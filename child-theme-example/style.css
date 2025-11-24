@@ -1,0 +1,46 @@
+/*
+Theme Name: Parent Theme Child
+Description: Child theme example for WordPress
+Author: Your Name
+Template: twentytwentyfour
+Version: 1.0.0
+Text Domain: child-theme
+*/
+
+/* Import parent theme styles */
+@import url("../twentytwentyfour/style.css");
+
+/* ============================================
+   Custom Styles Below
+   ============================================ */
+
+/* Example: Change body background color */
+body {
+    /* background-color: #f5f5f5; */
+}
+
+/* Example: Custom header styles */
+.site-header {
+    /* Add your custom header styles here */
+}
+
+/* Example: Custom footer styles */
+.site-footer {
+    /* Add your custom footer styles here */
+}
+
+/* Example: Custom button styles */
+.button-custom {
+    background-color: #0073aa;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button-custom:hover {
+    background-color: #005a87;
+}
+
+
