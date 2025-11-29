@@ -3,12 +3,16 @@
  * Confirms that the activation key that is sent in an email after a user signs
  * up for a new site matches the key for that user and then displays confirmation.
  *
+ * Xác nhận rằng activation key được gửi trong email sau khi người dùng đăng ký
+ * site mới khớp với key của người dùng đó và sau đó hiển thị xác nhận.
+ *
  * @package WordPress
  */
 
 define( 'WP_INSTALLING', true );
 
 /** Sets up the WordPress Environment. */
+/** Thiết lập môi trường WordPress. */
 require __DIR__ . '/wp-load.php';
 
 require __DIR__ . '/wp-blog-header.php';
@@ -69,10 +73,13 @@ if ( is_object( $wp_object_cache ) ) {
 }
 
 // Fix for page title.
+// Sửa cho tiêu đề trang.
 $wp_query->is_404 = false;
 
 /**
  * Fires before the Site Activation page is loaded.
+ *
+ * Kích hoạt trước khi trang Site Activation được load.
  *
  * @since 3.0.0
  */
@@ -81,7 +88,10 @@ do_action( 'activate_header' );
 /**
  * Adds an action hook specific to this page.
  *
+ * Thêm action hook cụ thể cho trang này.
+ *
  * Fires on {@see 'wp_head'}.
+ * Kích hoạt trên {@see 'wp_head'}.
  *
  * @since MU (3.0.0)
  */
@@ -89,7 +99,10 @@ function do_activate_header() {
 	/**
 	 * Fires within the `<head>` section of the Site Activation page.
 	 *
+	 * Kích hoạt trong phần `<head>` của trang Site Activation.
+	 *
 	 * Fires on the {@see 'wp_head'} action.
+	 * Kích hoạt trên action {@see 'wp_head'}.
 	 *
 	 * @since 3.0.0
 	 */
@@ -99,6 +112,8 @@ add_action( 'wp_head', 'do_activate_header' );
 
 /**
  * Loads styles specific to this page.
+ *
+ * Load các style cụ thể cho trang này.
  *
  * @since MU (3.0.0)
  */

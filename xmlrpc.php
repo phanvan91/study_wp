@@ -2,30 +2,38 @@
 /**
  * XML-RPC protocol support for WordPress
  *
+ * Hỗ trợ giao thức XML-RPC cho WordPress.
+ *
  * @package WordPress
  */
 
 /**
  * Whether this is an XML-RPC Request.
  *
+ * Có phải đây là XML-RPC Request không.
+ *
  * @var bool
  */
 define( 'XMLRPC_REQUEST', true );
 
 // Discard unneeded cookies sent by some browser-embedded clients.
+// Loại bỏ các cookies không cần thiết được gửi bởi một số client nhúng trong trình duyệt.
 $_COOKIE = array();
 
 // $HTTP_RAW_POST_DATA was deprecated in PHP 5.6 and removed in PHP 7.0.
+// $HTTP_RAW_POST_DATA đã bị deprecated trong PHP 5.6 và bị xóa trong PHP 7.0.
 // phpcs:disable PHPCompatibility.Variables.RemovedPredefinedGlobalVariables.http_raw_post_dataDeprecatedRemoved
 if ( ! isset( $HTTP_RAW_POST_DATA ) ) {
 	$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
 }
 
 // Fix for mozBlog and other cases where '<?xml' isn't on the very first line.
+// Sửa cho mozBlog và các trường hợp khác nơi '<?xml' không ở dòng đầu tiên.
 $HTTP_RAW_POST_DATA = trim( $HTTP_RAW_POST_DATA );
 // phpcs:enable
 
 /** Include the bootstrap for setting up WordPress environment */
+/** Include bootstrap để thiết lập môi trường WordPress */
 require_once __DIR__ . '/wp-load.php';
 
 if ( isset( $_GET['rsd'] ) ) { // https://cyber.harvard.edu/blogs/gems/tech/rsd.html
@@ -45,6 +53,8 @@ if ( isset( $_GET['rsd'] ) ) { // https://cyber.harvard.edu/blogs/gems/tech/rsd.
 			<?php
 			/**
 			 * Fires when adding APIs to the Really Simple Discovery (RSD) endpoint.
+			 *
+			 * Kích hoạt khi thêm APIs vào endpoint Really Simple Discovery (RSD).
 			 *
 			 * @link https://cyber.harvard.edu/blogs/gems/tech/rsd.html
 			 *
@@ -66,6 +76,8 @@ require_once ABSPATH . WPINC . '/class-wp-xmlrpc-server.php';
 /**
  * Posts submitted via the XML-RPC interface get that title
  *
+ * Các post được gửi qua giao diện XML-RPC nhận title đó.
+ *
  * @name post_default_title
  * @var string
  */
@@ -73,6 +85,8 @@ $post_default_title = '';
 
 /**
  * Filters the class used for handling XML-RPC requests.
+ *
+ * Filter class được sử dụng để xử lý XML-RPC requests.
  *
  * @since 3.1.0
  *
@@ -82,12 +96,15 @@ $wp_xmlrpc_server_class = apply_filters( 'wp_xmlrpc_server_class', 'wp_xmlrpc_se
 $wp_xmlrpc_server       = new $wp_xmlrpc_server_class();
 
 // Fire off the request.
+// Kích hoạt request.
 $wp_xmlrpc_server->serve_request();
 
 exit;
 
 /**
  * logIO() - Writes logging info to a file.
+ *
+ * logIO() - Ghi thông tin logging vào file.
  *
  * @since 1.2.0
  * @deprecated 3.4.0 Use error_log()

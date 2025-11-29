@@ -2,6 +2,8 @@
 /**
  * Handles Comment Post to WordPress and prevents duplicate comment posting.
  *
+ * Xử lý Comment Post đến WordPress và ngăn chặn đăng comment trùng lặp.
+ *
  * @package WordPress
  */
 
@@ -18,6 +20,7 @@ if ( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 }
 
 /** Sets up the WordPress Environment. */
+/** Thiết lập môi trường WordPress. */
 require __DIR__ . '/wp-load.php';
 
 nocache_headers();
@@ -45,6 +48,8 @@ $cookies_consent = ( isset( $_POST['wp-comment-cookies-consent'] ) );
 /**
  * Fires after comment cookies are set.
  *
+ * Kích hoạt sau khi comment cookies được thiết lập.
+ *
  * @since 3.4.0
  * @since 4.9.6 The `$cookies_consent` parameter was added.
  *
@@ -57,6 +62,7 @@ do_action( 'set_comment_cookies', $comment, $user, $cookies_consent );
 $location = empty( $_POST['redirect_to'] ) ? get_comment_link( $comment ) : $_POST['redirect_to'] . '#comment-' . $comment->comment_ID;
 
 // If user didn't consent to cookies, add specific query arguments to display the awaiting moderation message.
+// Nếu user không đồng ý với cookies, thêm các query arguments cụ thể để hiển thị thông báo đang chờ kiểm duyệt.
 if ( ! $cookies_consent && 'unapproved' === wp_get_comment_status( $comment ) && ! empty( $comment->comment_author_email ) ) {
 	$location = add_query_arg(
 		array(
@@ -69,6 +75,8 @@ if ( ! $cookies_consent && 'unapproved' === wp_get_comment_status( $comment ) &&
 
 /**
  * Filters the location URI to send the commenter after posting.
+ *
+ * Filter URI vị trí để gửi commenter sau khi đăng.
  *
  * @since 2.0.5
  *
