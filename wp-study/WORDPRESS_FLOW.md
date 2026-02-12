@@ -1,6 +1,21 @@
-# WordPress Request Flow - Luồng Xử Lý Request trong WordPress
+# WordPress Request Flow - Luong Xu Ly Request Trong WordPress
 
-## Tổng Quan
+## Muc Luc
+
+1. [Entry Point - Diem vao chinh](#1-entry-point---diem-vao-chinh)
+2. [Blog Header - Khoi tao WordPress Environment](#2-blog-header---khoi-tao-wordpress-environment)
+3. [WordPress Loader - Load Core](#3-wordpress-loader---load-core-wordpress)
+4. [WordPress Settings - Khoi tao toan bo](#4-wordpress-settings---khoi-tao-toan-bo-wordpress)
+5. [Parse Request - Phan tich request](#5-parse-request---phan-tich-request)
+6. [Template Loader - Load template phu hop](#6-template-loader---load-template-phu-hop)
+7. [Template Rendering - Render HTML](#7-template-rendering---render-html)
+8. [Tom tat luong hoat dong](#tom-tat-luong-hoat-dong)
+9. [Cac Hooks quan trong](#cac-hooks-quan-trong-action-hooks)
+10. [Cac Global Objects quan trong](#cac-global-objects-quan-trong)
+
+---
+
+## Tong Quan
 
 Khi một request được gửi đến WordPress, nó sẽ trải qua một chuỗi các bước xử lý từ entry point đến khi render HTML. Dưới đây là luồng chi tiết:
 
