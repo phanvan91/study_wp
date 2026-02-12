@@ -1,92 +1,92 @@
-# Gutenberg / Block Editor - Huong Dan Chi Tiet
+# Gutenberg / Block Editor - Hướng Dẫn Chi Tiết
 
-## Muc luc
+## Mục lục
 
-1. [Gioi thieu Block Editor](#1-gioi-thieu-block-editor)
-2. [Cau truc Block - attributes, edit, save](#2-cau-truc-block---attributes-edit-save)
-3. [Tao Custom Block don gian voi @wordpress/scripts](#3-tao-custom-block-don-gian-voi-wordpressscripts)
-4. [Block Attributes va InspectorControls](#4-block-attributes-va-inspectorcontrols)
+1. [Giới thiệu Block Editor](#1-gioi-thieu-block-editor)
+2. [Cấu trúc Block - attributes, edit, save](#2-cau-truc-block---attributes-edit-save)
+3. [Tạo Custom Block đơn giản với @wordpress/scripts](#3-tao-custom-block-don-gian-voi-wordpressscripts)
+4. [Block Attributes và InspectorControls](#4-block-attributes-va-inspectorcontrols)
 5. [RichText, MediaUpload components](#5-richtext-mediaupload-components)
 6. [Dynamic Blocks (Server-side rendering)](#6-dynamic-blocks-server-side-rendering)
 7. [Block Patterns](#7-block-patterns)
 8. [Block Templates](#8-block-templates)
-9. [theme.json - Cau hinh theme cho Block Editor](#9-themejson---cau-hinh-theme-cho-block-editor)
-10. [Vi du block hoan chinh](#10-vi-du-block-hoan-chinh)
+9. [theme.json - Cấu hình theme cho Block Editor](#9-themejson---cau-hinh-theme-cho-block-editor)
+10. [Ví dụ block hoàn chỉnh](#10-vi-du-block-hoan-chinh)
 
 ---
 
-## 1. Gioi thieu Block Editor
+## 1. Giới thiệu Block Editor
 
-### Block Editor la gi?
+### Block Editor là gì?
 
-Block Editor (hay Gutenberg) la trinh soan thao noi dung mac dinh cua WordPress tu phien ban 5.0. Thay vi su dung mot vung soan thao lon (TinyMCE), Gutenberg chia noi dung thanh cac "blocks" (khoi) doc lap.
+Block Editor (hay Gutenberg) là trình soạn thảo nội dung mặc định của WordPress từ phiên bản 5.0. Thay vì sử dụng một vùng soạn thảo lớn (TinyMCE), Gutenberg chia nội dung thành các "blocks" (khối) độc lập.
 
-### Cac khai niem co ban
+### Các khái niệm cơ bản
 
 ```
-Block: Don vi noi dung nho nhat (paragraph, heading, image, button, ...)
-Block Type: Loai block da duoc dang ky (core/paragraph, core/image, ...)
-Attributes: Du lieu cau hinh cua block (noi dung, mau sac, kich thuoc, ...)
-InnerBlocks: Block co the chua cac block con ben trong
-Block Patterns: Nhom cac block duoc sap xep san
-Block Templates: Cau truc block mac dinh cho post type
+Block: Đơn vị nội dung nhỏ nhất (paragraph, heading, image, button, ...)
+Block Type: Loại block đã được đăng ký (core/paragraph, core/image, ...)
+Attributes: Dữ liệu cấu hình của block (nội dung, màu sắc, kích thước, ...)
+InnerBlocks: Block có thể chứa các block con bên trong
+Block Patterns: Nhóm các block được sắp xếp sẵn
+Block Templates: Cấu trúc block mặc định cho post type
 ```
 
-### Kien truc tong quan
+### Kiến trúc tổng quan
 
 ```
 WordPress Block Editor
   |
   |-- Editor (React App)
-  |     |-- Block Toolbar (thanh cong cu tren block)
-  |     |-- Block Inspector / Sidebar (panel cai dat ben phai)
-  |     |-- Block Content (noi dung chinh)
+  |     |-- Block Toolbar (thanh công cụ trên block)
+  |     |-- Block Inspector / Sidebar (panel cài đặt bên phải)
+  |     |-- Block Content (nội dung chính)
   |
   |-- Blocks
   |     |-- Core Blocks (paragraph, heading, image, ...)
-  |     |-- Custom Blocks (ban tu tao)
-  |     |-- Third-party Blocks (tu plugin)
+  |     |-- Custom Blocks (bạn tự tạo)
+  |     |-- Third-party Blocks (từ plugin)
   |
   |-- Data Store (@wordpress/data)
   |     |-- core/editor
   |     |-- core/block-editor
   |     |-- core/notices
   |
-  |-- REST API (luu va tai noi dung)
+  |-- REST API (lưu và tải nội dung)
 ```
 
-### Cong nghe su dung
+### Công nghệ sử dụng
 
 ```
-- React.js: Xay dung giao dien
-- JSX: Cu phap viet component
+- React.js: Xây dựng giao diện
+- JSX: Cú pháp viết component
 - @wordpress/scripts: Build tools (webpack, babel)
-- @wordpress/components: Thu vien UI components
+- @wordpress/components: Thư viện UI components
 - @wordpress/block-editor: API cho block editor
-- @wordpress/blocks: API dang ky va quan ly blocks
-- @wordpress/data: State management (giong Redux)
+- @wordpress/blocks: API đăng ký và quản lý blocks
+- @wordpress/data: State management (giống Redux)
 ```
 
 ---
 
-## 2. Cau truc Block - attributes, edit, save
+## 2. Cấu trúc Block - attributes, edit, save
 
-### Cau truc co ban cua mot block
+### Cấu trúc cơ bản của một block
 
 ```javascript
-// index.js - File chinh cua block
+// index.js - File chính của block
 import { registerBlockType } from '@wordpress/blocks';
 import Edit from './edit';
 import save from './save';
 import metadata from './block.json';
 
 registerBlockType( metadata.name, {
-    edit: Edit,  // Component hien thi trong editor
-    save,        // Component render HTML luu vao database
+    edit: Edit,  // Component hiển thị trong editor
+    save,        // Component render HTML lưu vào database
 } );
 ```
 
-### block.json - File metadata (bat buoc tu WP 6.0+)
+### block.json - File metadata (bắt buộc từ WP 6.0+)
 
 ```json
 {
@@ -94,10 +94,10 @@ registerBlockType( metadata.name, {
     "apiVersion": 3,
     "name": "my-plugin/my-block",
     "version": "1.0.0",
-    "title": "Block Cua Toi",
+    "title": "Block Của Tôi",
     "category": "widgets",
     "icon": "smiley",
-    "description": "Mo ta block cua toi.",
+    "description": "Mô tả block của tôi.",
     "keywords": [ "custom", "block", "example" ],
     "supports": {
         "html": false,
@@ -138,23 +138,23 @@ registerBlockType( metadata.name, {
 }
 ```
 
-### Giai thich cac thanh phan trong block.json
+### Giải thích các thành phần trong block.json
 
 ```
-apiVersion: 3         - Phien ban API (3 la moi nhat)
-name:                 - Ten duy nhat, format: namespace/block-name
-category:             - Nhom: text, media, design, widgets, theme, embed
-icon:                 - Dashicon hoac SVG
-supports:             - Cac tinh nang block ho tro
-attributes:           - Du lieu cua block
-editorScript:         - JS chi load trong editor
-editorStyle:          - CSS chi load trong editor
-style:                - CSS load ca editor va frontend
+apiVersion: 3         - Phiên bản API (3 là mới nhất)
+name:                 - Tên duy nhất, format: namespace/block-name
+category:             - Nhóm: text, media, design, widgets, theme, embed
+icon:                 - Dashicon hoặc SVG
+supports:             - Các tính năng block hỗ trợ
+attributes:           - Dữ liệu của block
+editorScript:         - JS chỉ load trong editor
+editorStyle:          - CSS chỉ load trong editor
+style:                - CSS load cả editor và frontend
 render:               - PHP template cho dynamic block
-viewScript:           - JS chi load tren frontend
+viewScript:           - JS chỉ load trên frontend
 ```
 
-### edit.js - Component hien thi trong Editor
+### edit.js - Component hiển thị trong Editor
 
 ```javascript
 // edit.js
@@ -174,7 +174,7 @@ export default function Edit( { attributes, setAttributes } ) {
 }
 ```
 
-### save.js - Component render HTML luu vao database
+### save.js - Component render HTML lưu vào database
 
 ```javascript
 // save.js
@@ -194,41 +194,41 @@ export default function save( { attributes } ) {
 }
 ```
 
-### Vong doi cua block
+### Vòng đời của block
 
 ```
-1. User them block vao editor
-   -> registerBlockType() duoc goi
+1. User thêm block vào editor
+   -> registerBlockType() được gọi
    -> edit() component render trong editor
 
-2. User chinh sua noi dung
-   -> setAttributes() cap nhat du lieu
-   -> edit() re-render voi attributes moi
+2. User chỉnh sửa nội dung
+   -> setAttributes() cập nhật dữ liệu
+   -> edit() re-render với attributes mới
 
-3. User luu bai viet
+3. User lưu bài viết
    -> save() component render HTML
-   -> HTML duoc luu vao post_content trong database
-   -> Dinh dang: <!-- wp:my-plugin/my-block {"attr":"value"} -->HTML<!-- /wp:my-plugin/my-block -->
+   -> HTML được lưu vào post_content trong database
+   -> Định dạng: <!-- wp:my-plugin/my-block {"attr":"value"} -->HTML<!-- /wp:my-plugin/my-block -->
 
-4. Frontend hien thi
-   -> WordPress doc post_content
+4. Frontend hiển thị
+   -> WordPress đọc post_content
    -> Parse block markup
-   -> Render HTML (static) hoac goi render callback (dynamic)
+   -> Render HTML (static) hoặc gọi render callback (dynamic)
 ```
 
 ---
 
-## 3. Tao Custom Block don gian voi @wordpress/scripts
+## 3. Tạo Custom Block đơn giản với @wordpress/scripts
 
-### Buoc 1: Cai dat cong cu
+### Bước 1: Cài đặt công cụ
 
 ```bash
-# Tao plugin moi
+# Tạo plugin mới
 mkdir -p wp-content/plugins/my-blocks-plugin
 cd wp-content/plugins/my-blocks-plugin
 ```
 
-### Buoc 2: Tao file plugin chinh
+### Bước 2: Tạo file plugin chính
 
 ```php
 <?php
@@ -245,21 +245,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Dang ky tat ca custom blocks
+ * Đăng ký tất cả custom blocks
  */
 function my_blocks_register() {
-    // Dang ky block tu block.json
-    // WordPress se tu dong enqueue scripts va styles
+    // Đăng ký block từ block.json
+    // WordPress sẽ tự động enqueue scripts và styles
     register_block_type( __DIR__ . '/build/hello-block' );
 }
 add_action( 'init', 'my_blocks_register' );
 ```
 
-### Buoc 3: Tao cau truc thu muc source
+### Bước 3: Tạo cấu trúc thư mục source
 
 ```
 my-blocks-plugin/
-  |-- my-blocks-plugin.php        (File chinh)
+  |-- my-blocks-plugin.php        (File chính)
   |-- package.json
   |-- src/
   |     |-- hello-block/
@@ -269,10 +269,10 @@ my-blocks-plugin/
   |           |-- save.js
   |           |-- editor.scss
   |           |-- style.scss
-  |-- build/                      (Tu dong tao khi build)
+  |-- build/                      (Tự động tạo khi build)
 ```
 
-### Buoc 4: package.json
+### Bước 4: package.json
 
 ```json
 {
@@ -293,11 +293,11 @@ my-blocks-plugin/
 ```
 
 ```bash
-# Cai dat dependencies
+# Cài đặt dependencies
 npm install
 ```
 
-### Buoc 5: block.json
+### Bước 5: block.json
 
 ```json
 {
@@ -308,7 +308,7 @@ npm install
     "title": "Hello Block",
     "category": "widgets",
     "icon": "smiley",
-    "description": "Block chao hoi don gian.",
+    "description": "Block chào hỏi đơn giản.",
     "keywords": [ "hello", "chao", "example" ],
     "supports": {
         "html": false
@@ -316,7 +316,7 @@ npm install
     "attributes": {
         "message": {
             "type": "string",
-            "default": "Xin chao!"
+            "default": "Xin chào!"
         }
     },
     "textdomain": "my-blocks",
@@ -326,7 +326,7 @@ npm install
 }
 ```
 
-### Buoc 6: index.js
+### Bước 6: index.js
 
 ```javascript
 import { registerBlockType } from '@wordpress/blocks';
@@ -342,7 +342,7 @@ registerBlockType( metadata.name, {
 } );
 ```
 
-### Buoc 7: edit.js
+### Bước 7: edit.js
 
 ```javascript
 import { useBlockProps } from '@wordpress/block-editor';
@@ -356,7 +356,7 @@ export default function Edit( { attributes, setAttributes } ) {
     return (
         <div { ...blockProps }>
             <TextControl
-                label={ __( 'Loi chao', 'my-blocks' ) }
+                label={ __( 'Lời chào', 'my-blocks' ) }
                 value={ message }
                 onChange={ ( value ) => setAttributes( { message: value } ) }
             />
@@ -368,7 +368,7 @@ export default function Edit( { attributes, setAttributes } ) {
 }
 ```
 
-### Buoc 8: save.js
+### Bước 8: save.js
 
 ```javascript
 import { useBlockProps } from '@wordpress/block-editor';
@@ -385,10 +385,10 @@ export default function save( { attributes } ) {
 }
 ```
 
-### Buoc 9: Styles
+### Bước 9: Styles
 
 ```scss
-// editor.scss - Chi hien trong editor
+// editor.scss - Chỉ hiện trong editor
 .wp-block-my-blocks-hello-block {
     border: 2px dashed #ccc;
     padding: 20px;
@@ -404,7 +404,7 @@ export default function save( { attributes } ) {
 ```
 
 ```scss
-// style.scss - Hien ca editor va frontend
+// style.scss - Hiện cả editor và frontend
 .wp-block-my-blocks-hello-block {
     .hello-block-message {
         font-size: 24px;
@@ -416,16 +416,16 @@ export default function save( { attributes } ) {
 }
 ```
 
-### Buoc 10: Build va su dung
+### Bước 10: Build và sử dụng
 
 ```bash
-# Development (watch mode - tu dong rebuild khi thay doi)
+# Development (watch mode - tự động rebuild khi thay đổi)
 npm start
 
 # Production build
 npm run build
 
-# Ket qua:
+# Kết quả:
 # build/
 #   |-- hello-block/
 #         |-- block.json
@@ -438,9 +438,9 @@ npm run build
 
 ---
 
-## 4. Block Attributes va InspectorControls
+## 4. Block Attributes và InspectorControls
 
-### Cac loai Attributes
+### Các loại Attributes
 
 ```json
 {
@@ -486,32 +486,32 @@ npm run build
 }
 ```
 
-### Giai thich Attribute Sources
+### Giải thích Attribute Sources
 
 ```
 "source": "html"
-  -> Lay noi dung HTML tu selector
-  -> Vi du: <p class="content">Noi dung nay</p> => "Noi dung nay"
+  -> Lấy nội dung HTML từ selector
+  -> Ví dụ: <p class="content">Nội dung này</p> => "Nội dung này"
 
 "source": "attribute"
-  -> Lay gia tri attribute cua HTML element
-  -> Vi du: <img src="url.jpg"> => "url.jpg"
+  -> Lấy giá trị attribute của HTML element
+  -> Ví dụ: <img src="url.jpg"> => "url.jpg"
 
 "source": "text"
-  -> Lay text content (khong co HTML tags)
+  -> Lấy text content (không có HTML tags)
 
 "source": "query"
-  -> Lay du lieu tu nhieu elements (tra ve array)
+  -> Lấy dữ liệu từ nhiều elements (trả về array)
 
-Khong co "source":
-  -> Luu truc tiep trong block comment
+Không có "source":
+  -> Lưu trực tiếp trong block comment
   -> <!-- wp:my-block {"myAttr":"value"} -->
 ```
 
-### InspectorControls - Panel cai dat ben phai
+### InspectorControls - Panel cài đặt bên phải
 
 ```javascript
-// edit.js voi InspectorControls day du
+// edit.js với InspectorControls đầy đủ
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import {
     PanelBody,
@@ -553,68 +553,68 @@ export default function Edit( { attributes, setAttributes } ) {
         },
     } );
 
-    // Mau sac cho ColorPalette
+    // Màu sắc cho ColorPalette
     const colors = [
-        { name: 'Do', color: '#e74c3c' },
-        { name: 'Xanh duong', color: '#3498db' },
-        { name: 'Xanh la', color: '#2ecc71' },
-        { name: 'Vang', color: '#f39c12' },
-        { name: 'Tim', color: '#9b59b6' },
-        { name: 'Trang', color: '#ffffff' },
-        { name: 'Den', color: '#000000' },
+        { name: 'Đỏ', color: '#e74c3c' },
+        { name: 'Xanh dương', color: '#3498db' },
+        { name: 'Xanh lá', color: '#2ecc71' },
+        { name: 'Vàng', color: '#f39c12' },
+        { name: 'Tím', color: '#9b59b6' },
+        { name: 'Trắng', color: '#ffffff' },
+        { name: 'Đen', color: '#000000' },
     ];
 
     // Font sizes cho FontSizePicker
     const fontSizes = [
-        { name: 'Nho', slug: 'small', size: 14 },
-        { name: 'Vua', slug: 'medium', size: 16 },
-        { name: 'Lon', slug: 'large', size: 20 },
-        { name: 'Rat lon', slug: 'x-large', size: 28 },
+        { name: 'Nhỏ', slug: 'small', size: 14 },
+        { name: 'Vừa', slug: 'medium', size: 16 },
+        { name: 'Lớn', slug: 'large', size: 20 },
+        { name: 'Rất lớn', slug: 'x-large', size: 28 },
     ];
 
     return (
         <>
-            {/* Inspector Controls - Panel cai dat ben phai */}
+            {/* Inspector Controls - Panel cài đặt bên phải */}
             <InspectorControls>
 
-                {/* Panel 1: Noi dung */}
-                <PanelBody title={ __( 'Noi dung', 'my-blocks' ) } initialOpen={ true }>
+                {/* Panel 1: Nội dung */}
+                <PanelBody title={ __( 'Nội dung', 'my-blocks' ) } initialOpen={ true }>
                     <TextControl
-                        label={ __( 'Tieu de', 'my-blocks' ) }
+                        label={ __( 'Tiêu đề', 'my-blocks' ) }
                         value={ title }
                         onChange={ ( value ) => setAttributes( { title: value } ) }
-                        help="Nhap tieu de cua block"
+                        help="Nhập tiêu đề của block"
                     />
 
                     <TextareaControl
-                        label={ __( 'Mo ta', 'my-blocks' ) }
+                        label={ __( 'Mô tả', 'my-blocks' ) }
                         value={ description }
                         onChange={ ( value ) => setAttributes( { description: value } ) }
                         rows={ 4 }
                     />
 
                     <ToggleControl
-                        label={ __( 'Hien thi tieu de', 'my-blocks' ) }
+                        label={ __( 'Hiển thị tiêu đề', 'my-blocks' ) }
                         checked={ showTitle }
                         onChange={ ( value ) => setAttributes( { showTitle: value } ) }
                     />
                 </PanelBody>
 
-                {/* Panel 2: Bo cuc */}
-                <PanelBody title={ __( 'Bo cuc', 'my-blocks' ) } initialOpen={ false }>
+                {/* Panel 2: Bố cục */}
+                <PanelBody title={ __( 'Bố cục', 'my-blocks' ) } initialOpen={ false }>
                     <SelectControl
-                        label={ __( 'Kieu bo cuc', 'my-blocks' ) }
+                        label={ __( 'Kiểu bố cục', 'my-blocks' ) }
                         value={ layout }
                         options={ [
-                            { label: 'Luoi (Grid)', value: 'grid' },
-                            { label: 'Danh sach (List)', value: 'list' },
+                            { label: 'Lưới (Grid)', value: 'grid' },
+                            { label: 'Danh sách (List)', value: 'list' },
                             { label: 'Carousel', value: 'carousel' },
                         ] }
                         onChange={ ( value ) => setAttributes( { layout: value } ) }
                     />
 
                     <RangeControl
-                        label={ __( 'So cot', 'my-blocks' ) }
+                        label={ __( 'Số cột', 'my-blocks' ) }
                         value={ columns }
                         onChange={ ( value ) => setAttributes( { columns: value } ) }
                         min={ 1 }
@@ -623,27 +623,27 @@ export default function Edit( { attributes, setAttributes } ) {
                     />
 
                     <RadioControl
-                        label={ __( 'Can chinh', 'my-blocks' ) }
+                        label={ __( 'Căn chỉnh', 'my-blocks' ) }
                         selected={ alignment }
                         options={ [
-                            { label: 'Trai', value: 'left' },
-                            { label: 'Giua', value: 'center' },
-                            { label: 'Phai', value: 'right' },
+                            { label: 'Trái', value: 'left' },
+                            { label: 'Giữa', value: 'center' },
+                            { label: 'Phải', value: 'right' },
                         ] }
                         onChange={ ( value ) => setAttributes( { alignment: value } ) }
                     />
                 </PanelBody>
 
-                {/* Panel 3: Giao dien */}
-                <PanelBody title={ __( 'Giao dien', 'my-blocks' ) } initialOpen={ false }>
-                    <p>{ __( 'Mau nen', 'my-blocks' ) }</p>
+                {/* Panel 3: Giao diện */}
+                <PanelBody title={ __( 'Giao diện', 'my-blocks' ) } initialOpen={ false }>
+                    <p>{ __( 'Màu nền', 'my-blocks' ) }</p>
                     <ColorPalette
                         colors={ colors }
                         value={ backgroundColor }
                         onChange={ ( value ) => setAttributes( { backgroundColor: value } ) }
                     />
 
-                    <p>{ __( 'Mau chu', 'my-blocks' ) }</p>
+                    <p>{ __( 'Màu chữ', 'my-blocks' ) }</p>
                     <ColorPalette
                         colors={ colors }
                         value={ textColor }
@@ -657,7 +657,7 @@ export default function Edit( { attributes, setAttributes } ) {
                     />
 
                     <RangeControl
-                        label={ __( 'Bo goc (border-radius)', 'my-blocks' ) }
+                        label={ __( 'Bo góc (border-radius)', 'my-blocks' ) }
                         value={ borderRadius }
                         onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
                         min={ 0 }
@@ -665,10 +665,10 @@ export default function Edit( { attributes, setAttributes } ) {
                     />
                 </PanelBody>
 
-                {/* Panel 4: Nang cao */}
-                <PanelBody title={ __( 'Nang cao', 'my-blocks' ) } initialOpen={ false }>
+                {/* Panel 4: Nâng cao */}
+                <PanelBody title={ __( 'Nâng cao', 'my-blocks' ) } initialOpen={ false }>
                     <CheckboxControl
-                        label={ __( 'Bat hieu ung dong (animation)', 'my-blocks' ) }
+                        label={ __( 'Bật hiệu ứng động (animation)', 'my-blocks' ) }
                         checked={ enableAnimation }
                         onChange={ ( value ) => setAttributes( { enableAnimation: value } ) }
                     />
@@ -676,10 +676,10 @@ export default function Edit( { attributes, setAttributes } ) {
 
             </InspectorControls>
 
-            {/* Noi dung block trong editor */}
+            {/* Nội dung block trong editor */}
             <div { ...blockProps }>
-                { showTitle && <h3>{ title || 'Nhap tieu de...' }</h3> }
-                <p>{ description || 'Nhap mo ta...' }</p>
+                { showTitle && <h3>{ title || 'Nhập tiêu đề...' }</h3> }
+                <p>{ description || 'Nhập mô tả...' }</p>
             </div>
         </>
     );
@@ -708,25 +708,25 @@ export default function Edit( { attributes, setAttributes } ) {
 
     return (
         <>
-            {/* Block Toolbar - Thanh cong cu phia tren block */}
+            {/* Block Toolbar - Thanh công cụ phía trên block */}
             <BlockControls>
-                {/* Alignment toolbar co san */}
+                {/* Alignment toolbar có sẵn */}
                 <AlignmentToolbar
                     value={ alignment }
                     onChange={ ( value ) => setAttributes( { alignment: value } ) }
                 />
 
-                {/* Toolbar group tuy chinh */}
+                {/* Toolbar group tùy chỉnh */}
                 <ToolbarGroup>
                     <ToolbarButton
                         icon={ formatBold }
-                        label={ __( 'Dam', 'my-blocks' ) }
+                        label={ __( 'Đậm', 'my-blocks' ) }
                         isPressed={ isBold }
                         onClick={ () => setAttributes( { isBold: ! isBold } ) }
                     />
                     <ToolbarButton
                         icon={ formatItalic }
-                        label={ __( 'Nghieng', 'my-blocks' ) }
+                        label={ __( 'Nghiêng', 'my-blocks' ) }
                         isPressed={ isItalic }
                         onClick={ () => setAttributes( { isItalic: ! isItalic } ) }
                     />
@@ -735,14 +735,14 @@ export default function Edit( { attributes, setAttributes } ) {
                 {/* Dropdown menu */}
                 <ToolbarDropdownMenu
                     icon={ link }
-                    label={ __( 'Tuy chon', 'my-blocks' ) }
+                    label={ __( 'Tùy chọn', 'my-blocks' ) }
                     controls={ [
                         {
-                            title: 'Tuy chon 1',
+                            title: 'Tùy chọn 1',
                             onClick: () => console.log( 'Option 1' ),
                         },
                         {
-                            title: 'Tuy chon 2',
+                            title: 'Tùy chọn 2',
                             onClick: () => console.log( 'Option 2' ),
                         },
                     ] }
@@ -750,7 +750,7 @@ export default function Edit( { attributes, setAttributes } ) {
             </BlockControls>
 
             <div { ...blockProps }>
-                <p style={ { textAlign: alignment } }>Noi dung block</p>
+                <p style={ { textAlign: alignment } }>Nội dung block</p>
             </div>
         </>
     );
@@ -761,7 +761,7 @@ export default function Edit( { attributes, setAttributes } ) {
 
 ## 5. RichText, MediaUpload components
 
-### RichText - Soan thao van ban rich text
+### RichText - Soạn thảo văn bản rich text
 
 ```javascript
 import { useBlockProps, RichText } from '@wordpress/block-editor';
@@ -776,32 +776,32 @@ export function Edit( { attributes, setAttributes } ) {
         <div { ...blockProps }>
             {/* RichText cho heading */}
             <RichText
-                tagName="h2"                                   // HTML tag se render
+                tagName="h2"                                   // HTML tag sẽ render
                 className="my-block-heading"
-                value={ heading }                              // Gia tri hien tai
+                value={ heading }                              // Giá trị hiện tại
                 onChange={ ( value ) => setAttributes( { heading: value } ) }
-                placeholder={ __( 'Nhap tieu de...', 'my-blocks' ) }
-                allowedFormats={ [ 'core/bold', 'core/italic' ] }  // Gioi han format
-                // allowedFormats={ [] }                         // Khong cho format nao
+                placeholder={ __( 'Nhập tiêu đề...', 'my-blocks' ) }
+                allowedFormats={ [ 'core/bold', 'core/italic' ] }  // Giới hạn format
+                // allowedFormats={ [] }                         // Không cho format nào
             />
 
-            {/* RichText cho noi dung */}
+            {/* RichText cho nội dung */}
             <RichText
                 tagName="p"
                 className="my-block-content"
                 value={ content }
                 onChange={ ( value ) => setAttributes( { content: value } ) }
-                placeholder={ __( 'Nhap noi dung...', 'my-blocks' ) }
-                // Mac dinh cho phep tat ca formats
+                placeholder={ __( 'Nhập nội dung...', 'my-blocks' ) }
+                // Mặc định cho phép tất cả formats
             />
 
-            {/* RichText dang danh sach */}
+            {/* RichText dạng danh sách */}
             <RichText
                 tagName="ul"
-                multiline="li"                                 // Moi dong la 1 <li>
+                multiline="li"                                 // Mỗi dòng là 1 <li>
                 value={ attributes.listItems }
                 onChange={ ( value ) => setAttributes( { listItems: value } ) }
-                placeholder={ __( 'Nhap muc...', 'my-blocks' ) }
+                placeholder={ __( 'Nhập mục...', 'my-blocks' ) }
             />
         </div>
     );
@@ -847,7 +847,7 @@ export function save( { attributes } ) {
 }
 ```
 
-### MediaUpload - Upload va chon hinh anh
+### MediaUpload - Upload và chọn hình ảnh
 
 ```javascript
 import { useBlockProps, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
@@ -858,7 +858,7 @@ export default function Edit( { attributes, setAttributes } ) {
     const { imageId, imageUrl, imageAlt } = attributes;
     const blockProps = useBlockProps();
 
-    // Callback khi chon hinh
+    // Callback khi chọn hình
     const onSelectImage = ( media ) => {
         setAttributes( {
             imageId: media.id,
@@ -867,7 +867,7 @@ export default function Edit( { attributes, setAttributes } ) {
         } );
     };
 
-    // Callback khi xoa hinh
+    // Callback khi xóa hình
     const onRemoveImage = () => {
         setAttributes( {
             imageId: 0,
@@ -880,7 +880,7 @@ export default function Edit( { attributes, setAttributes } ) {
         <div { ...blockProps }>
             <MediaUploadCheck>
                 { imageUrl ? (
-                    // Da co hinh - hien thi hinh va nut thay doi
+                    // Đã có hình - hiển thị hình và nút thay đổi
                     <div className="my-block-image-wrapper">
                         <img src={ imageUrl } alt={ imageAlt } />
 
@@ -895,7 +895,7 @@ export default function Edit( { attributes, setAttributes } ) {
                                         variant="secondary"
                                         isSmall
                                     >
-                                        { __( 'Doi hinh', 'my-blocks' ) }
+                                        { __( 'Đổi hình', 'my-blocks' ) }
                                     </Button>
                                 ) }
                             />
@@ -905,12 +905,12 @@ export default function Edit( { attributes, setAttributes } ) {
                                 isDestructive
                                 isSmall
                             >
-                                { __( 'Xoa hinh', 'my-blocks' ) }
+                                { __( 'Xóa hình', 'my-blocks' ) }
                             </Button>
                         </div>
                     </div>
                 ) : (
-                    // Chua co hinh - hien thi placeholder
+                    // Chưa có hình - hiển thị placeholder
                     <MediaUpload
                         onSelect={ onSelectImage }
                         allowedTypes={ [ 'image' ] }
@@ -918,14 +918,14 @@ export default function Edit( { attributes, setAttributes } ) {
                         render={ ( { open } ) => (
                             <Placeholder
                                 icon="format-image"
-                                label={ __( 'Hinh anh', 'my-blocks' ) }
-                                instructions={ __( 'Chon hoac upload hinh anh', 'my-blocks' ) }
+                                label={ __( 'Hình ảnh', 'my-blocks' ) }
+                                instructions={ __( 'Chọn hoặc upload hình ảnh', 'my-blocks' ) }
                             >
                                 <Button
                                     onClick={ open }
                                     variant="primary"
                                 >
-                                    { __( 'Chon hinh', 'my-blocks' ) }
+                                    { __( 'Chọn hình', 'my-blocks' ) }
                                 </Button>
                             </Placeholder>
                         ) }
@@ -955,7 +955,7 @@ export function save( { attributes } ) {
 }
 ```
 
-### MediaUpload cho Video va File
+### MediaUpload cho Video và File
 
 ```javascript
 // Upload video
@@ -968,12 +968,12 @@ export function save( { attributes } ) {
     value={ attributes.videoId }
     render={ ( { open } ) => (
         <Button onClick={ open } variant="primary">
-            { __( 'Chon video', 'my-blocks' ) }
+            { __( 'Chọn video', 'my-blocks' ) }
         </Button>
     ) }
 />
 
-// Upload nhieu hinh (gallery)
+// Upload nhiều hình (gallery)
 <MediaUpload
     onSelect={ ( media ) => {
         const images = media.map( ( img ) => ( {
@@ -984,18 +984,18 @@ export function save( { attributes } ) {
         setAttributes( { gallery: images } );
     } }
     allowedTypes={ [ 'image' ] }
-    multiple={ true }           // Cho phep chon nhieu
-    gallery={ true }            // Giao dien gallery
+    multiple={ true }           // Cho phép chọn nhiều
+    gallery={ true }            // Giao diện gallery
     value={ attributes.gallery ? attributes.gallery.map( ( img ) => img.id ) : [] }
     render={ ( { open } ) => (
         <Button onClick={ open } variant="primary">
-            { __( 'Chon hinh gallery', 'my-blocks' ) }
+            { __( 'Chọn hình gallery', 'my-blocks' ) }
         </Button>
     ) }
 />
 ```
 
-### InnerBlocks - Block chua block con
+### InnerBlocks - Block chứa block con
 
 ```javascript
 import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
@@ -1004,14 +1004,14 @@ import { useBlockProps, InnerBlocks } from '@wordpress/block-editor';
 export function Edit() {
     const blockProps = useBlockProps();
 
-    // Template mac dinh cho InnerBlocks
+    // Template mặc định cho InnerBlocks
     const TEMPLATE = [
-        [ 'core/heading', { level: 2, placeholder: 'Tieu de...' } ],
-        [ 'core/paragraph', { placeholder: 'Noi dung...' } ],
+        [ 'core/heading', { level: 2, placeholder: 'Tiêu đề...' } ],
+        [ 'core/paragraph', { placeholder: 'Nội dung...' } ],
         [ 'core/image', {} ],
     ];
 
-    // Gioi han cac block cho phep
+    // Giới hạn các block cho phép
     const ALLOWED_BLOCKS = [
         'core/heading',
         'core/paragraph',
@@ -1025,12 +1025,12 @@ export function Edit() {
             <InnerBlocks
                 template={ TEMPLATE }
                 templateLock={ false }
-                // 'all' = khong cho sua template
-                // 'insert' = khong cho them/xoa block
-                // false = tu do chinh sua
+                // 'all' = không cho sửa template
+                // 'insert' = không cho thêm/xóa block
+                // false = tự do chỉnh sửa
                 allowedBlocks={ ALLOWED_BLOCKS }
                 // renderAppender={ InnerBlocks.ButtonBlockAppender }
-                // renderAppender={ () => null }  // An nut them block
+                // renderAppender={ () => null }  // Ẩn nút thêm block
             />
         </div>
     );
@@ -1052,20 +1052,20 @@ export function save() {
 
 ## 6. Dynamic Blocks (Server-side rendering)
 
-### Khi nao dung Dynamic Block?
+### Khi nào dùng Dynamic Block?
 
 ```
-Static Block: HTML duoc tao boi save() va luu vao database
-  -> Nhanh, khong can PHP khi render
-  -> Phu hop cho noi dung tinh (text, image, layout)
+Static Block: HTML được tạo bởi save() và lưu vào database
+  -> Nhanh, không cần PHP khi render
+  -> Phù hợp cho nội dung tĩnh (text, image, layout)
 
-Dynamic Block: HTML duoc tao boi PHP moi khi hien thi
-  -> Noi dung thay doi theo thoi gian thuc
-  -> Phu hop cho: bai viet moi nhat, san pham, query tu database
-  -> save() tra ve null
+Dynamic Block: HTML được tạo bởi PHP mỗi khi hiển thị
+  -> Nội dung thay đổi theo thời gian thực
+  -> Phù hợp cho: bài viết mới nhất, sản phẩm, query từ database
+  -> save() trả về null
 ```
 
-### Vi du Dynamic Block: Bai viet moi nhat
+### Ví dụ Dynamic Block: Bài viết mới nhất
 
 #### block.json
 
@@ -1074,10 +1074,10 @@ Dynamic Block: HTML duoc tao boi PHP moi khi hien thi
     "$schema": "https://schemas.wp.org/trunk/block.json",
     "apiVersion": 3,
     "name": "my-blocks/latest-posts",
-    "title": "Bai Viet Moi Nhat",
+    "title": "Bài Viết Mới Nhất",
     "category": "widgets",
     "icon": "list-view",
-    "description": "Hien thi danh sach bai viet moi nhat.",
+    "description": "Hiển thị danh sách bài viết mới nhất.",
     "supports": {
         "html": false,
         "align": [ "wide", "full" ]
@@ -1128,7 +1128,7 @@ Dynamic Block: HTML duoc tao boi PHP moi khi hien thi
 }
 ```
 
-#### edit.js (voi ServerSideRender)
+#### edit.js (với ServerSideRender)
 
 ```javascript
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
@@ -1158,20 +1158,20 @@ export default function Edit( { attributes, setAttributes } ) {
     return (
         <>
             <InspectorControls>
-                <PanelBody title={ __( 'Cai dat', 'my-blocks' ) }>
+                <PanelBody title={ __( 'Cài đặt', 'my-blocks' ) }>
                     <SelectControl
-                        label={ __( 'Loai bai viet', 'my-blocks' ) }
+                        label={ __( 'Loại bài viết', 'my-blocks' ) }
                         value={ postType }
                         options={ [
-                            { label: 'Bai viet', value: 'post' },
-                            { label: 'San pham', value: 'product' },
+                            { label: 'Bài viết', value: 'post' },
+                            { label: 'Sản phẩm', value: 'product' },
                             { label: 'Portfolio', value: 'portfolio' },
                         ] }
                         onChange={ ( value ) => setAttributes( { postType: value } ) }
                     />
 
                     <RangeControl
-                        label={ __( 'So bai viet', 'my-blocks' ) }
+                        label={ __( 'Số bài viết', 'my-blocks' ) }
                         value={ numberOfPosts }
                         onChange={ ( value ) => setAttributes( { numberOfPosts: value } ) }
                         min={ 1 }
@@ -1179,7 +1179,7 @@ export default function Edit( { attributes, setAttributes } ) {
                     />
 
                     <RangeControl
-                        label={ __( 'So cot', 'my-blocks' ) }
+                        label={ __( 'Số cột', 'my-blocks' ) }
                         value={ columns }
                         onChange={ ( value ) => setAttributes( { columns: value } ) }
                         min={ 1 }
@@ -1187,41 +1187,41 @@ export default function Edit( { attributes, setAttributes } ) {
                     />
 
                     <SelectControl
-                        label={ __( 'Sap xep theo', 'my-blocks' ) }
+                        label={ __( 'Sắp xếp theo', 'my-blocks' ) }
                         value={ orderBy }
                         options={ [
-                            { label: 'Ngay tao', value: 'date' },
-                            { label: 'Tieu de', value: 'title' },
-                            { label: 'Ngau nhien', value: 'rand' },
-                            { label: 'So binh luan', value: 'comment_count' },
+                            { label: 'Ngày tạo', value: 'date' },
+                            { label: 'Tiêu đề', value: 'title' },
+                            { label: 'Ngẫu nhiên', value: 'rand' },
+                            { label: 'Số bình luận', value: 'comment_count' },
                         ] }
                         onChange={ ( value ) => setAttributes( { orderBy: value } ) }
                     />
 
                     <SelectControl
-                        label={ __( 'Thu tu', 'my-blocks' ) }
+                        label={ __( 'Thứ tự', 'my-blocks' ) }
                         value={ order }
                         options={ [
-                            { label: 'Moi nhat truoc', value: 'desc' },
-                            { label: 'Cu nhat truoc', value: 'asc' },
+                            { label: 'Mới nhất trước', value: 'desc' },
+                            { label: 'Cũ nhất trước', value: 'asc' },
                         ] }
                         onChange={ ( value ) => setAttributes( { order: value } ) }
                     />
                 </PanelBody>
 
-                <PanelBody title={ __( 'Hien thi', 'my-blocks' ) } initialOpen={ false }>
+                <PanelBody title={ __( 'Hiển thị', 'my-blocks' ) } initialOpen={ false }>
                     <ToggleControl
-                        label={ __( 'Hien anh dai dien', 'my-blocks' ) }
+                        label={ __( 'Hiện ảnh đại diện', 'my-blocks' ) }
                         checked={ showThumbnail }
                         onChange={ ( value ) => setAttributes( { showThumbnail: value } ) }
                     />
                     <ToggleControl
-                        label={ __( 'Hien tom tat', 'my-blocks' ) }
+                        label={ __( 'Hiện tóm tắt', 'my-blocks' ) }
                         checked={ showExcerpt }
                         onChange={ ( value ) => setAttributes( { showExcerpt: value } ) }
                     />
                     <ToggleControl
-                        label={ __( 'Hien ngay dang', 'my-blocks' ) }
+                        label={ __( 'Hiện ngày đăng', 'my-blocks' ) }
                         checked={ showDate }
                         onChange={ ( value ) => setAttributes( { showDate: value } ) }
                     />
@@ -1229,7 +1229,7 @@ export default function Edit( { attributes, setAttributes } ) {
             </InspectorControls>
 
             <div { ...blockProps }>
-                {/* Render phia server trong editor */}
+                {/* Render phía server trong editor */}
                 <ServerSideRender
                     block="my-blocks/latest-posts"
                     attributes={ attributes }
@@ -1240,10 +1240,10 @@ export default function Edit( { attributes, setAttributes } ) {
 }
 ```
 
-#### save.js (tra ve null cho dynamic block)
+#### save.js (trả về null cho dynamic block)
 
 ```javascript
-// Dynamic block khong can save - tra ve null
+// Dynamic block không cần save - trả về null
 export default function save() {
     return null;
 }
@@ -1254,11 +1254,11 @@ export default function save() {
 ```php
 <?php
 /**
- * Render callback cho block "Bai Viet Moi Nhat"
+ * Render callback cho block "Bài Viết Mới Nhất"
  *
- * Cac bien co san:
- * $attributes - Mang attributes cua block
- * $content    - Noi dung InnerBlocks (neu co)
+ * Các biến có sẵn:
+ * $attributes - Mảng attributes của block
+ * $content    - Nội dung InnerBlocks (nếu có)
  * $block      - WP_Block instance
  */
 
@@ -1272,7 +1272,7 @@ $order           = isset( $attributes['order'] ) ? $attributes['order'] : 'desc'
 $order_by        = isset( $attributes['orderBy'] ) ? $attributes['orderBy'] : 'date';
 $category_id     = isset( $attributes['categoryId'] ) ? $attributes['categoryId'] : 0;
 
-// Query bai viet
+// Query bài viết
 $query_args = array(
     'post_type'      => $post_type,
     'posts_per_page' => $number_of_posts,
@@ -1288,11 +1288,11 @@ if ( $category_id > 0 ) {
 $posts = new WP_Query( $query_args );
 
 if ( ! $posts->have_posts() ) {
-    echo '<p>Khong co bai viet nao.</p>';
+    echo '<p>Không có bài viết nào.</p>';
     return;
 }
 
-// Lay wrapper attributes tu block
+// Lấy wrapper attributes từ block
 $wrapper_attributes = get_block_wrapper_attributes( array(
     'class' => 'latest-posts-block columns-' . $columns,
 ) );
@@ -1336,12 +1336,12 @@ $wrapper_attributes = get_block_wrapper_attributes( array(
 wp_reset_postdata();
 ```
 
-### Dang ky Dynamic Block bang PHP (cach cu, khong dung block.json)
+### Đăng ký Dynamic Block bằng PHP (cách cũ, không dùng block.json)
 
 ```php
 /**
- * Dang ky dynamic block bang PHP
- * Chi dung khi khong su dung block.json
+ * Đăng ký dynamic block bằng PHP
+ * Chỉ dùng khi không sử dụng block.json
  */
 function my_blocks_register_dynamic() {
     register_block_type( 'my-blocks/site-info', array(
@@ -1378,19 +1378,19 @@ function my_blocks_site_info_render( $attributes, $content ) {
 
 ## 7. Block Patterns
 
-### Block Pattern la gi?
+### Block Pattern là gì?
 
-Block Pattern la nhom cac block duoc sap xep san, nguoi dung co the chen vao noi dung voi 1 click. Khac voi Reusable Blocks, Pattern tao ban sao doc lap (thay doi pattern khong anh huong cac noi khac).
+Block Pattern là nhóm các block được sắp xếp sẵn, người dùng có thể chèn vào nội dung với 1 click. Khác với Reusable Blocks, Pattern tạo bản sao độc lập (thay đổi pattern không ảnh hưởng các nơi khác).
 
-### Dang ky Block Pattern
+### Đăng ký Block Pattern
 
 ```php
 /**
- * Dang ky Block Patterns
+ * Đăng ký Block Patterns
  */
 function mytheme_register_block_patterns() {
 
-    // 1. Dang ky Pattern Category truoc
+    // 1. Đăng ký Pattern Category trước
     register_block_pattern_category( 'mytheme-patterns', array(
         'label' => __( 'My Theme Patterns', 'mytheme' ),
     ) );
@@ -1399,12 +1399,12 @@ function mytheme_register_block_patterns() {
         'label' => __( 'Hero Sections', 'mytheme' ),
     ) );
 
-    // 2. Dang ky Pattern
+    // 2. Đăng ký Pattern
 
     // Pattern: Hero Section
     register_block_pattern( 'mytheme/hero-section', array(
         'title'       => __( 'Hero Section', 'mytheme' ),
-        'description' => __( 'Hero section voi tieu de lon va nut CTA', 'mytheme' ),
+        'description' => __( 'Hero section với tiêu đề lớn và nút CTA', 'mytheme' ),
         'categories'  => array( 'mytheme-hero', 'featured' ),
         'keywords'    => array( 'hero', 'banner', 'header' ),
         'blockTypes'  => array( 'core/cover' ),
@@ -1414,20 +1414,20 @@ function mytheme_register_block_patterns() {
                 <span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim"></span>
                 <div class="wp-block-cover__inner-container">
                     <!-- wp:heading {"textAlign":"center","level":1,"style":{"color":{"text":"#ffffff"}}} -->
-                    <h1 class="wp-block-heading has-text-align-center" style="color:#ffffff">Chao mung den voi Website cua chung toi</h1>
+                    <h1 class="wp-block-heading has-text-align-center" style="color:#ffffff">Chào mừng đến với Website của chúng tôi</h1>
                     <!-- /wp:heading -->
 
                     <!-- wp:paragraph {"align":"center","style":{"color":{"text":"#cccccc"}}} -->
-                    <p class="has-text-align-center" style="color:#cccccc">Mo ta ngan gon ve website hoac dich vu cua ban. Thu hut nguoi dung bang thong diep ro rang.</p>
+                    <p class="has-text-align-center" style="color:#cccccc">Mô tả ngắn gọn về website hoặc dịch vụ của bạn. Thu hút người dùng bằng thông điệp rõ ràng.</p>
                     <!-- /wp:paragraph -->
 
                     <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
                     <div class="wp-block-buttons">
                         <!-- wp:button {"backgroundColor":"vivid-cyan-blue"} -->
-                        <div class="wp-block-button"><a class="wp-block-button__link has-vivid-cyan-blue-background-color has-background wp-element-button">Tim Hieu Them</a></div>
+                        <div class="wp-block-button"><a class="wp-block-button__link has-vivid-cyan-blue-background-color has-background wp-element-button">Tìm Hiểu Thêm</a></div>
                         <!-- /wp:button -->
                         <!-- wp:button {"className":"is-style-outline"} -->
-                        <div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button">Lien He</a></div>
+                        <div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button">Liên Hệ</a></div>
                         <!-- /wp:button -->
                     </div>
                     <!-- /wp:buttons -->
@@ -1437,10 +1437,10 @@ function mytheme_register_block_patterns() {
         ',
     ) );
 
-    // Pattern: Card Grid (3 cot)
+    // Pattern: Card Grid (3 cột)
     register_block_pattern( 'mytheme/card-grid', array(
-        'title'       => __( 'Card Grid 3 Cot', 'mytheme' ),
-        'description' => __( 'Luoi 3 card voi icon, tieu de va mo ta', 'mytheme' ),
+        'title'       => __( 'Card Grid 3 Cột', 'mytheme' ),
+        'description' => __( 'Lưới 3 card với icon, tiêu đề và mô tả', 'mytheme' ),
         'categories'  => array( 'mytheme-patterns' ),
         'content'     => '
             <!-- wp:columns -->
@@ -1448,10 +1448,10 @@ function mytheme_register_block_patterns() {
                 <!-- wp:column -->
                 <div class="wp-block-column">
                     <!-- wp:heading {"textAlign":"center","level":3} -->
-                    <h3 class="wp-block-heading has-text-align-center">Dich Vu 1</h3>
+                    <h3 class="wp-block-heading has-text-align-center">Dịch Vụ 1</h3>
                     <!-- /wp:heading -->
                     <!-- wp:paragraph {"align":"center"} -->
-                    <p class="has-text-align-center">Mo ta chi tiet ve dich vu thu nhat cua ban.</p>
+                    <p class="has-text-align-center">Mô tả chi tiết về dịch vụ thứ nhất của bạn.</p>
                     <!-- /wp:paragraph -->
                 </div>
                 <!-- /wp:column -->
@@ -1459,10 +1459,10 @@ function mytheme_register_block_patterns() {
                 <!-- wp:column -->
                 <div class="wp-block-column">
                     <!-- wp:heading {"textAlign":"center","level":3} -->
-                    <h3 class="wp-block-heading has-text-align-center">Dich Vu 2</h3>
+                    <h3 class="wp-block-heading has-text-align-center">Dịch Vụ 2</h3>
                     <!-- /wp:heading -->
                     <!-- wp:paragraph {"align":"center"} -->
-                    <p class="has-text-align-center">Mo ta chi tiet ve dich vu thu hai cua ban.</p>
+                    <p class="has-text-align-center">Mô tả chi tiết về dịch vụ thứ hai của bạn.</p>
                     <!-- /wp:paragraph -->
                 </div>
                 <!-- /wp:column -->
@@ -1470,10 +1470,10 @@ function mytheme_register_block_patterns() {
                 <!-- wp:column -->
                 <div class="wp-block-column">
                     <!-- wp:heading {"textAlign":"center","level":3} -->
-                    <h3 class="wp-block-heading has-text-align-center">Dich Vu 3</h3>
+                    <h3 class="wp-block-heading has-text-align-center">Dịch Vụ 3</h3>
                     <!-- /wp:heading -->
                     <!-- wp:paragraph {"align":"center"} -->
-                    <p class="has-text-align-center">Mo ta chi tiet ve dich vu thu ba cua ban.</p>
+                    <p class="has-text-align-center">Mô tả chi tiết về dịch vụ thứ ba của bạn.</p>
                     <!-- /wp:paragraph -->
                 </div>
                 <!-- /wp:column -->
@@ -1490,10 +1490,10 @@ function mytheme_register_block_patterns() {
             <!-- wp:group {"style":{"spacing":{"padding":{"top":"30px","bottom":"30px","left":"30px","right":"30px"}},"border":{"radius":"8px"}},"backgroundColor":"cyan-bluish-gray"} -->
             <div class="wp-block-group has-cyan-bluish-gray-background-color has-background" style="border-radius:8px;padding-top:30px;padding-right:30px;padding-bottom:30px;padding-left:30px">
                 <!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"18px","fontStyle":"italic"}}} -->
-                <p class="has-text-align-center" style="font-size:18px;font-style:italic">"San pham rat tuyet voi! Toi da su dung duoc 6 thang va rat hai long voi chat luong dich vu."</p>
+                <p class="has-text-align-center" style="font-size:18px;font-style:italic">"Sản phẩm rất tuyệt vời! Tôi đã sử dụng được 6 tháng và rất hài lòng với chất lượng dịch vụ."</p>
                 <!-- /wp:paragraph -->
                 <!-- wp:paragraph {"align":"center","style":{"typography":{"fontWeight":"700"}}} -->
-                <p class="has-text-align-center" style="font-weight:700">- Nguyen Van A, Giam doc Cong ty XYZ</p>
+                <p class="has-text-align-center" style="font-weight:700">- Nguyễn Văn A, Giám đốc Công ty XYZ</p>
                 <!-- /wp:paragraph -->
             </div>
             <!-- /wp:group -->
@@ -1503,24 +1503,24 @@ function mytheme_register_block_patterns() {
 add_action( 'init', 'mytheme_register_block_patterns' );
 ```
 
-### Xoa hoac an Block Patterns
+### Xóa hoặc ẩn Block Patterns
 
 ```php
-// Xoa pattern cu the
+// Xóa pattern cụ thể
 function mytheme_unregister_patterns() {
     unregister_block_pattern( 'core/query-standard-posts' );
     unregister_block_pattern( 'core/social-links-shared-background-color' );
 }
 add_action( 'init', 'mytheme_unregister_patterns' );
 
-// Xoa toan bo core patterns
+// Xóa toàn bộ core patterns
 remove_theme_support( 'core-block-patterns' );
 
-// Xoa pattern category
+// Xóa pattern category
 unregister_block_pattern_category( 'buttons' );
 ```
 
-### Dang ky Pattern tu file PHP rieng
+### Đăng ký Pattern từ file PHP riêng
 
 ```php
 // patterns/hero.php
@@ -1539,7 +1539,7 @@ unregister_block_pattern_category( 'buttons' );
     <span aria-hidden="true" class="wp-block-cover__background has-black-background-color has-background-dim"></span>
     <div class="wp-block-cover__inner-container">
         <!-- wp:heading {"textAlign":"center","level":1} -->
-        <h1 class="wp-block-heading has-text-align-center">Tieu de Hero</h1>
+        <h1 class="wp-block-heading has-text-align-center">Tiêu đề Hero</h1>
         <!-- /wp:heading -->
     </div>
 </div>
@@ -1547,7 +1547,7 @@ unregister_block_pattern_category( 'buttons' );
 ```
 
 ```
-Cau truc thu muc:
+Cấu trúc thư mục:
 mytheme/
   |-- patterns/
   |     |-- hero.php
@@ -1555,98 +1555,98 @@ mytheme/
   |     |-- testimonial.php
   |     |-- cta-section.php
 
-WordPress tu dong dang ky cac file trong thu muc patterns/.
-Dieu kien: File phai co header comment voi Title va Slug.
+WordPress tự động đăng ký các file trong thư mục patterns/.
+Điều kiện: File phải có header comment với Title và Slug.
 ```
 
 ---
 
 ## 8. Block Templates
 
-### Block Template la gi?
+### Block Template là gì?
 
-Block Template dinh nghia cau truc block mac dinh khi tao bai viet moi. Khac voi Pattern (nguoi dung chu dong chen), Template tu dong ap dung.
+Block Template định nghĩa cấu trúc block mặc định khi tạo bài viết mới. Khác với Pattern (người dùng chủ động chèn), Template tự động áp dụng.
 
-### Dang ky Block Template cho Post Type
+### Đăng ký Block Template cho Post Type
 
 ```php
 /**
- * Dang ky block template cho Custom Post Type
+ * Đăng ký block template cho Custom Post Type
  */
 function mytheme_register_product_template() {
     $post_type_object = get_post_type_object( 'product' );
 
     if ( $post_type_object ) {
         $post_type_object->template = array(
-            // Moi array la 1 block: [ 'block-name', attributes, innerBlocks ]
+            // Mỗi array là 1 block: [ 'block-name', attributes, innerBlocks ]
             array( 'core/image', array(
                 'align' => 'wide',
             ) ),
             array( 'core/heading', array(
                 'level'       => 2,
-                'placeholder' => 'Ten san pham...',
+                'placeholder' => 'Tên sản phẩm...',
             ) ),
             array( 'core/paragraph', array(
-                'placeholder' => 'Mo ta ngan ve san pham...',
+                'placeholder' => 'Mô tả ngắn về sản phẩm...',
             ) ),
             array( 'core/heading', array(
                 'level'   => 3,
-                'content' => 'Thong so ky thuat',
+                'content' => 'Thông số kỹ thuật',
             ) ),
             array( 'core/table', array(
                 'className' => 'product-specs',
             ) ),
             array( 'core/heading', array(
                 'level'   => 3,
-                'content' => 'Mo ta chi tiet',
+                'content' => 'Mô tả chi tiết',
             ) ),
             array( 'core/paragraph', array(
-                'placeholder' => 'Nhap mo ta chi tiet san pham...',
+                'placeholder' => 'Nhập mô tả chi tiết sản phẩm...',
             ) ),
-            // Block voi InnerBlocks
+            // Block với InnerBlocks
             array( 'core/columns', array(), array(
                 array( 'core/column', array(), array(
                     array( 'core/heading', array(
                         'level' => 4,
-                        'content' => 'Uu diem',
+                        'content' => 'Ưu điểm',
                     ) ),
                     array( 'core/list', array() ),
                 ) ),
                 array( 'core/column', array(), array(
                     array( 'core/heading', array(
                         'level' => 4,
-                        'content' => 'Nhuoc diem',
+                        'content' => 'Nhược điểm',
                     ) ),
                     array( 'core/list', array() ),
                 ) ),
             ) ),
         );
 
-        // Khoa template
+        // Khóa template
         $post_type_object->template_lock = 'all';
-        // 'all'    = Khong cho them, xoa, di chuyen blocks
-        // 'insert' = Khong cho them/xoa, nhung cho di chuyen
-        // false    = Tu do chinh sua (mac dinh)
+        // 'all'    = Không cho thêm, xóa, di chuyển blocks
+        // 'insert' = Không cho thêm/xóa, nhưng cho di chuyển
+        // false    = Tự do chỉnh sửa (mặc định)
     }
 }
 add_action( 'init', 'mytheme_register_product_template' );
 ```
 
-### Dang ky template khi dang ky CPT
+### Đăng ký template khi đăng ký CPT
 
 ```php
 function mytheme_register_portfolio_cpt() {
     register_post_type( 'portfolio', array(
         'labels' => array( 'name' => 'Portfolio' ),
         'public'       => true,
-        'show_in_rest' => true,  // Bat buoc de dung Gutenberg
+        'show_in_rest' => true,  // Bắt buộc để dùng Gutenberg
         'supports'     => array( 'title', 'editor', 'thumbnail' ),
         'template'     => array(
             array( 'core/image', array(
                 'align' => 'wide',
             ) ),
             array( 'core/paragraph', array(
-                'placeholder' => 'Mo ta du an...',
+                'placeholder' => 'Mô tả dự án...',
             ) ),
             array( 'core/gallery', array() ),
         ),
@@ -1660,13 +1660,13 @@ add_action( 'init', 'mytheme_register_portfolio_cpt' );
 
 ```php
 /**
- * Them block template cho trang cu the
+ * Thêm block template cho trang cụ thể
  */
 function mytheme_page_templates( $args, $post_type ) {
     if ( $post_type === 'page' ) {
         $args['template'] = array(
             array( 'core/paragraph', array(
-                'placeholder' => 'Bat dau viet noi dung trang...',
+                'placeholder' => 'Bắt đầu viết nội dung trang...',
             ) ),
         );
     }
@@ -1677,17 +1677,17 @@ add_filter( 'register_post_type_args', 'mytheme_page_templates', 10, 2 );
 
 ---
 
-## 9. theme.json - Cau hinh theme cho Block Editor
+## 9. theme.json - Cấu hình theme cho Block Editor
 
-### theme.json la gi?
+### theme.json là gì?
 
-`theme.json` la file cau hinh trung tam cho block-based themes. No cho phep kiem soat:
+`theme.json` là file cấu hình trung tâm cho block-based themes. Nó cho phép kiểm soát:
 - Color palette, typography, spacing
 - Layout settings
 - Block-level customizations
-- CSS custom properties tu dong tao
+- CSS custom properties tự động tạo
 
-### Cau truc day du
+### Cấu trúc đầy đủ
 
 ```json
 {
@@ -1708,7 +1708,7 @@ add_filter( 'register_post_type_args', 'mytheme_page_templates', 10, 2 );
                 {
                     "colors": [ "#000000", "#ffffff" ],
                     "slug": "den-trang",
-                    "name": "Den va Trang"
+                    "name": "Đen và Trắng"
                 }
             ],
             "gradients": [
@@ -2069,7 +2069,7 @@ add_filter( 'register_post_type_args', 'mytheme_page_templates', 10, 2 );
     "customTemplates": [
         {
             "name": "blank",
-            "title": "Blank (Khong co header/footer)",
+            "title": "Blank (Không có header/footer)",
             "postTypes": [ "page", "post" ]
         },
         {
@@ -2079,17 +2079,17 @@ add_filter( 'register_post_type_args', 'mytheme_page_templates', 10, 2 );
         },
         {
             "name": "with-sidebar",
-            "title": "Voi Sidebar",
+            "title": "Với Sidebar",
             "postTypes": [ "page", "post" ]
         }
     ]
 }
 ```
 
-### CSS Custom Properties tu theme.json
+### CSS Custom Properties từ theme.json
 
 ```
-theme.json tu dong tao CSS Custom Properties:
+theme.json tự động tạo CSS Custom Properties:
 
 Color:
   --wp--preset--color--primary: #1a1a2e;
@@ -2109,7 +2109,7 @@ Spacing:
 Shadow:
   --wp--preset--shadow--natural: 0 2px 4px rgba(0,0,0,0.1);
 
-Su dung trong CSS:
+Sử dụng trong CSS:
   .my-element {
       color: var(--wp--preset--color--primary);
       font-family: var(--wp--preset--font-family--inter);
@@ -2119,11 +2119,11 @@ Su dung trong CSS:
 
 ---
 
-## 10. Vi du block hoan chinh
+## 10. Ví dụ block hoàn chỉnh
 
-### Block "Team Member Card" - Day du tinh nang
+### Block "Team Member Card" - Đầy đủ tính năng
 
-#### Cau truc thu muc
+#### Cấu trúc thư mục
 
 ```
 src/team-member-card/
@@ -2146,7 +2146,7 @@ src/team-member-card/
     "title": "Team Member Card",
     "category": "widgets",
     "icon": "admin-users",
-    "description": "Card hien thi thong tin thanh vien doi ngu.",
+    "description": "Card hiển thị thông tin thành viên đội ngũ.",
     "keywords": [ "team", "member", "card", "profile" ],
     "supports": {
         "html": false,
@@ -2249,7 +2249,7 @@ import './style.scss';
 registerBlockType( metadata.name, {
     edit: Edit,
     save,
-    // Icon tuy chinh bang SVG
+    // Icon tùy chỉnh bằng SVG
     icon: {
         src: (
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -2258,12 +2258,12 @@ registerBlockType( metadata.name, {
         ),
         foreground: '#3498db',
     },
-    // Vi du block trong inserter
+    // Ví dụ block trong inserter
     example: {
         attributes: {
-            name: 'Nguyen Van A',
-            position: 'Giam Doc Cong Nghe',
-            bio: 'Co hon 10 nam kinh nghiem trong linh vuc phat trien phan mem.',
+            name: 'Nguyễn Văn A',
+            position: 'Giám Đốc Công Nghệ',
+            bio: 'Có hơn 10 năm kinh nghiệm trong lĩnh vực phát triển phần mềm.',
             imageUrl: 'https://via.placeholder.com/200',
         },
     },
@@ -2332,34 +2332,34 @@ export default function Edit( { attributes, setAttributes } ) {
     return (
         <>
             <InspectorControls>
-                <PanelBody title={ __( 'Giao dien', 'my-blocks' ) }>
+                <PanelBody title={ __( 'Giao diện', 'my-blocks' ) }>
                     <SelectControl
-                        label={ __( 'Kieu card', 'my-blocks' ) }
+                        label={ __( 'Kiểu card', 'my-blocks' ) }
                         value={ cardStyle }
                         options={ [
-                            { label: 'Mac dinh', value: 'default' },
-                            { label: 'Co bong', value: 'shadow' },
-                            { label: 'Co vien', value: 'bordered' },
-                            { label: 'Toi gian', value: 'minimal' },
+                            { label: 'Mặc định', value: 'default' },
+                            { label: 'Có bóng', value: 'shadow' },
+                            { label: 'Có viền', value: 'bordered' },
+                            { label: 'Tối giản', value: 'minimal' },
                         ] }
                         onChange={ ( value ) => setAttributes( { cardStyle: value } ) }
                     />
 
                     <SelectControl
-                        label={ __( 'Hinh dang anh', 'my-blocks' ) }
+                        label={ __( 'Hình dạng ảnh', 'my-blocks' ) }
                         value={ imageShape }
                         options={ [
-                            { label: 'Tron', value: 'circle' },
-                            { label: 'Vuong', value: 'square' },
-                            { label: 'Bo goc', value: 'rounded' },
+                            { label: 'Tròn', value: 'circle' },
+                            { label: 'Vuông', value: 'square' },
+                            { label: 'Bo góc', value: 'rounded' },
                         ] }
                         onChange={ ( value ) => setAttributes( { imageShape: value } ) }
                     />
                 </PanelBody>
 
-                <PanelBody title={ __( 'Thong tin lien he', 'my-blocks' ) } initialOpen={ false }>
+                <PanelBody title={ __( 'Thông tin liên hệ', 'my-blocks' ) } initialOpen={ false }>
                     <ToggleControl
-                        label={ __( 'Hien thong tin lien he', 'my-blocks' ) }
+                        label={ __( 'Hiện thông tin liên hệ', 'my-blocks' ) }
                         checked={ showContact }
                         onChange={ ( value ) => setAttributes( { showContact: value } ) }
                     />
@@ -2372,7 +2372,7 @@ export default function Edit( { attributes, setAttributes } ) {
                                 type="email"
                             />
                             <TextControl
-                                label={ __( 'So dien thoai', 'my-blocks' ) }
+                                label={ __( 'Số điện thoại', 'my-blocks' ) }
                                 value={ phone }
                                 onChange={ ( value ) => setAttributes( { phone: value } ) }
                                 type="tel"
@@ -2381,9 +2381,9 @@ export default function Edit( { attributes, setAttributes } ) {
                     ) }
                 </PanelBody>
 
-                <PanelBody title={ __( 'Mang xa hoi', 'my-blocks' ) } initialOpen={ false }>
+                <PanelBody title={ __( 'Mạng xã hội', 'my-blocks' ) } initialOpen={ false }>
                     <ToggleControl
-                        label={ __( 'Hien link mang xa hoi', 'my-blocks' ) }
+                        label={ __( 'Hiện link mạng xã hội', 'my-blocks' ) }
                         checked={ showSocial }
                         onChange={ ( value ) => setAttributes( { showSocial: value } ) }
                     />
@@ -2427,12 +2427,12 @@ export default function Edit( { attributes, setAttributes } ) {
                                             value={ imageId }
                                             render={ ( { open } ) => (
                                                 <Button onClick={ open } isSmall variant="secondary">
-                                                    { __( 'Doi', 'my-blocks' ) }
+                                                    { __( 'Đổi', 'my-blocks' ) }
                                                 </Button>
                                             ) }
                                         />
                                         <Button onClick={ onRemoveImage } isSmall isDestructive>
-                                            { __( 'Xoa', 'my-blocks' ) }
+                                            { __( 'Xóa', 'my-blocks' ) }
                                         </Button>
                                     </div>
                                 </div>
@@ -2443,10 +2443,10 @@ export default function Edit( { attributes, setAttributes } ) {
                                     render={ ( { open } ) => (
                                         <Placeholder
                                             icon="admin-users"
-                                            label={ __( 'Anh dai dien', 'my-blocks' ) }
+                                            label={ __( 'Ảnh đại diện', 'my-blocks' ) }
                                         >
                                             <Button onClick={ open } variant="primary" isSmall>
-                                                { __( 'Chon anh', 'my-blocks' ) }
+                                                { __( 'Chọn ảnh', 'my-blocks' ) }
                                             </Button>
                                         </Placeholder>
                                     ) }
@@ -2455,14 +2455,14 @@ export default function Edit( { attributes, setAttributes } ) {
                         </MediaUploadCheck>
                     </div>
 
-                    {/* Thong tin */}
+                    {/* Thông tin */}
                     <div className="team-card__info">
                         <RichText
                             tagName="h3"
                             className="team-card__name"
                             value={ name }
                             onChange={ ( value ) => setAttributes( { name: value } ) }
-                            placeholder={ __( 'Ho va ten...', 'my-blocks' ) }
+                            placeholder={ __( 'Họ và tên...', 'my-blocks' ) }
                             allowedFormats={ [] }
                         />
 
@@ -2471,7 +2471,7 @@ export default function Edit( { attributes, setAttributes } ) {
                             className="team-card__position"
                             value={ position }
                             onChange={ ( value ) => setAttributes( { position: value } ) }
-                            placeholder={ __( 'Chuc vu...', 'my-blocks' ) }
+                            placeholder={ __( 'Chức vụ...', 'my-blocks' ) }
                             allowedFormats={ [] }
                         />
 
@@ -2480,15 +2480,15 @@ export default function Edit( { attributes, setAttributes } ) {
                             className="team-card__bio"
                             value={ bio }
                             onChange={ ( value ) => setAttributes( { bio: value } ) }
-                            placeholder={ __( 'Tieu su ngan...', 'my-blocks' ) }
+                            placeholder={ __( 'Tiểu sử ngắn...', 'my-blocks' ) }
                             allowedFormats={ [ 'core/bold', 'core/italic' ] }
                         />
 
-                        {/* Preview contact va social */}
+                        {/* Preview contact và social */}
                         { showContact && ( email || phone ) && (
                             <div className="team-card__contact">
                                 { email && <span>Email: { email }</span> }
-                                { phone && <span>SDT: { phone }</span> }
+                                { phone && <span>SĐT: { phone }</span> }
                             </div>
                         ) }
 
@@ -2595,7 +2595,7 @@ export default function save( { attributes } ) {
 #### style.scss
 
 ```scss
-// style.scss - Hien thi ca editor va frontend
+// style.scss - Hiển thị cả editor và frontend
 .wp-block-my-blocks-team-member-card {
     max-width: 400px;
 
@@ -2614,7 +2614,7 @@ export default function save( { attributes } ) {
         }
     }
 
-    // Hinh dang anh
+    // Hình dạng ảnh
     &.image-circle .team-card__avatar img {
         border-radius: 50%;
     }
@@ -2627,7 +2627,7 @@ export default function save( { attributes } ) {
         border-radius: 12px;
     }
 
-    // Thong tin
+    // Thông tin
     .team-card__name {
         font-size: 1.4rem;
         font-weight: 700;
@@ -2741,7 +2741,7 @@ export default function save( { attributes } ) {
 #### editor.scss
 
 ```scss
-// editor.scss - Chi hien trong editor
+// editor.scss - Chỉ hiện trong editor
 .wp-block-my-blocks-team-member-card {
     border: 1px dashed #ddd;
     border-radius: 8px;
@@ -2772,14 +2772,14 @@ export default function save( { attributes } ) {
 }
 ```
 
-#### Dang ky block trong PHP
+#### Đăng ký block trong PHP
 
 ```php
 <?php
 // my-blocks-plugin.php
 
 function my_blocks_register_all() {
-    // Dang ky tung block tu thu muc build
+    // Đăng ký từng block từ thư mục build
     $blocks = array(
         'hello-block',
         'team-member-card',
@@ -2793,16 +2793,16 @@ function my_blocks_register_all() {
 add_action( 'init', 'my_blocks_register_all' );
 ```
 
-### Tong ket quy trinh phat trien block
+### Tổng kết quy trình phát triển block
 
 ```
-1. Tao cau truc thu muc trong src/
-2. Viet block.json (metadata, attributes)
-3. Viet edit.js (giao dien trong editor)
-4. Viet save.js (HTML luu vao database) hoac render.php (dynamic block)
-5. Viet styles (editor.scss, style.scss)
+1. Tạo cấu trúc thư mục trong src/
+2. Viết block.json (metadata, attributes)
+3. Viết edit.js (giao diện trong editor)
+4. Viết save.js (HTML lưu vào database) hoặc render.php (dynamic block)
+5. Viết styles (editor.scss, style.scss)
 6. Build: npm run build
-7. Dang ky trong PHP: register_block_type()
-8. Test trong editor va frontend
-9. Lap lai buoc 2-8 cho tung block moi
+7. Đăng ký trong PHP: register_block_type()
+8. Test trong editor và frontend
+9. Lặp lại bước 2-8 cho từng block mới
 ```

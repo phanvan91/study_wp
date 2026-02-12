@@ -1,59 +1,59 @@
-# WP-CLI - Huong Dan Su Dung Chi Tiet
+# WP-CLI - Hướng Dẫn Sử Dụng Chi Tiết
 
-## Muc luc
+## Mục lục
 
-1. [Gioi thieu WP-CLI](#1-gioi-thieu-wp-cli)
-2. [Cac lenh co ban](#2-cac-lenh-co-ban)
-3. [wp scaffold - Tao plugin/theme skeleton](#3-wp-scaffold---tao-plugintheme-skeleton)
-4. [wp search-replace - Thay doi domain](#4-wp-search-replace---thay-doi-domain)
+1. [Giới thiệu WP-CLI](#1-gioi-thieu-wp-cli)
+2. [Các lệnh cơ bản](#2-cac-lenh-co-ban)
+3. [wp scaffold - Tạo plugin/theme skeleton](#3-wp-scaffold---tao-plugintheme-skeleton)
+4. [wp search-replace - Thay đổi domain](#4-wp-search-replace---thay-doi-domain)
 5. [wp db export/import - Backup database](#5-wp-db-exportimport---backup-database)
-6. [wp cron - Quan ly cron jobs](#6-wp-cron---quan-ly-cron-jobs)
-7. [wp media - Quan ly media](#7-wp-media---quan-ly-media)
-8. [wp rewrite - Quan ly rewrite rules](#8-wp-rewrite---quan-ly-rewrite-rules)
-9. [wp transient - Quan ly transients](#9-wp-transient---quan-ly-transients)
-10. [Tao Custom WP-CLI Command](#10-tao-custom-wp-cli-command)
-11. [wp eval va wp eval-file](#11-wp-eval-va-wp-eval-file)
+6. [wp cron - Quản lý cron jobs](#6-wp-cron---quan-ly-cron-jobs)
+7. [wp media - Quản lý media](#7-wp-media---quan-ly-media)
+8. [wp rewrite - Quản lý rewrite rules](#8-wp-rewrite---quan-ly-rewrite-rules)
+9. [wp transient - Quản lý transients](#9-wp-transient---quan-ly-transients)
+10. [Tạo Custom WP-CLI Command](#10-tao-custom-wp-cli-command)
+11. [wp eval và wp eval-file](#11-wp-eval-va-wp-eval-file)
 12. [wp shell](#12-wp-shell)
-13. [Automation scripts voi WP-CLI](#13-automation-scripts-voi-wp-cli)
+13. [Automation scripts với WP-CLI](#13-automation-scripts-voi-wp-cli)
 
 ---
 
-## 1. Gioi thieu WP-CLI
+## 1. Giới thiệu WP-CLI
 
-### WP-CLI la gi?
+### WP-CLI là gì?
 
-WP-CLI (WordPress Command Line Interface) la cong cu dong lenh chinh thuc de quan ly WordPress. Thay vi thao tac tren giao dien web, ban co the thuc hien hau het moi tac vu qua terminal: cai dat plugin, cap nhat core, quan ly user, backup database, va nhieu viec khac.
+WP-CLI (WordPress Command Line Interface) là công cụ dòng lệnh chính thức để quản lý WordPress. Thay vì thao tác trên giao diện web, bạn có thể thực hiện hầu hết mọi tác vụ qua terminal: cài đặt plugin, cập nhật core, quản lý user, backup database, và nhiều việc khác.
 
-### Loi ich cua WP-CLI
+### Lợi ích của WP-CLI
 
-- Nhanh hon nhieu so voi thao tac tren giao dien web
-- Co the tu dong hoa (automation) bang script
-- Quan ly nhieu site cung luc
-- Huu ich cho moi truong khong co giao dien (server headless)
-- Debug va troubleshoot de dang hon
+- Nhanh hơn nhiều so với thao tác trên giao diện web
+- Có thể tự động hóa (automation) bằng script
+- Quản lý nhiều site cùng lúc
+- Hữu ích cho môi trường không có giao diện (server headless)
+- Debug và troubleshoot dễ dàng hơn
 
-### Cai dat WP-CLI
+### Cài đặt WP-CLI
 
 ```bash
-# Tai file phar
+# Tải file phar
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 
-# Kiem tra hoat dong
+# Kiểm tra hoạt động
 php wp-cli.phar --info
 
-# Chuyen thanh lenh toan cuc
+# Chuyển thành lệnh toàn cục
 chmod +x wp-cli.phar
 sudo mv wp-cli.phar /usr/local/bin/wp
 
-# Kiem tra phien ban
+# Kiểm tra phiên bản
 wp --version
 # WP-CLI 2.x.x
 ```
 
-### Cai dat tren cac moi truong
+### Cài đặt trên các môi trường
 
 ```bash
-# macOS voi Homebrew
+# macOS với Homebrew
 brew install wp-cli
 
 # Ubuntu/Debian
@@ -66,18 +66,18 @@ composer global require wp-cli/wp-cli-bundle
 docker run --rm -v $(pwd):/var/www/html wordpress:cli wp --info
 ```
 
-### Cau hinh WP-CLI
+### Cấu hình WP-CLI
 
 ```bash
-# Tao file cau hinh toan cuc
+# Tạo file cấu hình toàn cục
 # ~/.wp-cli/config.yml
 
-# Tao file cau hinh cho project
-# Dat file wp-cli.yml hoac wp-cli.local.yml trong thu muc WordPress
+# Tạo file cấu hình cho project
+# Đặt file wp-cli.yml hoặc wp-cli.local.yml trong thư mục WordPress
 ```
 
 ```yaml
-# wp-cli.yml - File cau hinh cho project
+# wp-cli.yml - File cấu hình cho project
 path: /var/www/html/wordpress
 url: https://example.com
 user: admin
@@ -85,14 +85,14 @@ color: true
 debug: false
 quiet: false
 
-# Cau hinh cho tung lenh cu the
+# Cấu hình cho từng lệnh cụ thể
 core update:
   locale: vi
 
 plugin install:
   activate: true
 
-# Alias cho cac moi truong
+# Alias cho các môi trường
 @staging:
   ssh: user@staging.example.com/var/www/staging
   url: https://staging.example.com
@@ -102,41 +102,41 @@ plugin install:
   url: https://example.com
 ```
 
-### Su dung alias
+### Sử dụng alias
 
 ```bash
-# Chay lenh tren moi truong staging
+# Chạy lệnh trên môi trường staging
 wp @staging plugin list
 
-# Chay lenh tren moi truong production
+# Chạy lệnh trên môi trường production
 wp @production db export
 
-# Chay tren tat ca alias
+# Chạy trên tất cả alias
 wp @all plugin update --all
 ```
 
 ---
 
-## 2. Cac lenh co ban
+## 2. Các lệnh cơ bản
 
-### wp core - Quan ly WordPress Core
+### wp core - Quản lý WordPress Core
 
 ```bash
-# --- CAI DAT ---
+# --- CÀI ĐẶT ---
 
-# Tai WordPress moi nhat
+# Tải WordPress mới nhất
 wp core download
 
-# Tai phien ban cu the
+# Tải phiên bản cụ thể
 wp core download --version=6.4.2
 
-# Tai phien ban tieng Viet
+# Tải phiên bản tiếng Việt
 wp core download --locale=vi
 
-# Tao file wp-config.php
+# Tạo file wp-config.php
 wp config create --dbname=mydb --dbuser=root --dbpass=password --dbhost=localhost
 
-# Cai dat WordPress
+# Cài đặt WordPress
 wp core install \
   --url="http://localhost/mysite" \
   --title="My WordPress Site" \
@@ -144,7 +144,7 @@ wp core install \
   --admin_password="securepassword123" \
   --admin_email="admin@example.com"
 
-# Cai dat multisite
+# Cài đặt multisite
 wp core multisite-install \
   --url="http://localhost/multisite" \
   --title="My Network" \
@@ -152,182 +152,182 @@ wp core multisite-install \
   --admin_password="securepassword123" \
   --admin_email="admin@example.com"
 
-# --- CAP NHAT ---
+# --- CẬP NHẬT ---
 
-# Kiem tra phien ban hien tai
+# Kiểm tra phiên bản hiện tại
 wp core version
 
-# Kiem tra ban cap nhat
+# Kiểm tra bản cập nhật
 wp core check-update
 
-# Cap nhat len phien ban moi nhat
+# Cập nhật lên phiên bản mới nhất
 wp core update
 
-# Cap nhat len phien ban cu the
+# Cập nhật lên phiên bản cụ thể
 wp core update --version=6.4.2
 
-# Cap nhat database sau khi cap nhat core
+# Cập nhật database sau khi cập nhật core
 wp core update-db
 
-# --- THONG TIN ---
+# --- THÔNG TIN ---
 
-# Kiem tra toan bo thong tin
+# Kiểm tra toàn bộ thông tin
 wp core version --extra
 ```
 
-### wp plugin - Quan ly Plugins
+### wp plugin - Quản lý Plugins
 
 ```bash
-# --- DANH SACH ---
+# --- DANH SÁCH ---
 
-# Xem tat ca plugin
+# Xem tất cả plugin
 wp plugin list
 
-# Chi xem plugin dang active
+# Chỉ xem plugin đang active
 wp plugin list --status=active
 
-# Chi xem plugin can update
+# Chỉ xem plugin cần update
 wp plugin list --update=available
 
-# Xuat danh sach ra CSV
+# Xuất danh sách ra CSV
 wp plugin list --format=csv > plugins.csv
 
-# Xuat ra JSON
+# Xuất ra JSON
 wp plugin list --format=json
 
-# --- CAI DAT ---
+# --- CÀI ĐẶT ---
 
-# Cai dat plugin tu WordPress.org
+# Cài đặt plugin từ WordPress.org
 wp plugin install woocommerce
 
-# Cai dat va kich hoat ngay
+# Cài đặt và kích hoạt ngay
 wp plugin install woocommerce --activate
 
-# Cai dat phien ban cu the
+# Cài đặt phiên bản cụ thể
 wp plugin install woocommerce --version=8.0.0
 
-# Cai dat tu file zip
+# Cài đặt từ file zip
 wp plugin install /path/to/plugin.zip
 
-# Cai dat tu URL
+# Cài đặt từ URL
 wp plugin install https://example.com/plugin.zip
 
-# Cai dat nhieu plugin cung luc
+# Cài đặt nhiều plugin cùng lúc
 wp plugin install woocommerce contact-form-7 yoast-seo --activate
 
-# --- KICH HOAT / VO HIEU HOA ---
+# --- KÍCH HOẠT / VÔ HIỆU HÓA ---
 
-# Kich hoat plugin
+# Kích hoạt plugin
 wp plugin activate woocommerce
 
-# Kich hoat tat ca plugin
+# Kích hoạt tất cả plugin
 wp plugin activate --all
 
-# Vo hieu hoa plugin
+# Vô hiệu hóa plugin
 wp plugin deactivate woocommerce
 
-# Vo hieu hoa tat ca plugin (huu ich khi debug)
+# Vô hiệu hóa tất cả plugin (hữu ích khi debug)
 wp plugin deactivate --all
 
-# --- CAP NHAT ---
+# --- CẬP NHẬT ---
 
-# Cap nhat mot plugin
+# Cập nhật một plugin
 wp plugin update woocommerce
 
-# Cap nhat tat ca plugin
+# Cập nhật tất cả plugin
 wp plugin update --all
 
-# Cap nhat plugin len phien ban cu the (rollback)
+# Cập nhật plugin lên phiên bản cụ thể (rollback)
 wp plugin update woocommerce --version=8.0.0
 
-# --- XOA ---
+# --- XÓA ---
 
-# Xoa plugin (phai deactivate truoc)
+# Xóa plugin (phải deactivate trước)
 wp plugin deactivate woocommerce && wp plugin delete woocommerce
 
-# Xoa va uninstall
+# Xóa và uninstall
 wp plugin uninstall woocommerce
 
-# --- THONG TIN ---
+# --- THÔNG TIN ---
 
-# Xem thong tin chi tiet plugin
+# Xem thông tin chi tiết plugin
 wp plugin get woocommerce
 
-# Tim kiem plugin tren WordPress.org
+# Tìm kiếm plugin trên WordPress.org
 wp plugin search "contact form"
 
-# Kiem tra trang thai
+# Kiểm tra trạng thái
 wp plugin is-active woocommerce
 echo $?  # 0 = active, 1 = inactive
 
-# Xem duong dan plugin
+# Xem đường dẫn plugin
 wp plugin path woocommerce
 ```
 
-### wp theme - Quan ly Themes
+### wp theme - Quản lý Themes
 
 ```bash
-# Xem danh sach theme
+# Xem danh sách theme
 wp theme list
 
-# Cai dat theme
+# Cài đặt theme
 wp theme install flavor
 
-# Cai dat va kich hoat
+# Cài đặt và kích hoạt
 wp theme install flavor --activate
 
-# Kich hoat theme
+# Kích hoạt theme
 wp theme activate flavor
 
-# Cap nhat theme
+# Cập nhật theme
 wp theme update flavor
 wp theme update --all
 
-# Xoa theme
+# Xóa theme
 wp theme delete flavor
 
-# Kiem tra theme dang active
+# Kiểm tra theme đang active
 wp theme status
 
-# Lay thong tin theme
+# Lấy thông tin theme
 wp theme get flavor
 
-# Tao child theme
+# Tạo child theme
 wp scaffold child-theme flavor-child --parent_theme=flavor --activate
 ```
 
-### wp post - Quan ly Bai viet
+### wp post - Quản lý Bài viết
 
 ```bash
-# --- DANH SACH ---
+# --- DANH SÁCH ---
 
-# Xem danh sach bai viet
+# Xem danh sách bài viết
 wp post list
 
-# Loc theo post type
+# Lọc theo post type
 wp post list --post_type=product
 
-# Loc theo trang thai
+# Lọc theo trạng thái
 wp post list --post_status=draft
 
-# Loc theo tac gia
+# Lọc theo tác giả
 wp post list --author=1
 
-# Gioi han so luong va dinh dang
+# Giới hạn số lượng và định dạng
 wp post list --post_type=post --posts_per_page=5 --format=table
 
-# Lay chi ID
+# Lấy chỉ ID
 wp post list --post_type=post --field=ID
 
-# --- TAO ---
+# --- TẠO ---
 
-# Tao bai viet moi
+# Tạo bài viết mới
 wp post create --post_type=post --post_title="Bai Viet Moi" --post_status=publish
 
-# Tao tu file
+# Tạo từ file
 wp post create ./content.txt --post_title="Bai Viet Tu File" --post_status=draft
 
-# Tao voi nhieu tham so
+# Tạo với nhiều tham số
 wp post create \
   --post_type=product \
   --post_title="San Pham Moi" \
@@ -336,34 +336,34 @@ wp post create \
   --post_author=1 \
   --meta_input='{"_product_price":"500000","_product_sku":"SP001"}'
 
-# Tao nhieu bai viet nhanh (testing)
+# Tạo nhiều bài viết nhanh (testing)
 for i in $(seq 1 10); do
   wp post create --post_type=post --post_title="Bai viet test $i" --post_status=publish
 done
 
-# --- SUA ---
+# --- SỬA ---
 
-# Sua tieu de
+# Sửa tiêu đề
 wp post update 123 --post_title="Tieu De Moi"
 
-# Sua trang thai
+# Sửa trạng thái
 wp post update 123 --post_status=draft
 
-# Sua noi dung tu file
+# Sửa nội dung từ file
 wp post update 123 ./new-content.txt
 
-# --- XOA ---
+# --- XÓA ---
 
-# Chuyen vao thung rac
+# Chuyển vào thùng rác
 wp post delete 123
 
-# Xoa vinh vien
+# Xóa vĩnh viễn
 wp post delete 123 --force
 
-# Xoa tat ca bai viet nhap
+# Xóa tất cả bài viết nháp
 wp post delete $(wp post list --post_status=draft --field=ID) --force
 
-# Xoa tat ca bai viet cua post type
+# Xóa tất cả bài viết của post type
 wp post delete $(wp post list --post_type=product --field=ID) --force
 
 # --- META ---
@@ -371,155 +371,155 @@ wp post delete $(wp post list --post_type=product --field=ID) --force
 # Xem meta
 wp post meta list 123
 
-# Lay gia tri meta
+# Lấy giá trị meta
 wp post meta get 123 _product_price
 
-# Them/Cap nhat meta
+# Thêm/Cập nhật meta
 wp post meta update 123 _product_price 500000
 
-# Xoa meta
+# Xóa meta
 wp post meta delete 123 _product_price
 
-# --- KHAC ---
+# --- KHÁC ---
 
-# Tao noi dung test (lorem ipsum)
+# Tạo nội dung test (lorem ipsum)
 wp post generate --count=20 --post_type=post --post_status=publish
 
-# Lay URL cua bai viet
+# Lấy URL của bài viết
 wp post url 123
 ```
 
-### wp user - Quan ly Nguoi dung
+### wp user - Quản lý Người dùng
 
 ```bash
-# Xem danh sach user
+# Xem danh sách user
 wp user list
 
 # Xem theo role
 wp user list --role=editor
 
-# Tao user moi
+# Tạo user mới
 wp user create john john@example.com --role=author --user_pass=password123
 
-# Tao admin
+# Tạo admin
 wp user create newadmin admin@example.com --role=administrator --user_pass=StrongPass123!
 
-# Cap nhat user
+# Cập nhật user
 wp user update 1 --user_email=new@example.com
 
-# Doi mat khau
+# Đổi mật khẩu
 wp user update 1 --user_pass=NewPassword123!
 
-# Xoa user
+# Xóa user
 wp user delete 2
 
-# Xoa user va chuyen bai viet cho user khac
+# Xóa user và chuyển bài viết cho user khác
 wp user delete 2 --reassign=1
 
-# Them/xoa role
+# Thêm/xóa role
 wp user add-role 1 editor
 wp user remove-role 1 editor
 
-# Them/xoa capability
+# Thêm/xóa capability
 wp user add-cap 1 manage_options
 wp user remove-cap 1 manage_options
 
-# Xem thong tin user
+# Xem thông tin user
 wp user get 1
 
-# Lay user meta
+# Lấy user meta
 wp user meta list 1
 wp user meta get 1 nickname
 
-# Dang nhap tu dong (tao URL dang nhap)
-# Can plugin "wp-cli-login-command"
+# Đăng nhập tự động (tạo URL đăng nhập)
+# Cần plugin "wp-cli-login-command"
 wp login create 1 --launch
 ```
 
-### wp option - Quan ly Options
+### wp option - Quản lý Options
 
 ```bash
-# Lay gia tri option
+# Lấy giá trị option
 wp option get blogname
 wp option get siteurl
 wp option get home
 wp option get permalink_structure
 
-# Lay gia tri option dang JSON
+# Lấy giá trị option dạng JSON
 wp option get active_plugins --format=json
 
-# Cap nhat option
+# Cập nhật option
 wp option update blogname "Ten Website Moi"
 wp option update blogdescription "Mo ta moi"
 wp option update permalink_structure "/%postname%/"
 
-# Them option moi
+# Thêm option mới
 wp option add my_custom_option "gia tri" --autoload=yes
 
-# Xoa option
+# Xóa option
 wp option delete my_custom_option
 
-# Tim kiem option
+# Tìm kiếm option
 wp option list --search="*woocommerce*"
 
-# Xem tat ca options autoloaded
+# Xem tất cả options autoloaded
 wp option list --autoload=on
 
-# Cap nhat autoload
+# Cập nhật autoload
 wp option update my_option "value" --autoload=no
 
-# Lay danh sach autoloaded options va kich thuoc
+# Lấy danh sách autoloaded options và kích thước
 wp option list --autoload=on --format=csv | awk -F',' '{print length($2), $1}' | sort -rn | head -20
 ```
 
-### wp db - Quan ly Database
+### wp db - Quản lý Database
 
 ```bash
-# Kiem tra ket noi database
+# Kiểm tra kết nối database
 wp db check
 
-# Mo MySQL CLI
+# Mở MySQL CLI
 wp db cli
 
-# Chay SQL query
+# Chạy SQL query
 wp db query "SELECT * FROM wp_options WHERE option_name = 'siteurl'"
 
-# Xem kich thuoc database
+# Xem kích thước database
 wp db size
-wp db size --tables  # Chi tiet tung bang
+wp db size --tables  # Chi tiết từng bảng
 
-# Xem cau truc bang
+# Xem cấu trúc bảng
 wp db columns wp_posts
 
-# Toi uu database (OPTIMIZE TABLE)
+# Tối ưu database (OPTIMIZE TABLE)
 wp db optimize
 
-# Sua chua database (REPAIR TABLE)
+# Sửa chữa database (REPAIR TABLE)
 wp db repair
 
 # Xem prefix
 wp db prefix
 
-# Danh sach bang
+# Danh sách bảng
 wp db tables
 
-# Tim kiem trong database
+# Tìm kiếm trong database
 wp db search "old-domain.com"
 
-# Export/Import (xem phan 5)
+# Export/Import (xem phần 5)
 ```
 
 ---
 
-## 3. wp scaffold - Tao plugin/theme skeleton
+## 3. wp scaffold - Tạo plugin/theme skeleton
 
-### Tao Plugin
+### Tạo Plugin
 
 ```bash
-# Tao plugin co ban
+# Tạo plugin cơ bản
 wp scaffold plugin my-custom-plugin
 
-# Tao voi cac tham so
+# Tạo với các tham số
 wp scaffold plugin my-custom-plugin \
   --plugin_name="My Custom Plugin" \
   --plugin_description="Mo ta plugin" \
@@ -527,10 +527,10 @@ wp scaffold plugin my-custom-plugin \
   --plugin_author_uri="https://example.com" \
   --plugin_uri="https://example.com/plugin"
 
-# Ket qua tao ra:
+# Kết quả tạo ra:
 # wp-content/plugins/my-custom-plugin/
-#   |-- my-custom-plugin.php      (File chinh)
-#   |-- readme.txt                (Mo ta plugin)
+#   |-- my-custom-plugin.php      (File chính)
+#   |-- readme.txt                (Mô tả plugin)
 #   |-- .editorconfig
 #   |-- .phpcs.xml.dist
 #   |-- Gruntfile.js
@@ -541,14 +541,14 @@ wp scaffold plugin my-custom-plugin \
 #   |     |-- test-sample.php
 ```
 
-### Tao Theme
+### Tạo Theme
 
 ```bash
-# Tao theme co ban
+# Tạo theme cơ bản
 wp scaffold _s my-theme --theme_name="My Theme"
 
-# _s (Underscores) la starter theme cua Automattic
-# Ket qua:
+# _s (Underscores) là starter theme của Automattic
+# Kết quả:
 # wp-content/themes/my-theme/
 #   |-- style.css
 #   |-- functions.php
@@ -564,7 +564,7 @@ wp scaffold _s my-theme --theme_name="My Theme"
 #   |-- ...
 ```
 
-### Tao Child Theme
+### Tạo Child Theme
 
 ```bash
 wp scaffold child-theme flavor-child \
@@ -573,22 +573,22 @@ wp scaffold child-theme flavor-child \
   --author="Dev Team" \
   --activate
 
-# Ket qua:
+# Kết quả:
 # wp-content/themes/flavor-child/
 #   |-- style.css
 #   |-- functions.php
 ```
 
-### Tao Post Type va Taxonomy
+### Tạo Post Type và Taxonomy
 
 ```bash
-# Tao code dang ky post type
+# Tạo code đăng ký post type
 wp scaffold post-type product \
   --label="San Pham" \
   --textdomain="my-plugin" \
   --plugin=my-custom-plugin
 
-# Tao code dang ky taxonomy
+# Tạo code đăng ký taxonomy
 wp scaffold taxonomy product_category \
   --post_types=product \
   --label="Danh Muc San Pham" \
@@ -596,13 +596,13 @@ wp scaffold taxonomy product_category \
   --plugin=my-custom-plugin
 ```
 
-### Tao PHPUnit Tests
+### Tạo PHPUnit Tests
 
 ```bash
-# Tao test cho plugin
+# Tạo test cho plugin
 wp scaffold plugin-tests my-custom-plugin
 
-# Ket qua:
+# Kết quả:
 # tests/
 #   |-- bootstrap.php
 #   |-- test-sample.php
@@ -610,18 +610,18 @@ wp scaffold plugin-tests my-custom-plugin
 # bin/
 #   |-- install-wp-tests.sh
 
-# Chay cai dat test environment
+# Chạy cài đặt test environment
 cd wp-content/plugins/my-custom-plugin
 bash bin/install-wp-tests.sh wordpress_test root '' localhost latest
 ```
 
-### Tao Block
+### Tạo Block
 
 ```bash
-# Tao Gutenberg block
+# Tạo Gutenberg block
 wp scaffold block my-block --title="My Custom Block" --plugin=my-custom-plugin
 
-# Ket qua:
+# Kết quả:
 # wp-content/plugins/my-custom-plugin/
 #   |-- blocks/
 #   |     |-- my-block/
@@ -632,21 +632,21 @@ wp scaffold block my-block --title="My Custom Block" --plugin=my-custom-plugin
 
 ---
 
-## 4. wp search-replace - Thay doi domain
+## 4. wp search-replace - Thay đổi domain
 
-### Cu phap co ban
+### Cú pháp cơ bản
 
 ```bash
 wp search-replace <old-string> <new-string> [table...] [--dry-run] [--precise] [--all-tables]
 ```
 
-### Thay doi domain (Migration)
+### Thay đổi domain (Migration)
 
 ```bash
-# LUON chay --dry-run truoc de kiem tra
+# LUÔN chạy --dry-run trước để kiểm tra
 wp search-replace 'http://old-domain.com' 'https://new-domain.com' --dry-run
 
-# Ket qua:
+# Kết quả:
 # +------------------+-----------------------+--------------+------+
 # | Table            | Column                | Replacements | Type |
 # +------------------+-----------------------+--------------+------+
@@ -656,96 +656,96 @@ wp search-replace 'http://old-domain.com' 'https://new-domain.com' --dry-run
 # | wp_postmeta      | meta_value            | 78           | SQL  |
 # +------------------+-----------------------+--------------+------+
 
-# Chay that su
+# Chạy thật sự
 wp search-replace 'http://old-domain.com' 'https://new-domain.com'
 
-# Thay doi ca trong toan bo cac bang (bao gom bang cua plugin)
+# Thay đổi cả trong toàn bộ các bảng (bao gồm bảng của plugin)
 wp search-replace 'http://old-domain.com' 'https://new-domain.com' --all-tables
 
-# Bo qua cot guid (nen lam khi migration)
+# Bỏ qua cột guid (nên làm khi migration)
 wp search-replace 'http://old-domain.com' 'https://new-domain.com' --skip-columns=guid
 
-# Chi thay doi trong bang cu the
+# Chỉ thay đổi trong bảng cụ thể
 wp search-replace 'http://old-domain.com' 'https://new-domain.com' wp_options wp_posts wp_postmeta
 ```
 
-### Chuyen tu HTTP sang HTTPS
+### Chuyển từ HTTP sang HTTPS
 
 ```bash
-# Thay doi URL
+# Thay đổi URL
 wp search-replace 'http://example.com' 'https://example.com' --all-tables --dry-run
 wp search-replace 'http://example.com' 'https://example.com' --all-tables
 
-# Cap nhat siteurl va home
+# Cập nhật siteurl và home
 wp option update siteurl 'https://example.com'
 wp option update home 'https://example.com'
 ```
 
-### Thay doi prefix trong noi dung
+### Thay đổi prefix trong nội dung
 
 ```bash
-# Thay doi duong dan upload
+# Thay đổi đường dẫn upload
 wp search-replace '/wp-content/uploads/2023/' '/wp-content/uploads/2024/' wp_posts
 
-# Thay doi email domain
+# Thay đổi email domain
 wp search-replace '@old-company.com' '@new-company.com' --all-tables --dry-run
 ```
 
-### Tuy chon quan trong
+### Tùy chọn quan trọng
 
 ```bash
-# --precise: Xu ly chinh xac du lieu serialized (cham hon nhung an toan hon)
+# --precise: Xử lý chính xác dữ liệu serialized (chậm hơn nhưng an toàn hơn)
 wp search-replace 'old' 'new' --precise
 
-# --regex: Su dung regular expression
+# --regex: Sử dụng regular expression
 wp search-replace 'http://(www\.)?old-domain\.com' 'https://new-domain.com' --regex
 
-# --log: Ghi log thay doi
+# --log: Ghi log thay đổi
 wp search-replace 'old' 'new' --log=search-replace.log
 
-# --export: Xuat ket qua ra file SQL thay vi thay doi truc tiep
+# --export: Xuất kết quả ra file SQL thay vì thay đổi trực tiếp
 wp search-replace 'old-domain.com' 'new-domain.com' --export=migration.sql
 
-# --network: Chay tren multisite
+# --network: Chạy trên multisite
 wp search-replace 'old-domain.com' 'new-domain.com' --network
 ```
 
-### Quy trinh Migration day du
+### Quy trình Migration đầy đủ
 
 ```bash
 #!/bin/bash
-# Script migration tu local sang production
+# Script migration từ local sang production
 
 OLD_URL="http://localhost/mysite"
 NEW_URL="https://www.mysite.com"
 
-echo "=== Bat dau migration ==="
+echo "=== Bắt đầu migration ==="
 
 # 1. Export database
 wp db export backup-before-migration.sql
-echo "Da backup database"
+echo "Đã backup database"
 
-# 2. Dry run truoc
-echo "Kiem tra thay doi:"
+# 2. Dry run trước
+echo "Kiểm tra thay đổi:"
 wp search-replace "$OLD_URL" "$NEW_URL" --all-tables --dry-run
 
-# 3. Thuc hien thay doi
-read -p "Tiep tuc? (y/n) " confirm
+# 3. Thực hiện thay đổi
+read -p "Tiếp tục? (y/n) " confirm
 if [ "$confirm" = "y" ]; then
     wp search-replace "$OLD_URL" "$NEW_URL" --all-tables --skip-columns=guid
-    echo "Da thay doi URL"
+    echo "Đã thay đổi URL"
 
-    # 4. Cap nhat options
+    # 4. Cập nhật options
     wp option update siteurl "$NEW_URL"
     wp option update home "$NEW_URL"
 
-    # 5. Flush cache va rewrite
+    # 5. Flush cache và rewrite
     wp cache flush
     wp rewrite flush
 
-    echo "=== Migration hoan tat ==="
+    echo "=== Migration hoàn tất ==="
 else
-    echo "Da huy"
+    echo "Đã hủy"
 fi
 ```
 
@@ -756,48 +756,48 @@ fi
 ### Export (Backup)
 
 ```bash
-# Export toan bo database
+# Export toàn bộ database
 wp db export
 
-# Export voi ten file tu dat
+# Export với tên file tự đặt
 wp db export backup-2024-01-15.sql
 
-# Export voi nen gzip
+# Export với nén gzip
 wp db export - | gzip > backup-2024-01-15.sql.gz
 
-# Export chi mot so bang
+# Export chỉ một số bảng
 wp db export --tables=wp_posts,wp_postmeta,wp_options
 
-# Loai tru bang
+# Loại trừ bảng
 wp db export --exclude_tables=wp_comments,wp_commentmeta
 
-# Export voi tuy chon mysqldump
+# Export với tùy chọn mysqldump
 wp db export --add-drop-table --single-transaction
 
-# Export voi thoi gian trong ten file
+# Export với thời gian trong tên file
 wp db export "backup-$(date +%Y%m%d-%H%M%S).sql"
 ```
 
 ### Import
 
 ```bash
-# Import tu file SQL
+# Import từ file SQL
 wp db import backup.sql
 
-# Import tu file nen
+# Import từ file nén
 gunzip < backup.sql.gz | wp db import -
 
-# Import va skip errors
+# Import và skip errors
 wp db import backup.sql --skip-optimization
 ```
 
 ### Reset Database
 
 ```bash
-# Xoa toan bo database va tao lai
+# Xóa toàn bộ database và tạo lại
 wp db reset --yes
 
-# Sau khi reset, can cai dat lai WordPress
+# Sau khi reset, cần cài đặt lại WordPress
 wp core install \
   --url="http://localhost/mysite" \
   --title="My Site" \
@@ -806,56 +806,56 @@ wp core install \
   --admin_email="admin@example.com"
 ```
 
-### Script Backup tu dong
+### Script Backup tự động
 
 ```bash
 #!/bin/bash
-# backup-daily.sh - Script backup hang ngay
+# backup-daily.sh - Script backup hàng ngày
 
-# Cau hinh
+# Cấu hình
 WP_PATH="/var/www/html/wordpress"
 BACKUP_DIR="/var/backups/wordpress"
 KEEP_DAYS=30
 DATE=$(date +%Y%m%d-%H%M%S)
 
-# Tao thu muc backup neu chua co
+# Tạo thư mục backup nếu chưa có
 mkdir -p "$BACKUP_DIR"
 
 # Backup database
 wp db export "$BACKUP_DIR/db-$DATE.sql" --path="$WP_PATH"
 
-# Nen file
+# Nén file
 gzip "$BACKUP_DIR/db-$DATE.sql"
 
 # Backup uploads
 tar -czf "$BACKUP_DIR/uploads-$DATE.tar.gz" -C "$WP_PATH/wp-content" uploads
 
-echo "Backup hoan tat: $DATE"
+echo "Backup hoàn tất: $DATE"
 
-# Xoa backup cu hon KEEP_DAYS ngay
+# Xóa backup cũ hơn KEEP_DAYS ngày
 find "$BACKUP_DIR" -name "db-*.sql.gz" -mtime +$KEEP_DAYS -delete
 find "$BACKUP_DIR" -name "uploads-*.tar.gz" -mtime +$KEEP_DAYS -delete
 
-echo "Da xoa backup cu hon $KEEP_DAYS ngay"
+echo "Đã xóa backup cũ hơn $KEEP_DAYS ngày"
 ```
 
 ```bash
-# Them vao crontab de chay hang ngay luc 2h sang
+# Thêm vào crontab để chạy hàng ngày lúc 2h sáng
 # crontab -e
 # 0 2 * * * /path/to/backup-daily.sh >> /var/log/wp-backup.log 2>&1
 ```
 
 ---
 
-## 6. wp cron - Quan ly cron jobs
+## 6. wp cron - Quản lý cron jobs
 
 ### Xem cron events
 
 ```bash
-# Xem tat ca cron events
+# Xem tất cả cron events
 wp cron event list
 
-# Ket qua:
+# Kết quả:
 # +---------------------------+---------------------+-----------------------+------------+
 # | hook                      | next_run_gmt        | next_run_relative     | recurrence |
 # +---------------------------+---------------------+-----------------------+------------+
@@ -864,30 +864,30 @@ wp cron event list
 # | wp_scheduled_delete       | 2024-01-15 12:00:00 | 4 hours 30 minutes    | daily      |
 # +---------------------------+---------------------+-----------------------+------------+
 
-# Xem chi tiet
+# Xem chi tiết
 wp cron event list --format=json
 ```
 
-### Chay cron events
+### Chạy cron events
 
 ```bash
-# Chay tat ca cron events da den han
+# Chạy tất cả cron events đã đến hạn
 wp cron event run --due-now
 
-# Chay mot event cu the
+# Chạy một event cụ thể
 wp cron event run wp_version_check
 
-# Chay tat ca events (ke ca chua den han)
+# Chạy tất cả events (kể cả chưa đến hạn)
 wp cron event run --all
 ```
 
-### Quan ly cron schedules
+### Quản lý cron schedules
 
 ```bash
-# Xem cac schedule da dang ky
+# Xem các schedule đã đăng ký
 wp cron schedule list
 
-# Ket qua:
+# Kết quả:
 # +------------+----------+-------------------+
 # | name       | interval | display           |
 # +------------+----------+-------------------+
@@ -898,212 +898,212 @@ wp cron schedule list
 # +------------+----------+-------------------+
 ```
 
-### Xoa va them cron events
+### Xóa và thêm cron events
 
 ```bash
-# Xoa mot event
+# Xóa một event
 wp cron event delete wp_version_check
 
-# Tao event moi
+# Tạo event mới
 wp cron event schedule my_custom_hook now hourly
 
-# Kiem tra WP-Cron co hoat dong khong
+# Kiểm tra WP-Cron có hoạt động không
 wp cron test
 ```
 
 ### Debug Cron
 
 ```bash
-# Kiem tra DISABLE_WP_CRON
+# Kiểm tra DISABLE_WP_CRON
 wp config get DISABLE_WP_CRON
 
-# Bat/Tat WP-Cron
+# Bật/Tắt WP-Cron
 wp config set DISABLE_WP_CRON true --raw
 wp config set DISABLE_WP_CRON false --raw
 
-# Khi DISABLE_WP_CRON = true, dung system cron:
+# Khi DISABLE_WP_CRON = true, dùng system cron:
 # crontab -e
 # */5 * * * * cd /var/www/html && wp cron event run --due-now > /dev/null 2>&1
 
-# Hoac dung wget/curl:
+# Hoặc dùng wget/curl:
 # */5 * * * * wget -q -O - https://example.com/wp-cron.php > /dev/null 2>&1
 ```
 
 ---
 
-## 7. wp media - Quan ly media
+## 7. wp media - Quản lý media
 
 ### Regenerate thumbnails
 
 ```bash
-# Tao lai tat ca thumbnails (khi doi theme hoac them image size moi)
+# Tạo lại tất cả thumbnails (khi đổi theme hoặc thêm image size mới)
 wp media regenerate
 
-# Tao lai cho hinh cu the
+# Tạo lại cho hình cụ thể
 wp media regenerate 123 456
 
-# Chi tao lai nhung size bi thieu
+# Chỉ tạo lại những size bị thiếu
 wp media regenerate --only-missing
 
-# Bo qua xac nhan
+# Bỏ qua xác nhận
 wp media regenerate --yes
 
-# Chi tao lai size cu the
+# Chỉ tạo lại size cụ thể
 wp media regenerate --image_size=thumbnail
 ```
 
 ### Import media
 
 ```bash
-# Import tu URL
+# Import từ URL
 wp media import https://example.com/image.jpg
 
-# Import tu file local
+# Import từ file local
 wp media import /path/to/image.jpg
 
-# Import va gan cho bai viet
+# Import và gán cho bài viết
 wp media import https://example.com/image.jpg --post_id=123
 
-# Import va dat lam featured image
+# Import và đặt làm featured image
 wp media import https://example.com/image.jpg --post_id=123 --featured_image
 
-# Import voi tieu de tuy chinh
+# Import với tiêu đề tùy chỉnh
 wp media import /path/to/image.jpg --title="Anh San Pham"
 
-# Import nhieu file
+# Import nhiều file
 wp media import /path/to/images/*.jpg
 ```
 
-### Xem thong tin media
+### Xem thông tin media
 
 ```bash
-# Xem danh sach media
+# Xem danh sách media
 wp post list --post_type=attachment
 
-# Lay thong tin chi tiet
+# Lấy thông tin chi tiết
 wp post get 123
 
-# Lay URL media
+# Lấy URL media
 wp post list --post_type=attachment --field=guid
 
-# Xem cac image sizes da dang ky
+# Xem các image sizes đã đăng ký
 wp media image-size
 ```
 
-### Xoa media khong su dung
+### Xóa media không sử dụng
 
 ```bash
-# Tim media khong duoc gan voi bai viet nao
+# Tìm media không được gán với bài viết nào
 wp post list --post_type=attachment --post_parent=0 --format=ids
 
-# Xoa media khong su dung
+# Xóa media không sử dụng
 wp post delete $(wp post list --post_type=attachment --post_parent=0 --format=ids) --force
 ```
 
 ---
 
-## 8. wp rewrite - Quan ly rewrite rules
+## 8. wp rewrite - Quản lý rewrite rules
 
-### Xem va cap nhat rewrite rules
+### Xem và cập nhật rewrite rules
 
 ```bash
-# Xem tat ca rewrite rules
+# Xem tất cả rewrite rules
 wp rewrite list
 
-# Xem chi tiet voi match
+# Xem chi tiết với match
 wp rewrite list --match="san-pham/ao-thun"
 
-# Ket qua:
+# Kết quả:
 # +------------------------------------------+-------------------------------------------+--------+
 # | match                                    | query                                     | source |
 # +------------------------------------------+-------------------------------------------+--------+
 # | san-pham/([^/]+)/?$                      | index.php?product=$matches[1]             | post   |
 # +------------------------------------------+-------------------------------------------+--------+
 
-# Flush (lam moi) rewrite rules
+# Flush (làm mới) rewrite rules
 wp rewrite flush
 
-# Flush voi hard (xoa .htaccess va tao lai)
+# Flush với hard (xóa .htaccess và tạo lại)
 wp rewrite flush --hard
 
-# Xem cau truc permalink hien tai
+# Xem cấu trúc permalink hiện tại
 wp option get permalink_structure
 
-# Thay doi cau truc permalink
+# Thay đổi cấu trúc permalink
 wp rewrite structure '/%postname%/'
 wp rewrite structure '/%category%/%postname%/'
 
-# Them rewrite rule
-# (Thuong lam trong code PHP, nhung co the test bang wp eval)
+# Thêm rewrite rule
+# (Thường làm trong code PHP, nhưng có thể test bằng wp eval)
 wp eval "add_rewrite_rule('custom-page/?$', 'index.php?pagename=my-page', 'top'); flush_rewrite_rules();"
 ```
 
 ---
 
-## 9. wp transient - Quan ly transients
+## 9. wp transient - Quản lý transients
 
-### Transients la gi?
+### Transients là gì?
 
-Transients la cach luu cache tam thoi trong database (hoac object cache neu co). Co thoi gian het han (expiration).
+Transients là cách lưu cache tạm thời trong database (hoặc object cache nếu có). Có thời gian hết hạn (expiration).
 
-### Cac lenh co ban
+### Các lệnh cơ bản
 
 ```bash
-# Lay gia tri transient
+# Lấy giá trị transient
 wp transient get my_transient
 
-# Dat gia tri transient (het han sau 3600 giay = 1 gio)
+# Đặt giá trị transient (hết hạn sau 3600 giây = 1 giờ)
 wp transient set my_transient "gia tri" 3600
 
-# Dat transient khong het han
+# Đặt transient không hết hạn
 wp transient set my_transient "gia tri" 0
 
-# Xoa transient cu the
+# Xóa transient cụ thể
 wp transient delete my_transient
 
-# Xoa tat ca transients
+# Xóa tất cả transients
 wp transient delete --all
 
-# Xoa chi transients da het han
+# Xóa chỉ transients đã hết hạn
 wp transient delete --expired
 
-# Lay loai transient (transient hoac site-transient)
+# Lấy loại transient (transient hoặc site-transient)
 wp transient type my_transient
 
 # --- MULTISITE ---
 
-# Lay site transient (cho multisite)
+# Lấy site transient (cho multisite)
 wp transient get my_transient --network
 
-# Dat site transient
+# Đặt site transient
 wp transient set my_transient "value" 3600 --network
 
-# Xoa site transient
+# Xóa site transient
 wp transient delete my_transient --network
 ```
 
-### Vi du thuc te
+### Ví dụ thực tế
 
 ```bash
-# Kiem tra transient co ton tai khong
+# Kiểm tra transient có tồn tại không
 wp transient get featured_products
-# Neu tra ve empty => chua co hoac da het han
+# Nếu trả về empty => chưa có hoặc đã hết hạn
 
-# Dat transient test
+# Đặt transient test
 wp transient set test_cache '{"products":[1,2,3]}' 3600
 
-# Xem tat ca transients trong database
+# Xem tất cả transients trong database
 wp db query "SELECT option_name, LENGTH(option_value) as size FROM wp_options WHERE option_name LIKE '_transient_%' ORDER BY size DESC LIMIT 20;"
 
-# Xoa transients lon
+# Xóa transients lớn
 wp db query "DELETE FROM wp_options WHERE option_name LIKE '_transient_%' AND option_name NOT LIKE '_transient_timeout_%';"
 ```
 
 ---
 
-## 10. Tao Custom WP-CLI Command
+## 10. Tạo Custom WP-CLI Command
 
-### Command don gian
+### Command đơn giản
 
 ```php
 <?php
@@ -1114,29 +1114,29 @@ wp db query "DELETE FROM wp_options WHERE option_name LIKE '_transient_%' AND op
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// Chi dang ky khi chay trong WP-CLI
+// Chỉ đăng ký khi chạy trong WP-CLI
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
     return;
 }
 
 /**
- * Quan ly san pham tu command line.
+ * Quản lý sản phẩm từ command line.
  */
 class My_Product_CLI_Command {
 
     /**
-     * Xem danh sach san pham.
+     * Xem danh sách sản phẩm.
      *
      * ## OPTIONS
      *
      * [--count=<number>]
-     * : So luong san pham hien thi. Mac dinh: 10
+     * : Số lượng sản phẩm hiển thị. Mặc định: 10
      *
      * [--status=<status>]
-     * : Loc theo trang thai san pham (in_stock, out_of_stock, on_sale)
+     * : Lọc theo trạng thái sản phẩm (in_stock, out_of_stock, on_sale)
      *
      * [--format=<format>]
-     * : Dinh dang output. Mac dinh: table
+     * : Định dạng output. Mặc định: table
      * ---
      * default: table
      * options:
@@ -1148,10 +1148,10 @@ class My_Product_CLI_Command {
      *
      * ## EXAMPLES
      *
-     *     # Xem 5 san pham dau tien
+     *     # Xem 5 sản phẩm đầu tiên
      *     wp product list --count=5
      *
-     *     # Xem san pham con hang, dinh dang JSON
+     *     # Xem sản phẩm còn hàng, định dạng JSON
      *     wp product list --status=in_stock --format=json
      *
      * @when after_wp_load
@@ -1167,7 +1167,7 @@ class My_Product_CLI_Command {
             'post_status'    => 'publish',
         );
 
-        // Loc theo trang thai
+        // Lọc theo trạng thái
         if ( $status ) {
             $query_args['meta_query'] = array(
                 array(
@@ -1196,32 +1196,32 @@ class My_Product_CLI_Command {
         }
 
         if ( empty( $items ) ) {
-            WP_CLI::warning( 'Khong tim thay san pham nao.' );
+            WP_CLI::warning( 'Không tìm thấy sản phẩm nào.' );
             return;
         }
 
-        // Hien thi bang WP_CLI\Utils\format_items
+        // Hiển thị bằng WP_CLI\Utils\format_items
         WP_CLI\Utils\format_items( $format, $items, array( 'ID', 'Title', 'Price', 'SKU', 'Status', 'Date' ) );
 
-        WP_CLI::success( sprintf( 'Tim thay %d san pham.', count( $items ) ) );
+        WP_CLI::success( sprintf( 'Tìm thấy %d sản phẩm.', count( $items ) ) );
     }
 
     /**
-     * Tao san pham moi.
+     * Tạo sản phẩm mới.
      *
      * ## OPTIONS
      *
      * <title>
-     * : Ten san pham
+     * : Tên sản phẩm
      *
      * --price=<price>
-     * : Gia san pham (VND)
+     * : Giá sản phẩm (VND)
      *
      * [--sku=<sku>]
-     * : Ma san pham
+     * : Mã sản phẩm
      *
      * [--category=<category>]
-     * : Slug danh muc san pham
+     * : Slug danh mục sản phẩm
      *
      * ## EXAMPLES
      *
@@ -1235,7 +1235,7 @@ class My_Product_CLI_Command {
         $sku      = isset( $assoc_args['sku'] ) ? $assoc_args['sku'] : '';
         $category = isset( $assoc_args['category'] ) ? $assoc_args['category'] : '';
 
-        // Tao post
+        // Tạo post
         $post_id = wp_insert_post( array(
             'post_type'   => 'product',
             'post_title'  => $title,
@@ -1243,10 +1243,10 @@ class My_Product_CLI_Command {
         ) );
 
         if ( is_wp_error( $post_id ) ) {
-            WP_CLI::error( 'Khong the tao san pham: ' . $post_id->get_error_message() );
+            WP_CLI::error( 'Không thể tạo sản phẩm: ' . $post_id->get_error_message() );
         }
 
-        // Luu meta
+        // Lưu meta
         update_post_meta( $post_id, '_product_price', absint( $price ) );
         update_post_meta( $post_id, '_product_status', 'in_stock' );
 
@@ -1254,24 +1254,24 @@ class My_Product_CLI_Command {
             update_post_meta( $post_id, '_product_sku', sanitize_text_field( $sku ) );
         }
 
-        // Gan taxonomy
+        // Gán taxonomy
         if ( $category ) {
             wp_set_object_terms( $post_id, $category, 'product_category' );
         }
 
-        WP_CLI::success( sprintf( 'Da tao san pham "%s" (ID: %d)', $title, $post_id ) );
+        WP_CLI::success( sprintf( 'Đã tạo sản phẩm "%s" (ID: %d)', $title, $post_id ) );
     }
 
     /**
-     * Cap nhat gia san pham.
+     * Cập nhật giá sản phẩm.
      *
      * ## OPTIONS
      *
      * <id>
-     * : ID san pham
+     * : ID sản phẩm
      *
      * <price>
-     * : Gia moi (VND)
+     * : Giá mới (VND)
      *
      * ## EXAMPLES
      *
@@ -1286,14 +1286,14 @@ class My_Product_CLI_Command {
         $post = get_post( $post_id );
 
         if ( ! $post || $post->post_type !== 'product' ) {
-            WP_CLI::error( "Khong tim thay san pham voi ID: $post_id" );
+            WP_CLI::error( "Không tìm thấy sản phẩm với ID: $post_id" );
         }
 
         $old_price = get_post_meta( $post_id, '_product_price', true );
         update_post_meta( $post_id, '_product_price', $price );
 
         WP_CLI::success( sprintf(
-            'Da cap nhat gia san pham "%s": %s -> %s VND',
+            'Đã cập nhật giá sản phẩm "%s": %s -> %s VND',
             $post->post_title,
             number_format( $old_price ),
             number_format( $price )
@@ -1301,22 +1301,22 @@ class My_Product_CLI_Command {
     }
 
     /**
-     * Xoa san pham.
+     * Xóa sản phẩm.
      *
      * ## OPTIONS
      *
      * <id>...
-     * : Mot hoac nhieu ID san pham can xoa
+     * : Một hoặc nhiều ID sản phẩm cần xóa
      *
      * [--force]
-     * : Xoa vinh vien (khong qua thung rac)
+     * : Xóa vĩnh viễn (không qua thùng rác)
      *
      * ## EXAMPLES
      *
-     *     # Xoa 1 san pham
+     *     # Xóa 1 sản phẩm
      *     wp product delete 123
      *
-     *     # Xoa nhieu san pham vinh vien
+     *     # Xóa nhiều sản phẩm vĩnh viễn
      *     wp product delete 123 456 789 --force
      *
      * @when after_wp_load
@@ -1329,7 +1329,7 @@ class My_Product_CLI_Command {
             $post    = get_post( $post_id );
 
             if ( ! $post || $post->post_type !== 'product' ) {
-                WP_CLI::warning( "Khong tim thay san pham voi ID: $post_id" );
+                WP_CLI::warning( "Không tìm thấy sản phẩm với ID: $post_id" );
                 continue;
             }
 
@@ -1337,24 +1337,24 @@ class My_Product_CLI_Command {
 
             if ( $force ) {
                 wp_delete_post( $post_id, true );
-                WP_CLI::success( "Da xoa vinh vien: \"$title\" (ID: $post_id)" );
+                WP_CLI::success( "Đã xóa vĩnh viễn: \"$title\" (ID: $post_id)" );
             } else {
                 wp_trash_post( $post_id );
-                WP_CLI::success( "Da chuyen vao thung rac: \"$title\" (ID: $post_id)" );
+                WP_CLI::success( "Đã chuyển vào thùng rác: \"$title\" (ID: $post_id)" );
             }
         }
     }
 
     /**
-     * Import san pham tu file CSV.
+     * Import sản phẩm từ file CSV.
      *
      * ## OPTIONS
      *
      * <file>
-     * : Duong dan file CSV
+     * : Đường dẫn file CSV
      *
      * [--dry-run]
-     * : Chi hien thi, khong thuc su import
+     * : Chỉ hiển thị, không thực sự import
      *
      * ## EXAMPLES
      *
@@ -1368,22 +1368,22 @@ class My_Product_CLI_Command {
         $dry_run = isset( $assoc_args['dry-run'] );
 
         if ( ! file_exists( $file ) ) {
-            WP_CLI::error( "File khong ton tai: $file" );
+            WP_CLI::error( "File không tồn tại: $file" );
         }
 
         $handle = fopen( $file, 'r' );
-        $header = fgetcsv( $handle ); // Dong tieu de
+        $header = fgetcsv( $handle ); // Dòng tiêu đề
         $count  = 0;
 
         // Progress bar
-        $total = count( file( $file ) ) - 1; // Tru dong header
-        $progress = WP_CLI\Utils\make_progress_bar( 'Dang import san pham...', $total );
+        $total = count( file( $file ) ) - 1; // Trừ dòng header
+        $progress = WP_CLI\Utils\make_progress_bar( 'Đang import sản phẩm...', $total );
 
         while ( ( $row = fgetcsv( $handle ) ) !== false ) {
             $data = array_combine( $header, $row );
 
             if ( $dry_run ) {
-                WP_CLI::log( sprintf( '[DRY RUN] Se tao: %s - Gia: %s', $data['title'], $data['price'] ) );
+                WP_CLI::log( sprintf( '[DRY RUN] Sẽ tạo: %s - Giá: %s', $data['title'], $data['price'] ) );
             } else {
                 $post_id = wp_insert_post( array(
                     'post_type'   => 'product',
@@ -1408,28 +1408,28 @@ class My_Product_CLI_Command {
         fclose( $handle );
 
         if ( $dry_run ) {
-            WP_CLI::success( "Dry run hoan tat. Se import $total san pham." );
+            WP_CLI::success( "Dry run hoàn tất. Sẽ import $total sản phẩm." );
         } else {
-            WP_CLI::success( "Da import $count/$total san pham." );
+            WP_CLI::success( "Đã import $count/$total sản phẩm." );
         }
     }
 }
 
-// Dang ky command
+// Đăng ký command
 WP_CLI::add_command( 'product', 'My_Product_CLI_Command' );
 ```
 
-### Su dung command
+### Sử dụng command
 
 ```bash
-# Xem danh sach sub-commands
+# Xem danh sách sub-commands
 wp product --help
 
-# Xem help cua tung sub-command
+# Xem help của từng sub-command
 wp product list --help
 wp product create --help
 
-# Su dung
+# Sử dụng
 wp product list --count=5 --format=table
 wp product create "Ao Khoac" --price=500000 --sku=AK001
 wp product update-price 123 600000
@@ -1439,25 +1439,25 @@ wp product import products.csv --dry-run
 
 ---
 
-## 11. wp eval va wp eval-file
+## 11. wp eval và wp eval-file
 
-### wp eval - Chay code PHP truc tiep
+### wp eval - Chạy code PHP trực tiếp
 
 ```bash
-# Chay 1 dong code PHP
+# Chạy 1 dòng code PHP
 wp eval 'echo get_bloginfo("name");'
 
-# Lay thong tin
+# Lấy thông tin
 wp eval 'echo home_url();'
 wp eval 'echo wp_get_theme()->get("Name");'
 
-# Lay so luong bai viet
+# Lấy số lượng bài viết
 wp eval '$count = wp_count_posts("product"); echo "Published: " . $count->publish;'
 
-# Kiem tra function ton tai
+# Kiểm tra function tồn tại
 wp eval 'echo function_exists("wc_get_products") ? "WooCommerce active" : "WooCommerce inactive";'
 
-# Chay query
+# Chạy query
 wp eval '
 $users = get_users(array("role" => "administrator"));
 foreach ($users as $user) {
@@ -1465,7 +1465,7 @@ foreach ($users as $user) {
 }
 '
 
-# Xoa transients cu
+# Xóa transients cũ
 wp eval '
 global $wpdb;
 $count = $wpdb->query(
@@ -1473,10 +1473,10 @@ $count = $wpdb->query(
      WHERE option_name LIKE \"_transient_timeout_%\"
      AND option_value < UNIX_TIMESTAMP()"
 );
-echo "Da xoa $count transients het han.";
+echo "Đã xóa $count transients hết hạn.";
 '
 
-# Cap nhat meta hang loat
+# Cập nhật meta hàng loạt
 wp eval '
 $products = get_posts(array(
     "post_type" => "product",
@@ -1486,32 +1486,32 @@ $products = get_posts(array(
 foreach ($products as $id) {
     $price = get_post_meta($id, "_product_price", true);
     if ($price) {
-        $new_price = intval($price * 1.1); // Tang 10%
+        $new_price = intval($price * 1.1); // Tăng 10%
         update_post_meta($id, "_product_price", $new_price);
     }
 }
-echo "Da cap nhat " . count($products) . " san pham.";
+echo "Đã cập nhật " . count($products) . " sản phẩm.";
 '
 ```
 
-### wp eval-file - Chay file PHP
+### wp eval-file - Chạy file PHP
 
 ```bash
-# Chay file PHP
+# Chạy file PHP
 wp eval-file maintenance.php
 
-# Truyen tham so
+# Truyền tham số
 wp eval-file process.php -- --type=product --limit=100
 ```
 
 ```php
 <?php
-// maintenance.php - File bao tri
-// Chay: wp eval-file maintenance.php
+// maintenance.php - File bảo trì
+// Chạy: wp eval-file maintenance.php
 
-echo "=== Bat dau bao tri ===\n";
+echo "=== Bắt đầu bảo trì ===\n";
 
-// 1. Xoa bai viet nhap cu hon 30 ngay
+// 1. Xóa bài viết nháp cũ hơn 30 ngày
 $old_drafts = get_posts( array(
     'post_type'      => 'any',
     'post_status'    => 'draft',
@@ -1527,32 +1527,32 @@ $old_drafts = get_posts( array(
 foreach ( $old_drafts as $id ) {
     wp_delete_post( $id, true );
 }
-echo "Xoa " . count( $old_drafts ) . " bai nhap cu.\n";
+echo "Xóa " . count( $old_drafts ) . " bài nháp cũ.\n";
 
-// 2. Xoa revisions
+// 2. Xóa revisions
 global $wpdb;
 $revisions = $wpdb->query(
     "DELETE FROM {$wpdb->posts} WHERE post_type = 'revision'"
 );
-echo "Xoa $revisions revisions.\n";
+echo "Xóa $revisions revisions.\n";
 
-// 3. Xoa orphaned postmeta
+// 3. Xóa orphaned postmeta
 $orphaned = $wpdb->query(
     "DELETE pm FROM {$wpdb->postmeta} pm
      LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
      WHERE p.ID IS NULL"
 );
-echo "Xoa $orphaned orphaned meta.\n";
+echo "Xóa $orphaned orphaned meta.\n";
 
-// 4. Xoa transients het han
+// 4. Xóa transients hết hạn
 $expired = $wpdb->query(
     "DELETE FROM {$wpdb->options}
      WHERE option_name LIKE '_transient_timeout_%'
      AND option_value < UNIX_TIMESTAMP()"
 );
-echo "Xoa $expired expired transients.\n";
+echo "Xóa $expired expired transients.\n";
 
-echo "=== Bao tri hoan tat ===\n";
+echo "=== Bảo trì hoàn tất ===\n";
 ```
 
 ---
@@ -1562,10 +1562,10 @@ echo "=== Bao tri hoan tat ===\n";
 ### WP Shell - Interactive PHP Shell
 
 ```bash
-# Mo interactive shell
+# Mở interactive shell
 wp shell
 
-# Trong shell, co the chay code PHP truc tiep:
+# Trong shell, có thể chạy code PHP trực tiếp:
 # wp> echo get_bloginfo('name');
 # My WordPress Site
 #
@@ -1578,14 +1578,14 @@ wp shell
 # wp> get_post_meta(123, '_product_price', true);
 # => 250000
 #
-# wp> exit  // Thoat shell
+# wp> exit  // Thoát shell
 ```
 
-### Vi du su dung wp shell
+### Ví dụ sử dụng wp shell
 
 ```bash
 wp shell <<'PHP'
-// Kiem tra so luong post theo tung post type
+// Kiểm tra số lượng post theo từng post type
 $post_types = get_post_types( array( 'public' => true ), 'names' );
 foreach ( $post_types as $pt ) {
     $count = wp_count_posts( $pt );
@@ -1596,15 +1596,15 @@ PHP
 
 ---
 
-## 13. Automation scripts voi WP-CLI
+## 13. Automation scripts với WP-CLI
 
-### Script cai dat WordPress tu dong
+### Script cài đặt WordPress tự động
 
 ```bash
 #!/bin/bash
-# setup-wordpress.sh - Cai dat WordPress tu dong
+# setup-wordpress.sh - Cài đặt WordPress tự động
 
-# Cau hinh
+# Cấu hình
 DB_NAME="mysite_db"
 DB_USER="root"
 DB_PASS="password"
@@ -1616,21 +1616,21 @@ ADMIN_PASS="SecurePass123!"
 ADMIN_EMAIL="admin@example.com"
 WP_PATH="/var/www/html/mysite"
 
-echo "=== Bat dau cai dat WordPress ==="
+echo "=== Bắt đầu cài đặt WordPress ==="
 
-# 1. Tao thu muc
+# 1. Tạo thư mục
 mkdir -p "$WP_PATH"
 cd "$WP_PATH"
 
-# 2. Tai WordPress
+# 2. Tải WordPress
 wp core download --locale=vi --path="$WP_PATH"
-echo "[OK] Da tai WordPress"
+echo "[OK] Đã tải WordPress"
 
-# 3. Tao database
+# 3. Tạo database
 mysql -u"$DB_USER" -p"$DB_PASS" -e "CREATE DATABASE IF NOT EXISTS $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-echo "[OK] Da tao database"
+echo "[OK] Đã tạo database"
 
-# 4. Tao wp-config.php
+# 4. Tạo wp-config.php
 wp config create \
   --dbname="$DB_NAME" \
   --dbuser="$DB_USER" \
@@ -1639,14 +1639,14 @@ wp config create \
   --dbcharset="utf8mb4" \
   --path="$WP_PATH"
 
-# Them cau hinh bo sung
+# Thêm cấu hình bổ sung
 wp config set WP_DEBUG true --raw --path="$WP_PATH"
 wp config set WP_DEBUG_LOG true --raw --path="$WP_PATH"
 wp config set WP_DEBUG_DISPLAY false --raw --path="$WP_PATH"
 wp config set DISALLOW_FILE_EDIT true --raw --path="$WP_PATH"
-echo "[OK] Da tao wp-config.php"
+echo "[OK] Đã tạo wp-config.php"
 
-# 5. Cai dat WordPress
+# 5. Cài đặt WordPress
 wp core install \
   --url="$SITE_URL" \
   --title="$SITE_TITLE" \
@@ -1654,24 +1654,24 @@ wp core install \
   --admin_password="$ADMIN_PASS" \
   --admin_email="$ADMIN_EMAIL" \
   --path="$WP_PATH"
-echo "[OK] Da cai dat WordPress"
+echo "[OK] Đã cài đặt WordPress"
 
-# 6. Cau hinh co ban
+# 6. Cấu hình cơ bản
 wp option update permalink_structure '/%postname%/' --path="$WP_PATH"
-wp option update blogdescription 'Mo ta website' --path="$WP_PATH"
+wp option update blogdescription 'Mô tả website' --path="$WP_PATH"
 wp option update timezone_string 'Asia/Ho_Chi_Minh' --path="$WP_PATH"
 wp option update date_format 'd/m/Y' --path="$WP_PATH"
 wp option update time_format 'H:i' --path="$WP_PATH"
 wp option update WPLANG 'vi' --path="$WP_PATH"
-echo "[OK] Da cau hinh co ban"
+echo "[OK] Đã cấu hình cơ bản"
 
-# 7. Xoa noi dung mac dinh
+# 7. Xóa nội dung mặc định
 wp post delete 1 --force --path="$WP_PATH"  # Hello World
 wp post delete 2 --force --path="$WP_PATH"  # Sample Page
-wp comment delete 1 --force --path="$WP_PATH"  # Comment mac dinh
-echo "[OK] Da xoa noi dung mac dinh"
+wp comment delete 1 --force --path="$WP_PATH"  # Comment mặc định
+echo "[OK] Đã xóa nội dung mặc định"
 
-# 8. Cai dat plugins
+# 8. Cài đặt plugins
 PLUGINS=(
     "query-monitor"
     "contact-form-7"
@@ -1683,39 +1683,39 @@ PLUGINS=(
 
 for plugin in "${PLUGINS[@]}"; do
     wp plugin install "$plugin" --activate --path="$WP_PATH"
-    echo "[OK] Da cai dat plugin: $plugin"
+    echo "[OK] Đã cài đặt plugin: $plugin"
 done
 
-# 9. Xoa plugins mac dinh khong can
+# 9. Xóa plugins mặc định không cần
 wp plugin delete hello --path="$WP_PATH"
 wp plugin delete akismet --path="$WP_PATH"
-echo "[OK] Da xoa plugins khong can"
+echo "[OK] Đã xóa plugins không cần"
 
-# 10. Cai dat va kich hoat theme
+# 10. Cài đặt và kích hoạt theme
 wp theme install flavor --activate --path="$WP_PATH"
-echo "[OK] Da cai dat theme"
+echo "[OK] Đã cài đặt theme"
 
-# 11. Xoa themes mac dinh khong can
+# 11. Xóa themes mặc định không cần
 wp theme delete twentytwentytwo --path="$WP_PATH"
 wp theme delete twentytwentythree --path="$WP_PATH"
-echo "[OK] Da xoa themes khong can"
+echo "[OK] Đã xóa themes không cần"
 
-# 12. Tao cac trang co ban
+# 12. Tạo các trang cơ bản
 wp post create --post_type=page --post_title="Trang Chu" --post_status=publish --path="$WP_PATH"
 wp post create --post_type=page --post_title="Gioi Thieu" --post_status=publish --path="$WP_PATH"
 wp post create --post_type=page --post_title="Lien He" --post_status=publish --path="$WP_PATH"
 wp post create --post_type=page --post_title="Blog" --post_status=publish --path="$WP_PATH"
-echo "[OK] Da tao cac trang co ban"
+echo "[OK] Đã tạo các trang cơ bản"
 
-# 13. Cau hinh trang chu va trang blog
+# 13. Cấu hình trang chủ và trang blog
 FRONT_PAGE=$(wp post list --post_type=page --name="trang-chu" --field=ID --path="$WP_PATH")
 BLOG_PAGE=$(wp post list --post_type=page --name="blog" --field=ID --path="$WP_PATH")
 wp option update show_on_front 'page' --path="$WP_PATH"
 wp option update page_on_front "$FRONT_PAGE" --path="$WP_PATH"
 wp option update page_for_posts "$BLOG_PAGE" --path="$WP_PATH"
-echo "[OK] Da cau hinh trang chu"
+echo "[OK] Đã cấu hình trang chủ"
 
-# 14. Tao menu
+# 14. Tạo menu
 wp menu create "Main Menu" --path="$WP_PATH"
 wp menu item add-post main-menu "$FRONT_PAGE" --title="Trang Chu" --path="$WP_PATH"
 ABOUT_PAGE=$(wp post list --post_type=page --name="gioi-thieu" --field=ID --path="$WP_PATH")
@@ -1723,14 +1723,14 @@ wp menu item add-post main-menu "$ABOUT_PAGE" --title="Gioi Thieu" --path="$WP_P
 CONTACT_PAGE=$(wp post list --post_type=page --name="lien-he" --field=ID --path="$WP_PATH")
 wp menu item add-post main-menu "$CONTACT_PAGE" --title="Lien He" --path="$WP_PATH"
 wp menu location assign main-menu primary --path="$WP_PATH"
-echo "[OK] Da tao menu"
+echo "[OK] Đã tạo menu"
 
 # 15. Flush rewrite
 wp rewrite flush --hard --path="$WP_PATH"
 
 echo ""
 echo "========================================="
-echo "Cai dat hoan tat!"
+echo "Cài đặt hoàn tất!"
 echo "URL: $SITE_URL"
 echo "Admin: $SITE_URL/wp-admin"
 echo "User: $ADMIN_USER"
@@ -1738,78 +1738,78 @@ echo "Pass: $ADMIN_PASS"
 echo "========================================="
 ```
 
-### Script cap nhat hang loat
+### Script cập nhật hàng loạt
 
 ```bash
 #!/bin/bash
-# update-all.sh - Cap nhat tat ca
+# update-all.sh - Cập nhật tất cả
 
 WP_PATH="/var/www/html/wordpress"
 
-echo "=== Bat dau cap nhat ==="
+echo "=== Bắt đầu cập nhật ==="
 
-# Backup truoc khi cap nhat
+# Backup trước khi cập nhật
 BACKUP_FILE="pre-update-$(date +%Y%m%d-%H%M%S).sql"
 wp db export "$BACKUP_FILE" --path="$WP_PATH"
 echo "[OK] Backup: $BACKUP_FILE"
 
-# Cap nhat core
+# Cập nhật core
 wp core update --path="$WP_PATH"
 wp core update-db --path="$WP_PATH"
-echo "[OK] Cap nhat WordPress core"
+echo "[OK] Cập nhật WordPress core"
 
-# Cap nhat tat ca plugins
+# Cập nhật tất cả plugins
 wp plugin update --all --path="$WP_PATH"
-echo "[OK] Cap nhat plugins"
+echo "[OK] Cập nhật plugins"
 
-# Cap nhat tat ca themes
+# Cập nhật tất cả themes
 wp theme update --all --path="$WP_PATH"
-echo "[OK] Cap nhat themes"
+echo "[OK] Cập nhật themes"
 
-# Cap nhat ngon ngu
+# Cập nhật ngôn ngữ
 wp language core update --path="$WP_PATH"
 wp language plugin update --all --path="$WP_PATH"
 wp language theme update --all --path="$WP_PATH"
-echo "[OK] Cap nhat ngon ngu"
+echo "[OK] Cập nhật ngôn ngữ"
 
 # Flush cache
 wp cache flush --path="$WP_PATH"
 wp rewrite flush --path="$WP_PATH"
 echo "[OK] Flush cache"
 
-echo "=== Cap nhat hoan tat ==="
+echo "=== Cập nhật hoàn tất ==="
 ```
 
-### Script tao noi dung test
+### Script tạo nội dung test
 
 ```bash
 #!/bin/bash
-# generate-test-content.sh - Tao du lieu test
+# generate-test-content.sh - Tạo dữ liệu test
 
 WP_PATH="/var/www/html/wordpress"
 
-echo "=== Tao du lieu test ==="
+echo "=== Tạo dữ liệu test ==="
 
-# Tao categories
+# Tạo categories
 CATEGORIES=("Cong Nghe" "Doi Song" "Giai Tri" "Kinh Doanh" "The Thao")
 for cat in "${CATEGORIES[@]}"; do
     wp term create category "$cat" --path="$WP_PATH"
 done
-echo "[OK] Tao ${#CATEGORIES[@]} categories"
+echo "[OK] Tạo ${#CATEGORIES[@]} categories"
 
-# Tao bai viet
+# Tạo bài viết
 wp post generate --count=50 --post_type=post --post_status=publish --path="$WP_PATH"
-echo "[OK] Tao 50 bai viet"
+echo "[OK] Tạo 50 bài viết"
 
-# Tao users
+# Tạo users
 ROLES=("editor" "author" "contributor" "subscriber")
 for i in $(seq 1 10); do
     ROLE=${ROLES[$((RANDOM % ${#ROLES[@]}))]}
     wp user create "user$i" "user$i@example.com" --role="$ROLE" --user_pass=Test123! --path="$WP_PATH"
 done
-echo "[OK] Tao 10 users"
+echo "[OK] Tạo 10 users"
 
-# Tao comments
+# Tạo comments
 for post_id in $(wp post list --post_type=post --posts_per_page=20 --field=ID --path="$WP_PATH"); do
     for j in $(seq 1 3); do
         wp comment create --comment_post_ID="$post_id" \
@@ -1820,27 +1820,27 @@ for post_id in $(wp post list --post_type=post --posts_per_page=20 --field=ID --
           --path="$WP_PATH"
     done
 done
-echo "[OK] Tao comments"
+echo "[OK] Tạo comments"
 
-echo "=== Tao du lieu test hoan tat ==="
+echo "=== Tạo dữ liệu test hoàn tất ==="
 ```
 
-### Script kiem tra suc khoe website
+### Script kiểm tra sức khỏe website
 
 ```bash
 #!/bin/bash
-# health-check.sh - Kiem tra suc khoe website
+# health-check.sh - Kiểm tra sức khỏe website
 
 WP_PATH="/var/www/html/wordpress"
 
 echo "========================================="
-echo "  KIEM TRA SUC KHOE WORDPRESS"
+echo "  KIỂM TRA SỨC KHỎE WORDPRESS"
 echo "  $(date '+%Y-%m-%d %H:%M:%S')"
 echo "========================================="
 echo ""
 
-# 1. Thong tin co ban
-echo "--- THONG TIN CO BAN ---"
+# 1. Thông tin cơ bản
+echo "--- THÔNG TIN CƠ BẢN ---"
 echo "WordPress Version: $(wp core version --path="$WP_PATH")"
 echo "PHP Version: $(php -v | head -1)"
 echo "MySQL Version: $(wp db cli --path="$WP_PATH" <<< 'SELECT VERSION();' 2>/dev/null | tail -1)"
@@ -1848,14 +1848,14 @@ echo "Site URL: $(wp option get siteurl --path="$WP_PATH")"
 echo "Home URL: $(wp option get home --path="$WP_PATH")"
 echo ""
 
-# 2. Cap nhat
-echo "--- CAP NHAT ---"
+# 2. Cập nhật
+echo "--- CẬP NHẬT ---"
 wp core check-update --path="$WP_PATH"
 echo ""
-echo "Plugins can cap nhat:"
+echo "Plugins cần cập nhật:"
 wp plugin list --update=available --path="$WP_PATH"
 echo ""
-echo "Themes can cap nhat:"
+echo "Themes cần cập nhật:"
 wp theme list --update=available --path="$WP_PATH"
 echo ""
 
@@ -1864,7 +1864,7 @@ echo "--- PLUGINS ---"
 TOTAL_PLUGINS=$(wp plugin list --format=count --path="$WP_PATH")
 ACTIVE_PLUGINS=$(wp plugin list --status=active --format=count --path="$WP_PATH")
 INACTIVE_PLUGINS=$(wp plugin list --status=inactive --format=count --path="$WP_PATH")
-echo "Tong: $TOTAL_PLUGINS | Active: $ACTIVE_PLUGINS | Inactive: $INACTIVE_PLUGINS"
+echo "Tổng: $TOTAL_PLUGINS | Active: $ACTIVE_PLUGINS | Inactive: $INACTIVE_PLUGINS"
 echo ""
 
 # 4. Database
@@ -1880,13 +1880,13 @@ echo ""
 # 6. Cron
 echo "--- CRON EVENTS ---"
 CRON_COUNT=$(wp cron event list --format=count --path="$WP_PATH")
-echo "Tong cron events: $CRON_COUNT"
+echo "Tổng cron events: $CRON_COUNT"
 echo ""
 
 # 7. Transients
 echo "--- TRANSIENTS ---"
 TRANSIENT_COUNT=$(wp db query "SELECT COUNT(*) FROM $(wp db prefix --path="$WP_PATH")options WHERE option_name LIKE '_transient_%';" --path="$WP_PATH" 2>/dev/null | tail -1)
-echo "Tong transients: $TRANSIENT_COUNT"
+echo "Tổng transients: $TRANSIENT_COUNT"
 echo ""
 
 # 8. Users
@@ -1903,20 +1903,20 @@ echo "Themes:    $(du -sh "$WP_PATH/wp-content/themes" 2>/dev/null | cut -f1)"
 echo ""
 
 echo "========================================="
-echo "  Kiem tra hoan tat"
+echo "  Kiểm tra hoàn tất"
 echo "========================================="
 ```
 
-### Script quan ly nhieu site (Multisite Management)
+### Script quản lý nhiều site (Multisite Management)
 
 ```bash
 #!/bin/bash
-# multisite-update.sh - Cap nhat nhieu site cung luc
+# multisite-update.sh - Cập nhật nhiều site cùng lúc
 
-# Danh sach cac site (dung wp-cli aliases)
+# Danh sách các site (dùng wp-cli aliases)
 SITES=("@staging" "@production" "@dev")
 
-# Hoac danh sach duong dan
+# Hoặc danh sách đường dẫn
 # SITE_PATHS=(
 #     "/var/www/site1"
 #     "/var/www/site2"
@@ -1925,12 +1925,12 @@ SITES=("@staging" "@production" "@dev")
 
 for site in "${SITES[@]}"; do
     echo ""
-    echo "=== Cap nhat: $site ==="
+    echo "=== Cập nhật: $site ==="
 
-    # Backup truoc
+    # Backup trước
     wp "$site" db export "backup-$(date +%Y%m%d).sql"
 
-    # Cap nhat
+    # Cập nhật
     wp "$site" core update
     wp "$site" core update-db
     wp "$site" plugin update --all
@@ -1940,58 +1940,58 @@ for site in "${SITES[@]}"; do
     wp "$site" cache flush
     wp "$site" rewrite flush
 
-    echo "=== Hoan tat: $site ==="
+    echo "=== Hoàn tất: $site ==="
 done
 
 echo ""
-echo "Tat ca site da duoc cap nhat!"
+echo "Tất cả site đã được cập nhật!"
 ```
 
-### Lenh huu ich khac
+### Lệnh hữu ích khác
 
 ```bash
-# --- CAU HINH ---
+# --- CẤU HÌNH ---
 
-# Xem tat ca constants trong wp-config.php
+# Xem tất cả constants trong wp-config.php
 wp config list
 
-# Them constant
+# Thêm constant
 wp config set WP_MEMORY_LIMIT '256M'
 wp config set WP_MAX_MEMORY_LIMIT '512M'
 
-# Bat/tat debug
+# Bật/tắt debug
 wp config set WP_DEBUG true --raw
 wp config set WP_DEBUG false --raw
 
 # --- MAINTENANCE MODE ---
 
-# Bat maintenance mode
+# Bật maintenance mode
 wp maintenance-mode activate
 
-# Tat maintenance mode
+# Tắt maintenance mode
 wp maintenance-mode deactivate
 
-# Kiem tra trang thai
+# Kiểm tra trạng thái
 wp maintenance-mode status
 
 # --- EXPORT/IMPORT NỘI DUNG ---
 
-# Export noi dung (XML)
+# Export nội dung (XML)
 wp export --dir=/tmp/exports
 
-# Export chi post type cu the
+# Export chỉ post type cụ thể
 wp export --post_type=product --dir=/tmp/exports
 
-# Import noi dung
+# Import nội dung
 wp import /tmp/exports/export.xml --authors=create
 
 # --- WIDGET ---
 
-# Xem danh sach widget areas
+# Xem danh sách widget areas
 wp widget list sidebar-1
 
-# Them widget
-wp widget add text sidebar-1 --title="Lien He" --text="SDT: 0123456789"
+# Thêm widget
+wp widget add text sidebar-1 --title="Liên Hệ" --text="SDT: 0123456789"
 
 # --- SIDEBAR ---
 
@@ -2006,13 +2006,13 @@ wp super-admin remove username
 
 # --- PACKAGE MANAGEMENT ---
 
-# Cai dat WP-CLI package bo sung
+# Cài đặt WP-CLI package bổ sung
 wp package install wp-cli/doctor-command
 wp package install aaemnnosttv/wp-cli-login-command
 
-# Xem packages da cai
+# Xem packages đã cài
 wp package list
 
-# Chay doctor check
+# Chạy doctor check
 wp doctor check --all
 ```

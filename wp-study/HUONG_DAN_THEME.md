@@ -405,5 +405,5 @@ Việc download và sử dụng WordPress theme không khó, nhưng cần:
 - Sử dụng Child Theme khi customize
 - Maintain và update thường xuyên
 
-Chuc ban thanh cong voi WordPress theme cua minh!
+Chúc bạn thành công với WordPress theme của mình!
 

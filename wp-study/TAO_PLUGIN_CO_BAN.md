@@ -1,64 +1,64 @@
-# Huong Dan Tao Plugin WordPress Co Ban
+# Hướng Dẫn Tạo Plugin WordPress Cơ Bản
 
-## Muc Luc
+## Mục Lục
 
-1. [Gioi thieu](#1-gioi-thieu)
-2. [Cau truc plugin co ban](#2-cau-truc-plugin-co-ban)
-3. [Tao plugin dau tien - Hello World](#3-tao-plugin-dau-tien---hello-world)
+1. [Giới Thiệu](#1-giới-thiệu)
+2. [Cấu Trúc Plugin Cơ Bản](#2-cấu-trúc-plugin-cơ-bản)
+3. [Tạo Plugin Đầu Tiên - Hello World](#3-tạo-plugin-đầu-tiên---hello-world)
 4. [Plugin Headers](#4-plugin-headers)
-5. [Activation va Deactivation Hooks](#5-activation-va-deactivation-hooks)
+5. [Activation và Deactivation Hooks](#5-activation-và-deactivation-hooks)
 6. [Uninstall Plugin](#6-uninstall-plugin)
-7. [Tao Menu Admin](#7-tao-menu-admin)
+7. [Tạo Menu Admin](#7-tạo-menu-admin)
 8. [Settings API](#8-settings-api)
 9. [Shortcodes](#9-shortcodes)
 10. [Widgets](#10-widgets)
-11. [Enqueue Scripts va Styles](#11-enqueue-scripts-va-styles)
+11. [Enqueue Scripts và Styles](#11-enqueue-scripts-và-styles)
 12. [AJAX trong Plugin](#12-ajax-trong-plugin)
 13. [Custom Post Types](#13-custom-post-types)
-14. [Nonce va Security](#14-nonce-va-security)
+14. [Nonce và Security](#14-nonce-và-security)
 15. [Internationalization (i18n)](#15-internationalization-i18n)
-16. [Vi du plugin hoan chinh - CRUD](#16-vi-du-plugin-hoan-chinh---crud)
+16. [Ví Dụ Plugin Hoàn Chỉnh - CRUD](#16-ví-dụ-plugin-hoàn-chỉnh---crud)
 17. [Best Practices](#17-best-practices)
 18. [Debug Plugin](#18-debug-plugin)
 
 ---
 
-## 1. Gioi Thieu
+## 1. Giới Thiệu
 
-### Plugin la gi?
+### Plugin là gì?
 
-Plugin la mot doan chuong trinh PHP mo rong chuc nang cua WordPress ma khong can sua doi core. Plugin co the them tinh nang moi, thay doi hanh vi mac dinh, hoac tich hop voi dich vu ben ngoai.
+Plugin là một đoạn chương trình PHP mở rộng chức năng của WordPress mà không cần sửa đổi core. Plugin có thể thêm tính năng mới, thay đổi hành vi mặc định, hoặc tích hợp với dịch vụ bên ngoài.
 
-### Tai sao can viet plugin?
+### Tại sao cần viết plugin?
 
-- **Tach biet logic:** Giu code rieng biet voi theme va core
-- **Tai su dung:** Dung lai tren nhieu website
-- **Cap nhat an toan:** Khong mat code khi cap nhat WordPress hoac theme
-- **Chia se:** Phan phoi cho cong dong hoac ban thuong mai
+- **Tách biệt logic:** Giữ code riêng biệt với theme và core
+- **Tái sử dụng:** Dùng lại trên nhiều website
+- **Cập nhật an toàn:** Không mất code khi cập nhật WordPress hoặc theme
+- **Chia sẻ:** Phân phối cho cộng đồng hoặc bán thương mại
 
-### Plugin duoc luu o dau?
+### Plugin được lưu ở đâu?
 
-Tat ca plugin nam trong thu muc `wp-content/plugins/`.
+Tất cả plugin nằm trong thư mục `wp-content/plugins/`.
 
 ---
 
-## 2. Cau Truc Plugin Co Ban
+## 2. Cấu Trúc Plugin Cơ Bản
 
-### Plugin don file
+### Plugin đơn file
 
 ```
 wp-content/plugins/
-└── my-plugin.php          # Plugin chi co 1 file
+└── my-plugin.php          # Plugin chỉ có 1 file
 ```
 
-### Plugin nhieu file (khuyen dung)
+### Plugin nhiều file (khuyến dùng)
 
 ```
 wp-content/plugins/
 └── my-plugin/
-    ├── my-plugin.php       # File chinh (entry point)
-    ├── uninstall.php       # Xu ly khi go bo plugin
-    ├── readme.txt          # Mo ta plugin (cho WordPress.org)
+    ├── my-plugin.php       # File chính (entry point)
+    ├── uninstall.php       # Xử lý khi gỡ bỏ plugin
+    ├── readme.txt          # Mô tả plugin (cho WordPress.org)
     ├── includes/
     │   ├── class-my-plugin.php
     │   ├── class-my-plugin-admin.php
@@ -83,20 +83,20 @@ wp-content/plugins/
 
 ---
 
-## 3. Tao Plugin Dau Tien - Hello World
+## 3. Tạo Plugin Đầu Tiên - Hello World
 
-### Buoc 1: Tao thu muc plugin
+### Bước 1: Tạo thư mục plugin
 
-Tao thu muc `wp-content/plugins/hello-world/`
+Tạo thư mục `wp-content/plugins/hello-world/`
 
-### Buoc 2: Tao file chinh
+### Bước 2: Tạo file chính
 
 ```php
 <?php
 /**
  * Plugin Name: Hello World
  * Plugin URI:  https://example.com/hello-world
- * Description: Plugin dau tien - Hien thi "Hello World" trong admin.
+ * Description: Plugin đầu tiên - Hiển thị "Hello World" trong admin.
  * Version:     1.0.0
  * Author:      Ten Cua Ban
  * Author URI:  https://example.com
@@ -116,71 +116,71 @@ define( 'HELLO_WORLD_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HELLO_WORLD_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
- * Hien thi thong bao "Hello World" trong admin dashboard
+ * Hiển thị thông báo "Hello World" trong admin dashboard
  */
 function hello_world_admin_notice() {
-    echo '<div class="notice notice-info"><p>Hello World! Plugin dang hoat dong.</p></div>';
+    echo '<div class="notice notice-info"><p>Hello World! Plugin đang hoạt động.</p></div>';
 }
 add_action( 'admin_notices', 'hello_world_admin_notice' );
 ```
 
-### Buoc 3: Kich hoat plugin
+### Bước 3: Kích hoạt plugin
 
-Vao **Plugins > Installed Plugins** trong admin, tim "Hello World" va click **Activate**.
+Vào **Plugins > Installed Plugins** trong admin, tìm "Hello World" và click **Activate**.
 
 ---
 
 ## 4. Plugin Headers
 
-Plugin headers la khoi comment o dau file chinh, WordPress doc cac truong nay de hien thi thong tin plugin.
+Plugin headers là khối comment ở đầu file chính, WordPress đọc các trường này để hiển thị thông tin plugin.
 
 ```php
 <?php
 /**
- * Plugin Name:       Ten Plugin (bat buoc)
+ * Plugin Name:       Tên Plugin (bắt buộc)
  * Plugin URI:        https://example.com/plugin
- * Description:       Mo ta ngan gon ve plugin (bat buoc)
+ * Description:       Mô tả ngắn gọn về plugin (bắt buộc)
  * Version:           1.0.0
- * Requires at least: 6.0          // Phien ban WP toi thieu
- * Requires PHP:      8.0          // Phien ban PHP toi thieu
- * Author:            Ten tac gia
+ * Requires at least: 6.0          // Phiên bản WP tối thiểu
+ * Requires PHP:      8.0          // Phiên bản PHP tối thiểu
+ * Author:            Tên tác giả
  * Author URI:        https://example.com
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       my-plugin    // Dung cho da ngon ngu
- * Domain Path:       /languages   // Thu muc chua file ngon ngu
- * Network:           true         // Ho tro multisite (tuy chon)
+ * Text Domain:       my-plugin    // Dùng cho đa ngôn ngữ
+ * Domain Path:       /languages   // Thư mục chứa file ngôn ngữ
+ * Network:           true         // Hỗ trợ multisite (tùy chọn)
  * Update URI:        https://example.com/update
  */
 ```
 
-| Truong | Bat buoc | Mo ta |
+| Trường | Bắt buộc | Mô tả |
 |--------|----------|-------|
-| Plugin Name | Co | Ten hien thi trong admin |
-| Description | Co | Mo ta chuc nang plugin |
-| Version | Nen co | Phien ban hien tai |
-| Author | Nen co | Tac gia plugin |
-| Text Domain | Nen co | Identifier cho da ngon ngu |
-| License | Nen co | Giay phep su dung |
+| Plugin Name | Có | Tên hiển thị trong admin |
+| Description | Có | Mô tả chức năng plugin |
+| Version | Nên có | Phiên bản hiện tại |
+| Author | Nên có | Tác giả plugin |
+| Text Domain | Nên có | Identifier cho đa ngôn ngữ |
+| License | Nên có | Giấy phép sử dụng |
 
 ---
 
-## 5. Activation va Deactivation Hooks
+## 5. Activation và Deactivation Hooks
 
 ### Activation Hook
 
-Chay mot lan khi plugin duoc kich hoat. Dung de:
-- Tao bang database
-- Them option mac dinh
+Chạy một lần khi plugin được kích hoạt. Dùng để:
+- Tạo bảng database
+- Thêm option mặc định
 - Flush rewrite rules
-- Kiem tra yeu cau (PHP version, extension, ...)
+- Kiểm tra yêu cầu (PHP version, extension, ...)
 
 ```php
 /**
- * Xu ly khi kich hoat plugin
+ * Xử lý khi kích hoạt plugin
  */
 function hello_world_activate() {
-    // Tao bang database
+    // Tạo bảng database
     global $wpdb;
     $table_name = $wpdb->prefix . 'hello_world';
     $charset_collate = $wpdb->get_charset_collate();
@@ -196,16 +196,16 @@ function hello_world_activate() {
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta( $sql );
 
-    // Luu phien ban database
+    // Lưu phiên bản database
     add_option( 'hello_world_db_version', '1.0' );
 
-    // Them option mac dinh
+    // Thêm option mặc định
     add_option( 'hello_world_settings', array(
         'display_message' => true,
         'message_text'    => 'Hello World!',
     ) );
 
-    // Flush rewrite rules (neu co custom post type)
+    // Flush rewrite rules (nếu có custom post type)
     flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'hello_world_activate' );
@@ -213,17 +213,17 @@ register_activation_hook( __FILE__, 'hello_world_activate' );
 
 ### Deactivation Hook
 
-Chay khi plugin bi vo hieu hoa. Dung de:
-- Xoa cron jobs
+Chạy khi plugin bị vô hiệu hóa. Dùng để:
+- Xóa cron jobs
 - Flush rewrite rules
-- Xoa cache tam thoi
+- Xóa cache tạm thời
 
 ```php
 /**
- * Xu ly khi vo hieu hoa plugin
+ * Xử lý khi vô hiệu hóa plugin
  */
 function hello_world_deactivate() {
-    // Xoa scheduled cron events
+    // Xóa scheduled cron events
     $timestamp = wp_next_scheduled( 'hello_world_cron_event' );
     if ( $timestamp ) {
         wp_unschedule_event( $timestamp, 'hello_world_cron_event' );
@@ -239,36 +239,36 @@ register_deactivation_hook( __FILE__, 'hello_world_deactivate' );
 
 ## 6. Uninstall Plugin
 
-Khi nguoi dung xoa plugin, can don dep du lieu.
+Khi người dùng xóa plugin, cần dọn dẹp dữ liệu.
 
-### Cach 1: File uninstall.php (khuyen dung)
+### Cách 1: File uninstall.php (khuyến dùng)
 
-Tao file `uninstall.php` o thu muc goc cua plugin:
+Tạo file `uninstall.php` ở thư mục gốc của plugin:
 
 ```php
 <?php
-// Kiem tra WordPress co goi file nay khong
+// Kiểm tra WordPress có gọi file này không
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit;
 }
 
-// Xoa options
+// Xóa options
 delete_option( 'hello_world_settings' );
 delete_option( 'hello_world_db_version' );
 
-// Xoa bang database
+// Xóa bảng database
 global $wpdb;
 $table_name = $wpdb->prefix . 'hello_world';
 $wpdb->query( "DROP TABLE IF EXISTS $table_name" );
 
-// Xoa user meta (neu co)
+// Xóa user meta (nếu có)
 $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE 'hello_world_%'" );
 
-// Xoa transients
+// Xóa transients
 delete_transient( 'hello_world_cache' );
 ```
 
-### Cach 2: register_uninstall_hook
+### Cách 2: register_uninstall_hook
 
 ```php
 register_uninstall_hook( __FILE__, 'hello_world_uninstall' );
@@ -280,40 +280,40 @@ function hello_world_uninstall() {
 
 ---
 
-## 7. Tao Menu Admin
+## 7. Tạo Menu Admin
 
-### Menu chinh (Top-level menu)
+### Menu chính (Top-level menu)
 
 ```php
 /**
- * Them menu vao admin sidebar
+ * Thêm menu vào admin sidebar
  */
 function hello_world_admin_menu() {
-    // Menu chinh
+    // Menu chính
     add_menu_page(
-        'Hello World Settings',     // Tieu de trang (title tag)
-        'Hello World',              // Ten menu (hien thi trong sidebar)
-        'manage_options',           // Capability can thiet
+        'Hello World Settings',     // Tiêu đề trang (title tag)
+        'Hello World',              // Tên menu (hiển thị trong sidebar)
+        'manage_options',           // Capability cần thiết
         'hello-world',              // Menu slug (URL identifier)
         'hello_world_settings_page', // Callback function render trang
-        'dashicons-admin-generic',  // Icon (dashicons hoac URL)
-        30                          // Vi tri trong menu
+        'dashicons-admin-generic',  // Icon (dashicons hoặc URL)
+        30                          // Vị trí trong menu
     );
 
     // Sub-menu
     add_submenu_page(
         'hello-world',              // Parent slug
-        'Danh Sach',                // Tieu de trang
-        'Danh Sach',                // Ten menu
+        'Danh Sách',                // Tiêu đề trang
+        'Danh Sách',                // Tên menu
         'manage_options',           // Capability
-        'hello-world',              // Menu slug (trung voi parent de lam default)
+        'hello-world',              // Menu slug (trùng với parent để làm default)
         'hello_world_settings_page' // Callback
     );
 
     add_submenu_page(
         'hello-world',
-        'Them Moi',
-        'Them Moi',
+        'Thêm Mới',
+        'Thêm Mới',
         'manage_options',
         'hello-world-add',
         'hello_world_add_page'
@@ -325,20 +325,20 @@ add_action( 'admin_menu', 'hello_world_admin_menu' );
  * Render trang settings
  */
 function hello_world_settings_page() {
-    // Kiem tra quyen
+    // Kiểm tra quyền
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
     ?>
     <div class="wrap">
         <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-        <p>Day la trang settings cua plugin Hello World.</p>
+        <p>Đây là trang settings của plugin Hello World.</p>
     </div>
     <?php
 }
 
 /**
- * Render trang them moi
+ * Render trang thêm mới
  */
 function hello_world_add_page() {
     if ( ! current_user_can( 'manage_options' ) ) {
@@ -346,39 +346,39 @@ function hello_world_add_page() {
     }
     ?>
     <div class="wrap">
-        <h1>Them Moi</h1>
+        <h1>Thêm Mới</h1>
         <form method="post" action="">
             <?php wp_nonce_field( 'hello_world_add', 'hello_world_nonce' ); ?>
             <table class="form-table">
                 <tr>
-                    <th><label for="name">Ten:</label></th>
+                    <th><label for="name">Tên:</label></th>
                     <td><input type="text" name="name" id="name" class="regular-text" /></td>
                 </tr>
                 <tr>
-                    <th><label for="message">Noi dung:</label></th>
+                    <th><label for="message">Nội dung:</label></th>
                     <td><textarea name="message" id="message" rows="5" class="large-text"></textarea></td>
                 </tr>
             </table>
-            <?php submit_button( 'Luu' ); ?>
+            <?php submit_button( 'Lưu' ); ?>
         </form>
     </div>
     <?php
 }
 ```
 
-### Dashicons pho bien
+### Dashicons phổ biến
 
 ```
-dashicons-admin-home        - Trang chu
-dashicons-admin-post        - Bai viet
+dashicons-admin-home        - Trang chủ
+dashicons-admin-post        - Bài viết
 dashicons-admin-page        - Trang
-dashicons-admin-settings    - Cai dat
-dashicons-admin-tools       - Cong cu
-dashicons-admin-users       - Nguoi dung
+dashicons-admin-settings    - Cài đặt
+dashicons-admin-tools       - Công cụ
+dashicons-admin-users       - Người dùng
 dashicons-admin-plugins     - Plugin
 dashicons-admin-generic     - Chung
-dashicons-chart-bar         - Bieu do
-dashicons-cart              - Gio hang
+dashicons-chart-bar         - Biểu đồ
+dashicons-cart              - Giỏ hàng
 dashicons-email             - Email
 ```
 
@@ -386,17 +386,17 @@ dashicons-email             - Email
 
 ## 8. Settings API
 
-WordPress cung cap Settings API de tao trang cai dat mot cach an toan va chuan hoa.
+WordPress cung cấp Settings API để tạo trang cài đặt một cách an toàn và chuẩn hóa.
 
 ```php
 /**
- * Dang ky settings
+ * Đăng ký settings
  */
 function hello_world_register_settings() {
-    // Dang ky setting group
+    // Đăng ký setting group
     register_setting(
         'hello_world_options',       // Option group
-        'hello_world_settings',      // Option name (luu trong wp_options)
+        'hello_world_settings',      // Option name (lưu trong wp_options)
         array(
             'type'              => 'array',
             'sanitize_callback' => 'hello_world_sanitize_settings',
@@ -408,38 +408,38 @@ function hello_world_register_settings() {
         )
     );
 
-    // Them section
+    // Thêm section
     add_settings_section(
         'hello_world_general',           // Section ID
-        'Cai Dat Chung',                 // Tieu de section
-        'hello_world_section_callback',  // Callback mo ta
+        'Cài Đặt Chung',                 // Tiêu đề section
+        'hello_world_section_callback',  // Callback mô tả
         'hello-world-settings'           // Page slug
     );
 
-    // Them field: Hien thi thong bao
+    // Thêm field: Hiển thị thông báo
     add_settings_field(
         'display_message',                   // Field ID
-        'Hien thi thong bao',                // Label
+        'Hiển thị thông báo',                // Label
         'hello_world_checkbox_callback',     // Callback render field
         'hello-world-settings',              // Page slug
         'hello_world_general',               // Section ID
-        array( 'field' => 'display_message' ) // Args truyen vao callback
+        array( 'field' => 'display_message' ) // Args truyền vào callback
     );
 
-    // Them field: Noi dung thong bao
+    // Thêm field: Nội dung thông báo
     add_settings_field(
         'message_text',
-        'Noi dung thong bao',
+        'Nội dung thông báo',
         'hello_world_text_callback',
         'hello-world-settings',
         'hello_world_general',
         array( 'field' => 'message_text' )
     );
 
-    // Them field: Mau sac
+    // Thêm field: Màu sắc
     add_settings_field(
         'message_color',
-        'Mau sac',
+        'Màu sắc',
         'hello_world_color_callback',
         'hello-world-settings',
         'hello_world_general',
@@ -452,7 +452,7 @@ add_action( 'admin_init', 'hello_world_register_settings' );
  * Callback cho section
  */
 function hello_world_section_callback() {
-    echo '<p>Cau hinh cac tuy chon hien thi cua plugin.</p>';
+    echo '<p>Cấu hình các tùy chọn hiển thị của plugin.</p>';
 }
 
 /**

@@ -1,40 +1,40 @@
 # WordPress REST API
 
-Huong dan toan dien ve WordPress REST API: tu cac endpoint mac dinh, authentication, den viec tao custom endpoints, controller, va xay dung CRUD hoan chinh trong plugin.
+Hướng dẫn toàn diện về WordPress REST API: từ các endpoint mặc định, authentication, đến việc tạo custom endpoints, controller, và xây dựng CRUD hoàn chỉnh trong plugin.
 
 ---
 
-## Muc luc
+## Mục lục
 
-1. [Gioi thieu REST API](#1-gioi-thieu-rest-api)
-2. [Cac endpoint mac dinh](#2-cac-endpoint-mac-dinh)
-3. [Su dung REST API - GET, POST, PUT, DELETE](#3-su-dung-rest-api---get-post-put-delete)
+1. [Giới thiệu REST API](#1-gioi-thieu-rest-api)
+2. [Các endpoint mặc định](#2-cac-endpoint-mac-dinh)
+3. [Sử dụng REST API - GET, POST, PUT, DELETE](#3-su-dung-rest-api---get-post-put-delete)
 4. [Authentication](#4-authentication)
-5. [Tao Custom Endpoints - register_rest_route()](#5-tao-custom-endpoints---register_rest_route)
+5. [Tạo Custom Endpoints - register_rest_route()](#5-tao-custom-endpoints---register_rest_route)
 6. [Permission Callbacks](#6-permission-callbacks)
-7. [Schema va Validation](#7-schema-va-validation)
+7. [Schema và Validation](#7-schema-va-validation)
 8. [Custom Controller - Extend WP_REST_Controller](#8-custom-controller---extend-wp_rest_controller)
-9. [REST API trong Plugin - Vi du CRUD hoan chinh](#9-rest-api-trong-plugin---vi-du-crud-hoan-chinh)
+9. [REST API trong Plugin - Ví dụ CRUD hoàn chỉnh](#9-rest-api-trong-plugin---vi-du-crud-hoan-chinh)
 10. [Best Practices](#10-best-practices)
 
 ---
 
-## 1. Gioi thieu REST API
+## 1. Giới thiệu REST API
 
-### 1.1. REST API la gi?
+### 1.1. REST API là gì?
 
-WordPress REST API cung cap cac HTTP endpoints cho phep truy cap du lieu WordPress theo chuan RESTful. Du lieu duoc gui va nhan duoi dang JSON.
+WordPress REST API cung cấp các HTTP endpoints cho phép truy cập dữ liệu WordPress theo chuẩn RESTful. Dữ liệu được gửi và nhận dưới dạng JSON.
 
-Cac khai niem co ban:
+Các khái niệm cơ bản:
 
-- **Route**: Duong dan URL cua API, vi du `/wp/v2/posts`.
-- **Endpoint**: Mot route ket hop voi HTTP method cu the, vi du `GET /wp/v2/posts` la mot endpoint, `POST /wp/v2/posts` la mot endpoint khac.
-- **Namespace**: Phan dau cua route dung de nhom cac endpoint, vi du `wp/v2` la namespace cua WordPress core.
-- **Request**: Doi tuong `WP_REST_Request` chua thong tin ve request (params, headers, body).
-- **Response**: Doi tuong `WP_REST_Response` chua du lieu tra ve (data, status code, headers).
-- **Schema**: Mo ta cau truc du lieu cua endpoint (fields, types, validation rules).
+- **Route**: Đường dẫn URL của API, ví dụ `/wp/v2/posts`.
+- **Endpoint**: Một route kết hợp với HTTP method cụ thể, ví dụ `GET /wp/v2/posts` là một endpoint, `POST /wp/v2/posts` là một endpoint khác.
+- **Namespace**: Phần đầu của route dùng để nhóm các endpoint, ví dụ `wp/v2` là namespace của WordPress core.
+- **Request**: Đối tượng `WP_REST_Request` chứa thông tin về request (params, headers, body).
+- **Response**: Đối tượng `WP_REST_Response` chứa dữ liệu trả về (data, status code, headers).
+- **Schema**: Mô tả cấu trúc dữ liệu của endpoint (fields, types, validation rules).
 
-### 1.2. URL co ban
+### 1.2. URL cơ bản
 
 ```
 https://example.com/wp-json/wp/v2/posts
@@ -42,223 +42,223 @@ https://example.com/wp-json/wp/v2/posts
 |   Domain         |wp-json|NS|v |Route|
 ```
 
-- `wp-json`: REST API prefix (co the thay doi bang filter `rest_url_prefix`)
+- `wp-json`: REST API prefix (có thể thay đổi bằng filter `rest_url_prefix`)
 - `wp/v2`: Namespace (wp = WordPress core, v2 = version 2)
 - `posts`: Route name
 
-### 1.3. Kiem tra REST API co hoat dong
+### 1.3. Kiểm tra REST API có hoạt động
 
 ```bash
-# Lay thong tin API root
+# Lấy thông tin API root
 curl https://example.com/wp-json/
 
-# Lay danh sach routes
+# Lấy danh sách routes
 curl https://example.com/wp-json/wp/v2/
 
-# Kiem tra voi OPTIONS method
+# Kiểm tra với OPTIONS method
 curl -X OPTIONS https://example.com/wp-json/wp/v2/posts
 ```
 
 ### 1.4. Discovery
 
 ```html
-<!-- WordPress tu dong them link trong head -->
+<!-- WordPress tự động thêm link trong head -->
 <link rel="https://api.w.org/" href="https://example.com/wp-json/" />
 ```
 
 ```php
 <?php
-// Lay REST API URL trong PHP
+// Lấy REST API URL trong PHP
 $api_url = rest_url();           // https://example.com/wp-json/
 $posts_url = rest_url( 'wp/v2/posts' ); // https://example.com/wp-json/wp/v2/posts
 ```
 
 ---
 
-## 2. Cac endpoint mac dinh
+## 2. Các endpoint mặc định
 
 ### 2.1. /wp/v2/posts
 
-Quan ly bai viet (post type = 'post').
+Quản lý bài viết (post type = 'post').
 
 ```
-GET    /wp/v2/posts          - Lay danh sach bai viet
-GET    /wp/v2/posts/<id>     - Lay 1 bai viet theo ID
-POST   /wp/v2/posts          - Tao bai viet moi (can xac thuc)
-PUT    /wp/v2/posts/<id>     - Cap nhat toan bo bai viet (can xac thuc)
-PATCH  /wp/v2/posts/<id>     - Cap nhat mot phan bai viet (can xac thuc)
-DELETE /wp/v2/posts/<id>     - Xoa bai viet (can xac thuc)
+GET    /wp/v2/posts          - Lấy danh sách bài viết
+GET    /wp/v2/posts/<id>     - Lấy 1 bài viết theo ID
+POST   /wp/v2/posts          - Tạo bài viết mới (cần xác thực)
+PUT    /wp/v2/posts/<id>     - Cập nhật toàn bộ bài viết (cần xác thực)
+PATCH  /wp/v2/posts/<id>     - Cập nhật một phần bài viết (cần xác thực)
+DELETE /wp/v2/posts/<id>     - Xóa bài viết (cần xác thực)
 ```
 
-Cac tham so query pho bien cho GET:
+Các tham số query phổ biến cho GET:
 
-| Tham so | Mo ta | Vi du |
+| Tham số | Mô tả | Ví dụ |
 |---------|-------|-------|
-| `page` | Trang hien tai | `?page=2` |
-| `per_page` | So item moi trang (1-100, mac dinh 10) | `?per_page=20` |
-| `search` | Tim kiem | `?search=wordpress` |
-| `after` | Bai viet sau ngay | `?after=2024-01-01T00:00:00` |
-| `before` | Bai viet truoc ngay | `?before=2024-12-31T23:59:59` |
-| `author` | Theo ID tac gia | `?author=1` |
-| `author_exclude` | Loai tru tac gia | `?author_exclude=3,5` |
-| `exclude` | Loai tru post IDs | `?exclude=1,2,3` |
-| `include` | Chi lay post IDs | `?include=10,20,30` |
+| `page` | Trang hiện tại | `?page=2` |
+| `per_page` | Số item mỗi trang (1-100, mặc định 10) | `?per_page=20` |
+| `search` | Tìm kiếm | `?search=wordpress` |
+| `after` | Bài viết sau ngày | `?after=2024-01-01T00:00:00` |
+| `before` | Bài viết trước ngày | `?before=2024-12-31T23:59:59` |
+| `author` | Theo ID tác giả | `?author=1` |
+| `author_exclude` | Loại trừ tác giả | `?author_exclude=3,5` |
+| `exclude` | Loại trừ post IDs | `?exclude=1,2,3` |
+| `include` | Chỉ lấy post IDs | `?include=10,20,30` |
 | `slug` | Theo slug | `?slug=bai-viet-mau` |
-| `status` | Trang thai | `?status=draft` (can xac thuc) |
+| `status` | Trạng thái | `?status=draft` (cần xác thực) |
 | `categories` | Theo category IDs | `?categories=5,10` |
-| `categories_exclude` | Loai tru categories | `?categories_exclude=3` |
+| `categories_exclude` | Loại trừ categories | `?categories_exclude=3` |
 | `tags` | Theo tag IDs | `?tags=7,8` |
-| `tags_exclude` | Loai tru tags | `?tags_exclude=2` |
-| `sticky` | Bai ghim | `?sticky=true` |
-| `orderby` | Sap xep | `?orderby=title` |
-| `order` | Thu tu | `?order=asc` |
-| `_fields` | Chi lay cac truong cu the | `?_fields=id,title,link` |
-| `_embed` | Nhung du lieu lien quan | `?_embed` |
+| `tags_exclude` | Loại trừ tags | `?tags_exclude=2` |
+| `sticky` | Bài ghim | `?sticky=true` |
+| `orderby` | Sắp xếp | `?orderby=title` |
+| `order` | Thứ tự | `?order=asc` |
+| `_fields` | Chỉ lấy các trường cụ thể | `?_fields=id,title,link` |
+| `_embed` | Nhúng dữ liệu liên quan | `?_embed` |
 
 ### 2.2. /wp/v2/pages
 
-Tuong tu posts nhung cho post type = 'page'.
+Tương tự posts nhưng cho post type = 'page'.
 
 ```
-GET    /wp/v2/pages          - Lay danh sach trang
-GET    /wp/v2/pages/<id>     - Lay 1 trang
-POST   /wp/v2/pages          - Tao trang moi
-PUT    /wp/v2/pages/<id>     - Cap nhat trang
-DELETE /wp/v2/pages/<id>     - Xoa trang
+GET    /wp/v2/pages          - Lấy danh sách trang
+GET    /wp/v2/pages/<id>     - Lấy 1 trang
+POST   /wp/v2/pages          - Tạo trang mới
+PUT    /wp/v2/pages/<id>     - Cập nhật trang
+DELETE /wp/v2/pages/<id>     - Xóa trang
 ```
 
-Tham so rieng cua pages:
+Tham số riêng của pages:
 - `parent`: ID trang cha (`?parent=10`)
-- `menu_order`: Thu tu menu (`?orderby=menu_order`)
+- `menu_order`: Thứ tự menu (`?orderby=menu_order`)
 
 ### 2.3. /wp/v2/users
 
-Quan ly nguoi dung.
+Quản lý người dùng.
 
 ```
-GET    /wp/v2/users          - Lay danh sach users
-GET    /wp/v2/users/<id>     - Lay 1 user
-GET    /wp/v2/users/me       - Lay user hien tai (can xac thuc)
-POST   /wp/v2/users          - Tao user moi
-PUT    /wp/v2/users/<id>     - Cap nhat user
-DELETE /wp/v2/users/<id>     - Xoa user
+GET    /wp/v2/users          - Lấy danh sách users
+GET    /wp/v2/users/<id>     - Lấy 1 user
+GET    /wp/v2/users/me       - Lấy user hiện tại (cần xác thực)
+POST   /wp/v2/users          - Tạo user mới
+PUT    /wp/v2/users/<id>     - Cập nhật user
+DELETE /wp/v2/users/<id>     - Xóa user
 ```
 
-Tham so:
-- `roles`: Loc theo role (`?roles=author,editor`)
+Tham số:
+- `roles`: Lọc theo role (`?roles=author,editor`)
 - `slug`: Theo user slug
-- `search`: Tim kiem
+- `search`: Tìm kiếm
 
 ### 2.4. /wp/v2/categories
 
-Quan ly categories.
+Quản lý categories.
 
 ```
-GET    /wp/v2/categories          - Lay danh sach
-GET    /wp/v2/categories/<id>     - Lay 1 category
-POST   /wp/v2/categories          - Tao moi
-PUT    /wp/v2/categories/<id>     - Cap nhat
-DELETE /wp/v2/categories/<id>     - Xoa
+GET    /wp/v2/categories          - Lấy danh sách
+GET    /wp/v2/categories/<id>     - Lấy 1 category
+POST   /wp/v2/categories          - Tạo mới
+PUT    /wp/v2/categories/<id>     - Cập nhật
+DELETE /wp/v2/categories/<id>     - Xóa
 ```
 
-Tham so:
+Tham số:
 - `parent`: Category cha
-- `post`: Lay categories cua 1 post
-- `hide_empty`: An categories khong co bai (`?hide_empty=true`)
+- `post`: Lấy categories của 1 post
+- `hide_empty`: Ẩn categories không có bài (`?hide_empty=true`)
 
 ### 2.5. /wp/v2/tags
 
-Quan ly tags.
+Quản lý tags.
 
 ```
-GET    /wp/v2/tags          - Lay danh sach
-GET    /wp/v2/tags/<id>     - Lay 1 tag
-POST   /wp/v2/tags          - Tao moi
-PUT    /wp/v2/tags/<id>     - Cap nhat
-DELETE /wp/v2/tags/<id>     - Xoa
+GET    /wp/v2/tags          - Lấy danh sách
+GET    /wp/v2/tags/<id>     - Lấy 1 tag
+POST   /wp/v2/tags          - Tạo mới
+PUT    /wp/v2/tags/<id>     - Cập nhật
+DELETE /wp/v2/tags/<id>     - Xóa
 ```
 
 ### 2.6. /wp/v2/comments
 
-Quan ly binh luan.
+Quản lý bình luận.
 
 ```
-GET    /wp/v2/comments          - Lay danh sach
-GET    /wp/v2/comments/<id>     - Lay 1 comment
-POST   /wp/v2/comments          - Tao moi
-PUT    /wp/v2/comments/<id>     - Cap nhat
-DELETE /wp/v2/comments/<id>     - Xoa
+GET    /wp/v2/comments          - Lấy danh sách
+GET    /wp/v2/comments/<id>     - Lấy 1 comment
+POST   /wp/v2/comments          - Tạo mới
+PUT    /wp/v2/comments/<id>     - Cập nhật
+DELETE /wp/v2/comments/<id>     - Xóa
 ```
 
-Tham so:
-- `post`: Comments cua 1 post (`?post=42`)
+Tham số:
+- `post`: Comments của 1 post (`?post=42`)
 - `parent`: Comment cha (reply)
-- `author_email`: Theo email tac gia
-- `status`: Trang thai (`approve`, `hold`, `spam`, `trash`)
+- `author_email`: Theo email tác giả
+- `status`: Trạng thái (`approve`, `hold`, `spam`, `trash`)
 
 ### 2.7. /wp/v2/media
 
-Quan ly media (attachments).
+Quản lý media (attachments).
 
 ```
-GET    /wp/v2/media          - Lay danh sach
-GET    /wp/v2/media/<id>     - Lay 1 media
+GET    /wp/v2/media          - Lấy danh sách
+GET    /wp/v2/media/<id>     - Lấy 1 media
 POST   /wp/v2/media          - Upload file
-PUT    /wp/v2/media/<id>     - Cap nhat thong tin
-DELETE /wp/v2/media/<id>     - Xoa
+PUT    /wp/v2/media/<id>     - Cập nhật thông tin
+DELETE /wp/v2/media/<id>     - Xóa
 ```
 
-Tham so:
-- `media_type`: Loai media (`image`, `video`, `audio`, `application`)
+Tham số:
+- `media_type`: Loại media (`image`, `video`, `audio`, `application`)
 - `mime_type`: MIME type (`image/jpeg`)
 
-### 2.8. Cac endpoint khac
+### 2.8. Các endpoint khác
 
 ```
 /wp/v2/types               - Post types
 /wp/v2/statuses            - Post statuses
 /wp/v2/taxonomies          - Taxonomies
-/wp/v2/search              - Tim kiem toan cuc
-/wp/v2/settings            - Cai dat site (can admin)
+/wp/v2/search              - Tìm kiếm toàn cục
+/wp/v2/settings            - Cài đặt site (cần admin)
 /wp/v2/themes              - Themes
-/wp/v2/plugins             - Plugins (can admin)
+/wp/v2/plugins             - Plugins (cần admin)
 /wp/v2/block-types         - Block types (Gutenberg)
 /wp/v2/blocks              - Reusable blocks
 ```
 
 ---
 
-## 3. Su dung REST API - GET, POST, PUT, DELETE
+## 3. Sử dụng REST API - GET, POST, PUT, DELETE
 
-### 3.1. GET - Lay du lieu voi cURL
+### 3.1. GET - Lấy dữ liệu với cURL
 
 ```bash
-# Lay 5 bai viet moi nhat
+# Lấy 5 bài viết mới nhất
 curl "https://example.com/wp-json/wp/v2/posts?per_page=5&orderby=date&order=desc"
 
-# Lay bai viet theo ID
+# Lấy bài viết theo ID
 curl "https://example.com/wp-json/wp/v2/posts/42"
 
-# Tim kiem voi nhieu tham so
+# Tìm kiếm với nhiều tham số
 curl "https://example.com/wp-json/wp/v2/posts?search=wordpress&categories=5&per_page=10&_fields=id,title,link"
 
-# Lay voi embedded data (author, featured media, terms)
+# Lấy với embedded data (author, featured media, terms)
 curl "https://example.com/wp-json/wp/v2/posts?_embed&per_page=5"
 
-# Lay chi mot so truong
+# Lấy chỉ một số trường
 curl "https://example.com/wp-json/wp/v2/posts?_fields=id,title.rendered,link,date"
 
-# Lay headers de biet tong so va so trang
+# Lấy headers để biết tổng số và số trang
 curl -I "https://example.com/wp-json/wp/v2/posts?per_page=10"
 # Response headers:
-# X-WP-Total: 156        (tong so bai)
-# X-WP-TotalPages: 16    (tong so trang)
+# X-WP-Total: 156        (tổng số bài)
+# X-WP-TotalPages: 16    (tổng số trang)
 ```
 
-### 3.2. GET - Lay du lieu voi JavaScript fetch
+### 3.2. GET - Lấy dữ liệu với JavaScript fetch
 
 ```javascript
-// Lay danh sach bai viet
+// Lấy danh sách bài viết
 async function getPosts(page = 1, perPage = 10) {
     const url = new URL('https://example.com/wp-json/wp/v2/posts');
     url.searchParams.append('page', page);
@@ -283,20 +283,20 @@ async function getPosts(page = 1, perPage = 10) {
             totalPages: parseInt(totalPages),
         };
     } catch (error) {
-        console.error('Loi khi lay bai viet:', error);
+        console.error('Lỗi khi lấy bài viết:', error);
         throw error;
     }
 }
 
-// Su dung
+// Sử dụng
 getPosts(1, 5).then(result => {
-    console.log(`Tong: ${result.total} bai viet`);
+    console.log(`Tổng: ${result.total} bài viết`);
     result.posts.forEach(post => {
         console.log(`- ${post.title.rendered}`);
     });
 });
 
-// Lay 1 bai viet
+// Lấy 1 bài viết
 async function getPost(id) {
     const response = await fetch(
         `https://example.com/wp-json/wp/v2/posts/${id}?_embed`
@@ -307,7 +307,7 @@ async function getPost(id) {
     return response.json();
 }
 
-// Tim kiem
+// Tìm kiếm
 async function searchPosts(keyword) {
     const response = await fetch(
         `https://example.com/wp-json/wp/v2/posts?search=${encodeURIComponent(keyword)}&per_page=20`
@@ -316,31 +316,31 @@ async function searchPosts(keyword) {
 }
 ```
 
-### 3.3. POST - Tao du lieu voi cURL
+### 3.3. POST - Tạo dữ liệu với cURL
 
 ```bash
-# Tao bai viet moi (can xac thuc)
+# Tạo bài viết mới (cần xác thực)
 curl -X POST "https://example.com/wp-json/wp/v2/posts" \
     -H "Content-Type: application/json" \
     -H "Authorization: Basic YWRtaW46YXBwbGljYXRpb24tcGFzc3dvcmQ=" \
     -d '{
-        "title": "Bai viet moi tu API",
-        "content": "Noi dung bai viet duoc tao tu REST API.",
+        "title": "Bài viết mới từ API",
+        "content": "Nội dung bài viết được tạo từ REST API.",
         "status": "publish",
         "categories": [5, 10],
         "tags": [3, 7],
         "meta": {
-            "custom_field": "gia tri"
+            "custom_field": "giá trị"
         }
     }'
 
-# Tao bai viet draft
+# Tạo bài viết draft
 curl -X POST "https://example.com/wp-json/wp/v2/posts" \
     -H "Content-Type: application/json" \
     -H "Authorization: Basic YWRtaW46YXBwbGljYXRpb24tcGFzc3dvcmQ=" \
     -d '{
-        "title": "Bai nhap",
-        "content": "Dang soan...",
+        "title": "Bài nháp",
+        "content": "Đang soạn...",
         "status": "draft"
     }'
 
@@ -351,28 +351,28 @@ curl -X POST "https://example.com/wp-json/wp/v2/media" \
     -H "Content-Type: image/jpeg" \
     --data-binary @/path/to/hinh-anh.jpg
 
-# Tao comment
+# Tạo comment
 curl -X POST "https://example.com/wp-json/wp/v2/comments" \
     -H "Content-Type: application/json" \
     -d '{
         "post": 42,
-        "author_name": "Nguyen Van A",
+        "author_name": "Nguyễn Văn A",
         "author_email": "a@example.com",
-        "content": "Binh luan tu API"
+        "content": "Bình luận từ API"
     }'
 ```
 
-### 3.4. POST - Tao du lieu voi JavaScript
+### 3.4. POST - Tạo dữ liệu với JavaScript
 
 ```javascript
-// Tao bai viet moi
+// Tạo bài viết mới
 async function createPost(data) {
     const response = await fetch('https://example.com/wp-json/wp/v2/posts', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-WP-Nonce': wpApiSettings.nonce,  // Neu dung cookie auth
-            // HOAC: 'Authorization': 'Basic ' + btoa('user:app-password')
+            'X-WP-Nonce': wpApiSettings.nonce,  // Nếu dùng cookie auth
+            // HOẶC: 'Authorization': 'Basic ' + btoa('user:app-password')
         },
         body: JSON.stringify({
             title: data.title,
@@ -391,14 +391,14 @@ async function createPost(data) {
     return response.json();
 }
 
-// Su dung
+// Sử dụng
 createPost({
-    title: 'Bai viet tu JavaScript',
-    content: '<p>Noi dung bai viet.</p>',
+    title: 'Bài viết từ JavaScript',
+    content: '<p>Nội dung bài viết.</p>',
     status: 'publish',
     categories: [5],
 }).then(post => {
-    console.log('Da tao bai viet ID:', post.id);
+    console.log('Đã tạo bài viết ID:', post.id);
 });
 
 // Upload media
@@ -406,44 +406,44 @@ async function uploadMedia(file) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('title', file.name);
-    formData.append('alt_text', 'Mo ta hinh anh');
+    formData.append('alt_text', 'Mô tả hình ảnh');
 
     const response = await fetch('https://example.com/wp-json/wp/v2/media', {
         method: 'POST',
         headers: {
             'X-WP-Nonce': wpApiSettings.nonce,
         },
-        body: formData,  // KHONG dat Content-Type, browser tu them voi boundary
+        body: formData,  // KHÔNG đặt Content-Type, browser tự thêm với boundary
     });
 
     return response.json();
 }
 ```
 
-### 3.5. PUT/PATCH - Cap nhat du lieu
+### 3.5. PUT/PATCH - Cập nhật dữ liệu
 
 ```bash
-# Cap nhat toan bo (PUT)
+# Cập nhật toàn bộ (PUT)
 curl -X PUT "https://example.com/wp-json/wp/v2/posts/42" \
     -H "Content-Type: application/json" \
     -H "Authorization: Basic YWRtaW46YXBwbGljYXRpb24tcGFzc3dvcmQ=" \
     -d '{
-        "title": "Tieu de da sua",
-        "content": "Noi dung da cap nhat.",
+        "title": "Tiêu đề đã sửa",
+        "content": "Nội dung đã cập nhật.",
         "status": "publish"
     }'
 
-# Cap nhat mot phan (PATCH) - chi gui truong can sua
+# Cập nhật một phần (PATCH) - chỉ gửi trường cần sửa
 curl -X PATCH "https://example.com/wp-json/wp/v2/posts/42" \
     -H "Content-Type: application/json" \
     -H "Authorization: Basic YWRtaW46YXBwbGljYXRpb24tcGFzc3dvcmQ=" \
     -d '{
-        "title": "Chi sua tieu de thoi"
+        "title": "Chỉ sửa tiêu đề thôi"
     }'
 ```
 
 ```javascript
-// Cap nhat bai viet
+// Cập nhật bài viết
 async function updatePost(id, data) {
     const response = await fetch(`https://example.com/wp-json/wp/v2/posts/${id}`, {
         method: 'PUT',
@@ -462,26 +462,26 @@ async function updatePost(id, data) {
     return response.json();
 }
 
-// Cap nhat chi tieu de
-updatePost(42, { title: 'Tieu de moi' }).then(post => {
-    console.log('Da cap nhat:', post.title.rendered);
+// Cập nhật chỉ tiêu đề
+updatePost(42, { title: 'Tiêu đề mới' }).then(post => {
+    console.log('Đã cập nhật:', post.title.rendered);
 });
 ```
 
-### 3.6. DELETE - Xoa du lieu
+### 3.6. DELETE - Xóa dữ liệu
 
 ```bash
-# Xoa bai viet (chuyen vao trash)
+# Xóa bài viết (chuyển vào trash)
 curl -X DELETE "https://example.com/wp-json/wp/v2/posts/42" \
     -H "Authorization: Basic YWRtaW46YXBwbGljYXRpb24tcGFzc3dvcmQ="
 
-# Xoa vinh vien (bo qua trash)
+# Xóa vĩnh viễn (bỏ qua trash)
 curl -X DELETE "https://example.com/wp-json/wp/v2/posts/42?force=true" \
     -H "Authorization: Basic YWRtaW46YXBwbGljYXRpb24tcGFzc3dvcmQ="
 ```
 
 ```javascript
-// Xoa bai viet
+// Xóa bài viết
 async function deletePost(id, force = false) {
     const url = `https://example.com/wp-json/wp/v2/posts/${id}${force ? '?force=true' : ''}`;
 
@@ -500,18 +500,18 @@ async function deletePost(id, force = false) {
     return response.json();
 }
 
-// Chuyen vao trash
-deletePost(42).then(() => console.log('Da chuyen vao trash'));
+// Chuyển vào trash
+deletePost(42).then(() => console.log('Đã chuyển vào trash'));
 
-// Xoa vinh vien
-deletePost(42, true).then(() => console.log('Da xoa vinh vien'));
+// Xóa vĩnh viễn
+deletePost(42, true).then(() => console.log('Đã xóa vĩnh viễn'));
 ```
 
-### 3.7. Su dung REST API trong PHP (noi bo)
+### 3.7. Sử dụng REST API trong PHP (nội bộ)
 
 ```php
 <?php
-// Goi REST API noi bo (internal request) - khong can HTTP request
+// Gọi REST API nội bộ (internal request) - không cần HTTP request
 $request = new WP_REST_Request( 'GET', '/wp/v2/posts' );
 $request->set_query_params( array(
     'per_page' => 5,
@@ -525,27 +525,27 @@ foreach ( $data as $post ) {
     echo $post['title']['rendered'] . "\n";
 }
 
-// Tao bai viet qua internal request
+// Tạo bài viết qua internal request
 $request = new WP_REST_Request( 'POST', '/wp/v2/posts' );
 $request->set_body_params( array(
-    'title'   => 'Bai viet noi bo',
-    'content' => 'Noi dung...',
+    'title'   => 'Bài viết nội bộ',
+    'content' => 'Nội dung...',
     'status'  => 'publish',
 ) );
-// Set user hien tai de co quyen
+// Set user hiện tại để có quyền
 $request->set_param( 'author', get_current_user_id() );
 
 $response = rest_do_request( $request );
 
 if ( $response->is_error() ) {
     $error = $response->as_error();
-    echo 'Loi: ' . $error->get_error_message();
+    echo 'Lỗi: ' . $error->get_error_message();
 } else {
     $post = $response->get_data();
-    echo 'Da tao post ID: ' . $post['id'];
+    echo 'Đã tạo post ID: ' . $post['id'];
 }
 
-// Su dung wp_remote_get/post cho external request
+// Sử dụng wp_remote_get/post cho external request
 $response = wp_remote_get( rest_url( 'wp/v2/posts?per_page=5' ), array(
     'headers' => array(
         'Authorization' => 'Basic ' . base64_encode( 'user:app-password' ),
@@ -564,11 +564,11 @@ if ( ! is_wp_error( $response ) ) {
 
 ### 4.1. Cookie Authentication
 
-Danh cho cac request tu trong WordPress (cung domain). Su dung nonce de xac thuc.
+Dành cho các request từ trong WordPress (cùng domain). Sử dụng nonce để xác thực.
 
 ```php
 <?php
-// Dang ky script voi nonce
+// Đăng ký script với nonce
 add_action( 'wp_enqueue_scripts', 'my_enqueue_api_scripts' );
 function my_enqueue_api_scripts() {
     wp_enqueue_script(
@@ -579,7 +579,7 @@ function my_enqueue_api_scripts() {
         true
     );
 
-    // Truyen nonce va URL sang JavaScript
+    // Truyền nonce và URL sang JavaScript
     wp_localize_script( 'my-api-script', 'wpApiSettings', array(
         'root'  => esc_url_raw( rest_url() ),
         'nonce' => wp_create_nonce( 'wp_rest' ),
@@ -588,30 +588,30 @@ function my_enqueue_api_scripts() {
 ```
 
 ```javascript
-// Su dung nonce trong JavaScript
+// Sử dụng nonce trong JavaScript
 fetch(wpApiSettings.root + 'wp/v2/posts', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
-        'X-WP-Nonce': wpApiSettings.nonce,  // Gui nonce trong header
+        'X-WP-Nonce': wpApiSettings.nonce,  // Gửi nonce trong header
     },
     body: JSON.stringify({
-        title: 'Bai viet moi',
+        title: 'Bài viết mới',
         status: 'draft',
     }),
 });
 
-// Hoac gui nonce nhu query parameter
+// Hoặc gửi nonce như query parameter
 fetch(wpApiSettings.root + 'wp/v2/posts?_wpnonce=' + wpApiSettings.nonce);
 ```
 
 ### 4.2. Application Passwords
 
-Co san tu WordPress 5.6. Tao password rieng cho tung ung dung, khong dung password chinh.
+Có sẵn từ WordPress 5.6. Tạo password riêng cho từng ứng dụng, không dùng password chính.
 
 ```php
 <?php
-// Tao application password qua code
+// Tạo application password qua code
 $user_id = 1;
 $app_name = 'My Mobile App';
 
@@ -621,25 +621,25 @@ $result = WP_Application_Passwords::create_new_application_password(
 );
 
 if ( ! is_wp_error( $result ) ) {
-    $password = $result[0]; // Mat khau moi (chi hien thi 1 lan)
-    $item     = $result[1]; // Thong tin application password
+    $password = $result[0]; // Mật khẩu mới (chỉ hiển thị 1 lần)
+    $item     = $result[1]; // Thông tin application password
 }
 ```
 
 ```bash
-# Su dung Application Password voi cURL
-# Format: username:application-password (co dau cach, vd: "xxxx xxxx xxxx xxxx")
+# Sử dụng Application Password với cURL
+# Format: username:application-password (có dấu cách, vd: "xxxx xxxx xxxx xxxx")
 curl -X GET "https://example.com/wp-json/wp/v2/posts?status=draft" \
     -u "admin:XXXX XXXX XXXX XXXX XXXX XXXX"
 
-# Hoac su dung Basic Auth header
+# Hoặc sử dụng Basic Auth header
 # Base64 encode "admin:XXXX XXXX XXXX XXXX XXXX XXXX"
 curl -X GET "https://example.com/wp-json/wp/v2/posts?status=draft" \
     -H "Authorization: Basic YWRtaW46WFhYWCBYWFhYIFhYWFggWFhYWCBYWFhYIFhYWFg="
 ```
 
 ```javascript
-// Su dung Application Password trong JavaScript
+// Sử dụng Application Password trong JavaScript
 const username = 'admin';
 const appPassword = 'XXXX XXXX XXXX XXXX XXXX XXXX';
 const credentials = btoa(`${username}:${appPassword}`);
@@ -653,17 +653,17 @@ fetch('https://example.com/wp-json/wp/v2/posts', {
 
 ### 4.3. JWT (JSON Web Token)
 
-Can plugin ho tro (vi du: JWT Authentication for WP REST API).
+Cần plugin hỗ trợ (ví dụ: JWT Authentication for WP REST API).
 
 ```php
 <?php
-// Cau hinh trong wp-config.php
+// Cấu hình trong wp-config.php
 define( 'JWT_AUTH_SECRET_KEY', 'your-secret-key-here' );
 define( 'JWT_AUTH_CORS_ENABLE', true );
 ```
 
 ```bash
-# Buoc 1: Lay token
+# Bước 1: Lấy token
 curl -X POST "https://example.com/wp-json/jwt-auth/v1/token" \
     -H "Content-Type: application/json" \
     -d '{
@@ -672,7 +672,7 @@ curl -X POST "https://example.com/wp-json/jwt-auth/v1/token" \
     }'
 # Response: { "token": "eyJ0eXAi...", "user_email": "...", ... }
 
-# Buoc 2: Su dung token
+# Bước 2: Sử dụng token
 curl -X GET "https://example.com/wp-json/wp/v2/posts?status=draft" \
     -H "Authorization: Bearer eyJ0eXAi..."
 
@@ -697,7 +697,7 @@ class WPApiClient {
         });
 
         if (!response.ok) {
-            throw new Error('Dang nhap that bai');
+            throw new Error('Đăng nhập thất bại');
         }
 
         const data = await response.json();
@@ -741,7 +741,7 @@ class WPApiClient {
     }
 }
 
-// Su dung
+// Sử dụng
 const api = new WPApiClient('https://example.com');
 await api.login('admin', 'password');
 const posts = await api.getPosts({ per_page: 5 });
@@ -751,22 +751,22 @@ const posts = await api.getPosts({ per_page: 5 });
 
 ```php
 <?php
-// Them authentication method rieng
+// Thêm authentication method riêng
 add_filter( 'rest_authentication_errors', 'my_custom_rest_authentication' );
 function my_custom_rest_authentication( $result ) {
-    // Neu da co ket qua tu authentication khac, khong lam gi
+    // Nếu đã có kết quả từ authentication khác, không làm gì
     if ( ! is_null( $result ) ) {
         return $result;
     }
 
-    // Kiem tra API key trong header
+    // Kiểm tra API key trong header
     $api_key = isset( $_SERVER['HTTP_X_API_KEY'] ) ? $_SERVER['HTTP_X_API_KEY'] : '';
 
     if ( empty( $api_key ) ) {
-        return $result; // Khong co API key, de authentication khac xu ly
+        return $result; // Không có API key, để authentication khác xử lý
     }
 
-    // Xac thuc API key
+    // Xác thực API key
     $user_id = my_validate_api_key( $api_key );
     if ( $user_id ) {
         wp_set_current_user( $user_id );
@@ -775,7 +775,7 @@ function my_custom_rest_authentication( $result ) {
 
     return new WP_Error(
         'rest_invalid_api_key',
-        'API key khong hop le.',
+        'API key không hợp lệ.',
         array( 'status' => 401 )
     );
 }
@@ -794,9 +794,9 @@ function my_validate_api_key( $api_key ) {
 
 ---
 
-## 5. Tao Custom Endpoints - register_rest_route()
+## 5. Tạo Custom Endpoints - register_rest_route()
 
-### 5.1. Endpoint don gian
+### 5.1. Endpoint đơn giản
 
 ```php
 <?php
@@ -808,19 +808,19 @@ function my_register_custom_routes() {
     register_rest_route( 'myplugin/v1', '/hello', array(
         'methods'             => WP_REST_Server::READABLE,  // = 'GET'
         'callback'            => 'my_hello_callback',
-        'permission_callback' => '__return_true',  // Cho phep tat ca truy cap
+        'permission_callback' => '__return_true',  // Cho phép tất cả truy cập
     ) );
 }
 
 function my_hello_callback( WP_REST_Request $request ) {
     return new WP_REST_Response( array(
-        'message' => 'Xin chao tu REST API!',
+        'message' => 'Xin chào từ REST API!',
         'time'    => current_time( 'mysql' ),
     ), 200 );
 }
 ```
 
-### 5.2. Endpoint voi tham so
+### 5.2. Endpoint với tham số
 
 ```php
 <?php
@@ -837,7 +837,7 @@ function my_register_routes_with_params() {
             'category' => array(
                 'required'          => false,
                 'type'              => 'string',
-                'description'       => 'Slug danh muc san pham',
+                'description'       => 'Slug danh mục sản phẩm',
                 'sanitize_callback' => 'sanitize_text_field',
             ),
             'page' => array(
@@ -867,7 +867,7 @@ function my_register_routes_with_params() {
             'id' => array(
                 'required'          => true,
                 'type'              => 'integer',
-                'description'       => 'ID san pham',
+                'description'       => 'ID sản phẩm',
                 'validate_callback' => function( $value ) {
                     return is_numeric( $value ) && $value > 0;
                 },
@@ -915,7 +915,7 @@ function my_get_products( WP_REST_Request $request ) {
 
     $response = new WP_REST_Response( $products, 200 );
 
-    // Them headers pagination
+    // Thêm headers pagination
     $response->header( 'X-WP-Total', $query->found_posts );
     $response->header( 'X-WP-TotalPages', $query->max_num_pages );
 
@@ -929,7 +929,7 @@ function my_get_single_product( WP_REST_Request $request ) {
     if ( ! $post || 'product' !== $post->post_type ) {
         return new WP_Error(
             'product_not_found',
-            'Khong tim thay san pham.',
+            'Không tìm thấy sản phẩm.',
             array( 'status' => 404 )
         );
     }
@@ -948,7 +948,7 @@ function my_get_single_product( WP_REST_Request $request ) {
 }
 ```
 
-### 5.3. Endpoint voi nhieu methods
+### 5.3. Endpoint với nhiều methods
 
 ```php
 <?php
@@ -956,7 +956,7 @@ add_action( 'rest_api_init', 'my_register_crud_routes' );
 
 function my_register_crud_routes() {
 
-    // Collection route: GET (list) va POST (create)
+    // Collection route: GET (list) và POST (create)
     register_rest_route( 'myplugin/v1', '/items', array(
         array(
             'methods'             => WP_REST_Server::READABLE,   // GET
@@ -1025,7 +1025,7 @@ WP_REST_Server::ALLMETHODS  = 'GET, POST, PUT, PATCH, DELETE';
 
 ## 6. Permission Callbacks
 
-### 6.1. Cac loai permission callback
+### 6.1. Các loại permission callback
 
 ```php
 <?php
@@ -1033,14 +1033,14 @@ add_action( 'rest_api_init', 'my_register_permission_routes' );
 
 function my_register_permission_routes() {
 
-    // 1. Cho phep tat ca (public)
+    // 1. Cho phép tất cả (public)
     register_rest_route( 'myplugin/v1', '/public-data', array(
         'methods'             => 'GET',
         'callback'            => 'my_public_callback',
         'permission_callback' => '__return_true',
     ) );
 
-    // 2. Yeu cau dang nhap
+    // 2. Yêu cầu đăng nhập
     register_rest_route( 'myplugin/v1', '/private-data', array(
         'methods'             => 'GET',
         'callback'            => 'my_private_callback',
@@ -1049,7 +1049,7 @@ function my_register_permission_routes() {
         },
     ) );
 
-    // 3. Yeu cau capability cu the
+    // 3. Yêu cầu capability cụ thể
     register_rest_route( 'myplugin/v1', '/admin-data', array(
         'methods'             => 'GET',
         'callback'            => 'my_admin_callback',
@@ -1058,7 +1058,7 @@ function my_register_permission_routes() {
         },
     ) );
 
-    // 4. Kiem tra quyen tren doi tuong cu the
+    // 4. Kiểm tra quyền trên đối tượng cụ thể
     register_rest_route( 'myplugin/v1', '/posts/(?P<id>\d+)', array(
         'methods'             => 'PUT',
         'callback'            => 'my_update_post_callback',
@@ -1068,7 +1068,7 @@ function my_register_permission_routes() {
         },
     ) );
 
-    // 5. Kiem tra nhieu dieu kien
+    // 5. Kiểm tra nhiều điều kiện
     register_rest_route( 'myplugin/v1', '/restricted', array(
         'methods'             => 'POST',
         'callback'            => 'my_restricted_callback',
@@ -1077,31 +1077,31 @@ function my_register_permission_routes() {
 }
 
 function my_check_multiple_permissions( WP_REST_Request $request ) {
-    // Phai dang nhap
+    // Phải đăng nhập
     if ( ! is_user_logged_in() ) {
         return new WP_Error(
             'rest_not_logged_in',
-            'Ban can dang nhap de thuc hien thao tac nay.',
+            'Bạn cần đăng nhập để thực hiện thao tác này.',
             array( 'status' => 401 )
         );
     }
 
-    // Phai co quyen edit_posts
+    // Phải có quyền edit_posts
     if ( ! current_user_can( 'edit_posts' ) ) {
         return new WP_Error(
             'rest_forbidden',
-            'Ban khong co quyen thuc hien thao tac nay.',
+            'Bạn không có quyền thực hiện thao tác này.',
             array( 'status' => 403 )
         );
     }
 
-    // Kiem tra rate limiting (vi du)
+    // Kiểm tra rate limiting (ví dụ)
     $user_id    = get_current_user_id();
     $last_action = get_user_meta( $user_id, '_last_api_action', true );
     if ( $last_action && ( time() - $last_action ) < 60 ) {
         return new WP_Error(
             'rest_rate_limited',
-            'Vui long doi 60 giay giua cac request.',
+            'Vui lòng đợi 60 giây giữa các request.',
             array( 'status' => 429 )
         );
     }
@@ -1114,7 +1114,7 @@ function my_check_multiple_permissions( WP_REST_Request $request ) {
 
 ```php
 <?php
-// Chi cho phep user chinh sua du lieu cua chinh minh
+// Chỉ cho phép user chỉnh sửa dữ liệu của chính mình
 register_rest_route( 'myplugin/v1', '/profile', array(
     array(
         'methods'             => 'GET',
@@ -1130,11 +1130,11 @@ register_rest_route( 'myplugin/v1', '/profile', array(
             if ( ! is_user_logged_in() ) {
                 return false;
             }
-            // Admin co the sua bat ky ai
+            // Admin có thể sửa bất kỳ ai
             if ( current_user_can( 'manage_options' ) ) {
                 return true;
             }
-            // User thuong chi sua cua minh
+            // User thường chỉ sửa của mình
             $target_user_id = $request->get_param( 'user_id' );
             return get_current_user_id() === intval( $target_user_id );
         },
@@ -1144,9 +1144,9 @@ register_rest_route( 'myplugin/v1', '/profile', array(
 
 ---
 
-## 7. Schema va Validation
+## 7. Schema và Validation
 
-### 7.1. Dinh nghia Schema
+### 7.1. Định nghĩa Schema
 
 ```php
 <?php
@@ -1171,44 +1171,44 @@ function my_get_contact_schema() {
         'type'       => 'object',
         'properties' => array(
             'id' => array(
-                'description' => 'ID duy nhat cua lien he.',
+                'description' => 'ID duy nhất của liên hệ.',
                 'type'        => 'integer',
                 'context'     => array( 'view', 'edit' ),
                 'readonly'    => true,
             ),
             'name' => array(
-                'description' => 'Ho ten lien he.',
+                'description' => 'Họ tên liên hệ.',
                 'type'        => 'string',
                 'context'     => array( 'view', 'edit' ),
                 'required'    => true,
             ),
             'email' => array(
-                'description' => 'Dia chi email.',
+                'description' => 'Địa chỉ email.',
                 'type'        => 'string',
                 'format'      => 'email',
                 'context'     => array( 'view', 'edit' ),
                 'required'    => true,
             ),
             'phone' => array(
-                'description' => 'So dien thoai.',
+                'description' => 'Số điện thoại.',
                 'type'        => 'string',
                 'context'     => array( 'view', 'edit' ),
             ),
             'message' => array(
-                'description' => 'Noi dung lien he.',
+                'description' => 'Nội dung liên hệ.',
                 'type'        => 'string',
                 'context'     => array( 'view', 'edit' ),
                 'required'    => true,
             ),
             'status' => array(
-                'description' => 'Trang thai lien he.',
+                'description' => 'Trạng thái liên hệ.',
                 'type'        => 'string',
                 'enum'        => array( 'new', 'read', 'replied', 'closed' ),
                 'default'     => 'new',
                 'context'     => array( 'view', 'edit' ),
             ),
             'created_at' => array(
-                'description' => 'Ngay tao.',
+                'description' => 'Ngày tạo.',
                 'type'        => 'string',
                 'format'      => 'date-time',
                 'context'     => array( 'view' ),
@@ -1219,7 +1219,7 @@ function my_get_contact_schema() {
 }
 ```
 
-### 7.2. Validate va Sanitize Callbacks
+### 7.2. Validate và Sanitize Callbacks
 
 ```php
 <?php
@@ -1228,19 +1228,19 @@ function my_get_contact_args() {
         'name' => array(
             'required'          => true,
             'type'              => 'string',
-            'description'       => 'Ho ten lien he',
+            'description'       => 'Họ tên liên hệ',
             'validate_callback' => function( $value, $request, $param ) {
                 if ( strlen( $value ) < 2 ) {
                     return new WP_Error(
                         'rest_invalid_param',
-                        'Ten phai co it nhat 2 ky tu.',
+                        'Tên phải có ít nhất 2 ký tự.',
                         array( 'status' => 400 )
                     );
                 }
                 if ( strlen( $value ) > 100 ) {
                     return new WP_Error(
                         'rest_invalid_param',
-                        'Ten khong duoc qua 100 ky tu.',
+                        'Tên không được quá 100 ký tự.',
                         array( 'status' => 400 )
                     );
                 }
@@ -1252,12 +1252,12 @@ function my_get_contact_args() {
             'required'          => true,
             'type'              => 'string',
             'format'            => 'email',
-            'description'       => 'Dia chi email',
+            'description'       => 'Địa chỉ email',
             'validate_callback' => function( $value ) {
                 if ( ! is_email( $value ) ) {
                     return new WP_Error(
                         'rest_invalid_email',
-                        'Dia chi email khong hop le.',
+                        'Địa chỉ email không hợp lệ.',
                         array( 'status' => 400 )
                     );
                 }
@@ -1268,12 +1268,12 @@ function my_get_contact_args() {
         'phone' => array(
             'required'          => false,
             'type'              => 'string',
-            'description'       => 'So dien thoai',
+            'description'       => 'Số điện thoại',
             'validate_callback' => function( $value ) {
                 if ( ! empty( $value ) && ! preg_match( '/^[0-9\+\-\s\(\)]{8,20}$/', $value ) ) {
                     return new WP_Error(
                         'rest_invalid_phone',
-                        'So dien thoai khong hop le.',
+                        'Số điện thoại không hợp lệ.',
                         array( 'status' => 400 )
                     );
                 }
@@ -1284,12 +1284,12 @@ function my_get_contact_args() {
         'message' => array(
             'required'          => true,
             'type'              => 'string',
-            'description'       => 'Noi dung lien he',
+            'description'       => 'Nội dung liên hệ',
             'validate_callback' => function( $value ) {
                 if ( strlen( $value ) < 10 ) {
                     return new WP_Error(
                         'rest_invalid_param',
-                        'Noi dung phai co it nhat 10 ky tu.',
+                        'Nội dung phải có ít nhất 10 ký tự.',
                         array( 'status' => 400 )
                     );
                 }
@@ -1302,7 +1302,7 @@ function my_get_contact_args() {
             'type'              => 'string',
             'default'           => 'new',
             'enum'              => array( 'new', 'read', 'replied', 'closed' ),
-            'description'       => 'Trang thai lien he',
+            'description'       => 'Trạng thái liên hệ',
             'sanitize_callback' => 'sanitize_text_field',
         ),
     );
@@ -1327,7 +1327,7 @@ function my_create_contact( WP_REST_Request $request ) {
     if ( false === $result ) {
         return new WP_Error(
             'rest_db_error',
-            'Khong the luu lien he.',
+            'Không thể lưu liên hệ.',
             array( 'status' => 500 )
         );
     }
@@ -1343,7 +1343,7 @@ function my_create_contact( WP_REST_Request $request ) {
 }
 ```
 
-### 7.3. register_rest_field() - Them truong vao endpoint co san
+### 7.3. register_rest_field() - Thêm trường vào endpoint có sẵn
 
 ```php
 <?php
@@ -1351,7 +1351,7 @@ add_action( 'rest_api_init', 'my_register_custom_fields' );
 
 function my_register_custom_fields() {
 
-    // Them truong 'view_count' vao endpoint /wp/v2/posts
+    // Thêm trường 'view_count' vào endpoint /wp/v2/posts
     register_rest_field( 'post', 'view_count', array(
         'get_callback'    => function( $post_arr ) {
             return (int) get_post_meta( $post_arr['id'], '_view_count', true );
@@ -1360,13 +1360,13 @@ function my_register_custom_fields() {
             return update_post_meta( $post->ID, '_view_count', absint( $value ) );
         },
         'schema'          => array(
-            'description' => 'So luot xem bai viet.',
+            'description' => 'Số lượt xem bài viết.',
             'type'        => 'integer',
             'context'     => array( 'view', 'edit' ),
         ),
     ) );
 
-    // Them truong 'featured_image_url' vao endpoint posts
+    // Thêm trường 'featured_image_url' vào endpoint posts
     register_rest_field( 'post', 'featured_image_url', array(
         'get_callback' => function( $post_arr ) {
             $image_id = $post_arr['featured_media'];
@@ -1377,7 +1377,7 @@ function my_register_custom_fields() {
             return null;
         },
         'schema' => array(
-            'description' => 'URL anh dai dien.',
+            'description' => 'URL ảnh đại diện.',
             'type'        => 'string',
             'format'      => 'uri',
             'context'     => array( 'view' ),
@@ -1385,7 +1385,7 @@ function my_register_custom_fields() {
         ),
     ) );
 
-    // Them truong vao nhieu post types cung luc
+    // Thêm trường vào nhiều post types cùng lúc
     $post_types = array( 'post', 'page', 'product' );
     foreach ( $post_types as $post_type ) {
         register_rest_field( $post_type, 'reading_time', array(
@@ -1396,7 +1396,7 @@ function my_register_custom_fields() {
                 return $minutes;
             },
             'schema' => array(
-                'description' => 'Thoi gian doc uoc tinh (phut).',
+                'description' => 'Thời gian đọc ước tính (phút).',
                 'type'        => 'integer',
                 'context'     => array( 'view' ),
                 'readonly'    => true,
@@ -1404,7 +1404,7 @@ function my_register_custom_fields() {
         ) );
     }
 
-    // Them truong vao endpoint users
+    // Thêm trường vào endpoint users
     register_rest_field( 'user', 'social_links', array(
         'get_callback' => function( $user_arr ) {
             return array(
@@ -1425,7 +1425,7 @@ function my_register_custom_fields() {
             }
         },
         'schema' => array(
-            'description' => 'Lien ket mang xa hoi.',
+            'description' => 'Liên kết mạng xã hội.',
             'type'        => 'object',
             'properties'  => array(
                 'facebook'  => array( 'type' => 'string', 'format' => 'uri' ),
@@ -1442,7 +1442,7 @@ function my_register_custom_fields() {
 
 ## 8. Custom Controller - Extend WP_REST_Controller
 
-Khi can tao nhieu endpoints lien quan, nen su dung WP_REST_Controller de to chuc code tot hon.
+Khi cần tạo nhiều endpoints liên quan, nên sử dụng WP_REST_Controller để tổ chức code tốt hơn.
 
 ```php
 <?php
@@ -1455,7 +1455,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
     protected $rest_base = 'bookmarks';
 
     /**
-     * Dang ky routes
+     * Đăng ký routes
      */
     public function register_routes() {
 
@@ -1486,7 +1486,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
                     'id' => array(
                         'type'        => 'integer',
                         'required'    => true,
-                        'description' => 'ID cua bookmark.',
+                        'description' => 'ID của bookmark.',
                     ),
                 ),
             ),
@@ -1506,7 +1506,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Lay danh sach bookmarks
+     * Lấy danh sách bookmarks
      */
     public function get_items( $request ) {
         global $wpdb;
@@ -1526,12 +1526,12 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
 
         $table = $wpdb->prefix . 'bookmarks';
 
-        // Dem tong
+        // Đếm tổng
         $total = $wpdb->get_var(
             $wpdb->prepare( "SELECT COUNT(*) FROM {$table} {$where}", $values )
         );
 
-        // Lay du lieu
+        // Lấy dữ liệu
         $all_values    = array_merge( $values, array( $per_page, $offset ) );
         $items = $wpdb->get_results(
             $wpdb->prepare(
@@ -1553,7 +1553,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Lay 1 bookmark
+     * Lấy 1 bookmark
      */
     public function get_item( $request ) {
         global $wpdb;
@@ -1566,7 +1566,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
         if ( ! $item ) {
             return new WP_Error(
                 'rest_bookmark_not_found',
-                'Khong tim thay bookmark.',
+                'Không tìm thấy bookmark.',
                 array( 'status' => 404 )
             );
         }
@@ -1575,7 +1575,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Tao bookmark moi
+     * Tạo bookmark mới
      */
     public function create_item( $request ) {
         global $wpdb;
@@ -1590,7 +1590,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
         ), array( '%d', '%s', '%s', '%s', '%s' ) );
 
         if ( false === $result ) {
-            return new WP_Error( 'rest_db_error', 'Khong the tao bookmark.', array( 'status' => 500 ) );
+            return new WP_Error( 'rest_db_error', 'Không thể tạo bookmark.', array( 'status' => 500 ) );
         }
 
         $item = $wpdb->get_row(
@@ -1605,7 +1605,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Cap nhat bookmark
+     * Cập nhật bookmark
      */
     public function update_item( $request ) {
         global $wpdb;
@@ -1616,7 +1616,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
         );
 
         if ( ! $item ) {
-            return new WP_Error( 'rest_bookmark_not_found', 'Khong tim thay bookmark.', array( 'status' => 404 ) );
+            return new WP_Error( 'rest_bookmark_not_found', 'Không tìm thấy bookmark.', array( 'status' => 404 ) );
         }
 
         $update_data   = array();
@@ -1647,7 +1647,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Xoa bookmark
+     * Xóa bookmark
      */
     public function delete_item( $request ) {
         global $wpdb;
@@ -1658,7 +1658,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
         );
 
         if ( ! $item ) {
-            return new WP_Error( 'rest_bookmark_not_found', 'Khong tim thay bookmark.', array( 'status' => 404 ) );
+            return new WP_Error( 'rest_bookmark_not_found', 'Không tìm thấy bookmark.', array( 'status' => 404 ) );
         }
 
         $response = $this->prepare_item_for_response( $item, $request );
@@ -1672,7 +1672,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Kiem tra quyen
+     * Kiểm tra quyền
      */
     public function get_items_permissions_check( $request ) {
         return is_user_logged_in();
@@ -1696,7 +1696,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
 
     private function check_ownership( $request ) {
         if ( ! is_user_logged_in() ) {
-            return new WP_Error( 'rest_not_logged_in', 'Ban can dang nhap.', array( 'status' => 401 ) );
+            return new WP_Error( 'rest_not_logged_in', 'Bạn cần đăng nhập.', array( 'status' => 401 ) );
         }
 
         if ( current_user_can( 'manage_options' ) ) {
@@ -1712,18 +1712,18 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
         );
 
         if ( ! $item ) {
-            return new WP_Error( 'rest_bookmark_not_found', 'Khong tim thay bookmark.', array( 'status' => 404 ) );
+            return new WP_Error( 'rest_bookmark_not_found', 'Không tìm thấy bookmark.', array( 'status' => 404 ) );
         }
 
         if ( (int) $item->user_id !== get_current_user_id() ) {
-            return new WP_Error( 'rest_forbidden', 'Ban khong co quyen.', array( 'status' => 403 ) );
+            return new WP_Error( 'rest_forbidden', 'Bạn không có quyền.', array( 'status' => 403 ) );
         }
 
         return true;
     }
 
     /**
-     * Chuan bi response
+     * Chuẩn bị response
      */
     public function prepare_item_for_response( $item, $request ) {
         $data = array(
@@ -1735,7 +1735,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
             'created_at' => $item->created_at,
         );
 
-        // Loc theo _fields parameter
+        // Lọc theo _fields parameter
         $fields = $this->get_fields_for_response( $request );
         if ( is_array( $fields ) ) {
             $data = array_intersect_key( $data, array_flip( $fields ) );
@@ -1745,7 +1745,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Dinh nghia schema
+     * Định nghĩa schema
      */
     public function get_item_schema() {
         if ( $this->schema ) {
@@ -1758,13 +1758,13 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
             'type'       => 'object',
             'properties' => array(
                 'id' => array(
-                    'description' => 'ID duy nhat cua bookmark.',
+                    'description' => 'ID duy nhất của bookmark.',
                     'type'        => 'integer',
                     'context'     => array( 'view', 'edit' ),
                     'readonly'    => true,
                 ),
                 'title' => array(
-                    'description' => 'Tieu de bookmark.',
+                    'description' => 'Tiêu đề bookmark.',
                     'type'        => 'string',
                     'context'     => array( 'view', 'edit' ),
                     'required'    => true,
@@ -1783,7 +1783,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
                     ),
                 ),
                 'notes' => array(
-                    'description' => 'Ghi chu.',
+                    'description' => 'Ghi chú.',
                     'type'        => 'string',
                     'context'     => array( 'view', 'edit' ),
                     'arg_options' => array(
@@ -1791,7 +1791,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
                     ),
                 ),
                 'created_at' => array(
-                    'description' => 'Ngay tao.',
+                    'description' => 'Ngày tạo.',
                     'type'        => 'string',
                     'format'      => 'date-time',
                     'context'     => array( 'view' ),
@@ -1804,7 +1804,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Tham so cho collection (list)
+     * Tham số cho collection (list)
      */
     public function get_collection_params() {
         $params = parent::get_collection_params();
@@ -1816,7 +1816,7 @@ class My_Bookmarks_REST_Controller extends WP_REST_Controller {
     }
 }
 
-// Dang ky controller
+// Đăng ký controller
 add_action( 'rest_api_init', function() {
     $controller = new My_Bookmarks_REST_Controller();
     $controller->register_routes();
@@ -1825,17 +1825,17 @@ add_action( 'rest_api_init', function() {
 
 ---
 
-## 9. REST API trong Plugin - Vi du CRUD hoan chinh
+## 9. REST API trong Plugin - Ví dụ CRUD hoàn chỉnh
 
-Vi du day du ve mot plugin quan ly "Tasks" voi REST API.
+Ví dụ đầy đủ về một plugin quản lý "Tasks" với REST API.
 
-### 9.1. Plugin header va activation
+### 9.1. Plugin header và activation
 
 ```php
 <?php
 /**
  * Plugin Name: My Tasks API
- * Description: Quan ly cong viec voi REST API
+ * Description: Quản lý công việc với REST API
  * Version: 1.0.0
  * Author: Developer
  */
@@ -1848,7 +1848,7 @@ define( 'MY_TASKS_VERSION', '1.0.0' );
 define( 'MY_TASKS_DB_VERSION', '1.0' );
 define( 'MY_TASKS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
-// Tao bang khi activate
+// Tạo bảng khi activate
 register_activation_hook( __FILE__, 'my_tasks_activate' );
 
 function my_tasks_activate() {
@@ -1881,7 +1881,7 @@ function my_tasks_activate() {
     update_option( 'my_tasks_db_version', MY_TASKS_DB_VERSION );
 }
 
-// Xoa bang khi uninstall
+// Xóa bảng khi uninstall
 // File: uninstall.php
 // if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) exit;
 // global $wpdb;
@@ -1969,7 +1969,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * GET /tasks - Danh sach tasks
+     * GET /tasks - Danh sách tasks
      */
     public function get_items( $request ) {
         global $wpdb;
@@ -1986,7 +1986,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
         $where  = array( 'user_id = %d' );
         $values = array( get_current_user_id() );
 
-        // Admin co the xem tat ca
+        // Admin có thể xem tất cả
         if ( current_user_can( 'manage_options' ) && $request->get_param( 'all_users' ) ) {
             $where  = array( '1=1' );
             $values = array();
@@ -2016,7 +2016,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
         $orderby_sql = in_array( $orderby, $allowed_orderby, true ) ? $orderby : 'created_at';
         $order_sql   = strtoupper( $order ) === 'ASC' ? 'ASC' : 'DESC';
 
-        // Dem tong
+        // Đếm tổng
         $count_values = $values;
         $total = (int) $wpdb->get_var(
             $wpdb->prepare(
@@ -2025,7 +2025,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
             )
         );
 
-        // Lay du lieu
+        // Lấy dữ liệu
         $values[] = $per_page;
         $values[] = $offset;
 
@@ -2052,7 +2052,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * GET /tasks/<id> - Chi tiet task
+     * GET /tasks/<id> - Chi tiết task
      */
     public function get_item( $request ) {
         $item = $this->get_task( $request['id'] );
@@ -2065,7 +2065,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * POST /tasks - Tao task moi
+     * POST /tasks - Tạo task mới
      */
     public function create_item( $request ) {
         global $wpdb;
@@ -2086,7 +2086,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
         $result = $wpdb->insert( $this->table_name, $data, $format );
 
         if ( false === $result ) {
-            return new WP_Error( 'rest_db_error', 'Khong the tao task: ' . $wpdb->last_error, array( 'status' => 500 ) );
+            return new WP_Error( 'rest_db_error', 'Không thể tạo task: ' . $wpdb->last_error, array( 'status' => 500 ) );
         }
 
         $item = $this->get_task( $wpdb->insert_id );
@@ -2106,7 +2106,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * PUT/PATCH /tasks/<id> - Cap nhat task
+     * PUT/PATCH /tasks/<id> - Cập nhật task
      */
     public function update_item( $request ) {
         global $wpdb;
@@ -2134,20 +2134,20 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
             }
         }
 
-        // Neu chuyen sang 'done', ghi nhan thoi gian hoan thanh
+        // Nếu chuyển sang 'done', ghi nhận thời gian hoàn thành
         if ( isset( $update_data['status'] ) && 'done' === $update_data['status'] && 'done' !== $item->status ) {
             $update_data['completed_at'] = current_time( 'mysql' );
             $update_format[]             = '%s';
         }
 
-        // Neu chuyen TU 'done' sang trang thai khac, xoa completed_at
+        // Nếu chuyển TỪ 'done' sang trạng thái khác, xóa completed_at
         if ( isset( $update_data['status'] ) && 'done' !== $update_data['status'] && 'done' === $item->status ) {
             $update_data['completed_at'] = null;
             $update_format[]             = '%s';
         }
 
         if ( empty( $update_data ) ) {
-            return new WP_Error( 'rest_no_data', 'Khong co du lieu de cap nhat.', array( 'status' => 400 ) );
+            return new WP_Error( 'rest_no_data', 'Không có dữ liệu để cập nhật.', array( 'status' => 400 ) );
         }
 
         $update_data['updated_at'] = current_time( 'mysql' );
@@ -2162,7 +2162,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
         );
 
         if ( false === $result ) {
-            return new WP_Error( 'rest_db_error', 'Khong the cap nhat task.', array( 'status' => 500 ) );
+            return new WP_Error( 'rest_db_error', 'Không thể cập nhật task.', array( 'status' => 500 ) );
         }
 
         $updated_item = $this->get_task( $request['id'] );
@@ -2173,7 +2173,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * DELETE /tasks/<id> - Xoa task
+     * DELETE /tasks/<id> - Xóa task
      */
     public function delete_item( $request ) {
         global $wpdb;
@@ -2196,7 +2196,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Batch update - Cap nhat nhieu tasks cung luc
+     * Batch update - Cập nhật nhiều tasks cùng lúc
      */
     public function batch_update( $request ) {
         global $wpdb;
@@ -2205,7 +2205,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
         $status = $request->get_param( 'status' );
 
         if ( empty( $ids ) || ! is_array( $ids ) ) {
-            return new WP_Error( 'rest_invalid_ids', 'Danh sach IDs khong hop le.', array( 'status' => 400 ) );
+            return new WP_Error( 'rest_invalid_ids', 'Danh sách IDs không hợp lệ.', array( 'status' => 400 ) );
         }
 
         $user_id      = get_current_user_id();
@@ -2242,7 +2242,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Thong ke tasks
+     * Thống kê tasks
      */
     public function get_stats( $request ) {
         global $wpdb;
@@ -2312,7 +2312,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
 
     private function check_task_permission( $task_id ) {
         if ( ! is_user_logged_in() ) {
-            return new WP_Error( 'rest_not_logged_in', 'Ban can dang nhap.', array( 'status' => 401 ) );
+            return new WP_Error( 'rest_not_logged_in', 'Bạn cần đăng nhập.', array( 'status' => 401 ) );
         }
 
         if ( current_user_can( 'manage_options' ) ) {
@@ -2325,14 +2325,14 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
         }
 
         if ( (int) $task->user_id !== get_current_user_id() ) {
-            return new WP_Error( 'rest_forbidden', 'Ban khong co quyen truy cap task nay.', array( 'status' => 403 ) );
+            return new WP_Error( 'rest_forbidden', 'Bạn không có quyền truy cập task này.', array( 'status' => 403 ) );
         }
 
         return true;
     }
 
     /**
-     * Helper: Lay task tu database
+     * Helper: Lấy task từ database
      */
     private function get_task( $id ) {
         global $wpdb;
@@ -2342,14 +2342,14 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
         );
 
         if ( ! $item ) {
-            return new WP_Error( 'rest_task_not_found', 'Khong tim thay task.', array( 'status' => 404 ) );
+            return new WP_Error( 'rest_task_not_found', 'Không tìm thấy task.', array( 'status' => 404 ) );
         }
 
         return $item;
     }
 
     /**
-     * Chuan bi response
+     * Chuẩn bị response
      */
     public function prepare_item_for_response( $item, $request ) {
         $data = array(
@@ -2366,7 +2366,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
             'is_overdue'   => $this->is_overdue( $item ),
         );
 
-        // Them thong tin user
+        // Thêm thông tin user
         $user = get_userdata( $item->user_id );
         if ( $user ) {
             $data['user'] = array(
@@ -2376,7 +2376,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
             );
         }
 
-        // Loc theo _fields
+        // Lọc theo _fields
         $context = $request->get_param( 'context' ) ?: 'view';
         $fields  = $this->get_fields_for_response( $request );
 
@@ -2422,7 +2422,7 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
     }
 
     /**
-     * Tham so cho collection
+     * Tham số cho collection
      */
     public function get_collection_params() {
         return array(
@@ -2457,14 +2457,14 @@ class My_Tasks_REST_Controller extends WP_REST_Controller {
     }
 }
 
-// Dang ky controller
+// Đăng ký controller
 add_action( 'rest_api_init', function() {
     $controller = new My_Tasks_REST_Controller();
     $controller->register_routes();
 } );
 ```
 
-### 9.3. Su dung API tu frontend (JavaScript)
+### 9.3. Sử dụng API từ frontend (JavaScript)
 
 ```javascript
 /**
@@ -2488,7 +2488,7 @@ class TasksAPI {
 
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.message || 'Request that bai');
+            throw new Error(error.message || 'Request thất bại');
         }
 
         const data = await response.json();
@@ -2499,19 +2499,19 @@ class TasksAPI {
         };
     }
 
-    // Lay danh sach tasks
+    // Lấy danh sách tasks
     async list(params = {}) {
         const query = new URLSearchParams(params).toString();
         const url = query ? `${this.baseUrl}?${query}` : this.baseUrl;
         return this.request(url);
     }
 
-    // Lay 1 task
+    // Lấy 1 task
     async get(id) {
         return this.request(`${this.baseUrl}/${id}`);
     }
 
-    // Tao task moi
+    // Tạo task mới
     async create(data) {
         return this.request(this.baseUrl, {
             method: 'POST',
@@ -2519,7 +2519,7 @@ class TasksAPI {
         });
     }
 
-    // Cap nhat task
+    // Cập nhật task
     async update(id, data) {
         return this.request(`${this.baseUrl}/${id}`, {
             method: 'PUT',
@@ -2527,7 +2527,7 @@ class TasksAPI {
         });
     }
 
-    // Xoa task
+    // Xóa task
     async delete(id) {
         return this.request(`${this.baseUrl}/${id}`, {
             method: 'DELETE',
@@ -2542,46 +2542,46 @@ class TasksAPI {
         });
     }
 
-    // Thong ke
+    // Thống kê
     async stats() {
         return this.request(`${this.baseUrl}/stats`);
     }
 }
 
-// Su dung
+// Sử dụng
 const tasksAPI = new TasksAPI();
 
-// Lay danh sach tasks chua hoan thanh, sap xep theo due_date
+// Lấy danh sách tasks chưa hoàn thành, sắp xếp theo due_date
 tasksAPI.list({
     status: 'todo',
     orderby: 'due_date',
     order: 'ASC',
     per_page: 20,
 }).then(result => {
-    console.log(`Tong: ${result.total} tasks`);
+    console.log(`Tổng: ${result.total} tasks`);
     result.data.forEach(task => {
-        console.log(`[${task.priority}] ${task.title} - Han: ${task.due_date}`);
+        console.log(`[${task.priority}] ${task.title} - Hạn: ${task.due_date}`);
     });
 });
 
-// Tao task moi
+// Tạo task mới
 tasksAPI.create({
-    title: 'Hoan thanh bao cao',
-    description: 'Bao cao hang thang cho phong kinh doanh',
+    title: 'Hoàn thành báo cáo',
+    description: 'Báo cáo hàng tháng cho phòng kinh doanh',
     priority: 'high',
     due_date: '2024-12-31T17:00:00',
 }).then(result => {
-    console.log('Da tao task ID:', result.data.id);
+    console.log('Đã tạo task ID:', result.data.id);
 });
 
-// Cap nhat trang thai
+// Cập nhật trạng thái
 tasksAPI.update(5, { status: 'done' }).then(result => {
-    console.log('Da hoan thanh:', result.data.title);
+    console.log('Đã hoàn thành:', result.data.title);
 });
 
-// Xoa task
+// Xóa task
 tasksAPI.delete(10).then(result => {
-    console.log('Da xoa task');
+    console.log('Đã xóa task');
 });
 ```
 
@@ -2589,17 +2589,17 @@ tasksAPI.delete(10).then(result => {
 
 ## 10. Best Practices
 
-### 10.1. Luon khai bao permission_callback
+### 10.1. Luôn khai báo permission_callback
 
 ```php
 <?php
-// SAI: Thieu permission_callback (se co warning tu WP 5.5+)
+// SAI: Thiếu permission_callback (sẽ có warning từ WP 5.5+)
 register_rest_route( 'myplugin/v1', '/data', array(
     'methods'  => 'GET',
     'callback' => 'my_callback',
 ) );
 
-// DUNG: Luon co permission_callback
+// ĐÚNG: Luôn có permission_callback
 register_rest_route( 'myplugin/v1', '/data', array(
     'methods'             => 'GET',
     'callback'            => 'my_callback',
@@ -2607,29 +2607,29 @@ register_rest_route( 'myplugin/v1', '/data', array(
 ) );
 ```
 
-### 10.2. Su dung namespace dung cach
+### 10.2. Sử dụng namespace đúng cách
 
 ```php
 <?php
-// DUNG: Namespace co version
+// ĐÚNG: Namespace có version
 // myplugin/v1
 register_rest_route( 'myplugin/v1', '/items', array( /* ... */ ) );
 
-// DUNG: Khi can version moi (khong break version cu)
+// ĐÚNG: Khi cần version mới (không break version cũ)
 register_rest_route( 'myplugin/v2', '/items', array( /* ... */ ) );
 
-// SAI: Khong co version
+// SAI: Không có version
 register_rest_route( 'myplugin', '/items', array( /* ... */ ) );
 
-// SAI: Dung namespace cua WordPress core
+// SAI: Dùng namespace của WordPress core
 register_rest_route( 'wp/v2', '/my-items', array( /* ... */ ) );
 ```
 
-### 10.3. Validate va sanitize DU LIEU
+### 10.3. Validate và sanitize DỮ LIỆU
 
 ```php
 <?php
-// DUNG: Validate va sanitize day du
+// ĐÚNG: Validate và sanitize đầy đủ
 register_rest_route( 'myplugin/v1', '/items', array(
     'methods'  => 'POST',
     'callback' => 'my_create_item',
@@ -2643,7 +2643,7 @@ register_rest_route( 'myplugin/v1', '/items', array(
             'sanitize_callback' => 'sanitize_text_field',
             'validate_callback' => function( $value ) {
                 if ( empty( trim( $value ) ) ) {
-                    return new WP_Error( 'empty_title', 'Tieu de khong duoc de trong.' );
+                    return new WP_Error( 'empty_title', 'Tiêu đề không được để trống.' );
                 }
                 return true;
             },
@@ -2658,74 +2658,74 @@ register_rest_route( 'myplugin/v1', '/items', array(
 ) );
 ```
 
-### 10.4. Tra ve HTTP status code dung
+### 10.4. Trả về HTTP status code đúng
 
 ```php
 <?php
-// 200 OK - Thanh cong (GET, PUT, DELETE)
+// 200 OK - Thành công (GET, PUT, DELETE)
 return new WP_REST_Response( $data, 200 );
 
-// 201 Created - Tao thanh cong (POST)
+// 201 Created - Tạo thành công (POST)
 $response = new WP_REST_Response( $data, 201 );
 $response->header( 'Location', rest_url( 'myplugin/v1/items/' . $id ) );
 return $response;
 
-// 204 No Content - Xoa thanh cong (khong tra du lieu)
+// 204 No Content - Xóa thành công (không trả dữ liệu)
 return new WP_REST_Response( null, 204 );
 
-// 400 Bad Request - Du lieu khong hop le
-return new WP_Error( 'invalid_data', 'Du lieu khong hop le.', array( 'status' => 400 ) );
+// 400 Bad Request - Dữ liệu không hợp lệ
+return new WP_Error( 'invalid_data', 'Dữ liệu không hợp lệ.', array( 'status' => 400 ) );
 
-// 401 Unauthorized - Chua xac thuc
-return new WP_Error( 'rest_not_logged_in', 'Ban can dang nhap.', array( 'status' => 401 ) );
+// 401 Unauthorized - Chưa xác thực
+return new WP_Error( 'rest_not_logged_in', 'Bạn cần đăng nhập.', array( 'status' => 401 ) );
 
-// 403 Forbidden - Khong co quyen
-return new WP_Error( 'rest_forbidden', 'Ban khong co quyen.', array( 'status' => 403 ) );
+// 403 Forbidden - Không có quyền
+return new WP_Error( 'rest_forbidden', 'Bạn không có quyền.', array( 'status' => 403 ) );
 
-// 404 Not Found - Khong tim thay
-return new WP_Error( 'not_found', 'Khong tim thay.', array( 'status' => 404 ) );
+// 404 Not Found - Không tìm thấy
+return new WP_Error( 'not_found', 'Không tìm thấy.', array( 'status' => 404 ) );
 
-// 500 Internal Server Error - Loi server
-return new WP_Error( 'server_error', 'Loi he thong.', array( 'status' => 500 ) );
+// 500 Internal Server Error - Lỗi server
+return new WP_Error( 'server_error', 'Lỗi hệ thống.', array( 'status' => 500 ) );
 ```
 
-### 10.5. Su dung _fields de giam du lieu tra ve
+### 10.5. Sử dụng _fields để giảm dữ liệu trả về
 
 ```javascript
-// Chi lay cac truong can thiet
+// Chỉ lấy các trường cần thiết
 fetch('/wp-json/wp/v2/posts?_fields=id,title,link,date&per_page=5');
 
-// Thay vi lay toan bo du lieu cua post (rat nhieu truong)
-fetch('/wp-json/wp/v2/posts?per_page=5');  // Tra ve nhieu du lieu thua
+// Thay vì lấy toàn bộ dữ liệu của post (rất nhiều trường)
+fetch('/wp-json/wp/v2/posts?per_page=5');  // Trả về nhiều dữ liệu thừa
 ```
 
 ### 10.6. Cache REST API responses
 
 ```php
 <?php
-// Su dung transient de cache
+// Sử dụng transient để cache
 function my_cached_endpoint( WP_REST_Request $request ) {
     $cache_key = 'rest_cache_' . md5( serialize( $request->get_params() ) );
     $data      = get_transient( $cache_key );
 
     if ( false === $data ) {
-        // Cache miss - tinh toan du lieu
+        // Cache miss - tính toán dữ liệu
         $data = expensive_computation();
         set_transient( $cache_key, $data, 5 * MINUTE_IN_SECONDS );
     }
 
     $response = new WP_REST_Response( $data, 200 );
 
-    // Them cache headers
-    $response->header( 'Cache-Control', 'max-age=300' ); // 5 phut
+    // Thêm cache headers
+    $response->header( 'Cache-Control', 'max-age=300' ); // 5 phút
     $response->header( 'X-Cache', false === get_transient( $cache_key ) ? 'MISS' : 'HIT' );
 
     return $response;
 }
 
-// Xoa cache khi du lieu thay doi
+// Xóa cache khi dữ liệu thay đổi
 add_action( 'save_post', function( $post_id ) {
-    // Xoa cac transients lien quan
+    // Xóa các transients liên quan
     global $wpdb;
     $wpdb->query(
         "DELETE FROM {$wpdb->options}
@@ -2739,11 +2739,11 @@ add_action( 'save_post', function( $post_id ) {
 
 ```php
 <?php
-// Rate limiting don gian
+// Rate limiting đơn giản
 add_filter( 'rest_pre_dispatch', 'my_rest_rate_limit', 10, 3 );
 
 function my_rest_rate_limit( $result, $server, $request ) {
-    // Chi ap dung cho endpoints cua minh
+    // Chỉ áp dụng cho endpoints của mình
     $route = $request->get_route();
     if ( strpos( $route, '/myplugin/' ) === false ) {
         return $result;
@@ -2752,12 +2752,12 @@ function my_rest_rate_limit( $result, $server, $request ) {
     $ip         = $_SERVER['REMOTE_ADDR'];
     $cache_key  = 'rate_limit_' . md5( $ip );
     $requests   = (int) get_transient( $cache_key );
-    $max_requests = 60;  // 60 requests moi phut
+    $max_requests = 60;  // 60 requests mỗi phút
 
     if ( $requests >= $max_requests ) {
         return new WP_Error(
             'rest_rate_limit',
-            'Qua nhieu request. Vui long thu lai sau.',
+            'Quá nhiều request. Vui lòng thử lại sau.',
             array(
                 'status' => 429,
                 'retry_after' => 60,
@@ -2775,16 +2775,16 @@ function my_rest_rate_limit( $result, $server, $request ) {
 
 ```php
 <?php
-// Cho phep CORS cho REST API
+// Cho phép CORS cho REST API
 add_action( 'rest_api_init', function() {
-    // Xoa header CORS mac dinh cua WP
+    // Xóa header CORS mặc định của WP
     remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 
-    // Them header CORS tuy chinh
+    // Thêm header CORS tùy chỉnh
     add_filter( 'rest_pre_serve_request', function( $served, $result, $request, $server ) {
         $origin = get_http_origin();
 
-        // Chi cho phep cac domain cu the
+        // Chỉ cho phép các domain cụ thể
         $allowed_origins = array(
             'https://my-frontend-app.com',
             'https://admin.example.com',
@@ -2803,11 +2803,11 @@ add_action( 'rest_api_init', function() {
 } );
 ```
 
-### 10.9. Disable REST API cho nguoi dung chua dang nhap (neu can)
+### 10.9. Disable REST API cho người dùng chưa đăng nhập (nếu cần)
 
 ```php
 <?php
-// Chan tat ca REST API cho nguoi chua dang nhap
+// Chặn tất cả REST API cho người chưa đăng nhập
 add_filter( 'rest_authentication_errors', function( $result ) {
     if ( true === $result || is_wp_error( $result ) ) {
         return $result;
@@ -2816,7 +2816,7 @@ add_filter( 'rest_authentication_errors', function( $result ) {
     if ( ! is_user_logged_in() ) {
         return new WP_Error(
             'rest_not_logged_in',
-            'Ban can dang nhap de su dung API.',
+            'Bạn cần đăng nhập để sử dụng API.',
             array( 'status' => 401 )
         );
     }
@@ -2824,13 +2824,13 @@ add_filter( 'rest_authentication_errors', function( $result ) {
     return $result;
 } );
 
-// HOAC chi chan mot so endpoints
+// HOẶC chỉ chặn một số endpoints
 add_filter( 'rest_authentication_errors', function( $result ) {
     if ( true === $result || is_wp_error( $result ) ) {
         return $result;
     }
 
-    // Cho phep cac endpoint public
+    // Cho phép các endpoint public
     $public_routes = array( '/wp/v2/posts', '/wp/v2/categories', '/wp/v2/tags' );
     $current_route = $_SERVER['REQUEST_URI'];
 
@@ -2841,7 +2841,7 @@ add_filter( 'rest_authentication_errors', function( $result ) {
     }
 
     if ( ! is_user_logged_in() ) {
-        return new WP_Error( 'rest_not_logged_in', 'Can dang nhap.', array( 'status' => 401 ) );
+        return new WP_Error( 'rest_not_logged_in', 'Cần đăng nhập.', array( 'status' => 401 ) );
     }
 
     return $result;
@@ -2851,34 +2851,34 @@ add_filter( 'rest_authentication_errors', function( $result ) {
 ### 10.10. Testing REST API
 
 ```bash
-# Test voi cURL
-# Lay danh sach
+# Test với cURL
+# Lấy danh sách
 curl -s "https://example.com/wp-json/myplugin/v1/tasks" \
     -H "Authorization: Basic $(echo -n 'admin:app-password' | base64)" | python3 -m json.tool
 
-# Tao moi
+# Tạo mới
 curl -s -X POST "https://example.com/wp-json/myplugin/v1/tasks" \
     -H "Content-Type: application/json" \
     -H "Authorization: Basic $(echo -n 'admin:app-password' | base64)" \
     -d '{"title": "Test task", "priority": "high"}' | python3 -m json.tool
 
-# Test validation (thieu title)
+# Test validation (thiếu title)
 curl -s -X POST "https://example.com/wp-json/myplugin/v1/tasks" \
     -H "Content-Type: application/json" \
     -H "Authorization: Basic $(echo -n 'admin:app-password' | base64)" \
     -d '{"priority": "high"}' | python3 -m json.tool
-# Ket qua: {"code":"rest_missing_callback_param","message":"Missing parameter(s): title",...}
+# Kết quả: {"code":"rest_missing_callback_param","message":"Missing parameter(s): title",...}
 
-# Test permission (khong xac thuc)
+# Test permission (không xác thực)
 curl -s -X POST "https://example.com/wp-json/myplugin/v1/tasks" \
     -H "Content-Type: application/json" \
     -d '{"title": "Test"}' | python3 -m json.tool
-# Ket qua: {"code":"rest_not_logged_in","message":"Ban can dang nhap.",...}
+# Kết quả: {"code":"rest_not_logged_in","message":"Bạn cần đăng nhập.",...}
 ```
 
 ```php
 <?php
-// Unit test voi PHPUnit (WP Test Suite)
+// Unit test với PHPUnit (WP Test Suite)
 class Test_Tasks_REST_Controller extends WP_Test_REST_Controller_Testcase {
 
     protected $admin_id;
@@ -2935,7 +2935,7 @@ class Test_Tasks_REST_Controller extends WP_Test_REST_Controller_Testcase {
 
 ---
 
-Tai lieu tham khao:
+Tài liệu tham khảo:
 - WordPress REST API Handbook: https://developer.wordpress.org/rest-api/
 - REST API Reference: https://developer.wordpress.org/rest-api/reference/
 - WP_REST_Controller: https://developer.wordpress.org/reference/classes/wp_rest_controller/

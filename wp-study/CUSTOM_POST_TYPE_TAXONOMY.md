@@ -1,45 +1,45 @@
-# Custom Post Types va Taxonomies trong WordPress
+# Custom Post Types và Taxonomies trong WordPress
 
-## Muc luc
+## Mục lục
 
-1. [Gioi thieu](#1-gioi-thieu)
-2. [register_post_type() - Tham so chi tiet](#2-register_post_type---tham-so-chi-tiet)
-3. [Vi du tao Custom Post Type](#3-vi-du-tao-custom-post-type)
-4. [register_taxonomy() - Tham so chi tiet](#4-register_taxonomy---tham-so-chi-tiet)
-5. [Vi du tao Taxonomy](#5-vi-du-tao-taxonomy)
-6. [Lien ket CPT voi Taxonomy](#6-lien-ket-cpt-voi-taxonomy)
+1. [Giới thiệu](#1-gioi-thieu)
+2. [register_post_type() - Tham số chi tiết](#2-register_post_type---tham-so-chi-tiet)
+3. [Ví dụ tạo Custom Post Type](#3-vi-du-tao-custom-post-type)
+4. [register_taxonomy() - Tham số chi tiết](#4-register_taxonomy---tham-so-chi-tiet)
+5. [Ví dụ tạo Taxonomy](#5-vi-du-tao-taxonomy)
+6. [Liên kết CPT với Taxonomy](#6-lien-ket-cpt-voi-taxonomy)
 7. [Template cho CPT](#7-template-cho-cpt)
-8. [Query CPT - WP_Query voi post_type](#8-query-cpt---wp_query-voi-post_type)
+8. [Query CPT - WP_Query với post_type](#8-query-cpt---wp_query-voi-post_type)
 9. [Meta Boxes cho CPT](#9-meta-boxes-cho-cpt)
 10. [Custom Columns trong Admin List](#10-custom-columns-trong-admin-list)
 11. [Best Practices](#11-best-practices)
 
 ---
 
-## 1. Gioi thieu
+## 1. Giới thiệu
 
-### Custom Post Type (CPT) la gi?
+### Custom Post Type (CPT) là gì?
 
-WordPress mac dinh co cac post type: `post`, `page`, `attachment`, `revision`, `nav_menu_item`. Custom Post Type cho phep ban tao loai noi dung rieng, phu hop voi du an cu the.
+WordPress mặc định có các post type: `post`, `page`, `attachment`, `revision`, `nav_menu_item`. Custom Post Type cho phép bạn tạo loại nội dung riêng, phù hợp với dự án cụ thể.
 
-Vi du thuc te:
-- Website ban hang: can post type "Product" (San pham)
-- Website portfolio: can post type "Portfolio" (Du an)
-- Website cong ty: can post type "Team Member" (Thanh vien)
-- Website bat dong san: can post type "Property" (Bat dong san)
+Ví dụ thực tế:
+- Website bán hàng: cần post type "Product" (Sản phẩm)
+- Website portfolio: cần post type "Portfolio" (Dự án)
+- Website công ty: cần post type "Team Member" (Thành viên)
+- Website bất động sản: cần post type "Property" (Bất động sản)
 
-### Taxonomy la gi?
+### Taxonomy là gì?
 
-Taxonomy la cach phan loai noi dung. WordPress mac dinh co:
-- `category` (Chuyen muc) - phan cap (hierarchical)
-- `post_tag` (The) - khong phan cap (non-hierarchical)
+Taxonomy là cách phân loại nội dung. WordPress mặc định có:
+- `category` (Chuyên mục) - phân cấp (hierarchical)
+- `post_tag` (Thẻ) - không phân cấp (non-hierarchical)
 
-Custom Taxonomy cho phep tao cach phan loai rieng cho CPT. Vi du:
-- Product Category (Danh muc san pham)
-- Skill (Ky nang)
-- Property Type (Loai bat dong san)
+Custom Taxonomy cho phép tạo cách phân loại riêng cho CPT. Ví dụ:
+- Product Category (Danh mục sản phẩm)
+- Skill (Kỹ năng)
+- Property Type (Loại bất động sản)
 
-### Moi quan he giua CPT va Taxonomy
+### Mối quan hệ giữa CPT và Taxonomy
 
 ```
 CPT: Product
@@ -56,180 +56,180 @@ CPT: Product
 
 ---
 
-## 2. register_post_type() - Tham so chi tiet
+## 2. register_post_type() - Tham số chi tiết
 
-### Cu phap co ban
+### Cú pháp cơ bản
 
 ```php
 register_post_type( string $post_type, array|string $args = array() );
 ```
 
-### Toan bo tham so
+### Toàn bộ tham số
 
 ```php
 /**
- * Dang ky Custom Post Type voi day du tham so
+ * Đăng ký Custom Post Type với đầy đủ tham số
  */
 function mytheme_register_post_type() {
 
-    // Mang labels - Dinh nghia cac nhan hien thi trong admin
+    // Mảng labels - Định nghĩa các nhãn hiển thị trong admin
     $labels = array(
-        'name'                  => 'San Pham',           // Ten so nhieu
-        'singular_name'         => 'San Pham',           // Ten so it
-        'menu_name'             => 'San Pham',           // Ten tren menu admin
-        'name_admin_bar'        => 'San Pham',           // Ten tren admin bar
-        'add_new'               => 'Them Moi',           // Nut them moi
-        'add_new_item'          => 'Them San Pham Moi',  // Tieu de trang them moi
-        'new_item'              => 'San Pham Moi',
-        'edit_item'             => 'Sua San Pham',
-        'view_item'             => 'Xem San Pham',
-        'view_items'            => 'Xem Tat Ca San Pham',
-        'all_items'             => 'Tat Ca San Pham',
-        'search_items'          => 'Tim San Pham',
-        'parent_item_colon'     => 'San Pham Cha:',
-        'not_found'             => 'Khong tim thay san pham.',
-        'not_found_in_trash'    => 'Khong co san pham trong thung rac.',
-        'featured_image'        => 'Anh San Pham',
-        'set_featured_image'    => 'Dat Anh San Pham',
-        'remove_featured_image' => 'Xoa Anh San Pham',
-        'use_featured_image'    => 'Dung lam Anh San Pham',
-        'archives'              => 'Kho San Pham',
-        'insert_into_item'      => 'Chen vao san pham',
-        'uploaded_to_this_item' => 'Upload vao san pham nay',
-        'filter_items_list'     => 'Loc danh sach san pham',
-        'items_list_navigation' => 'Dieu huong danh sach san pham',
-        'items_list'            => 'Danh sach san pham',
+        'name'                  => 'Sản Phẩm',           // Tên số nhiều
+        'singular_name'         => 'Sản Phẩm',           // Tên số ít
+        'menu_name'             => 'Sản Phẩm',           // Tên trên menu admin
+        'name_admin_bar'        => 'Sản Phẩm',           // Tên trên admin bar
+        'add_new'               => 'Thêm Mới',           // Nút thêm mới
+        'add_new_item'          => 'Thêm Sản Phẩm Mới',  // Tiêu đề trang thêm mới
+        'new_item'              => 'Sản Phẩm Mới',
+        'edit_item'             => 'Sửa Sản Phẩm',
+        'view_item'             => 'Xem Sản Phẩm',
+        'view_items'            => 'Xem Tất Cả Sản Phẩm',
+        'all_items'             => 'Tất Cả Sản Phẩm',
+        'search_items'          => 'Tìm Sản Phẩm',
+        'parent_item_colon'     => 'Sản Phẩm Cha:',
+        'not_found'             => 'Không tìm thấy sản phẩm.',
+        'not_found_in_trash'    => 'Không có sản phẩm trong thùng rác.',
+        'featured_image'        => 'Ảnh Sản Phẩm',
+        'set_featured_image'    => 'Đặt Ảnh Sản Phẩm',
+        'remove_featured_image' => 'Xóa Ảnh Sản Phẩm',
+        'use_featured_image'    => 'Dùng làm Ảnh Sản Phẩm',
+        'archives'              => 'Kho Sản Phẩm',
+        'insert_into_item'      => 'Chèn vào sản phẩm',
+        'uploaded_to_this_item' => 'Upload vào sản phẩm này',
+        'filter_items_list'     => 'Lọc danh sách sản phẩm',
+        'items_list_navigation' => 'Điều hướng danh sách sản phẩm',
+        'items_list'            => 'Danh sách sản phẩm',
     );
 
-    // Mang args - Toan bo tham so cau hinh
+    // Mảng args - Toàn bộ tham số cấu hình
     $args = array(
 
         // --- LABELS ---
         'labels'              => $labels,
-        'description'         => 'Quan ly san pham cua cua hang',
+        'description'         => 'Quản lý sản phẩm của cửa hàng',
 
-        // --- HIEN THI (Visibility) ---
+        // --- HIỂN THỊ (Visibility) ---
         'public'              => true,
-        // true = hien thi phia truoc (frontend) va phia sau (admin)
-        // false = an hoan toan
+        // true = hiển thị phía trước (frontend) và phía sau (admin)
+        // false = ẩn hoàn toàn
 
         'publicly_queryable'  => true,
-        // true = co the truy van tu URL phia truoc
-        // false = khong the truy cap truc tiep tu URL
+        // true = có thể truy vấn từ URL phía trước
+        // false = không thể truy cập trực tiếp từ URL
 
         'show_ui'             => true,
-        // true = hien thi giao dien quan ly trong admin
-        // false = an khoi admin UI
+        // true = hiển thị giao diện quản lý trong admin
+        // false = ẩn khỏi admin UI
 
         'show_in_menu'        => true,
-        // true = hien thi nhu menu rieng trong admin sidebar
-        // false = an khoi menu
-        // 'edit.php' = hien thi duoi menu Posts
-        // 'tools.php' = hien thi duoi menu Tools
-        // 'options-general.php' = duoi Settings
+        // true = hiển thị như menu riêng trong admin sidebar
+        // false = ẩn khỏi menu
+        // 'edit.php' = hiển thị dưới menu Posts
+        // 'tools.php' = hiển thị dưới menu Tools
+        // 'options-general.php' = dưới Settings
 
         'show_in_nav_menus'   => true,
-        // true = co the them vao navigation menu
+        // true = có thể thêm vào navigation menu
 
         'show_in_admin_bar'   => true,
-        // true = hien thi tren admin bar (thanh tren cung)
+        // true = hiển thị trên admin bar (thanh trên cùng)
 
         'show_in_rest'        => true,
-        // true = ho tro REST API va Gutenberg block editor
-        // false = su dung Classic Editor
+        // true = hỗ trợ REST API và Gutenberg block editor
+        // false = sử dụng Classic Editor
 
         // --- URL & ARCHIVE ---
         'has_archive'         => true,
-        // true = co trang archive (danh sach), URL: /san-pham/
-        // false = khong co trang archive
-        // 'custom-slug' = dung slug tuy chinh cho archive
+        // true = có trang archive (danh sách), URL: /san-pham/
+        // false = không có trang archive
+        // 'custom-slug' = dùng slug tùy chỉnh cho archive
 
         'rewrite'             => array(
             'slug'       => 'san-pham',    // URL slug: /san-pham/ten-san-pham/
-            'with_front' => false,          // false = khong them prefix cua permalink
-            'pages'      => true,           // Ho tro phan trang
-            'feeds'      => true,           // Ho tro RSS feed
+            'with_front' => false,          // false = không thêm prefix của permalink
+            'pages'      => true,           // Hỗ trợ phân trang
+            'feeds'      => true,           // Hỗ trợ RSS feed
         ),
 
         'query_var'           => true,
-        // true = co the query bang ?product=ten-san-pham
-        // 'custom_var' = dung query var tuy chinh
+        // true = có thể query bằng ?product=ten-san-pham
+        // 'custom_var' = dùng query var tùy chỉnh
 
-        // --- TINH NANG (Features) ---
+        // --- TÍNH NĂNG (Features) ---
         'supports'            => array(
-            'title',           // Tieu de
-            'editor',          // Trinh soan thao noi dung
-            'thumbnail',       // Anh dai dien (featured image)
-            'excerpt',         // Tom tat
-            'author',          // Tac gia
-            'comments',        // Binh luan
+            'title',           // Tiêu đề
+            'editor',          // Trình soạn thảo nội dung
+            'thumbnail',       // Ảnh đại diện (featured image)
+            'excerpt',         // Tóm tắt
+            'author',          // Tác giả
+            'comments',        // Bình luận
             'trackbacks',      // Trackbacks
             'custom-fields',   // Custom fields
-            'revisions',       // Lich su chinh sua
-            'page-attributes', // Thu tu (menu_order), template
+            'revisions',       // Lịch sử chỉnh sửa
+            'page-attributes', // Thứ tự (menu_order), template
         ),
 
-        // --- PHAN CAP ---
+        // --- PHÂN CẤP ---
         'hierarchical'        => false,
-        // false = giong Post (khong co cha-con)
-        // true = giong Page (co the co cha-con)
+        // false = giống Post (không có cha-con)
+        // true = giống Page (có thể có cha-con)
 
-        // --- QUYEN HAN ---
+        // --- QUYỀN HẠN ---
         'capability_type'     => 'post',
-        // 'post' = dung quyen giong post
-        // 'page' = dung quyen giong page
-        // array('product', 'products') = quyen tuy chinh
+        // 'post' = dùng quyền giống post
+        // 'page' = dùng quyền giống page
+        // array('product', 'products') = quyền tùy chỉnh
 
         'map_meta_cap'        => true,
-        // true = tu dong map cac meta capabilities
+        // true = tự động map các meta capabilities
 
         // --- MENU ADMIN ---
         'menu_position'       => 5,
-        // 5 = duoi Posts
-        // 10 = duoi Media
-        // 15 = duoi Links
-        // 20 = duoi Pages
-        // 25 = duoi Comments
-        // 60 = duoi menu dau tien
-        // 65 = duoi Plugins
-        // 70 = duoi Users
-        // 75 = duoi Tools
-        // 80 = duoi Settings
+        // 5 = dưới Posts
+        // 10 = dưới Media
+        // 15 = dưới Links
+        // 20 = dưới Pages
+        // 25 = dưới Comments
+        // 60 = dưới menu đầu tiên
+        // 65 = dưới Plugins
+        // 70 = dưới Users
+        // 75 = dưới Tools
+        // 80 = dưới Settings
 
         'menu_icon'           => 'dashicons-cart',
         // Dashicons: https://developer.wordpress.org/resource/dashicons/
-        // Hoac duong dan den icon: get_template_directory_uri() . '/images/icon.png'
-        // Hoac base64 SVG: 'data:image/svg+xml;base64,...'
+        // Hoặc đường dẫn đến icon: get_template_directory_uri() . '/images/icon.png'
+        // Hoặc base64 SVG: 'data:image/svg+xml;base64,...'
 
         // --- TAXONOMY ---
         'taxonomies'          => array( 'product_category', 'product_tag' ),
-        // Gan taxonomy truc tiep khi dang ky CPT
+        // Gán taxonomy trực tiếp khi đăng ký CPT
 
-        // --- KHAC ---
+        // --- KHÁC ---
         'can_export'          => true,
-        // true = cho phep export bang WordPress Exporter
+        // true = cho phép export bằng WordPress Exporter
 
         'delete_with_user'    => false,
-        // false = giu bai viet khi xoa user
-        // true = xoa bai viet khi xoa user
+        // false = giữ bài viết khi xóa user
+        // true = xóa bài viết khi xóa user
 
         'exclude_from_search' => false,
-        // false = xuat hien trong ket qua tim kiem
-        // true = an khoi ket qua tim kiem
+        // false = xuất hiện trong kết quả tìm kiếm
+        // true = ẩn khỏi kết quả tìm kiếm
 
         'rest_base'           => 'products',
         // Slug cho REST API: /wp-json/wp/v2/products/
 
         'rest_controller_class' => 'WP_REST_Posts_Controller',
-        // Class xu ly REST API
+        // Class xử lý REST API
 
         'template'            => array(),
-        // Block template mac dinh cho Gutenberg
+        // Block template mặc định cho Gutenberg
 
         'template_lock'       => false,
-        // false = khong khoa
-        // 'all' = khoa hoan toan
-        // 'insert' = khong cho them block moi
+        // false = không khóa
+        // 'all' = khóa hoàn toàn
+        // 'insert' = không cho thêm block mới
     );
 
     register_post_type( 'product', $args );
@@ -237,11 +237,11 @@ function mytheme_register_post_type() {
 add_action( 'init', 'mytheme_register_post_type' );
 ```
 
-### Luu y quan trong
+### Lưu ý quan trọng
 
 ```php
-// SAU KHI dang ky CPT, can flush rewrite rules
-// Chi can lam 1 lan (khi activate plugin/theme)
+// SAU KHI đăng ký CPT, cần flush rewrite rules
+// Chỉ cần làm 1 lần (khi activate plugin/theme)
 function mytheme_activate() {
     mytheme_register_post_type();
     flush_rewrite_rules();
@@ -257,25 +257,25 @@ register_deactivation_hook( __FILE__, 'mytheme_deactivate' );
 
 ---
 
-## 3. Vi du tao Custom Post Type
+## 3. Ví dụ tạo Custom Post Type
 
-### Vi du 1: Product (San pham)
+### Ví dụ 1: Product (Sản phẩm)
 
 ```php
 function mytheme_register_product_cpt() {
     $labels = array(
-        'name'               => 'San Pham',
-        'singular_name'      => 'San Pham',
-        'menu_name'          => 'San Pham',
-        'add_new'            => 'Them Moi',
-        'add_new_item'       => 'Them San Pham Moi',
-        'edit_item'          => 'Sua San Pham',
-        'new_item'           => 'San Pham Moi',
-        'view_item'          => 'Xem San Pham',
-        'search_items'       => 'Tim San Pham',
-        'not_found'          => 'Khong tim thay san pham',
-        'not_found_in_trash' => 'Khong co san pham trong thung rac',
-        'all_items'          => 'Tat Ca San Pham',
+        'name'               => 'Sản Phẩm',
+        'singular_name'      => 'Sản Phẩm',
+        'menu_name'          => 'Sản Phẩm',
+        'add_new'            => 'Thêm Mới',
+        'add_new_item'       => 'Thêm Sản Phẩm Mới',
+        'edit_item'          => 'Sửa Sản Phẩm',
+        'new_item'           => 'Sản Phẩm Mới',
+        'view_item'          => 'Xem Sản Phẩm',
+        'search_items'       => 'Tìm Sản Phẩm',
+        'not_found'          => 'Không tìm thấy sản phẩm',
+        'not_found_in_trash' => 'Không có sản phẩm trong thùng rác',
+        'all_items'          => 'Tất Cả Sản Phẩm',
     );
 
     $args = array(
@@ -294,7 +294,7 @@ function mytheme_register_product_cpt() {
 add_action( 'init', 'mytheme_register_product_cpt' );
 ```
 
-### Vi du 2: Portfolio (Du an)
+### Ví dụ 2: Portfolio (Dự án)
 
 ```php
 function mytheme_register_portfolio_cpt() {
@@ -302,15 +302,15 @@ function mytheme_register_portfolio_cpt() {
         'name'               => 'Portfolio',
         'singular_name'      => 'Portfolio',
         'menu_name'          => 'Portfolio',
-        'add_new'            => 'Them Du An',
-        'add_new_item'       => 'Them Du An Moi',
-        'edit_item'          => 'Sua Du An',
-        'new_item'           => 'Du An Moi',
-        'view_item'          => 'Xem Du An',
-        'search_items'       => 'Tim Du An',
-        'not_found'          => 'Khong tim thay du an',
-        'not_found_in_trash' => 'Khong co du an trong thung rac',
-        'all_items'          => 'Tat Ca Du An',
+        'add_new'            => 'Thêm Dự Án',
+        'add_new_item'       => 'Thêm Dự Án Mới',
+        'edit_item'          => 'Sửa Dự Án',
+        'new_item'           => 'Dự Án Mới',
+        'view_item'          => 'Xem Dự Án',
+        'search_items'       => 'Tìm Dự Án',
+        'not_found'          => 'Không tìm thấy dự án',
+        'not_found_in_trash' => 'Không có dự án trong thùng rác',
+        'all_items'          => 'Tất Cả Dự Án',
     );
 
     $args = array(
@@ -330,23 +330,23 @@ function mytheme_register_portfolio_cpt() {
 add_action( 'init', 'mytheme_register_portfolio_cpt' );
 ```
 
-### Vi du 3: Team Member (Thanh vien)
+### Ví dụ 3: Team Member (Thành viên)
 
 ```php
 function mytheme_register_team_cpt() {
     $labels = array(
-        'name'               => 'Thanh Vien',
-        'singular_name'      => 'Thanh Vien',
-        'menu_name'          => 'Doi Ngu',
-        'add_new'            => 'Them Thanh Vien',
-        'add_new_item'       => 'Them Thanh Vien Moi',
-        'edit_item'          => 'Sua Thanh Vien',
-        'new_item'           => 'Thanh Vien Moi',
-        'view_item'          => 'Xem Thanh Vien',
-        'search_items'       => 'Tim Thanh Vien',
-        'not_found'          => 'Khong tim thay thanh vien',
-        'not_found_in_trash' => 'Khong co thanh vien trong thung rac',
-        'all_items'          => 'Tat Ca Thanh Vien',
+        'name'               => 'Thành Viên',
+        'singular_name'      => 'Thành Viên',
+        'menu_name'          => 'Đội Ngũ',
+        'add_new'            => 'Thêm Thành Viên',
+        'add_new_item'       => 'Thêm Thành Viên Mới',
+        'edit_item'          => 'Sửa Thành Viên',
+        'new_item'           => 'Thành Viên Mới',
+        'view_item'          => 'Xem Thành Viên',
+        'search_items'       => 'Tìm Thành Viên',
+        'not_found'          => 'Không tìm thấy thành viên',
+        'not_found_in_trash' => 'Không có thành viên trong thùng rác',
+        'all_items'          => 'Tất Cả Thành Viên',
     );
 
     $args = array(
@@ -359,7 +359,7 @@ function mytheme_register_team_cpt() {
         'menu_position' => 7,
         'show_in_rest'  => true,
         'hierarchical'  => false,
-        // Khong can comments, khong can excerpt
+        // Không cần comments, không cần excerpt
     );
 
     register_post_type( 'team_member', $args );
@@ -369,55 +369,55 @@ add_action( 'init', 'mytheme_register_team_cpt' );
 
 ---
 
-## 4. register_taxonomy() - Tham so chi tiet
+## 4. register_taxonomy() - Tham số chi tiết
 
-### Cu phap co ban
+### Cú pháp cơ bản
 
 ```php
 register_taxonomy( string $taxonomy, array|string $object_type, array|string $args = array() );
 ```
 
-### Toan bo tham so
+### Toàn bộ tham số
 
 ```php
 function mytheme_register_taxonomy() {
 
     $labels = array(
-        'name'                       => 'Danh Muc San Pham',
-        'singular_name'              => 'Danh Muc',
-        'menu_name'                  => 'Danh Muc',
-        'all_items'                  => 'Tat Ca Danh Muc',
-        'parent_item'                => 'Danh Muc Cha',
-        'parent_item_colon'          => 'Danh Muc Cha:',
-        'new_item_name'              => 'Danh Muc Moi',
-        'add_new_item'               => 'Them Danh Muc Moi',
-        'edit_item'                  => 'Sua Danh Muc',
-        'update_item'                => 'Cap Nhat Danh Muc',
-        'view_item'                  => 'Xem Danh Muc',
-        'separate_items_with_commas' => 'Phan cach bang dau phay',
-        'add_or_remove_items'        => 'Them hoac xoa danh muc',
-        'choose_from_most_used'      => 'Chon tu danh muc pho bien',
-        'popular_items'              => 'Danh Muc Pho Bien',
-        'search_items'               => 'Tim Danh Muc',
-        'not_found'                  => 'Khong tim thay',
-        'no_terms'                   => 'Khong co danh muc',
-        'items_list'                 => 'Danh sach danh muc',
-        'items_list_navigation'      => 'Dieu huong danh sach danh muc',
-        'back_to_items'              => 'Quay lai danh muc',
+        'name'                       => 'Danh Mục Sản Phẩm',
+        'singular_name'              => 'Danh Mục',
+        'menu_name'                  => 'Danh Mục',
+        'all_items'                  => 'Tất Cả Danh Mục',
+        'parent_item'                => 'Danh Mục Cha',
+        'parent_item_colon'          => 'Danh Mục Cha:',
+        'new_item_name'              => 'Danh Mục Mới',
+        'add_new_item'               => 'Thêm Danh Mục Mới',
+        'edit_item'                  => 'Sửa Danh Mục',
+        'update_item'                => 'Cập Nhật Danh Mục',
+        'view_item'                  => 'Xem Danh Mục',
+        'separate_items_with_commas' => 'Phân cách bằng dấu phẩy',
+        'add_or_remove_items'        => 'Thêm hoặc xóa danh mục',
+        'choose_from_most_used'      => 'Chọn từ danh mục phổ biến',
+        'popular_items'              => 'Danh Mục Phổ Biến',
+        'search_items'               => 'Tìm Danh Mục',
+        'not_found'                  => 'Không tìm thấy',
+        'no_terms'                   => 'Không có danh mục',
+        'items_list'                 => 'Danh sách danh mục',
+        'items_list_navigation'      => 'Điều hướng danh sách danh mục',
+        'back_to_items'              => 'Quay lại danh mục',
     );
 
     $args = array(
 
         // --- LABELS ---
         'labels'             => $labels,
-        'description'        => 'Phan loai san pham theo danh muc',
+        'description'        => 'Phân loại sản phẩm theo danh mục',
 
-        // --- PHAN CAP ---
+        // --- PHÂN CẤP ---
         'hierarchical'       => true,
-        // true = giong Category (co cha-con, hien thi dang checkbox)
-        // false = giong Tag (khong phan cap, hien thi dang input text)
+        // true = giống Category (có cha-con, hiển thị dạng checkbox)
+        // false = giống Tag (không phân cấp, hiển thị dạng input text)
 
-        // --- HIEN THI ---
+        // --- HIỂN THỊ ---
         'public'             => true,
         'publicly_queryable' => true,
         'show_ui'            => true,
@@ -426,23 +426,23 @@ function mytheme_register_taxonomy() {
         'show_tagcloud'      => true,
         'show_in_quick_edit' => true,
         'show_admin_column'  => true,
-        // true = hien thi cot taxonomy trong danh sach post
+        // true = hiển thị cột taxonomy trong danh sách post
 
         'show_in_rest'       => true,
-        // true = ho tro REST API va Gutenberg
+        // true = hỗ trợ REST API và Gutenberg
 
         // --- URL ---
         'rewrite'            => array(
             'slug'         => 'danh-muc-san-pham',
             'with_front'   => false,
             'hierarchical' => true,
-            // true = URL phan cap: /danh-muc/cha/con/
+            // true = URL phân cấp: /danh-muc/cha/con/
         ),
 
         'query_var'          => true,
-        // true = co the query: ?product_category=dien-tu
+        // true = có thể query: ?product_category=dien-tu
 
-        // --- QUYEN HAN ---
+        // --- QUYỀN HẠN ---
         'capabilities'       => array(
             'manage_terms' => 'manage_categories',
             'edit_terms'   => 'manage_categories',
@@ -454,20 +454,20 @@ function mytheme_register_taxonomy() {
         'rest_base'          => 'product-categories',
         'rest_controller_class' => 'WP_REST_Terms_Controller',
 
-        // --- KHAC ---
+        // --- KHÁC ---
         'sort'               => true,
-        // true = ghi nho thu tu cua terms
+        // true = ghi nhớ thứ tự của terms
 
         'default_term'       => array(
-            'name'        => 'Chua phan loai',
+            'name'        => 'Chưa phân loại',
             'slug'        => 'chua-phan-loai',
-            'description' => 'Danh muc mac dinh cho san pham chua phan loai',
+            'description' => 'Danh mục mặc định cho sản phẩm chưa phân loại',
         ),
 
-        // Meta box callback tuy chinh
+        // Meta box callback tùy chỉnh
         // 'meta_box_cb'     => 'my_custom_meta_box',
 
-        // Callback cap nhat so luong
+        // Callback cập nhật số lượng
         // 'update_count_callback' => '_update_post_term_count',
     );
 
@@ -478,30 +478,30 @@ add_action( 'init', 'mytheme_register_taxonomy' );
 
 ---
 
-## 5. Vi du tao Taxonomy
+## 5. Ví dụ tạo Taxonomy
 
-### Vi du 1: Product Category (Phan cap - giong Category)
+### Ví dụ 1: Product Category (Phân cấp - giống Category)
 
 ```php
 function mytheme_register_product_category() {
     $labels = array(
-        'name'              => 'Danh Muc San Pham',
-        'singular_name'     => 'Danh Muc',
-        'menu_name'         => 'Danh Muc',
-        'all_items'         => 'Tat Ca Danh Muc',
-        'parent_item'       => 'Danh Muc Cha',
-        'parent_item_colon' => 'Danh Muc Cha:',
-        'new_item_name'     => 'Danh Muc Moi',
-        'add_new_item'      => 'Them Danh Muc Moi',
-        'edit_item'         => 'Sua Danh Muc',
-        'update_item'       => 'Cap Nhat Danh Muc',
-        'search_items'      => 'Tim Danh Muc',
-        'not_found'         => 'Khong tim thay',
+        'name'              => 'Danh Mục Sản Phẩm',
+        'singular_name'     => 'Danh Mục',
+        'menu_name'         => 'Danh Mục',
+        'all_items'         => 'Tất Cả Danh Mục',
+        'parent_item'       => 'Danh Mục Cha',
+        'parent_item_colon' => 'Danh Mục Cha:',
+        'new_item_name'     => 'Danh Mục Mới',
+        'add_new_item'      => 'Thêm Danh Mục Mới',
+        'edit_item'         => 'Sửa Danh Mục',
+        'update_item'       => 'Cập Nhật Danh Mục',
+        'search_items'      => 'Tìm Danh Mục',
+        'not_found'         => 'Không tìm thấy',
     );
 
     $args = array(
         'labels'             => $labels,
-        'hierarchical'       => true,  // Phan cap giong Category
+        'hierarchical'       => true,  // Phân cấp giống Category
         'public'             => true,
         'show_ui'            => true,
         'show_admin_column'  => true,
@@ -518,29 +518,29 @@ function mytheme_register_product_category() {
 add_action( 'init', 'mytheme_register_product_category' );
 ```
 
-### Vi du 2: Skill (Khong phan cap - giong Tag)
+### Ví dụ 2: Skill (Không phân cấp - giống Tag)
 
 ```php
 function mytheme_register_skill_taxonomy() {
     $labels = array(
-        'name'                       => 'Ky Nang',
-        'singular_name'              => 'Ky Nang',
-        'menu_name'                  => 'Ky Nang',
-        'all_items'                  => 'Tat Ca Ky Nang',
-        'new_item_name'              => 'Ky Nang Moi',
-        'add_new_item'               => 'Them Ky Nang Moi',
-        'edit_item'                  => 'Sua Ky Nang',
-        'update_item'                => 'Cap Nhat Ky Nang',
-        'search_items'               => 'Tim Ky Nang',
-        'not_found'                  => 'Khong tim thay',
-        'separate_items_with_commas' => 'Phan cach cac ky nang bang dau phay',
-        'choose_from_most_used'      => 'Chon tu ky nang pho bien',
-        'popular_items'              => 'Ky Nang Pho Bien',
+        'name'                       => 'Kỹ Năng',
+        'singular_name'              => 'Kỹ Năng',
+        'menu_name'                  => 'Kỹ Năng',
+        'all_items'                  => 'Tất Cả Kỹ Năng',
+        'new_item_name'              => 'Kỹ Năng Mới',
+        'add_new_item'               => 'Thêm Kỹ Năng Mới',
+        'edit_item'                  => 'Sửa Kỹ Năng',
+        'update_item'                => 'Cập Nhật Kỹ Năng',
+        'search_items'               => 'Tìm Kỹ Năng',
+        'not_found'                  => 'Không tìm thấy',
+        'separate_items_with_commas' => 'Phân cách các kỹ năng bằng dấu phẩy',
+        'choose_from_most_used'      => 'Chọn từ kỹ năng phổ biến',
+        'popular_items'              => 'Kỹ Năng Phổ Biến',
     );
 
     $args = array(
         'labels'             => $labels,
-        'hierarchical'       => false,  // Khong phan cap, giong Tag
+        'hierarchical'       => false,  // Không phân cấp, giống Tag
         'public'             => true,
         'show_ui'            => true,
         'show_admin_column'  => true,
@@ -553,15 +553,15 @@ function mytheme_register_skill_taxonomy() {
 add_action( 'init', 'mytheme_register_skill_taxonomy' );
 ```
 
-### Vi du 3: Product Tag
+### Ví dụ 3: Product Tag
 
 ```php
 function mytheme_register_product_tag() {
     $args = array(
         'labels' => array(
-            'name'          => 'The San Pham',
-            'singular_name' => 'The',
-            'menu_name'     => 'The San Pham',
+            'name'          => 'Thẻ Sản Phẩm',
+            'singular_name' => 'Thẻ',
+            'menu_name'     => 'Thẻ Sản Phẩm',
         ),
         'hierarchical'      => false,
         'public'            => true,
@@ -578,9 +578,9 @@ add_action( 'init', 'mytheme_register_product_tag' );
 
 ---
 
-## 6. Lien ket CPT voi Taxonomy
+## 6. Liên kết CPT với Taxonomy
 
-### Cach 1: Khai bao truc tiep trong register_post_type()
+### Cách 1: Khai báo trực tiếp trong register_post_type()
 
 ```php
 $args = array(
@@ -590,41 +590,41 @@ $args = array(
 register_post_type( 'product', $args );
 ```
 
-### Cach 2: Su dung register_taxonomy_for_object_type()
+### Cách 2: Sử dụng register_taxonomy_for_object_type()
 
 ```php
-// Gan taxonomy co san cho CPT
+// Gán taxonomy có sẵn cho CPT
 function mytheme_connect_taxonomy_to_cpt() {
-    // Gan category mac dinh cua WordPress cho CPT portfolio
+    // Gán category mặc định của WordPress cho CPT portfolio
     register_taxonomy_for_object_type( 'category', 'portfolio' );
 
-    // Gan post_tag cho CPT portfolio
+    // Gán post_tag cho CPT portfolio
     register_taxonomy_for_object_type( 'post_tag', 'portfolio' );
 }
 add_action( 'init', 'mytheme_connect_taxonomy_to_cpt' );
 ```
 
-### Cach 3: Khai bao trong register_taxonomy()
+### Cách 3: Khai báo trong register_taxonomy()
 
 ```php
-// Tham so thu 2 cua register_taxonomy la post type
+// Tham số thứ 2 của register_taxonomy là post type
 register_taxonomy( 'skill', array( 'team_member', 'portfolio' ), $args );
-// Taxonomy 'skill' duoc gan cho ca 'team_member' va 'portfolio'
+// Taxonomy 'skill' được gán cho cả 'team_member' và 'portfolio'
 ```
 
-### Kiem tra lien ket
+### Kiểm tra liên kết
 
 ```php
-// Kiem tra taxonomy co duoc gan cho post type khong
+// Kiểm tra taxonomy có được gán cho post type không
 if ( is_object_in_taxonomy( 'product', 'product_category' ) ) {
-    echo 'Product co taxonomy product_category';
+    echo 'Product có taxonomy product_category';
 }
 
-// Lay tat ca taxonomy cua mot post type
+// Lấy tất cả taxonomy của một post type
 $taxonomies = get_object_taxonomies( 'product' );
-// Ket qua: array( 'product_category', 'product_tag' )
+// Kết quả: array( 'product_category', 'product_tag' )
 
-// Lay taxonomy voi thong tin chi tiet
+// Lấy taxonomy với thông tin chi tiết
 $taxonomies = get_object_taxonomies( 'product', 'objects' );
 ```
 
@@ -632,7 +632,7 @@ $taxonomies = get_object_taxonomies( 'product', 'objects' );
 
 ## 7. Template cho CPT
 
-### He thong Template Hierarchy cho CPT
+### Hệ thống Template Hierarchy cho CPT
 
 ```
 Single Post:
@@ -642,14 +642,14 @@ Single Post:
   -> singular.php
   -> index.php
 
-Vi du: single-product-ao-thun.php -> single-product.php -> single.php
+Ví dụ: single-product-ao-thun.php -> single-product.php -> single.php
 
 Archive:
   archive-{post_type}.php
   -> archive.php
   -> index.php
 
-Vi du: archive-product.php -> archive.php
+Ví dụ: archive-product.php -> archive.php
 
 Taxonomy Archive:
   taxonomy-{taxonomy}-{term_slug}.php
@@ -658,7 +658,7 @@ Taxonomy Archive:
   -> archive.php
   -> index.php
 
-Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
+Ví dụ: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
 ```
 
 ### single-product.php
@@ -673,13 +673,13 @@ Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
             <header class="entry-header">
                 <h1 class="entry-title"><?php the_title(); ?></h1>
 
-                <!-- Hien thi taxonomy terms -->
+                <!-- Hiển thị taxonomy terms -->
                 <?php
                 $categories = get_the_terms( get_the_ID(), 'product_category' );
                 if ( $categories && ! is_wp_error( $categories ) ) :
                 ?>
                     <div class="product-categories">
-                        <strong>Danh muc:</strong>
+                        <strong>Danh mục:</strong>
                         <?php
                         $cat_links = array();
                         foreach ( $categories as $cat ) {
@@ -702,21 +702,21 @@ Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
                 <?php the_content(); ?>
             </div>
 
-            <!-- Hien thi custom fields / meta -->
+            <!-- Hiển thị custom fields / meta -->
             <?php
             $price = get_post_meta( get_the_ID(), '_product_price', true );
             if ( $price ) :
             ?>
                 <div class="product-price">
-                    <strong>Gia:</strong> <?php echo number_format( $price, 0, ',', '.' ); ?> VND
+                    <strong>Giá:</strong> <?php echo number_format( $price, 0, ',', '.' ); ?> VND
                 </div>
             <?php endif; ?>
 
-            <!-- Navigation giua cac san pham -->
+            <!-- Navigation giữa các sản phẩm -->
             <nav class="product-navigation">
                 <?php
-                previous_post_link( '<div class="prev">%link</div>', 'San pham truoc: %title' );
-                next_post_link( '<div class="next">%link</div>', 'San pham tiep: %title' );
+                previous_post_link( '<div class="prev">%link</div>', 'Sản phẩm trước: %title' );
+                next_post_link( '<div class="next">%link</div>', 'Sản phẩm tiếp: %title' );
                 ?>
             </nav>
         </article>
@@ -735,9 +735,9 @@ Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
 
 <main id="primary" class="site-main">
     <header class="page-header">
-        <h1 class="page-title">Tat Ca San Pham</h1>
+        <h1 class="page-title">Tất Cả Sản Phẩm</h1>
 
-        <!-- Bo loc theo taxonomy -->
+        <!-- Bộ lọc theo taxonomy -->
         <div class="product-filters">
             <?php
             $categories = get_terms( array(
@@ -748,7 +748,7 @@ Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
             if ( $categories && ! is_wp_error( $categories ) ) :
             ?>
                 <ul class="filter-list">
-                    <li><a href="<?php echo get_post_type_archive_link( 'product' ); ?>">Tat ca</a></li>
+                    <li><a href="<?php echo get_post_type_archive_link( 'product' ); ?>">Tất cả</a></li>
                     <?php foreach ( $categories as $cat ) : ?>
                         <li>
                             <a href="<?php echo esc_url( get_term_link( $cat ) ); ?>">
@@ -798,12 +798,12 @@ Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
 
         <?php the_posts_pagination( array(
             'mid_size'  => 2,
-            'prev_text' => 'Truoc',
+            'prev_text' => 'Trước',
             'next_text' => 'Sau',
         ) ); ?>
 
     <?php else : ?>
-        <p>Khong co san pham nao.</p>
+        <p>Không có sản phẩm nào.</p>
     <?php endif; ?>
 </main>
 
@@ -821,14 +821,14 @@ Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
     $term = get_queried_object();
     ?>
     <header class="page-header">
-        <h1 class="page-title">Danh muc: <?php echo esc_html( $term->name ); ?></h1>
+        <h1 class="page-title">Danh mục: <?php echo esc_html( $term->name ); ?></h1>
         <?php if ( $term->description ) : ?>
             <div class="term-description">
                 <?php echo wpautop( esc_html( $term->description ) ); ?>
             </div>
         <?php endif; ?>
 
-        <!-- Hien thi danh muc con -->
+        <!-- Hiển thị danh mục con -->
         <?php
         $children = get_terms( array(
             'taxonomy' => 'product_category',
@@ -839,7 +839,7 @@ Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
         if ( $children && ! is_wp_error( $children ) ) :
         ?>
             <div class="subcategories">
-                <strong>Danh muc con:</strong>
+                <strong>Danh mục con:</strong>
                 <ul>
                     <?php foreach ( $children as $child ) : ?>
                         <li>
@@ -853,7 +853,7 @@ Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
         <?php endif; ?>
     </header>
 
-    <!-- Danh sach san pham giong archive-product.php -->
+    <!-- Danh sách sản phẩm giống archive-product.php -->
     <?php if ( have_posts() ) : ?>
         <div class="product-grid">
             <?php while ( have_posts() ) : the_post(); ?>
@@ -868,7 +868,7 @@ Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
 
         <?php the_posts_pagination(); ?>
     <?php else : ?>
-        <p>Khong co san pham trong danh muc nay.</p>
+        <p>Không có sản phẩm trong danh mục này.</p>
     <?php endif; ?>
 </main>
 
@@ -877,12 +877,12 @@ Vi du: taxonomy-product_category-dien-tu.php -> taxonomy-product_category.php
 
 ---
 
-## 8. Query CPT - WP_Query voi post_type
+## 8. Query CPT - WP_Query với post_type
 
-### Query co ban
+### Query cơ bản
 
 ```php
-// Lay tat ca san pham
+// Lấy tất cả sản phẩm
 $products = new WP_Query( array(
     'post_type'      => 'product',
     'posts_per_page' => 12,
@@ -894,14 +894,14 @@ if ( $products->have_posts() ) :
     while ( $products->have_posts() ) : $products->the_post();
         echo '<h3>' . get_the_title() . '</h3>';
     endwhile;
-    wp_reset_postdata(); // LUON LUON reset sau WP_Query
+    wp_reset_postdata(); // LUÔN LUÔN reset sau WP_Query
 endif;
 ```
 
 ### Query theo Taxonomy
 
 ```php
-// Lay san pham theo danh muc
+// Lấy sản phẩm theo danh mục
 $products = new WP_Query( array(
     'post_type' => 'product',
     'tax_query' => array(
@@ -913,11 +913,11 @@ $products = new WP_Query( array(
     ),
 ) );
 
-// Query nhieu taxonomy (AND)
+// Query nhiều taxonomy (AND)
 $products = new WP_Query( array(
     'post_type' => 'product',
     'tax_query' => array(
-        'relation' => 'AND',  // 'AND' hoac 'OR'
+        'relation' => 'AND',  // 'AND' hoặc 'OR'
         array(
             'taxonomy' => 'product_category',
             'field'    => 'slug',
@@ -936,7 +936,7 @@ $products = new WP_Query( array(
 ### Query theo Meta (Custom Fields)
 
 ```php
-// Lay san pham co gia duoi 1 trieu
+// Lấy sản phẩm có giá dưới 1 triệu
 $products = new WP_Query( array(
     'post_type'  => 'product',
     'meta_query' => array(
@@ -952,7 +952,7 @@ $products = new WP_Query( array(
     'order'      => 'ASC',
 ) );
 
-// Ket hop tax_query va meta_query
+// Kết hợp tax_query và meta_query
 $products = new WP_Query( array(
     'post_type'  => 'product',
     'tax_query'  => array(
@@ -979,29 +979,29 @@ $products = new WP_Query( array(
 ) );
 ```
 
-### Query nhieu Post Types
+### Query nhiều Post Types
 
 ```php
-// Lay ca product va portfolio
+// Lấy cả product và portfolio
 $mixed = new WP_Query( array(
     'post_type' => array( 'product', 'portfolio' ),
     'posts_per_page' => 10,
 ) );
 ```
 
-### Su dung pre_get_posts de thay doi Main Query
+### Sử dụng pre_get_posts để thay đổi Main Query
 
 ```php
 /**
- * Thay doi so bai viet tren trang archive cua CPT
+ * Thay đổi số bài viết trên trang archive của CPT
  */
 function mytheme_modify_cpt_query( $query ) {
-    // Chi thay doi tren frontend, chi main query
+    // Chỉ thay đổi trên frontend, chỉ main query
     if ( is_admin() || ! $query->is_main_query() ) {
         return;
     }
 
-    // Trang archive cua product: hien thi 12 san pham
+    // Trang archive của product: hiển thị 12 sản phẩm
     if ( is_post_type_archive( 'product' ) ) {
         $query->set( 'posts_per_page', 12 );
         $query->set( 'orderby', 'title' );
@@ -1013,7 +1013,7 @@ function mytheme_modify_cpt_query( $query ) {
         $query->set( 'posts_per_page', 9 );
     }
 
-    // Them CPT vao trang tim kiem
+    // Thêm CPT vào trang tìm kiếm
     if ( is_search() ) {
         $query->set( 'post_type', array( 'post', 'page', 'product', 'portfolio' ) );
     }
@@ -1025,32 +1025,32 @@ add_action( 'pre_get_posts', 'mytheme_modify_cpt_query' );
 
 ## 9. Meta Boxes cho CPT
 
-### Tao Meta Box
+### Tạo Meta Box
 
 ```php
 /**
- * Dang ky meta box cho Product
+ * Đăng ký meta box cho Product
  */
 function mytheme_add_product_meta_boxes() {
     add_meta_box(
-        'product_details',                    // ID duy nhat
-        'Thong Tin San Pham',                 // Tieu de
-        'mytheme_product_meta_box_callback',  // Ham render HTML
-        'product',                            // Post type (hoac array cua post types)
-        'normal',                             // Vi tri: 'normal', 'side', 'advanced'
-        'high'                                // Do uu tien: 'high', 'core', 'default', 'low'
+        'product_details',                    // ID duy nhất
+        'Thông Tin Sản Phẩm',                 // Tiêu đề
+        'mytheme_product_meta_box_callback',  // Hàm render HTML
+        'product',                            // Post type (hoặc array của post types)
+        'normal',                             // Vị trí: 'normal', 'side', 'advanced'
+        'high'                                // Độ ưu tiên: 'high', 'core', 'default', 'low'
     );
 }
 add_action( 'add_meta_boxes', 'mytheme_add_product_meta_boxes' );
 
 /**
- * Render noi dung meta box
+ * Render nội dung meta box
  */
 function mytheme_product_meta_box_callback( $post ) {
-    // Tao nonce de bao mat
+    // Tạo nonce để bảo mật
     wp_nonce_field( 'mytheme_save_product_meta', 'mytheme_product_nonce' );
 
-    // Lay gia tri hien tai
+    // Lấy giá trị hiện tại
     $price     = get_post_meta( $post->ID, '_product_price', true );
     $sku       = get_post_meta( $post->ID, '_product_sku', true );
     $status    = get_post_meta( $post->ID, '_product_status', true );
@@ -1060,7 +1060,7 @@ function mytheme_product_meta_box_callback( $post ) {
 
     <table class="form-table">
         <tr>
-            <th><label for="product_price">Gia (VND)</label></th>
+            <th><label for="product_price">Giá (VND)</label></th>
             <td>
                 <input type="number" id="product_price" name="product_price"
                        value="<?php echo esc_attr( $price ); ?>"
@@ -1068,7 +1068,7 @@ function mytheme_product_meta_box_callback( $post ) {
             </td>
         </tr>
         <tr>
-            <th><label for="product_sku">Ma San Pham (SKU)</label></th>
+            <th><label for="product_sku">Mã Sản Phẩm (SKU)</label></th>
             <td>
                 <input type="text" id="product_sku" name="product_sku"
                        value="<?php echo esc_attr( $sku ); ?>"
@@ -1076,23 +1076,23 @@ function mytheme_product_meta_box_callback( $post ) {
             </td>
         </tr>
         <tr>
-            <th><label for="product_status">Trang Thai</label></th>
+            <th><label for="product_status">Trạng Thái</label></th>
             <td>
                 <select id="product_status" name="product_status">
                     <option value="in_stock" <?php selected( $status, 'in_stock' ); ?>>
-                        Con hang
+                        Còn hàng
                     </option>
                     <option value="out_of_stock" <?php selected( $status, 'out_of_stock' ); ?>>
-                        Het hang
+                        Hết hàng
                     </option>
                     <option value="on_sale" <?php selected( $status, 'on_sale' ); ?>>
-                        Dang giam gia
+                        Đang giảm giá
                     </option>
                 </select>
             </td>
         </tr>
         <tr>
-            <th><label for="product_weight">Can nang (gram)</label></th>
+            <th><label for="product_weight">Cân nặng (gram)</label></th>
             <td>
                 <input type="number" id="product_weight" name="product_weight"
                        value="<?php echo esc_attr( $weight ); ?>"
@@ -1100,12 +1100,12 @@ function mytheme_product_meta_box_callback( $post ) {
             </td>
         </tr>
         <tr>
-            <th><label for="product_color">Mau sac</label></th>
+            <th><label for="product_color">Màu sắc</label></th>
             <td>
                 <input type="text" id="product_color" name="product_color"
                        value="<?php echo esc_attr( $color ); ?>"
                        class="regular-text">
-                <p class="description">Nhap mau sac san pham, phan cach bang dau phay</p>
+                <p class="description">Nhập màu sắc sản phẩm, phân cách bằng dấu phẩy</p>
             </td>
         </tr>
     </table>
@@ -1114,10 +1114,10 @@ function mytheme_product_meta_box_callback( $post ) {
 }
 
 /**
- * Luu du lieu meta box
+ * Lưu dữ liệu meta box
  */
 function mytheme_save_product_meta( $post_id ) {
-    // Kiem tra nonce
+    // Kiểm tra nonce
     if ( ! isset( $_POST['mytheme_product_nonce'] ) ) {
         return;
     }
@@ -1125,17 +1125,17 @@ function mytheme_save_product_meta( $post_id ) {
         return;
     }
 
-    // Kiem tra autosave
+    // Kiểm tra autosave
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
         return;
     }
 
-    // Kiem tra quyen
+    // Kiểm tra quyền
     if ( ! current_user_can( 'edit_post', $post_id ) ) {
         return;
     }
 
-    // Luu tung truong
+    // Lưu từng trường
     $fields = array(
         'product_price'  => '_product_price',
         'product_sku'    => '_product_sku',
@@ -1148,7 +1148,7 @@ function mytheme_save_product_meta( $post_id ) {
         if ( isset( $_POST[ $field_name ] ) ) {
             $value = sanitize_text_field( $_POST[ $field_name ] );
 
-            // Sanitize rieng cho tung loai du lieu
+            // Sanitize riêng cho từng loại dữ liệu
             if ( $meta_key === '_product_price' || $meta_key === '_product_weight' ) {
                 $value = absint( $value );
             }
@@ -1158,7 +1158,7 @@ function mytheme_save_product_meta( $post_id ) {
     }
 }
 add_action( 'save_post_product', 'mytheme_save_product_meta' );
-// save_post_{post_type} chi chay cho post type cu the
+// save_post_{post_type} chỉ chạy cho post type cụ thể
 ```
 
 ### Meta Box cho Team Member
@@ -1167,7 +1167,7 @@ add_action( 'save_post_product', 'mytheme_save_product_meta' );
 function mytheme_add_team_meta_boxes() {
     add_meta_box(
         'team_member_info',
-        'Thong Tin Thanh Vien',
+        'Thông Tin Thành Viên',
         'mytheme_team_meta_box_callback',
         'team_member',
         'normal',
@@ -1188,7 +1188,7 @@ function mytheme_team_meta_box_callback( $post ) {
 
     <table class="form-table">
         <tr>
-            <th><label for="team_position">Chuc vu</label></th>
+            <th><label for="team_position">Chức vụ</label></th>
             <td>
                 <input type="text" id="team_position" name="team_position"
                        value="<?php echo esc_attr( $position ); ?>" class="regular-text">
@@ -1202,7 +1202,7 @@ function mytheme_team_meta_box_callback( $post ) {
             </td>
         </tr>
         <tr>
-            <th><label for="team_phone">So dien thoai</label></th>
+            <th><label for="team_phone">Số điện thoại</label></th>
             <td>
                 <input type="tel" id="team_phone" name="team_phone"
                        value="<?php echo esc_attr( $phone ); ?>" class="regular-text">
@@ -1256,30 +1256,30 @@ add_action( 'save_post_team_member', 'mytheme_save_team_meta' );
 
 ## 10. Custom Columns trong Admin List
 
-### Them cot tuy chinh cho Product
+### Thêm cột tùy chỉnh cho Product
 
 ```php
 /**
- * Dinh nghia cac cot hien thi
+ * Định nghĩa các cột hiển thị
  */
 function mytheme_product_columns( $columns ) {
-    // Tao lai mang columns de sap xep thu tu
+    // Tạo lại mảng columns để sắp xếp thứ tự
     $new_columns = array(
         'cb'               => $columns['cb'],              // Checkbox
-        'thumbnail'        => 'Anh',                       // Cot anh (tuy chinh)
-        'title'            => 'Ten San Pham',
-        'product_category' => 'Danh Muc',                  // Taxonomy column
-        'price'            => 'Gia',                       // Meta column
+        'thumbnail'        => 'Ảnh',                       // Cột ảnh (tùy chỉnh)
+        'title'            => 'Tên Sản Phẩm',
+        'product_category' => 'Danh Mục',                  // Taxonomy column
+        'price'            => 'Giá',                       // Meta column
         'sku'              => 'SKU',                       // Meta column
-        'status'           => 'Trang Thai',                // Meta column
-        'date'             => 'Ngay Tao',
+        'status'           => 'Trạng Thái',                // Meta column
+        'date'             => 'Ngày Tạo',
     );
     return $new_columns;
 }
 add_filter( 'manage_product_posts_columns', 'mytheme_product_columns' );
 
 /**
- * Render noi dung cac cot tuy chinh
+ * Render nội dung các cột tùy chỉnh
  */
 function mytheme_product_column_content( $column, $post_id ) {
     switch ( $column ) {
@@ -1287,7 +1287,7 @@ function mytheme_product_column_content( $column, $post_id ) {
             if ( has_post_thumbnail( $post_id ) ) {
                 echo get_the_post_thumbnail( $post_id, array( 50, 50 ) );
             } else {
-                echo '<span style="color:#999;">Khong co anh</span>';
+                echo '<span style="color:#999;">Không có ảnh</span>';
             }
             break;
 
@@ -1296,7 +1296,7 @@ function mytheme_product_column_content( $column, $post_id ) {
             if ( $price ) {
                 echo number_format( $price, 0, ',', '.' ) . ' VND';
             } else {
-                echo '<span style="color:#999;">Chua co gia</span>';
+                echo '<span style="color:#999;">Chưa có giá</span>';
             }
             break;
 
@@ -1308,9 +1308,9 @@ function mytheme_product_column_content( $column, $post_id ) {
         case 'status':
             $status = get_post_meta( $post_id, '_product_status', true );
             $status_labels = array(
-                'in_stock'     => '<span style="color:green;">Con hang</span>',
-                'out_of_stock' => '<span style="color:red;">Het hang</span>',
-                'on_sale'      => '<span style="color:orange;">Giam gia</span>',
+                'in_stock'     => '<span style="color:green;">Còn hàng</span>',
+                'out_of_stock' => '<span style="color:red;">Hết hàng</span>',
+                'on_sale'      => '<span style="color:orange;">Giảm giá</span>',
             );
             echo isset( $status_labels[ $status ] ) ? $status_labels[ $status ] : 'N/A';
             break;
@@ -1325,7 +1325,7 @@ function mytheme_product_column_content( $column, $post_id ) {
                 }
                 echo implode( ', ', $links );
             } else {
-                echo '<span style="color:#999;">Chua phan loai</span>';
+                echo '<span style="color:#999;">Chưa phân loại</span>';
             }
             break;
     }
@@ -1333,7 +1333,7 @@ function mytheme_product_column_content( $column, $post_id ) {
 add_action( 'manage_product_posts_custom_column', 'mytheme_product_column_content', 10, 2 );
 
 /**
- * Cho phep sap xep theo cot tuy chinh
+ * Cho phép sắp xếp theo cột tùy chỉnh
  */
 function mytheme_product_sortable_columns( $columns ) {
     $columns['price']  = 'price';
@@ -1344,7 +1344,7 @@ function mytheme_product_sortable_columns( $columns ) {
 add_filter( 'manage_edit-product_sortable_columns', 'mytheme_product_sortable_columns' );
 
 /**
- * Xu ly logic sap xep
+ * Xử lý logic sắp xếp
  */
 function mytheme_product_orderby( $query ) {
     if ( ! is_admin() || ! $query->is_main_query() ) {
@@ -1373,11 +1373,11 @@ function mytheme_product_orderby( $query ) {
 add_action( 'pre_get_posts', 'mytheme_product_orderby' );
 ```
 
-### Them bo loc (filter) trong admin
+### Thêm bộ lọc (filter) trong admin
 
 ```php
 /**
- * Them dropdown loc theo taxonomy tren trang danh sach
+ * Thêm dropdown lọc theo taxonomy trên trang danh sách
  */
 function mytheme_product_taxonomy_filter() {
     global $typenow;
@@ -1386,12 +1386,12 @@ function mytheme_product_taxonomy_filter() {
         return;
     }
 
-    // Loc theo Product Category
+    // Lọc theo Product Category
     $taxonomy = 'product_category';
     $selected = isset( $_GET[ $taxonomy ] ) ? $_GET[ $taxonomy ] : '';
 
     wp_dropdown_categories( array(
-        'show_option_all' => 'Tat ca danh muc',
+        'show_option_all' => 'Tất cả danh mục',
         'taxonomy'        => $taxonomy,
         'name'            => $taxonomy,
         'orderby'         => 'name',
@@ -1401,21 +1401,21 @@ function mytheme_product_taxonomy_filter() {
         'value_field'     => 'slug',
     ) );
 
-    // Loc theo trang thai
+    // Lọc theo trạng thái
     $status = isset( $_GET['product_status_filter'] ) ? $_GET['product_status_filter'] : '';
     ?>
     <select name="product_status_filter">
-        <option value="">Tat ca trang thai</option>
-        <option value="in_stock" <?php selected( $status, 'in_stock' ); ?>>Con hang</option>
-        <option value="out_of_stock" <?php selected( $status, 'out_of_stock' ); ?>>Het hang</option>
-        <option value="on_sale" <?php selected( $status, 'on_sale' ); ?>>Giam gia</option>
+        <option value="">Tất cả trạng thái</option>
+        <option value="in_stock" <?php selected( $status, 'in_stock' ); ?>>Còn hàng</option>
+        <option value="out_of_stock" <?php selected( $status, 'out_of_stock' ); ?>>Hết hàng</option>
+        <option value="on_sale" <?php selected( $status, 'on_sale' ); ?>>Giảm giá</option>
     </select>
     <?php
 }
 add_action( 'restrict_manage_posts', 'mytheme_product_taxonomy_filter' );
 
 /**
- * Xu ly loc theo meta
+ * Xử lý lọc theo meta
  */
 function mytheme_product_filter_query( $query ) {
     global $pagenow, $typenow;
@@ -1440,70 +1440,70 @@ add_action( 'pre_get_posts', 'mytheme_product_filter_query' );
 
 ## 11. Best Practices
 
-### 1. Quy tac dat ten
+### 1. Quy tắc đặt tên
 
 ```php
-// Post type: dung so it, snake_case, toi da 20 ky tu
-// TOT:
+// Post type: dùng số ít, snake_case, tối đa 20 ký tự
+// TỐT:
 register_post_type( 'product', $args );
 register_post_type( 'team_member', $args );
 register_post_type( 'portfolio', $args );
 
-// KHONG TOT:
-register_post_type( 'products', $args );      // Khong nen dung so nhieu
-register_post_type( 'my-product', $args );    // Tranh dung dau gach ngang
-register_post_type( 'myPluginProduct', $args ); // Khong dung camelCase
+// KHÔNG TỐT:
+register_post_type( 'products', $args );      // Không nên dùng số nhiều
+register_post_type( 'my-product', $args );    // Tránh dùng dấu gạch ngang
+register_post_type( 'myPluginProduct', $args ); // Không dùng camelCase
 
-// Taxonomy: them prefix de tranh trung ten
-register_taxonomy( 'product_category', ... );  // TOT
-register_taxonomy( 'category', ... );          // KHONG TOT - trung voi taxonomy mac dinh
+// Taxonomy: thêm prefix để tránh trùng tên
+register_taxonomy( 'product_category', ... );  // TỐT
+register_taxonomy( 'category', ... );          // KHÔNG TỐT - trùng với taxonomy mặc định
 
-// Meta keys: dung underscore dau de an khoi Custom Fields UI
-update_post_meta( $id, '_product_price', $value );  // Co _ dau = an
-update_post_meta( $id, 'product_price', $value );   // Khong _ = hien trong Custom Fields
+// Meta keys: dùng underscore đầu để ẩn khỏi Custom Fields UI
+update_post_meta( $id, '_product_price', $value );  // Có _ đầu = ẩn
+update_post_meta( $id, 'product_price', $value );   // Không _ = hiện trong Custom Fields
 ```
 
-### 2. Bao mat
+### 2. Bảo mật
 
 ```php
-// LUON kiem tra nonce khi luu meta
+// LUÔN kiểm tra nonce khi lưu meta
 wp_nonce_field( 'action_name', 'nonce_name' );
 wp_verify_nonce( $_POST['nonce_name'], 'action_name' );
 
-// LUON kiem tra quyen
+// LUÔN kiểm tra quyền
 current_user_can( 'edit_post', $post_id );
 
-// LUON sanitize du lieu dau vao
+// LUÔN sanitize dữ liệu đầu vào
 sanitize_text_field( $_POST['field'] );
 sanitize_email( $_POST['email'] );
 absint( $_POST['number'] );
 esc_url_raw( $_POST['url'] );
 wp_kses_post( $_POST['html_content'] );
 
-// LUON escape du lieu dau ra
+// LUÔN escape dữ liệu đầu ra
 esc_html( $text );
 esc_attr( $attribute );
 esc_url( $url );
 ```
 
-### 3. Hieu suat
+### 3. Hiệu suất
 
 ```php
-// Dung save_post_{post_type} thay vi save_post
-// De tranh chay voi moi post type
+// Dùng save_post_{post_type} thay vì save_post
+// Để tránh chạy với mọi post type
 add_action( 'save_post_product', 'mytheme_save_product_meta' );
 
-// Dung pre_get_posts thay vi tao WP_Query moi cho main query
+// Dùng pre_get_posts thay vì tạo WP_Query mới cho main query
 add_action( 'pre_get_posts', 'mytheme_modify_query' );
 
-// LUON goi wp_reset_postdata() sau WP_Query
+// LUÔN gọi wp_reset_postdata() sau WP_Query
 $query = new WP_Query( $args );
 while ( $query->have_posts() ) : $query->the_post();
     // ...
 endwhile;
 wp_reset_postdata();
 
-// Cache ket qua query nang
+// Cache kết quả query nặng
 $products = get_transient( 'featured_products' );
 if ( false === $products ) {
     $query = new WP_Query( array(
@@ -1517,11 +1517,11 @@ if ( false === $products ) {
 }
 ```
 
-### 4. Flush Rewrite Rules dung cach
+### 4. Flush Rewrite Rules đúng cách
 
 ```php
-// Chi flush khi activate/deactivate plugin
-// KHONG BAO GIO goi flush_rewrite_rules() trong init hook
+// Chỉ flush khi activate/deactivate plugin
+// KHÔNG BAO GIỜ gọi flush_rewrite_rules() trong init hook
 
 // Trong plugin:
 register_activation_hook( __FILE__, function() {
@@ -1537,30 +1537,30 @@ function mytheme_after_switch() {
 add_action( 'after_switch_theme', 'mytheme_after_switch' );
 ```
 
-### 5. Su dung Plugin de dang ky CPT
+### 5. Sử dụng Plugin để đăng ký CPT
 
 ```
-Khi dang ky CPT, nen dat code trong plugin thay vi theme.
-Ly do: Khi doi theme, CPT van hoat dong.
-Noi dung (data) nen doc lap voi giao dien (theme).
+Khi đăng ký CPT, nên đặt code trong plugin thay vì theme.
+Lý do: Khi đổi theme, CPT vẫn hoạt động.
+Nội dung (data) nên độc lập với giao diện (theme).
 
-Cau truc plugin don gian:
+Cấu trúc plugin đơn giản:
 my-custom-post-types/
-  |-- my-custom-post-types.php    (File chinh: dang ky CPT + Taxonomy)
+  |-- my-custom-post-types.php    (File chính: đăng ký CPT + Taxonomy)
   |-- includes/
-  |     |-- post-types.php        (Dang ky CPT)
-  |     |-- taxonomies.php        (Dang ky Taxonomy)
+  |     |-- post-types.php        (Đăng ký CPT)
+  |     |-- taxonomies.php        (Đăng ký Taxonomy)
   |     |-- meta-boxes.php        (Meta boxes)
   |     |-- admin-columns.php     (Custom columns)
 ```
 
-### 6. Tong hop code hoan chinh trong mot plugin
+### 6. Tổng hợp code hoàn chỉnh trong một plugin
 
 ```php
 <?php
 /**
  * Plugin Name: My Custom Post Types
- * Description: Dang ky Custom Post Types va Taxonomies
+ * Description: Đăng ký Custom Post Types và Taxonomies
  * Version: 1.0
  * Author: Dev Team
  */
@@ -1584,8 +1584,8 @@ class My_Custom_Post_Types {
         // Product
         register_post_type( 'product', array(
             'labels' => array(
-                'name' => 'San Pham',
-                'singular_name' => 'San Pham',
+                'name' => 'Sản Phẩm',
+                'singular_name' => 'Sản Phẩm',
             ),
             'public'       => true,
             'has_archive'  => true,
@@ -1599,8 +1599,8 @@ class My_Custom_Post_Types {
     public function register_taxonomies() {
         register_taxonomy( 'product_category', 'product', array(
             'labels' => array(
-                'name' => 'Danh Muc',
-                'singular_name' => 'Danh Muc',
+                'name' => 'Danh Mục',
+                'singular_name' => 'Danh Mục',
             ),
             'hierarchical'      => true,
             'public'            => true,
@@ -1611,14 +1611,14 @@ class My_Custom_Post_Types {
     }
 
     public function add_meta_boxes() {
-        add_meta_box( 'product_details', 'Thong Tin San Pham',
+        add_meta_box( 'product_details', 'Thông Tin Sản Phẩm',
             array( $this, 'render_product_meta_box' ), 'product', 'normal', 'high' );
     }
 
     public function render_product_meta_box( $post ) {
         wp_nonce_field( 'save_product', 'product_nonce' );
         $price = get_post_meta( $post->ID, '_product_price', true );
-        echo '<label>Gia: </label>';
+        echo '<label>Giá: </label>';
         echo '<input type="number" name="product_price" value="' . esc_attr( $price ) . '">';
     }
 
@@ -1633,7 +1633,7 @@ class My_Custom_Post_Types {
     }
 
     public function product_columns( $columns ) {
-        $columns['price'] = 'Gia';
+        $columns['price'] = 'Giá';
         return $columns;
     }
 

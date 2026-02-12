@@ -832,5 +832,5 @@ Hiểu rõ hooks giúp bạn:
 - Tích hợp với plugins khác
 - Maintain code dễ dàng
 
-Chuc ban thanh cong voi WordPress Hooks!
+Chúc bạn thành công với WordPress Hooks!
 

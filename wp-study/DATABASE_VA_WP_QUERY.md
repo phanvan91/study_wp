@@ -1,32 +1,32 @@
-# Database va WP_Query trong WordPress
+# Database và WP_Query trong WordPress
 
-Huong dan toan dien ve co so du lieu WordPress va cac lop truy van (WP_Query, WP_Meta_Query, WP_Tax_Query, WP_User_Query, WP_Comment_Query), bao gom $wpdb, custom tables va toi uu hieu nang.
+Hướng dẫn toàn diện về cơ sở dữ liệu WordPress và các lớp truy vấn (WP_Query, WP_Meta_Query, WP_Tax_Query, WP_User_Query, WP_Comment_Query), bao gồm $wpdb, custom tables và tối ưu hiệu năng.
 
 ---
 
-## Muc luc
+## Mục lục
 
-1. [Cau truc Database WordPress](#1-cau-truc-database-wordpress)
+1. [Cấu trúc Database WordPress](#1-cau-truc-database-wordpress)
 2. [$wpdb - WordPress Database Abstraction Layer](#2-wpdb---wordpress-database-abstraction-layer)
-3. [WP_Query - Giai thich chi tiet](#3-wp_query---giai-thich-chi-tiet)
+3. [WP_Query - Giải thích chi tiết](#3-wp_query---giai-thich-chi-tiet)
 4. [WP_Meta_Query - Query theo meta fields](#4-wp_meta_query---query-theo-meta-fields)
 5. [WP_Tax_Query - Query theo taxonomy](#5-wp_tax_query---query-theo-taxonomy)
 6. [WP_User_Query - Query users](#6-wp_user_query---query-users)
 7. [WP_Comment_Query - Query comments](#7-wp_comment_query---query-comments)
 8. [pre_get_posts - Modify main query](#8-pre_get_posts---modify-main-query)
-9. [Custom Tables - Tao bang rieng voi dbDelta()](#9-custom-tables---tao-bang-rieng-voi-dbdelta)
-10. [Toi uu Database](#10-toi-uu-database)
-11. [Vi du thuc te phuc tap](#11-vi-du-thuc-te-phuc-tap)
+9. [Custom Tables - Tạo bảng riêng với dbDelta()](#9-custom-tables---tao-bang-rieng-voi-dbdelta)
+10. [Tối ưu Database](#10-toi-uu-database)
+11. [Ví dụ thực tế phức tạp](#11-vi-du-thuc-te-phuc-tap)
 
 ---
 
-## 1. Cau truc Database WordPress
+## 1. Cấu trúc Database WordPress
 
-WordPress su dung MySQL/MariaDB voi cau truc mac dinh gom 12 bang chinh. Prefix mac dinh la `wp_` nhung co the thay doi trong `wp-config.php`.
+WordPress sử dụng MySQL/MariaDB với cấu trúc mặc định gồm 12 bảng chính. Prefix mặc định là `wp_` nhưng có thể thay đổi trong `wp-config.php`.
 
 ### 1.1. wp_posts
 
-Bang quan trong nhat, luu tat ca cac loai noi dung: posts, pages, custom post types, attachments, revisions, menu items.
+Bảng quan trọng nhất, lưu tất cả các loại nội dung: posts, pages, custom post types, attachments, revisions, menu items.
 
 ```
 +-----------------------+---------------------+------+-----+---------------------+----------------+
@@ -58,13 +58,13 @@ Bang quan trong nhat, luu tat ca cac loai noi dung: posts, pages, custom post ty
 +-----------------------+---------------------+------+-----+---------------------+----------------+
 ```
 
-Cac gia tri `post_status` pho bien: `publish`, `draft`, `pending`, `private`, `trash`, `auto-draft`, `inherit` (cho revisions/attachments).
+Các giá trị `post_status` phổ biến: `publish`, `draft`, `pending`, `private`, `trash`, `auto-draft`, `inherit` (cho revisions/attachments).
 
-Cac gia tri `post_type` pho bien: `post`, `page`, `attachment`, `revision`, `nav_menu_item`, va cac custom post types.
+Các giá trị `post_type` phổ biến: `post`, `page`, `attachment`, `revision`, `nav_menu_item`, và các custom post types.
 
 ### 1.2. wp_postmeta
 
-Luu metadata cua posts theo dang key-value. Day la bang duoc truy van nhieu nhat va cung de bi cham nhat khi du lieu lon.
+Lưu metadata của posts theo dạng key-value. Đây là bảng được truy vấn nhiều nhất và cũng dễ bị chậm nhất khi dữ liệu lớn.
 
 ```
 +-----------+---------------------+------+-----+---------+----------------+
@@ -77,11 +77,11 @@ Luu metadata cua posts theo dang key-value. Day la bang duoc truy van nhieu nhat
 +-----------+---------------------+------+-----+---------+----------------+
 ```
 
-Luu y: `meta_value` la `longtext`, khong duoc danh index. Neu can query theo `meta_value` thuong xuyen, can tao custom index hoac custom table.
+Lưu ý: `meta_value` là `longtext`, không được đánh index. Nếu cần query theo `meta_value` thường xuyên, cần tạo custom index hoặc custom table.
 
 ### 1.3. wp_terms
 
-Luu ten cac term (category, tag, custom taxonomy term).
+Lưu tên các term (category, tag, custom taxonomy term).
 
 ```
 +------------+---------------------+------+-----+---------+----------------+
@@ -96,7 +96,7 @@ Luu ten cac term (category, tag, custom taxonomy term).
 
 ### 1.4. wp_term_taxonomy
 
-Gan term voi taxonomy cu the. Mot term co the thuoc nhieu taxonomy khac nhau.
+Gán term với taxonomy cụ thể. Một term có thể thuộc nhiều taxonomy khác nhau.
 
 ```
 +------------------+---------------------+------+-----+---------+----------------+
@@ -113,7 +113,7 @@ Gan term voi taxonomy cu the. Mot term co the thuoc nhieu taxonomy khac nhau.
 
 ### 1.5. wp_term_relationships
 
-Bang trung gian (pivot table) lien ket objects (posts) voi term_taxonomy.
+Bảng trung gian (pivot table) liên kết objects (posts) với term_taxonomy.
 
 ```
 +------------------+---------------------+------+-----+---------+-------+
@@ -125,11 +125,11 @@ Bang trung gian (pivot table) lien ket objects (posts) voi term_taxonomy.
 +------------------+---------------------+------+-----+---------+-------+
 ```
 
-Moi quan he: `wp_posts.ID` -> `wp_term_relationships.object_id` -> `wp_term_relationships.term_taxonomy_id` -> `wp_term_taxonomy.term_taxonomy_id` -> `wp_term_taxonomy.term_id` -> `wp_terms.term_id`.
+Mối quan hệ: `wp_posts.ID` -> `wp_term_relationships.object_id` -> `wp_term_relationships.term_taxonomy_id` -> `wp_term_taxonomy.term_taxonomy_id` -> `wp_term_taxonomy.term_id` -> `wp_terms.term_id`.
 
 ### 1.6. wp_users
 
-Luu thong tin nguoi dung.
+Lưu thông tin người dùng.
 
 ```
 +---------------------+---------------------+------+-----+---------------------+----------------+
@@ -150,7 +150,7 @@ Luu thong tin nguoi dung.
 
 ### 1.7. wp_usermeta
 
-Luu metadata cua user, tuong tu wp_postmeta.
+Lưu metadata của user, tương tự wp_postmeta.
 
 ```
 +-----------+---------------------+------+-----+---------+----------------+
@@ -163,11 +163,11 @@ Luu metadata cua user, tuong tu wp_postmeta.
 +-----------+---------------------+------+-----+---------+----------------+
 ```
 
-Cac meta_key quan trong: `wp_capabilities` (roles), `wp_user_level`, `first_name`, `last_name`, `nickname`, `description`.
+Các meta_key quan trọng: `wp_capabilities` (roles), `wp_user_level`, `first_name`, `last_name`, `nickname`, `description`.
 
 ### 1.8. wp_options
 
-Luu toan bo cai dat cua WordPress va plugins. Bang nay duoc load rat nhieu, dac biet cac row co `autoload = yes`.
+Lưu toàn bộ cài đặt của WordPress và plugins. Bảng này được load rất nhiều, đặc biệt các row có `autoload = yes`.
 
 ```
 +--------------+---------------------+------+-----+---------+----------------+
@@ -180,11 +180,11 @@ Luu toan bo cai dat cua WordPress va plugins. Bang nay duoc load rat nhieu, dac 
 +--------------+---------------------+------+-----+---------+----------------+
 ```
 
-Luu y: Tat ca cac row co `autoload = yes` se duoc load vao memory moi request. Khi su dung `add_option()` hoac `update_option()`, can can nhac gia tri `autoload`.
+Lưu ý: Tất cả các row có `autoload = yes` sẽ được load vào memory mỗi request. Khi sử dụng `add_option()` hoặc `update_option()`, cần cân nhắc giá trị `autoload`.
 
 ### 1.9. wp_comments
 
-Luu binh luan.
+Lưu bình luận.
 
 ```
 +----------------------+---------------------+------+-----+---------------------+----------------+
@@ -210,7 +210,7 @@ Luu binh luan.
 
 ### 1.10. wp_commentmeta
 
-Luu metadata cua comments.
+Lưu metadata của comments.
 
 ```
 +-----------+---------------------+------+-----+---------+----------------+
@@ -225,7 +225,7 @@ Luu metadata cua comments.
 
 ### 1.11. wp_links
 
-Bang luu bookmarks/links. Hien tai it duoc su dung (deprecated tu WP 3.5) nhung van ton tai trong schema.
+Bảng lưu bookmarks/links. Hiện tại ít được sử dụng (deprecated từ WP 3.5) nhưng vẫn tồn tại trong schema.
 
 ```
 +-----------------+---------------------+------+-----+---------------------+----------------+
@@ -247,7 +247,7 @@ Bang luu bookmarks/links. Hien tai it duoc su dung (deprecated tu WP 3.5) nhung 
 +-----------------+---------------------+------+-----+---------------------+----------------+
 ```
 
-### So do quan he giua cac bang
+### Sơ đồ quan hệ giữa các bảng
 
 ```
 wp_posts (ID)
@@ -263,27 +263,27 @@ wp_users (ID)
     |--- wp_posts (post_author -> wp_users.ID)
     |--- wp_comments (user_id -> wp_users.ID)
 
-wp_options (doc lap, khong co foreign key)
-wp_links (doc lap, it su dung)
+wp_options (độc lập, không có foreign key)
+wp_links (độc lập, ít sử dụng)
 ```
 
 ---
 
 ## 2. $wpdb - WordPress Database Abstraction Layer
 
-`$wpdb` la doi tuong global cung cap interface de tuong tac truc tiep voi database. No la instance cua class `wpdb`.
+`$wpdb` là đối tượng global cung cấp interface để tương tác trực tiếp với database. Nó là instance của class `wpdb`.
 
-### 2.1. Truy cap $wpdb
+### 2.1. Truy cập $wpdb
 
 ```php
 <?php
-// Cach 1: Khai bao global
+// Cách 1: Khai báo global
 function my_custom_query() {
     global $wpdb;
-    // Su dung $wpdb o day
+    // Sử dụng $wpdb ở đây
 }
 
-// Cach 2: Su dung trong class
+// Cách 2: Sử dụng trong class
 class My_Plugin {
     public function get_data() {
         global $wpdb;
@@ -292,13 +292,13 @@ class My_Plugin {
 }
 ```
 
-### 2.2. Cac thuoc tinh quan trong cua $wpdb
+### 2.2. Các thuộc tính quan trọng của $wpdb
 
 ```php
 <?php
 global $wpdb;
 
-// Ten cac bang voi prefix
+// Tên các bảng với prefix
 $wpdb->posts;            // wp_posts
 $wpdb->postmeta;         // wp_postmeta
 $wpdb->users;            // wp_users
@@ -312,27 +312,27 @@ $wpdb->options;          // wp_options
 $wpdb->links;            // wp_links
 
 // Prefix
-$wpdb->prefix;           // 'wp_' (hoac prefix tuy chinh)
-$wpdb->base_prefix;      // prefix goc (multisite)
+$wpdb->prefix;           // 'wp_' (hoặc prefix tùy chỉnh)
+$wpdb->base_prefix;      // prefix gốc (multisite)
 
-// Thong tin ket noi
-$wpdb->last_query;       // Cau query cuoi cung da chay
-$wpdb->last_result;      // Ket qua cuoi cung
-$wpdb->last_error;       // Loi cuoi cung
-$wpdb->num_rows;         // So dong tra ve tu query cuoi
-$wpdb->insert_id;        // ID cua row vua insert
-$wpdb->rows_affected;    // So dong bi anh huong boi query cuoi
+// Thông tin kết nối
+$wpdb->last_query;       // Câu query cuối cùng đã chạy
+$wpdb->last_result;      // Kết quả cuối cùng
+$wpdb->last_error;       // Lỗi cuối cùng
+$wpdb->num_rows;         // Số dòng trả về từ query cuối
+$wpdb->insert_id;        // ID của row vừa insert
+$wpdb->rows_affected;    // Số dòng bị ảnh hưởng bởi query cuối
 ```
 
 ### 2.3. $wpdb->get_results()
 
-Lay nhieu dong ket qua.
+Lấy nhiều dòng kết quả.
 
 ```php
 <?php
 global $wpdb;
 
-// Tra ve mang cac object (mac dinh OBJECT)
+// Trả về mảng các object (mặc định OBJECT)
 $posts = $wpdb->get_results(
     "SELECT ID, post_title, post_date FROM {$wpdb->posts}
      WHERE post_status = 'publish' AND post_type = 'post'
@@ -344,7 +344,7 @@ foreach ( $posts as $post ) {
     echo $post->ID . ': ' . $post->post_title . "\n";
 }
 
-// Tra ve mang cac mang associative (ARRAY_A)
+// Trả về mảng các mảng associative (ARRAY_A)
 $posts = $wpdb->get_results(
     "SELECT ID, post_title FROM {$wpdb->posts}
      WHERE post_status = 'publish'
@@ -356,7 +356,7 @@ foreach ( $posts as $post ) {
     echo $post['ID'] . ': ' . $post['post_title'] . "\n";
 }
 
-// Tra ve mang cac mang numeric (ARRAY_N)
+// Trả về mảng các mảng numeric (ARRAY_N)
 $posts = $wpdb->get_results(
     "SELECT ID, post_title FROM {$wpdb->posts}
      WHERE post_status = 'publish'
@@ -369,21 +369,21 @@ foreach ( $posts as $post ) {
 }
 ```
 
-Cac output type:
-- `OBJECT` (mac dinh): Moi row la mot stdClass object
-- `OBJECT_K`: Giong OBJECT nhung key la gia tri cot dau tien
-- `ARRAY_A`: Moi row la mang associative
-- `ARRAY_N`: Moi row la mang so thu tu
+Các output type:
+- `OBJECT` (mặc định): Mỗi row là một stdClass object
+- `OBJECT_K`: Giống OBJECT nhưng key là giá trị cột đầu tiên
+- `ARRAY_A`: Mỗi row là mảng associative
+- `ARRAY_N`: Mỗi row là mảng số thứ tự
 
 ### 2.4. $wpdb->get_row()
 
-Lay mot dong duy nhat.
+Lấy một dòng duy nhất.
 
 ```php
 <?php
 global $wpdb;
 
-// Lay 1 row dang object
+// Lấy 1 row dạng object
 $post = $wpdb->get_row(
     $wpdb->prepare(
         "SELECT * FROM {$wpdb->posts} WHERE ID = %d",
@@ -396,7 +396,7 @@ if ( $post ) {
     echo $post->post_content;
 }
 
-// Lay 1 row dang array associative
+// Lấy 1 row dạng array associative
 $post = $wpdb->get_row(
     $wpdb->prepare(
         "SELECT post_title, post_status FROM {$wpdb->posts} WHERE ID = %d",
@@ -409,30 +409,30 @@ if ( $post ) {
     echo $post['post_title'];
 }
 
-// Lay row thu 3 tu ket qua (0-indexed)
+// Lấy row thứ 3 từ kết quả (0-indexed)
 $third_post = $wpdb->get_row(
     "SELECT * FROM {$wpdb->posts} WHERE post_status = 'publish' LIMIT 5",
     OBJECT,
-    2  // Row offset, bat dau tu 0
+    2  // Row offset, bắt đầu từ 0
 );
 ```
 
 ### 2.5. $wpdb->get_var()
 
-Lay mot gia tri don le.
+Lấy một giá trị đơn lẻ.
 
 ```php
 <?php
 global $wpdb;
 
-// Dem so bai viet da publish
+// Đếm số bài viết đã publish
 $count = $wpdb->get_var(
     "SELECT COUNT(*) FROM {$wpdb->posts}
      WHERE post_status = 'publish' AND post_type = 'post'"
 );
-echo "Tong so bai viet: {$count}";
+echo "Tổng số bài viết: {$count}";
 
-// Lay title cua post co ID = 1
+// Lấy title của post có ID = 1
 $title = $wpdb->get_var(
     $wpdb->prepare(
         "SELECT post_title FROM {$wpdb->posts} WHERE ID = %d",
@@ -440,31 +440,31 @@ $title = $wpdb->get_var(
     )
 );
 
-// Lay gia tri tu cot va row cu the
+// Lấy giá trị từ cột và row cụ thể
 // get_var( query, column_offset, row_offset )
 $second_col_third_row = $wpdb->get_var(
     "SELECT ID, post_title FROM {$wpdb->posts} LIMIT 5",
-    1,  // cot thu 2 (0-indexed)
-    2   // row thu 3 (0-indexed)
+    1,  // cột thứ 2 (0-indexed)
+    2   // row thứ 3 (0-indexed)
 );
 ```
 
 ### 2.6. $wpdb->get_col()
 
-Lay toan bo gia tri cua mot cot.
+Lấy toàn bộ giá trị của một cột.
 
 ```php
 <?php
 global $wpdb;
 
-// Lay tat ca post IDs da publish
+// Lấy tất cả post IDs đã publish
 $post_ids = $wpdb->get_col(
     "SELECT ID FROM {$wpdb->posts}
      WHERE post_status = 'publish' AND post_type = 'post'
      ORDER BY post_date DESC"
 );
 
-// $post_ids la mang 1 chieu: array( 42, 38, 35, 22, ... )
+// $post_ids là mảng 1 chiều: array( 42, 38, 35, 22, ... )
 foreach ( $post_ids as $id ) {
     echo "Post ID: {$id}\n";
 }
@@ -472,13 +472,13 @@ foreach ( $post_ids as $id ) {
 
 ### 2.7. $wpdb->query()
 
-Chay bat ky cau SQL nao, tra ve so dong bi anh huong hoac false neu loi.
+Chạy bất kỳ câu SQL nào, trả về số dòng bị ảnh hưởng hoặc false nếu lỗi.
 
 ```php
 <?php
 global $wpdb;
 
-// UPDATE truc tiep
+// UPDATE trực tiếp
 $rows_updated = $wpdb->query(
     $wpdb->prepare(
         "UPDATE {$wpdb->posts}
@@ -487,7 +487,7 @@ $rows_updated = $wpdb->query(
         5
     )
 );
-echo "Da cap nhat {$rows_updated} bai viet";
+echo "Đã cập nhật {$rows_updated} bài viết";
 
 // DELETE
 $rows_deleted = $wpdb->query(
@@ -499,7 +499,7 @@ $rows_deleted = $wpdb->query(
     )
 );
 
-// Tao bang
+// Tạo bảng
 $wpdb->query(
     "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}my_table (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -511,21 +511,21 @@ $wpdb->query(
 
 ### 2.8. $wpdb->insert()
 
-Chen du lieu an toan.
+Chèn dữ liệu an toàn.
 
 ```php
 <?php
 global $wpdb;
 
-// Insert co ban
+// Insert cơ bản
 $result = $wpdb->insert(
-    $wpdb->prefix . 'my_table',     // Ten bang
-    array(                            // Du lieu (column => value)
-        'name'       => 'San pham A',
+    $wpdb->prefix . 'my_table',     // Tên bảng
+    array(                            // Dữ liệu (column => value)
+        'name'       => 'Sản phẩm A',
         'price'      => 299000,
         'created_at' => current_time( 'mysql' ),
     ),
-    array(                            // Dinh dang (tuy chon)
+    array(                            // Định dạng (tùy chọn)
         '%s',  // name: string
         '%d',  // price: integer
         '%s',  // created_at: string
@@ -534,17 +534,17 @@ $result = $wpdb->insert(
 
 if ( false !== $result ) {
     $new_id = $wpdb->insert_id;
-    echo "Da them voi ID: {$new_id}";
+    echo "Đã thêm với ID: {$new_id}";
 } else {
-    echo "Loi: " . $wpdb->last_error;
+    echo "Lỗi: " . $wpdb->last_error;
 }
 
-// Insert vao bang posts (thuong dung wp_insert_post() thay vi $wpdb->insert)
+// Insert vào bảng posts (thường dùng wp_insert_post() thay vì $wpdb->insert)
 $wpdb->insert(
     $wpdb->posts,
     array(
-        'post_title'   => 'Bai viet moi',
-        'post_content' => 'Noi dung bai viet',
+        'post_title'   => 'Bài viết mới',
+        'post_content' => 'Nội dung bài viết',
         'post_status'  => 'publish',
         'post_author'  => 1,
         'post_type'    => 'post',
@@ -556,38 +556,38 @@ $wpdb->insert(
 
 ### 2.9. $wpdb->update()
 
-Cap nhat du lieu an toan.
+Cập nhật dữ liệu an toàn.
 
 ```php
 <?php
 global $wpdb;
 
-// Update co ban
+// Update cơ bản
 $rows_updated = $wpdb->update(
-    $wpdb->prefix . 'my_table',     // Ten bang
-    array(                            // Du lieu can cap nhat
-        'name'  => 'San pham B',
+    $wpdb->prefix . 'my_table',     // Tên bảng
+    array(                            // Dữ liệu cần cập nhật
+        'name'  => 'Sản phẩm B',
         'price' => 350000,
     ),
-    array(                            // Dieu kien WHERE
+    array(                            // Điều kiện WHERE
         'id' => 5,
     ),
-    array(                            // Dinh dang du lieu
+    array(                            // Định dạng dữ liệu
         '%s',  // name
         '%d',  // price
     ),
-    array(                            // Dinh dang dieu kien
+    array(                            // Định dạng điều kiện
         '%d',  // id
     )
 );
 
 if ( false !== $rows_updated ) {
-    echo "Da cap nhat {$rows_updated} dong";
+    echo "Đã cập nhật {$rows_updated} dòng";
 } else {
-    echo "Loi: " . $wpdb->last_error;
+    echo "Lỗi: " . $wpdb->last_error;
 }
 
-// Update voi nhieu dieu kien WHERE
+// Update với nhiều điều kiện WHERE
 $wpdb->update(
     $wpdb->postmeta,
     array( 'meta_value' => 'new_value' ),                    // SET
@@ -599,20 +599,20 @@ $wpdb->update(
 
 ### 2.10. $wpdb->delete()
 
-Xoa du lieu an toan.
+Xóa dữ liệu an toàn.
 
 ```php
 <?php
 global $wpdb;
 
-// Xoa theo ID
+// Xóa theo ID
 $rows_deleted = $wpdb->delete(
-    $wpdb->prefix . 'my_table',  // Ten bang
-    array( 'id' => 5 ),          // Dieu kien WHERE
-    array( '%d' )                 // Dinh dang
+    $wpdb->prefix . 'my_table',  // Tên bảng
+    array( 'id' => 5 ),          // Điều kiện WHERE
+    array( '%d' )                 // Định dạng
 );
 
-// Xoa voi nhieu dieu kien
+// Xóa với nhiều điều kiện
 $wpdb->delete(
     $wpdb->postmeta,
     array(
@@ -622,7 +622,7 @@ $wpdb->delete(
     array( '%d', '%s' )
 );
 
-// Xoa tat ca meta cua mot post
+// Xóa tất cả meta của một post
 $wpdb->delete(
     $wpdb->postmeta,
     array( 'post_id' => 42 ),
@@ -632,18 +632,18 @@ $wpdb->delete(
 
 ### 2.11. $wpdb->prepare()
 
-Phuong thuc QUAN TRONG NHAT de ngan chan SQL Injection. Luon su dung khi truyen du lieu tu nguoi dung vao cau query.
+Phương thức QUAN TRỌNG NHẤT để ngăn chặn SQL Injection. Luôn sử dụng khi truyền dữ liệu từ người dùng vào câu query.
 
 ```php
 <?php
 global $wpdb;
 
-// Cac placeholder:
-// %d = so nguyen (integer)
-// %f = so thuc (float)
-// %s = chuoi (string)
+// Các placeholder:
+// %d = số nguyên (integer)
+// %f = số thực (float)
+// %s = chuỗi (string)
 
-// Vi du co ban
+// Ví dụ cơ bản
 $safe_query = $wpdb->prepare(
     "SELECT * FROM {$wpdb->posts} WHERE ID = %d AND post_status = %s",
     42,
@@ -651,7 +651,7 @@ $safe_query = $wpdb->prepare(
 );
 $result = $wpdb->get_row( $safe_query );
 
-// Voi LIKE - su dung $wpdb->esc_like()
+// Với LIKE - sử dụng $wpdb->esc_like()
 $search = 'wordpress';
 $like   = '%' . $wpdb->esc_like( $search ) . '%';
 $results = $wpdb->get_results(
@@ -663,7 +663,7 @@ $results = $wpdb->get_results(
     )
 );
 
-// Voi IN clause - su dung nhieu placeholder
+// Với IN clause - sử dụng nhiều placeholder
 $post_ids = array( 1, 5, 10, 15 );
 $placeholders = implode( ', ', array_fill( 0, count( $post_ids ), '%d' ) );
 $results = $wpdb->get_results(
@@ -673,7 +673,7 @@ $results = $wpdb->get_results(
     )
 );
 
-// KHONG BAO GIO lam nhu nay (SQL Injection!):
+// KHÔNG BAO GIỜ làm như này (SQL Injection!):
 // $wpdb->get_results( "SELECT * FROM {$wpdb->posts} WHERE ID = " . $_GET['id'] );
 // $wpdb->get_results( "SELECT * FROM {$wpdb->posts} WHERE post_title = '{$_POST['title']}'" );
 ```
@@ -684,27 +684,27 @@ $results = $wpdb->get_results(
 <?php
 global $wpdb;
 
-// Bat debug mode trong wp-config.php
+// Bật debug mode trong wp-config.php
 // define( 'SAVEQUERIES', true );
 
-// Xem tat ca cac query da chay
+// Xem tất cả các query đã chạy
 if ( defined( 'SAVEQUERIES' ) && SAVEQUERIES ) {
     echo '<pre>';
     print_r( $wpdb->queries );
     echo '</pre>';
 }
 
-// Xem query cuoi cung
+// Xem query cuối cùng
 echo $wpdb->last_query;
 
-// Xem loi cuoi cung
+// Xem lỗi cuối cùng
 echo $wpdb->last_error;
 
-// Hien thi loi truc tiep
+// Hiển thị lỗi trực tiếp
 $wpdb->show_errors();
 $wpdb->hide_errors();
 
-// In loi ra man hinh
+// In lỗi ra màn hình
 $wpdb->print_error();
 
 // Suppress errors
@@ -713,15 +713,15 @@ $wpdb->suppress_errors( true );
 
 ---
 
-## 3. WP_Query - Giai thich chi tiet
+## 3. WP_Query - Giải thích chi tiết
 
-`WP_Query` la lop chinh de truy van posts trong WordPress. No la nen tang cua main query va cung duoc su dung de tao custom queries.
+`WP_Query` là lớp chính để truy vấn posts trong WordPress. Nó là nền tảng của main query và cũng được sử dụng để tạo custom queries.
 
-### 3.1. Cach su dung co ban
+### 3.1. Cách sử dụng cơ bản
 
 ```php
 <?php
-// Cach 1: Tao instance moi
+// Cách 1: Tạo instance mới
 $query = new WP_Query( array(
     'post_type'      => 'post',
     'posts_per_page' => 10,
@@ -734,10 +734,10 @@ if ( $query->have_posts() ) {
         echo '<h2>' . get_the_title() . '</h2>';
         echo '<div>' . get_the_content() . '</div>';
     }
-    wp_reset_postdata(); // LUON GOI SAU KHI DUNG the_post()
+    wp_reset_postdata(); // LUÔN GỌI SAU KHI DÙNG the_post()
 }
 
-// Cach 2: Su dung get_posts() (wrapper cua WP_Query)
+// Cách 2: Sử dụng get_posts() (wrapper của WP_Query)
 $posts = get_posts( array(
     'post_type'      => 'product',
     'posts_per_page' => 5,
@@ -752,42 +752,42 @@ foreach ( $posts as $post ) {
 wp_reset_postdata();
 ```
 
-### 3.2. Tham so post_type
+### 3.2. Tham số post_type
 
 ```php
 <?php
-// Mot post type
+// Một post type
 $query = new WP_Query( array(
     'post_type' => 'post',
 ) );
 
-// Nhieu post types
+// Nhiều post types
 $query = new WP_Query( array(
     'post_type' => array( 'post', 'page', 'product' ),
 ) );
 
-// Tat ca post types
+// Tất cả post types
 $query = new WP_Query( array(
     'post_type' => 'any',
 ) );
 ```
 
-### 3.3. Tham so posts_per_page va phan trang
+### 3.3. Tham số posts_per_page và phân trang
 
 ```php
 <?php
-// So luong bai viet
+// Số lượng bài viết
 $query = new WP_Query( array(
-    'posts_per_page' => 10,     // 10 bai moi trang
+    'posts_per_page' => 10,     // 10 bài mỗi trang
 ) );
 
-// Tat ca bai viet (khong phan trang)
+// Tất cả bài viết (không phân trang)
 $query = new WP_Query( array(
-    'posts_per_page' => -1,     // Lay het, can than voi du lieu lon!
-    'no_found_rows'  => true,   // Bo qua SQL_CALC_FOUND_ROWS de tang toc
+    'posts_per_page' => -1,     // Lấy hết, cẩn thận với dữ liệu lớn!
+    'no_found_rows'  => true,   // Bỏ qua SQL_CALC_FOUND_ROWS để tăng tốc
 ) );
 
-// Phan trang
+// Phân trang
 $paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
 
 $query = new WP_Query( array(
@@ -796,11 +796,11 @@ $query = new WP_Query( array(
     'paged'          => $paged,
 ) );
 
-// Hien thi phan trang
+// Hiển thị phân trang
 if ( $query->have_posts() ) {
     while ( $query->have_posts() ) {
         $query->the_post();
-        // Hien thi bai viet
+        // Hiển thị bài viết
     }
 
     // Pagination links
@@ -812,14 +812,14 @@ if ( $query->have_posts() ) {
     wp_reset_postdata();
 }
 
-// Offset - bo qua N bai dau tien
+// Offset - bỏ qua N bài đầu tiên
 $query = new WP_Query( array(
     'posts_per_page' => 5,
-    'offset'         => 3,  // Bo qua 3 bai dau, lay tu bai thu 4
+    'offset'         => 3,  // Bỏ qua 3 bài đầu, lấy từ bài thứ 4
 ) );
 ```
 
-### 3.4. Tham so tax_query
+### 3.4. Tham số tax_query
 
 ```php
 <?php
@@ -835,7 +835,7 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Query theo nhieu taxonomy voi AND
+// Query theo nhiều taxonomy với AND
 $query = new WP_Query( array(
     'post_type' => 'product',
     'tax_query' => array(
@@ -854,7 +854,7 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Query theo nhieu taxonomy voi OR
+// Query theo nhiều taxonomy với OR
 $query = new WP_Query( array(
     'post_type' => 'product',
     'tax_query' => array(
@@ -872,7 +872,7 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// NOT IN - Loai tru
+// NOT IN - Loại trừ
 $query = new WP_Query( array(
     'post_type' => 'post',
     'tax_query' => array(
@@ -912,7 +912,7 @@ $query = new WP_Query( array(
 ) );
 ```
 
-### 3.5. Tham so meta_query
+### 3.5. Tham số meta_query
 
 ```php
 <?php
@@ -929,7 +929,7 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Query theo nhieu meta fields voi AND
+// Query theo nhiều meta fields với AND
 $query = new WP_Query( array(
     'post_type'  => 'product',
     'meta_query' => array(
@@ -948,28 +948,28 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Cac gia tri compare hop le:
-// '='          : Bang (mac dinh)
-// '!='         : Khac
-// '>'          : Lon hon
-// '>='         : Lon hon hoac bang
-// '<'          : Nho hon
-// '<='         : Nho hon hoac bang
-// 'LIKE'       : Chua chuoi
-// 'NOT LIKE'   : Khong chua chuoi
-// 'IN'         : Trong danh sach
-// 'NOT IN'     : Khong trong danh sach
-// 'BETWEEN'    : Giua 2 gia tri
-// 'NOT BETWEEN': Khong giua 2 gia tri
-// 'EXISTS'     : Meta key ton tai
-// 'NOT EXISTS' : Meta key khong ton tai
-// 'REGEXP'     : Khop bieu thuc chinh quy
-// 'NOT REGEXP' : Khong khop bieu thuc chinh quy
+// Các giá trị compare hợp lệ:
+// '='          : Bằng (mặc định)
+// '!='         : Khác
+// '>'          : Lớn hơn
+// '>='         : Lớn hơn hoặc bằng
+// '<'          : Nhỏ hơn
+// '<='         : Nhỏ hơn hoặc bằng
+// 'LIKE'       : Chứa chuỗi
+// 'NOT LIKE'   : Không chứa chuỗi
+// 'IN'         : Trong danh sách
+// 'NOT IN'     : Không trong danh sách
+// 'BETWEEN'    : Giữa 2 giá trị
+// 'NOT BETWEEN': Không giữa 2 giá trị
+// 'EXISTS'     : Meta key tồn tại
+// 'NOT EXISTS' : Meta key không tồn tại
+// 'REGEXP'     : Khớp biểu thức chính quy
+// 'NOT REGEXP' : Không khớp biểu thức chính quy
 
-// Cac gia tri type hop le:
+// Các giá trị type hợp lệ:
 // 'NUMERIC', 'BINARY', 'CHAR', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'TIME', 'UNSIGNED'
 
-// Sap xep theo meta value voi named meta query
+// Sắp xếp theo meta value với named meta query
 $query = new WP_Query( array(
     'post_type'  => 'product',
     'meta_query' => array(
@@ -992,7 +992,7 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Kiem tra meta key ton tai
+// Kiểm tra meta key tồn tại
 $query = new WP_Query( array(
     'post_type'  => 'post',
     'meta_query' => array(
@@ -1004,11 +1004,11 @@ $query = new WP_Query( array(
 ) );
 ```
 
-### 3.6. Tham so date_query
+### 3.6. Tham số date_query
 
 ```php
 <?php
-// Bai viet trong nam 2024
+// Bài viết trong năm 2024
 $query = new WP_Query( array(
     'post_type'  => 'post',
     'date_query' => array(
@@ -1018,7 +1018,7 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Bai viet tu thang 1 den thang 6 nam 2024
+// Bài viết từ tháng 1 đến tháng 6 năm 2024
 $query = new WP_Query( array(
     'post_type'  => 'post',
     'date_query' => array(
@@ -1030,7 +1030,7 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Bai viet trong 30 ngay gan nhat
+// Bài viết trong 30 ngày gần nhất
 $query = new WP_Query( array(
     'post_type'  => 'post',
     'date_query' => array(
@@ -1040,7 +1040,7 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Bai viet duoc sua trong tuan nay (dung post_modified)
+// Bài viết được sửa trong tuần này (dùng post_modified)
 $query = new WP_Query( array(
     'post_type'  => 'post',
     'date_query' => array(
@@ -1051,7 +1051,7 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Bai viet dang vao buoi sang (8h-12h)
+// Bài viết đăng vào buổi sáng (8h-12h)
 $query = new WP_Query( array(
     'post_type'  => 'post',
     'date_query' => array(
@@ -1068,40 +1068,40 @@ $query = new WP_Query( array(
 ) );
 ```
 
-### 3.7. Tham so orderby va order
+### 3.7. Tham số orderby và order
 
 ```php
 <?php
-// Sap xep co ban
+// Sắp xếp cơ bản
 $query = new WP_Query( array(
-    'orderby' => 'date',    // Theo ngay dang
-    'order'   => 'DESC',    // Giam dan (moi nhat truoc)
+    'orderby' => 'date',    // Theo ngày đăng
+    'order'   => 'DESC',    // Giảm dần (mới nhất trước)
 ) );
 
-// Cac gia tri orderby pho bien:
-// 'none'           : Khong sap xep
+// Các giá trị orderby phổ biến:
+// 'none'           : Không sắp xếp
 // 'ID'             : Theo post ID
-// 'author'         : Theo tac gia
-// 'title'          : Theo tieu de
+// 'author'         : Theo tác giả
+// 'title'          : Theo tiêu đề
 // 'name'           : Theo post slug
-// 'date'           : Theo ngay dang (mac dinh)
-// 'modified'       : Theo ngay sua
+// 'date'           : Theo ngày đăng (mặc định)
+// 'modified'       : Theo ngày sửa
 // 'parent'         : Theo parent ID
-// 'rand'           : Ngau nhien (CHAM, tranh dung voi du lieu lon)
-// 'comment_count'  : Theo so binh luan
-// 'menu_order'     : Theo thu tu menu
-// 'meta_value'     : Theo gia tri meta (can them meta_key)
-// 'meta_value_num' : Theo gia tri meta dang so
-// 'post__in'       : Theo thu tu trong mang post__in
+// 'rand'           : Ngẫu nhiên (CHẬM, tránh dùng với dữ liệu lớn)
+// 'comment_count'  : Theo số bình luận
+// 'menu_order'     : Theo thứ tự menu
+// 'meta_value'     : Theo giá trị meta (cần thêm meta_key)
+// 'meta_value_num' : Theo giá trị meta dạng số
+// 'post__in'       : Theo thứ tự trong mảng post__in
 
-// Sap xep theo meta_value
+// Sắp xếp theo meta_value
 $query = new WP_Query( array(
     'meta_key' => 'price',
     'orderby'  => 'meta_value_num',
     'order'    => 'ASC',
 ) );
 
-// Sap xep theo nhieu tieu chi
+// Sắp xếp theo nhiều tiêu chí
 $query = new WP_Query( array(
     'orderby' => array(
         'menu_order' => 'ASC',
@@ -1109,30 +1109,30 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Giu thu tu cua mang post__in
+// Giữ thứ tự của mảng post__in
 $query = new WP_Query( array(
     'post__in' => array( 5, 3, 8, 1, 10 ),
     'orderby'  => 'post__in',
 ) );
 ```
 
-### 3.8. Tham so tim kiem (s) va author
+### 3.8. Tham số tìm kiếm (s) và author
 
 ```php
 <?php
-// Tim kiem
+// Tìm kiếm
 $query = new WP_Query( array(
     'post_type' => 'post',
     's'         => 'wordpress tutorial',
 ) );
 
-// Tim kiem chinh xac (phrase)
+// Tìm kiếm chính xác (phrase)
 $query = new WP_Query( array(
-    's'      => '"wordpress tutorial"',  // Dung ngoac kep
-    'exact'  => true,                    // Tim chinh xac
+    's'      => '"wordpress tutorial"',  // Dùng ngoặc kép
+    'exact'  => true,                    // Tìm chính xác
 ) );
 
-// Theo tac gia
+// Theo tác giả
 $query = new WP_Query( array(
     'author' => 1,                       // Theo user ID
 ) );
@@ -1141,18 +1141,18 @@ $query = new WP_Query( array(
     'author_name' => 'admin',            // Theo user_nicename
 ) );
 
-// Nhieu tac gia
+// Nhiều tác giả
 $query = new WP_Query( array(
     'author__in' => array( 1, 5, 10 ),
 ) );
 
-// Loai tru tac gia
+// Loại trừ tác giả
 $query = new WP_Query( array(
     'author__not_in' => array( 3, 7 ),
 ) );
 ```
 
-### 3.9. Cac tham so khac
+### 3.9. Các tham số khác
 
 ```php
 <?php
@@ -1162,11 +1162,11 @@ $query = new WP_Query( array(
 ) );
 
 $query = new WP_Query( array(
-    'post__in' => array( 1, 5, 10, 42 ), // Nhieu posts theo ID
+    'post__in' => array( 1, 5, 10, 42 ), // Nhiều posts theo ID
 ) );
 
 $query = new WP_Query( array(
-    'post__not_in' => array( 3, 7 ),     // Loai tru posts
+    'post__not_in' => array( 3, 7 ),     // Loại trừ posts
 ) );
 
 // Theo slug
@@ -1176,7 +1176,7 @@ $query = new WP_Query( array(
 
 // Theo post parent
 $query = new WP_Query( array(
-    'post_parent'    => 10,              // Cac trang con cua trang ID=10
+    'post_parent'    => 10,              // Các trang con của trang ID=10
     'post_type'      => 'page',
 ) );
 
@@ -1203,7 +1203,7 @@ $query = new WP_Query( array(
 
 // Password protected posts
 $query = new WP_Query( array(
-    'has_password' => true,   // Chi lay bai co mat khau
+    'has_password' => true,   // Chỉ lấy bài có mật khẩu
 ) );
 
 // Sticky posts
@@ -1215,53 +1215,53 @@ $query = new WP_Query( array(
 // Performance - no_found_rows
 $query = new WP_Query( array(
     'posts_per_page' => 5,
-    'no_found_rows'  => true,   // Khong dem tong (nhanh hon, khong co pagination)
+    'no_found_rows'  => true,   // Không đếm tổng (nhanh hơn, không có pagination)
 ) );
 
-// Chi lay truong can thiet
+// Chỉ lấy trường cần thiết
 $query = new WP_Query( array(
-    'fields' => 'ids',          // Chi lay mang IDs
+    'fields' => 'ids',          // Chỉ lấy mảng IDs
 ) );
 
 $query = new WP_Query( array(
-    'fields' => 'id=>parent',   // Chi lay ID va parent
+    'fields' => 'id=>parent',   // Chỉ lấy ID và parent
 ) );
 
 // Cache
 $query = new WP_Query( array(
-    'update_post_meta_cache' => false,  // Khong load meta cache
-    'update_post_term_cache' => false,  // Khong load term cache
+    'update_post_meta_cache' => false,  // Không load meta cache
+    'update_post_term_cache' => false,  // Không load term cache
 ) );
 ```
 
-### 3.10. Thuoc tinh cua WP_Query
+### 3.10. Thuộc tính của WP_Query
 
 ```php
 <?php
 $query = new WP_Query( array( 'post_type' => 'post', 'posts_per_page' => 10 ) );
 
-$query->posts;          // Mang cac WP_Post objects
-$query->post_count;     // So bai trong trang hien tai
-$query->found_posts;    // Tong so bai (tat ca cac trang)
-$query->max_num_pages;  // Tong so trang
-$query->current_post;   // Index bai hien tai trong loop (-1 truoc loop)
-$query->post;           // Bai hien tai
-$query->is_single();    // True neu la trang single post
-$query->is_page();      // True neu la trang page
-$query->is_archive();   // True neu la trang archive
-$query->is_search();    // True neu la trang tim kiem
-$query->request;        // Cau SQL da chay
+$query->posts;          // Mảng các WP_Post objects
+$query->post_count;     // Số bài trong trang hiện tại
+$query->found_posts;    // Tổng số bài (tất cả các trang)
+$query->max_num_pages;  // Tổng số trang
+$query->current_post;   // Index bài hiện tại trong loop (-1 trước loop)
+$query->post;           // Bài hiện tại
+$query->is_single();    // True nếu là trang single post
+$query->is_page();      // True nếu là trang page
+$query->is_archive();   // True nếu là trang archive
+$query->is_search();    // True nếu là trang tìm kiếm
+$query->request;        // Câu SQL đã chạy
 ```
 
 ---
 
 ## 4. WP_Meta_Query - Query theo meta fields
 
-`WP_Meta_Query` la lop xu ly meta_query ben trong WP_Query. Co the su dung truc tiep hoac thong qua tham so `meta_query` cua WP_Query.
+`WP_Meta_Query` là lớp xử lý meta_query bên trong WP_Query. Có thể sử dụng trực tiếp hoặc thông qua tham số `meta_query` của WP_Query.
 
 ```php
 <?php
-// Su dung truc tiep WP_Meta_Query
+// Sử dụng trực tiếp WP_Meta_Query
 $meta_query = new WP_Meta_Query( array(
     'relation' => 'AND',
     array(
@@ -1277,31 +1277,31 @@ $meta_query = new WP_Meta_Query( array(
     ),
 ) );
 
-// Lay SQL tu WP_Meta_Query (de debug hoac su dung voi $wpdb)
+// Lấy SQL từ WP_Meta_Query (để debug hoặc sử dụng với $wpdb)
 $meta_query_sql = $meta_query->get_sql(
     'post',                // Meta type: 'post', 'user', 'comment', 'term'
-    $wpdb->posts,          // Bang chinh
-    'ID',                  // Cot primary key cua bang chinh
-    null                   // WP_Query object (tuy chon)
+    $wpdb->posts,          // Bảng chính
+    'ID',                  // Cột primary key của bảng chính
+    null                   // WP_Query object (tùy chọn)
 );
 
-// $meta_query_sql gom:
+// $meta_query_sql gồm:
 // $meta_query_sql['join']  => INNER JOIN wp_postmeta ON ...
 // $meta_query_sql['where'] => AND ( (wp_postmeta.meta_key = 'color' AND ...) )
 
-// Vi du phuc tap: san pham gia 100k-500k, mau xanh HOAC do, con hang
+// Ví dụ phức tạp: sản phẩm giá 100k-500k, màu xanh HOẶC đỏ, còn hàng
 $query = new WP_Query( array(
     'post_type'  => 'product',
     'meta_query' => array(
         'relation' => 'AND',
-        // Dieu kien gia
+        // Điều kiện giá
         'price_clause' => array(
             'key'     => '_price',
             'value'   => array( 100000, 500000 ),
             'compare' => 'BETWEEN',
             'type'    => 'NUMERIC',
         ),
-        // Dieu kien mau sac (OR)
+        // Điều kiện màu sắc (OR)
         array(
             'relation' => 'OR',
             array(
@@ -1315,7 +1315,7 @@ $query = new WP_Query( array(
                 'compare' => '=',
             ),
         ),
-        // Dieu kien con hang
+        // Điều kiện còn hàng
         array(
             'key'     => '_stock_status',
             'value'   => 'instock',
@@ -1331,11 +1331,11 @@ $query = new WP_Query( array(
 
 ## 5. WP_Tax_Query - Query theo taxonomy
 
-`WP_Tax_Query` xu ly tax_query ben trong WP_Query.
+`WP_Tax_Query` xử lý tax_query bên trong WP_Query.
 
 ```php
 <?php
-// Su dung truc tiep WP_Tax_Query
+// Sử dụng trực tiếp WP_Tax_Query
 $tax_query = new WP_Tax_Query( array(
     'relation' => 'AND',
     array(
@@ -1343,7 +1343,7 @@ $tax_query = new WP_Tax_Query( array(
         'field'            => 'slug',
         'terms'            => array( 'tin-tuc', 'cong-nghe' ),
         'operator'         => 'IN',
-        'include_children' => true,  // Bao gom cac category con (mac dinh true)
+        'include_children' => true,  // Bao gồm các category con (mặc định true)
     ),
     array(
         'taxonomy'         => 'post_tag',
@@ -1353,17 +1353,17 @@ $tax_query = new WP_Tax_Query( array(
     ),
 ) );
 
-// Lay SQL
+// Lấy SQL
 $tax_query_sql = $tax_query->get_sql( $wpdb->posts, 'ID' );
 
-// Vi du thuc te: San pham thuoc danh muc "dien-thoai" HOAC "may-tinh"
-// VA co tag "khuyen-mai"
-// VA KHONG thuoc thuong hieu "nokia"
+// Ví dụ thực tế: Sản phẩm thuộc danh mục "dien-thoai" HOẶC "may-tinh"
+// VÀ có tag "khuyen-mai"
+// VÀ KHÔNG thuộc thương hiệu "nokia"
 $query = new WP_Query( array(
     'post_type' => 'product',
     'tax_query' => array(
         'relation' => 'AND',
-        // Danh muc (OR)
+        // Danh mục (OR)
         array(
             'relation' => 'OR',
             array(
@@ -1377,13 +1377,13 @@ $query = new WP_Query( array(
                 'terms'    => 'may-tinh',
             ),
         ),
-        // Co tag khuyen-mai
+        // Có tag khuyến mãi
         array(
             'taxonomy' => 'product_tag',
             'field'    => 'slug',
             'terms'    => 'khuyen-mai',
         ),
-        // Khong phai Nokia
+        // Không phải Nokia
         array(
             'taxonomy' => 'brand',
             'field'    => 'slug',
@@ -1393,12 +1393,12 @@ $query = new WP_Query( array(
     ),
 ) );
 
-// Cac operator cua tax_query:
-// 'IN'         : Thuoc bat ky term nao (mac dinh)
-// 'NOT IN'     : Khong thuoc bat ky term nao
-// 'AND'        : Thuoc TAT CA cac terms
-// 'EXISTS'     : Co gan bat ky term nao cua taxonomy
-// 'NOT EXISTS' : Khong co gan term nao cua taxonomy
+// Các operator của tax_query:
+// 'IN'         : Thuộc bất kỳ term nào (mặc định)
+// 'NOT IN'     : Không thuộc bất kỳ term nào
+// 'AND'        : Thuộc TẤT CẢ các terms
+// 'EXISTS'     : Có gán bất kỳ term nào của taxonomy
+// 'NOT EXISTS' : Không có gán term nào của taxonomy
 ```
 
 ---
@@ -1407,7 +1407,7 @@ $query = new WP_Query( array(
 
 ```php
 <?php
-// Query co ban
+// Query cơ bản
 $user_query = new WP_User_Query( array(
     'role'    => 'subscriber',
     'orderby' => 'registered',
@@ -1420,14 +1420,14 @@ foreach ( $users as $user ) {
     echo $user->display_name . ' (' . $user->user_email . ")\n";
 }
 
-// Tong so users
+// Tổng số users
 $total = $user_query->get_total();
-echo "Tong: {$total} nguoi dung";
+echo "Tổng: {$total} người dùng";
 
-// Tim kiem user
+// Tìm kiếm user
 $user_query = new WP_User_Query( array(
-    'search'         => '*nguyen*',         // Tim kiem (wildcard *)
-    'search_columns' => array(              // Tim trong cac cot
+    'search'         => '*nguyen*',         // Tìm kiếm (wildcard *)
+    'search_columns' => array(              // Tìm trong các cột
         'user_login',
         'user_nicename',
         'user_email',
@@ -1435,12 +1435,12 @@ $user_query = new WP_User_Query( array(
     ),
 ) );
 
-// Query theo nhieu roles
+// Query theo nhiều roles
 $user_query = new WP_User_Query( array(
     'role__in' => array( 'editor', 'author' ),
 ) );
 
-// Loai tru role
+// Loại trừ role
 $user_query = new WP_User_Query( array(
     'role__not_in' => array( 'subscriber' ),
 ) );
@@ -1474,14 +1474,14 @@ $user_query = new WP_User_Query( array(
     ),
 ) );
 
-// Sap xep theo meta
+// Sắp xếp theo meta
 $user_query = new WP_User_Query( array(
     'meta_key' => 'last_login',
     'orderby'  => 'meta_value',
     'order'    => 'DESC',
 ) );
 
-// Phan trang
+// Phân trang
 $paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
 $per_page = 20;
 
@@ -1493,15 +1493,15 @@ $user_query = new WP_User_Query( array(
 $total_users = $user_query->get_total();
 $total_pages = ceil( $total_users / $per_page );
 
-// Cac tham so khac
+// Các tham số khác
 $user_query = new WP_User_Query( array(
-    'include'     => array( 1, 5, 10 ),  // Chi lay user IDs nay
-    'exclude'     => array( 3 ),          // Loai tru user IDs nay
+    'include'     => array( 1, 5, 10 ),  // Chỉ lấy user IDs này
+    'exclude'     => array( 3 ),          // Loại trừ user IDs này
     'blog_id'     => 1,                   // Blog ID (multisite)
-    'count_total' => true,                // Dem tong (mac dinh true)
-    'fields'      => 'all',              // 'all', 'all_with_meta', 'ID', 'display_name', 'user_login', hoac mang
-    'who'         => 'authors',           // Chi lay users la authors
-    'has_published_posts' => true,        // Chi lay users co bai da publish
+    'count_total' => true,                // Đếm tổng (mặc định true)
+    'fields'      => 'all',              // 'all', 'all_with_meta', 'ID', 'display_name', 'user_login', hoặc mảng
+    'who'         => 'authors',           // Chỉ lấy users là authors
+    'has_published_posts' => true,        // Chỉ lấy users có bài đã publish
 ) );
 ```
 
@@ -1511,7 +1511,7 @@ $user_query = new WP_User_Query( array(
 
 ```php
 <?php
-// Query co ban
+// Query cơ bản
 $comment_query = new WP_Comment_Query( array(
     'post_id' => 42,
     'status'  => 'approve',
@@ -1525,12 +1525,12 @@ foreach ( $comments as $comment ) {
     echo $comment->comment_author . ': ' . $comment->comment_content . "\n";
 }
 
-// Tim kiem comments
+// Tìm kiếm comments
 $comment_query = new WP_Comment_Query( array(
     'search' => 'wordpress',
 ) );
 
-// Comments cua 1 user
+// Comments của 1 user
 $comment_query = new WP_Comment_Query( array(
     'user_id' => 5,
 ) );
@@ -1541,7 +1541,7 @@ $comment_query = new WP_Comment_Query( array(
     'status'    => 'approve',
 ) );
 
-// Query voi meta
+// Query với meta
 $comment_query = new WP_Comment_Query( array(
     'meta_query' => array(
         array(
@@ -1562,28 +1562,28 @@ $comment_query = new WP_Comment_Query( array(
     ),
 ) );
 
-// Dem comments
+// Đếm comments
 $count = get_comments( array(
     'post_id' => 42,
     'status'  => 'approve',
-    'count'   => true,  // Tra ve so luong thay vi danh sach
+    'count'   => true,  // Trả về số lượng thay vì danh sách
 ) );
 
-// Cac gia tri status:
-// 'approve' hoac 'approved' hoac '1'  : Da duyet
-// 'hold' hoac 'unapproved' hoac '0'   : Cho duyet
+// Các giá trị status:
+// 'approve' hoặc 'approved' hoặc '1'  : Đã duyệt
+// 'hold' hoặc 'unapproved' hoặc '0'   : Chờ duyệt
 // 'spam'                                : Spam
-// 'trash'                               : Da xoa
-// 'all'                                 : Tat ca
+// 'trash'                               : Đã xóa
+// 'all'                                 : Tất cả
 
 // Comments hierarchical (nested)
 $comment_query = new WP_Comment_Query( array(
     'post_id'      => 42,
-    'hierarchical' => 'threaded',   // Tra ve comments dang cay
+    'hierarchical' => 'threaded',   // Trả về comments dạng cây
     'status'       => 'approve',
 ) );
 
-// Phan trang comments
+// Phân trang comments
 $cpage = get_query_var( 'cpage' ) ? get_query_var( 'cpage' ) : 1;
 $comment_query = new WP_Comment_Query( array(
     'post_id' => 42,
@@ -1597,14 +1597,14 @@ $comment_query = new WP_Comment_Query( array(
 
 ## 8. pre_get_posts - Modify main query
 
-`pre_get_posts` la hook cho phep thay doi tham so cua WP_Query TRUOC khi no chay. Day la cach dung de modify main query thay vi tao WP_Query moi.
+`pre_get_posts` là hook cho phép thay đổi tham số của WP_Query TRƯỚC khi nó chạy. Đây là cách đúng để modify main query thay vì tạo WP_Query mới.
 
 ```php
 <?php
-// Thay doi so bai tren trang archive
+// Thay đổi số bài trên trang archive
 add_action( 'pre_get_posts', 'custom_archive_posts_per_page' );
 function custom_archive_posts_per_page( $query ) {
-    // QUAN TRONG: Chi modify main query, khong phai custom queries
+    // QUAN TRỌNG: Chỉ modify main query, không phải custom queries
     if ( ! is_admin() && $query->is_main_query() ) {
         if ( $query->is_category() ) {
             $query->set( 'posts_per_page', 20 );
@@ -1612,7 +1612,7 @@ function custom_archive_posts_per_page( $query ) {
     }
 }
 
-// Them custom post type vao trang chu va archive
+// Thêm custom post type vào trang chủ và archive
 add_action( 'pre_get_posts', 'add_custom_post_type_to_query' );
 function add_custom_post_type_to_query( $query ) {
     if ( ! is_admin() && $query->is_main_query() ) {
@@ -1622,15 +1622,15 @@ function add_custom_post_type_to_query( $query ) {
     }
 }
 
-// Loai tru category khoi trang chu
+// Loại trừ category khỏi trang chủ
 add_action( 'pre_get_posts', 'exclude_category_from_home' );
 function exclude_category_from_home( $query ) {
     if ( ! is_admin() && $query->is_main_query() && $query->is_home() ) {
-        $query->set( 'cat', '-5,-10' );  // Loai tru category ID 5 va 10
+        $query->set( 'cat', '-5,-10' );  // Loại trừ category ID 5 và 10
     }
 }
 
-// Thay doi order cho trang tim kiem
+// Thay đổi order cho trang tìm kiếm
 add_action( 'pre_get_posts', 'custom_search_order' );
 function custom_search_order( $query ) {
     if ( ! is_admin() && $query->is_main_query() && $query->is_search() ) {
@@ -1639,11 +1639,11 @@ function custom_search_order( $query ) {
     }
 }
 
-// Them meta_query vao main query
+// Thêm meta_query vào main query
 add_action( 'pre_get_posts', 'filter_by_custom_field' );
 function filter_by_custom_field( $query ) {
     if ( ! is_admin() && $query->is_main_query() && $query->is_post_type_archive( 'product' ) ) {
-        // Lay tham so tu URL: ?min_price=100&max_price=500
+        // Lấy tham số từ URL: ?min_price=100&max_price=500
         $min_price = isset( $_GET['min_price'] ) ? intval( $_GET['min_price'] ) : 0;
         $max_price = isset( $_GET['max_price'] ) ? intval( $_GET['max_price'] ) : 0;
 
@@ -1669,7 +1669,7 @@ function admin_filter_by_author( $query ) {
     if ( is_admin() && $query->is_main_query() ) {
         $screen = get_current_screen();
         if ( $screen && 'edit-post' === $screen->id ) {
-            // Neu khong phai admin, chi hien thi bai cua chinh minh
+            // Nếu không phải admin, chỉ hiển thị bài của chính mình
             if ( ! current_user_can( 'manage_options' ) ) {
                 $query->set( 'author', get_current_user_id() );
             }
@@ -1678,22 +1678,22 @@ function admin_filter_by_author( $query ) {
 }
 ```
 
-Luu y quan trong ve `pre_get_posts`:
-- Luon kiem tra `$query->is_main_query()` de tranh anh huong den custom queries, widget queries, menu queries.
-- Luon kiem tra `! is_admin()` neu chi muon thay doi o frontend.
-- KHONG nen su dung `query_posts()` - no thay the main query va gay ra nhieu van de. Luon dung `pre_get_posts` hoac tao `WP_Query` moi.
+Lưu ý quan trọng về `pre_get_posts`:
+- Luôn kiểm tra `$query->is_main_query()` để tránh ảnh hưởng đến custom queries, widget queries, menu queries.
+- Luôn kiểm tra `! is_admin()` nếu chỉ muốn thay đổi ở frontend.
+- KHÔNG nên sử dụng `query_posts()` - nó thay thế main query và gây ra nhiều vấn đề. Luôn dùng `pre_get_posts` hoặc tạo `WP_Query` mới.
 
 ---
 
-## 9. Custom Tables - Tao bang rieng voi dbDelta()
+## 9. Custom Tables - Tạo bảng riêng với dbDelta()
 
-Khi nao nen tao custom table thay vi su dung postmeta:
-- Du lieu co cau truc co dinh, khong phai key-value.
-- Can query phuc tap voi JOIN, GROUP BY, aggregate functions.
-- Du lieu lon can danh index rieng.
-- Du lieu khong lien quan den posts/users/comments.
+Khi nào nên tạo custom table thay vì sử dụng postmeta:
+- Dữ liệu có cấu trúc cố định, không phải key-value.
+- Cần query phức tạp với JOIN, GROUP BY, aggregate functions.
+- Dữ liệu lớn cần đánh index riêng.
+- Dữ liệu không liên quan đến posts/users/comments.
 
-### 9.1. Tao bang khi activate plugin
+### 9.1. Tạo bảng khi activate plugin
 
 ```php
 <?php
@@ -1725,23 +1725,23 @@ function my_plugin_create_tables() {
         KEY order_date (order_date)
     ) {$charset_collate};";
 
-    // Can include file upgrade.php de su dung dbDelta()
+    // Cần include file upgrade.php để sử dụng dbDelta()
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta( $sql );
 
-    // Luu version cua database schema
+    // Lưu version của database schema
     update_option( 'my_plugin_db_version', '1.0' );
 }
 ```
 
-Luu y ve `dbDelta()`:
-- Moi truong trong dinh nghia cot phai dung CHINH XAC 1 dau cach giua cac phan.
-- PRIMARY KEY phai co HAI dau cach truoc dau ngoac: `PRIMARY KEY  (id)`.
-- Phai dung KEY thay vi INDEX.
-- Khong duoc dung dau phay sau truong cuoi cung truoc dau ngoac dong.
-- Moi truong phai nam tren 1 dong.
+Lưu ý về `dbDelta()`:
+- Mỗi trường trong định nghĩa cột phải dùng CHÍNH XÁC 1 dấu cách giữa các phần.
+- PRIMARY KEY phải có HAI dấu cách trước dấu ngoặc: `PRIMARY KEY  (id)`.
+- Phải dùng KEY thay vì INDEX.
+- Không được dùng dấu phẩy sau trường cuối cùng trước dấu ngoặc đóng.
+- Mỗi trường phải nằm trên 1 dòng.
 
-### 9.2. Cap nhat schema khi update plugin
+### 9.2. Cập nhật schema khi update plugin
 
 ```php
 <?php
@@ -1765,7 +1765,7 @@ function my_plugin_upgrade_db_to_1_1() {
     $table_name      = $wpdb->prefix . 'my_orders';
     $charset_collate = $wpdb->get_charset_collate();
 
-    // Them cot moi - dbDelta() tu dong detect va chi them cot chua co
+    // Thêm cột mới - dbDelta() tự động detect và chỉ thêm cột chưa có
     $sql = "CREATE TABLE {$table_name} (
         id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         user_id bigint(20) unsigned NOT NULL DEFAULT 0,
@@ -1793,7 +1793,7 @@ function my_plugin_upgrade_db_to_1_1() {
 function my_plugin_upgrade_db_to_1_2() {
     global $wpdb;
 
-    // Them bang moi
+    // Thêm bảng mới
     $table_name      = $wpdb->prefix . 'my_order_items';
     $charset_collate = $wpdb->get_charset_collate();
 
@@ -1815,32 +1815,32 @@ function my_plugin_upgrade_db_to_1_2() {
 }
 ```
 
-### 9.3. Xoa bang khi uninstall plugin
+### 9.3. Xóa bảng khi uninstall plugin
 
 ```php
 <?php
-// File: uninstall.php (dat o root cua plugin)
+// File: uninstall.php (đặt ở root của plugin)
 
-// Kiem tra WordPress goi file nay
+// Kiểm tra WordPress gọi file này
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit;
 }
 
 global $wpdb;
 
-// Xoa cac bang
+// Xóa các bảng
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}my_orders" );
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}my_order_items" );
 
-// Xoa options
+// Xóa options
 delete_option( 'my_plugin_db_version' );
 delete_option( 'my_plugin_settings' );
 
-// Xoa user meta
+// Xóa user meta
 $wpdb->query( "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE 'my_plugin_%'" );
 ```
 
-### 9.4. CRUD voi custom table
+### 9.4. CRUD với custom table
 
 ```php
 <?php
@@ -1854,7 +1854,7 @@ class My_Order_Model {
     }
 
     /**
-     * Tao don hang moi
+     * Tạo đơn hàng mới
      */
     public function create( $data ) {
         global $wpdb;
@@ -1893,7 +1893,7 @@ class My_Order_Model {
     }
 
     /**
-     * Lay don hang theo ID
+     * Lấy đơn hàng theo ID
      */
     public function get( $id ) {
         global $wpdb;
@@ -1907,7 +1907,7 @@ class My_Order_Model {
     }
 
     /**
-     * Lay danh sach don hang voi filter
+     * Lấy danh sách đơn hàng với filter
      */
     public function get_list( $args = array() ) {
         global $wpdb;
@@ -1938,7 +1938,7 @@ class My_Order_Model {
 
         $where_clause = implode( ' AND ', $where );
 
-        // Whitelist orderby va order de tranh SQL injection
+        // Whitelist orderby và order để tránh SQL injection
         $allowed_orderby = array( 'id', 'user_id', 'total_price', 'status', 'order_date' );
         $orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'order_date';
         $order   = in_array( strtoupper( $args['order'] ), array( 'ASC', 'DESC' ), true ) ? strtoupper( $args['order'] ) : 'DESC';
@@ -1961,7 +1961,7 @@ class My_Order_Model {
     }
 
     /**
-     * Dem tong so don hang theo dieu kien
+     * Đếm tổng số đơn hàng theo điều kiện
      */
     public function count( $args = array() ) {
         global $wpdb;
@@ -1991,7 +1991,7 @@ class My_Order_Model {
     }
 
     /**
-     * Cap nhat don hang
+     * Cập nhật đơn hàng
      */
     public function update( $id, $data ) {
         global $wpdb;
@@ -2020,7 +2020,7 @@ class My_Order_Model {
         }
 
         if ( empty( $update_data ) ) {
-            return new WP_Error( 'no_data', 'Khong co du lieu de cap nhat.' );
+            return new WP_Error( 'no_data', 'Không có dữ liệu để cập nhật.' );
         }
 
         $result = $wpdb->update(
@@ -2039,7 +2039,7 @@ class My_Order_Model {
     }
 
     /**
-     * Xoa don hang
+     * Xóa đơn hàng
      */
     public function delete( $id ) {
         global $wpdb;
@@ -2055,45 +2055,45 @@ class My_Order_Model {
 
 ---
 
-## 10. Toi uu Database
+## 10. Tối ưu Database
 
 ### 10.1. Index
 
 ```php
 <?php
-// Them index vao bang co san
+// Thêm index vào bảng có sẵn
 global $wpdb;
 
-// Them index cho meta_value (postmeta) - THAN TRONG voi bang lon
+// Thêm index cho meta_value (postmeta) - THẬN TRỌNG với bảng lớn
 $wpdb->query( "ALTER TABLE {$wpdb->postmeta} ADD INDEX meta_value_index (meta_value(191))" );
 
-// Them composite index
+// Thêm composite index
 $wpdb->query(
     "ALTER TABLE {$wpdb->prefix}my_orders
      ADD INDEX user_status (user_id, status)"
 );
 
-// Kiem tra index hien co
+// Kiểm tra index hiện có
 $indexes = $wpdb->get_results( "SHOW INDEX FROM {$wpdb->posts}" );
 
-// Xem execution plan cua query
+// Xem execution plan của query
 $explain = $wpdb->get_results(
     "EXPLAIN SELECT * FROM {$wpdb->posts}
      WHERE post_type = 'product' AND post_status = 'publish'"
 );
 ```
 
-### 10.2. Object Cache va Transients
+### 10.2. Object Cache và Transients
 
 ```php
 <?php
-// Transients - Cache du lieu vao database (hoac object cache neu co)
+// Transients - Cache dữ liệu vào database (hoặc object cache nếu có)
 function get_popular_posts() {
     $cache_key = 'popular_posts_list';
     $popular = get_transient( $cache_key );
 
     if ( false === $popular ) {
-        // Cache miss - chay query
+        // Cache miss - chạy query
         $popular = new WP_Query( array(
             'post_type'      => 'post',
             'posts_per_page' => 10,
@@ -2102,20 +2102,20 @@ function get_popular_posts() {
             'no_found_rows'  => true,
         ) );
 
-        // Luu cache 1 gio
+        // Lưu cache 1 giờ
         set_transient( $cache_key, $popular, HOUR_IN_SECONDS );
     }
 
     return $popular;
 }
 
-// Xoa cache khi co bai viet moi
+// Xóa cache khi có bài viết mới
 add_action( 'save_post', function( $post_id ) {
     delete_transient( 'popular_posts_list' );
 } );
 
-// Su dung wp_cache (Object Cache) - chi ton tai trong 1 request
-// (tru khi co persistent object cache nhu Redis/Memcached)
+// Sử dụng wp_cache (Object Cache) - chỉ tồn tại trong 1 request
+// (trừ khi có persistent object cache như Redis/Memcached)
 function get_user_order_count( $user_id ) {
     $cache_key   = 'order_count_' . $user_id;
     $cache_group = 'my_orders';
@@ -2136,35 +2136,35 @@ function get_user_order_count( $user_id ) {
 }
 ```
 
-### 10.3. Toi uu WP_Query
+### 10.3. Tối ưu WP_Query
 
 ```php
 <?php
-// 1. Su dung no_found_rows khi khong can pagination
+// 1. Sử dụng no_found_rows khi không cần pagination
 $query = new WP_Query( array(
     'posts_per_page' => 5,
-    'no_found_rows'  => true,  // Bo qua SQL_CALC_FOUND_ROWS
+    'no_found_rows'  => true,  // Bỏ qua SQL_CALC_FOUND_ROWS
 ) );
 
-// 2. Chi lay fields can thiet
+// 2. Chỉ lấy fields cần thiết
 $ids = new WP_Query( array(
-    'fields'         => 'ids',    // Chi lay IDs
+    'fields'         => 'ids',    // Chỉ lấy IDs
     'posts_per_page' => -1,
     'no_found_rows'  => true,
 ) );
 
-// 3. Tat meta/term cache khi khong can
+// 3. Tắt meta/term cache khi không cần
 $query = new WP_Query( array(
     'posts_per_page'         => 10,
-    'update_post_meta_cache' => false,  // Khong preload meta
-    'update_post_term_cache' => false,  // Khong preload terms
+    'update_post_meta_cache' => false,  // Không preload meta
+    'update_post_term_cache' => false,  // Không preload terms
 ) );
 
-// 4. Tranh posts_per_page = -1 voi du lieu lon
-// Thay vao do, su dung phan trang hoac gioi han hop ly
+// 4. Tránh posts_per_page = -1 với dữ liệu lớn
+// Thay vào đó, sử dụng phân trang hoặc giới hạn hợp lý
 
-// 5. Tranh orderby = 'rand' voi du lieu lon
-// Thay the bang:
+// 5. Tránh orderby = 'rand' với dữ liệu lớn
+// Thay thế bằng:
 $random_ids = $wpdb->get_col(
     "SELECT ID FROM {$wpdb->posts}
      WHERE post_type = 'post' AND post_status = 'publish'
@@ -2178,60 +2178,60 @@ $query = new WP_Query( array(
 
 ### 10.4. Query Monitor Plugin
 
-Query Monitor la plugin khong the thieu de debug va toi uu database queries.
+Query Monitor là plugin không thể thiếu để debug và tối ưu database queries.
 
 ```php
 <?php
-// Cai dat: wp plugin install query-monitor --activate
+// Cài đặt: wp plugin install query-monitor --activate
 
-// Query Monitor se tu dong hien thi:
-// - Tat ca SQL queries va thoi gian thuc thi
+// Query Monitor sẽ tự động hiển thị:
+// - Tất cả SQL queries và thời gian thực thi
 // - Duplicate queries
 // - Slow queries
 // - Queries by component (theme, plugin, core)
 // - PHP errors
 // - HTTP API calls
 // - Transients
-// - Hooks va actions
+// - Hooks và actions
 
-// Debug rieng voi QM:
-do_action( 'qm/debug', 'Thong tin debug' );
+// Debug riêng với QM:
+do_action( 'qm/debug', 'Thông tin debug' );
 do_action( 'qm/info', array( 'key' => 'value' ) );
-do_action( 'qm/warning', 'Canh bao!' );
-do_action( 'qm/error', 'Loi nghiem trong!' );
+do_action( 'qm/warning', 'Cảnh báo!' );
+do_action( 'qm/error', 'Lỗi nghiêm trọng!' );
 ```
 
-### 10.5. Cac meo toi uu khac
+### 10.5. Các mẹo tối ưu khác
 
 ```php
 <?php
-// 1. Su dung autoload = 'no' cho options lon hoac it dung
+// 1. Sử dụng autoload = 'no' cho options lớn hoặc ít dùng
 add_option( 'my_large_data', $data, '', 'no' );  // autoload = no
 
-// 2. Giam so luong revisions
-// Them vao wp-config.php:
-// define( 'WP_POST_REVISIONS', 5 );  // Gioi han 5 revisions
-// define( 'WP_POST_REVISIONS', false ); // Tat revisions
+// 2. Giảm số lượng revisions
+// Thêm vào wp-config.php:
+// define( 'WP_POST_REVISIONS', 5 );  // Giới hạn 5 revisions
+// define( 'WP_POST_REVISIONS', false ); // Tắt revisions
 
-// 3. Don dep database dinh ky
+// 3. Dọn dẹp database định kỳ
 function cleanup_old_data() {
     global $wpdb;
 
-    // Xoa revisions cu hon 30 ngay
+    // Xóa revisions cũ hơn 30 ngày
     $wpdb->query(
         "DELETE FROM {$wpdb->posts}
          WHERE post_type = 'revision'
          AND post_date < DATE_SUB(NOW(), INTERVAL 30 DAY)"
     );
 
-    // Xoa orphan postmeta
+    // Xóa orphan postmeta
     $wpdb->query(
         "DELETE pm FROM {$wpdb->postmeta} pm
          LEFT JOIN {$wpdb->posts} p ON p.ID = pm.post_id
          WHERE p.ID IS NULL"
     );
 
-    // Xoa transients het han
+    // Xóa transients hết hạn
     $wpdb->query(
         "DELETE FROM {$wpdb->options}
          WHERE option_name LIKE '_transient_timeout_%'
@@ -2259,20 +2259,20 @@ function optimize_database_tables() {
 
 ---
 
-## 11. Vi du thuc te phuc tap
+## 11. Ví dụ thực tế phức tạp
 
-### 11.1. He thong tim kiem san pham nang cao
+### 11.1. Hệ thống tìm kiếm sản phẩm nâng cao
 
 ```php
 <?php
 /**
- * Tim kiem san pham voi nhieu tieu chi:
- * - Tu khoa
- * - Khoang gia
- * - Danh muc
- * - Thuoc tinh (mau sac, kich thuoc)
- * - Sap xep
- * - Phan trang
+ * Tìm kiếm sản phẩm với nhiều tiêu chí:
+ * - Từ khóa
+ * - Khoảng giá
+ * - Danh mục
+ * - Thuộc tính (màu sắc, kích thước)
+ * - Sắp xếp
+ * - Phân trang
  */
 function advanced_product_search( $args = array() ) {
     $defaults = array(
@@ -2289,7 +2289,7 @@ function advanced_product_search( $args = array() ) {
 
     $args = wp_parse_args( $args, $defaults );
 
-    // Bat dau xay dung query args
+    // Bắt đầu xây dựng query args
     $query_args = array(
         'post_type'      => 'product',
         'post_status'    => 'publish',
@@ -2297,7 +2297,7 @@ function advanced_product_search( $args = array() ) {
         'paged'          => intval( $args['page'] ),
     );
 
-    // Tu khoa tim kiem
+    // Từ khóa tìm kiếm
     if ( ! empty( $args['keyword'] ) ) {
         $query_args['s'] = sanitize_text_field( $args['keyword'] );
     }
@@ -2305,7 +2305,7 @@ function advanced_product_search( $args = array() ) {
     // Meta query
     $meta_query = array( 'relation' => 'AND' );
 
-    // Khoang gia
+    // Khoảng giá
     if ( $args['min_price'] > 0 || $args['max_price'] > 0 ) {
         $price_query = array(
             'key'  => '_price',
@@ -2326,7 +2326,7 @@ function advanced_product_search( $args = array() ) {
         $meta_query['price_clause'] = $price_query;
     }
 
-    // Chi lay san pham con hang
+    // Chỉ lấy sản phẩm còn hàng
     $meta_query[] = array(
         'key'     => '_stock_status',
         'value'   => 'instock',
@@ -2340,7 +2340,7 @@ function advanced_product_search( $args = array() ) {
     // Tax query
     $tax_query = array( 'relation' => 'AND' );
 
-    // Danh muc
+    // Danh mục
     if ( ! empty( $args['category'] ) ) {
         $tax_query[] = array(
             'taxonomy'         => 'product_cat',
@@ -2350,7 +2350,7 @@ function advanced_product_search( $args = array() ) {
         );
     }
 
-    // Mau sac
+    // Màu sắc
     if ( ! empty( $args['color'] ) ) {
         $tax_query[] = array(
             'taxonomy' => 'pa_color',
@@ -2359,7 +2359,7 @@ function advanced_product_search( $args = array() ) {
         );
     }
 
-    // Kich thuoc
+    // Kích thước
     if ( ! empty( $args['size'] ) ) {
         $tax_query[] = array(
             'taxonomy' => 'pa_size',
@@ -2372,7 +2372,7 @@ function advanced_product_search( $args = array() ) {
         $query_args['tax_query'] = $tax_query;
     }
 
-    // Sap xep
+    // Sắp xếp
     switch ( $args['sort'] ) {
         case 'price_asc':
             $query_args['meta_key'] = '_price';
@@ -2422,11 +2422,11 @@ function advanced_product_search( $args = array() ) {
         'total'       => $query->found_posts,
         'total_pages' => $query->max_num_pages,
         'current_page'=> intval( $args['page'] ),
-        'sql'         => $query->request,  // De debug
+        'sql'         => $query->request,  // Để debug
     );
 }
 
-// Su dung:
+// Sử dụng:
 $results = advanced_product_search( array(
     'keyword'   => 'ao thun',
     'min_price' => 100000,
@@ -2438,32 +2438,32 @@ $results = advanced_product_search( array(
     'per_page'  => 12,
 ) );
 
-echo "Tim thay {$results['total']} san pham\n";
+echo "Tìm thấy {$results['total']} sản phẩm\n";
 foreach ( $results['products'] as $product ) {
     echo "- {$product->post_title}\n";
 }
 ```
 
-### 11.2. Bao cao thong ke voi $wpdb
+### 11.2. Báo cáo thống kê với $wpdb
 
 ```php
 <?php
 /**
- * Bao cao thong ke don hang
+ * Báo cáo thống kê đơn hàng
  */
 function get_order_statistics( $args = array() ) {
     global $wpdb;
 
     $defaults = array(
-        'date_from' => date( 'Y-m-01' ),  // Dau thang hien tai
-        'date_to'   => date( 'Y-m-d' ),   // Hom nay
+        'date_from' => date( 'Y-m-01' ),  // Đầu tháng hiện tại
+        'date_to'   => date( 'Y-m-d' ),   // Hôm nay
         'status'    => 'completed',
     );
 
     $args = wp_parse_args( $args, $defaults );
     $table = $wpdb->prefix . 'my_orders';
 
-    // Tong quan
+    // Tổng quan
     $overview = $wpdb->get_row(
         $wpdb->prepare(
             "SELECT
@@ -2482,7 +2482,7 @@ function get_order_statistics( $args = array() ) {
         )
     );
 
-    // Doanh thu theo ngay
+    // Doanh thu theo ngày
     $daily_revenue = $wpdb->get_results(
         $wpdb->prepare(
             "SELECT
@@ -2500,7 +2500,7 @@ function get_order_statistics( $args = array() ) {
         )
     );
 
-    // Top 10 khach hang
+    // Top 10 khách hàng
     $top_customers = $wpdb->get_results(
         $wpdb->prepare(
             "SELECT
@@ -2522,7 +2522,7 @@ function get_order_statistics( $args = array() ) {
         )
     );
 
-    // Top 10 san pham ban chay
+    // Top 10 sản phẩm bán chạy
     $top_products = $wpdb->get_results(
         $wpdb->prepare(
             "SELECT
@@ -2551,29 +2551,29 @@ function get_order_statistics( $args = array() ) {
     );
 }
 
-// Su dung:
+// Sử dụng:
 $stats = get_order_statistics( array(
     'date_from' => '2024-01-01',
     'date_to'   => '2024-12-31',
     'status'    => 'completed',
 ) );
 
-echo "Tong don hang: {$stats['overview']->total_orders}\n";
-echo "Tong doanh thu: " . number_format( $stats['overview']->total_revenue ) . " VND\n";
-echo "Gia tri trung binh: " . number_format( $stats['overview']->avg_order_value ) . " VND\n";
+echo "Tổng đơn hàng: {$stats['overview']->total_orders}\n";
+echo "Tổng doanh thu: " . number_format( $stats['overview']->total_revenue ) . " VND\n";
+echo "Giá trị trung bình: " . number_format( $stats['overview']->avg_order_value ) . " VND\n";
 ```
 
-### 11.3. Query phuc tap ket hop nhieu dieu kien
+### 11.3. Query phức tạp kết hợp nhiều điều kiện
 
 ```php
 <?php
 /**
- * Tim bai viet lien quan dua tren:
- * - Cung category
- * - Cung tags
- * - Cung tac gia
- * - Co nhieu luot xem
- * Sap xep theo do lien quan (diem)
+ * Tìm bài viết liên quan dựa trên:
+ * - Cùng category
+ * - Cùng tags
+ * - Cùng tác giả
+ * - Có nhiều lượt xem
+ * Sắp xếp theo độ liên quan (điểm)
  */
 function get_related_posts( $post_id, $limit = 5 ) {
     global $wpdb;
@@ -2583,7 +2583,7 @@ function get_related_posts( $post_id, $limit = 5 ) {
         return array();
     }
 
-    // Lay categories va tags cua bai hien tai
+    // Lấy categories và tags của bài hiện tại
     $categories = wp_get_post_categories( $post_id, array( 'fields' => 'ids' ) );
     $tags       = wp_get_post_tags( $post_id, array( 'fields' => 'ids' ) );
 
@@ -2591,12 +2591,12 @@ function get_related_posts( $post_id, $limit = 5 ) {
         return array();
     }
 
-    // Xay dung query tinh diem lien quan
+    // Xây dựng query tính điểm liên quan
     $score_parts = array();
     $join_parts  = array();
     $values      = array();
 
-    // Diem cho cung category (3 diem moi category trung)
+    // Điểm cho cùng category (3 điểm mỗi category trùng)
     if ( ! empty( $categories ) ) {
         $cat_placeholders = implode( ', ', array_fill( 0, count( $categories ), '%d' ) );
 
@@ -2609,7 +2609,7 @@ function get_related_posts( $post_id, $limit = 5 ) {
         $values = array_merge( $values, $categories );
     }
 
-    // Diem cho cung tag (2 diem moi tag trung)
+    // Điểm cho cùng tag (2 điểm mỗi tag trùng)
     if ( ! empty( $tags ) ) {
         $tag_placeholders = implode( ', ', array_fill( 0, count( $tags ), '%d' ) );
 
@@ -2622,14 +2622,14 @@ function get_related_posts( $post_id, $limit = 5 ) {
         $values = array_merge( $values, $tags );
     }
 
-    // Diem cho cung tac gia (1 diem)
+    // Điểm cho cùng tác giả (1 điểm)
     $score_parts[] = 'CASE WHEN p.post_author = %d THEN 1 ELSE 0 END';
     $values[] = $post->post_author;
 
     $score_sql = implode( ' + ', $score_parts );
     $join_sql  = implode( "\n", $join_parts );
 
-    // Loai tru bai hien tai
+    // Loại trừ bài hiện tại
     $values[] = $post_id;
     $values[] = $limit;
 
@@ -2651,31 +2651,31 @@ function get_related_posts( $post_id, $limit = 5 ) {
     return $wpdb->get_results( $sql );
 }
 
-// Su dung:
+// Sử dụng:
 $related = get_related_posts( get_the_ID(), 5 );
 foreach ( $related as $post ) {
-    echo "{$post->post_title} (diem: {$post->relevance_score})\n";
+    echo "{$post->post_title} (điểm: {$post->relevance_score})\n";
 }
 ```
 
-### 11.4. Custom Query voi Pagination trong template
+### 11.4. Custom Query với Pagination trong template
 
 ```php
 <?php
 /**
  * Template: archive-product.php
- * Hien thi danh sach san pham voi filter va pagination day du
+ * Hiển thị danh sách sản phẩm với filter và pagination đầy đủ
  */
 
 get_header();
 
-// Lay cac tham so filter tu URL
+// Lấy các tham số filter từ URL
 $current_cat   = get_query_var( 'product_cat', '' );
 $price_range   = isset( $_GET['price'] ) ? sanitize_text_field( $_GET['price'] ) : '';
 $sort          = isset( $_GET['sort'] ) ? sanitize_text_field( $_GET['sort'] ) : 'date';
 $paged         = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
 
-// Xay dung query
+// Xây dựng query
 $query_args = array(
     'post_type'      => 'product',
     'post_status'    => 'publish',
@@ -2683,7 +2683,7 @@ $query_args = array(
     'paged'          => $paged,
 );
 
-// Filter theo danh muc
+// Filter theo danh mục
 if ( ! empty( $current_cat ) ) {
     $query_args['tax_query'] = array(
         array(
@@ -2694,7 +2694,7 @@ if ( ! empty( $current_cat ) ) {
     );
 }
 
-// Filter theo gia
+// Filter theo giá
 if ( ! empty( $price_range ) ) {
     $prices = explode( '-', $price_range );
     if ( count( $prices ) === 2 ) {
@@ -2709,7 +2709,7 @@ if ( ! empty( $price_range ) ) {
     }
 }
 
-// Sap xep
+// Sắp xếp
 switch ( $sort ) {
     case 'price_asc':
         $query_args['meta_key'] = '_price';
@@ -2737,23 +2737,23 @@ $product_query = new WP_Query( $query_args );
     <div class="filter-bar">
         <form method="get">
             <select name="price">
-                <option value="">Tat ca gia</option>
-                <option value="0-100000" <?php selected( $price_range, '0-100000' ); ?>>Duoi 100k</option>
+                <option value="">Tất cả giá</option>
+                <option value="0-100000" <?php selected( $price_range, '0-100000' ); ?>>Dưới 100k</option>
                 <option value="100000-500000" <?php selected( $price_range, '100000-500000' ); ?>>100k - 500k</option>
                 <option value="500000-1000000" <?php selected( $price_range, '500000-1000000' ); ?>>500k - 1tr</option>
-                <option value="1000000-99999999" <?php selected( $price_range, '1000000-99999999' ); ?>>Tren 1tr</option>
+                <option value="1000000-99999999" <?php selected( $price_range, '1000000-99999999' ); ?>>Trên 1tr</option>
             </select>
             <select name="sort">
-                <option value="date" <?php selected( $sort, 'date' ); ?>>Moi nhat</option>
-                <option value="price_asc" <?php selected( $sort, 'price_asc' ); ?>>Gia tang dan</option>
-                <option value="price_desc" <?php selected( $sort, 'price_desc' ); ?>>Gia giam dan</option>
-                <option value="title" <?php selected( $sort, 'title' ); ?>>Ten A-Z</option>
+                <option value="date" <?php selected( $sort, 'date' ); ?>>Mới nhất</option>
+                <option value="price_asc" <?php selected( $sort, 'price_asc' ); ?>>Giá tăng dần</option>
+                <option value="price_desc" <?php selected( $sort, 'price_desc' ); ?>>Giá giảm dần</option>
+                <option value="title" <?php selected( $sort, 'title' ); ?>>Tên A-Z</option>
             </select>
-            <button type="submit">Loc</button>
+            <button type="submit">Lọc</button>
         </form>
     </div>
 
-    <p>Tim thay <?php echo $product_query->found_posts; ?> san pham</p>
+    <p>Tìm thấy <?php echo $product_query->found_posts; ?> sản phẩm</p>
 
     <?php if ( $product_query->have_posts() ) : ?>
         <div class="product-grid">
@@ -2775,7 +2775,7 @@ $product_query = new WP_Query( $query_args );
             echo paginate_links( array(
                 'total'     => $product_query->max_num_pages,
                 'current'   => $paged,
-                'prev_text' => 'Trang truoc',
+                'prev_text' => 'Trang trước',
                 'next_text' => 'Trang sau',
                 'add_args'  => array(
                     'price' => $price_range,
@@ -2787,7 +2787,7 @@ $product_query = new WP_Query( $query_args );
 
         <?php wp_reset_postdata(); ?>
     <?php else : ?>
-        <p>Khong tim thay san pham nao.</p>
+        <p>Không tìm thấy sản phẩm nào.</p>
     <?php endif; ?>
 </div>
 
@@ -2796,7 +2796,7 @@ $product_query = new WP_Query( $query_args );
 
 ---
 
-Tai lieu tham khao:
+Tài liệu tham khảo:
 - WordPress Developer Resources: https://developer.wordpress.org/reference/classes/wp_query/
 - WordPress Database Description: https://codex.wordpress.org/Database_Description
 - $wpdb Class Reference: https://developer.wordpress.org/reference/classes/wpdb/

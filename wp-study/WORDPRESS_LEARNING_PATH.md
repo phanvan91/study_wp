@@ -1,182 +1,182 @@
-# Lo Trinh Hoc WordPress Tu Co Ban Den Nang Cao
+# Lộ Trình Học WordPress Từ Cơ Bản Đến Nâng Cao
 
-## Muc Luc
+## Mục Lục
 
-1. [Giai doan 0 - Chuan bi nen tang](#giai-doan-0--chuan-bi-nen-tang)
-2. [Giai doan 1 - Lam chu WordPress Core](#giai-doan-1--lam-chu-wordpress-core)
-3. [Giai doan 2 - Theme Development](#giai-doan-2--theme-development)
-4. [Giai doan 3 - Plugin Development](#giai-doan-3--plugin-development)
-5. [Giai doan 4 - Database va WP_Query](#giai-doan-4--database-va-wp_query)
-6. [Giai doan 5 - Cong cu Dev va Workflow](#giai-doan-5--cong-cu-dev-va-workflow)
-7. [Giai doan 6 - Trien khai va Van hanh](#giai-doan-6--trien-khai-va-van-hanh)
-8. [Giai doan 7 - Bao mat va Hieu nang cao cap](#giai-doan-7--bao-mat-va-hieu-nang-cao-cap)
-9. [Giai doan 8 - Chuyen gia va Dinh huong nghe](#giai-doan-8--chuyen-gia-va-dinh-huong-nghe)
-10. [Goi y study plan (6-9 thang)](#goi-y-study-plan-69-thang)
+1. [Giai đoạn 0 - Chuẩn bị nền tảng](#giai-đoạn-0--chuẩn-bị-nền-tảng)
+2. [Giai đoạn 1 - Làm chủ WordPress Core](#giai-đoạn-1--làm-chủ-wordpress-core)
+3. [Giai đoạn 2 - Theme Development](#giai-đoạn-2--theme-development)
+4. [Giai đoạn 3 - Plugin Development](#giai-đoạn-3--plugin-development)
+5. [Giai đoạn 4 - Database và WP_Query](#giai-đoạn-4--database-và-wp_query)
+6. [Giai đoạn 5 - Công cụ Dev và Workflow](#giai-đoạn-5--công-cụ-dev-và-workflow)
+7. [Giai đoạn 6 - Triển khai và Vận hành](#giai-đoạn-6--triển-khai-và-vận-hành)
+8. [Giai đoạn 7 - Bảo mật và Hiệu năng cao cấp](#giai-đoạn-7--bảo-mật-và-hiệu-năng-cao-cấp)
+9. [Giai đoạn 8 - Chuyên gia và Định hướng nghề](#giai-đoạn-8--chuyên-gia-và-định-hướng-nghề)
+10. [Gợi ý study plan (6-9 tháng)](#gợi-ý-study-plan-69-tháng)
 
-## Tai Lieu Lien Quan
+## Tài Liệu Liên Quan
 
-| Chu de | File | Mo ta |
+| Chủ đề | File | Mô tả |
 |--------|------|-------|
-| Luong request | [WORDPRESS_FLOW.md](./WORDPRESS_FLOW.md) | Luong xu ly request tu dau den cuoi |
-| Cau truc source code | [CAU_TRUC_SOURCE_CODE.md](./CAU_TRUC_SOURCE_CODE.md) | Phan tich cau truc thu muc va file chinh |
-| Hooks | [WORDPRESS_HOOKS.md](./WORDPRESS_HOOKS.md) | Action va Filter Hooks toan dien |
-| Routing | [WORDPRESS_ROUTING.md](./WORDPRESS_ROUTING.md) | He thong URL Rewriting va Router |
-| Tao Plugin | [TAO_PLUGIN_CO_BAN.md](./TAO_PLUGIN_CO_BAN.md) | Huong dan tao plugin tu dau |
-| Tao Theme | [TAO_THEME_CO_BAN.md](./TAO_THEME_CO_BAN.md) | Huong dan tao theme tu dau |
-| Download Theme | [HUONG_DAN_THEME.md](./HUONG_DAN_THEME.md) | Download va su dung theme |
-| Database | [DATABASE_VA_WP_QUERY.md](./DATABASE_VA_WP_QUERY.md) | Database schema va WP_Query |
+| Luồng request | [WORDPRESS_FLOW.md](./WORDPRESS_FLOW.md) | Luồng xử lý request từ đầu đến cuối |
+| Cấu trúc source code | [CAU_TRUC_SOURCE_CODE.md](./CAU_TRUC_SOURCE_CODE.md) | Phân tích cấu trúc thư mục và file chính |
+| Hooks | [WORDPRESS_HOOKS.md](./WORDPRESS_HOOKS.md) | Action và Filter Hooks toàn diện |
+| Routing | [WORDPRESS_ROUTING.md](./WORDPRESS_ROUTING.md) | Hệ thống URL Rewriting và Router |
+| Tạo Plugin | [TAO_PLUGIN_CO_BAN.md](./TAO_PLUGIN_CO_BAN.md) | Hướng dẫn tạo plugin từ đầu |
+| Tạo Theme | [TAO_THEME_CO_BAN.md](./TAO_THEME_CO_BAN.md) | Hướng dẫn tạo theme từ đầu |
+| Download Theme | [HUONG_DAN_THEME.md](./HUONG_DAN_THEME.md) | Download và sử dụng theme |
+| Database | [DATABASE_VA_WP_QUERY.md](./DATABASE_VA_WP_QUERY.md) | Database schema và WP_Query |
 | REST API | [REST_API.md](./REST_API.md) | WordPress REST API |
-| Bao mat | [BAO_MAT_WORDPRESS.md](./BAO_MAT_WORDPRESS.md) | Bao mat WordPress |
-| CPT va Taxonomy | [CUSTOM_POST_TYPE_TAXONOMY.md](./CUSTOM_POST_TYPE_TAXONOMY.md) | Custom Post Types va Taxonomies |
-| WP-CLI | [WP_CLI.md](./WP_CLI.md) | Dong lenh WP-CLI |
-| Gutenberg | [GUTENBERG_BLOCK_EDITOR.md](./GUTENBERG_BLOCK_EDITOR.md) | Block Editor va Gutenberg |
-| Hieu nang | [HIEU_NANG_TOI_UU.md](./HIEU_NANG_TOI_UU.md) | Toi uu hieu nang WordPress |
+| Bảo mật | [BAO_MAT_WORDPRESS.md](./BAO_MAT_WORDPRESS.md) | Bảo mật WordPress |
+| CPT và Taxonomy | [CUSTOM_POST_TYPE_TAXONOMY.md](./CUSTOM_POST_TYPE_TAXONOMY.md) | Custom Post Types và Taxonomies |
+| WP-CLI | [WP_CLI.md](./WP_CLI.md) | Dòng lệnh WP-CLI |
+| Gutenberg | [GUTENBERG_BLOCK_EDITOR.md](./GUTENBERG_BLOCK_EDITOR.md) | Block Editor và Gutenberg |
+| Hiệu năng | [HIEU_NANG_TOI_UU.md](./HIEU_NANG_TOI_UU.md) | Tối ưu hiệu năng WordPress |
 
 ---
 
-### Giai doan 0 -- Chuan bi nen tang
+### Giai đoạn 0 -- Chuẩn bị nền tảng
 
-**Muc tieu:** Nam vung kien thuc nen tang truoc khi bat dau voi WordPress.
+**Mục tiêu:** Nắm vững kiến thức nền tảng trước khi bắt đầu với WordPress.
 
-- Hieu khai niem CMS, phan biet WordPress.org vs WordPress.com.
-- On HTML/CSS/JS co ban, PHP can ban (bien, ham, OOP don gian), MySQL co ban (CRUD).
-- Thiet lap moi truong: PHP >= 8.x, MySQL/MariaDB, Composer, Node, WP-CLI, Docker/Local stack.
-- Lam quen Git, VS Code hoac IDE yeu thich, quy tac viet README, ghi chu.
+- Hiểu khái niệm CMS, phân biệt WordPress.org vs WordPress.com.
+- Ôn HTML/CSS/JS cơ bản, PHP cơ bản (biến, hàm, OOP đơn giản), MySQL cơ bản (CRUD).
+- Thiết lập môi trường: PHP >= 8.x, MySQL/MariaDB, Composer, Node, WP-CLI, Docker/Local stack.
+- Làm quen Git, VS Code hoặc IDE yêu thích, quy tắc viết README, ghi chú.
 
-**Tai lieu:** Chua co file rieng, tham khao tai lieu PHP va MySQL chinh thuc.
-
----
-
-### Giai doan 1 -- Lam chu WordPress Core
-
-**Muc tieu:** Hieu ro cach WordPress hoat dong tu ben trong.
-
-- Khao sat cau truc thu muc (`wp-admin`, `wp-content`, `wp-includes`), vong doi khoi dong WP.
-- Hieu `wp-config.php`, `.htaccess`, cau hinh multisite, debug mode.
-- Nam he thong hook (action/filter), loop, template tag, internationalization.
-- Lam bai tap: tao vai post/page, cau hinh permalink, tao user role, su dung custom menu, widget, media.
-
-**Tai lieu:**
-- [Luong xu ly request](./WORDPRESS_FLOW.md)
-- [Cau truc source code](./CAU_TRUC_SOURCE_CODE.md)
-- [He thong Hooks](./WORDPRESS_HOOKS.md)
-- [He thong Routing](./WORDPRESS_ROUTING.md)
+**Tài liệu:** Chưa có file riêng, tham khảo tài liệu PHP và MySQL chính thức.
 
 ---
 
-### Giai doan 2 -- Theme Development
+### Giai đoạn 1 -- Làm chủ WordPress Core
 
-**Muc tieu:** Co kha nang tao va tuy chinh theme WordPress.
+**Mục tiêu:** Hiểu rõ cách WordPress hoạt động từ bên trong.
 
-- Template hierarchy, `functions.php`, enqueue scripts/styles dung chuan.
-- Customizer API, theme options, ho tro responsive va accessibility.
-- Child theme va best practices khi override template.
+- Khảo sát cấu trúc thư mục (`wp-admin`, `wp-content`, `wp-includes`), vòng đời khởi động WP.
+- Hiểu `wp-config.php`, `.htaccess`, cấu hình multisite, debug mode.
+- Nắm hệ thống hook (action/filter), loop, template tag, internationalization.
+- Làm bài tập: tạo vài post/page, cấu hình permalink, tạo user role, sử dụng custom menu, widget, media.
+
+**Tài liệu:**
+- [Luồng xử lý request](./WORDPRESS_FLOW.md)
+- [Cấu trúc source code](./CAU_TRUC_SOURCE_CODE.md)
+- [Hệ thống Hooks](./WORDPRESS_HOOKS.md)
+- [Hệ thống Routing](./WORDPRESS_ROUTING.md)
+
+---
+
+### Giai đoạn 2 -- Theme Development
+
+**Mục tiêu:** Có khả năng tạo và tùy chỉnh theme WordPress.
+
+- Template hierarchy, `functions.php`, enqueue scripts/styles đúng chuẩn.
+- Customizer API, theme options, hỗ trợ responsive và accessibility.
+- Child theme và best practices khi override template.
 - Gutenberg/Block Editor: block template, `theme.json`, style variations.
-- Bai tap: nhan ban theme mac dinh, them custom post type, taxonomy, template rieng cho archive/single.
+- Bài tập: nhân bản theme mặc định, thêm custom post type, taxonomy, template riêng cho archive/single.
 
-**Tai lieu:**
-- [Tao theme co ban](./TAO_THEME_CO_BAN.md)
-- [Download va su dung theme](./HUONG_DAN_THEME.md)
+**Tài liệu:**
+- [Tạo theme cơ bản](./TAO_THEME_CO_BAN.md)
+- [Download và sử dụng theme](./HUONG_DAN_THEME.md)
 - [Gutenberg Block Editor](./GUTENBERG_BLOCK_EDITOR.md)
 
 ---
 
-### Giai doan 3 -- Plugin Development
+### Giai đoạn 3 -- Plugin Development
 
-**Muc tieu:** Viet duoc plugin WordPress hoan chinh.
+**Mục tiêu:** Viết được plugin WordPress hoàn chỉnh.
 
-- Cau truc plugin, headers, activation/deactivation hooks, uninstall.
-- Hooks nang cao, shortcode, widget, REST API endpoint, admin settings page.
-- Bao mat: nonce, capability check, sanitize/escape.
-- Composer autoload, tach service, su dung dependency injection nhe.
-- Bai tap: viet plugin CRUD don gian, them block Gutenberg custom, tao cron task.
+- Cấu trúc plugin, headers, activation/deactivation hooks, uninstall.
+- Hooks nâng cao, shortcode, widget, REST API endpoint, admin settings page.
+- Bảo mật: nonce, capability check, sanitize/escape.
+- Composer autoload, tách service, sử dụng dependency injection nhẹ.
+- Bài tập: viết plugin CRUD đơn giản, thêm block Gutenberg custom, tạo cron task.
 
-**Tai lieu:**
-- [Tao plugin co ban](./TAO_PLUGIN_CO_BAN.md)
-- [He thong Hooks](./WORDPRESS_HOOKS.md)
+**Tài liệu:**
+- [Tạo plugin cơ bản](./TAO_PLUGIN_CO_BAN.md)
+- [Hệ thống Hooks](./WORDPRESS_HOOKS.md)
 - [REST API](./REST_API.md)
-- [Bao mat WordPress](./BAO_MAT_WORDPRESS.md)
+- [Bảo mật WordPress](./BAO_MAT_WORDPRESS.md)
 
 ---
 
-### Giai doan 4 -- Database va WP_Query
+### Giai đoạn 4 -- Database và WP_Query
 
-**Muc tieu:** Thanh thao truy van du lieu trong WordPress.
+**Mục tiêu:** Thành thạo truy vấn dữ liệu trong WordPress.
 
-- Hieu schema core: posts, postmeta, terms, termmeta, users, usermeta, options, comments.
-- `WP_Query`, `WP_Meta_Query`, `WP_Tax_Query`, `WP_User_Query`; optimize query voi index va caching.
-- Custom table (dbDelta), chuan hoa du lieu, versioning schema.
-- Thuc hanh viet report phuc tap, phan tich log query voi Query Monitor.
+- Hiểu schema core: posts, postmeta, terms, termmeta, users, usermeta, options, comments.
+- `WP_Query`, `WP_Meta_Query`, `WP_Tax_Query`, `WP_User_Query`; optimize query với index và caching.
+- Custom table (dbDelta), chuẩn hóa dữ liệu, versioning schema.
+- Thực hành viết report phức tạp, phân tích log query với Query Monitor.
 
-**Tai lieu:**
-- [Database va WP_Query](./DATABASE_VA_WP_QUERY.md)
-- [Custom Post Types va Taxonomies](./CUSTOM_POST_TYPE_TAXONOMY.md)
+**Tài liệu:**
+- [Database và WP_Query](./DATABASE_VA_WP_QUERY.md)
+- [Custom Post Types và Taxonomies](./CUSTOM_POST_TYPE_TAXONOMY.md)
 
 ---
 
-### Giai doan 5 -- Cong cu Dev va Workflow
+### Giai đoạn 5 -- Công cụ Dev và Workflow
 
-**Muc tieu:** Xay dung workflow phat trien chuyen nghiep.
+**Mục tiêu:** Xây dựng workflow phát triển chuyên nghiệp.
 
 - WP-CLI: scaffold theme/plugin/test, import/export DB, search-replace.
-- PHPUnit + WP test suite, integration test voi Playwright/Cypress cho frontend.
+- PHPUnit + WP test suite, integration test với Playwright/Cypress cho frontend.
 - Lint/format (PHPCS, ESLint, Prettier), husky pre-commit, CI (GitHub Actions/GitLab).
-- Docker/Local WP (DevKinsta, DDEV, Lando) va cau hinh multi-environment (.env, bedrock).
+- Docker/Local WP (DevKinsta, DDEV, Lando) và cấu hình multi-environment (.env, bedrock).
 
-**Tai lieu:**
+**Tài liệu:**
 - [WP-CLI](./WP_CLI.md)
 
 ---
 
-### Giai doan 6 -- Trien khai va Van hanh
+### Giai đoạn 6 -- Triển khai và Vận hành
 
-**Muc tieu:** Co kha nang deploy va van hanh website WordPress.
+**Mục tiêu:** Có khả năng deploy và vận hành website WordPress.
 
-- Hosting: shared, VPS, managed WP (Kinsta, WP Engine), cau hinh Nginx/Apache, SSL, HTTP/2.
+- Hosting: shared, VPS, managed WP (Kinsta, WP Engine), cấu hình Nginx/Apache, SSL, HTTP/2.
 - Build pipeline: deploy script, zero-downtime, versioning DB (WP Migrate, wp-cli).
-- Backup/restore, monitoring logs, su dung cron server hoac external scheduler.
-- CDN, object cache (Redis/Memcached), page cache (Varnish, Nginx FastCGI), su dung plugin cache dung cach.
+- Backup/restore, monitoring logs, sử dụng cron server hoặc external scheduler.
+- CDN, object cache (Redis/Memcached), page cache (Varnish, Nginx FastCGI), sử dụng plugin cache đúng cách.
 
-**Tai lieu:**
-- [Toi uu hieu nang](./HIEU_NANG_TOI_UU.md)
+**Tài liệu:**
+- [Tối ưu hiệu năng](./HIEU_NANG_TOI_UU.md)
 
 ---
 
-### Giai doan 7 -- Bao mat va Hieu nang cao cap
+### Giai đoạn 7 -- Bảo mật và Hiệu năng cao cấp
 
-**Muc tieu:** Bao ve va toi uu website WordPress o muc cao.
+**Mục tiêu:** Bảo vệ và tối ưu website WordPress ở mức cao.
 
-- Harden server, file permission, disable XML-RPC neu khong dung, su dung security headers.
+- Harden server, file permission, disable XML-RPC nếu không dùng, sử dụng security headers.
 - Audit plugin/theme, static analysis (Psalm, PHPStan).
-- Chong spam, rate limiting, Web Application Firewall.
-- Profiling hieu nang (Xdebug, Tideways, New Relic), async queue (Action Scheduler), background processing.
+- Chống spam, rate limiting, Web Application Firewall.
+- Profiling hiệu năng (Xdebug, Tideways, New Relic), async queue (Action Scheduler), background processing.
 
-**Tai lieu:**
-- [Bao mat WordPress](./BAO_MAT_WORDPRESS.md)
-- [Toi uu hieu nang](./HIEU_NANG_TOI_UU.md)
+**Tài liệu:**
+- [Bảo mật WordPress](./BAO_MAT_WORDPRESS.md)
+- [Tối ưu hiệu năng](./HIEU_NANG_TOI_UU.md)
 
 ---
 
-### Giai doan 8 -- Chuyen gia va Dinh huong nghe
+### Giai đoạn 8 -- Chuyên gia và Định hướng nghề
 
-**Muc tieu:** Tro thanh chuyen gia WordPress va dong gop cho cong dong.
+**Mục tiêu:** Trở thành chuyên gia WordPress và đóng góp cho cộng đồng.
 
-- Dong gop core: tham gia Make WordPress, review Gutenberg PR, internationalization.
-- Thiet ke kien truc headless WP (WPGraphQL, Next.js/React).
+- Đóng góp core: tham gia Make WordPress, review Gutenberg PR, internationalization.
+- Thiết kế kiến trúc headless WP (WPGraphQL, Next.js/React).
 - Multisite, multi-language (WPML, Polylang), enterprise plugin integration (WooCommerce, LMS).
-- Tu duy san pham: quy trinh discovery, UX, phan tich du lieu, A/B testing.
-- Mentoring, viet documentation, chia se knowledge, tham gia meetup/WordCamp.
+- Tư duy sản phẩm: quy trình discovery, UX, phân tích dữ liệu, A/B testing.
+- Mentoring, viết documentation, chia sẻ knowledge, tham gia meetup/WordCamp.
 
 ---
 
-### Goi y study plan (6-9 thang)
+### Gợi ý study plan (6-9 tháng)
 
-| Thoi gian | Giai doan | Muc tieu |
+| Thời gian | Giai đoạn | Mục tiêu |
 |-----------|-----------|----------|
-| Thang 1-2 | 0-2 | Hoan thanh 2 theme demo |
-| Thang 3-4 | 3-4 | Xay 2 plugin (CRUD + block) va 1 du an custom query phuc tap |
-| Thang 5 | 5-6 | Setup CI/CD + moi truong staging/production demo |
-| Thang 6 | 7 | Toi uu bao mat/hieu nang cho du an cu |
-| Thang 7+ | 8 | Dong gop open-source, hoc headless, mentoring junior |
+| Tháng 1-2 | 0-2 | Hoàn thành 2 theme demo |
+| Tháng 3-4 | 3-4 | Xây 2 plugin (CRUD + block) và 1 dự án custom query phức tạp |
+| Tháng 5 | 5-6 | Setup CI/CD + môi trường staging/production demo |
+| Tháng 6 | 7 | Tối ưu bảo mật/hiệu năng cho dự án cũ |
+| Tháng 7+ | 8 | Đóng góp open-source, học headless, mentoring junior |
 
-> **Tip:** Luon ghi chu lai kien thuc, dong goi template/plugin thanh san pham ca nhan, va dinh ky review skill de xac dinh buoc tiep theo.
+> **Tip:** Luôn ghi chú lại kiến thức, đóng gói template/plugin thành sản phẩm cá nhân, và định kỳ review skill để xác định bước tiếp theo.
