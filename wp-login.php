@@ -2,16 +2,23 @@
 /**
  * WordPress User Page
  *
+ * Trang người dùng WordPress.
+ *
  * Handles authentication, registering, resetting passwords, forgot password,
  * and other user handling.
+ *
+ * Xử lý xác thực, đăng ký, đặt lại mật khẩu, quên mật khẩu,
+ * và các xử lý người dùng khác.
  *
  * @package WordPress
  */
 
 /** Make sure that the WordPress bootstrap has run before continuing. */
+/** Đảm bảo WordPress bootstrap đã chạy trước khi tiếp tục. */
 require __DIR__ . '/wp-load.php';
 
 // Redirect to HTTPS login if forced to use SSL.
+// Chuyển hướng đến HTTPS login nếu bị buộc sử dụng SSL.
 if ( force_ssl_admin() && ! is_ssl() ) {
 	if ( str_starts_with( $_SERVER['REQUEST_URI'], 'http' ) ) {
 		wp_safe_redirect( set_url_scheme( $_SERVER['REQUEST_URI'], 'https' ) );
@@ -24,6 +31,8 @@ if ( force_ssl_admin() && ! is_ssl() ) {
 
 /**
  * Outputs the login page header.
+ *
+ * Xuất header của trang login.
  *
  * @since 2.1.0
  *
@@ -46,6 +55,7 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 	}
 
 	// Don't index any of these forms.
+	// Không index bất kỳ form nào trong số này.
 	add_filter( 'wp_robots', 'wp_robots_sensitive_page' );
 	add_action( 'login_head', 'wp_strict_cross_origin_referrer' );
 
@@ -56,9 +66,12 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 	}
 
 	// Shake it!
+	// Lắc nó!
 	$shake_error_codes = array( 'empty_password', 'empty_email', 'invalid_email', 'invalidcombo', 'empty_username', 'invalid_username', 'incorrect_password', 'retrieve_password_email_failure' );
 	/**
 	 * Filters the error codes array for shaking the login form.
+	 *
+	 * Filter mảng error codes để lắc form login.
 	 *
 	 * @since 3.0.0
 	 *
@@ -82,6 +95,8 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 
 	/**
 	 * Filters the title tag content for login page.
+	 *
+	 * Filter nội dung title tag cho trang login.
 	 *
 	 * @since 4.9.0
 	 *

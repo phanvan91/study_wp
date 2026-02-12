@@ -2,6 +2,8 @@
 /**
  * Handle Trackbacks and Pingbacks Sent to WordPress
  *
+ * Xử lý Trackbacks và Pingbacks được gửi đến WordPress.
+ *
  * @since 0.71
  *
  * @package WordPress
@@ -14,12 +16,17 @@ if ( empty( $wp ) ) {
 }
 
 // Always run as an unauthenticated user.
+// Luôn chạy như một user chưa xác thực.
 wp_set_current_user( 0 );
 
 /**
  * Response to a trackback.
  *
+ * Phản hồi một trackback.
+ *
  * Responds with an error or success XML message.
+ *
+ * Phản hồi với một tin nhắn XML lỗi hoặc thành công.
  *
  * @since 0.71
  *
@@ -54,6 +61,7 @@ $trackback_url = isset( $_POST['url'] ) ? $_POST['url'] : '';
 $charset       = isset( $_POST['charset'] ) ? $_POST['charset'] : '';
 
 // These three are stripslashed here so they can be properly escaped after mb_convert_encoding().
+// Ba cái này được stripslashed ở đây để chúng có thể được escape đúng cách sau mb_convert_encoding().
 $title     = isset( $_POST['title'] ) ? wp_unslash( $_POST['title'] ) : '';
 $excerpt   = isset( $_POST['excerpt'] ) ? wp_unslash( $_POST['excerpt'] ) : '';
 $blog_name = isset( $_POST['blog_name'] ) ? wp_unslash( $_POST['blog_name'] ) : '';
@@ -62,6 +70,7 @@ if ( $charset ) {
 	$charset = str_replace( array( ',', ' ' ), '', strtoupper( trim( $charset ) ) );
 
 	// Validate the specified "sender" charset is available on the receiving site.
+	// Xác thực charset "sender" được chỉ định có sẵn trên site nhận.
 	if ( function_exists( 'mb_list_encodings' ) && ! in_array( $charset, mb_list_encodings(), true ) ) {
 		$charset = '';
 	}
@@ -72,11 +81,13 @@ if ( ! $charset ) {
 }
 
 // No valid uses for UTF-7.
+// Không có sử dụng hợp lệ cho UTF-7.
 if ( str_contains( $charset, 'UTF-7' ) ) {
 	die;
 }
 
 // For international trackbacks.
+// Cho các trackback quốc tế.
 if ( function_exists( 'mb_convert_encoding' ) ) {
 	$title     = mb_convert_encoding( $title, get_option( 'blog_charset' ), $charset );
 	$excerpt   = mb_convert_encoding( $excerpt, get_option( 'blog_charset' ), $charset );
@@ -84,6 +95,7 @@ if ( function_exists( 'mb_convert_encoding' ) ) {
 }
 
 // Escape values to use in the trackback.
+// Escape các giá trị để sử dụng trong trackback.
 $title     = wp_slash( $title );
 $excerpt   = wp_slash( $excerpt );
 $blog_name = wp_slash( $blog_name );
@@ -98,6 +110,7 @@ if ( ! isset( $post_id ) || ! (int) $post_id ) {
 
 if ( empty( $title ) && empty( $trackback_url ) && empty( $blog_name ) ) {
 	// If it doesn't look like a trackback at all.
+	// Nếu nó không giống trackback chút nào.
 	wp_redirect( get_permalink( $post_id ) );
 	exit;
 }
@@ -105,6 +118,8 @@ if ( empty( $title ) && empty( $trackback_url ) && empty( $blog_name ) ) {
 if ( ! empty( $trackback_url ) && ! empty( $title ) ) {
 	/**
 	 * Fires before the trackback is added to a post.
+	 *
+	 * Kích hoạt trước khi trackback được thêm vào post.
 	 *
 	 * @since 4.7.0
 	 *
@@ -167,6 +182,8 @@ if ( ! empty( $trackback_url ) && ! empty( $title ) ) {
 
 	/**
 	 * Fires after a trackback is added to a post.
+	 *
+	 * Kích hoạt sau khi trackback được thêm vào post.
 	 *
 	 * @since 1.2.0
 	 *

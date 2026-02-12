@@ -3,13 +3,19 @@
  * Used to set up and fix common variables and include
  * the WordPress procedural and class library.
  *
+ * Được sử dụng để thiết lập và sửa các biến chung và include
+ * thư viện procedural và class của WordPress.
+ *
  * Allows for some configuration in wp-config.php (see default-constants.php)
+ * Cho phép một số cấu hình trong wp-config.php (xem default-constants.php)
  *
  * @package WordPress
  */
 
 /**
  * Stores the location of the WordPress directory of functions, classes, and core content.
+ *
+ * Lưu trữ vị trí thư mục WordPress chứa functions, classes, và core content.
  *
  * @since 1.0.0
  */
@@ -18,9 +24,15 @@ define( 'WPINC', 'wp-includes' );
 /**
  * Version information for the current WordPress release.
  *
+ * Thông tin phiên bản cho bản phát hành WordPress hiện tại.
+ *
  * These can't be directly globalized in version.php. When updating,
  * include version.php from another installation and don't override
  * these values if already set.
+ *
+ * Các giá trị này không thể được globalize trực tiếp trong version.php. Khi cập nhật,
+ * include version.php từ một cài đặt khác và không ghi đè
+ * các giá trị này nếu đã được thiết lập.
  *
  * @global string   $wp_version              The WordPress version string.
  * @global int      $wp_db_version           WordPress database version.
@@ -36,9 +48,11 @@ require ABSPATH . WPINC . '/compat.php';
 require ABSPATH . WPINC . '/load.php';
 
 // Check for the required PHP version and for the MySQL extension or a database drop-in.
+// Kiểm tra phiên bản PHP yêu cầu và extension MySQL hoặc database drop-in.
 wp_check_php_mysql_versions();
 
 // Include files required for initialization.
+// Include các file cần thiết cho việc khởi tạo.
 require ABSPATH . WPINC . '/class-wp-paused-extensions-storage.php';
 require ABSPATH . WPINC . '/class-wp-exception.php';
 require ABSPATH . WPINC . '/class-wp-fatal-error-handler.php';
@@ -55,6 +69,9 @@ require_once ABSPATH . WPINC . '/plugin.php';
  * If not already configured, `$blog_id` will default to 1 in a single site
  * configuration. In multisite, it will be overridden by default in ms-settings.php.
  *
+ * Nếu chưa được cấu hình, `$blog_id` sẽ mặc định là 1 trong cấu hình single site.
+ * Trong multisite, nó sẽ bị ghi đè mặc định trong ms-settings.php.
+ *
  * @since 2.0.0
  *
  * @global int $blog_id
@@ -62,32 +79,44 @@ require_once ABSPATH . WPINC . '/plugin.php';
 global $blog_id;
 
 // Set initial default constants including WP_MEMORY_LIMIT, WP_MAX_MEMORY_LIMIT, WP_DEBUG, SCRIPT_DEBUG, WP_CONTENT_DIR and WP_CACHE.
+// Thiết lập các hằng số mặc định ban đầu bao gồm WP_MEMORY_LIMIT, WP_MAX_MEMORY_LIMIT, WP_DEBUG, SCRIPT_DEBUG, WP_CONTENT_DIR và WP_CACHE.
 wp_initial_constants();
 
 // Register the shutdown handler for fatal errors as soon as possible.
+// Đăng ký shutdown handler cho fatal errors càng sớm càng tốt.
 wp_register_fatal_error_handler();
 
 // WordPress calculates offsets from UTC.
+// WordPress tính toán offsets từ UTC.
 // phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 date_default_timezone_set( 'UTC' );
 
 // Standardize $_SERVER variables across setups.
+// Chuẩn hóa các biến $_SERVER trên các thiết lập.
 wp_fix_server_vars();
 
 // Check if the site is in maintenance mode.
+// Kiểm tra xem site có đang ở chế độ bảo trì không.
 wp_maintenance();
 
 // Start loading timer.
+// Bắt đầu timer loading.
 timer_start();
 
 // Check if WP_DEBUG mode is enabled.
+// Kiểm tra xem chế độ WP_DEBUG có được bật không.
 wp_debug_mode();
 
 /**
  * Filters whether to enable loading of the advanced-cache.php drop-in.
  *
+ * Filter xác định có bật load advanced-cache.php drop-in không.
+ *
  * This filter runs before it can be used by plugins. It is designed for non-web
  * run-times. If false is returned, advanced-cache.php will never be loaded.
+ *
+ * Filter này chạy trước khi nó có thể được sử dụng bởi plugins. Nó được thiết kế cho
+ * các runtime không phải web. Nếu trả về false, advanced-cache.php sẽ không bao giờ được load.
  *
  * @since 4.6.0
  *
@@ -96,18 +125,22 @@ wp_debug_mode();
  */
 if ( WP_CACHE && apply_filters( 'enable_loading_advanced_cache_dropin', true ) && file_exists( WP_CONTENT_DIR . '/advanced-cache.php' ) ) {
 	// For an advanced caching plugin to use. Uses a static drop-in because you would only want one.
+	// Cho plugin caching nâng cao sử dụng. Sử dụng static drop-in vì bạn chỉ muốn một cái.
 	include WP_CONTENT_DIR . '/advanced-cache.php';
 
 	// Re-initialize any hooks added manually by advanced-cache.php.
+	// Khởi tạo lại các hooks được thêm thủ công bởi advanced-cache.php.
 	if ( $wp_filter ) {
 		$wp_filter = WP_Hook::build_preinitialized_hooks( $wp_filter );
 	}
 }
 
 // Define WP_LANG_DIR if not set.
+// Định nghĩa WP_LANG_DIR nếu chưa được thiết lập.
 wp_set_lang_dir();
 
 // Load early WordPress files.
+// Load các file WordPress sớm.
 require ABSPATH . WPINC . '/class-wp-list-util.php';
 require ABSPATH . WPINC . '/class-wp-token-map.php';
 require ABSPATH . WPINC . '/formatting.php';
@@ -131,6 +164,7 @@ require ABSPATH . WPINC . '/l10n/class-wp-translation-file-php.php';
  */
 global $wpdb;
 // Include the wpdb class and, if present, a db.php database drop-in.
+// Include class wpdb và, nếu có, database drop-in db.php.
 require_wp_db();
 
 /**
@@ -141,15 +175,19 @@ require_wp_db();
 $GLOBALS['table_prefix'] = $table_prefix;
 
 // Set the database table prefix and the format specifiers for database table columns.
+// Thiết lập prefix bảng database và format specifiers cho các cột bảng database.
 wp_set_wpdb_vars();
 
 // Start the WordPress object cache, or an external object cache if the drop-in is present.
+// Bắt đầu WordPress object cache, hoặc external object cache nếu drop-in có mặt.
 wp_start_object_cache();
 
 // Attach the default filters.
+// Đính kèm các filter mặc định.
 require ABSPATH . WPINC . '/default-filters.php';
 
 // Initialize multisite if enabled.
+// Khởi tạo multisite nếu được bật.
 if ( is_multisite() ) {
 	require ABSPATH . WPINC . '/class-wp-site-query.php';
 	require ABSPATH . WPINC . '/class-wp-network-query.php';
@@ -162,20 +200,24 @@ if ( is_multisite() ) {
 register_shutdown_function( 'shutdown_action_hook' );
 
 // Stop most of WordPress from being loaded if SHORTINIT is enabled.
+// Dừng hầu hết WordPress khỏi việc được load nếu SHORTINIT được bật.
 if ( SHORTINIT ) {
 	return false;
 }
 
 // Load the L10n library.
+// Load thư viện L10n.
 require_once ABSPATH . WPINC . '/l10n.php';
 require_once ABSPATH . WPINC . '/class-wp-textdomain-registry.php';
 require_once ABSPATH . WPINC . '/class-wp-locale.php';
 require_once ABSPATH . WPINC . '/class-wp-locale-switcher.php';
 
 // Run the installer if WordPress is not installed.
+// Chạy installer nếu WordPress chưa được cài đặt.
 wp_not_installed();
 
 // Load most of WordPress.
+// Load hầu hết WordPress.
 require ABSPATH . WPINC . '/class-wp-walker.php';
 require ABSPATH . WPINC . '/class-wp-ajax-response.php';
 require ABSPATH . WPINC . '/capabilities.php';

@@ -2,12 +2,17 @@
 /**
  * WordPress Signup Page
  *
+ * Trang đăng ký WordPress.
+ *
  * Handles the user registration and site creation process for multisite installations.
+ *
+ * Xử lý quá trình đăng ký người dùng và tạo site cho các cài đặt multisite.
  *
  * @package WordPress
  */
 
 /** Sets up the WordPress Environment. */
+/** Thiết lập môi trường WordPress. */
 require __DIR__ . '/wp-load.php';
 
 add_filter( 'wp_robots', 'wp_robots_no_robots' );
@@ -24,11 +29,15 @@ if ( is_array( get_site_option( 'illegal_names' ) ) && isset( $_GET['new'] ) && 
 /**
  * Prints signup_header via wp_head.
  *
+ * In signup_header qua wp_head.
+ *
  * @since MU (3.0.0)
  */
 function do_signup_header() {
 	/**
 	 * Fires within the head section of the site sign-up screen.
+	 *
+	 * Kích hoạt trong phần head của màn hình đăng ký site.
 	 *
 	 * @since 3.0.0
 	 */
@@ -47,10 +56,13 @@ if ( ! is_main_site() ) {
 }
 
 // Fix for page title.
+// Sửa cho tiêu đề trang.
 $wp_query->is_404 = false;
 
 /**
  * Fires before the Site Sign-up page is loaded.
+ *
+ * Kích hoạt trước khi trang Site Sign-up được load.
  *
  * @since 4.4.0
  */
@@ -58,6 +70,8 @@ do_action( 'before_signup_header' );
 
 /**
  * Prints styles for front-end Multisite Sign-up pages.
+ *
+ * In các style cho các trang Multisite Sign-up front-end.
  *
  * @since MU (3.0.0)
  */
