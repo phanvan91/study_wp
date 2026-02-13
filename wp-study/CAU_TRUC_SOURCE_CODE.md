@@ -98,14 +98,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( file_exists( ABSPATH . 'wp-config.php' ) ) {
     require_once ABSPATH . 'wp-config.php';
 } elseif ( file_exists( dirname( ABSPATH ) . '/wp-config.php' ) ) {
-    // wp-config.php co the dat o thu muc cha de bao mat
+    // wp-config.php có thể đặt ở thư mục cha để bảo mật
     require_once dirname( ABSPATH ) . '/wp-config.php';
 } else {
-    // Hien thi thong bao loi yeu cau cai dat
+    // Hiển thị thông báo lỗi yêu cầu cài đặt
 }
 ```
 
-**Luu y quan trong:** WordPress cho phep dat `wp-config.php` o thu muc cha cua thu muc WordPress. Day la ky thuat bao mat de file cau hinh khong nam trong web root.
+**Lưu ý quan trọng:** WordPress cho phép đặt `wp-config.php` ở thư mục cha của thư mục WordPress. Đây là kỹ thuật bảo mật để file cấu hình không nằm trong web root.
 
 #### wp-settings.php - Quy Trinh Khoi Dong (Boot Sequence)
 
@@ -117,24 +117,24 @@ File mau de tao `wp-config.php`. Chua cac thiet lap co ban:
 
 ```php
 <?php
-// Thiet lap database
+// Thiết lập database
 define( 'DB_NAME', 'database_name_here' );
 define( 'DB_USER', 'username_here' );
 define( 'DB_PASSWORD', 'password_here' );
 define( 'DB_HOST', 'localhost' );
 define( 'DB_CHARSET', 'utf8' );
 
-// Khoa bao mat (Security Keys)
+// Khóa bảo mật (Security Keys)
 define( 'AUTH_KEY',         'put your unique phrase here' );
 define( 'SECURE_AUTH_KEY',  'put your unique phrase here' );
 
-// Prefix bang database
+// Prefix bảng database
 $table_prefix = 'wp_';
 
-// Che do debug
+// Chế độ debug
 define( 'WP_DEBUG', false );
 
-// Load wp-settings.php de khoi dong WordPress
+// Load wp-settings.php để khởi động WordPress
 require_once ABSPATH . 'wp-settings.php';
 ```
 
@@ -147,19 +147,19 @@ Xu ly toan bo quy trinh xac thuc nguoi dung:
 
 ```php
 <?php
-// Vi du: Hook vao quy trinh dang nhap
+// Ví dụ: Hook vào quy trình đăng nhập
 add_filter( 'authenticate', 'my_custom_auth', 30, 3 );
 function my_custom_auth( $user, $username, $password ) {
     if ( is_blocked_ip( $_SERVER['REMOTE_ADDR'] ) ) {
-        return new WP_Error( 'blocked', 'IP cua ban da bi chan.' );
+        return new WP_Error( 'blocked', 'IP của bạn đã bị chặn.' );
     }
     return $user;
 }
 
-// Hook sau khi dang nhap thanh cong
+// Hook sau khi đăng nhập thành công
 add_action( 'wp_login', 'my_after_login', 10, 2 );
 function my_after_login( $user_login, $user ) {
-    error_log( "User {$user_login} da dang nhap luc " . current_time( 'mysql' ) );
+    error_log( "User {$user_login} đã đăng nhập lúc " . current_time( 'mysql' ) );
 }
 ```
 
@@ -169,23 +169,23 @@ Nhan va xu ly binh luan tu form comment cua nguoi dung. Kiem tra spam, validatio
 
 ```php
 <?php
-// Vi du: Hook kiem tra binh luan truoc khi luu
+// Ví dụ: Hook kiểm tra bình luận trước khi lưu
 add_filter( 'preprocess_comment', 'my_check_comment' );
 function my_check_comment( $commentdata ) {
     if ( strlen( $commentdata['comment_content'] ) < 10 ) {
-        wp_die( 'Binh luan qua ngan, vui long viet it nhat 10 ky tu.' );
+        wp_die( 'Bình luận quá ngắn, vui lòng viết ít nhất 10 ký tự.' );
     }
     return $commentdata;
 }
 ```
 
-#### wp-cron.php - He Thong Cron cua WordPress
+#### wp-cron.php - Hệ Thống Cron của WordPress
 
-WordPress khong su dung cron thuc su cua he dieu hanh. Thay vao do, moi khi co nguoi truy cap site, WordPress kiem tra xem co tac vu nao can chay khong.
+WordPress không sử dụng cron thực sự của hệ điều hành. Thay vào đó, mỗi khi có người truy cập site, WordPress kiểm tra xem có tác vụ nào cần chạy không.
 
 ```php
 <?php
-// Vi du: Dang ky mot cron event
+// Ví dụ: Đăng ký một cron event
 add_action( 'my_daily_cleanup', 'do_daily_cleanup' );
 function do_daily_cleanup() {
     global $wpdb;
@@ -196,13 +196,13 @@ function do_daily_cleanup() {
     );
 }
 
-// Len lich chay hang ngay
+// Lên lịch chạy hàng ngày
 if ( ! wp_next_scheduled( 'my_daily_cleanup' ) ) {
     wp_schedule_event( time(), 'daily', 'my_daily_cleanup' );
 }
 ```
 
-**Luu y:** Trong moi truong production, nen tat WP-Cron va su dung system cron thay the:
+**Lưu ý:** Trong môi trường production, nên tắt WP-Cron và sử dụng system cron thay thế:
 
 ```php
 // Trong wp-config.php
@@ -219,23 +219,23 @@ Xu ly dang ky tai khoan moi trong WordPress Multisite. Hien thi form dang ky va 
 
 #### wp-mail.php - Xu Ly Email Posting
 
-Cho phep tao bai viet thong qua email. Day la tinh nang cu (legacy) va it duoc su dung trong thuc te.
+Cho phép tạo bài viết thông qua email. Đây là tính năng cũ (legacy) và ít được sử dụng trong thực tế.
 
 #### wp-links-opml.php - Xuat Lien Ket OPML
 
-Xuat danh sach lien ket (blogroll) theo dinh dang OPML. Day la tinh nang tu thoi ky dau cua blogging.
+Xuất danh sách liên kết (blogroll) theo định dạng OPML. Đây là tính năng từ thời kỳ đầu của blogging.
 
 #### wp-trackback.php - Xu Ly Trackback
 
-Xu ly trackback tu cac blog khac. Trackback la co che thong bao khi mot blog khac lien ket den bai viet cua ban. Day la tinh nang cu va nen tat vi ly do bao mat.
+Xử lý trackback từ các blog khác. Trackback là cơ chế thông báo khi một blog khác liên kết đến bài viết của bạn. Đây là tính năng cũ và nên tắt vì lý do bảo mật.
 
 #### xmlrpc.php - XML-RPC API
 
-Cung cap API XML-RPC de cac ung dung ben ngoai tuong tac voi WordPress. Nhieu chuyen gia bao mat khuyen nen tat file nay neu khong su dung.
+Cung cấp API XML-RPC để các ứng dụng bên ngoài tương tác với WordPress. Nhiều chuyên gia bảo mật khuyên nên tắt file này nếu không sử dụng.
 
 ```php
 <?php
-// Tat XML-RPC trong functions.php
+// Tắt XML-RPC trong functions.php
 add_filter( 'xmlrpc_enabled', '__return_false' );
 ```
 
@@ -277,45 +277,45 @@ wp-admin/
 
 #### admin.php - Diem Vao Admin
 
-Moi trang trong admin panel deu load file nay dau tien. No thuc hien:
+Mỗi trang trong admin panel đều load file này đầu tiên. Nó thực hiện:
 - Load WordPress environment
-- Kiem tra quyen truy cap (authentication)
-- Thiet lap admin context
+- Kiểm tra quyền truy cập (authentication)
+- Thiết lập admin context
 
 ```php
 <?php
-// Quy trinh load cua admin.php (don gian hoa):
+// Quy trình load của admin.php (đơn giản hóa):
 
 // 1. Load WordPress
 require_once dirname( __DIR__ ) . '/wp-load.php';
 
-// 2. Kiem tra nguoi dung da dang nhap chua
+// 2. Kiểm tra người dùng đã đăng nhập chưa
 if ( ! is_user_logged_in() ) {
     wp_redirect( wp_login_url( $_SERVER['REQUEST_URI'] ) );
     exit;
 }
 
-// 3. Load cac thu vien admin
+// 3. Load các thư viện admin
 require_once ABSPATH . 'wp-admin/includes/admin.php';
 
-// 4. Fire action de plugins co the hook vao
+// 4. Fire action để plugins có thể hook vào
 do_action( 'admin_init' );
 ```
 
-#### edit.php - Danh Sach Bai Viet (Post List)
+#### edit.php - Danh Sách Bài Viết (Post List)
 
-Hien thi danh sach bai viet dang bang (table) voi cac chuc nang loc, tim kiem, va thao tac hang loat.
+Hiển thị danh sách bài viết dạng bảng (table) với các chức năng lọc, tìm kiếm, và thao tác hàng loạt.
 
 ```php
 <?php
-// Vi du: Them cot tuy chinh vao danh sach bai viet
+// Ví dụ: Thêm cột tùy chỉnh vào danh sách bài viết
 add_filter( 'manage_posts_columns', 'my_custom_columns' );
 function my_custom_columns( $columns ) {
     $new_columns = array();
     foreach ( $columns as $key => $value ) {
         $new_columns[ $key ] = $value;
         if ( $key === 'title' ) {
-            $new_columns['views'] = 'Luot Xem';
+            $new_columns['views'] = 'Lượt Xem';
         }
     }
     return $new_columns;
@@ -332,11 +332,11 @@ function my_custom_column_data( $column, $post_id ) {
 
 #### post.php va post-new.php - Tao/Sua Bai Viet
 
-`post-new.php` tao bai viet moi (auto-draft), `post.php` xu ly viec luu va cap nhat bai viet.
+`post-new.php` tạo bài viết mới (auto-draft), `post.php` xử lý việc lưu và cập nhật bài viết.
 
 ```php
 <?php
-// Vi du: Hook vao quy trinh luu bai viet
+// Ví dụ: Hook vào quy trình lưu bài viết
 add_action( 'save_post', 'my_save_post_handler', 10, 3 );
 function my_save_post_handler( $post_id, $post, $update ) {
     if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -360,16 +360,16 @@ function my_save_post_handler( $post_id, $post, $update ) {
 
 #### options.php - Xu Ly Luu Cau Hinh
 
-Nhan du lieu POST tu cac trang cau hinh va luu vao bang `wp_options`.
+Nhận dữ liệu POST từ các trang cấu hình và lưu vào bảng `wp_options`.
 
 ```php
 <?php
-// Vi du: Dang ky trang cau hinh tuy chinh
+// Ví dụ: Đăng ký trang cấu hình tùy chỉnh
 add_action( 'admin_menu', 'my_options_page' );
 function my_options_page() {
     add_options_page(
-        'Cau Hinh Plugin',
-        'Plugin Cua Toi',
+        'Cấu Hình Plugin',
+        'Plugin Của Tôi',
         'manage_options',
         'my-plugin-settings',
         'my_options_page_html'
@@ -382,7 +382,7 @@ function my_settings_init() {
 
     add_settings_section(
         'my_plugin_section',
-        'Cau Hinh Chung',
+        'Cấu Hình Chung',
         'my_section_callback',
         'my-plugin-settings'
     );
@@ -399,20 +399,20 @@ function my_settings_init() {
 
 #### users.php - Quan Ly Nguoi Dung
 
-Hien thi danh sach nguoi dung, cho phep them/sua/xoa va phan quyen.
+Hiển thị danh sách người dùng, cho phép thêm/sửa/xóa và phân quyền.
 
 ```php
 <?php
-// Vi du: Them custom field vao trang profile nguoi dung
+// Ví dụ: Thêm custom field vào trang profile người dùng
 add_action( 'show_user_profile', 'my_user_profile_fields' );
 add_action( 'edit_user_profile', 'my_user_profile_fields' );
 function my_user_profile_fields( $user ) {
     $phone = get_user_meta( $user->ID, 'phone_number', true );
     ?>
-    <h3>Thong Tin Bo Sung</h3>
+    <h3>Thông Tin Bổ Sung</h3>
     <table class="form-table">
         <tr>
-            <th><label for="phone_number">So Dien Thoai</label></th>
+            <th><label for="phone_number">Số Điện Thoại</label></th>
             <td>
                 <input type="text" name="phone_number" id="phone_number"
                        value="<?php echo esc_attr( $phone ); ?>" class="regular-text" />
@@ -434,14 +434,14 @@ function my_save_user_profile_fields( $user_id ) {
 
 #### plugins.php - Quan Ly Plugins
 
-Hien thi danh sach plugins da cai dat. Cho phep kich hoat, vo hieu hoa, cap nhat, va xoa plugins.
+Hiển thị danh sách plugins đã cài đặt. Cho phép kích hoạt, vô hiệu hóa, cập nhật, và xóa plugins.
 
 ```php
 <?php
-// Vi du: Them lien ket tuy chinh vao trang plugins
+// Ví dụ: Thêm liên kết tùy chỉnh vào trang plugins
 add_filter( 'plugin_action_links_my-plugin/my-plugin.php', 'my_plugin_links' );
 function my_plugin_links( $links ) {
-    $settings_link = '<a href="' . admin_url( 'options-general.php?page=my-plugin-settings' ) . '">Cau Hinh</a>';
+    $settings_link = '<a href="' . admin_url( 'options-general.php?page=my-plugin-settings' ) . '">Cấu Hình</a>';
     array_unshift( $links, $settings_link );
     return $links;
 }
@@ -449,36 +449,36 @@ function my_plugin_links( $links ) {
 
 #### themes.php - Quan Ly Themes
 
-Hien thi cac theme da cai dat, cho phep kich hoat, xem truoc, va cai dat theme moi.
+Hiển thị các theme đã cài đặt, cho phép kích hoạt, xem trước, và cài đặt theme mới.
 
 #### admin-ajax.php - Xu Ly AJAX
 
-Day la endpoint chinh cho tat ca cac AJAX request trong WordPress admin (va ca frontend). Moi AJAX request can gui kem tham so `action`.
+Đây là endpoint chính cho tất cả các AJAX request trong WordPress admin (và cả frontend). Mỗi AJAX request cần gửi kèm tham số `action`.
 
 ```php
 <?php
-// PHIA SERVER: Dang ky AJAX handler
-add_action( 'wp_ajax_my_action', 'my_ajax_handler' );        // User da dang nhap
-add_action( 'wp_ajax_nopriv_my_action', 'my_ajax_handler' ); // User chua dang nhap
+// PHÍA SERVER: Đăng ký AJAX handler
+add_action( 'wp_ajax_my_action', 'my_ajax_handler' );        // User đã đăng nhập
+add_action( 'wp_ajax_nopriv_my_action', 'my_ajax_handler' ); // User chưa đăng nhập
 
 function my_ajax_handler() {
     check_ajax_referer( 'my_nonce_action', 'nonce' );
 
     if ( ! current_user_can( 'edit_posts' ) ) {
-        wp_send_json_error( 'Khong co quyen.' );
+        wp_send_json_error( 'Không có quyền.' );
     }
 
     $post_id = intval( $_POST['post_id'] );
     $result  = update_post_meta( $post_id, '_liked', true );
 
     if ( $result ) {
-        wp_send_json_success( array( 'message' => 'Da thich bai viet!' ) );
+        wp_send_json_success( array( 'message' => 'Đã thích bài viết!' ) );
     } else {
-        wp_send_json_error( 'Khong the xu ly.' );
+        wp_send_json_error( 'Không thể xử lý.' );
     }
 }
 
-// Dang ky script va truyen bien sang JavaScript
+// Đăng ký script và truyền biến sang JavaScript
 add_action( 'wp_enqueue_scripts', 'my_enqueue_ajax_scripts' );
 function my_enqueue_ajax_scripts() {
     wp_enqueue_script( 'my-ajax-script', plugin_dir_url( __FILE__ ) . 'js/ajax.js', array( 'jquery' ) );
@@ -491,22 +491,22 @@ function my_enqueue_ajax_scripts() {
 
 ### 2.3. Thu Muc wp-admin/includes/
 
-Chua cac file ho tro cho admin:
+Chứa các file hỗ trợ cho admin:
 
 ```
 wp-admin/includes/
-├── admin.php                  # Load cac file admin utilities
-├── class-wp-list-table.php    # Class hien thi bang du lieu
-├── class-wp-screen.php        # Class quan ly man hinh admin
-├── dashboard.php              # Cac widget dashboard
-├── file.php                   # Xu ly file (upload, edit)
-├── image.php                  # Xu ly hinh anh
-├── media.php                  # Thu vien media
+├── admin.php                  # Load các file admin utilities
+├── class-wp-list-table.php    # Class hiển thị bảng dữ liệu
+├── class-wp-screen.php        # Class quản lý màn hình admin
+├── dashboard.php              # Các widget dashboard
+├── file.php                   # Xử lý file (upload, edit)
+├── image.php                  # Xử lý hình ảnh
+├── media.php                  # Thư viện media
 ├── plugin.php                 # Utilities cho plugin management
 ├── post.php                   # Utilities cho post management
-├── schema.php                 # Cau truc database
+├── schema.php                 # Cấu trúc database
 ├── template.php               # Template functions cho admin
-├── upgrade.php                # Xu ly nang cap WordPress
+├── upgrade.php                # Xử lý nâng cấp WordPress
 └── user.php                   # Utilities cho user management
 ```
 
@@ -514,19 +514,19 @@ wp-admin/includes/
 
 ## 3. Thu Muc wp-includes/
 
-Thu muc `wp-includes/` la **core library** cua WordPress. Chua tat ca cac class, function, va API ma WordPress su dung.
+Thư mục `wp-includes/` là **core library** của WordPress. Chứa tất cả các class, function, và API mà WordPress sử dụng.
 
-**Nguyen tac:** KHONG BAO GIO sua truc tiep cac file trong `wp-includes/`. Moi thay doi se bi mat khi cap nhat WordPress. Su dung hooks de tuy chinh hanh vi.
+**Nguyên tắc:** KHÔNG BAO GIỜ sửa trực tiếp các file trong `wp-includes/`. Mọi thay đổi sẽ bị mất khi cập nhật WordPress. Sử dụng hooks để tùy chỉnh hành vi.
 
 ### 3.1. Cac Class Chinh
 
 #### class-wp.php - Lop WordPress Chinh
 
-Class `WP` la trung tam dieu phoi cua WordPress. No xu ly viec phan tich URL request, thiet lap query variables, gui headers, va thuc hien main query.
+Class `WP` là trung tâm điều phối của WordPress. Nó xử lý việc phân tích URL request, thiết lập query variables, gửi headers, và thực hiện main query.
 
 ```php
 <?php
-// Cau truc don gian hoa cua class WP:
+// Cấu trúc đơn giản hóa của class WP:
 class WP {
     public $public_query_vars = array(
         'm', 'p', 'posts', 'w', 'cat', 's', 'search',
@@ -548,16 +548,16 @@ class WP {
 
     public function main( $query_args = '' ) {
         $this->init();
-        $this->parse_request();    // Phan tich URL
-        $this->send_headers();     // Gui HTTP headers
-        $this->query_posts();      // Truy van posts
-        $this->handle_404();       // Xu ly loi 404
+        $this->parse_request();    // Phân tích URL
+        $this->send_headers();     // Gửi HTTP headers
+        $this->query_posts();      // Truy vấn posts
+        $this->handle_404();       // Xử lý lỗi 404
         $this->register_globals();
         do_action_ref_array( 'wp', array( &$this ) );
     }
 }
 
-// Ham global wp() goi class nay:
+// Hàm global wp() gọi class này:
 function wp( $query_vars = '' ) {
     global $wp;
     $wp->main( $query_vars );
@@ -625,7 +625,7 @@ function my_modify_main_query( $query ) {
 
 #### class-wp-user.php - Lop Nguoi Dung
 
-Dai dien cho mot nguoi dung trong he thong. Chua thong tin ca nhan, vai tro, va quyen han.
+Đại diện cho một người dùng trong hệ thống. Chứa thông tin cá nhân, vai trò, và quyền hạn.
 
 ```php
 <?php
@@ -635,18 +635,18 @@ echo $user->user_email;
 echo $user->display_name;
 
 if ( $user->has_cap( 'edit_posts' ) ) {
-    echo 'Nguoi dung co quyen chinh sua bai viet.';
+    echo 'Người dùng có quyền chỉnh sửa bài viết.';
 }
 
-// Cac vai tro mac dinh cua WordPress:
-// - administrator: Toan quyen
-// - editor: Quan ly noi dung
-// - author: Viet va quan ly bai viet cua minh
-// - contributor: Viet bai nhung khong duoc xuat ban
-// - subscriber: Chi doc
+// Các vai trò mặc định của WordPress:
+// - administrator: Toàn quyền
+// - editor: Quản lý nội dung
+// - author: Viết và quản lý bài viết của mình
+// - contributor: Viết bài nhưng không được xuất bản
+// - subscriber: Chỉ đọc
 
-// Vi du: Tao vai tro tuy chinh
-add_role( 'shop_manager', 'Quan Ly Cua Hang', array(
+// Ví dụ: Tạo vai trò tùy chỉnh
+add_role( 'shop_manager', 'Quản Lý Cửa Hàng', array(
     'read'           => true,
     'edit_posts'     => true,
     'delete_posts'   => true,
@@ -657,33 +657,33 @@ add_role( 'shop_manager', 'Quan Ly Cua Hang', array(
 
 #### class-wp-post.php - Lop Bai Viet
 
-Dai dien cho mot bai viet (post, page, hoac bat ky custom post type nao).
+Đại diện cho một bài viết (post, page, hoặc bất kỳ custom post type nào).
 
 ```php
 <?php
-// Cac thuoc tinh cua WP_Post:
-// $post->ID              - ID bai viet
-// $post->post_author     - ID tac gia
-// $post->post_date       - Ngay tao
-// $post->post_content    - Noi dung
-// $post->post_title      - Tieu de
-// $post->post_excerpt    - Tom tat
-// $post->post_status     - Trang thai (publish, draft, private, pending...)
-// $post->post_type       - Loai (post, page, attachment, custom...)
+// Các thuộc tính của WP_Post:
+// $post->ID              - ID bài viết
+// $post->post_author     - ID tác giả
+// $post->post_date       - Ngày tạo
+// $post->post_content    - Nội dung
+// $post->post_title      - Tiêu đề
+// $post->post_excerpt    - Tóm tắt
+// $post->post_status     - Trạng thái (publish, draft, private, pending...)
+// $post->post_type       - Loại (post, page, attachment, custom...)
 // $post->post_name       - Slug URL
-// $post->post_parent     - ID bai viet cha
-// $post->menu_order      - Thu tu hien thi
+// $post->post_parent     - ID bài viết cha
+// $post->menu_order      - Thứ tự hiển thị
 
-// Vi du: Dang ky Custom Post Type
+// Ví dụ: Đăng ký Custom Post Type
 add_action( 'init', 'register_product_post_type' );
 function register_product_post_type() {
     register_post_type( 'product', array(
         'labels' => array(
-            'name'          => 'San Pham',
-            'singular_name' => 'San Pham',
-            'add_new'       => 'Them Moi',
-            'add_new_item'  => 'Them San Pham Moi',
-            'edit_item'     => 'Chinh Sua San Pham',
+            'name'          => 'Sản Phẩm',
+            'singular_name' => 'Sản Phẩm',
+            'add_new'       => 'Thêm Mới',
+            'add_new_item'  => 'Thêm Sản Phẩm Mới',
+            'edit_item'     => 'Chỉnh Sửa Sản Phẩm',
         ),
         'public'       => true,
         'has_archive'  => true,
@@ -697,11 +697,11 @@ function register_product_post_type() {
 
 #### class-wp-rewrite.php - Lop URL Rewrite
 
-Quan ly viec chuyen doi URL dep (pretty permalinks) thanh cac tham so truy van.
+Quản lý việc chuyển đổi URL đẹp (pretty permalinks) thành các tham số truy vấn.
 
 ```php
 <?php
-// Vi du: Them rewrite rule tuy chinh
+// Ví dụ: Thêm rewrite rule tùy chỉnh
 add_action( 'init', 'my_custom_rewrite_rules' );
 function my_custom_rewrite_rules() {
     add_rewrite_rule(
@@ -711,20 +711,20 @@ function my_custom_rewrite_rules() {
     );
     add_rewrite_tag( '%product_cat%', '([^/]+)' );
 }
-// Sau khi them rewrite rule, can flush:
-// Vao Settings > Permalinks va nhan Save
+// Sau khi thêm rewrite rule, cần flush:
+// Vào Settings > Permalinks và nhấn Save
 ```
 
 #### class-wp-hook.php - Lop Hook (Nen Tang Cua Plugin API)
 
-Class nay implement toan bo he thong hook (action va filter) cua WordPress.
+Class này implement toàn bộ hệ thống hook (action và filter) của WordPress.
 
 ```php
 <?php
-// Cau truc cua WP_Hook (don gian hoa):
+// Cấu trúc của WP_Hook (đơn giản hóa):
 final class WP_Hook implements Iterator, ArrayAccess {
     public $callbacks = array();
-    // Cau truc:
+    // Cấu trúc:
     // array(
     //     10 => array(
     //         'my_function' => array(
@@ -739,17 +739,17 @@ final class WP_Hook implements Iterator, ArrayAccess {
     public function apply_filters( $value, $args ) { }
 }
 
-// Vi du thuc te:
-// 1. Dang ky filter
+// Ví dụ thực tế:
+// 1. Đăng ký filter
 add_filter( 'the_content', 'my_add_disclaimer', 20 );
 function my_add_disclaimer( $content ) {
     if ( is_single() ) {
-        $content .= '<p><em>Bai viet chi mang tinh tham khao.</em></p>';
+        $content .= '<p><em>Bài viết chỉ mang tính tham khảo.</em></p>';
     }
     return $content;
 }
 
-// 2. Tao hook tuy chinh trong plugin/theme
+// 2. Tạo hook tùy chỉnh trong plugin/theme
 function my_process_order( $order_id ) {
     $order_data = get_order_data( $order_id );
     $order_data = apply_filters( 'my_plugin_order_data', $order_data, $order_id );
@@ -759,13 +759,13 @@ function my_process_order( $order_id ) {
 
 #### class-wpdb.php - Lop Database
 
-Class `wpdb` la lop truu tuong hoa database cua WordPress.
+Class `wpdb` là lớp trừu tượng hóa database của WordPress.
 
 ```php
 <?php
 global $wpdb;
 
-// 1. Truy van an toan voi prepare()
+// 1. Truy vấn an toàn với prepare()
 $results = $wpdb->get_results(
     $wpdb->prepare(
         "SELECT * FROM {$wpdb->posts} WHERE post_type = %s AND post_status = %s LIMIT %d",
@@ -773,23 +773,23 @@ $results = $wpdb->get_results(
     )
 );
 
-// 2. Lay mot dong
+// 2. Lấy một dòng
 $user = $wpdb->get_row(
     $wpdb->prepare( "SELECT * FROM {$wpdb->users} WHERE user_email = %s", 'user@example.com' )
 );
 
-// 3. Lay mot gia tri
+// 3. Lấy một giá trị
 $count = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_status = 'publish'" );
 
-// 4. Chen du lieu
+// 4. Chèn dữ liệu
 $wpdb->insert(
     $wpdb->prefix . 'my_custom_table',
-    array( 'name' => 'San pham moi', 'price' => 150000, 'created_at' => current_time( 'mysql' ) ),
+    array( 'name' => 'Sản phẩm mới', 'price' => 150000, 'created_at' => current_time( 'mysql' ) ),
     array( '%s', '%d', '%s' )
 );
 $new_id = $wpdb->insert_id;
 
-// 5. Cap nhat du lieu
+// 5. Cập nhật dữ liệu
 $wpdb->update(
     $wpdb->prefix . 'my_custom_table',
     array( 'price' => 200000 ),
@@ -798,10 +798,10 @@ $wpdb->update(
     array( '%d' )
 );
 
-// 6. Xoa du lieu
+// 6. Xóa dữ liệu
 $wpdb->delete( $wpdb->prefix . 'my_custom_table', array( 'id' => $new_id ), array( '%d' ) );
 
-// 7. Tao bang tuy chinh
+// 7. Tạo bảng tùy chỉnh
 function my_create_table() {
     global $wpdb;
     $table_name      = $wpdb->prefix . 'my_custom_table';
@@ -826,11 +826,11 @@ register_activation_hook( __FILE__, 'my_create_table' );
 
 #### rest-api.php va class-wp-rest-server.php
 
-WordPress REST API cho phep tuong tac voi WordPress thong qua HTTP requests, tra ve du lieu JSON.
+WordPress REST API cho phép tương tác với WordPress thông qua HTTP requests, trả về dữ liệu JSON.
 
 ```php
 <?php
-// Dang ky REST API endpoint tuy chinh
+// Đăng ký REST API endpoint tùy chỉnh
 add_action( 'rest_api_init', 'my_register_rest_routes' );
 function my_register_rest_routes() {
     // GET /wp-json/my-plugin/v1/products
@@ -878,7 +878,7 @@ function my_get_products( WP_REST_Request $request ) {
 function my_get_single_product( WP_REST_Request $request ) {
     $post = get_post( $request->get_param( 'id' ) );
     if ( ! $post || $post->post_type !== 'product' ) {
-        return new WP_Error( 'not_found', 'San pham khong ton tai.', array( 'status' => 404 ) );
+        return new WP_Error( 'not_found', 'Sản phẩm không tồn tại.', array( 'status' => 404 ) );
     }
     return new WP_REST_Response( array(
         'id'      => $post->ID,
@@ -890,28 +890,28 @@ function my_get_single_product( WP_REST_Request $request ) {
 
 ### 3.3. Formatting va Security
 
-#### formatting.php - Xu Ly Dinh Dang Van Ban
+#### formatting.php - Xử Lý Định Dạng Văn Bản
 
 ```php
 <?php
-// Escape du lieu de ngan XSS
+// Escape dữ liệu để ngăn XSS
 $safe = esc_html( '<script>alert("XSS")</script>' );
 echo '<input value="' . esc_attr( $user_input ) . '">';
-echo '<a href="' . esc_url( $url ) . '">Lien ket</a>';
+echo '<a href="' . esc_url( $url ) . '">Liên kết</a>';
 
-// Lam sach du lieu dau vao
+// Làm sạch dữ liệu đầu vào
 $clean = sanitize_text_field( $_POST['name'] );
 $email = sanitize_email( $_POST['email'] );
 $file  = sanitize_file_name( $_POST['filename'] );
-$slug  = sanitize_title( 'Tieu De Bai Viet Tieng Viet' );
+$slug  = sanitize_title( 'Tiêu Đề Bài Viết Tiếng Việt' );
 
-// Tu dong tao doan van
-$formatted = wpautop( "Dong 1\n\nDong 2\nDong 3" );
+// Tự động tạo đoạn văn
+$formatted = wpautop( "Dòng 1\n\nDòng 2\nDòng 3" );
 ```
 
 #### kses.php - HTML Filtering (Security)
 
-KSES (KSES Strips Evil Scripts) loc HTML de ngan chan XSS attack.
+KSES (KSES Strips Evil Scripts) lọc HTML để ngăn chặn XSS attack.
 
 ```php
 <?php
@@ -923,7 +923,7 @@ $allowed = array(
 );
 $safe_html = wp_kses( $user_html, $allowed );
 
-// Su dung cac preset co san:
+// Sử dụng các preset có sẵn:
 $post_safe = wp_kses_post( $html );
 ```
 
@@ -933,11 +933,11 @@ $post_safe = wp_kses_post( $html );
 
 ```php
 <?php
-// FILTERS - Thay doi du lieu
+// FILTERS - Thay đổi dữ liệu
 add_filter( $hook_name, $callback, $priority, $accepted_args );
 apply_filters( $hook_name, $value, ...$args );
 
-// ACTIONS - Thuc thi hanh dong
+// ACTIONS - Thực thi hành động
 add_action( $hook_name, $callback, $priority, $accepted_args );
 do_action( $hook_name, ...$args );
 
@@ -946,7 +946,7 @@ register_activation_hook( $file, $callback );
 register_deactivation_hook( $file, $callback );
 register_uninstall_hook( $file, $callback );
 
-// Vi du: Vong doi cua mot plugin
+// Ví dụ: Vòng đời của một plugin
 register_activation_hook( __FILE__, function() {
     add_option( 'my_plugin_version', '1.0.0' );
     flush_rewrite_rules();
@@ -964,16 +964,16 @@ register_deactivation_hook( __FILE__, function() {
 
 ```php
 <?php
-// Thu bac template cua WordPress (template hierarchy):
-// Trang chu:     front-page.php -> home.php -> index.php
-// Bai viet don:  single-{type}-{slug}.php -> single-{type}.php -> single.php -> singular.php -> index.php
+// Thứ bậc template của WordPress (template hierarchy):
+// Trang chủ:     front-page.php -> home.php -> index.php
+// Bài viết đơn:  single-{type}-{slug}.php -> single-{type}.php -> single.php -> singular.php -> index.php
 // Trang:         {custom}.php -> page-{slug}.php -> page-{id}.php -> page.php -> singular.php -> index.php
-// Danh muc:      category-{slug}.php -> category-{id}.php -> category.php -> archive.php -> index.php
+// Danh mục:      category-{slug}.php -> category-{id}.php -> category.php -> archive.php -> index.php
 // Tag:           tag-{slug}.php -> tag-{id}.php -> tag.php -> archive.php -> index.php
-// Tim kiem:      search.php -> index.php
+// Tìm kiếm:      search.php -> index.php
 // 404:           404.php -> index.php
 
-// Logic cua template-loader.php (don gian hoa):
+// Logic của template-loader.php (đơn giản hóa):
 if ( is_404() ) {
     $template = get_404_template();
 } elseif ( is_search() ) {
@@ -998,16 +998,16 @@ include $template;
 
 ```php
 <?php
-// Dang ky Custom Taxonomy
+// Đăng ký Custom Taxonomy
 add_action( 'init', 'register_product_taxonomy' );
 function register_product_taxonomy() {
     register_taxonomy( 'product_cat', 'product', array(
         'labels' => array(
-            'name'          => 'Danh Muc San Pham',
-            'singular_name' => 'Danh Muc',
-            'add_new_item'  => 'Them Danh Muc Moi',
+            'name'          => 'Danh Mục Sản Phẩm',
+            'singular_name' => 'Danh Mục',
+            'add_new_item'  => 'Thêm Danh Mục Mới',
         ),
-        'hierarchical'      => true,   // true = nhu Category, false = nhu Tag
+        'hierarchical'      => true,   // true = như Category, false = như Tag
         'public'            => true,
         'show_in_rest'      => true,
         'show_admin_column' => true,
@@ -1026,13 +1026,13 @@ wp_set_post_terms( $post_id, array( 5, 10 ), 'product_cat' );
 
 ```php
 <?php
-// Kiem tra dang nhap
+// Kiểm tra đăng nhập
 if ( is_user_logged_in() ) {
     $current_user = wp_get_current_user();
-    echo 'Xin chao, ' . $current_user->display_name;
+    echo 'Xin chào, ' . $current_user->display_name;
 }
 
-// Tao nguoi dung moi
+// Tạo người dùng mới
 $user_id = wp_insert_user( array(
     'user_login' => 'newuser',
     'user_pass'  => wp_generate_password(),
@@ -1040,35 +1040,35 @@ $user_id = wp_insert_user( array(
     'role'       => 'author',
 ) );
 
-// Kiem tra quyen
+// Kiểm tra quyền
 if ( current_user_can( 'manage_options' ) ) {
-    echo 'Ban la Administrator.';
+    echo 'Bạn là Administrator.';
 }
 if ( current_user_can( 'edit_post', $post_id ) ) {
-    echo 'Ban co the chinh sua bai viet nay.';
+    echo 'Bạn có thể chỉnh sửa bài viết này.';
 }
 
-// Them quyen tuy chinh cho vai tro
+// Thêm quyền tùy chỉnh cho vai trò
 $role = get_role( 'editor' );
 $role->add_cap( 'manage_products' );
 ```
 
 ### 3.8. HTTP API
 
-#### class-wp-http.php - Xu Ly HTTP Requests
+#### class-wp-http.php - Xử Lý HTTP Requests
 
 ```php
 <?php
 // GET request
 $response = wp_remote_get( 'https://api.example.com/data' );
 if ( is_wp_error( $response ) ) {
-    echo 'Loi: ' . $response->get_error_message();
+    echo 'Lỗi: ' . $response->get_error_message();
 } else {
     $body = wp_remote_retrieve_body( $response );
     $data = json_decode( $body, true );
 }
 
-// POST request voi headers
+// POST request với headers
 $response = wp_remote_post( 'https://api.example.com/orders', array(
     'headers' => array(
         'Content-Type'  => 'application/json',
@@ -1085,12 +1085,12 @@ $response = wp_remote_post( 'https://api.example.com/orders', array(
 
 ```php
 <?php
-// Object Cache co ban
+// Object Cache cơ bản
 wp_cache_set( 'my_key', $data, 'my_group', 3600 );
 $data = wp_cache_get( 'my_key', 'my_group' );
 wp_cache_delete( 'my_key', 'my_group' );
 
-// Transient API - Cache luu trong database
+// Transient API - Cache lưu trong database
 set_transient( 'my_api_data', $api_data, 12 * HOUR_IN_SECONDS );
 $cached = get_transient( 'my_api_data' );
 if ( false === $cached ) {
@@ -1098,7 +1098,7 @@ if ( false === $cached ) {
     set_transient( 'my_api_data', $cached, 12 * HOUR_IN_SECONDS );
 }
 
-// Vi du: Cache ket qua truy van phuc tap
+// Ví dụ: Cache kết quả truy vấn phức tạp
 function get_popular_posts( $count = 5 ) {
     $cache_key = 'popular_posts_' . $count;
     $posts     = get_transient( $cache_key );
@@ -1116,7 +1116,7 @@ function get_popular_posts( $count = 5 ) {
     return $posts;
 }
 
-// Xoa cache khi co bai viet moi
+// Xóa cache khi có bài viết mới
 add_action( 'save_post', function() {
     delete_transient( 'popular_posts_5' );
     delete_transient( 'popular_posts_10' );
@@ -1125,11 +1125,11 @@ add_action( 'save_post', function() {
 
 ### 3.10. Block Editor (Gutenberg)
 
-#### blocks.php va block-patterns.php
+#### blocks.php và block-patterns.php
 
 ```php
 <?php
-// Dang ky block tuy chinh (phia server)
+// Đăng ký block tùy chỉnh (phía server)
 add_action( 'init', 'my_register_blocks' );
 function my_register_blocks() {
     register_block_type( __DIR__ . '/blocks/my-block', array(
@@ -1138,7 +1138,7 @@ function my_register_blocks() {
 }
 
 function my_block_render( $attributes, $content ) {
-    $title = $attributes['title'] ?? 'Tieu de mac dinh';
+    $title = $attributes['title'] ?? 'Tiêu đề mặc định';
     return sprintf(
         '<div class="my-custom-block"><h3>%s</h3><div>%s</div></div>',
         esc_html( $title ),
@@ -1146,18 +1146,18 @@ function my_block_render( $attributes, $content ) {
     );
 }
 
-// Dang ky block pattern
+// Đăng ký block pattern
 add_action( 'init', 'my_register_patterns' );
 function my_register_patterns() {
     register_block_pattern( 'my-plugin/hero-section', array(
         'title'       => 'Hero Section',
-        'description' => 'Phan hero voi hinh nen va tieu de.',
+        'description' => 'Phần hero với hình nền và tiêu đề.',
         'categories'  => array( 'featured' ),
         'content'     => '<!-- wp:cover {"overlayColor":"primary"} -->
             <div class="wp-block-cover">
                 <div class="wp-block-cover__inner-container">
                     <!-- wp:heading {"textAlign":"center","level":1} -->
-                    <h1 class="has-text-align-center">Chao Mung</h1>
+                    <h1 class="has-text-align-center">Chào Mừng</h1>
                     <!-- /wp:heading -->
                 </div>
             </div>
@@ -1170,7 +1170,7 @@ function my_register_patterns() {
 
 ## 4. Thu Muc wp-content/
 
-Thu muc `wp-content/` la noi duy nhat ma nguoi dung nen thay doi.
+Thư mục `wp-content/` là nơi duy nhất mà người dùng nên thay đổi.
 
 ### 4.1. Cau Truc
 
@@ -1192,15 +1192,15 @@ wp-content/
 
 ### 4.2. Thu Muc plugins/
 
-Moi plugin nam trong thu muc rieng:
+Mỗi plugin nằm trong thư mục riêng:
 
 ```php
 <?php
 /**
  * Plugin Name: My Plugin
- * Description: Mo ta ngan gon ve plugin.
+ * Description: Mô tả ngắn gọn về plugin.
  * Version:     1.0.0
- * Author:      Ten Tac Gia
+ * Author:      Tên Tác Giả
  * Text Domain: my-plugin
  */
 
@@ -1222,7 +1222,7 @@ add_action( 'plugins_loaded', function() {
 
 ### 4.3. Thu Muc themes/
 
-Cau truc co ban cua mot theme:
+Cấu trúc cơ bản của một theme:
 
 ```
 themes/my-theme/
@@ -1256,7 +1256,7 @@ $upload_dir = wp_upload_dir();
 
 ### 4.5. Thu Muc mu-plugins/ (Must-Use Plugins)
 
-Cac plugin trong thu muc nay tu dong kich hoat va KHONG THE vo hieu hoa tu giao dien admin.
+Các plugin trong thư mục này tự động kích hoạt và KHÔNG THỂ vô hiệu hóa từ giao diện admin.
 
 ```php
 <?php
@@ -1270,17 +1270,17 @@ add_action( 'send_headers', function() {
 
 ### 4.6. Thu Muc languages/
 
-Chua cac file dich ngon ngu:
-- `.po` - file nguon co the doc duoc (Portable Object)
-- `.mo` - file da bien dich (Machine Object)
+Chứa các file dịch ngôn ngữ:
+- `.po` - file nguồn có thể đọc được (Portable Object)
+- `.mo` - file đã biên dịch (Machine Object)
 
 ```php
 <?php
 load_plugin_textdomain( 'my-plugin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 
-echo __( 'Xin chao', 'my-plugin' );
-_e( 'Xin chao', 'my-plugin' );
-echo _n( '%d bai viet', '%d bai viet', $count, 'my-plugin' );
+echo __( 'Xin chào', 'my-plugin' );
+_e( 'Xin chào', 'my-plugin' );
+echo _n( '%d bài viết', '%d bài viết', $count, 'my-plugin' );
 ```
 
 ---
@@ -1289,7 +1289,7 @@ echo _n( '%d bai viet', '%d bai viet', $count, 'my-plugin' );
 
 ### 5.1. wp-config.php - File Cau Hinh Chinh
 
-#### Cac Constant Database
+#### Các Constant Database
 
 ```php
 <?php
@@ -1302,7 +1302,7 @@ define( 'DB_COLLATE', '' );
 $table_prefix = 'wp_';
 ```
 
-#### Cac Constant Bao Mat
+#### Các Constant Bảo Mật
 
 ```php
 <?php
@@ -1320,7 +1320,7 @@ define( 'DISALLOW_FILE_EDIT', true );
 define( 'DISALLOW_FILE_MODS', true );
 ```
 
-#### Cac Constant Debug
+#### Các Constant Debug
 
 ```php
 <?php
@@ -1331,7 +1331,7 @@ define( 'SCRIPT_DEBUG', true );
 define( 'SAVEQUERIES', true );
 ```
 
-#### Cac Constant Hieu Suat
+#### Các Constant Hiệu Suất
 
 ```php
 <?php
@@ -1343,7 +1343,7 @@ define( 'AUTOSAVE_INTERVAL', 120 );
 define( 'WP_CACHE', true );
 ```
 
-#### Cac Constant URL
+#### Các Constant URL
 
 ```php
 <?php
@@ -1382,82 +1382,82 @@ Options -Indexes
 
 ### 5.3. wp-settings.php - Boot Sequence
 
-Day la file quan trong nhat trong quy trinh khoi dong. Quy trinh chi tiet:
+Đây là file quan trọng nhất trong quy trình khởi động. Quy trình chi tiết:
 
 ```
 wp-settings.php Boot Sequence:
 |
-|-- 1. Dinh nghia WPINC = 'wp-includes'
+|-- 1. Định nghĩa WPINC = 'wp-includes'
 |-- 2. Load version.php, compat.php, load.php
-|-- 3. Kiem tra phien ban PHP va MySQL
+|-- 3. Kiểm tra phiên bản PHP và MySQL
 |-- 4. Load recovery mode classes
 |-- 5. Load default-constants.php
-|-- 6. Load plugin.php (Hook API co san tu day)
+|-- 6. Load plugin.php (Hook API có sẵn từ đây)
 |
 |-- 7. wp_initial_constants() - WP_MEMORY_LIMIT, WP_DEBUG, WP_CONTENT_DIR
 |-- 8. wp_register_fatal_error_handler()
 |-- 9. date_default_timezone_set('UTC')
-|-- 10. wp_maintenance() - Kiem tra che do bao tri
+|-- 10. wp_maintenance() - Kiểm tra chế độ bảo trì
 |
-|-- 11. Load cac file som: formatting.php, functions.php, class-wp.php, class-wp-error.php
-|-- 12. require_wp_db() - Load class wpdb, ket noi database
+|-- 11. Load các file sớm: formatting.php, functions.php, class-wp.php, class-wp-error.php
+|-- 12. require_wp_db() - Load class wpdb, kết nối database
 |-- 13. wp_start_object_cache()
 |-- 14. Load default-filters.php
 |
-|-- ** Neu SHORTINIT = true -> DUNG O DAY **
+|-- ** Nếu SHORTINIT = true -> DỪNG Ở ĐÂY **
 |
-|-- 15. Load L10n (ngon ngu)
-|-- 16. wp_not_installed() - Kiem tra da cai dat chua
+|-- 15. Load L10n (ngôn ngữ)
+|-- 16. wp_not_installed() - Kiểm tra đã cài đặt chưa
 |
-|-- 17. Load PHAN LON WordPress:
+|-- 17. Load PHẦN LỚN WordPress:
 |       capabilities.php, class-wp-roles.php, class-wp-user.php,
 |       class-wp-query.php, theme.php, template.php,
 |       user.php, post.php, taxonomy.php, rewrite.php,
 |       kses.php, shortcodes.php, media.php, http.php,
 |       class-wp-http.php, widgets.php, nav-menu.php,
-|       rest-api.php + tat ca REST endpoints,
+|       rest-api.php + tất cả REST endpoints,
 |       blocks.php, block-patterns.php
 |
-|-- 18. do_action('muplugins_loaded')  -- MU-plugins da san sang
-|-- 19. Load cac active plugins
+|-- 18. do_action('muplugins_loaded')  -- MU-plugins đã sẵn sàng
+|-- 19. Load các active plugins
 |-- 20. Load pluggable.php
-|-- 21. do_action('plugins_loaded')    -- Tat ca plugins da load
+|-- 21. do_action('plugins_loaded')    -- Tất cả plugins đã load
 |
-|-- 22. Tao global objects: $wp, $wp_rewrite, $wp_roles
+|-- 22. Tạo global objects: $wp, $wp_rewrite, $wp_roles
 |-- 23. do_action('setup_theme')
 |-- 24. Load theme functions.php
-|-- 25. do_action('after_setup_theme') -- Theme da san sang
+|-- 25. do_action('after_setup_theme') -- Theme đã sẵn sàng
 |
-|-- 26. Tao $wp_the_query, $wp_query
-|-- 27. do_action('init')              -- MOI THU DA SAN SANG
-|-- 28. do_action('wp_loaded')         -- WORDPRESS DA LOAD XONG
+|-- 26. Tạo $wp_the_query, $wp_query
+|-- 27. do_action('init')              -- MỌI THỨ ĐÃ SẴN SÀNG
+|-- 28. do_action('wp_loaded')         -- WORDPRESS ĐÃ LOAD XONG
 ```
 
-**Thu tu cac action hooks chinh:**
+**Thứ tự các action hooks chính:**
 
 ```php
 <?php
 // 1. muplugins_loaded  - Sau khi MU-plugins load
-// 2. plugins_loaded    - Sau khi tat ca plugins load
-// 3. setup_theme       - Truoc khi theme load
+// 2. plugins_loaded    - Sau khi tất cả plugins load
+// 3. setup_theme       - Trước khi theme load
 // 4. after_setup_theme - Sau khi theme load
-// 5. init              - Moi thu da san sang
-// 6. wp_loaded         - WordPress da hoan tat load
-// 7. wp                - Sau khi parse request va query (chi frontend)
-// 8. template_redirect - Truoc khi chon template (chi frontend)
+// 5. init              - Mọi thứ đã sẵn sàng
+// 6. wp_loaded         - WordPress đã hoàn tất load
+// 7. wp                - Sau khi parse request và query (chỉ frontend)
+// 8. template_redirect - Trước khi chọn template (chỉ frontend)
 // 9. wp_head           - Trong <head>
-// 10. wp_footer        - Truoc </body>
-// 11. shutdown         - Sau khi output da gui
+// 10. wp_footer        - Trước </body>
+// 11. shutdown         - Sau khi output đã gửi
 
-// Vi du: Chon hook phu hop
+// Ví dụ: Chọn hook phù hợp
 add_action( 'after_setup_theme', function() {
     add_theme_support( 'post-thumbnails' );
     add_theme_support( 'title-tag' );
-    register_nav_menus( array( 'primary' => 'Menu Chinh' ) );
+    register_nav_menus( array( 'primary' => 'Menu Chính' ) );
 } );
 
 add_action( 'init', function() {
-    // Dang ky post types, taxonomies
+    // Đăng ký post types, taxonomies
 } );
 
 add_action( 'wp_enqueue_scripts', function() {
@@ -1470,7 +1470,7 @@ add_action( 'wp_enqueue_scripts', function() {
 
 ## 6. Cac Global Objects Quan Trong
 
-WordPress su dung nhieu bien global de luu tru trang thai va cung cap truy cap den cac he thong con.
+WordPress sử dụng nhiều biến global để lưu trữ trạng thái và cung cấp truy cập đến các hệ thống con.
 
 ### 6.1. $wpdb - Database Object
 
@@ -1488,7 +1488,7 @@ echo $wpdb->comments;      // 'wp_comments'
 echo $wpdb->terms;         // 'wp_terms'
 echo $wpdb->term_taxonomy; // 'wp_term_taxonomy'
 
-// Kiem tra loi truy van cuoi cung
+// Kiểm tra lỗi truy vấn cuối cùng
 if ( $wpdb->last_error ) {
     error_log( 'Database error: ' . $wpdb->last_error );
     error_log( 'Query: ' . $wpdb->last_query );
@@ -1503,7 +1503,7 @@ echo $wpdb->insert_id;
 <?php
 global $wp_query;
 
-// Kiem tra loai trang hien tai
+// Kiểm tra loại trang hiện tại
 $wp_query->is_home();
 $wp_query->is_front_page();
 $wp_query->is_single();
@@ -1513,9 +1513,9 @@ $wp_query->is_category();
 $wp_query->is_search();
 $wp_query->is_404();
 
-echo $wp_query->found_posts;    // Tong so bai viet tim thay
-echo $wp_query->max_num_pages;  // Tong so trang
-echo $wp_query->post_count;     // So bai viet trong trang hien tai
+echo $wp_query->found_posts;    // Tổng số bài viết tìm thấy
+echo $wp_query->max_num_pages;  // Tổng số trang
+echo $wp_query->post_count;     // Số bài viết trong trang hiện tại
 
 $posts      = $wp_query->posts;
 $query_vars = $wp_query->query_vars;
@@ -1527,10 +1527,10 @@ $query_vars = $wp_query->query_vars;
 <?php
 global $wp;
 
-echo $wp->request;       // Duong dan request (vi du: '2025/01/hello-world')
-echo $wp->query_string;  // Query string da phan tich
-echo $wp->matched_rule;  // Rewrite rule da khop
-echo $wp->matched_query; // Query da khop
+echo $wp->request;       // Đường dẫn request (ví dụ: '2025/01/hello-world')
+echo $wp->query_string;  // Query string đã phân tích
+echo $wp->matched_rule;  // Rewrite rule đã khớp
+echo $wp->matched_query; // Query đã khớp
 
 // Them custom query variable
 add_filter( 'query_vars', function( $vars ) {
@@ -1550,7 +1550,7 @@ echo $wp_rewrite->permalink_structure;
 // Vi du: '/%year%/%monthnum%/%day%/%postname%/'
 
 if ( $wp_rewrite->using_permalinks() ) {
-    echo 'Dang su dung pretty permalinks.';
+    echo 'Đang sử dụng pretty permalinks.';
 }
 
 $rules = $wp_rewrite->wp_rewrite_rules();
@@ -1570,7 +1570,7 @@ $roles = $wp_roles->get_names();
 $admin_role = $wp_roles->get_role( 'administrator' );
 // $admin_role->capabilities = array( 'switch_themes' => true, ... )
 
-$wp_roles->add_role( 'custom_role', 'Vai Tro Tuy Chinh', array(
+$wp_roles->add_role( 'custom_role', 'Vai trò Tùy Chỉnh', array(
     'read'       => true,
     'edit_posts' => true,
 ) );
@@ -1583,10 +1583,10 @@ $wp_roles->add_cap( 'editor', 'manage_custom_content' );
 <?php
 global $wp_filter, $wp_actions;
 
-// $wp_filter chua TAT CA cac hooks (ca actions va filters)
-// $wp_actions dem so lan moi action duoc goi
+// $wp_filter chứa TẤT CẢ các hooks (cả actions và filters)
+// $wp_actions đếm số lần mỗi action được gọi
 
-// Kiem tra mot hook co callbacks nao khong
+// Kiểm tra một hook có callbacks nào không
 if ( isset( $wp_filter['the_content'] ) ) {
     $callbacks = $wp_filter['the_content']->callbacks;
     foreach ( $callbacks as $priority => $hooks ) {
@@ -1605,9 +1605,9 @@ if ( isset( $wp_filter['the_content'] ) ) {
     }
 }
 
-// Kiem tra mot action da duoc goi chua
+// Kiểm tra một action đã được gọi chưa
 if ( did_action( 'init' ) ) {
-    echo 'Action init da duoc goi ' . $wp_actions['init'] . ' lan.';
+    echo 'Action init đã được gọi ' . $wp_actions['init'] . ' lần.';
 }
 ```
 
@@ -1617,11 +1617,11 @@ if ( did_action( 'init' ) ) {
 
 ### 7.1. Singleton Pattern
 
-Singleton dam bao mot class chi co duy nhat mot instance.
+Singleton đảm bảo một class chỉ có duy nhất một instance.
 
 ```php
 <?php
-// Vi du tu WordPress core: WP_Block_Type_Registry
+// Ví dụ từ WordPress core: WP_Block_Type_Registry
 class WP_Block_Type_Registry {
     private static $instance = null;
 
@@ -1633,7 +1633,7 @@ class WP_Block_Type_Registry {
     }
 }
 
-// Ap dung trong plugin cua ban:
+// Áp dụng trong plugin của bạn:
 class My_Plugin {
     private static $instance = null;
 
@@ -1655,7 +1655,7 @@ class My_Plugin {
 
     private function __clone() {}
     public function __wakeup() {
-        throw new Exception( 'Khong the unserialize singleton.' );
+        throw new Exception( 'Không thể unserialize singleton.' );
     }
 }
 
@@ -1664,13 +1664,13 @@ $plugin = My_Plugin::get_instance();
 
 ### 7.2. Observer Pattern (Hook System)
 
-Day la pattern quan trong nhat trong WordPress. He thong hooks la implement cua Observer pattern.
+Đây là pattern quan trọng nhất trong WordPress. Hệ thống hooks là implement của Observer pattern.
 
 ```php
 <?php
-// WordPress core (Subject - phat su kien):
+// WordPress core (Subject - phát sự kiện):
 function wp_insert_post( $postarr ) {
-    // ... logic chen bai viet ...
+    // ... logic chèn bài viết ...
     do_action( 'save_post', $post_id, $post, $update );
     return $post_id;
 }
@@ -1679,7 +1679,7 @@ function wp_insert_post( $postarr ) {
 add_action( 'save_post', 'plugin_a_notify_admin', 10, 3 );
 function plugin_a_notify_admin( $post_id, $post, $update ) {
     if ( ! $update && $post->post_status === 'publish' ) {
-        wp_mail( get_option( 'admin_email' ), 'Bai viet moi', $post->post_title );
+        wp_mail( get_option( 'admin_email' ), 'Bài viết mới', $post->post_title );
     }
 }
 
@@ -1689,7 +1689,7 @@ function plugin_b_clear_cache( $post_id ) {
     wp_cache_delete( 'front_page_posts', 'my_cache_group' );
 }
 
-// FILTER PATTERN - cho phep thay doi du lieu qua chuoi xu ly:
+// FILTER PATTERN - cho phép thay đổi dữ liệu qua chuỗi xử lý:
 // WordPress core:
 function get_the_title( $post = 0 ) {
     $title = $post->post_title;
@@ -1697,7 +1697,7 @@ function get_the_title( $post = 0 ) {
     return $title;
 }
 
-// Plugin thay doi title:
+// Plugin thay đổi title:
 add_filter( 'the_title', 'my_modify_title', 10, 2 );
 function my_modify_title( $title, $post_id ) {
     if ( is_sticky( $post_id ) ) {
@@ -1709,7 +1709,7 @@ function my_modify_title( $title, $post_id ) {
 
 ### 7.3. Registry Pattern
 
-Registry pattern luu tru va quan ly cac doi tuong theo ten (key).
+Registry pattern lưu trữ và quản lý các đối tượng theo tên (key).
 
 ```php
 <?php
@@ -1728,7 +1728,7 @@ $registry->register( 'my-plugin/my-block', array( /* ... */ ) );
 $block_type = $registry->get_registered( 'my-plugin/my-block' );
 $all_blocks = $registry->get_all_registered();
 
-// Tu tao Registry:
+// Tự tạo Registry:
 class My_Service_Registry {
     private static $services = array();
 
@@ -1755,27 +1755,27 @@ $mailer = My_Service_Registry::get( 'mailer' );
 
 ### 7.4. Factory Pattern
 
-Factory pattern tao doi tuong ma khong can biet chinh xac class nao se duoc tao.
+Factory pattern tạo đối tượng mà không cần biết chính xác class nào sẽ được tạo.
 
 ```php
 <?php
-// WP_Widget_Factory - Tao va quan ly widgets
+// WP_Widget_Factory - Tạo và quản lý widgets
 global $wp_widget_factory;
 $wp_widget_factory->register( 'WP_Widget_Recent_Posts' );
 
-// wp_insert_post() hoat dong nhu factory cho posts
+// wp_insert_post() hoạt động như factory cho posts
 $post_id = wp_insert_post( array(
-    'post_title'   => 'Bai Viet Moi',
-    'post_content' => 'Noi dung...',
+    'post_title'   => 'Bài Viết Mới',
+    'post_content' => 'Nội dung...',
     'post_status'  => 'publish',
     'post_type'    => 'post',
 ) );
 
-// WP_Http su dung factory de chon transport
-// Tu dong chon giua cURL va streams dua tren moi truong
+// WP_Http sử dụng factory để chọn transport
+// Tự động chọn giữa cURL và streams dựa trên môi trường
 $http = new WP_Http();
 
-// Ap dung:
+// Áp dụng:
 class Notification_Factory {
     public static function create( $type, $data ) {
         switch ( $type ) {
@@ -1788,12 +1788,12 @@ class Notification_Factory {
                 if ( $notification ) {
                     return $notification;
                 }
-                throw new InvalidArgumentException( "Loai thong bao khong hop le: $type" );
+                throw new InvalidArgumentException( "Loại thông báo không hợp lệ: $type" );
         }
     }
 }
 
-// Plugin khac co the mo rong:
+// Plugin khác có thể mở rộng:
 add_filter( 'my_plugin_notification_factory', function( $notification, $type, $data ) {
     if ( $type === 'telegram' ) {
         return new Telegram_Notification( $data );
@@ -1806,8 +1806,8 @@ add_filter( 'my_plugin_notification_factory', function( $notification, $type, $d
 
 ```php
 <?php
-// WP_Widget su dung pattern nay
-// Lop cha dinh nghia khung, lop con implement chi tiet
+// WP_Widget sử dụng pattern này
+// Lớp cha định nghĩa khung, lớp con implement chi tiết
 abstract class WP_Widget {
     abstract public function widget( $args, $instance );
     abstract public function update( $new_instance, $old_instance );
@@ -1829,7 +1829,7 @@ class My_Widget extends WP_Widget {
     public function form( $instance ) {
         $title = $instance['title'] ?? '';
         printf(
-            '<p><label for="%1$s">Tieu de:</label>
+            '<p><label for="%1$s">Tiêu đề:</label>
             <input class="widefat" id="%1$s" name="%2$s" value="%3$s" /></p>',
             esc_attr( $this->get_field_id( 'title' ) ),
             esc_attr( $this->get_field_name( 'title' ) ),
@@ -1841,14 +1841,14 @@ class My_Widget extends WP_Widget {
 
 ---
 
-## 8. Cach Doc Source Code WordPress Hieu Qua
+## 8. Cách Đọc Source Code WordPress Hiệu Quả
 
-### 8.1. Chien Luoc Doc Code
+### 8.1. Chiến Lược Đọc Code
 
-#### Buoc 1: Bat Dau Tu Entry Point
+#### Bước 1: Bắt Đầu Từ Entry Point
 
 ```
-Luong request cua WordPress:
+Luồng request của WordPress:
 
 Browser -> index.php
            -> wp-blog-header.php
@@ -1856,11 +1856,11 @@ Browser -> index.php
                  -> wp-config.php
                     -> wp-settings.php (BOOT SEQUENCE)
               -> wp() (parse request, query database)
-              -> template-loader.php (chon va load template)
+              -> template-loader.php (chọn và load template)
            -> Output HTML cho browser
 ```
 
-#### Buoc 2: Su Dung Xdebug De Trace
+#### Bước 2: Sử Dụng Xdebug Để Trace
 
 ```php
 <?php
@@ -1869,32 +1869,32 @@ define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 define( 'SAVEQUERIES', true );
 
-// Dat breakpoint tai cac diem quan trong:
+// Đặt breakpoint tại các điểm quan trọng:
 // - wp-settings.php (wp_initial_constants)
 // - wp-includes/class-wp.php method main()
 // - wp-includes/class-wp-query.php method get_posts()
 // - wp-includes/template-loader.php
 ```
 
-#### Buoc 3: Doc Theo Chuc Nang
+#### Bước 3: Đọc Theo Chức Năng
 
 ```php
 <?php
-// Vi du: Hieu cach WordPress luu bai viet
-// 1. Tim function: wp_insert_post() trong wp-includes/post.php
-// 2. Doc tu dau den cuoi, ghi chu cac buoc
-// 3. Theo doi cac hooks: do_action('save_post')
-// 4. Kiem tra database: bang wp_posts va wp_postmeta
+// Ví dụ: Hiểu cách WordPress lưu bài viết
+// 1. Tìm function: wp_insert_post() trong wp-includes/post.php
+// 2. Đọc từ đầu đến cuối, ghi chú các bước
+// 3. Theo dõi các hooks: do_action('save_post')
+// 4. Kiểm tra database: bảng wp_posts và wp_postmeta
 ```
 
-#### Buoc 4: Su Dung Cac Ham Debug
+#### Bước 4: Sử Dụng Các Hàm Debug
 
 ```php
 <?php
 // 1. Ghi log
 error_log( print_r( $variable, true ) );
 
-// 2. Debug hooks - xem tat ca callbacks cua mot hook
+// 2. Debug hooks - xem tất cả callbacks của một hook
 function debug_hook( $hook_name ) {
     global $wp_filter;
     if ( isset( $wp_filter[ $hook_name ] ) ) {
@@ -1928,53 +1928,53 @@ add_action( 'shutdown', function() {
     }
 } );
 
-// 4. Debug template dang duoc su dung
+// 4. Debug template đang được sử dụng
 add_filter( 'template_include', function( $template ) {
     error_log( 'Template: ' . $template );
     return $template;
 } );
 ```
 
-### 8.2. Cac File Nen Doc Truoc
+### 8.2. Các File Nên Đọc Trước
 
-Danh sach theo thu tu uu tien:
+Danh sách theo thứ tự ưu tiên:
 
 ```
-1.  index.php                          # Diem vao
-2.  wp-blog-header.php                 # Luong chinh
+1.  index.php                          # Điểm vào
+2.  wp-blog-header.php                 # Luồng chính
 3.  wp-load.php                        # Bootstrap
-4.  wp-settings.php                    # Boot sequence (QUAN TRONG NHAT)
+4.  wp-settings.php                    # Boot sequence (QUAN TRỌNG NHẤT)
 5.  wp-includes/plugin.php             # Hook API
-6.  wp-includes/class-wp-hook.php      # Cai dat Hook
-7.  wp-includes/class-wp.php           # Class WP chinh
-8.  wp-includes/class-wp-query.php     # Truy van
-9.  wp-includes/template-loader.php    # Chon template
+6.  wp-includes/class-wp-hook.php      # Cài đặt Hook
+7.  wp-includes/class-wp.php           # Class WP chính
+8.  wp-includes/class-wp-query.php     # Truy vấn
+9.  wp-includes/template-loader.php    # Chọn template
 10. wp-includes/class-wpdb.php         # Database
-11. wp-includes/formatting.php         # Xu ly van ban
+11. wp-includes/formatting.php         # Xử lý văn bản
 12. wp-includes/post.php               # API cho posts
 13. wp-includes/user.php               # API cho users
 14. wp-includes/taxonomy.php           # API cho taxonomies
 15. wp-includes/rest-api.php           # REST API
 ```
 
-### 8.3. Cac Meo Huu Ich
+### 8.3. Các Mẹo Hữu Ích
 
 ```php
 <?php
-// 1. Su dung Query Monitor plugin
-// Hien thi: SQL queries, hooks, HTTP requests, template info
+// 1. Sử dụng Query Monitor plugin
+// Hiển thị: SQL queries, hooks, HTTP requests, template info
 
-// 2. Doc PHPDoc comments
-// WordPress co comments rat chi tiet
-// Doc @since de biet function co tu phien ban nao
+// 2. Đọc PHPDoc comments
+// WordPress có comments rất chi tiết
+// Đọc @since để biết function có từ phiên bản nào
 
-// 3. Su dung IDE voi "Go to Definition"
-// PhpStorm hoac VS Code voi PHP Intelephense
+// 3. Sử dụng IDE với "Go to Definition"
+// PhpStorm hoặc VS Code với PHP Intelephense
 
-// 4. Tham khao developer.wordpress.org cho tai lieu chinh thuc
+// 4. Tham khảo developer.wordpress.org cho tài liệu chính thức
 ```
 
-### 8.4. So Do Tong Quan Kien Truc
+### 8.4. Sơ Đồ Tổng Quan Kiến Trúc
 
 ```
 +------------------------------------------------------------------+
@@ -1991,18 +1991,18 @@ Danh sach theo thu tu uu tien:
                               v
 +------------------------------------------------------------------+
 |  wp() -> WP::main()                                              |
-|     -> parse_request()    : Phan tich URL                         |
-|     -> send_headers()     : Gui HTTP headers                      |
+|     -> parse_request()    : Phân tích URL                         |
+|     -> send_headers()     : Gửi HTTP headers                      |
 |     -> query_posts()      : WP_Query -> wpdb -> MySQL            |
-|     -> handle_404()       : Kiem tra 404                          |
+|     -> handle_404()       : Kiểm tra 404                          |
 |  [REQUEST PROCESSING PHASE]                                       |
 +------------------------------------------------------------------+
                               |
                               v
 +------------------------------------------------------------------+
 |  template-loader.php                                              |
-|     -> Xac dinh loai trang (is_single, is_page, is_archive...)   |
-|     -> Tim template theo hierarchy                                |
+|     -> Xác định loại trang (is_single, is_page, is_archive...)   |
+|     -> Tìm template theo hierarchy                                |
 |     -> apply_filters('template_include', $template)               |
 |     -> include $template                                          |
 |  [TEMPLATE LOADING PHASE]                                         |
@@ -2012,7 +2012,7 @@ Danh sach theo thu tu uu tien:
 +------------------------------------------------------------------+
 |  Theme Template (single.php, page.php, archive.php...)           |
 |     -> get_header()       : Load header.php                       |
-|     -> The Loop            : Hien thi noi dung                    |
+|     -> The Loop            : Hiển thị nội dung                    |
 |     -> get_sidebar()      : Load sidebar.php                      |
 |     -> get_footer()       : Load footer.php                       |
 |  [RENDERING PHASE]                                                |
@@ -2026,27 +2026,27 @@ Danh sach theo thu tu uu tien:
 
 ---
 
-## Ket Luan
+## Kết Luận
 
-Nhung diem chinh can nho khi doc source code WordPress:
+Những điểm chính cần nhớ khi đọc source code WordPress:
 
-1. **Moi thu bat dau tu index.php** va di qua wp-blog-header.php, wp-load.php, wp-settings.php.
+1. **Mọi thứ bắt đầu từ index.php** và đi qua wp-blog-header.php, wp-load.php, wp-settings.php.
 
-2. **Hook system (actions va filters) la nen tang** cua toan bo kien truc. Hieu hooks la hieu WordPress.
+2. **Hook system (actions và filters) là nền tảng** của toàn bộ kiến trúc. Hiểu hooks là hiểu WordPress.
 
-3. **Khong bao gio sua core files** (wp-admin, wp-includes). Su dung hooks, plugins, va child themes de tuy chinh.
+3. **Không bao giờ sửa core files** (wp-admin, wp-includes). Sử dụng hooks, plugins, và child themes để tùy chỉnh.
 
-4. **wp-settings.php la ban do** cua quy trinh khoi dong. Doc file nay de biet moi thu duoc load khi nao va o dau.
+4. **wp-settings.php là bản đồ** của quy trình khởi động. Đọc file này để biết mọi thứ được load khi nào và ở đâu.
 
-5. **Global objects ($wpdb, $wp_query, $wp, $wp_rewrite)** la cac diem truy cap chinh den cac he thong con.
+5. **Global objects ($wpdb, $wp_query, $wp, $wp_rewrite)** là các điểm truy cập chính đến các hệ thống con.
 
-6. **Doc code theo chuc nang**, khong co doc toan bo. Tap trung vao mot luong xu ly cu the va theo doi no tu dau den cuoi.
+6. **Đọc code theo chức năng**, không có đọc toàn bộ. Tập trung vào một luồng xử lý cụ thể và theo dõi nó từ đầu đến cuối.
 
-7. **Su dung cong cu debug** (Xdebug, Query Monitor, error_log) de xem code thuc thi nhu the nao trong thuc te.
+7. **Sử dụng công cụ debug** (Xdebug, Query Monitor, error_log) để xem code thực thi như thế nào trong thực tế.
 
 ---
 
-## Tai Lieu Tham Khao
+## Tài Liệu Tham Khảo
 
 - WordPress Developer Resources: https://developer.wordpress.org/
 - WordPress Code Reference: https://developer.wordpress.org/reference/
