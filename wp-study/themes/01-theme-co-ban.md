@@ -1,16 +1,16 @@
-# Theme WordPress Co Ban - Huong Dan Day Du
+# Theme WordPress Cơ Bản - Hướng Dẫn Đầy Đủ
 
-## Muc Luc
+## Mục Lục
 
-1. [Theme la gi, tai sao can tu tao theme](#1-theme-la-gi)
-2. [Yeu cau toi thieu: style.css + index.php](#2-yeu-cau-toi-thieu)
-3. [Style.css Header chi tiet](#3-stylecss-header)
-4. [Cau truc thu muc theme day du](#4-cau-truc-thu-muc)
-5. [functions.php - Vai tro va cach su dung](#5-functionsphp)
+1. [Theme là gì, tại sao cần tự tạo theme](#1-theme-la-gi)
+2. [Yêu cầu tối thiểu: style.css + index.php](#2-yeu-cau-toi-thieu)
+3. [Style.css Header chi tiết](#3-stylecss-header)
+4. [Cấu trúc thư mục theme đầy đủ](#4-cau-truc-thu-muc)
+5. [functions.php - Vai trò và cách sử dụng](#5-functionsphp)
 6. [Theme Supports](#6-theme-supports)
-7. [Enqueue Styles va Scripts](#7-enqueue-styles-va-scripts)
-8. [Tao theme Hello World tu dau](#8-tao-theme-hello-world)
-9. [So sanh voi Laravel](#9-so-sanh-voi-laravel)
+7. [Enqueue Styles và Scripts](#7-enqueue-styles-va-scripts)
+8. [Tạo theme Hello World từ đầu](#8-tao-theme-hello-world)
+9. [So sánh với Laravel](#9-so-sanh-voi-laravel)
 10. [Best Practices](#10-best-practices)
 
 ---

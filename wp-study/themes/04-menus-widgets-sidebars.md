@@ -1,66 +1,66 @@
-# Menus, Widgets va Sidebars trong WordPress Theme
+# Menus, Widgets và Sidebars trong WordPress Theme
 
-## Muc Luc
+## Mục Lục
 
 1. [Navigation Menus](#1-navigation-menus)
 2. [Custom Walker cho Menu](#2-custom-walker)
 3. [Mega Menu](#3-mega-menu)
 4. [Breadcrumbs](#4-breadcrumbs)
-5. [Sidebars va Widget Areas](#5-sidebars)
+5. [Sidebars và Widget Areas](#5-sidebars)
 6. [Widgets trong Theme](#6-widgets)
 7. [Footer Widgets](#7-footer-widgets)
-8. [Code vi du: Theme hoan chinh](#8-code-vi-du)
+8. [Code ví dụ: Theme hoàn chỉnh](#8-code-vi-du)
 9. [Best Practices](#9-best-practices)
 
 ---
 
 ## 1. Navigation Menus
 
-### Buoc 1: Dang ky vi tri menu (functions.php)
+### Bước 1: Đăng ký vị trí menu (functions.php)
 
 ```php
 <?php
 /**
- * Dang ky cac vi tri menu cho theme
- * Phai goi trong hook 'after_setup_theme' hoac 'init'
+ * Đăng ký các vị trí menu cho theme
+ * Phải gọi trong hook 'after_setup_theme' hoặc 'init'
  */
 function developer_register_menus() {
     register_nav_menus( array(
-        // 'location_id' => 'Label hien thi trong Admin'
-        'primary'     => __( 'Menu Chinh (Header)', 'developer-theme' ),
-        'secondary'   => __( 'Menu Phu (Header Top Bar)', 'developer-theme' ),
+        // 'location_id' => 'Label hiển thị trong Admin'
+        'primary'     => __( 'Menu Chính (Header)', 'developer-theme' ),
+        'secondary'   => __( 'Menu Phụ (Header Top Bar)', 'developer-theme' ),
         'footer'      => __( 'Menu Footer', 'developer-theme' ),
         'mobile'      => __( 'Menu Mobile', 'developer-theme' ),
-        'social'      => __( 'Menu Mang Xa Hoi', 'developer-theme' ),
+        'social'      => __( 'Menu Mạng Xã Hội', 'developer-theme' ),
     ) );
 
-    // Dang ky 1 vi tri duy nhat:
-    // register_nav_menu( 'primary', __( 'Menu Chinh', 'developer-theme' ) );
+    // Đăng ký 1 vị trí duy nhất:
+    // register_nav_menu( 'primary', __( 'Menu Chính', 'developer-theme' ) );
 }
 add_action( 'after_setup_theme', 'developer_register_menus' );
 ```
 
-### Buoc 2: Hien thi menu trong template
+### Bước 2: Hiển thị menu trong template
 
 ```php
 <?php
 /**
- * wp_nav_menu() - Hien thi menu da dang ky
- * Tat ca cac tham so:
+ * wp_nav_menu() - Hiển thị menu đã đăng ký
+ * Tất cả các tham số:
  */
 wp_nav_menu( array(
-    // === BAT BUOC (chon 1 trong 3 cach) ===
-    'theme_location'  => 'primary',        // Vi tri menu (da dang ky)
-    // 'menu'         => 'Main Menu',       // Ten menu (trong Admin > Menus)
-    // 'menu'         => 5,                 // ID cua menu
+    // === BẮT BUỘC (chọn 1 trong 3 cách) ===
+    'theme_location'  => 'primary',        // Vị trí menu (đã đăng ký)
+    // 'menu'         => 'Main Menu',       // Tên menu (trong Admin > Menus)
+    // 'menu'         => 5,                 // ID của menu
 
-    // === CONTAINER (phan tu boc ngoai) ===
-    'container'       => 'nav',            // Tag boc ngoai: 'div', 'nav', false
+    // === CONTAINER (phần tử bọc ngoài) ===
+    'container'       => 'nav',            // Tag bọc ngoài: 'div', 'nav', false
     'container_class' => 'main-navigation', // Class cho container
     'container_id'    => 'site-navigation', // ID cho container
     'container_aria_label' => 'Primary Menu', // ARIA label
 
-    // === MENU (phan tu <ul>) ===
+    // === MENU (phần tử <ul>) ===
     'menu_class'      => 'nav-menu primary-menu', // Class cho <ul>
     'menu_id'         => 'primary-menu',          // ID cho <ul>
 
@@ -69,14 +69,14 @@ wp_nav_menu( array(
     // %1$s = menu_id, %2$s = menu_class, %3$s = menu items
 
     // === BEHAVIOR ===
-    'depth'           => 3,               // Do sau: 0 = tat ca, 1 = khong sub-menu, 2, 3...
-    'fallback_cb'     => 'wp_page_menu',  // Fallback khi chua co menu (false = khong hien gi)
+    'depth'           => 3,               // Độ sâu: 0 = tất cả, 1 = không sub-menu, 2, 3...
+    'fallback_cb'     => 'wp_page_menu',  // Fallback khi chưa có menu (false = không hiện gì)
     'walker'          => '',              // Custom Walker class
 
-    // === THEM NOI DUNG ===
-    'before'          => '',              // Truoc <a> (trong <li>)
+    // === THÊM NỘI DUNG ===
+    'before'          => '',              // Trước <a> (trong <li>)
     'after'           => '',              // Sau <a> (trong <li>)
-    'link_before'     => '',              // Truoc link text (trong <a>)
+    'link_before'     => '',              // Trước link text (trong <a>)
     'link_after'      => '',              // Sau link text (trong <a>)
 
     // === ECHO ===
@@ -85,16 +85,16 @@ wp_nav_menu( array(
 ?>
 ```
 
-### Vi du cac cach hien thi menu:
+### Ví dụ các cách hiển thị menu:
 
 ```php
-<!-- === Menu Header don gian === -->
+<!-- === Menu Header đơn giản === -->
 <header class="site-header">
     <nav class="main-nav">
         <?php
         wp_nav_menu( array(
             'theme_location' => 'primary',
-            'container'      => false,      // Khong can container vi da co <nav>
+            'container'      => false,      // Không cần container vì đã có <nav>
             'menu_class'     => 'nav-list',
             'depth'          => 2,
             'fallback_cb'    => false,
@@ -103,14 +103,14 @@ wp_nav_menu( array(
     </nav>
 </header>
 
-<!-- === Menu voi icon truoc link === -->
+<!-- === Menu với icon trước link === -->
 <?php
 wp_nav_menu( array(
     'theme_location' => 'primary',
     'container'      => 'nav',
     'link_before'    => '<span class="menu-icon"></span><span class="menu-text">',
     'link_after'     => '</span>',
-    // Ket qua: <a href="..."><span class="menu-icon"></span><span class="menu-text">Text</span></a>
+    // Kết quả: <a href="..."><span class="menu-icon"></span><span class="menu-text">Text</span></a>
 ) );
 ?>
 
@@ -122,14 +122,14 @@ wp_nav_menu( array(
             'theme_location' => 'footer',
             'container'      => false,
             'menu_class'     => 'footer-menu-list',
-            'depth'          => 1,          // Chi 1 cap, khong sub-menu
+            'depth'          => 1,          // Chỉ 1 cấp, không sub-menu
             'fallback_cb'    => false,
         ) );
         ?>
     </nav>
 </footer>
 
-<!-- === Menu Social voi custom walker === -->
+<!-- === Menu Social với custom walker === -->
 <?php
 wp_nav_menu( array(
     'theme_location' => 'social',
@@ -139,12 +139,12 @@ wp_nav_menu( array(
     'depth'          => 1,
     'link_before'    => '<span class="screen-reader-text">',
     'link_after'     => '</span>',
-    // Ket qua: <a href="https://facebook.com"><span class="screen-reader-text">Facebook</span></a>
-    // CSS se dung :before pseudo-element voi icon dua tren URL
+    // Kết quả: <a href="https://facebook.com"><span class="screen-reader-text">Facebook</span></a>
+    // CSS sẽ dùng :before pseudo-element với icon dựa trên URL
 ) );
 ?>
 
-<!-- === Kiem tra menu truoc khi hien thi === -->
+<!-- === Kiểm tra menu trước khi hiển thị === -->
 <?php if ( has_nav_menu( 'primary' ) ) : ?>
     <nav class="main-navigation">
         <?php
@@ -154,7 +154,7 @@ wp_nav_menu( array(
         ?>
     </nav>
 <?php else : ?>
-    <p><?php esc_html_e( 'Vui long thiet lap menu trong Admin > Appearance > Menus', 'developer-theme' ); ?></p>
+    <p><?php esc_html_e( 'Vui lòng thiết lập menu trong Admin > Appearance > Menus', 'developer-theme' ); ?></p>
 <?php endif; ?>
 ```
 
@@ -196,11 +196,11 @@ wp_nav_menu( array(
     background-color: rgba(0, 115, 170, 0.05);
 }
 
-/* WordPress tu dong them cac class nay:
-   .current-menu-item     - Menu item dang active
-   .current-menu-ancestor - Menu cha cua item active
-   .current-menu-parent   - Menu cha truc tiep
-   .menu-item-has-children - Co sub-menu
+/* WordPress tự động thêm các class này:
+   .current-menu-item     - Menu item đang active
+   .current-menu-ancestor - Menu cha của item active
+   .current-menu-parent   - Menu cha trực tiếp
+   .menu-item-has-children - Có sub-menu
 */
 
 /* Sub-menu */
@@ -223,7 +223,7 @@ wp_nav_menu( array(
     z-index: 100;
 }
 
-/* Hien sub-menu khi hover */
+/* Hiện sub-menu khi hover */
 .nav-menu li:hover > .sub-menu {
     opacity: 1;
     visibility: visible;
@@ -238,13 +238,13 @@ wp_nav_menu( array(
     white-space: nowrap;
 }
 
-/* Sub-sub-menu (cap 3) */
+/* Sub-sub-menu (cấp 3) */
 .nav-menu .sub-menu .sub-menu {
     top: 0;
     left: 100%;
 }
 
-/* Arrow cho items co sub-menu */
+/* Arrow cho items có sub-menu */
 .nav-menu .menu-item-has-children > a::after {
     content: ' \25BC'; /* Down arrow */
     font-size: 0.625rem;
@@ -305,36 +305,36 @@ wp_nav_menu( array(
 
 ## 2. Custom Walker
 
-### Walker_Nav_Menu la gi?
+### Walker_Nav_Menu là gì?
 
-Walker la class cho phep ban **tuy chinh hoan toan** HTML output cua menu. Mac dinh, `wp_nav_menu()` tao HTML co dinh. Walker cho phep ban thay doi tag, them class, them icon...
+Walker là class cho phép bạn **tùy chỉnh hoàn toàn** HTML output của menu. Mặc định, `wp_nav_menu()` tạo HTML cố định. Walker cho phép bạn thay đổi tag, thêm class, thêm icon...
 
 ```php
 <?php
 /**
- * Custom Walker: Tao Bootstrap 5 compatible menu
+ * Custom Walker: Tạo Bootstrap 5 compatible menu
  *
- * Dat file nay trong: inc/walker-nav-menu.php
+ * Đặt file này trong: inc/walker-nav-menu.php
  * Require trong functions.php: require get_template_directory() . '/inc/walker-nav-menu.php';
  */
 class Developer_Bootstrap_Walker extends Walker_Nav_Menu {
 
     /**
-     * start_lvl - Bat dau 1 cap menu con (sub-menu)
-     * Mac dinh: <ul class="sub-menu">
+     * start_lvl - Bắt đầu 1 cấp menu con (sub-menu)
+     * Mặc định: <ul class="sub-menu">
      *
      * @param string $output HTML output
-     * @param int    $depth  Do sau (0 = cap 1, 1 = cap 2...)
-     * @param array  $args   Tham so cua wp_nav_menu()
+     * @param int    $depth  Độ sâu (0 = cấp 1, 1 = cấp 2...)
+     * @param array  $args   Tham số của wp_nav_menu()
      */
     public function start_lvl( &$output, $depth = 0, $args = null ) {
         $indent = str_repeat( "\t", $depth );
-        // Thay sub-menu bang dropdown-menu cua Bootstrap
+        // Thay sub-menu bằng dropdown-menu của Bootstrap
         $output .= "\n{$indent}<ul class=\"dropdown-menu\">\n";
     }
 
     /**
-     * end_lvl - Ket thuc 1 cap menu con
+     * end_lvl - Kết thúc 1 cấp menu con
      */
     public function end_lvl( &$output, $depth = 0, $args = null ) {
         $indent = str_repeat( "\t", $depth );
@@ -342,46 +342,46 @@ class Developer_Bootstrap_Walker extends Walker_Nav_Menu {
     }
 
     /**
-     * start_el - Bat dau 1 menu item
-     * Day la phan QUAN TRONG NHAT - tuy chinh HTML cua moi item
+     * start_el - Bắt đầu 1 menu item
+     * Đây là phần QUAN TRỌNG NHẤT - tùy chỉnh HTML của mỗi item
      *
      * @param string   $output HTML output
      * @param WP_Post  $item   Menu item object
-     * @param int      $depth  Do sau
-     * @param stdClass $args   Tham so
+     * @param int      $depth  Độ sâu
+     * @param stdClass $args   Tham số
      * @param int      $id     Item ID
      */
     public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
         $indent = str_repeat( "\t", $depth );
 
-        // Kiem tra co sub-menu khong
+        // Kiểm tra có sub-menu không
         $has_children = in_array( 'menu-item-has-children', $item->classes );
 
-        // === Tao class cho <li> ===
+        // === Tạo class cho <li> ===
         $classes   = empty( $item->classes ) ? array() : (array) $item->classes;
         $classes[] = 'nav-item';
 
-        // Them class Bootstrap
+        // Thêm class Bootstrap
         if ( $has_children && $depth === 0 ) {
-            $classes[] = 'dropdown';       // Cap 1 co sub-menu
+            $classes[] = 'dropdown';       // Cấp 1 có sub-menu
         }
         if ( $has_children && $depth > 0 ) {
-            $classes[] = 'dropend';        // Cap 2+ co sub-menu
+            $classes[] = 'dropend';        // Cấp 2+ có sub-menu
         }
         if ( in_array( 'current-menu-item', $classes ) ) {
-            $classes[] = 'active';         // Item dang active
+            $classes[] = 'active';         // Item đang active
         }
 
         $class_names = join( ' ', array_filter( $classes ) );
         $class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
 
-        // ID cua item
+        // ID của item
         $id_attr = ' id="menu-item-' . esc_attr( $item->ID ) . '"';
 
-        // === Tao <li> ===
+        // === Tạo <li> ===
         $output .= $indent . '<li' . $id_attr . $class_names . '>';
 
-        // === Tao <a> ===
+        // === Tạo <a> ===
         $atts = array();
         $atts['title']  = ! empty( $item->attr_title ) ? $item->attr_title : '';
         $atts['target'] = ! empty( $item->target ) ? $item->target : '';
@@ -430,14 +430,14 @@ class Developer_Bootstrap_Walker extends Walker_Nav_Menu {
     }
 
     /**
-     * end_el - Ket thuc 1 menu item
+     * end_el - Kết thúc 1 menu item
      */
     public function end_el( &$output, $item, $depth = 0, $args = null ) {
         $output .= "</li>\n";
     }
 }
 
-// === Su dung Walker trong template ===
+// === Sử dụng Walker trong template ===
 wp_nav_menu( array(
     'theme_location' => 'primary',
     'container'      => false,
@@ -448,19 +448,19 @@ wp_nav_menu( array(
 ?>
 ```
 
-### Walker don gian hon - Them icon va description:
+### Walker đơn giản hơn - Thêm icon và description:
 
 ```php
 <?php
 /**
- * Walker them icon va description cho menu item
+ * Walker thêm icon và description cho menu item
  */
 class Developer_Icon_Walker extends Walker_Nav_Menu {
 
     public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
         $indent = str_repeat( "\t", $depth );
 
-        // Lay custom classes
+        // Lấy custom classes
         $classes = empty( $item->classes ) ? array() : (array) $item->classes;
         $class_names = join( ' ', array_filter( $classes ) );
         $class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
@@ -474,8 +474,8 @@ class Developer_Icon_Walker extends Walker_Nav_Menu {
         }
         $output .= '>';
 
-        // Icon (lay tu CSS class cua menu item)
-        // Khi tao menu trong Admin, them class nhu: icon-home, icon-about...
+        // Icon (lấy từ CSS class của menu item)
+        // Khi tạo menu trong Admin, thêm class như: icon-home, icon-about...
         foreach ( $item->classes as $class ) {
             if ( strpos( $class, 'icon-' ) === 0 ) {
                 $icon_name = str_replace( 'icon-', '', $class );
@@ -487,7 +487,7 @@ class Developer_Icon_Walker extends Walker_Nav_Menu {
         // Title
         $output .= '<span class="menu-title">' . esc_html( $item->title ) . '</span>';
 
-        // Description (nhap trong Admin > Menus > Screen Options > Description)
+        // Description (nhập trong Admin > Menus > Screen Options > Description)
         if ( ! empty( $item->description ) && $depth === 0 ) {
             $output .= '<span class="menu-description">' . esc_html( $item->description ) . '</span>';
         }
@@ -506,10 +506,10 @@ class Developer_Icon_Walker extends Walker_Nav_Menu {
 <?php
 /**
  * Mega Menu Walker
- * Tao mega menu voi nhieu cot, hinh anh, description
+ * Tạo mega menu với nhiều cột, hình ảnh, description
  *
- * Cach dung: Trong Admin > Menus, tao menu item voi class CSS "mega-menu"
- * Sub-menu items se duoc hien thi dang grid
+ * Cách dùng: Trong Admin > Menus, tạo menu item với class CSS "mega-menu"
+ * Sub-menu items sẽ được hiển thị dạng grid
  */
 class Developer_Mega_Menu_Walker extends Walker_Nav_Menu {
 
@@ -520,7 +520,7 @@ class Developer_Mega_Menu_Walker extends Walker_Nav_Menu {
 
         $classes = empty( $item->classes ) ? array() : (array) $item->classes;
 
-        // Kiem tra co phai mega menu khong (admin them class "mega-menu")
+        // Kiểm tra có phải mega menu không (admin thêm class "mega-menu")
         if ( $depth === 0 && in_array( 'mega-menu', $classes ) ) {
             $this->is_mega = true;
             $classes[] = 'has-mega-menu';
@@ -543,7 +543,7 @@ class Developer_Mega_Menu_Walker extends Walker_Nav_Menu {
 
         $output .= '</a>';
 
-        // Them description cho sub-items trong mega menu
+        // Thêm description cho sub-items trong mega menu
         if ( $this->is_mega && $depth === 1 && ! empty( $item->description ) ) {
             $output .= '<p class="mega-item-desc">' . esc_html( $item->description ) . '</p>';
         }
@@ -553,7 +553,7 @@ class Developer_Mega_Menu_Walker extends Walker_Nav_Menu {
         $indent = str_repeat( "\t", $depth );
 
         if ( $this->is_mega && $depth === 0 ) {
-            // Mega menu: su dung div thay vi ul
+            // Mega menu: sử dụng div thay vì ul
             $output .= "\n{$indent}<div class=\"mega-menu-panel\">\n";
             $output .= "{$indent}\t<div class=\"mega-menu-inner\">\n";
             $output .= "{$indent}\t\t<ul class=\"mega-menu-list\">\n";
@@ -582,7 +582,7 @@ class Developer_Mega_Menu_Walker extends Walker_Nav_Menu {
 ```css
 /* === Mega Menu CSS === */
 .has-mega-menu {
-    position: static; /* Quan trong: de mega menu full width */
+    position: static; /* Quan trọng: để mega menu full width */
 }
 
 .mega-menu-panel {
@@ -624,7 +624,7 @@ class Developer_Mega_Menu_Walker extends Walker_Nav_Menu {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 cot */
+    grid-template-columns: repeat(4, 1fr); /* 4 cột */
     gap: 1.5rem;
 }
 
@@ -677,24 +677,24 @@ class Developer_Mega_Menu_Walker extends Walker_Nav_Menu {
 <?php
 /**
  * Custom Breadcrumbs Function
- * Khong can plugin, tu tao breadcrumbs
+ * Không cần plugin, tự tạo breadcrumbs
  *
- * Dat trong: inc/template-tags.php
- * Goi trong template: developer_breadcrumbs();
+ * Đặt trong: inc/template-tags.php
+ * Gọi trong template: developer_breadcrumbs();
  */
 function developer_breadcrumbs() {
-    // Khong hien thi tren trang chu
+    // Không hiển thị trên trang chủ
     if ( is_front_page() ) {
         return;
     }
 
     $separator = '<span class="breadcrumb-separator">/</span>';
-    $home_text = __( 'Trang Chu', 'developer-theme' );
+    $home_text = __( 'Trang Chủ', 'developer-theme' );
 
     echo '<nav class="breadcrumbs" aria-label="Breadcrumb">';
     echo '<ol class="breadcrumb-list" itemscope itemtype="https://schema.org/BreadcrumbList">';
 
-    // Trang chu (luon co)
+    // Trang chủ (luôn có)
     $position = 1;
     echo '<li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">';
     echo '<a href="' . esc_url( home_url( '/' ) ) . '" itemprop="item"><span itemprop="name">' . esc_html( $home_text ) . '</span></a>';
@@ -707,7 +707,7 @@ function developer_breadcrumbs() {
     if ( is_category() ) {
         $cat = get_queried_object();
 
-        // Hien thi parent categories
+        // Hiển thị parent categories
         if ( $cat->parent !== 0 ) {
             $parents = get_ancestors( $cat->term_id, 'category' );
             $parents = array_reverse( $parents );
@@ -736,7 +736,7 @@ function developer_breadcrumbs() {
 
     // === Single Post ===
     } elseif ( is_single() ) {
-        // Hien thi category
+        // Hiển thị category
         $categories = get_the_category();
         if ( $categories ) {
             $cat = $categories[0];
@@ -795,19 +795,19 @@ function developer_breadcrumbs() {
     // === Search ===
     } elseif ( is_search() ) {
         echo '<li class="breadcrumb-item current">';
-        printf( esc_html__( 'Tim kiem: "%s"', 'developer-theme' ), get_search_query() );
+        printf( esc_html__( 'Tìm kiếm: "%s"', 'developer-theme' ), get_search_query() );
         echo '</li>';
 
     // === 404 ===
     } elseif ( is_404() ) {
         echo '<li class="breadcrumb-item current">';
-        esc_html_e( '404 - Khong Tim Thay', 'developer-theme' );
+        esc_html_e( '404 - Không Tìm Thấy', 'developer-theme' );
         echo '</li>';
 
     // === Author ===
     } elseif ( is_author() ) {
         echo '<li class="breadcrumb-item current">';
-        printf( esc_html__( 'Tac gia: %s', 'developer-theme' ), get_the_author() );
+        printf( esc_html__( 'Tác giả: %s', 'developer-theme' ), get_the_author() );
         echo '</li>';
 
     // === Date archive ===
@@ -895,23 +895,23 @@ function developer_breadcrumbs() {
 
 ---
 
-## 5. Sidebars va Widget Areas
+## 5. Sidebars và Widget Areas
 
-### Dang ky Sidebar:
+### Đăng ký Sidebar:
 
 ```php
 <?php
 /**
- * Dang ky tat ca Widget Areas (Sidebars)
- * Dat trong functions.php, hook 'widgets_init'
+ * Đăng ký tất cả Widget Areas (Sidebars)
+ * Đặt trong functions.php, hook 'widgets_init'
  */
 function developer_register_sidebars() {
 
-    // === Sidebar chinh ===
+    // === Sidebar chính ===
     register_sidebar( array(
-        'name'          => __( 'Sidebar Chinh', 'developer-theme' ),
-        'id'            => 'sidebar-main',          // ID duy nhat, dung de goi
-        'description'   => __( 'Hien thi ben phai cac trang blog.', 'developer-theme' ),
+        'name'          => __( 'Sidebar Chính', 'developer-theme' ),
+        'id'            => 'sidebar-main',          // ID duy nhất, dùng để gọi
+        'description'   => __( 'Hiển thị bên phải các trang blog.', 'developer-theme' ),
         'before_widget' => '<div id="%1$s" class="widget %2$s">',
         // %1$s = widget ID, %2$s = widget class
         'after_widget'  => '</div>',
@@ -919,23 +919,23 @@ function developer_register_sidebars() {
         'after_title'   => '</h3>',
     ) );
 
-    // === Sidebar cho trang san pham ===
+    // === Sidebar cho trang sản phẩm ===
     register_sidebar( array(
-        'name'          => __( 'Sidebar San Pham', 'developer-theme' ),
+        'name'          => __( 'Sidebar Sản Phẩm', 'developer-theme' ),
         'id'            => 'sidebar-shop',
-        'description'   => __( 'Hien thi ben phai trang san pham.', 'developer-theme' ),
+        'description'   => __( 'Hiển thị bên phải trang sản phẩm.', 'developer-theme' ),
         'before_widget' => '<div id="%1$s" class="widget shop-widget %2$s">',
         'after_widget'  => '</div>',
         'before_title'  => '<h3 class="widget-title">',
         'after_title'   => '</h3>',
     ) );
 
-    // === Footer Widget Areas (3 cot) ===
+    // === Footer Widget Areas (3 cột) ===
     for ( $i = 1; $i <= 3; $i++ ) {
         register_sidebar( array(
-            'name'          => sprintf( __( 'Footer Cot %d', 'developer-theme' ), $i ),
+            'name'          => sprintf( __( 'Footer Cột %d', 'developer-theme' ), $i ),
             'id'            => 'footer-' . $i,
-            'description'   => sprintf( __( 'Widget area cho footer cot %d.', 'developer-theme' ), $i ),
+            'description'   => sprintf( __( 'Widget area cho footer cột %d.', 'developer-theme' ), $i ),
             'before_widget' => '<div id="%1$s" class="widget footer-widget %2$s">',
             'after_widget'  => '</div>',
             'before_title'  => '<h4 class="widget-title">',
@@ -947,18 +947,18 @@ function developer_register_sidebars() {
     register_sidebar( array(
         'name'          => __( 'Header Top Bar', 'developer-theme' ),
         'id'            => 'header-top-bar',
-        'description'   => __( 'Hien thi thong tin tren cung (so dien thoai, email...).', 'developer-theme' ),
+        'description'   => __( 'Hiển thị thông tin trên cùng (số điện thoại, email...).', 'developer-theme' ),
         'before_widget' => '<div id="%1$s" class="widget topbar-widget %2$s">',
         'after_widget'  => '</div>',
         'before_title'  => '<span class="widget-title screen-reader-text">',
         'after_title'   => '</span>',
     ) );
 
-    // === Sidebar cho trang single bai viet ===
+    // === Sidebar cho trang single bài viết ===
     register_sidebar( array(
         'name'          => __( 'After Post Content', 'developer-theme' ),
         'id'            => 'after-post',
-        'description'   => __( 'Hien thi sau noi dung bai viet (CTA, newsletter...).', 'developer-theme' ),
+        'description'   => __( 'Hiển thị sau nội dung bài viết (CTA, newsletter...).', 'developer-theme' ),
         'before_widget' => '<div id="%1$s" class="widget after-post-widget %2$s">',
         'after_widget'  => '</div>',
         'before_title'  => '<h3 class="widget-title">',
@@ -968,28 +968,28 @@ function developer_register_sidebars() {
 add_action( 'widgets_init', 'developer_register_sidebars' );
 ```
 
-### Hien thi Sidebar trong template:
+### Hiển thị Sidebar trong template:
 
 ```php
 <?php
 /**
- * sidebar.php - Sidebar mac dinh
+ * sidebar.php - Sidebar mặc định
  */
 
-// Kiem tra co widget nao khong
+// Kiểm tra có widget nào không
 if ( ! is_active_sidebar( 'sidebar-main' ) ) {
-    return; // Khong co widget -> khong hien thi gi
+    return; // Không có widget -> không hiển thị gì
 }
 ?>
 
 <aside id="secondary" class="widget-area sidebar" role="complementary" aria-label="<?php esc_attr_e( 'Sidebar', 'developer-theme' ); ?>">
     <?php dynamic_sidebar( 'sidebar-main' ); ?>
-    <!-- dynamic_sidebar() hien thi tat ca widgets da them vao sidebar nay -->
+    <!-- dynamic_sidebar() hiển thị tất cả widgets đã thêm vào sidebar này -->
 </aside>
 
 <?php
 /**
- * sidebar-shop.php - Sidebar cho trang san pham
+ * sidebar-shop.php - Sidebar cho trang sản phẩm
  */
 if ( ! is_active_sidebar( 'sidebar-shop' ) ) {
     return;
@@ -1001,12 +1001,12 @@ if ( ! is_active_sidebar( 'sidebar-shop' ) ) {
 
 <?php
 /**
- * Trong template (index.php, single.php...), goi:
+ * Trong template (index.php, single.php...), gọi:
  */
 get_sidebar();         // Load sidebar.php
 get_sidebar( 'shop' ); // Load sidebar-shop.php
 
-// Hoac hien thi truc tiep, khong can file rieng:
+// Hoặc hiển thị trực tiếp, không cần file riêng:
 if ( is_active_sidebar( 'after-post' ) ) : ?>
     <div class="after-post-area">
         <?php dynamic_sidebar( 'after-post' ); ?>
@@ -1014,22 +1014,22 @@ if ( is_active_sidebar( 'after-post' ) ) : ?>
 <?php endif;
 ```
 
-### Sidebar co dieu kien:
+### Sidebar có điều kiện:
 
 ```php
 <?php
 /**
- * Hien thi sidebar khac nhau tuy theo trang
+ * Hiển thị sidebar khác nhau tùy theo trang
  */
 function developer_get_sidebar() {
     if ( is_post_type_archive( 'product' ) || is_singular( 'product' ) ) {
-        // Trang san pham: dung sidebar shop
+        // Trang sản phẩm: dùng sidebar shop
         get_sidebar( 'shop' );
     } elseif ( is_page_template( 'page-templates/template-full-width.php' ) ) {
-        // Template full width: khong co sidebar
+        // Template full width: không có sidebar
         return;
     } else {
-        // Mac dinh
+        // Mặc định
         get_sidebar();
     }
 }
@@ -1042,41 +1042,41 @@ function developer_get_sidebar() {
 
 ## 6. Widgets trong Theme
 
-### Tao Custom Widget:
+### Tạo Custom Widget:
 
 ```php
 <?php
 /**
- * Custom Widget: Recent Posts voi Thumbnail
+ * Custom Widget: Recent Posts với Thumbnail
  *
- * Dat file nay trong: inc/widgets.php
+ * Đặt file này trong: inc/widgets.php
  * Require trong functions.php: require get_template_directory() . '/inc/widgets.php';
  */
 class Developer_Recent_Posts_Widget extends WP_Widget {
 
     /**
-     * Constructor - Dang ky widget
+     * Constructor - Đăng ký widget
      */
     public function __construct() {
         parent::__construct(
-            'developer_recent_posts',   // Base ID (duy nhat)
-            __( 'Dev: Bai Viet Moi', 'developer-theme' ), // Ten hien thi trong Admin
+            'developer_recent_posts',   // Base ID (duy nhất)
+            __( 'Dev: Bài Viết Mới', 'developer-theme' ), // Tên hiển thị trong Admin
             array(
-                'description'             => __( 'Hien thi bai viet moi nhat voi hinh thu nho.', 'developer-theme' ),
+                'description'             => __( 'Hiển thị bài viết mới nhất với hình thu nhỏ.', 'developer-theme' ),
                 'classname'               => 'developer-recent-posts-widget',
-                'customize_selective_refresh' => true, // Ho tro Customizer live preview
+                'customize_selective_refresh' => true, // Hỗ trợ Customizer live preview
             )
         );
     }
 
     /**
-     * Frontend - Hien thi widget tren trang
+     * Frontend - Hiển thị widget trên trang
      *
      * @param array $args     Widget arguments (before_widget, after_widget, before_title, after_title)
      * @param array $instance Widget settings
      */
     public function widget( $args, $instance ) {
-        $title       = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Bai Viet Moi', 'developer-theme' );
+        $title       = ! empty( $instance['title'] ) ? $instance['title'] : __( 'Bài Viết Mới', 'developer-theme' );
         $title       = apply_filters( 'widget_title', $title, $instance, $this->id_base );
         $number      = ! empty( $instance['number'] ) ? absint( $instance['number'] ) : 5;
         $show_thumb  = ! empty( $instance['show_thumb'] );
@@ -1090,7 +1090,7 @@ class Developer_Recent_Posts_Widget extends WP_Widget {
             'posts_per_page'      => $number,
             'post_status'         => 'publish',
             'ignore_sticky_posts' => true,
-            'no_found_rows'       => true,       // Khong can pagination -> nhanh hon
+            'no_found_rows'       => true,       // Không cần pagination -> nhanh hơn
         );
 
         if ( $category > 0 ) {
@@ -1161,7 +1161,7 @@ class Developer_Recent_Posts_Widget extends WP_Widget {
      * @param array $instance Widget settings
      */
     public function form( $instance ) {
-        $title     = isset( $instance['title'] ) ? $instance['title'] : __( 'Bai Viet Moi', 'developer-theme' );
+        $title     = isset( $instance['title'] ) ? $instance['title'] : __( 'Bài Viết Mới', 'developer-theme' );
         $number    = isset( $instance['number'] ) ? absint( $instance['number'] ) : 5;
         $show_thumb = isset( $instance['show_thumb'] ) ? (bool) $instance['show_thumb'] : true;
         $show_date = isset( $instance['show_date'] ) ? (bool) $instance['show_date'] : true;
@@ -1169,10 +1169,10 @@ class Developer_Recent_Posts_Widget extends WP_Widget {
         $category  = isset( $instance['category'] ) ? absint( $instance['category'] ) : 0;
         ?>
 
-        <!-- Tieu de -->
+        <!-- Tiêu đề -->
         <p>
             <label for="<?php echo $this->get_field_id( 'title' ); ?>">
-                <?php esc_html_e( 'Tieu de:', 'developer-theme' ); ?>
+                <?php esc_html_e( 'Tiêu đề:', 'developer-theme' ); ?>
             </label>
             <input class="widefat" type="text"
                    id="<?php echo $this->get_field_id( 'title' ); ?>"
@@ -1180,10 +1180,10 @@ class Developer_Recent_Posts_Widget extends WP_Widget {
                    value="<?php echo esc_attr( $title ); ?>" />
         </p>
 
-        <!-- So bai viet -->
+        <!-- Số bài viết -->
         <p>
             <label for="<?php echo $this->get_field_id( 'number' ); ?>">
-                <?php esc_html_e( 'So bai viet:', 'developer-theme' ); ?>
+                <?php esc_html_e( 'Số bài viết:', 'developer-theme' ); ?>
             </label>
             <input class="tiny-text" type="number" min="1" max="20"
                    id="<?php echo $this->get_field_id( 'number' ); ?>"
@@ -1191,47 +1191,47 @@ class Developer_Recent_Posts_Widget extends WP_Widget {
                    value="<?php echo esc_attr( $number ); ?>" />
         </p>
 
-        <!-- Hien thi thumbnail -->
+        <!-- Hiển thị thumbnail -->
         <p>
             <input type="checkbox"
                    id="<?php echo $this->get_field_id( 'show_thumb' ); ?>"
                    name="<?php echo $this->get_field_name( 'show_thumb' ); ?>"
                    <?php checked( $show_thumb ); ?> />
             <label for="<?php echo $this->get_field_id( 'show_thumb' ); ?>">
-                <?php esc_html_e( 'Hien thi hinh thu nho', 'developer-theme' ); ?>
+                <?php esc_html_e( 'Hiển thị hình thu nhỏ', 'developer-theme' ); ?>
             </label>
         </p>
 
-        <!-- Hien thi ngay -->
+        <!-- Hiển thị ngày -->
         <p>
             <input type="checkbox"
                    id="<?php echo $this->get_field_id( 'show_date' ); ?>"
                    name="<?php echo $this->get_field_name( 'show_date' ); ?>"
                    <?php checked( $show_date ); ?> />
             <label for="<?php echo $this->get_field_id( 'show_date' ); ?>">
-                <?php esc_html_e( 'Hien thi ngay dang', 'developer-theme' ); ?>
+                <?php esc_html_e( 'Hiển thị ngày đăng', 'developer-theme' ); ?>
             </label>
         </p>
 
-        <!-- Hien thi danh muc -->
+        <!-- Hiển thị danh mục -->
         <p>
             <input type="checkbox"
                    id="<?php echo $this->get_field_id( 'show_category' ); ?>"
                    name="<?php echo $this->get_field_name( 'show_category' ); ?>"
                    <?php checked( $show_cat ); ?> />
             <label for="<?php echo $this->get_field_id( 'show_category' ); ?>">
-                <?php esc_html_e( 'Hien thi danh muc', 'developer-theme' ); ?>
+                <?php esc_html_e( 'Hiển thị danh mục', 'developer-theme' ); ?>
             </label>
         </p>
 
-        <!-- Loc theo danh muc -->
+        <!-- Lọc theo danh mục -->
         <p>
             <label for="<?php echo $this->get_field_id( 'category' ); ?>">
-                <?php esc_html_e( 'Danh muc:', 'developer-theme' ); ?>
+                <?php esc_html_e( 'Danh mục:', 'developer-theme' ); ?>
             </label>
             <?php
             wp_dropdown_categories( array(
-                'show_option_all' => __( 'Tat ca danh muc', 'developer-theme' ),
+                'show_option_all' => __( 'Tất cả danh mục', 'developer-theme' ),
                 'orderby'         => 'name',
                 'selected'        => $category,
                 'id'              => $this->get_field_id( 'category' ),
@@ -1245,7 +1245,7 @@ class Developer_Recent_Posts_Widget extends WP_Widget {
     }
 
     /**
-     * Update - Luu settings
+     * Update - Lưu settings
      *
      * @param array $new_instance New settings
      * @param array $old_instance Old settings
@@ -1264,7 +1264,7 @@ class Developer_Recent_Posts_Widget extends WP_Widget {
 }
 
 /**
- * Dang ky widget
+ * Đăng ký widget
  */
 function developer_register_widgets() {
     register_widget( 'Developer_Recent_Posts_Widget' );
@@ -1277,7 +1277,7 @@ add_action( 'widgets_init', 'developer_register_widgets' );
 ```php
 <?php
 /**
- * Widget CTA - Hien thi khung keu goi hanh dong
+ * Widget CTA - Hiển thị khung kêu gọi hành động
  */
 class Developer_CTA_Widget extends WP_Widget {
 
@@ -1286,7 +1286,7 @@ class Developer_CTA_Widget extends WP_Widget {
             'developer_cta',
             __( 'Dev: CTA Box', 'developer-theme' ),
             array(
-                'description' => __( 'Khung keu goi hanh dong voi nut bam.', 'developer-theme' ),
+                'description' => __( 'Khung kêu gọi hành động với nút bấm.', 'developer-theme' ),
                 'classname'   => 'developer-cta-widget',
             )
         );
@@ -1295,7 +1295,7 @@ class Developer_CTA_Widget extends WP_Widget {
     public function widget( $args, $instance ) {
         $title   = ! empty( $instance['title'] ) ? $instance['title'] : '';
         $text    = ! empty( $instance['text'] ) ? $instance['text'] : '';
-        $btn_text = ! empty( $instance['button_text'] ) ? $instance['button_text'] : __( 'Tim Hieu Them', 'developer-theme' );
+        $btn_text = ! empty( $instance['button_text'] ) ? $instance['button_text'] : __( 'Tìm Hiểu Thêm', 'developer-theme' );
         $btn_url = ! empty( $instance['button_url'] ) ? $instance['button_url'] : '#';
         $bg_color = ! empty( $instance['bg_color'] ) ? $instance['bg_color'] : '#0073aa';
 
@@ -1321,20 +1321,20 @@ class Developer_CTA_Widget extends WP_Widget {
     public function form( $instance ) {
         $title    = isset( $instance['title'] ) ? $instance['title'] : '';
         $text     = isset( $instance['text'] ) ? $instance['text'] : '';
-        $btn_text = isset( $instance['button_text'] ) ? $instance['button_text'] : __( 'Tim Hieu Them', 'developer-theme' );
+        $btn_text = isset( $instance['button_text'] ) ? $instance['button_text'] : __( 'Tìm Hiểu Thêm', 'developer-theme' );
         $btn_url  = isset( $instance['button_url'] ) ? $instance['button_url'] : '';
         $bg_color = isset( $instance['bg_color'] ) ? $instance['bg_color'] : '#0073aa';
         ?>
         <p>
-            <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php esc_html_e( 'Tieu de:', 'developer-theme' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php esc_html_e( 'Tiêu đề:', 'developer-theme' ); ?></label>
             <input class="widefat" type="text" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" value="<?php echo esc_attr( $title ); ?>" />
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id( 'text' ); ?>"><?php esc_html_e( 'Noi dung:', 'developer-theme' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'text' ); ?>"><?php esc_html_e( 'Nội dung:', 'developer-theme' ); ?></label>
             <textarea class="widefat" rows="3" id="<?php echo $this->get_field_id( 'text' ); ?>" name="<?php echo $this->get_field_name( 'text' ); ?>"><?php echo esc_textarea( $text ); ?></textarea>
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id( 'button_text' ); ?>"><?php esc_html_e( 'Nut bam:', 'developer-theme' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'button_text' ); ?>"><?php esc_html_e( 'Nút bấm:', 'developer-theme' ); ?></label>
             <input class="widefat" type="text" id="<?php echo $this->get_field_id( 'button_text' ); ?>" name="<?php echo $this->get_field_name( 'button_text' ); ?>" value="<?php echo esc_attr( $btn_text ); ?>" />
         </p>
         <p>
@@ -1342,7 +1342,7 @@ class Developer_CTA_Widget extends WP_Widget {
             <input class="widefat" type="url" id="<?php echo $this->get_field_id( 'button_url' ); ?>" name="<?php echo $this->get_field_name( 'button_url' ); ?>" value="<?php echo esc_url( $btn_url ); ?>" />
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id( 'bg_color' ); ?>"><?php esc_html_e( 'Mau nen:', 'developer-theme' ); ?></label>
+            <label for="<?php echo $this->get_field_id( 'bg_color' ); ?>"><?php esc_html_e( 'Màu nền:', 'developer-theme' ); ?></label>
             <input class="widefat" type="color" id="<?php echo $this->get_field_id( 'bg_color' ); ?>" name="<?php echo $this->get_field_name( 'bg_color' ); ?>" value="<?php echo esc_attr( $bg_color ); ?>" />
         </p>
         <?php
@@ -1364,18 +1364,18 @@ class Developer_CTA_Widget extends WP_Widget {
 
 ## 7. Footer Widgets
 
-### Hien thi Footer Widgets:
+### Hiển thị Footer Widgets:
 
 ```php
 <?php
 /**
  * template-parts/footer/footer-widgets.php
  *
- * Hien thi 3 cot footer widgets
- * Goi tu footer.php: get_template_part( 'template-parts/footer/footer-widgets' );
+ * Hiển thị 3 cột footer widgets
+ * Gọi từ footer.php: get_template_part( 'template-parts/footer/footer-widgets' );
  */
 
-// Dem so cot footer co widget
+// Đếm số cột footer có widget
 $footer_columns = 0;
 for ( $i = 1; $i <= 3; $i++ ) {
     if ( is_active_sidebar( 'footer-' . $i ) ) {
@@ -1383,7 +1383,7 @@ for ( $i = 1; $i <= 3; $i++ ) {
     }
 }
 
-// Khong co widget nao -> khong hien thi
+// Không có widget nào -> không hiển thị
 if ( $footer_columns === 0 ) {
     return;
 }
@@ -1464,21 +1464,21 @@ if ( $footer_columns === 0 ) {
 
 ---
 
-## 8. Code vi du: Theme hoan chinh
+## 8. Code ví dụ: Theme hoàn chỉnh
 
-### functions.php (phan menu va widgets):
+### functions.php (phần menu và widgets):
 
 ```php
 <?php
 /**
- * Toan bo dang ky menu, sidebar, widgets
- * Them vao functions.php cua theme
+ * Toàn bộ đăng ký menu, sidebar, widgets
+ * Thêm vào functions.php của theme
  */
 
 // === MENUS ===
 function developer_complete_setup() {
     register_nav_menus( array(
-        'primary'   => __( 'Menu Chinh', 'developer-theme' ),
+        'primary'   => __( 'Menu Chính', 'developer-theme' ),
         'secondary' => __( 'Menu Top Bar', 'developer-theme' ),
         'footer'    => __( 'Menu Footer', 'developer-theme' ),
         'mobile'    => __( 'Menu Mobile', 'developer-theme' ),
@@ -1490,7 +1490,7 @@ add_action( 'after_setup_theme', 'developer_complete_setup' );
 function developer_complete_widgets_init() {
     // Main sidebar
     register_sidebar( array(
-        'name'          => __( 'Sidebar Chinh', 'developer-theme' ),
+        'name'          => __( 'Sidebar Chính', 'developer-theme' ),
         'id'            => 'sidebar-main',
         'before_widget' => '<div id="%1$s" class="widget %2$s">',
         'after_widget'  => '</div>',
@@ -1529,12 +1529,12 @@ function developer_complete_scripts() {
 add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
 ```
 
-### header.php hoan chinh voi responsive menu:
+### header.php hoàn chỉnh với responsive menu:
 
 ```php
 <?php
 /**
- * header.php - Header day du voi top bar, logo, responsive menu
+ * header.php - Header đầy đủ với top bar, logo, responsive menu
  */
 ?>
 <!DOCTYPE html>
@@ -1551,7 +1551,7 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
 <div id="page" class="site">
 
     <a class="skip-link screen-reader-text" href="#primary">
-        <?php esc_html_e( 'Chuyen den noi dung', 'developer-theme' ); ?>
+        <?php esc_html_e( 'Chuyển đến nội dung', 'developer-theme' ); ?>
     </a>
 
     <!-- === TOP BAR === -->
@@ -1559,14 +1559,14 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
     <div class="top-bar">
         <div class="container">
             <div class="top-bar-inner">
-                <!-- Thong tin lien he -->
+                <!-- Thông tin liên hệ -->
                 <?php if ( is_active_sidebar( 'header-top-bar' ) ) : ?>
                     <div class="top-bar-info">
                         <?php dynamic_sidebar( 'header-top-bar' ); ?>
                     </div>
                 <?php endif; ?>
 
-                <!-- Menu phu (Login, Register, Language...) -->
+                <!-- Menu phụ (Login, Register, Language...) -->
                 <?php if ( has_nav_menu( 'secondary' ) ) : ?>
                     <nav class="top-bar-nav">
                         <?php
@@ -1621,7 +1621,7 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
                 </div>
 
                 <!-- Desktop Navigation -->
-                <nav id="site-navigation" class="main-navigation" aria-label="<?php esc_attr_e( 'Menu Chinh', 'developer-theme' ); ?>">
+                <nav id="site-navigation" class="main-navigation" aria-label="<?php esc_attr_e( 'Menu Chính', 'developer-theme' ); ?>">
                     <?php if ( has_nav_menu( 'primary' ) ) : ?>
                         <?php
                         wp_nav_menu( array(
@@ -1639,7 +1639,7 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
                 <!-- Header Actions (Search, Cart...) -->
                 <div class="header-actions">
                     <!-- Search Toggle -->
-                    <button class="search-toggle" aria-label="<?php esc_attr_e( 'Tim kiem', 'developer-theme' ); ?>">
+                    <button class="search-toggle" aria-label="<?php esc_attr_e( 'Tìm kiếm', 'developer-theme' ); ?>">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
                             <path d="M21 21l-4.35-4.35"></path>
@@ -1648,7 +1648,7 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
 
                     <!-- Mobile Menu Toggle -->
                     <button class="menu-toggle" aria-controls="mobile-menu" aria-expanded="false"
-                            aria-label="<?php esc_attr_e( 'Mo menu', 'developer-theme' ); ?>">
+                            aria-label="<?php esc_attr_e( 'Mở menu', 'developer-theme' ); ?>">
                         <span class="hamburger">
                             <span class="hamburger-line"></span>
                             <span class="hamburger-line"></span>
@@ -1664,7 +1664,7 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
         <div class="search-overlay" id="search-overlay" hidden>
             <div class="container">
                 <?php get_search_form(); ?>
-                <button class="search-close" aria-label="<?php esc_attr_e( 'Dong tim kiem', 'developer-theme' ); ?>">
+                <button class="search-close" aria-label="<?php esc_attr_e( 'Đóng tìm kiếm', 'developer-theme' ); ?>">
                     &times;
                 </button>
             </div>
@@ -1675,7 +1675,7 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
     <div id="mobile-menu" class="mobile-menu-panel" aria-hidden="true">
         <div class="mobile-menu-header">
             <span class="mobile-menu-title"><?php esc_html_e( 'Menu', 'developer-theme' ); ?></span>
-            <button class="mobile-menu-close" aria-label="<?php esc_attr_e( 'Dong menu', 'developer-theme' ); ?>">
+            <button class="mobile-menu-close" aria-label="<?php esc_attr_e( 'Đóng menu', 'developer-theme' ); ?>">
                 &times;
             </button>
         </div>
@@ -1707,7 +1707,7 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
 
 ```javascript
 /**
- * Navigation - Xu ly mobile menu, search toggle, dropdown
+ * Navigation - Xử lý mobile menu, search toggle, dropdown
  */
 (function() {
     'use strict';
@@ -1724,7 +1724,7 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
         mobileMenu.setAttribute('aria-hidden', 'false');
         overlay.classList.add('is-visible');
         menuToggle.setAttribute('aria-expanded', 'true');
-        document.body.style.overflow = 'hidden'; // Khong cho scroll
+        document.body.style.overflow = 'hidden'; // Không cho scroll
     }
 
     function closeMobileMenu() {
@@ -1746,7 +1746,7 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
         overlay.addEventListener('click', closeMobileMenu);
     }
 
-    // Dong khi nhan Escape
+    // Đóng khi nhấn Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeMobileMenu();
@@ -1757,7 +1757,7 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
     // === MOBILE SUB-MENU TOGGLE ===
     const mobileHasChildren = document.querySelectorAll('.mobile-nav-list .menu-item-has-children > a');
     mobileHasChildren.forEach(function(link) {
-        // Them nut toggle ben canh link
+        // Thêm nút toggle bên cạnh link
         const toggle = document.createElement('button');
         toggle.className = 'sub-menu-toggle';
         toggle.innerHTML = '+';
@@ -1798,20 +1798,20 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
     }
 
     // === DESKTOP KEYBOARD NAVIGATION ===
-    // Ho tro tab qua sub-menu
+    // Hỗ trợ tab qua sub-menu
     const navItems = document.querySelectorAll('.nav-menu .menu-item-has-children');
     navItems.forEach(function(item) {
         const links = item.querySelectorAll('a');
         const lastLink = links[links.length - 1];
 
-        // Khi tab ra khoi item cuoi cung cua sub-menu, dong sub-menu
+        // Khi tab ra khỏi item cuối cùng của sub-menu, đóng sub-menu
         if (lastLink) {
             lastLink.addEventListener('blur', function() {
                 item.classList.remove('focus');
             });
         }
 
-        // Mo sub-menu khi focus
+        // Mở sub-menu khi focus
         item.querySelector('a').addEventListener('focus', function() {
             item.classList.add('focus');
         });
@@ -1827,41 +1827,41 @@ add_action( 'wp_enqueue_scripts', 'developer_complete_scripts' );
 ### 1. Menu
 
 ```php
-// Luon kiem tra truoc khi hien thi
+// Luôn kiểm tra trước khi hiển thị
 if ( has_nav_menu( 'primary' ) ) {
     wp_nav_menu( array( 'theme_location' => 'primary' ) );
 }
 
-// Dung fallback_cb = false neu khong muon hien gi khi chua co menu
+// Dùng fallback_cb = false nếu không muốn hiện gì khi chưa có menu
 wp_nav_menu( array( 'fallback_cb' => false ) );
 
-// Dung theme_location, KHONG hard-code menu name
-// SAI: 'menu' => 'Main Menu'     (se hong neu doi ten menu)
-// DUNG: 'theme_location' => 'primary'  (luon dung)
+// Dùng theme_location, KHÔNG hard-code menu name
+// SAI: 'menu' => 'Main Menu'     (sẽ hỏng nếu đổi tên menu)
+// ĐÚNG: 'theme_location' => 'primary'  (luôn đúng)
 ```
 
 ### 2. Sidebar
 
 ```php
-// Luon kiem tra is_active_sidebar truoc khi render
+// Luôn kiểm tra is_active_sidebar trước khi render
 if ( is_active_sidebar( 'sidebar-main' ) ) {
     dynamic_sidebar( 'sidebar-main' );
 }
 
-// Dung ID co y nghia, co prefix
+// Dùng ID có ý nghĩa, có prefix
 // SAI: 'sidebar-1', 'sidebar-2'
-// DUNG: 'sidebar-main', 'sidebar-shop', 'footer-1'
+// ĐÚNG: 'sidebar-main', 'sidebar-shop', 'footer-1'
 ```
 
 ### 3. Widget
 
 ```php
-// Luon sanitize du lieu trong update()
+// Luôn sanitize dữ liệu trong update()
 $instance['title'] = sanitize_text_field( $new_instance['title'] );
 $instance['url']   = esc_url_raw( $new_instance['url'] );
 $instance['number'] = absint( $new_instance['number'] );
 
-// Dung no_found_rows => true cho widget queries (khong can pagination)
+// Dùng no_found_rows => true cho widget queries (không cần pagination)
 $query = new WP_Query( array(
     'no_found_rows' => true,
     'posts_per_page' => 5,
@@ -1872,17 +1872,17 @@ $query = new WP_Query( array(
 
 ```php
 // ARIA labels cho navigation
-<nav aria-label="<?php esc_attr_e( 'Menu Chinh', 'developer-theme' ); ?>">
+<nav aria-label="<?php esc_attr_e( 'Menu Chính', 'developer-theme' ); ?>">
 
 // ARIA cho mobile toggle
 <button aria-expanded="false" aria-controls="mobile-menu">
 
-// Skip link (dau trang)
+// Skip link (đầu trang)
 <a class="skip-link screen-reader-text" href="#primary">Skip to content</a>
 
 // Screen reader text cho icon-only buttons
 <button>
-    <span class="screen-reader-text"><?php esc_html_e( 'Tim kiem', 'developer-theme' ); ?></span>
+    <span class="screen-reader-text"><?php esc_html_e( 'Tìm kiếm', 'developer-theme' ); ?></span>
     <svg>...</svg>
 </button>
 ```
@@ -1896,10 +1896,10 @@ the_post_thumbnail( 'thumbnail', array( 'loading' => 'lazy' ) );
 // no_found_rows cho widget queries
 'no_found_rows' => true,
 
-// Gioi han depth cho menu
-'depth' => 2, // Khong can load het cac cap
+// Giới hạn depth cho menu
+'depth' => 2, // Không cần load hết các cấp
 ```
 
 ---
 
-**Tiep theo:** [05 - Customizer API](./05-customizer-api.md) - Tao trang tuy chinh theme voi live preview
+**Tiếp theo:** [05 - Customizer API](./05-customizer-api.md) - Tạo trang tùy chỉnh theme với live preview

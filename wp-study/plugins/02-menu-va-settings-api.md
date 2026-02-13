@@ -1,15 +1,15 @@
-# Menu va Settings API trong WordPress Plugin
+# Menu và Settings API trong WordPress Plugin
 
-## Muc luc
+## Mục lục
 
-1. [Tao Admin Menu](#1-tao-admin-menu)
-2. [Tao Submenu](#2-tao-submenu)
-3. [Settings API chi tiet](#3-settings-api-chi-tiet)
-4. [Tao trang Options hoan chinh](#4-tao-trang-options-hoan-chinh)
+1. [Tạo Admin Menu](#1-tao-admin-menu)
+2. [Tạo Submenu](#2-tao-submenu)
+3. [Settings API chi tiết](#3-settings-api-chi-tiet)
+4. [Tạo trang Options hoàn chỉnh](#4-tao-trang-options-hoan-chinh)
 5. [Tabs trong Settings Page](#5-tabs-trong-settings-page)
-6. [Cac loai field](#6-cac-loai-field)
-7. [Validate va Sanitize Settings](#7-validate-va-sanitize-settings)
-8. [Code vi du: Plugin Settings hoan chinh](#8-code-vi-du-plugin-settings-hoan-chinh)
+6. [Các loại field](#6-cac-loai-field)
+7. [Validate và Sanitize Settings](#7-validate-va-sanitize-settings)
+8. [Code ví dụ: Plugin Settings hoàn chỉnh](#8-code-vi-du-plugin-settings-hoan-chinh)
 9. [Best Practices](#9-best-practices)
 
 ---

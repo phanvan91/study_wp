@@ -1,85 +1,85 @@
 # Template Hierarchy trong WordPress
 
-## Muc Luc
+## Mục Lục
 
-1. [Template Hierarchy la gi](#1-template-hierarchy-la-gi)
-2. [So do Template Hierarchy day du](#2-so-do-template-hierarchy)
-3. [Cac template files chi tiet](#3-cac-template-files)
+1. [Template Hierarchy là gì](#1-template-hierarchy-la-gi)
+2. [Sơ đồ Template Hierarchy đầy đủ](#2-so-do-template-hierarchy)
+3. [Các template files chi tiết](#3-cac-template-files)
 4. [Template Parts](#4-template-parts)
 5. [Header, Footer, Sidebar](#5-header-footer-sidebar)
 6. [Conditional Tags](#6-conditional-tags)
 7. [Template cho Custom Post Types](#7-template-cho-custom-post-types)
 8. [Template cho Custom Taxonomies](#8-template-cho-custom-taxonomies)
-9. [Code vi du cho tung template](#9-code-vi-du)
-10. [So sanh voi Laravel Blade](#10-so-sanh-voi-laravel)
+9. [Code ví dụ cho từng template](#9-code-vi-du)
+10. [So sánh với Laravel Blade](#10-so-sanh-voi-laravel)
 11. [Best Practices](#11-best-practices)
 
 ---
 
-## 1. Template Hierarchy la gi
+## 1. Template Hierarchy là gì
 
-Template Hierarchy (Thu bac Template) la **he thong tu dong chon template file** cua WordPress. Khi nguoi dung truy cap mot URL, WordPress se xac dinh loai noi dung va tim template file phu hop nhat theo thu tu uu tien.
+Template Hierarchy (Thứ bậc Template) là **hệ thống tự động chọn template file** của WordPress. Khi người dùng truy cập một URL, WordPress sẽ xác định loại nội dung và tìm template file phù hợp nhất theo thứ tự ưu tiên.
 
-### Cach hoat dong:
-
-```
-Nguoi dung truy cap URL
-        |
-        v
-WordPress xac dinh loai noi dung (post, page, category, tag...)
-        |
-        v
-Tim template file theo thu tu uu tien (tu cu the nhat den chung nhat)
-        |
-        v
-Dung template file dau tien tim thay
-        |
-        v
-Neu khong tim thay template nao -> dung index.php (fallback cuoi cung)
-```
-
-### Vi du cu the:
-
-Khi truy cap `example.com/category/tin-tuc/`, WordPress tim theo thu tu:
+### Cách hoạt động:
 
 ```
-1. category-tin-tuc.php        (theo slug cua category)
-2. category-5.php              (theo ID cua category)
+Người dùng truy cập URL
+        |
+        v
+WordPress xác định loại nội dung (post, page, category, tag...)
+        |
+        v
+Tìm template file theo thứ tự ưu tiên (từ cụ thể nhất đến chung nhất)
+        |
+        v
+Dùng template file đầu tiên tìm thấy
+        |
+        v
+Nếu không tìm thấy template nào -> dùng index.php (fallback cuối cùng)
+```
+
+### Ví dụ cụ thể:
+
+Khi truy cập `example.com/category/tin-tuc/`, WordPress tìm theo thứ tự:
+
+```
+1. category-tin-tuc.php        (theo slug của category)
+2. category-5.php              (theo ID của category)
 3. category.php                (template chung cho category)
 4. archive.php                 (template chung cho archive)
-5. index.php                   (fallback cuoi cung)
+5. index.php                   (fallback cuối cùng)
 ```
 
-Tim thay file nao truoc thi dung file do.
+Tìm thấy file nào trước thì dùng file đó.
 
-### So sanh voi Laravel:
+### So sánh với Laravel:
 
 ```php
-// LARAVEL - Ban tu dinh nghia route va controller
+// LARAVEL - Bạn tự định nghĩa route và controller
 Route::get('/category/{slug}', [CategoryController::class, 'show']);
-// Ban phai viet code de mapping URL -> View
+// Bạn phải viết code để mapping URL -> View
 
-// WORDPRESS - Tu dong mapping URL -> Template file
-// Ban chi can tao file category.php la xong!
-// Khong can viet route, khong can controller
+// WORDPRESS - Tự động mapping URL -> Template file
+// Bạn chỉ cần tạo file category.php là xong!
+// Không cần viết route, không cần controller
 ```
 
 ---
 
-## 2. So do Template Hierarchy
+## 2. Sơ đồ Template Hierarchy
 
-### So do tong quat (ASCII Art):
+### Sơ đồ tổng quát (ASCII Art):
 
 ```
                                     +------------------+
                                     |    index.php     |
-                                    | (Fallback cuoi)  |
+                                    | (Fallback cuối)  |
                                     +--------+---------+
                                              |
                     +------------------------+------------------------+
                     |                        |                        |
             +-------+-------+       +-------+-------+       +-------+-------+
-            | Singular      |       | Archive       |       | Dac biet      |
+            | Singular      |       | Archive       |       | Đặc biệt      |
             +-------+-------+       +-------+-------+       +-------+-------+
                     |                        |                        |
         +-----------+-----------+    +-------+-------+       +-------+-------+
@@ -99,76 +99,76 @@ Route::get('/category/{slug}', [CategoryController::class, 'show']);
                                       +--+-------+--+
 ```
 
-### So do chi tiet theo tung loai trang:
+### Sơ đồ chi tiết theo từng loại trang:
 
 ```
 === TRANG CHU (Front Page) ===
 front-page.php --> home.php --> index.php
 
-Luu y: front-page.php luon duoc uu tien nhat khi Settings > Reading
-       co cau hinh "A static page"
+Lưu ý: front-page.php luôn được ưu tiên nhất khi Settings > Reading
+       có cấu hình "A static page"
 
 === TRANG BLOG (Blog Posts Index) ===
 home.php --> index.php
 
-=== BAI VIET DON (Single Post) ===
+=== BÀI VIẾT ĐƠN (Single Post) ===
 single-{post-type}-{slug}.php     (WP 4.4+)
   --> single-{post-type}.php
     --> single.php
       --> singular.php
         --> index.php
 
-Vi du: Bai viet "Hello World" (post type: post)
+Ví dụ: Bài viết "Hello World" (post type: post)
 single-post-hello-world.php
   --> single-post.php
     --> single.php
       --> singular.php
         --> index.php
 
-Vi du: Custom post type "product", bai "iphone"
+Ví dụ: Custom post type "product", bài "iphone"
 single-product-iphone.php
   --> single-product.php
     --> single.php
       --> singular.php
         --> index.php
 
-=== TRANG TINH (Page) ===
-{custom-template}.php             (template duoc chon trong editor)
+=== TRANG TĨNH (Page) ===
+{custom-template}.php             (template được chọn trong editor)
   --> page-{slug}.php
     --> page-{id}.php
       --> page.php
         --> singular.php
           --> index.php
 
-Vi du: Trang "About Us" (ID: 10)
+Ví dụ: Trang "About Us" (ID: 10)
 page-about-us.php
   --> page-10.php
     --> page.php
       --> singular.php
         --> index.php
 
-=== DANH MUC (Category) ===
+=== DANH MỤC (Category) ===
 category-{slug}.php
   --> category-{id}.php
     --> category.php
       --> archive.php
         --> index.php
 
-=== THE (Tag) ===
+=== THẺ (Tag) ===
 tag-{slug}.php
   --> tag-{id}.php
     --> tag.php
       --> archive.php
         --> index.php
 
-=== TAC GIA (Author) ===
+=== TÁC GIẢ (Author) ===
 author-{nicename}.php
   --> author-{id}.php
     --> author.php
       --> archive.php
         --> index.php
 
-=== NGAY THANG (Date) ===
+=== NGÀY THÁNG (Date) ===
 date.php
   --> archive.php
     --> index.php
@@ -185,15 +185,15 @@ taxonomy-{taxonomy}-{term}.php
       --> archive.php
         --> index.php
 
-=== TIM KIEM (Search) ===
+=== TÌM KIẾM (Search) ===
 search.php
   --> index.php
 
-=== LOI 404 ===
+=== LỖI 404 ===
 404.php
   --> index.php
 
-=== FILE DINH KEM (Attachment) ===
+=== FILE ĐÍNH KÈM (Attachment) ===
 {MIME-type}.php (image.php, video.php, application.php)
   --> attachment.php
     --> single-attachment-{slug}.php
@@ -210,16 +210,16 @@ embed-{post-type}-{post-format}.php
 
 ---
 
-## 3. Cac template files chi tiet
+## 3. Các template files chi tiết
 
-### index.php - Template mac dinh (bat buoc)
+### index.php - Template mặc định (bắt buộc)
 
 ```php
 <?php
 /**
- * index.php - Template fallback cuoi cung
- * Moi theme PHAI co file nay
- * Khi khong tim thay template cu the hon, WordPress dung file nay
+ * index.php - Template fallback cuối cùng
+ * Mỗi theme PHẢI có file này
+ * Khi không tìm thấy template cụ thể hơn, WordPress dùng file này
  *
  * @package Developer_Theme
  */
@@ -231,7 +231,7 @@ get_header();
 
     <?php if ( have_posts() ) : ?>
 
-        <!-- Hien thi tieu de trang archive neu can -->
+        <!-- Hiển thị tiêu đề trang archive nếu cần -->
         <?php if ( is_archive() ) : ?>
             <header class="page-header">
                 <?php
@@ -246,9 +246,9 @@ get_header();
             the_post();
 
             /*
-             * Load template part dua tren post format
-             * Se tim: template-parts/content-{format}.php
-             * Neu khong co, dung: template-parts/content.php
+             * Load template part dựa trên post format
+             * Sẽ tìm: template-parts/content-{format}.php
+             * Nếu không có, dùng: template-parts/content.php
              */
             get_template_part( 'template-parts/content', get_post_format() );
 
@@ -271,16 +271,16 @@ get_sidebar();
 get_footer();
 ```
 
-### front-page.php - Trang chu
+### front-page.php - Trang chủ
 
 ```php
 <?php
 /**
- * front-page.php - Template cho trang chu
- * Chi hoat dong khi: Settings > Reading > "A static page" > Homepage
+ * front-page.php - Template cho trang chủ
+ * Chỉ hoạt động khi: Settings > Reading > "A static page" > Homepage
  *
- * Day la template co uu tien CAO NHAT cho trang chu
- * Ke ca khi ban chon static page, file nay van duoc uu tien hon page-{slug}.php
+ * Đây là template có ưu tiên CAO NHẤT cho trang chủ
+ * Kể cả khi bạn chọn static page, file này vẫn được ưu tiên hơn page-{slug}.php
  *
  * @package Developer_Theme
  */
@@ -293,21 +293,21 @@ get_header();
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
-            <h1><?php echo esc_html( get_theme_mod( 'hero_title', 'Chao mung den voi Website' ) ); ?></h1>
-            <p><?php echo esc_html( get_theme_mod( 'hero_subtitle', 'Mo ta ngan ve website cua ban' ) ); ?></p>
+            <h1><?php echo esc_html( get_theme_mod( 'hero_title', 'Chào mừng đến với Website' ) ); ?></h1>
+            <p><?php echo esc_html( get_theme_mod( 'hero_subtitle', 'Mô tả ngắn về website của bạn' ) ); ?></p>
             <a href="<?php echo esc_url( get_theme_mod( 'hero_button_url', '#' ) ); ?>" class="btn-primary">
-                <?php echo esc_html( get_theme_mod( 'hero_button_text', 'Tim hieu them' ) ); ?>
+                <?php echo esc_html( get_theme_mod( 'hero_button_text', 'Tìm hiểu thêm' ) ); ?>
             </a>
         </div>
     </section>
 
-    <!-- Bai viet moi nhat -->
+    <!-- Bài viết mới nhất -->
     <section class="latest-posts">
         <div class="container">
-            <h2><?php esc_html_e( 'Bai Viet Moi Nhat', 'developer-theme' ); ?></h2>
+            <h2><?php esc_html_e( 'Bài Viết Mới Nhất', 'developer-theme' ); ?></h2>
 
             <?php
-            // Custom query de lay 6 bai viet moi nhat
+            // Custom query để lấy 6 bài viết mới nhất
             $latest_posts = new WP_Query( array(
                 'post_type'      => 'post',
                 'posts_per_page' => 6,
@@ -326,13 +326,13 @@ get_header();
                 </div>
             <?php
             endif;
-            wp_reset_postdata(); // QUAN TRONG: Reset lai query goc
+            wp_reset_postdata(); // QUAN TRỌNG: Reset lại query gốc
             ?>
 
         </div>
     </section>
 
-    <!-- Noi dung cua Page (neu co) -->
+    <!-- Nội dung của Page (nếu có) -->
     <?php
     while ( have_posts() ) :
         the_post();
@@ -358,16 +358,16 @@ get_header();
 ```php
 <?php
 /**
- * home.php - Template cho trang danh sach bai viet (blog)
+ * home.php - Template cho trang danh sách bài viết (blog)
  *
- * Hoat dong khi:
- * - Settings > Reading > "Your latest posts" (trang chu la blog)
- * - Settings > Reading > "A static page" > Posts page: chon 1 trang
+ * Hoạt động khi:
+ * - Settings > Reading > "Your latest posts" (trang chủ là blog)
+ * - Settings > Reading > "A static page" > Posts page: chọn 1 trang
  *
- * Khac voi front-page.php:
- * - front-page.php: trang chu (homepage)
- * - home.php: trang blog (danh sach bai viet)
- * Neu "homepage displays latest posts" -> ca 2 deu la 1 trang
+ * Khác với front-page.php:
+ * - front-page.php: trang chủ (homepage)
+ * - home.php: trang blog (danh sách bài viết)
+ * Nếu "homepage displays latest posts" -> cả 2 đều là 1 trang
  *
  * @package Developer_Theme
  */
@@ -383,7 +383,7 @@ get_header();
                 <header class="page-header">
                     <h1 class="page-title">
                         <?php
-                        // Neu co trang blog rieng, hien thi ten trang do
+                        // Nếu có trang blog riêng, hiển thị tên trang đó
                         if ( is_home() && ! is_front_page() ) {
                             single_post_title();
                         } else {
@@ -395,9 +395,9 @@ get_header();
 
                 <?php if ( have_posts() ) : ?>
 
-                    <!-- Bai viet dau tien (featured) -->
+                    <!-- Bài viết đầu tiên (featured) -->
                     <?php
-                    the_post(); // Lay bai dau tien
+                    the_post(); // Lấy bài đầu tiên
                     ?>
                     <article class="featured-post">
                         <?php if ( has_post_thumbnail() ) : ?>
@@ -413,7 +413,7 @@ get_header();
                         <div class="entry-excerpt"><?php the_excerpt(); ?></div>
                     </article>
 
-                    <!-- Cac bai viet con lai -->
+                    <!-- Các bài viết còn lại -->
                     <div class="posts-grid">
                         <?php
                         while ( have_posts() ) :
@@ -440,15 +440,15 @@ get_header();
 <?php get_footer(); ?>
 ```
 
-### single.php - Bai viet don
+### single.php - Bài viết đơn
 
 ```php
 <?php
 /**
- * single.php - Template cho bai viet don le
+ * single.php - Template cho bài viết đơn lẻ
  *
- * Tuong tu route: Route::get('/post/{slug}', [PostController::class, 'show'])
- * nhung WordPress tu dong handle
+ * Tương tự route: Route::get('/post/{slug}', [PostController::class, 'show'])
+ * nhưng WordPress tự động handle
  *
  * @package Developer_Theme
  */
@@ -473,7 +473,7 @@ get_header();
                         <div class="post-thumbnail">
                             <?php the_post_thumbnail( 'developer-featured' ); ?>
                             <?php
-                            // Hien thi caption cua featured image neu co
+                            // Hiển thị caption của featured image nếu có
                             $caption = get_the_post_thumbnail_caption();
                             if ( $caption ) :
                             ?>
@@ -499,34 +499,34 @@ get_header();
                         <h1 class="entry-title"><?php the_title(); ?></h1>
 
                         <div class="entry-meta">
-                            <!-- Avatar tac gia -->
+                            <!-- Avatar tác giả -->
                             <span class="author-avatar">
                                 <?php echo get_avatar( get_the_author_meta( 'ID' ), 40 ); ?>
                             </span>
 
-                            <!-- Ten tac gia -->
+                            <!-- Tên tác giả -->
                             <span class="author-name">
                                 <a href="<?php echo esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ); ?>">
                                     <?php the_author(); ?>
                                 </a>
                             </span>
 
-                            <!-- Ngay dang -->
+                            <!-- Ngày đăng -->
                             <span class="posted-date">
                                 <time datetime="<?php echo esc_attr( get_the_date( 'c' ) ); ?>">
                                     <?php echo esc_html( get_the_date() ); ?>
                                 </time>
                             </span>
 
-                            <!-- Thoi gian doc -->
+                            <!-- Thời gian đọc -->
                             <span class="reading-time">
                                 <?php
-                                // Tinh thoi gian doc (200 tu/phut)
+                                // Tính thời gian đọc (200 từ/phút)
                                 $content = get_the_content();
                                 $word_count = str_word_count( strip_tags( $content ) );
                                 $reading_time = ceil( $word_count / 200 );
                                 printf(
-                                    esc_html__( '%d phut doc', 'developer-theme' ),
+                                    esc_html__( '%d phút đọc', 'developer-theme' ),
                                     $reading_time
                                 );
                                 ?>
@@ -539,7 +539,7 @@ get_header();
                         <?php
                         the_content();
 
-                        // Hien thi phan trang trong bai viet (<!--nextpage-->)
+                        // Hiển thị phân trang trong bài viết (<!--nextpage-->)
                         wp_link_pages( array(
                             'before' => '<div class="page-links">' . esc_html__( 'Trang:', 'developer-theme' ),
                             'after'  => '</div>',
@@ -555,14 +555,14 @@ get_header();
                         if ( $tags ) :
                         ?>
                             <div class="entry-tags">
-                                <strong><?php esc_html_e( 'The:', 'developer-theme' ); ?></strong>
+                                <strong><?php esc_html_e( 'Thẻ:', 'developer-theme' ); ?></strong>
                                 <?php echo $tags; ?>
                             </div>
                         <?php endif; ?>
 
                         <!-- Share buttons -->
                         <div class="share-buttons">
-                            <strong><?php esc_html_e( 'Chia se:', 'developer-theme' ); ?></strong>
+                            <strong><?php esc_html_e( 'Chia sẻ:', 'developer-theme' ); ?></strong>
                             <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode( get_permalink() ); ?>"
                                target="_blank" rel="noopener noreferrer">
                                 Facebook
@@ -576,9 +576,9 @@ get_header();
 
                 </article>
 
-                <!-- Bai viet lien quan -->
+                <!-- Bài viết liên quan -->
                 <section class="related-posts">
-                    <h3><?php esc_html_e( 'Bai Viet Lien Quan', 'developer-theme' ); ?></h3>
+                    <h3><?php esc_html_e( 'Bài Viết Liên Quan', 'developer-theme' ); ?></h3>
                     <?php
                     $categories = get_the_category();
                     if ( $categories ) :
@@ -589,7 +589,7 @@ get_header();
 
                         $related = new WP_Query( array(
                             'category__in'   => $cat_ids,
-                            'post__not_in'   => array( get_the_ID() ), // Loai tru bai hien tai
+                            'post__not_in'   => array( get_the_ID() ), // Loại trừ bài hiện tại
                             'posts_per_page' => 3,
                             'orderby'        => 'rand',
                         ) );
@@ -619,27 +619,27 @@ get_header();
                     ?>
                 </section>
 
-                <!-- Dieu huong bai truoc/sau -->
+                <!-- Điều hướng bài trước/sau -->
                 <nav class="post-navigation">
                     <div class="nav-previous">
                         <?php
                         previous_post_link(
-                            '<span class="nav-label">' . esc_html__( 'Bai truoc', 'developer-theme' ) . '</span> %link'
+                            '<span class="nav-label">' . esc_html__( 'Bài trước', 'developer-theme' ) . '</span> %link'
                         );
                         ?>
                     </div>
                     <div class="nav-next">
                         <?php
                         next_post_link(
-                            '<span class="nav-label">' . esc_html__( 'Bai sau', 'developer-theme' ) . '</span> %link'
+                            '<span class="nav-label">' . esc_html__( 'Bài sau', 'developer-theme' ) . '</span> %link'
                         );
                         ?>
                     </div>
                 </nav>
 
-                <!-- Binh luan -->
+                <!-- Bình luận -->
                 <?php
-                // Neu binh luan mo hoac co binh luan, hien thi form
+                // Nếu bình luận mở hoặc có bình luận, hiển thị form
                 if ( comments_open() || get_comments_number() ) :
                     comments_template(); // Load comments.php
                 endif;
@@ -657,12 +657,12 @@ get_header();
 <?php get_footer(); ?>
 ```
 
-### page.php - Trang tinh
+### page.php - Trang tĩnh
 
 ```php
 <?php
 /**
- * page.php - Template cho trang tinh (static page)
+ * page.php - Template cho trang tĩnh (static page)
  *
  * @package Developer_Theme
  */
@@ -701,7 +701,7 @@ get_header();
             </div>
 
             <?php
-            // Hien thi binh luan tren page (neu bat)
+            // Hiển thị bình luận trên page (nếu bật)
             if ( comments_open() || get_comments_number() ) :
                 comments_template();
             endif;
@@ -721,9 +721,9 @@ get_header();
 ```php
 <?php
 /**
- * archive.php - Template cho trang archive (danh sach bai viet)
- * Ap dung cho: category, tag, author, date archives
- * (tru khi co template cu the hon nhu category.php, tag.php...)
+ * archive.php - Template cho trang archive (danh sách bài viết)
+ * Áp dụng cho: category, tag, author, date archives
+ * (trừ khi có template cụ thể hơn như category.php, tag.php...)
  *
  * @package Developer_Theme
  */
@@ -740,11 +740,11 @@ get_header();
 
                     <header class="page-header">
                         <?php
-                        // the_archive_title() tu dong tao tieu de phu hop:
-                        // Category: Tin tuc | Tag: WordPress | Author: Nguyen Van A | Thang 1, 2024
+                        // the_archive_title() tự động tạo tiêu đề phù hợp:
+                        // Category: Tin tức | Tag: WordPress | Author: Nguyễn Văn A | Tháng 1, 2024
                         the_archive_title( '<h1 class="page-title">', '</h1>' );
 
-                        // Mo ta cua category/tag (neu co)
+                        // Mô tả của category/tag (nếu có)
                         the_archive_description( '<div class="archive-description">', '</div>' );
                         ?>
                     </header>
@@ -761,7 +761,7 @@ get_header();
                     <?php
                     the_posts_pagination( array(
                         'mid_size'  => 2,
-                        'prev_text' => '&laquo; ' . __( 'Truoc', 'developer-theme' ),
+                        'prev_text' => '&laquo; ' . __( 'Trước', 'developer-theme' ),
                         'next_text' => __( 'Sau', 'developer-theme' ) . ' &raquo;',
                     ) );
                     ?>
@@ -780,33 +780,33 @@ get_header();
 <?php get_footer(); ?>
 ```
 
-### category.php - Trang danh muc
+### category.php - Trang danh mục
 
 ```php
 <?php
 /**
- * category.php - Template rieng cho trang danh muc
+ * category.php - Template riêng cho trang danh mục
  *
- * File nay duoc uu tien hon archive.php khi xem trang category
- * Ban cung co the tao: category-{slug}.php cho danh muc cu the
- * Vi du: category-tin-tuc.php chi ap dung cho danh muc "tin-tuc"
+ * File này được ưu tiên hơn archive.php khi xem trang category
+ * Bạn cũng có thể tạo: category-{slug}.php cho danh mục cụ thể
+ * Ví dụ: category-tin-tuc.php chỉ áp dụng cho danh mục "tin-tuc"
  *
  * @package Developer_Theme
  */
 
 get_header();
 
-// Lay thong tin category hien tai
+// Lấy thông tin category hiện tại
 $current_cat = get_queried_object();
 ?>
 
 <main id="primary" class="site-main category-page">
     <div class="container">
 
-        <!-- Category Header voi hinh nen va mo ta -->
+        <!-- Category Header với hình nền và mô tả -->
         <header class="category-header" style="
             <?php
-            // Neu category co custom field hinh nen
+            // Nếu category có custom field hình nền
             $cat_image = get_term_meta( $current_cat->term_id, 'category_image', true );
             if ( $cat_image ) :
                 echo 'background-image: url(' . esc_url( $cat_image ) . ');';
@@ -816,9 +816,9 @@ $current_cat = get_queried_object();
             <h1 class="page-title">
                 <?php
                 printf(
-                    esc_html__( 'Danh muc: %s', 'developer-theme' ),
+                    esc_html__( 'Danh mục: %s', 'developer-theme' ),
                     single_cat_title( '', false )
-                    // false = tra ve string thay vi echo
+                    // false = trả về string thay vì echo
                 );
                 ?>
             </h1>
@@ -832,13 +832,13 @@ $current_cat = get_queried_object();
             <p class="post-count">
                 <?php
                 printf(
-                    esc_html( _n( '%s bai viet', '%s bai viet', $current_cat->count, 'developer-theme' ) ),
+                    esc_html( _n( '%s bài viết', '%s bài viết', $current_cat->count, 'developer-theme' ) ),
                     number_format_i18n( $current_cat->count )
                 );
                 ?>
             </p>
 
-            <!-- Danh muc con (neu co) -->
+            <!-- Danh mục con (nếu có) -->
             <?php
             $subcategories = get_categories( array(
                 'parent' => $current_cat->term_id,
@@ -847,7 +847,7 @@ $current_cat = get_queried_object();
             if ( $subcategories ) :
             ?>
                 <div class="subcategories">
-                    <strong><?php esc_html_e( 'Danh muc con:', 'developer-theme' ); ?></strong>
+                    <strong><?php esc_html_e( 'Danh mục con:', 'developer-theme' ); ?></strong>
                     <?php foreach ( $subcategories as $subcat ) : ?>
                         <a href="<?php echo esc_url( get_category_link( $subcat->term_id ) ); ?>">
                             <?php echo esc_html( $subcat->name ); ?> (<?php echo $subcat->count; ?>)
@@ -871,7 +871,7 @@ $current_cat = get_queried_object();
 
                     <?php the_posts_pagination(); ?>
                 <?php else : ?>
-                    <p><?php esc_html_e( 'Chua co bai viet nao trong danh muc nay.', 'developer-theme' ); ?></p>
+                    <p><?php esc_html_e( 'Chưa có bài viết nào trong danh mục này.', 'developer-theme' ); ?></p>
                 <?php endif; ?>
             </div>
 
@@ -884,12 +884,12 @@ $current_cat = get_queried_object();
 <?php get_footer(); ?>
 ```
 
-### tag.php - Trang the
+### tag.php - Trang thẻ
 
 ```php
 <?php
 /**
- * tag.php - Template cho trang the (tag)
+ * tag.php - Template cho trang thẻ (tag)
  *
  * @package Developer_Theme
  */
@@ -904,7 +904,7 @@ get_header();
             <h1 class="page-title">
                 <?php
                 printf(
-                    esc_html__( 'The: %s', 'developer-theme' ),
+                    esc_html__( 'Thẻ: %s', 'developer-theme' ),
                     '<span>' . single_tag_title( '', false ) . '</span>'
                 );
                 ?>
@@ -939,19 +939,19 @@ get_header();
 <?php get_footer(); ?>
 ```
 
-### author.php - Trang tac gia
+### author.php - Trang tác giả
 
 ```php
 <?php
 /**
- * author.php - Template cho trang tac gia
+ * author.php - Template cho trang tác giả
  *
  * @package Developer_Theme
  */
 
 get_header();
 
-// Lay thong tin tac gia
+// Lấy thông tin tác giả
 $author_id   = get_queried_object_id();
 $author_name = get_the_author_meta( 'display_name', $author_id );
 $author_bio  = get_the_author_meta( 'description', $author_id );
@@ -982,7 +982,7 @@ $author_url  = get_the_author_meta( 'user_url', $author_id );
                 <p class="author-post-count">
                     <?php
                     printf(
-                        esc_html__( 'Da viet %s bai', 'developer-theme' ),
+                        esc_html__( 'Đã viết %s bài', 'developer-theme' ),
                         count_user_posts( $author_id )
                     );
                     ?>
@@ -990,10 +990,10 @@ $author_url  = get_the_author_meta( 'user_url', $author_id );
             </div>
         </header>
 
-        <!-- Bai viet cua tac gia -->
+        <!-- Bài viết của tác giả -->
         <div class="content-area">
             <div class="main-content">
-                <h2><?php printf( esc_html__( 'Bai viet cua %s', 'developer-theme' ), esc_html( $author_name ) ); ?></h2>
+                <h2><?php printf( esc_html__( 'Bài viết của %s', 'developer-theme' ), esc_html( $author_name ) ); ?></h2>
 
                 <?php if ( have_posts() ) : ?>
                     <?php
@@ -1005,7 +1005,7 @@ $author_url  = get_the_author_meta( 'user_url', $author_id );
                     the_posts_pagination();
                     ?>
                 <?php else : ?>
-                    <p><?php esc_html_e( 'Tac gia chua co bai viet nao.', 'developer-theme' ); ?></p>
+                    <p><?php esc_html_e( 'Tác giả chưa có bài viết nào.', 'developer-theme' ); ?></p>
                 <?php endif; ?>
             </div>
             <?php get_sidebar(); ?>
@@ -1017,12 +1017,12 @@ $author_url  = get_the_author_meta( 'user_url', $author_id );
 <?php get_footer(); ?>
 ```
 
-### search.php - Trang tim kiem
+### search.php - Trang tìm kiếm
 
 ```php
 <?php
 /**
- * search.php - Template cho trang ket qua tim kiem
+ * search.php - Template cho trang kết quả tìm kiếm
  *
  * @package Developer_Theme
  */
@@ -1037,9 +1037,9 @@ get_header();
             <h1 class="page-title">
                 <?php
                 printf(
-                    esc_html__( 'Ket qua tim kiem cho: "%s"', 'developer-theme' ),
+                    esc_html__( 'Kết quả tìm kiếm cho: "%s"', 'developer-theme' ),
                     '<span>' . get_search_query() . '</span>'
-                    // get_search_query() tra ve tu khoa da escape
+                    // get_search_query() trả về từ khóa đã escape
                 );
                 ?>
             </h1>
@@ -1049,8 +1049,8 @@ get_header();
                 global $wp_query;
                 printf(
                     esc_html( _n(
-                        'Tim thay %s ket qua',
-                        'Tim thay %s ket qua',
+                        'Tìm thấy %s kết quả',
+                        'Tìm thấy %s kết quả',
                         $wp_query->found_posts,
                         'developer-theme'
                     ) ),
@@ -1059,7 +1059,7 @@ get_header();
                 ?>
             </p>
 
-            <!-- Form tim kiem lai -->
+            <!-- Form tìm kiếm lại -->
             <?php get_search_form(); ?>
         </header>
 
@@ -1071,7 +1071,7 @@ get_header();
                         the_post();
                     ?>
                         <article <?php post_class( 'search-result-item' ); ?>>
-                            <!-- Loai noi dung -->
+                            <!-- Loại nội dung -->
                             <span class="result-type">
                                 <?php
                                 $post_type_obj = get_post_type_object( get_post_type() );
@@ -1092,7 +1092,7 @@ get_header();
                             <div class="entry-meta">
                                 <span class="date"><?php echo get_the_date(); ?></span>
                                 <a href="<?php the_permalink(); ?>" class="read-more">
-                                    <?php esc_html_e( 'Xem chi tiet', 'developer-theme' ); ?>
+                                    <?php esc_html_e( 'Xem chi tiết', 'developer-theme' ); ?>
                                 </a>
                             </div>
                         </article>
@@ -1102,22 +1102,22 @@ get_header();
 
                 <?php else : ?>
                     <div class="no-results">
-                        <h2><?php esc_html_e( 'Khong tim thay ket qua nao', 'developer-theme' ); ?></h2>
-                        <p><?php esc_html_e( 'Thu lai voi tu khoa khac hoac duyet qua cac danh muc.', 'developer-theme' ); ?></p>
+                        <h2><?php esc_html_e( 'Không tìm thấy kết quả nào', 'developer-theme' ); ?></h2>
+                        <p><?php esc_html_e( 'Thử lại với từ khóa khác hoặc duyệt qua các danh mục.', 'developer-theme' ); ?></p>
 
-                        <!-- Goi y -->
+                        <!-- Gợi ý -->
                         <div class="search-suggestions">
-                            <h3><?php esc_html_e( 'Goi y:', 'developer-theme' ); ?></h3>
+                            <h3><?php esc_html_e( 'Gợi ý:', 'developer-theme' ); ?></h3>
                             <ul>
-                                <li><?php esc_html_e( 'Kiem tra chinh ta', 'developer-theme' ); ?></li>
-                                <li><?php esc_html_e( 'Dung tu khoa ngan hon', 'developer-theme' ); ?></li>
-                                <li><?php esc_html_e( 'Thu dung tu dong nghia', 'developer-theme' ); ?></li>
+                                <li><?php esc_html_e( 'Kiểm tra chính tả', 'developer-theme' ); ?></li>
+                                <li><?php esc_html_e( 'Dùng từ khóa ngắn hơn', 'developer-theme' ); ?></li>
+                                <li><?php esc_html_e( 'Thử dùng từ đồng nghĩa', 'developer-theme' ); ?></li>
                             </ul>
                         </div>
 
-                        <!-- Danh muc -->
+                        <!-- Danh mục -->
                         <div class="categories-list">
-                            <h3><?php esc_html_e( 'Danh muc:', 'developer-theme' ); ?></h3>
+                            <h3><?php esc_html_e( 'Danh mục:', 'developer-theme' ); ?></h3>
                             <ul>
                                 <?php
                                 wp_list_categories( array(
@@ -1139,12 +1139,12 @@ get_header();
 <?php get_footer(); ?>
 ```
 
-### 404.php - Trang loi 404
+### 404.php - Trang lỗi 404
 
 ```php
 <?php
 /**
- * 404.php - Template cho trang loi 404 (khong tim thay)
+ * 404.php - Template cho trang lỗi 404 (không tìm thấy)
  *
  * @package Developer_Theme
  */
@@ -1157,31 +1157,31 @@ get_header();
 
         <div class="error-content" style="text-align: center; padding: 4rem 0;">
             <h1 class="error-code" style="font-size: 8rem; color: #ddd; margin-bottom: 0;">404</h1>
-            <h2><?php esc_html_e( 'Trang khong ton tai', 'developer-theme' ); ?></h2>
+            <h2><?php esc_html_e( 'Trang không tồn tại', 'developer-theme' ); ?></h2>
             <p>
                 <?php esc_html_e(
-                    'Xin loi, trang ban dang tim khong ton tai hoac da bi di chuyen.',
+                    'Xin lỗi, trang bạn đang tìm không tồn tại hoặc đã bị di chuyển.',
                     'developer-theme'
                 ); ?>
             </p>
 
-            <!-- Form tim kiem -->
+            <!-- Form tìm kiếm -->
             <div class="error-search" style="max-width: 500px; margin: 2rem auto;">
                 <?php get_search_form(); ?>
             </div>
 
-            <!-- Link huu ich -->
+            <!-- Link hữu ích -->
             <div class="error-links">
-                <h3><?php esc_html_e( 'Co the ban muon xem:', 'developer-theme' ); ?></h3>
+                <h3><?php esc_html_e( 'Có thể bạn muốn xem:', 'developer-theme' ); ?></h3>
 
                 <p>
                     <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-                        <?php esc_html_e( 'Trang Chu', 'developer-theme' ); ?>
+                        <?php esc_html_e( 'Trang Chủ', 'developer-theme' ); ?>
                     </a>
                 </p>
 
-                <!-- Bai viet moi nhat -->
-                <h4><?php esc_html_e( 'Bai viet moi nhat:', 'developer-theme' ); ?></h4>
+                <!-- Bài viết mới nhất -->
+                <h4><?php esc_html_e( 'Bài viết mới nhất:', 'developer-theme' ); ?></h4>
                 <ul>
                     <?php
                     $recent = new WP_Query( array(
@@ -1200,8 +1200,8 @@ get_header();
                     <?php wp_reset_postdata(); ?>
                 </ul>
 
-                <!-- Danh muc -->
-                <h4><?php esc_html_e( 'Danh muc:', 'developer-theme' ); ?></h4>
+                <!-- Danh mục -->
+                <h4><?php esc_html_e( 'Danh mục:', 'developer-theme' ); ?></h4>
                 <ul>
                     <?php
                     wp_list_categories( array(
@@ -1230,34 +1230,34 @@ get_header();
 /**
  * get_template_part( $slug, $name, $args )
  *
- * Tuong tu @include('components.card') trong Blade
- * Nhung khong co truyen bien tuong tu Blade
+ * Tương tự @include('components.card') trong Blade
+ * Nhưng không có truyền biến tương tự Blade
  *
- * @param string $slug - Duong dan co so
- * @param string $name - Phan mo rong (optional)
- * @param array  $args - Du lieu truyen vao (WP 5.5+)
+ * @param string $slug - Đường dẫn cơ sở
+ * @param string $name - Phần mở rộng (optional)
+ * @param array  $args - Dữ liệu truyền vào (WP 5.5+)
  */
 
-// === Vi du 1: Co ban ===
+// === Ví dụ 1: Cơ bản ===
 get_template_part( 'template-parts/content' );
 // Tim file: template-parts/content.php
 
-// === Vi du 2: Voi name (phu) ===
+// === Ví dụ 2: Với name (phụ) ===
 get_template_part( 'template-parts/content', 'single' );
 // Tim file: template-parts/content-single.php
-// Neu khong co, fallback: template-parts/content.php
+// Nếu không có, fallback: template-parts/content.php
 
-// === Vi du 3: Dua tren post type ===
+// === Ví dụ 3: Dựa trên post type ===
 get_template_part( 'template-parts/content', get_post_type() );
-// Neu post type la 'post' -> tim: template-parts/content-post.php
-// Neu post type la 'product' -> tim: template-parts/content-product.php
+// Nếu post type là 'post' -> tìm: template-parts/content-post.php
+// Nếu post type là 'product' -> tìm: template-parts/content-product.php
 
-// === Vi du 4: Dua tren post format ===
+// === Ví dụ 4: Dựa trên post format ===
 get_template_part( 'template-parts/content', get_post_format() );
-// Neu format la 'video' -> tim: template-parts/content-video.php
-// Neu format la 'gallery' -> tim: template-parts/content-gallery.php
+// Nếu format là 'video' -> tìm: template-parts/content-video.php
+// Nếu format là 'gallery' -> tìm: template-parts/content-gallery.php
 
-// === Vi du 5: Truyen du lieu (WP 5.5+) ===
+// === Ví dụ 5: Truyền dữ liệu (WP 5.5+) ===
 get_template_part( 'template-parts/content', 'card', array(
     'show_thumbnail' => true,
     'show_excerpt'   => true,
@@ -1268,26 +1268,26 @@ get_template_part( 'template-parts/content', 'card', array(
 // $args['show_thumbnail'], $args['show_excerpt'], $args['columns']
 ```
 
-### Vi du template-parts/content-card.php:
+### Ví dụ template-parts/content-card.php:
 
 ```php
 <?php
 /**
  * Template part: Content Card
- * Hien thi bai viet dang the (card) cho grid layout
+ * Hiển thị bài viết dạng thẻ (card) cho grid layout
  *
- * Tuong tu @component('card') trong Laravel Blade
+ * Tương tự @component('card') trong Laravel Blade
  *
  * @param array $args {
- *     @type bool   $show_thumbnail  Co hien thi anh khong
- *     @type bool   $show_excerpt    Co hien thi excerpt khong
- *     @type string $custom_class    Class CSS them
+ *     @type bool   $show_thumbnail  Có hiển thị ảnh không
+ *     @type bool   $show_excerpt    Có hiển thị excerpt không
+ *     @type string $custom_class    Class CSS thêm
  * }
  *
  * @package Developer_Theme
  */
 
-// Lay args voi gia tri mac dinh
+// Lấy args với giá trị mặc định
 $show_thumbnail = isset( $args['show_thumbnail'] ) ? $args['show_thumbnail'] : true;
 $show_excerpt   = isset( $args['show_excerpt'] ) ? $args['show_excerpt'] : true;
 $custom_class   = isset( $args['custom_class'] ) ? $args['custom_class'] : '';
@@ -1334,13 +1334,13 @@ $custom_class   = isset( $args['custom_class'] ) ? $args['custom_class'] : '';
 </article>
 ```
 
-### Vi du template-parts/content-none.php:
+### Ví dụ template-parts/content-none.php:
 
 ```php
 <?php
 /**
  * Template part: No Content
- * Hien thi khi khong co bai viet nao
+ * Hiển thị khi không có bài viết nào
  *
  * @package Developer_Theme
  */
@@ -1349,18 +1349,18 @@ $custom_class   = isset( $args['custom_class'] ) ? $args['custom_class'] : '';
 <section class="no-results not-found">
     <header class="page-header">
         <h1 class="page-title">
-            <?php esc_html_e( 'Khong tim thay noi dung', 'developer-theme' ); ?>
+            <?php esc_html_e( 'Không tìm thấy nội dung', 'developer-theme' ); ?>
         </h1>
     </header>
 
     <div class="page-content">
         <?php if ( is_home() && current_user_can( 'publish_posts' ) ) : ?>
-            <!-- Admin chua tao bai viet nao -->
+            <!-- Admin chưa tạo bài viết nào -->
             <p>
                 <?php
                 printf(
                     wp_kses(
-                        __( 'San sang dang bai viet dau tien? <a href="%1$s">Bat dau o day</a>.', 'developer-theme' ),
+                        __( 'Sẵn sàng đăng bài viết đầu tiên? <a href="%1$s">Bắt đầu ở đây</a>.', 'developer-theme' ),
                         array( 'a' => array( 'href' => array() ) )
                     ),
                     esc_url( admin_url( 'post-new.php' ) )
@@ -1369,13 +1369,13 @@ $custom_class   = isset( $args['custom_class'] ) ? $args['custom_class'] : '';
             </p>
 
         <?php elseif ( is_search() ) : ?>
-            <!-- Tim kiem khong co ket qua -->
-            <p><?php esc_html_e( 'Khong tim thay ket qua. Thu tim voi tu khoa khac.', 'developer-theme' ); ?></p>
+            <!-- Tìm kiếm không có kết quả -->
+            <p><?php esc_html_e( 'Không tìm thấy kết quả. Thử tìm với từ khóa khác.', 'developer-theme' ); ?></p>
             <?php get_search_form(); ?>
 
         <?php else : ?>
-            <!-- Truong hop chung -->
-            <p><?php esc_html_e( 'Khong the tim thay noi dung ban yeu cau. Thu tim kiem.', 'developer-theme' ); ?></p>
+            <!-- Trường hợp chung -->
+            <p><?php esc_html_e( 'Không thể tìm thấy nội dung bạn yêu cầu. Thử tìm kiếm.', 'developer-theme' ); ?></p>
             <?php get_search_form(); ?>
         <?php endif; ?>
     </div>
@@ -1386,23 +1386,23 @@ $custom_class   = isset( $args['custom_class'] ) ? $args['custom_class'] : '';
 
 ## 5. Header, Footer, Sidebar
 
-### get_header() chi tiet:
+### get_header() chi tiết:
 
 ```php
-// === Co ban ===
+// === Cơ bản ===
 get_header();
 // Load file: header.php
 
-// === Voi ten cu the ===
+// === Với tên cụ thể ===
 get_header( 'landing' );
 // Load file: header-landing.php
-// Neu khong co, fallback: header.php
+// Nếu không có, fallback: header.php
 
-// === Vi du: Landing page dung header khac ===
+// === Ví dụ: Landing page dùng header khác ===
 // Trong page-templates/template-landing.php:
-get_header( 'landing' ); // Load header-landing.php (khong co sidebar, menu don gian)
+get_header( 'landing' ); // Load header-landing.php (không có sidebar, menu đơn giản)
 
-// header-landing.php - Header don gian cho landing page:
+// header-landing.php - Header đơn giản cho landing page:
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -1422,31 +1422,31 @@ get_header( 'landing' ); // Load header-landing.php (khong co sidebar, menu don 
 <?php
 ```
 
-### get_footer() chi tiet:
+### get_footer() chi tiết:
 
 ```php
-// === Co ban ===
+// === Cơ bản ===
 get_footer();
 // Load file: footer.php
 
-// === Voi ten cu the ===
+// === Với tên cụ thể ===
 get_footer( 'minimal' );
 // Load file: footer-minimal.php
-// Neu khong co, fallback: footer.php
+// Nếu không có, fallback: footer.php
 ```
 
-### get_sidebar() chi tiet:
+### get_sidebar() chi tiết:
 
 ```php
-// === Co ban ===
+// === Cơ bản ===
 get_sidebar();
 // Load file: sidebar.php
 
-// === Sidebar rieng cho trang shop ===
+// === Sidebar riêng cho trang shop ===
 get_sidebar( 'shop' );
 // Load file: sidebar-shop.php
 
-// === Vi du sidebar-shop.php ===
+// === Ví dụ sidebar-shop.php ===
 if ( ! is_active_sidebar( 'sidebar-shop' ) ) {
     return;
 }
@@ -1461,83 +1461,83 @@ if ( ! is_active_sidebar( 'sidebar-shop' ) ) {
 
 ## 6. Conditional Tags
 
-Conditional Tags la cac ham tra ve `true/false` de kiem tra dang o trang nao:
+Conditional Tags là các hàm trả về `true/false` để kiểm tra đang ở trang nào:
 
 ```php
 <?php
-// === KIEM TRA LOAI TRANG ===
+// === KIỂM TRA LOẠI TRANG ===
 
-is_home()          // Trang blog (hien thi danh sach bai viet moi nhat)
-is_front_page()    // Trang chu (front page trong Settings > Reading)
-is_single()        // Bai viet don (post, custom post type)
-is_page()          // Trang tinh (page)
-is_singular()      // Ca post va page (single + page + attachment)
+is_home()          // Trang blog (hiển thị danh sách bài viết mới nhất)
+is_front_page()    // Trang chủ (front page trong Settings > Reading)
+is_single()        // Bài viết đơn (post, custom post type)
+is_page()          // Trang tĩnh (page)
+is_singular()      // Cả post và page (single + page + attachment)
 is_archive()       // Trang archive (category, tag, date, author)
-is_category()      // Trang danh muc
-is_tag()           // Trang the
-is_author()        // Trang tac gia
-is_date()          // Trang ngay thang
-is_year()          // Trang nam
-is_month()         // Trang thang
-is_day()           // Trang ngay
-is_search()        // Trang ket qua tim kiem
-is_404()           // Trang loi 404
-is_attachment()    // Trang file dinh kem
+is_category()      // Trang danh mục
+is_tag()           // Trang thẻ
+is_author()        // Trang tác giả
+is_date()          // Trang ngày tháng
+is_year()          // Trang năm
+is_month()         // Trang tháng
+is_day()           // Trang ngày
+is_search()        // Trang kết quả tìm kiếm
+is_404()           // Trang lỗi 404
+is_attachment()    // Trang file đính kèm
 is_tax()           // Trang custom taxonomy
 
-// === KIEM TRA CU THE ===
+// === KIỂM TRA CỤ THỂ ===
 
-is_single( 'hello-world' )        // Bai viet co slug 'hello-world'
-is_single( 42 )                    // Bai viet co ID 42
-is_single( array( 42, 'hello' ) ) // Bai viet co ID 42 HOAC slug 'hello'
+is_single( 'hello-world' )        // Bài viết có slug 'hello-world'
+is_single( 42 )                    // Bài viết có ID 42
+is_single( array( 42, 'hello' ) ) // Bài viết có ID 42 HOẶC slug 'hello'
 
-is_page( 'about' )                // Trang co slug 'about'
-is_page( 10 )                     // Trang co ID 10
-is_page( array( 'about', 'contact', 10 ) ) // 1 trong 3 trang nay
+is_page( 'about' )                // Trang có slug 'about'
+is_page( 10 )                     // Trang có ID 10
+is_page( array( 'about', 'contact', 10 ) ) // 1 trong 3 trang này
 
-is_category( 'tin-tuc' )          // Danh muc co slug 'tin-tuc'
-is_category( 5 )                  // Danh muc co ID 5
+is_category( 'tin-tuc' )          // Danh mục có slug 'tin-tuc'
+is_category( 5 )                  // Danh mục có ID 5
 
-is_tag( 'wordpress' )             // The co slug 'wordpress'
+is_tag( 'wordpress' )             // Thẻ có slug 'wordpress'
 
-is_author( 'admin' )              // Trang tac gia co nicename 'admin'
+is_author( 'admin' )              // Trang tác giả có nicename 'admin'
 
-is_post_type_archive( 'product' ) // Archive cua post type 'product'
+is_post_type_archive( 'product' ) // Archive của post type 'product'
 
 is_tax( 'brand' )                 // Taxonomy 'brand'
 is_tax( 'brand', 'apple' )        // Taxonomy 'brand', term 'apple'
 
-// === KIEM TRA THUOC TINH ===
+// === KIỂM TRA THUỘC TÍNH ===
 
-is_sticky()                       // Bai viet ghim
-has_post_thumbnail()              // Co featured image
-has_excerpt()                     // Co excerpt tu viet
-has_nav_menu( 'primary' )         // Co menu o vi tri 'primary'
-is_active_sidebar( 'sidebar-1' )  // Sidebar co widget
+is_sticky()                       // Bài viết ghim
+has_post_thumbnail()              // Có featured image
+has_excerpt()                     // Có excerpt tự viết
+has_nav_menu( 'primary' )         // Có menu ở vị trí 'primary'
+is_active_sidebar( 'sidebar-1' )  // Sidebar có widget
 
-in_category( 'tin-tuc' )          // Bai viet hien tai thuoc danh muc 'tin-tuc'
-has_category()                    // Bai viet co it nhat 1 category
-has_tag()                         // Bai viet co it nhat 1 tag
-has_tag( 'wordpress' )            // Bai viet co tag 'wordpress'
+in_category( 'tin-tuc' )          // Bài viết hiện tại thuộc danh mục 'tin-tuc'
+has_category()                    // Bài viết có ít nhất 1 category
+has_tag()                         // Bài viết có ít nhất 1 tag
+has_tag( 'wordpress' )            // Bài viết có tag 'wordpress'
 
-// === KIEM TRA NGUOI DUNG ===
+// === KIỂM TRA NGƯỜI DÙNG ===
 
-is_user_logged_in()               // Dang dang nhap
-current_user_can( 'edit_posts' )  // Co quyen chinh sua bai viet
-is_admin()                        // Dang o admin area
-is_customize_preview()            // Dang trong Customizer preview
+is_user_logged_in()               // Đang đăng nhập
+current_user_can( 'edit_posts' )  // Có quyền chỉnh sửa bài viết
+is_admin()                        // Đang ở admin area
+is_customize_preview()            // Đang trong Customizer preview
 
-// === KIEM TRA KHAC ===
+// === KIỂM TRA KHÁC ===
 
-is_paged()                        // Trang 2, 3, ... (co phan trang)
-is_main_query()                   // Co phai main query khong
-is_child_theme()                  // Dang dung child theme
-is_rtl()                          // Ngon ngu viet tu phai sang trai
+is_paged()                        // Trang 2, 3, ... (có phân trang)
+is_main_query()                   // Có phải main query không
+is_child_theme()                  // Đang dùng child theme
+is_rtl()                          // Ngôn ngữ viết từ phải sang trái
 is_multisite()                    // WordPress Multisite
 
-// === SU DUNG TRONG TEMPLATE ===
+// === SỬ DỤNG TRONG TEMPLATE ===
 
-// Vi du 1: Hien thi khac nhau theo trang
+// Ví dụ 1: Hiển thị khác nhau theo trang
 if ( is_home() ) {
     echo '<h1>Blog</h1>';
 } elseif ( is_single() ) {
@@ -1545,14 +1545,14 @@ if ( is_home() ) {
 } elseif ( is_page() ) {
     echo '<h1>' . get_the_title() . '</h1>';
 } elseif ( is_category() ) {
-    echo '<h1>Danh muc: ' . single_cat_title( '', false ) . '</h1>';
+    echo '<h1>Danh mục: ' . single_cat_title( '', false ) . '</h1>';
 } elseif ( is_search() ) {
-    echo '<h1>Tim kiem: ' . get_search_query() . '</h1>';
+    echo '<h1>Tìm kiếm: ' . get_search_query() . '</h1>';
 } elseif ( is_404() ) {
-    echo '<h1>404 - Khong tim thay</h1>';
+    echo '<h1>404 - Không tìm thấy</h1>';
 }
 
-// Vi du 2: Body class khac nhau
+// Ví dụ 2: Body class khác nhau
 $body_class = 'site';
 if ( is_front_page() ) {
     $body_class .= ' front-page';
@@ -1561,20 +1561,20 @@ if ( ! is_active_sidebar( 'sidebar-main' ) || is_page_template( 'template-full-w
     $body_class .= ' no-sidebar';
 }
 
-// Vi du 3: Sidebar co dieu kien
+// Ví dụ 3: Sidebar có điều kiện
 if ( is_single() || is_page() ) {
     get_sidebar();
-    // Chi hien sidebar tren trang single va page
+    // Chỉ hiện sidebar trên trang single và page
 }
 
-// Vi du 4: Trong functions.php - Conditional enqueue
+// Ví dụ 4: Trong functions.php - Conditional enqueue
 function developer_conditional_scripts() {
-    // Chi load slider JS tren trang chu
+    // Chỉ load slider JS trên trang chủ
     if ( is_front_page() ) {
         wp_enqueue_script( 'slider', get_template_directory_uri() . '/assets/js/slider.js' );
     }
 
-    // Chi load gallery CSS khi bai viet co gallery
+    // Chỉ load gallery CSS khi bài viết có gallery
     if ( is_singular() && has_shortcode( get_the_content(), 'gallery' ) ) {
         wp_enqueue_style( 'gallery-style', get_template_directory_uri() . '/assets/css/gallery.css' );
     }
@@ -1588,8 +1588,8 @@ add_action( 'wp_enqueue_scripts', 'developer_conditional_scripts' );
 
 ```php
 /**
- * Khi ban tao Custom Post Type (vi du: 'product'),
- * WordPress se tim template theo thu tu:
+ * Khi bạn tạo Custom Post Type (ví dụ: 'product'),
+ * WordPress sẽ tìm template theo thứ tự:
  *
  * Single Product:
  *   single-product-{slug}.php -> single-product.php -> single.php -> singular.php -> index.php
@@ -1598,30 +1598,30 @@ add_action( 'wp_enqueue_scripts', 'developer_conditional_scripts' );
  *   archive-product.php -> archive.php -> index.php
  */
 
-// === Buoc 1: Dang ky Custom Post Type (trong functions.php hoac plugin) ===
+// === Bước 1: Đăng ký Custom Post Type (trong functions.php hoặc plugin) ===
 function developer_register_product_cpt() {
     register_post_type( 'product', array(
         'labels' => array(
-            'name'               => __( 'San Pham', 'developer-theme' ),
-            'singular_name'      => __( 'San Pham', 'developer-theme' ),
-            'add_new_item'       => __( 'Them San Pham Moi', 'developer-theme' ),
-            'edit_item'          => __( 'Sua San Pham', 'developer-theme' ),
-            'view_item'          => __( 'Xem San Pham', 'developer-theme' ),
-            'all_items'          => __( 'Tat Ca San Pham', 'developer-theme' ),
-            'search_items'       => __( 'Tim San Pham', 'developer-theme' ),
-            'not_found'          => __( 'Khong tim thay san pham nao', 'developer-theme' ),
+            'name'               => __( 'Sản Phẩm', 'developer-theme' ),
+            'singular_name'      => __( 'Sản Phẩm', 'developer-theme' ),
+            'add_new_item'       => __( 'Thêm Sản Phẩm Mới', 'developer-theme' ),
+            'edit_item'          => __( 'Sửa Sản Phẩm', 'developer-theme' ),
+            'view_item'          => __( 'Xem Sản Phẩm', 'developer-theme' ),
+            'all_items'          => __( 'Tất Cả Sản Phẩm', 'developer-theme' ),
+            'search_items'       => __( 'Tìm Sản Phẩm', 'developer-theme' ),
+            'not_found'          => __( 'Không tìm thấy sản phẩm nào', 'developer-theme' ),
         ),
         'public'       => true,
-        'has_archive'  => true,                    // Co trang archive
+        'has_archive'  => true,                    // Có trang archive
         'rewrite'      => array( 'slug' => 'san-pham' ), // URL: /san-pham/ten-sp
         'supports'     => array( 'title', 'editor', 'thumbnail', 'excerpt', 'custom-fields' ),
         'menu_icon'    => 'dashicons-cart',
-        'show_in_rest' => true,                    // Ho tro Gutenberg
+        'show_in_rest' => true,                    // Hỗ trợ Gutenberg
     ) );
 }
 add_action( 'init', 'developer_register_product_cpt' );
 
-// === Buoc 2: Tao single-product.php ===
+// === Bước 2: Tạo single-product.php ===
 // File: single-product.php
 ?>
 <?php get_header(); ?>
@@ -1641,14 +1641,14 @@ add_action( 'init', 'developer_register_product_cpt' );
         <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
             <div class="product-layout">
 
-                <!-- Hinh anh san pham -->
+                <!-- Hình ảnh sản phẩm -->
                 <div class="product-gallery">
                     <?php if ( has_post_thumbnail() ) : ?>
                         <?php the_post_thumbnail( 'large' ); ?>
                     <?php endif; ?>
                 </div>
 
-                <!-- Thong tin san pham -->
+                <!-- Thông tin sản phẩm -->
                 <div class="product-info">
                     <h1 class="product-title"><?php the_title(); ?></h1>
 
@@ -1664,9 +1664,9 @@ add_action( 'init', 'developer_register_product_cpt' );
 
                     <div class="product-status">
                         <?php if ( $in_stock ) : ?>
-                            <span class="in-stock"><?php esc_html_e( 'Con hang', 'developer-theme' ); ?></span>
+                            <span class="in-stock"><?php esc_html_e( 'Còn hàng', 'developer-theme' ); ?></span>
                         <?php else : ?>
-                            <span class="out-of-stock"><?php esc_html_e( 'Het hang', 'developer-theme' ); ?></span>
+                            <span class="out-of-stock"><?php esc_html_e( 'Hết hàng', 'developer-theme' ); ?></span>
                         <?php endif; ?>
                     </div>
 
@@ -1674,13 +1674,13 @@ add_action( 'init', 'developer_register_product_cpt' );
                         <?php the_content(); ?>
                     </div>
 
-                    <!-- Taxonomies (danh muc san pham) -->
+                    <!-- Taxonomies (danh mục sản phẩm) -->
                     <?php
                     $product_cats = get_the_terms( get_the_ID(), 'product_category' );
                     if ( $product_cats && ! is_wp_error( $product_cats ) ) :
                     ?>
                         <div class="product-categories">
-                            <strong><?php esc_html_e( 'Danh muc:', 'developer-theme' ); ?></strong>
+                            <strong><?php esc_html_e( 'Danh mục:', 'developer-theme' ); ?></strong>
                             <?php
                             foreach ( $product_cats as $cat ) {
                                 echo '<a href="' . esc_url( get_term_link( $cat ) ) . '">' . esc_html( $cat->name ) . '</a> ';
@@ -1700,7 +1700,7 @@ add_action( 'init', 'developer_register_product_cpt' );
 <?php get_footer(); ?>
 
 <?php
-// === Buoc 3: Tao archive-product.php ===
+// === Bước 3: Tạo archive-product.php ===
 // File: archive-product.php
 ?>
 <?php get_header(); ?>
@@ -1709,9 +1709,9 @@ add_action( 'init', 'developer_register_product_cpt' );
     <div class="container">
 
         <header class="page-header">
-            <h1 class="page-title"><?php esc_html_e( 'San Pham', 'developer-theme' ); ?></h1>
+            <h1 class="page-title"><?php esc_html_e( 'Sản Phẩm', 'developer-theme' ); ?></h1>
             <?php
-            // Hien thi mo ta cua post type archive
+            // Hiển thị mô tả của post type archive
             $post_type_description = get_the_post_type_description();
             if ( $post_type_description ) :
             ?>
@@ -1719,7 +1719,7 @@ add_action( 'init', 'developer_register_product_cpt' );
             <?php endif; ?>
         </header>
 
-        <!-- Filter theo danh muc san pham -->
+        <!-- Filter theo danh mục sản phẩm -->
         <div class="product-filter">
             <?php
             $product_cats = get_terms( array(
@@ -1731,7 +1731,7 @@ add_action( 'init', 'developer_register_product_cpt' );
             ?>
                 <ul class="filter-list">
                     <li><a href="<?php echo esc_url( get_post_type_archive_link( 'product' ) ); ?>" class="active">
-                        <?php esc_html_e( 'Tat Ca', 'developer-theme' ); ?>
+                        <?php esc_html_e( 'Tất Cả', 'developer-theme' ); ?>
                     </a></li>
                     <?php foreach ( $product_cats as $cat ) : ?>
                         <li>
@@ -1770,7 +1770,7 @@ add_action( 'init', 'developer_register_product_cpt' );
 
             <?php the_posts_pagination(); ?>
         <?php else : ?>
-            <p><?php esc_html_e( 'Chua co san pham nao.', 'developer-theme' ); ?></p>
+            <p><?php esc_html_e( 'Chưa có sản phẩm nào.', 'developer-theme' ); ?></p>
         <?php endif; ?>
 
     </div>
@@ -1793,23 +1793,23 @@ add_action( 'init', 'developer_register_product_cpt' );
  *       -> archive.php
  *         -> index.php
  *
- * Vi du: Taxonomy 'brand', term 'apple':
+ * Ví dụ: Taxonomy 'brand', term 'apple':
  * taxonomy-brand-apple.php -> taxonomy-brand.php -> taxonomy.php -> archive.php -> index.php
  */
 
-// === Dang ky Custom Taxonomy (trong functions.php hoac plugin) ===
+// === Đăng ký Custom Taxonomy (trong functions.php hoặc plugin) ===
 function developer_register_brand_taxonomy() {
     register_taxonomy( 'brand', 'product', array(
         'labels' => array(
-            'name'          => __( 'Thuong Hieu', 'developer-theme' ),
-            'singular_name' => __( 'Thuong Hieu', 'developer-theme' ),
-            'search_items'  => __( 'Tim Thuong Hieu', 'developer-theme' ),
-            'all_items'     => __( 'Tat Ca Thuong Hieu', 'developer-theme' ),
-            'edit_item'     => __( 'Sua Thuong Hieu', 'developer-theme' ),
-            'add_new_item'  => __( 'Them Thuong Hieu Moi', 'developer-theme' ),
+            'name'          => __( 'Thương Hiệu', 'developer-theme' ),
+            'singular_name' => __( 'Thương Hiệu', 'developer-theme' ),
+            'search_items'  => __( 'Tìm Thương Hiệu', 'developer-theme' ),
+            'all_items'     => __( 'Tất Cả Thương Hiệu', 'developer-theme' ),
+            'edit_item'     => __( 'Sửa Thương Hiệu', 'developer-theme' ),
+            'add_new_item'  => __( 'Thêm Thương Hiệu Mới', 'developer-theme' ),
         ),
         'public'       => true,
-        'hierarchical' => true,       // Nhu category (co parent/child)
+        'hierarchical' => true,       // Như category (có parent/child)
         'rewrite'      => array( 'slug' => 'thuong-hieu' ),
         'show_in_rest' => true,
     ) );
@@ -1868,19 +1868,19 @@ $current_brand = get_queried_object();
 
 ---
 
-## 9. Code vi du cho tung template
+## 9. Code ví dụ cho từng template
 
 ### Template cho comments.php:
 
 ```php
 <?php
 /**
- * comments.php - Template hien thi binh luan
+ * comments.php - Template hiển thị bình luận
  *
  * @package Developer_Theme
  */
 
-// Khong hien thi binh luan neu trang can mat khau
+// Không hiển thị bình luận nếu trang cần mật khẩu
 if ( post_password_required() ) {
     return;
 }
@@ -1895,8 +1895,8 @@ if ( post_password_required() ) {
             $comment_count = get_comments_number();
             printf(
                 esc_html( _n(
-                    '%1$s binh luan cho "%2$s"',
-                    '%1$s binh luan cho "%2$s"',
+                    '%1$s bình luận cho "%2$s"',
+                    '%1$s bình luận cho "%2$s"',
                     $comment_count,
                     'developer-theme'
                 ) ),
@@ -1906,23 +1906,23 @@ if ( post_password_required() ) {
             ?>
         </h2>
 
-        <!-- Danh sach binh luan -->
+        <!-- Danh sách bình luận -->
         <ol class="comment-list">
             <?php
             wp_list_comments( array(
                 'style'       => 'ol',
                 'short_ping'  => true,
                 'avatar_size' => 50,
-                'max_depth'   => 3,  // Do sau reply toi da
+                'max_depth'   => 3,  // Độ sâu reply tối đa
             ) );
             ?>
         </ol>
 
-        <!-- Phan trang binh luan -->
+        <!-- Phân trang bình luận -->
         <?php
         the_comments_navigation( array(
-            'prev_text' => __( 'Binh luan cu hon', 'developer-theme' ),
-            'next_text' => __( 'Binh luan moi hon', 'developer-theme' ),
+            'prev_text' => __( 'Bình luận cũ hơn', 'developer-theme' ),
+            'next_text' => __( 'Bình luận mới hơn', 'developer-theme' ),
         ) );
         ?>
 
@@ -1930,19 +1930,19 @@ if ( post_password_required() ) {
 
     <?php if ( ! comments_open() && get_comments_number() && post_type_supports( get_post_type(), 'comments' ) ) : ?>
         <p class="no-comments">
-            <?php esc_html_e( 'Binh luan da dong.', 'developer-theme' ); ?>
+            <?php esc_html_e( 'Bình luận đã đóng.', 'developer-theme' ); ?>
         </p>
     <?php endif; ?>
 
-    <!-- Form binh luan -->
+    <!-- Form bình luận -->
     <?php
     comment_form( array(
-        'title_reply'          => __( 'De lai binh luan', 'developer-theme' ),
-        'title_reply_to'       => __( 'Tra loi %s', 'developer-theme' ),
-        'cancel_reply_link'    => __( 'Huy tra loi', 'developer-theme' ),
-        'label_submit'         => __( 'Gui binh luan', 'developer-theme' ),
+        'title_reply'          => __( 'Để lại bình luận', 'developer-theme' ),
+        'title_reply_to'       => __( 'Trả lời %s', 'developer-theme' ),
+        'cancel_reply_link'    => __( 'Hủy trả lời', 'developer-theme' ),
+        'label_submit'         => __( 'Gửi bình luận', 'developer-theme' ),
         'comment_notes_before' => '<p class="comment-notes">'
-            . __( 'Email se khong duoc hien thi cong khai.', 'developer-theme' )
+            . __( 'Email sẽ không được hiển thị công khai.', 'developer-theme' )
             . '</p>',
     ) );
     ?>
@@ -1958,12 +1958,12 @@ if ( post_password_required() ) {
  * Template Name: Full Width
  * Template Post Type: page, post
  *
- * Dong "Template Name:" la BAT BUOC - no dang ky template nay
+ * Dòng "Template Name:" là BẮT BUỘC - nó đăng ký template này
  * trong dropdown "Page Attributes > Template" khi edit Page
  *
- * "Template Post Type:" cho phep chon template nay cho nhieu post type
+ * "Template Post Type:" cho phép chọn template này cho nhiều post type
  *
- * Tuong tu viec tao @section khac nhau trong Laravel Blade
+ * Tương tự việc tạo @section khác nhau trong Laravel Blade
  *
  * @package Developer_Theme
  */
@@ -2004,16 +2004,16 @@ get_header();
 
 ---
 
-## 10. So sanh voi Laravel Blade
+## 10. So sánh với Laravel Blade
 
 ### Routing/Template Selection
 
 ```php
 // === LARAVEL ===
 // routes/web.php
-Route::get('/', [HomeController::class, 'index']);           // Trang chu
-Route::get('/blog', [PostController::class, 'index']);       // Danh sach bai
-Route::get('/blog/{slug}', [PostController::class, 'show']);  // Bai viet
+Route::get('/', [HomeController::class, 'index']);           // Trang chủ
+Route::get('/blog', [PostController::class, 'index']);       // Danh sách bài
+Route::get('/blog/{slug}', [PostController::class, 'show']);  // Bài viết
 Route::get('/page/{slug}', [PageController::class, 'show']); // Trang
 Route::get('/category/{slug}', [CategoryController::class, 'show']);
 
@@ -2026,14 +2026,14 @@ class PostController {
 }
 
 // === WORDPRESS ===
-// KHONG CAN routes va controller!
-// Chi can tao file template:
-// front-page.php   --> Trang chu
+// KHÔNG CẦN routes và controller!
+// Chỉ cần tạo file template:
+// front-page.php   --> Trang chủ
 // home.php         --> Trang blog
-// single.php       --> Bai viet
+// single.php       --> Bài viết
 // page.php         --> Trang
-// category.php     --> Danh muc
-// WordPress TU DONG map URL -> Template file
+// category.php     --> Danh mục
+// WordPress TỰ ĐỘNG map URL -> Template file
 ```
 
 ### Layout/Template Inheritance
@@ -2063,14 +2063,14 @@ class PostController {
 @endsection
 
 // === WORDPRESS ===
-// Khong co "extends", dung get_header() va get_footer() thay the:
+// Không có "extends", dùng get_header() và get_footer() thay thế:
 // index.php
-<?php get_header(); ?>    <!-- = @include('partials.header') + bat dau layout -->
+<?php get_header(); ?>    <!-- = @include('partials.header') + bắt đầu layout -->
 <main>
     <h1>Home</h1>
     <?php get_sidebar(); ?> <!-- = @include('partials.sidebar') -->
 </main>
-<?php get_footer(); ?>    <!-- = @include('partials.footer') + ket thuc layout -->
+<?php get_footer(); ?>    <!-- = @include('partials.footer') + kết thúc layout -->
 ```
 
 ### Components/Partials
@@ -2083,7 +2083,7 @@ class PostController {
     <p>{{ $post->excerpt }}</p>
 </div>
 
-// Su dung:
+// Sử dụng:
 @foreach($posts as $post)
     <x-post-card :post="$post" />
 @endforeach
@@ -2095,7 +2095,7 @@ class PostController {
     <p><?php the_excerpt(); ?></p>
 </div>
 
-// Su dung:
+// Sử dụng:
 <?php
 while ( have_posts() ) :
     the_post();
@@ -2103,7 +2103,7 @@ while ( have_posts() ) :
 endwhile;
 ?>
 
-// Truyen data (WP 5.5+):
+// Truyền data (WP 5.5+):
 get_template_part( 'template-parts/content', 'card', array(
     'show_image' => true,
 ) );
@@ -2140,14 +2140,14 @@ get_template_part( 'template-parts/content', 'card', array(
 
 ## 11. Best Practices
 
-### 1. Luon co index.php
+### 1. Luôn có index.php
 
 ```php
-// index.php la BAT BUOC va la fallback cuoi cung
-// Ke ca khi ban co single.php, page.php, archive.php... van phai co index.php
+// index.php là BẮT BUỘC và là fallback cuối cùng
+// Kể cả khi bạn có single.php, page.php, archive.php... vẫn phải có index.php
 ```
 
-### 2. Su dung get_template_part() thay vi include/require
+### 2. Sử dụng get_template_part() thay vì include/require
 
 ```php
 // SAI
@@ -2156,16 +2156,16 @@ require( TEMPLATEPATH . '/template-parts/content.php' );
 
 // DUNG
 get_template_part( 'template-parts/content' );
-// get_template_part() an toan hon vi:
-// - Tu dong xu ly duong dan
-// - Ho tro child theme override
-// - Khong bi loi fatal neu file khong ton tai
+// get_template_part() an toàn hơn vì:
+// - Tự động xử lý đường dẫn
+// - Hỗ trợ child theme override
+// - Không bị lỗi fatal nếu file không tồn tại
 ```
 
-### 3. Dung template phu hop, khong lam dung index.php
+### 3. Dùng template phù hợp, không lạm dụng index.php
 
 ```php
-// SAI: Dung conditional trong index.php cho moi thu
+// SAI: Dùng conditional trong index.php cho mọi thứ
 // index.php
 if ( is_single() ) {
     // code cho single...
@@ -2175,28 +2175,28 @@ if ( is_single() ) {
     // code cho category...
 }
 
-// DUNG: Tao file template rieng
-// single.php - cho bai viet
+// ĐÚNG: Tạo file template riêng
+// single.php - cho bài viết
 // page.php - cho trang
-// category.php - cho danh muc
+// category.php - cho danh mục
 ```
 
 ### 4. wp_reset_postdata() sau WP_Query
 
 ```php
-// Khi dung custom WP_Query, LUON reset lai sau khi xong
+// Khi dùng custom WP_Query, LUÔN reset lại sau khi xong
 $custom_query = new WP_Query( array( 'post_type' => 'product' ) );
 while ( $custom_query->have_posts() ) :
     $custom_query->the_post();
     // ...
 endwhile;
-wp_reset_postdata(); // BAT BUOC! Neu khong, cac ham nhu the_title() se bi sai
+wp_reset_postdata(); // BẮT BUỘC! Nếu không, các hàm như the_title() sẽ bị sai
 ```
 
-### 5. Kiem tra template dang dung
+### 5. Kiểm tra template đang dùng
 
 ```php
-// Trong development, them code nay de biet WordPress dang dung template nao:
+// Trong development, thêm code này để biết WordPress đang dùng template nào:
 function developer_show_template() {
     if ( current_user_can( 'manage_options' ) ) {
         global $template;
@@ -2205,35 +2205,35 @@ function developer_show_template() {
 }
 add_action( 'wp_head', 'developer_show_template' );
 
-// Hoac cai plugin "Query Monitor" de xem chi tiet
+// Hoặc cài plugin "Query Monitor" để xem chi tiết
 ```
 
-### 6. Dat ten file dung quy uoc
+### 6. Đặt tên file đúng quy ước
 
 ```
 DUNG:                          SAI:
 single.php                     post.php
 page.php                       static-page.php
 archive.php                    list.php
-template-parts/content.php     parts/content.php (van chay nhung khong chuan)
+template-parts/content.php     parts/content.php (vẫn chạy nhưng không chuẩn)
 page-templates/full-width.php  templates/full-width.php
 ```
 
-### 7. Su dung body_class() va post_class()
+### 7. Sử dụng body_class() và post_class()
 
 ```php
-// Luon dung de CSS targeting de dang hon
+// Luôn dùng để CSS targeting dễ dàng hơn
 <body <?php body_class(); ?>>
-// Tao ra: <body class="home blog logged-in admin-bar">
+// Tạo ra: <body class="home blog logged-in admin-bar">
 
 <article <?php post_class(); ?>>
-// Tao ra: <article class="post type-post status-publish format-standard has-post-thumbnail hentry category-news">
+// Tạo ra: <article class="post type-post status-publish format-standard has-post-thumbnail hentry category-news">
 
-// Them class tuy chinh:
+// Thêm class tùy chỉnh:
 <body <?php body_class( 'custom-layout dark-mode' ); ?>>
 <article <?php post_class( 'card featured' ); ?>>
 ```
 
 ---
 
-**Tiep theo:** [03 - The Loop va WP_Query](./03-the-loop-va-wp-query.md) - Hieu cach lay va hien thi du lieu
+**Tiếp theo:** [03 - The Loop và WP_Query](./03-the-loop-va-wp-query.md) - Hiểu cách lấy và hiển thị dữ liệu

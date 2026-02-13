@@ -1,50 +1,50 @@
-# Database va CRUD trong WordPress Plugin
+# Database và CRUD trong WordPress Plugin
 
-## Muc luc
+## Mục lục
 
 1. [Global $wpdb Object](#1-global-wpdb-object)
-2. [Tao Custom Table khi Activate Plugin](#2-tao-custom-table-khi-activate-plugin)
+2. [Tạo Custom Table khi Activate Plugin](#2-tao-custom-table-khi-activate-plugin)
 3. [dbDelta() Function](#3-dbdelta-function)
-4. [CRUD voi $wpdb](#4-crud-voi-wpdb)
+4. [CRUD với $wpdb](#4-crud-voi-wpdb)
 5. [Prepared Statements](#5-prepared-statements)
 6. [Options API](#6-options-api)
 7. [Post Meta API](#7-post-meta-api)
 8. [User Meta API](#8-user-meta-api)
 9. [Transients API](#9-transients-api)
-10. [Code vi du: Plugin quan ly Contacts](#10-code-vi-du-plugin-quan-ly-contacts)
-11. [So sanh voi Eloquent ORM trong Laravel](#11-so-sanh-voi-eloquent-orm-trong-laravel)
+10. [Code ví dụ: Plugin quản lý Contacts](#10-code-vi-du-plugin-quan-ly-contacts)
+11. [So sánh với Eloquent ORM trong Laravel](#11-so-sanh-voi-eloquent-orm-trong-laravel)
 12. [Best Practices](#12-best-practices)
 
 ---
 
 ## 1. Global $wpdb Object
 
-### $wpdb la gi?
+### $wpdb là gì?
 
-`$wpdb` la object global cua class `wpdb`, cung cap cac phuong thuc de tuong tac voi database WordPress. No la **lop trung gian** giua code PHP va MySQL, tuong tu nhu **DB Facade** trong Laravel.
+`$wpdb` là object global của class `wpdb`, cung cấp các phương thức để tương tác với database WordPress. Nó là **lớp trung gian** giữa code PHP và MySQL, tương tự như **DB Facade** trong Laravel.
 
 ```php
 <?php
-// Lay $wpdb - co 2 cach
+// Lấy $wpdb - có 2 cách
 
-// Cach 1: Khai bao global (thuong dung trong functions)
+// Cách 1: Khai báo global (thường dùng trong functions)
 function my_function() {
     global $wpdb;
     $results = $wpdb->get_results( "SELECT * FROM {$wpdb->posts} LIMIT 5" );
 }
 
-// Cach 2: Dung $GLOBALS (it dung hon)
+// Cách 2: Dùng $GLOBALS (ít dùng hơn)
 $results = $GLOBALS['wpdb']->get_results( "SELECT * FROM {$GLOBALS['wpdb']->posts} LIMIT 5" );
 ```
 
-### Cac thuoc tinh quan trong cua $wpdb
+### Các thuộc tính quan trọng của $wpdb
 
 ```php
 <?php
 global $wpdb;
 
-// === TABLE NAMES (co prefix) ===
-// WordPress tu dong them prefix (mac dinh: wp_)
+// === TABLE NAMES (có prefix) ===
+// WordPress tự động thêm prefix (mặc định: wp_)
 
 $wpdb->posts;           // wp_posts
 $wpdb->postmeta;        // wp_postmeta

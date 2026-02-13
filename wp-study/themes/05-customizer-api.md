@@ -1,131 +1,131 @@
 # Theme Customizer API trong WordPress
 
-## Muc Luc
+## Mục Lục
 
-1. [Theme Customizer la gi](#1-theme-customizer-la-gi)
+1. [Theme Customizer là gì](#1-theme-customizer-la-gi)
 2. [Panels, Sections, Settings, Controls](#2-cau-truc)
 3. [$wp_customize Object](#3-wp_customize-object)
-4. [Cac loai Control co san](#4-cac-loai-control)
+4. [Các loại Control có sẵn](#4-cac-loai-control)
 5. [Custom Controls](#5-custom-controls)
 6. [Selective Refresh (Live Preview)](#6-selective-refresh)
 7. [Sanitize Callbacks](#7-sanitize-callbacks)
 8. [Default Values](#8-default-values)
-9. [Code vi du: Theme Customizer hoan chinh](#9-code-vi-du)
+9. [Code ví dụ: Theme Customizer hoàn chỉnh](#9-code-vi-du)
 10. [Best Practices](#10-best-practices)
 
 ---
 
-## 1. Theme Customizer la gi
+## 1. Theme Customizer là gì
 
-Theme Customizer (Appearance > Customize) cho phep nguoi dung **thay doi cai dat giao dien** cua theme voi **live preview** (xem truoc truc tiep).
+Theme Customizer (Appearance > Customize) cho phép người dùng **thay đổi cài đặt giao diện** của theme với **live preview** (xem trước trực tiếp).
 
-### Tai sao dung Customizer?
+### Tại sao dùng Customizer?
 
-| Dac diem | Customizer | Theme Options Page |
+| Đặc điểm | Customizer | Theme Options Page |
 |----------|------------|-------------------|
-| Live Preview | Co | Khong |
-| API chuan WordPress | Co | Khong (tu code) |
-| An toan (sanitize) | Tich hop | Tu lam |
-| Non-destructive | Co (gia tri mac dinh) | Tuy |
-| Responsive preview | Co (Desktop/Tablet/Mobile) | Khong |
+| Live Preview | Có | Không |
+| API chuẩn WordPress | Có | Không (tự code) |
+| An toàn (sanitize) | Tích hợp | Tự làm |
+| Non-destructive | Có (giá trị mặc định) | Tùy |
+| Responsive preview | Có (Desktop/Tablet/Mobile) | Không |
 
-### Truy cap Customizer:
+### Truy cập Customizer:
 - **Admin > Appearance > Customize**
-- Hoac them `?customize=true` vao URL bat ky
+- Hoặc thêm `?customize=true` vào URL bất kỳ
 
-### So sanh voi Laravel:
+### So sánh với Laravel:
 
 ```php
-// LARAVEL - Settings page tu tao:
-// - Tao route, controller, view
-// - Tao migration cho settings table
-// - Tu code form va validation
+// LARAVEL - Settings page tự tạo:
+// - Tạo route, controller, view
+// - Tạo migration cho settings table
+// - Tự code form và validation
 
 // WORDPRESS - Customizer API:
-// - Chi can goi $wp_customize->add_*()
-// - WordPress tu dong tao form + live preview
-// - Luu vao wp_options, khong can migration
+// - Chỉ cần gọi $wp_customize->add_*()
+// - WordPress tự động tạo form + live preview
+// - Lưu vào wp_options, không cần migration
 ```
 
 ---
 
-## 2. Cau truc
+## 2. Cấu trúc
 
-### Thu bac Customizer:
+### Thứ bậc Customizer:
 
 ```
-Panel (Nhom lon - tuy chon)
+Panel (Nhóm lớn - tùy chọn)
   |
-  +-- Section (Nhom nho - bat buoc)
+  +-- Section (Nhóm nhỏ - bắt buộc)
         |
-        +-- Setting (Gia tri luu trong database)
+        +-- Setting (Giá trị lưu trong database)
         |     |
-        +-----+-- Control (Thanh phan UI de nguoi dung thay doi gia tri)
+        +-----+-- Control (Thành phần UI để người dùng thay đổi giá trị)
 ```
 
-### Mo hinh hoat dong:
+### Mô hình hoạt động:
 
 ```
-1. SETTING: Dinh nghia "cai gi duoc luu"
-   - key, gia tri mac dinh, sanitize callback
-   - Luu vao wp_options hoac theme_mods
+1. SETTING: Định nghĩa "cái gì được lưu"
+   - key, giá trị mặc định, sanitize callback
+   - Lưu vào wp_options hoặc theme_mods
 
-2. CONTROL: Dinh nghia "nguoi dung thay doi bang cach nao"
+2. CONTROL: Định nghĩa "người dùng thay đổi bằng cách nào"
    - Text input, color picker, image upload...
-   - Moi control gan voi 1 setting
+   - Mỗi control gắn với 1 setting
 
-3. SECTION: Nhom cac controls lai
+3. SECTION: Nhóm các controls lại
    - "Header Settings", "Typography", "Footer"...
 
-4. PANEL: Nhom cac sections lai (optional)
-   - Dung khi co qua nhieu sections
+4. PANEL: Nhóm các sections lại (optional)
+   - Dùng khi có quá nhiều sections
 ```
 
-### Cach dang ky:
+### Cách đăng ký:
 
 ```php
 <?php
 /**
- * Dang ky Customizer settings
- * Hook vao 'customize_register'
+ * Đăng ký Customizer settings
+ * Hook vào 'customize_register'
  */
 function developer_customize_register( $wp_customize ) {
 
     // === 1. TAO PANEL (optional) ===
     $wp_customize->add_panel( 'developer_theme_panel', array(
-        'title'       => __( 'Cai Dat Theme', 'developer-theme' ),
-        'description' => __( 'Tuy chinh giao dien theme.', 'developer-theme' ),
-        'priority'    => 10, // Thu tu hien thi (so nho = hien truoc)
+        'title'       => __( 'Cài Đặt Theme', 'developer-theme' ),
+        'description' => __( 'Tùy chỉnh giao diện theme.', 'developer-theme' ),
+        'priority'    => 10, // Thứ tự hiển thị (số nhỏ = hiện trước)
     ) );
 
     // === 2. TAO SECTION ===
     $wp_customize->add_section( 'developer_header_section', array(
         'title'       => __( 'Header', 'developer-theme' ),
-        'description' => __( 'Cai dat phan header cua trang.', 'developer-theme' ),
-        'panel'       => 'developer_theme_panel', // Thuoc panel nao
+        'description' => __( 'Cài đặt phần header của trang.', 'developer-theme' ),
+        'panel'       => 'developer_theme_panel', // Thuộc panel nào
         'priority'    => 10,
     ) );
 
     // === 3. TAO SETTING ===
     $wp_customize->add_setting( 'developer_header_bg_color', array(
-        'default'           => '#23282d',           // Gia tri mac dinh
-        'sanitize_callback' => 'sanitize_hex_color', // Ham lam sach du lieu
-        'transport'         => 'postMessage',        // Cach cap nhat preview
-        // 'refresh'   = reload toan trang (mac dinh)
-        // 'postMessage' = cap nhat bang JS (nhanh hon, khong reload)
-        'type'              => 'theme_mod',          // Luu o dau
-        // 'theme_mod' = luu vao theme_mods (mac dinh, khuyen dung)
-        // 'option'    = luu vao wp_options
+        'default'           => '#23282d',           // Giá trị mặc định
+        'sanitize_callback' => 'sanitize_hex_color', // Hàm làm sạch dữ liệu
+        'transport'         => 'postMessage',        // Cách cập nhật preview
+        // 'refresh'   = reload toàn trang (mặc định)
+        // 'postMessage' = cập nhật bằng JS (nhanh hơn, không reload)
+        'type'              => 'theme_mod',          // Lưu ở đâu
+        // 'theme_mod' = lưu vào theme_mods (mặc định, khuyên dùng)
+        // 'option'    = lưu vào wp_options
     ) );
 
     // === 4. TAO CONTROL ===
     $wp_customize->add_control( new WP_Customize_Color_Control(
         $wp_customize,
-        'developer_header_bg_color',  // Phai trung voi setting ID
+        'developer_header_bg_color',  // Phải trùng với setting ID
         array(
-            'label'       => __( 'Mau Nen Header', 'developer-theme' ),
-            'description' => __( 'Chon mau nen cho header.', 'developer-theme' ),
-            'section'     => 'developer_header_section', // Thuoc section nao
+            'label'       => __( 'Màu Nền Header', 'developer-theme' ),
+            'description' => __( 'Chọn màu nền cho header.', 'developer-theme' ),
+            'section'     => 'developer_header_section', // Thuộc section nào
             'priority'    => 10,
         )
     ) );
@@ -133,27 +133,27 @@ function developer_customize_register( $wp_customize ) {
 add_action( 'customize_register', 'developer_customize_register' );
 ```
 
-### Lay gia tri da luu:
+### Lấy giá trị đã lưu:
 
 ```php
 <?php
-// Lay gia tri customizer (dung trong template files)
+// Lấy giá trị customizer (dùng trong template files)
 
-// Cach 1: get_theme_mod() - khuyen dung
+// Cách 1: get_theme_mod() - khuyên dùng
 $header_bg = get_theme_mod( 'developer_header_bg_color', '#23282d' );
-// Tham so 2 la gia tri mac dinh (truong hop chua luu gi)
+// Tham số 2 là giá trị mặc định (trường hợp chưa lưu gì)
 
-// Cach 2: Neu setting type la 'option'
+// Cách 2: Nếu setting type là 'option'
 $value = get_option( 'developer_header_bg_color', '#23282d' );
 
-// Su dung trong template:
+// Sử dụng trong template:
 ?>
 <header style="background-color: <?php echo esc_attr( get_theme_mod( 'developer_header_bg_color', '#23282d' ) ); ?>">
     ...
 </header>
 
 <?php
-// Hoac tao CSS tu dong:
+// Hoặc tạo CSS tự động:
 function developer_customizer_css() {
     $header_bg   = get_theme_mod( 'developer_header_bg_color', '#23282d' );
     $header_text = get_theme_mod( 'developer_header_text_color', '#ffffff' );
@@ -183,8 +183,8 @@ add_action( 'wp_head', 'developer_customizer_css' );
 ```php
 <?php
 /**
- * $wp_customize - Object chinh cua Customizer API
- * Cac method quan trong:
+ * $wp_customize - Object chính của Customizer API
+ * Các method quan trọng:
  */
 function developer_customize_full( $wp_customize ) {
 
@@ -208,25 +208,25 @@ function developer_customize_full( $wp_customize ) {
     $wp_customize->get_control( $id );
     $wp_customize->remove_control( $id );
 
-    // === MODIFY SECTIONS CO SAN ===
-    // Di chuyen section vao panel cua minh
+    // === MODIFY SECTIONS CÓ SẴN ===
+    // Di chuyển section vào panel của mình
     $wp_customize->get_section( 'title_tagline' )->panel = 'developer_theme_panel';
     $wp_customize->get_section( 'colors' )->panel = 'developer_theme_panel';
 
-    // Doi tieu de section
-    $wp_customize->get_section( 'title_tagline' )->title = __( 'Logo va Ten Site', 'developer-theme' );
+    // Đổi tiêu đề section
+    $wp_customize->get_section( 'title_tagline' )->title = __( 'Logo và Tên Site', 'developer-theme' );
 
-    // Thay doi priority (thu tu)
+    // Thay đổi priority (thứ tự)
     $wp_customize->get_section( 'title_tagline' )->priority = 5;
 
-    // === XOA CONTROLS KHONG CAN ===
-    // Xoa custom header image
+    // === XÓA CONTROLS KHÔNG CẦN ===
+    // Xóa custom header image
     $wp_customize->remove_section( 'header_image' );
 
-    // Xoa custom background
+    // Xóa custom background
     $wp_customize->remove_section( 'background_image' );
 
-    // Xoa static front page setting
+    // Xóa static front page setting
     // $wp_customize->remove_section( 'static_front_page' );
 
     // === SELECTIVE REFRESH ===
@@ -239,29 +239,29 @@ add_action( 'customize_register', 'developer_customize_full' );
 
 ---
 
-## 4. Cac loai Control co san
+## 4. Các loại Control có sẵn
 
-### Controls co ban (built-in):
+### Controls cơ bản (built-in):
 
 ```php
 <?php
 function developer_basic_controls( $wp_customize ) {
 
-    // Tao section cho vi du
+    // Tạo section cho ví dụ
     $wp_customize->add_section( 'developer_demo_section', array(
         'title' => __( 'Demo Controls', 'developer-theme' ),
     ) );
 
     // === 1. TEXT INPUT ===
     $wp_customize->add_setting( 'developer_text_field', array(
-        'default'           => 'Gia tri mac dinh',
+        'default'           => 'Giá trị mặc định',
         'sanitize_callback' => 'sanitize_text_field',
         'transport'         => 'postMessage',
     ) );
     $wp_customize->add_control( 'developer_text_field', array(
         'type'        => 'text',
         'label'       => __( 'Text Input', 'developer-theme' ),
-        'description' => __( 'Nhap van ban ngan.', 'developer-theme' ),
+        'description' => __( 'Nhập văn bản ngắn.', 'developer-theme' ),
         'section'     => 'developer_demo_section',
     ) );
 
@@ -274,11 +274,11 @@ function developer_basic_controls( $wp_customize ) {
     $wp_customize->add_control( 'developer_textarea_field', array(
         'type'        => 'textarea',
         'label'       => __( 'Textarea', 'developer-theme' ),
-        'description' => __( 'Nhap van ban dai.', 'developer-theme' ),
+        'description' => __( 'Nhập văn bản dài.', 'developer-theme' ),
         'section'     => 'developer_demo_section',
         'input_attrs' => array(
             'rows'        => 5,
-            'placeholder' => __( 'Nhap noi dung...', 'developer-theme' ),
+            'placeholder' => __( 'Nhập nội dung...', 'developer-theme' ),
         ),
     ) );
 
@@ -311,7 +311,7 @@ function developer_basic_controls( $wp_customize ) {
     ) );
     $wp_customize->add_control( 'developer_number_field', array(
         'type'        => 'number',
-        'label'       => __( 'So', 'developer-theme' ),
+        'label'       => __( 'Số', 'developer-theme' ),
         'section'     => 'developer_demo_section',
         'input_attrs' => array(
             'min'  => 1,
@@ -344,7 +344,7 @@ function developer_basic_controls( $wp_customize ) {
     ) );
     $wp_customize->add_control( 'developer_checkbox_field', array(
         'type'    => 'checkbox',
-        'label'   => __( 'Bat tinh nang X', 'developer-theme' ),
+        'label'   => __( 'Bật tính năng X', 'developer-theme' ),
         'section' => 'developer_demo_section',
     ) );
 
@@ -355,12 +355,12 @@ function developer_basic_controls( $wp_customize ) {
     ) );
     $wp_customize->add_control( 'developer_radio_field', array(
         'type'    => 'radio',
-        'label'   => __( 'Vi tri Sidebar', 'developer-theme' ),
+        'label'   => __( 'Vị trí Sidebar', 'developer-theme' ),
         'section' => 'developer_demo_section',
         'choices' => array(
-            'left'  => __( 'Ben Trai', 'developer-theme' ),
-            'right' => __( 'Ben Phai', 'developer-theme' ),
-            'none'  => __( 'Khong Co', 'developer-theme' ),
+            'left'  => __( 'Bên Trái', 'developer-theme' ),
+            'right' => __( 'Bên Phải', 'developer-theme' ),
+            'none'  => __( 'Không Có', 'developer-theme' ),
         ),
     ) );
 
@@ -387,21 +387,21 @@ function developer_basic_controls( $wp_customize ) {
     ) );
     $wp_customize->add_control( 'developer_page_field', array(
         'type'    => 'dropdown-pages',
-        'label'   => __( 'Chon Trang', 'developer-theme' ),
+        'label'   => __( 'Chọn Trang', 'developer-theme' ),
         'section' => 'developer_demo_section',
     ) );
 }
 add_action( 'customize_register', 'developer_basic_controls' );
 ```
 
-### Controls dac biet (WP_Customize_*_Control):
+### Controls đặc biệt (WP_Customize_*_Control):
 
 ```php
 <?php
 function developer_special_controls( $wp_customize ) {
 
     $wp_customize->add_section( 'developer_special_section', array(
-        'title' => __( 'Controls Dac Biet', 'developer-theme' ),
+        'title' => __( 'Controls Đặc Biệt', 'developer-theme' ),
     ) );
 
     // === 11. COLOR PICKER ===
@@ -414,7 +414,7 @@ function developer_special_controls( $wp_customize ) {
         $wp_customize,
         'developer_color_field',
         array(
-            'label'   => __( 'Mau Chinh', 'developer-theme' ),
+            'label'   => __( 'Màu Chính', 'developer-theme' ),
             'section' => 'developer_special_section',
         )
     ) );
@@ -428,22 +428,22 @@ function developer_special_controls( $wp_customize ) {
         $wp_customize,
         'developer_image_field',
         array(
-            'label'       => __( 'Hinh Nen Header', 'developer-theme' ),
-            'description' => __( 'Upload hinh anh 1920x500px.', 'developer-theme' ),
+            'label'       => __( 'Hình Nền Header', 'developer-theme' ),
+            'description' => __( 'Upload hình ảnh 1920x500px.', 'developer-theme' ),
             'section'     => 'developer_special_section',
         )
     ) );
 
-    // === 13. MEDIA UPLOAD (cac loai file) ===
+    // === 13. MEDIA UPLOAD (các loại file) ===
     $wp_customize->add_setting( 'developer_media_field', array(
         'default'           => '',
-        'sanitize_callback' => 'absint',  // Luu attachment ID
+        'sanitize_callback' => 'absint',  // Lưu attachment ID
     ) );
     $wp_customize->add_control( new WP_Customize_Media_Control(
         $wp_customize,
         'developer_media_field',
         array(
-            'label'     => __( 'Chon Media', 'developer-theme' ),
+            'label'     => __( 'Chọn Media', 'developer-theme' ),
             'section'   => 'developer_special_section',
             'mime_type' => 'image', // 'image', 'video', 'audio', 'application'
         )
@@ -476,7 +476,7 @@ function developer_special_controls( $wp_customize ) {
         $wp_customize,
         'developer_date_field',
         array(
-            'label'        => __( 'Ngay Gio', 'developer-theme' ),
+            'label'        => __( 'Ngày Giờ', 'developer-theme' ),
             'section'      => 'developer_special_section',
             'include_time' => true,
             'allow_past_date' => true,
@@ -508,7 +508,7 @@ add_action( 'customize_register', 'developer_special_controls' );
 
 ## 5. Custom Controls
 
-### Tao control tuy chinh:
+### Tạo control tùy chỉnh:
 
 ```php
 <?php
@@ -518,7 +518,7 @@ add_action( 'customize_register', 'developer_special_controls' );
 class Developer_Toggle_Control extends WP_Customize_Control {
 
     /**
-     * Kieu control
+     * Kiểu control
      */
     public $type = 'developer-toggle';
 
@@ -535,7 +535,7 @@ class Developer_Toggle_Control extends WP_Customize_Control {
     }
 
     /**
-     * Render HTML cua control
+     * Render HTML của control
      */
     public function render_content() {
         ?>
@@ -562,7 +562,7 @@ class Developer_Toggle_Control extends WP_Customize_Control {
 
 /**
  * Custom Control: Separator/Heading
- * De phan chia cac nhom settings trong 1 section
+ * Để phân chia các nhóm settings trong 1 section
  */
 class Developer_Separator_Control extends WP_Customize_Control {
 
@@ -629,7 +629,7 @@ class Developer_Font_Control extends WP_Customize_Control {
     }
 }
 
-// === Dang ky custom controls ===
+// === Đăng ký custom controls ===
 function developer_custom_controls( $wp_customize ) {
 
     $wp_customize->add_section( 'developer_custom_section', array(
@@ -646,8 +646,8 @@ function developer_custom_controls( $wp_customize ) {
         $wp_customize,
         'developer_show_topbar',
         array(
-            'label'       => __( 'Hien thi Top Bar', 'developer-theme' ),
-            'description' => __( 'Bat/tat thanh top bar o dau trang.', 'developer-theme' ),
+            'label'       => __( 'Hiển thị Top Bar', 'developer-theme' ),
+            'description' => __( 'Bật/tắt thanh top bar ở đầu trang.', 'developer-theme' ),
             'section'     => 'developer_custom_section',
         )
     ) );
@@ -662,8 +662,8 @@ function developer_custom_controls( $wp_customize ) {
         $wp_customize,
         'developer_body_font',
         array(
-            'label'       => __( 'Font Chu Noi Dung', 'developer-theme' ),
-            'description' => __( 'Chon font chu cho noi dung chinh.', 'developer-theme' ),
+            'label'       => __( 'Font Chữ Nội Dung', 'developer-theme' ),
+            'description' => __( 'Chọn font chữ cho nội dung chính.', 'developer-theme' ),
             'section'     => 'developer_custom_section',
         )
     ) );
@@ -754,26 +754,26 @@ add_action( 'customize_register', 'developer_custom_controls' );
 
 ## 6. Selective Refresh
 
-### Selective Refresh la gi?
+### Selective Refresh là gì?
 
-Thay vi reload toan trang khi thay doi setting, Selective Refresh chi **cap nhat phan can thiet** cua trang. Nhanh hon va UX tot hon.
+Thay vì reload toàn trang khi thay đổi setting, Selective Refresh chỉ **cập nhật phần cần thiết** của trang. Nhanh hơn và UX tốt hơn.
 
 ```php
 <?php
 function developer_selective_refresh( $wp_customize ) {
 
-    // === Dang ky Partial ===
-    // Partial = phan trang se duoc refresh khi setting thay doi
+    // === Đăng ký Partial ===
+    // Partial = phần trang sẽ được refresh khi setting thay đổi
 
-    // Vi du 1: Cap nhat ten site
+    // Ví dụ 1: Cập nhật tên site
     $wp_customize->selective_refresh->add_partial( 'blogname', array(
-        'selector'        => '.site-title a',           // CSS selector cua element can refresh
-        'render_callback' => function() {                // Ham tra ve HTML moi
+        'selector'        => '.site-title a',           // CSS selector của element cần refresh
+        'render_callback' => function() {                // Hàm trả về HTML mới
             bloginfo( 'name' );
         },
     ) );
 
-    // Vi du 2: Cap nhat mo ta site
+    // Ví dụ 2: Cập nhật mô tả site
     $wp_customize->selective_refresh->add_partial( 'blogdescription', array(
         'selector'        => '.site-description',
         'render_callback' => function() {
@@ -781,20 +781,20 @@ function developer_selective_refresh( $wp_customize ) {
         },
     ) );
 
-    // Vi du 3: Cap nhat footer copyright
+    // Ví dụ 3: Cập nhật footer copyright
     $wp_customize->selective_refresh->add_partial( 'developer_footer_text', array(
         'selector'            => '.site-info',
-        'render_callback'     => 'developer_render_footer_text', // Ten ham
-        'container_inclusive'  => false,  // false = thay noi dung ben trong selector
-                                          // true = thay toan bo element (ca tag cha)
-        'fallback_refresh'    => true,   // Reload toan trang neu partial that bai
+        'render_callback'     => 'developer_render_footer_text', // Tên hàm
+        'container_inclusive'  => false,  // false = thay nội dung bên trong selector
+                                          // true = thay toàn bộ element (cả tag cha)
+        'fallback_refresh'    => true,   // Reload toàn trang nếu partial thất bại
     ) );
 
-    // Vi du 4: Cap nhat social links
+    // Ví dụ 4: Cập nhật social links
     $wp_customize->selective_refresh->add_partial( 'developer_social_facebook', array(
         'selector'        => '.social-links',
         'render_callback' => 'developer_render_social_links',
-        'settings'        => array(                     // Nhieu settings trigger cung 1 partial
+        'settings'        => array(                     // Nhiều settings trigger cùng 1 partial
             'developer_social_facebook',
             'developer_social_twitter',
             'developer_social_instagram',
@@ -804,7 +804,7 @@ function developer_selective_refresh( $wp_customize ) {
 }
 add_action( 'customize_register', 'developer_selective_refresh' );
 
-// Ham render cho partial
+// Hàm render cho partial
 function developer_render_footer_text() {
     $text = get_theme_mod( 'developer_footer_text', '&copy; 2024 Developer Theme' );
     echo wp_kses_post( $text );
@@ -831,48 +831,48 @@ function developer_render_social_links() {
 }
 ```
 
-### PostMessage voi JavaScript:
+### PostMessage với JavaScript:
 
 ```javascript
 /**
  * assets/js/customizer-preview.js
- * JS chay trong iframe preview cua Customizer
+ * JS chạy trong iframe preview của Customizer
  *
- * Cap nhat truc tiep DOM khi thay doi setting (khong can reload)
+ * Cập nhật trực tiếp DOM khi thay đổi setting (không cần reload)
  */
 (function($) {
     'use strict';
 
-    // Cap nhat tieu de site
+    // Cập nhật tiêu đề site
     wp.customize('blogname', function(value) {
         value.bind(function(newval) {
             $('.site-title a').text(newval);
         });
     });
 
-    // Cap nhat mo ta site
+    // Cập nhật mô tả site
     wp.customize('blogdescription', function(value) {
         value.bind(function(newval) {
             $('.site-description').text(newval);
         });
     });
 
-    // Cap nhat mau nen header
+    // Cập nhật màu nền header
     wp.customize('developer_header_bg_color', function(value) {
         value.bind(function(newval) {
             $('.site-header').css('background-color', newval);
         });
     });
 
-    // Cap nhat mau chinh (primary color)
+    // Cập nhật màu chính (primary color)
     wp.customize('developer_primary_color', function(value) {
         value.bind(function(newval) {
-            // Thay doi CSS variable
+            // Thay đổi CSS variable
             document.documentElement.style.setProperty('--color-primary', newval);
         });
     });
 
-    // Cap nhat font family
+    // Cập nhật font family
     wp.customize('developer_body_font', function(value) {
         value.bind(function(newval) {
             if (newval !== 'system') {
@@ -892,7 +892,7 @@ function developer_render_social_links() {
         });
     });
 
-    // Cap nhat footer text
+    // Cập nhật footer text
     wp.customize('developer_footer_text', function(value) {
         value.bind(function(newval) {
             $('.footer-text').html(newval);
@@ -932,7 +932,7 @@ function developer_customize_preview_js() {
 add_action( 'customize_preview_init', 'developer_customize_preview_js' );
 
 /**
- * Load CSS/JS cho Customizer controls (panel ben trai)
+ * Load CSS/JS cho Customizer controls (panel bên trái)
  */
 function developer_customize_controls_js() {
     wp_enqueue_style(
@@ -957,20 +957,20 @@ add_action( 'customize_controls_enqueue_scripts', 'developer_customize_controls_
 
 ## 7. Sanitize Callbacks
 
-### Tai sao can sanitize?
+### Tại sao cần sanitize?
 
-Moi setting PHAI co `sanitize_callback` de lam sach du lieu truoc khi luu. Tranh XSS, SQL injection, va du lieu khong hop le.
+Mỗi setting PHẢI có `sanitize_callback` để làm sạch dữ liệu trước khi lưu. Tránh XSS, SQL injection, và dữ liệu không hợp lệ.
 
 ```php
 <?php
 /**
- * Cac ham sanitize co san cua WordPress
+ * Các hàm sanitize có sẵn của WordPress
  */
 
-// Text ngan (1 dong, loai bo HTML tags)
+// Text ngắn (1 dòng, loại bỏ HTML tags)
 'sanitize_callback' => 'sanitize_text_field'
 
-// Text dai (nhieu dong)
+// Text dài (nhiều dòng)
 'sanitize_callback' => 'sanitize_textarea_field'
 
 // Email
@@ -979,23 +979,23 @@ Moi setting PHAI co `sanitize_callback` de lam sach du lieu truoc khi luu. Tranh
 // URL
 'sanitize_callback' => 'esc_url_raw'
 
-// Mau HEX (#ffffff)
+// Màu HEX (#ffffff)
 'sanitize_callback' => 'sanitize_hex_color'
 
-// So nguyen duong
+// Số nguyên dương
 'sanitize_callback' => 'absint'
 
-// Loai bo tat ca HTML tags
+// Loại bỏ tất cả HTML tags
 'sanitize_callback' => 'wp_strip_all_tags'
 
-// Cho phep 1 so HTML tags (nhu noi dung bai viet)
+// Cho phép 1 số HTML tags (như nội dung bài viết)
 'sanitize_callback' => 'wp_kses_post'
 
 // File name
 'sanitize_callback' => 'sanitize_file_name'
 
 /**
- * Cac ham sanitize TU TAO
+ * Các hàm sanitize TỰ TẠO
  */
 
 // Checkbox (true/false)
@@ -1003,16 +1003,16 @@ function developer_sanitize_checkbox( $value ) {
     return ( isset( $value ) && true == $value ) ? true : false;
 }
 
-// Select/Radio (chi chap nhan cac gia tri da dinh nghia)
+// Select/Radio (chỉ chấp nhận các giá trị đã định nghĩa)
 function developer_sanitize_select( $input, $setting ) {
-    // Lay danh sach choices tu control
+    // Lấy danh sách choices từ control
     $choices = $setting->manager->get_control( $setting->id )->choices;
 
-    // Kiem tra input co nam trong choices khong
+    // Kiểm tra input có nằm trong choices không
     return ( array_key_exists( $input, $choices ) ? $input : $setting->default );
 }
 
-// So trong khoang
+// Số trong khoảng
 function developer_sanitize_range( $input, $setting ) {
     $control = $setting->manager->get_control( $setting->id );
     $attrs   = $control->input_attrs;
@@ -1025,12 +1025,12 @@ function developer_sanitize_range( $input, $setting ) {
     return ( $number >= $min && $number <= $max ) ? $number : $setting->default;
 }
 
-// CSS an toan
+// CSS an toàn
 function developer_sanitize_css( $input ) {
     return wp_strip_all_tags( $input );
 }
 
-// HTML gioi han
+// HTML giới hạn
 function developer_sanitize_html( $input ) {
     $allowed_html = array(
         'a'      => array( 'href' => array(), 'title' => array(), 'target' => array() ),
@@ -1060,8 +1060,8 @@ function developer_sanitize_font( $input ) {
 ```php
 <?php
 /**
- * Quan ly gia tri mac dinh tap trung
- * Dat trong inc/customizer-defaults.php
+ * Quản lý giá trị mặc định tập trung
+ * Đặt trong inc/customizer-defaults.php
  */
 function developer_get_defaults() {
     return array(
@@ -1106,7 +1106,7 @@ function developer_get_defaults() {
 }
 
 /**
- * Helper: Lay gia tri customizer voi default
+ * Helper: Lấy giá trị customizer với default
  */
 function developer_get_option( $key ) {
     $defaults = developer_get_defaults();
@@ -1114,7 +1114,7 @@ function developer_get_option( $key ) {
     return get_theme_mod( $key, $default );
 }
 
-// Su dung trong template:
+// Sử dụng trong template:
 $primary_color = developer_get_option( 'developer_primary_color' );
 $body_font     = developer_get_option( 'developer_body_font' );
 $show_topbar   = developer_get_option( 'developer_show_topbar' );
@@ -1122,16 +1122,16 @@ $show_topbar   = developer_get_option( 'developer_show_topbar' );
 
 ---
 
-## 9. Code vi du: Theme Customizer hoan chinh
+## 9. Code ví dụ: Theme Customizer hoàn chỉnh
 
 ### inc/customizer.php:
 
 ```php
 <?php
 /**
- * Theme Customizer hoan chinh
+ * Theme Customizer hoàn chỉnh
  *
- * File nay duoc require tu functions.php:
+ * File này được require từ functions.php:
  * require get_template_directory() . '/inc/customizer.php';
  *
  * @package Developer_Theme
@@ -1145,17 +1145,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once get_template_directory() . '/inc/customizer-defaults.php';
 
 /**
- * Dang ky tat ca customizer settings
+ * Đăng ký tất cả customizer settings
  */
 function developer_full_customize_register( $wp_customize ) {
 
-    // === PANEL CHINH ===
+    // === PANEL CHÍNH ===
     $wp_customize->add_panel( 'developer_panel', array(
-        'title'    => __( 'Cai Dat Theme Developer', 'developer-theme' ),
+        'title'    => __( 'Cài Đặt Theme Developer', 'developer-theme' ),
         'priority' => 25,
     ) );
 
-    // Di chuyen sections co san vao panel
+    // Di chuyển sections có sẵn vào panel
     $wp_customize->get_section( 'title_tagline' )->panel = 'developer_panel';
     $wp_customize->get_section( 'title_tagline' )->priority = 5;
 
@@ -1182,7 +1182,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( new Developer_Toggle_Control(
         $wp_customize, 'developer_show_topbar', array(
-            'label'   => __( 'Hien Thi Top Bar', 'developer-theme' ),
+            'label'   => __( 'Hiển Thị Top Bar', 'developer-theme' ),
             'section' => 'developer_header',
         )
     ) );
@@ -1194,7 +1194,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( new Developer_Toggle_Control(
         $wp_customize, 'developer_sticky_header', array(
-            'label'   => __( 'Header Dinh (Sticky)', 'developer-theme' ),
+            'label'   => __( 'Header Dính (Sticky)', 'developer-theme' ),
             'section' => 'developer_header',
         )
     ) );
@@ -1207,7 +1207,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( new WP_Customize_Color_Control(
         $wp_customize, 'developer_header_bg_color', array(
-            'label'   => __( 'Mau Nen Header', 'developer-theme' ),
+            'label'   => __( 'Màu Nền Header', 'developer-theme' ),
             'section' => 'developer_header',
         )
     ) );
@@ -1220,7 +1220,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( new WP_Customize_Color_Control(
         $wp_customize, 'developer_header_text_color', array(
-            'label'   => __( 'Mau Chu Header', 'developer-theme' ),
+            'label'   => __( 'Màu Chữ Header', 'developer-theme' ),
             'section' => 'developer_header',
         )
     ) );
@@ -1232,12 +1232,12 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( 'developer_header_layout', array(
         'type'    => 'select',
-        'label'   => __( 'Kieu Header', 'developer-theme' ),
+        'label'   => __( 'Kiểu Header', 'developer-theme' ),
         'section' => 'developer_header',
         'choices' => array(
-            'default'  => __( 'Mac dinh (Logo trai, Menu phai)', 'developer-theme' ),
-            'centered' => __( 'Logo giua', 'developer-theme' ),
-            'stacked'  => __( 'Logo tren, Menu duoi', 'developer-theme' ),
+            'default'  => __( 'Mặc định (Logo trái, Menu phải)', 'developer-theme' ),
+            'centered' => __( 'Logo giữa', 'developer-theme' ),
+            'stacked'  => __( 'Logo trên, Menu dưới', 'developer-theme' ),
         ),
     ) );
 
@@ -1245,7 +1245,7 @@ function developer_full_customize_register( $wp_customize ) {
     // SECTION: COLORS
     // ============================================================
     $wp_customize->add_section( 'developer_colors', array(
-        'title'    => __( 'Mau Sac', 'developer-theme' ),
+        'title'    => __( 'Màu Sắc', 'developer-theme' ),
         'panel'    => 'developer_panel',
         'priority' => 20,
     ) );
@@ -1258,8 +1258,8 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( new WP_Customize_Color_Control(
         $wp_customize, 'developer_primary_color', array(
-            'label'       => __( 'Mau Chinh (Primary)', 'developer-theme' ),
-            'description' => __( 'Dung cho links, buttons, accents.', 'developer-theme' ),
+            'label'       => __( 'Màu Chính (Primary)', 'developer-theme' ),
+            'description' => __( 'Dùng cho links, buttons, accents.', 'developer-theme' ),
             'section'     => 'developer_colors',
         )
     ) );
@@ -1272,7 +1272,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( new WP_Customize_Color_Control(
         $wp_customize, 'developer_secondary_color', array(
-            'label'   => __( 'Mau Phu (Secondary)', 'developer-theme' ),
+            'label'   => __( 'Màu Phụ (Secondary)', 'developer-theme' ),
             'section' => 'developer_colors',
         )
     ) );
@@ -1285,7 +1285,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( new WP_Customize_Color_Control(
         $wp_customize, 'developer_accent_color', array(
-            'label'   => __( 'Mau Nhan Manh (Accent)', 'developer-theme' ),
+            'label'   => __( 'Màu Nhấn Mạnh (Accent)', 'developer-theme' ),
             'section' => 'developer_colors',
         )
     ) );
@@ -1307,7 +1307,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( new Developer_Font_Control(
         $wp_customize, 'developer_body_font', array(
-            'label'   => __( 'Font Noi Dung', 'developer-theme' ),
+            'label'   => __( 'Font Nội Dung', 'developer-theme' ),
             'section' => 'developer_typography',
         )
     ) );
@@ -1320,7 +1320,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( new Developer_Font_Control(
         $wp_customize, 'developer_heading_font', array(
-            'label'   => __( 'Font Tieu De', 'developer-theme' ),
+            'label'   => __( 'Font Tiêu Đề', 'developer-theme' ),
             'section' => 'developer_typography',
         )
     ) );
@@ -1333,7 +1333,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( 'developer_body_font_size', array(
         'type'        => 'range',
-        'label'       => __( 'Co Chu (px)', 'developer-theme' ),
+        'label'       => __( 'Cỡ Chữ (px)', 'developer-theme' ),
         'section'     => 'developer_typography',
         'input_attrs' => array( 'min' => 12, 'max' => 24, 'step' => 1 ),
     ) );
@@ -1355,7 +1355,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( 'developer_container_width', array(
         'type'        => 'range',
-        'label'       => __( 'Chieu Rong Container (px)', 'developer-theme' ),
+        'label'       => __( 'Chiều Rộng Container (px)', 'developer-theme' ),
         'section'     => 'developer_layout',
         'input_attrs' => array( 'min' => 960, 'max' => 1600, 'step' => 20 ),
     ) );
@@ -1367,12 +1367,12 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( 'developer_sidebar_position', array(
         'type'    => 'radio',
-        'label'   => __( 'Vi Tri Sidebar', 'developer-theme' ),
+        'label'   => __( 'Vị Trí Sidebar', 'developer-theme' ),
         'section' => 'developer_layout',
         'choices' => array(
-            'right' => __( 'Ben Phai', 'developer-theme' ),
-            'left'  => __( 'Ben Trai', 'developer-theme' ),
-            'none'  => __( 'Khong Co Sidebar', 'developer-theme' ),
+            'right' => __( 'Bên Phải', 'developer-theme' ),
+            'left'  => __( 'Bên Trái', 'developer-theme' ),
+            'none'  => __( 'Không Có Sidebar', 'developer-theme' ),
         ),
     ) );
 
@@ -1405,7 +1405,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( new WP_Customize_Color_Control(
         $wp_customize, 'developer_footer_bg_color', array(
-            'label'   => __( 'Mau Nen Footer', 'developer-theme' ),
+            'label'   => __( 'Màu Nền Footer', 'developer-theme' ),
             'section' => 'developer_footer',
         )
     ) );
@@ -1417,7 +1417,7 @@ function developer_full_customize_register( $wp_customize ) {
     ) );
     $wp_customize->add_control( 'developer_footer_columns', array(
         'type'    => 'select',
-        'label'   => __( 'So Cot Footer', 'developer-theme' ),
+        'label'   => __( 'Số Cột Footer', 'developer-theme' ),
         'section' => 'developer_footer',
         'choices' => array(
             '1' => '1',
@@ -1431,7 +1431,7 @@ function developer_full_customize_register( $wp_customize ) {
     // SECTION: SOCIAL LINKS
     // ============================================================
     $wp_customize->add_section( 'developer_social', array(
-        'title'    => __( 'Mang Xa Hoi', 'developer-theme' ),
+        'title'    => __( 'Mạng Xã Hội', 'developer-theme' ),
         'panel'    => 'developer_panel',
         'priority' => 60,
     ) );
@@ -1508,7 +1508,7 @@ function developer_full_customize_register( $wp_customize ) {
 add_action( 'customize_register', 'developer_full_customize_register' );
 
 /**
- * Output Customizer CSS vao <head>
+ * Output Customizer CSS vào <head>
  */
 function developer_customizer_output_css() {
     $defaults = developer_get_defaults();
@@ -1588,7 +1588,7 @@ function developer_customizer_output_css() {
 add_action( 'wp_head', 'developer_customizer_output_css', 25 );
 
 /**
- * Load Google Fonts neu can
+ * Load Google Fonts nếu cần
  */
 function developer_load_google_fonts() {
     $defaults     = developer_get_defaults();
@@ -1613,7 +1613,7 @@ function developer_load_google_fonts() {
             'developer-google-fonts',
             'https://fonts.googleapis.com/css2?family=' . $font_string . '&display=swap',
             array(),
-            null // null = khong them version
+            null // null = không thêm version
         );
     }
 }
@@ -1624,71 +1624,71 @@ add_action( 'wp_enqueue_scripts', 'developer_load_google_fonts', 5 );
 
 ## 10. Best Practices
 
-### 1. Prefix tat ca settings
+### 1. Prefix tất cả settings
 
 ```php
-// DUNG: Prefix voi ten theme
+// ĐÚNG: Prefix với tên theme
 'developer_header_bg_color'
 'developer_primary_color'
 'developer_show_topbar'
 
-// SAI: Ten qua chung
+// SAI: Tên quá chung
 'header_color'
 'primary_color'
 'show_topbar'
 ```
 
-### 2. Luon co sanitize_callback
+### 2. Luôn có sanitize_callback
 
 ```php
-// MOI setting PHAI co sanitize_callback
-// KHONG BAO GIO bo trong
+// MỖI setting PHẢI có sanitize_callback
+// KHÔNG BAO GIỜ bỏ trống
 $wp_customize->add_setting( 'my_setting', array(
-    'sanitize_callback' => 'sanitize_text_field', // BAT BUOC
+    'sanitize_callback' => 'sanitize_text_field', // BẮT BUỘC
 ) );
 ```
 
-### 3. Dung transport postMessage khi co the
+### 3. Dùng transport postMessage khi có thể
 
 ```php
-// postMessage = nhanh, khong reload trang
-// refresh = cham, reload toan trang
+// postMessage = nhanh, không reload trang
+// refresh = chậm, reload toàn trang
 
-// Dung postMessage cho: colors, fonts, text, toggle
+// Dùng postMessage cho: colors, fonts, text, toggle
 'transport' => 'postMessage'
 
-// Dung refresh cho: layout changes, template changes
+// Dùng refresh cho: layout changes, template changes
 'transport' => 'refresh'
 ```
 
-### 4. Default values tap trung
+### 4. Default values tập trung
 
 ```php
-// Tap trung defaults vao 1 ham
+// Tập trung defaults vào 1 hàm
 function developer_get_defaults() {
     return array( ... );
 }
 
-// Dung trong setting:
+// Dùng trong setting:
 $defaults = developer_get_defaults();
 'default' => $defaults['developer_primary_color']
 
-// Dung trong template:
+// Dùng trong template:
 get_theme_mod( 'developer_primary_color', $defaults['developer_primary_color'] )
 ```
 
-### 5. Selective Refresh cho UX tot
+### 5. Selective Refresh cho UX tốt
 
 ```php
-// Uu tien Selective Refresh hon postMessage
-// Vi Selective Refresh dung PHP render, chinh xac hon JS
+// Ưu tiên Selective Refresh hơn postMessage
+// Vì Selective Refresh dùng PHP render, chính xác hơn JS
 $wp_customize->selective_refresh->add_partial( ... );
 ```
 
-### 6. Tach file
+### 6. Tách file
 
 ```php
-// Tach customizer code ra file rieng
+// Tách customizer code ra file riêng
 // functions.php:
 require get_template_directory() . '/inc/customizer.php';
 require get_template_directory() . '/inc/customizer-defaults.php';
@@ -1697,4 +1697,4 @@ require get_template_directory() . '/inc/customizer-controls.php';
 
 ---
 
-**Tiep theo:** [06 - Block Theme va FSE](./06-block-theme-va-fse.md) - Tim hieu Full Site Editing voi Block Theme
+**Tiếp theo:** [06 - Block Theme và FSE](./06-block-theme-va-fse.md) - Tìm hiểu Full Site Editing với Block Theme

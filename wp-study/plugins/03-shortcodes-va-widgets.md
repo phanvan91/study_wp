@@ -1,46 +1,46 @@
-# Shortcodes va Widgets trong WordPress Plugin
+# Shortcodes và Widgets trong WordPress Plugin
 
-## Muc luc
+## Mục lục
 
-1. [Shortcodes co ban](#1-shortcodes-co-ban)
-2. [Shortcode voi Attributes](#2-shortcode-voi-attributes)
-3. [Shortcode voi Enclosed Content](#3-shortcode-voi-enclosed-content)
-4. [Shortcode voi Form](#4-shortcode-voi-form)
-5. [Shortcode long nhau (Nested)](#5-shortcode-long-nhau-nested)
+1. [Shortcodes cơ bản](#1-shortcodes-co-ban)
+2. [Shortcode với Attributes](#2-shortcode-voi-attributes)
+3. [Shortcode với Enclosed Content](#3-shortcode-voi-enclosed-content)
+4. [Shortcode với Form](#4-shortcode-voi-form)
+5. [Shortcode lồng nhau (Nested)](#5-shortcode-long-nhau-nested)
 6. [Widgets API](#6-widgets-api)
-7. [Tao Widget tuy chinh](#7-tao-widget-tuy-chinh)
+7. [Tạo Widget tùy chỉnh](#7-tao-widget-tuy-chinh)
 8. [Gutenberg Block vs Widget](#8-gutenberg-block-vs-widget)
-9. [Code vi du day du](#9-code-vi-du-day-du)
+9. [Code ví dụ đầy đủ](#9-code-vi-du-day-du)
 10. [Best Practices](#10-best-practices)
 
 ---
 
-## 1. Shortcodes co ban
+## 1. Shortcodes cơ bản
 
-### Shortcode la gi?
+### Shortcode là gì?
 
-Shortcode la **ma tat** dat trong ngoac vuong `[]` cho phep nguoi dung chen noi dung dong vao bai viet, trang, hoac widget. Shortcode duoc xu ly phia server va tra ve HTML.
-
-```
-Nguoi dung viet:     [my_shortcode]
-WordPress xu ly:     goi ham callback
-Ket qua:             <div class="my-output">Noi dung</div>
-```
-
-### So sanh voi Laravel
+Shortcode là **mã tắt** đặt trong ngoặc vuông `[]` cho phép người dùng chèn nội dung động vào bài viết, trang, hoặc widget. Shortcode được xử lý phía server và trả về HTML.
 
 ```
-Laravel:   Blade Component   @component('alert') hoac <x-alert />
+Người dùng viết:     [my_shortcode]
+WordPress xử lý:     gọi hàm callback
+Kết quả:             <div class="my-output">Nội dung</div>
+```
+
+### So sánh với Laravel
+
+```
+Laravel:   Blade Component   @component('alert') hoặc <x-alert />
 WordPress: Shortcode         [alert]
 ```
 
-### Tao Shortcode don gian
+### Tạo Shortcode đơn giản
 
 ```php
 <?php
 /**
  * Plugin Name: Shortcode Demo
- * Description: Demo cac loai shortcode.
+ * Description: Demo các loại shortcode.
  * Version: 1.0.0
  */
 
@@ -49,76 +49,76 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * add_shortcode() - Dang ky 1 shortcode
+ * add_shortcode() - Đăng ký 1 shortcode
  *
- * @param string   $tag      Ten shortcode (dat trong [])
- * @param callable $callback Ham xu ly, PHAI return (khong echo)
+ * @param string   $tag      Tên shortcode (đặt trong [])
+ * @param callable $callback Hàm xử lý, PHẢI return (không echo)
  */
 add_shortcode( 'hello', 'scd_hello_shortcode' );
 
 /**
- * Shortcode don gian nhat: [hello]
- * Tra ve chuoi "Xin chao!"
+ * Shortcode đơn giản nhất: [hello]
+ * Trả về chuỗi "Xin chào!"
  *
- * LUU Y QUAN TRONG: Shortcode callback PHAI return, KHONG duoc echo.
- * Neu echo, noi dung se xuat hien sai vi tri (tren cung trang).
+ * LƯU Ý QUAN TRỌNG: Shortcode callback PHẢI return, KHÔNG được echo.
+ * Nếu echo, nội dung sẽ xuất hiện sai vị trí (trên cùng trang).
  */
 function scd_hello_shortcode() {
-    return '<p style="color: green; font-weight: bold;">Xin chao tu Shortcode!</p>';
+    return '<p style="color: green; font-weight: bold;">Xin chào từ Shortcode!</p>';
 }
 
-// Su dung trong bai viet:
+// Sử dụng trong bài viết:
 // [hello]
 
-// Shortcode hien thi nam hien tai: [current_year]
+// Shortcode hiển thị năm hiện tại: [current_year]
 add_shortcode( 'current_year', function() {
     return date( 'Y' );
 });
 
-// Su dung: Ban quyen &copy; [current_year] Cong ty ABC
-// Ket qua: Ban quyen (c) 2024 Cong ty ABC
+// Sử dụng: Bản quyền &copy; [current_year] Công ty ABC
+// Kết quả: Bản quyền (c) 2024 Công ty ABC
 ```
 
 ---
 
-## 2. Shortcode voi Attributes
+## 2. Shortcode với Attributes
 
-### shortcode_atts() - Xu ly thuoc tinh
+### shortcode_atts() - Xử lý thuộc tính
 
 ```php
 <?php
 /**
- * Shortcode voi thuoc tinh (attributes):
+ * Shortcode với thuộc tính (attributes):
  * [button text="Click me" url="https://example.com" color="blue" size="large"]
  */
 add_shortcode( 'button', 'scd_button_shortcode' );
 
 /**
- * @param array  $atts    Cac thuoc tinh nguoi dung truyen vao
- * @param string $content Noi dung giua the mo va dong (null neu self-closing)
- * @param string $tag     Ten shortcode ('button')
+ * @param array  $atts    Các thuộc tính người dùng truyền vào
+ * @param string $content Nội dung giữa thẻ mở và đóng (null nếu self-closing)
+ * @param string $tag     Tên shortcode ('button')
  */
 function scd_button_shortcode( $atts, $content = null, $tag = '' ) {
     /**
-     * shortcode_atts() - Gop thuoc tinh mac dinh voi thuoc tinh nguoi dung
+     * shortcode_atts() - Gộp thuộc tính mặc định với thuộc tính người dùng
      *
-     * @param array  $defaults  Gia tri mac dinh
-     * @param array  $atts      Gia tri nguoi dung truyen
-     * @param string $shortcode Ten shortcode (cho filter)
+     * @param array  $defaults  Giá trị mặc định
+     * @param array  $atts      Giá trị người dùng truyền
+     * @param string $shortcode Tên shortcode (cho filter)
      *
-     * Hoat dong: Neu nguoi dung KHONG truyen attribute,
-     * dung gia tri mac dinh. Neu co truyen, dung gia tri cua nguoi dung.
+     * Hoạt động: Nếu người dùng KHÔNG truyền attribute,
+     * dùng giá trị mặc định. Nếu có truyền, dùng giá trị của người dùng.
      */
     $atts = shortcode_atts( array(
-        'text'   => 'Click here',           // Mac dinh neu khong truyen
+        'text'   => 'Click here',           // Mặc định nếu không truyền
         'url'    => '#',
         'color'  => 'blue',                 // blue, green, red, orange
         'size'   => 'medium',               // small, medium, large
         'target' => '_self',                // _self, _blank
-        'class'  => '',                     // CSS class tuy chinh
-    ), $atts, 'button' );                   // 'button' = ten shortcode
+        'class'  => '',                     // CSS class tùy chỉnh
+    ), $atts, 'button' );                   // 'button' = tên shortcode
 
-    // Xac dinh styles dua tren attributes
+    // Xác định styles dựa trên attributes
     $colors = array(
         'blue'   => '#0073aa',
         'green'  => '#46b450',
@@ -136,7 +136,7 @@ function scd_button_shortcode( $atts, $content = null, $tag = '' ) {
     $size_style = $sizes[ $atts['size'] ] ?? $sizes['medium'];
     $extra_class = ! empty( $atts['class'] ) ? ' ' . esc_attr( $atts['class'] ) : '';
 
-    // Tra ve HTML
+    // Trả về HTML
     return sprintf(
         '<a href="%s" target="%s" class="scd-button%s" style="
             display: inline-block;
@@ -155,13 +155,13 @@ function scd_button_shortcode( $atts, $content = null, $tag = '' ) {
     );
 }
 
-// Su dung:
-// [button]                                          => Nut mac dinh
+// Sử dụng:
+// [button]                                          => Nút mặc định
 // [button text="Mua ngay" color="green" size="large"]
-// [button text="Xem chi tiet" url="/san-pham" target="_blank"]
+// [button text="Xem chi tiết" url="/san-pham" target="_blank"]
 ```
 
-### Shortcode hien thi danh sach posts
+### Shortcode hiển thị danh sách posts
 
 ```php
 <?php
@@ -179,7 +179,7 @@ function scd_recent_posts_shortcode( $atts ) {
         'columns'  => 1,
     ), $atts, 'recent_posts' );
 
-    // Xay dung query args
+    // Xây dựng query args
     $args = array(
         'post_type'      => 'post',
         'posts_per_page' => intval( $atts['count'] ),
@@ -188,16 +188,16 @@ function scd_recent_posts_shortcode( $atts ) {
         'post_status'    => 'publish',
     );
 
-    // Them category neu co
+    // Thêm category nếu có
     if ( ! empty( $atts['category'] ) ) {
         $args['category_name'] = sanitize_text_field( $atts['category'] );
     }
 
     $query = new WP_Query( $args );
 
-    // Bat dau output buffering
-    // Vi shortcode phai return, ta dung ob_start/ob_get_clean
-    // de viet HTML tu nhien hon (thay vi noi chuoi)
+    // Bắt đầu output buffering
+    // Vì shortcode phải return, ta dùng ob_start/ob_get_clean
+    // để viết HTML tự nhiên hơn (thay vì nối chuỗi)
     ob_start();
 
     if ( $query->have_posts() ) :
@@ -242,17 +242,17 @@ function scd_recent_posts_shortcode( $atts ) {
         </div>
         <?php
     else :
-        echo '<p>Khong co bai viet nao.</p>';
+        echo '<p>Không có bài viết nào.</p>';
     endif;
 
-    // QUAN TRONG: Reset post data sau khi dung WP_Query tuy chinh
+    // QUAN TRỌNG: Reset post data sau khi dùng WP_Query tùy chỉnh
     wp_reset_postdata();
 
-    // Lay noi dung tu buffer va return
+    // Lấy nội dung từ buffer và return
     return ob_get_clean();
 }
 
-// Su dung:
+// Sử dụng:
 // [recent_posts]
 // [recent_posts count="3" columns="3"]
 // [recent_posts count="6" category="tin-tuc" columns="2"]
@@ -260,28 +260,28 @@ function scd_recent_posts_shortcode( $atts ) {
 
 ---
 
-## 3. Shortcode voi Enclosed Content
+## 3. Shortcode với Enclosed Content
 
-### Shortcode bao quanh noi dung
+### Shortcode bao quanh nội dung
 
 ```php
 <?php
 /**
- * Shortcode co the bao quanh noi dung:
- * [highlight color="yellow"]Noi dung can highlight[/highlight]
+ * Shortcode có thể bao quanh nội dung:
+ * [highlight color="yellow"]Nội dung cần highlight[/highlight]
  *
- * $content chua noi dung giua [shortcode] va [/shortcode]
+ * $content chứa nội dung giữa [shortcode] và [/shortcode]
  */
 add_shortcode( 'highlight', 'scd_highlight_shortcode' );
 
 function scd_highlight_shortcode( $atts, $content = null ) {
     $atts = shortcode_atts( array(
         'color' => 'yellow',
-        'style' => 'inline',   // inline hoac block
+        'style' => 'inline',   // inline hoặc block
     ), $atts, 'highlight' );
 
-    // Xu ly noi dung ben trong (cho phep shortcode long nhau)
-    // do_shortcode() xu ly cac shortcode nam trong $content
+    // Xử lý nội dung bên trong (cho phép shortcode lồng nhau)
+    // do_shortcode() xử lý các shortcode nằm trong $content
     $content = do_shortcode( $content );
 
     $display = $atts['style'] === 'block' ? 'display:block; padding:15px;' : 'padding:2px 5px;';
@@ -290,13 +290,13 @@ function scd_highlight_shortcode( $atts, $content = null ) {
         '<span class="scd-highlight" style="background-color:%s; %s border-radius:3px;">%s</span>',
         esc_attr( $atts['color'] ),
         $display,
-        wp_kses_post( $content )  // Cho phep HTML an toan
+        wp_kses_post( $content )  // Cho phép HTML an toàn
     );
 }
 
-// [highlight]Noi dung quan trong[/highlight]
+// [highlight]Nội dung quan trọng[/highlight]
 // [highlight color="#ff0" style="block"]
-//     <strong>Chu y:</strong> Day la noi dung quan trong.
+//     <strong>Chú ý:</strong> Đây là nội dung quan trọng.
 // [/highlight]
 ```
 
@@ -305,10 +305,10 @@ function scd_highlight_shortcode( $atts, $content = null ) {
 ```php
 <?php
 /**
- * [alert type="warning"]Noi dung canh bao[/alert]
- * [alert type="success"]Thao tac thanh cong![/alert]
- * [alert type="error"]Co loi xay ra![/alert]
- * [alert type="info"]Thong tin tham khao.[/alert]
+ * [alert type="warning"]Nội dung cảnh báo[/alert]
+ * [alert type="success"]Thao tác thành công![/alert]
+ * [alert type="error"]Có lỗi xảy ra![/alert]
+ * [alert type="info"]Thông tin tham khảo.[/alert]
  */
 add_shortcode( 'alert', 'scd_alert_shortcode' );
 
@@ -319,7 +319,7 @@ function scd_alert_shortcode( $atts, $content = null ) {
         'icon'        => 'true',      // true/false
     ), $atts, 'alert' );
 
-    // Mau sac va icon theo type
+    // Màu sắc và icon theo type
     $styles = array(
         'info'    => array( 'bg' => '#e7f3fe', 'border' => '#2196F3', 'icon' => 'ℹ' ),
         'success' => array( 'bg' => '#ddffdd', 'border' => '#4CAF50', 'icon' => '✓' ),
@@ -364,43 +364,43 @@ function scd_alert_shortcode( $atts, $content = null ) {
     );
 }
 
-// Su dung:
-// [alert type="info"]Day la thong tin tham khao.[/alert]
-// [alert type="warning" dismissible="true"]Canh bao! Co the dong lai duoc.[/alert]
-// [alert type="error"]Loi: Khong the ket noi database![/alert]
-// [alert type="success" icon="false"]Thanh cong![/alert]
+// Sử dụng:
+// [alert type="info"]Đây là thông tin tham khảo.[/alert]
+// [alert type="warning" dismissible="true"]Cảnh báo! Có thể đóng lại được.[/alert]
+// [alert type="error"]Lỗi: Không thể kết nối database![/alert]
+// [alert type="success" icon="false"]Thành công![/alert]
 ```
 
 ---
 
-## 4. Shortcode voi Form
+## 4. Shortcode với Form
 
 ```php
 <?php
 /**
- * Shortcode tao form lien he:
- * [contact_form email="admin@example.com" subject="Lien he tu website"]
+ * Shortcode tạo form liên hệ:
+ * [contact_form email="admin@example.com" subject="Liên hệ từ website"]
  */
 add_shortcode( 'contact_form', 'scd_contact_form_shortcode' );
 
 function scd_contact_form_shortcode( $atts ) {
     $atts = shortcode_atts( array(
         'email'   => get_option( 'admin_email' ),
-        'subject' => 'Lien he tu ' . get_bloginfo( 'name' ),
-        'success' => 'Cam on ban! Tin nhan da duoc gui thanh cong.',
+        'subject' => 'Liên hệ từ ' . get_bloginfo( 'name' ),
+        'success' => 'Cảm ơn bạn! Tin nhắn đã được gửi thành công.',
     ), $atts, 'contact_form' );
 
     $message = '';
     $form_data = array( 'name' => '', 'email' => '', 'phone' => '', 'message' => '' );
 
-    // Xu ly form khi submit
+    // Xử lý form khi submit
     if ( isset( $_POST['scd_contact_submit'] ) ) {
-        // Kiem tra nonce
+        // Kiểm tra nonce
         if ( ! wp_verify_nonce( $_POST['scd_contact_nonce'] ?? '', 'scd_contact_action' ) ) {
             $message = '<div class="scd-alert" style="background:#ffdddd; padding:10px; margin:10px 0;">
-                Loi bao mat! Vui long thu lai.</div>';
+                Lỗi bảo mật! Vui lòng thử lại.</div>';
         } else {
-            // Lay va sanitize du lieu
+            // Lấy và sanitize dữ liệu
             $form_data['name']    = sanitize_text_field( $_POST['scd_name'] ?? '' );
             $form_data['email']   = sanitize_email( $_POST['scd_email'] ?? '' );
             $form_data['phone']   = sanitize_text_field( $_POST['scd_phone'] ?? '' );
@@ -409,13 +409,13 @@ function scd_contact_form_shortcode( $atts ) {
             // Validate
             $errors = array();
             if ( empty( $form_data['name'] ) ) {
-                $errors[] = 'Vui long nhap ho ten.';
+                $errors[] = 'Vui lòng nhập họ tên.';
             }
             if ( ! is_email( $form_data['email'] ) ) {
-                $errors[] = 'Email khong hop le.';
+                $errors[] = 'Email không hợp lệ.';
             }
             if ( empty( $form_data['message'] ) ) {
-                $errors[] = 'Vui long nhap noi dung tin nhan.';
+                $errors[] = 'Vui lòng nhập nội dung tin nhắn.';
             }
 
             if ( ! empty( $errors ) ) {
@@ -425,9 +425,9 @@ function scd_contact_form_shortcode( $atts ) {
                 }
                 $message .= '</div>';
             } else {
-                // Gui email
+                // Gửi email
                 $email_body = sprintf(
-                    "Ho ten: %s\nEmail: %s\nSo dien thoai: %s\n\nNoi dung:\n%s",
+                    "Họ tên: %s\nEmail: %s\nSố điện thoại: %s\n\nNội dung:\n%s",
                     $form_data['name'],
                     $form_data['email'],
                     $form_data['phone'],
@@ -450,11 +450,11 @@ function scd_contact_form_shortcode( $atts ) {
                     $message = '<div style="background:#ddffdd; padding:15px; margin:10px 0; border-radius:4px;">
                         <p style="margin:0; color:#46b450;">' . esc_html( $atts['success'] ) . '</p>
                     </div>';
-                    // Reset form data sau khi gui thanh cong
+                    // Reset form data sau khi gửi thành công
                     $form_data = array( 'name' => '', 'email' => '', 'phone' => '', 'message' => '' );
                 } else {
                     $message = '<div style="background:#ffdddd; padding:15px; margin:10px 0; border-radius:4px;">
-                        <p style="margin:0; color:#d63638;">Co loi khi gui email. Vui long thu lai.</p>
+                        <p style="margin:0; color:#d63638;">Có lỗi khi gửi email. Vui lòng thử lại.</p>
                     </div>';
                 }
             }
@@ -472,7 +472,7 @@ function scd_contact_form_shortcode( $atts ) {
 
             <div>
                 <label for="scd_name" style="display:block; margin-bottom:5px; font-weight:600;">
-                    Ho ten <span style="color:red;">*</span>
+                    Họ tên <span style="color:red;">*</span>
                 </label>
                 <input type="text" id="scd_name" name="scd_name"
                        value="<?php echo esc_attr( $form_data['name'] ); ?>"
@@ -492,7 +492,7 @@ function scd_contact_form_shortcode( $atts ) {
 
             <div>
                 <label for="scd_phone" style="display:block; margin-bottom:5px; font-weight:600;">
-                    So dien thoai
+                    Số điện thoại
                 </label>
                 <input type="tel" id="scd_phone" name="scd_phone"
                        value="<?php echo esc_attr( $form_data['phone'] ); ?>"
@@ -501,7 +501,7 @@ function scd_contact_form_shortcode( $atts ) {
 
             <div>
                 <label for="scd_message" style="display:block; margin-bottom:5px; font-weight:600;">
-                    Noi dung <span style="color:red;">*</span>
+                    Nội dung <span style="color:red;">*</span>
                 </label>
                 <textarea id="scd_message" name="scd_message" rows="5" required
                           style="width:100%; padding:8px 12px; border:1px solid #ddd; border-radius:4px;"
@@ -512,7 +512,7 @@ function scd_contact_form_shortcode( $atts ) {
                 <button type="submit" name="scd_contact_submit" value="1"
                         style="background:#0073aa; color:#fff; border:none; padding:12px 30px;
                                border-radius:4px; cursor:pointer; font-size:16px;">
-                    Gui tin nhan
+                    Gửi tin nhắn
                 </button>
             </div>
         </form>
@@ -524,19 +524,19 @@ function scd_contact_form_shortcode( $atts ) {
 
 ---
 
-## 5. Shortcode long nhau (Nested)
+## 5. Shortcode lồng nhau (Nested)
 
 ```php
 <?php
 /**
- * Shortcodes long nhau de tao layout phuc tap.
+ * Shortcodes lồng nhau để tạo layout phức tạp.
  *
  * [row]
- *   [column width="6"]Noi dung cot 1[/column]
- *   [column width="6"]Noi dung cot 2[/column]
+ *   [column width="6"]Nội dung cột 1[/column]
+ *   [column width="6"]Nội dung cột 2[/column]
  * [/row]
  *
- * Dung he thong 12 columns (giong Bootstrap grid).
+ * Dùng hệ thống 12 columns (giống Bootstrap grid).
  */
 
 // === ROW Shortcode ===
@@ -548,7 +548,7 @@ function scd_row_shortcode( $atts, $content = null ) {
         'class' => '',
     ), $atts, 'row' );
 
-    // do_shortcode() de xu ly [column] ben trong
+    // do_shortcode() để xử lý [column] bên trong
     $content = do_shortcode( $content );
 
     return sprintf(
@@ -569,12 +569,12 @@ add_shortcode( 'column', 'scd_column_shortcode' );
 
 function scd_column_shortcode( $atts, $content = null ) {
     $atts = shortcode_atts( array(
-        'width' => '6',        // 1-12 (he thong 12 cot)
+        'width' => '6',        // 1-12 (hệ thống 12 cột)
         'class' => '',
     ), $atts, 'column' );
 
     $width = max( 1, min( 12, intval( $atts['width'] ) ) );
-    // Tinh % dua tren 12 columns, tru gap
+    // Tính % dựa trên 12 columns, trừ gap
     $percentage = ( $width / 12 ) * 100;
 
     $content = do_shortcode( $content );
@@ -591,19 +591,19 @@ function scd_column_shortcode( $atts, $content = null ) {
     );
 }
 
-// Su dung:
+// Sử dụng:
 // [row]
 //   [column width="4"]
-//     <h3>Cot 1</h3>
-//     <p>Chiem 1/3 chieu rong</p>
+//     <h3>Cột 1</h3>
+//     <p>Chiếm 1/3 chiều rộng</p>
 //   [/column]
 //   [column width="4"]
-//     <h3>Cot 2</h3>
-//     <p>Chiem 1/3 chieu rong</p>
+//     <h3>Cột 2</h3>
+//     <p>Chiếm 1/3 chiều rộng</p>
 //   [/column]
 //   [column width="4"]
-//     <h3>Cot 3</h3>
-//     <p>Chiem 1/3 chieu rong</p>
+//     <h3>Cột 3</h3>
+//     <p>Chiếm 1/3 chiều rộng</p>
 //   [/column]
 // [/row]
 ```
@@ -614,13 +614,13 @@ function scd_column_shortcode( $atts, $content = null ) {
 <?php
 /**
  * [tabs]
- *   [tab title="Tab 1"]Noi dung tab 1[/tab]
- *   [tab title="Tab 2"]Noi dung tab 2[/tab]
- *   [tab title="Tab 3"]Noi dung tab 3[/tab]
+ *   [tab title="Tab 1"]Nội dung tab 1[/tab]
+ *   [tab title="Tab 2"]Nội dung tab 2[/tab]
+ *   [tab title="Tab 3"]Nội dung tab 3[/tab]
  * [/tabs]
  */
 
-// Bien global tam de luu data cac tab
+// Biến global tạm để lưu data các tab
 $scd_tabs_data = array();
 
 add_shortcode( 'tabs', 'scd_tabs_shortcode' );
@@ -629,15 +629,15 @@ function scd_tabs_shortcode( $atts, $content = null ) {
     global $scd_tabs_data;
     $scd_tabs_data = array(); // Reset
 
-    // do_shortcode de xu ly cac [tab] ben trong
-    // Moi [tab] se push data vao $scd_tabs_data
+    // do_shortcode để xử lý các [tab] bên trong
+    // Mỗi [tab] sẽ push data vào $scd_tabs_data
     do_shortcode( $content );
 
     if ( empty( $scd_tabs_data ) ) {
         return '';
     }
 
-    // Tao ID duy nhat cho moi tabs instance
+    // Tạo ID duy nhất cho mỗi tabs instance
     $tabs_id = 'scd-tabs-' . wp_rand( 1000, 9999 );
 
     ob_start();
@@ -682,11 +682,11 @@ function scd_tabs_shortcode( $atts, $content = null ) {
     function scdSwitchTab(tabsId, tabIndex) {
         var container = document.getElementById(tabsId);
 
-        // An tat ca tab content
+        // Ẩn tất cả tab content
         var contents = container.querySelectorAll('.scd-tab-content');
         contents.forEach(function(el) { el.style.display = 'none'; });
 
-        // Reset tat ca buttons
+        // Reset tất cả buttons
         var buttons = container.querySelectorAll('.scd-tab-button');
         buttons.forEach(function(el) {
             el.style.background = 'transparent';
@@ -694,7 +694,7 @@ function scd_tabs_shortcode( $atts, $content = null ) {
             el.style.borderBottom = 'none';
         });
 
-        // Hien thi tab duoc chon
+        // Hiển thị tab được chọn
         container.querySelector('.scd-tab-content[data-tab="' + tabIndex + '"]').style.display = 'block';
         var activeBtn = container.querySelector('.scd-tab-button[data-tab="' + tabIndex + '"]');
         activeBtn.style.background = '#fff';
@@ -715,13 +715,13 @@ function scd_tab_shortcode( $atts, $content = null ) {
         'title' => 'Tab',
     ), $atts, 'tab' );
 
-    // Luu data cua tab vao mang global
+    // Lưu data của tab vào mảng global
     $scd_tabs_data[] = array(
         'title'   => $atts['title'],
         'content' => do_shortcode( $content ),
     );
 
-    // Khong return gi ca - tabs shortcode se render tat ca
+    // Không return gì cả - tabs shortcode sẽ render tất cả
     return '';
 }
 ```
@@ -730,11 +730,11 @@ function scd_tab_shortcode( $atts, $content = null ) {
 
 ## 6. Widgets API
 
-### Widget la gi?
+### Widget là gì?
 
-Widget la cac khoi noi dung nho co the keo tha vao **sidebar**, **footer**, hoac bat ky **widget area** nao trong theme. Moi widget co form cai dat rieng trong admin.
+Widget là các khối nội dung nhỏ có thể kéo thả vào **sidebar**, **footer**, hoặc bất kỳ **widget area** nào trong theme. Mỗi widget có form cài đặt riêng trong admin.
 
-### So sanh voi Laravel
+### So sánh với Laravel
 
 ```
 Laravel:   View Component / Blade Component
@@ -744,38 +744,38 @@ Laravel:
   <x-sidebar-widget title="Recent Posts" :count="5" />
 
 WordPress:
-  Keo tha widget vao sidebar area trong Admin > Appearance > Widgets
+  Kéo thả widget vào sidebar area trong Admin > Appearance > Widgets
 ```
 
-### WP_Widget Class - Cau truc
+### WP_Widget Class - Cấu trúc
 
 ```php
 <?php
 /**
- * Moi Widget la 1 class ke thua WP_Widget.
- * Can override 3 methods chinh:
+ * Mỗi Widget là 1 class kế thừa WP_Widget.
+ * Cần override 3 methods chính:
  */
 class My_Widget extends WP_Widget {
 
     /**
-     * Constructor: Dang ky widget
+     * Constructor: Đăng ký widget
      */
     public function __construct() {
         parent::__construct(
-            'my_widget',                  // Base ID (duy nhat)
-            'Ten Widget',                 // Ten hien thi
-            array(                        // Tuy chon
-                'description' => 'Mo ta widget.',
+            'my_widget',                  // Base ID (duy nhất)
+            'Tên Widget',                 // Tên hiển thị
+            array(                        // Tùy chọn
+                'description' => 'Mô tả widget.',
                 'classname'   => 'my-widget-class',    // CSS class cho wrapper
             )
         );
     }
 
     /**
-     * Frontend: Hien thi widget tren trang web
+     * Frontend: Hiển thị widget trên trang web
      *
-     * @param array $args     Tham so tu widget area (before_widget, after_widget, etc.)
-     * @param array $instance Gia tri settings cua widget instance nay
+     * @param array $args     Tham số từ widget area (before_widget, after_widget, etc.)
+     * @param array $instance Giá trị settings của widget instance này
      */
     public function widget( $args, $instance ) {
         // $args['before_widget'] = '<div class="widget my-widget-class">'
@@ -789,23 +789,23 @@ class My_Widget extends WP_Widget {
             echo $args['before_title'] . esc_html( $instance['title'] ) . $args['after_title'];
         }
 
-        // Noi dung widget
-        echo '<p>Noi dung widget o day.</p>';
+        // Nội dung widget
+        echo '<p>Nội dung widget ở đây.</p>';
 
         echo $args['after_widget'];
     }
 
     /**
-     * Admin Form: Form cai dat trong admin
+     * Admin Form: Form cài đặt trong admin
      *
-     * @param array $instance Gia tri hien tai
+     * @param array $instance Giá trị hiện tại
      */
     public function form( $instance ) {
-        $title = $instance['title'] ?? 'Tieu de mac dinh';
+        $title = $instance['title'] ?? 'Tiêu đề mặc định';
         ?>
         <p>
             <label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>">
-                Tieu de:
+                Tiêu đề:
             </label>
             <input class="widefat"
                    id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
@@ -817,11 +817,11 @@ class My_Widget extends WP_Widget {
     }
 
     /**
-     * Update: Xu ly khi luu settings
+     * Update: Xử lý khi lưu settings
      *
-     * @param array $new_instance Gia tri moi tu form
-     * @param array $old_instance Gia tri cu
-     * @return array Gia tri da sanitize de luu
+     * @param array $new_instance Giá trị mới từ form
+     * @param array $old_instance Giá trị cũ
+     * @return array Giá trị đã sanitize để lưu
      */
     public function update( $new_instance, $old_instance ) {
         $instance = array();
@@ -830,7 +830,7 @@ class My_Widget extends WP_Widget {
     }
 }
 
-// Dang ky widget
+// Đăng ký widget
 add_action( 'widgets_init', function() {
     register_widget( 'My_Widget' );
 });
@@ -838,15 +838,15 @@ add_action( 'widgets_init', function() {
 
 ---
 
-## 7. Tao Widget tuy chinh
+## 7. Tạo Widget tùy chỉnh
 
-### Widget Thong tin lien he
+### Widget Thông tin liên hệ
 
 ```php
 <?php
 /**
  * Plugin Name: Custom Widgets Plugin
- * Description: Tao cac widget tuy chinh.
+ * Description: Tạo các widget tùy chỉnh.
  * Version: 1.0.0
  */
 
@@ -854,28 +854,28 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// === WIDGET 1: Thong tin lien he ===
+// === WIDGET 1: Thông tin liên hệ ===
 
 class CWP_Contact_Info_Widget extends WP_Widget {
 
     public function __construct() {
         parent::__construct(
             'cwp_contact_info',
-            'Thong tin lien he',
+            'Thông tin liên hệ',
             array(
-                'description' => 'Hien thi thong tin lien he cua cong ty.',
+                'description' => 'Hiển thị thông tin liên hệ của công ty.',
                 'classname'   => 'cwp-contact-info-widget',
             )
         );
     }
 
     /**
-     * Frontend: Hien thi widget
+     * Frontend: Hiển thị widget
      */
     public function widget( $args, $instance ) {
         echo $args['before_widget'];
 
-        // Tieu de
+        // Tiêu đề
         if ( ! empty( $instance['title'] ) ) {
             echo $args['before_title'];
             echo esc_html( $instance['title'] );
@@ -885,14 +885,14 @@ class CWP_Contact_Info_Widget extends WP_Widget {
         <div class="cwp-contact-info">
             <?php if ( ! empty( $instance['address'] ) ) : ?>
                 <p>
-                    <strong>Dia chi:</strong><br>
+                    <strong>Địa chỉ:</strong><br>
                     <?php echo esc_html( $instance['address'] ); ?>
                 </p>
             <?php endif; ?>
 
             <?php if ( ! empty( $instance['phone'] ) ) : ?>
                 <p>
-                    <strong>Dien thoai:</strong><br>
+                    <strong>Điện thoại:</strong><br>
                     <a href="tel:<?php echo esc_attr( $instance['phone'] ); ?>">
                         <?php echo esc_html( $instance['phone'] ); ?>
                     </a>
@@ -910,7 +910,7 @@ class CWP_Contact_Info_Widget extends WP_Widget {
 
             <?php if ( ! empty( $instance['hours'] ) ) : ?>
                 <p>
-                    <strong>Gio lam viec:</strong><br>
+                    <strong>Giờ làm việc:</strong><br>
                     <?php echo nl2br( esc_html( $instance['hours'] ) ); ?>
                 </p>
             <?php endif; ?>
@@ -918,7 +918,7 @@ class CWP_Contact_Info_Widget extends WP_Widget {
             <?php if ( ! empty( $instance['show_map'] ) && ! empty( $instance['map_embed'] ) ) : ?>
                 <div class="cwp-map" style="margin-top:10px;">
                     <?php
-                    // Chi cho phep iframe tu Google Maps
+                    // Chỉ cho phép iframe từ Google Maps
                     echo wp_kses( $instance['map_embed'], array(
                         'iframe' => array(
                             'src'             => array(),
@@ -939,11 +939,11 @@ class CWP_Contact_Info_Widget extends WP_Widget {
     }
 
     /**
-     * Admin Form: Cac truong nhap lieu
+     * Admin Form: Các trường nhập liệu
      */
     public function form( $instance ) {
         $defaults = array(
-            'title'     => 'Lien he',
+            'title'     => 'Liên hệ',
             'address'   => '',
             'phone'     => '',
             'email'     => '',
@@ -955,7 +955,7 @@ class CWP_Contact_Info_Widget extends WP_Widget {
         ?>
         <!-- Title -->
         <p>
-            <label for="<?php echo $this->get_field_id( 'title' ); ?>">Tieu de:</label>
+            <label for="<?php echo $this->get_field_id( 'title' ); ?>">Tiêu đề:</label>
             <input class="widefat"
                    id="<?php echo $this->get_field_id( 'title' ); ?>"
                    name="<?php echo $this->get_field_name( 'title' ); ?>"
@@ -965,7 +965,7 @@ class CWP_Contact_Info_Widget extends WP_Widget {
 
         <!-- Address -->
         <p>
-            <label for="<?php echo $this->get_field_id( 'address' ); ?>">Dia chi:</label>
+            <label for="<?php echo $this->get_field_id( 'address' ); ?>">Địa chỉ:</label>
             <input class="widefat"
                    id="<?php echo $this->get_field_id( 'address' ); ?>"
                    name="<?php echo $this->get_field_name( 'address' ); ?>"
@@ -975,7 +975,7 @@ class CWP_Contact_Info_Widget extends WP_Widget {
 
         <!-- Phone -->
         <p>
-            <label for="<?php echo $this->get_field_id( 'phone' ); ?>">So dien thoai:</label>
+            <label for="<?php echo $this->get_field_id( 'phone' ); ?>">Số điện thoại:</label>
             <input class="widefat"
                    id="<?php echo $this->get_field_id( 'phone' ); ?>"
                    name="<?php echo $this->get_field_name( 'phone' ); ?>"
@@ -995,12 +995,12 @@ class CWP_Contact_Info_Widget extends WP_Widget {
 
         <!-- Working Hours -->
         <p>
-            <label for="<?php echo $this->get_field_id( 'hours' ); ?>">Gio lam viec:</label>
+            <label for="<?php echo $this->get_field_id( 'hours' ); ?>">Giờ làm việc:</label>
             <textarea class="widefat" rows="3"
                       id="<?php echo $this->get_field_id( 'hours' ); ?>"
                       name="<?php echo $this->get_field_name( 'hours' ); ?>"
             ><?php echo esc_textarea( $instance['hours'] ); ?></textarea>
-            <small>Vi du: Thu 2 - Thu 6: 8:00 - 17:00</small>
+            <small>Ví dụ: Thứ 2 - Thứ 6: 8:00 - 17:00</small>
         </p>
 
         <!-- Show Map -->
@@ -1010,7 +1010,7 @@ class CWP_Contact_Info_Widget extends WP_Widget {
                    name="<?php echo $this->get_field_name( 'show_map' ); ?>"
                    value="1"
                    <?php checked( $instance['show_map'], true ); ?>>
-            <label for="<?php echo $this->get_field_id( 'show_map' ); ?>">Hien thi ban do</label>
+            <label for="<?php echo $this->get_field_id( 'show_map' ); ?>">Hiển thị bản đồ</label>
         </p>
 
         <!-- Map Embed Code -->
@@ -1026,7 +1026,7 @@ class CWP_Contact_Info_Widget extends WP_Widget {
     }
 
     /**
-     * Update: Sanitize va luu
+     * Update: Sanitize và lưu
      */
     public function update( $new_instance, $old_instance ) {
         $instance = array();
@@ -1068,9 +1068,9 @@ class CWP_Social_Links_Widget extends WP_Widget {
     public function __construct() {
         parent::__construct(
             'cwp_social_links',
-            'Lien ket mang xa hoi',
+            'Liên kết mạng xã hội',
             array(
-                'description' => 'Hien thi cac icon mang xa hoi.',
+                'description' => 'Hiển thị các icon mạng xã hội.',
                 'classname'   => 'cwp-social-links-widget',
             )
         );
@@ -1120,11 +1120,11 @@ class CWP_Social_Links_Widget extends WP_Widget {
     }
 
     public function form( $instance ) {
-        $title = $instance['title'] ?? 'Ket noi voi chung toi';
+        $title = $instance['title'] ?? 'Kết nối với chúng tôi';
         $style = $instance['style'] ?? 'icon';
         ?>
         <p>
-            <label for="<?php echo $this->get_field_id( 'title' ); ?>">Tieu de:</label>
+            <label for="<?php echo $this->get_field_id( 'title' ); ?>">Tiêu đề:</label>
             <input class="widefat" type="text"
                    id="<?php echo $this->get_field_id( 'title' ); ?>"
                    name="<?php echo $this->get_field_name( 'title' ); ?>"
@@ -1132,17 +1132,17 @@ class CWP_Social_Links_Widget extends WP_Widget {
         </p>
 
         <p>
-            <label for="<?php echo $this->get_field_id( 'style' ); ?>">Kieu hien thi:</label>
+            <label for="<?php echo $this->get_field_id( 'style' ); ?>">Kiểu hiển thị:</label>
             <select class="widefat"
                     id="<?php echo $this->get_field_id( 'style' ); ?>"
                     name="<?php echo $this->get_field_name( 'style' ); ?>">
-                <option value="icon" <?php selected( $style, 'icon' ); ?>>Icon tron</option>
-                <option value="text" <?php selected( $style, 'text' ); ?>>Hien thi ten</option>
+                <option value="icon" <?php selected( $style, 'icon' ); ?>>Icon tròn</option>
+                <option value="text" <?php selected( $style, 'text' ); ?>>Hiển thị tên</option>
             </select>
         </p>
 
         <hr>
-        <p><strong>Nhap URL mang xa hoi:</strong></p>
+        <p><strong>Nhập URL mạng xã hội:</strong></p>
 
         <?php foreach ( $this->networks as $key => $label ) :
             $value = $instance[ $key ] ?? '';
@@ -1175,16 +1175,16 @@ class CWP_Social_Links_Widget extends WP_Widget {
     }
 }
 
-// === WIDGET 3: Bai viet noi bat ===
+// === WIDGET 3: Bài viết nổi bật ===
 
 class CWP_Featured_Posts_Widget extends WP_Widget {
 
     public function __construct() {
         parent::__construct(
             'cwp_featured_posts',
-            'Bai viet noi bat',
+            'Bài viết nổi bật',
             array(
-                'description' => 'Hien thi danh sach bai viet noi bat voi thumbnail.',
+                'description' => 'Hiển thị danh sách bài viết nổi bật với thumbnail.',
                 'classname'   => 'cwp-featured-posts-widget',
             )
         );
@@ -1213,7 +1213,7 @@ class CWP_Featured_Posts_Widget extends WP_Widget {
         }
 
         if ( ! empty( $instance['show_thumbnail'] ) ) {
-            $query_args['meta_key'] = '_thumbnail_id';  // Chi lay bai co thumbnail
+            $query_args['meta_key'] = '_thumbnail_id';  // Chỉ lấy bài có thumbnail
         }
 
         $query = new WP_Query( $query_args );
@@ -1252,7 +1252,7 @@ class CWP_Featured_Posts_Widget extends WP_Widget {
             echo '</ul>';
             wp_reset_postdata();
         else :
-            echo '<p>Khong co bai viet.</p>';
+            echo '<p>Không có bài viết.</p>';
         endif;
 
         echo $args['after_widget'];
@@ -1260,7 +1260,7 @@ class CWP_Featured_Posts_Widget extends WP_Widget {
 
     public function form( $instance ) {
         $defaults = array(
-            'title'          => 'Bai viet noi bat',
+            'title'          => 'Bài viết nổi bật',
             'count'          => 5,
             'category'       => '',
             'orderby'        => 'date',
@@ -1270,7 +1270,7 @@ class CWP_Featured_Posts_Widget extends WP_Widget {
         $instance = wp_parse_args( $instance, $defaults );
         ?>
         <p>
-            <label for="<?php echo $this->get_field_id( 'title' ); ?>">Tieu de:</label>
+            <label for="<?php echo $this->get_field_id( 'title' ); ?>">Tiêu đề:</label>
             <input class="widefat" type="text"
                    id="<?php echo $this->get_field_id( 'title' ); ?>"
                    name="<?php echo $this->get_field_name( 'title' ); ?>"
@@ -1278,7 +1278,7 @@ class CWP_Featured_Posts_Widget extends WP_Widget {
         </p>
 
         <p>
-            <label for="<?php echo $this->get_field_id( 'count' ); ?>">So luong bai viet:</label>
+            <label for="<?php echo $this->get_field_id( 'count' ); ?>">Số lượng bài viết:</label>
             <input class="tiny-text" type="number" min="1" max="20"
                    id="<?php echo $this->get_field_id( 'count' ); ?>"
                    name="<?php echo $this->get_field_name( 'count' ); ?>"
@@ -1286,11 +1286,11 @@ class CWP_Featured_Posts_Widget extends WP_Widget {
         </p>
 
         <p>
-            <label for="<?php echo $this->get_field_id( 'category' ); ?>">Chuyen muc:</label>
+            <label for="<?php echo $this->get_field_id( 'category' ); ?>">Chuyên mục:</label>
             <?php
             // wp_dropdown_categories tao dropdown tu dong tu danh sach categories
             wp_dropdown_categories( array(
-                'show_option_all' => '-- Tat ca --',
+                'show_option_all' => '-- Tất cả --',
                 'selected'        => $instance['category'],
                 'name'            => $this->get_field_name( 'category' ),
                 'id'              => $this->get_field_id( 'category' ),
@@ -1301,13 +1301,13 @@ class CWP_Featured_Posts_Widget extends WP_Widget {
         </p>
 
         <p>
-            <label for="<?php echo $this->get_field_id( 'orderby' ); ?>">Sap xep theo:</label>
+            <label for="<?php echo $this->get_field_id( 'orderby' ); ?>">Sắp xếp theo:</label>
             <select class="widefat"
                     id="<?php echo $this->get_field_id( 'orderby' ); ?>"
                     name="<?php echo $this->get_field_name( 'orderby' ); ?>">
-                <option value="date" <?php selected( $instance['orderby'], 'date' ); ?>>Ngay moi nhat</option>
-                <option value="comment_count" <?php selected( $instance['orderby'], 'comment_count' ); ?>>Nhieu binh luan</option>
-                <option value="rand" <?php selected( $instance['orderby'], 'rand' ); ?>>Ngau nhien</option>
+                <option value="date" <?php selected( $instance['orderby'], 'date' ); ?>>Ngày mới nhất</option>
+                <option value="comment_count" <?php selected( $instance['orderby'], 'comment_count' ); ?>>Nhiều bình luận</option>
+                <option value="rand" <?php selected( $instance['orderby'], 'rand' ); ?>>Ngẫu nhiên</option>
             </select>
         </p>
 
@@ -1316,7 +1316,7 @@ class CWP_Featured_Posts_Widget extends WP_Widget {
                    id="<?php echo $this->get_field_id( 'show_thumbnail' ); ?>"
                    name="<?php echo $this->get_field_name( 'show_thumbnail' ); ?>"
                    value="1" <?php checked( $instance['show_thumbnail'] ); ?>>
-            <label for="<?php echo $this->get_field_id( 'show_thumbnail' ); ?>">Hien thi hinh nho</label>
+            <label for="<?php echo $this->get_field_id( 'show_thumbnail' ); ?>">Hiển thị hình nhỏ</label>
         </p>
 
         <p>
@@ -1324,7 +1324,7 @@ class CWP_Featured_Posts_Widget extends WP_Widget {
                    id="<?php echo $this->get_field_id( 'show_date' ); ?>"
                    name="<?php echo $this->get_field_name( 'show_date' ); ?>"
                    value="1" <?php checked( $instance['show_date'] ); ?>>
-            <label for="<?php echo $this->get_field_id( 'show_date' ); ?>">Hien thi ngay dang</label>
+            <label for="<?php echo $this->get_field_id( 'show_date' ); ?>">Hiển thị ngày đăng</label>
         </p>
         <?php
     }
@@ -1342,7 +1342,7 @@ class CWP_Featured_Posts_Widget extends WP_Widget {
     }
 }
 
-// === DANG KY TAT CA WIDGETS ===
+// === ĐĂNG KÝ TẤT CẢ WIDGETS ===
 add_action( 'widgets_init', 'cwp_register_widgets' );
 
 function cwp_register_widgets() {
@@ -1356,38 +1356,38 @@ function cwp_register_widgets() {
 
 ## 8. Gutenberg Block vs Widget
 
-### So sanh
+### So sánh
 
-| Dac diem | Classic Widget | Gutenberg Block |
+| Đặc điểm | Classic Widget | Gutenberg Block |
 |----------|---------------|-----------------|
 | **Editor** | Widget panel (Appearance > Widgets) | Block Editor |
-| **Cong nghe** | PHP (WP_Widget class) | JavaScript (React) + PHP |
-| **Vi tri** | Chi sidebar/widget areas | Bat ky dau trong noi dung |
-| **Tu WP version** | 2.8+ | 5.0+ (2018) |
-| **Tuong lai** | Van duoc ho tro | **Duoc khuyen dung** |
-| **Do phuc tap** | Thap | Trung binh - Cao |
+| **Công nghệ** | PHP (WP_Widget class) | JavaScript (React) + PHP |
+| **Vị trí** | Chỉ sidebar/widget areas | Bất kỳ đâu trong nội dung |
+| **Từ WP version** | 2.8+ | 5.0+ (2018) |
+| **Tương lai** | Vẫn được hỗ trợ | **Được khuyên dùng** |
+| **Độ phức tạp** | Thấp | Trung bình - Cao |
 
-### Tao Gutenberg Block don gian (khong can JSX)
+### Tạo Gutenberg Block đơn giản (không cần JSX)
 
 ```php
 <?php
 /**
- * Dang ky 1 Block don gian chi bang PHP (khong can build JS)
- * Tu WordPress 5.8+, dung register_block_type voi render_callback
+ * Đăng ký 1 Block đơn giản chỉ bằng PHP (không cần build JS)
+ * Từ WordPress 5.8+, dùng register_block_type với render_callback
  */
 add_action( 'init', 'cwp_register_blocks' );
 
 function cwp_register_blocks() {
     /**
-     * Block don gian render phia server (Server-Side Rendering)
-     * Cach nay phu hop khi ban khong muon viet React
+     * Block đơn giản render phía server (Server-Side Rendering)
+     * Cách này phù hợp khi bạn không muốn viết React
      */
     register_block_type( 'cwp/contact-info', array(
-        // Attributes ma user co the cau hinh
+        // Attributes mà user có thể cấu hình
         'attributes' => array(
             'title' => array(
                 'type'    => 'string',
-                'default' => 'Lien he',
+                'default' => 'Liên hệ',
             ),
             'phone' => array(
                 'type'    => 'string',
@@ -1398,7 +1398,7 @@ function cwp_register_blocks() {
                 'default' => '',
             ),
         ),
-        // Ham render phia server
+        // Hàm render phía server
         'render_callback' => 'cwp_render_contact_block',
     ));
 }
@@ -1417,7 +1417,7 @@ function cwp_render_contact_block( $attributes ) {
         <?php endif; ?>
 
         <?php if ( ! empty( $attributes['phone'] ) ) : ?>
-            <p>Dien thoai: <a href="tel:<?php echo esc_attr( $attributes['phone'] ); ?>">
+            <p>Điện thoại: <a href="tel:<?php echo esc_attr( $attributes['phone'] ); ?>">
                 <?php echo esc_html( $attributes['phone'] ); ?></a></p>
         <?php endif; ?>
 
@@ -1431,32 +1431,32 @@ function cwp_render_contact_block( $attributes ) {
 }
 ```
 
-### Khuyen nghi
+### Khuyến nghị
 
 ```
-Khi nao dung Widget:
-- Can tuong thich voi WordPress cu (truoc 5.0)
-- Plugin don gian, chi hien thi o sidebar
-- Khong muon viet JavaScript phuc tap
+Khi nào dùng Widget:
+- Cần tương thích với WordPress cũ (trước 5.0)
+- Plugin đơn giản, chỉ hiển thị ở sidebar
+- Không muốn viết JavaScript phức tạp
 
-Khi nao dung Block:
-- Phien ban WordPress 5.0+
-- Noi dung can dat o bat ky dau trong bai viet
-- Muon trai nghiem editor tot hon
-- Plugin moi, huong toi tuong lai
+Khi nào dùng Block:
+- Phiên bản WordPress 5.0+
+- Nội dung cần đặt ở bất kỳ đâu trong bài viết
+- Muốn trải nghiệm editor tốt hơn
+- Plugin mới, hướng tới tương lai
 ```
 
 ---
 
-## 9. Code vi du day du
+## 9. Code ví dụ đầy đủ
 
-### Plugin hoan chinh: Shortcodes + Widgets
+### Plugin hoàn chỉnh: Shortcodes + Widgets
 
 ```php
 <?php
 /**
  * Plugin Name:       Content Elements Plugin
- * Description:       Bo suu tap Shortcodes va Widgets cho website.
+ * Description:       Bộ sưu tập Shortcodes và Widgets cho website.
  * Version:           1.0.0
  * Author:            Developer
  * Text Domain:       content-elements
@@ -1488,7 +1488,7 @@ class CEP_Shortcodes {
 
     public function accordion( $atts, $content = null ) {
         $this->accordion_items = array();
-        do_shortcode( $content ); // Xu ly cac [cep_item] ben trong
+        do_shortcode( $content ); // Xử lý các [cep_item] bên trong
 
         if ( empty( $this->accordion_items ) ) return '';
 
@@ -1555,9 +1555,9 @@ class CEP_Shortcodes {
             'price'    => '0',
             'currency' => '$',
             'period'   => '/thang',
-            'features' => '',             // Phan cach bang |
+            'features' => '',             // Phân cách bằng |
             'url'      => '#',
-            'label'    => 'Dang ky ngay',
+            'label'    => 'Đăng ký ngay',
             'featured' => 'false',
         ), $atts, 'cep_pricing' );
 
@@ -1581,7 +1581,7 @@ class CEP_Shortcodes {
                     position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
                     background: #0073aa; color: #fff; padding: 3px 15px; border-radius: 10px;
                     font-size: 12px;
-                ">Pho bien nhat</span>
+                ">Phổ biến nhất</span>
             <?php endif; ?>
 
             <h3 style="margin-top:10px;"><?php echo esc_html( $atts['name'] ); ?></h3>
@@ -1617,7 +1617,7 @@ class CEP_Shortcodes {
     public function call_to_action( $atts, $content = null ) {
         $atts = shortcode_atts( array(
             'title'    => '',
-            'btn_text' => 'Tim hieu them',
+            'btn_text' => 'Tìm hiểu thêm',
             'btn_url'  => '#',
             'bg_color' => '#0073aa',
         ), $atts, 'cep_cta' );
@@ -1715,33 +1715,33 @@ class CEP_Shortcodes {
     }
 }
 
-// Khoi tao Shortcodes
+// Khởi tạo Shortcodes
 new CEP_Shortcodes();
 
-// === DANG KY WIDGETS (xem cac class Widget phia tren) ===
+// === ĐĂNG KÝ WIDGETS (xem các class Widget phía trên) ===
 add_action( 'widgets_init', function() {
     register_widget( 'CWP_Contact_Info_Widget' );
     register_widget( 'CWP_Social_Links_Widget' );
     register_widget( 'CWP_Featured_Posts_Widget' );
 });
 
-// Su dung shortcodes:
+// Sử dụng shortcodes:
 //
 // [cep_accordion]
-//   [cep_item title="Cau hoi 1"]Tra loi cho cau hoi 1[/cep_item]
-//   [cep_item title="Cau hoi 2"]Tra loi cho cau hoi 2[/cep_item]
+//   [cep_item title="Câu hỏi 1"]Trả lời cho câu hỏi 1[/cep_item]
+//   [cep_item title="Câu hỏi 2"]Trả lời cho câu hỏi 2[/cep_item]
 // [/cep_accordion]
 //
 // [cep_pricing name="Pro" price="29" features="10 Users|50GB Storage|Email Support" featured="true"]
 //
-// [cep_cta title="Bat dau ngay hom nay" btn_text="Dang ky mien phi" btn_url="/register"]
-//   Tham gia cung hang nghin nguoi dung khac!
+// [cep_cta title="Bắt đầu ngay hôm nay" btn_text="Đăng ký miễn phí" btn_url="/register"]
+//   Tham gia cùng hàng nghìn người dùng khác!
 // [/cep_cta]
 //
-// [cep_counter number="1500" label="Khach hang"]
+// [cep_counter number="1500" label="Khách hàng"]
 //
-// [cep_testimonial name="Nguyen Van A" title="CEO Cong ty X" rating="5"]
-//   San pham tuyet voi, toi rat hai long voi dich vu!
+// [cep_testimonial name="Nguyễn Văn A" title="CEO Công ty X" rating="5"]
+//   Sản phẩm tuyệt vời, tôi rất hài lòng với dịch vụ!
 // [/cep_testimonial]
 ```
 
@@ -1753,48 +1753,48 @@ add_action( 'widgets_init', function() {
 
 ```php
 <?php
-// 1. Luon RETURN, khong ECHO
+// 1. Luôn RETURN, không ECHO
 // SAI:
 add_shortcode( 'bad', function() {
-    echo '<p>Noi dung</p>'; // Se xuat hien sai vi tri!
+    echo '<p>Nội dung</p>'; // Sẽ xuất hiện sai vị trí!
 });
 
 // DUNG:
 add_shortcode( 'good', function() {
-    return '<p>Noi dung</p>';
+    return '<p>Nội dung</p>';
 });
 
-// 2. Dung output buffering khi can HTML phuc tap
+// 2. Dùng output buffering khi cần HTML phức tạp
 add_shortcode( 'complex', function() {
     ob_start();
     ?>
     <div class="complex-layout">
-        <!-- HTML phuc tap o day -->
+        <!-- HTML phức tạp ở đây -->
     </div>
     <?php
     return ob_get_clean();
 });
 
-// 3. Luon dung shortcode_atts cho attributes
+// 3. Luôn dùng shortcode_atts cho attributes
 add_shortcode( 'safe', function( $atts ) {
     $atts = shortcode_atts( array(
         'default1' => 'value1',
         'default2' => 'value2',
-    ), $atts, 'safe' ); // Tham so 3 cho phep filter
+    ), $atts, 'safe' ); // Tham số 3 cho phép filter
     // ...
 });
 
-// 4. Dung do_shortcode() cho nested content
+// 4. Dùng do_shortcode() cho nested content
 function my_wrapper( $atts, $content = null ) {
     return '<div class="wrapper">' . do_shortcode( $content ) . '</div>';
 }
 
-// 5. Khong dat shortcode trong the <title> hay attribute
-// Shortcode chi hoat dong trong the_content, the_excerpt, va text widgets
+// 5. Không đặt shortcode trong thẻ <title> hay attribute
+// Shortcode chỉ hoạt động trong the_content, the_excerpt, và text widgets
 
-// 6. Xu ly khi khong co attributes
+// 6. Xử lý khi không có attributes
 add_shortcode( 'flexible', function( $atts ) {
-    // $atts co the la string rong '' khi khong co attributes
+    // $atts có thể là string rỗng '' khi không có attributes
     $atts = shortcode_atts( array(
         'param' => 'default',
     ), $atts ?: array(), 'flexible' );
@@ -1805,20 +1805,20 @@ add_shortcode( 'flexible', function( $atts ) {
 
 ```php
 <?php
-// 1. Luon ke thua WP_Widget
-// 2. Override du 3 methods: widget(), form(), update()
-// 3. Luon sanitize trong update()
-// 4. Luon escape trong widget() va form()
-// 5. Dung $this->get_field_id() va $this->get_field_name() cho form fields
-// 6. Dung wp_parse_args() cho default values
+// 1. Luôn kế thừa WP_Widget
+// 2. Override đủ 3 methods: widget(), form(), update()
+// 3. Luôn sanitize trong update()
+// 4. Luôn escape trong widget() và form()
+// 5. Dùng $this->get_field_id() và $this->get_field_name() cho form fields
+// 6. Dùng wp_parse_args() cho default values
 // 7. Reset postdata sau WP_Query: wp_reset_postdata()
 
-// 8. Dang ky Widget area (trong theme)
+// 8. Đăng ký Widget area (trong theme)
 add_action( 'widgets_init', function() {
     register_sidebar( array(
         'name'          => 'Footer Widget Area',
         'id'            => 'footer-widgets',
-        'description'   => 'Widgets hien thi o footer.',
+        'description'   => 'Widgets hiển thị ở footer.',
         'before_widget' => '<div class="widget %2$s">',
         'after_widget'  => '</div>',
         'before_title'  => '<h3 class="widget-title">',
@@ -1829,7 +1829,7 @@ add_action( 'widgets_init', function() {
 
 ---
 
-## Tham khao
+## Tham khảo
 
 - [WordPress Shortcode API](https://developer.wordpress.org/plugins/shortcodes/)
 - [WordPress Widgets API](https://developer.wordpress.org/plugins/widgets/)

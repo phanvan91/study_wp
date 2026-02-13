@@ -1,26 +1,26 @@
-# AJAX va REST API trong WordPress Plugin
+# AJAX và REST API trong WordPress Plugin
 
-## Muc luc
+## Mục lục
 
-1. [WordPress AJAX co ban](#1-wordpress-ajax-co-ban)
+1. [WordPress AJAX cơ bản](#1-wordpress-ajax-co-ban)
 2. [admin-ajax.php Flow](#2-admin-ajaxphp-flow)
-3. [wp_localize_script - Truyen data sang JS](#3-wp_localize_script---truyen-data-sang-js)
+3. [wp_localize_script - Truyền data sang JS](#3-wp_localize_script---truyen-data-sang-js)
 4. [Nonce Verification trong AJAX](#4-nonce-verification-trong-ajax)
-5. [jQuery AJAX va Fetch API](#5-jquery-ajax-va-fetch-api)
+5. [jQuery AJAX và Fetch API](#5-jquery-ajax-va-fetch-api)
 6. [REST API trong Plugin](#6-rest-api-trong-plugin)
 7. [Custom Endpoints](#7-custom-endpoints)
-8. [Permission Callback va Schema Validation](#8-permission-callback-va-schema-validation)
-9. [Code vi du: CRUD API hoan chinh](#9-code-vi-du-crud-api-hoan-chinh)
-10. [So sanh REST API voi Route trong Laravel](#10-so-sanh-rest-api-voi-route-trong-laravel)
+8. [Permission Callback và Schema Validation](#8-permission-callback-va-schema-validation)
+9. [Code ví dụ: CRUD API hoàn chỉnh](#9-code-vi-du-crud-api-hoan-chinh)
+10. [So sánh REST API với Route trong Laravel](#10-so-sanh-rest-api-voi-route-trong-laravel)
 11. [Best Practices](#11-best-practices)
 
 ---
 
-## 1. WordPress AJAX co ban
+## 1. WordPress AJAX cơ bản
 
-### AJAX trong WordPress la gi?
+### AJAX trong WordPress là gì?
 
-WordPress AJAX su dung file `admin-ajax.php` lam endpoint trung tam cho tat ca cac AJAX request. Plugin dang ky handler thong qua hooks dac biet.
+WordPress AJAX sử dụng file `admin-ajax.php` làm endpoint trung tâm cho tất cả các AJAX request. Plugin đăng ký handler thông qua hooks đặc biệt.
 
 ### 2 loai AJAX hooks
 
@@ -37,60 +37,60 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Hook AJAX cho nguoi dung DA DANG NHAP (logged in):
+ * Hook AJAX cho người dùng DA DANG NHAP (logged in):
  * wp_ajax_{action_name}
  *
- * Hook AJAX cho nguoi dung CHUA DANG NHAP (logged out):
+ * Hook AJAX cho người dùng CHUA DANG NHAP (logged out):
  * wp_ajax_nopriv_{action_name}
  *
- * {action_name} = gia tri cua 'action' gui tu JavaScript
+ * {action_name} = giá trị của 'action' gửi từ JavaScript
  */
 
-// Hook cho ca 2 loai nguoi dung
+// Hook cho cả 2 loại người dùng
 add_action( 'wp_ajax_my_ajax_action', 'handle_my_ajax_action' );
 add_action( 'wp_ajax_nopriv_my_ajax_action', 'handle_my_ajax_action' );
 
 /**
- * Ham xu ly AJAX request
+ * Hàm xử lý AJAX request
  */
 function handle_my_ajax_action() {
-    // 1. Kiem tra nonce (bao mat)
+    // 1. Kiểm tra nonce (bảo mật)
     check_ajax_referer( 'my_ajax_nonce', 'nonce' );
 
-    // 2. Lay du lieu tu request
+    // 2. Lấy dữ liệu từ request
     $name = sanitize_text_field( $_POST['name'] ?? '' );
 
-    // 3. Xu ly logic
+    // 3. Xử lý logic
     if ( empty( $name ) ) {
-        // Tra ve loi - wp_send_json_error tu dong set status 200
-        // va gui JSON: { "success": false, "data": {...} }
+        // Trả về lỗi - wp_send_json_error tự động set status 200
+        // và gửi JSON: { "success": false, "data": {...} }
         wp_send_json_error( array(
-            'message' => 'Ten khong duoc de trong.',
+            'message' => 'Tên không được để trống.',
         ));
-        // wp_send_json_error tu dong goi wp_die() - code phia duoi khong chay
+        // wp_send_json_error tự động gọi wp_die() - code phía dưới không chạy
     }
 
-    // 4. Tra ve thanh cong
-    // wp_send_json_success gui JSON: { "success": true, "data": {...} }
+    // 4. Trả về thành công
+    // wp_send_json_success gửi JSON: { "success": true, "data": {...} }
     wp_send_json_success( array(
         'message' => 'Xin chao, ' . $name . '!',
         'time'    => current_time( 'mysql' ),
     ));
 }
 
-// Hook chi cho nguoi dung da dang nhap (vi du: chuc nang admin)
+// Hook chỉ cho người dùng đã đăng nhập (ví dụ: chức năng admin)
 add_action( 'wp_ajax_admin_only_action', 'handle_admin_only_action' );
-// KHONG co wp_ajax_nopriv_ => nguoi chua dang nhap khong the goi
+// KHÔNG có wp_ajax_nopriv_ => người chưa đăng nhập không thể gọi
 
 function handle_admin_only_action() {
-    // Kiem tra quyen
+    // Kiểm tra quyền
     if ( ! current_user_can( 'manage_options' ) ) {
-        wp_send_json_error( array( 'message' => 'Khong co quyen.' ), 403 );
+        wp_send_json_error( array( 'message' => 'Không có quyền.' ), 403 );
     }
 
     check_ajax_referer( 'admin_ajax_nonce', 'nonce' );
 
-    // Xu ly...
+    // Xử lý...
     wp_send_json_success( array( 'message' => 'OK' ) );
 }
 ```
@@ -105,81 +105,81 @@ FRONTEND (JavaScript)                    BACKEND (WordPress)
 
 1. User click button
    |
-2. JS gui AJAX request    ------>    3. admin-ajax.php nhan request
+2. JS gửi AJAX request    ------>    3. admin-ajax.php nhận request
    URL: /wp-admin/admin-ajax.php          |
-   Data: { action: 'my_action',      4. Tim hook wp_ajax_{action}
-           nonce: '...',                  hoac wp_ajax_nopriv_{action}
+   Data: { action: 'my_action',      4. Tìm hook wp_ajax_{action}
+           nonce: '...',                  hoặc wp_ajax_nopriv_{action}
            name: 'John' }                |
-                                     5. Goi callback function
+                                     5. Gọi callback function
                                           |
-                                     6. Xu ly logic, query DB...
+                                     6. Xử lý logic, query DB...
                                           |
-7. JS nhan response       <------    7. wp_send_json_success/error
-   |                                     (tu dong set Content-Type: JSON
-8. Cap nhat DOM                          va goi wp_die())
+7. JS nhận response       <------    7. wp_send_json_success/error
+   |                                     (tự động set Content-Type: JSON
+8. Cập nhật DOM                          và gọi wp_die())
 ```
 
-### Cau hinh AJAX URL va Nonce
+### Cấu hình AJAX URL và Nonce
 
 ```php
 <?php
 /**
- * Dang ky script va truyen du lieu sang JavaScript
+ * Đăng ký script và truyền dữ liệu sang JavaScript
  */
 add_action( 'wp_enqueue_scripts', 'ajax_demo_enqueue_scripts' );
 
 function ajax_demo_enqueue_scripts() {
-    // Dang ky va load file JS
+    // Đăng ký và load file JS
     wp_enqueue_script(
         'ajax-demo-script',                              // Handle
         plugin_dir_url( __FILE__ ) . 'js/ajax-demo.js', // URL
         array( 'jquery' ),                               // Dependencies
         '1.0.0',                                         // Version
-        true                                             // Load o footer
+        true                                             // Load ở footer
     );
 
     /**
-     * wp_localize_script() - Truyen du lieu PHP sang JavaScript
+     * wp_localize_script() - Truyền dữ liệu PHP sang JavaScript
      *
-     * Tao 1 object JavaScript global chua du lieu can thiet.
-     * PHAI goi SAU wp_enqueue_script().
+     * Tạo 1 object JavaScript global chứa dữ liệu cần thiết.
+     * PHẢI gọi SAU wp_enqueue_script().
      *
-     * @param string $handle  Handle cua script da enqueue
-     * @param string $name    Ten object JavaScript se tao
-     * @param array  $data    Du lieu truyen sang
+     * @param string $handle  Handle của script đã enqueue
+     * @param string $name    Tên object JavaScript sẽ tạo
+     * @param array  $data    Dữ liệu truyền sang
      */
     wp_localize_script( 'ajax-demo-script', 'ajaxDemo', array(
-        // URL cua admin-ajax.php
+        // URL của admin-ajax.php
         // admin_url('admin-ajax.php') = https://example.com/wp-admin/admin-ajax.php
         'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 
-        // Tao nonce (so dung 1 lan) cho bao mat
+        // Tạo nonce (số dùng 1 lần) cho bảo mật
         'nonce'   => wp_create_nonce( 'my_ajax_nonce' ),
 
-        // Co the truyen bat ky du lieu nao
+        // Có thể truyền bất kỳ dữ liệu nào
         'siteUrl' => home_url(),
         'isAdmin' => current_user_can( 'manage_options' ),
         'i18n'    => array(
-            'loading' => 'Dang xu ly...',
-            'error'   => 'Co loi xay ra!',
-            'success' => 'Thanh cong!',
+            'loading' => 'Đang xử lý...',
+            'error'   => 'Có lỗi xảy ra!',
+            'success' => 'Thành công!',
         ),
     ));
-    // Ket qua: Trong JS co the truy cap ajaxDemo.ajaxUrl, ajaxDemo.nonce, v.v.
+    // Kết quả: Trong JS có thể truy cập ajaxDemo.ajaxUrl, ajaxDemo.nonce, v.v.
 }
 ```
 
 ---
 
-## 3. wp_localize_script - Truyen data sang JS
+## 3. wp_localize_script - Truyền data sang JS
 
 ```php
 <?php
 /**
- * wp_localize_script tao 1 object JavaScript.
- * Day la cach CHUAN de truyen data tu PHP sang JS trong WordPress.
+ * wp_localize_script tạo 1 object JavaScript.
+ * Đây là cách CHUẨN để truyền data từ PHP sang JS trong WordPress.
  *
- * Tuong duong voi @json() trong Blade cua Laravel.
+ * Tương đương với @json() trong Blade của Laravel.
  */
 
 // PHP (trong plugin):
@@ -191,18 +191,18 @@ wp_localize_script( 'my-script', 'myPluginData', array(
     'userId'    => get_current_user_id(),
     'settings'  => get_option( 'my_settings', array() ),
     'strings'   => array(
-        'confirm_delete' => 'Ban co chac muon xoa?',
-        'saved'          => 'Da luu thanh cong!',
+        'confirm_delete' => 'Bạn có chắc muốn xóa?',
+        'saved'          => 'Đã lưu thành công!',
     ),
 ));
 
-// JavaScript: Tu dong co object myPluginData
+// JavaScript: Tự động có object myPluginData
 // console.log(myPluginData.ajaxUrl);    // "https://example.com/wp-admin/admin-ajax.php"
 // console.log(myPluginData.restUrl);    // "https://example.com/wp-json/my-plugin/v1/"
 // console.log(myPluginData.userId);     // 1
 
-// === CACH MOI (WP 6.3+): wp_add_inline_script ===
-// Linh hoat hon wp_localize_script
+// === CÁCH MỚI (WP 6.3+): wp_add_inline_script ===
+// Linh hoạt hơn wp_localize_script
 
 wp_enqueue_script( 'my-script', '...', array(), '1.0', true );
 
@@ -212,7 +212,7 @@ wp_add_inline_script( 'my-script', sprintf(
         'ajaxUrl' => admin_url( 'admin-ajax.php' ),
         'nonce'   => wp_create_nonce( 'my_nonce' ),
     ))
-), 'before' ); // 'before' = truoc file script, 'after' = sau
+), 'before' ); // 'before' = trước file script, 'after' = sau
 ```
 
 ---
@@ -222,75 +222,75 @@ wp_add_inline_script( 'my-script', sprintf(
 ```php
 <?php
 /**
- * NONCE (Number used ONCE) = Ma bao mat dung 1 lan
- * Chong CSRF (Cross-Site Request Forgery)
+ * NONCE (Number used ONCE) = Mã bảo mật dùng 1 lần
+ * Chống CSRF (Cross-Site Request Forgery)
  *
- * Luong hoat dong:
- * 1. PHP tao nonce => gui sang JS
- * 2. JS gui nonce kem theo AJAX request
- * 3. PHP kiem tra nonce co hop le khong
+ * Luồng hoạt động:
+ * 1. PHP tạo nonce => gửi sang JS
+ * 2. JS gửi nonce kèm theo AJAX request
+ * 3. PHP kiểm tra nonce có hợp lệ không
  */
 
-// === TAO NONCE (PHP) ===
+// === TẠO NONCE (PHP) ===
 $nonce = wp_create_nonce( 'my_action_name' );
-// $nonce = chuoi hash ngan (vi du: "a1b2c3d4e5")
+// $nonce = chuỗi hash ngắn (ví dụ: "a1b2c3d4e5")
 
-// === GUI NONCE SANG JS ===
+// === GỬI NONCE SANG JS ===
 wp_localize_script( 'my-script', 'myData', array(
     'nonce' => wp_create_nonce( 'my_action_name' ),
 ));
 
-// === GUI NONCE TU JS ===
+// === GỬI NONCE TỪ JS ===
 // jQuery:
 // $.post(myData.ajaxUrl, {
 //     action: 'my_action',
-//     nonce: myData.nonce,     // <-- Gui kem nonce
+//     nonce: myData.nonce,     // <-- Gửi kèm nonce
 //     data: '...'
 // });
 
-// === KIEM TRA NONCE (PHP) ===
+// === KIỂM TRA NONCE (PHP) ===
 
-// Cach 1: check_ajax_referer() - Dung cho AJAX
+// Cách 1: check_ajax_referer() - Dùng cho AJAX
 add_action( 'wp_ajax_my_action', function() {
     /**
-     * check_ajax_referer() - Kiem tra nonce tu AJAX request
+     * check_ajax_referer() - Kiểm tra nonce từ AJAX request
      *
-     * @param string      $action    Ten action (khop voi wp_create_nonce)
-     * @param string|false $query_arg Ten truong chua nonce (mac dinh: '_ajax_nonce')
-     * @param bool        $die       true = tu dong die neu sai (mac dinh: true)
+     * @param string      $action    Tên action (khớp với wp_create_nonce)
+     * @param string|false $query_arg Tên trường chứa nonce (mặc định: '_ajax_nonce')
+     * @param bool        $die       true = tự động die nếu sai (mặc định: true)
      *
-     * @return int|false  1 = nonce duoi 12h, 2 = nonce 12-24h, false = sai
+     * @return int|false  1 = nonce dưới 12h, 2 = nonce 12-24h, false = sai
      */
     check_ajax_referer( 'my_action_name', 'nonce' );
-    // Neu nonce sai, tu dong die() voi HTTP 403
+    // Nếu nonce sai, tự động die() với HTTP 403
 
-    // Code xu ly tiep...
+    // Code xử lý tiếp...
     wp_send_json_success();
 });
 
-// Cach 2: wp_verify_nonce() - Kiem tra thu cong
+// Cách 2: wp_verify_nonce() - Kiểm tra thủ công
 add_action( 'wp_ajax_my_action2', function() {
     $nonce = sanitize_text_field( $_POST['nonce'] ?? '' );
 
     if ( ! wp_verify_nonce( $nonce, 'my_action_name' ) ) {
-        wp_send_json_error( array( 'message' => 'Nonce khong hop le.' ), 403 );
+        wp_send_json_error( array( 'message' => 'Nonce không hợp lệ.' ), 403 );
     }
 
-    // Code xu ly tiep...
+    // Code xử lý tiếp...
     wp_send_json_success();
 });
 
-// LUU Y: Nonce co thoi han
-// - Mac dinh: 24 gio (co the thay doi bang filter nonce_life)
-// - wp_verify_nonce tra ve:
-//   1 = nonce duoi 12 gio (moi)
-//   2 = nonce tu 12-24 gio (cu nhung van hop le)
-//   false = het han hoac sai
+// LƯU Ý: Nonce có thời hạn
+// - Mặc định: 24 giờ (có thể thay đổi bằng filter nonce_life)
+// - wp_verify_nonce trả về:
+//   1 = nonce dưới 12 giờ (mới)
+//   2 = nonce từ 12-24 giờ (cũ nhưng vẫn hợp lệ)
+//   false = hết hạn hoặc sai
 ```
 
 ---
 
-## 5. jQuery AJAX va Fetch API
+## 5. jQuery AJAX và Fetch API
 
 ### jQuery AJAX
 
@@ -298,11 +298,11 @@ add_action( 'wp_ajax_my_action2', function() {
 /**
  * File: js/ajax-demo.js
  *
- * Su dung jQuery AJAX (WordPress da bao gom jQuery)
+ * Sử dụng jQuery AJAX (WordPress đã bao gồm jQuery)
  */
 jQuery(document).ready(function($) {
 
-    // === AJAX POST co ban ===
+    // === AJAX POST cơ bản ===
     $('#my-form').on('submit', function(e) {
         e.preventDefault();
 
@@ -310,15 +310,15 @@ jQuery(document).ready(function($) {
         var $submitBtn = $form.find('button[type="submit"]');
         var $message = $('#ajax-message');
 
-        // Disable button khi dang xu ly
+        // Disable button khi đang xử lý
         $submitBtn.prop('disabled', true).text(ajaxDemo.i18n.loading);
 
         $.ajax({
             url: ajaxDemo.ajaxUrl,          // URL admin-ajax.php
             type: 'POST',
             data: {
-                action: 'my_ajax_action',   // Ten action (khop voi wp_ajax_{action})
-                nonce: ajaxDemo.nonce,       // Nonce bao mat
+                action: 'my_ajax_action',   // Tên action (khớp với wp_ajax_{action})
+                nonce: ajaxDemo.nonce,       // Nonce bảo mật
                 name: $('#input-name').val(),
                 email: $('#input-email').val(),
             },
@@ -339,20 +339,20 @@ jQuery(document).ready(function($) {
                 }
             },
             error: function(xhr, status, error) {
-                // Loi mang, server, v.v.
+                // Lỗi mạng, server, v.v.
                 $message
                     .addClass('error')
                     .html(ajaxDemo.i18n.error + ': ' + error)
                     .show();
             },
             complete: function() {
-                // Luon chay, ke ca thanh cong hay that bai
-                $submitBtn.prop('disabled', false).text('Gui');
+                // Luôn chạy, kể cả thành công hay thất bại
+                $submitBtn.prop('disabled', false).text('Gửi');
             }
         });
     });
 
-    // === AJAX voi jQuery.post (ngan gon hon) ===
+    // === AJAX với jQuery.post (ngắn gọn hơn) ===
     $('#load-more').on('click', function() {
         var page = $(this).data('page') || 1;
 
@@ -384,11 +384,11 @@ jQuery(document).ready(function($) {
             url: ajaxDemo.ajaxUrl,
             type: 'POST',
             data: formData,
-            processData: false,     // QUAN TRONG: Khong xu ly data
-            contentType: false,     // QUAN TRONG: Khong set content-type
+            processData: false,     // QUAN TRỌNG: Không xử lý data
+            contentType: false,     // QUAN TRỌNG: Không set content-type
             success: function(response) {
                 if (response.success) {
-                    alert('Upload thanh cong: ' + response.data.filename);
+                    alert('Upload thành công: ' + response.data.filename);
                 }
             }
         });
@@ -396,17 +396,17 @@ jQuery(document).ready(function($) {
 });
 ```
 
-### Fetch API (Modern JavaScript, khong can jQuery)
+### Fetch API (Modern JavaScript, không cần jQuery)
 
 ```javascript
 /**
  * File: js/ajax-fetch.js
  *
- * Su dung Fetch API (modern, khong can jQuery)
- * Can truyen du lieu qua wp_add_inline_script hoac wp_localize_script
+ * Sử dụng Fetch API (modern, không cần jQuery)
+ * Cần truyền dữ liệu qua wp_add_inline_script hoặc wp_localize_script
  */
 
-// === Fetch POST co ban ===
+// === Fetch POST cơ bản ===
 async function submitForm() {
     const formData = new FormData();
     formData.append('action', 'my_ajax_action');
@@ -417,8 +417,8 @@ async function submitForm() {
         const response = await fetch(myPluginData.ajaxUrl, {
             method: 'POST',
             body: formData,
-            // Khong can set Content-Type - FormData tu dong set
-            // credentials: 'same-origin' la mac dinh cho same-origin requests
+            // Không cần set Content-Type - FormData tự động set
+            // credentials: 'same-origin' là mặc định cho same-origin requests
         });
 
         const data = await response.json();
@@ -429,11 +429,11 @@ async function submitForm() {
             showMessage('error', data.data.message);
         }
     } catch (error) {
-        showMessage('error', 'Loi mang: ' + error.message);
+        showMessage('error', 'Lỗi mạng: ' + error.message);
     }
 }
 
-// === Fetch voi REST API (khuyen dung cho REST endpoints) ===
+// === Fetch với REST API (khuyến dùng cho REST endpoints) ===
 async function fetchContacts() {
     try {
         const response = await fetch(myPluginData.restUrl + 'contacts', {
@@ -451,7 +451,7 @@ async function fetchContacts() {
         const data = await response.json();
         renderContacts(data);
     } catch (error) {
-        console.error('Loi:', error);
+        console.error('Lỗi:', error);
     }
 }
 
@@ -470,10 +470,10 @@ async function createContact(contactData) {
         const data = await response.json();
 
         if (response.ok) {
-            showMessage('success', 'Da tao thanh cong!');
+            showMessage('success', 'Đã tạo thành công!');
             return data;
         } else {
-            showMessage('error', data.message || 'Loi khong xac dinh');
+            showMessage('error', data.message || 'Lỗi không xác định');
             return null;
         }
     } catch (error) {
@@ -496,28 +496,28 @@ function showMessage(type, message) {
 
 ## 6. REST API trong Plugin
 
-### REST API la gi?
+### REST API là gì?
 
-WordPress REST API cung cap **HTTP endpoints** de tuong tac voi du lieu. Moi endpoint tra ve JSON. Day la cach **hien dai** va **chuyen nghiep** hon admin-ajax.php.
+WordPress REST API cung cấp **HTTP endpoints** để tương tác với dữ liệu. Mỗi endpoint trả về JSON. Đây là cách **hiện đại** và **chuyên nghiệp** hơn admin-ajax.php.
 
-### So sanh AJAX vs REST API
+### So sánh AJAX vs REST API
 
 ```
 +--------------------+------------------------+------------------------+
-| Dac diem           | admin-ajax.php         | REST API               |
+| Đặc điểm           | admin-ajax.php         | REST API               |
 +--------------------+------------------------+------------------------+
 | URL                | /wp-admin/admin-ajax   | /wp-json/namespace/v1/ |
-| Method             | Chi POST               | GET, POST, PUT, DELETE |
-| Response           | Tu dinh dang           | JSON chuan             |
+| Method             | Chỉ POST               | GET, POST, PUT, DELETE |
+| Response           | Tự định dạng           | JSON chuẩn             |
 | Authentication     | Cookie + Nonce         | Nonce, OAuth, JWT      |
-| Cacheable          | Kho                    | De (GET request)       |
-| Dung cho           | Internal AJAX          | API cho ben ngoai      |
-| RESTful            | Khong                  | Co                     |
-| Discoverable       | Khong                  | Co (schema)            |
+| Cacheable          | Khó                    | Dễ (GET request)       |
+| Dùng cho           | Internal AJAX          | API cho bên ngoài      |
+| RESTful            | Không                  | Có                     |
+| Discoverable       | Không                  | Có (schema)            |
 +--------------------+------------------------+------------------------+
 ```
 
-### register_rest_route - Dang ky endpoint
+### register_rest_route - Đăng ký endpoint
 
 ```php
 <?php
@@ -532,27 +532,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Dang ky REST API routes.
- * Hook 'rest_api_init' la noi dang ky tat ca custom endpoints.
+ * Đăng ký REST API routes.
+ * Hook 'rest_api_init' là nơi đăng ký tất cả custom endpoints.
  */
 add_action( 'rest_api_init', 'rad_register_routes' );
 
 function rad_register_routes() {
     /**
-     * register_rest_route() - Dang ky 1 REST endpoint
+     * register_rest_route() - Đăng ký 1 REST endpoint
      *
-     * @param string $namespace  Namespace (ten-plugin/version)
-     * @param string $route      Duong dan endpoint
-     * @param array  $args       Cau hinh: methods, callback, permission_callback, args
+     * @param string $namespace  Namespace (tên-plugin/version)
+     * @param string $route      Đường dẫn endpoint
+     * @param array  $args       Cấu hình: methods, callback, permission_callback, args
      */
 
-    $namespace = 'rad/v1'; // Namespace: ten-plugin/version
+    $namespace = 'rad/v1'; // Namespace: tên-plugin/version
 
     // GET /wp-json/rad/v1/hello
     register_rest_route( $namespace, '/hello', array(
         'methods'             => WP_REST_Server::READABLE,  // = 'GET'
         'callback'            => 'rad_hello_endpoint',
-        'permission_callback' => '__return_true',  // Public (ai cung goi duoc)
+        'permission_callback' => '__return_true',  // Public (ai cũng gọi được)
     ));
 
     // GET /wp-json/rad/v1/posts
@@ -575,7 +575,7 @@ function rad_register_routes() {
         ),
     ));
 
-    // POST /wp-json/rad/v1/contact (can dang nhap)
+    // POST /wp-json/rad/v1/contact (cần đăng nhập)
     register_rest_route( $namespace, '/contact', array(
         'methods'             => 'POST',
         'callback'            => 'rad_create_contact',
@@ -604,18 +604,18 @@ function rad_register_routes() {
 /**
  * Handler cho GET /wp-json/rad/v1/hello
  *
- * @param WP_REST_Request $request  Object chua thong tin request
+ * @param WP_REST_Request $request  Object chứa thông tin request
  * @return WP_REST_Response|WP_Error
  */
 function rad_hello_endpoint( WP_REST_Request $request ) {
     return new WP_REST_Response( array(
-        'message' => 'Hello tu REST API!',
+        'message' => 'Hello từ REST API!',
         'time'    => current_time( 'mysql' ),
     ), 200 );
 }
 
 function rad_get_posts( WP_REST_Request $request ) {
-    // Lay params (da duoc validate va sanitize tu 'args')
+    // Lấy params (đã được validate và sanitize từ 'args')
     $per_page = $request->get_param( 'per_page' );
     $page     = $request->get_param( 'page' );
 
@@ -640,7 +640,7 @@ function rad_get_posts( WP_REST_Request $request ) {
 
     $response = new WP_REST_Response( $posts, 200 );
 
-    // Them headers cho pagination
+    // Thêm headers cho pagination
     $response->header( 'X-WP-Total', $query->found_posts );
     $response->header( 'X-WP-TotalPages', $query->max_num_pages );
 
@@ -651,7 +651,7 @@ function rad_create_contact( WP_REST_Request $request ) {
     $name  = $request->get_param( 'name' );
     $email = $request->get_param( 'email' );
 
-    // Xu ly logic luu contact...
+    // Xử lý logic lưu contact...
     global $wpdb;
     $result = $wpdb->insert(
         $wpdb->prefix . 'contacts',
@@ -662,7 +662,7 @@ function rad_create_contact( WP_REST_Request $request ) {
     if ( false === $result ) {
         return new WP_Error(
             'db_error',
-            'Khong the tao contact.',
+            'Không thể tạo contact.',
             array( 'status' => 500 )
         );
     }
@@ -671,7 +671,7 @@ function rad_create_contact( WP_REST_Request $request ) {
         'id'      => $wpdb->insert_id,
         'name'    => $name,
         'email'   => $email,
-        'message' => 'Da tao contact thanh cong!',
+        'message' => 'Đã tạo contact thành công!',
     ), 201 ); // 201 Created
 }
 ```
@@ -692,7 +692,7 @@ function rad_create_contact( WP_REST_Request $request ) {
 // WP_REST_Server::ALLMETHODS  = 'GET, POST, PUT, PATCH, DELETE'
 ```
 
-### CRUD Endpoints day du
+### CRUD Endpoints đầy đủ
 
 ```php
 <?php
@@ -701,7 +701,7 @@ add_action( 'rest_api_init', 'my_register_crud_routes' );
 function my_register_crud_routes() {
     $namespace = 'myplugin/v1';
 
-    // GET /wp-json/myplugin/v1/items - Lay danh sach
+    // GET /wp-json/myplugin/v1/items - Lấy danh sách
     register_rest_route( $namespace, '/items', array(
         'methods'             => 'GET',
         'callback'            => 'my_get_items',
@@ -709,7 +709,7 @@ function my_register_crud_routes() {
         'args'                => my_get_collection_params(),
     ));
 
-    // POST /wp-json/myplugin/v1/items - Tao moi
+    // POST /wp-json/myplugin/v1/items - Tạo mới
     register_rest_route( $namespace, '/items', array(
         'methods'             => 'POST',
         'callback'            => 'my_create_item',
@@ -717,8 +717,8 @@ function my_register_crud_routes() {
         'args'                => my_get_item_schema(),
     ));
 
-    // GET /wp-json/myplugin/v1/items/123 - Lay 1 item
-    // (?P<id>\d+) la regex: bat so nguyen lam param 'id'
+    // GET /wp-json/myplugin/v1/items/123 - Lấy 1 item
+    // (?P<id>\d+) là regex: bắt số nguyên làm param 'id'
     register_rest_route( $namespace, '/items/(?P<id>\d+)', array(
         'methods'             => 'GET',
         'callback'            => 'my_get_item',
@@ -732,7 +732,7 @@ function my_register_crud_routes() {
         ),
     ));
 
-    // PUT /wp-json/myplugin/v1/items/123 - Cap nhat
+    // PUT /wp-json/myplugin/v1/items/123 - Cập nhật
     register_rest_route( $namespace, '/items/(?P<id>\d+)', array(
         'methods'             => 'PUT',
         'callback'            => 'my_update_item',
@@ -740,14 +740,14 @@ function my_register_crud_routes() {
         'args'                => my_get_item_schema(),
     ));
 
-    // DELETE /wp-json/myplugin/v1/items/123 - Xoa
+    // DELETE /wp-json/myplugin/v1/items/123 - Xóa
     register_rest_route( $namespace, '/items/(?P<id>\d+)', array(
         'methods'             => 'DELETE',
         'callback'            => 'my_delete_item',
         'permission_callback' => 'my_check_admin_permission',
     ));
 
-    // Nhieu methods cho 1 route (gom lai)
+    // Nhiều methods cho 1 route (gom lại)
     register_rest_route( $namespace, '/items/(?P<id>\d+)', array(
         array(
             'methods'             => 'GET',
@@ -772,7 +772,7 @@ function my_check_admin_permission() {
     return current_user_can( 'manage_options' );
 }
 
-// === COLLECTION PARAMS (cho GET danh sach) ===
+// === COLLECTION PARAMS (cho GET danh sách) ===
 function my_get_collection_params() {
     return array(
         'page' => array(
@@ -816,7 +816,7 @@ function my_get_item_schema() {
             'validate_callback' => function( $v ) {
                 return ! empty( $v ) && strlen( $v ) <= 200;
             },
-            'description'       => 'Ten item',
+            'description'       => 'Tên item',
         ),
         'email' => array(
             'required'          => true,
@@ -837,24 +837,24 @@ function my_get_item_schema() {
 
 ---
 
-## 8. Permission Callback va Schema Validation
+## 8. Permission Callback và Schema Validation
 
-### Permission Callback chi tiet
+### Permission Callback chi tiết
 
 ```php
 <?php
 /**
- * permission_callback CHAY TRUOC callback.
- * Neu tra ve false hoac WP_Error, request bi tu choi (401/403).
+ * permission_callback CHẠY TRƯỚC callback.
+ * Nếu trả về false hoặc WP_Error, request bị từ chối (401/403).
  *
- * QUAN TRONG: Moi route PHAI co permission_callback.
- * Dung __return_true cho public endpoints.
+ * QUAN TRỌNG: Mỗi route PHẢI có permission_callback.
+ * Dùng __return_true cho public endpoints.
  */
 
-// Public - ai cung goi duoc
+// Public - ai cũng gọi được
 'permission_callback' => '__return_true'
 
-// Dang nhap - bat ky user nao da login
+// Đăng nhập - bất kỳ user nào đã login
 'permission_callback' => 'is_user_logged_in'
 
 // Admin only
@@ -862,19 +862,19 @@ function my_get_item_schema() {
     return current_user_can( 'manage_options' );
 }
 
-// Editor tro len
+// Editor trở lên
 'permission_callback' => function() {
     return current_user_can( 'edit_posts' );
 }
 
-// Tac gia cua item
+// Tác giả của item
 'permission_callback' => function( WP_REST_Request $request ) {
     $item_id = $request->get_param( 'id' );
     $item = get_item( $item_id );
     return $item && $item->created_by === get_current_user_id();
 }
 
-// Admin HOAC tac gia
+// Admin HOẶC tác giả
 'permission_callback' => function( WP_REST_Request $request ) {
     if ( current_user_can( 'manage_options' ) ) {
         return true;
@@ -884,7 +884,7 @@ function my_get_item_schema() {
     return $item && $item->created_by === get_current_user_id();
 }
 
-// Kiem tra nonce tu cookie-based auth
+// Kiểm tra nonce từ cookie-based auth
 'permission_callback' => function() {
     return wp_verify_nonce(
         $_SERVER['HTTP_X_WP_NONCE'] ?? '',
@@ -893,13 +893,13 @@ function my_get_item_schema() {
 }
 ```
 
-### Schema Validation chi tiet
+### Schema Validation chi tiết
 
 ```php
 <?php
 /**
- * WordPress REST API ho tro JSON Schema de validate du lieu.
- * Khai bao trong 'args' cua register_rest_route.
+ * WordPress REST API hỗ trợ JSON Schema để validate dữ liệu.
+ * Khai báo trong 'args' của register_rest_route.
  */
 
 register_rest_route( 'myplugin/v1', '/items', array(
@@ -910,7 +910,7 @@ register_rest_route( 'myplugin/v1', '/items', array(
         'title' => array(
             'required'          => true,
             'type'              => 'string',
-            'description'       => 'Tieu de cua item.',
+            'description'       => 'Tiêu đề của item.',
             'minLength'         => 3,
             'maxLength'         => 200,
             'sanitize_callback' => 'sanitize_text_field',
@@ -918,7 +918,7 @@ register_rest_route( 'myplugin/v1', '/items', array(
                 if ( strlen( $value ) < 3 ) {
                     return new WP_Error(
                         'too_short',
-                        'Tieu de phai co it nhat 3 ky tu.',
+                        'Tiêu đề phải có ít nhất 3 ký tự.',
                         array( 'status' => 400 )
                     );
                 }
@@ -936,7 +936,7 @@ register_rest_route( 'myplugin/v1', '/items', array(
             'type'    => 'string',
             'default' => 'draft',
             'enum'    => array( 'draft', 'published', 'archived' ),
-            // enum: Chi chap nhan cac gia tri trong danh sach
+            // enum: Chỉ chấp nhận các giá trị trong danh sách
         ),
         'tags' => array(
             'type'  => 'array',
@@ -964,13 +964,13 @@ register_rest_route( 'myplugin/v1', '/items', array(
 
 ---
 
-## 9. Code vi du: CRUD API hoan chinh
+## 9. Code ví dụ: CRUD API hoàn chỉnh
 
 ```php
 <?php
 /**
  * Plugin Name:       Contacts REST API
- * Description:       REST API CRUD hoan chinh cho quan ly contacts.
+ * Description:       REST API CRUD hoàn chỉnh cho quản lý contacts.
  * Version:           1.0.0
  */
 
@@ -991,17 +991,17 @@ class Contacts_REST_Controller {
     }
 
     /**
-     * Dang ky tat ca REST routes
+     * Đăng ký tất cả REST routes
      */
     public function register_routes() {
-        // GET    /wp-json/contacts-api/v1/contacts         - Danh sach
-        // POST   /wp-json/contacts-api/v1/contacts         - Tao moi
-        // GET    /wp-json/contacts-api/v1/contacts/{id}     - Chi tiet
-        // PUT    /wp-json/contacts-api/v1/contacts/{id}     - Cap nhat
-        // DELETE /wp-json/contacts-api/v1/contacts/{id}     - Xoa
-        // GET    /wp-json/contacts-api/v1/contacts/stats    - Thong ke
+        // GET    /wp-json/contacts-api/v1/contacts         - Danh sách
+        // POST   /wp-json/contacts-api/v1/contacts         - Tạo mới
+        // GET    /wp-json/contacts-api/v1/contacts/{id}     - Chi tiết
+        // PUT    /wp-json/contacts-api/v1/contacts/{id}     - Cập nhật
+        // DELETE /wp-json/contacts-api/v1/contacts/{id}     - Xóa
+        // GET    /wp-json/contacts-api/v1/contacts/stats    - Thống kê
 
-        // Danh sach + Tao moi
+        // Danh sách + Tạo mới
         register_rest_route( $this->namespace, '/contacts', array(
             array(
                 'methods'             => 'GET',
@@ -1017,7 +1017,7 @@ class Contacts_REST_Controller {
             ),
         ));
 
-        // Chi tiet + Cap nhat + Xoa
+        // Chi tiết + Cập nhật + Xóa
         register_rest_route( $this->namespace, '/contacts/(?P<id>\d+)', array(
             array(
                 'methods'             => 'GET',
@@ -1037,7 +1037,7 @@ class Contacts_REST_Controller {
             ),
         ));
 
-        // Thong ke
+        // Thống kê
         register_rest_route( $this->namespace, '/contacts/stats', array(
             'methods'             => 'GET',
             'callback'            => array( $this, 'get_stats' ),
@@ -1059,7 +1059,7 @@ class Contacts_REST_Controller {
         return current_user_can( 'manage_options' );
     }
 
-    // === GET ITEMS (Danh sach) ===
+    // === GET ITEMS (Danh sách) ===
 
     public function get_items( WP_REST_Request $request ) {
         global $wpdb;
@@ -1071,7 +1071,7 @@ class Contacts_REST_Controller {
         $orderby  = $request->get_param( 'orderby' );
         $order    = strtoupper( $request->get_param( 'order' ) );
 
-        // Xay dung query
+        // Xây dựng query
         $where = "WHERE 1=1";
         $params = array();
 
@@ -1088,13 +1088,13 @@ class Contacts_REST_Controller {
             $params[] = $status;
         }
 
-        // Dem tong
+        // Đếm tổng
         $count_sql = "SELECT COUNT(*) FROM {$this->table_name} {$where}";
         $total = empty( $params )
             ? $wpdb->get_var( $count_sql )
             : $wpdb->get_var( $wpdb->prepare( $count_sql, ...$params ) );
 
-        // Lay du lieu
+        // Lấy dữ liệu
         $offset = ( $page - 1 ) * $per_page;
         $safe_orderby = in_array( $orderby, array( 'id', 'first_name', 'email', 'status', 'created_at' ) )
             ? $orderby : 'id';
@@ -1122,7 +1122,7 @@ class Contacts_REST_Controller {
         return $response;
     }
 
-    // === GET ITEM (Chi tiet) ===
+    // === GET ITEM (Chi tiết) ===
 
     public function get_item( WP_REST_Request $request ) {
         global $wpdb;
@@ -1135,7 +1135,7 @@ class Contacts_REST_Controller {
         if ( ! $item ) {
             return new WP_Error(
                 'not_found',
-                'Khong tim thay contact.',
+                'Không tìm thấy contact.',
                 array( 'status' => 404 )
             );
         }
@@ -1158,7 +1158,7 @@ class Contacts_REST_Controller {
             'created_by' => get_current_user_id(),
         );
 
-        // Kiem tra email trung
+        // Kiểm tra email trùng
         $exists = $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT COUNT(*) FROM {$this->table_name} WHERE email = %s",
@@ -1169,7 +1169,7 @@ class Contacts_REST_Controller {
         if ( $exists > 0 ) {
             return new WP_Error(
                 'duplicate_email',
-                'Email da ton tai trong he thong.',
+                'Email đã tồn tại trong hệ thống.',
                 array( 'status' => 409 )  // 409 Conflict
             );
         }
@@ -1183,17 +1183,17 @@ class Contacts_REST_Controller {
         if ( false === $result ) {
             return new WP_Error(
                 'db_error',
-                'Loi database: ' . $wpdb->last_error,
+                'Lỗi database: ' . $wpdb->last_error,
                 array( 'status' => 500 )
             );
         }
 
-        // Lay item vua tao
+        // Lấy item vừa tạo
         $new_item = $wpdb->get_row(
             $wpdb->prepare( "SELECT * FROM {$this->table_name} WHERE id = %d", $wpdb->insert_id )
         );
 
-        // Fire action de cac plugin khac co the hook vao
+        // Fire action để các plugin khác có thể hook vào
         do_action( 'contacts_api_contact_created', $new_item );
 
         return new WP_REST_Response( $this->prepare_item( $new_item ), 201 );
@@ -1206,16 +1206,16 @@ class Contacts_REST_Controller {
 
         $id = absint( $request->get_param( 'id' ) );
 
-        // Kiem tra ton tai
+        // Kiểm tra tồn tại
         $existing = $wpdb->get_row(
             $wpdb->prepare( "SELECT * FROM {$this->table_name} WHERE id = %d", $id )
         );
 
         if ( ! $existing ) {
-            return new WP_Error( 'not_found', 'Khong tim thay contact.', array( 'status' => 404 ) );
+            return new WP_Error( 'not_found', 'Không tìm thấy contact.', array( 'status' => 404 ) );
         }
 
-        // Chi update cac truong duoc gui (PATCH-like behavior)
+        // Chỉ update các trường được gửi (PATCH-like behavior)
         $update_data = array();
         $format = array();
 
@@ -1229,10 +1229,10 @@ class Contacts_REST_Controller {
         }
 
         if ( empty( $update_data ) ) {
-            return new WP_Error( 'no_data', 'Khong co du lieu de cap nhat.', array( 'status' => 400 ) );
+            return new WP_Error( 'no_data', 'Không có dữ liệu để cập nhật.', array( 'status' => 400 ) );
         }
 
-        // Kiem tra email trung (neu doi email)
+        // Kiểm tra email trùng (nếu đổi email)
         if ( isset( $update_data['email'] ) && $update_data['email'] !== $existing->email ) {
             $email_exists = $wpdb->get_var(
                 $wpdb->prepare(
@@ -1242,7 +1242,7 @@ class Contacts_REST_Controller {
                 )
             );
             if ( $email_exists > 0 ) {
-                return new WP_Error( 'duplicate_email', 'Email da ton tai.', array( 'status' => 409 ) );
+                return new WP_Error( 'duplicate_email', 'Email đã tồn tại.', array( 'status' => 409 ) );
             }
         }
 
@@ -1269,7 +1269,7 @@ class Contacts_REST_Controller {
         );
 
         if ( ! $existing ) {
-            return new WP_Error( 'not_found', 'Khong tim thay contact.', array( 'status' => 404 ) );
+            return new WP_Error( 'not_found', 'Không tìm thấy contact.', array( 'status' => 404 ) );
         }
 
         $wpdb->delete( $this->table_name, array( 'id' => $id ), array( '%d' ) );
@@ -1279,7 +1279,7 @@ class Contacts_REST_Controller {
         return new WP_REST_Response( array(
             'deleted' => true,
             'id'      => $id,
-            'message' => 'Da xoa contact thanh cong.',
+            'message' => 'Đã xóa contact thành công.',
         ), 200 );
     }
 
@@ -1353,7 +1353,7 @@ class Contacts_REST_Controller {
             'first_name' => array(
                 'required' => $create, 'sanitize_callback' => 'sanitize_text_field',
                 'validate_callback' => function($v) use ($create) {
-                    if ( $create && empty($v) ) return new WP_Error('required', 'first_name la bat buoc.');
+                    if ( $create && empty($v) ) return new WP_Error('required', 'first_name là bắt buộc.');
                     return true;
                 },
             ),
@@ -1361,8 +1361,8 @@ class Contacts_REST_Controller {
             'email' => array(
                 'required' => $create, 'sanitize_callback' => 'sanitize_email',
                 'validate_callback' => function($v) use ($create) {
-                    if ( $create && ! is_email($v) ) return new WP_Error('invalid', 'Email khong hop le.');
-                    if ( ! $create && $v !== null && ! is_email($v) ) return new WP_Error('invalid', 'Email khong hop le.');
+                    if ( $create && ! is_email($v) ) return new WP_Error('invalid', 'Email không hợp lệ.');
+                    if ( ! $create && $v !== null && ! is_email($v) ) return new WP_Error('invalid', 'Email không hợp lệ.');
                     return true;
                 },
             ),
@@ -1374,41 +1374,41 @@ class Contacts_REST_Controller {
     }
 }
 
-// Khoi tao
+// Khởi tạo
 new Contacts_REST_Controller();
 
-// === TEST VOI cURL ===
-// # Lay danh sach
+// === TEST VỚI cURL ===
+// # Lấy danh sách
 // curl -X GET "https://example.com/wp-json/contacts-api/v1/contacts?per_page=5" \
 //      -H "X-WP-Nonce: YOUR_NONCE"
 //
-// # Tao moi
+// # Tạo mới
 // curl -X POST "https://example.com/wp-json/contacts-api/v1/contacts" \
 //      -H "X-WP-Nonce: YOUR_NONCE" \
 //      -H "Content-Type: application/json" \
 //      -d '{"first_name":"Nguyen","last_name":"Van A","email":"a@b.com"}'
 //
-// # Cap nhat
+// # Cập nhật
 // curl -X PUT "https://example.com/wp-json/contacts-api/v1/contacts/1" \
 //      -H "X-WP-Nonce: YOUR_NONCE" \
 //      -H "Content-Type: application/json" \
 //      -d '{"first_name":"Tran"}'
 //
-// # Xoa
+// # Xóa
 // curl -X DELETE "https://example.com/wp-json/contacts-api/v1/contacts/1" \
 //      -H "X-WP-Nonce: YOUR_NONCE"
 ```
 
 ---
 
-## 10. So sanh REST API voi Route trong Laravel
+## 10. So sánh REST API với Route trong Laravel
 
 ```php
 <?php
 // === LARAVEL ===
 // routes/api.php
 // Route::apiResource('contacts', ContactController::class);
-// Tu dong tao: GET, POST, PUT, DELETE
+// Tự động tạo: GET, POST, PUT, DELETE
 
 // Controller:
 // class ContactController extends Controller {
@@ -1432,27 +1432,27 @@ new Contacts_REST_Controller();
 // }
 
 // === WORDPRESS ===
-// Khong co Route file, dang ky trong rest_api_init hook
-// Khong co Route Model Binding, tu query
-// Khong co Form Request, validate trong 'args'
+// Không có Route file, đăng ký trong rest_api_init hook
+// Không có Route Model Binding, tự query
+// Không có Form Request, validate trong 'args'
 ```
 
-### Bang so sanh
+### Bảng so sánh
 
-| Tinh nang | Laravel API | WordPress REST API |
+| Tính năng | Laravel API | WordPress REST API |
 |-----------|-----------|-------------------|
-| **Dinh nghia route** | `routes/api.php` | `register_rest_route()` |
-| **Resource route** | `Route::apiResource()` | Tu dang ky tung route |
-| **Controller** | Class rieng | Callback function/method |
+| **Định nghĩa route** | `routes/api.php` | `register_rest_route()` |
+| **Resource route** | `Route::apiResource()` | Tự đăng ký từng route |
+| **Controller** | Class riêng | Callback function/method |
 | **Middleware** | Middleware classes | `permission_callback` |
 | **Validation** | Form Request | `validate_callback` trong args |
-| **Model Binding** | Tu dong | Tu query |
+| **Model Binding** | Tự động | Tự query |
 | **Response** | `response()->json()` | `WP_REST_Response` |
 | **Error** | `abort(404)` | `WP_Error` |
 | **Authentication** | Sanctum/Passport | Cookie+Nonce, Application Passwords |
-| **Rate Limiting** | ThrottleRequests | Khong co san (tu code) |
+| **Rate Limiting** | ThrottleRequests | Không có sẵn (tự code) |
 | **API Versioning** | URL prefix `/v1/` | Namespace: `plugin/v1` |
-| **Pagination** | `->paginate()` | Tu code LIMIT/OFFSET |
+| **Pagination** | `->paginate()` | Tự code LIMIT/OFFSET |
 | **CORS** | Middleware | `rest_pre_serve_request` filter |
 
 ---
@@ -1463,22 +1463,22 @@ new Contacts_REST_Controller();
 
 ```php
 <?php
-// 1. Luon dung nonce
+// 1. Luôn dùng nonce
 check_ajax_referer( 'my_nonce', 'nonce' );
 
-// 2. Luon kiem tra quyen
+// 2. Luôn kiểm tra quyền
 if ( ! current_user_can( 'manage_options' ) ) {
     wp_send_json_error( array( 'message' => 'Forbidden' ), 403 );
 }
 
-// 3. Luon sanitize input
+// 3. Luôn sanitize input
 $name = sanitize_text_field( $_POST['name'] ?? '' );
 
-// 4. Dung wp_send_json_success/error (tu dong die)
+// 4. Dùng wp_send_json_success/error (tự động die)
 wp_send_json_success( $data );
 // KHONG dung: echo json_encode($data); die();
 
-// 5. Chi load JS khi can
+// 5. Chỉ load JS khi cần
 add_action( 'wp_enqueue_scripts', function() {
     if ( is_singular( 'product' ) ) {
         wp_enqueue_script( 'my-ajax-script' );
@@ -1490,26 +1490,26 @@ add_action( 'wp_enqueue_scripts', function() {
 
 ```php
 <?php
-// 1. Luon co permission_callback (bao mat)
+// 1. Luôn có permission_callback (bảo mật)
 // SAI:
 register_rest_route( 'ns/v1', '/data', array(
     'methods'  => 'GET',
     'callback' => 'handler',
-    // Thieu permission_callback => WARNING
+    // Thiếu permission_callback => WARNING
 ));
 
 // DUNG:
 register_rest_route( 'ns/v1', '/data', array(
     'methods'             => 'GET',
     'callback'            => 'handler',
-    'permission_callback' => '__return_true', // Hoac check cu the
+    'permission_callback' => '__return_true', // Hoặc check cụ thể
 ));
 
-// 2. Dung namespace dung chuan: ten-plugin/vN
+// 2. Dùng namespace đúng chuẩn: tên-plugin/vN
 // 'my-plugin/v1' (DUNG)
 // 'v1/my-plugin' (SAI)
 
-// 3. Tra ve WP_REST_Response voi status code phu hop
+// 3. Trả về WP_REST_Response với status code phù hợp
 // 200 = OK (GET, PUT, DELETE)
 // 201 = Created (POST)
 // 204 = No Content
@@ -1520,10 +1520,10 @@ register_rest_route( 'ns/v1', '/data', array(
 // 409 = Conflict
 // 500 = Server Error
 
-// 4. Tra ve WP_Error cho loi
+// 4. Trả về WP_Error cho lỗi
 return new WP_Error( 'error_code', 'Message', array( 'status' => 404 ) );
 
-// 5. Validate va sanitize trong args (khong trong callback)
+// 5. Validate và sanitize trong args (không trong callback)
 'args' => array(
     'email' => array(
         'required'          => true,
@@ -1535,7 +1535,7 @@ return new WP_Error( 'error_code', 'Message', array( 'status' => 404 ) );
 
 ---
 
-## Tham khao
+## Tham khảo
 
 - [WordPress AJAX](https://developer.wordpress.org/plugins/javascript/ajax/)
 - [WordPress REST API Handbook](https://developer.wordpress.org/rest-api/)

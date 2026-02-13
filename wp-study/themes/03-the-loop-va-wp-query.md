@@ -1,36 +1,36 @@
-# The Loop va WP_Query trong WordPress
+# The Loop và WP_Query trong WordPress
 
-## Muc Luc
+## Mục Lục
 
-1. [The Loop la gi](#1-the-loop-la-gi)
-2. [Cau truc Loop co ban](#2-cau-truc-loop-co-ban)
-3. [Loop Functions chi tiet](#3-loop-functions)
-4. [Custom Loop voi WP_Query](#4-custom-loop-voi-wp_query)
-5. [Tham so WP_Query chi tiet](#5-tham-so-wp_query)
-6. [Multiple Loops tren mot page](#6-multiple-loops)
+1. [The Loop là gì](#1-the-loop-la-gi)
+2. [Cấu trúc Loop cơ bản](#2-cau-truc-loop-co-ban)
+3. [Loop Functions chi tiết](#3-loop-functions)
+4. [Custom Loop với WP_Query](#4-custom-loop-voi-wp_query)
+5. [Tham số WP_Query chi tiết](#5-tham-so-wp_query)
+6. [Multiple Loops trên một page](#6-multiple-loops)
 7. [Pagination](#7-pagination)
 8. [pre_get_posts hook](#8-pre_get_posts)
-9. [Code vi du: Trang blog voi nhieu loops](#9-code-vi-du)
-10. [So sanh voi Eloquent trong Laravel](#10-so-sanh-voi-eloquent)
+9. [Code ví dụ: Trang blog với nhiều loops](#9-code-vi-du)
+10. [So sánh với Eloquent trong Laravel](#10-so-sanh-voi-eloquent)
 11. [Best Practices](#11-best-practices)
 
 ---
 
-## 1. The Loop la gi
+## 1. The Loop là gì
 
-The Loop (Vong Lap) la co che **co ban nhat** cua WordPress de hien thi noi dung. No la mot vong lap PHP duyet qua danh sach bai viet va hien thi tung bai.
+The Loop (Vòng Lặp) là cơ chế **cơ bản nhất** của WordPress để hiển thị nội dung. Nó là một vòng lặp PHP duyệt qua danh sách bài viết và hiển thị từng bài.
 
-### Nguyen ly hoat dong:
+### Nguyên lý hoạt động:
 
 ```
-1. Nguoi dung truy cap URL (vd: /category/tin-tuc/)
-2. WordPress tu dong tao 1 query (Main Query) de lay bai viet phu hop
-3. The Loop duyet qua ket qua cua query do
-4. Moi vong lap, WordPress "setup" bai viet hien tai (global $post)
-5. Ban dung cac ham nhu the_title(), the_content() de hien thi
+1. Người dùng truy cập URL (vd: /category/tin-tuc/)
+2. WordPress tự động tạo 1 query (Main Query) để lấy bài viết phù hợp
+3. The Loop duyệt qua kết quả của query đó
+4. Mỗi vòng lặp, WordPress "setup" bài viết hiện tại (global $post)
+5. Bạn dùng các hàm như the_title(), the_content() để hiển thị
 ```
 
-### So sanh nhanh voi Laravel:
+### So sánh nhanh với Laravel:
 
 ```php
 // LARAVEL
@@ -46,63 +46,63 @@ The Loop (Vong Lap) la co che **co ban nhat** cua WordPress de hien thi noi dung
 <?php endwhile; ?>
 ```
 
-**Diem khac biet:** Trong Laravel, ban truyen `$posts` tu controller. Trong WordPress, The Loop tu dong lay du lieu tu Main Query (dua tren URL).
+**Điểm khác biệt:** Trong Laravel, bạn truyền `$posts` từ controller. Trong WordPress, The Loop tự động lấy dữ liệu từ Main Query (dựa trên URL).
 
 ---
 
-## 2. Cau truc Loop co ban
+## 2. Cấu trúc Loop cơ bản
 
-### Loop toi gian nhat:
+### Loop tối giản nhất:
 
 ```php
 <?php
 /**
- * Cau truc Loop co ban nhat
+ * Cấu trúc Loop cơ bản nhất
  */
 if ( have_posts() ) :
-    // Co bai viet -> bat dau loop
+    // Có bài viết -> bắt đầu loop
     while ( have_posts() ) :
         the_post();
-        // Hien thi noi dung bai viet o day
+        // Hiển thị nội dung bài viết ở đây
         the_title();
         the_content();
     endwhile;
 else :
-    // Khong co bai viet nao
-    echo 'Khong tim thay bai viet.';
+    // Không có bài viết nào
+    echo 'Không tìm thấy bài viết.';
 endif;
 ?>
 ```
 
-### Giai thich chi tiet:
+### Giải thích chi tiết:
 
 ```php
 <?php
 /**
  * === have_posts() ===
- * - Kiem tra con bai viet nao trong query khong
- * - Tra ve true/false
- * - Tuong tu: $collection->isNotEmpty() trong Laravel
+ * - Kiểm tra còn bài viết nào trong query không
+ * - Trả về true/false
+ * - Tương tự: $collection->isNotEmpty() trong Laravel
  *
  * === the_post() ===
- * - Chuyen den bai viet tiep theo trong loop
+ * - Chuyển đến bài viết tiếp theo trong loop
  * - Setup global $post object
- * - Sau khi goi the_post(), tat ca cac ham nhu the_title(), the_content()
- *   se tra ve du lieu cua bai viet HIEN TAI
- * - Tuong tu: $loop->current() trong Laravel
+ * - Sau khi gọi the_post(), tất cả các hàm như the_title(), the_content()
+ *   sẽ trả về dữ liệu của bài viết HIỆN TẠI
+ * - Tương tự: $loop->current() trong Laravel
  *
  * === the_title() ===
- * - In ra tieu de bai viet hien tai
- * - the_title() echo ra, get_the_title() tra ve string
+ * - In ra tiêu đề bài viết hiện tại
+ * - the_title() echo ra, get_the_title() trả về string
  *
  * === the_content() ===
- * - In ra noi dung bai viet hien tai (da qua filter)
- * - Tu dong apply shortcodes, embed, wpautop...
+ * - In ra nội dung bài viết hiện tại (đã qua filter)
+ * - Tự động apply shortcodes, embed, wpautop...
  */
 ?>
 ```
 
-### Loop day du voi HTML:
+### Loop đầy đủ với HTML:
 
 ```php
 <?php if ( have_posts() ) : ?>
@@ -141,7 +141,7 @@ endif;
                         <?php the_category( ', ' ); ?>
                     </span>
                     <span class="comments">
-                        <?php comments_number( 'Chua co binh luan', '1 binh luan', '% binh luan' ); ?>
+                        <?php comments_number( 'Chưa có bình luận', '1 bình luận', '% bình luận' ); ?>
                     </span>
                 </div>
             </header>
@@ -150,10 +150,10 @@ endif;
             <div class="entry-content">
                 <?php
                 if ( is_singular() ) {
-                    // Trang single: hien thi toan bo noi dung
-                    the_content( __( 'Doc tiep &rarr;', 'developer-theme' ) );
+                    // Trang single: hiển thị toàn bộ nội dung
+                    the_content( __( 'Đọc tiếp &rarr;', 'developer-theme' ) );
                 } else {
-                    // Trang archive: hien thi excerpt (tom tat)
+                    // Trang archive: hiển thị excerpt (tóm tắt)
                     the_excerpt();
                 }
                 ?>
@@ -165,8 +165,8 @@ endif;
                 // Tags
                 the_tags( '<span class="tags">Tags: ', ', ', '</span>' );
 
-                // Edit link (chi hien cho nguoi co quyen)
-                edit_post_link( __( 'Chinh sua', 'developer-theme' ), '<span class="edit-link">', '</span>' );
+                // Edit link (chỉ hiện cho người có quyền)
+                edit_post_link( __( 'Chỉnh sửa', 'developer-theme' ), '<span class="edit-link">', '</span>' );
                 ?>
             </footer>
 
@@ -179,7 +179,7 @@ endif;
 
 <?php else : ?>
 
-    <p><?php esc_html_e( 'Khong co bai viet nao.', 'developer-theme' ); ?></p>
+    <p><?php esc_html_e( 'Không có bài viết nào.', 'developer-theme' ); ?></p>
 
 <?php endif; ?>
 ```
@@ -188,62 +188,62 @@ endif;
 
 ## 3. Loop Functions
 
-### Cac ham hien thi thong tin bai viet:
+### Các hàm hiển thị thông tin bài viết:
 
 ```php
 <?php
-// === TIEU DE ===
-the_title();                          // Echo tieu de
-the_title( '<h1>', '</h1>' );         // Boc trong tag
-$title = get_the_title();             // Tra ve string (khong echo)
-$title = get_the_title( $post_id );   // Lay tieu de theo ID
+// === TIÊU ĐỀ ===
+the_title();                          // Echo tiêu đề
+the_title( '<h1>', '</h1>' );         // Bọc trong tag
+$title = get_the_title();             // Trả về string (không echo)
+$title = get_the_title( $post_id );   // Lấy tiêu đề theo ID
 
-// === NOI DUNG ===
-the_content();                        // Echo toan bo noi dung (da filter)
-the_content( 'Doc tiep...' );         // Voi "more" link text
-$content = get_the_content();         // Tra ve string (CHUA filter)
-$content = apply_filters( 'the_content', get_the_content() ); // Tra ve string (DA filter)
+// === NỘI DUNG ===
+the_content();                        // Echo toàn bộ nội dung (đã filter)
+the_content( 'Đọc tiếp...' );         // Với "more" link text
+$content = get_the_content();         // Trả về string (CHƯA filter)
+$content = apply_filters( 'the_content', get_the_content() ); // Trả về string (ĐÃ filter)
 
-// === TOM TAT (EXCERPT) ===
-the_excerpt();                        // Echo excerpt (tu dong tao tu content neu khong co)
-$excerpt = get_the_excerpt();         // Tra ve string
+// === TÓM TẮT (EXCERPT) ===
+the_excerpt();                        // Echo excerpt (tự động tạo từ content nếu không có)
+$excerpt = get_the_excerpt();         // Trả về string
 
-// Mac dinh: 55 tu, ket thuc bang "[...]"
-// Tuy chinh excerpt length:
+// Mặc định: 55 từ, kết thúc bằng "[...]"
+// Tùy chỉnh excerpt length:
 function custom_excerpt_length( $length ) {
-    return 20; // 20 tu
+    return 20; // 20 từ
 }
 add_filter( 'excerpt_length', 'custom_excerpt_length' );
 
-// Tuy chinh excerpt more text:
+// Tùy chỉnh excerpt more text:
 function custom_excerpt_more( $more ) {
-    return '... <a href="' . get_permalink() . '">Doc them</a>';
+    return '... <a href="' . get_permalink() . '">Đọc thêm</a>';
 }
 add_filter( 'excerpt_more', 'custom_excerpt_more' );
 
-// Tuy chinh so tu excerpt ngay trong template:
+// Tùy chỉnh số từ excerpt ngay trong template:
 echo wp_trim_words( get_the_content(), 30, '...' );
 
 // === LINK/URL ===
-the_permalink();                      // Echo URL bai viet
-$url = get_the_permalink();           // Tra ve URL
-$url = get_permalink();               // Giong get_the_permalink()
+the_permalink();                      // Echo URL bài viết
+$url = get_the_permalink();           // Trả về URL
+$url = get_permalink();               // Giống get_the_permalink()
 $url = get_permalink( $post_id );     // URL theo ID
 
-// === FEATURED IMAGE (Anh dai dien) ===
-the_post_thumbnail();                 // Echo anh mac dinh
-the_post_thumbnail( 'thumbnail' );    // Kich thuoc 150x150
-the_post_thumbnail( 'medium' );       // Kich thuoc 300x300
-the_post_thumbnail( 'medium_large' ); // Kich thuoc 768px wide
-the_post_thumbnail( 'large' );        // Kich thuoc 1024x1024
-the_post_thumbnail( 'full' );         // Kich thuoc goc
-the_post_thumbnail( 'developer-featured' ); // Kich thuoc tuy chinh
-the_post_thumbnail( array( 400, 300 ) );    // Kich thuoc cu the
+// === FEATURED IMAGE (Ảnh đại diện) ===
+the_post_thumbnail();                 // Echo ảnh mặc định
+the_post_thumbnail( 'thumbnail' );    // Kích thước 150x150
+the_post_thumbnail( 'medium' );       // Kích thước 300x300
+the_post_thumbnail( 'medium_large' ); // Kích thước 768px wide
+the_post_thumbnail( 'large' );        // Kích thước 1024x1024
+the_post_thumbnail( 'full' );         // Kích thước gốc
+the_post_thumbnail( 'developer-featured' ); // Kích thước tùy chỉnh
+the_post_thumbnail( array( 400, 300 ) );    // Kích thước cụ thể
 
 // Lay URL cua featured image:
 $thumbnail_url = get_the_post_thumbnail_url( get_the_ID(), 'large' );
 
-// Kiem tra co featured image khong:
+// Kiểm tra có featured image không:
 if ( has_post_thumbnail() ) {
     the_post_thumbnail( 'large', array(
         'class' => 'featured-img',
@@ -253,56 +253,56 @@ if ( has_post_thumbnail() ) {
 }
 
 // === ID ===
-the_ID();                             // Echo ID bai viet
-$id = get_the_ID();                   // Tra ve ID
+the_ID();                             // Echo ID bài viết
+$id = get_the_ID();                   // Trả về ID
 
-// === NGAY THANG ===
-the_date();                           // Echo ngay (chi hien 1 lan/ngay)
-the_time();                           // Echo gio
-echo get_the_date();                  // Luon hien thi (khac the_date!)
-echo get_the_date( 'd/m/Y' );        // Dinh dang tuy chinh
+// === NGÀY THÁNG ===
+the_date();                           // Echo ngày (chỉ hiện 1 lần/ngày)
+the_time();                           // Echo giờ
+echo get_the_date();                  // Luôn hiển thị (khác the_date!)
+echo get_the_date( 'd/m/Y' );        // Định dạng tùy chỉnh
 echo get_the_date( 'F j, Y' );       // January 15, 2024
-echo get_the_modified_date();         // Ngay chinh sua cuoi
-echo human_time_diff( get_the_time('U'), current_time('timestamp') ) . ' truoc';
-// Output: "2 ngay truoc", "3 gio truoc"
+echo get_the_modified_date();         // Ngày chỉnh sửa cuối
+echo human_time_diff( get_the_time('U'), current_time('timestamp') ) . ' trước';
+// Output: "2 ngày trước", "3 giờ trước"
 
-// === TAC GIA ===
-the_author();                         // Echo ten tac gia
-$author = get_the_author();           // Tra ve ten tac gia
-the_author_posts_link();              // Link den trang tac gia
+// === TÁC GIẢ ===
+the_author();                         // Echo tên tác giả
+$author = get_the_author();           // Trả về tên tác giả
+the_author_posts_link();              // Link đến trang tác giả
 echo get_the_author_meta( 'display_name' );
 echo get_the_author_meta( 'description' );  // Bio
 echo get_the_author_meta( 'user_email' );
 echo get_avatar( get_the_author_meta( 'ID' ), 80 ); // Avatar 80px
 
-// === DANH MUC VA THE ===
-the_category( ', ' );                 // Echo danh muc, phan cach bang phay
-$categories = get_the_category();     // Mang cac category objects
+// === DANH MỤC VÀ THẺ ===
+the_category( ', ' );                 // Echo danh mục, phân cách bằng phẩy
+$categories = get_the_category();     // Mảng các category objects
 the_tags( 'Tags: ', ', ', '' );       // Echo tags
-$tags = get_the_tags();               // Mang cac tag objects
+$tags = get_the_tags();               // Mảng các tag objects
 
-// Chi lay ten danh muc dau tien:
+// Chỉ lấy tên danh mục đầu tiên:
 $cat = get_the_category();
 if ( $cat ) {
     echo $cat[0]->name;
 }
 
-// Lay tat ca categories voi link:
+// Lấy tất cả categories với link:
 echo get_the_category_list( ', ' );
 
-// === BINH LUAN ===
+// === BÌNH LUẬN ===
 comments_number();                    // "No Comments", "1 Comment", "5 Comments"
-comments_number( 'Chua co', '1 binh luan', '% binh luan' ); // Tuy chinh
-$count = get_comments_number();       // Tra ve so
+comments_number( 'Chưa có', '1 bình luận', '% bình luận' ); // Tùy chỉnh
+$count = get_comments_number();       // Trả về số
 
 // === CUSTOM FIELDS (Post Meta) ===
-$value = get_post_meta( get_the_ID(), 'meta_key', true );  // Lay 1 gia tri
-$values = get_post_meta( get_the_ID(), 'meta_key', false ); // Lay mang gia tri
-$all_meta = get_post_meta( get_the_ID() );                  // Lay tat ca meta
+$value = get_post_meta( get_the_ID(), 'meta_key', true );  // Lấy 1 giá trị
+$values = get_post_meta( get_the_ID(), 'meta_key', false ); // Lấy mảng giá trị
+$all_meta = get_post_meta( get_the_ID() );                  // Lấy tất cả meta
 
 // === POST TYPE ===
 $type = get_post_type();                    // 'post', 'page', 'product'...
-$type_obj = get_post_type_object( $type );  // Object chi tiet
+$type_obj = get_post_type_object( $type );  // Object chi tiết
 
 // === POST FORMAT ===
 $format = get_post_format();          // 'video', 'gallery', 'quote', false (standard)
@@ -311,13 +311,13 @@ $format = get_post_format();          // 'video', 'gallery', 'quote', false (sta
 $status = get_post_status();          // 'publish', 'draft', 'private', 'pending'...
 
 // === CLASSES ===
-post_class();                         // Them cac class cho <article>
-post_class( 'custom-class' );        // Them class tuy chinh
-$classes = get_post_class();          // Tra ve mang classes
+post_class();                         // Thêm các class cho <article>
+post_class( 'custom-class' );        // Thêm class tùy chỉnh
+$classes = get_post_class();          // Trả về mảng classes
 ?>
 ```
 
-### Vi du su dung tat ca cac ham:
+### Ví dụ sử dụng tất cả các hàm:
 
 ```php
 <?php while ( have_posts() ) : the_post(); ?>
@@ -381,14 +381,14 @@ $classes = get_post_class();          // Tra ve mang classes
                 <?php
                 $word_count = str_word_count( wp_strip_all_tags( get_the_content() ) );
                 $minutes = max( 1, ceil( $word_count / 200 ) );
-                printf( __( '%d phut doc', 'developer-theme' ), $minutes );
+                printf( __( '%d phút đọc', 'developer-theme' ), $minutes );
                 ?>
             </span>
 
             <!-- Comments -->
             <span class="comments-count">
                 <a href="<?php comments_link(); ?>">
-                    <?php comments_number( '0 binh luan', '1 binh luan', '% binh luan' ); ?>
+                    <?php comments_number( '0 bình luận', '1 bình luận', '% bình luận' ); ?>
                 </a>
             </span>
         </div>
@@ -400,7 +400,7 @@ $classes = get_post_class();          // Tra ve mang classes
 
         <!-- Read More -->
         <a href="<?php the_permalink(); ?>" class="read-more-link">
-            <?php esc_html_e( 'Doc them', 'developer-theme' ); ?> &rarr;
+            <?php esc_html_e( 'Đọc thêm', 'developer-theme' ); ?> &rarr;
         </a>
 
         <!-- Tags -->
@@ -418,36 +418,36 @@ $classes = get_post_class();          // Tra ve mang classes
 
 ---
 
-## 4. Custom Loop voi WP_Query
+## 4. Custom Loop với WP_Query
 
-### Khi nao can WP_Query?
+### Khi nào cần WP_Query?
 
-Main Query (The Loop mac dinh) chi lay bai viet dua tren URL hien tai. Khi ban can:
-- Hien thi bai viet o vi tri khac (sidebar, footer)
-- Lay bai viet theo dieu kien rieng
-- Hien thi nhieu danh sach bai viet tren 1 trang
-- Lay bai viet tu Custom Post Type
+Main Query (The Loop mặc định) chỉ lấy bài viết dựa trên URL hiện tại. Khi bạn cần:
+- Hiển thị bài viết ở vị trí khác (sidebar, footer)
+- Lấy bài viết theo điều kiện riêng
+- Hiển thị nhiều danh sách bài viết trên 1 trang
+- Lấy bài viết từ Custom Post Type
 
-Ban can tao **Custom Query** voi `WP_Query`.
+Bạn cần tạo **Custom Query** với `WP_Query`.
 
-### Co ban:
+### Cơ bản:
 
 ```php
 <?php
 /**
- * WP_Query co ban - Lay 5 bai viet moi nhat
+ * WP_Query cơ bản - Lấy 5 bài viết mới nhất
  */
 $query = new WP_Query( array(
-    'post_type'      => 'post',        // Loai bai viet
-    'posts_per_page' => 5,             // So bai viet
-    'post_status'    => 'publish',     // Chi lay bai da xuat ban
+    'post_type'      => 'post',        // Loại bài viết
+    'posts_per_page' => 5,             // Số bài viết
+    'post_status'    => 'publish',     // Chỉ lấy bài đã xuất bản
 ) );
 
-// Loop qua ket qua
+// Loop qua kết quả
 if ( $query->have_posts() ) :
     while ( $query->have_posts() ) :
         $query->the_post();
-        // Sau the_post(), cac ham nhu the_title() hoat dong binh thuong
+        // Sau the_post(), các hàm như the_title() hoạt động bình thường
 ?>
         <h3><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
         <p><?php the_excerpt(); ?></p>
@@ -455,11 +455,11 @@ if ( $query->have_posts() ) :
     endwhile;
 endif;
 
-// === BAT BUOC: Reset postdata ===
+// === BẮT BUỘC: Reset postdata ===
 wp_reset_postdata();
-// Neu khong reset, cac ham nhu the_title() ben ngoai loop nay
-// se tra ve du lieu cua bai viet cuoi cung trong custom query
-// thay vi bai viet cua Main Query
+// Nếu không reset, các hàm như the_title() bên ngoài loop này
+// sẽ trả về dữ liệu của bài viết cuối cùng trong custom query
+// thay vì bài viết của Main Query
 ?>
 ```
 
@@ -493,108 +493,108 @@ wp_reset_postdata();
 
 ---
 
-## 5. Tham so WP_Query chi tiet
+## 5. Tham số WP_Query chi tiết
 
-### Tong hop tat ca tham so:
+### Tổng hợp tất cả tham số:
 
 ```php
 <?php
 /**
- * WP_Query - Tat ca cac tham so quan trong
+ * WP_Query - Tất cả các tham số quan trọng
  */
 $args = array(
 
-    // === LOAI BAI VIET ===
+    // === LOẠI BÀI VIẾT ===
     'post_type'      => 'post',                // string hoac array
     // 'post_type'   => array( 'post', 'page', 'product' ),
-    // 'post_type'   => 'any', // Tat ca post types (tru revision va nav_menu_item)
+    // 'post_type'   => 'any', // Tất cả post types (trừ revision và nav_menu_item)
 
     'post_status'    => 'publish',             // publish, draft, pending, private, trash, any
     // 'post_status' => array( 'publish', 'draft' ),
 
-    // === SO LUONG VA PHAN TRANG ===
-    'posts_per_page' => 10,                    // So bai moi trang (-1 = tat ca)
-    'offset'         => 5,                     // Bo qua N bai dau tien
-    'paged'          => get_query_var('paged') ?: 1, // Trang hien tai (cho pagination)
-    'nopaging'       => false,                 // true = lay tat ca, bo qua phan trang
+    // === SỐ LƯỢNG VÀ PHÂN TRANG ===
+    'posts_per_page' => 10,                    // Số bài mỗi trang (-1 = tất cả)
+    'offset'         => 5,                     // Bỏ qua N bài đầu tiên
+    'paged'          => get_query_var('paged') ?: 1, // Trang hiện tại (cho pagination)
+    'nopaging'       => false,                 // true = lấy tất cả, bỏ qua phân trang
 
-    // === SAP XEP ===
-    'orderby'        => 'date',                // Sap xep theo
-    // Cac gia tri orderby:
-    // 'date'          - Ngay dang
-    // 'modified'      - Ngay chinh sua
-    // 'title'         - Tieu de (alphabet)
+    // === SẮP XẾP ===
+    'orderby'        => 'date',                // Sắp xếp theo
+    // Các giá trị orderby:
+    // 'date'          - Ngày đăng
+    // 'modified'      - Ngày chỉnh sửa
+    // 'title'         - Tiêu đề (alphabet)
     // 'name'          - Slug
-    // 'ID'            - ID bai viet
-    // 'author'        - Tac gia
-    // 'rand'          - Ngau nhien
-    // 'comment_count' - So binh luan
-    // 'menu_order'    - Thu tu menu (dung cho Pages)
-    // 'meta_value'    - Gia tri meta (can them meta_key)
-    // 'meta_value_num' - Gia tri meta dang so
-    // 'post__in'      - Theo thu tu cua mang post__in
+    // 'ID'            - ID bài viết
+    // 'author'        - Tác giả
+    // 'rand'          - Ngẫu nhiên
+    // 'comment_count' - Số bình luận
+    // 'menu_order'    - Thứ tự menu (dùng cho Pages)
+    // 'meta_value'    - Giá trị meta (cần thêm meta_key)
+    // 'meta_value_num' - Giá trị meta dạng số
+    // 'post__in'      - Theo thứ tự của mảng post__in
 
-    'order'          => 'DESC',                // DESC (giam) hoac ASC (tang)
+    'order'          => 'DESC',                // DESC (giảm) hoặc ASC (tăng)
 
-    // Sap xep theo nhieu truong:
+    // Sắp xếp theo nhiều trường:
     // 'orderby' => array(
     //     'meta_value_num' => 'DESC',
     //     'title'          => 'ASC',
     // ),
 
-    // === LOC THEO ID ===
-    'p'              => 42,                    // Lay bai viet co ID = 42
-    'post__in'       => array( 1, 2, 3 ),      // Chi lay cac ID nay
-    'post__not_in'   => array( 4, 5, 6 ),      // Loai tru cac ID nay
+    // === LỌC THEO ID ===
+    'p'              => 42,                    // Lấy bài viết có ID = 42
+    'post__in'       => array( 1, 2, 3 ),      // Chỉ lấy các ID này
+    'post__not_in'   => array( 4, 5, 6 ),      // Loại trừ các ID này
 
-    // === LOC THEO SLUG ===
-    'name'           => 'hello-world',         // Lay theo slug
-    'pagename'       => 'about',               // Lay page theo slug
+    // === LỌC THEO SLUG ===
+    'name'           => 'hello-world',         // Lấy theo slug
+    'pagename'       => 'about',               // Lấy page theo slug
 
-    // === LOC THEO PARENT ===
-    'post_parent'     => 10,                   // Lay cac trang con cua trang ID=10
-    'post_parent__in' => array( 10, 20 ),      // Con cua nhieu trang
+    // === LỌC THEO PARENT ===
+    'post_parent'     => 10,                   // Lấy các trang con của trang ID=10
+    'post_parent__in' => array( 10, 20 ),      // Con của nhiều trang
 
-    // === LOC THEO TAC GIA ===
-    'author'          => 1,                    // ID tac gia
-    'author_name'     => 'admin',              // Nicename tac gia
-    'author__in'      => array( 1, 2, 3 ),     // Nhieu tac gia
-    'author__not_in'  => array( 4, 5 ),        // Loai tru tac gia
+    // === LỌC THEO TÁC GIẢ ===
+    'author'          => 1,                    // ID tác giả
+    'author_name'     => 'admin',              // Nicename tác giả
+    'author__in'      => array( 1, 2, 3 ),     // Nhiều tác giả
+    'author__not_in'  => array( 4, 5 ),        // Loại trừ tác giả
 
-    // === LOC THEO DANH MUC ===
-    'cat'              => 5,                   // ID danh muc
-    'category_name'    => 'tin-tuc',           // Slug danh muc
-    'category__in'     => array( 5, 6, 7 ),    // Thuoc IT NHAT 1 danh muc
-    'category__not_in' => array( 8, 9 ),       // Khong thuoc cac danh muc nay
-    'category__and'    => array( 5, 6 ),       // Thuoc TAT CA cac danh muc nay
+    // === LỌC THEO DANH MỤC ===
+    'cat'              => 5,                   // ID danh mục
+    'category_name'    => 'tin-tuc',           // Slug danh mục
+    'category__in'     => array( 5, 6, 7 ),    // Thuộc ÍT NHẤT 1 danh mục
+    'category__not_in' => array( 8, 9 ),       // Không thuộc các danh mục này
+    'category__and'    => array( 5, 6 ),       // Thuộc TẤT CẢ các danh mục này
 
-    // === LOC THEO THE (TAG) ===
+    // === LỌC THEO THẺ (TAG) ===
     'tag'          => 'wordpress',             // Slug tag
     'tag_id'       => 10,                      // ID tag
-    'tag__in'      => array( 10, 11 ),         // Co IT NHAT 1 tag
-    'tag__not_in'  => array( 12, 13 ),         // Khong co cac tag nay
-    'tag__and'     => array( 10, 11 ),         // Co TAT CA cac tag nay
+    'tag__in'      => array( 10, 11 ),         // Có ÍT NHẤT 1 tag
+    'tag__not_in'  => array( 12, 13 ),         // Không có các tag này
+    'tag__and'     => array( 10, 11 ),         // Có TẤT CẢ các tag này
     'tag_slug__in' => array( 'wp', 'php' ),    // Theo slug
 
-    // === TIM KIEM ===
-    's'              => 'tu khoa tim kiem',    // Tim kiem trong title va content
+    // === TÌM KIẾM ===
+    's'              => 'từ khóa tìm kiếm',    // Tìm kiếm trong title và content
 
     // === POST FORMAT ===
-    // Dung tax_query (xem ben duoi)
+    // Dùng tax_query (xem bên dưới)
 
     // === STICKY POSTS ===
-    'ignore_sticky_posts' => true,             // Bo qua sticky posts
-    // Mac dinh: sticky posts luon hien dau tien
+    'ignore_sticky_posts' => true,             // Bỏ qua sticky posts
+    // Mặc định: sticky posts luôn hiện đầu tiên
 
     // === PERFORMANCE ===
-    'no_found_rows'          => true,          // Khong dem tong so bai (nhanh hon, nhung mat pagination)
-    'update_post_meta_cache' => false,         // Khong cache meta (nhanh hon neu khong can meta)
-    'update_post_term_cache' => false,         // Khong cache terms
-    'fields'                 => 'ids',         // Chi lay IDs thay vi full objects
-    // 'fields' => 'id=>parent',              // Chi lay ID va parent
+    'no_found_rows'          => true,          // Không đếm tổng số bài (nhanh hơn, nhưng mất pagination)
+    'update_post_meta_cache' => false,         // Không cache meta (nhanh hơn nếu không cần meta)
+    'update_post_term_cache' => false,         // Không cache terms
+    'fields'                 => 'ids',         // Chỉ lấy IDs thay vì full objects
+    // 'fields' => 'id=>parent',              // Chỉ lấy ID và parent
 
     // === CACHE ===
-    'cache_results'  => true,                  // Cache ket qua (mac dinh true)
+    'cache_results'  => true,                  // Cache kết quả (mặc định true)
 );
 
 $query = new WP_Query( $args );
@@ -605,55 +605,55 @@ $query = new WP_Query( $args );
 ```php
 <?php
 /**
- * meta_query - Loc theo Custom Fields
- * Tuong tu WHERE ... AND meta_key = 'value' trong SQL
- * Tuong tu ->where('meta_key', 'value') trong Eloquent
+ * meta_query - Lọc theo Custom Fields
+ * Tương tự WHERE ... AND meta_key = 'value' trong SQL
+ * Tương tự ->where('meta_key', 'value') trong Eloquent
  */
 
-// === Vi du 1: Lay san pham co gia > 100000 ===
+// === Ví dụ 1: Lấy sản phẩm có giá > 100000 ===
 $products = new WP_Query( array(
     'post_type'  => 'product',
-    'meta_key'   => 'price',           // Dung ket hop voi orderby meta_value_num
-    'orderby'    => 'meta_value_num',  // Sap xep theo gia (dang so)
-    'order'      => 'ASC',             // Tu thap den cao
+    'meta_key'   => 'price',           // Dùng kết hợp với orderby meta_value_num
+    'orderby'    => 'meta_value_num',  // Sắp xếp theo giá (dạng số)
+    'order'      => 'ASC',             // Từ thấp đến cao
     'meta_query' => array(
         array(
-            'key'     => 'price',        // Ten meta key
-            'value'   => 100000,         // Gia tri so sanh
-            'compare' => '>',            // Phep so sanh
-            'type'    => 'NUMERIC',      // Kieu du lieu
+            'key'     => 'price',        // Tên meta key
+            'value'   => 100000,         // Giá trị so sánh
+            'compare' => '>',            // Phép so sánh
+            'type'    => 'NUMERIC',      // Kiểu dữ liệu
         ),
     ),
 ) );
 
-// === Vi du 2: Nhieu dieu kien (AND) ===
+// === Ví dụ 2: Nhiều điều kiện (AND) ===
 $products = new WP_Query( array(
     'post_type'  => 'product',
     'meta_query' => array(
-        'relation' => 'AND',            // Tat ca dieu kien deu phai dung
+        'relation' => 'AND',            // Tất cả điều kiện đều phải đúng
         array(
             'key'     => 'price',
             'value'   => array( 100000, 500000 ),
-            'compare' => 'BETWEEN',      // Gia tu 100k-500k
+            'compare' => 'BETWEEN',      // Giá từ 100k-500k
             'type'    => 'NUMERIC',
         ),
         array(
             'key'     => 'in_stock',
             'value'   => '1',
-            'compare' => '=',            // Con hang
+            'compare' => '=',            // Còn hàng
         ),
         array(
             'key'     => 'featured',
-            'compare' => 'EXISTS',       // Co truong 'featured' (bat ky gia tri nao)
+            'compare' => 'EXISTS',       // Có trường 'featured' (bất kỳ giá trị nào)
         ),
     ),
 ) );
 
-// === Vi du 3: Nhieu dieu kien (OR) ===
+// === Ví dụ 3: Nhiều điều kiện (OR) ===
 $posts = new WP_Query( array(
     'post_type'  => 'post',
     'meta_query' => array(
-        'relation' => 'OR',             // Chi can 1 dieu kien dung
+        'relation' => 'OR',             // Chỉ cần 1 điều kiện đúng
         array(
             'key'     => 'color',
             'value'   => 'red',
@@ -667,18 +667,18 @@ $posts = new WP_Query( array(
     ),
 ) );
 
-// === Vi du 4: Ket hop AND va OR (nested) ===
+// === Ví dụ 4: Kết hợp AND và OR (nested) ===
 $posts = new WP_Query( array(
     'post_type'  => 'product',
     'meta_query' => array(
         'relation' => 'AND',
-        // Dieu kien 1: Con hang
+        // Điều kiện 1: Còn hàng
         array(
             'key'     => 'in_stock',
             'value'   => '1',
             'compare' => '=',
         ),
-        // Dieu kien 2: Mau do HOAC xanh
+        // Điều kiện 2: Màu đỏ HOẶC xanh
         array(
             'relation' => 'OR',
             array(
@@ -695,32 +695,32 @@ $posts = new WP_Query( array(
     ),
 ) );
 
-// === Cac phep so sanh (compare) ===
-// '='           : Bang
-// '!='          : Khong bang
-// '>'           : Lon hon
-// '>='          : Lon hon hoac bang
-// '<'           : Nho hon
-// '<='          : Nho hon hoac bang
-// 'LIKE'        : Chua ky tu (tuong tu SQL LIKE)
-// 'NOT LIKE'    : Khong chua
-// 'IN'          : Trong mang (value la array)
-// 'NOT IN'      : Khong trong mang
-// 'BETWEEN'     : Giua 2 gia tri (value la array 2 phan tu)
-// 'NOT BETWEEN' : Khong giua 2 gia tri
-// 'EXISTS'      : Ton tai meta key (khong can value)
-// 'NOT EXISTS'  : Khong ton tai meta key
+// === Các phép so sánh (compare) ===
+// '='           : Bằng
+// '!='          : Không bằng
+// '>'           : Lớn hơn
+// '>='          : Lớn hơn hoặc bằng
+// '<'           : Nhỏ hơn
+// '<='          : Nhỏ hơn hoặc bằng
+// 'LIKE'        : Chứa ký tự (tương tự SQL LIKE)
+// 'NOT LIKE'    : Không chứa
+// 'IN'          : Trong mảng (value là array)
+// 'NOT IN'      : Không trong mảng
+// 'BETWEEN'     : Giữa 2 giá trị (value là array 2 phần tử)
+// 'NOT BETWEEN' : Không giữa 2 giá trị
+// 'EXISTS'      : Tồn tại meta key (không cần value)
+// 'NOT EXISTS'  : Không tồn tại meta key
 
-// === Cac kieu du lieu (type) ===
-// 'CHAR'      : Chuoi ky tu (mac dinh)
-// 'NUMERIC'   : So nguyen
-// 'DECIMAL'   : So thap phan
-// 'DATE'      : Ngay (Y-m-d)
-// 'DATETIME'  : Ngay gio (Y-m-d H:i:s)
-// 'TIME'      : Gio (H:i:s)
-// 'SIGNED'    : So nguyen co dau
-// 'UNSIGNED'  : So nguyen khong dau
-// 'BINARY'    : Nhi phan
+// === Các kiểu dữ liệu (type) ===
+// 'CHAR'      : Chuỗi ký tự (mặc định)
+// 'NUMERIC'   : Số nguyên
+// 'DECIMAL'   : Số thập phân
+// 'DATE'      : Ngày (Y-m-d)
+// 'DATETIME'  : Ngày giờ (Y-m-d H:i:s)
+// 'TIME'      : Giờ (H:i:s)
+// 'SIGNED'    : Số nguyên có dấu
+// 'UNSIGNED'  : Số nguyên không dấu
+// 'BINARY'    : Nhị phân
 ```
 
 ### Tax Query (Taxonomy):
@@ -728,23 +728,23 @@ $posts = new WP_Query( array(
 ```php
 <?php
 /**
- * tax_query - Loc theo Taxonomy (Category, Tag, Custom Taxonomy)
- * Tuong tu whereHas('category', ...) trong Eloquent
+ * tax_query - Lọc theo Taxonomy (Category, Tag, Custom Taxonomy)
+ * Tương tự whereHas('category', ...) trong Eloquent
  */
 
-// === Vi du 1: San pham thuoc thuong hieu Apple ===
+// === Ví dụ 1: Sản phẩm thuộc thương hiệu Apple ===
 $products = new WP_Query( array(
     'post_type' => 'product',
     'tax_query' => array(
         array(
-            'taxonomy' => 'brand',           // Ten taxonomy
-            'field'    => 'slug',            // Tim theo: 'slug', 'term_id', 'name'
-            'terms'    => 'apple',           // Gia tri tim
+            'taxonomy' => 'brand',           // Tên taxonomy
+            'field'    => 'slug',            // Tìm theo: 'slug', 'term_id', 'name'
+            'terms'    => 'apple',           // Giá trị tìm
         ),
     ),
 ) );
 
-// === Vi du 2: San pham thuoc nhieu danh muc ===
+// === Ví dụ 2: Sản phẩm thuộc nhiều danh mục ===
 $products = new WP_Query( array(
     'post_type' => 'product',
     'tax_query' => array(
@@ -752,16 +752,16 @@ $products = new WP_Query( array(
             'taxonomy' => 'product_category',
             'field'    => 'slug',
             'terms'    => array( 'dien-thoai', 'may-tinh' ),
-            'operator' => 'IN',              // Thuoc 1 trong cac danh muc nay
+            'operator' => 'IN',              // Thuộc 1 trong các danh mục này
         ),
     ),
 ) );
 
-// === Vi du 3: Ket hop nhieu taxonomy ===
+// === Ví dụ 3: Kết hợp nhiều taxonomy ===
 $products = new WP_Query( array(
     'post_type' => 'product',
     'tax_query' => array(
-        'relation' => 'AND',                // Phai thoa man TAT CA
+        'relation' => 'AND',                // Phải thỏa mãn TẤT CẢ
         array(
             'taxonomy' => 'product_category',
             'field'    => 'slug',
@@ -776,7 +776,7 @@ $products = new WP_Query( array(
     ),
 ) );
 
-// === Vi du 4: Loai tru taxonomy ===
+// === Ví dụ 4: Loại trừ taxonomy ===
 $products = new WP_Query( array(
     'post_type' => 'product',
     'tax_query' => array(
@@ -784,17 +784,17 @@ $products = new WP_Query( array(
             'taxonomy' => 'brand',
             'field'    => 'slug',
             'terms'    => 'no-name',
-            'operator' => 'NOT IN',          // Khong thuoc thuong hieu nay
+            'operator' => 'NOT IN',          // Không thuộc thương hiệu này
         ),
     ),
 ) );
 
-// === Cac operator ===
-// 'IN'         : Thuoc it nhat 1 term (mac dinh)
-// 'NOT IN'     : Khong thuoc bat ky term nao
-// 'AND'        : Thuoc tat ca cac terms
-// 'EXISTS'     : Co bat ky term nao trong taxonomy nay
-// 'NOT EXISTS' : Khong co term nao trong taxonomy nay
+// === Các operator ===
+// 'IN'         : Thuộc ít nhất 1 term (mặc định)
+// 'NOT IN'     : Không thuộc bất kỳ term nào
+// 'AND'        : Thuộc tất cả các terms
+// 'EXISTS'     : Có bất kỳ term nào trong taxonomy này
+// 'NOT EXISTS' : Không có term nào trong taxonomy này
 ```
 
 ### Date Query:
@@ -802,22 +802,22 @@ $products = new WP_Query( array(
 ```php
 <?php
 /**
- * date_query - Loc theo ngay thang
- * Tuong tu ->whereDate(), ->whereBetween() trong Eloquent
+ * date_query - Lọc theo ngày tháng
+ * Tương tự ->whereDate(), ->whereBetween() trong Eloquent
  */
 
-// === Vi du 1: Bai viet trong 30 ngay gan nhat ===
+// === Ví dụ 1: Bài viết trong 30 ngày gần nhất ===
 $recent = new WP_Query( array(
     'post_type'  => 'post',
     'date_query' => array(
         array(
-            'after'     => '30 days ago',    // Co the dung chuoi tuong doi
+            'after'     => '30 days ago',    // Có thể dùng chuỗi tương đối
             'inclusive' => true,
         ),
     ),
 ) );
 
-// === Vi du 2: Bai viet trong thang 1/2024 ===
+// === Ví dụ 2: Bài viết trong tháng 1/2024 ===
 $january = new WP_Query( array(
     'post_type'  => 'post',
     'date_query' => array(
@@ -828,7 +828,7 @@ $january = new WP_Query( array(
     ),
 ) );
 
-// === Vi du 3: Bai viet tu ngay X den ngay Y ===
+// === Ví dụ 3: Bài viết từ ngày X đến ngày Y ===
 $range = new WP_Query( array(
     'post_type'  => 'post',
     'date_query' => array(
@@ -840,7 +840,7 @@ $range = new WP_Query( array(
     ),
 ) );
 
-// === Vi du 4: Bai viet vao gio lam viec (9h-17h) ===
+// === Ví dụ 4: Bài viết vào giờ làm việc (9h-17h) ===
 $work_hours = new WP_Query( array(
     'post_type'  => 'post',
     'date_query' => array(
@@ -856,12 +856,12 @@ $work_hours = new WP_Query( array(
     ),
 ) );
 
-// === Vi du 5: Loc theo ngay chinh sua ===
+// === Ví dụ 5: Lọc theo ngày chỉnh sửa ===
 $modified = new WP_Query( array(
     'post_type'  => 'post',
     'date_query' => array(
         array(
-            'column' => 'post_modified',     // Mac dinh la 'post_date'
+            'column' => 'post_modified',     // Mặc định là 'post_date'
             'after'  => '7 days ago',
         ),
     ),
@@ -872,16 +872,16 @@ $modified = new WP_Query( array(
 
 ## 6. Multiple Loops
 
-### Nhieu loops tren cung mot trang:
+### Nhiều loops trên cùng một trang:
 
 ```php
 <?php
 /**
- * Multiple Loops - Hien thi nhieu danh sach bai viet tren 1 trang
+ * Multiple Loops - Hiển thị nhiều danh sách bài viết trên 1 trang
  *
- * QUAN TRONG:
- * - Moi custom WP_Query phai co wp_reset_postdata() sau khi xong
- * - Main Query (The Loop mac dinh) khong can reset
+ * QUAN TRỌNG:
+ * - Mỗi custom WP_Query phải có wp_reset_postdata() sau khi xong
+ * - Main Query (The Loop mặc định) không cần reset
  */
 
 get_header();
@@ -889,11 +889,11 @@ get_header();
 
 <main class="site-main">
 
-    <!-- === SECTION 1: Bai viet noi bat (sticky) === -->
+    <!-- === SECTION 1: Bài viết nổi bật (sticky) === -->
     <section class="featured-posts">
-        <h2>Bai Viet Noi Bat</h2>
+        <h2>Bài Viết Nổi Bật</h2>
         <?php
-        $sticky = get_option( 'sticky_posts' ); // Lay mang ID bai viet ghim
+        $sticky = get_option( 'sticky_posts' ); // Lấy mảng ID bài viết ghim
         if ( $sticky ) :
             $featured = new WP_Query( array(
                 'post__in'       => $sticky,
@@ -915,15 +915,15 @@ get_header();
         ?>
     </section>
 
-    <!-- === SECTION 2: Bai viet moi nhat === -->
+    <!-- === SECTION 2: Bài viết mới nhất === -->
     <section class="latest-posts">
-        <h2>Bai Viet Moi</h2>
+        <h2>Bài Viết Mới</h2>
         <?php
         $latest = new WP_Query( array(
             'post_type'           => 'post',
             'posts_per_page'      => 6,
-            'ignore_sticky_posts' => true,     // Khong hien sticky o dau
-            'post__not_in'        => $sticky,  // Loai tru bai da hien o section 1
+            'ignore_sticky_posts' => true,     // Không hiện sticky ở đầu
+            'post__not_in'        => $sticky,  // Loại trừ bài đã hiện ở section 1
         ) );
 
         while ( $latest->have_posts() ) :
@@ -939,9 +939,9 @@ get_header();
         ?>
     </section>
 
-    <!-- === SECTION 3: Bai viet theo tung danh muc === -->
+    <!-- === SECTION 3: Bài viết theo từng danh mục === -->
     <?php
-    // Lay 4 danh muc co nhieu bai nhat
+    // Lấy 4 danh mục có nhiều bài nhất
     $top_categories = get_categories( array(
         'orderby'    => 'count',
         'order'      => 'DESC',
@@ -975,18 +975,18 @@ get_header();
             </article>
         <?php
         endwhile;
-        wp_reset_postdata(); // RESET sau moi loop!
+        wp_reset_postdata(); // RESET sau mỗi loop!
         ?>
 
         <a href="<?php echo esc_url( get_category_link( $cat->term_id ) ); ?>" class="view-all">
-            <?php printf( esc_html__( 'Xem tat ca %s &rarr;', 'developer-theme' ), esc_html( $cat->name ) ); ?>
+            <?php printf( esc_html__( 'Xem tất cả %s &rarr;', 'developer-theme' ), esc_html( $cat->name ) ); ?>
         </a>
     </section>
     <?php endforeach; ?>
 
-    <!-- === SECTION 4: San pham (Custom Post Type) === -->
+    <!-- === SECTION 4: Sản phẩm (Custom Post Type) === -->
     <section class="products-section">
-        <h2>San Pham Moi</h2>
+        <h2>Sản Phẩm Mới</h2>
         <?php
         $products = new WP_Query( array(
             'post_type'      => 'product',
@@ -1011,12 +1011,12 @@ get_header();
         ?>
     </section>
 
-    <!-- === SECTION 5: Main Query (bai viet mac dinh theo URL) === -->
+    <!-- === SECTION 5: Main Query (bài viết mặc định theo URL) === -->
     <section class="main-posts">
-        <h2>Tat Ca Bai Viet</h2>
+        <h2>Tất Cả Bài Viết</h2>
         <?php
-        // Day la Main Query - khong can new WP_Query
-        // WordPress tu dong setup dua tren URL
+        // Đây là Main Query - không cần new WP_Query
+        // WordPress tự động setup dựa trên URL
         if ( have_posts() ) :
             while ( have_posts() ) :
                 the_post();
@@ -1026,7 +1026,7 @@ get_header();
                 </article>
         <?php
             endwhile;
-            the_posts_pagination(); // Pagination chi cho Main Query
+            the_posts_pagination(); // Pagination chỉ cho Main Query
         else :
             get_template_part( 'template-parts/content', 'none' );
         endif;
@@ -1047,18 +1047,18 @@ get_header();
 
 ```php
 <?php
-// === Cach 1: the_posts_pagination() (khuyen dung, WP 4.1+) ===
+// === Cách 1: the_posts_pagination() (khuyên dùng, WP 4.1+) ===
 the_posts_pagination( array(
-    'mid_size'           => 2,        // So trang hien thi 2 ben trang hien tai
-    'prev_text'          => '&laquo; Truoc',
+    'mid_size'           => 2,        // Số trang hiển thị 2 bên trang hiện tại
+    'prev_text'          => '&laquo; Trước',
     'next_text'          => 'Sau &raquo;',
     'before_page_number' => '<span class="page-num">',
     'after_page_number'  => '</span>',
-    'screen_reader_text' => __( 'Dieu huong bai viet', 'developer-theme' ),
+    'screen_reader_text' => __( 'Điều hướng bài viết', 'developer-theme' ),
 ) );
 // Tao ra HTML co class: nav-links, page-numbers, current, prev, next
 
-// === Cach 2: paginate_links() (linh hoat hon) ===
+// === Cách 2: paginate_links() (linh hoạt hơn) ===
 echo paginate_links( array(
     'base'      => str_replace( 999999999, '%#%', esc_url( get_pagenum_link( 999999999 ) ) ),
     'format'    => '?paged=%#%',
@@ -1069,14 +1069,14 @@ echo paginate_links( array(
     'next_text' => '&raquo;',
 ) );
 
-// === Cach 3: Truoc/Sau don gian ===
+// === Cách 3: Trước/Sau đơn giản ===
 the_posts_navigation( array(
-    'prev_text' => __( '&larr; Bai cu hon', 'developer-theme' ),
-    'next_text' => __( 'Bai moi hon &rarr;', 'developer-theme' ),
+    'prev_text' => __( '&larr; Bài cũ hơn', 'developer-theme' ),
+    'next_text' => __( 'Bài mới hơn &rarr;', 'developer-theme' ),
 ) );
 
 // === Cach 4: previous_posts_link / next_posts_link ===
-previous_posts_link( '&laquo; Trang truoc' );
+previous_posts_link( '&laquo; Trang trước' );
 next_posts_link( 'Trang sau &raquo;' );
 ?>
 ```
@@ -1087,23 +1087,23 @@ next_posts_link( 'Trang sau &raquo;' );
 <?php
 /**
  * Pagination cho custom WP_Query
- * Diem QUAN TRONG: Phai lay dung so trang hien tai
+ * Điểm QUAN TRỌNG: Phải lấy đúng số trang hiện tại
  */
 
-// Lay so trang hien tai
+// Lấy số trang hiện tại
 $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 
 // Custom query
 $custom_query = new WP_Query( array(
     'post_type'      => 'product',
     'posts_per_page' => 12,
-    'paged'          => $paged,        // Truyen so trang vao query
+    'paged'          => $paged,        // Truyền số trang vào query
     'meta_key'       => 'price',
     'orderby'        => 'meta_value_num',
     'order'          => 'ASC',
 ) );
 
-// Hien thi bai viet
+// Hiển thị bài viết
 if ( $custom_query->have_posts() ) :
     while ( $custom_query->have_posts() ) :
         $custom_query->the_post();
@@ -1115,12 +1115,12 @@ if ( $custom_query->have_posts() ) :
     endwhile;
 
     // Pagination cho custom query
-    // QUAN TRONG: Phai truyen $custom_query->max_num_pages
+    // QUAN TRỌNG: Phải truyền $custom_query->max_num_pages
     echo paginate_links( array(
         'base'    => str_replace( 999999999, '%#%', esc_url( get_pagenum_link( 999999999 ) ) ),
         'format'  => '?paged=%#%',
         'current' => $paged,
-        'total'   => $custom_query->max_num_pages,  // Tong so trang tu custom query
+        'total'   => $custom_query->max_num_pages,  // Tổng số trang từ custom query
     ) );
 
     wp_reset_postdata();
@@ -1128,16 +1128,16 @@ endif;
 ?>
 ```
 
-### Pagination tuy chinh voi HTML/CSS:
+### Pagination tùy chỉnh với HTML/CSS:
 
 ```php
 <?php
 /**
  * Custom pagination function
- * Co the dat trong functions.php hoac inc/template-tags.php
+ * Có thể đặt trong functions.php hoặc inc/template-tags.php
  */
 function developer_custom_pagination( $query = null ) {
-    // Neu khong truyen query, dung global
+    // Nếu không truyền query, dùng global
     if ( ! $query ) {
         global $wp_query;
         $query = $wp_query;
@@ -1146,23 +1146,23 @@ function developer_custom_pagination( $query = null ) {
     $total_pages = $query->max_num_pages;
 
     if ( $total_pages <= 1 ) {
-        return; // Khong can pagination neu chi co 1 trang
+        return; // Không cần pagination nếu chỉ có 1 trang
     }
 
     $current_page = max( 1, get_query_var( 'paged' ) );
 
-    echo '<nav class="custom-pagination" aria-label="Phan trang">';
+    echo '<nav class="custom-pagination" aria-label="Phân trang">';
     echo '<ul class="pagination-list">';
 
     // Nut Previous
     if ( $current_page > 1 ) {
         printf(
-            '<li><a href="%s" class="page-link prev">&laquo; Truoc</a></li>',
+            '<li><a href="%s" class="page-link prev">&laquo; Trước</a></li>',
             get_pagenum_link( $current_page - 1 )
         );
     }
 
-    // Trang dau
+    // Trang đầu
     if ( $current_page > 3 ) {
         printf( '<li><a href="%s" class="page-link">1</a></li>', get_pagenum_link( 1 ) );
         if ( $current_page > 4 ) {
@@ -1170,7 +1170,7 @@ function developer_custom_pagination( $query = null ) {
         }
     }
 
-    // Cac trang xung quanh trang hien tai
+    // Các trang xung quanh trang hiện tại
     for ( $i = max( 1, $current_page - 2 ); $i <= min( $total_pages, $current_page + 2 ); $i++ ) {
         if ( $i === $current_page ) {
             printf( '<li><span class="page-link current">%d</span></li>', $i );
@@ -1179,7 +1179,7 @@ function developer_custom_pagination( $query = null ) {
         }
     }
 
-    // Trang cuoi
+    // Trang cuối
     if ( $current_page < $total_pages - 2 ) {
         if ( $current_page < $total_pages - 3 ) {
             echo '<li><span class="page-dots">...</span></li>';
@@ -1197,7 +1197,7 @@ function developer_custom_pagination( $query = null ) {
 
     echo '</ul>';
 
-    // Thong tin trang
+    // Thông tin trang
     printf(
         '<p class="page-info">Trang %d / %d</p>',
         $current_page,
@@ -1207,7 +1207,7 @@ function developer_custom_pagination( $query = null ) {
     echo '</nav>';
 }
 
-// Su dung:
+// Sử dụng:
 // developer_custom_pagination();            // Cho main query
 // developer_custom_pagination( $my_query ); // Cho custom query
 ```
@@ -1216,37 +1216,37 @@ function developer_custom_pagination( $query = null ) {
 
 ## 8. pre_get_posts Hook
 
-### pre_get_posts la gi?
+### pre_get_posts là gì?
 
-`pre_get_posts` la hook cho phep ban **thay doi Main Query TRUOC KHI no chay**. Day la cach **tot nhat** de thay doi so bai viet, thu tu sap xep, loc dieu kien cho Main Query.
+`pre_get_posts` là hook cho phép bạn **thay đổi Main Query TRƯỚC KHI nó chạy**. Đây là cách **tốt nhất** để thay đổi số bài viết, thứ tự sắp xếp, lọc điều kiện cho Main Query.
 
 ```php
 <?php
 /**
- * QUAN TRONG:
- * - Dung pre_get_posts de modify Main Query
- * - KHONG dung query_posts() (da loi thoi va cham)
- * - KHONG tao new WP_Query de thay the Main Query
+ * QUAN TRỌNG:
+ * - Dùng pre_get_posts để modify Main Query
+ * - KHÔNG dùng query_posts() (đã lỗi thời và chậm)
+ * - KHÔNG tạo new WP_Query để thay thế Main Query
  */
 
-// === Vi du 1: Thay doi so bai viet tren trang archive ===
+// === Ví dụ 1: Thay đổi số bài viết trên trang archive ===
 function developer_modify_posts_per_page( $query ) {
-    // Kiem tra:
-    // 1. Khong phai trong admin
-    // 2. La main query (khong phai custom query)
+    // Kiểm tra:
+    // 1. Không phải trong admin
+    // 2. Là main query (không phải custom query)
     if ( ! is_admin() && $query->is_main_query() ) {
 
-        // Trang blog: 12 bai/trang
+        // Trang blog: 12 bài/trang
         if ( $query->is_home() ) {
             $query->set( 'posts_per_page', 12 );
         }
 
-        // Trang tim kiem: 20 ket qua/trang
+        // Trang tìm kiếm: 20 kết quả/trang
         if ( $query->is_search() ) {
             $query->set( 'posts_per_page', 20 );
         }
 
-        // Archive custom post type: 24 san pham/trang
+        // Archive custom post type: 24 sản phẩm/trang
         if ( $query->is_post_type_archive( 'product' ) ) {
             $query->set( 'posts_per_page', 24 );
         }
@@ -1254,18 +1254,18 @@ function developer_modify_posts_per_page( $query ) {
 }
 add_action( 'pre_get_posts', 'developer_modify_posts_per_page' );
 
-// === Vi du 2: Thay doi thu tu sap xep ===
+// === Ví dụ 2: Thay đổi thứ tự sắp xếp ===
 function developer_modify_ordering( $query ) {
     if ( ! is_admin() && $query->is_main_query() ) {
 
-        // San pham: sap xep theo gia tang dan
+        // Sản phẩm: sắp xếp theo giá tăng dần
         if ( $query->is_post_type_archive( 'product' ) ) {
             $query->set( 'meta_key', 'price' );
             $query->set( 'orderby', 'meta_value_num' );
             $query->set( 'order', 'ASC' );
         }
 
-        // Trang tac gia: sap xep theo tieu de
+        // Trang tác giả: sắp xếp theo tiêu đề
         if ( $query->is_author() ) {
             $query->set( 'orderby', 'title' );
             $query->set( 'order', 'ASC' );
@@ -1274,10 +1274,10 @@ function developer_modify_ordering( $query ) {
 }
 add_action( 'pre_get_posts', 'developer_modify_ordering' );
 
-// === Vi du 3: Them custom post type vao trang tim kiem va archive ===
+// === Ví dụ 3: Thêm custom post type vào trang tìm kiếm và archive ===
 function developer_include_custom_post_types( $query ) {
     if ( ! is_admin() && $query->is_main_query() ) {
-        // Tim kiem: bao gom ca pages va products
+        // Tìm kiếm: bao gồm cả pages và products
         if ( $query->is_search() ) {
             $query->set( 'post_type', array( 'post', 'page', 'product' ) );
         }
@@ -1290,16 +1290,16 @@ function developer_include_custom_post_types( $query ) {
 }
 add_action( 'pre_get_posts', 'developer_include_custom_post_types' );
 
-// === Vi du 4: Loai tru category khoi trang blog ===
+// === Ví dụ 4: Loại trừ category khỏi trang blog ===
 function developer_exclude_category( $query ) {
     if ( ! is_admin() && $query->is_main_query() && $query->is_home() ) {
-        // Loai tru category co ID = 5 (vi du: "Khong phan loai")
+        // Loại trừ category có ID = 5 (ví dụ: "Không phân loại")
         $query->set( 'category__not_in', array( 5 ) );
     }
 }
 add_action( 'pre_get_posts', 'developer_exclude_category' );
 
-// === Vi du 5: Loc theo meta field tu URL parameter ===
+// === Ví dụ 5: Lọc theo meta field từ URL parameter ===
 function developer_filter_by_meta( $query ) {
     if ( ! is_admin() && $query->is_main_query() && $query->is_post_type_archive( 'product' ) ) {
 

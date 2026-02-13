@@ -1,29 +1,29 @@
 # Plugin OOP Architecture
 
-## Muc luc
+## Mục lục
 
-1. [Tai sao dung OOP cho Plugin](#1-tai-sao-dung-oop-cho-plugin)
+1. [Tại sao dùng OOP cho Plugin](#1-tai-sao-dung-oop-cho-plugin)
 2. [Singleton Pattern cho Main Plugin Class](#2-singleton-pattern-cho-main-plugin-class)
 3. [Autoloading](#3-autoloading)
-4. [Dependency Injection co ban](#4-dependency-injection-co-ban)
+4. [Dependency Injection cơ bản](#4-dependency-injection-co-ban)
 5. [Namespaces trong Plugin](#5-namespaces-trong-plugin)
-6. [Cau truc thu muc OOP](#6-cau-truc-thu-muc-oop)
+6. [Cấu trúc thư mục OOP](#6-cau-truc-thu-muc-oop)
 7. [MVC Pattern trong Plugin](#7-mvc-pattern-trong-plugin)
 8. [Plugin Boilerplate](#8-plugin-boilerplate)
-9. [Code vi du: Plugin hoan chinh theo kien truc OOP](#9-code-vi-du-plugin-hoan-chinh-theo-kien-truc-oop)
-10. [So sanh voi cau truc Laravel](#10-so-sanh-voi-cau-truc-laravel)
+9. [Code ví dụ: Plugin hoàn chỉnh theo kiến trúc OOP](#9-code-vi-du-plugin-hoan-chinh-theo-kien-truc-oop)
+10. [So sánh với cấu trúc Laravel](#10-so-sanh-voi-cau-truc-laravel)
 11. [Best Practices](#11-best-practices)
 
 ---
 
-## 1. Tai sao dung OOP cho Plugin
+## 1. Tại sao dùng OOP cho Plugin
 
-### Van de voi Procedural Code
+### Vấn đề với Procedural Code
 
 ```php
 <?php
-// Procedural: Tat ca la functions rieng le
-// Kho quan ly khi plugin lon
+// Procedural: Tất cả là functions riêng lẻ
+// Khó quản lý khi plugin lớn
 
 function myp_activate() { }
 function myp_deactivate() { }
@@ -34,30 +34,30 @@ function myp_enqueue_scripts() { }
 function myp_shortcode_handler() { }
 function myp_ajax_handler() { }
 function myp_widget_init() { }
-// ... 50+ functions => Kho bao tri!
+// ... 50+ functions => Khó bảo trì!
 
-// Van de:
-// 1. Tat ca functions nam trong global scope => de xung dot ten
-// 2. Khong co cau truc ro rang
-// 3. Kho test (unit testing)
-// 4. Kho tai su dung
-// 5. Kho hieu khi plugin lon
+// Vấn đề:
+// 1. Tất cả functions nằm trong global scope => dễ xung đột tên
+// 2. Không có cấu trúc rõ ràng
+// 3. Khó test (unit testing)
+// 4. Khó tái sử dụng
+// 5. Khó hiểu khi plugin lớn
 ```
 
-### Uu diem OOP
+### Ưu điểm OOP
 
 ```php
 <?php
-// OOP: Code duoc to chuc thanh classes
+// OOP: Code được tổ chức thành classes
 
-// 1. Encapsulation - Gom nhom code lien quan
+// 1. Encapsulation - Gom nhóm code liên quan
 class Admin_Settings {
     public function register() { }
     public function render_page() { }
     private function sanitize() { }
 }
 
-// 2. Namespace - Tranh xung dot ten
+// 2. Namespace - Tránh xung đột tên
 namespace MyPlugin\Admin;
 class Settings { }  // MyPlugin\Admin\Settings - khong trung voi plugin khac
 

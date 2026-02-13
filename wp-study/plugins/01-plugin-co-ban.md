@@ -1,50 +1,50 @@
-# Plugin WordPress Co Ban
+# Plugin WordPress Cơ Bản
 
-## Muc luc
+## Mục lục
 
-1. [Plugin la gi, tai sao can Plugin](#1-plugin-la-gi-tai-sao-can-plugin)
-2. [Plugin Headers day du](#2-plugin-headers-day-du)
-3. [Cau truc thu muc Plugin](#3-cau-truc-thu-muc-plugin)
+1. [Plugin là gì, tại sao cần Plugin](#1-plugin-la-gi-tai-sao-can-plugin)
+2. [Plugin Headers đầy đủ](#2-plugin-headers-day-du)
+3. [Cấu trúc thư mục Plugin](#3-cau-truc-thu-muc-plugin)
 4. [Activation, Deactivation, Uninstall Hooks](#4-activation-deactivation-uninstall-hooks)
 5. [Plugin Lifecycle](#5-plugin-lifecycle)
-6. [Tao Plugin Hello World dau tien](#6-tao-plugin-hello-world-dau-tien)
-7. [So sanh Plugin voi Service Provider trong Laravel](#7-so-sanh-plugin-voi-service-provider-trong-laravel)
+6. [Tạo Plugin Hello World đầu tiên](#6-tao-plugin-hello-world-dau-tien)
+7. [So sánh Plugin với Service Provider trong Laravel](#7-so-sanh-plugin-voi-service-provider-trong-laravel)
 8. [Best Practices](#8-best-practices)
 
 ---
 
-## 1. Plugin la gi, tai sao can Plugin
+## 1. Plugin là gì, tại sao cần Plugin
 
-### Plugin la gi?
+### Plugin là gì?
 
-Plugin la mot goi ma nguon (package) mo rong chuc nang cua WordPress ma **khong can chinh sua core**. Plugin hoat dong theo co che **hook** (action va filter) de "cam" (plug) vao he thong WordPress.
+Plugin là một gói mã nguồn (package) mở rộng chức năng của WordPress mà **không cần chỉnh sửa core**. Plugin hoạt động theo cơ chế **hook** (action và filter) để "cắm" (plug) vào hệ thống WordPress.
 
-### Tai sao can Plugin?
+### Tại sao cần Plugin?
 
-| Ly do | Giai thich |
+| Lý do | Giải thích |
 |-------|-----------|
-| **Tach biet code** | Code rieng, khong anh huong theme hay core |
-| **Tai su dung** | Dung duoc o nhieu site WordPress khac nhau |
-| **Cap nhat doc lap** | Cap nhat plugin khong anh huong phan khac |
-| **Cong dong** | Co the chia se len WordPress.org |
-| **Bao tri de dang** | Bat/tat plugin de kiem tra loi |
+| **Tách biệt code** | Code riêng, không ảnh hưởng theme hay core |
+| **Tái sử dụng** | Dùng được ở nhiều site WordPress khác nhau |
+| **Cập nhật độc lập** | Cập nhật plugin không ảnh hưởng phần khác |
+| **Cộng đồng** | Có thể chia sẻ lên WordPress.org |
+| **Bảo trì dễ dàng** | Bật/tắt plugin để kiểm tra lỗi |
 
-### So sanh nhanh voi Laravel
+### So sánh nhanh với Laravel
 
 ```
-Laravel:   Composer Package / Service Provider  =>  Mo rong ung dung
-WordPress: Plugin                                =>  Mo rong website
+Laravel:   Composer Package / Service Provider  =>  Mở rộng ứng dụng
+WordPress: Plugin                                =>  Mở rộng website
 ```
 
-Trong Laravel, ban tao **Service Provider** de dang ky services, routes, views. Trong WordPress, ban tao **Plugin** de dang ky hooks, filters, menus, post types.
+Trong Laravel, bạn tạo **Service Provider** để đăng ký services, routes, views. Trong WordPress, bạn tạo **Plugin** để đăng ký hooks, filters, menus, post types.
 
 ---
 
-## 2. Plugin Headers day du
+## 2. Plugin Headers đầy đủ
 
-Moi plugin WordPress bat buoc phai co **Plugin Header** - la block comment o dau file chinh cua plugin. WordPress doc comment nay de nhan dien plugin.
+Mỗi plugin WordPress bắt buộc phải có **Plugin Header** - là block comment ở đầu file chính của plugin. WordPress đọc comment này để nhận diện plugin.
 
-### Header toi thieu
+### Header tối thiểu
 
 ```php
 <?php
@@ -53,16 +53,16 @@ Moi plugin WordPress bat buoc phai co **Plugin Header** - la block comment o dau
  */
 ```
 
-Chi can dong `Plugin Name` la WordPress da nhan dien duoc plugin.
+Chỉ cần dòng `Plugin Name` là WordPress đã nhận diện được plugin.
 
-### Header day du tat ca cac truong
+### Header đầy đủ tất cả các trường
 
 ```php
 <?php
 /**
  * Plugin Name:       My Awesome Plugin
  * Plugin URI:        https://example.com/my-awesome-plugin
- * Description:       Mo ta ngan gon ve plugin - hien thi trong trang Plugins.
+ * Description:       Mô tả ngắn gọn về plugin - hiển thị trong trang Plugins.
  * Version:           1.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
@@ -77,31 +77,31 @@ Chi can dong `Plugin Name` la WordPress da nhan dien duoc plugin.
  */
 ```
 
-### Giai thich tung truong
+### Giải thích từng trường
 
 ```php
 <?php
 /**
- * Plugin Name:       Ten plugin - BAT BUOC, hien thi trong admin
- * Plugin URI:        URL trang gioi thieu plugin
- * Description:       Mo ta - hien thi duoi ten plugin trong danh sach
- * Version:           Phien ban hien tai (Semantic Versioning: MAJOR.MINOR.PATCH)
- * Requires at least: Phien ban WordPress toi thieu can de chay plugin
- * Requires PHP:      Phien ban PHP toi thieu
- * Author:            Ten tac gia
- * Author URI:        Website tac gia
- * License:           Giay phep - WordPress yeu cau GPL v2+
- * License URI:       URL cua giay phep
- * Text Domain:       Slug dung cho da ngon ngu (internationalization)
- * Domain Path:       Thu muc chua file ngon ngu (.mo, .po)
- * Network:           true neu plugin chi hoat dong tren Multisite
- * Update URI:        URL kiem tra cap nhat (tu WP 5.8)
+ * Plugin Name:       Tên plugin - BẮT BUỘC, hiển thị trong admin
+ * Plugin URI:        URL trang giới thiệu plugin
+ * Description:       Mô tả - hiển thị dưới tên plugin trong danh sách
+ * Version:           Phiên bản hiện tại (Semantic Versioning: MAJOR.MINOR.PATCH)
+ * Requires at least: Phiên bản WordPress tối thiểu cần để chạy plugin
+ * Requires PHP:      Phiên bản PHP tối thiểu
+ * Author:            Tên tác giả
+ * Author URI:        Website tác giả
+ * License:           Giấy phép - WordPress yêu cầu GPL v2+
+ * License URI:       URL của giấy phép
+ * Text Domain:       Slug dùng cho đa ngôn ngữ (internationalization)
+ * Domain Path:       Thư mục chứa file ngôn ngữ (.mo, .po)
+ * Network:           true nếu plugin chỉ hoạt động trên Multisite
+ * Update URI:        URL kiểm tra cập nhật (từ WP 5.8)
  */
 ```
 
-### Ngan chan truy cap truc tiep
+### Ngăn chặn truy cập trực tiếp
 
-Luon them dong nay ngay sau Plugin Header:
+Luôn thêm dòng này ngay sau Plugin Header:
 
 ```php
 <?php
@@ -109,34 +109,34 @@ Luon them dong nay ngay sau Plugin Header:
  * Plugin Name: My Plugin
  */
 
-// Ngan chan truy cap truc tiep vao file plugin
-// Neu khong co hang ABSPATH (WordPress dinh nghia), thoat ngay
+// Ngăn chặn truy cập trực tiếp vào file plugin
+// Nếu không có hằng ABSPATH (WordPress định nghĩa), thoát ngay
 if ( ! defined( 'ABSPATH' ) ) {
-    exit; // Hoac dung: die('Direct access not allowed.');
+    exit; // Hoặc dùng: die('Direct access not allowed.');
 }
 ```
 
-**Tai sao can dong nay?** Neu ai do truy cap truc tiep URL `yoursite.com/wp-content/plugins/my-plugin/my-plugin.php`, WordPress chua duoc load nen ABSPATH chua duoc dinh nghia. Dong nay ngan chan viec do.
+**Tại sao cần dòng này?** Nếu ai đó truy cập trực tiếp URL `yoursite.com/wp-content/plugins/my-plugin/my-plugin.php`, WordPress chưa được load nên ABSPATH chưa được định nghĩa. Dòng này ngăn chặn việc đó.
 
 ---
 
-## 3. Cau truc thu muc Plugin
+## 3. Cấu trúc thư mục Plugin
 
-### 3.1. Plugin don file (Single File Plugin)
+### 3.1. Plugin đơn file (Single File Plugin)
 
-Phu hop voi plugin nho, don gian.
+Phù hợp với plugin nhỏ, đơn giản.
 
 ```
 wp-content/
   plugins/
-    my-simple-plugin.php    <-- Chi 1 file duy nhat
+    my-simple-plugin.php    <-- Chỉ 1 file duy nhất
 ```
 
 ```php
 <?php
 /**
  * Plugin Name: My Simple Plugin
- * Description: Plugin don gian chi co 1 file.
+ * Description: Plugin đơn giản chỉ có 1 file.
  * Version: 1.0.0
  */
 
@@ -144,31 +144,31 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Tat ca code dat trong file nay
+// Tất cả code đặt trong file này
 add_action( 'wp_footer', function() {
-    echo '<p>Hello tu My Simple Plugin!</p>';
+    echo '<p>Hello từ My Simple Plugin!</p>';
 });
 ```
 
-### 3.2. Plugin da file (Multi-File Plugin)
+### 3.2. Plugin đa file (Multi-File Plugin)
 
-Phu hop voi plugin trung binh va lon.
+Phù hợp với plugin trung bình và lớn.
 
 ```
 wp-content/
   plugins/
-    my-awesome-plugin/                 <-- Thu muc plugin
-      my-awesome-plugin.php            <-- File chinh (cung ten voi thu muc)
-      uninstall.php                    <-- Chay khi xoa plugin
-      readme.txt                       <-- Mo ta cho WordPress.org
+    my-awesome-plugin/                 <-- Thư mục plugin
+      my-awesome-plugin.php            <-- File chính (cùng tên với thư mục)
+      uninstall.php                    <-- Chạy khi xóa plugin
+      readme.txt                       <-- Mô tả cho WordPress.org
 
-      includes/                        <-- Logic chinh cua plugin
+      includes/                        <-- Logic chính của plugin
         class-main.php
         class-activator.php
         class-deactivator.php
         functions.php
 
-      admin/                           <-- Code danh cho trang Admin
+      admin/                           <-- Code dành cho trang Admin
         class-admin.php
         partials/                      <-- Template admin
           settings-page.php
@@ -177,7 +177,7 @@ wp-content/
         js/
           admin-script.js
 
-      public/                          <-- Code danh cho Frontend
+      public/                          <-- Code dành cho Frontend
         class-public.php
         partials/
           display-template.php
@@ -186,34 +186,34 @@ wp-content/
         js/
           public-script.js
 
-      languages/                       <-- File ngon ngu
+      languages/                       <-- File ngôn ngữ
         my-awesome-plugin-vi.po
         my-awesome-plugin-vi.mo
 
-      templates/                       <-- Template co the override tu theme
+      templates/                       <-- Template có thể override từ theme
         single-template.php
 
-      assets/                          <-- Tai nguyen chung
+      assets/                          <-- Tài nguyên chung
         images/
           icon.png
 ```
 
-### So sanh cau truc voi Laravel
+### So sánh cấu trúc với Laravel
 
 ```
 Laravel Package:              WordPress Plugin:
 src/                    =>    includes/
 resources/views/        =>    admin/partials/, public/partials/
 config/                 =>    (Settings API)
-routes/                 =>    (Hooks trong file chinh)
+routes/                 =>    (Hooks trong file chính)
 public/                 =>    assets/, admin/css/, public/css/
 tests/                  =>    tests/
 lang/                   =>    languages/
 composer.json           =>    readme.txt + Plugin Header
-ServiceProvider.php     =>    my-plugin.php (file chinh)
+ServiceProvider.php     =>    my-plugin.php (file chính)
 ```
 
-### 3.3. Dinh nghia Constants huu ich
+### 3.3. Định nghĩa Constants hữu ích
 
 ```php
 <?php
@@ -226,20 +226,20 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Dinh nghia cac hang so de dung xuyen suot plugin
-// __FILE__ tra ve duong dan tuyet doi cua file hien tai
+// Định nghĩa các hằng số để dùng xuyên suốt plugin
+// __FILE__ trả về đường dẫn tuyệt đối của file hiện tại
 define( 'MAP_VERSION', '1.0.0' );
 
-// Duong dan tuyet doi tren server: /var/www/html/wp-content/plugins/my-awesome-plugin/
+// Đường dẫn tuyệt đối trên server: /var/www/html/wp-content/plugins/my-awesome-plugin/
 define( 'MAP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
-// URL cua plugin: https://example.com/wp-content/plugins/my-awesome-plugin/
+// URL của plugin: https://example.com/wp-content/plugins/my-awesome-plugin/
 define( 'MAP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
-// Duong dan file chinh: my-awesome-plugin/my-awesome-plugin.php
+// Đường dẫn file chính: my-awesome-plugin/my-awesome-plugin.php
 define( 'MAP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
-// Su dung constants
+// Sử dụng constants
 // require_once MAP_PLUGIN_DIR . 'includes/class-main.php';
 // wp_enqueue_style( 'map-style', MAP_PLUGIN_URL . 'public/css/style.css', array(), MAP_VERSION );
 ```
@@ -248,11 +248,11 @@ define( 'MAP_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
 ## 4. Activation, Deactivation, Uninstall Hooks
 
-WordPress cung cap 3 hooks quan trong cho vong doi cua plugin:
+WordPress cung cấp 3 hooks quan trọng cho vòng đời của plugin:
 
 ### 4.1. Activation Hook
 
-Chay **mot lan** khi plugin duoc kich hoat (activate).
+Chạy **một lần** khi plugin được kích hoạt (activate).
 
 ```php
 <?php
@@ -266,17 +266,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Ham chay khi kich hoat plugin.
- * Dung de:
- * - Tao bang database
- * - Them default options
- * - Tao trang mac dinh
- * - Dang ky Cron Jobs
- * - Flush rewrite rules (neu tao Custom Post Type)
+ * Hàm chạy khi kích hoạt plugin.
+ * Dùng để:
+ * - Tạo bảng database
+ * - Thêm default options
+ * - Tạo trang mặc định
+ * - Đăng ký Cron Jobs
+ * - Flush rewrite rules (nếu tạo Custom Post Type)
  */
 function lifecycle_demo_activate() {
-    // 1. Them option mac dinh
-    // add_option chi them neu option chua ton tai (khong ghi de)
+    // 1. Thêm option mặc định
+    // add_option chỉ thêm nếu option chưa tồn tại (không ghi đè)
     add_option( 'lifecycle_demo_version', '1.0.0' );
     add_option( 'lifecycle_demo_settings', array(
         'enable_feature'  => true,
@@ -284,7 +284,7 @@ function lifecycle_demo_activate() {
         'display_mode'    => 'grid',
     ));
 
-    // 2. Tao bang database (xem chi tiet o bai Database)
+    // 2. Tạo bảng database (xem chi tiết ở bài Database)
     global $wpdb;
     $table_name = $wpdb->prefix . 'lifecycle_demo_logs';
     $charset_collate = $wpdb->get_charset_collate();
@@ -299,39 +299,39 @@ function lifecycle_demo_activate() {
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta( $sql );
 
-    // 3. Them role hoac capability
+    // 3. Thêm role hoặc capability
     $role = get_role( 'administrator' );
     if ( $role ) {
         $role->add_cap( 'manage_lifecycle_demo' );
     }
 
-    // 4. Flush rewrite rules (neu plugin tao Custom Post Type)
-    // Luu y: phai dang ky CPT truoc khi flush
+    // 4. Flush rewrite rules (nếu plugin tạo Custom Post Type)
+    // Lưu ý: phải đăng ký CPT trước khi flush
     flush_rewrite_rules();
 }
 
-// Dang ky activation hook
-// Tham so 1: Duong dan file chinh cua plugin (__FILE__)
-// Tham so 2: Ham callback
+// Đăng ký activation hook
+// Tham số 1: Đường dẫn file chính của plugin (__FILE__)
+// Tham số 2: Hàm callback
 register_activation_hook( __FILE__, 'lifecycle_demo_activate' );
 ```
 
 ### 4.2. Deactivation Hook
 
-Chay **mot lan** khi plugin bi vo hieu hoa (deactivate).
+Chạy **một lần** khi plugin bị vô hiệu hóa (deactivate).
 
 ```php
 <?php
 /**
- * Ham chay khi vo hieu hoa plugin.
- * Dung de:
- * - Xoa Cron Jobs
+ * Hàm chạy khi vô hiệu hóa plugin.
+ * Dùng để:
+ * - Xóa Cron Jobs
  * - Flush rewrite rules
- * - Tam dung cac tinh nang
- * KHONG nen xoa data o day (de danh cho uninstall)
+ * - Tạm dừng các tính năng
+ * KHÔNG nên xóa data ở đây (để dành cho uninstall)
  */
 function lifecycle_demo_deactivate() {
-    // 1. Xoa cron jobs da dang ky
+    // 1. Xóa cron jobs đã đăng ký
     $timestamp = wp_next_scheduled( 'lifecycle_demo_daily_event' );
     if ( $timestamp ) {
         wp_unschedule_event( $timestamp, 'lifecycle_demo_daily_event' );
@@ -340,8 +340,8 @@ function lifecycle_demo_deactivate() {
     // 2. Flush rewrite rules
     flush_rewrite_rules();
 
-    // 3. KHONG xoa data, options, tables o day!
-    // Nguoi dung co the chi tam vo hieu hoa roi kich hoat lai
+    // 3. KHÔNG xóa data, options, tables ở đây!
+    // Người dùng có thể chỉ tạm vô hiệu hóa rồi kích hoạt lại
 }
 
 register_deactivation_hook( __FILE__, 'lifecycle_demo_deactivate' );
@@ -349,37 +349,37 @@ register_deactivation_hook( __FILE__, 'lifecycle_demo_deactivate' );
 
 ### 4.3. Uninstall Hook
 
-Chay khi nguoi dung **xoa** plugin (delete). Co 2 cach:
+Chạy khi người dùng **xóa** plugin (delete). Có 2 cách:
 
-#### Cach 1: Dung register_uninstall_hook
+#### Cách 1: Dùng register_uninstall_hook
 
 ```php
 <?php
 /**
- * Ham chay khi xoa plugin.
- * Day la noi don dep toan bo data cua plugin.
+ * Hàm chạy khi xóa plugin.
+ * Đây là nơi dọn dẹp toàn bộ data của plugin.
  */
 function lifecycle_demo_uninstall() {
-    // 1. Xoa options
+    // 1. Xóa options
     delete_option( 'lifecycle_demo_version' );
     delete_option( 'lifecycle_demo_settings' );
 
-    // 2. Xoa toan bo post meta lien quan
-    // Cach nay xoa tat ca post meta co key bat dau bang '_lifecycle_demo_'
+    // 2. Xóa toàn bộ post meta liên quan
+    // Cách này xóa tất cả post meta có key bắt đầu bằng '_lifecycle_demo_'
     global $wpdb;
     $wpdb->query(
         "DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE '_lifecycle_demo_%'"
     );
 
-    // 3. Xoa user meta
+    // 3. Xóa user meta
     $wpdb->query(
         "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE '_lifecycle_demo_%'"
     );
 
-    // 4. Xoa custom tables
+    // 4. Xóa custom tables
     $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}lifecycle_demo_logs" );
 
-    // 5. Xoa transients
+    // 5. Xóa transients
     $wpdb->query(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_lifecycle_demo_%'"
     );
@@ -387,10 +387,10 @@ function lifecycle_demo_uninstall() {
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_lifecycle_demo_%'"
     );
 
-    // 6. Xoa cron jobs (phong truong hop)
+    // 6. Xóa cron jobs (phòng trường hợp)
     wp_clear_scheduled_hook( 'lifecycle_demo_daily_event' );
 
-    // 7. Xoa capabilities
+    // 7. Xóa capabilities
     $role = get_role( 'administrator' );
     if ( $role ) {
         $role->remove_cap( 'manage_lifecycle_demo' );
@@ -400,59 +400,59 @@ function lifecycle_demo_uninstall() {
 register_uninstall_hook( __FILE__, 'lifecycle_demo_uninstall' );
 ```
 
-#### Cach 2: Dung file uninstall.php (KHUYEN DUNG)
+#### Cách 2: Dùng file uninstall.php (KHUYÊN DÙNG)
 
-Tao file `uninstall.php` trong thu muc goc cua plugin:
+Tạo file `uninstall.php` trong thư mục gốc của plugin:
 
 ```php
 <?php
 /**
  * File: uninstall.php
  *
- * File nay tu dong chay khi plugin bi xoa.
- * WordPress se tu dong tim va chay file nay.
- * Cach nay duoc khuyen dung hon register_uninstall_hook
- * vi khong can load toan bo plugin chi de xoa data.
+ * File này tự động chạy khi plugin bị xóa.
+ * WordPress sẽ tự động tìm và chạy file này.
+ * Cách này được khuyên dùng hơn register_uninstall_hook
+ * vì không cần load toàn bộ plugin chỉ để xóa data.
  */
 
-// Kiem tra xem WordPress co dang thuc su goi file nay khong
-// WP_UNINSTALL_PLUGIN duoc WordPress dinh nghia khi xoa plugin
+// Kiểm tra xem WordPress có đang thực sự gọi file này không
+// WP_UNINSTALL_PLUGIN được WordPress định nghĩa khi xóa plugin
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit;
 }
 
-// Xoa options
+// Xóa options
 delete_option( 'lifecycle_demo_version' );
 delete_option( 'lifecycle_demo_settings' );
 
-// Xoa custom table
+// Xóa custom table
 global $wpdb;
 $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}lifecycle_demo_logs" );
 
-// Xoa post meta
+// Xóa post meta
 $wpdb->query(
     "DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE '_lifecycle_demo_%'"
 );
 
-// Xoa user meta
+// Xóa user meta
 $wpdb->query(
     "DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE 'lifecycle_demo_%'"
 );
 
-// Xoa transients
+// Xóa transients
 $wpdb->query(
     "DELETE FROM {$wpdb->options} WHERE option_name LIKE '%_transient_lifecycle_demo_%'"
 );
 ```
 
-### So sanh 2 cach Uninstall
+### So sánh 2 cách Uninstall
 
 | | register_uninstall_hook | uninstall.php |
 |---|---|---|
-| **Uu diem** | Code nam chung voi file chinh | Khong can load toan bo plugin |
-| **Nhuoc diem** | Phai load plugin truoc | File rieng, de quen |
-| **Khuyen dung** | Khong | **Co** |
-| **Do uu tien** | Thap hon | Cao hon (chay truoc) |
+| **Ưu điểm** | Code nằm chung với file chính | Không cần load toàn bộ plugin |
+| **Nhược điểm** | Phải load plugin trước | File riêng, dễ quên |
+| **Khuyên dùng** | Không | **Có** |
+| **Độ ưu tiên** | Thấp hơn | Cao hơn (chạy trước) |
 
 ---
 
@@ -461,23 +461,23 @@ $wpdb->query(
 ```
                     Plugin Lifecycle
 
- [Cai dat]  =>  [Kich hoat]  =>  [Chay]  =>  [Vo hieu hoa]  =>  [Xoa]
+ [Cài đặt]  =>  [Kích hoạt]  =>  [Chạy]  =>  [Vô hiệu hóa]  =>  [Xóa]
                      |              |              |                |
-            activation_hook    moi request   deactivation_hook  uninstall
-            - Tao tables      - Actions      - Xoa cron        - Xoa data
-            - Add options     - Filters      - Flush rules     - Xoa tables
-            - Flush rules     - Shortcodes                     - Xoa options
+            activation_hook    mỗi request   deactivation_hook  uninstall
+            - Tạo tables      - Actions      - Xóa cron        - Xóa data
+            - Add options     - Filters      - Flush rules     - Xóa tables
+            - Flush rules     - Shortcodes                     - Xóa options
                               - Menus
                               - Widgets
 ```
 
-### Chi tiet Lifecycle
+### Chi tiết Lifecycle
 
 ```php
 <?php
 /**
  * Plugin Name: Lifecycle Visualizer
- * Description: Minh hoa vong doi cua plugin WordPress.
+ * Description: Minh họa vòng đời của plugin WordPress.
  * Version: 1.0.0
  */
 
@@ -485,107 +485,107 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// === GIAI DOAN 1: KICH HOAT (Activation) ===
-// Chay 1 lan duy nhat khi click "Activate"
+// === GIAI ĐOẠN 1: KÍCH HOẠT (Activation) ===
+// Chạy 1 lần duy nhất khi click "Activate"
 register_activation_hook( __FILE__, function() {
-    // Setup ban dau
+    // Setup ban đầu
     add_option( 'lvp_installed_at', current_time( 'mysql' ) );
     add_option( 'lvp_version', '1.0.0' );
 });
 
-// === GIAI DOAN 2: CHAY (Runtime) ===
-// Code duoi day chay MOI KHI WordPress load (moi request)
+// === GIAI ĐOẠN 2: CHẠY (Runtime) ===
+// Code dưới đây chạy MỖI KHI WordPress load (mỗi request)
 
-// plugins_loaded - Hook chay sau khi tat ca plugins da duoc load
+// plugins_loaded - Hook chạy sau khi tất cả plugins đã được load
 add_action( 'plugins_loaded', function() {
-    // Kiem tra version de upgrade neu can
+    // Kiểm tra version để upgrade nếu cần
     $current_version = get_option( 'lvp_version', '0.0.0' );
     if ( version_compare( $current_version, '1.0.0', '<' ) ) {
-        // Chay code upgrade
+        // Chạy code upgrade
         update_option( 'lvp_version', '1.0.0' );
     }
 });
 
-// init - Hook chay sau khi WordPress khoi tao xong
+// init - Hook chạy sau khi WordPress khởi tạo xong
 add_action( 'init', function() {
-    // Dang ky Post Types, Taxonomies, Shortcodes
+    // Đăng ký Post Types, Taxonomies, Shortcodes
 });
 
-// admin_init - Chi chay trong trang Admin
+// admin_init - Chỉ chạy trong trang Admin
 add_action( 'admin_init', function() {
-    // Dang ky Settings
+    // Đăng ký Settings
 });
 
-// admin_menu - Them menu trong Admin
+// admin_menu - Thêm menu trong Admin
 add_action( 'admin_menu', function() {
-    // Them menu
+    // Thêm menu
 });
 
-// wp_enqueue_scripts - Them CSS/JS cho frontend
+// wp_enqueue_scripts - Thêm CSS/JS cho frontend
 add_action( 'wp_enqueue_scripts', function() {
-    // Them styles va scripts
+    // Thêm styles và scripts
 });
 
-// admin_enqueue_scripts - Them CSS/JS cho admin
+// admin_enqueue_scripts - Thêm CSS/JS cho admin
 add_action( 'admin_enqueue_scripts', function() {
-    // Them admin styles va scripts
+    // Thêm admin styles và scripts
 });
 
-// === GIAI DOAN 3: VO HIEU HOA (Deactivation) ===
-// Chay 1 lan khi click "Deactivate"
+// === GIAI ĐOẠN 3: VÔ HIỆU HÓA (Deactivation) ===
+// Chạy 1 lần khi click "Deactivate"
 register_deactivation_hook( __FILE__, function() {
-    // Don dep tam thoi, KHONG xoa data
+    // Dọn dẹp tạm thời, KHÔNG xóa data
 });
 
-// === GIAI DOAN 4: XOA (Uninstall) ===
-// Xem file uninstall.php hoac register_uninstall_hook
+// === GIAI ĐOẠN 4: XÓA (Uninstall) ===
+// Xem file uninstall.php hoặc register_uninstall_hook
 ```
 
-### Thu tu Hooks khi WordPress Load
+### Thứ tự Hooks khi WordPress Load
 
 ```
-muplugins_loaded        => Must-Use plugins da load
-registered_taxonomy      => Taxonomies da dang ky
-registered_post_type     => Post types da dang ky
-plugins_loaded          => Tat ca plugins da load        <-- Plugin bat dau chay
-setup_theme             => Truoc khi load theme
+muplugins_loaded        => Must-Use plugins đã load
+registered_taxonomy      => Taxonomies đã đăng ký
+registered_post_type     => Post types đã đăng ký
+plugins_loaded          => Tất cả plugins đã load        <-- Plugin bắt đầu chạy
+setup_theme             => Trước khi load theme
 after_setup_theme       => Sau khi load theme
-init                    => WordPress da khoi tao xong    <-- Dang ky CPT, Taxonomies
-admin_init              => Admin da khoi tao (chi admin) <-- Dang ky Settings
-admin_menu              => Tao menu admin
-wp_loaded               => WordPress da load hoan tat
-template_redirect       => Truoc khi chon template
-wp_enqueue_scripts      => Them CSS/JS frontend
+init                    => WordPress đã khởi tạo xong    <-- Đăng ký CPT, Taxonomies
+admin_init              => Admin đã khởi tạo (chỉ admin) <-- Đăng ký Settings
+admin_menu              => Tạo menu admin
+wp_loaded               => WordPress đã load hoàn tất
+template_redirect       => Trước khi chọn template
+wp_enqueue_scripts      => Thêm CSS/JS frontend
 wp_head                 => Trong <head>
-wp_footer               => Truoc </body>
-shutdown                => Ket thuc request
+wp_footer               => Trước </body>
+shutdown                => Kết thúc request
 ```
 
 ---
 
-## 6. Tao Plugin Hello World dau tien
+## 6. Tạo Plugin Hello World đầu tiên
 
-### Buoc 1: Tao thu muc va file
+### Bước 1: Tạo thư mục và file
 
 ```bash
-# Di chuyen den thu muc plugins cua WordPress
+# Di chuyển đến thư mục plugins của WordPress
 cd /path/to/wordpress/wp-content/plugins/
 
-# Tao thu muc plugin
+# Tạo thư mục plugin
 mkdir hello-world-plugin
 
-# Tao file chinh
+# Tạo file chính
 touch hello-world-plugin/hello-world-plugin.php
 ```
 
-### Buoc 2: Viet code plugin
+### Bước 2: Viết code plugin
 
 ```php
 <?php
 /**
  * Plugin Name:       Hello World Plugin
  * Plugin URI:        https://example.com/hello-world
- * Description:       Plugin dau tien - hien thi thong bao "Hello World" tren website.
+ * Description:       Plugin đầu tiên - hiển thị thông báo "Hello World" trên website.
  * Version:           1.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
@@ -595,12 +595,12 @@ touch hello-world-plugin/hello-world-plugin.php
  * Text Domain:       hello-world-plugin
  */
 
-// Ngan chan truy cap truc tiep
+// Ngăn chặn truy cập trực tiếp
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// === DINH NGHIA CONSTANTS ===
+// === ĐỊNH NGHĨA CONSTANTS ===
 define( 'HWP_VERSION', '1.0.0' );
 define( 'HWP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'HWP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -609,9 +609,9 @@ define( 'HWP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 register_activation_hook( __FILE__, 'hwp_activate' );
 
 function hwp_activate() {
-    // Luu thoi gian cai dat
+    // Lưu thời gian cài đặt
     add_option( 'hwp_installed_at', current_time( 'mysql' ) );
-    // Luu cai dat mac dinh
+    // Lưu cài đặt mặc định
     add_option( 'hwp_settings', array(
         'message'    => 'Hello World!',
         'text_color' => '#ffffff',
@@ -625,36 +625,36 @@ function hwp_activate() {
 register_deactivation_hook( __FILE__, 'hwp_deactivate' );
 
 function hwp_deactivate() {
-    // Khong xoa data, chi don dep tam thoi
+    // Không xóa data, chỉ dọn dẹp tạm thời
 }
 
-// === THEM MENU ADMIN ===
+// === THÊM MENU ADMIN ===
 add_action( 'admin_menu', 'hwp_add_admin_menu' );
 
 function hwp_add_admin_menu() {
-    // Them menu trong Admin sidebar
+    // Thêm menu trong Admin sidebar
     add_options_page(
-        'Hello World Settings',      // Tieu de trang
-        'Hello World',               // Ten menu
-        'manage_options',            // Quyen can thiet (admin)
+        'Hello World Settings',      // Tiêu đề trang
+        'Hello World',               // Tên menu
+        'manage_options',            // Quyền cần thiết (admin)
         'hello-world-settings',      // Slug (URL)
-        'hwp_settings_page'          // Ham hien thi trang
+        'hwp_settings_page'          // Hàm hiển thị trang
     );
 }
 
 // === TRANG SETTINGS ===
 function hwp_settings_page() {
-    // Kiem tra quyen
+    // Kiểm tra quyền
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
 
-    // Xu ly form khi submit
+    // Xử lý form khi submit
     if ( isset( $_POST['hwp_save_settings'] ) ) {
-        // Kiem tra nonce (bao mat chong CSRF)
+        // Kiểm tra nonce (bảo mật chống CSRF)
         check_admin_referer( 'hwp_settings_nonce' );
 
-        // Lay va lam sach du lieu
+        // Lấy và làm sạch dữ liệu
         $settings = array(
             'message'    => sanitize_text_field( $_POST['hwp_message'] ?? '' ),
             'text_color' => sanitize_hex_color( $_POST['hwp_text_color'] ?? '#ffffff' ),
@@ -663,14 +663,14 @@ function hwp_settings_page() {
             'enabled'    => isset( $_POST['hwp_enabled'] ) ? true : false,
         );
 
-        // Luu vao database
+        // Lưu vào database
         update_option( 'hwp_settings', $settings );
 
-        // Hien thi thong bao thanh cong
-        echo '<div class="notice notice-success"><p>Da luu cai dat!</p></div>';
+        // Hiển thị thông báo thành công
+        echo '<div class="notice notice-success"><p>Đã lưu cài đặt!</p></div>';
     }
 
-    // Lay cai dat hien tai
+    // Lấy cài đặt hiện tại
     $settings = get_option( 'hwp_settings', array() );
     $defaults = array(
         'message'    => 'Hello World!',
@@ -682,7 +682,7 @@ function hwp_settings_page() {
     $settings = wp_parse_args( $settings, $defaults );
     ?>
     <div class="wrap">
-        <h1>Hello World Plugin - Cai dat</h1>
+        <h1>Hello World Plugin - Cài đặt</h1>
 
         <form method="post" action="">
             <?php wp_nonce_field( 'hwp_settings_nonce' ); ?>
@@ -690,7 +690,7 @@ function hwp_settings_page() {
             <table class="form-table">
                 <tr>
                     <th scope="row">
-                        <label for="hwp_enabled">Bat/Tat</label>
+                        <label for="hwp_enabled">Bật/Tắt</label>
                     </th>
                     <td>
                         <input type="checkbox"
@@ -698,13 +698,13 @@ function hwp_settings_page() {
                                name="hwp_enabled"
                                value="1"
                                <?php checked( $settings['enabled'], true ); ?>>
-                        <label for="hwp_enabled">Hien thi thong bao tren website</label>
+                        <label for="hwp_enabled">Hiển thị thông báo trên website</label>
                     </td>
                 </tr>
 
                 <tr>
                     <th scope="row">
-                        <label for="hwp_message">Noi dung thong bao</label>
+                        <label for="hwp_message">Nội dung thông báo</label>
                     </th>
                     <td>
                         <input type="text"
@@ -717,7 +717,7 @@ function hwp_settings_page() {
 
                 <tr>
                     <th scope="row">
-                        <label for="hwp_text_color">Mau chu</label>
+                        <label for="hwp_text_color">Màu chữ</label>
                     </th>
                     <td>
                         <input type="color"
@@ -729,7 +729,7 @@ function hwp_settings_page() {
 
                 <tr>
                     <th scope="row">
-                        <label for="hwp_bg_color">Mau nen</label>
+                        <label for="hwp_bg_color">Màu nền</label>
                     </th>
                     <td>
                         <input type="color"
@@ -741,39 +741,39 @@ function hwp_settings_page() {
 
                 <tr>
                     <th scope="row">
-                        <label for="hwp_position">Vi tri</label>
+                        <label for="hwp_position">Vị trí</label>
                     </th>
                     <td>
                         <select id="hwp_position" name="hwp_position">
                             <option value="top" <?php selected( $settings['position'], 'top' ); ?>>
-                                Tren cung
+                                Trên cùng
                             </option>
                             <option value="bottom" <?php selected( $settings['position'], 'bottom' ); ?>>
-                                Duoi cung
+                                Dưới cùng
                             </option>
                         </select>
                     </td>
                 </tr>
             </table>
 
-            <?php submit_button( 'Luu cai dat', 'primary', 'hwp_save_settings' ); ?>
+            <?php submit_button( 'Lưu cài đặt', 'primary', 'hwp_save_settings' ); ?>
         </form>
 
         <hr>
         <h3>Shortcode</h3>
-        <p>Su dung shortcode <code>[hello_world]</code> de hien thi thong bao trong bai viet.</p>
-        <p>Hoac: <code>[hello_world message="Custom message" color="#ff0000"]</code></p>
+        <p>Sử dụng shortcode <code>[hello_world]</code> để hiển thị thông báo trong bài viết.</p>
+        <p>Hoặc: <code>[hello_world message="Custom message" color="#ff0000"]</code></p>
     </div>
     <?php
 }
 
-// === HIEN THI THONG BAO TREN FRONTEND ===
+// === HIỂN THỊ THÔNG BÁO TRÊN FRONTEND ===
 add_action( 'wp_footer', 'hwp_display_message' );
 
 function hwp_display_message() {
     $settings = get_option( 'hwp_settings', array() );
 
-    // Kiem tra xem co bat tinh nang khong
+    // Kiểm tra xem có bật tính năng không
     if ( empty( $settings['enabled'] ) ) {
         return;
     }
@@ -783,7 +783,7 @@ function hwp_display_message() {
     $bg_color   = esc_attr( $settings['bg_color'] ?? '#0073aa' );
     $position   = $settings['position'] ?? 'bottom';
 
-    // Xac dinh vi tri CSS
+    // Xác định vị trí CSS
     $pos_style = ( $position === 'top' ) ? 'top: 0;' : 'bottom: 0;';
 
     ?>
@@ -814,17 +814,17 @@ function hwp_display_message() {
     <?php
 }
 
-// === DANG KY SHORTCODE ===
+// === ĐĂNG KÝ SHORTCODE ===
 add_shortcode( 'hello_world', 'hwp_shortcode' );
 
 function hwp_shortcode( $atts ) {
-    // Gop thuoc tinh mac dinh voi thuoc tinh nguoi dung truyen vao
+    // Gộp thuộc tính mặc định với thuộc tính người dùng truyền vào
     $atts = shortcode_atts( array(
         'message' => 'Hello World!',
         'color'   => '#0073aa',
     ), $atts, 'hello_world' );
 
-    // Tra ve HTML (shortcode PHAI return, KHONG echo)
+    // Trả về HTML (shortcode PHẢI return, KHÔNG echo)
     return sprintf(
         '<div class="hwp-inline" style="background:%s; color:#fff; padding:10px; border-radius:5px; margin:10px 0;">%s</div>',
         esc_attr( $atts['color'] ),
@@ -832,49 +832,49 @@ function hwp_shortcode( $atts ) {
     );
 }
 
-// === THEM LINK SETTINGS TREN TRANG PLUGINS ===
+// === THÊM LINK SETTINGS TRÊN TRANG PLUGINS ===
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'hwp_action_links' );
 
 function hwp_action_links( $links ) {
-    // Them link "Cai dat" ben canh "Deactivate"
-    $settings_link = '<a href="' . admin_url( 'options-general.php?page=hello-world-settings' ) . '">Cai dat</a>';
+    // Thêm link "Cài đặt" bên cạnh "Deactivate"
+    $settings_link = '<a href="' . admin_url( 'options-general.php?page=hello-world-settings' ) . '">Cài đặt</a>';
     array_unshift( $links, $settings_link );
     return $links;
 }
 ```
 
-### Buoc 3: Tao file uninstall.php
+### Bước 3: Tạo file uninstall.php
 
 ```php
 <?php
 /**
  * File: hello-world-plugin/uninstall.php
- * Chay khi plugin bi xoa
+ * Chạy khi plugin bị xóa
  */
 
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
     exit;
 }
 
-// Xoa tat ca options cua plugin
+// Xóa tất cả options của plugin
 delete_option( 'hwp_installed_at' );
 delete_option( 'hwp_settings' );
 ```
 
-### Buoc 4: Kich hoat va test
+### Bước 4: Kích hoạt và test
 
-1. Truy cap **WordPress Admin > Plugins**
-2. Tim "Hello World Plugin" trong danh sach
+1. Truy cập **WordPress Admin > Plugins**
+2. Tìm "Hello World Plugin" trong danh sách
 3. Click **Activate**
-4. Vao **Settings > Hello World** de cau hinh
-5. Xem frontend - thong bao se hien thi o cuoi trang
-6. Thu shortcode `[hello_world]` trong bai viet
+4. Vào **Settings > Hello World** để cấu hình
+5. Xem frontend - thông báo sẽ hiển thị ở cuối trang
+6. Thử shortcode `[hello_world]` trong bài viết
 
 ---
 
-## 7. So sanh Plugin voi Service Provider trong Laravel
+## 7. So sánh Plugin với Service Provider trong Laravel
 
-### Tuong dong
+### Tương đồng
 
 ```php
 <?php
@@ -887,7 +887,7 @@ use Illuminate\Support\ServiceProvider;
 class MyFeatureServiceProvider extends ServiceProvider
 {
     /**
-     * Dang ky services - giong nhu activation hook
+     * Đăng ký services - giống như activation hook
      */
     public function register()
     {
@@ -903,27 +903,27 @@ class MyFeatureServiceProvider extends ServiceProvider
     }
 
     /**
-     * Bootstrap - giong nhu cac hooks init, admin_init
+     * Bootstrap - giống như các hooks init, admin_init
      */
     public function boot()
     {
-        // Load routes - giong admin_menu
+        // Load routes - giống admin_menu
         $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php');
 
-        // Load views - giong admin/partials
+        // Load views - giống admin/partials
         $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'myfeature');
 
-        // Load migrations - giong dbDelta trong activation hook
+        // Load migrations - giống dbDelta trong activation hook
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
-        // Publish assets - giong wp_enqueue_scripts
+        // Publish assets - giống wp_enqueue_scripts
         $this->publishes([
             __DIR__ . '/../../public' => public_path('vendor/myfeature'),
         ], 'public');
     }
 }
 
-// === WORDPRESS: Plugin tuong duong ===
+// === WORDPRESS: Plugin tương đương ===
 
 /**
  * Plugin Name: My Feature Plugin
@@ -931,32 +931,32 @@ class MyFeatureServiceProvider extends ServiceProvider
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// register() tuong duong => activation hook
+// register() tương đương => activation hook
 register_activation_hook( __FILE__, function() {
-    // Tao tables (giong migrations)
-    // Add options (giong config)
+    // Tạo tables (giống migrations)
+    // Add options (giống config)
 });
 
-// boot() tuong duong => cac hooks
+// boot() tương đương => các hooks
 add_action( 'init', function() {
-    // Dang ky Post Types (giong Route::resource)
-    // Dang ky Taxonomies
+    // Đăng ký Post Types (giống Route::resource)
+    // Đăng ký Taxonomies
 });
 
 add_action( 'admin_menu', function() {
-    // Them menu (giong routes/web.php)
+    // Thêm menu (giống routes/web.php)
 });
 
 add_action( 'wp_enqueue_scripts', function() {
-    // Them CSS/JS (giong publishes assets)
+    // Thêm CSS/JS (giống publishes assets)
 });
 ```
 
-### Bang so sanh chi tiet
+### Bảng so sánh chi tiết
 
-| Khai niem | Laravel | WordPress Plugin |
+| Khái niệm | Laravel | WordPress Plugin |
 |-----------|---------|-----------------|
-| **Khoi tao** | `register()` | `register_activation_hook()` |
+| **Khởi tạo** | `register()` | `register_activation_hook()` |
 | **Bootstrap** | `boot()` | `plugins_loaded`, `init` hooks |
 | **Config** | `config/app.php` | `get_option()`, `update_option()` |
 | **Routes** | `routes/web.php` | `add_menu_page()`, `register_rest_route()` |
@@ -966,31 +966,31 @@ add_action( 'wp_enqueue_scripts', function() {
 | **Migrations** | Migration files | `dbDelta()` trong activation hook |
 | **Middleware** | Middleware classes | `current_user_can()`, nonce checks |
 | **Events** | Events & Listeners | Actions & Filters (hooks) |
-| **Service Container** | `app()->make()` | Khong co (tu quan ly) |
+| **Service Container** | `app()->make()` | Không có (tự quản lý) |
 | **Artisan CLI** | `php artisan` | `WP-CLI` |
 | **Package Discovery** | `composer.json` extra | Plugin Header comment |
-| **Uninstall** | Khong co san | `uninstall.php` |
+| **Uninstall** | Không có sẵn | `uninstall.php` |
 
-### Diem khac biet lon
+### Điểm khác biệt lớn
 
 ```php
 <?php
-// Laravel: Dependency Injection tu dong
+// Laravel: Dependency Injection tự động
 class UserController extends Controller
 {
-    // Laravel tu dong inject UserService
+    // Laravel tự động inject UserService
     public function __construct(
         private UserService $userService
     ) {}
 }
 
-// WordPress: Phai tu quan ly dependencies
+// WordPress: Phải tự quản lý dependencies
 class My_Plugin_Controller {
     private $db;
 
     public function __construct() {
         global $wpdb;
-        $this->db = $wpdb; // Tu lay dependency
+        $this->db = $wpdb; // Tự lấy dependency
     }
 }
 ```
@@ -1021,47 +1021,47 @@ $users = $wpdb->get_results(
 
 ## 8. Best Practices
 
-### Dat ten (Naming)
+### Đặt tên (Naming)
 
 ```php
 <?php
-// 1. Dung prefix duy nhat cho tat ca functions, classes, constants
-// Tranh trung ten voi plugin khac
+// 1. Dùng prefix duy nhất cho tất cả functions, classes, constants
+// Tránh trùng tên với plugin khác
 
-// SAI - de trung ten
+// SAI - dễ trùng tên
 function get_settings() { }
 class Admin { }
 define( 'VERSION', '1.0.0' );
 
-// DUNG - co prefix
+// ĐÚNG - có prefix
 function myplugin_get_settings() { }
 class MyPlugin_Admin { }
 define( 'MYPLUGIN_VERSION', '1.0.0' );
 
-// TOT NHAT - dung Namespace (PHP 5.6+)
+// TỐT NHẤT - dùng Namespace (PHP 5.6+)
 namespace MyPlugin;
 class Admin { }
 function get_settings() { }
 ```
 
-### Bao mat
+### Bảo mật
 
 ```php
 <?php
-// 1. Luon kiem tra ABSPATH
+// 1. Luôn kiểm tra ABSPATH
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// 2. Luon kiem tra quyen
+// 2. Luôn kiểm tra quyền
 if ( ! current_user_can( 'manage_options' ) ) return;
 
-// 3. Luon dung nonce
+// 3. Luôn dùng nonce
 wp_nonce_field( 'my_action', 'my_nonce' );
-// Kiem tra: check_admin_referer( 'my_action', 'my_nonce' );
+// Kiểm tra: check_admin_referer( 'my_action', 'my_nonce' );
 
-// 4. Luon sanitize input
+// 4. Luôn sanitize input
 $clean = sanitize_text_field( $_POST['field'] );
 
-// 5. Luon escape output
+// 5. Luôn escape output
 echo esc_html( $value );
 echo esc_attr( $attribute );
 echo esc_url( $url );
@@ -1071,47 +1071,47 @@ echo esc_url( $url );
 
 ```php
 <?php
-// 1. Chi load code khi can thiet
+// 1. Chỉ load code khi cần thiết
 if ( is_admin() ) {
     require_once MAP_PLUGIN_DIR . 'admin/class-admin.php';
 } else {
     require_once MAP_PLUGIN_DIR . 'public/class-public.php';
 }
 
-// 2. Chi load CSS/JS tren trang can
+// 2. Chỉ load CSS/JS trên trang cần
 add_action( 'admin_enqueue_scripts', function( $hook ) {
-    // Chi load tren trang settings cua plugin
+    // Chỉ load trên trang settings của plugin
     if ( $hook !== 'settings_page_my-plugin' ) {
         return;
     }
     wp_enqueue_style( 'my-plugin-admin', MAP_PLUGIN_URL . 'admin/css/admin.css' );
 });
 
-// 3. Dung Transients de cache du lieu
+// 3. Dùng Transients để cache dữ liệu
 $data = get_transient( 'my_plugin_data' );
 if ( false === $data ) {
-    $data = expensive_query(); // Query nang
+    $data = expensive_query(); // Query nặng
     set_transient( 'my_plugin_data', $data, HOUR_IN_SECONDS );
 }
 ```
 
-### Checklist truoc khi phat hanh
+### Checklist trước khi phát hành
 
-- [ ] Co Plugin Header day du
-- [ ] Co file `uninstall.php`
-- [ ] Tat ca input duoc sanitize
-- [ ] Tat ca output duoc escape
-- [ ] Dung Nonces cho moi form va AJAX
-- [ ] Kiem tra quyen nguoi dung
-- [ ] Dung `$wpdb->prepare()` cho moi query
-- [ ] Co Text Domain cho da ngon ngu
-- [ ] Khong co `error_log()`, `var_dump()`, `print_r()` trong code production
-- [ ] Khong hardcode duong dan (dung `plugin_dir_path()`, `plugin_dir_url()`)
-- [ ] Tuong thich voi phien ban PHP va WordPress yeu cau
+- [ ] Có Plugin Header đầy đủ
+- [ ] Có file `uninstall.php`
+- [ ] Tất cả input được sanitize
+- [ ] Tất cả output được escape
+- [ ] Dùng Nonces cho mỗi form và AJAX
+- [ ] Kiểm tra quyền người dùng
+- [ ] Dùng `$wpdb->prepare()` cho mỗi query
+- [ ] Có Text Domain cho đa ngôn ngữ
+- [ ] Không có `error_log()`, `var_dump()`, `print_r()` trong code production
+- [ ] Không hardcode đường dẫn (dùng `plugin_dir_path()`, `plugin_dir_url()`)
+- [ ] Tương thích với phiên bản PHP và WordPress yêu cầu
 
 ---
 
-## Tham khao
+## Tham khảo
 
 - [WordPress Plugin Handbook](https://developer.wordpress.org/plugins/)
 - [Plugin Header Requirements](https://developer.wordpress.org/plugins/plugin-basics/header-requirements/)

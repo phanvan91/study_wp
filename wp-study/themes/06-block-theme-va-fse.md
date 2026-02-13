@@ -1,83 +1,83 @@
-# Block Theme va Full Site Editing (FSE)
+# Block Theme và Full Site Editing (FSE)
 
-## Muc Luc
+## Mục Lục
 
-1. [Block Theme la gi](#1-block-theme-la-gi)
-2. [theme.json chi tiet](#2-themejson)
+1. [Block Theme là gì](#1-block-theme-la-gi)
+2. [theme.json chi tiết](#2-themejson)
 3. [Template Parts: header.html, footer.html](#3-template-parts)
 4. [Block Templates](#4-block-templates)
 5. [Block Patterns](#5-block-patterns)
-6. [Template Editor va Global Styles](#6-template-editor)
-7. [Code vi du: Block Theme hoan chinh](#7-code-vi-du)
-8. [So sanh Classic Theme vs Block Theme](#8-so-sanh)
+6. [Template Editor và Global Styles](#6-template-editor)
+7. [Code ví dụ: Block Theme hoàn chỉnh](#7-code-vi-du)
+8. [So sánh Classic Theme vs Block Theme](#8-so-sanh)
 9. [Best Practices](#9-best-practices)
 
 ---
 
-## 1. Block Theme la gi
+## 1. Block Theme là gì
 
-Block Theme (theme khoi) la loai theme **moi** trong WordPress (tu WP 5.9+) su dung **block editor** cho TOAN BO trang, khong chi noi dung bai viet.
+Block Theme (theme khối) là loại theme **mới** trong WordPress (từ WP 5.9+) sử dụng **block editor** cho TOÀN BỘ trang, không chỉ nội dung bài viết.
 
 ### Classic Theme vs Block Theme:
 
 ```
-CLASSIC THEME (truyen thong):
+CLASSIC THEME (truyền thống):
 - PHP templates (index.php, single.php, header.php...)
-- Template Hierarchy voi PHP
+- Template Hierarchy với PHP
 - CSS/JS enqueue trong functions.php
-- Customizer API cho tuy chinh
-- Widgets va Sidebars
+- Customizer API cho tùy chỉnh
+- Widgets và Sidebars
 - Navigation Menus (wp_nav_menu)
 
-BLOCK THEME (moi):
+BLOCK THEME (mới):
 - HTML templates (index.html, single.html, header.html...)
-- Block markup thay vi PHP
-- theme.json cho styles va settings
-- Site Editor thay vi Customizer
+- Block markup thay vì PHP
+- theme.json cho styles và settings
+- Site Editor thay vì Customizer
 - Block-based Widgets
-- Navigation Block thay vi wp_nav_menu
+- Navigation Block thay vì wp_nav_menu
 ```
 
-### Cau truc toi thieu cua Block Theme:
+### Cấu trúc tối thiểu của Block Theme:
 
 ```
 my-block-theme/
-|-- style.css           # Theme header (giong classic)
-|-- theme.json          # Settings va Styles (THAY functions.php phan lon)
+|-- style.css           # Theme header (giống classic)
+|-- theme.json          # Settings và Styles (THAY functions.php phần lớn)
 |-- templates/
-|   |-- index.html      # Template mac dinh (THAY index.php)
+|   |-- index.html      # Template mặc định (THAY index.php)
 |-- parts/
     |-- header.html     # Header template part
     |-- footer.html     # Footer template part
 ```
 
-### Yeu cau:
+### Yêu cầu:
 - WordPress 5.9+
-- File `templates/index.html` (bat buoc)
-- File `theme.json` (khuyen dung manh)
+- File `templates/index.html` (bắt buộc)
+- File `theme.json` (khuyến dụng mạnh)
 
-### Uu diem cua Block Theme:
+### Ưu điểm của Block Theme:
 
-| Dac diem | Giai thich |
+| Đặc điểm | Giải thích |
 |----------|-----------|
-| **No-code editing** | Nguoi dung co the chinh sua layout bang keo tha |
-| **Global Styles** | Thay doi fonts, colors toan trang tu 1 noi |
-| **theme.json** | 1 file cau hinh thay vi nhieu PHP files |
-| **Portable** | Styles co the export/import de dang |
-| **Performance** | CSS duoc toi uu tu dong |
-| **Tuong lai WP** | Day la huong phat trien chinh cua WordPress |
+| **No-code editing** | Người dùng có thể chỉnh sửa layout bằng kéo thả |
+| **Global Styles** | Thay đổi fonts, colors toàn trang từ 1 nơi |
+| **theme.json** | 1 file cấu hình thay vì nhiều PHP files |
+| **Portable** | Styles có thể export/import dễ dàng |
+| **Performance** | CSS được tối ưu tự động |
+| **Tương lai WP** | Đây là hướng phát triển chính của WordPress |
 
 ---
 
 ## 2. theme.json
 
-`theme.json` la file **trung tam** cua Block Theme. No dinh nghia:
-- **Settings**: Cac tuy chon cho editor (colors, fonts, spacing...)
-- **Styles**: CSS mac dinh cho toan trang va tung block
-- **Custom Templates**: Cac template tuy chinh
-- **Template Parts**: Cac phan template
+`theme.json` là file **trung tâm** của Block Theme. Nó định nghĩa:
+- **Settings**: Các tùy chọn cho editor (colors, fonts, spacing...)
+- **Styles**: CSS mặc định cho toàn trang và từng block
+- **Custom Templates**: Các template tùy chỉnh
+- **Template Parts**: Các phần template
 
-### Cau truc theme.json day du:
+### Cấu trúc theme.json đầy đủ:
 
 ```json
 {
@@ -100,32 +100,32 @@ my-block-theme/
                 {
                     "slug": "primary",
                     "color": "#0073aa",
-                    "name": "Xanh Duong Chinh"
+                    "name": "Xanh Dương Chính"
                 },
                 {
                     "slug": "secondary",
                     "color": "#23282d",
-                    "name": "Xam Dam"
+                    "name": "Xám Đậm"
                 },
                 {
                     "slug": "accent",
                     "color": "#e74c3c",
-                    "name": "Do Nhan Manh"
+                    "name": "Đỏ Nhấn Mạnh"
                 },
                 {
                     "slug": "light",
                     "color": "#f5f5f5",
-                    "name": "Xam Nhat"
+                    "name": "Xám Nhạt"
                 },
                 {
                     "slug": "dark",
                     "color": "#1a1a1a",
-                    "name": "Den"
+                    "name": "Đen"
                 },
                 {
                     "slug": "white",
                     "color": "#ffffff",
-                    "name": "Trang"
+                    "name": "Trắng"
                 }
             ],
 
@@ -133,12 +133,12 @@ my-block-theme/
                 {
                     "slug": "primary-to-secondary",
                     "gradient": "linear-gradient(135deg, #0073aa 0%, #23282d 100%)",
-                    "name": "Chinh sang Phu"
+                    "name": "Chính sang Phụ"
                 },
                 {
                     "slug": "light-to-white",
                     "gradient": "linear-gradient(180deg, #f5f5f5 0%, #ffffff 100%)",
-                    "name": "Nhat sang Trang"
+                    "name": "Nhạt sang Trắng"
                 }
             ]
         },
@@ -209,7 +209,7 @@ my-block-theme/
                 {
                     "slug": "small",
                     "size": "0.875rem",
-                    "name": "Nho",
+                    "name": "Nhỏ",
                     "fluid": {
                         "min": "0.8rem",
                         "max": "0.875rem"
@@ -218,7 +218,7 @@ my-block-theme/
                 {
                     "slug": "medium",
                     "size": "1rem",
-                    "name": "Vua",
+                    "name": "Vừa",
                     "fluid": {
                         "min": "0.9rem",
                         "max": "1rem"
@@ -227,7 +227,7 @@ my-block-theme/
                 {
                     "slug": "large",
                     "size": "1.5rem",
-                    "name": "Lon",
+                    "name": "Lớn",
                     "fluid": {
                         "min": "1.25rem",
                         "max": "1.5rem"
@@ -236,7 +236,7 @@ my-block-theme/
                 {
                     "slug": "x-large",
                     "size": "2.25rem",
-                    "name": "Rat Lon",
+                    "name": "Rất Lớn",
                     "fluid": {
                         "min": "1.75rem",
                         "max": "2.25rem"
@@ -245,7 +245,7 @@ my-block-theme/
                 {
                     "slug": "xx-large",
                     "size": "3.5rem",
-                    "name": "Cuc Lon",
+                    "name": "Cực Lớn",
                     "fluid": {
                         "min": "2.5rem",
                         "max": "3.5rem"
@@ -289,17 +289,17 @@ my-block-theme/
         "shadow": {
             "presets": [
                 {
-                    "name": "Nhe",
+                    "name": "Nhẹ",
                     "slug": "light",
                     "shadow": "0 2px 4px rgba(0,0,0,0.1)"
                 },
                 {
-                    "name": "Vua",
+                    "name": "Vừa",
                     "slug": "medium",
                     "shadow": "0 4px 8px rgba(0,0,0,0.12)"
                 },
                 {
-                    "name": "Manh",
+                    "name": "Mạnh",
                     "slug": "heavy",
                     "shadow": "0 8px 24px rgba(0,0,0,0.15)"
                 }
@@ -525,7 +525,7 @@ my-block-theme/
         },
         {
             "name": "no-title",
-            "title": "Khong Co Tieu De",
+            "title": "Không Có Tiêu Đề",
             "postTypes": ["page"]
         },
         {
@@ -555,10 +555,10 @@ my-block-theme/
 }
 ```
 
-### Giai thich CSS Variables tu dong tao:
+### Giải thích CSS Variables tự động tạo:
 
 ```css
-/* theme.json tu dong tao cac CSS variables nay: */
+/* theme.json tự động tạo các CSS variables này: */
 
 /* Colors */
 --wp--preset--color--primary: #0073aa;
@@ -594,7 +594,7 @@ my-block-theme/
 --wp--preset--shadow--light: 0 2px 4px rgba(0,0,0,0.1);
 --wp--preset--shadow--medium: 0 4px 8px rgba(0,0,0,0.12);
 
-/* Ban co the dung chung trong CSS: */
+/* Bạn có thể dùng chúng trong CSS: */
 .my-element {
     color: var(--wp--preset--color--primary);
     font-family: var(--wp--preset--font-family--inter);
@@ -623,10 +623,10 @@ my-block-theme/
         <!-- /wp:group -->
 
         <!-- wp:navigation {"overlayMenu":"mobile","layout":{"type":"flex","justifyContent":"right"}} -->
-            <!-- wp:navigation-link {"label":"Trang Chu","url":"/","kind":"custom","isTopLevelLink":true} /-->
+            <!-- wp:navigation-link {"label":"Trang Chủ","url":"/","kind":"custom","isTopLevelLink":true} /-->
             <!-- wp:navigation-link {"label":"Blog","url":"/blog","kind":"custom","isTopLevelLink":true} /-->
-            <!-- wp:navigation-link {"label":"Gioi Thieu","url":"/about","kind":"custom","isTopLevelLink":true} /-->
-            <!-- wp:navigation-link {"label":"Lien He","url":"/contact","kind":"custom","isTopLevelLink":true} /-->
+            <!-- wp:navigation-link {"label":"Giới Thiệu","url":"/about","kind":"custom","isTopLevelLink":true} /-->
+            <!-- wp:navigation-link {"label":"Liên Hệ","url":"/contact","kind":"custom","isTopLevelLink":true} /-->
         <!-- /wp:navigation -->
 
     </div>
@@ -636,56 +636,56 @@ my-block-theme/
 <!-- /wp:group -->
 ```
 
-### Giai thich cu phap block:
+### Giải thích cú pháp block:
 
 ```html
 <!-- wp:block-name {"attributes":"values"} -->
 <html-output>
-    <!-- noi dung ben trong -->
+    <!-- nội dung bên trong -->
 </html-output>
 <!-- /wp:block-name -->
 
 <!--
-MOI block bao gom:
+MỖI block bao gồm:
 1. Block comment (<!-- wp:group {...} -->)
-   - Ten block: wp:group, wp:paragraph, wp:heading...
+   - Tên block: wp:group, wp:paragraph, wp:heading...
    - Attributes: JSON object (colors, spacing, layout...)
-2. HTML output (giua opening va closing comment)
+2. HTML output (giữa opening và closing comment)
 3. Closing comment (<!-- /wp:group -->)
 
-Day la cu phap cua Gutenberg blocks khi luu vao database
+Đây là cú pháp của Gutenberg blocks khi lưu vào database
 -->
 
-<!-- Vi du cac block thuong dung: -->
+<!-- Ví dụ các block thường dùng: -->
 
 <!-- Heading -->
 <!-- wp:heading {"level":2,"textAlign":"center"} -->
-<h2 class="has-text-align-center">Tieu De</h2>
+<h2 class="has-text-align-center">Tiêu Đề</h2>
 <!-- /wp:heading -->
 
 <!-- Paragraph -->
 <!-- wp:paragraph {"align":"center","fontSize":"large"} -->
-<p class="has-text-align-center has-large-font-size">Noi dung</p>
+<p class="has-text-align-center has-large-font-size">Nội dung</p>
 <!-- /wp:paragraph -->
 
 <!-- Image -->
 <!-- wp:image {"id":123,"sizeSlug":"large","linkDestination":"none"} -->
 <figure class="wp-block-image size-large">
-    <img src="image.jpg" alt="Mo ta" class="wp-image-123"/>
+    <img src="image.jpg" alt="Mô tả" class="wp-image-123"/>
 </figure>
 <!-- /wp:image -->
 
-<!-- Columns (2 cot) -->
+<!-- Columns (2 cột) -->
 <!-- wp:columns -->
 <div class="wp-block-columns">
     <!-- wp:column -->
     <div class="wp-block-column">
-        <!-- noi dung cot 1 -->
+        <!-- nội dung cột 1 -->
     </div>
     <!-- /wp:column -->
     <!-- wp:column -->
     <div class="wp-block-column">
-        <!-- noi dung cot 2 -->
+        <!-- nội dung cột 2 -->
     </div>
     <!-- /wp:column -->
 </div>
@@ -694,18 +694,18 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
 <!-- Group (container) -->
 <!-- wp:group {"layout":{"type":"constrained"}} -->
 <div class="wp-block-group">
-    <!-- noi dung -->
+    <!-- nội dung -->
 </div>
 <!-- /wp:group -->
 
-<!-- Query Loop (hien thi danh sach bai viet) -->
+<!-- Query Loop (hiển thị danh sách bài viết) -->
 <!-- wp:query {"queryId":1,"query":{"perPage":6,"postType":"post"}} -->
 <div class="wp-block-query">
     <!-- wp:post-template {"layout":{"type":"grid","columnCount":3}} -->
         <!-- wp:post-featured-image {"isLink":true} /-->
         <!-- wp:post-title {"isLink":true} /-->
         <!-- wp:post-date /-->
-        <!-- wp:post-excerpt {"moreText":"Doc them"} /-->
+        <!-- wp:post-excerpt {"moreText":"Đọc thêm"} /-->
     <!-- /wp:post-template -->
 
     <!-- wp:query-pagination -->
@@ -732,39 +732,39 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
     <!-- wp:columns {"style":{"spacing":{"blockGap":{"left":"var:preset|spacing|50"}}}} -->
     <div class="wp-block-columns">
 
-        <!-- Cot 1: Gioi thieu -->
+        <!-- Cột 1: Giới thiệu -->
         <!-- wp:column -->
         <div class="wp-block-column">
             <!-- wp:heading {"level":4,"textColor":"white"} -->
-            <h4 class="has-white-color has-text-color">Ve Chung Toi</h4>
+            <h4 class="has-white-color has-text-color">Về Chúng Tôi</h4>
             <!-- /wp:heading -->
 
             <!-- wp:paragraph {"textColor":"light"} -->
-            <p class="has-light-color has-text-color">Website chia se kien thuc lap trinh va cong nghe. Giup ban phat trien su nghiep developer.</p>
+            <p class="has-light-color has-text-color">Website chia sẻ kiến thức lập trình và công nghệ. Giúp bạn phát triển sự nghiệp developer.</p>
             <!-- /wp:paragraph -->
         </div>
         <!-- /wp:column -->
 
-        <!-- Cot 2: Lien ket -->
+        <!-- Cột 2: Liên kết -->
         <!-- wp:column -->
         <div class="wp-block-column">
             <!-- wp:heading {"level":4,"textColor":"white"} -->
-            <h4 class="has-white-color has-text-color">Lien Ket</h4>
+            <h4 class="has-white-color has-text-color">Liên Kết</h4>
             <!-- /wp:heading -->
 
             <!-- wp:navigation {"overlayMenu":"never","layout":{"type":"flex","orientation":"vertical"},"style":{"spacing":{"blockGap":"0.5rem"}}} -->
-                <!-- wp:navigation-link {"label":"Trang Chu","url":"/"} /-->
+                <!-- wp:navigation-link {"label":"Trang Chủ","url":"/"} /-->
                 <!-- wp:navigation-link {"label":"Blog","url":"/blog"} /-->
-                <!-- wp:navigation-link {"label":"Lien He","url":"/contact"} /-->
+                <!-- wp:navigation-link {"label":"Liên Hệ","url":"/contact"} /-->
             <!-- /wp:navigation -->
         </div>
         <!-- /wp:column -->
 
-        <!-- Cot 3: Lien he -->
+        <!-- Cột 3: Liên hệ -->
         <!-- wp:column -->
         <div class="wp-block-column">
             <!-- wp:heading {"level":4,"textColor":"white"} -->
-            <h4 class="has-white-color has-text-color">Lien He</h4>
+            <h4 class="has-white-color has-text-color">Liên Hệ</h4>
             <!-- /wp:heading -->
 
             <!-- wp:paragraph {"textColor":"light"} -->
@@ -801,7 +801,7 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
 
 ## 4. Block Templates
 
-### templates/index.html (template mac dinh):
+### templates/index.html (template mặc định):
 
 ```html
 <!-- wp:template-part {"slug":"header","area":"header"} /-->
@@ -828,7 +828,7 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
                 </div>
                 <!-- /wp:group -->
 
-                <!-- wp:post-excerpt {"moreText":"Doc them →","excerptLength":25} /-->
+                <!-- wp:post-excerpt {"moreText":"Đọc thêm →","excerptLength":25} /-->
 
                 <!-- wp:separator {"className":"is-style-wide"} -->
                 <hr class="wp-block-separator is-style-wide"/>
@@ -840,7 +840,7 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
 
         <!-- wp:query-pagination {"layout":{"type":"flex","justifyContent":"center"}} -->
         <div class="wp-block-query-pagination">
-            <!-- wp:query-pagination-previous {"label":"← Truoc"} /-->
+            <!-- wp:query-pagination-previous {"label":"← Trước"} /-->
             <!-- wp:query-pagination-numbers /-->
             <!-- wp:query-pagination-next {"label":"Sau →"} /-->
         </div>
@@ -848,7 +848,7 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
 
         <!-- wp:query-no-results -->
         <!-- wp:paragraph {"align":"center"} -->
-        <p class="has-text-align-center">Khong tim thay bai viet nao.</p>
+        <p class="has-text-align-center">Không tìm thấy bài viết nào.</p>
         <!-- /wp:paragraph -->
         <!-- /wp:query-no-results -->
 
@@ -895,8 +895,8 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
 
         <!-- wp:group {"layout":{"type":"flex","justifyContent":"space-between"}} -->
         <div class="wp-block-group">
-            <!-- wp:post-navigation-link {"type":"previous","label":"← Bai truoc"} /-->
-            <!-- wp:post-navigation-link {"label":"Bai sau →"} /-->
+            <!-- wp:post-navigation-link {"type":"previous","label":"← Bài trước"} /-->
+            <!-- wp:post-navigation-link {"label":"Bài sau →"} /-->
         </div>
         <!-- /wp:group -->
 
@@ -974,14 +974,14 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
     <!-- /wp:heading -->
 
     <!-- wp:heading {"textAlign":"center","level":2} -->
-    <h2 class="has-text-align-center">Trang khong ton tai</h2>
+    <h2 class="has-text-align-center">Trang không tồn tại</h2>
     <!-- /wp:heading -->
 
     <!-- wp:paragraph {"align":"center"} -->
-    <p class="has-text-align-center">Xin loi, trang ban dang tim khong ton tai hoac da bi di chuyen.</p>
+    <p class="has-text-align-center">Xin lỗi, trang bạn đang tìm không tồn tại hoặc đã bị di chuyển.</p>
     <!-- /wp:paragraph -->
 
-    <!-- wp:search {"label":"Tim kiem","buttonText":"Tim","buttonPosition":"button-inside","buttonUseIcon":true} /-->
+    <!-- wp:search {"label":"Tìm kiếm","buttonText":"Tìm","buttonPosition":"button-inside","buttonUseIcon":true} /-->
 
 </main>
 <!-- /wp:group -->
@@ -1001,7 +1001,7 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
     <div class="wp-block-group" style="padding-top:var(--wp--preset--spacing--50)">
 
         <!-- wp:query-title {"type":"search"} /-->
-        <!-- wp:search {"label":"Tim kiem","buttonText":"Tim"} /-->
+        <!-- wp:search {"label":"Tìm kiếm","buttonText":"Tìm"} /-->
 
     </div>
     <!-- /wp:group -->
@@ -1033,7 +1033,7 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
 
         <!-- wp:query-no-results -->
         <!-- wp:paragraph -->
-        <p>Khong tim thay ket qua nao. Hay thu voi tu khoa khac.</p>
+        <p>Không tìm thấy kết quả nào. Hãy thử với từ khóa khác.</p>
         <!-- /wp:paragraph -->
         <!-- /wp:query-no-results -->
     </div>
@@ -1049,18 +1049,18 @@ Day la cu phap cua Gutenberg blocks khi luu vao database
 
 ## 5. Block Patterns
 
-### Dang ky Block Patterns trong functions.php:
+### Đăng ký Block Patterns trong functions.php:
 
 ```php
 <?php
 /**
- * Block Patterns - Cac mau block co san de nguoi dung chen nhanh
+ * Block Patterns - Các mẫu block có sẵn để người dùng chèn nhanh
  *
- * Tuong tu "Blade components" trong Laravel nhung dung blocks
+ * Tương tự "Blade components" trong Laravel nhưng dùng blocks
  */
 
 /**
- * Dang ky Pattern Category
+ * Đăng ký Pattern Category
  */
 function developer_register_pattern_categories() {
     register_block_pattern_category( 'developer-theme', array(
@@ -1078,14 +1078,14 @@ function developer_register_pattern_categories() {
 add_action( 'init', 'developer_register_pattern_categories' );
 
 /**
- * Dang ky Patterns
+ * Đăng ký Patterns
  */
 function developer_register_patterns() {
 
     // === Pattern 1: Hero Section ===
     register_block_pattern( 'developer-theme/hero-section', array(
         'title'       => __( 'Hero Section', 'developer-theme' ),
-        'description' => __( 'Phan hero voi tieu de, mo ta va nut bam.', 'developer-theme' ),
+        'description' => __( 'Phần hero với tiêu đề, mô tả và nút bấm.', 'developer-theme' ),
         'categories'  => array( 'developer-theme', 'developer-hero' ),
         'keywords'    => array( 'hero', 'banner', 'header' ),
         'viewportWidth' => 1200,
@@ -1097,21 +1097,21 @@ function developer_register_patterns() {
                     <!-- wp:group {"layout":{"type":"constrained","contentSize":"700px"}} -->
                     <div class="wp-block-group">
                         <!-- wp:heading {"textAlign":"center","level":1,"textColor":"white","fontSize":"xx-large"} -->
-                        <h1 class="has-text-align-center has-white-color has-text-color has-xx-large-font-size">Chao Mung Den Voi Website</h1>
+                        <h1 class="has-text-align-center has-white-color has-text-color has-xx-large-font-size">Chào Mừng Đến Với Website</h1>
                         <!-- /wp:heading -->
 
                         <!-- wp:paragraph {"align":"center","textColor":"light","fontSize":"large"} -->
-                        <p class="has-text-align-center has-light-color has-text-color has-large-font-size">Mo ta ngan gon ve website hoac dich vu cua ban. Tao an tuong manh voi khach hang.</p>
+                        <p class="has-text-align-center has-light-color has-text-color has-large-font-size">Mô tả ngắn gọn về website hoặc dịch vụ của bạn. Tạo ấn tượng mạnh với khách hàng.</p>
                         <!-- /wp:paragraph -->
 
                         <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
                         <div class="wp-block-buttons">
                             <!-- wp:button {"backgroundColor":"primary","textColor":"white"} -->
-                            <div class="wp-block-button"><a class="wp-block-button__link has-white-color has-primary-background-color has-text-color has-background wp-element-button">Bat Dau Ngay</a></div>
+                            <div class="wp-block-button"><a class="wp-block-button__link has-white-color has-primary-background-color has-text-color has-background wp-element-button">Bắt Đầu Ngay</a></div>
                             <!-- /wp:button -->
 
                             <!-- wp:button {"className":"is-style-outline"} -->
-                            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button">Tim Hieu Them</a></div>
+                            <div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button">Tìm Hiểu Thêm</a></div>
                             <!-- /wp:button -->
                         </div>
                         <!-- /wp:buttons -->
@@ -1132,17 +1132,17 @@ function developer_register_patterns() {
             <div class="wp-block-group alignfull has-white-color has-primary-background-color has-text-color has-background" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)">
 
                 <!-- wp:heading {"textAlign":"center","textColor":"white"} -->
-                <h2 class="has-text-align-center has-white-color has-text-color">San Sang Bat Dau?</h2>
+                <h2 class="has-text-align-center has-white-color has-text-color">Sẵn Sàng Bắt Đầu?</h2>
                 <!-- /wp:heading -->
 
                 <!-- wp:paragraph {"align":"center"} -->
-                <p class="has-text-align-center">Lien he voi chung toi ngay hom nay de duoc tu van mien phi.</p>
+                <p class="has-text-align-center">Liên hệ với chúng tôi ngay hôm nay để được tư vấn miễn phí.</p>
                 <!-- /wp:paragraph -->
 
                 <!-- wp:buttons {"layout":{"type":"flex","justifyContent":"center"}} -->
                 <div class="wp-block-buttons">
                     <!-- wp:button {"backgroundColor":"white","textColor":"primary"} -->
-                    <div class="wp-block-button"><a class="wp-block-button__link has-primary-color has-white-background-color has-text-color has-background wp-element-button">Lien He Ngay</a></div>
+                    <div class="wp-block-button"><a class="wp-block-button__link has-primary-color has-white-background-color has-text-color has-background wp-element-button">Liên Hệ Ngay</a></div>
                     <!-- /wp:button -->
                 </div>
                 <!-- /wp:buttons -->
@@ -1152,7 +1152,7 @@ function developer_register_patterns() {
         ',
     ) );
 
-    // === Pattern 3: Features Grid (3 cot) ===
+    // === Pattern 3: Features Grid (3 cột) ===
     register_block_pattern( 'developer-theme/features-grid', array(
         'title'      => __( 'Features Grid', 'developer-theme' ),
         'categories' => array( 'developer-theme' ),
@@ -1161,7 +1161,7 @@ function developer_register_patterns() {
             <div class="wp-block-group alignfull has-light-background-color has-background" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)">
 
                 <!-- wp:heading {"textAlign":"center"} -->
-                <h2 class="has-text-align-center">Tinh Nang Noi Bat</h2>
+                <h2 class="has-text-align-center">Tính Năng Nổi Bật</h2>
                 <!-- /wp:heading -->
 
                 <!-- wp:columns {"style":{"spacing":{"blockGap":{"left":"var:preset|spacing|40"}}}} -->
@@ -1173,10 +1173,10 @@ function developer_register_patterns() {
                         <h3 class="has-text-align-center has-x-large-font-size">&#9889;</h3>
                         <!-- /wp:heading -->
                         <!-- wp:heading {"level":4,"textAlign":"center"} -->
-                        <h4 class="has-text-align-center">Nhanh Chong</h4>
+                        <h4 class="has-text-align-center">Nhanh Chóng</h4>
                         <!-- /wp:heading -->
                         <!-- wp:paragraph {"align":"center"} -->
-                        <p class="has-text-align-center">Toc do tai trang sieu nhanh, toi uu cho trai nghiem nguoi dung tot nhat.</p>
+                        <p class="has-text-align-center">Tốc độ tải trang siêu nhanh, tối ưu cho trải nghiệm người dùng tốt nhất.</p>
                         <!-- /wp:paragraph -->
                     </div>
                     <!-- /wp:column -->
@@ -1187,10 +1187,10 @@ function developer_register_patterns() {
                         <h3 class="has-text-align-center has-x-large-font-size">&#128274;</h3>
                         <!-- /wp:heading -->
                         <!-- wp:heading {"level":4,"textAlign":"center"} -->
-                        <h4 class="has-text-align-center">Bao Mat</h4>
+                        <h4 class="has-text-align-center">Bảo Mật</h4>
                         <!-- /wp:heading -->
                         <!-- wp:paragraph {"align":"center"} -->
-                        <p class="has-text-align-center">Bao mat da tang, bao ve du lieu nguoi dung voi cac tieu chuan cao nhat.</p>
+                        <p class="has-text-align-center">Bảo mật đa tầng, bảo vệ dữ liệu người dùng với các tiêu chuẩn cao nhất.</p>
                         <!-- /wp:paragraph -->
                     </div>
                     <!-- /wp:column -->
@@ -1201,10 +1201,10 @@ function developer_register_patterns() {
                         <h3 class="has-text-align-center has-x-large-font-size">&#127912;</h3>
                         <!-- /wp:heading -->
                         <!-- wp:heading {"level":4,"textAlign":"center"} -->
-                        <h4 class="has-text-align-center">Dep Mat</h4>
+                        <h4 class="has-text-align-center">Đẹp Mắt</h4>
                         <!-- /wp:heading -->
                         <!-- wp:paragraph {"align":"center"} -->
-                        <p class="has-text-align-center">Giao dien hien dai, tuy chinh linh hoat, tuong thich moi thiet bi.</p>
+                        <p class="has-text-align-center">Giao diện hiện đại, tùy chỉnh linh hoạt, tương thích mọi thiết bị.</p>
                         <!-- /wp:paragraph -->
                     </div>
                     <!-- /wp:column -->
@@ -1220,12 +1220,12 @@ function developer_register_patterns() {
 add_action( 'init', 'developer_register_patterns' );
 ```
 
-### Patterns tu file rieng (WP 6.0+):
+### Patterns từ file riêng (WP 6.0+):
 
 ```
 my-block-theme/
 |-- patterns/
-    |-- hero.php          # Tu dong dang ky pattern
+    |-- hero.php          # Tự động đăng ký pattern
     |-- cta.php
     |-- features.php
 ```
@@ -1251,11 +1251,11 @@ my-block-theme/
     <span aria-hidden="true" class="wp-block-cover__background has-secondary-background-color has-background-dim-100 has-background-dim"></span>
     <div class="wp-block-cover__inner-container">
         <!-- wp:heading {"textAlign":"center","level":1,"textColor":"white"} -->
-        <h1 class="has-text-align-center has-white-color has-text-color"><?php esc_html_e( 'Tieu De Chinh', 'developer-theme' ); ?></h1>
+        <h1 class="has-text-align-center has-white-color has-text-color"><?php esc_html_e( 'Tiêu Đề Chính', 'developer-theme' ); ?></h1>
         <!-- /wp:heading -->
 
         <!-- wp:paragraph {"align":"center","textColor":"light"} -->
-        <p class="has-text-align-center has-light-color has-text-color"><?php esc_html_e( 'Mo ta ngan gon ve website cua ban.', 'developer-theme' ); ?></p>
+        <p class="has-text-align-center has-light-color has-text-color"><?php esc_html_e( 'Mô tả ngắn gọn về website của bạn.', 'developer-theme' ); ?></p>
         <!-- /wp:paragraph -->
     </div>
 </div>
@@ -1264,46 +1264,46 @@ my-block-theme/
 
 ---
 
-## 6. Template Editor va Global Styles
+## 6. Template Editor và Global Styles
 
 ### Template Editor:
 
 ```
-Truy cap:
-- Admin > Appearance > Editor (hoac Site Editor)
-- Hoac click "Edit Site" tren Admin Bar
+Truy cập:
+- Admin > Appearance > Editor (hoặc Site Editor)
+- Hoặc click "Edit Site" trên Admin Bar
 
-Chuc nang:
-1. Chinh sua templates (index, single, page, archive, 404...)
-2. Chinh sua template parts (header, footer, sidebar)
-3. Them/xoa blocks tu template
-4. Thay doi layout khong can code
+Chức năng:
+1. Chỉnh sửa templates (index, single, page, archive, 404...)
+2. Chỉnh sửa template parts (header, footer, sidebar)
+3. Thêm/xóa blocks từ template
+4. Thay đổi layout không cần code
 
-Luu y:
-- Khi nguoi dung chinh sua template trong editor, thay doi duoc luu trong database
-- Template goc trong theme khong bi anh huong
-- Co the "Reset" ve template goc bat cu luc nao
+Lưu ý:
+- Khi người dùng chỉnh sửa template trong editor, thay đổi được lưu trong database
+- Template gốc trong theme không bị ảnh hưởng
+- Có thể "Reset" về template gốc bất cứ lúc nào
 ```
 
 ### Global Styles:
 
 ```
-Truy cap:
-- Trong Site Editor > Click icon "Styles" (hinh tron nua den nua trang)
+Truy cập:
+- Trong Site Editor > Click icon "Styles" (hình tròn nửa đen nửa trắng)
 
-Chuc nang:
-1. Thay doi fonts, colors cho TOAN TRANG
-2. Tuy chinh style cho tung LOAI BLOCK
+Chức năng:
+1. Thay đổi fonts, colors cho TOÀN TRANG
+2. Tùy chỉnh style cho từng LOẠI BLOCK
 3. Export/Import style presets
 
-Global Styles ghi de len theme.json:
-theme.json (developer tao) < Global Styles (nguoi dung tuy chinh)
+Global Styles ghi đè lên theme.json:
+theme.json (developer tạo) < Global Styles (người dùng tùy chỉnh)
 ```
 
 ### Style Variations:
 
 ```
-Tao file styles/dark.json de co them giao dien "Dark Mode":
+Tạo file styles/dark.json để có thêm giao diện "Dark Mode":
 
 my-block-theme/
 |-- styles/
@@ -1360,9 +1360,9 @@ my-block-theme/
 
 ---
 
-## 7. Code vi du: Block Theme hoan chinh
+## 7. Code ví dụ: Block Theme hoàn chỉnh
 
-### Cau truc thu muc:
+### Cấu trúc thư mục:
 
 ```
 developer-block-theme/
@@ -1410,15 +1410,15 @@ developer-block-theme/
 |-- screenshot.png
 ```
 
-### functions.php (don gian hon Classic Theme):
+### functions.php (đơn giản hơn Classic Theme):
 
 ```php
 <?php
 /**
  * Block Theme functions
  *
- * Block Theme can it code PHP hon Classic Theme vi theme.json
- * da xu ly phan lon settings va styles
+ * Block Theme cần ít code PHP hơn Classic Theme vì theme.json
+ * đã xử lý phần lớn settings và styles
  *
  * @package Developer_Block_Theme
  */
@@ -1431,7 +1431,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Theme setup
  */
 function developer_block_theme_setup() {
-    // Da ngon ngu
+    // Đa ngôn ngữ
     load_theme_textdomain( 'developer-block-theme', get_template_directory() . '/languages' );
 
     // Featured images
@@ -1454,10 +1454,10 @@ function developer_block_theme_setup() {
 add_action( 'after_setup_theme', 'developer_block_theme_setup' );
 
 /**
- * Enqueue styles (it hon Classic Theme vi theme.json da xu ly nhieu)
+ * Enqueue styles (ít hơn Classic Theme vì theme.json đã xử lý nhiều)
  */
 function developer_block_theme_scripts() {
-    // Style chinh
+    // Style chính
     wp_enqueue_style(
         'developer-block-theme-style',
         get_stylesheet_uri(),
@@ -1465,7 +1465,7 @@ function developer_block_theme_scripts() {
         wp_get_theme()->get( 'Version' )
     );
 
-    // Custom CSS bo sung
+    // Custom CSS bổ sung
     wp_enqueue_style(
         'developer-block-theme-custom',
         get_template_directory_uri() . '/assets/css/custom.css',
@@ -1476,7 +1476,7 @@ function developer_block_theme_scripts() {
 add_action( 'wp_enqueue_scripts', 'developer_block_theme_scripts' );
 
 /**
- * Dang ky Block Pattern Categories
+ * Đăng ký Block Pattern Categories
  */
 function developer_block_theme_pattern_categories() {
     register_block_pattern_category( 'developer-block-theme', array(
@@ -1486,32 +1486,32 @@ function developer_block_theme_pattern_categories() {
 add_action( 'init', 'developer_block_theme_pattern_categories' );
 
 /**
- * Dang ky Block Styles
- * Them cac style variants cho blocks co san
+ * Đăng ký Block Styles
+ * Thêm các style variants cho blocks có sẵn
  */
 function developer_block_theme_register_block_styles() {
-    // Style moi cho Group block: Card style
+    // Style mới cho Group block: Card style
     register_block_style( 'core/group', array(
         'name'  => 'card',
         'label' => __( 'Card', 'developer-block-theme' ),
     ) );
 
-    // Style moi cho Group block: Shadow
+    // Style mới cho Group block: Shadow
     register_block_style( 'core/group', array(
         'name'  => 'shadow',
         'label' => __( 'Shadow', 'developer-block-theme' ),
     ) );
 
-    // Style moi cho Image: Rounded
+    // Style mới cho Image: Rounded
     register_block_style( 'core/image', array(
         'name'  => 'rounded-full',
-        'label' => __( 'Tron', 'developer-block-theme' ),
+        'label' => __( 'Tròn', 'developer-block-theme' ),
     ) );
 
-    // Style moi cho Button: Arrow
+    // Style mới cho Button: Arrow
     register_block_style( 'core/button', array(
         'name'  => 'arrow',
-        'label' => __( 'Voi Mui Ten', 'developer-block-theme' ),
+        'label' => __( 'Với Mũi Tên', 'developer-block-theme' ),
     ) );
 }
 add_action( 'init', 'developer_block_theme_register_block_styles' );
@@ -1521,9 +1521,9 @@ add_action( 'init', 'developer_block_theme_register_block_styles' );
 
 ```css
 /**
- * Custom CSS bo sung cho Block Theme
- * theme.json da xu ly phan lon styles,
- * file nay chi chua nhung gi theme.json khong lam duoc
+ * Custom CSS bổ sung cho Block Theme
+ * theme.json đã xử lý phần lớn styles,
+ * file này chỉ chứa những gì theme.json không làm được
  */
 
 /* === ANIMATIONS === */
@@ -1605,12 +1605,12 @@ html {
 
 /* === RESPONSIVE ADJUSTMENTS === */
 @media (max-width: 768px) {
-    /* Giam gap tren mobile */
+    /* Giảm gap trên mobile */
     .wp-block-columns {
         gap: 1rem;
     }
 
-    /* Stack columns tren mobile */
+    /* Stack columns trên mobile */
     .wp-block-column {
         flex-basis: 100% !important;
     }
@@ -1619,7 +1619,7 @@ html {
 
 ---
 
-## 8. So sanh Classic Theme vs Block Theme
+## 8. So sánh Classic Theme vs Block Theme
 
 ### Mapping file:
 
@@ -1635,19 +1635,19 @@ page.php                       templates/page.html
 archive.php                    templates/archive.html
 search.php                     templates/search.html
 404.php                        templates/404.html
-functions.php (phan lon)       theme.json
+functions.php (phần lớn)       theme.json
 style.css (styles)             theme.json styles + style.css
 functions.php (enqueue)        theme.json fontFaces + functions.php
-inc/customizer.php             Global Styles UI (tren trung)
+inc/customizer.php             Global Styles UI (trên trình)
 template-parts/                patterns/
 wp_nav_menu()                  <!-- wp:navigation -->
-dynamic_sidebar()              Khong can (dung blocks truc tiep)
+dynamic_sidebar()              Không cần (dùng blocks trực tiếp)
 ```
 
-### So sanh code:
+### So sánh code:
 
 ```php
-// === CLASSIC: Hien thi header ===
+// === CLASSIC: Hiển thị header ===
 // header.php (PHP)
 <header>
     <div class="container">
@@ -1657,7 +1657,7 @@ dynamic_sidebar()              Khong can (dung blocks truc tiep)
     </div>
 </header>
 
-// === BLOCK: Hien thi header ===
+// === BLOCK: Hiển thị header ===
 // parts/header.html (Block markup)
 <!-- wp:group {"backgroundColor":"secondary","layout":{"type":"constrained"}} -->
 <div class="wp-block-group has-secondary-background-color has-background">
@@ -1672,7 +1672,7 @@ dynamic_sidebar()              Khong can (dung blocks truc tiep)
 <!-- /wp:group -->
 
 
-// === CLASSIC: Loop hien thi bai viet ===
+// === CLASSIC: Loop hiển thị bài viết ===
 // index.php (PHP)
 <?php while (have_posts()) : the_post(); ?>
     <article>
@@ -1683,7 +1683,7 @@ dynamic_sidebar()              Khong can (dung blocks truc tiep)
 <?php endwhile; ?>
 <?php the_posts_pagination(); ?>
 
-// === BLOCK: Loop hien thi bai viet ===
+// === BLOCK: Loop hiển thị bài viết ===
 // templates/index.html (Block markup)
 <!-- wp:query {"query":{"inherit":true}} -->
 <div class="wp-block-query">
@@ -1703,14 +1703,14 @@ dynamic_sidebar()              Khong can (dung blocks truc tiep)
 <!-- /wp:query -->
 
 
-// === CLASSIC: Styles va settings ===
+// === CLASSIC: Styles và settings ===
 // functions.php
 add_theme_support('editor-color-palette', array(
     array('name' => 'Primary', 'slug' => 'primary', 'color' => '#0073aa'),
 ));
 wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/...');
 
-// === BLOCK: Styles va settings ===
+// === BLOCK: Styles và settings ===
 // theme.json
 {
     "settings": {
@@ -1728,28 +1728,28 @@ wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/...');
 }
 ```
 
-### Khi nao dung Classic vs Block Theme?
+### Khi nào dùng Classic vs Block Theme?
 
-| Tinh huong | Nen dung |
+| Tình huống | Nên dùng |
 |------------|----------|
-| Du an moi, WordPress 6.0+ | Block Theme |
-| Can tuy chinh phuc tap bang PHP | Classic Theme |
-| Nguoi dung muon tu chinh sua layout | Block Theme |
-| Site don gian, blog, portfolio | Block Theme |
-| WooCommerce phuc tap | Classic Theme (ho tro tot hon) |
-| Theme da co san can cap nhat | Classic Theme (de maintain) |
+| Dự án mới, WordPress 6.0+ | Block Theme |
+| Cần tùy chỉnh phức tạp bằng PHP | Classic Theme |
+| Người dùng muốn tự chỉnh sửa layout | Block Theme |
+| Site đơn giản, blog, portfolio | Block Theme |
+| WooCommerce phức tạp | Classic Theme (hỗ trợ tốt hơn) |
+| Theme đã có sẵn cần cập nhật | Classic Theme (dễ maintain) |
 
 ---
 
 ## 9. Best Practices
 
-### 1. Dung theme.json toi da
+### 1. Dùng theme.json tối đa
 
 ```json
-// Dung theme.json cho colors, fonts, spacing thay vi CSS
-// WordPress se tu dong tao CSS toi uu
+// Dùng theme.json cho colors, fonts, spacing thay vì CSS
+// WordPress sẽ tự động tạo CSS tối ưu
 
-// DUNG: Dinh nghia trong theme.json
+// ĐÚNG: Định nghĩa trong theme.json
 "settings": {
     "color": {
         "palette": [{"slug": "primary", "color": "#0073aa"}]
@@ -1759,14 +1759,14 @@ wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/...');
 // SAI: Hard-code CSS
 .element { color: #0073aa; }
 
-// DUNG: Dung CSS variable
+// ĐÚNG: Dùng CSS variable
 .element { color: var(--wp--preset--color--primary); }
 ```
 
 ### 2. Fluid Typography
 
 ```json
-// Dung fluid font sizes de responsive tu dong
+// Dùng fluid font sizes để responsive tự động
 "fontSizes": [
     {
         "slug": "large",
@@ -1777,14 +1777,14 @@ wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/...');
         }
     }
 ]
-// WordPress se tu dong tinh font size theo viewport width
+// WordPress sẽ tự động tính font size theo viewport width
 ```
 
-### 3. Patterns cho content phuc tap
+### 3. Patterns cho content phức tạp
 
 ```php
-// Thay vi hard-code layout trong template,
-// tao patterns de nguoi dung co the tai su dung
+// Thay vì hard-code layout trong template,
+// tạo patterns để người dùng có thể tái sử dụng
 
 // patterns/testimonial.php
 // patterns/pricing-table.php
@@ -1794,20 +1794,20 @@ wp_enqueue_style('google-fonts', 'https://fonts.googleapis.com/...');
 ### 4. Style Variations cho flexibility
 
 ```
-// Tao nhieu style variations
+// Tạo nhiều style variations
 styles/
   dark.json      -- Dark mode
   warm.json      -- Warm colors
   minimal.json   -- Minimalist
   bold.json      -- Bold typography
 
-// Nguoi dung chon trong: Site Editor > Styles > Browse styles
+// Người dùng chọn trong: Site Editor > Styles > Browse styles
 ```
 
-### 5. Fonts tu host (khong dung CDN)
+### 5. Fonts tự host (không dùng CDN)
 
 ```json
-// Tu host fonts de tuong thich GDPR
+// Tự host fonts để tương thích GDPR
 "fontFace": [
     {
         "fontFamily": "Inter",
@@ -1815,27 +1815,27 @@ styles/
         "src": ["file:./assets/fonts/inter/Inter-Regular.woff2"]
     }
 ]
-// "file:./..." tro den file trong thu muc theme
+// "file:./..." trỏ đến file trong thư mục theme
 ```
 
-### 6. functions.php toi gian
+### 6. functions.php tối giản
 
 ```php
-// Block Theme can RAT IT code trong functions.php
-// Chi dung cho:
+// Block Theme cần RẤT ÍT code trong functions.php
+// Chỉ dùng cho:
 // - load_theme_textdomain()
 // - add_image_size()
 // - register_block_pattern_category()
 // - register_block_style()
-// - Custom functionality khong lam duoc bang theme.json
+// - Custom functionality không làm được bằng theme.json
 
-// KHONG can:
-// - register_nav_menus() (dung Navigation block)
-// - register_sidebar() (dung blocks truc tiep)
-// - add_theme_support('editor-color-palette') (dung theme.json)
-// - wp_enqueue_style('google-fonts') (dung theme.json fontFace)
+// KHÔNG cần:
+// - register_nav_menus() (dùng Navigation block)
+// - register_sidebar() (dùng blocks trực tiếp)
+// - add_theme_support('editor-color-palette') (dùng theme.json)
+// - wp_enqueue_style('google-fonts') (dùng theme.json fontFace)
 ```
 
 ---
 
-**Tiep theo:** [07 - Theme Nang Cao](./07-theme-nang-cao.md) - Child Theme, WooCommerce, Performance, i18n
+**Tiếp theo:** [07 - Theme Nâng Cao](./07-theme-nang-cao.md) - Child Theme, WooCommerce, Performance, i18n

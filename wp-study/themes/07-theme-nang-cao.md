@@ -1,74 +1,74 @@
-# Theme WordPress Nang Cao
+# Theme WordPress Nâng Cao
 
-## Muc Luc
+## Mục Lục
 
 1. [Child Theme](#1-child-theme)
-2. [Theme voi WooCommerce Support](#2-woocommerce-support)
+2. [Theme với WooCommerce Support](#2-woocommerce-support)
 3. [Responsive Design trong Theme](#3-responsive-design)
 4. [Accessibility (a11y)](#4-accessibility)
 5. [Performance Optimization](#5-performance)
 6. [Internationalization (i18n)](#6-i18n)
 7. [Theme Unit Test](#7-theme-unit-test)
 8. [Theme Check Plugin](#8-theme-check)
-9. [Packaging va Submit len WordPress.org](#9-packaging)
+9. [Packaging và Submit lên WordPress.org](#9-packaging)
 10. [Custom Page Templates](#10-custom-page-templates)
 11. [Theme Options vs Customizer](#11-theme-options-vs-customizer)
-12. [Best Practices tong hop](#12-best-practices)
+12. [Best Practices tổng hợp](#12-best-practices)
 
 ---
 
 ## 1. Child Theme
 
-### Tai sao can Child Theme?
+### Tại sao cần Child Theme?
 
-Khi ban muon **tuy chinh 1 theme co san** (Astra, GeneratePress, TwentyTwentyFour...) ma **khong bi mat thay doi khi theme update**.
+Khi bạn muốn **tùy chỉnh 1 theme có sẵn** (Astra, GeneratePress, TwentyTwentyFour...) mà **không bị mất thay đổi khi theme update**.
 
 ```
 Khi theme cha update:
-- File trong theme cha bi GHI DE het
-- Code ban them truc tiep vao theme cha se MAT
+- File trong theme cha bị GHI ĐÈ hết
+- Code bạn thêm trực tiếp vào theme cha sẽ MẤT
 
-Giai phap: Child Theme
-- Code tuy chinh o child theme KHONG bi anh huong khi theme cha update
-- Giong nhu class ke thua (extends) trong OOP
+Giải pháp: Child Theme
+- Code tùy chỉnh ở child theme KHÔNG bị ảnh hưởng khi theme cha update
+- Giống như class kế thừa (extends) trong OOP
 ```
 
-### So sanh voi Laravel:
+### So sánh với Laravel:
 
 ```php
 // LARAVEL
-// - Vendor package update khong anh huong published files
+// - Vendor package update không ảnh hưởng published files
 // php artisan vendor:publish --tag=views
-// Cac views da publish nam trong resources/views/vendor/ - khong bi ghi de
+// Các views đã publish nằm trong resources/views/vendor/ - không bị ghi đè
 
 // WORDPRESS
-// - Child theme = "published views" cua Laravel
-// - Override template ma khong sua theme goc
+// - Child theme = "published views" của Laravel
+// - Override template mà không sửa theme gốc
 ```
 
-### Cach tao Child Theme:
+### Cách tạo Child Theme:
 
 ```
-Buoc 1: Tao thu muc child theme
+Bước 1: Tạo thư mục child theme
 wp-content/themes/developer-starter-child/
 
-Buoc 2: Tao style.css
-Buoc 3: Tao functions.php
-Buoc 4: (Tuy chon) Copy va sua template files tu theme cha
+Bước 2: Tạo style.css
+Bước 3: Tạo functions.php
+Bước 4: (Tùy chọn) Copy và sửa template files từ theme cha
 ```
 
-### style.css cua Child Theme:
+### style.css của Child Theme:
 
 ```css
 /*
 Theme Name:        Developer Starter Child
 Theme URI:         https://example.com/developer-starter-child
-Description:       Child theme cua Developer Starter. Dung de tuy chinh ma khong
-                   anh huong den theme goc khi update.
+Description:       Child theme của Developer Starter. Dùng để tùy chỉnh mà không
+                   ảnh hưởng đến theme gốc khi update.
 Author:            Nguyen Van A
 Author URI:        https://example.com
 Template:          developer-starter
-                   ^^ TEN THU MUC cua theme cha (BAT BUOC, phai chinh xac)
+                   ^^ TÊN THƯ MỤC của theme cha (BẮT BUỘC, phải chính xác)
 Version:           1.0.0
 License:           GNU General Public License v2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
@@ -77,12 +77,12 @@ Text Domain:       developer-starter-child
 
 /* === Custom CSS o day === */
 
-/* Override mau primary */
+/* Override màu primary */
 :root {
-    --color-primary: #e74c3c;  /* Doi tu xanh sang do */
+    --color-primary: #e74c3c;  /* Đổi từ xanh sang đỏ */
 }
 
-/* Them style rieng cho child theme */
+/* Thêm style riêng cho child theme */
 .site-header {
     border-bottom: 3px solid var(--color-primary);
 }
@@ -92,19 +92,19 @@ Text Domain:       developer-starter-child
 }
 ```
 
-### functions.php cua Child Theme:
+### functions.php của Child Theme:
 
 ```php
 <?php
 /**
  * Child Theme Functions
  *
- * QUAN TRONG:
- * - functions.php cua child theme duoc load TRUOC theme cha
- * - Khong ghi de functions.php cha, ma BO SUNG
- * - Dung child functions.php de:
+ * QUAN TRỌNG:
+ * - functions.php của child theme được load TRƯỚC theme cha
+ * - Không ghi đè functions.php cha, mà BỔ SUNG
+ * - Dùng child functions.php để:
  *   1. Enqueue styles
- *   2. Them/sua functions
+ *   2. Thêm/sửa functions
  *   3. Override hooks
  *
  * @package Developer_Starter_Child
@@ -118,25 +118,25 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Enqueue parent va child theme styles
  */
 function developer_child_enqueue_styles() {
-    // 1. Load CSS cua theme cha
+    // 1. Load CSS của theme cha
     wp_enqueue_style(
         'developer-starter-parent-style',
         get_template_directory_uri() . '/style.css',
-        // get_template_directory_uri() luon tro den theme CHA
+        // get_template_directory_uri() luôn trỏ đến theme CHA
         array(),
         wp_get_theme( 'developer-starter' )->get( 'Version' )
     );
 
-    // 2. Load CSS cua child theme (tu dong load SAU theme cha)
+    // 2. Load CSS của child theme (tự động load SAU theme cha)
     wp_enqueue_style(
         'developer-starter-child-style',
         get_stylesheet_uri(),
-        // get_stylesheet_uri() tro den child theme
-        array( 'developer-starter-parent-style' ), // Phu thuoc vao parent
+        // get_stylesheet_uri() trỏ đến child theme
+        array( 'developer-starter-parent-style' ), // Phụ thuộc vào parent
         wp_get_theme()->get( 'Version' )
     );
 
-    // 3. Them CSS rieng cua child
+    // 3. Thêm CSS riêng của child
     wp_enqueue_style(
         'developer-child-custom',
         get_stylesheet_directory_uri() . '/assets/css/custom.css',
@@ -147,10 +147,10 @@ function developer_child_enqueue_styles() {
 add_action( 'wp_enqueue_scripts', 'developer_child_enqueue_styles' );
 
 /**
- * Override functions cua theme cha
+ * Override functions của theme cha
  *
- * Neu theme cha dung function_exists() de dinh nghia ham,
- * ban co the GHI DE ham do trong child theme
+ * Nếu theme cha dùng function_exists() để định nghĩa hàm,
+ * bạn có thể GHI ĐÈ hàm đó trong child theme
  */
 
 // Theme cha (functions.php):
@@ -158,9 +158,9 @@ add_action( 'wp_enqueue_scripts', 'developer_child_enqueue_styles' );
 //     function developer_starter_posted_on() { ... }
 // }
 
-// Child theme - ghi de:
+// Child theme - ghi đè:
 function developer_starter_posted_on() {
-    // Custom version - them icon truoc ngay
+    // Custom version - thêm icon trước ngày
     printf(
         '<span class="posted-on">&#128197; %s</span> | <span class="byline">&#9998; %s</span>',
         get_the_date(),
@@ -169,39 +169,39 @@ function developer_starter_posted_on() {
 }
 
 /**
- * Them/sua features
+ * Thêm/sửa features
  */
 
-// Them post format khong co trong theme cha
+// Thêm post format không có trong theme cha
 function developer_child_setup() {
     add_theme_support( 'post-formats', array( 'aside', 'gallery', 'video', 'quote' ) );
 
-    // Them kich thuoc anh moi
+    // Thêm kích thước ảnh mới
     add_image_size( 'child-hero', 1920, 800, true );
 }
 add_action( 'after_setup_theme', 'developer_child_setup', 11 );
-// Priority 11 = chay SAU theme cha (priority 10)
+// Priority 11 = chạy SAU theme cha (priority 10)
 
 /**
- * Go bo actions/filters cua theme cha
+ * Gỡ bỏ actions/filters của theme cha
  */
 function developer_child_remove_parent_actions() {
-    // Go bo ham cua theme cha
+    // Gỡ bỏ hàm của theme cha
     // remove_action( 'wp_head', 'developer_starter_some_function' );
 
-    // Thay doi excerpt length
+    // Thay đổi excerpt length
     remove_filter( 'excerpt_length', 'developer_starter_excerpt_length' );
 }
 add_action( 'after_setup_theme', 'developer_child_remove_parent_actions' );
 
-// Them excerpt length moi
+// Thêm excerpt length mới
 function developer_child_excerpt_length( $length ) {
-    return 40; // 40 tu thay vi 30 tu cua theme cha
+    return 40; // 40 từ thay vì 30 từ của theme cha
 }
 add_filter( 'excerpt_length', 'developer_child_excerpt_length' );
 
 /**
- * Them widget area moi (khong co trong theme cha)
+ * Thêm widget area mới (không có trong theme cha)
  */
 function developer_child_widgets() {
     register_sidebar( array(
@@ -219,57 +219,57 @@ add_action( 'widgets_init', 'developer_child_widgets' );
 ### Override template files:
 
 ```
-De override 1 template file cua theme cha:
-1. Copy file tu theme cha sang child theme (CUNG ten, CUNG duong dan)
-2. Sua file trong child theme
+Để override 1 template file của theme cha:
+1. Copy file từ theme cha sang child theme (CÙNG tên, CÙNG đường dẫn)
+2. Sửa file trong child theme
 
-Vi du:
+Ví dụ:
 Theme cha: developer-starter/single.php
-Child:     developer-starter-child/single.php  <-- File nay se duoc uu tien
+Child:     developer-starter-child/single.php  <-- File này sẽ được ưu tiên
 
 Theme cha: developer-starter/template-parts/content.php
 Child:     developer-starter-child/template-parts/content.php
 
-LUU Y:
-- Chi copy nhung file can sua
-- Khong copy tat ca file (kho maintain khi theme cha update)
-- functions.php KHONG override, no BO SUNG
+LƯU Ý:
+- Chỉ copy những file cần sửa
+- Không copy tất cả file (khó maintain khi theme cha update)
+- functions.php KHÔNG override, nó BỔ SUNG
 ```
 
-### Cau truc Child Theme:
+### Cấu trúc Child Theme:
 
 ```
 developer-starter-child/
-|-- style.css               # BAT BUOC: co "Template:" header
-|-- functions.php           # BAT BUOC: enqueue styles
-|-- screenshot.png          # Tuy chon: anh preview
+|-- style.css               # BẮT BUỘC: có "Template:" header
+|-- functions.php           # BẮT BUỘC: enqueue styles
+|-- screenshot.png          # Tùy chọn: ảnh preview
 |
-|-- # Chi copy file can override:
-|-- single.php              # Override trang bai viet
+|-- # Chỉ copy file cần override:
+|-- single.php              # Override trang bài viết
 |-- template-parts/
-|   |-- content-single.php  # Override noi dung bai viet
+|   |-- content-single.php  # Override nội dung bài viết
 |
 |-- assets/
 |   |-- css/
-|   |   |-- custom.css      # CSS rieng
+|   |   |-- custom.css      # CSS riêng
 |   |-- js/
-|       |-- custom.js        # JS rieng
+|       |-- custom.js        # JS riêng
 ```
 
 ---
 
 ## 2. WooCommerce Support
 
-### Khai bao WooCommerce support:
+### Khai báo WooCommerce support:
 
 ```php
 <?php
 /**
- * Them WooCommerce support vao theme
- * Dat trong functions.php
+ * Thêm WooCommerce support vào theme
+ * Đặt trong functions.php
  */
 function developer_woocommerce_support() {
-    // 1. Khai bao ho tro WooCommerce
+    // 1. Khai báo hỗ trợ WooCommerce
     add_theme_support( 'woocommerce', array(
         'thumbnail_image_width' => 300,
         'single_image_width'    => 600,
@@ -283,23 +283,23 @@ function developer_woocommerce_support() {
         ),
     ) );
 
-    // 2. Ho tro Product Gallery features
-    add_theme_support( 'wc-product-gallery-zoom' );      // Zoom hinh khi hover
+    // 2. Hỗ trợ Product Gallery features
+    add_theme_support( 'wc-product-gallery-zoom' );      // Zoom hình khi hover
     add_theme_support( 'wc-product-gallery-lightbox' );   // Lightbox khi click
-    add_theme_support( 'wc-product-gallery-slider' );     // Slider hinh anh
+    add_theme_support( 'wc-product-gallery-slider' );     // Slider hình ảnh
 }
 add_action( 'after_setup_theme', 'developer_woocommerce_support' );
 
 /**
  * Override WooCommerce wrapper
- * Mac dinh WooCommerce dung <main> cua no, co the khong khop voi theme
+ * Mặc định WooCommerce dùng <main> của nó, có thể không khớp với theme
  */
 
-// Bo wrapper mac dinh cua WooCommerce
+// Bỏ wrapper mặc định của WooCommerce
 remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
 remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
 
-// Them wrapper cua theme
+// Thêm wrapper của theme
 function developer_woocommerce_wrapper_before() {
     echo '<main id="primary" class="site-main woocommerce-page"><div class="container"><div class="content-area">';
 }
@@ -325,23 +325,23 @@ function developer_woocommerce_sidebar() {
 add_action( 'woocommerce_sidebar', 'developer_woocommerce_sidebar' );
 
 /**
- * Tuy chinh so san pham moi trang
+ * Tùy chỉnh số sản phẩm mỗi trang
  */
 function developer_woocommerce_products_per_page( $cols ) {
-    return 12; // 12 san pham moi trang
+    return 12; // 12 sản phẩm mỗi trang
 }
 add_filter( 'loop_shop_per_page', 'developer_woocommerce_products_per_page' );
 
 /**
- * Tuy chinh so cot grid
+ * Tùy chỉnh số cột grid
  */
 function developer_woocommerce_columns( $columns ) {
-    return 4; // 4 cot
+    return 4; // 4 cột
 }
 add_filter( 'loop_shop_columns', 'developer_woocommerce_columns' );
 
 /**
- * Them CSS/JS cho WooCommerce
+ * Thêm CSS/JS cho WooCommerce
  */
 function developer_woocommerce_scripts() {
     if ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() ) {
@@ -359,11 +359,11 @@ add_action( 'wp_enqueue_scripts', 'developer_woocommerce_scripts' );
 ### Override WooCommerce templates:
 
 ```
-De override template WooCommerce:
-1. Copy file tu: wp-content/plugins/woocommerce/templates/
-2. Dan vao:      wp-content/themes/developer-theme/woocommerce/
+Để override template WooCommerce:
+1. Copy file từ: wp-content/plugins/woocommerce/templates/
+2. Dán vào:      wp-content/themes/developer-theme/woocommerce/
 
-Vi du:
+Ví dụ:
 Plugin: woocommerce/templates/single-product.php
 Theme:  developer-theme/woocommerce/single-product.php
 
@@ -382,7 +382,7 @@ Theme:  developer-theme/woocommerce/cart/cart.php
 
 ```css
 /**
- * Mobile First: Viet CSS cho mobile truoc, sau do them cho man hinh lon
+ * Mobile First: Viết CSS cho mobile trước, sau đó thêm cho màn hình lớn
  */
 
 /* === BASE: Mobile (0 - 767px) === */
@@ -394,13 +394,13 @@ Theme:  developer-theme/woocommerce/cart/cart.php
 
 .content-area {
     display: flex;
-    flex-direction: column; /* Stack tren mobile */
+    flex-direction: column; /* Stack trên mobile */
     gap: 1.5rem;
 }
 
 .posts-grid {
     display: grid;
-    grid-template-columns: 1fr; /* 1 cot tren mobile */
+    grid-template-columns: 1fr; /* 1 cột trên mobile */
     gap: 1.5rem;
 }
 
@@ -409,7 +409,7 @@ Theme:  developer-theme/woocommerce/cart/cart.php
     gap: 1rem;
 }
 
-/* === TABLET: 768px tro len === */
+/* === TABLET: 768px trở lên === */
 @media (min-width: 768px) {
     .container {
         max-width: 720px;
@@ -417,7 +417,7 @@ Theme:  developer-theme/woocommerce/cart/cart.php
     }
 
     .posts-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 cot */
+        grid-template-columns: repeat(2, 1fr); /* 2 cột */
     }
 
     .site-header .header-inner {
@@ -426,14 +426,14 @@ Theme:  developer-theme/woocommerce/cart/cart.php
     }
 }
 
-/* === DESKTOP: 1024px tro len === */
+/* === DESKTOP: 1024px trở lên === */
 @media (min-width: 1024px) {
     .container {
         max-width: 960px;
     }
 
     .content-area {
-        flex-direction: row; /* Noi dung + Sidebar canh nhau */
+        flex-direction: row; /* Nội dung + Sidebar cạnh nhau */
     }
 
     .main-content {
@@ -446,18 +446,18 @@ Theme:  developer-theme/woocommerce/cart/cart.php
     }
 
     .posts-grid {
-        grid-template-columns: repeat(3, 1fr); /* 3 cot */
+        grid-template-columns: repeat(3, 1fr); /* 3 cột */
     }
 }
 
-/* === LARGE DESKTOP: 1200px tro len === */
+/* === LARGE DESKTOP: 1200px trở lên === */
 @media (min-width: 1200px) {
     .container {
         max-width: var(--max-width, 1200px);
     }
 
     .posts-grid {
-        grid-template-columns: repeat(4, 1fr); /* 4 cot */
+        grid-template-columns: repeat(4, 1fr); /* 4 cột */
     }
 }
 ```
@@ -466,14 +466,14 @@ Theme:  developer-theme/woocommerce/cart/cart.php
 
 ```php
 <?php
-// WordPress tu dong tao srcset va sizes cho anh
-// Dam bao thiet lap image sizes trong functions.php:
+// WordPress tự động tạo srcset và sizes cho ảnh
+// Đảm bảo thiết lập image sizes trong functions.php:
 
 add_image_size( 'developer-sm', 400, 300, true );
 add_image_size( 'developer-md', 800, 600, true );
 add_image_size( 'developer-lg', 1200, 630, true );
 
-// Khi dung the_post_thumbnail(), WordPress tu dong them srcset:
+// Khi dùng the_post_thumbnail(), WordPress tự động thêm srcset:
 the_post_thumbnail( 'developer-lg' );
 // Output:
 // <img src="image-1200x630.jpg"
@@ -497,7 +497,7 @@ the_post_thumbnail( 'developer-lg', array(
  * Helper: Responsive body classes
  */
 function developer_responsive_body_classes( $classes ) {
-    // Them class de CSS targeting de hon
+    // Thêm class để CSS targeting dễ hơn
     if ( is_active_sidebar( 'sidebar-main' ) && ! is_page_template( 'page-templates/template-full-width.php' ) ) {
         $classes[] = 'has-sidebar';
     } else {
@@ -517,16 +517,16 @@ add_filter( 'body_class', 'developer_responsive_body_classes' );
 
 ## 4. Accessibility (a11y)
 
-### Cac yeu cau co ban:
+### Các yêu cầu cơ bản:
 
 ```php
 <?php
 // === 1. SKIP LINK ===
-// Cho phep nguoi dung ban phim nhay thang den noi dung chinh
+// Cho phép người dùng bàn phím nhảy thẳng đến nội dung chính
 ?>
 <body <?php body_class(); ?>>
     <a class="skip-link screen-reader-text" href="#primary">
-        <?php esc_html_e( 'Chuyen den noi dung chinh', 'developer-theme' ); ?>
+        <?php esc_html_e( 'Chuyển đến nội dung chính', 'developer-theme' ); ?>
     </a>
 
 <?php
@@ -570,7 +570,7 @@ add_filter( 'body_class', 'developer_responsive_body_classes' );
 // === 2. SEMANTIC HTML ===
 ?>
 <header role="banner">...</header>
-<nav role="navigation" aria-label="<?php esc_attr_e( 'Menu Chinh', 'developer-theme' ); ?>">...</nav>
+<nav role="navigation" aria-label="<?php esc_attr_e( 'Menu Chính', 'developer-theme' ); ?>">...</nav>
 <main id="primary" role="main">...</main>
 <aside role="complementary">...</aside>
 <footer role="contentinfo">...</footer>
@@ -583,22 +583,22 @@ add_filter( 'body_class', 'developer_responsive_body_classes' );
 <button class="menu-toggle"
         aria-controls="primary-menu"
         aria-expanded="false"
-        aria-label="<?php esc_attr_e( 'Mo menu', 'developer-theme' ); ?>">
+        aria-label="<?php esc_attr_e( 'Mở menu', 'developer-theme' ); ?>">
     <span class="hamburger-icon"></span>
 </button>
 
 <!-- Search form -->
-<form role="search" aria-label="<?php esc_attr_e( 'Tim kiem tren trang', 'developer-theme' ); ?>">
+<form role="search" aria-label="<?php esc_attr_e( 'Tìm kiếm trên trang', 'developer-theme' ); ?>">
     <label for="search-input" class="screen-reader-text">
-        <?php esc_html_e( 'Tim kiem:', 'developer-theme' ); ?>
+        <?php esc_html_e( 'Tìm kiếm:', 'developer-theme' ); ?>
     </label>
     <input type="search" id="search-input"
-           placeholder="<?php esc_attr_e( 'Tim kiem...', 'developer-theme' ); ?>"
+           placeholder="<?php esc_attr_e( 'Tìm kiếm...', 'developer-theme' ); ?>"
            value="<?php echo get_search_query(); ?>"
            name="s"
-           aria-label="<?php esc_attr_e( 'Tu khoa tim kiem', 'developer-theme' ); ?>" />
-    <button type="submit" aria-label="<?php esc_attr_e( 'Tim kiem', 'developer-theme' ); ?>">
-        <span class="screen-reader-text"><?php esc_html_e( 'Tim kiem', 'developer-theme' ); ?></span>
+           aria-label="<?php esc_attr_e( 'Từ khóa tìm kiếm', 'developer-theme' ); ?>" />
+    <button type="submit" aria-label="<?php esc_attr_e( 'Tìm kiếm', 'developer-theme' ); ?>">
+        <span class="screen-reader-text"><?php esc_html_e( 'Tìm kiếm', 'developer-theme' ); ?></span>
         <!-- SVG icon -->
     </button>
 </form>
@@ -607,10 +607,10 @@ add_filter( 'body_class', 'developer_responsive_body_classes' );
 // === 4. FOCUS STYLES ===
 ?>
 <style>
-/* KHONG BAO GIO xoa outline khi focus */
+/* KHÔNG BAO GIỜ xóa outline khi focus */
 /* SAI: */ /* *:focus { outline: none; } */
 
-/* DUNG: Tao focus style dep hon */
+/* ĐÚNG: Tạo focus style đẹp hơn */
 a:focus,
 button:focus,
 input:focus,
@@ -620,7 +620,7 @@ textarea:focus {
     outline-offset: 2px;
 }
 
-/* Focus visible (chi hien khi dung ban phim, khong hien khi click chuot) */
+/* Focus visible (chỉ hiện khi dùng bàn phím, không hiện khi click chuột) */
 :focus:not(:focus-visible) {
     outline: none;
 }
@@ -632,22 +632,22 @@ textarea:focus {
 
 <?php
 // === 5. ALT TEXT CHO IMAGES ===
-// Luon co alt text cho anh
+// Luôn có alt text cho ảnh
 the_post_thumbnail( 'large', array(
-    'alt' => get_the_title(), // Hoac mo ta cu the hon
+    'alt' => get_the_title(), // Hoặc mô tả cụ thể hơn
 ) );
 
 // === 6. COLOR CONTRAST ===
-// Dam bao ty le tuong phan toi thieu:
-// - Text binh thuong: 4.5:1
-// - Text lon (18px+ bold): 3:1
-// Dung tool: https://webaim.org/resources/contrastchecker/
+// Đảm bảo tỷ lệ tương phản tối thiểu:
+// - Text bình thường: 4.5:1
+// - Text lớn (18px+ bold): 3:1
+// Dùng tool: https://webaim.org/resources/contrastchecker/
 
 // === 7. HEADING HIERARCHY ===
-// Dung thu tu heading dung (khong nhay bac)
-// h1 -> h2 -> h3 (DUNG)
+// Dùng thứ tự heading đúng (không nhảy bậc)
+// h1 -> h2 -> h3 (ĐÚNG)
 // h1 -> h3 -> h2 (SAI)
-// Chi co 1 h1 moi trang
+// Chỉ có 1 h1 mỗi trang
 ```
 
 ---
@@ -659,12 +659,12 @@ the_post_thumbnail( 'large', array(
 ```php
 <?php
 /**
- * Performance: Toi uu CSS va JS
+ * Performance: Tối ưu CSS và JS
  */
 
 // === 1. Defer va Async cho scripts ===
 function developer_script_attributes( $tag, $handle, $src ) {
-    // Them defer cho scripts cu the
+    // Thêm defer cho scripts cụ thể
     $defer_scripts = array( 'developer-main', 'developer-navigation' );
 
     if ( in_array( $handle, $defer_scripts ) ) {
@@ -686,24 +686,24 @@ function developer_preload_resources() {
 }
 add_action( 'wp_head', 'developer_preload_resources', 1 );
 
-// === 3. Go bo scripts/styles khong can ===
+// === 3. Gỡ bỏ scripts/styles không cần ===
 function developer_remove_unnecessary() {
-    // Go bo emoji scripts
+    // Gỡ bỏ emoji scripts
     remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
     remove_action( 'wp_print_styles', 'print_emoji_styles' );
     remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
     remove_action( 'admin_print_styles', 'print_emoji_styles' );
 
-    // Go bo wp-embed.js (neu khong can embed bai viet WP khac)
+    // Gỡ bỏ wp-embed.js (nếu không cần embed bài viết WP khác)
     wp_deregister_script( 'wp-embed' );
 
-    // Go bo jQuery migrate (neu theme khong can)
+    // Gỡ bỏ jQuery migrate (nếu theme không cần)
     if ( ! is_admin() ) {
         wp_deregister_script( 'jquery' );
         wp_register_script( 'jquery', false, array( 'jquery-core' ), null, true );
     }
 
-    // Conditional load: Chi load CF7 CSS/JS tren trang co form
+    // Conditional load: Chỉ load CF7 CSS/JS trên trang có form
     if ( ! is_page( array( 'contact', 'lien-he' ) ) ) {
         wp_dequeue_style( 'contact-form-7' );
         wp_dequeue_script( 'contact-form-7' );
@@ -728,18 +728,18 @@ add_action( 'init', 'developer_clean_head' );
 
 ```php
 <?php
-// === 1. Lazy Loading (WP 5.5+ tu dong them loading="lazy") ===
-// Mac dinh da bat, khong can lam gi them
+// === 1. Lazy Loading (WP 5.5+ tự động thêm loading="lazy") ===
+// Mặc định đã bật, không cần làm gì thêm
 
-// Neu muon tat lazy loading cho anh dau tien (LCP):
+// Nếu muốn tắt lazy loading cho ảnh đầu tiên (LCP):
 function developer_disable_lazy_load_first_image( $attr, $attachment, $size ) {
-    // Disable lazy load cho anh dau tien trong loop
+    // Disable lazy load cho ảnh đầu tiên trong loop
     static $counter = 0;
     $counter++;
 
     if ( $counter === 1 && is_home() || is_front_page() ) {
-        $attr['loading'] = 'eager';       // Load ngay, khong lazy
-        $attr['fetchpriority'] = 'high';  // Uu tien cao
+        $attr['loading'] = 'eager';       // Load ngay, không lazy
+        $attr['fetchpriority'] = 'high';  // Ưu tiên cao
     }
 
     return $attr;
@@ -747,12 +747,12 @@ function developer_disable_lazy_load_first_image( $attr, $attachment, $size ) {
 add_filter( 'wp_get_attachment_image_attributes', 'developer_disable_lazy_load_first_image', 10, 3 );
 
 // === 2. WebP support ===
-// WordPress 5.8+ ho tro WebP tu dong
-// Chi can upload WebP images, WP se xu ly
+// WordPress 5.8+ hỗ trợ WebP tự động
+// Chỉ cần upload WebP images, WP sẽ xử lý
 
-// === 3. Responsive images voi srcset ===
-// WordPress tu dong them srcset cho anh upload qua Media Library
-// Dam bao co nhieu image sizes:
+// === 3. Responsive images với srcset ===
+// WordPress tự động thêm srcset cho ảnh upload qua Media Library
+// Đảm bảo có nhiều image sizes:
 add_image_size( 'developer-sm', 400, 0, false );
 add_image_size( 'developer-md', 800, 0, false );
 add_image_size( 'developer-lg', 1200, 0, false );
@@ -765,18 +765,18 @@ add_image_size( 'developer-lg', 1200, 0, false );
 // === Transients API cho cache data ===
 
 /**
- * Cache ket qua WP_Query voi Transients
- * Giam so query den database
+ * Cache kết quả WP_Query với Transients
+ * Giảm số query đến database
  */
 function developer_get_featured_posts() {
-    // Kiem tra cache truoc
+    // Kiểm tra cache trước
     $cached = get_transient( 'developer_featured_posts' );
 
     if ( false !== $cached ) {
-        return $cached; // Tra ve tu cache
+        return $cached; // Trả về từ cache
     }
 
-    // Khong co cache -> chay query
+    // Không có cache -> chạy query
     $query = new WP_Query( array(
         'post_type'      => 'post',
         'posts_per_page' => 5,
@@ -786,7 +786,7 @@ function developer_get_featured_posts() {
 
     $posts = $query->posts;
 
-    // Luu vao cache (12 gio)
+    // Lưu vào cache (12 giờ)
     set_transient( 'developer_featured_posts', $posts, 12 * HOUR_IN_SECONDS );
 
     wp_reset_postdata();
@@ -794,7 +794,7 @@ function developer_get_featured_posts() {
     return $posts;
 }
 
-// Xoa cache khi co bai viet moi hoac cap nhat
+// Xóa cache khi có bài viết mới hoặc cập nhật
 function developer_clear_featured_cache( $post_id ) {
     delete_transient( 'developer_featured_posts' );
 }
@@ -805,26 +805,26 @@ add_action( 'save_post', 'developer_clear_featured_cache' );
 
 ## 6. Internationalization (i18n)
 
-### Cac ham dich:
+### Các hàm dịch:
 
 ```php
 <?php
 /**
- * Cac ham i18n cua WordPress
+ * Các hàm i18n của WordPress
  *
- * MOI chuoi text hien thi cho nguoi dung PHAI dung ham dich
- * Tham so thu 2 luon la Text Domain (phai trung voi ten thu muc theme)
+ * MỌI chuỗi text hiển thị cho người dùng PHẢI dùng hàm dịch
+ * Tham số thứ 2 luôn là Text Domain (phải trùng với tên thư mục theme)
  */
 
 // === 1. __() va _e() ===
-// __() : Tra ve string da dich (khong echo)
+// __() : Trả về string đã dịch (không echo)
 $text = __( 'Xin chao', 'developer-theme' );
 
-// _e() : Echo string da dich
+// _e() : Echo string đã dịch
 _e( 'Xin chao', 'developer-theme' );
 
 // === 2. esc_html__() va esc_html_e() ===
-// Giong tren nhung co escape HTML
+// Giống trên nhưng có escape HTML
 echo esc_html__( 'Xin chao', 'developer-theme' );
 esc_html_e( 'Xin chao', 'developer-theme' );
 
@@ -832,39 +832,39 @@ esc_html_e( 'Xin chao', 'developer-theme' );
 // Escape cho HTML attributes
 echo '<input placeholder="' . esc_attr__( 'Tim kiem...', 'developer-theme' ) . '">';
 
-// === 4. sprintf() voi dich ===
+// === 4. sprintf() với dịch ===
 printf(
-    /* translators: %s: tac gia */
-    esc_html__( 'Viet boi %s', 'developer-theme' ),
+    /* translators: %s: tác giả */
+    esc_html__( 'Viết bởi %s', 'developer-theme' ),
     get_the_author()
 );
 
-// Vi du phuc tap hon:
+// Ví dụ phức tạp hơn:
 printf(
-    /* translators: 1: so binh luan, 2: ten bai viet */
-    esc_html__( '%1$s binh luan cho "%2$s"', 'developer-theme' ),
+    /* translators: 1: số bình luận, 2: tên bài viết */
+    esc_html__( '%1$s bình luận cho "%2$s"', 'developer-theme' ),
     number_format_i18n( get_comments_number() ),
     get_the_title()
 );
 
-// === 5. _n() - So nhieu ===
+// === 5. _n() - Số nhiều ===
 printf(
-    /* translators: %s: so bai viet */
+    /* translators: %s: số bài viết */
     esc_html( _n(
-        '%s bai viet',      // So it (1)
-        '%s bai viet',      // So nhieu (2+)
-        $count,             // So luong
+        '%s bài viết',      // Số ít (1)
+        '%s bài viết',      // Số nhiều (2+)
+        $count,             // Số lượng
         'developer-theme'   // Text domain
     ) ),
     number_format_i18n( $count )
 );
 
 // === 6. _x() - Context ===
-// Khi cung 1 tu co nhieu nghia
-$title = _x( 'Post', 'post type name', 'developer-theme' );  // Bai viet
-$verb  = _x( 'Post', 'verb: to post', 'developer-theme' );   // Dang bai
+// Khi cùng 1 từ có nhiều nghĩa
+$title = _x( 'Post', 'post type name', 'developer-theme' );  // Bài viết
+$verb  = _x( 'Post', 'verb: to post', 'developer-theme' );   // Đăng bài
 
-// === 7. _nx() - So nhieu voi context ===
+// === 7. _nx() - Số nhiều với context ===
 printf(
     _nx(
         '%s item',
@@ -876,21 +876,21 @@ printf(
     $count
 );
 
-// === 8. Chuoi co HTML ===
+// === 8. Chuỗi có HTML ===
 printf(
     wp_kses(
-        /* translators: %s: URL trang lien he */
-        __( 'Lien he voi chung toi <a href="%s">tai day</a>.', 'developer-theme' ),
+        /* translators: %s: URL trang liên hệ */
+        __( 'Liên hệ với chúng tôi <a href="%s">tại đây</a>.', 'developer-theme' ),
         array( 'a' => array( 'href' => array() ) )
     ),
     esc_url( home_url( '/contact' ) )
 );
 
 // === 9. number_format_i18n() ===
-echo number_format_i18n( 1234567 ); // 1,234,567 (en) hoac 1.234.567 (de)
+echo number_format_i18n( 1234567 ); // 1,234,567 (en) hoặc 1.234.567 (de)
 
 // === 10. date_i18n() ===
-echo date_i18n( get_option( 'date_format' ) ); // Ngay theo dinh dang va ngon ngu
+echo date_i18n( get_option( 'date_format' ) ); // Ngày theo định dạng và ngôn ngữ
 ```
 
 ### Load text domain:
@@ -901,29 +901,29 @@ echo date_i18n( get_option( 'date_format' ) ); // Ngay theo dinh dang va ngon ng
 function developer_load_textdomain() {
     load_theme_textdomain(
         'developer-theme',                                    // Text domain
-        get_template_directory() . '/languages'                // Thu muc chua file .mo
+        get_template_directory() . '/languages'                // Thư mục chứa file .mo
     );
 }
 add_action( 'after_setup_theme', 'developer_load_textdomain' );
 ```
 
-### Tao file dich:
+### Tạo file dịch:
 
 ```bash
-# Buoc 1: Cai WP-CLI (neu chua co)
+# Bước 1: Cài WP-CLI (nếu chưa có)
 curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 chmod +x wp-cli.phar
 sudo mv wp-cli.phar /usr/local/bin/wp
 
-# Buoc 2: Tao file .pot (template)
+# Bước 2: Tạo file .pot (template)
 cd wp-content/themes/developer-theme/
 wp i18n make-pot . languages/developer-theme.pot --domain=developer-theme
 
-# Buoc 3: Tao file .po cho ngon ngu cu the
-# Dung tool: Poedit (https://poedit.net/)
-# Mo file .pot, dich cac chuoi, luu thanh vi.po va vi.mo
+# Bước 3: Tạo file .po cho ngôn ngữ cụ thể
+# Dùng tool: Poedit (https://poedit.net/)
+# Mở file .pot, dịch các chuỗi, lưu thành vi.po và vi.mo
 
-# Hoac dung WP-CLI:
+# Hoặc dùng WP-CLI:
 wp i18n make-json languages/ --no-purge
 ```
 
@@ -934,7 +934,7 @@ languages/
 |-- developer-theme.pot    # Template (source of truth)
 |-- vi.po                  # Vietnamese translations (text)
 |-- vi.mo                  # Vietnamese translations (compiled binary)
-|-- en_US.po               # English (neu can)
+|-- en_US.po               # English (nếu cần)
 |-- en_US.mo
 ```
 
@@ -945,39 +945,39 @@ languages/
 ### Theme Unit Test Data:
 
 ```
-WordPress cung cap bo du lieu test de kiem tra theme:
-1. Tai ve: https://github.com/WPTT/theme-unit-test
+WordPress cung cấp bộ dữ liệu test để kiểm tra theme:
+1. Tải về: https://github.com/WPTT/theme-unit-test
 2. Import: Tools > Import > WordPress
-3. Kiem tra tat ca cac trang, post types, layouts
+3. Kiểm tra tất cả các trang, post types, layouts
 
-Bo du lieu bao gom:
-- Bai viet voi nhieu dinh dang (titles dai, ngan, co special chars)
-- Pages voi nested hierarchy
-- Comments (nhieu cap)
-- Categories va Tags
-- Featured Images voi nhieu kich thuoc
+Bộ dữ liệu bao gồm:
+- Bài viết với nhiều định dạng (titles dài, ngắn, có special chars)
+- Pages với nested hierarchy
+- Comments (nhiều cấp)
+- Categories và Tags
+- Featured Images với nhiều kích thước
 - Post Formats
 - Edge cases (empty content, very long content...)
 ```
 
-### Checklist kiem tra:
+### Checklist kiểm tra:
 
 ```
 LAYOUT:
-[ ] Trang chu hien thi dung
-[ ] Single post hien thi dung (voi/khong co featured image)
-[ ] Page hien thi dung (voi/khong co parent page)
-[ ] Archive, Category, Tag hien thi dung
-[ ] Search results hien thi dung
-[ ] 404 page hien thi dung
-[ ] Sidebar hien thi/an dung
-[ ] Footer widgets hien thi dung
+[ ] Trang chủ hiển thị đúng
+[ ] Single post hiển thị đúng (với/không có featured image)
+[ ] Page hiển thị đúng (với/không có parent page)
+[ ] Archive, Category, Tag hiển thị đúng
+[ ] Search results hiển thị đúng
+[ ] 404 page hiển thị đúng
+[ ] Sidebar hiển thị/ẩn đúng
+[ ] Footer widgets hiển thị đúng
 
-NHI DUNG:
-[ ] Title dai (>100 ky tu) khong bi tran
-[ ] Noi dung voi tat ca HTML tags (h1-h6, ul, ol, table, blockquote, code...)
-[ ] Images voi alignleft, alignright, aligncenter, alignnone, alignwide, alignfull
-[ ] Galleries voi nhieu hinh
+NỘI DUNG:
+[ ] Title dài (>100 ký tự) không bị tràn
+[ ] Nội dung với tất cả HTML tags (h1-h6, ul, ol, table, blockquote, code...)
+[ ] Images với alignleft, alignright, aligncenter, alignnone, alignwide, alignfull
+[ ] Galleries với nhiều hình
 [ ] Embedded content (YouTube, Twitter, etc.)
 [ ] Password protected post
 [ ] Sticky post
@@ -986,102 +986,102 @@ RESPONSIVE:
 [ ] Desktop (1200px+)
 [ ] Tablet (768px - 1023px)
 [ ] Mobile (< 768px)
-[ ] Menu mobile hoat dong
+[ ] Menu mobile hoạt động
 
 NAVIGATION:
-[ ] Menu voi nhieu cap (3+ levels)
-[ ] Menu item dai
-[ ] Breadcrumbs chinh xac
+[ ] Menu với nhiều cấp (3+ levels)
+[ ] Menu item dài
+[ ] Breadcrumbs chính xác
 
-BINH LUAN:
-[ ] Comment form hien thi
+BÌNH LUẬN:
+[ ] Comment form hiển thị
 [ ] Nested comments (3+ levels)
 [ ] Comment pagination
 [ ] Trackbacks/Pingbacks
 
 ACCESSIBILITY:
 [ ] Tab navigation qua menu
-[ ] Skip link hoat dong
-[ ] Focus styles ro rang
+[ ] Skip link hoạt động
+[ ] Focus styles rõ ràng
 [ ] Alt text cho images
-[ ] ARIA labels dung
+[ ] ARIA labels đúng
 
 PERFORMANCE:
-[ ] Khong co loi console (JS errors)
+[ ] Không có lỗi console (JS errors)
 [ ] Images lazy loaded
-[ ] CSS/JS load o dung vi tri (head/footer)
+[ ] CSS/JS load ở đúng vị trí (head/footer)
 ```
 
 ---
 
 ## 8. Theme Check
 
-### Cai dat Theme Check Plugin:
+### Cài đặt Theme Check Plugin:
 
 ```
 1. Admin > Plugins > Add New
-2. Tim "Theme Check"
-3. Install va Activate
-4. Vao Admin > Appearance > Theme Check
-5. Chon theme va click "Check it!"
+2. Tìm "Theme Check"
+3. Install và Activate
+4. Vào Admin > Appearance > Theme Check
+5. Chọn theme và click "Check it!"
 ```
 
-### Cac quy tac Theme Check kiem tra:
+### Các quy tắc Theme Check kiểm tra:
 
 ```
-REQUIRED (bat buoc):
-- Co style.css voi Theme Name
-- Co index.php
+REQUIRED (bắt buộc):
+- Có style.css với Theme Name
+- Có index.php
 - add_theme_support('automatic-feed-links')
 - wp_head() trong header
-- wp_footer() truoc </body>
-- wp_enqueue_style/script (khong hard-code)
+- wp_footer() trước </body>
+- wp_enqueue_style/script (không hard-code)
 - body_class() trong <body>
 - post_class() trong loop
 - comment_form() hoac comments_template()
 - wp_link_pages()
-- Khong co file deprecated nhu timthumb.php
+- Không có file deprecated như timthumb.php
 
-RECOMMENDED (khuyen dung):
+RECOMMENDED (khuyến dụng):
 - add_theme_support('title-tag')
 - add_theme_support('custom-logo')
-- Tat ca text dung i18n functions
-- Prefix tat ca functions va classes
-- Khong dung PHP error suppression (@)
-- Khong co hard-coded links
-- Dung esc_* functions cho output
+- Tất cả text dùng i18n functions
+- Prefix tất cả functions và classes
+- Không dùng PHP error suppression (@)
+- Không có hard-coded links
+- Dùng esc_* functions cho output
 ```
 
-### Fix cac loi thuong gap:
+### Fix các lỗi thường gặp:
 
 ```php
 <?php
-// LOI: INFO: Could not find wp_link_pages.
-// FIX: Them vao single.php va page.php:
+// LỖI: INFO: Could not find wp_link_pages.
+// FIX: Thêm vào single.php và page.php:
 wp_link_pages( array(
     'before' => '<div class="page-links">' . __( 'Trang:', 'developer-theme' ),
     'after'  => '</div>',
 ) );
 
-// LOI: REQUIRED: Could not find add_theme_support( 'automatic-feed-links' )
-// FIX: Them vao functions.php:
+// LỖI: REQUIRED: Could not find add_theme_support( 'automatic-feed-links' )
+// FIX: Thêm vào functions.php:
 add_theme_support( 'automatic-feed-links' );
 
-// LOI: REQUIRED: Could not find body_class call
-// FIX: header.php phai co:
+// LỖI: REQUIRED: Could not find body_class call
+// FIX: header.php phải có:
 <body <?php body_class(); ?>>
 
 // LOI: REQUIRED: Could not find post_class
 // FIX: Trong loop:
 <article <?php post_class(); ?>>
 
-// LOI: WARNING: Found hard-coded link
-// FIX: Thay link cu the bang ham:
+// LỖI: WARNING: Found hard-coded link
+// FIX: Thay link cụ thể bằng hàm:
 // SAI: <a href="http://example.com/contact">
 // DUNG: <a href="<?php echo esc_url( home_url('/contact') ); ?>">
 
-// LOI: WARNING: file not sanitized
-// FIX: Escape tat ca output
+// LỖI: WARNING: file not sanitized
+// FIX: Escape tất cả output
 echo esc_html( $variable );
 echo esc_url( $url );
 echo esc_attr( $attribute );
@@ -1091,24 +1091,24 @@ echo esc_attr( $attribute );
 
 ## 9. Packaging va Submit len WordPress.org
 
-### Chuan bi theme:
+### Chuẩn bị theme:
 
 ```
-1. KIEM TRA:
-   - Chay Theme Check plugin (pass tat ca REQUIRED)
-   - Chay Theme Unit Test data
-   - Test tren nhieu trinh duyet (Chrome, Firefox, Safari, Edge)
+1. KIỂM TRA:
+   - Chạy Theme Check plugin (pass tất cả REQUIRED)
+   - Chạy Theme Unit Test data
+   - Test trên nhiều trình duyệt (Chrome, Firefox, Safari, Edge)
    - Test responsive (Mobile, Tablet, Desktop)
    - Test accessibility (keyboard navigation, screen reader)
 
-2. FILE CAN CO:
-   - style.css (voi day du header)
+2. FILE CẦN CÓ:
+   - style.css (với đầy đủ header)
    - index.php
    - functions.php
    - screenshot.png (1200x900, under 2MB)
-   - readme.txt (khuyen dung)
+   - readme.txt (khuyến dụng)
 
-3. FILE KHONG DUOC CO:
+3. FILE KHÔNG ĐƯỢC CÓ:
    - File .git, .gitignore
    - node_modules/
    - .sass-cache/
@@ -1117,9 +1117,9 @@ echo esc_attr( $attribute );
    - OS files (.DS_Store, Thumbs.db)
 
 4. LICENSE:
-   - Theme PHAI la GPL v2 hoac tuong thich
-   - Tat ca assets (fonts, images, icons) cung phai GPL compatible
-   - Ghi ro license trong style.css va readme.txt
+   - Theme PHẢI là GPL v2 hoặc tương thích
+   - Tất cả assets (fonts, images, icons) cũng phải GPL compatible
+   - Ghi rõ license trong style.css và readme.txt
 ```
 
 ### readme.txt:
@@ -1136,14 +1136,14 @@ Stable tag: 1.0.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Theme WordPress cho developer, toi uu cho hieu nang va SEO.
+Theme WordPress cho developer, tối ưu cho hiệu năng và SEO.
 
 == Description ==
 
-Developer Theme la theme WordPress don gian, nhanh, va de tuy chinh.
-Thiet ke cho blog, portfolio, va website cong ty.
+Developer Theme là theme WordPress đơn giản, nhanh, và dễ tùy chỉnh.
+Thiết kế cho blog, portfolio, và website công ty.
 
-Tinh nang:
+Tính năng:
 * Responsive design
 * Custom logo va colors
 * Widget areas (sidebar + 3 footer columns)
@@ -1152,14 +1152,14 @@ Tinh nang:
 
 == Installation ==
 
-1. Vao Appearance > Themes > Add New
-2. Tim "Developer Theme"
-3. Click Install va Activate
+1. Vào Appearance > Themes > Add New
+2. Tìm "Developer Theme"
+3. Click Install và Activate
 
 == Changelog ==
 
 = 1.0.0 =
-* Phien ban dau tien
+* Phiên bản đầu tiên
 
 == Resources ==
 
@@ -1181,13 +1181,13 @@ Developer Theme, Copyright 2024 Developer VN
 Developer Theme is distributed under the terms of the GNU GPL v2 or later.
 ```
 
-### Dong goi va submit:
+### Đóng gói và submit:
 
 ```bash
-# Buoc 1: Don dep
+# Bước 1: Dọn dẹp
 cd wp-content/themes/developer-theme/
 
-# Xoa file khong can
+# Xóa file không cần
 rm -rf node_modules/
 rm -rf .git/
 rm -rf .sass-cache/
@@ -1197,20 +1197,20 @@ rm -f package-lock.json
 rm -f composer.json
 rm -f composer.lock
 
-# Buoc 2: Tao zip
+# Bước 2: Tạo zip
 cd ..
 zip -r developer-theme.zip developer-theme/ \
     -x "developer-theme/.git/*" \
     -x "developer-theme/node_modules/*" \
     -x "developer-theme/.DS_Store"
 
-# Buoc 3: Submit
-# 1. Tao account tren WordPress.org
-# 2. Vao https://wordpress.org/themes/upload/
+# Bước 3: Submit
+# 1. Tạo account trên WordPress.org
+# 2. Vào https://wordpress.org/themes/upload/
 # 3. Upload file zip
-# 4. Doi review (thuong 1-3 thang)
+# 4. Đợi review (thường 1-3 tháng)
 
-# Hoac dung SVN (sau khi duoc approved):
+# Hoặc dùng SVN (sau khi được approved):
 # svn co https://themes.svn.wordpress.org/developer-theme/
 # Copy files vao thu muc trunk/
 # svn ci -m "Version 1.0.0"
@@ -1220,20 +1220,20 @@ zip -r developer-theme.zip developer-theme/ \
 
 ## 10. Custom Page Templates
 
-### Tao Custom Page Templates:
+### Tạo Custom Page Templates:
 
 ```php
 <?php
 /**
- * Template Name: Full Width - Khong Co Sidebar
+ * Template Name: Full Width - Không Có Sidebar
  * Template Post Type: page, post
  *
- * Dong "Template Name:" khai bao ten template
- * Dong "Template Post Type:" cho phep chon template cho post types nao
+ * Dòng "Template Name:" khai báo tên template
+ * Dòng "Template Post Type:" cho phép chọn template cho post types nào
  *
- * File nay co the dat o:
- * - Thu muc goc: full-width.php
- * - Thu muc con: page-templates/full-width.php
+ * File này có thể đặt ở:
+ * - Thư mục gốc: full-width.php
+ * - Thư mục con: page-templates/full-width.php
  *
  * @package Developer_Theme
  */
@@ -1268,11 +1268,11 @@ get_header();
  * Template Name: Landing Page
  * Template Post Type: page
  *
- * Landing page: khong co header/footer cua theme,
- * chi co noi dung page
+ * Landing page: không có header/footer của theme,
+ * chỉ có nội dung page
  */
 
-// KHONG goi get_header() - dung header rieng
+// KHÔNG gọi get_header() - dùng header riêng
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -1281,7 +1281,7 @@ get_header();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php wp_head(); ?>
     <style>
-        /* Styles rieng cho landing page */
+        /* Styles riêng cho landing page */
         .admin-bar .landing-page { margin-top: 32px; }
         .landing-page { font-family: var(--font-main); }
     </style>
@@ -1316,10 +1316,10 @@ get_header();
 <main id="primary" class="site-main sidebar-left-page">
     <div class="container">
         <div class="content-area sidebar-left">
-            <!-- Sidebar o ben trai -->
+            <!-- Sidebar ở bên trái -->
             <?php get_sidebar(); ?>
 
-            <!-- Noi dung o ben phai -->
+            <!-- Nội dung ở bên phải -->
             <div class="main-content">
                 <?php
                 while ( have_posts() ) :
@@ -1338,21 +1338,21 @@ get_header();
 <?php get_footer(); ?>
 ```
 
-### Kiem tra template dang dung:
+### Kiểm tra template đang dùng:
 
 ```php
 <?php
-// Kiem tra bai viet/trang dang dung template nao
+// Kiểm tra bài viết/trang đang dùng template nào
 if ( is_page_template( 'page-templates/full-width.php' ) ) {
-    // Dang dung template Full Width
+    // Đang dùng template Full Width
     echo 'class="no-sidebar"';
 }
 
-// Lay ten template file dang dung
+// Lấy tên template file đang dùng
 $template = get_page_template_slug();
-// Tra ve: 'page-templates/full-width.php' hoac '' (mac dinh)
+// Trả về: 'page-templates/full-width.php' hoặc '' (mặc định)
 
-// Dung trong body_class filter
+// Dùng trong body_class filter
 function developer_template_body_class( $classes ) {
     if ( is_page_template( 'page-templates/full-width.php' ) ) {
         $classes[] = 'no-sidebar';
@@ -1370,42 +1370,42 @@ add_filter( 'body_class', 'developer_template_body_class' );
 
 ## 11. Theme Options vs Customizer
 
-### So sanh:
+### So sánh:
 
 ```
-CUSTOMIZER (khuyen dung):
+CUSTOMIZER (khuyến dụng):
 + Live preview
-+ API chuan WordPress
-+ Tich hop san sanitize
-+ Non-destructive (co default values)
++ API chuẩn WordPress
++ Tích hợp sẵn sanitize
++ Non-destructive (có default values)
 + Responsive preview
-- Gioi han ve UI (khong lam duoc dashboard phuc tap)
-- Khong phu hop cho settings lon
+- Giới hạn về UI (không làm được dashboard phức tạp)
+- Không phù hợp cho settings lớn
 
-THEME OPTIONS PAGE (tu tao):
-+ Linh hoat ve UI
-+ Phu hop cho settings phuc tap
-+ Co the dung tabs, groups
-- Khong co live preview
-- Tu code sanitize
-- Tu code save/load
+THEME OPTIONS PAGE (tự tạo):
++ Linh hoạt về UI
++ Phù hợp cho settings phức tạp
++ Có thể dùng tabs, groups
+- Không có live preview
+- Tự code sanitize
+- Tự code save/load
 
-KHUYEN NGHI:
-1. Dung Customizer cho APPEARANCE settings (colors, fonts, layout)
-2. Dung Options page cho FUNCTIONALITY settings (neu can)
-3. Hoac dung plugin nhu ACF/CMB2 cho options page
+KHUYẾN NGHỊ:
+1. Dùng Customizer cho APPEARANCE settings (colors, fonts, layout)
+2. Dùng Options page cho FUNCTIONALITY settings (nếu cần)
+3. Hoặc dùng plugin như ACF/CMB2 cho options page
 ```
 
-### Theme Options Page don gian (neu can):
+### Theme Options Page đơn giản (nếu cần):
 
 ```php
 <?php
 /**
- * Theme Options Page - Cach tao nhanh
- * Chi dung khi Customizer khong du
+ * Theme Options Page - Cách tạo nhanh
+ * Chỉ dùng khi Customizer không đủ
  */
 
-// 1. Them menu trong admin
+// 1. Thêm menu trong admin
 function developer_options_menu() {
     add_theme_page(
         __( 'Theme Options', 'developer-theme' ),    // Page title
@@ -1417,7 +1417,7 @@ function developer_options_menu() {
 }
 add_action( 'admin_menu', 'developer_options_menu' );
 
-// 2. Dang ky settings
+// 2. Đăng ký settings
 function developer_options_init() {
     register_setting(
         'developer_options_group',       // Option group
@@ -1431,9 +1431,9 @@ function developer_options_init() {
     // Section
     add_settings_section(
         'developer_general_section',
-        __( 'Cai Dat Chung', 'developer-theme' ),
+        __( 'Cài Đặt Chung', 'developer-theme' ),
         function() {
-            echo '<p>' . esc_html__( 'Cai dat chung cho theme.', 'developer-theme' ) . '</p>';
+            echo '<p>' . esc_html__( 'Cài đặt chung cho theme.', 'developer-theme' ) . '</p>';
         },
         'developer-options'
     );
@@ -1446,7 +1446,7 @@ function developer_options_init() {
             $options = get_option( 'developer_theme_options' );
             $value = isset( $options['google_analytics_id'] ) ? $options['google_analytics_id'] : '';
             echo '<input type="text" name="developer_theme_options[google_analytics_id]" value="' . esc_attr( $value ) . '" class="regular-text" placeholder="G-XXXXXXXXXX" />';
-            echo '<p class="description">' . esc_html__( 'Nhap Google Analytics Measurement ID.', 'developer-theme' ) . '</p>';
+            echo '<p class="description">' . esc_html__( 'Nhập Google Analytics Measurement ID.', 'developer-theme' ) . '</p>';
         },
         'developer-options',
         'developer_general_section'
@@ -1455,12 +1455,12 @@ function developer_options_init() {
     // Field: Custom code before </head>
     add_settings_field(
         'head_code',
-        __( 'Code Truoc &lt;/head&gt;', 'developer-theme' ),
+        __( 'Code Trước &lt;/head&gt;', 'developer-theme' ),
         function() {
             $options = get_option( 'developer_theme_options' );
             $value = isset( $options['head_code'] ) ? $options['head_code'] : '';
             echo '<textarea name="developer_theme_options[head_code]" rows="5" class="large-text code">' . esc_textarea( $value ) . '</textarea>';
-            echo '<p class="description">' . esc_html__( 'Code se duoc them truoc the dong </head>.', 'developer-theme' ) . '</p>';
+            echo '<p class="description">' . esc_html__( 'Code sẽ được thêm trước thẻ đóng </head>.', 'developer-theme' ) . '</p>';
         },
         'developer-options',
         'developer_general_section'
@@ -1496,12 +1496,12 @@ function developer_options_page() {
         return;
     }
 
-    // Hien thi thong bao luu thanh cong
+    // Hiển thị thông báo lưu thành công
     if ( isset( $_GET['settings-updated'] ) ) {
         add_settings_error(
             'developer_messages',
             'developer_message',
-            __( 'Cai dat da duoc luu.', 'developer-theme' ),
+            __( 'Cài đặt đã được lưu.', 'developer-theme' ),
             'updated'
         );
     }
@@ -1513,14 +1513,14 @@ function developer_options_page() {
             <?php
             settings_fields( 'developer_options_group' );
             do_settings_sections( 'developer-options' );
-            submit_button( __( 'Luu Cai Dat', 'developer-theme' ) );
+            submit_button( __( 'Lưu Cài Đặt', 'developer-theme' ) );
             ?>
         </form>
     </div>
     <?php
 }
 
-// 6. Su dung options trong template
+// 6. Sử dụng options trong template
 function developer_output_head_code() {
     $options = get_option( 'developer_theme_options', developer_default_options() );
 
@@ -1549,7 +1549,7 @@ add_action( 'wp_head', 'developer_output_head_code', 999 );
 
 ## 12. Best Practices tong hop
 
-### 1. Bao mat
+### 1. Bảo mật
 
 ```php
 // Escape MỌOI output
@@ -1558,10 +1558,10 @@ echo esc_attr( $attr );
 echo esc_url( $url );
 echo wp_kses_post( $html );
 
-// Khong cho truy cap truc tiep file PHP
+// Không cho truy cập trực tiếp file PHP
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// Sanitize tat ca input
+// Sanitize tất cả input
 sanitize_text_field( $input );
 absint( $number );
 sanitize_email( $email );
@@ -1574,12 +1574,12 @@ wp_verify_nonce( $_POST['nonce_field'], 'action_name' );
 ### 2. Prefix
 
 ```php
-// LUON prefix tat ca: functions, classes, constants, hooks
+// LUÔN prefix tất cả: functions, classes, constants, hooks
 function developer_theme_setup() {}
 class Developer_Theme_Walker {}
 define( 'DEVELOPER_THEME_VERSION', '1.0.0' );
 
-// Text domain = ten thu muc theme
+// Text domain = tên thư mục theme
 __( 'text', 'developer-theme' );
 ```
 
@@ -1587,18 +1587,18 @@ __( 'text', 'developer-theme' );
 
 ```php
 // Theo WordPress Coding Standards
-// - Tab indentation (khong spaces)
-// - Spaces trong ngoac: if ( $condition ) { }
+// - Tab indentation (không spaces)
+// - Spaces trong ngoặc: if ( $condition ) { }
 // - Yoda conditions: if ( true === $var )
-// - === thay vi ==
-// - Single quotes cho string khong co bien
-// - PHPDoc cho moi function
+// - === thay vì ==
+// - Single quotes cho string không có biến
+// - PHPDoc cho mỗi function
 ```
 
 ### 4. Performance
 
 ```php
-// Load JS o footer
+// Load JS ở footer
 wp_enqueue_script( 'handle', $url, array(), $ver, true );
 
 // Conditional loading
@@ -1606,7 +1606,7 @@ if ( is_page( 'contact' ) ) {
     wp_enqueue_style( 'contact-css', ... );
 }
 
-// no_found_rows cho queries khong can pagination
+// no_found_rows cho queries không cần pagination
 'no_found_rows' => true
 
 // Transients cho cache
@@ -1637,7 +1637,7 @@ aria-label, aria-expanded, aria-controls, role
 ### 6. Template Architecture
 
 ```php
-// Tach code thanh cac file nho, co to chuc
+// Tách code thành các file nhỏ, có tổ chức
 functions.php          -- Bootstrap, includes
 inc/customizer.php     -- Customizer settings
 inc/template-tags.php  -- Helper functions cho templates
@@ -1645,25 +1645,25 @@ inc/widgets.php        -- Custom widgets
 inc/walker.php         -- Custom menu walkers
 template-parts/        -- Reusable template components
 
-// Dung get_template_part() thay vi include
+// Dùng get_template_part() thay vì include
 get_template_part( 'template-parts/content', get_post_type() );
 
 // wp_reset_postdata() sau custom queries
 wp_reset_postdata();
 
-// Khong bao gio dung query_posts()
-// Dung pre_get_posts hoac new WP_Query
+// Không bao giờ dùng query_posts()
+// Dùng pre_get_posts hoặc new WP_Query
 ```
 
 ### 7. Testing
 
 ```
-// Kiem tra truoc khi release:
-1. Theme Check plugin - pass tat ca REQUIRED
-2. Theme Unit Test data - khong bi loi
-3. PHP error log - khong co warnings/notices
-4. Browser DevTools Console - khong co JS errors
-5. Responsive test - 320px den 1920px
+// Kiểm tra trước khi release:
+1. Theme Check plugin - pass tất cả REQUIRED
+2. Theme Unit Test data - không bị lỗi
+3. PHP error log - không có warnings/notices
+4. Browser DevTools Console - không có JS errors
+5. Responsive test - 320px đến 1920px
 6. Accessibility test - keyboard navigation + screen reader
 7. Performance test - Google PageSpeed Insights > 90
 8. Cross-browser - Chrome, Firefox, Safari, Edge
@@ -1672,37 +1672,37 @@ wp_reset_postdata();
 ### 8. Documentation
 
 ```php
-// PHPDoc cho moi function
+// PHPDoc cho mỗi function
 /**
- * Hien thi thong tin meta cua bai viet.
+ * Hiển thị thông tin meta của bài viết.
  *
  * @since 1.0.0
  *
- * @param int  $post_id  ID cua bai viet. Mac dinh: bai viet hien tai.
- * @param bool $show_author Co hien thi ten tac gia khong. Mac dinh: true.
+ * @param int  $post_id  ID của bài viết. Mặc định: bài viết hiện tại.
+ * @param bool $show_author Có hiển thị tên tác giả không. Mặc định: true.
  * @return void
  */
 function developer_posted_on( $post_id = 0, $show_author = true ) {
     // ...
 }
 
-// Inline comments cho logic phuc tap
-// Gioi thich TAI SAO, khong phai CAI GI
+// Inline comments cho logic phức tạp
+// Giải thích TẠI SAO, không phải CÁI GÌ
 ```
 
 ---
 
-**Day la bai cuoi trong series Theme WordPress. Sau khi hoan thanh 7 bai nay, ban da co kien thuc day du de:**
+**Đây là bài cuối trong series Theme WordPress. Sau khi hoàn thành 7 bài này, bạn đã có kiến thức đầy đủ để:**
 
-1. Tao theme WordPress tu dau
-2. Hieu Template Hierarchy va The Loop
-3. Su dung WP_Query de lay du lieu
-4. Tao menus, widgets, sidebars
-5. Dung Customizer API cho tuy chinh
-6. Hieu Block Theme va Full Site Editing
-7. Ap dung cac ky thuat nang cao (Child Theme, WooCommerce, Performance, i18n, Accessibility)
+1. Tạo theme WordPress từ đầu
+2. Hiểu Template Hierarchy và The Loop
+3. Sử dụng WP_Query để lấy dữ liệu
+4. Tạo menus, widgets, sidebars
+5. Dùng Customizer API cho tùy chỉnh
+6. Hiểu Block Theme và Full Site Editing
+7. Áp dụng các kỹ thuật nâng cao (Child Theme, WooCommerce, Performance, i18n, Accessibility)
 
-**Tai lieu tham khao:**
+**Tài liệu tham khảo:**
 - [WordPress Theme Developer Handbook](https://developer.wordpress.org/themes/)
 - [WordPress Coding Standards](https://developer.wordpress.org/coding-standards/)
 - [Block Editor Handbook](https://developer.wordpress.org/block-editor/)
