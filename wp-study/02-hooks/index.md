@@ -16,6 +16,8 @@
 | 5 | [05-custom-hooks.md](./05-custom-hooks.md) | Cách tạo custom hooks riêng với `do_action()` và `apply_filters()`. Quy tắc đặt tên, documentation, pluggable functions, Observer Pattern. | Nâng cao |
 | 6 | [06-hooks-trong-plugin.md](./06-hooks-trong-plugin.md) | Best practices sử dụng hooks trong plugin: activation/deactivation hooks, conditional hooks, cách remove hooks từ plugin khác, debugging hooks. | Nâng cao |
 | 7 | [07-hooks-nang-cao.md](./07-hooks-nang-cao.md) | Kỹ thuật nâng cao: OOP callbacks, WP_Hook class internals, dynamic hooks, tối ưu hiệu năng hooks, PHPUnit testing cho hooks. | Nâng cao |
+| 8 | [08-vi-du-thuc-te.md](./08-vi-du-thuc-te.md) | **Ví dụ thực tế**: 20+ ví dụ copy-paste chạy được. Action hooks (CPT, enqueue, save_post, cron, email). Filter hooks (the_content, pre_get_posts, excerpt, body_class, upload_mimes). Custom hooks, contact form AJAX, REST API, anti-patterns. | Thực hành |
+| 9 | [09-hooks-chuyen-de.md](./09-hooks-chuyen-de.md) | **Hooks chuyên đề**: WooCommerce hooks (`woocommerce_before_cart`, `woocommerce_checkout_process`, `woocommerce_order_status_changed`). User hooks (`user_register`, `registration_errors`, `profile_update`, `wp_login`, `wp_logout`). REST API hooks (`rest_api_init`, `rest_pre_dispatch`, `rest_post_dispatch`). Performance hooks (`script_loader_tag`, `style_loader_tag`, `wp_resource_hints`). Dashboard hooks (`dashboard_glance_items`, `admin_footer_text`, `wp_dashboard_setup`). Advanced patterns. | Nâng cao |
 
 ---
 
@@ -79,6 +81,12 @@ add_filter( 'the_content', function( $content ) {
         │
         ▼
 07-hooks-nang-cao           Kỹ thuật OOP, debugging, testing
+        │
+        ▼
+08-vi-du-thuc-te            ★ 20+ ví dụ thực tế copy-paste
+        │
+        ▼
+09-hooks-chuyen-de          ★ WooCommerce, User, REST API, Performance, Dashboard
 ```
 
 ---

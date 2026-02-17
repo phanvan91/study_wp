@@ -16,6 +16,8 @@
 | 5 | [05-customizer-api.md](./05-customizer-api.md) | Theme Customizer API: Panels, Sections, Settings, Controls. Tạo Custom Controls, Selective Refresh, Live Preview, Sanitization, Default Values. | Nâng cao |
 | 6 | [06-block-theme-va-fse.md](./06-block-theme-va-fse.md) | Block Themes (WP 5.9+): `theme.json` configuration, Template Parts, Block Templates, Block Patterns, Template Editor, Full Site Editing. So sánh với Classic Themes. | Nâng cao |
 | 7 | [07-theme-nang-cao.md](./07-theme-nang-cao.md) | Kỹ thuật nâng cao: Child Themes, WooCommerce integration, Responsive Design, Accessibility (a11y), Performance optimization, Internationalization (i18n), Packaging & phân phối. | Nâng cao |
+| 8 | [08-vi-du-thuc-te.md](./08-vi-du-thuc-te.md) | **Ví dụ thực tế**: Xây theme hoàn chỉnh step-by-step. Code đầy đủ cho: style.css, functions.php, header.php, footer.php, index.php, single.php, page.php, archive.php, search.php, 404.php, sidebar.php, template parts, custom page templates, Bootstrap Walker, CPT archive template. | Thực hành |
+| 9 | [09-so-do-va-minh-hoa.md](./09-so-do-va-minh-hoa.md) | **Sơ đồ & Minh họa**: Sơ đồ cấu trúc trang, Template Hierarchy dạng sơ đồ, so sánh Classic vs Block Theme, luồng request, layout patterns (Blog, Magazine, Portfolio), functions.php map, The Loop flow, vị trí hooks trên trang, theme.json, phân tích theme phổ biến (Astra, GeneratePress, Twenty Twenty-Four). | Minh họa |
 
 ---
 
@@ -60,6 +62,12 @@ Một theme hợp lệ chỉ cần **2 file**:
         │
         ▼
 07-theme-nang-cao            Child Theme, WooCommerce, a11y, i18n
+        │
+        ▼
+08-vi-du-thuc-te             ★ Xây theme hoàn chỉnh step-by-step
+        │
+        ▼
+09-so-do-va-minh-hoa         ★ Sơ đồ trực quan & minh họa
 ```
 
 ---

@@ -11,14 +11,14 @@
 |------|---------|--------|--------|
 | 0 | [00-gioi-thieu](./00-gioi-thieu/) | Giới thiệu & Lộ trình học tập | 1 bài |
 | 1 | [01-nen-tang](./01-nen-tang/) | Nền tảng WordPress (cấu trúc, luồng xử lý, routing, CLI) | 4 bài |
-| 2 | [02-hooks](./02-hooks/) | Hệ thống Hooks - Trái tim WordPress | 7 bài |
+| 2 | [02-hooks](./02-hooks/) | Hệ thống Hooks - Trái tim WordPress | 8 bài |
 | 3 | [03-database](./03-database/) | Cơ sở dữ liệu ($wpdb, WP_Query, CPT) | 3 bài |
-| 4 | [04-themes](./04-themes/) | Phát triển Theme | 7 bài |
-| 5 | [05-plugins](./05-plugins/) | Phát triển Plugin | 8 bài |
+| 4 | [04-themes](./04-themes/) | Phát triển Theme | 9 bài |
+| 5 | [05-plugins](./05-plugins/) | Phát triển Plugin | 9 bài |
 | 6 | [06-admin](./06-admin/) | Quản trị WordPress Admin | 10 bài |
 | 7 | [07-nang-cao](./07-nang-cao/) | Nâng cao (REST API, Gutenberg, Bảo mật, Hiệu năng) | 4 bài |
 
-**Tổng cộng: 44 bài học + 8 file index điều hướng**
+**Tổng cộng: 48 bài học + 8 file index điều hướng**
 
 ---
 
@@ -52,6 +52,7 @@
 | 2.5 | [Custom Hooks](./02-hooks/05-custom-hooks.md) | Tạo `do_action`, `apply_filters` riêng | Nâng cao |
 | 2.6 | [Hooks trong Plugin](./02-hooks/06-hooks-trong-plugin.md) | Activation/deactivation, conditional, remove hooks | Nâng cao |
 | 2.7 | [Hooks nâng cao](./02-hooks/07-hooks-nang-cao.md) | OOP callbacks, WP_Hook class, testing | Nâng cao |
+| 2.8 | [★ Ví dụ thực tế](./02-hooks/08-vi-du-thuc-te.md) | 20+ ví dụ hooks copy-paste chạy được | Thực hành |
 
 ---
 
@@ -82,6 +83,8 @@
 | 4.5 | [Customizer API](./04-themes/05-customizer-api.md) | Panels, Sections, Controls, Live Preview | Nâng cao |
 | 4.6 | [Block Theme & FSE](./04-themes/06-block-theme-va-fse.md) | `theme.json`, Block Patterns, Full Site Editing | Nâng cao |
 | 4.7 | [Theme nâng cao](./04-themes/07-theme-nang-cao.md) | Child Theme, WooCommerce, a11y, i18n, Packaging | Nâng cao |
+| 4.8 | [★ Ví dụ thực tế](./04-themes/08-vi-du-thuc-te.md) | Xây theme hoàn chỉnh step-by-step | Thực hành |
+| 4.9 | [★ Sơ đồ & Minh họa](./04-themes/09-so-do-va-minh-hoa.md) | Sơ đồ trực quan cấu trúc theme, Template Hierarchy, hooks | Minh họa |
 
 ---
 
@@ -100,6 +103,7 @@
 | 5.6 | [Kiến trúc OOP](./05-plugins/06-plugin-oop-architecture.md) | Singleton, Autoloading, Namespaces, MVC | Nâng cao |
 | 5.7 | [Bảo mật Plugin](./05-plugins/07-bao-mat-plugin.md) | Sanitize, Escape, Nonces, Capability Checks | Nâng cao |
 | 5.8 | [Plugin nâng cao](./05-plugins/08-plugin-nang-cao.md) | CPT, Cron, Email, i18n, Unit Testing | Nâng cao |
+| 5.9 | [★ Ví dụ thực tế](./05-plugins/09-vi-du-thuc-te.md) | Plugin CRUD hoàn chỉnh + REST API + OOP | Thực hành |
 
 ---
 
@@ -162,7 +166,8 @@
  │  ├── 04 Hooks Lifecycle     → Vòng đời thực thi         │
  │  ├── 05 Custom Hooks        → Tạo hooks riêng           │
  │  ├── 06 Hooks trong Plugin  → Best practices             │
- │  └── 07 Hooks nâng cao      → OOP, WP_Hook, testing     │
+ │  ├── 07 Hooks nâng cao      → OOP, WP_Hook, testing     │
+ │  └── 08 ★ Ví dụ thực tế    → 20+ ví dụ copy-paste      │
  └────────────────────────────┬────────────────────────────┘
                               ▼
  PHẦN 3: CƠ SỞ DỮ LIỆU
@@ -182,8 +187,9 @@
  │  ├── 04 Menus/Widgets │        │  ├── 04 Database/CRUD │
  │  ├── 05 Customizer    │        │  ├── 05 AJAX/REST     │
  │  ├── 06 Block/FSE     │        │  ├── 06 OOP           │
- │  └── 07 Nâng cao      │        │  ├── 07 Bảo mật       │
- │                        │        │  └── 08 Nâng cao      │
+ │  ├── 07 Nâng cao      │        │  ├── 07 Bảo mật       │
+ │  ├── 08 ★ Ví dụ      │        │  ├── 08 Nâng cao      │
+ │  └── 09 ★ Sơ đồ     │        │  └── 09 ★ Ví dụ      │
  └───────────┬────────────┘        └───────────┬───────────┘
              └──────────────┬──────────────────┘
                             ▼
@@ -264,7 +270,8 @@ wp-study/
 │   ├── 04-hooks-lifecycle.md        ← Vòng đời hooks
 │   ├── 05-custom-hooks.md           ← Tạo hooks riêng
 │   ├── 06-hooks-trong-plugin.md     ← Hooks trong plugin
-│   └── 07-hooks-nang-cao.md         ← Hooks nâng cao
+│   ├── 07-hooks-nang-cao.md         ← Hooks nâng cao
+│   └── 08-vi-du-thuc-te.md         ← ★ Ví dụ thực tế (20+ examples)
 │
 ├── 03-database/                      ← Cơ sở dữ liệu
 │   ├── index.md                      ← Mục lục phần database
@@ -280,7 +287,9 @@ wp-study/
 │   ├── 04-menus-widgets-sidebars.md ← Menus, Widgets, Sidebars
 │   ├── 05-customizer-api.md         ← Customizer API
 │   ├── 06-block-theme-va-fse.md     ← Block Theme & FSE
-│   └── 07-theme-nang-cao.md         ← Theme nâng cao
+│   ├── 07-theme-nang-cao.md         ← Theme nâng cao
+│   ├── 08-vi-du-thuc-te.md         ← ★ Xây theme hoàn chỉnh step-by-step
+│   └── 09-so-do-va-minh-hoa.md    ← ★ Sơ đồ trực quan & minh họa
 │
 ├── 05-plugins/                       ← Phát triển Plugin
 │   ├── index.md                      ← Tổng quan & mục lục plugins
@@ -291,7 +300,8 @@ wp-study/
 │   ├── 05-ajax-va-rest-api.md       ← AJAX & REST API
 │   ├── 06-plugin-oop-architecture.md← Kiến trúc OOP
 │   ├── 07-bao-mat-plugin.md         ← Bảo mật plugin
-│   └── 08-plugin-nang-cao.md        ← Plugin nâng cao
+│   ├── 08-plugin-nang-cao.md        ← Plugin nâng cao
+│   └── 09-vi-du-thuc-te.md        ← ★ Plugin CRUD + REST API + OOP
 │
 ├── 06-admin/                         ← Quản trị WordPress
 │   ├── index.md                      ← Mục lục phần admin
@@ -337,6 +347,10 @@ wp-study/
 | Tối ưu hiệu năng? | [07-nang-cao/04-hieu-nang-toi-uu.md](./07-nang-cao/04-hieu-nang-toi-uu.md) |
 | Roles & Capabilities? | [06-admin/08-quan-ly-nguoi-dung.md](./06-admin/08-quan-ly-nguoi-dung.md) |
 | WP-CLI commands? | [01-nen-tang/wp-cli.md](./01-nen-tang/wp-cli.md) |
+| Ví dụ hooks thực tế? | [02-hooks/08-vi-du-thuc-te.md](./02-hooks/08-vi-du-thuc-te.md) |
+| Xây theme từ đầu? | [04-themes/08-vi-du-thuc-te.md](./04-themes/08-vi-du-thuc-te.md) |
+| Sơ đồ cấu trúc theme? | [04-themes/09-so-do-va-minh-hoa.md](./04-themes/09-so-do-va-minh-hoa.md) |
+| Plugin CRUD + REST API? | [05-plugins/09-vi-du-thuc-te.md](./05-plugins/09-vi-du-thuc-te.md) |
 
 ---
 
@@ -344,7 +358,7 @@ wp-study/
 
 | Thông tin | Giá trị |
 |-----------|---------|
-| Tổng số bài học | 44 bài |
+| Tổng số bài học | 48 bài |
 | Tổng số file index | 8 file (mỗi thư mục 1 file) |
 | Thư mục | 8 (00 → 07) |
 | Ngôn ngữ | Tiếng Việt có dấu |

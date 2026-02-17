@@ -17,6 +17,7 @@
 | 6 | [06-plugin-oop-architecture.md](./06-plugin-oop-architecture.md) | Kiến trúc OOP: Singleton Pattern, Autoloading (Composer), Dependency Injection, Namespaces, MVC pattern, Plugin Boilerplate. So sánh với cấu trúc Laravel package. | Nâng cao |
 | 7 | [07-bao-mat-plugin.md](./07-bao-mat-plugin.md) | Bảo mật plugin: Input Sanitization (`sanitize_*`), Output Escaping (`esc_*`), Nonces (CSRF), Capability Checks, SQL Injection Prevention, XSS Prevention, File Upload Security. | Nâng cao |
 | 8 | [08-plugin-nang-cao.md](./08-plugin-nang-cao.md) | Tính năng nâng cao: Custom Post Types từ plugin, Meta Boxes, Custom Admin Columns, Cron Jobs, Email (`wp_mail`), Export/Import, Internationalization (i18n), Unit Testing, Packaging. | Nâng cao |
+| 9 | [09-vi-du-thuc-te.md](./09-vi-du-thuc-te.md) | **Ví dụ thực tế**: Plugin CRUD hoàn chỉnh (Contact Manager) với admin table, pagination, search, bulk actions, export CSV. Settings Page, REST API (6 endpoints), CPT + Meta Box (Sản phẩm), Shortcode grid, Widget, Cron Job digest, kiến trúc OOP namespace. | Thực hành |
 
 ---
 
@@ -83,6 +84,9 @@ wp-content/plugins/
         │
         ▼
 08-plugin-nang-cao           CPT, Cron, Email, Testing, Packaging
+        │
+        ▼
+09-vi-du-thuc-te             ★ Plugin CRUD hoàn chỉnh + OOP
 ```
 
 ---
