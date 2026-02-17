@@ -13,12 +13,12 @@
 | 1 | [01-nen-tang](./01-nen-tang/) | Nền tảng WordPress (cấu trúc, luồng xử lý, routing, CLI) | 4 bài |
 | 2 | [02-hooks](./02-hooks/) | Hệ thống Hooks - Trái tim WordPress | 8 bài |
 | 3 | [03-database](./03-database/) | Cơ sở dữ liệu ($wpdb, WP_Query, CPT) | 3 bài |
-| 4 | [04-themes](./04-themes/) | Phát triển Theme | 9 bài |
+| 4 | [04-themes](./04-themes/) | Phát triển Theme | 10 bài |
 | 5 | [05-plugins](./05-plugins/) | Phát triển Plugin | 9 bài |
 | 6 | [06-admin](./06-admin/) | Quản trị WordPress Admin | 10 bài |
-| 7 | [07-nang-cao](./07-nang-cao/) | Nâng cao (REST API, Gutenberg, Bảo mật, Hiệu năng) | 4 bài |
+| 7 | [07-nang-cao](./07-nang-cao/) | Nâng cao (REST API, Gutenberg, Bảo mật, Hiệu năng, Cron, Multisite, Testing, i18n, Headless, Rewrite/Cache) | 10 bài |
 
-**Tổng cộng: 48 bài học + 8 file index điều hướng**
+**Tổng cộng: 55 bài học + 8 file index điều hướng**
 
 ---
 
@@ -85,6 +85,7 @@
 | 4.7 | [Theme nâng cao](./04-themes/07-theme-nang-cao.md) | Child Theme, WooCommerce, a11y, i18n, Packaging | Nâng cao |
 | 4.8 | [★ Ví dụ thực tế](./04-themes/08-vi-du-thuc-te.md) | Xây theme hoàn chỉnh step-by-step | Thực hành |
 | 4.9 | [★ Sơ đồ & Minh họa](./04-themes/09-so-do-va-minh-hoa.md) | Sơ đồ trực quan cấu trúc theme, Template Hierarchy, hooks | Minh họa |
+| 4.10 | [★ Theme hoàn chỉnh](./04-themes/10-tao-theme-hoan-chinh.md) | Theme "Developer Blog" copy-paste ready, 16 files đầy đủ | Thực hành |
 
 ---
 
@@ -136,6 +137,12 @@
 | 7.2 | [Gutenberg Block Editor](./07-nang-cao/02-gutenberg-block-editor.md) | Custom Blocks, Attributes, Dynamic Blocks, Patterns | Nâng cao |
 | 7.3 | [Bảo mật WordPress](./07-nang-cao/03-bao-mat-wordpress.md) | Sanitize, Escape, Nonces, SQL Injection, XSS | Nâng cao |
 | 7.4 | [Tối ưu Hiệu năng](./07-nang-cao/04-hieu-nang-toi-uu.md) | Object Cache, Page Cache, CDN, Profiling | Nâng cao |
+| 7.5 | [Cron & Background Jobs](./07-nang-cao/05-cron-va-background-jobs.md) | WP-Cron, Action Scheduler, Batch Processing | Nâng cao |
+| 7.6 | [Multisite](./07-nang-cao/06-multisite.md) | Network Setup, switch_to_blog, MU Plugins, Domain Mapping | Nâng cao |
+| 7.7 | [Testing & CI/CD](./07-nang-cao/07-testing-va-cicd.md) | PHPUnit, WP_UnitTestCase, GitHub Actions, Deployment | Nâng cao |
+| 7.8 | [Internationalization](./07-nang-cao/08-i18n-l10n.md) | i18n Functions, .pot/.po/.mo, JS i18n, RTL | Nâng cao |
+| 7.9 | [Headless WordPress](./07-nang-cao/09-headless-wordpress.md) | WPGraphQL, Next.js, JWT, ISR, Preview Mode | Nâng cao |
+| 7.10 | [Rewrite, Heartbeat & Cache](./07-nang-cao/10-rewrite-heartbeat-cache.md) | Rewrite API, Heartbeat API, Object Cache nâng cao | Nâng cao |
 
 ---
 
@@ -189,7 +196,8 @@
  │  ├── 06 Block/FSE     │        │  ├── 06 OOP           │
  │  ├── 07 Nâng cao      │        │  ├── 07 Bảo mật       │
  │  ├── 08 ★ Ví dụ      │        │  ├── 08 Nâng cao      │
- │  └── 09 ★ Sơ đồ     │        │  └── 09 ★ Ví dụ      │
+ │  ├── 09 ★ Sơ đồ     │        │  └── 09 ★ Ví dụ      │
+ │  └── 10 ★ Theme đầy đủ│
  └───────────┬────────────┘        └───────────┬───────────┘
              └──────────────┬──────────────────┘
                             ▼
@@ -214,7 +222,13 @@
  │  ├── 01 REST API            → Endpoints, Authentication │
  │  ├── 02 Gutenberg           → Custom Blocks, theme.json │
  │  ├── 03 Bảo mật             → Sanitize, Escape, Nonces │
- │  └── 04 Hiệu năng           → Cache, CDN, Profiling    │
+ │  ├── 04 Hiệu năng           → Cache, CDN, Profiling    │
+ │  ├── 05 Cron & Jobs         → WP-Cron, Action Scheduler│
+ │  ├── 06 Multisite           → Network, MU Plugins      │
+ │  ├── 07 Testing & CI/CD    → PHPUnit, GitHub Actions   │
+ │  ├── 08 i18n/l10n           → Đa ngôn ngữ, RTL        │
+ │  ├── 09 Headless WP         → Next.js, WPGraphQL       │
+ │  └── 10 Rewrite/HB/Cache   → URL Rules, Heartbeat     │
  └─────────────────────────────────────────────────────────┘
 ```
 
@@ -289,7 +303,8 @@ wp-study/
 │   ├── 06-block-theme-va-fse.md     ← Block Theme & FSE
 │   ├── 07-theme-nang-cao.md         ← Theme nâng cao
 │   ├── 08-vi-du-thuc-te.md         ← ★ Xây theme hoàn chỉnh step-by-step
-│   └── 09-so-do-va-minh-hoa.md    ← ★ Sơ đồ trực quan & minh họa
+│   ├── 09-so-do-va-minh-hoa.md    ← ★ Sơ đồ trực quan & minh họa
+│   └── 10-tao-theme-hoan-chinh.md ← ★ Theme "Developer Blog" copy-paste ready
 │
 ├── 05-plugins/                       ← Phát triển Plugin
 │   ├── index.md                      ← Tổng quan & mục lục plugins
@@ -321,7 +336,13 @@ wp-study/
     ├── 01-rest-api.md               ← REST API
     ├── 02-gutenberg-block-editor.md ← Gutenberg Block Editor
     ├── 03-bao-mat-wordpress.md      ← Bảo mật WordPress
-    └── 04-hieu-nang-toi-uu.md      ← Tối ưu hiệu năng
+    ├── 04-hieu-nang-toi-uu.md      ← Tối ưu hiệu năng
+    ├── 05-cron-va-background-jobs.md ← WP-Cron & Action Scheduler
+    ├── 06-multisite.md              ← WordPress Multisite
+    ├── 07-testing-va-cicd.md        ← Testing & CI/CD
+    ├── 08-i18n-l10n.md              ← Internationalization
+    ├── 09-headless-wordpress.md     ← Headless WordPress + Next.js
+    └── 10-rewrite-heartbeat-cache.md ← Rewrite, Heartbeat & Cache
 ```
 
 ---
@@ -350,7 +371,14 @@ wp-study/
 | Ví dụ hooks thực tế? | [02-hooks/08-vi-du-thuc-te.md](./02-hooks/08-vi-du-thuc-te.md) |
 | Xây theme từ đầu? | [04-themes/08-vi-du-thuc-te.md](./04-themes/08-vi-du-thuc-te.md) |
 | Sơ đồ cấu trúc theme? | [04-themes/09-so-do-va-minh-hoa.md](./04-themes/09-so-do-va-minh-hoa.md) |
+| Theme copy-paste ready? | [04-themes/10-tao-theme-hoan-chinh.md](./04-themes/10-tao-theme-hoan-chinh.md) |
 | Plugin CRUD + REST API? | [05-plugins/09-vi-du-thuc-te.md](./05-plugins/09-vi-du-thuc-te.md) |
+| WP-Cron & Background Jobs? | [07-nang-cao/05-cron-va-background-jobs.md](./07-nang-cao/05-cron-va-background-jobs.md) |
+| WordPress Multisite? | [07-nang-cao/06-multisite.md](./07-nang-cao/06-multisite.md) |
+| Testing & CI/CD? | [07-nang-cao/07-testing-va-cicd.md](./07-nang-cao/07-testing-va-cicd.md) |
+| Đa ngôn ngữ (i18n)? | [07-nang-cao/08-i18n-l10n.md](./07-nang-cao/08-i18n-l10n.md) |
+| Headless WordPress? | [07-nang-cao/09-headless-wordpress.md](./07-nang-cao/09-headless-wordpress.md) |
+| Rewrite, Heartbeat, Cache? | [07-nang-cao/10-rewrite-heartbeat-cache.md](./07-nang-cao/10-rewrite-heartbeat-cache.md) |
 
 ---
 
@@ -358,7 +386,7 @@ wp-study/
 
 | Thông tin | Giá trị |
 |-----------|---------|
-| Tổng số bài học | 48 bài |
+| Tổng số bài học | 55 bài |
 | Tổng số file index | 8 file (mỗi thư mục 1 file) |
 | Thư mục | 8 (00 → 07) |
 | Ngôn ngữ | Tiếng Việt có dấu |

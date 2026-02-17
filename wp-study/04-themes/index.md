@@ -18,6 +18,7 @@
 | 7 | [07-theme-nang-cao.md](./07-theme-nang-cao.md) | Kỹ thuật nâng cao: Child Themes, WooCommerce integration, Responsive Design, Accessibility (a11y), Performance optimization, Internationalization (i18n), Packaging & phân phối. | Nâng cao |
 | 8 | [08-vi-du-thuc-te.md](./08-vi-du-thuc-te.md) | **Ví dụ thực tế**: Xây theme hoàn chỉnh step-by-step. Code đầy đủ cho: style.css, functions.php, header.php, footer.php, index.php, single.php, page.php, archive.php, search.php, 404.php, sidebar.php, template parts, custom page templates, Bootstrap Walker, CPT archive template. | Thực hành |
 | 9 | [09-so-do-va-minh-hoa.md](./09-so-do-va-minh-hoa.md) | **Sơ đồ & Minh họa**: Sơ đồ cấu trúc trang, Template Hierarchy dạng sơ đồ, so sánh Classic vs Block Theme, luồng request, layout patterns (Blog, Magazine, Portfolio), functions.php map, The Loop flow, vị trí hooks trên trang, theme.json, phân tích theme phổ biến (Astra, GeneratePress, Twenty Twenty-Four). | Minh họa |
+| 10 | [10-tao-theme-hoan-chinh.md](./10-tao-theme-hoan-chinh.md) | **★ Theme hoàn chỉnh Copy-Paste Ready**: Theme "Developer Blog" với 16 file đầy đủ. Toàn bộ CSS (variables, layout, responsive), functions.php, header/footer, index, single, page, archive, search, 404, sidebar, comments, template parts, JS navigation. Mỗi file có ASCII art minh họa + giải thích chi tiết + so sánh Laravel. | Thực hành |
 
 ---
 
@@ -68,6 +69,9 @@ Một theme hợp lệ chỉ cần **2 file**:
         │
         ▼
 09-so-do-va-minh-hoa         ★ Sơ đồ trực quan & minh họa
+        │
+        ▼
+10-tao-theme-hoan-chinh      ★ Theme hoàn chỉnh copy-paste ready
 ```
 
 ---
