@@ -17,19 +17,20 @@
 
 | Chủ đề | File | Mô tả |
 |--------|------|-------|
-| Cấu trúc source code | [cau-truc-source-code.md](../01-nen-tang/cau-truc-source-code.md) | Phân tích cấu trúc thư mục và file chính |
-| Luồng request | [luong-xu-ly-request.md](../01-nen-tang/luong-xu-ly-request.md) | Luồng xử lý request từ đầu đến cuối |
-| Routing | [he-thong-routing.md](../01-nen-tang/he-thong-routing.md) | Hệ thống URL Rewriting và Router |
-| WP-CLI | [wp-cli.md](../01-nen-tang/wp-cli.md) | Dòng lệnh WP-CLI |
-| Hooks | [02-hooks/](../02-hooks/) | Hệ thống Hooks (7 bài chi tiết) |
-| Database | [03-database/](../03-database/) | Database, $wpdb, WP_Query, CPT |
-| Tạo Theme | [04-themes/](../04-themes/) | Phát triển Theme (7 bài chi tiết) |
-| Tạo Plugin | [05-plugins/](../05-plugins/) | Phát triển Plugin (8 bài chi tiết) |
-| Admin | [06-admin/](../06-admin/) | Quản trị WordPress (10 bài chi tiết) |
-| REST API | [01-rest-api.md](../07-nang-cao/01-rest-api.md) | WordPress REST API |
-| Gutenberg | [02-gutenberg-block-editor.md](../07-nang-cao/02-gutenberg-block-editor.md) | Block Editor và Gutenberg |
-| Bảo mật | [03-bao-mat-wordpress.md](../07-nang-cao/03-bao-mat-wordpress.md) | Bảo mật WordPress |
-| Hiệu năng | [04-hieu-nang-toi-uu.md](../07-nang-cao/04-hieu-nang-toi-uu.md) | Tối ưu hiệu năng WordPress |
+| Luồng request | [WORDPRESS_FLOW.md](./WORDPRESS_FLOW.md) | Luồng xử lý request từ đầu đến cuối |
+| Cấu trúc source code | [CAU_TRUC_SOURCE_CODE.md](./CAU_TRUC_SOURCE_CODE.md) | Phân tích cấu trúc thư mục và file chính |
+| Hooks | [WORDPRESS_HOOKS.md](./WORDPRESS_HOOKS.md) | Action và Filter Hooks toàn diện |
+| Routing | [WORDPRESS_ROUTING.md](./WORDPRESS_ROUTING.md) | Hệ thống URL Rewriting và Router |
+| Tạo Plugin | [TAO_PLUGIN_CO_BAN.md](./TAO_PLUGIN_CO_BAN.md) | Hướng dẫn tạo plugin từ đầu |
+| Tạo Theme | [TAO_THEME_CO_BAN.md](./TAO_THEME_CO_BAN.md) | Hướng dẫn tạo theme từ đầu |
+| Download Theme | [HUONG_DAN_THEME.md](./HUONG_DAN_THEME.md) | Download và sử dụng theme |
+| Database | [DATABASE_VA_WP_QUERY.md](./DATABASE_VA_WP_QUERY.md) | Database schema và WP_Query |
+| REST API | [REST_API.md](./REST_API.md) | WordPress REST API |
+| Bảo mật | [BAO_MAT_WORDPRESS.md](./BAO_MAT_WORDPRESS.md) | Bảo mật WordPress |
+| CPT và Taxonomy | [CUSTOM_POST_TYPE_TAXONOMY.md](./CUSTOM_POST_TYPE_TAXONOMY.md) | Custom Post Types và Taxonomies |
+| WP-CLI | [WP_CLI.md](./WP_CLI.md) | Dòng lệnh WP-CLI |
+| Gutenberg | [GUTENBERG_BLOCK_EDITOR.md](./GUTENBERG_BLOCK_EDITOR.md) | Block Editor và Gutenberg |
+| Hiệu năng | [HIEU_NANG_TOI_UU.md](./HIEU_NANG_TOI_UU.md) | Tối ưu hiệu năng WordPress |
 
 ---
 
@@ -56,10 +57,10 @@
 - Làm bài tập: tạo vài post/page, cấu hình permalink, tạo user role, sử dụng custom menu, widget, media.
 
 **Tài liệu:**
-- [Luồng xử lý request](../01-nen-tang/luong-xu-ly-request.md)
-- [Cấu trúc source code](../01-nen-tang/cau-truc-source-code.md)
-- [Hệ thống Hooks](../02-hooks/)
-- [Hệ thống Routing](../01-nen-tang/he-thong-routing.md)
+- [Luồng xử lý request](./WORDPRESS_FLOW.md)
+- [Cấu trúc source code](./CAU_TRUC_SOURCE_CODE.md)
+- [Hệ thống Hooks](./WORDPRESS_HOOKS.md)
+- [Hệ thống Routing](./WORDPRESS_ROUTING.md)
 
 ---
 
@@ -74,8 +75,9 @@
 - Bài tập: nhân bản theme mặc định, thêm custom post type, taxonomy, template riêng cho archive/single.
 
 **Tài liệu:**
-- [Phát triển Theme](../04-themes/) (7 bài chi tiết)
-- [Gutenberg Block Editor](../07-nang-cao/02-gutenberg-block-editor.md)
+- [Tạo theme cơ bản](./TAO_THEME_CO_BAN.md)
+- [Download và sử dụng theme](./HUONG_DAN_THEME.md)
+- [Gutenberg Block Editor](./GUTENBERG_BLOCK_EDITOR.md)
 
 ---
 
@@ -90,10 +92,10 @@
 - Bài tập: viết plugin CRUD đơn giản, thêm block Gutenberg custom, tạo cron task.
 
 **Tài liệu:**
-- [Phát triển Plugin](../05-plugins/) (8 bài chi tiết)
-- [Hệ thống Hooks](../02-hooks/)
-- [REST API](../07-nang-cao/01-rest-api.md)
-- [Bảo mật WordPress](../07-nang-cao/03-bao-mat-wordpress.md)
+- [Tạo plugin cơ bản](./TAO_PLUGIN_CO_BAN.md)
+- [Hệ thống Hooks](./WORDPRESS_HOOKS.md)
+- [REST API](./REST_API.md)
+- [Bảo mật WordPress](./BAO_MAT_WORDPRESS.md)
 
 ---
 
@@ -107,7 +109,8 @@
 - Thực hành viết report phức tạp, phân tích log query với Query Monitor.
 
 **Tài liệu:**
-- [Cơ sở dữ liệu](../03-database/) (3 bài chi tiết)
+- [Database và WP_Query](./DATABASE_VA_WP_QUERY.md)
+- [Custom Post Types và Taxonomies](./CUSTOM_POST_TYPE_TAXONOMY.md)
 
 ---
 
@@ -121,7 +124,7 @@
 - Docker/Local WP (DevKinsta, DDEV, Lando) và cấu hình multi-environment (.env, bedrock).
 
 **Tài liệu:**
-- [WP-CLI](../01-nen-tang/wp-cli.md)
+- [WP-CLI](./WP_CLI.md)
 
 ---
 
@@ -135,7 +138,7 @@
 - CDN, object cache (Redis/Memcached), page cache (Varnish, Nginx FastCGI), sử dụng plugin cache đúng cách.
 
 **Tài liệu:**
-- [Tối ưu hiệu năng](../07-nang-cao/04-hieu-nang-toi-uu.md)
+- [Tối ưu hiệu năng](./HIEU_NANG_TOI_UU.md)
 
 ---
 
@@ -149,8 +152,8 @@
 - Profiling hiệu năng (Xdebug, Tideways, New Relic), async queue (Action Scheduler), background processing.
 
 **Tài liệu:**
-- [Bảo mật WordPress](../07-nang-cao/03-bao-mat-wordpress.md)
-- [Tối ưu hiệu năng](../07-nang-cao/04-hieu-nang-toi-uu.md)
+- [Bảo mật WordPress](./BAO_MAT_WORDPRESS.md)
+- [Tối ưu hiệu năng](./HIEU_NANG_TOI_UU.md)
 
 ---
 

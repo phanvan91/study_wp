@@ -1,7 +1,7 @@
 # WordPress Database Schema Chi Tiết
 
 > Phân tích chi tiết từng bảng, từng cột trong database WordPress dựa trên source code `wp-admin/includes/schema.php`.
-> File này bổ sung cho [01-database-va-wpdb.md](./01-database-va-wpdb.md) với thông tin cấu trúc cột chi tiết.
+> File này bổ sung cho [DATABASE_VA_WP_QUERY.md](./DATABASE_VA_WP_QUERY.md) với thông tin cấu trúc cột chi tiết.
 
 ---
 
@@ -1674,4 +1674,4 @@ wp search-replace 'old-domain.com' 'new-domain.com' --dry-run
 ---
 
 *Tài liệu phân tích từ WordPress source code. Cập nhật 02/2026.*
-*Xem thêm: [01-database-va-wpdb.md](./01-database-va-wpdb.md) cho hướng dẫn sử dụng $wpdb và WP_Query.*
+*Xem thêm: [DATABASE_VA_WP_QUERY.md](./DATABASE_VA_WP_QUERY.md) cho hướng dẫn sử dụng $wpdb và WP_Query.*

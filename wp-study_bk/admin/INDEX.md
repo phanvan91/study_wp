@@ -219,14 +219,4 @@ Browser Request: GET /wp-admin/edit.php
 
 ---
 
-## Mục Tiêu Sau Khi Hoàn Thành
-
-- [ ] Hiểu kiến trúc và luồng xử lý của WP Admin
-- [ ] Tạo được custom Dashboard widgets
-- [ ] Quản lý bài viết, media, bình luận hiệu quả
-- [ ] Hiểu hệ thống Roles & Capabilities
-- [ ] Sử dụng Settings API để tạo trang cài đặt
-
----
-
-[← Quay lại INDEX.md](../INDEX.md) | [Tiếp theo: Chủ đề nâng cao →](../07-nang-cao/)
+*Tài liệu này là một phần của bộ [WordPress Study Guide cho Laravel Developer](../INDEX.md).*
