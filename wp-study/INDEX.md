@@ -1,7 +1,24 @@
 # Hệ Thống Học Tập WordPress
 
-> Tài liệu học WordPress từ cơ bản đến nâng cao, viết bằng tiếng Việt có dấu, code examples chi tiết.
-> Dành cho PHP Laravel Developer chuyển sang WordPress.
+> Tài liệu học WordPress từ cơ bản đến nâng cao, viết bằng **tiếng Việt có dấu**, code examples chi tiết.
+> Dành cho **PHP Laravel Developer** chuyển sang WordPress.
+
+---
+
+## Mục Lục Nhanh
+
+| Phần | Thư mục | Chủ đề | Số bài |
+|------|---------|--------|--------|
+| 0 | [00-gioi-thieu](./00-gioi-thieu/) | Giới thiệu & Lộ trình học tập | 1 bài |
+| 1 | [01-nen-tang](./01-nen-tang/) | Nền tảng WordPress (cấu trúc, luồng xử lý, routing, CLI) | 4 bài |
+| 2 | [02-hooks](./02-hooks/) | Hệ thống Hooks - Trái tim WordPress | 7 bài |
+| 3 | [03-database](./03-database/) | Cơ sở dữ liệu ($wpdb, WP_Query, CPT) | 3 bài |
+| 4 | [04-themes](./04-themes/) | Phát triển Theme | 7 bài |
+| 5 | [05-plugins](./05-plugins/) | Phát triển Plugin | 8 bài |
+| 6 | [06-admin](./06-admin/) | Quản trị WordPress Admin | 10 bài |
+| 7 | [07-nang-cao](./07-nang-cao/) | Nâng cao (REST API, Gutenberg, Bảo mật, Hiệu năng) | 4 bài |
+
+**Tổng cộng: 44 bài học + 8 file index điều hướng**
 
 ---
 
@@ -9,329 +26,190 @@
 
 ### Giai đoạn 1: Nền Tảng WordPress (Tuần 1-2)
 
-> Mục tiêu: Hiểu WordPress hoạt động như thế nào từ bên trong.
+> **Mục tiêu**: Hiểu WordPress hoạt động như thế nào từ bên trong.
 
-| Bước | File | Nội dung | Độ khó |
-|------|------|----------|--------|
-| 1.1 | [WORDPRESS_LEARNING_PATH.md](./WORDPRESS_LEARNING_PATH.md) | Lộ trình tổng quan 8 giai đoạn, study plan 6-9 tháng | Cơ bản |
-| 1.2 | [CAU_TRUC_SOURCE_CODE.md](./CAU_TRUC_SOURCE_CODE.md) | Phân tích cấu trúc thư mục WP, các file chính, design patterns | Cơ bản |
-| 1.3 | [WORDPRESS_FLOW.md](./WORDPRESS_FLOW.md) | Luồng xử lý request từ index.php → HTML output | Cơ bản |
-| 1.4 | [WORDPRESS_ROUTING.md](./WORDPRESS_ROUTING.md) | Hệ thống URL Rewriting, Rewrite API, Template Hierarchy | Cơ bản |
+| Bước | Bài học | Nội dung | Độ khó |
+|------|---------|----------|--------|
+| 1.0 | [Lộ trình tổng quan](./00-gioi-thieu/lo-trinh-hoc-tap.md) | Lộ trình 8 giai đoạn, study plan 6-9 tháng | Tổng quan |
+| 1.1 | [Cấu trúc source code](./01-nen-tang/cau-truc-source-code.md) | Phân tích cấu trúc thư mục WP, design patterns | Cơ bản |
+| 1.2 | [Luồng xử lý request](./01-nen-tang/luong-xu-ly-request.md) | Từ `index.php` → HTML output | Cơ bản |
+| 1.3 | [Hệ thống routing](./01-nen-tang/he-thong-routing.md) | URL Rewriting, Rewrite API, Template Hierarchy | Cơ bản |
+| 1.4 | [WP-CLI](./01-nen-tang/wp-cli.md) | Công cụ dòng lệnh (tương đương `php artisan`) | Trung bình |
 
 ---
 
 ### Giai đoạn 2: WordPress Hooks (Tuần 3-4)
 
-> Mục tiêu: Nắm vững hệ thống Hooks - trái tim của WordPress.
-> So sánh: Hooks = Events/Listeners trong Laravel.
+> **Mục tiêu**: Nắm vững hệ thống Hooks - trái tim của WordPress.
+> **So sánh**: Hooks = Events/Listeners trong Laravel.
 
-| Bước | File | Nội dung | Độ khó |
-|------|------|----------|--------|
-| 2.1 | [WORDPRESS_HOOKS.md](./WORDPRESS_HOOKS.md) | Tổng quan nhanh về Action & Filter Hooks | Cơ bản |
-| 2.2 | [hooks/01-hooks-co-ban.md](./hooks/01-hooks-co-ban.md) | add_action, add_filter, remove, priority, closures, so sánh Laravel | Cơ bản |
-| 2.3 | [hooks/02-action-hooks-quan-trong.md](./hooks/02-action-hooks-quan-trong.md) | init, admin_menu, wp_enqueue_scripts, save_post, wp_ajax... | Trung bình |
-| 2.4 | [hooks/03-filter-hooks-quan-trong.md](./hooks/03-filter-hooks-quan-trong.md) | the_content, pre_get_posts, body_class, upload_mimes, wp_mail... | Trung bình |
-| 2.5 | [hooks/04-hooks-lifecycle.md](./hooks/04-hooks-lifecycle.md) | Vòng đời request: Frontend, Admin, AJAX, REST, Cron lifecycle | Trung bình |
-| 2.6 | [hooks/05-custom-hooks.md](./hooks/05-custom-hooks.md) | Tạo do_action, apply_filters riêng, Observer Pattern | Nâng cao |
-| 2.7 | [hooks/06-hooks-trong-plugin.md](./hooks/06-hooks-trong-plugin.md) | Activation/deactivation hooks, conditional hooks, remove hooks | Nâng cao |
-| 2.8 | [hooks/07-hooks-nang-cao.md](./hooks/07-hooks-nang-cao.md) | OOP callbacks, WP_Hook class, dynamic hooks, performance, testing | Nâng cao |
-
----
-
-### Giai đoạn 3: Phát Triển Plugin (Tuần 5-8)
-
-> Mục tiêu: Tạo được plugin WordPress hoàn chỉnh.
-> So sánh: Plugin = Service Provider / Package trong Laravel.
-
-| Bước | File | Nội dung | Độ khó |
-|------|------|----------|--------|
-| 3.1 | [TAO_PLUGIN_CO_BAN.md](./TAO_PLUGIN_CO_BAN.md) | Bản tổng hợp nhanh về tạo plugin (đọc lướt) | Trung bình |
-| 3.2 | [plugins/01-plugin-co-ban.md](./plugins/01-plugin-co-ban.md) | Plugin là gì, Headers, cấu trúc, Activation/Deactivation, Hello World | Cơ bản |
-| 3.3 | [plugins/02-menu-va-settings-api.md](./plugins/02-menu-va-settings-api.md) | Admin Menu, Settings API, Tabs, các loại field, validate & sanitize | Trung bình |
-| 3.4 | [plugins/03-shortcodes-va-widgets.md](./plugins/03-shortcodes-va-widgets.md) | Shortcodes, nested shortcodes, Widgets API, WP_Widget class | Trung bình |
-| 3.5 | [plugins/04-database-va-crud.md](./plugins/04-database-va-crud.md) | $wpdb, Custom Tables, dbDelta, CRUD hoàn chỉnh, so sánh Eloquent | Trung bình |
-| 3.6 | [plugins/05-ajax-va-rest-api.md](./plugins/05-ajax-va-rest-api.md) | WordPress AJAX, REST API, Custom Endpoints, so sánh Laravel Route | Nâng cao |
-| 3.7 | [plugins/06-plugin-oop-architecture.md](./plugins/06-plugin-oop-architecture.md) | Singleton, Autoloading, Namespaces, MVC, Plugin Boilerplate | Nâng cao |
-| 3.8 | [plugins/07-bao-mat-plugin.md](./plugins/07-bao-mat-plugin.md) | Sanitize, Escape, Nonces, SQL Injection, XSS, CSRF, File Upload | Nâng cao |
-| 3.9 | [plugins/08-plugin-nang-cao.md](./plugins/08-plugin-nang-cao.md) | CPT, Meta Boxes, Cron Jobs, Email, i18n, Unit Testing, Packaging | Nâng cao |
+| Bước | Bài học | Nội dung | Độ khó |
+|------|---------|----------|--------|
+| 2.1 | [Hooks cơ bản](./02-hooks/01-hooks-co-ban.md) | `add_action`, `add_filter`, priority, closures | Cơ bản |
+| 2.2 | [Action Hooks quan trọng](./02-hooks/02-action-hooks-quan-trong.md) | `init`, `admin_menu`, `wp_enqueue_scripts`, `save_post`... | Trung bình |
+| 2.3 | [Filter Hooks quan trọng](./02-hooks/03-filter-hooks-quan-trong.md) | `the_content`, `pre_get_posts`, `body_class`... | Trung bình |
+| 2.4 | [Hooks Lifecycle](./02-hooks/04-hooks-lifecycle.md) | Vòng đời: Frontend, Admin, AJAX, REST, Cron | Trung bình |
+| 2.5 | [Custom Hooks](./02-hooks/05-custom-hooks.md) | Tạo `do_action`, `apply_filters` riêng | Nâng cao |
+| 2.6 | [Hooks trong Plugin](./02-hooks/06-hooks-trong-plugin.md) | Activation/deactivation, conditional, remove hooks | Nâng cao |
+| 2.7 | [Hooks nâng cao](./02-hooks/07-hooks-nang-cao.md) | OOP callbacks, WP_Hook class, testing | Nâng cao |
 
 ---
 
-### Giai đoạn 4: Phát Triển Theme (Tuần 9-12)
+### Giai đoạn 3: Cơ Sở Dữ Liệu (Tuần 5-6)
 
-> Mục tiêu: Tạo được theme WordPress từ đầu.
-> So sánh: Theme = Views / Blade Templates trong Laravel.
+> **Mục tiêu**: Thành thạo truy vấn dữ liệu trong WordPress.
+> **So sánh**: `$wpdb` = DB Facade, `WP_Query` = Eloquent trong Laravel.
 
-| Bước | File | Nội dung | Độ khó |
-|------|------|----------|--------|
-| 4.1 | [HUONG_DAN_THEME.md](./HUONG_DAN_THEME.md) | Download, cài đặt, sử dụng theme có sẵn (đọc nhanh) | Cơ bản |
-| 4.2 | [TAO_THEME_CO_BAN.md](./TAO_THEME_CO_BAN.md) | Bản tổng hợp nhanh về tạo theme (đọc lướt) | Trung bình |
-| 4.3 | [themes/01-theme-co-ban.md](./themes/01-theme-co-ban.md) | style.css header, functions.php, enqueue assets, Hello World theme | Cơ bản |
-| 4.4 | [themes/02-template-hierarchy.md](./themes/02-template-hierarchy.md) | Template Hierarchy, template files, conditional tags, template parts | Trung bình |
-| 4.5 | [themes/03-the-loop-va-wp-query.md](./themes/03-the-loop-va-wp-query.md) | The Loop, WP_Query, Multiple Loops, Pagination, pre_get_posts | Trung bình |
-| 4.6 | [themes/04-menus-widgets-sidebars.md](./themes/04-menus-widgets-sidebars.md) | Navigation Menus, Custom Walker, Mega Menu, Sidebars, Widget Areas | Trung bình |
-| 4.7 | [themes/05-customizer-api.md](./themes/05-customizer-api.md) | Theme Customizer, Panels, Sections, Controls, Live Preview | Nâng cao |
-| 4.8 | [themes/06-block-theme-va-fse.md](./themes/06-block-theme-va-fse.md) | Block Theme, theme.json, Full Site Editing, Block Patterns | Nâng cao |
-| 4.9 | [themes/07-theme-nang-cao.md](./themes/07-theme-nang-cao.md) | Child Theme, WooCommerce, Responsive, a11y, i18n, Packaging | Nâng cao |
+| Bước | Bài học | Nội dung | Độ khó |
+|------|---------|----------|--------|
+| 3.1 | [Database & $wpdb](./03-database/01-database-va-wpdb.md) | Schema, `$wpdb`, `WP_Query`, Meta Query, Tax Query | Trung bình |
+| 3.2 | [Database Schema chi tiết](./03-database/02-database-schema.md) | Phân tích từng bảng, từng cột, ERD, Roles | Nâng cao |
+| 3.3 | [Custom Post Type & Taxonomy](./03-database/03-custom-post-type-taxonomy.md) | `register_post_type`, Meta Boxes, Admin Columns | Trung bình |
 
 ---
 
-### Giai đoạn 5: Quản Lý Admin WordPress (Tuần 13-16)
+### Giai đoạn 4: Phát Triển Theme (Tuần 7-10)
 
-> Mục tiêu: Hiểu tường tận phần Admin Dashboard và cách quản lý WordPress.
+> **Mục tiêu**: Tạo được theme WordPress từ đầu.
+> **So sánh**: Theme = Views / Blade Templates trong Laravel.
 
-| Bước | File | Nội dung | Độ khó |
-|------|------|----------|--------|
-| 5.1 | [admin/INDEX.md](./admin/INDEX.md) | Mục lục điều hướng toàn bộ phần Admin | - |
-| 5.2 | [admin/01-tong-quan-admin.md](./admin/01-tong-quan-admin.md) | Bootstrap flow, Admin Menu, Hooks, Setup cấu hình đầu tiên | Cơ bản |
-| 5.3 | [admin/02-dashboard.md](./admin/02-dashboard.md) | Dashboard widgets, Screen Options, Custom widgets | Trung bình |
-| 5.4 | [admin/03-quan-ly-bai-viet.md](./admin/03-quan-ly-bai-viet.md) | Posts list, Editor, Meta Boxes, Custom Columns, Bulk Actions | Trung bình |
-| 5.5 | [admin/04-quan-ly-media.md](./admin/04-quan-ly-media.md) | Media Library, Upload flow, Image Sizes, EXIF | Trung bình |
-| 5.6 | [admin/05-quan-ly-binh-luan.md](./admin/05-quan-ly-binh-luan.md) | Comments list, Moderation, Reply, Anti-spam | Trung bình |
-| 5.7 | [admin/06-giao-dien.md](./admin/06-giao-dien.md) | Themes, Customizer, Widgets, Menus, FSE | Nâng cao |
-| 5.8 | [admin/07-quan-ly-plugin.md](./admin/07-quan-ly-plugin.md) | Plugins list, Activate/Deactivate, Install, Recovery Mode | Nâng cao |
-| 5.9 | [admin/08-quan-ly-nguoi-dung.md](./admin/08-quan-ly-nguoi-dung.md) | Users, Roles & Capabilities, Profile, Sessions | Nâng cao |
-| 5.10 | [admin/09-cong-cu.md](./admin/09-cong-cu.md) | Import, Export, Site Health, GDPR Tools | Trung bình |
-| 5.11 | [admin/10-cai-dat.md](./admin/10-cai-dat.md) | 7 trang Settings, Settings API, Custom Settings Page | Nâng cao |
+| Bước | Bài học | Nội dung | Độ khó |
+|------|---------|----------|--------|
+| 4.1 | [Theme cơ bản](./04-themes/01-theme-co-ban.md) | `style.css`, `functions.php`, Hello World theme | Cơ bản |
+| 4.2 | [Template Hierarchy](./04-themes/02-template-hierarchy.md) | Cách WP chọn template, conditional tags | Trung bình |
+| 4.3 | [The Loop & WP_Query](./04-themes/03-the-loop-va-wp-query.md) | The Loop, Custom Loops, Pagination | Trung bình |
+| 4.4 | [Menus, Widgets, Sidebars](./04-themes/04-menus-widgets-sidebars.md) | Navigation Menus, Walker, Sidebars | Trung bình |
+| 4.5 | [Customizer API](./04-themes/05-customizer-api.md) | Panels, Sections, Controls, Live Preview | Nâng cao |
+| 4.6 | [Block Theme & FSE](./04-themes/06-block-theme-va-fse.md) | `theme.json`, Block Patterns, Full Site Editing | Nâng cao |
+| 4.7 | [Theme nâng cao](./04-themes/07-theme-nang-cao.md) | Child Theme, WooCommerce, a11y, i18n, Packaging | Nâng cao |
 
 ---
 
-### Giai đoạn 6: Chuyên Sâu (Tuần 17-20+)
+### Giai đoạn 5: Phát Triển Plugin (Tuần 11-14)
 
-> Mục tiêu: Database, REST API, Gutenberg, Bảo mật, Hiệu năng, CLI.
+> **Mục tiêu**: Tạo được plugin WordPress hoàn chỉnh.
+> **So sánh**: Plugin = Service Provider / Package trong Laravel.
 
-| Bước | File | Nội dung | Độ khó |
-|------|------|----------|--------|
-| 6.1 | [DATABASE_VA_WP_QUERY.md](./DATABASE_VA_WP_QUERY.md) | Schema database, $wpdb, WP_Query, Meta Query, Tax Query | Trung bình |
-| 6.2 | [DATABASE_SCHEMA_CHI_TIET.md](./DATABASE_SCHEMA_CHI_TIET.md) | Phân tích chi tiết từng bảng, từng cột từ schema.php, ERD, Roles | Nâng cao |
-| 6.3 | [CUSTOM_POST_TYPE_TAXONOMY.md](./CUSTOM_POST_TYPE_TAXONOMY.md) | register_post_type, register_taxonomy, Meta Boxes, Admin Columns | Trung bình |
-| 6.4 | [REST_API.md](./REST_API.md) | Endpoints, Authentication, Custom Endpoints, Controller, CRUD API | Nâng cao |
-| 6.5 | [GUTENBERG_BLOCK_EDITOR.md](./GUTENBERG_BLOCK_EDITOR.md) | Custom Block, Attributes, InspectorControls, Dynamic Blocks | Nâng cao |
-| 6.6 | [BAO_MAT_WORDPRESS.md](./BAO_MAT_WORDPRESS.md) | Sanitize, Escape, Nonces, SQL Injection, XSS, Security Constants | Nâng cao |
-| 6.7 | [HIEU_NANG_TOI_UU.md](./HIEU_NANG_TOI_UU.md) | Object Cache, Page Cache, Transients, DB Optimization, CDN | Nâng cao |
-| 6.8 | [WP_CLI.md](./WP_CLI.md) | Cài đặt, lệnh cơ bản, scaffold, search-replace, Custom Command | Trung bình |
+| Bước | Bài học | Nội dung | Độ khó |
+|------|---------|----------|--------|
+| 5.1 | [Plugin cơ bản](./05-plugins/01-plugin-co-ban.md) | Headers, cấu trúc, Activation/Deactivation, Hello World | Cơ bản |
+| 5.2 | [Menu & Settings API](./05-plugins/02-menu-va-settings-api.md) | Admin Menu, Settings API, Tabs, Fields | Trung bình |
+| 5.3 | [Shortcodes & Widgets](./05-plugins/03-shortcodes-va-widgets.md) | Shortcodes, nested, Widgets API, WP_Widget | Trung bình |
+| 5.4 | [Database & CRUD](./05-plugins/04-database-va-crud.md) | `$wpdb`, Custom Tables, CRUD, Meta API | Trung bình |
+| 5.5 | [AJAX & REST API](./05-plugins/05-ajax-va-rest-api.md) | WordPress AJAX, REST Custom Endpoints | Nâng cao |
+| 5.6 | [Kiến trúc OOP](./05-plugins/06-plugin-oop-architecture.md) | Singleton, Autoloading, Namespaces, MVC | Nâng cao |
+| 5.7 | [Bảo mật Plugin](./05-plugins/07-bao-mat-plugin.md) | Sanitize, Escape, Nonces, Capability Checks | Nâng cao |
+| 5.8 | [Plugin nâng cao](./05-plugins/08-plugin-nang-cao.md) | CPT, Cron, Email, i18n, Unit Testing | Nâng cao |
+
+---
+
+### Giai đoạn 6: Quản Trị WordPress (Tuần 15-18)
+
+> **Mục tiêu**: Hiểu tường tận phần Admin Dashboard và cách quản lý WordPress.
+
+| Bước | Bài học | Nội dung | Độ khó |
+|------|---------|----------|--------|
+| 6.1 | [Tổng quan Admin](./06-admin/01-tong-quan-admin.md) | Bootstrap flow, Menu, Hooks, Setup cấu hình | Cơ bản |
+| 6.2 | [Dashboard](./06-admin/02-dashboard.md) | Dashboard widgets, Screen Options | Trung bình |
+| 6.3 | [Quản lý Bài viết](./06-admin/03-quan-ly-bai-viet.md) | Posts, Editor, Meta Boxes, Custom Columns | Trung bình |
+| 6.4 | [Quản lý Media](./06-admin/04-quan-ly-media.md) | Upload, Image Sizes, Media Library | Trung bình |
+| 6.5 | [Quản lý Bình luận](./06-admin/05-quan-ly-binh-luan.md) | Comments, Moderation, Anti-spam | Trung bình |
+| 6.6 | [Giao diện](./06-admin/06-giao-dien.md) | Themes, Customizer, Widgets, Menus, FSE | Nâng cao |
+| 6.7 | [Quản lý Plugins](./06-admin/07-quan-ly-plugin.md) | Install, Activate, Recovery Mode | Nâng cao |
+| 6.8 | [Quản lý Người dùng](./06-admin/08-quan-ly-nguoi-dung.md) | Users, Roles, Capabilities, Sessions | Nâng cao |
+| 6.9 | [Công cụ](./06-admin/09-cong-cu.md) | Import, Export, Site Health, GDPR Tools | Trung bình |
+| 6.10 | [Cài đặt](./06-admin/10-cai-dat.md) | 7 trang Settings, Settings API | Nâng cao |
+
+---
+
+### Giai đoạn 7: Chuyên Sâu (Tuần 19+)
+
+> **Mục tiêu**: REST API, Gutenberg, Bảo mật, Hiệu năng - nâng cao kỹ năng chuyên sâu.
+
+| Bước | Bài học | Nội dung | Độ khó |
+|------|---------|----------|--------|
+| 7.1 | [REST API](./07-nang-cao/01-rest-api.md) | Endpoints, Authentication, Custom Endpoints, CRUD | Nâng cao |
+| 7.2 | [Gutenberg Block Editor](./07-nang-cao/02-gutenberg-block-editor.md) | Custom Blocks, Attributes, Dynamic Blocks, Patterns | Nâng cao |
+| 7.3 | [Bảo mật WordPress](./07-nang-cao/03-bao-mat-wordpress.md) | Sanitize, Escape, Nonces, SQL Injection, XSS | Nâng cao |
+| 7.4 | [Tối ưu Hiệu năng](./07-nang-cao/04-hieu-nang-toi-uu.md) | Object Cache, Page Cache, CDN, Profiling | Nâng cao |
 
 ---
 
 ## Bản Đồ Học Tập
 
 ```
- GIAI ĐOẠN 1: NỀN TẢNG
+ PHẦN 0: GIỚI THIỆU
  ┌─────────────────────────────────────────────────────────┐
- │  WORDPRESS_LEARNING_PATH  →  Lộ trình tổng quan         │
- │  CAU_TRUC_SOURCE_CODE     →  Cấu trúc thư mục WP       │
- │  WORDPRESS_FLOW           →  Luồng xử lý request        │
- │  WORDPRESS_ROUTING        →  Hệ thống routing            │
+ │  00-gioi-thieu/lo-trinh-hoc-tap.md                      │
+ │  → Lộ trình tổng quan 8 giai đoạn                       │
  └────────────────────────────┬────────────────────────────┘
-                              │
                               ▼
- GIAI ĐOẠN 2: HOOKS (trái tim WordPress)
+ PHẦN 1: NỀN TẢNG WORDPRESS
  ┌─────────────────────────────────────────────────────────┐
- │  WORDPRESS_HOOKS          →  Tổng quan nhanh             │
- │  hooks/01-hooks-co-ban    →  Cơ bản: add_action/filter   │
- │  hooks/02-action-hooks    →  Action hooks quan trọng     │
- │  hooks/03-filter-hooks    →  Filter hooks quan trọng     │
- │  hooks/04-lifecycle       →  Vòng đời request            │
- │  hooks/05-custom-hooks    →  Tạo hooks riêng             │
- │  hooks/06-trong-plugin    →  Hooks trong plugin          │
- │  hooks/07-nang-cao        →  Kỹ thuật nâng cao           │
+ │  01-nen-tang/                                            │
+ │  ├── cau-truc-source-code   → Cấu trúc thư mục WP      │
+ │  ├── luong-xu-ly-request    → Luồng request → response  │
+ │  ├── he-thong-routing       → URL Rewriting & Routing   │
+ │  └── wp-cli                 → Công cụ dòng lệnh         │
+ └────────────────────────────┬────────────────────────────┘
+                              ▼
+ PHẦN 2: HỆ THỐNG HOOKS (trái tim WordPress)
+ ┌─────────────────────────────────────────────────────────┐
+ │  02-hooks/                                               │
+ │  ├── 01 Hooks cơ bản        → add_action, add_filter    │
+ │  ├── 02 Action Hooks        → init, save_post, wp_head  │
+ │  ├── 03 Filter Hooks        → the_content, pre_get_posts│
+ │  ├── 04 Hooks Lifecycle     → Vòng đời thực thi         │
+ │  ├── 05 Custom Hooks        → Tạo hooks riêng           │
+ │  ├── 06 Hooks trong Plugin  → Best practices             │
+ │  └── 07 Hooks nâng cao      → OOP, WP_Hook, testing     │
+ └────────────────────────────┬────────────────────────────┘
+                              ▼
+ PHẦN 3: CƠ SỞ DỮ LIỆU
+ ┌─────────────────────────────────────────────────────────┐
+ │  03-database/                                            │
+ │  ├── 01 Database & $wpdb    → Schema, WP_Query, Meta    │
+ │  ├── 02 Schema chi tiết     → Từng bảng, từng cột, ERD │
+ │  └── 03 CPT & Taxonomy      → Custom Post Types         │
  └───────────┬─────────────────────────────┬───────────────┘
-             │                             │
              ▼                             ▼
- GIAI ĐOẠN 3: PLUGIN                GIAI ĐOẠN 4: THEME
- ┌───────────────────────┐          ┌───────────────────────┐
- │  TAO_PLUGIN_CO_BAN    │          │  HUONG_DAN_THEME      │
- │  plugins/01 cơ bản    │          │  TAO_THEME_CO_BAN     │
- │  plugins/02 menu      │          │  themes/01 cơ bản     │
- │  plugins/03 shortcode │          │  themes/02 hierarchy  │
- │  plugins/04 database  │          │  themes/03 loop       │
- │  plugins/05 ajax/rest │          │  themes/04 menus      │
- │  plugins/06 oop       │          │  themes/05 customizer │
- │  plugins/07 bảo mật   │          │  themes/06 block/FSE  │
- │  plugins/08 nâng cao  │          │  themes/07 nâng cao   │
- └───────────┬───────────┘          └───────────┬───────────┘
-             │                                  │
-             └──────────────┬───────────────────┘
+ PHẦN 4: THEME                    PHẦN 5: PLUGIN
+ ┌───────────────────────┐        ┌───────────────────────┐
+ │  04-themes/            │        │  05-plugins/           │
+ │  ├── 01 Cơ bản        │        │  ├── 01 Cơ bản        │
+ │  ├── 02 Hierarchy     │        │  ├── 02 Menu/Settings │
+ │  ├── 03 The Loop      │        │  ├── 03 Shortcodes    │
+ │  ├── 04 Menus/Widgets │        │  ├── 04 Database/CRUD │
+ │  ├── 05 Customizer    │        │  ├── 05 AJAX/REST     │
+ │  ├── 06 Block/FSE     │        │  ├── 06 OOP           │
+ │  └── 07 Nâng cao      │        │  ├── 07 Bảo mật       │
+ │                        │        │  └── 08 Nâng cao      │
+ └───────────┬────────────┘        └───────────┬───────────┘
+             └──────────────┬──────────────────┘
                             ▼
- GIAI ĐOẠN 5: QUẢN LÝ ADMIN
+ PHẦN 6: QUẢN TRỊ ADMIN
  ┌─────────────────────────────────────────────────────────┐
- │  admin/01 tổng quan       →  Bootstrap, Menu, Setup      │
- │  admin/02 dashboard       →  Dashboard Widgets            │
- │  admin/03 bài viết        →  Posts, Editor, Meta Boxes    │
- │  admin/04 media           →  Upload, Image Sizes          │
- │  admin/05 bình luận       →  Comments, Moderation         │
- │  admin/06 giao diện       →  Themes, Customizer, Menus    │
- │  admin/07 plugin          →  Activate, Install, Recovery  │
- │  admin/08 người dùng      →  Users, Roles, Capabilities   │
- │  admin/09 công cụ         →  Import, Export, Site Health   │
- │  admin/10 cài đặt         →  Settings API, 7 trang cài đặt│
+ │  06-admin/                                               │
+ │  ├── 01 Tổng quan          → Bootstrap, Menu, Setup     │
+ │  ├── 02 Dashboard          → Dashboard Widgets           │
+ │  ├── 03 Bài viết           → Posts, Editor, Meta Boxes  │
+ │  ├── 04 Media              → Upload, Image Sizes        │
+ │  ├── 05 Bình luận          → Comments, Moderation       │
+ │  ├── 06 Giao diện          → Themes, Customizer, Menus  │
+ │  ├── 07 Plugins            → Install, Activate, Recovery│
+ │  ├── 08 Người dùng         → Users, Roles, Capabilities │
+ │  ├── 09 Công cụ            → Import, Export, Site Health │
+ │  └── 10 Cài đặt            → Settings API, 7 trang      │
  └────────────────────────────┬────────────────────────────┘
                               ▼
- GIAI ĐOẠN 6: CHUYÊN SÂU
+ PHẦN 7: CHUYÊN SÂU
  ┌─────────────────────────────────────────────────────────┐
- │  DATABASE_VA_WP_QUERY        →  Database & truy vấn      │
- │  DATABASE_SCHEMA_CHI_TIET    →  Chi tiết schema từng cột  │
- │  CUSTOM_POST_TYPE_TAXONOMY   →  CPT & Taxonomy           │
- │  REST_API                    →  REST API đầy đủ          │
- │  GUTENBERG_BLOCK_EDITOR      →  Gutenberg Block          │
- │  BAO_MAT_WORDPRESS           →  Bảo mật tổng hợp        │
- │  HIEU_NANG_TOI_UU            →  Tối ưu hiệu năng        │
- │  WP_CLI                      →  Công cụ dòng lệnh        │
+ │  07-nang-cao/                                            │
+ │  ├── 01 REST API            → Endpoints, Authentication │
+ │  ├── 02 Gutenberg           → Custom Blocks, theme.json │
+ │  ├── 03 Bảo mật             → Sanitize, Escape, Nonces │
+ │  └── 04 Hiệu năng           → Cache, CDN, Profiling    │
  └─────────────────────────────────────────────────────────┘
-```
-
----
-
-## Danh Sách Toàn Bộ Files (50 files)
-
-### Thư mục gốc `/wp-study/` (17 files)
-
-| STT | File | Nội dung | Dòng |
-|-----|------|----------|------|
-| 1 | [INDEX.md](./INDEX.md) | File điều hướng này | - |
-| 2 | [WORDPRESS_LEARNING_PATH.md](./WORDPRESS_LEARNING_PATH.md) | Lộ trình học 8 giai đoạn | ~182 |
-| 3 | [CAU_TRUC_SOURCE_CODE.md](./CAU_TRUC_SOURCE_CODE.md) | Phân tích cấu trúc source code WordPress | ~2,054 |
-| 4 | [WORDPRESS_FLOW.md](./WORDPRESS_FLOW.md) | Luồng xử lý request trong WordPress | ~528 |
-| 5 | [WORDPRESS_ROUTING.md](./WORDPRESS_ROUTING.md) | Hệ thống routing trong WordPress | ~573 |
-| 6 | [WORDPRESS_HOOKS.md](./WORDPRESS_HOOKS.md) | Tổng quan Hooks (Action & Filter) | ~836 |
-| 7 | [HUONG_DAN_THEME.md](./HUONG_DAN_THEME.md) | Hướng dẫn download, cài theme có sẵn | ~409 |
-| 8 | [TAO_THEME_CO_BAN.md](./TAO_THEME_CO_BAN.md) | Tổng hợp tạo theme cơ bản | ~1,562 |
-| 9 | [TAO_PLUGIN_CO_BAN.md](./TAO_PLUGIN_CO_BAN.md) | Tổng hợp tạo plugin cơ bản | ~1,381 |
-| 10 | [DATABASE_VA_WP_QUERY.md](./DATABASE_VA_WP_QUERY.md) | Database, $wpdb, WP_Query, Meta Query | ~2,802 |
-| 11 | [DATABASE_SCHEMA_CHI_TIET.md](./DATABASE_SCHEMA_CHI_TIET.md) | Chi tiết từng bảng, từng cột, ERD, Roles | ~1,200 |
-| 12 | [CUSTOM_POST_TYPE_TAXONOMY.md](./CUSTOM_POST_TYPE_TAXONOMY.md) | Custom Post Types & Taxonomies | ~1,660 |
-| 13 | [REST_API.md](./REST_API.md) | WordPress REST API đầy đủ | ~2,941 |
-| 14 | [GUTENBERG_BLOCK_EDITOR.md](./GUTENBERG_BLOCK_EDITOR.md) | Gutenberg Block Editor | ~2,808 |
-| 15 | [BAO_MAT_WORDPRESS.md](./BAO_MAT_WORDPRESS.md) | Bảo mật WordPress | ~2,350 |
-| 16 | [HIEU_NANG_TOI_UU.md](./HIEU_NANG_TOI_UU.md) | Tối ưu hiệu năng | ~2,109 |
-| 17 | [WP_CLI.md](./WP_CLI.md) | WP-CLI công cụ dòng lệnh | ~2,018 |
-
-### Thư mục `hooks/` (7 files)
-
-| STT | File | Nội dung | Dòng |
-|-----|------|----------|------|
-| 18 | [01-hooks-co-ban.md](./hooks/01-hooks-co-ban.md) | Hooks cơ bản, add_action, add_filter, priority | ~1,277 |
-| 19 | [02-action-hooks-quan-trong.md](./hooks/02-action-hooks-quan-trong.md) | Danh sách Action Hooks quan trọng nhất | ~2,057 |
-| 20 | [03-filter-hooks-quan-trong.md](./hooks/03-filter-hooks-quan-trong.md) | Danh sách Filter Hooks quan trọng nhất | ~1,593 |
-| 21 | [04-hooks-lifecycle.md](./hooks/04-hooks-lifecycle.md) | Vòng đời hooks trong WordPress | ~988 |
-| 22 | [05-custom-hooks.md](./hooks/05-custom-hooks.md) | Tạo Custom Hooks riêng | ~1,658 |
-| 23 | [06-hooks-trong-plugin.md](./hooks/06-hooks-trong-plugin.md) | Best practices hooks trong plugin | ~1,593 |
-| 24 | [07-hooks-nang-cao.md](./hooks/07-hooks-nang-cao.md) | Hooks nâng cao: OOP, WP_Hook, testing | ~1,709 |
-
-### Thư mục `plugins/` (8 files)
-
-| STT | File | Nội dung | Dòng |
-|-----|------|----------|------|
-| 25 | [01-plugin-co-ban.md](./plugins/01-plugin-co-ban.md) | Plugin cơ bản, Headers, Hello World | ~1,120 |
-| 26 | [02-menu-va-settings-api.md](./plugins/02-menu-va-settings-api.md) | Admin Menu, Settings API, Tabs, Fields | ~2,252 |
-| 27 | [03-shortcodes-va-widgets.md](./plugins/03-shortcodes-va-widgets.md) | Shortcodes, Widgets API, WP_Widget | ~1,838 |
-| 28 | [04-database-va-crud.md](./plugins/04-database-va-crud.md) | $wpdb, Custom Tables, CRUD hoàn chỉnh | ~1,802 |
-| 29 | [05-ajax-va-rest-api.md](./plugins/05-ajax-va-rest-api.md) | WordPress AJAX, REST API trong plugin | ~1,545 |
-| 30 | [06-plugin-oop-architecture.md](./plugins/06-plugin-oop-architecture.md) | Singleton, Autoloading, MVC, Boilerplate | ~1,666 |
-| 31 | [07-bao-mat-plugin.md](./plugins/07-bao-mat-plugin.md) | Bảo mật plugin: Sanitize, Escape, Nonces | ~1,441 |
-| 32 | [08-plugin-nang-cao.md](./plugins/08-plugin-nang-cao.md) | CPT, Cron, Email, i18n, Testing, Packaging | ~1,565 |
-
-### Thư mục `themes/` (7 files)
-
-| STT | File | Nội dung | Dòng |
-|-----|------|----------|------|
-| 33 | [01-theme-co-ban.md](./themes/01-theme-co-ban.md) | Theme cơ bản, style.css, functions.php | ~2,045 |
-| 34 | [02-template-hierarchy.md](./themes/02-template-hierarchy.md) | Template Hierarchy, conditional tags | ~2,239 |
-| 35 | [03-the-loop-va-wp-query.md](./themes/03-the-loop-va-wp-query.md) | The Loop, WP_Query, Pagination | ~1,876 |
-| 36 | [04-menus-widgets-sidebars.md](./themes/04-menus-widgets-sidebars.md) | Menus, Walker, Sidebars, Widget Areas | ~1,905 |
-| 37 | [05-customizer-api.md](./themes/05-customizer-api.md) | Theme Customizer API, Controls, Preview | ~1,700 |
-| 38 | [06-block-theme-va-fse.md](./themes/06-block-theme-va-fse.md) | Block Theme, theme.json, FSE | ~1,841 |
-| 39 | [07-theme-nang-cao.md](./themes/07-theme-nang-cao.md) | Child Theme, WooCommerce, a11y, Packaging | ~1,709 |
-
-### Thư mục `admin/` (11 files)
-
-| STT | File | Nội dung | Dòng |
-|-----|------|----------|------|
-| 40 | [INDEX.md](./admin/INDEX.md) | Mục lục điều hướng phần Admin | ~222 |
-| 41 | [01-tong-quan-admin.md](./admin/01-tong-quan-admin.md) | Tổng quan WP Admin, Bootstrap, Menu, Setup | ~2,051 |
-| 42 | [02-dashboard.md](./admin/02-dashboard.md) | Dashboard, Widgets, Screen Options | ~1,280 |
-| 43 | [03-quan-ly-bai-viet.md](./admin/03-quan-ly-bai-viet.md) | Posts, Editor, Meta Boxes, Custom Columns | ~1,996 |
-| 44 | [04-quan-ly-media.md](./admin/04-quan-ly-media.md) | Media Library, Upload flow, Image Sizes | ~1,352 |
-| 45 | [05-quan-ly-binh-luan.md](./admin/05-quan-ly-binh-luan.md) | Comments, Moderation, Reply, Anti-spam | ~1,323 |
-| 46 | [06-giao-dien.md](./admin/06-giao-dien.md) | Themes, Customizer, Widgets, Menus, FSE | ~1,660 |
-| 47 | [07-quan-ly-plugin.md](./admin/07-quan-ly-plugin.md) | Plugins, Activate/Deactivate, Install, Recovery | ~1,595 |
-| 48 | [08-quan-ly-nguoi-dung.md](./admin/08-quan-ly-nguoi-dung.md) | Users, Roles & Capabilities, Profile, Sessions | ~1,767 |
-| 49 | [09-cong-cu.md](./admin/09-cong-cu.md) | Import, Export, Site Health, GDPR Tools | ~1,340 |
-| 50 | [10-cai-dat.md](./admin/10-cai-dat.md) | 7 trang Settings, Settings API, Custom Page | ~2,158 |
-
----
-
-## Cấu Trúc Thư Mục
-
-```
-wp-study/
-│
-├── INDEX.md                          ← BẠN ĐANG Ở ĐÂY
-│
-├── ─── GIAI ĐOẠN 1: NỀN TẢNG ────────────────────────
-├── WORDPRESS_LEARNING_PATH.md        ← Lộ trình học tập
-├── CAU_TRUC_SOURCE_CODE.md           ← Cấu trúc source code WP
-├── WORDPRESS_FLOW.md                 ← Luồng xử lý request
-├── WORDPRESS_ROUTING.md              ← Hệ thống routing
-│
-├── ─── GIAI ĐOẠN 2: HOOKS ────────────────────────────
-├── WORDPRESS_HOOKS.md                ← Tổng quan hooks
-├── hooks/
-│   ├── 01-hooks-co-ban.md            ← Hooks cơ bản
-│   ├── 02-action-hooks-quan-trong.md ← Action Hooks quan trọng
-│   ├── 03-filter-hooks-quan-trong.md ← Filter Hooks quan trọng
-│   ├── 04-hooks-lifecycle.md         ← Vòng đời hooks
-│   ├── 05-custom-hooks.md            ← Tạo hooks riêng
-│   ├── 06-hooks-trong-plugin.md      ← Hooks trong plugin
-│   └── 07-hooks-nang-cao.md          ← Hooks nâng cao
-│
-├── ─── GIAI ĐOẠN 3: PLUGIN ───────────────────────────
-├── TAO_PLUGIN_CO_BAN.md              ← Tổng hợp tạo plugin
-├── plugins/
-│   ├── 01-plugin-co-ban.md           ← Plugin cơ bản
-│   ├── 02-menu-va-settings-api.md    ← Admin Menu & Settings
-│   ├── 03-shortcodes-va-widgets.md   ← Shortcodes & Widgets
-│   ├── 04-database-va-crud.md        ← Database & CRUD
-│   ├── 05-ajax-va-rest-api.md        ← AJAX & REST API
-│   ├── 06-plugin-oop-architecture.md ← Kiến trúc OOP
-│   ├── 07-bao-mat-plugin.md          ← Bảo mật plugin
-│   └── 08-plugin-nang-cao.md         ← Plugin nâng cao
-│
-├── ─── GIAI ĐOẠN 4: THEME ────────────────────────────
-├── HUONG_DAN_THEME.md                ← Hướng dẫn dùng theme
-├── TAO_THEME_CO_BAN.md               ← Tổng hợp tạo theme
-├── themes/
-│   ├── 01-theme-co-ban.md            ← Theme cơ bản
-│   ├── 02-template-hierarchy.md      ← Template Hierarchy
-│   ├── 03-the-loop-va-wp-query.md    ← The Loop & WP_Query
-│   ├── 04-menus-widgets-sidebars.md  ← Menus, Widgets, Sidebars
-│   ├── 05-customizer-api.md          ← Customizer API
-│   ├── 06-block-theme-va-fse.md      ← Block Theme & FSE
-│   └── 07-theme-nang-cao.md          ← Theme nâng cao
-│
-├── ─── GIAI ĐOẠN 5: QUẢN LÝ ADMIN ──────────────────────
-├── admin/
-│   ├── INDEX.md                      ← Mục lục phần Admin
-│   ├── 01-tong-quan-admin.md         ← Tổng quan, Bootstrap, Setup
-│   ├── 02-dashboard.md               ← Dashboard & Widgets
-│   ├── 03-quan-ly-bai-viet.md        ← Quản lý bài viết & Editor
-│   ├── 04-quan-ly-media.md           ← Quản lý Media & Upload
-│   ├── 05-quan-ly-binh-luan.md       ← Quản lý bình luận
-│   ├── 06-giao-dien.md               ← Themes, Customizer, Menus
-│   ├── 07-quan-ly-plugin.md          ← Quản lý Plugins
-│   ├── 08-quan-ly-nguoi-dung.md      ← Users, Roles, Capabilities
-│   ├── 09-cong-cu.md                 ← Tools, Site Health, GDPR
-│   └── 10-cai-dat.md                 ← 7 trang Settings
-│
-├── ─── GIAI ĐOẠN 6: CHUYÊN SÂU ───────────────────────
-├── DATABASE_VA_WP_QUERY.md           ← Database & WP_Query
-├── DATABASE_SCHEMA_CHI_TIET.md       ← Chi tiết schema từng cột
-├── CUSTOM_POST_TYPE_TAXONOMY.md      ← CPT & Taxonomy
-├── REST_API.md                       ← REST API
-├── GUTENBERG_BLOCK_EDITOR.md         ← Gutenberg Block Editor
-├── BAO_MAT_WORDPRESS.md              ← Bảo mật WordPress
-├── HIEU_NANG_TOI_UU.md               ← Tối ưu hiệu năng
-└── WP_CLI.md                         ← WP-CLI
 ```
 
 ---
@@ -342,7 +220,7 @@ wp-study/
 |-----------|---------|-----------|
 | **Entry point** | `public/index.php` | `index.php` → `wp-blog-header.php` |
 | **Routing** | `routes/web.php` | Rewrite Rules + Template Hierarchy |
-| **Controller** | `App\Http\Controllers` | Template files (single.php, page.php...) |
+| **Controller** | `App\Http\Controllers` | Template files (`single.php`, `page.php`...) |
 | **Views** | Blade templates | PHP template files |
 | **Models** | Eloquent ORM | `$wpdb` + `WP_Query` |
 | **Events** | Events / Listeners | Action Hooks / Filter Hooks |
@@ -355,8 +233,110 @@ wp-study/
 | **Cache** | `Cache::remember()` | `get_transient()` / Object Cache |
 | **Auth** | Auth scaffolding | Built-in user system |
 | **API** | API Resources | REST API + `register_rest_route()` |
-| **Validation** | Form Request | Tự viết (sanitize + validate) |
+| **Validation** | Form Request | Tự viết (`sanitize_*` + validate) |
 | **Queue** | Jobs / Queue | WP Cron + Action Scheduler |
+
+---
+
+## Cấu Trúc Thư Mục
+
+```
+wp-study/
+│
+├── INDEX.md                          ← BẠN ĐANG Ở ĐÂY
+│
+├── 00-gioi-thieu/                    ← Giới thiệu & Lộ trình
+│   ├── index.md                      ← Mục lục phần giới thiệu
+│   └── lo-trinh-hoc-tap.md          ← Lộ trình học 8 giai đoạn
+│
+├── 01-nen-tang/                      ← Nền tảng WordPress
+│   ├── index.md                      ← Mục lục phần nền tảng
+│   ├── cau-truc-source-code.md      ← Cấu trúc source code WP
+│   ├── luong-xu-ly-request.md       ← Luồng xử lý request
+│   ├── he-thong-routing.md          ← Hệ thống routing
+│   └── wp-cli.md                    ← WP-CLI
+│
+├── 02-hooks/                         ← Hệ thống Hooks
+│   ├── index.md                      ← Tổng quan & mục lục hooks
+│   ├── 01-hooks-co-ban.md           ← Hooks cơ bản
+│   ├── 02-action-hooks-quan-trong.md← Action Hooks
+│   ├── 03-filter-hooks-quan-trong.md← Filter Hooks
+│   ├── 04-hooks-lifecycle.md        ← Vòng đời hooks
+│   ├── 05-custom-hooks.md           ← Tạo hooks riêng
+│   ├── 06-hooks-trong-plugin.md     ← Hooks trong plugin
+│   └── 07-hooks-nang-cao.md         ← Hooks nâng cao
+│
+├── 03-database/                      ← Cơ sở dữ liệu
+│   ├── index.md                      ← Mục lục phần database
+│   ├── 01-database-va-wpdb.md       ← Database & $wpdb & WP_Query
+│   ├── 02-database-schema.md        ← Schema chi tiết từng bảng
+│   └── 03-custom-post-type-taxonomy.md ← CPT & Taxonomy
+│
+├── 04-themes/                        ← Phát triển Theme
+│   ├── index.md                      ← Tổng quan & mục lục themes
+│   ├── 01-theme-co-ban.md           ← Theme cơ bản
+│   ├── 02-template-hierarchy.md     ← Template Hierarchy
+│   ├── 03-the-loop-va-wp-query.md   ← The Loop & WP_Query
+│   ├── 04-menus-widgets-sidebars.md ← Menus, Widgets, Sidebars
+│   ├── 05-customizer-api.md         ← Customizer API
+│   ├── 06-block-theme-va-fse.md     ← Block Theme & FSE
+│   └── 07-theme-nang-cao.md         ← Theme nâng cao
+│
+├── 05-plugins/                       ← Phát triển Plugin
+│   ├── index.md                      ← Tổng quan & mục lục plugins
+│   ├── 01-plugin-co-ban.md          ← Plugin cơ bản
+│   ├── 02-menu-va-settings-api.md   ← Menu & Settings API
+│   ├── 03-shortcodes-va-widgets.md  ← Shortcodes & Widgets
+│   ├── 04-database-va-crud.md       ← Database & CRUD
+│   ├── 05-ajax-va-rest-api.md       ← AJAX & REST API
+│   ├── 06-plugin-oop-architecture.md← Kiến trúc OOP
+│   ├── 07-bao-mat-plugin.md         ← Bảo mật plugin
+│   └── 08-plugin-nang-cao.md        ← Plugin nâng cao
+│
+├── 06-admin/                         ← Quản trị WordPress
+│   ├── index.md                      ← Mục lục phần admin
+│   ├── 01-tong-quan-admin.md        ← Tổng quan Admin
+│   ├── 02-dashboard.md              ← Dashboard
+│   ├── 03-quan-ly-bai-viet.md      ← Quản lý bài viết
+│   ├── 04-quan-ly-media.md         ← Quản lý media
+│   ├── 05-quan-ly-binh-luan.md     ← Quản lý bình luận
+│   ├── 06-giao-dien.md             ← Giao diện
+│   ├── 07-quan-ly-plugin.md        ← Quản lý plugins
+│   ├── 08-quan-ly-nguoi-dung.md    ← Quản lý người dùng
+│   ├── 09-cong-cu.md               ← Công cụ
+│   └── 10-cai-dat.md               ← Cài đặt
+│
+└── 07-nang-cao/                      ← Chủ đề nâng cao
+    ├── index.md                      ← Mục lục phần nâng cao
+    ├── 01-rest-api.md               ← REST API
+    ├── 02-gutenberg-block-editor.md ← Gutenberg Block Editor
+    ├── 03-bao-mat-wordpress.md      ← Bảo mật WordPress
+    └── 04-hieu-nang-toi-uu.md      ← Tối ưu hiệu năng
+```
+
+---
+
+## Tìm Nhanh Theo Chủ Đề
+
+### Tôi muốn học về...
+
+| Chủ đề | Đọc file |
+|--------|----------|
+| WordPress hoạt động thế nào? | [01-nen-tang/luong-xu-ly-request.md](./01-nen-tang/luong-xu-ly-request.md) |
+| Hooks là gì? | [02-hooks/01-hooks-co-ban.md](./02-hooks/01-hooks-co-ban.md) |
+| Cách truy vấn database? | [03-database/01-database-va-wpdb.md](./03-database/01-database-va-wpdb.md) |
+| Tạo Custom Post Type? | [03-database/03-custom-post-type-taxonomy.md](./03-database/03-custom-post-type-taxonomy.md) |
+| Tạo theme từ đầu? | [04-themes/01-theme-co-ban.md](./04-themes/01-theme-co-ban.md) |
+| Template Hierarchy? | [04-themes/02-template-hierarchy.md](./04-themes/02-template-hierarchy.md) |
+| Tạo plugin đầu tiên? | [05-plugins/01-plugin-co-ban.md](./05-plugins/01-plugin-co-ban.md) |
+| Admin Menu & Settings? | [05-plugins/02-menu-va-settings-api.md](./05-plugins/02-menu-va-settings-api.md) |
+| AJAX trong WordPress? | [05-plugins/05-ajax-va-rest-api.md](./05-plugins/05-ajax-va-rest-api.md) |
+| REST API? | [07-nang-cao/01-rest-api.md](./07-nang-cao/01-rest-api.md) |
+| Gutenberg Blocks? | [07-nang-cao/02-gutenberg-block-editor.md](./07-nang-cao/02-gutenberg-block-editor.md) |
+| Bảo mật WordPress? | [07-nang-cao/03-bao-mat-wordpress.md](./07-nang-cao/03-bao-mat-wordpress.md) |
+| Tối ưu hiệu năng? | [07-nang-cao/04-hieu-nang-toi-uu.md](./07-nang-cao/04-hieu-nang-toi-uu.md) |
+| Roles & Capabilities? | [06-admin/08-quan-ly-nguoi-dung.md](./06-admin/08-quan-ly-nguoi-dung.md) |
+| WP-CLI commands? | [01-nen-tang/wp-cli.md](./01-nen-tang/wp-cli.md) |
 
 ---
 
@@ -364,10 +344,10 @@ wp-study/
 
 | Thông tin | Giá trị |
 |-----------|---------|
-| Tổng số file MD | 50 (17 gốc + 7 hooks + 8 plugins + 7 themes + 11 admin) |
-| Tổng số dòng | ~80,000+ |
-| Folders | 4 (hooks/, plugins/, themes/, admin/) |
+| Tổng số bài học | 44 bài |
+| Tổng số file index | 8 file (mỗi thư mục 1 file) |
+| Thư mục | 8 (00 → 07) |
 | Ngôn ngữ | Tiếng Việt có dấu |
 | Code examples | Có trong mọi file, copy-paste chạy được |
 | So sánh Laravel | Có trong hầu hết các file |
-| Cập nhật lần cuối | 02/2026 |
+| Đối tượng | PHP Laravel Developer chuyển sang WordPress |
