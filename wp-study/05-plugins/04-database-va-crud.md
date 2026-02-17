@@ -3,16 +3,16 @@
 ## Mục lục
 
 1. [Global $wpdb Object](#1-global-wpdb-object)
-2. [Tạo Custom Table khi Activate Plugin](#2-tao-custom-table-khi-activate-plugin)
+2. [Tạo Custom Table khi Activate Plugin](#2-tạo-custom-table-khi-activate-plugin)
 3. [dbDelta() Function](#3-dbdelta-function)
-4. [CRUD với $wpdb](#4-crud-voi-wpdb)
+4. [CRUD với $wpdb](#4-crud-với-wpdb)
 5. [Prepared Statements](#5-prepared-statements)
 6. [Options API](#6-options-api)
 7. [Post Meta API](#7-post-meta-api)
 8. [User Meta API](#8-user-meta-api)
 9. [Transients API](#9-transients-api)
-10. [Code ví dụ: Plugin quản lý Contacts](#10-code-vi-du-plugin-quan-ly-contacts)
-11. [So sánh với Eloquent ORM trong Laravel](#11-so-sanh-voi-eloquent-orm-trong-laravel)
+10. [Code ví dụ: Plugin quản lý Contacts](#10-code-ví-dụ-plugin-quản-lý-contacts)
+11. [So sánh với Eloquent ORM trong Laravel](#11-so-sánh-với-eloquent-orm-trong-laravel)
 12. [Best Practices](#12-best-practices)
 
 ---
@@ -59,31 +59,31 @@ $wpdb->options;         // wp_options
 $wpdb->links;           // wp_links
 
 // === PREFIX ===
-$wpdb->prefix;          // 'wp_' (hoac prefix tuy chinh)
-// Dung khi tao custom table
+$wpdb->prefix;          // 'wp_' (hoặc prefix tùy chỉnh)
+// Dùng khi tạo custom table
 $my_table = $wpdb->prefix . 'my_contacts';  // wp_my_contacts
 
 // === CHARSET ===
 $wpdb->get_charset_collate();  // 'DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'
 
-// === THONG TIN KET QUA ===
-$wpdb->num_rows;         // So dong tra ve tu query SELECT cuoi
-$wpdb->rows_affected;    // So dong bi anh huong tu query INSERT/UPDATE/DELETE cuoi
-$wpdb->insert_id;        // Auto-increment ID cua dong vua INSERT
-$wpdb->last_query;       // Cau query cuoi cung da chay
-$wpdb->last_error;       // Thong bao loi cuoi cung (rong neu khong co loi)
-$wpdb->last_result;      // Ket qua tho cua query cuoi
+// === THÔNG TIN KẾT QUẢ ===
+$wpdb->num_rows;         // Số dòng trả về từ query SELECT cuối
+$wpdb->rows_affected;    // Số dòng bị ảnh hưởng từ query INSERT/UPDATE/DELETE cuối
+$wpdb->insert_id;        // Auto-increment ID của dòng vừa INSERT
+$wpdb->last_query;       // Câu query cuối cùng đã chạy
+$wpdb->last_error;       // Thông báo lỗi cuối cùng (rỗng nếu không có lỗi)
+$wpdb->last_result;      // Kết quả thô của query cuối
 ```
 
 ---
 
-## 2. Tao Custom Table khi Activate Plugin
+## 2. Tạo Custom Table khi Activate Plugin
 
 ```php
 <?php
 /**
  * Plugin Name: Database Demo
- * Description: Demo tao va quan ly custom table.
+ * Description: Demo tạo và quản lý custom table.
  * Version: 1.0.0
  */
 
@@ -92,27 +92,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'DBD_VERSION', '1.0.0' );
-define( 'DBD_DB_VERSION', '1.0.0' ); // Version rieng cho database schema
+define( 'DBD_DB_VERSION', '1.0.0' ); // Version riêng cho database schema
 
 /**
- * Tao custom table khi activate plugin.
+ * Tạo custom table khi activate plugin.
  *
- * NGUYEN TAC QUAN TRONG:
- * - Dung $wpdb->prefix de ho tro Multisite
- * - Dung dbDelta() de tao/cap nhat table an toan
- * - Luu db_version de biet khi nao can upgrade
- * - Dung charset_collate de ho tro Unicode
+ * NGUYÊN TẮC QUAN TRỌNG:
+ * - Dùng $wpdb->prefix để hỗ trợ Multisite
+ * - Dùng dbDelta() để tạo/cập nhật table an toàn
+ * - Lưu db_version để biết khi nào cần upgrade
+ * - Dùng charset_collate để hỗ trợ Unicode
  */
 register_activation_hook( __FILE__, 'dbd_create_tables' );
 
 function dbd_create_tables() {
     global $wpdb;
 
-    // Ten table voi prefix
+    // Tên table với prefix
     $table_contacts = $wpdb->prefix . 'dbd_contacts';
     $table_notes    = $wpdb->prefix . 'dbd_contact_notes';
 
-    // Charset va Collation (ho tro Unicode/tieng Viet)
+    // Charset và Collation (hỗ trợ Unicode/tiếng Việt)
     $charset_collate = $wpdb->get_charset_collate();
 
     // === TABLE 1: Contacts ===
@@ -145,29 +145,29 @@ function dbd_create_tables() {
         KEY contact_id (contact_id)
     ) $charset_collate;";
 
-    // Load file chua ham dbDelta
+    // Load file chứa hàm dbDelta
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-    // Chay dbDelta de tao/cap nhat tables
+    // Chạy dbDelta để tạo/cập nhật tables
     dbDelta( $sql_contacts );
     dbDelta( $sql_notes );
 
-    // Luu version database de biet khi nao can upgrade
+    // Lưu version database để biết khi nào cần upgrade
     update_option( 'dbd_db_version', DBD_DB_VERSION );
 }
 
 /**
- * Kiem tra va upgrade database khi can.
- * Chay o plugins_loaded de bat upgrade khi update plugin.
+ * Kiểm tra và upgrade database khi cần.
+ * Chạy ở plugins_loaded để bắt upgrade khi update plugin.
  */
 add_action( 'plugins_loaded', 'dbd_check_db_upgrade' );
 
 function dbd_check_db_upgrade() {
     $installed_version = get_option( 'dbd_db_version', '0' );
 
-    // Neu version trong database khac version hien tai => upgrade
+    // Nếu version trong database khác version hiện tại => upgrade
     if ( version_compare( $installed_version, DBD_DB_VERSION, '<' ) ) {
-        dbd_create_tables(); // dbDelta se chi cap nhat, khong tao lai
+        dbd_create_tables(); // dbDelta sẽ chỉ cập nhật, không tạo lại
     }
 }
 ```
@@ -176,61 +176,61 @@ function dbd_check_db_upgrade() {
 
 ## 3. dbDelta() Function
 
-### dbDelta la gi?
+### dbDelta là gì?
 
-`dbDelta()` la ham dac biet cua WordPress de tao hoac cap nhat schema database. No **thong minh hon** `CREATE TABLE` vi:
+`dbDelta()` là hàm đặc biệt của WordPress để tạo hoặc cập nhật schema database. Nó **thông minh hơn** `CREATE TABLE` vì:
 
-- Neu table chua ton tai: **Tao moi**
-- Neu table da ton tai nhung thieu column: **Them column**
-- Neu table da ton tai nhung thieu index: **Them index**
-- **KHONG** xoa column hoac table cu
+- Nếu table chưa tồn tại: **Tạo mới**
+- Nếu table đã tồn tại nhưng thiếu column: **Thêm column**
+- Nếu table đã tồn tại nhưng thiếu index: **Thêm index**
+- **KHÔNG** xóa column hoặc table cũ
 
-### Quy tac SQL cho dbDelta (RAT QUAN TRONG)
+### Quy tắc SQL cho dbDelta (RẤT QUAN TRỌNG)
 
 ```php
 <?php
-// dbDelta rat KHUNG KHO ve dinh dang SQL. Phai tuan thu chinh xac:
+// dbDelta rất KHẮT KHE về định dạng SQL. Phải tuân thủ chính xác:
 
-// 1. Moi truong tren 1 dong rieng
-// 2. Co CHINH XAC 2 dau cach truoc PRIMARY KEY
-// 3. Phai co PRIMARY KEY
-// 4. Dung KEY thay vi INDEX
-// 5. Khong co dau phay sau truong cuoi cung (truoc PRIMARY KEY)
-// 6. Ten truong khong dung dau backtick `
+// 1. Mỗi trường trên 1 dòng riêng
+// 2. Có CHÍNH XÁC 2 dấu cách trước PRIMARY KEY
+// 3. Phải có PRIMARY KEY
+// 4. Dùng KEY thay vì INDEX
+// 5. Không có dấu phẩy sau trường cuối cùng (trước PRIMARY KEY)
+// 6. Tên trường không dùng dấu backtick `
 
-// SAI - se bi loi:
+// SAI - sẽ bị lỗi:
 $sql_wrong = "CREATE TABLE {$table} (
     id bigint(20) NOT NULL AUTO_INCREMENT,
     `name` varchar(100),
 PRIMARY KEY (id)
 )";
-// Loi: dung backtick, PRIMARY KEY chi co 1 dau cach, thieu charset
+// Lỗi: dùng backtick, PRIMARY KEY chỉ có 1 dấu cách, thiếu charset
 
-// DUNG:
+// ĐÚNG:
 $sql_correct = "CREATE TABLE {$table} (
     id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
     name varchar(100) NOT NULL DEFAULT '',
     PRIMARY KEY  (id)
 ) $charset_collate;";
-// Chu y: "PRIMARY KEY  (id)" co 2 dau cach giua KEY va (id)
+// Chú ý: "PRIMARY KEY  (id)" có 2 dấu cách giữa KEY và (id)
 
-// THEM COLUMN MOI (upgrade):
-// Chi can them dong moi vao SQL roi goi dbDelta lai
-// dbDelta se tu dong phat hien va ALTER TABLE ADD COLUMN
+// THÊM COLUMN MỚI (upgrade):
+// Chỉ cần thêm dòng mới vào SQL rồi gọi dbDelta lại
+// dbDelta sẽ tự động phát hiện và ALTER TABLE ADD COLUMN
 $sql_v2 = "CREATE TABLE {$table} (
     id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
     name varchar(100) NOT NULL DEFAULT '',
     new_column varchar(50) NOT NULL DEFAULT '',
     PRIMARY KEY  (id)
 ) $charset_collate;";
-// dbDelta se chi ALTER TABLE ADD new_column, khong tao lai table
+// dbDelta sẽ chỉ ALTER TABLE ADD new_column, không tạo lại table
 ```
 
 ---
 
-## 4. CRUD voi $wpdb
+## 4. CRUD với $wpdb
 
-### 4.1. CREATE - Them du lieu
+### 4.1. CREATE - Thêm dữ liệu
 
 ```php
 <?php
@@ -238,27 +238,27 @@ global $wpdb;
 $table = $wpdb->prefix . 'dbd_contacts';
 
 /**
- * $wpdb->insert() - Them 1 dong moi
+ * $wpdb->insert() - Thêm 1 dòng mới
  *
- * @param string $table  Ten table
- * @param array  $data   Mang key => value
- * @param array  $format Dinh dang tung truong (%s = string, %d = integer, %f = float)
+ * @param string $table  Tên table
+ * @param array  $data   Mảng key => value
+ * @param array  $format Định dạng từng trường (%s = string, %d = integer, %f = float)
  *
- * @return int|false  So dong da them (1) hoac false neu loi
+ * @return int|false  Số dòng đã thêm (1) hoặc false nếu lỗi
  */
 $result = $wpdb->insert(
-    $table,                              // Ten table
-    array(                               // Du lieu
+    $table,                              // Tên table
+    array(                               // Dữ liệu
         'first_name' => 'Nguyen',
         'last_name'  => 'Van A',
         'email'      => 'nguyenvana@example.com',
         'phone'      => '0901234567',
-        'company'    => 'Cong ty ABC',
+        'company'    => 'Công ty ABC',
         'status'     => 'active',
-        'notes'      => 'Khach hang VIP',
+        'notes'      => 'Khách hàng VIP',
         'created_by' => get_current_user_id(),
     ),
-    array(                               // Format tuong ung
+    array(                               // Format tương ứng
         '%s',  // first_name = string
         '%s',  // last_name = string
         '%s',  // email = string
@@ -271,15 +271,15 @@ $result = $wpdb->insert(
 );
 
 if ( $result !== false ) {
-    // Lay ID cua dong vua them
+    // Lấy ID của dòng vừa thêm
     $new_id = $wpdb->insert_id;
-    echo "Da them contact ID: {$new_id}";
+    echo "Đã thêm contact ID: {$new_id}";
 } else {
-    echo "Loi: " . $wpdb->last_error;
+    echo "Lỗi: " . $wpdb->last_error;
 }
 ```
 
-### 4.2. READ - Doc du lieu
+### 4.2. READ - Đọc dữ liệu
 
 ```php
 <?php
@@ -287,39 +287,39 @@ global $wpdb;
 $table = $wpdb->prefix . 'dbd_contacts';
 
 /**
- * $wpdb->get_results() - Lay nhieu dong
+ * $wpdb->get_results() - Lấy nhiều dòng
  *
- * @param string $query   Cau SQL
- * @param string $output  Kieu ket qua:
- *                        OBJECT  (mac dinh) - Mang cac object
- *                        OBJECT_K - Object voi key la cot dau tien
- *                        ARRAY_A  - Mang cac associative array
- *                        ARRAY_N  - Mang cac numeric array
+ * @param string $query   Câu SQL
+ * @param string $output  Kiểu kết quả:
+ *                        OBJECT  (mặc định) - Mảng các object
+ *                        OBJECT_K - Object với key là cột đầu tiên
+ *                        ARRAY_A  - Mảng các associative array
+ *                        ARRAY_N  - Mảng các numeric array
  *
- * @return array  Mang ket qua
+ * @return array  Mảng kết quả
  */
 
-// Lay tat ca contacts
+// Lấy tất cả contacts
 $contacts = $wpdb->get_results( "SELECT * FROM {$table} ORDER BY created_at DESC" );
-// $contacts = array cua objects
+// $contacts = array của objects
 foreach ( $contacts as $contact ) {
     echo $contact->first_name . ' ' . $contact->last_name;
     echo ' - ' . $contact->email;
 }
 
-// Lay ket qua dang array
+// Lấy kết quả dạng array
 $contacts_array = $wpdb->get_results(
     "SELECT * FROM {$table} ORDER BY created_at DESC",
-    ARRAY_A    // Tra ve associative array
+    ARRAY_A    // Trả về associative array
 );
 // $contacts_array[0]['first_name'], $contacts_array[0]['email']
 
 /**
- * $wpdb->get_row() - Lay 1 dong duy nhat
+ * $wpdb->get_row() - Lấy 1 dòng duy nhất
  *
- * @param string $query   Cau SQL
+ * @param string $query   Câu SQL
  * @param string $output  OBJECT, ARRAY_A, ARRAY_N
- * @param int    $offset  Dong thu may (0-based)
+ * @param int    $offset  Dòng thứ mấy (0-based)
  */
 $contact = $wpdb->get_row(
     $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", 5 )
@@ -327,33 +327,33 @@ $contact = $wpdb->get_row(
 // $contact->first_name, $contact->email
 
 /**
- * $wpdb->get_var() - Lay 1 gia tri duy nhat (1 cell)
+ * $wpdb->get_var() - Lấy 1 giá trị duy nhất (1 cell)
  *
- * @param string $query  Cau SQL
- * @param int    $col    Cot thu may (0-based)
- * @param int    $row    Dong thu may (0-based)
+ * @param string $query  Câu SQL
+ * @param int    $col    Cột thứ mấy (0-based)
+ * @param int    $row    Dòng thứ mấy (0-based)
  */
 
-// Dem so contacts
+// Đếm số contacts
 $count = $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
-echo "Tong: {$count} contacts";
+echo "Tổng: {$count} contacts";
 
-// Lay email cua contact ID = 5
+// Lấy email của contact ID = 5
 $email = $wpdb->get_var(
     $wpdb->prepare( "SELECT email FROM {$table} WHERE id = %d", 5 )
 );
 
 /**
- * $wpdb->get_col() - Lay 1 cot (mang gia tri)
+ * $wpdb->get_col() - Lấy 1 cột (mảng giá trị)
  *
- * @param string $query  Cau SQL
- * @param int    $col    Cot thu may (0-based)
+ * @param string $query  Câu SQL
+ * @param int    $col    Cột thứ mấy (0-based)
  */
 $all_emails = $wpdb->get_col( "SELECT email FROM {$table} WHERE status = 'active'" );
 // $all_emails = array( 'email1@...', 'email2@...', ... )
 ```
 
-### 4.3. UPDATE - Cap nhat du lieu
+### 4.3. UPDATE - Cập nhật dữ liệu
 
 ```php
 <?php
@@ -361,41 +361,41 @@ global $wpdb;
 $table = $wpdb->prefix . 'dbd_contacts';
 
 /**
- * $wpdb->update() - Cap nhat du lieu
+ * $wpdb->update() - Cập nhật dữ liệu
  *
- * @param string $table        Ten table
- * @param array  $data         Du lieu can cap nhat (key => value)
- * @param array  $where        Dieu kien WHERE (key => value)
- * @param array  $format       Format cua $data
- * @param array  $where_format Format cua $where
+ * @param string $table        Tên table
+ * @param array  $data         Dữ liệu cần cập nhật (key => value)
+ * @param array  $where        Điều kiện WHERE (key => value)
+ * @param array  $format       Format của $data
+ * @param array  $where_format Format của $where
  *
- * @return int|false  So dong da cap nhat hoac false neu loi
+ * @return int|false  Số dòng đã cập nhật hoặc false nếu lỗi
  */
 $result = $wpdb->update(
     $table,
-    // SET (du lieu cap nhat)
+    // SET (dữ liệu cập nhật)
     array(
         'first_name' => 'Tran',
         'last_name'  => 'Van B',
         'status'     => 'active',
     ),
-    // WHERE (dieu kien)
+    // WHERE (điều kiện)
     array(
         'id' => 5,
     ),
-    // Format cua SET
+    // Format của SET
     array( '%s', '%s', '%s' ),
-    // Format cua WHERE
+    // Format của WHERE
     array( '%d' )
 );
 
 if ( $result !== false ) {
-    echo "Da cap nhat {$result} dong.";
-    // $result = 0 neu khong co gi thay doi (du lieu giong cu)
-    // $result = false neu co loi SQL
+    echo "Đã cập nhật {$result} dòng.";
+    // $result = 0 nếu không có gì thay đổi (dữ liệu giống cũ)
+    // $result = false nếu có lỗi SQL
 }
 
-// Update nhieu dong cung luc (khong dung $wpdb->update)
+// Update nhiều dòng cùng lúc (không dùng $wpdb->update)
 $wpdb->query(
     $wpdb->prepare(
         "UPDATE {$table} SET status = %s WHERE status = %s AND created_at < %s",
@@ -404,10 +404,10 @@ $wpdb->query(
         '2024-01-01 00:00:00'
     )
 );
-echo "Da cap nhat {$wpdb->rows_affected} dong.";
+echo "Đã cập nhật {$wpdb->rows_affected} dòng.";
 ```
 
-### 4.4. DELETE - Xoa du lieu
+### 4.4. DELETE - Xóa dữ liệu
 
 ```php
 <?php
@@ -415,32 +415,32 @@ global $wpdb;
 $table = $wpdb->prefix . 'dbd_contacts';
 
 /**
- * $wpdb->delete() - Xoa du lieu
+ * $wpdb->delete() - Xóa dữ liệu
  *
- * @param string $table        Ten table
- * @param array  $where        Dieu kien WHERE
- * @param array  $where_format Format cua WHERE
+ * @param string $table        Tên table
+ * @param array  $where        Điều kiện WHERE
+ * @param array  $where_format Format của WHERE
  *
- * @return int|false  So dong da xoa hoac false neu loi
+ * @return int|false  Số dòng đã xóa hoặc false nếu lỗi
  */
 $result = $wpdb->delete(
     $table,
     array( 'id' => 5 ),           // WHERE id = 5
-    array( '%d' )                  // id la integer
+    array( '%d' )                  // id là integer
 );
 
 if ( $result !== false ) {
-    echo "Da xoa {$result} dong.";
+    echo "Đã xóa {$result} dòng.";
 }
 
-// Xoa nhieu dong
+// Xóa nhiều dòng
 $wpdb->delete(
     $table,
     array( 'status' => 'inactive' ),
     array( '%s' )
 );
 
-// Xoa voi dieu kien phuc tap (dung query)
+// Xóa với điều kiện phức tạp (dùng query)
 $wpdb->query(
     $wpdb->prepare(
         "DELETE FROM {$table} WHERE status = %s AND created_at < %s",
@@ -450,35 +450,35 @@ $wpdb->query(
 );
 ```
 
-### 4.5. Query phuc tap
+### 4.5. Query phức tạp
 
 ```php
 <?php
 global $wpdb;
 $table = $wpdb->prefix . 'dbd_contacts';
 
-// === TIM KIEM ===
+// === TÌM KIẾM ===
 $search = 'Nguyen';
 $results = $wpdb->get_results(
     $wpdb->prepare(
         "SELECT * FROM {$table}
          WHERE first_name LIKE %s OR last_name LIKE %s OR email LIKE %s
          ORDER BY first_name ASC",
-        '%' . $wpdb->esc_like( $search ) . '%',  // esc_like: escape ky tu dac biet LIKE
+        '%' . $wpdb->esc_like( $search ) . '%',  // esc_like: escape ký tự đặc biệt LIKE
         '%' . $wpdb->esc_like( $search ) . '%',
         '%' . $wpdb->esc_like( $search ) . '%'
     )
 );
 
-// === PHAN TRANG ===
+// === PHÂN TRANG ===
 $per_page = 10;
 $current_page = max( 1, intval( $_GET['paged'] ?? 1 ) );
 $offset = ( $current_page - 1 ) * $per_page;
 
-// Dem tong
+// Đếm tổng
 $total = $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
 
-// Lay trang hien tai
+// Lấy trang hiện tại
 $contacts = $wpdb->get_results(
     $wpdb->prepare(
         "SELECT * FROM {$table} ORDER BY created_at DESC LIMIT %d OFFSET %d",
@@ -521,43 +521,43 @@ $stats = $wpdb->get_row(
 
 ## 5. Prepared Statements
 
-### Tai sao phai dung Prepared Statements?
+### Tại sao phải dùng Prepared Statements?
 
 ```php
 <?php
 global $wpdb;
 $table = $wpdb->prefix . 'dbd_contacts';
 
-// === NGUY HIEM: SQL Injection ===
-// KHONG BAO GIO lam the nay!
-$id = $_GET['id']; // Nguoi dung co the truyen: "1 OR 1=1"
+// === NGUY HIỂM: SQL Injection ===
+// KHÔNG BAO GIỜ làm thế này!
+$id = $_GET['id']; // Người dùng có thể truyền: "1 OR 1=1"
 $result = $wpdb->get_row( "SELECT * FROM {$table} WHERE id = {$id}" );
-// Query thuc te: SELECT * FROM wp_dbd_contacts WHERE id = 1 OR 1=1
-// => Lay TOAN BO du lieu!
+// Query thực tế: SELECT * FROM wp_dbd_contacts WHERE id = 1 OR 1=1
+// => Lấy TOÀN BỘ dữ liệu!
 
-// === AN TOAN: Dung $wpdb->prepare() ===
-$id = intval( $_GET['id'] ); // Ep kieu truoc
+// === AN TOÀN: Dùng $wpdb->prepare() ===
+$id = intval( $_GET['id'] ); // Ép kiểu trước
 $result = $wpdb->get_row(
     $wpdb->prepare( "SELECT * FROM {$table} WHERE id = %d", $id )
 );
-// Query thuc te: SELECT * FROM wp_dbd_contacts WHERE id = 1
+// Query thực tế: SELECT * FROM wp_dbd_contacts WHERE id = 1
 ```
 
-### Cu phap $wpdb->prepare()
+### Cú pháp $wpdb->prepare()
 
 ```php
 <?php
 global $wpdb;
 
 /**
- * $wpdb->prepare() - Tao prepared statement an toan
+ * $wpdb->prepare() - Tạo prepared statement an toàn
  *
  * Placeholders:
- *   %d  = integer (so nguyen)
- *   %f  = float (so thuc)
- *   %s  = string (chuoi - tu dong escape quotes)
+ *   %d  = integer (số nguyên)
+ *   %f  = float (số thực)
+ *   %s  = string (chuỗi - tự động escape quotes)
  *
- * Tra ve string SQL da duoc escape an toan
+ * Trả về string SQL đã được escape an toàn
  */
 
 // 1 placeholder
@@ -565,25 +565,25 @@ $sql = $wpdb->prepare(
     "SELECT * FROM {$wpdb->posts} WHERE ID = %d",
     42
 );
-// Ket qua: "SELECT * FROM wp_posts WHERE ID = 42"
+// Kết quả: "SELECT * FROM wp_posts WHERE ID = 42"
 
-// Nhieu placeholders
+// Nhiều placeholders
 $sql = $wpdb->prepare(
     "SELECT * FROM {$wpdb->posts} WHERE post_type = %s AND post_status = %s LIMIT %d",
-    'post',        // %s dau tien
-    'publish',     // %s thu hai
+    'post',        // %s đầu tiên
+    'publish',     // %s thứ hai
     10             // %d
 );
 
-// LIKE query (phai dung esc_like)
-$search = "O'Brien"; // Co dau ' (nguy hiem)
+// LIKE query (phải dùng esc_like)
+$search = "O'Brien"; // Có dấu ' (nguy hiểm)
 $sql = $wpdb->prepare(
     "SELECT * FROM {$table} WHERE last_name LIKE %s",
     '%' . $wpdb->esc_like( $search ) . '%'
 );
-// WordPress se tu dong escape: "... WHERE last_name LIKE '%O\'Brien%'"
+// WordPress sẽ tự động escape: "... WHERE last_name LIKE '%O\'Brien%'"
 
-// IN clause (mang gia tri)
+// IN clause (mảng giá trị)
 $statuses = array( 'active', 'lead' );
 $placeholders = implode( ', ', array_fill( 0, count( $statuses ), '%s' ) );
 $sql = $wpdb->prepare(
@@ -591,7 +591,7 @@ $sql = $wpdb->prepare(
     ...$statuses    // Spread operator (PHP 5.6+)
 );
 
-// Query phuc tap
+// Query phức tạp
 $sql = $wpdb->prepare(
     "SELECT c.*, u.display_name as created_by_name
      FROM {$table} c
@@ -612,50 +612,50 @@ $sql = $wpdb->prepare(
 
 ## 6. Options API
 
-Options API luu tru cac cap **key-value** trong bang `wp_options`. Phu hop cho cai dat (settings), config.
+Options API lưu trữ các cặp **key-value** trong bảng `wp_options`. Phù hợp cho cài đặt (settings), config.
 
 ```php
 <?php
 /**
- * Options API - Luu tru cai dat cua plugin
- * Tuong tu: config() hoac .env trong Laravel
+ * Options API - Lưu trữ cài đặt của plugin
+ * Tương tự: config() hoặc .env trong Laravel
  */
 
 // === GET OPTION ===
 /**
- * get_option() - Lay gia tri option
+ * get_option() - Lấy giá trị option
  *
- * @param string $option   Ten option
- * @param mixed  $default  Gia tri mac dinh neu option chua ton tai
- * @return mixed           Gia tri cua option
+ * @param string $option   Tên option
+ * @param mixed  $default  Giá trị mặc định nếu option chưa tồn tại
+ * @return mixed           Giá trị của option
  */
 $value = get_option( 'my_plugin_setting', 'default_value' );
 
-// Lay option la array
+// Lấy option là array
 $settings = get_option( 'my_plugin_settings', array() );
 $per_page = $settings['per_page'] ?? 10;
 
 // === ADD OPTION ===
 /**
- * add_option() - Them option MOI (chi them neu CHUA ton tai)
+ * add_option() - Thêm option MỚI (chỉ thêm nếu CHƯA tồn tại)
  *
- * @param string $option     Ten option
- * @param mixed  $value      Gia tri
- * @param string $deprecated Bo qua (compat)
- * @param bool   $autoload   Tu dong load moi request (yes/no)
+ * @param string $option     Tên option
+ * @param mixed  $value      Giá trị
+ * @param string $deprecated Bỏ qua (compat)
+ * @param bool   $autoload   Tự động load mỗi request (yes/no)
  */
 add_option( 'my_plugin_version', '1.0.0' );
 
-// Khong autoload (cho du lieu lon, it dung)
+// Không autoload (cho dữ liệu lớn, ít dùng)
 add_option( 'my_plugin_large_data', $large_array, '', 'no' );
 
 // === UPDATE OPTION ===
 /**
- * update_option() - Cap nhat option (tao moi neu chua ton tai)
+ * update_option() - Cập nhật option (tạo mới nếu chưa tồn tại)
  *
- * @param string $option   Ten option
- * @param mixed  $value    Gia tri moi
- * @param bool   $autoload Autoload (tu WP 4.2)
+ * @param string $option   Tên option
+ * @param mixed  $value    Giá trị mới
+ * @param bool   $autoload Autoload (từ WP 4.2)
  */
 update_option( 'my_plugin_setting', 'new_value' );
 
@@ -666,11 +666,11 @@ update_option( 'my_plugin_settings', $settings );
 
 // === DELETE OPTION ===
 /**
- * delete_option() - Xoa option
+ * delete_option() - Xóa option
  */
 delete_option( 'my_plugin_setting' );
 
-// === OPTION CO THE LUU NHIEU KIEU DU LIEU ===
+// === OPTION CÓ THỂ LƯU NHIỀU KIỂU DỮ LIỆU ===
 // String
 update_option( 'my_string', 'Hello World' );
 
@@ -680,102 +680,102 @@ update_option( 'my_number', 42 );
 // Boolean
 update_option( 'my_bool', true );
 
-// Array (tu dong serialize/unserialize)
+// Array (tự động serialize/unserialize)
 update_option( 'my_array', array(
     'key1' => 'value1',
     'key2' => array( 'nested' => true ),
 ));
 
-// Object (tu dong serialize)
+// Object (tự động serialize)
 $obj = new stdClass();
 $obj->name = 'Test';
 update_option( 'my_object', $obj );
 
-// LUU Y: WordPress tu dong serialize mang va object khi luu,
-// va tu dong unserialize khi doc. Ban khong can tu lam.
+// LƯU Ý: WordPress tự động serialize mảng và object khi lưu,
+// và tự động unserialize khi đọc. Bạn không cần tự làm.
 ```
 
-### Khi nao dung Options API vs Custom Table?
+### Khi nào dùng Options API vs Custom Table?
 
 ```
-Options API phu hop khi:
-- Du lieu la cai dat, config (it thay doi)
-- Du lieu nho, it ban ghi (< 100)
-- Khong can tim kiem, sap xep phuc tap
-- Chia se giua cac phan cua plugin
+Options API phù hợp khi:
+- Dữ liệu là cài đặt, config (ít thay đổi)
+- Dữ liệu nhỏ, ít bản ghi (< 100)
+- Không cần tìm kiếm, sắp xếp phức tạp
+- Chia sẻ giữa các phần của plugin
 
-Custom Table phu hop khi:
-- Du lieu nhieu ban ghi (> 100)
-- Can tim kiem, loc, sap xep
-- Can JOIN voi cac bang khac
-- Du lieu co cau truc co dinh (schema)
-- Can index de toi uu performance
+Custom Table phù hợp khi:
+- Dữ liệu nhiều bản ghi (> 100)
+- Cần tìm kiếm, lọc, sắp xếp
+- Cần JOIN với các bảng khác
+- Dữ liệu có cấu trúc cố định (schema)
+- Cần index để tối ưu performance
 ```
 
 ---
 
 ## 7. Post Meta API
 
-Post Meta luu tru **du lieu bo sung** cho moi post/page. Luu trong bang `wp_postmeta`.
+Post Meta lưu trữ **dữ liệu bổ sung** cho mỗi post/page. Lưu trong bảng `wp_postmeta`.
 
 ```php
 <?php
 /**
- * Post Meta API - Luu du lieu cho tung bai viet
- * Tuong tu: JSON column hoac pivot table trong Laravel
+ * Post Meta API - Lưu dữ liệu cho từng bài viết
+ * Tương tự: JSON column hoặc pivot table trong Laravel
  */
 
 $post_id = 123;
 
 // === ADD POST META ===
 /**
- * add_post_meta() - Them meta cho post
+ * add_post_meta() - Thêm meta cho post
  *
- * @param int    $post_id   ID bai viet
- * @param string $meta_key  Ten meta
- * @param mixed  $value     Gia tri
- * @param bool   $unique    true = chi 1 gia tri, false = nhieu gia tri cung key
+ * @param int    $post_id   ID bài viết
+ * @param string $meta_key  Tên meta
+ * @param mixed  $value     Giá trị
+ * @param bool   $unique    true = chỉ 1 giá trị, false = nhiều giá trị cùng key
  */
 add_post_meta( $post_id, '_my_plugin_price', 150000, true );
-// _ (underscore) o dau key = hidden (khong hien trong Custom Fields UI)
+// _ (underscore) ở đầu key = hidden (không hiện trong Custom Fields UI)
 
-// Cho phep nhieu gia tri cung key
+// Cho phép nhiều giá trị cùng key
 add_post_meta( $post_id, '_my_plugin_gallery', 'image1.jpg', false );
 add_post_meta( $post_id, '_my_plugin_gallery', 'image2.jpg', false );
 
 // === GET POST META ===
 /**
- * get_post_meta() - Lay meta cua post
+ * get_post_meta() - Lấy meta của post
  *
- * @param int    $post_id   ID bai viet
- * @param string $meta_key  Ten meta ('' = lay tat ca)
- * @param bool   $single    true = tra ve gia tri, false = tra ve array
+ * @param int    $post_id   ID bài viết
+ * @param string $meta_key  Tên meta ('' = lấy tất cả)
+ * @param bool   $single    true = trả về giá trị, false = trả về array
  */
 
-// Lay 1 gia tri (single = true)
+// Lấy 1 giá trị (single = true)
 $price = get_post_meta( $post_id, '_my_plugin_price', true );
 // $price = 150000
 
-// Lay nhieu gia tri (single = false)
+// Lấy nhiều giá trị (single = false)
 $gallery = get_post_meta( $post_id, '_my_plugin_gallery', false );
 // $gallery = array( 'image1.jpg', 'image2.jpg' )
 
-// Lay TAT CA meta cua post
+// Lấy TẤT CẢ meta của post
 $all_meta = get_post_meta( $post_id );
 // $all_meta = array( '_my_plugin_price' => array('150000'), ... )
 
 // === UPDATE POST META ===
 /**
- * update_post_meta() - Cap nhat meta (tao moi neu chua co)
+ * update_post_meta() - Cập nhật meta (tạo mới nếu chưa có)
  *
- * @param int    $post_id    ID bai viet
- * @param string $meta_key   Ten meta
- * @param mixed  $value      Gia tri moi
- * @param mixed  $prev_value Gia tri cu (de cap nhat chinh xac khi co nhieu gia tri)
+ * @param int    $post_id    ID bài viết
+ * @param string $meta_key   Tên meta
+ * @param mixed  $value      Giá trị mới
+ * @param mixed  $prev_value Giá trị cũ (để cập nhật chính xác khi có nhiều giá trị)
  */
 update_post_meta( $post_id, '_my_plugin_price', 200000 );
 
-// Luu array (tu dong serialize)
+// Lưu array (tự động serialize)
 update_post_meta( $post_id, '_my_plugin_settings', array(
     'color'    => 'red',
     'size'     => 'large',
@@ -784,22 +784,22 @@ update_post_meta( $post_id, '_my_plugin_settings', array(
 
 // === DELETE POST META ===
 /**
- * delete_post_meta() - Xoa meta
+ * delete_post_meta() - Xóa meta
  *
- * @param int    $post_id    ID bai viet
- * @param string $meta_key   Ten meta
- * @param mixed  $meta_value Gia tri cu the (neu chi muon xoa 1 gia tri trong nhieu gia tri)
+ * @param int    $post_id    ID bài viết
+ * @param string $meta_key   Tên meta
+ * @param mixed  $meta_value Giá trị cụ thể (nếu chỉ muốn xóa 1 giá trị trong nhiều giá trị)
  */
 delete_post_meta( $post_id, '_my_plugin_price' );
 
-// Xoa 1 gia tri cu the trong nhieu gia tri
+// Xóa 1 giá trị cụ thể trong nhiều giá trị
 delete_post_meta( $post_id, '_my_plugin_gallery', 'image1.jpg' );
 
 // === QUERY THEO META ===
 $expensive_products = new WP_Query( array(
     'post_type'  => 'product',
     'meta_query' => array(
-        'relation' => 'AND',   // AND hoac OR
+        'relation' => 'AND',   // AND hoặc OR
         array(
             'key'     => '_my_plugin_price',
             'value'   => 100000,
@@ -825,48 +825,48 @@ $expensive_products = new WP_Query( array(
 ```php
 <?php
 /**
- * User Meta API - Luu du lieu cho tung nguoi dung
- * Cu phap giong Post Meta nhung cho users
+ * User Meta API - Lưu dữ liệu cho từng người dùng
+ * Cú pháp giống Post Meta nhưng cho users
  */
 
 $user_id = get_current_user_id();
 
-// Them
+// Thêm
 add_user_meta( $user_id, 'my_plugin_preferences', array(
     'theme'        => 'dark',
     'notification' => true,
     'language'     => 'vi',
 ), true );
 
-// Lay
+// Lấy
 $prefs = get_user_meta( $user_id, 'my_plugin_preferences', true );
 $theme = $prefs['theme'] ?? 'light';
 
-// Cap nhat
+// Cập nhật
 $prefs['theme'] = 'light';
 update_user_meta( $user_id, 'my_plugin_preferences', $prefs );
 
-// Xoa
+// Xóa
 delete_user_meta( $user_id, 'my_plugin_preferences' );
 
 // Query users theo meta
 $dark_theme_users = get_users( array(
     'meta_key'   => 'my_plugin_preferences',
     'meta_value' => 'dark',
-    'meta_compare' => 'LIKE',    // Tim trong serialized data
+    'meta_compare' => 'LIKE',    // Tìm trong serialized data
 ));
 
-// Them truong vao trang Profile
+// Thêm trường vào trang Profile
 add_action( 'show_user_profile', 'my_plugin_user_fields' );
 add_action( 'edit_user_profile', 'my_plugin_user_fields' );
 
 function my_plugin_user_fields( $user ) {
     $phone = get_user_meta( $user->ID, 'my_plugin_phone', true );
     ?>
-    <h3>Thong tin bo sung</h3>
+    <h3>Thông tin bổ sung</h3>
     <table class="form-table">
         <tr>
-            <th><label for="my_plugin_phone">So dien thoai</label></th>
+            <th><label for="my_plugin_phone">Số điện thoại</label></th>
             <td>
                 <input type="tel" name="my_plugin_phone" id="my_plugin_phone"
                        value="<?php echo esc_attr( $phone ); ?>" class="regular-text">
@@ -876,7 +876,7 @@ function my_plugin_user_fields( $user ) {
     <?php
 }
 
-// Luu truong khi update profile
+// Lưu trường khi update profile
 add_action( 'personal_options_update', 'my_plugin_save_user_fields' );
 add_action( 'edit_user_profile_update', 'my_plugin_save_user_fields' );
 
@@ -892,75 +892,75 @@ function my_plugin_save_user_fields( $user_id ) {
 
 ## 9. Transients API
 
-Transients la **cache tam thoi** luu trong database (hoac object cache neu co). Tu dong het han.
+Transients là **cache tạm thời** lưu trong database (hoặc object cache nếu có). Tự động hết hạn.
 
 ```php
 <?php
 /**
- * Transients API - Cache tam thoi
- * Tuong tu: Cache::remember() trong Laravel
+ * Transients API - Cache tạm thời
+ * Tương tự: Cache::remember() trong Laravel
  */
 
 // === SET TRANSIENT ===
 /**
- * set_transient() - Luu du lieu tam thoi
+ * set_transient() - Lưu dữ liệu tạm thời
  *
- * @param string $transient  Ten transient
- * @param mixed  $value      Gia tri
- * @param int    $expiration Thoi gian het han (giay), 0 = khong het han
+ * @param string $transient  Tên transient
+ * @param mixed  $value      Giá trị
+ * @param int    $expiration Thời gian hết hạn (giây), 0 = không hết hạn
  */
 
-// Cache ket qua API trong 1 gio
+// Cache kết quả API trong 1 giờ
 $api_data = wp_remote_get( 'https://api.example.com/data' );
 if ( ! is_wp_error( $api_data ) ) {
     $data = json_decode( wp_remote_retrieve_body( $api_data ), true );
     set_transient( 'my_plugin_api_data', $data, HOUR_IN_SECONDS );
 }
 
-// Cac hang thoi gian co san:
+// Các hằng thời gian có sẵn:
 // MINUTE_IN_SECONDS  = 60
 // HOUR_IN_SECONDS    = 3600
 // DAY_IN_SECONDS     = 86400
 // WEEK_IN_SECONDS    = 604800
-// MONTH_IN_SECONDS   = 2592000 (30 ngay)
+// MONTH_IN_SECONDS   = 2592000 (30 ngày)
 // YEAR_IN_SECONDS    = 31536000
 
 // === GET TRANSIENT ===
 /**
- * get_transient() - Lay du lieu tu cache
+ * get_transient() - Lấy dữ liệu từ cache
  *
- * @return mixed  Du lieu hoac false neu het han/khong ton tai
+ * @return mixed  Dữ liệu hoặc false nếu hết hạn/không tồn tại
  */
 
-// Pattern thuong dung: Check cache truoc, query neu khong co
+// Pattern thường dùng: Check cache trước, query nếu không có
 $data = get_transient( 'my_plugin_api_data' );
 
 if ( false === $data ) {
-    // Cache het han hoac chua co => goi API
+    // Cache hết hạn hoặc chưa có => gọi API
     $response = wp_remote_get( 'https://api.example.com/data' );
     if ( ! is_wp_error( $response ) ) {
         $data = json_decode( wp_remote_retrieve_body( $response ), true );
-        // Luu cache 1 gio
+        // Lưu cache 1 giờ
         set_transient( 'my_plugin_api_data', $data, HOUR_IN_SECONDS );
     }
 }
 
-// Su dung $data...
+// Sử dụng $data...
 
 // === DELETE TRANSIENT ===
 /**
- * delete_transient() - Xoa cache
- * Dung khi du lieu thay doi va can cap nhat cache
+ * delete_transient() - Xóa cache
+ * Dùng khi dữ liệu thay đổi và cần cập nhật cache
  */
 delete_transient( 'my_plugin_api_data' );
 
-// === VI DU THUC TE: Cache danh sach bai viet pho bien ===
+// === VÍ DỤ THỰC TẾ: Cache danh sách bài viết phổ biến ===
 function my_plugin_get_popular_posts( $count = 5 ) {
     $cache_key = 'my_plugin_popular_posts_' . $count;
     $posts = get_transient( $cache_key );
 
     if ( false === $posts ) {
-        // Query nang - chi chay khi cache het han
+        // Query nặng - chỉ chạy khi cache hết hạn
         $posts = get_posts( array(
             'post_type'      => 'post',
             'posts_per_page' => $count,
@@ -969,44 +969,44 @@ function my_plugin_get_popular_posts( $count = 5 ) {
             'order'          => 'DESC',
         ));
 
-        // Cache 30 phut
+        // Cache 30 phút
         set_transient( $cache_key, $posts, 30 * MINUTE_IN_SECONDS );
     }
 
     return $posts;
 }
 
-// Xoa cache khi co bai viet moi
+// Xóa cache khi có bài viết mới
 add_action( 'save_post', function( $post_id ) {
-    // Xoa tat ca transients lien quan
+    // Xóa tất cả transients liên quan
     delete_transient( 'my_plugin_popular_posts_5' );
     delete_transient( 'my_plugin_popular_posts_10' );
 });
 ```
 
-### So sanh cac cach luu du lieu
+### So sánh các cách lưu dữ liệu
 
 ```
 +-------------------+----------------+----------------+------------------+
-| Phuong phap       | Pham vi        | Het han?       | Use case         |
+| Phương pháp       | Phạm vi        | Hết hạn?       | Use case         |
 +-------------------+----------------+----------------+------------------+
-| Options API       | Toan site      | Khong          | Settings, config |
-| Post Meta         | 1 post         | Khong          | Data cua post    |
-| User Meta         | 1 user         | Khong          | Data cua user    |
-| Transients        | Toan site      | Co             | Cache, temp data |
-| Custom Table      | Tuy chinh      | Khong          | Du lieu phuc tap  |
+| Options API       | Toàn site      | Không          | Settings, config |
+| Post Meta         | 1 post         | Không          | Data của post    |
+| User Meta         | 1 user         | Không          | Data của user    |
+| Transients        | Toàn site      | Có             | Cache, temp data |
+| Custom Table      | Tùy chỉnh      | Không          | Dữ liệu phức tạp |
 +-------------------+----------------+----------------+------------------+
 ```
 
 ---
 
-## 10. Code vi du: Plugin quan ly Contacts
+## 10. Code ví dụ: Plugin quản lý Contacts
 
 ```php
 <?php
 /**
  * Plugin Name:       Contacts Manager
- * Description:       Plugin quan ly danh sach lien he voi CRUD hoan chinh.
+ * Description:       Plugin quản lý danh sách liên hệ với CRUD hoàn chỉnh.
  * Version:           1.0.0
  * Author:            Developer
  * Text Domain:       contacts-manager
@@ -1041,7 +1041,7 @@ class Contacts_Manager {
         add_action( 'admin_init', array( $this, 'handle_form_actions' ) );
     }
 
-    // === ACTIVATION: Tao table ===
+    // === ACTIVATION: Tạo table ===
     public static function activate() {
         global $wpdb;
         $table_name = $wpdb->prefix . 'cm_contacts';
@@ -1067,15 +1067,15 @@ class Contacts_Manager {
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta( $sql );
 
-        // Them du lieu mau
+        // Thêm dữ liệu mẫu
         $count = $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
         if ( intval( $count ) === 0 ) {
             $samples = array(
-                array( 'Nguyen', 'Van A', 'nguyenvana@email.com', '0901234567', 'Cong ty ABC', 'Ha Noi', 'active' ),
-                array( 'Tran', 'Thi B', 'tranthib@email.com', '0912345678', 'Cong ty XYZ', 'TP HCM', 'active' ),
-                array( 'Le', 'Van C', 'levanc@email.com', '0923456789', 'Cong ty DEF', 'Da Nang', 'lead' ),
-                array( 'Pham', 'Thi D', 'phamthid@email.com', '0934567890', 'Cong ty GHI', 'Hai Phong', 'inactive' ),
-                array( 'Hoang', 'Van E', 'hoangvane@email.com', '0945678901', 'Cong ty JKL', 'Can Tho', 'lead' ),
+                array( 'Nguyen', 'Van A', 'nguyenvana@email.com', '0901234567', 'Công ty ABC', 'Hà Nội', 'active' ),
+                array( 'Tran', 'Thi B', 'tranthib@email.com', '0912345678', 'Công ty XYZ', 'TP HCM', 'active' ),
+                array( 'Le', 'Van C', 'levanc@email.com', '0923456789', 'Công ty DEF', 'Đà Nẵng', 'lead' ),
+                array( 'Pham', 'Thi D', 'phamthid@email.com', '0934567890', 'Công ty GHI', 'Hải Phòng', 'inactive' ),
+                array( 'Hoang', 'Van E', 'hoangvane@email.com', '0945678901', 'Công ty JKL', 'Cần Thơ', 'lead' ),
             );
             foreach ( $samples as $s ) {
                 $wpdb->insert( $table_name, array(
@@ -1091,13 +1091,13 @@ class Contacts_Manager {
 
     // === DEACTIVATION ===
     public static function deactivate() {
-        // Khong xoa data
+        // Không xóa data
     }
 
     // === ADD MENU ===
     public function add_menu() {
         add_menu_page(
-            'Quan ly Lien he',
+            'Quản lý Liên hệ',
             'Contacts',
             'manage_options',
             'cm-contacts',
@@ -1108,8 +1108,8 @@ class Contacts_Manager {
 
         add_submenu_page(
             'cm-contacts',
-            'Tat ca Lien he',
-            'Tat ca',
+            'Tất cả Liên hệ',
+            'Tất cả',
             'manage_options',
             'cm-contacts',
             array( $this, 'render_page' )
@@ -1117,8 +1117,8 @@ class Contacts_Manager {
 
         add_submenu_page(
             'cm-contacts',
-            'Them Lien he moi',
-            'Them moi',
+            'Thêm Liên hệ mới',
+            'Thêm mới',
             'manage_options',
             'cm-contacts-add',
             array( $this, 'render_add_page' )
@@ -1154,7 +1154,7 @@ class Contacts_Manager {
         ');
     }
 
-    // === XU LY FORM ACTIONS ===
+    // === XỬ LÝ FORM ACTIONS ===
     public function handle_form_actions() {
         global $wpdb;
 
@@ -1163,7 +1163,7 @@ class Contacts_Manager {
             check_admin_referer( 'cm_create_contact' );
 
             if ( ! current_user_can( 'manage_options' ) ) {
-                wp_die( 'Khong co quyen.' );
+                wp_die( 'Không có quyền.' );
             }
 
             $data = $this->sanitize_contact_data( $_POST );
@@ -1192,10 +1192,10 @@ class Contacts_Manager {
             );
 
             if ( $result ) {
-                set_transient( 'cm_notice', array( 'type' => 'success', 'message' => 'Da them lien he thanh cong!' ), 30 );
+                set_transient( 'cm_notice', array( 'type' => 'success', 'message' => 'Đã thêm liên hệ thành công!' ), 30 );
                 wp_redirect( admin_url( 'admin.php?page=cm-contacts' ) );
             } else {
-                set_transient( 'cm_notice', array( 'type' => 'error', 'message' => 'Loi: ' . $wpdb->last_error ), 30 );
+                set_transient( 'cm_notice', array( 'type' => 'error', 'message' => 'Lỗi: ' . $wpdb->last_error ), 30 );
                 wp_redirect( admin_url( 'admin.php?page=cm-contacts-add' ) );
             }
             exit;
@@ -1206,7 +1206,7 @@ class Contacts_Manager {
             check_admin_referer( 'cm_update_contact' );
 
             if ( ! current_user_can( 'manage_options' ) ) {
-                wp_die( 'Khong co quyen.' );
+                wp_die( 'Không có quyền.' );
             }
 
             $id = absint( $_POST['contact_id'] ?? 0 );
@@ -1235,7 +1235,7 @@ class Contacts_Manager {
                 array( '%d' )
             );
 
-            set_transient( 'cm_notice', array( 'type' => 'success', 'message' => 'Da cap nhat thanh cong!' ), 30 );
+            set_transient( 'cm_notice', array( 'type' => 'success', 'message' => 'Đã cập nhật thành công!' ), 30 );
             wp_redirect( admin_url( 'admin.php?page=cm-contacts' ) );
             exit;
         }
@@ -1245,13 +1245,13 @@ class Contacts_Manager {
             check_admin_referer( 'cm_delete_contact' );
 
             if ( ! current_user_can( 'manage_options' ) ) {
-                wp_die( 'Khong co quyen.' );
+                wp_die( 'Không có quyền.' );
             }
 
             $id = absint( $_GET['id'] );
             $wpdb->delete( $this->table_name, array( 'id' => $id ), array( '%d' ) );
 
-            set_transient( 'cm_notice', array( 'type' => 'success', 'message' => 'Da xoa lien he.' ), 30 );
+            set_transient( 'cm_notice', array( 'type' => 'success', 'message' => 'Đã xóa liên hệ.' ), 30 );
             wp_redirect( admin_url( 'admin.php?page=cm-contacts' ) );
             exit;
         }
@@ -1274,17 +1274,17 @@ class Contacts_Manager {
     // === VALIDATE ===
     private function validate_contact_data( $data ) {
         $errors = array();
-        if ( empty( $data['first_name'] ) ) $errors[] = 'Ho ten khong duoc de trong.';
-        if ( empty( $data['email'] ) ) $errors[] = 'Email khong duoc de trong.';
-        if ( ! empty( $data['email'] ) && ! is_email( $data['email'] ) ) $errors[] = 'Email khong hop le.';
+        if ( empty( $data['first_name'] ) ) $errors[] = 'Họ tên không được để trống.';
+        if ( empty( $data['email'] ) ) $errors[] = 'Email không được để trống.';
+        if ( ! empty( $data['email'] ) && ! is_email( $data['email'] ) ) $errors[] = 'Email không hợp lệ.';
         return $errors;
     }
 
-    // === TRANG DANH SACH ===
+    // === TRANG DANH SÁCH ===
     public function render_page() {
         if ( ! current_user_can( 'manage_options' ) ) return;
 
-        // Kiem tra action
+        // Kiểm tra action
         $action = sanitize_text_field( $_GET['action'] ?? 'list' );
 
         if ( $action === 'edit' && isset( $_GET['id'] ) ) {
@@ -1299,15 +1299,15 @@ class Contacts_Manager {
 
         global $wpdb;
 
-        // Hien thi thong bao
+        // Hiển thị thông báo
         $notice = get_transient( 'cm_notice' );
         if ( $notice ) delete_transient( 'cm_notice' );
 
-        // Tim kiem
+        // Tìm kiếm
         $search = sanitize_text_field( $_GET['s'] ?? '' );
         $status_filter = sanitize_text_field( $_GET['status'] ?? '' );
 
-        // Dem tong
+        // Đếm tổng
         $where = "WHERE 1=1";
         $params = array();
 
@@ -1322,7 +1322,7 @@ class Contacts_Manager {
             $params[] = $status_filter;
         }
 
-        // Tong so ban ghi
+        // Tổng số bản ghi
         $total_query = "SELECT COUNT(*) FROM {$this->table_name} {$where}";
         if ( ! empty( $params ) ) {
             $total = $wpdb->get_var( $wpdb->prepare( $total_query, ...$params ) );
@@ -1330,13 +1330,13 @@ class Contacts_Manager {
             $total = $wpdb->get_var( $total_query );
         }
 
-        // Phan trang
+        // Phân trang
         $per_page = 10;
         $current_page = max( 1, intval( $_GET['paged'] ?? 1 ) );
         $offset = ( $current_page - 1 ) * $per_page;
         $total_pages = ceil( $total / $per_page );
 
-        // Lay du lieu
+        // Lấy dữ liệu
         $order = sanitize_sql_orderby( $_GET['orderby'] ?? 'created_at' ) ?: 'created_at';
         $order_dir = strtoupper( $_GET['order'] ?? 'DESC' ) === 'ASC' ? 'ASC' : 'DESC';
 
@@ -1344,7 +1344,7 @@ class Contacts_Manager {
         $all_params = array_merge( $params, array( $per_page, $offset ) );
         $contacts = $wpdb->get_results( $wpdb->prepare( $query, ...$all_params ) );
 
-        // Thong ke
+        // Thống kê
         $stats = $wpdb->get_row(
             "SELECT
                 COUNT(*) as total,
@@ -1357,8 +1357,8 @@ class Contacts_Manager {
         // Render
         ?>
         <div class="wrap cm-wrap">
-            <h1 class="wp-heading-inline">Quan ly Lien he</h1>
-            <a href="<?php echo admin_url( 'admin.php?page=cm-contacts-add' ); ?>" class="page-title-action">Them moi</a>
+            <h1 class="wp-heading-inline">Quản lý Liên hệ</h1>
+            <a href="<?php echo admin_url( 'admin.php?page=cm-contacts-add' ); ?>" class="page-title-action">Thêm mới</a>
             <hr class="wp-header-end">
 
             <?php if ( $notice ) : ?>
@@ -1367,67 +1367,67 @@ class Contacts_Manager {
                 </div>
             <?php endif; ?>
 
-            <!-- Thong ke -->
+            <!-- Thống kê -->
             <div class="cm-stats">
                 <div class="cm-stat-card">
                     <div class="cm-stat-number"><?php echo intval( $stats->total ); ?></div>
-                    <div class="cm-stat-label">Tong cong</div>
+                    <div class="cm-stat-label">Tổng cộng</div>
                 </div>
                 <div class="cm-stat-card">
                     <div class="cm-stat-number" style="color:#46b450;"><?php echo intval( $stats->active_count ); ?></div>
-                    <div class="cm-stat-label">Dang hoat dong</div>
+                    <div class="cm-stat-label">Đang hoạt động</div>
                 </div>
                 <div class="cm-stat-card">
                     <div class="cm-stat-number" style="color:#856404;"><?php echo intval( $stats->lead_count ); ?></div>
-                    <div class="cm-stat-label">Tiem nang</div>
+                    <div class="cm-stat-label">Tiềm năng</div>
                 </div>
                 <div class="cm-stat-card">
                     <div class="cm-stat-number" style="color:#dc3232;"><?php echo intval( $stats->inactive_count ); ?></div>
-                    <div class="cm-stat-label">Ngung hoat dong</div>
+                    <div class="cm-stat-label">Ngừng hoạt động</div>
                 </div>
             </div>
 
-            <!-- Loc va Tim kiem -->
+            <!-- Lọc và Tìm kiếm -->
             <div class="cm-search-box">
                 <form method="get" style="display:flex; gap:10px; align-items:center;">
                     <input type="hidden" name="page" value="cm-contacts">
 
                     <select name="status">
-                        <option value="">-- Tat ca trang thai --</option>
+                        <option value="">-- Tất cả trạng thái --</option>
                         <option value="active" <?php selected( $status_filter, 'active' ); ?>>Active</option>
                         <option value="inactive" <?php selected( $status_filter, 'inactive' ); ?>>Inactive</option>
                         <option value="lead" <?php selected( $status_filter, 'lead' ); ?>>Lead</option>
                     </select>
 
                     <input type="text" name="s" value="<?php echo esc_attr( $search ); ?>"
-                           placeholder="Tim kiem ten, email, cong ty..."
+                           placeholder="Tìm kiếm tên, email, công ty..."
                            style="width:300px;">
 
-                    <button type="submit" class="button">Tim kiem</button>
+                    <button type="submit" class="button">Tìm kiếm</button>
 
                     <?php if ( ! empty( $search ) || ! empty( $status_filter ) ) : ?>
-                        <a href="<?php echo admin_url( 'admin.php?page=cm-contacts' ); ?>" class="button">Xoa bo loc</a>
+                        <a href="<?php echo admin_url( 'admin.php?page=cm-contacts' ); ?>" class="button">Xóa bộ lọc</a>
                     <?php endif; ?>
                 </form>
             </div>
 
-            <!-- Bang du lieu -->
+            <!-- Bảng dữ liệu -->
             <table class="cm-table">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Ho ten</th>
+                        <th>Họ tên</th>
                         <th>Email</th>
-                        <th>Dien thoai</th>
-                        <th>Cong ty</th>
-                        <th>Trang thai</th>
-                        <th>Ngay tao</th>
-                        <th>Hanh dong</th>
+                        <th>Điện thoại</th>
+                        <th>Công ty</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if ( empty( $contacts ) ) : ?>
-                        <tr><td colspan="8" style="text-align:center; padding:30px;">Khong co du lieu.</td></tr>
+                        <tr><td colspan="8" style="text-align:center; padding:30px;">Không có dữ liệu.</td></tr>
                     <?php else : ?>
                         <?php foreach ( $contacts as $i => $contact ) : ?>
                             <tr>
@@ -1453,13 +1453,13 @@ class Contacts_Manager {
                                 <td><?php echo esc_html( date_i18n( 'd/m/Y', strtotime( $contact->created_at ) ) ); ?></td>
                                 <td class="cm-actions">
                                     <a href="<?php echo esc_url( admin_url( 'admin.php?page=cm-contacts&action=edit&id=' . $contact->id ) ); ?>"
-                                       style="color:#0073aa;">Sua</a>
+                                       style="color:#0073aa;">Sửa</a>
                                     <a href="<?php echo esc_url( wp_nonce_url(
                                         admin_url( 'admin.php?page=cm-contacts&action=delete&id=' . $contact->id ),
                                         'cm_delete_contact'
                                     ) ); ?>"
                                        style="color:#dc3232;"
-                                       onclick="return confirm('Ban co chac muon xoa lien he nay?');">Xoa</a>
+                                       onclick="return confirm('Bạn có chắc muốn xóa liên hệ này?');">Xóa</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -1467,7 +1467,7 @@ class Contacts_Manager {
                 </tbody>
             </table>
 
-            <!-- Phan trang -->
+            <!-- Phân trang -->
             <?php if ( $total_pages > 1 ) : ?>
                 <div class="cm-pagination">
                     <?php
@@ -1476,14 +1476,14 @@ class Contacts_Manager {
                         'format'    => '',
                         'current'   => $current_page,
                         'total'     => $total_pages,
-                        'prev_text' => '&laquo; Truoc',
+                        'prev_text' => '&laquo; Trước',
                         'next_text' => 'Sau &raquo;',
                     ));
                     echo $page_links;
                     ?>
                     <span style="margin-left:15px; color:#666;">
                         Trang <?php echo $current_page; ?>/<?php echo $total_pages; ?>
-                        (<?php echo $total; ?> ket qua)
+                        (<?php echo $total; ?> kết quả)
                     </span>
                 </div>
             <?php endif; ?>
@@ -1491,7 +1491,7 @@ class Contacts_Manager {
         <?php
     }
 
-    // === TRANG THEM MOI ===
+    // === TRANG THÊM MỚI ===
     public function render_add_page() {
         if ( ! current_user_can( 'manage_options' ) ) return;
 
@@ -1504,7 +1504,7 @@ class Contacts_Manager {
         $this->render_form( 'create', $data, $errors );
     }
 
-    // === TRANG CHINH SUA ===
+    // === TRANG CHỈNH SỬA ===
     private function render_edit_page() {
         global $wpdb;
 
@@ -1515,7 +1515,7 @@ class Contacts_Manager {
         );
 
         if ( ! $contact ) {
-            echo '<div class="wrap"><h1>Khong tim thay lien he.</h1></div>';
+            echo '<div class="wrap"><h1>Không tìm thấy liên hệ.</h1></div>';
             return;
         }
 
@@ -1525,7 +1525,7 @@ class Contacts_Manager {
         $this->render_form( 'update', $contact, $errors );
     }
 
-    // === TRANG XEM CHI TIET ===
+    // === TRANG XEM CHI TIẾT ===
     private function render_view_page() {
         global $wpdb;
 
@@ -1535,7 +1535,7 @@ class Contacts_Manager {
         );
 
         if ( ! $contact ) {
-            echo '<div class="wrap"><h1>Khong tim thay lien he.</h1></div>';
+            echo '<div class="wrap"><h1>Không tìm thấy liên hệ.</h1></div>';
             return;
         }
 
@@ -1543,38 +1543,38 @@ class Contacts_Manager {
         ?>
         <div class="wrap">
             <h1>
-                Chi tiet lien he
-                <a href="<?php echo admin_url( 'admin.php?page=cm-contacts&action=edit&id=' . $id ); ?>" class="page-title-action">Sua</a>
-                <a href="<?php echo admin_url( 'admin.php?page=cm-contacts' ); ?>" class="page-title-action">Quay lai</a>
+                Chi tiết liên hệ
+                <a href="<?php echo admin_url( 'admin.php?page=cm-contacts&action=edit&id=' . $id ); ?>" class="page-title-action">Sửa</a>
+                <a href="<?php echo admin_url( 'admin.php?page=cm-contacts' ); ?>" class="page-title-action">Quay lại</a>
             </h1>
             <div style="background:#fff; padding:25px; border:1px solid #ddd; border-radius:5px; max-width:600px; margin-top:15px;">
                 <table class="form-table">
-                    <tr><th>Ho:</th><td><?php echo esc_html( $contact->first_name ); ?></td></tr>
-                    <tr><th>Ten:</th><td><?php echo esc_html( $contact->last_name ); ?></td></tr>
+                    <tr><th>Họ:</th><td><?php echo esc_html( $contact->first_name ); ?></td></tr>
+                    <tr><th>Tên:</th><td><?php echo esc_html( $contact->last_name ); ?></td></tr>
                     <tr><th>Email:</th><td><a href="mailto:<?php echo esc_attr( $contact->email ); ?>"><?php echo esc_html( $contact->email ); ?></a></td></tr>
-                    <tr><th>Dien thoai:</th><td><?php echo esc_html( $contact->phone ); ?></td></tr>
-                    <tr><th>Cong ty:</th><td><?php echo esc_html( $contact->company ); ?></td></tr>
-                    <tr><th>Dia chi:</th><td><?php echo nl2br( esc_html( $contact->address ) ); ?></td></tr>
-                    <tr><th>Trang thai:</th><td><span class="cm-status cm-status-<?php echo esc_attr( $contact->status ); ?>"><?php echo esc_html( $contact->status ); ?></span></td></tr>
-                    <tr><th>Nguoi tao:</th><td><?php echo esc_html( $creator ? $creator->display_name : 'N/A' ); ?></td></tr>
-                    <tr><th>Ngay tao:</th><td><?php echo esc_html( date_i18n( 'd/m/Y H:i', strtotime( $contact->created_at ) ) ); ?></td></tr>
-                    <tr><th>Cap nhat:</th><td><?php echo esc_html( date_i18n( 'd/m/Y H:i', strtotime( $contact->updated_at ) ) ); ?></td></tr>
+                    <tr><th>Điện thoại:</th><td><?php echo esc_html( $contact->phone ); ?></td></tr>
+                    <tr><th>Công ty:</th><td><?php echo esc_html( $contact->company ); ?></td></tr>
+                    <tr><th>Địa chỉ:</th><td><?php echo nl2br( esc_html( $contact->address ) ); ?></td></tr>
+                    <tr><th>Trạng thái:</th><td><span class="cm-status cm-status-<?php echo esc_attr( $contact->status ); ?>"><?php echo esc_html( $contact->status ); ?></span></td></tr>
+                    <tr><th>Người tạo:</th><td><?php echo esc_html( $creator ? $creator->display_name : 'N/A' ); ?></td></tr>
+                    <tr><th>Ngày tạo:</th><td><?php echo esc_html( date_i18n( 'd/m/Y H:i', strtotime( $contact->created_at ) ) ); ?></td></tr>
+                    <tr><th>Cập nhật:</th><td><?php echo esc_html( date_i18n( 'd/m/Y H:i', strtotime( $contact->updated_at ) ) ); ?></td></tr>
                 </table>
             </div>
         </div>
         <?php
     }
 
-    // === RENDER FORM (dung chung cho Add va Edit) ===
+    // === RENDER FORM (dùng chung cho Add và Edit) ===
     private function render_form( $action, $data, $errors = null ) {
         $is_edit = ( $action === 'update' );
-        $title = $is_edit ? 'Chinh sua Lien he' : 'Them Lien he moi';
+        $title = $is_edit ? 'Chỉnh sửa Liên hệ' : 'Thêm Liên hệ mới';
         $nonce_action = $is_edit ? 'cm_update_contact' : 'cm_create_contact';
         ?>
         <div class="wrap cm-form">
             <h1>
                 <?php echo esc_html( $title ); ?>
-                <a href="<?php echo admin_url( 'admin.php?page=cm-contacts' ); ?>" class="page-title-action">Quay lai</a>
+                <a href="<?php echo admin_url( 'admin.php?page=cm-contacts' ); ?>" class="page-title-action">Quay lại</a>
             </h1>
 
             <?php if ( ! empty( $errors ) ) : ?>
@@ -1594,17 +1594,17 @@ class Contacts_Manager {
                     <input type="hidden" name="contact_id" value="<?php echo esc_attr( $data['id'] ?? '' ); ?>">
                 <?php endif; ?>
 
-                <!-- Form gui truc tiep ve admin.php (xu ly trong admin_init) -->
+                <!-- Form gửi trực tiếp về admin.php (xử lý trong admin_init) -->
                 <input type="hidden" name="action" value="cm_form">
 
                 <table class="form-table">
                     <tr>
-                        <th><label for="first_name">Ho <span style="color:red;">*</span></label></th>
+                        <th><label for="first_name">Họ <span style="color:red;">*</span></label></th>
                         <td><input type="text" name="first_name" id="first_name" class="regular-text"
                                    value="<?php echo esc_attr( $data['first_name'] ?? '' ); ?>" required></td>
                     </tr>
                     <tr>
-                        <th><label for="last_name">Ten</label></th>
+                        <th><label for="last_name">Tên</label></th>
                         <td><input type="text" name="last_name" id="last_name" class="regular-text"
                                    value="<?php echo esc_attr( $data['last_name'] ?? '' ); ?>"></td>
                     </tr>
@@ -1614,34 +1614,34 @@ class Contacts_Manager {
                                    value="<?php echo esc_attr( $data['email'] ?? '' ); ?>" required></td>
                     </tr>
                     <tr>
-                        <th><label for="phone">Dien thoai</label></th>
+                        <th><label for="phone">Điện thoại</label></th>
                         <td><input type="tel" name="phone" id="phone" class="regular-text"
                                    value="<?php echo esc_attr( $data['phone'] ?? '' ); ?>"></td>
                     </tr>
                     <tr>
-                        <th><label for="company">Cong ty</label></th>
+                        <th><label for="company">Công ty</label></th>
                         <td><input type="text" name="company" id="company" class="regular-text"
                                    value="<?php echo esc_attr( $data['company'] ?? '' ); ?>"></td>
                     </tr>
                     <tr>
-                        <th><label for="address">Dia chi</label></th>
+                        <th><label for="address">Địa chỉ</label></th>
                         <td><textarea name="address" id="address" rows="3" class="large-text"><?php
                             echo esc_textarea( $data['address'] ?? '' );
                         ?></textarea></td>
                     </tr>
                     <tr>
-                        <th><label for="status">Trang thai</label></th>
+                        <th><label for="status">Trạng thái</label></th>
                         <td>
                             <select name="status" id="status">
-                                <option value="lead" <?php selected( $data['status'] ?? '', 'lead' ); ?>>Lead (Tiem nang)</option>
-                                <option value="active" <?php selected( $data['status'] ?? '', 'active' ); ?>>Active (Hoat dong)</option>
-                                <option value="inactive" <?php selected( $data['status'] ?? '', 'inactive' ); ?>>Inactive (Ngung)</option>
+                                <option value="lead" <?php selected( $data['status'] ?? '', 'lead' ); ?>>Lead (Tiềm năng)</option>
+                                <option value="active" <?php selected( $data['status'] ?? '', 'active' ); ?>>Active (Hoạt động)</option>
+                                <option value="inactive" <?php selected( $data['status'] ?? '', 'inactive' ); ?>>Inactive (Ngừng)</option>
                             </select>
                         </td>
                     </tr>
                 </table>
 
-                <?php submit_button( $is_edit ? 'Cap nhat' : 'Them moi' ); ?>
+                <?php submit_button( $is_edit ? 'Cập nhật' : 'Thêm mới' ); ?>
             </form>
         </div>
         <?php
@@ -1652,7 +1652,7 @@ class Contacts_Manager {
 register_activation_hook( __FILE__, array( 'Contacts_Manager', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Contacts_Manager', 'deactivate' ) );
 
-// Khoi tao plugin
+// Khởi tạo plugin
 add_action( 'plugins_loaded', function() {
     Contacts_Manager::get_instance();
 });
@@ -1660,12 +1660,12 @@ add_action( 'plugins_loaded', function() {
 
 ---
 
-## 11. So sanh voi Eloquent ORM trong Laravel
+## 11. So sánh với Eloquent ORM trong Laravel
 
 ```php
 <?php
 /**
- * LARAVEL: Eloquent ORM - Tuong tac database bang Model objects
+ * LARAVEL: Eloquent ORM - Tương tác database bằng Model objects
  */
 
 // Migration
@@ -1689,10 +1689,10 @@ add_action( 'plugins_loaded', function() {
 // $contact->delete();                                                        // DELETE
 
 /**
- * WORDPRESS: $wpdb - Tuong tac database bang SQL queries
+ * WORDPRESS: $wpdb - Tương tác database bằng SQL queries
  */
 
-// Tao table (trong activation hook)
+// Tạo table (trong activation hook)
 // dbDelta("CREATE TABLE {$wpdb->prefix}contacts (...)");
 
 // CREATE
@@ -1708,19 +1708,19 @@ add_action( 'plugins_loaded', function() {
 // $wpdb->delete('wp_contacts', ['id' => 1], ['%d']);
 ```
 
-### Bang so sanh
+### Bảng so sánh
 
-| Tinh nang | Laravel Eloquent | WordPress $wpdb |
+| Tính năng | Laravel Eloquent | WordPress $wpdb |
 |-----------|-----------------|-----------------|
-| **Cach tiep can** | ORM (Object-Relational Mapping) | Query Builder / Raw SQL |
-| **Tao table** | Migration files | dbDelta() |
-| **Model** | Class extend Model | Khong co (tu viet) |
+| **Cách tiếp cận** | ORM (Object-Relational Mapping) | Query Builder / Raw SQL |
+| **Tạo table** | Migration files | dbDelta() |
+| **Model** | Class extend Model | Không có (tự viết) |
 | **Query Builder** | `User::where()->get()` | `$wpdb->prepare()` + SQL |
-| **Relationships** | `hasMany`, `belongsTo` | Tu viet JOIN |
-| **Pagination** | `->paginate(10)` | Tu tinh LIMIT/OFFSET |
-| **Validation** | Form Request | Tu viet |
-| **Mass Assignment** | `$fillable`, `$guarded` | Khong co |
-| **Soft Delete** | `SoftDeletes` trait | Tu them column |
+| **Relationships** | `hasMany`, `belongsTo` | Tự viết JOIN |
+| **Pagination** | `->paginate(10)` | Tự tính LIMIT/OFFSET |
+| **Validation** | Form Request | Tự viết |
+| **Mass Assignment** | `$fillable`, `$guarded` | Không có |
+| **Soft Delete** | `SoftDeletes` trait | Tự thêm column |
 | **Events** | Model Events | Hooks (actions/filters) |
 | **Cache** | `Cache::remember()` | `get_transient()` |
 | **Tinker** | `php artisan tinker` | WP-CLI |
@@ -1729,29 +1729,29 @@ add_action( 'plugins_loaded', function() {
 
 ## 12. Best Practices
 
-### 1. Luon dung $wpdb->prepare()
+### 1. Luôn dùng $wpdb->prepare()
 
 ```php
 <?php
 // SAI
 $wpdb->query( "DELETE FROM {$table} WHERE id = {$_GET['id']}" );
 
-// DUNG
+// ĐÚNG
 $wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id = %d", absint( $_GET['id'] ) ) );
 ```
 
-### 2. Luon dung prefix
+### 2. Luôn dùng prefix
 
 ```php
 <?php
-// SAI - hardcode ten table
+// SAI - hardcode tên table
 $wpdb->get_results( "SELECT * FROM wp_my_table" );
 
-// DUNG - dung prefix
+// ĐÚNG - dùng prefix
 $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}my_table" );
 ```
 
-### 3. Kiem tra loi sau moi query
+### 3. Kiểm tra lỗi sau mỗi query
 
 ```php
 <?php
@@ -1761,16 +1761,16 @@ if ( false === $result ) {
 }
 ```
 
-### 4. Dung dbDelta dung cach
+### 4. Dùng dbDelta đúng cách
 
 ```php
 <?php
-// Nho: 2 dau cach truoc PRIMARY KEY
-// Khong dung backtick cho ten truong
-// Moi truong tren 1 dong
+// Nhớ: 2 dấu cách trước PRIMARY KEY
+// Không dùng backtick cho tên trường
+// Mỗi trường trên 1 dòng
 ```
 
-### 5. Don dep khi uninstall
+### 5. Dọn dẹp khi uninstall
 
 ```php
 <?php
@@ -1780,20 +1780,20 @@ $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}my_table" );
 delete_option( 'my_plugin_db_version' );
 ```
 
-### 6. Dung Transients cho du lieu nang
+### 6. Dùng Transients cho dữ liệu nặng
 
 ```php
 <?php
 $data = get_transient( 'expensive_query' );
 if ( false === $data ) {
-    $data = $wpdb->get_results( "SELECT ... phuc tap ..." );
+    $data = $wpdb->get_results( "SELECT ... phức tạp ..." );
     set_transient( 'expensive_query', $data, HOUR_IN_SECONDS );
 }
 ```
 
 ---
 
-## Tham khao
+## Tham khảo
 
 - [WordPress Database API ($wpdb)](https://developer.wordpress.org/reference/classes/wpdb/)
 - [Creating Tables with Plugins](https://developer.wordpress.org/plugins/creating-tables-with-plugins/)
