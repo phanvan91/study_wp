@@ -14,17 +14,17 @@
 
 ---
 
-## 1. Tao Admin Menu
+## 1. Tạo Admin Menu
 
-WordPress cho phep them menu vao sidebar Admin thong qua hook `admin_menu`.
+WordPress cho phép thêm menu vào sidebar Admin thông qua hook `admin_menu`.
 
-### add_menu_page - Them Menu chinh
+### add_menu_page - Thêm Menu chính
 
 ```php
 <?php
 /**
  * Plugin Name: Menu Demo
- * Description: Demo tao menu admin.
+ * Description: Demo tạo menu admin.
  * Version: 1.0.0
  */
 
@@ -33,36 +33,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Them menu chinh vao sidebar Admin.
- * Hook 'admin_menu' chay khi WordPress dang xay dung menu admin.
+ * Thêm menu chính vào sidebar Admin.
+ * Hook 'admin_menu' chạy khi WordPress đang xây dựng menu admin.
  */
 add_action( 'admin_menu', 'md_add_admin_menu' );
 
 function md_add_admin_menu() {
     /**
-     * add_menu_page() - Tao 1 menu cap cao nhat (top-level menu)
+     * add_menu_page() - Tạo 1 menu cấp cao nhất (top-level menu)
      *
-     * @param string   $page_title  Tieu de trang (the <title>)
-     * @param string   $menu_title  Ten hien thi tren menu sidebar
-     * @param string   $capability  Quyen can thiet de thay menu
-     * @param string   $menu_slug   Slug duy nhat (dung lam URL: admin.php?page=slug)
-     * @param callable $callback    Ham render noi dung trang
-     * @param string   $icon_url    Icon cua menu (Dashicons, SVG, hoac URL)
-     * @param int      $position    Vi tri trong sidebar (so cang nho cang len tren)
+     * @param string   $page_title  Tiêu đề trang (thẻ <title>)
+     * @param string   $menu_title  Tên hiển thị trên menu sidebar
+     * @param string   $capability  Quyền cần thiết để thấy menu
+     * @param string   $menu_slug   Slug duy nhất (dùng làm URL: admin.php?page=slug)
+     * @param callable $callback    Hàm render nội dung trang
+     * @param string   $icon_url    Icon của menu (Dashicons, SVG, hoặc URL)
+     * @param int      $position    Vị trí trong sidebar (số càng nhỏ càng lên trên)
      *
-     * @return string  Hook suffix cua trang (dung de chi load CSS/JS tren trang nay)
+     * @return string  Hook suffix của trang (dùng để chỉ load CSS/JS trên trang này)
      */
     $hook_suffix = add_menu_page(
         'My Plugin Dashboard',              // page_title
         'My Plugin',                         // menu_title
-        'manage_options',                    // capability (chi admin thay)
+        'manage_options',                    // capability (chỉ admin thấy)
         'my-plugin-dashboard',               // menu_slug
         'md_dashboard_page',                 // callback function
         'dashicons-admin-generic',           // icon (Dashicons)
         30                                   // position (sau Comments = 25)
     );
 
-    // Dung hook_suffix de chi load CSS/JS tren trang nay
+    // Dùng hook_suffix để chỉ load CSS/JS trên trang này
     add_action( "load-{$hook_suffix}", 'md_load_dashboard_assets' );
 }
 
@@ -70,18 +70,18 @@ function md_dashboard_page() {
     ?>
     <div class="wrap">
         <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-        <p>Day la trang Dashboard cua plugin.</p>
+        <p>Đây là trang Dashboard của plugin.</p>
     </div>
     <?php
 }
 
 function md_load_dashboard_assets() {
-    // Code nay chi chay khi trang Dashboard cua plugin duoc load
-    // Phu hop de enqueue CSS/JS chi cho trang nay
+    // Code này chỉ chạy khi trang Dashboard của plugin được load
+    // Phù hợp để enqueue CSS/JS chỉ cho trang này
 }
 ```
 
-### Vi tri menu (Position)
+### Vị trí menu (Position)
 
 ```
 2    - Dashboard
@@ -104,39 +104,39 @@ function md_load_dashboard_assets() {
 
 ```php
 <?php
-// Mot so Dashicons thuong dung:
-// 'dashicons-admin-generic'     - Banh rang
-// 'dashicons-admin-tools'       - Cong cu
-// 'dashicons-chart-bar'         - Bieu do
+// Một số Dashicons thường dùng:
+// 'dashicons-admin-generic'     - Bánh răng
+// 'dashicons-admin-tools'       - Công cụ
+// 'dashicons-chart-bar'         - Biểu đồ
 // 'dashicons-email'             - Email
-// 'dashicons-calendar'          - Lich
-// 'dashicons-cart'              - Gio hang
-// 'dashicons-store'             - Cua hang
-// 'dashicons-groups'            - Nhom nguoi
-// 'dashicons-shield'            - Bao mat
-// 'dashicons-megaphone'         - Thong bao
+// 'dashicons-calendar'          - Lịch
+// 'dashicons-cart'              - Giỏ hàng
+// 'dashicons-store'             - Cửa hàng
+// 'dashicons-groups'            - Nhóm người
+// 'dashicons-shield'            - Bảo mật
+// 'dashicons-megaphone'         - Thông báo
 
-// Dung SVG base64
+// Dùng SVG base64
 $icon = 'data:image/svg+xml;base64,' . base64_encode('<svg>...</svg>');
 
-// Dung URL hinh anh
+// Dùng URL hình ảnh
 $icon = plugins_url( 'assets/icon.png', __FILE__ );
 
-// Danh sach day du: https://developer.wordpress.org/resource/dashicons/
+// Danh sách đầy đủ: https://developer.wordpress.org/resource/dashicons/
 ```
 
 ---
 
-## 2. Tao Submenu
+## 2. Tạo Submenu
 
-### add_submenu_page - Them menu con
+### add_submenu_page - Thêm menu con
 
 ```php
 <?php
 add_action( 'admin_menu', 'md_add_menus' );
 
 function md_add_menus() {
-    // Menu chinh
+    // Menu chính
     add_menu_page(
         'My Plugin',
         'My Plugin',
@@ -148,54 +148,54 @@ function md_add_menus() {
     );
 
     /**
-     * add_submenu_page() - Them submenu duoi menu chinh
+     * add_submenu_page() - Thêm submenu dưới menu chính
      *
-     * @param string   $parent_slug  Slug cua menu cha
-     * @param string   $page_title   Tieu de trang
-     * @param string   $menu_title   Ten hien thi
-     * @param string   $capability   Quyen can thiet
-     * @param string   $menu_slug    Slug duy nhat
-     * @param callable $callback     Ham render
-     * @param int      $position     Vi tri trong submenu
+     * @param string   $parent_slug  Slug của menu cha
+     * @param string   $page_title   Tiêu đề trang
+     * @param string   $menu_title   Tên hiển thị
+     * @param string   $capability   Quyền cần thiết
+     * @param string   $menu_slug    Slug duy nhất
+     * @param callable $callback     Hàm render
+     * @param int      $position     Vị trí trong submenu
      */
 
-    // Submenu 1: Dashboard (thay the ten mac dinh cua menu cha)
-    // Khi tao menu cha, WP tu dong tao 1 submenu cung ten
-    // Them submenu voi parent_slug giong menu cha de doi ten submenu dau tien
+    // Submenu 1: Dashboard (thay thế tên mặc định của menu cha)
+    // Khi tạo menu cha, WP tự động tạo 1 submenu cùng tên
+    // Thêm submenu với parent_slug giống menu cha để đổi tên submenu đầu tiên
     add_submenu_page(
-        'my-plugin',                // parent_slug = slug cua menu cha
+        'my-plugin',                // parent_slug = slug của menu cha
         'Dashboard',
-        'Dashboard',                // Ten moi cho submenu dau tien
+        'Dashboard',                // Tên mới cho submenu đầu tiên
         'manage_options',
-        'my-plugin',                // Slug GIONG menu cha => thay the submenu dau
+        'my-plugin',                // Slug GIỐNG menu cha => thay thế submenu đầu
         'md_main_page'
     );
 
     // Submenu 2: Settings
     add_submenu_page(
         'my-plugin',
-        'Cai dat Plugin',
-        'Cai dat',
+        'Cài đặt Plugin',
+        'Cài đặt',
         'manage_options',
         'my-plugin-settings',
         'md_settings_page'
     );
 
-    // Submenu 3: Reports - chi Editor tro len thay
+    // Submenu 3: Reports - chỉ Editor trở lên thấy
     add_submenu_page(
         'my-plugin',
-        'Bao cao',
-        'Bao cao',
-        'edit_posts',               // Editor tro len
+        'Báo cáo',
+        'Báo cáo',
+        'edit_posts',               // Editor trở lên
         'my-plugin-reports',
         'md_reports_page'
     );
 
-    // Submenu 4: Logs - chi Admin thay
+    // Submenu 4: Logs - chỉ Admin thấy
     add_submenu_page(
         'my-plugin',
-        'Nhat ky',
-        'Nhat ky',
+        'Nhật ký',
+        'Nhật ký',
         'manage_options',
         'my-plugin-logs',
         'md_logs_page'
@@ -207,29 +207,29 @@ function md_main_page() {
 }
 
 function md_settings_page() {
-    echo '<div class="wrap"><h1>Cai dat</h1></div>';
+    echo '<div class="wrap"><h1>Cài đặt</h1></div>';
 }
 
 function md_reports_page() {
-    echo '<div class="wrap"><h1>Bao cao</h1></div>';
+    echo '<div class="wrap"><h1>Báo cáo</h1></div>';
 }
 
 function md_logs_page() {
-    echo '<div class="wrap"><h1>Nhat ky</h1></div>';
+    echo '<div class="wrap"><h1>Nhật ký</h1></div>';
 }
 ```
 
-### Them submenu vao menu co san cua WordPress
+### Thêm submenu vào menu có sẵn của WordPress
 
 ```php
 <?php
 add_action( 'admin_menu', 'md_add_to_existing_menus' );
 
 function md_add_to_existing_menus() {
-    // Them vao menu Settings (Options)
-    // Tuong duong: add_options_page(...)
+    // Thêm vào menu Settings (Options)
+    // Tương đương: add_options_page(...)
     add_submenu_page(
-        'options-general.php',      // Parent slug cua Settings
+        'options-general.php',      // Parent slug của Settings
         'My Plugin Settings',
         'My Plugin',
         'manage_options',
@@ -237,10 +237,10 @@ function md_add_to_existing_menus() {
         'md_settings_callback'
     );
 
-    // Them vao menu Tools
-    // Tuong duong: add_management_page(...)
+    // Thêm vào menu Tools
+    // Tương đương: add_management_page(...)
     add_submenu_page(
-        'tools.php',                // Parent slug cua Tools
+        'tools.php',                // Parent slug của Tools
         'My Plugin Tools',
         'My Plugin Tool',
         'manage_options',
@@ -248,9 +248,9 @@ function md_add_to_existing_menus() {
         'md_tool_callback'
     );
 
-    // Them vao menu Posts
+    // Thêm vào menu Posts
     add_submenu_page(
-        'edit.php',                 // Parent slug cua Posts
+        'edit.php',                 // Parent slug của Posts
         'Extra Post Settings',
         'Extra Settings',
         'edit_posts',
@@ -258,7 +258,7 @@ function md_add_to_existing_menus() {
         'md_extra_post_callback'
     );
 
-    // Danh sach parent slugs co san:
+    // Danh sách parent slugs có sẵn:
     // 'index.php'           - Dashboard
     // 'edit.php'             - Posts
     // 'upload.php'           - Media
@@ -271,7 +271,7 @@ function md_add_to_existing_menus() {
     // 'options-general.php'  - Settings
 }
 
-// Cac ham shortcut tuong duong:
+// Các hàm shortcut tương đương:
 // add_dashboard_page()    => add_submenu_page('index.php', ...)
 // add_posts_page()        => add_submenu_page('edit.php', ...)
 // add_media_page()        => add_submenu_page('upload.php', ...)
@@ -286,63 +286,63 @@ function md_add_to_existing_menus() {
 
 ---
 
-## 3. Settings API chi tiet
+## 3. Settings API chi tiết
 
-Settings API la cach **chuan** cua WordPress de tao trang cai dat. No giup tu dong hoa viec luu, validate va hien thi settings.
+Settings API là cách **chuẩn** của WordPress để tạo trang cài đặt. Nó giúp tự động hóa việc lưu, validate và hiển thị settings.
 
-### Khai niem chinh
+### Khái niệm chính
 
 ```
-Settings API co 3 thanh phan:
+Settings API có 3 thành phần:
 
 1. Setting (register_setting)
-   - Dang ky 1 option trong database (wp_options)
-   - Dinh nghia ham sanitize/validate
+   - Đăng ký 1 option trong database (wp_options)
+   - Định nghĩa hàm sanitize/validate
 
 2. Section (add_settings_section)
-   - Nhom cac fields lai voi nhau
-   - Co tieu de va mo ta
+   - Nhóm các fields lại với nhau
+   - Có tiêu đề và mô tả
 
 3. Field (add_settings_field)
-   - Tung truong nhap lieu cu the
+   - Từng trường nhập liệu cụ thể
    - Text, checkbox, select, v.v.
 
-Quan he:
+Quan hệ:
 Setting 1:N Section 1:N Field
 
-Moi Setting chua nhieu Sections
-Moi Section chua nhieu Fields
+Mỗi Setting chứa nhiều Sections
+Mỗi Section chứa nhiều Fields
 ```
 
-### Luong hoat dong cua Settings API
+### Luồng hoạt động của Settings API
 
 ```
 1. admin_init hook
-   => register_setting()         : Dang ky setting
-   => add_settings_section()     : Them section
-   => add_settings_field()       : Them field vao section
+   => register_setting()         : Đăng ký setting
+   => add_settings_section()     : Thêm section
+   => add_settings_field()       : Thêm field vào section
 
 2. Trang Settings (callback)
-   => <form action="options.php"> : Form gui den options.php
+   => <form action="options.php"> : Form gửi đến options.php
    => settings_fields()           : Output nonce + hidden fields
-   => do_settings_sections()      : Render tat ca sections va fields
-   => submit_button()             : Nut Submit
+   => do_settings_sections()      : Render tất cả sections và fields
+   => submit_button()             : Nút Submit
 
 3. Khi Submit
-   => WordPress tu dong:
-      - Kiem tra nonce
-      - Goi ham sanitize/validate
-      - Luu vao wp_options
-      - Redirect ve trang settings voi thong bao
+   => WordPress tự động:
+      - Kiểm tra nonce
+      - Gọi hàm sanitize/validate
+      - Lưu vào wp_options
+      - Redirect về trang settings với thông báo
 ```
 
-### Vi du co ban Settings API
+### Ví dụ cơ bản Settings API
 
 ```php
 <?php
 /**
  * Plugin Name: Settings API Demo
- * Description: Demo Settings API co ban.
+ * Description: Demo Settings API cơ bản.
  * Version: 1.0.0
  */
 
@@ -350,7 +350,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// === BUOC 1: Them menu ===
+// === BƯỚC 1: Thêm menu ===
 add_action( 'admin_menu', 'sad_add_menu' );
 
 function sad_add_menu() {
@@ -363,20 +363,20 @@ function sad_add_menu() {
     );
 }
 
-// === BUOC 2: Dang ky Settings ===
+// === BƯỚC 2: Đăng ký Settings ===
 add_action( 'admin_init', 'sad_register_settings' );
 
 function sad_register_settings() {
     /**
-     * register_setting() - Dang ky 1 setting (1 option trong database)
+     * register_setting() - Đăng ký 1 setting (1 option trong database)
      *
-     * @param string $option_group  Nhom setting (dung trong settings_fields())
-     * @param string $option_name   Ten option trong wp_options
-     * @param array  $args          Tuy chon: type, description, sanitize_callback, default
+     * @param string $option_group  Nhóm setting (dùng trong settings_fields())
+     * @param string $option_name   Tên option trong wp_options
+     * @param array  $args          Tùy chọn: type, description, sanitize_callback, default
      */
     register_setting(
         'sad_options_group',         // option_group
-        'sad_options',               // option_name (luu trong wp_options)
+        'sad_options',               // option_name (lưu trong wp_options)
         array(
             'type'              => 'array',
             'sanitize_callback' => 'sad_sanitize_options',
@@ -390,45 +390,45 @@ function sad_register_settings() {
     );
 
     /**
-     * add_settings_section() - Them 1 section (nhom fields)
+     * add_settings_section() - Thêm 1 section (nhóm fields)
      *
-     * @param string   $id        ID duy nhat cua section
-     * @param string   $title     Tieu de hien thi
-     * @param callable $callback  Ham render mo ta (co the null)
-     * @param string   $page      Slug trang (khop voi menu_slug)
+     * @param string   $id        ID duy nhất của section
+     * @param string   $title     Tiêu đề hiển thị
+     * @param callable $callback  Hàm render mô tả (có thể null)
+     * @param string   $page      Slug trang (khớp với menu_slug)
      */
     add_settings_section(
         'sad_general_section',           // section ID
-        'Cai dat chung',                 // tieu de
-        'sad_general_section_callback',  // ham mo ta
+        'Cài đặt chung',                // tiêu đề
+        'sad_general_section_callback',  // hàm mô tả
         'settings-api-demo'              // page slug
     );
 
     /**
-     * add_settings_field() - Them 1 truong nhap lieu
+     * add_settings_field() - Thêm 1 trường nhập liệu
      *
-     * @param string   $id        ID duy nhat
-     * @param string   $title     Label cua field
-     * @param callable $callback  Ham render input
+     * @param string   $id        ID duy nhất
+     * @param string   $title     Label của field
+     * @param callable $callback  Hàm render input
      * @param string   $page      Slug trang
-     * @param string   $section   ID cua section
-     * @param array    $args      Tham so truyen cho callback
+     * @param string   $section   ID của section
+     * @param array    $args      Tham số truyền cho callback
      */
     add_settings_field(
         'sad_site_name',                 // field ID
-        'Ten website',                   // label
-        'sad_text_field_callback',       // ham render
+        'Tên website',                   // label
+        'sad_text_field_callback',       // hàm render
         'settings-api-demo',             // page slug
         'sad_general_section',           // section ID
-        array(                           // args truyen cho callback
-            'label_for' => 'sad_site_name',  // them for="" cho label
+        array(                           // args truyền cho callback
+            'label_for' => 'sad_site_name',  // thêm for="" cho label
             'field_key' => 'site_name',      // key trong option array
         )
     );
 
     add_settings_field(
         'sad_site_email',
-        'Email lien he',
+        'Email liên hệ',
         'sad_email_field_callback',
         'settings-api-demo',
         'sad_general_section',
@@ -440,7 +440,7 @@ function sad_register_settings() {
 
     add_settings_field(
         'sad_per_page',
-        'So luong moi trang',
+        'Số lượng mỗi trang',
         'sad_number_field_callback',
         'settings-api-demo',
         'sad_general_section',
@@ -452,7 +452,7 @@ function sad_register_settings() {
 
     add_settings_field(
         'sad_show_header',
-        'Hien thi Header',
+        'Hiển thị Header',
         'sad_checkbox_field_callback',
         'settings-api-demo',
         'sad_general_section',
@@ -463,12 +463,12 @@ function sad_register_settings() {
     );
 }
 
-// === BUOC 3: Callback cho Section ===
+// === BƯỚC 3: Callback cho Section ===
 function sad_general_section_callback() {
-    echo '<p>Cau hinh cac thong tin chung cua website.</p>';
+    echo '<p>Cấu hình các thông tin chung của website.</p>';
 }
 
-// === BUOC 4: Callbacks cho Fields ===
+// === BƯỚC 4: Callbacks cho Fields ===
 
 function sad_text_field_callback( $args ) {
     $options = get_option( 'sad_options' );
@@ -491,7 +491,7 @@ function sad_email_field_callback( $args ) {
            name="sad_options[<?php echo esc_attr( $args['field_key'] ); ?>]"
            value="<?php echo esc_attr( $value ); ?>"
            class="regular-text">
-    <p class="description">Nhap email hop le.</p>
+    <p class="description">Nhập email hợp lệ.</p>
     <?php
 }
 
@@ -507,7 +507,7 @@ function sad_number_field_callback( $args ) {
            max="100"
            step="1"
            class="small-text">
-    <p class="description">Tu 1 den 100.</p>
+    <p class="description">Từ 1 đến 100.</p>
     <?php
 }
 
@@ -521,16 +521,16 @@ function sad_checkbox_field_callback( $args ) {
            value="1"
            <?php checked( $checked, true ); ?>>
     <label for="<?php echo esc_attr( $args['label_for'] ); ?>">
-        Bat tinh nang nay
+        Bật tính năng này
     </label>
     <?php
 }
 
-// === BUOC 5: Ham Sanitize ===
+// === BƯỚC 5: Hàm Sanitize ===
 function sad_sanitize_options( $input ) {
     $sanitized = array();
 
-    // Sanitize tung truong
+    // Sanitize từng trường
     $sanitized['site_name'] = sanitize_text_field( $input['site_name'] ?? '' );
 
     $sanitized['site_email'] = sanitize_email( $input['site_email'] ?? '' );
@@ -538,10 +538,10 @@ function sad_sanitize_options( $input ) {
         add_settings_error(
             'sad_options',           // setting slug
             'invalid_email',         // error code
-            'Email khong hop le!',   // thong bao loi
-            'error'                  // loai: error, warning, success, info
+            'Email không hợp lệ!',  // thông báo lỗi
+            'error'                  // loại: error, warning, success, info
         );
-        // Giu lai gia tri cu
+        // Giữ lại giá trị cũ
         $old = get_option( 'sad_options' );
         $sanitized['site_email'] = $old['site_email'] ?? '';
     }
@@ -556,9 +556,9 @@ function sad_sanitize_options( $input ) {
     return $sanitized;
 }
 
-// === BUOC 6: Render trang Settings ===
+// === BƯỚC 6: Render trang Settings ===
 function sad_options_page() {
-    // Kiem tra quyen
+    // Kiểm tra quyền
     if ( ! current_user_can( 'manage_options' ) ) {
         return;
     }
@@ -567,28 +567,28 @@ function sad_options_page() {
         <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
         <?php
-        // Hien thi thong bao loi/thanh cong (tu dong tu Settings API)
+        // Hiển thị thông báo lỗi/thành công (tự động từ Settings API)
         settings_errors( 'sad_options' );
         ?>
 
         <!--
-        QUAN TRONG: action="options.php"
-        WordPress se tu dong xu ly:
-        1. Kiem tra nonce
-        2. Goi sanitize callback
-        3. Luu option
-        4. Redirect ve trang nay voi thong bao
+        QUAN TRỌNG: action="options.php"
+        WordPress sẽ tự động xử lý:
+        1. Kiểm tra nonce
+        2. Gọi sanitize callback
+        3. Lưu option
+        4. Redirect về trang này với thông báo
         -->
         <form method="post" action="options.php">
             <?php
             // Output hidden fields: nonce, option_page, action
             settings_fields( 'sad_options_group' );
 
-            // Render tat ca sections va fields cua trang nay
+            // Render tất cả sections và fields của trang này
             do_settings_sections( 'settings-api-demo' );
 
-            // Nut Submit
-            submit_button( 'Luu cai dat' );
+            // Nút Submit
+            submit_button( 'Lưu cài đặt' );
             ?>
         </form>
     </div>
@@ -598,15 +598,15 @@ function sad_options_page() {
 
 ---
 
-## 4. Tao trang Options hoan chinh
+## 4. Tạo trang Options hoàn chỉnh
 
-Mot trang Options chuyen nghiep voi cau truc ro rang:
+Một trang Options chuyên nghiệp với cấu trúc rõ ràng:
 
 ```php
 <?php
 /**
  * Plugin Name: Professional Settings
- * Description: Trang Settings chuyen nghiep.
+ * Description: Trang Settings chuyên nghiệp.
  * Version: 1.0.0
  */
 
@@ -647,7 +647,7 @@ class Professional_Settings {
     }
 
     /**
-     * Lay gia tri option, tu dong merge voi defaults
+     * Lấy giá trị option, tự động merge với defaults
      */
     public function get_options() {
         return wp_parse_args(
@@ -657,7 +657,7 @@ class Professional_Settings {
     }
 
     /**
-     * Them menu
+     * Thêm menu
      */
     public function add_menu() {
         add_menu_page(
@@ -672,7 +672,7 @@ class Professional_Settings {
     }
 
     /**
-     * Dang ky settings
+     * Đăng ký settings
      */
     public function register_settings() {
         register_setting(
@@ -684,32 +684,32 @@ class Professional_Settings {
             )
         );
 
-        // --- Section: Thong tin cong ty ---
+        // --- Section: Thông tin công ty ---
         add_settings_section(
             'company_section',
-            'Thong tin cong ty',
+            'Thông tin công ty',
             function() {
-                echo '<p>Nhap thong tin cong ty cua ban.</p>';
+                echo '<p>Nhập thông tin công ty của bạn.</p>';
             },
             'pro-settings'
         );
 
-        $this->add_field( 'company_name', 'Ten cong ty', 'company_section', 'text' );
+        $this->add_field( 'company_name', 'Tên công ty', 'company_section', 'text' );
         $this->add_field( 'company_email', 'Email', 'company_section', 'email' );
-        $this->add_field( 'company_phone', 'So dien thoai', 'company_section', 'tel' );
+        $this->add_field( 'company_phone', 'Số điện thoại', 'company_section', 'tel' );
 
-        // --- Section: Hien thi ---
+        // --- Section: Hiển thị ---
         add_settings_section(
             'display_section',
-            'Cai dat hien thi',
+            'Cài đặt hiển thị',
             function() {
-                echo '<p>Tuy chinh cach hien thi noi dung.</p>';
+                echo '<p>Tùy chỉnh cách hiển thị nội dung.</p>';
             },
             'pro-settings'
         );
 
-        $this->add_field( 'items_per_page', 'So luong moi trang', 'display_section', 'number' );
-        $this->add_field( 'date_format', 'Dinh dang ngay', 'display_section', 'select', array(
+        $this->add_field( 'items_per_page', 'Số lượng mỗi trang', 'display_section', 'number' );
+        $this->add_field( 'date_format', 'Định dạng ngày', 'display_section', 'select', array(
             'options' => array(
                 'Y-m-d'  => '2024-01-15',
                 'd/m/Y'  => '15/01/2024',
@@ -717,25 +717,25 @@ class Professional_Settings {
                 'F j, Y' => 'January 15, 2024',
             ),
         ));
-        $this->add_field( 'theme_color', 'Mau chu dao', 'display_section', 'color' );
-        $this->add_field( 'custom_css', 'CSS tuy chinh', 'display_section', 'textarea' );
+        $this->add_field( 'theme_color', 'Màu chủ đạo', 'display_section', 'color' );
+        $this->add_field( 'custom_css', 'CSS tùy chỉnh', 'display_section', 'textarea' );
 
-        // --- Section: Hieu suat ---
+        // --- Section: Hiệu suất ---
         add_settings_section(
             'performance_section',
-            'Hieu suat',
+            'Hiệu suất',
             function() {
-                echo '<p>Cai dat lien quan den hieu suat website.</p>';
+                echo '<p>Cài đặt liên quan đến hiệu suất website.</p>';
             },
             'pro-settings'
         );
 
-        $this->add_field( 'enable_cache', 'Bat Cache', 'performance_section', 'checkbox' );
-        $this->add_field( 'cache_duration', 'Thoi gian cache (giay)', 'performance_section', 'number' );
+        $this->add_field( 'enable_cache', 'Bật Cache', 'performance_section', 'checkbox' );
+        $this->add_field( 'cache_duration', 'Thời gian cache (giây)', 'performance_section', 'number' );
     }
 
     /**
-     * Helper: Them field nhanh
+     * Helper: Thêm field nhanh
      */
     private function add_field( $key, $label, $section, $type, $extra = array() ) {
         add_settings_field(
@@ -753,7 +753,7 @@ class Professional_Settings {
     }
 
     /**
-     * Render field dua tren type
+     * Render field dựa trên type
      */
     public function render_field( $args ) {
         $options = $this->get_options();
@@ -825,14 +825,14 @@ class Professional_Settings {
                 break;
         }
 
-        // Hien thi mo ta neu co
+        // Hiển thị mô tả nếu có
         if ( ! empty( $args['description'] ) ) {
             printf( '<p class="description">%s</p>', esc_html( $args['description'] ) );
         }
     }
 
     /**
-     * Sanitize tat ca options
+     * Sanitize tất cả options
      */
     public function sanitize( $input ) {
         $sanitized = array();
@@ -866,7 +866,7 @@ class Professional_Settings {
                 <?php
                 settings_fields( $this->option_group );
                 do_settings_sections( 'pro-settings' );
-                submit_button( 'Luu cai dat' );
+                submit_button( 'Lưu cài đặt' );
                 ?>
             </form>
         </div>
@@ -874,7 +874,7 @@ class Professional_Settings {
     }
 }
 
-// Khoi tao
+// Khởi tạo
 new Professional_Settings();
 ```
 
@@ -886,7 +886,7 @@ new Professional_Settings();
 <?php
 /**
  * Plugin Name: Tabbed Settings
- * Description: Settings page voi nhieu tabs.
+ * Description: Settings page với nhiều tabs.
  * Version: 1.0.0
  */
 
@@ -899,12 +899,12 @@ class Tabbed_Settings {
     private $tabs = array();
 
     public function __construct() {
-        // Dinh nghia cac tabs
+        // Định nghĩa các tabs
         $this->tabs = array(
-            'general'     => 'Tong quan',
-            'display'     => 'Hien thi',
-            'social'      => 'Mang xa hoi',
-            'advanced'    => 'Nang cao',
+            'general'     => 'Tổng quan',
+            'display'     => 'Hiển thị',
+            'social'      => 'Mạng xã hội',
+            'advanced'    => 'Nâng cao',
         );
 
         add_action( 'admin_menu', array( $this, 'add_menu' ) );
@@ -930,17 +930,17 @@ class Tabbed_Settings {
         ));
 
         add_settings_section(
-            'ts_general_section', 'Cai dat tong quan', null, 'ts-general'
+            'ts_general_section', 'Cài đặt tổng quan', null, 'ts-general'
         );
 
         add_settings_field(
-            'ts_site_title', 'Tieu de site', array( $this, 'render_text_field' ),
+            'ts_site_title', 'Tiêu đề site', array( $this, 'render_text_field' ),
             'ts-general', 'ts_general_section',
             array( 'option' => 'ts_general_options', 'field' => 'site_title' )
         );
 
         add_settings_field(
-            'ts_tagline', 'Khau hieu', array( $this, 'render_text_field' ),
+            'ts_tagline', 'Khẩu hiệu', array( $this, 'render_text_field' ),
             'ts-general', 'ts_general_section',
             array( 'option' => 'ts_general_options', 'field' => 'tagline' )
         );
@@ -951,33 +951,33 @@ class Tabbed_Settings {
         ));
 
         add_settings_section(
-            'ts_display_section', 'Cai dat hien thi', null, 'ts-display'
+            'ts_display_section', 'Cài đặt hiển thị', null, 'ts-display'
         );
 
         add_settings_field(
-            'ts_layout', 'Bo cuc', array( $this, 'render_radio_field' ),
+            'ts_layout', 'Bố cục', array( $this, 'render_radio_field' ),
             'ts-display', 'ts_display_section',
             array(
                 'option'  => 'ts_display_options',
                 'field'   => 'layout',
                 'choices' => array(
-                    'boxed'     => 'Bo cuc hop (Boxed)',
-                    'wide'      => 'Bo cuc rong (Wide)',
-                    'fullwidth' => 'Toan man hinh (Full Width)',
+                    'boxed'     => 'Bố cục hộp (Boxed)',
+                    'wide'      => 'Bố cục rộng (Wide)',
+                    'fullwidth' => 'Toàn màn hình (Full Width)',
                 ),
             )
         );
 
         add_settings_field(
-            'ts_sidebar', 'Vi tri Sidebar', array( $this, 'render_select_field' ),
+            'ts_sidebar', 'Vị trí Sidebar', array( $this, 'render_select_field' ),
             'ts-display', 'ts_display_section',
             array(
                 'option'  => 'ts_display_options',
                 'field'   => 'sidebar',
                 'choices' => array(
-                    'left'  => 'Ben trai',
-                    'right' => 'Ben phai',
-                    'none'  => 'Khong co',
+                    'left'  => 'Bên trái',
+                    'right' => 'Bên phải',
+                    'none'  => 'Không có',
                 ),
             )
         );
@@ -988,7 +988,7 @@ class Tabbed_Settings {
         ));
 
         add_settings_section(
-            'ts_social_section', 'Lien ket mang xa hoi', null, 'ts-social'
+            'ts_social_section', 'Liên kết mạng xã hội', null, 'ts-social'
         );
 
         $social_networks = array( 'facebook', 'twitter', 'instagram', 'youtube', 'linkedin' );
@@ -1006,7 +1006,7 @@ class Tabbed_Settings {
         ));
 
         add_settings_section(
-            'ts_advanced_section', 'Cai dat nang cao', null, 'ts-advanced'
+            'ts_advanced_section', 'Cài đặt nâng cao', null, 'ts-advanced'
         );
 
         add_settings_field(
@@ -1015,7 +1015,7 @@ class Tabbed_Settings {
             array(
                 'option'      => 'ts_advanced_options',
                 'field'       => 'custom_header',
-                'description' => 'Code se duoc them vao truoc the </head>',
+                'description' => 'Code sẽ được thêm vào trước thẻ </head>',
             )
         );
 
@@ -1025,12 +1025,12 @@ class Tabbed_Settings {
             array(
                 'option'      => 'ts_advanced_options',
                 'field'       => 'custom_footer',
-                'description' => 'Code se duoc them vao truoc the </body>',
+                'description' => 'Code sẽ được thêm vào trước thẻ </body>',
             )
         );
 
         add_settings_field(
-            'ts_debug_mode', 'Che do Debug', array( $this, 'render_checkbox_field' ),
+            'ts_debug_mode', 'Chế độ Debug', array( $this, 'render_checkbox_field' ),
             'ts-advanced', 'ts_advanced_section',
             array( 'option' => 'ts_advanced_options', 'field' => 'debug_mode' )
         );
@@ -1161,17 +1161,17 @@ class Tabbed_Settings {
         );
     }
 
-    // === RENDER TRANG CHINH ===
+    // === RENDER TRANG CHÍNH ===
 
     public function render_page() {
         if ( ! current_user_can( 'manage_options' ) ) {
             return;
         }
 
-        // Xac dinh tab hien tai tu URL parameter
+        // Xác định tab hiện tại từ URL parameter
         $current_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
 
-        // Dam bao tab hop le
+        // Đảm bảo tab hợp lệ
         if ( ! array_key_exists( $current_tab, $this->tabs ) ) {
             $current_tab = 'general';
         }
@@ -1219,7 +1219,7 @@ class Tabbed_Settings {
                         break;
                 }
 
-                submit_button( 'Luu cai dat' );
+                submit_button( 'Lưu cài đặt' );
                 ?>
             </form>
         </div>
@@ -1232,15 +1232,15 @@ new Tabbed_Settings();
 
 ---
 
-## 6. Cac loai field
+## 6. Các loại field
 
-### Tong hop tat ca cac loai field thuong dung
+### Tổng hợp tất cả các loại field thường dùng
 
 ```php
 <?php
 /**
- * Render cac loai field khac nhau trong Settings page.
- * File nay la tap hop cac ham helper.
+ * Render các loại field khác nhau trong Settings page.
+ * File này là tập hợp các hàm helper.
  */
 
 // === 1. TEXT FIELD ===
@@ -1269,7 +1269,7 @@ function render_textarea_field( $option_name, $field_key, $rows = 5 ) {
     );
 }
 
-// === 3. CHECKBOX DON ===
+// === 3. CHECKBOX ĐƠN ===
 function render_checkbox_field( $option_name, $field_key, $label = '' ) {
     $options = get_option( $option_name, array() );
     $checked = ! empty( $options[ $field_key ] );
@@ -1282,7 +1282,7 @@ function render_checkbox_field( $option_name, $field_key, $label = '' ) {
     );
 }
 
-// === 4. NHIEU CHECKBOXES ===
+// === 4. NHIỀU CHECKBOXES ===
 function render_multi_checkbox_field( $option_name, $field_key, $choices ) {
     $options = get_option( $option_name, array() );
     $values = (array) ( $options[ $field_key ] ?? array() );
@@ -1301,7 +1301,7 @@ function render_multi_checkbox_field( $option_name, $field_key, $choices ) {
     }
 }
 
-// Su dung:
+// Sử dụng:
 // render_multi_checkbox_field( 'my_options', 'features', array(
 //     'seo'       => 'SEO Optimization',
 //     'cache'     => 'Page Caching',
@@ -1345,12 +1345,12 @@ function render_radio_field( $option_name, $field_key, $choices ) {
     }
 }
 
-// === 7. COLOR PICKER (voi jQuery) ===
+// === 7. COLOR PICKER (với jQuery) ===
 function render_color_picker_field( $option_name, $field_key ) {
     $options = get_option( $option_name, array() );
     $value = $options[ $field_key ] ?? '#000000';
 
-    // Can wp_enqueue_script('wp-color-picker') va wp_enqueue_style('wp-color-picker')
+    // Cần wp_enqueue_script('wp-color-picker') và wp_enqueue_style('wp-color-picker')
     printf(
         '<input type="text" name="%s[%s]" value="%s" class="color-picker" data-default-color="#000000">',
         esc_attr( $option_name ),
@@ -1371,7 +1371,7 @@ function render_color_picker_field( $option_name, $field_key ) {
 //     ");
 // });
 
-// === 8. MEDIA UPLOAD (chon hinh anh tu Media Library) ===
+// === 8. MEDIA UPLOAD (chọn hình ảnh từ Media Library) ===
 function render_media_upload_field( $option_name, $field_key ) {
     $options = get_option( $option_name, array() );
     $value = $options[ $field_key ] ?? '';
@@ -1393,14 +1393,14 @@ function render_media_upload_field( $option_name, $field_key ) {
         <button type="button"
                 class="button media-upload-button"
                 data-field="<?php echo esc_attr( $field_key ); ?>">
-            Chon hinh anh
+            Chọn hình ảnh
         </button>
 
         <?php if ( $value ) : ?>
             <button type="button"
                     class="button media-remove-button"
                     data-field="<?php echo esc_attr( $field_key ); ?>">
-                Xoa hinh
+                Xóa hình
             </button>
         <?php endif; ?>
     </div>
@@ -1420,8 +1420,8 @@ function render_media_upload_field( $option_name, $field_key ) {
 //                 e.preventDefault();
 //                 var field = $(this).data('field');
 //                 var frame = wp.media({
-//                     title: 'Chon hinh anh',
-//                     button: { text: 'Su dung hinh nay' },
+//                     title: 'Chọn hình ảnh',
+//                     button: { text: 'Sử dụng hình này' },
 //                     multiple: false,
 //                     library: { type: 'image' }
 //                 });
@@ -1453,12 +1453,12 @@ function render_wysiwyg_field( $option_name, $field_key ) {
     $options = get_option( $option_name, array() );
     $value = $options[ $field_key ] ?? '';
 
-    // wp_editor tu dong tao editor (TinyMCE hoac Quicktags)
+    // wp_editor tự động tạo editor (TinyMCE hoặc Quicktags)
     wp_editor( $value, $field_key, array(
         'textarea_name' => $option_name . '[' . $field_key . ']',
         'textarea_rows' => 10,
-        'media_buttons' => true,    // Nut them media
-        'teeny'         => false,   // true = editor don gian
+        'media_buttons' => true,    // Nút thêm media
+        'teeny'         => false,   // true = editor đơn giản
         'quicktags'     => true,    // Tab Text
     ));
 }
@@ -1475,7 +1475,7 @@ function render_password_field( $option_name, $field_key ) {
     );
 }
 
-// === 11. REPEATER FIELD (them nhieu dong) ===
+// === 11. REPEATER FIELD (thêm nhiều dòng) ===
 function render_repeater_field( $option_name, $field_key ) {
     $options = get_option( $option_name, array() );
     $items = (array) ( $options[ $field_key ] ?? array() );
@@ -1488,12 +1488,12 @@ function render_repeater_field( $option_name, $field_key ) {
                        name="<?php echo $name; ?>[]"
                        value="<?php echo esc_attr( $item ); ?>"
                        class="regular-text">
-                <button type="button" class="button remove-row">Xoa</button>
+                <button type="button" class="button remove-row">Xóa</button>
             </div>
         <?php endforeach; ?>
     </div>
     <button type="button" class="button add-row" data-field="<?php echo esc_attr( $field_key ); ?>">
-        + Them dong moi
+        + Thêm dòng mới
     </button>
     <?php
 }
@@ -1501,86 +1501,86 @@ function render_repeater_field( $option_name, $field_key ) {
 
 ---
 
-## 7. Validate va Sanitize Settings
+## 7. Validate và Sanitize Settings
 
-### Phan biet Sanitize va Validate
+### Phân biệt Sanitize và Validate
 
 ```
-SANITIZE = Lam sach du lieu (loai bo ky tu xau)
-  - Luon thuc hien
-  - Bien doi du lieu thanh dang an toan
-  - Vi du: "<script>alert(1)</script>" => "alert(1)"
+SANITIZE = Làm sạch dữ liệu (loại bỏ ký tự xấu)
+  - Luôn thực hiện
+  - Biến đổi dữ liệu thành dạng an toàn
+  - Ví dụ: "<script>alert(1)</script>" => "alert(1)"
 
-VALIDATE = Kiem tra du lieu co hop le khong
-  - Kiem tra logic nghiep vu
-  - Tra ve true/false hoac error
-  - Vi du: Email co dung dinh dang? So co trong pham vi?
+VALIDATE = Kiểm tra dữ liệu có hợp lệ không
+  - Kiểm tra logic nghiệp vụ
+  - Trả về true/false hoặc error
+  - Ví dụ: Email có đúng định dạng? Số có trong phạm vi?
 ```
 
-### Vi du Sanitize va Validate day du
+### Ví dụ Sanitize và Validate đầy đủ
 
 ```php
 <?php
 /**
- * Ham sanitize toan bo settings.
- * Ham nay duoc goi tu dong boi Settings API truoc khi luu data.
+ * Hàm sanitize toàn bộ settings.
+ * Hàm này được gọi tự động bởi Settings API trước khi lưu data.
  *
- * @param array $input Du lieu tho tu form
- * @return array Du lieu da duoc lam sach
+ * @param array $input Dữ liệu thô từ form
+ * @return array Dữ liệu đã được làm sạch
  */
 function my_sanitize_settings( $input ) {
     $sanitized = array();
     $errors = array();
 
     // --- Sanitize text ---
-    // sanitize_text_field: Loai bo tags HTML, xoa ky tu dac biet
+    // sanitize_text_field: Loại bỏ tags HTML, xóa ký tự đặc biệt
     $sanitized['name'] = sanitize_text_field( $input['name'] ?? '' );
 
-    // Validate: Kiem tra khong de trong
+    // Validate: Kiểm tra không để trống
     if ( empty( $sanitized['name'] ) ) {
-        $errors[] = 'Ten khong duoc de trong.';
+        $errors[] = 'Tên không được để trống.';
     }
 
     // --- Sanitize email ---
     $sanitized['email'] = sanitize_email( $input['email'] ?? '' );
 
-    // Validate: Kiem tra dinh dang email
+    // Validate: Kiểm tra định dạng email
     if ( ! empty( $input['email'] ) && ! is_email( $sanitized['email'] ) ) {
-        $errors[] = 'Dia chi email khong hop le.';
-        // Giu lai gia tri cu
+        $errors[] = 'Địa chỉ email không hợp lệ.';
+        // Giữ lại giá trị cũ
         $old = get_option( 'my_settings' );
         $sanitized['email'] = $old['email'] ?? '';
     }
 
     // --- Sanitize URL ---
-    // esc_url_raw: Giong esc_url nhung cho database (khong encode entities)
+    // esc_url_raw: Giống esc_url nhưng cho database (không encode entities)
     $sanitized['website'] = esc_url_raw( $input['website'] ?? '' );
 
     // --- Sanitize number ---
-    // absint: Tra ve so nguyen duong tuyet doi
+    // absint: Trả về số nguyên dương tuyệt đối
     $sanitized['age'] = absint( $input['age'] ?? 0 );
 
-    // Validate: Kiem tra pham vi
+    // Validate: Kiểm tra phạm vi
     if ( $sanitized['age'] < 1 || $sanitized['age'] > 150 ) {
-        $errors[] = 'Tuoi phai tu 1 den 150.';
-        $sanitized['age'] = 25; // Gia tri mac dinh
+        $errors[] = 'Tuổi phải từ 1 đến 150.';
+        $sanitized['age'] = 25; // Giá trị mặc định
     }
 
-    // intval: Tra ve so nguyen (co the am)
+    // intval: Trả về số nguyên (có thể âm)
     $sanitized['offset'] = intval( $input['offset'] ?? 0 );
 
-    // floatval: Tra ve so thuc
+    // floatval: Trả về số thực
     $sanitized['price'] = floatval( $input['price'] ?? 0 );
 
     // --- Sanitize textarea ---
-    // sanitize_textarea_field: Giong sanitize_text_field nhung giu lai xuong dong
+    // sanitize_textarea_field: Giống sanitize_text_field nhưng giữ lại xuống dòng
     $sanitized['description'] = sanitize_textarea_field( $input['description'] ?? '' );
 
     // --- Sanitize HTML content ---
-    // wp_kses_post: Cho phep HTML an toan (giong noi dung bai viet)
+    // wp_kses_post: Cho phép HTML an toàn (giống nội dung bài viết)
     $sanitized['rich_content'] = wp_kses_post( $input['rich_content'] ?? '' );
 
-    // wp_kses: Tuy chinh chinh xac HTML nao duoc phep
+    // wp_kses: Tùy chỉnh chính xác HTML nào được phép
     $allowed_html = array(
         'a'      => array( 'href' => array(), 'title' => array(), 'target' => array() ),
         'br'     => array(),
@@ -1593,17 +1593,17 @@ function my_sanitize_settings( $input ) {
     // --- Sanitize checkbox ---
     $sanitized['enabled'] = ! empty( $input['enabled'] );
 
-    // --- Sanitize select/radio (gia tri tu danh sach co dinh) ---
+    // --- Sanitize select/radio (giá trị từ danh sách cố định) ---
     $valid_colors = array( 'red', 'green', 'blue' );
     $sanitized['color'] = in_array( $input['color'] ?? '', $valid_colors, true )
         ? $input['color']
-        : 'blue'; // Default neu gia tri khong hop le
+        : 'blue'; // Default nếu giá trị không hợp lệ
 
     // --- Sanitize array ---
     $sanitized['tags'] = array();
     if ( ! empty( $input['tags'] ) && is_array( $input['tags'] ) ) {
         $sanitized['tags'] = array_map( 'sanitize_text_field', $input['tags'] );
-        $sanitized['tags'] = array_filter( $sanitized['tags'] ); // Loai bo empty
+        $sanitized['tags'] = array_filter( $sanitized['tags'] ); // Loại bỏ empty
     }
 
     // --- Sanitize hex color ---
@@ -1618,13 +1618,13 @@ function my_sanitize_settings( $input ) {
     // --- Sanitize CSS class ---
     $sanitized['css_class'] = sanitize_html_class( $input['css_class'] ?? '' );
 
-    // --- Hien thi loi ---
+    // --- Hiển thị lỗi ---
     foreach ( $errors as $error ) {
         add_settings_error(
             'my_settings',       // Setting slug
-            'validation_error',  // Error code (duy nhat)
-            $error,              // Noi dung loi
-            'error'              // Loai: 'error', 'warning', 'success', 'info'
+            'validation_error',  // Error code (duy nhất)
+            $error,              // Nội dung lỗi
+            'error'              // Loại: 'error', 'warning', 'success', 'info'
         );
     }
 
@@ -1632,41 +1632,41 @@ function my_sanitize_settings( $input ) {
 }
 ```
 
-### Danh sach Sanitize Functions cua WordPress
+### Danh sách Sanitize Functions của WordPress
 
 ```
 +---------------------------+-----------------------------------+
-| Ham                       | Cong dung                         |
+| Hàm                       | Công dụng                         |
 +---------------------------+-----------------------------------+
-| sanitize_text_field()     | Xoa tags, trim, xoa xuong dong    |
-| sanitize_textarea_field() | Giong tren nhung giu xuong dong   |
-| sanitize_email()          | Chi giu ky tu email hop le        |
-| sanitize_url()            | Lam sach URL                      |
-| esc_url_raw()             | URL cho database (khong encode)   |
-| sanitize_file_name()      | Lam sach ten file                 |
-| sanitize_html_class()     | Lam sach CSS class                |
-| sanitize_hex_color()      | Kiem tra ma mau hex (#ffffff)     |
-| sanitize_title()          | Tao slug tu text                  |
-| sanitize_key()            | Chu thuong, so, gach ngang        |
-| sanitize_mime_type()      | Lam sach MIME type                |
-| wp_kses()                 | Loc HTML theo whitelist           |
-| wp_kses_post()            | Cho phep HTML an toan bai viet    |
-| wp_strip_all_tags()       | Xoa tat ca tags HTML              |
-| absint()                  | So nguyen duong tuyet doi         |
-| intval()                  | Chuyen sang so nguyen             |
-| floatval()                | Chuyen sang so thuc               |
+| sanitize_text_field()     | Xóa tags, trim, xóa xuống dòng   |
+| sanitize_textarea_field() | Giống trên nhưng giữ xuống dòng   |
+| sanitize_email()          | Chỉ giữ ký tự email hợp lệ       |
+| sanitize_url()            | Làm sạch URL                      |
+| esc_url_raw()             | URL cho database (không encode)   |
+| sanitize_file_name()      | Làm sạch tên file                 |
+| sanitize_html_class()     | Làm sạch CSS class                |
+| sanitize_hex_color()      | Kiểm tra mã màu hex (#ffffff)     |
+| sanitize_title()          | Tạo slug từ text                  |
+| sanitize_key()            | Chữ thường, số, gạch ngang        |
+| sanitize_mime_type()      | Làm sạch MIME type                |
+| wp_kses()                 | Lọc HTML theo whitelist           |
+| wp_kses_post()            | Cho phép HTML an toàn bài viết    |
+| wp_strip_all_tags()       | Xóa tất cả tags HTML              |
+| absint()                  | Số nguyên dương tuyệt đối         |
+| intval()                  | Chuyển sang số nguyên             |
+| floatval()                | Chuyển sang số thực               |
 +---------------------------+-----------------------------------+
 ```
 
 ---
 
-## 8. Code vi du: Plugin Settings hoan chinh
+## 8. Code ví dụ: Plugin Settings hoàn chỉnh
 
 ```php
 <?php
 /**
  * Plugin Name:       Advanced Settings Plugin
- * Description:       Plugin mau voi trang Settings hoan chinh, nhieu tabs, nhieu loai field.
+ * Description:       Plugin mẫu với trang Settings hoàn chỉnh, nhiều tabs, nhiều loại field.
  * Version:           1.0.0
  * Author:            Developer
  * Text Domain:       adv-settings
@@ -1682,17 +1682,17 @@ define( 'ASP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 class Advanced_Settings_Plugin {
 
     /**
-     * Instance duy nhat (Singleton)
+     * Instance duy nhất (Singleton)
      */
     private static $instance = null;
 
     /**
-     * Cac tab
+     * Các tab
      */
     private $tabs;
 
     /**
-     * Lay instance
+     * Lấy instance
      */
     public static function get_instance() {
         if ( null === self::$instance ) {
@@ -1706,10 +1706,10 @@ class Advanced_Settings_Plugin {
      */
     private function __construct() {
         $this->tabs = array(
-            'general'  => array( 'title' => 'Tong quan',   'icon' => 'dashicons-admin-generic' ),
+            'general'  => array( 'title' => 'Tổng quan',   'icon' => 'dashicons-admin-generic' ),
             'email'    => array( 'title' => 'Email',       'icon' => 'dashicons-email' ),
-            'display'  => array( 'title' => 'Hien thi',    'icon' => 'dashicons-visibility' ),
-            'advanced' => array( 'title' => 'Nang cao',    'icon' => 'dashicons-admin-tools' ),
+            'display'  => array( 'title' => 'Hiển thị',    'icon' => 'dashicons-visibility' ),
+            'advanced' => array( 'title' => 'Nâng cao',    'icon' => 'dashicons-admin-tools' ),
         );
 
         add_action( 'admin_menu', array( $this, 'add_menu' ) );
@@ -1721,7 +1721,7 @@ class Advanced_Settings_Plugin {
      * Enqueue CSS/JS cho admin
      */
     public function enqueue_assets( $hook ) {
-        // Chi load tren trang settings cua plugin
+        // Chỉ load trên trang settings của plugin
         if ( 'toplevel_page_adv-settings' !== $hook ) {
             return;
         }
@@ -1751,10 +1751,10 @@ class Advanced_Settings_Plugin {
             }
         ');
 
-        // Inline JS cho Color Picker va Media Upload
+        // Inline JS cho Color Picker và Media Upload
         wp_add_inline_script( 'wp-color-picker', "
             jQuery(document).ready(function($){
-                // Khoi tao Color Picker
+                // Khởi tạo Color Picker
                 $('.asp-color-picker').wpColorPicker();
 
                 // Media Upload
@@ -1763,8 +1763,8 @@ class Advanced_Settings_Plugin {
                     var button = $(this);
                     var field = button.data('field');
                     var frame = wp.media({
-                        title: 'Chon hinh anh',
-                        button: { text: 'Su dung hinh nay' },
+                        title: 'Chọn hình ảnh',
+                        button: { text: 'Sử dụng hình này' },
                         multiple: false,
                         library: { type: 'image' }
                     });
@@ -1791,7 +1791,7 @@ class Advanced_Settings_Plugin {
     }
 
     /**
-     * Them menu
+     * Thêm menu
      */
     public function add_menu() {
         add_menu_page(
@@ -1806,7 +1806,7 @@ class Advanced_Settings_Plugin {
     }
 
     /**
-     * Dang ky tat ca settings cho moi tab
+     * Đăng ký tất cả settings cho mỗi tab
      */
     public function register_settings() {
         // === TAB GENERAL ===
@@ -1820,9 +1820,9 @@ class Advanced_Settings_Plugin {
             ),
         ));
 
-        add_settings_section( 'asp_general_main', 'Thong tin website', null, 'asp-general' );
+        add_settings_section( 'asp_general_main', 'Thông tin website', null, 'asp-general' );
 
-        add_settings_field( 'asp_site_name', 'Ten website', function() {
+        add_settings_field( 'asp_site_name', 'Tên website', function() {
             $opts = get_option( 'asp_general_options', array() );
             printf(
                 '<input type="text" name="asp_general_options[site_name]" value="%s" class="regular-text">',
@@ -1830,7 +1830,7 @@ class Advanced_Settings_Plugin {
             );
         }, 'asp-general', 'asp_general_main' );
 
-        add_settings_field( 'asp_site_desc', 'Mo ta', function() {
+        add_settings_field( 'asp_site_desc', 'Mô tả', function() {
             $opts = get_option( 'asp_general_options', array() );
             printf(
                 '<textarea name="asp_general_options[site_description]" rows="3" class="large-text">%s</textarea>',
@@ -1851,16 +1851,16 @@ class Advanced_Settings_Plugin {
                 <?php endif; ?>
             </div>
             <button type="button" class="button asp-media-upload" data-field="asp_logo_id">
-                Chon Logo
+                Chọn Logo
             </button>
             <button type="button" class="button asp-media-remove" data-field="asp_logo_id"
                     style="<?php echo $logo_id ? '' : 'display:none;'; ?>">
-                Xoa Logo
+                Xóa Logo
             </button>
             <?php
         }, 'asp-general', 'asp_general_main' );
 
-        add_settings_field( 'asp_per_page', 'So luong moi trang', function() {
+        add_settings_field( 'asp_per_page', 'Số lượng mỗi trang', function() {
             $opts = get_option( 'asp_general_options', array() );
             printf(
                 '<input type="number" name="asp_general_options[per_page]" value="%s"
@@ -1874,11 +1874,11 @@ class Advanced_Settings_Plugin {
             'sanitize_callback' => array( $this, 'sanitize_email' ),
         ));
 
-        add_settings_section( 'asp_email_main', 'Cai dat Email', function() {
-            echo '<p>Cau hinh email gui tu plugin.</p>';
+        add_settings_section( 'asp_email_main', 'Cài đặt Email', function() {
+            echo '<p>Cấu hình email gửi từ plugin.</p>';
         }, 'asp-email' );
 
-        add_settings_field( 'asp_from_email', 'Email gui', function() {
+        add_settings_field( 'asp_from_email', 'Email gửi', function() {
             $opts = get_option( 'asp_email_options', array() );
             printf(
                 '<input type="email" name="asp_email_options[from_email]" value="%s" class="regular-text">',
@@ -1886,7 +1886,7 @@ class Advanced_Settings_Plugin {
             );
         }, 'asp-email', 'asp_email_main' );
 
-        add_settings_field( 'asp_from_name', 'Ten nguoi gui', function() {
+        add_settings_field( 'asp_from_name', 'Tên người gửi', function() {
             $opts = get_option( 'asp_email_options', array() );
             printf(
                 '<input type="text" name="asp_email_options[from_name]" value="%s" class="regular-text">',
@@ -1913,9 +1913,9 @@ class Advanced_Settings_Plugin {
             'sanitize_callback' => array( $this, 'sanitize_display' ),
         ));
 
-        add_settings_section( 'asp_display_main', 'Tuy chinh giao dien', null, 'asp-display' );
+        add_settings_section( 'asp_display_main', 'Tùy chỉnh giao diện', null, 'asp-display' );
 
-        add_settings_field( 'asp_primary_color', 'Mau chinh', function() {
+        add_settings_field( 'asp_primary_color', 'Màu chính', function() {
             $opts = get_option( 'asp_display_options', array() );
             printf(
                 '<input type="text" name="asp_display_options[primary_color]" value="%s"
@@ -1924,7 +1924,7 @@ class Advanced_Settings_Plugin {
             );
         }, 'asp-display', 'asp_display_main' );
 
-        add_settings_field( 'asp_layout', 'Bo cuc', function() {
+        add_settings_field( 'asp_layout', 'Bố cục', function() {
             $opts = get_option( 'asp_display_options', array() );
             $current = $opts['layout'] ?? 'wide';
             $layouts = array( 'boxed' => 'Boxed', 'wide' => 'Wide', 'full' => 'Full Width' );
@@ -1940,14 +1940,14 @@ class Advanced_Settings_Plugin {
             }
         }, 'asp-display', 'asp_display_main' );
 
-        add_settings_field( 'asp_features', 'Tinh nang', function() {
+        add_settings_field( 'asp_features', 'Tính năng', function() {
             $opts = get_option( 'asp_display_options', array() );
             $features = (array) ( $opts['features'] ?? array() );
             $all_features = array(
-                'breadcrumbs' => 'Hien thi Breadcrumbs',
-                'scroll_top'  => 'Nut Scroll to Top',
+                'breadcrumbs' => 'Hiển thị Breadcrumbs',
+                'scroll_top'  => 'Nút Scroll to Top',
                 'preloader'   => 'Preloader Animation',
-                'dark_mode'   => 'Ho tro Dark Mode',
+                'dark_mode'   => 'Hỗ trợ Dark Mode',
             );
             foreach ( $all_features as $key => $label ) {
                 printf(
@@ -1975,25 +1975,25 @@ class Advanced_Settings_Plugin {
             'sanitize_callback' => array( $this, 'sanitize_advanced' ),
         ));
 
-        add_settings_section( 'asp_advanced_main', 'Cai dat nang cao', function() {
-            echo '<p style="color:#d63638;"><strong>Chu y:</strong> Chi thay doi khi ban hieu ro minh dang lam gi.</p>';
+        add_settings_section( 'asp_advanced_main', 'Cài đặt nâng cao', function() {
+            echo '<p style="color:#d63638;"><strong>Chú ý:</strong> Chỉ thay đổi khi bạn hiểu rõ mình đang làm gì.</p>';
         }, 'asp-advanced' );
 
-        add_settings_field( 'asp_debug', 'Che do Debug', function() {
+        add_settings_field( 'asp_debug', 'Chế độ Debug', function() {
             $opts = get_option( 'asp_advanced_options', array() );
             printf(
                 '<label><input type="checkbox" name="asp_advanced_options[debug]" value="1" %s>
-                 Bat che do debug (ghi log)</label>',
+                 Bật chế độ debug (ghi log)</label>',
                 checked( ! empty( $opts['debug'] ), true, false )
             );
         }, 'asp-advanced', 'asp_advanced_main' );
 
-        add_settings_field( 'asp_cache_ttl', 'Cache TTL (giay)', function() {
+        add_settings_field( 'asp_cache_ttl', 'Cache TTL (giây)', function() {
             $opts = get_option( 'asp_advanced_options', array() );
             printf(
                 '<input type="number" name="asp_advanced_options[cache_ttl]" value="%s"
                         min="0" max="86400" class="small-text">
-                 <p class="description">0 = tat cache. Toi da 86400 (24 gio).</p>',
+                 <p class="description">0 = tắt cache. Tối đa 86400 (24 giờ).</p>',
                 esc_attr( $opts['cache_ttl'] ?? 3600 )
             );
         }, 'asp-advanced', 'asp_advanced_main' );
@@ -2003,12 +2003,12 @@ class Advanced_Settings_Plugin {
             printf(
                 '<input type="password" name="asp_advanced_options[api_key]" value="%s"
                         class="regular-text" autocomplete="new-password">
-                 <p class="description">Nhap API key de ket noi dich vu ngoai.</p>',
+                 <p class="description">Nhập API key để kết nối dịch vụ ngoài.</p>',
                 esc_attr( $opts['api_key'] ?? '' )
             );
         }, 'asp-advanced', 'asp_advanced_main' );
 
-        add_settings_field( 'asp_export', 'Xuat/Nhap cai dat', function() {
+        add_settings_field( 'asp_export', 'Xuất/Nhập cài đặt', function() {
             $all_options = array(
                 'asp_general_options'  => get_option( 'asp_general_options', array() ),
                 'asp_email_options'    => get_option( 'asp_email_options', array() ),
@@ -2016,16 +2016,16 @@ class Advanced_Settings_Plugin {
                 'asp_advanced_options' => get_option( 'asp_advanced_options', array() ),
             );
             ?>
-            <h4>Xuat cai dat</h4>
+            <h4>Xuất cài đặt</h4>
             <textarea readonly class="large-text" rows="3" onclick="this.select();"><?php
                 echo esc_textarea( wp_json_encode( $all_options ) );
             ?></textarea>
-            <p class="description">Copy noi dung tren de sao luu cai dat.</p>
+            <p class="description">Copy nội dung trên để sao lưu cài đặt.</p>
 
-            <h4 style="margin-top:15px;">Nhap cai dat</h4>
+            <h4 style="margin-top:15px;">Nhập cài đặt</h4>
             <textarea name="asp_advanced_options[import_data]" class="large-text" rows="3"
-                      placeholder="Dan noi dung JSON da xuat o day..."></textarea>
-            <p class="description">Dan JSON da xuat vao day va nhan Luu de khoi phuc cai dat.</p>
+                      placeholder="Dán nội dung JSON đã xuất ở đây..."></textarea>
+            <p class="description">Dán JSON đã xuất vào đây và nhấn Lưu để khôi phục cài đặt.</p>
             <?php
         }, 'asp-advanced', 'asp_advanced_main' );
     }
@@ -2048,7 +2048,7 @@ class Advanced_Settings_Plugin {
         $sanitized['email_footer'] = wp_kses_post( $input['email_footer'] ?? '' );
 
         if ( ! empty( $input['from_email'] ) && ! is_email( $sanitized['from_email'] ) ) {
-            add_settings_error( 'asp_email_options', 'invalid_email', 'Email khong hop le!' );
+            add_settings_error( 'asp_email_options', 'invalid_email', 'Email không hợp lệ!' );
         }
 
         return $sanitized;
@@ -2072,7 +2072,7 @@ class Advanced_Settings_Plugin {
     }
 
     public function sanitize_advanced( $input ) {
-        // Xu ly Import
+        // Xử lý Import
         if ( ! empty( $input['import_data'] ) ) {
             $import = json_decode( wp_unslash( $input['import_data'] ), true );
             if ( is_array( $import ) ) {
@@ -2085,10 +2085,10 @@ class Advanced_Settings_Plugin {
                     }
                 }
                 add_settings_error( 'asp_advanced_options', 'import_success',
-                    'Da nhap cai dat thanh cong!', 'success' );
+                    'Đã nhập cài đặt thành công!', 'success' );
             } else {
                 add_settings_error( 'asp_advanced_options', 'import_error',
-                    'Du lieu JSON khong hop le!', 'error' );
+                    'Dữ liệu JSON không hợp lệ!', 'error' );
             }
         }
 
@@ -2100,7 +2100,7 @@ class Advanced_Settings_Plugin {
     }
 
     /**
-     * Render trang settings voi tabs
+     * Render trang settings với tabs
      */
     public function render_page() {
         if ( ! current_user_can( 'manage_options' ) ) {
@@ -2157,7 +2157,7 @@ class Advanced_Settings_Plugin {
                             break;
                     }
 
-                    submit_button( 'Luu cai dat' );
+                    submit_button( 'Lưu cài đặt' );
                     ?>
                 </form>
             </div>
@@ -2166,14 +2166,14 @@ class Advanced_Settings_Plugin {
             <p style="margin-top:20px; color:#666;">
                 <span class="dashicons dashicons-info"></span>
                 Plugin version <?php echo esc_html( ASP_VERSION ); ?> |
-                Tab hien tai: <strong><?php echo esc_html( $this->tabs[ $current_tab ]['title'] ); ?></strong>
+                Tab hiện tại: <strong><?php echo esc_html( $this->tabs[ $current_tab ]['title'] ); ?></strong>
             </p>
         </div>
         <?php
     }
 }
 
-// Khoi tao plugin
+// Khởi tạo plugin
 Advanced_Settings_Plugin::get_instance();
 ```
 
@@ -2181,39 +2181,39 @@ Advanced_Settings_Plugin::get_instance();
 
 ## 9. Best Practices
 
-### 1. Luon dung Settings API
+### 1. Luôn dùng Settings API
 
 ```php
 <?php
-// SAI: Tu xu ly form
+// SAI: Tự xử lý form
 if ( $_POST['action'] === 'save' ) {
-    update_option( 'my_opt', $_POST['value'] ); // Khong an toan!
+    update_option( 'my_opt', $_POST['value'] ); // Không an toàn!
 }
 
-// DUNG: Dung Settings API
+// ĐÚNG: Dùng Settings API
 register_setting( 'my_group', 'my_opt', array(
     'sanitize_callback' => 'sanitize_text_field',
 ));
-// WordPress tu dong kiem tra nonce, sanitize, va luu
+// WordPress tự động kiểm tra nonce, sanitize, và lưu
 ```
 
-### 2. Prefix tat ca
+### 2. Prefix tất cả
 
 ```php
 <?php
-// SAI: De bi trung ten
+// SAI: Dễ bị trùng tên
 add_menu_page( 'Settings', 'Settings', ... );
 
-// DUNG: Prefix duy nhat
+// ĐÚNG: Prefix duy nhất
 add_menu_page( 'My Plugin Settings', 'My Plugin', ... );
 ```
 
-### 3. Chi load assets khi can
+### 3. Chỉ load assets khi cần
 
 ```php
 <?php
 add_action( 'admin_enqueue_scripts', function( $hook ) {
-    // Chi load tren trang settings cua plugin
+    // Chỉ load trên trang settings của plugin
     if ( strpos( $hook, 'my-plugin' ) === false ) {
         return;
     }
@@ -2221,21 +2221,21 @@ add_action( 'admin_enqueue_scripts', function( $hook ) {
 });
 ```
 
-### 4. Dung wp_parse_args cho defaults
+### 4. Dùng wp_parse_args cho defaults
 
 ```php
 <?php
-// Dam bao tat ca keys luon co gia tri
+// Đảm bảo tất cả keys luôn có giá trị
 $defaults = array( 'name' => '', 'email' => '', 'age' => 25 );
 $options = wp_parse_args( get_option( 'my_options', array() ), $defaults );
-// $options luon co du 3 keys ke ca khi database chua co
+// $options luôn có đủ 3 keys kể cả khi database chưa có
 ```
 
-### 5. Tach code thanh nhieu file
+### 5. Tách code thành nhiều file
 
 ```php
 <?php
-// File chinh chi load cac file khac
+// File chính chỉ load các file khác
 if ( is_admin() ) {
     require_once plugin_dir_path( __FILE__ ) . 'admin/class-settings.php';
 }
@@ -2243,7 +2243,7 @@ if ( is_admin() ) {
 
 ---
 
-## Tham khao
+## Tham khảo
 
 - [WordPress Settings API](https://developer.wordpress.org/plugins/settings/settings-api/)
 - [add_menu_page()](https://developer.wordpress.org/reference/functions/add_menu_page/)
