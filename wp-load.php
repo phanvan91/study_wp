@@ -29,7 +29,6 @@
 
 /** Define ABSPATH as this file's directory */
 /** Định nghĩa ABSPATH là thư mục chứa file này */
-dd(ABSPATH);
 
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
