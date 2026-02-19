@@ -1,10 +1,10 @@
 <?php
 /**
- * A class for displaying various tree-like structures.
+ * Lớp hiển thị các cấu trúc dạng cây khác nhau.
  *
- * Extend the Walker class to use it, see examples below. Child classes
- * do not need to implement all of the abstract methods in the class. The child
- * only needs to implement the methods that are needed.
+ * Kế thừa lớp Walker để sử dụng, xem các ví dụ bên dưới. Các lớp con
+ * không cần triển khai tất cả các phương thức trừu tượng trong lớp. Lớp con
+ * chỉ cần triển khai các phương thức cần thiết.
  *
  * @since 2.1.0
  *
@@ -14,7 +14,7 @@
 #[AllowDynamicProperties]
 class Walker {
 	/**
-	 * What the class handles.
+	 * Loại đối tượng mà lớp xử lý.
 	 *
 	 * @since 2.1.0
 	 * @var string
@@ -22,7 +22,7 @@ class Walker {
 	public $tree_type;
 
 	/**
-	 * DB fields to use.
+	 * Các trường cơ sở dữ liệu sử dụng.
 	 *
 	 * @since 2.1.0
 	 * @var string[]
@@ -30,7 +30,7 @@ class Walker {
 	public $db_fields;
 
 	/**
-	 * Max number of pages walked by the paged walker.
+	 * Số trang tối đa được duyệt bởi walker phân trang.
 	 *
 	 * @since 2.7.0
 	 * @var int
@@ -38,9 +38,9 @@ class Walker {
 	public $max_pages = 1;
 
 	/**
-	 * Whether the current element has children or not.
+	 * Phần tử hiện tại có phần tử con hay không.
 	 *
-	 * To be used in start_el().
+	 * Được sử dụng trong start_el().
 	 *
 	 * @since 4.0.0
 	 * @var bool
@@ -48,50 +48,50 @@ class Walker {
 	public $has_children;
 
 	/**
-	 * Starts the list before the elements are added.
+	 * Bắt đầu danh sách trước khi các phần tử được thêm vào.
 	 *
-	 * The $args parameter holds additional values that may be used with the child
-	 * class methods. This method is called at the start of the output list.
+	 * Tham số $args chứa các giá trị bổ sung có thể được sử dụng với các phương thức
+	 * của lớp con. Phương thức này được gọi khi bắt đầu xuất danh sách.
 	 *
 	 * @since 2.1.0
 	 * @abstract
 	 *
-	 * @param string $output Used to append additional content (passed by reference).
-	 * @param int    $depth  Depth of the item.
-	 * @param array  $args   An array of additional arguments.
+	 * @param string $output Dùng để nối thêm nội dung (truyền theo tham chiếu).
+	 * @param int    $depth  Độ sâu của mục.
+	 * @param array  $args   Mảng các đối số bổ sung.
 	 */
 	public function start_lvl( &$output, $depth = 0, $args = array() ) {}
 
 	/**
-	 * Ends the list of after the elements are added.
+	 * Kết thúc danh sách sau khi các phần tử đã được thêm.
 	 *
-	 * The $args parameter holds additional values that may be used with the child
-	 * class methods. This method finishes the list at the end of output of the elements.
+	 * Tham số $args chứa các giá trị bổ sung có thể được sử dụng với các phương thức
+	 * của lớp con. Phương thức này hoàn tất danh sách khi kết thúc xuất các phần tử.
 	 *
 	 * @since 2.1.0
 	 * @abstract
 	 *
-	 * @param string $output Used to append additional content (passed by reference).
-	 * @param int    $depth  Depth of the item.
-	 * @param array  $args   An array of additional arguments.
+	 * @param string $output Dùng để nối thêm nội dung (truyền theo tham chiếu).
+	 * @param int    $depth  Độ sâu của mục.
+	 * @param array  $args   Mảng các đối số bổ sung.
 	 */
 	public function end_lvl( &$output, $depth = 0, $args = array() ) {}
 
 	/**
-	 * Starts the element output.
+	 * Bắt đầu xuất phần tử.
 	 *
-	 * The $args parameter holds additional values that may be used with the child
-	 * class methods. Also includes the element output.
+	 * Tham số $args chứa các giá trị bổ sung có thể được sử dụng với các phương thức
+	 * của lớp con. Cũng bao gồm kết xuất phần tử.
 	 *
 	 * @since 2.1.0
-	 * @since 5.9.0 Renamed `$object` (a PHP reserved keyword) to `$data_object` for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$object` (từ khóa dành riêng của PHP) thành `$data_object` để hỗ trợ tham số đặt tên PHP 8.
 	 * @abstract
 	 *
-	 * @param string $output            Used to append additional content (passed by reference).
-	 * @param object $data_object       The data object.
-	 * @param int    $depth             Depth of the item.
-	 * @param array  $args              An array of additional arguments.
-	 * @param int    $current_object_id Optional. ID of the current item. Default 0.
+	 * @param string $output            Dùng để nối thêm nội dung (truyền theo tham chiếu).
+	 * @param object $data_object       Đối tượng dữ liệu.
+	 * @param int    $depth             Độ sâu của mục.
+	 * @param array  $args              Mảng các đối số bổ sung.
+	 * @param int    $current_object_id Tùy chọn. ID của mục hiện tại. Mặc định 0.
 	 */
 	public function start_el( &$output, $data_object, $depth = 0, $args = array(), $current_object_id = 0 ) {}
 

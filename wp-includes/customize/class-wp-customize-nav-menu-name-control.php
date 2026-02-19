@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Nav_Menu_Name_Control class
+ * API Tùy biến: Lớp WP_Customize_Nav_Menu_Name_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize control to represent the name field for a given menu.
+ * Điều khiển tùy biến đại diện cho trường tên của một menu nhất định.
  *
  * @since 4.3.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Nav_Menu_Name_Control extends WP_Customize_Control {
 
 	/**
-	 * Type of control, used by JS.
+	 * Loại điều khiển, được sử dụng bởi JS.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -25,14 +25,14 @@ class WP_Customize_Nav_Menu_Name_Control extends WP_Customize_Control {
 	public $type = 'nav_menu_name';
 
 	/**
-	 * No-op since we're using JS template.
+	 * Không thực hiện gì vì chúng ta đang sử dụng mẫu JS.
 	 *
 	 * @since 4.3.0
 	 */
 	protected function render_content() {}
 
 	/**
-	 * Render the Underscore template for this control.
+	 * Hiển thị mẫu Underscore cho điều khiển này.
 	 *
 	 * @since 4.3.0
 	 */

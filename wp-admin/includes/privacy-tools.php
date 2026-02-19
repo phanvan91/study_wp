@@ -1,19 +1,19 @@
 <?php
 /**
- * WordPress Administration Privacy Tools API.
+ * API Công cụ Quyền riêng tư Quản trị WordPress.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Resend an existing request and return the result.
+ * Gửi lại một yêu cầu hiện có và trả về kết quả.
  *
  * @since 4.9.6
  * @access private
  *
- * @param int $request_id Request ID.
- * @return true|WP_Error Returns true if sending the email was successful, or a WP_Error object.
+ * @param int $request_id ID yêu cầu.
+ * @return true|WP_Error Trả về true nếu gửi email thành công, hoặc đối tượng WP_Error.
  */
 function _wp_privacy_resend_request( $request_id ) {
 	$request_id = absint( $request_id );
@@ -35,16 +35,16 @@ function _wp_privacy_resend_request( $request_id ) {
 }
 
 /**
- * Marks a request as completed by the admin and logs the current timestamp.
+ * Đánh dấu yêu cầu là đã hoàn thành bởi quản trị viên và ghi lại dấu thời gian hiện tại.
  *
  * @since 4.9.6
  * @access private
  *
- * @param int $request_id Request ID.
- * @return int|WP_Error Request ID on success, or a WP_Error on failure.
+ * @param int $request_id ID yêu cầu.
+ * @return int|WP_Error ID yêu cầu khi thành công, hoặc WP_Error khi thất bại.
  */
 function _wp_privacy_completed_request( $request_id ) {
-	// Get the request.
+	// Lấy yêu cầu.
 	$request_id = absint( $request_id );
 	$request    = wp_get_user_request( $request_id );
 
@@ -65,7 +65,7 @@ function _wp_privacy_completed_request( $request_id ) {
 }
 
 /**
- * Handle list table actions.
+ * Xử lý các hành động bảng danh sách.
  *
  * @since 4.9.6
  * @access private
@@ -187,7 +187,7 @@ function _wp_personal_data_handle_actions() {
 }
 
 /**
- * Cleans up failed and expired requests before displaying the list table.
+ * Dọn dẹp các yêu cầu thất bại và hết hạn trước khi hiển thị bảng danh sách.
  *
  * @since 4.9.6
  * @access private
@@ -225,29 +225,29 @@ function _wp_personal_data_cleanup_requests() {
 }
 
 /**
- * Generate a single group for the personal data export report.
+ * Tạo một nhóm đơn lẻ cho báo cáo xuất dữ liệu cá nhân.
  *
  * @since 4.9.6
- * @since 5.4.0 Added the `$group_id` and `$groups_count` parameters.
+ * @since 5.4.0 Thêm tham số `$group_id` và `$groups_count`.
  *
  * @param array  $group_data {
- *     The group data to render.
+ *     Dữ liệu nhóm cần hiển thị.
  *
- *     @type string $group_label  The user-facing heading for the group, e.g. 'Comments'.
+ *     @type string $group_label  Tiêu đề hiển thị cho người dùng của nhóm, ví dụ 'Bình luận'.
  *     @type array  $items        {
- *         An array of group items.
+ *         Mảng các mục trong nhóm.
  *
  *         @type array  $group_item_data  {
- *             An array of name-value pairs for the item.
+ *             Mảng các cặp tên-giá trị cho mục.
  *
- *             @type string $name   The user-facing name of an item name-value pair, e.g. 'IP Address'.
- *             @type string $value  The user-facing value of an item data pair, e.g. '50.60.70.0'.
+ *             @type string $name   Tên hiển thị cho người dùng của cặp tên-giá trị, ví dụ 'Địa chỉ IP'.
+ *             @type string $value  Giá trị hiển thị cho người dùng của cặp dữ liệu, ví dụ '50.60.70.0'.
  *         }
  *     }
  * }
- * @param string $group_id     The group identifier.
- * @param int    $groups_count The number of all groups
- * @return string The HTML for this group and its items.
+ * @param string $group_id     Định danh nhóm.
+ * @param int    $groups_count Tổng số nhóm.
+ * @return string HTML cho nhóm này và các mục của nó.
  */
 function wp_privacy_generate_personal_data_export_group_html( $group_data, $group_id = '', $groups_count = 1 ) {
 	$group_id_attr = sanitize_title_with_dashes( $group_data['group_label'] . '-' . $group_id );
@@ -274,7 +274,7 @@ function wp_privacy_generate_personal_data_export_group_html( $group_data, $grou
 
 		foreach ( (array) $group_item_data as $group_item_datum ) {
 			$value = $group_item_datum['value'];
-			// If it looks like a link, make it a link.
+			// Nếu trông giống liên kết, biến nó thành liên kết.
 			if ( ! str_contains( $value, ' ' ) && ( str_starts_with( $value, 'http://' ) || str_starts_with( $value, 'https://' ) ) ) {
 				$value = '<a href="' . esc_url( $value ) . '">' . esc_html( $value ) . '</a>';
 			}
@@ -301,18 +301,18 @@ function wp_privacy_generate_personal_data_export_group_html( $group_data, $grou
 }
 
 /**
- * Generate the personal data export file.
+ * Tạo tệp xuất dữ liệu cá nhân.
  *
  * @since 4.9.6
  *
- * @param int $request_id The export request ID.
+ * @param int $request_id ID yêu cầu xuất.
  */
 function wp_privacy_generate_personal_data_export_file( $request_id ) {
 	if ( ! class_exists( 'ZipArchive' ) ) {
 		wp_send_json_error( __( 'Unable to generate personal data export file. ZipArchive not available.' ) );
 	}
 
-	// Get the request.
+	// Lấy yêu cầu.
 	$request = wp_get_user_request( $request_id );
 
 	if ( ! $request || 'export_personal_data' !== $request->action_name ) {
@@ -325,7 +325,7 @@ function wp_privacy_generate_personal_data_export_file( $request_id ) {
 		wp_send_json_error( __( 'Invalid email address when generating personal data export file.' ) );
 	}
 
-	// Create the exports folder if needed.
+	// Tạo thư mục xuất nếu cần.
 	$exports_dir = wp_privacy_exports_dir();
 	$exports_url = wp_privacy_exports_url();
 
@@ -333,7 +333,7 @@ function wp_privacy_generate_personal_data_export_file( $request_id ) {
 		wp_send_json_error( __( 'Unable to create personal data export folder.' ) );
 	}
 
-	// Protect export folder from browsing.
+	// Bảo vệ thư mục xuất khỏi việc duyệt.
 	$index_pathname = $exports_dir . 'index.php';
 	if ( ! file_exists( $index_pathname ) ) {
 		$file = fopen( $index_pathname, 'w' );
@@ -352,17 +352,17 @@ function wp_privacy_generate_personal_data_export_file( $request_id ) {
 	$json_report_pathname = wp_normalize_path( $exports_dir . $json_report_filename );
 
 	/*
-	 * Gather general data needed.
+	 * Thu thập dữ liệu chung cần thiết.
 	 */
 
-	// Title.
+	// Tiêu đề.
 	$title = sprintf(
 		/* translators: %s: User's email address. */
 		__( 'Personal Data Export for %s' ),
 		$email_address
 	);
 
-	// First, build an "About" group on the fly for this report.
+	// Đầu tiên, xây dựng nhóm "Giới thiệu" ngay lập tức cho báo cáo này.
 	$about_group = array(
 		/* translators: Header for the About section in a personal data export. */
 		'group_label'       => _x( 'About', 'personal data group label' ),
@@ -390,7 +390,7 @@ function wp_privacy_generate_personal_data_export_file( $request_id ) {
 		),
 	);
 
-	// And now, all the Groups.
+	// Và bây giờ, tất cả các Nhóm.
 	$groups = get_post_meta( $request_id, '_export_data_grouped', true );
 	if ( is_array( $groups ) ) {
 		// Merge in the special "About" group.

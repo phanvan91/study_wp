@@ -1,18 +1,18 @@
 <?php
 /**
- * WordPress Administration Screen API.
+ * API Màn hình Quản trị WordPress.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Get the column headers for a screen
+ * Lấy tiêu đề cột cho một màn hình.
  *
  * @since 2.7.0
  *
- * @param string|WP_Screen $screen The screen you want the headers for
- * @return string[] The column header labels keyed by column ID.
+ * @param string|WP_Screen $screen Màn hình bạn muốn lấy tiêu đề.
+ * @return string[] Nhãn tiêu đề cột được đánh khóa theo ID cột.
  */
 function get_column_headers( $screen ) {
 	static $column_headers = array();
@@ -23,16 +23,16 @@ function get_column_headers( $screen ) {
 
 	if ( ! isset( $column_headers[ $screen->id ] ) ) {
 		/**
-		 * Filters the column headers for a list table on a specific screen.
+		 * Lọc tiêu đề cột cho bảng danh sách trên một màn hình cụ thể.
 		 *
-		 * The dynamic portion of the hook name, `$screen->id`, refers to the
-		 * ID of a specific screen. For example, the screen ID for the Posts
-		 * list table is edit-post, so the filter for that screen would be
+		 * Phần động của tên hook, `$screen->id`, tham chiếu đến
+		 * ID của một màn hình cụ thể. Ví dụ, ID màn hình cho bảng
+		 * danh sách Bài viết là edit-post, nên bộ lọc cho màn hình đó sẽ là
 		 * manage_edit-post_columns.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string[] $columns The column header labels keyed by column ID.
+		 * @param string[] $columns Nhãn tiêu đề cột được đánh khóa theo ID cột.
 		 */
 		$column_headers[ $screen->id ] = apply_filters( "manage_{$screen->id}_columns", array() );
 	}
@@ -41,12 +41,12 @@ function get_column_headers( $screen ) {
 }
 
 /**
- * Get a list of hidden columns.
+ * Lấy danh sách các cột bị ẩn.
  *
  * @since 2.7.0
  *
- * @param string|WP_Screen $screen The screen you want the hidden columns for
- * @return string[] Array of IDs of hidden columns.
+ * @param string|WP_Screen $screen Màn hình bạn muốn lấy các cột bị ẩn.
+ * @return string[] Mảng ID của các cột bị ẩn.
  */
 function get_hidden_columns( $screen ) {
 	if ( is_string( $screen ) ) {
@@ -61,35 +61,35 @@ function get_hidden_columns( $screen ) {
 		$hidden = array();
 
 		/**
-		 * Filters the default list of hidden columns.
+		 * Lọc danh sách mặc định các cột bị ẩn.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string[]  $hidden Array of IDs of columns hidden by default.
-		 * @param WP_Screen $screen WP_Screen object of the current screen.
+		 * @param string[]  $hidden Mảng ID của các cột bị ẩn mặc định.
+		 * @param WP_Screen $screen Đối tượng WP_Screen của màn hình hiện tại.
 		 */
 		$hidden = apply_filters( 'default_hidden_columns', $hidden, $screen );
 	}
 
 	/**
-	 * Filters the list of hidden columns.
+	 * Lọc danh sách các cột bị ẩn.
 	 *
 	 * @since 4.4.0
-	 * @since 4.4.1 Added the `use_defaults` parameter.
+	 * @since 4.4.1 Thêm tham số `use_defaults`.
 	 *
-	 * @param string[]  $hidden       Array of IDs of hidden columns.
-	 * @param WP_Screen $screen       WP_Screen object of the current screen.
-	 * @param bool      $use_defaults Whether to show the default columns.
+	 * @param string[]  $hidden       Mảng ID của các cột bị ẩn.
+	 * @param WP_Screen $screen       Đối tượng WP_Screen của màn hình hiện tại.
+	 * @param bool      $use_defaults Có hiển thị các cột mặc định hay không.
 	 */
 	return apply_filters( 'hidden_columns', $hidden, $screen, $use_defaults );
 }
 
 /**
- * Prints the meta box preferences for screen meta.
+ * In tùy chọn meta box cho phần meta màn hình.
  *
  * @since 2.7.0
  *
- * @global array $wp_meta_boxes Global meta box state.
+ * @global array $wp_meta_boxes Trạng thái meta box toàn cục.
  *
  * @param WP_Screen $screen
  */
@@ -117,7 +117,7 @@ function meta_box_prefs( $screen ) {
 					continue;
 				}
 
-				// Submit box cannot be hidden.
+				// Hộp gửi bài không thể bị ẩn.
 				if ( 'submitdiv' === $box['id'] || 'linksubmitdiv' === $box['id'] ) {
 					continue;
 				}
@@ -142,12 +142,12 @@ function meta_box_prefs( $screen ) {
 }
 
 /**
- * Gets an array of IDs of hidden meta boxes.
+ * Lấy mảng ID của các meta box bị ẩn.
  *
  * @since 2.7.0
  *
- * @param string|WP_Screen $screen Screen identifier
- * @return string[] IDs of hidden meta boxes.
+ * @param string|WP_Screen $screen Định danh màn hình.
+ * @return string[] ID của các meta box bị ẩn.
  */
 function get_hidden_meta_boxes( $screen ) {
 	if ( is_string( $screen ) ) {
@@ -158,7 +158,7 @@ function get_hidden_meta_boxes( $screen ) {
 
 	$use_defaults = ! is_array( $hidden );
 
-	// Hide slug boxes by default.
+	// Ẩn hộp slug theo mặc định.
 	if ( $use_defaults ) {
 		$hidden = array();
 
@@ -171,36 +171,36 @@ function get_hidden_meta_boxes( $screen ) {
 		}
 
 		/**
-		 * Filters the default list of hidden meta boxes.
+		 * Lọc danh sách mặc định các meta box bị ẩn.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string[]  $hidden An array of IDs of meta boxes hidden by default.
-		 * @param WP_Screen $screen WP_Screen object of the current screen.
+		 * @param string[]  $hidden Mảng ID của các meta box bị ẩn mặc định.
+		 * @param WP_Screen $screen Đối tượng WP_Screen của màn hình hiện tại.
 		 */
 		$hidden = apply_filters( 'default_hidden_meta_boxes', $hidden, $screen );
 	}
 
 	/**
-	 * Filters the list of hidden meta boxes.
+	 * Lọc danh sách các meta box bị ẩn.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string[]  $hidden       An array of IDs of hidden meta boxes.
-	 * @param WP_Screen $screen       WP_Screen object of the current screen.
-	 * @param bool      $use_defaults Whether to show the default meta boxes.
-	 *                                Default true.
+	 * @param string[]  $hidden       Mảng ID của các meta box bị ẩn.
+	 * @param WP_Screen $screen       Đối tượng WP_Screen của màn hình hiện tại.
+	 * @param bool      $use_defaults Có hiển thị các meta box mặc định hay không.
+	 *                                Mặc định true.
 	 */
 	return apply_filters( 'hidden_meta_boxes', $hidden, $screen, $use_defaults );
 }
 
 /**
- * Register and configure an admin screen option
+ * Đăng ký và cấu hình tùy chọn màn hình quản trị.
  *
  * @since 3.1.0
  *
- * @param string $option An option name.
- * @param mixed  $args   Option-dependent arguments.
+ * @param string $option Tên tùy chọn.
+ * @param mixed  $args   Các đối số phụ thuộc vào tùy chọn.
  */
 function add_screen_option( $option, $args = array() ) {
 	$current_screen = get_current_screen();
@@ -213,13 +213,13 @@ function add_screen_option( $option, $args = array() ) {
 }
 
 /**
- * Get the current screen object
+ * Lấy đối tượng màn hình hiện tại.
  *
  * @since 3.1.0
  *
- * @global WP_Screen $current_screen WordPress current screen object.
+ * @global WP_Screen $current_screen Đối tượng màn hình hiện tại của WordPress.
  *
- * @return WP_Screen|null Current screen object or null when screen not defined.
+ * @return WP_Screen|null Đối tượng màn hình hiện tại hoặc null khi màn hình chưa được định nghĩa.
  */
 function get_current_screen() {
 	global $current_screen;
@@ -232,12 +232,12 @@ function get_current_screen() {
 }
 
 /**
- * Set the current screen object
+ * Đặt đối tượng màn hình hiện tại.
  *
  * @since 3.0.0
  *
- * @param string|WP_Screen $hook_name Optional. The hook name (also known as the hook suffix) used to determine the screen,
- *                                    or an existing screen object.
+ * @param string|WP_Screen $hook_name Tùy chọn. Tên hook (còn gọi là hậu tố hook) dùng để xác định màn hình,
+ *                                    hoặc một đối tượng màn hình đã tồn tại.
  */
 function set_current_screen( $hook_name = '' ) {
 	WP_Screen::get( $hook_name )->set_current_screen();

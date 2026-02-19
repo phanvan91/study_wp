@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Nav_Menu_Control class
+ * API Tùy biến: Lớp WP_Customize_Nav_Menu_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Nav Menu Control Class.
+ * Lớp Điều khiển Menu Điều hướng trong Tùy biến.
  *
  * @since 4.3.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Nav_Menu_Control extends WP_Customize_Control {
 
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -25,14 +25,14 @@ class WP_Customize_Nav_Menu_Control extends WP_Customize_Control {
 	public $type = 'nav_menu';
 
 	/**
-	 * Don't render the control's content - it uses a JS template instead.
+	 * Không hiển thị nội dung điều khiển - sử dụng mẫu JS thay thế.
 	 *
 	 * @since 4.3.0
 	 */
 	public function render_content() {}
 
 	/**
-	 * JS/Underscore template for the control UI.
+	 * Mẫu JS/Underscore cho giao diện điều khiển.
 	 *
 	 * @since 4.3.0
 	 */
@@ -42,7 +42,7 @@ class WP_Customize_Nav_Menu_Control extends WP_Customize_Control {
 		<p class="new-menu-item-invitation">
 			<?php
 			printf(
-				/* translators: %s: "Add Items" button text. */
+				/* translators: %s: Văn bản nút "Add Items". */
 				__( 'Time to add some links! Click &#8220;%s&#8221; to start putting pages, categories, and custom links in your menu. Add as many things as you would like.' ),
 				$add_items
 			);
@@ -59,7 +59,7 @@ class WP_Customize_Nav_Menu_Control extends WP_Customize_Control {
 		</div>
 		<p class="screen-reader-text" id="reorder-items-desc-{{ data.menu_id }}">
 			<?php
-			/* translators: Hidden accessibility text. */
+			/* translators: Văn bản trợ năng ẩn. */
 			_e( 'When in reorder mode, additional controls to reorder menu items will be available in the items list above.' );
 			?>
 		</p>
@@ -67,11 +67,11 @@ class WP_Customize_Nav_Menu_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Return parameters for this control.
+	 * Trả về các tham số cho điều khiển này.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @return array Exported parameters.
+	 * @return array Các tham số đã được xuất.
 	 */
 	public function json() {
 		$exported            = parent::json();

@@ -1,6 +1,6 @@
 <?php
 /**
- * Comment API: WP_Comment class
+ * API Bình luận: Lớp WP_Comment
  *
  * @package WordPress
  * @subpackage Comments
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to organize comments as instantiated objects with defined members.
+ * Lớp lõi dùng để tổ chức bình luận thành các đối tượng được khởi tạo với các thành viên được xác định.
  *
  * @since 4.4.0
  */
@@ -16,9 +16,9 @@
 final class WP_Comment {
 
 	/**
-	 * Comment ID.
+	 * ID bình luận.
 	 *
-	 * A numeric string, for compatibility reasons.
+	 * Chuỗi số, vì lý do tương thích.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -26,9 +26,9 @@ final class WP_Comment {
 	public $comment_ID;
 
 	/**
-	 * ID of the post the comment is associated with.
+	 * ID bài viết mà bình luận thuộc về.
 	 *
-	 * A numeric string, for compatibility reasons.
+	 * Chuỗi số, vì lý do tương thích.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -36,7 +36,7 @@ final class WP_Comment {
 	public $comment_post_ID = '0';
 
 	/**
-	 * Comment author name.
+	 * Tên tác giả bình luận.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -44,7 +44,7 @@ final class WP_Comment {
 	public $comment_author = '';
 
 	/**
-	 * Comment author email address.
+	 * Địa chỉ email tác giả bình luận.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -52,7 +52,7 @@ final class WP_Comment {
 	public $comment_author_email = '';
 
 	/**
-	 * Comment author URL.
+	 * URL tác giả bình luận.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -60,7 +60,7 @@ final class WP_Comment {
 	public $comment_author_url = '';
 
 	/**
-	 * Comment author IP address (IPv4 format).
+	 * Địa chỉ IP tác giả bình luận (định dạng IPv4).
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -68,7 +68,7 @@ final class WP_Comment {
 	public $comment_author_IP = '';
 
 	/**
-	 * Comment date in YYYY-MM-DD HH:MM:SS format.
+	 * Ngày bình luận theo định dạng YYYY-MM-DD HH:MM:SS.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -76,7 +76,7 @@ final class WP_Comment {
 	public $comment_date = '0000-00-00 00:00:00';
 
 	/**
-	 * Comment GMT date in YYYY-MM-DD HH::MM:SS format.
+	 * Ngày bình luận theo GMT với định dạng YYYY-MM-DD HH:MM:SS.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -84,7 +84,7 @@ final class WP_Comment {
 	public $comment_date_gmt = '0000-00-00 00:00:00';
 
 	/**
-	 * Comment content.
+	 * Nội dung bình luận.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -92,9 +92,9 @@ final class WP_Comment {
 	public $comment_content;
 
 	/**
-	 * Comment karma count.
+	 * Số điểm karma của bình luận.
 	 *
-	 * A numeric string, for compatibility reasons.
+	 * Chuỗi số, vì lý do tương thích.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -102,7 +102,7 @@ final class WP_Comment {
 	public $comment_karma = '0';
 
 	/**
-	 * Comment approval status.
+	 * Trạng thái phê duyệt bình luận.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -110,7 +110,7 @@ final class WP_Comment {
 	public $comment_approved = '1';
 
 	/**
-	 * Comment author HTTP user agent.
+	 * User agent HTTP của tác giả bình luận.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -118,18 +118,18 @@ final class WP_Comment {
 	public $comment_agent = '';
 
 	/**
-	 * Comment type.
+	 * Loại bình luận.
 	 *
 	 * @since 4.4.0
-	 * @since 5.5.0 Default value changed to `comment`.
+	 * @since 5.5.0 Giá trị mặc định đổi thành `comment`.
 	 * @var string
 	 */
 	public $comment_type = 'comment';
 
 	/**
-	 * Parent comment ID.
+	 * ID bình luận cha.
 	 *
-	 * A numeric string, for compatibility reasons.
+	 * Chuỗi số, vì lý do tương thích.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -137,9 +137,9 @@ final class WP_Comment {
 	public $comment_parent = '0';
 
 	/**
-	 * Comment author ID.
+	 * ID tác giả bình luận.
 	 *
-	 * A numeric string, for compatibility reasons.
+	 * Chuỗi số, vì lý do tương thích.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -147,7 +147,7 @@ final class WP_Comment {
 	public $user_id = '0';
 
 	/**
-	 * Comment children.
+	 * Các bình luận con.
 	 *
 	 * @since 4.4.0
 	 * @var array
@@ -155,7 +155,7 @@ final class WP_Comment {
 	protected $children;
 
 	/**
-	 * Whether children have been populated for this comment object.
+	 * Các bình luận con đã được nạp cho đối tượng bình luận này hay chưa.
 	 *
 	 * @since 4.4.0
 	 * @var bool
@@ -163,7 +163,7 @@ final class WP_Comment {
 	protected $populated_children = false;
 
 	/**
-	 * Post fields.
+	 * Các trường bài viết.
 	 *
 	 * @since 4.4.0
 	 * @var array
@@ -171,14 +171,14 @@ final class WP_Comment {
 	protected $post_fields = array( 'post_author', 'post_date', 'post_date_gmt', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'comment_status', 'ping_status', 'post_name', 'to_ping', 'pinged', 'post_modified', 'post_modified_gmt', 'post_content_filtered', 'post_parent', 'guid', 'menu_order', 'post_type', 'post_mime_type', 'comment_count' );
 
 	/**
-	 * Retrieves a WP_Comment instance.
+	 * Lấy instance WP_Comment.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
 	 *
-	 * @param int $id Comment ID.
-	 * @return WP_Comment|false Comment object, otherwise false.
+	 * @param int $id ID bình luận.
+	 * @return WP_Comment|false Đối tượng bình luận, false nếu không tìm thấy.
 	 */
 	public static function get_instance( $id ) {
 		global $wpdb;
@@ -204,13 +204,13 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * Populates properties with object vars.
+	 * Gán các thuộc tính từ biến đối tượng.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_Comment $comment Comment object.
+	 * @param WP_Comment $comment Đối tượng bình luận.
 	 */
 	public function __construct( $comment ) {
 		foreach ( get_object_vars( $comment ) as $key => $value ) {
@@ -219,51 +219,51 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Converts object to array.
+	 * Chuyển đổi đối tượng sang mảng.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Object as array.
+	 * @return array Đối tượng dưới dạng mảng.
 	 */
 	public function to_array() {
 		return get_object_vars( $this );
 	}
 
 	/**
-	 * Gets the children of a comment.
+	 * Lấy các bình luận con của một bình luận.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @param array $args {
-	 *     Array of arguments used to pass to get_comments() and determine format.
+	 *     Mảng tham số dùng để truyền cho get_comments() và xác định định dạng.
 	 *
-	 *     @type string $format        Return value format. 'tree' for a hierarchical tree, 'flat' for a flattened array.
-	 *                                 Default 'tree'.
-	 *     @type string $status        Comment status to limit results by. Accepts 'hold' (`comment_status=0`),
-	 *                                 'approve' (`comment_status=1`), 'all', or a custom comment status.
-	 *                                 Default 'all'.
-	 *     @type string $hierarchical  Whether to include comment descendants in the results.
-	 *                                 'threaded' returns a tree, with each comment's children
-	 *                                 stored in a `children` property on the `WP_Comment` object.
-	 *                                 'flat' returns a flat array of found comments plus their children.
-	 *                                 Pass `false` to leave out descendants.
-	 *                                 The parameter is ignored (forced to `false`) when `$fields` is 'ids' or 'counts'.
-	 *                                 Accepts 'threaded', 'flat', or false. Default: 'threaded'.
-	 *     @type string|array $orderby Comment status or array of statuses. To use 'meta_value'
-	 *                                 or 'meta_value_num', `$meta_key` must also be defined.
-	 *                                 To sort by a specific `$meta_query` clause, use that
-	 *                                 clause's array key. Accepts 'comment_agent',
+	 *     @type string $format        Định dạng giá trị trả về. 'tree' cho cây phân cấp, 'flat' cho mảng phẳng.
+	 *                                 Mặc định 'tree'.
+	 *     @type string $status        Trạng thái bình luận để giới hạn kết quả. Chấp nhận 'hold' (`comment_status=0`),
+	 *                                 'approve' (`comment_status=1`), 'all', hoặc trạng thái bình luận tùy chỉnh.
+	 *                                 Mặc định 'all'.
+	 *     @type string $hierarchical  Có bao gồm các bình luận con trong kết quả không.
+	 *                                 'threaded' trả về cây, với các bình luận con được lưu
+	 *                                 trong thuộc tính `children` trên đối tượng `WP_Comment`.
+	 *                                 'flat' trả về mảng phẳng các bình luận tìm được cộng thêm bình luận con.
+	 *                                 Truyền `false` để bỏ qua các bình luận con.
+	 *                                 Tham số này bị bỏ qua (ép thành `false`) khi `$fields` là 'ids' hoặc 'counts'.
+	 *                                 Chấp nhận 'threaded', 'flat', hoặc false. Mặc định: 'threaded'.
+	 *     @type string|array $orderby Trạng thái bình luận hoặc mảng trạng thái. Để dùng 'meta_value'
+	 *                                 hoặc 'meta_value_num', `$meta_key` cũng phải được định nghĩa.
+	 *                                 Để sắp xếp theo mệnh đề `$meta_query` cụ thể, dùng
+	 *                                 khóa mảng của mệnh đề đó. Chấp nhận 'comment_agent',
 	 *                                 'comment_approved', 'comment_author',
 	 *                                 'comment_author_email', 'comment_author_IP',
 	 *                                 'comment_author_url', 'comment_content', 'comment_date',
 	 *                                 'comment_date_gmt', 'comment_ID', 'comment_karma',
 	 *                                 'comment_parent', 'comment_post_ID', 'comment_type',
 	 *                                 'user_id', 'comment__in', 'meta_value', 'meta_value_num',
-	 *                                 the value of $meta_key, and the array keys of
-	 *                                 `$meta_query`. Also accepts false, an empty array, or
-	 *                                 'none' to disable `ORDER BY` clause.
+	 *                                 giá trị của $meta_key, và các khóa mảng của
+	 *                                 `$meta_query`. Cũng chấp nhận false, mảng rỗng, hoặc
+	 *                                 'none' để tắt mệnh đề `ORDER BY`.
 	 * }
-	 * @return WP_Comment[] Array of `WP_Comment` objects.
+	 * @return WP_Comment[] Mảng các đối tượng `WP_Comment`.
 	 */
 	public function get_children( $args = array() ) {
 		$defaults = array(
@@ -289,7 +289,7 @@ final class WP_Comment {
 			foreach ( $this->children as $child ) {
 				$child_args           = $_args;
 				$child_args['format'] = 'flat';
-				// get_children() resets this value automatically.
+				// get_children() tự động đặt lại giá trị này.
 				unset( $child_args['parent'] );
 
 				$children = array_merge( $children, array( $child ), $child->get_children( $child_args ) );
@@ -302,25 +302,25 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Adds a child to the comment.
+	 * Thêm bình luận con vào bình luận.
 	 *
-	 * Used by `WP_Comment_Query` when bulk-filling descendants.
+	 * Được sử dụng bởi `WP_Comment_Query` khi nạp hàng loạt các bình luận con.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_Comment $child Child comment.
+	 * @param WP_Comment $child Bình luận con.
 	 */
 	public function add_child( WP_Comment $child ) {
 		$this->children[ $child->comment_ID ] = $child;
 	}
 
 	/**
-	 * Gets a child comment by ID.
+	 * Lấy bình luận con theo ID.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param int $child_id ID of the child.
-	 * @return WP_Comment|false Returns the comment object if found, otherwise false.
+	 * @param int $child_id ID của bình luận con.
+	 * @return WP_Comment|false Trả về đối tượng bình luận nếu tìm thấy, ngược lại trả về false.
 	 */
 	public function get_child( $child_id ) {
 		if ( isset( $this->children[ $child_id ] ) ) {
@@ -331,28 +331,28 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Sets the 'populated_children' flag.
+	 * Thiết lập cờ 'populated_children'.
 	 *
-	 * This flag is important for ensuring that calling `get_children()` on a childless comment will not trigger
-	 * unneeded database queries.
+	 * Cờ này quan trọng để đảm bảo rằng gọi `get_children()` trên bình luận không có con sẽ không
+	 * kích hoạt các truy vấn cơ sở dữ liệu không cần thiết.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param bool $set Whether the comment's children have already been populated.
+	 * @param bool $set Các bình luận con đã được nạp hay chưa.
 	 */
 	public function populated_children( $set ) {
 		$this->populated_children = (bool) $set;
 	}
 
 	/**
-	 * Determines whether a non-public property is set.
+	 * Xác định xem thuộc tính không công khai có được thiết lập hay không.
 	 *
-	 * If `$name` matches a post field, the comment post will be loaded and the post's value checked.
+	 * Nếu `$name` khớp với trường bài viết, bài viết của bình luận sẽ được tải và giá trị bài viết được kiểm tra.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $name Property to check if set.
-	 * @return bool Whether the property is set.
+	 * @param string $name Thuộc tính cần kiểm tra.
+	 * @return bool Thuộc tính có được thiết lập hay không.
 	 */
 	public function __isset( $name ) {
 		if ( in_array( $name, $this->post_fields, true ) && 0 !== (int) $this->comment_post_ID ) {
@@ -364,13 +364,13 @@ final class WP_Comment {
 	}
 
 	/**
-	 * Magic getter.
+	 * Phương thức getter ma thuật.
 	 *
-	 * If `$name` matches a post field, the comment post will be loaded and the post's value returned.
+	 * Nếu `$name` khớp với trường bài viết, bài viết của bình luận sẽ được tải và giá trị bài viết được trả về.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $name Property name.
+	 * @param string $name Tên thuộc tính.
 	 * @return mixed
 	 */
 	public function __get( $name ) {

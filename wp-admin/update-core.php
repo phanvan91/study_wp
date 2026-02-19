@@ -1,12 +1,12 @@
 <?php
 /**
- * Update Core administration panel.
+ * Bảng quản trị Cập nhật Lõi WordPress.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 wp_enqueue_style( 'plugin-install' );
@@ -24,12 +24,12 @@ if ( ! current_user_can( 'update_core' ) && ! current_user_can( 'update_themes' 
 }
 
 /**
- * Lists available core updates.
+ * Liệt kê các bản cập nhật lõi có sẵn.
  *
  * @since 2.7.0
  *
- * @global string $wp_local_package Locale code of the package.
- * @global wpdb   $wpdb             WordPress database abstraction object.
+ * @global string $wp_local_package Mã ngôn ngữ của gói.
+ * @global wpdb   $wpdb             Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
  * @param object $update
  */
@@ -45,7 +45,7 @@ function list_core_update( $update ) {
 	} elseif ( 'en_US' === $update->locale && $update->packages->partial && $wp_version === $update->partial_version ) {
 		$updates = get_core_updates();
 		if ( $updates && 1 === count( $updates ) ) {
-			// If the only available update is a partial builds, it doesn't need a language-specific version string.
+			// Nếu bản cập nhật duy nhất có sẵn là bản dựng một phần, nó không cần chuỗi phiên bản theo ngôn ngữ cụ thể.
 			$version_string = $update->current;
 		}
 	} elseif ( 'en_US' === $update->locale && 'en_US' !== get_locale() ) {
@@ -63,9 +63,9 @@ function list_core_update( $update ) {
 	$mysql_version = $wpdb->db_version();
 	$show_buttons  = true;
 
-	// Nightly build versions have two hyphens and a commit number.
+	// Phiên bản nightly build có hai dấu gạch nối và số commit.
 	if ( preg_match( '/-\w+-\d+/', $update->current ) ) {
-		// Retrieve the major version number.
+		// Lấy số phiên bản chính.
 		preg_match( '/^\d+.\d+/', $update->current, $update_major );
 		/* translators: %s: WordPress version. */
 		$submit = sprintf( __( 'Update to latest %s nightly' ), $update_major[0] );
@@ -182,7 +182,7 @@ function list_core_update( $update ) {
 	if ( 'en_US' !== $update->locale && ( ! isset( $wp_local_package ) || $wp_local_package !== $update->locale ) ) {
 		echo '<p class="hint">' . __( 'This localized version contains both the translation and various other localization fixes.' ) . '</p>';
 	} elseif ( 'en_US' === $update->locale && 'en_US' !== get_locale() && ( ! $update->packages->partial && $wp_version === $update->partial_version ) ) {
-		// Partial builds don't need language-specific warnings.
+		// Bản dựng một phần không cần cảnh báo theo ngôn ngữ cụ thể.
 		echo '<p class="hint">' . sprintf(
 			/* translators: %s: WordPress version. */
 			__( 'You are about to install WordPress %s <strong>in English (US)</strong>. There is a chance this update will break your translation. You may prefer to wait for the localized version to be released.' ),
@@ -194,7 +194,7 @@ function list_core_update( $update ) {
 }
 
 /**
- * Display dismissed updates.
+ * Hiển thị các bản cập nhật đã ẩn.
  *
  * @since 2.7.0
  */
@@ -238,14 +238,14 @@ function dismissed_updates() {
 }
 
 /**
- * Display upgrade WordPress for downloading latest or upgrading automatically form.
+ * Hiển thị form nâng cấp WordPress để tải phiên bản mới nhất hoặc nâng cấp tự động.
  *
  * @since 2.7.0
  */
 function core_upgrade_preamble() {
 	$updates = get_core_updates();
 
-	// Include an unmodified $wp_version.
+	// Nạp $wp_version chưa bị sửa đổi.
 	require ABSPATH . WPINC . '/version.php';
 
 	$is_development_version = preg_match( '/alpha|beta|RC/', $wp_version );
@@ -282,7 +282,7 @@ function core_upgrade_preamble() {
 	}
 	echo '</ul>';
 
-	// Don't show the maintenance mode notice when we are only showing a single re-install option.
+	// Không hiển thị thông báo chế độ bảo trì khi chỉ hiện một tùy chọn cài đặt lại.
 	if ( $updates && ( count( $updates ) > 1 || 'latest' !== $updates[0]->response ) ) {
 		echo '<p>' . __( 'While your site is being updated, it will be in maintenance mode. As soon as your updates are complete, this mode will be deactivated.' ) . '</p>';
 	} elseif ( ! $updates ) {
@@ -299,7 +299,7 @@ function core_upgrade_preamble() {
 }
 
 /**
- * Display WordPress auto-updates settings.
+ * Hiển thị cài đặt tự động cập nhật WordPress.
  *
  * @since 5.6.0
  */
@@ -329,7 +329,7 @@ function core_auto_updates_settings() {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
 	$updater = new WP_Automatic_Updater();
 
-	// Defaults:
+	// Giá trị mặc định:
 	$upgrade_dev   = get_site_option( 'auto_update_core_dev', 'enabled' ) === 'enabled';
 	$upgrade_minor = get_site_option( 'auto_update_core_minor', 'enabled' ) === 'enabled';
 	$upgrade_major = get_site_option( 'auto_update_core_major', 'unset' ) === 'enabled';
@@ -338,25 +338,25 @@ function core_auto_updates_settings() {
 	// WP_AUTO_UPDATE_CORE = true (all), 'beta', 'rc', 'development', 'branch-development', 'minor', false.
 	if ( defined( 'WP_AUTO_UPDATE_CORE' ) ) {
 		if ( false === WP_AUTO_UPDATE_CORE ) {
-			// Defaults to turned off, unless a filter allows it.
+			// Mặc định tắt, trừ khi bộ lọc cho phép.
 			$upgrade_dev   = false;
 			$upgrade_minor = false;
 			$upgrade_major = false;
 		} elseif ( true === WP_AUTO_UPDATE_CORE
 			|| in_array( WP_AUTO_UPDATE_CORE, array( 'beta', 'rc', 'development', 'branch-development' ), true )
 		) {
-			// ALL updates for core.
+			// TẤT CẢ các bản cập nhật cho lõi.
 			$upgrade_dev   = true;
 			$upgrade_minor = true;
 			$upgrade_major = true;
 		} elseif ( 'minor' === WP_AUTO_UPDATE_CORE ) {
-			// Only minor updates for core.
+			// Chỉ cập nhật phụ cho lõi.
 			$upgrade_dev   = false;
 			$upgrade_minor = true;
 			$upgrade_major = false;
 		}
 
-		// The UI is overridden by the `WP_AUTO_UPDATE_CORE` constant.
+		// Giao diện bị ghi đè bởi hằng số `WP_AUTO_UPDATE_CORE`.
 		$can_set_update_option = false;
 	}
 
@@ -366,24 +366,24 @@ function core_auto_updates_settings() {
 		$upgrade_major = false;
 
 		/*
-		 * The UI is overridden by the `AUTOMATIC_UPDATER_DISABLED` constant
-		 * or the `automatic_updater_disabled` filter,
-		 * or by `wp_is_file_mod_allowed( 'automatic_updater' )`.
-		 * See `WP_Automatic_Updater::is_disabled()`.
+		 * Giao diện bị ghi đè bởi hằng số `AUTOMATIC_UPDATER_DISABLED`
+		 * hoặc bộ lọc `automatic_updater_disabled`,
+		 * hoặc bởi `wp_is_file_mod_allowed( 'automatic_updater' )`.
+		 * Xem `WP_Automatic_Updater::is_disabled()`.
 		 */
 		$can_set_update_option = false;
 	}
 
-	// Is the UI overridden by a plugin using the `allow_major_auto_core_updates` filter?
+	// Giao diện có bị ghi đè bởi plugin sử dụng bộ lọc `allow_major_auto_core_updates` không?
 	if ( has_filter( 'allow_major_auto_core_updates' ) ) {
 		$can_set_update_option = false;
 	}
 
-	/** This filter is documented in wp-admin/includes/class-core-upgrader.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-admin/includes/class-core-upgrader.php */
 	$upgrade_dev = apply_filters( 'allow_dev_auto_core_updates', $upgrade_dev );
-	/** This filter is documented in wp-admin/includes/class-core-upgrader.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-admin/includes/class-core-upgrader.php */
 	$upgrade_minor = apply_filters( 'allow_minor_auto_core_updates', $upgrade_minor );
-	/** This filter is documented in wp-admin/includes/class-core-upgrader.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-admin/includes/class-core-upgrader.php */
 	$upgrade_major = apply_filters( 'allow_major_auto_core_updates', $upgrade_major );
 
 	$auto_update_settings = array(
@@ -439,23 +439,23 @@ function core_auto_updates_settings() {
 
 	<?php
 	/**
-	 * Fires after the major core auto-update settings.
+	 * Kích hoạt sau khi hiển thị cài đặt tự động cập nhật lõi chính.
 	 *
 	 * @since 5.6.0
 	 *
 	 * @param array $auto_update_settings {
-	 *     Array of core auto-update settings.
+	 *     Mảng cài đặt tự động cập nhật lõi.
 	 *
-	 *     @type bool $dev   Whether to enable automatic updates for development versions.
-	 *     @type bool $minor Whether to enable minor automatic core updates.
-	 *     @type bool $major Whether to enable major automatic core updates.
+	 *     @type bool $dev   Có bật tự động cập nhật cho phiên bản phát triển hay không.
+	 *     @type bool $minor Có bật tự động cập nhật lõi phụ hay không.
+	 *     @type bool $major Có bật tự động cập nhật lõi chính hay không.
 	 * }
 	 */
 	do_action( 'after_core_auto_updates_settings', $auto_update_settings );
 }
 
 /**
- * Display the upgrade plugins form.
+ * Hiển thị form nâng cấp plugin.
  *
  * @since 2.9.0
  */
@@ -523,7 +523,7 @@ function list_plugin_updates() {
 			}
 		}
 
-		// Get plugin compat for running version of WordPress.
+		// Kiểm tra tương thích plugin cho phiên bản WordPress đang chạy.
 		if ( isset( $plugin_data->update->tested ) && version_compare( $plugin_data->update->tested, $cur_wp_version, '>=' ) ) {
 			/* translators: %s: WordPress version. */
 			$compat = '<br />' . sprintf( __( 'Compatibility with WordPress %s: 100%% (according to its author)' ), $cur_wp_version );
@@ -531,7 +531,7 @@ function list_plugin_updates() {
 			/* translators: %s: WordPress version. */
 			$compat = '<br />' . sprintf( __( 'Compatibility with WordPress %s: Unknown' ), $cur_wp_version );
 		}
-		// Get plugin compat for updated version of WordPress.
+		// Kiểm tra tương thích plugin cho phiên bản WordPress đã cập nhật.
 		if ( $core_update_version ) {
 			if ( isset( $plugin_data->update->tested ) && version_compare( $plugin_data->update->tested, $core_update_version, '>=' ) ) {
 				/* translators: %s: WordPress version. */
@@ -560,7 +560,7 @@ function list_plugin_updates() {
 			}
 		}
 
-		// Get the upgrade notice for the new plugin version.
+		// Lấy thông báo nâng cấp cho phiên bản plugin mới.
 		if ( isset( $plugin_data->update->upgrade_notice ) ) {
 			$upgrade_notice = '<br />' . strip_tags( $plugin_data->update->upgrade_notice );
 		} else {
@@ -632,7 +632,7 @@ function list_plugin_updates() {
 }
 
 /**
- * Display the upgrade themes form.
+ * Hiển thị form nâng cấp theme.
  *
  * @since 2.9.0
  */
@@ -808,7 +808,7 @@ function list_theme_updates() {
 }
 
 /**
- * Display the update translations form.
+ * Hiển thị form cập nhật bản dịch.
  *
  * @since 3.7.0
  */
@@ -834,11 +834,11 @@ function list_translation_updates() {
 }
 
 /**
- * Upgrades WordPress core display.
+ * Hiển thị nâng cấp lõi WordPress.
  *
  * @since 2.7.0
  *
- * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+ * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
  *
  * @param bool $reinstall
  */
@@ -862,8 +862,8 @@ function do_core_upgrade( $reinstall = false ) {
 	}
 
 	/*
-	 * Allow relaxed file ownership writes for User-initiated upgrades when the API specifies
-	 * that it's safe to do so. This only happens when there are no new files to create.
+	 * Cho phép ghi file với quyền sở hữu linh hoạt cho các nâng cấp do người dùng khởi tạo
+	 * khi API xác định rằng việc này an toàn. Điều này chỉ xảy ra khi không có file mới cần tạo.
 	 */
 	$allow_relaxed_file_ownership = ! $reinstall && isset( $update->new_files ) && ! $update->new_files;
 
@@ -879,7 +879,7 @@ function do_core_upgrade( $reinstall = false ) {
 	}
 
 	if ( ! WP_Filesystem( $credentials, ABSPATH, $allow_relaxed_file_ownership ) ) {
-		// Failed to connect. Error and request again.
+		// Kết nối thất bại. Báo lỗi và yêu cầu lại.
 		request_filesystem_credentials( $url, '', true, ABSPATH, array( 'version', 'locale' ), $allow_relaxed_file_ownership );
 		echo '</div>';
 		return;
@@ -942,7 +942,7 @@ function do_core_upgrade( $reinstall = false ) {
 }
 
 /**
- * Dismiss a core update.
+ * Ẩn một bản cập nhật lõi.
  *
  * @since 2.7.0
  */
@@ -959,7 +959,7 @@ function do_dismiss_core_update() {
 }
 
 /**
- * Undismiss a core update.
+ * Hiện lại một bản cập nhật lõi đã ẩn.
  *
  * @since 2.7.0
  */
@@ -1057,7 +1057,7 @@ get_current_screen()->set_help_sidebar(
 );
 
 if ( 'upgrade-core' === $action ) {
-	// Force an update check when requested.
+	// Buộc kiểm tra cập nhật khi được yêu cầu.
 	$force_check = ! empty( $_GET['force-check'] );
 	wp_version_check( array(), $force_check );
 
@@ -1132,7 +1132,7 @@ if ( 'upgrade-core' === $action ) {
 	}
 
 	/**
-	 * Fires after the core, plugin, and theme update tables.
+	 * Kích hoạt sau các bảng cập nhật lõi, plugin và theme.
 	 *
 	 * @since 2.9.0
 	 */
@@ -1157,7 +1157,7 @@ if ( 'upgrade-core' === $action ) {
 
 	check_admin_referer( 'upgrade-core' );
 
-	// Do the (un)dismiss actions before headers, so that they can redirect.
+	// Thực hiện hành động ẩn/hiện trước khi gửi header, để có thể chuyển hướng.
 	if ( isset( $_POST['dismiss'] ) ) {
 		do_dismiss_core_update();
 	} elseif ( isset( $_POST['undismiss'] ) ) {
@@ -1205,7 +1205,7 @@ if ( 'upgrade-core' === $action ) {
 	$url = 'update.php?action=update-selected&plugins=' . urlencode( implode( ',', $plugins ) );
 	$url = wp_nonce_url( $url, 'bulk-update-plugins' );
 
-	// Used in the HTML title tag.
+	// Được dùng trong thẻ HTML title.
 	$title = __( 'Update Plugins' );
 
 	require_once ABSPATH . 'wp-admin/admin-header.php';
@@ -1246,7 +1246,7 @@ if ( 'upgrade-core' === $action ) {
 	$url = 'update.php?action=update-selected-themes&themes=' . urlencode( implode( ',', $themes ) );
 	$url = wp_nonce_url( $url, 'bulk-update-themes' );
 
-	// Used in the HTML title tag.
+	// Được dùng trong thẻ HTML title.
 	$title = __( 'Update Themes' );
 
 	require_once ABSPATH . 'wp-admin/admin-header.php';
@@ -1320,11 +1320,11 @@ if ( 'upgrade-core' === $action ) {
 	exit;
 } else {
 	/**
-	 * Fires for each custom update action on the WordPress Updates screen.
+	 * Kích hoạt cho mỗi hành động cập nhật tùy chỉnh trên màn hình Cập nhật WordPress.
 	 *
-	 * The dynamic portion of the hook name, `$action`, refers to the
-	 * passed update action. The hook fires in lieu of all available
-	 * default update actions.
+	 * Phần động của tên hook, `$action`, tham chiếu đến hành động
+	 * cập nhật được truyền vào. Hook này được kích hoạt thay thế cho tất cả
+	 * các hành động cập nhật mặc định có sẵn.
 	 *
 	 * @since 3.2.0
 	 */

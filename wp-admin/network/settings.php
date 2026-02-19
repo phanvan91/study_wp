@@ -1,27 +1,27 @@
 <?php
 /**
- * Multisite network settings administration panel.
+ * Trang quản trị Cài đặt Mạng lưới Multisite.
  *
  * @package WordPress
  * @subpackage Multisite
  * @since 3.0.0
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
-/** WordPress Translation Installation API */
+/** API Cài đặt Bản dịch WordPress */
 require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
 if ( ! current_user_can( 'manage_network_options' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 }
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ tiêu đề HTML.
 $title       = __( 'Network Settings' );
 $parent_file = 'settings.php';
 
-// Handle network admin email change requests.
+// Xử lý các yêu cầu thay đổi email quản trị viên mạng lưới.
 if ( ! empty( $_GET['network_admin_hash'] ) ) {
 	$new_admin_details = get_site_option( 'network_admin_hash' );
 	$redirect          = 'settings.php?updated=false';
@@ -66,7 +66,7 @@ get_current_screen()->set_help_sidebar(
 );
 
 if ( $_POST ) {
-	/** This action is documented in wp-admin/network/edit.php */
+	/** Hành động này được ghi chú trong wp-admin/network/edit.php */
 	do_action( 'wpmuadminedit' );
 
 	check_admin_referer( 'siteoptions' );
@@ -108,7 +108,7 @@ if ( $_POST ) {
 		'first_comment_email',
 	);
 
-	// Handle translation installation.
+	// Xử lý cài đặt bản dịch.
 	if ( ! empty( $_POST['WPLANG'] ) && current_user_can( 'install_languages' ) && wp_can_install_language_pack() ) {
 		$language = wp_download_language_pack( $_POST['WPLANG'] );
 		if ( $language ) {
@@ -125,7 +125,7 @@ if ( $_POST ) {
 	}
 
 	/**
-	 * Fires after the network options are updated.
+	 * Kích hoạt sau khi các tùy chọn mạng lưới được cập nhật.
 	 *
 	 * @since MU (3.0.0)
 	 */
@@ -282,7 +282,7 @@ if ( isset( $_GET['updated'] ) ) {
 					if ( empty( $limited_email_domains ) ) {
 						$limited_email_domains = '';
 					} else {
-						// Convert from an input field. Back-compat for WPMU < 1.0.
+						// Chuyển đổi từ trường nhập liệu. Tương thích ngược cho WPMU < 1.0.
 						$limited_email_domains = str_replace( ' ', "\n", $limited_email_domains );
 
 						if ( is_array( $limited_email_domains ) ) {
@@ -490,19 +490,19 @@ if ( isset( $_GET['updated'] ) ) {
 		<?php
 		$menu_perms = get_site_option( 'menu_items' );
 		/**
-		 * Filters available network-wide administration menu options.
+		 * Lọc các tùy chọn menu quản trị trên toàn mạng lưới có sẵn.
 		 *
-		 * Options returned to this filter are output as individual checkboxes that, when selected,
-		 * enable site administrator access to the specified administration menu in certain contexts.
+		 * Các tùy chọn trả về cho bộ lọc này được xuất dưới dạng các hộp kiểm riêng lẻ, khi được chọn,
+		 * cho phép quản trị viên trang web truy cập menu quản trị được chỉ định trong các ngữ cảnh nhất định.
 		 *
-		 * Adding options for specific menus here hinges on the appropriate checks and capabilities
-		 * being in place in the site dashboard on the other side. For instance, when the single
-		 * default option, 'plugins' is enabled, site administrators are granted access to the Plugins
-		 * screen in their individual sites' dashboards.
+		 * Việc thêm tùy chọn cho các menu cụ thể ở đây phụ thuộc vào việc kiểm tra và quyền phù hợp
+		 * được đặt đúng chỗ trong bảng điều khiển trang web ở phía bên kia. Ví dụ, khi tùy chọn
+		 * mặc định duy nhất, 'plugins' được bật, quản trị viên trang web được cấp quyền truy cập màn hình
+		 * Plugin trong bảng điều khiển của các trang web riêng lẻ của họ.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param string[] $admin_menus Associative array of the menu items available.
+		 * @param string[] $admin_menus Mảng kết hợp của các mục menu có sẵn.
 		 */
 		$menu_items = apply_filters( 'mu_menu_items', array( 'plugins' => __( 'Plugins' ) ) );
 
@@ -534,7 +534,7 @@ if ( isset( $_GET['updated'] ) ) {
 
 		<?php
 		/**
-		 * Fires at the end of the Network Settings form, before the submit button.
+		 * Kích hoạt ở cuối biểu mẫu Cài đặt Mạng lưới, trước nút gửi.
 		 *
 		 * @since MU (3.0.0)
 		 */

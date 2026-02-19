@@ -1,18 +1,18 @@
 <?php
 /**
- * Shadow block support flag.
+ * Cờ hỗ trợ bóng đổ cho block.
  *
  * @package WordPress
  * @since 6.3.0
  */
 
 /**
- * Registers the style and shadow block attributes for block types that support it.
+ * Đăng ký thuộc tính kiểu và bóng đổ cho các loại block hỗ trợ nó.
  *
  * @since 6.3.0
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
+ * @param WP_Block_Type $block_type Loại Block.
  */
 function wp_register_shadow_support( $block_type ) {
 	$has_shadow_support = block_has_support( $block_type, 'shadow', false );
@@ -39,16 +39,16 @@ function wp_register_shadow_support( $block_type ) {
 }
 
 /**
- * Add CSS classes and inline styles for shadow features to the incoming attributes array.
- * This will be applied to the block markup in the front-end.
+ * Thêm các lớp CSS và kiểu inline cho tính năng bóng đổ vào mảng thuộc tính đầu vào.
+ * Điều này sẽ được áp dụng cho markup block ở giao diện người dùng.
  *
  * @since 6.3.0
- * @since 6.6.0 Return early if __experimentalSkipSerialization is true.
+ * @since 6.6.0 Trả về sớm nếu __experimentalSkipSerialization là true.
  * @access private
  *
- * @param  WP_Block_Type $block_type       Block type.
- * @param  array         $block_attributes Block attributes.
- * @return array Shadow CSS classes and inline styles.
+ * @param  WP_Block_Type $block_type       Loại block.
+ * @param  array         $block_attributes Thuộc tính block.
+ * @return array Các lớp CSS và kiểu inline bóng đổ.
  */
 function wp_apply_shadow_support( $block_type, $block_attributes ) {
 	$has_shadow_support = block_has_support( $block_type, 'shadow', false );
@@ -75,7 +75,7 @@ function wp_apply_shadow_support( $block_type, $block_attributes ) {
 	return $attributes;
 }
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register(
 	'shadow',
 	array(

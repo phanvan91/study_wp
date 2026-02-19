@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress Network Administration Bootstrap
+ * Tệp khởi động Quản trị Mạng lưới WordPress
  *
  * @package WordPress
  * @subpackage Multisite
@@ -9,10 +9,10 @@
 
 define( 'WP_NETWORK_ADMIN', true );
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once dirname( __DIR__ ) . '/admin.php';
 
-// Do not remove this check. It is required by individual network admin pages.
+// Không xóa kiểm tra này. Nó được yêu cầu bởi các trang quản trị mạng lưới riêng lẻ.
 if ( ! is_multisite() ) {
 	wp_die( __( 'Multisite support is not enabled.' ) );
 }
@@ -20,11 +20,11 @@ if ( ! is_multisite() ) {
 $redirect_network_admin_request = ( 0 !== strcasecmp( $current_blog->domain, $current_site->domain ) || 0 !== strcasecmp( $current_blog->path, $current_site->path ) );
 
 /**
- * Filters whether to redirect the request to the Network Admin.
+ * Lọc xem có nên chuyển hướng yêu cầu đến Quản trị Mạng lưới hay không.
  *
  * @since 3.2.0
  *
- * @param bool $redirect_network_admin_request Whether the request should be redirected.
+ * @param bool $redirect_network_admin_request Liệu yêu cầu có nên được chuyển hướng hay không.
  */
 $redirect_network_admin_request = apply_filters( 'redirect_network_admin_request', $redirect_network_admin_request );
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Upgrader API: Bulk_Plugin_Upgrader_Skin class
+ * API Nâng cấp: Lớp Bulk_Plugin_Upgrader_Skin
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -8,28 +8,28 @@
  */
 
 /**
- * Bulk Plugin Upgrader Skin for WordPress Plugin Upgrades.
+ * Giao diện nâng cấp hàng loạt plugin cho việc nâng cấp plugin WordPress.
  *
  * @since 3.0.0
- * @since 4.6.0 Moved to its own file from wp-admin/includes/class-wp-upgrader-skins.php.
+ * @since 4.6.0 Được chuyển sang file riêng từ wp-admin/includes/class-wp-upgrader-skins.php.
  *
  * @see Bulk_Upgrader_Skin
  */
 class Bulk_Plugin_Upgrader_Skin extends Bulk_Upgrader_Skin {
 
 	/**
-	 * Plugin info.
+	 * Thông tin plugin.
 	 *
-	 * The Plugin_Upgrader::bulk_upgrade() method will fill this in
-	 * with info retrieved from the get_plugin_data() function.
+	 * Phương thức Plugin_Upgrader::bulk_upgrade() sẽ điền thông tin này
+	 * với dữ liệu lấy từ hàm get_plugin_data().
 	 *
 	 * @since 3.0.0
-	 * @var array Plugin data. Values will be empty if not supplied by the plugin.
+	 * @var array Dữ liệu plugin. Các giá trị sẽ rỗng nếu plugin không cung cấp.
 	 */
 	public $plugin_info = array();
 
 	/**
-	 * Sets up the strings used in the update process.
+	 * Thiết lập các chuỗi sử dụng trong quá trình cập nhật.
 	 *
 	 * @since 3.0.0
 	 */
@@ -40,7 +40,7 @@ class Bulk_Plugin_Upgrader_Skin extends Bulk_Upgrader_Skin {
 	}
 
 	/**
-	 * Performs an action before a bulk plugin update.
+	 * Thực hiện hành động trước khi cập nhật hàng loạt plugin.
 	 *
 	 * @since 3.0.0
 	 *
@@ -51,7 +51,7 @@ class Bulk_Plugin_Upgrader_Skin extends Bulk_Upgrader_Skin {
 	}
 
 	/**
-	 * Performs an action following a bulk plugin update.
+	 * Thực hiện hành động sau khi cập nhật hàng loạt plugin.
 	 *
 	 * @since 3.0.0
 	 *
@@ -63,7 +63,7 @@ class Bulk_Plugin_Upgrader_Skin extends Bulk_Upgrader_Skin {
 	}
 
 	/**
-	 * Displays the footer following the bulk update process.
+	 * Hiển thị phần chân trang sau quá trình cập nhật hàng loạt.
 	 *
 	 * @since 3.0.0
 	 */
@@ -88,12 +88,12 @@ class Bulk_Plugin_Upgrader_Skin extends Bulk_Upgrader_Skin {
 		}
 
 		/**
-		 * Filters the list of action links available following bulk plugin updates.
+		 * Lọc danh sách liên kết hành động có sẵn sau khi cập nhật hàng loạt plugin.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string[] $update_actions Array of plugin action links.
-		 * @param array    $plugin_info    Array of information for the last-updated plugin.
+		 * @param string[] $update_actions Mảng các liên kết hành động plugin.
+		 * @param array    $plugin_info    Mảng thông tin cho plugin được cập nhật cuối cùng.
 		 */
 		$update_actions = apply_filters( 'update_bulk_plugins_complete_actions', $update_actions, $this->plugin_info );
 

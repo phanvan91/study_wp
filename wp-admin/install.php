@@ -1,12 +1,12 @@
 <?php
 /**
- * WordPress Installer
+ * Trình cài đặt WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-// Confidence check.
+// Kiểm tra xác nhận.
 if ( false ) {
 	?>
 <!DOCTYPE html>
@@ -25,23 +25,23 @@ if ( false ) {
 }
 
 /**
- * We are installing WordPress.
+ * Chúng ta đang cài đặt WordPress.
  *
  * @since 1.5.1
  * @var bool
  */
 define( 'WP_INSTALLING', true );
 
-/** Load WordPress Bootstrap */
+/** Nạp Bootstrap WordPress */
 require_once dirname( __DIR__ ) . '/wp-load.php';
 
-/** Load WordPress Administration Upgrade API */
+/** Nạp API Nâng cấp Quản trị WordPress */
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-/** Load WordPress Translation Install API */
+/** Nạp API Cài đặt Bản dịch WordPress */
 require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
-/** Load wpdb */
+/** Nạp wpdb */
 require_once ABSPATH . WPINC . '/class-wpdb.php';
 
 nocache_headers();
@@ -49,7 +49,7 @@ nocache_headers();
 $step = isset( $_GET['step'] ) ? (int) $_GET['step'] : 0;
 
 /**
- * Display installation header.
+ * Hiển thị phần đầu trang cài đặt.
  *
  * @since 2.5.0
  *
@@ -77,14 +77,14 @@ function display_header( $body_classes = '' ) {
 <p id="logo"><?php _e( 'WordPress' ); ?></p>
 
 	<?php
-} // End display_header().
+} // Kết thúc display_header().
 
 /**
- * Displays installer setup form.
+ * Hiển thị form thiết lập trình cài đặt.
  *
  * @since 2.8.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
  * @param string|null $error
  */
@@ -93,7 +93,7 @@ function display_setup_form( $error = null ) {
 
 	$user_table = ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $wpdb->esc_like( $wpdb->users ) ) ) !== null );
 
-	// Ensure that sites appear in search engines by default.
+	// Đảm bảo trang web xuất hiện trên công cụ tìm kiếm theo mặc định.
 	$blog_public = 1;
 	if ( isset( $_POST['weblog_title'] ) ) {
 		$blog_public = isset( $_POST['blog_public'] ) ? (int) $_POST['blog_public'] : $blog_public;
@@ -202,7 +202,7 @@ function display_setup_form( $error = null ) {
 						<label for="blog-norobots"><?php _e( 'Discourage search engines from indexing this site' ); ?></label>
 						<p id="public-desc" class="description"><?php _e( 'Note: Discouraging search engines does not block access to your site &mdash; it is up to search engines to honor your request.' ); ?></p>
 						<?php
-						/** This action is documented in wp-admin/options-reading.php */
+						/** Action này được ghi tài liệu trong wp-admin/options-reading.php */
 						do_action( 'blog_privacy_selector' );
 					} else {
 						?>
@@ -218,9 +218,9 @@ function display_setup_form( $error = null ) {
 	<input type="hidden" name="language" value="<?php echo isset( $_REQUEST['language'] ) ? esc_attr( $_REQUEST['language'] ) : ''; ?>" />
 </form>
 	<?php
-} // End display_setup_form().
+} // Kết thúc display_setup_form().
 
-// Let's check to make sure WP isn't already installed.
+// Kiểm tra để đảm bảo WP chưa được cài đặt.
 if ( is_blog_installed() ) {
 	display_header();
 	die(
@@ -232,11 +232,11 @@ if ( is_blog_installed() ) {
 }
 
 /**
- * @global string   $wp_version              The WordPress version string.
- * @global string   $required_php_version    The required PHP version string.
- * @global string[] $required_php_extensions The names of required PHP extensions.
- * @global string   $required_mysql_version  The required MySQL version string.
- * @global wpdb     $wpdb                    WordPress database abstraction object.
+ * @global string   $wp_version              Chuỗi phiên bản WordPress.
+ * @global string   $required_php_version    Chuỗi phiên bản PHP yêu cầu.
+ * @global string[] $required_php_extensions Tên các extension PHP yêu cầu.
+ * @global string   $required_mysql_version  Chuỗi phiên bản MySQL yêu cầu.
+ * @global wpdb     $wpdb                    Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 global $wp_version, $required_php_version, $required_php_extensions, $required_mysql_version, $wpdb;
 
@@ -334,7 +334,7 @@ if ( ! is_string( $wpdb->base_prefix ) || '' === $wpdb->base_prefix ) {
 	);
 }
 
-// Set error message if DO_NOT_UPGRADE_GLOBAL_TABLES isn't set as it will break install.
+// Đặt thông báo lỗi nếu DO_NOT_UPGRADE_GLOBAL_TABLES được định nghĩa vì sẽ làm hỏng cài đặt.
 if ( defined( 'DO_NOT_UPGRADE_GLOBAL_TABLES' ) ) {
 	display_header();
 	die(
@@ -348,8 +348,8 @@ if ( defined( 'DO_NOT_UPGRADE_GLOBAL_TABLES' ) ) {
 }
 
 /**
- * @global string    $wp_local_package Locale code of the package.
- * @global WP_Locale $wp_locale        WordPress date and time locale object.
+ * @global string    $wp_local_package Mã ngôn ngữ của gói.
+ * @global WP_Locale $wp_locale        Đối tượng ngôn ngữ ngày giờ WordPress.
  */
 $language = '';
 if ( ! empty( $_REQUEST['language'] ) ) {
@@ -361,7 +361,7 @@ if ( ! empty( $_REQUEST['language'] ) ) {
 $scripts_to_print = array( 'jquery' );
 
 switch ( $step ) {
-	case 0: // Step 0.
+	case 0: // Bước 0.
 		if ( wp_can_install_language_pack() && empty( $language ) ) {
 			$languages = wp_get_available_translations();
 			if ( $languages ) {
@@ -374,9 +374,9 @@ switch ( $step ) {
 			}
 		}
 
-		// Deliberately fall through if we can't reach the translations API.
+		// Cố ý rơi xuống case tiếp theo nếu không thể kết nối API bản dịch.
 
-	case 1: // Step 1, direct link or from language chooser.
+	case 1: // Bước 1, liên kết trực tiếp hoặc từ bộ chọn ngôn ngữ.
 		if ( ! empty( $language ) ) {
 			$loaded_language = wp_download_language_pack( $language );
 			if ( $loaded_language ) {
@@ -413,7 +413,7 @@ switch ( $step ) {
 		$scripts_to_print[] = 'user-profile';
 
 		display_header();
-		// Fill in the data we gathered.
+		// Điền dữ liệu đã thu thập.
 		$weblog_title         = isset( $_POST['weblog_title'] ) ? trim( wp_unslash( $_POST['weblog_title'] ) ) : '';
 		$user_name            = isset( $_POST['user_name'] ) ? trim( wp_unslash( $_POST['user_name'] ) ) : '';
 		$admin_password       = isset( $_POST['admin_password'] ) ? wp_unslash( $_POST['admin_password'] ) : '';
@@ -421,7 +421,7 @@ switch ( $step ) {
 		$admin_email          = isset( $_POST['admin_email'] ) ? trim( wp_unslash( $_POST['admin_email'] ) ) : '';
 		$public               = isset( $_POST['blog_public'] ) ? (int) $_POST['blog_public'] : 1;
 
-		// Check email address.
+		// Kiểm tra địa chỉ email.
 		$error = false;
 		if ( empty( $user_name ) ) {
 			// TODO: Poka-yoke.

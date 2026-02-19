@@ -1,19 +1,19 @@
 <?php
 /**
- * Typography block support flag.
+ * Cờ hỗ trợ kiểu chữ cho block.
  *
  * @package WordPress
  * @since 5.6.0
  */
 
 /**
- * Registers the style and typography block attributes for block types that support it.
+ * Đăng ký thuộc tính kiểu và kiểu chữ cho các loại block hỗ trợ nó.
  *
  * @since 5.6.0
- * @since 6.3.0 Added support for text-columns.
+ * @since 6.3.0 Thêm hỗ trợ text-columns.
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
+ * @param WP_Block_Type $block_type Loại Block.
  */
 function wp_register_typography_support( $block_type ) {
 	if ( ! ( $block_type instanceof WP_Block_Type ) ) {
@@ -73,18 +73,18 @@ function wp_register_typography_support( $block_type ) {
 }
 
 /**
- * Adds CSS classes and inline styles for typography features such as font sizes
- * to the incoming attributes array. This will be applied to the block markup in
- * the front-end.
+ * Thêm các lớp CSS và kiểu inline cho các tính năng kiểu chữ như cỡ chữ
+ * vào mảng thuộc tính đầu vào. Điều này sẽ được áp dụng cho markup block
+ * ở giao diện người dùng.
  *
  * @since 5.6.0
- * @since 6.1.0 Used the style engine to generate CSS and classnames.
- * @since 6.3.0 Added support for text-columns.
+ * @since 6.1.0 Sử dụng engine kiểu để tạo CSS và tên lớp.
+ * @since 6.3.0 Thêm hỗ trợ text-columns.
  * @access private
  *
- * @param WP_Block_Type $block_type       Block type.
- * @param array         $block_attributes Block attributes.
- * @return array Typography CSS classes and inline styles.
+ * @param WP_Block_Type $block_type       Loại block.
+ * @param array         $block_attributes Thuộc tính block.
+ * @return array Các lớp CSS và kiểu inline kiểu chữ.
  */
 function wp_apply_typography_support( $block_type, $block_attributes ) {
 	if ( ! ( $block_type instanceof WP_Block_Type ) ) {
@@ -114,7 +114,7 @@ function wp_apply_typography_support( $block_type, $block_attributes ) {
 	$has_text_transform_support  = isset( $typography_supports['__experimentalTextTransform'] ) ? $typography_supports['__experimentalTextTransform'] : false;
 	$has_writing_mode_support    = isset( $typography_supports['__experimentalWritingMode'] ) ? $typography_supports['__experimentalWritingMode'] : false;
 
-	// Whether to skip individual block support features.
+	// Có bỏ qua các tính năng hỗ trợ block riêng lẻ hay không.
 	$should_skip_font_size       = wp_should_skip_block_supports_serialization( $block_type, 'typography', 'fontSize' );
 	$should_skip_font_family     = wp_should_skip_block_supports_serialization( $block_type, 'typography', 'fontFamily' );
 	$should_skip_font_style      = wp_should_skip_block_supports_serialization( $block_type, 'typography', 'fontStyle' );
@@ -261,49 +261,49 @@ function wp_apply_typography_support( $block_type, $block_attributes ) {
 }
 
 /**
- * Generates an inline style value for a typography feature e.g. text decoration,
- * text transform, and font style.
+ * Tạo giá trị kiểu inline cho một tính năng kiểu chữ, ví dụ trang trí văn bản,
+ * biến đổi văn bản, và kiểu chữ.
  *
- * Note: This function is for backwards compatibility.
- * * It is necessary to parse older blocks whose typography styles contain presets.
- * * It mostly replaces the deprecated `wp_typography_get_css_variable_inline_style()`,
- *   but skips compiling a CSS declaration as the style engine takes over this role.
+ * Lưu ý: Hàm này dùng để tương thích ngược.
+ * * Cần thiết để phân tích các block cũ có kiểu chữ chứa thiết lập sẵn.
+ * * Chủ yếu thay thế hàm đã lỗi thời `wp_typography_get_css_variable_inline_style()`,
+ *   nhưng bỏ qua việc biên dịch khai báo CSS vì engine kiểu đảm nhận vai trò này.
  * @link https://github.com/wordpress/gutenberg/pull/27555
  *
  * @since 6.1.0
  *
- * @param string $style_value  A raw style value for a single typography feature from a block's style attribute.
- * @param string $css_property Slug for the CSS property the inline style sets.
- * @return string A CSS inline style value.
+ * @param string $style_value  Giá trị kiểu thô cho một tính năng kiểu chữ đơn từ thuộc tính style của block.
+ * @param string $css_property Slug cho thuộc tính CSS mà kiểu inline thiết lập.
+ * @return string Giá trị kiểu inline CSS.
  */
 function wp_typography_get_preset_inline_style_value( $style_value, $css_property ) {
-	// If the style value is not a preset CSS variable go no further.
+	// Nếu giá trị kiểu không phải biến CSS thiết lập sẵn thì không xử lý tiếp.
 	if ( empty( $style_value ) || ! str_contains( $style_value, "var:preset|{$css_property}|" ) ) {
 		return $style_value;
 	}
 
 	/*
-	 * For backwards compatibility.
-	 * Presets were removed in WordPress/gutenberg#27555.
-	 * A preset CSS variable is the style.
-	 * Gets the style value from the string and return CSS style.
+	 * Để tương thích ngược.
+	 * Thiết lập sẵn đã bị loại bỏ trong WordPress/gutenberg#27555.
+	 * Biến CSS thiết lập sẵn chính là kiểu.
+	 * Lấy giá trị kiểu từ chuỗi và trả về kiểu CSS.
 	 */
 	$index_to_splice = strrpos( $style_value, '|' ) + 1;
 	$slug            = _wp_to_kebab_case( substr( $style_value, $index_to_splice ) );
 
-	// Return the actual CSS inline style value,
-	// e.g. `var(--wp--preset--text-decoration--underline);`.
+	// Trả về giá trị kiểu inline CSS thực tế,
+	// ví dụ `var(--wp--preset--text-decoration--underline);`.
 	return sprintf( 'var(--wp--preset--%s--%s);', $css_property, $slug );
 }
 
 /**
- * Renders typography styles/content to the block wrapper.
+ * Render các kiểu/nội dung kiểu chữ cho wrapper của block.
  *
  * @since 6.1.0
  *
- * @param string $block_content Rendered block content.
- * @param array  $block         Block object.
- * @return string Filtered block content.
+ * @param string $block_content Nội dung block đã được render.
+ * @param array  $block         Đối tượng block.
+ * @return string Nội dung block đã được lọc.
  */
 function wp_render_typography_support( $block_content, $block ) {
 	if ( ! isset( $block['attrs']['style']['typography']['fontSize'] ) ) {
@@ -314,11 +314,11 @@ function wp_render_typography_support( $block_content, $block ) {
 	$fluid_font_size  = wp_get_typography_font_size_value( array( 'size' => $custom_font_size ) );
 
 	/*
-	 * Checks that $fluid_font_size does not match $custom_font_size,
-	 * which means it's been mutated by the fluid font size functions.
+	 * Kiểm tra xem $fluid_font_size không khớp với $custom_font_size,
+	 * có nghĩa là nó đã bị thay đổi bởi các hàm cỡ chữ linh hoạt.
 	 */
 	if ( ! empty( $fluid_font_size ) && $fluid_font_size !== $custom_font_size ) {
-		// Replaces the first instance of `font-size:$custom_font_size` with `font-size:$fluid_font_size`.
+		// Thay thế phiên bản đầu tiên của `font-size:$custom_font_size` bằng `font-size:$fluid_font_size`.
 		return preg_replace( '/font-size\s*:\s*' . preg_quote( $custom_font_size, '/' ) . '\s*;?/', 'font-size:' . esc_attr( $fluid_font_size ) . ';', $block_content, 1 );
 	}
 
@@ -326,21 +326,21 @@ function wp_render_typography_support( $block_content, $block ) {
 }
 
 /**
- * Checks a string for a unit and value and returns an array
- * consisting of `'value'` and `'unit'`, e.g. array( '42', 'rem' ).
+ * Kiểm tra chuỗi để tìm đơn vị và giá trị, trả về mảng
+ * gồm `'value'` và `'unit'`, ví dụ array( '42', 'rem' ).
  *
  * @since 6.1.0
  *
- * @param string|int|float $raw_value Raw size value from theme.json.
+ * @param string|int|float $raw_value Giá trị kích thước thô từ theme.json.
  * @param array            $options   {
- *     Optional. An associative array of options. Default is empty array.
+ *     Tùy chọn. Mảng liên kết các tùy chọn. Mặc định là mảng rỗng.
  *
- *     @type string   $coerce_to        Coerce the value to rem or px. Default `'rem'`.
- *     @type int      $root_size_value  Value of root font size for rem|em <-> px conversion. Default `16`.
- *     @type string[] $acceptable_units An array of font size units. Default `array( 'rem', 'px', 'em' )`;
+ *     @type string   $coerce_to        Ép kiểu giá trị sang rem hoặc px. Mặc định `'rem'`.
+ *     @type int      $root_size_value  Giá trị cỡ chữ gốc cho chuyển đổi rem|em <-> px. Mặc định `16`.
+ *     @type string[] $acceptable_units Mảng các đơn vị cỡ chữ. Mặc định `array( 'rem', 'px', 'em' )`;
  * }
- * @return array|null An array consisting of `'value'` and `'unit'` properties on success.
- *                    `null` on failure.
+ * @return array|null Mảng gồm thuộc tính `'value'` và `'unit'` khi thành công.
+ *                    `null` khi thất bại.
  */
 function wp_get_typography_value_and_unit( $raw_value, $options = array() ) {
 	if ( ! is_string( $raw_value ) && ! is_int( $raw_value ) && ! is_float( $raw_value ) ) {
@@ -356,7 +356,7 @@ function wp_get_typography_value_and_unit( $raw_value, $options = array() ) {
 		return null;
 	}
 
-	// Converts numbers to pixel values by default.
+	// Mặc định chuyển đổi số sang giá trị pixel.
 	if ( is_numeric( $raw_value ) ) {
 		$raw_value = $raw_value . 'px';
 	}
@@ -374,7 +374,7 @@ function wp_get_typography_value_and_unit( $raw_value, $options = array() ) {
 
 	preg_match( $pattern, $raw_value, $matches );
 
-	// Bails out if not a number value and a px or rem unit.
+	// Thoát nếu không phải giá trị số và đơn vị px hoặc rem.
 	if ( ! isset( $matches[1] ) || ! isset( $matches[2] ) ) {
 		return null;
 	}
@@ -383,8 +383,8 @@ function wp_get_typography_value_and_unit( $raw_value, $options = array() ) {
 	$unit  = $matches[2];
 
 	/*
-	 * Default browser font size. Later, possibly could inject some JS to
-	 * compute this `getComputedStyle( document.querySelector( "html" ) ).fontSize`.
+	 * Cỡ chữ mặc định của trình duyệt. Sau này, có thể chèn JS để
+	 * tính toán `getComputedStyle( document.querySelector( "html" ) ).fontSize`.
 	 */
 	if ( 'px' === $options['coerce_to'] && ( 'em' === $unit || 'rem' === $unit ) ) {
 		$value = $value * $options['root_size_value'];
@@ -397,9 +397,9 @@ function wp_get_typography_value_and_unit( $raw_value, $options = array() ) {
 	}
 
 	/*
-	 * No calculation is required if swapping between em and rem yet,
-	 * since we assume a root size value. Later we might like to differentiate between
-	 * :root font size (rem) and parent element font size (em) relativity.
+	 * Chưa cần tính toán nếu chuyển đổi giữa em và rem,
+	 * vì chúng ta giả sử giá trị kích thước gốc. Sau này có thể muốn phân biệt
+	 * giữa cỡ chữ :root (rem) và cỡ chữ phần tử cha (em).
 	 */
 	if ( ( 'em' === $options['coerce_to'] || 'rem' === $options['coerce_to'] ) && ( 'em' === $unit || 'rem' === $unit ) ) {
 		$unit = $options['coerce_to'];
@@ -412,25 +412,25 @@ function wp_get_typography_value_and_unit( $raw_value, $options = array() ) {
 }
 
 /**
- * Internal implementation of CSS clamp() based on available min/max viewport
- * width and min/max font sizes.
+ * Triển khai nội bộ CSS clamp() dựa trên chiều rộng viewport tối thiểu/tối đa
+ * có sẵn và cỡ chữ tối thiểu/tối đa.
  *
  * @since 6.1.0
- * @since 6.3.0 Checks for unsupported min/max viewport values that cause invalid clamp values.
- * @since 6.5.0 Returns early when min and max viewport subtraction is zero to avoid division by zero.
+ * @since 6.3.0 Kiểm tra giá trị viewport tối thiểu/tối đa không được hỗ trợ gây ra giá trị clamp không hợp lệ.
+ * @since 6.5.0 Trả về sớm khi phép trừ viewport tối thiểu và tối đa bằng không để tránh chia cho không.
  * @access private
  *
  * @param array $args {
- *     Optional. An associative array of values to calculate a fluid formula
- *     for font size. Default is empty array.
+ *     Tùy chọn. Mảng liên kết các giá trị để tính công thức linh hoạt
+ *     cho cỡ chữ. Mặc định là mảng rỗng.
  *
- *     @type string $maximum_viewport_width Maximum size up to which type will have fluidity.
- *     @type string $minimum_viewport_width Minimum viewport size from which type will have fluidity.
- *     @type string $maximum_font_size      Maximum font size for any clamp() calculation.
- *     @type string $minimum_font_size      Minimum font size for any clamp() calculation.
- *     @type int    $scale_factor           A scale factor to determine how fast a font scales within boundaries.
+ *     @type string $maximum_viewport_width Kích thước tối đa mà kiểu chữ sẽ có tính linh hoạt.
+ *     @type string $minimum_viewport_width Kích thước viewport tối thiểu mà kiểu chữ sẽ có tính linh hoạt.
+ *     @type string $maximum_font_size      Cỡ chữ tối đa cho bất kỳ phép tính clamp() nào.
+ *     @type string $minimum_font_size      Cỡ chữ tối thiểu cho bất kỳ phép tính clamp() nào.
+ *     @type int    $scale_factor           Hệ số tỷ lệ để xác định tốc độ chữ thay đổi kích thước trong giới hạn.
  * }
- * @return string|null A font-size value using clamp() on success, otherwise null.
+ * @return string|null Giá trị cỡ chữ sử dụng clamp() khi thành công, ngược lại null.
  */
 function wp_get_computed_fluid_typography_value( $args = array() ) {
 	$maximum_viewport_width_raw = isset( $args['maximum_viewport_width'] ) ? $args['maximum_viewport_width'] : null;
@@ -439,16 +439,16 @@ function wp_get_computed_fluid_typography_value( $args = array() ) {
 	$minimum_font_size_raw      = isset( $args['minimum_font_size'] ) ? $args['minimum_font_size'] : null;
 	$scale_factor               = isset( $args['scale_factor'] ) ? $args['scale_factor'] : null;
 
-	// Normalizes the minimum font size in order to use the value for calculations.
+	// Chuẩn hóa cỡ chữ tối thiểu để sử dụng giá trị cho các phép tính.
 	$minimum_font_size = wp_get_typography_value_and_unit( $minimum_font_size_raw );
 
 	/*
-	 * We get a 'preferred' unit to keep units consistent when calculating,
-	 * otherwise the result will not be accurate.
+	 * Lấy đơn vị 'ưu tiên' để giữ đơn vị nhất quán khi tính toán,
+	 * nếu không kết quả sẽ không chính xác.
 	 */
 	$font_size_unit = isset( $minimum_font_size['unit'] ) ? $minimum_font_size['unit'] : 'rem';
 
-	// Normalizes the maximum font size in order to use the value for calculations.
+	// Chuẩn hóa cỡ chữ tối đa để sử dụng giá trị cho các phép tính.
 	$maximum_font_size = wp_get_typography_value_and_unit(
 		$maximum_font_size_raw,
 		array(
@@ -456,12 +456,12 @@ function wp_get_computed_fluid_typography_value( $args = array() ) {
 		)
 	);
 
-	// Checks for mandatory min and max sizes, and protects against unsupported units.
+	// Kiểm tra kích thước tối thiểu và tối đa bắt buộc, và bảo vệ chống lại đơn vị không được hỗ trợ.
 	if ( ! $maximum_font_size || ! $minimum_font_size ) {
 		return null;
 	}
 
-	// Uses rem for accessible fluid target font scaling.
+	// Sử dụng rem cho khả năng co giãn cỡ chữ mục tiêu linh hoạt dễ tiếp cận.
 	$minimum_font_size_rem = wp_get_typography_value_and_unit(
 		$minimum_font_size_raw,
 		array(
@@ -469,7 +469,7 @@ function wp_get_computed_fluid_typography_value( $args = array() ) {
 		)
 	);
 
-	// Viewport widths defined for fluid typography. Normalize units.
+	// Chiều rộng viewport được định nghĩa cho kiểu chữ linh hoạt. Chuẩn hóa đơn vị.
 	$maximum_viewport_width = wp_get_typography_value_and_unit(
 		$maximum_viewport_width_raw,
 		array(
@@ -483,20 +483,20 @@ function wp_get_computed_fluid_typography_value( $args = array() ) {
 		)
 	);
 
-	// Protects against unsupported units in min and max viewport widths.
+	// Bảo vệ chống lại đơn vị không được hỗ trợ trong chiều rộng viewport tối thiểu và tối đa.
 	if ( ! $minimum_viewport_width || ! $maximum_viewport_width ) {
 		return null;
 	}
 
-	// Calculates the linear factor denominator. If it's 0, we cannot calculate a fluid value.
+	// Tính mẫu số hệ số tuyến tính. Nếu bằng 0, không thể tính giá trị linh hoạt.
 	$linear_factor_denominator = $maximum_viewport_width['value'] - $minimum_viewport_width['value'];
 	if ( empty( $linear_factor_denominator ) ) {
 		return null;
 	}
 
 	/*
-	 * Build CSS rule.
-	 * Borrowed from https://websemantics.uk/tools/responsive-font-calculator/.
+	 * Xây dựng quy tắc CSS.
+	 * Tham khảo từ https://websemantics.uk/tools/responsive-font-calculator/.
 	 */
 	$view_port_width_offset = round( $minimum_viewport_width['value'] / 100, 3 ) . $font_size_unit;
 	$linear_factor          = 100 * ( ( $maximum_font_size['value'] - $minimum_font_size['value'] ) / ( $linear_factor_denominator ) );
@@ -508,28 +508,28 @@ function wp_get_computed_fluid_typography_value( $args = array() ) {
 }
 
 /**
- * Returns a font-size value based on a given font-size preset.
- * Takes into account fluid typography parameters and attempts to return a CSS
- * formula depending on available, valid values.
+ * Trả về giá trị cỡ chữ dựa trên thiết lập sẵn cỡ chữ cho trước.
+ * Tính đến các tham số kiểu chữ linh hoạt và cố gắng trả về công thức CSS
+ * dựa trên các giá trị khả dụng, hợp lệ.
  *
  * @since 6.1.0
- * @since 6.1.1 Adjusted rules for min and max font sizes.
- * @since 6.2.0 Added 'settings.typography.fluid.minFontSize' support.
- * @since 6.3.0 Using layout.wideSize as max viewport width, and logarithmic scale factor to calculate minimum font scale.
- * @since 6.4.0 Added configurable min and max viewport width values to the typography.fluid theme.json schema.
- * @since 6.6.0 Deprecated bool argument $should_use_fluid_typography.
- * @since 6.7.0 Font size presets can enable fluid typography individually, even if it’s disabled globally.
+ * @since 6.1.1 Điều chỉnh quy tắc cho cỡ chữ tối thiểu và tối đa.
+ * @since 6.2.0 Thêm hỗ trợ 'settings.typography.fluid.minFontSize'.
+ * @since 6.3.0 Sử dụng layout.wideSize làm chiều rộng viewport tối đa, và hệ số tỷ lệ logarit để tính tỷ lệ chữ tối thiểu.
+ * @since 6.4.0 Thêm giá trị chiều rộng viewport tối thiểu và tối đa có thể cấu hình vào schema typography.fluid của theme.json.
+ * @since 6.6.0 Đánh dấu lỗi thời tham số bool $should_use_fluid_typography.
+ * @since 6.7.0 Các thiết lập sẵn cỡ chữ có thể bật kiểu chữ linh hoạt riêng lẻ, ngay cả khi nó bị tắt toàn cục.
  *
  * @param array      $preset   {
- *     Required. fontSizes preset value as seen in theme.json.
+ *     Bắt buộc. Giá trị thiết lập sẵn fontSizes như trong theme.json.
  *
- *     @type string           $name Name of the font size preset.
- *     @type string           $slug Kebab-case, unique identifier for the font size preset.
- *     @type string|int|float $size CSS font-size value, including units if applicable.
+ *     @type string           $name Tên của thiết lập sẵn cỡ chữ.
+ *     @type string           $slug Định danh duy nhất dạng kebab-case cho thiết lập sẵn cỡ chữ.
+ *     @type string|int|float $size Giá trị cỡ chữ CSS, bao gồm đơn vị nếu có.
  * }
- * @param bool|array $settings Optional Theme JSON settings array that overrides any global theme settings.
- *                             Default is false.
- * @return string|null Font-size value or null if a size is not passed in $preset.
+ * @param bool|array $settings Tùy chọn. Mảng cài đặt Theme JSON ghi đè bất kỳ cài đặt theme toàn cục nào.
+ *                             Mặc định là false.
+ * @return string|null Giá trị cỡ chữ hoặc null nếu kích thước không được truyền trong $preset.
  */
 
 
@@ -539,8 +539,8 @@ function wp_get_typography_font_size_value( $preset, $settings = array() ) {
 	}
 
 	/*
-	 * Catches falsy values and 0/'0'. Fluid calculations cannot be performed on `0`.
-	 * Also returns early when a preset font size explicitly disables fluid typography with `false`.
+	 * Bắt các giá trị falsy và 0/'0'. Không thể thực hiện phép tính linh hoạt trên `0`.
+	 * Cũng trả về sớm khi thiết lập sẵn cỡ chữ vô hiệu hóa rõ ràng kiểu chữ linh hoạt bằng `false`.
 	 */
 	$fluid_font_size_settings = $preset['fluid'] ?? null;
 	if ( false === $fluid_font_size_settings || empty( $preset['size'] ) ) {
@@ -548,7 +548,7 @@ function wp_get_typography_font_size_value( $preset, $settings = array() ) {
 	}
 
 	/*
-	 * As a boolean (deprecated since 6.6), $settings acts as an override to switch fluid typography "on" (`true`) or "off" (`false`).
+	 * Dưới dạng boolean (đã lỗi thời từ 6.6), $settings hoạt động như ghi đè để bật (`true`) hoặc tắt (`false`) kiểu chữ linh hoạt.
 	 */
 	if ( is_bool( $settings ) ) {
 		_deprecated_argument( __FUNCTION__, '6.6.0', __( '`boolean` type for second argument `$settings` is deprecated. Use `array()` instead.' ) );
@@ -559,7 +559,7 @@ function wp_get_typography_font_size_value( $preset, $settings = array() ) {
 		);
 	}
 
-	// Fallback to global settings as default.
+	// Dự phòng về cài đặt toàn cục làm mặc định.
 	$global_settings = wp_get_global_settings();
 	$settings        = wp_parse_args(
 		$settings,
@@ -569,11 +569,11 @@ function wp_get_typography_font_size_value( $preset, $settings = array() ) {
 	$typography_settings = $settings['typography'] ?? array();
 
 	/*
-	 * Return early when fluid typography is disabled in the settings, and there
-	 * are no local settings to enable it for the individual preset.
+	 * Trả về sớm khi kiểu chữ linh hoạt bị tắt trong cài đặt, và không có
+	 * cài đặt cục bộ nào để bật nó cho thiết lập sẵn riêng lẻ.
 	 *
-	 * If this condition isn't met, either the settings or individual preset settings
-	 * have enabled fluid typography.
+	 * Nếu điều kiện này không được đáp ứng, nghĩa là cài đặt hoặc cài đặt
+	 * thiết lập sẵn riêng lẻ đã bật kiểu chữ linh hoạt.
 	 */
 	if ( empty( $typography_settings['fluid'] ) && empty( $fluid_font_size_settings ) ) {
 		return $preset['size'];
@@ -582,7 +582,7 @@ function wp_get_typography_font_size_value( $preset, $settings = array() ) {
 	$fluid_settings  = isset( $typography_settings['fluid'] ) ? $typography_settings['fluid'] : array();
 	$layout_settings = isset( $settings['layout'] ) ? $settings['layout'] : array();
 
-	// Defaults.
+	// Giá trị mặc định.
 	$default_maximum_viewport_width       = '1600px';
 	$default_minimum_viewport_width       = '320px';
 	$default_minimum_font_size_factor_max = 0.75;
@@ -590,7 +590,7 @@ function wp_get_typography_font_size_value( $preset, $settings = array() ) {
 	$default_scale_factor                 = 1;
 	$default_minimum_font_size_limit      = '14px';
 
-	// Defaults overrides.
+	// Ghi đè giá trị mặc định.
 	$minimum_viewport_width = isset( $fluid_settings['minViewportWidth'] ) ? $fluid_settings['minViewportWidth'] : $default_minimum_viewport_width;
 	$maximum_viewport_width = isset( $layout_settings['wideSize'] ) && ! empty( wp_get_typography_value_and_unit( $layout_settings['wideSize'] ) ) ? $layout_settings['wideSize'] : $default_maximum_viewport_width;
 	if ( isset( $fluid_settings['maxViewportWidth'] ) ) {
@@ -599,21 +599,21 @@ function wp_get_typography_font_size_value( $preset, $settings = array() ) {
 	$has_min_font_size       = isset( $fluid_settings['minFontSize'] ) && ! empty( wp_get_typography_value_and_unit( $fluid_settings['minFontSize'] ) );
 	$minimum_font_size_limit = $has_min_font_size ? $fluid_settings['minFontSize'] : $default_minimum_font_size_limit;
 
-	// Try to grab explicit min and max fluid font sizes.
+	// Cố gắng lấy cỡ chữ linh hoạt tối thiểu và tối đa rõ ràng.
 	$minimum_font_size_raw = isset( $fluid_font_size_settings['min'] ) ? $fluid_font_size_settings['min'] : null;
 	$maximum_font_size_raw = isset( $fluid_font_size_settings['max'] ) ? $fluid_font_size_settings['max'] : null;
 
-	// Font sizes.
+	// Cỡ chữ.
 	$preferred_size = wp_get_typography_value_and_unit( $preset['size'] );
 
-	// Protects against unsupported units.
+	// Bảo vệ chống lại các đơn vị không được hỗ trợ.
 	if ( empty( $preferred_size['unit'] ) ) {
 		return $preset['size'];
 	}
 
 	/*
-	 * Normalizes the minimum font size limit according to the incoming unit,
-	 * in order to perform comparative checks.
+	 * Chuẩn hóa giới hạn cỡ chữ tối thiểu theo đơn vị đầu vào,
+	 * để thực hiện các kiểm tra so sánh.
 	 */
 	$minimum_font_size_limit = wp_get_typography_value_and_unit(
 		$minimum_font_size_limit,
@@ -622,40 +622,40 @@ function wp_get_typography_font_size_value( $preset, $settings = array() ) {
 		)
 	);
 
-	// Don't enforce minimum font size if a font size has explicitly set a min and max value.
+	// Không ép buộc cỡ chữ tối thiểu nếu cỡ chữ đã đặt rõ ràng giá trị tối thiểu và tối đa.
 	if ( ! empty( $minimum_font_size_limit ) && ( ! $minimum_font_size_raw && ! $maximum_font_size_raw ) ) {
 		/*
-		 * If a minimum size was not passed to this function
-		 * and the user-defined font size is lower than $minimum_font_size_limit,
-		 * do not calculate a fluid value.
+		 * Nếu kích thước tối thiểu không được truyền vào hàm này
+		 * và cỡ chữ do người dùng định nghĩa nhỏ hơn $minimum_font_size_limit,
+		 * không tính giá trị linh hoạt.
 		 */
 		if ( $preferred_size['value'] <= $minimum_font_size_limit['value'] ) {
 			return $preset['size'];
 		}
 	}
 
-	// If no fluid max font size is available use the incoming value.
+	// Nếu không có cỡ chữ linh hoạt tối đa, sử dụng giá trị đầu vào.
 	if ( ! $maximum_font_size_raw ) {
 		$maximum_font_size_raw = $preferred_size['value'] . $preferred_size['unit'];
 	}
 
 	/*
-	 * If no minimumFontSize is provided, create one using
-	 * the given font size multiplied by the min font size scale factor.
+	 * Nếu không có minimumFontSize được cung cấp, tạo một giá trị sử dụng
+	 * cỡ chữ cho trước nhân với hệ số tỷ lệ cỡ chữ tối thiểu.
 	 */
 	if ( ! $minimum_font_size_raw ) {
 		$preferred_font_size_in_px = 'px' === $preferred_size['unit'] ? $preferred_size['value'] : $preferred_size['value'] * 16;
 
 		/*
-		 * The scale factor is a multiplier that affects how quickly the curve will move towards the minimum,
-		 * that is, how quickly the size factor reaches 0 given increasing font size values.
-		 * For a - b * log2(), lower values of b will make the curve move towards the minimum faster.
-		 * The scale factor is constrained between min and max values.
+		 * Hệ số tỷ lệ là một bội số ảnh hưởng đến tốc độ đường cong tiến về giá trị tối thiểu,
+		 * tức là tốc độ hệ số kích thước đạt 0 khi giá trị cỡ chữ tăng.
+		 * Với a - b * log2(), giá trị b thấp hơn sẽ làm đường cong tiến về tối thiểu nhanh hơn.
+		 * Hệ số tỷ lệ bị giới hạn giữa giá trị tối thiểu và tối đa.
 		 */
 		$minimum_font_size_factor     = min( max( 1 - 0.075 * log( $preferred_font_size_in_px, 2 ), $default_minimum_font_size_factor_min ), $default_minimum_font_size_factor_max );
 		$calculated_minimum_font_size = round( $preferred_size['value'] * $minimum_font_size_factor, 3 );
 
-		// Only use calculated min font size if it's > $minimum_font_size_limit value.
+		// Chỉ sử dụng cỡ chữ tối thiểu đã tính nếu nó > giá trị $minimum_font_size_limit.
 		if ( ! empty( $minimum_font_size_limit ) && $calculated_minimum_font_size <= $minimum_font_size_limit['value'] ) {
 			$minimum_font_size_raw = $minimum_font_size_limit['value'] . $minimum_font_size_limit['unit'];
 		} else {
@@ -680,7 +680,7 @@ function wp_get_typography_font_size_value( $preset, $settings = array() ) {
 	return $preset['size'];
 }
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register(
 	'typography',
 	array(

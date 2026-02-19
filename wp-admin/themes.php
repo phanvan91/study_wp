@@ -1,12 +1,12 @@
 <?php
 /**
- * Themes administration panel.
+ * Trang quản trị giao diện.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Tải bootstrap quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( ! current_user_can( 'switch_themes' ) && ! current_user_can( 'edit_theme_options' ) ) {
@@ -93,7 +93,7 @@ if ( current_user_can( 'switch_themes' ) && isset( $_GET['action'] ) ) {
 
 		$auto_updates[] = $_GET['stylesheet'];
 		$auto_updates   = array_unique( $auto_updates );
-		// Remove themes that have been deleted since the site option was last updated.
+		// Loại bỏ các giao diện đã bị xóa kể từ lần cập nhật option cuối cùng.
 		$auto_updates = array_intersect( $auto_updates, array_keys( $all_items ) );
 
 		update_site_option( 'auto_update_themes', $auto_updates );
@@ -112,7 +112,7 @@ if ( current_user_can( 'switch_themes' ) && isset( $_GET['action'] ) ) {
 		$auto_updates = (array) get_site_option( 'auto_update_themes', array() );
 
 		$auto_updates = array_diff( $auto_updates, array( $_GET['stylesheet'] ) );
-		// Remove themes that have been deleted since the site option was last updated.
+		// Loại bỏ các giao diện đã bị xóa kể từ lần cập nhật option cuối cùng.
 		$auto_updates = array_intersect( $auto_updates, array_keys( $all_items ) );
 
 		update_site_option( 'auto_update_themes', $auto_updates );

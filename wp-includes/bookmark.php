@@ -1,25 +1,25 @@
 <?php
 /**
- * Link/Bookmark API
+ * API Liên kết/Dấu trang
  *
  * @package WordPress
  * @subpackage Bookmark
  */
 
 /**
- * Retrieves bookmark data.
+ * Lấy dữ liệu dấu trang.
  *
  * @since 2.1.0
  *
- * @global object $link Current link object.
- * @global wpdb   $wpdb WordPress database abstraction object.
+ * @global object $link Đối tượng liên kết hiện tại.
+ * @global wpdb   $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
  * @param int|stdClass $bookmark
- * @param string       $output   Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
- *                               correspond to an stdClass object, an associative array, or a numeric array,
- *                               respectively. Default OBJECT.
- * @param string       $filter   Optional. How to sanitize bookmark fields. Default 'raw'.
- * @return array|object|null Type returned depends on $output value.
+ * @param string       $output   Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT, ARRAY_A, hoặc ARRAY_N,
+ *                               tương ứng với đối tượng stdClass, mảng kết hợp, hoặc mảng số.
+ *                               Mặc định OBJECT.
+ * @param string       $filter   Tùy chọn. Cách làm sạch các trường dấu trang. Mặc định 'raw'.
+ * @return array|object|null Kiểu trả về phụ thuộc vào giá trị $output.
  */
 function get_bookmark( $bookmark, $output = OBJECT, $filter = 'raw' ) {
 	global $wpdb;
@@ -66,13 +66,13 @@ function get_bookmark( $bookmark, $output = OBJECT, $filter = 'raw' ) {
 }
 
 /**
- * Retrieves single bookmark data item or field.
+ * Lấy một mục dữ liệu hoặc trường đơn lẻ của dấu trang.
  *
  * @since 2.3.0
  *
- * @param string $field    The name of the data field to return.
- * @param int    $bookmark The bookmark ID to get field.
- * @param string $context  Optional. The context of how the field will be used. Default 'display'.
+ * @param string $field    Tên của trường dữ liệu cần trả về.
+ * @param int    $bookmark ID dấu trang cần lấy trường.
+ * @param string $context  Tùy chọn. Ngữ cảnh sử dụng trường. Mặc định 'display'.
  * @return string|WP_Error
  */
 function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
@@ -95,43 +95,43 @@ function get_bookmark_field( $field, $bookmark, $context = 'display' ) {
 }
 
 /**
- * Retrieves the list of bookmarks.
+ * Lấy danh sách dấu trang.
  *
- * Attempts to retrieve from the cache first based on MD5 hash of arguments. If
- * that fails, then the query will be built from the arguments and executed. The
- * results will be stored to the cache.
+ * Cố gắng lấy từ bộ nhớ đệm trước dựa trên mã băm MD5 của tham số. Nếu
+ * thất bại, truy vấn sẽ được xây dựng từ các tham số và thực thi. Kết quả
+ * sẽ được lưu vào bộ nhớ đệm.
  *
  * @since 2.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
  * @param string|array $args {
- *     Optional. String or array of arguments to retrieve bookmarks.
+ *     Tùy chọn. Chuỗi hoặc mảng tham số để lấy dấu trang.
  *
- *     @type string   $orderby        How to order the links by. Accepts 'id', 'link_id', 'name', 'link_name',
+ *     @type string   $orderby        Cách sắp xếp liên kết. Chấp nhận 'id', 'link_id', 'name', 'link_name',
  *                                    'url', 'link_url', 'visible', 'link_visible', 'rating', 'link_rating',
  *                                    'owner', 'link_owner', 'updated', 'link_updated', 'notes', 'link_notes',
- *                                    'description', 'link_description', 'length' and 'rand'.
- *                                    When `$orderby` is 'length', orders by the character length of
- *                                    'link_name'. Default 'name'.
- *     @type string   $order          Whether to order bookmarks in ascending or descending order.
- *                                    Accepts 'ASC' (ascending) or 'DESC' (descending). Default 'ASC'.
- *     @type int      $limit          Amount of bookmarks to display. Accepts any positive number or
- *                                    -1 for all.  Default -1.
- *     @type string   $category       Comma-separated list of category IDs to include links from.
- *                                    Default empty.
- *     @type string   $category_name  Category to retrieve links for by name. Default empty.
- *     @type int|bool $hide_invisible Whether to show or hide links marked as 'invisible'. Accepts
- *                                    1|true or 0|false. Default 1|true.
- *     @type int|bool $show_updated   Whether to display the time the bookmark was last updated.
- *                                    Accepts 1|true or 0|false. Default 0|false.
- *     @type string   $include        Comma-separated list of bookmark IDs to include. Default empty.
- *     @type string   $exclude        Comma-separated list of bookmark IDs to exclude. Default empty.
- *     @type string   $search         Search terms. Will be SQL-formatted with wildcards before and after
- *                                    and searched in 'link_url', 'link_name' and 'link_description'.
- *                                    Default empty.
+ *                                    'description', 'link_description', 'length' và 'rand'.
+ *                                    Khi `$orderby` là 'length', sắp xếp theo độ dài ký tự của
+ *                                    'link_name'. Mặc định 'name'.
+ *     @type string   $order          Sắp xếp dấu trang theo thứ tự tăng dần hay giảm dần.
+ *                                    Chấp nhận 'ASC' (tăng dần) hoặc 'DESC' (giảm dần). Mặc định 'ASC'.
+ *     @type int      $limit          Số lượng dấu trang hiển thị. Chấp nhận bất kỳ số dương nào hoặc
+ *                                    -1 cho tất cả. Mặc định -1.
+ *     @type string   $category       Danh sách ID chuyên mục phân cách bằng dấu phẩy để bao gồm liên kết.
+ *                                    Mặc định rỗng.
+ *     @type string   $category_name  Tên chuyên mục để lấy liên kết. Mặc định rỗng.
+ *     @type int|bool $hide_invisible Hiện hay ẩn các liên kết được đánh dấu 'invisible'. Chấp nhận
+ *                                    1|true hoặc 0|false. Mặc định 1|true.
+ *     @type int|bool $show_updated   Hiển thị thời gian dấu trang được cập nhật lần cuối hay không.
+ *                                    Chấp nhận 1|true hoặc 0|false. Mặc định 0|false.
+ *     @type string   $include        Danh sách ID dấu trang phân cách bằng dấu phẩy để bao gồm. Mặc định rỗng.
+ *     @type string   $exclude        Danh sách ID dấu trang phân cách bằng dấu phẩy để loại trừ. Mặc định rỗng.
+ *     @type string   $search         Từ khóa tìm kiếm. Sẽ được định dạng SQL với ký tự đại diện trước và sau
+ *                                    và tìm trong 'link_url', 'link_name' và 'link_description'.
+ *                                    Mặc định rỗng.
  * }
- * @return object[] List of bookmark row objects.
+ * @return object[] Danh sách các đối tượng hàng dấu trang.
  */
 function get_bookmarks( $args = '' ) {
 	global $wpdb;
@@ -158,19 +158,19 @@ function get_bookmarks( $args = '' ) {
 		if ( is_array( $cache ) && isset( $cache[ $key ] ) ) {
 			$bookmarks = $cache[ $key ];
 			/**
-			 * Filters the returned list of bookmarks.
+			 * Lọc danh sách dấu trang trả về.
 			 *
-			 * The first time the hook is evaluated in this file, it returns the cached
-			 * bookmarks list. The second evaluation returns a cached bookmarks list if the
-			 * link category is passed but does not exist. The third evaluation returns
-			 * the full cached results.
+			 * Lần đầu hook được đánh giá trong file này, nó trả về danh sách
+			 * dấu trang từ bộ nhớ đệm. Lần đánh giá thứ hai trả về danh sách dấu trang
+			 * từ bộ nhớ đệm nếu chuyên mục liên kết được truyền nhưng không tồn tại.
+			 * Lần đánh giá thứ ba trả về toàn bộ kết quả từ bộ nhớ đệm.
 			 *
 			 * @since 2.1.0
 			 *
 			 * @see get_bookmarks()
 			 *
-			 * @param array $bookmarks   List of the cached bookmarks.
-			 * @param array $parsed_args An array of bookmark query arguments.
+			 * @param array $bookmarks   Danh sách dấu trang từ bộ nhớ đệm.
+			 * @param array $parsed_args Mảng tham số truy vấn dấu trang.
 			 */
 			return apply_filters( 'get_bookmarks', $bookmarks, $parsed_args );
 		}
@@ -182,7 +182,7 @@ function get_bookmarks( $args = '' ) {
 
 	$inclusions = '';
 	if ( ! empty( $parsed_args['include'] ) ) {
-		$parsed_args['exclude']       = '';  // Ignore exclude, category, and category_name params if using include.
+		$parsed_args['exclude']       = '';  // Bỏ qua tham số exclude, category, và category_name nếu sử dụng include.
 		$parsed_args['category']      = '';
 		$parsed_args['category_name'] = '';
 
@@ -225,7 +225,7 @@ function get_bookmarks( $args = '' ) {
 		} else {
 			$cache[ $key ] = array();
 			wp_cache_set( 'get_bookmarks', $cache, 'bookmark' );
-			/** This filter is documented in wp-includes/bookmark.php */
+			/** Bộ lọc này được ghi tài liệu trong wp-includes/bookmark.php */
 			return apply_filters( 'get_bookmarks', array(), $parsed_args );
 		}
 	}
@@ -318,18 +318,18 @@ function get_bookmarks( $args = '' ) {
 		wp_cache_set( 'get_bookmarks', $cache, 'bookmark' );
 	}
 
-	/** This filter is documented in wp-includes/bookmark.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-includes/bookmark.php */
 	return apply_filters( 'get_bookmarks', $results, $parsed_args );
 }
 
 /**
- * Sanitizes all bookmark fields.
+ * Làm sạch tất cả các trường dấu trang.
  *
  * @since 2.3.0
  *
- * @param stdClass|array $bookmark Bookmark row.
- * @param string         $context  Optional. How to filter the fields. Default 'display'.
- * @return stdClass|array Same type as $bookmark but with fields sanitized.
+ * @param stdClass|array $bookmark Hàng dấu trang.
+ * @param string         $context  Tùy chọn. Cách lọc các trường. Mặc định 'display'.
+ * @return stdClass|array Cùng kiểu với $bookmark nhưng với các trường đã được làm sạch.
  */
 function sanitize_bookmark( $bookmark, $context = 'display' ) {
 	$fields = array(
@@ -373,28 +373,28 @@ function sanitize_bookmark( $bookmark, $context = 'display' ) {
 }
 
 /**
- * Sanitizes a bookmark field.
+ * Làm sạch một trường dấu trang.
  *
- * Sanitizes the bookmark fields based on what the field name is. If the field
- * has a strict value set, then it will be tested for that, else a more generic
- * filtering is applied. After the more strict filter is applied, if the `$context`
- * is 'raw' then the value is immediately return.
+ * Làm sạch các trường dấu trang dựa trên tên trường. Nếu trường
+ * có tập giá trị nghiêm ngặt, nó sẽ được kiểm tra cho giá trị đó, nếu không thì
+ * áp dụng lọc tổng quát hơn. Sau khi bộ lọc nghiêm ngặt hơn được áp dụng, nếu `$context`
+ * là 'raw' thì giá trị được trả về ngay lập tức.
  *
- * Hooks exist for the more generic cases. With the 'edit' context, the {@see 'edit_$field'}
- * filter will be called and passed the `$value` and `$bookmark_id` respectively.
+ * Hook tồn tại cho các trường hợp tổng quát hơn. Với ngữ cảnh 'edit', bộ lọc {@see 'edit_$field'}
+ * sẽ được gọi và truyền `$value` và `$bookmark_id` tương ứng.
  *
- * With the 'db' context, the {@see 'pre_$field'} filter is called and passed the value.
- * The 'display' context is the final context and has the `$field` has the filter name
- * and is passed the `$value`, `$bookmark_id`, and `$context`, respectively.
+ * Với ngữ cảnh 'db', bộ lọc {@see 'pre_$field'} được gọi và truyền giá trị.
+ * Ngữ cảnh 'display' là ngữ cảnh cuối cùng và có `$field` làm tên bộ lọc
+ * và được truyền `$value`, `$bookmark_id`, và `$context` tương ứng.
  *
  * @since 2.3.0
  *
- * @param string $field       The bookmark field.
- * @param mixed  $value       The bookmark field value.
- * @param int    $bookmark_id Bookmark ID.
- * @param string $context     How to filter the field value. Accepts 'raw', 'edit', 'db',
- *                            'display', 'attribute', or 'js'. Default 'display'.
- * @return mixed The filtered value.
+ * @param string $field       Trường dấu trang.
+ * @param mixed  $value       Giá trị trường dấu trang.
+ * @param int    $bookmark_id ID dấu trang.
+ * @param string $context     Cách lọc giá trị trường. Chấp nhận 'raw', 'edit', 'db',
+ *                            'display', 'attribute', hoặc 'js'. Mặc định 'display'.
+ * @return mixed Giá trị đã được lọc.
  */
 function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 	$int_fields = array( 'link_id', 'link_rating' );
@@ -403,15 +403,15 @@ function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 	}
 
 	switch ( $field ) {
-		case 'link_category': // array( ints )
+		case 'link_category': // mảng( số nguyên )
 			$value = array_map( 'absint', (array) $value );
 			/*
-			 * We return here so that the categories aren't filtered.
-			 * The 'link_category' filter is for the name of a link category, not an array of a link's link categories.
+			 * Chúng ta trả về ở đây để các chuyên mục không bị lọc.
+			 * Bộ lọc 'link_category' dành cho tên chuyên mục liên kết, không phải mảng chuyên mục liên kết của một liên kết.
 			 */
 			return $value;
 
-		case 'link_visible': // bool stored as Y|N
+		case 'link_visible': // boolean lưu dạng Y|N
 			$value = preg_replace( '/[^YNyn]/', '', $value );
 			break;
 		case 'link_target': // "enum"
@@ -427,7 +427,7 @@ function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 	}
 
 	if ( 'edit' === $context ) {
-		/** This filter is documented in wp-includes/post.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-includes/post.php */
 		$value = apply_filters( "edit_{$field}", $value, $bookmark_id );
 
 		if ( 'link_notes' === $field ) {
@@ -436,10 +436,10 @@ function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 			$value = esc_attr( $value );
 		}
 	} elseif ( 'db' === $context ) {
-		/** This filter is documented in wp-includes/post.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-includes/post.php */
 		$value = apply_filters( "pre_{$field}", $value );
 	} else {
-		/** This filter is documented in wp-includes/post.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-includes/post.php */
 		$value = apply_filters( "{$field}", $value, $bookmark_id, $context );
 
 		if ( 'attribute' === $context ) {
@@ -449,7 +449,7 @@ function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 		}
 	}
 
-	// Restore the type for integer fields after esc_attr().
+	// Khôi phục kiểu dữ liệu cho các trường số nguyên sau esc_attr().
 	if ( in_array( $field, $int_fields, true ) ) {
 		$value = (int) $value;
 	}
@@ -458,11 +458,11 @@ function sanitize_bookmark_field( $field, $value, $bookmark_id, $context ) {
 }
 
 /**
- * Deletes the bookmark cache.
+ * Xóa bộ nhớ đệm dấu trang.
  *
  * @since 2.7.0
  *
- * @param int $bookmark_id Bookmark ID.
+ * @param int $bookmark_id ID dấu trang.
  */
 function clean_bookmark_cache( $bookmark_id ) {
 	wp_cache_delete( $bookmark_id, 'bookmark' );

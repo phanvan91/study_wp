@@ -1,23 +1,23 @@
 <?php
 /**
- * Layout block support flag.
+ * Cờ hỗ trợ bố cục cho block.
  *
  * @package WordPress
  * @since 5.8.0
  */
 
 /**
- * Returns layout definitions, keyed by layout type.
+ * Trả về các định nghĩa bố cục, được đánh khóa theo loại bố cục.
  *
- * Provides a common definition of slugs, classnames, base styles, and spacing styles for each layout type.
- * When making changes or additions to layout definitions, the corresponding JavaScript definitions should
- * also be updated.
+ * Cung cấp định nghĩa chung cho slug, tên lớp CSS, kiểu cơ sở và kiểu khoảng cách cho mỗi loại bố cục.
+ * Khi thực hiện thay đổi hoặc bổ sung vào các định nghĩa bố cục, các định nghĩa JavaScript tương ứng
+ * cũng cần được cập nhật.
  *
  * @since 6.3.0
- * @since 6.6.0 Updated specificity for compatibility with 0-1-0 global styles specificity.
+ * @since 6.6.0 Cập nhật độ cụ thể để tương thích với độ cụ thể 0-1-0 của kiểu toàn cục.
  * @access private
  *
- * @return array[] Layout definitions.
+ * @return array[] Các định nghĩa bố cục.
  */
 function wp_get_layout_definitions() {
 	$layout_definitions = array(
@@ -151,7 +151,7 @@ function wp_get_layout_definitions() {
 					),
 				),
 				array(
-					'selector' => ' > :is(*, div)', // :is(*, div) instead of just * increases the specificity by 001.
+					'selector' => ' > :is(*, div)', // :is(*, div) thay vì chỉ * tăng độ cụ thể thêm 001.
 					'rules'    => array(
 						'margin' => '0',
 					),
@@ -173,7 +173,7 @@ function wp_get_layout_definitions() {
 			'displayMode'   => 'grid',
 			'baseStyles'    => array(
 				array(
-					'selector' => ' > :is(*, div)', // :is(*, div) instead of just * increases the specificity by 001.
+					'selector' => ' > :is(*, div)', // :is(*, div) thay vì chỉ * tăng độ cụ thể thêm 001.
 					'rules'    => array(
 						'margin' => '0',
 					),
@@ -194,13 +194,13 @@ function wp_get_layout_definitions() {
 }
 
 /**
- * Registers the layout block attribute for block types that support it.
+ * Đăng ký thuộc tính bố cục block cho các loại block hỗ trợ nó.
  *
  * @since 5.8.0
- * @since 6.3.0 Check for layout support via the `layout` key with fallback to `__experimentalLayout`.
+ * @since 6.3.0 Kiểm tra hỗ trợ bố cục qua khóa `layout` với dự phòng `__experimentalLayout`.
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
+ * @param WP_Block_Type $block_type Loại Block.
  */
 function wp_register_layout_support( $block_type ) {
 	$support_layout = block_has_support( $block_type, 'layout', false ) || block_has_support( $block_type, '__experimentalLayout', false );
@@ -218,24 +218,24 @@ function wp_register_layout_support( $block_type ) {
 }
 
 /**
- * Generates the CSS corresponding to the provided layout.
+ * Tạo CSS tương ứng với bố cục được cung cấp.
  *
  * @since 5.9.0
- * @since 6.1.0 Added `$block_spacing` param, use style engine to enqueue styles.
- * @since 6.3.0 Added grid layout type.
- * @since 6.6.0 Removed duplicated selector from layout styles.
- *              Enabled negative margins for alignfull children of blocks with custom padding.
+ * @since 6.1.0 Thêm tham số `$block_spacing`, sử dụng engine kiểu để nạp kiểu.
+ * @since 6.3.0 Thêm loại bố cục grid.
+ * @since 6.6.0 Loại bỏ selector trùng lặp khỏi kiểu bố cục.
+ *              Bật margin âm cho các phần tử con alignfull của block có padding tùy chỉnh.
  * @access private
  *
- * @param string               $selector                      CSS selector.
- * @param array                $layout                        Layout object. The one that is passed has already checked
- *                                                            the existence of default block layout.
- * @param bool                 $has_block_gap_support         Optional. Whether the theme has support for the block gap. Default false.
- * @param string|string[]|null $gap_value                     Optional. The block gap value to apply. Default null.
- * @param bool                 $should_skip_gap_serialization Optional. Whether to skip applying the user-defined value set in the editor. Default false.
- * @param string               $fallback_gap_value            Optional. The block gap value to apply. Default '0.5em'.
- * @param array|null           $block_spacing                 Optional. Custom spacing set on the block. Default null.
- * @return string CSS styles on success. Else, empty string.
+ * @param string               $selector                      Selector CSS.
+ * @param array                $layout                        Đối tượng bố cục. Đối tượng được truyền vào đã kiểm tra
+ *                                                            sự tồn tại của bố cục block mặc định.
+ * @param bool                 $has_block_gap_support         Tùy chọn. Theme có hỗ trợ khoảng cách block hay không. Mặc định false.
+ * @param string|string[]|null $gap_value                     Tùy chọn. Giá trị khoảng cách block để áp dụng. Mặc định null.
+ * @param bool                 $should_skip_gap_serialization Tùy chọn. Có bỏ qua áp dụng giá trị do người dùng đặt trong trình soạn thảo hay không. Mặc định false.
+ * @param string               $fallback_gap_value            Tùy chọn. Giá trị khoảng cách block dự phòng. Mặc định '0.5em'.
+ * @param array|null           $block_spacing                 Tùy chọn. Khoảng cách tùy chỉnh được đặt trên block. Mặc định null.
+ * @return string Các kiểu CSS khi thành công. Nếu không, chuỗi rỗng.
  */
 function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false, $gap_value = null, $should_skip_gap_serialization = false, $fallback_gap_value = '0.5em', $block_spacing = null ) {
 	$layout_type   = isset( $layout['type'] ) ? $layout['type'] : 'default';
@@ -247,7 +247,7 @@ function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false
 				$gap_value = isset( $gap_value['top'] ) ? $gap_value['top'] : null;
 			}
 			if ( null !== $gap_value && ! $should_skip_gap_serialization ) {
-				// Get spacing CSS variable from preset value if provided.
+				// Lấy biến CSS khoảng cách từ giá trị thiết lập sẵn nếu có.
 				if ( is_string( $gap_value ) && str_contains( $gap_value, 'var:preset|spacing|' ) ) {
 					$index_to_splice = strrpos( $gap_value, '|' ) + 1;
 					$slug            = _wp_to_kebab_case( substr( $gap_value, $index_to_splice ) );
@@ -281,7 +281,7 @@ function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false
 		$all_max_width_value  = $content_size ? $content_size : $wide_size;
 		$wide_max_width_value = $wide_size ? $wide_size : $content_size;
 
-		// Make sure there is a single CSS rule, and all tags are stripped for security.
+		// Đảm bảo chỉ có một quy tắc CSS duy nhất, và tất cả các thẻ bị loại bỏ vì lý do bảo mật.
 		$all_max_width_value  = safecss_filter_attr( explode( ';', $all_max_width_value )[0] );
 		$wide_max_width_value = safecss_filter_attr( explode( ';', $wide_max_width_value )[0] );
 
@@ -318,12 +318,12 @@ function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false
 			);
 
 			/*
-			 * Handle negative margins for alignfull children of blocks with custom padding set.
-			 * They're added separately because padding might only be set on one side.
+			 * Xử lý margin âm cho các phần tử con alignfull của block có padding tùy chỉnh.
+			 * Chúng được thêm riêng vì padding có thể chỉ được đặt ở một cạnh.
 			 */
 			if ( isset( $block_spacing_values['declarations']['padding-right'] ) ) {
 				$padding_right = $block_spacing_values['declarations']['padding-right'];
-				// Add unit if 0.
+				// Thêm đơn vị nếu bằng 0.
 				if ( '0' === $padding_right ) {
 					$padding_right = '0px';
 				}
@@ -334,7 +334,7 @@ function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false
 			}
 			if ( isset( $block_spacing_values['declarations']['padding-left'] ) ) {
 				$padding_left = $block_spacing_values['declarations']['padding-left'];
-				// Add unit if 0.
+				// Thêm đơn vị nếu bằng 0.
 				if ( '0' === $padding_left ) {
 					$padding_left = '0px';
 				}
@@ -364,7 +364,7 @@ function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false
 				$gap_value = isset( $gap_value['top'] ) ? $gap_value['top'] : null;
 			}
 			if ( null !== $gap_value && ! $should_skip_gap_serialization ) {
-				// Get spacing CSS variable from preset value if provided.
+				// Lấy biến CSS khoảng cách từ giá trị thiết lập sẵn nếu có.
 				if ( is_string( $gap_value ) && str_contains( $gap_value, 'var:preset|spacing|' ) ) {
 					$index_to_splice = strrpos( $gap_value, '|' ) + 1;
 					$slug            = _wp_to_kebab_case( substr( $gap_value, $index_to_splice ) );
@@ -429,7 +429,7 @@ function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false
 				if ( is_array( $gap_value ) ) {
 					$process_value = isset( $gap_value[ $gap_side ] ) ? $gap_value[ $gap_side ] : $fallback_gap_value;
 				}
-				// Get spacing CSS variable from preset value if provided.
+				// Lấy biến CSS khoảng cách từ giá trị thiết lập sẵn nếu có.
 				if ( is_string( $process_value ) && str_contains( $process_value, 'var:preset|spacing|' ) ) {
 					$index_to_splice = strrpos( $process_value, '|' ) + 1;
 					$slug            = _wp_to_kebab_case( substr( $process_value, $index_to_splice ) );
@@ -449,9 +449,9 @@ function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false
 
 		if ( 'horizontal' === $layout_orientation ) {
 			/*
-			 * Add this style only if is not empty for backwards compatibility,
-			 * since we intend to convert blocks that had flex layout implemented
-			 * by custom css.
+			 * Chỉ thêm kiểu này nếu không rỗng để tương thích ngược,
+			 * vì chúng ta dự định chuyển đổi các block có bố cục flex
+			 * được triển khai bằng CSS tùy chỉnh.
 			 */
 			if ( ! empty( $layout['justifyContent'] ) && array_key_exists( $layout['justifyContent'], $justify_content_options ) ) {
 				$layout_styles[] = array(
@@ -516,7 +516,7 @@ function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false
 				if ( is_array( $gap_value ) ) {
 					$process_value = isset( $gap_value[ $gap_side ] ) ? $gap_value[ $gap_side ] : $fallback_gap_value;
 				}
-				// Get spacing CSS variable from preset value if provided.
+				// Lấy biến CSS khoảng cách từ giá trị thiết lập sẵn nếu có.
 				if ( is_string( $process_value ) && str_contains( $process_value, 'var:preset|spacing|' ) ) {
 					$index_to_splice = strrpos( $process_value, '|' ) + 1;
 					$slug            = _wp_to_kebab_case( substr( $process_value, $index_to_splice ) );
@@ -537,10 +537,10 @@ function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false
 
 	if ( ! empty( $layout_styles ) ) {
 		/*
-		 * Add to the style engine store to enqueue and render layout styles.
-		 * Return compiled layout styles to retain backwards compatibility.
-		 * Since https://github.com/WordPress/gutenberg/pull/42452,
-		 * wp_enqueue_block_support_styles is no longer called in this block supports file.
+		 * Thêm vào kho engine kiểu để nạp và render các kiểu bố cục.
+		 * Trả về các kiểu bố cục đã biên dịch để giữ tương thích ngược.
+		 * Kể từ https://github.com/WordPress/gutenberg/pull/42452,
+		 * wp_enqueue_block_support_styles không còn được gọi trong file hỗ trợ block này.
 		 */
 		return wp_style_engine_get_stylesheet_from_css_rules(
 			$layout_styles,
@@ -555,17 +555,17 @@ function wp_get_layout_style( $selector, $layout, $has_block_gap_support = false
 }
 
 /**
- * Renders the layout config to the block wrapper.
+ * Render cấu hình bố cục vào wrapper của block.
  *
  * @since 5.8.0
- * @since 6.3.0 Adds compound class to layout wrapper for global spacing styles.
- * @since 6.3.0 Check for layout support via the `layout` key with fallback to `__experimentalLayout`.
- * @since 6.6.0 Removed duplicate container class from layout styles.
+ * @since 6.3.0 Thêm lớp CSS kết hợp vào wrapper bố cục cho kiểu khoảng cách toàn cục.
+ * @since 6.3.0 Kiểm tra hỗ trợ bố cục qua khóa `layout` với dự phòng `__experimentalLayout`.
+ * @since 6.6.0 Loại bỏ lớp CSS container trùng lặp khỏi kiểu bố cục.
  * @access private
  *
- * @param string $block_content Rendered block content.
- * @param array  $block         Block object.
- * @return string Filtered block content.
+ * @param string $block_content Nội dung block đã được render.
+ * @param array  $block         Đối tượng block.
+ * @return string Nội dung block đã được lọc.
  */
 function wp_render_layout_support_flag( $block_content, $block ) {
 	$block_type            = WP_Block_Type_Registry::get_instance()->get_registered( $block['blockName'] );
@@ -578,16 +578,16 @@ function wp_render_layout_support_flag( $block_content, $block ) {
 
 	$outer_class_names = array();
 
-	// Child layout specific logic.
+	// Logic cụ thể cho bố cục con.
 	if ( $child_layout ) {
 		/*
-		 * Generates a unique class for child block layout styles.
+		 * Tạo lớp CSS duy nhất cho kiểu bố cục block con.
 		 *
-		 * To ensure consistent class generation across different page renders,
-		 * only properties that affect layout styling are used. These properties
-		 * come from `$block['attrs']['style']['layout']` and `$block['parentLayout']`.
+		 * Để đảm bảo tạo lớp CSS nhất quán qua các lần render trang khác nhau,
+		 * chỉ các thuộc tính ảnh hưởng đến kiểu bố cục được sử dụng. Các thuộc tính
+		 * này đến từ `$block['attrs']['style']['layout']` và `$block['parentLayout']`.
 		 *
-		 * As long as these properties coincide, the generated class will be the same.
+		 * Miễn là các thuộc tính này trùng khớp, lớp CSS được tạo sẽ giống nhau.
 		 */
 		$container_content_class = wp_unique_id_from_values(
 			array(
@@ -633,10 +633,10 @@ function wp_render_layout_support_flag( $block_content, $block ) {
 		);
 
 		/*
-		 * If columnSpan is set, and the parent grid is responsive, i.e. if it has a minimumColumnWidth set,
-		 * the columnSpan should be removed on small grids. If there's a minimumColumnWidth, the grid is responsive.
-		 * But if the minimumColumnWidth value wasn't changed, it won't be set. In that case, if columnCount doesn't
-		 * exist, we can assume that the grid is responsive.
+		 * Nếu columnSpan được đặt, và grid cha là responsive, tức là nó có minimumColumnWidth được đặt,
+		 * columnSpan nên bị xóa trên các grid nhỏ. Nếu có minimumColumnWidth, grid là responsive.
+		 * Nhưng nếu giá trị minimumColumnWidth không thay đổi, nó sẽ không được đặt. Trong trường hợp đó, nếu columnCount
+		 * không tồn tại, chúng ta có thể giả định rằng grid là responsive.
 		 */
 		if ( isset( $child_layout['columnSpan'] ) && ( isset( $block['parentLayout']['minimumColumnWidth'] ) || ! isset( $block['parentLayout']['columnCount'] ) ) ) {
 			$column_span_number  = floatval( $child_layout['columnSpan'] );
@@ -645,9 +645,9 @@ function wp_render_layout_support_flag( $block_content, $block ) {
 			$parent_column_unit  = explode( $parent_column_value, $parent_column_width );
 
 			/*
-			 * If there is no unit, the width has somehow been mangled so we reset both unit and value
-			 * to defaults.
-			 * Additionally, the unit should be one of px, rem or em, so that also needs to be checked.
+			 * Nếu không có đơn vị, chiều rộng đã bị hỏng nên chúng ta đặt lại cả đơn vị và giá trị
+			 * về mặc định.
+			 * Ngoài ra, đơn vị phải là một trong px, rem hoặc em, vì vậy cũng cần kiểm tra điều đó.
 			 */
 			if ( count( $parent_column_unit ) <= 1 ) {
 				$parent_column_unit  = 'rem';
@@ -661,8 +661,8 @@ function wp_render_layout_support_flag( $block_content, $block ) {
 			}
 
 			/*
-			 * A default gap value is used for this computation because custom gap values may not be
-			 * viable to use in the computation of the container query value.
+			 * Giá trị khoảng cách mặc định được sử dụng cho phép tính này vì giá trị khoảng cách tùy chỉnh
+			 * có thể không khả thi để sử dụng trong phép tính giá trị truy vấn container.
 			 */
 			$default_gap_value     = 'px' === $parent_column_unit ? 24 : 1.5;
 			$container_query_value = $column_span_number * $parent_column_value + ( $column_span_number - 1 ) * $default_gap_value;

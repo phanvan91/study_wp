@@ -1,6 +1,6 @@
 <?php
 /**
- * Widget API: WP_Widget_Factory class
+ * API Widget: Lớp WP_Widget_Factory
  *
  * @package WordPress
  * @subpackage Widgets
@@ -8,16 +8,16 @@
  */
 
 /**
- * Singleton that registers and instantiates WP_Widget classes.
+ * Singleton đăng ký và khởi tạo các lớp WP_Widget.
  *
  * @since 2.8.0
- * @since 4.4.0 Moved to its own file from wp-includes/widgets.php
+ * @since 4.4.0 Chuyển sang file riêng từ wp-includes/widgets.php
  */
 #[AllowDynamicProperties]
 class WP_Widget_Factory {
 
 	/**
-	 * Widgets array.
+	 * Mảng các widget.
 	 *
 	 * @since 2.8.0
 	 * @var array
@@ -25,7 +25,7 @@ class WP_Widget_Factory {
 	public $widgets = array();
 
 	/**
-	 * PHP5 constructor.
+	 * Hàm khởi tạo PHP5.
 	 *
 	 * @since 4.3.0
 	 */
@@ -34,10 +34,10 @@ class WP_Widget_Factory {
 	}
 
 	/**
-	 * PHP4 constructor.
+	 * Hàm khởi tạo PHP4.
 	 *
 	 * @since 2.8.0
-	 * @deprecated 4.3.0 Use __construct() instead.
+	 * @deprecated 4.3.0 Sử dụng __construct() thay thế.
 	 *
 	 * @see WP_Widget_Factory::__construct()
 	 */
@@ -47,13 +47,13 @@ class WP_Widget_Factory {
 	}
 
 	/**
-	 * Registers a widget subclass.
+	 * Đăng ký một lớp con widget.
 	 *
 	 * @since 2.8.0
-	 * @since 4.6.0 Updated the `$widget` parameter to also accept a WP_Widget instance object
-	 *              instead of simply a `WP_Widget` subclass name.
+	 * @since 4.6.0 Cập nhật tham số `$widget` để cũng chấp nhận đối tượng thể hiện WP_Widget
+	 *              thay vì chỉ tên lớp con `WP_Widget`.
 	 *
-	 * @param string|WP_Widget $widget Either the name of a `WP_Widget` subclass or an instance of a `WP_Widget` subclass.
+	 * @param string|WP_Widget $widget Tên lớp con `WP_Widget` hoặc một thể hiện của lớp con `WP_Widget`.
 	 */
 	public function register( $widget ) {
 		if ( $widget instanceof WP_Widget ) {
@@ -64,13 +64,13 @@ class WP_Widget_Factory {
 	}
 
 	/**
-	 * Un-registers a widget subclass.
+	 * Hủy đăng ký một lớp con widget.
 	 *
 	 * @since 2.8.0
-	 * @since 4.6.0 Updated the `$widget` parameter to also accept a WP_Widget instance object
-	 *              instead of simply a `WP_Widget` subclass name.
+	 * @since 4.6.0 Cập nhật tham số `$widget` để cũng chấp nhận đối tượng thể hiện WP_Widget
+	 *              thay vì chỉ tên lớp con `WP_Widget`.
 	 *
-	 * @param string|WP_Widget $widget Either the name of a `WP_Widget` subclass or an instance of a `WP_Widget` subclass.
+	 * @param string|WP_Widget $widget Tên lớp con `WP_Widget` hoặc một thể hiện của lớp con `WP_Widget`.
 	 */
 	public function unregister( $widget ) {
 		if ( $widget instanceof WP_Widget ) {
@@ -81,7 +81,7 @@ class WP_Widget_Factory {
 	}
 
 	/**
-	 * Serves as a utility method for adding widgets to the registered widgets global.
+	 * Phương thức tiện ích để thêm widget vào biến toàn cục widget đã đăng ký.
 	 *
 	 * @since 2.8.0
 	 *
@@ -94,7 +94,7 @@ class WP_Widget_Factory {
 		$registered = array_map( '_get_widget_id_base', $registered );
 
 		foreach ( $keys as $key ) {
-			// Don't register new widget if old widget with the same id is already registered.
+			// Không đăng ký widget mới nếu widget cũ có cùng id đã được đăng ký.
 			if ( in_array( $this->widgets[ $key ]->id_base, $registered, true ) ) {
 				unset( $this->widgets[ $key ] );
 				continue;
@@ -105,11 +105,11 @@ class WP_Widget_Factory {
 	}
 
 	/**
-	 * Returns the registered WP_Widget object for the given widget type.
+	 * Trả về đối tượng WP_Widget đã đăng ký cho loại widget đã cho.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $id_base Widget type ID.
+	 * @param string $id_base ID loại widget.
 	 * @return WP_Widget|null
 	 */
 	public function get_widget_object( $id_base ) {
@@ -122,11 +122,11 @@ class WP_Widget_Factory {
 	}
 
 	/**
-	 * Returns the registered key for the given widget type.
+	 * Trả về khóa đã đăng ký cho loại widget đã cho.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $id_base Widget type ID.
+	 * @param string $id_base ID loại widget.
 	 * @return string
 	 */
 	public function get_widget_key( $id_base ) {

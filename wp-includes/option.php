@@ -1,61 +1,61 @@
 <?php
 /**
- * Option API
+ * API Tùy chọn (Option)
  *
  * @package WordPress
  * @subpackage Option
  */
 
 /**
- * Retrieves an option value based on an option name.
+ * Lấy giá trị tùy chọn dựa trên tên tùy chọn.
  *
- * If the option does not exist, and a default value is not provided,
- * boolean false is returned. This could be used to check whether you need
- * to initialize an option during installation of a plugin, however that
- * can be done better by using add_option() which will not overwrite
- * existing options.
+ * Nếu tùy chọn không tồn tại và không cung cấp giá trị mặc định,
+ * boolean false sẽ được trả về. Điều này có thể được dùng để kiểm tra xem bạn có cần
+ * khởi tạo tùy chọn trong quá trình cài đặt plugin hay không, tuy nhiên
+ * có thể làm tốt hơn bằng cách dùng add_option() vì nó sẽ không ghi đè
+ * các tùy chọn đã tồn tại.
  *
- * Not initializing an option and using boolean `false` as a return value
- * is a bad practice as it triggers an additional database query.
+ * Không khởi tạo tùy chọn và sử dụng boolean `false` làm giá trị trả về
+ * là một thực hành xấu vì nó kích hoạt thêm một truy vấn cơ sở dữ liệu.
  *
- * The type of the returned value can be different from the type that was passed
- * when saving or updating the option. If the option value was serialized,
- * then it will be unserialized when it is returned. In this case the type will
- * be the same. For example, storing a non-scalar value like an array will
- * return the same array.
+ * Kiểu dữ liệu của giá trị trả về có thể khác với kiểu được truyền vào
+ * khi lưu hoặc cập nhật tùy chọn. Nếu giá trị tùy chọn đã được serialize,
+ * thì nó sẽ được unserialize khi trả về. Trong trường hợp này kiểu dữ liệu sẽ
+ * giống nhau. Ví dụ, lưu một giá trị không phải scalar như mảng sẽ
+ * trả về cùng mảng đó.
  *
- * In most cases non-string scalar and null values will be converted and returned
- * as string equivalents.
+ * Trong hầu hết các trường hợp, các giá trị scalar không phải string và null sẽ được chuyển đổi
+ * và trả về dưới dạng chuỗi tương đương.
  *
- * Exceptions:
+ * Ngoại lệ:
  *
- * 1. When the option has not been saved in the database, the `$default_value` value
- *    is returned if provided. If not, boolean `false` is returned.
- * 2. When one of the Options API filters is used: {@see 'pre_option_$option'},
- *    {@see 'default_option_$option'}, or {@see 'option_$option'}, the returned
- *    value may not match the expected type.
- * 3. When the option has just been saved in the database, and get_option()
- *    is used right after, non-string scalar and null values are not converted to
- *    string equivalents and the original type is returned.
+ * 1. Khi tùy chọn chưa được lưu trong cơ sở dữ liệu, giá trị `$default_value`
+ *    sẽ được trả về nếu được cung cấp. Nếu không, boolean `false` được trả về.
+ * 2. Khi một trong các bộ lọc Options API được sử dụng: {@see 'pre_option_$option'},
+ *    {@see 'default_option_$option'}, hoặc {@see 'option_$option'}, giá trị trả về
+ *    có thể không khớp với kiểu dữ liệu mong đợi.
+ * 3. Khi tùy chọn vừa được lưu vào cơ sở dữ liệu, và get_option()
+ *    được sử dụng ngay sau đó, các giá trị scalar không phải string và null sẽ không được
+ *    chuyển đổi thành chuỗi tương đương và kiểu gốc sẽ được trả về.
  *
- * Examples:
+ * Ví dụ:
  *
- * When adding options like this: `add_option( 'my_option_name', 'value' )`
- * and then retrieving them with `get_option( 'my_option_name' )`, the returned
- * values will be:
+ * Khi thêm tùy chọn như sau: `add_option( 'my_option_name', 'value' )`
+ * và sau đó lấy chúng với `get_option( 'my_option_name' )`, các giá trị trả về
+ * sẽ là:
  *
- *   - `false` returns `string(0) ""`
- *   - `true`  returns `string(1) "1"`
- *   - `0`     returns `string(1) "0"`
- *   - `1`     returns `string(1) "1"`
- *   - `'0'`   returns `string(1) "0"`
- *   - `'1'`   returns `string(1) "1"`
- *   - `null`  returns `string(0) ""`
+ *   - `false` trả về `string(0) ""`
+ *   - `true`  trả về `string(1) "1"`
+ *   - `0`     trả về `string(1) "0"`
+ *   - `1`     trả về `string(1) "1"`
+ *   - `'0'`   trả về `string(1) "0"`
+ *   - `'1'`   trả về `string(1) "1"`
+ *   - `null`  trả về `string(0) ""`
  *
- * When adding options with non-scalar values like
- * `add_option( 'my_array', array( false, 'str', null ) )`, the returned value
- * will be identical to the original as it is serialized before saving
- * it in the database:
+ * Khi thêm tùy chọn với giá trị không phải scalar như
+ * `add_option( 'my_array', array( false, 'str', null ) )`, giá trị trả về
+ * sẽ giống hệt giá trị gốc vì nó được serialize trước khi lưu
+ * vào cơ sở dữ liệu:
  *
  *     array(3) {
  *         [0] => bool(false)
@@ -65,15 +65,15 @@
  *
  * @since 1.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $option        Name of the option to retrieve. Expected to not be SQL-escaped.
- * @param mixed  $default_value Optional. Default value to return if the option does not exist.
- * @return mixed Value of the option. A value of any type may be returned, including
+ * @param string $option        Tên tùy chọn cần lấy. Không cần SQL-escape.
+ * @param mixed  $default_value Tùy chọn. Giá trị mặc định trả về nếu tùy chọn không tồn tại.
+ * @return mixed Giá trị của tùy chọn. Có thể trả về giá trị thuộc bất kỳ kiểu nào, bao gồm
  *               scalar (string, boolean, float, integer), null, array, object.
- *               Scalar and null values will be returned as strings as long as they originate
- *               from a database stored option value. If there is no option in the database,
- *               boolean `false` is returned.
+ *               Các giá trị scalar và null sẽ được trả về dưới dạng chuỗi miễn là chúng
+ *               có nguồn gốc từ giá trị tùy chọn lưu trong cơ sở dữ liệu. Nếu không có tùy chọn
+ *               trong cơ sở dữ liệu, boolean `false` được trả về.
  */
 function get_option( $option, $default_value = false ) {
 	global $wpdb;
@@ -87,8 +87,8 @@ function get_option( $option, $default_value = false ) {
 	}
 
 	/*
-	 * Until a proper _deprecated_option() function can be introduced,
-	 * redirect requests to deprecated keys to the new, correct ones.
+	 * Cho đến khi có hàm _deprecated_option() phù hợp,
+	 * chuyển hướng các yêu cầu đến khóa đã lỗi thời sang khóa mới, đúng.
 	 */
 	$deprecated_keys = array(
 		'blacklist_keys'    => 'disallowed_keys',
@@ -100,7 +100,7 @@ function get_option( $option, $default_value = false ) {
 			__FUNCTION__,
 			'5.5.0',
 			sprintf(
-				/* translators: 1: Deprecated option key, 2: New option key. */
+				/* translators: 1: Khóa tùy chọn đã lỗi thời, 2: Khóa tùy chọn mới. */
 				__( 'The "%1$s" option key has been renamed to "%2$s".' ),
 				$option,
 				$deprecated_keys[ $option ]
@@ -110,42 +110,42 @@ function get_option( $option, $default_value = false ) {
 	}
 
 	/**
-	 * Filters the value of an existing option before it is retrieved.
+	 * Lọc giá trị của một tùy chọn hiện có trước khi nó được lấy ra.
 	 *
-	 * The dynamic portion of the hook name, `$option`, refers to the option name.
+	 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 	 *
-	 * Returning a value other than false from the filter will short-circuit retrieval
-	 * and return that value instead.
+	 * Trả về một giá trị khác false từ bộ lọc sẽ bỏ qua việc truy xuất
+	 * và trả về giá trị đó thay thế.
 	 *
 	 * @since 1.5.0
-	 * @since 4.4.0 The `$option` parameter was added.
-	 * @since 4.9.0 The `$default_value` parameter was added.
+	 * @since 4.4.0 Tham số `$option` được thêm vào.
+	 * @since 4.9.0 Tham số `$default_value` được thêm vào.
 	 *
-	 * @param mixed  $pre_option    The value to return instead of the option value. This differs from
-	 *                              `$default_value`, which is used as the fallback value in the event
-	 *                              the option doesn't exist elsewhere in get_option().
-	 *                              Default false (to skip past the short-circuit).
-	 * @param string $option        Option name.
-	 * @param mixed  $default_value The fallback value to return if the option does not exist.
-	 *                              Default false.
+	 * @param mixed  $pre_option    Giá trị trả về thay vì giá trị tùy chọn. Điều này khác với
+	 *                              `$default_value`, được dùng làm giá trị dự phòng trong trường hợp
+	 *                              tùy chọn không tồn tại ở nơi khác trong get_option().
+	 *                              Mặc định false (để bỏ qua short-circuit).
+	 * @param string $option        Tên tùy chọn.
+	 * @param mixed  $default_value Giá trị dự phòng trả về nếu tùy chọn không tồn tại.
+	 *                              Mặc định false.
 	 */
 	$pre = apply_filters( "pre_option_{$option}", false, $option, $default_value );
 
 	/**
-	 * Filters the value of all existing options before it is retrieved.
+	 * Lọc giá trị của tất cả các tùy chọn hiện có trước khi chúng được lấy ra.
 	 *
-	 * Returning a truthy value from the filter will effectively short-circuit retrieval
-	 * and return the passed value instead.
+	 * Trả về giá trị truthy từ bộ lọc sẽ bỏ qua việc truy xuất
+	 * và trả về giá trị được truyền vào thay thế.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param mixed  $pre_option    The value to return instead of the option value. This differs from
-	 *                              `$default_value`, which is used as the fallback value in the event
-	 *                              the option doesn't exist elsewhere in get_option().
-	 *                              Default false (to skip past the short-circuit).
-	 * @param string $option        Name of the option.
-	 * @param mixed  $default_value The fallback value to return if the option does not exist.
-	 *                              Default false.
+	 * @param mixed  $pre_option    Giá trị trả về thay vì giá trị tùy chọn. Điều này khác với
+	 *                              `$default_value`, được dùng làm giá trị dự phòng trong trường hợp
+	 *                              tùy chọn không tồn tại ở nơi khác trong get_option().
+	 *                              Mặc định false (để bỏ qua short-circuit).
+	 * @param string $option        Tên tùy chọn.
+	 * @param mixed  $default_value Giá trị dự phòng trả về nếu tùy chọn không tồn tại.
+	 *                              Mặc định false.
 	 */
 	$pre = apply_filters( 'pre_option', $pre, $option, $default_value );
 
@@ -157,23 +157,23 @@ function get_option( $option, $default_value = false ) {
 		return false;
 	}
 
-	// Distinguish between `false` as a default, and not passing one.
+	// Phân biệt giữa `false` là giá trị mặc định, và không truyền giá trị mặc định.
 	$passed_default = func_num_args() > 1;
 
 	if ( ! wp_installing() ) {
 		$alloptions = wp_load_alloptions();
 		/*
-		 * When getting an option value, we check in the following order for performance:
+		 * Khi lấy giá trị tùy chọn, chúng ta kiểm tra theo thứ tự sau để tối ưu hiệu suất:
 		 *
-		 * 1. Check the 'alloptions' cache first to prioritize existing loaded options.
-		 * 2. Check the 'notoptions' cache before a cache lookup or DB hit.
-		 * 3. Check the 'options' cache prior to a DB hit.
-		 * 4. Check the DB for the option and cache it in either the 'options' or 'notoptions' cache.
+		 * 1. Kiểm tra bộ nhớ đệm 'alloptions' trước để ưu tiên các tùy chọn đã tải.
+		 * 2. Kiểm tra bộ nhớ đệm 'notoptions' trước khi tra cứu cache hoặc truy vấn DB.
+		 * 3. Kiểm tra bộ nhớ đệm 'options' trước khi truy vấn DB.
+		 * 4. Kiểm tra DB cho tùy chọn và lưu vào bộ nhớ đệm 'options' hoặc 'notoptions'.
 		 */
 		if ( isset( $alloptions[ $option ] ) ) {
 			$value = $alloptions[ $option ];
 		} else {
-			// Check for non-existent options first to avoid unnecessary object cache lookups and DB hits.
+			// Kiểm tra các tùy chọn không tồn tại trước để tránh tra cứu object cache và truy vấn DB không cần thiết.
 			$notoptions = wp_cache_get( 'notoptions', 'options' );
 
 			if ( ! is_array( $notoptions ) ) {
@@ -183,18 +183,18 @@ function get_option( $option, $default_value = false ) {
 
 			if ( isset( $notoptions[ $option ] ) ) {
 				/**
-				 * Filters the default value for an option.
+				 * Lọc giá trị mặc định cho một tùy chọn.
 				 *
-				 * The dynamic portion of the hook name, `$option`, refers to the option name.
+				 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 				 *
 				 * @since 3.4.0
-				 * @since 4.4.0 The `$option` parameter was added.
-				 * @since 4.7.0 The `$passed_default` parameter was added to distinguish between a `false` value and the default parameter value.
+				 * @since 4.4.0 Tham số `$option` được thêm vào.
+				 * @since 4.7.0 Tham số `$passed_default` được thêm vào để phân biệt giữa giá trị `false` và giá trị tham số mặc định.
 				 *
-				 * @param mixed  $default_value  The default value to return if the option does not exist
-				 *                               in the database.
-				 * @param string $option         Option name.
-				 * @param bool   $passed_default Was `get_option()` passed a default value?
+				 * @param mixed  $default_value  Giá trị mặc định trả về nếu tùy chọn không tồn tại
+				 *                               trong cơ sở dữ liệu.
+				 * @param string $option         Tên tùy chọn.
+				 * @param bool   $passed_default Hàm `get_option()` có được truyền giá trị mặc định không?
 				 */
 				return apply_filters( "default_option_{$option}", $default_value, $option, $passed_default );
 			}
@@ -205,11 +205,11 @@ function get_option( $option, $default_value = false ) {
 
 				$row = $wpdb->get_row( $wpdb->prepare( "SELECT option_value FROM $wpdb->options WHERE option_name = %s LIMIT 1", $option ) );
 
-				// Has to be get_row() instead of get_var() because of funkiness with 0, false, null values.
+				// Phải dùng get_row() thay vì get_var() vì sự bất thường với các giá trị 0, false, null.
 				if ( is_object( $row ) ) {
 					$value = $row->option_value;
 					wp_cache_add( $option, $value, 'options' );
-				} else { // Option does not exist, so we must cache its non-existence.
+				} else { // Tùy chọn không tồn tại, vì vậy chúng ta phải lưu cache sự không tồn tại của nó.
 					$notoptions[ $option ] = true;
 					wp_cache_set( 'notoptions', $notoptions, 'options' );
 
@@ -231,7 +231,7 @@ function get_option( $option, $default_value = false ) {
 		}
 	}
 
-	// If home is not set, use siteurl.
+	// Nếu home chưa được thiết lập, sử dụng siteurl.
 	if ( 'home' === $option && '' === $value ) {
 		return get_option( 'siteurl' );
 	}
@@ -241,31 +241,31 @@ function get_option( $option, $default_value = false ) {
 	}
 
 	/**
-	 * Filters the value of an existing option.
+	 * Lọc giá trị của một tùy chọn hiện có.
 	 *
-	 * The dynamic portion of the hook name, `$option`, refers to the option name.
+	 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 	 *
-	 * @since 1.5.0 As 'option_' . $setting
+	 * @since 1.5.0 Với tên 'option_' . $setting
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added.
+	 * @since 4.4.0 Tham số `$option` được thêm vào.
 	 *
-	 * @param mixed  $value  Value of the option. If stored serialized, it will be
-	 *                       unserialized prior to being returned.
-	 * @param string $option Option name.
+	 * @param mixed  $value  Giá trị của tùy chọn. Nếu đã được serialize khi lưu,
+	 *                       nó sẽ được unserialize trước khi trả về.
+	 * @param string $option Tên tùy chọn.
 	 */
 	return apply_filters( "option_{$option}", maybe_unserialize( $value ), $option );
 }
 
 /**
- * Primes specific options into the cache with a single database query.
+ * Nạp sẵn các tùy chọn cụ thể vào cache bằng một truy vấn cơ sở dữ liệu duy nhất.
  *
- * Only options that do not already exist in cache will be loaded.
+ * Chỉ những tùy chọn chưa tồn tại trong cache mới được tải.
  *
  * @since 6.4.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string[] $options An array of option names to be loaded.
+ * @param string[] $options Mảng các tên tùy chọn cần tải.
  */
 function wp_prime_option_caches( $options ) {
 	global $wpdb;
@@ -277,7 +277,7 @@ function wp_prime_option_caches( $options ) {
 		$notoptions = array();
 	}
 
-	// Filter options that are not in the cache.
+	// Lọc các tùy chọn không có trong cache.
 	$options_to_prime = array();
 	foreach ( $options as $option ) {
 		if (
@@ -289,7 +289,7 @@ function wp_prime_option_caches( $options ) {
 		}
 	}
 
-	// Bail early if there are no options to be loaded.
+	// Thoát sớm nếu không có tùy chọn nào cần tải.
 	if ( empty( $options_to_prime ) ) {
 		return;
 	}
@@ -307,22 +307,22 @@ function wp_prime_option_caches( $options ) {
 	$options_found = array();
 	foreach ( $results as $result ) {
 		/*
-		 * The cache is primed with the raw value (i.e. not maybe_unserialized).
+		 * Cache được nạp sẵn với giá trị thô (tức là chưa được maybe_unserialize).
 		 *
-		 * `get_option()` will handle unserializing the value as needed.
+		 * `get_option()` sẽ xử lý unserialize giá trị khi cần thiết.
 		 */
 		$options_found[ $result->option_name ] = $result->option_value;
 	}
 	wp_cache_set_multiple( $options_found, 'options' );
 
-	// If all options were found, no need to update `notoptions` cache.
+	// Nếu tất cả tùy chọn đã được tìm thấy, không cần cập nhật cache `notoptions`.
 	if ( count( $options_found ) === count( $options_to_prime ) ) {
 		return;
 	}
 
 	$options_not_found = array_diff( $options_to_prime, array_keys( $options_found ) );
 
-	// Add the options that were not found to the cache.
+	// Thêm các tùy chọn không tìm thấy vào cache.
 	$update_notoptions = false;
 	foreach ( $options_not_found as $option_name ) {
 		if ( ! isset( $notoptions[ $option_name ] ) ) {
@@ -331,20 +331,20 @@ function wp_prime_option_caches( $options ) {
 		}
 	}
 
-	// Only update the cache if it was modified.
+	// Chỉ cập nhật cache nếu nó đã được thay đổi.
 	if ( $update_notoptions ) {
 		wp_cache_set( 'notoptions', $notoptions, 'options' );
 	}
 }
 
 /**
- * Primes the cache of all options registered with a specific option group.
+ * Nạp sẵn cache của tất cả tùy chọn đã đăng ký với một nhóm tùy chọn cụ thể.
  *
  * @since 6.4.0
  *
  * @global array $new_allowed_options
  *
- * @param string $option_group The option group to load options for.
+ * @param string $option_group Nhóm tùy chọn cần tải.
  */
 function wp_prime_option_caches_by_group( $option_group ) {
 	global $new_allowed_options;
@@ -355,14 +355,14 @@ function wp_prime_option_caches_by_group( $option_group ) {
 }
 
 /**
- * Retrieves multiple options.
+ * Lấy nhiều tùy chọn cùng lúc.
  *
- * Options are loaded as necessary first in order to use a single database query at most.
+ * Các tùy chọn được tải khi cần thiết để sử dụng tối đa một truy vấn cơ sở dữ liệu.
  *
  * @since 6.4.0
  *
- * @param string[] $options An array of option names to retrieve.
- * @return array An array of key-value pairs for the requested options.
+ * @param string[] $options Mảng các tên tùy chọn cần lấy.
+ * @return array Mảng các cặp key-value cho các tùy chọn được yêu cầu.
  */
 function get_options( $options ) {
 	wp_prime_option_caches( $options );
@@ -376,23 +376,23 @@ function get_options( $options ) {
 }
 
 /**
- * Sets the autoload values for multiple options in the database.
+ * Thiết lập giá trị autoload cho nhiều tùy chọn trong cơ sở dữ liệu.
  *
- * Autoloading too many options can lead to performance problems, especially if the options are not frequently used.
- * This function allows modifying the autoload value for multiple options without changing the actual option value.
- * This is for example recommended for plugin activation and deactivation hooks, to ensure any options exclusively used
- * by the plugin which are generally autoloaded can be set to not autoload when the plugin is inactive.
+ * Tự động tải quá nhiều tùy chọn có thể dẫn đến vấn đề hiệu suất, đặc biệt nếu các tùy chọn không được sử dụng thường xuyên.
+ * Hàm này cho phép thay đổi giá trị autoload cho nhiều tùy chọn mà không thay đổi giá trị thực tế của tùy chọn.
+ * Điều này được khuyến nghị cho các hook kích hoạt và hủy kích hoạt plugin, để đảm bảo các tùy chọn chỉ được sử dụng
+ * bởi plugin mà thường được tự động tải có thể được thiết lập không tự động tải khi plugin không hoạt động.
  *
  * @since 6.4.0
- * @since 6.7.0 The autoload values 'yes' and 'no' are deprecated.
+ * @since 6.7.0 Các giá trị autoload 'yes' và 'no' đã bị deprecated.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param array $options Associative array of option names and their autoload values to set. The option names are
- *                       expected to not be SQL-escaped. The autoload values should be boolean values. For backward
- *                       compatibility 'yes' and 'no' are also accepted, though using these values is deprecated.
- * @return array Associative array of all provided $options as keys and boolean values for whether their autoload value
- *               was updated.
+ * @param array $options Mảng kết hợp gồm tên tùy chọn và giá trị autoload cần thiết lập. Tên tùy chọn
+ *                       không cần SQL-escape. Giá trị autoload nên là boolean. Để tương thích ngược,
+ *                       'yes' và 'no' cũng được chấp nhận, mặc dù việc sử dụng các giá trị này đã bị deprecated.
+ * @return array Mảng kết hợp của tất cả $options được cung cấp làm key và giá trị boolean cho biết giá trị autoload
+ *               có được cập nhật hay không.
  */
 function wp_set_option_autoload_values( array $options ) {
 	global $wpdb;
@@ -407,18 +407,18 @@ function wp_set_option_autoload_values( array $options ) {
 	);
 	$results         = array();
 	foreach ( $options as $option => $autoload ) {
-		wp_protect_special_option( $option ); // Ensure only valid options can be passed.
+		wp_protect_special_option( $option ); // Đảm bảo chỉ các tùy chọn hợp lệ mới có thể được truyền vào.
 
 		/*
-		 * Sanitize autoload value and categorize accordingly.
-		 * The values 'yes', 'no', 'on', and 'off' are supported for backward compatibility.
+		 * Làm sạch giá trị autoload và phân loại tương ứng.
+		 * Các giá trị 'yes', 'no', 'on', và 'off' được hỗ trợ để tương thích ngược.
 		 */
 		if ( 'off' === $autoload || 'no' === $autoload || false === $autoload ) {
 			$grouped_options['off'][] = $option;
 		} else {
 			$grouped_options['on'][] = $option;
 		}
-		$results[ $option ] = false; // Initialize result value.
+		$results[ $option ] = false; // Khởi tạo giá trị kết quả.
 	}
 
 	$where      = array();
@@ -437,8 +437,8 @@ function wp_set_option_autoload_values( array $options ) {
 	$where = 'WHERE ' . implode( ' OR ', $where );
 
 	/*
-	 * Determine the relevant options that do not already use the given autoload value.
-	 * If no options are returned, no need to update.
+	 * Xác định các tùy chọn liên quan chưa sử dụng giá trị autoload đã cho.
+	 * Nếu không có tùy chọn nào được trả về, không cần cập nhật.
 	 */
 	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared,WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 	$options_to_update = $wpdb->get_col( $wpdb->prepare( "SELECT option_name FROM $wpdb->options $where", $where_args ) );
@@ -446,7 +446,7 @@ function wp_set_option_autoload_values( array $options ) {
 		return $results;
 	}
 
-	// Run UPDATE queries as needed (maximum 2) to update the relevant options' autoload values to 'yes' or 'no'.
+	// Chạy các truy vấn UPDATE khi cần (tối đa 2) để cập nhật giá trị autoload của các tùy chọn liên quan thành 'yes' hoặc 'no'.
 	foreach ( $grouped_options as $autoload => $options ) {
 		if ( ! $options ) {
 			continue;
@@ -457,7 +457,7 @@ function wp_set_option_autoload_values( array $options ) {
 			continue;
 		}
 
-		// Run query to update autoload value for all the options where it is needed.
+		// Chạy truy vấn để cập nhật giá trị autoload cho tất cả các tùy chọn cần thiết.
 		$success = $wpdb->query(
 			$wpdb->prepare(
 				"UPDATE $wpdb->options SET autoload = %s WHERE option_name IN (" . implode( ',', array_fill( 0, count( $grouped_options[ $autoload ] ), '%s' ) ) . ')',
@@ -468,23 +468,23 @@ function wp_set_option_autoload_values( array $options ) {
 			)
 		);
 		if ( ! $success ) {
-			// Set option list to an empty array to indicate no options were updated.
+			// Đặt danh sách tùy chọn thành mảng rỗng để chỉ ra rằng không có tùy chọn nào được cập nhật.
 			$grouped_options[ $autoload ] = array();
 			continue;
 		}
 
-		// Assume that on success all options were updated, which should be the case given only new values are sent.
+		// Giả định rằng khi thành công tất cả tùy chọn đã được cập nhật, điều này đúng vì chỉ có giá trị mới được gửi.
 		foreach ( $grouped_options[ $autoload ] as $option ) {
 			$results[ $option ] = true;
 		}
 	}
 
 	/*
-	 * If any options were changed to 'on', delete their individual caches, and delete 'alloptions' cache so that it
-	 * is refreshed as needed.
-	 * If no options were changed to 'on' but any options were changed to 'no', delete them from the 'alloptions'
-	 * cache. This is not necessary when options were changed to 'on', since in that situation the entire cache is
-	 * deleted anyway.
+	 * Nếu có tùy chọn nào được chuyển sang 'on', xóa cache riêng lẻ của chúng, và xóa cache 'alloptions' để nó
+	 * được làm mới khi cần.
+	 * Nếu không có tùy chọn nào được chuyển sang 'on' nhưng có tùy chọn được chuyển sang 'no', xóa chúng khỏi cache
+	 * 'alloptions'. Điều này không cần thiết khi tùy chọn được chuyển sang 'on', vì trong trường hợp đó toàn bộ cache
+	 * đã bị xóa rồi.
 	 */
 	if ( $grouped_options['on'] ) {
 		wp_cache_delete_multiple( $grouped_options['on'], 'options' );
@@ -505,22 +505,22 @@ function wp_set_option_autoload_values( array $options ) {
 }
 
 /**
- * Sets the autoload value for multiple options in the database.
+ * Thiết lập giá trị autoload cho nhiều tùy chọn trong cơ sở dữ liệu.
  *
- * This is a wrapper for {@see wp_set_option_autoload_values()}, which can be used to set different autoload values for
- * each option at once.
+ * Đây là wrapper cho {@see wp_set_option_autoload_values()}, có thể được dùng để thiết lập các giá trị autoload khác nhau cho
+ * mỗi tùy chọn cùng lúc.
  *
  * @since 6.4.0
- * @since 6.7.0 The autoload values 'yes' and 'no' are deprecated.
+ * @since 6.7.0 Các giá trị autoload 'yes' và 'no' đã bị deprecated.
  *
  * @see wp_set_option_autoload_values()
  *
- * @param string[] $options  List of option names. Expected to not be SQL-escaped.
- * @param bool     $autoload Autoload value to control whether to load the options when WordPress starts up.
- *                           For backward compatibility 'yes' and 'no' are also accepted, though using these values is
- *                           deprecated.
- * @return array Associative array of all provided $options as keys and boolean values for whether their autoload value
- *               was updated.
+ * @param string[] $options  Danh sách tên tùy chọn. Không cần SQL-escape.
+ * @param bool     $autoload Giá trị autoload để kiểm soát việc tải tùy chọn khi WordPress khởi động.
+ *                           Để tương thích ngược, 'yes' và 'no' cũng được chấp nhận, mặc dù việc sử dụng các giá trị này
+ *                           đã bị deprecated.
+ * @return array Mảng kết hợp của tất cả $options được cung cấp làm key và giá trị boolean cho biết giá trị autoload
+ *               có được cập nhật hay không.
  */
 function wp_set_options_autoload( array $options, $autoload ) {
 	return wp_set_option_autoload_values(
@@ -529,21 +529,21 @@ function wp_set_options_autoload( array $options, $autoload ) {
 }
 
 /**
- * Sets the autoload value for an option in the database.
+ * Thiết lập giá trị autoload cho một tùy chọn trong cơ sở dữ liệu.
  *
- * This is a wrapper for {@see wp_set_option_autoload_values()}, which can be used to set the autoload value for
- * multiple options at once.
+ * Đây là wrapper cho {@see wp_set_option_autoload_values()}, có thể được dùng để thiết lập giá trị autoload cho
+ * nhiều tùy chọn cùng lúc.
  *
  * @since 6.4.0
- * @since 6.7.0 The autoload values 'yes' and 'no' are deprecated.
+ * @since 6.7.0 Các giá trị autoload 'yes' và 'no' đã bị deprecated.
  *
  * @see wp_set_option_autoload_values()
  *
- * @param string $option   Name of the option. Expected to not be SQL-escaped.
- * @param bool   $autoload Autoload value to control whether to load the option when WordPress starts up.
- *                         For backward compatibility 'yes' and 'no' are also accepted, though using these values is
- *                         deprecated.
- * @return bool True if the autoload value was modified, false otherwise.
+ * @param string $option   Tên tùy chọn. Không cần SQL-escape.
+ * @param bool   $autoload Giá trị autoload để kiểm soát việc tải tùy chọn khi WordPress khởi động.
+ *                         Để tương thích ngược, 'yes' và 'no' cũng được chấp nhận, mặc dù việc sử dụng các giá trị này
+ *                         đã bị deprecated.
+ * @return bool True nếu giá trị autoload đã được thay đổi, false nếu không.
  */
 function wp_set_option_autoload( $option, $autoload ) {
 	$result = wp_set_option_autoload_values( array( $option => $autoload ) );
@@ -554,14 +554,14 @@ function wp_set_option_autoload( $option, $autoload ) {
 }
 
 /**
- * Protects WordPress special option from being modified.
+ * Bảo vệ tùy chọn đặc biệt của WordPress khỏi bị chỉnh sửa.
  *
- * Will die if $option is in protected list. Protected options are 'alloptions'
- * and 'notoptions' options.
+ * Sẽ dừng chương trình nếu $option nằm trong danh sách được bảo vệ. Các tùy chọn được bảo vệ
+ * là 'alloptions' và 'notoptions'.
  *
  * @since 2.2.0
  *
- * @param string $option Option name.
+ * @param string $option Tên tùy chọn.
  */
 function wp_protect_special_option( $option ) {
 	if ( 'alloptions' === $option || 'notoptions' === $option ) {
@@ -576,41 +576,41 @@ function wp_protect_special_option( $option ) {
 }
 
 /**
- * Prints option value after sanitizing for forms.
+ * In giá trị tùy chọn sau khi làm sạch để dùng trong form.
  *
  * @since 1.5.0
  *
- * @param string $option Option name.
+ * @param string $option Tên tùy chọn.
  */
 function form_option( $option ) {
 	echo esc_attr( get_option( $option ) );
 }
 
 /**
- * Loads and caches all autoloaded options, if available or all options.
+ * Tải và lưu cache tất cả tùy chọn tự động tải, hoặc tất cả tùy chọn nếu có.
  *
  * @since 2.2.0
- * @since 5.3.1 The `$force_cache` parameter was added.
+ * @since 5.3.1 Tham số `$force_cache` được thêm vào.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param bool $force_cache Optional. Whether to force an update of the local cache
- *                          from the persistent cache. Default false.
- * @return array List of all options.
+ * @param bool $force_cache Tùy chọn. Có buộc cập nhật cache cục bộ
+ *                          từ cache persistent hay không. Mặc định false.
+ * @return array Danh sách tất cả tùy chọn.
  */
 function wp_load_alloptions( $force_cache = false ) {
 	global $wpdb;
 
 	/**
-	 * Filters the array of alloptions before it is populated.
+	 * Lọc mảng alloptions trước khi nó được điền dữ liệu.
 	 *
-	 * Returning an array from the filter will effectively short circuit
-	 * wp_load_alloptions(), returning that value instead.
+	 * Trả về mảng từ bộ lọc sẽ bỏ qua hàm
+	 * wp_load_alloptions(), trả về giá trị đó thay thế.
 	 *
 	 * @since 6.2.0
 	 *
-	 * @param array|null $alloptions  An array of alloptions. Default null.
-	 * @param bool       $force_cache Whether to force an update of the local cache from the persistent cache. Default false.
+	 * @param array|null $alloptions  Mảng alloptions. Mặc định null.
+	 * @param bool       $force_cache Có buộc cập nhật cache cục bộ từ cache persistent hay không. Mặc định false.
 	 */
 	$alloptions = apply_filters( 'pre_wp_load_alloptions', null, $force_cache );
 	if ( is_array( $alloptions ) ) {
@@ -639,11 +639,11 @@ function wp_load_alloptions( $force_cache = false ) {
 
 		if ( ! wp_installing() || ! is_multisite() ) {
 			/**
-			 * Filters all options before caching them.
+			 * Lọc tất cả tùy chọn trước khi lưu cache.
 			 *
 			 * @since 4.9.0
 			 *
-			 * @param array $alloptions Array with all options.
+			 * @param array $alloptions Mảng chứa tất cả tùy chọn.
 			 */
 			$alloptions = apply_filters( 'pre_cache_alloptions', $alloptions );
 
@@ -652,45 +652,45 @@ function wp_load_alloptions( $force_cache = false ) {
 	}
 
 	/**
-	 * Filters all options after retrieving them.
+	 * Lọc tất cả tùy chọn sau khi lấy ra.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param array $alloptions Array with all options.
+	 * @param array $alloptions Mảng chứa tất cả tùy chọn.
 	 */
 	return apply_filters( 'alloptions', $alloptions );
 }
 
 /**
- * Primes specific network options for the current network into the cache with a single database query.
+ * Nạp sẵn các tùy chọn mạng cụ thể cho mạng hiện tại vào cache bằng một truy vấn cơ sở dữ liệu duy nhất.
  *
- * Only network options that do not already exist in cache will be loaded.
+ * Chỉ những tùy chọn mạng chưa tồn tại trong cache mới được tải.
  *
- * If site is not multisite, then call wp_prime_option_caches().
+ * Nếu site không phải multisite, sẽ gọi wp_prime_option_caches().
  *
  * @since 6.6.0
  *
  * @see wp_prime_network_option_caches()
  *
- * @param string[] $options An array of option names to be loaded.
+ * @param string[] $options Mảng các tên tùy chọn cần tải.
  */
 function wp_prime_site_option_caches( array $options ) {
 	wp_prime_network_option_caches( null, $options );
 }
 
 /**
- * Primes specific network options into the cache with a single database query.
+ * Nạp sẵn các tùy chọn mạng cụ thể vào cache bằng một truy vấn cơ sở dữ liệu duy nhất.
  *
- * Only network options that do not already exist in cache will be loaded.
+ * Chỉ những tùy chọn mạng chưa tồn tại trong cache mới được tải.
  *
- * If site is not multisite, then call wp_prime_option_caches().
+ * Nếu site không phải multisite, sẽ gọi wp_prime_option_caches().
  *
  * @since 6.6.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|null $network_id ID of the network. Can be null to default to the current network ID.
- * @param string[] $options    An array of option names to be loaded.
+ * @param int|null $network_id ID của mạng. Có thể là null để mặc định sử dụng ID mạng hiện tại.
+ * @param string[] $options    Mảng các tên tùy chọn cần tải.
  */
 function wp_prime_network_option_caches( $network_id, array $options ) {
 	global $wpdb;
@@ -710,7 +710,7 @@ function wp_prime_network_option_caches( $network_id, array $options ) {
 
 	$network_id = (int) $network_id;
 
-	// Fallback to the current network if a network ID is not specified.
+	// Dự phòng sử dụng mạng hiện tại nếu không chỉ định ID mạng.
 	if ( ! $network_id ) {
 		$network_id = get_current_network_id();
 	}
@@ -730,7 +730,7 @@ function wp_prime_network_option_caches( $network_id, array $options ) {
 		$notoptions = array();
 	}
 
-	// Filter options that are not in the cache.
+	// Lọc các tùy chọn không có trong cache.
 	$options_to_prime = array();
 	foreach ( $cache_keys as $option => $cache_key ) {
 		if (
@@ -741,7 +741,7 @@ function wp_prime_network_option_caches( $network_id, array $options ) {
 		}
 	}
 
-	// Bail early if there are no options to be loaded.
+	// Thoát sớm nếu không có tùy chọn nào cần tải.
 	if ( empty( $options_to_prime ) ) {
 		return;
 	}
@@ -768,14 +768,14 @@ function wp_prime_network_option_caches( $network_id, array $options ) {
 		$options_found[]    = $key;
 	}
 	wp_cache_set_multiple( $data, $cache_group );
-	// If all options were found, no need to update `notoptions` cache.
+	// Nếu tất cả tùy chọn đã được tìm thấy, không cần cập nhật cache `notoptions`.
 	if ( count( $options_found ) === count( $options_to_prime ) ) {
 		return;
 	}
 
 	$options_not_found = array_diff( $options_to_prime, $options_found );
 
-	// Add the options that were not found to the cache.
+	// Thêm các tùy chọn không tìm thấy vào cache.
 	$update_notoptions = false;
 	foreach ( $options_not_found as $option_name ) {
 		if ( ! isset( $notoptions[ $option_name ] ) ) {
@@ -784,20 +784,20 @@ function wp_prime_network_option_caches( $network_id, array $options ) {
 		}
 	}
 
-	// Only update the cache if it was modified.
+	// Chỉ cập nhật cache nếu nó đã được thay đổi.
 	if ( $update_notoptions ) {
 		wp_cache_set( $notoptions_key, $notoptions, $cache_group );
 	}
 }
 
 /**
- * Loads and primes caches of certain often requested network options if is_multisite().
+ * Tải và nạp sẵn cache cho một số tùy chọn mạng thường xuyên được yêu cầu nếu là is_multisite().
  *
  * @since 3.0.0
- * @since 6.3.0 Also prime caches for network options when persistent object cache is enabled.
- * @since 6.6.0 Uses wp_prime_network_option_caches().
+ * @since 6.3.0 Cũng nạp sẵn cache cho tùy chọn mạng khi object cache persistent được bật.
+ * @since 6.6.0 Sử dụng wp_prime_network_option_caches().
  *
- * @param int $network_id Optional. Network ID of network for which to prime network options cache. Defaults to current network.
+ * @param int $network_id Tùy chọn. ID mạng cần nạp sẵn cache tùy chọn. Mặc định là mạng hiện tại.
  */
 function wp_load_core_site_options( $network_id = null ) {
 	if ( ! is_multisite() || wp_installing() ) {
@@ -809,40 +809,40 @@ function wp_load_core_site_options( $network_id = null ) {
 }
 
 /**
- * Updates the value of an option that was already added.
+ * Cập nhật giá trị của một tùy chọn đã được thêm trước đó.
  *
- * You do not need to serialize values. If the value needs to be serialized,
- * then it will be serialized before it is inserted into the database.
- * Remember, resources cannot be serialized or added as an option.
+ * Bạn không cần serialize giá trị. Nếu giá trị cần được serialize,
+ * nó sẽ được serialize trước khi chèn vào cơ sở dữ liệu.
+ * Lưu ý, resource không thể serialize hoặc thêm làm tùy chọn.
  *
- * If the option does not exist, it will be created.
+ * Nếu tùy chọn không tồn tại, nó sẽ được tạo mới.
 
- * This function is designed to work with or without a logged-in user. In terms of security,
- * plugin developers should check the current user's capabilities before updating any options.
+ * Hàm này được thiết kế để hoạt động có hoặc không có người dùng đã đăng nhập. Về mặt bảo mật,
+ * các nhà phát triển plugin nên kiểm tra quyền hạn của người dùng hiện tại trước khi cập nhật bất kỳ tùy chọn nào.
  *
  * @since 1.0.0
- * @since 4.2.0 The `$autoload` parameter was added.
- * @since 6.7.0 The autoload values 'yes' and 'no' are deprecated.
+ * @since 4.2.0 Tham số `$autoload` được thêm vào.
+ * @since 6.7.0 Các giá trị autoload 'yes' và 'no' đã bị deprecated.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string    $option   Name of the option to update. Expected to not be SQL-escaped.
- * @param mixed     $value    Option value. Must be serializable if non-scalar. Expected to not be SQL-escaped.
- * @param bool|null $autoload Optional. Whether to load the option when WordPress starts up.
- *                            Accepts a boolean, or `null` to stick with the initial value or, if no initial value is
- *                            set, to leave the decision up to default heuristics in WordPress.
- *                            For existing options, `$autoload` can only be updated using `update_option()` if `$value`
- *                            is also changed.
- *                            For backward compatibility 'yes' and 'no' are also accepted, though using these values is
- *                            deprecated.
- *                            Autoloading too many options can lead to performance problems, especially if the
- *                            options are not frequently used. For options which are accessed across several places
- *                            in the frontend, it is recommended to autoload them, by using true.
- *                            For options which are accessed only on few specific URLs, it is recommended
- *                            to not autoload them, by using false.
- *                            For non-existent options, the default is null, which means WordPress will determine
- *                            the autoload value.
- * @return bool True if the value was updated, false otherwise.
+ * @param string    $option   Tên tùy chọn cần cập nhật. Không cần SQL-escape.
+ * @param mixed     $value    Giá trị tùy chọn. Phải serializable nếu không phải scalar. Không cần SQL-escape.
+ * @param bool|null $autoload Tùy chọn. Có tải tùy chọn khi WordPress khởi động hay không.
+ *                            Chấp nhận boolean, hoặc `null` để giữ nguyên giá trị ban đầu hoặc, nếu không có giá trị ban đầu,
+ *                            để WordPress quyết định dựa trên heuristic mặc định.
+ *                            Với các tùy chọn hiện có, `$autoload` chỉ có thể cập nhật qua `update_option()` nếu `$value`
+ *                            cũng được thay đổi.
+ *                            Để tương thích ngược, 'yes' và 'no' cũng được chấp nhận, mặc dù việc sử dụng các giá trị này
+ *                            đã bị deprecated.
+ *                            Tự động tải quá nhiều tùy chọn có thể dẫn đến vấn đề hiệu suất, đặc biệt nếu
+ *                            các tùy chọn không được sử dụng thường xuyên. Với các tùy chọn được truy cập ở nhiều nơi
+ *                            trên frontend, nên tự động tải chúng bằng cách sử dụng true.
+ *                            Với các tùy chọn chỉ được truy cập trên một vài URL cụ thể, nên
+ *                            không tự động tải chúng bằng cách sử dụng false.
+ *                            Với tùy chọn không tồn tại, mặc định là null, nghĩa là WordPress sẽ xác định
+ *                            giá trị autoload.
+ * @return bool True nếu giá trị đã được cập nhật, false nếu không.
  */
 function update_option( $option, $value, $autoload = null ) {
 	global $wpdb;
@@ -856,8 +856,8 @@ function update_option( $option, $value, $autoload = null ) {
 	}
 
 	/*
-	 * Until a proper _deprecated_option() function can be introduced,
-	 * redirect requests to deprecated keys to the new, correct ones.
+	 * Cho đến khi có hàm _deprecated_option() phù hợp,
+	 * chuyển hướng các yêu cầu đến khóa đã lỗi thời sang khóa mới, đúng.
 	 */
 	$deprecated_keys = array(
 		'blacklist_keys'    => 'disallowed_keys',
@@ -869,7 +869,7 @@ function update_option( $option, $value, $autoload = null ) {
 			__FUNCTION__,
 			'5.5.0',
 			sprintf(
-				/* translators: 1: Deprecated option key, 2: New option key. */
+				/* translators: 1: Khóa tùy chọn đã lỗi thời, 2: Khóa tùy chọn mới. */
 				__( 'The "%1$s" option key has been renamed to "%2$s".' ),
 				$option,
 				$deprecated_keys[ $option ]
@@ -888,38 +888,38 @@ function update_option( $option, $value, $autoload = null ) {
 	$old_value = get_option( $option );
 
 	/**
-	 * Filters a specific option before its value is (maybe) serialized and updated.
+	 * Lọc một tùy chọn cụ thể trước khi giá trị của nó được (có thể) serialize và cập nhật.
 	 *
-	 * The dynamic portion of the hook name, `$option`, refers to the option name.
+	 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 	 *
 	 * @since 2.6.0
-	 * @since 4.4.0 The `$option` parameter was added.
+	 * @since 4.4.0 Tham số `$option` được thêm vào.
 	 *
-	 * @param mixed  $value     The new, unserialized option value.
-	 * @param mixed  $old_value The old option value.
-	 * @param string $option    Option name.
+	 * @param mixed  $value     Giá trị tùy chọn mới, chưa serialize.
+	 * @param mixed  $old_value Giá trị tùy chọn cũ.
+	 * @param string $option    Tên tùy chọn.
 	 */
 	$value = apply_filters( "pre_update_option_{$option}", $value, $old_value, $option );
 
 	/**
-	 * Filters an option before its value is (maybe) serialized and updated.
+	 * Lọc một tùy chọn trước khi giá trị của nó được (có thể) serialize và cập nhật.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param mixed  $value     The new, unserialized option value.
-	 * @param string $option    Name of the option.
-	 * @param mixed  $old_value The old option value.
+	 * @param mixed  $value     Giá trị tùy chọn mới, chưa serialize.
+	 * @param string $option    Tên tùy chọn.
+	 * @param mixed  $old_value Giá trị tùy chọn cũ.
 	 */
 	$value = apply_filters( 'pre_update_option', $value, $option, $old_value );
 
 	/*
-	 * If the new and old values are the same, no need to update.
+	 * Nếu giá trị mới và cũ giống nhau, không cần cập nhật.
 	 *
-	 * Unserialized values will be adequate in most cases. If the unserialized
-	 * data differs, the (maybe) serialized data is checked to avoid
-	 * unnecessary database calls for otherwise identical object instances.
+	 * Các giá trị chưa serialize sẽ đủ trong hầu hết trường hợp. Nếu dữ liệu chưa serialize
+	 * khác nhau, dữ liệu (có thể) đã serialize sẽ được kiểm tra để tránh
+	 * các truy vấn cơ sở dữ liệu không cần thiết cho các instance đối tượng giống hệt nhau.
 	 *
-	 * See https://core.trac.wordpress.org/ticket/38903
+	 * Xem https://core.trac.wordpress.org/ticket/38903
 	 */
 	if ( $value === $old_value || maybe_serialize( $value ) === maybe_serialize( $old_value ) ) {
 		return false;
@@ -933,13 +933,13 @@ function update_option( $option, $value, $autoload = null ) {
 	$serialized_value = maybe_serialize( $value );
 
 	/**
-	 * Fires immediately before an option value is updated.
+	 * Kích hoạt ngay trước khi giá trị tùy chọn được cập nhật.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $option    Name of the option to update.
-	 * @param mixed  $old_value The old option value.
-	 * @param mixed  $value     The new option value.
+	 * @param string $option    Tên tùy chọn cần cập nhật.
+	 * @param mixed  $old_value Giá trị tùy chọn cũ.
+	 * @param mixed  $value     Giá trị tùy chọn mới.
 	 */
 	do_action( 'update_option', $option, $old_value, $value );
 
@@ -950,7 +950,7 @@ function update_option( $option, $value, $autoload = null ) {
 	if ( null !== $autoload ) {
 		$update_args['autoload'] = wp_determine_option_autoload_value( $option, $value, $serialized_value, $autoload );
 	} else {
-		// Retrieve the current autoload value to reevaluate it in case it was set automatically.
+		// Lấy giá trị autoload hiện tại để đánh giá lại trong trường hợp nó được thiết lập tự động.
 		$raw_autoload = $wpdb->get_var( $wpdb->prepare( "SELECT autoload FROM $wpdb->options WHERE option_name = %s LIMIT 1", $option ) );
 		$allow_values = array( 'auto-on', 'auto-off', 'auto' );
 		if ( in_array( $raw_autoload, $allow_values, true ) ) {
@@ -975,7 +975,7 @@ function update_option( $option, $value, $autoload = null ) {
 
 	if ( ! wp_installing() ) {
 		if ( ! isset( $update_args['autoload'] ) ) {
-			// Update the cached value based on where it is currently cached.
+			// Cập nhật giá trị cache dựa trên vị trí nó hiện đang được cache.
 			$alloptions = wp_load_alloptions( true );
 
 			if ( isset( $alloptions[ $option ] ) ) {
@@ -985,7 +985,7 @@ function update_option( $option, $value, $autoload = null ) {
 				wp_cache_set( $option, $serialized_value, 'options' );
 			}
 		} elseif ( in_array( $update_args['autoload'], wp_autoload_values_to_autoload(), true ) ) {
-			// Delete the individual cache, then set in alloptions cache.
+			// Xóa cache riêng lẻ, sau đó thiết lập trong cache alloptions.
 			wp_cache_delete( $option, 'options' );
 
 			$alloptions = wp_load_alloptions( true );
@@ -993,7 +993,7 @@ function update_option( $option, $value, $autoload = null ) {
 			$alloptions[ $option ] = $serialized_value;
 			wp_cache_set( 'alloptions', $alloptions, 'options' );
 		} else {
-			// Delete the alloptions cache, then set the individual cache.
+			// Xóa cache alloptions, sau đó thiết lập cache riêng lẻ.
 			$alloptions = wp_load_alloptions( true );
 
 			if ( isset( $alloptions[ $option ] ) ) {
@@ -1006,27 +1006,27 @@ function update_option( $option, $value, $autoload = null ) {
 	}
 
 	/**
-	 * Fires after the value of a specific option has been successfully updated.
+	 * Kích hoạt sau khi giá trị của một tùy chọn cụ thể đã được cập nhật thành công.
 	 *
-	 * The dynamic portion of the hook name, `$option`, refers to the option name.
+	 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 	 *
 	 * @since 2.0.1
-	 * @since 4.4.0 The `$option` parameter was added.
+	 * @since 4.4.0 Tham số `$option` được thêm vào.
 	 *
-	 * @param mixed  $old_value The old option value.
-	 * @param mixed  $value     The new option value.
-	 * @param string $option    Option name.
+	 * @param mixed  $old_value Giá trị tùy chọn cũ.
+	 * @param mixed  $value     Giá trị tùy chọn mới.
+	 * @param string $option    Tên tùy chọn.
 	 */
 	do_action( "update_option_{$option}", $old_value, $value, $option );
 
 	/**
-	 * Fires after the value of an option has been successfully updated.
+	 * Kích hoạt sau khi giá trị của một tùy chọn đã được cập nhật thành công.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $option    Name of the updated option.
-	 * @param mixed  $old_value The old option value.
-	 * @param mixed  $value     The new option value.
+	 * @param string $option    Tên tùy chọn đã cập nhật.
+	 * @param mixed  $old_value Giá trị tùy chọn cũ.
+	 * @param mixed  $value     Giá trị tùy chọn mới.
 	 */
 	do_action( 'updated_option', $option, $old_value, $value );
 
@@ -1034,38 +1034,38 @@ function update_option( $option, $value, $autoload = null ) {
 }
 
 /**
- * Adds a new option.
+ * Thêm một tùy chọn mới.
  *
- * You do not need to serialize values. If the value needs to be serialized,
- * then it will be serialized before it is inserted into the database.
- * Remember, resources cannot be serialized or added as an option.
+ * Bạn không cần serialize giá trị. Nếu giá trị cần được serialize,
+ * nó sẽ được serialize trước khi chèn vào cơ sở dữ liệu.
+ * Lưu ý, resource không thể serialize hoặc thêm làm tùy chọn.
  *
- * You can create options without values and then update the values later.
- * Existing options will not be updated and checks are performed to ensure that you
- * aren't adding a protected WordPress option. Care should be taken to not name
- * options the same as the ones which are protected.
+ * Bạn có thể tạo tùy chọn mà không có giá trị và cập nhật giá trị sau.
+ * Các tùy chọn hiện có sẽ không bị cập nhật và các kiểm tra được thực hiện để đảm bảo rằng bạn
+ * không thêm tùy chọn WordPress được bảo vệ. Cần cẩn thận không đặt tên
+ * tùy chọn trùng với những tùy chọn được bảo vệ.
  *
  * @since 1.0.0
- * @since 6.6.0 The $autoload parameter's default value was changed to null.
- * @since 6.7.0 The autoload values 'yes' and 'no' are deprecated.
+ * @since 6.6.0 Giá trị mặc định của tham số $autoload được thay đổi thành null.
+ * @since 6.7.0 Các giá trị autoload 'yes' và 'no' đã bị deprecated.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string    $option     Name of the option to add. Expected to not be SQL-escaped.
- * @param mixed     $value      Optional. Option value. Must be serializable if non-scalar.
- *                              Expected to not be SQL-escaped.
- * @param string    $deprecated Optional. Description. Not used anymore.
- * @param bool|null $autoload   Optional. Whether to load the option when WordPress starts up.
- *                              Accepts a boolean, or `null` to leave the decision up to default heuristics in
- *                              WordPress. For backward compatibility 'yes' and 'no' are also accepted, though using
- *                              these values is deprecated.
- *                              Autoloading too many options can lead to performance problems, especially if the
- *                              options are not frequently used. For options which are accessed across several places
- *                              in the frontend, it is recommended to autoload them, by using true.
- *                              For options which are accessed only on few specific URLs, it is recommended
- *                              to not autoload them, by using false.
- *                              Default is null, which means WordPress will determine the autoload value.
- * @return bool True if the option was added, false otherwise.
+ * @param string    $option     Tên tùy chọn cần thêm. Không cần SQL-escape.
+ * @param mixed     $value      Tùy chọn. Giá trị tùy chọn. Phải serializable nếu không phải scalar.
+ *                              Không cần SQL-escape.
+ * @param string    $deprecated Tùy chọn. Mô tả. Không còn được sử dụng.
+ * @param bool|null $autoload   Tùy chọn. Có tải tùy chọn khi WordPress khởi động hay không.
+ *                              Chấp nhận boolean, hoặc `null` để WordPress quyết định dựa trên heuristic mặc định.
+ *                              Để tương thích ngược, 'yes' và 'no' cũng được chấp nhận, mặc dù việc sử dụng
+ *                              các giá trị này đã bị deprecated.
+ *                              Tự động tải quá nhiều tùy chọn có thể dẫn đến vấn đề hiệu suất, đặc biệt nếu
+ *                              các tùy chọn không được sử dụng thường xuyên. Với các tùy chọn được truy cập ở nhiều nơi
+ *                              trên frontend, nên tự động tải chúng bằng cách sử dụng true.
+ *                              Với các tùy chọn chỉ được truy cập trên một vài URL cụ thể, nên
+ *                              không tự động tải chúng bằng cách sử dụng false.
+ *                              Mặc định là null, nghĩa là WordPress sẽ xác định giá trị autoload.
+ * @return bool True nếu tùy chọn đã được thêm, false nếu không.
  */
 function add_option( $option, $value = '', $deprecated = '', $autoload = null ) {
 	global $wpdb;
@@ -1083,8 +1083,8 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = null ) 
 	}
 
 	/*
-	 * Until a proper _deprecated_option() function can be introduced,
-	 * redirect requests to deprecated keys to the new, correct ones.
+	 * Cho đến khi có hàm _deprecated_option() phù hợp,
+	 * chuyển hướng các yêu cầu đến khóa đã lỗi thời sang khóa mới, đúng.
 	 */
 	$deprecated_keys = array(
 		'blacklist_keys'    => 'disallowed_keys',
@@ -1096,7 +1096,7 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = null ) 
 			__FUNCTION__,
 			'5.5.0',
 			sprintf(
-				/* translators: 1: Deprecated option key, 2: New option key. */
+				/* translators: 1: Khóa tùy chọn đã lỗi thời, 2: Khóa tùy chọn mới. */
 				__( 'The "%1$s" option key has been renamed to "%2$s".' ),
 				$option,
 				$deprecated_keys[ $option ]
@@ -1114,8 +1114,8 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = null ) 
 	$value = sanitize_option( $option, $value );
 
 	/*
-	 * Make sure the option doesn't already exist.
-	 * We can check the 'notoptions' cache before we ask for a DB query.
+	 * Đảm bảo tùy chọn chưa tồn tại.
+	 * Chúng ta có thể kiểm tra cache 'notoptions' trước khi thực hiện truy vấn DB.
 	 */
 	$notoptions = wp_cache_get( 'notoptions', 'options' );
 
@@ -1131,12 +1131,12 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = null ) 
 	$autoload = wp_determine_option_autoload_value( $option, $value, $serialized_value, $autoload );
 
 	/**
-	 * Fires before an option is added.
+	 * Kích hoạt trước khi một tùy chọn được thêm.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $option Name of the option to add.
-	 * @param mixed  $value  Value of the option.
+	 * @param string $option Tên tùy chọn cần thêm.
+	 * @param mixed  $value  Giá trị của tùy chọn.
 	 */
 	do_action( 'add_option', $option, $value );
 
@@ -1155,8 +1155,8 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = null ) 
 		}
 	}
 
-	// This option exists now.
-	$notoptions = wp_cache_get( 'notoptions', 'options' ); // Yes, again... we need it to be fresh.
+	// Tùy chọn này đã tồn tại.
+	$notoptions = wp_cache_get( 'notoptions', 'options' ); // Vâng, lại lần nữa... chúng ta cần nó được cập nhật mới.
 
 	if ( is_array( $notoptions ) && isset( $notoptions[ $option ] ) ) {
 		unset( $notoptions[ $option ] );
@@ -1164,25 +1164,25 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = null ) 
 	}
 
 	/**
-	 * Fires after a specific option has been added.
+	 * Kích hoạt sau khi một tùy chọn cụ thể đã được thêm.
 	 *
-	 * The dynamic portion of the hook name, `$option`, refers to the option name.
+	 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 	 *
-	 * @since 2.5.0 As `add_option_{$name}`
+	 * @since 2.5.0 Với tên `add_option_{$name}`
 	 * @since 3.0.0
 	 *
-	 * @param string $option Name of the option to add.
-	 * @param mixed  $value  Value of the option.
+	 * @param string $option Tên tùy chọn cần thêm.
+	 * @param mixed  $value  Giá trị của tùy chọn.
 	 */
 	do_action( "add_option_{$option}", $option, $value );
 
 	/**
-	 * Fires after an option has been added.
+	 * Kích hoạt sau khi một tùy chọn đã được thêm.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $option Name of the added option.
-	 * @param mixed  $value  Value of the option.
+	 * @param string $option Tên tùy chọn đã thêm.
+	 * @param mixed  $value  Giá trị của tùy chọn.
 	 */
 	do_action( 'added_option', $option, $value );
 
@@ -1190,14 +1190,14 @@ function add_option( $option, $value = '', $deprecated = '', $autoload = null ) 
 }
 
 /**
- * Removes an option by name. Prevents removal of protected WordPress options.
+ * Xóa một tùy chọn theo tên. Ngăn không cho xóa các tùy chọn WordPress được bảo vệ.
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $option Name of the option to delete. Expected to not be SQL-escaped.
- * @return bool True if the option was deleted, false otherwise.
+ * @param string $option Tên tùy chọn cần xóa. Không cần SQL-escape.
+ * @return bool True nếu tùy chọn đã được xóa, false nếu không.
  */
 function delete_option( $option ) {
 	global $wpdb;
@@ -1212,18 +1212,18 @@ function delete_option( $option ) {
 
 	wp_protect_special_option( $option );
 
-	// Get the ID, if no ID then return.
+	// Lấy ID, nếu không có ID thì trả về.
 	$row = $wpdb->get_row( $wpdb->prepare( "SELECT autoload FROM $wpdb->options WHERE option_name = %s", $option ) );
 	if ( is_null( $row ) ) {
 		return false;
 	}
 
 	/**
-	 * Fires immediately before an option is deleted.
+	 * Kích hoạt ngay trước khi một tùy chọn bị xóa.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $option Name of the option to delete.
+	 * @param string $option Tên tùy chọn cần xóa.
 	 */
 	do_action( 'delete_option', $option );
 
@@ -1254,22 +1254,22 @@ function delete_option( $option ) {
 	if ( $result ) {
 
 		/**
-		 * Fires after a specific option has been deleted.
+		 * Kích hoạt sau khi một tùy chọn cụ thể đã bị xóa.
 		 *
-		 * The dynamic portion of the hook name, `$option`, refers to the option name.
+		 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $option Name of the deleted option.
+		 * @param string $option Tên tùy chọn đã bị xóa.
 		 */
 		do_action( "delete_option_{$option}", $option );
 
 		/**
-		 * Fires after an option has been deleted.
+		 * Kích hoạt sau khi một tùy chọn đã bị xóa.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param string $option Name of the deleted option.
+		 * @param string $option Tên tùy chọn đã bị xóa.
 		 */
 		do_action( 'deleted_option', $option );
 
@@ -1280,33 +1280,33 @@ function delete_option( $option ) {
 }
 
 /**
- *  Determines the appropriate autoload value for an option based on input.
+ * Xác định giá trị autoload phù hợp cho một tùy chọn dựa trên đầu vào.
  *
- *  This function checks the provided autoload value and returns a standardized value
- *  ('on', 'off', 'auto-on', 'auto-off', or 'auto') based on specific conditions.
+ * Hàm này kiểm tra giá trị autoload được cung cấp và trả về giá trị đã được chuẩn hóa
+ * ('on', 'off', 'auto-on', 'auto-off', hoặc 'auto') dựa trên các điều kiện cụ thể.
  *
- * If no explicit autoload value is provided, the function will check for certain heuristics around the given option.
- * It will return `auto-on` to indicate autoloading, `auto-off` to indicate not autoloading, or `auto` if no clear
- * decision could be made.
+ * Nếu không có giá trị autoload rõ ràng được cung cấp, hàm sẽ kiểm tra các heuristic nhất định xung quanh tùy chọn đã cho.
+ * Nó sẽ trả về `auto-on` để chỉ ra tự động tải, `auto-off` để chỉ ra không tự động tải, hoặc `auto` nếu không thể
+ * đưa ra quyết định rõ ràng.
  *
  * @since 6.6.0
  * @access private
  *
- * @param string    $option           The name of the option.
- * @param mixed     $value            The value of the option to check its autoload value.
- * @param mixed     $serialized_value The serialized value of the option to check its autoload value.
- * @param bool|null $autoload         The autoload value to check.
- *                                    Accepts 'on'|true to enable or 'off'|false to disable, or
- *                                    'auto-on', 'auto-off', or 'auto' for internal purposes.
- *                                    Any other autoload value will be forced to either 'auto-on',
- *                                    'auto-off', or 'auto'.
- *                                    'yes' and 'no' are supported for backward compatibility.
- * @return string Returns the original $autoload value if explicit, or 'auto-on', 'auto-off',
- *                or 'auto' depending on default heuristics.
+ * @param string    $option           Tên tùy chọn.
+ * @param mixed     $value            Giá trị của tùy chọn để kiểm tra giá trị autoload.
+ * @param mixed     $serialized_value Giá trị đã serialize của tùy chọn để kiểm tra giá trị autoload.
+ * @param bool|null $autoload         Giá trị autoload cần kiểm tra.
+ *                                    Chấp nhận 'on'|true để bật hoặc 'off'|false để tắt, hoặc
+ *                                    'auto-on', 'auto-off', hoặc 'auto' cho mục đích nội bộ.
+ *                                    Bất kỳ giá trị autoload nào khác sẽ bị ép thành 'auto-on',
+ *                                    'auto-off', hoặc 'auto'.
+ *                                    'yes' và 'no' được hỗ trợ để tương thích ngược.
+ * @return string Trả về giá trị $autoload gốc nếu rõ ràng, hoặc 'auto-on', 'auto-off',
+ *                hoặc 'auto' tùy thuộc vào heuristic mặc định.
  */
 function wp_determine_option_autoload_value( $option, $value, $serialized_value, $autoload ) {
 
-	// Check if autoload is a boolean.
+	// Kiểm tra xem autoload có phải boolean không.
 	if ( is_bool( $autoload ) ) {
 		return $autoload ? 'on' : 'off';
 	}
@@ -1321,14 +1321,14 @@ function wp_determine_option_autoload_value( $option, $value, $serialized_value,
 	}
 
 	/**
-	 * Allows to determine the default autoload value for an option where no explicit value is passed.
+	 * Cho phép xác định giá trị autoload mặc định cho tùy chọn khi không có giá trị rõ ràng được truyền.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param bool|null $autoload The default autoload value to set. Returning true will be set as 'auto-on' in the
-	 *                            database, false will be set as 'auto-off', and null will be set as 'auto'.
-	 * @param string    $option   The passed option name.
-	 * @param mixed     $value    The passed option value to be saved.
+	 * @param bool|null $autoload Giá trị autoload mặc định cần thiết lập. Trả về true sẽ được lưu là 'auto-on' trong
+	 *                            cơ sở dữ liệu, false sẽ được lưu là 'auto-off', và null sẽ được lưu là 'auto'.
+	 * @param string    $option   Tên tùy chọn được truyền vào.
+	 * @param mixed     $value    Giá trị tùy chọn được truyền vào để lưu.
 	 */
 	$autoload = apply_filters( 'wp_default_autoload_value', null, $option, $value, $serialized_value );
 	if ( is_bool( $autoload ) ) {
@@ -1339,25 +1339,25 @@ function wp_determine_option_autoload_value( $option, $value, $serialized_value,
 }
 
 /**
- * Filters the default autoload value to disable autoloading if the option value is too large.
+ * Lọc giá trị autoload mặc định để tắt tự động tải nếu giá trị tùy chọn quá lớn.
  *
  * @since 6.6.0
  * @access private
  *
- * @param bool|null $autoload         The default autoload value to set.
- * @param string    $option           The passed option name.
- * @param mixed     $value            The passed option value to be saved.
- * @param mixed     $serialized_value The passed option value to be saved, in serialized form.
- * @return bool|null Potentially modified $default.
+ * @param bool|null $autoload         Giá trị autoload mặc định cần thiết lập.
+ * @param string    $option           Tên tùy chọn được truyền vào.
+ * @param mixed     $value            Giá trị tùy chọn được truyền vào để lưu.
+ * @param mixed     $serialized_value Giá trị tùy chọn được truyền vào để lưu, ở dạng đã serialize.
+ * @return bool|null Giá trị $default có thể đã được sửa đổi.
  */
 function wp_filter_default_autoload_value_via_option_size( $autoload, $option, $value, $serialized_value ) {
 	/**
-	 * Filters the maximum size of option value in bytes.
+	 * Lọc kích thước tối đa của giá trị tùy chọn tính bằng byte.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param int    $max_option_size The option-size threshold, in bytes. Default 150000.
-	 * @param string $option          The name of the option.
+	 * @param int    $max_option_size Ngưỡng kích thước tùy chọn, tính bằng byte. Mặc định 150000.
+	 * @param string $option          Tên tùy chọn.
 	 */
 	$max_option_size = (int) apply_filters( 'wp_max_autoloaded_option_size', 150000, $option );
 	$size            = ! empty( $serialized_value ) ? strlen( $serialized_value ) : 0;
@@ -1370,23 +1370,23 @@ function wp_filter_default_autoload_value_via_option_size( $autoload, $option, $
 }
 
 /**
- * Deletes a transient.
+ * Xóa một transient.
  *
  * @since 2.8.0
  *
- * @param string $transient Transient name. Expected to not be SQL-escaped.
- * @return bool True if the transient was deleted, false otherwise.
+ * @param string $transient Tên transient. Không cần SQL-escape.
+ * @return bool True nếu transient đã được xóa, false nếu không.
  */
 function delete_transient( $transient ) {
 
 	/**
-	 * Fires immediately before a specific transient is deleted.
+	 * Kích hoạt ngay trước khi một transient cụ thể bị xóa.
 	 *
-	 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+	 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $transient Transient name.
+	 * @param string $transient Tên transient.
 	 */
 	do_action( "delete_transient_{$transient}", $transient );
 
@@ -1405,11 +1405,11 @@ function delete_transient( $transient ) {
 	if ( $result ) {
 
 		/**
-		 * Fires after a transient is deleted.
+		 * Kích hoạt sau khi một transient bị xóa.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $transient Deleted transient name.
+		 * @param string $transient Tên transient đã bị xóa.
 		 */
 		do_action( 'deleted_transient', $transient );
 	}
@@ -1418,33 +1418,33 @@ function delete_transient( $transient ) {
 }
 
 /**
- * Retrieves the value of a transient.
+ * Lấy giá trị của một transient.
  *
- * If the transient does not exist, does not have a value, or has expired,
- * then the return value will be false.
+ * Nếu transient không tồn tại, không có giá trị, hoặc đã hết hạn,
+ * thì giá trị trả về sẽ là false.
  *
  * @since 2.8.0
  *
- * @param string $transient Transient name. Expected to not be SQL-escaped.
- * @return mixed Value of transient.
+ * @param string $transient Tên transient. Không cần SQL-escape.
+ * @return mixed Giá trị của transient.
  */
 function get_transient( $transient ) {
 
 	/**
-	 * Filters the value of an existing transient before it is retrieved.
+	 * Lọc giá trị của một transient hiện có trước khi nó được lấy ra.
 	 *
-	 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+	 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 	 *
-	 * Returning a value other than false from the filter will short-circuit retrieval
-	 * and return that value instead.
+	 * Trả về giá trị khác false từ bộ lọc sẽ bỏ qua việc truy xuất
+	 * và trả về giá trị đó thay thế.
 	 *
 	 * @since 2.8.0
-	 * @since 4.4.0 The `$transient` parameter was added
+	 * @since 4.4.0 Tham số `$transient` được thêm vào.
 	 *
-	 * @param mixed  $pre_transient The default value to return if the transient does not exist.
-	 *                              Any value other than false will short-circuit the retrieval
-	 *                              of the transient, and return that value.
-	 * @param string $transient     Transient name.
+	 * @param mixed  $pre_transient Giá trị mặc định trả về nếu transient không tồn tại.
+	 *                              Bất kỳ giá trị nào khác false sẽ bỏ qua việc truy xuất
+	 *                              transient và trả về giá trị đó.
+	 * @param string $transient     Tên transient.
 	 */
 	$pre = apply_filters( "pre_transient_{$transient}", false, $transient );
 
@@ -1457,7 +1457,7 @@ function get_transient( $transient ) {
 	} else {
 		$transient_option = '_transient_' . $transient;
 		if ( ! wp_installing() ) {
-			// If option is not in alloptions, it is not autoloaded and thus has a timeout.
+			// Nếu tùy chọn không có trong alloptions, nó không được tự động tải và do đó có thời gian hết hạn.
 			$alloptions = wp_load_alloptions();
 
 			if ( ! isset( $alloptions[ $transient_option ] ) ) {
@@ -1478,63 +1478,63 @@ function get_transient( $transient ) {
 	}
 
 	/**
-	 * Filters an existing transient's value.
+	 * Lọc giá trị của một transient hiện có.
 	 *
-	 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+	 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 	 *
 	 * @since 2.8.0
-	 * @since 4.4.0 The `$transient` parameter was added
+	 * @since 4.4.0 Tham số `$transient` được thêm vào.
 	 *
-	 * @param mixed  $value     Value of transient.
-	 * @param string $transient Transient name.
+	 * @param mixed  $value     Giá trị của transient.
+	 * @param string $transient Tên transient.
 	 */
 	return apply_filters( "transient_{$transient}", $value, $transient );
 }
 
 /**
- * Sets/updates the value of a transient.
+ * Thiết lập/cập nhật giá trị của một transient.
  *
- * You do not need to serialize values. If the value needs to be serialized,
- * then it will be serialized before it is set.
+ * Bạn không cần serialize giá trị. Nếu giá trị cần được serialize,
+ * nó sẽ được serialize trước khi thiết lập.
  *
  * @since 2.8.0
  *
- * @param string $transient  Transient name. Expected to not be SQL-escaped.
- *                           Must be 172 characters or fewer in length.
- * @param mixed  $value      Transient value. Must be serializable if non-scalar.
- *                           Expected to not be SQL-escaped.
- * @param int    $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
- * @return bool True if the value was set, false otherwise.
+ * @param string $transient  Tên transient. Không cần SQL-escape.
+ *                           Phải có 172 ký tự hoặc ít hơn.
+ * @param mixed  $value      Giá trị transient. Phải serializable nếu không phải scalar.
+ *                           Không cần SQL-escape.
+ * @param int    $expiration Tùy chọn. Thời gian cho đến khi hết hạn tính bằng giây. Mặc định 0 (không hết hạn).
+ * @return bool True nếu giá trị đã được thiết lập, false nếu không.
  */
 function set_transient( $transient, $value, $expiration = 0 ) {
 
 	$expiration = (int) $expiration;
 
 	/**
-	 * Filters a specific transient before its value is set.
+	 * Lọc một transient cụ thể trước khi giá trị của nó được thiết lập.
 	 *
-	 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+	 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 	 *
 	 * @since 3.0.0
-	 * @since 4.2.0 The `$expiration` parameter was added.
-	 * @since 4.4.0 The `$transient` parameter was added.
+	 * @since 4.2.0 Tham số `$expiration` được thêm vào.
+	 * @since 4.4.0 Tham số `$transient` được thêm vào.
 	 *
-	 * @param mixed  $value      New value of transient.
-	 * @param int    $expiration Time until expiration in seconds.
-	 * @param string $transient  Transient name.
+	 * @param mixed  $value      Giá trị mới của transient.
+	 * @param int    $expiration Thời gian cho đến khi hết hạn tính bằng giây.
+	 * @param string $transient  Tên transient.
 	 */
 	$value = apply_filters( "pre_set_transient_{$transient}", $value, $expiration, $transient );
 
 	/**
-	 * Filters the expiration for a transient before its value is set.
+	 * Lọc thời gian hết hạn cho một transient trước khi giá trị của nó được thiết lập.
 	 *
-	 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+	 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param int    $expiration Time until expiration in seconds. Use 0 for no expiration.
-	 * @param mixed  $value      New value of transient.
-	 * @param string $transient  Transient name.
+	 * @param int    $expiration Thời gian cho đến khi hết hạn tính bằng giây. Dùng 0 để không hết hạn.
+	 * @param mixed  $value      Giá trị mới của transient.
+	 * @param string $transient  Tên transient.
 	 */
 	$expiration = apply_filters( "expiration_of_transient_{$transient}", $expiration, $value, $transient );
 
@@ -1554,8 +1554,8 @@ function set_transient( $transient, $value, $expiration = 0 ) {
 			$result = add_option( $transient_option, $value, '', $autoload );
 		} else {
 			/*
-			 * If expiration is requested, but the transient has no timeout option,
-			 * delete, then re-create transient rather than update.
+			 * Nếu yêu cầu hết hạn, nhưng transient không có tùy chọn timeout,
+			 * xóa rồi tạo lại transient thay vì cập nhật.
 			 */
 			$update = true;
 
@@ -1579,41 +1579,41 @@ function set_transient( $transient, $value, $expiration = 0 ) {
 	if ( $result ) {
 
 		/**
-		 * Fires after the value for a specific transient has been set.
+		 * Kích hoạt sau khi giá trị của một transient cụ thể đã được thiết lập.
 		 *
-		 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+		 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 		 *
 		 * @since 3.0.0
-		 * @since 3.6.0 The `$value` and `$expiration` parameters were added.
-		 * @since 4.4.0 The `$transient` parameter was added.
+		 * @since 3.6.0 Tham số `$value` và `$expiration` được thêm vào.
+		 * @since 4.4.0 Tham số `$transient` được thêm vào.
 		 *
-		 * @param mixed  $value      Transient value.
-		 * @param int    $expiration Time until expiration in seconds.
-		 * @param string $transient  The name of the transient.
+		 * @param mixed  $value      Giá trị transient.
+		 * @param int    $expiration Thời gian cho đến khi hết hạn tính bằng giây.
+		 * @param string $transient  Tên transient.
 		 */
 		do_action( "set_transient_{$transient}", $value, $expiration, $transient );
 
 		/**
-		 * Fires after the value for a transient has been set.
+		 * Kích hoạt sau khi giá trị của một transient đã được thiết lập.
 		 *
 		 * @since 6.8.0
 		 *
-		 * @param string $transient  The name of the transient.
-		 * @param mixed  $value      Transient value.
-		 * @param int    $expiration Time until expiration in seconds.
+		 * @param string $transient  Tên transient.
+		 * @param mixed  $value      Giá trị transient.
+		 * @param int    $expiration Thời gian cho đến khi hết hạn tính bằng giây.
 		 */
 		do_action( 'set_transient', $transient, $value, $expiration );
 
 		/**
-		 * Fires after the transient is set.
+		 * Kích hoạt sau khi transient được thiết lập.
 		 *
 		 * @since 3.0.0
-		 * @since 3.6.0 The `$value` and `$expiration` parameters were added.
-		 * @deprecated 6.8.0 Use {@see 'set_transient'} instead.
+		 * @since 3.6.0 Tham số `$value` và `$expiration` được thêm vào.
+		 * @deprecated 6.8.0 Sử dụng {@see 'set_transient'} thay thế.
 		 *
-		 * @param string $transient  The name of the transient.
-		 * @param mixed  $value      Transient value.
-		 * @param int    $expiration Time until expiration in seconds.
+		 * @param string $transient  Tên transient.
+		 * @param mixed  $value      Giá trị transient.
+		 * @param int    $expiration Thời gian cho đến khi hết hạn tính bằng giây.
 		 */
 		do_action_deprecated( 'setted_transient', array( $transient, $value, $expiration ), '6.8.0', 'set_transient' );
 	}
@@ -1622,18 +1622,18 @@ function set_transient( $transient, $value, $expiration = 0 ) {
 }
 
 /**
- * Deletes all expired transients.
+ * Xóa tất cả transient đã hết hạn.
  *
- * Note that this function won't do anything if an external object cache is in use.
+ * Lưu ý rằng hàm này sẽ không làm gì nếu đang sử dụng object cache bên ngoài.
  *
- * The multi-table delete syntax is used to delete the transient record
- * from table a, and the corresponding transient_timeout record from table b.
+ * Cú pháp xóa đa bảng được dùng để xóa bản ghi transient
+ * từ bảng a, và bản ghi transient_timeout tương ứng từ bảng b.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
  * @since 4.9.0
  *
- * @param bool $force_db Optional. Force cleanup to run against the database even when an external object cache is used.
+ * @param bool $force_db Tùy chọn. Buộc dọn dẹp chạy trên cơ sở dữ liệu ngay cả khi đang sử dụng object cache bên ngoài.
  */
 function delete_expired_transients( $force_db = false ) {
 	global $wpdb;
@@ -1656,7 +1656,7 @@ function delete_expired_transients( $force_db = false ) {
 	);
 
 	if ( ! is_multisite() ) {
-		// Single site stores site transients in the options table.
+		// Site đơn lưu trữ site transient trong bảng options.
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE a, b FROM {$wpdb->options} a, {$wpdb->options} b
@@ -1670,7 +1670,7 @@ function delete_expired_transients( $force_db = false ) {
 			)
 		);
 	} elseif ( is_multisite() && is_main_site() && is_main_network() ) {
-		// Multisite stores site transients in the sitemeta table.
+		// Multisite lưu trữ site transient trong bảng sitemeta.
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE a, b FROM {$wpdb->sitemeta} a, {$wpdb->sitemeta} b
@@ -1687,11 +1687,11 @@ function delete_expired_transients( $force_db = false ) {
 }
 
 /**
- * Saves and restores user interface settings stored in a cookie.
+ * Lưu và khôi phục các cài đặt giao diện người dùng được lưu trong cookie.
  *
- * Checks if the current user-settings cookie is updated and stores it. When no
- * cookie exists (different browser used), adds the last saved cookie restoring
- * the settings.
+ * Kiểm tra xem cookie cài đặt người dùng hiện tại có được cập nhật không và lưu nó. Khi không có
+ * cookie nào tồn tại (sử dụng trình duyệt khác), thêm cookie đã lưu cuối cùng để khôi phục
+ * các cài đặt.
  *
  * @since 2.7.0
  */
@@ -1715,7 +1715,7 @@ function wp_user_settings() {
 	if ( isset( $_COOKIE[ 'wp-settings-' . $user_id ] ) ) {
 		$cookie = preg_replace( '/[^A-Za-z0-9=&_]/', '', $_COOKIE[ 'wp-settings-' . $user_id ] );
 
-		// No change or both empty.
+		// Không thay đổi hoặc cả hai đều rỗng.
 		if ( $cookie === $settings ) {
 			return;
 		}
@@ -1727,7 +1727,7 @@ function wp_user_settings() {
 			$current = (int) preg_replace( '/[^0-9]/', '', $_COOKIE[ 'wp-settings-time-' . $user_id ] );
 		}
 
-		// The cookie is newer than the saved value. Update the user_option and leave the cookie as-is.
+		// Cookie mới hơn giá trị đã lưu. Cập nhật user_option và giữ nguyên cookie.
 		if ( $current > $last_saved ) {
 			update_user_option( $user_id, 'user-settings', $cookie, false );
 			update_user_option( $user_id, 'user-settings-time', time() - 5, false );
@@ -1735,7 +1735,7 @@ function wp_user_settings() {
 		}
 	}
 
-	// The cookie is not set in the current browser or the saved value is newer.
+	// Cookie chưa được thiết lập trong trình duyệt hiện tại hoặc giá trị đã lưu mới hơn.
 	$secure = ( 'https' === parse_url( admin_url(), PHP_URL_SCHEME ) );
 	setcookie( 'wp-settings-' . $user_id, $settings, time() + YEAR_IN_SECONDS, SITECOOKIEPATH, '', $secure );
 	setcookie( 'wp-settings-time-' . $user_id, time(), time() + YEAR_IN_SECONDS, SITECOOKIEPATH, '', $secure );
@@ -1743,13 +1743,13 @@ function wp_user_settings() {
 }
 
 /**
- * Retrieves user interface setting value based on setting name.
+ * Lấy giá trị cài đặt giao diện người dùng dựa trên tên cài đặt.
  *
  * @since 2.7.0
  *
- * @param string       $name          The name of the setting.
- * @param string|false $default_value Optional. Default value to return when $name is not set. Default false.
- * @return mixed The last saved user setting or the default value/false if it doesn't exist.
+ * @param string       $name          Tên cài đặt.
+ * @param string|false $default_value Tùy chọn. Giá trị mặc định trả về khi $name chưa được thiết lập. Mặc định false.
+ * @return mixed Cài đặt người dùng đã lưu cuối cùng hoặc giá trị mặc định/false nếu không tồn tại.
  */
 function get_user_setting( $name, $default_value = false ) {
 	$all_user_settings = get_all_user_settings();
@@ -1758,18 +1758,18 @@ function get_user_setting( $name, $default_value = false ) {
 }
 
 /**
- * Adds or updates user interface setting.
+ * Thêm hoặc cập nhật cài đặt giao diện người dùng.
  *
- * Both `$name` and `$value` can contain only ASCII letters, numbers, hyphens, and underscores.
+ * Cả `$name` và `$value` chỉ có thể chứa các chữ cái ASCII, số, dấu gạch ngang và dấu gạch dưới.
  *
- * This function has to be used before any output has started as it calls `setcookie()`.
+ * Hàm này phải được sử dụng trước khi bất kỳ output nào được bắt đầu vì nó gọi `setcookie()`.
  *
  * @since 2.8.0
  *
- * @param string $name  The name of the setting.
- * @param string $value The value for the setting.
- * @return bool|null True if set successfully, false otherwise.
- *                   Null if the current user is not a member of the site.
+ * @param string $name  Tên cài đặt.
+ * @param string $value Giá trị cho cài đặt.
+ * @return bool|null True nếu thiết lập thành công, false nếu không.
+ *                   Null nếu người dùng hiện tại không phải thành viên của site.
  */
 function set_user_setting( $name, $value ) {
 	if ( headers_sent() ) {
@@ -1783,17 +1783,17 @@ function set_user_setting( $name, $value ) {
 }
 
 /**
- * Deletes user interface settings.
+ * Xóa các cài đặt giao diện người dùng.
  *
- * Deleting settings would reset them to the defaults.
+ * Xóa cài đặt sẽ đặt lại chúng về giá trị mặc định.
  *
- * This function has to be used before any output has started as it calls `setcookie()`.
+ * Hàm này phải được sử dụng trước khi bất kỳ output nào được bắt đầu vì nó gọi `setcookie()`.
  *
  * @since 2.7.0
  *
- * @param string $names The name or array of names of the setting to be deleted.
- * @return bool|null True if deleted successfully, false otherwise.
- *                   Null if the current user is not a member of the site.
+ * @param string $names Tên hoặc mảng tên của cài đặt cần xóa.
+ * @return bool|null True nếu xóa thành công, false nếu không.
+ *                   Null nếu người dùng hiện tại không phải thành viên của site.
  */
 function delete_user_setting( $names ) {
 	if ( headers_sent() ) {
@@ -1819,13 +1819,13 @@ function delete_user_setting( $names ) {
 }
 
 /**
- * Retrieves all user interface settings.
+ * Lấy tất cả cài đặt giao diện người dùng.
  *
  * @since 2.7.0
  *
  * @global array $_updated_user_settings
  *
- * @return array The last saved user settings or empty array.
+ * @return array Các cài đặt người dùng đã lưu cuối cùng hoặc mảng rỗng.
  */
 function get_all_user_settings() {
 	global $_updated_user_settings;
@@ -1860,16 +1860,16 @@ function get_all_user_settings() {
 }
 
 /**
- * Private. Sets all user interface settings.
+ * Riêng tư. Thiết lập tất cả cài đặt giao diện người dùng.
  *
  * @since 2.8.0
  * @access private
  *
  * @global array $_updated_user_settings
  *
- * @param array $user_settings User settings.
- * @return bool|null True if set successfully, false if the current user could not be found.
- *                   Null if the current user is not a member of the site.
+ * @param array $user_settings Cài đặt người dùng.
+ * @return bool|null True nếu thiết lập thành công, false nếu không tìm thấy người dùng hiện tại.
+ *                   Null nếu người dùng hiện tại không phải thành viên của site.
  */
 function wp_set_all_user_settings( $user_settings ) {
 	global $_updated_user_settings;
@@ -1903,7 +1903,7 @@ function wp_set_all_user_settings( $user_settings ) {
 }
 
 /**
- * Deletes the user settings of the current user.
+ * Xóa cài đặt người dùng của người dùng hiện tại.
  *
  * @since 2.7.0
  */
@@ -1918,85 +1918,85 @@ function delete_all_user_settings() {
 }
 
 /**
- * Retrieve an option value for the current network based on name of option.
+ * Lấy giá trị tùy chọn cho mạng hiện tại dựa trên tên tùy chọn.
  *
  * @since 2.8.0
- * @since 4.4.0 The `$use_cache` parameter was deprecated.
- * @since 4.4.0 Modified into wrapper for get_network_option()
+ * @since 4.4.0 Tham số `$use_cache` đã bị deprecated.
+ * @since 4.4.0 Được sửa thành wrapper cho get_network_option().
  *
  * @see get_network_option()
  *
- * @param string $option        Name of the option to retrieve. Expected to not be SQL-escaped.
- * @param mixed  $default_value Optional. Value to return if the option doesn't exist. Default false.
- * @param bool   $deprecated    Whether to use cache. Multisite only. Always set to true.
- * @return mixed Value set for the option.
+ * @param string $option        Tên tùy chọn cần lấy. Không cần SQL-escape.
+ * @param mixed  $default_value Tùy chọn. Giá trị trả về nếu tùy chọn không tồn tại. Mặc định false.
+ * @param bool   $deprecated    Có sử dụng cache không. Chỉ Multisite. Luôn được thiết lập là true.
+ * @return mixed Giá trị được thiết lập cho tùy chọn.
  */
 function get_site_option( $option, $default_value = false, $deprecated = true ) {
 	return get_network_option( null, $option, $default_value );
 }
 
 /**
- * Adds a new option for the current network.
+ * Thêm một tùy chọn mới cho mạng hiện tại.
  *
- * Existing options will not be updated. Note that prior to 3.3 this wasn't the case.
+ * Các tùy chọn hiện có sẽ không bị cập nhật. Lưu ý rằng trước phiên bản 3.3 thì không phải vậy.
  *
  * @since 2.8.0
- * @since 4.4.0 Modified into wrapper for add_network_option()
+ * @since 4.4.0 Được sửa thành wrapper cho add_network_option().
  *
  * @see add_network_option()
  *
- * @param string $option Name of the option to add. Expected to not be SQL-escaped.
- * @param mixed  $value  Option value, can be anything. Expected to not be SQL-escaped.
- * @return bool True if the option was added, false otherwise.
+ * @param string $option Tên tùy chọn cần thêm. Không cần SQL-escape.
+ * @param mixed  $value  Giá trị tùy chọn, có thể là bất kỳ kiểu nào. Không cần SQL-escape.
+ * @return bool True nếu tùy chọn đã được thêm, false nếu không.
  */
 function add_site_option( $option, $value ) {
 	return add_network_option( null, $option, $value );
 }
 
 /**
- * Removes an option by name for the current network.
+ * Xóa một tùy chọn theo tên cho mạng hiện tại.
  *
  * @since 2.8.0
- * @since 4.4.0 Modified into wrapper for delete_network_option()
+ * @since 4.4.0 Được sửa thành wrapper cho delete_network_option().
  *
  * @see delete_network_option()
  *
- * @param string $option Name of the option to delete. Expected to not be SQL-escaped.
- * @return bool True if the option was deleted, false otherwise.
+ * @param string $option Tên tùy chọn cần xóa. Không cần SQL-escape.
+ * @return bool True nếu tùy chọn đã được xóa, false nếu không.
  */
 function delete_site_option( $option ) {
 	return delete_network_option( null, $option );
 }
 
 /**
- * Updates the value of an option that was already added for the current network.
+ * Cập nhật giá trị của một tùy chọn đã được thêm trước đó cho mạng hiện tại.
  *
  * @since 2.8.0
- * @since 4.4.0 Modified into wrapper for update_network_option()
+ * @since 4.4.0 Được sửa thành wrapper cho update_network_option().
  *
  * @see update_network_option()
  *
- * @param string $option Name of the option. Expected to not be SQL-escaped.
- * @param mixed  $value  Option value. Expected to not be SQL-escaped.
- * @return bool True if the value was updated, false otherwise.
+ * @param string $option Tên tùy chọn. Không cần SQL-escape.
+ * @param mixed  $value  Giá trị tùy chọn. Không cần SQL-escape.
+ * @return bool True nếu giá trị đã được cập nhật, false nếu không.
  */
 function update_site_option( $option, $value ) {
 	return update_network_option( null, $option, $value );
 }
 
 /**
- * Retrieves a network's option value based on the option name.
+ * Lấy giá trị tùy chọn của mạng dựa trên tên tùy chọn.
  *
  * @since 4.4.0
  *
  * @see get_option()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|null $network_id    ID of the network. Can be null to default to the current network ID.
- * @param string   $option        Name of the option to retrieve. Expected to not be SQL-escaped.
- * @param mixed    $default_value Optional. Value to return if the option doesn't exist. Default false.
- * @return mixed Value set for the option.
+ * @param int|null $network_id    ID của mạng. Có thể là null để mặc định sử dụng ID mạng hiện tại.
+ * @param string   $option        Tên tùy chọn cần lấy. Không cần SQL-escape.
+ * @param mixed    $default_value Tùy chọn. Giá trị trả về nếu tùy chọn không tồn tại. Mặc định false.
+ * @return mixed Giá trị được thiết lập cho tùy chọn.
  */
 function get_network_option( $network_id, $option, $default_value = false ) {
 	global $wpdb;
@@ -2007,33 +2007,33 @@ function get_network_option( $network_id, $option, $default_value = false ) {
 
 	$network_id = (int) $network_id;
 
-	// Fallback to the current network if a network ID is not specified.
+	// Dự phòng sử dụng mạng hiện tại nếu không chỉ định ID mạng.
 	if ( ! $network_id ) {
 		$network_id = get_current_network_id();
 	}
 
 	/**
-	 * Filters the value of an existing network option before it is retrieved.
+	 * Lọc giá trị của một tùy chọn mạng hiện có trước khi nó được lấy ra.
 	 *
-	 * The dynamic portion of the hook name, `$option`, refers to the option name.
+	 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 	 *
-	 * Returning a value other than false from the filter will short-circuit retrieval
-	 * and return that value instead.
+	 * Trả về giá trị khác false từ bộ lọc sẽ bỏ qua việc truy xuất
+	 * và trả về giá trị đó thay thế.
 	 *
-	 * @since 2.9.0 As 'pre_site_option_' . $key
+	 * @since 2.9.0 Với tên 'pre_site_option_' . $key
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added.
-	 * @since 4.7.0 The `$network_id` parameter was added.
-	 * @since 4.9.0 The `$default_value` parameter was added.
+	 * @since 4.4.0 Tham số `$option` được thêm vào.
+	 * @since 4.7.0 Tham số `$network_id` được thêm vào.
+	 * @since 4.9.0 Tham số `$default_value` được thêm vào.
 	 *
-	 * @param mixed  $pre_site_option The value to return instead of the option value. This differs from
-	 *                                `$default_value`, which is used as the fallback value in the event
-	 *                                the option doesn't exist elsewhere in get_network_option().
-	 *                                Default false (to skip past the short-circuit).
-	 * @param string $option          Option name.
-	 * @param int    $network_id      ID of the network.
-	 * @param mixed  $default_value   The fallback value to return if the option does not exist.
-	 *                                Default false.
+	 * @param mixed  $pre_site_option Giá trị trả về thay vì giá trị tùy chọn. Điều này khác với
+	 *                                `$default_value`, được dùng làm giá trị dự phòng trong trường hợp
+	 *                                tùy chọn không tồn tại ở nơi khác trong get_network_option().
+	 *                                Mặc định false (để bỏ qua short-circuit).
+	 * @param string $option          Tên tùy chọn.
+	 * @param int    $network_id      ID của mạng.
+	 * @param mixed  $default_value   Giá trị dự phòng trả về nếu tùy chọn không tồn tại.
+	 *                                Mặc định false.
 	 */
 	$pre = apply_filters( "pre_site_option_{$option}", false, $option, $network_id, $default_value );
 
@@ -2041,25 +2041,25 @@ function get_network_option( $network_id, $option, $default_value = false ) {
 		return $pre;
 	}
 
-	// Prevent non-existent options from triggering multiple queries.
+	// Ngăn các tùy chọn không tồn tại kích hoạt nhiều truy vấn.
 	$notoptions_key = "$network_id:notoptions";
 	$notoptions     = wp_cache_get( $notoptions_key, 'site-options' );
 
 	if ( is_array( $notoptions ) && isset( $notoptions[ $option ] ) ) {
 
 		/**
-		 * Filters the value of a specific default network option.
+		 * Lọc giá trị mặc định của một tùy chọn mạng cụ thể.
 		 *
-		 * The dynamic portion of the hook name, `$option`, refers to the option name.
+		 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 		 *
 		 * @since 3.4.0
-		 * @since 4.4.0 The `$option` parameter was added.
-		 * @since 4.7.0 The `$network_id` parameter was added.
+		 * @since 4.4.0 Tham số `$option` được thêm vào.
+		 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 		 *
-		 * @param mixed  $default_value The value to return if the site option does not exist
-		 *                              in the database.
-		 * @param string $option        Option name.
-		 * @param int    $network_id    ID of the network.
+		 * @param mixed  $default_value Giá trị trả về nếu tùy chọn site không tồn tại
+		 *                              trong cơ sở dữ liệu.
+		 * @param string $option        Tên tùy chọn.
+		 * @param int    $network_id    ID của mạng.
 		 */
 		return apply_filters( "default_site_option_{$option}", $default_value, $option, $network_id );
 	}
@@ -2075,7 +2075,7 @@ function get_network_option( $network_id, $option, $default_value = false ) {
 		if ( ! isset( $value ) || false === $value ) {
 			$row = $wpdb->get_row( $wpdb->prepare( "SELECT meta_value FROM $wpdb->sitemeta WHERE meta_key = %s AND site_id = %d", $option, $network_id ) );
 
-			// Has to be get_row() instead of get_var() because of funkiness with 0, false, null values.
+			// Phải dùng get_row() thay vì get_var() vì sự bất thường với các giá trị 0, false, null.
 			if ( is_object( $row ) ) {
 				$value = $row->meta_value;
 				$value = maybe_unserialize( $value );
@@ -2100,37 +2100,37 @@ function get_network_option( $network_id, $option, $default_value = false ) {
 	}
 
 	/**
-	 * Filters the value of an existing network option.
+	 * Lọc giá trị của một tùy chọn mạng hiện có.
 	 *
-	 * The dynamic portion of the hook name, `$option`, refers to the option name.
+	 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 	 *
-	 * @since 2.9.0 As 'site_option_' . $key
+	 * @since 2.9.0 Với tên 'site_option_' . $key
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added.
-	 * @since 4.7.0 The `$network_id` parameter was added.
+	 * @since 4.4.0 Tham số `$option` được thêm vào.
+	 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 	 *
-	 * @param mixed  $value      Value of network option.
-	 * @param string $option     Option name.
-	 * @param int    $network_id ID of the network.
+	 * @param mixed  $value      Giá trị tùy chọn mạng.
+	 * @param string $option     Tên tùy chọn.
+	 * @param int    $network_id ID của mạng.
 	 */
 	return apply_filters( "site_option_{$option}", $value, $option, $network_id );
 }
 
 /**
- * Adds a new network option.
+ * Thêm một tùy chọn mạng mới.
  *
- * Existing options will not be updated.
+ * Các tùy chọn hiện có sẽ không bị cập nhật.
  *
  * @since 4.4.0
  *
  * @see add_option()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|null $network_id ID of the network. Can be null to default to the current network ID.
- * @param string   $option     Name of the option to add. Expected to not be SQL-escaped.
- * @param mixed    $value      Option value, can be anything. Expected to not be SQL-escaped.
- * @return bool True if the option was added, false otherwise.
+ * @param int|null $network_id ID của mạng. Có thể là null để mặc định sử dụng ID mạng hiện tại.
+ * @param string   $option     Tên tùy chọn cần thêm. Không cần SQL-escape.
+ * @param mixed    $value      Giá trị tùy chọn, có thể là bất kỳ kiểu nào. Không cần SQL-escape.
+ * @return bool True nếu tùy chọn đã được thêm, false nếu không.
  */
 function add_network_option( $network_id, $option, $value ) {
 	global $wpdb;
@@ -2141,7 +2141,7 @@ function add_network_option( $network_id, $option, $value ) {
 
 	$network_id = (int) $network_id;
 
-	// Fallback to the current network if a network ID is not specified.
+	// Dự phòng sử dụng mạng hiện tại nếu không chỉ định ID mạng.
 	if ( ! $network_id ) {
 		$network_id = get_current_network_id();
 	}
@@ -2149,18 +2149,18 @@ function add_network_option( $network_id, $option, $value ) {
 	wp_protect_special_option( $option );
 
 	/**
-	 * Filters the value of a specific network option before it is added.
+	 * Lọc giá trị của một tùy chọn mạng cụ thể trước khi nó được thêm.
 	 *
-	 * The dynamic portion of the hook name, `$option`, refers to the option name.
+	 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 	 *
-	 * @since 2.9.0 As 'pre_add_site_option_' . $key
+	 * @since 2.9.0 Với tên 'pre_add_site_option_' . $key
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added.
-	 * @since 4.7.0 The `$network_id` parameter was added.
+	 * @since 4.4.0 Tham số `$option` được thêm vào.
+	 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 	 *
-	 * @param mixed  $value      Value of network option.
-	 * @param string $option     Option name.
-	 * @param int    $network_id ID of the network.
+	 * @param mixed  $value      Giá trị tùy chọn mạng.
+	 * @param string $option     Tên tùy chọn.
+	 * @param int    $network_id ID của mạng.
 	 */
 	$value = apply_filters( "pre_add_site_option_{$option}", $value, $option, $network_id );
 
@@ -2172,8 +2172,8 @@ function add_network_option( $network_id, $option, $value ) {
 		$cache_key = "$network_id:$option";
 
 		/*
-		 * Make sure the option doesn't already exist.
-		 * We can check the 'notoptions' cache before we ask for a DB query.
+		 * Đảm bảo tùy chọn chưa tồn tại.
+		 * Chúng ta có thể kiểm tra cache 'notoptions' trước khi thực hiện truy vấn DB.
 		 */
 		$notoptions = wp_cache_get( $notoptions_key, 'site-options' );
 
@@ -2201,8 +2201,8 @@ function add_network_option( $network_id, $option, $value ) {
 
 		wp_cache_set( $cache_key, $value, 'site-options' );
 
-		// This option exists now.
-		$notoptions = wp_cache_get( $notoptions_key, 'site-options' ); // Yes, again... we need it to be fresh.
+		// Tùy chọn này đã tồn tại.
+		$notoptions = wp_cache_get( $notoptions_key, 'site-options' ); // Vâng, lại lần nữa... chúng ta cần nó được cập nhật mới.
 
 		if ( is_array( $notoptions ) && isset( $notoptions[ $option ] ) ) {
 			unset( $notoptions[ $option ] );
@@ -2213,29 +2213,29 @@ function add_network_option( $network_id, $option, $value ) {
 	if ( $result ) {
 
 		/**
-		 * Fires after a specific network option has been successfully added.
+		 * Kích hoạt sau khi một tùy chọn mạng cụ thể đã được thêm thành công.
 		 *
-		 * The dynamic portion of the hook name, `$option`, refers to the option name.
+		 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 		 *
-		 * @since 2.9.0 As "add_site_option_{$key}"
+		 * @since 2.9.0 Với tên "add_site_option_{$key}"
 		 * @since 3.0.0
-		 * @since 4.7.0 The `$network_id` parameter was added.
+		 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 		 *
-		 * @param string $option     Name of the network option.
-		 * @param mixed  $value      Value of the network option.
-		 * @param int    $network_id ID of the network.
+		 * @param string $option     Tên tùy chọn mạng.
+		 * @param mixed  $value      Giá trị tùy chọn mạng.
+		 * @param int    $network_id ID của mạng.
 		 */
 		do_action( "add_site_option_{$option}", $option, $value, $network_id );
 
 		/**
-		 * Fires after a network option has been successfully added.
+		 * Kích hoạt sau khi một tùy chọn mạng đã được thêm thành công.
 		 *
 		 * @since 3.0.0
-		 * @since 4.7.0 The `$network_id` parameter was added.
+		 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 		 *
-		 * @param string $option     Name of the network option.
-		 * @param mixed  $value      Value of the network option.
-		 * @param int    $network_id ID of the network.
+		 * @param string $option     Tên tùy chọn mạng.
+		 * @param mixed  $value      Giá trị tùy chọn mạng.
+		 * @param int    $network_id ID của mạng.
 		 */
 		do_action( 'add_site_option', $option, $value, $network_id );
 
@@ -2246,17 +2246,17 @@ function add_network_option( $network_id, $option, $value ) {
 }
 
 /**
- * Removes a network option by name.
+ * Xóa một tùy chọn mạng theo tên.
  *
  * @since 4.4.0
  *
  * @see delete_option()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|null $network_id ID of the network. Can be null to default to the current network ID.
- * @param string   $option     Name of the option to delete. Expected to not be SQL-escaped.
- * @return bool True if the option was deleted, false otherwise.
+ * @param int|null $network_id ID của mạng. Có thể là null để mặc định sử dụng ID mạng hiện tại.
+ * @param string   $option     Tên tùy chọn cần xóa. Không cần SQL-escape.
+ * @return bool True nếu tùy chọn đã được xóa, false nếu không.
  */
 function delete_network_option( $network_id, $option ) {
 	global $wpdb;
@@ -2267,22 +2267,22 @@ function delete_network_option( $network_id, $option ) {
 
 	$network_id = (int) $network_id;
 
-	// Fallback to the current network if a network ID is not specified.
+	// Dự phòng sử dụng mạng hiện tại nếu không chỉ định ID mạng.
 	if ( ! $network_id ) {
 		$network_id = get_current_network_id();
 	}
 
 	/**
-	 * Fires immediately before a specific network option is deleted.
+	 * Kích hoạt ngay trước khi một tùy chọn mạng cụ thể bị xóa.
 	 *
-	 * The dynamic portion of the hook name, `$option`, refers to the option name.
+	 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 	 *
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added.
-	 * @since 4.7.0 The `$network_id` parameter was added.
+	 * @since 4.4.0 Tham số `$option` được thêm vào.
+	 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 	 *
-	 * @param string $option     Option name.
-	 * @param int    $network_id ID of the network.
+	 * @param string $option     Tên tùy chọn.
+	 * @param int    $network_id ID của mạng.
 	 */
 	do_action( "pre_delete_site_option_{$option}", $option, $network_id );
 
@@ -2319,27 +2319,27 @@ function delete_network_option( $network_id, $option ) {
 	if ( $result ) {
 
 		/**
-		 * Fires after a specific network option has been deleted.
+		 * Kích hoạt sau khi một tùy chọn mạng cụ thể đã bị xóa.
 		 *
-		 * The dynamic portion of the hook name, `$option`, refers to the option name.
+		 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 		 *
-		 * @since 2.9.0 As "delete_site_option_{$key}"
+		 * @since 2.9.0 Với tên "delete_site_option_{$key}"
 		 * @since 3.0.0
-		 * @since 4.7.0 The `$network_id` parameter was added.
+		 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 		 *
-		 * @param string $option     Name of the network option.
-		 * @param int    $network_id ID of the network.
+		 * @param string $option     Tên tùy chọn mạng.
+		 * @param int    $network_id ID của mạng.
 		 */
 		do_action( "delete_site_option_{$option}", $option, $network_id );
 
 		/**
-		 * Fires after a network option has been deleted.
+		 * Kích hoạt sau khi một tùy chọn mạng đã bị xóa.
 		 *
 		 * @since 3.0.0
-		 * @since 4.7.0 The `$network_id` parameter was added.
+		 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 		 *
-		 * @param string $option     Name of the network option.
-		 * @param int    $network_id ID of the network.
+		 * @param string $option     Tên tùy chọn mạng.
+		 * @param int    $network_id ID của mạng.
 		 */
 		do_action( 'delete_site_option', $option, $network_id );
 
@@ -2350,18 +2350,18 @@ function delete_network_option( $network_id, $option ) {
 }
 
 /**
- * Updates the value of a network option that was already added.
+ * Cập nhật giá trị của một tùy chọn mạng đã được thêm trước đó.
  *
  * @since 4.4.0
  *
  * @see update_option()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|null $network_id ID of the network. Can be null to default to the current network ID.
- * @param string   $option     Name of the option. Expected to not be SQL-escaped.
- * @param mixed    $value      Option value. Expected to not be SQL-escaped.
- * @return bool True if the value was updated, false otherwise.
+ * @param int|null $network_id ID của mạng. Có thể là null để mặc định sử dụng ID mạng hiện tại.
+ * @param string   $option     Tên tùy chọn. Không cần SQL-escape.
+ * @param mixed    $value      Giá trị tùy chọn. Không cần SQL-escape.
+ * @return bool True nếu giá trị đã được cập nhật, false nếu không.
  */
 function update_network_option( $network_id, $option, $value ) {
 	global $wpdb;
@@ -2372,7 +2372,7 @@ function update_network_option( $network_id, $option, $value ) {
 
 	$network_id = (int) $network_id;
 
-	// Fallback to the current network if a network ID is not specified.
+	// Dự phòng sử dụng mạng hiện tại nếu không chỉ định ID mạng.
 	if ( ! $network_id ) {
 		$network_id = get_current_network_id();
 	}
@@ -2382,30 +2382,30 @@ function update_network_option( $network_id, $option, $value ) {
 	$old_value = get_network_option( $network_id, $option );
 
 	/**
-	 * Filters a specific network option before its value is updated.
+	 * Lọc một tùy chọn mạng cụ thể trước khi giá trị của nó được cập nhật.
 	 *
-	 * The dynamic portion of the hook name, `$option`, refers to the option name.
+	 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 	 *
-	 * @since 2.9.0 As 'pre_update_site_option_' . $key
+	 * @since 2.9.0 Với tên 'pre_update_site_option_' . $key
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$option` parameter was added.
-	 * @since 4.7.0 The `$network_id` parameter was added.
+	 * @since 4.4.0 Tham số `$option` được thêm vào.
+	 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 	 *
-	 * @param mixed  $value      New value of the network option.
-	 * @param mixed  $old_value  Old value of the network option.
-	 * @param string $option     Option name.
-	 * @param int    $network_id ID of the network.
+	 * @param mixed  $value      Giá trị mới của tùy chọn mạng.
+	 * @param mixed  $old_value  Giá trị cũ của tùy chọn mạng.
+	 * @param string $option     Tên tùy chọn.
+	 * @param int    $network_id ID của mạng.
 	 */
 	$value = apply_filters( "pre_update_site_option_{$option}", $value, $old_value, $option, $network_id );
 
 	/*
-	 * If the new and old values are the same, no need to update.
+	 * Nếu giá trị mới và cũ giống nhau, không cần cập nhật.
 	 *
-	 * Unserialized values will be adequate in most cases. If the unserialized
-	 * data differs, the (maybe) serialized data is checked to avoid
-	 * unnecessary database calls for otherwise identical object instances.
+	 * Các giá trị chưa serialize sẽ đủ trong hầu hết trường hợp. Nếu dữ liệu chưa serialize
+	 * khác nhau, dữ liệu (có thể) đã serialize sẽ được kiểm tra để tránh
+	 * các truy vấn cơ sở dữ liệu không cần thiết cho các instance đối tượng giống hệt nhau.
 	 *
-	 * See https://core.trac.wordpress.org/ticket/44956
+	 * Xem https://core.trac.wordpress.org/ticket/44956
 	 */
 	if ( $value === $old_value || maybe_serialize( $value ) === maybe_serialize( $old_value ) ) {
 		return false;
@@ -2447,31 +2447,31 @@ function update_network_option( $network_id, $option, $value ) {
 	if ( $result ) {
 
 		/**
-		 * Fires after the value of a specific network option has been successfully updated.
+		 * Kích hoạt sau khi giá trị của một tùy chọn mạng cụ thể đã được cập nhật thành công.
 		 *
-		 * The dynamic portion of the hook name, `$option`, refers to the option name.
+		 * Phần động của tên hook, `$option`, đề cập đến tên tùy chọn.
 		 *
-		 * @since 2.9.0 As "update_site_option_{$key}"
+		 * @since 2.9.0 Với tên "update_site_option_{$key}"
 		 * @since 3.0.0
-		 * @since 4.7.0 The `$network_id` parameter was added.
+		 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 		 *
-		 * @param string $option     Name of the network option.
-		 * @param mixed  $value      Current value of the network option.
-		 * @param mixed  $old_value  Old value of the network option.
-		 * @param int    $network_id ID of the network.
+		 * @param string $option     Tên tùy chọn mạng.
+		 * @param mixed  $value      Giá trị hiện tại của tùy chọn mạng.
+		 * @param mixed  $old_value  Giá trị cũ của tùy chọn mạng.
+		 * @param int    $network_id ID của mạng.
 		 */
 		do_action( "update_site_option_{$option}", $option, $value, $old_value, $network_id );
 
 		/**
-		 * Fires after the value of a network option has been successfully updated.
+		 * Kích hoạt sau khi giá trị của một tùy chọn mạng đã được cập nhật thành công.
 		 *
 		 * @since 3.0.0
-		 * @since 4.7.0 The `$network_id` parameter was added.
+		 * @since 4.7.0 Tham số `$network_id` được thêm vào.
 		 *
-		 * @param string $option     Name of the network option.
-		 * @param mixed  $value      Current value of the network option.
-		 * @param mixed  $old_value  Old value of the network option.
-		 * @param int    $network_id ID of the network.
+		 * @param string $option     Tên tùy chọn mạng.
+		 * @param mixed  $value      Giá trị hiện tại của tùy chọn mạng.
+		 * @param mixed  $old_value  Giá trị cũ của tùy chọn mạng.
+		 * @param int    $network_id ID của mạng.
 		 */
 		do_action( 'update_site_option', $option, $value, $old_value, $network_id );
 
@@ -2482,23 +2482,23 @@ function update_network_option( $network_id, $option, $value ) {
 }
 
 /**
- * Deletes a site transient.
+ * Xóa một site transient.
  *
  * @since 2.9.0
  *
- * @param string $transient Transient name. Expected to not be SQL-escaped.
- * @return bool True if the transient was deleted, false otherwise.
+ * @param string $transient Tên transient. Không cần SQL-escape.
+ * @return bool True nếu transient đã được xóa, false nếu không.
  */
 function delete_site_transient( $transient ) {
 
 	/**
-	 * Fires immediately before a specific site transient is deleted.
+	 * Kích hoạt ngay trước khi một site transient cụ thể bị xóa.
 	 *
-	 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+	 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $transient Transient name.
+	 * @param string $transient Tên transient.
 	 */
 	do_action( "delete_site_transient_{$transient}", $transient );
 
@@ -2517,11 +2517,11 @@ function delete_site_transient( $transient ) {
 	if ( $result ) {
 
 		/**
-		 * Fires after a transient is deleted.
+		 * Kích hoạt sau khi một site transient bị xóa.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $transient Deleted transient name.
+		 * @param string $transient Tên transient đã bị xóa.
 		 */
 		do_action( 'deleted_site_transient', $transient );
 	}
@@ -2530,35 +2530,35 @@ function delete_site_transient( $transient ) {
 }
 
 /**
- * Retrieves the value of a site transient.
+ * Lấy giá trị của một site transient.
  *
- * If the transient does not exist, does not have a value, or has expired,
- * then the return value will be false.
+ * Nếu transient không tồn tại, không có giá trị, hoặc đã hết hạn,
+ * thì giá trị trả về sẽ là false.
  *
  * @since 2.9.0
  *
  * @see get_transient()
  *
- * @param string $transient Transient name. Expected to not be SQL-escaped.
- * @return mixed Value of transient.
+ * @param string $transient Tên transient. Không cần SQL-escape.
+ * @return mixed Giá trị của transient.
  */
 function get_site_transient( $transient ) {
 
 	/**
-	 * Filters the value of an existing site transient before it is retrieved.
+	 * Lọc giá trị của một site transient hiện có trước khi nó được lấy ra.
 	 *
-	 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+	 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 	 *
-	 * Returning a value other than boolean false will short-circuit retrieval and
-	 * return that value instead.
+	 * Trả về giá trị khác boolean false sẽ bỏ qua việc truy xuất và
+	 * trả về giá trị đó thay thế.
 	 *
 	 * @since 2.9.0
-	 * @since 4.4.0 The `$transient` parameter was added.
+	 * @since 4.4.0 Tham số `$transient` được thêm vào.
 	 *
-	 * @param mixed  $pre_site_transient The default value to return if the site transient does not exist.
-	 *                                   Any value other than false will short-circuit the retrieval
-	 *                                   of the transient, and return that value.
-	 * @param string $transient          Transient name.
+	 * @param mixed  $pre_site_transient Giá trị mặc định trả về nếu site transient không tồn tại.
+	 *                                   Bất kỳ giá trị nào khác false sẽ bỏ qua việc truy xuất
+	 *                                   transient và trả về giá trị đó.
+	 * @param string $transient          Tên transient.
 	 */
 	$pre = apply_filters( "pre_site_transient_{$transient}", false, $transient );
 
@@ -2569,7 +2569,7 @@ function get_site_transient( $transient ) {
 	if ( wp_using_ext_object_cache() || wp_installing() ) {
 		$value = wp_cache_get( $transient, 'site-transient' );
 	} else {
-		// Core transients that do not have a timeout. Listed here so querying timeouts can be avoided.
+		// Các transient lõi không có thời gian hết hạn. Liệt kê ở đây để có thể tránh truy vấn timeout.
 		$no_timeout       = array( 'update_core', 'update_plugins', 'update_themes' );
 		$transient_option = '_site_transient_' . $transient;
 		if ( ! in_array( $transient, $no_timeout, true ) ) {
@@ -2590,62 +2590,62 @@ function get_site_transient( $transient ) {
 	}
 
 	/**
-	 * Filters the value of an existing site transient.
+	 * Lọc giá trị của một site transient hiện có.
 	 *
-	 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+	 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 	 *
 	 * @since 2.9.0
-	 * @since 4.4.0 The `$transient` parameter was added.
+	 * @since 4.4.0 Tham số `$transient` được thêm vào.
 	 *
-	 * @param mixed  $value     Value of site transient.
-	 * @param string $transient Transient name.
+	 * @param mixed  $value     Giá trị site transient.
+	 * @param string $transient Tên transient.
 	 */
 	return apply_filters( "site_transient_{$transient}", $value, $transient );
 }
 
 /**
- * Sets/updates the value of a site transient.
+ * Thiết lập/cập nhật giá trị của một site transient.
  *
- * You do not need to serialize values. If the value needs to be serialized,
- * then it will be serialized before it is set.
+ * Bạn không cần serialize giá trị. Nếu giá trị cần được serialize,
+ * nó sẽ được serialize trước khi thiết lập.
  *
  * @since 2.9.0
  *
  * @see set_transient()
  *
- * @param string $transient  Transient name. Expected to not be SQL-escaped. Must be
- *                           167 characters or fewer in length.
- * @param mixed  $value      Transient value. Expected to not be SQL-escaped.
- * @param int    $expiration Optional. Time until expiration in seconds. Default 0 (no expiration).
- * @return bool True if the value was set, false otherwise.
+ * @param string $transient  Tên transient. Không cần SQL-escape. Phải có
+ *                           167 ký tự hoặc ít hơn.
+ * @param mixed  $value      Giá trị transient. Không cần SQL-escape.
+ * @param int    $expiration Tùy chọn. Thời gian cho đến khi hết hạn tính bằng giây. Mặc định 0 (không hết hạn).
+ * @return bool True nếu giá trị đã được thiết lập, false nếu không.
  */
 function set_site_transient( $transient, $value, $expiration = 0 ) {
 
 	/**
-	 * Filters the value of a specific site transient before it is set.
+	 * Lọc giá trị của một site transient cụ thể trước khi nó được thiết lập.
 	 *
-	 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+	 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 	 *
 	 * @since 3.0.0
-	 * @since 4.4.0 The `$transient` parameter was added.
+	 * @since 4.4.0 Tham số `$transient` được thêm vào.
 	 *
-	 * @param mixed  $value     New value of site transient.
-	 * @param string $transient Transient name.
+	 * @param mixed  $value     Giá trị mới của site transient.
+	 * @param string $transient Tên transient.
 	 */
 	$value = apply_filters( "pre_set_site_transient_{$transient}", $value, $transient );
 
 	$expiration = (int) $expiration;
 
 	/**
-	 * Filters the expiration for a site transient before its value is set.
+	 * Lọc thời gian hết hạn cho một site transient trước khi giá trị của nó được thiết lập.
 	 *
-	 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+	 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param int    $expiration Time until expiration in seconds. Use 0 for no expiration.
-	 * @param mixed  $value      New value of site transient.
-	 * @param string $transient  Transient name.
+	 * @param int    $expiration Thời gian cho đến khi hết hạn tính bằng giây. Dùng 0 để không hết hạn.
+	 * @param mixed  $value      Giá trị mới của site transient.
+	 * @param string $transient  Tên transient.
 	 */
 	$expiration = apply_filters( "expiration_of_site_transient_{$transient}", $expiration, $value, $transient );
 
@@ -2672,39 +2672,39 @@ function set_site_transient( $transient, $value, $expiration = 0 ) {
 	if ( $result ) {
 
 		/**
-		 * Fires after the value for a specific site transient has been set.
+		 * Kích hoạt sau khi giá trị của một site transient cụ thể đã được thiết lập.
 		 *
-		 * The dynamic portion of the hook name, `$transient`, refers to the transient name.
+		 * Phần động của tên hook, `$transient`, đề cập đến tên transient.
 		 *
 		 * @since 3.0.0
-		 * @since 4.4.0 The `$transient` parameter was added
+		 * @since 4.4.0 Tham số `$transient` được thêm vào.
 		 *
-		 * @param mixed  $value      Site transient value.
-		 * @param int    $expiration Time until expiration in seconds.
-		 * @param string $transient  Transient name.
+		 * @param mixed  $value      Giá trị site transient.
+		 * @param int    $expiration Thời gian cho đến khi hết hạn tính bằng giây.
+		 * @param string $transient  Tên transient.
 		 */
 		do_action( "set_site_transient_{$transient}", $value, $expiration, $transient );
 
 		/**
-		 * Fires after the value for a site transient has been set.
+		 * Kích hoạt sau khi giá trị của một site transient đã được thiết lập.
 		 *
 		 * @since 6.8.0
 		 *
-		 * @param string $transient  The name of the site transient.
-		 * @param mixed  $value      Site transient value.
-		 * @param int    $expiration Time until expiration in seconds.
+		 * @param string $transient  Tên site transient.
+		 * @param mixed  $value      Giá trị site transient.
+		 * @param int    $expiration Thời gian cho đến khi hết hạn tính bằng giây.
 		 */
 		do_action( 'set_site_transient', $transient, $value, $expiration );
 
 		/**
-		 * Fires after the value for a site transient has been set.
+		 * Kích hoạt sau khi giá trị của một site transient đã được thiết lập.
 		 *
 		 * @since 3.0.0
-		 * @deprecated 6.8.0 Use {@see 'set_site_transient'} instead.
+		 * @deprecated 6.8.0 Sử dụng {@see 'set_site_transient'} thay thế.
 		 *
-		 * @param string $transient  The name of the site transient.
-		 * @param mixed  $value      Site transient value.
-		 * @param int    $expiration Time until expiration in seconds.
+		 * @param string $transient  Tên site transient.
+		 * @param mixed  $value      Giá trị site transient.
+		 * @param int    $expiration Thời gian cho đến khi hết hạn tính bằng giây.
 		 */
 		do_action_deprecated( 'setted_site_transient', array( $transient, $value, $expiration ), '6.8.0', 'set_site_transient' );
 	}
@@ -2713,13 +2713,13 @@ function set_site_transient( $transient, $value, $expiration = 0 ) {
 }
 
 /**
- * Registers default settings available in WordPress.
+ * Đăng ký các cài đặt mặc định có sẵn trong WordPress.
  *
- * The settings registered here are primarily useful for the REST API, so this
- * does not encompass all settings available in WordPress.
+ * Các cài đặt được đăng ký ở đây chủ yếu hữu ích cho REST API, vì vậy
+ * không bao gồm tất cả các cài đặt có sẵn trong WordPress.
  *
  * @since 4.7.0
- * @since 6.0.1 The `show_on_front`, `page_on_front`, and `page_for_posts` options were added.
+ * @since 6.0.1 Các tùy chọn `show_on_front`, `page_on_front`, và `page_for_posts` được thêm vào.
  */
 function register_initial_settings() {
 	register_setting(
@@ -2943,35 +2943,35 @@ function register_initial_settings() {
 }
 
 /**
- * Registers a setting and its data.
+ * Đăng ký một cài đặt và dữ liệu của nó.
  *
  * @since 2.7.0
- * @since 3.0.0 The `misc` option group was deprecated.
- * @since 3.5.0 The `privacy` option group was deprecated.
- * @since 4.7.0 `$args` can be passed to set flags on the setting, similar to `register_meta()`.
- * @since 5.5.0 `$new_whitelist_options` was renamed to `$new_allowed_options`.
- *              Please consider writing more inclusive code.
- * @since 6.6.0 Added the `label` argument.
+ * @since 3.0.0 Nhóm tùy chọn `misc` đã bị deprecated.
+ * @since 3.5.0 Nhóm tùy chọn `privacy` đã bị deprecated.
+ * @since 4.7.0 `$args` có thể được truyền để thiết lập cờ cho cài đặt, tương tự như `register_meta()`.
+ * @since 5.5.0 `$new_whitelist_options` được đổi tên thành `$new_allowed_options`.
+ *              Hãy cân nhắc viết code bao dung hơn.
+ * @since 6.6.0 Thêm tham số `label`.
  *
  * @global array $new_allowed_options
  * @global array $wp_registered_settings
  *
- * @param string $option_group A settings group name. Should correspond to an allowed option key name.
- *                             Default allowed option key names include 'general', 'discussion', 'media',
- *                             'reading', 'writing', and 'options'.
- * @param string $option_name The name of an option to sanitize and save.
+ * @param string $option_group Tên nhóm cài đặt. Nên tương ứng với tên khóa tùy chọn được phép.
+ *                             Các tên khóa tùy chọn được phép mặc định bao gồm 'general', 'discussion', 'media',
+ *                             'reading', 'writing', và 'options'.
+ * @param string $option_name Tên tùy chọn cần làm sạch và lưu.
  * @param array  $args {
- *     Data used to describe the setting when registered.
+ *     Dữ liệu dùng để mô tả cài đặt khi đăng ký.
  *
- *     @type string     $type              The type of data associated with this setting.
- *                                         Valid values are 'string', 'boolean', 'integer', 'number', 'array', and 'object'.
- *     @type string     $label             A label of the data attached to this setting.
- *     @type string     $description       A description of the data attached to this setting.
- *     @type callable   $sanitize_callback A callback function that sanitizes the option's value.
- *     @type bool|array $show_in_rest      Whether data associated with this setting should be included in the REST API.
- *                                         When registering complex settings, this argument may optionally be an
- *                                         array with a 'schema' key.
- *     @type mixed      $default           Default value when calling `get_option()`.
+ *     @type string     $type              Kiểu dữ liệu liên kết với cài đặt này.
+ *                                         Các giá trị hợp lệ là 'string', 'boolean', 'integer', 'number', 'array', và 'object'.
+ *     @type string     $label             Nhãn của dữ liệu gắn với cài đặt này.
+ *     @type string     $description       Mô tả của dữ liệu gắn với cài đặt này.
+ *     @type callable   $sanitize_callback Hàm callback để làm sạch giá trị tùy chọn.
+ *     @type bool|array $show_in_rest      Dữ liệu liên kết với cài đặt này có nên được bao gồm trong REST API không.
+ *                                         Khi đăng ký cài đặt phức tạp, tham số này có thể tùy chọn là
+ *                                         mảng với khóa 'schema'.
+ *     @type mixed      $default           Giá trị mặc định khi gọi `get_option()`.
  * }
  */
 function register_setting( $option_group, $option_name, $args = array() ) {
@@ -2992,7 +2992,7 @@ function register_setting( $option_group, $option_name, $args = array() ) {
 		'show_in_rest'      => false,
 	);
 
-	// Back-compat: old sanitize callback is added.
+	// Tương thích ngược: callback sanitize cũ được thêm vào.
 	if ( is_callable( $args ) ) {
 		$args = array(
 			'sanitize_callback' => $args,
@@ -3000,20 +3000,20 @@ function register_setting( $option_group, $option_name, $args = array() ) {
 	}
 
 	/**
-	 * Filters the registration arguments when registering a setting.
+	 * Lọc các tham số đăng ký khi đăng ký một cài đặt.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array  $args         Array of setting registration arguments.
-	 * @param array  $defaults     Array of default arguments.
-	 * @param string $option_group Setting group.
-	 * @param string $option_name  Setting name.
+	 * @param array  $args         Mảng các tham số đăng ký cài đặt.
+	 * @param array  $defaults     Mảng các tham số mặc định.
+	 * @param string $option_group Nhóm cài đặt.
+	 * @param string $option_name  Tên cài đặt.
 	 */
 	$args = apply_filters( 'register_setting_args', $args, $defaults, $option_group, $option_name );
 
 	$args = wp_parse_args( $args, $defaults );
 
-	// Require an item schema when registering settings with an array type.
+	// Yêu cầu schema cho phần tử khi đăng ký cài đặt với kiểu mảng.
 	if ( false !== $args['show_in_rest'] && 'array' === $args['type'] && ( ! is_array( $args['show_in_rest'] ) || ! isset( $args['show_in_rest']['schema']['items'] ) ) ) {
 		_doing_it_wrong( __FUNCTION__, __( 'When registering an "array" setting to show in the REST API, you must specify the schema for each array item in "show_in_rest.schema.items".' ), '5.4.0' );
 	}

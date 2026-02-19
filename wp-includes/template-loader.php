@@ -1,12 +1,12 @@
 <?php
 /**
- * Loads the correct template based on the visitor's url
+ * Tải template chính xác dựa trên URL của người truy cập
  *
  * @package WordPress
  */
 if ( wp_using_themes() ) {
 	/**
-	 * Fires before determining which template to load.
+	 * Kích hoạt trước khi xác định template nào sẽ được tải.
 	 *
 	 * @since 1.5.0
 	 */
@@ -14,23 +14,23 @@ if ( wp_using_themes() ) {
 }
 
 /**
- * Filters whether to allow 'HEAD' requests to generate content.
+ * Lọc việc cho phép các yêu cầu 'HEAD' tạo nội dung.
  *
- * Provides a significant performance bump by exiting before the page
- * content loads for 'HEAD' requests. See #14348.
+ * Cung cấp cải thiện hiệu suất đáng kể bằng cách thoát trước khi nội dung
+ * trang được tải cho các yêu cầu 'HEAD'. Xem #14348.
  *
  * @since 3.5.0
  *
- * @param bool $exit Whether to exit without generating any content for 'HEAD' requests. Default true.
+ * @param bool $exit Có thoát mà không tạo nội dung nào cho các yêu cầu 'HEAD' hay không. Mặc định true.
  */
 if ( 'HEAD' === $_SERVER['REQUEST_METHOD'] && apply_filters( 'exit_on_http_head', true ) ) {
 	exit;
 }
 
-// Process feeds and trackbacks even if not using themes.
+// Xử lý feed và trackback ngay cả khi không sử dụng theme.
 if ( is_robots() ) {
 	/**
-	 * Fired when the template loader determines a robots.txt request.
+	 * Kích hoạt khi bộ tải template xác định đây là yêu cầu robots.txt.
 	 *
 	 * @since 2.1.0
 	 */
@@ -38,7 +38,7 @@ if ( is_robots() ) {
 	return;
 } elseif ( is_favicon() ) {
 	/**
-	 * Fired when the template loader determines a favicon.ico request.
+	 * Kích hoạt khi bộ tải template xác định đây là yêu cầu favicon.ico.
 	 *
 	 * @since 5.4.0
 	 */
@@ -75,7 +75,7 @@ if ( wp_using_themes() ) {
 	);
 	$template      = false;
 
-	// Loop through each of the template conditionals, and find the appropriate template file.
+	// Lặp qua từng điều kiện template, và tìm file template phù hợp.
 	foreach ( $tag_templates as $tag => $template_getter ) {
 		if ( call_user_func( $tag ) ) {
 			$template = call_user_func( $template_getter );
@@ -95,11 +95,11 @@ if ( wp_using_themes() ) {
 	}
 
 	/**
-	 * Filters the path of the current template before including it.
+	 * Lọc đường dẫn của template hiện tại trước khi include nó.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $template The path of the template to include.
+	 * @param string $template Đường dẫn của template cần include.
 	 */
 	$template = apply_filters( 'template_include', $template );
 	if ( $template ) {

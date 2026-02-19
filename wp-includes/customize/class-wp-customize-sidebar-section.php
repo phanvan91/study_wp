@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Sidebar_Section class
+ * API Tùy biến: Lớp WP_Customize_Sidebar_Section
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customizer section representing widget area (sidebar).
+ * Phần tùy biến đại diện cho vùng widget (thanh bên).
  *
  * @since 4.1.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Sidebar_Section extends WP_Customize_Section {
 
 	/**
-	 * Type of this section.
+	 * Loại của phần này.
 	 *
 	 * @since 4.1.0
 	 * @var string
@@ -25,7 +25,7 @@ class WP_Customize_Sidebar_Section extends WP_Customize_Section {
 	public $type = 'sidebar';
 
 	/**
-	 * Unique identifier.
+	 * Định danh duy nhất.
 	 *
 	 * @since 4.1.0
 	 * @var string
@@ -33,11 +33,11 @@ class WP_Customize_Sidebar_Section extends WP_Customize_Section {
 	public $sidebar_id;
 
 	/**
-	 * Gather the parameters passed to client JavaScript via JSON.
+	 * Thu thập các tham số được truyền tới JavaScript phía client qua JSON.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return array The array to be exported to the client as JSON.
+	 * @return array Mảng được xuất tới client dưới dạng JSON.
 	 */
 	public function json() {
 		$json              = parent::json();
@@ -46,11 +46,11 @@ class WP_Customize_Sidebar_Section extends WP_Customize_Section {
 	}
 
 	/**
-	 * Whether the current sidebar is rendered on the page.
+	 * Kiểm tra xem thanh bên hiện tại có được hiển thị trên trang hay không.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return bool Whether sidebar is rendered.
+	 * @return bool Thanh bên có được hiển thị hay không.
 	 */
 	public function active_callback() {
 		return $this->manager->widgets->is_sidebar_rendered( $this->sidebar_id );

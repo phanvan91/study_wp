@@ -1,6 +1,6 @@
 <?php
 /**
- * Upgrader API: Bulk_Upgrader_Skin class
+ * API Nâng cấp: Lớp Bulk_Upgrader_Skin
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -8,17 +8,17 @@
  */
 
 /**
- * Generic Bulk Upgrader Skin for WordPress Upgrades.
+ * Giao diện nâng cấp hàng loạt chung cho việc nâng cấp WordPress.
  *
  * @since 3.0.0
- * @since 4.6.0 Moved to its own file from wp-admin/includes/class-wp-upgrader-skins.php.
+ * @since 4.6.0 Được chuyển sang file riêng từ wp-admin/includes/class-wp-upgrader-skins.php.
  *
  * @see WP_Upgrader_Skin
  */
 class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 
 	/**
-	 * Whether the bulk update process has started.
+	 * Quá trình cập nhật hàng loạt đã bắt đầu hay chưa.
 	 *
 	 * @since 3.0.0
 	 * @var bool
@@ -26,7 +26,7 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	public $in_loop = false;
 
 	/**
-	 * Stores an error message about the update.
+	 * Lưu trữ thông báo lỗi về việc cập nhật.
 	 *
 	 * @since 3.0.0
 	 * @var string|false
@@ -34,9 +34,9 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	public $error = false;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * Sets up the generic skin for the Bulk Upgrader classes.
+	 * Thiết lập giao diện chung cho các lớp Nâng cấp hàng loạt.
 	 *
 	 * @since 3.0.0
 	 *
@@ -53,7 +53,7 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Sets up the strings used in the update process.
+	 * Thiết lập các chuỗi sử dụng trong quá trình cập nhật.
 	 *
 	 * @since 3.0.0
 	 */
@@ -69,13 +69,13 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Displays a message about the update.
+	 * Hiển thị thông báo về việc cập nhật.
 	 *
 	 * @since 3.0.0
-	 * @since 5.9.0 Renamed `$string` (a PHP reserved keyword) to `$feedback` for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$string` (từ khóa dành riêng PHP) thành `$feedback` để hỗ trợ tham số đặt tên PHP 8.
 	 *
-	 * @param string $feedback Message data.
-	 * @param mixed  ...$args  Optional text replacements.
+	 * @param string $feedback Dữ liệu thông báo.
+	 * @param mixed  ...$args  Các chuỗi thay thế tùy chọn.
 	 */
 	public function feedback( $feedback, ...$args ) {
 		if ( isset( $this->upgrader->strings[ $feedback ] ) ) {
@@ -100,30 +100,30 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Displays the header before the update process.
+	 * Hiển thị phần tiêu đề trước quá trình cập nhật.
 	 *
 	 * @since 3.0.0
 	 */
 	public function header() {
-		// Nothing. This will be displayed within an iframe.
+		// Không có gì. Nội dung này sẽ được hiển thị trong một iframe.
 	}
 
 	/**
-	 * Displays the footer following the update process.
+	 * Hiển thị phần chân trang sau quá trình cập nhật.
 	 *
 	 * @since 3.0.0
 	 */
 	public function footer() {
-		// Nothing. This will be displayed within an iframe.
+		// Không có gì. Nội dung này sẽ được hiển thị trong một iframe.
 	}
 
 	/**
-	 * Displays an error message about the update.
+	 * Hiển thị thông báo lỗi về việc cập nhật.
 	 *
 	 * @since 3.0.0
-	 * @since 5.9.0 Renamed `$error` to `$errors` for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$error` thành `$errors` để hỗ trợ tham số đặt tên PHP 8.
 	 *
-	 * @param string|WP_Error $errors Errors.
+	 * @param string|WP_Error $errors Các lỗi.
 	 */
 	public function error( $errors ) {
 		if ( is_string( $errors ) && isset( $this->upgrader->strings[ $errors ] ) ) {
@@ -145,7 +145,7 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Displays the header before the bulk update process.
+	 * Hiển thị phần tiêu đề trước quá trình cập nhật hàng loạt.
 	 *
 	 * @since 3.0.0
 	 */
@@ -154,7 +154,7 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Displays the footer following the bulk update process.
+	 * Hiển thị phần chân trang sau quá trình cập nhật hàng loạt.
 	 *
 	 * @since 3.0.0
 	 */
@@ -163,7 +163,7 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Performs an action before a bulk update.
+	 * Thực hiện hành động trước khi cập nhật hàng loạt.
 	 *
 	 * @since 3.0.0
 	 *
@@ -173,13 +173,13 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 		$this->in_loop = true;
 		printf( '<h2>' . $this->upgrader->strings['skin_before_update_header'] . ' <span class="spinner waiting-' . $this->upgrader->update_current . '"></span></h2>', $title, $this->upgrader->update_current, $this->upgrader->update_count );
 		echo '<script type="text/javascript">jQuery(\'.waiting-' . esc_js( $this->upgrader->update_current ) . '\').css("display", "inline-block");</script>';
-		// This progress messages div gets moved via JavaScript when clicking on "More details.".
+		// Thẻ div thông báo tiến trình này sẽ được di chuyển qua JavaScript khi nhấp vào "Xem chi tiết.".
 		echo '<div class="update-messages hide-if-js" id="progress-' . esc_attr( $this->upgrader->update_current ) . '"><p>';
 		$this->flush_output();
 	}
 
 	/**
-	 * Performs an action following a bulk update.
+	 * Thực hiện hành động sau khi cập nhật hàng loạt.
 	 *
 	 * @since 3.0.0
 	 *
@@ -218,7 +218,7 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Resets the properties used in the update process.
+	 * Đặt lại các thuộc tính sử dụng trong quá trình cập nhật.
 	 *
 	 * @since 3.0.0
 	 */
@@ -228,7 +228,7 @@ class Bulk_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Flushes all output buffers.
+	 * Xả tất cả các bộ đệm đầu ra.
 	 *
 	 * @since 3.0.0
 	 */

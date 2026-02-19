@@ -1,13 +1,13 @@
 <?php
 /**
- * Error Protection API: WP_Recovery_Mode class
+ * API bảo vệ lỗi: Lớp WP_Recovery_Mode
  *
  * @package WordPress
  * @since 5.2.0
  */
 
 /**
- * Core class used to implement Recovery Mode.
+ * Lớp cốt lõi dùng để triển khai Chế độ Phục hồi.
  *
  * @since 5.2.0
  */
@@ -17,7 +17,7 @@ class WP_Recovery_Mode {
 	const EXIT_ACTION = 'exit_recovery_mode';
 
 	/**
-	 * Service to handle cookies.
+	 * Dịch vụ để xử lý cookie.
 	 *
 	 * @since 5.2.0
 	 * @var WP_Recovery_Mode_Cookie_Service
@@ -25,7 +25,7 @@ class WP_Recovery_Mode {
 	private $cookie_service;
 
 	/**
-	 * Service to generate a recovery mode key.
+	 * Dịch vụ để tạo khóa chế độ phục hồi.
 	 *
 	 * @since 5.2.0
 	 * @var WP_Recovery_Mode_Key_Service
@@ -33,7 +33,7 @@ class WP_Recovery_Mode {
 	private $key_service;
 
 	/**
-	 * Service to generate and validate recovery mode links.
+	 * Dịch vụ để tạo và xác thực các liên kết chế độ phục hồi.
 	 *
 	 * @since 5.2.0
 	 * @var WP_Recovery_Mode_Link_Service
@@ -41,7 +41,7 @@ class WP_Recovery_Mode {
 	private $link_service;
 
 	/**
-	 * Service to handle sending an email with a recovery mode link.
+	 * Dịch vụ để xử lý việc gửi email có liên kết chế độ phục hồi.
 	 *
 	 * @since 5.2.0
 	 * @var WP_Recovery_Mode_Email_Service
@@ -49,7 +49,7 @@ class WP_Recovery_Mode {
 	private $email_service;
 
 	/**
-	 * Is recovery mode initialized.
+	 * Chế độ phục hồi đã được khởi tạo hay chưa.
 	 *
 	 * @since 5.2.0
 	 * @var bool
@@ -57,7 +57,7 @@ class WP_Recovery_Mode {
 	private $is_initialized = false;
 
 	/**
-	 * Is recovery mode active in this session.
+	 * Chế độ phục hồi có hoạt động trong phiên này hay không.
 	 *
 	 * @since 5.2.0
 	 * @var bool
@@ -65,7 +65,7 @@ class WP_Recovery_Mode {
 	private $is_active = false;
 
 	/**
-	 * Get an ID representing the current recovery mode session.
+	 * Lấy ID đại diện cho phiên chế độ phục hồi hiện tại.
 	 *
 	 * @since 5.2.0
 	 * @var string
@@ -73,7 +73,7 @@ class WP_Recovery_Mode {
 	private $session_id = '';
 
 	/**
-	 * WP_Recovery_Mode constructor.
+	 * Hàm khởi tạo WP_Recovery_Mode.
 	 *
 	 * @since 5.2.0
 	 */
@@ -85,7 +85,7 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Initialize recovery mode for the current request.
+	 * Khởi tạo chế độ phục hồi cho yêu cầu hiện tại.
 	 *
 	 * @since 5.2.0
 	 */
@@ -117,33 +117,33 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Checks whether recovery mode is active.
+	 * Kiểm tra xem chế độ phục hồi có hoạt động hay không.
 	 *
-	 * This will not change after recovery mode has been initialized. {@see WP_Recovery_Mode::run()}.
+	 * Điều này sẽ không thay đổi sau khi chế độ phục hồi đã được khởi tạo. {@see WP_Recovery_Mode::run()}.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return bool True if recovery mode is active, false otherwise.
+	 * @return bool True nếu chế độ phục hồi hoạt động, false nếu ngược lại.
 	 */
 	public function is_active() {
 		return $this->is_active;
 	}
 
 	/**
-	 * Gets the recovery mode session ID.
+	 * Lấy ID phiên chế độ phục hồi.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return string The session ID if recovery mode is active, empty string otherwise.
+	 * @return string ID phiên nếu chế độ phục hồi hoạt động, chuỗi rỗng nếu ngược lại.
 	 */
 	public function get_session_id() {
 		return $this->session_id;
 	}
 
 	/**
-	 * Checks whether recovery mode has been initialized.
+	 * Kiểm tra xem chế độ phục hồi đã được khởi tạo hay chưa.
 	 *
-	 * Recovery mode should not be used until this point. Initialization happens immediately before loading plugins.
+	 * Chế độ phục hồi không nên được sử dụng cho đến thời điểm này. Khởi tạo xảy ra ngay trước khi tải plugin.
 	 *
 	 * @since 5.2.0
 	 *
@@ -154,16 +154,16 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Handles a fatal error occurring.
+	 * Xử lý một lỗi nghiêm trọng xảy ra.
 	 *
-	 * The calling API should immediately die() after calling this function.
+	 * API gọi nên ngay lập tức die() sau khi gọi hàm này.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param array $error Error details from `error_get_last()`.
-	 * @return true|WP_Error|void True if the error was handled and headers have already been sent.
-	 *                            Or the request will exit to try and catch multiple errors at once.
-	 *                            WP_Error if an error occurred preventing it from being handled.
+	 * @param array $error Chi tiết lỗi từ `error_get_last()`.
+	 * @return true|WP_Error|void True nếu lỗi đã được xử lý và tiêu đề đã được gửi.
+	 *                            Hoặc yêu cầu sẽ thoát để thử bắt nhiều lỗi cùng một lúc.
+	 *                            WP_Error nếu một lỗi xảy ra ngăn nó được xử lý.
 	 */
 	public function handle_error( array $error ) {
 
@@ -197,11 +197,11 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Ends the current recovery mode session.
+	 * Kết thúc phiên chế độ phục hồi hiện tại.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return bool True on success, false on failure.
+	 * @return bool True nếu thành công, false nếu thất bại.
 	 */
 	public function exit_recovery_mode() {
 		if ( ! $this->is_active() ) {
@@ -218,14 +218,14 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Handles a request to exit Recovery Mode.
+	 * Xử lý yêu cầu thoát Chế độ Phục hồi.
 	 *
 	 * @since 5.2.0
 	 */
 	public function handle_exit_recovery_mode() {
 		$redirect_to = wp_get_referer();
 
-		// Safety check in case referrer returns false.
+		// Kiểm tra an toàn trong trường hợp người giới thiệu trả về false.
 		if ( ! $redirect_to ) {
 			$redirect_to = is_user_logged_in() ? admin_url() : home_url();
 		}
@@ -252,9 +252,9 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Cleans any recovery mode keys that have expired according to the link TTL.
+	 * Xóa bất kỳ khóa chế độ phục hồi nào đã hết hạn theo TTL liên kết.
 	 *
-	 * Executes on a daily cron schedule.
+	 * Thực thi theo lịch trình cron hàng ngày.
 	 *
 	 * @since 5.2.0
 	 */
@@ -263,7 +263,7 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Handles checking for the recovery mode cookie and validating it.
+	 * Xử lý việc kiểm tra cookie chế độ phục hồi và xác thực nó.
 	 *
 	 * @since 5.2.0
 	 */
@@ -290,29 +290,29 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Gets the rate limit between sending new recovery mode email links.
+	 * Lấy giới hạn tỷ lệ giữa việc gửi các liên kết email chế độ phục hồi mới.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return int Rate limit in seconds.
+	 * @return int Giới hạn tỷ lệ tính bằng giây.
 	 */
 	protected function get_email_rate_limit() {
 		/**
-		 * Filters the rate limit between sending new recovery mode email links.
+		 * Lọc giới hạn tỷ lệ giữa việc gửi các liên kết email chế độ phục hồi mới.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param int $rate_limit Time to wait in seconds. Defaults to 1 day.
+		 * @param int $rate_limit Thời gian chờ tính bằng giây. Mặc định là 1 ngày.
 		 */
 		return apply_filters( 'recovery_mode_email_rate_limit', DAY_IN_SECONDS );
 	}
 
 	/**
-	 * Gets the number of seconds the recovery mode link is valid for.
+	 * Lấy số giây liên kết chế độ phục hồi có hiệu lực.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return int Interval in seconds.
+	 * @return int Khoảng thời gian tính bằng giây.
 	 */
 	protected function get_link_ttl() {
 
@@ -320,13 +320,13 @@ class WP_Recovery_Mode {
 		$valid_for  = $rate_limit;
 
 		/**
-		 * Filters the amount of time the recovery mode email link is valid for.
+		 * Lọc lượng thời gian liên kết email chế độ phục hồi có hiệu lực.
 		 *
-		 * The ttl must be at least as long as the email rate limit.
+		 * TTL phải ít nhất bằng giới hạn tỷ lệ email.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param int $valid_for The number of seconds the link is valid for.
+		 * @param int $valid_for Số giây liên kết có hiệu lực.
 		 */
 		$valid_for = apply_filters( 'recovery_mode_email_link_ttl', $valid_for );
 
@@ -334,18 +334,18 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Gets the extension that the error occurred in.
+	 * Lấy phần mở rộng mà lỗi xảy ra.
 	 *
 	 * @since 5.2.0
 	 *
 	 * @global string[] $wp_theme_directories
 	 *
-	 * @param array $error Error details from `error_get_last()`.
+	 * @param array $error Chi tiết lỗi từ `error_get_last()`.
 	 * @return array|false {
-	 *     Extension details.
+	 *     Chi tiết phần mở rộng.
 	 *
-	 *     @type string $slug The extension slug. This is the plugin or theme's directory.
-	 *     @type string $type The extension type. Either 'plugin' or 'theme'.
+	 *     @type string $slug Slug của phần mở rộng. Đây là thư mục của plugin hoặc theme.
+	 *     @type string $type Loại phần mở rộng. Hoặc 'plugin' hoặc 'theme'.
 	 * }
 	 */
 	protected function get_extension_for_error( $error ) {
@@ -394,12 +394,12 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Checks whether the given extension a network activated plugin.
+	 * Kiểm tra xem phần mở rộng đã cho có phải là một plugin được kích hoạt mạng hay không.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param array $extension Extension data.
-	 * @return bool True if network plugin, false otherwise.
+	 * @param array $extension Dữ liệu phần mở rộng.
+	 * @return bool True nếu là plugin mạng, false nếu ngược lại.
 	 */
 	protected function is_network_plugin( $extension ) {
 		if ( 'plugin' !== $extension['type'] ) {
@@ -422,12 +422,12 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Stores the given error so that the extension causing it is paused.
+	 * Lưu trữ lỗi đã cho để phần mở rộng gây ra nó bị tạm dừng.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param array $error Error details from `error_get_last()`.
-	 * @return bool True if the error was stored successfully, false otherwise.
+	 * @param array $error Chi tiết lỗi từ `error_get_last()`.
+	 * @return bool True nếu lỗi được lưu trữ thành công, false nếu ngược lại.
 	 */
 	protected function store_error( $error ) {
 		$extension = $this->get_extension_for_error( $error );
@@ -447,17 +447,17 @@ class WP_Recovery_Mode {
 	}
 
 	/**
-	 * Redirects the current request to allow recovering multiple errors in one go.
+	 * Chuyển hướng yêu cầu hiện tại để cho phép khôi phục nhiều lỗi cùng một lúc.
 	 *
-	 * The redirection will only happen when on a protected endpoint.
+	 * Việc chuyển hướng sẽ chỉ xảy ra khi trên một điểm cuối được bảo vệ.
 	 *
-	 * It must be ensured that this method is only called when an error actually occurred and will not occur on the
-	 * next request again. Otherwise it will create a redirect loop.
+	 * Phải đảm bảo rằng phương thức này chỉ được gọi khi một lỗi thực sự xảy ra và sẽ không xảy ra trên
+	 * yêu cầu tiếp theo nữa. Nếu không, nó sẽ tạo ra một vòng lặp chuyển hướng.
 	 *
 	 * @since 5.2.0
 	 */
 	protected function redirect_protected() {
-		// Pluggable is usually loaded after plugins, so we manually include it here for redirection functionality.
+		// Pluggable thường được tải sau các plugin, vì vậy chúng tôi bao gồm nó ở đây để có chức năng chuyển hướng.
 		if ( ! function_exists( 'wp_safe_redirect' ) ) {
 			require_once ABSPATH . WPINC . '/pluggable.php';
 		}

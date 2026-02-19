@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Nav_Menu_Item_Control class
+ * API Tùy biến: Lớp WP_Customize_Nav_Menu_Item_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize control to represent the name field for a given menu.
+ * Điều khiển tùy biến đại diện cho trường tên của một menu nhất định.
  *
  * @since 4.3.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Nav_Menu_Item_Control extends WP_Customize_Control {
 
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -25,7 +25,7 @@ class WP_Customize_Nav_Menu_Item_Control extends WP_Customize_Control {
 	public $type = 'nav_menu_item';
 
 	/**
-	 * The nav menu item setting.
+	 * Cài đặt mục menu điều hướng.
 	 *
 	 * @since 4.3.0
 	 * @var WP_Customize_Nav_Menu_Item_Setting
@@ -33,31 +33,31 @@ class WP_Customize_Nav_Menu_Item_Control extends WP_Customize_Control {
 	public $setting;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 4.3.0
 	 *
 	 * @see WP_Customize_Control::__construct()
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
-	 * @param string               $id      The control ID.
-	 * @param array                $args    Optional. Arguments to override class property defaults.
-	 *                                      See WP_Customize_Control::__construct() for information
-	 *                                      on accepted arguments. Default empty array.
+	 * @param WP_Customize_Manager $manager Đối tượng khởi tạo Trình tùy biến.
+	 * @param string               $id      ID của điều khiển.
+	 * @param array                $args    Tùy chọn. Các tham số để ghi đè giá trị mặc định của thuộc tính lớp.
+	 *                                      Xem WP_Customize_Control::__construct() để biết thông tin
+	 *                                      về các tham số được chấp nhận. Mặc định là mảng rỗng.
 	 */
 	public function __construct( $manager, $id, $args = array() ) {
 		parent::__construct( $manager, $id, $args );
 	}
 
 	/**
-	 * Don't render the control's content - it's rendered with a JS template.
+	 * Không hiển thị nội dung điều khiển - được hiển thị bằng mẫu JS.
 	 *
 	 * @since 4.3.0
 	 */
 	public function render_content() {}
 
 	/**
-	 * JS/Underscore template for the control UI.
+	 * Mẫu JS/Underscore cho giao diện điều khiển.
 	 *
 	 * @since 4.3.0
 	 */
@@ -79,24 +79,24 @@ class WP_Customize_Nav_Menu_Item_Control extends WP_Customize_Control {
 					<button type="button" class="button-link item-edit" aria-expanded="false"><span class="screen-reader-text">
 					<# if ( 0 === data.depth ) { #>
 						<?php
-						/* translators: 1: Title of a menu item, 2: Type of a menu item. 3: Item index, 4: Total items. */
+						/* translators: 1: Tiêu đề mục menu, 2: Loại mục menu. 3: Chỉ số mục, 4: Tổng số mục. */
 						printf( __( 'Edit %1$s (%2$s, %3$d of %4$d)' ), '{{ data.title || data.original_title || wp.customize.Menus.data.l10n.untitled }}', '{{ data.item_type_label }}', '', '' );
 						?>
 					<# } else if ( 1 === data.depth ) { #>
 						<?php
-							/* translators: 1: Title of a menu item, 2: Type of a menu item, 3, Item index, 4, Total items, 5: Item parent. */
+							/* translators: 1: Tiêu đề mục menu, 2: Loại mục menu, 3: Chỉ số mục, 4: Tổng số mục, 5: Mục cha. */
 							printf( __( 'Edit %1$s (%2$s, sub-item %3$d of %4$d under %5$s)' ), '{{ data.title || data.original_title || wp.customize.Menus.data.l10n.untitled }}', '{{ data.item_type_label }}', '', '', '' );
 						?>
 					<# } else { #>
 						<?php
-							/* translators: 1: Title of a menu item, 2: Type of a menu item, 3, Item index, 4, Total items, 5: Item parent, 6: Item depth. */
+							/* translators: 1: Tiêu đề mục menu, 2: Loại mục menu, 3: Chỉ số mục, 4: Tổng số mục, 5: Mục cha, 6: Độ sâu mục. */
 							printf( __( 'Edit %1$s (%2$s, sub-item %3$d of %4$d under %5$s, level %6$s)' ), '{{ data.title || data.original_title || wp.customize.Menus.data.l10n.untitled }}', '{{ data.item_type_label }}', '', '', '', '{{data.depth}}' );
 						?>
 					<# } #>
 					</span><span class="toggle-indicator" aria-hidden="true"></span></button>
 					<button type="button" class="button-link item-delete submitdelete deletion"><span class="screen-reader-text">
 					<?php
-						/* translators: 1: Title of a menu item, 2: Type of a menu item. */
+						/* translators: 1: Tiêu đề mục menu, 2: Loại mục menu. */
 						printf( __( 'Remove Menu Item: %1$s (%2$s)' ), '{{ data.title || data.original_title || wp.customize.Menus.data.l10n.untitled }}', '{{ data.item_type_label }}' );
 					?>
 					</span></button>
@@ -153,9 +153,9 @@ class WP_Customize_Nav_Menu_Item_Control extends WP_Customize_Control {
 
 			<?php
 			/**
-			 * Fires at the end of the form field template for nav menu items in the customizer.
+			 * Kích hoạt ở cuối mẫu trường biểu mẫu cho các mục menu điều hướng trong trình tùy biến.
 			 *
-			 * Additional fields can be rendered here and managed in JavaScript.
+			 * Các trường bổ sung có thể được hiển thị ở đây và quản lý trong JavaScript.
 			 *
 			 * @since 5.4.0
 			 */
@@ -166,7 +166,7 @@ class WP_Customize_Nav_Menu_Item_Control extends WP_Customize_Control {
 				<# if ( ( 'post_type' === data.item_type || 'taxonomy' === data.item_type ) && '' !== data.original_title ) { #>
 				<p class="link-to-original">
 					<?php
-						/* translators: Nav menu item original title. %s: Original title. */
+						/* translators: Tiêu đề gốc của mục menu điều hướng. %s: Tiêu đề gốc. */
 						printf( __( 'Original: %s' ), '<a class="original-link" href="{{ data.url }}">{{ data.original_title }}</a>' );
 					?>
 				</p>
@@ -183,11 +183,11 @@ class WP_Customize_Nav_Menu_Item_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Return parameters for this control.
+	 * Trả về các tham số cho điều khiển này.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @return array Exported parameters.
+	 * @return array Các tham số đã được xuất.
 	 */
 	public function json() {
 		$exported                 = parent::json();

@@ -1,69 +1,69 @@
 <?php
 /**
- * Misc WordPress Administration API.
+ * API Quản trị WordPress đa dụng.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Returns whether the server is running Apache with the mod_rewrite module loaded.
+ * Trả về máy chủ có đang chạy Apache với mô-đun mod_rewrite được tải hay không.
  *
  * @since 2.0.0
  *
- * @return bool Whether the server is running Apache with the mod_rewrite module loaded.
+ * @return bool Máy chủ có đang chạy Apache với mô-đun mod_rewrite được tải hay không.
  */
 function got_mod_rewrite() {
 	$got_rewrite = apache_mod_loaded( 'mod_rewrite', true );
 
 	/**
-	 * Filters whether Apache and mod_rewrite are present.
+	 * Lọc kết quả kiểm tra Apache và mod_rewrite có tồn tại hay không.
 	 *
-	 * This filter was previously used to force URL rewriting for other servers,
-	 * like nginx. Use the {@see 'got_url_rewrite'} filter in got_url_rewrite() instead.
+	 * Bộ lọc này trước đây được dùng để ép viết lại URL cho các máy chủ khác,
+	 * như nginx. Sử dụng bộ lọc {@see 'got_url_rewrite'} trong got_url_rewrite() thay thế.
 	 *
 	 * @since 2.5.0
 	 *
 	 * @see got_url_rewrite()
 	 *
-	 * @param bool $got_rewrite Whether Apache and mod_rewrite are present.
+	 * @param bool $got_rewrite Apache và mod_rewrite có tồn tại hay không.
 	 */
 	return apply_filters( 'got_rewrite', $got_rewrite );
 }
 
 /**
- * Returns whether the server supports URL rewriting.
+ * Trả về máy chủ có hỗ trợ viết lại URL hay không.
  *
- * Detects Apache's mod_rewrite, IIS 7.0+ permalink support, and nginx.
+ * Phát hiện mod_rewrite của Apache, hỗ trợ đường dẫn tĩnh IIS 7.0+, và nginx.
  *
  * @since 3.7.0
  *
  * @global bool $is_nginx
  * @global bool $is_caddy
  *
- * @return bool Whether the server supports URL rewriting.
+ * @return bool Máy chủ có hỗ trợ viết lại URL hay không.
  */
 function got_url_rewrite() {
 	$got_url_rewrite = ( got_mod_rewrite() || $GLOBALS['is_nginx'] || $GLOBALS['is_caddy'] || iis7_supports_permalinks() );
 
 	/**
-	 * Filters whether URL rewriting is available.
+	 * Lọc kết quả kiểm tra viết lại URL có khả dụng hay không.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param bool $got_url_rewrite Whether URL rewriting is available.
+	 * @param bool $got_url_rewrite Viết lại URL có khả dụng hay không.
 	 */
 	return apply_filters( 'got_url_rewrite', $got_url_rewrite );
 }
 
 /**
- * Extracts strings from between the BEGIN and END markers in the .htaccess file.
+ * Trích xuất chuỗi nằm giữa các đánh dấu BEGIN và END trong tệp .htaccess.
  *
  * @since 1.5.0
  *
- * @param string $filename Filename to extract the strings from.
- * @param string $marker   The marker to extract the strings from.
- * @return string[] An array of strings from a file (.htaccess) from between BEGIN and END markers.
+ * @param string $filename Tên tệp để trích xuất chuỗi.
+ * @param string $marker   Đánh dấu để trích xuất chuỗi.
+ * @return string[] Mảng các chuỗi từ tệp (.htaccess) nằm giữa các đánh dấu BEGIN và END.
  */
 function extract_from_markers( $filename, $marker ) {
 	$result = array();
@@ -98,18 +98,18 @@ function extract_from_markers( $filename, $marker ) {
 }
 
 /**
- * Inserts an array of strings into a file (.htaccess), placing it between
- * BEGIN and END markers.
+ * Chèn một mảng chuỗi vào tệp (.htaccess), đặt giữa
+ * các đánh dấu BEGIN và END.
  *
- * Replaces existing marked info. Retains surrounding
- * data. Creates file if none exists.
+ * Thay thế thông tin đánh dấu hiện có. Giữ lại dữ liệu
+ * xung quanh. Tạo tệp nếu chưa tồn tại.
  *
  * @since 1.5.0
  *
- * @param string       $filename  Filename to alter.
- * @param string       $marker    The marker to alter.
- * @param array|string $insertion The new content to insert.
- * @return bool True on write success, false on failure.
+ * @param string       $filename  Tên tệp cần thay đổi.
+ * @param string       $marker    Đánh dấu cần thay đổi.
+ * @param array|string $insertion Nội dung mới để chèn.
+ * @return bool True nếu ghi thành công, false nếu thất bại.
  */
 function insert_with_markers( $filename, $marker, $insertion ) {
 	if ( ! file_exists( $filename ) ) {
@@ -121,7 +121,7 @@ function insert_with_markers( $filename, $marker, $insertion ) {
 			return false;
 		}
 
-		// Make sure the file is created with a minimum set of permissions.
+		// Đảm bảo tệp được tạo với bộ quyền tối thiểu.
 		$perms = fileperms( $filename );
 
 		if ( $perms ) {
@@ -154,12 +154,12 @@ Any changes to the directives between these markers will be overwritten.'
 	}
 
 	/**
-	 * Filters the inline instructions inserted before the dynamically generated content.
+	 * Lọc các hướng dẫn nội tuyến được chèn trước nội dung được tạo động.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param string[] $instructions Array of lines with inline instructions.
-	 * @param string   $marker       The marker being inserted.
+	 * @param string[] $instructions Mảng các dòng chứa hướng dẫn nội tuyến.
+	 * @param string   $marker       Đánh dấu đang được chèn.
 	 */
 	$instructions = apply_filters( 'insert_with_markers_inline_instructions', $instructions, $marker );
 
@@ -178,7 +178,7 @@ Any changes to the directives between these markers will be overwritten.'
 		return false;
 	}
 
-	// Attempt to get a lock. If the filesystem supports locking, this will block until the lock is acquired.
+	// Cố gắng khóa tệp. Nếu hệ thống tệp hỗ trợ khóa, nó sẽ chặn cho đến khi khóa được lấy.
 	flock( $fp, LOCK_EX );
 
 	$lines = array();
@@ -187,7 +187,7 @@ Any changes to the directives between these markers will be overwritten.'
 		$lines[] = rtrim( fgets( $fp ), "\r\n" );
 	}
 
-	// Split out the existing file into the preceding lines, and those that appear after the marker.
+	// Tách tệp hiện có thành các dòng trước đánh dấu, và các dòng xuất hiện sau đánh dấu.
 	$pre_lines        = array();
 	$post_lines       = array();
 	$existing_lines   = array();
@@ -212,7 +212,7 @@ Any changes to the directives between these markers will be overwritten.'
 		}
 	}
 
-	// Check to see if there was a change.
+	// Kiểm tra xem có thay đổi hay không.
 	if ( $existing_lines === $insertion ) {
 		flock( $fp, LOCK_UN );
 		fclose( $fp );
@@ -220,7 +220,7 @@ Any changes to the directives between these markers will be overwritten.'
 		return true;
 	}
 
-	// Generate the new file data.
+	// Tạo dữ liệu tệp mới.
 	$new_file_data = implode(
 		"\n",
 		array_merge(
@@ -232,7 +232,7 @@ Any changes to the directives between these markers will be overwritten.'
 		)
 	);
 
-	// Write to the start of the file, and truncate it to that length.
+	// Ghi từ đầu tệp và cắt bớt đến độ dài đó.
 	fseek( $fp, 0 );
 	$bytes = fwrite( $fp, $new_file_data );
 
@@ -248,16 +248,16 @@ Any changes to the directives between these markers will be overwritten.'
 }
 
 /**
- * Updates the htaccess file with the current rules if it is writable.
+ * Cập nhật tệp htaccess với các quy tắc hiện tại nếu có quyền ghi.
  *
- * Always writes to the file if it exists and is writable to ensure that we
- * blank out old rules.
+ * Luôn ghi vào tệp nếu nó tồn tại và có quyền ghi để đảm bảo
+ * xóa sạch các quy tắc cũ.
  *
  * @since 1.5.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần viết lại URL của WordPress.
  *
- * @return bool|null True on write success, false on failure. Null in multisite.
+ * @return bool|null True nếu ghi thành công, false nếu thất bại. Null trong multisite.
  */
 function save_mod_rewrite_rules() {
 	global $wp_rewrite;
@@ -266,15 +266,15 @@ function save_mod_rewrite_rules() {
 		return;
 	}
 
-	// Ensure get_home_path() is declared.
+	// Đảm bảo get_home_path() đã được khai báo.
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 
 	$home_path     = get_home_path();
 	$htaccess_file = $home_path . '.htaccess';
 
 	/*
-	 * If the file doesn't already exist check for write access to the directory
-	 * and whether we have some rules. Else check for write access to the file.
+	 * Nếu tệp chưa tồn tại, kiểm tra quyền ghi vào thư mục
+	 * và xem có quy tắc nào không. Nếu không, kiểm tra quyền ghi vào tệp.
 	 */
 	if ( ! file_exists( $htaccess_file ) && is_writable( $home_path ) && $wp_rewrite->using_mod_rewrite_permalinks()
 		|| is_writable( $htaccess_file )
@@ -290,14 +290,14 @@ function save_mod_rewrite_rules() {
 }
 
 /**
- * Updates the IIS web.config file with the current rules if it is writable.
- * If the permalinks do not require rewrite rules then the rules are deleted from the web.config file.
+ * Cập nhật tệp web.config của IIS với các quy tắc hiện tại nếu có quyền ghi.
+ * Nếu đường dẫn tĩnh không yêu cầu quy tắc viết lại thì xóa các quy tắc khỏi tệp web.config.
  *
  * @since 2.8.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần viết lại URL của WordPress.
  *
- * @return bool|null True on write success, false on failure. Null in multisite.
+ * @return bool|null True nếu ghi thành công, false nếu thất bại. Null trong multisite.
  */
 function iis7_save_url_rewrite_rules() {
 	global $wp_rewrite;
@@ -306,13 +306,13 @@ function iis7_save_url_rewrite_rules() {
 		return;
 	}
 
-	// Ensure get_home_path() is declared.
+	// Đảm bảo get_home_path() đã được khai báo.
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 
 	$home_path       = get_home_path();
 	$web_config_file = $home_path . 'web.config';
 
-	// Using win_is_writable() instead of is_writable() because of a bug in Windows PHP.
+	// Sử dụng win_is_writable() thay vì is_writable() vì lỗi trong PHP trên Windows.
 	if ( iis7_supports_permalinks()
 		&& ( ! file_exists( $web_config_file ) && win_is_writable( $home_path ) && $wp_rewrite->using_mod_rewrite_permalinks()
 			|| win_is_writable( $web_config_file ) )
@@ -330,7 +330,7 @@ function iis7_save_url_rewrite_rules() {
 }
 
 /**
- * Updates the "recently-edited" file for the plugin or theme file editor.
+ * Cập nhật tệp "đã chỉnh sửa gần đây" cho trình soạn thảo tệp plugin hoặc giao diện.
  *
  * @since 1.5.0
  *
@@ -356,13 +356,13 @@ function update_recently_edited( $file ) {
 }
 
 /**
- * Makes a tree structure for the theme file editor's file list.
+ * Tạo cấu trúc cây cho danh sách tệp của trình soạn thảo tệp giao diện.
  *
  * @since 4.9.0
  * @access private
  *
- * @param array $allowed_files List of theme file paths.
- * @return array Tree structure for listing theme files.
+ * @param array $allowed_files Danh sách đường dẫn tệp giao diện.
+ * @return array Cấu trúc cây để liệt kê các tệp giao diện.
  */
 function wp_make_theme_file_tree( $allowed_files ) {
 	$tree_list = array();
@@ -382,19 +382,19 @@ function wp_make_theme_file_tree( $allowed_files ) {
 }
 
 /**
- * Outputs the formatted file list for the theme file editor.
+ * Xuất danh sách tệp đã định dạng cho trình soạn thảo tệp giao diện.
  *
  * @since 4.9.0
  * @access private
  *
- * @global string $relative_file Name of the file being edited relative to the
- *                               theme directory.
- * @global string $stylesheet    The stylesheet name of the theme being edited.
+ * @global string $relative_file Tên tệp đang được chỉnh sửa tương đối so với
+ *                               thư mục giao diện.
+ * @global string $stylesheet    Tên stylesheet của giao diện đang được chỉnh sửa.
  *
- * @param array|string $tree  List of file/folder paths, or filename.
- * @param int          $level The aria-level for the current iteration.
- * @param int          $size  The aria-setsize for the current iteration.
- * @param int          $index The aria-posinset for the current iteration.
+ * @param array|string $tree  Danh sách đường dẫn tệp/thư mục, hoặc tên tệp.
+ * @param int          $level Mức aria-level cho lần lặp hiện tại.
+ * @param int          $size  Giá trị aria-setsize cho lần lặp hiện tại.
+ * @param int          $index Giá trị aria-posinset cho lần lặp hiện tại.
  */
 function wp_print_theme_file_tree( $tree, $level = 2, $size = 1, $index = 1 ) {
 	global $relative_file, $stylesheet;
@@ -461,13 +461,13 @@ function wp_print_theme_file_tree( $tree, $level = 2, $size = 1, $index = 1 ) {
 }
 
 /**
- * Makes a tree structure for the plugin file editor's file list.
+ * Tạo cấu trúc cây cho danh sách tệp của trình soạn thảo tệp plugin.
  *
  * @since 4.9.0
  * @access private
  *
- * @param array $plugin_editable_files List of plugin file paths.
- * @return array Tree structure for listing plugin files.
+ * @param array $plugin_editable_files Danh sách đường dẫn tệp plugin.
+ * @return array Cấu trúc cây để liệt kê các tệp plugin.
  */
 function wp_make_plugin_file_tree( $plugin_editable_files ) {
 	$tree_list = array();
@@ -487,16 +487,16 @@ function wp_make_plugin_file_tree( $plugin_editable_files ) {
 }
 
 /**
- * Outputs the formatted file list for the plugin file editor.
+ * Xuất danh sách tệp đã định dạng cho trình soạn thảo tệp plugin.
  *
  * @since 4.9.0
  * @access private
  *
- * @param array|string $tree  List of file/folder paths, or filename.
- * @param string       $label Name of file or folder to print.
- * @param int          $level The aria-level for the current iteration.
- * @param int          $size  The aria-setsize for the current iteration.
- * @param int          $index The aria-posinset for the current iteration.
+ * @param array|string $tree  Danh sách đường dẫn tệp/thư mục, hoặc tên tệp.
+ * @param string       $label Tên tệp hoặc thư mục cần hiển thị.
+ * @param int          $level Mức aria-level cho lần lặp hiện tại.
+ * @param int          $size  Giá trị aria-setsize cho lần lặp hiện tại.
+ * @param int          $index Giá trị aria-posinset cho lần lặp hiện tại.
  */
 function wp_print_plugin_file_tree( $tree, $label = '', $level = 2, $size = 1, $index = 1 ) {
 	global $file, $plugin;
@@ -556,7 +556,7 @@ function wp_print_plugin_file_tree( $tree, $label = '', $level = 2, $size = 1, $
 }
 
 /**
- * Flushes rewrite rules if `siteurl`, `home` or `page_on_front` changed.
+ * Xóa bộ nhớ đệm quy tắc viết lại nếu `siteurl`, `home` hoặc `page_on_front` thay đổi.
  *
  * @since 2.1.0
  *
@@ -576,15 +576,15 @@ function update_home_siteurl( $old_value, $value ) {
 }
 
 /**
- * Resets global variables based on `$_GET` and `$_POST`.
+ * Đặt lại các biến toàn cục dựa trên `$_GET` và `$_POST`.
  *
- * This function resets global variables based on the names passed
- * in the `$vars` array to the value of `$_POST[$var]` or `$_GET[$var]` or an
- * empty string if neither is defined.
+ * Hàm này đặt lại các biến toàn cục dựa trên tên được truyền
+ * trong mảng `$vars` thành giá trị của `$_POST[$var]` hoặc `$_GET[$var]` hoặc
+ * chuỗi rỗng nếu không có giá trị nào được định nghĩa.
  *
  * @since 2.0.0
  *
- * @param array $vars An array of globals to reset.
+ * @param array $vars Mảng các biến toàn cục cần đặt lại.
  */
 function wp_reset_vars( $vars ) {
 	foreach ( $vars as $var ) {
@@ -601,7 +601,7 @@ function wp_reset_vars( $vars ) {
 }
 
 /**
- * Displays the given administration message.
+ * Hiển thị thông báo quản trị được cung cấp.
  *
  * @since 2.1.0
  *
@@ -625,7 +625,7 @@ function show_message( $message ) {
  * @since 2.8.0
  *
  * @param string $content
- * @return string[] Array of function names.
+ * @return string[] Mảng tên các hàm.
  */
 function wp_doc_link_parse( $content ) {
 	if ( ! is_string( $content ) || empty( $content ) ) {
@@ -647,14 +647,14 @@ function wp_doc_link_parse( $content ) {
 		}
 
 		if ( T_STRING === $tokens[ $t ][0] && ( '(' === $tokens[ $t + 1 ] || '(' === $tokens[ $t + 2 ] ) ) {
-			// If it's a function or class defined locally, there's not going to be any docs available.
+			// Nếu đây là hàm hoặc lớp được định nghĩa cục bộ, sẽ không có tài liệu nào khả dụng.
 			if ( ( isset( $tokens[ $t - 2 ][1] ) && in_array( $tokens[ $t - 2 ][1], array( 'function', 'class' ), true ) )
 				|| ( isset( $tokens[ $t - 2 ][0] ) && T_OBJECT_OPERATOR === $tokens[ $t - 1 ][0] )
 			) {
 				$ignore_functions[] = $tokens[ $t ][1];
 			}
 
-			// Add this to our stack of unique references.
+			// Thêm vào ngăn xếp các tham chiếu duy nhất.
 			$functions[] = $tokens[ $t ][1];
 		}
 	}
@@ -663,11 +663,11 @@ function wp_doc_link_parse( $content ) {
 	sort( $functions );
 
 	/**
-	 * Filters the list of functions and classes to be ignored from the documentation lookup.
+	 * Lọc danh sách các hàm và lớp cần bỏ qua khi tra cứu tài liệu.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string[] $ignore_functions Array of names of functions and classes to be ignored.
+	 * @param string[] $ignore_functions Mảng tên các hàm và lớp cần bỏ qua.
 	 */
 	$ignore_functions = apply_filters( 'documentation_ignore_functions', $ignore_functions );
 
@@ -687,7 +687,7 @@ function wp_doc_link_parse( $content ) {
 }
 
 /**
- * Saves option for number of rows when listing posts, pages, comments, etc.
+ * Lưu tùy chọn số dòng khi liệt kê bài viết, trang, bình luận, v.v.
  *
  * @since 2.8.0
  */
@@ -732,7 +732,8 @@ function set_screen_options() {
 		case 'plugins_per_page':
 		case 'export_personal_data_requests_per_page':
 		case 'remove_personal_data_requests_per_page':
-			// Network admin.
+			// Quản trị mạng.
+		// Quản trị mạng.
 		case 'sites_network_per_page':
 		case 'users_network_per_page':
 		case 'site_users_network_per_page':
@@ -752,42 +753,42 @@ function set_screen_options() {
 
 			if ( str_ends_with( $option, '_page' ) || 'layout_columns' === $option ) {
 				/**
-				 * Filters a screen option value before it is set.
+				 * Lọc giá trị tùy chọn màn hình trước khi được thiết lập.
 				 *
-				 * The filter can also be used to modify non-standard `[items]_per_page`
-				 * settings. See the parent function for a full list of standard options.
+				 * Bộ lọc cũng có thể được dùng để sửa đổi các cài đặt `[items]_per_page`
+				 * không chuẩn. Xem hàm cha để biết danh sách đầy đủ các tùy chọn chuẩn.
 				 *
-				 * Returning false from the filter will skip saving the current option.
+				 * Trả về false từ bộ lọc sẽ bỏ qua việc lưu tùy chọn hiện tại.
 				 *
 				 * @since 2.8.0
-				 * @since 5.4.2 Only applied to options ending with '_page',
-				 *              or the 'layout_columns' option.
+				 * @since 5.4.2 Chỉ áp dụng cho các tùy chọn kết thúc bằng '_page',
+				 *              hoặc tùy chọn 'layout_columns'.
 				 *
 				 * @see set_screen_options()
 				 *
-				 * @param mixed  $screen_option The value to save instead of the option value.
-				 *                              Default false (to skip saving the current option).
-				 * @param string $option        The option name.
-				 * @param int    $value         The option value.
+				 * @param mixed  $screen_option Giá trị để lưu thay vì giá trị tùy chọn.
+				 *                              Mặc định false (để bỏ qua việc lưu tùy chọn hiện tại).
+				 * @param string $option        Tên tùy chọn.
+				 * @param int    $value         Giá trị tùy chọn.
 				 */
 				$screen_option = apply_filters( 'set-screen-option', $screen_option, $option, $value ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 			}
 
 			/**
-			 * Filters a screen option value before it is set.
+			 * Lọc giá trị tùy chọn màn hình trước khi được thiết lập.
 			 *
-			 * The dynamic portion of the hook name, `$option`, refers to the option name.
+			 * Phần động của tên hook, `$option`, tham chiếu đến tên tùy chọn.
 			 *
-			 * Returning false from the filter will skip saving the current option.
+			 * Trả về false từ bộ lọc sẽ bỏ qua việc lưu tùy chọn hiện tại.
 			 *
 			 * @since 5.4.2
 			 *
 			 * @see set_screen_options()
 			 *
-			 * @param mixed   $screen_option The value to save instead of the option value.
-			 *                               Default false (to skip saving the current option).
-			 * @param string  $option        The option name.
-			 * @param int     $value         The option value.
+			 * @param mixed   $screen_option Giá trị để lưu thay vì giá trị tùy chọn.
+			 *                               Mặc định false (để bỏ qua việc lưu tùy chọn hiện tại).
+			 * @param string  $option        Tên tùy chọn.
+			 * @param int     $value         Giá trị tùy chọn.
 			 */
 			$value = apply_filters( "set_screen_option_{$option}", $screen_option, $option, $value );
 
@@ -811,11 +812,11 @@ function set_screen_options() {
 }
 
 /**
- * Checks if rewrite rule for WordPress already exists in the IIS 7+ configuration file.
+ * Kiểm tra xem quy tắc viết lại cho WordPress đã tồn tại trong tệp cấu hình IIS 7+ chưa.
  *
  * @since 2.8.0
  *
- * @param string $filename The file path to the configuration file.
+ * @param string $filename Đường dẫn tệp đến tệp cấu hình.
  * @return bool
  */
 function iis7_rewrite_rule_exists( $filename ) {
@@ -844,15 +845,15 @@ function iis7_rewrite_rule_exists( $filename ) {
 }
 
 /**
- * Deletes WordPress rewrite rule from web.config file if it exists there.
+ * Xóa quy tắc viết lại WordPress khỏi tệp web.config nếu nó tồn tại.
  *
  * @since 2.8.0
  *
- * @param string $filename Name of the configuration file.
+ * @param string $filename Tên của tệp cấu hình.
  * @return bool
  */
 function iis7_delete_rewrite_rule( $filename ) {
-	// If configuration file does not exist then rules also do not exist, so there is nothing to delete.
+	// Nếu tệp cấu hình không tồn tại thì quy tắc cũng không tồn tại, nên không có gì để xóa.
 	if ( ! file_exists( $filename ) ) {
 		return true;
 	}
@@ -883,12 +884,12 @@ function iis7_delete_rewrite_rule( $filename ) {
 }
 
 /**
- * Adds WordPress rewrite rule to the IIS 7+ configuration file.
+ * Thêm quy tắc viết lại WordPress vào tệp cấu hình IIS 7+.
  *
  * @since 2.8.0
  *
- * @param string $filename     The file path to the configuration file.
- * @param string $rewrite_rule The XML fragment with URL Rewrite rule.
+ * @param string $filename     Đường dẫn tệp đến tệp cấu hình.
+ * @param string $rewrite_rule Đoạn XML chứa quy tắc viết lại URL.
  * @return bool
  */
 function iis7_add_rewrite_rule( $filename, $rewrite_rule ) {
@@ -896,7 +897,7 @@ function iis7_add_rewrite_rule( $filename, $rewrite_rule ) {
 		return false;
 	}
 
-	// If configuration file does not exist then we create one.
+	// Nếu tệp cấu hình không tồn tại thì tạo mới.
 	if ( ! file_exists( $filename ) ) {
 		$fp = fopen( $filename, 'w' );
 		fwrite( $fp, '<configuration/>' );
@@ -912,14 +913,14 @@ function iis7_add_rewrite_rule( $filename, $rewrite_rule ) {
 
 	$xpath = new DOMXPath( $doc );
 
-	// First check if the rule already exists as in that case there is no need to re-add it.
+	// Kiểm tra trước xem quy tắc đã tồn tại chưa vì trong trường hợp đó không cần thêm lại.
 	$wordpress_rules = $xpath->query( '/configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'wordpress\')] | /configuration/system.webServer/rewrite/rules/rule[starts-with(@name,\'WordPress\')]' );
 
 	if ( $wordpress_rules->length > 0 ) {
 		return true;
 	}
 
-	// Check the XPath to the rewrite rule and create XML nodes if they do not exist.
+	// Kiểm tra XPath đến quy tắc viết lại và tạo các nút XML nếu chúng chưa tồn tại.
 	$xml_nodes = $xpath->query( '/configuration/system.webServer/rewrite/rules' );
 
 	if ( $xml_nodes->length > 0 ) {

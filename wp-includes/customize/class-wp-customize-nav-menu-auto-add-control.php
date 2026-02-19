@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Nav_Menu_Auto_Add_Control class
+ * API Tùy biến: Lớp WP_Customize_Nav_Menu_Auto_Add_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize control to represent the auto_add field for a given menu.
+ * Điều khiển tùy biến đại diện cho trường auto_add của một menu nhất định.
  *
  * @since 4.3.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Nav_Menu_Auto_Add_Control extends WP_Customize_Control {
 
 	/**
-	 * Type of control, used by JS.
+	 * Loại điều khiển, được sử dụng bởi JS.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -25,14 +25,14 @@ class WP_Customize_Nav_Menu_Auto_Add_Control extends WP_Customize_Control {
 	public $type = 'nav_menu_auto_add';
 
 	/**
-	 * No-op since we're using JS template.
+	 * Không thực hiện gì vì chúng ta đang sử dụng mẫu JS.
 	 *
 	 * @since 4.3.0
 	 */
 	protected function render_content() {}
 
 	/**
-	 * Render the Underscore template for this control.
+	 * Hiển thị mẫu Underscore cho điều khiển này.
 	 *
 	 * @since 4.3.0
 	 */

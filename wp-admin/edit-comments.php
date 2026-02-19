@@ -1,12 +1,12 @@
 <?php
 /**
- * Edit Comments Administration Screen.
+ * Màn hình quản trị Chỉnh sửa Bình luận.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Tải WordPress Administration Bootstrap */
 require_once __DIR__ . '/admin.php';
 if ( ! current_user_can( 'edit_posts' ) ) {
 	wp_die(
@@ -26,7 +26,7 @@ if ( $doaction ) {
 
 	if ( 'delete_all' === $doaction && ! empty( $_REQUEST['pagegen_timestamp'] ) ) {
 		/**
-		 * @global wpdb $wpdb WordPress database abstraction object.
+		 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 		 */
 		global $wpdb;
 
@@ -76,7 +76,7 @@ if ( $doaction ) {
 
 	wp_defer_comment_counting( true );
 
-	foreach ( $comment_ids as $comment_id ) { // Check the permissions on each.
+	foreach ( $comment_ids as $comment_id ) { // Kiểm tra quyền trên từng bình luận.
 		if ( ! current_user_can( 'edit_comment', $comment_id ) ) {
 			continue;
 		}
@@ -116,7 +116,7 @@ if ( $doaction ) {
 	if ( ! in_array( $doaction, array( 'approve', 'unapprove', 'spam', 'unspam', 'trash', 'delete' ), true ) ) {
 		$screen = get_current_screen()->id;
 
-		/** This action is documented in wp-admin/edit.php */
+		/** Action này được ghi nhận trong wp-admin/edit.php */
 		$redirect_to = apply_filters( "handle_bulk_actions-{$screen}", $redirect_to, $doaction, $comment_ids ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 	}
 
@@ -160,7 +160,7 @@ wp_enqueue_script( 'admin-comments' );
 enqueue_comment_hotkeys_js();
 
 /**
- * @global int $post_id
+ * @global int $post_id ID bài viết.
  */
 global $post_id;
 
@@ -169,7 +169,7 @@ if ( $post_id ) {
 	$draft_or_post_title = wp_html_excerpt( _draft_or_post_title( $post_id ), 50, '&hellip;' );
 
 	if ( $comments_count->moderated > 0 ) {
-		// Used in the HTML title tag.
+		// Sử dụng trong thẻ HTML title.
 		$title = sprintf(
 			/* translators: 1: Comments count, 2: Post title. */
 			__( 'Comments (%1$s) on &#8220;%2$s&#8221;' ),
@@ -177,7 +177,7 @@ if ( $post_id ) {
 			$draft_or_post_title
 		);
 	} else {
-		// Used in the HTML title tag.
+		// Sử dụng trong thẻ HTML title.
 		$title = sprintf(
 			/* translators: %s: Post title. */
 			__( 'Comments on &#8220;%s&#8221;' ),
@@ -188,14 +188,14 @@ if ( $post_id ) {
 	$comments_count = wp_count_comments();
 
 	if ( $comments_count->moderated > 0 ) {
-		// Used in the HTML title tag.
+		// Sử dụng trong thẻ HTML title.
 		$title = sprintf(
 			/* translators: %s: Comments count. */
 			__( 'Comments (%s)' ),
 			number_format_i18n( $comments_count->moderated )
 		);
 	} else {
-		// Used in the HTML title tag.
+		// Sử dụng trong thẻ HTML title.
 		$title = __( 'Comments' );
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Widget API: WP_Widget_RSS class
+ * Widget API: Lớp WP_Widget_RSS
  *
  * @package WordPress
  * @subpackage Widgets
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement a RSS widget.
+ * Lớp cốt lõi được sử dụng để triển khai widget RSS.
  *
  * @since 2.8.0
  *

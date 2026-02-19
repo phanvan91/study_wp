@@ -1,6 +1,6 @@
 <?php
 /**
- * User API: WP_Roles class
+ * API Người dùng: Lớp WP_Roles
  *
  * @package WordPress
  * @subpackage Users
@@ -8,11 +8,11 @@
  */
 
 /**
- * Core class used to implement a user roles API.
+ * Lớp lõi dùng để triển khai API vai trò người dùng.
  *
- * The role option is simple, the structure is organized by role name that store
- * the name in value of the 'name' key. The capabilities are stored as an array
- * in the value of the 'capability' key.
+ * Tùy chọn vai trò rất đơn giản, cấu trúc được tổ chức theo tên vai trò
+ * lưu trữ tên trong giá trị của khóa 'name'. Các quyền hạn được lưu trữ dưới dạng mảng
+ * trong giá trị của khóa 'capability'.
  *
  *     array (
  *          'rolename' => array (
@@ -26,7 +26,7 @@
 #[AllowDynamicProperties]
 class WP_Roles {
 	/**
-	 * List of roles and capabilities.
+	 * Danh sách vai trò và quyền hạn.
 	 *
 	 * @since 2.0.0
 	 * @var array[]
@@ -34,7 +34,7 @@ class WP_Roles {
 	public $roles;
 
 	/**
-	 * List of the role objects.
+	 * Danh sách các đối tượng vai trò.
 	 *
 	 * @since 2.0.0
 	 * @var WP_Role[]
@@ -42,7 +42,7 @@ class WP_Roles {
 	public $role_objects = array();
 
 	/**
-	 * List of role names.
+	 * Danh sách tên vai trò.
 	 *
 	 * @since 2.0.0
 	 * @var string[]
@@ -50,7 +50,7 @@ class WP_Roles {
 	public $role_names = array();
 
 	/**
-	 * Option name for storing role list.
+	 * Tên tùy chọn để lưu trữ danh sách vai trò.
 	 *
 	 * @since 2.0.0
 	 * @var string
@@ -58,7 +58,7 @@ class WP_Roles {
 	public $role_key;
 
 	/**
-	 * Whether to use the database for retrieval and storage.
+	 * Có sử dụng cơ sở dữ liệu để truy xuất và lưu trữ hay không.
 	 *
 	 * @since 2.1.0
 	 * @var bool
@@ -66,7 +66,7 @@ class WP_Roles {
 	public $use_db = true;
 
 	/**
-	 * The site ID the roles are initialized for.
+	 * ID site mà các vai trò được khởi tạo cho.
 	 *
 	 * @since 4.9.0
 	 * @var int
@@ -74,14 +74,14 @@ class WP_Roles {
 	protected $site_id = 0;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 2.0.0
-	 * @since 4.9.0 The `$site_id` argument was added.
+	 * @since 4.9.0 Thêm tham số `$site_id`.
 	 *
-	 * @global array $wp_user_roles Used to set the 'roles' property value.
+	 * @global array $wp_user_roles Dùng để thiết lập giá trị thuộc tính 'roles'.
 	 *
-	 * @param int $site_id Site ID to initialize roles for. Default is the current site.
+	 * @param int $site_id ID site để khởi tạo vai trò. Mặc định là site hiện tại.
 	 */
 	public function __construct( $site_id = null ) {
 		global $wp_user_roles;
@@ -92,13 +92,13 @@ class WP_Roles {
 	}
 
 	/**
-	 * Makes private/protected methods readable for backward compatibility.
+	 * Cho phép đọc các phương thức private/protected cho tương thích ngược.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $name      Method to call.
-	 * @param array  $arguments Arguments to pass when calling.
-	 * @return mixed|false Return value of the callback, false otherwise.
+	 * @param string $name      Phương thức cần gọi.
+	 * @param array  $arguments Các tham số truyền vào khi gọi.
+	 * @return mixed|false Giá trị trả về của callback, false nếu không.
 	 */
 	public function __call( $name, $arguments ) {
 		if ( '_init' === $name ) {
@@ -108,14 +108,14 @@ class WP_Roles {
 	}
 
 	/**
-	 * Sets up the object properties.
+	 * Thiết lập các thuộc tính đối tượng.
 	 *
-	 * The role key is set to the current prefix for the $wpdb object with
-	 * 'user_roles' appended. If the $wp_user_roles global is set, then it will
-	 * be used and the role option will not be updated or used.
+	 * Khóa vai trò được đặt thành tiền tố hiện tại của đối tượng $wpdb
+	 * nối thêm 'user_roles'. Nếu biến toàn cục $wp_user_roles được thiết lập, nó sẽ
+	 * được sử dụng và tùy chọn vai trò sẽ không được cập nhật hoặc sử dụng.
 	 *
 	 * @since 2.1.0
-	 * @deprecated 4.9.0 Use WP_Roles::for_site()
+	 * @deprecated 4.9.0 Sử dụng WP_Roles::for_site()
 	 */
 	protected function _init() {
 		_deprecated_function( __METHOD__, '4.9.0', 'WP_Roles::for_site()' );
@@ -124,13 +124,13 @@ class WP_Roles {
 	}
 
 	/**
-	 * Reinitializes the object.
+	 * Khởi tạo lại đối tượng.
 	 *
-	 * Recreates the role objects. This is typically called only by switch_to_blog()
-	 * after switching wpdb to a new site ID.
+	 * Tạo lại các đối tượng vai trò. Thường chỉ được gọi bởi switch_to_blog()
+	 * sau khi chuyển wpdb sang ID site mới.
 	 *
 	 * @since 3.5.0
-	 * @deprecated 4.7.0 Use WP_Roles::for_site()
+	 * @deprecated 4.7.0 Sử dụng WP_Roles::for_site()
 	 */
 	public function reinit() {
 		_deprecated_function( __METHOD__, '4.7.0', 'WP_Roles::for_site()' );
@@ -139,21 +139,21 @@ class WP_Roles {
 	}
 
 	/**
-	 * Adds a role name with capabilities to the list.
+	 * Thêm tên vai trò cùng quyền hạn vào danh sách.
 	 *
-	 * Updates the list of roles, if the role doesn't already exist.
+	 * Cập nhật danh sách vai trò, nếu vai trò chưa tồn tại.
 	 *
-	 * The capabilities are defined in the following format: `array( 'read' => true )`.
-	 * To explicitly deny the role a capability, set the value for that capability to false.
+	 * Quyền hạn được định nghĩa theo định dạng sau: `array( 'read' => true )`.
+	 * Để từ chối rõ ràng một quyền hạn cho vai trò, đặt giá trị của quyền hạn đó thành false.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $role         Role name.
-	 * @param string $display_name Role display name.
-	 * @param bool[] $capabilities Optional. List of capabilities keyed by the capability name,
-	 *                             e.g. `array( 'edit_posts' => true, 'delete_posts' => false )`.
-	 *                             Default empty array.
-	 * @return WP_Role|void WP_Role object, if the role is added.
+	 * @param string $role         Tên vai trò.
+	 * @param string $display_name Tên hiển thị của vai trò.
+	 * @param bool[] $capabilities Tùy chọn. Danh sách quyền hạn với khóa là tên quyền hạn,
+	 *                             ví dụ `array( 'edit_posts' => true, 'delete_posts' => false )`.
+	 *                             Mặc định mảng rỗng.
+	 * @return WP_Role|void Đối tượng WP_Role, nếu vai trò được thêm.
 	 */
 	public function add_role( $role, $display_name, $capabilities = array() ) {
 		if ( empty( $role ) || isset( $this->roles[ $role ] ) ) {
@@ -173,11 +173,11 @@ class WP_Roles {
 	}
 
 	/**
-	 * Removes a role by name.
+	 * Xóa vai trò theo tên.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $role Role name.
+	 * @param string $role Tên vai trò.
 	 */
 	public function remove_role( $role ) {
 		if ( ! isset( $this->role_objects[ $role ] ) ) {
@@ -198,14 +198,14 @@ class WP_Roles {
 	}
 
 	/**
-	 * Adds a capability to role.
+	 * Thêm quyền hạn cho vai trò.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $role  Role name.
-	 * @param string $cap   Capability name.
-	 * @param bool   $grant Optional. Whether role is capable of performing capability.
-	 *                      Default true.
+	 * @param string $role  Tên vai trò.
+	 * @param string $cap   Tên quyền hạn.
+	 * @param bool   $grant Tùy chọn. Vai trò có khả năng thực hiện quyền hạn hay không.
+	 *                      Mặc định true.
 	 */
 	public function add_cap( $role, $cap, $grant = true ) {
 		if ( ! isset( $this->roles[ $role ] ) ) {
@@ -219,12 +219,12 @@ class WP_Roles {
 	}
 
 	/**
-	 * Removes a capability from role.
+	 * Xóa quyền hạn khỏi vai trò.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $role Role name.
-	 * @param string $cap  Capability name.
+	 * @param string $role Tên vai trò.
+	 * @param string $cap  Tên quyền hạn.
 	 */
 	public function remove_cap( $role, $cap ) {
 		if ( ! isset( $this->roles[ $role ] ) ) {
@@ -238,12 +238,12 @@ class WP_Roles {
 	}
 
 	/**
-	 * Retrieves a role object by name.
+	 * Lấy đối tượng vai trò theo tên.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $role Role name.
-	 * @return WP_Role|null WP_Role object if found, null if the role does not exist.
+	 * @param string $role Tên vai trò.
+	 * @return WP_Role|null Đối tượng WP_Role nếu tìm thấy, null nếu vai trò không tồn tại.
 	 */
 	public function get_role( $role ) {
 		if ( isset( $this->role_objects[ $role ] ) ) {
@@ -254,22 +254,22 @@ class WP_Roles {
 	}
 
 	/**
-	 * Retrieves a list of role names.
+	 * Lấy danh sách tên vai trò.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @return string[] List of role names.
+	 * @return string[] Danh sách tên vai trò.
 	 */
 	public function get_names() {
 		return $this->role_names;
 	}
 
 	/**
-	 * Determines whether a role name is currently in the list of available roles.
+	 * Xác định xem tên vai trò có trong danh sách vai trò khả dụng hay không.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $role Role name to look up.
+	 * @param string $role Tên vai trò cần tra cứu.
 	 * @return bool
 	 */
 	public function is_role( $role ) {
@@ -277,7 +277,7 @@ class WP_Roles {
 	}
 
 	/**
-	 * Initializes all of the available roles.
+	 * Khởi tạo tất cả các vai trò khả dụng.
 	 *
 	 * @since 4.9.0
 	 */
@@ -294,23 +294,23 @@ class WP_Roles {
 		}
 
 		/**
-		 * Fires after the roles have been initialized, allowing plugins to add their own roles.
+		 * Kích hoạt sau khi các vai trò đã được khởi tạo, cho phép plugin thêm vai trò riêng.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_Roles $wp_roles A reference to the WP_Roles object.
+		 * @param WP_Roles $wp_roles Tham chiếu đến đối tượng WP_Roles.
 		 */
 		do_action( 'wp_roles_init', $this );
 	}
 
 	/**
-	 * Sets the site to operate on. Defaults to the current site.
+	 * Thiết lập site để hoạt động. Mặc định là site hiện tại.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
 	 *
-	 * @param int $site_id Site ID to initialize roles for. Default is the current site.
+	 * @param int $site_id ID site để khởi tạo vai trò. Mặc định là site hiện tại.
 	 */
 	public function for_site( $site_id = null ) {
 		global $wpdb;
@@ -333,24 +333,24 @@ class WP_Roles {
 	}
 
 	/**
-	 * Gets the ID of the site for which roles are currently initialized.
+	 * Lấy ID site mà các vai trò hiện đang được khởi tạo.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @return int Site ID.
+	 * @return int ID site.
 	 */
 	public function get_site_id() {
 		return $this->site_id;
 	}
 
 	/**
-	 * Gets the available roles data.
+	 * Lấy dữ liệu vai trò khả dụng.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @global array $wp_user_roles Used to set the 'roles' property value.
+	 * @global array $wp_user_roles Dùng để thiết lập giá trị thuộc tính 'roles'.
 	 *
-	 * @return array Roles array.
+	 * @return array Mảng vai trò.
 	 */
 	protected function get_roles_data() {
 		global $wp_user_roles;

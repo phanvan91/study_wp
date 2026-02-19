@@ -1,13 +1,13 @@
 <?php
 /**
- * Error Protection API: WP_Recovery_Mode_Email_Link class
+ * API bảo vệ lỗi: Lớp WP_Recovery_Mode_Email_Link
  *
  * @package WordPress
  * @since 5.2.0
  */
 
 /**
- * Core class used to send an email with a link to begin Recovery Mode.
+ * Lớp cốt lõi dùng để gửi email chứa liên kết để bắt đầu Chế độ Phục hồi.
  *
  * @since 5.2.0
  */
@@ -17,7 +17,7 @@ final class WP_Recovery_Mode_Email_Service {
 	const RATE_LIMIT_OPTION = 'recovery_mode_email_last_sent';
 
 	/**
-	 * Service to generate recovery mode URLs.
+	 * Dịch vụ để tạo URL chế độ phục hồi.
 	 *
 	 * @since 5.2.0
 	 * @var WP_Recovery_Mode_Link_Service
@@ -25,7 +25,7 @@ final class WP_Recovery_Mode_Email_Service {
 	private $link_service;
 
 	/**
-	 * WP_Recovery_Mode_Email_Service constructor.
+	 * Hàm khởi tạo WP_Recovery_Mode_Email_Service.
 	 *
 	 * @since 5.2.0
 	 *
@@ -36,19 +36,19 @@ final class WP_Recovery_Mode_Email_Service {
 	}
 
 	/**
-	 * Sends the recovery mode email if the rate limit has not been sent.
+	 * Gửi email chế độ phục hồi nếu giới hạn tỷ lệ chưa được gửi.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param int   $rate_limit Number of seconds before another email can be sent.
-	 * @param array $error      Error details from `error_get_last()`.
+	 * @param int   $rate_limit Số giây trước khi email khác có thể được gửi.
+	 * @param array $error      Chi tiết lỗi từ `error_get_last()`.
 	 * @param array $extension {
-	 *     The extension that caused the error.
+	 *     Phần mở rộng gây ra lỗi.
 	 *
-	 *     @type string $slug The extension slug. The plugin or theme's directory.
-	 *     @type string $type The extension type. Either 'plugin' or 'theme'.
+	 *     @type string $slug Slug của phần mở rộng. Thư mục của plugin hoặc theme.
+	 *     @type string $type Loại phần mở rộng. Hoặc 'plugin' hoặc 'theme'.
 	 * }
-	 * @return true|WP_Error True if email sent, WP_Error otherwise.
+	 * @return true|WP_Error True nếu email được gửi, WP_Error nếu ngược lại.
 	 */
 	public function maybe_send_recovery_mode_email( $rate_limit, $error, $extension ) {
 
@@ -86,30 +86,30 @@ final class WP_Recovery_Mode_Email_Service {
 	}
 
 	/**
-	 * Clears the rate limit, allowing a new recovery mode email to be sent immediately.
+	 * Xóa giới hạn tỷ lệ, cho phép gửi email chế độ phục hồi mới ngay lập tức.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return bool True on success, false on failure.
+	 * @return bool True nếu thành công, false nếu thất bại.
 	 */
 	public function clear_rate_limit() {
 		return delete_option( self::RATE_LIMIT_OPTION );
 	}
 
 	/**
-	 * Sends the Recovery Mode email to the site admin email address.
+	 * Gửi email Chế độ Phục hồi đến địa chỉ email quản trị trang web.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param int   $rate_limit Number of seconds before another email can be sent.
-	 * @param array $error      Error details from `error_get_last()`.
+	 * @param int   $rate_limit Số giây trước khi email khác có thể được gửi.
+	 * @param array $error      Chi tiết lỗi từ `error_get_last()`.
 	 * @param array $extension {
-	 *     The extension that caused the error.
+	 *     Phần mở rộng gây ra lỗi.
 	 *
-	 *     @type string $slug The extension slug. The directory of the plugin or theme.
-	 *     @type string $type The extension type. Either 'plugin' or 'theme'.
+	 *     @type string $slug Slug của phần mở rộng. Thư mục của plugin hoặc theme.
+	 *     @type string $type Loại phần mở rộng. Hoặc 'plugin' hoặc 'theme'.
 	 * }
-	 * @return bool Whether the email was sent successfully.
+	 * @return bool Liệu email đã được gửi thành công hay không.
 	 */
 	private function send_recovery_mode_email( $rate_limit, $error, $extension ) {
 
@@ -132,20 +132,20 @@ final class WP_Recovery_Mode_Email_Service {
 		}
 
 		/**
-		 * Filters the support message sent with the the fatal error protection email.
+		 * Lọc thông báo hỗ trợ được gửi cùng với email bảo vệ lỗi nghiêm trọng.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param string $message The Message to include in the email.
+		 * @param string $message Thông báo để đưa vào email.
 		 */
 		$support = apply_filters( 'recovery_email_support_info', __( 'Please contact your host for assistance with investigating this issue further.' ) );
 
 		/**
-		 * Filters the debug information included in the fatal error protection email.
+		 * Lọc thông tin gỡ lỗi được bao gồm trong email bảo vệ lỗi nghiêm trọng.
 		 *
 		 * @since 5.3.0
 		 *
-		 * @param array $message An associative array of debug information.
+		 * @param array $message Một mảng kết hợp của thông tin gỡ lỗi.
 		 */
 		$debug = apply_filters( 'recovery_email_debug_info', $this->get_debug( $extension ) );
 
@@ -204,21 +204,21 @@ When seeking help with this issue, you may be asked for some of the following in
 		);
 
 		/**
-		 * Filters the contents of the Recovery Mode email.
+		 * Lọc nội dung của email Chế độ Phục hồi.
 		 *
 		 * @since 5.2.0
-		 * @since 5.6.0 The `$email` argument includes the `attachments` key.
+		 * @since 5.6.0 Đối số `$email` bao gồm khóa `attachments`.
 		 *
 		 * @param array  $email {
-		 *     Used to build a call to wp_mail().
+		 *     Dùng để xây dựng lệnh gọi wp_mail().
 		 *
-		 *     @type string|array $to          Array or comma-separated list of email addresses to send message.
-		 *     @type string       $subject     Email subject
-		 *     @type string       $message     Message contents
-		 *     @type string|array $headers     Optional. Additional headers.
-		 *     @type string|array $attachments Optional. Files to attach.
+		 *     @type string|array $to          Mảng hoặc danh sách địa chỉ email được phân tách bằng dấu phẩy để gửi tin nhắn.
+		 *     @type string       $subject     Chủ đề email
+		 *     @type string       $message     Nội dung tin nhắn
+		 *     @type string|array $headers     Tùy chọn. Các tiêu đề bổ sung.
+		 *     @type string|array $attachments Tùy chọn. Các tệp đính kèm.
 		 * }
-		 * @param string $url   URL to enter recovery mode.
+		 * @param string $url   URL để vào chế độ phục hồi.
 		 */
 		$email = apply_filters( 'recovery_mode_email', $email, $url );
 
@@ -238,11 +238,11 @@ When seeking help with this issue, you may be asked for some of the following in
 	}
 
 	/**
-	 * Gets the email address to send the recovery mode link to.
+	 * Lấy địa chỉ email để gửi liên kết chế độ phục hồi đến.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return string Email address to send recovery mode link to.
+	 * @return string Địa chỉ email để gửi liên kết chế độ phục hồi đến.
 	 */
 	private function get_recovery_mode_email_address() {
 		if ( defined( 'RECOVERY_MODE_EMAIL' ) && is_email( RECOVERY_MODE_EMAIL ) ) {
@@ -253,17 +253,17 @@ When seeking help with this issue, you may be asked for some of the following in
 	}
 
 	/**
-	 * Gets the description indicating the possible cause for the error.
+	 * Lấy mô tả chỉ ra nguyên nhân có thể gây ra lỗi.
 	 *
 	 * @since 5.2.0
 	 *
 	 * @param array $extension {
-	 *     The extension that caused the error.
+	 *     Phần mở rộng gây ra lỗi.
 	 *
-	 *     @type string $slug The extension slug. The directory of the plugin or theme.
-	 *     @type string $type The extension type. Either 'plugin' or 'theme'.
+	 *     @type string $slug Slug của phần mở rộng. Thư mục của plugin hoặc theme.
+	 *     @type string $type Loại phần mở rộng. Hoặc 'plugin' hoặc 'theme'.
 	 * }
-	 * @return string Message about which extension caused the error.
+	 * @return string Thông báo về phần mở rộng nào đã gây ra lỗi.
 	 */
 	private function get_cause( $extension ) {
 
@@ -290,17 +290,17 @@ When seeking help with this issue, you may be asked for some of the following in
 	}
 
 	/**
-	 * Return the details for a single plugin based on the extension data from an error.
+	 * Trả về chi tiết cho một plugin duy nhất dựa trên dữ liệu phần mở rộng từ một lỗi.
 	 *
 	 * @since 5.3.0
 	 *
 	 * @param array $extension {
-	 *     The extension that caused the error.
+	 *     Phần mở rộng gây ra lỗi.
 	 *
-	 *     @type string $slug The extension slug. The directory of the plugin or theme.
-	 *     @type string $type The extension type. Either 'plugin' or 'theme'.
+	 *     @type string $slug Slug của phần mở rộng. Thư mục của plugin hoặc theme.
+	 *     @type string $type Loại phần mở rộng. Hoặc 'plugin' hoặc 'theme'.
 	 * }
-	 * @return array|false A plugin array {@see get_plugins()} or `false` if no plugin was found.
+	 * @return array|false Một mảng plugin {@see get_plugins()} hoặc `false` nếu không tìm thấy plugin.
 	 */
 	private function get_plugin( $extension ) {
 		if ( ! function_exists( 'get_plugins' ) ) {
@@ -309,7 +309,7 @@ When seeking help with this issue, you may be asked for some of the following in
 
 		$plugins = get_plugins();
 
-		// Assume plugin main file name first since it is a common convention.
+		// Giả sử tên tệp chính của plugin trước vì đây là một quy ước phổ biến.
 		if ( isset( $plugins[ "{$extension['slug']}/{$extension['slug']}.php" ] ) ) {
 			return $plugins[ "{$extension['slug']}/{$extension['slug']}.php" ];
 		} else {
@@ -324,17 +324,17 @@ When seeking help with this issue, you may be asked for some of the following in
 	}
 
 	/**
-	 * Return debug information in an easy to manipulate format.
+	 * Trả về thông tin gỡ lỗi ở định dạng dễ thao tác.
 	 *
 	 * @since 5.3.0
 	 *
 	 * @param array $extension {
-	 *     The extension that caused the error.
+	 *     Phần mở rộng gây ra lỗi.
 	 *
-	 *     @type string $slug The extension slug. The directory of the plugin or theme.
-	 *     @type string $type The extension type. Either 'plugin' or 'theme'.
+	 *     @type string $slug Slug của phần mở rộng. Thư mục của plugin hoặc theme.
+	 *     @type string $type Loại phần mở rộng. Hoặc 'plugin' hoặc 'theme'.
 	 * }
-	 * @return array An associative array of debug information.
+	 * @return array Một mảng kết hợp của thông tin gỡ lỗi.
 	 */
 	private function get_debug( $extension ) {
 		$theme      = wp_get_theme();

@@ -1,6 +1,6 @@
 <?php
 /**
- * Class for looking up a site's health based on a user's WordPress environment.
+ * Lớp để tra cứu tình trạng sức khỏe website dựa trên môi trường WordPress của người dùng.
  *
  * @package WordPress
  * @subpackage Site_Health
@@ -30,14 +30,14 @@ class WP_Site_Health {
 	private $timeout_late_cron   = null;
 
 	/**
-	 * WP_Site_Health constructor.
+	 * Hàm khởi tạo WP_Site_Health.
 	 *
 	 * @since 5.2.0
 	 */
 	public function __construct() {
 		$this->maybe_create_scheduled_event();
 
-		// Save memory limit before it's affected by wp_raise_memory_limit( 'admin' ).
+		// Lưu giới hạn bộ nhớ trước khi bị ảnh hưởng bởi wp_raise_memory_limit( 'admin' ).
 		$this->php_memory_limit = ini_get( 'memory_limit' );
 
 		$this->timeout_late_cron   = 0;
@@ -57,11 +57,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Outputs the content of a tab in the Site Health screen.
+	 * Xuất nội dung của một tab trong màn hình Sức khỏe Website.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $tab Slug of the current tab being displayed.
+	 * @param string $tab Slug của tab hiện tại đang được hiển thị.
 	 */
 	public function show_site_health_tab( $tab ) {
 		if ( 'debug' === $tab ) {
@@ -70,7 +70,7 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Returns an instance of the WP_Site_Health class, or create one if none exist yet.
+	 * Trả về một thể hiện của lớp WP_Site_Health, hoặc tạo mới nếu chưa có.
 	 *
 	 * @since 5.4.0
 	 *
@@ -85,7 +85,7 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Enqueues the site health scripts.
+	 * Nạp các script sức khỏe website vào hàng đợi.
 	 *
 	 * @since 5.2.0
 	 */
@@ -123,7 +123,7 @@ class WP_Site_Health {
 		if ( 'site-health' === $screen->id && ( ! isset( $_GET['tab'] ) || empty( $_GET['tab'] ) ) ) {
 			$tests = WP_Site_Health::get_tests();
 
-			// Don't run https test on development environments.
+			// Không chạy kiểm tra https trên môi trường phát triển.
 			if ( $this->is_development_environment() ) {
 				unset( $tests['async']['https_status'] );
 			}
@@ -162,47 +162,47 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Runs a Site Health test directly.
+	 * Chạy một bài kiểm tra Sức khỏe Website trực tiếp.
 	 *
 	 * @since 5.4.0
 	 *
-	 * @param callable $callback
+	 * @param callable $callback Hàm callback để thực thi.
 	 * @return mixed|void
 	 */
 	private function perform_test( $callback ) {
 		/**
-		 * Filters the output of a finished Site Health test.
+		 * Lọc kết quả đầu ra của một bài kiểm tra Sức khỏe Website đã hoàn thành.
 		 *
 		 * @since 5.3.0
 		 *
 		 * @param array $test_result {
-		 *     An associative array of test result data.
+		 *     Mảng liên kết chứa dữ liệu kết quả kiểm tra.
 		 *
-		 *     @type string $label       A label describing the test, and is used as a header in the output.
-		 *     @type string $status      The status of the test, which can be a value of `good`, `recommended` or `critical`.
+		 *     @type string $label       Nhãn mô tả bài kiểm tra, được dùng làm tiêu đề trong kết quả đầu ra.
+		 *     @type string $status      Trạng thái của bài kiểm tra, có thể là `good`, `recommended` hoặc `critical`.
 		 *     @type array  $badge {
-		 *         Tests are put into categories which have an associated badge shown, these can be modified and assigned here.
+		 *         Các bài kiểm tra được phân loại với huy hiệu tương ứng, có thể được sửa đổi và gán tại đây.
 		 *
-		 *         @type string $label The test label, for example `Performance`.
-		 *         @type string $color Default `blue`. A string representing a color to use for the label.
+		 *         @type string $label Nhãn bài kiểm tra, ví dụ `Performance`.
+		 *         @type string $color Mặc định `blue`. Chuỗi đại diện cho màu sắc sử dụng cho nhãn.
 		 *     }
-		 *     @type string $description A more descriptive explanation of what the test looks for, and why it is important for the end user.
-		 *     @type string $actions     An action to direct the user to where they can resolve the issue, if one exists.
-		 *     @type string $test        The name of the test being ran, used as a reference point.
+		 *     @type string $description Giải thích mô tả chi tiết hơn về những gì bài kiểm tra tìm kiếm và tại sao nó quan trọng với người dùng cuối.
+		 *     @type string $actions     Hành động hướng dẫn người dùng đến nơi họ có thể giải quyết vấn đề, nếu có.
+		 *     @type string $test        Tên của bài kiểm tra đang chạy, dùng làm điểm tham chiếu.
 		 * }
 		 */
 		return apply_filters( 'site_status_test_result', call_user_func( $callback ) );
 	}
 
 	/**
-	 * Runs the SQL version checks.
+	 * Chạy các kiểm tra phiên bản SQL.
 	 *
-	 * These values are used in later tests, but the part of preparing them is more easily managed
-	 * early in the class for ease of access and discovery.
+	 * Các giá trị này được sử dụng trong các bài kiểm tra sau, nhưng việc chuẩn bị chúng
+	 * dễ quản lý hơn khi đặt sớm trong lớp để dễ truy cập và khám phá.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 */
 	private function prepare_sql_data() {
 		global $wpdb;
@@ -221,13 +221,13 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests whether `wp_version_check` is blocked.
+	 * Kiểm tra xem `wp_version_check` có bị chặn hay không.
 	 *
-	 * It's possible to block updates with the `wp_version_check` filter, but this can't be checked
-	 * during an Ajax call, as the filter is never introduced then.
+	 * Có thể chặn cập nhật bằng bộ lọc `wp_version_check`, nhưng điều này không thể kiểm tra
+	 * trong lệnh gọi Ajax, vì bộ lọc không được đưa vào lúc đó.
 	 *
-	 * This filter overrides a standard page request if it's made by an admin through the Ajax call
-	 * with the right query argument to check for this.
+	 * Bộ lọc này ghi đè yêu cầu trang tiêu chuẩn nếu nó được thực hiện bởi quản trị viên
+	 * thông qua lệnh gọi Ajax với tham số truy vấn phù hợp để kiểm tra điều này.
 	 *
 	 * @since 5.2.0
 	 */
@@ -242,14 +242,14 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests for WordPress version and outputs it.
+	 * Kiểm tra phiên bản WordPress và xuất kết quả.
 	 *
-	 * Gives various results depending on what kind of updates are available, if any, to encourage
-	 * the user to install security updates as a priority.
+	 * Trả về các kết quả khác nhau tùy thuộc vào loại bản cập nhật có sẵn, nếu có,
+	 * để khuyến khích người dùng cài đặt các bản cập nhật bảo mật là ưu tiên hàng đầu.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test result.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_wordpress_version() {
 		$result = array(
@@ -308,14 +308,14 @@ class WP_Site_Health {
 					);
 
 					if ( $current_major !== $new_major ) {
-						// This is a major version mismatch.
+						// Đây là sự không khớp phiên bản chính.
 						$result['status']      = 'recommended';
 						$result['description'] = sprintf(
 							'<p>%s</p>',
 							__( 'A new version of WordPress is available.' )
 						);
 					} else {
-						// This is a minor version, sometimes considered more critical.
+						// Đây là phiên bản phụ, đôi khi được coi là quan trọng hơn.
 						$result['status']         = 'critical';
 						$result['badge']['label'] = __( 'Security' );
 						$result['description']    = sprintf(
@@ -343,14 +343,14 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if plugins are outdated, or unnecessary.
+	 * Kiểm tra xem plugin có lỗi thời hoặc không cần thiết không.
 	 *
-	 * The test checks if your plugins are up to date, and encourages you to remove any
-	 * that are not in use.
+	 * Bài kiểm tra này xác minh xem các plugin của bạn có được cập nhật hay không, và khuyến khích bạn
+	 * gỡ bỏ những plugin không được sử dụng.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test result.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_plugin_version() {
 		$result = array(
@@ -379,7 +379,7 @@ class WP_Site_Health {
 		$plugins_total       = 0;
 		$plugins_need_update = 0;
 
-		// Loop over the available plugins and check their versions and active state.
+		// Lặp qua các plugin có sẵn và kiểm tra phiên bản cùng trạng thái kích hoạt của chúng.
 		foreach ( $plugins as $plugin_path => $plugin ) {
 			++$plugins_total;
 
@@ -392,7 +392,7 @@ class WP_Site_Health {
 			}
 		}
 
-		// Add a notice if there are outdated plugins.
+		// Thêm thông báo nếu có plugin đã lỗi thời.
 		if ( $plugins_need_update > 0 ) {
 			$result['status'] = 'critical';
 
@@ -443,7 +443,7 @@ class WP_Site_Health {
 			}
 		}
 
-		// Check if there are inactive plugins.
+		// Kiểm tra xem có plugin không hoạt động hay không.
 		if ( $plugins_total > $plugins_active && ! is_multisite() ) {
 			$unused_plugins = $plugins_total - $plugins_active;
 
@@ -476,15 +476,15 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if themes are outdated, or unnecessary.
+	 * Kiểm tra xem giao diện có lỗi thời hoặc không cần thiết không.
 	 *
-	 * Checks if your site has a default theme (to fall back on if there is a need),
-	 * if your themes are up to date and, finally, encourages you to remove any themes
-	 * that are not needed.
+	 * Kiểm tra xem website của bạn có giao diện mặc định (để dự phòng khi cần),
+	 * các giao diện có được cập nhật hay không, và cuối cùng khuyến khích bạn gỡ bỏ
+	 * những giao diện không cần thiết.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_theme_version() {
 		$result = array(
@@ -512,7 +512,7 @@ class WP_Site_Health {
 		$themes_need_updates = 0;
 		$themes_inactive     = 0;
 
-		// This value is changed during processing to determine how many themes are considered a reasonable amount.
+		// Giá trị này được thay đổi trong quá trình xử lý để xác định số lượng giao diện được coi là hợp lý.
 		$allowed_theme_count = 1;
 
 		$has_default_theme   = false;
@@ -520,11 +520,11 @@ class WP_Site_Health {
 		$show_unused_themes  = true;
 		$using_default_theme = false;
 
-		// Populate a list of all themes available in the install.
+		// Tạo danh sách tất cả các giao diện có sẵn trong bản cài đặt.
 		$all_themes   = wp_get_themes();
 		$active_theme = wp_get_theme();
 
-		// If WP_DEFAULT_THEME doesn't exist, fall back to the latest core default theme.
+		// Nếu WP_DEFAULT_THEME không tồn tại, dùng giao diện mặc định lõi mới nhất.
 		$default_theme = wp_get_theme( WP_DEFAULT_THEME );
 		if ( ! $default_theme->exists() ) {
 			$default_theme = WP_Theme::get_core_default_theme();
@@ -550,12 +550,12 @@ class WP_Site_Health {
 			}
 		}
 
-		// If this is a child theme, increase the allowed theme count by one, to account for the parent.
+		// Nếu đây là giao diện con, tăng số lượng giao diện cho phép thêm một, để tính cả giao diện cha.
 		if ( is_child_theme() ) {
 			++$allowed_theme_count;
 		}
 
-		// If there's a default theme installed and not in use, we count that as allowed as well.
+		// Nếu có giao diện mặc định được cài đặt nhưng không sử dụng, chúng ta cũng tính nó là được phép.
 		if ( $has_default_theme && ! $using_default_theme ) {
 			++$allowed_theme_count;
 		}
@@ -565,7 +565,7 @@ class WP_Site_Health {
 			$themes_inactive   = ( $themes_total - $allowed_theme_count );
 		}
 
-		// Check if any themes need to be updated.
+		// Kiểm tra xem có giao diện nào cần cập nhật không.
 		if ( $themes_need_updates > 0 ) {
 			$result['status'] = 'critical';
 
@@ -584,7 +584,7 @@ class WP_Site_Health {
 				)
 			);
 		} else {
-			// Give positive feedback about the site being good about keeping things up to date.
+			// Đưa ra phản hồi tích cực về việc website luôn cập nhật mọi thứ.
 			if ( 1 === $themes_total ) {
 				$result['description'] .= sprintf(
 					'<p>%s</p>',
@@ -613,9 +613,9 @@ class WP_Site_Health {
 
 		if ( $has_unused_themes && $show_unused_themes && ! is_multisite() ) {
 
-			// This is a child theme, so we want to be a bit more explicit in our messages.
+			// Đây là giao diện con, nên chúng ta muốn rõ ràng hơn trong thông báo.
 			if ( $active_theme->parent() ) {
-				// Recommend removing inactive themes, except a default theme, your current one, and the parent theme.
+				// Khuyến nghị gỡ bỏ giao diện không hoạt động, trừ giao diện mặc định, giao diện hiện tại, và giao diện cha.
 				$result['status'] = 'recommended';
 
 				$result['label'] = __( 'You should remove inactive themes' );
@@ -661,7 +661,7 @@ class WP_Site_Health {
 					);
 				}
 			} else {
-				// Recommend removing all inactive themes.
+				// Khuyến nghị gỡ bỏ tất cả giao diện không hoạt động.
 				$result['status'] = 'recommended';
 
 				$result['label'] = __( 'You should remove inactive themes' );
@@ -701,7 +701,7 @@ class WP_Site_Health {
 			}
 		}
 
-		// If no default Twenty* theme exists.
+		// Nếu không có giao diện Twenty* mặc định nào tồn tại.
 		if ( ! $has_default_theme ) {
 			$result['status'] = 'recommended';
 
@@ -717,11 +717,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if the supplied PHP version is supported.
+	 * Kiểm tra xem phiên bản PHP được cung cấp có được hỗ trợ không.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_php_version() {
 		$response = wp_check_php_version();
@@ -755,12 +755,12 @@ class WP_Site_Health {
 			'test'        => 'php_version',
 		);
 
-		// PHP is up to date.
+		// PHP đã được cập nhật.
 		if ( ! $response || version_compare( PHP_VERSION, $response['recommended_version'], '>=' ) ) {
 			return $result;
 		}
 
-		// The PHP version is older than the recommended version, but still receiving active support.
+		// Phiên bản PHP cũ hơn phiên bản khuyến nghị, nhưng vẫn đang nhận hỗ trợ tích cực.
 		if ( $response['is_supported'] ) {
 			$result['label'] = sprintf(
 				/* translators: %s: The server PHP version. */
@@ -773,11 +773,11 @@ class WP_Site_Health {
 		}
 
 		/*
-		 * The PHP version is still receiving security fixes, but is lower than
-		 * the expected minimum version that will be required by WordPress in the near future.
+		 * Phiên bản PHP vẫn đang nhận các bản vá bảo mật, nhưng thấp hơn
+		 * phiên bản tối thiểu dự kiến sẽ được WordPress yêu cầu trong tương lai gần.
 		 */
 		if ( $response['is_secure'] && $response['is_lower_than_future_minimum'] ) {
-			// The `is_secure` array key name doesn't actually imply this is a secure version of PHP. It only means it receives security updates.
+			// Tên khóa mảng `is_secure` thực ra không có nghĩa đây là phiên bản PHP an toàn. Nó chỉ có nghĩa là phiên bản này nhận các bản cập nhật bảo mật.
 
 			$result['label'] = sprintf(
 				/* translators: %s: The server PHP version. */
@@ -791,7 +791,7 @@ class WP_Site_Health {
 			return $result;
 		}
 
-		// The PHP version is only receiving security fixes.
+		// Phiên bản PHP chỉ nhận các bản vá bảo mật.
 		if ( $response['is_secure'] ) {
 			$result['label'] = sprintf(
 				/* translators: %s: The server PHP version. */
@@ -803,7 +803,7 @@ class WP_Site_Health {
 			return $result;
 		}
 
-		// No more security updates for the PHP version, and lower than the expected minimum version required by WordPress.
+		// Không còn bản cập nhật bảo mật cho phiên bản PHP, và thấp hơn phiên bản tối thiểu dự kiến được WordPress yêu cầu.
 		if ( $response['is_lower_than_future_minimum'] ) {
 			$message = sprintf(
 				/* translators: %s: The server PHP version. */
@@ -811,7 +811,7 @@ class WP_Site_Health {
 				PHP_VERSION
 			);
 		} else {
-			// No more security updates for the PHP version, must be updated.
+			// Không còn bản cập nhật bảo mật cho phiên bản PHP, cần phải cập nhật.
 			$message = sprintf(
 				/* translators: %s: The server PHP version. */
 				__( 'Your site is running on an outdated version of PHP (%s), which does not receive security updates. It should be updated.' ),
@@ -828,21 +828,21 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Checks if the passed extension or function are available.
+	 * Kiểm tra xem extension hoặc hàm được truyền vào có khả dụng không.
 	 *
-	 * Make the check for available PHP modules into a simple boolean operator for a cleaner test runner.
+	 * Chuyển đổi việc kiểm tra các module PHP khả dụng thành toán tử boolean đơn giản để trình chạy kiểm tra gọn gàng hơn.
 	 *
 	 * @since 5.2.0
-	 * @since 5.3.0 The `$constant_name` and `$class_name` parameters were added.
+	 * @since 5.3.0 Các tham số `$constant_name` và `$class_name` đã được thêm vào.
 	 *
-	 * @param string $extension_name Optional. The extension name to test. Default null.
-	 * @param string $function_name  Optional. The function name to test. Default null.
-	 * @param string $constant_name  Optional. The constant name to test for. Default null.
-	 * @param string $class_name     Optional. The class name to test for. Default null.
-	 * @return bool Whether or not the extension and function are available.
+	 * @param string $extension_name Tùy chọn. Tên extension cần kiểm tra. Mặc định null.
+	 * @param string $function_name  Tùy chọn. Tên hàm cần kiểm tra. Mặc định null.
+	 * @param string $constant_name  Tùy chọn. Tên hằng số cần kiểm tra. Mặc định null.
+	 * @param string $class_name     Tùy chọn. Tên lớp cần kiểm tra. Mặc định null.
+	 * @return bool Extension và hàm có khả dụng hay không.
 	 */
 	private function test_php_extension_availability( $extension_name = null, $function_name = null, $constant_name = null, $class_name = null ) {
-		// If no extension or function is passed, claim to fail testing, as we have nothing to test against.
+		// Nếu không có extension hoặc hàm nào được truyền vào, báo lỗi kiểm tra, vì không có gì để kiểm tra.
 		if ( ! $extension_name && ! $function_name && ! $constant_name && ! $class_name ) {
 			return false;
 		}
@@ -867,10 +867,10 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if required PHP modules are installed on the host.
+	 * Kiểm tra xem các module PHP bắt buộc có được cài đặt trên máy chủ không.
 	 *
-	 * This test builds on the recommendations made by the WordPress Hosting Team
-	 * as seen at https://make.wordpress.org/hosting/handbook/handbook/server-environment/#php-extensions
+	 * Bài kiểm tra này dựa trên các khuyến nghị của Nhóm Hosting WordPress
+	 * tại https://make.wordpress.org/hosting/handbook/handbook/server-environment/#php-extensions
 	 *
 	 * @since 5.2.0
 	 *
@@ -1002,24 +1002,24 @@ class WP_Site_Health {
 		);
 
 		/**
-		 * Filters the array representing all the modules we wish to test for.
+		 * Lọc mảng đại diện cho tất cả các module mà chúng ta muốn kiểm tra.
 		 *
 		 * @since 5.2.0
-		 * @since 5.3.0 The `$constant` and `$class` parameters were added.
+		 * @since 5.3.0 Các tham số `$constant` và `$class` đã được thêm vào.
 		 *
 		 * @param array $modules {
-		 *     An associative array of modules to test for.
+		 *     Mảng liên kết chứa các module cần kiểm tra.
 		 *
 		 *     @type array ...$0 {
-		 *         An associative array of module properties used during testing.
-		 *         One of either `$function` or `$extension` must be provided, or they will fail by default.
+		 *         Mảng liên kết chứa các thuộc tính module được sử dụng trong quá trình kiểm tra.
+		 *         Phải cung cấp ít nhất một trong `$function` hoặc `$extension`, nếu không sẽ thất bại theo mặc định.
 		 *
-		 *         @type string $function     Optional. A function name to test for the existence of.
-		 *         @type string $extension    Optional. An extension to check if is loaded in PHP.
-		 *         @type string $constant     Optional. A constant name to check for to verify an extension exists.
-		 *         @type string $class        Optional. A class name to check for to verify an extension exists.
-		 *         @type bool   $required     Is this a required feature or not.
-		 *         @type string $fallback_for Optional. The module this module replaces as a fallback.
+		 *         @type string $function     Tùy chọn. Tên hàm để kiểm tra sự tồn tại.
+		 *         @type string $extension    Tùy chọn. Extension để kiểm tra xem có được tải trong PHP không.
+		 *         @type string $constant     Tùy chọn. Tên hằng số để kiểm tra xác nhận extension tồn tại.
+		 *         @type string $class        Tùy chọn. Tên lớp để kiểm tra xác nhận extension tồn tại.
+		 *         @type bool   $required     Đây có phải tính năng bắt buộc hay không.
+		 *         @type string $fallback_for Tùy chọn. Module mà module này thay thế làm phương án dự phòng.
 		 *     }
 		 * }
 		 */
@@ -1033,11 +1033,11 @@ class WP_Site_Health {
 			$constant_name  = ( isset( $module['constant'] ) ? $module['constant'] : null );
 			$class_name     = ( isset( $module['class'] ) ? $module['class'] : null );
 
-			// If this module is a fallback for another function, check if that other function passed.
+			// Nếu module này là phương án dự phòng cho hàm khác, kiểm tra xem hàm kia có vượt qua không.
 			if ( isset( $module['fallback_for'] ) ) {
 				/*
-				 * If that other function has a failure, mark this module as required for usual operations.
-				 * If that other function hasn't failed, skip this test as it's only a fallback.
+				 * Nếu hàm kia gặp lỗi, đánh dấu module này là bắt buộc cho các hoạt động thông thường.
+				 * Nếu hàm kia không gặp lỗi, bỏ qua kiểm tra này vì nó chỉ là phương án dự phòng.
 				 */
 				if ( isset( $failures[ $module['fallback_for'] ] ) ) {
 					$module['required'] = true;
@@ -1108,11 +1108,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if the PHP default timezone is set to UTC.
+	 * Kiểm tra xem múi giờ mặc định của PHP có được đặt là UTC không.
 	 *
 	 * @since 5.3.1
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_php_default_timezone() {
 		$result = array(
@@ -1149,11 +1149,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if there's an active PHP session that can affect loopback requests.
+	 * Kiểm tra xem có phiên PHP đang hoạt động có thể ảnh hưởng đến yêu cầu loopback không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_php_sessions() {
 		$result = array(
@@ -1195,11 +1195,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if the SQL server is up to date.
+	 * Kiểm tra xem máy chủ SQL có được cập nhật không.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_sql_server() {
 		if ( ! $this->mysql_server_version ) {
@@ -1284,11 +1284,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if the site can communicate with WordPress.org.
+	 * Kiểm tra xem website có thể giao tiếp với WordPress.org không.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_dotorg_communication() {
 		$result = array(
@@ -1348,17 +1348,17 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if debug information is enabled.
+	 * Kiểm tra xem thông tin gỡ lỗi có được bật không.
 	 *
-	 * When WP_DEBUG is enabled, errors and information may be disclosed to site visitors,
-	 * or logged to a publicly accessible file.
+	 * Khi WP_DEBUG được bật, lỗi và thông tin có thể bị tiết lộ cho khách truy cập website,
+	 * hoặc được ghi vào tệp có thể truy cập công khai.
 	 *
-	 * Debugging is also frequently left enabled after looking for errors on a site,
-	 * as site owners do not understand the implications of this.
+	 * Chế độ gỡ lỗi cũng thường bị để bật sau khi tìm lỗi trên website,
+	 * vì chủ website không hiểu hậu quả của điều này.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_is_in_debug_mode() {
 		$result = array(
@@ -1404,7 +1404,7 @@ class WP_Site_Health {
 
 				$result['status'] = 'critical';
 
-				// On development environments, set the status to recommended.
+				// Trên môi trường phát triển, đặt trạng thái thành khuyến nghị.
 				if ( $this->is_development_environment() ) {
 					$result['status'] = 'recommended';
 				}
@@ -1425,19 +1425,19 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if the site is serving content over HTTPS.
+	 * Kiểm tra xem website có đang phục vụ nội dung qua HTTPS không.
 	 *
-	 * Many sites have varying degrees of HTTPS support, the most common of which is sites that have it
-	 * enabled, but only if you visit the right site address.
+	 * Nhiều website có các mức độ hỗ trợ HTTPS khác nhau, phổ biến nhất là các website đã bật HTTPS,
+	 * nhưng chỉ khi bạn truy cập đúng địa chỉ website.
 	 *
 	 * @since 5.2.0
-	 * @since 5.7.0 Updated to rely on {@see wp_is_using_https()} and {@see wp_is_https_supported()}.
+	 * @since 5.7.0 Cập nhật để dựa vào {@see wp_is_using_https()} và {@see wp_is_https_supported()}.
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_https_status() {
 		/*
-		 * Check HTTPS detection results.
+		 * Kiểm tra kết quả phát hiện HTTPS.
 		 */
 		$errors = wp_get_https_detection_errors();
 
@@ -1466,8 +1466,8 @@ class WP_Site_Health {
 
 		if ( ! wp_is_using_https() ) {
 			/*
-			 * If the website is not using HTTPS, provide more information
-			 * about whether it is supported and how it can be enabled.
+			 * Nếu website không sử dụng HTTPS, cung cấp thêm thông tin
+			 * về việc nó có được hỗ trợ không và cách bật nó.
 			 */
 			$result['status'] = 'recommended';
 			$result['label']  = __( 'Your website does not use HTTPS' );
@@ -1554,7 +1554,7 @@ class WP_Site_Health {
 					}
 				}
 			} else {
-				// If host-specific "Update HTTPS" URL is provided, include a link.
+				// Nếu URL "Cập nhật HTTPS" dành riêng cho máy chủ được cung cấp, bao gồm một liên kết.
 				$update_url = wp_get_update_https_url();
 				if ( $update_url !== $default_update_url ) {
 					$result['description'] .= sprintf(
@@ -1577,11 +1577,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Checks if the HTTP API can handle SSL/TLS requests.
+	 * Kiểm tra xem HTTP API có thể xử lý các yêu cầu SSL/TLS không.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test result.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_ssl_support() {
 		$result = array(
@@ -1620,14 +1620,14 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if scheduled events run as intended.
+	 * Kiểm tra xem các sự kiện đã lên lịch có chạy đúng như dự kiến không.
 	 *
-	 * If scheduled events are not running, this may indicate something with WP_Cron is not working
-	 * as intended, or that there are orphaned events hanging around from older code.
+	 * Nếu các sự kiện đã lên lịch không chạy, điều này có thể cho thấy WP_Cron không hoạt động
+	 * đúng như dự kiến, hoặc có các sự kiện mồ côi còn sót lại từ mã cũ.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_scheduled_events() {
 		$result = array(
@@ -1692,15 +1692,15 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if WordPress can run automated background updates.
+	 * Kiểm tra xem WordPress có thể chạy cập nhật nền tự động không.
 	 *
-	 * Background updates in WordPress are primarily used for minor releases and security updates.
-	 * It's important to either have these working, or be aware that they are intentionally disabled
-	 * for whatever reason.
+	 * Cập nhật nền trong WordPress chủ yếu được dùng cho các bản phát hành phụ và cập nhật bảo mật.
+	 * Điều quan trọng là phải đảm bảo chúng hoạt động, hoặc biết rằng chúng đã bị vô hiệu hóa có chủ đích
+	 * vì bất kỳ lý do gì.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_background_updates() {
 		$result = array(
@@ -1723,8 +1723,8 @@ class WP_Site_Health {
 		}
 
 		/*
-		 * Run the auto-update tests in a separate class,
-		 * as there are many considerations to be made.
+		 * Chạy các bài kiểm tra tự động cập nhật trong một lớp riêng,
+		 * vì có nhiều yếu tố cần được xem xét.
 		 */
 		$automatic_updates = new WP_Site_Health_Auto_Updates();
 		$tests             = $automatic_updates->run_tests();
@@ -1771,11 +1771,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if plugin and theme auto-updates appear to be configured correctly.
+	 * Kiểm tra xem tự động cập nhật plugin và giao diện có được cấu hình đúng không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_plugin_theme_auto_updates() {
 		$result = array(
@@ -1810,11 +1810,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests available disk space for updates.
+	 * Kiểm tra dung lượng đĩa khả dụng cho cập nhật.
 	 *
 	 * @since 6.3.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_available_updates_disk_space() {
 		$available_space = function_exists( 'disk_free_space' ) ? @disk_free_space( WP_CONTENT_DIR ) : false;
@@ -1858,13 +1858,13 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if plugin and theme temporary backup directories are writable or can be created.
+	 * Kiểm tra xem thư mục sao lưu tạm thời của plugin và giao diện có thể ghi hoặc tạo được không.
 	 *
 	 * @since 6.3.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_update_temp_backup_writable() {
 		global $wp_filesystem;
@@ -1995,15 +1995,15 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if loopbacks work as expected.
+	 * Kiểm tra xem yêu cầu loopback có hoạt động đúng như mong đợi không.
 	 *
-	 * A loopback is when WordPress queries itself, for example to start a new WP_Cron instance,
-	 * or when editing a plugin or theme. This has shown itself to be a recurring issue,
-	 * as code can very easily break this interaction.
+	 * Loopback là khi WordPress truy vấn chính nó, ví dụ để khởi chạy một phiên WP_Cron mới,
+	 * hoặc khi chỉnh sửa plugin hay giao diện. Đây là một vấn đề tái diễn thường gặp,
+	 * vì mã có thể dễ dàng phá vỡ tương tác này.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_loopback_requests() {
 		$result = array(
@@ -2038,15 +2038,15 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if HTTP requests are blocked.
+	 * Kiểm tra xem các yêu cầu HTTP có bị chặn không.
 	 *
-	 * It's possible to block all outgoing communication (with the possibility of allowing certain
-	 * hosts) via the HTTP API. This may create problems for users as many features are running as
-	 * services these days.
+	 * Có thể chặn tất cả giao tiếp đi ra (với khả năng cho phép một số máy chủ nhất định)
+	 * thông qua HTTP API. Điều này có thể gây ra vấn đề cho người dùng vì nhiều tính năng
+	 * hiện nay chạy dưới dạng dịch vụ.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_http_requests() {
 		$result = array(
@@ -2110,14 +2110,14 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if the REST API is accessible.
+	 * Kiểm tra xem REST API có thể truy cập được không.
 	 *
-	 * Various security measures may block the REST API from working, or it may have been disabled in general.
-	 * This is required for the new block editor to work, so we explicitly test for this.
+	 * Các biện pháp bảo mật khác nhau có thể chặn REST API hoạt động, hoặc nó có thể đã bị vô hiệu hóa nói chung.
+	 * Điều này là bắt buộc để trình soạn thảo khối mới hoạt động, nên chúng ta kiểm tra rõ ràng điều này.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_rest_availability() {
 		$result = array(
@@ -2144,14 +2144,14 @@ class WP_Site_Health {
 		/** This filter is documented in wp-includes/class-wp-http-streams.php */
 		$sslverify = apply_filters( 'https_local_ssl_verify', false );
 
-		// Include Basic auth in loopback requests.
+		// Bao gồm xác thực Basic trong các yêu cầu loopback.
 		if ( isset( $_SERVER['PHP_AUTH_USER'] ) && isset( $_SERVER['PHP_AUTH_PW'] ) ) {
 			$headers['Authorization'] = 'Basic ' . base64_encode( wp_unslash( $_SERVER['PHP_AUTH_USER'] ) . ':' . wp_unslash( $_SERVER['PHP_AUTH_PW'] ) );
 		}
 
 		$url = rest_url( 'wp/v2/types/post' );
 
-		// The context for this is editing with the new block editor.
+		// Ngữ cảnh cho điều này là chỉnh sửa với trình soạn thảo khối mới.
 		$url = add_query_arg(
 			array(
 				'context' => 'edit',
@@ -2224,11 +2224,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if 'file_uploads' directive in PHP.ini is turned off.
+	 * Kiểm tra xem chỉ thị 'file_uploads' trong PHP.ini có bị tắt không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_file_uploads() {
 		$result = array(
@@ -2316,7 +2316,7 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if the Authorization header has the expected values.
+	 * Kiểm tra xem header Authorization có giá trị như mong đợi không.
 	 *
 	 * @since 5.6.0
 	 *
@@ -2376,11 +2376,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if a full page cache is available.
+	 * Kiểm tra xem bộ nhớ đệm trang đầy đủ có khả dụng không.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @return array The test result.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_page_cache() {
 		$description  = '<p>' . __( 'Page cache enhances the speed and performance of your site by saving and serving static pages instead of calling for a page every time a user visits.' ) . '</p>';
@@ -2481,7 +2481,7 @@ class WP_Site_Health {
 		if ( $page_cache_detail['advanced_cache_present'] ) {
 			$page_cache_test_summary[] = '<span class="dashicons dashicons-yes-alt"></span> ' . __( 'A page cache plugin was detected.' );
 		} elseif ( ! ( is_array( $page_cache_detail ) && ! empty( $page_cache_detail['headers'] ) ) ) {
-			// Note: This message is not shown if client caching response headers were present since an external caching layer may be employed.
+			// Lưu ý: Thông báo này không hiển thị nếu header phản hồi bộ nhớ đệm phía khách hàng có mặt vì có thể đang sử dụng lớp bộ nhớ đệm bên ngoài.
 			$page_cache_test_summary[] = '<span class="dashicons dashicons-warning"></span> ' . __( 'A page cache plugin was not detected.' );
 		}
 
@@ -2490,11 +2490,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests if the site uses persistent object cache and recommends to use it if not.
+	 * Kiểm tra xem website có sử dụng bộ nhớ đệm đối tượng bền vững không và khuyến nghị sử dụng nếu chưa.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @return array The test result.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_persistent_object_cache() {
 		/**
@@ -3120,7 +3120,7 @@ class WP_Site_Health {
 		/** This filter is documented in wp-includes/class-wp-http-streams.php */
 		$sslverify = apply_filters( 'https_local_ssl_verify', false );
 
-		// Include Basic auth in loopback requests.
+		// Bao gồm xác thực Basic trong các yêu cầu loopback.
 		if ( isset( $_SERVER['PHP_AUTH_USER'] ) && isset( $_SERVER['PHP_AUTH_PW'] ) ) {
 			$headers['Authorization'] = 'Basic ' . base64_encode( wp_unslash( $_SERVER['PHP_AUTH_USER'] ) . ':' . wp_unslash( $_SERVER['PHP_AUTH_PW'] ) );
 		}

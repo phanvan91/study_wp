@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Widget_Form_Customize_Control class
+ * API Tùy biến: Lớp WP_Widget_Form_Customize_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Widget Form Customize Control class.
+ * Lớp điều khiển tùy biến biểu mẫu Widget.
  *
  * @since 3.9.0
  *
@@ -16,7 +16,7 @@
  */
 class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 	/**
-	 * Customize control type.
+	 * Loại điều khiển tùy biến.
 	 *
 	 * @since 3.9.0
 	 * @var string
@@ -24,7 +24,7 @@ class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 	public $type = 'widget_form';
 
 	/**
-	 * Widget ID.
+	 * ID Widget.
 	 *
 	 * @since 3.9.0
 	 * @var string
@@ -32,7 +32,7 @@ class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 	public $widget_id;
 
 	/**
-	 * Widget ID base.
+	 * ID cơ sở của Widget.
 	 *
 	 * @since 3.9.0
 	 * @var string
@@ -40,7 +40,7 @@ class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 	public $widget_id_base;
 
 	/**
-	 * Sidebar ID.
+	 * ID thanh bên.
 	 *
 	 * @since 3.9.0
 	 * @var string
@@ -48,15 +48,15 @@ class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 	public $sidebar_id;
 
 	/**
-	 * Widget status.
+	 * Trạng thái widget.
 	 *
 	 * @since 3.9.0
-	 * @var bool True if new, false otherwise. Default false.
+	 * @var bool True nếu mới, false nếu ngược lại. Mặc định false.
 	 */
 	public $is_new = false;
 
 	/**
-	 * Widget width.
+	 * Chiều rộng widget.
 	 *
 	 * @since 3.9.0
 	 * @var int
@@ -64,7 +64,7 @@ class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 	public $width;
 
 	/**
-	 * Widget height.
+	 * Chiều cao widget.
 	 *
 	 * @since 3.9.0
 	 * @var int
@@ -72,15 +72,15 @@ class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 	public $height;
 
 	/**
-	 * Widget mode.
+	 * Chế độ widget.
 	 *
 	 * @since 3.9.0
-	 * @var bool True if wide, false otherwise. Default false.
+	 * @var bool True nếu rộng, false nếu ngược lại. Mặc định false.
 	 */
 	public $is_wide = false;
 
 	/**
-	 * Gather control params for exporting to JavaScript.
+	 * Thu thập các tham số điều khiển để xuất sang JavaScript.
 	 *
 	 * @since 3.9.0
 	 *
@@ -95,7 +95,7 @@ class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 			$this->json[ $key ] = $this->$key;
 		}
 
-		// Get the widget_control and widget_content.
+		// Lấy widget_control và widget_content.
 		require_once ABSPATH . 'wp-admin/includes/widgets.php';
 
 		$widget = $wp_registered_widgets[ $this->widget_id ];
@@ -121,18 +121,18 @@ class WP_Widget_Form_Customize_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Override render_content to be no-op since content is exported via to_json for deferred embedding.
+	 * Ghi đè render_content để không thực hiện gì vì nội dung được xuất qua to_json để nhúng trì hoãn.
 	 *
 	 * @since 3.9.0
 	 */
 	public function render_content() {}
 
 	/**
-	 * Whether the current widget is rendered on the page.
+	 * Kiểm tra xem widget hiện tại có được hiển thị trên trang hay không.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return bool Whether the widget is rendered.
+	 * @return bool Widget có được hiển thị hay không.
 	 */
 	public function active_callback() {
 		return $this->manager->widgets->is_widget_rendered( $this->widget_id );

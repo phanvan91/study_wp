@@ -1,6 +1,6 @@
 <?php
 /**
- * Upgrade API: WP_Automatic_Updater class
+ * API Nâng cấp: Lớp WP_Automatic_Updater
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -8,30 +8,30 @@
  */
 
 /**
- * Core class used for handling automatic background updates.
+ * Lớp lõi dùng để xử lý các cập nhật nền tự động.
  *
  * @since 3.7.0
- * @since 4.6.0 Moved to its own file from wp-admin/includes/class-wp-upgrader.php.
+ * @since 4.6.0 Chuyển sang tệp riêng từ wp-admin/includes/class-wp-upgrader.php.
  */
 #[AllowDynamicProperties]
 class WP_Automatic_Updater {
 
 	/**
-	 * Tracks update results during processing.
+	 * Theo dõi kết quả cập nhật trong quá trình xử lý.
 	 *
 	 * @var array
 	 */
 	protected $update_results = array();
 
 	/**
-	 * Determines whether the entire automatic updater is disabled.
+	 * Xác định xem toàn bộ trình cập nhật tự động có bị vô hiệu hóa hay không.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @return bool True if the automatic updater is disabled, false otherwise.
+	 * @return bool True nếu trình cập nhật tự động bị vô hiệu hóa, false nếu ngược lại.
 	 */
 	public function is_disabled() {
-		// Background updates are disabled if you don't want file changes.
+		// Cập nhật nền bị vô hiệu hóa nếu bạn không muốn thay đổi tệp.
 		if ( ! wp_is_file_mod_allowed( 'automatic_updater' ) ) {
 			return true;
 		}
@@ -40,35 +40,35 @@ class WP_Automatic_Updater {
 			return true;
 		}
 
-		// More fine grained control can be done through the WP_AUTO_UPDATE_CORE constant and filters.
+		// Kiểm soát chi tiết hơn có thể thực hiện thông qua hằng số WP_AUTO_UPDATE_CORE và các bộ lọc.
 		$disabled = defined( 'AUTOMATIC_UPDATER_DISABLED' ) && AUTOMATIC_UPDATER_DISABLED;
 
 		/**
-		 * Filters whether to entirely disable background updates.
+		 * Lọc xem có vô hiệu hóa hoàn toàn cập nhật nền hay không.
 		 *
-		 * There are more fine-grained filters and controls for selective disabling.
-		 * This filter parallels the AUTOMATIC_UPDATER_DISABLED constant in name.
+		 * Có nhiều bộ lọc và điều khiển chi tiết hơn để vô hiệu hóa có chọn lọc.
+		 * Bộ lọc này có tên tương đương với hằng số AUTOMATIC_UPDATER_DISABLED.
 		 *
-		 * This also disables update notification emails. That may change in the future.
+		 * Điều này cũng vô hiệu hóa email thông báo cập nhật. Điều đó có thể thay đổi trong tương lai.
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param bool $disabled Whether the updater should be disabled.
+		 * @param bool $disabled Có nên vô hiệu hóa trình cập nhật hay không.
 		 */
 		return apply_filters( 'automatic_updater_disabled', $disabled );
 	}
 
 	/**
-	 * Checks whether access to a given directory is allowed.
+	 * Kiểm tra xem quyền truy cập vào một thư mục nhất định có được phép hay không.
 	 *
-	 * This is used when detecting version control checkouts. Takes into account
-	 * the PHP `open_basedir` restrictions, so that WordPress does not try to access
-	 * directories it is not allowed to.
+	 * Được sử dụng khi phát hiện các checkout hệ thống quản lý phiên bản. Có tính đến
+	 * các hạn chế `open_basedir` của PHP, để WordPress không cố truy cập
+	 * các thư mục mà nó không được phép.
 	 *
 	 * @since 6.2.0
 	 *
-	 * @param string $dir The directory to check.
-	 * @return bool True if access to the directory is allowed, false otherwise.
+	 * @param string $dir Thư mục cần kiểm tra.
+	 * @return bool True nếu quyền truy cập thư mục được phép, false nếu ngược lại.
 	 */
 	public function is_allowed_dir( $dir ) {
 		if ( is_string( $dir ) ) {
@@ -107,22 +107,22 @@ class WP_Automatic_Updater {
 	}
 
 	/**
-	 * Checks for version control checkouts.
+	 * Kiểm tra các checkout hệ thống quản lý phiên bản.
 	 *
-	 * Checks for Subversion, Git, Mercurial, and Bazaar. It recursively looks up the
-	 * filesystem to the top of the drive, erring on the side of detecting a VCS
-	 * checkout somewhere.
+	 * Kiểm tra Subversion, Git, Mercurial và Bazaar. Đệ quy tìm kiếm lên
+	 * hệ thống tệp đến đỉnh ổ đĩa, ưu tiên phát hiện một VCS
+	 * checkout ở đâu đó.
 	 *
-	 * ABSPATH is always checked in addition to whatever `$context` is (which may be the
-	 * wp-content directory, for example). The underlying assumption is that if you are
-	 * using version control *anywhere*, then you should be making decisions for
-	 * how things get updated.
+	 * ABSPATH luôn được kiểm tra ngoài `$context` (có thể là
+	 * thư mục wp-content chẳng hạn). Giả định cơ bản là nếu bạn đang
+	 * sử dụng hệ thống quản lý phiên bản *ở bất kỳ đâu*, thì bạn nên tự quyết định
+	 * cách mọi thứ được cập nhật.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param string $context The filesystem path to check, in addition to ABSPATH.
-	 * @return bool True if a VCS checkout was discovered at `$context` or ABSPATH,
-	 *              or anywhere higher. False otherwise.
+	 * @param string $context Đường dẫn hệ thống tệp cần kiểm tra, ngoài ABSPATH.
+	 * @return bool True nếu phát hiện checkout VCS tại `$context` hoặc ABSPATH,
+	 *              hoặc bất kỳ đâu cao hơn. False nếu ngược lại.
 	 */
 	public function is_vcs_checkout( $context ) {
 		$context_dirs = array( untrailingslashit( $context ) );
@@ -134,23 +134,23 @@ class WP_Automatic_Updater {
 		$check_dirs = array();
 
 		foreach ( $context_dirs as $context_dir ) {
-			// Walk up from $context_dir to the root.
+			// Đi lên từ $context_dir đến thư mục gốc.
 			do {
 				$check_dirs[] = $context_dir;
 
-				// Once we've hit '/' or 'C:\', we need to stop. dirname will keep returning the input here.
+				// Khi đã đến '/' hoặc 'C:\', cần dừng lại. dirname sẽ tiếp tục trả về đầu vào tại đây.
 				if ( dirname( $context_dir ) === $context_dir ) {
 					break;
 				}
 
-				// Continue one level at a time.
+				// Tiếp tục lên một cấp mỗi lần.
 			} while ( $context_dir = dirname( $context_dir ) );
 		}
 
 		$check_dirs = array_unique( $check_dirs );
 		$checkout   = false;
 
-		// Search all directories we've found for evidence of version control.
+		// Tìm kiếm tất cả các thư mục đã tìm thấy để phát hiện hệ thống quản lý phiên bản.
 		foreach ( $vcs_dirs as $vcs_dir ) {
 			foreach ( $check_dirs as $check_dir ) {
 				if ( ! $this->is_allowed_dir( $check_dir ) ) {
@@ -165,48 +165,48 @@ class WP_Automatic_Updater {
 		}
 
 		/**
-		 * Filters whether the automatic updater should consider a filesystem
-		 * location to be potentially managed by a version control system.
+		 * Lọc xem trình cập nhật tự động có nên coi một vị trí hệ thống tệp
+		 * là có thể được quản lý bởi hệ thống quản lý phiên bản hay không.
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param bool $checkout  Whether a VCS checkout was discovered at `$context`
-		 *                        or ABSPATH, or anywhere higher.
-		 * @param string $context The filesystem context (a path) against which
-		 *                        filesystem status should be checked.
+		 * @param bool $checkout  Có phát hiện checkout VCS tại `$context`
+		 *                        hoặc ABSPATH, hoặc bất kỳ đâu cao hơn hay không.
+		 * @param string $context Ngữ cảnh hệ thống tệp (đường dẫn) mà
+		 *                        trạng thái hệ thống tệp nên được kiểm tra.
 		 */
 		return apply_filters( 'automatic_updates_is_vcs_checkout', $checkout, $context );
 	}
 
 	/**
-	 * Tests to see if we can and should update a specific item.
+	 * Kiểm tra xem chúng ta có thể và có nên cập nhật một mục cụ thể hay không.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param string $type    The type of update being checked: 'core', 'theme',
+	 * @param string $type    Loại cập nhật đang được kiểm tra: 'core', 'theme',
 	 *                        'plugin', 'translation'.
-	 * @param object $item    The update offer.
-	 * @param string $context The filesystem context (a path) against which filesystem
-	 *                        access and status should be checked.
-	 * @return bool True if the item should be updated, false otherwise.
+	 * @param object $item    Đề xuất cập nhật.
+	 * @param string $context Ngữ cảnh hệ thống tệp (đường dẫn) mà quyền truy cập
+	 *                        và trạng thái hệ thống tệp nên được kiểm tra.
+	 * @return bool True nếu mục nên được cập nhật, false nếu ngược lại.
 	 */
 	public function should_update( $type, $item, $context ) {
-		// Used to see if WP_Filesystem is set up to allow unattended updates.
+		// Dùng để kiểm tra xem WP_Filesystem có được thiết lập để cho phép cập nhật không cần giám sát hay không.
 		$skin = new Automatic_Upgrader_Skin();
 
 		if ( $this->is_disabled() ) {
 			return false;
 		}
 
-		// Only relax the filesystem checks when the update doesn't include new files.
+		// Chỉ nới lỏng kiểm tra hệ thống tệp khi cập nhật không bao gồm tệp mới.
 		$allow_relaxed_file_ownership = false;
 		if ( 'core' === $type && isset( $item->new_files ) && ! $item->new_files ) {
 			$allow_relaxed_file_ownership = true;
 		}
 
-		// If we can't do an auto core update, we may still be able to email the user.
+		// Nếu không thể tự động cập nhật lõi, vẫn có thể gửi email cho người dùng.
 		if ( ! $skin->request_filesystem_credentials( false, $context, $allow_relaxed_file_ownership )
 			|| $this->is_vcs_checkout( $context )
 		) {
@@ -216,14 +216,14 @@ class WP_Automatic_Updater {
 			return false;
 		}
 
-		// Next up, is this an item we can update?
+		// Tiếp theo, đây có phải mục chúng ta có thể cập nhật không?
 		if ( 'core' === $type ) {
 			$update = Core_Upgrader::should_update_to_version( $item->current );
 		} elseif ( 'plugin' === $type || 'theme' === $type ) {
 			$update = ! empty( $item->autoupdate );
 
 			if ( ! $update && wp_is_auto_update_enabled_for_type( $type ) ) {
-				// Check if the site admin has enabled auto-updates by default for the specific item.
+				// Kiểm tra xem quản trị viên trang web đã bật tự động cập nhật mặc định cho mục cụ thể hay chưa.
 				$auto_updates = (array) get_site_option( "auto_update_{$type}s", array() );
 				$update       = in_array( $item->{$type}, $auto_updates, true );
 			}
@@ -231,39 +231,39 @@ class WP_Automatic_Updater {
 			$update = ! empty( $item->autoupdate );
 		}
 
-		// If the `disable_autoupdate` flag is set, override any user-choice, but allow filters.
+		// Nếu cờ `disable_autoupdate` được đặt, ghi đè mọi lựa chọn của người dùng, nhưng cho phép bộ lọc.
 		if ( ! empty( $item->disable_autoupdate ) ) {
 			$update = false;
 		}
 
 		/**
-		 * Filters whether to automatically update core, a plugin, a theme, or a language.
+		 * Lọc xem có tự động cập nhật lõi, plugin, giao diện, hay ngôn ngữ hay không.
 		 *
-		 * The dynamic portion of the hook name, `$type`, refers to the type of update
-		 * being checked.
+		 * Phần động của tên hook, `$type`, tham chiếu đến loại cập nhật
+		 * đang được kiểm tra.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `auto_update_core`
 		 *  - `auto_update_plugin`
 		 *  - `auto_update_theme`
 		 *  - `auto_update_translation`
 		 *
-		 * Since WordPress 3.7, minor and development versions of core, and translations have
-		 * been auto-updated by default. New installs on WordPress 5.6 or higher will also
-		 * auto-update major versions by default. Starting in 5.6, older sites can opt-in to
-		 * major version auto-updates, and auto-updates for plugins and themes.
+		 * Từ WordPress 3.7, các phiên bản phụ và phát triển của lõi, và bản dịch đã
+		 * được tự động cập nhật theo mặc định. Các cài đặt mới trên WordPress 5.6 trở lên cũng sẽ
+		 * tự động cập nhật phiên bản chính theo mặc định. Bắt đầu từ 5.6, các trang cũ có thể chọn
+		 * tự động cập nhật phiên bản chính, và tự động cập nhật cho plugin và giao diện.
 		 *
-		 * See the {@see 'allow_dev_auto_core_updates'}, {@see 'allow_minor_auto_core_updates'},
-		 * and {@see 'allow_major_auto_core_updates'} filters for a more straightforward way to
-		 * adjust core updates.
+		 * Xem các bộ lọc {@see 'allow_dev_auto_core_updates'}, {@see 'allow_minor_auto_core_updates'},
+		 * và {@see 'allow_major_auto_core_updates'} để có cách trực tiếp hơn
+		 * để điều chỉnh cập nhật lõi.
 		 *
 		 * @since 3.7.0
-		 * @since 5.5.0 The `$update` parameter accepts the value of null.
+		 * @since 5.5.0 Tham số `$update` chấp nhận giá trị null.
 		 *
-		 * @param bool|null $update Whether to update. The value of null is internally used
-		 *                          to detect whether nothing has hooked into this filter.
-		 * @param object    $item   The update offer.
+		 * @param bool|null $update Có cập nhật hay không. Giá trị null được sử dụng nội bộ
+		 *                          để phát hiện xem không có gì hook vào bộ lọc này.
+		 * @param object    $item   Đề xuất cập nhật.
 		 */
 		$update = apply_filters( "auto_update_{$type}", $update, $item );
 
@@ -274,7 +274,7 @@ class WP_Automatic_Updater {
 			return false;
 		}
 
-		// If it's a core update, are we actually compatible with its requirements?
+		// Nếu đây là cập nhật lõi, chúng ta có thực sự tương thích với yêu cầu của nó không?
 		if ( 'core' === $type ) {
 			global $wpdb;
 
@@ -290,7 +290,7 @@ class WP_Automatic_Updater {
 			}
 		}
 
-		// If updating a plugin or theme, ensure the minimum PHP version requirements are satisfied.
+		// Nếu cập nhật plugin hoặc giao diện, đảm bảo yêu cầu phiên bản PHP tối thiểu được đáp ứng.
 		if ( in_array( $type, array( 'plugin', 'theme' ), true ) ) {
 			if ( ! empty( $item->requires_php ) && version_compare( PHP_VERSION, $item->requires_php, '<' ) ) {
 				return false;
@@ -301,18 +301,18 @@ class WP_Automatic_Updater {
 	}
 
 	/**
-	 * Notifies an administrator of a core update.
+	 * Thông báo cho quản trị viên về bản cập nhật lõi.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param object $item The update offer.
-	 * @return bool True if the site administrator is notified of a core update,
-	 *              false otherwise.
+	 * @param object $item Đề xuất cập nhật.
+	 * @return bool True nếu quản trị viên được thông báo về cập nhật lõi,
+	 *              false nếu ngược lại.
 	 */
 	protected function send_core_update_notification_email( $item ) {
 		$notified = get_site_option( 'auto_core_update_notified' );
 
-		// Don't notify if we've already notified the same email address of the same version.
+		// Không thông báo nếu đã thông báo cùng địa chỉ email về cùng phiên bản.
 		if ( $notified
 			&& get_site_option( 'admin_email' ) === $notified['email']
 			&& $notified['version'] === $item->current
@@ -320,27 +320,27 @@ class WP_Automatic_Updater {
 			return false;
 		}
 
-		// See if we need to notify users of a core update.
+		// Xem liệu có cần thông báo cho người dùng về cập nhật lõi hay không.
 		$notify = ! empty( $item->notify_email );
 
 		/**
-		 * Filters whether to notify the site administrator of a new core update.
+		 * Lọc xem có nên thông báo cho quản trị viên trang web về bản cập nhật lõi mới hay không.
 		 *
-		 * By default, administrators are notified when the update offer received
-		 * from WordPress.org sets a particular flag. This allows some discretion
-		 * in if and when to notify.
+		 * Theo mặc định, quản trị viên được thông báo khi đề xuất cập nhật nhận được
+		 * từ WordPress.org đặt một cờ cụ thể. Điều này cho phép một số quyền quyết định
+		 * về việc có thông báo hay không và khi nào thông báo.
 		 *
-		 * This filter is only evaluated once per release. If the same email address
-		 * was already notified of the same new version, WordPress won't repeatedly
-		 * email the administrator.
+		 * Bộ lọc này chỉ được đánh giá một lần mỗi bản phát hành. Nếu cùng địa chỉ email
+		 * đã được thông báo về cùng phiên bản mới, WordPress sẽ không gửi email
+		 * lặp lại cho quản trị viên.
 		 *
-		 * This filter is also used on about.php to check if a plugin has disabled
-		 * these notifications.
+		 * Bộ lọc này cũng được sử dụng trên about.php để kiểm tra xem một plugin có vô hiệu hóa
+		 * các thông báo này hay không.
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param bool   $notify Whether the site administrator is notified.
-		 * @param object $item   The update offer.
+		 * @param bool   $notify Có thông báo cho quản trị viên trang web hay không.
+		 * @param object $item   Đề xuất cập nhật.
 		 */
 		if ( ! apply_filters( 'send_core_update_notification_email', $notify, $item ) ) {
 			return false;
@@ -351,12 +351,12 @@ class WP_Automatic_Updater {
 	}
 
 	/**
-	 * Updates an item, if appropriate.
+	 * Cập nhật một mục, nếu phù hợp.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param string $type The type of update being checked: 'core', 'theme', 'plugin', 'translation'.
-	 * @param object $item The update offer.
+	 * @param string $type Loại cập nhật đang được kiểm tra: 'core', 'theme', 'plugin', 'translation'.
+	 * @param object $item Đề xuất cập nhật.
 	 * @return null|WP_Error
 	 */
 	public function update( $type, $item ) {
@@ -364,14 +364,14 @@ class WP_Automatic_Updater {
 
 		switch ( $type ) {
 			case 'core':
-				// The Core upgrader doesn't use the Upgrader's skin during the actual main part of the upgrade, instead, firing a filter.
+				// Trình nâng cấp lõi không sử dụng skin của Upgrader trong phần chính của quá trình nâng cấp, thay vào đó kích hoạt một bộ lọc.
 				add_filter( 'update_feedback', array( $skin, 'feedback' ) );
 				$upgrader = new Core_Upgrader( $skin );
 				$context  = ABSPATH;
 				break;
 			case 'plugin':
 				$upgrader = new Plugin_Upgrader( $skin );
-				$context  = WP_PLUGIN_DIR; // We don't support custom Plugin directories, or updates for WPMU_PLUGIN_DIR.
+				$context  = WP_PLUGIN_DIR; // Không hỗ trợ thư mục Plugin tùy chỉnh, hoặc cập nhật cho WPMU_PLUGIN_DIR.
 				break;
 			case 'theme':
 				$upgrader = new Theme_Upgrader( $skin );
@@ -383,20 +383,20 @@ class WP_Automatic_Updater {
 				break;
 		}
 
-		// Determine whether we can and should perform this update.
+		// Xác định xem chúng ta có thể và có nên thực hiện cập nhật này hay không.
 		if ( ! $this->should_update( $type, $item, $context ) ) {
 			return false;
 		}
 
 		/**
-		 * Fires immediately prior to an auto-update.
+		 * Kích hoạt ngay trước khi tự động cập nhật.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string $type    The type of update being checked: 'core', 'theme', 'plugin', or 'translation'.
-		 * @param object $item    The update offer.
-		 * @param string $context The filesystem context (a path) against which filesystem access and status
-		 *                        should be checked.
+		 * @param string $type    Loại cập nhật đang được kiểm tra: 'core', 'theme', 'plugin', hoặc 'translation'.
+		 * @param object $item    Đề xuất cập nhật.
+		 * @param string $context Ngữ cảnh hệ thống tệp (đường dẫn) mà quyền truy cập và trạng thái
+		 *                        hệ thống tệp nên được kiểm tra.
 		 */
 		do_action( 'pre_auto_update', $type, $item, $context );
 
@@ -412,7 +412,7 @@ class WP_Automatic_Updater {
 				$upgrader_item = $item->theme;
 				$theme         = wp_get_theme( $upgrader_item );
 				$item_name     = $theme->Get( 'Name' );
-				// Add the current version so that it can be reported in the notification email.
+				// Thêm phiên bản hiện tại để có thể báo cáo trong email thông báo.
 				$item->current_version = $theme->get( 'Version' );
 				if ( empty( $item->current_version ) ) {
 					$item->current_version = false;
@@ -424,7 +424,7 @@ class WP_Automatic_Updater {
 				$upgrader_item = $item->plugin;
 				$plugin_data   = get_plugin_data( $context . '/' . $upgrader_item );
 				$item_name     = $plugin_data['Name'];
-				// Add the current version so that it can be reported in the notification email.
+				// Thêm phiên bản hiện tại để có thể báo cáo trong email thông báo.
 				$item->current_version = $plugin_data['Version'];
 				if ( empty( $item->current_version ) ) {
 					$item->current_version = false;
@@ -459,49 +459,49 @@ class WP_Automatic_Updater {
 		}
 
 		/*
-		 * Enable maintenance mode before upgrading the plugin or theme.
+		 * Bật chế độ bảo trì trước khi nâng cấp plugin hoặc giao diện.
 		 *
-		 * This avoids potential non-fatal errors being detected
-		 * while scraping for a fatal error if some files are still
-		 * being moved.
+		 * Điều này tránh phát hiện các lỗi không nghiêm trọng tiềm ẩn
+		 * trong khi quét tìm lỗi nghiêm trọng nếu một số tệp vẫn
+		 * đang được di chuyển.
 		 *
-		 * While these checks are intended only for plugins,
-		 * maintenance mode is enabled for all upgrade types as any
-		 * update could contain an error or warning, which could cause
-		 * the scrape to miss a fatal error in the plugin update.
+		 * Mặc dù các kiểm tra này chỉ dành cho plugin,
+		 * chế độ bảo trì được bật cho tất cả các loại nâng cấp vì bất kỳ
+		 * cập nhật nào cũng có thể chứa lỗi hoặc cảnh báo, có thể khiến
+		 * quá trình quét bỏ sót lỗi nghiêm trọng trong cập nhật plugin.
 		 */
 		if ( 'translation' !== $type ) {
 			$upgrader->maintenance_mode( true );
 		}
 
-		// Boom, this site's about to get a whole new splash of paint!
+		// Trang web này sắp được cập nhật!
 		$upgrade_result = $upgrader->upgrade(
 			$upgrader_item,
 			array(
 				'clear_update_cache'           => false,
-				// Always use partial builds if possible for core updates.
+				// Luôn sử dụng bản build một phần nếu có thể cho cập nhật lõi.
 				'pre_check_md5'                => false,
-				// Only available for core updates.
+				// Chỉ khả dụng cho cập nhật lõi.
 				'attempt_rollback'             => true,
-				// Allow relaxed file ownership in some scenarios.
+				// Cho phép nới lỏng quyền sở hữu tệp trong một số tình huống.
 				'allow_relaxed_file_ownership' => $allow_relaxed_file_ownership,
 			)
 		);
 
 		/*
-		 * After WP_Upgrader::upgrade() completes, maintenance mode is disabled.
+		 * Sau khi WP_Upgrader::upgrade() hoàn thành, chế độ bảo trì bị vô hiệu hóa.
 		 *
-		 * Re-enable maintenance mode while attempting to detect fatal errors
-		 * and potentially rolling back.
+		 * Bật lại chế độ bảo trì trong khi cố phát hiện lỗi nghiêm trọng
+		 * và có thể hoàn tác.
 		 *
-		 * This avoids errors if the site is visited while fatal errors exist
-		 * or while files are still being moved.
+		 * Điều này tránh lỗi nếu trang web được truy cập trong khi có lỗi nghiêm trọng
+		 * hoặc khi các tệp vẫn đang được di chuyển.
 		 */
 		if ( 'translation' !== $type ) {
 			$upgrader->maintenance_mode( true );
 		}
 
-		// If the filesystem is unavailable, false is returned.
+		// Nếu hệ thống tệp không khả dụng, trả về false.
 		if ( false === $upgrade_result ) {
 			$upgrade_result = new WP_Error( 'fs_unavailable', __( 'Could not access filesystem.' ) );
 		}
@@ -511,17 +511,17 @@ class WP_Automatic_Updater {
 				&& ( 'up_to_date' === $upgrade_result->get_error_code()
 					|| 'locked' === $upgrade_result->get_error_code() )
 			) {
-				// Allow visitors to browse the site again.
+				// Cho phép khách truy cập duyệt trang web trở lại.
 				$upgrader->maintenance_mode( false );
 
 				/*
-				 * These aren't actual errors, treat it as a skipped-update instead
-				 * to avoid triggering the post-core update failure routines.
+				 * Đây không phải lỗi thực sự, xử lý như cập nhật bị bỏ qua thay vì
+				 * kích hoạt các quy trình xử lý lỗi sau cập nhật lõi.
 				 */
 				return false;
 			}
 
-			// Core doesn't output this, so let's append it, so we don't get confused.
+			// Lõi không xuất thông tin này, nên hãy thêm vào để không bị nhầm lẫn.
 			if ( is_wp_error( $upgrade_result ) ) {
 				$upgrade_result->add( 'installation_failed', __( 'Installation failed.' ) );
 				$skin->error( $upgrade_result );
@@ -547,19 +547,19 @@ class WP_Automatic_Updater {
 			if ( $was_active && ! is_wp_error( $upgrade_result ) ) {
 
 				/*
-				 * The usual time limit is five minutes. However, as a loopback request
-				 * is about to be performed, increase the time limit to account for this.
+				 * Giới hạn thời gian thông thường là năm phút. Tuy nhiên, do một yêu cầu loopback
+				 * sắp được thực hiện, tăng giới hạn thời gian để tính đến điều này.
 				 */
 				if ( function_exists( 'set_time_limit' ) ) {
 					set_time_limit( 10 * MINUTE_IN_SECONDS );
 				}
 
 				/*
-				 * Avoids a race condition when there are 2 sequential plugins that have
-				 * fatal errors. It seems a slight delay is required for the loopback to
-				 * use the updated plugin code in the request. This can cause the second
-				 * plugin's fatal error checking to be inaccurate, and may also affect
-				 * subsequent plugin checks.
+				 * Tránh tình trạng chạy đua khi có 2 plugin liên tiếp có
+				 * lỗi nghiêm trọng. Dường như cần một khoảng trễ nhỏ để loopback
+				 * sử dụng mã plugin đã cập nhật trong yêu cầu. Điều này có thể khiến
+				 * kiểm tra lỗi nghiêm trọng của plugin thứ hai không chính xác, và cũng có thể ảnh hưởng
+				 * đến các kiểm tra plugin tiếp theo.
 				 */
 				sleep( 2 );
 
@@ -602,13 +602,13 @@ class WP_Automatic_Updater {
 					}
 
 					/*
-					 * Should emails not be working, log the message(s) so that
-					 * the log file contains context for the fatal error,
-					 * and whether a rollback was performed.
+					 * Nếu email không hoạt động, ghi lại (các) thông báo để
+					 * tệp log chứa ngữ cảnh cho lỗi nghiêm trọng,
+					 * và liệu có thực hiện hoàn tác hay không.
 					 *
-					 * `trigger_error()` is not used as it outputs a stack trace
-					 * to this location rather than to the fatal error, which will
-					 * appear above this entry in the log file.
+					 * `trigger_error()` không được sử dụng vì nó xuất stack trace
+					 * đến vị trí này thay vì đến lỗi nghiêm trọng, sẽ
+					 * xuất hiện phía trên mục này trong tệp log.
 					 */
 					if ( $is_debug ) {
 						error_log( '    ' . implode( "\n", $upgrade_result->get_error_messages() ) );
@@ -619,7 +619,7 @@ class WP_Automatic_Updater {
 			}
 		}
 
-		// All processes are complete. Allow visitors to browse the site again.
+		// Tất cả các quá trình đã hoàn tất. Cho phép khách truy cập duyệt trang web trở lại.
 		if ( 'translation' !== $type ) {
 			$upgrader->maintenance_mode( false );
 		}
@@ -635,7 +635,7 @@ class WP_Automatic_Updater {
 	}
 
 	/**
-	 * Kicks off the background update process, looping through all pending updates.
+	 * Khởi chạy quá trình cập nhật nền, lặp qua tất cả các cập nhật đang chờ.
 	 *
 	 * @since 3.7.0
 	 */
@@ -658,14 +658,14 @@ class WP_Automatic_Updater {
 			error_log( 'Automatic updates starting...' );
 		}
 
-		// Don't automatically run these things, as we'll handle it ourselves.
+		// Không tự động chạy những thứ này, vì chúng ta sẽ tự xử lý.
 		remove_action( 'upgrader_process_complete', array( 'Language_Pack_Upgrader', 'async_upgrade' ), 20 );
 		remove_action( 'upgrader_process_complete', 'wp_version_check' );
 		remove_action( 'upgrader_process_complete', 'wp_update_plugins' );
 		remove_action( 'upgrader_process_complete', 'wp_update_themes' );
 
-		// Next, plugins.
-		wp_update_plugins(); // Check for plugin updates.
+		// Tiếp theo, plugin.
+		wp_update_plugins(); // Kiểm tra cập nhật plugin.
 		$plugin_updates = get_site_transient( 'update_plugins' );
 		if ( $plugin_updates && ! empty( $plugin_updates->response ) ) {
 			if ( $is_debug ) {
@@ -676,7 +676,7 @@ class WP_Automatic_Updater {
 				$this->update( 'plugin', $plugin );
 			}
 
-			// Force refresh of plugin update information.
+			// Buộc làm mới thông tin cập nhật plugin.
 			wp_clean_plugins_cache();
 
 			if ( $is_debug ) {
@@ -684,8 +684,8 @@ class WP_Automatic_Updater {
 			}
 		}
 
-		// Next, those themes we all love.
-		wp_update_themes();  // Check for theme updates.
+		// Tiếp theo, các giao diện.
+		wp_update_themes();  // Kiểm tra cập nhật giao diện.
 		$theme_updates = get_site_transient( 'update_themes' );
 		if ( $theme_updates && ! empty( $theme_updates->response ) ) {
 			if ( $is_debug ) {
@@ -695,7 +695,7 @@ class WP_Automatic_Updater {
 			foreach ( $theme_updates->response as $theme ) {
 				$this->update( 'theme', (object) $theme );
 			}
-			// Force refresh of theme update information.
+			// Buộc làm mới thông tin cập nhật giao diện.
 			wp_clean_themes_cache();
 
 			if ( $is_debug ) {
@@ -707,8 +707,8 @@ class WP_Automatic_Updater {
 			error_log( 'Automatic updates complete.' );
 		}
 
-		// Next, process any core update.
-		wp_version_check(); // Check for core updates.
+		// Tiếp theo, xử lý bất kỳ cập nhật lõi nào.
+		wp_version_check(); // Kiểm tra cập nhật lõi.
 		$core_update = find_core_auto_update();
 
 		if ( $core_update ) {
@@ -716,8 +716,8 @@ class WP_Automatic_Updater {
 		}
 
 		/*
-		 * Clean up, and check for any pending translations.
-		 * (Core_Upgrader checks for core updates.)
+		 * Dọn dẹp, và kiểm tra bất kỳ bản dịch đang chờ nào.
+		 * (Core_Upgrader kiểm tra cập nhật lõi.)
 		 */
 		$theme_stats = array();
 		if ( isset( $this->update_results['theme'] ) ) {
@@ -725,7 +725,7 @@ class WP_Automatic_Updater {
 				$theme_stats[ $upgrade->item->theme ] = ( true === $upgrade->result );
 			}
 		}
-		wp_update_themes( $theme_stats ); // Check for theme updates.
+		wp_update_themes( $theme_stats ); // Kiểm tra cập nhật giao diện.
 
 		$plugin_stats = array();
 		if ( isset( $this->update_results['plugin'] ) ) {
@@ -733,35 +733,35 @@ class WP_Automatic_Updater {
 				$plugin_stats[ $upgrade->item->plugin ] = ( true === $upgrade->result );
 			}
 		}
-		wp_update_plugins( $plugin_stats ); // Check for plugin updates.
+		wp_update_plugins( $plugin_stats ); // Kiểm tra cập nhật plugin.
 
-		// Finally, process any new translations.
+		// Cuối cùng, xử lý bất kỳ bản dịch mới nào.
 		$language_updates = wp_get_translation_updates();
 		if ( $language_updates ) {
 			foreach ( $language_updates as $update ) {
 				$this->update( 'translation', $update );
 			}
 
-			// Clear existing caches.
+			// Xóa bộ nhớ đệm hiện có.
 			wp_clean_update_cache();
 
-			wp_version_check();  // Check for core updates.
-			wp_update_themes();  // Check for theme updates.
-			wp_update_plugins(); // Check for plugin updates.
+			wp_version_check();  // Kiểm tra cập nhật lõi.
+			wp_update_themes();  // Kiểm tra cập nhật giao diện.
+			wp_update_plugins(); // Kiểm tra cập nhật plugin.
 		}
 
-		// Send debugging email to admin for all development installations.
+		// Gửi email gỡ lỗi cho quản trị viên cho tất cả các cài đặt phát triển.
 		if ( ! empty( $this->update_results ) ) {
 			$development_version = str_contains( wp_get_wp_version(), '-' );
 
 			/**
-			 * Filters whether to send a debugging email for each automatic background update.
+			 * Lọc xem có gửi email gỡ lỗi cho mỗi lần cập nhật nền tự động hay không.
 			 *
 			 * @since 3.7.0
 			 *
-			 * @param bool $development_version By default, emails are sent if the
-			 *                                  install is a development version.
-			 *                                  Return false to avoid the email.
+			 * @param bool $development_version Theo mặc định, email được gửi nếu
+			 *                                  cài đặt là phiên bản phát triển.
+			 *                                  Trả về false để không gửi email.
 			 */
 			if ( apply_filters( 'automatic_updates_send_debug_email', $development_version ) ) {
 				$this->send_debug_email();
@@ -774,11 +774,11 @@ class WP_Automatic_Updater {
 			}
 
 			/**
-			 * Fires after all automatic updates have run.
+			 * Kích hoạt sau khi tất cả các cập nhật tự động đã chạy.
 			 *
 			 * @since 3.8.0
 			 *
-			 * @param array $update_results The results of all attempted updates.
+			 * @param array $update_results Kết quả của tất cả các lần cập nhật đã thử.
 			 */
 			do_action( 'automatic_updates_complete', $this->update_results );
 		}
@@ -787,12 +787,12 @@ class WP_Automatic_Updater {
 	}
 
 	/**
-	 * Checks whether to send an email and avoid processing future updates after
-	 * attempting a core update.
+	 * Kiểm tra xem có nên gửi email và tránh xử lý các cập nhật trong tương lai sau
+	 * khi thử cập nhật lõi hay không.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param object $update_result The result of the core update. Includes the update offer and result.
+	 * @param object $update_result Kết quả cập nhật lõi. Bao gồm đề xuất cập nhật và kết quả.
 	 */
 	protected function after_core_update( $update_result ) {
 		$wp_version = wp_get_wp_version();
@@ -808,8 +808,8 @@ class WP_Automatic_Updater {
 		$error_code = $result->get_error_code();
 
 		/*
-		 * Any of these WP_Error codes are critical failures, as in they occurred after we started to copy core files.
-		 * We should not try to perform a background update again until there is a successful one-click update performed by the user.
+		 * Bất kỳ mã WP_Error nào trong số này đều là lỗi nghiêm trọng, xảy ra sau khi bắt đầu sao chép các tệp lõi.
+		 * Không nên thử thực hiện cập nhật nền lần nữa cho đến khi có một cập nhật một-cú-nhấp thành công do người dùng thực hiện.
 		 */
 		$critical = false;
 		if ( 'disk_full' === $error_code || str_contains( $error_code, '__copy_dir' ) ) {

@@ -1,8 +1,8 @@
 <?php
 /**
- * Translation API: Continent and city translations for timezone selection
+ * API Dịch thuật: Bản dịch lục địa và thành phố dùng để chọn múi giờ
  *
- * This file is not included anywhere. It exists solely for use by xgettext.
+ * File này không được include ở bất cứ đâu. Nó chỉ tồn tại để xgettext sử dụng.
  *
  * @package WordPress
  * @subpackage i18n

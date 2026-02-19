@@ -1,21 +1,21 @@
 <?php
 /**
- * Core HTTP Request API
+ * API Yêu cầu HTTP Lõi
  *
- * Standardizes the HTTP requests for WordPress. Handles cookies, gzip encoding and decoding, chunk
- * decoding, if HTTP 1.1 and various other difficult HTTP protocol implementations.
+ * Chuẩn hóa các yêu cầu HTTP cho WordPress. Xử lý cookie, mã hóa và giải mã gzip, giải mã chunk,
+ * nếu HTTP 1.1 và nhiều triển khai giao thức HTTP phức tạp khác.
  *
  * @package WordPress
  * @subpackage HTTP
  */
 
 /**
- * Returns the initialized WP_Http Object
+ * Trả về đối tượng WP_Http đã được khởi tạo
  *
  * @since 2.7.0
  * @access private
  *
- * @return WP_Http HTTP Transport object.
+ * @return WP_Http Đối tượng HTTP Transport.
  */
 function _wp_http_get_object() {
 	static $http = null;
@@ -27,25 +27,25 @@ function _wp_http_get_object() {
 }
 
 /**
- * Retrieves the raw response from a safe HTTP request.
+ * Lấy phản hồi thô từ một yêu cầu HTTP an toàn.
  *
- * This function is ideal when the HTTP request is being made to an arbitrary
- * URL. The URL, and every URL it redirects to, are validated with wp_http_validate_url()
- * to avoid Server Side Request Forgery attacks (SSRF).
+ * Hàm này lý tưởng khi yêu cầu HTTP được thực hiện tới một URL tùy ý.
+ * URL và mọi URL mà nó chuyển hướng tới đều được xác thực bằng wp_http_validate_url()
+ * để tránh các cuộc tấn công Server Side Request Forgery (SSRF).
  *
  * @since 3.6.0
  *
- * @see wp_remote_request() For more information on the response array format.
- * @see WP_Http::request() For default arguments information.
- * @see wp_http_validate_url() For more information about how the URL is validated.
+ * @see wp_remote_request() Để biết thêm thông tin về định dạng mảng phản hồi.
+ * @see WP_Http::request() Để biết thông tin về các đối số mặc định.
+ * @see wp_http_validate_url() Để biết thêm thông tin về cách URL được xác thực.
  *
  * @link https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
  *
- * @param string $url  URL to retrieve.
- * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
- * @return array|WP_Error The response or WP_Error on failure.
- *                        See WP_Http::request() for information on return value.
+ * @param string $url  URL cần lấy.
+ * @param array  $args Tùy chọn. Các đối số yêu cầu. Mặc định mảng rỗng.
+ *                     Xem WP_Http::request() để biết thông tin về các đối số được chấp nhận.
+ * @return array|WP_Error Phản hồi hoặc WP_Error khi thất bại.
+ *                        Xem WP_Http::request() để biết thông tin về giá trị trả về.
  */
 function wp_safe_remote_request( $url, $args = array() ) {
 	$args['reject_unsafe_urls'] = true;
@@ -54,25 +54,25 @@ function wp_safe_remote_request( $url, $args = array() ) {
 }
 
 /**
- * Retrieves the raw response from a safe HTTP request using the GET method.
+ * Lấy phản hồi thô từ một yêu cầu HTTP an toàn sử dụng phương thức GET.
  *
- * This function is ideal when the HTTP request is being made to an arbitrary
- * URL. The URL, and every URL it redirects to, are validated with wp_http_validate_url()
- * to avoid Server Side Request Forgery attacks (SSRF).
+ * Hàm này lý tưởng khi yêu cầu HTTP được thực hiện tới một URL tùy ý.
+ * URL và mọi URL mà nó chuyển hướng tới đều được xác thực bằng wp_http_validate_url()
+ * để tránh các cuộc tấn công Server Side Request Forgery (SSRF).
  *
  * @since 3.6.0
  *
- * @see wp_remote_request() For more information on the response array format.
- * @see WP_Http::request() For default arguments information.
- * @see wp_http_validate_url() For more information about how the URL is validated.
+ * @see wp_remote_request() Để biết thêm thông tin về định dạng mảng phản hồi.
+ * @see WP_Http::request() Để biết thông tin về các đối số mặc định.
+ * @see wp_http_validate_url() Để biết thêm thông tin về cách URL được xác thực.
  *
  * @link https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
  *
- * @param string $url  URL to retrieve.
- * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
- * @return array|WP_Error The response or WP_Error on failure.
- *                        See WP_Http::request() for information on return value.
+ * @param string $url  URL cần lấy.
+ * @param array  $args Tùy chọn. Các đối số yêu cầu. Mặc định mảng rỗng.
+ *                     Xem WP_Http::request() để biết thông tin về các đối số được chấp nhận.
+ * @return array|WP_Error Phản hồi hoặc WP_Error khi thất bại.
+ *                        Xem WP_Http::request() để biết thông tin về giá trị trả về.
  */
 function wp_safe_remote_get( $url, $args = array() ) {
 	$args['reject_unsafe_urls'] = true;
@@ -81,25 +81,25 @@ function wp_safe_remote_get( $url, $args = array() ) {
 }
 
 /**
- * Retrieves the raw response from a safe HTTP request using the POST method.
+ * Lấy phản hồi thô từ một yêu cầu HTTP an toàn sử dụng phương thức POST.
  *
- * This function is ideal when the HTTP request is being made to an arbitrary
- * URL. The URL, and every URL it redirects to, are validated with wp_http_validate_url()
- * to avoid Server Side Request Forgery attacks (SSRF).
+ * Hàm này lý tưởng khi yêu cầu HTTP được thực hiện tới một URL tùy ý.
+ * URL và mọi URL mà nó chuyển hướng tới đều được xác thực bằng wp_http_validate_url()
+ * để tránh các cuộc tấn công Server Side Request Forgery (SSRF).
  *
  * @since 3.6.0
  *
- * @see wp_remote_request() For more information on the response array format.
- * @see WP_Http::request() For default arguments information.
- * @see wp_http_validate_url() For more information about how the URL is validated.
+ * @see wp_remote_request() Để biết thêm thông tin về định dạng mảng phản hồi.
+ * @see WP_Http::request() Để biết thông tin về các đối số mặc định.
+ * @see wp_http_validate_url() Để biết thêm thông tin về cách URL được xác thực.
  *
  * @link https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
  *
- * @param string $url  URL to retrieve.
- * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
- * @return array|WP_Error The response or WP_Error on failure.
- *                        See WP_Http::request() for information on return value.
+ * @param string $url  URL cần lấy.
+ * @param array  $args Tùy chọn. Các đối số yêu cầu. Mặc định mảng rỗng.
+ *                     Xem WP_Http::request() để biết thông tin về các đối số được chấp nhận.
+ * @return array|WP_Error Phản hồi hoặc WP_Error khi thất bại.
+ *                        Xem WP_Http::request() để biết thông tin về giá trị trả về.
  */
 function wp_safe_remote_post( $url, $args = array() ) {
 	$args['reject_unsafe_urls'] = true;
@@ -108,25 +108,25 @@ function wp_safe_remote_post( $url, $args = array() ) {
 }
 
 /**
- * Retrieves the raw response from a safe HTTP request using the HEAD method.
+ * Lấy phản hồi thô từ một yêu cầu HTTP an toàn sử dụng phương thức HEAD.
  *
- * This function is ideal when the HTTP request is being made to an arbitrary
- * URL. The URL, and every URL it redirects to, are validated with wp_http_validate_url()
- * to avoid Server Side Request Forgery attacks (SSRF).
+ * Hàm này lý tưởng khi yêu cầu HTTP được thực hiện tới một URL tùy ý.
+ * URL và mọi URL mà nó chuyển hướng tới đều được xác thực bằng wp_http_validate_url()
+ * để tránh các cuộc tấn công Server Side Request Forgery (SSRF).
  *
  * @since 3.6.0
  *
- * @see wp_remote_request() For more information on the response array format.
- * @see WP_Http::request() For default arguments information.
- * @see wp_http_validate_url() For more information about how the URL is validated.
+ * @see wp_remote_request() Để biết thêm thông tin về định dạng mảng phản hồi.
+ * @see WP_Http::request() Để biết thông tin về các đối số mặc định.
+ * @see wp_http_validate_url() Để biết thêm thông tin về cách URL được xác thực.
  *
  * @link https://owasp.org/www-community/attacks/Server_Side_Request_Forgery
  *
- * @param string $url  URL to retrieve.
- * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
- * @return array|WP_Error The response or WP_Error on failure.
- *                        See WP_Http::request() for information on return value.
+ * @param string $url  URL cần lấy.
+ * @param array  $args Tùy chọn. Các đối số yêu cầu. Mặc định mảng rỗng.
+ *                     Xem WP_Http::request() để biết thông tin về các đối số được chấp nhận.
+ * @return array|WP_Error Phản hồi hoặc WP_Error khi thất bại.
+ *                        Xem WP_Http::request() để biết thông tin về giá trị trả về.
  */
 function wp_safe_remote_head( $url, $args = array() ) {
 	$args['reject_unsafe_urls'] = true;
@@ -135,23 +135,23 @@ function wp_safe_remote_head( $url, $args = array() ) {
 }
 
 /**
- * Performs an HTTP request and returns its response.
+ * Thực hiện một yêu cầu HTTP và trả về phản hồi của nó.
  *
- * There are other API functions available which abstract away the HTTP method:
+ * Có các hàm API khác trừu tượng hóa phương thức HTTP:
  *
- *  - Default 'GET'  for wp_remote_get()
- *  - Default 'POST' for wp_remote_post()
- *  - Default 'HEAD' for wp_remote_head()
+ *  - Mặc định 'GET'  cho wp_remote_get()
+ *  - Mặc định 'POST' cho wp_remote_post()
+ *  - Mặc định 'HEAD' cho wp_remote_head()
  *
  * @since 2.7.0
  *
- * @see WP_Http::request() For information on default arguments.
+ * @see WP_Http::request() Để biết thông tin về các đối số mặc định.
  *
- * @param string $url  URL to retrieve.
- * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
- * @return array|WP_Error The response array or a WP_Error on failure.
- *                        See WP_Http::request() for information on return value.
+ * @param string $url  URL cần lấy.
+ * @param array  $args Tùy chọn. Các đối số yêu cầu. Mặc định mảng rỗng.
+ *                     Xem WP_Http::request() để biết thông tin về các đối số được chấp nhận.
+ * @return array|WP_Error Mảng phản hồi hoặc WP_Error khi thất bại.
+ *                        Xem WP_Http::request() để biết thông tin về giá trị trả về.
  */
 function wp_remote_request( $url, $args = array() ) {
 	$http = _wp_http_get_object();
@@ -159,18 +159,18 @@ function wp_remote_request( $url, $args = array() ) {
 }
 
 /**
- * Performs an HTTP request using the GET method and returns its response.
+ * Thực hiện một yêu cầu HTTP sử dụng phương thức GET và trả về phản hồi.
  *
  * @since 2.7.0
  *
- * @see wp_remote_request() For more information on the response array format.
- * @see WP_Http::request() For default arguments information.
+ * @see wp_remote_request() Để biết thêm thông tin về định dạng mảng phản hồi.
+ * @see WP_Http::request() Để biết thông tin về các đối số mặc định.
  *
- * @param string $url  URL to retrieve.
- * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
- * @return array|WP_Error The response or WP_Error on failure.
- *                        See WP_Http::request() for information on return value.
+ * @param string $url  URL cần lấy.
+ * @param array  $args Tùy chọn. Các đối số yêu cầu. Mặc định mảng rỗng.
+ *                     Xem WP_Http::request() để biết thông tin về các đối số được chấp nhận.
+ * @return array|WP_Error Phản hồi hoặc WP_Error khi thất bại.
+ *                        Xem WP_Http::request() để biết thông tin về giá trị trả về.
  */
 function wp_remote_get( $url, $args = array() ) {
 	$http = _wp_http_get_object();
@@ -178,18 +178,18 @@ function wp_remote_get( $url, $args = array() ) {
 }
 
 /**
- * Performs an HTTP request using the POST method and returns its response.
+ * Thực hiện một yêu cầu HTTP sử dụng phương thức POST và trả về phản hồi.
  *
  * @since 2.7.0
  *
- * @see wp_remote_request() For more information on the response array format.
- * @see WP_Http::request() For default arguments information.
+ * @see wp_remote_request() Để biết thêm thông tin về định dạng mảng phản hồi.
+ * @see WP_Http::request() Để biết thông tin về các đối số mặc định.
  *
- * @param string $url  URL to retrieve.
- * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
- * @return array|WP_Error The response or WP_Error on failure.
- *                        See WP_Http::request() for information on return value.
+ * @param string $url  URL cần lấy.
+ * @param array  $args Tùy chọn. Các đối số yêu cầu. Mặc định mảng rỗng.
+ *                     Xem WP_Http::request() để biết thông tin về các đối số được chấp nhận.
+ * @return array|WP_Error Phản hồi hoặc WP_Error khi thất bại.
+ *                        Xem WP_Http::request() để biết thông tin về giá trị trả về.
  */
 function wp_remote_post( $url, $args = array() ) {
 	$http = _wp_http_get_object();
@@ -197,18 +197,18 @@ function wp_remote_post( $url, $args = array() ) {
 }
 
 /**
- * Performs an HTTP request using the HEAD method and returns its response.
+ * Thực hiện một yêu cầu HTTP sử dụng phương thức HEAD và trả về phản hồi.
  *
  * @since 2.7.0
  *
- * @see wp_remote_request() For more information on the response array format.
- * @see WP_Http::request() For default arguments information.
+ * @see wp_remote_request() Để biết thêm thông tin về định dạng mảng phản hồi.
+ * @see WP_Http::request() Để biết thông tin về các đối số mặc định.
  *
- * @param string $url  URL to retrieve.
- * @param array  $args Optional. Request arguments. Default empty array.
- *                     See WP_Http::request() for information on accepted arguments.
- * @return array|WP_Error The response or WP_Error on failure.
- *                        See WP_Http::request() for information on return value.
+ * @param string $url  URL cần lấy.
+ * @param array  $args Tùy chọn. Các đối số yêu cầu. Mặc định mảng rỗng.
+ *                     Xem WP_Http::request() để biết thông tin về các đối số được chấp nhận.
+ * @return array|WP_Error Phản hồi hoặc WP_Error khi thất bại.
+ *                        Xem WP_Http::request() để biết thông tin về giá trị trả về.
  */
 function wp_remote_head( $url, $args = array() ) {
 	$http = _wp_http_get_object();
@@ -216,16 +216,16 @@ function wp_remote_head( $url, $args = array() ) {
 }
 
 /**
- * Retrieves only the headers from the raw response.
+ * Lấy chỉ các header từ phản hồi thô.
  *
  * @since 2.7.0
- * @since 4.6.0 Return value changed from an array to an WpOrg\Requests\Utility\CaseInsensitiveDictionary instance.
+ * @since 4.6.0 Giá trị trả về thay đổi từ mảng sang instance WpOrg\Requests\Utility\CaseInsensitiveDictionary.
  *
  * @see \WpOrg\Requests\Utility\CaseInsensitiveDictionary
  *
- * @param array|WP_Error $response HTTP response.
- * @return \WpOrg\Requests\Utility\CaseInsensitiveDictionary|array The headers of the response, or empty array
- *                                                                 if incorrect parameter given.
+ * @param array|WP_Error $response Phản hồi HTTP.
+ * @return \WpOrg\Requests\Utility\CaseInsensitiveDictionary|array Các header của phản hồi, hoặc mảng rỗng
+ *                                                                 nếu tham số không đúng.
  */
 function wp_remote_retrieve_headers( $response ) {
 	if ( is_wp_error( $response ) || ! isset( $response['headers'] ) ) {
@@ -236,14 +236,14 @@ function wp_remote_retrieve_headers( $response ) {
 }
 
 /**
- * Retrieves a single header by name from the raw response.
+ * Lấy một header đơn lẻ theo tên từ phản hồi thô.
  *
  * @since 2.7.0
  *
- * @param array|WP_Error $response HTTP response.
- * @param string         $header   Header name to retrieve value from.
- * @return array|string The header(s) value(s). Array if multiple headers with the same name are retrieved.
- *                      Empty string if incorrect parameter given, or if the header doesn't exist.
+ * @param array|WP_Error $response Phản hồi HTTP.
+ * @param string         $header   Tên header cần lấy giá trị.
+ * @return array|string Giá trị header. Mảng nếu có nhiều header cùng tên được lấy.
+ *                      Chuỗi rỗng nếu tham số không đúng, hoặc header không tồn tại.
  */
 function wp_remote_retrieve_header( $response, $header ) {
 	if ( is_wp_error( $response ) || ! isset( $response['headers'] ) ) {
@@ -258,14 +258,14 @@ function wp_remote_retrieve_header( $response, $header ) {
 }
 
 /**
- * Retrieves only the response code from the raw response.
+ * Lấy chỉ mã phản hồi từ phản hồi thô.
  *
- * Will return an empty string if incorrect parameter value is given.
+ * Sẽ trả về chuỗi rỗng nếu giá trị tham số không đúng.
  *
  * @since 2.7.0
  *
- * @param array|WP_Error $response HTTP response.
- * @return int|string The response code as an integer. Empty string if incorrect parameter given.
+ * @param array|WP_Error $response Phản hồi HTTP.
+ * @return int|string Mã phản hồi dạng số nguyên. Chuỗi rỗng nếu tham số không đúng.
  */
 function wp_remote_retrieve_response_code( $response ) {
 	if ( is_wp_error( $response ) || ! isset( $response['response'] ) || ! is_array( $response['response'] ) ) {
@@ -276,14 +276,14 @@ function wp_remote_retrieve_response_code( $response ) {
 }
 
 /**
- * Retrieves only the response message from the raw response.
+ * Lấy chỉ thông báo phản hồi từ phản hồi thô.
  *
- * Will return an empty string if incorrect parameter value is given.
+ * Sẽ trả về chuỗi rỗng nếu giá trị tham số không đúng.
  *
  * @since 2.7.0
  *
- * @param array|WP_Error $response HTTP response.
- * @return string The response message. Empty string if incorrect parameter given.
+ * @param array|WP_Error $response Phản hồi HTTP.
+ * @return string Thông báo phản hồi. Chuỗi rỗng nếu tham số không đúng.
  */
 function wp_remote_retrieve_response_message( $response ) {
 	if ( is_wp_error( $response ) || ! isset( $response['response'] ) || ! is_array( $response['response'] ) ) {
@@ -294,12 +294,12 @@ function wp_remote_retrieve_response_message( $response ) {
 }
 
 /**
- * Retrieves only the body from the raw response.
+ * Lấy chỉ phần thân từ phản hồi thô.
  *
  * @since 2.7.0
  *
- * @param array|WP_Error $response HTTP response.
- * @return string The body of the response. Empty string if no body or incorrect parameter given.
+ * @param array|WP_Error $response Phản hồi HTTP.
+ * @return string Phần thân của phản hồi. Chuỗi rỗng nếu không có thân hoặc tham số không đúng.
  */
 function wp_remote_retrieve_body( $response ) {
 	if ( is_wp_error( $response ) || ! isset( $response['body'] ) ) {
@@ -310,13 +310,13 @@ function wp_remote_retrieve_body( $response ) {
 }
 
 /**
- * Retrieves only the cookies from the raw response.
+ * Lấy chỉ các cookie từ phản hồi thô.
  *
  * @since 4.4.0
  *
- * @param array|WP_Error $response HTTP response.
- * @return WP_Http_Cookie[] An array of `WP_Http_Cookie` objects from the response.
- *                          Empty array if there are none, or the response is a WP_Error.
+ * @param array|WP_Error $response Phản hồi HTTP.
+ * @return WP_Http_Cookie[] Mảng các đối tượng `WP_Http_Cookie` từ phản hồi.
+ *                          Mảng rỗng nếu không có cookie, hoặc phản hồi là WP_Error.
  */
 function wp_remote_retrieve_cookies( $response ) {
 	if ( is_wp_error( $response ) || empty( $response['cookies'] ) ) {
@@ -327,14 +327,14 @@ function wp_remote_retrieve_cookies( $response ) {
 }
 
 /**
- * Retrieves a single cookie by name from the raw response.
+ * Lấy một cookie đơn lẻ theo tên từ phản hồi thô.
  *
  * @since 4.4.0
  *
- * @param array|WP_Error $response HTTP response.
- * @param string         $name     The name of the cookie to retrieve.
- * @return WP_Http_Cookie|string The `WP_Http_Cookie` object, or empty string
- *                               if the cookie is not present in the response.
+ * @param array|WP_Error $response Phản hồi HTTP.
+ * @param string         $name     Tên cookie cần lấy.
+ * @return WP_Http_Cookie|string Đối tượng `WP_Http_Cookie`, hoặc chuỗi rỗng
+ *                               nếu cookie không có trong phản hồi.
  */
 function wp_remote_retrieve_cookie( $response, $name ) {
 	$cookies = wp_remote_retrieve_cookies( $response );
@@ -353,14 +353,14 @@ function wp_remote_retrieve_cookie( $response, $name ) {
 }
 
 /**
- * Retrieves a single cookie's value by name from the raw response.
+ * Lấy giá trị của một cookie đơn lẻ theo tên từ phản hồi thô.
  *
  * @since 4.4.0
  *
- * @param array|WP_Error $response HTTP response.
- * @param string         $name     The name of the cookie to retrieve.
- * @return string The value of the cookie, or empty string
- *                if the cookie is not present in the response.
+ * @param array|WP_Error $response Phản hồi HTTP.
+ * @param string         $name     Tên cookie cần lấy.
+ * @return string Giá trị của cookie, hoặc chuỗi rỗng
+ *                nếu cookie không có trong phản hồi.
  */
 function wp_remote_retrieve_cookie_value( $response, $name ) {
 	$cookie = wp_remote_retrieve_cookie( $response, $name );
@@ -373,13 +373,13 @@ function wp_remote_retrieve_cookie_value( $response, $name ) {
 }
 
 /**
- * Determines if there is an HTTP Transport that can process this request.
+ * Xác định xem có HTTP Transport nào có thể xử lý yêu cầu này không.
  *
  * @since 3.2.0
  *
- * @param array  $capabilities Array of capabilities to test or a wp_remote_request() $args array.
- * @param string $url          Optional. If given, will check if the URL requires SSL and adds
- *                             that requirement to the capabilities array.
+ * @param array  $capabilities Mảng các khả năng cần kiểm tra hoặc mảng $args của wp_remote_request().
+ * @param string $url          Tùy chọn. Nếu được cung cấp, sẽ kiểm tra xem URL có yêu cầu SSL không và thêm
+ *                             yêu cầu đó vào mảng khả năng.
  *
  * @return bool
  */
@@ -388,7 +388,7 @@ function wp_http_supports( $capabilities = array(), $url = null ) {
 
 	$count = count( $capabilities );
 
-	// If we have a numeric $capabilities array, spoof a wp_remote_request() associative $args array.
+	// Nếu có mảng $capabilities dạng số, giả lập mảng $args kết hợp của wp_remote_request().
 	if ( $count && count( array_filter( array_keys( $capabilities ), 'is_numeric' ) ) === $count ) {
 		$capabilities = array_combine( array_values( $capabilities ), array_fill( 0, $count, true ) );
 	}
@@ -404,11 +404,11 @@ function wp_http_supports( $capabilities = array(), $url = null ) {
 }
 
 /**
- * Gets the HTTP Origin of the current request.
+ * Lấy HTTP Origin của yêu cầu hiện tại.
  *
  * @since 3.4.0
  *
- * @return string URL of the origin. Empty string if no origin.
+ * @return string URL của origin. Chuỗi rỗng nếu không có origin.
  */
 function get_http_origin() {
 	$origin = '';
@@ -417,27 +417,27 @@ function get_http_origin() {
 	}
 
 	/**
-	 * Changes the origin of an HTTP request.
+	 * Thay đổi origin của một yêu cầu HTTP.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $origin The original origin for the request.
+	 * @param string $origin Origin ban đầu cho yêu cầu.
 	 */
 	return apply_filters( 'http_origin', $origin );
 }
 
 /**
- * Retrieves list of allowed HTTP origins.
+ * Lấy danh sách các HTTP origin được phép.
  *
  * @since 3.4.0
  *
- * @return string[] Array of origin URLs.
+ * @return string[] Mảng các URL origin.
  */
 function get_allowed_http_origins() {
 	$admin_origin = parse_url( admin_url() );
 	$home_origin  = parse_url( home_url() );
 
-	// @todo Preserve port?
+	// @todo Giữ lại port?
 	$allowed_origins = array_unique(
 		array(
 			'http://' . $admin_origin['host'],
@@ -448,29 +448,29 @@ function get_allowed_http_origins() {
 	);
 
 	/**
-	 * Changes the origin types allowed for HTTP requests.
+	 * Thay đổi các loại origin được phép cho yêu cầu HTTP.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @param string[] $allowed_origins {
-	 *     Array of default allowed HTTP origins.
+	 *     Mảng các HTTP origin được phép mặc định.
 	 *
-	 *     @type string $0 Non-secure URL for admin origin.
-	 *     @type string $1 Secure URL for admin origin.
-	 *     @type string $2 Non-secure URL for home origin.
-	 *     @type string $3 Secure URL for home origin.
+	 *     @type string $0 URL không bảo mật cho admin origin.
+	 *     @type string $1 URL bảo mật cho admin origin.
+	 *     @type string $2 URL không bảo mật cho home origin.
+	 *     @type string $3 URL bảo mật cho home origin.
 	 * }
 	 */
 	return apply_filters( 'allowed_http_origins', $allowed_origins );
 }
 
 /**
- * Determines if the HTTP origin is an authorized one.
+ * Xác định xem HTTP origin có được phép hay không.
  *
  * @since 3.4.0
  *
- * @param string|null $origin Origin URL. If not provided, the value of get_http_origin() is used.
- * @return string Origin URL if allowed, empty string if not.
+ * @param string|null $origin URL Origin. Nếu không cung cấp, giá trị của get_http_origin() sẽ được sử dụng.
+ * @return string URL Origin nếu được phép, chuỗi rỗng nếu không.
  */
 function is_allowed_http_origin( $origin = null ) {
 	$origin_arg = $origin;
@@ -484,28 +484,28 @@ function is_allowed_http_origin( $origin = null ) {
 	}
 
 	/**
-	 * Changes the allowed HTTP origin result.
+	 * Thay đổi kết quả HTTP origin được phép.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $origin     Origin URL if allowed, empty string if not.
-	 * @param string $origin_arg Original origin string passed into is_allowed_http_origin function.
+	 * @param string $origin     URL Origin nếu được phép, chuỗi rỗng nếu không.
+	 * @param string $origin_arg Chuỗi origin ban đầu được truyền vào hàm is_allowed_http_origin.
 	 */
 	return apply_filters( 'allowed_http_origin', $origin, $origin_arg );
 }
 
 /**
- * Sends Access-Control-Allow-Origin and related headers if the current request
- * is from an allowed origin.
+ * Gửi header Access-Control-Allow-Origin và các header liên quan nếu yêu cầu
+ * hiện tại đến từ một origin được phép.
  *
- * If the request is an OPTIONS request, the script exits with either access
- * control headers sent, or a 403 response if the origin is not allowed. For
- * other request methods, you will receive a return value.
+ * Nếu yêu cầu là OPTIONS, script sẽ thoát với các header kiểm soát truy cập
+ * đã gửi, hoặc phản hồi 403 nếu origin không được phép. Đối với các phương thức
+ * yêu cầu khác, bạn sẽ nhận được giá trị trả về.
  *
  * @since 3.4.0
  *
- * @return string|false Returns the origin URL if headers are sent. Returns false
- *                      if headers are not sent.
+ * @return string|false Trả về URL origin nếu header được gửi. Trả về false
+ *                      nếu header không được gửi.
  */
 function send_origin_headers() {
 	$origin = get_http_origin();
@@ -528,26 +528,26 @@ function send_origin_headers() {
 }
 
 /**
- * Validates a URL for safe use in the HTTP API.
+ * Xác thực URL để sử dụng an toàn trong HTTP API.
  *
- * Examples of URLs that are considered unsafe:
+ * Ví dụ về các URL được coi là không an toàn:
  *
- * - ftp://example.com/caniload.php - Invalid protocol - only http and https are allowed.
- * - http:///example.com/caniload.php - Malformed URL.
- * - http://user:pass@example.com/caniload.php - Login information.
- * - http://example.invalid/caniload.php - Invalid hostname, as the IP cannot be looked up in DNS.
+ * - ftp://example.com/caniload.php - Giao thức không hợp lệ - chỉ cho phép http và https.
+ * - http:///example.com/caniload.php - URL bị lỗi định dạng.
+ * - http://user:pass@example.com/caniload.php - Thông tin đăng nhập.
+ * - http://example.invalid/caniload.php - Hostname không hợp lệ, vì IP không thể tra cứu trong DNS.
  *
- * Examples of URLs that are considered unsafe by default:
+ * Ví dụ về các URL được coi là không an toàn theo mặc định:
  *
- * - http://192.168.0.1/caniload.php - IPs from LAN networks.
- *   This can be changed with the {@see 'http_request_host_is_external'} filter.
- * - http://198.143.164.252:81/caniload.php - By default, only 80, 443, and 8080 ports are allowed.
- *   This can be changed with the {@see 'http_allowed_safe_ports'} filter.
+ * - http://192.168.0.1/caniload.php - IP từ mạng LAN.
+ *   Có thể thay đổi bằng bộ lọc {@see 'http_request_host_is_external'}.
+ * - http://198.143.164.252:81/caniload.php - Theo mặc định, chỉ cho phép port 80, 443 và 8080.
+ *   Có thể thay đổi bằng bộ lọc {@see 'http_allowed_safe_ports'}.
  *
  * @since 3.5.2
  *
- * @param string $url Request URL.
- * @return string|false URL or false on failure.
+ * @param string $url URL yêu cầu.
+ * @return string|false URL hoặc false khi thất bại.
  */
 function wp_http_validate_url( $url ) {
 	if ( ! is_string( $url ) || '' === $url || is_numeric( $url ) ) {
@@ -582,7 +582,7 @@ function wp_http_validate_url( $url ) {
 			$ip = $host;
 		} else {
 			$ip = gethostbyname( $host );
-			if ( $ip === $host ) { // Error condition for gethostbyname().
+			if ( $ip === $host ) { // Điều kiện lỗi cho gethostbyname().
 				return false;
 			}
 		}
@@ -592,17 +592,17 @@ function wp_http_validate_url( $url ) {
 				|| ( 172 === $parts[0] && 16 <= $parts[1] && 31 >= $parts[1] )
 				|| ( 192 === $parts[0] && 168 === $parts[1] )
 			) {
-				// If host appears local, reject unless specifically allowed.
+				// Nếu host có vẻ là local, từ chối trừ khi được phép cụ thể.
 				/**
-				 * Checks if HTTP request is external or not.
+				 * Kiểm tra xem yêu cầu HTTP có phải là bên ngoài hay không.
 				 *
-				 * Allows to change and allow external requests for the HTTP request.
+				 * Cho phép thay đổi và cho phép các yêu cầu bên ngoài cho yêu cầu HTTP.
 				 *
 				 * @since 3.6.0
 				 *
-				 * @param bool   $external Whether HTTP request is external or not.
-				 * @param string $host     Host name of the requested URL.
-				 * @param string $url      Requested URL.
+				 * @param bool   $external Yêu cầu HTTP có phải là bên ngoài hay không.
+				 * @param string $host     Tên host của URL được yêu cầu.
+				 * @param string $url      URL được yêu cầu.
 				 */
 				if ( ! apply_filters( 'http_request_host_is_external', false, $host, $url ) ) {
 					return false;
@@ -618,15 +618,15 @@ function wp_http_validate_url( $url ) {
 	$port = $parsed_url['port'];
 
 	/**
-	 * Controls the list of ports considered safe in HTTP API.
+	 * Kiểm soát danh sách các port được coi là an toàn trong HTTP API.
 	 *
-	 * Allows to change and allow external requests for the HTTP request.
+	 * Cho phép thay đổi và cho phép các yêu cầu bên ngoài cho yêu cầu HTTP.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param int[]  $allowed_ports Array of integers for valid ports.
-	 * @param string $host          Host name of the requested URL.
-	 * @param string $url           Requested URL.
+	 * @param int[]  $allowed_ports Mảng số nguyên cho các port hợp lệ.
+	 * @param string $host          Tên host của URL được yêu cầu.
+	 * @param string $url           URL được yêu cầu.
 	 */
 	$allowed_ports = apply_filters( 'http_allowed_safe_ports', array( 80, 443, 8080 ), $host, $url );
 	if ( is_array( $allowed_ports ) && in_array( $port, $allowed_ports, true ) ) {
@@ -641,9 +641,9 @@ function wp_http_validate_url( $url ) {
 }
 
 /**
- * Marks allowed redirect hosts safe for HTTP requests as well.
+ * Đánh dấu các host chuyển hướng được phép là an toàn cho yêu cầu HTTP.
  *
- * Attached to the {@see 'http_request_host_is_external'} filter.
+ * Gắn vào bộ lọc {@see 'http_request_host_is_external'}.
  *
  * @since 3.6.0
  *
@@ -659,14 +659,14 @@ function allowed_http_request_hosts( $is_external, $host ) {
 }
 
 /**
- * Adds any domain in a multisite installation for safe HTTP requests to the
- * allowed list.
+ * Thêm bất kỳ tên miền nào trong cài đặt multisite vào danh sách
+ * được phép cho các yêu cầu HTTP an toàn.
  *
- * Attached to the {@see 'http_request_host_is_external'} filter.
+ * Gắn vào bộ lọc {@see 'http_request_host_is_external'}.
  *
  * @since 3.6.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
  * @param bool   $is_external
  * @param string $host
@@ -689,25 +689,25 @@ function ms_allowed_http_request_hosts( $is_external, $host ) {
 }
 
 /**
- * A wrapper for PHP's parse_url() function that handles consistency in the return values
- * across PHP versions.
+ * Hàm bọc cho hàm parse_url() của PHP xử lý tính nhất quán trong các giá trị
+ * trả về giữa các phiên bản PHP.
  *
- * Across various PHP versions, schemeless URLs containing a ":" in the query
- * are being handled inconsistently. This function works around those differences.
+ * Giữa các phiên bản PHP khác nhau, các URL không có scheme chứa ":" trong truy vấn
+ * được xử lý không nhất quán. Hàm này khắc phục những khác biệt đó.
  *
  * @since 4.4.0
- * @since 4.7.0 The `$component` parameter was added for parity with PHP's `parse_url()`.
+ * @since 4.7.0 Tham số `$component` được thêm để tương đương với `parse_url()` của PHP.
  *
  * @link https://www.php.net/manual/en/function.parse-url.php
  *
- * @param string $url       The URL to parse.
- * @param int    $component The specific component to retrieve. Use one of the PHP
- *                          predefined constants to specify which one.
- *                          Defaults to -1 (= return all parts as an array).
- * @return mixed False on parse failure; Array of URL components on success;
- *               When a specific component has been requested: null if the component
- *               doesn't exist in the given URL; a string or - in the case of
- *               PHP_URL_PORT - integer when it does. See parse_url()'s return values.
+ * @param string $url       URL cần phân tích.
+ * @param int    $component Thành phần cụ thể cần lấy. Sử dụng một trong các hằng số
+ *                          được định nghĩa sẵn của PHP để chỉ định thành phần nào.
+ *                          Mặc định -1 (= trả về tất cả các phần dưới dạng mảng).
+ * @return mixed False khi phân tích thất bại; Mảng các thành phần URL khi thành công;
+ *               Khi một thành phần cụ thể được yêu cầu: null nếu thành phần
+ *               không tồn tại trong URL; chuỗi hoặc - trong trường hợp
+ *               PHP_URL_PORT - số nguyên khi nó tồn tại. Xem giá trị trả về của parse_url().
  */
 function wp_parse_url( $url, $component = -1 ) {
 	$to_unset = array();
@@ -725,11 +725,11 @@ function wp_parse_url( $url, $component = -1 ) {
 	$parts = parse_url( $url );
 
 	if ( false === $parts ) {
-		// Parsing failure.
+		// Phân tích thất bại.
 		return $parts;
 	}
 
-	// Remove the placeholder values.
+	// Xóa các giá trị placeholder.
 	foreach ( $to_unset as $key ) {
 		unset( $parts[ $key ] );
 	}
@@ -738,7 +738,7 @@ function wp_parse_url( $url, $component = -1 ) {
 }
 
 /**
- * Retrieves a specific component from a parsed URL array.
+ * Lấy một thành phần cụ thể từ mảng URL đã phân tích.
  *
  * @internal
  *
@@ -747,14 +747,14 @@ function wp_parse_url( $url, $component = -1 ) {
  *
  * @link https://www.php.net/manual/en/function.parse-url.php
  *
- * @param array|false $url_parts The parsed URL. Can be false if the URL failed to parse.
- * @param int         $component The specific component to retrieve. Use one of the PHP
- *                               predefined constants to specify which one.
- *                               Defaults to -1 (= return all parts as an array).
- * @return mixed False on parse failure; Array of URL components on success;
- *               When a specific component has been requested: null if the component
- *               doesn't exist in the given URL; a string or - in the case of
- *               PHP_URL_PORT - integer when it does. See parse_url()'s return values.
+ * @param array|false $url_parts URL đã phân tích. Có thể là false nếu URL phân tích thất bại.
+ * @param int         $component Thành phần cụ thể cần lấy. Sử dụng một trong các hằng số
+ *                               được định nghĩa sẵn của PHP để chỉ định thành phần nào.
+ *                               Mặc định -1 (= trả về tất cả các phần dưới dạng mảng).
+ * @return mixed False khi phân tích thất bại; Mảng các thành phần URL khi thành công;
+ *               Khi một thành phần cụ thể được yêu cầu: null nếu thành phần
+ *               không tồn tại trong URL; chuỗi hoặc - trong trường hợp
+ *               PHP_URL_PORT - số nguyên khi nó tồn tại. Xem giá trị trả về của parse_url().
  */
 function _get_component_from_parsed_url_array( $url_parts, $component = -1 ) {
 	if ( -1 === $component ) {
@@ -770,7 +770,7 @@ function _get_component_from_parsed_url_array( $url_parts, $component = -1 ) {
 }
 
 /**
- * Translates a PHP_URL_* constant to the named array keys PHP uses.
+ * Chuyển đổi hằng số PHP_URL_* sang các khóa mảng có tên mà PHP sử dụng.
  *
  * @internal
  *
@@ -779,8 +779,8 @@ function _get_component_from_parsed_url_array( $url_parts, $component = -1 ) {
  *
  * @link https://www.php.net/manual/en/url.constants.php
  *
- * @param int $constant PHP_URL_* constant.
- * @return string|false The named key or false.
+ * @param int $constant Hằng số PHP_URL_*.
+ * @return string|false Khóa có tên hoặc false.
  */
 function _wp_translate_php_url_constant_to_key( $constant ) {
 	$translation = array(

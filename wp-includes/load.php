@@ -1,16 +1,16 @@
 <?php
 /**
- * These functions are needed to load WordPress.
+ * Các hàm cần thiết để tải WordPress.
  *
  * @package WordPress
  */
 
 /**
- * Returns the HTTP protocol sent by the server.
+ * Trả về giao thức HTTP được gửi bởi máy chủ.
  *
  * @since 4.4.0
  *
- * @return string The HTTP protocol. Default: HTTP/1.0.
+ * @return string Giao thức HTTP. Mặc định: HTTP/1.0.
  */
 function wp_get_server_protocol() {
 	$protocol = isset( $_SERVER['SERVER_PROTOCOL'] ) ? $_SERVER['SERVER_PROTOCOL'] : '';
@@ -23,13 +23,13 @@ function wp_get_server_protocol() {
 }
 
 /**
- * Fixes `$_SERVER` variables for various setups.
+ * Sửa các biến `$_SERVER` cho các cấu hình khác nhau.
  *
  * @since 3.0.0
  * @access private
  *
- * @global string $PHP_SELF The filename of the currently executing script,
- *                          relative to the document root.
+ * @global string $PHP_SELF Tên tệp của script đang thực thi,
+ *                          tương đối so với thư mục gốc tài liệu.
  */
 function wp_fix_server_vars() {
 	global $PHP_SELF;
@@ -41,7 +41,7 @@ function wp_fix_server_vars() {
 
 	$_SERVER = array_merge( $default_server_values, $_SERVER );
 
-	// Fix for IIS when running with PHP ISAPI.
+	// Sửa cho IIS khi chạy với PHP ISAPI.
 	if ( empty( $_SERVER['REQUEST_URI'] )
 		|| ( 'cgi-fcgi' !== PHP_SAPI && preg_match( '/^Microsoft-IIS\//', $_SERVER['SERVER_SOFTWARE'] ) )
 	) {
@@ -53,12 +53,12 @@ function wp_fix_server_vars() {
 			// IIS Isapi_Rewrite.
 			$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'];
 		} else {
-			// Use ORIG_PATH_INFO if there is no PATH_INFO.
+			// Sử dụng ORIG_PATH_INFO nếu không có PATH_INFO.
 			if ( ! isset( $_SERVER['PATH_INFO'] ) && isset( $_SERVER['ORIG_PATH_INFO'] ) ) {
 				$_SERVER['PATH_INFO'] = $_SERVER['ORIG_PATH_INFO'];
 			}
 
-			// Some IIS + PHP configurations put the script-name in the path-info (no need to append it twice).
+			// Một số cấu hình IIS + PHP đặt script-name trong path-info (không cần thêm lần nữa).
 			if ( isset( $_SERVER['PATH_INFO'] ) ) {
 				if ( $_SERVER['PATH_INFO'] === $_SERVER['SCRIPT_NAME'] ) {
 					$_SERVER['REQUEST_URI'] = $_SERVER['PATH_INFO'];
@@ -67,24 +67,24 @@ function wp_fix_server_vars() {
 				}
 			}
 
-			// Append the query string if it exists and isn't null.
+			// Thêm chuỗi truy vấn nếu nó tồn tại và không rỗng.
 			if ( ! empty( $_SERVER['QUERY_STRING'] ) ) {
 				$_SERVER['REQUEST_URI'] .= '?' . $_SERVER['QUERY_STRING'];
 			}
 		}
 	}
 
-	// Fix for PHP as CGI hosts that set SCRIPT_FILENAME to something ending in php.cgi for all requests.
+	// Sửa cho PHP dạng CGI host đặt SCRIPT_FILENAME kết thúc bằng php.cgi cho tất cả yêu cầu.
 	if ( isset( $_SERVER['SCRIPT_FILENAME'] ) && str_ends_with( $_SERVER['SCRIPT_FILENAME'], 'php.cgi' ) ) {
 		$_SERVER['SCRIPT_FILENAME'] = $_SERVER['PATH_TRANSLATED'];
 	}
 
-	// Fix for Dreamhost and other PHP as CGI hosts.
+	// Sửa cho Dreamhost và các PHP CGI host khác.
 	if ( isset( $_SERVER['SCRIPT_NAME'] ) && str_contains( $_SERVER['SCRIPT_NAME'], 'php.cgi' ) ) {
 		unset( $_SERVER['PATH_INFO'] );
 	}
 
-	// Fix empty PHP_SELF.
+	// Sửa PHP_SELF rỗng.
 	$PHP_SELF = $_SERVER['PHP_SELF'];
 	if ( empty( $PHP_SELF ) ) {
 		$_SERVER['PHP_SELF'] = preg_replace( '/(\?.*)?$/', '', $_SERVER['REQUEST_URI'] );
@@ -95,61 +95,61 @@ function wp_fix_server_vars() {
 }
 
 /**
- * Populates the Basic Auth server details from the Authorization header.
+ * Điền thông tin Basic Auth từ header Authorization.
  *
- * Some servers running in CGI or FastCGI mode don't pass the Authorization
- * header on to WordPress.  If it's been rewritten to the `HTTP_AUTHORIZATION` header,
- * fill in the proper $_SERVER variables instead.
+ * Một số máy chủ chạy ở chế độ CGI hoặc FastCGI không truyền header Authorization
+ * đến WordPress. Nếu nó đã được viết lại thành header `HTTP_AUTHORIZATION`,
+ * điền vào các biến $_SERVER thích hợp thay thế.
  *
  * @since 5.6.0
  */
 function wp_populate_basic_auth_from_authorization_header() {
-	// If we don't have anything to pull from, return early.
+	// Nếu không có gì để lấy, trả về sớm.
 	if ( ! isset( $_SERVER['HTTP_AUTHORIZATION'] ) && ! isset( $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ) ) {
 		return;
 	}
 
-	// If either PHP_AUTH key is already set, do nothing.
+	// Nếu bất kỳ khóa PHP_AUTH nào đã được đặt, không làm gì.
 	if ( isset( $_SERVER['PHP_AUTH_USER'] ) || isset( $_SERVER['PHP_AUTH_PW'] ) ) {
 		return;
 	}
 
-	// From our prior conditional, one of these must be set.
+	// Từ điều kiện trước, một trong hai phải được đặt.
 	$header = isset( $_SERVER['HTTP_AUTHORIZATION'] ) ? $_SERVER['HTTP_AUTHORIZATION'] : $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
 
-	// Test to make sure the pattern matches expected.
+	// Kiểm tra xem mẫu có khớp với mong đợi không.
 	if ( ! preg_match( '%^Basic [a-z\d/+]*={0,2}$%i', $header ) ) {
 		return;
 	}
 
-	// Removing `Basic ` the token would start six characters in.
+	// Bỏ `Basic `, token sẽ bắt đầu từ ký tự thứ sáu.
 	$token    = substr( $header, 6 );
 	$userpass = base64_decode( $token );
 
-	// There must be at least one colon in the string.
+	// Phải có ít nhất một dấu hai chấm trong chuỗi.
 	if ( ! str_contains( $userpass, ':' ) ) {
 		return;
 	}
 
 	list( $user, $pass ) = explode( ':', $userpass, 2 );
 
-	// Now shove them in the proper keys where we're expecting later on.
+	// Đặt chúng vào đúng khóa mà chúng ta mong đợi sau đó.
 	$_SERVER['PHP_AUTH_USER'] = $user;
 	$_SERVER['PHP_AUTH_PW']   = $pass;
 }
 
 /**
- * Checks for the required PHP version, and the mysqli extension or
- * a database drop-in.
+ * Kiểm tra phiên bản PHP yêu cầu, và phần mở rộng mysqli hoặc
+ * một drop-in cơ sở dữ liệu.
  *
- * Dies if requirements are not met.
+ * Dừng chương trình nếu không đáp ứng yêu cầu.
  *
  * @since 3.0.0
  * @access private
  *
- * @global string   $required_php_version    The required PHP version string.
- * @global string[] $required_php_extensions The names of required PHP extensions.
- * @global string   $wp_version              The WordPress version string.
+ * @global string   $required_php_version    Chuỗi phiên bản PHP yêu cầu.
+ * @global string[] $required_php_extensions Tên các phần mở rộng PHP yêu cầu.
+ * @global string   $wp_version              Chuỗi phiên bản WordPress.
  */
 function wp_check_php_mysql_versions() {
 	global $required_php_version, $required_php_extensions, $wp_version;
@@ -193,7 +193,7 @@ function wp_check_php_mysql_versions() {
 		exit( 1 );
 	}
 
-	// This runs before default constants are defined, so we can't assume WP_CONTENT_DIR is set yet.
+	// Đoạn này chạy trước khi các hằng số mặc định được định nghĩa, nên không thể giả định WP_CONTENT_DIR đã được đặt.
 	$wp_content_dir = defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : ABSPATH . 'wp-content';
 
 	if ( ! function_exists( 'mysqli_connect' )
@@ -230,19 +230,19 @@ function wp_check_php_mysql_versions() {
 }
 
 /**
- * Retrieves the current environment type.
+ * Lấy loại môi trường hiện tại.
  *
- * The type can be set via the `WP_ENVIRONMENT_TYPE` global system variable,
- * or a constant of the same name.
+ * Loại có thể được đặt thông qua biến hệ thống toàn cục `WP_ENVIRONMENT_TYPE`,
+ * hoặc một hằng số cùng tên.
  *
- * Possible values are 'local', 'development', 'staging', and 'production'.
- * If not set, the type defaults to 'production'.
+ * Các giá trị có thể là 'local', 'development', 'staging', và 'production'.
+ * Nếu không được đặt, loại mặc định là 'production'.
  *
  * @since 5.5.0
- * @since 5.5.1 Added the 'local' type.
- * @since 5.5.1 Removed the ability to alter the list of types.
+ * @since 5.5.1 Thêm loại 'local'.
+ * @since 5.5.1 Loại bỏ khả năng thay đổi danh sách các loại.
  *
- * @return string The current environment type.
+ * @return string Loại môi trường hiện tại.
  */
 function wp_get_environment_type() {
 	static $current_env = '';
@@ -258,7 +258,7 @@ function wp_get_environment_type() {
 		'production',
 	);
 
-	// Add a note about the deprecated WP_ENVIRONMENT_TYPES constant.
+	// Thêm ghi chú về hằng số WP_ENVIRONMENT_TYPES đã bị ngừng hỗ trợ.
 	if ( defined( 'WP_ENVIRONMENT_TYPES' ) && function_exists( '_deprecated_argument' ) ) {
 		if ( function_exists( '__' ) ) {
 			/* translators: %s: WP_ENVIRONMENT_TYPES */
@@ -274,7 +274,7 @@ function wp_get_environment_type() {
 		);
 	}
 
-	// Check if the environment variable has been set, if `getenv` is available on the system.
+	// Kiểm tra xem biến môi trường đã được đặt chưa, nếu `getenv` có sẵn trên hệ thống.
 	if ( function_exists( 'getenv' ) ) {
 		$has_env = getenv( 'WP_ENVIRONMENT_TYPE' );
 		if ( false !== $has_env ) {
@@ -282,12 +282,12 @@ function wp_get_environment_type() {
 		}
 	}
 
-	// Fetch the environment from a constant, this overrides the global system variable.
+	// Lấy môi trường từ hằng số, giá trị này ghi đè biến hệ thống toàn cục.
 	if ( defined( 'WP_ENVIRONMENT_TYPE' ) && WP_ENVIRONMENT_TYPE ) {
 		$current_env = WP_ENVIRONMENT_TYPE;
 	}
 
-	// Make sure the environment is an allowed one, and not accidentally set to an invalid value.
+	// Đảm bảo môi trường là một giá trị được phép, và không bị đặt nhầm thành giá trị không hợp lệ.
 	if ( ! in_array( $current_env, $wp_environments, true ) ) {
 		$current_env = 'production';
 	}
@@ -296,25 +296,25 @@ function wp_get_environment_type() {
 }
 
 /**
- * Retrieves the current development mode.
+ * Lấy chế độ phát triển hiện tại.
  *
- * The development mode affects how certain parts of the WordPress application behave,
- * which is relevant when developing for WordPress.
+ * Chế độ phát triển ảnh hưởng đến cách một số phần của ứng dụng WordPress hoạt động,
+ * điều này liên quan khi phát triển cho WordPress.
  *
- * Development mode can be set via the `WP_DEVELOPMENT_MODE` constant in `wp-config.php`.
- * Possible values are 'core', 'plugin', 'theme', 'all', or an empty string to disable
- * development mode. 'all' is a special value to signify that all three development modes
- * ('core', 'plugin', and 'theme') are enabled.
+ * Chế độ phát triển có thể được đặt thông qua hằng số `WP_DEVELOPMENT_MODE` trong `wp-config.php`.
+ * Các giá trị có thể là 'core', 'plugin', 'theme', 'all', hoặc chuỗi rỗng để tắt
+ * chế độ phát triển. 'all' là giá trị đặc biệt để biểu thị rằng cả ba chế độ phát triển
+ * ('core', 'plugin', và 'theme') đều được bật.
  *
- * Development mode is considered separately from `WP_DEBUG` and wp_get_environment_type().
- * It does not affect debugging output, but rather functional nuances in WordPress.
+ * Chế độ phát triển được xem xét riêng biệt với `WP_DEBUG` và wp_get_environment_type().
+ * Nó không ảnh hưởng đến đầu ra debug, mà là các sắc thái chức năng trong WordPress.
  *
- * This function retrieves the currently set development mode value. To check whether
- * a specific development mode is enabled, use wp_is_development_mode().
+ * Hàm này lấy giá trị chế độ phát triển hiện tại. Để kiểm tra xem
+ * một chế độ phát triển cụ thể có được bật hay không, sử dụng wp_is_development_mode().
  *
  * @since 6.3.0
  *
- * @return string The current development mode.
+ * @return string Chế độ phát triển hiện tại.
  */
 function wp_get_development_mode() {
 	static $current_mode = null;
@@ -325,7 +325,7 @@ function wp_get_development_mode() {
 
 	$development_mode = WP_DEVELOPMENT_MODE;
 
-	// Exclusively for core tests, rely on the `$_wp_tests_development_mode` global.
+	// Dành riêng cho kiểm thử core, dựa vào biến toàn cục `$_wp_tests_development_mode`.
 	if ( defined( 'WP_RUN_CORE_TESTS' ) && isset( $GLOBALS['_wp_tests_development_mode'] ) ) {
 		$development_mode = $GLOBALS['_wp_tests_development_mode'];
 	}
@@ -348,12 +348,12 @@ function wp_get_development_mode() {
 }
 
 /**
- * Checks whether the site is in the given development mode.
+ * Kiểm tra xem trang web có đang ở chế độ phát triển được chỉ định hay không.
  *
  * @since 6.3.0
  *
- * @param string $mode Development mode to check for. Either 'core', 'plugin', 'theme', or 'all'.
- * @return bool True if the given mode is covered by the current development mode, false otherwise.
+ * @param string $mode Chế độ phát triển cần kiểm tra. Có thể là 'core', 'plugin', 'theme', hoặc 'all'.
+ * @return bool True nếu chế độ được chỉ định nằm trong chế độ phát triển hiện tại, false nếu không.
  */
 function wp_is_development_mode( $mode ) {
 	$current_mode = wp_get_development_mode();
@@ -361,22 +361,22 @@ function wp_is_development_mode( $mode ) {
 		return false;
 	}
 
-	// Return true if the current mode encompasses all modes.
+	// Trả về true nếu chế độ hiện tại bao gồm tất cả các chế độ.
 	if ( 'all' === $current_mode ) {
 		return true;
 	}
 
-	// Return true if the current mode is the given mode.
+	// Trả về true nếu chế độ hiện tại là chế độ được chỉ định.
 	return $mode === $current_mode;
 }
 
 /**
- * Ensures all of WordPress is not loaded when handling a favicon.ico request.
+ * Đảm bảo toàn bộ WordPress không được tải khi xử lý yêu cầu favicon.ico.
  *
- * Instead, send the headers for a zero-length favicon and bail.
+ * Thay vào đó, gửi các header cho favicon có độ dài bằng không và thoát.
  *
  * @since 3.0.0
- * @deprecated 5.4.0 Deprecated in favor of do_favicon().
+ * @deprecated 5.4.0 Ngừng hỗ trợ, ưu tiên sử dụng do_favicon().
  */
 function wp_favicon_request() {
 	if ( '/favicon.ico' === $_SERVER['REQUEST_URI'] ) {
@@ -386,16 +386,16 @@ function wp_favicon_request() {
 }
 
 /**
- * Dies with a maintenance message when conditions are met.
+ * Dừng chương trình với thông báo bảo trì khi điều kiện được đáp ứng.
  *
- * The default message can be replaced by using a drop-in (maintenance.php in
- * the wp-content directory).
+ * Thông báo mặc định có thể được thay thế bằng cách sử dụng drop-in (maintenance.php trong
+ * thư mục wp-content).
  *
  * @since 3.0.0
  * @access private
  */
 function wp_maintenance() {
-	// Return if maintenance mode is disabled.
+	// Trả về nếu chế độ bảo trì bị tắt.
 	if ( ! wp_is_maintenance_mode() ) {
 		return;
 	}
@@ -418,18 +418,18 @@ function wp_maintenance() {
 }
 
 /**
- * Checks if maintenance mode is enabled.
+ * Kiểm tra xem chế độ bảo trì có được bật không.
  *
- * Checks for a file in the WordPress root directory named ".maintenance".
- * This file will contain the variable $upgrading, set to the time the file
- * was created. If the file was created less than 10 minutes ago, WordPress
- * is in maintenance mode.
+ * Kiểm tra tệp trong thư mục gốc WordPress có tên ".maintenance".
+ * Tệp này sẽ chứa biến $upgrading, được đặt là thời gian tệp
+ * được tạo. Nếu tệp được tạo cách đây ít hơn 10 phút, WordPress
+ * đang ở chế độ bảo trì.
  *
  * @since 5.5.0
  *
- * @global int $upgrading The Unix timestamp marking when upgrading WordPress began.
+ * @global int $upgrading Dấu thời gian Unix đánh dấu khi nâng cấp WordPress bắt đầu.
  *
- * @return bool True if maintenance mode is enabled, false otherwise.
+ * @return bool True nếu chế độ bảo trì được bật, false nếu không.
  */
 function wp_is_maintenance_mode() {
 	global $upgrading;
@@ -440,12 +440,12 @@ function wp_is_maintenance_mode() {
 
 	require ABSPATH . '.maintenance';
 
-	// If the $upgrading timestamp is older than 10 minutes, consider maintenance over.
+	// Nếu dấu thời gian $upgrading cũ hơn 10 phút, coi như bảo trì đã kết thúc.
 	if ( ( time() - $upgrading ) >= 10 * MINUTE_IN_SECONDS ) {
 		return false;
 	}
 
-	// Don't enable maintenance mode while scraping for fatal errors.
+	// Không bật chế độ bảo trì khi đang quét lỗi nghiêm trọng.
 	if ( is_int( $upgrading ) && isset( $_REQUEST['wp_scrape_key'], $_REQUEST['wp_scrape_nonce'] ) ) {
 		$key   = stripslashes( $_REQUEST['wp_scrape_key'] );
 		$nonce = stripslashes( $_REQUEST['wp_scrape_nonce'] );
@@ -456,17 +456,17 @@ function wp_is_maintenance_mode() {
 	}
 
 	/**
-	 * Filters whether to enable maintenance mode.
+	 * Lọc xem có bật chế độ bảo trì hay không.
 	 *
-	 * This filter runs before it can be used by plugins. It is designed for
-	 * non-web runtimes. If this filter returns true, maintenance mode will be
-	 * active and the request will end. If false, the request will be allowed to
-	 * continue processing even if maintenance mode should be active.
+	 * Bộ lọc này chạy trước khi có thể được sử dụng bởi plugin. Nó được thiết kế cho
+	 * các runtime không phải web. Nếu bộ lọc này trả về true, chế độ bảo trì sẽ
+	 * được kích hoạt và yêu cầu sẽ kết thúc. Nếu false, yêu cầu sẽ được phép
+	 * tiếp tục xử lý ngay cả khi chế độ bảo trì nên được kích hoạt.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param bool $enable_checks Whether to enable maintenance mode. Default true.
-	 * @param int  $upgrading     The timestamp set in the .maintenance file.
+	 * @param bool $enable_checks Có bật chế độ bảo trì hay không. Mặc định true.
+	 * @param int  $upgrading     Dấu thời gian được đặt trong tệp .maintenance.
 	 */
 	if ( ! apply_filters( 'enable_maintenance_mode', true, $upgrading ) ) {
 		return false;
@@ -476,26 +476,26 @@ function wp_is_maintenance_mode() {
 }
 
 /**
- * Gets the time elapsed so far during this PHP script.
+ * Lấy thời gian đã trôi qua kể từ đầu script PHP này.
  *
  * @since 5.8.0
  *
- * @return float Seconds since the PHP script started.
+ * @return float Số giây kể từ khi script PHP bắt đầu.
  */
 function timer_float() {
 	return microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'];
 }
 
 /**
- * Starts the WordPress micro-timer.
+ * Khởi động bộ đếm thời gian vi mô của WordPress.
  *
  * @since 0.71
  * @access private
  *
- * @global float $timestart Unix timestamp set at the beginning of the page load.
+ * @global float $timestart Dấu thời gian Unix được đặt ở đầu tải trang.
  * @see timer_stop()
  *
- * @return bool Always returns true.
+ * @return bool Luôn trả về true.
  */
 function timer_start() {
 	global $timestart;
@@ -506,19 +506,19 @@ function timer_start() {
 }
 
 /**
- * Retrieves or displays the time from the page start to when function is called.
+ * Lấy hoặc hiển thị thời gian từ khi bắt đầu tải trang đến khi hàm được gọi.
  *
  * @since 0.71
  *
- * @global float   $timestart Seconds from when timer_start() is called.
- * @global float   $timeend   Seconds from when function is called.
+ * @global float   $timestart Số giây từ khi timer_start() được gọi.
+ * @global float   $timeend   Số giây từ khi hàm được gọi.
  *
- * @param int|bool $display   Whether to echo or return the results. Accepts 0|false for return,
- *                            1|true for echo. Default 0|false.
- * @param int      $precision The number of digits from the right of the decimal to display.
- *                            Default 3.
- * @return string The "second.microsecond" finished time calculation. The number is formatted
- *                for human consumption, both localized and rounded.
+ * @param int|bool $display   Có echo hay trả về kết quả. Chấp nhận 0|false để trả về,
+ *                            1|true để echo. Mặc định 0|false.
+ * @param int      $precision Số chữ số sau dấu thập phân để hiển thị.
+ *                            Mặc định 3.
+ * @return string Kết quả tính toán thời gian "giây.micro giây". Số được định dạng
+ *                cho người đọc, được bản địa hóa và làm tròn.
  */
 function timer_stop( $display = 0, $precision = 3 ) {
 	global $timestart, $timeend;
@@ -540,50 +540,50 @@ function timer_stop( $display = 0, $precision = 3 ) {
 }
 
 /**
- * Sets PHP error reporting based on WordPress debug settings.
+ * Đặt báo cáo lỗi PHP dựa trên cài đặt debug của WordPress.
  *
- * Uses three constants: `WP_DEBUG`, `WP_DEBUG_DISPLAY`, and `WP_DEBUG_LOG`.
- * All three can be defined in wp-config.php. By default, `WP_DEBUG` and
- * `WP_DEBUG_LOG` are set to false, and `WP_DEBUG_DISPLAY` is set to true.
+ * Sử dụng ba hằng số: `WP_DEBUG`, `WP_DEBUG_DISPLAY`, và `WP_DEBUG_LOG`.
+ * Cả ba đều có thể được định nghĩa trong wp-config.php. Mặc định, `WP_DEBUG` và
+ * `WP_DEBUG_LOG` được đặt là false, và `WP_DEBUG_DISPLAY` được đặt là true.
  *
- * When `WP_DEBUG` is true, all PHP notices are reported. WordPress will also
- * display internal notices: when a deprecated WordPress function, function
- * argument, or file is used. Deprecated code may be removed from a later
- * version.
+ * Khi `WP_DEBUG` là true, tất cả thông báo PHP sẽ được báo cáo. WordPress cũng sẽ
+ * hiển thị các thông báo nội bộ: khi một hàm WordPress đã ngừng hỗ trợ, tham số
+ * hàm, hoặc tệp được sử dụng. Mã ngừng hỗ trợ có thể được loại bỏ trong phiên bản
+ * sau.
  *
- * It is strongly recommended that plugin and theme developers use `WP_DEBUG`
- * in their development environments.
+ * Các nhà phát triển plugin và theme được khuyến khích sử dụng `WP_DEBUG`
+ * trong môi trường phát triển của họ.
  *
- * `WP_DEBUG_DISPLAY` and `WP_DEBUG_LOG` perform no function unless `WP_DEBUG`
- * is true.
+ * `WP_DEBUG_DISPLAY` và `WP_DEBUG_LOG` không có tác dụng trừ khi `WP_DEBUG`
+ * là true.
  *
- * When `WP_DEBUG_DISPLAY` is true, WordPress will force errors to be displayed.
- * `WP_DEBUG_DISPLAY` defaults to true. Defining it as null prevents WordPress
- * from changing the global configuration setting. Defining `WP_DEBUG_DISPLAY`
- * as false will force errors to be hidden.
+ * Khi `WP_DEBUG_DISPLAY` là true, WordPress sẽ buộc hiển thị lỗi.
+ * `WP_DEBUG_DISPLAY` mặc định là true. Định nghĩa nó là null ngăn WordPress
+ * thay đổi cài đặt cấu hình toàn cục. Định nghĩa `WP_DEBUG_DISPLAY`
+ * là false sẽ buộc ẩn lỗi.
  *
- * When `WP_DEBUG_LOG` is true, errors will be logged to `wp-content/debug.log`.
- * When `WP_DEBUG_LOG` is a valid path, errors will be logged to the specified file.
+ * Khi `WP_DEBUG_LOG` là true, lỗi sẽ được ghi vào `wp-content/debug.log`.
+ * Khi `WP_DEBUG_LOG` là một đường dẫn hợp lệ, lỗi sẽ được ghi vào tệp chỉ định.
  *
- * Errors are never displayed for XML-RPC, REST, `ms-files.php`, and Ajax requests.
+ * Lỗi không bao giờ được hiển thị cho các yêu cầu XML-RPC, REST, `ms-files.php`, và Ajax.
  *
  * @since 3.0.0
- * @since 5.1.0 `WP_DEBUG_LOG` can be a file path.
+ * @since 5.1.0 `WP_DEBUG_LOG` có thể là đường dẫn tệp.
  * @access private
  */
 function wp_debug_mode() {
 	/**
-	 * Filters whether to allow the debug mode check to occur.
+	 * Lọc xem có cho phép kiểm tra chế độ debug hay không.
 	 *
-	 * This filter runs before it can be used by plugins. It is designed for
-	 * non-web runtimes. Returning false causes the `WP_DEBUG` and related
-	 * constants to not be checked and the default PHP values for errors
-	 * will be used unless you take care to update them yourself.
+	 * Bộ lọc này chạy trước khi có thể được sử dụng bởi plugin. Nó được thiết kế cho
+	 * các runtime không phải web. Trả về false khiến các hằng số `WP_DEBUG` và liên quan
+	 * không được kiểm tra và các giá trị PHP mặc định cho lỗi
+	 * sẽ được sử dụng trừ khi bạn tự cập nhật chúng.
 	 *
-	 * To use this filter you must define a `$wp_filter` global before
-	 * WordPress loads, usually in `wp-config.php`.
+	 * Để sử dụng bộ lọc này bạn phải định nghĩa một biến toàn cục `$wp_filter` trước
+	 * khi WordPress tải, thường trong `wp-config.php`.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $GLOBALS['wp_filter'] = array(
 	 *         'enable_wp_debug_mode_checks' => array(
@@ -600,7 +600,7 @@ function wp_debug_mode() {
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param bool $enable_debug_mode Whether to enable debug mode checks to occur. Default true.
+	 * @param bool $enable_debug_mode Có cho phép kiểm tra chế độ debug hay không. Mặc định true.
 	 */
 	if ( ! apply_filters( 'enable_wp_debug_mode_checks', true ) ) {
 		return;
@@ -632,8 +632,8 @@ function wp_debug_mode() {
 	}
 
 	/*
-	 * The 'REST_REQUEST' check here is optimistic as the constant is most
-	 * likely not set at this point even if it is in fact a REST request.
+	 * Kiểm tra 'REST_REQUEST' ở đây mang tính lạc quan vì hằng số này
+	 * nhiều khả năng chưa được đặt tại thời điểm này ngay cả khi thực tế đây là yêu cầu REST.
 	 */
 	if ( defined( 'XMLRPC_REQUEST' ) || defined( 'REST_REQUEST' ) || defined( 'MS_FILES_REQUEST' )
 		|| ( defined( 'WP_INSTALLING' ) && WP_INSTALLING )
@@ -644,14 +644,14 @@ function wp_debug_mode() {
 }
 
 /**
- * Sets the location of the language directory.
+ * Đặt vị trí của thư mục ngôn ngữ.
  *
- * To set directory manually, define the `WP_LANG_DIR` constant
- * in wp-config.php.
+ * Để đặt thư mục thủ công, định nghĩa hằng số `WP_LANG_DIR`
+ * trong wp-config.php.
  *
- * If the language directory exists within `WP_CONTENT_DIR`, it
- * is used. Otherwise the language directory is assumed to live
- * in `WPINC`.
+ * Nếu thư mục ngôn ngữ tồn tại trong `WP_CONTENT_DIR`, nó
+ * sẽ được sử dụng. Nếu không, thư mục ngôn ngữ được giả định nằm
+ * trong `WPINC`.
  *
  * @since 3.0.0
  * @access private
@@ -662,30 +662,30 @@ function wp_set_lang_dir() {
 			|| ! @is_dir( ABSPATH . WPINC . '/languages' )
 		) {
 			/**
-			 * Server path of the language directory.
+			 * Đường dẫn máy chủ của thư mục ngôn ngữ.
 			 *
-			 * No leading slash, no trailing slash, full path, not relative to ABSPATH
+			 * Không có dấu gạch chéo đầu, không có dấu gạch chéo cuối, đường dẫn đầy đủ, không tương đối với ABSPATH
 			 *
 			 * @since 2.1.0
 			 */
 			define( 'WP_LANG_DIR', WP_CONTENT_DIR . '/languages' );
 
 			if ( ! defined( 'LANGDIR' ) ) {
-				// Old static relative path maintained for limited backward compatibility - won't work in some cases.
+				// Đường dẫn tương đối tĩnh cũ được duy trì cho tương thích ngược hạn chế - không hoạt động trong một số trường hợp.
 				define( 'LANGDIR', 'wp-content/languages' );
 			}
 		} else {
 			/**
-			 * Server path of the language directory.
+			 * Đường dẫn máy chủ của thư mục ngôn ngữ.
 			 *
-			 * No leading slash, no trailing slash, full path, not relative to `ABSPATH`.
+			 * Không có dấu gạch chéo đầu, không có dấu gạch chéo cuối, đường dẫn đầy đủ, không tương đối với `ABSPATH`.
 			 *
 			 * @since 2.1.0
 			 */
 			define( 'WP_LANG_DIR', ABSPATH . WPINC . '/languages' );
 
 			if ( ! defined( 'LANGDIR' ) ) {
-				// Old relative path maintained for backward compatibility.
+				// Đường dẫn tương đối cũ được duy trì cho tương thích ngược.
 				define( 'LANGDIR', WPINC . '/languages' );
 			}
 		}
@@ -693,11 +693,11 @@ function wp_set_lang_dir() {
 }
 
 /**
- * Loads the database class file and instantiates the `$wpdb` global.
+ * Tải tệp lớp cơ sở dữ liệu và khởi tạo biến toàn cục `$wpdb`.
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  */
 function require_wp_db() {
 	global $wpdb;
@@ -721,16 +721,16 @@ function require_wp_db() {
 }
 
 /**
- * Sets the database table prefix and the format specifiers for database
- * table columns.
+ * Đặt tiền tố bảng cơ sở dữ liệu và các chỉ định định dạng cho
+ * các cột bảng cơ sở dữ liệu.
  *
- * Columns not listed here default to `%s`.
+ * Các cột không được liệt kê ở đây mặc định là `%s`.
  *
  * @since 3.0.0
  * @access private
  *
- * @global wpdb   $wpdb         WordPress database abstraction object.
- * @global string $table_prefix The database table prefix.
+ * @global wpdb   $wpdb         Đối tượng trừu tượng cơ sở dữ liệu WordPress.
+ * @global string $table_prefix Tiền tố bảng cơ sở dữ liệu.
  */
 function wp_set_wpdb_vars() {
 	global $wpdb, $table_prefix;
@@ -793,15 +793,15 @@ function wp_set_wpdb_vars() {
 }
 
 /**
- * Toggles `$_wp_using_ext_object_cache` on and off without directly
- * touching global.
+ * Bật/tắt `$_wp_using_ext_object_cache` mà không trực tiếp
+ * chạm vào biến toàn cục.
  *
  * @since 3.7.0
  *
  * @global bool $_wp_using_ext_object_cache
  *
- * @param bool $using Whether external object cache is being used.
- * @return bool The current 'using' setting.
+ * @param bool $using Có đang sử dụng bộ nhớ đệm đối tượng bên ngoài hay không.
+ * @return bool Cài đặt 'đang sử dụng' hiện tại.
  */
 function wp_using_ext_object_cache( $using = null ) {
 	global $_wp_using_ext_object_cache;
@@ -816,42 +816,42 @@ function wp_using_ext_object_cache( $using = null ) {
 }
 
 /**
- * Starts the WordPress object cache.
+ * Khởi động bộ nhớ đệm đối tượng WordPress.
  *
- * If an object-cache.php file exists in the wp-content directory,
- * it uses that drop-in as an external object cache.
+ * Nếu tệp object-cache.php tồn tại trong thư mục wp-content,
+ * nó sử dụng drop-in đó làm bộ nhớ đệm đối tượng bên ngoài.
  *
  * @since 3.0.0
  * @access private
  *
- * @global array $wp_filter Stores all of the filters.
+ * @global array $wp_filter Lưu trữ tất cả các bộ lọc.
  */
 function wp_start_object_cache() {
 	global $wp_filter;
 	static $first_init = true;
 
-	// Only perform the following checks once.
+	// Chỉ thực hiện các kiểm tra sau đây một lần.
 
 	/**
-	 * Filters whether to enable loading of the object-cache.php drop-in.
+	 * Lọc xem có bật tải drop-in object-cache.php hay không.
 	 *
-	 * This filter runs before it can be used by plugins. It is designed for non-web
-	 * runtimes. If false is returned, object-cache.php will never be loaded.
+	 * Bộ lọc này chạy trước khi có thể được sử dụng bởi plugin. Nó được thiết kế cho các runtime
+	 * không phải web. Nếu trả về false, object-cache.php sẽ không bao giờ được tải.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param bool $enable_object_cache Whether to enable loading object-cache.php (if present).
-	 *                                  Default true.
+	 * @param bool $enable_object_cache Có bật tải object-cache.php (nếu có) hay không.
+	 *                                  Mặc định true.
 	 */
 	if ( $first_init && apply_filters( 'enable_loading_object_cache_dropin', true ) ) {
 		if ( ! function_exists( 'wp_cache_init' ) ) {
 			/*
-			 * This is the normal situation. First-run of this function. No
-			 * caching backend has been loaded.
+			 * Đây là tình huống bình thường. Lần chạy đầu tiên của hàm này. Không có
+			 * backend bộ nhớ đệm nào được tải.
 			 *
-			 * We try to load a custom caching backend, and then, if it
-			 * results in a wp_cache_init() function existing, we note
-			 * that an external object cache is being used.
+			 * Chúng ta thử tải một backend bộ nhớ đệm tùy chỉnh, và sau đó, nếu nó
+			 * dẫn đến hàm wp_cache_init() tồn tại, chúng ta ghi nhận
+			 * rằng bộ nhớ đệm đối tượng bên ngoài đang được sử dụng.
 			 */
 			if ( file_exists( WP_CONTENT_DIR . '/object-cache.php' ) ) {
 				require_once WP_CONTENT_DIR . '/object-cache.php';
@@ -860,17 +860,17 @@ function wp_start_object_cache() {
 					wp_using_ext_object_cache( true );
 				}
 
-				// Re-initialize any hooks added manually by object-cache.php.
+				// Khởi tạo lại các hook được thêm thủ công bởi object-cache.php.
 				if ( $wp_filter ) {
 					$wp_filter = WP_Hook::build_preinitialized_hooks( $wp_filter );
 				}
 			}
 		} elseif ( ! wp_using_ext_object_cache() && file_exists( WP_CONTENT_DIR . '/object-cache.php' ) ) {
 			/*
-			 * Sometimes advanced-cache.php can load object-cache.php before
-			 * this function is run. This breaks the function_exists() check
-			 * above and can result in wp_using_ext_object_cache() returning
-			 * false when actually an external cache is in use.
+			 * Đôi khi advanced-cache.php có thể tải object-cache.php trước
+			 * khi hàm này chạy. Điều này phá vỡ kiểm tra function_exists()
+			 * ở trên và có thể khiến wp_using_ext_object_cache() trả về
+			 * false khi thực tế bộ nhớ đệm bên ngoài đang được sử dụng.
 			 */
 			wp_using_ext_object_cache( true );
 		}
@@ -883,9 +883,9 @@ function wp_start_object_cache() {
 	require_once ABSPATH . WPINC . '/cache-compat.php';
 
 	/*
-	 * If cache supports reset, reset instead of init if already
-	 * initialized. Reset signals to the cache that global IDs
-	 * have changed and it may need to update keys and cleanup caches.
+	 * Nếu bộ nhớ đệm hỗ trợ đặt lại, đặt lại thay vì khởi tạo nếu đã
+	 * được khởi tạo. Đặt lại báo hiệu cho bộ nhớ đệm rằng các ID toàn cục
+	 * đã thay đổi và nó có thể cần cập nhật khóa và dọn dẹp bộ nhớ đệm.
 	 */
 	if ( ! $first_init && function_exists( 'wp_cache_switch_to_blog' ) ) {
 		wp_cache_switch_to_blog( get_current_blog_id() );
@@ -928,9 +928,9 @@ function wp_start_object_cache() {
 }
 
 /**
- * Redirects to the installer if WordPress is not installed.
+ * Chuyển hướng đến trình cài đặt nếu WordPress chưa được cài đặt.
  *
- * Dies with an error message when Multisite is enabled.
+ * Dừng chương trình với thông báo lỗi khi Multisite được bật.
  *
  * @since 3.0.0
  * @access private
@@ -956,16 +956,16 @@ function wp_not_installed() {
 }
 
 /**
- * Retrieves an array of must-use plugin files.
+ * Lấy mảng các tệp plugin bắt buộc (must-use).
  *
- * The default directory is wp-content/mu-plugins. To change the default
- * directory manually, define `WPMU_PLUGIN_DIR` and `WPMU_PLUGIN_URL`
- * in wp-config.php.
+ * Thư mục mặc định là wp-content/mu-plugins. Để thay đổi thư mục
+ * mặc định thủ công, định nghĩa `WPMU_PLUGIN_DIR` và `WPMU_PLUGIN_URL`
+ * trong wp-config.php.
  *
  * @since 3.0.0
  * @access private
  *
- * @return string[] Array of absolute paths of files to include.
+ * @return string[] Mảng các đường dẫn tuyệt đối của tệp cần include.
  */
 function wp_get_mu_plugins() {
 	$mu_plugins = array();
@@ -993,24 +993,24 @@ function wp_get_mu_plugins() {
 }
 
 /**
- * Retrieves an array of active and valid plugin files.
+ * Lấy mảng các tệp plugin đang hoạt động và hợp lệ.
  *
- * While upgrading or installing WordPress, no plugins are returned.
+ * Trong khi nâng cấp hoặc cài đặt WordPress, không có plugin nào được trả về.
  *
- * The default directory is `wp-content/plugins`. To change the default
- * directory manually, define `WP_PLUGIN_DIR` and `WP_PLUGIN_URL`
- * in `wp-config.php`.
+ * Thư mục mặc định là `wp-content/plugins`. Để thay đổi thư mục
+ * mặc định thủ công, định nghĩa `WP_PLUGIN_DIR` và `WP_PLUGIN_URL`
+ * trong `wp-config.php`.
  *
  * @since 3.0.0
  * @access private
  *
- * @return string[] Array of paths to plugin files relative to the plugins directory.
+ * @return string[] Mảng các đường dẫn tệp plugin tương đối so với thư mục plugins.
  */
 function wp_get_active_and_valid_plugins() {
 	$plugins        = array();
 	$active_plugins = (array) get_option( 'active_plugins', array() );
 
-	// Check for hacks file if the option is enabled.
+	// Kiểm tra tệp hack nếu tùy chọn được bật.
 	if ( get_option( 'hack_file' ) && file_exists( ABSPATH . 'my-hacks.php' ) ) {
 		_deprecated_file( 'my-hacks.php', '1.5.0' );
 		array_unshift( $plugins, ABSPATH . 'my-hacks.php' );
@@ -1023,10 +1023,10 @@ function wp_get_active_and_valid_plugins() {
 	$network_plugins = is_multisite() ? wp_get_active_network_plugins() : false;
 
 	foreach ( $active_plugins as $plugin ) {
-		if ( ! validate_file( $plugin )                     // $plugin must validate as file.
-			&& str_ends_with( $plugin, '.php' )             // $plugin must end with '.php'.
-			&& file_exists( WP_PLUGIN_DIR . '/' . $plugin ) // $plugin must exist.
-			// Not already included as a network plugin.
+		if ( ! validate_file( $plugin )                     // $plugin phải hợp lệ là tệp.
+			&& str_ends_with( $plugin, '.php' )             // $plugin phải kết thúc bằng '.php'.
+			&& file_exists( WP_PLUGIN_DIR . '/' . $plugin ) // $plugin phải tồn tại.
+			// Chưa được bao gồm như plugin mạng.
 			&& ( ! $network_plugins || ! in_array( WP_PLUGIN_DIR . '/' . $plugin, $network_plugins, true ) )
 		) {
 			$plugins[] = WP_PLUGIN_DIR . '/' . $plugin;
@@ -1034,8 +1034,8 @@ function wp_get_active_and_valid_plugins() {
 	}
 
 	/*
-	 * Remove plugins from the list of active plugins when we're on an endpoint
-	 * that should be protected against WSODs and the plugin is paused.
+	 * Loại bỏ plugin khỏi danh sách plugin đang hoạt động khi chúng ta đang ở endpoint
+	 * nên được bảo vệ chống WSOD và plugin đang bị tạm dừng.
 	 */
 	if ( wp_is_recovery_mode() ) {
 		$plugins = wp_skip_paused_plugins( $plugins );
@@ -1045,14 +1045,14 @@ function wp_get_active_and_valid_plugins() {
 }
 
 /**
- * Filters a given list of plugins, removing any paused plugins from it.
+ * Lọc danh sách plugin được cung cấp, loại bỏ các plugin bị tạm dừng.
  *
  * @since 5.2.0
  *
  * @global WP_Paused_Extensions_Storage $_paused_plugins
  *
- * @param string[] $plugins Array of absolute plugin main file paths.
- * @return string[] Filtered array of plugins, without any paused plugins.
+ * @param string[] $plugins Mảng các đường dẫn tuyệt đối tệp chính của plugin.
+ * @return string[] Mảng plugin đã được lọc, không bao gồm các plugin bị tạm dừng.
  */
 function wp_skip_paused_plugins( array $plugins ) {
 	$paused_plugins = wp_paused_plugins()->get_all();
@@ -1067,7 +1067,7 @@ function wp_skip_paused_plugins( array $plugins ) {
 		if ( array_key_exists( $plugin, $paused_plugins ) ) {
 			unset( $plugins[ $index ] );
 
-			// Store list of paused plugins for displaying an admin notice.
+			// Lưu danh sách plugin bị tạm dừng để hiển thị thông báo quản trị.
 			$GLOBALS['_paused_plugins'][ $plugin ] = $paused_plugins[ $plugin ];
 		}
 	}
@@ -1076,18 +1076,18 @@ function wp_skip_paused_plugins( array $plugins ) {
 }
 
 /**
- * Retrieves an array of active and valid themes.
+ * Lấy mảng các theme đang hoạt động và hợp lệ.
  *
- * While upgrading or installing WordPress, no themes are returned.
+ * Trong khi nâng cấp hoặc cài đặt WordPress, không có theme nào được trả về.
  *
  * @since 5.1.0
  * @access private
  *
- * @global string $pagenow            The filename of the current screen.
- * @global string $wp_stylesheet_path Path to current theme's stylesheet directory.
- * @global string $wp_template_path   Path to current theme's template directory.
+ * @global string $pagenow            Tên tệp của màn hình hiện tại.
+ * @global string $wp_stylesheet_path Đường dẫn đến thư mục stylesheet của theme hiện tại.
+ * @global string $wp_template_path   Đường dẫn đến thư mục template của theme hiện tại.
  *
- * @return string[] Array of absolute paths to theme directories.
+ * @return string[] Mảng các đường dẫn tuyệt đối đến thư mục theme.
  */
 function wp_get_active_and_valid_themes() {
 	global $pagenow, $wp_stylesheet_path, $wp_template_path;
@@ -1105,13 +1105,13 @@ function wp_get_active_and_valid_themes() {
 	$themes[] = $wp_template_path;
 
 	/*
-	 * Remove themes from the list of active themes when we're on an endpoint
-	 * that should be protected against WSODs and the theme is paused.
+	 * Loại bỏ theme khỏi danh sách theme đang hoạt động khi chúng ta đang ở endpoint
+	 * nên được bảo vệ chống WSOD và theme đang bị tạm dừng.
 	 */
 	if ( wp_is_recovery_mode() ) {
 		$themes = wp_skip_paused_themes( $themes );
 
-		// If no active and valid themes exist, skip loading themes.
+		// Nếu không có theme hoạt động và hợp lệ nào, bỏ qua tải theme.
 		if ( empty( $themes ) ) {
 			add_filter( 'wp_using_themes', '__return_false' );
 		}
@@ -1121,14 +1121,14 @@ function wp_get_active_and_valid_themes() {
 }
 
 /**
- * Filters a given list of themes, removing any paused themes from it.
+ * Lọc danh sách theme được cung cấp, loại bỏ các theme bị tạm dừng.
  *
  * @since 5.2.0
  *
  * @global WP_Paused_Extensions_Storage $_paused_themes
  *
- * @param string[] $themes Array of absolute theme directory paths.
- * @return string[] Filtered array of absolute paths to themes, without any paused themes.
+ * @param string[] $themes Mảng các đường dẫn tuyệt đối thư mục theme.
+ * @return string[] Mảng đường dẫn tuyệt đối đến theme đã được lọc, không bao gồm các theme bị tạm dừng.
  */
 function wp_skip_paused_themes( array $themes ) {
 	$paused_themes = wp_paused_themes()->get_all();
@@ -1143,7 +1143,7 @@ function wp_skip_paused_themes( array $themes ) {
 		if ( array_key_exists( $theme, $paused_themes ) ) {
 			unset( $themes[ $index ] );
 
-			// Store list of paused themes for displaying an admin notice.
+			// Lưu danh sách theme bị tạm dừng để hiển thị thông báo quản trị.
 			$GLOBALS['_paused_themes'][ $theme ] = $paused_themes[ $theme ];
 		}
 	}
@@ -1152,9 +1152,9 @@ function wp_skip_paused_themes( array $themes ) {
 }
 
 /**
- * Determines whether WordPress is in Recovery Mode.
+ * Xác định xem WordPress có đang ở Chế độ Phục hồi hay không.
  *
- * In this mode, plugins or themes that cause WSODs will be paused.
+ * Trong chế độ này, các plugin hoặc theme gây ra WSOD sẽ bị tạm dừng.
  *
  * @since 5.2.0
  *
@@ -1165,51 +1165,51 @@ function wp_is_recovery_mode() {
 }
 
 /**
- * Determines whether we are currently on an endpoint that should be protected against WSODs.
+ * Xác định xem chúng ta có đang ở endpoint nên được bảo vệ chống WSOD hay không.
  *
  * @since 5.2.0
  *
- * @global string $pagenow The filename of the current screen.
+ * @global string $pagenow Tên tệp của màn hình hiện tại.
  *
- * @return bool True if the current endpoint should be protected.
+ * @return bool True nếu endpoint hiện tại nên được bảo vệ.
  */
 function is_protected_endpoint() {
-	// Protect login pages.
+	// Bảo vệ các trang đăng nhập.
 	if ( isset( $GLOBALS['pagenow'] ) && 'wp-login.php' === $GLOBALS['pagenow'] ) {
 		return true;
 	}
 
-	// Protect the admin backend.
+	// Bảo vệ backend quản trị.
 	if ( is_admin() && ! wp_doing_ajax() ) {
 		return true;
 	}
 
-	// Protect Ajax actions that could help resolve a fatal error should be available.
+	// Bảo vệ các action Ajax có thể giúp giải quyết lỗi nghiêm trọng nên có sẵn.
 	if ( is_protected_ajax_action() ) {
 		return true;
 	}
 
 	/**
-	 * Filters whether the current request is against a protected endpoint.
+	 * Lọc xem yêu cầu hiện tại có đang đến endpoint được bảo vệ hay không.
 	 *
-	 * This filter is only fired when an endpoint is requested which is not already protected by
-	 * WordPress core. As such, it exclusively allows providing further protected endpoints in
-	 * addition to the admin backend, login pages and protected Ajax actions.
+	 * Bộ lọc này chỉ được kích hoạt khi một endpoint được yêu cầu mà chưa được bảo vệ bởi
+	 * WordPress core. Do đó, nó chỉ cho phép cung cấp thêm các endpoint được bảo vệ
+	 * ngoài backend quản trị, trang đăng nhập và các action Ajax được bảo vệ.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param bool $is_protected_endpoint Whether the currently requested endpoint is protected.
-	 *                                    Default false.
+	 * @param bool $is_protected_endpoint Endpoint hiện tại có được bảo vệ hay không.
+	 *                                    Mặc định false.
 	 */
 	return (bool) apply_filters( 'is_protected_endpoint', false );
 }
 
 /**
- * Determines whether we are currently handling an Ajax action that should be protected against WSODs.
+ * Xác định xem chúng ta có đang xử lý action Ajax nên được bảo vệ chống WSOD hay không.
  *
  * @since 5.2.0
  *
- * @return bool True if the current Ajax action should be protected.
+ * @return bool True nếu action Ajax hiện tại nên được bảo vệ.
  */
 function is_protected_ajax_action() {
 	if ( ! wp_doing_ajax() ) {
@@ -1221,25 +1221,25 @@ function is_protected_ajax_action() {
 	}
 
 	$actions_to_protect = array(
-		'edit-theme-plugin-file', // Saving changes in the core code editor.
-		'heartbeat',              // Keep the heart beating.
-		'install-plugin',         // Installing a new plugin.
-		'install-theme',          // Installing a new theme.
-		'search-plugins',         // Searching in the list of plugins.
-		'search-install-plugins', // Searching for a plugin in the plugin install screen.
-		'update-plugin',          // Update an existing plugin.
-		'update-theme',           // Update an existing theme.
-		'activate-plugin',        // Activating an existing plugin.
+		'edit-theme-plugin-file', // Lưu thay đổi trong trình chỉnh sửa mã core.
+		'heartbeat',              // Giữ nhịp tim hoạt động.
+		'install-plugin',         // Cài đặt plugin mới.
+		'install-theme',          // Cài đặt theme mới.
+		'search-plugins',         // Tìm kiếm trong danh sách plugin.
+		'search-install-plugins', // Tìm kiếm plugin trong màn hình cài đặt plugin.
+		'update-plugin',          // Cập nhật plugin hiện có.
+		'update-theme',           // Cập nhật theme hiện có.
+		'activate-plugin',        // Kích hoạt plugin hiện có.
 	);
 
 	/**
-	 * Filters the array of protected Ajax actions.
+	 * Lọc mảng các action Ajax được bảo vệ.
 	 *
-	 * This filter is only fired when doing Ajax and the Ajax request has an 'action' property.
+	 * Bộ lọc này chỉ được kích hoạt khi đang thực hiện Ajax và yêu cầu Ajax có thuộc tính 'action'.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string[] $actions_to_protect Array of strings with Ajax actions to protect.
+	 * @param string[] $actions_to_protect Mảng chuỗi các action Ajax cần bảo vệ.
 	 */
 	$actions_to_protect = (array) apply_filters( 'wp_protected_ajax_actions', $actions_to_protect );
 
@@ -1251,10 +1251,10 @@ function is_protected_ajax_action() {
 }
 
 /**
- * Sets internal encoding.
+ * Đặt mã hóa nội bộ.
  *
- * In most cases the default internal encoding is latin1, which is
- * of no use, since we want to use the `mb_` functions for `utf-8` strings.
+ * Trong hầu hết các trường hợp, mã hóa nội bộ mặc định là latin1, điều này
+ * không hữu ích, vì chúng ta muốn sử dụng các hàm `mb_` cho chuỗi `utf-8`.
  *
  * @since 3.0.0
  * @access private
@@ -1270,34 +1270,34 @@ function wp_set_internal_encoding() {
 }
 
 /**
- * Adds magic quotes to `$_GET`, `$_POST`, `$_COOKIE`, and `$_SERVER`.
+ * Thêm magic quotes vào `$_GET`, `$_POST`, `$_COOKIE`, và `$_SERVER`.
  *
- * Also forces `$_REQUEST` to be `$_GET + $_POST`. If `$_SERVER`,
- * `$_COOKIE`, or `$_ENV` are needed, use those superglobals directly.
+ * Cũng buộc `$_REQUEST` là `$_GET + $_POST`. Nếu cần `$_SERVER`,
+ * `$_COOKIE`, hoặc `$_ENV`, sử dụng trực tiếp các superglobal đó.
  *
  * @since 3.0.0
  * @access private
  */
 function wp_magic_quotes() {
-	// Escape with wpdb.
+	// Escape với wpdb.
 	$_GET    = add_magic_quotes( $_GET );
 	$_POST   = add_magic_quotes( $_POST );
 	$_COOKIE = add_magic_quotes( $_COOKIE );
 	$_SERVER = add_magic_quotes( $_SERVER );
 
-	// Force REQUEST to be GET + POST.
+	// Buộc REQUEST là GET + POST.
 	$_REQUEST = array_merge( $_GET, $_POST );
 }
 
 /**
- * Runs just before PHP shuts down execution.
+ * Chạy ngay trước khi PHP dừng thực thi.
  *
  * @since 1.2.0
  * @access private
  */
 function shutdown_action_hook() {
 	/**
-	 * Fires just before PHP shuts down execution.
+	 * Kích hoạt ngay trước khi PHP dừng thực thi.
 	 *
 	 * @since 1.2.0
 	 */
@@ -1307,47 +1307,47 @@ function shutdown_action_hook() {
 }
 
 /**
- * Clones an object.
+ * Sao chép một đối tượng.
  *
  * @since 2.7.0
  * @deprecated 3.2.0
  *
- * @param object $input_object The object to clone.
- * @return object The cloned object.
+ * @param object $input_object Đối tượng cần sao chép.
+ * @return object Đối tượng đã được sao chép.
  */
 function wp_clone( $input_object ) {
-	// Use parens for clone to accommodate PHP 4. See #17880.
+	// Sử dụng ngoặc tròn cho clone để tương thích PHP 4. Xem #17880.
 	return clone( $input_object );
 }
 
 /**
- * Determines whether the current request is for the login screen.
+ * Xác định xem yêu cầu hiện tại có phải cho màn hình đăng nhập hay không.
  *
  * @since 6.1.0
  *
  * @see wp_login_url()
  *
- * @return bool True if inside WordPress login screen, false otherwise.
+ * @return bool True nếu đang trong màn hình đăng nhập WordPress, false nếu không.
  */
 function is_login() {
 	return false !== stripos( wp_login_url(), $_SERVER['SCRIPT_NAME'] );
 }
 
 /**
- * Determines whether the current request is for an administrative interface page.
+ * Xác định xem yêu cầu hiện tại có phải cho trang giao diện quản trị hay không.
  *
- * Does not check if the user is an administrator; use current_user_can()
- * for checking roles and capabilities.
+ * Không kiểm tra xem người dùng có phải là quản trị viên hay không; sử dụng current_user_can()
+ * để kiểm tra vai trò và khả năng.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Thẻ Điều kiện} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 1.5.1
  *
- * @global WP_Screen $current_screen WordPress current screen object.
+ * @global WP_Screen $current_screen Đối tượng màn hình hiện tại của WordPress.
  *
- * @return bool True if inside WordPress administration interface, false otherwise.
+ * @return bool True nếu đang trong giao diện quản trị WordPress, false nếu không.
  */
 function is_admin() {
 	if ( isset( $GLOBALS['current_screen'] ) ) {
@@ -1360,18 +1360,18 @@ function is_admin() {
 }
 
 /**
- * Determines whether the current request is for a site's administrative interface.
+ * Xác định xem yêu cầu hiện tại có phải cho giao diện quản trị của trang web hay không.
  *
- * e.g. `/wp-admin/`
+ * Ví dụ: `/wp-admin/`
  *
- * Does not check if the user is an administrator; use current_user_can()
- * for checking roles and capabilities.
+ * Không kiểm tra xem người dùng có phải là quản trị viên hay không; sử dụng current_user_can()
+ * để kiểm tra vai trò và khả năng.
  *
  * @since 3.1.0
  *
- * @global WP_Screen $current_screen WordPress current screen object.
+ * @global WP_Screen $current_screen Đối tượng màn hình hiện tại của WordPress.
  *
- * @return bool True if inside WordPress site administration pages.
+ * @return bool True nếu đang trong các trang quản trị trang web WordPress.
  */
 function is_blog_admin() {
 	if ( isset( $GLOBALS['current_screen'] ) ) {
@@ -1384,21 +1384,21 @@ function is_blog_admin() {
 }
 
 /**
- * Determines whether the current request is for the network administrative interface.
+ * Xác định xem yêu cầu hiện tại có phải cho giao diện quản trị mạng hay không.
  *
- * e.g. `/wp-admin/network/`
+ * Ví dụ: `/wp-admin/network/`
  *
- * Does not check if the user is an administrator; use current_user_can()
- * for checking roles and capabilities.
+ * Không kiểm tra xem người dùng có phải là quản trị viên hay không; sử dụng current_user_can()
+ * để kiểm tra vai trò và khả năng.
  *
- * Does not check if the site is a Multisite network; use is_multisite()
- * for checking if Multisite is enabled.
+ * Không kiểm tra xem trang web có phải là mạng Multisite hay không; sử dụng is_multisite()
+ * để kiểm tra xem Multisite có được bật hay không.
  *
  * @since 3.1.0
  *
- * @global WP_Screen $current_screen WordPress current screen object.
+ * @global WP_Screen $current_screen Đối tượng màn hình hiện tại của WordPress.
  *
- * @return bool True if inside WordPress network administration pages.
+ * @return bool True nếu đang trong các trang quản trị mạng WordPress.
  */
 function is_network_admin() {
 	if ( isset( $GLOBALS['current_screen'] ) ) {
@@ -1411,18 +1411,18 @@ function is_network_admin() {
 }
 
 /**
- * Determines whether the current request is for a user admin screen.
+ * Xác định xem yêu cầu hiện tại có phải cho màn hình quản trị người dùng hay không.
  *
- * e.g. `/wp-admin/user/`
+ * Ví dụ: `/wp-admin/user/`
  *
- * Does not check if the user is an administrator; use current_user_can()
- * for checking roles and capabilities.
+ * Không kiểm tra xem người dùng có phải là quản trị viên hay không; sử dụng current_user_can()
+ * để kiểm tra vai trò và khả năng.
  *
  * @since 3.1.0
  *
- * @global WP_Screen $current_screen WordPress current screen object.
+ * @global WP_Screen $current_screen Đối tượng màn hình hiện tại của WordPress.
  *
- * @return bool True if inside WordPress user administration pages.
+ * @return bool True nếu đang trong các trang quản trị người dùng WordPress.
  */
 function is_user_admin() {
 	if ( isset( $GLOBALS['current_screen'] ) ) {
@@ -1435,11 +1435,11 @@ function is_user_admin() {
 }
 
 /**
- * Determines whether Multisite is enabled.
+ * Xác định xem Multisite có được bật hay không.
  *
  * @since 3.0.0
  *
- * @return bool True if Multisite is enabled, false otherwise.
+ * @return bool True nếu Multisite được bật, false nếu không.
  */
 function is_multisite() {
 	if ( defined( 'MULTISITE' ) ) {
@@ -1454,25 +1454,25 @@ function is_multisite() {
 }
 
 /**
- * Converts a value to non-negative integer.
+ * Chuyển đổi giá trị thành số nguyên không âm.
  *
  * @since 2.5.0
  *
- * @param mixed $maybeint Data you wish to have converted to a non-negative integer.
- * @return int A non-negative integer.
+ * @param mixed $maybeint Dữ liệu bạn muốn chuyển đổi thành số nguyên không âm.
+ * @return int Số nguyên không âm.
  */
 function absint( $maybeint ) {
 	return abs( (int) $maybeint );
 }
 
 /**
- * Retrieves the current site ID.
+ * Lấy ID trang web hiện tại.
  *
  * @since 3.1.0
  *
  * @global int $blog_id
  *
- * @return int Site ID.
+ * @return int ID trang web.
  */
 function get_current_blog_id() {
 	global $blog_id;
@@ -1481,11 +1481,11 @@ function get_current_blog_id() {
 }
 
 /**
- * Retrieves the current network ID.
+ * Lấy ID mạng hiện tại.
  *
  * @since 4.6.0
  *
- * @return int The ID of the current network.
+ * @return int ID của mạng hiện tại.
  */
 function get_current_network_id() {
 	if ( ! is_multisite() ) {
@@ -1502,20 +1502,20 @@ function get_current_network_id() {
 }
 
 /**
- * Attempts an early load of translations.
+ * Cố gắng tải sớm các bản dịch.
  *
- * Used for errors encountered during the initial loading process, before
- * the locale has been properly detected and loaded.
+ * Được sử dụng cho các lỗi gặp phải trong quá trình tải ban đầu, trước khi
+ * ngôn ngữ được phát hiện và tải đúng cách.
  *
- * Designed for unusual load sequences (like setup-config.php) or for when
- * the script will then terminate with an error, otherwise there is a risk
- * that a file can be double-included.
+ * Được thiết kế cho các chuỗi tải bất thường (như setup-config.php) hoặc khi
+ * script sau đó sẽ dừng với lỗi, nếu không có nguy cơ
+ * tệp có thể bị include hai lần.
  *
  * @since 3.4.0
  * @access private
  *
- * @global WP_Textdomain_Registry $wp_textdomain_registry WordPress Textdomain Registry.
- * @global WP_Locale              $wp_locale              WordPress date and time locale object.
+ * @global WP_Textdomain_Registry $wp_textdomain_registry Đăng ký Textdomain WordPress.
+ * @global WP_Locale              $wp_locale              Đối tượng ngôn ngữ ngày và giờ WordPress.
  */
 function wp_load_translations_early() {
 	global $wp_textdomain_registry, $wp_locale;
@@ -1531,10 +1531,10 @@ function wp_load_translations_early() {
 		return;
 	}
 
-	// We need $wp_local_package.
+	// Chúng ta cần $wp_local_package.
 	require ABSPATH . WPINC . '/version.php';
 
-	// Translation and localization.
+	// Dịch thuật và bản địa hóa.
 	require_once ABSPATH . WPINC . '/pomo/mo.php';
 	require_once ABSPATH . WPINC . '/l10n/class-wp-translation-controller.php';
 	require_once ABSPATH . WPINC . '/l10n/class-wp-translations.php';
@@ -1546,7 +1546,7 @@ function wp_load_translations_early() {
 	require_once ABSPATH . WPINC . '/class-wp-locale.php';
 	require_once ABSPATH . WPINC . '/class-wp-locale-switcher.php';
 
-	// General libraries.
+	// Thư viện chung.
 	require_once ABSPATH . WPINC . '/plugin.php';
 
 	$locales   = array();
@@ -1615,21 +1615,21 @@ function wp_load_translations_early() {
 }
 
 /**
- * Checks or sets whether WordPress is in "installation" mode.
+ * Kiểm tra hoặc đặt WordPress có đang ở chế độ "cài đặt" hay không.
  *
- * If the `WP_INSTALLING` constant is defined during the bootstrap, `wp_installing()` will default to `true`.
+ * Nếu hằng số `WP_INSTALLING` được định nghĩa trong quá trình bootstrap, `wp_installing()` sẽ mặc định là `true`.
  *
  * @since 4.4.0
  *
- * @param bool $is_installing Optional. True to set WP into Installing mode, false to turn Installing mode off.
- *                            Omit this parameter if you only want to fetch the current status.
- * @return bool True if WP is installing, otherwise false. When a `$is_installing` is passed, the function will
- *              report whether WP was in installing mode prior to the change to `$is_installing`.
+ * @param bool $is_installing Tùy chọn. True để đặt WP vào chế độ Cài đặt, false để tắt chế độ Cài đặt.
+ *                            Bỏ qua tham số này nếu bạn chỉ muốn lấy trạng thái hiện tại.
+ * @return bool True nếu WP đang cài đặt, ngược lại false. Khi `$is_installing` được truyền, hàm sẽ
+ *              trả về WP có đang ở chế độ cài đặt trước khi thay đổi thành `$is_installing` hay không.
  */
 function wp_installing( $is_installing = null ) {
 	static $installing = null;
 
-	// Support for the `WP_INSTALLING` constant, defined before WP is loaded.
+	// Hỗ trợ cho hằng số `WP_INSTALLING`, được định nghĩa trước khi WP tải.
 	if ( is_null( $installing ) ) {
 		$installing = defined( 'WP_INSTALLING' ) && WP_INSTALLING;
 	}
@@ -1645,12 +1645,12 @@ function wp_installing( $is_installing = null ) {
 }
 
 /**
- * Determines if SSL is used.
+ * Xác định xem SSL có được sử dụng hay không.
  *
  * @since 2.6.0
- * @since 4.6.0 Moved from functions.php to load.php.
+ * @since 4.6.0 Chuyển từ functions.php sang load.php.
  *
- * @return bool True if SSL, otherwise false.
+ * @return bool True nếu SSL, ngược lại false.
  */
 function is_ssl() {
 	if ( isset( $_SERVER['HTTPS'] ) ) {
@@ -1669,16 +1669,16 @@ function is_ssl() {
 }
 
 /**
- * Converts a shorthand byte value to an integer byte value.
+ * Chuyển đổi giá trị byte viết tắt thành giá trị byte số nguyên.
  *
  * @since 2.3.0
- * @since 4.6.0 Moved from media.php to load.php.
+ * @since 4.6.0 Chuyển từ media.php sang load.php.
  *
  * @link https://www.php.net/manual/en/function.ini-get.php
  * @link https://www.php.net/manual/en/faq.using.php#faq.using.shorthandbytes
  *
- * @param string $value A (PHP ini) byte value, either shorthand or ordinary.
- * @return int An integer byte value.
+ * @param string $value Giá trị byte (PHP ini), dạng viết tắt hoặc thông thường.
+ * @return int Giá trị byte số nguyên.
  */
 function wp_convert_hr_to_bytes( $value ) {
 	$value = strtolower( trim( $value ) );
@@ -1692,26 +1692,26 @@ function wp_convert_hr_to_bytes( $value ) {
 		$bytes *= KB_IN_BYTES;
 	}
 
-	// Deal with large (float) values which run into the maximum integer size.
+	// Xử lý các giá trị lớn (float) vượt quá kích thước số nguyên tối đa.
 	return min( $bytes, PHP_INT_MAX );
 }
 
 /**
- * Determines whether a PHP ini value is changeable at runtime.
+ * Xác định xem giá trị PHP ini có thể thay đổi tại runtime hay không.
  *
  * @since 4.6.0
  *
  * @link https://www.php.net/manual/en/function.ini-get-all.php
  *
- * @param string $setting The name of the ini setting to check.
- * @return bool True if the value is changeable at runtime. False otherwise.
+ * @param string $setting Tên cài đặt ini cần kiểm tra.
+ * @return bool True nếu giá trị có thể thay đổi tại runtime. False nếu không.
  */
 function wp_is_ini_value_changeable( $setting ) {
 	static $ini_all;
 
 	if ( ! isset( $ini_all ) ) {
 		$ini_all = false;
-		// Sometimes `ini_get_all()` is disabled via the `disable_functions` option for "security purposes".
+		// Đôi khi `ini_get_all()` bị tắt qua tùy chọn `disable_functions` vì lý do "bảo mật".
 		if ( function_exists( 'ini_get_all' ) ) {
 			$ini_all = ini_get_all();
 		}
@@ -1723,7 +1723,7 @@ function wp_is_ini_value_changeable( $setting ) {
 		return true;
 	}
 
-	// If we were unable to retrieve the details, fail gracefully to assume it's changeable.
+	// Nếu không thể lấy thông tin chi tiết, giả định một cách an toàn rằng có thể thay đổi.
 	if ( ! is_array( $ini_all ) ) {
 		return true;
 	}
@@ -1732,79 +1732,79 @@ function wp_is_ini_value_changeable( $setting ) {
 }
 
 /**
- * Determines whether the current request is a WordPress Ajax request.
+ * Xác định xem yêu cầu hiện tại có phải là yêu cầu Ajax WordPress hay không.
  *
  * @since 4.7.0
  *
- * @return bool True if it's a WordPress Ajax request, false otherwise.
+ * @return bool True nếu là yêu cầu Ajax WordPress, false nếu không.
  */
 function wp_doing_ajax() {
 	/**
-	 * Filters whether the current request is a WordPress Ajax request.
+	 * Lọc xem yêu cầu hiện tại có phải là yêu cầu Ajax WordPress hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param bool $wp_doing_ajax Whether the current request is a WordPress Ajax request.
+	 * @param bool $wp_doing_ajax Yêu cầu hiện tại có phải là yêu cầu Ajax WordPress hay không.
 	 */
 	return apply_filters( 'wp_doing_ajax', defined( 'DOING_AJAX' ) && DOING_AJAX );
 }
 
 /**
- * Determines whether the current request should use themes.
+ * Xác định xem yêu cầu hiện tại có nên sử dụng theme hay không.
  *
  * @since 5.1.0
  *
- * @return bool True if themes should be used, false otherwise.
+ * @return bool True nếu nên sử dụng theme, false nếu không.
  */
 function wp_using_themes() {
 	/**
-	 * Filters whether the current request should use themes.
+	 * Lọc xem yêu cầu hiện tại có nên sử dụng theme hay không.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param bool $wp_using_themes Whether the current request should use themes.
+	 * @param bool $wp_using_themes Yêu cầu hiện tại có nên sử dụng theme hay không.
 	 */
 	return apply_filters( 'wp_using_themes', defined( 'WP_USE_THEMES' ) && WP_USE_THEMES );
 }
 
 /**
- * Determines whether the current request is a WordPress cron request.
+ * Xác định xem yêu cầu hiện tại có phải là yêu cầu cron WordPress hay không.
  *
  * @since 4.8.0
  *
- * @return bool True if it's a WordPress cron request, false otherwise.
+ * @return bool True nếu là yêu cầu cron WordPress, false nếu không.
  */
 function wp_doing_cron() {
 	/**
-	 * Filters whether the current request is a WordPress cron request.
+	 * Lọc xem yêu cầu hiện tại có phải là yêu cầu cron WordPress hay không.
 	 *
 	 * @since 4.8.0
 	 *
-	 * @param bool $wp_doing_cron Whether the current request is a WordPress cron request.
+	 * @param bool $wp_doing_cron Yêu cầu hiện tại có phải là yêu cầu cron WordPress hay không.
 	 */
 	return apply_filters( 'wp_doing_cron', defined( 'DOING_CRON' ) && DOING_CRON );
 }
 
 /**
- * Checks whether the given variable is a WordPress Error.
+ * Kiểm tra xem biến cho trước có phải là WordPress Error hay không.
  *
- * Returns whether `$thing` is an instance of the `WP_Error` class.
+ * Trả về xem `$thing` có phải là thực thể của lớp `WP_Error` hay không.
  *
  * @since 2.1.0
  *
- * @param mixed $thing The variable to check.
- * @return bool Whether the variable is an instance of WP_Error.
+ * @param mixed $thing Biến cần kiểm tra.
+ * @return bool Biến có phải là thực thể của WP_Error hay không.
  */
 function is_wp_error( $thing ) {
 	$is_wp_error = ( $thing instanceof WP_Error );
 
 	if ( $is_wp_error ) {
 		/**
-		 * Fires when `is_wp_error()` is called and its parameter is an instance of `WP_Error`.
+		 * Kích hoạt khi `is_wp_error()` được gọi và tham số của nó là thực thể của `WP_Error`.
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param WP_Error $thing The error object passed to `is_wp_error()`.
+		 * @param WP_Error $thing Đối tượng lỗi được truyền vào `is_wp_error()`.
 		 */
 		do_action( 'is_wp_error_instance', $thing );
 	}
@@ -1813,27 +1813,27 @@ function is_wp_error( $thing ) {
 }
 
 /**
- * Determines whether file modifications are allowed.
+ * Xác định xem có cho phép sửa đổi tệp hay không.
  *
  * @since 4.8.0
  *
- * @param string $context The usage context.
- * @return bool True if file modification is allowed, false otherwise.
+ * @param string $context Ngữ cảnh sử dụng.
+ * @return bool True nếu cho phép sửa đổi tệp, false nếu không.
  */
 function wp_is_file_mod_allowed( $context ) {
 	/**
-	 * Filters whether file modifications are allowed.
+	 * Lọc xem có cho phép sửa đổi tệp hay không.
 	 *
 	 * @since 4.8.0
 	 *
-	 * @param bool   $file_mod_allowed Whether file modifications are allowed.
-	 * @param string $context          The usage context.
+	 * @param bool   $file_mod_allowed Có cho phép sửa đổi tệp hay không.
+	 * @param string $context          Ngữ cảnh sử dụng.
 	 */
 	return apply_filters( 'file_mod_allowed', ! defined( 'DISALLOW_FILE_MODS' ) || ! DISALLOW_FILE_MODS, $context );
 }
 
 /**
- * Starts scraping edited file errors.
+ * Bắt đầu quét lỗi tệp đã chỉnh sửa.
  *
  * @since 4.9.0
  */
@@ -1877,11 +1877,11 @@ function wp_start_scraping_edited_file_errors() {
 }
 
 /**
- * Finalizes scraping for edited file errors.
+ * Hoàn tất quét lỗi tệp đã chỉnh sửa.
  *
  * @since 4.9.0
  *
- * @param string $scrape_key Scrape key.
+ * @param string $scrape_key Khóa quét.
  */
 function wp_finalize_scraping_edited_file_errors( $scrape_key ) {
 	$error = error_get_last();
@@ -1901,12 +1901,12 @@ function wp_finalize_scraping_edited_file_errors( $scrape_key ) {
 }
 
 /**
- * Checks whether current request is a JSON request, or is expecting a JSON response.
+ * Kiểm tra xem yêu cầu hiện tại có phải là yêu cầu JSON, hoặc mong đợi phản hồi JSON hay không.
  *
  * @since 5.0.0
  *
- * @return bool True if `Accepts` or `Content-Type` headers contain `application/json`.
- *              False otherwise.
+ * @return bool True nếu header `Accepts` hoặc `Content-Type` chứa `application/json`.
+ *              False nếu không.
  */
 function wp_is_json_request() {
 	if ( isset( $_SERVER['HTTP_ACCEPT'] ) && wp_is_json_media_type( $_SERVER['HTTP_ACCEPT'] ) ) {
@@ -1921,11 +1921,11 @@ function wp_is_json_request() {
 }
 
 /**
- * Checks whether current request is a JSONP request, or is expecting a JSONP response.
+ * Kiểm tra xem yêu cầu hiện tại có phải là yêu cầu JSONP, hoặc mong đợi phản hồi JSONP hay không.
  *
  * @since 5.2.0
  *
- * @return bool True if JSONP request, false otherwise.
+ * @return bool True nếu là yêu cầu JSONP, false nếu không.
  */
 function wp_is_jsonp_request() {
 	if ( ! isset( $_GET['_jsonp'] ) ) {
@@ -1941,19 +1941,19 @@ function wp_is_jsonp_request() {
 		return false;
 	}
 
-	/** This filter is documented in wp-includes/rest-api/class-wp-rest-server.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-includes/rest-api/class-wp-rest-server.php */
 	$jsonp_enabled = apply_filters( 'rest_jsonp_enabled', true );
 
 	return $jsonp_enabled;
 }
 
 /**
- * Checks whether a string is a valid JSON Media Type.
+ * Kiểm tra xem chuỗi có phải là JSON Media Type hợp lệ hay không.
  *
  * @since 5.6.0
  *
- * @param string $media_type A Media Type string to check.
- * @return bool True if string is a valid JSON Media Type.
+ * @param string $media_type Chuỗi Media Type cần kiểm tra.
+ * @return bool True nếu chuỗi là JSON Media Type hợp lệ.
  */
 function wp_is_json_media_type( $media_type ) {
 	static $cache = array();
@@ -1966,12 +1966,12 @@ function wp_is_json_media_type( $media_type ) {
 }
 
 /**
- * Checks whether current request is an XML request, or is expecting an XML response.
+ * Kiểm tra xem yêu cầu hiện tại có phải là yêu cầu XML, hoặc mong đợi phản hồi XML hay không.
  *
  * @since 5.2.0
  *
- * @return bool True if `Accepts` or `Content-Type` headers contain `text/xml`
- *              or one of the related MIME types. False otherwise.
+ * @return bool True nếu header `Accepts` hoặc `Content-Type` chứa `text/xml`
+ *              hoặc một trong các loại MIME liên quan. False nếu không.
  */
 function wp_is_xml_request() {
 	$accepted = array(
@@ -1999,22 +1999,22 @@ function wp_is_xml_request() {
 }
 
 /**
- * Checks if this site is protected by HTTP Basic Auth.
+ * Kiểm tra xem trang web này có được bảo vệ bởi HTTP Basic Auth hay không.
  *
- * At the moment, this merely checks for the present of Basic Auth credentials. Therefore, calling
- * this function with a context different from the current context may give inaccurate results.
- * In a future release, this evaluation may be made more robust.
+ * Hiện tại, điều này chỉ kiểm tra sự hiện diện của thông tin đăng nhập Basic Auth. Do đó, gọi
+ * hàm này với ngữ cảnh khác với ngữ cảnh hiện tại có thể cho kết quả không chính xác.
+ * Trong phiên bản tương lai, đánh giá này có thể được thực hiện mạnh mẽ hơn.
  *
- * Currently, this is only used by Application Passwords to prevent a conflict since it also utilizes
+ * Hiện tại, điều này chỉ được sử dụng bởi Application Passwords để ngăn xung đột vì nó cũng sử dụng
  * Basic Auth.
  *
  * @since 5.6.1
  *
- * @global string $pagenow The filename of the current screen.
+ * @global string $pagenow Tên tệp của màn hình hiện tại.
  *
- * @param string $context The context to check for protection. Accepts 'login', 'admin', and 'front'.
- *                        Defaults to the current context.
- * @return bool Whether the site is protected by Basic Auth.
+ * @param string $context Ngữ cảnh cần kiểm tra bảo vệ. Chấp nhận 'login', 'admin', và 'front'.
+ *                        Mặc định là ngữ cảnh hiện tại.
+ * @return bool Trang web có được bảo vệ bởi Basic Auth hay không.
  */
 function wp_is_site_protected_by_basic_auth( $context = '' ) {
 	global $pagenow;
@@ -2032,12 +2032,12 @@ function wp_is_site_protected_by_basic_auth( $context = '' ) {
 	$is_protected = ! empty( $_SERVER['PHP_AUTH_USER'] ) || ! empty( $_SERVER['PHP_AUTH_PW'] );
 
 	/**
-	 * Filters whether a site is protected by HTTP Basic Auth.
+	 * Lọc xem trang web có được bảo vệ bởi HTTP Basic Auth hay không.
 	 *
 	 * @since 5.6.1
 	 *
-	 * @param bool $is_protected Whether the site is protected by Basic Auth.
-	 * @param string $context    The context to check for protection. One of 'login', 'admin', or 'front'.
+	 * @param bool $is_protected Trang web có được bảo vệ bởi Basic Auth hay không.
+	 * @param string $context    Ngữ cảnh kiểm tra bảo vệ. Một trong 'login', 'admin', hoặc 'front'.
 	 */
 	return apply_filters( 'wp_is_site_protected_by_basic_auth', $is_protected, $context );
 }

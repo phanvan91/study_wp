@@ -1,11 +1,11 @@
 <?php
 /**
- * Facilitates adding of the WordPress editor as used on the Write and Edit screens.
+ * Hỗ trợ thêm trình soạn thảo WordPress được sử dụng trên các màn hình Viết và Chỉnh sửa.
  *
  * @package WordPress
  * @since 3.3.0
  *
- * Private, not included by default. See wp_editor() in wp-includes/general-template.php.
+ * Riêng tư, không được bao gồm mặc định. Xem wp_editor() trong wp-includes/general-template.php.
  */
 
 #[AllowDynamicProperties]
@@ -33,59 +33,59 @@ final class _WP_Editors {
 	private function __construct() {}
 
 	/**
-	 * Parse default arguments for the editor instance.
+	 * Phân tích các tham số mặc định cho phiên bản trình soạn thảo.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string $editor_id HTML ID for the textarea and TinyMCE and Quicktags instances.
-	 *                          Should not contain square brackets.
+	 * @param string $editor_id ID HTML cho textarea và các phiên bản TinyMCE và Quicktags.
+	 *                          Không nên chứa dấu ngoặc vuông.
 	 * @param array  $settings {
-	 *     Array of editor arguments.
+	 *     Mảng các tham số trình soạn thảo.
 	 *
-	 *     @type bool       $wpautop           Whether to use wpautop(). Default true.
-	 *     @type bool       $media_buttons     Whether to show the Add Media/other media buttons.
-	 *     @type string     $default_editor    When both TinyMCE and Quicktags are used, set which
-	 *                                         editor is shown on page load. Default empty.
-	 *     @type bool       $drag_drop_upload  Whether to enable drag & drop on the editor uploading. Default false.
-	 *                                         Requires the media modal.
-	 *     @type string     $textarea_name     Give the textarea a unique name here. Square brackets
-	 *                                         can be used here. Default $editor_id.
-	 *     @type int        $textarea_rows     Number rows in the editor textarea. Default 20.
-	 *     @type string|int $tabindex          Tabindex value to use. Default empty.
-	 *     @type string     $tabfocus_elements The previous and next element ID to move the focus to
-	 *                                         when pressing the Tab key in TinyMCE. Default ':prev,:next'.
-	 *     @type string     $editor_css        Intended for extra styles for both Visual and Code editors.
-	 *                                         Should include `<style>` tags, and can use "scoped". Default empty.
-	 *     @type string     $editor_class      Extra classes to add to the editor textarea element. Default empty.
-	 *     @type bool       $teeny             Whether to output the minimal editor config. Examples include
-	 *                                         Press This and the Comment editor. Default false.
-	 *     @type bool       $dfw               Deprecated in 4.1. Unused.
-	 *     @type bool|array $tinymce           Whether to load TinyMCE. Can be used to pass settings directly to
-	 *                                         TinyMCE using an array. Default true.
-	 *     @type bool|array $quicktags         Whether to load Quicktags. Can be used to pass settings directly to
-	 *                                         Quicktags using an array. Default true.
+	 *     @type bool       $wpautop           Có sử dụng wpautop() hay không. Mặc định true.
+	 *     @type bool       $media_buttons     Có hiển thị nút Thêm Media/các nút media khác hay không.
+	 *     @type string     $default_editor    Khi cả TinyMCE và Quicktags đều được sử dụng, đặt trình soạn thảo
+	 *                                         nào hiển thị khi tải trang. Mặc định rỗng.
+	 *     @type bool       $drag_drop_upload  Có bật kéo thả tải lên trên trình soạn thảo hay không. Mặc định false.
+	 *                                         Yêu cầu modal media.
+	 *     @type string     $textarea_name     Đặt tên duy nhất cho textarea ở đây. Có thể sử dụng dấu ngoặc vuông.
+	 *                                         Mặc định $editor_id.
+	 *     @type int        $textarea_rows     Số hàng trong textarea của trình soạn thảo. Mặc định 20.
+	 *     @type string|int $tabindex          Giá trị tabindex để sử dụng. Mặc định rỗng.
+	 *     @type string     $tabfocus_elements ID phần tử trước và sau để chuyển focus tới
+	 *                                         khi nhấn phím Tab trong TinyMCE. Mặc định ':prev,:next'.
+	 *     @type string     $editor_css        Dành cho các style bổ sung cho cả trình soạn thảo Trực quan và Code.
+	 *                                         Nên bao gồm thẻ `<style>`, và có thể dùng "scoped". Mặc định rỗng.
+	 *     @type string     $editor_class      Các class bổ sung thêm vào phần tử textarea của trình soạn thảo. Mặc định rỗng.
+	 *     @type bool       $teeny             Có xuất cấu hình trình soạn thảo tối thiểu hay không. Ví dụ bao gồm
+	 *                                         Press This và trình soạn thảo Bình luận. Mặc định false.
+	 *     @type bool       $dfw               Không dùng nữa từ 4.1. Không sử dụng.
+	 *     @type bool|array $tinymce           Có tải TinyMCE hay không. Có thể dùng để truyền cài đặt trực tiếp tới
+	 *                                         TinyMCE bằng mảng. Mặc định true.
+	 *     @type bool|array $quicktags         Có tải Quicktags hay không. Có thể dùng để truyền cài đặt trực tiếp tới
+	 *                                         Quicktags bằng mảng. Mặc định true.
 	 * }
-	 * @return array Parsed arguments array.
+	 * @return array Mảng tham số đã được phân tích.
 	 */
 	public static function parse_settings( $editor_id, $settings ) {
 
 		/**
-		 * Filters the wp_editor() settings.
+		 * Lọc các cài đặt wp_editor().
 		 *
 		 * @since 4.0.0
 		 *
 		 * @see _WP_Editors::parse_settings()
 		 *
-		 * @param array  $settings  Array of editor arguments.
-		 * @param string $editor_id Unique editor identifier, e.g. 'content'. Accepts 'classic-block'
-		 *                          when called from block editor's Classic block.
+		 * @param array  $settings  Mảng các tham số trình soạn thảo.
+		 * @param string $editor_id Mã định danh trình soạn thảo duy nhất, ví dụ 'content'. Chấp nhận 'classic-block'
+		 *                          khi được gọi từ khối Classic của trình soạn thảo khối.
 		 */
 		$settings = apply_filters( 'wp_editor_settings', $settings, $editor_id );
 
 		$set = wp_parse_args(
 			$settings,
 			array(
-				// Disable autop if the current post has blocks in it.
+				// Tắt autop nếu bài viết hiện tại có chứa các khối.
 				'wpautop'             => ! has_blocks(),
 				'media_buttons'       => true,
 				'default_editor'      => '',
@@ -127,7 +127,7 @@ final class _WP_Editors {
 		}
 
 		if ( 'content' === $editor_id && empty( $set['tinymce']['wp_autoresize_on'] ) ) {
-			// A cookie (set when a user resizes the editor) overrides the height.
+			// Một cookie (được đặt khi người dùng thay đổi kích thước trình soạn thảo) ghi đè chiều cao.
 			$cookie = (int) get_user_setting( 'ed_size' );
 
 			if ( $cookie ) {
@@ -145,16 +145,16 @@ final class _WP_Editors {
 	}
 
 	/**
-	 * Outputs the HTML for a single instance of the editor.
+	 * Xuất HTML cho một phiên bản duy nhất của trình soạn thảo.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @global WP_Screen $current_screen WordPress current screen object.
+	 * @global WP_Screen $current_screen Đối tượng màn hình hiện tại của WordPress.
 	 *
-	 * @param string $content   Initial content for the editor.
-	 * @param string $editor_id HTML ID for the textarea and TinyMCE and Quicktags instances.
-	 *                          Should not contain square brackets.
-	 * @param array  $settings  See _WP_Editors::parse_settings() for description.
+	 * @param string $content   Nội dung ban đầu cho trình soạn thảo.
+	 * @param string $editor_id ID HTML cho textarea và các phiên bản TinyMCE và Quicktags.
+	 *                          Không nên chứa dấu ngoặc vuông.
+	 * @param array  $settings  Xem _WP_Editors::parse_settings() để biết mô tả.
 	 */
 	public static function editor( $content, $editor_id, $settings = array() ) {
 		$set            = self::parse_settings( $editor_id, $settings );
@@ -184,7 +184,7 @@ final class _WP_Editors {
 
 			if ( self::$this_quicktags ) {
 				$default_editor = $set['default_editor'] ? $set['default_editor'] : wp_default_editor();
-				// 'html' is used for the "Code" editor tab.
+				// 'html' được sử dụng cho tab trình soạn thảo "Code".
 				if ( 'html' !== $default_editor ) {
 					$default_editor = 'tinymce';
 				}
@@ -231,11 +231,11 @@ final class _WP_Editors {
 				echo '<div id="wp-' . $editor_id_attr . '-media-buttons" class="wp-media-buttons">';
 
 				/**
-				 * Fires after the default media button(s) are displayed.
+				 * Kích hoạt sau khi (các) nút media mặc định được hiển thị.
 				 *
 				 * @since 2.5.0
 				 *
-				 * @param string $editor_id Unique editor identifier, e.g. 'content'.
+				 * @param string $editor_id Mã định danh trình soạn thảo duy nhất, ví dụ 'content'.
 				 */
 				do_action( 'media_buttons', $editor_id );
 				echo "</div>\n";
@@ -258,11 +258,11 @@ final class _WP_Editors {
 		}
 
 		/**
-		 * Filters the HTML markup output that displays the editor.
+		 * Lọc đầu ra HTML hiển thị trình soạn thảo.
 		 *
 		 * @since 2.1.0
 		 *
-		 * @param string $output Editor's HTML markup.
+		 * @param string $output Mã HTML của trình soạn thảo.
 		 */
 		$the_editor = apply_filters(
 			'the_editor',
@@ -272,33 +272,33 @@ final class _WP_Editors {
 			'id="' . $editor_id_attr . '">%s</textarea></div>'
 		);
 
-		// Prepare the content for the Visual or Code editor, only when TinyMCE is used (back-compat).
+		// Chuẩn bị nội dung cho trình soạn thảo Trực quan hoặc Code, chỉ khi TinyMCE được sử dụng (tương thích ngược).
 		if ( self::$this_tinymce ) {
 			add_filter( 'the_editor_content', 'format_for_editor', 10, 2 );
 		}
 
 		/**
-		 * Filters the default editor content.
+		 * Lọc nội dung mặc định của trình soạn thảo.
 		 *
 		 * @since 2.1.0
 		 *
-		 * @param string $content        Default editor content.
-		 * @param string $default_editor The default editor for the current user.
-		 *                               Either 'html' or 'tinymce'.
+		 * @param string $content        Nội dung mặc định của trình soạn thảo.
+		 * @param string $default_editor Trình soạn thảo mặc định cho người dùng hiện tại.
+		 *                               Là 'html' hoặc 'tinymce'.
 		 */
 		$content = apply_filters( 'the_editor_content', $content, $default_editor );
 
-		// Remove the filter as the next editor on the same page may not need it.
+		// Xóa bộ lọc vì trình soạn thảo tiếp theo trên cùng trang có thể không cần nó.
 		if ( self::$this_tinymce ) {
 			remove_filter( 'the_editor_content', 'format_for_editor' );
 		}
 
-		// Back-compat for the `htmledit_pre` and `richedit_pre` filters.
+		// Tương thích ngược cho các bộ lọc `htmledit_pre` và `richedit_pre`.
 		if ( 'html' === $default_editor && has_filter( 'htmledit_pre' ) ) {
-			/** This filter is documented in wp-includes/deprecated.php */
+			/** Bộ lọc này được ghi tài liệu trong wp-includes/deprecated.php */
 			$content = apply_filters_deprecated( 'htmledit_pre', array( $content ), '4.3.0', 'format_for_editor' );
 		} elseif ( 'tinymce' === $default_editor && has_filter( 'richedit_pre' ) ) {
-			/** This filter is documented in wp-includes/deprecated.php */
+			/** Bộ lọc này được ghi tài liệu trong wp-includes/deprecated.php */
 			$content = apply_filters_deprecated( 'richedit_pre', array( $content ), '4.3.0', 'format_for_editor' );
 		}
 
@@ -315,8 +315,8 @@ final class _WP_Editors {
 	/**
 	 * @since 3.3.0
 	 *
-	 * @param string $editor_id Unique editor identifier, e.g. 'content'.
-	 * @param array  $set       Array of editor arguments.
+	 * @param string $editor_id Mã định danh trình soạn thảo duy nhất, ví dụ 'content'.
+	 * @param array  $set       Mảng các tham số trình soạn thảo.
 	 */
 	public static function editor_settings( $editor_id, $set ) {
 		if ( empty( self::$first_init ) ) {
@@ -351,12 +351,12 @@ final class _WP_Editors {
 			}
 
 			/**
-			 * Filters the Quicktags settings.
+			 * Lọc các cài đặt Quicktags.
 			 *
 			 * @since 3.3.0
 			 *
-			 * @param array  $qt_init   Quicktags settings.
-			 * @param string $editor_id Unique editor identifier, e.g. 'content'.
+			 * @param array  $qt_init   Cài đặt Quicktags.
+			 * @param string $editor_id Mã định danh trình soạn thảo duy nhất, ví dụ 'content'.
 			 */
 			$qt_init = apply_filters( 'quicktags_settings', $qt_init, $editor_id );
 
@@ -375,13 +375,13 @@ final class _WP_Editors {
 				if ( $set['teeny'] ) {
 
 					/**
-					 * Filters the list of teenyMCE plugins.
+					 * Lọc danh sách các plugin teenyMCE.
 					 *
 					 * @since 2.7.0
-					 * @since 3.3.0 The `$editor_id` parameter was added.
+					 * @since 3.3.0 Tham số `$editor_id` đã được thêm.
 					 *
-					 * @param array  $plugins   An array of teenyMCE plugins.
-					 * @param string $editor_id Unique editor identifier, e.g. 'content'.
+					 * @param array  $plugins   Mảng các plugin teenyMCE.
+					 * @param string $editor_id Mã định danh trình soạn thảo duy nhất, ví dụ 'content'.
 					 */
 					$plugins = apply_filters(
 						'teeny_mce_plugins',
@@ -399,24 +399,24 @@ final class _WP_Editors {
 				} else {
 
 					/**
-					 * Filters the list of TinyMCE external plugins.
+					 * Lọc danh sách các plugin TinyMCE bên ngoài.
 					 *
-					 * The filter takes an associative array of external plugins for
-					 * TinyMCE in the form 'plugin_name' => 'url'.
+					 * Bộ lọc nhận một mảng kết hợp các plugin bên ngoài cho
+					 * TinyMCE dưới dạng 'tên_plugin' => 'url'.
 					 *
-					 * The url should be absolute, and should include the js filename
-					 * to be loaded. For example:
+					 * URL phải là đường dẫn tuyệt đối, và phải bao gồm tên file js
+					 * cần tải. Ví dụ:
 					 * 'myplugin' => 'http://mysite.com/wp-content/plugins/myfolder/mce_plugin.js'.
 					 *
-					 * If the external plugin adds a button, it should be added with
-					 * one of the 'mce_buttons' filters.
+					 * Nếu plugin bên ngoài thêm một nút, nó nên được thêm bằng
+					 * một trong các bộ lọc 'mce_buttons'.
 					 *
 					 * @since 2.5.0
-					 * @since 5.3.0 The `$editor_id` parameter was added.
+					 * @since 5.3.0 Tham số `$editor_id` đã được thêm.
 					 *
-					 * @param array  $external_plugins An array of external TinyMCE plugins.
-					 * @param string $editor_id        Unique editor identifier, e.g. 'content'. Accepts 'classic-block'
-					 *                                 when called from block editor's Classic block.
+					 * @param array  $external_plugins Mảng các plugin TinyMCE bên ngoài.
+					 * @param string $editor_id        Mã định danh trình soạn thảo duy nhất, ví dụ 'content'. Chấp nhận 'classic-block'
+					 *                                 khi được gọi từ khối Classic của trình soạn thảo khối.
 					 */
 					$mce_external_plugins = apply_filters( 'mce_external_plugins', array(), $editor_id );
 
@@ -446,25 +446,25 @@ final class _WP_Editors {
 					}
 
 					/**
-					 * Filters the list of default TinyMCE plugins.
+					 * Lọc danh sách các plugin TinyMCE mặc định.
 					 *
-					 * The filter specifies which of the default plugins included
-					 * in WordPress should be added to the TinyMCE instance.
+					 * Bộ lọc xác định plugin mặc định nào đã được bao gồm
+					 * trong WordPress sẽ được thêm vào phiên bản TinyMCE.
 					 *
 					 * @since 3.3.0
-					 * @since 5.3.0 The `$editor_id` parameter was added.
+					 * @since 5.3.0 Tham số `$editor_id` đã được thêm.
 					 *
-					 * @param array  $plugins   An array of default TinyMCE plugins.
-					 * @param string $editor_id Unique editor identifier, e.g. 'content'. Accepts 'classic-block'
-					 *                          when called from block editor's Classic block.
+					 * @param array  $plugins   Mảng các plugin TinyMCE mặc định.
+					 * @param string $editor_id Mã định danh trình soạn thảo duy nhất, ví dụ 'content'. Chấp nhận 'classic-block'
+					 *                          khi được gọi từ khối Classic của trình soạn thảo khối.
 					 */
 					$plugins = array_unique( apply_filters( 'tiny_mce_plugins', $plugins, $editor_id ) );
 
 					$key = array_search( 'spellchecker', $plugins, true );
 					if ( false !== $key ) {
 						/*
-						 * Remove 'spellchecker' from the internal plugins if added with 'tiny_mce_plugins' filter to prevent errors.
-						 * It can be added with 'mce_external_plugins'.
+						 * Xóa 'spellchecker' khỏi các plugin nội bộ nếu được thêm bằng bộ lọc 'tiny_mce_plugins' để ngăn lỗi.
+						 * Nó có thể được thêm bằng 'mce_external_plugins'.
 						 */
 						unset( $plugins[ $key ] );
 					}
@@ -472,19 +472,19 @@ final class _WP_Editors {
 					if ( ! empty( $mce_external_plugins ) ) {
 
 						/**
-						 * Filters the translations loaded for external TinyMCE 3.x plugins.
+						 * Lọc các bản dịch được tải cho các plugin TinyMCE 3.x bên ngoài.
 						 *
-						 * The filter takes an associative array ('plugin_name' => 'path')
-						 * where 'path' is the include path to the file.
+						 * Bộ lọc nhận một mảng kết hợp ('tên_plugin' => 'đường_dẫn')
+						 * trong đó 'đường_dẫn' là đường dẫn include tới file.
 						 *
-						 * The language file should follow the same format as wp_mce_translation(),
-						 * and should define a variable ($strings) that holds all translated strings.
+						 * File ngôn ngữ nên theo cùng định dạng như wp_mce_translation(),
+						 * và nên định nghĩa một biến ($strings) chứa tất cả các chuỗi đã dịch.
 						 *
 						 * @since 2.5.0
-						 * @since 5.3.0 The `$editor_id` parameter was added.
+						 * @since 5.3.0 Tham số `$editor_id` đã được thêm.
 						 *
-						 * @param array  $translations Translations for external TinyMCE plugins.
-						 * @param string $editor_id    Unique editor identifier, e.g. 'content'.
+						 * @param array  $translations Các bản dịch cho các plugin TinyMCE bên ngoài.
+						 * @param string $editor_id    Mã định danh trình soạn thảo duy nhất, ví dụ 'content'.
 						 */
 						$mce_external_languages = apply_filters( 'mce_external_languages', array(), $editor_id );
 
@@ -512,7 +512,7 @@ final class _WP_Editors {
 							$plugurl                       = dirname( $url );
 							$strings                       = '';
 
-							// Try to load langs/[locale].js and langs/[locale]_dlg.js.
+							// Thử tải langs/[locale].js và langs/[locale]_dlg.js.
 							if ( ! in_array( $name, $loaded_langs, true ) ) {
 								$path = str_replace( content_url(), '', $plugurl );
 								$path = realpath( WP_CONTENT_DIR . $path . '/langs/' );
@@ -563,7 +563,7 @@ final class _WP_Editors {
 					$settings['external_plugins'] = wp_json_encode( $mce_external_plugins );
 				}
 
-				/** This filter is documented in wp-admin/includes/media.php */
+				/** Bộ lọc này được ghi tài liệu trong wp-admin/includes/media.php */
 				if ( apply_filters( 'disable_captions', '' ) ) {
 					$settings['wpeditimage_disable_captions'] = true;
 				}
@@ -571,15 +571,15 @@ final class _WP_Editors {
 				$mce_css = $settings['content_css'];
 
 				/*
-				 * The `editor-style.css` added by the theme is generally intended for the editor instance on the Edit Post screen.
-				 * Plugins that use wp_editor() on the front-end can decide whether to add the theme stylesheet
-				 * by using `get_editor_stylesheets()` and the `mce_css` or `tiny_mce_before_init` filters, see below.
+				 * `editor-style.css` được thêm bởi theme thường dành cho phiên bản trình soạn thảo trên màn hình Chỉnh sửa Bài viết.
+				 * Các plugin sử dụng wp_editor() ở front-end có thể quyết định có thêm stylesheet của theme hay không
+				 * bằng cách sử dụng `get_editor_stylesheets()` và các bộ lọc `mce_css` hoặc `tiny_mce_before_init`, xem bên dưới.
 				 */
 				if ( is_admin() ) {
 					$editor_styles = get_editor_stylesheets();
 
 					if ( ! empty( $editor_styles ) ) {
-						// Force urlencoding of commas.
+						// Bắt buộc mã hóa URL cho dấu phẩy.
 						foreach ( $editor_styles as $key => $url ) {
 							if ( str_contains( $url, ',' ) ) {
 								$editor_styles[ $key ] = str_replace( ',', '%2C', $url );
@@ -591,11 +591,11 @@ final class _WP_Editors {
 				}
 
 				/**
-				 * Filters the comma-delimited list of stylesheets to load in TinyMCE.
+				 * Lọc danh sách các stylesheet được phân cách bằng dấu phẩy để tải trong TinyMCE.
 				 *
 				 * @since 2.1.0
 				 *
-				 * @param string $stylesheets Comma-delimited list of stylesheets.
+				 * @param string $stylesheets Danh sách các stylesheet phân cách bằng dấu phẩy.
 				 */
 				$mce_css = trim( apply_filters( 'mce_css', $mce_css ), ' ,' );
 
@@ -627,13 +627,13 @@ final class _WP_Editors {
 				);
 
 				/**
-				 * Filters the list of teenyMCE buttons (Code tab).
+				 * Lọc danh sách các nút teenyMCE (tab Code).
 				 *
 				 * @since 2.7.0
-				 * @since 3.3.0 The `$editor_id` parameter was added.
+				 * @since 3.3.0 Tham số `$editor_id` đã được thêm.
 				 *
-				 * @param array  $mce_buttons An array of teenyMCE buttons.
-				 * @param string $editor_id   Unique editor identifier, e.g. 'content'.
+				 * @param array  $mce_buttons Mảng các nút teenyMCE.
+				 * @param string $editor_id   Mã định danh trình soạn thảo duy nhất, ví dụ 'content'.
 				 */
 				$mce_buttons   = apply_filters( 'teeny_mce_buttons', $mce_buttons, $editor_id );
 				$mce_buttons_2 = array();
@@ -668,14 +668,14 @@ final class _WP_Editors {
 				}
 
 				/**
-				 * Filters the first-row list of TinyMCE buttons (Visual tab).
+				 * Lọc danh sách nút TinyMCE hàng đầu tiên (tab Trực quan).
 				 *
 				 * @since 2.0.0
-				 * @since 3.3.0 The `$editor_id` parameter was added.
+				 * @since 3.3.0 Tham số `$editor_id` đã được thêm.
 				 *
-				 * @param array  $mce_buttons First-row list of buttons.
-				 * @param string $editor_id   Unique editor identifier, e.g. 'content'. Accepts 'classic-block'
-				 *                            when called from block editor's Classic block.
+				 * @param array  $mce_buttons Danh sách nút hàng đầu tiên.
+				 * @param string $editor_id   Mã định danh trình soạn thảo duy nhất, ví dụ 'content'. Chấp nhận 'classic-block'
+				 *                            khi được gọi từ khối Classic của trình soạn thảo khối.
 				 */
 				$mce_buttons = apply_filters( 'mce_buttons', $mce_buttons, $editor_id );
 
@@ -697,38 +697,38 @@ final class _WP_Editors {
 				}
 
 				/**
-				 * Filters the second-row list of TinyMCE buttons (Visual tab).
+				 * Lọc danh sách nút TinyMCE hàng thứ hai (tab Trực quan).
 				 *
 				 * @since 2.0.0
-				 * @since 3.3.0 The `$editor_id` parameter was added.
+				 * @since 3.3.0 Tham số `$editor_id` đã được thêm.
 				 *
-				 * @param array  $mce_buttons_2 Second-row list of buttons.
-				 * @param string $editor_id     Unique editor identifier, e.g. 'content'. Accepts 'classic-block'
-				 *                              when called from block editor's Classic block.
+				 * @param array  $mce_buttons_2 Danh sách nút hàng thứ hai.
+				 * @param string $editor_id     Mã định danh trình soạn thảo duy nhất, ví dụ 'content'. Chấp nhận 'classic-block'
+				 *                              khi được gọi từ khối Classic của trình soạn thảo khối.
 				 */
 				$mce_buttons_2 = apply_filters( 'mce_buttons_2', $mce_buttons_2, $editor_id );
 
 				/**
-				 * Filters the third-row list of TinyMCE buttons (Visual tab).
+				 * Lọc danh sách nút TinyMCE hàng thứ ba (tab Trực quan).
 				 *
 				 * @since 2.0.0
-				 * @since 3.3.0 The `$editor_id` parameter was added.
+				 * @since 3.3.0 Tham số `$editor_id` đã được thêm.
 				 *
-				 * @param array  $mce_buttons_3 Third-row list of buttons.
-				 * @param string $editor_id     Unique editor identifier, e.g. 'content'. Accepts 'classic-block'
-				 *                              when called from block editor's Classic block.
+				 * @param array  $mce_buttons_3 Danh sách nút hàng thứ ba.
+				 * @param string $editor_id     Mã định danh trình soạn thảo duy nhất, ví dụ 'content'. Chấp nhận 'classic-block'
+				 *                              khi được gọi từ khối Classic của trình soạn thảo khối.
 				 */
 				$mce_buttons_3 = apply_filters( 'mce_buttons_3', array(), $editor_id );
 
 				/**
-				 * Filters the fourth-row list of TinyMCE buttons (Visual tab).
+				 * Lọc danh sách nút TinyMCE hàng thứ tư (tab Trực quan).
 				 *
 				 * @since 2.5.0
-				 * @since 3.3.0 The `$editor_id` parameter was added.
+				 * @since 3.3.0 Tham số `$editor_id` đã được thêm.
 				 *
-				 * @param array  $mce_buttons_4 Fourth-row list of buttons.
-				 * @param string $editor_id     Unique editor identifier, e.g. 'content'. Accepts 'classic-block'
-				 *                              when called from block editor's Classic block.
+				 * @param array  $mce_buttons_4 Danh sách nút hàng thứ tư.
+				 * @param string $editor_id     Mã định danh trình soạn thảo duy nhất, ví dụ 'content'. Chấp nhận 'classic-block'
+				 *                              khi được gọi từ khối Classic của trình soạn thảo khối.
 				 */
 				$mce_buttons_4 = apply_filters( 'mce_buttons_4', array(), $editor_id );
 			}
@@ -775,7 +775,7 @@ final class _WP_Editors {
 				'body_class'        => $body_class,
 			);
 
-			// Merge with the first part of the init array.
+			// Gộp với phần đầu tiên của mảng khởi tạo.
 			$mce_init = array_merge( self::$first_init, $mce_init );
 
 			if ( is_array( $set['tinymce'] ) ) {
@@ -783,36 +783,36 @@ final class _WP_Editors {
 			}
 
 			/*
-			 * For people who really REALLY know what they're doing with TinyMCE
-			 * You can modify $mceInit to add, remove, change elements of the config
-			 * before tinyMCE.init. Setting "valid_elements", "invalid_elements"
-			 * and "extended_valid_elements" can be done through this filter. Best
-			 * is to use the default cleanup by not specifying valid_elements,
-			 * as TinyMCE checks against the full set of HTML 5.0 elements and attributes.
+			 * Dành cho những người THỰC SỰ biết họ đang làm gì với TinyMCE.
+			 * Bạn có thể chỉnh sửa $mceInit để thêm, xóa, thay đổi các phần tử của cấu hình
+			 * trước khi tinyMCE.init. Thiết lập "valid_elements", "invalid_elements"
+			 * và "extended_valid_elements" có thể được thực hiện thông qua bộ lọc này. Tốt nhất
+			 * là sử dụng dọn dẹp mặc định bằng cách không chỉ định valid_elements,
+			 * vì TinyMCE kiểm tra với toàn bộ tập hợp các phần tử và thuộc tính HTML 5.0.
 			 */
 			if ( $set['teeny'] ) {
 
 				/**
-				 * Filters the teenyMCE config before init.
+				 * Lọc cấu hình teenyMCE trước khi khởi tạo.
 				 *
 				 * @since 2.7.0
-				 * @since 3.3.0 The `$editor_id` parameter was added.
+				 * @since 3.3.0 Tham số `$editor_id` đã được thêm.
 				 *
-				 * @param array  $mce_init  An array with teenyMCE config.
-				 * @param string $editor_id Unique editor identifier, e.g. 'content'.
+				 * @param array  $mce_init  Mảng cấu hình teenyMCE.
+				 * @param string $editor_id Mã định danh trình soạn thảo duy nhất, ví dụ 'content'.
 				 */
 				$mce_init = apply_filters( 'teeny_mce_before_init', $mce_init, $editor_id );
 			} else {
 
 				/**
-				 * Filters the TinyMCE config before init.
+				 * Lọc cấu hình TinyMCE trước khi khởi tạo.
 				 *
 				 * @since 2.5.0
-				 * @since 3.3.0 The `$editor_id` parameter was added.
+				 * @since 3.3.0 Tham số `$editor_id` đã được thêm.
 				 *
-				 * @param array  $mce_init  An array with TinyMCE config.
-				 * @param string $editor_id Unique editor identifier, e.g. 'content'. Accepts 'classic-block'
-				 *                          when called from block editor's Classic block.
+				 * @param array  $mce_init  Mảng cấu hình TinyMCE.
+				 * @param string $editor_id Mã định danh trình soạn thảo duy nhất, ví dụ 'content'. Chấp nhận 'classic-block'
+				 *                          khi được gọi từ khối Classic của trình soạn thảo khối.
 				 */
 				$mce_init = apply_filters( 'tiny_mce_before_init', $mce_init, $editor_id );
 			}
@@ -823,14 +823,14 @@ final class _WP_Editors {
 			}
 
 			self::$mce_settings[ $editor_id ] = $mce_init;
-		} // End if self::$this_tinymce.
+		} // Kết thúc if self::$this_tinymce.
 	}
 
 	/**
 	 * @since 3.3.0
 	 *
-	 * @param array $init
-	 * @return string
+	 * @param array $init Mảng cấu hình cần phân tích.
+	 * @return string Chuỗi cấu hình đã phân tích.
 	 */
 	private static function _parse_init( $init ) {
 		$options = '';
@@ -857,7 +857,7 @@ final class _WP_Editors {
 	/**
 	 * @since 3.3.0
 	 *
-	 * @param bool $default_scripts Optional. Whether default scripts should be enqueued. Default false.
+	 * @param bool $default_scripts Tùy chọn. Có nên nạp các script mặc định hay không. Mặc định false.
 	 */
 	public static function enqueue_scripts( $default_scripts = false ) {
 		if ( $default_scripts || self::$has_tinymce ) {
@@ -883,12 +883,12 @@ final class _WP_Editors {
 		}
 
 		/**
-		 * Fires when scripts and styles are enqueued for the editor.
+		 * Kích hoạt khi các script và style được nạp cho trình soạn thảo.
 		 *
 		 * @since 3.9.0
 		 *
-		 * @param array $to_load An array containing boolean values whether TinyMCE
-		 *                       and Quicktags are being loaded.
+		 * @param array $to_load Mảng chứa các giá trị boolean cho biết TinyMCE
+		 *                       và Quicktags có đang được tải hay không.
 		 */
 		do_action(
 			'wp_enqueue_editor',
@@ -900,20 +900,20 @@ final class _WP_Editors {
 	}
 
 	/**
-	 * Enqueue all editor scripts.
-	 * For use when the editor is going to be initialized after page load.
+	 * Nạp tất cả các script trình soạn thảo.
+	 * Dùng khi trình soạn thảo sẽ được khởi tạo sau khi trang đã tải.
 	 *
 	 * @since 4.8.0
 	 */
 	public static function enqueue_default_editor() {
-		// We are past the point where scripts can be enqueued properly.
+		// Chúng ta đã qua thời điểm mà các script có thể được nạp đúng cách.
 		if ( did_action( 'wp_enqueue_editor' ) ) {
 			return;
 		}
 
 		self::enqueue_scripts( true );
 
-		// Also add wp-includes/css/editor.css.
+		// Cũng thêm wp-includes/css/editor.css.
 		wp_enqueue_style( 'editor-buttons' );
 
 		if ( is_admin() ) {
@@ -926,8 +926,8 @@ final class _WP_Editors {
 	}
 
 	/**
-	 * Print (output) all editor scripts and default settings.
-	 * For use when the editor is going to be initialized after page load.
+	 * In (xuất) tất cả các script trình soạn thảo và cài đặt mặc định.
+	 * Dùng khi trình soạn thảo sẽ được khởi tạo sau khi trang đã tải.
 	 *
 	 * @since 4.8.0
 	 */
@@ -947,9 +947,9 @@ final class _WP_Editors {
 			}
 
 			/*
-			 * In production all plugins are loaded (they are in wp-editor.js.gz).
-			 * The 'wpview', 'wpdialogs', and 'media' TinyMCE plugins are not initialized by default.
-			 * Can be added from js by using the 'wp-before-tinymce-init' event.
+			 * Trong môi trường sản xuất, tất cả các plugin được tải (chúng nằm trong wp-editor.js.gz).
+			 * Các plugin TinyMCE 'wpview', 'wpdialogs', và 'media' không được khởi tạo mặc định.
+			 * Có thể được thêm từ js bằng cách sử dụng sự kiện 'wp-before-tinymce-init'.
 			 */
 			$settings['plugins'] = implode(
 				',',
@@ -1015,8 +1015,8 @@ final class _WP_Editors {
 		}
 
 		/**
-		 * Fires when the editor scripts are loaded for later initialization,
-		 * after all scripts and settings are printed.
+		 * Kích hoạt khi các script trình soạn thảo được tải để khởi tạo sau,
+		 * sau khi tất cả các script và cài đặt đã được in.
 		 *
 		 * @since 4.8.0
 		 */
@@ -1026,11 +1026,11 @@ final class _WP_Editors {
 	}
 
 	/**
-	 * Returns the TinyMCE locale.
+	 * Trả về locale của TinyMCE.
 	 *
 	 * @since 4.8.0
 	 *
-	 * @return string
+	 * @return string Mã locale.
 	 */
 	public static function get_mce_locale() {
 		if ( empty( self::$mce_locale ) ) {
@@ -1042,11 +1042,11 @@ final class _WP_Editors {
 	}
 
 	/**
-	 * Returns the TinyMCE base URL.
+	 * Trả về URL gốc của TinyMCE.
 	 *
 	 * @since 4.8.0
 	 *
-	 * @return string
+	 * @return string URL gốc.
 	 */
 	public static function get_baseurl() {
 		if ( empty( self::$baseurl ) ) {
@@ -1057,14 +1057,14 @@ final class _WP_Editors {
 	}
 
 	/**
-	 * Returns the default TinyMCE settings.
-	 * Doesn't include plugins, buttons, editor selector.
+	 * Trả về các cài đặt TinyMCE mặc định.
+	 * Không bao gồm plugin, nút, bộ chọn trình soạn thảo.
 	 *
 	 * @since 4.8.0
 	 *
 	 * @global string $tinymce_version
 	 *
-	 * @return array
+	 * @return array Mảng cài đặt mặc định.
 	 */
 	private static function default_settings() {
 		global $tinymce_version;
@@ -1109,7 +1109,7 @@ final class _WP_Editors {
 			'menubar'                      => false,
 			'branding'                     => false,
 
-			// Limit the preview styles in the menu/toolbar.
+			// Giới hạn các style xem trước trong menu/thanh công cụ.
 			'preview_styles'               => 'font-family font-size font-weight font-style text-decoration text-transform',
 
 			'end_container_on_empty_block' => true,
@@ -1121,7 +1121,7 @@ final class _WP_Editors {
 		$suffix  = SCRIPT_DEBUG ? '' : '.min';
 		$version = 'ver=' . get_bloginfo( 'version' );
 
-		// Default stylesheets.
+		// Các stylesheet mặc định.
 		$settings['content_css'] = includes_url( "css/dashicons$suffix.css?$version" ) . ',' .
 			includes_url( "js/tinymce/skins/wordpress/wp-content.css?$version" );
 
@@ -1131,12 +1131,12 @@ final class _WP_Editors {
 	/**
 	 * @since 4.7.0
 	 *
-	 * @return array
+	 * @return array Mảng bản dịch.
 	 */
 	private static function get_translation() {
 		if ( empty( self::$translation ) ) {
 			self::$translation = array(
-				// Default TinyMCE strings.
+				// Các chuỗi TinyMCE mặc định.
 				'New document'                         => __( 'New document' ),
 				'Formats'                              => _x( 'Formats', 'TinyMCE' ),
 
@@ -1201,7 +1201,7 @@ final class _WP_Editors {
 				'Upper Roman'                          => _x( 'Upper Roman', 'list style' ),
 				'Lower Roman'                          => _x( 'Lower Roman', 'list style' ),
 
-				// Anchor plugin.
+				// Plugin Anchor (neo).
 				'Name'                                 => _x( 'Name', 'Name of link anchor (TinyMCE)' ),
 				'Anchor'                               => _x( 'Anchor', 'Link anchor (TinyMCE)' ),
 				'Anchors'                              => _x( 'Anchors', 'Link anchors (TinyMCE)' ),
@@ -1209,7 +1209,7 @@ final class _WP_Editors {
 					__( 'Id should start with a letter, followed only by letters, numbers, dashes, dots, colons or underscores.' ),
 				'Id'                                   => _x( 'Id', 'Id for link anchor (TinyMCE)' ),
 
-				// Fullpage plugin.
+				// Plugin Fullpage (toàn trang).
 				'Document properties'                  => __( 'Document properties' ),
 				'Robots'                               => __( 'Robots' ),
 				'Title'                                => __( 'Title' ),
@@ -1218,7 +1218,7 @@ final class _WP_Editors {
 				'Description'                          => __( 'Description' ),
 				'Author'                               => __( 'Author' ),
 
-				// Media, image plugins.
+				// Các plugin Media, hình ảnh.
 				'Image'                                => __( 'Image' ),
 				'Insert/edit image'                    => array( __( 'Insert/edit image' ), 'accessM' ),
 				'General'                              => __( 'General' ),
@@ -1244,7 +1244,7 @@ final class _WP_Editors {
 				'Insert video'                         => __( 'Insert video' ),
 				'Embed'                                => __( 'Embed' ),
 
-				// Each of these have a corresponding plugin.
+				// Mỗi cái dưới đây có một plugin tương ứng.
 				'Special character'                    => __( 'Special character' ),
 				'Right to left'                        => _x( 'Right to left', 'editor button' ),
 				'Left to right'                        => _x( 'Left to right', 'editor button' ),
@@ -1262,7 +1262,7 @@ final class _WP_Editors {
 				'Insert/edit link'                     => array( __( 'Insert/edit link' ), 'metaK' ),
 				'Remove link'                          => array( __( 'Remove link' ), 'accessS' ),
 
-				// Link plugin.
+				// Plugin Link (liên kết).
 				'Link'                                 => __( 'Link' ),
 				'Insert link'                          => __( 'Insert link' ),
 				'Target'                               => __( 'Target' ),
@@ -1282,7 +1282,7 @@ final class _WP_Editors {
 				'G'                                    => _x( 'G', 'Short for green in RGB' ),
 				'B'                                    => _x( 'B', 'Short for blue in RGB' ),
 
-				// Spelling, search/replace plugins.
+				// Các plugin kiểm tra chính tả, tìm kiếm/thay thế.
 				'Could not find the specified string.' => __( 'Could not find the specified string.' ),
 				'Replace'                              => _x( 'Replace', 'find/replace' ),
 				'Next'                                 => _x( 'Next', 'find/replace' ),
@@ -1300,7 +1300,7 @@ final class _WP_Editors {
 				'Ignore'                               => _x( 'Ignore', 'spellcheck' ),
 				'Add to Dictionary'                    => __( 'Add to Dictionary' ),
 
-				// TinyMCE tables.
+				// Bảng TinyMCE.
 				'Insert table'                         => __( 'Insert table' ),
 				'Delete table'                         => __( 'Delete table' ),
 				'Table properties'                     => __( 'Table properties' ),
@@ -1374,7 +1374,7 @@ final class _WP_Editors {
 				'Your browser doesn\'t support direct access to the clipboard. Please use the Ctrl+X/C/V keyboard shortcuts instead.' =>
 					__( 'Your browser does not support direct access to the clipboard. Please use keyboard shortcuts or your browser&#8217;s edit menu instead.' ),
 
-				// TinyMCE menus.
+				// Menu TinyMCE.
 				'Insert'                               => _x( 'Insert', 'TinyMCE menu' ),
 				'File'                                 => _x( 'File', 'TinyMCE menu' ),
 				'Edit'                                 => _x( 'Edit', 'TinyMCE menu' ),
@@ -1383,17 +1383,17 @@ final class _WP_Editors {
 				'Table'                                => _x( 'Table', 'TinyMCE menu' ),
 				'Format'                               => _x( 'Format', 'TinyMCE menu' ),
 
-				// WordPress strings.
+				// Các chuỗi WordPress.
 				'Toolbar Toggle'                       => array( __( 'Toolbar Toggle' ), 'accessZ' ),
 				'Insert Read More tag'                 => array( __( 'Insert Read More tag' ), 'accessT' ),
 				'Insert Page Break tag'                => array( __( 'Insert Page Break tag' ), 'accessP' ),
-				'Read more...'                         => __( 'Read more...' ), // Title on the placeholder inside the editor (no ellipsis).
+				'Read more...'                         => __( 'Read more...' ), // Tiêu đề trên placeholder bên trong trình soạn thảo (không có dấu ba chấm).
 				'Distraction-free writing mode'        => array( __( 'Distraction-free writing mode' ), 'accessW' ),
-				'No alignment'                         => __( 'No alignment' ), // Tooltip for the 'alignnone' button in the image toolbar.
-				'Remove'                               => __( 'Remove' ),       // Tooltip for the 'remove' button in the image toolbar.
-				'Edit|button'                          => __( 'Edit' ),         // Tooltip for the 'edit' button in the image toolbar.
-				'Paste URL or type to search'          => __( 'Paste URL or type to search' ), // Placeholder for the inline link dialog.
-				'Apply'                                => __( 'Apply' ),        // Tooltip for the 'apply' button in the inline link dialog.
+				'No alignment'                         => __( 'No alignment' ), // Tooltip cho nút 'alignnone' trong thanh công cụ hình ảnh.
+				'Remove'                               => __( 'Remove' ),       // Tooltip cho nút 'remove' trong thanh công cụ hình ảnh.
+				'Edit|button'                          => __( 'Edit' ),         // Tooltip cho nút 'edit' trong thanh công cụ hình ảnh.
+				'Paste URL or type to search'          => __( 'Paste URL or type to search' ), // Placeholder cho hộp thoại liên kết nội tuyến.
+				'Apply'                                => __( 'Apply' ),        // Tooltip cho nút 'apply' trong hộp thoại liên kết nội tuyến.
 				'Link options'                         => __( 'Link options' ), // Tooltip for the 'link options' button in the inline link dialog.
 				'Visual'                               => _x( 'Visual', 'Name for the Visual editor tab' ),             // Editor switch tab label.
 				'Code|tab'                             => _x( 'Code', 'Name for the Code editor tab (formerly Text)' ), // Editor switch tab label.

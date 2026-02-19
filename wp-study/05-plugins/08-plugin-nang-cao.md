@@ -1,25 +1,25 @@
-# Plugin Nang cao
+# Plugin Nâng cao
 
-## Muc luc
+## Mục lục
 
-1. [Custom Post Types va Taxonomies](#1-custom-post-types-va-taxonomies)
+1. [Custom Post Types và Taxonomies](#1-custom-post-types-va-taxonomies)
 2. [Meta Boxes](#2-meta-boxes)
 3. [Custom Admin Columns](#3-custom-admin-columns)
 4. [Cron Jobs](#4-cron-jobs)
-5. [Email: wp_mail va Custom Templates](#5-email-wp_mail-va-custom-templates)
+5. [Email: wp_mail và Custom Templates](#5-email-wp_mail-va-custom-templates)
 6. [Export/Import Functionality](#6-exportimport-functionality)
 7. [Plugin Updates (Custom Update Checker)](#7-plugin-updates-custom-update-checker)
 8. [Multisite Compatibility](#8-multisite-compatibility)
 9. [Internationalization (i18n)](#9-internationalization-i18n)
 10. [Unit Testing (PHPUnit)](#10-unit-testing-phpunit)
-11. [Packaging va Distribution](#11-packaging-va-distribution)
+11. [Packaging và Distribution](#11-packaging-va-distribution)
 12. [Best Practices](#12-best-practices)
 
 ---
 
-## 1. Custom Post Types va Taxonomies
+## 1. Custom Post Types và Taxonomies
 
-### Tao Custom Post Type (CPT) trong Plugin
+### Tạo Custom Post Type (CPT) trong Plugin
 
 ```php
 <?php
@@ -33,120 +33,120 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Custom Post Type = Loai noi dung tuy chinh.
- * WordPress co san: post, page, attachment, revision, nav_menu_item
- * Plugin tao them: product, event, portfolio, testimonial, v.v.
+ * Custom Post Type = Loại nội dung tùy chỉnh.
+ * WordPress có sẵn: post, page, attachment, revision, nav_menu_item
+ * Plugin tạo thêm: product, event, portfolio, testimonial, v.v.
  *
- * So sanh voi Laravel:
+ * So sánh với Laravel:
  * Laravel: php artisan make:model Product -mcr (Model + Migration + Controller + Resource)
- * WordPress: register_post_type() (tao ca "model" + "admin UI" + "routing")
+ * WordPress: register_post_type() (tạo cả "model" + "admin UI" + "routing")
  */
 
 add_action( 'init', 'af_register_post_types' );
 
 function af_register_post_types() {
     /**
-     * register_post_type() - Dang ky Custom Post Type
+     * register_post_type() - Đăng ký Custom Post Type
      *
-     * @param string $post_type  Slug cua post type (toi da 20 ky tu, khong co dau cach)
-     * @param array  $args       Cac tuy chon
+     * @param string $post_type  Slug của post type (tối đa 20 ký tự, không có dấu cách)
+     * @param array  $args       Các tùy chọn
      */
     register_post_type( 'product', array(
-        // Labels: Ten hien thi o cac noi trong admin
+        // Labels: Tên hiển thị ở các nơi trong admin
         'labels' => array(
-            'name'                  => 'San pham',
-            'singular_name'        => 'San pham',
-            'add_new'              => 'Them moi',
-            'add_new_item'         => 'Them san pham moi',
-            'edit_item'            => 'Sua san pham',
-            'new_item'             => 'San pham moi',
-            'view_item'            => 'Xem san pham',
-            'search_items'         => 'Tim san pham',
-            'not_found'            => 'Khong tim thay san pham',
-            'not_found_in_trash'   => 'Khong co san pham trong thung rac',
-            'all_items'            => 'Tat ca san pham',
-            'menu_name'            => 'San pham',
+            'name'                  => 'Sản phẩm',
+            'singular_name'        => 'Sản phẩm',
+            'add_new'              => 'Thêm mới',
+            'add_new_item'         => 'Thêm sản phẩm mới',
+            'edit_item'            => 'Sửa sản phẩm',
+            'new_item'             => 'Sản phẩm mới',
+            'view_item'            => 'Xem sản phẩm',
+            'search_items'         => 'Tìm sản phẩm',
+            'not_found'            => 'Không tìm thấy sản phẩm',
+            'not_found_in_trash'   => 'Không có sản phẩm trong thùng rác',
+            'all_items'            => 'Tất cả sản phẩm',
+            'menu_name'            => 'Sản phẩm',
         ),
 
-        // Cai dat chung
-        'public'             => true,       // Hien thi cho public
-        'publicly_queryable' => true,       // Co the query tu frontend
-        'show_ui'            => true,       // Hien thi UI trong admin
-        'show_in_menu'       => true,       // Hien thi trong admin menu
-        'show_in_rest'       => true,       // Ho tro REST API + Gutenberg
-        'show_in_nav_menus'  => true,       // Cho phep them vao menu
-        'menu_position'      => 5,          // Vi tri menu (sau Posts)
+        // Cài đặt chung
+        'public'             => true,       // Hiển thị cho public
+        'publicly_queryable' => true,       // Có thể query từ frontend
+        'show_ui'            => true,       // Hiển thị UI trong admin
+        'show_in_menu'       => true,       // Hiển thị trong admin menu
+        'show_in_rest'       => true,       // Hỗ trợ REST API + Gutenberg
+        'show_in_nav_menus'  => true,       // Cho phép thêm vào menu
+        'menu_position'      => 5,          // Vị trí menu (sau Posts)
         'menu_icon'          => 'dashicons-cart', // Icon
 
-        // Tinh nang
+        // Tính năng
         'supports'           => array(
-            'title',           // Tieu de
-            'editor',          // Noi dung (Gutenberg)
+            'title',           // Tiêu đề
+            'editor',          // Nội dung (Gutenberg)
             'thumbnail',       // Featured image
-            'excerpt',         // Tom tat
+            'excerpt',         // Tóm tắt
             'custom-fields',   // Custom fields
-            'revisions',       // Lich su chinh sua
-            'author',          // Tac gia
-            'page-attributes', // Thu tu (menu_order)
-            'comments',        // Binh luan
+            'revisions',       // Lịch sử chỉnh sửa
+            'author',          // Tác giả
+            'page-attributes', // Thứ tự (menu_order)
+            'comments',        // Bình luận
         ),
 
         // URL
-        'has_archive'        => true,       // Co trang archive (/products/)
+        'has_archive'        => true,       // Có trang archive (/products/)
         'rewrite'            => array(
             'slug'       => 'san-pham',     // URL slug (/san-pham/ten-sp/)
-            'with_front' => false,          // Khong them prefix blog
+            'with_front' => false,          // Không thêm prefix blog
         ),
 
-        // Quyen
-        'capability_type'    => 'post',     // Dung quyen giong post
-        // Hoac tuy chinh:
+        // Quyền
+        'capability_type'    => 'post',     // Dùng quyền giống post
+        // Hoặc tùy chỉnh:
         // 'capability_type'    => 'product',
         // 'map_meta_cap'       => true,
 
-        // Khac
-        'hierarchical'       => false,      // false = giong post, true = giong page (co parent)
+        // Khác
+        'hierarchical'       => false,      // false = giống post, true = giống page (có parent)
         'query_var'          => true,
         'can_export'         => true,
     ));
 
-    // === DANG KY TAXONOMY (Phan loai) ===
+    // === ĐĂNG KÝ TAXONOMY (Phân loại) ===
 
     /**
-     * register_taxonomy() - Dang ky Taxonomy tuy chinh
+     * register_taxonomy() - Đăng ký Taxonomy tùy chỉnh
      *
-     * Taxonomy giong Category/Tag nhung cho Custom Post Type.
+     * Taxonomy giống Category/Tag nhưng cho Custom Post Type.
      *
-     * So sanh voi Laravel:
+     * So sánh với Laravel:
      * Laravel: Relationship (belongsToMany) + Pivot table
      * WordPress: register_taxonomy() + wp_term_* tables
      */
 
-    // Taxonomy dang Category (hierarchical = true => co parent/child)
+    // Taxonomy dạng Category (hierarchical = true => có parent/child)
     register_taxonomy( 'product_cat', 'product', array(
         'labels' => array(
-            'name'          => 'Danh muc san pham',
-            'singular_name' => 'Danh muc',
-            'add_new_item'  => 'Them danh muc moi',
-            'edit_item'     => 'Sua danh muc',
-            'all_items'     => 'Tat ca danh muc',
-            'search_items'  => 'Tim danh muc',
+            'name'          => 'Danh mục sản phẩm',
+            'singular_name' => 'Danh mục',
+            'add_new_item'  => 'Thêm danh mục mới',
+            'edit_item'     => 'Sửa danh mục',
+            'all_items'     => 'Tất cả danh mục',
+            'search_items'  => 'Tìm danh mục',
         ),
-        'hierarchical'      => true,    // Co cap bac (giong Category)
+        'hierarchical'      => true,    // Có cấp bậc (giống Category)
         'show_ui'           => true,
         'show_in_rest'      => true,    // Gutenberg support
-        'show_admin_column' => true,    // Hien thi cot trong admin list
+        'show_admin_column' => true,    // Hiển thị cột trong admin list
         'rewrite'           => array( 'slug' => 'danh-muc-sp' ),
     ));
 
-    // Taxonomy dang Tag (hierarchical = false => phang)
+    // Taxonomy dạng Tag (hierarchical = false => phẳng)
     register_taxonomy( 'product_tag', 'product', array(
         'labels' => array(
-            'name'          => 'The san pham',
-            'singular_name' => 'The',
-            'add_new_item'  => 'Them the moi',
+            'name'          => 'Thẻ sản phẩm',
+            'singular_name' => 'Thẻ',
+            'add_new_item'  => 'Thêm thẻ mới',
         ),
-        'hierarchical'      => false,   // Khong co cap bac (giong Tag)
+        'hierarchical'      => false,   // Không có cấp bậc (giống Tag)
         'show_ui'           => true,
         'show_in_rest'      => true,
         'show_admin_column' => true,

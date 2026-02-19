@@ -1,36 +1,36 @@
 <?php
 /**
- * Theme, template, and stylesheet functions.
+ * Các hàm liên quan đến theme, template và stylesheet.
  *
  * @package WordPress
  * @subpackage Theme
  */
 
 /**
- * Returns an array of WP_Theme objects based on the arguments.
+ * Trả về mảng các đối tượng WP_Theme dựa trên các tham số.
  *
- * Despite advances over get_themes(), this function is quite expensive, and grows
- * linearly with additional themes. Stick to wp_get_theme() if possible.
+ * Mặc dù cải tiến hơn get_themes(), hàm này khá tốn tài nguyên và tăng
+ * tuyến tính với số lượng theme. Hãy dùng wp_get_theme() nếu có thể.
  *
  * @since 3.4.0
  *
  * @global string[] $wp_theme_directories
  *
  * @param array $args {
- *     Optional. The search arguments.
+ *     Tùy chọn. Các tham số tìm kiếm.
  *
- *     @type mixed $errors  True to return themes with errors, false to return
- *                          themes without errors, null to return all themes.
- *                          Default false.
- *     @type mixed $allowed (Multisite) True to return only allowed themes for a site.
- *                          False to return only disallowed themes for a site.
- *                          'site' to return only site-allowed themes.
- *                          'network' to return only network-allowed themes.
- *                          Null to return all themes. Default null.
- *     @type int   $blog_id (Multisite) The blog ID used to calculate which themes
- *                          are allowed. Default 0, synonymous for the current blog.
+ *     @type mixed $errors  True để trả về theme có lỗi, false để trả về
+ *                          theme không có lỗi, null để trả về tất cả theme.
+ *                          Mặc định false.
+ *     @type mixed $allowed (Multisite) True để chỉ trả về theme được phép cho site.
+ *                          False để chỉ trả về theme không được phép cho site.
+ *                          'site' để chỉ trả về theme được phép ở cấp site.
+ *                          'network' để chỉ trả về theme được phép ở cấp mạng.
+ *                          Null để trả về tất cả theme. Mặc định null.
+ *     @type int   $blog_id (Multisite) ID blog dùng để tính toán theme nào
+ *                          được phép. Mặc định 0, đồng nghĩa với blog hiện tại.
  * }
- * @return WP_Theme[] Array of WP_Theme objects.
+ * @return WP_Theme[] Mảng các đối tượng WP_Theme.
  */
 function wp_get_themes( $args = array() ) {
 	global $wp_theme_directories;
@@ -46,8 +46,8 @@ function wp_get_themes( $args = array() ) {
 
 	if ( is_array( $wp_theme_directories ) && count( $wp_theme_directories ) > 1 ) {
 		/*
-		 * Make sure the active theme wins out, in case search_theme_directories() picks the wrong
-		 * one in the case of a conflict. (Normally, last registered theme root wins.)
+		 * Đảm bảo theme đang hoạt động được ưu tiên, phòng trường hợp search_theme_directories() chọn sai
+		 * khi có xung đột. (Thông thường, thư mục gốc theme đăng ký cuối cùng sẽ thắng.)
 		 */
 		$current_theme = get_stylesheet();
 		if ( isset( $theme_directories[ $current_theme ] ) ) {
@@ -101,18 +101,18 @@ function wp_get_themes( $args = array() ) {
 }
 
 /**
- * Gets a WP_Theme object for a theme.
+ * Lấy đối tượng WP_Theme cho một theme.
  *
  * @since 3.4.0
  *
  * @global string[] $wp_theme_directories
  *
- * @param string $stylesheet Optional. Directory name for the theme. Defaults to active theme.
- * @param string $theme_root Optional. Absolute path of the theme root to look in.
- *                           If not specified, get_raw_theme_root() is used to calculate
- *                           the theme root for the $stylesheet provided (or active theme).
- * @return WP_Theme Theme object. Be sure to check the object's exists() method
- *                  if you need to confirm the theme's existence.
+ * @param string $stylesheet Tùy chọn. Tên thư mục của theme. Mặc định là theme đang hoạt động.
+ * @param string $theme_root Tùy chọn. Đường dẫn tuyệt đối của thư mục gốc theme để tìm kiếm.
+ *                           Nếu không chỉ định, get_raw_theme_root() được dùng để tính toán
+ *                           thư mục gốc theme cho $stylesheet được cung cấp (hoặc theme đang hoạt động).
+ * @return WP_Theme Đối tượng theme. Hãy kiểm tra phương thức exists() của đối tượng
+ *                  nếu bạn cần xác nhận sự tồn tại của theme.
  */
 function wp_get_theme( $stylesheet = '', $theme_root = '' ) {
 	global $wp_theme_directories;
@@ -134,10 +134,10 @@ function wp_get_theme( $stylesheet = '', $theme_root = '' ) {
 }
 
 /**
- * Clears the cache held by get_theme_roots() and WP_Theme.
+ * Xóa bộ nhớ đệm được giữ bởi get_theme_roots() và WP_Theme.
  *
  * @since 3.5.0
- * @param bool $clear_update_cache Whether to clear the theme updates cache.
+ * @param bool $clear_update_cache Có xóa bộ nhớ đệm cập nhật theme hay không.
  */
 function wp_clean_themes_cache( $clear_update_cache = true ) {
 	if ( $clear_update_cache ) {
@@ -150,15 +150,15 @@ function wp_clean_themes_cache( $clear_update_cache = true ) {
 }
 
 /**
- * Whether a child theme is in use.
+ * Kiểm tra xem có đang sử dụng theme con hay không.
  *
  * @since 3.0.0
- * @since 6.5.0 Makes use of global template variables.
+ * @since 6.5.0 Sử dụng các biến template toàn cục.
  *
- * @global string $wp_stylesheet_path Path to current theme's stylesheet directory.
- * @global string $wp_template_path   Path to current theme's template directory.
+ * @global string $wp_stylesheet_path Đường dẫn đến thư mục stylesheet của theme hiện tại.
+ * @global string $wp_template_path   Đường dẫn đến thư mục template của theme hiện tại.
  *
- * @return bool True if a child theme is in use, false otherwise.
+ * @return bool True nếu đang sử dụng theme con, false nếu không.
  */
 function is_child_theme() {
 	global $wp_stylesheet_path, $wp_template_path;
@@ -167,36 +167,36 @@ function is_child_theme() {
 }
 
 /**
- * Retrieves name of the current stylesheet.
+ * Lấy tên của stylesheet hiện tại.
  *
- * The theme name that is currently set as the front end theme.
+ * Tên theme hiện đang được thiết lập làm theme giao diện.
  *
- * For all intents and purposes, the template name and the stylesheet name
- * are going to be the same for most cases.
+ * Trong hầu hết các trường hợp, tên template và tên stylesheet
+ * sẽ giống nhau.
  *
  * @since 1.5.0
  *
- * @return string Stylesheet name.
+ * @return string Tên stylesheet.
  */
 function get_stylesheet() {
 	/**
-	 * Filters the name of current stylesheet.
+	 * Lọc tên của stylesheet hiện tại.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $stylesheet Name of the current stylesheet.
+	 * @param string $stylesheet Tên của stylesheet hiện tại.
 	 */
 	return apply_filters( 'stylesheet', get_option( 'stylesheet' ) );
 }
 
 /**
- * Retrieves stylesheet directory path for the active theme.
+ * Lấy đường dẫn thư mục stylesheet cho theme đang hoạt động.
  *
  * @since 1.5.0
- * @since 6.4.0 Memoizes filter execution so that it only runs once for the current theme.
- * @since 6.4.2 Memoization removed.
+ * @since 6.4.0 Ghi nhớ việc thực thi bộ lọc để chỉ chạy một lần cho theme hiện tại.
+ * @since 6.4.2 Đã gỡ bỏ tính năng ghi nhớ.
  *
- * @return string Path to active theme's stylesheet directory.
+ * @return string Đường dẫn đến thư mục stylesheet của theme đang hoạt động.
  */
 function get_stylesheet_directory() {
 	$stylesheet     = get_stylesheet();
@@ -204,23 +204,23 @@ function get_stylesheet_directory() {
 	$stylesheet_dir = "$theme_root/$stylesheet";
 
 	/**
-	 * Filters the stylesheet directory path for the active theme.
+	 * Lọc đường dẫn thư mục stylesheet cho theme đang hoạt động.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $stylesheet_dir Absolute path to the active theme.
-	 * @param string $stylesheet     Directory name of the active theme.
-	 * @param string $theme_root     Absolute path to themes directory.
+	 * @param string $stylesheet_dir Đường dẫn tuyệt đối đến theme đang hoạt động.
+	 * @param string $stylesheet     Tên thư mục của theme đang hoạt động.
+	 * @param string $theme_root     Đường dẫn tuyệt đối đến thư mục themes.
 	 */
 	return apply_filters( 'stylesheet_directory', $stylesheet_dir, $stylesheet, $theme_root );
 }
 
 /**
- * Retrieves stylesheet directory URI for the active theme.
+ * Lấy URI thư mục stylesheet cho theme đang hoạt động.
  *
  * @since 1.5.0
  *
- * @return string URI to active theme's stylesheet directory.
+ * @return string URI đến thư mục stylesheet của theme đang hoạt động.
  */
 function get_stylesheet_directory_uri() {
 	$stylesheet         = str_replace( '%2F', '/', rawurlencode( get_stylesheet() ) );
@@ -228,61 +228,61 @@ function get_stylesheet_directory_uri() {
 	$stylesheet_dir_uri = "$theme_root_uri/$stylesheet";
 
 	/**
-	 * Filters the stylesheet directory URI.
+	 * Lọc URI thư mục stylesheet.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $stylesheet_dir_uri Stylesheet directory URI.
-	 * @param string $stylesheet         Name of the activated theme's directory.
-	 * @param string $theme_root_uri     Themes root URI.
+	 * @param string $stylesheet_dir_uri URI thư mục stylesheet.
+	 * @param string $stylesheet         Tên thư mục của theme đang hoạt động.
+	 * @param string $theme_root_uri     URI gốc của themes.
 	 */
 	return apply_filters( 'stylesheet_directory_uri', $stylesheet_dir_uri, $stylesheet, $theme_root_uri );
 }
 
 /**
- * Retrieves stylesheet URI for the active theme.
+ * Lấy URI stylesheet cho theme đang hoạt động.
  *
- * The stylesheet file name is 'style.css' which is appended to the stylesheet directory URI path.
- * See get_stylesheet_directory_uri().
+ * Tên tệp stylesheet là 'style.css' được nối vào đường dẫn URI thư mục stylesheet.
+ * Xem get_stylesheet_directory_uri().
  *
  * @since 1.5.0
  *
- * @return string URI to active theme's stylesheet.
+ * @return string URI đến stylesheet của theme đang hoạt động.
  */
 function get_stylesheet_uri() {
 	$stylesheet_dir_uri = get_stylesheet_directory_uri();
 	$stylesheet_uri     = $stylesheet_dir_uri . '/style.css';
 	/**
-	 * Filters the URI of the active theme stylesheet.
+	 * Lọc URI của stylesheet theme đang hoạt động.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $stylesheet_uri     Stylesheet URI for the active theme/child theme.
-	 * @param string $stylesheet_dir_uri Stylesheet directory URI for the active theme/child theme.
+	 * @param string $stylesheet_uri     URI stylesheet cho theme/theme con đang hoạt động.
+	 * @param string $stylesheet_dir_uri URI thư mục stylesheet cho theme/theme con đang hoạt động.
 	 */
 	return apply_filters( 'stylesheet_uri', $stylesheet_uri, $stylesheet_dir_uri );
 }
 
 /**
- * Retrieves the localized stylesheet URI.
+ * Lấy URI stylesheet đã được bản địa hóa.
  *
- * The stylesheet directory for the localized stylesheet files are located, by
- * default, in the base theme directory. The name of the locale file will be the
- * locale followed by '.css'. If that does not exist, then the text direction
- * stylesheet will be checked for existence, for example 'ltr.css'.
+ * Thư mục stylesheet cho các tệp stylesheet bản địa hóa nằm ở,
+ * mặc định, trong thư mục theme gốc. Tên tệp locale sẽ là
+ * locale theo sau bởi '.css'. Nếu không tồn tại, thì stylesheet
+ * hướng văn bản sẽ được kiểm tra, ví dụ 'ltr.css'.
  *
- * The theme may change the location of the stylesheet directory by either using
- * the {@see 'stylesheet_directory_uri'} or {@see 'locale_stylesheet_uri'} filters.
+ * Theme có thể thay đổi vị trí thư mục stylesheet bằng cách sử dụng
+ * bộ lọc {@see 'stylesheet_directory_uri'} hoặc {@see 'locale_stylesheet_uri'}.
  *
- * If you want to change the location of the stylesheet files for the entire
- * WordPress workflow, then change the former. If you just have the locale in a
- * separate folder, then change the latter.
+ * Nếu bạn muốn thay đổi vị trí tệp stylesheet cho toàn bộ
+ * luồng WordPress, hãy thay đổi cái trước. Nếu bạn chỉ có locale trong
+ * thư mục riêng, hãy thay đổi cái sau.
  *
  * @since 2.1.0
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày và giờ của WordPress.
  *
- * @return string URI to active theme's localized stylesheet.
+ * @return string URI đến stylesheet bản địa hóa của theme đang hoạt động.
  */
 function get_locale_stylesheet_uri() {
 	global $wp_locale;
@@ -297,42 +297,42 @@ function get_locale_stylesheet_uri() {
 		$stylesheet_uri = '';
 	}
 	/**
-	 * Filters the localized stylesheet URI.
+	 * Lọc URI stylesheet bản địa hóa.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $stylesheet_uri     Localized stylesheet URI.
-	 * @param string $stylesheet_dir_uri Stylesheet directory URI.
+	 * @param string $stylesheet_uri     URI stylesheet bản địa hóa.
+	 * @param string $stylesheet_dir_uri URI thư mục stylesheet.
 	 */
 	return apply_filters( 'locale_stylesheet_uri', $stylesheet_uri, $stylesheet_dir_uri );
 }
 
 /**
- * Retrieves name of the active theme.
+ * Lấy tên của theme đang hoạt động.
  *
  * @since 1.5.0
  *
- * @return string Template name.
+ * @return string Tên template.
  */
 function get_template() {
 	/**
-	 * Filters the name of the active theme.
+	 * Lọc tên của theme đang hoạt động.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $template active theme's directory name.
+	 * @param string $template Tên thư mục của theme đang hoạt động.
 	 */
 	return apply_filters( 'template', get_option( 'template' ) );
 }
 
 /**
- * Retrieves template directory path for the active theme.
+ * Lấy đường dẫn thư mục template cho theme đang hoạt động.
  *
  * @since 1.5.0
- * @since 6.4.0 Memoizes filter execution so that it only runs once for the current theme.
- * @since 6.4.1 Memoization removed.
+ * @since 6.4.0 Ghi nhớ việc thực thi bộ lọc để chỉ chạy một lần cho theme hiện tại.
+ * @since 6.4.1 Đã gỡ bỏ tính năng ghi nhớ.
  *
- * @return string Path to active theme's template directory.
+ * @return string Đường dẫn đến thư mục template của theme đang hoạt động.
  */
 function get_template_directory() {
 	$template     = get_template();
@@ -340,23 +340,23 @@ function get_template_directory() {
 	$template_dir = "$theme_root/$template";
 
 	/**
-	 * Filters the active theme directory path.
+	 * Lọc đường dẫn thư mục theme đang hoạt động.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $template_dir The path of the active theme directory.
-	 * @param string $template     Directory name of the active theme.
-	 * @param string $theme_root   Absolute path to the themes directory.
+	 * @param string $template_dir Đường dẫn của thư mục theme đang hoạt động.
+	 * @param string $template     Tên thư mục của theme đang hoạt động.
+	 * @param string $theme_root   Đường dẫn tuyệt đối đến thư mục themes.
 	 */
 	return apply_filters( 'template_directory', $template_dir, $template, $theme_root );
 }
 
 /**
- * Retrieves template directory URI for the active theme.
+ * Lấy URI thư mục template cho theme đang hoạt động.
  *
  * @since 1.5.0
  *
- * @return string URI to active theme's template directory.
+ * @return string URI đến thư mục template của theme đang hoạt động.
  */
 function get_template_directory_uri() {
 	$template         = str_replace( '%2F', '/', rawurlencode( get_template() ) );
@@ -364,26 +364,26 @@ function get_template_directory_uri() {
 	$template_dir_uri = "$theme_root_uri/$template";
 
 	/**
-	 * Filters the active theme directory URI.
+	 * Lọc URI thư mục theme đang hoạt động.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $template_dir_uri The URI of the active theme directory.
-	 * @param string $template         Directory name of the active theme.
-	 * @param string $theme_root_uri   The themes root URI.
+	 * @param string $template_dir_uri URI của thư mục theme đang hoạt động.
+	 * @param string $template         Tên thư mục của theme đang hoạt động.
+	 * @param string $theme_root_uri   URI gốc của themes.
 	 */
 	return apply_filters( 'template_directory_uri', $template_dir_uri, $template, $theme_root_uri );
 }
 
 /**
- * Retrieves theme roots.
+ * Lấy các thư mục gốc theme.
  *
  * @since 2.9.0
  *
  * @global string[] $wp_theme_directories
  *
- * @return array|string An array of theme roots keyed by template/stylesheet
- *                      or a single theme root if all themes have the same root.
+ * @return array|string Mảng các thư mục gốc theme được khóa theo template/stylesheet
+ *                      hoặc một thư mục gốc theme duy nhất nếu tất cả theme cùng gốc.
  */
 function get_theme_roots() {
 	global $wp_theme_directories;
@@ -394,31 +394,31 @@ function get_theme_roots() {
 
 	$theme_roots = get_site_transient( 'theme_roots' );
 	if ( false === $theme_roots ) {
-		search_theme_directories( true ); // Regenerate the transient.
+		search_theme_directories( true ); // Tạo lại transient.
 		$theme_roots = get_site_transient( 'theme_roots' );
 	}
 	return $theme_roots;
 }
 
 /**
- * Registers a directory that contains themes.
+ * Đăng ký một thư mục chứa các theme.
  *
  * @since 2.9.0
  *
  * @global string[] $wp_theme_directories
  *
- * @param string $directory Either the full filesystem path to a theme folder
- *                          or a folder within WP_CONTENT_DIR.
- * @return bool True if successfully registered a directory that contains themes,
- *              false if the directory does not exist.
+ * @param string $directory Đường dẫn đầy đủ đến thư mục theme
+ *                          hoặc một thư mục trong WP_CONTENT_DIR.
+ * @return bool True nếu đăng ký thành công thư mục chứa theme,
+ *              false nếu thư mục không tồn tại.
  */
 function register_theme_directory( $directory ) {
 	global $wp_theme_directories;
 
 	if ( ! file_exists( $directory ) ) {
-		// Try prepending as the theme directory could be relative to the content directory.
+		// Thử thêm tiền tố vì thư mục theme có thể tương đối so với thư mục nội dung.
 		$directory = WP_CONTENT_DIR . '/' . $directory;
-		// If this directory does not exist, return and do not register.
+		// Nếu thư mục này không tồn tại, trả về và không đăng ký.
 		if ( ! file_exists( $directory ) ) {
 			return false;
 		}
@@ -437,14 +437,14 @@ function register_theme_directory( $directory ) {
 }
 
 /**
- * Searches all registered theme directories for complete and valid themes.
+ * Tìm kiếm tất cả thư mục theme đã đăng ký để tìm theme hoàn chỉnh và hợp lệ.
  *
  * @since 2.9.0
  *
  * @global string[] $wp_theme_directories
  *
- * @param bool $force Optional. Whether to force a new directory scan. Default false.
- * @return array|false Valid themes found on success, false on failure.
+ * @param bool $force Tùy chọn. Có buộc quét thư mục mới hay không. Mặc định false.
+ * @return array|false Theme hợp lệ tìm được khi thành công, false khi thất bại.
  */
 function search_theme_directories( $force = false ) {
 	global $wp_theme_directories;
@@ -464,9 +464,9 @@ function search_theme_directories( $force = false ) {
 	$relative_theme_roots = array();
 
 	/*
-	 * Set up maybe-relative, maybe-absolute array of theme directories.
-	 * We always want to return absolute, but we need to cache relative
-	 * to use in get_theme_root().
+	 * Thiết lập mảng thư mục theme có thể tương đối hoặc tuyệt đối.
+	 * Chúng ta luôn muốn trả về đường dẫn tuyệt đối, nhưng cần lưu đệm
+	 * đường dẫn tương đối để sử dụng trong get_theme_root().
 	 */
 	foreach ( $wp_theme_directories as $theme_root ) {
 		if ( str_starts_with( $theme_root, WP_CONTENT_DIR ) ) {
@@ -477,12 +477,12 @@ function search_theme_directories( $force = false ) {
 	}
 
 	/**
-	 * Filters whether to get the cache of the registered theme directories.
+	 * Lọc việc có lấy bộ nhớ đệm của các thư mục theme đã đăng ký hay không.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param bool   $cache_expiration Whether to get the cache of the theme directories. Default false.
-	 * @param string $context          The class or function name calling the filter.
+	 * @param bool   $cache_expiration Có lấy bộ nhớ đệm thư mục theme hay không. Mặc định false.
+	 * @param string $context          Tên lớp hoặc hàm đang gọi bộ lọc.
 	 */
 	$cache_expiration = apply_filters( 'wp_cache_themes_persistently', false, 'search_theme_directories' );
 
@@ -490,13 +490,13 @@ function search_theme_directories( $force = false ) {
 		$cached_roots = get_site_transient( 'theme_roots' );
 		if ( is_array( $cached_roots ) ) {
 			foreach ( $cached_roots as $theme_dir => $theme_root ) {
-				// A cached theme root is no longer around, so skip it.
+				// Thư mục gốc theme đã lưu đệm không còn tồn tại, nên bỏ qua.
 				if ( ! isset( $relative_theme_roots[ $theme_root ] ) ) {
 					continue;
 				}
 				$found_themes[ $theme_dir ] = array(
 					'theme_file' => $theme_dir . '/style.css',
-					'theme_root' => $relative_theme_roots[ $theme_root ], // Convert relative to absolute.
+					'theme_root' => $relative_theme_roots[ $theme_root ], // Chuyển đổi tương đối sang tuyệt đối.
 				);
 			}
 			return $found_themes;
@@ -508,10 +508,10 @@ function search_theme_directories( $force = false ) {
 		$cache_expiration = 30 * MINUTE_IN_SECONDS;
 	}
 
-	/* Loop the registered theme directories and extract all themes */
+	/* Duyệt qua các thư mục theme đã đăng ký và trích xuất tất cả theme */
 	foreach ( $wp_theme_directories as $theme_root ) {
 
-		// Start with directories in the root of the active theme directory.
+		// Bắt đầu với các thư mục trong gốc của thư mục theme đang hoạt động.
 		$dirs = @ scandir( $theme_root );
 		if ( ! $dirs ) {
 			wp_trigger_error( __FUNCTION__, "$theme_root is not readable" );
@@ -524,7 +524,7 @@ function search_theme_directories( $force = false ) {
 			if ( file_exists( $theme_root . '/' . $dir . '/style.css' ) ) {
 				/*
 				 * wp-content/themes/a-single-theme
-				 * wp-content/themes is $theme_root, a-single-theme is $dir.
+				 * wp-content/themes là $theme_root, a-single-theme là $dir.
 				 */
 				$found_themes[ $dir ] = array(
 					'theme_file' => $dir . '/style.css',
@@ -534,7 +534,7 @@ function search_theme_directories( $force = false ) {
 				$found_theme = false;
 				/*
 				 * wp-content/themes/a-folder-of-themes/*
-				 * wp-content/themes is $theme_root, a-folder-of-themes is $dir, then themes are $sub_dirs.
+				 * wp-content/themes là $theme_root, a-folder-of-themes là $dir, sau đó các theme là $sub_dirs.
 				 */
 				$sub_dirs = @ scandir( $theme_root . '/' . $dir );
 				if ( ! $sub_dirs ) {
@@ -555,8 +555,8 @@ function search_theme_directories( $force = false ) {
 					$found_theme                           = true;
 				}
 				/*
-				 * Never mind the above, it's just a theme missing a style.css.
-				 * Return it; WP_Theme will catch the error.
+				 * Bỏ qua phần trên, đây chỉ là theme thiếu tệp style.css.
+				 * Trả về nó; WP_Theme sẽ bắt lỗi.
 				 */
 				if ( ! $found_theme ) {
 					$found_themes[ $dir ] = array(
@@ -574,7 +574,7 @@ function search_theme_directories( $force = false ) {
 	$relative_theme_roots = array_flip( $relative_theme_roots );
 
 	foreach ( $found_themes as $theme_dir => $theme_data ) {
-		$theme_roots[ $theme_dir ] = $relative_theme_roots[ $theme_data['theme_root'] ]; // Convert absolute to relative.
+		$theme_roots[ $theme_dir ] = $relative_theme_roots[ $theme_data['theme_root'] ]; // Chuyển đổi tuyệt đối sang tương đối.
 	}
 
 	if ( get_site_transient( 'theme_roots' ) !== $theme_roots ) {
@@ -585,17 +585,17 @@ function search_theme_directories( $force = false ) {
 }
 
 /**
- * Retrieves path to themes directory.
+ * Lấy đường dẫn đến thư mục themes.
  *
- * Does not have trailing slash.
+ * Không có dấu gạch chéo ở cuối.
  *
  * @since 1.5.0
  *
  * @global string[] $wp_theme_directories
  *
- * @param string $stylesheet_or_template Optional. The stylesheet or template name of the theme.
- *                                       Default is to leverage the main theme root.
- * @return string Themes directory path.
+ * @param string $stylesheet_or_template Tùy chọn. Tên stylesheet hoặc template của theme.
+ *                                       Mặc định sử dụng thư mục gốc theme chính.
+ * @return string Đường dẫn thư mục themes.
  */
 function get_theme_root( $stylesheet_or_template = '' ) {
 	global $wp_theme_directories;
@@ -606,8 +606,8 @@ function get_theme_root( $stylesheet_or_template = '' ) {
 		$theme_root = get_raw_theme_root( $stylesheet_or_template );
 		if ( $theme_root ) {
 			/*
-			 * Always prepend WP_CONTENT_DIR unless the root currently registered as a theme directory.
-			 * This gives relative theme roots the benefit of the doubt when things go haywire.
+			 * Luôn thêm tiền tố WP_CONTENT_DIR trừ khi gốc hiện tại đã được đăng ký là thư mục theme.
+			 * Điều này giúp các đường dẫn gốc theme tương đối hoạt động đúng khi có sự cố.
 			 */
 			if ( ! in_array( $theme_root, (array) $wp_theme_directories, true ) ) {
 				$theme_root = WP_CONTENT_DIR . $theme_root;
@@ -620,29 +620,29 @@ function get_theme_root( $stylesheet_or_template = '' ) {
 	}
 
 	/**
-	 * Filters the absolute path to the themes directory.
+	 * Lọc đường dẫn tuyệt đối đến thư mục themes.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $theme_root Absolute path to themes directory.
+	 * @param string $theme_root Đường dẫn tuyệt đối đến thư mục themes.
 	 */
 	return apply_filters( 'theme_root', $theme_root );
 }
 
 /**
- * Retrieves URI for themes directory.
+ * Lấy URI cho thư mục themes.
  *
- * Does not have trailing slash.
+ * Không có dấu gạch chéo ở cuối.
  *
  * @since 1.5.0
  *
  * @global string[] $wp_theme_directories
  *
- * @param string $stylesheet_or_template Optional. The stylesheet or template name of the theme.
- *                                       Default is to leverage the main theme root.
- * @param string $theme_root             Optional. The theme root for which calculations will be based,
- *                                       preventing the need for a get_raw_theme_root() call. Default empty.
- * @return string Themes directory URI.
+ * @param string $stylesheet_or_template Tùy chọn. Tên stylesheet hoặc template của theme.
+ *                                       Mặc định sử dụng thư mục gốc theme chính.
+ * @param string $theme_root             Tùy chọn. Thư mục gốc theme dùng để tính toán,
+ *                                       tránh cần gọi get_raw_theme_root(). Mặc định rỗng.
+ * @return string URI thư mục themes.
  */
 function get_theme_root_uri( $stylesheet_or_template = '', $theme_root = '' ) {
 	global $wp_theme_directories;
@@ -653,7 +653,7 @@ function get_theme_root_uri( $stylesheet_or_template = '', $theme_root = '' ) {
 
 	if ( $stylesheet_or_template && $theme_root ) {
 		if ( in_array( $theme_root, (array) $wp_theme_directories, true ) ) {
-			// Absolute path. Make an educated guess. YMMV -- but note the filter below.
+			// Đường dẫn tuyệt đối. Đoán có cơ sở. Có thể không chính xác -- nhưng lưu ý bộ lọc bên dưới.
 			if ( str_starts_with( $theme_root, WP_CONTENT_DIR ) ) {
 				$theme_root_uri = content_url( str_replace( WP_CONTENT_DIR, '', $theme_root ) );
 			} elseif ( str_starts_with( $theme_root, ABSPATH ) ) {
@@ -671,28 +671,28 @@ function get_theme_root_uri( $stylesheet_or_template = '', $theme_root = '' ) {
 	}
 
 	/**
-	 * Filters the URI for themes directory.
+	 * Lọc URI cho thư mục themes.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $theme_root_uri         The URI for themes directory.
-	 * @param string $siteurl                WordPress web address which is set in General Options.
-	 * @param string $stylesheet_or_template The stylesheet or template name of the theme.
+	 * @param string $theme_root_uri         URI cho thư mục themes.
+	 * @param string $siteurl                Địa chỉ web WordPress được thiết lập trong Tùy chọn Chung.
+	 * @param string $stylesheet_or_template Tên stylesheet hoặc template của theme.
 	 */
 	return apply_filters( 'theme_root_uri', $theme_root_uri, get_option( 'siteurl' ), $stylesheet_or_template );
 }
 
 /**
- * Gets the raw theme root relative to the content directory with no filters applied.
+ * Lấy thư mục gốc theme thô tương đối so với thư mục nội dung, không áp dụng bộ lọc.
  *
  * @since 3.1.0
  *
  * @global string[] $wp_theme_directories
  *
- * @param string $stylesheet_or_template The stylesheet or template name of the theme.
- * @param bool   $skip_cache             Optional. Whether to skip the cache.
- *                                       Defaults to false, meaning the cache is used.
- * @return string Theme root.
+ * @param string $stylesheet_or_template Tên stylesheet hoặc template của theme.
+ * @param bool   $skip_cache             Tùy chọn. Có bỏ qua bộ nhớ đệm hay không.
+ *                                       Mặc định false, nghĩa là sử dụng bộ nhớ đệm.
+ * @return string Thư mục gốc theme.
  */
 function get_raw_theme_root( $stylesheet_or_template, $skip_cache = false ) {
 	global $wp_theme_directories;
@@ -703,7 +703,7 @@ function get_raw_theme_root( $stylesheet_or_template, $skip_cache = false ) {
 
 	$theme_root = false;
 
-	// If requesting the root for the active theme, consult options to avoid calling get_theme_roots().
+	// Nếu yêu cầu gốc cho theme đang hoạt động, tham khảo tùy chọn để tránh gọi get_theme_roots().
 	if ( ! $skip_cache ) {
 		if ( get_option( 'stylesheet' ) === $stylesheet_or_template ) {
 			$theme_root = get_option( 'stylesheet_root' );
@@ -723,7 +723,7 @@ function get_raw_theme_root( $stylesheet_or_template, $skip_cache = false ) {
 }
 
 /**
- * Displays localized stylesheet link element.
+ * Hiển thị phần tử liên kết stylesheet đã được bản địa hóa.
  *
  * @since 2.1.0
  */
@@ -743,10 +743,10 @@ function locale_stylesheet() {
 }
 
 /**
- * Switches the theme.
+ * Chuyển đổi theme.
  *
- * Accepts one argument: $stylesheet of the theme. It also accepts an additional function signature
- * of two arguments: $template then $stylesheet. This is for backward compatibility.
+ * Chấp nhận một tham số: $stylesheet của theme. Cũng chấp nhận chữ ký hàm bổ sung
+ * với hai tham số: $template rồi $stylesheet. Điều này để tương thích ngược.
  *
  * @since 2.5.0
  *
@@ -755,7 +755,7 @@ function locale_stylesheet() {
  * @global array                $sidebars_widgets
  * @global array                $wp_registered_sidebars
  *
- * @param string $stylesheet Stylesheet name.
+ * @param string $stylesheet Tên stylesheet.
  */
 function switch_theme( $stylesheet ) {
 	global $wp_theme_directories, $wp_customize, $sidebars_widgets, $wp_registered_sidebars;
@@ -817,7 +817,7 @@ function switch_theme( $stylesheet ) {
 
 	update_option( 'current_theme', $new_name );
 
-	// Migrate from the old mods_{name} option to theme_mods_{slug}.
+	// Di chuyển từ tùy chọn mods_{name} cũ sang theme_mods_{slug}.
 	if ( is_admin() && false === get_option( 'theme_mods_' . $stylesheet ) ) {
 		$default_theme_mods = (array) get_option( 'mods_' . $new_name );
 		if ( ! empty( $nav_menu_locations ) && empty( $default_theme_mods['nav_menu_locations'] ) ) {
@@ -826,16 +826,16 @@ function switch_theme( $stylesheet ) {
 		add_option( "theme_mods_$stylesheet", $default_theme_mods );
 	} else {
 		/*
-		 * Since retrieve_widgets() is called when initializing a theme in the Customizer,
-		 * we need to remove the theme mods to avoid overwriting changes made via
-		 * the Customizer when accessing wp-admin/widgets.php.
+		 * Vì retrieve_widgets() được gọi khi khởi tạo theme trong Trình tùy biến,
+		 * chúng ta cần xóa theme mods để tránh ghi đè các thay đổi được thực hiện qua
+		 * Trình tùy biến khi truy cập wp-admin/widgets.php.
 		 */
 		if ( 'wp_ajax_customize_save' === current_action() ) {
 			remove_theme_mod( 'sidebars_widgets' );
 		}
 	}
 
-	// Stores classic sidebars for later use by block themes.
+	// Lưu trữ các sidebar cổ điển để theme khối sử dụng sau này.
 	if ( $new_theme->is_block_theme() ) {
 		set_theme_mod( 'wp_classic_sidebars', $wp_registered_sidebars );
 	}
@@ -843,20 +843,20 @@ function switch_theme( $stylesheet ) {
 	update_option( 'theme_switched', $old_theme->get_stylesheet() );
 
 	/*
-	 * Reset template globals when switching themes outside of a switched blog
-	 * context to ensure templates will be loaded from the new theme.
+	 * Đặt lại các biến toàn cục template khi chuyển theme ngoài ngữ cảnh
+	 * blog đã chuyển để đảm bảo template sẽ được tải từ theme mới.
 	 */
 	if ( ! is_multisite() || ! ms_is_switched() ) {
 		wp_set_template_globals();
 	}
 
-	// Clear pattern caches.
+	// Xóa bộ nhớ đệm pattern.
 	if ( ! is_multisite() ) {
 		$new_theme->delete_pattern_cache();
 		$old_theme->delete_pattern_cache();
 	}
 
-	// Set autoload=no for the old theme, autoload=yes for the switched theme.
+	// Đặt autoload=no cho theme cũ, autoload=yes cho theme đã chuyển.
 	$theme_mods_options = array(
 		'theme_mods_' . $stylesheet                  => 'yes',
 		'theme_mods_' . $old_theme->get_stylesheet() => 'no',
@@ -864,35 +864,35 @@ function switch_theme( $stylesheet ) {
 	wp_set_option_autoload_values( $theme_mods_options );
 
 	/**
-	 * Fires after the theme is switched.
+	 * Kích hoạt sau khi theme được chuyển đổi.
 	 *
-	 * See {@see 'after_switch_theme'}.
+	 * Xem {@see 'after_switch_theme'}.
 	 *
 	 * @since 1.5.0
-	 * @since 4.5.0 Introduced the `$old_theme` parameter.
+	 * @since 4.5.0 Thêm tham số `$old_theme`.
 	 *
-	 * @param string   $new_name  Name of the new theme.
-	 * @param WP_Theme $new_theme WP_Theme instance of the new theme.
-	 * @param WP_Theme $old_theme WP_Theme instance of the old theme.
+	 * @param string   $new_name  Tên của theme mới.
+	 * @param WP_Theme $new_theme Thể hiện WP_Theme của theme mới.
+	 * @param WP_Theme $old_theme Thể hiện WP_Theme của theme cũ.
 	 */
 	do_action( 'switch_theme', $new_name, $new_theme, $old_theme );
 }
 
 /**
- * Checks that the active theme has the required files.
+ * Kiểm tra xem theme đang hoạt động có các tệp bắt buộc hay không.
  *
- * Standalone themes need to have a `templates/index.html` or `index.php` template file.
- * Child themes need to have a `Template` header in the `style.css` stylesheet.
+ * Theme độc lập cần có tệp template `templates/index.html` hoặc `index.php`.
+ * Theme con cần có header `Template` trong stylesheet `style.css`.
  *
- * Does not initially check the default theme, which is the fallback and should always exist.
- * But if it doesn't exist, it'll fall back to the latest core default theme that does exist.
- * Will switch theme to the fallback theme if active theme does not validate.
+ * Ban đầu không kiểm tra theme mặc định, vì đó là dự phòng và phải luôn tồn tại.
+ * Nhưng nếu nó không tồn tại, sẽ chuyển sang theme mặc định lõi mới nhất có sẵn.
+ * Sẽ chuyển theme sang theme dự phòng nếu theme đang hoạt động không hợp lệ.
  *
- * You can use the {@see 'validate_current_theme'} filter to return false to disable
- * this functionality.
+ * Bạn có thể sử dụng bộ lọc {@see 'validate_current_theme'} để trả về false nhằm vô hiệu hóa
+ * chức năng này.
  *
  * @since 1.5.0
- * @since 6.0.0 Removed the requirement for block themes to have an `index.php` template.
+ * @since 6.0.0 Đã loại bỏ yêu cầu theme khối phải có template `index.php`.
  *
  * @see WP_DEFAULT_THEME
  *
@@ -900,11 +900,11 @@ function switch_theme( $stylesheet ) {
  */
 function validate_current_theme() {
 	/**
-	 * Filters whether to validate the active theme.
+	 * Lọc có xác thực theme đang hoạt động hay không.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param bool $validate Whether to validate the active theme. Default true.
+	 * @param bool $validate Có xác thực theme đang hoạt động hay không. Mặc định true.
 	 */
 	if ( wp_installing() || ! apply_filters( 'validate_current_theme', true ) ) {
 		return true;
@@ -912,16 +912,16 @@ function validate_current_theme() {
 
 	if (
 		! file_exists( get_template_directory() . '/templates/index.html' )
-		&& ! file_exists( get_template_directory() . '/block-templates/index.html' ) // Deprecated path support since 5.9.0.
+		&& ! file_exists( get_template_directory() . '/block-templates/index.html' ) // Hỗ trợ đường dẫn ngưng sử dụng từ 5.9.0.
 		&& ! file_exists( get_template_directory() . '/index.php' )
 	) {
-		// Invalid.
+		// Không hợp lệ.
 	} elseif ( ! file_exists( get_template_directory() . '/style.css' ) ) {
-		// Invalid.
+		// Không hợp lệ.
 	} elseif ( is_child_theme() && ! file_exists( get_stylesheet_directory() . '/style.css' ) ) {
-		// Invalid.
+		// Không hợp lệ.
 	} else {
-		// Valid.
+		// Hợp lệ.
 		return true;
 	}
 
@@ -932,14 +932,14 @@ function validate_current_theme() {
 	}
 
 	/**
-	 * If we're in an invalid state but WP_DEFAULT_THEME doesn't exist,
-	 * switch to the latest core default theme that's installed.
+	 * Nếu chúng ta ở trạng thái không hợp lệ nhưng WP_DEFAULT_THEME không tồn tại,
+	 * chuyển sang theme mặc định lõi mới nhất đã được cài đặt.
 	 *
-	 * If it turns out that this latest core default theme is our current
-	 * theme, then there's nothing we can do about that, so we have to bail,
-	 * rather than going into an infinite loop. (This is why there are
-	 * checks against WP_DEFAULT_THEME above, also.) We also can't do anything
-	 * if it turns out there is no default theme installed. (That's `false`.)
+	 * Nếu theme mặc định lõi mới nhất đó chính là theme hiện tại của chúng ta,
+	 * thì không có gì có thể làm, nên phải thoát ra,
+	 * thay vì rơi vào vòng lặp vô hạn. (Đây là lý do có các kiểm tra
+	 * WP_DEFAULT_THEME ở trên.) Chúng ta cũng không thể làm gì
+	 * nếu không có theme mặc định nào được cài đặt. (Giá trị đó là `false`.)
 	 */
 	$default = WP_Theme::get_core_default_theme();
 	if ( false === $default || get_stylesheet() === $default->get_stylesheet() ) {
@@ -951,16 +951,16 @@ function validate_current_theme() {
 }
 
 /**
- * Validates the theme requirements for WordPress version and PHP version.
+ * Xác thực yêu cầu theme về phiên bản WordPress và phiên bản PHP.
  *
- * Uses the information from `Requires at least` and `Requires PHP` headers
- * defined in the theme's `style.css` file.
+ * Sử dụng thông tin từ header `Requires at least` và `Requires PHP`
+ * được định nghĩa trong tệp `style.css` của theme.
  *
  * @since 5.5.0
- * @since 5.8.0 Removed support for using `readme.txt` as a fallback.
+ * @since 5.8.0 Đã loại bỏ hỗ trợ sử dụng `readme.txt` làm phương án dự phòng.
  *
- * @param string $stylesheet Directory name for the theme.
- * @return true|WP_Error True if requirements are met, WP_Error on failure.
+ * @param string $stylesheet Tên thư mục của theme.
+ * @return true|WP_Error True nếu đáp ứng yêu cầu, WP_Error khi thất bại.
  */
 function validate_theme_requirements( $stylesheet ) {
 	$theme = wp_get_theme( $stylesheet );
@@ -1006,12 +1006,12 @@ function validate_theme_requirements( $stylesheet ) {
 }
 
 /**
- * Retrieves all theme modifications.
+ * Lấy tất cả các tùy biến theme.
  *
  * @since 3.1.0
- * @since 5.9.0 The return value is always an array.
+ * @since 5.9.0 Giá trị trả về luôn là mảng.
  *
- * @return array Theme modifications.
+ * @return array Các tùy biến theme.
  */
 function get_theme_mods() {
 	$theme_slug = get_option( 'stylesheet' );
@@ -1023,7 +1023,7 @@ function get_theme_mods() {
 			$theme_name = wp_get_theme()->get( 'Name' );
 		}
 
-		$mods = get_option( "mods_$theme_name" ); // Deprecated location.
+		$mods = get_option( "mods_$theme_name" ); // Vị trí không còn sử dụng.
 		if ( is_admin() && false !== $mods ) {
 			update_option( "theme_mods_$theme_slug", $mods );
 			delete_option( "mods_$theme_name" );
@@ -1038,41 +1038,41 @@ function get_theme_mods() {
 }
 
 /**
- * Retrieves theme modification value for the active theme.
+ * Lấy giá trị tùy biến theme cho theme đang hoạt động.
  *
- * If the modification name does not exist and `$default_value` is a string, then the
- * default will be passed through the {@link https://www.php.net/sprintf sprintf()}
- * PHP function with the template directory URI as the first value and the
- * stylesheet directory URI as the second value.
+ * Nếu tên tùy biến không tồn tại và `$default_value` là chuỗi, thì giá trị
+ * mặc định sẽ được truyền qua hàm PHP {@link https://www.php.net/sprintf sprintf()}
+ * với URI thư mục template là giá trị đầu tiên và
+ * URI thư mục stylesheet là giá trị thứ hai.
  *
  * @since 2.1.0
  *
- * @param string $name          Theme modification name.
- * @param mixed  $default_value Optional. Theme modification default value. Default false.
- * @return mixed Theme modification value.
+ * @param string $name          Tên tùy biến theme.
+ * @param mixed  $default_value Tùy chọn. Giá trị mặc định tùy biến theme. Mặc định false.
+ * @return mixed Giá trị tùy biến theme.
  */
 function get_theme_mod( $name, $default_value = false ) {
 	$mods = get_theme_mods();
 
 	if ( isset( $mods[ $name ] ) ) {
 		/**
-		 * Filters the theme modification, or 'theme_mod', value.
+		 * Lọc giá trị tùy biến theme, hay 'theme_mod'.
 		 *
-		 * The dynamic portion of the hook name, `$name`, refers to the key name
-		 * of the modification array. For example, 'header_textcolor', 'header_image',
-		 * and so on depending on the theme options.
+		 * Phần động của tên hook, `$name`, tham chiếu đến tên khóa
+		 * của mảng tùy biến. Ví dụ, 'header_textcolor', 'header_image',
+		 * v.v. tùy thuộc vào các tùy chọn theme.
 		 *
 		 * @since 2.2.0
 		 *
-		 * @param mixed $current_mod The value of the active theme modification.
+		 * @param mixed $current_mod Giá trị của tùy biến theme đang hoạt động.
 		 */
 		return apply_filters( "theme_mod_{$name}", $mods[ $name ] );
 	}
 
 	if ( is_string( $default_value ) ) {
-		// Only run the replacement if an sprintf() string format pattern was found.
+		// Chỉ chạy thay thế nếu tìm thấy mẫu định dạng chuỗi sprintf().
 		if ( preg_match( '#(?<!%)%(?:\d+\$?)?s#', $default_value ) ) {
-			// Remove a single trailing percent sign.
+			// Xóa một ký hiệu phần trăm ở cuối.
 			$default_value = preg_replace( '#(?<!%)%$#', '', $default_value );
 			$default_value = sprintf( $default_value, get_template_directory_uri(), get_stylesheet_directory_uri() );
 		}
@@ -1083,30 +1083,30 @@ function get_theme_mod( $name, $default_value = false ) {
 }
 
 /**
- * Updates theme modification value for the active theme.
+ * Cập nhật giá trị tùy biến theme cho theme đang hoạt động.
  *
  * @since 2.1.0
- * @since 5.6.0 A return value was added.
+ * @since 5.6.0 Đã thêm giá trị trả về.
  *
- * @param string $name  Theme modification name.
- * @param mixed  $value Theme modification value.
- * @return bool True if the value was updated, false otherwise.
+ * @param string $name  Tên tùy biến theme.
+ * @param mixed  $value Giá trị tùy biến theme.
+ * @return bool True nếu giá trị được cập nhật, false nếu không.
  */
 function set_theme_mod( $name, $value ) {
 	$mods      = get_theme_mods();
 	$old_value = isset( $mods[ $name ] ) ? $mods[ $name ] : false;
 
 	/**
-	 * Filters the theme modification, or 'theme_mod', value on save.
+	 * Lọc giá trị tùy biến theme, hay 'theme_mod', khi lưu.
 	 *
-	 * The dynamic portion of the hook name, `$name`, refers to the key name
-	 * of the modification array. For example, 'header_textcolor', 'header_image',
-	 * and so on depending on the theme options.
+	 * Phần động của tên hook, `$name`, tham chiếu đến tên khóa
+	 * của mảng tùy biến. Ví dụ, 'header_textcolor', 'header_image',
+	 * v.v. tùy thuộc vào các tùy chọn theme.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param mixed $value     The new value of the theme modification.
-	 * @param mixed $old_value The current value of the theme modification.
+	 * @param mixed $value     Giá trị mới của tùy biến theme.
+	 * @param mixed $old_value Giá trị hiện tại của tùy biến theme.
 	 */
 	$mods[ $name ] = apply_filters( "pre_set_theme_mod_{$name}", $value, $old_value );
 
@@ -1116,14 +1116,14 @@ function set_theme_mod( $name, $value ) {
 }
 
 /**
- * Removes theme modification name from active theme list.
+ * Xóa tên tùy biến theme khỏi danh sách theme đang hoạt động.
  *
- * If removing the name also removes all elements, then the entire option
- * will be removed.
+ * Nếu việc xóa tên cũng xóa tất cả các phần tử, thì toàn bộ tùy chọn
+ * sẽ bị xóa.
  *
  * @since 2.1.0
  *
- * @param string $name Theme modification name.
+ * @param string $name Tên tùy biến theme.
  */
 function remove_theme_mod( $name ) {
 	$mods = get_theme_mods();
@@ -1145,14 +1145,14 @@ function remove_theme_mod( $name ) {
 }
 
 /**
- * Removes theme modifications option for the active theme.
+ * Xóa tùy chọn tùy biến theme cho theme đang hoạt động.
  *
  * @since 2.1.0
  */
 function remove_theme_mods() {
 	delete_option( 'theme_mods_' . get_option( 'stylesheet' ) );
 
-	// Old style.
+	// Kiểu cũ.
 	$theme_name = get_option( 'current_theme' );
 	if ( false === $theme_name ) {
 		$theme_name = wp_get_theme()->get( 'Name' );
@@ -1162,18 +1162,18 @@ function remove_theme_mods() {
 }
 
 /**
- * Retrieves the custom header text color in 3- or 6-digit hexadecimal form.
+ * Lấy màu văn bản header tùy chỉnh dạng thập lục phân 3 hoặc 6 ký tự.
  *
  * @since 2.1.0
  *
- * @return string Header text color in 3- or 6-digit hexadecimal form (minus the hash symbol).
+ * @return string Màu văn bản header dạng thập lục phân 3 hoặc 6 ký tự (không có ký hiệu #).
  */
 function get_header_textcolor() {
 	return get_theme_mod( 'header_textcolor', get_theme_support( 'custom-header', 'default-text-color' ) );
 }
 
 /**
- * Displays the custom header text color in 3- or 6-digit hexadecimal form (minus the hash symbol).
+ * Hiển thị màu văn bản header tùy chỉnh dạng thập lục phân 3 hoặc 6 ký tự (không có ký hiệu #).
  *
  * @since 2.1.0
  */
@@ -1182,7 +1182,7 @@ function header_textcolor() {
 }
 
 /**
- * Whether to display the header text.
+ * Có hiển thị văn bản header hay không.
  *
  * @since 3.4.0
  *
@@ -1198,20 +1198,20 @@ function display_header_text() {
 }
 
 /**
- * Checks whether a header image is set or not.
+ * Kiểm tra xem ảnh header đã được thiết lập hay chưa.
  *
  * @since 4.2.0
  *
  * @see get_header_image()
  *
- * @return bool Whether a header image is set or not.
+ * @return bool Có ảnh header được thiết lập hay không.
  */
 function has_header_image() {
 	return (bool) get_header_image();
 }
 
 /**
- * Retrieves header image for custom header.
+ * Lấy ảnh header cho header tùy chỉnh.
  *
  * @since 2.1.0
  *
@@ -1229,11 +1229,11 @@ function get_header_image() {
 	}
 
 	/**
-	 * Filters the header image URL.
+	 * Lọc URL ảnh header.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param string $url Header image URL.
+	 * @param string $url URL ảnh header.
 	 */
 	$url = apply_filters( 'get_header_image', $url );
 
@@ -1246,13 +1246,13 @@ function get_header_image() {
 }
 
 /**
- * Creates image tag markup for a custom header image.
+ * Tạo mã HTML thẻ ảnh cho ảnh header tùy chỉnh.
  *
  * @since 4.4.0
  *
- * @param array $attr Optional. Additional attributes for the image tag. Can be used
- *                              to override the default attributes. Default empty.
- * @return string HTML image element markup or empty string on failure.
+ * @param array $attr Tùy chọn. Các thuộc tính bổ sung cho thẻ ảnh. Có thể dùng
+ *                              để ghi đè các thuộc tính mặc định. Mặc định rỗng.
+ * @return string Mã HTML phần tử ảnh hoặc chuỗi rỗng khi thất bại.
  */
 function get_header_image_tag( $attr = array() ) {
 	$header      = get_custom_header();
@@ -1266,7 +1266,7 @@ function get_header_image_tag( $attr = array() ) {
 	$height = absint( $header->height );
 	$alt    = '';
 
-	// Use alternative text assigned to the image, if available. Otherwise, leave it empty.
+	// Sử dụng văn bản thay thế được gán cho ảnh, nếu có. Nếu không, để trống.
 	if ( ! empty( $header->attachment_id ) ) {
 		$image_alt = get_post_meta( $header->attachment_id, '_wp_attachment_image_alt', true );
 
@@ -1285,7 +1285,7 @@ function get_header_image_tag( $attr = array() ) {
 		)
 	);
 
-	// Generate 'srcset' and 'sizes' if not already present.
+	// Tạo 'srcset' và 'sizes' nếu chưa có.
 	if ( empty( $attr['srcset'] ) && ! empty( $header->attachment_id ) ) {
 		$image_meta = get_post_meta( $header->attachment_id, '_wp_attachment_metadata', true );
 		$size_array = array( $width, $height );
@@ -1312,14 +1312,14 @@ function get_header_image_tag( $attr = array() ) {
 	);
 
 	/*
-	 * If the default value of `lazy` for the `loading` attribute is overridden
-	 * to omit the attribute for this image, ensure it is not included.
+	 * Nếu giá trị mặc định `lazy` cho thuộc tính `loading` bị ghi đè
+	 * để bỏ qua thuộc tính cho ảnh này, đảm bảo nó không được bao gồm.
 	 */
 	if ( isset( $attr['loading'] ) && ! $attr['loading'] ) {
 		unset( $attr['loading'] );
 	}
 
-	// If the `fetchpriority` attribute is overridden and set to false or an empty string.
+	// Nếu thuộc tính `fetchpriority` bị ghi đè và được đặt thành false hoặc chuỗi rỗng.
 	if ( isset( $attr['fetchpriority'] ) && ! $attr['fetchpriority'] ) {
 		unset( $attr['fetchpriority'] );
 	}

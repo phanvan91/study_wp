@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Themes_Panel class
+ * API Tùy biến: Lớp WP_Customize_Themes_Panel
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Themes Panel Class
+ * Lớp Bảng điều khiển Giao diện trong Tùy biến
  *
  * @since 4.9.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Themes_Panel extends WP_Customize_Panel {
 
 	/**
-	 * Panel type.
+	 * Loại bảng điều khiển.
 	 *
 	 * @since 4.9.0
 	 * @var string
@@ -25,9 +25,9 @@ class WP_Customize_Themes_Panel extends WP_Customize_Panel {
 	public $type = 'themes';
 
 	/**
-	 * An Underscore (JS) template for rendering this panel's container.
+	 * Mẫu Underscore (JS) để hiển thị vùng chứa của bảng điều khiển này.
 	 *
-	 * The themes panel renders a custom panel heading with the active theme and a switch themes button.
+	 * Bảng điều khiển giao diện hiển thị tiêu đề tùy chỉnh với giao diện đang hoạt động và nút chuyển đổi giao diện.
 	 *
 	 * @see WP_Customize_Panel::print_template()
 	 *
@@ -54,10 +54,10 @@ class WP_Customize_Themes_Panel extends WP_Customize_Panel {
 	}
 
 	/**
-	 * An Underscore (JS) template for this panel's content (but not its container).
+	 * Mẫu Underscore (JS) cho nội dung của bảng điều khiển này (nhưng không phải vùng chứa).
 	 *
-	 * Class variables for this panel class are available in the `data` JS object;
-	 * export custom variables by overriding WP_Customize_Panel::json().
+	 * Các biến lớp cho lớp bảng điều khiển này có sẵn trong đối tượng JS `data`;
+	 * xuất các biến tùy chỉnh bằng cách ghi đè WP_Customize_Panel::json().
 	 *
 	 * @since 4.9.0
 	 *
@@ -68,7 +68,7 @@ class WP_Customize_Themes_Panel extends WP_Customize_Panel {
 		<li class="panel-meta customize-info accordion-section <# if ( ! data.description ) { #> cannot-expand<# } #>">
 			<button class="customize-panel-back" tabindex="-1" type="button"><span class="screen-reader-text">
 				<?php
-				/* translators: Hidden accessibility text. */
+				/* translators: Văn bản trợ năng ẩn. */
 				_e( 'Back' );
 				?>
 			</span></button>
@@ -76,17 +76,17 @@ class WP_Customize_Themes_Panel extends WP_Customize_Panel {
 				<span class="preview-notice">
 					<?php
 					printf(
-						/* translators: %s: Themes panel title in the Customizer. */
+						/* translators: %s: Tiêu đề bảng điều khiển Giao diện trong Trình tùy biến. */
 						__( 'You are browsing %s' ),
 						'<strong class="panel-title">' . __( 'Themes' ) . '</strong>'
-					); // Separate strings for consistency with other panels.
+					); // Tách chuỗi riêng để nhất quán với các bảng điều khiển khác.
 					?>
 				</span>
 				<?php if ( current_user_can( 'install_themes' ) && ! is_multisite() ) : ?>
 					<# if ( data.description ) { #>
 						<button class="customize-help-toggle dashicons dashicons-editor-help" type="button" aria-expanded="false"><span class="screen-reader-text">
 							<?php
-							/* translators: Hidden accessibility text. */
+							/* translators: Văn bản trợ năng ẩn. */
 							_e( 'Help' );
 							?>
 						</span></button>

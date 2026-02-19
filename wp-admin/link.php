@@ -1,15 +1,15 @@
 <?php
 /**
- * Manage link administration actions.
+ * Quản lý các hành động quản trị liên kết.
  *
- * This page is accessed by the link management pages and handles the forms and
- * Ajax processes for link actions.
+ * Trang này được truy cập bởi các trang quản lý liên kết và xử lý các biểu mẫu và
+ * tiến trình Ajax cho các hành động liên kết.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 $action  = ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : '';
@@ -36,7 +36,7 @@ switch ( $action ) {
 	case 'deletebookmarks':
 		check_admin_referer( 'bulk-bookmarks' );
 
-		// For each link id (in $linkcheck[]) change category to selected value.
+		// Với mỗi ID liên kết (trong $linkcheck[]) thay đổi danh mục sang giá trị đã chọn.
 		if ( count( $linkcheck ) === 0 ) {
 			wp_redirect( $this_file );
 			exit;
@@ -57,14 +57,14 @@ switch ( $action ) {
 	case 'move':
 		check_admin_referer( 'bulk-bookmarks' );
 
-		// For each link id (in $linkcheck[]) change category to selected value.
+		// Với mỗi ID liên kết (trong $linkcheck[]) thay đổi danh mục sang giá trị đã chọn.
 		if ( count( $linkcheck ) === 0 ) {
 			wp_redirect( $this_file );
 			exit;
 		}
 		$all_links = implode( ',', $linkcheck );
 		/*
-		 * Should now have an array of links we can change:
+		 * Bây giờ nên có một mảng các liên kết có thể thay đổi:
 		 *     $q = $wpdb->query("update $wpdb->links SET link_category='$category' WHERE link_id IN ($all_links)");
 		 */
 
@@ -110,7 +110,7 @@ switch ( $action ) {
 
 		$parent_file  = 'link-manager.php';
 		$submenu_file = 'link-manager.php';
-		// Used in the HTML title tag.
+		// Sử dụng trong thẻ HTML title.
 		$title = __( 'Edit Link' );
 
 		$link_id = (int) $_GET['link_id'];

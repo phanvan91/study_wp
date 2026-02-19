@@ -1,13 +1,13 @@
 <?php
 /**
- * WordPress Administration Bootstrap
+ * Khởi tạo Quản trị WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * In WordPress Administration Screens
+ * Đang ở trong Màn hình Quản trị WordPress
  *
  * @since 2.3.2
  */
@@ -31,7 +31,7 @@ if ( isset( $_GET['import'] ) && ! defined( 'WP_LOAD_IMPORTERS' ) ) {
 	define( 'WP_LOAD_IMPORTERS', true );
 }
 
-/** Load WordPress Bootstrap */
+/** Tải phần Khởi động WordPress */
 require_once dirname( __DIR__ ) . '/wp-load.php';
 
 nocache_headers();
@@ -42,7 +42,7 @@ if ( get_option( 'db_upgraded' ) ) {
 	update_option( 'db_upgraded', false, true );
 
 	/**
-	 * Fires on the next page load after a successful DB upgrade.
+	 * Kích hoạt vào lần tải trang tiếp theo sau khi nâng cấp CSDL thành công.
 	 *
 	 * @since 2.8.0
 	 */
@@ -58,25 +58,25 @@ if ( get_option( 'db_upgraded' ) ) {
 	}
 
 	/**
-	 * Filters whether to attempt to perform the multisite DB upgrade routine.
+	 * Lọc xem có nên thực hiện quy trình nâng cấp CSDL multisite hay không.
 	 *
-	 * In single site, the user would be redirected to wp-admin/upgrade.php.
-	 * In multisite, the DB upgrade routine is automatically fired, but only
-	 * when this filter returns true.
+	 * Trên site đơn, người dùng sẽ được chuyển hướng đến wp-admin/upgrade.php.
+	 * Trên multisite, quy trình nâng cấp CSDL được tự động kích hoạt, nhưng chỉ
+	 * khi bộ lọc này trả về true.
 	 *
-	 * If the network is 50 sites or less, it will run every time. Otherwise,
-	 * it will throttle itself to reduce load.
+	 * Nếu mạng có 50 site trở xuống, nó sẽ chạy mỗi lần. Ngược lại,
+	 * nó sẽ tự điều tiết để giảm tải.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param bool $do_mu_upgrade Whether to perform the Multisite upgrade routine. Default true.
+	 * @param bool $do_mu_upgrade Có thực hiện quy trình nâng cấp Multisite hay không. Mặc định true.
 	 */
 	if ( apply_filters( 'do_mu_upgrade', true ) ) {
 		$c = get_blog_count();
 
 		/*
-		 * If there are 50 or fewer sites, run every time. Otherwise, throttle to reduce load:
-		 * attempt to do no more than threshold value, with some +/- allowed.
+		 * Nếu có 50 site trở xuống, chạy mỗi lần. Ngược lại, điều tiết để giảm tải:
+		 * cố gắng không vượt quá giá trị ngưỡng, với một số sai lệch +/- cho phép.
 		 */
 		if ( $c <= 50 || ( $c > 50 && mt_rand( 0, (int) ( $c / 50 ) ) === 1 ) ) {
 			require_once ABSPATH . WPINC . '/http.php';
@@ -87,7 +87,7 @@ if ( get_option( 'db_upgraded' ) ) {
 					'httpversion' => '1.1',
 				)
 			);
-			/** This action is documented in wp-admin/network/upgrade.php */
+			/** Action này được ghi tài liệu trong wp-admin/network/upgrade.php */
 			do_action( 'after_mu_upgrade', $response );
 			unset( $response );
 		}
@@ -99,12 +99,12 @@ require_once ABSPATH . 'wp-admin/includes/admin.php';
 
 auth_redirect();
 
-// Schedule Trash collection.
+// Lên lịch thu gom Thùng rác.
 if ( ! wp_next_scheduled( 'wp_scheduled_delete' ) && ! wp_installing() ) {
 	wp_schedule_event( time(), 'daily', 'wp_scheduled_delete' );
 }
 
-// Schedule transient cleanup.
+// Lên lịch dọn dẹp transient.
 if ( ! wp_next_scheduled( 'delete_expired_transients' ) && ! wp_installing() ) {
 	wp_schedule_event( time(), 'daily', 'delete_expired_transients' );
 }
@@ -117,16 +117,16 @@ $time_format = __( 'g:i a' );
 wp_enqueue_script( 'common' );
 
 /**
- * $pagenow is set in vars.php.
- * $wp_importers is sometimes set in wp-admin/includes/import.php.
- * The remaining variables are imported as globals elsewhere, declared as globals here.
+ * $pagenow được thiết lập trong vars.php.
+ * $wp_importers đôi khi được thiết lập trong wp-admin/includes/import.php.
+ * Các biến còn lại được import dưới dạng biến toàn cục ở nơi khác, được khai báo là biến toàn cục ở đây.
  *
- * @global string $pagenow      The filename of the current screen.
+ * @global string $pagenow      Tên file của màn hình hiện tại.
  * @global array  $wp_importers
  * @global string $hook_suffix
  * @global string $plugin_page
- * @global string $typenow      The post type of the current screen.
- * @global string $taxnow       The taxonomy of the current screen.
+ * @global string $typenow      Loại bài viết của màn hình hiện tại.
+ * @global string $taxnow       Taxonomy của màn hình hiện tại.
  */
 global $pagenow, $wp_importers, $hook_suffix, $plugin_page, $typenow, $taxnow;
 
@@ -164,12 +164,12 @@ if ( current_user_can( 'manage_options' ) ) {
 }
 
 /**
- * Fires as an admin screen or script is being initialized.
+ * Kích hoạt khi màn hình quản trị hoặc script đang được khởi tạo.
  *
- * Note, this does not just run on user-facing admin screens.
- * It runs on admin-ajax.php and admin-post.php as well.
+ * Lưu ý, hook này không chỉ chạy trên các màn hình quản trị dành cho người dùng.
+ * Nó cũng chạy trên admin-ajax.php và admin-post.php.
  *
- * This is roughly analogous to the more general {@see 'init'} hook, which fires earlier.
+ * Hook này tương tự với hook tổng quát hơn {@see 'init'}, được kích hoạt sớm hơn.
  *
  * @since 2.5.0
  */
@@ -186,9 +186,9 @@ if ( isset( $plugin_page ) ) {
 	if ( ! $page_hook ) {
 		$page_hook = get_plugin_page_hook( $plugin_page, $plugin_page );
 
-		// Back-compat for plugins using add_management_page().
+		// Tương thích ngược cho các plugin sử dụng add_management_page().
 		if ( empty( $page_hook ) && 'edit.php' === $pagenow && get_plugin_page_hook( $plugin_page, 'tools.php' ) ) {
-			// There could be plugin specific params on the URL, so we need the whole query string.
+			// Có thể có các tham số riêng của plugin trên URL, nên cần toàn bộ chuỗi truy vấn.
 			if ( ! empty( $_SERVER['QUERY_STRING'] ) ) {
 				$query_string = $_SERVER['QUERY_STRING'];
 			} else {
@@ -212,24 +212,24 @@ if ( isset( $page_hook ) ) {
 
 set_current_screen();
 
-// Handle plugin admin pages.
+// Xử lý các trang quản trị của plugin.
 if ( isset( $plugin_page ) ) {
 	if ( $page_hook ) {
 		/**
-		 * Fires before a particular screen is loaded.
+		 * Kích hoạt trước khi một màn hình cụ thể được tải.
 		 *
-		 * The load-* hook fires in a number of contexts. This hook is for plugin screens
-		 * where a callback is provided when the screen is registered.
+		 * Hook load-* kích hoạt trong nhiều ngữ cảnh. Hook này dành cho các màn hình plugin
+		 * nơi callback được cung cấp khi màn hình được đăng ký.
 		 *
-		 * The dynamic portion of the hook name, `$page_hook`, refers to a mixture of plugin
-		 * page information including:
-		 * 1. The page type. If the plugin page is registered as a submenu page, such as for
-		 *    Settings, the page type would be 'settings'. Otherwise the type is 'toplevel'.
-		 * 2. A separator of '_page_'.
-		 * 3. The plugin basename minus the file extension.
+		 * Phần động của tên hook, `$page_hook`, tham chiếu đến hỗn hợp thông tin
+		 * trang plugin bao gồm:
+		 * 1. Loại trang. Nếu trang plugin được đăng ký như trang con, chẳng hạn cho
+		 *    Cài đặt, loại trang sẽ là 'settings'. Ngược lại loại là 'toplevel'.
+		 * 2. Dấu phân cách '_page_'.
+		 * 3. Tên cơ sở của plugin không bao gồm phần mở rộng file.
 		 *
-		 * Together, the three parts form the `$page_hook`. Citing the example above,
-		 * the hook name used would be 'load-settings_page_pluginbasename'.
+		 * Kết hợp lại, ba phần tạo thành `$page_hook`. Trích dẫn ví dụ trên,
+		 * tên hook được sử dụng sẽ là 'load-settings_page_pluginbasename'.
 		 *
 		 * @see get_plugin_page_hook()
 		 *
@@ -241,17 +241,17 @@ if ( isset( $plugin_page ) ) {
 		}
 
 		/**
-		 * Used to call the registered callback for a plugin screen.
+		 * Được sử dụng để gọi callback đã đăng ký cho một màn hình plugin.
 		 *
-		 * This hook uses a dynamic hook name, `$page_hook`, which refers to a mixture of plugin
-		 * page information including:
-		 * 1. The page type. If the plugin page is registered as a submenu page, such as for
-		 *    Settings, the page type would be 'settings'. Otherwise the type is 'toplevel'.
-		 * 2. A separator of '_page_'.
-		 * 3. The plugin basename minus the file extension.
+		 * Hook này sử dụng tên hook động, `$page_hook`, tham chiếu đến hỗn hợp thông tin
+		 * trang plugin bao gồm:
+		 * 1. Loại trang. Nếu trang plugin được đăng ký như trang con, chẳng hạn cho
+		 *    Cài đặt, loại trang sẽ là 'settings'. Ngược lại loại là 'toplevel'.
+		 * 2. Dấu phân cách '_page_'.
+		 * 3. Tên cơ sở của plugin không bao gồm phần mở rộng file.
 		 *
-		 * Together, the three parts form the `$page_hook`. Citing the example above,
-		 * the hook name used would be 'settings_page_pluginbasename'.
+		 * Kết hợp lại, ba phần tạo thành `$page_hook`. Trích dẫn ví dụ trên,
+		 * tên hook được sử dụng sẽ là 'settings_page_pluginbasename'.
 		 *
 		 * @see get_plugin_page_hook()
 		 *
@@ -271,12 +271,12 @@ if ( isset( $plugin_page ) ) {
 		}
 
 		/**
-		 * Fires before a particular screen is loaded.
+		 * Kích hoạt trước khi một màn hình cụ thể được tải.
 		 *
-		 * The load-* hook fires in a number of contexts. This hook is for plugin screens
-		 * where the file to load is directly included, rather than the use of a function.
+		 * Hook load-* kích hoạt trong nhiều ngữ cảnh. Hook này dành cho các màn hình plugin
+		 * nơi file cần tải được include trực tiếp, thay vì sử dụng hàm.
 		 *
-		 * The dynamic portion of the hook name, `$plugin_page`, refers to the plugin basename.
+		 * Phần động của tên hook, `$plugin_page`, tham chiếu đến tên cơ sở của plugin.
 		 *
 		 * @see plugin_basename()
 		 *
@@ -317,11 +317,11 @@ if ( isset( $plugin_page ) ) {
 	}
 
 	/**
-	 * Fires before an importer screen is loaded.
+	 * Kích hoạt trước khi một màn hình trình nhập được tải.
 	 *
-	 * The dynamic portion of the hook name, `$importer`, refers to the importer slug.
+	 * Phần động của tên hook, `$importer`, tham chiếu đến slug của trình nhập.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `load-importer-blogger`
 	 *  - `load-importer-wpcat2tag`
@@ -335,7 +335,7 @@ if ( isset( $plugin_page ) ) {
 	 */
 	do_action( "load-importer-{$importer}" ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
-	// Used in the HTML title tag.
+	// Được sử dụng trong thẻ title HTML.
 	$title        = __( 'Import' );
 	$parent_file  = 'tools.php';
 	$submenu_file = 'import.php';
@@ -349,36 +349,36 @@ if ( isset( $plugin_page ) ) {
 	define( 'WP_IMPORTING', true );
 
 	/**
-	 * Filters whether to filter imported data through kses on import.
+	 * Lọc xem có nên lọc dữ liệu nhập qua kses khi nhập hay không.
 	 *
-	 * Multisite uses this hook to filter all data through kses by default,
-	 * as a super administrator may be assisting an untrusted user.
+	 * Multisite sử dụng hook này để lọc tất cả dữ liệu qua kses theo mặc định,
+	 * vì quản trị viên cấp cao có thể đang hỗ trợ một người dùng không đáng tin cậy.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param bool $force Whether to force data to be filtered through kses. Default false.
+	 * @param bool $force Có buộc dữ liệu phải lọc qua kses hay không. Mặc định false.
 	 */
 	if ( apply_filters( 'force_filtered_html_on_import', false ) ) {
-		kses_init_filters();  // Always filter imported data with kses on multisite.
+		kses_init_filters();  // Luôn lọc dữ liệu nhập bằng kses trên multisite.
 	}
 
 	call_user_func( $wp_importers[ $importer ][2] );
 
 	require_once ABSPATH . 'wp-admin/admin-footer.php';
 
-	// Make sure rules are flushed.
+	// Đảm bảo các quy tắc rewrite được xả.
 	flush_rewrite_rules( false );
 
 	exit;
 } else {
 	/**
-	 * Fires before a particular screen is loaded.
+	 * Kích hoạt trước khi một màn hình cụ thể được tải.
 	 *
-	 * The load-* hook fires in a number of contexts. This hook is for core screens.
+	 * Hook load-* kích hoạt trong nhiều ngữ cảnh. Hook này dành cho các màn hình lõi.
 	 *
-	 * The dynamic portion of the hook name, `$pagenow`, is a global variable
-	 * referring to the filename of the current screen, such as 'admin.php',
-	 * 'post-new.php' etc. A complete hook for the latter would be
+	 * Phần động của tên hook, `$pagenow`, là biến toàn cục
+	 * tham chiếu đến tên file của màn hình hiện tại, chẳng hạn 'admin.php',
+	 * 'post-new.php' v.v. Một hook đầy đủ cho trường hợp sau sẽ là
 	 * 'load-post-new.php'.
 	 *
 	 * @since 2.1.0
@@ -386,8 +386,8 @@ if ( isset( $plugin_page ) ) {
 	do_action( "load-{$pagenow}" ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
 	/*
-	 * The following hooks are fired to ensure backward compatibility.
-	 * In all other cases, 'load-' . $pagenow should be used instead.
+	 * Các hook sau được kích hoạt để đảm bảo tương thích ngược.
+	 * Trong tất cả các trường hợp khác, nên sử dụng 'load-' . $pagenow thay thế.
 	 */
 	if ( 'page' === $typenow ) {
 		if ( 'post-new.php' === $pagenow ) {
@@ -410,10 +410,10 @@ if ( ! empty( $_REQUEST['action'] ) ) {
 	$action = $_REQUEST['action'];
 
 	/**
-	 * Fires when an 'action' request variable is sent.
+	 * Kích hoạt khi biến yêu cầu 'action' được gửi.
 	 *
-	 * The dynamic portion of the hook name, `$action`, refers to
-	 * the action derived from the `GET` or `POST` request.
+	 * Phần động của tên hook, `$action`, tham chiếu đến
+	 * action được lấy từ yêu cầu `GET` hoặc `POST`.
 	 *
 	 * @since 2.6.0
 	 */

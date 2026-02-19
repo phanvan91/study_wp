@@ -1,6 +1,6 @@
 <?php
 /**
- * Action handler for Multisite administration panels.
+ * Trình xử lý hành động cho các bảng điều khiển quản trị Multisite.
  *
  * @package WordPress
  * @subpackage Multisite

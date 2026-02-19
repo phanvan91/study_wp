@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Nav_Menu_Section class
+ * API Tùy biến: Lớp WP_Customize_Nav_Menu_Section
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,9 +8,9 @@
  */
 
 /**
- * Customize Menu Section Class
+ * Lớp Phần Menu Tùy biến
  *
- * Custom section only needed in JS.
+ * Phần tùy chỉnh chỉ cần thiết trong JS.
  *
  * @since 4.3.0
  *
@@ -19,7 +19,7 @@
 class WP_Customize_Nav_Menu_Section extends WP_Customize_Section {
 
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -27,10 +27,10 @@ class WP_Customize_Nav_Menu_Section extends WP_Customize_Section {
 	public $type = 'nav_menu';
 
 	/**
-	 * Get section parameters for JS.
+	 * Lấy các tham số phần cho JS.
 	 *
 	 * @since 4.3.0
-	 * @return array Exported parameters.
+	 * @return array Các tham số đã được xuất.
 	 */
 	public function json() {
 		$exported            = parent::json();

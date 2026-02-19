@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress Customize Section classes
+ * Các lớp Section trong WordPress Customize
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,9 +8,9 @@
  */
 
 /**
- * Customize Section class.
+ * Lớp Customize Section.
  *
- * A UI container for controls, managed by the WP_Customize_Manager class.
+ * Một container giao diện cho các control, được quản lý bởi lớp WP_Customize_Manager.
  *
  * @since 3.4.0
  *
@@ -20,9 +20,9 @@
 class WP_Customize_Section {
 
 	/**
-	 * Incremented with each new class instantiation, then stored in $instance_number.
+	 * Tăng dần với mỗi lần khởi tạo lớp mới, sau đó được lưu trong $instance_number.
 	 *
-	 * Used when sorting two instances whose priorities are equal.
+	 * Được sử dụng khi sắp xếp hai thực thể có mức ưu tiên bằng nhau.
 	 *
 	 * @since 4.1.0
 	 * @var int
@@ -30,7 +30,7 @@ class WP_Customize_Section {
 	protected static $instance_count = 0;
 
 	/**
-	 * Order in which this instance was created in relation to other instances.
+	 * Thứ tự mà thực thể này được tạo so với các thực thể khác.
 	 *
 	 * @since 4.1.0
 	 * @var int
@@ -38,7 +38,7 @@ class WP_Customize_Section {
 	public $instance_number;
 
 	/**
-	 * WP_Customize_Manager instance.
+	 * Thực thể WP_Customize_Manager.
 	 *
 	 * @since 3.4.0
 	 * @var WP_Customize_Manager
@@ -46,7 +46,7 @@ class WP_Customize_Section {
 	public $manager;
 
 	/**
-	 * Unique identifier.
+	 * Định danh duy nhất.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -54,7 +54,7 @@ class WP_Customize_Section {
 	public $id;
 
 	/**
-	 * Priority of the section which informs load order of sections.
+	 * Mức ưu tiên của section xác định thứ tự tải của các section.
 	 *
 	 * @since 3.4.0
 	 * @var int
@@ -62,7 +62,7 @@ class WP_Customize_Section {
 	public $priority = 160;
 
 	/**
-	 * Panel in which to show the section, making it a sub-section.
+	 * Panel chứa section, biến nó thành một section con.
 	 *
 	 * @since 4.0.0
 	 * @var string
@@ -70,7 +70,7 @@ class WP_Customize_Section {
 	public $panel = '';
 
 	/**
-	 * Capability required for the section.
+	 * Quyền cần thiết cho section.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -78,7 +78,7 @@ class WP_Customize_Section {
 	public $capability = 'edit_theme_options';
 
 	/**
-	 * Theme features required to support the section.
+	 * Các tính năng theme cần thiết để hỗ trợ section.
 	 *
 	 * @since 3.4.0
 	 * @var string|string[]
@@ -86,7 +86,7 @@ class WP_Customize_Section {
 	public $theme_supports = '';
 
 	/**
-	 * Title of the section to show in UI.
+	 * Tiêu đề của section hiển thị trong giao diện.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -94,7 +94,7 @@ class WP_Customize_Section {
 	public $title = '';
 
 	/**
-	 * Description to show in the UI.
+	 * Mô tả hiển thị trong giao diện.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -102,7 +102,7 @@ class WP_Customize_Section {
 	public $description = '';
 
 	/**
-	 * Customizer controls for this section.
+	 * Các control Customizer cho section này.
 	 *
 	 * @since 3.4.0
 	 * @var array
@@ -110,7 +110,7 @@ class WP_Customize_Section {
 	public $controls;
 
 	/**
-	 * Type of this section.
+	 * Loại của section này.
 	 *
 	 * @since 4.1.0
 	 * @var string
@@ -118,56 +118,56 @@ class WP_Customize_Section {
 	public $type = 'default';
 
 	/**
-	 * Active callback.
+	 * Callback kích hoạt.
 	 *
 	 * @since 4.1.0
 	 *
 	 * @see WP_Customize_Section::active()
 	 *
-	 * @var callable Callback is called with one argument, the instance of
-	 *               WP_Customize_Section, and returns bool to indicate whether
-	 *               the section is active (such as it relates to the URL currently
-	 *               being previewed).
+	 * @var callable Callback được gọi với một tham số, thực thể của
+	 *               WP_Customize_Section, và trả về bool để chỉ ra liệu
+	 *               section có đang hoạt động hay không (liên quan đến URL đang
+	 *               được xem trước).
 	 */
 	public $active_callback = '';
 
 	/**
-	 * Show the description or hide it behind the help icon.
+	 * Hiển thị mô tả hoặc ẩn nó sau biểu tượng trợ giúp.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @var bool Indicates whether the Section's description should be
-	 *           hidden behind a help icon ("?") in the Section header,
-	 *           similar to how help icons are displayed on Panels.
+	 * @var bool Chỉ ra liệu mô tả của Section có nên được
+	 *           ẩn sau biểu tượng trợ giúp ("?") trong tiêu đề Section hay không,
+	 *           tương tự như cách biểu tượng trợ giúp được hiển thị trên các Panel.
 	 */
 	public $description_hidden = false;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * Any supplied $args override class property defaults.
+	 * Bất kỳ $args nào được cung cấp sẽ ghi đè các giá trị mặc định của thuộc tính lớp.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
-	 * @param string               $id      A specific ID of the section.
+	 * @param WP_Customize_Manager $manager Thực thể khởi tạo Customizer.
+	 * @param string               $id      ID cụ thể của section.
 	 * @param array                $args    {
-	 *     Optional. Array of properties for the new Section object. Default empty array.
+	 *     Tùy chọn. Mảng các thuộc tính cho đối tượng Section mới. Mặc định mảng rỗng.
 	 *
-	 *     @type int             $priority           Priority of the section, defining the display order
-	 *                                               of panels and sections. Default 160.
-	 *     @type string          $panel              The panel this section belongs to (if any).
-	 *                                               Default empty.
-	 *     @type string          $capability         Capability required for the section.
-	 *                                               Default 'edit_theme_options'
-	 *     @type string|string[] $theme_supports     Theme features required to support the section.
-	 *     @type string          $title              Title of the section to show in UI.
-	 *     @type string          $description        Description to show in the UI.
-	 *     @type string          $type               Type of the section.
-	 *     @type callable        $active_callback    Active callback.
-	 *     @type bool            $description_hidden Hide the description behind a help icon,
-	 *                                               instead of inline above the first control.
-	 *                                               Default false.
+	 *     @type int             $priority           Mức ưu tiên của section, xác định thứ tự hiển thị
+	 *                                               của các panel và section. Mặc định 160.
+	 *     @type string          $panel              Panel mà section này thuộc về (nếu có).
+	 *                                               Mặc định rỗng.
+	 *     @type string          $capability         Quyền cần thiết cho section.
+	 *                                               Mặc định 'edit_theme_options'
+	 *     @type string|string[] $theme_supports     Các tính năng theme cần thiết để hỗ trợ section.
+	 *     @type string          $title              Tiêu đề của section hiển thị trong giao diện.
+	 *     @type string          $description        Mô tả hiển thị trong giao diện.
+	 *     @type string          $type               Loại của section.
+	 *     @type callable        $active_callback    Callback kích hoạt.
+	 *     @type bool            $description_hidden Ẩn mô tả sau biểu tượng trợ giúp,
+	 *                                               thay vì hiển thị nội tuyến phía trên control đầu tiên.
+	 *                                               Mặc định false.
 	 * }
 	 */
 	public function __construct( $manager, $id, $args = array() ) {
@@ -186,27 +186,27 @@ class WP_Customize_Section {
 		self::$instance_count += 1;
 		$this->instance_number = self::$instance_count;
 
-		$this->controls = array(); // Users cannot customize the $controls array.
+		$this->controls = array(); // Người dùng không thể tùy chỉnh mảng $controls.
 	}
 
 	/**
-	 * Check whether section is active to current Customizer preview.
+	 * Kiểm tra xem section có đang hoạt động với bản xem trước Customizer hiện tại không.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return bool Whether the section is active to the current preview.
+	 * @return bool Liệu section có đang hoạt động với bản xem trước hiện tại hay không.
 	 */
 	final public function active() {
 		$section = $this;
 		$active  = call_user_func( $this->active_callback, $this );
 
 		/**
-		 * Filters response of WP_Customize_Section::active().
+		 * Lọc phản hồi của WP_Customize_Section::active().
 		 *
 		 * @since 4.1.0
 		 *
-		 * @param bool                 $active  Whether the Customizer section is active.
-		 * @param WP_Customize_Section $section WP_Customize_Section instance.
+		 * @param bool                 $active  Liệu section Customizer có đang hoạt động hay không.
+		 * @param WP_Customize_Section $section Thực thể WP_Customize_Section.
 		 */
 		$active = apply_filters( 'customize_section_active', $active, $section );
 
@@ -214,25 +214,25 @@ class WP_Customize_Section {
 	}
 
 	/**
-	 * Default callback used when invoking WP_Customize_Section::active().
+	 * Callback mặc định được sử dụng khi gọi WP_Customize_Section::active().
 	 *
-	 * Subclasses can override this with their specific logic, or they may provide
-	 * an 'active_callback' argument to the constructor.
+	 * Các lớp con có thể ghi đè với logic cụ thể của chúng, hoặc có thể cung cấp
+	 * tham số 'active_callback' cho hàm khởi tạo.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return true Always true.
+	 * @return true Luôn trả về true.
 	 */
 	public function active_callback() {
 		return true;
 	}
 
 	/**
-	 * Gather the parameters passed to client JavaScript via JSON.
+	 * Thu thập các tham số được truyền cho JavaScript phía client qua JSON.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return array The array to be exported to the client as JSON.
+	 * @return array Mảng được xuất ra cho client dưới dạng JSON.
 	 */
 	public function json() {
 		$array                   = wp_array_slice_assoc( (array) $this, array( 'id', 'description', 'priority', 'panel', 'type', 'description_hidden' ) );
@@ -252,12 +252,12 @@ class WP_Customize_Section {
 	}
 
 	/**
-	 * Checks required user capabilities and whether the theme has the
-	 * feature support required by the section.
+	 * Kiểm tra quyền người dùng cần thiết và liệu theme có hỗ trợ
+	 * tính năng mà section yêu cầu hay không.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return bool False if theme doesn't support the section or user doesn't have the capability.
+	 * @return bool False nếu theme không hỗ trợ section hoặc người dùng không có quyền cần thiết.
 	 */
 	final public function check_capabilities() {
 		if ( $this->capability && ! current_user_can( $this->capability ) ) {
@@ -272,11 +272,11 @@ class WP_Customize_Section {
 	}
 
 	/**
-	 * Get the section's content for insertion into the Customizer pane.
+	 * Lấy nội dung của section để chèn vào khung Customizer.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return string Contents of the section.
+	 * @return string Nội dung của section.
 	 */
 	final public function get_content() {
 		ob_start();
@@ -285,7 +285,7 @@ class WP_Customize_Section {
 	}
 
 	/**
-	 * Check capabilities and render the section.
+	 * Kiểm tra quyền và hiển thị section.
 	 *
 	 * @since 3.4.0
 	 */
@@ -295,18 +295,18 @@ class WP_Customize_Section {
 		}
 
 		/**
-		 * Fires before rendering a Customizer section.
+		 * Kích hoạt trước khi hiển thị một section Customizer.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param WP_Customize_Section $section WP_Customize_Section instance.
+		 * @param WP_Customize_Section $section Thực thể WP_Customize_Section.
 		 */
 		do_action( 'customize_render_section', $this );
 		/**
-		 * Fires before rendering a specific Customizer section.
+		 * Kích hoạt trước khi hiển thị một section Customizer cụ thể.
 		 *
-		 * The dynamic portion of the hook name, `$this->id`, refers to the ID
-		 * of the specific Customizer section to be rendered.
+		 * Phần động của tên hook, `$this->id`, tham chiếu đến ID
+		 * của section Customizer cụ thể sẽ được hiển thị.
 		 *
 		 * @since 3.4.0
 		 */
@@ -316,18 +316,18 @@ class WP_Customize_Section {
 	}
 
 	/**
-	 * Render the section UI in a subclass.
+	 * Hiển thị giao diện section trong lớp con.
 	 *
-	 * Sections are now rendered in JS by default, see WP_Customize_Section::print_template().
+	 * Các section giờ được hiển thị bằng JS theo mặc định, xem WP_Customize_Section::print_template().
 	 *
 	 * @since 3.4.0
 	 */
 	protected function render() {}
 
 	/**
-	 * Render the section's JS template.
+	 * Hiển thị template JS của section.
 	 *
-	 * This function is only run for section types that have been registered with
+	 * Hàm này chỉ chạy cho các loại section đã được đăng ký với
 	 * WP_Customize_Manager::register_section_type().
 	 *
 	 * @since 4.3.0
@@ -343,10 +343,10 @@ class WP_Customize_Section {
 	}
 
 	/**
-	 * An Underscore (JS) template for rendering this section.
+	 * Template Underscore (JS) để hiển thị section này.
 	 *
-	 * Class variables for this section class are available in the `data` JS object;
-	 * export custom variables by overriding WP_Customize_Section::json().
+	 * Các biến lớp cho lớp section này có sẵn trong đối tượng JS `data`;
+	 * xuất các biến tùy chỉnh bằng cách ghi đè WP_Customize_Section::json().
 	 *
 	 * @since 4.3.0
 	 *
@@ -404,11 +404,11 @@ class WP_Customize_Section {
 	}
 }
 
-/** WP_Customize_Themes_Section class */
+/** Lớp WP_Customize_Themes_Section */
 require_once ABSPATH . WPINC . '/customize/class-wp-customize-themes-section.php';
 
-/** WP_Customize_Sidebar_Section class */
+/** Lớp WP_Customize_Sidebar_Section */
 require_once ABSPATH . WPINC . '/customize/class-wp-customize-sidebar-section.php';
 
-/** WP_Customize_Nav_Menu_Section class */
+/** Lớp WP_Customize_Nav_Menu_Section */
 require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-section.php';

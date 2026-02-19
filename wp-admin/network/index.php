@@ -1,23 +1,23 @@
 <?php
 /**
- * Multisite administration panel.
+ * Trang quản trị Multisite.
  *
  * @package WordPress
  * @subpackage Multisite
  * @since 3.0.0
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
-/** Load WordPress dashboard API */
+/** Tải API bảng điều khiển WordPress */
 require_once ABSPATH . 'wp-admin/includes/dashboard.php';
 
 if ( ! current_user_can( 'manage_network' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
 }
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ tiêu đề HTML.
 $title       = __( 'Dashboard' );
 $parent_file = 'index.php';
 

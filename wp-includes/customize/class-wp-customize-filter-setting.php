@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Filter_Setting class
+ * API Tùy biến: Lớp WP_Customize_Filter_Setting
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,9 +8,9 @@
  */
 
 /**
- * A setting that is used to filter a value, but will not save the results.
+ * Một cài đặt được sử dụng để lọc giá trị, nhưng sẽ không lưu kết quả.
  *
- * Results should be properly handled using another setting or callback.
+ * Kết quả nên được xử lý đúng cách bằng một cài đặt hoặc callback khác.
  *
  * @since 3.4.0
  *
@@ -19,11 +19,11 @@
 class WP_Customize_Filter_Setting extends WP_Customize_Setting {
 
 	/**
-	 * Saves the value of the setting, using the related API.
+	 * Lưu giá trị của cài đặt, sử dụng API liên quan.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param mixed $value The value to update.
+	 * @param mixed $value Giá trị cần cập nhật.
 	 */
 	public function update( $value ) {}
 }

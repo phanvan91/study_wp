@@ -1,22 +1,22 @@
 <?php
 /**
- * WordPress Theme Administration API
+ * API Quản trị Giao diện WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Removes a theme.
+ * Xóa một giao diện.
  *
  * @since 2.8.0
  *
- * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+ * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
  *
- * @param string $stylesheet Stylesheet of the theme to delete.
- * @param string $redirect   Redirect to page when complete.
- * @return bool|null|WP_Error True on success, false if `$stylesheet` is empty, WP_Error on failure.
- *                            Null if filesystem credentials are required to proceed.
+ * @param string $stylesheet Stylesheet của giao diện cần xóa.
+ * @param string $redirect   Chuyển hướng đến trang khi hoàn tất.
+ * @return bool|null|WP_Error True khi thành công, false nếu `$stylesheet` rỗng, WP_Error khi thất bại.
+ *                            Null nếu cần thông tin xác thực hệ thống tệp để tiếp tục.
  */
 function delete_theme( $stylesheet, $redirect = '' ) {
 	global $wp_filesystem;
@@ -45,7 +45,7 @@ function delete_theme( $stylesheet, $redirect = '' ) {
 
 	if ( ! WP_Filesystem( $credentials ) ) {
 		ob_start();
-		// Failed to connect. Error and request again.
+		// Kết nối thất bại. Hiển thị lỗi và yêu cầu lại.
 		request_filesystem_credentials( $redirect, '', true );
 		$data = ob_get_clean();
 
@@ -66,18 +66,18 @@ function delete_theme( $stylesheet, $redirect = '' ) {
 		return new WP_Error( 'fs_error', __( 'Filesystem error.' ), $wp_filesystem->errors );
 	}
 
-	// Get the base theme folder.
+	// Lấy thư mục giao diện gốc.
 	$themes_dir = $wp_filesystem->wp_themes_dir();
 	if ( empty( $themes_dir ) ) {
 		return new WP_Error( 'fs_no_themes_dir', __( 'Unable to locate WordPress theme directory.' ) );
 	}
 
 	/**
-	 * Fires immediately before a theme deletion attempt.
+	 * Kích hoạt ngay trước khi thử xóa giao diện.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $stylesheet Stylesheet of the theme to delete.
+	 * @param string $stylesheet Stylesheet của giao diện cần xóa.
 	 */
 	do_action( 'delete_theme', $stylesheet );
 
@@ -88,12 +88,12 @@ function delete_theme( $stylesheet, $redirect = '' ) {
 	$deleted    = $wp_filesystem->delete( $theme_dir, true );
 
 	/**
-	 * Fires immediately after a theme deletion attempt.
+	 * Kích hoạt ngay sau khi thử xóa giao diện.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $stylesheet Stylesheet of the theme to delete.
-	 * @param bool   $deleted    Whether the theme deletion was successful.
+	 * @param string $stylesheet Stylesheet của giao diện cần xóa.
+	 * @param bool   $deleted    Liệu việc xóa giao diện có thành công hay không.
 	 */
 	do_action( 'deleted_theme', $stylesheet, $deleted );
 
@@ -107,7 +107,7 @@ function delete_theme( $stylesheet, $redirect = '' ) {
 
 	$theme_translations = wp_get_installed_translations( 'themes' );
 
-	// Remove language files, silently.
+	// Xóa các tệp ngôn ngữ, không thông báo.
 	if ( ! empty( $theme_translations[ $stylesheet ] ) ) {
 		$translations = $theme_translations[ $stylesheet ];
 
@@ -123,42 +123,42 @@ function delete_theme( $stylesheet, $redirect = '' ) {
 		}
 	}
 
-	// Remove the theme from allowed themes on the network.
+	// Xóa giao diện khỏi danh sách giao diện được phép trên mạng.
 	if ( is_multisite() ) {
 		WP_Theme::network_disable_theme( $stylesheet );
 	}
 
-	// Clear theme caches.
+	// Xóa bộ nhớ đệm giao diện.
 	$theme->cache_delete();
 
-	// Force refresh of theme update information.
+	// Buộc làm mới thông tin cập nhật giao diện.
 	delete_site_transient( 'update_themes' );
 
 	return true;
 }
 
 /**
- * Gets the page templates available in this theme.
+ * Lấy các mẫu trang có sẵn trong giao diện này.
  *
  * @since 1.5.0
- * @since 4.7.0 Added the `$post_type` parameter.
+ * @since 4.7.0 Thêm tham số `$post_type`.
  *
- * @param WP_Post|null $post      Optional. The post being edited, provided for context.
- * @param string       $post_type Optional. Post type to get the templates for. Default 'page'.
- * @return string[] Array of template file names keyed by the template header name.
+ * @param WP_Post|null $post      Tùy chọn. Bài viết đang được chỉnh sửa, cung cấp cho ngữ cảnh.
+ * @param string       $post_type Tùy chọn. Loại bài viết để lấy mẫu. Mặc định 'page'.
+ * @return string[] Mảng tên tệp mẫu được đánh khóa bởi tên tiêu đề mẫu.
  */
 function get_page_templates( $post = null, $post_type = 'page' ) {
 	return array_flip( wp_get_theme()->get_page_templates( $post, $post_type ) );
 }
 
 /**
- * Tidies a filename for url display by the theme file editor.
+ * Làm gọn tên tệp để hiển thị URL bởi trình chỉnh sửa tệp giao diện.
  *
  * @since 2.9.0
  * @access private
  *
- * @param string $fullpath Full path to the theme file
- * @param string $containingfolder Path of the theme parent folder
+ * @param string $fullpath Đường dẫn đầy đủ đến tệp giao diện.
+ * @param string $containingfolder Đường dẫn của thư mục giao diện cha.
  * @return string
  */
 function _get_template_edit_filename( $fullpath, $containingfolder ) {
@@ -166,29 +166,29 @@ function _get_template_edit_filename( $fullpath, $containingfolder ) {
 }
 
 /**
- * Check if there is an update for a theme available.
+ * Kiểm tra xem có bản cập nhật giao diện hay không.
  *
- * Will display link, if there is an update available.
+ * Sẽ hiển thị liên kết, nếu có bản cập nhật.
  *
  * @since 2.7.0
  *
  * @see get_theme_update_available()
  *
- * @param WP_Theme $theme Theme data object.
+ * @param WP_Theme $theme Đối tượng dữ liệu giao diện.
  */
 function theme_update_available( $theme ) {
 	echo get_theme_update_available( $theme );
 }
 
 /**
- * Retrieves the update link if there is a theme update available.
+ * Lấy liên kết cập nhật nếu có bản cập nhật giao diện.
  *
- * Will return a link if there is an update available.
+ * Sẽ trả về liên kết nếu có bản cập nhật.
  *
  * @since 3.8.0
  *
- * @param WP_Theme $theme WP_Theme object.
- * @return string|false HTML for the update link, or false if invalid info was passed.
+ * @param WP_Theme $theme Đối tượng WP_Theme.
+ * @return string|false HTML cho liên kết cập nhật, hoặc false nếu thông tin không hợp lệ.
  */
 function get_theme_update_available( $theme ) {
 	static $themes_update = null;
@@ -219,7 +219,7 @@ function get_theme_update_available( $theme ) {
 				'height'    => 800,
 			),
 			$update['url']
-		); // Theme browser inside WP? Replace this. Also, theme preview JS will override this on the available list.
+		); // Trình duyệt giao diện trong WP? Thay thế cái này. Ngoài ra, JS xem trước giao diện sẽ ghi đè cái này trên danh sách có sẵn.
 		$update_url  = wp_nonce_url( admin_url( 'update.php?action=upgrade-theme&amp;theme=' . urlencode( $stylesheet ) ), 'upgrade-theme_' . $stylesheet );
 
 		if ( ! is_multisite() ) {
@@ -277,42 +277,42 @@ function get_theme_update_available( $theme ) {
 }
 
 /**
- * Retrieves list of WordPress theme features (aka theme tags).
+ * Lấy danh sách tính năng giao diện WordPress (hay còn gọi là thẻ giao diện).
  *
  * @since 3.1.0
- * @since 3.2.0 Added 'Gray' color and 'Featured Image Header', 'Featured Images',
- *              'Full Width Template', and 'Post Formats' features.
- * @since 3.5.0 Added 'Flexible Header' feature.
- * @since 3.8.0 Renamed 'Width' filter to 'Layout'.
- * @since 3.8.0 Renamed 'Fixed Width' and 'Flexible Width' options
- *              to 'Fixed Layout' and 'Fluid Layout'.
- * @since 3.8.0 Added 'Accessibility Ready' feature and 'Responsive Layout' option.
- * @since 3.9.0 Combined 'Layout' and 'Columns' filters.
- * @since 4.6.0 Removed 'Colors' filter.
- * @since 4.6.0 Added 'Grid Layout' option.
- *              Removed 'Fixed Layout', 'Fluid Layout', and 'Responsive Layout' options.
- * @since 4.6.0 Added 'Custom Logo' and 'Footer Widgets' features.
- *              Removed 'Blavatar' feature.
- * @since 4.6.0 Added 'Blog', 'E-Commerce', 'Education', 'Entertainment', 'Food & Drink',
- *              'Holiday', 'News', 'Photography', and 'Portfolio' subjects.
- *              Removed 'Photoblogging' and 'Seasonal' subjects.
- * @since 4.9.0 Reordered the filters from 'Layout', 'Features', 'Subject'
- *              to 'Subject', 'Features', 'Layout'.
- * @since 4.9.0 Removed 'BuddyPress', 'Custom Menu', 'Flexible Header',
+ * @since 3.2.0 Thêm màu 'Gray' và các tính năng 'Featured Image Header', 'Featured Images',
+ *              'Full Width Template', và 'Post Formats'.
+ * @since 3.5.0 Thêm tính năng 'Flexible Header'.
+ * @since 3.8.0 Đổi tên bộ lọc 'Width' thành 'Layout'.
+ * @since 3.8.0 Đổi tên tùy chọn 'Fixed Width' và 'Flexible Width'
+ *              thành 'Fixed Layout' và 'Fluid Layout'.
+ * @since 3.8.0 Thêm tính năng 'Accessibility Ready' và tùy chọn 'Responsive Layout'.
+ * @since 3.9.0 Gộp bộ lọc 'Layout' và 'Columns'.
+ * @since 4.6.0 Loại bỏ bộ lọc 'Colors'.
+ * @since 4.6.0 Thêm tùy chọn 'Grid Layout'.
+ *              Loại bỏ tùy chọn 'Fixed Layout', 'Fluid Layout', và 'Responsive Layout'.
+ * @since 4.6.0 Thêm tính năng 'Custom Logo' và 'Footer Widgets'.
+ *              Loại bỏ tính năng 'Blavatar'.
+ * @since 4.6.0 Thêm chủ đề 'Blog', 'E-Commerce', 'Education', 'Entertainment', 'Food & Drink',
+ *              'Holiday', 'News', 'Photography', và 'Portfolio'.
+ *              Loại bỏ chủ đề 'Photoblogging' và 'Seasonal'.
+ * @since 4.9.0 Sắp xếp lại bộ lọc từ 'Layout', 'Features', 'Subject'
+ *              thành 'Subject', 'Features', 'Layout'.
+ * @since 4.9.0 Loại bỏ tính năng 'BuddyPress', 'Custom Menu', 'Flexible Header',
  *              'Front Page Posting', 'Microformats', 'RTL Language Support',
- *              'Threaded Comments', and 'Translation Ready' features.
- * @since 5.5.0 Added 'Block Editor Patterns', 'Block Editor Styles',
- *              and 'Full Site Editing' features.
- * @since 5.5.0 Added 'Wide Blocks' layout option.
- * @since 5.8.1 Added 'Template Editing' feature.
- * @since 6.1.1 Replaced 'Full Site Editing' feature name with 'Site Editor'.
- * @since 6.2.0 Added 'Style Variations' feature.
+ *              'Threaded Comments', và 'Translation Ready'.
+ * @since 5.5.0 Thêm tính năng 'Block Editor Patterns', 'Block Editor Styles',
+ *              và 'Full Site Editing'.
+ * @since 5.5.0 Thêm tùy chọn bố cục 'Wide Blocks'.
+ * @since 5.8.1 Thêm tính năng 'Template Editing'.
+ * @since 6.1.1 Thay thế tên tính năng 'Full Site Editing' bằng 'Site Editor'.
+ * @since 6.2.0 Thêm tính năng 'Style Variations'.
  *
- * @param bool $api Optional. Whether try to fetch tags from the WordPress.org API. Defaults to true.
- * @return array Array of features keyed by category with translations keyed by slug.
+ * @param bool $api Tùy chọn. Có thử lấy thẻ từ API WordPress.org hay không. Mặc định true.
+ * @return array Mảng các tính năng được đánh khóa theo danh mục với bản dịch đánh khóa theo slug.
  */
 function get_theme_feature_list( $api = true ) {
-	// Hard-coded list is used if API is not accessible.
+	// Danh sách mã cứng được sử dụng nếu API không truy cập được.
 	$features = array(
 
 		__( 'Subject' )  => array(
@@ -391,7 +391,7 @@ function get_theme_feature_list( $api = true ) {
 
 	$wporg_features = array();
 
-	// Loop over the wp.org canonical list and apply translations.
+	// Lặp qua danh sách chính thức của wp.org và áp dụng bản dịch.
 	foreach ( (array) $feature_list as $feature_category => $feature_items ) {
 		if ( isset( $category_translations[ $feature_category ] ) ) {
 			$feature_category = $category_translations[ $feature_category ];
@@ -412,85 +412,82 @@ function get_theme_feature_list( $api = true ) {
 }
 
 /**
- * Retrieves theme installer pages from the WordPress.org Themes API.
+ * Lấy các trang cài đặt giao diện từ API Giao diện WordPress.org.
  *
- * It is possible for a theme to override the Themes API result with three
- * filters. Assume this is for themes, which can extend on the Theme Info to
- * offer more choices. This is very powerful and must be used with care, when
- * overriding the filters.
+ * Giao diện có thể ghi đè kết quả API Giao diện bằng ba bộ lọc. Giả sử đây là
+ * dành cho các giao diện, có thể mở rộng Thông tin Giao diện để cung cấp thêm lựa chọn.
+ * Tính năng này rất mạnh mẽ và phải được sử dụng cẩn thận khi ghi đè các bộ lọc.
  *
- * The first filter, {@see 'themes_api_args'}, is for the args and gives the action
- * as the second parameter. The hook for {@see 'themes_api_args'} must ensure that
- * an object is returned.
+ * Bộ lọc đầu tiên, {@see 'themes_api_args'}, dành cho các tham số và truyền action
+ * làm tham số thứ hai. Hook cho {@see 'themes_api_args'} phải đảm bảo trả về một đối tượng.
  *
- * The second filter, {@see 'themes_api'}, allows a plugin to override the WordPress.org
- * Theme API entirely. If `$action` is 'query_themes', 'theme_information', or 'feature_list',
- * an object MUST be passed. If `$action` is 'hot_tags', an array should be passed.
+ * Bộ lọc thứ hai, {@see 'themes_api'}, cho phép plugin ghi đè hoàn toàn API Giao diện
+ * WordPress.org. Nếu `$action` là 'query_themes', 'theme_information', hoặc 'feature_list',
+ * một đối tượng PHẢI được truyền. Nếu `$action` là 'hot_tags', một mảng nên được truyền.
  *
- * Finally, the third filter, {@see 'themes_api_result'}, makes it possible to filter the
- * response object or array, depending on the `$action` type.
+ * Cuối cùng, bộ lọc thứ ba, {@see 'themes_api_result'}, cho phép lọc đối tượng hoặc
+ * mảng phản hồi, tùy thuộc vào loại `$action`.
  *
- * Supported arguments per action:
+ * Các tham số được hỗ trợ theo từng action:
  *
- * | Argument Name      | 'query_themes' | 'theme_information' | 'hot_tags' | 'feature_list'   |
+ * | Tên tham số        | 'query_themes' | 'theme_information' | 'hot_tags' | 'feature_list'   |
  * | -------------------| :------------: | :-----------------: | :--------: | :--------------: |
- * | `$slug`            | No             |  Yes                | No         | No               |
- * | `$per_page`        | Yes            |  No                 | No         | No               |
- * | `$page`            | Yes            |  No                 | No         | No               |
- * | `$number`          | No             |  No                 | Yes        | No               |
- * | `$search`          | Yes            |  No                 | No         | No               |
- * | `$tag`             | Yes            |  No                 | No         | No               |
- * | `$author`          | Yes            |  No                 | No         | No               |
- * | `$user`            | Yes            |  No                 | No         | No               |
- * | `$browse`          | Yes            |  No                 | No         | No               |
- * | `$locale`          | Yes            |  Yes                | No         | No               |
- * | `$fields`          | Yes            |  Yes                | No         | No               |
+ * | `$slug`            | Không          |  Có                 | Không      | Không            |
+ * | `$per_page`        | Có             |  Không              | Không      | Không            |
+ * | `$page`            | Có             |  Không              | Không      | Không            |
+ * | `$number`          | Không          |  Không              | Có         | Không            |
+ * | `$search`          | Có             |  Không              | Không      | Không            |
+ * | `$tag`             | Có             |  Không              | Không      | Không            |
+ * | `$author`          | Có             |  Không              | Không      | Không            |
+ * | `$user`            | Có             |  Không              | Không      | Không            |
+ * | `$browse`          | Có             |  Không              | Không      | Không            |
+ * | `$locale`          | Có             |  Có                 | Không      | Không            |
+ * | `$fields`          | Có             |  Có                 | Không      | Không            |
  *
  * @since 2.8.0
  *
- * @param string       $action API action to perform: Accepts 'query_themes', 'theme_information',
- *                             'hot_tags' or 'feature_list'.
+ * @param string       $action Action API cần thực hiện: Chấp nhận 'query_themes', 'theme_information',
+ *                             'hot_tags' hoặc 'feature_list'.
  * @param array|object $args   {
- *     Optional. Array or object of arguments to serialize for the Themes API. Default empty array.
+ *     Tùy chọn. Mảng hoặc đối tượng tham số để tuần tự hóa cho API Giao diện. Mặc định mảng rỗng.
  *
- *     @type string  $slug     The theme slug. Default empty.
- *     @type int     $per_page Number of themes per page. Default 24.
- *     @type int     $page     Number of current page. Default 1.
- *     @type int     $number   Number of tags to be queried.
- *     @type string  $search   A search term. Default empty.
- *     @type string  $tag      Tag to filter themes. Default empty.
- *     @type string  $author   Username of an author to filter themes. Default empty.
- *     @type string  $user     Username to query for their favorites. Default empty.
- *     @type string  $browse   Browse view: 'featured', 'popular', 'updated', 'favorites'.
- *     @type string  $locale   Locale to provide context-sensitive results. Default is the value of get_locale().
+ *     @type string  $slug     Slug giao diện. Mặc định rỗng.
+ *     @type int     $per_page Số giao diện mỗi trang. Mặc định 24.
+ *     @type int     $page     Số trang hiện tại. Mặc định 1.
+ *     @type int     $number   Số thẻ cần truy vấn.
+ *     @type string  $search   Từ khóa tìm kiếm. Mặc định rỗng.
+ *     @type string  $tag      Thẻ để lọc giao diện. Mặc định rỗng.
+ *     @type string  $author   Tên tác giả để lọc giao diện. Mặc định rỗng.
+ *     @type string  $user     Tên người dùng để truy vấn yêu thích. Mặc định rỗng.
+ *     @type string  $browse   Chế độ duyệt: 'featured', 'popular', 'updated', 'favorites'.
+ *     @type string  $locale   Ngôn ngữ để cung cấp kết quả phù hợp ngữ cảnh. Mặc định là giá trị của get_locale().
  *     @type array   $fields   {
- *         Array of fields which should or should not be returned.
+ *         Mảng các trường nên hoặc không nên được trả về.
  *
- *         @type bool $description        Whether to return the theme full description. Default false.
- *         @type bool $sections           Whether to return the theme readme sections: description, installation,
- *                                        FAQ, screenshots, other notes, and changelog. Default false.
- *         @type bool $rating             Whether to return the rating in percent and total number of ratings.
- *                                        Default false.
- *         @type bool $ratings            Whether to return the number of rating for each star (1-5). Default false.
- *         @type bool $downloaded         Whether to return the download count. Default false.
- *         @type bool $downloadlink       Whether to return the download link for the package. Default false.
- *         @type bool $last_updated       Whether to return the date of the last update. Default false.
- *         @type bool $tags               Whether to return the assigned tags. Default false.
- *         @type bool $homepage           Whether to return the theme homepage link. Default false.
- *         @type bool $screenshots        Whether to return the screenshots. Default false.
- *         @type int  $screenshot_count   Number of screenshots to return. Default 1.
- *         @type bool $screenshot_url     Whether to return the URL of the first screenshot. Default false.
- *         @type bool $photon_screenshots Whether to return the screenshots via Photon. Default false.
- *         @type bool $template           Whether to return the slug of the parent theme. Default false.
- *         @type bool $parent             Whether to return the slug, name and homepage of the parent theme. Default false.
- *         @type bool $versions           Whether to return the list of all available versions. Default false.
- *         @type bool $theme_url          Whether to return theme's URL. Default false.
- *         @type bool $extended_author    Whether to return nicename or nicename and display name. Default false.
+ *         @type bool $description        Có trả về mô tả đầy đủ giao diện hay không. Mặc định false.
+ *         @type bool $sections           Có trả về các phần readme giao diện: mô tả, cài đặt,
+ *                                        FAQ, ảnh chụp màn hình, ghi chú khác, và nhật ký thay đổi. Mặc định false.
+ *         @type bool $rating             Có trả về đánh giá theo phần trăm và tổng số đánh giá. Mặc định false.
+ *         @type bool $ratings            Có trả về số đánh giá cho mỗi sao (1-5). Mặc định false.
+ *         @type bool $downloaded         Có trả về số lượt tải. Mặc định false.
+ *         @type bool $downloadlink       Có trả về liên kết tải gói. Mặc định false.
+ *         @type bool $last_updated       Có trả về ngày cập nhật cuối. Mặc định false.
+ *         @type bool $tags               Có trả về các thẻ được gán. Mặc định false.
+ *         @type bool $homepage           Có trả về liên kết trang chủ giao diện. Mặc định false.
+ *         @type bool $screenshots        Có trả về ảnh chụp màn hình. Mặc định false.
+ *         @type int  $screenshot_count   Số ảnh chụp màn hình cần trả về. Mặc định 1.
+ *         @type bool $screenshot_url     Có trả về URL ảnh chụp màn hình đầu tiên. Mặc định false.
+ *         @type bool $photon_screenshots Có trả về ảnh chụp màn hình qua Photon. Mặc định false.
+ *         @type bool $template           Có trả về slug giao diện cha. Mặc định false.
+ *         @type bool $parent             Có trả về slug, tên và trang chủ giao diện cha. Mặc định false.
+ *         @type bool $versions           Có trả về danh sách tất cả phiên bản có sẵn. Mặc định false.
+ *         @type bool $theme_url          Có trả về URL giao diện. Mặc định false.
+ *         @type bool $extended_author    Có trả về nicename hay nicename và tên hiển thị. Mặc định false.
  *     }
  * }
- * @return object|array|WP_Error Response object or array on success, WP_Error on failure. See the
- *         {@link https://developer.wordpress.org/reference/functions/themes_api/ function reference article}
- *         for more information on the make-up of possible return objects depending on the value of `$action`.
+ * @return object|array|WP_Error Đối tượng hoặc mảng phản hồi khi thành công, WP_Error khi thất bại. Xem
+ *         {@link https://developer.wordpress.org/reference/functions/themes_api/ bài viết tham chiếu hàm}
+ *         để biết thêm thông tin về cấu trúc đối tượng trả về có thể tùy thuộc vào giá trị của `$action`.
  */
 function themes_api( $action, $args = array() ) {
 	if ( is_array( $args ) ) {
@@ -512,32 +509,32 @@ function themes_api( $action, $args = array() ) {
 	}
 
 	/**
-	 * Filters arguments used to query for installer pages from the WordPress.org Themes API.
+	 * Lọc các tham số dùng để truy vấn trang cài đặt từ API Giao diện WordPress.org.
 	 *
-	 * Important: An object MUST be returned to this filter.
+	 * Quan trọng: MỘT đối tượng PHẢI được trả về cho bộ lọc này.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param object $args   Arguments used to query for installer pages from the WordPress.org Themes API.
-	 * @param string $action Requested action. Likely values are 'theme_information',
-	 *                       'feature_list', or 'query_themes'.
+	 * @param object $args   Các tham số dùng để truy vấn trang cài đặt từ API Giao diện WordPress.org.
+	 * @param string $action Action được yêu cầu. Các giá trị có thể là 'theme_information',
+	 *                       'feature_list', hoặc 'query_themes'.
 	 */
 	$args = apply_filters( 'themes_api_args', $args, $action );
 
 	/**
-	 * Filters whether to override the WordPress.org Themes API.
+	 * Lọc có ghi đè API Giao diện WordPress.org hay không.
 	 *
-	 * Returning a non-false value will effectively short-circuit the WordPress.org API request.
+	 * Trả về giá trị khác false sẽ bỏ qua yêu cầu API WordPress.org.
 	 *
-	 * If `$action` is 'query_themes', 'theme_information', or 'feature_list', an object MUST
-	 * be passed. If `$action` is 'hot_tags', an array should be passed.
+	 * Nếu `$action` là 'query_themes', 'theme_information', hoặc 'feature_list', một đối tượng PHẢI
+	 * được truyền. Nếu `$action` là 'hot_tags', một mảng nên được truyền.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param false|object|array $override Whether to override the WordPress.org Themes API. Default false.
-	 * @param string             $action   Requested action. Likely values are 'theme_information',
-	 *                                    'feature_list', or 'query_themes'.
-	 * @param object             $args     Arguments used to query for installer pages from the Themes API.
+	 * @param false|object|array $override Có ghi đè API Giao diện WordPress.org hay không. Mặc định false.
+	 * @param string             $action   Action được yêu cầu. Các giá trị có thể là 'theme_information',
+	 *                                    'feature_list', hoặc 'query_themes'.
+	 * @param object             $args     Các tham số dùng để truy vấn trang cài đặt từ API Giao diện.
 	 */
 	$res = apply_filters( 'themes_api', false, $action, $args );
 
@@ -591,7 +588,7 @@ function themes_api( $action, $args = array() ) {
 		} else {
 			$res = json_decode( wp_remote_retrieve_body( $request ), true );
 			if ( is_array( $res ) ) {
-				// Object casting is required in order to match the info/1.0 format.
+				// Ép kiểu đối tượng là bắt buộc để khớp với định dạng info/1.0.
 				$res = (object) $res;
 			} elseif ( null === $res ) {
 				$res = new WP_Error(
@@ -611,14 +608,14 @@ function themes_api( $action, $args = array() ) {
 		}
 
 		if ( ! is_wp_error( $res ) ) {
-			// Back-compat for info/1.2 API, upgrade the theme objects in query_themes to objects.
+			// Tương thích ngược cho API info/1.2, nâng cấp đối tượng giao diện trong query_themes thành đối tượng.
 			if ( 'query_themes' === $action ) {
 				foreach ( $res->themes as $i => $theme ) {
 					$res->themes[ $i ] = (object) $theme;
 				}
 			}
 
-			// Back-compat for info/1.2 API, downgrade the feature_list result back to an array.
+			// Tương thích ngược cho API info/1.2, hạ cấp kết quả feature_list trở lại mảng.
 			if ( 'feature_list' === $action ) {
 				$res = (array) $res;
 			}
@@ -626,42 +623,42 @@ function themes_api( $action, $args = array() ) {
 	}
 
 	/**
-	 * Filters the returned WordPress.org Themes API response.
+	 * Lọc phản hồi API Giao diện WordPress.org được trả về.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array|stdClass|WP_Error $res    WordPress.org Themes API response.
-	 * @param string                  $action Requested action. Likely values are 'theme_information',
-	 *                                        'feature_list', or 'query_themes'.
-	 * @param stdClass                $args   Arguments used to query for installer pages from the WordPress.org Themes API.
+	 * @param array|stdClass|WP_Error $res    Phản hồi API Giao diện WordPress.org.
+	 * @param string                  $action Action được yêu cầu. Các giá trị có thể là 'theme_information',
+	 *                                        'feature_list', hoặc 'query_themes'.
+	 * @param stdClass                $args   Các tham số dùng để truy vấn trang cài đặt từ API Giao diện WordPress.org.
 	 */
 	return apply_filters( 'themes_api_result', $res, $action, $args );
 }
 
 /**
- * Prepares themes for JavaScript.
+ * Chuẩn bị dữ liệu giao diện cho JavaScript.
  *
  * @since 3.8.0
  *
- * @param WP_Theme[] $themes Optional. Array of theme objects to prepare.
- *                           Defaults to all allowed themes.
+ * @param WP_Theme[] $themes Tùy chọn. Mảng đối tượng giao diện cần chuẩn bị.
+ *                           Mặc định là tất cả giao diện được phép.
  *
- * @return array An associative array of theme data, sorted by name.
+ * @return array Mảng kết hợp dữ liệu giao diện, sắp xếp theo tên.
  */
 function wp_prepare_themes_for_js( $themes = null ) {
 	$current_theme = get_stylesheet();
 
 	/**
-	 * Filters theme data before it is prepared for JavaScript.
+	 * Lọc dữ liệu giao diện trước khi được chuẩn bị cho JavaScript.
 	 *
-	 * Passing a non-empty array will result in wp_prepare_themes_for_js() returning
-	 * early with that value instead.
+	 * Truyền mảng không rỗng sẽ khiến wp_prepare_themes_for_js() trả về
+	 * sớm với giá trị đó.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param array           $prepared_themes An associative array of theme data. Default empty array.
-	 * @param WP_Theme[]|null $themes          An array of theme objects to prepare, if any.
-	 * @param string          $current_theme   The active theme slug.
+	 * @param array           $prepared_themes Mảng kết hợp dữ liệu giao diện. Mặc định mảng rỗng.
+	 * @param WP_Theme[]|null $themes          Mảng đối tượng giao diện cần chuẩn bị, nếu có.
+	 * @param string          $current_theme   Slug giao diện đang hoạt động.
 	 */
 	$prepared_themes = (array) apply_filters( 'pre_prepare_themes_for_js', array(), $themes, $current_theme );
 
@@ -669,7 +666,7 @@ function wp_prepare_themes_for_js( $themes = null ) {
 		return $prepared_themes;
 	}
 
-	// Make sure the active theme is listed first.
+	// Đảm bảo giao diện đang hoạt động được liệt kê đầu tiên.
 	$prepared_themes[ $current_theme ] = array();
 
 	if ( null === $themes ) {
@@ -747,8 +744,8 @@ function wp_prepare_themes_for_js( $themes = null ) {
 		} else {
 			$auto_update_supported = false;
 			/*
-			 * Create the expected payload for the auto_update_theme filter, this is the same data
-			 * as contained within $updates or $no_updates but used when the Theme is not known.
+			 * Tạo payload mong đợi cho bộ lọc auto_update_theme, đây là dữ liệu tương tự
+			 * như trong $updates hoặc $no_updates nhưng được sử dụng khi Giao diện không xác định.
 			 */
 			$auto_update_filter_payload = (object) array(
 				'theme'        => $slug,
@@ -799,19 +796,19 @@ function wp_prepare_themes_for_js( $themes = null ) {
 		);
 	}
 
-	// Remove 'delete' action if theme has an active child.
+	// Xóa action 'delete' nếu giao diện có giao diện con đang hoạt động.
 	if ( ! empty( $parents ) && array_key_exists( $current_theme, $parents ) ) {
 		unset( $prepared_themes[ $parents[ $current_theme ] ]['actions']['delete'] );
 	}
 
 	/**
-	 * Filters the themes prepared for JavaScript, for themes.php.
+	 * Lọc dữ liệu giao diện đã chuẩn bị cho JavaScript, dùng cho themes.php.
 	 *
-	 * Could be useful for changing the order, which is by name by default.
+	 * Có thể hữu ích để thay đổi thứ tự, mặc định sắp xếp theo tên.
 	 *
 	 * @since 3.8.0
 	 *
-	 * @param array $prepared_themes Array of theme data.
+	 * @param array $prepared_themes Mảng dữ liệu giao diện.
 	 */
 	$prepared_themes = apply_filters( 'wp_prepare_themes_for_js', $prepared_themes );
 	$prepared_themes = array_values( $prepared_themes );
@@ -819,7 +816,7 @@ function wp_prepare_themes_for_js( $themes = null ) {
 }
 
 /**
- * Prints JS templates for the theme-browsing UI in the Customizer.
+ * In mẫu JS cho giao diện duyệt trong Tùy biến.
  *
  * @since 4.2.0
  */
@@ -1100,19 +1097,19 @@ function customize_themes_print_templates() {
 }
 
 /**
- * Determines whether a theme is technically active but was paused while
- * loading.
+ * Xác định xem giao diện có đang hoạt động về mặt kỹ thuật nhưng bị tạm dừng khi
+ * tải hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm giao diện tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Thẻ Điều kiện} trong Sổ tay Nhà phát triển Giao diện.
  *
  * @since 5.2.0
  *
  * @global WP_Paused_Extensions_Storage $_paused_themes
  *
- * @param string $theme Path to the theme directory relative to the themes directory.
- * @return bool True, if in the list of paused themes. False, not in the list.
+ * @param string $theme Đường dẫn đến thư mục giao diện tương đối với thư mục giao diện.
+ * @return bool True nếu nằm trong danh sách giao diện bị tạm dừng. False nếu không.
  */
 function is_theme_paused( $theme ) {
 	if ( ! isset( $GLOBALS['_paused_themes'] ) ) {
@@ -1127,16 +1124,16 @@ function is_theme_paused( $theme ) {
 }
 
 /**
- * Gets the error that was recorded for a paused theme.
+ * Lấy lỗi đã được ghi lại cho giao diện bị tạm dừng.
  *
  * @since 5.2.0
  *
  * @global WP_Paused_Extensions_Storage $_paused_themes
  *
- * @param string $theme Path to the theme directory relative to the themes
- *                      directory.
- * @return array|false Array of error information as it was returned by
- *                     `error_get_last()`, or false if none was recorded.
+ * @param string $theme Đường dẫn đến thư mục giao diện tương đối với thư mục
+ *                      giao diện.
+ * @return array|false Mảng thông tin lỗi như được trả về bởi
+ *                     `error_get_last()`, hoặc false nếu không có lỗi nào được ghi lại.
  */
 function wp_get_theme_error( $theme ) {
 	if ( ! isset( $GLOBALS['_paused_themes'] ) ) {
@@ -1151,24 +1148,24 @@ function wp_get_theme_error( $theme ) {
 }
 
 /**
- * Tries to resume a single theme.
+ * Cố gắng tiếp tục một giao diện đơn lẻ.
  *
- * If a redirect was provided and a functions.php file was found, we first ensure that
- * functions.php file does not throw fatal errors anymore.
+ * Nếu URL chuyển hướng được cung cấp và tìm thấy tệp functions.php, trước tiên chúng ta đảm bảo
+ * rằng tệp functions.php không còn gây lỗi nghiêm trọng nữa.
  *
- * The way it works is by setting the redirection to the error before trying to
- * include the file. If the theme fails, then the redirection will not be overwritten
- * with the success message and the theme will not be resumed.
+ * Cách hoạt động là đặt chuyển hướng đến lỗi trước khi thử include tệp.
+ * Nếu giao diện thất bại, chuyển hướng sẽ không bị ghi đè bởi thông báo thành công
+ * và giao diện sẽ không được tiếp tục.
  *
  * @since 5.2.0
  *
- * @global string $wp_stylesheet_path Path to current theme's stylesheet directory.
- * @global string $wp_template_path   Path to current theme's template directory.
+ * @global string $wp_stylesheet_path Đường dẫn đến thư mục stylesheet của giao diện hiện tại.
+ * @global string $wp_template_path   Đường dẫn đến thư mục template của giao diện hiện tại.
  *
- * @param string $theme    Single theme to resume.
- * @param string $redirect Optional. URL to redirect to. Default empty string.
- * @return bool|WP_Error True on success, false if `$theme` was not paused,
- *                       `WP_Error` on failure.
+ * @param string $theme    Giao diện đơn lẻ cần tiếp tục.
+ * @param string $redirect Tùy chọn. URL để chuyển hướng đến. Mặc định chuỗi rỗng.
+ * @return bool|WP_Error True khi thành công, false nếu `$theme` không bị tạm dừng,
+ *                       `WP_Error` khi thất bại.
  */
 function resume_theme( $theme, $redirect = '' ) {
 	global $wp_stylesheet_path, $wp_template_path;
@@ -1176,8 +1173,8 @@ function resume_theme( $theme, $redirect = '' ) {
 	list( $extension ) = explode( '/', $theme );
 
 	/*
-	 * We'll override this later if the theme could be resumed without
-	 * creating a fatal error.
+	 * Chúng ta sẽ ghi đè cái này sau nếu giao diện có thể tiếp tục
+	 * mà không tạo lỗi nghiêm trọng.
 	 */
 	if ( ! empty( $redirect ) ) {
 		$functions_path = '';
@@ -1196,7 +1193,7 @@ function resume_theme( $theme, $redirect = '' ) {
 				)
 			);
 
-			// Load the theme's functions.php to test whether it throws a fatal error.
+			// Tải functions.php của giao diện để kiểm tra xem có gây lỗi nghiêm trọng không.
 			ob_start();
 			if ( ! defined( 'WP_SANDBOX_SCRAPING' ) ) {
 				define( 'WP_SANDBOX_SCRAPING', true );
@@ -1219,11 +1216,11 @@ function resume_theme( $theme, $redirect = '' ) {
 }
 
 /**
- * Renders an admin notice in case some themes have been paused due to errors.
+ * Hiển thị thông báo quản trị trong trường hợp một số giao diện bị tạm dừng do lỗi.
  *
  * @since 5.2.0
  *
- * @global string                       $pagenow        The filename of the current screen.
+ * @global string                       $pagenow        Tên tệp của màn hình hiện tại.
  * @global WP_Paused_Extensions_Storage $_paused_themes
  */
 function paused_themes_notice() {

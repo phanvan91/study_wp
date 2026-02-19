@@ -1,34 +1,34 @@
 <?php
 /**
- * WordPress Generic Request (POST/GET) Handler
+ * Trình xử lý Yêu cầu Chung (POST/GET) của WordPress
  *
- * Intended for form submission handling in themes and plugins.
+ * Dành cho việc xử lý gửi biểu mẫu trong theme và plugin.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** We are located in WordPress Administration Screens */
+/** Chúng ta đang ở trong Màn hình Quản trị WordPress */
 if ( ! defined( 'WP_ADMIN' ) ) {
 	define( 'WP_ADMIN', true );
 }
 
-/** Load WordPress Bootstrap */
+/** Tải phần Khởi động WordPress */
 require_once dirname( __DIR__ ) . '/wp-load.php';
 
-/** Allow for cross-domain requests (from the front end). */
+/** Cho phép các yêu cầu cross-domain (từ giao diện front-end). */
 send_origin_headers();
 
 require_once ABSPATH . 'wp-admin/includes/admin.php';
 
 nocache_headers();
 
-/** This action is documented in wp-admin/admin.php */
+/** Action này được ghi tài liệu trong wp-admin/admin.php */
 do_action( 'admin_init' );
 
 $action = ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : '';
 
-// Reject invalid parameters.
+// Từ chối các tham số không hợp lệ.
 if ( ! is_scalar( $action ) ) {
 	wp_die( '', 400 );
 }
@@ -36,22 +36,22 @@ if ( ! is_scalar( $action ) ) {
 if ( ! is_user_logged_in() ) {
 	if ( empty( $action ) ) {
 		/**
-		 * Fires on a non-authenticated admin post request where no action is supplied.
+		 * Kích hoạt khi có yêu cầu admin post chưa xác thực mà không có action nào được cung cấp.
 		 *
 		 * @since 2.6.0
 		 */
 		do_action( 'admin_post_nopriv' );
 	} else {
-		// If no action is registered, return a Bad Request response.
+		// Nếu không có action nào được đăng ký, trả về phản hồi Bad Request.
 		if ( ! has_action( "admin_post_nopriv_{$action}" ) ) {
 			wp_die( '', 400 );
 		}
 
 		/**
-		 * Fires on a non-authenticated admin post request for the given action.
+		 * Kích hoạt khi có yêu cầu admin post chưa xác thực cho action đã cho.
 		 *
-		 * The dynamic portion of the hook name, `$action`, refers to the given
-		 * request action.
+		 * Phần động của tên hook, `$action`, tham chiếu đến
+		 * action yêu cầu đã cho.
 		 *
 		 * @since 2.6.0
 		 */
@@ -60,22 +60,22 @@ if ( ! is_user_logged_in() ) {
 } else {
 	if ( empty( $action ) ) {
 		/**
-		 * Fires on an authenticated admin post request where no action is supplied.
+		 * Kích hoạt khi có yêu cầu admin post đã xác thực mà không có action nào được cung cấp.
 		 *
 		 * @since 2.6.0
 		 */
 		do_action( 'admin_post' );
 	} else {
-		// If no action is registered, return a Bad Request response.
+		// Nếu không có action nào được đăng ký, trả về phản hồi Bad Request.
 		if ( ! has_action( "admin_post_{$action}" ) ) {
 			wp_die( '', 400 );
 		}
 
 		/**
-		 * Fires on an authenticated admin post request for the given action.
+		 * Kích hoạt khi có yêu cầu admin post đã xác thực cho action đã cho.
 		 *
-		 * The dynamic portion of the hook name, `$action`, refers to the given
-		 * request action.
+		 * Phần động của tên hook, `$action`, tham chiếu đến
+		 * action yêu cầu đã cho.
 		 *
 		 * @since 2.6.0
 		 */

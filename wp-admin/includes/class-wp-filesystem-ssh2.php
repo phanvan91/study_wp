@@ -1,12 +1,12 @@
 <?php
 /**
- * WordPress Filesystem Class for implementing SSH2
+ * Lớp Hệ thống tệp WordPress triển khai SSH2
  *
- * To use this class you must follow these steps for PHP 5.2.6+
+ * Để sử dụng lớp này bạn phải làm theo các bước sau cho PHP 5.2.6+
  *
- * {@link http://kevin.vanzonneveld.net/techblog/article/make_ssh_connections_with_php/ - Installation Notes}
+ * {@link http://kevin.vanzonneveld.net/techblog/article/make_ssh_connections_with_php/ - Ghi chú cài đặt}
  *
- * Compile libssh2 (Note: Only 0.14 is officially working with PHP 5.2.6+ right now, But many users have found the latest versions work)
+ * Biên dịch libssh2 (Lưu ý: Chỉ phiên bản 0.14 chính thức hoạt động với PHP 5.2.6+ hiện tại, nhưng nhiều người dùng thấy các phiên bản mới nhất cũng hoạt động)
  *
  * cd /usr/src
  * wget https://www.libssh2.org/download/libssh2-0.14.tar.gz
@@ -15,18 +15,18 @@
  * ./configure
  * make all install
  *
- * Note: Do not leave the directory yet!
+ * Lưu ý: Chưa rời khỏi thư mục!
  *
- * Enter: pecl install -f ssh2
+ * Nhập: pecl install -f ssh2
  *
- * Copy the ssh.so file it creates to your PHP Module Directory.
- * Open up your PHP.INI file and look for where extensions are placed.
- * Add in your PHP.ini file: extension=ssh2.so
+ * Sao chép file ssh.so được tạo vào thư mục Module PHP của bạn.
+ * Mở file PHP.INI và tìm nơi đặt các extension.
+ * Thêm vào file PHP.ini: extension=ssh2.so
  *
- * Restart Apache!
- * Check phpinfo() streams to confirm that: ssh2.shell, ssh2.exec, ssh2.tunnel, ssh2.scp, ssh2.sftp  exist.
+ * Khởi động lại Apache!
+ * Kiểm tra phpinfo() streams để xác nhận rằng: ssh2.shell, ssh2.exec, ssh2.tunnel, ssh2.scp, ssh2.sftp tồn tại.
  *
- * Note: As of WordPress 2.8, this utilizes the PHP5+ function `stream_get_contents()`.
+ * Lưu ý: Kể từ WordPress 2.8, lớp này sử dụng hàm PHP5+ `stream_get_contents()`.
  *
  * @since 2.7.0
  *
@@ -54,7 +54,7 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	public $keys = false;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 2.7.0
 	 *
@@ -64,13 +64,13 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 		$this->method = 'ssh2';
 		$this->errors = new WP_Error();
 
-		// Check if possible to use ssh2 functions.
+		// Kiểm tra xem có thể sử dụng các hàm ssh2 không.
 		if ( ! extension_loaded( 'ssh2' ) ) {
 			$this->errors->add( 'no_ssh2_ext', __( 'The ssh2 PHP extension is not available' ) );
 			return;
 		}
 
-		// Set defaults:
+		// Đặt giá trị mặc định:
 		if ( empty( $opt['port'] ) ) {
 			$this->options['port'] = 22;
 		} else {
@@ -83,7 +83,7 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 			$this->options['hostname'] = $opt['hostname'];
 		}
 
-		// Check if the options provided are OK.
+		// Kiểm tra các tùy chọn được cung cấp có hợp lệ không.
 		if ( ! empty( $opt['public_key'] ) && ! empty( $opt['private_key'] ) ) {
 			$this->options['public_key']  = $opt['public_key'];
 			$this->options['private_key'] = $opt['private_key'];

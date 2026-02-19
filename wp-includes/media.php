@@ -1,24 +1,24 @@
 <?php
 /**
- * WordPress API for media display.
+ * API WordPress cho hiển thị media.
  *
  * @package WordPress
  * @subpackage Media
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
 /**
- * Retrieves additional image sizes.
+ * Lấy các kích thước hình ảnh bổ sung.
  *
  * @since 4.7.0
  *
  * @global array $_wp_additional_image_sizes
  *
- * @return array Additional images size data.
+ * @return array Dữ liệu kích thước hình ảnh bổ sung.
  */
 function wp_get_additional_image_sizes() {
 	global $_wp_additional_image_sizes;
@@ -31,35 +31,35 @@ function wp_get_additional_image_sizes() {
 }
 
 /**
- * Scales down the default size of an image.
+ * Thu nhỏ kích thước mặc định của hình ảnh.
  *
- * This is so that the image is a better fit for the editor and theme.
+ * Điều này giúp hình ảnh phù hợp hơn với trình soạn thảo và theme.
  *
- * The `$size` parameter accepts either an array or a string. The supported string
- * values are 'thumb' or 'thumbnail' for the given thumbnail size or defaults at
- * 128 width and 96 height in pixels. Also supported for the string value is
- * 'medium', 'medium_large' and 'full'. The 'full' isn't actually supported, but any value other
- * than the supported will result in the content_width size or 500 if that is
- * not set.
+ * Tham số `$size` chấp nhận mảng hoặc chuỗi. Các giá trị chuỗi được hỗ trợ
+ * là 'thumb' hoặc 'thumbnail' cho kích thước ảnh thu nhỏ đã cho hoặc mặc định
+ * 128 chiều rộng và 96 chiều cao tính bằng pixel. Cũng hỗ trợ giá trị chuỗi
+ * 'medium', 'medium_large' và 'full'. 'full' thực tế không được hỗ trợ, nhưng bất kỳ giá trị
+ * nào khác ngoài các giá trị được hỗ trợ sẽ dùng kích thước content_width hoặc 500 nếu
+ * chưa được thiết lập.
  *
- * Finally, there is a filter named {@see 'editor_max_image_size'}, that will be
- * called on the calculated array for width and height, respectively.
+ * Cuối cùng, có một bộ lọc tên {@see 'editor_max_image_size'}, sẽ được gọi
+ * trên mảng đã tính toán cho chiều rộng và chiều cao tương ứng.
  *
  * @since 2.5.0
  *
  * @global int $content_width
  *
- * @param int          $width   Width of the image in pixels.
- * @param int          $height  Height of the image in pixels.
- * @param string|int[] $size    Optional. Image size. Accepts any registered image size name, or an array
- *                              of width and height values in pixels (in that order). Default 'medium'.
- * @param string       $context Optional. Could be 'display' (like in a theme) or 'edit'
- *                              (like inserting into an editor). Default null.
+ * @param int          $width   Chiều rộng của hình ảnh tính bằng pixel.
+ * @param int          $height  Chiều cao của hình ảnh tính bằng pixel.
+ * @param string|int[] $size    Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                              giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'medium'.
+ * @param string       $context Tùy chọn. Có thể là 'display' (như trong theme) hoặc 'edit'
+ *                              (như chèn vào trình soạn thảo). Mặc định null.
  * @return int[] {
- *     An array of width and height values.
+ *     Mảng các giá trị chiều rộng và chiều cao.
  *
- *     @type int $0 The maximum width in pixels.
- *     @type int $1 The maximum height in pixels.
+ *     @type int $0 Chiều rộng tối đa tính bằng pixel.
+ *     @type int $1 Chiều cao tối đa tính bằng pixel.
  * }
  */
 function image_constrain_size_for_editor( $width, $height, $size = 'medium', $context = null ) {
@@ -77,7 +77,7 @@ function image_constrain_size_for_editor( $width, $height, $size = 'medium', $co
 	} elseif ( 'thumb' === $size || 'thumbnail' === $size ) {
 		$max_width  = (int) get_option( 'thumbnail_size_w' );
 		$max_height = (int) get_option( 'thumbnail_size_h' );
-		// Last chance thumbnail size defaults.
+		// Kích thước ảnh thu nhỏ mặc định cơ hội cuối cùng.
 		if ( ! $max_width && ! $max_height ) {
 			$max_width  = 128;
 			$max_height = 96;
@@ -95,10 +95,10 @@ function image_constrain_size_for_editor( $width, $height, $size = 'medium', $co
 		}
 	} elseif ( 'large' === $size ) {
 		/*
-		 * We're inserting a large size image into the editor. If it's a really
-		 * big image we'll scale it down to fit reasonably within the editor
-		 * itself, and within the theme's content width if it's known. The user
-		 * can resize it in the editor if they wish.
+		 * Chúng ta đang chèn hình ảnh kích thước lớn vào trình soạn thảo. Nếu đó là hình ảnh
+		 * thực sự lớn, chúng ta sẽ thu nhỏ nó để vừa hợp lý trong trình soạn thảo,
+		 * và trong chiều rộng nội dung của theme nếu biết. Người dùng
+		 * có thể thay đổi kích thước trong trình soạn thảo nếu muốn.
 		 */
 		$max_width  = (int) get_option( 'large_size_w' );
 		$max_height = (int) get_option( 'large_size_h' );
@@ -109,31 +109,31 @@ function image_constrain_size_for_editor( $width, $height, $size = 'medium', $co
 	} elseif ( ! empty( $_wp_additional_image_sizes ) && in_array( $size, array_keys( $_wp_additional_image_sizes ), true ) ) {
 		$max_width  = (int) $_wp_additional_image_sizes[ $size ]['width'];
 		$max_height = (int) $_wp_additional_image_sizes[ $size ]['height'];
-		// Only in admin. Assume that theme authors know what they're doing.
+		// Chỉ trong admin. Giả định rằng tác giả theme biết họ đang làm gì.
 		if ( (int) $content_width > 0 && 'edit' === $context ) {
 			$max_width = min( (int) $content_width, $max_width );
 		}
-	} else { // $size === 'full' has no constraint.
+	} else { // $size === 'full' không có ràng buộc.
 		$max_width  = $width;
 		$max_height = $height;
 	}
 
 	/**
-	 * Filters the maximum image size dimensions for the editor.
+	 * Lọc kích thước hình ảnh tối đa cho trình soạn thảo.
 	 *
 	 * @since 2.5.0
 	 *
 	 * @param int[]        $max_image_size {
-	 *     An array of width and height values.
+	 *     Mảng các giá trị chiều rộng và chiều cao.
 	 *
-	 *     @type int $0 The maximum width in pixels.
-	 *     @type int $1 The maximum height in pixels.
+	 *     @type int $0 Chiều rộng tối đa tính bằng pixel.
+	 *     @type int $1 Chiều cao tối đa tính bằng pixel.
 	 * }
-	 * @param string|int[] $size     Requested image size. Can be any registered image size name, or
-	 *                               an array of width and height values in pixels (in that order).
-	 * @param string       $context  The context the image is being resized for.
-	 *                               Possible values are 'display' (like in a theme)
-	 *                               or 'edit' (like inserting into an editor).
+	 * @param string|int[] $size     Kích thước hình ảnh yêu cầu. Có thể là tên kích thước ảnh đã đăng ký, hoặc
+	 *                               mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+	 * @param string       $context  Ngữ cảnh mà hình ảnh đang được thay đổi kích thước.
+	 *                               Các giá trị có thể là 'display' (như trong theme)
+	 *                               hoặc 'edit' (như chèn vào trình soạn thảo).
 	 */
 	list( $max_width, $max_height ) = apply_filters( 'editor_max_image_size', array( $max_width, $max_height ), $size, $context );
 
@@ -141,21 +141,21 @@ function image_constrain_size_for_editor( $width, $height, $size = 'medium', $co
 }
 
 /**
- * Retrieves width and height attributes using given width and height values.
+ * Lấy các thuộc tính chiều rộng và chiều cao từ các giá trị chiều rộng và chiều cao đã cho.
  *
- * Both attributes are required in the sense that both parameters must have a
- * value, but are optional in that if you set them to false or null, then they
- * will not be added to the returned string.
+ * Cả hai thuộc tính đều bắt buộc theo nghĩa cả hai tham số phải có giá trị,
+ * nhưng tùy chọn ở chỗ nếu bạn đặt chúng thành false hoặc null, thì chúng
+ * sẽ không được thêm vào chuỗi trả về.
  *
- * You can set the value using a string, but it will only take numeric values.
- * If you wish to put 'px' after the numbers, then it will be stripped out of
- * the return.
+ * Bạn có thể đặt giá trị bằng chuỗi, nhưng chỉ chấp nhận giá trị số.
+ * Nếu bạn muốn thêm 'px' sau các số, thì nó sẽ bị loại bỏ khỏi
+ * giá trị trả về.
  *
  * @since 2.5.0
  *
- * @param int|string $width  Image width in pixels.
- * @param int|string $height Image height in pixels.
- * @return string HTML attributes for width and, or height.
+ * @param int|string $width  Chiều rộng hình ảnh tính bằng pixel.
+ * @param int|string $height Chiều cao hình ảnh tính bằng pixel.
+ * @return string Thuộc tính HTML cho chiều rộng và/hoặc chiều cao.
  */
 function image_hwstring( $width, $height ) {
 	$out = '';
@@ -169,45 +169,45 @@ function image_hwstring( $width, $height ) {
 }
 
 /**
- * Scales an image to fit a particular size (such as 'thumb' or 'medium').
+ * Co giãn hình ảnh để vừa với kích thước cụ thể (như 'thumb' hoặc 'medium').
  *
- * The URL might be the original image, or it might be a resized version. This
- * function won't create a new resized copy, it will just return an already
- * resized one if it exists.
+ * URL có thể là hình ảnh gốc, hoặc có thể là phiên bản đã thay đổi kích thước. Hàm
+ * này sẽ không tạo bản sao đã thay đổi kích thước mới, mà chỉ trả về bản đã
+ * thay đổi kích thước nếu nó tồn tại.
  *
- * A plugin may use the {@see 'image_downsize'} filter to hook into and offer image
- * resizing services for images. The hook must return an array with the same
- * elements that are normally returned from the function.
+ * Plugin có thể sử dụng bộ lọc {@see 'image_downsize'} để hook vào và cung cấp
+ * dịch vụ thay đổi kích thước hình ảnh. Hook phải trả về mảng với các phần tử
+ * giống như thường được trả về từ hàm.
  *
  * @since 2.5.0
  *
- * @param int          $id   Attachment ID for image.
- * @param string|int[] $size Optional. Image size. Accepts any registered image size name, or an array
- *                           of width and height values in pixels (in that order). Default 'medium'.
+ * @param int          $id   ID đính kèm cho hình ảnh.
+ * @param string|int[] $size Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                           giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'medium'.
  * @return array|false {
- *     Array of image data, or boolean false if no image is available.
+ *     Mảng dữ liệu hình ảnh, hoặc boolean false nếu không có hình ảnh.
  *
- *     @type string $0 Image source URL.
- *     @type int    $1 Image width in pixels.
- *     @type int    $2 Image height in pixels.
- *     @type bool   $3 Whether the image is a resized image.
+ *     @type string $0 URL nguồn hình ảnh.
+ *     @type int    $1 Chiều rộng hình ảnh tính bằng pixel.
+ *     @type int    $2 Chiều cao hình ảnh tính bằng pixel.
+ *     @type bool   $3 Hình ảnh có phải là ảnh đã thay đổi kích thước hay không.
  * }
  */
 function image_downsize( $id, $size = 'medium' ) {
 	$is_image = wp_attachment_is_image( $id );
 
 	/**
-	 * Filters whether to preempt the output of image_downsize().
+	 * Lọc việc có bỏ qua đầu ra của image_downsize() hay không.
 	 *
-	 * Returning a truthy value from the filter will effectively short-circuit
-	 * down-sizing the image, returning that value instead.
+	 * Trả về giá trị truthy từ bộ lọc sẽ bỏ qua việc thu nhỏ hình ảnh,
+	 * trả về giá trị đó thay thế.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param bool|array   $downsize Whether to short-circuit the image downsize.
-	 * @param int          $id       Attachment ID for image.
-	 * @param string|int[] $size     Requested image size. Can be any registered image size name, or
-	 *                               an array of width and height values in pixels (in that order).
+	 * @param bool|array   $downsize Có bỏ qua việc thu nhỏ hình ảnh hay không.
+	 * @param int          $id       ID đính kèm cho hình ảnh.
+	 * @param string|int[] $size     Kích thước hình ảnh yêu cầu. Có thể là tên kích thước ảnh đã đăng ký, hoặc
+	 *                               mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 	 */
 	$out = apply_filters( 'image_downsize', false, $id, $size );
 
@@ -223,8 +223,8 @@ function image_downsize( $id, $size = 'medium' ) {
 	$img_url_basename = wp_basename( $img_url );
 
 	/*
-	 * If the file isn't an image, attempt to replace its URL with a rendered image from its meta.
-	 * Otherwise, a non-image type could be returned.
+	 * Nếu tệp không phải là hình ảnh, cố gắng thay thế URL của nó bằng hình ảnh được render từ meta.
+	 * Nếu không, một loại không phải hình ảnh có thể được trả về.
 	 */
 	if ( ! $is_image ) {
 		if ( ! empty( $meta['sizes']['full'] ) ) {
@@ -237,7 +237,7 @@ function image_downsize( $id, $size = 'medium' ) {
 		}
 	}
 
-	// Try for a new style intermediate size.
+	// Thử tìm kích thước trung gian kiểu mới.
 	$intermediate = image_get_intermediate_size( $id, $size );
 
 	if ( $intermediate ) {
@@ -246,7 +246,7 @@ function image_downsize( $id, $size = 'medium' ) {
 		$height          = $intermediate['height'];
 		$is_intermediate = true;
 	} elseif ( 'thumbnail' === $size && ! empty( $meta['thumb'] ) && is_string( $meta['thumb'] ) ) {
-		// Fall back to the old thumbnail.
+		// Dùng phương án dự phòng với ảnh thu nhỏ cũ.
 		$imagefile = get_attached_file( $id );
 		$thumbfile = str_replace( wp_basename( $imagefile ), wp_basename( $meta['thumb'] ), $imagefile );
 
@@ -263,13 +263,13 @@ function image_downsize( $id, $size = 'medium' ) {
 	}
 
 	if ( ! $width && ! $height && isset( $meta['width'], $meta['height'] ) ) {
-		// Any other type: use the real image.
+		// Bất kỳ loại nào khác: sử dụng hình ảnh thực.
 		$width  = $meta['width'];
 		$height = $meta['height'];
 	}
 
 	if ( $img_url ) {
-		// We have the actual image size, but might need to further constrain it if content_width is narrower.
+		// Chúng ta có kích thước hình ảnh thực tế, nhưng có thể cần ràng buộc thêm nếu content_width hẹp hơn.
 		list( $width, $height ) = image_constrain_size_for_editor( $width, $height, $size );
 
 		return array( $img_url, $width, $height, $is_intermediate );
@@ -279,22 +279,22 @@ function image_downsize( $id, $size = 'medium' ) {
 }
 
 /**
- * Registers a new image size.
+ * Đăng ký kích thước hình ảnh mới.
  *
  * @since 2.9.0
  *
- * @global array $_wp_additional_image_sizes Associative array of additional image sizes.
+ * @global array $_wp_additional_image_sizes Mảng kết hợp các kích thước hình ảnh bổ sung.
  *
- * @param string     $name   Image size identifier.
- * @param int        $width  Optional. Image width in pixels. Default 0.
- * @param int        $height Optional. Image height in pixels. Default 0.
+ * @param string     $name   Định danh kích thước hình ảnh.
+ * @param int        $width  Tùy chọn. Chiều rộng hình ảnh tính bằng pixel. Mặc định 0.
+ * @param int        $height Tùy chọn. Chiều cao hình ảnh tính bằng pixel. Mặc định 0.
  * @param bool|array $crop   {
- *     Optional. Image cropping behavior. If false, the image will be scaled (default).
- *     If true, image will be cropped to the specified dimensions using center positions.
- *     If an array, the image will be cropped using the array to specify the crop location:
+ *     Tùy chọn. Hành vi cắt xén hình ảnh. Nếu false, hình ảnh sẽ được co giãn (mặc định).
+ *     Nếu true, hình ảnh sẽ được cắt theo kích thước chỉ định sử dụng vị trí trung tâm.
+ *     Nếu là mảng, hình ảnh sẽ được cắt sử dụng mảng để chỉ định vị trí cắt:
  *
- *     @type string $0 The x crop position. Accepts 'left', 'center', or 'right'.
- *     @type string $1 The y crop position. Accepts 'top', 'center', or 'bottom'.
+ *     @type string $0 Vị trí cắt theo trục x. Chấp nhận 'left', 'center', hoặc 'right'.
+ *     @type string $1 Vị trí cắt theo trục y. Chấp nhận 'top', 'center', hoặc 'bottom'.
  * }
  */
 function add_image_size( $name, $width = 0, $height = 0, $crop = false ) {
@@ -308,12 +308,12 @@ function add_image_size( $name, $width = 0, $height = 0, $crop = false ) {
 }
 
 /**
- * Checks if an image size exists.
+ * Kiểm tra xem kích thước hình ảnh có tồn tại không.
  *
  * @since 3.9.0
  *
- * @param string $name The image size to check.
- * @return bool True if the image size exists, false if not.
+ * @param string $name Kích thước hình ảnh cần kiểm tra.
+ * @return bool True nếu kích thước hình ảnh tồn tại, false nếu không.
  */
 function has_image_size( $name ) {
 	$sizes = wp_get_additional_image_sizes();
@@ -321,14 +321,14 @@ function has_image_size( $name ) {
 }
 
 /**
- * Removes a new image size.
+ * Xóa một kích thước hình ảnh.
  *
  * @since 3.9.0
  *
  * @global array $_wp_additional_image_sizes
  *
- * @param string $name The image size to remove.
- * @return bool True if the image size was successfully removed, false on failure.
+ * @param string $name Kích thước hình ảnh cần xóa.
+ * @return bool True nếu kích thước hình ảnh đã được xóa thành công, false khi thất bại.
  */
 function remove_image_size( $name ) {
 	global $_wp_additional_image_sizes;
@@ -342,21 +342,21 @@ function remove_image_size( $name ) {
 }
 
 /**
- * Registers an image size for the post thumbnail.
+ * Đăng ký kích thước hình ảnh cho ảnh đại diện bài viết.
  *
  * @since 2.9.0
  *
- * @see add_image_size() for details on cropping behavior.
+ * @see add_image_size() để biết chi tiết về hành vi cắt xén.
  *
- * @param int        $width  Image width in pixels.
- * @param int        $height Image height in pixels.
+ * @param int        $width  Chiều rộng hình ảnh tính bằng pixel.
+ * @param int        $height Chiều cao hình ảnh tính bằng pixel.
  * @param bool|array $crop   {
- *     Optional. Image cropping behavior. If false, the image will be scaled (default).
- *     If true, image will be cropped to the specified dimensions using center positions.
- *     If an array, the image will be cropped using the array to specify the crop location:
+ *     Tùy chọn. Hành vi cắt xén hình ảnh. Nếu false, hình ảnh sẽ được co giãn (mặc định).
+ *     Nếu true, hình ảnh sẽ được cắt theo kích thước chỉ định sử dụng vị trí trung tâm.
+ *     Nếu là mảng, hình ảnh sẽ được cắt sử dụng mảng để chỉ định vị trí cắt:
  *
- *     @type string $0 The x crop position. Accepts 'left', 'center', or 'right'.
- *     @type string $1 The y crop position. Accepts 'top', 'center', or 'bottom'.
+ *     @type string $0 Vị trí cắt theo trục x. Chấp nhận 'left', 'center', hoặc 'right'.
+ *     @type string $1 Vị trí cắt theo trục y. Chấp nhận 'top', 'center', hoặc 'bottom'.
  * }
  */
 function set_post_thumbnail_size( $width = 0, $height = 0, $crop = false ) {
@@ -364,26 +364,25 @@ function set_post_thumbnail_size( $width = 0, $height = 0, $crop = false ) {
 }
 
 /**
- * Gets an img tag for an image attachment, scaling it down if requested.
+ * Lấy thẻ img cho đính kèm hình ảnh, thu nhỏ nếu được yêu cầu.
  *
- * The {@see 'get_image_tag_class'} filter allows for changing the class name for the
- * image without having to use regular expressions on the HTML content. The
- * parameters are: what WordPress will use for the class, the Attachment ID,
- * image align value, and the size the image should be.
+ * Bộ lọc {@see 'get_image_tag_class'} cho phép thay đổi tên class cho hình ảnh
+ * mà không cần sử dụng biểu thức chính quy trên nội dung HTML. Các tham số là:
+ * những gì WordPress sẽ sử dụng cho class, ID đính kèm,
+ * giá trị căn chỉnh hình ảnh, và kích thước hình ảnh cần hiển thị.
  *
- * The second filter, {@see 'get_image_tag'}, has the HTML content, which can then be
- * further manipulated by a plugin to change all attribute values and even HTML
- * content.
+ * Bộ lọc thứ hai, {@see 'get_image_tag'}, có nội dung HTML, sau đó có thể được
+ * plugin thao tác thêm để thay đổi tất cả giá trị thuộc tính và cả nội dung HTML.
  *
  * @since 2.5.0
  *
- * @param int          $id    Attachment ID.
- * @param string       $alt   Image description for the alt attribute.
- * @param string       $title Image description for the title attribute.
- * @param string       $align Part of the class name for aligning the image.
- * @param string|int[] $size  Optional. Image size. Accepts any registered image size name, or an array of
- *                            width and height values in pixels (in that order). Default 'medium'.
- * @return string HTML IMG element for given image attachment.
+ * @param int          $id    ID đính kèm.
+ * @param string       $alt   Mô tả hình ảnh cho thuộc tính alt.
+ * @param string       $title Mô tả hình ảnh cho thuộc tính title.
+ * @param string       $align Phần của tên class để căn chỉnh hình ảnh.
+ * @param string|int[] $size  Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                            giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'medium'.
+ * @return string Phần tử HTML IMG cho đính kèm hình ảnh đã cho.
  */
 function get_image_tag( $id, $alt, $title, $align, $size = 'medium' ) {
 
@@ -396,53 +395,53 @@ function get_image_tag( $id, $alt, $title, $align, $size = 'medium' ) {
 	$class      = 'align' . esc_attr( $align ) . ' size-' . esc_attr( $size_class ) . ' wp-image-' . $id;
 
 	/**
-	 * Filters the value of the attachment's image tag class attribute.
+	 * Lọc giá trị thuộc tính class của thẻ hình ảnh đính kèm.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param string       $class CSS class name or space-separated list of classes.
-	 * @param int          $id    Attachment ID.
-	 * @param string       $align Part of the class name for aligning the image.
-	 * @param string|int[] $size  Requested image size. Can be any registered image size name, or
-	 *                            an array of width and height values in pixels (in that order).
+	 * @param string       $class Tên class CSS hoặc danh sách các class phân cách bằng dấu cách.
+	 * @param int          $id    ID đính kèm.
+	 * @param string       $align Phần của tên class để căn chỉnh hình ảnh.
+	 * @param string|int[] $size  Kích thước hình ảnh yêu cầu. Có thể là tên kích thước ảnh đã đăng ký, hoặc
+	 *                            mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 	 */
 	$class = apply_filters( 'get_image_tag_class', $class, $id, $align, $size );
 
 	$html = '<img src="' . esc_url( $img_src ) . '" alt="' . esc_attr( $alt ) . '" ' . $title . $hwstring . 'class="' . $class . '" />';
 
 	/**
-	 * Filters the HTML content for the image tag.
+	 * Lọc nội dung HTML cho thẻ hình ảnh.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param string       $html  HTML content for the image.
-	 * @param int          $id    Attachment ID.
-	 * @param string       $alt   Image description for the alt attribute.
-	 * @param string       $title Image description for the title attribute.
-	 * @param string       $align Part of the class name for aligning the image.
-	 * @param string|int[] $size  Requested image size. Can be any registered image size name, or
-	 *                            an array of width and height values in pixels (in that order).
+	 * @param string       $html  Nội dung HTML cho hình ảnh.
+	 * @param int          $id    ID đính kèm.
+	 * @param string       $alt   Mô tả hình ảnh cho thuộc tính alt.
+	 * @param string       $title Mô tả hình ảnh cho thuộc tính title.
+	 * @param string       $align Phần của tên class để căn chỉnh hình ảnh.
+	 * @param string|int[] $size  Kích thước hình ảnh yêu cầu. Có thể là tên kích thước ảnh đã đăng ký, hoặc
+	 *                            mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 	 */
 	return apply_filters( 'get_image_tag', $html, $id, $alt, $title, $align, $size );
 }
 
 /**
- * Calculates the new dimensions for a down-sampled image.
+ * Tính toán kích thước mới cho hình ảnh đã thu nhỏ.
  *
- * If either width or height are empty, no constraint is applied on
- * that dimension.
+ * Nếu chiều rộng hoặc chiều cao rỗng, không có ràng buộc nào được áp dụng
+ * cho chiều đó.
  *
  * @since 2.5.0
  *
- * @param int $current_width  Current width of the image.
- * @param int $current_height Current height of the image.
- * @param int $max_width      Optional. Max width in pixels to constrain to. Default 0.
- * @param int $max_height     Optional. Max height in pixels to constrain to. Default 0.
+ * @param int $current_width  Chiều rộng hiện tại của hình ảnh.
+ * @param int $current_height Chiều cao hiện tại của hình ảnh.
+ * @param int $max_width      Tùy chọn. Chiều rộng tối đa tính bằng pixel để ràng buộc. Mặc định 0.
+ * @param int $max_height     Tùy chọn. Chiều cao tối đa tính bằng pixel để ràng buộc. Mặc định 0.
  * @return int[] {
- *     An array of width and height values.
+ *     Mảng các giá trị chiều rộng và chiều cao.
  *
- *     @type int $0 The width in pixels.
- *     @type int $1 The height in pixels.
+ *     @type int $0 Chiều rộng tính bằng pixel.
+ *     @type int $1 Chiều cao tính bằng pixel.
  * }
  */
 function wp_constrain_dimensions( $current_width, $current_height, $max_width = 0, $max_height = 0 ) {
@@ -465,106 +464,106 @@ function wp_constrain_dimensions( $current_width, $current_height, $max_width = 
 		$did_height   = true;
 	}
 
-	// Calculate the larger/smaller ratios.
+	// Tính toán tỷ lệ lớn hơn/nhỏ hơn.
 	$smaller_ratio = min( $width_ratio, $height_ratio );
 	$larger_ratio  = max( $width_ratio, $height_ratio );
 
 	if ( (int) round( $current_width * $larger_ratio ) > $max_width || (int) round( $current_height * $larger_ratio ) > $max_height ) {
-		// The larger ratio is too big. It would result in an overflow.
+		// Tỷ lệ lớn hơn quá lớn. Nó sẽ gây ra tràn.
 		$ratio = $smaller_ratio;
 	} else {
-		// The larger ratio fits, and is likely to be a more "snug" fit.
+		// Tỷ lệ lớn hơn vừa vặn, và có khả năng là phù hợp hơn.
 		$ratio = $larger_ratio;
 	}
 
-	// Very small dimensions may result in 0, 1 should be the minimum.
+	// Kích thước rất nhỏ có thể cho kết quả 0, 1 nên là giá trị tối thiểu.
 	$w = max( 1, (int) round( $current_width * $ratio ) );
 	$h = max( 1, (int) round( $current_height * $ratio ) );
 
 	/*
-	 * Sometimes, due to rounding, we'll end up with a result like this:
-	 * 465x700 in a 177x177 box is 117x176... a pixel short.
-	 * We also have issues with recursive calls resulting in an ever-changing result.
-	 * Constraining to the result of a constraint should yield the original result.
-	 * Thus we look for dimensions that are one pixel shy of the max value and bump them up.
+	 * Đôi khi, do làm tròn, chúng ta sẽ nhận được kết quả như thế này:
+	 * 465x700 trong hộp 177x177 là 117x176... thiếu một pixel.
+	 * Chúng ta cũng gặp vấn đề với các cuộc gọi đệ quy tạo ra kết quả thay đổi liên tục.
+	 * Ràng buộc theo kết quả của ràng buộc nên cho ra kết quả ban đầu.
+	 * Vì vậy chúng ta tìm các kích thước thiếu một pixel so với giá trị tối đa và tăng chúng lên.
 	 */
 
-	// Note: $did_width means it is possible $smaller_ratio == $width_ratio.
+	// Lưu ý: $did_width có nghĩa là có thể $smaller_ratio == $width_ratio.
 	if ( $did_width && $w === $max_width - 1 ) {
-		$w = $max_width; // Round it up.
+		$w = $max_width; // Làm tròn lên.
 	}
 
-	// Note: $did_height means it is possible $smaller_ratio == $height_ratio.
+	// Lưu ý: $did_height có nghĩa là có thể $smaller_ratio == $height_ratio.
 	if ( $did_height && $h === $max_height - 1 ) {
-		$h = $max_height; // Round it up.
+		$h = $max_height; // Làm tròn lên.
 	}
 
 	/**
-	 * Filters dimensions to constrain down-sampled images to.
+	 * Lọc kích thước để ràng buộc hình ảnh đã thu nhỏ.
 	 *
 	 * @since 4.1.0
 	 *
 	 * @param int[] $dimensions     {
-	 *     An array of width and height values.
+	 *     Mảng các giá trị chiều rộng và chiều cao.
 	 *
-	 *     @type int $0 The width in pixels.
-	 *     @type int $1 The height in pixels.
+	 *     @type int $0 Chiều rộng tính bằng pixel.
+	 *     @type int $1 Chiều cao tính bằng pixel.
 	 * }
-	 * @param int   $current_width  The current width of the image.
-	 * @param int   $current_height The current height of the image.
-	 * @param int   $max_width      The maximum width permitted.
-	 * @param int   $max_height     The maximum height permitted.
+	 * @param int   $current_width  Chiều rộng hiện tại của hình ảnh.
+	 * @param int   $current_height Chiều cao hiện tại của hình ảnh.
+	 * @param int   $max_width      Chiều rộng tối đa cho phép.
+	 * @param int   $max_height     Chiều cao tối đa cho phép.
 	 */
 	return apply_filters( 'wp_constrain_dimensions', array( $w, $h ), $current_width, $current_height, $max_width, $max_height );
 }
 
 /**
- * Retrieves calculated resize dimensions for use in WP_Image_Editor.
+ * Lấy kích thước thay đổi đã tính toán để sử dụng trong WP_Image_Editor.
  *
- * Calculates dimensions and coordinates for a resized image that fits
- * within a specified width and height.
+ * Tính toán kích thước và tọa độ cho hình ảnh đã thay đổi kích thước
+ * vừa trong chiều rộng và chiều cao chỉ định.
  *
  * @since 2.5.0
  *
- * @param int        $orig_w Original width in pixels.
- * @param int        $orig_h Original height in pixels.
- * @param int        $dest_w New width in pixels.
- * @param int        $dest_h New height in pixels.
+ * @param int        $orig_w Chiều rộng gốc tính bằng pixel.
+ * @param int        $orig_h Chiều cao gốc tính bằng pixel.
+ * @param int        $dest_w Chiều rộng mới tính bằng pixel.
+ * @param int        $dest_h Chiều cao mới tính bằng pixel.
  * @param bool|array $crop   {
- *     Optional. Image cropping behavior. If false, the image will be scaled (default).
- *     If true, image will be cropped to the specified dimensions using center positions.
- *     If an array, the image will be cropped using the array to specify the crop location:
+ *     Tùy chọn. Hành vi cắt xén hình ảnh. Nếu false, hình ảnh sẽ được co giãn (mặc định).
+ *     Nếu true, hình ảnh sẽ được cắt theo kích thước chỉ định sử dụng vị trí trung tâm.
+ *     Nếu là mảng, hình ảnh sẽ được cắt sử dụng mảng để chỉ định vị trí cắt:
  *
- *     @type string $0 The x crop position. Accepts 'left', 'center', or 'right'.
- *     @type string $1 The y crop position. Accepts 'top', 'center', or 'bottom'.
+ *     @type string $0 Vị trí cắt theo trục x. Chấp nhận 'left', 'center', hoặc 'right'.
+ *     @type string $1 Vị trí cắt theo trục y. Chấp nhận 'top', 'center', hoặc 'bottom'.
  * }
- * @return array|false Returned array matches parameters for `imagecopyresampled()`. False on failure.
+ * @return array|false Mảng trả về khớp với các tham số cho `imagecopyresampled()`. False khi thất bại.
  */
 function image_resize_dimensions( $orig_w, $orig_h, $dest_w, $dest_h, $crop = false ) {
 
 	if ( $orig_w <= 0 || $orig_h <= 0 ) {
 		return false;
 	}
-	// At least one of $dest_w or $dest_h must be specific.
+	// Ít nhất một trong $dest_w hoặc $dest_h phải được chỉ định.
 	if ( $dest_w <= 0 && $dest_h <= 0 ) {
 		return false;
 	}
 
 	/**
-	 * Filters whether to preempt calculating the image resize dimensions.
+	 * Lọc việc có bỏ qua tính toán kích thước thay đổi hình ảnh hay không.
 	 *
-	 * Returning a non-null value from the filter will effectively short-circuit
-	 * image_resize_dimensions(), returning that value instead.
+	 * Trả về giá trị non-null từ bộ lọc sẽ bỏ qua
+	 * image_resize_dimensions(), trả về giá trị đó thay thế.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param null|mixed $null   Whether to preempt output of the resize dimensions.
-	 * @param int        $orig_w Original width in pixels.
-	 * @param int        $orig_h Original height in pixels.
-	 * @param int        $dest_w New width in pixels.
-	 * @param int        $dest_h New height in pixels.
-	 * @param bool|array $crop   Whether to crop image to specified width and height or resize.
-	 *                           An array can specify positioning of the crop area. Default false.
+	 * @param null|mixed $null   Có bỏ qua đầu ra kích thước thay đổi hay không.
+	 * @param int        $orig_w Chiều rộng gốc tính bằng pixel.
+	 * @param int        $orig_h Chiều cao gốc tính bằng pixel.
+	 * @param int        $dest_w Chiều rộng mới tính bằng pixel.
+	 * @param int        $dest_h Chiều cao mới tính bằng pixel.
+	 * @param bool|array $crop   Có cắt xén hình ảnh theo kích thước chỉ định hay thay đổi kích thước.
+	 *                           Mảng có thể chỉ định vị trí vùng cắt. Mặc định false.
 	 */
 	$output = apply_filters( 'image_resize_dimensions', null, $orig_w, $orig_h, $dest_w, $dest_h, $crop );
 
@@ -572,7 +571,7 @@ function image_resize_dimensions( $orig_w, $orig_h, $dest_w, $dest_h, $crop = fa
 		return $output;
 	}
 
-	// Stop if the destination size is larger than the original image dimensions.
+	// Dừng lại nếu kích thước đích lớn hơn kích thước hình ảnh gốc.
 	if ( empty( $dest_h ) ) {
 		if ( $orig_w < $dest_w ) {
 			return false;
@@ -589,12 +588,12 @@ function image_resize_dimensions( $orig_w, $orig_h, $dest_w, $dest_h, $crop = fa
 
 	if ( $crop ) {
 		/*
-		 * Crop the largest possible portion of the original image that we can size to $dest_w x $dest_h.
-		 * Note that the requested crop dimensions are used as a maximum bounding box for the original image.
-		 * If the original image's width or height is less than the requested width or height
-		 * only the greater one will be cropped.
-		 * For example when the original image is 600x300, and the requested crop dimensions are 400x400,
-		 * the resulting image will be 400x300.
+		 * Cắt phần lớn nhất có thể của hình ảnh gốc mà chúng ta có thể thay đổi kích thước thành $dest_w x $dest_h.
+		 * Lưu ý rằng kích thước cắt yêu cầu được sử dụng như hộp giới hạn tối đa cho hình ảnh gốc.
+		 * Nếu chiều rộng hoặc chiều cao của hình ảnh gốc nhỏ hơn chiều rộng hoặc chiều cao yêu cầu
+		 * thì chỉ chiều lớn hơn sẽ được cắt.
+		 * Ví dụ khi hình ảnh gốc là 600x300, và kích thước cắt yêu cầu là 400x400,
+		 * hình ảnh kết quả sẽ là 400x300.
 		 */
 		$aspect_ratio = $orig_w / $orig_h;
 		$new_w        = min( $dest_w, $orig_w );
@@ -635,7 +634,7 @@ function image_resize_dimensions( $orig_w, $orig_h, $dest_w, $dest_h, $crop = fa
 			$s_y = floor( ( $orig_h - $crop_h ) / 2 );
 		}
 	} else {
-		// Resize using $dest_w x $dest_h as a maximum bounding box.
+		// Thay đổi kích thước sử dụng $dest_w x $dest_h làm hộp giới hạn tối đa.
 		$crop_w = $orig_w;
 		$crop_h = $orig_h;
 
@@ -646,17 +645,17 @@ function image_resize_dimensions( $orig_w, $orig_h, $dest_w, $dest_h, $crop = fa
 	}
 
 	if ( wp_fuzzy_number_match( $new_w, $orig_w ) && wp_fuzzy_number_match( $new_h, $orig_h ) ) {
-		// The new size has virtually the same dimensions as the original image.
+		// Kích thước mới thực tế có cùng kích thước với hình ảnh gốc.
 
 		/**
-		 * Filters whether to proceed with making an image sub-size with identical dimensions
-		 * with the original/source image. Differences of 1px may be due to rounding and are ignored.
+		 * Lọc việc có tiếp tục tạo kích thước phụ hình ảnh với kích thước giống hệt
+		 * hình ảnh gốc/nguồn hay không. Chênh lệch 1px có thể do làm tròn và được bỏ qua.
 		 *
 		 * @since 5.3.0
 		 *
-		 * @param bool $proceed The filtered value.
-		 * @param int  $orig_w  Original image width.
-		 * @param int  $orig_h  Original image height.
+		 * @param bool $proceed Giá trị đã lọc.
+		 * @param int  $orig_w  Chiều rộng hình ảnh gốc.
+		 * @param int  $orig_h  Chiều cao hình ảnh gốc.
 		 */
 		$proceed = (bool) apply_filters( 'wp_image_resize_identical_dimensions', false, $orig_w, $orig_h );
 
@@ -666,33 +665,33 @@ function image_resize_dimensions( $orig_w, $orig_h, $dest_w, $dest_h, $crop = fa
 	}
 
 	/*
-	 * The return array matches the parameters to imagecopyresampled().
+	 * Mảng trả về khớp với các tham số cho imagecopyresampled().
 	 * int dst_x, int dst_y, int src_x, int src_y, int dst_w, int dst_h, int src_w, int src_h
 	 */
 	return array( 0, 0, (int) $s_x, (int) $s_y, (int) $new_w, (int) $new_h, (int) $crop_w, (int) $crop_h );
 }
 
 /**
- * Resizes an image to make a thumbnail or intermediate size.
+ * Thay đổi kích thước hình ảnh để tạo ảnh thu nhỏ hoặc kích thước trung gian.
  *
- * The returned array has the file size, the image width, and image height. The
- * {@see 'image_make_intermediate_size'} filter can be used to hook in and change the
- * values of the returned array. The only parameter is the resized file path.
+ * Mảng trả về có kích thước tệp, chiều rộng hình ảnh và chiều cao hình ảnh.
+ * Bộ lọc {@see 'image_make_intermediate_size'} có thể được sử dụng để hook vào và thay đổi
+ * giá trị của mảng trả về. Tham số duy nhất là đường dẫn tệp đã thay đổi kích thước.
  *
  * @since 2.5.0
  *
- * @param string     $file   File path.
- * @param int        $width  Image width.
- * @param int        $height Image height.
+ * @param string     $file   Đường dẫn tệp.
+ * @param int        $width  Chiều rộng hình ảnh.
+ * @param int        $height Chiều cao hình ảnh.
  * @param bool|array $crop   {
- *     Optional. Image cropping behavior. If false, the image will be scaled (default).
- *     If true, image will be cropped to the specified dimensions using center positions.
- *     If an array, the image will be cropped using the array to specify the crop location:
+ *     Tùy chọn. Hành vi cắt xén hình ảnh. Nếu false, hình ảnh sẽ được co giãn (mặc định).
+ *     Nếu true, hình ảnh sẽ được cắt theo kích thước chỉ định sử dụng vị trí trung tâm.
+ *     Nếu là mảng, hình ảnh sẽ được cắt sử dụng mảng để chỉ định vị trí cắt:
  *
- *     @type string $0 The x crop position. Accepts 'left', 'center', or 'right'.
- *     @type string $1 The y crop position. Accepts 'top', 'center', or 'bottom'.
+ *     @type string $0 Vị trí cắt theo trục x. Chấp nhận 'left', 'center', hoặc 'right'.
+ *     @type string $1 Vị trí cắt theo trục y. Chấp nhận 'top', 'center', hoặc 'bottom'.
  * }
- * @return array|false Metadata array on success. False if no image was created.
+ * @return array|false Mảng metadata khi thành công. False nếu không có hình ảnh nào được tạo.
  */
 function image_make_intermediate_size( $file, $width, $height, $crop = false ) {
 	if ( $width || $height ) {
@@ -713,20 +712,20 @@ function image_make_intermediate_size( $file, $width, $height, $crop = false ) {
 }
 
 /**
- * Helper function to test if aspect ratios for two images match.
+ * Hàm trợ giúp để kiểm tra xem tỷ lệ khung hình của hai hình ảnh có khớp không.
  *
  * @since 4.6.0
  *
- * @param int $source_width  Width of the first image in pixels.
- * @param int $source_height Height of the first image in pixels.
- * @param int $target_width  Width of the second image in pixels.
- * @param int $target_height Height of the second image in pixels.
- * @return bool True if aspect ratios match within 1px. False if not.
+ * @param int $source_width  Chiều rộng hình ảnh thứ nhất tính bằng pixel.
+ * @param int $source_height Chiều cao hình ảnh thứ nhất tính bằng pixel.
+ * @param int $target_width  Chiều rộng hình ảnh thứ hai tính bằng pixel.
+ * @param int $target_height Chiều cao hình ảnh thứ hai tính bằng pixel.
+ * @return bool True nếu tỷ lệ khung hình khớp trong phạm vi 1px. False nếu không.
  */
 function wp_image_matches_ratio( $source_width, $source_height, $target_width, $target_height ) {
 	/*
-	 * To test for varying crops, we constrain the dimensions of the larger image
-	 * to the dimensions of the smaller image and see if they match.
+	 * Để kiểm tra các kiểu cắt xén khác nhau, chúng ta ràng buộc kích thước của hình ảnh lớn hơn
+	 * theo kích thước của hình ảnh nhỏ hơn và xem chúng có khớp không.
 	 */
 	if ( $source_width > $target_width ) {
 		$constrained_size = wp_constrain_dimensions( $source_width, $source_height, $target_width );
@@ -736,45 +735,45 @@ function wp_image_matches_ratio( $source_width, $source_height, $target_width, $
 		$expected_size    = array( $source_width, $source_height );
 	}
 
-	// If the image dimensions are within 1px of the expected size, we consider it a match.
+	// Nếu kích thước hình ảnh nằm trong phạm vi 1px so với kích thước mong đợi, chúng ta coi là khớp.
 	$matched = ( wp_fuzzy_number_match( $constrained_size[0], $expected_size[0] ) && wp_fuzzy_number_match( $constrained_size[1], $expected_size[1] ) );
 
 	return $matched;
 }
 
 /**
- * Retrieves the image's intermediate size (resized) path, width, and height.
+ * Lấy đường dẫn, chiều rộng và chiều cao kích thước trung gian (đã thay đổi kích thước) của hình ảnh.
  *
- * The $size parameter can be an array with the width and height respectively.
- * If the size matches the 'sizes' metadata array for width and height, then it
- * will be used. If there is no direct match, then the nearest image size larger
- * than the specified size will be used. If nothing is found, then the function
- * will break out and return false.
+ * Tham số $size có thể là mảng với chiều rộng và chiều cao tương ứng.
+ * Nếu kích thước khớp với mảng metadata 'sizes' cho chiều rộng và chiều cao, thì nó
+ * sẽ được sử dụng. Nếu không có kết quả khớp trực tiếp, thì kích thước hình ảnh gần nhất
+ * lớn hơn kích thước chỉ định sẽ được sử dụng. Nếu không tìm thấy gì, hàm
+ * sẽ thoát ra và trả về false.
  *
- * The metadata 'sizes' is used for compatible sizes that can be used for the
- * parameter $size value.
+ * Metadata 'sizes' được sử dụng cho các kích thước tương thích có thể được dùng cho
+ * giá trị tham số $size.
  *
- * The url path will be given, when the $size parameter is a string.
+ * Đường dẫn URL sẽ được cung cấp khi tham số $size là chuỗi.
  *
- * If you are passing an array for the $size, you should consider using
- * add_image_size() so that a cropped version is generated. It's much more
- * efficient than having to find the closest-sized image and then having the
- * browser scale down the image.
+ * Nếu bạn truyền mảng cho $size, bạn nên cân nhắc sử dụng
+ * add_image_size() để phiên bản đã cắt xén được tạo ra. Nó hiệu quả hơn nhiều
+ * so với việc phải tìm hình ảnh có kích thước gần nhất rồi để
+ * trình duyệt thu nhỏ hình ảnh.
  *
  * @since 2.5.0
  *
- * @param int          $post_id Attachment ID.
- * @param string|int[] $size    Optional. Image size. Accepts any registered image size name, or an array
- *                              of width and height values in pixels (in that order). Default 'thumbnail'.
+ * @param int          $post_id ID đính kèm.
+ * @param string|int[] $size    Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                              giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
  * @return array|false {
- *     Array of file relative path, width, and height on success. Additionally includes absolute
- *     path and URL if registered size is passed to `$size` parameter. False on failure.
+ *     Mảng đường dẫn tương đối, chiều rộng và chiều cao khi thành công. Ngoài ra bao gồm
+ *     đường dẫn tuyệt đối và URL nếu kích thước đã đăng ký được truyền cho tham số `$size`. False khi thất bại.
  *
- *     @type string $file   Filename of image.
- *     @type int    $width  Width of image in pixels.
- *     @type int    $height Height of image in pixels.
- *     @type string $path   Path of image relative to uploads directory.
- *     @type string $url    URL of image.
+ *     @type string $file   Tên tệp hình ảnh.
+ *     @type int    $width  Chiều rộng hình ảnh tính bằng pixel.
+ *     @type int    $height Chiều cao hình ảnh tính bằng pixel.
+ *     @type string $path   Đường dẫn hình ảnh tương đối so với thư mục uploads.
+ *     @type string $url    URL của hình ảnh.
  * }
  */
 function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
@@ -786,7 +785,7 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 
 	$data = array();
 
-	// Find the best match when '$size' is an array.
+	// Tìm kết quả khớp tốt nhất khi '$size' là mảng.
 	if ( is_array( $size ) ) {
 		$candidates = array();
 
@@ -796,15 +795,15 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 		}
 
 		foreach ( $imagedata['sizes'] as $_size => $data ) {
-			// If there's an exact match to an existing image size, short circuit.
+			// Nếu có kết quả khớp chính xác với kích thước hình ảnh hiện có, bỏ qua.
 			if ( (int) $data['width'] === (int) $size[0] && (int) $data['height'] === (int) $size[1] ) {
 				$candidates[ $data['width'] * $data['height'] ] = $data;
 				break;
 			}
 
-			// If it's not an exact match, consider larger sizes with the same aspect ratio.
+			// Nếu không khớp chính xác, xem xét các kích thước lớn hơn với cùng tỷ lệ khung hình.
 			if ( $data['width'] >= $size[0] && $data['height'] >= $size[1] ) {
-				// If '0' is passed to either size, we test ratios against the original file.
+				// Nếu '0' được truyền cho bất kỳ kích thước nào, chúng ta kiểm tra tỷ lệ so với tệp gốc.
 				if ( 0 === $size[0] || 0 === $size[1] ) {
 					$same_ratio = wp_image_matches_ratio( $data['width'], $data['height'], $imagedata['width'], $imagedata['height'] );
 				} else {
@@ -818,16 +817,16 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 		}
 
 		if ( ! empty( $candidates ) ) {
-			// Sort the array by size if we have more than one candidate.
+			// Sắp xếp mảng theo kích thước nếu có nhiều hơn một ứng viên.
 			if ( 1 < count( $candidates ) ) {
 				ksort( $candidates );
 			}
 
 			$data = array_shift( $candidates );
 			/*
-			* When the size requested is smaller than the thumbnail dimensions, we
-			* fall back to the thumbnail size to maintain backward compatibility with
-			* pre 4.6 versions of WordPress.
+			* Khi kích thước yêu cầu nhỏ hơn kích thước ảnh thu nhỏ, chúng ta
+			* quay lại dùng kích thước ảnh thu nhỏ để duy trì tương thích ngược với
+			* các phiên bản WordPress trước 4.6.
 			*/
 		} elseif ( ! empty( $imagedata['sizes']['thumbnail'] ) && $imagedata['sizes']['thumbnail']['width'] >= $size[0] && $imagedata['sizes']['thumbnail']['width'] >= $size[1] ) {
 			$data = $imagedata['sizes']['thumbnail'];
@@ -835,19 +834,19 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 			return false;
 		}
 
-		// Constrain the width and height attributes to the requested values.
+		// Ràng buộc thuộc tính chiều rộng và chiều cao theo giá trị yêu cầu.
 		list( $data['width'], $data['height'] ) = image_constrain_size_for_editor( $data['width'], $data['height'], $size );
 
 	} elseif ( ! empty( $imagedata['sizes'][ $size ] ) ) {
 		$data = $imagedata['sizes'][ $size ];
 	}
 
-	// If we still don't have a match at this point, return false.
+	// Nếu tại thời điểm này vẫn không có kết quả khớp, trả về false.
 	if ( empty( $data ) ) {
 		return false;
 	}
 
-	// Include the full filesystem path of the intermediate file.
+	// Bao gồm đường dẫn hệ thống tệp đầy đủ của tệp trung gian.
 	if ( empty( $data['path'] ) && ! empty( $data['file'] ) && ! empty( $imagedata['file'] ) ) {
 		$file_url     = wp_get_attachment_url( $post_id );
 		$data['path'] = path_join( dirname( $imagedata['file'] ), $data['file'] );
@@ -855,27 +854,27 @@ function image_get_intermediate_size( $post_id, $size = 'thumbnail' ) {
 	}
 
 	/**
-	 * Filters the output of image_get_intermediate_size()
+	 * Lọc đầu ra của image_get_intermediate_size()
 	 *
 	 * @since 4.4.0
 	 *
 	 * @see image_get_intermediate_size()
 	 *
-	 * @param array        $data    Array of file relative path, width, and height on success. May also include
-	 *                              file absolute path and URL.
-	 * @param int          $post_id The ID of the image attachment.
-	 * @param string|int[] $size    Requested image size. Can be any registered image size name, or
-	 *                              an array of width and height values in pixels (in that order).
+	 * @param array        $data    Mảng đường dẫn tương đối, chiều rộng và chiều cao khi thành công. Cũng có thể bao gồm
+	 *                              đường dẫn tuyệt đối và URL.
+	 * @param int          $post_id ID của đính kèm hình ảnh.
+	 * @param string|int[] $size    Kích thước hình ảnh yêu cầu. Có thể là tên kích thước ảnh đã đăng ký, hoặc
+	 *                              mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 	 */
 	return apply_filters( 'image_get_intermediate_size', $data, $post_id, $size );
 }
 
 /**
- * Gets the available intermediate image size names.
+ * Lấy các tên kích thước hình ảnh trung gian có sẵn.
  *
  * @since 3.0.0
  *
- * @return string[] An array of image size names.
+ * @return string[] Mảng các tên kích thước hình ảnh.
  */
 function get_intermediate_image_sizes() {
 	$default_sizes    = array( 'thumbnail', 'medium', 'medium_large', 'large' );
@@ -886,25 +885,25 @@ function get_intermediate_image_sizes() {
 	}
 
 	/**
-	 * Filters the list of intermediate image sizes.
+	 * Lọc danh sách các kích thước hình ảnh trung gian.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string[] $default_sizes An array of intermediate image size names. Defaults
-	 *                                are 'thumbnail', 'medium', 'medium_large', 'large'.
+	 * @param string[] $default_sizes Mảng các tên kích thước hình ảnh trung gian. Mặc định
+	 *                                là 'thumbnail', 'medium', 'medium_large', 'large'.
 	 */
 	return apply_filters( 'intermediate_image_sizes', $default_sizes );
 }
 
 /**
- * Returns a normalized list of all currently registered image sub-sizes.
+ * Trả về danh sách đã chuẩn hóa của tất cả kích thước phụ hình ảnh đã đăng ký hiện tại.
  *
  * @since 5.3.0
  * @uses wp_get_additional_image_sizes()
  * @uses get_intermediate_image_sizes()
  *
- * @return array[] Associative array of arrays of image sub-size information,
- *                 keyed by image size name.
+ * @return array[] Mảng kết hợp các mảng thông tin kích thước phụ hình ảnh,
+ *                 được đánh chỉ mục theo tên kích thước hình ảnh.
  */
 function wp_get_registered_image_subsizes() {
 	$additional_sizes = wp_get_additional_image_sizes();
@@ -918,10 +917,10 @@ function wp_get_registered_image_subsizes() {
 		);
 
 		if ( isset( $additional_sizes[ $size_name ]['width'] ) ) {
-			// For sizes added by plugins and themes.
+			// Cho các kích thước được thêm bởi plugin và theme.
 			$size_data['width'] = (int) $additional_sizes[ $size_name ]['width'];
 		} else {
-			// For default sizes set in options.
+			// Cho các kích thước mặc định được thiết lập trong tùy chọn.
 			$size_data['width'] = (int) get_option( "{$size_name}_size_w" );
 		}
 
@@ -932,7 +931,7 @@ function wp_get_registered_image_subsizes() {
 		}
 
 		if ( empty( $size_data['width'] ) && empty( $size_data['height'] ) ) {
-			// This size isn't set.
+			// Kích thước này chưa được thiết lập.
 			continue;
 		}
 
@@ -953,25 +952,25 @@ function wp_get_registered_image_subsizes() {
 }
 
 /**
- * Retrieves an image to represent an attachment.
+ * Lấy hình ảnh đại diện cho đính kèm.
  *
  * @since 2.5.0
  *
- * @param int          $attachment_id Image attachment ID.
- * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array of
- *                                    width and height values in pixels (in that order). Default 'thumbnail'.
- * @param bool         $icon          Optional. Whether the image should fall back to a mime type icon. Default false.
+ * @param int          $attachment_id ID đính kèm hình ảnh.
+ * @param string|int[] $size          Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                                    giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
+ * @param bool         $icon          Tùy chọn. Có nên dùng biểu tượng loại MIME làm phương án dự phòng hay không. Mặc định false.
  * @return array|false {
- *     Array of image data, or boolean false if no image is available.
+ *     Mảng dữ liệu hình ảnh, hoặc boolean false nếu không có hình ảnh.
  *
- *     @type string $0 Image source URL.
- *     @type int    $1 Image width in pixels.
- *     @type int    $2 Image height in pixels.
- *     @type bool   $3 Whether the image is a resized image.
+ *     @type string $0 URL nguồn hình ảnh.
+ *     @type int    $1 Chiều rộng hình ảnh tính bằng pixel.
+ *     @type int    $2 Chiều cao hình ảnh tính bằng pixel.
+ *     @type bool   $3 Hình ảnh có phải là ảnh đã thay đổi kích thước hay không.
  * }
  */
 function wp_get_attachment_image_src( $attachment_id, $size = 'thumbnail', $icon = false ) {
-	// Get a thumbnail or intermediate image if there is one.
+	// Lấy ảnh thu nhỏ hoặc ảnh trung gian nếu có.
 	$image = image_downsize( $attachment_id, $size );
 	if ( ! $image ) {
 		$src = false;
@@ -980,7 +979,7 @@ function wp_get_attachment_image_src( $attachment_id, $size = 'thumbnail', $icon
 			$src = wp_mime_type_icon( $attachment_id, '.svg' );
 
 			if ( $src ) {
-				/** This filter is documented in wp-includes/post.php */
+				/** Bộ lọc này được ghi chú trong wp-includes/post.php */
 				$icon_dir = apply_filters( 'icon_dir', ABSPATH . WPINC . '/images/media' );
 
 				$src_file = $icon_dir . '/' . wp_basename( $src );
@@ -990,7 +989,7 @@ function wp_get_attachment_image_src( $attachment_id, $size = 'thumbnail', $icon
 				$ext = strtolower( substr( $src_file, -4 ) );
 
 				if ( '.svg' === $ext ) {
-					// SVG does not have true dimensions, so this assigns width and height directly.
+					// SVG không có kích thước thực, nên gán chiều rộng và chiều cao trực tiếp.
 					$width  = 48;
 					$height = 64;
 				} else {
@@ -1004,63 +1003,63 @@ function wp_get_attachment_image_src( $attachment_id, $size = 'thumbnail', $icon
 		}
 	}
 	/**
-	 * Filters the attachment image source result.
+	 * Lọc kết quả nguồn hình ảnh đính kèm.
 	 *
 	 * @since 4.3.0
 	 *
 	 * @param array|false  $image         {
-	 *     Array of image data, or boolean false if no image is available.
+	 *     Mảng dữ liệu hình ảnh, hoặc boolean false nếu không có hình ảnh.
 	 *
-	 *     @type string $0 Image source URL.
-	 *     @type int    $1 Image width in pixels.
-	 *     @type int    $2 Image height in pixels.
-	 *     @type bool   $3 Whether the image is a resized image.
+	 *     @type string $0 URL nguồn hình ảnh.
+	 *     @type int    $1 Chiều rộng hình ảnh tính bằng pixel.
+	 *     @type int    $2 Chiều cao hình ảnh tính bằng pixel.
+	 *     @type bool   $3 Hình ảnh có phải là ảnh đã thay đổi kích thước hay không.
 	 * }
-	 * @param int          $attachment_id Image attachment ID.
-	 * @param string|int[] $size          Requested image size. Can be any registered image size name, or
-	 *                                    an array of width and height values in pixels (in that order).
-	 * @param bool         $icon          Whether the image should be treated as an icon.
+	 * @param int          $attachment_id ID đính kèm hình ảnh.
+	 * @param string|int[] $size          Kích thước hình ảnh yêu cầu. Có thể là tên kích thước ảnh đã đăng ký, hoặc
+	 *                                    mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+	 * @param bool         $icon          Có nên xử lý hình ảnh như biểu tượng hay không.
 	 */
 	return apply_filters( 'wp_get_attachment_image_src', $image, $attachment_id, $size, $icon );
 }
 
 /**
- * Gets an HTML img element representing an image attachment.
+ * Lấy phần tử HTML img đại diện cho đính kèm hình ảnh.
  *
- * While `$size` will accept an array, it is better to register a size with
- * add_image_size() so that a cropped version is generated. It's much more
- * efficient than having to find the closest-sized image and then having the
- * browser scale down the image.
+ * Mặc dù `$size` chấp nhận mảng, tốt hơn nên đăng ký kích thước với
+ * add_image_size() để phiên bản đã cắt xén được tạo ra. Nó hiệu quả hơn nhiều
+ * so với việc phải tìm hình ảnh có kích thước gần nhất rồi để
+ * trình duyệt thu nhỏ hình ảnh.
  *
  * @since 2.5.0
- * @since 4.4.0 The `$srcset` and `$sizes` attributes were added.
- * @since 5.5.0 The `$loading` attribute was added.
- * @since 6.1.0 The `$decoding` attribute was added.
+ * @since 4.4.0 Thuộc tính `$srcset` và `$sizes` đã được thêm.
+ * @since 5.5.0 Thuộc tính `$loading` đã được thêm.
+ * @since 6.1.0 Thuộc tính `$decoding` đã được thêm.
  *
- * @param int          $attachment_id Image attachment ID.
- * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array
- *                                    of width and height values in pixels (in that order). Default 'thumbnail'.
- * @param bool         $icon          Optional. Whether the image should be treated as an icon. Default false.
+ * @param int          $attachment_id ID đính kèm hình ảnh.
+ * @param string|int[] $size          Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                                    giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
+ * @param bool         $icon          Tùy chọn. Có nên xử lý hình ảnh như biểu tượng hay không. Mặc định false.
  * @param string|array $attr {
- *     Optional. Attributes for the image markup.
+ *     Tùy chọn. Các thuộc tính cho markup hình ảnh.
  *
- *     @type string       $src           Image attachment URL.
- *     @type string       $class         CSS class name or space-separated list of classes.
- *                                       Default `attachment-$size_class size-$size_class`,
- *                                       where `$size_class` is the image size being requested.
- *     @type string       $alt           Image description for the alt attribute.
- *     @type string       $srcset        The 'srcset' attribute value.
- *     @type string       $sizes         The 'sizes' attribute value.
- *     @type string|false $loading       The 'loading' attribute value. Passing a value of false
- *                                       will result in the attribute being omitted for the image.
- *                                       Default determined by {@see wp_get_loading_optimization_attributes()}.
- *     @type string       $decoding      The 'decoding' attribute value. Possible values are
- *                                       'async' (default), 'sync', or 'auto'. Passing false or an empty
- *                                       string will result in the attribute being omitted.
- *     @type string       $fetchpriority The 'fetchpriority' attribute value, whether `high`, `low`, or `auto`.
- *                                       Default determined by {@see wp_get_loading_optimization_attributes()}.
+ *     @type string       $src           URL đính kèm hình ảnh.
+ *     @type string       $class         Tên class CSS hoặc danh sách các class phân cách bằng dấu cách.
+ *                                       Mặc định `attachment-$size_class size-$size_class`,
+ *                                       trong đó `$size_class` là kích thước hình ảnh được yêu cầu.
+ *     @type string       $alt           Mô tả hình ảnh cho thuộc tính alt.
+ *     @type string       $srcset        Giá trị thuộc tính 'srcset'.
+ *     @type string       $sizes         Giá trị thuộc tính 'sizes'.
+ *     @type string|false $loading       Giá trị thuộc tính 'loading'. Truyền giá trị false
+ *                                       sẽ khiến thuộc tính bị bỏ qua cho hình ảnh.
+ *                                       Mặc định được xác định bởi {@see wp_get_loading_optimization_attributes()}.
+ *     @type string       $decoding      Giá trị thuộc tính 'decoding'. Các giá trị có thể là
+ *                                       'async' (mặc định), 'sync', hoặc 'auto'. Truyền false hoặc chuỗi rỗng
+ *                                       sẽ khiến thuộc tính bị bỏ qua.
+ *     @type string       $fetchpriority Giá trị thuộc tính 'fetchpriority', là `high`, `low`, hoặc `auto`.
+ *                                       Mặc định được xác định bởi {@see wp_get_loading_optimization_attributes()}.
  * }
- * @return string HTML img element or empty string on failure.
+ * @return string Phần tử HTML img hoặc chuỗi rỗng khi thất bại.
  */
 function wp_get_attachment_image( $attachment_id, $size = 'thumbnail', $icon = false, $attr = '' ) {
 	$html  = '';
@@ -1083,11 +1082,11 @@ function wp_get_attachment_image( $attachment_id, $size = 'thumbnail', $icon = f
 		);
 
 		/**
-		 * Filters the context in which wp_get_attachment_image() is used.
+		 * Lọc ngữ cảnh mà wp_get_attachment_image() được sử dụng.
 		 *
 		 * @since 6.3.0
 		 *
-		 * @param string $context The context. Default 'wp_get_attachment_image'.
+		 * @param string $context Ngữ cảnh. Mặc định 'wp_get_attachment_image'.
 		 */
 		$context        = apply_filters( 'wp_get_attachment_image_context', 'wp_get_attachment_image' );
 		$attr           = wp_parse_args( $attr, $default_attr );
@@ -1100,28 +1099,28 @@ function wp_get_attachment_image( $attachment_id, $size = 'thumbnail', $icon = f
 			$context
 		);
 
-		// Add loading optimization attributes if not available.
+		// Thêm thuộc tính tối ưu hóa tải nếu chưa có.
 		$attr = array_merge( $attr, $loading_optimization_attr );
 
-		// Omit the `decoding` attribute if the value is invalid according to the spec.
+		// Bỏ qua thuộc tính `decoding` nếu giá trị không hợp lệ theo đặc tả.
 		if ( empty( $attr['decoding'] ) || ! in_array( $attr['decoding'], array( 'async', 'sync', 'auto' ), true ) ) {
 			unset( $attr['decoding'] );
 		}
 
 		/*
-		 * If the default value of `lazy` for the `loading` attribute is overridden
-		 * to omit the attribute for this image, ensure it is not included.
+		 * Nếu giá trị mặc định `lazy` của thuộc tính `loading` bị ghi đè
+		 * để bỏ qua thuộc tính cho hình ảnh này, đảm bảo nó không được bao gồm.
 		 */
 		if ( isset( $attr['loading'] ) && ! $attr['loading'] ) {
 			unset( $attr['loading'] );
 		}
 
-		// If the `fetchpriority` attribute is overridden and set to false or an empty string.
+		// Nếu thuộc tính `fetchpriority` bị ghi đè và được đặt thành false hoặc chuỗi rỗng.
 		if ( isset( $attr['fetchpriority'] ) && ! $attr['fetchpriority'] ) {
 			unset( $attr['fetchpriority'] );
 		}
 
-		// Generate 'srcset' and 'sizes' if not already present.
+		// Tạo 'srcset' và 'sizes' nếu chưa có.
 		if ( empty( $attr['srcset'] ) ) {
 			$image_meta = wp_get_attachment_metadata( $attachment_id );
 
@@ -1140,10 +1139,10 @@ function wp_get_attachment_image( $attachment_id, $size = 'thumbnail', $icon = f
 			}
 		}
 
-		/** This filter is documented in wp-includes/media.php */
+		/** Bộ lọc này được ghi chú trong wp-includes/media.php */
 		$add_auto_sizes = apply_filters( 'wp_img_tag_add_auto_sizes', true );
 
-		// Adds 'auto' to the sizes attribute if applicable.
+		// Thêm 'auto' vào thuộc tính sizes nếu áp dụng được.
 		if (
 			$add_auto_sizes &&
 			isset( $attr['loading'] ) &&
@@ -1155,15 +1154,15 @@ function wp_get_attachment_image( $attachment_id, $size = 'thumbnail', $icon = f
 		}
 
 		/**
-		 * Filters the list of attachment image attributes.
+		 * Lọc danh sách thuộc tính hình ảnh đính kèm.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param string[]     $attr       Array of attribute values for the image markup, keyed by attribute name.
-		 *                                 See wp_get_attachment_image().
-		 * @param WP_Post      $attachment Image attachment post.
-		 * @param string|int[] $size       Requested image size. Can be any registered image size name, or
-		 *                                 an array of width and height values in pixels (in that order).
+		 * @param string[]     $attr       Mảng giá trị thuộc tính cho markup hình ảnh, đánh chỉ mục theo tên thuộc tính.
+		 *                                 Xem wp_get_attachment_image().
+		 * @param WP_Post      $attachment Bài viết đính kèm hình ảnh.
+		 * @param string|int[] $size       Kích thước hình ảnh yêu cầu. Có thể là tên kích thước ảnh đã đăng ký, hoặc
+		 *                                 mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 		 */
 		$attr = apply_filters( 'wp_get_attachment_image_attributes', $attr, $attachment, $size );
 
@@ -1186,32 +1185,32 @@ function wp_get_attachment_image( $attachment_id, $size = 'thumbnail', $icon = f
 	}
 
 	/**
-	 * Filters the HTML img element representing an image attachment.
+	 * Lọc phần tử HTML img đại diện cho đính kèm hình ảnh.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param string       $html          HTML img element or empty string on failure.
-	 * @param int          $attachment_id Image attachment ID.
-	 * @param string|int[] $size          Requested image size. Can be any registered image size name, or
-	 *                                    an array of width and height values in pixels (in that order).
-	 * @param bool         $icon          Whether the image should be treated as an icon.
-	 * @param string[]     $attr          Array of attribute values for the image markup, keyed by attribute name.
-	 *                                    See wp_get_attachment_image().
+	 * @param string       $html          Phần tử HTML img hoặc chuỗi rỗng khi thất bại.
+	 * @param int          $attachment_id ID đính kèm hình ảnh.
+	 * @param string|int[] $size          Kích thước hình ảnh yêu cầu. Có thể là tên kích thước ảnh đã đăng ký, hoặc
+	 *                                    mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+	 * @param bool         $icon          Có nên xử lý hình ảnh như biểu tượng hay không.
+	 * @param string[]     $attr          Mảng giá trị thuộc tính cho markup hình ảnh, đánh chỉ mục theo tên thuộc tính.
+	 *                                    Xem wp_get_attachment_image().
 	 */
 	return apply_filters( 'wp_get_attachment_image', $html, $attachment_id, $size, $icon, $attr );
 }
 
 /**
- * Gets the URL of an image attachment.
+ * Lấy URL của đính kèm hình ảnh.
  *
  * @since 4.4.0
  *
- * @param int          $attachment_id Image attachment ID.
- * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array of
- *                                    width and height values in pixels (in that order). Default 'thumbnail'.
- * @param bool         $icon          Optional. Whether the image should be treated as an icon. Default false.
- * @return string|false Attachment URL or false if no image is available. If `$size` does not match
- *                      any registered image size, the original image URL will be returned.
+ * @param int          $attachment_id ID đính kèm hình ảnh.
+ * @param string|int[] $size          Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                                    giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
+ * @param bool         $icon          Tùy chọn. Có nên xử lý hình ảnh như biểu tượng hay không. Mặc định false.
+ * @return string|false URL đính kèm hoặc false nếu không có hình ảnh. Nếu `$size` không khớp
+ *                      với bất kỳ kích thước ảnh đã đăng ký nào, URL hình ảnh gốc sẽ được trả về.
  */
 function wp_get_attachment_image_url( $attachment_id, $size = 'thumbnail', $icon = false ) {
 	$image = wp_get_attachment_image_src( $attachment_id, $size, $icon );
@@ -1219,13 +1218,13 @@ function wp_get_attachment_image_url( $attachment_id, $size = 'thumbnail', $icon
 }
 
 /**
- * Gets the attachment path relative to the upload directory.
+ * Lấy đường dẫn đính kèm tương đối so với thư mục upload.
  *
  * @since 4.4.1
  * @access private
  *
- * @param string $file Attachment file name.
- * @return string Attachment path relative to the upload directory.
+ * @param string $file Tên tệp đính kèm.
+ * @return string Đường dẫn đính kèm tương đối so với thư mục upload.
  */
 function _wp_get_attachment_relative_path( $file ) {
 	$dirname = dirname( $file );
@@ -1235,7 +1234,7 @@ function _wp_get_attachment_relative_path( $file ) {
 	}
 
 	if ( str_contains( $dirname, 'wp-content/uploads' ) ) {
-		// Get the directory name relative to the upload directory (back compat for pre-2.7 uploads).
+		// Lấy tên thư mục tương đối so với thư mục upload (tương thích ngược cho upload trước phiên bản 2.7).
 		$dirname = substr( $dirname, strpos( $dirname, 'wp-content/uploads' ) + 18 );
 		$dirname = ltrim( $dirname, '/' );
 	}
@@ -1244,20 +1243,20 @@ function _wp_get_attachment_relative_path( $file ) {
 }
 
 /**
- * Gets the image size as array from its meta data.
+ * Lấy kích thước hình ảnh dạng mảng từ metadata.
  *
- * Used for responsive images.
+ * Được sử dụng cho hình ảnh responsive.
  *
  * @since 4.4.0
  * @access private
  *
- * @param string $size_name  Image size. Accepts any registered image size name.
- * @param array  $image_meta The image meta data.
+ * @param string $size_name  Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký.
+ * @param array  $image_meta Metadata hình ảnh.
  * @return array|false {
- *     Array of width and height or false if the size isn't present in the meta data.
+ *     Mảng chiều rộng và chiều cao hoặc false nếu kích thước không có trong metadata.
  *
- *     @type int $0 Image width.
- *     @type int $1 Image height.
+ *     @type int $0 Chiều rộng hình ảnh.
+ *     @type int $1 Chiều cao hình ảnh.
  * }
  */
 function _wp_get_image_size_from_meta( $size_name, $image_meta ) {
@@ -1277,18 +1276,18 @@ function _wp_get_image_size_from_meta( $size_name, $image_meta ) {
 }
 
 /**
- * Retrieves the value for an image attachment's 'srcset' attribute.
+ * Lấy giá trị thuộc tính 'srcset' cho đính kèm hình ảnh.
  *
  * @since 4.4.0
  *
  * @see wp_calculate_image_srcset()
  *
- * @param int          $attachment_id Image attachment ID.
- * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array of
- *                                    width and height values in pixels (in that order). Default 'medium'.
- * @param array|null   $image_meta    Optional. The image meta data as returned by 'wp_get_attachment_metadata()'.
- *                                    Default null.
- * @return string|false A 'srcset' value string or false.
+ * @param int          $attachment_id ID đính kèm hình ảnh.
+ * @param string|int[] $size          Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                                    giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'medium'.
+ * @param array|null   $image_meta    Tùy chọn. Metadata hình ảnh như được trả về bởi 'wp_get_attachment_metadata()'.
+ *                                    Mặc định null.
+ * @return string|false Chuỗi giá trị 'srcset' hoặc false.
  */
 function wp_get_attachment_image_srcset( $attachment_id, $size = 'medium', $image_meta = null ) {
 	$image = wp_get_attachment_image_src( $attachment_id, $size );
@@ -1311,36 +1310,36 @@ function wp_get_attachment_image_srcset( $attachment_id, $size = 'medium', $imag
 }
 
 /**
- * A helper function to calculate the image sources to include in a 'srcset' attribute.
+ * Hàm trợ giúp để tính toán các nguồn hình ảnh bao gồm trong thuộc tính 'srcset'.
  *
  * @since 4.4.0
  *
  * @param int[]  $size_array    {
- *     An array of width and height values.
+ *     Mảng giá trị chiều rộng và chiều cao.
  *
- *     @type int $0 The width in pixels.
- *     @type int $1 The height in pixels.
+ *     @type int $0 Chiều rộng tính bằng pixel.
+ *     @type int $1 Chiều cao tính bằng pixel.
  * }
- * @param string $image_src     The 'src' of the image.
- * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
- * @param int    $attachment_id Optional. The image attachment ID. Default 0.
- * @return string|false The 'srcset' attribute value. False on error or when only one source exists.
+ * @param string $image_src     Thuộc tính 'src' của hình ảnh.
+ * @param array  $image_meta    Metadata hình ảnh như được trả về bởi 'wp_get_attachment_metadata()'.
+ * @param int    $attachment_id Tùy chọn. ID đính kèm hình ảnh. Mặc định 0.
+ * @return string|false Giá trị thuộc tính 'srcset'. False khi lỗi hoặc khi chỉ có một nguồn.
  */
 function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attachment_id = 0 ) {
 	/**
-	 * Pre-filters the image meta to be able to fix inconsistencies in the stored data.
+	 * Tiền lọc metadata hình ảnh để có thể sửa các không nhất quán trong dữ liệu đã lưu.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
+	 * @param array  $image_meta    Metadata hình ảnh như được trả về bởi 'wp_get_attachment_metadata()'.
 	 * @param int[]  $size_array    {
-	 *     An array of requested width and height values.
+	 *     Mảng giá trị chiều rộng và chiều cao yêu cầu.
 	 *
-	 *     @type int $0 The width in pixels.
-	 *     @type int $1 The height in pixels.
+	 *     @type int $0 Chiều rộng tính bằng pixel.
+	 *     @type int $1 Chiều cao tính bằng pixel.
 	 * }
-	 * @param string $image_src     The 'src' of the image.
-	 * @param int    $attachment_id The image attachment ID or 0 if not supplied.
+	 * @param string $image_src     Thuộc tính 'src' của hình ảnh.
+	 * @param int    $attachment_id ID đính kèm hình ảnh hoặc 0 nếu không được cung cấp.
 	 */
 	$image_meta = apply_filters( 'wp_calculate_image_srcset_meta', $image_meta, $size_array, $image_src, $attachment_id );
 
@@ -1350,11 +1349,11 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 
 	$image_sizes = $image_meta['sizes'];
 
-	// Get the width and height of the image.
+	// Lấy chiều rộng và chiều cao của hình ảnh.
 	$image_width  = (int) $size_array[0];
 	$image_height = (int) $size_array[1];
 
-	// Bail early if error/no width.
+	// Thoát sớm nếu lỗi/không có chiều rộng.
 	if ( $image_width < 1 ) {
 		return false;
 	}
@@ -1362,9 +1361,9 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 	$image_basename = wp_basename( $image_meta['file'] );
 
 	/*
-	 * WordPress flattens animated GIFs into one frame when generating intermediate sizes.
-	 * To avoid hiding animation in user content, if src is a full size GIF, a srcset attribute is not generated.
-	 * If src is an intermediate size GIF, the full size is excluded from srcset to keep a flattened GIF from becoming animated.
+	 * WordPress làm phẳng GIF động thành một khung hình khi tạo kích thước trung gian.
+	 * Để tránh ẩn hoạt ảnh trong nội dung người dùng, nếu src là GIF kích thước đầy đủ, thuộc tính srcset không được tạo.
+	 * Nếu src là GIF kích thước trung gian, kích thước đầy đủ bị loại khỏi srcset để giữ GIF đã làm phẳng không trở thành hoạt ảnh.
 	 */
 	if ( ! isset( $image_sizes['thumbnail']['mime-type'] ) || 'image/gif' !== $image_sizes['thumbnail']['mime-type'] ) {
 		$image_sizes[] = array(
@@ -1376,7 +1375,7 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 		return false;
 	}
 
-	// Retrieve the uploads sub-directory from the full size image.
+	// Lấy thư mục con uploads từ hình ảnh kích thước đầy đủ.
 	$dirname = _wp_get_attachment_relative_path( $image_meta['file'] );
 
 	if ( $dirname ) {
@@ -1387,13 +1386,13 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 	$image_baseurl = trailingslashit( $upload_dir['baseurl'] ) . $dirname;
 
 	/*
-	 * If currently on HTTPS, prefer HTTPS URLs when we know they're supported by the domain
-	 * (which is to say, when they share the domain name of the current request).
+	 * Nếu đang dùng HTTPS, ưu tiên URL HTTPS khi biết chúng được hỗ trợ bởi tên miền
+	 * (nghĩa là khi chúng chia sẻ tên miền với yêu cầu hiện tại).
 	 */
 	if ( is_ssl() && ! str_starts_with( $image_baseurl, 'https' ) ) {
 		/*
-		 * Since the `Host:` header might contain a port, it should
-		 * be compared against the image URL using the same port.
+		 * Vì header `Host:` có thể chứa cổng, nên cần
+		 * so sánh với URL hình ảnh sử dụng cùng cổng.
 		 */
 		$parsed = parse_url( $image_baseurl );
 		$domain = isset( $parsed['host'] ) ? $parsed['host'] : '';
@@ -1408,78 +1407,78 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 	}
 
 	/*
-	 * Images that have been edited in WordPress after being uploaded will
-	 * contain a unique hash. Look for that hash and use it later to filter
-	 * out images that are leftovers from previous versions.
+	 * Hình ảnh đã được chỉnh sửa trong WordPress sau khi tải lên sẽ
+	 * chứa hash duy nhất. Tìm hash đó và sử dụng sau để lọc
+	 * ra các hình ảnh còn sót lại từ phiên bản trước.
 	 */
 	$image_edited = preg_match( '/-e[0-9]{13}/', wp_basename( $image_src ), $image_edit_hash );
 
 	/**
-	 * Filters the maximum image width to be included in a 'srcset' attribute.
+	 * Lọc chiều rộng hình ảnh tối đa để bao gồm trong thuộc tính 'srcset'.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param int   $max_width  The maximum image width to be included in the 'srcset'. Default '2048'.
+	 * @param int   $max_width  Chiều rộng hình ảnh tối đa để bao gồm trong 'srcset'. Mặc định '2048'.
 	 * @param int[] $size_array {
-	 *     An array of requested width and height values.
+	 *     Mảng giá trị chiều rộng và chiều cao yêu cầu.
 	 *
-	 *     @type int $0 The width in pixels.
-	 *     @type int $1 The height in pixels.
+	 *     @type int $0 Chiều rộng tính bằng pixel.
+	 *     @type int $1 Chiều cao tính bằng pixel.
 	 * }
 	 */
 	$max_srcset_image_width = apply_filters( 'max_srcset_image_width', 2048, $size_array );
 
-	// Array to hold URL candidates.
+	// Mảng để giữ các URL ứng viên.
 	$sources = array();
 
 	/**
-	 * To make sure the ID matches our image src, we will check to see if any sizes in our attachment
-	 * meta match our $image_src. If no matches are found we don't return a srcset to avoid serving
-	 * an incorrect image. See #35045.
+	 * Để đảm bảo ID khớp với image src, chúng ta sẽ kiểm tra xem có kích thước nào trong metadata
+	 * đính kèm khớp với $image_src không. Nếu không tìm thấy kết quả khớp, chúng ta không trả về srcset
+	 * để tránh phục vụ hình ảnh không chính xác. Xem #35045.
 	 */
 	$src_matched = false;
 
 	/*
-	 * Loop through available images. Only use images that are resized
-	 * versions of the same edit.
+	 * Lặp qua các hình ảnh có sẵn. Chỉ sử dụng hình ảnh là phiên bản
+	 * đã thay đổi kích thước của cùng bản chỉnh sửa.
 	 */
 	foreach ( $image_sizes as $image ) {
 		$is_src = false;
 
-		// Check if image meta isn't corrupted.
+		// Kiểm tra xem metadata hình ảnh có bị hỏng không.
 		if ( ! is_array( $image ) ) {
 			continue;
 		}
 
-		// If the file name is part of the `src`, we've confirmed a match.
+		// Nếu tên tệp là một phần của `src`, chúng ta đã xác nhận khớp.
 		if ( ! $src_matched && str_contains( $image_src, $dirname . $image['file'] ) ) {
 			$src_matched = true;
 			$is_src      = true;
 		}
 
-		// Filter out images that are from previous edits.
+		// Lọc bỏ hình ảnh từ các bản chỉnh sửa trước.
 		if ( $image_edited && ! strpos( $image['file'], $image_edit_hash[0] ) ) {
 			continue;
 		}
 
 		/*
-		 * Filters out images that are wider than '$max_srcset_image_width' unless
-		 * that file is in the 'src' attribute.
+		 * Lọc bỏ hình ảnh rộng hơn '$max_srcset_image_width' trừ khi
+		 * tệp đó nằm trong thuộc tính 'src'.
 		 */
 		if ( $max_srcset_image_width && $image['width'] > $max_srcset_image_width && ! $is_src ) {
 			continue;
 		}
 
-		// If the image dimensions are within 1px of the expected size, use it.
+		// Nếu kích thước hình ảnh nằm trong phạm vi 1px so với kích thước mong đợi, sử dụng nó.
 		if ( wp_image_matches_ratio( $image_width, $image_height, $image['width'], $image['height'] ) ) {
-			// Add the URL, descriptor, and value to the sources array to be returned.
+			// Thêm URL, bộ mô tả và giá trị vào mảng nguồn để trả về.
 			$source = array(
 				'url'        => $image_baseurl . $image['file'],
 				'descriptor' => 'w',
 				'value'      => $image['width'],
 			);
 
-			// The 'src' image has to be the first in the 'srcset', because of a bug in iOS8. See #35030.
+			// Hình ảnh 'src' phải là đầu tiên trong 'srcset', do lỗi trong iOS8. Xem #35030.
 			if ( $is_src ) {
 				$sources = array( $image['width'] => $source ) + $sources;
 			} else {
@@ -1489,34 +1488,34 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 	}
 
 	/**
-	 * Filters an image's 'srcset' sources.
+	 * Lọc các nguồn 'srcset' của hình ảnh.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @param array  $sources {
-	 *     One or more arrays of source data to include in the 'srcset'.
+	 *     Một hoặc nhiều mảng dữ liệu nguồn để bao gồm trong 'srcset'.
 	 *
 	 *     @type array $width {
-	 *         @type string $url        The URL of an image source.
-	 *         @type string $descriptor The descriptor type used in the image candidate string,
-	 *                                  either 'w' or 'x'.
-	 *         @type int    $value      The source width if paired with a 'w' descriptor, or a
-	 *                                  pixel density value if paired with an 'x' descriptor.
+	 *         @type string $url        URL của nguồn hình ảnh.
+	 *         @type string $descriptor Loại bộ mô tả được sử dụng trong chuỗi ứng viên hình ảnh,
+	 *                                  'w' hoặc 'x'.
+	 *         @type int    $value      Chiều rộng nguồn nếu ghép với bộ mô tả 'w', hoặc
+	 *                                  giá trị mật độ pixel nếu ghép với bộ mô tả 'x'.
 	 *     }
 	 * }
 	 * @param array $size_array     {
-	 *     An array of requested width and height values.
+	 *     Mảng giá trị chiều rộng và chiều cao yêu cầu.
 	 *
-	 *     @type int $0 The width in pixels.
-	 *     @type int $1 The height in pixels.
+	 *     @type int $0 Chiều rộng tính bằng pixel.
+	 *     @type int $1 Chiều cao tính bằng pixel.
 	 * }
-	 * @param string $image_src     The 'src' of the image.
-	 * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
-	 * @param int    $attachment_id Image attachment ID or 0.
+	 * @param string $image_src     Thuộc tính 'src' của hình ảnh.
+	 * @param array  $image_meta    Metadata hình ảnh như được trả về bởi 'wp_get_attachment_metadata()'.
+	 * @param int    $attachment_id ID đính kèm hình ảnh hoặc 0.
 	 */
 	$sources = apply_filters( 'wp_calculate_image_srcset', $sources, $size_array, $image_src, $image_meta, $attachment_id );
 
-	// Only return a 'srcset' value if there is more than one source.
+	// Chỉ trả về giá trị 'srcset' nếu có nhiều hơn một nguồn.
 	if ( ! $src_matched || ! is_array( $sources ) || count( $sources ) < 2 ) {
 		return false;
 	}
@@ -1531,18 +1530,18 @@ function wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attac
 }
 
 /**
- * Retrieves the value for an image attachment's 'sizes' attribute.
+ * Lấy giá trị thuộc tính 'sizes' cho đính kèm hình ảnh.
  *
  * @since 4.4.0
  *
  * @see wp_calculate_image_sizes()
  *
- * @param int          $attachment_id Image attachment ID.
- * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array of
- *                                    width and height values in pixels (in that order). Default 'medium'.
- * @param array|null   $image_meta    Optional. The image meta data as returned by 'wp_get_attachment_metadata()'.
- *                                    Default null.
- * @return string|false A valid source size value for use in a 'sizes' attribute or false.
+ * @param int          $attachment_id ID đính kèm hình ảnh.
+ * @param string|int[] $size          Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                                    giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'medium'.
+ * @param array|null   $image_meta    Tùy chọn. Metadata hình ảnh như được trả về bởi 'wp_get_attachment_metadata()'.
+ *                                    Mặc định null.
+ * @return string|false Giá trị kích thước nguồn hợp lệ để dùng trong thuộc tính 'sizes' hoặc false.
  */
 function wp_get_attachment_image_sizes( $attachment_id, $size = 'medium', $image_meta = null ) {
 	$image = wp_get_attachment_image_src( $attachment_id, $size );
@@ -1565,18 +1564,18 @@ function wp_get_attachment_image_sizes( $attachment_id, $size = 'medium', $image
 }
 
 /**
- * Creates a 'sizes' attribute value for an image.
+ * Tạo giá trị thuộc tính 'sizes' cho hình ảnh.
  *
  * @since 4.4.0
  *
- * @param string|int[] $size          Image size. Accepts any registered image size name, or an array of
- *                                    width and height values in pixels (in that order).
- * @param string|null  $image_src     Optional. The URL to the image file. Default null.
- * @param array|null   $image_meta    Optional. The image meta data as returned by 'wp_get_attachment_metadata()'.
- *                                    Default null.
- * @param int          $attachment_id Optional. Image attachment ID. Either `$image_meta` or `$attachment_id`
- *                                    is needed when using the image size name as argument for `$size`. Default 0.
- * @return string|false A valid source size value for use in a 'sizes' attribute or false.
+ * @param string|int[] $size          Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                                    giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+ * @param string|null  $image_src     Tùy chọn. URL đến tệp hình ảnh. Mặc định null.
+ * @param array|null   $image_meta    Tùy chọn. Metadata hình ảnh như được trả về bởi 'wp_get_attachment_metadata()'.
+ *                                    Mặc định null.
+ * @param int          $attachment_id Tùy chọn. ID đính kèm hình ảnh. Cần `$image_meta` hoặc `$attachment_id`
+ *                                    khi sử dụng tên kích thước ảnh làm đối số cho `$size`. Mặc định 0.
+ * @return string|false Giá trị kích thước nguồn hợp lệ để dùng trong thuộc tính 'sizes' hoặc false.
  */
 function wp_calculate_image_sizes( $size, $image_src = null, $image_meta = null, $attachment_id = 0 ) {
 	$width = 0;
@@ -1600,52 +1599,52 @@ function wp_calculate_image_sizes( $size, $image_src = null, $image_meta = null,
 		return false;
 	}
 
-	// Setup the default 'sizes' attribute.
+	// Thiết lập thuộc tính 'sizes' mặc định.
 	$sizes = sprintf( '(max-width: %1$dpx) 100vw, %1$dpx', $width );
 
 	/**
-	 * Filters the output of 'wp_calculate_image_sizes()'.
+	 * Lọc đầu ra của 'wp_calculate_image_sizes()'.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string       $sizes         A source size value for use in a 'sizes' attribute.
-	 * @param string|int[] $size          Requested image size. Can be any registered image size name, or
-	 *                                    an array of width and height values in pixels (in that order).
-	 * @param string|null  $image_src     The URL to the image file or null.
-	 * @param array|null   $image_meta    The image meta data as returned by wp_get_attachment_metadata() or null.
-	 * @param int          $attachment_id Image attachment ID of the original image or 0.
+	 * @param string       $sizes         Giá trị kích thước nguồn để dùng trong thuộc tính 'sizes'.
+	 * @param string|int[] $size          Kích thước hình ảnh yêu cầu. Có thể là tên kích thước ảnh đã đăng ký, hoặc
+	 *                                    mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+	 * @param string|null  $image_src     URL đến tệp hình ảnh hoặc null.
+	 * @param array|null   $image_meta    Metadata hình ảnh như được trả về bởi wp_get_attachment_metadata() hoặc null.
+	 * @param int          $attachment_id ID đính kèm hình ảnh gốc hoặc 0.
 	 */
 	return apply_filters( 'wp_calculate_image_sizes', $sizes, $size, $image_src, $image_meta, $attachment_id );
 }
 
 /**
- * Determines if the image meta data is for the image source file.
+ * Xác định xem metadata hình ảnh có phải là của tệp nguồn hình ảnh hay không.
  *
- * The image meta data is retrieved by attachment post ID. In some cases the post IDs may change.
- * For example when the website is exported and imported at another website. Then the
- * attachment post IDs that are in post_content for the exported website may not match
- * the same attachments at the new website.
+ * Metadata hình ảnh được lấy theo ID bài viết đính kèm. Trong một số trường hợp ID bài viết có thể thay đổi.
+ * Ví dụ khi website được xuất và nhập vào website khác. Khi đó
+ * ID bài viết đính kèm trong post_content của website đã xuất có thể không khớp
+ * với cùng đính kèm ở website mới.
  *
  * @since 5.5.0
  *
- * @param string $image_location The full path or URI to the image file.
- * @param array  $image_meta     The attachment meta data as returned by 'wp_get_attachment_metadata()'.
- * @param int    $attachment_id  Optional. The image attachment ID. Default 0.
- * @return bool Whether the image meta is for this image file.
+ * @param string $image_location Đường dẫn đầy đủ hoặc URI đến tệp hình ảnh.
+ * @param array  $image_meta     Metadata đính kèm như được trả về bởi 'wp_get_attachment_metadata()'.
+ * @param int    $attachment_id  Tùy chọn. ID đính kèm hình ảnh. Mặc định 0.
+ * @return bool Metadata hình ảnh có phải là của tệp hình ảnh này hay không.
  */
 function wp_image_file_matches_image_meta( $image_location, $image_meta, $attachment_id = 0 ) {
 	$match = false;
 
-	// Ensure the $image_meta is valid.
+	// Đảm bảo $image_meta hợp lệ.
 	if ( isset( $image_meta['file'] ) && strlen( $image_meta['file'] ) > 4 ) {
-		// Remove query args in image URI.
+		// Xóa tham số truy vấn trong URI hình ảnh.
 		list( $image_location ) = explode( '?', $image_location );
 
-		// Check if the relative image path from the image meta is at the end of $image_location.
+		// Kiểm tra xem đường dẫn hình ảnh tương đối từ metadata có nằm ở cuối $image_location không.
 		if ( strrpos( $image_location, $image_meta['file'] ) === strlen( $image_location ) - strlen( $image_meta['file'] ) ) {
 			$match = true;
 		} else {
-			// Retrieve the uploads sub-directory from the full size image.
+			// Lấy thư mục con uploads từ hình ảnh kích thước đầy đủ.
 			$dirname = _wp_get_attachment_relative_path( $image_meta['file'] );
 
 			if ( $dirname ) {
@@ -1674,34 +1673,34 @@ function wp_image_file_matches_image_meta( $image_location, $image_meta, $attach
 	}
 
 	/**
-	 * Filters whether an image path or URI matches image meta.
+	 * Lọc xem đường dẫn hoặc URI hình ảnh có khớp với metadata hình ảnh không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param bool   $match          Whether the image relative path from the image meta
-	 *                               matches the end of the URI or path to the image file.
-	 * @param string $image_location Full path or URI to the tested image file.
-	 * @param array  $image_meta     The image meta data as returned by 'wp_get_attachment_metadata()'.
-	 * @param int    $attachment_id  The image attachment ID or 0 if not supplied.
+	 * @param bool   $match          Đường dẫn tương đối hình ảnh từ metadata
+	 *                               có khớp với cuối URI hoặc đường dẫn đến tệp hình ảnh không.
+	 * @param string $image_location Đường dẫn đầy đủ hoặc URI đến tệp hình ảnh được kiểm tra.
+	 * @param array  $image_meta     Metadata hình ảnh như được trả về bởi 'wp_get_attachment_metadata()'.
+	 * @param int    $attachment_id  ID đính kèm hình ảnh hoặc 0 nếu không được cung cấp.
 	 */
 	return apply_filters( 'wp_image_file_matches_image_meta', $match, $image_location, $image_meta, $attachment_id );
 }
 
 /**
- * Determines an image's width and height dimensions based on the source file.
+ * Xác định kích thước chiều rộng và chiều cao của hình ảnh dựa trên tệp nguồn.
  *
  * @since 5.5.0
  *
- * @param string $image_src     The image source file.
- * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
- * @param int    $attachment_id Optional. The image attachment ID. Default 0.
- * @return array|false Array with first element being the width and second element being the height,
- *                     or false if dimensions cannot be determined.
+ * @param string $image_src     Tệp nguồn hình ảnh.
+ * @param array  $image_meta    Metadata hình ảnh như được trả về bởi 'wp_get_attachment_metadata()'.
+ * @param int    $attachment_id Tùy chọn. ID đính kèm hình ảnh. Mặc định 0.
+ * @return array|false Mảng với phần tử đầu tiên là chiều rộng và phần tử thứ hai là chiều cao,
+ *                     hoặc false nếu không thể xác định kích thước.
  */
 function wp_image_src_get_dimensions( $image_src, $image_meta, $attachment_id = 0 ) {
 	$dimensions = false;
 
-	// Is it a full size image?
+	// Có phải hình ảnh kích thước đầy đủ không?
 	if (
 		isset( $image_meta['file'] ) &&
 		str_contains( $image_src, wp_basename( $image_meta['file'] ) )
@@ -1728,36 +1727,36 @@ function wp_image_src_get_dimensions( $image_src, $image_meta, $attachment_id = 
 	}
 
 	/**
-	 * Filters the 'wp_image_src_get_dimensions' value.
+	 * Lọc giá trị 'wp_image_src_get_dimensions'.
 	 *
 	 * @since 5.7.0
 	 *
-	 * @param array|false $dimensions    Array with first element being the width
-	 *                                   and second element being the height, or
-	 *                                   false if dimensions could not be determined.
-	 * @param string      $image_src     The image source file.
-	 * @param array       $image_meta    The image meta data as returned by
+	 * @param array|false $dimensions    Mảng với phần tử đầu tiên là chiều rộng
+	 *                                   và phần tử thứ hai là chiều cao, hoặc
+	 *                                   false nếu không thể xác định kích thước.
+	 * @param string      $image_src     Tệp nguồn hình ảnh.
+	 * @param array       $image_meta    Metadata hình ảnh như được trả về bởi
 	 *                                   'wp_get_attachment_metadata()'.
-	 * @param int         $attachment_id The image attachment ID. Default 0.
+	 * @param int         $attachment_id ID đính kèm hình ảnh. Mặc định 0.
 	 */
 	return apply_filters( 'wp_image_src_get_dimensions', $dimensions, $image_src, $image_meta, $attachment_id );
 }
 
 /**
- * Adds 'srcset' and 'sizes' attributes to an existing 'img' element.
+ * Thêm thuộc tính 'srcset' và 'sizes' vào phần tử 'img' hiện có.
  *
  * @since 4.4.0
  *
  * @see wp_calculate_image_srcset()
  * @see wp_calculate_image_sizes()
  *
- * @param string $image         An HTML 'img' element to be filtered.
- * @param array  $image_meta    The image meta data as returned by 'wp_get_attachment_metadata()'.
- * @param int    $attachment_id Image attachment ID.
- * @return string Converted 'img' element with 'srcset' and 'sizes' attributes added.
+ * @param string $image         Phần tử HTML 'img' cần được lọc.
+ * @param array  $image_meta    Metadata hình ảnh như được trả về bởi 'wp_get_attachment_metadata()'.
+ * @param int    $attachment_id ID đính kèm hình ảnh.
+ * @return string Phần tử 'img' đã chuyển đổi với thuộc tính 'srcset' và 'sizes' được thêm.
  */
 function wp_image_add_srcset_and_sizes( $image, $image_meta, $attachment_id ) {
-	// Ensure the image meta exists.
+	// Đảm bảo metadata hình ảnh tồn tại.
 	if ( empty( $image_meta['sizes'] ) ) {
 		return $image;
 	}
@@ -1765,12 +1764,12 @@ function wp_image_add_srcset_and_sizes( $image, $image_meta, $attachment_id ) {
 	$image_src         = preg_match( '/src="([^"]+)"/', $image, $match_src ) ? $match_src[1] : '';
 	list( $image_src ) = explode( '?', $image_src );
 
-	// Return early if we couldn't get the image source.
+	// Trả về sớm nếu không thể lấy nguồn hình ảnh.
 	if ( ! $image_src ) {
 		return $image;
 	}
 
-	// Bail early if an image has been inserted and later edited.
+	// Thoát sớm nếu hình ảnh đã được chèn và sau đó chỉnh sửa.
 	if ( preg_match( '/-e[0-9]{13}/', $image_meta['file'], $img_edit_hash )
 		&& ! str_contains( wp_basename( $image_src ), $img_edit_hash[0] )
 	) {
@@ -1792,7 +1791,7 @@ function wp_image_add_srcset_and_sizes( $image, $image_meta, $attachment_id ) {
 	$srcset = wp_calculate_image_srcset( $size_array, $image_src, $image_meta, $attachment_id );
 
 	if ( $srcset ) {
-		// Check if there is already a 'sizes' attribute.
+		// Kiểm tra xem đã có thuộc tính 'sizes' chưa.
 		$sizes = strpos( $image, ' sizes=' );
 
 		if ( ! $sizes ) {
@@ -1801,14 +1800,14 @@ function wp_image_add_srcset_and_sizes( $image, $image_meta, $attachment_id ) {
 	}
 
 	if ( $srcset && $sizes ) {
-		// Format the 'srcset' and 'sizes' string and escape attributes.
+		// Định dạng chuỗi 'srcset' và 'sizes' và thoát thuộc tính.
 		$attr = sprintf( ' srcset="%s"', esc_attr( $srcset ) );
 
 		if ( is_string( $sizes ) ) {
 			$attr .= sprintf( ' sizes="%s"', esc_attr( $sizes ) );
 		}
 
-		// Add the srcset and sizes attributes to the image markup.
+		// Thêm thuộc tính srcset và sizes vào markup hình ảnh.
 		return preg_replace( '/<img ([^>]+?)[\/ ]*>/', '<img $1' . $attr . ' />', $image );
 	}
 
@@ -1816,58 +1815,58 @@ function wp_image_add_srcset_and_sizes( $image, $image_meta, $attachment_id ) {
 }
 
 /**
- * Determines whether to add the `loading` attribute to the specified tag in the specified context.
+ * Xác định xem có nên thêm thuộc tính `loading` vào thẻ được chỉ định trong ngữ cảnh được chỉ định không.
  *
  * @since 5.5.0
- * @since 5.7.0 Now returns `true` by default for `iframe` tags.
+ * @since 5.7.0 Giờ trả về `true` mặc định cho thẻ `iframe`.
  *
- * @param string $tag_name The tag name.
- * @param string $context  Additional context, like the current filter name
- *                         or the function name from where this was called.
- * @return bool Whether to add the attribute.
+ * @param string $tag_name Tên thẻ.
+ * @param string $context  Ngữ cảnh bổ sung, như tên bộ lọc hiện tại
+ *                         hoặc tên hàm nơi được gọi.
+ * @return bool Có nên thêm thuộc tính hay không.
  */
 function wp_lazy_loading_enabled( $tag_name, $context ) {
 	/*
-	 * By default add to all 'img' and 'iframe' tags.
-	 * See https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-loading
-	 * See https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-loading
+	 * Mặc định thêm vào tất cả thẻ 'img' và 'iframe'.
+	 * Xem https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-loading
+	 * Xem https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-loading
 	 */
 	$default = ( 'img' === $tag_name || 'iframe' === $tag_name );
 
 	/**
-	 * Filters whether to add the `loading` attribute to the specified tag in the specified context.
+	 * Lọc xem có nên thêm thuộc tính `loading` vào thẻ được chỉ định trong ngữ cảnh được chỉ định không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param bool   $default  Default value.
-	 * @param string $tag_name The tag name.
-	 * @param string $context  Additional context, like the current filter name
-	 *                         or the function name from where this was called.
+	 * @param bool   $default  Giá trị mặc định.
+	 * @param string $tag_name Tên thẻ.
+	 * @param string $context  Ngữ cảnh bổ sung, như tên bộ lọc hiện tại
+	 *                         hoặc tên hàm nơi được gọi.
 	 */
 	return (bool) apply_filters( 'wp_lazy_loading_enabled', $default, $tag_name, $context );
 }
 
 /**
- * Filters specific tags in post content and modifies their markup.
+ * Lọc các thẻ cụ thể trong nội dung bài viết và sửa đổi markup của chúng.
  *
- * Modifies HTML tags in post content to include new browser and HTML technologies
- * that may not have existed at the time of post creation. These modifications currently
- * include adding `srcset`, `sizes`, and `loading` attributes to `img` HTML tags, as well
- * as adding `loading` attributes to `iframe` HTML tags.
- * Future similar optimizations should be added/expected here.
+ * Sửa đổi các thẻ HTML trong nội dung bài viết để bao gồm các công nghệ trình duyệt và HTML mới
+ * có thể chưa tồn tại tại thời điểm tạo bài viết. Các sửa đổi hiện tại
+ * bao gồm thêm thuộc tính `srcset`, `sizes` và `loading` vào thẻ HTML `img`, cũng như
+ * thêm thuộc tính `loading` vào thẻ HTML `iframe`.
+ * Các tối ưu hóa tương tự trong tương lai nên được thêm/mong đợi ở đây.
  *
  * @since 5.5.0
- * @since 5.7.0 Now supports adding `loading` attributes to `iframe` tags.
+ * @since 5.7.0 Giờ hỗ trợ thêm thuộc tính `loading` vào thẻ `iframe`.
  *
  * @see wp_img_tag_add_width_and_height_attr()
  * @see wp_img_tag_add_srcset_and_sizes_attr()
  * @see wp_img_tag_add_loading_optimization_attrs()
  * @see wp_iframe_tag_add_loading_attr()
  *
- * @param string $content The HTML content to be filtered.
- * @param string $context Optional. Additional context to pass to the filters.
- *                        Defaults to `current_filter()` when not set.
- * @return string Converted content with images modified.
+ * @param string $content Nội dung HTML cần được lọc.
+ * @param string $context Tùy chọn. Ngữ cảnh bổ sung để truyền cho các bộ lọc.
+ *                        Mặc định là `current_filter()` khi không được đặt.
+ * @return string Nội dung đã chuyển đổi với hình ảnh được sửa đổi.
  */
 function wp_filter_content_tags( $content, $context = null ) {
 	if ( null === $context ) {
@@ -1880,10 +1879,10 @@ function wp_filter_content_tags( $content, $context = null ) {
 		return $content;
 	}
 
-	// List of the unique `img` tags found in $content.
+	// Danh sách các thẻ `img` duy nhất tìm thấy trong $content.
 	$images = array();
 
-	// List of the unique `iframe` tags found in $content.
+	// Danh sách các thẻ `iframe` duy nhất tìm thấy trong $content.
 	$iframes = array();
 
 	foreach ( $matches as $match ) {
@@ -1896,8 +1895,8 @@ function wp_filter_content_tags( $content, $context = null ) {
 
 					if ( $attachment_id ) {
 						/*
-						 * If exactly the same image tag is used more than once, overwrite it.
-						 * All identical tags will be replaced later with 'str_replace()'.
+						 * Nếu chính xác cùng thẻ hình ảnh được sử dụng nhiều hơn một lần, ghi đè nó.
+						 * Tất cả các thẻ giống hệt sẽ được thay thế sau bằng 'str_replace()'.
 						 */
 						$images[ $tag ] = $attachment_id;
 						break;
@@ -1911,48 +1910,48 @@ function wp_filter_content_tags( $content, $context = null ) {
 		}
 	}
 
-	// Reduce the array to unique attachment IDs.
+	// Thu gọn mảng thành các ID đính kèm duy nhất.
 	$attachment_ids = array_unique( array_filter( array_values( $images ) ) );
 
 	if ( count( $attachment_ids ) > 1 ) {
 		/*
-		 * Warm the object cache with post and meta information for all found
-		 * images to avoid making individual database calls.
+		 * Làm ấm bộ nhớ đệm đối tượng với thông tin bài viết và meta cho tất cả
+		 * hình ảnh tìm thấy để tránh thực hiện các truy vấn cơ sở dữ liệu riêng lẻ.
 		 */
 		_prime_post_caches( $attachment_ids, false, true );
 	}
 
-	// Iterate through the matches in order of occurrence as it is relevant for whether or not to lazy-load.
+	// Lặp qua các kết quả khớp theo thứ tự xuất hiện vì nó liên quan đến việc có tải lười hay không.
 	foreach ( $matches as $match ) {
-		// Filter an image match.
+		// Lọc kết quả khớp hình ảnh.
 		if ( isset( $images[ $match[0] ] ) ) {
 			$filtered_image = $match[0];
 			$attachment_id  = $images[ $match[0] ];
 
-			// Add 'width' and 'height' attributes if applicable.
+			// Thêm thuộc tính 'width' và 'height' nếu áp dụng được.
 			if ( $attachment_id > 0 && ! str_contains( $filtered_image, ' width=' ) && ! str_contains( $filtered_image, ' height=' ) ) {
 				$filtered_image = wp_img_tag_add_width_and_height_attr( $filtered_image, $context, $attachment_id );
 			}
 
-			// Add 'srcset' and 'sizes' attributes if applicable.
+			// Thêm thuộc tính 'srcset' và 'sizes' nếu áp dụng được.
 			if ( $attachment_id > 0 && ! str_contains( $filtered_image, ' srcset=' ) ) {
 				$filtered_image = wp_img_tag_add_srcset_and_sizes_attr( $filtered_image, $context, $attachment_id );
 			}
 
-			// Add loading optimization attributes if applicable.
+			// Thêm thuộc tính tối ưu hóa tải nếu áp dụng được.
 			$filtered_image = wp_img_tag_add_loading_optimization_attrs( $filtered_image, $context );
 
-			// Adds 'auto' to the sizes attribute if applicable.
+			// Thêm 'auto' vào thuộc tính sizes nếu áp dụng được.
 			$filtered_image = wp_img_tag_add_auto_sizes( $filtered_image );
 
 			/**
-			 * Filters an img tag within the content for a given context.
+			 * Lọc thẻ img trong nội dung cho ngữ cảnh nhất định.
 			 *
 			 * @since 6.0.0
 			 *
-			 * @param string $filtered_image Full img tag with attributes that will replace the source img tag.
-			 * @param string $context        Additional context, like the current filter name or the function name from where this was called.
-			 * @param int    $attachment_id  The image attachment ID. May be 0 in case the image is not an attachment.
+			 * @param string $filtered_image Thẻ img đầy đủ với thuộc tính sẽ thay thế thẻ img nguồn.
+			 * @param string $context        Ngữ cảnh bổ sung, như tên bộ lọc hiện tại hoặc tên hàm nơi được gọi.
+			 * @param int    $attachment_id  ID đính kèm hình ảnh. Có thể là 0 nếu hình ảnh không phải đính kèm.
 			 */
 			$filtered_image = apply_filters( 'wp_content_img_tag', $filtered_image, $context, $attachment_id );
 
@@ -1961,17 +1960,17 @@ function wp_filter_content_tags( $content, $context = null ) {
 			}
 
 			/*
-			 * Unset image lookup to not run the same logic again unnecessarily if the same image tag is used more than
-			 * once in the same blob of content.
+			 * Bỏ thiết lập tra cứu hình ảnh để không chạy lại logic tương tự một cách không cần thiết nếu cùng thẻ hình ảnh
+			 * được sử dụng nhiều hơn một lần trong cùng khối nội dung.
 			 */
 			unset( $images[ $match[0] ] );
 		}
 
-		// Filter an iframe match.
+		// Lọc kết quả khớp iframe.
 		if ( isset( $iframes[ $match[0] ] ) ) {
 			$filtered_iframe = $match[0];
 
-			// Add 'loading' attribute if applicable.
+			// Thêm thuộc tính 'loading' nếu áp dụng được.
 			if ( $add_iframe_loading_attr && ! str_contains( $filtered_iframe, ' loading=' ) ) {
 				$filtered_iframe = wp_iframe_tag_add_loading_attr( $filtered_iframe, $context );
 			}
@@ -1981,8 +1980,8 @@ function wp_filter_content_tags( $content, $context = null ) {
 			}
 
 			/*
-			 * Unset iframe lookup to not run the same logic again unnecessarily if the same iframe tag is used more
-			 * than once in the same blob of content.
+			 * Bỏ thiết lập tra cứu iframe để không chạy lại logic tương tự một cách không cần thiết nếu cùng thẻ iframe
+			 * được sử dụng nhiều hơn một lần trong cùng khối nội dung.
 			 */
 			unset( $iframes[ $match[0] ] );
 		}
@@ -1992,20 +1991,20 @@ function wp_filter_content_tags( $content, $context = null ) {
 }
 
 /**
- * Adds 'auto' to the sizes attribute to the image, if the image is lazy loaded and does not already include it.
+ * Thêm 'auto' vào thuộc tính sizes của hình ảnh, nếu hình ảnh được tải lười và chưa bao gồm nó.
  *
  * @since 6.7.0
  *
- * @param string $image The image tag markup being filtered.
- * @return string The filtered image tag markup.
+ * @param string $image Markup thẻ hình ảnh đang được lọc.
+ * @return string Markup thẻ hình ảnh đã lọc.
  */
 function wp_img_tag_add_auto_sizes( string $image ): string {
 	/**
-	 * Filters whether auto-sizes for lazy loaded images is enabled.
+	 * Lọc xem auto-sizes cho hình ảnh tải lười có được bật không.
 	 *
 	 * @since 6.7.1
 	 *
-	 * @param boolean $enabled Whether auto-sizes for lazy loaded images is enabled.
+	 * @param boolean $enabled Auto-sizes cho hình ảnh tải lười có được bật không.
 	 */
 	if ( ! apply_filters( 'wp_img_tag_add_auto_sizes', true ) ) {
 		return $image;
@@ -2013,22 +2012,22 @@ function wp_img_tag_add_auto_sizes( string $image ): string {
 
 	$processor = new WP_HTML_Tag_Processor( $image );
 
-	// Bail if there is no IMG tag.
+	// Thoát nếu không có thẻ IMG.
 	if ( ! $processor->next_tag( array( 'tag_name' => 'IMG' ) ) ) {
 		return $image;
 	}
 
-	// Bail early if the image is not lazy-loaded.
+	// Thoát sớm nếu hình ảnh không được tải lười.
 	$loading = $processor->get_attribute( 'loading' );
 	if ( ! is_string( $loading ) || 'lazy' !== strtolower( trim( $loading, " \t\f\r\n" ) ) ) {
 		return $image;
 	}
 
 	/*
-	 * Bail early if the image doesn't have a width attribute.
-	 * Per WordPress Core itself, lazy-loaded images should always have a width attribute.
-	 * However, it is possible that lazy-loading could be added by a plugin, where we don't have that guarantee.
-	 * As such, it still makes sense to ensure presence of a width attribute here in order to use `sizes=auto`.
+	 * Thoát sớm nếu hình ảnh không có thuộc tính width.
+	 * Theo WordPress Core, hình ảnh tải lười luôn phải có thuộc tính width.
+	 * Tuy nhiên, có thể tải lười được thêm bởi plugin, nơi chúng ta không có đảm bảo đó.
+	 * Do đó, vẫn hợp lý để đảm bảo sự hiện diện của thuộc tính width ở đây để sử dụng `sizes=auto`.
 	 */
 	$width = $processor->get_attribute( 'width' );
 	if ( ! is_string( $width ) || '' === $width ) {
@@ -2037,12 +2036,12 @@ function wp_img_tag_add_auto_sizes( string $image ): string {
 
 	$sizes = $processor->get_attribute( 'sizes' );
 
-	// Bail early if the image is not responsive.
+	// Thoát sớm nếu hình ảnh không phải responsive.
 	if ( ! is_string( $sizes ) ) {
 		return $image;
 	}
 
-	// Don't add 'auto' to the sizes attribute if it already exists.
+	// Không thêm 'auto' vào thuộc tính sizes nếu nó đã tồn tại.
 	if ( wp_sizes_attribute_includes_valid_auto( $sizes ) ) {
 		return $image;
 	}
@@ -2052,14 +2051,14 @@ function wp_img_tag_add_auto_sizes( string $image ): string {
 }
 
 /**
- * Checks whether the given 'sizes' attribute includes the 'auto' keyword as the first item in the list.
+ * Kiểm tra xem thuộc tính 'sizes' đã cho có bao gồm từ khóa 'auto' là mục đầu tiên trong danh sách không.
  *
- * Per the HTML spec, if present it must be the first entry.
+ * Theo đặc tả HTML, nếu có mặt nó phải là mục đầu tiên.
  *
  * @since 6.7.0
  *
- * @param string $sizes_attr The 'sizes' attribute value.
- * @return bool True if the 'auto' keyword is present, false otherwise.
+ * @param string $sizes_attr Giá trị thuộc tính 'sizes'.
+ * @return bool True nếu từ khóa 'auto' có mặt, false nếu ngược lại.
  */
 function wp_sizes_attribute_includes_valid_auto( string $sizes_attr ): bool {
 	list( $first_size ) = explode( ',', $sizes_attr, 2 );
@@ -2067,10 +2066,10 @@ function wp_sizes_attribute_includes_valid_auto( string $sizes_attr ): bool {
 }
 
 /**
- * Prints a CSS rule to fix potential visual issues with images using `sizes=auto`.
+ * In quy tắc CSS để sửa các vấn đề hiển thị tiềm ẩn với hình ảnh sử dụng `sizes=auto`.
  *
- * This rule overrides the similar rule in the default user agent stylesheet, to avoid images that use e.g.
- * `width: auto` or `width: fit-content` to appear smaller.
+ * Quy tắc này ghi đè quy tắc tương tự trong stylesheet mặc định của trình duyệt, để tránh hình ảnh sử dụng ví dụ
+ * `width: auto` hoặc `width: fit-content` bị hiển thị nhỏ hơn.
  *
  * @since 6.7.1
  * @see https://html.spec.whatwg.org/multipage/rendering.html#img-contain-size
@@ -2089,13 +2088,13 @@ function wp_print_auto_sizes_contain_css_fix() {
 }
 
 /**
- * Adds optimization attributes to an `img` HTML tag.
+ * Thêm thuộc tính tối ưu hóa vào thẻ HTML `img`.
  *
  * @since 6.3.0
  *
- * @param string $image   The HTML `img` tag where the attribute should be added.
- * @param string $context Additional context to pass to the filters.
- * @return string Converted `img` tag with optimization attributes added.
+ * @param string $image   Thẻ HTML `img` nơi thuộc tính cần được thêm.
+ * @param string $context Ngữ cảnh bổ sung để truyền cho các bộ lọc.
+ * @return string Thẻ `img` đã chuyển đổi với thuộc tính tối ưu hóa được thêm.
  */
 function wp_img_tag_add_loading_optimization_attrs( $image, $context ) {
 	$src               = preg_match( '/ src=["\']?([^"\']*)/i', $image, $matche_src ) ? $matche_src[1] : null;
@@ -2106,9 +2105,9 @@ function wp_img_tag_add_loading_optimization_attrs( $image, $context ) {
 	$decoding_val      = preg_match( '/ decoding=["\']([A-Za-z]+)["\']/', $image, $match_decoding ) ? $match_decoding[1] : null;
 
 	/*
-	 * Get loading optimization attributes to use.
-	 * This must occur before the conditional check below so that even images
-	 * that are ineligible for being lazy-loaded are considered.
+	 * Lấy thuộc tính tối ưu hóa tải để sử dụng.
+	 * Điều này phải xảy ra trước kiểm tra điều kiện bên dưới để ngay cả hình ảnh
+	 * không đủ điều kiện tải lười cũng được xem xét.
 	 */
 	$optimization_attrs = wp_get_loading_optimization_attributes(
 		'img',
@@ -2123,25 +2122,25 @@ function wp_img_tag_add_loading_optimization_attrs( $image, $context ) {
 		$context
 	);
 
-	// Images should have source for the loading optimization attributes to be added.
+	// Hình ảnh phải có nguồn để thuộc tính tối ưu hóa tải được thêm.
 	if ( ! str_contains( $image, ' src="' ) ) {
 		return $image;
 	}
 
 	if ( empty( $decoding_val ) ) {
 		/**
-		 * Filters the `decoding` attribute value to add to an image. Default `async`.
+		 * Lọc giá trị thuộc tính `decoding` để thêm vào hình ảnh. Mặc định `async`.
 		 *
-		 * Returning a falsey value will omit the attribute.
+		 * Trả về giá trị falsey sẽ bỏ qua thuộc tính.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param string|false|null $value      The `decoding` attribute value. Returning a falsey value
-		 *                                      will result in the attribute being omitted for the image.
-		 *                                      Otherwise, it may be: 'async', 'sync', or 'auto'. Defaults to false.
-		 * @param string            $image      The HTML `img` tag to be filtered.
-		 * @param string            $context    Additional context about how the function was called
-		 *                                      or where the img tag is.
+		 * @param string|false|null $value      Giá trị thuộc tính `decoding`. Trả về giá trị falsey
+		 *                                      sẽ khiến thuộc tính bị bỏ qua cho hình ảnh.
+		 *                                      Nếu không, có thể là: 'async', 'sync', hoặc 'auto'. Mặc định false.
+		 * @param string            $image      Thẻ HTML `img` cần được lọc.
+		 * @param string            $context    Ngữ cảnh bổ sung về cách hàm được gọi
+		 *                                      hoặc vị trí thẻ img.
 		 */
 		$filtered_decoding_attr = apply_filters(
 			'wp_img_tag_add_decoding_attr',
@@ -2150,9 +2149,9 @@ function wp_img_tag_add_loading_optimization_attrs( $image, $context ) {
 			$context
 		);
 
-		// Validate the values after filtering.
+		// Xác thực các giá trị sau khi lọc.
 		if ( isset( $optimization_attrs['decoding'] ) && ! $filtered_decoding_attr ) {
-			// Unset `decoding` attribute if `$filtered_decoding_attr` is set to `false`.
+			// Bỏ thuộc tính `decoding` nếu `$filtered_decoding_attr` được đặt thành `false`.
 			unset( $optimization_attrs['decoding'] );
 		} elseif ( in_array( $filtered_decoding_attr, array( 'async', 'sync', 'auto' ), true ) ) {
 			$optimization_attrs['decoding'] = $filtered_decoding_attr;
@@ -2163,27 +2162,27 @@ function wp_img_tag_add_loading_optimization_attrs( $image, $context ) {
 		}
 	}
 
-	// Images should have dimension attributes for the 'loading' and 'fetchpriority' attributes to be added.
+	// Hình ảnh phải có thuộc tính kích thước để thuộc tính 'loading' và 'fetchpriority' được thêm.
 	if ( ! str_contains( $image, ' width="' ) || ! str_contains( $image, ' height="' ) ) {
 		return $image;
 	}
 
-	// Retained for backward compatibility.
+	// Giữ lại để tương thích ngược.
 	$loading_attrs_enabled = wp_lazy_loading_enabled( 'img', $context );
 
 	if ( empty( $loading_val ) && $loading_attrs_enabled ) {
 		/**
-		 * Filters the `loading` attribute value to add to an image. Default `lazy`.
+		 * Lọc giá trị thuộc tính `loading` để thêm vào hình ảnh. Mặc định `lazy`.
 		 *
-		 * Returning `false` or an empty string will not add the attribute.
-		 * Returning `true` will add the default value.
+		 * Trả về `false` hoặc chuỗi rỗng sẽ không thêm thuộc tính.
+		 * Trả về `true` sẽ thêm giá trị mặc định.
 		 *
 		 * @since 5.5.0
 		 *
-		 * @param string|bool $value   The `loading` attribute value. Returning a falsey value will result in
-		 *                             the attribute being omitted for the image.
-		 * @param string      $image   The HTML `img` tag to be filtered.
-		 * @param string      $context Additional context about how the function was called or where the img tag is.
+		 * @param string|bool $value   Giá trị thuộc tính `loading`. Trả về giá trị falsey sẽ khiến
+		 *                             thuộc tính bị bỏ qua cho hình ảnh.
+		 * @param string      $image   Thẻ HTML `img` cần được lọc.
+		 * @param string      $context Ngữ cảnh bổ sung về cách hàm được gọi hoặc vị trí thẻ img.
 		 */
 		$filtered_loading_attr = apply_filters(
 			'wp_img_tag_add_loading_attr',
@@ -2192,18 +2191,18 @@ function wp_img_tag_add_loading_optimization_attrs( $image, $context ) {
 			$context
 		);
 
-		// Validate the values after filtering.
+		// Xác thực các giá trị sau khi lọc.
 		if ( isset( $optimization_attrs['loading'] ) && ! $filtered_loading_attr ) {
-			// Unset `loading` attributes if `$filtered_loading_attr` is set to `false`.
+			// Bỏ thuộc tính `loading` nếu `$filtered_loading_attr` được đặt thành `false`.
 			unset( $optimization_attrs['loading'] );
 		} elseif ( in_array( $filtered_loading_attr, array( 'lazy', 'eager' ), true ) ) {
 			/*
-			 * If the filter changed the loading attribute to "lazy" when a fetchpriority attribute
-			 * with value "high" is already present, trigger a warning since those two attribute
-			 * values should be mutually exclusive.
+			 * Nếu bộ lọc đã thay đổi thuộc tính loading thành "lazy" khi thuộc tính fetchpriority
+			 * với giá trị "high" đã có mặt, kích hoạt cảnh báo vì hai giá trị thuộc tính đó
+			 * nên loại trừ lẫn nhau.
 			 *
-			 * The same warning is present in `wp_get_loading_optimization_attributes()`, and here it
-			 * is only intended for the specific scenario where the above filtered caused the problem.
+			 * Cùng cảnh báo có trong `wp_get_loading_optimization_attributes()`, và ở đây nó
+			 * chỉ dành cho kịch bản cụ thể khi bộ lọc ở trên gây ra vấn đề.
 			 */
 			if ( isset( $optimization_attrs['fetchpriority'] ) && 'high' === $optimization_attrs['fetchpriority'] &&
 				( isset( $optimization_attrs['loading'] ) ? $optimization_attrs['loading'] : false ) !== $filtered_loading_attr &&
@@ -2216,7 +2215,7 @@ function wp_img_tag_add_loading_optimization_attrs( $image, $context ) {
 				);
 			}
 
-			// The filtered value will still be respected.
+			// Giá trị đã lọc vẫn được tôn trọng.
 			$optimization_attrs['loading'] = $filtered_loading_attr;
 		}
 
@@ -2233,35 +2232,35 @@ function wp_img_tag_add_loading_optimization_attrs( $image, $context ) {
 }
 
 /**
- * Adds `width` and `height` attributes to an `img` HTML tag.
+ * Thêm thuộc tính `width` và `height` vào thẻ HTML `img`.
  *
  * @since 5.5.0
  *
- * @param string $image         The HTML `img` tag where the attribute should be added.
- * @param string $context       Additional context to pass to the filters.
- * @param int    $attachment_id Image attachment ID.
- * @return string Converted 'img' element with 'width' and 'height' attributes added.
+ * @param string $image         Thẻ HTML `img` nơi thuộc tính cần được thêm.
+ * @param string $context       Ngữ cảnh bổ sung để truyền cho các bộ lọc.
+ * @param int    $attachment_id ID đính kèm hình ảnh.
+ * @return string Phần tử 'img' đã chuyển đổi với thuộc tính 'width' và 'height' được thêm.
  */
 function wp_img_tag_add_width_and_height_attr( $image, $context, $attachment_id ) {
 	$image_src         = preg_match( '/src="([^"]+)"/', $image, $match_src ) ? $match_src[1] : '';
 	list( $image_src ) = explode( '?', $image_src );
 
-	// Return early if we couldn't get the image source.
+	// Trả về sớm nếu không thể lấy nguồn hình ảnh.
 	if ( ! $image_src ) {
 		return $image;
 	}
 
 	/**
-	 * Filters whether to add the missing `width` and `height` HTML attributes to the img tag. Default `true`.
+	 * Lọc xem có nên thêm thuộc tính HTML `width` và `height` còn thiếu vào thẻ img không. Mặc định `true`.
 	 *
-	 * Returning anything else than `true` will not add the attributes.
+	 * Trả về bất kỳ thứ gì khác ngoài `true` sẽ không thêm thuộc tính.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param bool   $value         The filtered value, defaults to `true`.
-	 * @param string $image         The HTML `img` tag where the attribute should be added.
-	 * @param string $context       Additional context about how the function was called or where the img tag is.
-	 * @param int    $attachment_id The image attachment ID.
+	 * @param bool   $value         Giá trị đã lọc, mặc định `true`.
+	 * @param string $image         Thẻ HTML `img` nơi thuộc tính cần được thêm.
+	 * @param string $context       Ngữ cảnh bổ sung về cách hàm được gọi hoặc vị trí thẻ img.
+	 * @param int    $attachment_id ID đính kèm hình ảnh.
 	 */
 	$add = apply_filters( 'wp_img_tag_add_width_and_height_attr', true, $image, $context, $attachment_id );
 
@@ -2270,7 +2269,7 @@ function wp_img_tag_add_width_and_height_attr( $image, $context, $attachment_id 
 		$size_array = wp_image_src_get_dimensions( $image_src, $image_meta, $attachment_id );
 
 		if ( $size_array && $size_array[0] && $size_array[1] ) {
-			// If the width is enforced through style (e.g. in an inline image), calculate the dimension attributes.
+			// Nếu chiều rộng được áp đặt thông qua style (ví dụ trong hình ảnh inline), tính toán thuộc tính kích thước.
 			$style_width = preg_match( '/style="width:\s*(\d+)px;"/', $image, $match_width ) ? (int) $match_width[1] : 0;
 			if ( $style_width ) {
 				$size_array[1] = (int) round( $size_array[1] * $style_width / $size_array[0] );
@@ -2286,27 +2285,27 @@ function wp_img_tag_add_width_and_height_attr( $image, $context, $attachment_id 
 }
 
 /**
- * Adds `srcset` and `sizes` attributes to an existing `img` HTML tag.
+ * Thêm thuộc tính `srcset` và `sizes` vào thẻ HTML `img` hiện có.
  *
  * @since 5.5.0
  *
- * @param string $image         The HTML `img` tag where the attribute should be added.
- * @param string $context       Additional context to pass to the filters.
- * @param int    $attachment_id Image attachment ID.
- * @return string Converted 'img' element with 'loading' attribute added.
+ * @param string $image         Thẻ HTML `img` nơi thuộc tính cần được thêm.
+ * @param string $context       Ngữ cảnh bổ sung để truyền cho các bộ lọc.
+ * @param int    $attachment_id ID đính kèm hình ảnh.
+ * @return string Phần tử 'img' đã chuyển đổi với thuộc tính 'loading' được thêm.
  */
 function wp_img_tag_add_srcset_and_sizes_attr( $image, $context, $attachment_id ) {
 	/**
-	 * Filters whether to add the `srcset` and `sizes` HTML attributes to the img tag. Default `true`.
+	 * Lọc xem có nên thêm thuộc tính HTML `srcset` và `sizes` vào thẻ img không. Mặc định `true`.
 	 *
-	 * Returning anything else than `true` will not add the attributes.
+	 * Trả về bất kỳ thứ gì khác ngoài `true` sẽ không thêm thuộc tính.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param bool   $value         The filtered value, defaults to `true`.
-	 * @param string $image         The HTML `img` tag where the attribute should be added.
-	 * @param string $context       Additional context about how the function was called or where the img tag is.
-	 * @param int    $attachment_id The image attachment ID.
+	 * @param bool   $value         Giá trị đã lọc, mặc định `true`.
+	 * @param string $image         Thẻ HTML `img` nơi thuộc tính cần được thêm.
+	 * @param string $context       Ngữ cảnh bổ sung về cách hàm được gọi hoặc vị trí thẻ img.
+	 * @param int    $attachment_id ID đính kèm hình ảnh.
 	 */
 	$add = apply_filters( 'wp_img_tag_add_srcset_and_sizes_attr', true, $image, $context, $attachment_id );
 
@@ -2319,37 +2318,37 @@ function wp_img_tag_add_srcset_and_sizes_attr( $image, $context, $attachment_id 
 }
 
 /**
- * Adds `loading` attribute to an `iframe` HTML tag.
+ * Thêm thuộc tính `loading` vào thẻ HTML `iframe`.
  *
  * @since 5.7.0
  *
- * @param string $iframe  The HTML `iframe` tag where the attribute should be added.
- * @param string $context Additional context to pass to the filters.
- * @return string Converted `iframe` tag with `loading` attribute added.
+ * @param string $iframe  Thẻ HTML `iframe` nơi thuộc tính cần được thêm.
+ * @param string $context Ngữ cảnh bổ sung để truyền cho các bộ lọc.
+ * @return string Thẻ `iframe` đã chuyển đổi với thuộc tính `loading` được thêm.
  */
 function wp_iframe_tag_add_loading_attr( $iframe, $context ) {
 	/*
-	 * Get loading attribute value to use. This must occur before the conditional check below so that even iframes that
-	 * are ineligible for being lazy-loaded are considered.
+	 * Lấy giá trị thuộc tính loading để sử dụng. Điều này phải xảy ra trước kiểm tra điều kiện bên dưới để ngay cả iframe
+	 * không đủ điều kiện tải lười cũng được xem xét.
 	 */
 	$optimization_attrs = wp_get_loading_optimization_attributes(
 		'iframe',
 		array(
 			/*
-			 * The concrete values for width and height are not important here for now
-			 * since fetchpriority is not yet supported for iframes.
-			 * TODO: Use WP_HTML_Tag_Processor to extract actual values once support is
-			 * added.
+			 * Các giá trị cụ thể cho chiều rộng và chiều cao không quan trọng ở đây hiện tại
+			 * vì fetchpriority chưa được hỗ trợ cho iframe.
+			 * TODO: Sử dụng WP_HTML_Tag_Processor để trích xuất giá trị thực khi hỗ trợ
+			 * được thêm.
 			 */
 			'width'   => str_contains( $iframe, ' width="' ) ? 100 : null,
 			'height'  => str_contains( $iframe, ' height="' ) ? 100 : null,
-			// This function is never called when a 'loading' attribute is already present.
+			// Hàm này không bao giờ được gọi khi thuộc tính 'loading' đã có mặt.
 			'loading' => null,
 		),
 		$context
 	);
 
-	// Iframes should have source and dimension attributes for the `loading` attribute to be added.
+	// Iframe phải có thuộc tính nguồn và kích thước để thuộc tính `loading` được thêm.
 	if ( ! str_contains( $iframe, ' src="' ) || ! str_contains( $iframe, ' width="' ) || ! str_contains( $iframe, ' height="' ) ) {
 		return $iframe;
 	}
@@ -2357,17 +2356,17 @@ function wp_iframe_tag_add_loading_attr( $iframe, $context ) {
 	$value = isset( $optimization_attrs['loading'] ) ? $optimization_attrs['loading'] : false;
 
 	/**
-	 * Filters the `loading` attribute value to add to an iframe. Default `lazy`.
+	 * Lọc giá trị thuộc tính `loading` để thêm vào iframe. Mặc định `lazy`.
 	 *
-	 * Returning `false` or an empty string will not add the attribute.
-	 * Returning `true` will add the default value.
+	 * Trả về `false` hoặc chuỗi rỗng sẽ không thêm thuộc tính.
+	 * Trả về `true` sẽ thêm giá trị mặc định.
 	 *
 	 * @since 5.7.0
 	 *
-	 * @param string|bool $value   The `loading` attribute value. Returning a falsey value will result in
-	 *                             the attribute being omitted for the iframe.
-	 * @param string      $iframe  The HTML `iframe` tag to be filtered.
-	 * @param string      $context Additional context about how the function was called or where the iframe tag is.
+	 * @param string|bool $value   Giá trị thuộc tính `loading`. Trả về giá trị falsey sẽ khiến
+	 *                             thuộc tính bị bỏ qua cho iframe.
+	 * @param string      $iframe  Thẻ HTML `iframe` cần được lọc.
+	 * @param string      $context Ngữ cảnh bổ sung về cách hàm được gọi hoặc vị trí thẻ iframe.
 	 */
 	$value = apply_filters( 'wp_iframe_tag_add_loading_attr', $value, $iframe, $context );
 
@@ -2383,16 +2382,16 @@ function wp_iframe_tag_add_loading_attr( $iframe, $context ) {
 }
 
 /**
- * Adds a 'wp-post-image' class to post thumbnails. Internal use only.
+ * Thêm class 'wp-post-image' vào ảnh thu nhỏ bài viết. Chỉ sử dụng nội bộ.
  *
- * Uses the {@see 'begin_fetch_post_thumbnail_html'} and {@see 'end_fetch_post_thumbnail_html'}
- * action hooks to dynamically add/remove itself so as to only filter post thumbnails.
+ * Sử dụng hook hành động {@see 'begin_fetch_post_thumbnail_html'} và {@see 'end_fetch_post_thumbnail_html'}
+ * để thêm/xóa động chính nó sao cho chỉ lọc ảnh thu nhỏ bài viết.
  *
  * @ignore
  * @since 2.9.0
  *
- * @param string[] $attr Array of thumbnail attributes including src, class, alt, title, keyed by attribute name.
- * @return string[] Modified array of attributes including the new 'wp-post-image' class.
+ * @param string[] $attr Mảng thuộc tính ảnh thu nhỏ bao gồm src, class, alt, title, được khóa theo tên thuộc tính.
+ * @return string[] Mảng thuộc tính đã sửa đổi bao gồm class 'wp-post-image' mới.
  */
 function _wp_post_thumbnail_class_filter( $attr ) {
 	$attr['class'] .= ' wp-post-image';
@@ -2400,51 +2399,51 @@ function _wp_post_thumbnail_class_filter( $attr ) {
 }
 
 /**
- * Adds '_wp_post_thumbnail_class_filter' callback to the 'wp_get_attachment_image_attributes'
- * filter hook. Internal use only.
+ * Thêm callback '_wp_post_thumbnail_class_filter' vào hook bộ lọc 'wp_get_attachment_image_attributes'.
+ * Chỉ sử dụng nội bộ.
  *
  * @ignore
  * @since 2.9.0
  *
- * @param string[] $attr Array of thumbnail attributes including src, class, alt, title, keyed by attribute name.
+ * @param string[] $attr Mảng thuộc tính ảnh thu nhỏ bao gồm src, class, alt, title, được khóa theo tên thuộc tính.
  */
 function _wp_post_thumbnail_class_filter_add( $attr ) {
 	add_filter( 'wp_get_attachment_image_attributes', '_wp_post_thumbnail_class_filter' );
 }
 
 /**
- * Removes the '_wp_post_thumbnail_class_filter' callback from the 'wp_get_attachment_image_attributes'
- * filter hook. Internal use only.
+ * Xóa callback '_wp_post_thumbnail_class_filter' khỏi hook bộ lọc 'wp_get_attachment_image_attributes'.
+ * Chỉ sử dụng nội bộ.
  *
  * @ignore
  * @since 2.9.0
  *
- * @param string[] $attr Array of thumbnail attributes including src, class, alt, title, keyed by attribute name.
+ * @param string[] $attr Mảng thuộc tính ảnh thu nhỏ bao gồm src, class, alt, title, được khóa theo tên thuộc tính.
  */
 function _wp_post_thumbnail_class_filter_remove( $attr ) {
 	remove_filter( 'wp_get_attachment_image_attributes', '_wp_post_thumbnail_class_filter' );
 }
 
 /**
- * Overrides the context used in {@see wp_get_attachment_image()}. Internal use only.
+ * Ghi đè ngữ cảnh được sử dụng trong {@see wp_get_attachment_image()}. Chỉ sử dụng nội bộ.
  *
- * Uses the {@see 'begin_fetch_post_thumbnail_html'} and {@see 'end_fetch_post_thumbnail_html'}
- * action hooks to dynamically add/remove itself so as to only filter post thumbnails.
+ * Sử dụng hook hành động {@see 'begin_fetch_post_thumbnail_html'} và {@see 'end_fetch_post_thumbnail_html'}
+ * để thêm/xóa động chính nó sao cho chỉ lọc ảnh thu nhỏ bài viết.
  *
  * @ignore
  * @since 6.3.0
  * @access private
  *
- * @param string $context The context for rendering an attachment image.
- * @return string Modified context set to 'the_post_thumbnail'.
+ * @param string $context Ngữ cảnh để hiển thị hình ảnh đính kèm.
+ * @return string Ngữ cảnh đã sửa đổi được đặt thành 'the_post_thumbnail'.
  */
 function _wp_post_thumbnail_context_filter( $context ) {
 	return 'the_post_thumbnail';
 }
 
 /**
- * Adds the '_wp_post_thumbnail_context_filter' callback to the 'wp_get_attachment_image_context'
- * filter hook. Internal use only.
+ * Thêm callback '_wp_post_thumbnail_context_filter' vào hook bộ lọc 'wp_get_attachment_image_context'.
+ * Chỉ sử dụng nội bộ.
  *
  * @ignore
  * @since 6.3.0
@@ -2455,8 +2454,8 @@ function _wp_post_thumbnail_context_filter_add() {
 }
 
 /**
- * Removes the '_wp_post_thumbnail_context_filter' callback from the 'wp_get_attachment_image_context'
- * filter hook. Internal use only.
+ * Xóa callback '_wp_post_thumbnail_context_filter' khỏi hook bộ lọc 'wp_get_attachment_image_context'.
+ * Chỉ sử dụng nội bộ.
  *
  * @ignore
  * @since 6.3.0
@@ -2470,36 +2469,36 @@ add_shortcode( 'wp_caption', 'img_caption_shortcode' );
 add_shortcode( 'caption', 'img_caption_shortcode' );
 
 /**
- * Builds the Caption shortcode output.
+ * Xây dựng đầu ra shortcode Caption.
  *
- * Allows a plugin to replace the content that would otherwise be returned. The
- * filter is {@see 'img_caption_shortcode'} and passes an empty string, the attr
- * parameter and the content parameter values.
+ * Cho phép plugin thay thế nội dung mà lẽ ra sẽ được trả về. Bộ lọc
+ * là {@see 'img_caption_shortcode'} và truyền chuỗi rỗng, tham số attr
+ * và giá trị tham số content.
  *
- * The supported attributes for the shortcode are 'id', 'caption_id', 'align',
- * 'width', 'caption', and 'class'.
+ * Các thuộc tính được hỗ trợ cho shortcode là 'id', 'caption_id', 'align',
+ * 'width', 'caption', và 'class'.
  *
  * @since 2.6.0
- * @since 3.9.0 The `class` attribute was added.
- * @since 5.1.0 The `caption_id` attribute was added.
- * @since 5.9.0 The `$content` parameter default value changed from `null` to `''`.
+ * @since 3.9.0 Thuộc tính `class` đã được thêm.
+ * @since 5.1.0 Thuộc tính `caption_id` đã được thêm.
+ * @since 5.9.0 Giá trị mặc định tham số `$content` đã thay đổi từ `null` sang `''`.
  *
  * @param array  $attr {
- *     Attributes of the caption shortcode.
+ *     Thuộc tính của shortcode caption.
  *
- *     @type string $id         ID of the image and caption container element, i.e. `<figure>` or `<div>`.
- *     @type string $caption_id ID of the caption element, i.e. `<figcaption>` or `<p>`.
- *     @type string $align      Class name that aligns the caption. Default 'alignnone'. Accepts 'alignleft',
- *                              'aligncenter', alignright', 'alignnone'.
- *     @type int    $width      The width of the caption, in pixels.
- *     @type string $caption    The caption text.
- *     @type string $class      Additional class name(s) added to the caption container.
+ *     @type string $id         ID của phần tử chứa hình ảnh và chú thích, tức là `<figure>` hoặc `<div>`.
+ *     @type string $caption_id ID của phần tử chú thích, tức là `<figcaption>` hoặc `<p>`.
+ *     @type string $align      Tên class căn chỉnh chú thích. Mặc định 'alignnone'. Chấp nhận 'alignleft',
+ *                              'aligncenter', 'alignright', 'alignnone'.
+ *     @type int    $width      Chiều rộng chú thích, tính bằng pixel.
+ *     @type string $caption    Văn bản chú thích.
+ *     @type string $class      Tên class bổ sung được thêm vào phần tử chứa chú thích.
  * }
- * @param string $content Optional. Shortcode content. Default empty string.
- * @return string HTML content to display the caption.
+ * @param string $content Tùy chọn. Nội dung shortcode. Mặc định chuỗi rỗng.
+ * @return string Nội dung HTML để hiển thị chú thích.
  */
 function img_caption_shortcode( $attr, $content = '' ) {
-	// New-style shortcode with the caption inside the shortcode with the link and image tags.
+	// Shortcode kiểu mới với chú thích bên trong shortcode cùng với thẻ liên kết và hình ảnh.
 	if ( ! isset( $attr['caption'] ) ) {
 		if ( preg_match( '#((?:<a [^>]+>\s*)?<img [^>]+>(?:\s*</a>)?)(.*)#is', $content, $matches ) ) {
 			$content         = $matches[1];
@@ -2510,18 +2509,18 @@ function img_caption_shortcode( $attr, $content = '' ) {
 	}
 
 	/**
-	 * Filters the default caption shortcode output.
+	 * Lọc đầu ra shortcode caption mặc định.
 	 *
-	 * If the filtered output isn't empty, it will be used instead of generating
-	 * the default caption template.
+	 * Nếu đầu ra đã lọc không rỗng, nó sẽ được sử dụng thay vì tạo
+	 * mẫu caption mặc định.
 	 *
 	 * @since 2.6.0
 	 *
 	 * @see img_caption_shortcode()
 	 *
-	 * @param string $output  The caption output. Default empty.
-	 * @param array  $attr    Attributes of the caption shortcode.
-	 * @param string $content The image element, possibly wrapped in a hyperlink.
+	 * @param string $output  Đầu ra caption. Mặc định rỗng.
+	 * @param array  $attr    Thuộc tính của shortcode caption.
+	 * @param string $content Phần tử hình ảnh, có thể được bao bọc trong siêu liên kết.
 	 */
 	$output = apply_filters( 'img_caption_shortcode', '', $attr, $content );
 
@@ -2571,23 +2570,23 @@ function img_caption_shortcode( $attr, $content = '' ) {
 	$class = trim( 'wp-caption ' . $atts['align'] . ' ' . $atts['class'] );
 
 	$html5 = current_theme_supports( 'html5', 'caption' );
-	// HTML5 captions never added the extra 10px to the image width.
+	// Chú thích HTML5 không bao giờ thêm 10px phụ vào chiều rộng hình ảnh.
 	$width = $html5 ? $atts['width'] : ( 10 + $atts['width'] );
 
 	/**
-	 * Filters the width of an image's caption.
+	 * Lọc chiều rộng chú thích của hình ảnh.
 	 *
-	 * By default, the caption is 10 pixels greater than the width of the image,
-	 * to prevent post content from running up against a floated image.
+	 * Mặc định, chú thích rộng hơn 10 pixel so với chiều rộng hình ảnh,
+	 * để ngăn nội dung bài viết chạy sát hình ảnh float.
 	 *
 	 * @since 3.7.0
 	 *
 	 * @see img_caption_shortcode()
 	 *
-	 * @param int    $width    Width of the caption in pixels. To remove this inline style,
-	 *                         return zero.
-	 * @param array  $atts     Attributes of the caption shortcode.
-	 * @param string $content  The image element, possibly wrapped in a hyperlink.
+	 * @param int    $width    Chiều rộng chú thích tính bằng pixel. Để xóa style inline này,
+	 *                         trả về zero.
+	 * @param array  $atts     Thuộc tính của shortcode caption.
+	 * @param string $content  Phần tử hình ảnh, có thể được bao bọc trong siêu liên kết.
 	 */
 	$caption_width = apply_filters( 'img_caption_shortcode_width', $width, $atts, $content );
 
@@ -2632,55 +2631,55 @@ function img_caption_shortcode( $attr, $content = '' ) {
 add_shortcode( 'gallery', 'gallery_shortcode' );
 
 /**
- * Builds the Gallery shortcode output.
+ * Xây dựng đầu ra shortcode Gallery.
  *
- * This implements the functionality of the Gallery Shortcode for displaying
- * WordPress images on a post.
+ * Triển khai chức năng của Shortcode Gallery để hiển thị
+ * hình ảnh WordPress trên bài viết.
  *
  * @since 2.5.0
- * @since 2.8.0 Added the `$attr` parameter to set the shortcode output. New attributes included
- *              such as `size`, `itemtag`, `icontag`, `captiontag`, and columns. Changed markup from
- *              `div` tags to `dl`, `dt` and `dd` tags. Support more than one gallery on the
- *              same page.
- * @since 2.9.0 Added support for `include` and `exclude` to shortcode.
- * @since 3.5.0 Use get_post() instead of global `$post`. Handle mapping of `ids` to `include`
- *              and `orderby`.
- * @since 3.6.0 Added validation for tags used in gallery shortcode. Add orientation information to items.
- * @since 3.7.0 Introduced the `link` attribute.
- * @since 3.9.0 `html5` gallery support, accepting 'itemtag', 'icontag', and 'captiontag' attributes.
- * @since 4.0.0 Removed use of `extract()`.
- * @since 4.1.0 Added attribute to `wp_get_attachment_link()` to output `aria-describedby`.
- * @since 4.2.0 Passed the shortcode instance ID to `post_gallery` and `post_playlist` filters.
- * @since 4.6.0 Standardized filter docs to match documentation standards for PHP.
- * @since 5.1.0 Code cleanup for WPCS 1.0.0 coding standards.
- * @since 5.3.0 Saved progress of intermediate image creation after upload.
- * @since 5.5.0 Ensured that galleries can be output as a list of links in feeds.
- * @since 5.6.0 Replaced order-style PHP type conversion functions with typecasts. Fix logic for
- *              an array of image dimensions.
+ * @since 2.8.0 Thêm tham số `$attr` để đặt đầu ra shortcode. Các thuộc tính mới bao gồm
+ *              `size`, `itemtag`, `icontag`, `captiontag`, và columns. Thay đổi markup từ
+ *              thẻ `div` sang thẻ `dl`, `dt` và `dd`. Hỗ trợ nhiều hơn một gallery trên
+ *              cùng trang.
+ * @since 2.9.0 Thêm hỗ trợ `include` và `exclude` cho shortcode.
+ * @since 3.5.0 Sử dụng get_post() thay vì global `$post`. Xử lý ánh xạ `ids` sang `include`
+ *              và `orderby`.
+ * @since 3.6.0 Thêm xác thực cho các thẻ sử dụng trong shortcode gallery. Thêm thông tin hướng cho các mục.
+ * @since 3.7.0 Giới thiệu thuộc tính `link`.
+ * @since 3.9.0 Hỗ trợ gallery `html5`, chấp nhận thuộc tính 'itemtag', 'icontag', và 'captiontag'.
+ * @since 4.0.0 Xóa việc sử dụng `extract()`.
+ * @since 4.1.0 Thêm thuộc tính cho `wp_get_attachment_link()` để xuất `aria-describedby`.
+ * @since 4.2.0 Truyền ID phiên bản shortcode cho bộ lọc `post_gallery` và `post_playlist`.
+ * @since 4.6.0 Chuẩn hóa tài liệu bộ lọc để khớp với tiêu chuẩn tài liệu cho PHP.
+ * @since 5.1.0 Dọn dẹp code cho tiêu chuẩn mã hóa WPCS 1.0.0.
+ * @since 5.3.0 Lưu tiến trình tạo hình ảnh trung gian sau khi tải lên.
+ * @since 5.5.0 Đảm bảo gallery có thể được xuất dưới dạng danh sách liên kết trong feed.
+ * @since 5.6.0 Thay thế hàm chuyển đổi kiểu PHP kiểu order bằng typecast. Sửa logic cho
+ *              mảng kích thước hình ảnh.
  *
  * @param array $attr {
- *     Attributes of the gallery shortcode.
+ *     Thuộc tính của shortcode gallery.
  *
- *     @type string       $order      Order of the images in the gallery. Default 'ASC'. Accepts 'ASC', 'DESC'.
- *     @type string       $orderby    The field to use when ordering the images. Default 'menu_order ID'.
- *                                    Accepts any valid SQL ORDERBY statement.
- *     @type int          $id         Post ID.
- *     @type string       $itemtag    HTML tag to use for each image in the gallery.
- *                                    Default 'dl', or 'figure' when the theme registers HTML5 gallery support.
- *     @type string       $icontag    HTML tag to use for each image's icon.
- *                                    Default 'dt', or 'div' when the theme registers HTML5 gallery support.
- *     @type string       $captiontag HTML tag to use for each image's caption.
- *                                    Default 'dd', or 'figcaption' when the theme registers HTML5 gallery support.
- *     @type int          $columns    Number of columns of images to display. Default 3.
- *     @type string|int[] $size       Size of the images to display. Accepts any registered image size name, or an array
- *                                    of width and height values in pixels (in that order). Default 'thumbnail'.
- *     @type string       $ids        A comma-separated list of IDs of attachments to display. Default empty.
- *     @type string       $include    A comma-separated list of IDs of attachments to include. Default empty.
- *     @type string       $exclude    A comma-separated list of IDs of attachments to exclude. Default empty.
- *     @type string       $link       What to link each image to. Default empty (links to the attachment page).
- *                                    Accepts 'file', 'none'.
+ *     @type string       $order      Thứ tự hình ảnh trong gallery. Mặc định 'ASC'. Chấp nhận 'ASC', 'DESC'.
+ *     @type string       $orderby    Trường để sử dụng khi sắp xếp hình ảnh. Mặc định 'menu_order ID'.
+ *                                    Chấp nhận bất kỳ câu lệnh SQL ORDERBY hợp lệ nào.
+ *     @type int          $id         ID bài viết.
+ *     @type string       $itemtag    Thẻ HTML sử dụng cho mỗi hình ảnh trong gallery.
+ *                                    Mặc định 'dl', hoặc 'figure' khi theme đăng ký hỗ trợ gallery HTML5.
+ *     @type string       $icontag    Thẻ HTML sử dụng cho biểu tượng mỗi hình ảnh.
+ *                                    Mặc định 'dt', hoặc 'div' khi theme đăng ký hỗ trợ gallery HTML5.
+ *     @type string       $captiontag Thẻ HTML sử dụng cho chú thích mỗi hình ảnh.
+ *                                    Mặc định 'dd', hoặc 'figcaption' khi theme đăng ký hỗ trợ gallery HTML5.
+ *     @type int          $columns    Số cột hình ảnh để hiển thị. Mặc định 3.
+ *     @type string|int[] $size       Kích thước hình ảnh để hiển thị. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                                    giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
+ *     @type string       $ids        Danh sách ID đính kèm phân cách bằng dấu phẩy để hiển thị. Mặc định rỗng.
+ *     @type string       $include    Danh sách ID đính kèm phân cách bằng dấu phẩy để bao gồm. Mặc định rỗng.
+ *     @type string       $exclude    Danh sách ID đính kèm phân cách bằng dấu phẩy để loại trừ. Mặc định rỗng.
+ *     @type string       $link       Liên kết mỗi hình ảnh đến đâu. Mặc định rỗng (liên kết đến trang đính kèm).
+ *                                    Chấp nhận 'file', 'none'.
  * }
- * @return string HTML content to display gallery.
+ * @return string Nội dung HTML để hiển thị gallery.
  */
 function gallery_shortcode( $attr ) {
 	$post = get_post();
@@ -2689,7 +2688,7 @@ function gallery_shortcode( $attr ) {
 	++$instance;
 
 	if ( ! empty( $attr['ids'] ) ) {
-		// 'ids' is explicitly ordered, unless you specify otherwise.
+		// 'ids' được sắp xếp rõ ràng, trừ khi bạn chỉ định khác.
 		if ( empty( $attr['orderby'] ) ) {
 			$attr['orderby'] = 'post__in';
 		}
@@ -2697,19 +2696,19 @@ function gallery_shortcode( $attr ) {
 	}
 
 	/**
-	 * Filters the default gallery shortcode output.
+	 * Lọc đầu ra shortcode gallery mặc định.
 	 *
-	 * If the filtered output isn't empty, it will be used instead of generating
-	 * the default gallery template.
+	 * Nếu đầu ra đã lọc không rỗng, nó sẽ được sử dụng thay vì tạo
+	 * mẫu gallery mặc định.
 	 *
 	 * @since 2.5.0
-	 * @since 4.2.0 The `$instance` parameter was added.
+	 * @since 4.2.0 Tham số `$instance` đã được thêm.
 	 *
 	 * @see gallery_shortcode()
 	 *
-	 * @param string $output   The gallery output. Default empty.
-	 * @param array  $attr     Attributes of the gallery shortcode.
-	 * @param int    $instance Unique numeric ID of this gallery shortcode instance.
+	 * @param string $output   Đầu ra gallery. Mặc định rỗng.
+	 * @param array  $attr     Thuộc tính của shortcode gallery.
+	 * @param int    $instance ID số duy nhất của phiên bản shortcode gallery này.
 	 */
 	$output = apply_filters( 'post_gallery', '', $attr, $instance );
 
@@ -2784,7 +2783,7 @@ function gallery_shortcode( $attr ) {
 	if ( ! empty( $post_parent_id ) ) {
 		$post_parent = get_post( $post_parent_id );
 
-		// Terminate the shortcode execution if the user cannot read the post or it is password-protected.
+		// Kết thúc thực thi shortcode nếu người dùng không thể đọc bài viết hoặc bài viết được bảo vệ bằng mật khẩu.
 		if ( ! is_post_publicly_viewable( $post_parent->ID ) && ! current_user_can( 'read_post', $post_parent->ID )
 			|| post_password_required( $post_parent )
 		) {
@@ -2836,13 +2835,13 @@ function gallery_shortcode( $attr ) {
 	$gallery_style = '';
 
 	/**
-	 * Filters whether to print default gallery styles.
+	 * Lọc xem có in các style gallery mặc định không.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param bool $print Whether to print default gallery styles.
-	 *                    Defaults to false if the theme supports HTML5 galleries.
-	 *                    Otherwise, defaults to true.
+	 * @param bool $print Có in các style gallery mặc định không.
+	 *                    Mặc định false nếu theme hỗ trợ gallery HTML5.
+	 *                    Nếu không, mặc định true.
 	 */
 	if ( apply_filters( 'use_default_gallery_style', ! $html5 ) ) {
 		$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/css"';
@@ -2872,12 +2871,12 @@ function gallery_shortcode( $attr ) {
 	$gallery_div = "<div id='$selector' class='gallery galleryid-{$id} gallery-columns-{$columns} gallery-size-{$size_class}'>";
 
 	/**
-	 * Filters the default gallery shortcode CSS styles.
+	 * Lọc các style CSS mặc định của shortcode gallery.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $gallery_style Default CSS styles and opening HTML div container
-	 *                              for the gallery shortcode output.
+	 * @param string $gallery_style Các style CSS mặc định và phần tử mở HTML div container
+	 *                              cho đầu ra shortcode gallery.
 	 */
 	$output = apply_filters( 'gallery_style', $gallery_style . $gallery_div );
 
@@ -3127,7 +3126,7 @@ function wp_playlist_shortcode( $attr ) {
 	if ( ! empty( $args['post_parent'] ) ) {
 		$post_parent = get_post( $id );
 
-		// Terminate the shortcode execution if the user cannot read the post or it is password-protected.
+		// Kết thúc thực thi shortcode nếu người dùng không thể đọc bài viết hoặc bài viết được bảo vệ bằng mật khẩu.
 		if ( ! current_user_can( 'read_post', $post_parent->ID ) || post_password_required( $post_parent ) ) {
 			return '';
 		}

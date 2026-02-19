@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Background_Image_Control class
+ * API Tùy biến: Lớp WP_Customize_Background_Image_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Background Image Control class.
+ * Lớp Điều khiển Hình nền trong Tùy biến.
  *
  * @since 3.4.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Background_Image_Control extends WP_Customize_Image_Control {
 
 	/**
-	 * Customize control type.
+	 * Loại điều khiển tùy biến.
 	 *
 	 * @since 4.1.0
 	 * @var string
@@ -25,12 +25,12 @@ class WP_Customize_Background_Image_Control extends WP_Customize_Image_Control {
 	public $type = 'background';
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 3.4.0
 	 * @uses WP_Customize_Image_Control::__construct()
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
+	 * @param WP_Customize_Manager $manager Đối tượng khởi tạo Trình tùy biến.
 	 */
 	public function __construct( $manager ) {
 		parent::__construct(
@@ -44,7 +44,7 @@ class WP_Customize_Background_Image_Control extends WP_Customize_Image_Control {
 	}
 
 	/**
-	 * Enqueue control related scripts/styles.
+	 * Nạp các script/style liên quan đến điều khiển.
 	 *
 	 * @since 4.1.0
 	 */

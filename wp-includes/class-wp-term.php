@@ -1,6 +1,6 @@
 <?php
 /**
- * Taxonomy API: WP_Term class
+ * API Taxonomy: Lớp WP_Term
  *
  * @package WordPress
  * @subpackage Taxonomy
@@ -8,17 +8,17 @@
  */
 
 /**
- * Core class used to implement the WP_Term object.
+ * Lớp lõi dùng để triển khai đối tượng WP_Term.
  *
  * @since 4.4.0
  *
- * @property-read object $data Sanitized term data.
+ * @property-read object $data Dữ liệu term đã được làm sạch.
  */
 #[AllowDynamicProperties]
 final class WP_Term {
 
 	/**
-	 * Term ID.
+	 * ID term.
 	 *
 	 * @since 4.4.0
 	 * @var int
@@ -26,7 +26,7 @@ final class WP_Term {
 	public $term_id;
 
 	/**
-	 * The term's name.
+	 * Tên của term.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -34,7 +34,7 @@ final class WP_Term {
 	public $name = '';
 
 	/**
-	 * The term's slug.
+	 * Slug của term.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -42,7 +42,7 @@ final class WP_Term {
 	public $slug = '';
 
 	/**
-	 * The term's term_group.
+	 * Nhóm term (term_group) của term.
 	 *
 	 * @since 4.4.0
 	 * @var int
@@ -50,7 +50,7 @@ final class WP_Term {
 	public $term_group = '';
 
 	/**
-	 * Term Taxonomy ID.
+	 * ID Taxonomy của term.
 	 *
 	 * @since 4.4.0
 	 * @var int
@@ -58,7 +58,7 @@ final class WP_Term {
 	public $term_taxonomy_id = 0;
 
 	/**
-	 * The term's taxonomy name.
+	 * Tên taxonomy của term.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -66,7 +66,7 @@ final class WP_Term {
 	public $taxonomy = '';
 
 	/**
-	 * The term's description.
+	 * Mô tả của term.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -74,7 +74,7 @@ final class WP_Term {
 	public $description = '';
 
 	/**
-	 * ID of a term's parent term.
+	 * ID của term cha.
 	 *
 	 * @since 4.4.0
 	 * @var int
@@ -82,7 +82,7 @@ final class WP_Term {
 	public $parent = 0;
 
 	/**
-	 * Cached object count for this term.
+	 * Số đối tượng đã cache cho term này.
 	 *
 	 * @since 4.4.0
 	 * @var int
@@ -90,9 +90,9 @@ final class WP_Term {
 	public $count = 0;
 
 	/**
-	 * Stores the term object's sanitization level.
+	 * Lưu trữ mức độ làm sạch dữ liệu của đối tượng term.
 	 *
-	 * Does not correspond to a database field.
+	 * Không tương ứng với trường nào trong cơ sở dữ liệu.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -100,18 +100,18 @@ final class WP_Term {
 	public $filter = 'raw';
 
 	/**
-	 * Retrieve WP_Term instance.
+	 * Lấy instance WP_Term.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
 	 *
-	 * @param int    $term_id  Term ID.
-	 * @param string $taxonomy Optional. Limit matched terms to those matching `$taxonomy`. Only used for
-	 *                         disambiguating potentially shared terms.
-	 * @return WP_Term|WP_Error|false Term object, if found. WP_Error if `$term_id` is shared between taxonomies and
-	 *                                there's insufficient data to distinguish which term is intended.
-	 *                                False for other failures.
+	 * @param int    $term_id  ID term.
+	 * @param string $taxonomy Tùy chọn. Giới hạn các term khớp với `$taxonomy`. Chỉ dùng để
+	 *                         phân biệt các term có thể dùng chung.
+	 * @return WP_Term|WP_Error|false Đối tượng term nếu tìm thấy. WP_Error nếu `$term_id` được dùng chung giữa các taxonomy và
+	 *                                không đủ dữ liệu để phân biệt term nào được yêu cầu.
+	 *                                False cho các trường hợp thất bại khác.
 	 */
 	public static function get_instance( $term_id, $taxonomy = null ) {
 		global $wpdb;
@@ -123,18 +123,18 @@ final class WP_Term {
 
 		$_term = wp_cache_get( $term_id, 'terms' );
 
-		// If there isn't a cached version, hit the database.
+		// Nếu không có phiên bản cache, truy vấn cơ sở dữ liệu.
 		if ( ! $_term || ( $taxonomy && $taxonomy !== $_term->taxonomy ) ) {
-			// Any term found in the cache is not a match, so don't use it.
+			// Bất kỳ term nào tìm thấy trong cache đều không khớp, nên không dùng nó.
 			$_term = false;
 
-			// Grab all matching terms, in case any are shared between taxonomies.
+			// Lấy tất cả term khớp, phòng trường hợp term được dùng chung giữa các taxonomy.
 			$terms = $wpdb->get_results( $wpdb->prepare( "SELECT t.*, tt.* FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id WHERE t.term_id = %d", $term_id ) );
 			if ( ! $terms ) {
 				return false;
 			}
 
-			// If a taxonomy was specified, find a match.
+			// Nếu taxonomy được chỉ định, tìm kết quả khớp.
 			if ( $taxonomy ) {
 				foreach ( $terms as $match ) {
 					if ( $taxonomy === $match->taxonomy ) {
@@ -143,19 +143,19 @@ final class WP_Term {
 					}
 				}
 
-				// If only one match was found, it's the one we want.
+				// Nếu chỉ có một kết quả khớp, đó là kết quả cần tìm.
 			} elseif ( 1 === count( $terms ) ) {
 				$_term = reset( $terms );
 
-				// Otherwise, the term must be shared between taxonomies.
+				// Ngược lại, term phải được dùng chung giữa các taxonomy.
 			} else {
-				// If the term is shared only with invalid taxonomies, return the one valid term.
+				// Nếu term chỉ được dùng chung với các taxonomy không hợp lệ, trả về term hợp lệ duy nhất.
 				foreach ( $terms as $t ) {
 					if ( ! taxonomy_exists( $t->taxonomy ) ) {
 						continue;
 					}
 
-					// Only hit if we've already identified a term in a valid taxonomy.
+					// Chỉ chạy vào đây nếu đã xác định được term trong taxonomy hợp lệ.
 					if ( $_term ) {
 						return new WP_Error( 'ambiguous_term_id', __( 'Term ID is shared between multiple taxonomies' ), $term_id );
 					}
@@ -168,14 +168,14 @@ final class WP_Term {
 				return false;
 			}
 
-			// Don't return terms from invalid taxonomies.
+			// Không trả về term từ các taxonomy không hợp lệ.
 			if ( ! taxonomy_exists( $_term->taxonomy ) ) {
 				return new WP_Error( 'invalid_taxonomy', __( 'Invalid taxonomy.' ) );
 			}
 
 			$_term = sanitize_term( $_term, $_term->taxonomy, 'raw' );
 
-			// Don't cache terms that are shared between taxonomies.
+			// Không cache các term được dùng chung giữa các taxonomy.
 			if ( 1 === count( $terms ) ) {
 				wp_cache_add( $term_id, $_term, 'terms' );
 			}
@@ -188,11 +188,11 @@ final class WP_Term {
 	}
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_Term|object $term Term object.
+	 * @param WP_Term|object $term Đối tượng term.
 	 */
 	public function __construct( $term ) {
 		foreach ( get_object_vars( $term ) as $key => $value ) {
@@ -201,34 +201,34 @@ final class WP_Term {
 	}
 
 	/**
-	 * Sanitizes term fields, according to the filter type provided.
+	 * Làm sạch các trường term theo loại bộ lọc được cung cấp.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $filter Filter context. Accepts 'edit', 'db', 'display', 'attribute', 'js', 'rss', or 'raw'.
+	 * @param string $filter Ngữ cảnh bộ lọc. Chấp nhận 'edit', 'db', 'display', 'attribute', 'js', 'rss', hoặc 'raw'.
 	 */
 	public function filter( $filter ) {
 		sanitize_term( $this, $this->taxonomy, $filter );
 	}
 
 	/**
-	 * Converts an object to array.
+	 * Chuyển đổi đối tượng sang mảng.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Object as array.
+	 * @return array Đối tượng dưới dạng mảng.
 	 */
 	public function to_array() {
 		return get_object_vars( $this );
 	}
 
 	/**
-	 * Getter.
+	 * Phương thức getter.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $key Property to get.
-	 * @return mixed Property value.
+	 * @param string $key Thuộc tính cần lấy.
+	 * @return mixed Giá trị thuộc tính.
 	 */
 	public function __get( $key ) {
 		switch ( $key ) {

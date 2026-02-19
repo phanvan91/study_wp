@@ -1,15 +1,15 @@
 <?php
 /**
- * WordPress Post Template Functions.
+ * Các hàm mẫu bài viết WordPress.
  *
- * Gets content for the current post in the loop.
+ * Lấy nội dung cho bài viết hiện tại trong vòng lặp.
  *
  * @package WordPress
  * @subpackage Template
  */
 
 /**
- * Displays the ID of the current item in the WordPress Loop.
+ * Hiển thị ID của mục hiện tại trong Vòng lặp WordPress.
  *
  * @since 0.71
  */
@@ -18,11 +18,11 @@ function the_ID() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionNam
 }
 
 /**
- * Retrieves the ID of the current item in the WordPress Loop.
+ * Lấy ID của mục hiện tại trong Vòng lặp WordPress.
  *
  * @since 2.1.0
  *
- * @return int|false The ID of the current item in the WordPress Loop. False if $post is not set.
+ * @return int|false ID của mục hiện tại trong Vòng lặp WordPress. False nếu $post chưa được thiết lập.
  */
 function get_the_ID() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 	$post = get_post();
@@ -30,15 +30,15 @@ function get_the_ID() { // phpcs:ignore WordPress.NamingConventions.ValidFunctio
 }
 
 /**
- * Displays or retrieves the current post title with optional markup.
+ * Hiển thị hoặc lấy tiêu đề bài viết hiện tại với đánh dấu tùy chọn.
  *
  * @since 0.71
  *
- * @param string $before  Optional. Markup to prepend to the title. Default empty.
- * @param string $after   Optional. Markup to append to the title. Default empty.
- * @param bool   $display Optional. Whether to echo or return the title. Default true for echo.
- * @return void|string Void if `$display` argument is true or the title is empty,
- *                     current post title if `$display` is false.
+ * @param string $before  Tùy chọn. Đánh dấu thêm trước tiêu đề. Mặc định rỗng.
+ * @param string $after   Tùy chọn. Đánh dấu thêm sau tiêu đề. Mặc định rỗng.
+ * @param bool   $display Tùy chọn. Có echo hay trả về tiêu đề. Mặc định true để echo.
+ * @return void|string Void nếu tham số `$display` là true hoặc tiêu đề rỗng,
+ *                     tiêu đề bài viết hiện tại nếu `$display` là false.
  */
 function the_title( $before = '', $after = '', $display = true ) {
 	$title = get_the_title();
@@ -57,26 +57,26 @@ function the_title( $before = '', $after = '', $display = true ) {
 }
 
 /**
- * Sanitizes the current title when retrieving or displaying.
+ * Làm sạch tiêu đề hiện tại khi lấy hoặc hiển thị.
  *
- * Works like the_title(), except the parameters can be in a string or
- * an array. See the function for what can be override in the $args parameter.
+ * Hoạt động như the_title(), ngoại trừ các tham số có thể ở dạng chuỗi hoặc
+ * mảng. Xem hàm để biết những gì có thể ghi đè trong tham số $args.
  *
- * The title before it is displayed will have the tags stripped and esc_attr()
- * before it is passed to the user or displayed. The default as with the_title(),
- * is to display the title.
+ * Tiêu đề trước khi hiển thị sẽ được loại bỏ thẻ và esc_attr()
+ * trước khi được truyền cho người dùng hoặc hiển thị. Mặc định giống với the_title(),
+ * là hiển thị tiêu đề.
  *
  * @since 2.3.0
  *
  * @param string|array $args {
- *     Title attribute arguments. Optional.
+ *     Tham số thuộc tính tiêu đề. Tùy chọn.
  *
- *     @type string  $before Markup to prepend to the title. Default empty.
- *     @type string  $after  Markup to append to the title. Default empty.
- *     @type bool    $echo   Whether to echo or return the title. Default true for echo.
- *     @type WP_Post $post   Current post object to retrieve the title for.
+ *     @type string  $before Đánh dấu thêm trước tiêu đề. Mặc định rỗng.
+ *     @type string  $after  Đánh dấu thêm sau tiêu đề. Mặc định rỗng.
+ *     @type bool    $echo   Có echo hay trả về tiêu đề. Mặc định true để echo.
+ *     @type WP_Post $post   Đối tượng bài viết hiện tại để lấy tiêu đề.
  * }
- * @return void|string Void if 'echo' argument is true, the title attribute if 'echo' is false.
+ * @return void|string Void nếu tham số 'echo' là true, thuộc tính tiêu đề nếu 'echo' là false.
  */
 function the_title_attribute( $args = '' ) {
 	$defaults    = array(
@@ -104,15 +104,15 @@ function the_title_attribute( $args = '' ) {
 }
 
 /**
- * Retrieves the post title.
+ * Lấy tiêu đề bài viết.
  *
- * If the post is protected and the visitor is not an admin, then "Protected"
- * will be inserted before the post title. If the post is private, then
- * "Private" will be inserted before the post title.
+ * Nếu bài viết được bảo vệ và khách truy cập không phải quản trị viên, thì "Protected"
+ * sẽ được chèn trước tiêu đề bài viết. Nếu bài viết là riêng tư, thì
+ * "Private" sẽ được chèn trước tiêu đề bài viết.
  *
  * @since 0.71
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global $post.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là $post toàn cục.
  * @return string
  */
 function get_the_title( $post = 0 ) {
@@ -128,15 +128,15 @@ function get_the_title( $post = 0 ) {
 			$prepend = __( 'Protected: %s' );
 
 			/**
-			 * Filters the text prepended to the post title for protected posts.
+			 * Lọc văn bản thêm trước tiêu đề bài viết cho các bài viết được bảo vệ.
 			 *
-			 * The filter is only applied on the front end.
+			 * Bộ lọc chỉ được áp dụng ở giao diện trước.
 			 *
 			 * @since 2.8.0
 			 *
-			 * @param string  $prepend Text displayed before the post title.
-			 *                         Default 'Protected: %s'.
-			 * @param WP_Post $post    Current post object.
+			 * @param string  $prepend Văn bản hiển thị trước tiêu đề bài viết.
+			 *                         Mặc định 'Protected: %s'.
+			 * @param WP_Post $post    Đối tượng bài viết hiện tại.
 			 */
 			$protected_title_format = apply_filters( 'protected_title_format', $prepend, $post );
 
@@ -147,15 +147,15 @@ function get_the_title( $post = 0 ) {
 			$prepend = __( 'Private: %s' );
 
 			/**
-			 * Filters the text prepended to the post title of private posts.
+			 * Lọc văn bản thêm trước tiêu đề bài viết cho các bài viết riêng tư.
 			 *
-			 * The filter is only applied on the front end.
+			 * Bộ lọc chỉ được áp dụng ở giao diện trước.
 			 *
 			 * @since 2.8.0
 			 *
-			 * @param string  $prepend Text displayed before the post title.
-			 *                         Default 'Private: %s'.
-			 * @param WP_Post $post    Current post object.
+			 * @param string  $prepend Văn bản hiển thị trước tiêu đề bài viết.
+			 *                         Mặc định 'Private: %s'.
+			 * @param WP_Post $post    Đối tượng bài viết hiện tại.
 			 */
 			$private_title_format = apply_filters( 'private_title_format', $prepend, $post );
 
@@ -164,28 +164,28 @@ function get_the_title( $post = 0 ) {
 	}
 
 	/**
-	 * Filters the post title.
+	 * Lọc tiêu đề bài viết.
 	 *
 	 * @since 0.71
 	 *
-	 * @param string $post_title The post title.
-	 * @param int    $post_id    The post ID.
+	 * @param string $post_title Tiêu đề bài viết.
+	 * @param int    $post_id    ID bài viết.
 	 */
 	return apply_filters( 'the_title', $post_title, $post_id );
 }
 
 /**
- * Displays the Post Global Unique Identifier (guid).
+ * Hiển thị Định danh toàn cục duy nhất (guid) của bài viết.
  *
- * The guid will appear to be a link, but should not be used as a link to the
- * post. The reason you should not use it as a link, is because of moving the
- * blog across domains.
+ * Guid sẽ trông giống một liên kết, nhưng không nên được sử dụng làm liên kết đến
+ * bài viết. Lý do không nên dùng nó làm liên kết là vì việc di chuyển
+ * blog giữa các tên miền.
  *
- * URL is escaped to make it XML-safe.
+ * URL được escape để đảm bảo an toàn XML.
  *
  * @since 1.5.0
  *
- * @param int|WP_Post $post Optional. Post ID or post object. Default is global $post.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là $post toàn cục.
  */
 function the_guid( $post = 0 ) {
 	$post = get_post( $post );

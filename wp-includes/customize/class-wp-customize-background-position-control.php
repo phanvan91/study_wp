@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Background_Position_Control class
+ * API Tùy biến: Lớp WP_Customize_Background_Position_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Background Position Control class.
+ * Lớp Điều khiển Vị trí Hình nền trong Tùy biến.
  *
  * @since 4.7.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Background_Position_Control extends WP_Customize_Control {
 
 	/**
-	 * Type.
+	 * Loại.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -25,14 +25,14 @@ class WP_Customize_Background_Position_Control extends WP_Customize_Control {
 	public $type = 'background_position';
 
 	/**
-	 * Don't render the control content from PHP, as it's rendered via JS on load.
+	 * Không hiển thị nội dung điều khiển từ PHP, vì nó được hiển thị qua JS khi tải trang.
 	 *
 	 * @since 4.7.0
 	 */
 	public function render_content() {}
 
 	/**
-	 * Render a JS template for the content of the position control.
+	 * Hiển thị mẫu JS cho nội dung của điều khiển vị trí.
 	 *
 	 * @since 4.7.0
 	 */
@@ -92,7 +92,7 @@ class WP_Customize_Background_Position_Control extends WP_Customize_Control {
 			<fieldset>
 				<legend class="screen-reader-text"><span>
 					<?php
-					/* translators: Hidden accessibility text. */
+					/* translators: Văn bản trợ năng ẩn. */
 					_e( 'Image Position' );
 					?>
 				</span></legend>

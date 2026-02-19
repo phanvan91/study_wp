@@ -1,6 +1,6 @@
 <?php
 /**
- * Administration API: Core Ajax handlers
+ * API Quản trị: Các trình xử lý Ajax cốt lõi
  *
  * @package WordPress
  * @subpackage Administration
@@ -8,20 +8,20 @@
  */
 
 //
-// No-privilege Ajax handlers.
+// Các trình xử lý Ajax không cần quyền.
 //
 
 /**
- * Handles the Heartbeat API in the no-privilege context via AJAX .
+ * Xử lý API Heartbeat trong ngữ cảnh không có quyền qua AJAX.
  *
- * Runs when the user is not logged in.
+ * Chạy khi người dùng chưa đăng nhập.
  *
  * @since 3.6.0
  */
 function wp_ajax_nopriv_heartbeat() {
 	$response = array();
 
-	// 'screen_id' is the same as $current_screen->id and the JS global 'pagenow'.
+	// 'screen_id' giống với $current_screen->id và biến JS toàn cục 'pagenow'.
 	if ( ! empty( $_POST['screen_id'] ) ) {
 		$screen_id = sanitize_key( $_POST['screen_id'] );
 	} else {
@@ -32,51 +32,51 @@ function wp_ajax_nopriv_heartbeat() {
 		$data = wp_unslash( (array) $_POST['data'] );
 
 		/**
-		 * Filters Heartbeat Ajax response in no-privilege environments.
+		 * Lọc phản hồi Ajax Heartbeat trong môi trường không có quyền.
 		 *
 		 * @since 3.6.0
 		 *
-		 * @param array  $response  The no-priv Heartbeat response.
-		 * @param array  $data      The $_POST data sent.
-		 * @param string $screen_id The screen ID.
+		 * @param array  $response  Phản hồi Heartbeat không có quyền.
+		 * @param array  $data      Dữ liệu $_POST được gửi.
+		 * @param string $screen_id ID màn hình.
 		 */
 		$response = apply_filters( 'heartbeat_nopriv_received', $response, $data, $screen_id );
 	}
 
 	/**
-	 * Filters Heartbeat Ajax response in no-privilege environments when no data is passed.
+	 * Lọc phản hồi Ajax Heartbeat trong môi trường không có quyền khi không có dữ liệu được truyền.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param array  $response  The no-priv Heartbeat response.
-	 * @param string $screen_id The screen ID.
+	 * @param array  $response  Phản hồi Heartbeat không có quyền.
+	 * @param string $screen_id ID màn hình.
 	 */
 	$response = apply_filters( 'heartbeat_nopriv_send', $response, $screen_id );
 
 	/**
-	 * Fires when Heartbeat ticks in no-privilege environments.
+	 * Kích hoạt khi Heartbeat nhịp trong môi trường không có quyền.
 	 *
-	 * Allows the transport to be easily replaced with long-polling.
+	 * Cho phép phương thức truyền tải dễ dàng được thay thế bằng long-polling.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param array  $response  The no-priv Heartbeat response.
-	 * @param string $screen_id The screen ID.
+	 * @param array  $response  Phản hồi Heartbeat không có quyền.
+	 * @param string $screen_id ID màn hình.
 	 */
 	do_action( 'heartbeat_nopriv_tick', $response, $screen_id );
 
-	// Send the current time according to the server.
+	// Gửi thời gian hiện tại theo máy chủ.
 	$response['server_time'] = time();
 
 	wp_send_json( $response );
 }
 
 //
-// GET-based Ajax handlers.
+// Các trình xử lý Ajax dựa trên GET.
 //
 
 /**
- * Handles fetching a list table via AJAX.
+ * Xử lý việc lấy bảng danh sách qua AJAX.
  *
  * @since 3.1.0
  */
@@ -99,7 +99,7 @@ function wp_ajax_fetch_list() {
 }
 
 /**
- * Handles tag search via AJAX.
+ * Xử lý tìm kiếm thẻ qua AJAX.
  *
  * @since 3.1.0
  */
@@ -134,19 +134,19 @@ function wp_ajax_ajax_tag_search() {
 	$search = trim( $search );
 
 	/**
-	 * Filters the minimum number of characters required to fire a tag search via Ajax.
+	 * Lọc số ký tự tối thiểu cần thiết để kích hoạt tìm kiếm thẻ qua Ajax.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param int         $characters      The minimum number of characters required. Default 2.
-	 * @param WP_Taxonomy $taxonomy_object The taxonomy object.
-	 * @param string      $search          The search term.
+	 * @param int         $characters      Số ký tự tối thiểu cần thiết. Mặc định 2.
+	 * @param WP_Taxonomy $taxonomy_object Đối tượng taxonomy.
+	 * @param string      $search          Chuỗi tìm kiếm.
 	 */
 	$term_search_min_chars = (int) apply_filters( 'term_search_min_chars', 2, $taxonomy_object, $search );
 
 	/*
-	 * Require $term_search_min_chars chars for matching (default: 2)
-	 * ensure it's a non-negative, non-zero integer.
+	 * Yêu cầu $term_search_min_chars ký tự để khớp (mặc định: 2)
+	 * đảm bảo đó là số nguyên không âm, khác không.
 	 */
 	if ( ( 0 === $term_search_min_chars ) || ( strlen( $search ) < $term_search_min_chars ) ) {
 		wp_die();
@@ -163,13 +163,13 @@ function wp_ajax_ajax_tag_search() {
 	);
 
 	/**
-	 * Filters the Ajax term search results.
+	 * Lọc kết quả tìm kiếm term qua Ajax.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param string[]    $results         Array of term names.
-	 * @param WP_Taxonomy $taxonomy_object The taxonomy object.
-	 * @param string      $search          The search term.
+	 * @param string[]    $results         Mảng tên term.
+	 * @param WP_Taxonomy $taxonomy_object Đối tượng taxonomy.
+	 * @param string      $search          Chuỗi tìm kiếm.
 	 */
 	$results = apply_filters( 'ajax_term_search_results', $results, $taxonomy_object, $search );
 
@@ -178,7 +178,7 @@ function wp_ajax_ajax_tag_search() {
 }
 
 /**
- * Handles compression testing via AJAX.
+ * Xử lý kiểm tra nén qua AJAX.
  *
  * @since 3.1.0
  */
@@ -188,7 +188,7 @@ function wp_ajax_wp_compression_test() {
 	}
 
 	if ( ini_get( 'zlib.output_compression' ) || 'ob_gzhandler' === ini_get( 'output_handler' ) ) {
-		// Use `update_option()` on single site to mark the option for autoloading.
+		// Sử dụng `update_option()` trên site đơn để đánh dấu tùy chọn tự động tải.
 		if ( is_multisite() ) {
 			update_site_option( 'can_compress_scripts', 0 );
 		} else {
@@ -227,7 +227,7 @@ function wp_ajax_wp_compression_test() {
 			wp_die();
 		} elseif ( 'no' === $_GET['test'] ) {
 			check_ajax_referer( 'update_can_compress_scripts' );
-			// Use `update_option()` on single site to mark the option for autoloading.
+			// Sử dụng `update_option()` trên site đơn để đánh dấu tùy chọn tự động tải.
 			if ( is_multisite() ) {
 				update_site_option( 'can_compress_scripts', 0 );
 			} else {
@@ -235,7 +235,7 @@ function wp_ajax_wp_compression_test() {
 			}
 		} elseif ( 'yes' === $_GET['test'] ) {
 			check_ajax_referer( 'update_can_compress_scripts' );
-			// Use `update_option()` on single site to mark the option for autoloading.
+			// Sử dụng `update_option()` trên site đơn để đánh dấu tùy chọn tự động tải.
 			if ( is_multisite() ) {
 				update_site_option( 'can_compress_scripts', 1 );
 			} else {
@@ -248,7 +248,7 @@ function wp_ajax_wp_compression_test() {
 }
 
 /**
- * Handles image editor previews via AJAX.
+ * Xử lý xem trước trình chỉnh sửa hình ảnh qua AJAX.
  *
  * @since 3.1.0
  */
@@ -270,11 +270,11 @@ function wp_ajax_imgedit_preview() {
 }
 
 /**
- * Handles oEmbed caching via AJAX.
+ * Xử lý bộ nhớ đệm oEmbed qua AJAX.
  *
  * @since 3.1.0
  *
- * @global WP_Embed $wp_embed WordPress Embed object.
+ * @global WP_Embed $wp_embed Đối tượng WordPress Embed.
  */
 function wp_ajax_oembed_cache() {
 	$GLOBALS['wp_embed']->cache_oembed( $_GET['post'] );
@@ -282,7 +282,7 @@ function wp_ajax_oembed_cache() {
 }
 
 /**
- * Handles user autocomplete via AJAX.
+ * Xử lý tự động hoàn thành người dùng qua AJAX.
  *
  * @since 3.4.0
  */
@@ -291,7 +291,7 @@ function wp_ajax_autocomplete_user() {
 		wp_die( -1 );
 	}
 
-	/** This filter is documented in wp-admin/user-new.php */
+	/** Bộ lọc này được ghi chú trong wp-admin/user-new.php */
 	if ( ! current_user_can( 'manage_network_users' ) && ! apply_filters( 'autocomplete_users_for_site_admins', false ) ) {
 		wp_die( -1 );
 	}
@@ -299,8 +299,8 @@ function wp_ajax_autocomplete_user() {
 	$return = array();
 
 	/*
-	 * Check the type of request.
-	 * Current allowed values are `add` and `search`.
+	 * Kiểm tra loại yêu cầu.
+	 * Các giá trị được phép hiện tại là `add` và `search`.
 	 */
 	if ( isset( $_REQUEST['autocomplete_type'] ) && 'search' === $_REQUEST['autocomplete_type'] ) {
 		$type = $_REQUEST['autocomplete_type'];
@@ -309,8 +309,8 @@ function wp_ajax_autocomplete_user() {
 	}
 
 	/*
-	 * Check the desired field for value.
-	 * Current allowed values are `user_email` and `user_login`.
+	 * Kiểm tra trường mong muốn cho giá trị.
+	 * Các giá trị được phép hiện tại là `user_email` và `user_login`.
 	 */
 	if ( isset( $_REQUEST['autocomplete_field'] ) && 'user_email' === $_REQUEST['autocomplete_field'] ) {
 		$field = $_REQUEST['autocomplete_field'];
@@ -318,7 +318,7 @@ function wp_ajax_autocomplete_user() {
 		$field = 'user_login';
 	}
 
-	// Exclude current users of this blog.
+	// Loại trừ người dùng hiện tại của blog này.
 	if ( isset( $_REQUEST['site_id'] ) ) {
 		$id = absint( $_REQUEST['site_id'] );
 	} else {
@@ -361,7 +361,7 @@ function wp_ajax_autocomplete_user() {
 }
 
 /**
- * Handles Ajax requests for community events
+ * Xử lý các yêu cầu Ajax cho sự kiện cộng đồng
  *
  * @since 4.8.0
  */
@@ -392,17 +392,17 @@ function wp_ajax_get_community_events() {
 		}
 
 		/*
-		 * The location should only be updated when it changes. The API doesn't always return
-		 * a full location; sometimes it's missing the description or country. The location
-		 * that was saved during the initial request is known to be good and complete, though.
-		 * It should be left intact until the user explicitly changes it (either by manually
-		 * searching for a new location, or by changing their IP address).
+		 * Vị trí chỉ nên được cập nhật khi nó thay đổi. API không phải lúc nào cũng trả về
+		 * vị trí đầy đủ; đôi khi thiếu mô tả hoặc quốc gia. Vị trí
+		 * được lưu trong yêu cầu ban đầu được biết là tốt và đầy đủ.
+		 * Nó nên được giữ nguyên cho đến khi người dùng thay đổi rõ ràng (bằng cách tìm kiếm
+		 * thủ công vị trí mới, hoặc bằng cách thay đổi địa chỉ IP).
 		 *
-		 * If the location was updated with an incomplete response from the API, then it could
-		 * break assumptions that the UI makes (e.g., that there will always be a description
-		 * that corresponds to a latitude/longitude location).
+		 * Nếu vị trí được cập nhật với phản hồi không đầy đủ từ API, nó có thể
+		 * phá vỡ các giả định của giao diện (ví dụ, luôn có mô tả
+		 * tương ứng với vị trí kinh độ/vĩ độ).
 		 *
-		 * The location is stored network-wide, so that the user doesn't have to set it on each site.
+		 * Vị trí được lưu trữ toàn mạng, để người dùng không phải thiết lập trên mỗi site.
 		 */
 		if ( $ip_changed || $search ) {
 			update_user_meta( $user_id, 'community-events-location', $events['location'] );
@@ -413,7 +413,7 @@ function wp_ajax_get_community_events() {
 }
 
 /**
- * Handles dashboard widgets via AJAX.
+ * Xử lý widget bảng điều khiển qua AJAX.
  *
  * @since 3.4.0
  */
@@ -434,7 +434,7 @@ function wp_ajax_dashboard_widgets() {
 }
 
 /**
- * Handles Customizer preview logged-in status via AJAX.
+ * Xử lý trạng thái đăng nhập xem trước Tùy biến qua AJAX.
  *
  * @since 3.4.0
  */
@@ -443,13 +443,13 @@ function wp_ajax_logged_in() {
 }
 
 //
-// Ajax helpers.
+// Các hàm trợ giúp Ajax.
 //
 
 /**
- * Sends back current comment total and new page links if they need to be updated.
+ * Gửi lại tổng số bình luận hiện tại và liên kết trang mới nếu cần cập nhật.
  *
- * Contrary to normal success Ajax response ("1"), die with time() on success.
+ * Trái với phản hồi Ajax thành công thông thường ("1"), dừng với time() khi thành công.
  *
  * @since 2.7.0
  * @access private
@@ -463,7 +463,7 @@ function _wp_ajax_delete_comment_response( $comment_id, $delta = -1 ) {
 	$page     = isset( $_POST['_page'] ) ? (int) $_POST['_page'] : 0;
 	$url      = isset( $_POST['_url'] ) ? sanitize_url( $_POST['_url'] ) : '';
 
-	// JS didn't send us everything we need to know. Just die with success message.
+	// JS không gửi cho chúng ta mọi thứ cần biết. Chỉ dừng với thông báo thành công.
 	if ( ! $total || ! $per_page || ! $page || ! $url ) {
 		$time           = time();
 		$comment        = get_comment( $comment_id );
@@ -483,7 +483,7 @@ function _wp_ajax_delete_comment_response( $comment_id, $delta = -1 ) {
 		$x = new WP_Ajax_Response(
 			array(
 				'what'         => 'comment',
-				// Here for completeness - not used.
+				// Ở đây để hoàn chỉnh - không được sử dụng.
 				'id'           => $comment_id,
 				'supplemental' => array(
 					'status'               => $comment_status,
@@ -512,10 +512,10 @@ function _wp_ajax_delete_comment_response( $comment_id, $delta = -1 ) {
 		$total = 0;
 	}
 
-	// Only do the expensive stuff on a page-break, and about 1 other time per page.
+	// Chỉ thực hiện các thao tác tốn kém khi chuyển trang, và khoảng 1 lần khác mỗi trang.
 	if ( 0 === $total % $per_page || 1 === mt_rand( 1, $per_page ) ) {
 		$post_id = 0;
-		// What type of comment count are we looking for?
+		// Chúng ta đang tìm loại đếm bình luận nào?
 		$status = 'all';
 		$parsed = parse_url( $url );
 
@@ -536,18 +536,18 @@ function _wp_ajax_delete_comment_response( $comment_id, $delta = -1 ) {
 		}
 
 		if ( empty( $type ) ) {
-			// Only use the comment count if not filtering by a comment_type.
+			// Chỉ sử dụng số đếm bình luận nếu không lọc theo comment_type.
 			$comment_count = wp_count_comments( $post_id );
 
-			// We're looking for a known type of comment count.
+			// Chúng ta đang tìm loại đếm bình luận đã biết.
 			if ( isset( $comment_count->$status ) ) {
 				$total = $comment_count->$status;
 			}
 		}
-		// Else use the decremented value from above.
+		// Nếu không thì sử dụng giá trị đã giảm ở trên.
 	}
 
-	// The time since the last comment count.
+	// Thời gian kể từ lần đếm bình luận cuối.
 	$time    = time();
 	$comment = get_comment( $comment_id );
 	$counts  = wp_count_comments();
@@ -578,11 +578,11 @@ function _wp_ajax_delete_comment_response( $comment_id, $delta = -1 ) {
 }
 
 //
-// POST-based Ajax handlers.
+// Các trình xử lý Ajax dựa trên POST.
 //
 
 /**
- * Handles adding a hierarchical term via AJAX.
+ * Xử lý thêm term phân cấp qua AJAX.
  *
  * @since 3.1.0
  * @access private
@@ -630,7 +630,7 @@ function _wp_ajax_add_hierarchical_term() {
 
 		$checked_categories[] = $cat_id;
 
-		if ( $parent ) { // Do these all at once in a second.
+		if ( $parent ) { // Thực hiện tất cả cùng lúc trong giây lát.
 			continue;
 		}
 
@@ -656,11 +656,11 @@ function _wp_ajax_add_hierarchical_term() {
 		);
 	}
 
-	if ( $parent ) { // Foncy - replace the parent and all its children.
+	if ( $parent ) { // Thay thế term cha và tất cả con của nó.
 		$parent  = get_term( $parent, $taxonomy->name );
 		$term_id = $parent->term_id;
 
-		while ( $parent->parent ) { // Get the top parent.
+		while ( $parent->parent ) { // Lấy term cha cao nhất.
 			$parent = get_term( $parent->parent, $taxonomy->name );
 			if ( is_wp_error( $parent ) ) {
 				break;
@@ -712,7 +712,7 @@ function _wp_ajax_add_hierarchical_term() {
 }
 
 /**
- * Handles deleting a comment via AJAX.
+ * Xử lý xóa bình luận qua AJAX.
  *
  * @since 3.1.0
  */
@@ -746,7 +746,7 @@ function wp_ajax_delete_comment() {
 
 		$r = wp_untrash_comment( $comment );
 
-		// Undo trash, not in Trash.
+		// Hoàn tác thùng rác, không nằm trong Thùng rác.
 		if ( ! isset( $_POST['comment_status'] ) || 'trash' !== $_POST['comment_status'] ) {
 			$delta = 1;
 		}
@@ -763,7 +763,7 @@ function wp_ajax_delete_comment() {
 
 		$r = wp_unspam_comment( $comment );
 
-		// Undo spam, not in spam.
+		// Hoàn tác spam, không nằm trong spam.
 		if ( ! isset( $_POST['comment_status'] ) || 'spam' !== $_POST['comment_status'] ) {
 			$delta = 1;
 		}
@@ -774,7 +774,7 @@ function wp_ajax_delete_comment() {
 	}
 
 	if ( $r ) {
-		// Decide if we need to send back '1' or a more complicated response including page links and comment counts.
+		// Quyết định xem cần gửi lại '1' hay phản hồi phức tạp hơn bao gồm liên kết trang và số đếm bình luận.
 		_wp_ajax_delete_comment_response( $comment->comment_ID, $delta );
 	}
 
@@ -782,7 +782,7 @@ function wp_ajax_delete_comment() {
 }
 
 /**
- * Handles deleting a tag via AJAX.
+ * Xử lý xóa thẻ qua AJAX.
  *
  * @since 3.1.0
  */
@@ -809,7 +809,7 @@ function wp_ajax_delete_tag() {
 }
 
 /**
- * Handles deleting a link via AJAX.
+ * Xử lý xóa liên kết qua AJAX.
  *
  * @since 3.1.0
  */
@@ -835,7 +835,7 @@ function wp_ajax_delete_link() {
 }
 
 /**
- * Handles deleting meta via AJAX.
+ * Xử lý xóa meta qua AJAX.
  *
  * @since 3.1.0
  */
@@ -861,11 +861,11 @@ function wp_ajax_delete_meta() {
 }
 
 /**
- * Handles deleting a post via AJAX.
+ * Xử lý xóa bài viết qua AJAX.
  *
  * @since 3.1.0
  *
- * @param string $action Action to perform.
+ * @param string $action Hành động cần thực hiện.
  */
 function wp_ajax_delete_post( $action ) {
 	if ( empty( $action ) ) {
@@ -891,11 +891,11 @@ function wp_ajax_delete_post( $action ) {
 }
 
 /**
- * Handles sending a post to the Trash via AJAX.
+ * Xử lý gửi bài viết vào Thùng rác qua AJAX.
  *
  * @since 3.1.0
  *
- * @param string $action Action to perform.
+ * @param string $action Hành động cần thực hiện.
  */
 function wp_ajax_trash_post( $action ) {
 	if ( empty( $action ) ) {
@@ -927,11 +927,11 @@ function wp_ajax_trash_post( $action ) {
 }
 
 /**
- * Handles restoring a post from the Trash via AJAX.
+ * Xử lý khôi phục bài viết từ Thùng rác qua AJAX.
  *
  * @since 3.1.0
  *
- * @param string $action Action to perform.
+ * @param string $action Hành động cần thực hiện.
  */
 function wp_ajax_untrash_post( $action ) {
 	if ( empty( $action ) ) {
@@ -942,11 +942,11 @@ function wp_ajax_untrash_post( $action ) {
 }
 
 /**
- * Handles deleting a page via AJAX.
+ * Xử lý xóa trang qua AJAX.
  *
  * @since 3.1.0
  *
- * @param string $action Action to perform.
+ * @param string $action Hành động cần thực hiện.
  */
 function wp_ajax_delete_page( $action ) {
 	if ( empty( $action ) ) {
@@ -972,7 +972,7 @@ function wp_ajax_delete_page( $action ) {
 }
 
 /**
- * Handles dimming a comment via AJAX.
+ * Xử lý làm mờ bình luận qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1022,17 +1022,17 @@ function wp_ajax_dim_comment() {
 		$x->send();
 	}
 
-	// Decide if we need to send back '1' or a more complicated response including page links and comment counts.
+	// Quyết định xem cần gửi lại '1' hay phản hồi phức tạp hơn bao gồm liên kết trang và số đếm bình luận.
 	_wp_ajax_delete_comment_response( $comment->comment_ID );
 	wp_die( 0 );
 }
 
 /**
- * Handles adding a link category via AJAX.
+ * Xử lý thêm danh mục liên kết qua AJAX.
  *
  * @since 3.1.0
  *
- * @param string $action Action to perform.
+ * @param string $action Hành động cần thực hiện.
  */
 function wp_ajax_add_link_category( $action ) {
 	if ( empty( $action ) ) {
@@ -1081,7 +1081,7 @@ function wp_ajax_add_link_category( $action ) {
 }
 
 /**
- * Handles adding a tag via AJAX.
+ * Xử lý thêm thẻ qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1173,7 +1173,7 @@ function wp_ajax_add_tag() {
 }
 
 /**
- * Handles getting a tagcloud via AJAX.
+ * Xử lý lấy đám mây thẻ qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1215,7 +1215,7 @@ function wp_ajax_get_tagcloud() {
 		$tags[ $key ]->id   = $tag->term_id;
 	}
 
-	// We need raw tag names here, so don't filter the output.
+	// Cần tên thẻ thô ở đây, vì vậy không lọc đầu ra.
 	$return = wp_generate_tag_cloud(
 		$tags,
 		array(
@@ -1233,13 +1233,13 @@ function wp_ajax_get_tagcloud() {
 }
 
 /**
- * Handles getting comments via AJAX.
+ * Xử lý lấy bình luận qua AJAX.
  *
  * @since 3.1.0
  *
  * @global int $post_id
  *
- * @param string $action Action to perform.
+ * @param string $action Hành động cần thực hiện.
  */
 function wp_ajax_get_comments( $action ) {
 	global $post_id;
@@ -1296,11 +1296,11 @@ function wp_ajax_get_comments( $action ) {
 }
 
 /**
- * Handles replying to a comment via AJAX.
+ * Xử lý trả lời bình luận qua AJAX.
  *
  * @since 3.1.0
  *
- * @param string $action Action to perform.
+ * @param string $action Hành động cần thực hiện.
  */
 function wp_ajax_replyto_comment( $action ) {
 	if ( empty( $action ) ) {
@@ -1380,7 +1380,7 @@ function wp_ajax_replyto_comment( $action ) {
 		'user_id'
 	);
 
-	// Automatically approve parent comment.
+	// Tự động phê duyệt bình luận cha.
 	if ( ! empty( $_POST['approve_parent'] ) ) {
 		$parent = get_comment( $comment_parent );
 
@@ -1456,7 +1456,7 @@ function wp_ajax_replyto_comment( $action ) {
 }
 
 /**
- * Handles editing a comment via AJAX.
+ * Xử lý chỉnh sửa bình luận qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1484,8 +1484,8 @@ function wp_ajax_edit_comment() {
 
 	$position = ( isset( $_POST['position'] ) && (int) $_POST['position'] ) ? (int) $_POST['position'] : '-1';
 	/*
-	 * Checkbox is used to differentiate between the Edit Comments screen (1)
-	 * and the Comments section on the Edit Post screen (0).
+	 * Checkbox được sử dụng để phân biệt giữa màn hình Chỉnh sửa Bình luận (1)
+	 * và phần Bình luận trên màn hình Chỉnh sửa Bài viết (0).
 	 */
 	$checkbox      = ( isset( $_POST['checkbox'] ) && '1' === $_POST['checkbox'] ) ? 1 : 0;
 	$wp_list_table = _get_list_table( $checkbox ? 'WP_Comments_List_Table' : 'WP_Post_Comments_List_Table', array( 'screen' => 'edit-comments' ) );
@@ -1515,7 +1515,7 @@ function wp_ajax_edit_comment() {
 }
 
 /**
- * Handles adding a menu item via AJAX.
+ * Xử lý thêm mục menu qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1529,8 +1529,8 @@ function wp_ajax_add_menu_item() {
 	require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
 
 	/*
-	 * For performance reasons, we omit some object properties from the checklist.
-	 * The following is a hacky way to restore them when adding non-custom items.
+	 * Vì lý do hiệu năng, chúng ta bỏ qua một số thuộc tính đối tượng từ danh sách kiểm tra.
+	 * Đoạn code sau là cách để khôi phục chúng khi thêm các mục không tùy chỉnh.
 	 */
 	$menu_items_data = array();
 
@@ -1557,7 +1557,7 @@ function wp_ajax_add_menu_item() {
 			$_menu_items = array_map( 'wp_setup_nav_menu_item', array( $_object ) );
 			$_menu_item  = reset( $_menu_items );
 
-			// Restore the missing menu item properties.
+			// Khôi phục các thuộc tính mục menu bị thiếu.
 			$menu_item_data['menu-item-description'] = $_menu_item->description;
 		}
 
@@ -1577,7 +1577,7 @@ function wp_ajax_add_menu_item() {
 		if ( ! empty( $menu_obj->ID ) ) {
 			$menu_obj        = wp_setup_nav_menu_item( $menu_obj );
 			$menu_obj->title = empty( $menu_obj->title ) ? __( 'Menu Item' ) : $menu_obj->title;
-			$menu_obj->label = $menu_obj->title; // Don't show "(pending)" in ajax-added items.
+			$menu_obj->label = $menu_obj->title; // Không hiển thị "(pending)" trong các mục được thêm qua ajax.
 			$menu_items[]    = $menu_obj;
 		}
 	}
@@ -1605,7 +1605,7 @@ function wp_ajax_add_menu_item() {
 }
 
 /**
- * Handles adding meta via AJAX.
+ * Xử lý thêm meta qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1624,7 +1624,7 @@ function wp_ajax_add_meta() {
 			wp_die( 1 );
 		}
 
-		// If the post is an autodraft, save the post as a draft and then attempt to save the meta.
+		// Nếu bài viết là bản nháp tự động, lưu bài viết dưới dạng bản nháp rồi thử lưu meta.
 		if ( 'auto-draft' === $post->post_status ) {
 			$post_data                = array();
 			$post_data['action']      = 'draft'; // Warning fix.
@@ -1680,7 +1680,7 @@ function wp_ajax_add_meta() {
 				'supplemental' => array( 'postid' => $pid ),
 			)
 		);
-	} else { // Update?
+	} else { // Cập nhật?
 		$mid   = (int) key( $_POST['meta'] );
 		$key   = wp_unslash( $_POST['meta'][ $mid ]['key'] );
 		$value = wp_unslash( $_POST['meta'][ $mid ]['value'] );
@@ -1692,7 +1692,7 @@ function wp_ajax_add_meta() {
 		$meta = get_metadata_by_mid( 'post', $mid );
 
 		if ( ! $meta ) {
-			wp_die( 0 ); // If meta doesn't exist.
+			wp_die( 0 ); // Nếu meta không tồn tại.
 		}
 
 		if (
@@ -1706,7 +1706,7 @@ function wp_ajax_add_meta() {
 		if ( $meta->meta_value !== $value || $meta->meta_key !== $key ) {
 			$u = update_metadata_by_mid( 'post', $mid, $value, $key );
 			if ( ! $u ) {
-				wp_die( 0 ); // We know meta exists; we also know it's unchanged (or DB error, in which case there are bigger problems).
+				wp_die( 0 ); // Chúng ta biết meta tồn tại; cũng biết nó không thay đổi (hoặc lỗi DB, trường hợp đó có vấn đề lớn hơn).
 			}
 		}
 
@@ -1732,11 +1732,11 @@ function wp_ajax_add_meta() {
 }
 
 /**
- * Handles adding a user via AJAX.
+ * Xử lý thêm người dùng qua AJAX.
  *
  * @since 3.1.0
  *
- * @param string $action Action to perform.
+ * @param string $action Hành động cần thực hiện.
  */
 function wp_ajax_add_user( $action ) {
 	if ( empty( $action ) ) {
@@ -1787,7 +1787,7 @@ function wp_ajax_add_user( $action ) {
 }
 
 /**
- * Handles closed post boxes via AJAX.
+ * Xử lý hộp bài viết đã đóng qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1815,7 +1815,7 @@ function wp_ajax_closed_postboxes() {
 	}
 
 	if ( is_array( $hidden ) ) {
-		// Postboxes that are always shown.
+		// Các hộp bài viết luôn được hiển thị.
 		$hidden = array_diff( $hidden, array( 'submitdiv', 'linksubmitdiv', 'manage-menu', 'create-menu' ) );
 		update_user_meta( $user->ID, "metaboxhidden_$page", $hidden );
 	}
@@ -1824,7 +1824,7 @@ function wp_ajax_closed_postboxes() {
 }
 
 /**
- * Handles hidden columns via AJAX.
+ * Xử lý các cột ẩn qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1848,7 +1848,7 @@ function wp_ajax_hidden_columns() {
 }
 
 /**
- * Handles updating whether to display the welcome panel via AJAX.
+ * Xử lý cập nhật hiển thị bảng chào mừng qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1865,7 +1865,7 @@ function wp_ajax_update_welcome_panel() {
 }
 
 /**
- * Handles for retrieving menu meta boxes via AJAX.
+ * Xử lý lấy hộp meta menu qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1916,7 +1916,7 @@ function wp_ajax_menu_get_metabox() {
 }
 
 /**
- * Handles internal linking via AJAX.
+ * Xử lý liên kết nội bộ qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1952,7 +1952,7 @@ function wp_ajax_wp_link_ajax() {
 }
 
 /**
- * Handles saving menu locations via AJAX.
+ * Xử lý lưu vị trí menu qua AJAX.
  *
  * @since 3.1.0
  */
@@ -1972,7 +1972,7 @@ function wp_ajax_menu_locations_save() {
 }
 
 /**
- * Handles saving the meta box order via AJAX.
+ * Xử lý lưu thứ tự hộp meta qua AJAX.
  *
  * @since 3.1.0
  */
@@ -2008,7 +2008,7 @@ function wp_ajax_meta_box_order() {
 }
 
 /**
- * Handles menu quick searching via AJAX.
+ * Xử lý tìm kiếm nhanh menu qua AJAX.
  *
  * @since 3.1.0
  */
@@ -2025,7 +2025,7 @@ function wp_ajax_menu_quick_search() {
 }
 
 /**
- * Handles retrieving a permalink via AJAX.
+ * Xử lý lấy đường dẫn tĩnh qua AJAX.
  *
  * @since 3.1.0
  */
@@ -2036,7 +2036,7 @@ function wp_ajax_get_permalink() {
 }
 
 /**
- * Handles retrieving a sample permalink via AJAX.
+ * Xử lý lấy đường dẫn tĩnh mẫu qua AJAX.
  *
  * @since 3.1.0
  */
@@ -2049,11 +2049,11 @@ function wp_ajax_sample_permalink() {
 }
 
 /**
- * Handles Quick Edit saving a post from a list table via AJAX.
+ * Xử lý lưu Sửa nhanh bài viết từ bảng danh sách qua AJAX.
  *
  * @since 3.1.0
  *
- * @global string $mode List table view mode.
+ * @global string $mode Chế độ xem bảng danh sách.
  */
 function wp_ajax_inline_save() {
 	global $mode;
@@ -2097,20 +2097,20 @@ function wp_ajax_inline_save() {
 
 	$post = get_post( $post_id, ARRAY_A );
 
-	// Since it's coming from the database.
+	// Vì dữ liệu đến từ cơ sở dữ liệu.
 	$post = wp_slash( $post );
 
 	$data['content'] = $post['post_content'];
 	$data['excerpt'] = $post['post_excerpt'];
 
-	// Rename.
+	// Đổi tên.
 	$data['user_ID'] = get_current_user_id();
 
 	if ( isset( $data['post_parent'] ) ) {
 		$data['parent_id'] = $data['post_parent'];
 	}
 
-	// Status.
+	// Trạng thái.
 	if ( isset( $data['keep_private'] ) && 'private' === $data['keep_private'] ) {
 		$data['visibility']  = 'private';
 		$data['post_status'] = 'private';
@@ -2126,7 +2126,7 @@ function wp_ajax_inline_save() {
 		$data['ping_status'] = 'closed';
 	}
 
-	// Exclude terms from taxonomies that are not supposed to appear in Quick Edit.
+	// Loại trừ các term từ taxonomy không nên xuất hiện trong Sửa nhanh.
 	if ( ! empty( $data['tax_input'] ) ) {
 		foreach ( $data['tax_input'] as $taxonomy => $terms ) {
 			$tax_object = get_taxonomy( $taxonomy );
@@ -2137,13 +2137,13 @@ function wp_ajax_inline_save() {
 		}
 	}
 
-	// Hack: wp_unique_post_slug() doesn't work for drafts, so we will fake that our post is published.
+	// Mẹo: wp_unique_post_slug() không hoạt động cho bản nháp, nên ta giả lập bài viết đã xuất bản.
 	if ( ! empty( $data['post_name'] ) && in_array( $post['post_status'], array( 'draft', 'pending' ), true ) ) {
 		$post['post_status'] = 'publish';
 		$data['post_name']   = wp_unique_post_slug( $data['post_name'], $post['ID'], $post['post_status'], $post['post_type'], $post['post_parent'] );
 	}
 
-	// Update the post.
+	// Cập nhật bài viết.
 	edit_post();
 
 	$wp_list_table = _get_list_table( 'WP_Posts_List_Table', array( 'screen' => $_POST['screen'] ) );
@@ -2168,7 +2168,7 @@ function wp_ajax_inline_save() {
 }
 
 /**
- * Handles Quick Edit saving for a term via AJAX.
+ * Xử lý lưu Sửa nhanh cho term qua AJAX.
  *
  * @since 3.1.0
  */
@@ -2228,7 +2228,7 @@ function wp_ajax_inline_save_tax() {
 }
 
 /**
- * Handles querying posts for the Find Posts modal via AJAX.
+ * Xử lý truy vấn bài viết cho hộp thoại Tìm bài viết qua AJAX.
  *
  * @see window.findPosts
  *
@@ -2297,7 +2297,7 @@ function wp_ajax_find_posts() {
 }
 
 /**
- * Handles saving the widgets order via AJAX.
+ * Xử lý lưu thứ tự widget qua AJAX.
  *
  * @since 3.1.0
  */
@@ -2310,7 +2310,7 @@ function wp_ajax_widgets_order() {
 
 	unset( $_POST['savewidgets'], $_POST['action'] );
 
-	// Save widgets order for all sidebars.
+	// Lưu thứ tự widget cho tất cả thanh bên.
 	if ( is_array( $_POST['sidebars'] ) ) {
 		$sidebars = array();
 
@@ -2339,7 +2339,7 @@ function wp_ajax_widgets_order() {
 }
 
 /**
- * Handles saving a widget via AJAX.
+ * Xử lý lưu widget qua AJAX.
  *
  * @since 3.1.0
  *
@@ -2359,14 +2359,14 @@ function wp_ajax_save_widget() {
 	unset( $_POST['savewidgets'], $_POST['action'] );
 
 	/**
-	 * Fires early when editing the widgets displayed in sidebars.
+	 * Kích hoạt sớm khi chỉnh sửa các widget hiển thị trong thanh bên.
 	 *
 	 * @since 2.8.0
 	 */
 	do_action( 'load-widgets.php' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
 	/**
-	 * Fires early when editing the widgets displayed in sidebars.
+	 * Kích hoạt sớm khi chỉnh sửa các widget hiển thị trong thanh bên.
 	 *
 	 * @since 2.8.0
 	 */
@@ -2385,7 +2385,7 @@ function wp_ajax_save_widget() {
 	$sidebars = wp_get_sidebars_widgets();
 	$sidebar  = isset( $sidebars[ $sidebar_id ] ) ? $sidebars[ $sidebar_id ] : array();
 
-	// Delete.
+	// Xóa.
 	if ( isset( $_POST['delete_widget'] ) && $_POST['delete_widget'] ) {
 
 		if ( ! isset( $wp_registered_widgets[ $widget_id ] ) ) {
@@ -2448,7 +2448,7 @@ function wp_ajax_save_widget() {
 }
 
 /**
- * Handles updating a widget via AJAX.
+ * Xử lý cập nhật widget qua AJAX.
  *
  * @since 3.9.0
  *
@@ -2460,7 +2460,7 @@ function wp_ajax_update_widget() {
 }
 
 /**
- * Handles removing inactive widgets via AJAX.
+ * Xử lý xóa widget không hoạt động qua AJAX.
  *
  * @since 4.4.0
  */
@@ -2497,7 +2497,7 @@ function wp_ajax_delete_inactive_widgets() {
 }
 
 /**
- * Handles creating missing image sub-sizes for just uploaded images via AJAX.
+ * Xử lý tạo các kích thước phụ bị thiếu cho hình ảnh vừa tải lên qua AJAX.
  *
  * @since 5.3.0
  */
@@ -2515,11 +2515,11 @@ function wp_ajax_media_create_image_subsizes() {
 	$attachment_id = (int) $_POST['attachment_id'];
 
 	if ( ! empty( $_POST['_wp_upload_failed_cleanup'] ) ) {
-		// Upload failed. Cleanup.
+		// Tải lên thất bại. Dọn dẹp.
 		if ( wp_attachment_is_image( $attachment_id ) && current_user_can( 'delete_post', $attachment_id ) ) {
 			$attachment = get_post( $attachment_id );
 
-			// Created at most 10 min ago.
+			// Được tạo tối đa 10 phút trước.
 			if ( $attachment && ( time() - strtotime( $attachment->post_date_gmt ) < 600 ) ) {
 				wp_delete_attachment( $attachment_id, true );
 				wp_send_json_success();
@@ -2528,24 +2528,24 @@ function wp_ajax_media_create_image_subsizes() {
 	}
 
 	/*
-	 * Set a custom header with the attachment_id.
-	 * Used by the browser/client to resume creating image sub-sizes after a PHP fatal error.
+	 * Thiết lập header tùy chỉnh với attachment_id.
+	 * Được trình duyệt/client sử dụng để tiếp tục tạo kích thước phụ hình ảnh sau lỗi nghiêm trọng PHP.
 	 */
 	if ( ! headers_sent() ) {
 		header( 'X-WP-Upload-Attachment-ID: ' . $attachment_id );
 	}
 
 	/*
-	 * This can still be pretty slow and cause timeout or out of memory errors.
-	 * The js that handles the response would need to also handle HTTP 500 errors.
+	 * Điều này vẫn có thể khá chậm và gây lỗi hết thời gian hoặc tràn bộ nhớ.
+	 * Mã JS xử lý phản hồi cũng cần xử lý lỗi HTTP 500.
 	 */
 	wp_update_image_subsizes( $attachment_id );
 
 	if ( ! empty( $_POST['_legacy_support'] ) ) {
-		// The old (inline) uploader. Only needs the attachment_id.
+		// Trình tải lên cũ (inline). Chỉ cần attachment_id.
 		$response = array( 'id' => $attachment_id );
 	} else {
-		// Media modal and Media Library grid view.
+		// Hộp thoại media và chế độ xem lưới Thư viện Media.
 		$response = wp_prepare_attachment_for_js( $attachment_id );
 
 		if ( ! $response ) {
@@ -3460,7 +3460,7 @@ function wp_ajax_heartbeat() {
 	$data        = array();
 	$nonce_state = wp_verify_nonce( $_POST['_nonce'], 'heartbeat-nonce' );
 
-	// 'screen_id' is the same as $current_screen->id and the JS global 'pagenow'.
+	// 'screen_id' giống với $current_screen->id và biến JS toàn cục 'pagenow'.
 	if ( ! empty( $_POST['screen_id'] ) ) {
 		$screen_id = sanitize_key( $_POST['screen_id'] );
 	} else {

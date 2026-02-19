@@ -1,16 +1,16 @@
 <?php
 /**
- * The base configuration for WordPress
+ * Cấu hình cơ bản cho WordPress
  *
- * The wp-config.php creation script uses this file during the installation.
- * You don't have to use the website, you can copy this file to "wp-config.php"
- * and fill in the values.
+ * Script tạo wp-config.php sử dụng file này trong quá trình cài đặt.
+ * Bạn không cần sử dụng website, có thể sao chép file này thành "wp-config.php"
+ * và điền các giá trị.
  *
- * This file contains the following configurations:
+ * File này chứa các cấu hình sau:
  *
- * * Database settings
- * * Secret keys
- * * Database table prefix
+ * * Cài đặt cơ sở dữ liệu
+ * * Khóa bí mật
+ * * Tiền tố bảng cơ sở dữ liệu
  * * ABSPATH
  *
  * @link https://developer.wordpress.org/advanced-administration/wordpress/wp-config/
@@ -18,33 +18,33 @@
  * @package WordPress
  */
 
-// ** Database settings - You can get this info from your web host ** //
-/** The name of the database for WordPress */
+// ** Cài đặt cơ sở dữ liệu - Bạn có thể lấy thông tin này từ nhà cung cấp hosting ** //
+/** Tên cơ sở dữ liệu cho WordPress */
 define( 'DB_NAME', 'database_name_here' );
 
-/** Database username */
+/** Tên người dùng cơ sở dữ liệu */
 define( 'DB_USER', 'username_here' );
 
-/** Database password */
+/** Mật khẩu cơ sở dữ liệu */
 define( 'DB_PASSWORD', 'password_here' );
 
-/** Database hostname */
+/** Tên máy chủ cơ sở dữ liệu */
 define( 'DB_HOST', 'localhost' );
 
-/** Database charset to use in creating database tables. */
+/** Bộ ký tự cơ sở dữ liệu sử dụng khi tạo bảng. */
 define( 'DB_CHARSET', 'utf8' );
 
-/** The database collate type. Don't change this if in doubt. */
+/** Kiểu collate của cơ sở dữ liệu. Không thay đổi nếu không chắc chắn. */
 define( 'DB_COLLATE', '' );
 
 /**#@+
- * Authentication unique keys and salts.
+ * Khóa xác thực và salt duy nhất.
  *
- * Change these to different unique phrases! You can generate these using
- * the {@link https://api.wordpress.org/secret-key/1.1/salt/ WordPress.org secret-key service}.
+ * Thay đổi thành các chuỗi duy nhất khác nhau! Bạn có thể tạo chúng bằng
+ * {@link https://api.wordpress.org/secret-key/1.1/salt/ dịch vụ khóa bí mật WordPress.org}.
  *
- * You can change these at any point in time to invalidate all existing cookies.
- * This will force all users to have to log in again.
+ * Bạn có thể thay đổi chúng bất cứ lúc nào để vô hiệu hóa tất cả cookies hiện có.
+ * Điều này sẽ buộc tất cả người dùng phải đăng nhập lại.
  *
  * @since 2.6.0
  */
@@ -60,43 +60,43 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 /**#@-*/
 
 /**
- * WordPress database table prefix.
+ * Tiền tố bảng cơ sở dữ liệu WordPress.
  *
- * You can have multiple installations in one database if you give each
- * a unique prefix. Only numbers, letters, and underscores please!
+ * Bạn có thể có nhiều bản cài đặt trong một cơ sở dữ liệu nếu đặt cho mỗi bản
+ * một tiền tố duy nhất. Chỉ sử dụng số, chữ cái và dấu gạch dưới!
  *
- * At the installation time, database tables are created with the specified prefix.
- * Changing this value after WordPress is installed will make your site think
- * it has not been installed.
+ * Khi cài đặt, các bảng cơ sở dữ liệu được tạo với tiền tố đã chỉ định.
+ * Thay đổi giá trị này sau khi WordPress đã cài đặt sẽ khiến site nghĩ
+ * rằng chưa được cài đặt.
  *
  * @link https://developer.wordpress.org/advanced-administration/wordpress/wp-config/#table-prefix
  */
 $table_prefix = 'wp_';
 
 /**
- * For developers: WordPress debugging mode.
+ * Dành cho nhà phát triển: Chế độ debug WordPress.
  *
- * Change this to true to enable the display of notices during development.
- * It is strongly recommended that plugin and theme developers use WP_DEBUG
- * in their development environments.
+ * Thay đổi thành true để bật hiển thị thông báo trong quá trình phát triển.
+ * Khuyến nghị mạnh rằng các nhà phát triển plugin và theme nên sử dụng WP_DEBUG
+ * trong môi trường phát triển của họ.
  *
- * For information on other constants that can be used for debugging,
- * visit the documentation.
+ * Để biết thêm về các hằng số khác có thể dùng để debug,
+ * hãy xem tài liệu.
  *
  * @link https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/
  */
 define( 'WP_DEBUG', false );
 
-/* Add any custom values between this line and the "stop editing" line. */
+/* Thêm các giá trị tùy chỉnh giữa dòng này và dòng "ngừng chỉnh sửa". */
 
 
 
-/* That's all, stop editing! Happy publishing. */
+/* Vậy là xong, ngừng chỉnh sửa! Chúc xuất bản vui vẻ. */
 
-/** Absolute path to the WordPress directory. */
+/** Đường dẫn tuyệt đối đến thư mục WordPress. */
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/' );
 }
 
-/** Sets up WordPress vars and included files. */
+/** Thiết lập biến WordPress và các file được nạp. */
 require_once ABSPATH . 'wp-settings.php';

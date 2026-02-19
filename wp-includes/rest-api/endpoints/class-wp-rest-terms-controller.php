@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Terms_Controller class
+ * REST API: Lớp WP_REST_Terms_Controller
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to managed terms associated with a taxonomy via the REST API.
+ * Lớp cốt lõi dùng để quản lý các term liên kết với taxonomy qua REST API.
  *
  * @since 4.7.0
  *
@@ -17,7 +17,7 @@
 class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 	/**
-	 * Taxonomy key.
+	 * Khóa taxonomy.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -25,7 +25,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	protected $taxonomy;
 
 	/**
-	 * Instance of a term meta fields object.
+	 * Thực thể của đối tượng trường meta term.
 	 *
 	 * @since 4.7.0
 	 * @var WP_REST_Term_Meta_Fields
@@ -33,7 +33,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	protected $meta;
 
 	/**
-	 * Column to have the terms be sorted by.
+	 * Cột để sắp xếp các term.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -41,7 +41,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	protected $sort_column;
 
 	/**
-	 * Number of terms that were found.
+	 * Số lượng term được tìm thấy.
 	 *
 	 * @since 4.7.0
 	 * @var int
@@ -49,7 +49,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	protected $total_terms;
 
 	/**
-	 * Whether the controller supports batching.
+	 * Bộ điều khiển có hỗ trợ xử lý hàng loạt hay không.
 	 *
 	 * @since 5.9.0
 	 * @var array
@@ -57,11 +57,11 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	protected $allow_batch = array( 'v1' => true );
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string $taxonomy Taxonomy key.
+	 * @param string $taxonomy Khóa taxonomy.
 	 */
 	public function __construct( $taxonomy ) {
 		$this->taxonomy  = $taxonomy;
@@ -73,7 +73,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Registers the routes for terms.
+	 * Đăng ký các route cho term.
 	 *
 	 * @since 4.7.0
 	 *
@@ -145,41 +145,41 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if the terms for a post can be read.
+	 * Kiểm tra xem các term của bài viết có thể được đọc hay không.
 	 *
 	 * @since 6.0.3
 	 *
-	 * @param WP_Post         $post    Post object.
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return bool Whether the terms for the post can be read.
+	 * @param WP_Post         $post    Đối tượng bài viết.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return bool Các term của bài viết có thể được đọc hay không.
 	 */
 	public function check_read_terms_permission_for_post( $post, $request ) {
-		// If the requested post isn't associated with this taxonomy, deny access.
+		// Nếu bài viết được yêu cầu không liên kết với taxonomy này, từ chối truy cập.
 		if ( ! is_object_in_taxonomy( $post->post_type, $this->taxonomy ) ) {
 			return false;
 		}
 
-		// Grant access if the post is publicly viewable.
+		// Cho phép truy cập nếu bài viết có thể xem công khai.
 		if ( is_post_publicly_viewable( $post ) ) {
 			return true;
 		}
 
-		// Otherwise grant access if the post is readable by the logged-in user.
+		// Nếu không, cho phép truy cập nếu bài viết có thể đọc bởi người dùng đã đăng nhập.
 		if ( current_user_can( 'read_post', $post->ID ) ) {
 			return true;
 		}
 
-		// Otherwise, deny access.
+		// Nếu không, từ chối truy cập.
 		return false;
 	}
 
 	/**
-	 * Checks if a request has access to read terms in the specified taxonomy.
+	 * Kiểm tra xem yêu cầu có quyền đọc term trong taxonomy được chỉ định hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return bool|WP_Error True if the request has read access, otherwise false or WP_Error object.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return bool|WP_Error True nếu yêu cầu có quyền đọc, ngược lại false hoặc đối tượng WP_Error.
 	 */
 	public function get_items_permissions_check( $request ) {
 		$tax_obj = get_taxonomy( $this->taxonomy );
@@ -224,24 +224,24 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves terms associated with a taxonomy.
+	 * Lấy các term liên kết với taxonomy.
 	 *
 	 * @since 4.7.0
-	 * @since 6.8.0 Respect default query arguments set for the taxonomy upon registration.
+	 * @since 6.8.0 Tuân theo các tham số truy vấn mặc định được đặt cho taxonomy khi đăng ký.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function get_items( $request ) {
 
-		// Retrieve the list of registered collection query parameters.
+		// Lấy danh sách các tham số truy vấn collection đã đăng ký.
 		$registered = $this->get_collection_params();
 
 		/*
-		 * This array defines mappings between public API query parameters whose
-		 * values are accepted as-passed, and their internal WP_Query parameter
-		 * name equivalents (some are the same). Only values which are also
-		 * present in $registered will be set.
+		 * Mảng này định nghĩa ánh xạ giữa các tham số truy vấn API công khai có
+		 * giá trị được chấp nhận nguyên trạng, và các tham số WP_Query nội bộ
+		 * tương đương (một số giống nhau). Chỉ các giá trị có trong
+		 * $registered mới được thiết lập.
 		 */
 		$parameter_mappings = array(
 			'exclude'    => 'exclude',
@@ -258,8 +258,8 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		$prepared_args = array( 'taxonomy' => $this->taxonomy );
 
 		/*
-		 * For each known parameter which is both registered and present in the request,
-		 * set the parameter's value on the query $prepared_args.
+		 * Với mỗi tham số đã biết vừa được đăng ký vừa có trong yêu cầu,
+		 * thiết lập giá trị của tham số vào truy vấn $prepared_args.
 		 */
 		foreach ( $parameter_mappings as $api_param => $wp_param ) {
 			if ( isset( $registered[ $api_param ], $request[ $api_param ] ) ) {
@@ -287,7 +287,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		if ( $taxonomy_obj->hierarchical && isset( $registered['parent'], $request['parent'] ) ) {
 			if ( 0 === $request['parent'] ) {
-				// Only query top-level terms.
+				// Chỉ truy vấn các term cấp cao nhất.
 				$prepared_args['parent'] = 0;
 			} else {
 				if ( $request['parent'] ) {
@@ -297,12 +297,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		}
 
 		/*
-		 * When a taxonomy is registered with an 'args' array,
-		 * those params override the `$args` passed to this function.
+		 * Khi taxonomy được đăng ký với mảng 'args',
+		 * các tham số đó sẽ ghi đè `$args` truyền vào hàm này.
 		 *
-		 * We only need to do this if no `post` argument is provided.
-		 * Otherwise, terms will be fetched using `wp_get_object_terms()`,
-		 * which respects the default query arguments set for the taxonomy.
+		 * Chỉ cần làm điều này nếu không có tham số `post` được cung cấp.
+		 * Nếu không, các term sẽ được lấy bằng `wp_get_object_terms()`,
+		 * sẽ tuân theo các tham số truy vấn mặc định được đặt cho taxonomy.
 		 */
 		if (
 			empty( $prepared_args['post'] ) &&
@@ -314,38 +314,38 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		$is_head_request = $request->is_method( 'HEAD' );
 		if ( $is_head_request ) {
-			// Force the 'fields' argument. For HEAD requests, only term IDs are required.
+			// Buộc tham số 'fields'. Với yêu cầu HEAD, chỉ cần ID của term.
 			$prepared_args['fields'] = 'ids';
-			// Disable priming term meta for HEAD requests to improve performance.
+			// Tắt việc tải trước meta term cho yêu cầu HEAD để cải thiện hiệu suất.
 			$prepared_args['update_term_meta_cache'] = false;
 		}
 
 		/**
-		 * Filters get_terms() arguments when querying terms via the REST API.
+		 * Lọc các tham số get_terms() khi truy vấn term qua REST API.
 		 *
-		 * The dynamic portion of the hook name, `$this->taxonomy`, refers to the taxonomy slug.
+		 * Phần động của tên hook, `$this->taxonomy`, tham chiếu đến slug taxonomy.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `rest_category_query`
 		 *  - `rest_post_tag_query`
 		 *
-		 * Enables adding extra arguments or setting defaults for a terms
-		 * collection request.
+		 * Cho phép thêm các tham số bổ sung hoặc thiết lập giá trị mặc định cho
+		 * yêu cầu collection term.
 		 *
 		 * @since 4.7.0
 		 *
 		 * @link https://developer.wordpress.org/reference/functions/get_terms/
 		 *
-		 * @param array           $prepared_args Array of arguments for get_terms().
-		 * @param WP_REST_Request $request       The REST API request.
+		 * @param array           $prepared_args Mảng các tham số cho get_terms().
+		 * @param WP_REST_Request $request       Yêu cầu REST API.
 		 */
 		$prepared_args = apply_filters( "rest_{$this->taxonomy}_query", $prepared_args, $request );
 
 		if ( ! empty( $prepared_args['post'] ) ) {
 			$query_result = wp_get_object_terms( $prepared_args['post'], $this->taxonomy, $prepared_args );
 
-			// Used when calling wp_count_terms() below.
+			// Dùng khi gọi wp_count_terms() bên dưới.
 			$prepared_args['object_ids'] = $prepared_args['post'];
 		} else {
 			$query_result = get_terms( $prepared_args );
@@ -357,7 +357,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		$total_terms = wp_count_terms( $count_args );
 
-		// wp_count_terms() can return a falsey value when the term has no children.
+		// wp_count_terms() có thể trả về giá trị falsey khi term không có con.
 		if ( ! $total_terms ) {
 			$total_terms = 0;
 		}
@@ -376,7 +376,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		$response = $is_head_request ? new WP_REST_Response( array() ) : rest_ensure_response( $response );
 
-		// Store pagination values for headers.
+		// Lưu trữ giá trị phân trang cho headers.
 		$per_page = (int) $prepared_args['number'];
 		$page     = (int) ceil( ( ( (int) $prepared_args['offset'] ) / $per_page ) + 1 );
 
@@ -411,12 +411,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get the term, if the ID is valid.
+	 * Lấy term nếu ID hợp lệ.
 	 *
 	 * @since 4.7.2
 	 *
-	 * @param int $id Supplied ID.
-	 * @return WP_Term|WP_Error Term object if ID is valid, WP_Error otherwise.
+	 * @param int $id ID được cung cấp.
+	 * @return WP_Term|WP_Error Đối tượng term nếu ID hợp lệ, WP_Error nếu không.
 	 */
 	protected function get_term( $id ) {
 		$error = new WP_Error(
@@ -442,12 +442,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a request has access to read or edit the specified term.
+	 * Kiểm tra xem yêu cầu có quyền đọc hoặc sửa term được chỉ định hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access for the item, otherwise WP_Error object.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc mục, ngược lại đối tượng WP_Error.
 	 */
 	public function get_item_permissions_check( $request ) {
 		$term = $this->get_term( $request['id'] );
@@ -468,12 +468,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Gets a single term from a taxonomy.
+	 * Lấy một term đơn từ taxonomy.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function get_item( $request ) {
 		$term = $this->get_term( $request['id'] );
@@ -487,12 +487,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a request has access to create a term.
+	 * Kiểm tra xem yêu cầu có quyền tạo term hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return bool|WP_Error True if the request has access to create items, otherwise false or WP_Error object.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return bool|WP_Error True nếu yêu cầu có quyền tạo mục, ngược lại false hoặc đối tượng WP_Error.
 	 */
 	public function create_item_permissions_check( $request ) {
 
@@ -517,12 +517,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Creates a single term in a taxonomy.
+	 * Tạo một term đơn trong taxonomy.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function create_item( $request ) {
 		if ( isset( $request['parent'] ) ) {
@@ -550,8 +550,8 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		$term = wp_insert_term( wp_slash( $prepared_term->name ), $this->taxonomy, wp_slash( (array) $prepared_term ) );
 		if ( is_wp_error( $term ) ) {
 			/*
-			 * If we're going to inform the client that the term already exists,
-			 * give them the identifier for future use.
+			 * Nếu chúng ta sẽ thông báo cho client rằng term đã tồn tại,
+			 * cung cấp định danh để sử dụng trong tương lai.
 			 */
 			$term_id = $term->get_error_data( 'term_exists' );
 			if ( $term_id ) {
@@ -571,20 +571,20 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		$term = get_term( $term['term_id'], $this->taxonomy );
 
 		/**
-		 * Fires after a single term is created or updated via the REST API.
+		 * Kích hoạt sau khi một term đơn được tạo hoặc cập nhật qua REST API.
 		 *
-		 * The dynamic portion of the hook name, `$this->taxonomy`, refers to the taxonomy slug.
+		 * Phần động của tên hook, `$this->taxonomy`, tham chiếu đến slug taxonomy.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `rest_insert_category`
 		 *  - `rest_insert_post_tag`
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_Term         $term     Inserted or updated term object.
-		 * @param WP_REST_Request $request  Request object.
-		 * @param bool            $creating True when creating a term, false when updating.
+		 * @param WP_Term         $term     Đối tượng term được chèn hoặc cập nhật.
+		 * @param WP_REST_Request $request  Đối tượng yêu cầu.
+		 * @param bool            $creating True khi tạo term, false khi cập nhật.
 		 */
 		do_action( "rest_insert_{$this->taxonomy}", $term, $request, true );
 
@@ -606,20 +606,20 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		$request->set_param( 'context', 'edit' );
 
 		/**
-		 * Fires after a single term is completely created or updated via the REST API.
+		 * Kích hoạt sau khi một term đơn được tạo hoặc cập nhật hoàn toàn qua REST API.
 		 *
-		 * The dynamic portion of the hook name, `$this->taxonomy`, refers to the taxonomy slug.
+		 * Phần động của tên hook, `$this->taxonomy`, tham chiếu đến slug taxonomy.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `rest_after_insert_category`
 		 *  - `rest_after_insert_post_tag`
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param WP_Term         $term     Inserted or updated term object.
-		 * @param WP_REST_Request $request  Request object.
-		 * @param bool            $creating True when creating a term, false when updating.
+		 * @param WP_Term         $term     Đối tượng term được chèn hoặc cập nhật.
+		 * @param WP_REST_Request $request  Đối tượng yêu cầu.
+		 * @param bool            $creating True khi tạo term, false khi cập nhật.
 		 */
 		do_action( "rest_after_insert_{$this->taxonomy}", $term, $request, true );
 
@@ -633,12 +633,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a request has access to update the specified term.
+	 * Kiểm tra xem yêu cầu có quyền cập nhật term được chỉ định hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to update the item, false or WP_Error object otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền cập nhật mục, ngược lại false hoặc đối tượng WP_Error.
 	 */
 	public function update_item_permissions_check( $request ) {
 		$term = $this->get_term( $request['id'] );
@@ -659,12 +659,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Updates a single term from a taxonomy.
+	 * Cập nhật một term đơn từ taxonomy.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function update_item( $request ) {
 		$term = $this->get_term( $request['id'] );
@@ -694,7 +694,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		$prepared_term = $this->prepare_item_for_database( $request );
 
-		// Only update the term if we have something to update.
+		// Chỉ cập nhật term nếu có gì đó để cập nhật.
 		if ( ! empty( $prepared_term ) ) {
 			$update = wp_update_term( $term->term_id, $term->taxonomy, wp_slash( (array) $prepared_term ) );
 
@@ -734,12 +734,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a request has access to delete the specified term.
+	 * Kiểm tra xem yêu cầu có quyền xóa term được chỉ định hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to delete the item, otherwise false or WP_Error object.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền xóa mục, ngược lại false hoặc đối tượng WP_Error.
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$term = $this->get_term( $request['id'] );
@@ -760,12 +760,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Deletes a single term from a taxonomy.
+	 * Xóa một term đơn từ taxonomy.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function delete_item( $request ) {
 		$term = $this->get_term( $request['id'] );
@@ -775,7 +775,7 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 
 		$force = isset( $request['force'] ) ? (bool) $request['force'] : false;
 
-		// We don't support trashing for terms.
+		// Chúng ta không hỗ trợ đưa vào thùng rác cho term.
 		if ( ! $force ) {
 			return new WP_Error(
 				'rest_trash_not_supported',
@@ -808,20 +808,20 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 		);
 
 		/**
-		 * Fires after a single term is deleted via the REST API.
+		 * Kích hoạt sau khi một term đơn bị xóa qua REST API.
 		 *
-		 * The dynamic portion of the hook name, `$this->taxonomy`, refers to the taxonomy slug.
+		 * Phần động của tên hook, `$this->taxonomy`, tham chiếu đến slug taxonomy.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `rest_delete_category`
 		 *  - `rest_delete_post_tag`
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_Term          $term     The deleted term.
-		 * @param WP_REST_Response $response The response data.
-		 * @param WP_REST_Request  $request  The request sent to the API.
+		 * @param WP_Term          $term     Term đã bị xóa.
+		 * @param WP_REST_Response $response Dữ liệu phản hồi.
+		 * @param WP_REST_Request  $request  Yêu cầu gửi đến API.
 		 */
 		do_action( "rest_delete_{$this->taxonomy}", $term, $response, $request );
 
@@ -829,12 +829,12 @@ class WP_REST_Terms_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepares a single term for create or update.
+	 * Chuẩn bị một term đơn cho việc tạo hoặc cập nhật.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return object Term object.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @return object Đối tượng term.
 	 */
 	public function prepare_item_for_database( $request ) {
 		$prepared_term = new stdClass();

@@ -1,8 +1,8 @@
 <?php
 /**
- * API for fetching the HTML to embed remote content based on a provided URL.
+ * API để lấy HTML nhúng nội dung từ xa dựa trên URL được cung cấp.
  *
- * This file is deprecated, use 'wp-includes/class-wp-oembed.php' instead.
+ * Tệp này đã ngừng sử dụng, hãy dùng 'wp-includes/class-wp-oembed.php' thay thế.
  *
  * @deprecated 5.3.0
  * @package WordPress
@@ -11,5 +11,5 @@
 
 _deprecated_file( basename( __FILE__ ), '5.3.0', WPINC . '/class-wp-oembed.php' );
 
-/** WP_oEmbed class */
+/** Lớp WP_oEmbed */
 require_once ABSPATH . WPINC . '/class-wp-oembed.php';

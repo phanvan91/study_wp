@@ -1,15 +1,15 @@
 <?php
 /**
- * WordPress Dashboard Widget Administration Screen API
+ * API Màn hình Quản trị Widget Bảng điều khiển WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Registers dashboard widgets.
+ * Đăng ký các widget bảng điều khiển.
  *
- * Handles POST data, sets up filters.
+ * Xử lý dữ liệu POST, thiết lập các bộ lọc.
  *
  * @since 2.5.0
  *
@@ -22,10 +22,10 @@ function wp_dashboard_setup() {
 
 	$screen = get_current_screen();
 
-	/* Register Widgets and Controls */
+	/* Đăng ký Widget và Điều khiển */
 	$wp_dashboard_control_callbacks = array();
 
-	// Browser version
+	// Phiên bản trình duyệt
 	$check_browser = wp_check_browser_version();
 
 	if ( $check_browser && $check_browser['upgrade'] ) {
@@ -38,11 +38,11 @@ function wp_dashboard_setup() {
 		}
 	}
 
-	// PHP Version.
+	// Phiên bản PHP.
 	$check_php = wp_check_php_version();
 
 	if ( $check_php && current_user_can( 'update_php' ) ) {
-		// If "not acceptable" the widget will be shown.
+		// Nếu "không chấp nhận được" thì widget sẽ được hiển thị.
 		if ( isset( $check_php['is_acceptable'] ) && ! $check_php['is_acceptable'] ) {
 			add_filter( 'postbox_classes_dashboard_dashboard_php_nag', 'dashboard_php_nag_class' );
 
@@ -54,7 +54,7 @@ function wp_dashboard_setup() {
 		}
 	}
 
-	// Site Health.
+	// Sức khỏe Website.
 	if ( current_user_can( 'view_site_health_checks' ) && ! is_network_admin() ) {
 		if ( ! class_exists( 'WP_Site_Health' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/class-wp-site-health.php';
@@ -68,7 +68,7 @@ function wp_dashboard_setup() {
 		wp_add_dashboard_widget( 'dashboard_site_health', __( 'Site Health Status' ), 'wp_dashboard_site_health' );
 	}
 
-	// Right Now.
+	// Ngay bây giờ.
 	if ( is_blog_admin() && current_user_can( 'edit_posts' ) ) {
 		wp_add_dashboard_widget( 'dashboard_right_now', __( 'At a Glance' ), 'wp_dashboard_right_now' );
 	}
@@ -77,69 +77,69 @@ function wp_dashboard_setup() {
 		wp_add_dashboard_widget( 'network_dashboard_right_now', __( 'Right Now' ), 'wp_network_dashboard_right_now' );
 	}
 
-	// Activity Widget.
+	// Widget Hoạt động.
 	if ( is_blog_admin() ) {
 		wp_add_dashboard_widget( 'dashboard_activity', __( 'Activity' ), 'wp_dashboard_site_activity' );
 	}
 
-	// QuickPress Widget.
+	// Widget Đăng nhanh.
 	if ( is_blog_admin() && current_user_can( get_post_type_object( 'post' )->cap->create_posts ) ) {
 		$quick_draft_title = sprintf( '<span class="hide-if-no-js">%1$s</span> <span class="hide-if-js">%2$s</span>', __( 'Quick Draft' ), __( 'Your Recent Drafts' ) );
 		wp_add_dashboard_widget( 'dashboard_quick_press', $quick_draft_title, 'wp_dashboard_quick_press' );
 	}
 
-	// WordPress Events and News.
+	// Sự kiện và Tin tức WordPress.
 	wp_add_dashboard_widget( 'dashboard_primary', __( 'WordPress Events and News' ), 'wp_dashboard_events_news' );
 
 	if ( is_network_admin() ) {
 
 		/**
-		 * Fires after core widgets for the Network Admin dashboard have been registered.
+		 * Kích hoạt sau khi các widget lõi cho bảng điều khiển Quản trị Mạng đã được đăng ký.
 		 *
 		 * @since 3.1.0
 		 */
 		do_action( 'wp_network_dashboard_setup' );
 
 		/**
-		 * Filters the list of widgets to load for the Network Admin dashboard.
+		 * Lọc danh sách widget để tải cho bảng điều khiển Quản trị Mạng.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string[] $dashboard_widgets An array of dashboard widget IDs.
+		 * @param string[] $dashboard_widgets Mảng các ID widget bảng điều khiển.
 		 */
 		$dashboard_widgets = apply_filters( 'wp_network_dashboard_widgets', array() );
 	} elseif ( is_user_admin() ) {
 
 		/**
-		 * Fires after core widgets for the User Admin dashboard have been registered.
+		 * Kích hoạt sau khi các widget lõi cho bảng điều khiển Quản trị Người dùng đã được đăng ký.
 		 *
 		 * @since 3.1.0
 		 */
 		do_action( 'wp_user_dashboard_setup' );
 
 		/**
-		 * Filters the list of widgets to load for the User Admin dashboard.
+		 * Lọc danh sách widget để tải cho bảng điều khiển Quản trị Người dùng.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string[] $dashboard_widgets An array of dashboard widget IDs.
+		 * @param string[] $dashboard_widgets Mảng các ID widget bảng điều khiển.
 		 */
 		$dashboard_widgets = apply_filters( 'wp_user_dashboard_widgets', array() );
 	} else {
 
 		/**
-		 * Fires after core widgets for the admin dashboard have been registered.
+		 * Kích hoạt sau khi các widget lõi cho bảng điều khiển quản trị đã được đăng ký.
 		 *
 		 * @since 2.5.0
 		 */
 		do_action( 'wp_dashboard_setup' );
 
 		/**
-		 * Filters the list of widgets to load for the admin dashboard.
+		 * Lọc danh sách widget để tải cho bảng điều khiển quản trị.
 		 *
 		 * @since 2.5.0
 		 *
-		 * @param string[] $dashboard_widgets An array of dashboard widget IDs.
+		 * @param string[] $dashboard_widgets Mảng các ID widget bảng điều khiển.
 		 */
 		$dashboard_widgets = apply_filters( 'wp_dashboard_widgets', array() );
 	}
@@ -151,39 +151,39 @@ function wp_dashboard_setup() {
 
 	if ( 'POST' === $_SERVER['REQUEST_METHOD'] && isset( $_POST['widget_id'] ) ) {
 		check_admin_referer( 'edit-dashboard-widget_' . $_POST['widget_id'], 'dashboard-widget-nonce' );
-		ob_start(); // Hack - but the same hack wp-admin/widgets.php uses.
+		ob_start(); // Hack - nhưng cùng một hack mà wp-admin/widgets.php sử dụng.
 		wp_dashboard_trigger_widget_control( $_POST['widget_id'] );
 		ob_end_clean();
 		wp_redirect( remove_query_arg( 'edit' ) );
 		exit;
 	}
 
-	/** This action is documented in wp-admin/includes/meta-boxes.php */
+	/** Action này được ghi chú trong wp-admin/includes/meta-boxes.php */
 	do_action( 'do_meta_boxes', $screen->id, 'normal', '' );
 
-	/** This action is documented in wp-admin/includes/meta-boxes.php */
+	/** Action này được ghi chú trong wp-admin/includes/meta-boxes.php */
 	do_action( 'do_meta_boxes', $screen->id, 'side', '' );
 }
 
 /**
- * Adds a new dashboard widget.
+ * Thêm một widget bảng điều khiển mới.
  *
  * @since 2.7.0
- * @since 5.6.0 The `$context` and `$priority` parameters were added.
+ * @since 5.6.0 Tham số `$context` và `$priority` đã được thêm.
  *
  * @global callable[] $wp_dashboard_control_callbacks
  *
- * @param string   $widget_id        Widget ID  (used in the 'id' attribute for the widget).
- * @param string   $widget_name      Title of the widget.
- * @param callable $callback         Function that fills the widget with the desired content.
- *                                   The function should echo its output.
- * @param callable $control_callback Optional. Function that outputs controls for the widget. Default null.
- * @param array    $callback_args    Optional. Data that should be set as the $args property of the widget array
- *                                   (which is the second parameter passed to your callback). Default null.
- * @param string   $context          Optional. The context within the screen where the box should display.
- *                                   Accepts 'normal', 'side', 'column3', or 'column4'. Default 'normal'.
- * @param string   $priority         Optional. The priority within the context where the box should show.
- *                                   Accepts 'high', 'core', 'default', or 'low'. Default 'core'.
+ * @param string   $widget_id        ID Widget (dùng trong thuộc tính 'id' cho widget).
+ * @param string   $widget_name      Tiêu đề của widget.
+ * @param callable $callback         Hàm điền nội dung mong muốn vào widget.
+ *                                   Hàm nên echo đầu ra của nó.
+ * @param callable $control_callback Tùy chọn. Hàm xuất các điều khiển cho widget. Mặc định null.
+ * @param array    $callback_args    Tùy chọn. Dữ liệu nên được đặt làm thuộc tính $args của mảng widget
+ *                                   (là tham số thứ hai truyền vào callback của bạn). Mặc định null.
+ * @param string   $context          Tùy chọn. Ngữ cảnh trong màn hình nơi hộp sẽ hiển thị.
+ *                                   Chấp nhận 'normal', 'side', 'column3', hoặc 'column4'. Mặc định 'normal'.
+ * @param string   $priority         Tùy chọn. Độ ưu tiên trong ngữ cảnh nơi hộp sẽ hiển thị.
+ *                                   Chấp nhận 'high', 'core', 'default', hoặc 'low'. Mặc định 'core'.
  */
 function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_callback = null, $callback_args = null, $context = 'normal', $priority = 'core' ) {
 	global $wp_dashboard_control_callbacks;
@@ -235,7 +235,7 @@ function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_
 }
 
 /**
- * Outputs controls for the current dashboard widget.
+ * Xuất các điều khiển cho widget bảng điều khiển hiện tại.
  *
  * @access private
  * @since 2.7.0
@@ -253,7 +253,7 @@ function _wp_dashboard_control_callback( $dashboard, $meta_box ) {
 }
 
 /**
- * Displays the dashboard.
+ * Hiển thị bảng điều khiển.
  *
  * @since 2.5.0
  */
@@ -287,13 +287,13 @@ function wp_dashboard() {
 }
 
 //
-// Dashboard Widgets.
+// Các Widget Bảng điều khiển.
 //
 
 /**
- * Dashboard widget that displays some basic stats about the site.
+ * Widget bảng điều khiển hiển thị một số thống kê cơ bản về website.
  *
- * Formerly 'Right Now'. A streamlined 'At a Glance' as of 3.8.
+ * Trước đây là 'Right Now'. Được tinh gọn thành 'At a Glance' từ phiên bản 3.8.
  *
  * @since 2.7.0
  */
@@ -302,7 +302,7 @@ function wp_dashboard_right_now() {
 	<div class="main">
 	<ul>
 	<?php
-	// Posts and Pages.
+	// Bài viết và Trang.
 	foreach ( array( 'post', 'page' ) as $post_type ) {
 		$num_posts = wp_count_posts( $post_type );
 
@@ -326,7 +326,7 @@ function wp_dashboard_right_now() {
 		}
 	}
 
-	// Comments.
+	// Bình luận.
 	$num_comm = wp_count_comments();
 
 	if ( $num_comm && ( $num_comm->approved || $num_comm->moderated ) ) {
@@ -348,15 +348,15 @@ function wp_dashboard_right_now() {
 	}
 
 	/**
-	 * Filters the array of extra elements to list in the 'At a Glance'
-	 * dashboard widget.
+	 * Lọc mảng các phần tử bổ sung để liệt kê trong widget
+	 * bảng điều khiển 'Tổng quan'.
 	 *
-	 * Prior to 3.8.0, the widget was named 'Right Now'. Each element
-	 * is wrapped in list-item tags on output.
+	 * Trước phiên bản 3.8.0, widget có tên 'Right Now'. Mỗi phần tử
+	 * được bọc trong thẻ list-item khi xuất ra.
 	 *
 	 * @since 3.8.0
 	 *
-	 * @param string[] $items Array of extra 'At a Glance' widget items.
+	 * @param string[] $items Mảng các mục widget 'Tổng quan' bổ sung.
 	 */
 	$elements = apply_filters( 'dashboard_glance_items', array() );
 
@@ -369,33 +369,33 @@ function wp_dashboard_right_now() {
 	<?php
 	update_right_now_message();
 
-	// Check if search engines are asked not to index this site.
+	// Kiểm tra nếu công cụ tìm kiếm được yêu cầu không lập chỉ mục website này.
 	if ( ! is_network_admin() && ! is_user_admin()
 		&& current_user_can( 'manage_options' ) && ! get_option( 'blog_public' )
 	) {
 
 		/**
-		 * Filters the link title attribute for the 'Search engines discouraged'
-		 * message displayed in the 'At a Glance' dashboard widget.
+		 * Lọc thuộc tính title liên kết cho thông báo 'Công cụ tìm kiếm bị ngăn cản'
+		 * hiển thị trong widget bảng điều khiển 'Tổng quan'.
 		 *
-		 * Prior to 3.8.0, the widget was named 'Right Now'.
+		 * Trước phiên bản 3.8.0, widget có tên 'Right Now'.
 		 *
 		 * @since 3.0.0
-		 * @since 4.5.0 The default for `$title` was updated to an empty string.
+		 * @since 4.5.0 Giá trị mặc định cho `$title` được cập nhật thành chuỗi rỗng.
 		 *
-		 * @param string $title Default attribute text.
+		 * @param string $title Văn bản thuộc tính mặc định.
 		 */
 		$title = apply_filters( 'privacy_on_link_title', '' );
 
 		/**
-		 * Filters the link label for the 'Search engines discouraged' message
-		 * displayed in the 'At a Glance' dashboard widget.
+		 * Lọc nhãn liên kết cho thông báo 'Công cụ tìm kiếm bị ngăn cản'
+		 * hiển thị trong widget bảng điều khiển 'Tổng quan'.
 		 *
-		 * Prior to 3.8.0, the widget was named 'Right Now'.
+		 * Trước phiên bản 3.8.0, widget có tên 'Right Now'.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $content Default text.
+		 * @param string $content Văn bản mặc định.
 		 */
 		$content = apply_filters( 'privacy_on_link_text', __( 'Search engines discouraged' ) );
 
@@ -407,24 +407,24 @@ function wp_dashboard_right_now() {
 	</div>
 	<?php
 	/*
-	 * activity_box_end has a core action, but only prints content when multisite.
-	 * Using an output buffer is the only way to really check if anything's displayed here.
+	 * activity_box_end có một action lõi, nhưng chỉ in nội dung khi multisite.
+	 * Sử dụng bộ đệm đầu ra là cách duy nhất để thực sự kiểm tra xem có gì được hiển thị ở đây hay không.
 	 */
 	ob_start();
 
 	/**
-	 * Fires at the end of the 'At a Glance' dashboard widget.
+	 * Kích hoạt ở cuối widget bảng điều khiển 'Tổng quan'.
 	 *
-	 * Prior to 3.8.0, the widget was named 'Right Now'.
+	 * Trước phiên bản 3.8.0, widget có tên 'Right Now'.
 	 *
 	 * @since 2.5.0
 	 */
 	do_action( 'rightnow_end' );
 
 	/**
-	 * Fires at the end of the 'At a Glance' dashboard widget.
+	 * Kích hoạt ở cuối widget bảng điều khiển 'Tổng quan'.
 	 *
-	 * Prior to 3.8.0, the widget was named 'Right Now'.
+	 * Trước phiên bản 3.8.0, widget có tên 'Right Now'.
 	 *
 	 * @since 2.0.0
 	 */
@@ -481,8 +481,8 @@ function wp_network_dashboard_right_now() {
 
 	<?php
 		/**
-		 * Fires in the Network Admin 'Right Now' dashboard widget
-		 * just before the user and site search form fields.
+		 * Kích hoạt trong widget bảng điều khiển 'Ngay bây giờ' của Quản trị Mạng
+		 * ngay trước các trường tìm kiếm người dùng và website.
 		 *
 		 * @since MU (3.0.0)
 		 */
@@ -531,13 +531,13 @@ function wp_network_dashboard_right_now() {
 }
 
 /**
- * Displays the Quick Draft widget.
+ * Hiển thị widget Đăng nhanh.
  *
  * @since 3.8.0
  *
  * @global int $post_ID
  *
- * @param string|false $error_msg Optional. Error message. Default false.
+ * @param string|false $error_msg Tùy chọn. Thông báo lỗi. Mặc định false.
  */
 function wp_dashboard_quick_press( $error_msg = false ) {
 	global $post_ID;
@@ -546,25 +546,25 @@ function wp_dashboard_quick_press( $error_msg = false ) {
 		return;
 	}
 
-	// Check if a new auto-draft (= no new post_ID) is needed or if the old can be used.
-	$last_post_id = (int) get_user_option( 'dashboard_quick_press_last_post_id' ); // Get the last post_ID.
+	// Kiểm tra xem có cần tạo auto-draft mới (= không có post_ID mới) hay có thể sử dụng cái cũ.
+	$last_post_id = (int) get_user_option( 'dashboard_quick_press_last_post_id' ); // Lấy post_ID cuối cùng.
 
 	if ( $last_post_id ) {
 		$post = get_post( $last_post_id );
 
-		if ( empty( $post ) || 'auto-draft' !== $post->post_status ) { // auto-draft doesn't exist anymore.
+		if ( empty( $post ) || 'auto-draft' !== $post->post_status ) { // auto-draft không còn tồn tại.
 			$post = get_default_post_to_edit( 'post', true );
-			update_user_option( get_current_user_id(), 'dashboard_quick_press_last_post_id', (int) $post->ID ); // Save post_ID.
+			update_user_option( get_current_user_id(), 'dashboard_quick_press_last_post_id', (int) $post->ID ); // Lưu post_ID.
 		} else {
-			$post->post_title = ''; // Remove the auto draft title.
+			$post->post_title = ''; // Xóa tiêu đề bản nháp tự động.
 		}
 	} else {
 		$post    = get_default_post_to_edit( 'post', true );
 		$user_id = get_current_user_id();
 
-		// Don't create an option if this is a super admin who does not belong to this site.
+		// Không tạo tùy chọn nếu đây là quản trị viên cấp cao không thuộc website này.
 		if ( in_array( get_current_blog_id(), array_keys( get_blogs_of_user( $user_id ) ), true ) ) {
-			update_user_option( $user_id, 'dashboard_quick_press_last_post_id', (int) $post->ID ); // Save post_ID.
+			update_user_option( $user_id, 'dashboard_quick_press_last_post_id', (int) $post->ID ); // Lưu post_ID.
 		}
 	}
 
@@ -614,11 +614,11 @@ function wp_dashboard_quick_press( $error_msg = false ) {
 }
 
 /**
- * Show recent drafts of the user on the dashboard.
+ * Hiển thị các bản nháp gần đây của người dùng trên bảng điều khiển.
  *
  * @since 2.7.0
  *
- * @param WP_Post[]|false $drafts Optional. Array of posts to display. Default false.
+ * @param WP_Post[]|false $drafts Tùy chọn. Mảng bài viết để hiển thị. Mặc định false.
  */
 function wp_dashboard_recent_drafts( $drafts = false ) {
 	if ( ! $drafts ) {
@@ -632,11 +632,11 @@ function wp_dashboard_recent_drafts( $drafts = false ) {
 		);
 
 		/**
-		 * Filters the post query arguments for the 'Recent Drafts' dashboard widget.
+		 * Lọc các tham số truy vấn bài viết cho widget bảng điều khiển 'Bản nháp gần đây'.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param array $query_args The query arguments for the 'Recent Drafts' dashboard widget.
+		 * @param array $query_args Các tham số truy vấn cho widget bảng điều khiển 'Bản nháp gần đây'.
 		 */
 		$query_args = apply_filters( 'dashboard_recent_drafts_query_args', $query_args );
 
@@ -691,15 +691,15 @@ function wp_dashboard_recent_drafts( $drafts = false ) {
 }
 
 /**
- * Outputs a row for the Recent Comments widget.
+ * Xuất một hàng cho widget Bình luận gần đây.
  *
  * @access private
  * @since 2.7.0
  *
- * @global WP_Comment $comment Global comment object.
+ * @global WP_Comment $comment Đối tượng bình luận toàn cục.
  *
- * @param WP_Comment $comment   The current comment.
- * @param bool       $show_date Optional. Whether to display the date.
+ * @param WP_Comment $comment   Bình luận hiện tại.
+ * @param bool       $show_date Tùy chọn. Có hiển thị ngày hay không.
  */
 function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 	$GLOBALS['comment'] = clone $comment;
@@ -714,7 +714,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 
 	$actions_string = '';
 	if ( current_user_can( 'edit_comment', $comment->comment_ID ) ) {
-		// Pre-order it: Approve | Reply | Edit | Spam | Trash.
+		// Sắp xếp trước: Duyệt | Trả lời | Sửa | Spam | Thùng rác.
 		$actions = array(
 			'approve'   => '',
 			'unapprove' => '',
@@ -818,7 +818,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 				$separator = ' | ';
 			}
 
-			// Reply and quickedit need a hide-if-no-js span.
+			// Trả lời và chỉnh sửa nhanh cần một span hide-if-no-js.
 			if ( 'reply' === $action || 'quickedit' === $action ) {
 				$action .= ' hide-if-no-js';
 			}
@@ -848,7 +848,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 			<div class="dashboard-comment-wrap has-row-actions <?php echo $comment_row_class; ?>">
 			<p class="comment-meta">
 				<?php
-				// Comments might not have a post they relate to, e.g. programmatically created ones.
+				// Bình luận có thể không có bài viết liên quan, ví dụ những bình luận được tạo bằng mã lập trình.
 				if ( $comment_post_link ) {
 					printf(
 						/* translators: 1: Comment author, 2: Post link, 3: Notification if the comment is pending. */
@@ -885,7 +885,7 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 			<div class="dashboard-comment-wrap has-row-actions">
 			<p class="comment-meta">
 				<?php
-				// Pingbacks, Trackbacks or custom comment types might not have a post they relate to, e.g. programmatically created ones.
+				// Pingback, Trackback hoặc các loại bình luận tùy chỉnh có thể không có bài viết liên quan, ví dụ những cái được tạo bằng mã lập trình.
 				if ( $comment_post_link ) {
 					printf(
 						/* translators: 1: Type of comment, 2: Post link, 3: Notification if the comment is pending. */
@@ -918,9 +918,9 @@ function _wp_dashboard_recent_comments_row( &$comment, $show_date = true ) {
 }
 
 /**
- * Outputs the Activity widget.
+ * Xuất widget Hoạt động.
  *
- * Callback function for {@see 'dashboard_activity'}.
+ * Hàm callback cho {@see 'dashboard_activity'}.
  *
  * @since 3.8.0
  */
@@ -959,20 +959,20 @@ function wp_dashboard_site_activity() {
 }
 
 /**
- * Generates Publishing Soon and Recently Published sections.
+ * Tạo các phần Sắp xuất bản và Đã xuất bản gần đây.
  *
  * @since 3.8.0
  *
  * @param array $args {
- *     An array of query and display arguments.
+ *     Mảng các tham số truy vấn và hiển thị.
  *
- *     @type int    $max     Number of posts to display.
- *     @type string $status  Post status.
- *     @type string $order   Designates ascending ('ASC') or descending ('DESC') order.
- *     @type string $title   Section title.
- *     @type string $id      The container id.
+ *     @type int    $max     Số bài viết để hiển thị.
+ *     @type string $status  Trạng thái bài viết.
+ *     @type string $order   Chỉ định thứ tự tăng dần ('ASC') hoặc giảm dần ('DESC').
+ *     @type string $title   Tiêu đề phần.
+ *     @type string $id      ID của container.
  * }
- * @return bool False if no posts were found. True otherwise.
+ * @return bool False nếu không tìm thấy bài viết. True nếu có.
  */
 function wp_dashboard_recent_posts( $args ) {
 	$query_args = array(
@@ -987,11 +987,11 @@ function wp_dashboard_recent_posts( $args ) {
 	);
 
 	/**
-	 * Filters the query arguments used for the Recent Posts widget.
+	 * Lọc các tham số truy vấn được sử dụng cho widget Bài viết gần đây.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param array $query_args The arguments passed to WP_Query to produce the list of posts.
+	 * @param array $query_args Các tham số được truyền vào WP_Query để tạo danh sách bài viết.
 	 */
 	$query_args = apply_filters( 'dashboard_recent_posts_query_args', $query_args );
 

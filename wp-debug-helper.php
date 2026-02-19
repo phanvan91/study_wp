@@ -1,21 +1,16 @@
 <?php
 /**
  * WordPress Debug Helper
- * 
- * Helper functions for debugging WordPress applications
- * Similar to Laravel's dd() function
  *
- * Helper functions để debug ứng dụng WordPress
+ * Các hàm hỗ trợ debug ứng dụng WordPress
  * Tương tự hàm dd() của Laravel
  */
 
-// Enable error display immediately - Must be at the very top
 // Bật hiển thị lỗi ngay lập tức - Phải ở đầu file
 error_reporting( E_ALL );
 ini_set( 'display_errors', '1' );
 ini_set( 'display_startup_errors', '1' );
 
-// Set error handler immediately to catch all errors
 // Thiết lập error handler ngay lập tức để bắt tất cả lỗi
 $error_types = array(
 	E_ERROR             => 'Fatal Error',
@@ -59,7 +54,6 @@ set_error_handler( function( $errno, $errstr, $errfile, $errline ) use ( $error_
 } );
 
 set_exception_handler( function( $throwable ) {
-	// Handle both Exception and Error (PHP 7+)
 	// Xử lý cả Exception và Error (PHP 7+)
 	$is_error = $throwable instanceof Error;
 	$error_type = $is_error ? 'Uncaught Error' : 'Uncaught Exception';
@@ -84,8 +78,7 @@ set_exception_handler( function( $throwable ) {
 } );
 
 /**
- * Enable error display for development
- * Bật hiển thị lỗi cho development
+ * Bật hiển thị lỗi cho môi trường phát triển
  */
 if ( ! function_exists( 'enable_debug' ) ) {
 	function enable_debug() {
@@ -96,19 +89,15 @@ if ( ! function_exists( 'enable_debug' ) ) {
 }
 
 /**
- * Dump and Die - Debug helper function similar to Laravel's dd()
+ * Dump và Die - Hàm hỗ trợ debug tương tự dd() của Laravel
  *
- * Dump và Die - Function helper debug tương tự dd() của Laravel
- *
- * @param mixed ...$args Variables to dump
+ * @param mixed ...$args Các biến cần dump
  */
 if ( ! function_exists( 'dd' ) ) {
 	function dd( ...$args ) {
-		// Enable error display when dd() is called
 		// Bật hiển thị lỗi khi dd() được gọi
 		enable_debug();
 		
-		// Check if we're in a web context (not CLI)
 		// Kiểm tra xem có đang trong web context (không phải CLI)
 		$is_cli = ( defined( 'WP_CLI' ) && constant( 'WP_CLI' ) ) || php_sapi_name() === 'cli';
 		$is_web = ! $is_cli;
@@ -178,7 +167,7 @@ if ( ! function_exists( 'dd' ) ) {
 				var_dump( $arg );
 				$output = ob_get_clean();
 				if ( $is_web ) {
-					// Syntax highlight var_dump output
+					// Tô màu cú pháp cho output của var_dump
 					$output = preg_replace( '/string\((\d+)\)/', '<span style="color: #ce9178;">string</span>($1)', $output );
 					$output = preg_replace( '/int\((\d+)\)/', '<span style="color: #4ec9b0;">int</span>($1)', $output );
 					$output = preg_replace( '/bool\((true|false)\)/', '<span style="color: #569cd6;">bool</span>($1)', $output );
@@ -196,7 +185,6 @@ if ( ! function_exists( 'dd' ) ) {
 		}
 		
 		if ( $is_web ) {
-			// Get backtrace info
 			// Lấy thông tin backtrace
 			$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2 );
 			if ( ! empty( $backtrace[1] ) ) {
@@ -221,7 +209,6 @@ if ( ! function_exists( 'dd' ) ) {
 	}
 }
 
-// Enable debug mode immediately after defining functions
-// Bật chế độ debug ngay sau khi định nghĩa functions
+// Bật chế độ debug ngay sau khi định nghĩa các hàm
 enable_debug();
 

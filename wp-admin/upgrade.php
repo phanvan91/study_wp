@@ -1,20 +1,20 @@
 <?php
 /**
- * Upgrade WordPress Page.
+ * Trang Nâng cấp WordPress.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * We are upgrading WordPress.
+ * Chúng ta đang nâng cấp WordPress.
  *
  * @since 1.5.1
  * @var bool
  */
 define( 'WP_INSTALLING', true );
 
-/** Load WordPress Bootstrap */
+/** Nạp Bootstrap WordPress */
 require dirname( __DIR__ ) . '/wp-load.php';
 
 nocache_headers();
@@ -29,18 +29,18 @@ if ( isset( $_GET['step'] ) ) {
 	$step = 0;
 }
 
-// Do it. No output.
+// Thực hiện nâng cấp. Không có đầu ra.
 if ( 'upgrade_db' === $step ) {
 	wp_upgrade();
 	die( '0' );
 }
 
 /**
- * @global string   $wp_version              The WordPress version string.
- * @global string   $required_php_version    The required PHP version string.
- * @global string[] $required_php_extensions The names of required PHP extensions.
- * @global string   $required_mysql_version  The required MySQL version string.
- * @global wpdb     $wpdb                    WordPress database abstraction object.
+ * @global string   $wp_version              Chuỗi phiên bản WordPress.
+ * @global string   $required_php_version    Chuỗi phiên bản PHP yêu cầu.
+ * @global string[] $required_php_extensions Tên các extension PHP yêu cầu.
+ * @global string   $required_mysql_version  Chuỗi phiên bản MySQL yêu cầu.
+ * @global wpdb     $wpdb                    Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 global $wp_version, $required_php_version, $required_php_extensions, $required_mysql_version, $wpdb;
 
@@ -64,7 +64,7 @@ if ( isset( $required_php_extensions ) && is_array( $required_php_extensions ) )
 		}
 
 		$missing_extensions[] = sprintf(
-			/* translators: 1: URL to WordPress release notes, 2: WordPress version number, 3: The PHP extension name needed. */
+			/* translators: 1: URL đến ghi chú phát hành WordPress, 2: Số phiên bản WordPress, 3: Tên extension PHP cần thiết. */
 			__( 'You cannot upgrade because <a href="%1$s">WordPress %2$s</a> requires the %3$s PHP extension.' ),
 			$version_url,
 			$wp_version,
@@ -96,13 +96,13 @@ header( 'Content-Type: ' . get_option( 'html_type' ) . '; charset=' . get_option
 	<?php
 elseif ( ! $php_compat || ! $mysql_compat ) :
 	$version_url = sprintf(
-		/* translators: %s: WordPress version. */
+		/* translators: %s: Phiên bản WordPress. */
 		esc_url( __( 'https://wordpress.org/documentation/wordpress-version/version-%s/' ) ),
 		sanitize_title( $wp_version )
 	);
 
 	$php_update_message = '</p><p>' . sprintf(
-		/* translators: %s: URL to Update PHP page. */
+		/* translators: %s: URL đến trang Cập nhật PHP. */
 		__( '<a href="%s">Learn more about updating PHP</a>.' ),
 		esc_url( wp_get_update_php_url() )
 	);
@@ -115,7 +115,7 @@ elseif ( ! $php_compat || ! $mysql_compat ) :
 
 	if ( ! $mysql_compat && ! $php_compat ) {
 		$message = sprintf(
-			/* translators: 1: URL to WordPress release notes, 2: WordPress version number, 3: Minimum required PHP version number, 4: Minimum required MySQL version number, 5: Current PHP version number, 6: Current MySQL version number. */
+			/* translators: 1: URL đến ghi chú phát hành WordPress, 2: Số phiên bản WordPress, 3: Phiên bản PHP tối thiểu yêu cầu, 4: Phiên bản MySQL tối thiểu yêu cầu, 5: Phiên bản PHP hiện tại, 6: Phiên bản MySQL hiện tại. */
 			__( 'You cannot update because <a href="%1$s">WordPress %2$s</a> requires PHP version %3$s or higher and MySQL version %4$s or higher. You are running PHP version %5$s and MySQL version %6$s.' ),
 			$version_url,
 			$wp_version,
@@ -126,7 +126,7 @@ elseif ( ! $php_compat || ! $mysql_compat ) :
 		) . $php_update_message;
 	} elseif ( ! $php_compat ) {
 		$message = sprintf(
-			/* translators: 1: URL to WordPress release notes, 2: WordPress version number, 3: Minimum required PHP version number, 4: Current PHP version number. */
+			/* translators: 1: URL đến ghi chú phát hành WordPress, 2: Số phiên bản WordPress, 3: Phiên bản PHP tối thiểu yêu cầu, 4: Phiên bản PHP hiện tại. */
 			__( 'You cannot update because <a href="%1$s">WordPress %2$s</a> requires PHP version %3$s or higher. You are running version %4$s.' ),
 			$version_url,
 			$wp_version,
@@ -135,7 +135,7 @@ elseif ( ! $php_compat || ! $mysql_compat ) :
 		) . $php_update_message;
 	} elseif ( ! $mysql_compat ) {
 		$message = sprintf(
-			/* translators: 1: URL to WordPress release notes, 2: WordPress version number, 3: Minimum required MySQL version number, 4: Current MySQL version number. */
+			/* translators: 1: URL đến ghi chú phát hành WordPress, 2: Số phiên bản WordPress, 3: Phiên bản MySQL tối thiểu yêu cầu, 4: Phiên bản MySQL hiện tại. */
 			__( 'You cannot update because <a href="%1$s">WordPress %2$s</a> requires MySQL version %3$s or higher. You are running version %4$s.' ),
 			$version_url,
 			$wp_version,

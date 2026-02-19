@@ -1,13 +1,13 @@
 <?php
 /**
- * WordPress Widgets Administration API
+ * API Quản trị Widget WordPress.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Display list of the available widgets.
+ * Hiển thị danh sách các widget có sẵn.
  *
  * @since 2.5.0
  *
@@ -22,7 +22,7 @@ function wp_list_widgets() {
 	$done = array();
 
 	foreach ( $sort as $widget ) {
-		if ( in_array( $widget['callback'], $done, true ) ) { // We already showed this multi-widget.
+		if ( in_array( $widget['callback'], $done, true ) ) { // Đã hiển thị multi-widget này rồi.
 			continue;
 		}
 
@@ -62,13 +62,13 @@ function wp_list_widgets() {
 }
 
 /**
- * Callback to sort array by a 'name' key.
+ * Callback để sắp xếp mảng theo khóa 'name'.
  *
  * @since 3.1.0
  * @access private
  *
- * @param array $a First array.
- * @param array $b Second array.
+ * @param array $a Mảng thứ nhất.
+ * @param array $b Mảng thứ hai.
  * @return int
  */
 function _sort_name_callback( $a, $b ) {
@@ -76,13 +76,13 @@ function _sort_name_callback( $a, $b ) {
 }
 
 /**
- * Show the widgets and their settings for a sidebar.
- * Used in the admin widget config screen.
+ * Hiển thị các widget và cài đặt của chúng cho một sidebar.
+ * Được sử dụng trong màn hình cấu hình widget quản trị.
  *
  * @since 2.5.0
  *
- * @param string $sidebar      Sidebar ID.
- * @param string $sidebar_name Optional. Sidebar name. Default empty.
+ * @param string $sidebar      ID của sidebar.
+ * @param string $sidebar_name Tùy chọn. Tên sidebar. Mặc định rỗng.
  */
 function wp_list_widget_controls( $sidebar, $sidebar_name = '' ) {
 	add_filter( 'dynamic_sidebar_params', 'wp_list_widget_controls_dynamic_sidebar' );
@@ -122,7 +122,7 @@ function wp_list_widget_controls( $sidebar, $sidebar_name = '' ) {
 }
 
 /**
- * Retrieves the widget control arguments.
+ * Lấy các đối số điều khiển widget.
  *
  * @since 2.5.0
  *
@@ -142,8 +142,8 @@ function wp_list_widget_controls_dynamic_sidebar( $params ) {
 
 	$params[0]['before_widget'] = "<div id='widget-{$i}_{$id}' class='widget'$hidden>";
 	$params[0]['after_widget']  = '</div>';
-	$params[0]['before_title']  = '%BEG_OF_TITLE%'; // Deprecated.
-	$params[0]['after_title']   = '%END_OF_TITLE%'; // Deprecated.
+	$params[0]['before_title']  = '%BEG_OF_TITLE%'; // Không dùng nữa.
+	$params[0]['after_title']   = '%END_OF_TITLE%'; // Không dùng nữa.
 
 	if ( is_callable( $wp_registered_widgets[ $widget_id ]['callback'] ) ) {
 		$wp_registered_widgets[ $widget_id ]['_callback'] = $wp_registered_widgets[ $widget_id ]['callback'];
@@ -174,9 +174,9 @@ function next_widget_id_number( $id_base ) {
 }
 
 /**
- * Meta widget used to display the control form for a widget.
+ * Meta widget dùng để hiển thị biểu mẫu điều khiển cho một widget.
  *
- * Called from dynamic_sidebar().
+ * Được gọi từ dynamic_sidebar().
  *
  * @since 2.5.0
  *
@@ -192,7 +192,7 @@ function wp_widget_control( $sidebar_args ) {
 
 	$widget_id  = $sidebar_args['widget_id'];
 	$sidebar_id = isset( $sidebar_args['id'] ) ? $sidebar_args['id'] : false;
-	$key        = $sidebar_id ? array_search( $widget_id, $sidebars_widgets[ $sidebar_id ], true ) : '-1'; // Position of widget in sidebar.
+	$key        = $sidebar_id ? array_search( $widget_id, $sidebars_widgets[ $sidebar_id ], true ) : '-1'; // Vị trí của widget trong sidebar.
 	$control    = isset( $wp_registered_widget_controls[ $widget_id ] ) ? $wp_registered_widget_controls[ $widget_id ] : array();
 	$widget     = $wp_registered_widgets[ $widget_id ];
 
@@ -222,13 +222,13 @@ function wp_widget_control( $sidebar_args ) {
 	}
 
 	/*
-	 * We aren't showing a widget control, we're outputting a template
-	 * for a multi-widget control.
+	 * Chúng ta không hiển thị điều khiển widget, mà đang xuất
+	 * một mẫu cho điều khiển multi-widget.
 	 */
 	if ( isset( $sidebar_args['_display'] ) && 'template' === $sidebar_args['_display'] && $widget_number ) {
-		// number == -1 implies a template where id numbers are replaced by a generic '__i__'.
+		// number == -1 nghĩa là một mẫu template trong đó số id được thay bằng '__i__' chung.
 		$control['params'][0]['number'] = -1;
-		// With id_base widget ID's are constructed like {$id_base}-{$id_number}.
+		// Với id_base, ID widget được xây dựng theo dạng {$id_base}-{$id_number}.
 		if ( isset( $control['id_base'] ) ) {
 			$id_format = $control['id_base'] . '-__i__';
 		}

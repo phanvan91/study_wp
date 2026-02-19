@@ -1,6 +1,6 @@
 <?php
 /**
- * List Table API: WP_Posts_List_Table class
+ * API Bảng danh sách: Lớp WP_Posts_List_Table
  *
  * @package WordPress
  * @subpackage Administration
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement displaying posts in a list table.
+ * Lớp cốt lõi dùng để hiển thị bài viết trong bảng danh sách.
  *
  * @since 3.1.0
  *
@@ -17,7 +17,7 @@
 class WP_Posts_List_Table extends WP_List_Table {
 
 	/**
-	 * Whether the items should be displayed hierarchically or linearly.
+	 * Xác định các mục nên hiển thị theo phân cấp hay tuyến tính.
 	 *
 	 * @since 3.1.0
 	 * @var bool
@@ -25,7 +25,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	protected $hierarchical_display;
 
 	/**
-	 * Holds the number of pending comments for each post.
+	 * Lưu trữ số lượng bình luận chờ duyệt cho mỗi bài viết.
 	 *
 	 * @since 3.1.0
 	 * @var array
@@ -33,7 +33,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	protected $comment_pending_count;
 
 	/**
-	 * Holds the number of posts for this user.
+	 * Lưu trữ số lượng bài viết của người dùng này.
 	 *
 	 * @since 3.1.0
 	 * @var int
@@ -41,7 +41,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	private $user_posts_count;
 
 	/**
-	 * Holds the number of posts which are sticky.
+	 * Lưu trữ số lượng bài viết được ghim.
 	 *
 	 * @since 3.1.0
 	 * @var int
@@ -51,7 +51,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	private $is_trash;
 
 	/**
-	 * Current level for output.
+	 * Cấp độ hiện tại cho đầu ra.
 	 *
 	 * @since 4.3.0
 	 * @var int
@@ -59,16 +59,16 @@ class WP_Posts_List_Table extends WP_List_Table {
 	protected $current_level = 0;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @see WP_List_Table::__construct() for more information on default arguments.
+	 * @see WP_List_Table::__construct() để biết thêm thông tin về các tham số mặc định.
 	 *
-	 * @global WP_Post_Type $post_type_object Global post type object.
-	 * @global wpdb         $wpdb             WordPress database abstraction object.
+	 * @global WP_Post_Type $post_type_object Đối tượng loại bài viết toàn cục.
+	 * @global wpdb         $wpdb             Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param array $args An associative array of arguments.
+	 * @param array $args Mảng kết hợp các tham số.
 	 */
 	public function __construct( $args = array() ) {
 		global $post_type_object, $wpdb;
@@ -128,11 +128,11 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Sets whether the table layout should be hierarchical or not.
+	 * Thiết lập bố cục bảng theo phân cấp hay không.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param bool $display Whether the table layout should be hierarchical.
+	 * @param bool $display Bố cục bảng có theo phân cấp hay không.
 	 */
 	public function set_hierarchical_display( $display ) {
 		$this->hierarchical_display = $display;
@@ -146,9 +146,9 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global string   $mode             List table view mode.
+	 * @global string   $mode             Chế độ xem bảng danh sách.
 	 * @global array    $avail_post_stati
-	 * @global WP_Query $wp_query         WordPress Query object.
+	 * @global WP_Query $wp_query         Đối tượng truy vấn WordPress.
 	 * @global int      $per_page
 	 */
 	public function prepare_items() {
@@ -161,7 +161,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			$mode = get_user_setting( 'posts_list_mode', 'list' );
 		}
 
-		// Is going to call wp().
+		// Sẽ gọi hàm wp().
 		$avail_post_stati = wp_edit_posts_query();
 
 		$this->set_hierarchical_display(
@@ -191,7 +191,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			} else {
 				$total_items = array_sum( $post_counts );
 
-				// Subtract post types that are not included in the admin all list.
+				// Trừ đi các loại bài viết không nằm trong danh sách tất cả của admin.
 				foreach ( get_post_stati( array( 'show_in_admin_all_list' => false ) ) as $state ) {
 					$total_items -= $post_counts[ $state ];
 				}
@@ -226,11 +226,11 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Determines if the current view is the "All" view.
+	 * Xác định chế độ xem hiện tại có phải là "Tất cả" hay không.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @return bool Whether the current view is the "All" view.
+	 * @return bool Chế độ xem hiện tại có phải "Tất cả" hay không.
 	 */
 	protected function is_base_request() {
 		$vars = $_GET;
@@ -246,14 +246,14 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Creates a link to edit.php with params.
+	 * Tạo liên kết đến edit.php với các tham số.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string[] $args      Associative array of URL parameters for the link.
-	 * @param string   $link_text Link text.
-	 * @param string   $css_class Optional. Class attribute. Default empty string.
-	 * @return string The formatted link string.
+	 * @param string[] $args      Mảng kết hợp các tham số URL cho liên kết.
+	 * @param string   $link_text Nội dung liên kết.
+	 * @param string   $css_class Tùy chọn. Thuộc tính class. Mặc định chuỗi rỗng.
+	 * @return string Chuỗi liên kết đã được định dạng.
 	 */
 	protected function get_edit_link( $args, $link_text, $css_class = '' ) {
 		$url = add_query_arg( $args, 'edit.php' );
@@ -282,7 +282,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global array $locked_post_status This seems to be deprecated.
+	 * @global array $locked_post_status Có vẻ đã bị loại bỏ.
 	 * @global array $avail_post_stati
 	 * @return array
 	 */
@@ -304,7 +304,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 		$all_args        = array( 'post_type' => $post_type );
 		$mine            = '';
 
-		// Subtract post types that are not included in the admin all list.
+		// Trừ đi các loại bài viết không nằm trong danh sách tất cả của admin.
 		foreach ( get_post_stati( array( 'show_in_admin_all_list' => false ) ) as $state ) {
 			$total_posts -= $num_posts->$state;
 		}
@@ -418,7 +418,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 				),
 			);
 
-			// Sticky comes after Publish, or if not listed, after All.
+			// Ghim đứng sau Đã xuất bản, hoặc nếu không có, sau Tất cả.
 			$split        = 1 + array_search( ( isset( $status_links['publish'] ) ? 'publish' : 'all' ), array_keys( $status_links ), true );
 			$status_links = array_merge( array_slice( $status_links, 0, $split ), $sticky_link, array_slice( $status_links, $split ) );
 		}
@@ -453,24 +453,24 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Displays a categories drop-down for filtering on the Posts list table.
+	 * Hiển thị danh sách thả xuống chuyên mục để lọc trên bảng danh sách bài viết.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @global int $cat Currently selected category.
+	 * @global int $cat Chuyên mục đang được chọn.
 	 *
-	 * @param string $post_type Post type slug.
+	 * @param string $post_type Slug loại bài viết.
 	 */
 	protected function categories_dropdown( $post_type ) {
 		global $cat;
 
 		/**
-		 * Filters whether to remove the 'Categories' drop-down from the post list table.
+		 * Lọc xem có xóa danh sách thả xuống 'Chuyên mục' khỏi bảng danh sách bài viết hay không.
 		 *
 		 * @since 4.6.0
 		 *
-		 * @param bool   $disable   Whether to disable the categories drop-down. Default false.
-		 * @param string $post_type Post type slug.
+		 * @param bool   $disable   Có vô hiệu hóa danh sách thả xuống chuyên mục hay không. Mặc định false.
+		 * @param string $post_type Slug loại bài viết.
 		 */
 		if ( false !== apply_filters( 'disable_categories_dropdown', false, $post_type ) ) {
 			return;
@@ -493,33 +493,33 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Displays a formats drop-down for filtering items.
+	 * Hiển thị danh sách thả xuống định dạng để lọc các mục.
 	 *
 	 * @since 5.2.0
 	 * @access protected
 	 *
-	 * @param string $post_type Post type slug.
+	 * @param string $post_type Slug loại bài viết.
 	 */
 	protected function formats_dropdown( $post_type ) {
 		/**
-		 * Filters whether to remove the 'Formats' drop-down from the post list table.
+		 * Lọc xem có xóa danh sách thả xuống 'Định dạng' khỏi bảng danh sách bài viết hay không.
 		 *
 		 * @since 5.2.0
-		 * @since 5.5.0 The `$post_type` parameter was added.
+		 * @since 5.5.0 Thêm tham số `$post_type`.
 		 *
-		 * @param bool   $disable   Whether to disable the drop-down. Default false.
-		 * @param string $post_type Post type slug.
+		 * @param bool   $disable   Có vô hiệu hóa danh sách thả xuống hay không. Mặc định false.
+		 * @param string $post_type Slug loại bài viết.
 		 */
 		if ( apply_filters( 'disable_formats_dropdown', false, $post_type ) ) {
 			return;
 		}
 
-		// Return if the post type doesn't have post formats or if we're in the Trash.
+		// Trả về nếu loại bài viết không có định dạng bài hoặc đang ở Thùng rác.
 		if ( ! is_object_in_taxonomy( $post_type, 'post_format' ) || $this->is_trash ) {
 			return;
 		}
 
-		// Make sure the dropdown shows only formats with a post count greater than 0.
+		// Đảm bảo danh sách thả xuống chỉ hiển thị các định dạng có số bài viết lớn hơn 0.
 		$used_post_formats = get_terms(
 			array(
 				'taxonomy'   => 'post_format',
@@ -527,7 +527,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			)
 		);
 
-		// Return if there are no posts using formats.
+		// Trả về nếu không có bài viết nào sử dụng định dạng.
 		if ( ! $used_post_formats ) {
 			return;
 		}
@@ -544,7 +544,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			<option<?php selected( $displayed_post_format, '' ); ?> value=""><?php _e( 'All formats' ); ?></option>
 			<?php
 			foreach ( $used_post_formats as $used_post_format ) {
-				// Post format slug.
+				// Slug định dạng bài viết.
 				$slug = str_replace( 'post-format-', '', $used_post_format->slug );
 				// Pretty, translated version of the post format slug.
 				$pretty_name = get_post_format_string( $slug );
@@ -577,19 +577,19 @@ class WP_Posts_List_Table extends WP_List_Table {
 			$this->formats_dropdown( $this->screen->post_type );
 
 			/**
-			 * Fires before the Filter button on the Posts and Pages list tables.
+			 * Kích hoạt trước nút Lọc trên bảng danh sách Bài viết và Trang.
 			 *
-			 * The Filter button allows sorting by date and/or category on the
-			 * Posts list table, and sorting by date on the Pages list table.
+			 * Nút Lọc cho phép sắp xếp theo ngày và/hoặc chuyên mục trên
+			 * bảng danh sách Bài viết, và sắp xếp theo ngày trên bảng danh sách Trang.
 			 *
 			 * @since 2.1.0
-			 * @since 4.4.0 The `$post_type` parameter was added.
-			 * @since 4.6.0 The `$which` parameter was added.
+			 * @since 4.4.0 Thêm tham số `$post_type`.
+			 * @since 4.6.0 Thêm tham số `$which`.
 			 *
-			 * @param string $post_type The post type slug.
-			 * @param string $which     The location of the extra table nav markup:
-			 *                          'top' or 'bottom' for WP_Posts_List_Table,
-			 *                          'bar' for WP_Media_List_Table.
+			 * @param string $post_type Slug loại bài viết.
+			 * @param string $which     Vị trí của đánh dấu điều hướng bảng bổ sung:
+			 *                          'top' hoặc 'bottom' cho WP_Posts_List_Table,
+			 *                          'bar' cho WP_Media_List_Table.
 			 */
 			do_action( 'restrict_manage_posts', $this->screen->post_type, $which );
 
@@ -610,12 +610,12 @@ class WP_Posts_List_Table extends WP_List_Table {
 		</div>
 		<?php
 		/**
-		 * Fires immediately following the closing "actions" div in the tablenav for the posts
-		 * list table.
+		 * Kích hoạt ngay sau div "actions" đóng trong tablenav của bảng danh sách
+		 * bài viết.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string $which The location of the extra table nav markup: 'top' or 'bottom'.
+		 * @param string $which Vị trí của đánh dấu điều hướng bảng bổ sung: 'top' hoặc 'bottom'.
 		 */
 		do_action( 'manage_posts_extra_tablenav', $which );
 	}
@@ -632,7 +632,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global string $mode List table view mode.
+	 * @global string $mode Chế độ xem bảng danh sách.
 	 *
 	 * @return array
 	 */
@@ -651,7 +651,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @return string[] Array of column titles keyed by their column name.
+	 * @return string[] Mảng tiêu đề cột được đánh khóa theo tên cột.
 	 */
 	public function get_columns() {
 		$post_type = $this->screen->post_type;
@@ -671,20 +671,20 @@ class WP_Posts_List_Table extends WP_List_Table {
 		$taxonomies = wp_filter_object_list( $taxonomies, array( 'show_admin_column' => true ), 'and', 'name' );
 
 		/**
-		 * Filters the taxonomy columns in the Posts list table.
+		 * Lọc các cột phân loại trong bảng danh sách Bài viết.
 		 *
-		 * The dynamic portion of the hook name, `$post_type`, refers to the post
-		 * type slug.
+		 * Phần động của tên hook, `$post_type`, tham chiếu đến slug
+		 * loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `manage_taxonomies_for_post_columns`
 		 *  - `manage_taxonomies_for_page_columns`
 		 *
 		 * @since 3.5.0
 		 *
-		 * @param string[] $taxonomies Array of taxonomy names to show columns for.
-		 * @param string   $post_type  The post type.
+		 * @param string[] $taxonomies Mảng tên phân loại để hiển thị cột.
+		 * @param string   $post_type  Loại bài viết.
 		 */
 		$taxonomies = apply_filters( "manage_taxonomies_for_{$post_type}_columns", $taxonomies, $post_type );
 		$taxonomies = array_filter( $taxonomies, 'taxonomy_exists' );
@@ -719,39 +719,39 @@ class WP_Posts_List_Table extends WP_List_Table {
 		if ( 'page' === $post_type ) {
 
 			/**
-			 * Filters the columns displayed in the Pages list table.
+			 * Lọc các cột hiển thị trong bảng danh sách Trang.
 			 *
 			 * @since 2.5.0
 			 *
-			 * @param string[] $posts_columns An associative array of column headings.
+			 * @param string[] $posts_columns Mảng liên kết chứa tiêu đề cột.
 			 */
 			$posts_columns = apply_filters( 'manage_pages_columns', $posts_columns );
 		} else {
 
 			/**
-			 * Filters the columns displayed in the Posts list table.
+			 * Lọc các cột hiển thị trong bảng danh sách Bài viết.
 			 *
 			 * @since 1.5.0
 			 *
-			 * @param string[] $posts_columns An associative array of column headings.
-			 * @param string   $post_type     The post type slug.
+			 * @param string[] $posts_columns Mảng liên kết chứa tiêu đề cột.
+			 * @param string   $post_type     Slug loại bài viết.
 			 */
 			$posts_columns = apply_filters( 'manage_posts_columns', $posts_columns, $post_type );
 		}
 
 		/**
-		 * Filters the columns displayed in the Posts list table for a specific post type.
+		 * Lọc các cột hiển thị trong bảng danh sách Bài viết cho một loại bài viết cụ thể.
 		 *
-		 * The dynamic portion of the hook name, `$post_type`, refers to the post type slug.
+		 * Phần động của tên hook, `$post_type`, tham chiếu đến slug loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `manage_post_posts_columns`
 		 *  - `manage_page_posts_columns`
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string[] $posts_columns An associative array of column headings.
+		 * @param string[] $posts_columns Mảng liên kết chứa tiêu đề cột.
 		 */
 		return apply_filters( "manage_{$post_type}_posts_columns", $posts_columns );
 	}
@@ -784,17 +784,17 @@ class WP_Posts_List_Table extends WP_List_Table {
 				'date'     => array( 'date', true, __( 'Date' ), __( 'Table ordered by Date.' ), 'desc' ),
 			);
 		}
-		// Custom Post Types: there's a filter for that, see get_column_info().
+		// Loại bài viết tùy chỉnh: có bộ lọc cho việc đó, xem get_column_info().
 
 		return $sortables;
 	}
 
 	/**
-	 * Generates the list table rows.
+	 * Tạo các hàng của bảng danh sách.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @global WP_Query $wp_query WordPress Query object.
+	 * @global WP_Query $wp_query Đối tượng truy vấn WordPress.
 	 * @global int      $per_page
 	 *
 	 * @param array $posts
@@ -823,7 +823,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	private function _display_rows( $posts, $level = 0 ) {
 		$post_type = $this->screen->post_type;
 
-		// Create array of post IDs.
+		// Tạo mảng các ID bài viết.
 		$post_ids = array();
 
 		foreach ( $posts as $a_post ) {
@@ -841,8 +841,8 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global wpdb    $wpdb WordPress database abstraction object.
-	 * @global WP_Post $post Global post object.
+	 * @global wpdb    $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
+	 * @global WP_Post $post Đối tượng bài viết toàn cục.
 	 * @param array $pages
 	 * @param int   $pagenum
 	 * @param int   $per_page
@@ -861,18 +861,18 @@ class WP_Posts_List_Table extends WP_List_Table {
 		}
 
 		/*
-		 * Arrange pages into two parts: top level pages and children_pages.
-		 * children_pages is two dimensional array. Example:
-		 * children_pages[10][] contains all sub-pages whose parent is 10.
-		 * It only takes O( N ) to arrange this and it takes O( 1 ) for subsequent lookup operations
-		 * If searching, ignore hierarchy and treat everything as top level
+		 * Sắp xếp các trang thành hai phần: trang cấp cao nhất và children_pages.
+		 * children_pages là mảng hai chiều. Ví dụ:
+		 * children_pages[10][] chứa tất cả trang con có cha là 10.
+		 * Chỉ tốn O( N ) để sắp xếp và O( 1 ) cho các thao tác tra cứu tiếp theo.
+		 * Nếu đang tìm kiếm, bỏ qua phân cấp và xem mọi thứ như cấp cao nhất.
 		 */
 		if ( empty( $_REQUEST['s'] ) ) {
 			$top_level_pages = array();
 			$children_pages  = array();
 
 			foreach ( $pages as $page ) {
-				// Catch and repair bad pages.
+				// Phát hiện và sửa các trang lỗi.
 				if ( $page->post_parent === $page->ID ) {
 					$page->post_parent = 0;
 					$wpdb->update( $wpdb->posts, array( 'post_parent' => 0 ), array( 'ID' => $page->ID ) );
@@ -910,7 +910,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 			}
 		}
 
-		// If it is the last pagenum and there are orphaned pages, display them with paging as well.
+		// Nếu đây là trang cuối cùng và có các trang mồ côi, hiển thị chúng với phân trang luôn.
 		if ( isset( $children_pages ) && $count < $end ) {
 			foreach ( $children_pages as $orphans ) {
 				foreach ( $orphans as $op ) {
@@ -943,11 +943,11 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Displays the nested hierarchy of sub-pages together with paging
-	 * support, based on a top level page ID.
+	 * Hiển thị cấu trúc phân cấp lồng nhau của các trang con cùng với hỗ trợ
+	 * phân trang, dựa trên ID trang cấp cao nhất.
 	 *
-	 * @since 3.1.0 (Standalone function exists since 2.6.0)
-	 * @since 4.2.0 Added the `$to_display` parameter.
+	 * @since 3.1.0 (Hàm độc lập tồn tại từ 2.6.0)
+	 * @since 4.2.0 Thêm tham số `$to_display`.
 	 *
 	 * @param array $children_pages
 	 * @param int   $count
@@ -955,7 +955,7 @@ class WP_Posts_List_Table extends WP_List_Table {
 	 * @param int   $level
 	 * @param int   $pagenum
 	 * @param int   $per_page
-	 * @param array $to_display List of pages to be displayed. Passed by reference.
+	 * @param array $to_display Danh sách các trang cần hiển thị. Truyền theo tham chiếu.
 	 */
 	private function _page_rows( &$children_pages, &$count, $parent_page, $level, $pagenum, $per_page, &$to_display ) {
 		if ( ! isset( $children_pages[ $parent_page ] ) ) {
@@ -970,13 +970,13 @@ class WP_Posts_List_Table extends WP_List_Table {
 				break;
 			}
 
-			// If the page starts in a subtree, print the parents.
+			// Nếu trang bắt đầu trong cây con, in các bài viết cha.
 			if ( $count === $start && $page->post_parent > 0 ) {
 				$my_parents = array();
 				$my_parent  = $page->post_parent;
 
 				while ( $my_parent ) {
-					// Get the ID from the list or the attribute if my_parent is an object.
+					// Lấy ID từ danh sách hoặc thuộc tính nếu my_parent là một đối tượng.
 					$parent_id = $my_parent;
 
 					if ( is_object( $my_parent ) ) {
@@ -1010,32 +1010,32 @@ class WP_Posts_List_Table extends WP_List_Table {
 			$this->_page_rows( $children_pages, $count, $page->ID, $level + 1, $pagenum, $per_page, $to_display );
 		}
 
-		unset( $children_pages[ $parent_page ] ); // Required in order to keep track of orphans.
+		unset( $children_pages[ $parent_page ] ); // Cần thiết để theo dõi các trang mồ côi.
 	}
 
 	/**
-	 * Handles the checkbox column output.
+	 * Xử lý đầu ra cột hộp kiểm.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$post` to `$item` to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$post` thành `$item` để khớp với lớp cha cho hỗ trợ tham số có tên PHP 8.
 	 *
-	 * @param WP_Post $item The current WP_Post object.
+	 * @param WP_Post $item Đối tượng WP_Post hiện tại.
 	 */
 	public function column_cb( $item ) {
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$post = $item;
 
 		$show = current_user_can( 'edit_post', $post->ID );
 
 		/**
-		 * Filters whether to show the bulk edit checkbox for a post in its list table.
+		 * Lọc xem có hiển thị hộp kiểm chỉnh sửa hàng loạt cho bài viết trong bảng danh sách hay không.
 		 *
-		 * By default the checkbox is only shown if the current user can edit the post.
+		 * Theo mặc định, hộp kiểm chỉ hiển thị nếu người dùng hiện tại có thể chỉnh sửa bài viết.
 		 *
 		 * @since 5.7.0
 		 *
-		 * @param bool    $show Whether to show the checkbox.
-		 * @param WP_Post $post The current WP_Post object.
+		 * @param bool    $show Có hiển thị hộp kiểm hay không.
+		 * @param WP_Post $post Đối tượng WP_Post hiện tại.
 		 */
 		if ( apply_filters( 'wp_list_table_show_post_checkbox', $show, $post ) ) :
 			?>
@@ -1080,20 +1080,20 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the title column output.
+	 * Xử lý đầu ra cột tiêu đề.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @global string $mode List table view mode.
+	 * @global string $mode Chế độ xem bảng danh sách.
 	 *
-	 * @param WP_Post $post The current WP_Post object.
+	 * @param WP_Post $post Đối tượng WP_Post hiện tại.
 	 */
 	public function column_title( $post ) {
 		global $mode;
 
 		if ( $this->hierarchical_display ) {
 			if ( 0 === $this->current_level && (int) $post->post_parent > 0 ) {
-				// Sent level 0 by accident, by default, or because we don't know the actual level.
+				// Gửi level 0 do nhầm, mặc định, hoặc vì không biết level thực tế.
 				$find_main_page = (int) $post->post_parent;
 
 				while ( $find_main_page > 0 ) {
@@ -1182,13 +1182,13 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the post date column output.
+	 * Xử lý đầu ra cột ngày bài viết.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @global string $mode List table view mode.
+	 * @global string $mode Chế độ xem bảng danh sách.
 	 *
-	 * @param WP_Post $post The current WP_Post object.
+	 * @param WP_Post $post Đối tượng WP_Post hiện tại.
 	 */
 	public function column_date( $post ) {
 		global $mode;
@@ -1223,14 +1223,14 @@ class WP_Posts_List_Table extends WP_List_Table {
 		}
 
 		/**
-		 * Filters the status text of the post.
+		 * Lọc văn bản trạng thái của bài viết.
 		 *
 		 * @since 4.8.0
 		 *
-		 * @param string  $status      The status text.
-		 * @param WP_Post $post        Post object.
-		 * @param string  $column_name The column name.
-		 * @param string  $mode        The list display mode ('excerpt' or 'list').
+		 * @param string  $status      Văn bản trạng thái.
+		 * @param WP_Post $post        Đối tượng bài viết.
+		 * @param string  $column_name Tên cột.
+		 * @param string  $mode        Chế độ hiển thị danh sách ('excerpt' hoặc 'list').
 		 */
 		$status = apply_filters( 'post_date_column_status', $status, $post, 'date', $mode );
 
@@ -1239,27 +1239,27 @@ class WP_Posts_List_Table extends WP_List_Table {
 		}
 
 		/**
-		 * Filters the published, scheduled, or unpublished time of the post.
+		 * Lọc thời gian đã xuất bản, đã lên lịch, hoặc chưa xuất bản của bài viết.
 		 *
 		 * @since 2.5.1
-		 * @since 5.5.0 Removed the difference between 'excerpt' and 'list' modes.
-		 *              The published time and date are both displayed now,
-		 *              which is equivalent to the previous 'excerpt' mode.
+		 * @since 5.5.0 Loại bỏ sự khác biệt giữa chế độ 'excerpt' và 'list'.
+		 *              Thời gian và ngày xuất bản đều được hiển thị,
+		 *              tương đương với chế độ 'excerpt' trước đó.
 		 *
-		 * @param string  $t_time      The published time.
-		 * @param WP_Post $post        Post object.
-		 * @param string  $column_name The column name.
-		 * @param string  $mode        The list display mode ('excerpt' or 'list').
+		 * @param string  $t_time      Thời gian đã xuất bản.
+		 * @param WP_Post $post        Đối tượng bài viết.
+		 * @param string  $column_name Tên cột.
+		 * @param string  $mode        Chế độ hiển thị danh sách ('excerpt' hoặc 'list').
 		 */
 		echo apply_filters( 'post_date_column_time', $t_time, $post, 'date', $mode );
 	}
 
 	/**
-	 * Handles the comments column output.
+	 * Xử lý đầu ra cột bình luận.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param WP_Post $post The current WP_Post object.
+	 * @param WP_Post $post Đối tượng WP_Post hiện tại.
 	 */
 	public function column_comments( $post ) {
 		?>
@@ -1274,12 +1274,12 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the post author column output.
+	 * Xử lý đầu ra cột tác giả bài viết.
 	 *
 	 * @since 4.3.0
-	 * @since 6.8.0 Added fallback text when author's name is unknown.
+	 * @since 6.8.0 Thêm văn bản dự phòng khi tên tác giả không xác định.
 	 *
-	 * @param WP_Post $post The current WP_Post object.
+	 * @param WP_Post $post Đối tượng WP_Post hiện tại.
 	 */
 	public function column_author( $post ) {
 		$author = get_the_author();
@@ -1296,16 +1296,16 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the default column output.
+	 * Xử lý đầu ra cột mặc định.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$post` to `$item` to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$post` thành `$item` để khớp với lớp cha cho hỗ trợ tham số có tên PHP 8.
 	 *
-	 * @param WP_Post $item        The current WP_Post object.
-	 * @param string  $column_name The current column name.
+	 * @param WP_Post $item        Đối tượng WP_Post hiện tại.
+	 * @param string  $column_name Tên cột hiện tại.
 	 */
 	public function column_default( $item, $column_name ) {
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$post = $item;
 
 		if ( 'categories' === $column_name ) {
@@ -1345,13 +1345,13 @@ class WP_Posts_List_Table extends WP_List_Table {
 				}
 
 				/**
-				 * Filters the links in `$taxonomy` column of edit.php.
+				 * Lọc các liên kết trong cột `$taxonomy` của edit.php.
 				 *
 				 * @since 5.2.0
 				 *
-				 * @param string[]  $term_links Array of term editing links.
-				 * @param string    $taxonomy   Taxonomy name.
-				 * @param WP_Term[] $terms      Array of term objects appearing in the post row.
+				 * @param string[]  $term_links Mảng các liên kết chỉnh sửa term.
+				 * @param string    $taxonomy   Tên phân loại.
+				 * @param WP_Term[] $terms      Mảng các đối tượng term xuất hiện trong hàng bài viết.
 				 */
 				$term_links = apply_filters( 'post_column_taxonomy_links', $term_links, $taxonomy, $terms );
 
@@ -1365,53 +1365,53 @@ class WP_Posts_List_Table extends WP_List_Table {
 		if ( is_post_type_hierarchical( $post->post_type ) ) {
 
 			/**
-			 * Fires in each custom column on the Posts list table.
+			 * Kích hoạt trong mỗi cột tùy chỉnh trên bảng danh sách Bài viết.
 			 *
-			 * This hook only fires if the current post type is hierarchical,
-			 * such as pages.
+			 * Hook này chỉ kích hoạt nếu loại bài viết hiện tại là phân cấp,
+			 * chẳng hạn như trang.
 			 *
 			 * @since 2.5.0
 			 *
-			 * @param string $column_name The name of the column to display.
-			 * @param int    $post_id     The current post ID.
+			 * @param string $column_name Tên cột cần hiển thị.
+			 * @param int    $post_id     ID bài viết hiện tại.
 			 */
 			do_action( 'manage_pages_custom_column', $column_name, $post->ID );
 		} else {
 
 			/**
-			 * Fires in each custom column in the Posts list table.
+			 * Kích hoạt trong mỗi cột tùy chỉnh trong bảng danh sách Bài viết.
 			 *
-			 * This hook only fires if the current post type is non-hierarchical,
-			 * such as posts.
+			 * Hook này chỉ kích hoạt nếu loại bài viết hiện tại không phân cấp,
+			 * chẳng hạn như bài viết.
 			 *
 			 * @since 1.5.0
 			 *
-			 * @param string $column_name The name of the column to display.
-			 * @param int    $post_id     The current post ID.
+			 * @param string $column_name Tên cột cần hiển thị.
+			 * @param int    $post_id     ID bài viết hiện tại.
 			 */
 			do_action( 'manage_posts_custom_column', $column_name, $post->ID );
 		}
 
 		/**
-		 * Fires for each custom column of a specific post type in the Posts list table.
+		 * Kích hoạt cho mỗi cột tùy chỉnh của một loại bài viết cụ thể trong bảng danh sách Bài viết.
 		 *
-		 * The dynamic portion of the hook name, `$post->post_type`, refers to the post type.
+		 * Phần động của tên hook, `$post->post_type`, tham chiếu đến loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `manage_post_posts_custom_column`
 		 *  - `manage_page_posts_custom_column`
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string $column_name The name of the column to display.
-		 * @param int    $post_id     The current post ID.
+		 * @param string $column_name Tên cột cần hiển thị.
+		 * @param int    $post_id     ID bài viết hiện tại.
 		 */
 		do_action( "manage_{$post->post_type}_posts_custom_column", $column_name, $post->ID );
 	}
 
 	/**
-	 * @global WP_Post $post Global post object.
+	 * @global WP_Post $post Đối tượng bài viết toàn cục.
 	 *
 	 * @param int|WP_Post $post
 	 * @param int         $level
@@ -1448,34 +1448,34 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Gets the name of the default primary column.
+	 * Lấy tên cột chính mặc định.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @return string Name of the default primary column, in this case, 'title'.
+	 * @return string Tên cột chính mặc định, trong trường hợp này là 'title'.
 	 */
 	protected function get_default_primary_column_name() {
 		return 'title';
 	}
 
 	/**
-	 * Generates and displays row action links.
+	 * Tạo và hiển thị các liên kết hành động trên hàng.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$post` to `$item` to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$post` thành `$item` để khớp với lớp cha cho hỗ trợ tham số có tên PHP 8.
 	 *
-	 * @param WP_Post $item        Post being acted upon.
-	 * @param string  $column_name Current column name.
-	 * @param string  $primary     Primary column name.
-	 * @return string Row actions output for posts, or an empty string
-	 *                if the current column is not the primary column.
+	 * @param WP_Post $item        Bài viết đang được thao tác.
+	 * @param string  $column_name Tên cột hiện tại.
+	 * @param string  $primary     Tên cột chính.
+	 * @return string Đầu ra hành động hàng cho bài viết, hoặc chuỗi rỗng
+	 *                nếu cột hiện tại không phải cột chính.
 	 */
 	protected function handle_row_actions( $item, $column_name, $primary ) {
 		if ( $primary !== $column_name ) {
 			return '';
 		}
 
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$post = $item;
 
 		$post_type_object = get_post_type_object( $post->post_type );
@@ -1493,12 +1493,12 @@ class WP_Posts_List_Table extends WP_List_Table {
 			);
 
 			/**
-			 * Filters whether Quick Edit should be enabled for the given post type.
+			 * Lọc xem Chỉnh sửa nhanh có nên được bật cho loại bài viết này hay không.
 			 *
 			 * @since 6.4.0
 			 *
-			 * @param bool   $enable    Whether to enable the Quick Edit functionality. Default true.
-			 * @param string $post_type Post type name.
+			 * @param bool   $enable    Có bật chức năng Chỉnh sửa nhanh hay không. Mặc định true.
+			 * @param string $post_type Tên loại bài viết.
 			 */
 			$quick_edit_enabled = apply_filters( 'quick_edit_enabled_for_post_type', true, $post->post_type );
 
@@ -1578,31 +1578,31 @@ class WP_Posts_List_Table extends WP_List_Table {
 		if ( is_post_type_hierarchical( $post->post_type ) ) {
 
 			/**
-			 * Filters the array of row action links on the Pages list table.
+			 * Lọc mảng liên kết hành động hàng trên bảng danh sách Trang.
 			 *
-			 * The filter is evaluated only for hierarchical post types.
+			 * Bộ lọc chỉ được đánh giá cho loại bài viết phân cấp.
 			 *
 			 * @since 2.8.0
 			 *
-			 * @param string[] $actions An array of row action links. Defaults are
-			 *                          'Edit', 'Quick Edit', 'Restore', 'Trash',
-			 *                          'Delete Permanently', 'Preview', and 'View'.
-			 * @param WP_Post  $post    The post object.
+			 * @param string[] $actions Mảng liên kết hành động hàng. Mặc định là
+			 *                          'Sửa', 'Sửa nhanh', 'Khôi phục', 'Thùng rác',
+			 *                          'Xóa vĩnh viễn', 'Xem trước', và 'Xem'.
+			 * @param WP_Post  $post    Đối tượng bài viết.
 			 */
 			$actions = apply_filters( 'page_row_actions', $actions, $post );
 		} else {
 
 			/**
-			 * Filters the array of row action links on the Posts list table.
+			 * Lọc mảng liên kết hành động hàng trên bảng danh sách Bài viết.
 			 *
-			 * The filter is evaluated only for non-hierarchical post types.
+			 * Bộ lọc chỉ được đánh giá cho loại bài viết không phân cấp.
 			 *
 			 * @since 2.8.0
 			 *
-			 * @param string[] $actions An array of row action links. Defaults are
-			 *                          'Edit', 'Quick Edit', 'Restore', 'Trash',
-			 *                          'Delete Permanently', 'Preview', and 'View'.
-			 * @param WP_Post  $post    The post object.
+			 * @param string[] $actions Mảng liên kết hành động hàng. Mặc định là
+			 *                          'Sửa', 'Sửa nhanh', 'Khôi phục', 'Thùng rác',
+			 *                          'Xóa vĩnh viễn', 'Xem trước', và 'Xem'.
+			 * @param WP_Post  $post    Đối tượng bài viết.
 			 */
 			$actions = apply_filters( 'post_row_actions', $actions, $post );
 		}
@@ -1611,11 +1611,11 @@ class WP_Posts_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Outputs the hidden row displayed when inline editing
+	 * Xuất hàng ẩn hiển thị khi chỉnh sửa nội tuyến.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @global string $mode List table view mode.
+	 * @global string $mode Chế độ xem bảng danh sách.
 	 */
 	public function inline_edit() {
 		global $mode;

@@ -1,12 +1,12 @@
 <?php
 /**
- * Block template loader functions.
+ * Các hàm tải block template.
  *
  * @package WordPress
  */
 
 /**
- * Adds necessary hooks to resolve '_wp-find-template' requests.
+ * Thêm các hook cần thiết để xử lý yêu cầu '_wp-find-template'.
  *
  * @access private
  * @since 5.9.0
@@ -18,12 +18,12 @@ function _add_template_loader_filters() {
 }
 
 /**
- * Renders a warning screen for empty block templates.
+ * Hiển thị màn hình cảnh báo cho các block template rỗng.
  *
  * @since 6.8.0
  *
- * @param WP_Block_Template $block_template The block template object.
- * @return string The warning screen HTML.
+ * @param WP_Block_Template $block_template Đối tượng block template.
+ * @return string HTML của màn hình cảnh báo.
  */
 function wp_render_empty_block_template_warning( $block_template ) {
 	wp_enqueue_style( 'wp-empty-template-alert' );
@@ -44,20 +44,20 @@ function wp_render_empty_block_template_warning( $block_template ) {
 }
 
 /**
- * Finds a block template with equal or higher specificity than a given PHP template file.
+ * Tìm block template có độ ưu tiên bằng hoặc cao hơn file template PHP cho trước.
  *
- * Internally, this communicates the block content that needs to be used by the template canvas through a global variable.
+ * Bên trong, hàm này truyền nội dung block cần được sử dụng bởi template canvas thông qua biến toàn cục.
  *
  * @since 5.8.0
- * @since 6.3.0 Added `$_wp_current_template_id` global for editing of current template directly from the admin bar.
+ * @since 6.3.0 Thêm biến toàn cục `$_wp_current_template_id` để chỉnh sửa template hiện tại trực tiếp từ admin bar.
  *
  * @global string $_wp_current_template_content
  * @global string $_wp_current_template_id
  *
- * @param string   $template  Path to the template. See locate_template().
- * @param string   $type      Sanitized filename without extension.
- * @param string[] $templates A list of template candidates, in descending order of priority.
- * @return string The path to the Site Editor template canvas file, or the fallback PHP template.
+ * @param string   $template  Đường dẫn đến template. Xem locate_template().
+ * @param string   $type      Tên file đã được sanitize không có phần mở rộng.
+ * @param string[] $templates Danh sách các template ứng viên, theo thứ tự ưu tiên giảm dần.
+ * @return string Đường dẫn đến file canvas Site Editor template, hoặc template PHP dự phòng.
  */
 function locate_block_template( $template, $type, array $templates ) {
 	global $_wp_current_template_content, $_wp_current_template_id;
@@ -68,15 +68,15 @@ function locate_block_template( $template, $type, array $templates ) {
 
 	if ( $template ) {
 		/*
-		 * locate_template() has found a PHP template at the path specified by $template.
-		 * That means that we have a fallback candidate if we cannot find a block template
-		 * with higher specificity.
+		 * locate_template() đã tìm thấy template PHP tại đường dẫn được chỉ định bởi $template.
+		 * Điều đó có nghĩa là chúng ta có ứng viên dự phòng nếu không thể tìm thấy block template
+		 * với độ ưu tiên cao hơn.
 		 *
-		 * Thus, before looking for matching block themes, we shorten our list of candidate
-		 * templates accordingly.
+		 * Do đó, trước khi tìm kiếm block themes phù hợp, chúng ta rút ngắn danh sách
+		 * các template ứng viên cho phù hợp.
 		 */
 
-		// Locate the index of $template (without the theme directory path) in $templates.
+		// Xác định vị trí của $template (không có đường dẫn thư mục theme) trong $templates.
 		$relative_template_path = str_replace(
 			array( get_stylesheet_directory() . '/', get_template_directory() . '/' ),
 			'',
@@ -84,8 +84,8 @@ function locate_block_template( $template, $type, array $templates ) {
 		);
 		$index                  = array_search( $relative_template_path, $templates, true );
 
-		// If the template hierarchy algorithm has successfully located a PHP template file,
-		// we will only consider block templates with higher or equal specificity.
+		// Nếu thuật toán phân cấp template đã xác định thành công file template PHP,
+		// chúng ta chỉ xem xét block templates có độ ưu tiên cao hơn hoặc bằng.
 		$templates = array_slice( $templates, 0, $index + 1 );
 	}
 
@@ -99,7 +99,7 @@ function locate_block_template( $template, $type, array $templates ) {
 				$_wp_current_template_content = wp_render_empty_block_template_warning( $block_template );
 			} else {
 				if ( $block_template->has_theme_file ) {
-					// Show contents from theme template if user is not logged in.
+					// Hiển thị nội dung từ template theme nếu người dùng chưa đăng nhập.
 					$theme_template               = _get_block_template_file( 'wp_template', $block_template->slug );
 					$_wp_current_template_content = file_get_contents( $theme_template['path'] );
 				} else {
@@ -122,33 +122,33 @@ function locate_block_template( $template, $type, array $templates ) {
 				wp_send_json_error( array( 'message' => __( 'No matching template found.' ) ) );
 			}
 		} else {
-			return ''; // So that the template loader keeps looking for templates.
+			return ''; // Để trình tải template tiếp tục tìm kiếm templates.
 		}
 	}
 
-	// Add hooks for template canvas.
-	// Add viewport meta tag.
+	// Thêm hooks cho template canvas.
+	// Thêm thẻ meta viewport.
 	add_action( 'wp_head', '_block_template_viewport_meta_tag', 0 );
 
-	// Render title tag with content, regardless of whether theme has title-tag support.
-	remove_action( 'wp_head', '_wp_render_title_tag', 1 );    // Remove conditional title tag rendering...
-	add_action( 'wp_head', '_block_template_render_title_tag', 1 ); // ...and make it unconditional.
+	// Render thẻ title với nội dung, bất kể theme có hỗ trợ title-tag hay không.
+	remove_action( 'wp_head', '_wp_render_title_tag', 1 );    // Xóa render thẻ title có điều kiện...
+	add_action( 'wp_head', '_block_template_render_title_tag', 1 ); // ...và làm cho nó không điều kiện.
 
-	// This file will be included instead of the theme's template file.
+	// File này sẽ được include thay vì file template của theme.
 	return ABSPATH . WPINC . '/template-canvas.php';
 }
 
 /**
- * Returns the correct 'wp_template' to render for the request template type.
+ * Trả về 'wp_template' chính xác để render cho loại template yêu cầu.
  *
  * @access private
  * @since 5.8.0
- * @since 5.9.0 Added the `$fallback_template` parameter.
+ * @since 5.9.0 Thêm tham số `$fallback_template`.
  *
- * @param string   $template_type      The current template type.
- * @param string[] $template_hierarchy The current template hierarchy, ordered by priority.
- * @param string   $fallback_template  A PHP fallback template to use if no matching block template is found.
- * @return WP_Block_Template|null template A template object, or null if none could be found.
+ * @param string   $template_type      Loại template hiện tại.
+ * @param string[] $template_hierarchy Phân cấp template hiện tại, sắp xếp theo thứ tự ưu tiên.
+ * @param string   $fallback_template  Template PHP dự phòng để sử dụng nếu không tìm thấy block template phù hợp.
+ * @return WP_Block_Template|null Đối tượng template, hoặc null nếu không tìm thấy.
  */
 function resolve_block_template( $template_type, $template_hierarchy, $fallback_template ) {
 	if ( ! $template_type ) {
@@ -164,14 +164,14 @@ function resolve_block_template( $template_type, $template_hierarchy, $fallback_
 		$template_hierarchy
 	);
 
-	// Find all potential templates 'wp_template' post matching the hierarchy.
+	// Tìm tất cả các 'wp_template' post tiềm năng khớp với phân cấp.
 	$query     = array(
 		'slug__in' => $slugs,
 	);
 	$templates = get_block_templates( $query );
 
-	// Order these templates per slug priority.
-	// Build map of template slugs to their priority in the current hierarchy.
+	// Sắp xếp các templates theo thứ tự ưu tiên slug.
+	// Xây dựng bản đồ slug template theo thứ tự ưu tiên trong phân cấp hiện tại.
 	$slug_priorities = array_flip( $slugs );
 
 	usort(
@@ -184,35 +184,35 @@ function resolve_block_template( $template_type, $template_hierarchy, $fallback_
 	$theme_base_path        = get_stylesheet_directory() . DIRECTORY_SEPARATOR;
 	$parent_theme_base_path = get_template_directory() . DIRECTORY_SEPARATOR;
 
-	// Is the active theme a child theme, and is the PHP fallback template part of it?
+	// Theme đang hoạt động có phải là child theme không, và template PHP dự phòng có thuộc về nó không?
 	if (
 		str_starts_with( $fallback_template, $theme_base_path ) &&
 		! str_contains( $fallback_template, $parent_theme_base_path )
 	) {
 		$fallback_template_slug = substr(
 			$fallback_template,
-			// Starting position of slug.
+			// Vị trí bắt đầu của slug.
 			strpos( $fallback_template, $theme_base_path ) + strlen( $theme_base_path ),
-			// Remove '.php' suffix.
+			// Xóa hậu tố '.php'.
 			-4
 		);
 
-		// Is our candidate block template's slug identical to our PHP fallback template's?
+		// Slug của block template ứng viên có giống với slug template PHP dự phòng không?
 		if (
 			count( $templates ) &&
 			$fallback_template_slug === $templates[0]->slug &&
 			'theme' === $templates[0]->source
 		) {
-			// Unfortunately, we cannot trust $templates[0]->theme, since it will always
-			// be set to the active theme's slug by _build_block_template_result_from_file(),
-			// even if the block template is really coming from the active theme's parent.
-			// (The reason for this is that we want it to be associated with the active theme
-			// -- not its parent -- once we edit it and store it to the DB as a wp_template CPT.)
-			// Instead, we use _get_block_template_file() to locate the block template file.
+			// Rất tiếc, chúng ta không thể tin tưởng $templates[0]->theme, vì nó luôn
+			// được đặt thành slug của theme đang hoạt động bởi _build_block_template_result_from_file(),
+			// ngay cả khi block template thực sự đến từ theme cha của theme đang hoạt động.
+			// (Lý do là chúng ta muốn nó được liên kết với theme đang hoạt động
+			// -- không phải theme cha -- khi chúng ta chỉnh sửa và lưu vào DB dưới dạng wp_template CPT.)
+			// Thay vào đó, chúng ta sử dụng _get_block_template_file() để xác định vị trí file block template.
 			$template_file = _get_block_template_file( 'wp_template', $fallback_template_slug );
 			if ( $template_file && get_template() === $template_file['theme'] ) {
-				// The block template is part of the parent theme, so we
-				// have to give precedence to the child theme's PHP template.
+				// Block template thuộc về theme cha, vì vậy chúng ta
+				// phải ưu tiên template PHP của child theme.
 				array_shift( $templates );
 			}
 		}
@@ -222,7 +222,7 @@ function resolve_block_template( $template_type, $template_hierarchy, $fallback_
 }
 
 /**
- * Displays title tag with content, regardless of whether theme has title-tag support.
+ * Hiển thị thẻ title với nội dung, bất kể theme có hỗ trợ title-tag hay không.
  *
  * @access private
  * @since 5.8.0
@@ -234,17 +234,17 @@ function _block_template_render_title_tag() {
 }
 
 /**
- * Returns the markup for the current template.
+ * Trả về markup cho template hiện tại.
  *
  * @access private
  * @since 5.8.0
  *
  * @global string   $_wp_current_template_id
  * @global string   $_wp_current_template_content
- * @global WP_Embed $wp_embed                     WordPress Embed object.
- * @global WP_Query $wp_query                     WordPress Query object.
+ * @global WP_Embed $wp_embed                     Đối tượng WordPress Embed.
+ * @global WP_Query $wp_query                     Đối tượng WordPress Query.
  *
- * @return string Block template markup.
+ * @return string Markup block template.
  */
 function get_the_block_template_html() {
 	global $_wp_current_template_id, $_wp_current_template_content, $wp_embed, $wp_query;
@@ -262,22 +262,21 @@ function get_the_block_template_html() {
 	$content = do_shortcode( $content );
 
 	/*
-	 * Most block themes omit the `core/query` and `core/post-template` blocks in their singular content templates.
-	 * While this technically still works since singular content templates are always for only one post, it results in
-	 * the main query loop never being entered which causes bugs in core and the plugin ecosystem.
+	 * Hầu hết block themes bỏ qua các block `core/query` và `core/post-template` trong template nội dung singular.
+	 * Mặc dù về mặt kỹ thuật vẫn hoạt động vì template nội dung singular luôn chỉ cho một bài viết, nhưng nó dẫn đến
+	 * vòng lặp truy vấn chính không bao giờ được vào, gây ra lỗi trong lõi và hệ sinh thái plugin.
 	 *
-	 * The workaround below ensures that the loop is started even for those singular templates. The while loop will by
-	 * definition only go through a single iteration, i.e. `do_blocks()` is only called once. Additional safeguard
-	 * checks are included to ensure the main query loop has not been tampered with and really only encompasses a
-	 * single post.
+	 * Giải pháp tạm thời bên dưới đảm bảo vòng lặp được bắt đầu ngay cả với những template singular đó. Vòng lặp while
+	 * theo định nghĩa chỉ đi qua một lần lặp, tức là `do_blocks()` chỉ được gọi một lần. Các kiểm tra bảo vệ bổ sung
+	 * được bao gồm để đảm bảo vòng lặp truy vấn chính không bị can thiệp và thực sự chỉ bao gồm một bài viết duy nhất.
 	 *
-	 * Even if the block template contained a `core/query` and `core/post-template` block referencing the main query
-	 * loop, it would not cause errors since it would use a cloned instance and go through the same loop of a single
-	 * post, within the actual main query loop.
+	 * Ngay cả khi block template chứa block `core/query` và `core/post-template` tham chiếu đến vòng lặp truy vấn chính,
+	 * nó sẽ không gây ra lỗi vì nó sẽ sử dụng một instance nhân bản và đi qua cùng vòng lặp của một bài viết duy nhất,
+	 * bên trong vòng lặp truy vấn chính thực tế.
 	 *
-	 * This special logic should be skipped if the current template does not come from the current theme, in which case
-	 * it has been injected by a plugin by hijacking the block template loader mechanism. In that case, entirely custom
-	 * logic may be applied which is unpredictable and therefore safer to omit this special handling on.
+	 * Logic đặc biệt này nên được bỏ qua nếu template hiện tại không đến từ theme hiện tại, trong trường hợp đó
+	 * nó đã được chèn bởi plugin bằng cách chiếm quyền cơ chế tải block template. Trong trường hợp đó, logic tùy chỉnh
+	 * hoàn toàn có thể được áp dụng, không thể dự đoán và do đó an toàn hơn nếu bỏ qua xử lý đặc biệt này.
 	 */
 	if (
 		$_wp_current_template_id &&
@@ -299,15 +298,15 @@ function get_the_block_template_html() {
 	$content = wp_filter_content_tags( $content, 'template' );
 	$content = str_replace( ']]>', ']]&gt;', $content );
 
-	// Wrap block template in .wp-site-blocks to allow for specific descendant styles
-	// (e.g. `.wp-site-blocks > *`).
+	// Bọc block template trong .wp-site-blocks để cho phép các style con cháu cụ thể
+	// (ví dụ: `.wp-site-blocks > *`).
 	return '<div class="wp-site-blocks">' . $content . '</div>';
 }
 
 /**
- * Renders a 'viewport' meta tag.
+ * Render thẻ meta 'viewport'.
  *
- * This is hooked into {@see 'wp_head'} to decouple its output from the default template canvas.
+ * Được gắn vào {@see 'wp_head'} để tách đầu ra của nó khỏi template canvas mặc định.
  *
  * @access private
  * @since 5.8.0
@@ -317,34 +316,34 @@ function _block_template_viewport_meta_tag() {
 }
 
 /**
- * Strips .php or .html suffix from template file names.
+ * Xóa hậu tố .php hoặc .html khỏi tên file template.
  *
  * @access private
  * @since 5.8.0
  *
- * @param string $template_file Template file name.
- * @return string Template file name without extension.
+ * @param string $template_file Tên file template.
+ * @return string Tên file template không có phần mở rộng.
  */
 function _strip_template_file_suffix( $template_file ) {
 	return preg_replace( '/\.(php|html)$/', '', $template_file );
 }
 
 /**
- * Removes post details from block context when rendering a block template.
+ * Xóa chi tiết bài viết khỏi block context khi render block template.
  *
  * @access private
  * @since 5.8.0
  *
- * @param array $context Default context.
+ * @param array $context Context mặc định.
  *
- * @return array Filtered context.
+ * @return array Context đã được lọc.
  */
 function _block_template_render_without_post_block_context( $context ) {
 	/*
-	 * When loading a template directly and not through a page that resolves it,
-	 * the top-level post ID and type context get set to that of the template.
-	 * Templates are just the structure of a site, and they should not be available
-	 * as post context because blocks like Post Content would recurse infinitely.
+	 * Khi tải template trực tiếp mà không thông qua trang phân giải nó,
+	 * context ID và loại bài viết cấp cao nhất được đặt thành template đó.
+	 * Templates chỉ là cấu trúc của site, và chúng không nên có sẵn
+	 * dưới dạng context bài viết vì các block như Post Content sẽ đệ quy vô hạn.
 	 */
 	if ( isset( $context['postType'] ) && 'wp_template' === $context['postType'] ) {
 		unset( $context['postId'] );
@@ -355,15 +354,15 @@ function _block_template_render_without_post_block_context( $context ) {
 }
 
 /**
- * Sets the current WP_Query to return auto-draft posts.
+ * Thiết lập WP_Query hiện tại để trả về các bài viết auto-draft.
  *
- * The auto-draft status indicates a new post, so allow the the WP_Query instance to
- * return an auto-draft post for template resolution when editing a new post.
+ * Trạng thái auto-draft chỉ ra một bài viết mới, vì vậy cho phép instance WP_Query
+ * trả về bài viết auto-draft cho việc phân giải template khi chỉnh sửa bài viết mới.
  *
  * @access private
  * @since 5.9.0
  *
- * @param WP_Query $wp_query Current WP_Query instance, passed by reference.
+ * @param WP_Query $wp_query Instance WP_Query hiện tại, truyền theo tham chiếu.
  */
 function _resolve_template_for_new_post( $wp_query ) {
 	if ( ! $wp_query->is_main_query() ) {
@@ -372,10 +371,10 @@ function _resolve_template_for_new_post( $wp_query ) {
 
 	remove_filter( 'pre_get_posts', '_resolve_template_for_new_post' );
 
-	// Pages.
+	// Trang.
 	$page_id = isset( $wp_query->query['page_id'] ) ? $wp_query->query['page_id'] : null;
 
-	// Posts, including custom post types.
+	// Bài viết, bao gồm cả loại bài viết tùy chỉnh.
 	$p = isset( $wp_query->query['p'] ) ? $wp_query->query['p'] : null;
 
 	$post_id = $page_id ? $page_id : $p;
@@ -391,35 +390,34 @@ function _resolve_template_for_new_post( $wp_query ) {
 }
 
 /**
- * Register a block template.
+ * Đăng ký một block template.
  *
  * @since 6.7.0
  *
- * @param string       $template_name  Template name in the form of `plugin_uri//template_name`.
+ * @param string       $template_name  Tên template dạng `plugin_uri//template_name`.
  * @param array|string $args           {
- *     @type string        $title                 Optional. Title of the template as it will be shown in the Site Editor
- *                                                and other UI elements.
- *     @type string        $description           Optional. Description of the template as it will be shown in the Site
- *                                                Editor.
- *     @type string        $content               Optional. Default content of the template that will be used when the
- *                                                template is rendered or edited in the editor.
- *     @type string[]      $post_types            Optional. Array of post types to which the template should be available.
- *     @type string        $plugin                Optional. Slug of the plugin that registers the template.
+ *     @type string        $title                 Tùy chọn. Tiêu đề của template sẽ hiển thị trong Site Editor
+ *                                                và các phần tử giao diện khác.
+ *     @type string        $description           Tùy chọn. Mô tả template sẽ hiển thị trong Site Editor.
+ *     @type string        $content               Tùy chọn. Nội dung mặc định của template sẽ được sử dụng khi
+ *                                                template được render hoặc chỉnh sửa trong trình soạn thảo.
+ *     @type string[]      $post_types            Tùy chọn. Mảng các loại bài viết mà template nên có sẵn.
+ *     @type string        $plugin                Tùy chọn. Slug của plugin đăng ký template.
  * }
- * @return WP_Block_Template|WP_Error The registered template object on success, WP_Error object on failure.
+ * @return WP_Block_Template|WP_Error Đối tượng template đã đăng ký khi thành công, đối tượng WP_Error khi thất bại.
  */
 function register_block_template( $template_name, $args = array() ) {
 	return WP_Block_Templates_Registry::get_instance()->register( $template_name, $args );
 }
 
 /**
- * Unregister a block template.
+ * Hủy đăng ký một block template.
  *
  * @since 6.7.0
  *
- * @param string $template_name Template name in the form of `plugin_uri//template_name`.
- * @return WP_Block_Template|WP_Error The unregistered template object on success, WP_Error object on failure or if the
- *                                    template doesn't exist.
+ * @param string $template_name Tên template dạng `plugin_uri//template_name`.
+ * @return WP_Block_Template|WP_Error Đối tượng template đã hủy đăng ký khi thành công, đối tượng WP_Error khi thất bại hoặc nếu
+ *                                    template không tồn tại.
  */
 function unregister_block_template( $template_name ) {
 	return WP_Block_Templates_Registry::get_instance()->unregister( $template_name );

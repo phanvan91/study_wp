@@ -1,18 +1,18 @@
 <?php
 /**
- * Aria label block support flag.
+ * Cờ hỗ trợ aria-label cho block.
  *
  * @package WordPress
  * @since 6.8.0
  */
 
 /**
- * Registers the aria-label block attribute for block types that support it.
+ * Đăng ký thuộc tính aria-label cho các loại block hỗ trợ nó.
  *
  * @since 6.8.0
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
+ * @param WP_Block_Type $block_type Loại Block.
  */
 function wp_register_aria_label_support( $block_type ) {
 	$has_aria_label_support = block_has_support( $block_type, array( 'ariaLabel' ), false );
@@ -33,15 +33,15 @@ function wp_register_aria_label_support( $block_type ) {
 }
 
 /**
- * Add the aria-label to the output.
+ * Thêm aria-label vào đầu ra.
  *
  * @since 6.8.0
  * @access private
  *
- * @param WP_Block_Type $block_type       Block Type.
- * @param array         $block_attributes Block attributes.
+ * @param WP_Block_Type $block_type       Loại Block.
+ * @param array         $block_attributes Thuộc tính block.
  *
- * @return array Block aria-label.
+ * @return array Aria-label của block.
  */
 function wp_apply_aria_label_support( $block_type, $block_attributes ) {
 	if ( ! $block_attributes ) {
@@ -60,7 +60,7 @@ function wp_apply_aria_label_support( $block_type, $block_attributes ) {
 	return array( 'aria-label' => $block_attributes['ariaLabel'] );
 }
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register(
 	'aria-label',
 	array(

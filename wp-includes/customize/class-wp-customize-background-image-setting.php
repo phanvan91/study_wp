@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Background_Image_Setting class
+ * API Tùy biến: Lớp WP_Customize_Background_Image_Setting
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customizer Background Image Setting class.
+ * Lớp Cài đặt Hình nền trong Trình tùy biến.
  *
  * @since 3.4.0
  *
@@ -17,7 +17,7 @@
 final class WP_Customize_Background_Image_Setting extends WP_Customize_Setting {
 
 	/**
-	 * Unique string identifier for the setting.
+	 * Chuỗi định danh duy nhất cho cài đặt.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -27,7 +27,7 @@ final class WP_Customize_Background_Image_Setting extends WP_Customize_Setting {
 	/**
 	 * @since 3.4.0
 	 *
-	 * @param mixed $value The value to update. Not used.
+	 * @param mixed $value Giá trị cần cập nhật. Không được sử dụng.
 	 */
 	public function update( $value ) {
 		remove_theme_mod( 'background_image_thumb' );

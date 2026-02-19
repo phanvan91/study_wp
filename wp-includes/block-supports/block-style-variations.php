@@ -1,20 +1,20 @@
 <?php
 /**
- * Block support to enable per-section styling of block types via
- * block style variations.
+ * Hỗ trợ block để bật kiểu dáng theo từng phần của các loại block
+ * thông qua biến thể kiểu block.
  *
  * @package WordPress
  * @since 6.6.0
  */
 
 /**
- * Determines the block style variation names within a CSS class string.
+ * Xác định tên biến thể kiểu block trong một chuỗi lớp CSS.
  *
  * @since 6.6.0
  *
- * @param string $class_string CSS class string to look for a variation in.
+ * @param string $class_string Chuỗi lớp CSS để tìm biến thể.
  *
- * @return array|null The block style variation name if found.
+ * @return array|null Tên biến thể kiểu block nếu tìm thấy.
  */
 function wp_get_block_style_variation_name_from_class( $class_string ) {
 	if ( ! is_string( $class_string ) ) {
@@ -26,21 +26,21 @@ function wp_get_block_style_variation_name_from_class( $class_string ) {
 }
 
 /**
- * Recursively resolves any `ref` values within a block style variation's data.
+ * Phân giải đệ quy mọi giá trị `ref` trong dữ liệu biến thể kiểu block.
  *
  * @since 6.6.0
  * @access private
  *
- * @param array $variation_data Reference to the variation data being processed.
- * @param array $theme_json     Theme.json data to retrieve referenced values from.
+ * @param array $variation_data Tham chiếu đến dữ liệu biến thể đang được xử lý.
+ * @param array $theme_json     Dữ liệu Theme.json để lấy các giá trị được tham chiếu.
  */
 function wp_resolve_block_style_variation_ref_values( &$variation_data, $theme_json ) {
 	foreach ( $variation_data as $key => &$value ) {
-		// Only need to potentially process arrays.
+		// Chỉ cần xử lý tiềm năng các mảng.
 		if ( is_array( $value ) ) {
-			// If ref value is set, attempt to find its matching value and update it.
+			// Nếu giá trị ref được đặt, cố gắng tìm giá trị khớp và cập nhật nó.
 			if ( array_key_exists( 'ref', $value ) ) {
-				// Clean up any invalid ref value.
+				// Dọn dẹp giá trị ref không hợp lệ.
 				if ( empty( $value['ref'] ) || ! is_string( $value['ref'] ) ) {
 					unset( $variation_data[ $key ] );
 				}
@@ -48,35 +48,35 @@ function wp_resolve_block_style_variation_ref_values( &$variation_data, $theme_j
 				$value_path = explode( '.', $value['ref'] ?? '' );
 				$ref_value  = _wp_array_get( $theme_json, $value_path );
 
-				// Only update the current value if the referenced path matched a value.
+				// Chỉ cập nhật giá trị hiện tại nếu đường dẫn tham chiếu khớp với một giá trị.
 				if ( null === $ref_value ) {
 					unset( $variation_data[ $key ] );
 				} else {
 					$value = $ref_value;
 				}
 			} else {
-				// Recursively look for ref instances.
+				// Tìm kiếm đệ quy các thể hiện ref.
 				wp_resolve_block_style_variation_ref_values( $value, $theme_json );
 			}
 		}
 	}
 }
 /**
- * Renders the block style variation's styles.
+ * Render các kiểu của biến thể kiểu block.
  *
- * In the case of nested blocks with variations applied, we want the parent
- * variation's styles to be rendered before their descendants. This solves the
- * issue of a block type being styled in both the parent and descendant: we want
- * the descendant style to take priority, and this is done by loading it after,
- * in the DOM order. This is why the variation stylesheet generation is in a
- * different filter.
+ * Trong trường hợp các block lồng nhau có biến thể được áp dụng, chúng ta muốn
+ * kiểu của biến thể cha được render trước các con cháu. Điều này giải quyết
+ * vấn đề một loại block được định kiểu ở cả cha và con cháu: chúng ta muốn
+ * kiểu con cháu được ưu tiên, và điều này được thực hiện bằng cách tải nó sau,
+ * theo thứ tự DOM. Đây là lý do tại sao việc tạo bảng kiểu biến thể nằm trong
+ * một bộ lọc khác.
  *
  * @since 6.6.0
  * @access private
  *
- * @param array $parsed_block The parsed block.
+ * @param array $parsed_block Block đã được phân tích.
  *
- * @return array The parsed block with block style variation classname added.
+ * @return array Block đã phân tích với tên lớp CSS biến thể kiểu block được thêm.
  */
 function wp_render_block_style_variation_support_styles( $parsed_block ) {
 	$classes    = $parsed_block['attrs']['className'] ?? null;
@@ -89,7 +89,7 @@ function wp_render_block_style_variation_support_styles( $parsed_block ) {
 	$tree       = WP_Theme_JSON_Resolver::get_merged_data();
 	$theme_json = $tree->get_raw_data();
 
-	// Only the first block style variation with data is supported.
+	// Chỉ biến thể kiểu block đầu tiên có dữ liệu được hỗ trợ.
 	$variation_data = array();
 	foreach ( $variations as $variation ) {
 		$variation_data = $theme_json['styles']['blocks'][ $parsed_block['blockName'] ]['variations'][ $variation ] ?? array();
@@ -104,8 +104,8 @@ function wp_render_block_style_variation_support_styles( $parsed_block ) {
 	}
 
 	/*
-	 * Recursively resolve any ref values with the appropriate value within the
-	 * theme_json data.
+	 * Phân giải đệ quy mọi giá trị ref với giá trị phù hợp trong
+	 * dữ liệu theme_json.
 	 */
 	wp_resolve_block_style_variation_ref_values( $variation_data, $theme_json );
 
@@ -114,21 +114,21 @@ function wp_render_block_style_variation_support_styles( $parsed_block ) {
 	$updated_class_name = $parsed_block['attrs']['className'] . " $class_name";
 
 	/*
-	 * Even though block style variations are effectively theme.json partials,
-	 * they can't be processed completely as though they are.
+	 * Mặc dù biến thể kiểu block thực chất là các phần theme.json,
+	 * chúng không thể được xử lý hoàn toàn như vậy.
 	 *
-	 * Block styles support custom selectors to direct specific types of styles
-	 * to inner elements. For example, borders on Image block's get applied to
-	 * the inner `img` element rather than the wrapping `figure`.
+	 * Kiểu block hỗ trợ các selector tùy chỉnh để hướng các loại kiểu cụ thể
+	 * đến các phần tử bên trong. Ví dụ, viền trên block Hình ảnh được áp dụng cho
+	 * phần tử `img` bên trong thay vì `figure` bao bọc.
 	 *
-	 * The following relocates the "root" block style variation styles to
-	 * under an appropriate blocks property to leverage the preexisting style
-	 * generation for simple block style variations. This way they get the
-	 * custom selectors they need.
+	 * Đoạn mã sau di chuyển các kiểu biến thể kiểu block "gốc" sang
+	 * dưới thuộc tính blocks phù hợp để tận dụng cơ chế tạo kiểu
+	 * đã có sẵn cho các biến thể kiểu block đơn giản. Bằng cách này chúng
+	 * nhận được các selector tùy chỉnh cần thiết.
 	 *
-	 * The inner elements and block styles for the variation itself are
-	 * still included at the top level but scoped by the variation's selector
-	 * when the stylesheet is generated.
+	 * Các phần tử bên trong và kiểu block cho bản thân biến thể
+	 * vẫn được bao gồm ở cấp cao nhất nhưng được giới hạn bởi selector
+	 * của biến thể khi bảng kiểu được tạo.
 	 */
 	$elements_data = $variation_data['elements'] ?? array();
 	$blocks_data   = $variation_data['blocks'] ?? array();
@@ -149,12 +149,12 @@ function wp_render_block_style_variation_support_styles( $parsed_block ) {
 		),
 	);
 
-	// Turn off filter that excludes block nodes. They are needed here for the variation's inner block types.
+	// Tắt bộ lọc loại trừ các nút block. Chúng cần thiết ở đây cho các loại block bên trong của biến thể.
 	if ( ! is_admin() ) {
 		remove_filter( 'wp_theme_json_get_style_nodes', 'wp_filter_out_block_nodes' );
 	}
 
-	// Temporarily prevent variation instance from being sanitized while processing theme.json.
+	// Tạm thời ngăn thể hiện biến thể bị làm sạch trong khi xử lý theme.json.
 	$styles_registry = WP_Block_Styles_Registry::get_instance();
 	$styles_registry->register( $parsed_block['blockName'], array( 'name' => $variation_instance ) );
 
@@ -169,10 +169,10 @@ function wp_render_block_style_variation_support_styles( $parsed_block ) {
 		)
 	);
 
-	// Clean up temporary block style now instance styles have been processed.
+	// Dọn dẹp kiểu block tạm thời sau khi các kiểu thể hiện đã được xử lý.
 	$styles_registry->unregister( $parsed_block['blockName'], $variation_instance );
 
-	// Restore filter that excludes block nodes.
+	// Khôi phục bộ lọc loại trừ các nút block.
 	if ( ! is_admin() ) {
 		add_filter( 'wp_theme_json_get_style_nodes', 'wp_filter_out_block_nodes' );
 	}
@@ -185,8 +185,8 @@ function wp_render_block_style_variation_support_styles( $parsed_block ) {
 	wp_add_inline_style( 'block-style-variation-styles', $variation_styles );
 
 	/*
-	 * Add variation instance class name to block's className string so it can
-	 * be enforced in the block markup via render_block filter.
+	 * Thêm tên lớp CSS thể hiện biến thể vào chuỗi className của block để có thể
+	 * được áp dụng trong markup block qua bộ lọc render_block.
 	 */
 	_wp_array_set( $parsed_block, array( 'attrs', 'className' ), $updated_class_name );
 
@@ -194,19 +194,19 @@ function wp_render_block_style_variation_support_styles( $parsed_block ) {
 }
 
 /**
- * Ensures the variation block support class name generated and added to
- * block attributes in the `render_block_data` filter gets applied to the
- * block's markup.
+ * Đảm bảo tên lớp CSS hỗ trợ block biến thể được tạo và thêm vào
+ * thuộc tính block trong bộ lọc `render_block_data` được áp dụng vào
+ * markup của block.
  *
  * @since 6.6.0
  * @access private
  *
  * @see wp_render_block_style_variation_support_styles
  *
- * @param  string $block_content Rendered block content.
- * @param  array  $block         Block object.
+ * @param  string $block_content Nội dung block đã được render.
+ * @param  array  $block         Đối tượng block.
  *
- * @return string                Filtered block content.
+ * @return string                Nội dung block đã được lọc.
  */
 function wp_render_block_style_variation_class_name( $block_content, $block ) {
 	if ( ! $block_content || empty( $block['attrs']['className'] ) ) {
@@ -214,8 +214,8 @@ function wp_render_block_style_variation_class_name( $block_content, $block ) {
 	}
 
 	/*
-	 * Matches a class prefixed by `is-style`, followed by the
-	 * variation slug, then `--`, and finally an instance number.
+	 * Khớp một lớp CSS có tiền tố `is-style`, theo sau là
+	 * slug biến thể, rồi `--`, và cuối cùng là số thể hiện.
 	 */
 	preg_match( '/\bis-style-(\S+?--\d+)\b/', $block['attrs']['className'], $matches );
 
@@ -227,9 +227,9 @@ function wp_render_block_style_variation_class_name( $block_content, $block ) {
 
 	if ( $tags->next_tag() ) {
 		/*
-		 * Ensure the variation instance class name set in the
-		 * `render_block_data` filter is applied in markup.
-		 * See `wp_render_block_style_variation_support_styles`.
+		 * Đảm bảo tên lớp CSS thể hiện biến thể được đặt trong
+		 * bộ lọc `render_block_data` được áp dụng trong markup.
+		 * Xem `wp_render_block_style_variation_support_styles`.
 		 */
 		$tags->add_class( $matches[0] );
 	}
@@ -238,7 +238,7 @@ function wp_render_block_style_variation_class_name( $block_content, $block ) {
 }
 
 /**
- * Enqueues styles for block style variations.
+ * Nạp các kiểu cho biến thể kiểu block.
  *
  * @since 6.6.0
  * @access private
@@ -247,7 +247,7 @@ function wp_enqueue_block_style_variation_styles() {
 	wp_enqueue_style( 'block-style-variation-styles' );
 }
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register( 'block-style-variation', array() );
 
 add_filter( 'render_block_data', 'wp_render_block_style_variation_support_styles', 10, 2 );
@@ -255,12 +255,12 @@ add_filter( 'render_block', 'wp_render_block_style_variation_class_name', 10, 2 
 add_action( 'wp_enqueue_scripts', 'wp_enqueue_block_style_variation_styles', 1 );
 
 /**
- * Registers block style variations read in from theme.json partials.
+ * Đăng ký các biến thể kiểu block được đọc từ các phần theme.json.
  *
  * @since 6.6.0
  * @access private
  *
- * @param array $variations Shared block style variations.
+ * @param array $variations Các biến thể kiểu block chia sẻ.
  */
 function wp_register_block_style_variations_from_theme_json_partials( $variations ) {
 	if ( empty( $variations ) ) {
@@ -280,7 +280,7 @@ function wp_register_block_style_variations_from_theme_json_partials( $variation
 		foreach ( $variation['blockTypes'] as $block_type ) {
 			$registered_styles = $registry->get_registered_styles_for_block( $block_type );
 
-			// Register block style variation if it hasn't already been registered.
+			// Đăng ký biến thể kiểu block nếu chưa được đăng ký.
 			if ( ! array_key_exists( $variation_name, $registered_styles ) ) {
 				register_block_style(
 					$block_type,

@@ -1,19 +1,19 @@
 <?php
 /**
- * Colors block support flag.
+ * Cờ hỗ trợ màu sắc cho block.
  *
  * @package WordPress
  * @since 5.6.0
  */
 
 /**
- * Registers the style and colors block attributes for block types that support it.
+ * Đăng ký thuộc tính kiểu và màu sắc cho các loại block hỗ trợ nó.
  *
  * @since 5.6.0
- * @since 6.1.0 Improved $color_support assignment optimization.
+ * @since 6.1.0 Cải thiện tối ưu hóa gán $color_support.
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
+ * @param WP_Block_Type $block_type Loại Block.
  */
 function wp_register_colors_support( $block_type ) {
 	$color_support = false;
@@ -68,17 +68,17 @@ function wp_register_colors_support( $block_type ) {
 
 
 /**
- * Adds CSS classes and inline styles for colors to the incoming attributes array.
- * This will be applied to the block markup in the front-end.
+ * Thêm các lớp CSS và kiểu inline cho màu sắc vào mảng thuộc tính đầu vào.
+ * Điều này sẽ được áp dụng cho markup block ở giao diện người dùng.
  *
  * @since 5.6.0
- * @since 6.1.0 Implemented the style engine to generate CSS and classnames.
+ * @since 6.1.0 Triển khai engine kiểu để tạo CSS và tên lớp.
  * @access private
  *
- * @param  WP_Block_Type $block_type       Block type.
- * @param  array         $block_attributes Block attributes.
+ * @param  WP_Block_Type $block_type       Loại block.
+ * @param  array         $block_attributes Thuộc tính block.
  *
- * @return array Colors CSS classes and inline styles.
+ * @return array Các lớp CSS và kiểu inline màu sắc.
  */
 function wp_apply_colors_support( $block_type, $block_attributes ) {
 	$color_support = isset( $block_type->supports['color'] ) ? $block_type->supports['color'] : false;
@@ -99,21 +99,21 @@ function wp_apply_colors_support( $block_type, $block_attributes ) {
 	$has_gradients_support         = isset( $color_support['gradients'] ) ? $color_support['gradients'] : false;
 	$color_block_styles            = array();
 
-	// Text colors.
+	// Màu chữ.
 	if ( $has_text_colors_support && ! wp_should_skip_block_supports_serialization( $block_type, 'color', 'text' ) ) {
 		$preset_text_color          = array_key_exists( 'textColor', $block_attributes ) ? "var:preset|color|{$block_attributes['textColor']}" : null;
 		$custom_text_color          = isset( $block_attributes['style']['color']['text'] ) ? $block_attributes['style']['color']['text'] : null;
 		$color_block_styles['text'] = $preset_text_color ? $preset_text_color : $custom_text_color;
 	}
 
-	// Background colors.
+	// Màu nền.
 	if ( $has_background_colors_support && ! wp_should_skip_block_supports_serialization( $block_type, 'color', 'background' ) ) {
 		$preset_background_color          = array_key_exists( 'backgroundColor', $block_attributes ) ? "var:preset|color|{$block_attributes['backgroundColor']}" : null;
 		$custom_background_color          = isset( $block_attributes['style']['color']['background'] ) ? $block_attributes['style']['color']['background'] : null;
 		$color_block_styles['background'] = $preset_background_color ? $preset_background_color : $custom_background_color;
 	}
 
-	// Gradients.
+	// Gradient.
 	if ( $has_gradients_support && ! wp_should_skip_block_supports_serialization( $block_type, 'color', 'gradients' ) ) {
 		$preset_gradient_color          = array_key_exists( 'gradient', $block_attributes ) ? "var:preset|gradient|{$block_attributes['gradient']}" : null;
 		$custom_gradient_color          = isset( $block_attributes['style']['color']['gradient'] ) ? $block_attributes['style']['color']['gradient'] : null;
@@ -134,7 +134,7 @@ function wp_apply_colors_support( $block_type, $block_attributes ) {
 	return $attributes;
 }
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register(
 	'colors',
 	array(

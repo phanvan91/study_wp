@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Header_Image_Control class
+ * API Tùy biến: Lớp WP_Customize_Header_Image_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Header Image Control class.
+ * Lớp Điều khiển Ảnh đầu trang trong Tùy biến.
  *
  * @since 3.4.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 
 	/**
-	 * Customize control type.
+	 * Loại điều khiển tùy biến.
 	 *
 	 * @since 4.2.0
 	 * @var string
@@ -25,7 +25,7 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 	public $type = 'header';
 
 	/**
-	 * Uploaded header images.
+	 * Các ảnh đầu trang đã tải lên.
 	 *
 	 * @since 3.9.0
 	 * @var string
@@ -33,7 +33,7 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 	public $uploaded_headers;
 
 	/**
-	 * Default header images.
+	 * Các ảnh đầu trang mặc định.
 	 *
 	 * @since 3.9.0
 	 * @var string
@@ -41,11 +41,11 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 	public $default_headers;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
+	 * @param WP_Customize_Manager $manager Đối tượng khởi tạo Trình tùy biến.
 	 */
 	public function __construct( $manager ) {
 		parent::__construct(
@@ -106,7 +106,7 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'print_header_image_template' ) );
 
-		// Process default headers and uploaded headers.
+		// Xử lý các ảnh đầu trang mặc định và ảnh đã tải lên.
 		$custom_image_header->process_default_headers();
 		$this->default_headers  = $custom_image_header->get_default_header_images();
 		$this->uploaded_headers = $custom_image_header->get_uploaded_header_images();
@@ -134,7 +134,7 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 				data-customize-header-image-data="{{JSON.stringify(data.header)}}">
 				<span class="screen-reader-text">
 					<?php
-					/* translators: Hidden accessibility text. */
+					/* translators: Văn bản trợ năng ẩn. */
 					_e( 'Set image' );
 					?>
 				</span>
@@ -145,7 +145,7 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 				<button type="button" class="dashicons dashicons-no close">
 					<span class="screen-reader-text">
 						<?php
-						/* translators: Hidden accessibility text. */
+						/* translators: Văn bản trợ năng ẩn. */
 						_e( 'Remove image' );
 						?>
 					</span>
@@ -215,19 +215,19 @@ class WP_Customize_Header_Image_Control extends WP_Customize_Image_Control {
 					_e( 'Click &#8220;Add Image&#8221; to upload an image file from your computer. Your theme works best with an image that matches the size of your video &#8212; you&#8217;ll be able to crop your image once you upload it for a perfect fit.' );
 				} elseif ( $width && $height ) {
 					printf(
-						/* translators: %s: Header size in pixels. */
+						/* translators: %s: Kích thước ảnh đầu trang tính bằng pixel. */
 						__( 'Click &#8220;Add Image&#8221; to upload an image file from your computer. Your theme works best with an image with a header size of %s pixels &#8212; you&#8217;ll be able to crop your image once you upload it for a perfect fit.' ),
 						sprintf( '<strong>%s &times; %s</strong>', $width, $height )
 					);
 				} elseif ( $width ) {
 					printf(
-						/* translators: %s: Header width in pixels. */
+						/* translators: %s: Chiều rộng ảnh đầu trang tính bằng pixel. */
 						__( 'Click &#8220;Add Image&#8221; to upload an image file from your computer. Your theme works best with an image with a header width of %s pixels &#8212; you&#8217;ll be able to crop your image once you upload it for a perfect fit.' ),
 						sprintf( '<strong>%s</strong>', $width )
 					);
 				} else {
 					printf(
-						/* translators: %s: Header height in pixels. */
+						/* translators: %s: Chiều cao ảnh đầu trang tính bằng pixel. */
 						__( 'Click &#8220;Add Image&#8221; to upload an image file from your computer. Your theme works best with an image with a header height of %s pixels &#8212; you&#8217;ll be able to crop your image once you upload it for a perfect fit.' ),
 						sprintf( '<strong>%s</strong>', $height )
 					);

@@ -1,6 +1,6 @@
 <?php
 /**
- * PemFTP - An Ftp implementation in pure PHP
+ * PemFTP - Triển khai FTP bằng PHP thuần
  *
  * @package PemFTP
  * @since 2.5.0
@@ -13,7 +13,7 @@
  */
 
 /**
- * FTP implementation using fsockopen to connect.
+ * Triển khai FTP sử dụng fsockopen để kết nối.
  *
  * @package PemFTP
  * @subpackage Pure
@@ -32,7 +32,7 @@ class ftp_pure extends ftp_base {
 	}
 
 // <!-- --------------------------------------------------------------------------------------- -->
-// <!--       Private functions                                                                 -->
+// <!--       Các hàm riêng tư                                                                  -->
 // <!-- --------------------------------------------------------------------------------------- -->
 
 	function _settimeout($sock) {

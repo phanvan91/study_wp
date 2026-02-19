@@ -2,16 +2,16 @@
 
 ## Mục lục
 
-1. [Tại sao dùng OOP cho Plugin](#1-tai-sao-dung-oop-cho-plugin)
+1. [Tại sao dùng OOP cho Plugin](#1-tại-sao-dùng-oop-cho-plugin)
 2. [Singleton Pattern cho Main Plugin Class](#2-singleton-pattern-cho-main-plugin-class)
 3. [Autoloading](#3-autoloading)
-4. [Dependency Injection cơ bản](#4-dependency-injection-co-ban)
+4. [Dependency Injection cơ bản](#4-dependency-injection-cơ-bản)
 5. [Namespaces trong Plugin](#5-namespaces-trong-plugin)
-6. [Cấu trúc thư mục OOP](#6-cau-truc-thu-muc-oop)
+6. [Cấu trúc thư mục OOP](#6-cấu-trúc-thư-mục-oop)
 7. [MVC Pattern trong Plugin](#7-mvc-pattern-trong-plugin)
 8. [Plugin Boilerplate](#8-plugin-boilerplate)
-9. [Code ví dụ: Plugin hoàn chỉnh theo kiến trúc OOP](#9-code-vi-du-plugin-hoan-chinh-theo-kien-truc-oop)
-10. [So sánh với cấu trúc Laravel](#10-so-sanh-voi-cau-truc-laravel)
+9. [Code ví dụ: Plugin hoàn chỉnh theo kiến trúc OOP](#9-code-ví-dụ-plugin-hoàn-chỉnh-theo-kiến-trúc-oop)
+10. [So sánh với cấu trúc Laravel](#10-so-sánh-với-cấu-trúc-laravel)
 11. [Best Practices](#11-best-practices)
 
 ---
@@ -59,31 +59,31 @@ class Admin_Settings {
 
 // 2. Namespace - Tránh xung đột tên
 namespace MyPlugin\Admin;
-class Settings { }  // MyPlugin\Admin\Settings - khong trung voi plugin khac
+class Settings { }  // MyPlugin\Admin\Settings - không trùng với plugin khác
 
-// 3. Inheritance - Ke thua va tai su dung
+// 3. Inheritance - Kế thừa và tái sử dụng
 class Base_Widget extends \WP_Widget { }
 class Contact_Widget extends Base_Widget { }
 class Social_Widget extends Base_Widget { }
 
-// 4. Testable - De viet unit test
+// 4. Testable - Dễ viết unit test
 class Calculator {
     public function add($a, $b) { return $a + $b; }
 }
 // Test: assertEquals(3, $calc->add(1, 2));
 
-// 5. Maintainable - De bao tri
-// Moi class 1 trach nhiem (Single Responsibility)
-// Thay doi 1 class khong anh huong class khac
+// 5. Maintainable - Dễ bảo trì
+// Mỗi class 1 trách nhiệm (Single Responsibility)
+// Thay đổi 1 class không ảnh hưởng class khác
 ```
 
 ---
 
 ## 2. Singleton Pattern cho Main Plugin Class
 
-### Singleton Pattern la gi?
+### Singleton Pattern là gì?
 
-Singleton dam bao chi co **duy nhat 1 instance** cua class trong toan bo ung dung. Day la pattern pho bien nhat cho Main Plugin Class.
+Singleton đảm bảo chỉ có **duy nhất 1 instance** của class trong toàn bộ ứng dụng. Đây là pattern phổ biến nhất cho Main Plugin Class.
 
 ```php
 <?php
@@ -99,36 +99,36 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Main Plugin Class - Singleton Pattern
  *
- * Chi co 1 instance duy nhat trong suot vong doi cua request.
- * Cac phan khac truy cap qua: OOP_Plugin::get_instance()
+ * Chỉ có 1 instance duy nhất trong suốt vòng đời của request.
+ * Các phần khác truy cập qua: OOP_Plugin::get_instance()
  */
 final class OOP_Plugin {
 
     /**
-     * Phien ban plugin
+     * Phiên bản plugin
      */
     const VERSION = '1.0.0';
 
     /**
-     * Instance duy nhat
+     * Instance duy nhất
      * @var OOP_Plugin|null
      */
     private static $instance = null;
 
     /**
-     * Duong dan thu muc plugin
+     * Đường dẫn thư mục plugin
      * @var string
      */
     private $plugin_path;
 
     /**
-     * URL cua plugin
+     * URL của plugin
      * @var string
      */
     private $plugin_url;
 
     /**
-     * Lay instance duy nhat (tao moi neu chua co)
+     * Lấy instance duy nhất (tạo mới nếu chưa có)
      *
      * @return OOP_Plugin
      */
@@ -140,8 +140,8 @@ final class OOP_Plugin {
     }
 
     /**
-     * Constructor - PRIVATE de ngan tao object tu ben ngoai
-     * Chi duoc goi 1 lan tu get_instance()
+     * Constructor - PRIVATE để ngăn tạo object từ bên ngoài
+     * Chỉ được gọi 1 lần từ get_instance()
      */
     private function __construct() {
         $this->plugin_path = plugin_dir_path( __FILE__ );
@@ -153,19 +153,19 @@ final class OOP_Plugin {
     }
 
     /**
-     * Ngan clone object
+     * Ngăn clone object
      */
     private function __clone() { }
 
     /**
-     * Ngan unserialize
+     * Ngăn unserialize
      */
     public function __wakeup() {
         throw new \Exception( 'Cannot unserialize singleton.' );
     }
 
     /**
-     * Dinh nghia constants
+     * Định nghĩa constants
      */
     private function define_constants() {
         define( 'OOP_PLUGIN_VERSION', self::VERSION );
@@ -175,20 +175,20 @@ final class OOP_Plugin {
     }
 
     /**
-     * Include cac file can thiet
+     * Include các file cần thiết
      */
     private function includes() {
         // Core
         require_once $this->plugin_path . 'includes/class-activator.php';
         require_once $this->plugin_path . 'includes/class-deactivator.php';
 
-        // Admin - chi load trong admin
+        // Admin - chỉ load trong admin
         if ( is_admin() ) {
             require_once $this->plugin_path . 'admin/class-admin.php';
             require_once $this->plugin_path . 'admin/class-settings.php';
         }
 
-        // Public - chi load o frontend
+        // Public - chỉ load ở frontend
         if ( ! is_admin() ) {
             require_once $this->plugin_path . 'public/class-frontend.php';
         }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Theme_Control class
+ * API Tùy biến: Lớp WP_Customize_Theme_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Theme Control class.
+ * Lớp Điều khiển Giao diện trong Tùy biến.
  *
  * @since 4.2.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Theme_Control extends WP_Customize_Control {
 
 	/**
-	 * Customize control type.
+	 * Loại điều khiển tùy biến.
 	 *
 	 * @since 4.2.0
 	 * @var string
@@ -25,7 +25,7 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 	public $type = 'theme';
 
 	/**
-	 * Theme object.
+	 * Đối tượng giao diện.
 	 *
 	 * @since 4.2.0
 	 * @var WP_Theme
@@ -33,7 +33,7 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 	public $theme;
 
 	/**
-	 * Refresh the parameters passed to the JavaScript via JSON.
+	 * Làm mới các tham số được truyền tới JavaScript qua JSON.
 	 *
 	 * @since 4.2.0
 	 *
@@ -45,25 +45,25 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Don't render the control content from PHP, as it's rendered via JS on load.
+	 * Không hiển thị nội dung điều khiển từ PHP, vì nó được hiển thị qua JS khi tải trang.
 	 *
 	 * @since 4.2.0
 	 */
 	public function render_content() {}
 
 	/**
-	 * Render a JS template for theme display.
+	 * Hiển thị mẫu JS cho giao diện hiển thị giao diện.
 	 *
 	 * @since 4.2.0
 	 */
 	public function content_template() {
-		/* translators: %s: Theme name. */
+		/* translators: %s: Tên giao diện. */
 		$details_label = sprintf( __( 'Details for theme: %s' ), '{{ data.theme.name }}' );
-		/* translators: %s: Theme name. */
+		/* translators: %s: Tên giao diện. */
 		$customize_label = sprintf( __( 'Customize theme: %s' ), '{{ data.theme.name }}' );
-		/* translators: %s: Theme name. */
+		/* translators: %s: Tên giao diện. */
 		$preview_label = sprintf( __( 'Live preview theme: %s' ), '{{ data.theme.name }}' );
-		/* translators: %s: Theme name. */
+		/* translators: %s: Tên giao diện. */
 		$install_label = sprintf( __( 'Install and preview theme: %s' ), '{{ data.theme.name }}' );
 		?>
 		<# if ( data.theme.active ) { #>
@@ -84,7 +84,7 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 
 			<div class="theme-author">
 			<?php
-				/* translators: Theme author name. */
+				/* translators: Tên tác giả giao diện. */
 				printf( _x( 'By %s', 'theme author' ), '{{ data.theme.author }}' );
 			?>
 			</div>
@@ -98,7 +98,7 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 								_e( 'New version available.' );
 							} else {
 								printf(
-									/* translators: %s: "Update now" button. */
+									/* translators: %s: Nút "Cập nhật ngay". */
 									__( 'New version available. %s' ),
 									'<button class="button-link update-theme" type="button">' . __( 'Update now' ) . '</button>'
 								);
@@ -112,13 +112,13 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 							<# if ( ! data.theme.updateResponse.compatibleWP && ! data.theme.updateResponse.compatiblePHP ) { #>
 								<?php
 								printf(
-									/* translators: %s: Theme name. */
+									/* translators: %s: Tên giao diện. */
 									__( 'There is a new version of %s available, but it does not work with your versions of WordPress and PHP.' ),
 									'{{{ data.theme.name }}}'
 								);
 								if ( current_user_can( 'update_core' ) && current_user_can( 'update_php' ) ) {
 									printf(
-										/* translators: 1: URL to WordPress Updates screen, 2: URL to Update PHP page. */
+										/* translators: 1: URL đến trang Cập nhật WordPress, 2: URL đến trang Cập nhật PHP. */
 										' ' . __( '<a href="%1$s">Please update WordPress</a>, and then <a href="%2$s">learn more about updating PHP</a>.' ),
 										self_admin_url( 'update-core.php' ),
 										esc_url( wp_get_update_php_url() )
@@ -126,13 +126,13 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 									wp_update_php_annotation( '</p><p><em>', '</em>' );
 								} elseif ( current_user_can( 'update_core' ) ) {
 									printf(
-										/* translators: %s: URL to WordPress Updates screen. */
+										/* translators: %s: URL đến trang Cập nhật WordPress. */
 										' ' . __( '<a href="%s">Please update WordPress</a>.' ),
 										self_admin_url( 'update-core.php' )
 									);
 								} elseif ( current_user_can( 'update_php' ) ) {
 									printf(
-										/* translators: %s: URL to Update PHP page. */
+										/* translators: %s: URL đến trang Cập nhật PHP. */
 										' ' . __( '<a href="%s">Learn more about updating PHP</a>.' ),
 										esc_url( wp_get_update_php_url() )
 									);
@@ -142,13 +142,13 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 							<# } else if ( ! data.theme.updateResponse.compatibleWP ) { #>
 								<?php
 								printf(
-									/* translators: %s: Theme name. */
+									/* translators: %s: Tên giao diện. */
 									__( 'There is a new version of %s available, but it does not work with your version of WordPress.' ),
 									'{{{ data.theme.name }}}'
 								);
 								if ( current_user_can( 'update_core' ) ) {
 									printf(
-										/* translators: %s: URL to WordPress Updates screen. */
+										/* translators: %s: URL đến trang Cập nhật WordPress. */
 										' ' . __( '<a href="%s">Please update WordPress</a>.' ),
 										self_admin_url( 'update-core.php' )
 									);
@@ -157,13 +157,13 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 							<# } else if ( ! data.theme.updateResponse.compatiblePHP ) { #>
 								<?php
 								printf(
-									/* translators: %s: Theme name. */
+									/* translators: %s: Tên giao diện. */
 									__( 'There is a new version of %s available, but it does not work with your version of PHP.' ),
 									'{{{ data.theme.name }}}'
 								);
 								if ( current_user_can( 'update_php' ) ) {
 									printf(
-										/* translators: %s: URL to Update PHP page. */
+										/* translators: %s: URL đến trang Cập nhật PHP. */
 										' ' . __( '<a href="%s">Learn more about updating PHP</a>.' ),
 										esc_url( wp_get_update_php_url() )
 									);
@@ -183,7 +183,7 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 						_e( 'This theme does not work with your versions of WordPress and PHP.' );
 						if ( current_user_can( 'update_core' ) && current_user_can( 'update_php' ) ) {
 							printf(
-								/* translators: 1: URL to WordPress Updates screen, 2: URL to Update PHP page. */
+								/* translators: 1: URL đến trang Cập nhật WordPress, 2: URL đến trang Cập nhật PHP. */
 								' ' . __( '<a href="%1$s">Please update WordPress</a>, and then <a href="%2$s">learn more about updating PHP</a>.' ),
 								self_admin_url( 'update-core.php' ),
 								esc_url( wp_get_update_php_url() )
@@ -191,13 +191,13 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 							wp_update_php_annotation( '</p><p><em>', '</em>' );
 						} elseif ( current_user_can( 'update_core' ) ) {
 							printf(
-								/* translators: %s: URL to WordPress Updates screen. */
+								/* translators: %s: URL đến trang Cập nhật WordPress. */
 								' ' . __( '<a href="%s">Please update WordPress</a>.' ),
 								self_admin_url( 'update-core.php' )
 							);
 						} elseif ( current_user_can( 'update_php' ) ) {
 							printf(
-								/* translators: %s: URL to Update PHP page. */
+								/* translators: %s: URL đến trang Cập nhật PHP. */
 								' ' . __( '<a href="%s">Learn more about updating PHP</a>.' ),
 								esc_url( wp_get_update_php_url() )
 							);
@@ -209,7 +209,7 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 						_e( 'This theme does not work with your version of WordPress.' );
 						if ( current_user_can( 'update_core' ) ) {
 							printf(
-								/* translators: %s: URL to WordPress Updates screen. */
+								/* translators: %s: URL đến trang Cập nhật WordPress. */
 								' ' . __( '<a href="%s">Please update WordPress</a>.' ),
 								self_admin_url( 'update-core.php' )
 							);
@@ -220,7 +220,7 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 						_e( 'This theme does not work with your version of PHP.' );
 						if ( current_user_can( 'update_php' ) ) {
 							printf(
-								/* translators: %s: URL to Update PHP page. */
+								/* translators: %s: URL đến trang Cập nhật PHP. */
 								' ' . __( '<a href="%s">Learn more about updating PHP</a>.' ),
 								esc_url( wp_get_update_php_url() )
 							);
@@ -256,7 +256,7 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 						<div class="theme-actions">
 							<# if ( data.theme.actions.activate ) { #>
 								<?php
-									/* translators: %s: Theme name. */
+									/* translators: %s: Tên giao diện. */
 									$aria_label = sprintf( _x( 'Activate %s', 'theme' ), '{{ data.name }}' );
 								?>
 								<a href="{{{ data.theme.actions.activate }}}" class="button button-primary activate" aria-label="<?php echo esc_attr( $aria_label ); ?>"><?php _e( 'Activate' ); ?></a>
@@ -267,7 +267,7 @@ class WP_Customize_Theme_Control extends WP_Customize_Control {
 					<# if ( data.theme.actions.activate ) { #>
 						<?php
 							$customizer_not_supported_message .= ' ' . sprintf(
-								/* translators: %s: URL to the themes page (also it activates the theme). */
+								/* translators: %s: URL đến trang giao diện (đồng thời kích hoạt giao diện). */
 								__( 'However, you can still <a href="%s">activate this theme</a>, and use the Site Editor to customize it.' ),
 								'{{{ data.theme.actions.activate }}}'
 							);

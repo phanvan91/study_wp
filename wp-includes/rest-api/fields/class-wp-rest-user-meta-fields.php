@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_User_Meta_Fields class
+ * REST API: Lớp WP_REST_User_Meta_Fields
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to manage meta values for users via the REST API.
+ * Lớp cốt lõi dùng để quản lý giá trị meta cho người dùng thông qua REST API.
  *
  * @since 4.7.0
  *
@@ -17,33 +17,33 @@
 class WP_REST_User_Meta_Fields extends WP_REST_Meta_Fields {
 
 	/**
-	 * Retrieves the user meta type.
+	 * Lấy loại meta người dùng.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return string The user meta type.
+	 * @return string Loại meta người dùng.
 	 */
 	protected function get_meta_type() {
 		return 'user';
 	}
 
 	/**
-	 * Retrieves the user meta subtype.
+	 * Lấy loại phụ meta người dùng.
 	 *
 	 * @since 4.9.8
 	 *
-	 * @return string 'user' There are no subtypes.
+	 * @return string 'user' Không có loại phụ.
 	 */
 	protected function get_meta_subtype() {
 		return 'user';
 	}
 
 	/**
-	 * Retrieves the type for register_rest_field().
+	 * Lấy loại cho register_rest_field().
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return string The user REST field type.
+	 * @return string Loại trường REST người dùng.
 	 */
 	public function get_rest_field_type() {
 		return 'user';

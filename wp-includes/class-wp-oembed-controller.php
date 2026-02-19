@@ -1,6 +1,6 @@
 <?php
 /**
- * WP_oEmbed_Controller class, used to provide an oEmbed endpoint.
+ * Lớp WP_oEmbed_Controller, được sử dụng để cung cấp endpoint oEmbed.
  *
  * @package WordPress
  * @subpackage Embeds
@@ -8,27 +8,27 @@
  */
 
 /**
- * oEmbed API endpoint controller.
+ * Bộ điều khiển endpoint API oEmbed.
  *
- * Registers the REST API route and delivers the response data.
- * The output format (XML or JSON) is handled by the REST API.
+ * Đăng ký route REST API và cung cấp dữ liệu phản hồi.
+ * Định dạng đầu ra (XML hoặc JSON) được xử lý bởi REST API.
  *
  * @since 4.4.0
  */
 #[AllowDynamicProperties]
 final class WP_oEmbed_Controller {
 	/**
-	 * Register the oEmbed REST API route.
+	 * Đăng ký route REST API oEmbed.
 	 *
 	 * @since 4.4.0
 	 */
 	public function register_routes() {
 		/**
-		 * Filters the maxwidth oEmbed parameter.
+		 * Lọc tham số maxwidth oEmbed.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param int $maxwidth Maximum allowed width. Default 600.
+		 * @param int $maxwidth Chiều rộng tối đa cho phép. Mặc định 600.
 		 */
 		$maxwidth = apply_filters( 'oembed_default_width', 600 );
 
@@ -107,25 +107,25 @@ final class WP_oEmbed_Controller {
 	}
 
 	/**
-	 * Callback for the embed API endpoint.
+	 * Callback cho endpoint API nhúng.
 	 *
-	 * Returns the JSON object for the post.
+	 * Trả về đối tượng JSON cho bài viết.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_REST_Request $request Full data about the request.
-	 * @return array|WP_Error oEmbed response data or WP_Error on failure.
+	 * @param WP_REST_Request $request Dữ liệu đầy đủ về yêu cầu.
+	 * @return array|WP_Error Dữ liệu phản hồi oEmbed hoặc WP_Error nếu thất bại.
 	 */
 	public function get_item( $request ) {
 		$post_id = url_to_postid( $request['url'] );
 
 		/**
-		 * Filters the determined post ID.
+		 * Lọc ID bài viết đã xác định.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param int    $post_id The post ID.
-		 * @param string $url     The requested URL.
+		 * @param int    $post_id ID bài viết.
+		 * @param string $url     URL được yêu cầu.
 		 */
 		$post_id = apply_filters( 'oembed_request_post_id', $post_id, $request['url'] );
 
@@ -139,11 +139,11 @@ final class WP_oEmbed_Controller {
 	}
 
 	/**
-	 * Checks if current user can make a proxy oEmbed request.
+	 * Kiểm tra xem người dùng hiện tại có thể thực hiện yêu cầu proxy oEmbed hay không.
 	 *
 	 * @since 4.8.0
 	 *
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function get_proxy_item_permissions_check() {
 		if ( ! current_user_can( 'edit_posts' ) ) {
@@ -153,25 +153,25 @@ final class WP_oEmbed_Controller {
 	}
 
 	/**
-	 * Callback for the proxy API endpoint.
+	 * Callback cho endpoint API proxy.
 	 *
-	 * Returns the JSON object for the proxied item.
+	 * Trả về đối tượng JSON cho mục được proxy.
 	 *
 	 * @since 4.8.0
 	 *
 	 * @see WP_oEmbed::get_html()
-	 * @global WP_Embed   $wp_embed   WordPress Embed object.
+	 * @global WP_Embed   $wp_embed   Đối tượng WordPress Embed.
 	 * @global WP_Scripts $wp_scripts
 	 *
-	 * @param WP_REST_Request $request Full data about the request.
-	 * @return object|WP_Error oEmbed response data or WP_Error on failure.
+	 * @param WP_REST_Request $request Dữ liệu đầy đủ về yêu cầu.
+	 * @return object|WP_Error Dữ liệu phản hồi oEmbed hoặc WP_Error nếu thất bại.
 	 */
 	public function get_proxy_item( $request ) {
 		global $wp_embed, $wp_scripts;
 
 		$args = $request->get_params();
 
-		// Serve oEmbed data from cache if set.
+		// Cung cấp dữ liệu oEmbed từ cache nếu có.
 		unset( $args['_wpnonce'] );
 		$cache_key = 'oembed_' . md5( serialize( $args ) );
 		$data      = get_transient( $cache_key );
@@ -182,7 +182,7 @@ final class WP_oEmbed_Controller {
 		$url = $request['url'];
 		unset( $args['url'] );
 
-		// Copy maxwidth/maxheight to width/height since WP_oEmbed::fetch() uses these arg names.
+		// Sao chép maxwidth/maxheight thành width/height vì WP_oEmbed::fetch() sử dụng các tên tham số này.
 		if ( isset( $args['maxwidth'] ) ) {
 			$args['width'] = $args['maxwidth'];
 		}
@@ -190,7 +190,7 @@ final class WP_oEmbed_Controller {
 			$args['height'] = $args['maxheight'];
 		}
 
-		// Short-circuit process for URLs belonging to the current site.
+		// Rút gọn quy trình cho URL thuộc trang web hiện tại.
 		$data = get_oembed_response_data_for_url( $url, $args );
 
 		if ( $data ) {
@@ -200,12 +200,12 @@ final class WP_oEmbed_Controller {
 		$data = _wp_oembed_get_object()->get_data( $url, $args );
 
 		if ( false === $data ) {
-			// Try using a classic embed, instead.
+			// Thử sử dụng nhúng cổ điển thay thế.
 			/* @var WP_Embed $wp_embed */
 			$html = $wp_embed->get_embed_handler_html( $args, $url );
 
 			if ( $html ) {
-				// Check if any scripts were enqueued by the shortcode, and include them in the response.
+				// Kiểm tra xem có script nào được enqueue bởi shortcode không, và bao gồm chúng trong phản hồi.
 				$enqueued_scripts = array();
 
 				foreach ( $wp_scripts->queue as $script ) {
@@ -222,20 +222,20 @@ final class WP_oEmbed_Controller {
 			return new WP_Error( 'oembed_invalid_url', get_status_header_desc( 404 ), array( 'status' => 404 ) );
 		}
 
-		/** This filter is documented in wp-includes/class-wp-oembed.php */
+		/** Bộ lọc này được ghi chú trong wp-includes/class-wp-oembed.php */
 		$data->html = apply_filters( 'oembed_result', _wp_oembed_get_object()->data2html( (object) $data, $url ), $url, $args );
 
 		/**
-		 * Filters the oEmbed TTL value (time to live).
+		 * Lọc giá trị TTL oEmbed (thời gian sống).
 		 *
-		 * Similar to the {@see 'oembed_ttl'} filter, but for the REST API
-		 * oEmbed proxy endpoint.
+		 * Tương tự bộ lọc {@see 'oembed_ttl'}, nhưng cho endpoint
+		 * proxy oEmbed REST API.
 		 *
 		 * @since 4.8.0
 		 *
-		 * @param int    $time    Time to live (in seconds).
-		 * @param string $url     The attempted embed URL.
-		 * @param array  $args    An array of embed request arguments.
+		 * @param int    $time    Thời gian sống (tính bằng giây).
+		 * @param string $url     URL nhúng được thử.
+		 * @param array  $args    Mảng tham số yêu cầu nhúng.
 		 */
 		$ttl = apply_filters( 'rest_oembed_ttl', DAY_IN_SECONDS, $url, $args );
 

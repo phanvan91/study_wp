@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Image_Control class
+ * API Tùy biến: Lớp WP_Customize_Image_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Image Control class.
+ * Lớp Điều khiển Hình ảnh trong Tùy biến.
  *
  * @since 3.4.0
  *
@@ -16,7 +16,7 @@
  */
 class WP_Customize_Image_Control extends WP_Customize_Upload_Control {
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -24,7 +24,7 @@ class WP_Customize_Image_Control extends WP_Customize_Upload_Control {
 	public $type = 'image';
 
 	/**
-	 * Media control mime type.
+	 * Loại MIME của điều khiển phương tiện.
 	 *
 	 * @since 4.1.0
 	 * @var string

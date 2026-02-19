@@ -1,6 +1,6 @@
 <?php
 /**
- * Upgrader API: WP_Ajax_Upgrader_Skin class
+ * API Nâng cấp: Lớp WP_Ajax_Upgrader_Skin
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -8,9 +8,9 @@
  */
 
 /**
- * Upgrader Skin for Ajax WordPress upgrades.
+ * Giao diện Nâng cấp cho các nâng cấp WordPress qua Ajax.
  *
- * This skin is designed to be used for Ajax updates.
+ * Giao diện này được thiết kế để sử dụng cho các cập nhật Ajax.
  *
  * @since 4.6.0
  *
@@ -19,28 +19,28 @@
 class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 
 	/**
-	 * Plugin info.
+	 * Thông tin plugin.
 	 *
-	 * The Plugin_Upgrader::bulk_upgrade() method will fill this in
-	 * with info retrieved from the get_plugin_data() function.
+	 * Phương thức Plugin_Upgrader::bulk_upgrade() sẽ điền thông tin này
+	 * với dữ liệu lấy từ hàm get_plugin_data().
 	 *
-	 * @var array Plugin data. Values will be empty if not supplied by the plugin.
+	 * @var array Dữ liệu plugin. Các giá trị sẽ rỗng nếu không được plugin cung cấp.
 	 */
 	public $plugin_info = array();
 
 	/**
-	 * Theme info.
+	 * Thông tin giao diện.
 	 *
-	 * The Theme_Upgrader::bulk_upgrade() method will fill this in
-	 * with info retrieved from the Theme_Upgrader::theme_info() method,
-	 * which in turn calls the wp_get_theme() function.
+	 * Phương thức Theme_Upgrader::bulk_upgrade() sẽ điền thông tin này
+	 * với dữ liệu lấy từ phương thức Theme_Upgrader::theme_info(),
+	 * mà phương thức đó gọi hàm wp_get_theme().
 	 *
-	 * @var WP_Theme|false The theme's info object, or false.
+	 * @var WP_Theme|false Đối tượng thông tin giao diện, hoặc false.
 	 */
 	public $theme_info = false;
 
 	/**
-	 * Holds the WP_Error object.
+	 * Lưu trữ đối tượng WP_Error.
 	 *
 	 * @since 4.6.0
 	 *
@@ -49,17 +49,17 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 	protected $errors = null;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * Sets up the WordPress Ajax upgrader skin.
+	 * Thiết lập giao diện nâng cấp Ajax WordPress.
 	 *
 	 * @since 4.6.0
 	 *
 	 * @see WP_Upgrader_Skin::__construct()
 	 *
-	 * @param array $args Optional. The WordPress Ajax upgrader skin arguments to
-	 *                    override default options. See WP_Upgrader_Skin::__construct().
-	 *                    Default empty array.
+	 * @param array $args Tùy chọn. Các tham số giao diện nâng cấp Ajax WordPress để
+	 *                    ghi đè các tùy chọn mặc định. Xem WP_Upgrader_Skin::__construct().
+	 *                    Mặc định mảng rỗng.
 	 */
 	public function __construct( $args = array() ) {
 		parent::__construct( $args );
@@ -68,22 +68,22 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 	}
 
 	/**
-	 * Retrieves the list of errors.
+	 * Lấy danh sách các lỗi.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @return WP_Error Errors during an upgrade.
+	 * @return WP_Error Các lỗi trong quá trình nâng cấp.
 	 */
 	public function get_errors() {
 		return $this->errors;
 	}
 
 	/**
-	 * Retrieves a string for error messages.
+	 * Lấy chuỗi các thông báo lỗi.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @return string Error messages during an upgrade.
+	 * @return string Các thông báo lỗi trong quá trình nâng cấp.
 	 */
 	public function get_error_messages() {
 		$messages = array();
@@ -102,14 +102,14 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 	}
 
 	/**
-	 * Stores an error message about the upgrade.
+	 * Lưu trữ một thông báo lỗi về quá trình nâng cấp.
 	 *
 	 * @since 4.6.0
-	 * @since 5.3.0 Formalized the existing `...$args` parameter by adding it
-	 *              to the function signature.
+	 * @since 5.3.0 Chính thức hóa tham số `...$args` hiện có bằng cách thêm nó
+	 *              vào chữ ký hàm.
 	 *
-	 * @param string|WP_Error $errors  Errors.
-	 * @param mixed           ...$args Optional text replacements.
+	 * @param string|WP_Error $errors  Các lỗi.
+	 * @param mixed           ...$args Các chuỗi thay thế tùy chọn.
 	 */
 	public function error( $errors, ...$args ) {
 		if ( is_string( $errors ) ) {
@@ -124,7 +124,7 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 				}
 			}
 
-			// Count existing errors to generate a unique error code.
+			// Đếm các lỗi hiện có để tạo mã lỗi duy nhất.
 			$errors_count = count( $this->errors->get_error_codes() );
 			$this->errors->add( 'unknown_upgrade_error_' . ( $errors_count + 1 ), $string );
 		} elseif ( is_wp_error( $errors ) ) {
@@ -137,15 +137,15 @@ class WP_Ajax_Upgrader_Skin extends Automatic_Upgrader_Skin {
 	}
 
 	/**
-	 * Stores a message about the upgrade.
+	 * Lưu trữ một thông báo về quá trình nâng cấp.
 	 *
 	 * @since 4.6.0
-	 * @since 5.3.0 Formalized the existing `...$args` parameter by adding it
-	 *              to the function signature.
-	 * @since 5.9.0 Renamed `$data` to `$feedback` for PHP 8 named parameter support.
+	 * @since 5.3.0 Chính thức hóa tham số `...$args` hiện có bằng cách thêm nó
+	 *              vào chữ ký hàm.
+	 * @since 5.9.0 Đổi tên `$data` thành `$feedback` để hỗ trợ tham số có tên trong PHP 8.
 	 *
-	 * @param string|array|WP_Error $feedback Message data.
-	 * @param mixed                 ...$args  Optional text replacements.
+	 * @param string|array|WP_Error $feedback Dữ liệu thông báo.
+	 * @param mixed                 ...$args  Các chuỗi thay thế tùy chọn.
 	 */
 	public function feedback( $feedback, ...$args ) {
 		if ( is_wp_error( $feedback ) ) {

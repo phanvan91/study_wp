@@ -1,6 +1,6 @@
 <?php
 /**
- * Upgrader API: Plugin_Installer_Skin class
+ * API Nâng cấp: Lớp Plugin_Installer_Skin
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -8,10 +8,10 @@
  */
 
 /**
- * Plugin Installer Skin for WordPress Plugin Installer.
+ * Giao diện cài đặt plugin cho Trình cài đặt plugin WordPress.
  *
  * @since 2.8.0
- * @since 4.6.0 Moved to its own file from wp-admin/includes/class-wp-upgrader-skins.php.
+ * @since 4.6.0 Được chuyển sang file riêng từ wp-admin/includes/class-wp-upgrader-skins.php.
  *
  * @see WP_Upgrader_Skin
  */
@@ -24,9 +24,9 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	private $is_downgrading = false;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * Sets up the plugin installer skin.
+	 * Thiết lập giao diện cài đặt plugin.
 	 *
 	 * @since 2.8.0
 	 *
@@ -52,7 +52,7 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Performs an action before installing a plugin.
+	 * Thực hiện hành động trước khi cài đặt plugin.
 	 *
 	 * @since 2.8.0
 	 */
@@ -67,12 +67,12 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Hides the `process_failed` error when updating a plugin by uploading a zip file.
+	 * Ẩn lỗi `process_failed` khi cập nhật plugin bằng cách tải lên tệp zip.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_Error $wp_error WP_Error object.
-	 * @return bool True if the error should be hidden, false otherwise.
+	 * @param WP_Error $wp_error Đối tượng WP_Error.
+	 * @return bool True nếu lỗi cần được ẩn, false nếu ngược lại.
 	 */
 	public function hide_process_failed( $wp_error ) {
 		if (
@@ -87,12 +87,12 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Performs an action following a plugin install.
+	 * Thực hiện hành động sau khi cài đặt plugin.
 	 *
 	 * @since 2.8.0
 	 */
 	public function after() {
-		// Check if the plugin can be overwritten and output the HTML.
+		// Kiểm tra xem plugin có thể được ghi đè và xuất HTML.
 		if ( $this->do_overwrite() ) {
 			return;
 		}
@@ -165,15 +165,15 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 		}
 
 		/**
-		 * Filters the list of action links available following a single plugin installation.
+		 * Lọc danh sách liên kết hành động có sẵn sau khi cài đặt một plugin.
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param string[] $install_actions Array of plugin action links.
-		 * @param object   $api             Object containing WordPress.org API plugin data. Empty
-		 *                                  for non-API installs, such as when a plugin is installed
-		 *                                  via upload.
-		 * @param string   $plugin_file     Path to the plugin file relative to the plugins directory.
+		 * @param string[] $install_actions Mảng các liên kết hành động plugin.
+		 * @param object   $api             Đối tượng chứa dữ liệu API plugin WordPress.org. Rỗng
+		 *                                  cho các cài đặt không qua API, ví dụ khi plugin được cài đặt
+		 *                                  bằng cách tải lên.
+		 * @param string   $plugin_file     Đường dẫn tới tệp plugin tương đối so với thư mục plugin.
 		 */
 		$install_actions = apply_filters( 'install_plugin_complete_actions', $install_actions, $this->api, $plugin_file );
 
@@ -183,11 +183,11 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Checks if the plugin can be overwritten and outputs the HTML for overwriting a plugin on upload.
+	 * Kiểm tra xem plugin có thể được ghi đè và xuất HTML cho việc ghi đè plugin khi tải lên.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @return bool Whether the plugin can be overwritten and HTML was outputted.
+	 * @return bool Plugin có thể được ghi đè và HTML đã được xuất hay không.
 	 */
 	private function do_overwrite() {
 		if ( 'upload' !== $this->type || ! is_wp_error( $this->result ) || 'folder_exists' !== $this->result->get_error_code() ) {
@@ -230,7 +230,7 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 		$table .= '<tr><th></th><th>' . esc_html_x( 'Current', 'plugin' ) . '</th>';
 		$table .= '<th>' . esc_html_x( 'Uploaded', 'plugin' ) . '</th></tr>';
 
-		$is_same_plugin = true; // Let's consider only these rows.
+		$is_same_plugin = true; // Chỉ xem xét các hàng này.
 
 		foreach ( $rows as $field => $label ) {
 			$old_value = ! empty( $current_plugin_data[ $field ] ) ? (string) $current_plugin_data[ $field ] : '-';
@@ -249,13 +249,13 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 		$table .= '</tbody></table>';
 
 		/**
-		 * Filters the compare table output for overwriting a plugin package on upload.
+		 * Lọc bảng so sánh đầu ra cho việc ghi đè gói plugin khi tải lên.
 		 *
 		 * @since 5.5.0
 		 *
-		 * @param string $table               The output table with Name, Version, Author, RequiresWP, and RequiresPHP info.
-		 * @param array  $current_plugin_data Array with current plugin data.
-		 * @param array  $new_plugin_data     Array with uploaded plugin data.
+		 * @param string $table               Bảng đầu ra với thông tin Tên, Phiên bản, Tác giả, RequiresWP, và RequiresPHP.
+		 * @param array  $current_plugin_data Mảng dữ liệu plugin hiện tại.
+		 * @param array  $new_plugin_data     Mảng dữ liệu plugin đã tải lên.
 		 */
 		echo apply_filters( 'install_plugin_overwrite_comparison', $table, $current_plugin_data, $new_plugin_data );
 
@@ -270,7 +270,7 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 
 		if ( ! is_php_version_compatible( $requires_php ) ) {
 			$error = sprintf(
-				/* translators: 1: Current PHP version, 2: Version required by the uploaded plugin. */
+				/* translators: 1: Phiên bản PHP hiện tại, 2: Phiên bản yêu cầu bởi plugin đã tải lên. */
 				__( 'The PHP version on your server is %1$s, however the uploaded plugin requires %2$s.' ),
 				PHP_VERSION,
 				$requires_php
@@ -282,7 +282,7 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 
 		if ( ! is_wp_version_compatible( $requires_wp ) ) {
 			$error = sprintf(
-				/* translators: 1: Current WordPress version, 2: Version required by the uploaded plugin. */
+				/* translators: 1: Phiên bản WordPress hiện tại, 2: Phiên bản yêu cầu bởi plugin đã tải lên. */
 				__( 'Your WordPress version is %1$s, however the uploaded plugin requires %2$s.' ),
 				esc_html( wp_get_wp_version() ),
 				$requires_wp
@@ -297,13 +297,13 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 		if ( $can_update ) {
 			if ( $this->is_downgrading ) {
 				$warning = sprintf(
-					/* translators: %s: Documentation URL. */
+					/* translators: %s: URL tài liệu. */
 					__( 'You are uploading an older version of a current plugin. You can continue to install the older version, but be sure to <a href="%s">back up your database and files</a> first.' ),
 					__( 'https://developer.wordpress.org/advanced-administration/security/backup/' )
 				);
 			} else {
 				$warning = sprintf(
-					/* translators: %s: Documentation URL. */
+					/* translators: %s: URL tài liệu. */
 					__( 'You are updating a plugin. Be sure to <a href="%s">back up your database and files</a> first.' ),
 					__( 'https://developer.wordpress.org/advanced-administration/security/backup/' )
 				);
@@ -331,14 +331,14 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 		);
 
 		/**
-		 * Filters the list of action links available following a single plugin installation failure
-		 * when overwriting is allowed.
+		 * Lọc danh sách liên kết hành động có sẵn sau khi cài đặt plugin thất bại
+		 * khi cho phép ghi đè.
 		 *
 		 * @since 5.5.0
 		 *
-		 * @param string[] $install_actions Array of plugin action links.
-		 * @param object   $api             Object containing WordPress.org API plugin data.
-		 * @param array    $new_plugin_data Array with uploaded plugin data.
+		 * @param string[] $install_actions Mảng các liên kết hành động plugin.
+		 * @param object   $api             Đối tượng chứa dữ liệu API plugin WordPress.org.
+		 * @param array    $new_plugin_data Mảng dữ liệu plugin đã tải lên.
 		 */
 		$install_actions = apply_filters( 'install_plugin_overwrite_actions', $install_actions, $this->api, $new_plugin_data );
 

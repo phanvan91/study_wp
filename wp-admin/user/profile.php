@@ -1,13 +1,13 @@
 <?php
 /**
- * User Profile Administration Screen.
+ * Màn hình Quản trị Hồ sơ Người dùng.
  *
  * @package WordPress
  * @subpackage Administration
  * @since 3.1.0
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 require ABSPATH . 'wp-admin/profile.php';

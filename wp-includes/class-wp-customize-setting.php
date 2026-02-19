@@ -1,21 +1,21 @@
 <?php
 /**
- * WordPress Customize Setting classes
+ * Các lớp Cài đặt Tùy biến WordPress.
  *
  * @package WordPress
  * @subpackage Customize
  * @since 3.4.0
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
 /**
- * Customize Setting class.
+ * Lớp Cài đặt Tùy biến.
  *
- * Handles saving and sanitizing of settings.
+ * Xử lý việc lưu và làm sạch các cài đặt.
  *
  * @since 3.4.0
  *
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 #[AllowDynamicProperties]
 class WP_Customize_Setting {
 	/**
-	 * Customizer bootstrap instance.
+	 * Đối tượng khởi tạo Customizer.
 	 *
 	 * @since 3.4.0
 	 * @var WP_Customize_Manager
@@ -33,7 +33,7 @@ class WP_Customize_Setting {
 	public $manager;
 
 	/**
-	 * Unique string identifier for the setting.
+	 * Chuỗi định danh duy nhất cho cài đặt.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -41,7 +41,7 @@ class WP_Customize_Setting {
 	public $id;
 
 	/**
-	 * Type of customize settings.
+	 * Loại cài đặt tùy biến.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -49,7 +49,7 @@ class WP_Customize_Setting {
 	public $type = 'theme_mod';
 
 	/**
-	 * Capability required to edit this setting.
+	 * Quyền cần thiết để chỉnh sửa cài đặt này.
 	 *
 	 * @since 3.4.0
 	 * @var string|array
@@ -57,7 +57,7 @@ class WP_Customize_Setting {
 	public $capability = 'edit_theme_options';
 
 	/**
-	 * Theme features required to support the setting.
+	 * Các tính năng giao diện cần thiết để hỗ trợ cài đặt.
 	 *
 	 * @since 3.4.0
 	 * @var string|string[]
@@ -65,7 +65,7 @@ class WP_Customize_Setting {
 	public $theme_supports = '';
 
 	/**
-	 * The default value for the setting.
+	 * Giá trị mặc định cho cài đặt.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -73,10 +73,10 @@ class WP_Customize_Setting {
 	public $default = '';
 
 	/**
-	 * Options for rendering the live preview of changes in Customizer.
+	 * Tùy chọn cho việc hiển thị xem trước trực tiếp các thay đổi trong Customizer.
 	 *
-	 * Set this value to 'postMessage' to enable a custom JavaScript handler to render changes to this setting
-	 * as opposed to reloading the whole page.
+	 * Đặt giá trị này thành 'postMessage' để kích hoạt trình xử lý JavaScript tùy chỉnh
+	 * hiển thị các thay đổi cho cài đặt này thay vì tải lại toàn bộ trang.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -84,7 +84,7 @@ class WP_Customize_Setting {
 	public $transport = 'refresh';
 
 	/**
-	 * Server-side validation callback for the setting's value.
+	 * Callback xác thực phía máy chủ cho giá trị của cài đặt.
 	 *
 	 * @since 4.6.0
 	 * @var callable
@@ -92,7 +92,7 @@ class WP_Customize_Setting {
 	public $validate_callback = '';
 
 	/**
-	 * Callback to filter a Customize setting value in un-slashed form.
+	 * Callback để lọc giá trị cài đặt Tùy biến ở dạng chưa thêm dấu gạch chéo.
 	 *
 	 * @since 3.4.0
 	 * @var callable
@@ -100,7 +100,7 @@ class WP_Customize_Setting {
 	public $sanitize_callback = '';
 
 	/**
-	 * Callback to convert a Customize PHP setting value to a value that is JSON serializable.
+	 * Callback để chuyển đổi giá trị cài đặt PHP Tùy biến thành giá trị có thể tuần tự hóa JSON.
 	 *
 	 * @since 3.4.0
 	 * @var callable
@@ -108,12 +108,12 @@ class WP_Customize_Setting {
 	public $sanitize_js_callback = '';
 
 	/**
-	 * Whether or not the setting is initially dirty when created.
+	 * Cài đặt có bị thay đổi (dirty) khi được tạo hay không.
 	 *
-	 * This is used to ensure that a setting will be sent from the pane to the
-	 * preview when loading the Customizer. Normally a setting only is synced to
-	 * the preview if it has been changed. This allows the setting to be sent
-	 * from the start.
+	 * Điều này được sử dụng để đảm bảo rằng cài đặt sẽ được gửi từ bảng điều khiển
+	 * đến phần xem trước khi tải Customizer. Thông thường cài đặt chỉ được đồng bộ
+	 * với phần xem trước nếu nó đã được thay đổi. Điều này cho phép cài đặt được
+	 * gửi ngay từ đầu.
 	 *
 	 * @since 4.2.0
 	 * @var bool
@@ -121,7 +121,7 @@ class WP_Customize_Setting {
 	public $dirty = false;
 
 	/**
-	 * ID Data.
+	 * Dữ liệu ID.
 	 *
 	 * @since 3.4.0
 	 * @var array
@@ -129,7 +129,7 @@ class WP_Customize_Setting {
 	protected $id_data = array();
 
 	/**
-	 * Whether or not preview() was called.
+	 * preview() đã được gọi hay chưa.
 	 *
 	 * @since 4.4.0
 	 * @var bool
@@ -137,7 +137,7 @@ class WP_Customize_Setting {
 	protected $is_previewed = false;
 
 	/**
-	 * Cache of multidimensional values to improve performance.
+	 * Bộ nhớ đệm các giá trị đa chiều để cải thiện hiệu suất.
 	 *
 	 * @since 4.4.0
 	 * @var array
@@ -145,7 +145,7 @@ class WP_Customize_Setting {
 	protected static $aggregated_multidimensionals = array();
 
 	/**
-	 * Whether the multidimensional setting is aggregated.
+	 * Cài đặt đa chiều có được tổng hợp hay không.
 	 *
 	 * @since 4.4.0
 	 * @var bool
@@ -153,31 +153,31 @@ class WP_Customize_Setting {
 	protected $is_multidimensional_aggregated = false;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * Any supplied $args override class property defaults.
+	 * Bất kỳ $args nào được cung cấp sẽ ghi đè các giá trị mặc định của thuộc tính lớp.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
-	 * @param string               $id      A specific ID of the setting.
-	 *                                      Can be a theme mod or option name.
+	 * @param WP_Customize_Manager $manager Đối tượng khởi tạo Customizer.
+	 * @param string               $id      ID cụ thể của cài đặt.
+	 *                                      Có thể là tên theme mod hoặc option.
 	 * @param array                $args    {
-	 *     Optional. Array of properties for the new Setting object. Default empty array.
+	 *     Tùy chọn. Mảng các thuộc tính cho đối tượng Setting mới. Mặc định là mảng rỗng.
 	 *
-	 *     @type string          $type                 Type of the setting. Default 'theme_mod'.
-	 *     @type string          $capability           Capability required for the setting. Default 'edit_theme_options'
-	 *     @type string|string[] $theme_supports       Theme features required to support the panel. Default is none.
-	 *     @type string          $default              Default value for the setting. Default is empty string.
-	 *     @type string          $transport            Options for rendering the live preview of changes in Customizer.
-	 *                                                 Using 'refresh' makes the change visible by reloading the whole preview.
-	 *                                                 Using 'postMessage' allows a custom JavaScript to handle live changes.
-	 *                                                 Default is 'refresh'.
-	 *     @type callable        $validate_callback    Server-side validation callback for the setting's value.
-	 *     @type callable        $sanitize_callback    Callback to filter a Customize setting value in un-slashed form.
-	 *     @type callable        $sanitize_js_callback Callback to convert a Customize PHP setting value to a value that is
-	 *                                                 JSON serializable.
-	 *     @type bool            $dirty                Whether or not the setting is initially dirty when created.
+	 *     @type string          $type                 Loại cài đặt. Mặc định 'theme_mod'.
+	 *     @type string          $capability           Quyền cần thiết cho cài đặt. Mặc định 'edit_theme_options'.
+	 *     @type string|string[] $theme_supports       Các tính năng giao diện cần thiết để hỗ trợ bảng điều khiển. Mặc định không có.
+	 *     @type string          $default              Giá trị mặc định cho cài đặt. Mặc định là chuỗi rỗng.
+	 *     @type string          $transport            Tùy chọn hiển thị xem trước trực tiếp các thay đổi trong Customizer.
+	 *                                                 Sử dụng 'refresh' làm thay đổi hiển thị bằng cách tải lại toàn bộ xem trước.
+	 *                                                 Sử dụng 'postMessage' cho phép JavaScript tùy chỉnh xử lý thay đổi trực tiếp.
+	 *                                                 Mặc định là 'refresh'.
+	 *     @type callable        $validate_callback    Callback xác thực phía máy chủ cho giá trị cài đặt.
+	 *     @type callable        $sanitize_callback    Callback để lọc giá trị cài đặt Tùy biến ở dạng chưa thêm dấu gạch chéo.
+	 *     @type callable        $sanitize_js_callback Callback để chuyển đổi giá trị cài đặt PHP Tùy biến thành giá trị
+	 *                                                 có thể tuần tự hóa JSON.
+	 *     @type bool            $dirty                Cài đặt có bị thay đổi (dirty) khi được tạo hay không.
 	 * }
 	 */
 	public function __construct( $manager, $id, $args = array() ) {
@@ -191,11 +191,11 @@ class WP_Customize_Setting {
 		$this->manager = $manager;
 		$this->id      = $id;
 
-		// Parse the ID for array keys.
+		// Phân tích ID để lấy các khóa mảng.
 		$this->id_data['keys'] = preg_split( '/\[/', str_replace( ']', '', $this->id ) );
 		$this->id_data['base'] = array_shift( $this->id_data['keys'] );
 
-		// Rebuild the ID.
+		// Xây dựng lại ID.
 		$this->id = $this->id_data['base'];
 		if ( ! empty( $this->id_data['keys'] ) ) {
 			$this->id .= '[' . implode( '][', $this->id_data['keys'] ) . ']';
@@ -212,10 +212,10 @@ class WP_Customize_Setting {
 		}
 
 		if ( 'option' === $this->type || 'theme_mod' === $this->type ) {
-			// Other setting types can opt-in to aggregate multidimensional explicitly.
+			// Các loại cài đặt khác có thể chọn tham gia tổng hợp đa chiều một cách rõ ràng.
 			$this->aggregate_multidimensional();
 
-			// Allow option settings to indicate whether they should be autoloaded.
+			// Cho phép các cài đặt option chỉ định liệu chúng có nên được tự động tải hay không.
 			if ( 'option' === $this->type && isset( $args['autoload'] ) ) {
 				self::$aggregated_multidimensionals[ $this->type ][ $this->id_data['base'] ]['autoload'] = $args['autoload'];
 			}
@@ -223,15 +223,15 @@ class WP_Customize_Setting {
 	}
 
 	/**
-	 * Get parsed ID data for multidimensional setting.
+	 * Lấy dữ liệu ID đã phân tích cho cài đặt đa chiều.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @return array {
-	 *     ID data for multidimensional setting.
+	 *     Dữ liệu ID cho cài đặt đa chiều.
 	 *
-	 *     @type string $base ID base
-	 *     @type array  $keys Keys for multidimensional array.
+	 *     @type string $base ID gốc.
+	 *     @type array  $keys Các khóa cho mảng đa chiều.
 	 * }
 	 */
 	final public function id_data() {
@@ -239,10 +239,10 @@ class WP_Customize_Setting {
 	}
 
 	/**
-	 * Set up the setting for aggregated multidimensional values.
+	 * Thiết lập cài đặt cho các giá trị đa chiều tổng hợp.
 	 *
-	 * When a multidimensional setting gets aggregated, all of its preview and update
-	 * calls get combined into one call, greatly improving performance.
+	 * Khi một cài đặt đa chiều được tổng hợp, tất cả các lệnh gọi xem trước và cập nhật
+	 * của nó được kết hợp thành một lệnh gọi duy nhất, cải thiện đáng kể hiệu suất.
 	 *
 	 * @since 4.4.0
 	 */
@@ -253,23 +253,23 @@ class WP_Customize_Setting {
 		}
 		if ( ! isset( self::$aggregated_multidimensionals[ $this->type ][ $id_base ] ) ) {
 			self::$aggregated_multidimensionals[ $this->type ][ $id_base ] = array(
-				'previewed_instances'       => array(), // Calling preview() will add the $setting to the array.
-				'preview_applied_instances' => array(), // Flags for which settings have had their values applied.
-				'root_value'                => $this->get_root_value( array() ), // Root value for initial state, manipulated by preview and update calls.
+				'previewed_instances'       => array(), // Gọi preview() sẽ thêm $setting vào mảng.
+				'preview_applied_instances' => array(), // Cờ đánh dấu các cài đặt đã được áp dụng giá trị.
+				'root_value'                => $this->get_root_value( array() ), // Giá trị gốc cho trạng thái ban đầu, được thao tác bởi các lệnh gọi preview và update.
 			);
 		}
 
 		if ( ! empty( $this->id_data['keys'] ) ) {
-			// Note the preview-applied flag is cleared at priority 9 to ensure it is cleared before a deferred-preview runs.
+			// Lưu ý cờ preview-applied được xóa ở priority 9 để đảm bảo nó được xóa trước khi một deferred-preview chạy.
 			add_action( "customize_post_value_set_{$this->id}", array( $this, '_clear_aggregated_multidimensional_preview_applied_flag' ), 9 );
 			$this->is_multidimensional_aggregated = true;
 		}
 	}
 
 	/**
-	 * Reset `$aggregated_multidimensionals` static variable.
+	 * Đặt lại biến tĩnh `$aggregated_multidimensionals`.
 	 *
-	 * This is intended only for use by unit tests.
+	 * Chỉ dành cho việc sử dụng bởi các bài kiểm tra đơn vị (unit tests).
 	 *
 	 * @since 4.5.0
 	 * @ignore
@@ -279,7 +279,7 @@ class WP_Customize_Setting {
 	}
 
 	/**
-	 * The ID for the current site when the preview() method was called.
+	 * ID của trang web hiện tại khi phương thức preview() được gọi.
 	 *
 	 * @since 4.2.0
 	 * @var int
@@ -287,11 +287,11 @@ class WP_Customize_Setting {
 	protected $_previewed_blog_id;
 
 	/**
-	 * Return true if the current site is not the same as the previewed site.
+	 * Trả về true nếu trang web hiện tại không giống với trang web đang xem trước.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @return bool If preview() has been called.
+	 * @return bool Liệu preview() đã được gọi hay chưa.
 	 */
 	public function is_current_blog_previewed() {
 		if ( ! isset( $this->_previewed_blog_id ) ) {
@@ -301,7 +301,7 @@ class WP_Customize_Setting {
 	}
 
 	/**
-	 * Original non-previewed value stored by the preview method.
+	 * Giá trị gốc chưa xem trước được lưu bởi phương thức preview.
 	 *
 	 * @see WP_Customize_Setting::preview()
 	 * @since 4.1.1
@@ -310,23 +310,22 @@ class WP_Customize_Setting {
 	protected $_original_value;
 
 	/**
-	 * Add filters to supply the setting's value when accessed.
+	 * Thêm các bộ lọc để cung cấp giá trị của cài đặt khi được truy cập.
 	 *
-	 * If the setting already has a pre-existing value and there is no incoming
-	 * post value for the setting, then this method will short-circuit since
-	 * there is no change to preview.
+	 * Nếu cài đặt đã có giá trị sẵn và không có giá trị post đến cho cài đặt,
+	 * thì phương thức này sẽ bỏ qua vì không có thay đổi nào cần xem trước.
 	 *
 	 * @since 3.4.0
-	 * @since 4.4.0 Added boolean return value.
+	 * @since 4.4.0 Thêm giá trị trả về boolean.
 	 *
-	 * @return bool False when preview short-circuits due no change needing to be previewed.
+	 * @return bool False khi xem trước bị bỏ qua vì không có thay đổi nào cần xem trước.
 	 */
 	public function preview() {
 		if ( ! isset( $this->_previewed_blog_id ) ) {
 			$this->_previewed_blog_id = get_current_blog_id();
 		}
 
-		// Prevent re-previewing an already-previewed setting.
+		// Ngăn việc xem trước lại một cài đặt đã được xem trước.
 		if ( $this->is_previewed ) {
 			return true;
 		}
@@ -336,30 +335,29 @@ class WP_Customize_Setting {
 		$multidimensional_filter = array( $this, '_multidimensional_preview_filter' );
 
 		/*
-		 * Check if the setting has a pre-existing value (an isset check),
-		 * and if doesn't have any incoming post value. If both checks are true,
-		 * then the preview short-circuits because there is nothing that needs
-		 * to be previewed.
+		 * Kiểm tra xem cài đặt có giá trị sẵn hay không (kiểm tra isset),
+		 * và liệu có giá trị post đến hay không. Nếu cả hai kiểm tra đều đúng,
+		 * thì xem trước sẽ bị bỏ qua vì không có gì cần xem trước.
 		 */
 		$undefined     = new stdClass();
 		$needs_preview = ( $undefined !== $this->post_value( $undefined ) );
 		$value         = null;
 
-		// Since no post value was defined, check if we have an initial value set.
+		// Vì không có giá trị post nào được định nghĩa, kiểm tra xem có giá trị ban đầu được đặt hay không.
 		if ( ! $needs_preview ) {
 			if ( $this->is_multidimensional_aggregated ) {
 				$root  = self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['root_value'];
 				$value = $this->multidimensional_get( $root, $this->id_data['keys'], $undefined );
 			} else {
 				$default       = $this->default;
-				$this->default = $undefined; // Temporarily set default to undefined so we can detect if existing value is set.
+				$this->default = $undefined; // Tạm thời đặt mặc định thành undefined để phát hiện nếu giá trị hiện có được đặt.
 				$value         = $this->value();
 				$this->default = $default;
 			}
-			$needs_preview = ( $undefined === $value ); // Because the default needs to be supplied.
+			$needs_preview = ( $undefined === $value ); // Vì giá trị mặc định cần được cung cấp.
 		}
 
-		// If the setting does not need previewing now, defer to when it has a value to preview.
+		// Nếu cài đặt không cần xem trước ngay bây giờ, hoãn lại đến khi nó có giá trị để xem trước.
 		if ( ! $needs_preview ) {
 			if ( ! has_action( "customize_post_value_set_{$this->id}", array( $this, 'preview' ) ) ) {
 				add_action( "customize_post_value_set_{$this->id}", array( $this, 'preview' ) );
@@ -373,7 +371,7 @@ class WP_Customize_Setting {
 					add_filter( "theme_mod_{$id_base}", array( $this, '_preview_filter' ) );
 				} else {
 					if ( empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
-						// Only add this filter once for this ID base.
+						// Chỉ thêm bộ lọc này một lần cho ID gốc này.
 						add_filter( "theme_mod_{$id_base}", $multidimensional_filter );
 					}
 					self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'][ $this->id ] = $this;
@@ -384,7 +382,7 @@ class WP_Customize_Setting {
 					add_filter( "pre_option_{$id_base}", array( $this, '_preview_filter' ) );
 				} else {
 					if ( empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
-						// Only add these filters once for this ID base.
+						// Chỉ thêm các bộ lọc này một lần cho ID gốc này.
 						add_filter( "option_{$id_base}", $multidimensional_filter );
 						add_filter( "default_option_{$id_base}", $multidimensional_filter );
 					}
@@ -393,26 +391,26 @@ class WP_Customize_Setting {
 				break;
 			default:
 				/**
-				 * Fires when the WP_Customize_Setting::preview() method is called for settings
-				 * not handled as theme_mods or options.
+				 * Kích hoạt khi phương thức WP_Customize_Setting::preview() được gọi cho các cài đặt
+				 * không được xử lý dưới dạng theme_mods hoặc options.
 				 *
-				 * The dynamic portion of the hook name, `$this->id`, refers to the setting ID.
+				 * Phần động của tên hook, `$this->id`, tham chiếu đến ID cài đặt.
 				 *
 				 * @since 3.4.0
 				 *
-				 * @param WP_Customize_Setting $setting WP_Customize_Setting instance.
+				 * @param WP_Customize_Setting $setting Đối tượng WP_Customize_Setting.
 				 */
 				do_action( "customize_preview_{$this->id}", $this );
 
 				/**
-				 * Fires when the WP_Customize_Setting::preview() method is called for settings
-				 * not handled as theme_mods or options.
+				 * Kích hoạt khi phương thức WP_Customize_Setting::preview() được gọi cho các cài đặt
+				 * không được xử lý dưới dạng theme_mods hoặc options.
 				 *
-				 * The dynamic portion of the hook name, `$this->type`, refers to the setting type.
+				 * Phần động của tên hook, `$this->type`, tham chiếu đến loại cài đặt.
 				 *
 				 * @since 4.1.0
 				 *
-				 * @param WP_Customize_Setting $setting WP_Customize_Setting instance.
+				 * @param WP_Customize_Setting $setting Đối tượng WP_Customize_Setting.
 				 */
 				do_action( "customize_preview_{$this->type}", $this );
 		}
@@ -423,11 +421,11 @@ class WP_Customize_Setting {
 	}
 
 	/**
-	 * Clear out the previewed-applied flag for a multidimensional-aggregated value whenever its post value is updated.
+	 * Xóa cờ đã áp dụng xem trước cho giá trị tổng hợp đa chiều mỗi khi giá trị post của nó được cập nhật.
 	 *
-	 * This ensures that the new value will get sanitized and used the next time
-	 * that `WP_Customize_Setting::_multidimensional_preview_filter()`
-	 * is called for this setting.
+	 * Điều này đảm bảo rằng giá trị mới sẽ được làm sạch và sử dụng vào lần tiếp theo
+	 * mà `WP_Customize_Setting::_multidimensional_preview_filter()`
+	 * được gọi cho cài đặt này.
 	 *
 	 * @since 4.4.0
 	 *
@@ -439,31 +437,31 @@ class WP_Customize_Setting {
 	}
 
 	/**
-	 * Callback function to filter non-multidimensional theme mods and options.
+	 * Hàm callback để lọc các theme mods và options không phải đa chiều.
 	 *
-	 * If switch_to_blog() was called after the preview() method, and the current
-	 * site is now not the same site, then this method does a no-op and returns
-	 * the original value.
+	 * Nếu switch_to_blog() được gọi sau phương thức preview(), và trang web hiện tại
+	 * không còn là cùng một trang web, thì phương thức này không thực hiện gì và trả về
+	 * giá trị gốc.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param mixed $original Old value.
-	 * @return mixed New or old value.
+	 * @param mixed $original Giá trị cũ.
+	 * @return mixed Giá trị mới hoặc cũ.
 	 */
 	public function _preview_filter( $original ) {
 		if ( ! $this->is_current_blog_previewed() ) {
 			return $original;
 		}
 
-		$undefined  = new stdClass(); // Symbol hack.
+		$undefined  = new stdClass(); // Mẹo dùng symbol.
 		$post_value = $this->post_value( $undefined );
 		if ( $undefined !== $post_value ) {
 			$value = $post_value;
 		} else {
 			/*
-			 * Note that we don't use $original here because preview() will
-			 * not add the filter in the first place if it has an initial value
-			 * and there is no post value.
+			 * Lưu ý rằng chúng ta không dùng $original ở đây vì preview() sẽ
+			 * không thêm bộ lọc ngay từ đầu nếu nó có giá trị ban đầu
+			 * và không có giá trị post.
 			 */
 			$value = $this->default;
 		}
@@ -471,16 +469,16 @@ class WP_Customize_Setting {
 	}
 
 	/**
-	 * Callback function to filter multidimensional theme mods and options.
+	 * Hàm callback để lọc các theme mods và options đa chiều.
 	 *
-	 * For all multidimensional settings of a given type, the preview filter for
-	 * the first setting previewed will be used to apply the values for the others.
+	 * Đối với tất cả các cài đặt đa chiều cùng loại, bộ lọc xem trước của
+	 * cài đặt đầu tiên được xem trước sẽ được sử dụng để áp dụng giá trị cho các cài đặt khác.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @see WP_Customize_Setting::$aggregated_multidimensionals
-	 * @param mixed $original Original root value.
-	 * @return mixed New or old value.
+	 * @param mixed $original Giá trị gốc ban đầu.
+	 * @return mixed Giá trị mới hoặc cũ.
 	 */
 	final public function _multidimensional_preview_filter( $original ) {
 		if ( ! $this->is_current_blog_previewed() ) {
@@ -489,18 +487,18 @@ class WP_Customize_Setting {
 
 		$id_base = $this->id_data['base'];
 
-		// If no settings have been previewed yet (which should not be the case, since $this is), just pass through the original value.
+		// Nếu chưa có cài đặt nào được xem trước (điều này không nên xảy ra vì $this đã có), chỉ cần truyền qua giá trị gốc.
 		if ( empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] ) ) {
 			return $original;
 		}
 
 		foreach ( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['previewed_instances'] as $previewed_setting ) {
-			// Skip applying previewed value for any settings that have already been applied.
+			// Bỏ qua việc áp dụng giá trị xem trước cho bất kỳ cài đặt nào đã được áp dụng.
 			if ( ! empty( self::$aggregated_multidimensionals[ $this->type ][ $id_base ]['preview_applied_instances'][ $previewed_setting->id ] ) ) {
 				continue;
 			}
 
-			// Do the replacements of the posted/default sub value into the root value.
+			// Thực hiện thay thế giá trị con đã đăng/mặc định vào giá trị gốc.
 			$value = $previewed_setting->post_value( $previewed_setting->default );
 			$root  = self::$aggregated_multidimensionals[ $previewed_setting->type ][ $id_base ]['root_value'];
 			$root  = $previewed_setting->multidimensional_replace( $root, $previewed_setting->id_data['keys'], $value );

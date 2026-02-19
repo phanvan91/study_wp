@@ -1,6 +1,6 @@
 <?php
 /**
- * Update/Install Plugin/Theme administration panel.
+ * Bảng quản trị Cập nhật/Cài đặt Plugin/Theme.
  *
  * @package WordPress
  * @subpackage Administration
@@ -12,7 +12,7 @@ if ( ! defined( 'IFRAME_REQUEST' )
 	define( 'IFRAME_REQUEST', true );
 }
 
-/** WordPress Administration Bootstrap */
+/** Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
@@ -59,7 +59,7 @@ if ( isset( $_GET['action'] ) ) {
 
 		check_admin_referer( 'upgrade-plugin_' . $plugin );
 
-		// Used in the HTML title tag.
+		// Được dùng trong thẻ HTML title.
 		$title        = __( 'Update Plugin' );
 		$parent_file  = 'plugins.php';
 		$submenu_file = 'plugins.php';
@@ -96,7 +96,7 @@ if ( isset( $_GET['action'] ) ) {
 			echo '<p>' . __( 'Plugin failed to reactivate due to a fatal error.' ) . '</p>';
 
 			error_reporting( E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_RECOVERABLE_ERROR );
-			ini_set( 'display_errors', true ); // Ensure that fatal errors are displayed.
+			ini_set( 'display_errors', true ); // Đảm bảo hiển thị các lỗi nghiêm trọng.
 			wp_register_plugin_realpath( WP_PLUGIN_DIR . '/' . $plugin );
 			include WP_PLUGIN_DIR . '/' . $plugin;
 		}
@@ -107,7 +107,7 @@ if ( isset( $_GET['action'] ) ) {
 			wp_die( __( 'Sorry, you are not allowed to install plugins on this site.' ) );
 		}
 
-		require_once ABSPATH . 'wp-admin/includes/plugin-install.php'; // For plugins_api().
+		require_once ABSPATH . 'wp-admin/includes/plugin-install.php'; // Cho hàm plugins_api().
 
 		check_admin_referer( 'install-plugin_' . $plugin );
 		$api = plugins_api(
@@ -124,14 +124,14 @@ if ( isset( $_GET['action'] ) ) {
 			wp_die( $api );
 		}
 
-		// Used in the HTML title tag.
+		// Được dùng trong thẻ HTML title.
 		$title        = __( 'Plugin Installation' );
 		$parent_file  = 'plugins.php';
 		$submenu_file = 'plugin-install.php';
 
 		require_once ABSPATH . 'wp-admin/admin-header.php';
 
-		/* translators: %s: Plugin name and version. */
+		/* translators: %s: Tên plugin và phiên bản. */
 		$title = sprintf( __( 'Installing Plugin: %s' ), $api->name . ' ' . $api->version );
 		$nonce = 'install-plugin_' . $plugin;
 		$url   = 'update.php?action=install-plugin&plugin=' . urlencode( $plugin );
@@ -139,7 +139,7 @@ if ( isset( $_GET['action'] ) ) {
 			$url .= '&from=' . urlencode( stripslashes( $_GET['from'] ) );
 		}
 
-		$type = 'web'; // Install plugin type, From Web or an Upload.
+		$type = 'web'; // Loại cài đặt plugin, từ Web hoặc Tải lên.
 
 		$upgrader = new Plugin_Upgrader( new Plugin_Installer_Skin( compact( 'title', 'url', 'nonce', 'plugin', 'api' ) ) );
 		$upgrader->install( $api->download_link );
@@ -160,18 +160,18 @@ if ( isset( $_GET['action'] ) ) {
 
 		$file_upload = new File_Upload_Upgrader( 'pluginzip', 'package' );
 
-		// Used in the HTML title tag.
+		// Được dùng trong thẻ HTML title.
 		$title        = __( 'Upload Plugin' );
 		$parent_file  = 'plugins.php';
 		$submenu_file = 'plugin-install.php';
 
 		require_once ABSPATH . 'wp-admin/admin-header.php';
 
-		/* translators: %s: File name. */
+		/* translators: %s: Tên file. */
 		$title = sprintf( __( 'Installing plugin from uploaded file: %s' ), esc_html( basename( $file_upload->filename ) ) );
 		$nonce = 'plugin-upload';
 		$url   = add_query_arg( array( 'package' => $file_upload->id ), 'update.php?action=upload-plugin' );
-		$type  = 'upload'; // Install plugin type, From Web or an Upload.
+		$type  = 'upload'; // Loại cài đặt plugin, từ Web hoặc Tải lên.
 
 		$overwrite = isset( $_GET['overwrite'] ) ? sanitize_text_field( $_GET['overwrite'] ) : '';
 		$overwrite = in_array( $overwrite, array( 'update-plugin', 'downgrade-plugin' ), true ) ? $overwrite : '';
@@ -192,8 +192,8 @@ if ( isset( $_GET['action'] ) ) {
 
 		check_admin_referer( 'plugin-upload-cancel-overwrite' );
 
-		// Make sure the attachment still exists, or File_Upload_Upgrader will call wp_die()
-		// that shows a generic "Please select a file" error.
+		// Đảm bảo attachment vẫn tồn tại, nếu không File_Upload_Upgrader sẽ gọi wp_die()
+		// hiển thị lỗi chung "Please select a file".
 		if ( ! empty( $_GET['package'] ) ) {
 			$attachment_id = (int) $_GET['package'];
 
@@ -215,7 +215,7 @@ if ( isset( $_GET['action'] ) ) {
 
 		wp_enqueue_script( 'updates' );
 
-		// Used in the HTML title tag.
+		// Được dùng trong thẻ HTML title.
 		$title        = __( 'Update Theme' );
 		$parent_file  = 'themes.php';
 		$submenu_file = 'themes.php';
@@ -262,7 +262,7 @@ if ( isset( $_GET['action'] ) ) {
 			wp_die( __( 'Sorry, you are not allowed to install themes on this site.' ) );
 		}
 
-		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'; // For themes_api().
+		require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'; // Cho hàm themes_api().
 
 		check_admin_referer( 'install-theme_' . $theme );
 		$api = themes_api(
@@ -274,24 +274,24 @@ if ( isset( $_GET['action'] ) ) {
 					'tags'     => false,
 				),
 			)
-		); // Save on a bit of bandwidth.
+		); // Tiết kiệm một chút băng thông.
 
 		if ( is_wp_error( $api ) ) {
 			wp_die( $api );
 		}
 
-		// Used in the HTML title tag.
+		// Được dùng trong thẻ HTML title.
 		$title        = __( 'Install Themes' );
 		$parent_file  = 'themes.php';
 		$submenu_file = 'themes.php';
 
 		require_once ABSPATH . 'wp-admin/admin-header.php';
 
-		/* translators: %s: Theme name and version. */
+		/* translators: %s: Tên theme và phiên bản. */
 		$title = sprintf( __( 'Installing Theme: %s' ), $api->name . ' ' . $api->version );
 		$nonce = 'install-theme_' . $theme;
 		$url   = 'update.php?action=install-theme&theme=' . urlencode( $theme );
-		$type  = 'web'; // Install theme type, From Web or an Upload.
+		$type  = 'web'; // Loại cài đặt theme, từ Web hoặc Tải lên.
 
 		$upgrader = new Theme_Upgrader( new Theme_Installer_Skin( compact( 'title', 'url', 'nonce', 'plugin', 'api' ) ) );
 		$upgrader->install( $api->download_link );
@@ -312,18 +312,18 @@ if ( isset( $_GET['action'] ) ) {
 
 		$file_upload = new File_Upload_Upgrader( 'themezip', 'package' );
 
-		// Used in the HTML title tag.
+		// Được dùng trong thẻ HTML title.
 		$title        = __( 'Upload Theme' );
 		$parent_file  = 'themes.php';
 		$submenu_file = 'theme-install.php';
 
 		require_once ABSPATH . 'wp-admin/admin-header.php';
 
-		/* translators: %s: File name. */
+		/* translators: %s: Tên file. */
 		$title = sprintf( __( 'Installing theme from uploaded file: %s' ), esc_html( basename( $file_upload->filename ) ) );
 		$nonce = 'theme-upload';
 		$url   = add_query_arg( array( 'package' => $file_upload->id ), 'update.php?action=upload-theme' );
-		$type  = 'upload'; // Install theme type, From Web or an Upload.
+		$type  = 'upload'; // Loại cài đặt theme, từ Web hoặc Tải lên.
 
 		$overwrite = isset( $_GET['overwrite'] ) ? sanitize_text_field( $_GET['overwrite'] ) : '';
 		$overwrite = in_array( $overwrite, array( 'update-theme', 'downgrade-theme' ), true ) ? $overwrite : '';
@@ -344,8 +344,8 @@ if ( isset( $_GET['action'] ) ) {
 
 		check_admin_referer( 'theme-upload-cancel-overwrite' );
 
-		// Make sure the attachment still exists, or File_Upload_Upgrader will call wp_die()
-		// that shows a generic "Please select a file" error.
+		// Đảm bảo attachment vẫn tồn tại, nếu không File_Upload_Upgrader sẽ gọi wp_die()
+		// hiển thị lỗi chung "Please select a file".
 		if ( ! empty( $_GET['package'] ) ) {
 			$attachment_id = (int) $_GET['package'];
 
@@ -359,11 +359,11 @@ if ( isset( $_GET['action'] ) ) {
 		exit;
 	} else {
 		/**
-		 * Fires when a custom plugin or theme update request is received.
+		 * Kích hoạt khi nhận được yêu cầu cập nhật plugin hoặc theme tùy chỉnh.
 		 *
-		 * The dynamic portion of the hook name, `$action`, refers to the action
-		 * provided in the request for wp-admin/update.php. Can be used to
-		 * provide custom update functionality for themes and plugins.
+		 * Phần động của tên hook, `$action`, tham chiếu đến hành động
+		 * được cung cấp trong yêu cầu cho wp-admin/update.php. Có thể được sử dụng để
+		 * cung cấp chức năng cập nhật tùy chỉnh cho theme và plugin.
 		 *
 		 * @since 2.8.0
 		 */

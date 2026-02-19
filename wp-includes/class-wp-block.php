@@ -1,13 +1,13 @@
 <?php
 /**
- * Blocks API: WP_Block class
+ * API Blocks: Lớp WP_Block
  *
  * @package WordPress
  * @since 5.5.0
  */
 
 /**
- * Class representing a parsed instance of a block.
+ * Lớp đại diện cho một thể hiện block đã được phân tích cú pháp.
  *
  * @since 5.5.0
  * @property array $attributes
@@ -16,7 +16,7 @@
 class WP_Block {
 
 	/**
-	 * Original parsed array representation of block.
+	 * Mảng biểu diễn gốc của block đã được phân tích cú pháp.
 	 *
 	 * @since 5.5.0
 	 * @var array
@@ -24,7 +24,7 @@ class WP_Block {
 	public $parsed_block;
 
 	/**
-	 * Name of block.
+	 * Tên của block.
 	 *
 	 * @example "core/paragraph"
 	 *
@@ -34,7 +34,7 @@ class WP_Block {
 	public $name;
 
 	/**
-	 * Block type associated with the instance.
+	 * Loại block liên kết với thể hiện này.
 	 *
 	 * @since 5.5.0
 	 * @var WP_Block_Type
@@ -42,7 +42,7 @@ class WP_Block {
 	public $block_type;
 
 	/**
-	 * Block context values.
+	 * Các giá trị ngữ cảnh của block.
 	 *
 	 * @since 5.5.0
 	 * @var array
@@ -50,7 +50,7 @@ class WP_Block {
 	public $context = array();
 
 	/**
-	 * All available context of the current hierarchy.
+	 * Tất cả ngữ cảnh khả dụng của cấp bậc hiện tại.
 	 *
 	 * @since 5.5.0
 	 * @var array
@@ -59,7 +59,7 @@ class WP_Block {
 	protected $available_context = array();
 
 	/**
-	 * Block type registry.
+	 * Registry loại block.
 	 *
 	 * @since 5.9.0
 	 * @var WP_Block_Type_Registry
@@ -68,7 +68,7 @@ class WP_Block {
 	protected $registry;
 
 	/**
-	 * List of inner blocks (of this same class)
+	 * Danh sách các block con (cùng lớp này)
 	 *
 	 * @since 5.5.0
 	 * @var WP_Block_List
@@ -76,8 +76,8 @@ class WP_Block {
 	public $inner_blocks = array();
 
 	/**
-	 * Resultant HTML from inside block comment delimiters after removing inner
-	 * blocks.
+	 * HTML kết quả từ bên trong các dấu phân cách comment block
+	 * sau khi loại bỏ các block con.
 	 *
 	 * @example "...Just <!-- wp:test /--> testing..." -> "Just testing..."
 	 *
@@ -87,7 +87,7 @@ class WP_Block {
 	public $inner_html = '';
 
 	/**
-	 * List of string fragments and null markers where inner blocks were found
+	 * Danh sách các đoạn chuỗi và các dấu null nơi các block con được tìm thấy
 	 *
 	 * @example array(
 	 *   'inner_html'    => 'BeforeInnerAfter',
@@ -101,30 +101,30 @@ class WP_Block {
 	public $inner_content = array();
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * Populates object properties from the provided block instance argument.
+	 * Điền các thuộc tính đối tượng từ tham số thể hiện block được cung cấp.
 	 *
-	 * The given array of context values will not necessarily be available on
-	 * the instance itself, but is treated as the full set of values provided by
-	 * the block's ancestry. This is assigned to the private `available_context`
-	 * property. Only values which are configured to consumed by the block via
-	 * its registered type will be assigned to the block's `context` property.
+	 * Mảng giá trị ngữ cảnh được cung cấp không nhất thiết sẽ có sẵn trên chính
+	 * thể hiện này, mà được coi là tập hợp đầy đủ các giá trị được cung cấp bởi
+	 * tổ tiên của block. Giá trị này được gán cho thuộc tính riêng tư `available_context`.
+	 * Chỉ các giá trị được cấu hình để block sử dụng thông qua loại block đã đăng ký
+	 * mới được gán cho thuộc tính `context` của block.
 	 *
 	 * @since 5.5.0
 	 *
 	 * @param array                  $block             {
-	 *     An associative array of a single parsed block object. See WP_Block_Parser_Block.
+	 *     Mảng liên kết của một đối tượng block đã phân tích cú pháp đơn lẻ. Xem WP_Block_Parser_Block.
 	 *
-	 *     @type string   $blockName    Name of block.
-	 *     @type array    $attrs        Attributes from block comment delimiters.
-	 *     @type array    $innerBlocks  List of inner blocks. An array of arrays that
-	 *                                  have the same structure as this one.
-	 *     @type string   $innerHTML    HTML from inside block comment delimiters.
-	 *     @type array    $innerContent List of string fragments and null markers where inner blocks were found.
+	 *     @type string   $blockName    Tên của block.
+	 *     @type array    $attrs        Thuộc tính từ các dấu phân cách comment block.
+	 *     @type array    $innerBlocks  Danh sách các block con. Mảng các mảng có cùng
+	 *                                  cấu trúc với mảng này.
+	 *     @type string   $innerHTML    HTML từ bên trong các dấu phân cách comment block.
+	 *     @type array    $innerContent Danh sách các đoạn chuỗi và dấu null nơi các block con được tìm thấy.
 	 * }
-	 * @param array                  $available_context Optional array of ancestry context values.
-	 * @param WP_Block_Type_Registry $registry          Optional block type registry.
+	 * @param array                  $available_context Mảng tùy chọn các giá trị ngữ cảnh tổ tiên.
+	 * @param WP_Block_Type_Registry $registry          Registry loại block tùy chọn.
 	 */
 	public function __construct( $block, $available_context = array(), $registry = null ) {
 		$this->parsed_block = $block;
@@ -144,21 +144,23 @@ class WP_Block {
 	}
 
 	/**
-	 * Updates the context for the current block and its inner blocks.
+	 * Cập nhật ngữ cảnh cho block hiện tại và các block con của nó.
 	 *
-	 * The method updates the context of inner blocks, if any, by passing down
-	 * any context values the block provides (`provides_context`).
+	 * Phương thức cập nhật ngữ cảnh của các block con, nếu có, bằng cách truyền xuống
+	 * bất kỳ giá trị ngữ cảnh nào mà block cung cấp (`provides_context`).
 	 *
-	 * If the block has inner blocks, the method recursively processes them by creating new instances of `WP_Block`
-	 * for each inner block and updating their context based on the block's `provides_context` property.
+	 * Nếu block có các block con, phương thức sẽ xử lý đệ quy chúng bằng cách tạo các
+	 * thể hiện mới của `WP_Block` cho mỗi block con và cập nhật ngữ cảnh dựa trên
+	 * thuộc tính `provides_context` của block.
 	 *
 	 * @since 6.8.0
 	 */
 	public function refresh_context_dependents() {
 		/*
-		 * Merging the `$context` property here is not ideal, but for now needs to happen because of backward compatibility.
-		 * Ideally, the `$context` property itself would not be filterable directly and only the `$available_context` would be filterable.
-		 * However, this needs to be separately explored whether it's possible without breakage.
+		 * Việc hợp nhất thuộc tính `$context` ở đây không lý tưởng, nhưng hiện tại cần thiết vì lý do
+		 * tương thích ngược. Lý tưởng nhất, thuộc tính `$context` sẽ không thể lọc được trực tiếp
+		 * và chỉ `$available_context` mới có thể lọc được.
+		 * Tuy nhiên, cần phải tìm hiểu riêng xem liệu có thể thực hiện điều này mà không gây lỗi hay không.
 		 */
 		$this->available_context = array_merge( $this->available_context, $this->context );
 
@@ -174,14 +176,15 @@ class WP_Block {
 	}
 
 	/**
-	 * Updates the parsed block content for the current block and its inner blocks.
+	 * Cập nhật nội dung block đã phân tích cú pháp cho block hiện tại và các block con.
 	 *
-	 * This method sets the `inner_html` and `inner_content` properties of the block based on the parsed
-	 * block content provided during initialization. It ensures that the block instance reflects the
-	 * most up-to-date content for both the inner HTML and any string fragments around inner blocks.
+	 * Phương thức này thiết lập các thuộc tính `inner_html` và `inner_content` của block dựa trên
+	 * nội dung block đã phân tích cú pháp được cung cấp trong quá trình khởi tạo. Nó đảm bảo rằng
+	 * thể hiện block phản ánh nội dung cập nhật nhất cho cả HTML bên trong và bất kỳ đoạn chuỗi nào
+	 * xung quanh các block con.
 	 *
-	 * If the block has inner blocks, this method initializes a new `WP_Block_List` for them, ensuring the
-	 * correct content and context are updated for each nested block.
+	 * Nếu block có các block con, phương thức này khởi tạo một `WP_Block_List` mới cho chúng,
+	 * đảm bảo nội dung và ngữ cảnh chính xác được cập nhật cho mỗi block lồng nhau.
 	 *
 	 * @since 6.8.0
 	 */
@@ -210,17 +213,17 @@ class WP_Block {
 	}
 
 	/**
-	 * Returns a value from an inaccessible property.
+	 * Trả về giá trị từ một thuộc tính không thể truy cập.
 	 *
-	 * This is used to lazily initialize the `attributes` property of a block,
-	 * such that it is only prepared with default attributes at the time that
-	 * the property is accessed. For all other inaccessible properties, a `null`
-	 * value is returned.
+	 * Được sử dụng để khởi tạo lười thuộc tính `attributes` của block,
+	 * sao cho nó chỉ được chuẩn bị với các thuộc tính mặc định tại thời điểm
+	 * thuộc tính được truy cập. Với tất cả các thuộc tính không thể truy cập khác,
+	 * giá trị `null` được trả về.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $name Property name.
-	 * @return array|null Prepared attributes, or null.
+	 * @param string $name Tên thuộc tính.
+	 * @return array|null Các thuộc tính đã chuẩn bị, hoặc null.
 	 */
 	public function __get( $name ) {
 		if ( 'attributes' === $name ) {
@@ -239,19 +242,19 @@ class WP_Block {
 	}
 
 	/**
-	 * Processes the block bindings and updates the block attributes with the values from the sources.
+	 * Xử lý các liên kết dữ liệu (bindings) của block và cập nhật thuộc tính block với giá trị từ các nguồn.
 	 *
-	 * A block might contain bindings in its attributes. Bindings are mappings
-	 * between an attribute of the block and a source. A "source" is a function
-	 * registered with `register_block_bindings_source()` that defines how to
-	 * retrieve a value from outside the block, e.g. from post meta.
+	 * Một block có thể chứa các liên kết dữ liệu trong thuộc tính của nó. Liên kết dữ liệu là ánh xạ
+	 * giữa một thuộc tính của block và một nguồn. "Nguồn" là một hàm được đăng ký với
+	 * `register_block_bindings_source()` xác định cách lấy giá trị từ bên ngoài block,
+	 * ví dụ từ post meta.
 	 *
-	 * This function will process those bindings and update the block's attributes
-	 * with the values coming from the bindings.
+	 * Hàm này sẽ xử lý các liên kết dữ liệu đó và cập nhật thuộc tính của block
+	 * với các giá trị đến từ các liên kết dữ liệu.
 	 *
-	 * ### Example
+	 * ### Ví dụ
 	 *
-	 * The "bindings" property for an Image block might look like this:
+	 * Thuộc tính "bindings" cho block Hình ảnh có thể trông như thế này:
 	 *
 	 * ```json
 	 * {
@@ -270,14 +273,14 @@ class WP_Block {
 	 * }
 	 * ```
 	 *
-	 * The above example will replace the `title` and `url` attributes of the Image
-	 * block with the values of the `text_custom_field` and `url_custom_field` post meta.
+	 * Ví dụ trên sẽ thay thế thuộc tính `title` và `url` của block Hình ảnh
+	 * bằng giá trị của post meta `text_custom_field` và `url_custom_field`.
 	 *
 	 * @since 6.5.0
-	 * @since 6.6.0 Handle the `__default` attribute for pattern overrides.
-	 * @since 6.7.0 Return any updated bindings metadata in the computed attributes.
+	 * @since 6.6.0 Xử lý thuộc tính `__default` cho ghi đè pattern.
+	 * @since 6.7.0 Trả về bất kỳ metadata liên kết dữ liệu cập nhật nào trong các thuộc tính đã tính toán.
 	 *
-	 * @return array The computed block attributes for the provided block bindings.
+	 * @return array Các thuộc tính block đã tính toán cho các liên kết dữ liệu block được cung cấp.
 	 */
 	private function process_block_bindings() {
 		$parsed_block               = $this->parsed_block;
@@ -289,8 +292,8 @@ class WP_Block {
 			'core/button'    => array( 'url', 'text', 'linkTarget', 'rel' ),
 		);
 
-		// If the block doesn't have the bindings property, isn't one of the supported
-		// block types, or the bindings property is not an array, return the block content.
+		// Nếu block không có thuộc tính bindings, không thuộc loại block được hỗ trợ,
+		// hoặc thuộc tính bindings không phải là mảng, trả về nội dung block.
 		if (
 			! isset( $supported_block_attributes[ $this->name ] ) ||
 			empty( $parsed_block['attrs']['metadata']['bindings'] ) ||
@@ -302,8 +305,8 @@ class WP_Block {
 		$bindings = $parsed_block['attrs']['metadata']['bindings'];
 
 		/*
-		 * If the default binding is set for pattern overrides, replace it
-		 * with a pattern override binding for all supported attributes.
+		 * Nếu liên kết mặc định được thiết lập cho ghi đè pattern, thay thế nó
+		 * bằng liên kết ghi đè pattern cho tất cả thuộc tính được hỗ trợ.
 		 */
 		if (
 			isset( $bindings['__default']['source'] ) &&
@@ -312,20 +315,20 @@ class WP_Block {
 			$updated_bindings = array();
 
 			/*
-			 * Build a binding array of all supported attributes.
-			 * Note that this also omits the `__default` attribute from the
-			 * resulting array.
+			 * Xây dựng mảng liên kết của tất cả thuộc tính được hỗ trợ.
+			 * Lưu ý rằng điều này cũng loại bỏ thuộc tính `__default` khỏi
+			 * mảng kết quả.
 			 */
 			foreach ( $supported_block_attributes[ $parsed_block['blockName'] ] as $attribute_name ) {
-				// Retain any non-pattern override bindings that might be present.
+				// Giữ lại bất kỳ liên kết không phải ghi đè pattern nào có thể có mặt.
 				$updated_bindings[ $attribute_name ] = isset( $bindings[ $attribute_name ] )
 					? $bindings[ $attribute_name ]
 					: array( 'source' => 'core/pattern-overrides' );
 			}
 			$bindings = $updated_bindings;
 			/*
-			 * Update the bindings metadata of the computed attributes.
-			 * This ensures the block receives the expanded __default binding metadata when it renders.
+			 * Cập nhật metadata liên kết dữ liệu của các thuộc tính đã tính toán.
+			 * Điều này đảm bảo block nhận được metadata liên kết __default đã mở rộng khi nó render.
 			 */
 			$computed_attributes['metadata'] = array_merge(
 				$parsed_block['attrs']['metadata'],
@@ -334,11 +337,11 @@ class WP_Block {
 		}
 
 		foreach ( $bindings as $attribute_name => $block_binding ) {
-			// If the attribute is not in the supported list, process next attribute.
+			// Nếu thuộc tính không nằm trong danh sách hỗ trợ, xử lý thuộc tính tiếp theo.
 			if ( ! in_array( $attribute_name, $supported_block_attributes[ $this->name ], true ) ) {
 				continue;
 			}
-			// If no source is provided, or that source is not registered, process next attribute.
+			// Nếu không có nguồn được cung cấp, hoặc nguồn đó không được đăng ký, xử lý thuộc tính tiếp theo.
 			if ( ! isset( $block_binding['source'] ) || ! is_string( $block_binding['source'] ) ) {
 				continue;
 			}
@@ -348,7 +351,7 @@ class WP_Block {
 				continue;
 			}
 
-			// Adds the necessary context defined by the source.
+			// Thêm ngữ cảnh cần thiết được định nghĩa bởi nguồn.
 			if ( ! empty( $block_binding_source->uses_context ) ) {
 				foreach ( $block_binding_source->uses_context as $context_name ) {
 					if ( array_key_exists( $context_name, $this->available_context ) ) {
@@ -360,7 +363,7 @@ class WP_Block {
 			$source_args  = ! empty( $block_binding['args'] ) && is_array( $block_binding['args'] ) ? $block_binding['args'] : array();
 			$source_value = $block_binding_source->get_value( $source_args, $this, $attribute_name );
 
-			// If the value is not null, process the HTML based on the block and the attribute.
+			// Nếu giá trị không null, xử lý HTML dựa trên block và thuộc tính.
 			if ( ! is_null( $source_value ) ) {
 				$computed_attributes[ $attribute_name ] = $source_value;
 			}
@@ -370,14 +373,14 @@ class WP_Block {
 	}
 
 	/**
-	 * Depending on the block attribute name, replace its value in the HTML based on the value provided.
+	 * Tùy thuộc vào tên thuộc tính block, thay thế giá trị của nó trong HTML dựa trên giá trị được cung cấp.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param string $block_content  Block content.
-	 * @param string $attribute_name The attribute name to replace.
-	 * @param mixed  $source_value   The value used to replace in the HTML.
-	 * @return string The modified block content.
+	 * @param string $block_content  Nội dung block.
+	 * @param string $attribute_name Tên thuộc tính cần thay thế.
+	 * @param mixed  $source_value   Giá trị được sử dụng để thay thế trong HTML.
+	 * @return string Nội dung block đã được sửa đổi.
 	 */
 	private function replace_html( string $block_content, string $attribute_name, $source_value ) {
 		$block_type = $this->block_type;
@@ -385,22 +388,22 @@ class WP_Block {
 			return $block_content;
 		}
 
-		// Depending on the attribute source, the processing will be different.
+		// Tùy thuộc vào nguồn thuộc tính, quá trình xử lý sẽ khác nhau.
 		switch ( $block_type->attributes[ $attribute_name ]['source'] ) {
 			case 'html':
 			case 'rich-text':
 				$block_reader = new WP_HTML_Tag_Processor( $block_content );
 
-				// TODO: Support for CSS selectors whenever they are ready in the HTML API.
-				// In the meantime, support comma-separated selectors by exploding them into an array.
+				// TODO: Hỗ trợ bộ chọn CSS khi chúng sẵn sàng trong HTML API.
+				// Trong khi chờ đợi, hỗ trợ bộ chọn phân cách bằng dấu phẩy bằng cách tách chúng thành mảng.
 				$selectors = explode( ',', $block_type->attributes[ $attribute_name ]['selector'] );
-				// Add a bookmark to the first tag to be able to iterate over the selectors.
+				// Thêm bookmark vào thẻ đầu tiên để có thể lặp qua các bộ chọn.
 				$block_reader->next_tag();
 				$block_reader->set_bookmark( 'iterate-selectors' );
 
-				// TODO: This shouldn't be needed when the `set_inner_html` function is ready.
-				// Store the parent tag and its attributes to be able to restore them later in the button.
-				// The button block has a wrapper while the paragraph and heading blocks don't.
+				// TODO: Điều này sẽ không cần thiết khi hàm `set_inner_html` sẵn sàng.
+				// Lưu thẻ cha và thuộc tính của nó để có thể khôi phục sau trong button.
+				// Block button có wrapper trong khi block paragraph và heading thì không.
 				if ( 'core/button' === $this->name ) {
 					$button_wrapper                 = $block_reader->get_tag();
 					$button_wrapper_attribute_names = $block_reader->get_attribute_names_with_prefix( '' );
@@ -411,7 +414,7 @@ class WP_Block {
 				}
 
 				foreach ( $selectors as $selector ) {
-					// If the parent tag, or any of its children, matches the selector, replace the HTML.
+					// Nếu thẻ cha, hoặc bất kỳ phần tử con nào, khớp với bộ chọn, thay thế HTML.
 					if ( strcasecmp( $block_reader->get_tag(), $selector ) === 0 || $block_reader->next_tag(
 						array(
 							'tag_name' => $selector,
@@ -419,9 +422,9 @@ class WP_Block {
 					) ) {
 						$block_reader->release_bookmark( 'iterate-selectors' );
 
-						// TODO: Use `set_inner_html` method whenever it's ready in the HTML API.
-						// Until then, it is hardcoded for the paragraph, heading, and button blocks.
-						// Store the tag and its attributes to be able to restore them later.
+						// TODO: Sử dụng phương thức `set_inner_html` khi nó sẵn sàng trong HTML API.
+						// Cho đến khi đó, nó được mã hóa cứng cho các block paragraph, heading và button.
+						// Lưu thẻ và thuộc tính của nó để có thể khôi phục sau.
 						$selector_attribute_names = $block_reader->get_attribute_names_with_prefix( '' );
 						$selector_attrs           = array();
 						foreach ( $selector_attribute_names as $name ) {
@@ -456,7 +459,7 @@ class WP_Block {
 				$amended_content = new WP_HTML_Tag_Processor( $block_content );
 				if ( ! $amended_content->next_tag(
 					array(
-						// TODO: build the query from CSS selector.
+						// TODO: xây dựng truy vấn từ bộ chọn CSS.
 						'tag_name' => $block_type->attributes[ $attribute_name ]['selector'],
 					)
 				) ) {
@@ -472,34 +475,34 @@ class WP_Block {
 
 
 	/**
-	 * Generates the render output for the block.
+	 * Tạo đầu ra render cho block.
 	 *
 	 * @since 5.5.0
-	 * @since 6.5.0 Added block bindings processing.
+	 * @since 6.5.0 Thêm xử lý liên kết dữ liệu block.
 	 *
-	 * @global WP_Post $post Global post object.
+	 * @global WP_Post $post Đối tượng bài viết toàn cục.
 	 *
 	 * @param array $options {
-	 *     Optional options object.
+	 *     Đối tượng tùy chọn tùy chọn.
 	 *
-	 *     @type bool $dynamic Defaults to 'true'. Optionally set to false to avoid using the block's render_callback.
+	 *     @type bool $dynamic Mặc định 'true'. Tùy chọn đặt thành false để tránh sử dụng render_callback của block.
 	 * }
-	 * @return string Rendered block output.
+	 * @return string Đầu ra render của block.
 	 */
 	public function render( $options = array() ) {
 		global $post;
 
 		/*
-		 * There can be only one root interactive block at a time because the rendered HTML of that block contains
-		 * the rendered HTML of all its inner blocks, including any interactive block.
+		 * Tại một thời điểm chỉ có thể có một block tương tác gốc vì HTML render của block đó
+		 * chứa HTML render của tất cả các block con, bao gồm mọi block tương tác.
 		 */
 		static $root_interactive_block = null;
 		/**
-		 * Filters whether Interactivity API should process directives.
+		 * Lọc xem Interactivity API có nên xử lý các chỉ thị hay không.
 		 *
 		 * @since 6.6.0
 		 *
-		 * @param bool $enabled Whether the directives processing is enabled.
+		 * @param bool $enabled Xử lý chỉ thị có được bật hay không.
 		 */
 		$interactivity_process_directives_enabled = apply_filters( 'interactivity_process_directives', true );
 		if (
@@ -518,10 +521,10 @@ class WP_Block {
 			)
 		);
 
-		// Process the block bindings and get attributes updated with the values from the sources.
+		// Xử lý các liên kết dữ liệu block và lấy thuộc tính đã cập nhật với giá trị từ các nguồn.
 		$computed_attributes = $this->process_block_bindings();
 		if ( ! empty( $computed_attributes ) ) {
-			// Merge the computed attributes with the original attributes.
+			// Hợp nhất các thuộc tính đã tính toán với các thuộc tính gốc.
 			$this->attributes = array_merge( $this->attributes, $computed_attributes );
 		}
 
@@ -538,7 +541,7 @@ class WP_Block {
 					$inner_block  = $this->inner_blocks[ $index ];
 					$parent_block = $this;
 
-					/** This filter is documented in wp-includes/blocks.php */
+					/** Bộ lọc này được ghi nhận trong wp-includes/blocks.php */
 					$pre_render = apply_filters( 'pre_render_block', null, $inner_block->parsed_block, $parent_block );
 
 					if ( ! is_null( $pre_render ) ) {
@@ -547,15 +550,15 @@ class WP_Block {
 						$source_block        = $inner_block->parsed_block;
 						$inner_block_context = $inner_block->context;
 
-						/** This filter is documented in wp-includes/blocks.php */
+						/** Bộ lọc này được ghi nhận trong wp-includes/blocks.php */
 						$inner_block->parsed_block = apply_filters( 'render_block_data', $inner_block->parsed_block, $source_block, $parent_block );
 
-						/** This filter is documented in wp-includes/blocks.php */
+						/** Bộ lọc này được ghi nhận trong wp-includes/blocks.php */
 						$inner_block->context = apply_filters( 'render_block_context', $inner_block->context, $inner_block->parsed_block, $parent_block );
 
 						/*
-						 * The `refresh_context_dependents()` method already calls `refresh_parsed_block_dependents()`.
-						 * Therefore the second condition is irrelevant if the first one is satisfied.
+						 * Phương thức `refresh_context_dependents()` đã gọi `refresh_parsed_block_dependents()`.
+						 * Do đó điều kiện thứ hai không liên quan nếu điều kiện đầu tiên được thỏa mãn.
 						 */
 						if ( $inner_block->context !== $inner_block_context ) {
 							$inner_block->refresh_context_dependents();
@@ -609,9 +612,9 @@ class WP_Block {
 		}
 
 		/*
-		 * For Core blocks, these styles are only enqueued if `wp_should_load_separate_core_block_assets()` returns
-		 * true. Otherwise these `wp_enqueue_style()` calls will not have any effect, as the Core blocks are relying on
-		 * the combined 'wp-block-library' stylesheet instead, which is unconditionally enqueued.
+		 * Đối với các block Core, các style này chỉ được enqueue nếu `wp_should_load_separate_core_block_assets()`
+		 * trả về true. Nếu không, các lệnh gọi `wp_enqueue_style()` này sẽ không có hiệu lực, vì các block Core
+		 * dựa vào stylesheet kết hợp 'wp-block-library', được enqueue vô điều kiện.
 		 */
 		if ( ( ! empty( $this->block_type->style_handles ) ) ) {
 			foreach ( $this->block_type->style_handles as $style_handle ) {
@@ -626,34 +629,34 @@ class WP_Block {
 		}
 
 		/**
-		 * Filters the content of a single block.
+		 * Lọc nội dung của một block đơn lẻ.
 		 *
 		 * @since 5.0.0
-		 * @since 5.9.0 The `$instance` parameter was added.
+		 * @since 5.9.0 Thêm tham số `$instance`.
 		 *
-		 * @param string   $block_content The block content.
-		 * @param array    $block         The full block, including name and attributes.
-		 * @param WP_Block $instance      The block instance.
+		 * @param string   $block_content Nội dung block.
+		 * @param array    $block         Block đầy đủ, bao gồm tên và thuộc tính.
+		 * @param WP_Block $instance      Thể hiện block.
 		 */
 		$block_content = apply_filters( 'render_block', $block_content, $this->parsed_block, $this );
 
 		/**
-		 * Filters the content of a single block.
+		 * Lọc nội dung của một block đơn lẻ.
 		 *
-		 * The dynamic portion of the hook name, `$name`, refers to
-		 * the block name, e.g. "core/paragraph".
+		 * Phần động của tên hook, `$name`, tham chiếu đến
+		 * tên block, ví dụ "core/paragraph".
 		 *
 		 * @since 5.7.0
-		 * @since 5.9.0 The `$instance` parameter was added.
+		 * @since 5.9.0 Thêm tham số `$instance`.
 		 *
-		 * @param string   $block_content The block content.
-		 * @param array    $block         The full block, including name and attributes.
-		 * @param WP_Block $instance      The block instance.
+		 * @param string   $block_content Nội dung block.
+		 * @param array    $block         Block đầy đủ, bao gồm tên và thuộc tính.
+		 * @param WP_Block $instance      Thể hiện block.
 		 */
 		$block_content = apply_filters( "render_block_{$this->name}", $block_content, $this->parsed_block, $this );
 
 		if ( $root_interactive_block === $this ) {
-			// The root interactive block has finished rendering. Time to process directives.
+			// Block tương tác gốc đã render xong. Đến lúc xử lý các chỉ thị.
 			$block_content          = wp_interactivity_process_directives( $block_content );
 			$root_interactive_block = null;
 		}

@@ -1,30 +1,30 @@
 <?php
 /**
- * Dimensions block support flag.
+ * Cờ hỗ trợ kích thước cho block.
  *
- * This does not include the `spacing` block support even though that visually
- * appears under the "Dimensions" panel in the editor. It remains in its
- * original `spacing.php` file for compatibility with core.
+ * Phần này không bao gồm hỗ trợ block `spacing` mặc dù về mặt giao diện
+ * nó xuất hiện dưới panel "Kích thước" trong trình soạn thảo. Nó vẫn nằm trong
+ * file `spacing.php` gốc để tương thích với core.
  *
  * @package WordPress
  * @since 5.9.0
  */
 
 /**
- * Registers the style block attribute for block types that support it.
+ * Đăng ký thuộc tính kiểu cho các loại block hỗ trợ nó.
  *
  * @since 5.9.0
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
+ * @param WP_Block_Type $block_type Loại Block.
  */
 function wp_register_dimensions_support( $block_type ) {
-	// Setup attributes and styles within that if needed.
+	// Thiết lập thuộc tính và kiểu bên trong nếu cần.
 	if ( ! $block_type->attributes ) {
 		$block_type->attributes = array();
 	}
 
-	// Check for existing style attribute definition e.g. from block.json.
+	// Kiểm tra định nghĩa thuộc tính style đã có sẵn, ví dụ từ block.json.
 	if ( array_key_exists( 'style', $block_type->attributes ) ) {
 		return;
 	}
@@ -39,16 +39,16 @@ function wp_register_dimensions_support( $block_type ) {
 }
 
 /**
- * Adds CSS classes for block dimensions to the incoming attributes array.
- * This will be applied to the block markup in the front-end.
+ * Thêm các lớp CSS cho kích thước block vào mảng thuộc tính đầu vào.
+ * Điều này sẽ được áp dụng cho markup block ở giao diện người dùng.
  *
  * @since 5.9.0
- * @since 6.2.0 Added `minHeight` support.
+ * @since 6.2.0 Thêm hỗ trợ `minHeight`.
  * @access private
  *
- * @param WP_Block_Type $block_type       Block Type.
- * @param array         $block_attributes Block attributes.
- * @return array Block dimensions CSS classes and inline styles.
+ * @param WP_Block_Type $block_type       Loại Block.
+ * @param array         $block_attributes Thuộc tính block.
+ * @return array Các lớp CSS và kiểu inline kích thước block.
  */
 function wp_apply_dimensions_support( $block_type, $block_attributes ) {
 	if ( wp_should_skip_block_supports_serialization( $block_type, 'dimensions' ) ) {
@@ -57,7 +57,7 @@ function wp_apply_dimensions_support( $block_type, $block_attributes ) {
 
 	$attributes = array();
 
-	// Width support to be added in near future.
+	// Hỗ trợ chiều rộng sẽ được thêm trong tương lai gần.
 
 	$has_min_height_support = block_has_support( $block_type, array( 'dimensions', 'minHeight' ), false );
 	$block_styles           = isset( $block_attributes['style'] ) ? $block_attributes['style'] : null;
@@ -84,16 +84,16 @@ function wp_apply_dimensions_support( $block_type, $block_attributes ) {
 }
 
 /**
- * Renders server-side dimensions styles to the block wrapper.
- * This block support uses the `render_block` hook to ensure that
- * it is also applied to non-server-rendered blocks.
+ * Render các kiểu kích thước phía server cho wrapper của block.
+ * Hỗ trợ block này sử dụng hook `render_block` để đảm bảo rằng
+ * nó cũng được áp dụng cho các block không được render phía server.
  *
  * @since 6.5.0
  * @access private
  *
- * @param  string $block_content Rendered block content.
- * @param  array  $block         Block object.
- * @return string                Filtered block content.
+ * @param  string $block_content Nội dung block đã được render.
+ * @param  array  $block         Đối tượng block.
+ * @return string                Nội dung block đã được lọc.
  */
 function wp_render_dimensions_support( $block_content, $block ) {
 	$block_type               = WP_Block_Type_Registry::get_instance()->get_registered( $block['blockName'] );
@@ -110,7 +110,7 @@ function wp_render_dimensions_support( $block_content, $block ) {
 	$dimensions_block_styles                = array();
 	$dimensions_block_styles['aspectRatio'] = $block_attributes['style']['dimensions']['aspectRatio'] ?? null;
 
-	// To ensure the aspect ratio does not get overridden by `minHeight` unset any existing rule.
+	// Để đảm bảo tỷ lệ khung hình không bị ghi đè bởi `minHeight`, bỏ thiết lập bất kỳ quy tắc nào đã tồn tại.
 	if (
 		isset( $dimensions_block_styles['aspectRatio'] )
 	) {
@@ -125,7 +125,7 @@ function wp_render_dimensions_support( $block_content, $block ) {
 	$styles = wp_style_engine_get_styles( array( 'dimensions' => $dimensions_block_styles ) );
 
 	if ( ! empty( $styles['css'] ) ) {
-		// Inject dimensions styles to the first element, presuming it's the wrapper, if it exists.
+		// Chèn kiểu kích thước vào phần tử đầu tiên, giả sử đó là wrapper, nếu nó tồn tại.
 		$tags = new WP_HTML_Tag_Processor( $block_content );
 
 		if ( $tags->next_tag() ) {
@@ -163,7 +163,7 @@ function wp_render_dimensions_support( $block_content, $block ) {
 
 add_filter( 'render_block', 'wp_render_dimensions_support', 10, 2 );
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register(
 	'dimensions',
 	array(

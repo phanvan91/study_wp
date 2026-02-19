@@ -1,19 +1,19 @@
 <?php
 /**
- * WordPress Image Editor
+ * Trình chỉnh sửa hình ảnh WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Loads the WP image-editing interface.
+ * Tải giao diện chỉnh sửa hình ảnh của WP.
  *
  * @since 2.9.0
  *
- * @param int          $post_id Attachment post ID.
- * @param false|object $msg     Optional. Message to display for image editor updates or errors.
- *                              Default false.
+ * @param int          $post_id ID bài viết đính kèm.
+ * @param false|object $msg     Tùy chọn. Thông báo hiển thị cho các cập nhật hoặc lỗi trình chỉnh sửa hình ảnh.
+ *                              Mặc định false.
  */
 function wp_image_editor( $post_id, $msg = false ) {
 	$nonce     = wp_create_nonce( "image_editor-$post_id" );
@@ -46,11 +46,11 @@ function wp_image_editor( $post_id, $msg = false ) {
 	}
 
 	/**
-	 * Shows the settings in the Image Editor that allow selecting to edit only the thumbnail of an image.
+	 * Hiển thị các cài đặt trong Trình chỉnh sửa hình ảnh cho phép chọn chỉ chỉnh sửa ảnh thu nhỏ của hình ảnh.
 	 *
 	 * @since 6.3.0
 	 *
-	 * @param bool $show Whether to show the settings in the Image Editor. Default false.
+	 * @param bool $show Có hiển thị các cài đặt trong Trình chỉnh sửa hình ảnh hay không. Mặc định false.
 	 */
 	$edit_thumbnails_separately = (bool) apply_filters( 'image_edit_thumbnails_separately', false );
 
@@ -66,7 +66,7 @@ function wp_image_editor( $post_id, $msg = false ) {
 				<button type="button" aria-controls="imgedit-rotate-menu" class="imgedit-rotate button" aria-expanded="false" onclick="imageEdit.togglePopup(this)" onblur="imageEdit.monitorPopup()"><?php esc_html_e( 'Image Rotation' ); ?></button>
 				<div id="imgedit-rotate-menu" class="imgedit-popup-menu">
 			<?php
-			// On some setups GD library does not provide imagerotate() - Ticket #11536.
+			// Trên một số cấu hình, thư viện GD không cung cấp imagerotate() - Ticket #11536.
 			if ( wp_image_editor_supports(
 				array(
 					'mime_type' => get_post_mime_type( $post_id ),
@@ -332,25 +332,25 @@ function wp_image_editor( $post_id, $msg = false ) {
 }
 
 /**
- * Streams image in WP_Image_Editor to browser.
+ * Truyền hình ảnh từ WP_Image_Editor đến trình duyệt.
  *
  * @since 2.9.0
  *
- * @param WP_Image_Editor $image         The image editor instance.
- * @param string          $mime_type     The mime type of the image.
- * @param int             $attachment_id The image's attachment post ID.
- * @return bool True on success, false on failure.
+ * @param WP_Image_Editor $image         Đối tượng trình chỉnh sửa hình ảnh.
+ * @param string          $mime_type     Kiểu mime của hình ảnh.
+ * @param int             $attachment_id ID bài viết đính kèm của hình ảnh.
+ * @return bool True nếu thành công, false nếu thất bại.
  */
 function wp_stream_image( $image, $mime_type, $attachment_id ) {
 	if ( $image instanceof WP_Image_Editor ) {
 
 		/**
-		 * Filters the WP_Image_Editor instance for the image to be streamed to the browser.
+		 * Lọc đối tượng WP_Image_Editor cho hình ảnh sẽ được truyền đến trình duyệt.
 		 *
 		 * @since 3.5.0
 		 *
-		 * @param WP_Image_Editor $image         The image editor instance.
-		 * @param int             $attachment_id The attachment post ID.
+		 * @param WP_Image_Editor $image         Đối tượng trình chỉnh sửa hình ảnh.
+		 * @param int             $attachment_id ID bài viết đính kèm.
 		 */
 		$image = apply_filters( 'image_editor_save_pre', $image, $attachment_id );
 
@@ -364,13 +364,13 @@ function wp_stream_image( $image, $mime_type, $attachment_id ) {
 		_deprecated_argument( __FUNCTION__, '3.5.0', sprintf( __( '%1$s needs to be a %2$s object.' ), '$image', 'WP_Image_Editor' ) );
 
 		/**
-		 * Filters the GD image resource to be streamed to the browser.
+		 * Lọc tài nguyên hình ảnh GD sẽ được truyền đến trình duyệt.
 		 *
 		 * @since 2.9.0
-		 * @deprecated 3.5.0 Use {@see 'image_editor_save_pre'} instead.
+		 * @deprecated 3.5.0 Sử dụng {@see 'image_editor_save_pre'} thay thế.
 		 *
-		 * @param resource|GdImage $image         Image resource to be streamed.
-		 * @param int              $attachment_id The attachment post ID.
+		 * @param resource|GdImage $image         Tài nguyên hình ảnh sẽ được truyền.
+		 * @param int              $attachment_id ID bài viết đính kèm.
 		 */
 		$image = apply_filters_deprecated( 'image_save_pre', array( $image, $attachment_id ), '3.5.0', 'image_editor_save_pre' );
 
@@ -403,49 +403,49 @@ function wp_stream_image( $image, $mime_type, $attachment_id ) {
 }
 
 /**
- * Saves image to file.
+ * Lưu hình ảnh vào tập tin.
  *
  * @since 2.9.0
- * @since 3.5.0 The `$image` parameter expects a `WP_Image_Editor` instance.
- * @since 6.0.0 The `$filesize` value was added to the returned array.
+ * @since 3.5.0 Tham số `$image` yêu cầu một đối tượng `WP_Image_Editor`.
+ * @since 6.0.0 Giá trị `$filesize` đã được thêm vào mảng trả về.
  *
- * @param string          $filename  Name of the file to be saved.
- * @param WP_Image_Editor $image     The image editor instance.
- * @param string          $mime_type The mime type of the image.
- * @param int             $post_id   Attachment post ID.
+ * @param string          $filename  Tên tập tin sẽ được lưu.
+ * @param WP_Image_Editor $image     Đối tượng trình chỉnh sửa hình ảnh.
+ * @param string          $mime_type Kiểu mime của hình ảnh.
+ * @param int             $post_id   ID bài viết đính kèm.
  * @return array|WP_Error|bool {
- *     Array on success or WP_Error if the file failed to save.
- *     When called with a deprecated value for the `$image` parameter,
- *     i.e. a non-`WP_Image_Editor` image resource or `GdImage` instance,
- *     the function will return true on success, false on failure.
+ *     Mảng nếu thành công hoặc WP_Error nếu lưu tập tin thất bại.
+ *     Khi gọi với giá trị không dùng nữa cho tham số `$image`,
+ *     tức là tài nguyên hình ảnh không phải `WP_Image_Editor` hoặc đối tượng `GdImage`,
+ *     hàm sẽ trả về true nếu thành công, false nếu thất bại.
  *
- *     @type string $path      Path to the image file.
- *     @type string $file      Name of the image file.
- *     @type int    $width     Image width.
- *     @type int    $height    Image height.
- *     @type string $mime-type The mime type of the image.
- *     @type int    $filesize  File size of the image.
+ *     @type string $path      Đường dẫn đến tập tin hình ảnh.
+ *     @type string $file      Tên tập tin hình ảnh.
+ *     @type int    $width     Chiều rộng hình ảnh.
+ *     @type int    $height    Chiều cao hình ảnh.
+ *     @type string $mime-type Kiểu mime của hình ảnh.
+ *     @type int    $filesize  Kích thước tập tin hình ảnh.
  * }
  */
 function wp_save_image_file( $filename, $image, $mime_type, $post_id ) {
 	if ( $image instanceof WP_Image_Editor ) {
 
-		/** This filter is documented in wp-admin/includes/image-edit.php */
+		/** Bộ lọc này được ghi chú tại wp-admin/includes/image-edit.php */
 		$image = apply_filters( 'image_editor_save_pre', $image, $post_id );
 
 		/**
-		 * Filters whether to skip saving the image file.
+		 * Lọc có bỏ qua việc lưu tập tin hình ảnh hay không.
 		 *
-		 * Returning a non-null value will short-circuit the save method,
-		 * returning that value instead.
+		 * Trả về giá trị khác null sẽ bỏ qua phương thức lưu,
+		 * trả về giá trị đó thay thế.
 		 *
 		 * @since 3.5.0
 		 *
-		 * @param bool|null       $override  Value to return instead of saving. Default null.
-		 * @param string          $filename  Name of the file to be saved.
-		 * @param WP_Image_Editor $image     The image editor instance.
-		 * @param string          $mime_type The mime type of the image.
-		 * @param int             $post_id   Attachment post ID.
+		 * @param bool|null       $override  Giá trị trả về thay vì lưu. Mặc định null.
+		 * @param string          $filename  Tên tập tin sẽ được lưu.
+		 * @param WP_Image_Editor $image     Đối tượng trình chỉnh sửa hình ảnh.
+		 * @param string          $mime_type Kiểu mime của hình ảnh.
+		 * @param int             $post_id   ID bài viết đính kèm.
 		 */
 		$saved = apply_filters( 'wp_save_image_editor_file', null, $filename, $image, $mime_type, $post_id );
 
@@ -458,23 +458,23 @@ function wp_save_image_file( $filename, $image, $mime_type, $post_id ) {
 		/* translators: 1: $image, 2: WP_Image_Editor */
 		_deprecated_argument( __FUNCTION__, '3.5.0', sprintf( __( '%1$s needs to be a %2$s object.' ), '$image', 'WP_Image_Editor' ) );
 
-		/** This filter is documented in wp-admin/includes/image-edit.php */
+		/** Bộ lọc này được ghi chú tại wp-admin/includes/image-edit.php */
 		$image = apply_filters_deprecated( 'image_save_pre', array( $image, $post_id ), '3.5.0', 'image_editor_save_pre' );
 
 		/**
-		 * Filters whether to skip saving the image file.
+		 * Lọc có bỏ qua việc lưu tập tin hình ảnh hay không.
 		 *
-		 * Returning a non-null value will short-circuit the save method,
-		 * returning that value instead.
+		 * Trả về giá trị khác null sẽ bỏ qua phương thức lưu,
+		 * trả về giá trị đó thay thế.
 		 *
 		 * @since 2.9.0
-		 * @deprecated 3.5.0 Use {@see 'wp_save_image_editor_file'} instead.
+		 * @deprecated 3.5.0 Sử dụng {@see 'wp_save_image_editor_file'} thay thế.
 		 *
-		 * @param bool|null        $override  Value to return instead of saving. Default null.
-		 * @param string           $filename  Name of the file to be saved.
-		 * @param resource|GdImage $image     Image resource or GdImage instance.
-		 * @param string           $mime_type The mime type of the image.
-		 * @param int              $post_id   Attachment post ID.
+		 * @param bool|null        $override  Giá trị trả về thay vì lưu. Mặc định null.
+		 * @param string           $filename  Tên tập tin sẽ được lưu.
+		 * @param resource|GdImage $image     Tài nguyên hình ảnh hoặc đối tượng GdImage.
+		 * @param string           $mime_type Kiểu mime của hình ảnh.
+		 * @param int              $post_id   ID bài viết đính kèm.
 		 */
 		$saved = apply_filters_deprecated(
 			'wp_save_image_file',
@@ -489,7 +489,7 @@ function wp_save_image_file( $filename, $image, $mime_type, $post_id ) {
 
 		switch ( $mime_type ) {
 			case 'image/jpeg':
-				/** This filter is documented in wp-includes/class-wp-image-editor.php */
+				/** Bộ lọc này được ghi chú tại wp-includes/class-wp-image-editor.php */
 				return imagejpeg( $image, $filename, apply_filters( 'jpeg_quality', 90, 'edit_image' ) );
 			case 'image/png':
 				return imagepng( $image, $filename );
@@ -512,14 +512,14 @@ function wp_save_image_file( $filename, $image, $mime_type, $post_id ) {
 }
 
 /**
- * Image preview ratio. Internal use only.
+ * Tỷ lệ xem trước hình ảnh. Chỉ sử dụng nội bộ.
  *
  * @since 2.9.0
  *
  * @ignore
- * @param int $w Image width in pixels.
- * @param int $h Image height in pixels.
- * @return float|int Image preview ratio.
+ * @param int $w Chiều rộng hình ảnh tính bằng pixel.
+ * @param int $h Chiều cao hình ảnh tính bằng pixel.
+ * @return float|int Tỷ lệ xem trước hình ảnh.
  */
 function _image_get_preview_ratio( $w, $h ) {
 	$max = max( $w, $h );
@@ -527,16 +527,16 @@ function _image_get_preview_ratio( $w, $h ) {
 }
 
 /**
- * Returns an image resource. Internal use only.
+ * Trả về tài nguyên hình ảnh. Chỉ sử dụng nội bộ.
  *
  * @since 2.9.0
- * @deprecated 3.5.0 Use WP_Image_Editor::rotate()
+ * @deprecated 3.5.0 Sử dụng WP_Image_Editor::rotate()
  * @see WP_Image_Editor::rotate()
  *
  * @ignore
- * @param resource|GdImage $img   Image resource.
- * @param float|int        $angle Image rotation angle, in degrees.
- * @return resource|GdImage|false GD image resource or GdImage instance, false otherwise.
+ * @param resource|GdImage $img   Tài nguyên hình ảnh.
+ * @param float|int        $angle Góc xoay hình ảnh, tính bằng độ.
+ * @return resource|GdImage|false Tài nguyên hình ảnh GD hoặc đối tượng GdImage, false nếu không.
  */
 function _rotate_image_resource( $img, $angle ) {
 	_deprecated_function( __FUNCTION__, '3.5.0', 'WP_Image_Editor::rotate()' );
@@ -554,17 +554,17 @@ function _rotate_image_resource( $img, $angle ) {
 }
 
 /**
- * Flips an image resource. Internal use only.
+ * Lật tài nguyên hình ảnh. Chỉ sử dụng nội bộ.
  *
  * @since 2.9.0
- * @deprecated 3.5.0 Use WP_Image_Editor::flip()
+ * @deprecated 3.5.0 Sử dụng WP_Image_Editor::flip()
  * @see WP_Image_Editor::flip()
  *
  * @ignore
- * @param resource|GdImage $img  Image resource or GdImage instance.
- * @param bool             $horz Whether to flip horizontally.
- * @param bool             $vert Whether to flip vertically.
- * @return resource|GdImage (maybe) flipped image resource or GdImage instance.
+ * @param resource|GdImage $img  Tài nguyên hình ảnh hoặc đối tượng GdImage.
+ * @param bool             $horz Có lật ngang hay không.
+ * @param bool             $vert Có lật dọc hay không.
+ * @return resource|GdImage Tài nguyên hình ảnh (có thể) đã lật hoặc đối tượng GdImage.
  */
 function _flip_image_resource( $img, $horz, $vert ) {
 	_deprecated_function( __FUNCTION__, '3.5.0', 'WP_Image_Editor::flip()' );
@@ -589,17 +589,17 @@ function _flip_image_resource( $img, $horz, $vert ) {
 }
 
 /**
- * Crops an image resource. Internal use only.
+ * Cắt tài nguyên hình ảnh. Chỉ sử dụng nội bộ.
  *
  * @since 2.9.0
  *
  * @ignore
- * @param resource|GdImage $img Image resource or GdImage instance.
- * @param float            $x   Source point x-coordinate.
- * @param float            $y   Source point y-coordinate.
- * @param float            $w   Source width.
- * @param float            $h   Source height.
- * @return resource|GdImage (maybe) cropped image resource or GdImage instance.
+ * @param resource|GdImage $img Tài nguyên hình ảnh hoặc đối tượng GdImage.
+ * @param float            $x   Tọa độ x điểm nguồn.
+ * @param float            $y   Tọa độ y điểm nguồn.
+ * @param float            $w   Chiều rộng nguồn.
+ * @param float            $h   Chiều cao nguồn.
+ * @return resource|GdImage Tài nguyên hình ảnh (có thể) đã cắt hoặc đối tượng GdImage.
  */
 function _crop_image_resource( $img, $x, $y, $w, $h ) {
 	$dst = wp_imagecreatetruecolor( $w, $h );
@@ -615,13 +615,13 @@ function _crop_image_resource( $img, $x, $y, $w, $h ) {
 }
 
 /**
- * Performs group of changes on Editor specified.
+ * Thực hiện nhóm thay đổi trên Trình chỉnh sửa được chỉ định.
  *
  * @since 2.9.0
  *
- * @param WP_Image_Editor $image   WP_Image_Editor instance.
- * @param array           $changes Array of change operations.
- * @return WP_Image_Editor WP_Image_Editor instance with changes applied.
+ * @param WP_Image_Editor $image   Đối tượng WP_Image_Editor.
+ * @param array           $changes Mảng các thao tác thay đổi.
+ * @return WP_Image_Editor Đối tượng WP_Image_Editor với các thay đổi đã áp dụng.
  */
 function image_edit_apply_changes( $image, $changes ) {
 	if ( is_gd_image( $image ) ) {
@@ -633,7 +633,7 @@ function image_edit_apply_changes( $image, $changes ) {
 		return $image;
 	}
 
-	// Expand change operations.
+	// Mở rộng các thao tác thay đổi.
 	foreach ( $changes as $key => $obj ) {
 		if ( isset( $obj->r ) ) {
 			$obj->type  = 'rotate';
@@ -652,7 +652,7 @@ function image_edit_apply_changes( $image, $changes ) {
 		$changes[ $key ] = $obj;
 	}
 
-	// Combine operations.
+	// Kết hợp các thao tác.
 	if ( count( $changes ) > 1 ) {
 		$filtered = array( $changes[0] );
 
@@ -681,28 +681,28 @@ function image_edit_apply_changes( $image, $changes ) {
 		unset( $filtered );
 	}
 
-	// Image resource before applying the changes.
+	// Tài nguyên hình ảnh trước khi áp dụng các thay đổi.
 	if ( $image instanceof WP_Image_Editor ) {
 
 		/**
-		 * Filters the WP_Image_Editor instance before applying changes to the image.
+		 * Lọc đối tượng WP_Image_Editor trước khi áp dụng các thay đổi vào hình ảnh.
 		 *
 		 * @since 3.5.0
 		 *
-		 * @param WP_Image_Editor $image   WP_Image_Editor instance.
-		 * @param array           $changes Array of change operations.
+		 * @param WP_Image_Editor $image   Đối tượng WP_Image_Editor.
+		 * @param array           $changes Mảng các thao tác thay đổi.
 		 */
 		$image = apply_filters( 'wp_image_editor_before_change', $image, $changes );
 	} elseif ( is_gd_image( $image ) ) {
 
 		/**
-		 * Filters the GD image resource before applying changes to the image.
+		 * Lọc tài nguyên hình ảnh GD trước khi áp dụng các thay đổi vào hình ảnh.
 		 *
 		 * @since 2.9.0
-		 * @deprecated 3.5.0 Use {@see 'wp_image_editor_before_change'} instead.
+		 * @deprecated 3.5.0 Sử dụng {@see 'wp_image_editor_before_change'} thay thế.
 		 *
-		 * @param resource|GdImage $image   GD image resource or GdImage instance.
-		 * @param array            $changes Array of change operations.
+		 * @param resource|GdImage $image   Tài nguyên hình ảnh GD hoặc đối tượng GdImage.
+		 * @param array            $changes Mảng các thao tác thay đổi.
 		 */
 		$image = apply_filters_deprecated( 'image_edit_before_change', array( $image, $changes ), '3.5.0', 'wp_image_editor_before_change' );
 	}
@@ -735,10 +735,10 @@ function image_edit_apply_changes( $image, $changes ) {
 					$w    = $size['width'];
 					$h    = $size['height'];
 
-					$scale = isset( $sel->r ) ? $sel->r : 1 / _image_get_preview_ratio( $w, $h ); // Discard preview scaling.
+					$scale = isset( $sel->r ) ? $sel->r : 1 / _image_get_preview_ratio( $w, $h ); // Bỏ tỷ lệ xem trước.
 					$image->crop( (int) ( $sel->x * $scale ), (int) ( $sel->y * $scale ), (int) ( $sel->w * $scale ), (int) ( $sel->h * $scale ) );
 				} else {
-					$scale = isset( $sel->r ) ? $sel->r : 1 / _image_get_preview_ratio( imagesx( $image ), imagesy( $image ) ); // Discard preview scaling.
+					$scale = isset( $sel->r ) ? $sel->r : 1 / _image_get_preview_ratio( imagesx( $image ), imagesy( $image ) ); // Bỏ tỷ lệ xem trước.
 					$image = _crop_image_resource( $image, $sel->x * $scale, $sel->y * $scale, $sel->w * $scale, $sel->h * $scale );
 				}
 				break;
@@ -750,13 +750,13 @@ function image_edit_apply_changes( $image, $changes ) {
 
 
 /**
- * Streams image in post to browser, along with enqueued changes
- * in `$_REQUEST['history']`.
+ * Truyền hình ảnh trong bài viết đến trình duyệt, cùng với các thay đổi
+ * được xếp hàng trong `$_REQUEST['history']`.
  *
  * @since 2.9.0
  *
- * @param int $post_id Attachment post ID.
- * @return bool True on success, false on failure.
+ * @param int $post_id ID bài viết đính kèm.
+ * @return bool True nếu thành công, false nếu thất bại.
  */
 function stream_preview_image( $post_id ) {
 	$post = get_post( $post_id );
@@ -774,7 +774,7 @@ function stream_preview_image( $post_id ) {
 		$img = image_edit_apply_changes( $img, $changes );
 	}
 
-	// Scale the image.
+	// Thu nhỏ hình ảnh.
 	$size = $img->get_size();
 	$w    = $size['width'];
 	$h    = $size['height'];
@@ -791,12 +791,12 @@ function stream_preview_image( $post_id ) {
 }
 
 /**
- * Restores the metadata for a given attachment.
+ * Khôi phục siêu dữ liệu cho đính kèm đã cho.
  *
  * @since 2.9.0
  *
- * @param int $post_id Attachment post ID.
- * @return stdClass Image restoration message object.
+ * @param int $post_id ID bài viết đính kèm.
+ * @return stdClass Đối tượng thông báo khôi phục hình ảnh.
  */
 function wp_restore_image( $post_id ) {
 	$meta             = wp_get_attachment_metadata( $post_id );
@@ -820,7 +820,7 @@ function wp_restore_image( $post_id ) {
 
 		if ( $parts['basename'] !== $data['file'] ) {
 			if ( defined( 'IMAGE_EDIT_OVERWRITE' ) && IMAGE_EDIT_OVERWRITE ) {
-				// Delete only if it's an edited image.
+				// Chỉ xóa nếu đây là hình ảnh đã chỉnh sửa.
 				if ( preg_match( '/-e[0-9]{13}\./', $parts['basename'] ) ) {
 					wp_delete_file( $file );
 				}
@@ -842,9 +842,9 @@ function wp_restore_image( $post_id ) {
 		$meta['height'] = $data['height'];
 		if ( isset( $data['filesize'] ) ) {
 			/*
-			 * Restore the original filesize if it was backed up.
+			 * Khôi phục kích thước tập tin gốc nếu đã được sao lưu.
 			 *
-			 * See https://core.trac.wordpress.org/ticket/59684.
+			 * Xem https://core.trac.wordpress.org/ticket/59684.
 			 */
 			$meta['filesize'] = $data['filesize'];
 		}
@@ -856,7 +856,7 @@ function wp_restore_image( $post_id ) {
 
 			if ( isset( $meta['sizes'][ $default_size ] ) && $meta['sizes'][ $default_size ]['file'] !== $data['file'] ) {
 				if ( defined( 'IMAGE_EDIT_OVERWRITE' ) && IMAGE_EDIT_OVERWRITE ) {
-					// Delete only if it's an edited image.
+					// Chỉ xóa nếu đây là hình ảnh đã chỉnh sửa.
 					if ( preg_match( '/-e[0-9]{13}-/', $meta['sizes'][ $default_size ]['file'] ) ) {
 						$delete_file = path_join( $parts['dirname'], $meta['sizes'][ $default_size ]['file'] );
 						wp_delete_file( $delete_file );
@@ -893,12 +893,12 @@ function wp_restore_image( $post_id ) {
 }
 
 /**
- * Saves image to post, along with enqueued changes
- * in `$_REQUEST['history']`.
+ * Lưu hình ảnh vào bài viết, cùng với các thay đổi
+ * được xếp hàng trong `$_REQUEST['history']`.
  *
  * @since 2.9.0
  *
- * @param int $post_id Attachment post ID.
+ * @param int $post_id ID bài viết đính kèm.
  * @return stdClass
  */
 function wp_save_image( $post_id ) {
@@ -923,7 +923,7 @@ function wp_save_image( $post_id ) {
 	$target      = ! empty( $_REQUEST['target'] ) ? preg_replace( '/[^a-z0-9_-]+/i', '', $_REQUEST['target'] ) : '';
 	$scale       = ! empty( $_REQUEST['do'] ) && 'scale' === $_REQUEST['do'];
 
-	/** This filter is documented in wp-admin/includes/image-edit.php */
+	/** Bộ lọc này được ghi chú tại wp-admin/includes/image-edit.php */
 	$edit_thumbnails_separately = (bool) apply_filters( 'image_edit_thumbnails_separately', false );
 
 	if ( $scale ) {
@@ -937,10 +937,10 @@ function wp_save_image( $post_id ) {
 		}
 
 		if ( $full_width > 0 && $full_height > 0 ) {
-			// Check if it has roughly the same w / h ratio.
+			// Kiểm tra xem có tỷ lệ w / h gần giống hay không.
 			$diff = round( $original_width / $original_height, 2 ) - round( $full_width / $full_height, 2 );
 			if ( -0.1 < $diff && $diff < 0.1 ) {
-				// Scale the full size image.
+				// Thu nhỏ hình ảnh kích thước đầy đủ.
 				if ( $img->resize( $full_width, $full_height ) ) {
 					$scaled = true;
 				}
@@ -973,7 +973,7 @@ function wp_save_image( $post_id ) {
 		$backup_sizes = array();
 	}
 
-	// Generate new filename.
+	// Tạo tên tập tin mới.
 	$path = get_attached_file( $post_id );
 
 	$basename = pathinfo( $path, PATHINFO_BASENAME );
@@ -1007,7 +1007,7 @@ function wp_save_image( $post_id ) {
 	}
 
 	$saved_image = wp_save_image_file( $new_path, $img, $post->post_mime_type, $post_id );
-	// Save the full-size file, also needed to create sub-sizes.
+	// Lưu tập tin kích thước đầy đủ, cũng cần thiết để tạo các kích thước phụ.
 	if ( ! $saved_image ) {
 		$return->error = esc_js( __( 'Unable to save the image.' ) );
 		return $return;
@@ -1062,9 +1062,9 @@ function wp_save_image( $post_id ) {
 	}
 
 	/*
-	 * We need to remove any existing resized image files because
-	 * a new crop or rotate could generate different sizes (and hence, filenames),
-	 * keeping the new resized images from overwriting the existing image files.
+	 * Chúng ta cần xóa bất kỳ tập tin hình ảnh đã thay đổi kích thước nào tồn tại vì
+	 * một lần cắt hoặc xoay mới có thể tạo ra các kích thước khác nhau (và do đó, tên tập tin khác),
+	 * ngăn các hình ảnh đã thay đổi kích thước mới ghi đè lên các tập tin hình ảnh hiện có.
 	 * https://core.trac.wordpress.org/ticket/32171
 	 */
 	if ( defined( 'IMAGE_EDIT_OVERWRITE' ) && IMAGE_EDIT_OVERWRITE && ! empty( $meta['sizes'] ) ) {
@@ -1125,7 +1125,7 @@ function wp_save_image( $post_id ) {
 		update_post_meta( $post_id, '_wp_attachment_backup_sizes', $backup_sizes );
 
 		if ( 'thumbnail' === $target || 'all' === $target || 'full' === $target ) {
-			// Check if it's an image edit from attachment edit screen.
+			// Kiểm tra xem đây có phải là chỉnh sửa hình ảnh từ màn hình chỉnh sửa đính kèm hay không.
 			if ( ! empty( $_REQUEST['context'] ) && 'edit-attachment' === $_REQUEST['context'] ) {
 				$thumb_url = wp_get_attachment_image_src( $post_id, array( 900, 600 ), true );
 

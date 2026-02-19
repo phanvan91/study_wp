@@ -1,31 +1,31 @@
 <?php
 /**
- * WordPress user administration API.
+ * API quản trị người dùng WordPress.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Creates a new user from the "Users" form using $_POST information.
+ * Tạo người dùng mới từ form "Người dùng" sử dụng thông tin $_POST.
  *
  * @since 2.0.0
  *
- * @return int|WP_Error WP_Error or User ID.
+ * @return int|WP_Error WP_Error hoặc ID người dùng.
  */
 function add_user() {
 	return edit_user();
 }
 
 /**
- * Edit user settings based on contents of $_POST
+ * Chỉnh sửa cài đặt người dùng dựa trên nội dung của $_POST
  *
- * Used on user-edit.php and profile.php to manage and process user options, passwords etc.
+ * Được sử dụng trên user-edit.php và profile.php để quản lý và xử lý tùy chọn người dùng, mật khẩu v.v.
  *
  * @since 2.0.0
  *
- * @param int $user_id Optional. User ID.
- * @return int|WP_Error User ID of the updated user or WP_Error on failure.
+ * @param int $user_id Tùy chọn. ID người dùng.
+ * @return int|WP_Error ID người dùng đã được cập nhật hoặc WP_Error khi thất bại.
  */
 function edit_user( $user_id = 0 ) {
 	$wp_roles = wp_roles();
@@ -56,7 +56,7 @@ function edit_user( $user_id = 0 ) {
 	if ( isset( $_POST['role'] ) && current_user_can( 'promote_users' ) && ( ! $user_id || current_user_can( 'promote_user', $user_id ) ) ) {
 		$new_role = sanitize_text_field( $_POST['role'] );
 
-		// If the new role isn't editable by the logged-in user die with error.
+		// Nếu vai trò mới không thể chỉnh sửa bởi người dùng đã đăng nhập thì dừng với lỗi.
 		$editable_roles = get_editable_roles();
 		if ( ! empty( $new_role ) && empty( $editable_roles[ $new_role ] ) ) {
 			wp_die( __( 'Sorry, you are not allowed to give users that role.' ), 403 );

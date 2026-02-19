@@ -1,23 +1,23 @@
 <?php
 /**
- * Position block support flag.
+ * Cờ hỗ trợ vị trí cho block.
  *
  * @package WordPress
  * @since 6.2.0
  */
 
 /**
- * Registers the style block attribute for block types that support it.
+ * Đăng ký thuộc tính kiểu cho các loại block hỗ trợ nó.
  *
  * @since 6.2.0
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
+ * @param WP_Block_Type $block_type Loại Block.
  */
 function wp_register_position_support( $block_type ) {
 	$has_position_support = block_has_support( $block_type, 'position', false );
 
-	// Set up attributes and styles within that if needed.
+	// Thiết lập thuộc tính và kiểu bên trong nếu cần.
 	if ( ! $block_type->attributes ) {
 		$block_type->attributes = array();
 	}
@@ -30,14 +30,14 @@ function wp_register_position_support( $block_type ) {
 }
 
 /**
- * Renders position styles to the block wrapper.
+ * Render các kiểu vị trí cho wrapper của block.
  *
  * @since 6.2.0
  * @access private
  *
- * @param  string $block_content Rendered block content.
- * @param  array  $block         Block object.
- * @return string                Filtered block content.
+ * @param  string $block_content Nội dung block đã được render.
+ * @param  array  $block         Đối tượng block.
+ * @return string                Nội dung block đã được lọc.
  */
 function wp_render_position_support( $block_content, $block ) {
 	$block_type           = WP_Block_Type_Registry::get_instance()->get_registered( $block['blockName'] );
@@ -54,7 +54,7 @@ function wp_render_position_support( $block_content, $block ) {
 	$theme_has_sticky_support = isset( $global_settings['position']['sticky'] ) ? $global_settings['position']['sticky'] : false;
 	$theme_has_fixed_support  = isset( $global_settings['position']['fixed'] ) ? $global_settings['position']['fixed'] : false;
 
-	// Only allow output for position types that the theme supports.
+	// Chỉ cho phép xuất các loại vị trí mà theme hỗ trợ.
 	$allowed_position_types = array();
 	if ( true === $theme_has_sticky_support ) {
 		$allowed_position_types[] = 'sticky';
@@ -81,19 +81,19 @@ function wp_render_position_support( $block_content, $block ) {
 			$side_value = isset( $style_attribute['position'][ $side ] ) ? $style_attribute['position'][ $side ] : null;
 			if ( null !== $side_value ) {
 				/*
-				 * For fixed or sticky top positions,
-				 * ensure the value includes an offset for the logged in admin bar.
+				 * Đối với vị trí top cố định hoặc dính,
+				 * đảm bảo giá trị bao gồm khoảng bù cho thanh quản trị khi đã đăng nhập.
 				 */
 				if (
 					'top' === $side &&
 					( 'fixed' === $position_type || 'sticky' === $position_type )
 				) {
-					// Ensure 0 values can be used in `calc()` calculations.
+					// Đảm bảo giá trị 0 có thể được sử dụng trong các phép tính `calc()`.
 					if ( '0' === $side_value || 0 === $side_value ) {
 						$side_value = '0px';
 					}
 
-					// Ensure current side value also factors in the height of the logged in admin bar.
+					// Đảm bảo giá trị cạnh hiện tại cũng tính đến chiều cao của thanh quản trị khi đã đăng nhập.
 					$side_value = "calc($side_value + var(--wp-admin--admin-bar--position-offset, 0px))";
 				}
 
@@ -119,7 +119,7 @@ function wp_render_position_support( $block_content, $block ) {
 
 	if ( ! empty( $position_styles ) ) {
 		/*
-		 * Add to the style engine store to enqueue and render position styles.
+		 * Thêm vào kho engine kiểu để nạp và render các kiểu vị trí.
 		 */
 		wp_style_engine_get_stylesheet_from_css_rules(
 			$position_styles,
@@ -129,7 +129,7 @@ function wp_render_position_support( $block_content, $block ) {
 			)
 		);
 
-		// Inject class name to block container markup.
+		// Chèn tên lớp vào markup container block.
 		$content = new WP_HTML_Tag_Processor( $block_content );
 		$content->next_tag();
 		foreach ( $wrapper_classes as $class ) {
@@ -141,7 +141,7 @@ function wp_render_position_support( $block_content, $block ) {
 	return $block_content;
 }
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register(
 	'position',
 	array(

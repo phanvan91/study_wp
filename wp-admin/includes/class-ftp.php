@@ -1,6 +1,6 @@
 <?php
 /**
- * PemFTP - An Ftp implementation in pure PHP
+ * PemFTP - Triển khai FTP bằng PHP thuần
  *
  * @package PemFTP
  * @since 2.5.0
@@ -13,9 +13,9 @@
  */
 
 /**
- * Defines the newline characters, if not defined already.
+ * Định nghĩa ký tự xuống dòng, nếu chưa được định nghĩa.
  *
- * This can be redefined.
+ * Có thể được định nghĩa lại.
  *
  * @since 2.5.0
  * @var string
@@ -25,9 +25,9 @@ if ( ! defined( 'CRLF' ) ) {
 }
 
 /**
- * Sets whatever to autodetect ASCII mode.
+ * Thiết lập tự động phát hiện chế độ ASCII.
  *
- * This can be redefined.
+ * Có thể được định nghĩa lại.
  *
  * @since 2.5.0
  * @var int
@@ -38,7 +38,7 @@ if ( ! defined( 'FTP_AUTOASCII' ) ) {
 
 /**
  *
- * This can be redefined.
+ * Có thể được định nghĩa lại.
  * @since 2.5.0
  * @var int
  */
@@ -48,7 +48,7 @@ if ( ! defined( 'FTP_BINARY' ) ) {
 
 /**
  *
- * This can be redefined.
+ * Có thể được định nghĩa lại.
  * @since 2.5.0
  * @var int
  */
@@ -57,9 +57,9 @@ if ( ! defined( 'FTP_ASCII' ) ) {
 }
 
 /**
- * Whether to force FTP.
+ * Có buộc sử dụng FTP hay không.
  *
- * This can be redefined.
+ * Có thể được định nghĩa lại.
  *
  * @since 2.5.0
  * @var bool
@@ -87,17 +87,17 @@ define('FTP_OS_Windows','w');
 define('FTP_OS_Mac','m');
 
 /**
- * PemFTP base class
+ * Lớp cơ sở PemFTP
  *
  */
 class ftp_base {
-	/* Public variables */
+	/* Biến công khai */
 	var $LocalEcho;
 	var $Verbose;
 	var $OS_local;
 	var $OS_remote;
 
-	/* Private variables */
+	/* Biến riêng tư */
 	var $_lastaction;
 	var $_errors;
 	var $_type;
@@ -130,7 +130,7 @@ class ftp_base {
 	var $_eol_code;
 	var $AutoAsciiExt;
 
-	/* Constructor */
+	/* Hàm khởi tạo */
 	function __construct($port_mode=FALSE, $verb=FALSE, $le=FALSE) {
 		$this->LocalEcho=$le;
 		$this->Verbose=$verb;
@@ -168,14 +168,14 @@ class ftp_base {
 	}
 
 // <!-- --------------------------------------------------------------------------------------- -->
-// <!--       Public functions                                                                  -->
+// <!--       Các hàm công khai                                                                 -->
 // <!-- --------------------------------------------------------------------------------------- -->
 
 	function parselisting($line) {
 		$is_windows = ($this->OS_remote == FTP_OS_Windows);
 		if ($is_windows && preg_match("/([0-9]{2})-([0-9]{2})-([0-9]{2}) +([0-9]{2}):([0-9]{2})(AM|PM) +([0-9]+|<DIR>) +(.+)/",$line,$lucifer)) {
 			$b = array();
-			if ($lucifer[3]<70) { $lucifer[3]+=2000; } else { $lucifer[3]+=1900; } // 4digit year fix
+			if ($lucifer[3]<70) { $lucifer[3]+=2000; } else { $lucifer[3]+=1900; } // Sửa năm 4 chữ số
 			$b['isdir'] = ($lucifer[7]=="<DIR>");
 			if ( $b['isdir'] )
 				$b['type'] = 'd';
@@ -288,8 +288,8 @@ class ftp_base {
 	        $dns=@gethostbyaddr($host);
 	        if(!$ip) $ip=$host;
 	        if(!$dns) $dns=$host;
-	        // Validate the IPAddress PHP4 returns -1 for invalid, PHP5 false
-	        // -1 === "255.255.255.255" which is the broadcast address which is also going to be invalid
+	        // Xác thực địa chỉ IP. PHP4 trả về -1 khi không hợp lệ, PHP5 trả về false
+	        // -1 === "255.255.255.255" là địa chỉ broadcast cũng sẽ không hợp lệ
 	        $ipaslong = ip2long($ip);
 			if ( ($ipaslong == false) || ($ipaslong === -1) ) {
 				$this->SendMSG("Wrong host name/address \"".$host."\"");
@@ -820,7 +820,7 @@ class ftp_base {
 		if(count($out)==1) return($this->glob_regexp("^$out[0]$",$subject));
 		else {
 			foreach($out as $tester)
-				// TODO: This should probably be glob_regexp(), but needs tests.
+				// TODO: Có lẽ nên dùng glob_regexp(), nhưng cần kiểm thử.
 				if($this->my_regexp("^$tester$",$subject)) return true;
 		}
 		return false;
@@ -856,7 +856,7 @@ class ftp_base {
 		return $dirlist;
 	}
 // <!-- --------------------------------------------------------------------------------------- -->
-// <!--       Private functions                                                                 -->
+// <!--       Các hàm riêng tư                                                                  -->
 // <!-- --------------------------------------------------------------------------------------- -->
 	function _checkCode() {
 		return ($this->_code<400 and $this->_code>0);
@@ -886,9 +886,9 @@ class ftp_base {
 	}
 
 // <!-- --------------------------------------------------------------------------------------- -->
-// <!-- Partie : gestion des erreurs                                                            -->
+// <!-- Phần: quản lý lỗi                                                                      -->
 // <!-- --------------------------------------------------------------------------------------- -->
-// Gnre une erreur pour traitement externe  la classe
+// Tạo một lỗi để xử lý bên ngoài lớp
 	function PushError($fctname,$msg,$desc=false){
 		$error=array();
 		$error['time']=time();
@@ -900,7 +900,7 @@ class ftp_base {
 		return(array_push($this->_error_array,$error));
 	}
 
-// Rcupre une erreur externe
+// Lấy một lỗi từ bên ngoài
 	function PopError(){
 		if(count($this->_error_array)) return(array_pop($this->_error_array));
 			else return(false);

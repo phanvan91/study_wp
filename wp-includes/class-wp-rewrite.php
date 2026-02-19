@@ -1,6 +1,6 @@
 <?php
 /**
- * Rewrite API: WP_Rewrite class
+ * API Rewrite: Lớp WP_Rewrite
  *
  * @package WordPress
  * @subpackage Rewrite
@@ -8,24 +8,23 @@
  */
 
 /**
- * Core class used to implement a rewrite component API.
+ * Lớp cốt lõi được sử dụng để triển khai API rewrite.
  *
- * The WordPress Rewrite class writes the rewrite module rules to the .htaccess
- * file. It also handles parsing the request to get the correct setup for the
- * WordPress Query class.
+ * Lớp WordPress Rewrite ghi các quy tắc module rewrite vào tệp .htaccess.
+ * Nó cũng xử lý phân tích yêu cầu để thiết lập đúng cho đối tượng WordPress Query.
  *
- * The Rewrite along with WP class function as a front controller for WordPress.
- * You can add rules to trigger your page view and processing using this
- * component. The full functionality of a front controller does not exist,
- * meaning you can't define how the template files load based on the rewrite
- * rules.
+ * Rewrite, cùng với lớp WP, hoạt động như một bộ điều khiển phía trước cho WordPress.
+ * Bạn có thể thêm các quy tắc để kích hoạt xem trang và xử lý bằng cách sử dụng
+ * thành phần này. Chức năng đầy đủ của bộ điều khiển phía trước không tồn tại,
+ * nghĩa là bạn không thể định nghĩa cách tải các tệp template dựa trên các
+ * quy tắc rewrite.
  *
  * @since 1.5.0
  */
 #[AllowDynamicProperties]
 class WP_Rewrite {
 	/**
-	 * Permalink structure for posts.
+	 * Cấu trúc đường dẫn tĩnh cho bài viết.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -33,7 +32,7 @@ class WP_Rewrite {
 	public $permalink_structure;
 
 	/**
-	 * Whether to add trailing slashes.
+	 * Có thêm dấu gạch chéo cuối hay không.
 	 *
 	 * @since 2.2.0
 	 * @var bool
@@ -41,7 +40,7 @@ class WP_Rewrite {
 	public $use_trailing_slashes;
 
 	/**
-	 * Base for the author permalink structure (example.com/$author_base/authorname).
+	 * Cơ sở cho cấu trúc đường dẫn tĩnh tác giả (example.com/$author_base/authorname).
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -49,7 +48,7 @@ class WP_Rewrite {
 	public $author_base = 'author';
 
 	/**
-	 * Permalink structure for author archives.
+	 * Cấu trúc đường dẫn tĩnh cho lưu trữ tác giả.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -57,7 +56,7 @@ class WP_Rewrite {
 	public $author_structure;
 
 	/**
-	 * Permalink structure for date archives.
+	 * Cấu trúc đường dẫn tĩnh cho lưu trữ theo ngày.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -65,7 +64,7 @@ class WP_Rewrite {
 	public $date_structure;
 
 	/**
-	 * Permalink structure for pages.
+	 * Cấu trúc đường dẫn tĩnh cho trang.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -73,7 +72,7 @@ class WP_Rewrite {
 	public $page_structure;
 
 	/**
-	 * Base of the search permalink structure (example.com/$search_base/query).
+	 * Cơ sở của cấu trúc đường dẫn tĩnh tìm kiếm (example.com/$search_base/query).
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -81,7 +80,7 @@ class WP_Rewrite {
 	public $search_base = 'search';
 
 	/**
-	 * Permalink structure for searches.
+	 * Cấu trúc đường dẫn tĩnh cho tìm kiếm.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -89,7 +88,7 @@ class WP_Rewrite {
 	public $search_structure;
 
 	/**
-	 * Comments permalink base.
+	 * Cơ sở đường dẫn tĩnh bình luận.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -97,7 +96,7 @@ class WP_Rewrite {
 	public $comments_base = 'comments';
 
 	/**
-	 * Pagination permalink base.
+	 * Cơ sở đường dẫn tĩnh phân trang.
 	 *
 	 * @since 3.1.0
 	 * @var string
@@ -105,7 +104,7 @@ class WP_Rewrite {
 	public $pagination_base = 'page';
 
 	/**
-	 * Comments pagination permalink base.
+	 * Cơ sở đường dẫn tĩnh phân trang bình luận.
 	 *
 	 * @since 4.2.0
 	 * @var string
@@ -113,7 +112,7 @@ class WP_Rewrite {
 	public $comments_pagination_base = 'comment-page';
 
 	/**
-	 * Feed permalink base.
+	 * Cơ sở đường dẫn tĩnh nguồn cấp dữ liệu.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -121,7 +120,7 @@ class WP_Rewrite {
 	public $feed_base = 'feed';
 
 	/**
-	 * Comments feed permalink structure.
+	 * Cấu trúc đường dẫn tĩnh nguồn cấp bình luận.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -129,7 +128,7 @@ class WP_Rewrite {
 	public $comment_feed_structure;
 
 	/**
-	 * Feed request permalink structure.
+	 * Cấu trúc đường dẫn tĩnh yêu cầu nguồn cấp dữ liệu.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -137,11 +136,11 @@ class WP_Rewrite {
 	public $feed_structure;
 
 	/**
-	 * The static portion of the post permalink structure.
+	 * Phần tĩnh của cấu trúc đường dẫn tĩnh bài viết.
 	 *
-	 * If the permalink structure is "/archive/%post_id%" then the front
-	 * is "/archive/". If the permalink structure is "/%year%/%postname%/"
-	 * then the front is "/".
+	 * Nếu cấu trúc đường dẫn tĩnh là "/archive/%post_id%" thì front
+	 * là "/archive/". Nếu cấu trúc đường dẫn tĩnh là "/%year%/%postname%/"
+	 * thì front là "/".
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -151,11 +150,11 @@ class WP_Rewrite {
 	public $front;
 
 	/**
-	 * The prefix for all permalink structures.
+	 * Tiền tố cho tất cả các cấu trúc đường dẫn tĩnh.
 	 *
-	 * If PATHINFO/index permalinks are in use then the root is the value of
-	 * `WP_Rewrite::$index` with a trailing slash appended. Otherwise the root
-	 * will be empty.
+	 * Nếu đường dẫn tĩnh PATHINFO/index đang được sử dụng thì root là giá trị của
+	 * `WP_Rewrite::$index` với dấu gạch chéo cuối được thêm vào. Ngược lại root
+	 * sẽ trống.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -166,7 +165,7 @@ class WP_Rewrite {
 	public $root = '';
 
 	/**
-	 * The name of the index file which is the entry point to all requests.
+	 * Tên của tệp index là điểm vào cho tất cả các yêu cầu.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -174,7 +173,7 @@ class WP_Rewrite {
 	public $index = 'index.php';
 
 	/**
-	 * Variable name to use for regex matches in the rewritten query.
+	 * Tên biến sử dụng cho các kết quả khớp regex trong truy vấn đã viết lại.
 	 *
 	 * @since 1.5.0
 	 * @var string
@@ -182,7 +181,7 @@ class WP_Rewrite {
 	public $matches = '';
 
 	/**
-	 * Rewrite rules to match against the request to find the redirect or query.
+	 * Các quy tắc rewrite để khớp với yêu cầu nhằm tìm chuyển hướng hoặc truy vấn.
 	 *
 	 * @since 1.5.0
 	 * @var string[]
@@ -190,9 +189,9 @@ class WP_Rewrite {
 	public $rules;
 
 	/**
-	 * Additional rules added external to the rewrite class.
+	 * Các quy tắc bổ sung được thêm từ bên ngoài lớp rewrite.
 	 *
-	 * Those not generated by the class, see add_rewrite_rule().
+	 * Những quy tắc không được tạo bởi lớp, xem add_rewrite_rule().
 	 *
 	 * @since 2.1.0
 	 * @var string[]
@@ -200,9 +199,9 @@ class WP_Rewrite {
 	public $extra_rules = array();
 
 	/**
-	 * Additional rules that belong at the beginning to match first.
+	 * Các quy tắc bổ sung thuộc về đầu danh sách để khớp trước tiên.
 	 *
-	 * Those not generated by the class, see add_rewrite_rule().
+	 * Những quy tắc không được tạo bởi lớp, xem add_rewrite_rule().
 	 *
 	 * @since 2.3.0
 	 * @var string[]
@@ -210,10 +209,10 @@ class WP_Rewrite {
 	public $extra_rules_top = array();
 
 	/**
-	 * Rules that don't redirect to WordPress' index.php.
+	 * Các quy tắc không chuyển hướng đến index.php của WordPress.
 	 *
-	 * These rules are written to the mod_rewrite portion of the .htaccess,
-	 * and are added by add_external_rule().
+	 * Các quy tắc này được ghi vào phần mod_rewrite của .htaccess,
+	 * và được thêm bởi add_external_rule().
 	 *
 	 * @since 2.1.0
 	 * @var string[]
@@ -221,7 +220,7 @@ class WP_Rewrite {
 	public $non_wp_rules = array();
 
 	/**
-	 * Extra permalink structures, e.g. categories, added by add_permastruct().
+	 * Các cấu trúc đường dẫn tĩnh bổ sung, ví dụ: chuyên mục, được thêm bởi add_permastruct().
 	 *
 	 * @since 2.1.0
 	 * @var array[]
@@ -229,7 +228,7 @@ class WP_Rewrite {
 	public $extra_permastructs = array();
 
 	/**
-	 * Endpoints (like /trackback/) added by add_rewrite_endpoint().
+	 * Các điểm cuối (như /trackback/) được thêm bởi add_rewrite_endpoint().
 	 *
 	 * @since 2.1.0
 	 * @var array[]
@@ -237,10 +236,10 @@ class WP_Rewrite {
 	public $endpoints;
 
 	/**
-	 * Whether to write every mod_rewrite rule for WordPress into the .htaccess file.
+	 * Có ghi tất cả các quy tắc mod_rewrite của WordPress vào tệp .htaccess hay không.
 	 *
-	 * This is off by default, turning it on might print a lot of rewrite rules
-	 * to the .htaccess file.
+	 * Mặc định tắt, bật lên có thể in rất nhiều quy tắc rewrite
+	 * vào tệp .htaccess.
 	 *
 	 * @since 2.0.0
 	 * @var bool
@@ -250,14 +249,14 @@ class WP_Rewrite {
 	public $use_verbose_rules = false;
 
 	/**
-	 * Could post permalinks be confused with those of pages?
+	 * Liệu đường dẫn tĩnh bài viết có thể bị nhầm lẫn với đường dẫn tĩnh của trang không?
 	 *
-	 * If the first rewrite tag in the post permalink structure is one that could
-	 * also match a page name (e.g. %postname% or %author%) then this flag is
-	 * set to true. Prior to WordPress 3.3 this flag indicated that every page
-	 * would have a set of rules added to the top of the rewrite rules array.
-	 * Now it tells WP::parse_request() to check if a URL matching the page
-	 * permastruct is actually a page before accepting it.
+	 * Nếu thẻ rewrite đầu tiên trong cấu trúc đường dẫn tĩnh bài viết là thẻ có thể
+	 * khớp với tên trang (ví dụ: %postname% hoặc %author%) thì cờ này được
+	 * đặt thành true. Trước WordPress 3.3, cờ này chỉ ra rằng mỗi trang
+	 * sẽ có một bộ quy tắc được thêm vào đầu mảng quy tắc rewrite.
+	 * Bây giờ nó báo cho WP::parse_request() kiểm tra xem URL khớp với
+	 * permastruct trang có thực sự là một trang hay không trước khi chấp nhận.
 	 *
 	 * @since 2.5.0
 	 * @var bool
@@ -267,13 +266,13 @@ class WP_Rewrite {
 	public $use_verbose_page_rules = true;
 
 	/**
-	 * Rewrite tags that can be used in permalink structures.
+	 * Các thẻ rewrite có thể sử dụng trong cấu trúc đường dẫn tĩnh.
 	 *
-	 * These are translated into the regular expressions stored in
-	 * `WP_Rewrite::$rewritereplace` and are rewritten to the query
-	 * variables listed in WP_Rewrite::$queryreplace.
+	 * Các thẻ này được chuyển đổi thành biểu thức chính quy lưu trong
+	 * `WP_Rewrite::$rewritereplace` và được viết lại thành các biến
+	 * truy vấn được liệt kê trong WP_Rewrite::$queryreplace.
 	 *
-	 * Additional tags can be added with add_rewrite_tag().
+	 * Các thẻ bổ sung có thể được thêm bằng add_rewrite_tag().
 	 *
 	 * @since 1.5.0
 	 * @var string[]
@@ -293,8 +292,8 @@ class WP_Rewrite {
 	);
 
 	/**
-	 * Regular expressions to be substituted into rewrite rules in place
-	 * of rewrite tags, see WP_Rewrite::$rewritecode.
+	 * Các biểu thức chính quy được thay thế vào quy tắc rewrite thay cho
+	 * các thẻ rewrite, xem WP_Rewrite::$rewritecode.
 	 *
 	 * @since 1.5.0
 	 * @var string[]
@@ -314,7 +313,7 @@ class WP_Rewrite {
 	);
 
 	/**
-	 * Query variables that rewrite tags map to, see WP_Rewrite::$rewritecode.
+	 * Các biến truy vấn mà thẻ rewrite ánh xạ tới, xem WP_Rewrite::$rewritecode.
 	 *
 	 * @since 1.5.0
 	 * @var string[]
@@ -334,7 +333,7 @@ class WP_Rewrite {
 	);
 
 	/**
-	 * Supported default feeds.
+	 * Các nguồn cấp dữ liệu mặc định được hỗ trợ.
 	 *
 	 * @since 1.5.0
 	 * @var string[]
@@ -342,62 +341,62 @@ class WP_Rewrite {
 	public $feeds = array( 'feed', 'rdf', 'rss', 'rss2', 'atom' );
 
 	/**
-	 * Determines whether permalinks are being used.
+	 * Xác định xem đường dẫn tĩnh có đang được sử dụng hay không.
 	 *
-	 * This can be either rewrite module or permalink in the HTTP query string.
+	 * Có thể là module rewrite hoặc đường dẫn tĩnh trong chuỗi truy vấn HTTP.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return bool True, if permalinks are enabled.
+	 * @return bool True nếu đường dẫn tĩnh được bật.
 	 */
 	public function using_permalinks() {
 		return ! empty( $this->permalink_structure );
 	}
 
 	/**
-	 * Determines whether permalinks are being used and rewrite module is not enabled.
+	 * Xác định xem đường dẫn tĩnh có đang được sử dụng và module rewrite không được bật hay không.
 	 *
-	 * Means that permalink links are enabled and index.php is in the URL.
+	 * Có nghĩa là đường dẫn tĩnh được bật và index.php nằm trong URL.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return bool Whether permalink links are enabled and index.php is in the URL.
+	 * @return bool Liệu đường dẫn tĩnh có được bật và index.php có trong URL hay không.
 	 */
 	public function using_index_permalinks() {
 		if ( empty( $this->permalink_structure ) ) {
 			return false;
 		}
 
-		// If the index is not in the permalink, we're using mod_rewrite.
+		// Nếu index không nằm trong đường dẫn tĩnh, chúng ta đang sử dụng mod_rewrite.
 		return preg_match( '#^/*' . $this->index . '#', $this->permalink_structure );
 	}
 
 	/**
-	 * Determines whether permalinks are being used and rewrite module is enabled.
+	 * Xác định xem đường dẫn tĩnh có đang được sử dụng và module rewrite có được bật hay không.
 	 *
-	 * Using permalinks and index.php is not in the URL.
+	 * Sử dụng đường dẫn tĩnh và index.php không nằm trong URL.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return bool Whether permalink links are enabled and index.php is NOT in the URL.
+	 * @return bool Liệu đường dẫn tĩnh có được bật và index.php KHÔNG có trong URL hay không.
 	 */
 	public function using_mod_rewrite_permalinks() {
 		return $this->using_permalinks() && ! $this->using_index_permalinks();
 	}
 
 	/**
-	 * Indexes for matches for usage in preg_*() functions.
+	 * Chỉ mục cho các kết quả khớp để sử dụng trong các hàm preg_*().
 	 *
-	 * The format of the string is, with empty matches property value, '$NUM'.
-	 * The 'NUM' will be replaced with the value in the $number parameter. With
-	 * the matches property not empty, the value of the returned string will
-	 * contain that value of the matches property. The format then will be
-	 * '$MATCHES[NUM]', with MATCHES as the value in the property and NUM the
-	 * value of the $number parameter.
+	 * Định dạng của chuỗi là, với giá trị thuộc tính matches rỗng, '$NUM'.
+	 * 'NUM' sẽ được thay thế bằng giá trị trong tham số $number. Với
+	 * thuộc tính matches không rỗng, giá trị của chuỗi trả về sẽ
+	 * chứa giá trị đó của thuộc tính matches. Định dạng khi đó sẽ là
+	 * '$MATCHES[NUM]', với MATCHES là giá trị trong thuộc tính và NUM là
+	 * giá trị của tham số $number.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param int $number Index number.
+	 * @param int $number Số chỉ mục.
 	 * @return string
 	 */
 	public function preg_index( $number ) {
@@ -413,37 +412,37 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Retrieves all pages and attachments for pages URIs.
+	 * Lấy tất cả các trang và tệp đính kèm cho URI của trang.
 	 *
-	 * The attachments are for those that have pages as parents and will be
-	 * retrieved.
+	 * Các tệp đính kèm dành cho những trang có trang cha và sẽ được
+	 * lấy ra.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @return array Array of page URIs as first element and attachment URIs as second element.
+	 * @return array Mảng URI trang là phần tử đầu tiên và URI tệp đính kèm là phần tử thứ hai.
 	 */
 	public function page_uri_index() {
 		global $wpdb;
 
-		// Get pages in order of hierarchy, i.e. children after parents.
+		// Lấy các trang theo thứ tự phân cấp, tức là con sau cha.
 		$pages = $wpdb->get_results( "SELECT ID, post_name, post_parent FROM $wpdb->posts WHERE post_type = 'page' AND post_status != 'auto-draft'" );
 		$posts = get_page_hierarchy( $pages );
 
-		// If we have no pages get out quick.
+		// Nếu không có trang nào thì thoát nhanh.
 		if ( ! $posts ) {
 			return array( array(), array() );
 		}
 
-		// Now reverse it, because we need parents after children for rewrite rules to work properly.
+		// Bây giờ đảo ngược nó, vì chúng ta cần cha sau con để quy tắc rewrite hoạt động đúng.
 		$posts = array_reverse( $posts, true );
 
 		$page_uris            = array();
 		$page_attachment_uris = array();
 
 		foreach ( $posts as $id => $post ) {
-			// URL => page name.
+			// URL => tên trang.
 			$uri         = get_page_uri( $id );
 			$attachments = $wpdb->get_results( $wpdb->prepare( "SELECT ID, post_name, post_parent FROM $wpdb->posts WHERE post_type = 'attachment' AND post_parent = %d", $id ) );
 			if ( ! empty( $attachments ) ) {
@@ -460,37 +459,37 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Retrieves all of the rewrite rules for pages.
+	 * Lấy tất cả các quy tắc rewrite cho trang.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string[] Page rewrite rules.
+	 * @return string[] Quy tắc rewrite trang.
 	 */
 	public function page_rewrite_rules() {
-		// The extra .? at the beginning prevents clashes with other regular expressions in the rules array.
+		// Dấu .? thêm ở đầu ngăn xung đột với các biểu thức chính quy khác trong mảng quy tắc.
 		$this->add_rewrite_tag( '%pagename%', '(.?.+?)', 'pagename=' );
 
 		return $this->generate_rewrite_rules( $this->get_page_permastruct(), EP_PAGES, true, true, false, false );
 	}
 
 	/**
-	 * Retrieves date permalink structure, with year, month, and day.
+	 * Lấy cấu trúc đường dẫn tĩnh ngày, với năm, tháng và ngày.
 	 *
-	 * The permalink structure for the date, if not set already depends on the
-	 * permalink structure. It can be one of three formats. The first is year,
-	 * month, day; the second is day, month, year; and the last format is month,
-	 * day, year. These are matched against the permalink structure for which
-	 * one is used. If none matches, then the default will be used, which is
-	 * year, month, day.
+	 * Cấu trúc đường dẫn tĩnh cho ngày, nếu chưa được thiết lập phụ thuộc vào
+	 * cấu trúc đường dẫn tĩnh. Nó có thể là một trong ba định dạng. Đầu tiên là năm,
+	 * tháng, ngày; thứ hai là ngày, tháng, năm; và định dạng cuối cùng là tháng,
+	 * ngày, năm. Chúng được đối chiếu với cấu trúc đường dẫn tĩnh để xác định
+	 * cái nào được sử dụng. Nếu không có cái nào khớp, thì mặc định sẽ được dùng, đó là
+	 * năm, tháng, ngày.
 	 *
-	 * Prevents post ID and date permalinks from overlapping. In the case of
-	 * post_id, the date permalink will be prepended with front permalink with
-	 * 'date/' before the actual permalink to form the complete date permalink
-	 * structure.
+	 * Ngăn ID bài viết và đường dẫn tĩnh ngày chồng chéo nhau. Trong trường hợp
+	 * post_id, đường dẫn tĩnh ngày sẽ được thêm tiền tố front permalink với
+	 * 'date/' trước đường dẫn tĩnh thực tế để tạo thành cấu trúc đường dẫn tĩnh
+	 * ngày đầy đủ.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string|false Date permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh ngày khi thành công, false khi thất bại.
 	 */
 	public function get_date_permastruct() {
 		if ( isset( $this->date_structure ) ) {
@@ -502,7 +501,7 @@ class WP_Rewrite {
 			return false;
 		}
 
-		// The date permalink must have year, month, and day separated by slashes.
+		// Đường dẫn tĩnh ngày phải có năm, tháng và ngày được phân tách bằng dấu gạch chéo.
 		$endians = array( '%year%/%monthnum%/%day%', '%day%/%monthnum%/%year%', '%monthnum%/%day%/%year%' );
 
 		$this->date_structure = '';
@@ -520,8 +519,8 @@ class WP_Rewrite {
 		}
 
 		/*
-		 * Do not allow the date tags and %post_id% to overlap in the permalink
-		 * structure. If they do, move the date tags to $front/date/.
+		 * Không cho phép các thẻ ngày và %post_id% chồng chéo trong cấu trúc
+		 * đường dẫn tĩnh. Nếu chúng chồng chéo, di chuyển các thẻ ngày sang $front/date/.
 		 */
 		$front = $this->front;
 		preg_match_all( '/%.+?%/', $this->permalink_structure, $tokens );
@@ -540,14 +539,14 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Retrieves the year permalink structure without month and day.
+	 * Lấy cấu trúc đường dẫn tĩnh năm mà không có tháng và ngày.
 	 *
-	 * Gets the date permalink structure and strips out the month and day
-	 * permalink structures.
+	 * Lấy cấu trúc đường dẫn tĩnh ngày và loại bỏ các cấu trúc
+	 * đường dẫn tĩnh tháng và ngày.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string|false Year permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh năm khi thành công, false khi thất bại.
 	 */
 	public function get_year_permastruct() {
 		$structure = $this->get_date_permastruct();
@@ -564,14 +563,14 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Retrieves the month permalink structure without day and with year.
+	 * Lấy cấu trúc đường dẫn tĩnh tháng mà không có ngày và có năm.
 	 *
-	 * Gets the date permalink structure and strips out the day permalink
-	 * structures. Keeps the year permalink structure.
+	 * Lấy cấu trúc đường dẫn tĩnh ngày và loại bỏ cấu trúc
+	 * đường dẫn tĩnh ngày. Giữ lại cấu trúc đường dẫn tĩnh năm.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string|false Year/Month permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh Năm/Tháng khi thành công, false khi thất bại.
 	 */
 	public function get_month_permastruct() {
 		$structure = $this->get_date_permastruct();
@@ -587,57 +586,57 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Retrieves the day permalink structure with month and year.
+	 * Lấy cấu trúc đường dẫn tĩnh ngày với tháng và năm.
 	 *
-	 * Keeps date permalink structure with all year, month, and day.
+	 * Giữ cấu trúc đường dẫn tĩnh ngày với đầy đủ năm, tháng và ngày.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string|false Year/Month/Day permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh Năm/Tháng/Ngày khi thành công, false khi thất bại.
 	 */
 	public function get_day_permastruct() {
 		return $this->get_date_permastruct();
 	}
 
 	/**
-	 * Retrieves the permalink structure for categories.
+	 * Lấy cấu trúc đường dẫn tĩnh cho chuyên mục.
 	 *
-	 * If the category_base property has no value, then the category structure
-	 * will have the front property value, followed by 'category', and finally
-	 * '%category%'. If it does, then the root property will be used, along with
-	 * the category_base property value.
+	 * Nếu thuộc tính category_base không có giá trị, thì cấu trúc chuyên mục
+	 * sẽ có giá trị thuộc tính front, theo sau là 'category', và cuối cùng
+	 * '%category%'. Nếu có, thì thuộc tính root sẽ được sử dụng, cùng với
+	 * giá trị thuộc tính category_base.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string|false Category permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh chuyên mục khi thành công, false khi thất bại.
 	 */
 	public function get_category_permastruct() {
 		return $this->get_extra_permastruct( 'category' );
 	}
 
 	/**
-	 * Retrieves the permalink structure for tags.
+	 * Lấy cấu trúc đường dẫn tĩnh cho thẻ.
 	 *
-	 * If the tag_base property has no value, then the tag structure will have
-	 * the front property value, followed by 'tag', and finally '%tag%'. If it
-	 * does, then the root property will be used, along with the tag_base
-	 * property value.
+	 * Nếu thuộc tính tag_base không có giá trị, thì cấu trúc thẻ sẽ có
+	 * giá trị thuộc tính front, theo sau là 'tag', và cuối cùng '%tag%'. Nếu
+	 * có, thì thuộc tính root sẽ được sử dụng, cùng với giá trị thuộc tính
+	 * tag_base.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @return string|false Tag permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh thẻ khi thành công, false khi thất bại.
 	 */
 	public function get_tag_permastruct() {
 		return $this->get_extra_permastruct( 'post_tag' );
 	}
 
 	/**
-	 * Retrieves an extra permalink structure by name.
+	 * Lấy một cấu trúc đường dẫn tĩnh bổ sung theo tên.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $name Permalink structure name.
-	 * @return string|false Permalink structure string on success, false on failure.
+	 * @param string $name Tên cấu trúc đường dẫn tĩnh.
+	 * @return string|false Chuỗi cấu trúc đường dẫn tĩnh khi thành công, false khi thất bại.
 	 */
 	public function get_extra_permastruct( $name ) {
 		if ( empty( $this->permalink_structure ) ) {
@@ -652,15 +651,15 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Retrieves the author permalink structure.
+	 * Lấy cấu trúc đường dẫn tĩnh tác giả.
 	 *
-	 * The permalink structure is front property, author base, and finally
-	 * '/%author%'. Will set the author_structure property and then return it
-	 * without attempting to set the value again.
+	 * Cấu trúc đường dẫn tĩnh là thuộc tính front, cơ sở tác giả, và cuối cùng
+	 * '/%author%'. Sẽ thiết lập thuộc tính author_structure và sau đó trả về nó
+	 * mà không cố gắng thiết lập lại giá trị.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string|false Author permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh tác giả khi thành công, false khi thất bại.
 	 */
 	public function get_author_permastruct() {
 		if ( isset( $this->author_structure ) ) {
@@ -678,15 +677,15 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Retrieves the search permalink structure.
+	 * Lấy cấu trúc đường dẫn tĩnh tìm kiếm.
 	 *
-	 * The permalink structure is root property, search base, and finally
-	 * '/%search%'. Will set the search_structure property and then return it
-	 * without attempting to set the value again.
+	 * Cấu trúc đường dẫn tĩnh là thuộc tính root, cơ sở tìm kiếm, và cuối cùng
+	 * '/%search%'. Sẽ thiết lập thuộc tính search_structure và sau đó trả về nó
+	 * mà không cố gắng thiết lập lại giá trị.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string|false Search permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh tìm kiếm khi thành công, false khi thất bại.
 	 */
 	public function get_search_permastruct() {
 		if ( isset( $this->search_structure ) ) {
@@ -704,15 +703,15 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Retrieves the page permalink structure.
+	 * Lấy cấu trúc đường dẫn tĩnh trang.
 	 *
-	 * The permalink structure is root property, and '%pagename%'. Will set the
-	 * page_structure property and then return it without attempting to set the
-	 * value again.
+	 * Cấu trúc đường dẫn tĩnh là thuộc tính root, và '%pagename%'. Sẽ thiết lập
+	 * thuộc tính page_structure và sau đó trả về nó mà không cố gắng thiết lập
+	 * lại giá trị.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string|false Page permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh trang khi thành công, false khi thất bại.
 	 */
 	public function get_page_permastruct() {
 		if ( isset( $this->page_structure ) ) {
@@ -730,15 +729,15 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Retrieves the feed permalink structure.
+	 * Lấy cấu trúc đường dẫn tĩnh nguồn cấp dữ liệu.
 	 *
-	 * The permalink structure is root property, feed base, and finally
-	 * '/%feed%'. Will set the feed_structure property and then return it
-	 * without attempting to set the value again.
+	 * Cấu trúc đường dẫn tĩnh là thuộc tính root, cơ sở nguồn cấp, và cuối cùng
+	 * '/%feed%'. Sẽ thiết lập thuộc tính feed_structure và sau đó trả về nó
+	 * mà không cố gắng thiết lập lại giá trị.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string|false Feed permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh nguồn cấp khi thành công, false khi thất bại.
 	 */
 	public function get_feed_permastruct() {
 		if ( isset( $this->feed_structure ) ) {
@@ -756,15 +755,15 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Retrieves the comment feed permalink structure.
+	 * Lấy cấu trúc đường dẫn tĩnh nguồn cấp bình luận.
 	 *
-	 * The permalink structure is root property, comment base property, feed
-	 * base and finally '/%feed%'. Will set the comment_feed_structure property
-	 * and then return it without attempting to set the value again.
+	 * Cấu trúc đường dẫn tĩnh là thuộc tính root, thuộc tính cơ sở bình luận, cơ sở
+	 * nguồn cấp và cuối cùng '/%feed%'. Sẽ thiết lập thuộc tính comment_feed_structure
+	 * và sau đó trả về nó mà không cố gắng thiết lập lại giá trị.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string|false Comment feed permalink structure on success, false on failure.
+	 * @return string|false Cấu trúc đường dẫn tĩnh nguồn cấp bình luận khi thành công, false khi thất bại.
 	 */
 	public function get_comment_feed_permastruct() {
 		if ( isset( $this->comment_feed_structure ) ) {
@@ -782,10 +781,10 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Adds or updates existing rewrite tags (e.g. %postname%).
+	 * Thêm hoặc cập nhật các thẻ rewrite hiện có (ví dụ: %postname%).
 	 *
-	 * If the tag already exists, replace the existing pattern and query for
-	 * that tag, otherwise add the new tag.
+	 * Nếu thẻ đã tồn tại, thay thế mẫu và truy vấn hiện có cho
+	 * thẻ đó, ngược lại thêm thẻ mới.
 	 *
 	 * @since 1.5.0
 	 *
@@ -793,9 +792,9 @@ class WP_Rewrite {
 	 * @see WP_Rewrite::$rewritereplace
 	 * @see WP_Rewrite::$queryreplace
 	 *
-	 * @param string $tag   Name of the rewrite tag to add or update.
-	 * @param string $regex Regular expression to substitute the tag for in rewrite rules.
-	 * @param string $query String to append to the rewritten query. Must end in '='.
+	 * @param string $tag   Tên thẻ rewrite cần thêm hoặc cập nhật.
+	 * @param string $regex Biểu thức chính quy thay thế cho thẻ trong quy tắc rewrite.
+	 * @param string $query Chuỗi nối thêm vào truy vấn đã viết lại. Phải kết thúc bằng '='.
 	 */
 	public function add_rewrite_tag( $tag, $regex, $query ) {
 		$position = array_search( $tag, $this->rewritecode, true );
@@ -811,7 +810,7 @@ class WP_Rewrite {
 
 
 	/**
-	 * Removes an existing rewrite tag.
+	 * Xóa một thẻ rewrite hiện có.
 	 *
 	 * @since 4.5.0
 	 *
@@ -819,7 +818,7 @@ class WP_Rewrite {
 	 * @see WP_Rewrite::$rewritereplace
 	 * @see WP_Rewrite::$queryreplace
 	 *
-	 * @param string $tag Name of the rewrite tag to remove.
+	 * @param string $tag Tên thẻ rewrite cần xóa.
 	 */
 	public function remove_rewrite_tag( $tag ) {
 		$position = array_search( $tag, $this->rewritecode, true );
@@ -831,17 +830,17 @@ class WP_Rewrite {
 	}
 
 	/**
-	 * Generates rewrite rules from a permalink structure.
+	 * Tạo quy tắc rewrite từ cấu trúc đường dẫn tĩnh.
 	 *
-	 * The main WP_Rewrite function for building the rewrite rule list. The
-	 * contents of the function is a mix of black magic and regular expressions,
-	 * so best just ignore the contents and move to the parameters.
+	 * Hàm WP_Rewrite chính để xây dựng danh sách quy tắc rewrite. Nội dung
+	 * của hàm là sự kết hợp giữa phép thuật đen và biểu thức chính quy,
+	 * vì vậy tốt nhất hãy bỏ qua nội dung và chuyển sang các tham số.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $permalink_structure The permalink structure.
-	 * @param int    $ep_mask             Optional. Endpoint mask defining what endpoints are added to the structure.
-	 *                                    Accepts a mask of:
+	 * @param string $permalink_structure Cấu trúc đường dẫn tĩnh.
+	 * @param int    $ep_mask             Tùy chọn. Mặt nạ điểm cuối xác định điểm cuối nào được thêm vào cấu trúc.
+	 *                                    Chấp nhận mặt nạ của:
 	 *                                    - `EP_ALL`
 	 *                                    - `EP_NONE`
 	 *                                    - `EP_ALL_ARCHIVES`
@@ -858,21 +857,21 @@ class WP_Rewrite {
 	 *                                    - `EP_SEARCH`
 	 *                                    - `EP_TAGS`
 	 *                                    - `EP_YEAR`
-	 *                                    Default `EP_NONE`.
-	 * @param bool   $paged               Optional. Whether archive pagination rules should be added for the structure.
-	 *                                    Default true.
-	 * @param bool   $feed                Optional. Whether feed rewrite rules should be added for the structure.
-	 *                                    Default true.
-	 * @param bool   $forcomments         Optional. Whether the feed rules should be a query for a comments feed.
-	 *                                    Default false.
-	 * @param bool   $walk_dirs           Optional. Whether the 'directories' making up the structure should be walked
-	 *                                    over and rewrite rules built for each in-turn. Default true.
-	 * @param bool   $endpoints           Optional. Whether endpoints should be applied to the generated rewrite rules.
-	 *                                    Default true.
-	 * @return string[] Array of rewrite rules keyed by their regex pattern.
+	 *                                    Mặc định `EP_NONE`.
+	 * @param bool   $paged               Tùy chọn. Có nên thêm quy tắc phân trang lưu trữ cho cấu trúc không.
+	 *                                    Mặc định true.
+	 * @param bool   $feed                Tùy chọn. Có nên thêm quy tắc rewrite nguồn cấp cho cấu trúc không.
+	 *                                    Mặc định true.
+	 * @param bool   $forcomments         Tùy chọn. Có nên tạo quy tắc nguồn cấp dưới dạng truy vấn nguồn cấp bình luận không.
+	 *                                    Mặc định false.
+	 * @param bool   $walk_dirs           Tùy chọn. Có nên duyệt qua các 'thư mục' tạo nên cấu trúc
+	 *                                    và xây dựng quy tắc rewrite cho từng cái không. Mặc định true.
+	 * @param bool   $endpoints           Tùy chọn. Có nên áp dụng điểm cuối cho quy tắc rewrite đã tạo không.
+	 *                                    Mặc định true.
+	 * @return string[] Mảng quy tắc rewrite được đánh chỉ mục bởi mẫu regex.
 	 */
 	public function generate_rewrite_rules( $permalink_structure, $ep_mask = EP_NONE, $paged = true, $feed = true, $forcomments = false, $walk_dirs = true, $endpoints = true ) {
-		// Build a regex to match the feed section of URLs, something like (feed|atom|rss|rss2)/?
+		// Xây dựng regex để khớp phần nguồn cấp của URL, giống như (feed|atom|rss|rss2)/?
 		$feedregex2 = '';
 		foreach ( (array) $this->feeds as $feed_name ) {
 			$feedregex2 .= $feed_name . '|';
@@ -880,46 +879,46 @@ class WP_Rewrite {
 		$feedregex2 = '(' . trim( $feedregex2, '|' ) . ')/?$';
 
 		/*
-		 * $feedregex is identical but with /feed/ added on as well, so URLs like <permalink>/feed/atom
-		 * and <permalink>/atom are both possible
+		 * $feedregex giống hệt nhưng có thêm /feed/, vì vậy URL như <permalink>/feed/atom
+		 * và <permalink>/atom đều có thể
 		 */
 		$feedregex = $this->feed_base . '/' . $feedregex2;
 
-		// Build a regex to match the trackback and page/xx parts of URLs.
+		// Xây dựng regex để khớp phần trackback và page/xx của URL.
 		$trackbackregex = 'trackback/?$';
 		$pageregex      = $this->pagination_base . '/?([0-9]{1,})/?$';
 		$commentregex   = $this->comments_pagination_base . '-([0-9]{1,})/?$';
 		$embedregex     = 'embed/?$';
 
-		// Build up an array of endpoint regexes to append => queries to append.
+		// Xây dựng mảng các regex điểm cuối để nối thêm => truy vấn để nối thêm.
 		if ( $endpoints ) {
 			$ep_query_append = array();
 			foreach ( (array) $this->endpoints as $endpoint ) {
-				// Match everything after the endpoint name, but allow for nothing to appear there.
+				// Khớp mọi thứ sau tên điểm cuối, nhưng cho phép không có gì xuất hiện ở đó.
 				$epmatch = $endpoint[1] . '(/(.*))?/?$';
 
-				// This will be appended on to the rest of the query for each dir.
+				// Cái này sẽ được nối thêm vào phần còn lại của truy vấn cho mỗi thư mục.
 				$epquery                     = '&' . $endpoint[2] . '=';
 				$ep_query_append[ $epmatch ] = array( $endpoint[0], $epquery );
 			}
 		}
 
-		// Get everything up to the first rewrite tag.
+		// Lấy mọi thứ cho đến thẻ rewrite đầu tiên.
 		$front = substr( $permalink_structure, 0, strpos( $permalink_structure, '%' ) );
 
-		// Build an array of the tags (note that said array ends up being in $tokens[0]).
+		// Xây dựng mảng các thẻ (lưu ý mảng nói trên nằm trong $tokens[0]).
 		preg_match_all( '/%.+?%/', $permalink_structure, $tokens );
 
 		$num_tokens = count( $tokens[0] );
 
-		$index          = $this->index; // Probably 'index.php'.
+		$index          = $this->index; // Có thể là 'index.php'.
 		$feedindex      = $index;
 		$trackbackindex = $index;
 		$embedindex     = $index;
 
 		/*
-		 * Build a list from the rewritecode and queryreplace arrays, that will look something
-		 * like tagname=$matches[i] where i is the current $i.
+		 * Xây dựng danh sách từ mảng rewritecode và queryreplace, trông giống như
+		 * tagname=$matches[i] trong đó i là $i hiện tại.
 		 */
 		$queries = array();
 		for ( $i = 0; $i < $num_tokens; ++$i ) {
@@ -933,42 +932,42 @@ class WP_Rewrite {
 			$queries[ $i ] .= $query_token;
 		}
 
-		// Get the structure, minus any cruft (stuff that isn't tags) at the front.
+		// Lấy cấu trúc, trừ đi phần thừa (những thứ không phải thẻ) ở phía trước.
 		$structure = $permalink_structure;
 		if ( '/' !== $front ) {
 			$structure = str_replace( $front, '', $structure );
 		}
 
 		/*
-		 * Create a list of dirs to walk over, making rewrite rules for each level
-		 * so for example, a $structure of /%year%/%monthnum%/%postname% would create
-		 * rewrite rules for /%year%/, /%year%/%monthnum%/ and /%year%/%monthnum%/%postname%
+		 * Tạo danh sách các thư mục để duyệt qua, tạo quy tắc rewrite cho mỗi cấp
+		 * ví dụ, một $structure là /%year%/%monthnum%/%postname% sẽ tạo
+		 * quy tắc rewrite cho /%year%/, /%year%/%monthnum%/ và /%year%/%monthnum%/%postname%
 		 */
 		$structure = trim( $structure, '/' );
 		$dirs      = $walk_dirs ? explode( '/', $structure ) : array( $structure );
 		$num_dirs  = count( $dirs );
 
-		// Strip slashes from the front of $front.
+		// Loại bỏ dấu gạch chéo ở phía trước của $front.
 		$front = preg_replace( '|^/+|', '', $front );
 
-		// The main workhorse loop.
+		// Vòng lặp xử lý chính.
 		$post_rewrite = array();
 		$struct       = $front;
 		for ( $j = 0; $j < $num_dirs; ++$j ) {
-			// Get the struct for this dir, and trim slashes off the front.
-			$struct .= $dirs[ $j ] . '/'; // Accumulate. see comment near explode('/', $structure) above.
+			// Lấy cấu trúc cho thư mục này, và loại bỏ dấu gạch chéo ở phía trước.
+			$struct .= $dirs[ $j ] . '/'; // Tích lũy. Xem chú thích gần explode('/', $structure) ở trên.
 			$struct  = ltrim( $struct, '/' );
 
-			// Replace tags with regexes.
+			// Thay thế các thẻ bằng biểu thức chính quy.
 			$match = str_replace( $this->rewritecode, $this->rewritereplace, $struct );
 
-			// Make a list of tags, and store how many there are in $num_toks.
+			// Tạo danh sách các thẻ, và lưu số lượng vào $num_toks.
 			$num_toks = preg_match_all( '/%.+?%/', $struct, $toks );
 
-			// Get the 'tagname=$matches[i]'.
+			// Lấy chuỗi 'tagname=$matches[i]'.
 			$query = ( ! empty( $num_toks ) && isset( $queries[ $num_toks - 1 ] ) ) ? $queries[ $num_toks - 1 ] : '';
 
-			// Set up $ep_mask_specific which is used to match more specific URL types.
+			// Thiết lập $ep_mask_specific dùng để khớp các loại URL cụ thể hơn.
 			switch ( $dirs[ $j ] ) {
 				case '%year%':
 					$ep_mask_specific = EP_YEAR;
@@ -983,7 +982,7 @@ class WP_Rewrite {
 					$ep_mask_specific = EP_NONE;
 			}
 
-			// Create query for /page/xx.
+			// Tạo truy vấn cho /page/xx.
 			$pagematch = $match . $pageregex;
 			$pagequery = $index . '?' . $query . '&paged=' . $this->preg_index( $num_toks + 1 );
 

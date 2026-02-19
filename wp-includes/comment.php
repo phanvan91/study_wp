@@ -1,72 +1,71 @@
 <?php
 /**
- * Core Comment API
+ * API bình luận lõi
  *
  * @package WordPress
  * @subpackage Comment
  */
 
 /**
- * Checks whether a comment passes internal checks to be allowed to add.
+ * Kiểm tra xem bình luận có vượt qua các kiểm tra nội bộ để được phép thêm hay không.
  *
- * If manual comment moderation is set in the administration, then all checks,
- * regardless of their type and substance, will fail and the function will
- * return false.
+ * Nếu kiểm duyệt bình luận thủ công được bật trong trang quản trị, thì tất cả các kiểm tra,
+ * bất kể loại và nội dung, sẽ thất bại và hàm sẽ trả về false.
  *
- * If the number of links exceeds the amount in the administration, then the
- * check fails. If any of the parameter contents contain any disallowed words,
- * then the check fails.
+ * Nếu số lượng liên kết vượt quá giới hạn trong trang quản trị, thì kiểm tra
+ * thất bại. Nếu bất kỳ nội dung tham số nào chứa từ không được phép,
+ * thì kiểm tra thất bại.
  *
- * If the comment author was approved before, then the comment is automatically
- * approved.
+ * Nếu tác giả bình luận đã được phê duyệt trước đó, thì bình luận sẽ tự động
+ * được phê duyệt.
  *
- * If all checks pass, the function will return true.
+ * Nếu tất cả kiểm tra đều đạt, hàm sẽ trả về true.
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $author       Comment author name.
- * @param string $email        Comment author email.
- * @param string $url          Comment author URL.
- * @param string $comment      Content of the comment.
- * @param string $user_ip      Comment author IP address.
- * @param string $user_agent   Comment author User-Agent.
- * @param string $comment_type Comment type, either user-submitted comment,
- *                             trackback, or pingback.
- * @return bool If all checks pass, true, otherwise false.
+ * @param string $author       Tên tác giả bình luận.
+ * @param string $email        Email tác giả bình luận.
+ * @param string $url          URL tác giả bình luận.
+ * @param string $comment      Nội dung bình luận.
+ * @param string $user_ip      Địa chỉ IP tác giả bình luận.
+ * @param string $user_agent   User-Agent của tác giả bình luận.
+ * @param string $comment_type Loại bình luận, có thể là bình luận do người dùng gửi,
+ *                             trackback, hoặc pingback.
+ * @return bool Nếu tất cả kiểm tra đều đạt thì true, ngược lại false.
  */
 function check_comment( $author, $email, $url, $comment, $user_ip, $user_agent, $comment_type ) {
 	global $wpdb;
 
-	// If manual moderation is enabled, skip all checks and return false.
+	// Nếu kiểm duyệt thủ công được bật, bỏ qua tất cả kiểm tra và trả về false.
 	if ( '1' === get_option( 'comment_moderation' ) ) {
 		return false;
 	}
 
-	/** This filter is documented in wp-includes/comment-template.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-includes/comment-template.php */
 	$comment = apply_filters( 'comment_text', $comment, null, array() );
 
-	// Check for the number of external links if a max allowed number is set.
+	// Kiểm tra số lượng liên kết bên ngoài nếu đã thiết lập số lượng tối đa cho phép.
 	$max_links = get_option( 'comment_max_links' );
 	if ( $max_links ) {
 		$num_links = preg_match_all( '/<a [^>]*href/i', $comment, $out );
 
 		/**
-		 * Filters the number of links found in a comment.
+		 * Lọc số lượng liên kết tìm thấy trong bình luận.
 		 *
 		 * @since 3.0.0
-		 * @since 4.7.0 Added the `$comment` parameter.
+		 * @since 4.7.0 Thêm tham số `$comment`.
 		 *
-		 * @param int    $num_links The number of links found.
-		 * @param string $url       Comment author's URL. Included in allowed links total.
-		 * @param string $comment   Content of the comment.
+		 * @param int    $num_links Số lượng liên kết tìm thấy.
+		 * @param string $url       URL của tác giả bình luận. Được tính trong tổng liên kết cho phép.
+		 * @param string $comment   Nội dung bình luận.
 		 */
 		$num_links = apply_filters( 'comment_max_links_url', $num_links, $url, $comment );
 
 		/*
-		 * If the number of links in the comment exceeds the allowed amount,
-		 * fail the check by returning false.
+		 * Nếu số lượng liên kết trong bình luận vượt quá giới hạn cho phép,
+		 * kiểm tra thất bại bằng cách trả về false.
 		 */
 		if ( $num_links >= $max_links ) {
 			return false;
@@ -75,27 +74,27 @@ function check_comment( $author, $email, $url, $comment, $user_ip, $user_agent, 
 
 	$mod_keys = trim( get_option( 'moderation_keys' ) );
 
-	// If moderation 'keys' (keywords) are set, process them.
+	// Nếu các 'key' kiểm duyệt (từ khóa) đã được thiết lập, xử lý chúng.
 	if ( ! empty( $mod_keys ) ) {
 		$words = explode( "\n", $mod_keys );
 
 		foreach ( (array) $words as $word ) {
 			$word = trim( $word );
 
-			// Skip empty lines.
+			// Bỏ qua các dòng trống.
 			if ( empty( $word ) ) {
 				continue;
 			}
 
 			/*
-			 * Do some escaping magic so that '#' (number of) characters in the spam
-			 * words don't break things:
+			 * Thực hiện một số xử lý escape để ký tự '#' (ký hiệu số) trong
+			 * các từ spam không gây lỗi:
 			 */
 			$word = preg_quote( $word, '#' );
 
 			/*
-			 * Check the comment fields for moderation keywords. If any are found,
-			 * fail the check for the given field by returning false.
+			 * Kiểm tra các trường bình luận với từ khóa kiểm duyệt. Nếu tìm thấy bất kỳ từ khóa nào,
+			 * kiểm tra thất bại cho trường đó bằng cách trả về false.
 			 */
 			$pattern = "#$word#iu";
 			if ( preg_match( $pattern, $author ) ) {
@@ -120,11 +119,11 @@ function check_comment( $author, $email, $url, $comment, $user_ip, $user_agent, 
 	}
 
 	/*
-	 * Check if the option to approve comments by previously-approved authors is enabled.
+	 * Kiểm tra xem tùy chọn phê duyệt bình luận từ tác giả đã được phê duyệt trước đó có được bật không.
 	 *
-	 * If it is enabled, check whether the comment author has a previously-approved comment,
-	 * as well as whether there are any moderation keywords (if set) present in the author
-	 * email address. If both checks pass, return true. Otherwise, return false.
+	 * Nếu được bật, kiểm tra xem tác giả bình luận có bình luận đã được phê duyệt trước đó hay không,
+	 * cũng như kiểm tra xem có từ khóa kiểm duyệt nào (nếu được thiết lập) có mặt trong địa chỉ
+	 * email tác giả hay không. Nếu cả hai kiểm tra đều đạt, trả về true. Ngược lại, trả về false.
 	 */
 	if ( '1' === get_option( 'comment_previously_approved' ) ) {
 		if ( 'trackback' !== $comment_type && 'pingback' !== $comment_type && '' !== $author && '' !== $email ) {
@@ -141,7 +140,7 @@ function check_comment( $author, $email, $url, $comment, $user_ip, $user_agent, 
 					)
 				);
 			} else {
-				// expected_slashed ($author, $email)
+				// dự kiến đã có dấu gạch chéo ($author, $email)
 				$ok_to_comment = $wpdb->get_var(
 					$wpdb->prepare(
 						"SELECT comment_approved
@@ -169,21 +168,20 @@ function check_comment( $author, $email, $url, $comment, $user_ip, $user_agent, 
 }
 
 /**
- * Retrieves the approved comments for a post.
+ * Lấy các bình luận đã được phê duyệt cho một bài viết.
  *
  * @since 2.0.0
- * @since 4.1.0 Refactored to leverage WP_Comment_Query over a direct query.
+ * @since 4.1.0 Tái cấu trúc để sử dụng WP_Comment_Query thay vì truy vấn trực tiếp.
  *
- * @param int   $post_id The ID of the post.
+ * @param int   $post_id ID của bài viết.
  * @param array $args    {
- *     Optional. See WP_Comment_Query::__construct() for information on accepted arguments.
+ *     Tùy chọn. Xem WP_Comment_Query::__construct() để biết thông tin về các tham số được chấp nhận.
  *
- *     @type int    $status  Comment status to limit results by. Defaults to approved comments.
- *     @type int    $post_id Limit results to those affiliated with a given post ID.
- *     @type string $order   How to order retrieved comments. Default 'ASC'.
+ *     @type int    $status  Trạng thái bình luận để giới hạn kết quả. Mặc định là bình luận đã phê duyệt.
+ *     @type int    $post_id Giới hạn kết quả cho bài viết có ID nhất định.
+ *     @type string $order   Cách sắp xếp các bình luận. Mặc định 'ASC'.
  * }
- * @return WP_Comment[]|int[]|int The approved comments, or number of comments if `$count`
- *                                argument is true.
+ * @return WP_Comment[]|int[]|int Các bình luận đã phê duyệt, hoặc số lượng bình luận nếu tham số `$count` là true.
  */
 function get_approved_comments( $post_id, $args = array() ) {
 	if ( ! $post_id ) {
@@ -202,21 +200,21 @@ function get_approved_comments( $post_id, $args = array() ) {
 }
 
 /**
- * Retrieves comment data given a comment ID or comment object.
+ * Lấy dữ liệu bình luận dựa trên ID hoặc đối tượng bình luận.
  *
- * If an object is passed then the comment data will be cached and then returned
- * after being passed through a filter. If the comment is empty, then the global
- * comment variable will be used, if it is set.
+ * Nếu một đối tượng được truyền vào thì dữ liệu bình luận sẽ được lưu cache và sau đó trả về
+ * sau khi đi qua bộ lọc. Nếu bình luận trống, thì biến bình luận toàn cục
+ * sẽ được sử dụng, nếu nó đã được thiết lập.
  *
  * @since 2.0.0
  *
- * @global WP_Comment $comment Global comment object.
+ * @global WP_Comment $comment Đối tượng bình luận toàn cục.
  *
- * @param WP_Comment|string|int $comment Comment to retrieve.
- * @param string                $output  Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
- *                                       correspond to a WP_Comment object, an associative array, or a numeric array,
- *                                       respectively. Default OBJECT.
- * @return WP_Comment|array|null Depends on $output value.
+ * @param WP_Comment|string|int $comment Bình luận cần lấy.
+ * @param string                $output  Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT, ARRAY_A, hoặc ARRAY_N,
+ *                                       tương ứng với đối tượng WP_Comment, mảng liên kết, hoặc mảng số.
+ *                                       Mặc định OBJECT.
+ * @return WP_Comment|array|null Phụ thuộc vào giá trị $output.
  */
 function get_comment( $comment = null, $output = OBJECT ) {
 	if ( empty( $comment ) && isset( $GLOBALS['comment'] ) ) {
@@ -236,11 +234,11 @@ function get_comment( $comment = null, $output = OBJECT ) {
 	}
 
 	/**
-	 * Fires after a comment is retrieved.
+	 * Kích hoạt sau khi lấy được một bình luận.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param WP_Comment $_comment Comment data.
+	 * @param WP_Comment $_comment Dữ liệu bình luận.
 	 */
 	$_comment = apply_filters( 'get_comment', $_comment );
 
@@ -255,15 +253,15 @@ function get_comment( $comment = null, $output = OBJECT ) {
 }
 
 /**
- * Retrieves a list of comments.
+ * Lấy danh sách bình luận.
  *
- * The comment list can be for the blog as a whole or for an individual post.
+ * Danh sách bình luận có thể cho toàn bộ blog hoặc cho một bài viết riêng lẻ.
  *
  * @since 2.7.0
  *
- * @param string|array $args Optional. Array or string of arguments. See WP_Comment_Query::__construct()
- *                           for information on accepted arguments. Default empty string.
- * @return WP_Comment[]|int[]|int List of comments or number of found comments if `$count` argument is true.
+ * @param string|array $args Tùy chọn. Mảng hoặc chuỗi tham số. Xem WP_Comment_Query::__construct()
+ *                           để biết thông tin về các tham số được chấp nhận. Mặc định chuỗi rỗng.
+ * @return WP_Comment[]|int[]|int Danh sách bình luận hoặc số lượng bình luận tìm thấy nếu tham số `$count` là true.
  */
 function get_comments( $args = '' ) {
 	$query = new WP_Comment_Query();
@@ -271,14 +269,14 @@ function get_comments( $args = '' ) {
 }
 
 /**
- * Retrieves all of the WordPress supported comment statuses.
+ * Lấy tất cả các trạng thái bình luận được WordPress hỗ trợ.
  *
- * Comments have a limited set of valid status values, this provides the comment
- * status values and descriptions.
+ * Bình luận có một tập hợp giới hạn các giá trị trạng thái hợp lệ, hàm này cung cấp
+ * các giá trị và mô tả trạng thái bình luận.
  *
  * @since 2.7.0
  *
- * @return string[] List of comment status labels keyed by status.
+ * @return string[] Danh sách nhãn trạng thái bình luận được đánh chỉ mục theo trạng thái.
  */
 function get_comment_statuses() {
 	$status = array(
@@ -292,13 +290,13 @@ function get_comment_statuses() {
 }
 
 /**
- * Gets the default comment status for a post type.
+ * Lấy trạng thái bình luận mặc định cho một loại bài viết.
  *
  * @since 4.3.0
  *
- * @param string $post_type    Optional. Post type. Default 'post'.
- * @param string $comment_type Optional. Comment type. Default 'comment'.
- * @return string Either 'open' or 'closed'.
+ * @param string $post_type    Tùy chọn. Loại bài viết. Mặc định 'post'.
+ * @param string $comment_type Tùy chọn. Loại bình luận. Mặc định 'comment'.
+ * @return string 'open' hoặc 'closed'.
  */
 function get_default_comment_status( $post_type = 'post', $comment_type = 'comment' ) {
 	switch ( $comment_type ) {
@@ -313,7 +311,7 @@ function get_default_comment_status( $post_type = 'post', $comment_type = 'comme
 			break;
 	}
 
-	// Set the status.
+	// Thiết lập trạng thái.
 	if ( 'page' === $post_type ) {
 		$status = 'closed';
 	} elseif ( post_type_supports( $post_type, $supports ) ) {
@@ -323,29 +321,29 @@ function get_default_comment_status( $post_type = 'post', $comment_type = 'comme
 	}
 
 	/**
-	 * Filters the default comment status for the given post type.
+	 * Lọc trạng thái bình luận mặc định cho loại bài viết nhất định.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param string $status       Default status for the given post type,
-	 *                             either 'open' or 'closed'.
-	 * @param string $post_type    Post type. Default is `post`.
-	 * @param string $comment_type Type of comment. Default is `comment`.
+	 * @param string $status       Trạng thái mặc định cho loại bài viết nhất định,
+	 *                             'open' hoặc 'closed'.
+	 * @param string $post_type    Loại bài viết. Mặc định là `post`.
+	 * @param string $comment_type Loại bình luận. Mặc định là `comment`.
 	 */
 	return apply_filters( 'get_default_comment_status', $status, $post_type, $comment_type );
 }
 
 /**
- * Retrieves the date the last comment was modified.
+ * Lấy ngày bình luận cuối cùng được chỉnh sửa.
  *
  * @since 1.5.0
- * @since 4.7.0 Replaced caching the modified date in a local static variable
- *              with the Object Cache API.
+ * @since 4.7.0 Thay thế việc lưu cache ngày chỉnh sửa trong biến tĩnh cục bộ
+ *              bằng API Object Cache.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $timezone Which timezone to use in reference to 'gmt', 'blog', or 'server' locations.
- * @return string|false Last comment modified date on success, false on failure.
+ * @param string $timezone Múi giờ nào sẽ sử dụng, tham chiếu đến 'gmt', 'blog', hoặc 'server'.
+ * @return string|false Ngày chỉnh sửa bình luận cuối cùng khi thành công, false khi thất bại.
  */
 function get_lastcommentmodified( $timezone = 'server' ) {
 	global $wpdb;
@@ -382,22 +380,22 @@ function get_lastcommentmodified( $timezone = 'server' ) {
 }
 
 /**
- * Retrieves the total comment counts for the whole site or a single post.
+ * Lấy tổng số lượng bình luận cho toàn bộ trang web hoặc một bài viết.
  *
  * @since 2.0.0
  *
- * @param int $post_id Optional. Restrict the comment counts to the given post. Default 0, which indicates that
- *                     comment counts for the whole site will be retrieved.
+ * @param int $post_id Tùy chọn. Giới hạn số lượng bình luận cho bài viết nhất định. Mặc định 0, nghĩa là
+ *                     sẽ lấy số lượng bình luận cho toàn bộ trang web.
  * @return int[] {
- *     The number of comments keyed by their status.
+ *     Số lượng bình luận được đánh chỉ mục theo trạng thái.
  *
- *     @type int $approved            The number of approved comments.
- *     @type int $awaiting_moderation The number of comments awaiting moderation (a.k.a. pending).
- *     @type int $spam                The number of spam comments.
- *     @type int $trash               The number of trashed comments.
- *     @type int $post-trashed        The number of comments for posts that are in the trash.
- *     @type int $total_comments      The total number of non-trashed comments, including spam.
- *     @type int $all                 The total number of pending or approved comments.
+ *     @type int $approved            Số lượng bình luận đã phê duyệt.
+ *     @type int $awaiting_moderation Số lượng bình luận đang chờ kiểm duyệt (tức là đang chờ xử lý).
+ *     @type int $spam                Số lượng bình luận spam.
+ *     @type int $trash               Số lượng bình luận đã bị xóa.
+ *     @type int $post-trashed        Số lượng bình luận cho các bài viết đã bị xóa.
+ *     @type int $total_comments      Tổng số bình luận chưa bị xóa, bao gồm spam.
+ *     @type int $all                 Tổng số bình luận đang chờ hoặc đã phê duyệt.
  * }
  */
 function get_comment_count( $post_id = 0 ) {
@@ -440,89 +438,89 @@ function get_comment_count( $post_id = 0 ) {
 }
 
 //
-// Comment meta functions.
+// Các hàm meta bình luận.
 //
 
 /**
- * Adds meta data field to a comment.
+ * Thêm trường dữ liệu meta cho bình luận.
  *
  * @since 2.9.0
  *
  * @link https://developer.wordpress.org/reference/functions/add_comment_meta/
  *
- * @param int    $comment_id Comment ID.
- * @param string $meta_key   Metadata name.
- * @param mixed  $meta_value Metadata value. Arrays and objects are stored as serialized data and
- *                           will be returned as the same type when retrieved. Other data types will
- *                           be stored as strings in the database:
- *                           - false is stored and retrieved as an empty string ('')
- *                           - true is stored and retrieved as '1'
- *                           - numbers (both integer and float) are stored and retrieved as strings
- *                           Must be serializable if non-scalar.
- * @param bool   $unique     Optional. Whether the same key should not be added.
- *                           Default false.
- * @return int|false Meta ID on success, false on failure.
+ * @param int    $comment_id ID bình luận.
+ * @param string $meta_key   Tên metadata.
+ * @param mixed  $meta_value Giá trị metadata. Mảng và đối tượng được lưu dưới dạng dữ liệu đã serialize và
+ *                           sẽ được trả về cùng kiểu khi lấy ra. Các kiểu dữ liệu khác sẽ
+ *                           được lưu dưới dạng chuỗi trong cơ sở dữ liệu:
+ *                           - false được lưu và trả về dưới dạng chuỗi rỗng ('')
+ *                           - true được lưu và trả về dưới dạng '1'
+ *                           - số (cả số nguyên và số thực) được lưu và trả về dưới dạng chuỗi
+ *                           Phải có khả năng serialize nếu không phải kiểu vô hướng.
+ * @param bool   $unique     Tùy chọn. Liệu cùng một key có nên không được thêm.
+ *                           Mặc định false.
+ * @return int|false ID meta khi thành công, false khi thất bại.
  */
 function add_comment_meta( $comment_id, $meta_key, $meta_value, $unique = false ) {
 	return add_metadata( 'comment', $comment_id, $meta_key, $meta_value, $unique );
 }
 
 /**
- * Removes metadata matching criteria from a comment.
+ * Xóa metadata phù hợp với tiêu chí từ một bình luận.
  *
- * You can match based on the key, or key and value. Removing based on key and
- * value, will keep from removing duplicate metadata with the same key. It also
- * allows removing all metadata matching key, if needed.
+ * Bạn có thể khớp dựa trên key, hoặc key và giá trị. Xóa dựa trên key và
+ * giá trị sẽ tránh việc xóa metadata trùng lặp có cùng key. Nó cũng
+ * cho phép xóa tất cả metadata khớp với key, nếu cần.
  *
  * @since 2.9.0
  *
  * @link https://developer.wordpress.org/reference/functions/delete_comment_meta/
  *
- * @param int    $comment_id Comment ID.
- * @param string $meta_key   Metadata name.
- * @param mixed  $meta_value Optional. Metadata value. If provided,
- *                           rows will only be removed that match the value.
- *                           Must be serializable if non-scalar. Default empty string.
- * @return bool True on success, false on failure.
+ * @param int    $comment_id ID bình luận.
+ * @param string $meta_key   Tên metadata.
+ * @param mixed  $meta_value Tùy chọn. Giá trị metadata. Nếu được cung cấp,
+ *                           chỉ các hàng khớp với giá trị mới bị xóa.
+ *                           Phải có khả năng serialize nếu không phải kiểu vô hướng. Mặc định chuỗi rỗng.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function delete_comment_meta( $comment_id, $meta_key, $meta_value = '' ) {
 	return delete_metadata( 'comment', $comment_id, $meta_key, $meta_value );
 }
 
 /**
- * Retrieves comment meta field for a comment.
+ * Lấy trường meta của bình luận.
  *
  * @since 2.9.0
  *
  * @link https://developer.wordpress.org/reference/functions/get_comment_meta/
  *
- * @param int    $comment_id Comment ID.
- * @param string $key        Optional. The meta key to retrieve. By default,
- *                           returns data for all keys. Default empty string.
- * @param bool   $single     Optional. Whether to return a single value.
- *                           This parameter has no effect if `$key` is not specified.
- *                           Default false.
- * @return mixed An array of values if `$single` is false.
- *               The value of meta data field if `$single` is true.
- *               False for an invalid `$comment_id` (non-numeric, zero, or negative value).
- *               An empty array if a valid but non-existing comment ID is passed and `$single` is false.
- *               An empty string if a valid but non-existing comment ID is passed and `$single` is true.
- *               Note: Non-serialized values are returned as strings:
- *               - false values are returned as empty strings ('')
- *               - true values are returned as '1'
- *               - numbers are returned as strings
- *               Arrays and objects retain their original type.
+ * @param int    $comment_id ID bình luận.
+ * @param string $key        Tùy chọn. Key meta cần lấy. Mặc định,
+ *                           trả về dữ liệu cho tất cả các key. Mặc định chuỗi rỗng.
+ * @param bool   $single     Tùy chọn. Có trả về một giá trị duy nhất hay không.
+ *                           Tham số này không có tác dụng nếu `$key` không được chỉ định.
+ *                           Mặc định false.
+ * @return mixed Mảng các giá trị nếu `$single` là false.
+ *               Giá trị của trường meta nếu `$single` là true.
+ *               False cho `$comment_id` không hợp lệ (không phải số, bằng 0, hoặc giá trị âm).
+ *               Mảng rỗng nếu truyền ID bình luận hợp lệ nhưng không tồn tại và `$single` là false.
+ *               Chuỗi rỗng nếu truyền ID bình luận hợp lệ nhưng không tồn tại và `$single` là true.
+ *               Lưu ý: Các giá trị chưa serialize được trả về dưới dạng chuỗi:
+ *               - giá trị false được trả về dưới dạng chuỗi rỗng ('')
+ *               - giá trị true được trả về dưới dạng '1'
+ *               - số được trả về dưới dạng chuỗi
+ *               Mảng và đối tượng giữ nguyên kiểu dữ liệu gốc.
  */
 function get_comment_meta( $comment_id, $key = '', $single = false ) {
 	return get_metadata( 'comment', $comment_id, $key, $single );
 }
 
 /**
- * Queue comment meta for lazy-loading.
+ * Xếp hàng meta bình luận để tải lười (lazy-loading).
  *
  * @since 6.3.0
  *
- * @param array $comment_ids List of comment IDs.
+ * @param array $comment_ids Danh sách ID bình luận.
  */
 function wp_lazyload_comment_meta( array $comment_ids ) {
 	if ( empty( $comment_ids ) ) {
@@ -533,50 +531,50 @@ function wp_lazyload_comment_meta( array $comment_ids ) {
 }
 
 /**
- * Updates comment meta field based on comment ID.
+ * Cập nhật trường meta bình luận dựa trên ID bình luận.
  *
- * Use the $prev_value parameter to differentiate between meta fields with the
- * same key and comment ID.
+ * Sử dụng tham số $prev_value để phân biệt giữa các trường meta có cùng
+ * key và ID bình luận.
  *
- * If the meta field for the comment does not exist, it will be added.
+ * Nếu trường meta cho bình luận không tồn tại, nó sẽ được thêm mới.
  *
  * @since 2.9.0
  *
  * @link https://developer.wordpress.org/reference/functions/update_comment_meta/
  *
- * @param int    $comment_id Comment ID.
- * @param string $meta_key   Metadata key.
- * @param mixed  $meta_value Metadata value. Must be serializable if non-scalar.
- * @param mixed  $prev_value Optional. Previous value to check before updating.
- *                           If specified, only update existing metadata entries with
- *                           this value. Otherwise, update all entries. Default empty string.
- * @return int|bool Meta ID if the key didn't exist, true on successful update,
- *                  false on failure or if the value passed to the function
- *                  is the same as the one that is already in the database.
+ * @param int    $comment_id ID bình luận.
+ * @param string $meta_key   Key metadata.
+ * @param mixed  $meta_value Giá trị metadata. Phải có khả năng serialize nếu không phải kiểu vô hướng.
+ * @param mixed  $prev_value Tùy chọn. Giá trị trước đó để kiểm tra trước khi cập nhật.
+ *                           Nếu được chỉ định, chỉ cập nhật các mục metadata hiện có với
+ *                           giá trị này. Ngược lại, cập nhật tất cả các mục. Mặc định chuỗi rỗng.
+ * @return int|bool ID meta nếu key chưa tồn tại, true khi cập nhật thành công,
+ *                  false khi thất bại hoặc nếu giá trị truyền vào hàm
+ *                  giống với giá trị đã có trong cơ sở dữ liệu.
  */
 function update_comment_meta( $comment_id, $meta_key, $meta_value, $prev_value = '' ) {
 	return update_metadata( 'comment', $comment_id, $meta_key, $meta_value, $prev_value );
 }
 
 /**
- * Sets the cookies used to store an unauthenticated commentator's identity. Typically used
- * to recall previous comments by this commentator that are still held in moderation.
+ * Thiết lập cookie dùng để lưu danh tính người bình luận chưa xác thực. Thường được sử dụng
+ * để nhớ lại các bình luận trước đó của người bình luận này vẫn đang chờ kiểm duyệt.
  *
  * @since 3.4.0
- * @since 4.9.6 The `$cookies_consent` parameter was added.
+ * @since 4.9.6 Thêm tham số `$cookies_consent`.
  *
- * @param WP_Comment $comment         Comment object.
- * @param WP_User    $user            Comment author's user object. The user may not exist.
- * @param bool       $cookies_consent Optional. Comment author's consent to store cookies. Default true.
+ * @param WP_Comment $comment         Đối tượng bình luận.
+ * @param WP_User    $user            Đối tượng người dùng của tác giả bình luận. Người dùng có thể không tồn tại.
+ * @param bool       $cookies_consent Tùy chọn. Sự đồng ý của tác giả bình luận để lưu cookie. Mặc định true.
  */
 function wp_set_comment_cookies( $comment, $user, $cookies_consent = true ) {
-	// If the user already exists, or the user opted out of cookies, don't set cookies.
+	// Nếu người dùng đã tồn tại, hoặc người dùng từ chối cookie, không thiết lập cookie.
 	if ( $user->exists() ) {
 		return;
 	}
 
 	if ( false === $cookies_consent ) {
-		// Remove any existing cookies.
+		// Xóa bất kỳ cookie hiện có nào.
 		$past = time() - YEAR_IN_SECONDS;
 		setcookie( 'comment_author_' . COOKIEHASH, ' ', $past, COOKIEPATH, COOKIE_DOMAIN );
 		setcookie( 'comment_author_email_' . COOKIEHASH, ' ', $past, COOKIEPATH, COOKIE_DOMAIN );
@@ -586,12 +584,12 @@ function wp_set_comment_cookies( $comment, $user, $cookies_consent = true ) {
 	}
 
 	/**
-	 * Filters the lifetime of the comment cookie in seconds.
+	 * Lọc thời gian sống của cookie bình luận tính bằng giây.
 	 *
 	 * @since 2.8.0
-	 * @since 6.6.0 The default $seconds value changed from 30000000 to YEAR_IN_SECONDS.
+	 * @since 6.6.0 Giá trị mặc định $seconds thay đổi từ 30000000 sang YEAR_IN_SECONDS.
 	 *
-	 * @param int $seconds Comment cookie lifetime. Default YEAR_IN_SECONDS.
+	 * @param int $seconds Thời gian sống cookie bình luận. Mặc định YEAR_IN_SECONDS.
 	 */
 	$comment_cookie_lifetime = time() + apply_filters( 'comment_cookie_lifetime', YEAR_IN_SECONDS );
 
@@ -603,24 +601,24 @@ function wp_set_comment_cookies( $comment, $user, $cookies_consent = true ) {
 }
 
 /**
- * Sanitizes the cookies sent to the user already.
+ * Làm sạch các cookie đã được gửi đến người dùng.
  *
- * Will only do anything if the cookies have already been created for the user.
- * Mostly used after cookies had been sent to use elsewhere.
+ * Chỉ thực hiện nếu cookie đã được tạo cho người dùng.
+ * Chủ yếu được sử dụng sau khi cookie đã được gửi để sử dụng ở nơi khác.
  *
  * @since 2.0.4
  */
 function sanitize_comment_cookies() {
 	if ( isset( $_COOKIE[ 'comment_author_' . COOKIEHASH ] ) ) {
 		/**
-		 * Filters the comment author's name cookie before it is set.
+		 * Lọc cookie tên tác giả bình luận trước khi được thiết lập.
 		 *
-		 * When this filter hook is evaluated in wp_filter_comment(),
-		 * the comment author's name string is passed.
+		 * Khi hook bộ lọc này được đánh giá trong wp_filter_comment(),
+		 * chuỗi tên tác giả bình luận được truyền vào.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param string $author_cookie The comment author name cookie.
+		 * @param string $author_cookie Cookie tên tác giả bình luận.
 		 */
 		$comment_author = apply_filters( 'pre_comment_author_name', $_COOKIE[ 'comment_author_' . COOKIEHASH ] );
 		$comment_author = wp_unslash( $comment_author );
@@ -631,14 +629,14 @@ function sanitize_comment_cookies() {
 
 	if ( isset( $_COOKIE[ 'comment_author_email_' . COOKIEHASH ] ) ) {
 		/**
-		 * Filters the comment author's email cookie before it is set.
+		 * Lọc cookie email tác giả bình luận trước khi được thiết lập.
 		 *
-		 * When this filter hook is evaluated in wp_filter_comment(),
-		 * the comment author's email string is passed.
+		 * Khi hook bộ lọc này được đánh giá trong wp_filter_comment(),
+		 * chuỗi email tác giả bình luận được truyền vào.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param string $author_email_cookie The comment author email cookie.
+		 * @param string $author_email_cookie Cookie email tác giả bình luận.
 		 */
 		$comment_author_email = apply_filters( 'pre_comment_author_email', $_COOKIE[ 'comment_author_email_' . COOKIEHASH ] );
 		$comment_author_email = wp_unslash( $comment_author_email );
@@ -649,14 +647,14 @@ function sanitize_comment_cookies() {
 
 	if ( isset( $_COOKIE[ 'comment_author_url_' . COOKIEHASH ] ) ) {
 		/**
-		 * Filters the comment author's URL cookie before it is set.
+		 * Lọc cookie URL tác giả bình luận trước khi được thiết lập.
 		 *
-		 * When this filter hook is evaluated in wp_filter_comment(),
-		 * the comment author's URL string is passed.
+		 * Khi hook bộ lọc này được đánh giá trong wp_filter_comment(),
+		 * chuỗi URL tác giả bình luận được truyền vào.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param string $author_url_cookie The comment author URL cookie.
+		 * @param string $author_url_cookie Cookie URL tác giả bình luận.
 		 */
 		$comment_author_url = apply_filters( 'pre_comment_author_url', $_COOKIE[ 'comment_author_url_' . COOKIEHASH ] );
 		$comment_author_url = wp_unslash( $comment_author_url );
@@ -666,28 +664,28 @@ function sanitize_comment_cookies() {
 }
 
 /**
- * Validates whether this comment is allowed to be made.
+ * Xác thực liệu bình luận này có được phép đăng hay không.
  *
  * @since 2.0.0
- * @since 4.7.0 The `$avoid_die` parameter was added, allowing the function
- *              to return a WP_Error object instead of dying.
- * @since 5.5.0 The `$avoid_die` parameter was renamed to `$wp_error`.
+ * @since 4.7.0 Thêm tham số `$avoid_die`, cho phép hàm
+ *              trả về đối tượng WP_Error thay vì dừng thực thi.
+ * @since 5.5.0 Tham số `$avoid_die` được đổi tên thành `$wp_error`.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param array $commentdata Contains information on the comment.
- * @param bool  $wp_error    When true, a disallowed comment will result in the function
- *                           returning a WP_Error object, rather than executing wp_die().
- *                           Default false.
- * @return int|string|WP_Error Allowed comments return the approval status (0|1|'spam'|'trash').
- *                             If `$wp_error` is true, disallowed comments return a WP_Error.
+ * @param array $commentdata Chứa thông tin về bình luận.
+ * @param bool  $wp_error    Khi true, bình luận không được phép sẽ khiến hàm
+ *                           trả về đối tượng WP_Error, thay vì thực thi wp_die().
+ *                           Mặc định false.
+ * @return int|string|WP_Error Bình luận được phép trả về trạng thái phê duyệt (0|1|'spam'|'trash').
+ *                             Nếu `$wp_error` là true, bình luận không được phép trả về WP_Error.
  */
 function wp_allow_comment( $commentdata, $wp_error = false ) {
 	global $wpdb;
 
 	/*
-	 * Simple duplicate check.
-	 * expected_slashed ($comment_post_ID, $comment_author, $comment_author_email, $comment_content)
+	 * Kiểm tra trùng lặp đơn giản.
+	 * dự kiến đã có dấu gạch chéo ($comment_post_ID, $comment_author, $comment_author_email, $comment_content)
 	 */
 	$dupe = $wpdb->prepare(
 		"SELECT comment_ID FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_parent = %s AND comment_approved != 'trash' AND ( comment_author = %s ",
@@ -709,33 +707,33 @@ function wp_allow_comment( $commentdata, $wp_error = false ) {
 	$dupe_id = $wpdb->get_var( $dupe );
 
 	/**
-	 * Filters the ID, if any, of the duplicate comment found when creating a new comment.
+	 * Lọc ID (nếu có) của bình luận trùng lặp được tìm thấy khi tạo bình luận mới.
 	 *
-	 * Return an empty value from this filter to allow what WP considers a duplicate comment.
+	 * Trả về giá trị rỗng từ bộ lọc này để cho phép bình luận mà WP coi là trùng lặp.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param int   $dupe_id     ID of the comment identified as a duplicate.
-	 * @param array $commentdata Data for the comment being created.
+	 * @param int   $dupe_id     ID của bình luận được xác định là trùng lặp.
+	 * @param array $commentdata Dữ liệu cho bình luận đang được tạo.
 	 */
 	$dupe_id = apply_filters( 'duplicate_comment_id', $dupe_id, $commentdata );
 
 	if ( $dupe_id ) {
 		/**
-		 * Fires immediately after a duplicate comment is detected.
+		 * Kích hoạt ngay sau khi phát hiện bình luận trùng lặp.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param array $commentdata Comment data.
+		 * @param array $commentdata Dữ liệu bình luận.
 		 */
 		do_action( 'comment_duplicate_trigger', $commentdata );
 
 		/**
-		 * Filters duplicate comment error message.
+		 * Lọc thông báo lỗi bình luận trùng lặp.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param string $comment_duplicate_message Duplicate comment error message.
+		 * @param string $comment_duplicate_message Thông báo lỗi bình luận trùng lặp.
 		 */
 		$comment_duplicate_message = apply_filters( 'comment_duplicate_message', __( 'Duplicate comment detected; it looks as though you&#8217;ve already said that!' ) );
 
@@ -751,19 +749,19 @@ function wp_allow_comment( $commentdata, $wp_error = false ) {
 	}
 
 	/**
-	 * Fires immediately before a comment is marked approved.
+	 * Kích hoạt ngay trước khi bình luận được đánh dấu phê duyệt.
 	 *
-	 * Allows checking for comment flooding.
+	 * Cho phép kiểm tra spam bình luận hàng loạt (flood).
 	 *
 	 * @since 2.3.0
-	 * @since 4.7.0 The `$avoid_die` parameter was added.
-	 * @since 5.5.0 The `$avoid_die` parameter was renamed to `$wp_error`.
+	 * @since 4.7.0 Thêm tham số `$avoid_die`.
+	 * @since 5.5.0 Tham số `$avoid_die` được đổi tên thành `$wp_error`.
 	 *
-	 * @param string $comment_author_ip    Comment author's IP address.
-	 * @param string $comment_author_email Comment author's email.
-	 * @param string $comment_date_gmt     GMT date the comment was posted.
-	 * @param bool   $wp_error             Whether to return a WP_Error object instead of executing
-	 *                                     wp_die() or die() if a comment flood is occurring.
+	 * @param string $comment_author_ip    Địa chỉ IP tác giả bình luận.
+	 * @param string $comment_author_email Email tác giả bình luận.
+	 * @param string $comment_date_gmt     Ngày GMT bình luận được đăng.
+	 * @param bool   $wp_error             Có trả về đối tượng WP_Error thay vì thực thi
+	 *                                     wp_die() hoặc die() khi xảy ra flood bình luận hay không.
 	 */
 	do_action(
 		'check_comment_flood',
@@ -774,19 +772,19 @@ function wp_allow_comment( $commentdata, $wp_error = false ) {
 	);
 
 	/**
-	 * Filters whether a comment is part of a comment flood.
+	 * Lọc xem bình luận có phải là một phần của flood bình luận hay không.
 	 *
-	 * The default check is wp_check_comment_flood(). See check_comment_flood_db().
+	 * Kiểm tra mặc định là wp_check_comment_flood(). Xem check_comment_flood_db().
 	 *
 	 * @since 4.7.0
-	 * @since 5.5.0 The `$avoid_die` parameter was renamed to `$wp_error`.
+	 * @since 5.5.0 Tham số `$avoid_die` được đổi tên thành `$wp_error`.
 	 *
-	 * @param bool   $is_flood             Is a comment flooding occurring? Default false.
-	 * @param string $comment_author_ip    Comment author's IP address.
-	 * @param string $comment_author_email Comment author's email.
-	 * @param string $comment_date_gmt     GMT date the comment was posted.
-	 * @param bool   $wp_error             Whether to return a WP_Error object instead of executing
-	 *                                     wp_die() or die() if a comment flood is occurring.
+	 * @param bool   $is_flood             Có đang xảy ra flood bình luận không? Mặc định false.
+	 * @param string $comment_author_ip    Địa chỉ IP tác giả bình luận.
+	 * @param string $comment_author_email Email tác giả bình luận.
+	 * @param string $comment_date_gmt     Ngày GMT bình luận được đăng.
+	 * @param bool   $wp_error             Có trả về đối tượng WP_Error thay vì thực thi
+	 *                                     wp_die() hoặc die() khi xảy ra flood bình luận hay không.
 	 */
 	$is_flood = apply_filters(
 		'wp_is_comment_flood',
@@ -798,7 +796,7 @@ function wp_allow_comment( $commentdata, $wp_error = false ) {
 	);
 
 	if ( $is_flood ) {
-		/** This filter is documented in wp-includes/comment-template.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-includes/comment-template.php */
 		$comment_flood_message = apply_filters( 'comment_flood_message', __( 'You are posting comments too quickly. Slow down.' ) );
 
 		return new WP_Error( 'comment_flood', $comment_flood_message, 429 );
@@ -808,46 +806,46 @@ function wp_allow_comment( $commentdata, $wp_error = false ) {
 }
 
 /**
- * Hooks WP's native database-based comment-flood check.
+ * Gắn hook kiểm tra flood bình luận dựa trên cơ sở dữ liệu gốc của WP.
  *
- * This wrapper maintains backward compatibility with plugins that expect to
- * be able to unhook the legacy check_comment_flood_db() function from
- * 'check_comment_flood' using remove_action().
+ * Hàm bọc này duy trì tương thích ngược với các plugin mong đợi có thể
+ * gỡ hook hàm check_comment_flood_db() cũ khỏi
+ * 'check_comment_flood' bằng remove_action().
  *
  * @since 2.3.0
- * @since 4.7.0 Converted to be an add_filter() wrapper.
+ * @since 4.7.0 Chuyển đổi thành hàm bọc add_filter().
  */
 function check_comment_flood_db() {
 	add_filter( 'wp_is_comment_flood', 'wp_check_comment_flood', 10, 5 );
 }
 
 /**
- * Checks whether comment flooding is occurring.
+ * Kiểm tra xem có đang xảy ra flood bình luận hay không.
  *
- * Won't run, if current user can manage options, so to not block
- * administrators.
+ * Sẽ không chạy nếu người dùng hiện tại có quyền quản lý tùy chọn, để không
+ * chặn quản trị viên.
  *
  * @since 4.7.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param bool   $is_flood  Is a comment flooding occurring?
- * @param string $ip        Comment author's IP address.
- * @param string $email     Comment author's email address.
- * @param string $date      MySQL time string.
- * @param bool   $avoid_die When true, a disallowed comment will result in the function
- *                          returning without executing wp_die() or die(). Default false.
- * @return bool Whether comment flooding is occurring.
+ * @param bool   $is_flood  Có đang xảy ra flood bình luận không?
+ * @param string $ip        Địa chỉ IP tác giả bình luận.
+ * @param string $email     Địa chỉ email tác giả bình luận.
+ * @param string $date      Chuỗi thời gian MySQL.
+ * @param bool   $avoid_die Khi true, bình luận không được phép sẽ khiến hàm
+ *                          trả về mà không thực thi wp_die() hoặc die(). Mặc định false.
+ * @return bool Có đang xảy ra flood bình luận hay không.
  */
 function wp_check_comment_flood( $is_flood, $ip, $email, $date, $avoid_die = false ) {
 	global $wpdb;
 
-	// Another callback has declared a flood. Trust it.
+	// Một callback khác đã khai báo flood. Tin tưởng nó.
 	if ( true === $is_flood ) {
 		return $is_flood;
 	}
 
-	// Don't throttle admins or moderators.
+	// Không giới hạn tốc độ cho quản trị viên hoặc người kiểm duyệt.
 	if ( current_user_can( 'manage_options' ) || current_user_can( 'moderate_comments' ) ) {
 		return false;
 	}
@@ -876,24 +874,24 @@ function wp_check_comment_flood( $is_flood, $ip, $email, $date, $avoid_die = fal
 		$time_newcomment  = mysql2date( 'U', $date, false );
 
 		/**
-		 * Filters the comment flood status.
+		 * Lọc trạng thái flood bình luận.
 		 *
 		 * @since 2.1.0
 		 *
-		 * @param bool $bool             Whether a comment flood is occurring. Default false.
-		 * @param int  $time_lastcomment Timestamp of when the last comment was posted.
-		 * @param int  $time_newcomment  Timestamp of when the new comment was posted.
+		 * @param bool $bool             Có đang xảy ra flood bình luận không. Mặc định false.
+		 * @param int  $time_lastcomment Dấu thời gian khi bình luận cuối cùng được đăng.
+		 * @param int  $time_newcomment  Dấu thời gian khi bình luận mới được đăng.
 		 */
 		$flood_die = apply_filters( 'comment_flood_filter', false, $time_lastcomment, $time_newcomment );
 
 		if ( $flood_die ) {
 			/**
-			 * Fires before the comment flood message is triggered.
+			 * Kích hoạt trước khi thông báo flood bình luận được kích hoạt.
 			 *
 			 * @since 1.5.0
 			 *
-			 * @param int $time_lastcomment Timestamp of when the last comment was posted.
-			 * @param int $time_newcomment  Timestamp of when the new comment was posted.
+			 * @param int $time_lastcomment Dấu thời gian khi bình luận cuối cùng được đăng.
+			 * @param int $time_newcomment  Dấu thời gian khi bình luận mới được đăng.
 			 */
 			do_action( 'comment_flood_trigger', $time_lastcomment, $time_newcomment );
 
@@ -901,11 +899,11 @@ function wp_check_comment_flood( $is_flood, $ip, $email, $date, $avoid_die = fal
 				return true;
 			} else {
 				/**
-				 * Filters the comment flood error message.
+				 * Lọc thông báo lỗi flood bình luận.
 				 *
 				 * @since 5.2.0
 				 *
-				 * @param string $comment_flood_message Comment flood error message.
+				 * @param string $comment_flood_message Thông báo lỗi flood bình luận.
 				 */
 				$comment_flood_message = apply_filters( 'comment_flood_message', __( 'You are posting comments too quickly. Slow down.' ) );
 
@@ -922,12 +920,12 @@ function wp_check_comment_flood( $is_flood, $ip, $email, $date, $avoid_die = fal
 }
 
 /**
- * Separates an array of comments into an array keyed by comment_type.
+ * Phân tách mảng bình luận thành mảng được đánh chỉ mục theo comment_type.
  *
  * @since 2.7.0
  *
- * @param WP_Comment[] $comments Array of comments
- * @return WP_Comment[] Array of comments keyed by comment_type.
+ * @param WP_Comment[] $comments Mảng bình luận
+ * @return WP_Comment[] Mảng bình luận được đánh chỉ mục theo comment_type.
  */
 function separate_comments( &$comments ) {
 	$comments_by_type = array(
@@ -957,20 +955,20 @@ function separate_comments( &$comments ) {
 }
 
 /**
- * Calculates the total number of comment pages.
+ * Tính tổng số trang bình luận.
  *
  * @since 2.7.0
  *
  * @uses Walker_Comment
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng truy vấn WordPress.
  *
- * @param WP_Comment[] $comments Optional. Array of WP_Comment objects. Defaults to `$wp_query->comments`.
- * @param int          $per_page Optional. Comments per page. Defaults to the value of `comments_per_page`
- *                               query var, option of the same name, or 1 (in that order).
- * @param bool         $threaded Optional. Control over flat or threaded comments. Defaults to the value
- *                               of `thread_comments` option.
- * @return int Number of comment pages.
+ * @param WP_Comment[] $comments Tùy chọn. Mảng đối tượng WP_Comment. Mặc định là `$wp_query->comments`.
+ * @param int          $per_page Tùy chọn. Số bình luận mỗi trang. Mặc định là giá trị của biến truy vấn
+ *                               `comments_per_page`, tùy chọn cùng tên, hoặc 1 (theo thứ tự đó).
+ * @param bool         $threaded Tùy chọn. Kiểm soát bình luận phẳng hoặc theo chuỗi. Mặc định là giá trị
+ *                               của tùy chọn `thread_comments`.
+ * @return int Số trang bình luận.
  */
 function get_comment_pages_count( $comments = null, $per_page = null, $threaded = null ) {
 	global $wp_query;
@@ -1016,26 +1014,26 @@ function get_comment_pages_count( $comments = null, $per_page = null, $threaded 
 }
 
 /**
- * Calculates what page number a comment will appear on for comment paging.
+ * Tính số trang mà một bình luận sẽ xuất hiện trong phân trang bình luận.
  *
  * @since 2.7.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int   $comment_id Comment ID.
+ * @param int   $comment_id ID bình luận.
  * @param array $args {
- *     Array of optional arguments.
+ *     Mảng các tham số tùy chọn.
  *
- *     @type string     $type      Limit paginated comments to those matching a given type.
- *                                 Accepts 'comment', 'trackback', 'pingback', 'pings'
- *                                 (trackbacks and pingbacks), or 'all'. Default 'all'.
- *     @type int        $per_page  Per-page count to use when calculating pagination.
- *                                 Defaults to the value of the 'comments_per_page' option.
- *     @type int|string $max_depth If greater than 1, comment page will be determined
- *                                 for the top-level parent `$comment_id`.
- *                                 Defaults to the value of the 'thread_comments_depth' option.
+ *     @type string     $type      Giới hạn bình luận phân trang cho những bình luận khớp với loại nhất định.
+ *                                 Chấp nhận 'comment', 'trackback', 'pingback', 'pings'
+ *                                 (trackbacks và pingbacks), hoặc 'all'. Mặc định 'all'.
+ *     @type int        $per_page  Số lượng mỗi trang khi tính phân trang.
+ *                                 Mặc định là giá trị của tùy chọn 'comments_per_page'.
+ *     @type int|string $max_depth Nếu lớn hơn 1, trang bình luận sẽ được xác định
+ *                                 cho bình luận cha cấp cao nhất `$comment_id`.
+ *                                 Mặc định là giá trị của tùy chọn 'thread_comments_depth'.
  * }
- * @return int|null Comment page number or null on error.
+ * @return int|null Số trang bình luận hoặc null khi lỗi.
  */
 function get_page_of_comment( $comment_id, $args = array() ) {
 	global $wpdb;
@@ -1056,7 +1054,7 @@ function get_page_of_comment( $comment_id, $args = array() ) {
 	$args          = wp_parse_args( $args, $defaults );
 	$original_args = $args;
 
-	// Order of precedence: 1. `$args['per_page']`, 2. 'comments_per_page' query_var, 3. 'comments_per_page' option.
+	// Thứ tự ưu tiên: 1. `$args['per_page']`, 2. biến truy vấn 'comments_per_page', 3. tùy chọn 'comments_per_page'.
 	if ( get_option( 'page_comments' ) ) {
 		if ( '' === $args['per_page'] ) {
 			$args['per_page'] = get_query_var( 'comments_per_page' );
@@ -1085,7 +1083,7 @@ function get_page_of_comment( $comment_id, $args = array() ) {
 			}
 		}
 
-		// Find this comment's top-level parent if threading is enabled.
+		// Tìm bình luận cha cấp cao nhất của bình luận này nếu chuỗi bình luận được bật.
 		if ( $args['max_depth'] > 1 && '0' !== $comment->comment_parent ) {
 			return get_page_of_comment( $comment->comment_parent, $args );
 		}
@@ -1117,27 +1115,27 @@ function get_page_of_comment( $comment_id, $args = array() ) {
 		}
 
 		/**
-		 * Filters the arguments used to query comments in get_page_of_comment().
+		 * Lọc các tham số dùng để truy vấn bình luận trong get_page_of_comment().
 		 *
 		 * @since 5.5.0
 		 *
 		 * @see WP_Comment_Query::__construct()
 		 *
 		 * @param array $comment_args {
-		 *     Array of WP_Comment_Query arguments.
+		 *     Mảng các tham số WP_Comment_Query.
 		 *
-		 *     @type string $type               Limit paginated comments to those matching a given type.
-		 *                                      Accepts 'comment', 'trackback', 'pingback', 'pings'
-		 *                                      (trackbacks and pingbacks), or 'all'. Default 'all'.
-		 *     @type int    $post_id            ID of the post.
-		 *     @type string $fields             Comment fields to return.
-		 *     @type bool   $count              Whether to return a comment count (true) or array
-		 *                                      of comment objects (false).
-		 *     @type string $status             Comment status.
-		 *     @type int    $parent             Parent ID of comment to retrieve children of.
-		 *     @type array  $date_query         Date query clauses to limit comments by. See WP_Date_Query.
-		 *     @type array  $include_unapproved Array of IDs or email addresses whose unapproved comments
-		 *                                      will be included in paginated comments.
+		 *     @type string $type               Giới hạn bình luận phân trang cho loại nhất định.
+		 *                                      Chấp nhận 'comment', 'trackback', 'pingback', 'pings'
+		 *                                      (trackbacks và pingbacks), hoặc 'all'. Mặc định 'all'.
+		 *     @type int    $post_id            ID của bài viết.
+		 *     @type string $fields             Các trường bình luận cần trả về.
+		 *     @type bool   $count              Trả về số lượng bình luận (true) hay mảng
+		 *                                      các đối tượng bình luận (false).
+		 *     @type string $status             Trạng thái bình luận.
+		 *     @type int    $parent             ID cha của bình luận để lấy các bình luận con.
+		 *     @type array  $date_query         Mệnh đề truy vấn ngày để giới hạn bình luận. Xem WP_Date_Query.
+		 *     @type array  $include_unapproved Mảng ID hoặc địa chỉ email có bình luận chưa phê duyệt
+		 *                                      sẽ được bao gồm trong bình luận phân trang.
 		 * }
 		 */
 		$comment_args = apply_filters( 'get_page_of_comment_query_args', $comment_args );
@@ -1145,54 +1143,54 @@ function get_page_of_comment( $comment_id, $args = array() ) {
 		$comment_query       = new WP_Comment_Query();
 		$older_comment_count = $comment_query->query( $comment_args );
 
-		// No older comments? Then it's page #1.
+		// Không có bình luận cũ hơn? Vậy thì đó là trang #1.
 		if ( 0 === $older_comment_count ) {
 			$page = 1;
 
-			// Divide comments older than this one by comments per page to get this comment's page number.
+			// Chia số bình luận cũ hơn bình luận này cho số bình luận mỗi trang để lấy số trang của bình luận này.
 		} else {
 			$page = (int) ceil( ( $older_comment_count + 1 ) / $args['per_page'] );
 		}
 	}
 
 	/**
-	 * Filters the calculated page on which a comment appears.
+	 * Lọc trang đã tính toán mà bình luận xuất hiện.
 	 *
 	 * @since 4.4.0
-	 * @since 4.7.0 Introduced the `$comment_id` parameter.
+	 * @since 4.7.0 Giới thiệu tham số `$comment_id`.
 	 *
-	 * @param int   $page          Comment page.
+	 * @param int   $page          Trang bình luận.
 	 * @param array $args {
-	 *     Arguments used to calculate pagination. These include arguments auto-detected by the function,
-	 *     based on query vars, system settings, etc. For pristine arguments passed to the function,
-	 *     see `$original_args`.
+	 *     Các tham số dùng để tính phân trang. Bao gồm các tham số được tự động phát hiện bởi hàm,
+	 *     dựa trên biến truy vấn, cài đặt hệ thống, v.v. Để xem các tham số gốc truyền vào hàm,
+	 *     xem `$original_args`.
 	 *
-	 *     @type string $type      Type of comments to count.
-	 *     @type int    $page      Calculated current page.
-	 *     @type int    $per_page  Calculated number of comments per page.
-	 *     @type int    $max_depth Maximum comment threading depth allowed.
+	 *     @type string $type      Loại bình luận cần đếm.
+	 *     @type int    $page      Trang hiện tại đã tính.
+	 *     @type int    $per_page  Số bình luận mỗi trang đã tính.
+	 *     @type int    $max_depth Độ sâu tối đa cho chuỗi bình luận được phép.
 	 * }
 	 * @param array $original_args {
-	 *     Array of arguments passed to the function. Some or all of these may not be set.
+	 *     Mảng các tham số truyền vào hàm. Một số hoặc tất cả có thể chưa được thiết lập.
 	 *
-	 *     @type string $type      Type of comments to count.
-	 *     @type int    $page      Current comment page.
-	 *     @type int    $per_page  Number of comments per page.
-	 *     @type int    $max_depth Maximum comment threading depth allowed.
+	 *     @type string $type      Loại bình luận cần đếm.
+	 *     @type int    $page      Trang bình luận hiện tại.
+	 *     @type int    $per_page  Số bình luận mỗi trang.
+	 *     @type int    $max_depth Độ sâu tối đa cho chuỗi bình luận được phép.
 	 * }
-	 * @param int $comment_id ID of the comment.
+	 * @param int $comment_id ID của bình luận.
 	 */
 	return apply_filters( 'get_page_of_comment', (int) $page, $args, $original_args, $comment_id );
 }
 
 /**
- * Retrieves the maximum character lengths for the comment form fields.
+ * Lấy độ dài ký tự tối đa cho các trường biểu mẫu bình luận.
  *
  * @since 4.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @return int[] Array of maximum lengths keyed by field name.
+ * @return int[] Mảng độ dài tối đa được đánh chỉ mục theo tên trường.
  */
 function wp_get_comment_fields_max_lengths() {
 	global $wpdb;
@@ -1209,7 +1207,7 @@ function wp_get_comment_fields_max_lengths() {
 			$col_length = $wpdb->get_col_length( $wpdb->comments, $column );
 			$max_length = 0;
 
-			// No point if we can't get the DB column lengths.
+			// Không có ý nghĩa nếu không lấy được độ dài cột DB.
 			if ( is_wp_error( $col_length ) ) {
 				break;
 			}
@@ -1231,23 +1229,23 @@ function wp_get_comment_fields_max_lengths() {
 	}
 
 	/**
-	 * Filters the lengths for the comment form fields.
+	 * Lọc độ dài cho các trường biểu mẫu bình luận.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @param int[] $lengths Array of maximum lengths keyed by field name.
+	 * @param int[] $lengths Mảng độ dài tối đa được đánh chỉ mục theo tên trường.
 	 */
 	return apply_filters( 'wp_get_comment_fields_max_lengths', $lengths );
 }
 
 /**
- * Compares the lengths of comment data against the maximum character limits.
+ * So sánh độ dài dữ liệu bình luận với giới hạn ký tự tối đa.
  *
  * @since 4.7.0
  *
- * @param array $comment_data Array of arguments for inserting a comment.
- * @return WP_Error|true WP_Error when a comment field exceeds the limit,
- *                       otherwise true.
+ * @param array $comment_data Mảng các tham số để chèn bình luận.
+ * @return WP_Error|true WP_Error khi trường bình luận vượt quá giới hạn,
+ *                       ngược lại true.
  */
 function wp_check_comment_data_max_lengths( $comment_data ) {
 	$max_lengths = wp_get_comment_fields_max_lengths();
@@ -1272,15 +1270,15 @@ function wp_check_comment_data_max_lengths( $comment_data ) {
 }
 
 /**
- * Checks whether comment data passes internal checks or has disallowed content.
+ * Kiểm tra xem dữ liệu bình luận có vượt qua các kiểm tra nội bộ hay có nội dung không được phép.
  *
  * @since 6.7.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param array $comment_data Array of arguments for inserting a comment.
- * @return int|string|WP_Error The approval status on success (0|1|'spam'|'trash'),
- *                             WP_Error otherwise.
+ * @param array $comment_data Mảng các tham số để chèn bình luận.
+ * @return int|string|WP_Error Trạng thái phê duyệt khi thành công (0|1|'spam'|'trash'),
+ *                             WP_Error trong trường hợp khác.
  */
 function wp_check_comment_data( $comment_data ) {
 	global $wpdb;
@@ -1296,10 +1294,10 @@ function wp_check_comment_data( $comment_data ) {
 	}
 
 	if ( isset( $user ) && ( $comment_data['user_id'] === $post_author || $user->has_cap( 'moderate_comments' ) ) ) {
-		// The author and the admins get respect.
+		// Tác giả và quản trị viên được ưu tiên.
 		$approved = 1;
 	} else {
-		// Everyone else's comments will be checked.
+		// Bình luận của tất cả người khác sẽ được kiểm tra.
 		if ( check_comment(
 			$comment_data['comment_author'],
 			$comment_data['comment_author_email'],
@@ -1327,45 +1325,45 @@ function wp_check_comment_data( $comment_data ) {
 	}
 
 	/**
-	 * Filters a comment's approval status before it is set.
+	 * Lọc trạng thái phê duyệt bình luận trước khi được thiết lập.
 	 *
 	 * @since 2.1.0
-	 * @since 4.9.0 Returning a WP_Error value from the filter will short-circuit comment insertion
-	 *              and allow skipping further processing.
+	 * @since 4.9.0 Trả về giá trị WP_Error từ bộ lọc sẽ bỏ qua việc chèn bình luận
+	 *              và cho phép bỏ qua xử lý tiếp theo.
 	 *
-	 * @param int|string|WP_Error $approved    The approval status. Accepts 1, 0, 'spam', 'trash',
-	 *                                         or WP_Error.
-	 * @param array               $commentdata Comment data.
+	 * @param int|string|WP_Error $approved    Trạng thái phê duyệt. Chấp nhận 1, 0, 'spam', 'trash',
+	 *                                         hoặc WP_Error.
+	 * @param array               $commentdata Dữ liệu bình luận.
 	 */
 	return apply_filters( 'pre_comment_approved', $approved, $comment_data );
 }
 
 /**
- * Checks if a comment contains disallowed characters or words.
+ * Kiểm tra xem bình luận có chứa ký tự hoặc từ không được phép hay không.
  *
  * @since 5.5.0
  *
- * @param string $author     The author of the comment.
- * @param string $email      The email of the comment.
- * @param string $url        The url used in the comment.
- * @param string $comment    The comment content.
- * @param string $user_ip    The comment author's IP address.
- * @param string $user_agent The author's browser user agent.
- * @return bool True if the comment contains disallowed content, false otherwise.
+ * @param string $author     Tác giả bình luận.
+ * @param string $email      Email của bình luận.
+ * @param string $url        URL được sử dụng trong bình luận.
+ * @param string $comment    Nội dung bình luận.
+ * @param string $user_ip    Địa chỉ IP tác giả bình luận.
+ * @param string $user_agent User-Agent trình duyệt của tác giả.
+ * @return bool True nếu bình luận chứa nội dung không được phép, false trong trường hợp ngược lại.
  */
 function wp_check_comment_disallowed_list( $author, $email, $url, $comment, $user_ip, $user_agent ) {
 	/**
-	 * Fires before the comment is tested for disallowed characters or words.
+	 * Kích hoạt trước khi bình luận được kiểm tra ký tự hoặc từ không được phép.
 	 *
 	 * @since 1.5.0
-	 * @deprecated 5.5.0 Use {@see 'wp_check_comment_disallowed_list'} instead.
+	 * @deprecated 5.5.0 Sử dụng {@see 'wp_check_comment_disallowed_list'} thay thế.
 	 *
-	 * @param string $author     Comment author.
-	 * @param string $email      Comment author's email.
-	 * @param string $url        Comment author's URL.
-	 * @param string $comment    Comment content.
-	 * @param string $user_ip    Comment author's IP address.
-	 * @param string $user_agent Comment author's browser user agent.
+	 * @param string $author     Tác giả bình luận.
+	 * @param string $email      Email tác giả bình luận.
+	 * @param string $url        URL tác giả bình luận.
+	 * @param string $comment    Nội dung bình luận.
+	 * @param string $user_ip    Địa chỉ IP tác giả bình luận.
+	 * @param string $user_agent User-Agent trình duyệt tác giả bình luận.
 	 */
 	do_action_deprecated(
 		'wp_blacklist_check',
@@ -1376,25 +1374,25 @@ function wp_check_comment_disallowed_list( $author, $email, $url, $comment, $use
 	);
 
 	/**
-	 * Fires before the comment is tested for disallowed characters or words.
+	 * Kích hoạt trước khi bình luận được kiểm tra ký tự hoặc từ không được phép.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $author     Comment author.
-	 * @param string $email      Comment author's email.
-	 * @param string $url        Comment author's URL.
-	 * @param string $comment    Comment content.
-	 * @param string $user_ip    Comment author's IP address.
-	 * @param string $user_agent Comment author's browser user agent.
+	 * @param string $author     Tác giả bình luận.
+	 * @param string $email      Email tác giả bình luận.
+	 * @param string $url        URL tác giả bình luận.
+	 * @param string $comment    Nội dung bình luận.
+	 * @param string $user_ip    Địa chỉ IP tác giả bình luận.
+	 * @param string $user_agent User-Agent trình duyệt tác giả bình luận.
 	 */
 	do_action( 'wp_check_comment_disallowed_list', $author, $email, $url, $comment, $user_ip, $user_agent );
 
 	$mod_keys = trim( get_option( 'disallowed_keys' ) );
 	if ( '' === $mod_keys ) {
-		return false; // If moderation keys are empty.
+		return false; // Nếu các key kiểm duyệt trống.
 	}
 
-	// Ensure HTML tags are not being used to bypass the list of disallowed characters and words.
+	// Đảm bảo thẻ HTML không được sử dụng để vượt qua danh sách ký tự và từ không được phép.
 	$comment_without_html = wp_strip_all_tags( $comment );
 
 	$words = explode( "\n", $mod_keys );
@@ -1402,11 +1400,11 @@ function wp_check_comment_disallowed_list( $author, $email, $url, $comment, $use
 	foreach ( (array) $words as $word ) {
 		$word = trim( $word );
 
-		// Skip empty lines.
+		// Bỏ qua các dòng trống.
 		if ( empty( $word ) ) {
 			continue; }
 
-		// Do some escaping magic so that '#' chars in the spam words don't break things:
+		// Thực hiện một số xử lý escape để ký tự '#' trong các từ spam không gây lỗi:
 		$word = preg_quote( $word, '#' );
 
 		$pattern = "#$word#iu";
@@ -1425,39 +1423,39 @@ function wp_check_comment_disallowed_list( $author, $email, $url, $comment, $use
 }
 
 /**
- * Retrieves the total comment counts for the whole site or a single post.
+ * Lấy tổng số lượng bình luận cho toàn bộ trang web hoặc một bài viết.
  *
- * The comment stats are cached and then retrieved, if they already exist in the
+ * Thống kê bình luận được lưu cache và sau đó được lấy ra, nếu chúng đã tồn tại trong
  * cache.
  *
- * @see get_comment_count() Which handles fetching the live comment counts.
+ * @see get_comment_count() Hàm xử lý việc lấy số lượng bình luận trực tiếp.
  *
  * @since 2.5.0
  *
- * @param int $post_id Optional. Restrict the comment counts to the given post. Default 0, which indicates that
- *                     comment counts for the whole site will be retrieved.
+ * @param int $post_id Tùy chọn. Giới hạn số lượng bình luận cho bài viết nhất định. Mặc định 0, nghĩa là
+ *                     sẽ lấy số lượng bình luận cho toàn bộ trang web.
  * @return stdClass {
- *     The number of comments keyed by their status.
+ *     Số lượng bình luận được đánh chỉ mục theo trạng thái.
  *
- *     @type int $approved       The number of approved comments.
- *     @type int $moderated      The number of comments awaiting moderation (a.k.a. pending).
- *     @type int $spam           The number of spam comments.
- *     @type int $trash          The number of trashed comments.
- *     @type int $post-trashed   The number of comments for posts that are in the trash.
- *     @type int $total_comments The total number of non-trashed comments, including spam.
- *     @type int $all            The total number of pending or approved comments.
+ *     @type int $approved       Số lượng bình luận đã phê duyệt.
+ *     @type int $moderated      Số lượng bình luận đang chờ kiểm duyệt (tức là đang chờ xử lý).
+ *     @type int $spam           Số lượng bình luận spam.
+ *     @type int $trash          Số lượng bình luận đã bị xóa.
+ *     @type int $post-trashed   Số lượng bình luận cho các bài viết đã bị xóa.
+ *     @type int $total_comments Tổng số bình luận chưa bị xóa, bao gồm spam.
+ *     @type int $all            Tổng số bình luận đang chờ hoặc đã phê duyệt.
  * }
  */
 function wp_count_comments( $post_id = 0 ) {
 	$post_id = (int) $post_id;
 
 	/**
-	 * Filters the comments count for a given post or the whole site.
+	 * Lọc số lượng bình luận cho một bài viết nhất định hoặc toàn bộ trang web.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param array|stdClass $count   An empty array or an object containing comment counts.
-	 * @param int            $post_id The post ID. Can be 0 to represent the whole site.
+	 * @param array|stdClass $count   Mảng rỗng hoặc đối tượng chứa số lượng bình luận.
+	 * @param int            $post_id ID bài viết. Có thể là 0 để đại diện cho toàn bộ trang web.
 	 */
 	$filtered = apply_filters( 'wp_count_comments', array(), $post_id );
 	if ( ! empty( $filtered ) ) {
@@ -1480,21 +1478,21 @@ function wp_count_comments( $post_id = 0 ) {
 }
 
 /**
- * Trashes or deletes a comment.
+ * Chuyển vào thùng rác hoặc xóa một bình luận.
  *
- * The comment is moved to Trash instead of permanently deleted unless Trash is
- * disabled, item is already in the Trash, or $force_delete is true.
+ * Bình luận được chuyển vào Thùng rác thay vì xóa vĩnh viễn trừ khi Thùng rác
+ * bị vô hiệu hóa, mục đã ở trong Thùng rác, hoặc $force_delete là true.
  *
- * The post comment count will be updated if the comment was approved and has a
- * post ID available.
+ * Số lượng bình luận bài viết sẽ được cập nhật nếu bình luận đã được phê duyệt và có
+ * ID bài viết.
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|WP_Comment $comment_id   Comment ID or WP_Comment object.
- * @param bool           $force_delete Whether to bypass Trash and force deletion. Default false.
- * @return bool True on success, false on failure.
+ * @param int|WP_Comment $comment_id   ID bình luận hoặc đối tượng WP_Comment.
+ * @param bool           $force_delete Có bỏ qua Thùng rác và buộc xóa hay không. Mặc định false.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function wp_delete_comment( $comment_id, $force_delete = false ) {
 	global $wpdb;
@@ -1509,24 +1507,24 @@ function wp_delete_comment( $comment_id, $force_delete = false ) {
 	}
 
 	/**
-	 * Fires immediately before a comment is deleted from the database.
+	 * Kích hoạt ngay trước khi bình luận bị xóa khỏi cơ sở dữ liệu.
 	 *
 	 * @since 1.2.0
-	 * @since 4.9.0 Added the `$comment` parameter.
+	 * @since 4.9.0 Thêm tham số `$comment`.
 	 *
-	 * @param string     $comment_id The comment ID as a numeric string.
-	 * @param WP_Comment $comment    The comment to be deleted.
+	 * @param string     $comment_id ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment    Bình luận sẽ bị xóa.
 	 */
 	do_action( 'delete_comment', $comment->comment_ID, $comment );
 
-	// Move children up a level.
+	// Di chuyển bình luận con lên một cấp.
 	$children = $wpdb->get_col( $wpdb->prepare( "SELECT comment_ID FROM $wpdb->comments WHERE comment_parent = %d", $comment->comment_ID ) );
 	if ( ! empty( $children ) ) {
 		$wpdb->update( $wpdb->comments, array( 'comment_parent' => $comment->comment_parent ), array( 'comment_parent' => $comment->comment_ID ) );
 		clean_comment_cache( $children );
 	}
 
-	// Delete metadata.
+	// Xóa metadata.
 	$meta_ids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->commentmeta WHERE comment_id = %d", $comment->comment_ID ) );
 	foreach ( $meta_ids as $mid ) {
 		delete_metadata_by_mid( 'comment', $mid );
@@ -1537,13 +1535,13 @@ function wp_delete_comment( $comment_id, $force_delete = false ) {
 	}
 
 	/**
-	 * Fires immediately after a comment is deleted from the database.
+	 * Kích hoạt ngay sau khi bình luận bị xóa khỏi cơ sở dữ liệu.
 	 *
 	 * @since 2.9.0
-	 * @since 4.9.0 Added the `$comment` parameter.
+	 * @since 4.9.0 Thêm tham số `$comment`.
 	 *
-	 * @param string     $comment_id The comment ID as a numeric string.
-	 * @param WP_Comment $comment    The deleted comment.
+	 * @param string     $comment_id ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment    Bình luận đã bị xóa.
 	 */
 	do_action( 'deleted_comment', $comment->comment_ID, $comment );
 
@@ -1554,7 +1552,7 @@ function wp_delete_comment( $comment_id, $force_delete = false ) {
 
 	clean_comment_cache( $comment->comment_ID );
 
-	/** This action is documented in wp-includes/comment.php */
+	/** Hành động này được ghi tài liệu trong wp-includes/comment.php */
 	do_action( 'wp_set_comment_status', $comment->comment_ID, 'delete' );
 
 	wp_transition_comment_status( 'delete', $comment->comment_approved, $comment );
@@ -1563,14 +1561,14 @@ function wp_delete_comment( $comment_id, $force_delete = false ) {
 }
 
 /**
- * Moves a comment to the Trash
+ * Chuyển bình luận vào Thùng rác.
  *
- * If Trash is disabled, comment is permanently deleted.
+ * Nếu Thùng rác bị vô hiệu hóa, bình luận sẽ bị xóa vĩnh viễn.
  *
  * @since 2.9.0
  *
- * @param int|WP_Comment $comment_id Comment ID or WP_Comment object.
- * @return bool True on success, false on failure.
+ * @param int|WP_Comment $comment_id ID bình luận hoặc đối tượng WP_Comment.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function wp_trash_comment( $comment_id ) {
 	if ( ! EMPTY_TRASH_DAYS ) {
@@ -1583,13 +1581,13 @@ function wp_trash_comment( $comment_id ) {
 	}
 
 	/**
-	 * Fires immediately before a comment is sent to the Trash.
+	 * Kích hoạt ngay trước khi bình luận được chuyển vào Thùng rác.
 	 *
 	 * @since 2.9.0
-	 * @since 4.9.0 Added the `$comment` parameter.
+	 * @since 4.9.0 Thêm tham số `$comment`.
 	 *
-	 * @param string     $comment_id The comment ID as a numeric string.
-	 * @param WP_Comment $comment    The comment to be trashed.
+	 * @param string     $comment_id ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment    Bình luận sẽ được chuyển vào thùng rác.
 	 */
 	do_action( 'trash_comment', $comment->comment_ID, $comment );
 
@@ -1600,13 +1598,13 @@ function wp_trash_comment( $comment_id ) {
 		add_comment_meta( $comment->comment_ID, '_wp_trash_meta_time', time() );
 
 		/**
-		 * Fires immediately after a comment is sent to Trash.
+		 * Kích hoạt ngay sau khi bình luận được chuyển vào Thùng rác.
 		 *
 		 * @since 2.9.0
-		 * @since 4.9.0 Added the `$comment` parameter.
+		 * @since 4.9.0 Thêm tham số `$comment`.
 		 *
-		 * @param string     $comment_id The comment ID as a numeric string.
-		 * @param WP_Comment $comment    The trashed comment.
+		 * @param string     $comment_id ID bình luận dưới dạng chuỗi số.
+		 * @param WP_Comment $comment    Bình luận đã chuyển vào thùng rác.
 		 */
 		do_action( 'trashed_comment', $comment->comment_ID, $comment );
 
@@ -1617,12 +1615,12 @@ function wp_trash_comment( $comment_id ) {
 }
 
 /**
- * Removes a comment from the Trash
+ * Khôi phục bình luận từ Thùng rác.
  *
  * @since 2.9.0
  *
- * @param int|WP_Comment $comment_id Comment ID or WP_Comment object.
- * @return bool True on success, false on failure.
+ * @param int|WP_Comment $comment_id ID bình luận hoặc đối tượng WP_Comment.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function wp_untrash_comment( $comment_id ) {
 	$comment = get_comment( $comment_id );
@@ -1631,13 +1629,13 @@ function wp_untrash_comment( $comment_id ) {
 	}
 
 	/**
-	 * Fires immediately before a comment is restored from the Trash.
+	 * Kích hoạt ngay trước khi bình luận được khôi phục từ Thùng rác.
 	 *
 	 * @since 2.9.0
-	 * @since 4.9.0 Added the `$comment` parameter.
+	 * @since 4.9.0 Thêm tham số `$comment`.
 	 *
-	 * @param string     $comment_id The comment ID as a numeric string.
-	 * @param WP_Comment $comment    The comment to be untrashed.
+	 * @param string     $comment_id ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment    Bình luận sẽ được khôi phục từ thùng rác.
 	 */
 	do_action( 'untrash_comment', $comment->comment_ID, $comment );
 
@@ -1651,13 +1649,13 @@ function wp_untrash_comment( $comment_id ) {
 		delete_comment_meta( $comment->comment_ID, '_wp_trash_meta_status' );
 
 		/**
-		 * Fires immediately after a comment is restored from the Trash.
+		 * Kích hoạt ngay sau khi bình luận được khôi phục từ Thùng rác.
 		 *
 		 * @since 2.9.0
-		 * @since 4.9.0 Added the `$comment` parameter.
+		 * @since 4.9.0 Thêm tham số `$comment`.
 		 *
-		 * @param string     $comment_id The comment ID as a numeric string.
-		 * @param WP_Comment $comment    The untrashed comment.
+		 * @param string     $comment_id ID bình luận dưới dạng chuỗi số.
+		 * @param WP_Comment $comment    Bình luận đã được khôi phục từ thùng rác.
 		 */
 		do_action( 'untrashed_comment', $comment->comment_ID, $comment );
 
@@ -1668,12 +1666,12 @@ function wp_untrash_comment( $comment_id ) {
 }
 
 /**
- * Marks a comment as Spam.
+ * Đánh dấu bình luận là Spam.
  *
  * @since 2.9.0
  *
- * @param int|WP_Comment $comment_id Comment ID or WP_Comment object.
- * @return bool True on success, false on failure.
+ * @param int|WP_Comment $comment_id ID bình luận hoặc đối tượng WP_Comment.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function wp_spam_comment( $comment_id ) {
 	$comment = get_comment( $comment_id );
@@ -1682,13 +1680,13 @@ function wp_spam_comment( $comment_id ) {
 	}
 
 	/**
-	 * Fires immediately before a comment is marked as Spam.
+	 * Kích hoạt ngay trước khi bình luận được đánh dấu là Spam.
 	 *
 	 * @since 2.9.0
-	 * @since 4.9.0 Added the `$comment` parameter.
+	 * @since 4.9.0 Thêm tham số `$comment`.
 	 *
-	 * @param int        $comment_id The comment ID.
-	 * @param WP_Comment $comment    The comment to be marked as spam.
+	 * @param int        $comment_id ID bình luận.
+	 * @param WP_Comment $comment    Bình luận sẽ được đánh dấu là spam.
 	 */
 	do_action( 'spam_comment', $comment->comment_ID, $comment );
 
@@ -1699,13 +1697,13 @@ function wp_spam_comment( $comment_id ) {
 		add_comment_meta( $comment->comment_ID, '_wp_trash_meta_time', time() );
 
 		/**
-		 * Fires immediately after a comment is marked as Spam.
+		 * Kích hoạt ngay sau khi bình luận được đánh dấu là Spam.
 		 *
 		 * @since 2.9.0
-		 * @since 4.9.0 Added the `$comment` parameter.
+		 * @since 4.9.0 Thêm tham số `$comment`.
 		 *
-		 * @param int        $comment_id The comment ID.
-		 * @param WP_Comment $comment    The comment marked as spam.
+		 * @param int        $comment_id ID bình luận.
+		 * @param WP_Comment $comment    Bình luận đã được đánh dấu là spam.
 		 */
 		do_action( 'spammed_comment', $comment->comment_ID, $comment );
 
@@ -1716,12 +1714,12 @@ function wp_spam_comment( $comment_id ) {
 }
 
 /**
- * Removes a comment from the Spam.
+ * Bỏ đánh dấu spam cho bình luận.
  *
  * @since 2.9.0
  *
- * @param int|WP_Comment $comment_id Comment ID or WP_Comment object.
- * @return bool True on success, false on failure.
+ * @param int|WP_Comment $comment_id ID bình luận hoặc đối tượng WP_Comment.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function wp_unspam_comment( $comment_id ) {
 	$comment = get_comment( $comment_id );
@@ -1730,13 +1728,13 @@ function wp_unspam_comment( $comment_id ) {
 	}
 
 	/**
-	 * Fires immediately before a comment is unmarked as Spam.
+	 * Kích hoạt ngay trước khi bình luận được bỏ đánh dấu Spam.
 	 *
 	 * @since 2.9.0
-	 * @since 4.9.0 Added the `$comment` parameter.
+	 * @since 4.9.0 Thêm tham số `$comment`.
 	 *
-	 * @param string     $comment_id The comment ID as a numeric string.
-	 * @param WP_Comment $comment    The comment to be unmarked as spam.
+	 * @param string     $comment_id ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment    Bình luận sẽ được bỏ đánh dấu spam.
 	 */
 	do_action( 'unspam_comment', $comment->comment_ID, $comment );
 
@@ -1750,13 +1748,13 @@ function wp_unspam_comment( $comment_id ) {
 		delete_comment_meta( $comment->comment_ID, '_wp_trash_meta_time' );
 
 		/**
-		 * Fires immediately after a comment is unmarked as Spam.
+		 * Kích hoạt ngay sau khi bình luận được bỏ đánh dấu Spam.
 		 *
 		 * @since 2.9.0
-		 * @since 4.9.0 Added the `$comment` parameter.
+		 * @since 4.9.0 Thêm tham số `$comment`.
 		 *
-		 * @param string     $comment_id The comment ID as a numeric string.
-		 * @param WP_Comment $comment    The comment unmarked as spam.
+		 * @param string     $comment_id ID bình luận dưới dạng chuỗi số.
+		 * @param WP_Comment $comment    Bình luận đã được bỏ đánh dấu spam.
 		 */
 		do_action( 'unspammed_comment', $comment->comment_ID, $comment );
 
@@ -1767,12 +1765,12 @@ function wp_unspam_comment( $comment_id ) {
 }
 
 /**
- * Retrieves the status of a comment by comment ID.
+ * Lấy trạng thái của bình luận theo ID bình luận.
  *
  * @since 1.0.0
  *
- * @param int|WP_Comment $comment_id Comment ID or WP_Comment object
- * @return string|false Status might be 'trash', 'approved', 'unapproved', 'spam'. False on failure.
+ * @param int|WP_Comment $comment_id ID bình luận hoặc đối tượng WP_Comment.
+ * @return string|false Trạng thái có thể là 'trash', 'approved', 'unapproved', 'spam'. False khi thất bại.
  */
 function wp_get_comment_status( $comment_id ) {
 	$comment = get_comment( $comment_id );
@@ -1798,34 +1796,34 @@ function wp_get_comment_status( $comment_id ) {
 }
 
 /**
- * Calls hooks for when a comment status transition occurs.
+ * Gọi các hook khi xảy ra chuyển đổi trạng thái bình luận.
  *
- * Calls hooks for comment status transitions. If the new comment status is not the same
- * as the previous comment status, then two hooks will be ran, the first is
- * {@see 'transition_comment_status'} with new status, old status, and comment data.
- * The next action called is {@see 'comment_$old_status_to_$new_status'}. It has
- * the comment data.
+ * Gọi các hook cho chuyển đổi trạng thái bình luận. Nếu trạng thái bình luận mới không giống
+ * với trạng thái bình luận trước đó, thì hai hook sẽ được chạy, đầu tiên là
+ * {@see 'transition_comment_status'} với trạng thái mới, trạng thái cũ, và dữ liệu bình luận.
+ * Hành động tiếp theo được gọi là {@see 'comment_$old_status_to_$new_status'}. Nó có
+ * dữ liệu bình luận.
  *
- * The final action will run whether or not the comment statuses are the same.
- * The action is named {@see 'comment_$new_status_$comment->comment_type'}.
+ * Hành động cuối cùng sẽ chạy bất kể trạng thái bình luận có giống nhau hay không.
+ * Hành động có tên {@see 'comment_$new_status_$comment->comment_type'}.
  *
  * @since 2.7.0
  *
- * @param string     $new_status New comment status.
- * @param string     $old_status Previous comment status.
- * @param WP_Comment $comment    Comment object.
+ * @param string     $new_status Trạng thái bình luận mới.
+ * @param string     $old_status Trạng thái bình luận trước đó.
+ * @param WP_Comment $comment    Đối tượng bình luận.
  */
 function wp_transition_comment_status( $new_status, $old_status, $comment ) {
 	/*
-	 * Translate raw statuses to human-readable formats for the hooks.
-	 * This is not a complete list of comment status, it's only the ones
-	 * that need to be renamed.
+	 * Chuyển đổi trạng thái thô sang định dạng dễ đọc cho các hook.
+	 * Đây không phải là danh sách đầy đủ các trạng thái bình luận, chỉ là những trạng thái
+	 * cần được đổi tên.
 	 */
 	$comment_statuses = array(
 		0         => 'unapproved',
-		'hold'    => 'unapproved', // wp_set_comment_status() uses "hold".
+		'hold'    => 'unapproved', // wp_set_comment_status() sử dụng "hold".
 		1         => 'approved',
-		'approve' => 'approved',   // wp_set_comment_status() uses "approve".
+		'approve' => 'approved',   // wp_set_comment_status() sử dụng "approve".
 	);
 	if ( isset( $comment_statuses[ $new_status ] ) ) {
 		$new_status = $comment_statuses[ $new_status ];
@@ -1834,26 +1832,26 @@ function wp_transition_comment_status( $new_status, $old_status, $comment ) {
 		$old_status = $comment_statuses[ $old_status ];
 	}
 
-	// Call the hooks.
+	// Gọi các hook.
 	if ( $new_status !== $old_status ) {
 		/**
-		 * Fires when the comment status is in transition.
+		 * Kích hoạt khi trạng thái bình luận đang chuyển đổi.
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param string     $new_status The new comment status.
-		 * @param string     $old_status The old comment status.
-		 * @param WP_Comment $comment    Comment object.
+		 * @param string     $new_status Trạng thái bình luận mới.
+		 * @param string     $old_status Trạng thái bình luận cũ.
+		 * @param WP_Comment $comment    Đối tượng bình luận.
 		 */
 		do_action( 'transition_comment_status', $new_status, $old_status, $comment );
 
 		/**
-		 * Fires when the comment status is in transition from one specific status to another.
+		 * Kích hoạt khi trạng thái bình luận chuyển đổi từ một trạng thái cụ thể sang trạng thái khác.
 		 *
-		 * The dynamic portions of the hook name, `$old_status`, and `$new_status`,
-		 * refer to the old and new comment statuses, respectively.
+		 * Các phần động của tên hook, `$old_status` và `$new_status`,
+		 * tham chiếu đến trạng thái bình luận cũ và mới tương ứng.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `comment_unapproved_to_approved`
 		 *  - `comment_spam_to_approved`
@@ -1864,19 +1862,19 @@ function wp_transition_comment_status( $new_status, $old_status, $comment ) {
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param WP_Comment $comment Comment object.
+		 * @param WP_Comment $comment Đối tượng bình luận.
 		 */
 		do_action( "comment_{$old_status}_to_{$new_status}", $comment );
 	}
 	/**
-	 * Fires when the status of a specific comment type is in transition.
+	 * Kích hoạt khi trạng thái của một loại bình luận cụ thể đang chuyển đổi.
 	 *
-	 * The dynamic portions of the hook name, `$new_status`, and `$comment->comment_type`,
-	 * refer to the new comment status, and the type of comment, respectively.
+	 * Các phần động của tên hook, `$new_status` và `$comment->comment_type`,
+	 * tham chiếu đến trạng thái bình luận mới và loại bình luận tương ứng.
 	 *
-	 * Typical comment types include 'comment', 'pingback', or 'trackback'.
+	 * Các loại bình luận thông thường bao gồm 'comment', 'pingback', hoặc 'trackback'.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `comment_approved_comment`
 	 *  - `comment_approved_pingback`
@@ -1890,23 +1888,23 @@ function wp_transition_comment_status( $new_status, $old_status, $comment ) {
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string     $comment_id The comment ID as a numeric string.
-	 * @param WP_Comment $comment    Comment object.
+	 * @param string     $comment_id ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment    Đối tượng bình luận.
 	 */
 	do_action( "comment_{$new_status}_{$comment->comment_type}", $comment->comment_ID, $comment );
 }
 
 /**
- * Clears the lastcommentmodified cached value when a comment status is changed.
+ * Xóa giá trị cache lastcommentmodified khi trạng thái bình luận thay đổi.
  *
- * Deletes the lastcommentmodified cache key when a comment enters or leaves
- * 'approved' status.
+ * Xóa key cache lastcommentmodified khi bình luận vào hoặc rời khỏi
+ * trạng thái 'approved'.
  *
  * @since 4.7.0
  * @access private
  *
- * @param string $new_status The new comment status.
- * @param string $old_status The old comment status.
+ * @param string $new_status Trạng thái bình luận mới.
+ * @param string $old_status Trạng thái bình luận cũ.
  */
 function _clear_modified_cache_on_transition_comment_status( $new_status, $old_status ) {
 	if ( 'approved' === $new_status || 'approved' === $old_status ) {
@@ -1919,25 +1917,25 @@ function _clear_modified_cache_on_transition_comment_status( $new_status, $old_s
 }
 
 /**
- * Gets current commenter's name, email, and URL.
+ * Lấy tên, email và URL của người bình luận hiện tại.
  *
- * Expects cookies content to already be sanitized. User of this function might
- * wish to recheck the returned array for validity.
+ * Mong đợi nội dung cookie đã được làm sạch. Người sử dụng hàm này có thể
+ * muốn kiểm tra lại mảng trả về để đảm bảo tính hợp lệ.
  *
- * @see sanitize_comment_cookies() Use to sanitize cookies
+ * @see sanitize_comment_cookies() Sử dụng để làm sạch cookie.
  *
  * @since 2.0.4
  *
  * @return array {
- *     An array of current commenter variables.
+ *     Mảng các biến của người bình luận hiện tại.
  *
- *     @type string $comment_author       The name of the current commenter, or an empty string.
- *     @type string $comment_author_email The email address of the current commenter, or an empty string.
- *     @type string $comment_author_url   The URL address of the current commenter, or an empty string.
+ *     @type string $comment_author       Tên của người bình luận hiện tại, hoặc chuỗi rỗng.
+ *     @type string $comment_author_email Địa chỉ email của người bình luận hiện tại, hoặc chuỗi rỗng.
+ *     @type string $comment_author_url   Địa chỉ URL của người bình luận hiện tại, hoặc chuỗi rỗng.
  * }
  */
 function wp_get_current_commenter() {
-	// Cookies should already be sanitized.
+	// Cookie đã được làm sạch rồi.
 
 	$comment_author = '';
 	if ( isset( $_COOKIE[ 'comment_author_' . COOKIEHASH ] ) ) {
@@ -1955,31 +1953,31 @@ function wp_get_current_commenter() {
 	}
 
 	/**
-	 * Filters the current commenter's name, email, and URL.
+	 * Lọc tên, email và URL của người bình luận hiện tại.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @param array $comment_author_data {
-	 *     An array of current commenter variables.
+	 *     Mảng các biến của người bình luận hiện tại.
 	 *
-	 *     @type string $comment_author       The name of the current commenter, or an empty string.
-	 *     @type string $comment_author_email The email address of the current commenter, or an empty string.
-	 *     @type string $comment_author_url   The URL address of the current commenter, or an empty string.
+	 *     @type string $comment_author       Tên của người bình luận hiện tại, hoặc chuỗi rỗng.
+	 *     @type string $comment_author_email Địa chỉ email của người bình luận hiện tại, hoặc chuỗi rỗng.
+	 *     @type string $comment_author_url   Địa chỉ URL của người bình luận hiện tại, hoặc chuỗi rỗng.
 	 * }
 	 */
 	return apply_filters( 'wp_get_current_commenter', compact( 'comment_author', 'comment_author_email', 'comment_author_url' ) );
 }
 
 /**
- * Gets unapproved comment author's email.
+ * Lấy email của tác giả bình luận chưa được phê duyệt.
  *
- * Used to allow the commenter to see their pending comment.
+ * Được sử dụng để cho phép người bình luận xem bình luận đang chờ duyệt của họ.
  *
  * @since 5.1.0
- * @since 5.7.0 The window within which the author email for an unapproved comment
- *              can be retrieved was extended to 10 minutes.
+ * @since 5.7.0 Khoảng thời gian mà email tác giả cho bình luận chưa phê duyệt
+ *              có thể được lấy đã được mở rộng lên 10 phút.
  *
- * @return string The unapproved comment author's email (when supplied).
+ * @return string Email tác giả bình luận chưa phê duyệt (khi được cung cấp).
  */
 function wp_get_unapproved_comment_author_email() {
 	$commenter_email = '';
@@ -1989,7 +1987,7 @@ function wp_get_unapproved_comment_author_email() {
 		$comment    = get_comment( $comment_id );
 
 		if ( $comment && hash_equals( $_GET['moderation-hash'], wp_hash( $comment->comment_date_gmt ) ) ) {
-			// The comment will only be viewable by the comment author for 10 minutes.
+			// Bình luận chỉ có thể được xem bởi tác giả bình luận trong 10 phút.
 			$comment_preview_expires = strtotime( $comment->comment_date_gmt . '+10 minutes' );
 
 			if ( time() < $comment_preview_expires ) {
@@ -2007,40 +2005,40 @@ function wp_get_unapproved_comment_author_email() {
 }
 
 /**
- * Inserts a comment into the database.
+ * Chèn bình luận vào cơ sở dữ liệu.
  *
  * @since 2.0.0
- * @since 4.4.0 Introduced the `$comment_meta` argument.
- * @since 5.5.0 Default value for `$comment_type` argument changed to `comment`.
+ * @since 4.4.0 Giới thiệu tham số `$comment_meta`.
+ * @since 5.5.0 Giá trị mặc định cho tham số `$comment_type` thay đổi thành `comment`.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
  * @param array $commentdata {
- *     Array of arguments for inserting a new comment.
+ *     Mảng các tham số để chèn bình luận mới.
  *
- *     @type string     $comment_agent        The HTTP user agent of the `$comment_author` when
- *                                            the comment was submitted. Default empty.
- *     @type int|string $comment_approved     Whether the comment has been approved. Default 1.
- *     @type string     $comment_author       The name of the author of the comment. Default empty.
- *     @type string     $comment_author_email The email address of the `$comment_author`. Default empty.
- *     @type string     $comment_author_IP    The IP address of the `$comment_author`. Default empty.
- *     @type string     $comment_author_url   The URL address of the `$comment_author`. Default empty.
- *     @type string     $comment_content      The content of the comment. Default empty.
- *     @type string     $comment_date         The date the comment was submitted. To set the date
- *                                            manually, `$comment_date_gmt` must also be specified.
- *                                            Default is the current time.
- *     @type string     $comment_date_gmt     The date the comment was submitted in the GMT timezone.
- *                                            Default is `$comment_date` in the site's GMT timezone.
- *     @type int        $comment_karma        The karma of the comment. Default 0.
- *     @type int        $comment_parent       ID of this comment's parent, if any. Default 0.
- *     @type int        $comment_post_ID      ID of the post that relates to the comment, if any.
- *                                            Default 0.
- *     @type string     $comment_type         Comment type. Default 'comment'.
- *     @type array      $comment_meta         Optional. Array of key/value pairs to be stored in commentmeta for the
- *                                            new comment.
- *     @type int        $user_id              ID of the user who submitted the comment. Default 0.
+ *     @type string     $comment_agent        User-Agent HTTP của `$comment_author` khi
+ *                                            bình luận được gửi. Mặc định rỗng.
+ *     @type int|string $comment_approved     Bình luận đã được phê duyệt chưa. Mặc định 1.
+ *     @type string     $comment_author       Tên tác giả bình luận. Mặc định rỗng.
+ *     @type string     $comment_author_email Địa chỉ email của `$comment_author`. Mặc định rỗng.
+ *     @type string     $comment_author_IP    Địa chỉ IP của `$comment_author`. Mặc định rỗng.
+ *     @type string     $comment_author_url   Địa chỉ URL của `$comment_author`. Mặc định rỗng.
+ *     @type string     $comment_content      Nội dung bình luận. Mặc định rỗng.
+ *     @type string     $comment_date         Ngày bình luận được gửi. Để thiết lập ngày
+ *                                            thủ công, `$comment_date_gmt` cũng phải được chỉ định.
+ *                                            Mặc định là thời gian hiện tại.
+ *     @type string     $comment_date_gmt     Ngày bình luận được gửi theo múi giờ GMT.
+ *                                            Mặc định là `$comment_date` theo múi giờ GMT của trang web.
+ *     @type int        $comment_karma        Karma của bình luận. Mặc định 0.
+ *     @type int        $comment_parent       ID của bình luận cha, nếu có. Mặc định 0.
+ *     @type int        $comment_post_ID      ID của bài viết liên quan đến bình luận, nếu có.
+ *                                            Mặc định 0.
+ *     @type string     $comment_type         Loại bình luận. Mặc định 'comment'.
+ *     @type array      $comment_meta         Tùy chọn. Mảng các cặp key/value để lưu trong commentmeta cho
+ *                                            bình luận mới.
+ *     @type int        $user_id              ID người dùng đã gửi bình luận. Mặc định 0.
  * }
- * @return int|false The new comment's ID on success, false on failure.
+ * @return int|false ID bình luận mới khi thành công, false khi thất bại.
  */
 function wp_insert_comment( $commentdata ) {
 	global $wpdb;
@@ -2105,7 +2103,7 @@ function wp_insert_comment( $commentdata ) {
 
 	$comment = get_comment( $id );
 
-	// If metadata is provided, store it.
+	// Nếu metadata được cung cấp, lưu trữ nó.
 	if ( isset( $commentdata['comment_meta'] ) && is_array( $commentdata['comment_meta'] ) ) {
 		foreach ( $commentdata['comment_meta'] as $meta_key => $meta_value ) {
 			add_comment_meta( $comment->comment_ID, $meta_key, $meta_value, true );
@@ -2113,12 +2111,12 @@ function wp_insert_comment( $commentdata ) {
 	}
 
 	/**
-	 * Fires immediately after a comment is inserted into the database.
+	 * Kích hoạt ngay sau khi bình luận được chèn vào cơ sở dữ liệu.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param int        $id      The comment ID.
-	 * @param WP_Comment $comment Comment object.
+	 * @param int        $id      ID bình luận.
+	 * @param WP_Comment $comment Đối tượng bình luận.
 	 */
 	do_action( 'wp_insert_comment', $id, $comment );
 
@@ -2126,64 +2124,64 @@ function wp_insert_comment( $commentdata ) {
 }
 
 /**
- * Filters and sanitizes comment data.
+ * Lọc và làm sạch dữ liệu bình luận.
  *
- * Sets the comment data 'filtered' field to true when finished. This can be
- * checked as to whether the comment should be filtered and to keep from
- * filtering the same comment more than once.
+ * Thiết lập trường 'filtered' của dữ liệu bình luận thành true khi hoàn tất. Điều này có thể
+ * được kiểm tra để xác định liệu bình luận có nên được lọc hay không và tránh
+ * lọc cùng một bình luận nhiều lần.
  *
  * @since 2.0.0
  *
- * @param array $commentdata Contains information on the comment.
- * @return array Parsed comment information.
+ * @param array $commentdata Chứa thông tin về bình luận.
+ * @return array Thông tin bình luận đã được phân tích.
  */
 function wp_filter_comment( $commentdata ) {
 	if ( isset( $commentdata['user_ID'] ) ) {
 		/**
-		 * Filters the comment author's user ID before it is set.
+		 * Lọc ID người dùng của tác giả bình luận trước khi được thiết lập.
 		 *
-		 * The first time this filter is evaluated, `user_ID` is checked
-		 * (for back-compat), followed by the standard `user_id` value.
+		 * Lần đầu tiên bộ lọc này được đánh giá, `user_ID` được kiểm tra
+		 * (để tương thích ngược), tiếp theo là giá trị `user_id` tiêu chuẩn.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param int $user_id The comment author's user ID.
+		 * @param int $user_id ID người dùng của tác giả bình luận.
 		 */
 		$commentdata['user_id'] = apply_filters( 'pre_user_id', $commentdata['user_ID'] );
 	} elseif ( isset( $commentdata['user_id'] ) ) {
-		/** This filter is documented in wp-includes/comment.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-includes/comment.php */
 		$commentdata['user_id'] = apply_filters( 'pre_user_id', $commentdata['user_id'] );
 	}
 
 	/**
-	 * Filters the comment author's browser user agent before it is set.
+	 * Lọc User-Agent trình duyệt của tác giả bình luận trước khi được thiết lập.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $comment_agent The comment author's browser user agent.
+	 * @param string $comment_agent User-Agent trình duyệt của tác giả bình luận.
 	 */
 	$commentdata['comment_agent'] = apply_filters( 'pre_comment_user_agent', ( isset( $commentdata['comment_agent'] ) ? $commentdata['comment_agent'] : '' ) );
-	/** This filter is documented in wp-includes/comment.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-includes/comment.php */
 	$commentdata['comment_author'] = apply_filters( 'pre_comment_author_name', $commentdata['comment_author'] );
 	/**
-	 * Filters the comment content before it is set.
+	 * Lọc nội dung bình luận trước khi được thiết lập.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $comment_content The comment content.
+	 * @param string $comment_content Nội dung bình luận.
 	 */
 	$commentdata['comment_content'] = apply_filters( 'pre_comment_content', $commentdata['comment_content'] );
 	/**
-	 * Filters the comment author's IP address before it is set.
+	 * Lọc địa chỉ IP của tác giả bình luận trước khi được thiết lập.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $comment_author_ip The comment author's IP address.
+	 * @param string $comment_author_ip Địa chỉ IP của tác giả bình luận.
 	 */
 	$commentdata['comment_author_IP'] = apply_filters( 'pre_comment_user_ip', $commentdata['comment_author_IP'] );
-	/** This filter is documented in wp-includes/comment.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-includes/comment.php */
 	$commentdata['comment_author_url'] = apply_filters( 'pre_comment_author_url', $commentdata['comment_author_url'] );
-	/** This filter is documented in wp-includes/comment.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-includes/comment.php */
 	$commentdata['comment_author_email'] = apply_filters( 'pre_comment_author_email', $commentdata['comment_author_email'] );
 
 	$commentdata['filtered'] = true;
@@ -2192,17 +2190,17 @@ function wp_filter_comment( $commentdata ) {
 }
 
 /**
- * Determines whether a comment should be blocked because of comment flood.
+ * Xác định liệu bình luận có nên bị chặn vì flood bình luận hay không.
  *
  * @since 2.1.0
  *
- * @param bool $block            Whether plugin has already blocked comment.
- * @param int  $time_lastcomment Timestamp for last comment.
- * @param int  $time_newcomment  Timestamp for new comment.
- * @return bool Whether comment should be blocked.
+ * @param bool $block            Plugin đã chặn bình luận chưa.
+ * @param int  $time_lastcomment Dấu thời gian của bình luận cuối cùng.
+ * @param int  $time_newcomment  Dấu thời gian của bình luận mới.
+ * @return bool Bình luận có nên bị chặn hay không.
  */
 function wp_throttle_comment_flood( $block, $time_lastcomment, $time_newcomment ) {
-	if ( $block ) { // A plugin has already blocked... we'll let that decision stand.
+	if ( $block ) { // Một plugin đã chặn rồi... chúng ta sẽ giữ nguyên quyết định đó.
 		return $block;
 	}
 	if ( ( $time_newcomment - $time_lastcomment ) < 15 ) {
@@ -2212,58 +2210,58 @@ function wp_throttle_comment_flood( $block, $time_lastcomment, $time_newcomment 
 }
 
 /**
- * Adds a new comment to the database.
+ * Thêm bình luận mới vào cơ sở dữ liệu.
  *
- * Filters new comment to ensure that the fields are sanitized and valid before
- * inserting comment into database. Calls {@see 'comment_post'} action with comment ID
- * and whether comment is approved by WordPress. Also has {@see 'preprocess_comment'}
- * filter for processing the comment data before the function handles it.
+ * Lọc bình luận mới để đảm bảo các trường được làm sạch và hợp lệ trước khi
+ * chèn bình luận vào cơ sở dữ liệu. Gọi hành động {@see 'comment_post'} với ID bình luận
+ * và xác định bình luận có được WordPress phê duyệt hay không. Cũng có bộ lọc {@see 'preprocess_comment'}
+ * để xử lý dữ liệu bình luận trước khi hàm xử lý nó.
  *
- * We use `REMOTE_ADDR` here directly. If you are behind a proxy, you should ensure
- * that it is properly set, such as in wp-config.php, for your environment.
+ * Chúng tôi sử dụng `REMOTE_ADDR` trực tiếp ở đây. Nếu bạn đang đứng sau proxy, bạn nên đảm bảo
+ * rằng nó được thiết lập đúng, chẳng hạn trong wp-config.php, cho môi trường của bạn.
  *
- * See {@link https://core.trac.wordpress.org/ticket/9235}
+ * Xem {@link https://core.trac.wordpress.org/ticket/9235}
  *
  * @since 1.5.0
- * @since 4.3.0 Introduced the `comment_agent` and `comment_author_IP` arguments.
- * @since 4.7.0 The `$avoid_die` parameter was added, allowing the function
- *              to return a WP_Error object instead of dying.
- * @since 5.5.0 The `$avoid_die` parameter was renamed to `$wp_error`.
- * @since 5.5.0 Introduced the `comment_type` argument.
+ * @since 4.3.0 Giới thiệu tham số `comment_agent` và `comment_author_IP`.
+ * @since 4.7.0 Thêm tham số `$avoid_die`, cho phép hàm
+ *              trả về đối tượng WP_Error thay vì dừng thực thi.
+ * @since 5.5.0 Tham số `$avoid_die` được đổi tên thành `$wp_error`.
+ * @since 5.5.0 Giới thiệu tham số `comment_type`.
  *
  * @see wp_insert_comment()
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
  * @param array $commentdata {
- *     Comment data.
+ *     Dữ liệu bình luận.
  *
- *     @type string $comment_author       The name of the comment author.
- *     @type string $comment_author_email The comment author email address.
- *     @type string $comment_author_url   The comment author URL.
- *     @type string $comment_content      The content of the comment.
- *     @type string $comment_date         The date the comment was submitted. Default is the current time.
- *     @type string $comment_date_gmt     The date the comment was submitted in the GMT timezone.
- *                                        Default is `$comment_date` in the GMT timezone.
- *     @type string $comment_type         Comment type. Default 'comment'.
- *     @type int    $comment_parent       The ID of this comment's parent, if any. Default 0.
- *     @type int    $comment_post_ID      The ID of the post that relates to the comment.
- *     @type int    $user_id              The ID of the user who submitted the comment. Default 0.
- *     @type int    $user_ID              Kept for backward-compatibility. Use `$user_id` instead.
- *     @type string $comment_agent        Comment author user agent. Default is the value of 'HTTP_USER_AGENT'
- *                                        in the `$_SERVER` superglobal sent in the original request.
- *     @type string $comment_author_IP    Comment author IP address in IPv4 format. Default is the value of
- *                                        'REMOTE_ADDR' in the `$_SERVER` superglobal sent in the original request.
+ *     @type string $comment_author       Tên tác giả bình luận.
+ *     @type string $comment_author_email Địa chỉ email tác giả bình luận.
+ *     @type string $comment_author_url   URL tác giả bình luận.
+ *     @type string $comment_content      Nội dung bình luận.
+ *     @type string $comment_date         Ngày bình luận được gửi. Mặc định là thời gian hiện tại.
+ *     @type string $comment_date_gmt     Ngày bình luận được gửi theo múi giờ GMT.
+ *                                        Mặc định là `$comment_date` theo múi giờ GMT.
+ *     @type string $comment_type         Loại bình luận. Mặc định 'comment'.
+ *     @type int    $comment_parent       ID bình luận cha, nếu có. Mặc định 0.
+ *     @type int    $comment_post_ID      ID bài viết liên quan đến bình luận.
+ *     @type int    $user_id              ID người dùng đã gửi bình luận. Mặc định 0.
+ *     @type int    $user_ID              Giữ lại để tương thích ngược. Sử dụng `$user_id` thay thế.
+ *     @type string $comment_agent        User-Agent của tác giả bình luận. Mặc định là giá trị của 'HTTP_USER_AGENT'
+ *                                        trong biến toàn cục `$_SERVER` được gửi trong yêu cầu gốc.
+ *     @type string $comment_author_IP    Địa chỉ IP tác giả bình luận định dạng IPv4. Mặc định là giá trị của
+ *                                        'REMOTE_ADDR' trong biến toàn cục `$_SERVER` được gửi trong yêu cầu gốc.
  * }
- * @param bool  $wp_error Should errors be returned as WP_Error objects instead of
- *                        executing wp_die()? Default false.
- * @return int|false|WP_Error The ID of the comment on success, false or WP_Error on failure.
+ * @param bool  $wp_error Lỗi có nên được trả về dưới dạng đối tượng WP_Error thay vì
+ *                        thực thi wp_die() hay không? Mặc định false.
+ * @return int|false|WP_Error ID bình luận khi thành công, false hoặc WP_Error khi thất bại.
  */
 function wp_new_comment( $commentdata, $wp_error = false ) {
 	global $wpdb;
 
 	/*
-	 * Normalize `user_ID` to `user_id`, but pass the old key
-	 * to the `preprocess_comment` filter for backward compatibility.
+	 * Chuẩn hóa `user_ID` thành `user_id`, nhưng truyền key cũ
+	 * vào bộ lọc `preprocess_comment` để tương thích ngược.
 	 */
 	if ( isset( $commentdata['user_ID'] ) ) {
 		$commentdata['user_ID'] = (int) $commentdata['user_ID'];
@@ -2284,18 +2282,18 @@ function wp_new_comment( $commentdata, $wp_error = false ) {
 	}
 
 	/**
-	 * Filters a comment's data before it is sanitized and inserted into the database.
+	 * Lọc dữ liệu bình luận trước khi được làm sạch và chèn vào cơ sở dữ liệu.
 	 *
 	 * @since 1.5.0
-	 * @since 5.6.0 Comment data includes the `comment_agent` and `comment_author_IP` values.
+	 * @since 5.6.0 Dữ liệu bình luận bao gồm các giá trị `comment_agent` và `comment_author_IP`.
 	 *
-	 * @param array $commentdata Comment data.
+	 * @param array $commentdata Dữ liệu bình luận.
 	 */
 	$commentdata = apply_filters( 'preprocess_comment', $commentdata );
 
 	$commentdata['comment_post_ID'] = (int) $commentdata['comment_post_ID'];
 
-	// Normalize `user_ID` to `user_id` again, after the filter.
+	// Chuẩn hóa `user_ID` thành `user_id` lần nữa, sau bộ lọc.
 	if ( isset( $commentdata['user_ID'] ) && $prefiltered_user_id !== (int) $commentdata['user_ID'] ) {
 		$commentdata['user_ID'] = (int) $commentdata['user_ID'];
 		$commentdata['user_id'] = $commentdata['user_ID'];
@@ -2335,7 +2333,7 @@ function wp_new_comment( $commentdata, $wp_error = false ) {
 	$commentdata = wp_filter_comment( $commentdata );
 
 	if ( ! in_array( $commentdata['comment_approved'], array( 'trash', 'spam' ), true ) ) {
-		// Validate the comment again after filters are applied to comment data.
+		// Xác thực bình luận lần nữa sau khi các bộ lọc được áp dụng cho dữ liệu bình luận.
 		$commentdata['comment_approved'] = wp_check_comment_data( $commentdata );
 	}
 
@@ -2368,14 +2366,14 @@ function wp_new_comment( $commentdata, $wp_error = false ) {
 	}
 
 	/**
-	 * Fires immediately after a comment is inserted into the database.
+	 * Kích hoạt ngay sau khi bình luận được chèn vào cơ sở dữ liệu.
 	 *
 	 * @since 1.2.0
-	 * @since 4.5.0 The `$commentdata` parameter was added.
+	 * @since 4.5.0 Thêm tham số `$commentdata`.
 	 *
-	 * @param int        $comment_id       The comment ID.
-	 * @param int|string $comment_approved 1 if the comment is approved, 0 if not, 'spam' if spam.
-	 * @param array      $commentdata      Comment data.
+	 * @param int        $comment_id       ID bình luận.
+	 * @param int|string $comment_approved 1 nếu bình luận được phê duyệt, 0 nếu không, 'spam' nếu là spam.
+	 * @param array      $commentdata      Dữ liệu bình luận.
 	 */
 	do_action( 'comment_post', $comment_id, $commentdata['comment_approved'], $commentdata );
 
@@ -2383,20 +2381,20 @@ function wp_new_comment( $commentdata, $wp_error = false ) {
 }
 
 /**
- * Sends a comment moderation notification to the comment moderator.
+ * Gửi thông báo kiểm duyệt bình luận đến người kiểm duyệt.
  *
  * @since 4.4.0
  *
- * @param int $comment_id ID of the comment.
- * @return bool True on success, false on failure.
+ * @param int $comment_id ID bình luận.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function wp_new_comment_notify_moderator( $comment_id ) {
 	$comment = get_comment( $comment_id );
 
-	// Only send notifications for pending comments.
+	// Chỉ gửi thông báo cho bình luận đang chờ duyệt.
 	$maybe_notify = ( '0' === $comment->comment_approved );
 
-	/** This filter is documented in wp-includes/pluggable.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-includes/pluggable.php */
 	$maybe_notify = apply_filters( 'notify_moderator', $maybe_notify, $comment_id );
 
 	if ( ! $maybe_notify ) {
@@ -2407,15 +2405,15 @@ function wp_new_comment_notify_moderator( $comment_id ) {
 }
 
 /**
- * Sends a notification of a new comment to the post author.
+ * Gửi thông báo về bình luận mới đến tác giả bài viết.
  *
  * @since 4.4.0
  *
- * Uses the {@see 'notify_post_author'} filter to determine whether the post author
- * should be notified when a new comment is added, overriding site setting.
+ * Sử dụng bộ lọc {@see 'notify_post_author'} để xác định liệu tác giả bài viết
+ * có nên được thông báo khi bình luận mới được thêm hay không, ghi đè cài đặt trang web.
  *
- * @param int $comment_id Comment ID.
- * @return bool True on success, false on failure.
+ * @param int $comment_id ID bình luận.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function wp_new_comment_notify_postauthor( $comment_id ) {
 	$comment = get_comment( $comment_id );
@@ -2423,25 +2421,25 @@ function wp_new_comment_notify_postauthor( $comment_id ) {
 	$maybe_notify = get_option( 'comments_notify' );
 
 	/**
-	 * Filters whether to send the post author new comment notification emails,
-	 * overriding the site setting.
+	 * Lọc có gửi email thông báo bình luận mới cho tác giả bài viết hay không,
+	 * ghi đè cài đặt trang web.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param bool $maybe_notify Whether to notify the post author about the new comment.
-	 * @param int  $comment_id   The ID of the comment for the notification.
+	 * @param bool $maybe_notify Có thông báo cho tác giả bài viết về bình luận mới hay không.
+	 * @param int  $comment_id   ID bình luận cho thông báo.
 	 */
 	$maybe_notify = apply_filters( 'notify_post_author', $maybe_notify, $comment_id );
 
 	/*
-	 * wp_notify_postauthor() checks if notifying the author of their own comment.
-	 * By default, it won't, but filters can override this.
+	 * wp_notify_postauthor() kiểm tra xem có thông báo cho tác giả về bình luận của chính họ không.
+	 * Mặc định sẽ không thông báo, nhưng các bộ lọc có thể ghi đè điều này.
 	 */
 	if ( ! $maybe_notify ) {
 		return false;
 	}
 
-	// Only send notifications for approved comments.
+	// Chỉ gửi thông báo cho bình luận đã được phê duyệt.
 	if ( ! isset( $comment->comment_approved ) || '1' !== $comment->comment_approved ) {
 		return false;
 	}
@@ -2450,19 +2448,19 @@ function wp_new_comment_notify_postauthor( $comment_id ) {
 }
 
 /**
- * Sets the status of a comment.
+ * Thiết lập trạng thái của bình luận.
  *
- * The {@see 'wp_set_comment_status'} action is called after the comment is handled.
- * If the comment status is not in the list, then false is returned.
+ * Hành động {@see 'wp_set_comment_status'} được gọi sau khi bình luận được xử lý.
+ * Nếu trạng thái bình luận không có trong danh sách, thì false được trả về.
  *
  * @since 1.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|WP_Comment $comment_id     Comment ID or WP_Comment object.
- * @param string         $comment_status New comment status, either 'hold', 'approve', 'spam', or 'trash'.
- * @param bool           $wp_error       Whether to return a WP_Error object if there is a failure. Default false.
- * @return bool|WP_Error True on success, false or WP_Error on failure.
+ * @param int|WP_Comment $comment_id     ID bình luận hoặc đối tượng WP_Comment.
+ * @param string         $comment_status Trạng thái bình luận mới, 'hold', 'approve', 'spam', hoặc 'trash'.
+ * @param bool           $wp_error       Có trả về đối tượng WP_Error nếu thất bại hay không. Mặc định false.
+ * @return bool|WP_Error True khi thành công, false hoặc WP_Error khi thất bại.
  */
 function wp_set_comment_status( $comment_id, $comment_status, $wp_error = false ) {
 	global $wpdb;
@@ -2502,14 +2500,14 @@ function wp_set_comment_status( $comment_id, $comment_status, $wp_error = false 
 	$comment = get_comment( $comment_old->comment_ID );
 
 	/**
-	 * Fires immediately after transitioning a comment's status from one to another in the database
-	 * and removing the comment from the object cache, but prior to all status transition hooks.
+	 * Kích hoạt ngay sau khi chuyển đổi trạng thái bình luận trong cơ sở dữ liệu
+	 * và xóa bình luận khỏi cache đối tượng, nhưng trước tất cả các hook chuyển đổi trạng thái.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $comment_id     Comment ID as a numeric string.
-	 * @param string $comment_status Current comment status. Possible values include
-	 *                               'hold', '0', 'approve', '1', 'spam', and 'trash'.
+	 * @param string $comment_id     ID bình luận dưới dạng chuỗi số.
+	 * @param string $comment_status Trạng thái bình luận hiện tại. Các giá trị có thể bao gồm
+	 *                               'hold', '0', 'approve', '1', 'spam', và 'trash'.
 	 */
 	do_action( 'wp_set_comment_status', $comment->comment_ID, $comment_status );
 
@@ -2521,27 +2519,27 @@ function wp_set_comment_status( $comment_id, $comment_status, $wp_error = false 
 }
 
 /**
- * Updates an existing comment in the database.
+ * Cập nhật bình luận hiện có trong cơ sở dữ liệu.
  *
- * Filters the comment and makes sure certain fields are valid before updating.
+ * Lọc bình luận và đảm bảo một số trường hợp lệ trước khi cập nhật.
  *
  * @since 2.0.0
- * @since 4.9.0 Add updating comment meta during comment update.
- * @since 5.5.0 The `$wp_error` parameter was added.
- * @since 5.5.0 The return values for an invalid comment or post ID
- *              were changed to false instead of 0.
+ * @since 4.9.0 Thêm cập nhật meta bình luận trong quá trình cập nhật bình luận.
+ * @since 5.5.0 Thêm tham số `$wp_error`.
+ * @since 5.5.0 Giá trị trả về cho ID bình luận hoặc bài viết không hợp lệ
+ *              đã được thay đổi thành false thay vì 0.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param array $commentarr Contains information on the comment.
- * @param bool  $wp_error   Optional. Whether to return a WP_Error on failure. Default false.
- * @return int|false|WP_Error The value 1 if the comment was updated, 0 if not updated.
- *                            False or a WP_Error object on failure.
+ * @param array $commentarr Chứa thông tin về bình luận.
+ * @param bool  $wp_error   Tùy chọn. Có trả về WP_Error khi thất bại hay không. Mặc định false.
+ * @return int|false|WP_Error Giá trị 1 nếu bình luận được cập nhật, 0 nếu không cập nhật.
+ *                            False hoặc đối tượng WP_Error khi thất bại.
  */
 function wp_update_comment( $commentarr, $wp_error = false ) {
 	global $wpdb;
 
-	// First, get all of the original fields.
+	// Đầu tiên, lấy tất cả các trường gốc.
 	$comment = get_comment( $commentarr['comment_ID'], ARRAY_A );
 
 	if ( empty( $comment ) ) {
@@ -2552,7 +2550,7 @@ function wp_update_comment( $commentarr, $wp_error = false ) {
 		}
 	}
 
-	// Make sure that the comment post ID is valid (if specified).
+	// Đảm bảo rằng ID bài viết của bình luận hợp lệ (nếu được chỉ định).
 	if ( ! empty( $commentarr['comment_post_ID'] ) && ! get_post( $commentarr['comment_post_ID'] ) ) {
 		if ( $wp_error ) {
 			return new WP_Error( 'invalid_post_id', __( 'Invalid post ID.' ) );
@@ -2570,12 +2568,12 @@ function wp_update_comment( $commentarr, $wp_error = false ) {
 		add_filter( 'pre_comment_content', 'wp_filter_kses' );
 	}
 
-	// Escape data pulled from DB.
+	// Escape dữ liệu lấy từ cơ sở dữ liệu.
 	$comment = wp_slash( $comment );
 
 	$old_status = $comment['comment_approved'];
 
-	// Merge old and new fields with new fields overwriting old ones.
+	// Gộp các trường cũ và mới, trường mới ghi đè trường cũ.
 	$commentarr = array_merge( $comment, $commentarr );
 
 	$commentarr = wp_filter_comment( $commentarr );
@@ -2584,15 +2582,15 @@ function wp_update_comment( $commentarr, $wp_error = false ) {
 		remove_filter( 'pre_comment_content', 'wp_filter_kses' );
 	}
 
-	// Now extract the merged array.
+	// Bây giờ trích xuất mảng đã gộp.
 	$data = wp_unslash( $commentarr );
 
 	/**
-	 * Filters the comment content before it is updated in the database.
+	 * Lọc nội dung bình luận trước khi được cập nhật trong cơ sở dữ liệu.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $comment_content The comment data.
+	 * @param string $comment_content Dữ liệu bình luận.
 	 */
 	$data['comment_content'] = apply_filters( 'comment_save_pre', $data['comment_content'] );
 
@@ -2610,21 +2608,21 @@ function wp_update_comment( $commentarr, $wp_error = false ) {
 	$comment_post_id = $data['comment_post_ID'];
 
 	/**
-	 * Filters the comment data immediately before it is updated in the database.
+	 * Lọc dữ liệu bình luận ngay trước khi được cập nhật trong cơ sở dữ liệu.
 	 *
-	 * Note: data being passed to the filter is already unslashed.
+	 * Lưu ý: dữ liệu được truyền vào bộ lọc đã được unslash.
 	 *
 	 * @since 4.7.0
-	 * @since 5.5.0 Returning a WP_Error value from the filter will short-circuit comment update
-	 *              and allow skipping further processing.
+	 * @since 5.5.0 Trả về giá trị WP_Error từ bộ lọc sẽ bỏ qua cập nhật bình luận
+	 *              và cho phép bỏ qua xử lý tiếp theo.
 	 *
-	 * @param array|WP_Error $data       The new, processed comment data, or WP_Error.
-	 * @param array          $comment    The old, unslashed comment data.
-	 * @param array          $commentarr The new, raw comment data.
+	 * @param array|WP_Error $data       Dữ liệu bình luận mới đã xử lý, hoặc WP_Error.
+	 * @param array          $comment    Dữ liệu bình luận cũ chưa slash.
+	 * @param array          $commentarr Dữ liệu bình luận mới thô.
 	 */
 	$data = apply_filters( 'wp_update_comment_data', $data, $comment, $commentarr );
 
-	// Do not carry on on failure.
+	// Không tiếp tục khi thất bại.
 	if ( is_wp_error( $data ) ) {
 		if ( $wp_error ) {
 			return $data;
@@ -2662,7 +2660,7 @@ function wp_update_comment( $commentarr, $wp_error = false ) {
 		}
 	}
 
-	// If metadata is provided, store it.
+	// Nếu metadata được cung cấp, lưu trữ nó.
 	if ( isset( $commentarr['comment_meta'] ) && is_array( $commentarr['comment_meta'] ) ) {
 		foreach ( $commentarr['comment_meta'] as $meta_key => $meta_value ) {
 			update_comment_meta( $comment_id, $meta_key, $meta_value );
@@ -2673,15 +2671,15 @@ function wp_update_comment( $commentarr, $wp_error = false ) {
 	wp_update_comment_count( $comment_post_id );
 
 	/**
-	 * Fires immediately after a comment is updated in the database.
+	 * Kích hoạt ngay sau khi bình luận được cập nhật trong cơ sở dữ liệu.
 	 *
-	 * The hook also fires immediately before comment status transition hooks are fired.
+	 * Hook cũng kích hoạt ngay trước khi các hook chuyển đổi trạng thái bình luận được kích hoạt.
 	 *
 	 * @since 1.2.0
-	 * @since 4.6.0 Added the `$data` parameter.
+	 * @since 4.6.0 Thêm tham số `$data`.
 	 *
-	 * @param int   $comment_id The comment ID.
-	 * @param array $data       Comment data.
+	 * @param int   $comment_id ID bình luận.
+	 * @param array $data       Dữ liệu bình luận.
 	 */
 	do_action( 'edit_comment', $comment_id, $data );
 
@@ -2693,12 +2691,12 @@ function wp_update_comment( $commentarr, $wp_error = false ) {
 }
 
 /**
- * Determines whether to defer comment counting.
+ * Xác định có hoãn đếm bình luận hay không.
  *
- * When setting $defer to true, all post comment counts will not be updated
- * until $defer is set to false. When $defer is set to false, then all
- * previously deferred updated post comment counts will then be automatically
- * updated without having to call wp_update_comment_count() after.
+ * Khi thiết lập $defer thành true, tất cả số lượng bình luận bài viết sẽ không được cập nhật
+ * cho đến khi $defer được thiết lập thành false. Khi $defer được thiết lập thành false, thì tất cả
+ * các số lượng bình luận đã hoãn trước đó sẽ được tự động cập nhật
+ * mà không cần gọi wp_update_comment_count() sau đó.
  *
  * @since 2.5.0
  *
@@ -2710,7 +2708,7 @@ function wp_defer_comment_counting( $defer = null ) {
 
 	if ( is_bool( $defer ) ) {
 		$_defer = $defer;
-		// Flush any deferred counts.
+		// Xả tất cả các số lượng đã hoãn.
 		if ( ! $defer ) {
 			wp_update_comment_count( null, true );
 		}
@@ -2720,25 +2718,25 @@ function wp_defer_comment_counting( $defer = null ) {
 }
 
 /**
- * Updates the comment count for post(s).
+ * Cập nhật số lượng bình luận cho bài viết.
  *
- * When $do_deferred is false (is by default) and the comments have been set to
- * be deferred, the post_id will be added to a queue, which will be updated at a
- * later date and only updated once per post ID.
+ * Khi $do_deferred là false (mặc định) và bình luận đã được thiết lập để
+ * hoãn, post_id sẽ được thêm vào hàng đợi, sẽ được cập nhật sau
+ * và chỉ cập nhật một lần cho mỗi ID bài viết.
  *
- * If the comments have not be set up to be deferred, then the post will be
- * updated. When $do_deferred is set to true, then all previous deferred post
- * IDs will be updated along with the current $post_id.
+ * Nếu bình luận không được thiết lập hoãn, thì bài viết sẽ được
+ * cập nhật. Khi $do_deferred được thiết lập thành true, thì tất cả các ID bài viết
+ * đã hoãn trước đó sẽ được cập nhật cùng với $post_id hiện tại.
  *
  * @since 2.1.0
  *
- * @see wp_update_comment_count_now() For what could cause a false return value
+ * @see wp_update_comment_count_now() Để biết nguyên nhân có thể gây ra giá trị trả về false
  *
- * @param int|null $post_id     Post ID.
- * @param bool     $do_deferred Optional. Whether to process previously deferred
- *                              post comment counts. Default false.
- * @return bool|void True on success, false on failure or if post with ID does
- *                   not exist.
+ * @param int|null $post_id     ID bài viết.
+ * @param bool     $do_deferred Tùy chọn. Có xử lý số lượng bình luận bài viết đã hoãn trước đó hay không.
+ *                              Mặc định false.
+ * @return bool|void True khi thành công, false khi thất bại hoặc nếu bài viết có ID đó
+ *                   không tồn tại.
  */
 function wp_update_comment_count( $post_id, $do_deferred = false ) {
 	static $_deferred = array();
@@ -2752,7 +2750,7 @@ function wp_update_comment_count( $post_id, $do_deferred = false ) {
 		foreach ( $_deferred as $i => $_post_id ) {
 			wp_update_comment_count_now( $_post_id );
 			unset( $_deferred[ $i ] );
-			/** @todo Move this outside of the foreach and reset $_deferred to an array instead */
+			/** @todo Di chuyển phần này ra ngoài vòng lặp foreach và đặt lại $_deferred thành mảng thay thế */
 		}
 	}
 
@@ -2765,14 +2763,14 @@ function wp_update_comment_count( $post_id, $do_deferred = false ) {
 }
 
 /**
- * Updates the comment count for the post.
+ * Cập nhật số lượng bình luận cho bài viết.
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int $post_id Post ID
- * @return bool True on success, false if the post does not exist.
+ * @param int $post_id ID bài viết.
+ * @return bool True khi thành công, false nếu bài viết không tồn tại.
  */
 function wp_update_comment_count_now( $post_id ) {
 	global $wpdb;
@@ -2795,13 +2793,13 @@ function wp_update_comment_count_now( $post_id ) {
 	$old = (int) $post->comment_count;
 
 	/**
-	 * Filters a post's comment count before it is updated in the database.
+	 * Lọc số lượng bình luận của bài viết trước khi được cập nhật trong cơ sở dữ liệu.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @param int|null $new     The new comment count. Default null.
-	 * @param int      $old     The old comment count.
-	 * @param int      $post_id Post ID.
+	 * @param int|null $new     Số lượng bình luận mới. Mặc định null.
+	 * @param int      $old     Số lượng bình luận cũ.
+	 * @param int      $post_id ID bài viết.
 	 */
 	$new = apply_filters( 'pre_wp_update_comment_count_now', null, $old, $post_id );
 
@@ -2816,41 +2814,41 @@ function wp_update_comment_count_now( $post_id ) {
 	clean_post_cache( $post );
 
 	/**
-	 * Fires immediately after a post's comment count is updated in the database.
+	 * Kích hoạt ngay sau khi số lượng bình luận của bài viết được cập nhật trong cơ sở dữ liệu.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param int $post_id Post ID.
-	 * @param int $new     The new comment count.
-	 * @param int $old     The old comment count.
+	 * @param int $post_id ID bài viết.
+	 * @param int $new     Số lượng bình luận mới.
+	 * @param int $old     Số lượng bình luận cũ.
 	 */
 	do_action( 'wp_update_comment_count', $post_id, $new, $old );
 
-	/** This action is documented in wp-includes/post.php */
+	/** Hành động này được ghi tài liệu trong wp-includes/post.php */
 	do_action( "edit_post_{$post->post_type}", $post_id, $post );
 
-	/** This action is documented in wp-includes/post.php */
+	/** Hành động này được ghi tài liệu trong wp-includes/post.php */
 	do_action( 'edit_post', $post_id, $post );
 
 	return true;
 }
 
 //
-// Ping and trackback functions.
+// Các hàm Ping và Trackback.
 //
 
 /**
- * Finds a pingback server URI based on the given URL.
+ * Tìm URI máy chủ pingback dựa trên URL đã cho.
  *
- * Checks the HTML for the rel="pingback" link and X-Pingback headers. It does
- * a check for the X-Pingback headers first and returns that, if available.
- * The check for the rel="pingback" has more overhead than just the header.
+ * Kiểm tra HTML để tìm liên kết rel="pingback" và header X-Pingback. Hàm kiểm tra
+ * header X-Pingback trước và trả về nó nếu có sẵn.
+ * Việc kiểm tra rel="pingback" tốn nhiều tài nguyên hơn so với chỉ kiểm tra header.
  *
  * @since 1.5.0
  *
- * @param string $url        URL to ping.
- * @param string $deprecated Not Used.
- * @return string|false String containing URI on success, false on failure.
+ * @param string $url        URL cần ping.
+ * @param string $deprecated Không sử dụng.
+ * @return string|false Chuỗi chứa URI khi thành công, false khi thất bại.
  */
 function discover_pingback_server_uri( $url, $deprecated = '' ) {
 	if ( ! empty( $deprecated ) ) {
@@ -2860,14 +2858,14 @@ function discover_pingback_server_uri( $url, $deprecated = '' ) {
 	$pingback_str_dquote = 'rel="pingback"';
 	$pingback_str_squote = 'rel=\'pingback\'';
 
-	/** @todo Should use Filter Extension or custom preg_match instead. */
+	/** @todo Nên sử dụng Filter Extension hoặc preg_match tùy chỉnh thay thế. */
 	$parsed_url = parse_url( $url );
 
-	if ( ! isset( $parsed_url['host'] ) ) { // Not a URL. This should never happen.
+	if ( ! isset( $parsed_url['host'] ) ) { // Không phải URL. Điều này không bao giờ nên xảy ra.
 		return false;
 	}
 
-	// Do not search for a pingback server on our own uploads.
+	// Không tìm kiếm máy chủ pingback trên các tệp tải lên của chúng ta.
 	$uploads_dir = wp_get_upload_dir();
 	if ( str_starts_with( $url, $uploads_dir['baseurl'] ) ) {
 		return false;
@@ -2889,12 +2887,12 @@ function discover_pingback_server_uri( $url, $deprecated = '' ) {
 		return wp_remote_retrieve_header( $response, 'X-Pingback' );
 	}
 
-	// Not an (x)html, sgml, or xml page, no use going further.
+	// Không phải trang (x)html, sgml, hoặc xml, không cần tiếp tục.
 	if ( preg_match( '#(image|audio|video|model)/#is', wp_remote_retrieve_header( $response, 'Content-Type' ) ) ) {
 		return false;
 	}
 
-	// Now do a GET since we're going to look in the HTML headers (and we're sure it's not a binary file).
+	// Bây giờ thực hiện GET vì chúng ta sẽ tìm trong các header HTML (và chắc chắn không phải file nhị phân).
 	$response = wp_safe_remote_get(
 		$url,
 		array(
@@ -2921,8 +2919,8 @@ function discover_pingback_server_uri( $url, $deprecated = '' ) {
 		$pingback_server_url_len = $pingback_href_end - $pingback_href_start;
 		$pingback_server_url     = substr( $contents, $pingback_href_start, $pingback_server_url_len );
 
-		// We may find rel="pingback" but an incomplete pingback URL.
-		if ( $pingback_server_url_len > 0 ) { // We got it!
+		// Chúng ta có thể tìm thấy rel="pingback" nhưng URL pingback không đầy đủ.
+		if ( $pingback_server_url_len > 0 ) { // Đã tìm thấy!
 			return $pingback_server_url;
 		}
 	}
@@ -2931,14 +2929,14 @@ function discover_pingback_server_uri( $url, $deprecated = '' ) {
 }
 
 /**
- * Performs all pingbacks, enclosures, trackbacks, and sends to pingback services.
+ * Thực hiện tất cả pingback, enclosure, trackback, và gửi đến các dịch vụ pingback.
  *
  * @since 2.1.0
- * @since 5.6.0 Introduced `do_all_pings` action hook for individual services.
+ * @since 5.6.0 Giới thiệu hook hành động `do_all_pings` cho từng dịch vụ riêng lẻ.
  */
 function do_all_pings() {
 	/**
-	 * Fires immediately after the `do_pings` event to hook services individually.
+	 * Kích hoạt ngay sau sự kiện `do_pings` để gắn hook từng dịch vụ riêng lẻ.
 	 *
 	 * @since 5.6.0
 	 */
@@ -2946,7 +2944,7 @@ function do_all_pings() {
 }
 
 /**
- * Performs all pingbacks.
+ * Thực hiện tất cả pingback.
  *
  * @since 5.6.0
  */
@@ -2968,7 +2966,7 @@ function do_all_pingbacks() {
 }
 
 /**
- * Performs all enclosures.
+ * Thực hiện tất cả enclosure.
  *
  * @since 5.6.0
  */
@@ -2990,7 +2988,7 @@ function do_all_enclosures() {
 }
 
 /**
- * Performs all trackbacks.
+ * Thực hiện tất cả trackback.
  *
  * @since 5.6.0
  */
@@ -3012,15 +3010,15 @@ function do_all_trackbacks() {
 }
 
 /**
- * Performs trackbacks.
+ * Thực hiện trackback.
  *
  * @since 1.5.0
- * @since 4.7.0 `$post` can be a WP_Post object.
+ * @since 4.7.0 `$post` có thể là đối tượng WP_Post.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|WP_Post $post Post ID or object to do trackbacks on.
- * @return void|false Returns false on failure.
+ * @param int|WP_Post $post ID bài viết hoặc đối tượng để thực hiện trackback.
+ * @return void|false Trả về false khi thất bại.
  */
 function do_trackbacks( $post ) {
 	global $wpdb;
@@ -3040,17 +3038,17 @@ function do_trackbacks( $post ) {
 	}
 
 	if ( empty( $post->post_excerpt ) ) {
-		/** This filter is documented in wp-includes/post-template.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-includes/post-template.php */
 		$excerpt = apply_filters( 'the_content', $post->post_content, $post->ID );
 	} else {
-		/** This filter is documented in wp-includes/post-template.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-includes/post-template.php */
 		$excerpt = apply_filters( 'the_excerpt', $post->post_excerpt );
 	}
 
 	$excerpt = str_replace( ']]>', ']]&gt;', $excerpt );
 	$excerpt = wp_html_excerpt( $excerpt, 252, '&#8230;' );
 
-	/** This filter is documented in wp-includes/post-template.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-includes/post-template.php */
 	$post_title = apply_filters( 'the_title', $post->post_title, $post->ID );
 	$post_title = strip_tags( $post_title );
 
@@ -3075,12 +3073,12 @@ function do_trackbacks( $post ) {
 }
 
 /**
- * Sends pings to all of the ping site services.
+ * Gửi ping đến tất cả các dịch vụ trang ping.
  *
  * @since 1.2.0
  *
- * @param int $post_id Post ID.
- * @return int Same post ID as provided.
+ * @param int $post_id ID bài viết.
+ * @return int Cùng ID bài viết đã cung cấp.
  */
 function generic_ping( $post_id = 0 ) {
 	$services = get_option( 'ping_sites' );
@@ -3097,21 +3095,21 @@ function generic_ping( $post_id = 0 ) {
 }
 
 /**
- * Pings back the links found in a post.
+ * Gửi pingback cho các liên kết tìm thấy trong bài viết.
  *
  * @since 0.71
- * @since 4.7.0 `$post` can be a WP_Post object.
- * @since 6.8.0 Returns an array of pingback statuses indexed by link.
+ * @since 4.7.0 `$post` có thể là đối tượng WP_Post.
+ * @since 6.8.0 Trả về mảng trạng thái pingback được đánh chỉ mục theo liên kết.
  *
- * @param string      $content Post content to check for links. If empty will retrieve from post.
- * @param int|WP_Post $post    Post ID or object.
- * @return array<string, bool> An array of pingback statuses indexed by link.
+ * @param string      $content Nội dung bài viết để kiểm tra liên kết. Nếu rỗng sẽ lấy từ bài viết.
+ * @param int|WP_Post $post    ID bài viết hoặc đối tượng.
+ * @return array<string, bool> Mảng trạng thái pingback được đánh chỉ mục theo liên kết.
  */
 function pingback( $content, $post ) {
 	require_once ABSPATH . WPINC . '/class-IXR.php';
 	require_once ABSPATH . WPINC . '/class-wp-http-ixr-client.php';
 
-	// Original code by Mort (http://mort.mine.nu:8080).
+	// Mã gốc bởi Mort (http://mort.mine.nu:8080).
 	$post_links = array();
 
 	$post = get_post( $post );
@@ -3127,26 +3125,26 @@ function pingback( $content, $post ) {
 	}
 
 	/*
-	 * Step 1.
-	 * Parsing the post, external links (if any) are stored in the $post_links array.
+	 * Bước 1.
+	 * Phân tích bài viết, các liên kết ngoài (nếu có) được lưu trong mảng $post_links.
 	 */
 	$post_links_temp = wp_extract_urls( $content );
 
 	$ping_status = array();
 	/*
-	 * Step 2.
-	 * Walking through the links array.
-	 * First we get rid of links pointing to sites, not to specific files.
-	 * Example:
+	 * Bước 2.
+	 * Duyệt qua mảng liên kết.
+	 * Đầu tiên loại bỏ các liên kết trỏ đến trang web, không phải đến các tệp cụ thể.
+	 * Ví dụ:
 	 * http://dummy-weblog.org
 	 * http://dummy-weblog.org/
 	 * http://dummy-weblog.org/post.php
-	 * We don't wanna ping first and second types, even if they have a valid <link/>.
+	 * Chúng ta không muốn ping loại đầu tiên và thứ hai, ngay cả khi chúng có <link/> hợp lệ.
 	 */
 	foreach ( (array) $post_links_temp as $link_test ) {
-		// If we haven't pung it already and it isn't a link to itself.
+		// Nếu chúng ta chưa ping nó và không phải liên kết đến chính nó.
 		if ( ! in_array( $link_test, $pung, true ) && ( url_to_postid( $link_test ) !== $post->ID )
-			// Also, let's never ping local attachments.
+			// Ngoài ra, không bao giờ ping các tệp đính kèm cục bộ.
 			&& ! is_local_attachment( $link_test )
 		) {
 			$test = parse_url( $link_test );
@@ -3163,13 +3161,13 @@ function pingback( $content, $post ) {
 	$post_links = array_unique( $post_links );
 
 	/**
-	 * Fires just before pinging back links found in a post.
+	 * Kích hoạt ngay trước khi gửi pingback cho các liên kết tìm thấy trong bài viết.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string[] $post_links Array of link URLs to be checked (passed by reference).
-	 * @param string[] $pung       Array of link URLs already pinged (passed by reference).
-	 * @param int      $post_id    The post ID.
+	 * @param string[] $post_links Mảng URL liên kết cần kiểm tra (truyền tham chiếu).
+	 * @param string[] $pung       Mảng URL liên kết đã được ping (truyền tham chiếu).
+	 * @param int      $post_id    ID bài viết.
 	 */
 	do_action_ref_array( 'pre_ping', array( &$post_links, &$pung, $post->ID ) );
 
@@ -3177,37 +3175,37 @@ function pingback( $content, $post ) {
 		$pingback_server_url = discover_pingback_server_uri( $pagelinkedto );
 
 		if ( $pingback_server_url ) {
-			// Allow an additional 60 seconds for each pingback to complete.
+			// Cho phép thêm 60 giây cho mỗi pingback để hoàn thành.
 			if ( function_exists( 'set_time_limit' ) ) {
 				set_time_limit( 60 );
 			}
 
-			// Now, the RPC call.
+			// Bây giờ, gọi RPC.
 			$pagelinkedfrom = get_permalink( $post );
 
-			// Using a timeout of 3 seconds should be enough to cover slow servers.
+			// Sử dụng thời gian chờ 3 giây đủ để xử lý các máy chủ chậm.
 			$client          = new WP_HTTP_IXR_Client( $pingback_server_url );
 			$client->timeout = 3;
 			/**
-			 * Filters the user agent sent when pinging-back a URL.
+			 * Lọc user agent được gửi khi thực hiện pingback đến một URL.
 			 *
 			 * @since 2.9.0
 			 *
-			 * @param string $concat_useragent    The user agent concatenated with ' -- WordPress/'
-			 *                                    and the WordPress version.
-			 * @param string $useragent           The useragent.
-			 * @param string $pingback_server_url The server URL being linked to.
-			 * @param string $pagelinkedto        URL of page linked to.
-			 * @param string $pagelinkedfrom      URL of page linked from.
+			 * @param string $concat_useragent    User agent được nối với ' -- WordPress/'
+			 *                                    và phiên bản WordPress.
+			 * @param string $useragent           User agent.
+			 * @param string $pingback_server_url URL máy chủ được liên kết đến.
+			 * @param string $pagelinkedto        URL trang được liên kết đến.
+			 * @param string $pagelinkedfrom      URL trang liên kết từ.
 			 */
 			$client->useragent = apply_filters( 'pingback_useragent', $client->useragent . ' -- WordPress/' . get_bloginfo( 'version' ), $client->useragent, $pingback_server_url, $pagelinkedto, $pagelinkedfrom );
-			// When set to true, this outputs debug messages by itself.
+			// Khi thiết lập thành true, sẽ tự xuất các thông báo debug.
 			$client->debug = false;
 
 			$status = $client->query( 'pingback.ping', $pagelinkedfrom, $pagelinkedto );
 
-			if ( $status // Ping registered.
-				|| ( isset( $client->error->code ) && 48 === $client->error->code ) // Already registered.
+			if ( $status // Ping đã đăng ký.
+				|| ( isset( $client->error->code ) && 48 === $client->error->code ) // Đã đăng ký trước đó.
 			) {
 				add_ping( $post, $pagelinkedto );
 			}
@@ -3219,12 +3217,12 @@ function pingback( $content, $post ) {
 }
 
 /**
- * Checks whether blog is public before returning sites.
+ * Kiểm tra xem blog có công khai hay không trước khi trả về các trang web.
  *
  * @since 2.1.0
  *
- * @param mixed $sites Will return if blog is public, will not return if not public.
- * @return mixed Empty string if blog is not public, returns $sites, if site is public.
+ * @param mixed $sites Sẽ trả về nếu blog là công khai, sẽ không trả về nếu không công khai.
+ * @return mixed Chuỗi rỗng nếu blog không công khai, trả về $sites nếu trang web công khai.
  */
 function privacy_ping_filter( $sites ) {
 	if ( '0' !== get_option( 'blog_public' ) ) {
@@ -3235,19 +3233,19 @@ function privacy_ping_filter( $sites ) {
 }
 
 /**
- * Sends a Trackback.
+ * Gửi Trackback.
  *
- * Updates database when sending trackback to prevent duplicates.
+ * Cập nhật cơ sở dữ liệu khi gửi trackback để tránh trùng lặp.
  *
  * @since 0.71
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $trackback_url URL to send trackbacks.
- * @param string $title         Title of post.
- * @param string $excerpt       Excerpt of post.
- * @param int    $post_id       Post ID.
- * @return int|false|void Database query from update.
+ * @param string $trackback_url URL để gửi trackback.
+ * @param string $title         Tiêu đề bài viết.
+ * @param string $excerpt       Tóm tắt bài viết.
+ * @param int    $post_id       ID bài viết.
+ * @return int|false|void Truy vấn cơ sở dữ liệu từ cập nhật.
  */
 function trackback( $trackback_url, $title, $excerpt, $post_id ) {
 	global $wpdb;
@@ -3276,56 +3274,56 @@ function trackback( $trackback_url, $title, $excerpt, $post_id ) {
 }
 
 /**
- * Sends a pingback.
+ * Gửi một pingback.
  *
  * @since 1.2.0
  *
- * @param string $server Host of blog to connect to.
- * @param string $path Path to send the ping.
+ * @param string $server Host của blog để kết nối đến.
+ * @param string $path Đường dẫn để gửi ping.
  */
 function weblog_ping( $server = '', $path = '' ) {
 	require_once ABSPATH . WPINC . '/class-IXR.php';
 	require_once ABSPATH . WPINC . '/class-wp-http-ixr-client.php';
 
-	// Using a timeout of 3 seconds should be enough to cover slow servers.
+	// Sử dụng thời gian chờ 3 giây đủ để xử lý các máy chủ chậm.
 	$client             = new WP_HTTP_IXR_Client( $server, ( ( ! strlen( trim( $path ) ) || ( '/' === $path ) ) ? false : $path ) );
 	$client->timeout    = 3;
 	$client->useragent .= ' -- WordPress/' . get_bloginfo( 'version' );
 
-	// When set to true, this outputs debug messages by itself.
+	// Khi thiết lập thành true, sẽ tự xuất các thông báo debug.
 	$client->debug = false;
 	$home          = trailingslashit( home_url() );
-	if ( ! $client->query( 'weblogUpdates.extendedPing', get_option( 'blogname' ), $home, get_bloginfo( 'rss2_url' ) ) ) { // Then try a normal ping.
+	if ( ! $client->query( 'weblogUpdates.extendedPing', get_option( 'blogname' ), $home, get_bloginfo( 'rss2_url' ) ) ) { // Thử ping bình thường.
 		$client->query( 'weblogUpdates.ping', get_option( 'blogname' ), $home );
 	}
 }
 
 /**
- * Default filter attached to pingback_ping_source_uri to validate the pingback's Source URI.
+ * Bộ lọc mặc định gắn vào pingback_ping_source_uri để xác thực URI nguồn của pingback.
  *
  * @since 3.5.1
  *
  * @see wp_http_validate_url()
  *
- * @param string $source_uri
- * @return string
+ * @param string $source_uri URI nguồn của pingback.
+ * @return string URI nguồn đã xác thực.
  */
 function pingback_ping_source_uri( $source_uri ) {
 	return (string) wp_http_validate_url( $source_uri );
 }
 
 /**
- * Default filter attached to xmlrpc_pingback_error.
+ * Bộ lọc mặc định gắn vào xmlrpc_pingback_error.
  *
- * Returns a generic pingback error code unless the error code is 48,
- * which reports that the pingback is already registered.
+ * Trả về mã lỗi pingback chung trừ khi mã lỗi là 48,
+ * nghĩa là pingback đã được đăng ký.
  *
  * @since 3.5.1
  *
  * @link https://www.hixie.ch/specs/pingback/pingback#TOC3
  *
- * @param IXR_Error $ixr_error
- * @return IXR_Error
+ * @param IXR_Error $ixr_error Đối tượng lỗi IXR.
+ * @return IXR_Error Đối tượng lỗi IXR.
  */
 function xmlrpc_pingback_error( $ixr_error ) {
 	if ( 48 === $ixr_error->code ) {
@@ -3335,26 +3333,26 @@ function xmlrpc_pingback_error( $ixr_error ) {
 }
 
 //
-// Cache.
+// Bộ nhớ đệm.
 //
 
 /**
- * Removes a comment from the object cache.
+ * Xóa bình luận khỏi bộ nhớ đệm đối tượng.
  *
  * @since 2.3.0
  *
- * @param int|array $ids Comment ID or an array of comment IDs to remove from cache.
+ * @param int|array $ids ID bình luận hoặc mảng ID bình luận cần xóa khỏi bộ nhớ đệm.
  */
 function clean_comment_cache( $ids ) {
 	$comment_ids = (array) $ids;
 	wp_cache_delete_multiple( $comment_ids, 'comment' );
 	foreach ( $comment_ids as $id ) {
 		/**
-		 * Fires immediately after a comment has been removed from the object cache.
+		 * Kích hoạt ngay sau khi bình luận bị xóa khỏi bộ nhớ đệm đối tượng.
 		 *
 		 * @since 4.5.0
 		 *
-		 * @param int $id Comment ID.
+		 * @param int $id ID bình luận.
 		 */
 		do_action( 'clean_comment_cache', $id );
 	}
@@ -3363,17 +3361,17 @@ function clean_comment_cache( $ids ) {
 }
 
 /**
- * Updates the comment cache of given comments.
+ * Cập nhật bộ nhớ đệm bình luận cho các bình luận đã cho.
  *
- * Will add the comments in $comments to the cache. If comment ID already exists
- * in the comment cache then it will not be updated. The comment is added to the
- * cache using the comment group with the key using the ID of the comments.
+ * Sẽ thêm các bình luận trong $comments vào bộ nhớ đệm. Nếu ID bình luận đã tồn tại
+ * trong bộ nhớ đệm bình luận thì sẽ không được cập nhật. Bình luận được thêm vào
+ * bộ nhớ đệm sử dụng nhóm comment với key là ID của bình luận.
  *
  * @since 2.3.0
- * @since 4.4.0 Introduced the `$update_meta_cache` parameter.
+ * @since 4.4.0 Giới thiệu tham số `$update_meta_cache`.
  *
- * @param WP_Comment[] $comments          Array of comment objects
- * @param bool         $update_meta_cache Whether to update commentmeta cache. Default true.
+ * @param WP_Comment[] $comments          Mảng đối tượng bình luận.
+ * @param bool         $update_meta_cache Có cập nhật bộ nhớ đệm commentmeta hay không. Mặc định true.
  */
 function update_comment_cache( $comments, $update_meta_cache = true ) {
 	$data = array();
@@ -3383,7 +3381,7 @@ function update_comment_cache( $comments, $update_meta_cache = true ) {
 	wp_cache_add_multiple( $data, 'comment' );
 
 	if ( $update_meta_cache ) {
-		// Avoid `wp_list_pluck()` in case `$comments` is passed by reference.
+		// Tránh `wp_list_pluck()` trong trường hợp `$comments` được truyền tham chiếu.
 		$comment_ids = array();
 		foreach ( $comments as $comment ) {
 			$comment_ids[] = $comment->comment_ID;
@@ -3393,17 +3391,17 @@ function update_comment_cache( $comments, $update_meta_cache = true ) {
 }
 
 /**
- * Adds any comments from the given IDs to the cache that do not already exist in cache.
+ * Thêm bất kỳ bình luận nào từ các ID đã cho vào bộ nhớ đệm nếu chưa tồn tại trong bộ nhớ đệm.
  *
  * @since 4.4.0
- * @since 6.1.0 This function is no longer marked as "private".
- * @since 6.3.0 Use wp_lazyload_comment_meta() for lazy-loading of comment meta.
+ * @since 6.1.0 Hàm này không còn được đánh dấu là "private".
+ * @since 6.3.0 Sử dụng wp_lazyload_comment_meta() để tải lười meta bình luận.
  *
  * @see update_comment_cache()
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int[] $comment_ids       Array of comment IDs.
- * @param bool  $update_meta_cache Optional. Whether to update the meta cache. Default true.
+ * @param int[] $comment_ids       Mảng ID bình luận.
+ * @param bool  $update_meta_cache Tùy chọn. Có cập nhật bộ nhớ đệm meta hay không. Mặc định true.
  */
 function _prime_comment_caches( $comment_ids, $update_meta_cache = true ) {
 	global $wpdb;
@@ -3421,17 +3419,17 @@ function _prime_comment_caches( $comment_ids, $update_meta_cache = true ) {
 }
 
 //
-// Internal.
+// Nội bộ.
 //
 
 /**
- * Closes comments on old posts on the fly, without any extra DB queries. Hooked to the_posts.
+ * Đóng bình luận trên các bài viết cũ ngay lập tức, không cần truy vấn DB bổ sung. Gắn hook vào the_posts.
  *
  * @since 2.7.0
  * @access private
  *
- * @param WP_Post  $posts Post data object.
- * @param WP_Query $query Query object.
+ * @param WP_Post  $posts Đối tượng dữ liệu bài viết.
+ * @param WP_Query $query Đối tượng truy vấn.
  * @return array
  */
 function _close_comments_for_old_posts( $posts, $query ) {
@@ -3440,11 +3438,11 @@ function _close_comments_for_old_posts( $posts, $query ) {
 	}
 
 	/**
-	 * Filters the list of post types to automatically close comments for.
+	 * Lọc danh sách loại bài viết để tự động đóng bình luận.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param string[] $post_types An array of post type names.
+	 * @param string[] $post_types Mảng tên loại bài viết.
 	 */
 	$post_types = apply_filters( 'close_comments_for_post_types', array( 'post' ) );
 	if ( ! in_array( $posts[0]->post_type, $post_types, true ) ) {
@@ -3465,13 +3463,13 @@ function _close_comments_for_old_posts( $posts, $query ) {
 }
 
 /**
- * Closes comments on an old post. Hooked to comments_open and pings_open.
+ * Đóng bình luận trên bài viết cũ. Gắn hook vào comments_open và pings_open.
  *
  * @since 2.7.0
  * @access private
  *
- * @param bool $open    Comments open or closed.
- * @param int  $post_id Post ID.
+ * @param bool $open    Bình luận mở hoặc đóng.
+ * @param int  $post_id ID bài viết.
  * @return bool $open
  */
 function _close_comments_for_old_post( $open, $post_id ) {
@@ -3490,13 +3488,13 @@ function _close_comments_for_old_post( $open, $post_id ) {
 
 	$post = get_post( $post_id );
 
-	/** This filter is documented in wp-includes/comment.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-includes/comment.php */
 	$post_types = apply_filters( 'close_comments_for_post_types', array( 'post' ) );
 	if ( ! in_array( $post->post_type, $post_types, true ) ) {
 		return $open;
 	}
 
-	// Undated drafts should not show up as comments closed.
+	// Bản nháp chưa đặt ngày không nên hiển thị là đã đóng bình luận.
 	if ( '0000-00-00 00:00:00' === $post->post_date_gmt ) {
 		return $open;
 	}
@@ -3509,25 +3507,25 @@ function _close_comments_for_old_post( $open, $post_id ) {
 }
 
 /**
- * Handles the submission of a comment, usually posted to wp-comments-post.php via a comment form.
+ * Xử lý việc gửi bình luận, thường được đăng đến wp-comments-post.php qua biểu mẫu bình luận.
  *
- * This function expects unslashed data, as opposed to functions such as `wp_new_comment()` which
- * expect slashed data.
+ * Hàm này mong đợi dữ liệu chưa slash, khác với các hàm như `wp_new_comment()`
+ * mong đợi dữ liệu đã slash.
  *
  * @since 4.4.0
  *
  * @param array $comment_data {
- *     Comment data.
+ *     Dữ liệu bình luận.
  *
- *     @type string|int $comment_post_ID             The ID of the post that relates to the comment.
- *     @type string     $author                      The name of the comment author.
- *     @type string     $email                       The comment author email address.
- *     @type string     $url                         The comment author URL.
- *     @type string     $comment                     The content of the comment.
- *     @type string|int $comment_parent              The ID of this comment's parent, if any. Default 0.
- *     @type string     $_wp_unfiltered_html_comment The nonce value for allowing unfiltered HTML.
+ *     @type string|int $comment_post_ID             ID bài viết liên quan đến bình luận.
+ *     @type string     $author                      Tên tác giả bình luận.
+ *     @type string     $email                       Địa chỉ email tác giả bình luận.
+ *     @type string     $url                         URL tác giả bình luận.
+ *     @type string     $comment                     Nội dung bình luận.
+ *     @type string|int $comment_parent              ID bình luận cha, nếu có. Mặc định 0.
+ *     @type string     $_wp_unfiltered_html_comment Giá trị nonce để cho phép HTML chưa lọc.
  * }
- * @return WP_Comment|WP_Error A WP_Comment object on success, a WP_Error object on failure.
+ * @return WP_Comment|WP_Error Đối tượng WP_Comment khi thành công, đối tượng WP_Error khi thất bại.
  */
 function wp_handle_comment_submission( $comment_data ) {
 	$comment_post_id      = 0;
@@ -3565,12 +3563,12 @@ function wp_handle_comment_submission( $comment_data ) {
 			)
 		) {
 			/**
-			 * Fires when a comment reply is attempted to an unapproved comment.
+			 * Kích hoạt khi có nỗ lực trả lời bình luận chưa được phê duyệt.
 			 *
 			 * @since 6.2.0
 			 *
-			 * @param int $comment_post_id Post ID.
-			 * @param int $comment_parent  Parent comment ID.
+			 * @param int $comment_post_id ID bài viết.
+			 * @param int $comment_parent  ID bình luận cha.
 			 */
 			do_action( 'comment_reply_to_unapproved_comment', $comment_post_id, $comment_parent );
 
@@ -3583,11 +3581,11 @@ function wp_handle_comment_submission( $comment_data ) {
 	if ( empty( $post->comment_status ) ) {
 
 		/**
-		 * Fires when a comment is attempted on a post that does not exist.
+		 * Kích hoạt khi có nỗ lực bình luận trên bài viết không tồn tại.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param int $comment_post_id Post ID.
+		 * @param int $comment_post_id ID bài viết.
 		 */
 		do_action( 'comment_id_not_found', $comment_post_id );
 
@@ -3595,7 +3593,7 @@ function wp_handle_comment_submission( $comment_data ) {
 
 	}
 
-	// get_post_status() will get the parent status for attachments.
+	// get_post_status() sẽ lấy trạng thái cha cho tệp đính kèm.
 	$status = get_post_status( $post );
 
 	if ( ( 'private' === $status ) && ! current_user_can( 'read_post', $comment_post_id ) ) {
@@ -3607,11 +3605,11 @@ function wp_handle_comment_submission( $comment_data ) {
 	if ( ! comments_open( $comment_post_id ) ) {
 
 		/**
-		 * Fires when a comment is attempted on a post that has comments closed.
+		 * Kích hoạt khi có nỗ lực bình luận trên bài viết đã đóng bình luận.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param int $comment_post_id Post ID.
+		 * @param int $comment_post_id ID bài viết.
 		 */
 		do_action( 'comment_closed', $comment_post_id );
 
@@ -3620,11 +3618,11 @@ function wp_handle_comment_submission( $comment_data ) {
 	} elseif ( 'trash' === $status ) {
 
 		/**
-		 * Fires when a comment is attempted on a trashed post.
+		 * Kích hoạt khi có nỗ lực bình luận trên bài viết đã bị xóa.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param int $comment_post_id Post ID.
+		 * @param int $comment_post_id ID bài viết.
 		 */
 		do_action( 'comment_on_trash', $comment_post_id );
 
@@ -3633,11 +3631,11 @@ function wp_handle_comment_submission( $comment_data ) {
 	} elseif ( ! $status_obj->public && ! $status_obj->private ) {
 
 		/**
-		 * Fires when a comment is attempted on a post in draft mode.
+		 * Kích hoạt khi có nỗ lực bình luận trên bài viết đang ở chế độ bản nháp.
 		 *
 		 * @since 1.5.1
 		 *
-		 * @param int $comment_post_id Post ID.
+		 * @param int $comment_post_id ID bài viết.
 		 */
 		do_action( 'comment_on_draft', $comment_post_id );
 
@@ -3649,11 +3647,11 @@ function wp_handle_comment_submission( $comment_data ) {
 	} elseif ( post_password_required( $comment_post_id ) ) {
 
 		/**
-		 * Fires when a comment is attempted on a password-protected post.
+		 * Kích hoạt khi có nỗ lực bình luận trên bài viết được bảo vệ bằng mật khẩu.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param int $comment_post_id Post ID.
+		 * @param int $comment_post_id ID bài viết.
 		 */
 		do_action( 'comment_on_password_protected', $comment_post_id );
 
@@ -3661,16 +3659,16 @@ function wp_handle_comment_submission( $comment_data ) {
 
 	} else {
 		/**
-		 * Fires before a comment is posted.
+		 * Kích hoạt trước khi bình luận được đăng.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param int $comment_post_id Post ID.
+		 * @param int $comment_post_id ID bài viết.
 		 */
 		do_action( 'pre_comment_on_post', $comment_post_id );
 	}
 
-	// If the user is logged in.
+	// Nếu người dùng đã đăng nhập.
 	$user = wp_get_current_user();
 	if ( $user->exists() ) {
 		if ( empty( $user->display_name ) ) {
@@ -3686,8 +3684,8 @@ function wp_handle_comment_submission( $comment_data ) {
 			if ( ! isset( $comment_data['_wp_unfiltered_html_comment'] )
 				|| ! wp_verify_nonce( $comment_data['_wp_unfiltered_html_comment'], 'unfiltered-html-comment_' . $comment_post_id )
 			) {
-				kses_remove_filters(); // Start with a clean slate.
-				kses_init_filters();   // Set up the filters.
+				kses_remove_filters(); // Bắt đầu với trạng thái sạch.
+				kses_init_filters();   // Thiết lập các bộ lọc.
 				remove_filter( 'pre_comment_content', 'wp_filter_post_kses' );
 				add_filter( 'pre_comment_content', 'wp_filter_kses' );
 			}
@@ -3723,12 +3721,12 @@ function wp_handle_comment_submission( $comment_data ) {
 	);
 
 	/**
-	 * Filters whether an empty comment should be allowed.
+	 * Lọc liệu bình luận trống có nên được phép hay không.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param bool  $allow_empty_comment Whether to allow empty comments. Default false.
-	 * @param array $commentdata         Array of comment data to be sent to wp_insert_comment().
+	 * @param bool  $allow_empty_comment Có cho phép bình luận trống hay không. Mặc định false.
+	 * @param array $commentdata         Mảng dữ liệu bình luận sẽ được gửi đến wp_insert_comment().
 	 */
 	$allow_empty_comment = apply_filters( 'allow_empty_comment', false, $commentdata );
 	if ( '' === $comment_content && ! $allow_empty_comment ) {
@@ -3753,12 +3751,12 @@ function wp_handle_comment_submission( $comment_data ) {
 }
 
 /**
- * Registers the personal data exporter for comments.
+ * Đăng ký trình xuất dữ liệu cá nhân cho bình luận.
  *
  * @since 4.9.6
  *
- * @param array[] $exporters An array of personal data exporters.
- * @return array[] An array of personal data exporters.
+ * @param array[] $exporters Mảng các trình xuất dữ liệu cá nhân.
+ * @return array[] Mảng các trình xuất dữ liệu cá nhân.
  */
 function wp_register_comment_personal_data_exporter( $exporters ) {
 	$exporters['wordpress-comments'] = array(
@@ -3770,21 +3768,21 @@ function wp_register_comment_personal_data_exporter( $exporters ) {
 }
 
 /**
- * Finds and exports personal data associated with an email address from the comments table.
+ * Tìm và xuất dữ liệu cá nhân liên quan đến địa chỉ email từ bảng bình luận.
  *
  * @since 4.9.6
  *
- * @param string $email_address The comment author email address.
- * @param int    $page          Comment page number.
+ * @param string $email_address Địa chỉ email tác giả bình luận.
+ * @param int    $page          Số trang bình luận.
  * @return array {
- *     An array of personal data.
+ *     Mảng dữ liệu cá nhân.
  *
- *     @type array[] $data An array of personal data arrays.
- *     @type bool    $done Whether the exporter is finished.
+ *     @type array[] $data Mảng các mảng dữ liệu cá nhân.
+ *     @type bool    $done Liệu trình xuất đã hoàn thành hay chưa.
  * }
  */
 function wp_comments_personal_data_exporter( $email_address, $page = 1 ) {
-	// Limit us to 500 comments at a time to avoid timing out.
+	// Giới hạn 500 bình luận mỗi lần để tránh hết thời gian chờ.
 	$number = 500;
 	$page   = (int) $page;
 
@@ -3868,12 +3866,12 @@ function wp_comments_personal_data_exporter( $email_address, $page = 1 ) {
 }
 
 /**
- * Registers the personal data eraser for comments.
+ * Đăng ký trình xóa dữ liệu cá nhân cho bình luận.
  *
  * @since 4.9.6
  *
- * @param array $erasers An array of personal data erasers.
- * @return array An array of personal data erasers.
+ * @param array $erasers Mảng các trình xóa dữ liệu cá nhân.
+ * @return array Mảng các trình xóa dữ liệu cá nhân.
  */
 function wp_register_comment_personal_data_eraser( $erasers ) {
 	$erasers['wordpress-comments'] = array(
@@ -3885,21 +3883,21 @@ function wp_register_comment_personal_data_eraser( $erasers ) {
 }
 
 /**
- * Erases personal data associated with an email address from the comments table.
+ * Xóa dữ liệu cá nhân liên quan đến địa chỉ email từ bảng bình luận.
  *
  * @since 4.9.6
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $email_address The comment author email address.
- * @param int    $page          Comment page number.
+ * @param string $email_address Địa chỉ email tác giả bình luận.
+ * @param int    $page          Số trang bình luận.
  * @return array {
- *     Data removal results.
+ *     Kết quả xóa dữ liệu.
  *
- *     @type bool     $items_removed  Whether items were actually removed.
- *     @type bool     $items_retained Whether items were retained.
- *     @type string[] $messages       An array of messages to add to the personal data export file.
- *     @type bool     $done           Whether the eraser is finished.
+ *     @type bool     $items_removed  Liệu các mục đã thực sự được xóa hay chưa.
+ *     @type bool     $items_retained Liệu các mục đã được giữ lại hay chưa.
+ *     @type string[] $messages       Mảng thông báo để thêm vào tệp xuất dữ liệu cá nhân.
+ *     @type bool     $done           Liệu trình xóa đã hoàn thành hay chưa.
  * }
  */
 function wp_comments_personal_data_eraser( $email_address, $page = 1 ) {
@@ -3914,7 +3912,7 @@ function wp_comments_personal_data_eraser( $email_address, $page = 1 ) {
 		);
 	}
 
-	// Limit us to 500 comments at a time to avoid timing out.
+	// Giới hạn 500 bình luận mỗi lần để tránh hết thời gian chờ.
 	$number         = 500;
 	$page           = (int) $page;
 	$items_removed  = false;
@@ -3947,14 +3945,14 @@ function wp_comments_personal_data_eraser( $email_address, $page = 1 ) {
 		$comment_id = (int) $comment->comment_ID;
 
 		/**
-		 * Filters whether to anonymize the comment.
+		 * Lọc liệu có ẩn danh bình luận hay không.
 		 *
 		 * @since 4.9.6
 		 *
-		 * @param bool|string $anon_message       Whether to apply the comment anonymization (bool) or a custom
-		 *                                        message (string). Default true.
-		 * @param WP_Comment  $comment            WP_Comment object.
-		 * @param array       $anonymized_comment Anonymized comment data.
+		 * @param bool|string $anon_message       Có áp dụng ẩn danh bình luận (bool) hay thông báo
+		 *                                        tùy chỉnh (string). Mặc định true.
+		 * @param WP_Comment  $comment            Đối tượng WP_Comment.
+		 * @param array       $anonymized_comment Dữ liệu bình luận đã ẩn danh.
 		 */
 		$anon_message = apply_filters( 'wp_anonymize_comment', true, $comment, $anonymized_comment );
 
@@ -3996,7 +3994,7 @@ function wp_comments_personal_data_eraser( $email_address, $page = 1 ) {
 }
 
 /**
- * Sets the last changed time for the 'comment' cache group.
+ * Thiết lập thời gian thay đổi cuối cùng cho nhóm bộ nhớ đệm 'comment'.
  *
  * @since 5.0.0
  */
@@ -4005,60 +4003,60 @@ function wp_cache_set_comments_last_changed() {
 }
 
 /**
- * Updates the comment type for a batch of comments.
+ * Cập nhật loại bình luận cho một loạt bình luận.
  *
  * @since 5.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function _wp_batch_update_comment_type() {
 	global $wpdb;
 
 	$lock_name = 'update_comment_type.lock';
 
-	// Try to lock.
+	// Thử khóa.
 	$lock_result = $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO `$wpdb->options` ( `option_name`, `option_value`, `autoload` ) VALUES (%s, %s, 'no') /* LOCK */", $lock_name, time() ) );
 
 	if ( ! $lock_result ) {
 		$lock_result = get_option( $lock_name );
 
-		// Bail if we were unable to create a lock, or if the existing lock is still valid.
+		// Thoát nếu không thể tạo khóa, hoặc nếu khóa hiện tại vẫn còn hiệu lực.
 		if ( ! $lock_result || ( $lock_result > ( time() - HOUR_IN_SECONDS ) ) ) {
 			wp_schedule_single_event( time() + ( 5 * MINUTE_IN_SECONDS ), 'wp_update_comment_type_batch' );
 			return;
 		}
 	}
 
-	// Update the lock, as by this point we've definitely got a lock, just need to fire the actions.
+	// Cập nhật khóa, vì đến thời điểm này chúng ta chắc chắn đã có khóa, chỉ cần kích hoạt các hành động.
 	update_option( $lock_name, time() );
 
-	// Check if there's still an empty comment type.
+	// Kiểm tra xem vẫn còn loại bình luận trống hay không.
 	$empty_comment_type = $wpdb->get_var(
 		"SELECT comment_ID FROM $wpdb->comments
 		WHERE comment_type = ''
 		LIMIT 1"
 	);
 
-	// No empty comment type, we're done here.
+	// Không còn loại bình luận trống, đã hoàn thành.
 	if ( ! $empty_comment_type ) {
 		update_option( 'finished_updating_comment_type', true );
 		delete_option( $lock_name );
 		return;
 	}
 
-	// Empty comment type found? We'll need to run this script again.
+	// Tìm thấy loại bình luận trống? Chúng ta sẽ cần chạy lại script này.
 	wp_schedule_single_event( time() + ( 2 * MINUTE_IN_SECONDS ), 'wp_update_comment_type_batch' );
 
 	/**
-	 * Filters the comment batch size for updating the comment type.
+	 * Lọc kích thước lô bình luận để cập nhật loại bình luận.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param int $comment_batch_size The comment batch size. Default 100.
+	 * @param int $comment_batch_size Kích thước lô bình luận. Mặc định 100.
 	 */
 	$comment_batch_size = (int) apply_filters( 'wp_update_comment_type_batch_size', 100 );
 
-	// Get the IDs of the comments to update.
+	// Lấy ID các bình luận cần cập nhật.
 	$comment_ids = $wpdb->get_col(
 		$wpdb->prepare(
 			"SELECT comment_ID
@@ -4073,7 +4071,7 @@ function _wp_batch_update_comment_type() {
 	if ( $comment_ids ) {
 		$comment_id_list = implode( ',', $comment_ids );
 
-		// Update the `comment_type` field value to be `comment` for the next batch of comments.
+		// Cập nhật giá trị trường `comment_type` thành `comment` cho loạt bình luận tiếp theo.
 		$wpdb->query(
 			"UPDATE {$wpdb->comments}
 			SET comment_type = 'comment'
@@ -4081,7 +4079,7 @@ function _wp_batch_update_comment_type() {
 			AND comment_ID IN ({$comment_id_list})" // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		);
 
-		// Make sure to clean the comment cache.
+		// Đảm bảo xóa bộ nhớ đệm bình luận.
 		clean_comment_cache( $comment_ids );
 	}
 
@@ -4089,8 +4087,8 @@ function _wp_batch_update_comment_type() {
 }
 
 /**
- * In order to avoid the _wp_batch_update_comment_type() job being accidentally removed,
- * check that it's still scheduled while we haven't finished updating comment types.
+ * Để tránh công việc _wp_batch_update_comment_type() bị xóa nhầm,
+ * kiểm tra rằng nó vẫn được lên lịch trong khi chúng ta chưa hoàn thành cập nhật loại bình luận.
  *
  * @ignore
  * @since 5.5.0

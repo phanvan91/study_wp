@@ -1,33 +1,33 @@
 <?php
 /**
- * Elements styles block support.
+ * Hỗ trợ kiểu phần tử cho block.
  *
  * @package WordPress
  * @since 5.8.0
  */
 
 /**
- * Gets the elements class names.
+ * Lấy tên lớp CSS của các phần tử.
  *
  * @since 6.0.0
  * @access private
  *
- * @param array $block Block object.
- * @return string The unique class name.
+ * @param array $block Đối tượng block.
+ * @return string Tên lớp CSS duy nhất.
  */
 function wp_get_elements_class_name( $block ) {
 	return 'wp-elements-' . md5( serialize( $block ) );
 }
 
 /**
- * Determines whether an elements class name should be added to the block.
+ * Xác định xem có nên thêm tên lớp CSS phần tử vào block hay không.
  *
  * @since 6.6.0
  * @access private
  *
- * @param  array $block   Block object.
- * @param  array $options Per element type options e.g. whether to skip serialization.
- * @return boolean Whether the block needs an elements class name.
+ * @param  array $block   Đối tượng block.
+ * @param  array $options Tùy chọn cho từng loại phần tử, ví dụ có bỏ qua tuần tự hóa hay không.
+ * @return boolean Block có cần tên lớp CSS phần tử hay không.
  */
 function wp_should_add_elements_class_name( $block, $options ) {
 	if ( ! isset( $block['attrs']['style']['elements'] ) ) {
@@ -96,30 +96,30 @@ function wp_should_add_elements_class_name( $block, $options ) {
 }
 
 /**
- * Render the elements stylesheet and adds elements class name to block as required.
+ * Render bảng kiểu phần tử và thêm tên lớp CSS phần tử vào block khi cần.
  *
- * In the case of nested blocks we want the parent element styles to be rendered before their descendants.
- * This solves the issue of an element (e.g.: link color) being styled in both the parent and a descendant:
- * we want the descendant style to take priority, and this is done by loading it after, in DOM order.
+ * Trong trường hợp block lồng nhau, chúng ta muốn kiểu phần tử cha được render trước các phần tử con.
+ * Điều này giải quyết vấn đề một phần tử (ví dụ: màu liên kết) được định kiểu ở cả cha và con:
+ * chúng ta muốn kiểu con được ưu tiên, và điều này được thực hiện bằng cách tải nó sau, theo thứ tự DOM.
  *
  * @since 6.0.0
- * @since 6.1.0 Implemented the style engine to generate CSS and classnames.
- * @since 6.6.0 Element block support class and styles are generated via the `render_block_data` filter instead of `pre_render_block`.
+ * @since 6.1.0 Triển khai engine kiểu để tạo CSS và tên lớp.
+ * @since 6.6.0 Lớp CSS và kiểu hỗ trợ block phần tử được tạo qua bộ lọc `render_block_data` thay vì `pre_render_block`.
  * @access private
  *
- * @param array $parsed_block The parsed block.
- * @return array The same parsed block with elements classname added if appropriate.
+ * @param array $parsed_block Block đã được phân tích.
+ * @return array Block đã phân tích với tên lớp CSS phần tử được thêm nếu phù hợp.
  */
 function wp_render_elements_support_styles( $parsed_block ) {
 	/*
-	 * The generation of element styles and classname were moved to the
-	 * `render_block_data` filter in 6.6.0 to avoid filtered attributes
-	 * breaking the application of the elements CSS class.
+	 * Việc tạo kiểu phần tử và tên lớp CSS đã được chuyển sang bộ lọc
+	 * `render_block_data` trong 6.6.0 để tránh thuộc tính đã lọc
+	 * làm hỏng việc áp dụng lớp CSS phần tử.
 	 *
 	 * @see https://github.com/WordPress/gutenberg/pull/59535
 	 *
-	 * The change in filter means, the argument types for this function
-	 * have changed and require deprecating.
+	 * Sự thay đổi bộ lọc có nghĩa là kiểu tham số cho hàm này
+	 * đã thay đổi và cần được đánh dấu lỗi thời.
 	 */
 	if ( is_string( $parsed_block ) ) {
 		_deprecated_argument(
@@ -162,7 +162,7 @@ function wp_render_elements_support_styles( $parsed_block ) {
 
 	_wp_array_set( $parsed_block, array( 'attrs', 'className' ), $updated_class_name );
 
-	// Generate element styles based on selector and store in style engine for enqueuing.
+	// Tạo kiểu phần tử dựa trên selector và lưu trữ trong engine kiểu để nạp.
 	$element_types = array(
 		'button'  => array(
 			'selector' => ".$class_name .wp-element-button, .$class_name .wp-block-button__link",
@@ -187,7 +187,7 @@ function wp_render_elements_support_styles( $parsed_block ) {
 
 		$element_style_object = isset( $element_block_styles[ $element_type ] ) ? $element_block_styles[ $element_type ] : null;
 
-		// Process primary element type styles.
+		// Xử lý kiểu loại phần tử chính.
 		if ( $element_style_object ) {
 			wp_style_engine_get_styles(
 				$element_style_object,
@@ -208,7 +208,7 @@ function wp_render_elements_support_styles( $parsed_block ) {
 			}
 		}
 
-		// Process related elements e.g. h1-h6 for headings.
+		// Xử lý các phần tử liên quan, ví dụ h1-h6 cho tiêu đề.
 		if ( isset( $element_config['elements'] ) ) {
 			foreach ( $element_config['elements'] as $element ) {
 				$element_style_object = isset( $element_block_styles[ $element ] )
@@ -232,16 +232,16 @@ function wp_render_elements_support_styles( $parsed_block ) {
 }
 
 /**
- * Ensure the elements block support class name generated, and added to
- * block attributes, in the `render_block_data` filter gets applied to the
- * block's markup.
+ * Đảm bảo tên lớp CSS hỗ trợ block phần tử được tạo và thêm vào
+ * thuộc tính block trong bộ lọc `render_block_data` được áp dụng
+ * vào markup của block.
  *
  * @see wp_render_elements_support_styles
  * @since 6.6.0
  *
- * @param  string $block_content Rendered block content.
- * @param  array  $block         Block object.
- * @return string                Filtered block content.
+ * @param  string $block_content Nội dung block đã được render.
+ * @param  array  $block         Đối tượng block.
+ * @return string                Nội dung block đã được lọc.
  */
 function wp_render_elements_class_name( $block_content, $block ) {
 	$class_string = $block['attrs']['className'] ?? '';

@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Nav_Menu_Locations_Control class
+ * API Tùy biến: Lớp WP_Customize_Nav_Menu_Locations_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Nav Menu Locations Control Class.
+ * Lớp Điều khiển Vị trí Menu Điều hướng trong Tùy biến.
  *
  * @since 4.9.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Nav_Menu_Locations_Control extends WP_Customize_Control {
 
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 4.9.0
 	 * @var string
@@ -25,14 +25,14 @@ class WP_Customize_Nav_Menu_Locations_Control extends WP_Customize_Control {
 	public $type = 'nav_menu_locations';
 
 	/**
-	 * Don't render the control's content - it uses a JS template instead.
+	 * Không hiển thị nội dung điều khiển - sử dụng mẫu JS thay thế.
 	 *
 	 * @since 4.9.0
 	 */
 	public function render_content() {}
 
 	/**
-	 * JS/Underscore template for the control UI.
+	 * Mẫu JS/Underscore cho giao diện điều khiển.
 	 *
 	 * @since 4.9.0
 	 */
@@ -48,13 +48,13 @@ class WP_Customize_Nav_Menu_Locations_Control extends WP_Customize_Control {
 							<?php echo _x( 'Where do you want this menu to appear?', 'menu locations' ); ?>
 							<?php
 							printf(
-								/* translators: 1: Documentation URL, 2: Additional link attributes, 3: Accessibility text. */
+								/* translators: 1: URL tài liệu, 2: Thuộc tính liên kết bổ sung, 3: Văn bản trợ năng. */
 								_x( '(If you plan to use a menu <a href="%1$s" %2$s>widget%3$s</a>, skip this step.)', 'menu locations' ),
 								__( 'https://wordpress.org/documentation/article/manage-wordpress-widgets/' ),
 								' class="external-link" target="_blank"',
 								sprintf(
 									'<span class="screen-reader-text"> %s</span>',
-									/* translators: Hidden accessibility text. */
+									/* translators: Văn bản trợ năng ẩn. */
 									__( '(opens in a new tab)' )
 								)
 							);
@@ -75,7 +75,7 @@ class WP_Customize_Nav_Menu_Locations_Control extends WP_Customize_Control {
 								<span class="theme-location-set">
 									<?php
 									printf(
-										/* translators: %s: Menu name. */
+										/* translators: %s: Tên menu. */
 										_x( '(Current: %s)', 'menu location' ),
 										'<span class="current-menu-location-name-' . esc_attr( $location ) . '"></span>'
 									);

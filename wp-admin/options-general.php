@@ -1,25 +1,25 @@
 <?php
 /**
- * General settings administration panel.
+ * Bảng quản trị cài đặt Tổng quát.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Khởi tạo Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
-/** WordPress Translation Installation API */
+/** API Cài đặt Bản dịch WordPress */
 require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
 if ( ! current_user_can( 'manage_options' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to manage options for this site.' ) );
 }
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ HTML title.
 $title       = __( 'General Settings' );
 $parent_file = 'options-general.php';
-/* translators: Date and time format for exact current time, mainly about timezones, see https://www.php.net/manual/datetime.format.php */
+/* translators: Định dạng ngày và giờ cho thời gian hiện tại chính xác, chủ yếu về múi giờ, xem https://www.php.net/manual/datetime.format.php */
 $timezone_format = _x( 'Y-m-d H:i:s', 'timezone date format' );
 
 add_action( 'admin_head', 'options_general_add_js' );
@@ -79,14 +79,14 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 
 <?php
 if ( ! is_multisite() ) {
-	/* translators: Site tagline. */
+	/* translators: Khẩu hiệu trang web. */
 	$sample_tagline = __( 'Just another WordPress site' );
 } else {
-	/* translators: %s: Network title. */
+	/* translators: %s: Tên mạng lưới. */
 	$sample_tagline = sprintf( __( 'Just another %s site' ), get_network()->site_name );
 }
 $tagline_description = sprintf(
-	/* translators: %s: Site tagline example. */
+	/* translators: %s: Ví dụ khẩu hiệu trang web. */
 	__( 'In a few words, explain what this site is about. Example: &#8220;%s.&#8221;' ),
 	$sample_tagline
 );
@@ -119,7 +119,7 @@ $tagline_description = sprintf(
 		$classes_for_button_on_change = $classes_for_update_button;
 	}
 
-	// Handle alt text for site icon on page load.
+	// Xử lý văn bản thay thế cho biểu tượng trang web khi tải trang.
 	$site_icon_id           = (int) get_option( 'site_icon' );
 	$app_icon_alt_value     = '';
 	$browser_icon_alt_value = '';
@@ -130,26 +130,26 @@ $tagline_description = sprintf(
 		$img_alt            = get_post_meta( $site_icon_id, '_wp_attachment_image_alt', true );
 		$filename           = wp_basename( $site_icon_url );
 		$app_icon_alt_value = sprintf(
-			/* translators: %s: The selected image filename. */
+			/* translators: %s: Tên file hình ảnh đã chọn. */
 			__( 'App icon preview: The current image has no alternative text. The file name is: %s' ),
 			$filename
 		);
 
 		$browser_icon_alt_value = sprintf(
-			/* translators: %s: The selected image filename. */
+			/* translators: %s: Tên file hình ảnh đã chọn. */
 			__( 'Browser icon preview: The current image has no alternative text. The file name is: %s' ),
 			$filename
 		);
 
 		if ( $img_alt ) {
 			$app_icon_alt_value = sprintf(
-				/* translators: %s: The selected image alt text. */
+				/* translators: %s: Văn bản thay thế của hình ảnh đã chọn. */
 				__( 'App icon preview: Current image: %s' ),
 				$img_alt
 			);
 
 			$browser_icon_alt_value = sprintf(
-				/* translators: %s: The selected image alt text. */
+				/* translators: %s: Văn bản thay thế của hình ảnh đã chọn. */
 				__( 'Browser icon preview: Current image: %s' ),
 				$img_alt
 			);
@@ -211,7 +211,7 @@ $tagline_description = sprintf(
 	<p class="description">
 		<?php
 			printf(
-				/* translators: 1: pixel value for icon size. 2: pixel value for icon size. */
+				/* translators: 1: giá trị pixel cho kích thước biểu tượng. 2: giá trị pixel cho kích thước biểu tượng. */
 				__( 'The Site Icon is what you see in browser tabs, bookmark bars, and within the WordPress mobile apps. It should be square and at least <code>%1$s by %2$s</code> pixels.' ),
 				512,
 				512
@@ -224,7 +224,7 @@ $tagline_description = sprintf(
 
 	<?php
 endif;
-	/* End Site Icon */
+	/* Kết thúc Biểu tượng Trang web */
 
 if ( ! is_multisite() ) {
 	$wp_site_url_class = '';
@@ -249,7 +249,7 @@ if ( ! is_multisite() ) {
 <p class="description" id="home-description">
 		<?php
 		printf(
-			/* translators: %s: Documentation URL. */
+			/* translators: %s: URL tài liệu. */
 			__( 'Enter the same address here unless you <a href="%s">want your site home page to be different from your WordPress installation directory</a>.' ),
 			__( 'https://developer.wordpress.org/advanced-administration/server/wordpress-in-directory/' )
 		);
@@ -269,7 +269,7 @@ if ( ! is_multisite() ) {
 $new_admin_email = get_option( 'new_admin_email' );
 if ( $new_admin_email && get_option( 'admin_email' ) !== $new_admin_email ) {
 	$pending_admin_email_message = sprintf(
-		/* translators: %s: New admin email. */
+		/* translators: %s: Email quản trị mới. */
 		__( 'There is a pending change of the admin email to %s.' ),
 		'<code>' . esc_html( $new_admin_email ) . '</code>'
 	);
@@ -295,7 +295,7 @@ if ( $new_admin_email && get_option( 'admin_email' ) !== $new_admin_email ) {
 <th scope="row"><?php _e( 'Membership' ); ?></th>
 <td> <fieldset><legend class="screen-reader-text"><span>
 	<?php
-	/* translators: Hidden accessibility text. */
+	/* translators: Văn bản trợ năng ẩn. */
 	_e( 'Membership' );
 	?>
 </span></legend><label for="users_can_register">
@@ -341,12 +341,12 @@ if ( ! empty( $languages ) || ! empty( $translations ) ) {
 				)
 			);
 
-			// Add note about deprecated WPLANG constant.
+			// Thêm ghi chú về hằng số WPLANG đã lỗi thời.
 			if ( defined( 'WPLANG' ) && ( '' !== WPLANG ) && WPLANG !== $locale ) {
 				_deprecated_argument(
 					'define()',
 					'4.0.0',
-					/* translators: 1: WPLANG, 2: wp-config.php */
+					/* translators: 1: WPLANG, 2: wp-config.php. */
 					sprintf( __( 'The %1$s constant in your %2$s file is no longer needed.' ), 'WPLANG', 'wp-config.php' )
 				);
 			}
@@ -363,12 +363,12 @@ $tzstring       = get_option( 'timezone_string' );
 
 $check_zone_info = true;
 
-// Remove old Etc mappings. Fallback to gmt_offset.
+// Xóa ánh xạ Etc cũ. Dự phòng về gmt_offset.
 if ( str_contains( $tzstring, 'Etc/GMT' ) ) {
 	$tzstring = '';
 }
 
-if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists.
+if ( empty( $tzstring ) ) { // Tạo vùng UTC+- nếu không tồn tại chuỗi múi giờ.
 	$check_zone_info = false;
 	if ( 0 === (int) $current_offset ) {
 		$tzstring = 'UTC+0';
@@ -390,7 +390,7 @@ if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists.
 <p class="description" id="timezone-description">
 <?php
 	printf(
-		/* translators: %s: UTC abbreviation */
+		/* translators: %s: Viết tắt của UTC */
 		__( 'Choose either a city in the same timezone as you or a %s (Coordinated Universal Time) time offset.' ),
 		'<abbr>UTC</abbr>'
 	);
@@ -401,7 +401,7 @@ if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists.
 	<span id="utc-time">
 	<?php
 		printf(
-			/* translators: %s: UTC time. */
+			/* translators: %s: Giờ UTC. */
 			__( 'Universal time is %s.' ),
 			'<code>' . date_i18n( $timezone_format, false, true ) . '</code>'
 		);
@@ -411,7 +411,7 @@ if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists.
 	<span id="local-time">
 	<?php
 		printf(
-			/* translators: %s: Local time. */
+			/* translators: %s: Giờ địa phương. */
 			__( 'Local time is %s.' ),
 			'<code>' . date_i18n( $timezone_format ) . '</code>'
 		);
@@ -438,13 +438,13 @@ if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists.
 	if ( in_array( $tzstring, timezone_identifiers_list( DateTimeZone::ALL_WITH_BC ), true ) ) {
 		$transitions = timezone_transitions_get( timezone_open( $tzstring ), time() );
 
-		// 0 index is the state at current time, 1 index is the next transition, if any.
+		// Chỉ số 0 là trạng thái tại thời điểm hiện tại, chỉ số 1 là lần chuyển đổi tiếp theo, nếu có.
 		if ( ! empty( $transitions[1] ) ) {
 			echo ' ';
 			$message = $transitions[1]['isdst'] ?
-				/* translators: %s: Date and time. */
+				/* translators: %s: Ngày và giờ. */
 				__( 'Daylight saving time begins on: %s.' ) :
-				/* translators: %s: Date and time. */
+				/* translators: %s: Ngày và giờ. */
 				__( 'Standard time begins on: %s.' );
 			printf(
 				$message,
@@ -466,19 +466,19 @@ if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists.
 <td>
 	<fieldset><legend class="screen-reader-text"><span>
 		<?php
-		/* translators: Hidden accessibility text. */
+		/* translators: Văn bản trợ năng ẩn. */
 		_e( 'Date Format' );
 		?>
 	</span></legend>
 <?php
 	/**
-	 * Filters the default date formats.
+	 * Lọc các định dạng ngày mặc định.
 	 *
 	 * @since 2.7.0
-	 * @since 4.0.0 Replaced the `Y/m/d` format with `Y-m-d` (ISO date standard YYYY-MM-DD).
-	 * @since 6.8.0 Added the `d.m.Y` format.
+	 * @since 4.0.0 Thay thế định dạng `Y/m/d` bằng `Y-m-d` (tiêu chuẩn ngày ISO YYYY-MM-DD).
+	 * @since 6.8.0 Thêm định dạng `d.m.Y`.
 	 *
-	 * @param string[] $default_date_formats Array of default date formats.
+	 * @param string[] $default_date_formats Mảng các định dạng ngày mặc định.
 	 */
 	$date_formats = array_unique( apply_filters( 'date_formats', array( __( 'F j, Y' ), 'Y-m-d', 'm/d/Y', 'd/m/Y', 'd.m.Y' ) ) );
 
@@ -486,7 +486,7 @@ if ( empty( $tzstring ) ) { // Create a UTC+- zone if no timezone string exists.
 
 foreach ( $date_formats as $format ) {
 	echo "\t<label><input type='radio' name='date_format' value='" . esc_attr( $format ) . "'";
-	if ( get_option( 'date_format' ) === $format ) { // checked() uses "==" rather than "===".
+	if ( get_option( 'date_format' ) === $format ) { // checked() sử dụng "==" thay vì "===".
 		echo " checked='checked'";
 		$custom = false;
 	}
@@ -496,11 +496,11 @@ foreach ( $date_formats as $format ) {
 	echo '<label><input type="radio" name="date_format" id="date_format_custom_radio" value="\c\u\s\t\o\m"';
 	checked( $custom );
 	echo '/> <span class="date-time-text date-time-custom-text">' . __( 'Custom:' ) . '<span class="screen-reader-text"> ' .
-			/* translators: Hidden accessibility text. */
+			/* translators: Văn bản trợ năng ẩn. */
 			__( 'enter a custom date format in the following field' ) .
 		'</span></span></label>' .
 		'<label for="date_format_custom" class="screen-reader-text">' .
-			/* translators: Hidden accessibility text. */
+			/* translators: Văn bản trợ năng ẩn. */
 			__( 'Custom date format:' ) .
 		'</label>' .
 		'<input type="text" name="date_format_custom" id="date_format_custom" value="' . esc_attr( get_option( 'date_format' ) ) . '" class="small-text" />' .
@@ -516,17 +516,17 @@ foreach ( $date_formats as $format ) {
 <td>
 	<fieldset><legend class="screen-reader-text"><span>
 		<?php
-		/* translators: Hidden accessibility text. */
+		/* translators: Văn bản trợ năng ẩn. */
 		_e( 'Time Format' );
 		?>
 	</span></legend>
 <?php
 	/**
-	 * Filters the default time formats.
+	 * Lọc các định dạng giờ mặc định.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string[] $default_time_formats Array of default time formats.
+	 * @param string[] $default_time_formats Mảng các định dạng giờ mặc định.
 	 */
 	$time_formats = array_unique( apply_filters( 'time_formats', array( __( 'g:i a' ), 'g:i A', 'H:i' ) ) );
 
@@ -534,7 +534,7 @@ foreach ( $date_formats as $format ) {
 
 foreach ( $time_formats as $format ) {
 	echo "\t<label><input type='radio' name='time_format' value='" . esc_attr( $format ) . "'";
-	if ( get_option( 'time_format' ) === $format ) { // checked() uses "==" rather than "===".
+	if ( get_option( 'time_format' ) === $format ) { // checked() sử dụng "==" thay vì "===".
 		echo " checked='checked'";
 		$custom = false;
 	}
@@ -544,11 +544,11 @@ foreach ( $time_formats as $format ) {
 	echo '<label><input type="radio" name="time_format" id="time_format_custom_radio" value="\c\u\s\t\o\m"';
 	checked( $custom );
 	echo '/> <span class="date-time-text date-time-custom-text">' . __( 'Custom:' ) . '<span class="screen-reader-text"> ' .
-			/* translators: Hidden accessibility text. */
+			/* translators: Văn bản trợ năng ẩn. */
 			__( 'enter a custom time format in the following field' ) .
 		'</span></span></label>' .
 		'<label for="time_format_custom" class="screen-reader-text">' .
-			/* translators: Hidden accessibility text. */
+			/* translators: Văn bản trợ năng ẩn. */
 			__( 'Custom time format:' ) .
 		'</label>' .
 		'<input type="text" name="time_format_custom" id="time_format_custom" value="' . esc_attr( get_option( 'time_format' ) ) . '" class="small-text" />' .
@@ -566,7 +566,7 @@ foreach ( $time_formats as $format ) {
 <td><select name="start_of_week" id="start_of_week">
 <?php
 /**
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng ngôn ngữ ngày và giờ của WordPress.
  */
 global $wp_locale;
 

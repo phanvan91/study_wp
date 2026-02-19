@@ -1,13 +1,13 @@
 <?php
 /**
- * User profile network administration panel.
+ * Trang quản trị mạng lưới Hồ sơ Người dùng.
  *
  * @package WordPress
  * @subpackage Multisite
  * @since 3.1.0
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 require ABSPATH . 'wp-admin/profile.php';

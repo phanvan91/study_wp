@@ -1,24 +1,24 @@
 <?php
 /**
  * Child Theme Functions
- * 
- * This file is loaded after the parent theme's functions.php
- * Add your custom functions here.
+ *
+ * File này được load sau functions.php của parent theme
+ * Thêm các hàm tùy chỉnh của bạn ở đây.
  */
 
 /**
- * Enqueue parent and child theme styles
+ * Enqueue styles của parent theme và child theme
  */
 function child_theme_enqueue_styles() {
-    // Enqueue parent theme stylesheet
+    // Enqueue stylesheet của parent theme
     wp_enqueue_style(
         'parent-style',
         get_template_directory_uri() . '/style.css',
         array(),
         wp_get_theme()->get('Version')
     );
-    
-    // Enqueue child theme stylesheet
+
+    // Enqueue stylesheet của child theme
     wp_enqueue_style(
         'child-style',
         get_stylesheet_directory_uri() . '/style.css',
@@ -29,7 +29,7 @@ function child_theme_enqueue_styles() {
 add_action('wp_enqueue_scripts', 'child_theme_enqueue_styles');
 
 /**
- * Example: Add custom JavaScript
+ * Ví dụ: Thêm custom JavaScript
  */
 function child_theme_enqueue_scripts() {
     wp_enqueue_script(
@@ -43,7 +43,7 @@ function child_theme_enqueue_scripts() {
 add_action('wp_enqueue_scripts', 'child_theme_enqueue_scripts');
 
 /**
- * Example: Register custom menu location
+ * Ví dụ: Đăng ký vị trí menu tùy chỉnh
  */
 function child_theme_register_menus() {
     register_nav_menus(array(
@@ -53,13 +53,13 @@ function child_theme_register_menus() {
 add_action('after_setup_theme', 'child_theme_register_menus');
 
 /**
- * Example: Register widget area
+ * Ví dụ: Đăng ký vùng widget
  */
 function child_theme_widgets_init() {
     register_sidebar(array(
-        'name'          => __('Custom Sidebar', 'child-theme'),
+        'name'          => __('Sidebar Tùy Chỉnh', 'child-theme'),
         'id'            => 'custom-sidebar',
-        'description'   => __('Add widgets here.', 'child-theme'),
+        'description'   => __('Thêm widget vào đây.', 'child-theme'),
         'before_widget' => '<section id="%1$s" class="widget %2$s">',
         'after_widget'  => '</section>',
         'before_title'  => '<h2 class="widget-title">',
@@ -69,15 +69,15 @@ function child_theme_widgets_init() {
 add_action('widgets_init', 'child_theme_widgets_init');
 
 /**
- * Example: Custom excerpt length
+ * Ví dụ: Tùy chỉnh độ dài excerpt
  */
 function child_theme_excerpt_length($length) {
-    return 30; // Change to your desired length
+    return 30; // Thay đổi thành số bạn muốn
 }
 add_filter('excerpt_length', 'child_theme_excerpt_length');
 
 /**
- * Example: Custom excerpt more text
+ * Ví dụ: Tùy chỉnh text "đọc thêm" của excerpt
  */
 function child_theme_excerpt_more($more) {
     return '...';
@@ -85,13 +85,13 @@ function child_theme_excerpt_more($more) {
 add_filter('excerpt_more', 'child_theme_excerpt_more');
 
 /**
- * Example: Add theme support
+ * Ví dụ: Thêm theme support
  */
 function child_theme_setup() {
-    // Add theme support for post thumbnails
+    // Hỗ trợ ảnh đại diện cho bài viết (Featured Image)
     add_theme_support('post-thumbnails');
-    
-    // Add theme support for custom logo
+
+    // Hỗ trợ logo tùy chỉnh
     add_theme_support('custom-logo', array(
         'height'      => 100,
         'width'       => 400,
@@ -99,7 +99,7 @@ function child_theme_setup() {
         'flex-width'  => true,
     ));
     
-    // Add theme support for custom header
+    // Hỗ trợ header tùy chỉnh
     add_theme_support('custom-header', array(
         'default-image' => get_stylesheet_directory_uri() . '/images/header.jpg',
         'width'         => 1200,
@@ -111,7 +111,7 @@ function child_theme_setup() {
 add_action('after_setup_theme', 'child_theme_setup');
 
 /**
- * Example: Remove parent theme function (if needed)
+ * Ví dụ: Gỡ bỏ function của parent theme (nếu cần)
  */
 // function remove_parent_function() {
 //     remove_action('wp_head', 'parent_theme_function');
@@ -119,10 +119,10 @@ add_action('after_setup_theme', 'child_theme_setup');
 // add_action('init', 'remove_parent_function');
 
 /**
- * Example: Add custom body classes
+ * Ví dụ: Thêm custom body classes
  */
 function child_theme_body_classes($classes) {
-    // Add custom class
+    // Thêm class tùy chỉnh
     $classes[] = 'child-theme-active';
     
     return $classes;

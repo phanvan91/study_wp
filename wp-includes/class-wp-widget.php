@@ -1,6 +1,6 @@
 <?php
 /**
- * Widget API: WP_Widget base class
+ * API Widget: Lớp cơ sở WP_Widget
  *
  * @package WordPress
  * @subpackage Widgets
@@ -8,20 +8,20 @@
  */
 
 /**
- * Core base class extended to register widgets.
+ * Lớp cơ sở lõi được mở rộng để đăng ký widget.
  *
- * This class must be extended for each widget, and WP_Widget::widget() must be overridden.
+ * Lớp này phải được mở rộng cho mỗi widget, và WP_Widget::widget() phải được ghi đè.
  *
- * If adding widget options, WP_Widget::update() and WP_Widget::form() should also be overridden.
+ * Nếu thêm tùy chọn widget, WP_Widget::update() và WP_Widget::form() cũng nên được ghi đè.
  *
  * @since 2.8.0
- * @since 4.4.0 Moved to its own file from wp-includes/widgets.php
+ * @since 4.4.0 Chuyển sang file riêng từ wp-includes/widgets.php
  */
 #[AllowDynamicProperties]
 class WP_Widget {
 
 	/**
-	 * Root ID for all widgets of this type.
+	 * ID gốc cho tất cả widget thuộc loại này.
 	 *
 	 * @since 2.8.0
 	 * @var mixed|string
@@ -29,7 +29,7 @@ class WP_Widget {
 	public $id_base;
 
 	/**
-	 * Name for this widget type.
+	 * Tên cho loại widget này.
 	 *
 	 * @since 2.8.0
 	 * @var string
@@ -37,7 +37,7 @@ class WP_Widget {
 	public $name;
 
 	/**
-	 * Option name for this widget type.
+	 * Tên tùy chọn cho loại widget này.
 	 *
 	 * @since 2.8.0
 	 * @var string
@@ -45,7 +45,7 @@ class WP_Widget {
 	public $option_name;
 
 	/**
-	 * Alt option name for this widget type.
+	 * Tên tùy chọn thay thế cho loại widget này.
 	 *
 	 * @since 2.8.0
 	 * @var string
@@ -53,7 +53,7 @@ class WP_Widget {
 	public $alt_option_name;
 
 	/**
-	 * Option array passed to wp_register_sidebar_widget().
+	 * Mảng tùy chọn truyền cho wp_register_sidebar_widget().
 	 *
 	 * @since 2.8.0
 	 * @var array
@@ -61,7 +61,7 @@ class WP_Widget {
 	public $widget_options;
 
 	/**
-	 * Option array passed to wp_register_widget_control().
+	 * Mảng tùy chọn truyền cho wp_register_widget_control().
 	 *
 	 * @since 2.8.0
 	 * @var array
@@ -69,7 +69,7 @@ class WP_Widget {
 	public $control_options;
 
 	/**
-	 * Unique ID number of the current instance.
+	 * Số ID duy nhất của thể hiện hiện tại.
 	 *
 	 * @since 2.8.0
 	 * @var bool|int
@@ -77,7 +77,7 @@ class WP_Widget {
 	public $number = false;
 
 	/**
-	 * Unique ID string of the current instance (id_base-number).
+	 * Chuỗi ID duy nhất của thể hiện hiện tại (id_base-number).
 	 *
 	 * @since 2.8.0
 	 * @var bool|string
@@ -85,10 +85,10 @@ class WP_Widget {
 	public $id = false;
 
 	/**
-	 * Whether the widget data has been updated.
+	 * Dữ liệu widget đã được cập nhật hay chưa.
 	 *
-	 * Set to true when the data is updated after a POST submit - ensures it does
-	 * not happen twice.
+	 * Được đặt thành true khi dữ liệu được cập nhật sau khi POST gửi đi - đảm bảo
+	 * không xảy ra hai lần.
 	 *
 	 * @since 2.8.0
 	 * @var bool
@@ -96,69 +96,69 @@ class WP_Widget {
 	public $updated = false;
 
 	//
-	// Member functions that must be overridden by subclasses.
+	// Các hàm thành viên phải được ghi đè bởi lớp con.
 	//
 
 	/**
-	 * Echoes the widget content.
+	 * Xuất nội dung widget.
 	 *
-	 * Subclasses should override this function to generate their widget code.
+	 * Các lớp con nên ghi đè hàm này để tạo mã widget của chúng.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $args     Display arguments including 'before_title', 'after_title',
-	 *                        'before_widget', and 'after_widget'.
-	 * @param array $instance The settings for the particular instance of the widget.
+	 * @param array $args     Các tham số hiển thị bao gồm 'before_title', 'after_title',
+	 *                        'before_widget', và 'after_widget'.
+	 * @param array $instance Các cài đặt cho thể hiện cụ thể của widget.
 	 */
 	public function widget( $args, $instance ) {
 		die( 'function WP_Widget::widget() must be overridden in a subclass.' );
 	}
 
 	/**
-	 * Updates a particular instance of a widget.
+	 * Cập nhật một thể hiện cụ thể của widget.
 	 *
-	 * This function should check that `$new_instance` is set correctly. The newly-calculated
-	 * value of `$instance` should be returned. If false is returned, the instance won't be
-	 * saved/updated.
+	 * Hàm này nên kiểm tra rằng `$new_instance` được thiết lập đúng. Giá trị
+	 * mới tính toán được của `$instance` sẽ được trả về. Nếu trả về false, thể hiện sẽ không
+	 * được lưu/cập nhật.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $new_instance New settings for this instance as input by the user via
+	 * @param array $new_instance Cài đặt mới cho thể hiện này do người dùng nhập qua
 	 *                            WP_Widget::form().
-	 * @param array $old_instance Old settings for this instance.
-	 * @return array Settings to save or bool false to cancel saving.
+	 * @param array $old_instance Cài đặt cũ cho thể hiện này.
+	 * @return array Cài đặt cần lưu hoặc bool false để hủy lưu.
 	 */
 	public function update( $new_instance, $old_instance ) {
 		return $new_instance;
 	}
 
 	/**
-	 * Outputs the settings update form.
+	 * Xuất biểu mẫu cập nhật cài đặt.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $instance The settings for the particular instance of the widget.
-	 * @return string|void Default return is 'noform'.
+	 * @param array $instance Các cài đặt cho thể hiện cụ thể của widget.
+	 * @return string|void Giá trị trả về mặc định là 'noform'.
 	 */
 	public function form( $instance ) {
 		echo '<p class="no-options-widget">' . __( 'There are no options for this widget.' ) . '</p>';
 		return 'noform';
 	}
 
-	// Functions you'll need to call.
+	// Các hàm bạn sẽ cần gọi.
 
 	/**
-	 * PHP5 constructor.
+	 * Hàm khởi tạo PHP5.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $id_base         Base ID for the widget, lowercase and unique. If left empty,
-	 *                                a portion of the widget's PHP class name will be used. Has to be unique.
-	 * @param string $name            Name for the widget displayed on the configuration page.
-	 * @param array  $widget_options  Optional. Widget options. See wp_register_sidebar_widget() for
-	 *                                information on accepted arguments. Default empty array.
-	 * @param array  $control_options Optional. Widget control options. See wp_register_widget_control() for
-	 *                                information on accepted arguments. Default empty array.
+	 * @param string $id_base         ID cơ sở cho widget, viết thường và duy nhất. Nếu để trống,
+	 *                                một phần tên lớp PHP của widget sẽ được sử dụng. Phải duy nhất.
+	 * @param string $name            Tên widget hiển thị trên trang cấu hình.
+	 * @param array  $widget_options  Tùy chọn. Tùy chọn widget. Xem wp_register_sidebar_widget() để biết
+	 *                                thông tin về các tham số chấp nhận. Mặc định mảng rỗng.
+	 * @param array  $control_options Tùy chọn. Tùy chọn điều khiển widget. Xem wp_register_widget_control() để biết
+	 *                                thông tin về các tham số chấp nhận. Mặc định mảng rỗng.
 	 */
 	public function __construct( $id_base, $name, $widget_options = array(), $control_options = array() ) {
 		if ( ! empty( $id_base ) ) {
@@ -181,20 +181,20 @@ class WP_Widget {
 	}
 
 	/**
-	 * PHP4 constructor.
+	 * Hàm khởi tạo PHP4.
 	 *
 	 * @since 2.8.0
-	 * @deprecated 4.3.0 Use __construct() instead.
+	 * @deprecated 4.3.0 Sử dụng __construct() thay thế.
 	 *
 	 * @see WP_Widget::__construct()
 	 *
-	 * @param string $id_base         Base ID for the widget, lowercase and unique. If left empty,
-	 *                                a portion of the widget's PHP class name will be used. Has to be unique.
-	 * @param string $name            Name for the widget displayed on the configuration page.
-	 * @param array  $widget_options  Optional. Widget options. See wp_register_sidebar_widget() for
-	 *                                information on accepted arguments. Default empty array.
-	 * @param array  $control_options Optional. Widget control options. See wp_register_widget_control() for
-	 *                                information on accepted arguments. Default empty array.
+	 * @param string $id_base         ID cơ sở cho widget, viết thường và duy nhất. Nếu để trống,
+	 *                                một phần tên lớp PHP của widget sẽ được sử dụng. Phải duy nhất.
+	 * @param string $name            Tên widget hiển thị trên trang cấu hình.
+	 * @param array  $widget_options  Tùy chọn. Tùy chọn widget. Xem wp_register_sidebar_widget() để biết
+	 *                                thông tin về các tham số chấp nhận. Mặc định mảng rỗng.
+	 * @param array  $control_options Tùy chọn. Tùy chọn điều khiển widget. Xem wp_register_widget_control() để biết
+	 *                                thông tin về các tham số chấp nhận. Mặc định mảng rỗng.
 	 */
 	public function WP_Widget( $id_base, $name, $widget_options = array(), $control_options = array() ) {
 		_deprecated_constructor( 'WP_Widget', '4.3.0', get_class( $this ) );
@@ -202,22 +202,22 @@ class WP_Widget {
 	}
 
 	/**
-	 * Constructs name attributes for use in form() fields
+	 * Tạo thuộc tính name để sử dụng trong các trường của form().
 	 *
-	 * This function should be used in form() methods to create name attributes for fields
-	 * to be saved by update()
+	 * Hàm này nên được sử dụng trong các phương thức form() để tạo thuộc tính name cho các trường
+	 * sẽ được lưu bởi update().
 	 *
 	 * @since 2.8.0
-	 * @since 4.4.0 Array format field names are now accepted.
+	 * @since 4.4.0 Tên trường dạng mảng giờ đã được hỗ trợ.
 	 *
-	 * @param string $field_name Field name.
-	 * @return string Name attribute for `$field_name`.
+	 * @param string $field_name Tên trường.
+	 * @return string Thuộc tính name cho `$field_name`.
 	 */
 	public function get_field_name( $field_name ) {
 		$pos = strpos( $field_name, '[' );
 
 		if ( false !== $pos ) {
-			// Replace the first occurrence of '[' with ']['.
+			// Thay thế lần xuất hiện đầu tiên của '[' bằng ']['.
 			$field_name = '[' . substr_replace( $field_name, '][', $pos, strlen( '[' ) );
 		} else {
 			$field_name = '[' . $field_name . ']';
@@ -227,16 +227,16 @@ class WP_Widget {
 	}
 
 	/**
-	 * Constructs id attributes for use in WP_Widget::form() fields.
+	 * Tạo thuộc tính id để sử dụng trong các trường của WP_Widget::form().
 	 *
-	 * This function should be used in form() methods to create id attributes
-	 * for fields to be saved by WP_Widget::update().
+	 * Hàm này nên được sử dụng trong các phương thức form() để tạo thuộc tính id
+	 * cho các trường sẽ được lưu bởi WP_Widget::update().
 	 *
 	 * @since 2.8.0
-	 * @since 4.4.0 Array format field IDs are now accepted.
+	 * @since 4.4.0 ID trường dạng mảng giờ đã được hỗ trợ.
 	 *
-	 * @param string $field_name Field name.
-	 * @return string ID attribute for `$field_name`.
+	 * @param string $field_name Tên trường.
+	 * @return string Thuộc tính ID cho `$field_name`.
 	 */
 	public function get_field_id( $field_name ) {
 		$field_name = str_replace( array( '[]', '[', ']' ), array( '', '-', '' ), $field_name );
@@ -246,7 +246,7 @@ class WP_Widget {
 	}
 
 	/**
-	 * Register all widget instances of this widget class.
+	 * Đăng ký tất cả thể hiện widget của lớp widget này.
 	 *
 	 * @since 2.8.0
 	 */
@@ -254,7 +254,7 @@ class WP_Widget {
 		$settings = $this->get_settings();
 		$empty    = true;
 
-		// When $settings is an array-like object, get an intrinsic array for use with array_keys().
+		// Khi $settings là đối tượng dạng mảng, lấy mảng nội tại để sử dụng với array_keys().
 		if ( $settings instanceof ArrayObject || $settings instanceof ArrayIterator ) {
 			$settings = $settings->getArrayCopy();
 		}
@@ -270,19 +270,19 @@ class WP_Widget {
 		}
 
 		if ( $empty ) {
-			// If there are none, we register the widget's existence with a generic template.
+			// Nếu không có thể hiện nào, đăng ký sự tồn tại của widget với mẫu chung.
 			$this->_set( 1 );
 			$this->_register_one();
 		}
 	}
 
 	/**
-	 * Sets the internal order number for the widget instance.
+	 * Thiết lập số thứ tự nội bộ cho thể hiện widget.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param int $number The unique order number of this widget instance compared to other
-	 *                    instances of the same class.
+	 * @param int $number Số thứ tự duy nhất của thể hiện widget này so với các
+	 *                    thể hiện khác của cùng lớp.
 	 */
 	public function _set( $number ) {
 		$this->number = $number;
@@ -290,51 +290,51 @@ class WP_Widget {
 	}
 
 	/**
-	 * Retrieves the widget display callback.
+	 * Lấy callback hiển thị widget.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @return callable Display callback.
+	 * @return callable Callback hiển thị.
 	 */
 	public function _get_display_callback() {
 		return array( $this, 'display_callback' );
 	}
 
 	/**
-	 * Retrieves the widget update callback.
+	 * Lấy callback cập nhật widget.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @return callable Update callback.
+	 * @return callable Callback cập nhật.
 	 */
 	public function _get_update_callback() {
 		return array( $this, 'update_callback' );
 	}
 
 	/**
-	 * Retrieves the form callback.
+	 * Lấy callback biểu mẫu.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @return callable Form callback.
+	 * @return callable Callback biểu mẫu.
 	 */
 	public function _get_form_callback() {
 		return array( $this, 'form_callback' );
 	}
 
 	/**
-	 * Determines whether the current request is inside the Customizer preview.
+	 * Xác định xem yêu cầu hiện tại có đang trong bản xem trước Customizer hay không.
 	 *
-	 * If true -- the current request is inside the Customizer preview, then
-	 * the object cache gets suspended and widgets should check this to decide
-	 * whether they should store anything persistently to the object cache,
-	 * to transients, or anywhere else.
+	 * Nếu true -- yêu cầu hiện tại nằm trong bản xem trước Customizer, thì
+	 * bộ nhớ đệm đối tượng bị tạm dừng và widget nên kiểm tra điều này để quyết định
+	 * liệu có nên lưu trữ bất cứ gì vĩnh viễn vào bộ nhớ đệm đối tượng,
+	 * transients, hoặc bất kỳ nơi nào khác hay không.
 	 *
 	 * @since 3.9.0
 	 *
 	 * @global WP_Customize_Manager $wp_customize
 	 *
-	 * @return bool True if within the Customizer preview, false if not.
+	 * @return bool True nếu đang trong bản xem trước Customizer, false nếu không.
 	 */
 	public function is_preview() {
 		global $wp_customize;
@@ -342,19 +342,19 @@ class WP_Widget {
 	}
 
 	/**
-	 * Generates the actual widget content (Do NOT override).
+	 * Tạo nội dung widget thực tế (KHÔNG ghi đè).
 	 *
-	 * Finds the instance and calls WP_Widget::widget().
+	 * Tìm thể hiện và gọi WP_Widget::widget().
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array     $args        Display arguments. See WP_Widget::widget() for information
-	 *                               on accepted arguments.
+	 * @param array     $args        Các tham số hiển thị. Xem WP_Widget::widget() để biết thông tin
+	 *                               về các tham số chấp nhận.
 	 * @param int|array $widget_args {
-	 *     Optional. Internal order number of the widget instance, or array of multi-widget arguments.
-	 *     Default 1.
+	 *     Tùy chọn. Số thứ tự nội bộ của thể hiện widget, hoặc mảng tham số đa widget.
+	 *     Mặc định 1.
 	 *
-	 *     @type int $number Number increment used for multiples of the same widget.
+	 *     @type int $number Số tăng dần dùng cho nhiều widget cùng loại.
 	 * }
 	 */
 	public function display_callback( $args, $widget_args = 1 ) {
@@ -370,15 +370,15 @@ class WP_Widget {
 			$instance = $instances[ $this->number ];
 
 			/**
-			 * Filters the settings for a particular widget instance.
+			 * Lọc cài đặt cho một thể hiện widget cụ thể.
 			 *
-			 * Returning false will effectively short-circuit display of the widget.
+			 * Trả về false sẽ hiệu quả ngắn mạch việc hiển thị widget.
 			 *
 			 * @since 2.8.0
 			 *
-			 * @param array     $instance The current widget instance's settings.
-			 * @param WP_Widget $widget   The current widget instance.
-			 * @param array     $args     An array of default widget arguments.
+			 * @param array     $instance Cài đặt của thể hiện widget hiện tại.
+			 * @param WP_Widget $widget   Thể hiện widget hiện tại.
+			 * @param array     $args     Mảng các tham số widget mặc định.
 			 */
 			$instance = apply_filters( 'widget_display_callback', $instance, $this, $args );
 
@@ -400,26 +400,26 @@ class WP_Widget {
 	}
 
 	/**
-	 * Handles changed settings (Do NOT override).
+	 * Xử lý cài đặt thay đổi (KHÔNG ghi đè).
 	 *
 	 * @since 2.8.0
 	 *
 	 * @global array $wp_registered_widgets
 	 *
-	 * @param int $deprecated Not used.
+	 * @param int $deprecated Không sử dụng.
 	 */
 	public function update_callback( $deprecated = 1 ) {
 		global $wp_registered_widgets;
 
 		$all_instances = $this->get_settings();
 
-		// We need to update the data.
+		// Chúng ta cần cập nhật dữ liệu.
 		if ( $this->updated ) {
 			return;
 		}
 
 		if ( isset( $_POST['delete_widget'] ) && $_POST['delete_widget'] ) {
-			// Delete the settings for this instance of the widget.
+			// Xóa cài đặt cho thể hiện widget này.
 			if ( isset( $_POST['the-widget-id'] ) ) {
 				$del_id = $_POST['the-widget-id'];
 			} else {
@@ -461,17 +461,17 @@ class WP_Widget {
 				}
 
 				/**
-				 * Filters a widget's settings before saving.
+				 * Lọc cài đặt widget trước khi lưu.
 				 *
-				 * Returning false will effectively short-circuit the widget's ability
-				 * to update settings.
+				 * Trả về false sẽ hiệu quả ngắn mạch khả năng cập nhật cài đặt
+				 * của widget.
 				 *
 				 * @since 2.8.0
 				 *
-				 * @param array     $instance     The current widget instance's settings.
-				 * @param array     $new_instance Array of new widget settings.
-				 * @param array     $old_instance Array of old widget settings.
-				 * @param WP_Widget $widget       The current widget instance.
+				 * @param array     $instance     Cài đặt của thể hiện widget hiện tại.
+				 * @param array     $new_instance Mảng cài đặt widget mới.
+				 * @param array     $old_instance Mảng cài đặt widget cũ.
+				 * @param WP_Widget $widget       Thể hiện widget hiện tại.
 				 */
 				$instance = apply_filters( 'widget_update_callback', $instance, $new_instance, $old_instance, $this );
 
@@ -479,7 +479,7 @@ class WP_Widget {
 					$all_instances[ $number ] = $instance;
 				}
 
-				break; // Run only once.
+				break; // Chỉ chạy một lần.
 			}
 		}
 
@@ -488,15 +488,15 @@ class WP_Widget {
 	}
 
 	/**
-	 * Generates the widget control form (Do NOT override).
+	 * Tạo biểu mẫu điều khiển widget (KHÔNG ghi đè).
 	 *
 	 * @since 2.8.0
 	 *
 	 * @param int|array $widget_args {
-	 *     Optional. Internal order number of the widget instance, or array of multi-widget arguments.
-	 *     Default 1.
+	 *     Tùy chọn. Số thứ tự nội bộ của thể hiện widget, hoặc mảng tham số đa widget.
+	 *     Mặc định 1.
 	 *
-	 *     @type int $number Number increment used for multiples of the same widget.
+	 *     @type int $number Số tăng dần dùng cho nhiều widget cùng loại.
 	 * }
 	 * @return string|null
 	 */
@@ -509,7 +509,7 @@ class WP_Widget {
 		$all_instances = $this->get_settings();
 
 		if ( -1 === $widget_args['number'] ) {
-			// We echo out a form where 'number' can be set later.
+			// Xuất biểu mẫu nơi 'number' có thể được thiết lập sau.
 			$this->_set( '__i__' );
 			$instance = array();
 		} else {
@@ -518,14 +518,14 @@ class WP_Widget {
 		}
 
 		/**
-		 * Filters the widget instance's settings before displaying the control form.
+		 * Lọc cài đặt thể hiện widget trước khi hiển thị biểu mẫu điều khiển.
 		 *
-		 * Returning false effectively short-circuits display of the control form.
+		 * Trả về false sẽ hiệu quả ngắn mạch việc hiển thị biểu mẫu điều khiển.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param array     $instance The current widget instance's settings.
-		 * @param WP_Widget $widget   The current widget instance.
+		 * @param array     $instance Cài đặt của thể hiện widget hiện tại.
+		 * @param WP_Widget $widget   Thể hiện widget hiện tại.
 		 */
 		$instance = apply_filters( 'widget_form_callback', $instance, $this );
 
@@ -535,20 +535,20 @@ class WP_Widget {
 			$return = $this->form( $instance );
 
 			/**
-			 * Fires at the end of the widget control form.
+			 * Kích hoạt ở cuối biểu mẫu điều khiển widget.
 			 *
-			 * Use this hook to add extra fields to the widget form. The hook
-			 * is only fired if the value passed to the 'widget_form_callback'
-			 * hook is not false.
+			 * Sử dụng hook này để thêm trường bổ sung vào biểu mẫu widget. Hook
+			 * chỉ được kích hoạt nếu giá trị truyền cho hook 'widget_form_callback'
+			 * không phải false.
 			 *
-			 * Note: If the widget has no form, the text echoed from the default
-			 * form method can be hidden using CSS.
+			 * Lưu ý: Nếu widget không có biểu mẫu, văn bản được xuất từ phương thức
+			 * biểu mẫu mặc định có thể được ẩn bằng CSS.
 			 *
 			 * @since 2.8.0
 			 *
-			 * @param WP_Widget $widget   The widget instance (passed by reference).
-			 * @param null      $return   Return null if new fields are added.
-			 * @param array     $instance An array of the widget's settings.
+			 * @param WP_Widget $widget   Thể hiện widget (truyền theo tham chiếu).
+			 * @param null      $return   Trả về null nếu có trường mới được thêm.
+			 * @param array     $instance Mảng cài đặt của widget.
 			 */
 			do_action_ref_array( 'in_widget_form', array( &$this, &$return, $instance ) );
 		}
@@ -557,12 +557,12 @@ class WP_Widget {
 	}
 
 	/**
-	 * Registers an instance of the widget class.
+	 * Đăng ký một thể hiện của lớp widget.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param int $number Optional. The unique order number of this widget instance
-	 *                    compared to other instances of the same class. Default -1.
+	 * @param int $number Tùy chọn. Số thứ tự duy nhất của thể hiện widget này
+	 *                    so với các thể hiện khác của cùng lớp. Mặc định -1.
 	 */
 	public function _register_one( $number = -1 ) {
 		wp_register_sidebar_widget(
@@ -590,11 +590,11 @@ class WP_Widget {
 	}
 
 	/**
-	 * Saves the settings for all instances of the widget class.
+	 * Lưu cài đặt cho tất cả thể hiện của lớp widget.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $settings Multi-dimensional array of widget instance settings.
+	 * @param array $settings Mảng đa chiều cài đặt thể hiện widget.
 	 */
 	public function save_settings( $settings ) {
 		$settings['_multiwidget'] = 1;
@@ -602,11 +602,11 @@ class WP_Widget {
 	}
 
 	/**
-	 * Retrieves the settings for all instances of the widget class.
+	 * Lấy cài đặt cho tất cả thể hiện của lớp widget.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @return array Multi-dimensional array of widget instance settings.
+	 * @return array Mảng đa chiều cài đặt thể hiện widget.
 	 */
 	public function get_settings() {
 
@@ -615,13 +615,13 @@ class WP_Widget {
 		if ( false === $settings ) {
 			$settings = array();
 			if ( isset( $this->alt_option_name ) ) {
-				// Get settings from alternative (legacy) option.
+				// Lấy cài đặt từ tùy chọn thay thế (cũ).
 				$settings = get_option( $this->alt_option_name, array() );
 
-				// Delete the alternative (legacy) option as the new option will be created using `$this->option_name`.
+				// Xóa tùy chọn thay thế (cũ) vì tùy chọn mới sẽ được tạo bằng `$this->option_name`.
 				delete_option( $this->alt_option_name );
 			}
-			// Save an option so it can be autoloaded next time.
+			// Lưu tùy chọn để có thể tự động tải lần sau.
 			$this->save_settings( $settings );
 		}
 
@@ -630,7 +630,7 @@ class WP_Widget {
 		}
 
 		if ( ! empty( $settings ) && ! isset( $settings['_multiwidget'] ) ) {
-			// Old format, convert if single widget.
+			// Định dạng cũ, chuyển đổi nếu là widget đơn.
 			$settings = wp_convert_widget_settings( $this->id_base, $this->option_name, $settings );
 		}
 

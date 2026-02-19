@@ -1,6 +1,6 @@
 <?php
 /**
- * Object Cache API functions missing from 3rd party object caches.
+ * Các hàm API Object Cache bị thiếu từ object cache của bên thứ ba.
  *
  * @link https://developer.wordpress.org/reference/classes/wp_object_cache/
  *
@@ -10,21 +10,21 @@
 
 if ( ! function_exists( 'wp_cache_add_multiple' ) ) :
 	/**
-	 * Adds multiple values to the cache in one call, if the cache keys don't already exist.
+	 * Thêm nhiều giá trị vào bộ nhớ đệm trong một lần gọi, nếu các khóa cache chưa tồn tại.
 	 *
-	 * Compat function to mimic wp_cache_add_multiple().
+	 * Hàm tương thích để mô phỏng wp_cache_add_multiple().
 	 *
 	 * @ignore
 	 * @since 6.0.0
 	 *
 	 * @see wp_cache_add_multiple()
 	 *
-	 * @param array  $data   Array of keys and values to be added.
-	 * @param string $group  Optional. Where the cache contents are grouped. Default empty.
-	 * @param int    $expire Optional. When to expire the cache contents, in seconds.
-	 *                       Default 0 (no expiration).
-	 * @return bool[] Array of return values, grouped by key. Each value is either
-	 *                true on success, or false if cache key and group already exist.
+	 * @param array  $data   Mảng các khóa và giá trị cần thêm.
+	 * @param string $group  Tùy chọn. Nơi nhóm nội dung cache. Mặc định rỗng.
+	 * @param int    $expire Tùy chọn. Thời gian hết hạn nội dung cache, tính bằng giây.
+	 *                       Mặc định 0 (không hết hạn).
+	 * @return bool[] Mảng giá trị trả về, nhóm theo khóa. Mỗi giá trị là
+	 *                true nếu thành công, hoặc false nếu khóa và nhóm cache đã tồn tại.
 	 */
 	function wp_cache_add_multiple( array $data, $group = '', $expire = 0 ) {
 		$values = array();
@@ -39,23 +39,23 @@ endif;
 
 if ( ! function_exists( 'wp_cache_set_multiple' ) ) :
 	/**
-	 * Sets multiple values to the cache in one call.
+	 * Thiết lập nhiều giá trị vào bộ nhớ đệm trong một lần gọi.
 	 *
-	 * Differs from wp_cache_add_multiple() in that it will always write data.
+	 * Khác với wp_cache_add_multiple() ở chỗ nó luôn ghi dữ liệu.
 	 *
-	 * Compat function to mimic wp_cache_set_multiple().
+	 * Hàm tương thích để mô phỏng wp_cache_set_multiple().
 	 *
 	 * @ignore
 	 * @since 6.0.0
 	 *
 	 * @see wp_cache_set_multiple()
 	 *
-	 * @param array  $data   Array of keys and values to be set.
-	 * @param string $group  Optional. Where the cache contents are grouped. Default empty.
-	 * @param int    $expire Optional. When to expire the cache contents, in seconds.
-	 *                       Default 0 (no expiration).
-	 * @return bool[] Array of return values, grouped by key. Each value is either
-	 *                true on success, or false on failure.
+	 * @param array  $data   Mảng các khóa và giá trị cần thiết lập.
+	 * @param string $group  Tùy chọn. Nơi nhóm nội dung cache. Mặc định rỗng.
+	 * @param int    $expire Tùy chọn. Thời gian hết hạn nội dung cache, tính bằng giây.
+	 *                       Mặc định 0 (không hết hạn).
+	 * @return bool[] Mảng giá trị trả về, nhóm theo khóa. Mỗi giá trị là
+	 *                true nếu thành công, hoặc false nếu thất bại.
 	 */
 	function wp_cache_set_multiple( array $data, $group = '', $expire = 0 ) {
 		$values = array();
@@ -70,21 +70,21 @@ endif;
 
 if ( ! function_exists( 'wp_cache_get_multiple' ) ) :
 	/**
-	 * Retrieves multiple values from the cache in one call.
+	 * Lấy nhiều giá trị từ bộ nhớ đệm trong một lần gọi.
 	 *
-	 * Compat function to mimic wp_cache_get_multiple().
+	 * Hàm tương thích để mô phỏng wp_cache_get_multiple().
 	 *
 	 * @ignore
 	 * @since 5.5.0
 	 *
 	 * @see wp_cache_get_multiple()
 	 *
-	 * @param array  $keys  Array of keys under which the cache contents are stored.
-	 * @param string $group Optional. Where the cache contents are grouped. Default empty.
-	 * @param bool   $force Optional. Whether to force an update of the local cache
-	 *                      from the persistent cache. Default false.
-	 * @return array Array of return values, grouped by key. Each value is either
-	 *               the cache contents on success, or false on failure.
+	 * @param array  $keys  Mảng các khóa lưu trữ nội dung cache.
+	 * @param string $group Tùy chọn. Nơi nhóm nội dung cache. Mặc định rỗng.
+	 * @param bool   $force Tùy chọn. Có buộc cập nhật cache cục bộ
+	 *                      từ cache bền vững hay không. Mặc định false.
+	 * @return array Mảng giá trị trả về, nhóm theo khóa. Mỗi giá trị là
+	 *               nội dung cache nếu thành công, hoặc false nếu thất bại.
 	 */
 	function wp_cache_get_multiple( $keys, $group = '', $force = false ) {
 		$values = array();
@@ -99,19 +99,19 @@ endif;
 
 if ( ! function_exists( 'wp_cache_delete_multiple' ) ) :
 	/**
-	 * Deletes multiple values from the cache in one call.
+	 * Xóa nhiều giá trị khỏi bộ nhớ đệm trong một lần gọi.
 	 *
-	 * Compat function to mimic wp_cache_delete_multiple().
+	 * Hàm tương thích để mô phỏng wp_cache_delete_multiple().
 	 *
 	 * @ignore
 	 * @since 6.0.0
 	 *
 	 * @see wp_cache_delete_multiple()
 	 *
-	 * @param array  $keys  Array of keys under which the cache to deleted.
-	 * @param string $group Optional. Where the cache contents are grouped. Default empty.
-	 * @return bool[] Array of return values, grouped by key. Each value is either
-	 *                true on success, or false if the contents were not deleted.
+	 * @param array  $keys  Mảng các khóa cache cần xóa.
+	 * @param string $group Tùy chọn. Nơi nhóm nội dung cache. Mặc định rỗng.
+	 * @return bool[] Mảng giá trị trả về, nhóm theo khóa. Mỗi giá trị là
+	 *                true nếu thành công, hoặc false nếu nội dung không được xóa.
 	 */
 	function wp_cache_delete_multiple( array $keys, $group = '' ) {
 		$values = array();
@@ -126,16 +126,16 @@ endif;
 
 if ( ! function_exists( 'wp_cache_flush_runtime' ) ) :
 	/**
-	 * Removes all cache items from the in-memory runtime cache.
+	 * Xóa tất cả mục cache khỏi bộ nhớ đệm runtime trong bộ nhớ.
 	 *
-	 * Compat function to mimic wp_cache_flush_runtime().
+	 * Hàm tương thích để mô phỏng wp_cache_flush_runtime().
 	 *
 	 * @ignore
 	 * @since 6.0.0
 	 *
 	 * @see wp_cache_flush_runtime()
 	 *
-	 * @return bool True on success, false on failure.
+	 * @return bool True nếu thành công, false nếu thất bại.
 	 */
 	function wp_cache_flush_runtime() {
 		if ( ! wp_cache_supports( 'flush_runtime' ) ) {
@@ -154,18 +154,18 @@ endif;
 
 if ( ! function_exists( 'wp_cache_flush_group' ) ) :
 	/**
-	 * Removes all cache items in a group, if the object cache implementation supports it.
+	 * Xóa tất cả mục cache trong một nhóm, nếu triển khai object cache hỗ trợ.
 	 *
-	 * Before calling this function, always check for group flushing support using the
-	 * `wp_cache_supports( 'flush_group' )` function.
+	 * Trước khi gọi hàm này, luôn kiểm tra hỗ trợ xóa nhóm bằng
+	 * hàm `wp_cache_supports( 'flush_group' )`.
 	 *
 	 * @since 6.1.0
 	 *
 	 * @see WP_Object_Cache::flush_group()
-	 * @global WP_Object_Cache $wp_object_cache Object cache global instance.
+	 * @global WP_Object_Cache $wp_object_cache Đối tượng cache toàn cục.
 	 *
-	 * @param string $group Name of group to remove from cache.
-	 * @return bool True if group was flushed, false otherwise.
+	 * @param string $group Tên nhóm cần xóa khỏi cache.
+	 * @return bool True nếu nhóm đã được xóa, false nếu không.
 	 */
 	function wp_cache_flush_group( $group ) {
 		global $wp_object_cache;
@@ -186,14 +186,14 @@ endif;
 
 if ( ! function_exists( 'wp_cache_supports' ) ) :
 	/**
-	 * Determines whether the object cache implementation supports a particular feature.
+	 * Xác định xem triển khai object cache có hỗ trợ một tính năng cụ thể hay không.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param string $feature Name of the feature to check for. Possible values include:
+	 * @param string $feature Tên tính năng cần kiểm tra. Các giá trị có thể bao gồm:
 	 *                        'add_multiple', 'set_multiple', 'get_multiple', 'delete_multiple',
 	 *                        'flush_runtime', 'flush_group'.
-	 * @return bool True if the feature is supported, false otherwise.
+	 * @return bool True nếu tính năng được hỗ trợ, false nếu không.
 	 */
 	function wp_cache_supports( $feature ) {
 		return false;

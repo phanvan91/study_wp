@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress Credits Administration API.
+ * API Quản trị Ghi nhận Đóng góp WordPress.
  *
  * @package WordPress
  * @subpackage Administration
@@ -8,14 +8,14 @@
  */
 
 /**
- * Retrieves the contributor credits.
+ * Lấy danh sách ghi nhận đóng góp.
  *
  * @since 3.2.0
- * @since 5.6.0 Added the `$version` and `$locale` parameters.
+ * @since 5.6.0 Thêm các tham số `$version` và `$locale`.
  *
- * @param string $version WordPress version. Defaults to the current version.
- * @param string $locale  WordPress locale. Defaults to the current user's locale.
- * @return array|false A list of all of the contributors, or false on error.
+ * @param string $version Phiên bản WordPress. Mặc định là phiên bản hiện tại.
+ * @param string $locale  Ngôn ngữ WordPress. Mặc định là ngôn ngữ của người dùng hiện tại.
+ * @return array|false Danh sách tất cả người đóng góp, hoặc false khi có lỗi.
  */
 function wp_credits( $version = '', $locale = '' ) {
 	if ( ! $version ) {
@@ -58,37 +58,37 @@ function wp_credits( $version = '', $locale = '' ) {
 }
 
 /**
- * Retrieves the link to a contributor's WordPress.org profile page.
+ * Lấy liên kết đến trang hồ sơ WordPress.org của người đóng góp.
  *
  * @access private
  * @since 3.2.0
  *
- * @param string $display_name  The contributor's display name (passed by reference).
- * @param string $username      The contributor's username.
- * @param string $profiles      URL to the contributor's WordPress.org profile page.
+ * @param string $display_name  Tên hiển thị của người đóng góp (truyền bằng tham chiếu).
+ * @param string $username      Tên đăng nhập của người đóng góp.
+ * @param string $profiles      URL đến trang hồ sơ WordPress.org của người đóng góp.
  */
 function _wp_credits_add_profile_link( &$display_name, $username, $profiles ) {
 	$display_name = '<a href="' . esc_url( sprintf( $profiles, $username ) ) . '">' . esc_html( $display_name ) . '</a>';
 }
 
 /**
- * Retrieves the link to an external library used in WordPress.
+ * Lấy liên kết đến thư viện bên ngoài được sử dụng trong WordPress.
  *
  * @access private
  * @since 3.2.0
  *
- * @param string $data External library data (passed by reference).
+ * @param string $data Dữ liệu thư viện bên ngoài (truyền bằng tham chiếu).
  */
 function _wp_credits_build_object_link( &$data ) {
 	$data = '<a href="' . esc_url( $data[1] ) . '">' . esc_html( $data[0] ) . '</a>';
 }
 
 /**
- * Displays the title for a given group of contributors.
+ * Hiển thị tiêu đề cho một nhóm người đóng góp nhất định.
  *
  * @since 5.3.0
  *
- * @param array $group_data The current contributor group.
+ * @param array $group_data Nhóm người đóng góp hiện tại.
  */
 function wp_credits_section_title( $group_data = array() ) {
 	if ( ! count( $group_data ) ) {
@@ -97,7 +97,7 @@ function wp_credits_section_title( $group_data = array() ) {
 
 	if ( $group_data['name'] ) {
 		if ( 'Translators' === $group_data['name'] ) {
-			// Considered a special slug in the API response. (Also, will never be returned for en_US.)
+			// Được coi là slug đặc biệt trong phản hồi API. (Ngoài ra, sẽ không bao giờ được trả về cho en_US.)
 			$title = _x( 'Translators', 'Translate this to be the equivalent of English Translators in your language for the credits page Translators section' );
 		} elseif ( isset( $group_data['placeholders'] ) ) {
 			// phpcs:ignore WordPress.WP.I18n.LowLevelTranslationFunction,WordPress.WP.I18n.NonSingularStringLiteralText
@@ -112,12 +112,12 @@ function wp_credits_section_title( $group_data = array() ) {
 }
 
 /**
- * Displays a list of contributors for a given group.
+ * Hiển thị danh sách người đóng góp cho một nhóm nhất định.
  *
  * @since 5.3.0
  *
- * @param array  $credits The credits groups returned from the API.
- * @param string $slug    The current group to display.
+ * @param array  $credits Các nhóm ghi nhận đóng góp được trả về từ API.
+ * @param string $slug    Nhóm hiện tại để hiển thị.
  */
 function wp_credits_section_list( $credits = array(), $slug = '' ) {
 	$group_data   = isset( $credits['groups'][ $slug ] ) ? $credits['groups'][ $slug ] : array();
@@ -127,7 +127,7 @@ function wp_credits_section_list( $credits = array(), $slug = '' ) {
 	}
 
 	if ( ! empty( $group_data['shuffle'] ) ) {
-		shuffle( $group_data['data'] ); // We were going to sort by ability to pronounce "hierarchical," but that wouldn't be fair to Matt.
+		shuffle( $group_data['data'] ); // Chúng tôi định sắp xếp theo khả năng phát âm "hierarchical", nhưng điều đó không công bằng với Matt.
 	}
 
 	switch ( $group_data['type'] ) {

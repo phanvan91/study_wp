@@ -1,6 +1,6 @@
 <?php
 /**
- * Widget API: WP_Widget_Recent_Posts class
+ * Widget API: Lớp WP_Widget_Recent_Posts
  *
  * @package WordPress
  * @subpackage Widgets
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement a Recent Posts widget.
+ * Lớp cốt lõi dùng để triển khai widget Bài viết gần đây.
  *
  * @since 2.8.0
  *
@@ -17,7 +17,7 @@
 class WP_Widget_Recent_Posts extends WP_Widget {
 
 	/**
-	 * Sets up a new Recent Posts widget instance.
+	 * Thiết lập một phiên bản widget Bài viết gần đây mới.
 	 *
 	 * @since 2.8.0
 	 */
@@ -33,13 +33,13 @@ class WP_Widget_Recent_Posts extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the content for the current Recent Posts widget instance.
+	 * Xuất nội dung cho phiên bản widget Bài viết gần đây hiện tại.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $args     Display arguments including 'before_title', 'after_title',
-	 *                        'before_widget', and 'after_widget'.
-	 * @param array $instance Settings for the current Recent Posts widget instance.
+	 * @param array $args     Các tham số hiển thị bao gồm 'before_title', 'after_title',
+	 *                        'before_widget', và 'after_widget'.
+	 * @param array $instance Cài đặt cho phiên bản widget Bài viết gần đây hiện tại.
 	 */
 	public function widget( $args, $instance ) {
 		if ( ! isset( $args['widget_id'] ) ) {
@@ -49,7 +49,7 @@ class WP_Widget_Recent_Posts extends WP_Widget {
 		$default_title = __( 'Recent Posts' );
 		$title         = ( ! empty( $instance['title'] ) ) ? $instance['title'] : $default_title;
 
-		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
+		/** Bộ lọc này được ghi chú tại wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
 		$number = ( ! empty( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
@@ -60,15 +60,15 @@ class WP_Widget_Recent_Posts extends WP_Widget {
 
 		$r = new WP_Query(
 			/**
-			 * Filters the arguments for the Recent Posts widget.
+			 * Lọc các tham số cho widget Bài viết gần đây.
 			 *
 			 * @since 3.4.0
-			 * @since 4.9.0 Added the `$instance` parameter.
+			 * @since 4.9.0 Thêm tham số `$instance`.
 			 *
 			 * @see WP_Query::get_posts()
 			 *
-			 * @param array $args     An array of arguments used to retrieve the recent posts.
-			 * @param array $instance Array of settings for the current widget.
+			 * @param array $args     Mảng các tham số dùng để truy xuất bài viết gần đây.
+			 * @param array $instance Mảng cài đặt cho widget hiện tại.
 			 */
 			apply_filters(
 				'widget_posts_args',
@@ -96,11 +96,11 @@ class WP_Widget_Recent_Posts extends WP_Widget {
 
 		$format = current_theme_supports( 'html5', 'navigation-widgets' ) ? 'html5' : 'xhtml';
 
-		/** This filter is documented in wp-includes/widgets/class-wp-nav-menu-widget.php */
+		/** Bộ lọc này được ghi chú tại wp-includes/widgets/class-wp-nav-menu-widget.php */
 		$format = apply_filters( 'navigation_widgets_format', $format );
 
 		if ( 'html5' === $format ) {
-			// The title may be filtered: Strip out HTML and make sure the aria-label is never empty.
+			// Tiêu đề có thể bị lọc: Loại bỏ HTML và đảm bảo aria-label không bao giờ rỗng.
 			$title      = trim( strip_tags( $title ) );
 			$aria_label = $title ? $title : $default_title;
 			echo '<nav aria-label="' . esc_attr( $aria_label ) . '">';
@@ -136,14 +136,14 @@ class WP_Widget_Recent_Posts extends WP_Widget {
 	}
 
 	/**
-	 * Handles updating the settings for the current Recent Posts widget instance.
+	 * Xử lý cập nhật cài đặt cho phiên bản widget Bài viết gần đây hiện tại.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $new_instance New settings for this instance as input by the user via
+	 * @param array $new_instance Cài đặt mới cho phiên bản này do người dùng nhập qua
 	 *                            WP_Widget::form().
-	 * @param array $old_instance Old settings for this instance.
-	 * @return array Updated settings to save.
+	 * @param array $old_instance Cài đặt cũ cho phiên bản này.
+	 * @return array Cài đặt đã cập nhật để lưu.
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance              = $old_instance;
@@ -154,11 +154,11 @@ class WP_Widget_Recent_Posts extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the settings form for the Recent Posts widget.
+	 * Xuất biểu mẫu cài đặt cho widget Bài viết gần đây.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $instance Current settings.
+	 * @param array $instance Cài đặt hiện tại.
 	 */
 	public function form( $instance ) {
 		$title     = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';

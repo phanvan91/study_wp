@@ -1,13 +1,13 @@
 <?php
 /**
- * Base WordPress Filesystem
+ * Lớp hệ thống tệp cơ sở của WordPress
  *
  * @package WordPress
  * @subpackage Filesystem
  */
 
 /**
- * Base WordPress Filesystem class which Filesystem implementations extend.
+ * Lớp hệ thống tệp cơ sở của WordPress mà các triển khai Filesystem kế thừa.
  *
  * @since 2.5.0
  */
@@ -15,7 +15,7 @@
 class WP_Filesystem_Base {
 
 	/**
-	 * Whether to display debug data for the connection.
+	 * Có hiển thị dữ liệu gỡ lỗi cho kết nối hay không.
 	 *
 	 * @since 2.5.0
 	 * @var bool
@@ -23,7 +23,7 @@ class WP_Filesystem_Base {
 	public $verbose = false;
 
 	/**
-	 * Cached list of local filepaths to mapped remote filepaths.
+	 * Danh sách đã lưu cache của đường dẫn tệp cục bộ ánh xạ tới đường dẫn tệp từ xa.
 	 *
 	 * @since 2.7.0
 	 * @var array
@@ -31,7 +31,7 @@ class WP_Filesystem_Base {
 	public $cache = array();
 
 	/**
-	 * The Access method of the current connection, Set automatically.
+	 * Phương thức truy cập của kết nối hiện tại, được thiết lập tự động.
 	 *
 	 * @since 2.5.0
 	 * @var string
@@ -48,18 +48,18 @@ class WP_Filesystem_Base {
 	public $options = array();
 
 	/**
-	 * Returns the path on the remote filesystem of ABSPATH.
+	 * Trả về đường dẫn trên hệ thống tệp từ xa của ABSPATH.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @return string The location of the remote path.
+	 * @return string Vị trí của đường dẫn từ xa.
 	 */
 	public function abspath() {
 		$folder = $this->find_folder( ABSPATH );
 
 		/*
-		 * Perhaps the FTP folder is rooted at the WordPress install.
-		 * Check for wp-includes folder in root. Could have some false positives, but rare.
+		 * Có thể thư mục FTP được gốc tại thư mục cài đặt WordPress.
+		 * Kiểm tra thư mục wp-includes trong thư mục gốc. Có thể có một số kết quả dương tính giả, nhưng hiếm.
 		 */
 		if ( ! $folder && $this->is_dir( '/' . WPINC ) ) {
 			$folder = '/';
@@ -69,40 +69,40 @@ class WP_Filesystem_Base {
 	}
 
 	/**
-	 * Returns the path on the remote filesystem of WP_CONTENT_DIR.
+	 * Trả về đường dẫn trên hệ thống tệp từ xa của WP_CONTENT_DIR.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @return string The location of the remote path.
+	 * @return string Vị trí của đường dẫn từ xa.
 	 */
 	public function wp_content_dir() {
 		return $this->find_folder( WP_CONTENT_DIR );
 	}
 
 	/**
-	 * Returns the path on the remote filesystem of WP_PLUGIN_DIR.
+	 * Trả về đường dẫn trên hệ thống tệp từ xa của WP_PLUGIN_DIR.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @return string The location of the remote path.
+	 * @return string Vị trí của đường dẫn từ xa.
 	 */
 	public function wp_plugins_dir() {
 		return $this->find_folder( WP_PLUGIN_DIR );
 	}
 
 	/**
-	 * Returns the path on the remote filesystem of the Themes Directory.
+	 * Trả về đường dẫn trên hệ thống tệp từ xa của thư mục Themes.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string|false $theme Optional. The theme stylesheet or template for the directory.
-	 *                            Default false.
-	 * @return string The location of the remote path.
+	 * @param string|false $theme Tùy chọn. Stylesheet hoặc template của giao diện cho thư mục.
+	 *                            Mặc định false.
+	 * @return string Vị trí của đường dẫn từ xa.
 	 */
 	public function wp_themes_dir( $theme = false ) {
 		$theme_root = get_theme_root( $theme );
 
-		// Account for relative theme roots.
+		// Xử lý cho các thư mục gốc giao diện tương đối.
 		if ( '/themes' === $theme_root || ! is_dir( $theme_root ) ) {
 			$theme_root = WP_CONTENT_DIR . $theme_root;
 		}
@@ -111,30 +111,30 @@ class WP_Filesystem_Base {
 	}
 
 	/**
-	 * Returns the path on the remote filesystem of WP_LANG_DIR.
+	 * Trả về đường dẫn trên hệ thống tệp từ xa của WP_LANG_DIR.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @return string The location of the remote path.
+	 * @return string Vị trí của đường dẫn từ xa.
 	 */
 	public function wp_lang_dir() {
 		return $this->find_folder( WP_LANG_DIR );
 	}
 
 	/**
-	 * Locates a folder on the remote filesystem.
+	 * Định vị thư mục trên hệ thống tệp từ xa.
 	 *
 	 * @since 2.5.0
-	 * @deprecated 2.7.0 use WP_Filesystem_Base::abspath() or WP_Filesystem_Base::wp_*_dir() instead.
+	 * @deprecated 2.7.0 sử dụng WP_Filesystem_Base::abspath() hoặc WP_Filesystem_Base::wp_*_dir() thay thế.
 	 * @see WP_Filesystem_Base::abspath()
 	 * @see WP_Filesystem_Base::wp_content_dir()
 	 * @see WP_Filesystem_Base::wp_plugins_dir()
 	 * @see WP_Filesystem_Base::wp_themes_dir()
 	 * @see WP_Filesystem_Base::wp_lang_dir()
 	 *
-	 * @param string $base    Optional. The folder to start searching from. Default '.'.
-	 * @param bool   $verbose Optional. True to display debug information. Default false.
-	 * @return string The location of the remote path.
+	 * @param string $base    Tùy chọn. Thư mục bắt đầu tìm kiếm. Mặc định '.'.
+	 * @param bool   $verbose Tùy chọn. True để hiển thị thông tin gỡ lỗi. Mặc định false.
+	 * @return string Vị trí của đường dẫn từ xa.
 	 */
 	public function find_base_dir( $base = '.', $verbose = false ) {
 		_deprecated_function( __FUNCTION__, '2.7.0', 'WP_Filesystem_Base::abspath() or WP_Filesystem_Base::wp_*_dir()' );
@@ -143,19 +143,19 @@ class WP_Filesystem_Base {
 	}
 
 	/**
-	 * Locates a folder on the remote filesystem.
+	 * Định vị thư mục trên hệ thống tệp từ xa.
 	 *
 	 * @since 2.5.0
-	 * @deprecated 2.7.0 use WP_Filesystem_Base::abspath() or WP_Filesystem_Base::wp_*_dir() methods instead.
+	 * @deprecated 2.7.0 sử dụng WP_Filesystem_Base::abspath() hoặc các phương thức WP_Filesystem_Base::wp_*_dir() thay thế.
 	 * @see WP_Filesystem_Base::abspath()
 	 * @see WP_Filesystem_Base::wp_content_dir()
 	 * @see WP_Filesystem_Base::wp_plugins_dir()
 	 * @see WP_Filesystem_Base::wp_themes_dir()
 	 * @see WP_Filesystem_Base::wp_lang_dir()
 	 *
-	 * @param string $base    Optional. The folder to start searching from. Default '.'.
-	 * @param bool   $verbose Optional. True to display debug information. Default false.
-	 * @return string The location of the remote path.
+	 * @param string $base    Tùy chọn. Thư mục bắt đầu tìm kiếm. Mặc định '.'.
+	 * @param bool   $verbose Tùy chọn. True để hiển thị thông tin gỡ lỗi. Mặc định false.
+	 * @return string Vị trí của đường dẫn từ xa.
 	 */
 	public function get_base_dir( $base = '.', $verbose = false ) {
 		_deprecated_function( __FUNCTION__, '2.7.0', 'WP_Filesystem_Base::abspath() or WP_Filesystem_Base::wp_*_dir()' );
@@ -164,15 +164,15 @@ class WP_Filesystem_Base {
 	}
 
 	/**
-	 * Locates a folder on the remote filesystem.
+	 * Định vị thư mục trên hệ thống tệp từ xa.
 	 *
-	 * Assumes that on Windows systems, Stripping off the Drive
-	 * letter is OK Sanitizes \\ to / in Windows filepaths.
+	 * Giả định rằng trên hệ thống Windows, việc loại bỏ ký tự ổ đĩa
+	 * là chấp nhận được. Chuẩn hóa \\ thành / trong đường dẫn tệp Windows.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $folder the folder to locate.
-	 * @return string|false The location of the remote path, false on failure.
+	 * @param string $folder Thư mục cần định vị.
+	 * @return string|false Vị trí của đường dẫn từ xa, false nếu thất bại.
 	 */
 	public function find_folder( $folder ) {
 		if ( isset( $this->cache[ $folder ] ) ) {
@@ -187,7 +187,7 @@ class WP_Filesystem_Base {
 				'FTP_LANG_DIR'    => WP_LANG_DIR,
 			);
 
-			// Direct matches ( folder = CONSTANT/ ).
+			// Khớp trực tiếp ( folder = CONSTANT/ ).
 			foreach ( $constant_overrides as $constant => $dir ) {
 				if ( ! defined( $constant ) ) {
 					continue;
@@ -198,13 +198,13 @@ class WP_Filesystem_Base {
 				}
 			}
 
-			// Prefix matches ( folder = CONSTANT/subdir ),
+			// Khớp tiền tố ( folder = CONSTANT/subdir ),
 			foreach ( $constant_overrides as $constant => $dir ) {
 				if ( ! defined( $constant ) ) {
 					continue;
 				}
 
-				if ( 0 === stripos( $folder, $dir ) ) { // $folder starts with $dir.
+				if ( 0 === stripos( $folder, $dir ) ) { // $folder bắt đầu bằng $dir.
 					$potential_folder = preg_replace( '#^' . preg_quote( $dir, '#' ) . '/#i', trailingslashit( constant( $constant ) ), $folder );
 					$potential_folder = trailingslashit( $potential_folder );
 
@@ -216,19 +216,19 @@ class WP_Filesystem_Base {
 				}
 			}
 		} elseif ( 'direct' === $this->method ) {
-			$folder = str_replace( '\\', '/', $folder ); // Windows path sanitization.
+			$folder = str_replace( '\\', '/', $folder ); // Chuẩn hóa đường dẫn Windows.
 
 			return trailingslashit( $folder );
 		}
 
-		$folder = preg_replace( '|^([a-z]{1}):|i', '', $folder ); // Strip out Windows drive letter if it's there.
-		$folder = str_replace( '\\', '/', $folder ); // Windows path sanitization.
+		$folder = preg_replace( '|^([a-z]{1}):|i', '', $folder ); // Loại bỏ ký tự ổ đĩa Windows nếu có.
+		$folder = str_replace( '\\', '/', $folder ); // Chuẩn hóa đường dẫn Windows.
 
 		if ( isset( $this->cache[ $folder ] ) ) {
 			return $this->cache[ $folder ];
 		}
 
-		if ( $this->exists( $folder ) ) { // Folder exists at that absolute path.
+		if ( $this->exists( $folder ) ) { // Thư mục tồn tại tại đường dẫn tuyệt đối đó.
 			$folder                 = trailingslashit( $folder );
 			$this->cache[ $folder ] = $folder;
 
@@ -245,16 +245,16 @@ class WP_Filesystem_Base {
 	}
 
 	/**
-	 * Locates a folder on the remote filesystem.
+	 * Định vị thư mục trên hệ thống tệp từ xa.
 	 *
-	 * Expects Windows sanitized path.
+	 * Yêu cầu đường dẫn đã được chuẩn hóa theo Windows.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $folder The folder to locate.
-	 * @param string $base   The folder to start searching from.
-	 * @param bool   $loop   If the function has recursed. Internal use only.
-	 * @return string|false The location of the remote path, false to cease looping.
+	 * @param string $folder Thư mục cần định vị.
+	 * @param string $base   Thư mục bắt đầu tìm kiếm.
+	 * @param bool   $loop   Nếu hàm đã đệ quy. Chỉ sử dụng nội bộ.
+	 * @return string|false Vị trí của đường dẫn từ xa, false để dừng vòng lặp.
 	 */
 	public function search_for_folder( $folder, $base = '.', $loop = false ) {
 		if ( empty( $base ) || '.' === $base ) {
@@ -277,19 +277,19 @@ class WP_Filesystem_Base {
 
 		foreach ( $folder_parts as $index => $key ) {
 			if ( $index === $last_index ) {
-				continue; // We want this to be caught by the next code block.
+				continue; // Chúng ta muốn phần này được xử lý bởi khối mã tiếp theo.
 			}
 
 			/*
-			 * Working from /home/ to /user/ to /wordpress/ see if that file exists within
-			 * the current folder, If it's found, change into it and follow through looking
-			 * for it. If it can't find WordPress down that route, it'll continue onto the next
-			 * folder level, and see if that matches, and so on. If it reaches the end, and still
-			 * can't find it, it'll return false for the entire function.
+			 * Làm việc từ /home/ đến /user/ đến /wordpress/ xem tệp đó có tồn tại trong
+			 * thư mục hiện tại không. Nếu tìm thấy, chuyển vào đó và tiếp tục tìm kiếm.
+			 * Nếu không tìm thấy WordPress theo đường đó, sẽ tiếp tục đến cấp thư mục tiếp theo,
+			 * và xem có khớp không, v.v. Nếu đạt đến cuối mà vẫn không tìm thấy,
+			 * sẽ trả về false cho toàn bộ hàm.
 			 */
 			if ( isset( $files[ $key ] ) ) {
 
-				// Let's try that folder:
+				// Hãy thử thư mục đó:
 				$newdir = trailingslashit( path_join( $base, $key ) );
 
 				if ( $this->verbose ) {

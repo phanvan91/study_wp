@@ -1,26 +1,26 @@
 <?php
 /**
- * Core Taxonomy API
+ * API Taxonomy cốt lõi
  *
  * @package WordPress
  * @subpackage Taxonomy
  */
 
 //
-// Taxonomy registration.
+// Đăng ký taxonomy.
 //
 
 /**
- * Creates the initial taxonomies.
+ * Tạo các taxonomy ban đầu.
  *
- * This function fires twice: in wp-settings.php before plugins are loaded (for
- * backward compatibility reasons), and again on the {@see 'init'} action. We must
- * avoid registering rewrite rules before the {@see 'init'} action.
+ * Hàm này được gọi hai lần: trong wp-settings.php trước khi plugin được tải (vì
+ * lý do tương thích ngược), và một lần nữa trong action {@see 'init'}. Chúng ta phải
+ * tránh đăng ký rewrite rules trước action {@see 'init'}.
  *
  * @since 2.8.0
- * @since 5.9.0 Added `'wp_template_part_area'` taxonomy.
+ * @since 5.9.0 Thêm taxonomy `'wp_template_part_area'`.
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  */
 function create_initial_taxonomies() {
 	global $wp_rewrite;
@@ -36,11 +36,11 @@ function create_initial_taxonomies() {
 	} else {
 
 		/**
-		 * Filters the post formats rewrite base.
+		 * Lọc rewrite base của định dạng bài viết.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string $context Context of the rewrite base. Default 'type'.
+		 * @param string $context Ngữ cảnh của rewrite base. Mặc định 'type'.
 		 */
 		$post_format_base = apply_filters( 'post_format_rewrite_base', 'type' );
 		$rewrite          = array(
@@ -264,20 +264,20 @@ function create_initial_taxonomies() {
 }
 
 /**
- * Retrieves a list of registered taxonomy names or objects.
+ * Lấy danh sách tên hoặc đối tượng taxonomy đã đăng ký.
  *
  * @since 3.0.0
  *
- * @global WP_Taxonomy[] $wp_taxonomies The registered taxonomies.
+ * @global WP_Taxonomy[] $wp_taxonomies Các taxonomy đã đăng ký.
  *
- * @param array  $args     Optional. An array of `key => value` arguments to match against the taxonomy objects.
- *                         Default empty array.
- * @param string $output   Optional. The type of output to return in the array. Either 'names'
- *                         or 'objects'. Default 'names'.
- * @param string $operator Optional. The logical operation to perform. Accepts 'and' or 'or'. 'or' means only
- *                         one element from the array needs to match; 'and' means all elements must match.
- *                         Default 'and'.
- * @return string[]|WP_Taxonomy[] An array of taxonomy names or objects.
+ * @param array  $args     Tùy chọn. Mảng các tham số `key => value` để so khớp với các đối tượng taxonomy.
+ *                         Mặc định mảng rỗng.
+ * @param string $output   Tùy chọn. Kiểu đầu ra trả về trong mảng. Có thể là 'names'
+ *                         hoặc 'objects'. Mặc định 'names'.
+ * @param string $operator Tùy chọn. Phép toán logic cần thực hiện. Chấp nhận 'and' hoặc 'or'. 'or' nghĩa là chỉ
+ *                         cần một phần tử trong mảng khớp; 'and' nghĩa là tất cả phần tử phải khớp.
+ *                         Mặc định 'and'.
+ * @return string[]|WP_Taxonomy[] Mảng tên hoặc đối tượng taxonomy.
  */
 function get_taxonomies( $args = array(), $output = 'names', $operator = 'and' ) {
 	global $wp_taxonomies;
@@ -288,25 +288,25 @@ function get_taxonomies( $args = array(), $output = 'names', $operator = 'and' )
 }
 
 /**
- * Returns the names or objects of the taxonomies which are registered for the requested object or object type,
- * such as a post object or post type name.
+ * Trả về tên hoặc đối tượng của các taxonomy đã được đăng ký cho đối tượng hoặc loại đối tượng được yêu cầu,
+ * chẳng hạn như đối tượng bài viết hoặc tên post type.
  *
- * Example:
+ * Ví dụ:
  *
  *     $taxonomies = get_object_taxonomies( 'post' );
  *
- * This results in:
+ * Kết quả:
  *
  *     Array( 'category', 'post_tag' )
  *
  * @since 2.3.0
  *
- * @global WP_Taxonomy[] $wp_taxonomies The registered taxonomies.
+ * @global WP_Taxonomy[] $wp_taxonomies Các taxonomy đã đăng ký.
  *
- * @param string|string[]|WP_Post $object_type Name of the type of taxonomy object, or an object (row from posts).
- * @param string                  $output      Optional. The type of output to return in the array. Accepts either
- *                                             'names' or 'objects'. Default 'names'.
- * @return string[]|WP_Taxonomy[] The names or objects of all taxonomies of `$object_type`.
+ * @param string|string[]|WP_Post $object_type Tên loại đối tượng taxonomy, hoặc một đối tượng (dòng từ bảng posts).
+ * @param string                  $output      Tùy chọn. Kiểu đầu ra trả về trong mảng. Chấp nhận
+ *                                             'names' hoặc 'objects'. Mặc định 'names'.
+ * @return string[]|WP_Taxonomy[] Tên hoặc đối tượng của tất cả taxonomy thuộc `$object_type`.
  */
 function get_object_taxonomies( $object_type, $output = 'names' ) {
 	global $wp_taxonomies;
@@ -335,17 +335,17 @@ function get_object_taxonomies( $object_type, $output = 'names' ) {
 }
 
 /**
- * Retrieves the taxonomy object of $taxonomy.
+ * Lấy đối tượng taxonomy của $taxonomy.
  *
- * The get_taxonomy function will first check that the parameter string given
- * is a taxonomy object and if it is, it will return it.
+ * Hàm get_taxonomy sẽ kiểm tra trước xem chuỗi tham số được truyền vào
+ * có phải là đối tượng taxonomy hay không, nếu đúng thì trả về nó.
  *
  * @since 2.3.0
  *
- * @global WP_Taxonomy[] $wp_taxonomies The registered taxonomies.
+ * @global WP_Taxonomy[] $wp_taxonomies Các taxonomy đã đăng ký.
  *
- * @param string $taxonomy Name of taxonomy object to return.
- * @return WP_Taxonomy|false The taxonomy object or false if $taxonomy doesn't exist.
+ * @param string $taxonomy Tên của đối tượng taxonomy cần trả về.
+ * @return WP_Taxonomy|false Đối tượng taxonomy hoặc false nếu $taxonomy không tồn tại.
  */
 function get_taxonomy( $taxonomy ) {
 	global $wp_taxonomies;
@@ -358,20 +358,20 @@ function get_taxonomy( $taxonomy ) {
 }
 
 /**
- * Determines whether the taxonomy name exists.
+ * Xác định xem tên taxonomy có tồn tại hay không.
  *
- * Formerly is_taxonomy(), introduced in 2.3.0.
+ * Trước đây là is_taxonomy(), được giới thiệu từ 2.3.0.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay lập trình Theme.
  *
  * @since 3.0.0
  *
- * @global WP_Taxonomy[] $wp_taxonomies The registered taxonomies.
+ * @global WP_Taxonomy[] $wp_taxonomies Các taxonomy đã đăng ký.
  *
- * @param string $taxonomy Name of taxonomy object.
- * @return bool Whether the taxonomy exists.
+ * @param string $taxonomy Tên đối tượng taxonomy.
+ * @return bool Taxonomy có tồn tại hay không.
  */
 function taxonomy_exists( $taxonomy ) {
 	global $wp_taxonomies;
@@ -380,21 +380,21 @@ function taxonomy_exists( $taxonomy ) {
 }
 
 /**
- * Determines whether the taxonomy object is hierarchical.
+ * Xác định xem đối tượng taxonomy có phân cấp hay không.
  *
- * Checks to make sure that the taxonomy is an object first. Then Gets the
- * object, and finally returns the hierarchical value in the object.
+ * Kiểm tra trước xem taxonomy có phải là đối tượng hay không. Sau đó lấy
+ * đối tượng, và cuối cùng trả về giá trị phân cấp trong đối tượng.
  *
- * A false return value might also mean that the taxonomy does not exist.
+ * Giá trị trả về false cũng có thể có nghĩa là taxonomy không tồn tại.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay lập trình Theme.
  *
  * @since 2.3.0
  *
- * @param string $taxonomy Name of taxonomy object.
- * @return bool Whether the taxonomy is hierarchical.
+ * @param string $taxonomy Tên đối tượng taxonomy.
+ * @return bool Taxonomy có phân cấp hay không.
  */
 function is_taxonomy_hierarchical( $taxonomy ) {
 	if ( ! taxonomy_exists( $taxonomy ) ) {
@@ -406,114 +406,114 @@ function is_taxonomy_hierarchical( $taxonomy ) {
 }
 
 /**
- * Creates or modifies a taxonomy object.
+ * Tạo hoặc chỉnh sửa đối tượng taxonomy.
  *
- * Note: Do not use before the {@see 'init'} hook.
+ * Lưu ý: Không sử dụng trước hook {@see 'init'}.
  *
- * A simple function for creating or modifying a taxonomy object based on
- * the parameters given. If modifying an existing taxonomy object, note
- * that the `$object_type` value from the original registration will be
- * overwritten.
+ * Một hàm đơn giản để tạo hoặc chỉnh sửa đối tượng taxonomy dựa trên
+ * các tham số được cung cấp. Nếu chỉnh sửa đối tượng taxonomy hiện có, lưu ý
+ * rằng giá trị `$object_type` từ lần đăng ký gốc sẽ bị
+ * ghi đè.
  *
  * @since 2.3.0
- * @since 4.2.0 Introduced `show_in_quick_edit` argument.
- * @since 4.4.0 The `show_ui` argument is now enforced on the term editing screen.
- * @since 4.4.0 The `public` argument now controls whether the taxonomy can be queried on the front end.
- * @since 4.5.0 Introduced `publicly_queryable` argument.
- * @since 4.7.0 Introduced `show_in_rest`, 'rest_base' and 'rest_controller_class'
- *              arguments to register the taxonomy in REST API.
- * @since 5.1.0 Introduced `meta_box_sanitize_cb` argument.
- * @since 5.4.0 Added the registered taxonomy object as a return value.
- * @since 5.5.0 Introduced `default_term` argument.
- * @since 5.9.0 Introduced `rest_namespace` argument.
+ * @since 4.2.0 Giới thiệu tham số `show_in_quick_edit`.
+ * @since 4.4.0 Tham số `show_ui` giờ được áp dụng trên màn hình chỉnh sửa term.
+ * @since 4.4.0 Tham số `public` giờ kiểm soát việc taxonomy có thể truy vấn ở front end hay không.
+ * @since 4.5.0 Giới thiệu tham số `publicly_queryable`.
+ * @since 4.7.0 Giới thiệu các tham số `show_in_rest`, 'rest_base' và 'rest_controller_class'
+ *              để đăng ký taxonomy trong REST API.
+ * @since 5.1.0 Giới thiệu tham số `meta_box_sanitize_cb`.
+ * @since 5.4.0 Thêm đối tượng taxonomy đã đăng ký làm giá trị trả về.
+ * @since 5.5.0 Giới thiệu tham số `default_term`.
+ * @since 5.9.0 Giới thiệu tham số `rest_namespace`.
  *
- * @global WP_Taxonomy[] $wp_taxonomies Registered taxonomies.
+ * @global WP_Taxonomy[] $wp_taxonomies Các taxonomy đã đăng ký.
  *
- * @param string       $taxonomy    Taxonomy key. Must not exceed 32 characters and may only contain
- *                                  lowercase alphanumeric characters, dashes, and underscores. See sanitize_key().
- * @param array|string $object_type Object type or array of object types with which the taxonomy should be associated.
+ * @param string       $taxonomy    Khóa taxonomy. Không được vượt quá 32 ký tự và chỉ có thể chứa
+ *                                  ký tự chữ-số viết thường, dấu gạch ngang và dấu gạch dưới. Xem sanitize_key().
+ * @param array|string $object_type Loại đối tượng hoặc mảng các loại đối tượng mà taxonomy sẽ được liên kết.
  * @param array|string $args        {
- *     Optional. Array or query string of arguments for registering a taxonomy.
+ *     Tùy chọn. Mảng hoặc chuỗi query string của các tham số để đăng ký taxonomy.
  *
- *     @type string[]      $labels                An array of labels for this taxonomy. By default, Tag labels are
- *                                                used for non-hierarchical taxonomies, and Category labels are used
- *                                                for hierarchical taxonomies. See accepted values in
- *                                                get_taxonomy_labels(). Default empty array.
- *     @type string        $description           A short descriptive summary of what the taxonomy is for. Default empty.
- *     @type bool          $public                Whether a taxonomy is intended for use publicly either via
- *                                                the admin interface or by front-end users. The default settings
- *                                                of `$publicly_queryable`, `$show_ui`, and `$show_in_nav_menus`
- *                                                are inherited from `$public`.
- *     @type bool          $publicly_queryable    Whether the taxonomy is publicly queryable.
- *                                                If not set, the default is inherited from `$public`
- *     @type bool          $hierarchical          Whether the taxonomy is hierarchical. Default false.
- *     @type bool          $show_ui               Whether to generate and allow a UI for managing terms in this taxonomy in
- *                                                the admin. If not set, the default is inherited from `$public`
- *                                                (default true).
- *     @type bool          $show_in_menu          Whether to show the taxonomy in the admin menu. If true, the taxonomy is
- *                                                shown as a submenu of the object type menu. If false, no menu is shown.
- *                                                `$show_ui` must be true. If not set, default is inherited from `$show_ui`
- *                                                (default true).
- *     @type bool          $show_in_nav_menus     Makes this taxonomy available for selection in navigation menus. If not
- *                                                set, the default is inherited from `$public` (default true).
- *     @type bool          $show_in_rest          Whether to include the taxonomy in the REST API. Set this to true
- *                                                for the taxonomy to be available in the block editor.
- *     @type string        $rest_base             To change the base url of REST API route. Default is $taxonomy.
- *     @type string        $rest_namespace        To change the namespace URL of REST API route. Default is wp/v2.
- *     @type string        $rest_controller_class REST API Controller class name. Default is 'WP_REST_Terms_Controller'.
- *     @type bool          $show_tagcloud         Whether to list the taxonomy in the Tag Cloud Widget controls. If not set,
- *                                                the default is inherited from `$show_ui` (default true).
- *     @type bool          $show_in_quick_edit    Whether to show the taxonomy in the quick/bulk edit panel. It not set,
- *                                                the default is inherited from `$show_ui` (default true).
- *     @type bool          $show_admin_column     Whether to display a column for the taxonomy on its post type listing
- *                                                screens. Default false.
- *     @type bool|callable $meta_box_cb           Provide a callback function for the meta box display. If not set,
- *                                                post_categories_meta_box() is used for hierarchical taxonomies, and
- *                                                post_tags_meta_box() is used for non-hierarchical. If false, no meta
- *                                                box is shown.
- *     @type callable      $meta_box_sanitize_cb  Callback function for sanitizing taxonomy data saved from a meta
- *                                                box. If no callback is defined, an appropriate one is determined
- *                                                based on the value of `$meta_box_cb`.
+ *     @type string[]      $labels                Mảng các nhãn cho taxonomy này. Mặc định, nhãn Tag được sử dụng
+ *                                                cho taxonomy không phân cấp, và nhãn Category được sử dụng
+ *                                                cho taxonomy phân cấp. Xem các giá trị được chấp nhận trong
+ *                                                get_taxonomy_labels(). Mặc định mảng rỗng.
+ *     @type string        $description           Mô tả ngắn gọn về mục đích của taxonomy. Mặc định rỗng.
+ *     @type bool          $public                Taxonomy có được sử dụng công khai thông qua
+ *                                                giao diện admin hoặc bởi người dùng front-end hay không. Các thiết lập mặc định
+ *                                                của `$publicly_queryable`, `$show_ui`, và `$show_in_nav_menus`
+ *                                                được kế thừa từ `$public`.
+ *     @type bool          $publicly_queryable    Taxonomy có thể truy vấn công khai hay không.
+ *                                                Nếu không được thiết lập, mặc định được kế thừa từ `$public`.
+ *     @type bool          $hierarchical          Taxonomy có phân cấp hay không. Mặc định false.
+ *     @type bool          $show_ui               Có tạo và cho phép giao diện quản lý term trong taxonomy này ở
+ *                                                admin hay không. Nếu không thiết lập, mặc định được kế thừa từ `$public`
+ *                                                (mặc định true).
+ *     @type bool          $show_in_menu          Có hiển thị taxonomy trong menu admin hay không. Nếu true, taxonomy
+ *                                                được hiển thị như menu con của menu loại đối tượng. Nếu false, không hiển thị menu.
+ *                                                `$show_ui` phải là true. Nếu không thiết lập, mặc định kế thừa từ `$show_ui`
+ *                                                (mặc định true).
+ *     @type bool          $show_in_nav_menus     Cho phép taxonomy này có sẵn để chọn trong menu điều hướng. Nếu không
+ *                                                thiết lập, mặc định kế thừa từ `$public` (mặc định true).
+ *     @type bool          $show_in_rest          Có bao gồm taxonomy trong REST API hay không. Thiết lập true
+ *                                                để taxonomy có sẵn trong trình soạn thảo khối.
+ *     @type string        $rest_base             Để thay đổi URL gốc của route REST API. Mặc định là $taxonomy.
+ *     @type string        $rest_namespace        Để thay đổi namespace URL của route REST API. Mặc định là wp/v2.
+ *     @type string        $rest_controller_class Tên class Controller REST API. Mặc định là 'WP_REST_Terms_Controller'.
+ *     @type bool          $show_tagcloud         Có liệt kê taxonomy trong điều khiển Widget Tag Cloud hay không. Nếu không thiết lập,
+ *                                                mặc định kế thừa từ `$show_ui` (mặc định true).
+ *     @type bool          $show_in_quick_edit    Có hiển thị taxonomy trong bảng chỉnh sửa nhanh/hàng loạt hay không. Nếu không thiết lập,
+ *                                                mặc định kế thừa từ `$show_ui` (mặc định true).
+ *     @type bool          $show_admin_column     Có hiển thị cột cho taxonomy trên màn hình danh sách post type hay không.
+ *                                                Mặc định false.
+ *     @type bool|callable $meta_box_cb           Cung cấp hàm callback cho hiển thị meta box. Nếu không thiết lập,
+ *                                                post_categories_meta_box() được dùng cho taxonomy phân cấp, và
+ *                                                post_tags_meta_box() được dùng cho không phân cấp. Nếu false, không
+ *                                                hiển thị meta box.
+ *     @type callable      $meta_box_sanitize_cb  Hàm callback để làm sạch dữ liệu taxonomy được lưu từ meta
+ *                                                box. Nếu không định nghĩa callback, một callback phù hợp sẽ được xác định
+ *                                                dựa trên giá trị của `$meta_box_cb`.
  *     @type string[]      $capabilities {
- *         Array of capabilities for this taxonomy.
+ *         Mảng các quyền cho taxonomy này.
  *
- *         @type string $manage_terms Default 'manage_categories'.
- *         @type string $edit_terms   Default 'manage_categories'.
- *         @type string $delete_terms Default 'manage_categories'.
- *         @type string $assign_terms Default 'edit_posts'.
+ *         @type string $manage_terms Mặc định 'manage_categories'.
+ *         @type string $edit_terms   Mặc định 'manage_categories'.
+ *         @type string $delete_terms Mặc định 'manage_categories'.
+ *         @type string $assign_terms Mặc định 'edit_posts'.
  *     }
  *     @type bool|array    $rewrite {
- *         Triggers the handling of rewrites for this taxonomy. Default true, using $taxonomy as slug. To prevent
- *         rewrite, set to false. To specify rewrite rules, an array can be passed with any of these keys:
+ *         Kích hoạt xử lý rewrite cho taxonomy này. Mặc định true, sử dụng $taxonomy làm slug. Để ngăn
+ *         rewrite, thiết lập false. Để chỉ định rewrite rules, có thể truyền mảng với các khóa sau:
  *
- *         @type string $slug         Customize the permastruct slug. Default `$taxonomy` key.
- *         @type bool   $with_front   Should the permastruct be prepended with WP_Rewrite::$front. Default true.
- *         @type bool   $hierarchical Either hierarchical rewrite tag or not. Default false.
- *         @type int    $ep_mask      Assign an endpoint mask. Default `EP_NONE`.
+ *         @type string $slug         Tùy chỉnh slug permastruct. Mặc định khóa `$taxonomy`.
+ *         @type bool   $with_front   Có nên thêm WP_Rewrite::$front vào trước permastruct hay không. Mặc định true.
+ *         @type bool   $hierarchical Có phải rewrite tag phân cấp hay không. Mặc định false.
+ *         @type int    $ep_mask      Gán endpoint mask. Mặc định `EP_NONE`.
  *     }
- *     @type string|bool   $query_var             Sets the query var key for this taxonomy. Default `$taxonomy` key. If
- *                                                false, a taxonomy cannot be loaded at `?{query_var}={term_slug}`. If a
- *                                                string, the query `?{query_var}={term_slug}` will be valid.
- *     @type callable      $update_count_callback Works much like a hook, in that it will be called when the count is
- *                                                updated. Default _update_post_term_count() for taxonomies attached
- *                                                to post types, which confirms that the objects are published before
- *                                                counting them. Default _update_generic_term_count() for taxonomies
- *                                                attached to other object types, such as users.
+ *     @type string|bool   $query_var             Thiết lập khóa query var cho taxonomy này. Mặc định khóa `$taxonomy`. Nếu
+ *                                                false, taxonomy không thể tải tại `?{query_var}={term_slug}`. Nếu là
+ *                                                chuỗi, query `?{query_var}={term_slug}` sẽ hợp lệ.
+ *     @type callable      $update_count_callback Hoạt động giống hook, sẽ được gọi khi số lượng được
+ *                                                cập nhật. Mặc định _update_post_term_count() cho taxonomy gắn với
+ *                                                post type, xác nhận rằng đối tượng đã được xuất bản trước
+ *                                                khi đếm. Mặc định _update_generic_term_count() cho taxonomy
+ *                                                gắn với loại đối tượng khác, như users.
  *     @type string|array  $default_term {
- *         Default term to be used for the taxonomy.
+ *         Term mặc định được sử dụng cho taxonomy.
  *
- *         @type string $name         Name of default term.
- *         @type string $slug         Slug for default term. Default empty.
- *         @type string $description  Description for default term. Default empty.
+ *         @type string $name         Tên của term mặc định.
+ *         @type string $slug         Slug cho term mặc định. Mặc định rỗng.
+ *         @type string $description  Mô tả cho term mặc định. Mặc định rỗng.
  *     }
- *     @type bool          $sort                  Whether terms in this taxonomy should be sorted in the order they are
- *                                                provided to `wp_set_object_terms()`. Default null which equates to false.
- *     @type array         $args                  Array of arguments to automatically use inside `wp_get_object_terms()`
- *                                                for this taxonomy.
- *     @type bool          $_builtin              This taxonomy is a "built-in" taxonomy. INTERNAL USE ONLY!
- *                                                Default false.
+ *     @type bool          $sort                  Có nên sắp xếp term trong taxonomy này theo thứ tự được
+ *                                                cung cấp cho `wp_set_object_terms()` hay không. Mặc định null tương đương false.
+ *     @type array         $args                  Mảng tham số tự động sử dụng bên trong `wp_get_object_terms()`
+ *                                                cho taxonomy này.
+ *     @type bool          $_builtin              Taxonomy này là taxonomy "tích hợp sẵn". CHỈ SỬ DỤNG NỘI BỘ!
+ *                                                Mặc định false.
  * }
- * @return WP_Taxonomy|WP_Error The registered taxonomy object on success, WP_Error object on failure.
+ * @return WP_Taxonomy|WP_Error Đối tượng taxonomy đã đăng ký khi thành công, đối tượng WP_Error khi thất bại.
  */
 function register_taxonomy( $taxonomy, $object_type, $args = array() ) {
 	global $wp_taxonomies;
@@ -536,7 +536,7 @@ function register_taxonomy( $taxonomy, $object_type, $args = array() ) {
 
 	$taxonomy_object->add_hooks();
 
-	// Add default term.
+	// Thêm term mặc định.
 	if ( ! empty( $taxonomy_object->default_term ) ) {
 		$term = term_exists( $taxonomy_object->default_term['name'], $taxonomy );
 		if ( $term ) {
@@ -551,7 +551,7 @@ function register_taxonomy( $taxonomy, $object_type, $args = array() ) {
 				)
 			);
 
-			// Update `term_id` in options.
+			// Cập nhật `term_id` trong options.
 			if ( ! is_wp_error( $term ) ) {
 				update_option( 'default_term_' . $taxonomy_object->name, $term['term_id'] );
 			}
@@ -559,31 +559,31 @@ function register_taxonomy( $taxonomy, $object_type, $args = array() ) {
 	}
 
 	/**
-	 * Fires after a taxonomy is registered.
+	 * Kích hoạt sau khi một taxonomy được đăng ký.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string       $taxonomy    Taxonomy slug.
-	 * @param array|string $object_type Object type or array of object types.
-	 * @param array        $args        Array of taxonomy registration arguments.
+	 * @param string       $taxonomy    Slug taxonomy.
+	 * @param array|string $object_type Loại đối tượng hoặc mảng các loại đối tượng.
+	 * @param array        $args        Mảng tham số đăng ký taxonomy.
 	 */
 	do_action( 'registered_taxonomy', $taxonomy, $object_type, (array) $taxonomy_object );
 
 	/**
-	 * Fires after a specific taxonomy is registered.
+	 * Kích hoạt sau khi một taxonomy cụ thể được đăng ký.
 	 *
-	 * The dynamic portion of the filter name, `$taxonomy`, refers to the taxonomy key.
+	 * Phần động của tên filter, `$taxonomy`, tham chiếu đến khóa taxonomy.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `registered_taxonomy_category`
 	 *  - `registered_taxonomy_post_tag`
 	 *
 	 * @since 6.0.0
 	 *
-	 * @param string       $taxonomy    Taxonomy slug.
-	 * @param array|string $object_type Object type or array of object types.
-	 * @param array        $args        Array of taxonomy registration arguments.
+	 * @param string       $taxonomy    Slug taxonomy.
+	 * @param array|string $object_type Loại đối tượng hoặc mảng các loại đối tượng.
+	 * @param array        $args        Mảng tham số đăng ký taxonomy.
 	 */
 	do_action( "registered_taxonomy_{$taxonomy}", $taxonomy, $object_type, (array) $taxonomy_object );
 
@@ -591,16 +591,16 @@ function register_taxonomy( $taxonomy, $object_type, $args = array() ) {
 }
 
 /**
- * Unregisters a taxonomy.
+ * Hủy đăng ký taxonomy.
  *
- * Can not be used to unregister built-in taxonomies.
+ * Không thể dùng để hủy đăng ký các taxonomy tích hợp sẵn.
  *
  * @since 4.5.0
  *
- * @global WP_Taxonomy[] $wp_taxonomies List of taxonomies.
+ * @global WP_Taxonomy[] $wp_taxonomies Danh sách taxonomy.
  *
- * @param string $taxonomy Taxonomy name.
- * @return true|WP_Error True on success, WP_Error on failure or if the taxonomy doesn't exist.
+ * @param string $taxonomy Tên taxonomy.
+ * @return true|WP_Error True khi thành công, WP_Error khi thất bại hoặc taxonomy không tồn tại.
  */
 function unregister_taxonomy( $taxonomy ) {
 	global $wp_taxonomies;
@@ -611,7 +611,7 @@ function unregister_taxonomy( $taxonomy ) {
 
 	$taxonomy_object = get_taxonomy( $taxonomy );
 
-	// Do not allow unregistering internal taxonomies.
+	// Không cho phép hủy đăng ký các taxonomy nội bộ.
 	if ( $taxonomy_object->_builtin ) {
 		return new WP_Error( 'invalid_taxonomy', __( 'Unregistering a built-in taxonomy is not allowed.' ) );
 	}
@@ -619,15 +619,15 @@ function unregister_taxonomy( $taxonomy ) {
 	$taxonomy_object->remove_rewrite_rules();
 	$taxonomy_object->remove_hooks();
 
-	// Remove the taxonomy.
+	// Xóa taxonomy.
 	unset( $wp_taxonomies[ $taxonomy ] );
 
 	/**
-	 * Fires after a taxonomy is unregistered.
+	 * Kích hoạt sau khi taxonomy bị hủy đăng ký.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @param string $taxonomy Taxonomy name.
+	 * @param string $taxonomy Tên taxonomy.
 	 */
 	do_action( 'unregistered_taxonomy', $taxonomy );
 
@@ -635,73 +635,73 @@ function unregister_taxonomy( $taxonomy ) {
 }
 
 /**
- * Builds an object with all taxonomy labels out of a taxonomy object.
+ * Xây dựng đối tượng với tất cả nhãn taxonomy từ đối tượng taxonomy.
  *
  * @since 3.0.0
- * @since 4.3.0 Added the `no_terms` label.
- * @since 4.4.0 Added the `items_list_navigation` and `items_list` labels.
- * @since 4.9.0 Added the `most_used` and `back_to_items` labels.
- * @since 5.7.0 Added the `filter_by_item` label.
- * @since 5.8.0 Added the `item_link` and `item_link_description` labels.
- * @since 5.9.0 Added the `name_field_description`, `slug_field_description`,
- *              `parent_field_description`, and `desc_field_description` labels.
- * @since 6.6.0 Added the `template_name` label.
+ * @since 4.3.0 Thêm nhãn `no_terms`.
+ * @since 4.4.0 Thêm nhãn `items_list_navigation` và `items_list`.
+ * @since 4.9.0 Thêm nhãn `most_used` và `back_to_items`.
+ * @since 5.7.0 Thêm nhãn `filter_by_item`.
+ * @since 5.8.0 Thêm nhãn `item_link` và `item_link_description`.
+ * @since 5.9.0 Thêm nhãn `name_field_description`, `slug_field_description`,
+ *              `parent_field_description`, và `desc_field_description`.
+ * @since 6.6.0 Thêm nhãn `template_name`.
  *
- * @param WP_Taxonomy $tax Taxonomy object.
+ * @param WP_Taxonomy $tax Đối tượng taxonomy.
  * @return object {
- *     Taxonomy labels object. The first default value is for non-hierarchical taxonomies
- *     (like tags) and the second one is for hierarchical taxonomies (like categories).
+ *     Đối tượng nhãn taxonomy. Giá trị mặc định đầu tiên dành cho taxonomy không phân cấp
+ *     (như tag) và giá trị thứ hai dành cho taxonomy phân cấp (như category).
  *
- *     @type string $name                       General name for the taxonomy, usually plural. The same
- *                                              as and overridden by `$tax->label`. Default 'Tags'/'Categories'.
- *     @type string $singular_name              Name for one object of this taxonomy. Default 'Tag'/'Category'.
- *     @type string $search_items               Default 'Search Tags'/'Search Categories'.
- *     @type string $popular_items              This label is only used for non-hierarchical taxonomies.
- *                                              Default 'Popular Tags'.
- *     @type string $all_items                  Default 'All Tags'/'All Categories'.
- *     @type string $parent_item                This label is only used for hierarchical taxonomies. Default
+ *     @type string $name                       Tên chung cho taxonomy, thường ở dạng số nhiều. Giống
+ *                                              và bị ghi đè bởi `$tax->label`. Mặc định 'Tags'/'Categories'.
+ *     @type string $singular_name              Tên cho một đối tượng của taxonomy này. Mặc định 'Tag'/'Category'.
+ *     @type string $search_items               Mặc định 'Search Tags'/'Search Categories'.
+ *     @type string $popular_items              Nhãn này chỉ dùng cho taxonomy không phân cấp.
+ *                                              Mặc định 'Popular Tags'.
+ *     @type string $all_items                  Mặc định 'All Tags'/'All Categories'.
+ *     @type string $parent_item                Nhãn này chỉ dùng cho taxonomy phân cấp. Mặc định
  *                                              'Parent Category'.
- *     @type string $parent_item_colon          The same as `parent_item`, but with colon `:` in the end.
- *     @type string $name_field_description     Description for the Name field on Edit Tags screen.
- *                                              Default 'The name is how it appears on your site'.
- *     @type string $slug_field_description     Description for the Slug field on Edit Tags screen.
- *                                              Default 'The &#8220;slug&#8221; is the URL-friendly version
- *                                              of the name. It is usually all lowercase and contains
- *                                              only letters, numbers, and hyphens'.
- *     @type string $parent_field_description   Description for the Parent field on Edit Tags screen.
- *                                              Default 'Assign a parent term to create a hierarchy.
- *                                              The term Jazz, for example, would be the parent
- *                                              of Bebop and Big Band'.
- *     @type string $desc_field_description     Description for the Description field on Edit Tags screen.
- *                                              Default 'The description is not prominent by default;
- *                                              however, some themes may show it'.
- *     @type string $edit_item                  Default 'Edit Tag'/'Edit Category'.
- *     @type string $view_item                  Default 'View Tag'/'View Category'.
- *     @type string $update_item                Default 'Update Tag'/'Update Category'.
- *     @type string $add_new_item               Default 'Add Tag'/'Add Category'.
- *     @type string $new_item_name              Default 'New Tag Name'/'New Category Name'.
- *     @type string $template_name              Default 'Tag Archives'/'Category Archives'.
- *     @type string $separate_items_with_commas This label is only used for non-hierarchical taxonomies. Default
- *                                              'Separate tags with commas', used in the meta box.
- *     @type string $add_or_remove_items        This label is only used for non-hierarchical taxonomies. Default
- *                                              'Add or remove tags', used in the meta box when JavaScript
- *                                              is disabled.
- *     @type string $choose_from_most_used      This label is only used on non-hierarchical taxonomies. Default
- *                                              'Choose from the most used tags', used in the meta box.
- *     @type string $not_found                  Default 'No tags found'/'No categories found', used in
- *                                              the meta box and taxonomy list table.
- *     @type string $no_terms                   Default 'No tags'/'No categories', used in the posts and media
- *                                              list tables.
- *     @type string $filter_by_item             This label is only used for hierarchical taxonomies. Default
- *                                              'Filter by category', used in the posts list table.
- *     @type string $items_list_navigation      Label for the table pagination hidden heading.
- *     @type string $items_list                 Label for the table hidden heading.
- *     @type string $most_used                  Title for the Most Used tab. Default 'Most Used'.
- *     @type string $back_to_items              Label displayed after a term has been updated.
- *     @type string $item_link                  Used in the block editor. Title for a navigation link block variation.
- *                                              Default 'Tag Link'/'Category Link'.
- *     @type string $item_link_description      Used in the block editor. Description for a navigation link block
- *                                              variation. Default 'A link to a tag'/'A link to a category'.
+ *     @type string $parent_item_colon          Giống `parent_item`, nhưng có dấu hai chấm `:` ở cuối.
+ *     @type string $name_field_description     Mô tả cho trường Tên trên màn hình Sửa Tag.
+ *                                              Mặc định 'Tên là cách nó hiển thị trên trang web của bạn'.
+ *     @type string $slug_field_description     Mô tả cho trường Slug trên màn hình Sửa Tag.
+ *                                              Mặc định 'Slug là phiên bản thân thiện URL
+ *                                              của tên. Thường viết thường và chỉ chứa
+ *                                              chữ cái, số và dấu gạch ngang'.
+ *     @type string $parent_field_description   Mô tả cho trường Cha trên màn hình Sửa Tag.
+ *                                              Mặc định 'Gán term cha để tạo phân cấp.
+ *                                              Ví dụ, term Jazz sẽ là cha
+ *                                              của Bebop và Big Band'.
+ *     @type string $desc_field_description     Mô tả cho trường Mô tả trên màn hình Sửa Tag.
+ *                                              Mặc định 'Mô tả không nổi bật theo mặc định;
+ *                                              tuy nhiên, một số theme có thể hiển thị nó'.
+ *     @type string $edit_item                  Mặc định 'Edit Tag'/'Edit Category'.
+ *     @type string $view_item                  Mặc định 'View Tag'/'View Category'.
+ *     @type string $update_item                Mặc định 'Update Tag'/'Update Category'.
+ *     @type string $add_new_item               Mặc định 'Add Tag'/'Add Category'.
+ *     @type string $new_item_name              Mặc định 'New Tag Name'/'New Category Name'.
+ *     @type string $template_name              Mặc định 'Tag Archives'/'Category Archives'.
+ *     @type string $separate_items_with_commas Nhãn này chỉ dùng cho taxonomy không phân cấp. Mặc định
+ *                                              'Separate tags with commas', dùng trong meta box.
+ *     @type string $add_or_remove_items        Nhãn này chỉ dùng cho taxonomy không phân cấp. Mặc định
+ *                                              'Add or remove tags', dùng trong meta box khi JavaScript
+ *                                              bị tắt.
+ *     @type string $choose_from_most_used      Nhãn này chỉ dùng cho taxonomy không phân cấp. Mặc định
+ *                                              'Choose from the most used tags', dùng trong meta box.
+ *     @type string $not_found                  Mặc định 'No tags found'/'No categories found', dùng trong
+ *                                              meta box và bảng danh sách taxonomy.
+ *     @type string $no_terms                   Mặc định 'No tags'/'No categories', dùng trong bảng danh sách
+ *                                              bài viết và media.
+ *     @type string $filter_by_item             Nhãn này chỉ dùng cho taxonomy phân cấp. Mặc định
+ *                                              'Filter by category', dùng trong bảng danh sách bài viết.
+ *     @type string $items_list_navigation      Nhãn cho tiêu đề ẩn phân trang bảng.
+ *     @type string $items_list                 Nhãn cho tiêu đề ẩn bảng.
+ *     @type string $most_used                  Tiêu đề cho tab Được dùng nhiều nhất. Mặc định 'Most Used'.
+ *     @type string $back_to_items              Nhãn hiển thị sau khi term được cập nhật.
+ *     @type string $item_link                  Dùng trong trình soạn thảo khối. Tiêu đề cho biến thể khối liên kết điều hướng.
+ *                                              Mặc định 'Tag Link'/'Category Link'.
+ *     @type string $item_link_description      Dùng trong trình soạn thảo khối. Mô tả cho biến thể khối liên kết
+ *                                              điều hướng. Mặc định 'A link to a tag'/'A link to a category'.
  * }
  */
 function get_taxonomy_labels( $tax ) {
@@ -731,39 +731,39 @@ function get_taxonomy_labels( $tax ) {
 	$default_labels = clone $labels;
 
 	/**
-	 * Filters the labels of a specific taxonomy.
+	 * Lọc các nhãn của một taxonomy cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers to the taxonomy slug.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu đến slug taxonomy.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `taxonomy_labels_category`
 	 *  - `taxonomy_labels_post_tag`
 	 *
 	 * @since 4.4.0
 	 *
-	 * @see get_taxonomy_labels() for the full list of taxonomy labels.
+	 * @see get_taxonomy_labels() để xem danh sách đầy đủ các nhãn taxonomy.
 	 *
-	 * @param object $labels Object with labels for the taxonomy as member variables.
+	 * @param object $labels Đối tượng chứa các nhãn của taxonomy dưới dạng biến thành viên.
 	 */
 	$labels = apply_filters( "taxonomy_labels_{$taxonomy}", $labels );
 
-	// Ensure that the filtered labels contain all required default values.
+	// Đảm bảo rằng các nhãn đã được lọc chứa tất cả giá trị mặc định cần thiết.
 	$labels = (object) array_merge( (array) $default_labels, (array) $labels );
 
 	return $labels;
 }
 
 /**
- * Adds an already registered taxonomy to an object type.
+ * Thêm một taxonomy đã đăng ký vào loại đối tượng.
  *
  * @since 3.0.0
  *
- * @global WP_Taxonomy[] $wp_taxonomies The registered taxonomies.
+ * @global WP_Taxonomy[] $wp_taxonomies Các taxonomy đã đăng ký.
  *
- * @param string $taxonomy    Name of taxonomy object.
- * @param string $object_type Name of the object type.
- * @return bool True if successful, false if not.
+ * @param string $taxonomy    Tên đối tượng taxonomy.
+ * @param string $object_type Tên loại đối tượng.
+ * @return bool True nếu thành công, false nếu không.
  */
 function register_taxonomy_for_object_type( $taxonomy, $object_type ) {
 	global $wp_taxonomies;
@@ -780,16 +780,16 @@ function register_taxonomy_for_object_type( $taxonomy, $object_type ) {
 		$wp_taxonomies[ $taxonomy ]->object_type[] = $object_type;
 	}
 
-	// Filter out empties.
+	// Lọc bỏ các phần tử rỗng.
 	$wp_taxonomies[ $taxonomy ]->object_type = array_filter( $wp_taxonomies[ $taxonomy ]->object_type );
 
 	/**
-	 * Fires after a taxonomy is registered for an object type.
+	 * Kích hoạt sau khi một taxonomy được đăng ký cho loại đối tượng.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param string $taxonomy    Taxonomy name.
-	 * @param string $object_type Name of the object type.
+	 * @param string $taxonomy    Tên taxonomy.
+	 * @param string $object_type Tên loại đối tượng.
 	 */
 	do_action( 'registered_taxonomy_for_object_type', $taxonomy, $object_type );
 
@@ -797,15 +797,15 @@ function register_taxonomy_for_object_type( $taxonomy, $object_type ) {
 }
 
 /**
- * Removes an already registered taxonomy from an object type.
+ * Gỡ bỏ một taxonomy đã đăng ký khỏi loại đối tượng.
  *
  * @since 3.7.0
  *
- * @global WP_Taxonomy[] $wp_taxonomies The registered taxonomies.
+ * @global WP_Taxonomy[] $wp_taxonomies Các taxonomy đã đăng ký.
  *
- * @param string $taxonomy    Name of taxonomy object.
- * @param string $object_type Name of the object type.
- * @return bool True if successful, false if not.
+ * @param string $taxonomy    Tên đối tượng taxonomy.
+ * @param string $object_type Tên loại đối tượng.
+ * @return bool True nếu thành công, false nếu không.
  */
 function unregister_taxonomy_for_object_type( $taxonomy, $object_type ) {
 	global $wp_taxonomies;
@@ -826,12 +826,12 @@ function unregister_taxonomy_for_object_type( $taxonomy, $object_type ) {
 	unset( $wp_taxonomies[ $taxonomy ]->object_type[ $key ] );
 
 	/**
-	 * Fires after a taxonomy is unregistered for an object type.
+	 * Kích hoạt sau khi một taxonomy bị hủy đăng ký khỏi loại đối tượng.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param string $taxonomy    Taxonomy name.
-	 * @param string $object_type Name of the object type.
+	 * @param string $taxonomy    Tên taxonomy.
+	 * @param string $object_type Tên loại đối tượng.
 	 */
 	do_action( 'unregistered_taxonomy_for_object_type', $taxonomy, $object_type );
 
@@ -839,34 +839,34 @@ function unregister_taxonomy_for_object_type( $taxonomy, $object_type ) {
 }
 
 //
-// Term API.
+// API Term.
 //
 
 /**
- * Retrieves object IDs of valid taxonomy and term.
+ * Lấy các ID đối tượng của taxonomy và term hợp lệ.
  *
- * The strings of `$taxonomies` must exist before this function will continue.
- * On failure of finding a valid taxonomy, it will return a WP_Error.
+ * Các chuỗi `$taxonomies` phải tồn tại trước khi hàm này tiếp tục.
+ * Khi không tìm thấy taxonomy hợp lệ, hàm sẽ trả về WP_Error.
  *
- * The `$terms` aren't checked the same as `$taxonomies`, but still need to exist
- * for object IDs to be returned.
+ * `$terms` không được kiểm tra giống như `$taxonomies`, nhưng vẫn cần tồn tại
+ * để các ID đối tượng được trả về.
  *
- * It is possible to change the order that object IDs are returned by using `$args`
- * with either ASC or DESC array. The value should be in the key named 'order'.
+ * Có thể thay đổi thứ tự trả về ID đối tượng bằng cách sử dụng `$args`
+ * với mảng ASC hoặc DESC. Giá trị nên nằm trong khóa có tên 'order'.
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|int[]       $term_ids   Term ID or array of term IDs of terms that will be used.
- * @param string|string[] $taxonomies String of taxonomy name or Array of string values of taxonomy names.
+ * @param int|int[]       $term_ids   ID term hoặc mảng các ID term sẽ được sử dụng.
+ * @param string|string[] $taxonomies Chuỗi tên taxonomy hoặc mảng chuỗi tên taxonomy.
  * @param array|string    $args       {
- *     Change the order of the object IDs.
+ *     Thay đổi thứ tự của các ID đối tượng.
  *
- *     @type string $order Order to retrieve terms. Accepts 'ASC' or 'DESC'. Default 'ASC'.
+ *     @type string $order Thứ tự lấy term. Chấp nhận 'ASC' hoặc 'DESC'. Mặc định 'ASC'.
  * }
- * @return string[]|WP_Error An array of object IDs as numeric strings on success,
- *                           WP_Error if the taxonomy does not exist.
+ * @return string[]|WP_Error Mảng các ID đối tượng dưới dạng chuỗi số khi thành công,
+ *                           WP_Error nếu taxonomy không tồn tại.
  */
 function get_objects_in_term( $term_ids, $taxonomies, $args = array() ) {
 	global $wpdb;
@@ -912,13 +912,13 @@ function get_objects_in_term( $term_ids, $taxonomies, $args = array() ) {
 }
 
 /**
- * Given a taxonomy query, generates SQL to be appended to a main query.
+ * Cho một truy vấn taxonomy, tạo SQL để nối vào truy vấn chính.
  *
  * @since 3.1.0
  *
  * @see WP_Tax_Query
  *
- * @param array  $tax_query         A compact tax query
+ * @param array  $tax_query         Truy vấn taxonomy dạng gọn.
  * @param string $primary_table
  * @param string $primary_id_column
  * @return string[]
@@ -929,50 +929,49 @@ function get_tax_sql( $tax_query, $primary_table, $primary_id_column ) {
 }
 
 /**
- * Gets all term data from database by term ID.
+ * Lấy tất cả dữ liệu term từ cơ sở dữ liệu theo ID term.
  *
- * The usage of the get_term function is to apply filters to a term object. It
- * is possible to get a term object from the database before applying the
- * filters.
+ * Mục đích sử dụng hàm get_term là để áp dụng các bộ lọc cho đối tượng term. Có thể
+ * lấy đối tượng term từ cơ sở dữ liệu trước khi áp dụng các bộ lọc.
  *
- * $term ID must be part of $taxonomy, to get from the database. Failure, might
- * be able to be captured by the hooks. Failure would be the same value as $wpdb
- * returns for the get_row method.
+ * ID $term phải thuộc $taxonomy để lấy từ cơ sở dữ liệu. Thất bại có thể
+ * được bắt bởi các hook. Thất bại sẽ trả về cùng giá trị như $wpdb
+ * trả về cho phương thức get_row.
  *
- * There are two hooks, one is specifically for each term, named 'get_term', and
- * the second is for the taxonomy name, 'term_$taxonomy'. Both hooks gets the
- * term object, and the taxonomy name as parameters. Both hooks are expected to
- * return a term object.
+ * Có hai hook, một dành riêng cho mỗi term, tên 'get_term', và
+ * cái thứ hai dành cho tên taxonomy, 'term_$taxonomy'. Cả hai hook nhận
+ * đối tượng term và tên taxonomy làm tham số. Cả hai hook được kỳ vọng
+ * trả về đối tượng term.
  *
- * {@see 'get_term'} hook - Takes two parameters the term Object and the taxonomy name.
- * Must return term object. Used in get_term() as a catch-all filter for every
+ * Hook {@see 'get_term'} - Nhận hai tham số: đối tượng term và tên taxonomy.
+ * Phải trả về đối tượng term. Được dùng trong get_term() như bộ lọc tổng hợp cho mọi
  * $term.
  *
- * {@see 'get_$taxonomy'} hook - Takes two parameters the term Object and the taxonomy
- * name. Must return term object. $taxonomy will be the taxonomy name, so for
- * example, if 'category', it would be 'get_category' as the filter name. Useful
- * for custom taxonomies or plugging into default taxonomies.
+ * Hook {@see 'get_$taxonomy'} - Nhận hai tham số: đối tượng term và tên
+ * taxonomy. Phải trả về đối tượng term. $taxonomy sẽ là tên taxonomy, ví dụ
+ * nếu là 'category', tên bộ lọc sẽ là 'get_category'. Hữu ích
+ * cho các taxonomy tùy chỉnh hoặc gắn vào taxonomy mặc định.
  *
- * @todo Better formatting for DocBlock
+ * @todo Định dạng DocBlock tốt hơn
  *
  * @since 2.3.0
- * @since 4.4.0 Converted to return a WP_Term object if `$output` is `OBJECT`.
- *              The `$taxonomy` parameter was made optional.
+ * @since 4.4.0 Chuyển đổi để trả về đối tượng WP_Term nếu `$output` là `OBJECT`.
+ *              Tham số `$taxonomy` được đặt là tùy chọn.
  *
- * @see sanitize_term_field() The $context param lists the available values for get_term_by() $filter param.
+ * @see sanitize_term_field() Tham số $context liệt kê các giá trị khả dụng cho tham số $filter của get_term_by().
  *
- * @param int|WP_Term|object $term     If integer, term data will be fetched from the database,
- *                                     or from the cache if available.
- *                                     If stdClass object (as in the results of a database query),
- *                                     will apply filters and return a `WP_Term` object with the `$term` data.
- *                                     If `WP_Term`, will return `$term`.
- * @param string             $taxonomy Optional. Taxonomy name that `$term` is part of.
- * @param string             $output   Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
- *                                     correspond to a WP_Term object, an associative array, or a numeric array,
- *                                     respectively. Default OBJECT.
- * @param string             $filter   Optional. How to sanitize term fields. Default 'raw'.
- * @return WP_Term|array|WP_Error|null WP_Term instance (or array) on success, depending on the `$output` value.
- *                                     WP_Error if `$taxonomy` does not exist. Null for miscellaneous failure.
+ * @param int|WP_Term|object $term     Nếu là số nguyên, dữ liệu term sẽ được lấy từ cơ sở dữ liệu,
+ *                                     hoặc từ cache nếu có sẵn.
+ *                                     Nếu là đối tượng stdClass (như kết quả truy vấn cơ sở dữ liệu),
+ *                                     sẽ áp dụng bộ lọc và trả về đối tượng `WP_Term` với dữ liệu `$term`.
+ *                                     Nếu là `WP_Term`, sẽ trả về `$term`.
+ * @param string             $taxonomy Tùy chọn. Tên taxonomy mà `$term` thuộc về.
+ * @param string             $output   Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT, ARRAY_A, hoặc ARRAY_N,
+ *                                     tương ứng với đối tượng WP_Term, mảng kết hợp, hoặc mảng số.
+ *                                     Mặc định OBJECT.
+ * @param string             $filter   Tùy chọn. Cách làm sạch các trường term. Mặc định 'raw'.
+ * @return WP_Term|array|WP_Error|null Thể hiện WP_Term (hoặc mảng) khi thành công, tùy thuộc vào giá trị `$output`.
+ *                                     WP_Error nếu `$taxonomy` không tồn tại. Null cho các lỗi khác.
  */
 function get_term( $term, $taxonomy = '', $output = OBJECT, $filter = 'raw' ) {
 	if ( empty( $term ) ) {
@@ -1002,49 +1001,49 @@ function get_term( $term, $taxonomy = '', $output = OBJECT, $filter = 'raw' ) {
 		return null;
 	}
 
-	// Ensure for filters that this is not empty.
+	// Đảm bảo cho các bộ lọc rằng giá trị này không rỗng.
 	$taxonomy = $_term->taxonomy;
 
 	$old_term = $_term;
 	/**
-	 * Filters a taxonomy term object.
+	 * Lọc đối tượng term taxonomy.
 	 *
-	 * The {@see 'get_$taxonomy'} hook is also available for targeting a specific
-	 * taxonomy.
+	 * Hook {@see 'get_$taxonomy'} cũng có sẵn để nhắm mục tiêu một taxonomy
+	 * cụ thể.
 	 *
 	 * @since 2.3.0
-	 * @since 4.4.0 `$_term` is now a `WP_Term` object.
+	 * @since 4.4.0 `$_term` giờ là đối tượng `WP_Term`.
 	 *
-	 * @param WP_Term $_term    Term object.
-	 * @param string  $taxonomy The taxonomy slug.
+	 * @param WP_Term $_term    Đối tượng term.
+	 * @param string  $taxonomy Slug taxonomy.
 	 */
 	$_term = apply_filters( 'get_term', $_term, $taxonomy );
 
 	/**
-	 * Filters a taxonomy term object.
+	 * Lọc đối tượng term taxonomy.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers
-	 * to the slug of the term's taxonomy.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu
+	 * đến slug của taxonomy của term.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `get_category`
 	 *  - `get_post_tag`
 	 *
 	 * @since 2.3.0
-	 * @since 4.4.0 `$_term` is now a `WP_Term` object.
+	 * @since 4.4.0 `$_term` giờ là đối tượng `WP_Term`.
 	 *
-	 * @param WP_Term $_term    Term object.
-	 * @param string  $taxonomy The taxonomy slug.
+	 * @param WP_Term $_term    Đối tượng term.
+	 * @param string  $taxonomy Slug taxonomy.
 	 */
 	$_term = apply_filters( "get_{$taxonomy}", $_term, $taxonomy );
 
-	// Bail if a filter callback has changed the type of the `$_term` object.
+	// Dừng lại nếu callback bộ lọc đã thay đổi kiểu của đối tượng `$_term`.
 	if ( ! ( $_term instanceof WP_Term ) ) {
 		return $_term;
 	}
 
-	// Sanitize term, according to the specified filter.
+	// Làm sạch term, theo bộ lọc được chỉ định.
 	if ( $_term !== $old_term || $_term->filter !== $filter ) {
 		$_term->filter( $filter );
 	}
@@ -1059,51 +1058,51 @@ function get_term( $term, $taxonomy = '', $output = OBJECT, $filter = 'raw' ) {
 }
 
 /**
- * Gets all term data from database by term field and data.
+ * Lấy tất cả dữ liệu term từ cơ sở dữ liệu theo trường term và dữ liệu.
  *
- * Warning: $value is not escaped for 'name' $field. You must do it yourself, if
- * required.
+ * Cảnh báo: $value không được escape cho $field 'name'. Bạn phải tự làm điều đó,
+ * nếu cần.
  *
- * The default $field is 'id', therefore it is possible to also use null for
- * field, but not recommended that you do so.
+ * $field mặc định là 'id', do đó cũng có thể sử dụng null cho
+ * field, nhưng không khuyến nghị.
  *
- * If $value does not exist, the return value will be false. If $taxonomy exists
- * and $field and $value combinations exist, the term will be returned.
+ * Nếu $value không tồn tại, giá trị trả về sẽ là false. Nếu $taxonomy tồn tại
+ * và tổ hợp $field và $value tồn tại, term sẽ được trả về.
  *
- * This function will always return the first term that matches the `$field`-
- * `$value`-`$taxonomy` combination specified in the parameters. If your query
- * is likely to match more than one term (as is likely to be the case when
- * `$field` is 'name', for example), consider using get_terms() instead; that
- * way, you will get all matching terms, and can provide your own logic for
- * deciding which one was intended.
+ * Hàm này sẽ luôn trả về term đầu tiên khớp với tổ hợp `$field`-
+ * `$value`-`$taxonomy` được chỉ định trong tham số. Nếu truy vấn của bạn
+ * có khả năng khớp nhiều hơn một term (như trường hợp khi
+ * `$field` là 'name'), hãy cân nhắc sử dụng get_terms() thay thế;
+ * theo cách đó, bạn sẽ nhận được tất cả các term khớp, và có thể cung cấp logic riêng
+ * để quyết định term nào là mong muốn.
  *
- * @todo Better formatting for DocBlock.
+ * @todo Định dạng DocBlock tốt hơn.
  *
  * @since 2.3.0
- * @since 4.4.0 `$taxonomy` is optional if `$field` is 'term_taxonomy_id'. Converted to return
- *              a WP_Term object if `$output` is `OBJECT`.
- * @since 5.5.0 Added 'ID' as an alias of 'id' for the `$field` parameter.
+ * @since 4.4.0 `$taxonomy` là tùy chọn nếu `$field` là 'term_taxonomy_id'. Chuyển đổi để trả về
+ *              đối tượng WP_Term nếu `$output` là `OBJECT`.
+ * @since 5.5.0 Thêm 'ID' như bí danh của 'id' cho tham số `$field`.
  *
- * @see sanitize_term_field() The $context param lists the available values for get_term_by() $filter param.
+ * @see sanitize_term_field() Tham số $context liệt kê các giá trị khả dụng cho tham số $filter của get_term_by().
  *
- * @param string     $field    Either 'slug', 'name', 'term_id' (or 'id', 'ID'), or 'term_taxonomy_id'.
- * @param string|int $value    Search for this term value.
- * @param string     $taxonomy Taxonomy name. Optional, if `$field` is 'term_taxonomy_id'.
- * @param string     $output   Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
- *                             correspond to a WP_Term object, an associative array, or a numeric array,
- *                             respectively. Default OBJECT.
- * @param string     $filter   Optional. How to sanitize term fields. Default 'raw'.
- * @return WP_Term|array|false WP_Term instance (or array) on success, depending on the `$output` value.
- *                             False if `$taxonomy` does not exist or `$term` was not found.
+ * @param string     $field    Có thể là 'slug', 'name', 'term_id' (hoặc 'id', 'ID'), hoặc 'term_taxonomy_id'.
+ * @param string|int $value    Tìm kiếm giá trị term này.
+ * @param string     $taxonomy Tên taxonomy. Tùy chọn, nếu `$field` là 'term_taxonomy_id'.
+ * @param string     $output   Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT, ARRAY_A, hoặc ARRAY_N,
+ *                             tương ứng với đối tượng WP_Term, mảng kết hợp, hoặc mảng số.
+ *                             Mặc định OBJECT.
+ * @param string     $filter   Tùy chọn. Cách làm sạch các trường term. Mặc định 'raw'.
+ * @return WP_Term|array|false Thể hiện WP_Term (hoặc mảng) khi thành công, tùy thuộc vào giá trị `$output`.
+ *                             False nếu `$taxonomy` không tồn tại hoặc `$term` không được tìm thấy.
  */
 function get_term_by( $field, $value, $taxonomy = '', $output = OBJECT, $filter = 'raw' ) {
 
-	// 'term_taxonomy_id' lookups don't require taxonomy checks.
+	// Tra cứu 'term_taxonomy_id' không yêu cầu kiểm tra taxonomy.
 	if ( 'term_taxonomy_id' !== $field && ! taxonomy_exists( $taxonomy ) ) {
 		return false;
 	}
 
-	// No need to perform a query for empty 'slug' or 'name'.
+	// Không cần thực hiện truy vấn cho 'slug' hoặc 'name' rỗng.
 	if ( 'slug' === $field || 'name' === $field ) {
 		$value = (string) $value;
 
@@ -1151,7 +1150,7 @@ function get_term_by( $field, $value, $taxonomy = '', $output = OBJECT, $filter 
 
 	$term = array_shift( $terms );
 
-	// In the case of 'term_taxonomy_id', override the provided `$taxonomy` with whatever we find in the DB.
+	// Trong trường hợp 'term_taxonomy_id', ghi đè `$taxonomy` được cung cấp bằng giá trị tìm thấy trong DB.
 	if ( 'term_taxonomy_id' === $field ) {
 		$taxonomy = $term->taxonomy;
 	}
@@ -1160,18 +1159,18 @@ function get_term_by( $field, $value, $taxonomy = '', $output = OBJECT, $filter 
 }
 
 /**
- * Merges all term children into a single array of their IDs.
+ * Gộp tất cả term con vào một mảng duy nhất chứa các ID của chúng.
  *
- * This recursive function will merge all of the children of $term into the same
- * array of term IDs. Only useful for taxonomies which are hierarchical.
+ * Hàm đệ quy này sẽ gộp tất cả các con của $term vào cùng
+ * một mảng ID term. Chỉ hữu ích cho các taxonomy phân cấp.
  *
- * Will return an empty array if $term does not exist in $taxonomy.
+ * Sẽ trả về mảng rỗng nếu $term không tồn tại trong $taxonomy.
  *
  * @since 2.3.0
  *
- * @param int    $term_id  ID of term to get children.
- * @param string $taxonomy Taxonomy name.
- * @return array|WP_Error List of term IDs. WP_Error returned if `$taxonomy` does not exist.
+ * @param int    $term_id  ID của term cần lấy con.
+ * @param string $taxonomy Tên taxonomy.
+ * @return array|WP_Error Danh sách ID term. WP_Error được trả về nếu `$taxonomy` không tồn tại.
  */
 function get_term_children( $term_id, $taxonomy ) {
 	if ( ! taxonomy_exists( $taxonomy ) ) {
@@ -1202,21 +1201,21 @@ function get_term_children( $term_id, $taxonomy ) {
 }
 
 /**
- * Gets sanitized term field.
+ * Lấy trường term đã được làm sạch.
  *
- * The function is for contextual reasons and for simplicity of usage.
+ * Hàm này dùng cho mục đích ngữ cảnh và để đơn giản hóa việc sử dụng.
  *
  * @since 2.3.0
- * @since 4.4.0 The `$taxonomy` parameter was made optional. `$term` can also now accept a WP_Term object.
+ * @since 4.4.0 Tham số `$taxonomy` được đặt là tùy chọn. `$term` giờ cũng chấp nhận đối tượng WP_Term.
  *
  * @see sanitize_term_field()
  *
- * @param string      $field    Term field to fetch.
- * @param int|WP_Term $term     Term ID or object.
- * @param string      $taxonomy Optional. Taxonomy name. Default empty.
- * @param string      $context  Optional. How to sanitize term fields. Look at sanitize_term_field() for available options.
- *                              Default 'display'.
- * @return string|int|null|WP_Error Will return an empty string if $term is not an object or if $field is not set in $term.
+ * @param string      $field    Trường term cần lấy.
+ * @param int|WP_Term $term     ID term hoặc đối tượng.
+ * @param string      $taxonomy Tùy chọn. Tên taxonomy. Mặc định rỗng.
+ * @param string      $context  Tùy chọn. Cách làm sạch các trường term. Xem sanitize_term_field() để biết các tùy chọn.
+ *                              Mặc định 'display'.
+ * @return string|int|null|WP_Error Sẽ trả về chuỗi rỗng nếu $term không phải đối tượng hoặc nếu $field không được thiết lập trong $term.
  */
 function get_term_field( $field, $term, $taxonomy = '', $context = 'display' ) {
 	$term = get_term( $term, $taxonomy );
@@ -1236,16 +1235,16 @@ function get_term_field( $field, $term, $taxonomy = '', $context = 'display' ) {
 }
 
 /**
- * Sanitizes term for editing.
+ * Làm sạch term để chỉnh sửa.
  *
- * Return value is sanitize_term() and usage is for sanitizing the term for
- * editing. Function is for contextual and simplicity.
+ * Giá trị trả về là sanitize_term() và mục đích sử dụng là để làm sạch term cho
+ * việc chỉnh sửa. Hàm này dùng cho mục đích ngữ cảnh và đơn giản hóa.
  *
  * @since 2.3.0
  *
- * @param int|object $id       Term ID or object.
- * @param string     $taxonomy Taxonomy name.
- * @return string|int|null|WP_Error Will return empty string if $term is not an object.
+ * @param int|object $id       ID term hoặc đối tượng.
+ * @param string     $taxonomy Tên taxonomy.
+ * @return string|int|null|WP_Error Sẽ trả về chuỗi rỗng nếu $term không phải đối tượng.
  */
 function get_term_to_edit( $id, $taxonomy ) {
 	$term = get_term( $id, $taxonomy );
@@ -1262,56 +1261,56 @@ function get_term_to_edit( $id, $taxonomy ) {
 }
 
 /**
- * Retrieves the terms in a given taxonomy or list of taxonomies.
+ * Lấy các term trong một taxonomy hoặc danh sách taxonomy được cho.
  *
- * You can fully inject any customizations to the query before it is sent, as
- * well as control the output with a filter.
+ * Bạn có thể hoàn toàn tùy chỉnh truy vấn trước khi nó được gửi, cũng
+ * như kiểm soát đầu ra bằng bộ lọc.
  *
- * The return type varies depending on the value passed to `$args['fields']`. See
- * WP_Term_Query::get_terms() for details. In all cases, a `WP_Error` object will
- * be returned if an invalid taxonomy is requested.
+ * Kiểu trả về thay đổi tùy thuộc vào giá trị truyền vào `$args['fields']`. Xem
+ * WP_Term_Query::get_terms() để biết chi tiết. Trong mọi trường hợp, đối tượng `WP_Error` sẽ
+ * được trả về nếu yêu cầu taxonomy không hợp lệ.
  *
- * The {@see 'get_terms'} filter will be called when the cache has the term and will
- * pass the found term along with the array of $taxonomies and array of $args.
- * This filter is also called before the array of terms is passed and will pass
- * the array of terms, along with the $taxonomies and $args.
+ * Bộ lọc {@see 'get_terms'} sẽ được gọi khi cache có term và sẽ
+ * truyền term tìm thấy cùng với mảng $taxonomies và mảng $args.
+ * Bộ lọc này cũng được gọi trước khi mảng term được truyền và sẽ truyền
+ * mảng term, cùng với $taxonomies và $args.
  *
- * The {@see 'list_terms_exclusions'} filter passes the compiled exclusions along with
- * the $args.
+ * Bộ lọc {@see 'list_terms_exclusions'} truyền các loại trừ đã biên dịch cùng với
+ * $args.
  *
- * The {@see 'get_terms_orderby'} filter passes the `ORDER BY` clause for the query
- * along with the $args array.
+ * Bộ lọc {@see 'get_terms_orderby'} truyền mệnh đề `ORDER BY` cho truy vấn
+ * cùng với mảng $args.
  *
- * Taxonomy or an array of taxonomies should be passed via the 'taxonomy' argument
- * in the `$args` array:
+ * Taxonomy hoặc mảng taxonomy nên được truyền qua tham số 'taxonomy'
+ * trong mảng `$args`:
  *
  *     $terms = get_terms( array(
  *         'taxonomy'   => 'post_tag',
  *         'hide_empty' => false,
  *     ) );
  *
- * Prior to 4.5.0, taxonomy was passed as the first parameter of `get_terms()`.
+ * Trước 4.5.0, taxonomy được truyền như tham số đầu tiên của `get_terms()`.
  *
  * @since 2.3.0
- * @since 4.2.0 Introduced 'name' and 'childless' parameters.
- * @since 4.4.0 Introduced the ability to pass 'term_id' as an alias of 'id' for the `orderby` parameter.
- *              Introduced the 'meta_query' and 'update_term_meta_cache' parameters. Converted to return
- *              a list of WP_Term objects.
- * @since 4.5.0 Changed the function signature so that the `$args` array can be provided as the first parameter.
- *              Introduced 'meta_key' and 'meta_value' parameters. Introduced the ability to order results by metadata.
- * @since 4.8.0 Introduced 'suppress_filter' parameter.
+ * @since 4.2.0 Giới thiệu tham số 'name' và 'childless'.
+ * @since 4.4.0 Giới thiệu khả năng truyền 'term_id' như bí danh của 'id' cho tham số `orderby`.
+ *              Giới thiệu tham số 'meta_query' và 'update_term_meta_cache'. Chuyển đổi để trả về
+ *              danh sách đối tượng WP_Term.
+ * @since 4.5.0 Thay đổi chữ ký hàm để mảng `$args` có thể được cung cấp như tham số đầu tiên.
+ *              Giới thiệu tham số 'meta_key' và 'meta_value'. Giới thiệu khả năng sắp xếp kết quả theo metadata.
+ * @since 4.8.0 Giới thiệu tham số 'suppress_filter'.
  *
- * @internal The `$deprecated` parameter is parsed for backward compatibility only.
+ * @internal Tham số `$deprecated` được phân tích chỉ cho mục đích tương thích ngược.
  *
- * @param array|string $args       Optional. Array or string of arguments. See WP_Term_Query::__construct()
- *                                 for information on accepted arguments. Default empty array.
- * @param array|string $deprecated Optional. Argument array, when using the legacy function parameter format.
- *                                 If present, this parameter will be interpreted as `$args`, and the first
- *                                 function parameter will be parsed as a taxonomy or array of taxonomies.
- *                                 Default empty.
- * @return WP_Term[]|int[]|string[]|string|WP_Error Array of terms, a count thereof as a numeric string,
- *                                                  or WP_Error if any of the taxonomies do not exist.
- *                                                  See the function description for more information.
+ * @param array|string $args       Tùy chọn. Mảng hoặc chuỗi tham số. Xem WP_Term_Query::__construct()
+ *                                 để biết thông tin về các tham số được chấp nhận. Mặc định mảng rỗng.
+ * @param array|string $deprecated Tùy chọn. Mảng tham số, khi sử dụng định dạng tham số hàm cũ.
+ *                                 Nếu có, tham số này sẽ được hiểu là `$args`, và tham số
+ *                                 đầu tiên của hàm sẽ được phân tích như taxonomy hoặc mảng taxonomy.
+ *                                 Mặc định rỗng.
+ * @return WP_Term[]|int[]|string[]|string|WP_Error Mảng term, số đếm dưới dạng chuỗi số,
+ *                                                  hoặc WP_Error nếu bất kỳ taxonomy nào không tồn tại.
+ *                                                  Xem mô tả hàm để biết thêm thông tin.
  */
 function get_terms( $args = array(), $deprecated = '' ) {
 	$term_query = new WP_Term_Query();
@@ -1321,11 +1320,11 @@ function get_terms( $args = array(), $deprecated = '' ) {
 	);
 
 	/*
-	 * Legacy argument format ($taxonomy, $args) takes precedence.
+	 * Định dạng tham số cũ ($taxonomy, $args) được ưu tiên.
 	 *
-	 * We detect legacy argument format by checking if
-	 * (a) a second non-empty parameter is passed, or
-	 * (b) the first parameter shares no keys with the default array (ie, it's a list of taxonomies)
+	 * Chúng ta phát hiện định dạng tham số cũ bằng cách kiểm tra xem
+	 * (a) tham số thứ hai không rỗng được truyền vào, hoặc
+	 * (b) tham số đầu tiên không có khóa chung với mảng mặc định (tức là nó là danh sách taxonomy)
 	 */
 	$_args          = wp_parse_args( $args );
 	$key_intersect  = array_intersect_key( $term_query->query_var_defaults, (array) $_args );
@@ -1350,13 +1349,13 @@ function get_terms( $args = array(), $deprecated = '' ) {
 		}
 	}
 
-	// Don't pass suppress_filter to WP_Term_Query.
+	// Không truyền suppress_filter cho WP_Term_Query.
 	$suppress_filter = $args['suppress_filter'];
 	unset( $args['suppress_filter'] );
 
 	$terms = $term_query->query( $args );
 
-	// Count queries are not filtered, for legacy reasons.
+	// Truy vấn đếm không được lọc, vì lý do tương thích ngược.
 	if ( ! is_array( $terms ) ) {
 		return $terms;
 	}
@@ -1366,37 +1365,37 @@ function get_terms( $args = array(), $deprecated = '' ) {
 	}
 
 	/**
-	 * Filters the found terms.
+	 * Lọc các term tìm thấy.
 	 *
 	 * @since 2.3.0
-	 * @since 4.6.0 Added the `$term_query` parameter.
+	 * @since 4.6.0 Thêm tham số `$term_query`.
 	 *
-	 * @param array         $terms      Array of found terms.
-	 * @param array|null    $taxonomies An array of taxonomies if known.
-	 * @param array         $args       An array of get_terms() arguments.
-	 * @param WP_Term_Query $term_query The WP_Term_Query object.
+	 * @param array         $terms      Mảng các term tìm thấy.
+	 * @param array|null    $taxonomies Mảng taxonomy nếu biết.
+	 * @param array         $args       Mảng tham số của get_terms().
+	 * @param WP_Term_Query $term_query Đối tượng WP_Term_Query.
 	 */
 	return apply_filters( 'get_terms', $terms, $term_query->query_vars['taxonomy'], $term_query->query_vars, $term_query );
 }
 
 /**
- * Adds metadata to a term.
+ * Thêm metadata cho term.
  *
  * @since 4.4.0
  *
- * @param int    $term_id    Term ID.
- * @param string $meta_key   Metadata name.
- * @param mixed  $meta_value Metadata value. Arrays and objects are stored as serialized data and
- *                           will be returned as the same type when retrieved. Other data types will
- *                           be stored as strings in the database:
- *                           - false is stored and retrieved as an empty string ('')
- *                           - true is stored and retrieved as '1'
- *                           - numbers (both integer and float) are stored and retrieved as strings
- *                           Must be serializable if non-scalar.
- * @param bool   $unique     Optional. Whether the same key should not be added.
- *                           Default false.
- * @return int|false|WP_Error Meta ID on success, false on failure.
- *                            WP_Error when term_id is ambiguous between taxonomies.
+ * @param int    $term_id    ID term.
+ * @param string $meta_key   Tên metadata.
+ * @param mixed  $meta_value Giá trị metadata. Mảng và đối tượng được lưu dưới dạng dữ liệu serialize và
+ *                           sẽ được trả về cùng kiểu khi lấy ra. Các kiểu dữ liệu khác sẽ
+ *                           được lưu dưới dạng chuỗi trong cơ sở dữ liệu:
+ *                           - false được lưu và trả về dưới dạng chuỗi rỗng ('')
+ *                           - true được lưu và trả về dưới dạng '1'
+ *                           - số (cả số nguyên và số thực) được lưu và trả về dưới dạng chuỗi
+ *                           Phải có thể serialize nếu không phải kiểu vô hướng.
+ * @param bool   $unique     Tùy chọn. Liệu khóa trùng có nên không được thêm hay không.
+ *                           Mặc định false.
+ * @return int|false|WP_Error ID meta khi thành công, false khi thất bại.
+ *                            WP_Error khi term_id không rõ ràng giữa các taxonomy.
  */
 function add_term_meta( $term_id, $meta_key, $meta_value, $unique = false ) {
 	if ( wp_term_is_shared( $term_id ) ) {
@@ -1407,66 +1406,66 @@ function add_term_meta( $term_id, $meta_key, $meta_value, $unique = false ) {
 }
 
 /**
- * Removes metadata matching criteria from a term.
+ * Xóa metadata khớp tiêu chí khỏi term.
  *
  * @since 4.4.0
  *
- * @param int    $term_id    Term ID.
- * @param string $meta_key   Metadata name.
- * @param mixed  $meta_value Optional. Metadata value. If provided,
- *                           rows will only be removed that match the value.
- *                           Must be serializable if non-scalar. Default empty.
- * @return bool True on success, false on failure.
+ * @param int    $term_id    ID term.
+ * @param string $meta_key   Tên metadata.
+ * @param mixed  $meta_value Tùy chọn. Giá trị metadata. Nếu được cung cấp,
+ *                           chỉ các hàng khớp giá trị mới bị xóa.
+ *                           Phải có thể serialize nếu không phải kiểu vô hướng. Mặc định rỗng.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function delete_term_meta( $term_id, $meta_key, $meta_value = '' ) {
 	return delete_metadata( 'term', $term_id, $meta_key, $meta_value );
 }
 
 /**
- * Retrieves metadata for a term.
+ * Lấy metadata cho term.
  *
  * @since 4.4.0
  *
- * @param int    $term_id Term ID.
- * @param string $key     Optional. The meta key to retrieve. By default,
- *                        returns data for all keys. Default empty.
- * @param bool   $single  Optional. Whether to return a single value.
- *                        This parameter has no effect if `$key` is not specified.
- *                        Default false.
- * @return mixed An array of values if `$single` is false.
- *               The value of the meta field if `$single` is true.
- *               False for an invalid `$term_id` (non-numeric, zero, or negative value).
- *               An empty array if a valid but non-existing term ID is passed and `$single` is false.
- *               An empty string if a valid but non-existing term ID is passed and `$single` is true.
- *               Note: Non-serialized values are returned as strings:
- *               - false values are returned as empty strings ('')
- *               - true values are returned as '1'
- *               - numbers are returned as strings
- *               Arrays and objects retain their original type.
+ * @param int    $term_id ID term.
+ * @param string $key     Tùy chọn. Khóa meta cần lấy. Mặc định,
+ *                        trả về dữ liệu cho tất cả khóa. Mặc định rỗng.
+ * @param bool   $single  Tùy chọn. Có trả về một giá trị duy nhất hay không.
+ *                        Tham số này không có tác dụng nếu `$key` không được chỉ định.
+ *                        Mặc định false.
+ * @return mixed Mảng giá trị nếu `$single` là false.
+ *               Giá trị của trường meta nếu `$single` là true.
+ *               False cho `$term_id` không hợp lệ (không phải số, bằng không, hoặc giá trị âm).
+ *               Mảng rỗng nếu ID term hợp lệ nhưng không tồn tại được truyền và `$single` là false.
+ *               Chuỗi rỗng nếu ID term hợp lệ nhưng không tồn tại được truyền và `$single` là true.
+ *               Lưu ý: Các giá trị không serialize được trả về dưới dạng chuỗi:
+ *               - giá trị false được trả về dưới dạng chuỗi rỗng ('')
+ *               - giá trị true được trả về dưới dạng '1'
+ *               - số được trả về dưới dạng chuỗi
+ *               Mảng và đối tượng giữ nguyên kiểu ban đầu.
  */
 function get_term_meta( $term_id, $key = '', $single = false ) {
 	return get_metadata( 'term', $term_id, $key, $single );
 }
 
 /**
- * Updates term metadata.
+ * Cập nhật metadata term.
  *
- * Use the `$prev_value` parameter to differentiate between meta fields with the same key and term ID.
+ * Sử dụng tham số `$prev_value` để phân biệt giữa các trường meta có cùng khóa và ID term.
  *
- * If the meta field for the term does not exist, it will be added.
+ * Nếu trường meta cho term không tồn tại, nó sẽ được thêm mới.
  *
  * @since 4.4.0
  *
- * @param int    $term_id    Term ID.
- * @param string $meta_key   Metadata key.
- * @param mixed  $meta_value Metadata value. Must be serializable if non-scalar.
- * @param mixed  $prev_value Optional. Previous value to check before updating.
- *                           If specified, only update existing metadata entries with
- *                           this value. Otherwise, update all entries. Default empty.
- * @return int|bool|WP_Error Meta ID if the key didn't exist. true on successful update,
- *                           false on failure or if the value passed to the function
- *                           is the same as the one that is already in the database.
- *                           WP_Error when term_id is ambiguous between taxonomies.
+ * @param int    $term_id    ID term.
+ * @param string $meta_key   Khóa metadata.
+ * @param mixed  $meta_value Giá trị metadata. Phải có thể serialize nếu không phải kiểu vô hướng.
+ * @param mixed  $prev_value Tùy chọn. Giá trị trước đó để kiểm tra trước khi cập nhật.
+ *                           Nếu được chỉ định, chỉ cập nhật các mục metadata hiện có với
+ *                           giá trị này. Nếu không, cập nhật tất cả mục. Mặc định rỗng.
+ * @return int|bool|WP_Error ID meta nếu khóa không tồn tại. true khi cập nhật thành công,
+ *                           false khi thất bại hoặc nếu giá trị truyền cho hàm
+ *                           giống với giá trị đã có trong cơ sở dữ liệu.
+ *                           WP_Error khi term_id không rõ ràng giữa các taxonomy.
  */
 function update_term_meta( $term_id, $meta_key, $meta_value, $prev_value = '' ) {
 	if ( wp_term_is_shared( $term_id ) ) {
@@ -1477,15 +1476,15 @@ function update_term_meta( $term_id, $meta_key, $meta_value, $prev_value = '' ) 
 }
 
 /**
- * Updates metadata cache for list of term IDs.
+ * Cập nhật cache metadata cho danh sách ID term.
  *
- * Performs SQL query to retrieve all metadata for the terms matching `$term_ids` and stores them in the cache.
- * Subsequent calls to `get_term_meta()` will not need to query the database.
+ * Thực hiện truy vấn SQL để lấy tất cả metadata cho các term khớp `$term_ids` và lưu vào cache.
+ * Các lần gọi `get_term_meta()` tiếp theo sẽ không cần truy vấn cơ sở dữ liệu.
  *
  * @since 4.4.0
  *
- * @param array $term_ids List of term IDs.
- * @return array|false An array of metadata on success, false if there is nothing to update.
+ * @param array $term_ids Danh sách ID term.
+ * @return array|false Mảng metadata khi thành công, false nếu không có gì để cập nhật.
  */
 function update_termmeta_cache( $term_ids ) {
 	return update_meta_cache( 'term', $term_ids );
@@ -1493,11 +1492,11 @@ function update_termmeta_cache( $term_ids ) {
 
 
 /**
- * Queue term meta for lazy-loading.
+ * Xếp hàng meta term để tải lười.
  *
  * @since 6.3.0
  *
- * @param array $term_ids List of term IDs.
+ * @param array $term_ids Danh sách ID term.
  */
 function wp_lazyload_term_meta( array $term_ids ) {
 	if ( empty( $term_ids ) ) {
@@ -1508,14 +1507,14 @@ function wp_lazyload_term_meta( array $term_ids ) {
 }
 
 /**
- * Gets all meta data, including meta IDs, for the given term ID.
+ * Lấy tất cả dữ liệu meta, bao gồm ID meta, cho ID term được cho.
  *
  * @since 4.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int $term_id Term ID.
- * @return array|false Array with meta data, or false when the meta table is not installed.
+ * @param int $term_id ID term.
+ * @return array|false Mảng chứa dữ liệu meta, hoặc false khi bảng meta chưa được cài đặt.
  */
 function has_term_meta( $term_id ) {
 	$check = wp_check_term_meta_support_prefilter( null );
@@ -1529,16 +1528,16 @@ function has_term_meta( $term_id ) {
 }
 
 /**
- * Registers a meta key for terms.
+ * Đăng ký khóa meta cho term.
  *
  * @since 4.9.8
  *
- * @param string $taxonomy Taxonomy to register a meta key for. Pass an empty string
- *                         to register the meta key across all existing taxonomies.
- * @param string $meta_key The meta key to register.
- * @param array  $args     Data used to describe the meta key when registered. See
- *                         {@see register_meta()} for a list of supported arguments.
- * @return bool True if the meta key was successfully registered, false if not.
+ * @param string $taxonomy Taxonomy để đăng ký khóa meta. Truyền chuỗi rỗng
+ *                         để đăng ký khóa meta cho tất cả taxonomy hiện có.
+ * @param string $meta_key Khóa meta cần đăng ký.
+ * @param array  $args     Dữ liệu dùng để mô tả khóa meta khi đăng ký. Xem
+ *                         {@see register_meta()} để biết danh sách tham số được hỗ trợ.
+ * @return bool True nếu khóa meta được đăng ký thành công, false nếu không.
  */
 function register_term_meta( $taxonomy, $meta_key, array $args ) {
 	$args['object_subtype'] = $taxonomy;
@@ -1547,41 +1546,41 @@ function register_term_meta( $taxonomy, $meta_key, array $args ) {
 }
 
 /**
- * Unregisters a meta key for terms.
+ * Hủy đăng ký khóa meta cho term.
  *
  * @since 4.9.8
  *
- * @param string $taxonomy Taxonomy the meta key is currently registered for. Pass
- *                         an empty string if the meta key is registered across all
- *                         existing taxonomies.
- * @param string $meta_key The meta key to unregister.
- * @return bool True on success, false if the meta key was not previously registered.
+ * @param string $taxonomy Taxonomy mà khóa meta hiện đang được đăng ký. Truyền
+ *                         chuỗi rỗng nếu khóa meta được đăng ký cho tất cả
+ *                         taxonomy hiện có.
+ * @param string $meta_key Khóa meta cần hủy đăng ký.
+ * @return bool True khi thành công, false nếu khóa meta chưa được đăng ký trước đó.
  */
 function unregister_term_meta( $taxonomy, $meta_key ) {
 	return unregister_meta_key( 'term', $meta_key, $taxonomy );
 }
 
 /**
- * Determines whether a taxonomy term exists.
+ * Xác định xem một term taxonomy có tồn tại hay không.
  *
- * Formerly is_term(), introduced in 2.3.0.
+ * Trước đây là is_term(), được giới thiệu từ 2.3.0.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay lập trình Theme.
  *
  * @since 3.0.0
- * @since 6.0.0 Converted to use `get_terms()`.
+ * @since 6.0.0 Chuyển đổi để sử dụng `get_terms()`.
  *
  * @global bool $_wp_suspend_cache_invalidation
  *
- * @param int|string $term        The term to check. Accepts term ID, slug, or name.
- * @param string     $taxonomy    Optional. The taxonomy name to use.
- * @param int        $parent_term Optional. ID of parent term under which to confine the exists search.
- * @return mixed Returns null if the term does not exist.
- *               Returns the term ID if no taxonomy is specified and the term ID exists.
- *               Returns an array of the term ID and the term taxonomy ID if the taxonomy is specified and the pairing exists.
- *               Returns 0 if term ID 0 is passed to the function.
+ * @param int|string $term        Term cần kiểm tra. Chấp nhận ID term, slug, hoặc tên.
+ * @param string     $taxonomy    Tùy chọn. Tên taxonomy để sử dụng.
+ * @param int        $parent_term Tùy chọn. ID của term cha để giới hạn phạm vi tìm kiếm.
+ * @return mixed Trả về null nếu term không tồn tại.
+ *               Trả về ID term nếu không chỉ định taxonomy và ID term tồn tại.
+ *               Trả về mảng gồm ID term và ID term taxonomy nếu taxonomy được chỉ định và cặp tồn tại.
+ *               Trả về 0 nếu ID term 0 được truyền cho hàm.
  */
 function term_exists( $term, $taxonomy = '', $parent_term = null ) {
 	global $_wp_suspend_cache_invalidation;
@@ -1600,7 +1599,7 @@ function term_exists( $term, $taxonomy = '', $parent_term = null ) {
 		'suppress_filter'        => true,
 	);
 
-	// Ensure that while importing, queries are not cached.
+	// Đảm bảo rằng trong quá trình nhập, các truy vấn không được cache.
 	if ( ! empty( $_wp_suspend_cache_invalidation ) ) {
 		$defaults['cache_results'] = false;
 	}
@@ -1611,16 +1610,16 @@ function term_exists( $term, $taxonomy = '', $parent_term = null ) {
 	}
 
 	/**
-	 * Filters default query arguments for checking if a term exists.
+	 * Lọc các tham số truy vấn mặc định để kiểm tra xem term có tồn tại hay không.
 	 *
 	 * @since 6.0.0
 	 *
-	 * @param array      $defaults    An array of arguments passed to get_terms().
-	 * @param int|string $term        The term to check. Accepts term ID, slug, or name.
-	 * @param string     $taxonomy    The taxonomy name to use. An empty string indicates
-	 *                                the search is against all taxonomies.
-	 * @param int|null   $parent_term ID of parent term under which to confine the exists search.
-	 *                                Null indicates the search is unconfined.
+	 * @param array      $defaults    Mảng tham số được truyền cho get_terms().
+	 * @param int|string $term        Term cần kiểm tra. Chấp nhận ID term, slug, hoặc tên.
+	 * @param string     $taxonomy    Tên taxonomy để sử dụng. Chuỗi rỗng cho biết
+	 *                                tìm kiếm trên tất cả taxonomy.
+	 * @param int|null   $parent_term ID của term cha để giới hạn phạm vi tìm kiếm.
+	 *                                Null cho biết tìm kiếm không bị giới hạn.
 	 */
 	$defaults = apply_filters( 'term_exists_default_query_args', $defaults, $term, $taxonomy, $parent_term );
 
@@ -1665,16 +1664,16 @@ function term_exists( $term, $taxonomy = '', $parent_term = null ) {
 }
 
 /**
- * Checks if a term is an ancestor of another term.
+ * Kiểm tra xem một term có phải là tổ tiên của term khác hay không.
  *
- * You can use either an ID or the term object for both parameters.
+ * Bạn có thể sử dụng ID hoặc đối tượng term cho cả hai tham số.
  *
  * @since 3.4.0
  *
- * @param int|object $term1    ID or object to check if this is the parent term.
- * @param int|object $term2    The child term.
- * @param string     $taxonomy Taxonomy name that $term1 and `$term2` belong to.
- * @return bool Whether `$term2` is a child of `$term1`.
+ * @param int|object $term1    ID hoặc đối tượng để kiểm tra xem đây có phải term cha hay không.
+ * @param int|object $term2    Term con.
+ * @param string     $taxonomy Tên taxonomy mà $term1 và `$term2` thuộc về.
+ * @return bool Liệu `$term2` có phải con của `$term1` hay không.
  */
 function term_is_ancestor_of( $term1, $term2, $taxonomy ) {
 	if ( ! isset( $term1->term_id ) ) {
@@ -1695,22 +1694,22 @@ function term_is_ancestor_of( $term1, $term2, $taxonomy ) {
 }
 
 /**
- * Sanitizes all term fields.
+ * Làm sạch tất cả trường term.
  *
- * Relies on sanitize_term_field() to sanitize the term. The difference is that
- * this function will sanitize **all** fields. The context is based
- * on sanitize_term_field().
+ * Dựa vào sanitize_term_field() để làm sạch term. Sự khác biệt là
+ * hàm này sẽ làm sạch **tất cả** trường. Ngữ cảnh dựa trên
+ * sanitize_term_field().
  *
- * The `$term` is expected to be either an array or an object.
+ * `$term` được kỳ vọng là mảng hoặc đối tượng.
  *
  * @since 2.3.0
  *
- * @param array|object $term     The term to check.
- * @param string       $taxonomy The taxonomy name to use.
- * @param string       $context  Optional. Context in which to sanitize the term.
- *                               Accepts 'raw', 'edit', 'db', 'display', 'rss',
- *                               'attribute', or 'js'. Default 'display'.
- * @return array|object Term with all fields sanitized.
+ * @param array|object $term     Term cần kiểm tra.
+ * @param string       $taxonomy Tên taxonomy để sử dụng.
+ * @param string       $context  Tùy chọn. Ngữ cảnh để làm sạch term.
+ *                               Chấp nhận 'raw', 'edit', 'db', 'display', 'rss',
+ *                               'attribute', hoặc 'js'. Mặc định 'display'.
+ * @return array|object Term với tất cả trường đã được làm sạch.
  */
 function sanitize_term( $term, $taxonomy, $context = 'display' ) {
 	$fields = array( 'term_id', 'name', 'description', 'slug', 'count', 'parent', 'term_group', 'term_taxonomy_id', 'object_id' );
@@ -1741,28 +1740,28 @@ function sanitize_term( $term, $taxonomy, $context = 'display' ) {
 }
 
 /**
- * Sanitizes the field value in the term based on the context.
+ * Làm sạch giá trị trường trong term dựa trên ngữ cảnh.
  *
- * Passing a term field value through the function should be assumed to have
- * cleansed the value for whatever context the term field is going to be used.
+ * Truyền giá trị trường term qua hàm này được coi là đã
+ * làm sạch giá trị cho bất kỳ ngữ cảnh nào mà trường term sẽ được sử dụng.
  *
- * If no context or an unsupported context is given, then default filters will
- * be applied.
+ * Nếu không có ngữ cảnh hoặc ngữ cảnh không được hỗ trợ, các bộ lọc mặc định sẽ
+ * được áp dụng.
  *
- * There are enough filters for each context to support a custom filtering
- * without creating your own filter function. Simply create a function that
- * hooks into the filter you need.
+ * Có đủ bộ lọc cho mỗi ngữ cảnh để hỗ trợ lọc tùy chỉnh
+ * mà không cần tạo hàm lọc riêng. Chỉ cần tạo hàm
+ * hook vào bộ lọc bạn cần.
  *
  * @since 2.3.0
  *
- * @param string $field    Term field to sanitize.
- * @param string $value    Search for this term value.
- * @param int    $term_id  Term ID.
- * @param string $taxonomy Taxonomy name.
- * @param string $context  Context in which to sanitize the term field.
- *                         Accepts 'raw', 'edit', 'db', 'display', 'rss',
- *                         'attribute', or 'js'. Default 'display'.
- * @return mixed Sanitized field.
+ * @param string $field    Trường term cần làm sạch.
+ * @param string $value    Tìm kiếm giá trị term này.
+ * @param int    $term_id  ID term.
+ * @param string $taxonomy Tên taxonomy.
+ * @param string $context  Ngữ cảnh để làm sạch trường term.
+ *                         Chấp nhận 'raw', 'edit', 'db', 'display', 'rss',
+ *                         'attribute', hoặc 'js'. Mặc định 'display'.
+ * @return mixed Trường đã được làm sạch.
  */
 function sanitize_term_field( $field, $value, $term_id, $taxonomy, $context ) {
 	$int_fields = array( 'parent', 'term_id', 'count', 'term_group', 'term_taxonomy_id', 'object_id' );
@@ -1782,28 +1781,28 @@ function sanitize_term_field( $field, $value, $term_id, $taxonomy, $context ) {
 	if ( 'edit' === $context ) {
 
 		/**
-		 * Filters a term field to edit before it is sanitized.
+		 * Lọc trường term để chỉnh sửa trước khi nó được làm sạch.
 		 *
-		 * The dynamic portion of the hook name, `$field`, refers to the term field.
+		 * Phần động của tên hook, `$field`, tham chiếu đến trường term.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param mixed $value     Value of the term field.
-		 * @param int   $term_id   Term ID.
-		 * @param string $taxonomy Taxonomy slug.
+		 * @param mixed $value     Giá trị của trường term.
+		 * @param int   $term_id   ID term.
+		 * @param string $taxonomy Slug taxonomy.
 		 */
 		$value = apply_filters( "edit_term_{$field}", $value, $term_id, $taxonomy );
 
 		/**
-		 * Filters the taxonomy field to edit before it is sanitized.
+		 * Lọc trường taxonomy để chỉnh sửa trước khi nó được làm sạch.
 		 *
-		 * The dynamic portions of the filter name, `$taxonomy` and `$field`, refer
-		 * to the taxonomy slug and taxonomy field, respectively.
+		 * Các phần động của tên bộ lọc, `$taxonomy` và `$field`, tham chiếu
+		 * đến slug taxonomy và trường taxonomy, tương ứng.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param mixed $value   Value of the taxonomy field to edit.
-		 * @param int   $term_id Term ID.
+		 * @param mixed $value   Giá trị của trường taxonomy cần chỉnh sửa.
+		 * @param int   $term_id ID term.
 		 */
 		$value = apply_filters( "edit_{$taxonomy}_{$field}", $value, $term_id );
 
@@ -1815,95 +1814,95 @@ function sanitize_term_field( $field, $value, $term_id, $taxonomy, $context ) {
 	} elseif ( 'db' === $context ) {
 
 		/**
-		 * Filters a term field value before it is sanitized.
+		 * Lọc giá trị trường term trước khi nó được làm sạch.
 		 *
-		 * The dynamic portion of the hook name, `$field`, refers to the term field.
+		 * Phần động của tên hook, `$field`, tham chiếu đến trường term.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param mixed  $value    Value of the term field.
-		 * @param string $taxonomy Taxonomy slug.
+		 * @param mixed  $value    Giá trị của trường term.
+		 * @param string $taxonomy Slug taxonomy.
 		 */
 		$value = apply_filters( "pre_term_{$field}", $value, $taxonomy );
 
 		/**
-		 * Filters a taxonomy field before it is sanitized.
+		 * Lọc trường taxonomy trước khi nó được làm sạch.
 		 *
-		 * The dynamic portions of the filter name, `$taxonomy` and `$field`, refer
-		 * to the taxonomy slug and field name, respectively.
+		 * Các phần động của tên bộ lọc, `$taxonomy` và `$field`, tham chiếu
+		 * đến slug taxonomy và tên trường, tương ứng.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param mixed $value Value of the taxonomy field.
+		 * @param mixed $value Giá trị của trường taxonomy.
 		 */
 		$value = apply_filters( "pre_{$taxonomy}_{$field}", $value );
 
-		// Back compat filters.
+		// Bộ lọc tương thích ngược.
 		if ( 'slug' === $field ) {
 			/**
-			 * Filters the category nicename before it is sanitized.
+			 * Lọc nicename danh mục trước khi nó được làm sạch.
 			 *
-			 * Use the {@see 'pre_$taxonomy_$field'} hook instead.
+			 * Sử dụng hook {@see 'pre_$taxonomy_$field'} thay thế.
 			 *
 			 * @since 2.0.3
 			 *
-			 * @param string $value The category nicename.
+			 * @param string $value Nicename danh mục.
 			 */
 			$value = apply_filters( 'pre_category_nicename', $value );
 		}
 	} elseif ( 'rss' === $context ) {
 
 		/**
-		 * Filters the term field for use in RSS.
+		 * Lọc trường term để sử dụng trong RSS.
 		 *
-		 * The dynamic portion of the hook name, `$field`, refers to the term field.
+		 * Phần động của tên hook, `$field`, tham chiếu đến trường term.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param mixed  $value    Value of the term field.
-		 * @param string $taxonomy Taxonomy slug.
+		 * @param mixed  $value    Giá trị của trường term.
+		 * @param string $taxonomy Slug taxonomy.
 		 */
 		$value = apply_filters( "term_{$field}_rss", $value, $taxonomy );
 
 		/**
-		 * Filters the taxonomy field for use in RSS.
+		 * Lọc trường taxonomy để sử dụng trong RSS.
 		 *
-		 * The dynamic portions of the hook name, `$taxonomy`, and `$field`, refer
-		 * to the taxonomy slug and field name, respectively.
+		 * Các phần động của tên hook, `$taxonomy` và `$field`, tham chiếu
+		 * đến slug taxonomy và tên trường, tương ứng.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param mixed $value Value of the taxonomy field.
+		 * @param mixed $value Giá trị của trường taxonomy.
 		 */
 		$value = apply_filters( "{$taxonomy}_{$field}_rss", $value );
 	} else {
-		// Use display filters by default.
+		// Sử dụng bộ lọc hiển thị theo mặc định.
 
 		/**
-		 * Filters the term field sanitized for display.
+		 * Lọc trường term đã được làm sạch để hiển thị.
 		 *
-		 * The dynamic portion of the hook name, `$field`, refers to the term field name.
+		 * Phần động của tên hook, `$field`, tham chiếu đến tên trường term.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param mixed  $value    Value of the term field.
-		 * @param int    $term_id  Term ID.
-		 * @param string $taxonomy Taxonomy slug.
-		 * @param string $context  Context to retrieve the term field value.
+		 * @param mixed  $value    Giá trị của trường term.
+		 * @param int    $term_id  ID term.
+		 * @param string $taxonomy Slug taxonomy.
+		 * @param string $context  Ngữ cảnh để lấy giá trị trường term.
 		 */
 		$value = apply_filters( "term_{$field}", $value, $term_id, $taxonomy, $context );
 
 		/**
-		 * Filters the taxonomy field sanitized for display.
+		 * Lọc trường taxonomy đã được làm sạch để hiển thị.
 		 *
-		 * The dynamic portions of the filter name, `$taxonomy`, and `$field`, refer
-		 * to the taxonomy slug and taxonomy field, respectively.
+		 * Các phần động của tên bộ lọc, `$taxonomy` và `$field`, tham chiếu
+		 * đến slug taxonomy và trường taxonomy, tương ứng.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param mixed  $value   Value of the taxonomy field.
-		 * @param int    $term_id Term ID.
-		 * @param string $context Context to retrieve the taxonomy field value.
+		 * @param mixed  $value   Giá trị của trường taxonomy.
+		 * @param int    $term_id ID term.
+		 * @param string $context Ngữ cảnh để lấy giá trị trường taxonomy.
 		 */
 		$value = apply_filters( "{$taxonomy}_{$field}", $value, $term_id, $context );
 	}
@@ -1914,7 +1913,7 @@ function sanitize_term_field( $field, $value, $term_id, $taxonomy, $context ) {
 		$value = esc_js( $value );
 	}
 
-	// Restore the type for integer fields after esc_attr().
+	// Khôi phục kiểu cho các trường số nguyên sau esc_attr().
 	if ( in_array( $field, $int_fields, true ) ) {
 		$value = (int) $value;
 	}
@@ -1923,28 +1922,28 @@ function sanitize_term_field( $field, $value, $term_id, $taxonomy, $context ) {
 }
 
 /**
- * Counts how many terms are in taxonomy.
+ * Đếm số lượng term trong taxonomy.
  *
- * Default $args is 'hide_empty' which can be 'hide_empty=true' or array('hide_empty' => true).
+ * $args mặc định là 'hide_empty' có thể là 'hide_empty=true' hoặc array('hide_empty' => true).
  *
  * @since 2.3.0
- * @since 5.6.0 Changed the function signature so that the `$args` array can be provided as the first parameter.
+ * @since 5.6.0 Thay đổi chữ ký hàm để mảng `$args` có thể được cung cấp như tham số đầu tiên.
  *
- * @internal The `$deprecated` parameter is parsed for backward compatibility only.
+ * @internal Tham số `$deprecated` được phân tích chỉ cho mục đích tương thích ngược.
  *
- * @param array|string $args       Optional. Array or string of arguments. See WP_Term_Query::__construct()
- *                                 for information on accepted arguments. Default empty array.
- * @param array|string $deprecated Optional. Argument array, when using the legacy function parameter format.
- *                                 If present, this parameter will be interpreted as `$args`, and the first
- *                                 function parameter will be parsed as a taxonomy or array of taxonomies.
- *                                 Default empty.
- * @return string|WP_Error Numeric string containing the number of terms in that
- *                         taxonomy or WP_Error if the taxonomy does not exist.
+ * @param array|string $args       Tùy chọn. Mảng hoặc chuỗi tham số. Xem WP_Term_Query::__construct()
+ *                                 để biết thông tin về các tham số được chấp nhận. Mặc định mảng rỗng.
+ * @param array|string $deprecated Tùy chọn. Mảng tham số, khi sử dụng định dạng tham số hàm cũ.
+ *                                 Nếu có, tham số này sẽ được hiểu là `$args`, và tham số
+ *                                 đầu tiên của hàm sẽ được phân tích như taxonomy hoặc mảng taxonomy.
+ *                                 Mặc định rỗng.
+ * @return string|WP_Error Chuỗi số chứa số lượng term trong
+ *                         taxonomy đó hoặc WP_Error nếu taxonomy không tồn tại.
  */
 function wp_count_terms( $args = array(), $deprecated = '' ) {
 	$use_legacy_args = false;
 
-	// Check whether function is used with legacy signature: `$taxonomy` and `$args`.
+	// Kiểm tra xem hàm có đang được sử dụng với chữ ký cũ: `$taxonomy` và `$args` hay không.
 	if ( $args
 		&& ( is_string( $args ) && taxonomy_exists( $args )
 			|| is_array( $args ) && wp_is_numeric_array( $args ) )
@@ -1961,7 +1960,7 @@ function wp_count_terms( $args = array(), $deprecated = '' ) {
 
 	$args = wp_parse_args( $args, $defaults );
 
-	// Backward compatibility.
+	// Tương thích ngược.
 	if ( isset( $args['ignore_empty'] ) ) {
 		$args['hide_empty'] = $args['ignore_empty'];
 		unset( $args['ignore_empty'] );
@@ -1973,16 +1972,16 @@ function wp_count_terms( $args = array(), $deprecated = '' ) {
 }
 
 /**
- * Unlinks the object from the taxonomy or taxonomies.
+ * Gỡ liên kết đối tượng khỏi taxonomy hoặc các taxonomy.
  *
- * Will remove all relationships between the object and any terms in
- * a particular taxonomy or taxonomies. Does not remove the term or
- * taxonomy itself.
+ * Sẽ xóa tất cả mối quan hệ giữa đối tượng và bất kỳ term nào trong
+ * taxonomy hoặc các taxonomy cụ thể. Không xóa bản thân term hoặc
+ * taxonomy.
  *
  * @since 2.3.0
  *
- * @param int          $object_id  The term object ID that refers to the term.
- * @param string|array $taxonomies List of taxonomy names or single taxonomy name.
+ * @param int          $object_id  ID đối tượng term tham chiếu đến term.
+ * @param string|array $taxonomies Danh sách tên taxonomy hoặc tên taxonomy đơn.
  */
 function wp_delete_object_term_relationships( $object_id, $taxonomies ) {
 	$object_id = (int) $object_id;
@@ -1999,31 +1998,31 @@ function wp_delete_object_term_relationships( $object_id, $taxonomies ) {
 }
 
 /**
- * Removes a term from the database.
+ * Xóa một term khỏi cơ sở dữ liệu.
  *
- * If the term is a parent of other terms, then the children will be updated to
- * that term's parent.
+ * Nếu term là cha của các term khác, thì các con sẽ được cập nhật về
+ * cha của term đó.
  *
- * Metadata associated with the term will be deleted.
+ * Metadata liên kết với term sẽ bị xóa.
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int          $term     Term ID.
- * @param string       $taxonomy Taxonomy name.
+ * @param int          $term     ID term.
+ * @param string       $taxonomy Tên taxonomy.
  * @param array|string $args {
- *     Optional. Array of arguments to override the default term ID. Default empty array.
+ *     Tùy chọn. Mảng tham số để ghi đè ID term mặc định. Mặc định mảng rỗng.
  *
- *     @type int  $default       The term ID to make the default term. This will only override
- *                               the terms found if there is only one term found. Any other and
- *                               the found terms are used.
- *     @type bool $force_default Optional. Whether to force the supplied term as default to be
- *                               assigned even if the object was not going to be term-less.
- *                               Default false.
+ *     @type int  $default       ID term để đặt làm term mặc định. Chỉ ghi đè
+ *                               các term tìm thấy nếu chỉ có một term được tìm thấy. Nếu khác,
+ *                               các term tìm thấy sẽ được sử dụng.
+ *     @type bool $force_default Tùy chọn. Có ép buộc term được cung cấp làm mặc định được
+ *                               gán ngay cả khi đối tượng không bị mất term hay không.
+ *                               Mặc định false.
  * }
- * @return bool|int|WP_Error True on success, false if term does not exist. Zero on attempted
- *                           deletion of default Category. WP_Error if the taxonomy does not exist.
+ * @return bool|int|WP_Error True khi thành công, false nếu term không tồn tại. Zero khi cố
+ *                           xóa Category mặc định. WP_Error nếu taxonomy không tồn tại.
  */
 function wp_delete_term( $term, $taxonomy, $args = array() ) {
 	global $wpdb;
@@ -2045,11 +2044,11 @@ function wp_delete_term( $term, $taxonomy, $args = array() ) {
 	if ( 'category' === $taxonomy ) {
 		$defaults['default'] = (int) get_option( 'default_category' );
 		if ( $defaults['default'] === $term ) {
-			return 0; // Don't delete the default category.
+			return 0; // Không xóa danh mục mặc định.
 		}
 	}
 
-	// Don't delete the default custom taxonomy term.
+	// Không xóa term mặc định của taxonomy tùy chỉnh.
 	$taxonomy_object = get_taxonomy( $taxonomy );
 	if ( ! empty( $taxonomy_object->default_term ) ) {
 		$defaults['default'] = (int) get_option( 'default_term_' . $taxonomy );
@@ -2072,16 +2071,16 @@ function wp_delete_term( $term, $taxonomy, $args = array() ) {
 	}
 
 	/**
-	 * Fires when deleting a term, before any modifications are made to posts or terms.
+	 * Kích hoạt khi xóa term, trước khi bất kỳ thay đổi nào được thực hiện với bài viết hoặc term.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param int    $term     Term ID.
-	 * @param string $taxonomy Taxonomy name.
+	 * @param int    $term     ID term.
+	 * @param string $taxonomy Tên taxonomy.
 	 */
 	do_action( 'pre_delete_term', $term, $taxonomy );
 
-	// Update children to point to new parent.
+	// Cập nhật các con để trỏ đến cha mới.
 	if ( is_taxonomy_hierarchical( $taxonomy ) ) {
 		$term_obj = get_term( $term, $taxonomy );
 		if ( is_wp_error( $term_obj ) ) {
@@ -2093,31 +2092,31 @@ function wp_delete_term( $term, $taxonomy, $args = array() ) {
 		$edit_tt_ids = wp_list_pluck( $edit_ids, 'term_taxonomy_id' );
 
 		/**
-		 * Fires immediately before a term to delete's children are reassigned a parent.
+		 * Kích hoạt ngay trước khi các con của term sắp xóa được gán lại cha.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param array $edit_tt_ids An array of term taxonomy IDs for the given term.
+		 * @param array $edit_tt_ids Mảng ID term taxonomy cho term được cho.
 		 */
 		do_action( 'edit_term_taxonomies', $edit_tt_ids );
 
 		$wpdb->update( $wpdb->term_taxonomy, compact( 'parent' ), array( 'parent' => $term_obj->term_id ) + compact( 'taxonomy' ) );
 
-		// Clean the cache for all child terms.
+		// Xóa cache cho tất cả term con.
 		$edit_term_ids = wp_list_pluck( $edit_ids, 'term_id' );
 		clean_term_cache( $edit_term_ids, $taxonomy );
 
 		/**
-		 * Fires immediately after a term to delete's children are reassigned a parent.
+		 * Kích hoạt ngay sau khi các con của term sắp xóa được gán lại cha.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param array $edit_tt_ids An array of term taxonomy IDs for the given term.
+		 * @param array $edit_tt_ids Mảng ID term taxonomy cho term được cho.
 		 */
 		do_action( 'edited_term_taxonomies', $edit_tt_ids );
 	}
 
-	// Get the term before deleting it or its term relationships so we can pass to actions below.
+	// Lấy term trước khi xóa nó hoặc các mối quan hệ term để có thể truyền cho các action bên dưới.
 	$deleted_term = get_term( $term, $taxonomy );
 
 	$object_ids = (array) $wpdb->get_col( $wpdb->prepare( "SELECT object_id FROM $wpdb->term_relationships WHERE term_taxonomy_id = %d", $tt_id ) );
@@ -2150,7 +2149,7 @@ function wp_delete_term( $term, $taxonomy, $args = array() ) {
 		wp_set_object_terms( $object_id, $terms, $taxonomy );
 	}
 
-	// Clean the relationship caches for all object types using this term.
+	// Xóa cache mối quan hệ cho tất cả loại đối tượng sử dụng term này.
 	$tax_object = get_taxonomy( $taxonomy );
 	foreach ( $tax_object->object_type as $object_type ) {
 		clean_object_term_cache( $object_ids, $object_type );
@@ -2162,26 +2161,26 @@ function wp_delete_term( $term, $taxonomy, $args = array() ) {
 	}
 
 	/**
-	 * Fires immediately before a term taxonomy ID is deleted.
+	 * Kích hoạt ngay trước khi ID term taxonomy bị xóa.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param int $tt_id Term taxonomy ID.
+	 * @param int $tt_id ID term taxonomy.
 	 */
 	do_action( 'delete_term_taxonomy', $tt_id );
 
 	$wpdb->delete( $wpdb->term_taxonomy, array( 'term_taxonomy_id' => $tt_id ) );
 
 	/**
-	 * Fires immediately after a term taxonomy ID is deleted.
+	 * Kích hoạt ngay sau khi ID term taxonomy bị xóa.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param int $tt_id Term taxonomy ID.
+	 * @param int $tt_id ID term taxonomy.
 	 */
 	do_action( 'deleted_term_taxonomy', $tt_id );
 
-	// Delete the term if no taxonomies use it.
+	// Xóa term nếu không có taxonomy nào sử dụng nó.
 	if ( ! $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_taxonomy WHERE term_id = %d", $term ) ) ) {
 		$wpdb->delete( $wpdb->terms, array( 'term_id' => $term ) );
 	}
@@ -2189,40 +2188,40 @@ function wp_delete_term( $term, $taxonomy, $args = array() ) {
 	clean_term_cache( $term, $taxonomy );
 
 	/**
-	 * Fires after a term is deleted from the database and the cache is cleaned.
+	 * Kích hoạt sau khi term bị xóa khỏi cơ sở dữ liệu và cache được dọn sạch.
 	 *
-	 * The {@see 'delete_$taxonomy'} hook is also available for targeting a specific
-	 * taxonomy.
+	 * Hook {@see 'delete_$taxonomy'} cũng có sẵn để nhắm mục tiêu một taxonomy
+	 * cụ thể.
 	 *
 	 * @since 2.5.0
-	 * @since 4.5.0 Introduced the `$object_ids` argument.
+	 * @since 4.5.0 Giới thiệu tham số `$object_ids`.
 	 *
-	 * @param int     $term         Term ID.
-	 * @param int     $tt_id        Term taxonomy ID.
-	 * @param string  $taxonomy     Taxonomy slug.
-	 * @param WP_Term $deleted_term Copy of the already-deleted term.
-	 * @param array   $object_ids   List of term object IDs.
+	 * @param int     $term         ID term.
+	 * @param int     $tt_id        ID term taxonomy.
+	 * @param string  $taxonomy     Slug taxonomy.
+	 * @param WP_Term $deleted_term Bản sao của term đã bị xóa.
+	 * @param array   $object_ids   Danh sách ID đối tượng term.
 	 */
 	do_action( 'delete_term', $term, $tt_id, $taxonomy, $deleted_term, $object_ids );
 
 	/**
-	 * Fires after a term in a specific taxonomy is deleted.
+	 * Kích hoạt sau khi term trong một taxonomy cụ thể bị xóa.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers to the specific
-	 * taxonomy the term belonged to.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu đến taxonomy cụ thể
+	 * mà term thuộc về.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `delete_category`
 	 *  - `delete_post_tag`
 	 *
 	 * @since 2.3.0
-	 * @since 4.5.0 Introduced the `$object_ids` argument.
+	 * @since 4.5.0 Giới thiệu tham số `$object_ids`.
 	 *
-	 * @param int     $term         Term ID.
-	 * @param int     $tt_id        Term taxonomy ID.
-	 * @param WP_Term $deleted_term Copy of the already-deleted term.
-	 * @param array   $object_ids   List of term object IDs.
+	 * @param int     $term         ID term.
+	 * @param int     $tt_id        ID term taxonomy.
+	 * @param WP_Term $deleted_term Bản sao của term đã bị xóa.
+	 * @param array   $object_ids   Danh sách ID đối tượng term.
 	 */
 	do_action( "delete_{$taxonomy}", $term, $tt_id, $deleted_term, $object_ids );
 
@@ -2230,37 +2229,37 @@ function wp_delete_term( $term, $taxonomy, $args = array() ) {
 }
 
 /**
- * Deletes one existing category.
+ * Xóa một danh mục hiện có.
  *
  * @since 2.0.0
  *
- * @param int $cat_id Category term ID.
- * @return bool|int|WP_Error Returns true if completes delete action; false if term doesn't exist;
- *                           Zero on attempted deletion of default Category; WP_Error object is
- *                           also a possibility.
+ * @param int $cat_id ID term danh mục.
+ * @return bool|int|WP_Error Trả về true nếu hoàn thành hành động xóa; false nếu term không tồn tại;
+ *                           Zero khi cố xóa Category mặc định; đối tượng WP_Error cũng
+ *                           có thể xảy ra.
  */
 function wp_delete_category( $cat_id ) {
 	return wp_delete_term( $cat_id, 'category' );
 }
 
 /**
- * Retrieves the terms associated with the given object(s), in the supplied taxonomies.
+ * Lấy các term liên kết với đối tượng được cho, trong các taxonomy được cung cấp.
  *
  * @since 2.3.0
- * @since 4.2.0 Added support for 'taxonomy', 'parent', and 'term_taxonomy_id' values of `$orderby`.
- *              Introduced `$parent` argument.
- * @since 4.4.0 Introduced `$meta_query` and `$update_term_meta_cache` arguments. When `$fields` is 'all' or
- *              'all_with_object_id', an array of `WP_Term` objects will be returned.
- * @since 4.7.0 Refactored to use WP_Term_Query, and to support any WP_Term_Query arguments.
- * @since 6.3.0 Passing `update_term_meta_cache` argument value false by default resulting in get_terms() to not
- *              prime the term meta cache.
+ * @since 4.2.0 Thêm hỗ trợ cho giá trị 'taxonomy', 'parent', và 'term_taxonomy_id' của `$orderby`.
+ *              Giới thiệu tham số `$parent`.
+ * @since 4.4.0 Giới thiệu tham số `$meta_query` và `$update_term_meta_cache`. Khi `$fields` là 'all' hoặc
+ *              'all_with_object_id', mảng đối tượng `WP_Term` sẽ được trả về.
+ * @since 4.7.0 Tái cấu trúc để sử dụng WP_Term_Query, và hỗ trợ bất kỳ tham số WP_Term_Query nào.
+ * @since 6.3.0 Truyền giá trị tham số `update_term_meta_cache` là false theo mặc định khiến get_terms() không
+ *              nạp trước cache meta term.
  *
- * @param int|int[]       $object_ids The ID(s) of the object(s) to retrieve.
- * @param string|string[] $taxonomies The taxonomy names to retrieve terms from.
- * @param array|string    $args       See WP_Term_Query::__construct() for supported arguments.
- * @return WP_Term[]|int[]|string[]|string|WP_Error Array of terms, a count thereof as a numeric string,
- *                                                  or WP_Error if any of the taxonomies do not exist.
- *                                                  See WP_Term_Query::get_terms() for more information.
+ * @param int|int[]       $object_ids (Các) ID của (các) đối tượng cần lấy.
+ * @param string|string[] $taxonomies Tên taxonomy để lấy term từ đó.
+ * @param array|string    $args       Xem WP_Term_Query::__construct() để biết các tham số được hỗ trợ.
+ * @return WP_Term[]|int[]|string[]|string|WP_Error Mảng term, số đếm dưới dạng chuỗi số,
+ *                                                  hoặc WP_Error nếu bất kỳ taxonomy nào không tồn tại.
+ *                                                  Xem WP_Term_Query::get_terms() để biết thêm thông tin.
  */
 function wp_get_object_terms( $object_ids, $taxonomies, $args = array() ) {
 	if ( empty( $object_ids ) || empty( $taxonomies ) ) {
@@ -2289,20 +2288,20 @@ function wp_get_object_terms( $object_ids, $taxonomies, $args = array() ) {
 	$args = wp_parse_args( $args, $defaults );
 
 	/**
-	 * Filters arguments for retrieving object terms.
+	 * Lọc các tham số để lấy term của đối tượng.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param array    $args       An array of arguments for retrieving terms for the given object(s).
-	 *                             See {@see wp_get_object_terms()} for details.
-	 * @param int[]    $object_ids Array of object IDs.
-	 * @param string[] $taxonomies Array of taxonomy names to retrieve terms from.
+	 * @param array    $args       Mảng tham số để lấy term cho (các) đối tượng được cho.
+	 *                             Xem {@see wp_get_object_terms()} để biết chi tiết.
+	 * @param int[]    $object_ids Mảng ID đối tượng.
+	 * @param string[] $taxonomies Mảng tên taxonomy để lấy term từ đó.
 	 */
 	$args = apply_filters( 'wp_get_object_terms_args', $args, $object_ids, $taxonomies );
 
 	/*
-	 * When one or more queried taxonomies is registered with an 'args' array,
-	 * those params override the `$args` passed to this function.
+	 * Khi một hoặc nhiều taxonomy được truy vấn được đăng ký với mảng 'args',
+	 * các tham số đó ghi đè `$args` được truyền cho hàm này.
 	 */
 	$terms = array();
 	if ( count( $taxonomies ) > 1 ) {
@@ -2323,11 +2322,11 @@ function wp_get_object_terms( $object_ids, $taxonomies, $args = array() ) {
 	$args['taxonomy']   = $taxonomies;
 	$args['object_ids'] = $object_ids;
 
-	// Taxonomies registered without an 'args' param are handled here.
+	// Các taxonomy được đăng ký không có tham số 'args' được xử lý ở đây.
 	if ( ! empty( $taxonomies ) ) {
 		$terms_from_remaining_taxonomies = get_terms( $args );
 
-		// Array keys should be preserved for values of $fields that use term_id for keys.
+		// Khóa mảng nên được giữ nguyên cho các giá trị $fields sử dụng term_id làm khóa.
 		if ( ! empty( $args['fields'] ) && str_starts_with( $args['fields'], 'id=>' ) ) {
 			$terms = $terms + $terms_from_remaining_taxonomies;
 		} else {
@@ -2336,15 +2335,15 @@ function wp_get_object_terms( $object_ids, $taxonomies, $args = array() ) {
 	}
 
 	/**
-	 * Filters the terms for a given object or objects.
+	 * Lọc các term cho một đối tượng hoặc nhiều đối tượng được cho.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param WP_Term[]|int[]|string[]|string $terms      Array of terms or a count thereof as a numeric string.
-	 * @param int[]                           $object_ids Array of object IDs for which terms were retrieved.
-	 * @param string[]                        $taxonomies Array of taxonomy names from which terms were retrieved.
-	 * @param array                           $args       Array of arguments for retrieving terms for the given
-	 *                                                    object(s). See wp_get_object_terms() for details.
+	 * @param WP_Term[]|int[]|string[]|string $terms      Mảng term hoặc số đếm dưới dạng chuỗi số.
+	 * @param int[]                           $object_ids Mảng ID đối tượng mà term được lấy cho.
+	 * @param string[]                        $taxonomies Mảng tên taxonomy mà term được lấy từ đó.
+	 * @param array                           $args       Mảng tham số để lấy term cho (các)
+	 *                                                    đối tượng. Xem wp_get_object_terms() để biết chi tiết.
 	 */
 	$terms = apply_filters( 'get_object_terms', $terms, $object_ids, $taxonomies, $args );
 
@@ -2352,67 +2351,67 @@ function wp_get_object_terms( $object_ids, $taxonomies, $args = array() ) {
 	$taxonomies = "'" . implode( "', '", array_map( 'esc_sql', $taxonomies ) ) . "'";
 
 	/**
-	 * Filters the terms for a given object or objects.
+	 * Lọc các term cho một đối tượng hoặc nhiều đối tượng được cho.
 	 *
-	 * The `$taxonomies` parameter passed to this filter is formatted as a SQL fragment. The
-	 * {@see 'get_object_terms'} filter is recommended as an alternative.
+	 * Tham số `$taxonomies` được truyền cho bộ lọc này được định dạng như đoạn SQL. Bộ lọc
+	 * {@see 'get_object_terms'} được khuyến nghị như giải pháp thay thế.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param WP_Term[]|int[]|string[]|string $terms      Array of terms or a count thereof as a numeric string.
-	 * @param string                          $object_ids Comma separated list of object IDs for which terms were retrieved.
-	 * @param string                          $taxonomies SQL fragment of taxonomy names from which terms were retrieved.
-	 * @param array                           $args       Array of arguments for retrieving terms for the given
-	 *                                                    object(s). See wp_get_object_terms() for details.
+	 * @param WP_Term[]|int[]|string[]|string $terms      Mảng term hoặc số đếm dưới dạng chuỗi số.
+	 * @param string                          $object_ids Danh sách ID đối tượng phân cách bằng dấu phẩy.
+	 * @param string                          $taxonomies Đoạn SQL chứa tên taxonomy mà term được lấy từ đó.
+	 * @param array                           $args       Mảng tham số để lấy term cho (các)
+	 *                                                    đối tượng. Xem wp_get_object_terms() để biết chi tiết.
 	 */
 	return apply_filters( 'wp_get_object_terms', $terms, $object_ids, $taxonomies, $args );
 }
 
 /**
- * Adds a new term to the database.
+ * Thêm term mới vào cơ sở dữ liệu.
  *
- * A non-existent term is inserted in the following sequence:
- * 1. The term is added to the term table, then related to the taxonomy.
- * 2. If everything is correct, several actions are fired.
- * 3. The 'term_id_filter' is evaluated.
- * 4. The term cache is cleaned.
- * 5. Several more actions are fired.
- * 6. An array is returned containing the `term_id` and `term_taxonomy_id`.
+ * Một term chưa tồn tại được chèn theo trình tự sau:
+ * 1. Term được thêm vào bảng term, sau đó liên kết với taxonomy.
+ * 2. Nếu mọi thứ đúng, một số action được kích hoạt.
+ * 3. 'term_id_filter' được đánh giá.
+ * 4. Cache term được dọn sạch.
+ * 5. Một số action khác được kích hoạt.
+ * 6. Mảng chứa `term_id` và `term_taxonomy_id` được trả về.
  *
- * If the 'slug' argument is not empty, then it is checked to see if the term
- * is invalid. If it is not a valid, existing term, it is added and the term_id
- * is given.
+ * Nếu tham số 'slug' không rỗng, nó sẽ được kiểm tra xem term
+ * có hợp lệ hay không. Nếu không phải term hợp lệ đã tồn tại, nó được thêm và term_id
+ * được cấp.
  *
- * If the taxonomy is hierarchical, and the 'parent' argument is not empty,
- * the term is inserted and the term_id will be given.
+ * Nếu taxonomy phân cấp, và tham số 'parent' không rỗng,
+ * term được chèn và term_id sẽ được cấp.
  *
- * Error handling:
- * If `$taxonomy` does not exist or `$term` is empty,
- * a WP_Error object will be returned.
+ * Xử lý lỗi:
+ * Nếu `$taxonomy` không tồn tại hoặc `$term` rỗng,
+ * đối tượng WP_Error sẽ được trả về.
  *
- * If the term already exists on the same hierarchical level,
- * or the term slug and name are not unique, a WP_Error object will be returned.
+ * Nếu term đã tồn tại ở cùng cấp phân cấp,
+ * hoặc slug và tên term không duy nhất, đối tượng WP_Error sẽ được trả về.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
  * @since 2.3.0
  *
- * @param string       $term     The term name to add.
- * @param string       $taxonomy The taxonomy to which to add the term.
+ * @param string       $term     Tên term cần thêm.
+ * @param string       $taxonomy Taxonomy để thêm term vào.
  * @param array|string $args {
- *     Optional. Array or query string of arguments for inserting a term.
+ *     Tùy chọn. Mảng hoặc chuỗi query string của tham số để chèn term.
  *
- *     @type string $alias_of    Slug of the term to make this term an alias of.
- *                               Default empty string. Accepts a term slug.
- *     @type string $description The term description. Default empty string.
- *     @type int    $parent      The id of the parent term. Default 0.
- *     @type string $slug        The term slug to use. Default empty string.
+ *     @type string $alias_of    Slug của term để biến term này thành bí danh.
+ *                               Mặc định chuỗi rỗng. Chấp nhận slug term.
+ *     @type string $description Mô tả term. Mặc định chuỗi rỗng.
+ *     @type int    $parent      ID của term cha. Mặc định 0.
+ *     @type string $slug        Slug term cần sử dụng. Mặc định chuỗi rỗng.
  * }
  * @return array|WP_Error {
- *     An array of the new term data, WP_Error otherwise.
+ *     Mảng dữ liệu term mới, WP_Error nếu ngược lại.
  *
- *     @type int        $term_id          The new term ID.
- *     @type int|string $term_taxonomy_id The new term taxonomy ID. Can be a numeric string.
+ *     @type int        $term_id          ID term mới.
+ *     @type int|string $term_taxonomy_id ID term taxonomy mới. Có thể là chuỗi số.
  * }
  */
 function wp_insert_term( $term, $taxonomy, $args = array() ) {

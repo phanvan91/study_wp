@@ -1,43 +1,43 @@
 <?php
 /**
- * WordPress Cron API
+ * API WordPress Cron
  *
  * @package WordPress
  */
 
 /**
- * Schedules an event to run only once.
+ * Lên lịch một sự kiện chỉ chạy một lần.
  *
- * Schedules a hook which will be triggered by WordPress at the specified UTC time.
- * The action will trigger when someone visits your WordPress site if the scheduled
- * time has passed.
+ * Lên lịch một hook sẽ được WordPress kích hoạt tại thời điểm UTC được chỉ định.
+ * Action sẽ được kích hoạt khi ai đó truy cập trang WordPress của bạn nếu thời gian
+ * đã lên lịch đã qua.
  *
- * Note that scheduling an event to occur within 10 minutes of an existing event
- * with the same action hook will be ignored unless you pass unique `$args` values
- * for each scheduled event.
+ * Lưu ý rằng việc lên lịch một sự kiện xảy ra trong vòng 10 phút kể từ một sự kiện
+ * hiện có với cùng action hook sẽ bị bỏ qua trừ khi bạn truyền các giá trị `$args`
+ * duy nhất cho mỗi sự kiện đã lên lịch.
  *
- * Use wp_next_scheduled() to prevent duplicate events.
+ * Sử dụng wp_next_scheduled() để ngăn các sự kiện trùng lặp.
  *
- * Use wp_schedule_event() to schedule a recurring event.
+ * Sử dụng wp_schedule_event() để lên lịch một sự kiện lặp lại.
  *
  * @since 2.1.0
- * @since 5.1.0 Return value modified to boolean indicating success or failure,
- *              {@see 'pre_schedule_event'} filter added to short-circuit the function.
- * @since 5.7.0 The `$wp_error` parameter was added.
+ * @since 5.1.0 Giá trị trả về được thay đổi thành boolean cho biết thành công hay thất bại,
+ *              bộ lọc {@see 'pre_schedule_event'} được thêm để rút ngắn hàm.
+ * @since 5.7.0 Tham số `$wp_error` được thêm vào.
  *
  * @link https://developer.wordpress.org/reference/functions/wp_schedule_single_event/
  *
- * @param int    $timestamp  Unix timestamp (UTC) for when to next run the event.
- * @param string $hook       Action hook to execute when the event is run.
- * @param array  $args       Optional. Array containing arguments to pass to the
- *                           hook's callback function. Each value in the array
- *                           is passed to the callback as an individual parameter.
- *                           The array keys are ignored. Default empty array.
- * @param bool   $wp_error   Optional. Whether to return a WP_Error on failure. Default false.
- * @return bool|WP_Error True if event successfully scheduled. False or WP_Error on failure.
+ * @param int    $timestamp  Dấu thời gian Unix (UTC) cho lần chạy sự kiện tiếp theo.
+ * @param string $hook       Action hook để thực thi khi sự kiện được chạy.
+ * @param array  $args       Tùy chọn. Mảng chứa các đối số truyền cho hàm callback
+ *                           của hook. Mỗi giá trị trong mảng được truyền cho callback
+ *                           như một tham số riêng biệt. Các khóa mảng bị bỏ qua.
+ *                           Mặc định mảng rỗng.
+ * @param bool   $wp_error   Tùy chọn. Có trả về WP_Error khi thất bại không. Mặc định false.
+ * @return bool|WP_Error True nếu sự kiện được lên lịch thành công. False hoặc WP_Error khi thất bại.
  */
 function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error = false ) {
-	// Make sure timestamp is a positive integer.
+	// Đảm bảo timestamp là một số nguyên dương.
 	if ( ! is_numeric( $timestamp ) || $timestamp <= 0 ) {
 		if ( $wp_error ) {
 			return new WP_Error(
@@ -57,36 +57,36 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error
 	);
 
 	/**
-	 * Filter to override scheduling an event.
+	 * Bộ lọc để ghi đè việc lên lịch sự kiện.
 	 *
-	 * Returning a non-null value will short-circuit adding the event to the
-	 * cron array, causing the function to return the filtered value instead.
+	 * Trả về giá trị không phải null sẽ rút ngắn việc thêm sự kiện vào
+	 * mảng cron, khiến hàm trả về giá trị đã lọc thay thế.
 	 *
-	 * Both single events and recurring events are passed through this filter;
-	 * single events have `$event->schedule` as false, whereas recurring events
-	 * have this set to a recurrence from wp_get_schedules(). Recurring
-	 * events also have the integer recurrence interval set as `$event->interval`.
+	 * Cả sự kiện đơn lẻ và sự kiện lặp lại đều đi qua bộ lọc này;
+	 * sự kiện đơn lẻ có `$event->schedule` là false, trong khi sự kiện lặp lại
+	 * có giá trị này được đặt thành tần suất từ wp_get_schedules(). Sự kiện lặp lại
+	 * cũng có khoảng thời gian lặp lại dạng số nguyên được đặt là `$event->interval`.
 	 *
-	 * For plugins replacing wp-cron, it is recommended you check for an
-	 * identical event within ten minutes and apply the {@see 'schedule_event'}
-	 * filter to check if another plugin has disallowed the event before scheduling.
+	 * Đối với plugin thay thế wp-cron, khuyến nghị bạn kiểm tra sự kiện
+	 * giống hệt trong vòng mười phút và áp dụng bộ lọc {@see 'schedule_event'}
+	 * để kiểm tra xem plugin khác có cấm sự kiện trước khi lên lịch không.
 	 *
-	 * Return true if the event was scheduled, false or a WP_Error if not.
+	 * Trả về true nếu sự kiện đã được lên lịch, false hoặc WP_Error nếu không.
 	 *
 	 * @since 5.1.0
-	 * @since 5.7.0 The `$wp_error` parameter was added, and a `WP_Error` object can now be returned.
+	 * @since 5.7.0 Tham số `$wp_error` được thêm vào, và đối tượng `WP_Error` có thể được trả về.
 	 *
-	 * @param null|bool|WP_Error $result   The value to return instead. Default null to continue adding the event.
+	 * @param null|bool|WP_Error $result   Giá trị trả về thay thế. Mặc định null để tiếp tục thêm sự kiện.
 	 * @param object             $event    {
-	 *     An object containing an event's data.
+	 *     Đối tượng chứa dữ liệu sự kiện.
 	 *
-	 *     @type string       $hook      Action hook to execute when the event is run.
-	 *     @type int          $timestamp Unix timestamp (UTC) for when to next run the event.
-	 *     @type string|false $schedule  How often the event should subsequently recur.
-	 *     @type array        $args      Array containing each separate argument to pass to the hook's callback function.
-	 *     @type int          $interval  Optional. The interval time in seconds for the schedule. Only present for recurring events.
+	 *     @type string       $hook      Action hook để thực thi khi sự kiện được chạy.
+	 *     @type int          $timestamp Dấu thời gian Unix (UTC) cho lần chạy sự kiện tiếp theo.
+	 *     @type string|false $schedule  Tần suất sự kiện nên lặp lại.
+	 *     @type array        $args      Mảng chứa từng đối số riêng biệt truyền cho hàm callback của hook.
+	 *     @type int          $interval  Tùy chọn. Khoảng thời gian tính bằng giây cho lịch. Chỉ có ở sự kiện lặp lại.
 	 * }
-	 * @param bool               $wp_error Whether to return a WP_Error on failure.
+	 * @param bool               $wp_error Có trả về WP_Error khi thất bại không.
 	 */
 	$pre = apply_filters( 'pre_schedule_event', null, $event, $wp_error );
 
@@ -106,17 +106,17 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error
 	}
 
 	/*
-	 * Check for a duplicated event.
+	 * Kiểm tra sự kiện trùng lặp.
 	 *
-	 * Don't schedule an event if there's already an identical event
-	 * within 10 minutes.
+	 * Không lên lịch sự kiện nếu đã có sự kiện giống hệt
+	 * trong vòng 10 phút.
 	 *
-	 * When scheduling events within ten minutes of the current time,
-	 * all past identical events are considered duplicates.
+	 * Khi lên lịch sự kiện trong vòng mười phút kể từ thời gian hiện tại,
+	 * tất cả sự kiện giống hệt trong quá khứ được coi là trùng lặp.
 	 *
-	 * When scheduling an event with a past timestamp (ie, before the
-	 * current time) all events scheduled within the next ten minutes
-	 * are considered duplicates.
+	 * Khi lên lịch sự kiện với timestamp trong quá khứ (tức là trước
+	 * thời gian hiện tại) tất cả sự kiện đã lên lịch trong mười phút tiếp theo
+	 * được coi là trùng lặp.
 	 */
 	$crons = _get_cron_array();
 
@@ -162,23 +162,23 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error
 	}
 
 	/**
-	 * Modify an event before it is scheduled.
+	 * Sửa đổi sự kiện trước khi được lên lịch.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @param object|false $event {
-	 *     An object containing an event's data, or boolean false to prevent the event from being scheduled.
+	 *     Đối tượng chứa dữ liệu sự kiện, hoặc boolean false để ngăn sự kiện được lên lịch.
 	 *
-	 *     @type string       $hook      Action hook to execute when the event is run.
-	 *     @type int          $timestamp Unix timestamp (UTC) for when to next run the event.
-	 *     @type string|false $schedule  How often the event should subsequently recur.
-	 *     @type array        $args      Array containing each separate argument to pass to the hook's callback function.
-	 *     @type int          $interval  Optional. The interval time in seconds for the schedule. Only present for recurring events.
+	 *     @type string       $hook      Action hook để thực thi khi sự kiện được chạy.
+	 *     @type int          $timestamp Dấu thời gian Unix (UTC) cho lần chạy sự kiện tiếp theo.
+	 *     @type string|false $schedule  Tần suất sự kiện nên lặp lại.
+	 *     @type array        $args      Mảng chứa từng đối số riêng biệt truyền cho hàm callback của hook.
+	 *     @type int          $interval  Tùy chọn. Khoảng thời gian tính bằng giây cho lịch. Chỉ có ở sự kiện lặp lại.
 	 * }
 	 */
 	$event = apply_filters( 'schedule_event', $event );
 
-	// A plugin disallowed this event.
+	// Một plugin đã cấm sự kiện này.
 	if ( ! $event ) {
 		if ( $wp_error ) {
 			return new WP_Error(
@@ -200,39 +200,39 @@ function wp_schedule_single_event( $timestamp, $hook, $args = array(), $wp_error
 }
 
 /**
- * Schedules a recurring event.
+ * Lên lịch một sự kiện lặp lại.
  *
- * Schedules a hook which will be triggered by WordPress at the specified interval.
- * The action will trigger when someone visits your WordPress site if the scheduled
- * time has passed.
+ * Lên lịch một hook sẽ được WordPress kích hoạt theo khoảng thời gian được chỉ định.
+ * Action sẽ được kích hoạt khi ai đó truy cập trang WordPress của bạn nếu thời gian
+ * đã lên lịch đã qua.
  *
- * Valid values for the recurrence are 'hourly', 'twicedaily', 'daily', and 'weekly'.
- * These can be extended using the {@see 'cron_schedules'} filter in wp_get_schedules().
+ * Các giá trị hợp lệ cho tần suất lặp lại là 'hourly', 'twicedaily', 'daily', và 'weekly'.
+ * Có thể mở rộng bằng bộ lọc {@see 'cron_schedules'} trong wp_get_schedules().
  *
- * Use wp_next_scheduled() to prevent duplicate events.
+ * Sử dụng wp_next_scheduled() để ngăn các sự kiện trùng lặp.
  *
- * Use wp_schedule_single_event() to schedule a non-recurring event.
+ * Sử dụng wp_schedule_single_event() để lên lịch sự kiện không lặp lại.
  *
  * @since 2.1.0
- * @since 5.1.0 Return value modified to boolean indicating success or failure,
- *              {@see 'pre_schedule_event'} filter added to short-circuit the function.
- * @since 5.7.0 The `$wp_error` parameter was added.
+ * @since 5.1.0 Giá trị trả về được thay đổi thành boolean cho biết thành công hay thất bại,
+ *              bộ lọc {@see 'pre_schedule_event'} được thêm để rút ngắn hàm.
+ * @since 5.7.0 Tham số `$wp_error` được thêm vào.
  *
  * @link https://developer.wordpress.org/reference/functions/wp_schedule_event/
  *
- * @param int    $timestamp  Unix timestamp (UTC) for when to next run the event.
- * @param string $recurrence How often the event should subsequently recur.
- *                           See wp_get_schedules() for accepted values.
- * @param string $hook       Action hook to execute when the event is run.
- * @param array  $args       Optional. Array containing arguments to pass to the
- *                           hook's callback function. Each value in the array
- *                           is passed to the callback as an individual parameter.
- *                           The array keys are ignored. Default empty array.
- * @param bool   $wp_error   Optional. Whether to return a WP_Error on failure. Default false.
- * @return bool|WP_Error True if event successfully scheduled. False or WP_Error on failure.
+ * @param int    $timestamp  Dấu thời gian Unix (UTC) cho lần chạy sự kiện tiếp theo.
+ * @param string $recurrence Tần suất sự kiện nên lặp lại.
+ *                           Xem wp_get_schedules() để biết các giá trị được chấp nhận.
+ * @param string $hook       Action hook để thực thi khi sự kiện được chạy.
+ * @param array  $args       Tùy chọn. Mảng chứa các đối số truyền cho hàm callback
+ *                           của hook. Mỗi giá trị trong mảng được truyền cho callback
+ *                           như một tham số riêng biệt. Các khóa mảng bị bỏ qua.
+ *                           Mặc định mảng rỗng.
+ * @param bool   $wp_error   Tùy chọn. Có trả về WP_Error khi thất bại không. Mặc định false.
+ * @return bool|WP_Error True nếu sự kiện được lên lịch thành công. False hoặc WP_Error khi thất bại.
  */
 function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array(), $wp_error = false ) {
-	// Make sure timestamp is a positive integer.
+	// Đảm bảo timestamp là một số nguyên dương.
 	if ( ! is_numeric( $timestamp ) || $timestamp <= 0 ) {
 		if ( $wp_error ) {
 			return new WP_Error(
@@ -286,7 +286,7 @@ function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array(), $wp
 	/** This filter is documented in wp-includes/cron.php */
 	$event = apply_filters( 'schedule_event', $event );
 
-	// A plugin disallowed this event.
+	// Một plugin đã cấm sự kiện này.
 	if ( ! $event ) {
 		if ( $wp_error ) {
 			return new WP_Error(
@@ -313,32 +313,32 @@ function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array(), $wp
 }
 
 /**
- * Reschedules a recurring event.
+ * Lên lịch lại một sự kiện định kỳ.
  *
- * Mainly for internal use, this takes the Unix timestamp (UTC) of a previously run
- * recurring event and reschedules it for its next run.
+ * Chủ yếu dùng nội bộ, hàm này nhận Unix timestamp (UTC) của một sự kiện
+ * định kỳ đã chạy trước đó và lên lịch lại cho lần chạy tiếp theo.
  *
- * To change upcoming scheduled events, use wp_schedule_event() to
- * change the recurrence frequency.
+ * Để thay đổi các sự kiện đã lên lịch sắp tới, sử dụng wp_schedule_event() để
+ * thay đổi tần suất lặp lại.
  *
  * @since 2.1.0
- * @since 5.1.0 Return value modified to boolean indicating success or failure,
- *              {@see 'pre_reschedule_event'} filter added to short-circuit the function.
- * @since 5.7.0 The `$wp_error` parameter was added.
+ * @since 5.1.0 Giá trị trả về được sửa thành boolean cho biết thành công hay thất bại,
+ *              bộ lọc {@see 'pre_reschedule_event'} được thêm để short-circuit hàm.
+ * @since 5.7.0 Tham số `$wp_error` được thêm vào.
  *
- * @param int    $timestamp  Unix timestamp (UTC) for when the event was scheduled.
- * @param string $recurrence How often the event should subsequently recur.
- *                           See wp_get_schedules() for accepted values.
- * @param string $hook       Action hook to execute when the event is run.
- * @param array  $args       Optional. Array containing arguments to pass to the
- *                           hook's callback function. Each value in the array
- *                           is passed to the callback as an individual parameter.
- *                           The array keys are ignored. Default empty array.
- * @param bool   $wp_error   Optional. Whether to return a WP_Error on failure. Default false.
- * @return bool|WP_Error True if event successfully rescheduled. False or WP_Error on failure.
+ * @param int    $timestamp  Unix timestamp (UTC) khi sự kiện được lên lịch.
+ * @param string $recurrence Tần suất sự kiện nên lặp lại sau đó.
+ *                           Xem wp_get_schedules() để biết các giá trị được chấp nhận.
+ * @param string $hook       Action hook để thực thi khi sự kiện được chạy.
+ * @param array  $args       Tùy chọn. Mảng chứa các đối số để truyền vào
+ *                           hàm callback của hook. Mỗi giá trị trong mảng
+ *                           được truyền vào callback như một tham số riêng lẻ.
+ *                           Các khóa mảng bị bỏ qua. Mặc định mảng rỗng.
+ * @param bool   $wp_error   Tùy chọn. Có trả về WP_Error khi thất bại không. Mặc định false.
+ * @return bool|WP_Error True nếu sự kiện được lên lịch lại thành công. False hoặc WP_Error khi thất bại.
  */
 function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = array(), $wp_error = false ) {
-	// Make sure timestamp is a positive integer.
+	// Đảm bảo timestamp là một số nguyên dương.
 	if ( ! is_numeric( $timestamp ) || $timestamp <= 0 ) {
 		if ( $wp_error ) {
 			return new WP_Error(
@@ -353,12 +353,12 @@ function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = array(), $
 	$schedules = wp_get_schedules();
 	$interval  = 0;
 
-	// First we try to get the interval from the schedule.
+	// Đầu tiên chúng ta thử lấy khoảng thời gian từ lịch trình.
 	if ( isset( $schedules[ $recurrence ] ) ) {
 		$interval = $schedules[ $recurrence ]['interval'];
 	}
 
-	// Now we try to get it from the saved interval in case the schedule disappears.
+	// Bây giờ chúng ta thử lấy từ khoảng thời gian đã lưu trong trường hợp lịch trình biến mất.
 	if ( 0 === $interval ) {
 		$scheduled_event = wp_get_scheduled_event( $hook, $args, $timestamp );
 
@@ -376,28 +376,28 @@ function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = array(), $
 	);
 
 	/**
-	 * Filter to override rescheduling of a recurring event.
+	 * Bộ lọc để ghi đè việc lên lịch lại sự kiện định kỳ.
 	 *
-	 * Returning a non-null value will short-circuit the normal rescheduling
-	 * process, causing the function to return the filtered value instead.
+	 * Trả về giá trị không phải null sẽ short-circuit quy trình lên lịch lại
+	 * bình thường, khiến hàm trả về giá trị đã lọc thay vì.
 	 *
-	 * For plugins replacing wp-cron, return true if the event was successfully
-	 * rescheduled, false or a WP_Error if not.
+	 * Đối với plugin thay thế wp-cron, trả về true nếu sự kiện được lên lịch lại
+	 * thành công, false hoặc WP_Error nếu không.
 	 *
 	 * @since 5.1.0
-	 * @since 5.7.0 The `$wp_error` parameter was added, and a `WP_Error` object can now be returned.
+	 * @since 5.7.0 Tham số `$wp_error` được thêm vào, và đối tượng `WP_Error` giờ có thể được trả về.
 	 *
-	 * @param null|bool|WP_Error $pre      Value to return instead. Default null to continue adding the event.
+	 * @param null|bool|WP_Error $pre      Giá trị trả về thay thế. Mặc định null để tiếp tục thêm sự kiện.
 	 * @param object             $event    {
-	 *     An object containing an event's data.
+	 *     Một đối tượng chứa dữ liệu của sự kiện.
 	 *
-	 *     @type string $hook      Action hook to execute when the event is run.
-	 *     @type int    $timestamp Unix timestamp (UTC) for when to next run the event.
-	 *     @type string $schedule  How often the event should subsequently recur.
-	 *     @type array  $args      Array containing each separate argument to pass to the hook's callback function.
-	 *     @type int    $interval  The interval time in seconds for the schedule.
+	 *     @type string $hook      Action hook để thực thi khi sự kiện được chạy.
+	 *     @type int    $timestamp Unix timestamp (UTC) cho lần chạy tiếp theo của sự kiện.
+	 *     @type string $schedule  Tần suất sự kiện nên lặp lại sau đó.
+	 *     @type array  $args      Mảng chứa từng đối số riêng lẻ để truyền vào hàm callback của hook.
+	 *     @type int    $interval  Thời gian khoảng cách tính bằng giây cho lịch trình.
 	 * }
-	 * @param bool               $wp_error Whether to return a WP_Error on failure.
+	 * @param bool               $wp_error Có trả về WP_Error khi thất bại không.
 	 */
 	$pre = apply_filters( 'pre_reschedule_event', null, $event, $wp_error );
 
@@ -416,7 +416,7 @@ function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = array(), $
 		return $pre;
 	}
 
-	// Now we assume something is wrong and fail to schedule.
+	// Bây giờ chúng ta giả định có gì đó sai và không lên lịch được.
 	if ( 0 === $interval ) {
 		if ( $wp_error ) {
 			return new WP_Error(
@@ -440,27 +440,27 @@ function wp_reschedule_event( $timestamp, $recurrence, $hook, $args = array(), $
 }
 
 /**
- * Unschedules a previously scheduled event.
+ * Hủy lịch một sự kiện đã được lên lịch trước đó.
  *
- * The `$timestamp` and `$hook` parameters are required so that the event can be
- * identified.
+ * Các tham số `$timestamp` và `$hook` là bắt buộc để có thể xác định
+ * sự kiện.
  *
  * @since 2.1.0
- * @since 5.1.0 Return value modified to boolean indicating success or failure,
- *              {@see 'pre_unschedule_event'} filter added to short-circuit the function.
- * @since 5.7.0 The `$wp_error` parameter was added.
+ * @since 5.1.0 Giá trị trả về được sửa thành boolean cho biết thành công hay thất bại,
+ *              bộ lọc {@see 'pre_unschedule_event'} được thêm để short-circuit hàm.
+ * @since 5.7.0 Tham số `$wp_error` được thêm vào.
  *
- * @param int    $timestamp Unix timestamp (UTC) of the event.
- * @param string $hook      Action hook of the event.
- * @param array  $args      Optional. Array containing each separate argument to pass to the hook's callback function.
- *                          Although not passed to a callback, these arguments are used to uniquely identify the
- *                          event, so they should be the same as those used when originally scheduling the event.
- *                          Default empty array.
- * @param bool   $wp_error  Optional. Whether to return a WP_Error on failure. Default false.
- * @return bool|WP_Error True if event successfully unscheduled. False or WP_Error on failure.
+ * @param int    $timestamp Unix timestamp (UTC) của sự kiện.
+ * @param string $hook      Action hook của sự kiện.
+ * @param array  $args      Tùy chọn. Mảng chứa từng đối số riêng lẻ để truyền vào hàm callback của hook.
+ *                          Mặc dù không được truyền vào callback, các đối số này được dùng để xác định
+ *                          duy nhất sự kiện, vì vậy chúng nên giống như khi ban đầu lên lịch sự kiện.
+ *                          Mặc định mảng rỗng.
+ * @param bool   $wp_error  Tùy chọn. Có trả về WP_Error khi thất bại không. Mặc định false.
+ * @return bool|WP_Error True nếu sự kiện được hủy lịch thành công. False hoặc WP_Error khi thất bại.
  */
 function wp_unschedule_event( $timestamp, $hook, $args = array(), $wp_error = false ) {
-	// Make sure timestamp is a positive integer.
+	// Đảm bảo timestamp là một số nguyên dương.
 	if ( ! is_numeric( $timestamp ) || $timestamp <= 0 ) {
 		if ( $wp_error ) {
 			return new WP_Error(
@@ -473,22 +473,22 @@ function wp_unschedule_event( $timestamp, $hook, $args = array(), $wp_error = fa
 	}
 
 	/**
-	 * Filter to override unscheduling of events.
+	 * Bộ lọc để ghi đè việc hủy lịch sự kiện.
 	 *
-	 * Returning a non-null value will short-circuit the normal unscheduling
-	 * process, causing the function to return the filtered value instead.
+	 * Trả về giá trị không phải null sẽ short-circuit quy trình hủy lịch
+	 * bình thường, khiến hàm trả về giá trị đã lọc thay vì.
 	 *
-	 * For plugins replacing wp-cron, return true if the event was successfully
-	 * unscheduled, false or a WP_Error if not.
+	 * Đối với plugin thay thế wp-cron, trả về true nếu sự kiện được hủy lịch
+	 * thành công, false hoặc WP_Error nếu không.
 	 *
 	 * @since 5.1.0
-	 * @since 5.7.0 The `$wp_error` parameter was added, and a `WP_Error` object can now be returned.
+	 * @since 5.7.0 Tham số `$wp_error` được thêm vào, và đối tượng `WP_Error` giờ có thể được trả về.
 	 *
-	 * @param null|bool|WP_Error $pre       Value to return instead. Default null to continue unscheduling the event.
-	 * @param int                $timestamp Unix timestamp (UTC) for when to run the event.
-	 * @param string             $hook      Action hook, the execution of which will be unscheduled.
-	 * @param array              $args      Arguments to pass to the hook's callback function.
-	 * @param bool               $wp_error  Whether to return a WP_Error on failure.
+	 * @param null|bool|WP_Error $pre       Giá trị trả về thay thế. Mặc định null để tiếp tục hủy lịch sự kiện.
+	 * @param int                $timestamp Unix timestamp (UTC) khi chạy sự kiện.
+	 * @param string             $hook      Action hook, việc thực thi sẽ bị hủy lịch.
+	 * @param array              $args      Các đối số để truyền vào hàm callback của hook.
+	 * @param bool               $wp_error  Có trả về WP_Error khi thất bại không.
 	 */
 	$pre = apply_filters( 'pre_unschedule_event', null, $timestamp, $hook, $args, $wp_error );
 
@@ -524,32 +524,32 @@ function wp_unschedule_event( $timestamp, $hook, $args = array(), $wp_error = fa
 }
 
 /**
- * Unschedules all events attached to the hook with the specified arguments.
+ * Hủy lịch tất cả sự kiện gắn với hook với các đối số được chỉ định.
  *
- * Warning: This function may return boolean false, but may also return a non-boolean
- * value which evaluates to false. For information about casting to booleans see the
- * {@link https://www.php.net/manual/en/language.types.boolean.php PHP documentation}. Use
- * the `===` operator for testing the return value of this function.
+ * Cảnh báo: Hàm này có thể trả về boolean false, nhưng cũng có thể trả về giá trị
+ * không phải boolean mà đánh giá thành false. Để biết thông tin về chuyển đổi kiểu sang boolean xem
+ * {@link https://www.php.net/manual/en/language.types.boolean.php tài liệu PHP}. Sử dụng
+ * toán tử `===` để kiểm tra giá trị trả về của hàm này.
  *
  * @since 2.1.0
- * @since 5.1.0 Return value modified to indicate success or failure,
- *              {@see 'pre_clear_scheduled_hook'} filter added to short-circuit the function.
- * @since 5.7.0 The `$wp_error` parameter was added.
+ * @since 5.1.0 Giá trị trả về được sửa để cho biết thành công hay thất bại,
+ *              bộ lọc {@see 'pre_clear_scheduled_hook'} được thêm để short-circuit hàm.
+ * @since 5.7.0 Tham số `$wp_error` được thêm vào.
  *
- * @param string $hook     Action hook, the execution of which will be unscheduled.
- * @param array  $args     Optional. Array containing each separate argument to pass to the hook's callback function.
- *                         Although not passed to a callback, these arguments are used to uniquely identify the
- *                         event, so they should be the same as those used when originally scheduling the event.
- *                         Default empty array.
- * @param bool   $wp_error Optional. Whether to return a WP_Error on failure. Default false.
- * @return int|false|WP_Error On success an integer indicating number of events unscheduled (0 indicates no
- *                            events were registered with the hook and arguments combination), false or WP_Error
- *                            if unscheduling one or more events fail.
+ * @param string $hook     Action hook, việc thực thi sẽ bị hủy lịch.
+ * @param array  $args     Tùy chọn. Mảng chứa từng đối số riêng lẻ để truyền vào hàm callback của hook.
+ *                         Mặc dù không được truyền vào callback, các đối số này được dùng để xác định
+ *                         duy nhất sự kiện, vì vậy chúng nên giống như khi ban đầu lên lịch sự kiện.
+ *                         Mặc định mảng rỗng.
+ * @param bool   $wp_error Tùy chọn. Có trả về WP_Error khi thất bại không. Mặc định false.
+ * @return int|false|WP_Error Khi thành công trả về số nguyên cho biết số sự kiện đã hủy lịch (0 nghĩa là không có
+ *                            sự kiện nào được đăng ký với tổ hợp hook và đối số), false hoặc WP_Error
+ *                            nếu hủy lịch một hoặc nhiều sự kiện thất bại.
  */
 function wp_clear_scheduled_hook( $hook, $args = array(), $wp_error = false ) {
 	/*
-	 * Backward compatibility.
-	 * Previously, this function took the arguments as discrete vars rather than an array like the rest of the API.
+	 * Tương thích ngược.
+	 * Trước đây, hàm này nhận các đối số dưới dạng biến riêng lẻ thay vì mảng như phần còn lại của API.
 	 */
 	if ( ! is_array( $args ) ) {
 		_deprecated_argument(

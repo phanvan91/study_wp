@@ -107,13 +107,13 @@ if ( file_exists( ABSPATH . 'wp-config.php' ) ) {
 
 **Lưu ý quan trọng:** WordPress cho phép đặt `wp-config.php` ở thư mục cha của thư mục WordPress. Đây là kỹ thuật bảo mật để file cấu hình không nằm trong web root.
 
-#### wp-settings.php - Quy Trinh Khoi Dong (Boot Sequence)
+#### wp-settings.php - Quy Trình Khởi Động (Boot Sequence)
 
-Day la file quan trong nhat trong quy trinh khoi dong. No load toan bo thu vien WordPress theo thu tu cu the. Chi tiet se duoc phan tich o [Muc 5.3](#53-wp-settingsphp---boot-sequence).
+Đây là file quan trọng nhất trong quy trình khởi động. Nó load toàn bộ thư viện WordPress theo thứ tự cụ thể. Chi tiết sẽ được phân tích ở [Mục 5.3](#53-wp-settingsphp---boot-sequence).
 
-#### wp-config-sample.php - Mau Cau Hinh
+#### wp-config-sample.php - Mẫu Cấu Hình
 
-File mau de tao `wp-config.php`. Chua cac thiet lap co ban:
+File mẫu để tạo `wp-config.php`. Chứa các thiết lập cơ bản:
 
 ```php
 <?php
@@ -138,12 +138,12 @@ define( 'WP_DEBUG', false );
 require_once ABSPATH . 'wp-settings.php';
 ```
 
-#### wp-login.php - Xu Ly Dang Nhap
+#### wp-login.php - Xử Lý Đăng Nhập
 
-Xu ly toan bo quy trinh xac thuc nguoi dung:
-- Hien thi form dang nhap
-- Xu ly dang nhap/dang xuat
-- Quen mat khau va dat lai mat khau
+Xử lý toàn bộ quy trình xác thực người dùng:
+- Hiển thị form đăng nhập
+- Xử lý đăng nhập/đăng xuất
+- Quên mật khẩu và đặt lại mật khẩu
 
 ```php
 <?php
@@ -163,9 +163,9 @@ function my_after_login( $user_login, $user ) {
 }
 ```
 
-#### wp-comments-post.php - Xu Ly Gui Binh Luan
+#### wp-comments-post.php - Xử Lý Gửi Bình Luận
 
-Nhan va xu ly binh luan tu form comment cua nguoi dung. Kiem tra spam, validation, va luu vao database.
+Nhận và xử lý bình luận từ form comment của người dùng. Kiểm tra spam, validation, và lưu vào database.
 
 ```php
 <?php
@@ -209,23 +209,23 @@ if ( ! wp_next_scheduled( 'my_daily_cleanup' ) ) {
 define( 'DISABLE_WP_CRON', true );
 ```
 
-#### wp-activate.php - Kich Hoat Tai Khoan
+#### wp-activate.php - Kích Hoạt Tài Khoản
 
-Su dung trong WordPress Multisite de kich hoat tai khoan nguoi dung moi sau khi dang ky.
+Sử dụng trong WordPress Multisite để kích hoạt tài khoản người dùng mới sau khi đăng ký.
 
-#### wp-signup.php - Dang Ky Tai Khoan
+#### wp-signup.php - Đăng Ký Tài Khoản
 
-Xu ly dang ky tai khoan moi trong WordPress Multisite. Hien thi form dang ky va xu ly du lieu.
+Xử lý đăng ký tài khoản mới trong WordPress Multisite. Hiển thị form đăng ký và xử lý dữ liệu.
 
-#### wp-mail.php - Xu Ly Email Posting
+#### wp-mail.php - Xử Lý Email Posting
 
 Cho phép tạo bài viết thông qua email. Đây là tính năng cũ (legacy) và ít được sử dụng trong thực tế.
 
-#### wp-links-opml.php - Xuat Lien Ket OPML
+#### wp-links-opml.php - Xuất Liên Kết OPML
 
 Xuất danh sách liên kết (blogroll) theo định dạng OPML. Đây là tính năng từ thời kỳ đầu của blogging.
 
-#### wp-trackback.php - Xu Ly Trackback
+#### wp-trackback.php - Xử Lý Trackback
 
 Xử lý trackback từ các blog khác. Trackback là cơ chế thông báo khi một blog khác liên kết đến bài viết của bạn. Đây là tính năng cũ và nên tắt vì lý do bảo mật.
 
@@ -241,41 +241,41 @@ add_filter( 'xmlrpc_enabled', '__return_false' );
 
 ---
 
-## 2. Thu Muc wp-admin/
+## 2. Thư Mục wp-admin/
 
-Thu muc `wp-admin/` chua toan bo giao dien quan tri (admin dashboard) cua WordPress.
+Thư mục `wp-admin/` chứa toàn bộ giao diện quản trị (admin dashboard) của WordPress.
 
-### 2.1. So Do Cau Truc wp-admin/
+### 2.1. Sơ Đồ Cấu Trúc wp-admin/
 
 ```
 wp-admin/
-├── admin.php              # Diem vao chinh cua moi trang admin
-├── admin-ajax.php         # Xu ly AJAX requests
-├── admin-post.php         # Xu ly form POST tu admin
-├── admin-header.php       # Header cua trang admin
-├── admin-footer.php       # Footer cua trang admin
-├── edit.php               # Danh sach bai viet
-├── post.php               # Xu ly tao/sua bai viet
-├── post-new.php           # Tao bai viet moi
-├── edit-tags.php          # Quan ly taxonomy terms
-├── upload.php             # Thu vien media
-├── options.php            # Xu ly luu cau hinh
-├── options-general.php    # Trang cau hinh chung
-├── users.php              # Quan ly nguoi dung
-├── plugins.php            # Quan ly plugins
-├── themes.php             # Quan ly themes
-├── widgets.php            # Quan ly widgets
-├── nav-menus.php          # Quan ly menu
+├── admin.php              # Điểm vào chính của mỗi trang admin
+├── admin-ajax.php         # Xử lý AJAX requests
+├── admin-post.php         # Xử lý form POST từ admin
+├── admin-header.php       # Header của trang admin
+├── admin-footer.php       # Footer của trang admin
+├── edit.php               # Danh sách bài viết
+├── post.php               # Xử lý tạo/sửa bài viết
+├── post-new.php           # Tạo bài viết mới
+├── edit-tags.php          # Quản lý taxonomy terms
+├── upload.php             # Thư viện media
+├── options.php            # Xử lý lưu cấu hình
+├── options-general.php    # Trang cấu hình chung
+├── users.php              # Quản lý người dùng
+├── plugins.php            # Quản lý plugins
+├── themes.php             # Quản lý themes
+├── widgets.php            # Quản lý widgets
+├── nav-menus.php          # Quản lý menu
 ├── customize.php          # WordPress Customizer
-├── includes/              # Cac file ho tro admin
-├── css/                   # Stylesheets cua admin
-├── js/                    # JavaScript cua admin
-└── images/                # Hinh anh cua admin
+├── includes/              # Các file hỗ trợ admin
+├── css/                   # Stylesheets của admin
+├── js/                    # JavaScript của admin
+└── images/                # Hình ảnh của admin
 ```
 
-### 2.2. Cac File Quan Trong
+### 2.2. Các File Quan Trọng
 
-#### admin.php - Diem Vao Admin
+#### admin.php - Điểm Vào Admin
 
 Mỗi trang trong admin panel đều load file này đầu tiên. Nó thực hiện:
 - Load WordPress environment
@@ -330,7 +330,7 @@ function my_custom_column_data( $column, $post_id ) {
 }
 ```
 
-#### post.php va post-new.php - Tao/Sua Bai Viet
+#### post.php và post-new.php - Tạo/Sửa Bài Viết
 
 `post-new.php` tạo bài viết mới (auto-draft), `post.php` xử lý việc lưu và cập nhật bài viết.
 
@@ -358,7 +358,7 @@ function my_save_post_handler( $post_id, $post, $update ) {
 }
 ```
 
-#### options.php - Xu Ly Luu Cau Hinh
+#### options.php - Xử Lý Lưu Cấu Hình
 
 Nhận dữ liệu POST từ các trang cấu hình và lưu vào bảng `wp_options`.
 
@@ -397,7 +397,7 @@ function my_settings_init() {
 }
 ```
 
-#### users.php - Quan Ly Nguoi Dung
+#### users.php - Quản Lý Người Dùng
 
 Hiển thị danh sách người dùng, cho phép thêm/sửa/xóa và phân quyền.
 

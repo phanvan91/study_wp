@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Response class
+ * REST API: Lớp WP_REST_Response
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement a REST response object.
+ * Lớp cốt lõi dùng để triển khai đối tượng phản hồi REST.
  *
  * @since 4.4.0
  *
@@ -17,7 +17,7 @@
 class WP_REST_Response extends WP_HTTP_Response {
 
 	/**
-	 * Links related to the response.
+	 * Các liên kết liên quan đến phản hồi.
 	 *
 	 * @since 4.4.0
 	 * @var array
@@ -25,7 +25,7 @@ class WP_REST_Response extends WP_HTTP_Response {
 	protected $links = array();
 
 	/**
-	 * The route that was to create the response.
+	 * Route đã tạo ra phản hồi.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -33,7 +33,7 @@ class WP_REST_Response extends WP_HTTP_Response {
 	protected $matched_route = '';
 
 	/**
-	 * The handler that was used to create the response.
+	 * Handler đã được sử dụng để tạo phản hồi.
 	 *
 	 * @since 4.4.0
 	 * @var null|array
@@ -41,19 +41,19 @@ class WP_REST_Response extends WP_HTTP_Response {
 	protected $matched_handler = null;
 
 	/**
-	 * Adds a link to the response.
+	 * Thêm một liên kết vào phản hồi.
 	 *
-	 * @internal The $rel parameter is first, as this looks nicer when sending multiple.
+	 * @internal Tham số $rel được đặt trước vì trông đẹp hơn khi gửi nhiều liên kết.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @link https://tools.ietf.org/html/rfc5988
 	 * @link https://www.iana.org/assignments/link-relations/link-relations.xml
 	 *
-	 * @param string $rel        Link relation. Either an IANA registered type,
-	 *                           or an absolute URL.
-	 * @param string $href       Target URI for the link.
-	 * @param array  $attributes Optional. Link parameters to send along with the URL. Default empty array.
+	 * @param string $rel        Quan hệ liên kết. Có thể là loại đã đăng ký IANA,
+	 *                           hoặc một URL tuyệt đối.
+	 * @param string $href       URI đích cho liên kết.
+	 * @param array  $attributes Tùy chọn. Các tham số liên kết gửi kèm URL. Mặc định mảng rỗng.
 	 */
 	public function add_link( $rel, $href, $attributes = array() ) {
 		if ( empty( $this->links[ $rel ] ) ) {
@@ -61,7 +61,7 @@ class WP_REST_Response extends WP_HTTP_Response {
 		}
 
 		if ( isset( $attributes['href'] ) ) {
-			// Remove the href attribute, as it's used for the main URL.
+			// Xóa thuộc tính href vì nó được dùng cho URL chính.
 			unset( $attributes['href'] );
 		}
 
@@ -72,13 +72,13 @@ class WP_REST_Response extends WP_HTTP_Response {
 	}
 
 	/**
-	 * Removes a link from the response.
+	 * Xóa một liên kết khỏi phản hồi.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $rel  Link relation. Either an IANA registered type, or an absolute URL.
-	 * @param string $href Optional. Only remove links for the relation matching the given href.
-	 *                     Default null.
+	 * @param string $rel  Quan hệ liên kết. Có thể là loại đã đăng ký IANA, hoặc một URL tuyệt đối.
+	 * @param string $href Tùy chọn. Chỉ xóa các liên kết có quan hệ khớp với href đã cho.
+	 *                     Mặc định null.
 	 */
 	public function remove_link( $rel, $href = null ) {
 		if ( ! isset( $this->links[ $rel ] ) ) {
@@ -97,20 +97,20 @@ class WP_REST_Response extends WP_HTTP_Response {
 	}
 
 	/**
-	 * Adds multiple links to the response.
+	 * Thêm nhiều liên kết vào phản hồi.
 	 *
-	 * Link data should be an associative array with link relation as the key.
-	 * The value can either be an associative array of link attributes
-	 * (including `href` with the URL for the response), or a list of these
-	 * associative arrays.
+	 * Dữ liệu liên kết phải là mảng kết hợp với quan hệ liên kết làm khóa.
+	 * Giá trị có thể là mảng kết hợp chứa thuộc tính liên kết
+	 * (bao gồm `href` với URL cho phản hồi), hoặc danh sách các mảng
+	 * kết hợp này.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $links Map of link relation to list of links.
+	 * @param array $links Bản đồ quan hệ liên kết đến danh sách liên kết.
 	 */
 	public function add_links( $links ) {
 		foreach ( $links as $rel => $set ) {
-			// If it's a single link, wrap with an array for consistent handling.
+			// Nếu là liên kết đơn, bọc trong mảng để xử lý nhất quán.
 			if ( isset( $set['href'] ) ) {
 				$set = array( $set );
 			}
@@ -122,30 +122,30 @@ class WP_REST_Response extends WP_HTTP_Response {
 	}
 
 	/**
-	 * Retrieves links for the response.
+	 * Lấy các liên kết của phản hồi.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array List of links.
+	 * @return array Danh sách các liên kết.
 	 */
 	public function get_links() {
 		return $this->links;
 	}
 
 	/**
-	 * Sets a single link header.
+	 * Thiết lập một header liên kết đơn.
 	 *
-	 * @internal The $rel parameter is first, as this looks nicer when sending multiple.
+	 * @internal Tham số $rel được đặt trước vì trông đẹp hơn khi gửi nhiều liên kết.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @link https://tools.ietf.org/html/rfc5988
 	 * @link https://www.iana.org/assignments/link-relations/link-relations.xml
 	 *
-	 * @param string $rel   Link relation. Either an IANA registered type, or an absolute URL.
-	 * @param string $link  Target IRI for the link.
-	 * @param array  $other Optional. Other parameters to send, as an associative array.
-	 *                      Default empty array.
+	 * @param string $rel   Quan hệ liên kết. Có thể là loại đã đăng ký IANA, hoặc một URL tuyệt đối.
+	 * @param string $link  IRI đích cho liên kết.
+	 * @param array  $other Tùy chọn. Các tham số khác để gửi, dạng mảng kết hợp.
+	 *                      Mặc định mảng rỗng.
 	 */
 	public function link_header( $rel, $link, $other = array() ) {
 		$header = '<' . $link . '>; rel="' . $rel . '"';
@@ -161,66 +161,66 @@ class WP_REST_Response extends WP_HTTP_Response {
 	}
 
 	/**
-	 * Retrieves the route that was used.
+	 * Lấy route đã được sử dụng.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return string The matched route.
+	 * @return string Route đã khớp.
 	 */
 	public function get_matched_route() {
 		return $this->matched_route;
 	}
 
 	/**
-	 * Sets the route (regex for path) that caused the response.
+	 * Thiết lập route (regex cho đường dẫn) đã tạo ra phản hồi.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $route Route name.
+	 * @param string $route Tên route.
 	 */
 	public function set_matched_route( $route ) {
 		$this->matched_route = $route;
 	}
 
 	/**
-	 * Retrieves the handler that was used to generate the response.
+	 * Lấy handler đã được sử dụng để tạo phản hồi.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return null|array The handler that was used to create the response.
+	 * @return null|array Handler đã được sử dụng để tạo phản hồi.
 	 */
 	public function get_matched_handler() {
 		return $this->matched_handler;
 	}
 
 	/**
-	 * Sets the handler that was responsible for generating the response.
+	 * Thiết lập handler chịu trách nhiệm tạo phản hồi.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $handler The matched handler.
+	 * @param array $handler Handler đã khớp.
 	 */
 	public function set_matched_handler( $handler ) {
 		$this->matched_handler = $handler;
 	}
 
 	/**
-	 * Checks if the response is an error, i.e. >= 400 response code.
+	 * Kiểm tra xem phản hồi có phải lỗi không, tức là mã phản hồi >= 400.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return bool Whether the response is an error.
+	 * @return bool Phản hồi có phải lỗi hay không.
 	 */
 	public function is_error() {
 		return $this->get_status() >= 400;
 	}
 
 	/**
-	 * Retrieves a WP_Error object from the response.
+	 * Lấy đối tượng WP_Error từ phản hồi.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return WP_Error|null WP_Error or null on not an errored response.
+	 * @return WP_Error|null WP_Error hoặc null nếu phản hồi không phải lỗi.
 	 */
 	public function as_error() {
 		if ( ! $this->is_error() ) {
@@ -246,11 +246,11 @@ class WP_REST_Response extends WP_HTTP_Response {
 	}
 
 	/**
-	 * Retrieves the CURIEs (compact URIs) used for relations.
+	 * Lấy các CURIE (URI rút gọn) dùng cho quan hệ.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @return array Compact URIs.
+	 * @return array Các URI rút gọn.
 	 */
 	public function get_curies() {
 		$curies = array(
@@ -262,29 +262,29 @@ class WP_REST_Response extends WP_HTTP_Response {
 		);
 
 		/**
-		 * Filters extra CURIEs available on REST API responses.
+		 * Lọc các CURIE bổ sung có sẵn trên phản hồi REST API.
 		 *
-		 * CURIEs allow a shortened version of URI relations. This allows a more
-		 * usable form for custom relations than using the full URI. These work
-		 * similarly to how XML namespaces work.
+		 * CURIE cho phép phiên bản rút gọn của quan hệ URI. Điều này cho phép
+		 * dạng dễ sử dụng hơn cho quan hệ tùy chỉnh so với việc dùng URI đầy đủ.
+		 * Chúng hoạt động tương tự như cách namespace XML hoạt động.
 		 *
-		 * Registered CURIES need to specify a name and URI template. This will
-		 * automatically transform URI relations into their shortened version.
-		 * The shortened relation follows the format `{name}:{rel}`. `{rel}` in
-		 * the URI template will be replaced with the `{rel}` part of the
-		 * shortened relation.
+		 * Các CURIE đã đăng ký cần chỉ định tên và mẫu URI. Điều này sẽ
+		 * tự động chuyển đổi quan hệ URI thành phiên bản rút gọn.
+		 * Quan hệ rút gọn theo định dạng `{name}:{rel}`. `{rel}` trong
+		 * mẫu URI sẽ được thay thế bằng phần `{rel}` của
+		 * quan hệ rút gọn.
 		 *
-		 * For example, a CURIE with name `example` and URI template
-		 * `http://w.org/{rel}` would transform a `http://w.org/term` relation
-		 * into `example:term`.
+		 * Ví dụ, một CURIE có tên `example` và mẫu URI
+		 * `http://w.org/{rel}` sẽ chuyển đổi quan hệ `http://w.org/term`
+		 * thành `example:term`.
 		 *
-		 * Well-behaved clients should expand and normalize these back to their
-		 * full URI relation, however some naive clients may not resolve these
-		 * correctly, so adding new CURIEs may break backward compatibility.
+		 * Các client hoạt động đúng cách nên mở rộng và chuẩn hóa lại
+		 * thành quan hệ URI đầy đủ, tuy nhiên một số client đơn giản có thể không
+		 * xử lý đúng, nên việc thêm CURIE mới có thể phá vỡ tính tương thích ngược.
 		 *
 		 * @since 4.5.0
 		 *
-		 * @param array $additional Additional CURIEs to register with the REST API.
+		 * @param array $additional Các CURIE bổ sung để đăng ký với REST API.
 		 */
 		$additional = apply_filters( 'rest_response_link_curies', array() );
 

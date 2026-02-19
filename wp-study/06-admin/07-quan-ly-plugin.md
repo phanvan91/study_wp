@@ -170,7 +170,7 @@ $plugins = array(
 
 ## 4. Activation Flow Chi Tiết
 
-**Source**: `wp-admin/includes/plugin.php` dong 641
+**Source**: `wp-admin/includes/plugin.php` dòng 641
 
 ### Trong plugins.php - Trigger activate
 
@@ -383,7 +383,7 @@ add_action( 'activate_my-plugin/my-plugin.php', function( $network_wide ) {
 
 ## 5. Deactivation Flow
 
-**Source**: `wp-admin/includes/plugin.php` dong 758
+**Source**: `wp-admin/includes/plugin.php` dòng 758
 
 ```php
 function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
@@ -634,7 +634,7 @@ Mỗi plugin cần file chính với comment header:
 
 | Header | Bắt buộc | Mô tả |
 |--------|----------|-------|
-| `Plugin Name` | Co | Tên plugin, hiển thị trong admin |
+| `Plugin Name` | Có | Tên plugin, hiển thị trong admin |
 | `Plugin URI` | Không | URL trang web plugin |
 | `Description` | Không | Mô tả ngắn (1 dòng) |
 | `Version` | Khuyến nghị | Phiên bản hiện tại |
@@ -653,7 +653,7 @@ Mỗi plugin cần file chính với comment header:
 
 ## 9. get_plugin_data() - Đọc Plugin Metadata
 
-**Source**: `wp-admin/includes/plugin.php` dong 74
+**Source**: `wp-admin/includes/plugin.php` dòng 74
 
 ```php
 function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
@@ -1084,7 +1084,7 @@ Array (
 // 1. Thêm "Settings" link dưới tên plugin
 add_filter( 'plugin_action_links_my-plugin/my-plugin.php', function( $links ) {
     $settings_link = '<a href="' . admin_url( 'options-general.php?page=my-plugin' ) . '">'
-        . __( 'Cai Dat', 'my-plugin' ) . '</a>';
+        . __( 'Cài Đặt', 'my-plugin' ) . '</a>';
     array_unshift( $links, $settings_link );
     return $links;
 });
@@ -1093,9 +1093,9 @@ add_filter( 'plugin_action_links_my-plugin/my-plugin.php', function( $links ) {
 add_filter( 'plugin_row_meta', function( $links, $file ) {
     if ( 'my-plugin/my-plugin.php' === $file ) {
         $links[] = '<a href="https://docs.example.com" target="_blank">'
-            . __( 'Tai Lieu', 'my-plugin' ) . '</a>';
+            . __( 'Tài Liệu', 'my-plugin' ) . '</a>';
         $links[] = '<a href="https://example.com/support" target="_blank">'
-            . __( 'Ho Tro', 'my-plugin' ) . '</a>';
+            . __( 'Hỗ Trợ', 'my-plugin' ) . '</a>';
     }
     return $links;
 }, 10, 2 );
@@ -1117,9 +1117,9 @@ add_action( 'admin_notices', function() {
     if ( get_transient( 'my_plugin_activation_notice' ) ) {
         delete_transient( 'my_plugin_activation_notice' );
         echo '<div class="notice notice-success is-dismissible">';
-        echo '<p>' . __( 'My Plugin da duoc kich hoat! ', 'my-plugin' );
+        echo '<p>' . __( 'My Plugin đã được kích hoạt! ', 'my-plugin' );
         echo '<a href="' . admin_url( 'options-general.php?page=my-plugin' ) . '">';
-        echo __( 'Cau hinh ngay', 'my-plugin' ) . '</a></p>';
+        echo __( 'Cấu hình ngay', 'my-plugin' ) . '</a></p>';
         echo '</div>';
     }
 });
@@ -1139,9 +1139,9 @@ add_action( 'after_plugin_row_my-plugin/my-plugin.php', function( $plugin_file, 
         echo '<tr class="plugin-update-tr active">';
         echo '<td colspan="4" class="plugin-update colspanchange">';
         echo '<div class="update-message notice notice-warning inline">';
-        echo '<p>' . __( 'Giay phep chua duoc kich hoat. ', 'my-plugin' );
+        echo '<p>' . __( 'Giấy phép chưa được kích hoạt. ', 'my-plugin' );
         echo '<a href="' . admin_url( 'options-general.php?page=my-plugin-license' ) . '">';
-        echo __( 'Nhap license key', 'my-plugin' ) . '</a></p>';
+        echo __( 'Nhập license key', 'my-plugin' ) . '</a></p>';
         echo '</div></td></tr>';
     }
 }, 10, 3 );
@@ -1339,7 +1339,7 @@ my-plugin/
  * Plugin Name: My Plugin
  * Description: Plugin mẫu cho WordPress developer
  * Version: 1.0.0
- * Author: Tac Gia
+ * Author: Tác Giả
  * Text Domain: my-plugin
  * Domain Path: /languages
  * Requires at least: 6.0
@@ -1577,7 +1577,7 @@ class UppercaseTitle {
 
 8. **Auto-Updates**: WordPress 5.5+ hỗ trợ auto-update plugins qua WP-Cron. Control bằng filter `auto_update_plugin`.
 
-9. **Uninstall**: Dùng `register_uninstall_hook()` hoặc file `uninstall.php` để cleanup khi xóa plugin. KHONG cleanup trong deactivation hook.
+9. **Uninstall**: Dùng `register_uninstall_hook()` hoặc file `uninstall.php` để cleanup khi xóa plugin. KHÔNG cleanup trong deactivation hook.
 
 10. **Hooks quan trọng nhất**:
     - `activate_{$plugin}` / `deactivate_{$plugin}` - Activation/deactivation

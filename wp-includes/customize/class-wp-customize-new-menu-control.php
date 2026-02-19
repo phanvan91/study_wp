@@ -1,27 +1,27 @@
 <?php
 /**
- * Customize API: WP_Customize_New_Menu_Control class
+ * API Tùy biến: Lớp WP_Customize_New_Menu_Control
  *
  * @package WordPress
  * @subpackage Customize
  * @since 4.4.0
- * @deprecated 4.9.0 This file is no longer used as of the menu creation UX introduced in #40104.
+ * @deprecated 4.9.0 File này không còn được sử dụng kể từ giao diện tạo menu được giới thiệu trong #40104.
  */
 
 _deprecated_file( basename( __FILE__ ), '4.9.0' );
 
 /**
- * Customize control class for new menus.
+ * Lớp điều khiển tùy biến cho các menu mới.
  *
  * @since 4.3.0
- * @deprecated 4.9.0 This class is no longer used as of the menu creation UX introduced in #40104.
+ * @deprecated 4.9.0 Lớp này không còn được sử dụng kể từ giao diện tạo menu được giới thiệu trong #40104.
  *
  * @see WP_Customize_Control
  */
 class WP_Customize_New_Menu_Control extends WP_Customize_Control {
 
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -29,18 +29,18 @@ class WP_Customize_New_Menu_Control extends WP_Customize_Control {
 	public $type = 'new_menu';
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 4.9.0
 	 * @deprecated 4.9.0
 	 *
 	 * @see WP_Customize_Control::__construct()
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
-	 * @param string               $id      The control ID.
-	 * @param array                $args    Optional. Arguments to override class property defaults.
-	 *                                      See WP_Customize_Control::__construct() for information
-	 *                                      on accepted arguments. Default empty array.
+	 * @param WP_Customize_Manager $manager Thể hiện khởi tạo của Trình tùy biến.
+	 * @param string               $id      ID điều khiển.
+	 * @param array                $args    Tùy chọn. Các đối số để ghi đè giá trị mặc định của thuộc tính lớp.
+	 *                                      Xem WP_Customize_Control::__construct() để biết thông tin
+	 *                                      về các đối số được chấp nhận. Mặc định mảng rỗng.
 	 */
 	public function __construct( WP_Customize_Manager $manager, $id, array $args = array() ) {
 		_deprecated_function( __METHOD__, '4.9.0' );
@@ -48,7 +48,7 @@ class WP_Customize_New_Menu_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Render the control's content.
+	 * Hiển thị nội dung của điều khiển.
 	 *
 	 * @since 4.3.0
 	 * @deprecated 4.9.0

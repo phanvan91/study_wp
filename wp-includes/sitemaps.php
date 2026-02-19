@@ -1,9 +1,9 @@
 <?php
 /**
- * Sitemaps: Public functions
+ * Sitemaps: Các hàm công khai
  *
- * This file contains a variety of public functions developers can use to interact with
- * the XML Sitemaps API.
+ * File này chứa nhiều hàm công khai mà các nhà phát triển có thể sử dụng để tương tác với
+ * API XML Sitemaps.
  *
  * @package WordPress
  * @subpackage Sitemaps
@@ -11,30 +11,30 @@
  */
 
 /**
- * Retrieves the current Sitemaps server instance.
+ * Lấy instance hiện tại của máy chủ Sitemaps.
  *
  * @since 5.5.0
  *
- * @global WP_Sitemaps $wp_sitemaps Global Core Sitemaps instance.
+ * @global WP_Sitemaps $wp_sitemaps Instance Sitemaps lõi toàn cục.
  *
- * @return WP_Sitemaps Sitemaps instance.
+ * @return WP_Sitemaps Instance Sitemaps.
  */
 function wp_sitemaps_get_server() {
 	global $wp_sitemaps;
 
-	// If there isn't a global instance, set and bootstrap the sitemaps system.
+	// Nếu không có instance toàn cục, khởi tạo và thiết lập hệ thống sitemaps.
 	if ( empty( $wp_sitemaps ) ) {
 		$wp_sitemaps = new WP_Sitemaps();
 		$wp_sitemaps->init();
 
 		/**
-		 * Fires when initializing the Sitemaps object.
+		 * Kích hoạt khi khởi tạo đối tượng Sitemaps.
 		 *
-		 * Additional sitemaps should be registered on this hook.
+		 * Các sitemaps bổ sung nên được đăng ký trên hook này.
 		 *
 		 * @since 5.5.0
 		 *
-		 * @param WP_Sitemaps $wp_sitemaps Sitemaps object.
+		 * @param WP_Sitemaps $wp_sitemaps Đối tượng Sitemaps.
 		 */
 		do_action( 'wp_sitemaps_init', $wp_sitemaps );
 	}
@@ -43,11 +43,11 @@ function wp_sitemaps_get_server() {
 }
 
 /**
- * Gets an array of sitemap providers.
+ * Lấy mảng các nhà cung cấp sitemap.
  *
  * @since 5.5.0
  *
- * @return WP_Sitemaps_Provider[] Array of sitemap providers.
+ * @return WP_Sitemaps_Provider[] Mảng các nhà cung cấp sitemap.
  */
 function wp_get_sitemap_providers() {
 	$sitemaps = wp_sitemaps_get_server();
@@ -56,13 +56,13 @@ function wp_get_sitemap_providers() {
 }
 
 /**
- * Registers a new sitemap provider.
+ * Đăng ký một nhà cung cấp sitemap mới.
  *
  * @since 5.5.0
  *
- * @param string               $name     Unique name for the sitemap provider.
- * @param WP_Sitemaps_Provider $provider The `Sitemaps_Provider` instance implementing the sitemap.
- * @return bool Whether the sitemap was added.
+ * @param string               $name     Tên duy nhất cho nhà cung cấp sitemap.
+ * @param WP_Sitemaps_Provider $provider Instance `Sitemaps_Provider` triển khai sitemap.
+ * @return bool Sitemap đã được thêm hay chưa.
  */
 function wp_register_sitemap_provider( $name, WP_Sitemaps_Provider $provider ) {
 	$sitemaps = wp_sitemaps_get_server();
@@ -71,34 +71,34 @@ function wp_register_sitemap_provider( $name, WP_Sitemaps_Provider $provider ) {
 }
 
 /**
- * Gets the maximum number of URLs for a sitemap.
+ * Lấy số lượng URL tối đa cho một sitemap.
  *
  * @since 5.5.0
  *
- * @param string $object_type Object type for sitemap to be filtered (e.g. 'post', 'term', 'user').
- * @return int The maximum number of URLs.
+ * @param string $object_type Loại đối tượng cho sitemap cần lọc (ví dụ: 'post', 'term', 'user').
+ * @return int Số lượng URL tối đa.
  */
 function wp_sitemaps_get_max_urls( $object_type ) {
 	/**
-	 * Filters the maximum number of URLs displayed on a sitemap.
+	 * Lọc số lượng URL tối đa hiển thị trên một sitemap.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param int    $max_urls    The maximum number of URLs included in a sitemap. Default 2000.
-	 * @param string $object_type Object type for sitemap to be filtered (e.g. 'post', 'term', 'user').
+	 * @param int    $max_urls    Số lượng URL tối đa trong một sitemap. Mặc định 2000.
+	 * @param string $object_type Loại đối tượng cho sitemap cần lọc (ví dụ: 'post', 'term', 'user').
 	 */
 	return apply_filters( 'wp_sitemaps_max_urls', 2000, $object_type );
 }
 
 /**
- * Retrieves the full URL for a sitemap.
+ * Lấy URL đầy đủ cho một sitemap.
  *
  * @since 5.5.1
  *
- * @param string $name         The sitemap name.
- * @param string $subtype_name The sitemap subtype name. Default empty string.
- * @param int    $page         The page of the sitemap. Default 1.
- * @return string|false The sitemap URL or false if the sitemap doesn't exist.
+ * @param string $name         Tên sitemap.
+ * @param string $subtype_name Tên loại phụ sitemap. Mặc định chuỗi rỗng.
+ * @param int    $page         Trang của sitemap. Mặc định 1.
+ * @return string|false URL sitemap hoặc false nếu sitemap không tồn tại.
  */
 function get_sitemap_url( $name, $subtype_name = '', $page = 1 ) {
 	$sitemaps = wp_sitemaps_get_server();

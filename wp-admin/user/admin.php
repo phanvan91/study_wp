@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress User Administration Bootstrap
+ * Bootstrap Quản trị Người dùng WordPress
  *
  * @package WordPress
  * @subpackage Administration
@@ -19,11 +19,11 @@ if ( ! is_multisite() ) {
 $redirect_user_admin_request = ( 0 !== strcasecmp( $current_blog->domain, $current_site->domain ) || 0 !== strcasecmp( $current_blog->path, $current_site->path ) );
 
 /**
- * Filters whether to redirect the request to the User Admin in Multisite.
+ * Lọc xem có nên chuyển hướng yêu cầu đến Quản trị Người dùng trong Multisite hay không.
  *
  * @since 3.2.0
  *
- * @param bool $redirect_user_admin_request Whether the request should be redirected.
+ * @param bool $redirect_user_admin_request Có nên chuyển hướng yêu cầu hay không.
  */
 $redirect_user_admin_request = apply_filters( 'redirect_user_admin_request', $redirect_user_admin_request );
 

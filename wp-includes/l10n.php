@@ -1,6 +1,6 @@
 <?php
 /**
- * Core Translation API
+ * API Dịch thuật Lõi
  *
  * @package WordPress
  * @subpackage i18n
@@ -8,24 +8,24 @@
  */
 
 /**
- * Retrieves the current locale.
+ * Lấy ngôn ngữ (locale) hiện tại.
  *
- * If the locale is set, then it will filter the locale in the {@see 'locale'}
- * filter hook and return the value.
+ * Nếu ngôn ngữ đã được thiết lập, nó sẽ lọc ngôn ngữ qua hook bộ lọc {@see 'locale'}
+ * và trả về giá trị.
  *
- * If the locale is not set already, then the WPLANG constant is used if it is
- * defined. Then it is filtered through the {@see 'locale'} filter hook and
- * the value for the locale global set and the locale is returned.
+ * Nếu ngôn ngữ chưa được thiết lập, hằng số WPLANG sẽ được sử dụng nếu nó
+ * đã được định nghĩa. Sau đó nó được lọc qua hook bộ lọc {@see 'locale'} và
+ * giá trị cho biến toàn cục locale được thiết lập và ngôn ngữ được trả về.
  *
- * The process to get the locale should only be done once, but the locale will
- * always be filtered using the {@see 'locale'} hook.
+ * Quá trình lấy ngôn ngữ chỉ nên thực hiện một lần, nhưng ngôn ngữ sẽ
+ * luôn được lọc qua hook {@see 'locale'}.
  *
  * @since 1.5.0
  *
- * @global string $locale           The current locale.
- * @global string $wp_local_package Locale code of the package.
+ * @global string $locale           Ngôn ngữ hiện tại.
+ * @global string $wp_local_package Mã ngôn ngữ của gói.
  *
- * @return string The locale of the blog or from the {@see 'locale'} hook.
+ * @return string Ngôn ngữ của blog hoặc từ hook {@see 'locale'}.
  */
 function get_locale() {
 	global $locale, $wp_local_package;
@@ -39,14 +39,14 @@ function get_locale() {
 		$locale = $wp_local_package;
 	}
 
-	// WPLANG was defined in wp-config.
+	// WPLANG đã được định nghĩa trong wp-config.
 	if ( defined( 'WPLANG' ) ) {
 		$locale = WPLANG;
 	}
 
-	// If multisite, check options.
+	// Nếu là multisite, kiểm tra các tùy chọn.
 	if ( is_multisite() ) {
-		// Don't check blog option when installing.
+		// Không kiểm tra tùy chọn blog khi đang cài đặt.
 		if ( wp_installing() ) {
 			$ms_locale = get_site_option( 'WPLANG' );
 		} else {
@@ -71,25 +71,25 @@ function get_locale() {
 	}
 
 	/**
-	 * Filters the locale ID of the WordPress installation.
+	 * Lọc ID ngôn ngữ của bản cài đặt WordPress.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $locale The locale ID.
+	 * @param string $locale ID ngôn ngữ.
 	 */
 	return apply_filters( 'locale', $locale );
 }
 
 /**
- * Retrieves the locale of a user.
+ * Lấy ngôn ngữ của người dùng.
  *
- * If the user has a locale set to a non-empty string then it will be
- * returned. Otherwise it returns the locale of get_locale().
+ * Nếu người dùng có ngôn ngữ được thiết lập thành chuỗi không rỗng thì nó sẽ
+ * được trả về. Ngược lại, trả về ngôn ngữ từ get_locale().
  *
  * @since 4.7.0
  *
- * @param int|WP_User $user User's ID or a WP_User object. Defaults to current user.
- * @return string The locale of the user.
+ * @param int|WP_User $user ID người dùng hoặc đối tượng WP_User. Mặc định là người dùng hiện tại.
+ * @return string Ngôn ngữ của người dùng.
  */
 function get_user_locale( $user = 0 ) {
 	$user_object = false;
@@ -112,24 +112,24 @@ function get_user_locale( $user = 0 ) {
 }
 
 /**
- * Determines the current locale desired for the request.
+ * Xác định ngôn ngữ hiện tại mong muốn cho yêu cầu.
  *
  * @since 5.0.0
  *
- * @global string $pagenow          The filename of the current screen.
- * @global string $wp_local_package Locale code of the package.
+ * @global string $pagenow          Tên tệp của màn hình hiện tại.
+ * @global string $wp_local_package Mã ngôn ngữ của gói.
  *
- * @return string The determined locale.
+ * @return string Ngôn ngữ đã được xác định.
  */
 function determine_locale() {
 	/**
-	 * Filters the locale for the current request prior to the default determination process.
+	 * Lọc ngôn ngữ cho yêu cầu hiện tại trước quá trình xác định mặc định.
 	 *
-	 * Using this filter allows to override the default logic, effectively short-circuiting the function.
+	 * Sử dụng bộ lọc này cho phép ghi đè logic mặc định, bỏ qua hoàn toàn hàm.
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param string|null $locale The locale to return and short-circuit. Default null.
+	 * @param string|null $locale Ngôn ngữ để trả về và bỏ qua. Mặc định null.
 	 */
 	$determined_locale = apply_filters( 'pre_determine_locale', null );
 
@@ -167,55 +167,55 @@ function determine_locale() {
 	}
 
 	/**
-	 * Filters the locale for the current request.
+	 * Lọc ngôn ngữ cho yêu cầu hiện tại.
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param string $determined_locale The locale.
+	 * @param string $determined_locale Ngôn ngữ.
 	 */
 	return apply_filters( 'determine_locale', $determined_locale );
 }
 
 /**
- * Retrieves the translation of $text.
+ * Lấy bản dịch của $text.
  *
- * If there is no translation, or the text domain isn't loaded, the original text is returned.
+ * Nếu không có bản dịch, hoặc miền văn bản chưa được tải, văn bản gốc sẽ được trả về.
  *
- * *Note:* Don't use translate() directly, use __() or related functions.
+ * *Lưu ý:* Không sử dụng translate() trực tiếp, hãy dùng __() hoặc các hàm liên quan.
  *
  * @since 2.2.0
- * @since 5.5.0 Introduced `gettext-{$domain}` filter.
+ * @since 5.5.0 Giới thiệu bộ lọc `gettext-{$domain}`.
  *
- * @param string $text   Text to translate.
- * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
- *                       Default 'default'.
- * @return string Translated text.
+ * @param string $text   Văn bản cần dịch.
+ * @param string $domain Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                       Mặc định 'default'.
+ * @return string Văn bản đã dịch.
  */
 function translate( $text, $domain = 'default' ) {
 	$translations = get_translations_for_domain( $domain );
 	$translation  = $translations->translate( $text );
 
 	/**
-	 * Filters text with its translation.
+	 * Lọc văn bản cùng với bản dịch của nó.
 	 *
 	 * @since 2.0.11
 	 *
-	 * @param string $translation Translated text.
-	 * @param string $text        Text to translate.
-	 * @param string $domain      Text domain. Unique identifier for retrieving translated strings.
+	 * @param string $translation Văn bản đã dịch.
+	 * @param string $text        Văn bản cần dịch.
+	 * @param string $domain      Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
 	 */
 	$translation = apply_filters( 'gettext', $translation, $text, $domain );
 
 	/**
-	 * Filters text with its translation for a domain.
+	 * Lọc văn bản cùng với bản dịch của nó cho một miền.
 	 *
-	 * The dynamic portion of the hook name, `$domain`, refers to the text domain.
+	 * Phần động của tên hook, `$domain`, tham chiếu đến miền văn bản.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $translation Translated text.
-	 * @param string $text        Text to translate.
-	 * @param string $domain      Text domain. Unique identifier for retrieving translated strings.
+	 * @param string $translation Văn bản đã dịch.
+	 * @param string $text        Văn bản cần dịch.
+	 * @param string $domain      Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
 	 */
 	$translation = apply_filters( "gettext_{$domain}", $translation, $text, $domain );
 
@@ -223,15 +223,15 @@ function translate( $text, $domain = 'default' ) {
 }
 
 /**
- * Removes last item on a pipe-delimited string.
+ * Xóa mục cuối cùng trên chuỗi phân tách bằng dấu gạch đứng.
  *
- * Meant for removing the last item in a string, such as 'Role name|User role'. The original
- * string will be returned if no pipe '|' characters are found in the string.
+ * Dùng để xóa mục cuối cùng trong chuỗi, chẳng hạn 'Role name|User role'. Chuỗi
+ * gốc sẽ được trả về nếu không tìm thấy ký tự dấu gạch đứng '|' trong chuỗi.
  *
  * @since 2.8.0
  *
- * @param string $text A pipe-delimited string.
- * @return string Either $text or everything before the last pipe.
+ * @param string $text Chuỗi phân tách bằng dấu gạch đứng.
+ * @return string $text hoặc mọi thứ trước dấu gạch đứng cuối cùng.
  */
 function before_last_bar( $text ) {
 	$last_bar = strrpos( $text, '|' );
@@ -243,48 +243,48 @@ function before_last_bar( $text ) {
 }
 
 /**
- * Retrieves the translation of $text in the context defined in $context.
+ * Lấy bản dịch của $text trong ngữ cảnh được định nghĩa trong $context.
  *
- * If there is no translation, or the text domain isn't loaded, the original text is returned.
+ * Nếu không có bản dịch, hoặc miền văn bản chưa được tải, văn bản gốc sẽ được trả về.
  *
- * *Note:* Don't use translate_with_gettext_context() directly, use _x() or related functions.
+ * *Lưu ý:* Không sử dụng translate_with_gettext_context() trực tiếp, hãy dùng _x() hoặc các hàm liên quan.
  *
  * @since 2.8.0
- * @since 5.5.0 Introduced `gettext_with_context-{$domain}` filter.
+ * @since 5.5.0 Giới thiệu bộ lọc `gettext_with_context-{$domain}`.
  *
- * @param string $text    Text to translate.
- * @param string $context Context information for the translators.
- * @param string $domain  Optional. Text domain. Unique identifier for retrieving translated strings.
- *                        Default 'default'.
- * @return string Translated text on success, original text on failure.
+ * @param string $text    Văn bản cần dịch.
+ * @param string $context Thông tin ngữ cảnh cho người dịch.
+ * @param string $domain  Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                        Mặc định 'default'.
+ * @return string Văn bản đã dịch nếu thành công, văn bản gốc nếu thất bại.
  */
 function translate_with_gettext_context( $text, $context, $domain = 'default' ) {
 	$translations = get_translations_for_domain( $domain );
 	$translation  = $translations->translate( $text, $context );
 
 	/**
-	 * Filters text with its translation based on context information.
+	 * Lọc văn bản cùng bản dịch dựa trên thông tin ngữ cảnh.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $translation Translated text.
-	 * @param string $text        Text to translate.
-	 * @param string $context     Context information for the translators.
-	 * @param string $domain      Text domain. Unique identifier for retrieving translated strings.
+	 * @param string $translation Văn bản đã dịch.
+	 * @param string $text        Văn bản cần dịch.
+	 * @param string $context     Thông tin ngữ cảnh cho người dịch.
+	 * @param string $domain      Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
 	 */
 	$translation = apply_filters( 'gettext_with_context', $translation, $text, $context, $domain );
 
 	/**
-	 * Filters text with its translation based on context information for a domain.
+	 * Lọc văn bản cùng bản dịch dựa trên thông tin ngữ cảnh cho một miền.
 	 *
-	 * The dynamic portion of the hook name, `$domain`, refers to the text domain.
+	 * Phần động của tên hook, `$domain`, tham chiếu đến miền văn bản.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $translation Translated text.
-	 * @param string $text        Text to translate.
-	 * @param string $context     Context information for the translators.
-	 * @param string $domain      Text domain. Unique identifier for retrieving translated strings.
+	 * @param string $translation Văn bản đã dịch.
+	 * @param string $text        Văn bản cần dịch.
+	 * @param string $context     Thông tin ngữ cảnh cho người dịch.
+	 * @param string $domain      Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
 	 */
 	$translation = apply_filters( "gettext_with_context_{$domain}", $translation, $text, $context, $domain );
 
@@ -292,223 +292,223 @@ function translate_with_gettext_context( $text, $context, $domain = 'default' ) 
 }
 
 /**
- * Retrieves the translation of $text.
+ * Lấy bản dịch của $text.
  *
- * If there is no translation, or the text domain isn't loaded, the original text is returned.
+ * Nếu không có bản dịch, hoặc miền văn bản chưa được tải, văn bản gốc sẽ được trả về.
  *
  * @since 2.1.0
  *
- * @param string $text   Text to translate.
- * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
- *                       Default 'default'.
- * @return string Translated text.
+ * @param string $text   Văn bản cần dịch.
+ * @param string $domain Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                       Mặc định 'default'.
+ * @return string Văn bản đã dịch.
  */
 function __( $text, $domain = 'default' ) {
 	return translate( $text, $domain );
 }
 
 /**
- * Retrieves the translation of $text and escapes it for safe use in an attribute.
+ * Lấy bản dịch của $text và thoát ký tự để sử dụng an toàn trong thuộc tính.
  *
- * If there is no translation, or the text domain isn't loaded, the original text is returned.
+ * Nếu không có bản dịch, hoặc miền văn bản chưa được tải, văn bản gốc sẽ được trả về.
  *
  * @since 2.8.0
  *
- * @param string $text   Text to translate.
- * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
- *                       Default 'default'.
- * @return string Translated text on success, original text on failure.
+ * @param string $text   Văn bản cần dịch.
+ * @param string $domain Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                       Mặc định 'default'.
+ * @return string Văn bản đã dịch nếu thành công, văn bản gốc nếu thất bại.
  */
 function esc_attr__( $text, $domain = 'default' ) {
 	return esc_attr( translate( $text, $domain ) );
 }
 
 /**
- * Retrieves the translation of $text and escapes it for safe use in HTML output.
+ * Lấy bản dịch của $text và thoát ký tự để sử dụng an toàn trong đầu ra HTML.
  *
- * If there is no translation, or the text domain isn't loaded, the original text
- * is escaped and returned.
+ * Nếu không có bản dịch, hoặc miền văn bản chưa được tải, văn bản gốc
+ * sẽ được thoát ký tự và trả về.
  *
  * @since 2.8.0
  *
- * @param string $text   Text to translate.
- * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
- *                       Default 'default'.
- * @return string Translated text.
+ * @param string $text   Văn bản cần dịch.
+ * @param string $domain Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                       Mặc định 'default'.
+ * @return string Văn bản đã dịch.
  */
 function esc_html__( $text, $domain = 'default' ) {
 	return esc_html( translate( $text, $domain ) );
 }
 
 /**
- * Displays translated text.
+ * Hiển thị văn bản đã dịch.
  *
  * @since 1.2.0
  *
- * @param string $text   Text to translate.
- * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
- *                       Default 'default'.
+ * @param string $text   Văn bản cần dịch.
+ * @param string $domain Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                       Mặc định 'default'.
  */
 function _e( $text, $domain = 'default' ) {
 	echo translate( $text, $domain );
 }
 
 /**
- * Displays translated text that has been escaped for safe use in an attribute.
+ * Hiển thị văn bản đã dịch đã được thoát ký tự để sử dụng an toàn trong thuộc tính.
  *
- * Encodes `< > & " '` (less than, greater than, ampersand, double quote, single quote).
- * Will never double encode entities.
+ * Mã hóa `< > & " '` (nhỏ hơn, lớn hơn, dấu và, ngoặc kép, ngoặc đơn).
+ * Sẽ không bao giờ mã hóa kép các thực thể.
  *
- * If you need the value for use in PHP, use esc_attr__().
+ * Nếu bạn cần giá trị để sử dụng trong PHP, hãy dùng esc_attr__().
  *
  * @since 2.8.0
  *
- * @param string $text   Text to translate.
- * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
- *                       Default 'default'.
+ * @param string $text   Văn bản cần dịch.
+ * @param string $domain Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                       Mặc định 'default'.
  */
 function esc_attr_e( $text, $domain = 'default' ) {
 	echo esc_attr( translate( $text, $domain ) );
 }
 
 /**
- * Displays translated text that has been escaped for safe use in HTML output.
+ * Hiển thị văn bản đã dịch đã được thoát ký tự để sử dụng an toàn trong đầu ra HTML.
  *
- * If there is no translation, or the text domain isn't loaded, the original text
- * is escaped and displayed.
+ * Nếu không có bản dịch, hoặc miền văn bản chưa được tải, văn bản gốc
+ * sẽ được thoát ký tự và hiển thị.
  *
- * If you need the value for use in PHP, use esc_html__().
+ * Nếu bạn cần giá trị để sử dụng trong PHP, hãy dùng esc_html__().
  *
  * @since 2.8.0
  *
- * @param string $text   Text to translate.
- * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
- *                       Default 'default'.
+ * @param string $text   Văn bản cần dịch.
+ * @param string $domain Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                       Mặc định 'default'.
  */
 function esc_html_e( $text, $domain = 'default' ) {
 	echo esc_html( translate( $text, $domain ) );
 }
 
 /**
- * Retrieves translated string with gettext context.
+ * Lấy chuỗi đã dịch với ngữ cảnh gettext.
  *
- * Quite a few times, there will be collisions with similar translatable text
- * found in more than two places, but with different translated context.
+ * Khá nhiều lần, sẽ có xung đột với văn bản có thể dịch tương tự
+ * được tìm thấy ở nhiều hơn hai nơi, nhưng với ngữ cảnh dịch khác nhau.
  *
- * By including the context in the pot file, translators can translate the two
- * strings differently.
+ * Bằng cách bao gồm ngữ cảnh trong tệp pot, người dịch có thể dịch hai
+ * chuỗi khác nhau.
  *
  * @since 2.8.0
  *
- * @param string $text    Text to translate.
- * @param string $context Context information for the translators.
- * @param string $domain  Optional. Text domain. Unique identifier for retrieving translated strings.
- *                        Default 'default'.
- * @return string Translated context string without pipe.
+ * @param string $text    Văn bản cần dịch.
+ * @param string $context Thông tin ngữ cảnh cho người dịch.
+ * @param string $domain  Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                        Mặc định 'default'.
+ * @return string Chuỗi ngữ cảnh đã dịch không có dấu gạch đứng.
  */
 function _x( $text, $context, $domain = 'default' ) {
 	return translate_with_gettext_context( $text, $context, $domain );
 }
 
 /**
- * Displays translated string with gettext context.
+ * Hiển thị chuỗi đã dịch với ngữ cảnh gettext.
  *
  * @since 3.0.0
  *
- * @param string $text    Text to translate.
- * @param string $context Context information for the translators.
- * @param string $domain  Optional. Text domain. Unique identifier for retrieving translated strings.
- *                        Default 'default'.
+ * @param string $text    Văn bản cần dịch.
+ * @param string $context Thông tin ngữ cảnh cho người dịch.
+ * @param string $domain  Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                        Mặc định 'default'.
  */
 function _ex( $text, $context, $domain = 'default' ) {
 	echo _x( $text, $context, $domain );
 }
 
 /**
- * Translates string with gettext context, and escapes it for safe use in an attribute.
+ * Dịch chuỗi với ngữ cảnh gettext, và thoát ký tự để sử dụng an toàn trong thuộc tính.
  *
- * If there is no translation, or the text domain isn't loaded, the original text
- * is escaped and returned.
+ * Nếu không có bản dịch, hoặc miền văn bản chưa được tải, văn bản gốc
+ * sẽ được thoát ký tự và trả về.
  *
  * @since 2.8.0
  *
- * @param string $text    Text to translate.
- * @param string $context Context information for the translators.
- * @param string $domain  Optional. Text domain. Unique identifier for retrieving translated strings.
- *                        Default 'default'.
- * @return string Translated text.
+ * @param string $text    Văn bản cần dịch.
+ * @param string $context Thông tin ngữ cảnh cho người dịch.
+ * @param string $domain  Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                        Mặc định 'default'.
+ * @return string Văn bản đã dịch.
  */
 function esc_attr_x( $text, $context, $domain = 'default' ) {
 	return esc_attr( translate_with_gettext_context( $text, $context, $domain ) );
 }
 
 /**
- * Translates string with gettext context, and escapes it for safe use in HTML output.
+ * Dịch chuỗi với ngữ cảnh gettext, và thoát ký tự để sử dụng an toàn trong đầu ra HTML.
  *
- * If there is no translation, or the text domain isn't loaded, the original text
- * is escaped and returned.
+ * Nếu không có bản dịch, hoặc miền văn bản chưa được tải, văn bản gốc
+ * sẽ được thoát ký tự và trả về.
  *
  * @since 2.9.0
  *
- * @param string $text    Text to translate.
- * @param string $context Context information for the translators.
- * @param string $domain  Optional. Text domain. Unique identifier for retrieving translated strings.
- *                        Default 'default'.
- * @return string Translated text.
+ * @param string $text    Văn bản cần dịch.
+ * @param string $context Thông tin ngữ cảnh cho người dịch.
+ * @param string $domain  Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                        Mặc định 'default'.
+ * @return string Văn bản đã dịch.
  */
 function esc_html_x( $text, $context, $domain = 'default' ) {
 	return esc_html( translate_with_gettext_context( $text, $context, $domain ) );
 }
 
 /**
- * Translates and retrieves the singular or plural form based on the supplied number.
+ * Dịch và lấy dạng số ít hoặc số nhiều dựa trên số được cung cấp.
  *
- * Used when you want to use the appropriate form of a string based on whether a
- * number is singular or plural.
+ * Sử dụng khi bạn muốn dùng dạng phù hợp của chuỗi dựa trên việc
+ * số là số ít hay số nhiều.
  *
- * Example:
+ * Ví dụ:
  *
  *     printf( _n( '%s person', '%s people', $count, 'text-domain' ), number_format_i18n( $count ) );
  *
  * @since 2.8.0
- * @since 5.5.0 Introduced `ngettext-{$domain}` filter.
+ * @since 5.5.0 Giới thiệu bộ lọc `ngettext-{$domain}`.
  *
- * @param string $single The text to be used if the number is singular.
- * @param string $plural The text to be used if the number is plural.
- * @param int    $number The number to compare against to use either the singular or plural form.
- * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
- *                       Default 'default'.
- * @return string The translated singular or plural form.
+ * @param string $single Văn bản được sử dụng nếu số là số ít.
+ * @param string $plural Văn bản được sử dụng nếu số là số nhiều.
+ * @param int    $number Số để so sánh nhằm sử dụng dạng số ít hoặc số nhiều.
+ * @param string $domain Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                       Mặc định 'default'.
+ * @return string Dạng số ít hoặc số nhiều đã dịch.
  */
 function _n( $single, $plural, $number, $domain = 'default' ) {
 	$translations = get_translations_for_domain( $domain );
 	$translation  = $translations->translate_plural( $single, $plural, $number );
 
 	/**
-	 * Filters the singular or plural form of a string.
+	 * Lọc dạng số ít hoặc số nhiều của chuỗi.
 	 *
 	 * @since 2.2.0
 	 *
-	 * @param string $translation Translated text.
-	 * @param string $single      The text to be used if the number is singular.
-	 * @param string $plural      The text to be used if the number is plural.
-	 * @param int    $number      The number to compare against to use either the singular or plural form.
-	 * @param string $domain      Text domain. Unique identifier for retrieving translated strings.
+	 * @param string $translation Văn bản đã dịch.
+	 * @param string $single      Văn bản được sử dụng nếu số là số ít.
+	 * @param string $plural      Văn bản được sử dụng nếu số là số nhiều.
+	 * @param int    $number      Số để so sánh nhằm sử dụng dạng số ít hoặc số nhiều.
+	 * @param string $domain      Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
 	 */
 	$translation = apply_filters( 'ngettext', $translation, $single, $plural, $number, $domain );
 
 	/**
-	 * Filters the singular or plural form of a string for a domain.
+	 * Lọc dạng số ít hoặc số nhiều của chuỗi cho một miền.
 	 *
-	 * The dynamic portion of the hook name, `$domain`, refers to the text domain.
+	 * Phần động của tên hook, `$domain`, tham chiếu đến miền văn bản.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $translation Translated text.
-	 * @param string $single      The text to be used if the number is singular.
-	 * @param string $plural      The text to be used if the number is plural.
-	 * @param int    $number      The number to compare against to use either the singular or plural form.
-	 * @param string $domain      Text domain. Unique identifier for retrieving translated strings.
+	 * @param string $translation Văn bản đã dịch.
+	 * @param string $single      Văn bản được sử dụng nếu số là số ít.
+	 * @param string $plural      Văn bản được sử dụng nếu số là số nhiều.
+	 * @param int    $number      Số để so sánh nhằm sử dụng dạng số ít hoặc số nhiều.
+	 * @param string $domain      Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
 	 */
 	$translation = apply_filters( "ngettext_{$domain}", $translation, $single, $plural, $number, $domain );
 
@@ -516,60 +516,60 @@ function _n( $single, $plural, $number, $domain = 'default' ) {
 }
 
 /**
- * Translates and retrieves the singular or plural form based on the supplied number, with gettext context.
+ * Dịch và lấy dạng số ít hoặc số nhiều dựa trên số được cung cấp, với ngữ cảnh gettext.
  *
- * This is a hybrid of _n() and _x(). It supports context and plurals.
+ * Đây là kết hợp của _n() và _x(). Nó hỗ trợ ngữ cảnh và số nhiều.
  *
- * Used when you want to use the appropriate form of a string with context based on whether a
- * number is singular or plural.
+ * Sử dụng khi bạn muốn dùng dạng phù hợp của chuỗi với ngữ cảnh dựa trên việc
+ * số là số ít hay số nhiều.
  *
- * Example of a generic phrase which is disambiguated via the context parameter:
+ * Ví dụ về cụm từ chung được phân biệt qua tham số ngữ cảnh:
  *
  *     printf( _nx( '%s group', '%s groups', $people, 'group of people', 'text-domain' ), number_format_i18n( $people ) );
  *     printf( _nx( '%s group', '%s groups', $animals, 'group of animals', 'text-domain' ), number_format_i18n( $animals ) );
  *
  * @since 2.8.0
- * @since 5.5.0 Introduced `ngettext_with_context-{$domain}` filter.
+ * @since 5.5.0 Giới thiệu bộ lọc `ngettext_with_context-{$domain}`.
  *
- * @param string $single  The text to be used if the number is singular.
- * @param string $plural  The text to be used if the number is plural.
- * @param int    $number  The number to compare against to use either the singular or plural form.
- * @param string $context Context information for the translators.
- * @param string $domain  Optional. Text domain. Unique identifier for retrieving translated strings.
- *                        Default 'default'.
- * @return string The translated singular or plural form.
+ * @param string $single  Văn bản được sử dụng nếu số là số ít.
+ * @param string $plural  Văn bản được sử dụng nếu số là số nhiều.
+ * @param int    $number  Số để so sánh nhằm sử dụng dạng số ít hoặc số nhiều.
+ * @param string $context Thông tin ngữ cảnh cho người dịch.
+ * @param string $domain  Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                        Mặc định 'default'.
+ * @return string Dạng số ít hoặc số nhiều đã dịch.
  */
 function _nx( $single, $plural, $number, $context, $domain = 'default' ) {
 	$translations = get_translations_for_domain( $domain );
 	$translation  = $translations->translate_plural( $single, $plural, $number, $context );
 
 	/**
-	 * Filters the singular or plural form of a string with gettext context.
+	 * Lọc dạng số ít hoặc số nhiều của chuỗi với ngữ cảnh gettext.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $translation Translated text.
-	 * @param string $single      The text to be used if the number is singular.
-	 * @param string $plural      The text to be used if the number is plural.
-	 * @param int    $number      The number to compare against to use either the singular or plural form.
-	 * @param string $context     Context information for the translators.
-	 * @param string $domain      Text domain. Unique identifier for retrieving translated strings.
+	 * @param string $translation Văn bản đã dịch.
+	 * @param string $single      Văn bản được sử dụng nếu số là số ít.
+	 * @param string $plural      Văn bản được sử dụng nếu số là số nhiều.
+	 * @param int    $number      Số để so sánh nhằm sử dụng dạng số ít hoặc số nhiều.
+	 * @param string $context     Thông tin ngữ cảnh cho người dịch.
+	 * @param string $domain      Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
 	 */
 	$translation = apply_filters( 'ngettext_with_context', $translation, $single, $plural, $number, $context, $domain );
 
 	/**
-	 * Filters the singular or plural form of a string with gettext context for a domain.
+	 * Lọc dạng số ít hoặc số nhiều của chuỗi với ngữ cảnh gettext cho một miền.
 	 *
-	 * The dynamic portion of the hook name, `$domain`, refers to the text domain.
+	 * Phần động của tên hook, `$domain`, tham chiếu đến miền văn bản.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $translation Translated text.
-	 * @param string $single      The text to be used if the number is singular.
-	 * @param string $plural      The text to be used if the number is plural.
-	 * @param int    $number      The number to compare against to use either the singular or plural form.
-	 * @param string $context     Context information for the translators.
-	 * @param string $domain      Text domain. Unique identifier for retrieving translated strings.
+	 * @param string $translation Văn bản đã dịch.
+	 * @param string $single      Văn bản được sử dụng nếu số là số ít.
+	 * @param string $plural      Văn bản được sử dụng nếu số là số nhiều.
+	 * @param int    $number      Số để so sánh nhằm sử dụng dạng số ít hoặc số nhiều.
+	 * @param string $context     Thông tin ngữ cảnh cho người dịch.
+	 * @param string $domain      Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
 	 */
 	$translation = apply_filters( "ngettext_with_context_{$domain}", $translation, $single, $plural, $number, $context, $domain );
 
@@ -577,12 +577,12 @@ function _nx( $single, $plural, $number, $context, $domain = 'default' ) {
 }
 
 /**
- * Registers plural strings in POT file, but does not translate them.
+ * Đăng ký các chuỗi số nhiều trong tệp POT, nhưng không dịch chúng.
  *
- * Used when you want to keep structures with translatable plural
- * strings and use them later when the number is known.
+ * Sử dụng khi bạn muốn giữ các cấu trúc với chuỗi số nhiều có thể dịch
+ * và sử dụng chúng sau khi biết số lượng.
  *
- * Example:
+ * Ví dụ:
  *
  *     $message = _n_noop( '%s post', '%s posts', 'text-domain' );
  *     ...
@@ -590,19 +590,19 @@ function _nx( $single, $plural, $number, $context, $domain = 'default' ) {
  *
  * @since 2.5.0
  *
- * @param string $singular Singular form to be localized.
- * @param string $plural   Plural form to be localized.
- * @param string $domain   Optional. Text domain. Unique identifier for retrieving translated strings.
- *                         Default null.
+ * @param string $singular Dạng số ít cần bản địa hóa.
+ * @param string $plural   Dạng số nhiều cần bản địa hóa.
+ * @param string $domain   Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                         Mặc định null.
  * @return array {
- *     Array of translation information for the strings.
+ *     Mảng thông tin dịch cho các chuỗi.
  *
- *     @type string      $0        Singular form to be localized. No longer used.
- *     @type string      $1        Plural form to be localized. No longer used.
- *     @type string      $singular Singular form to be localized.
- *     @type string      $plural   Plural form to be localized.
- *     @type null        $context  Context information for the translators.
- *     @type string|null $domain   Text domain.
+ *     @type string      $0        Dạng số ít cần bản địa hóa. Không còn sử dụng.
+ *     @type string      $1        Dạng số nhiều cần bản địa hóa. Không còn sử dụng.
+ *     @type string      $singular Dạng số ít cần bản địa hóa.
+ *     @type string      $plural   Dạng số nhiều cần bản địa hóa.
+ *     @type null        $context  Thông tin ngữ cảnh cho người dịch.
+ *     @type string|null $domain   Miền văn bản.
  * }
  */
 function _n_noop( $singular, $plural, $domain = null ) {
@@ -617,12 +617,12 @@ function _n_noop( $singular, $plural, $domain = null ) {
 }
 
 /**
- * Registers plural strings with gettext context in POT file, but does not translate them.
+ * Đăng ký các chuỗi số nhiều với ngữ cảnh gettext trong tệp POT, nhưng không dịch chúng.
  *
- * Used when you want to keep structures with translatable plural
- * strings and use them later when the number is known.
+ * Sử dụng khi bạn muốn giữ các cấu trúc với chuỗi số nhiều có thể dịch
+ * và sử dụng chúng sau khi biết số lượng.
  *
- * Example of a generic phrase which is disambiguated via the context parameter:
+ * Ví dụ về cụm từ chung được phân biệt qua tham số ngữ cảnh:
  *
  *     $messages = array(
  *          'people'  => _nx_noop( '%s group', '%s groups', 'people', 'text-domain' ),
@@ -634,21 +634,21 @@ function _n_noop( $singular, $plural, $domain = null ) {
  *
  * @since 2.8.0
  *
- * @param string $singular Singular form to be localized.
- * @param string $plural   Plural form to be localized.
- * @param string $context  Context information for the translators.
- * @param string $domain   Optional. Text domain. Unique identifier for retrieving translated strings.
- *                         Default null.
+ * @param string $singular Dạng số ít cần bản địa hóa.
+ * @param string $plural   Dạng số nhiều cần bản địa hóa.
+ * @param string $context  Thông tin ngữ cảnh cho người dịch.
+ * @param string $domain   Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                         Mặc định null.
  * @return array {
- *     Array of translation information for the strings.
+ *     Mảng thông tin dịch cho các chuỗi.
  *
- *     @type string      $0        Singular form to be localized. No longer used.
- *     @type string      $1        Plural form to be localized. No longer used.
- *     @type string      $2        Context information for the translators. No longer used.
- *     @type string      $singular Singular form to be localized.
- *     @type string      $plural   Plural form to be localized.
- *     @type string      $context  Context information for the translators.
- *     @type string|null $domain   Text domain.
+ *     @type string      $0        Dạng số ít cần bản địa hóa. Không còn sử dụng.
+ *     @type string      $1        Dạng số nhiều cần bản địa hóa. Không còn sử dụng.
+ *     @type string      $2        Thông tin ngữ cảnh cho người dịch. Không còn sử dụng.
+ *     @type string      $singular Dạng số ít cần bản địa hóa.
+ *     @type string      $plural   Dạng số nhiều cần bản địa hóa.
+ *     @type string      $context  Thông tin ngữ cảnh cho người dịch.
+ *     @type string|null $domain   Miền văn bản.
  * }
  */
 function _nx_noop( $singular, $plural, $context, $domain = null ) {
@@ -664,12 +664,12 @@ function _nx_noop( $singular, $plural, $context, $domain = null ) {
 }
 
 /**
- * Translates and returns the singular or plural form of a string that's been registered
- * with _n_noop() or _nx_noop().
+ * Dịch và trả về dạng số ít hoặc số nhiều của chuỗi đã được đăng ký
+ * với _n_noop() hoặc _nx_noop().
  *
- * Used when you want to use a translatable plural string once the number is known.
+ * Sử dụng khi bạn muốn dùng chuỗi số nhiều có thể dịch khi đã biết số lượng.
  *
- * Example:
+ * Ví dụ:
  *
  *     $message = _n_noop( '%s post', '%s posts', 'text-domain' );
  *     ...
@@ -678,17 +678,17 @@ function _nx_noop( $singular, $plural, $context, $domain = null ) {
  * @since 3.1.0
  *
  * @param array  $nooped_plural {
- *     Array that is usually a return value from _n_noop() or _nx_noop().
+ *     Mảng thường là giá trị trả về từ _n_noop() hoặc _nx_noop().
  *
- *     @type string      $singular Singular form to be localized.
- *     @type string      $plural   Plural form to be localized.
- *     @type string|null $context  Context information for the translators.
- *     @type string|null $domain   Text domain.
+ *     @type string      $singular Dạng số ít cần bản địa hóa.
+ *     @type string      $plural   Dạng số nhiều cần bản địa hóa.
+ *     @type string|null $context  Thông tin ngữ cảnh cho người dịch.
+ *     @type string|null $domain   Miền văn bản.
  * }
- * @param int    $count         Number of objects.
- * @param string $domain        Optional. Text domain. Unique identifier for retrieving translated strings. If $nooped_plural contains
- *                              a text domain passed to _n_noop() or _nx_noop(), it will override this value. Default 'default'.
- * @return string Either $singular or $plural translated text.
+ * @param int    $count         Số lượng đối tượng.
+ * @param string $domain        Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch. Nếu $nooped_plural chứa
+ *                              miền văn bản được truyền cho _n_noop() hoặc _nx_noop(), nó sẽ ghi đè giá trị này. Mặc định 'default'.
+ * @return string Văn bản đã dịch dạng $singular hoặc $plural.
  */
 function translate_nooped_plural( $nooped_plural, $count, $domain = 'default' ) {
 	if ( $nooped_plural['domain'] ) {
@@ -703,25 +703,25 @@ function translate_nooped_plural( $nooped_plural, $count, $domain = 'default' ) 
 }
 
 /**
- * Loads a .mo file into the text domain $domain.
+ * Tải tệp .mo vào miền văn bản $domain.
  *
- * If the text domain already exists, the translations will be merged. If both
- * sets have the same string, the translation from the original value will be taken.
+ * Nếu miền văn bản đã tồn tại, các bản dịch sẽ được gộp lại. Nếu cả hai
+ * bộ có cùng chuỗi, bản dịch từ giá trị gốc sẽ được lấy.
  *
- * On success, the .mo file will be placed in the $l10n global by $domain
- * and will be a MO object.
+ * Khi thành công, tệp .mo sẽ được đặt trong biến toàn cục $l10n theo $domain
+ * và sẽ là đối tượng MO.
  *
  * @since 1.5.0
- * @since 6.1.0 Added the `$locale` parameter.
+ * @since 6.1.0 Thêm tham số `$locale`.
  *
- * @global MO[]                   $l10n                   An array of all currently loaded text domains.
- * @global MO[]                   $l10n_unloaded          An array of all text domains that have been unloaded again.
- * @global WP_Textdomain_Registry $wp_textdomain_registry WordPress Textdomain Registry.
+ * @global MO[]                   $l10n                   Mảng tất cả các miền văn bản đã tải hiện tại.
+ * @global MO[]                   $l10n_unloaded          Mảng tất cả các miền văn bản đã được gỡ tải.
+ * @global WP_Textdomain_Registry $wp_textdomain_registry Registry Miền văn bản WordPress.
  *
- * @param string $domain Text domain. Unique identifier for retrieving translated strings.
- * @param string $mofile Path to the .mo file.
- * @param string $locale Optional. Locale. Default is the current locale.
- * @return bool True on success, false on failure.
+ * @param string $domain Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ * @param string $mofile Đường dẫn đến tệp .mo.
+ * @param string $locale Tùy chọn. Ngôn ngữ. Mặc định là ngôn ngữ hiện tại.
+ * @return bool True nếu thành công, false nếu thất bại.
  */
 function load_textdomain( $domain, $mofile, $locale = null ) {
 	/** @var WP_Textdomain_Registry $wp_textdomain_registry */
@@ -734,17 +734,17 @@ function load_textdomain( $domain, $mofile, $locale = null ) {
 	}
 
 	/**
-	 * Filters whether to short-circuit loading .mo file.
+	 * Lọc xem có bỏ qua việc tải tệp .mo hay không.
 	 *
-	 * Returning a non-null value from the filter will effectively short-circuit
-	 * the loading, returning the passed value instead.
+	 * Trả về giá trị khác null từ bộ lọc sẽ bỏ qua hoàn toàn
+	 * việc tải, trả về giá trị được truyền vào thay thế.
 	 *
 	 * @since 6.3.0
 	 *
-	 * @param bool|null   $loaded The result of loading a .mo file. Default null.
-	 * @param string      $domain Text domain. Unique identifier for retrieving translated strings.
-	 * @param string      $mofile Path to the MO file.
-	 * @param string|null $locale Locale.
+	 * @param bool|null   $loaded Kết quả tải tệp .mo. Mặc định null.
+	 * @param string      $domain Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+	 * @param string      $mofile Đường dẫn đến tệp MO.
+	 * @param string|null $locale Ngôn ngữ.
 	 */
 	$loaded = apply_filters( 'pre_load_textdomain', null, $domain, $mofile, $locale );
 	if ( null !== $loaded ) {
@@ -756,15 +756,15 @@ function load_textdomain( $domain, $mofile, $locale = null ) {
 	}
 
 	/**
-	 * Filters whether to override the .mo file loading.
+	 * Lọc xem có ghi đè việc tải tệp .mo hay không.
 	 *
 	 * @since 2.9.0
-	 * @since 6.2.0 Added the `$locale` parameter.
+	 * @since 6.2.0 Thêm tham số `$locale`.
 	 *
-	 * @param bool        $override Whether to override the .mo file loading. Default false.
-	 * @param string      $domain   Text domain. Unique identifier for retrieving translated strings.
-	 * @param string      $mofile   Path to the MO file.
-	 * @param string|null $locale   Locale.
+	 * @param bool        $override Có ghi đè việc tải tệp .mo hay không. Mặc định false.
+	 * @param string      $domain   Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+	 * @param string      $mofile   Đường dẫn đến tệp MO.
+	 * @param string|null $locale   Ngôn ngữ.
 	 */
 	$plugin_override = apply_filters( 'override_load_textdomain', false, $domain, $mofile, $locale );
 
@@ -775,22 +775,22 @@ function load_textdomain( $domain, $mofile, $locale = null ) {
 	}
 
 	/**
-	 * Fires before the MO translation file is loaded.
+	 * Kích hoạt trước khi tệp dịch MO được tải.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $domain Text domain. Unique identifier for retrieving translated strings.
-	 * @param string $mofile Path to the .mo file.
+	 * @param string $domain Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+	 * @param string $mofile Đường dẫn đến tệp .mo.
 	 */
 	do_action( 'load_textdomain', $domain, $mofile );
 
 	/**
-	 * Filters MO file path for loading translations for a specific text domain.
+	 * Lọc đường dẫn tệp MO để tải bản dịch cho miền văn bản cụ thể.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $mofile Path to the MO file.
-	 * @param string $domain Text domain. Unique identifier for retrieving translated strings.
+	 * @param string $mofile Đường dẫn đến tệp MO.
+	 * @param string $domain Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
 	 */
 	$mofile = apply_filters( 'load_textdomain_mofile', $mofile, $domain );
 
@@ -800,18 +800,18 @@ function load_textdomain( $domain, $mofile, $locale = null ) {
 
 	$i18n_controller = WP_Translation_Controller::get_instance();
 
-	// Ensures the correct locale is set as the current one, in case it was filtered.
+	// Đảm bảo ngôn ngữ đúng được thiết lập là ngôn ngữ hiện tại, trong trường hợp nó đã bị lọc.
 	$i18n_controller->set_locale( $locale );
 
 	/**
-	 * Filters the preferred file format for translation files.
+	 * Lọc định dạng tệp ưu tiên cho các tệp dịch.
 	 *
-	 * Can be used to disable the use of PHP files for translations.
+	 * Có thể được sử dụng để vô hiệu hóa việc dùng tệp PHP cho bản dịch.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param string $preferred_format Preferred file format. Possible values: 'php', 'mo'. Default: 'php'.
-	 * @param string $domain           The text domain.
+	 * @param string $preferred_format Định dạng tệp ưu tiên. Giá trị có thể: 'php', 'mo'. Mặc định: 'php'.
+	 * @param string $domain           Miền văn bản.
 	 */
 	$preferred_format = apply_filters( 'translation_file_format', 'php', $domain );
 	if ( ! in_array( $preferred_format, array( 'php', 'mo' ), true ) ) {
@@ -828,17 +828,17 @@ function load_textdomain( $domain, $mofile, $locale = null ) {
 
 	foreach ( $translation_files as $file ) {
 		/**
-		 * Filters the file path for loading translations for the given text domain.
+		 * Lọc đường dẫn tệp để tải bản dịch cho miền văn bản đã cho.
 		 *
-		 * Similar to the {@see 'load_textdomain_mofile'} filter with the difference that
-		 * the file path could be for an MO or PHP file.
+		 * Tương tự bộ lọc {@see 'load_textdomain_mofile'} với sự khác biệt là
+		 * đường dẫn tệp có thể là tệp MO hoặc PHP.
 		 *
 		 * @since 6.5.0
-		 * @since 6.6.0 Added the `$locale` parameter.
+		 * @since 6.6.0 Thêm tham số `$locale`.
 		 *
-		 * @param string $file   Path to the translation file to load.
-		 * @param string $domain The text domain.
-		 * @param string $locale The locale.
+		 * @param string $file   Đường dẫn đến tệp dịch cần tải.
+		 * @param string $domain Miền văn bản.
+		 * @param string $locale Ngôn ngữ.
 		 */
 		$file = (string) apply_filters( 'load_translation_file', $file, $domain, $locale );
 
@@ -849,7 +849,7 @@ function load_textdomain( $domain, $mofile, $locale = null ) {
 				$i18n_controller->load_file( $l10n[ $domain ]->get_filename(), $domain, $locale );
 			}
 
-			// Unset NOOP_Translations reference in get_translations_for_domain().
+			// Hủy tham chiếu NOOP_Translations trong get_translations_for_domain().
 			unset( $l10n[ $domain ] );
 
 			$l10n[ $domain ] = new WP_Translations( $i18n_controller, $domain );
@@ -864,17 +864,17 @@ function load_textdomain( $domain, $mofile, $locale = null ) {
 }
 
 /**
- * Unloads translations for a text domain.
+ * Gỡ tải bản dịch cho một miền văn bản.
  *
  * @since 3.0.0
- * @since 6.1.0 Added the `$reloadable` parameter.
+ * @since 6.1.0 Thêm tham số `$reloadable`.
  *
- * @global MO[] $l10n          An array of all currently loaded text domains.
- * @global MO[] $l10n_unloaded An array of all text domains that have been unloaded again.
+ * @global MO[] $l10n          Mảng tất cả các miền văn bản đã tải hiện tại.
+ * @global MO[] $l10n_unloaded Mảng tất cả các miền văn bản đã được gỡ tải.
  *
- * @param string $domain     Text domain. Unique identifier for retrieving translated strings.
- * @param bool   $reloadable Whether the text domain can be loaded just-in-time again.
- * @return bool Whether textdomain was unloaded.
+ * @param string $domain     Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ * @param bool   $reloadable Liệu miền văn bản có thể được tải lại kịp thời hay không.
+ * @return bool Liệu miền văn bản đã được gỡ tải hay chưa.
  */
 function unload_textdomain( $domain, $reloadable = false ) {
 	global $l10n, $l10n_unloaded;
@@ -882,14 +882,14 @@ function unload_textdomain( $domain, $reloadable = false ) {
 	$l10n_unloaded = (array) $l10n_unloaded;
 
 	/**
-	 * Filters whether to override the text domain unloading.
+	 * Lọc xem có ghi đè việc gỡ tải miền văn bản hay không.
 	 *
 	 * @since 3.0.0
-	 * @since 6.1.0 Added the `$reloadable` parameter.
+	 * @since 6.1.0 Thêm tham số `$reloadable`.
 	 *
-	 * @param bool   $override   Whether to override the text domain unloading. Default false.
-	 * @param string $domain     Text domain. Unique identifier for retrieving translated strings.
-	 * @param bool   $reloadable Whether the text domain can be loaded just-in-time again.
+	 * @param bool   $override   Có ghi đè việc gỡ tải miền văn bản hay không. Mặc định false.
+	 * @param string $domain     Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+	 * @param bool   $reloadable Liệu miền văn bản có thể được tải lại kịp thời hay không.
 	 */
 	$plugin_override = apply_filters( 'override_unload_textdomain', false, $domain, $reloadable );
 
@@ -902,17 +902,17 @@ function unload_textdomain( $domain, $reloadable = false ) {
 	}
 
 	/**
-	 * Fires before the text domain is unloaded.
+	 * Kích hoạt trước khi miền văn bản được gỡ tải.
 	 *
 	 * @since 3.0.0
-	 * @since 6.1.0 Added the `$reloadable` parameter.
+	 * @since 6.1.0 Thêm tham số `$reloadable`.
 	 *
-	 * @param string $domain     Text domain. Unique identifier for retrieving translated strings.
-	 * @param bool   $reloadable Whether the text domain can be loaded just-in-time again.
+	 * @param string $domain     Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+	 * @param bool   $reloadable Liệu miền văn bản có thể được tải lại kịp thời hay không.
 	 */
 	do_action( 'unload_textdomain', $domain, $reloadable );
 
-	// Since multiple locales are supported, reloadable text domains don't actually need to be unloaded.
+	// Vì nhiều ngôn ngữ được hỗ trợ, các miền văn bản có thể tải lại không thực sự cần được gỡ tải.
 	if ( ! $reloadable ) {
 		WP_Translation_Controller::get_instance()->unload_textdomain( $domain );
 	}
@@ -937,24 +937,24 @@ function unload_textdomain( $domain, $reloadable = false ) {
 }
 
 /**
- * Loads default translated strings based on locale.
+ * Tải các chuỗi dịch mặc định dựa trên ngôn ngữ.
  *
- * Loads the .mo file in WP_LANG_DIR constant path from WordPress root.
- * The translated (.mo) file is named based on the locale.
+ * Tải tệp .mo trong đường dẫn hằng số WP_LANG_DIR từ thư mục gốc WordPress.
+ * Tệp đã dịch (.mo) được đặt tên dựa trên ngôn ngữ.
  *
  * @see load_textdomain()
  *
  * @since 1.5.0
  *
- * @param string $locale Optional. Locale to load. Default is the value of get_locale().
- * @return bool Whether the textdomain was loaded.
+ * @param string $locale Tùy chọn. Ngôn ngữ cần tải. Mặc định là giá trị của get_locale().
+ * @return bool Liệu miền văn bản đã được tải hay chưa.
  */
 function load_default_textdomain( $locale = null ) {
 	if ( null === $locale ) {
 		$locale = determine_locale();
 	}
 
-	// Unload previously loaded strings so we can switch translations.
+	// Gỡ tải các chuỗi đã tải trước đó để có thể chuyển đổi bản dịch.
 	unload_textdomain( 'default', true );
 
 	$return = load_textdomain( 'default', WP_LANG_DIR . "/$locale.mo", $locale );
@@ -976,25 +976,25 @@ function load_default_textdomain( $locale = null ) {
 }
 
 /**
- * Loads a plugin's translated strings.
+ * Tải các chuỗi đã dịch của plugin.
  *
- * If the path is not given then it will be the root of the plugin directory.
+ * Nếu đường dẫn không được cung cấp thì sẽ là thư mục gốc của plugin.
  *
- * The .mo file should be named based on the text domain with a dash, and then the locale exactly.
+ * Tệp .mo nên được đặt tên dựa trên miền văn bản với dấu gạch ngang, rồi đến ngôn ngữ chính xác.
  *
  * @since 1.5.0
- * @since 4.6.0 The function now tries to load the .mo file from the languages directory first.
- * @since 6.7.0 Translations are no longer immediately loaded, but handed off to the just-in-time loading mechanism.
+ * @since 4.6.0 Hàm giờ đây thử tải tệp .mo từ thư mục ngôn ngữ trước.
+ * @since 6.7.0 Bản dịch không còn được tải ngay lập tức, mà được chuyển cho cơ chế tải kịp thời.
  *
- * @global WP_Textdomain_Registry $wp_textdomain_registry WordPress Textdomain Registry.
- * @global array<string, WP_Translations|NOOP_Translations> $l10n An array of all currently loaded text domains.
+ * @global WP_Textdomain_Registry $wp_textdomain_registry Registry Miền văn bản WordPress.
+ * @global array<string, WP_Translations|NOOP_Translations> $l10n Mảng tất cả các miền văn bản đã tải hiện tại.
  *
- * @param string       $domain          Unique identifier for retrieving translated strings
- * @param string|false $deprecated      Optional. Deprecated. Use the $plugin_rel_path parameter instead.
- *                                      Default false.
- * @param string|false $plugin_rel_path Optional. Relative path to WP_PLUGIN_DIR where the .mo file resides.
- *                                      Default false.
- * @return bool True when textdomain is successfully loaded, false otherwise.
+ * @param string       $domain          Định danh duy nhất để lấy các chuỗi đã dịch.
+ * @param string|false $deprecated      Tùy chọn. Đã lỗi thời. Sử dụng tham số $plugin_rel_path thay thế.
+ *                                      Mặc định false.
+ * @param string|false $plugin_rel_path Tùy chọn. Đường dẫn tương đối đến WP_PLUGIN_DIR nơi tệp .mo nằm.
+ *                                      Mặc định false.
+ * @return bool True khi miền văn bản được tải thành công, false ngược lại.
  */
 function load_plugin_textdomain( $domain, $deprecated = false, $plugin_rel_path = false ) {
 	/** @var WP_Textdomain_Registry $wp_textdomain_registry */
@@ -1016,7 +1016,7 @@ function load_plugin_textdomain( $domain, $deprecated = false, $plugin_rel_path 
 
 	$wp_textdomain_registry->set_custom_path( $domain, $path );
 
-	// If just-in-time loading was triggered before, reset the entry so it can be tried again.
+	// Nếu tải kịp thời đã được kích hoạt trước đó, đặt lại mục để có thể thử lại.
 	if ( isset( $l10n[ $domain ] ) && $l10n[ $domain ] instanceof NOOP_Translations ) {
 		unset( $l10n[ $domain ] );
 	}
@@ -1025,19 +1025,19 @@ function load_plugin_textdomain( $domain, $deprecated = false, $plugin_rel_path 
 }
 
 /**
- * Loads the translated strings for a plugin residing in the mu-plugins directory.
+ * Tải các chuỗi đã dịch cho plugin nằm trong thư mục mu-plugins.
  *
  * @since 3.0.0
- * @since 4.6.0 The function now tries to load the .mo file from the languages directory first.
- * @since 6.7.0 Translations are no longer immediately loaded, but handed off to the just-in-time loading mechanism.
+ * @since 4.6.0 Hàm giờ đây thử tải tệp .mo từ thư mục ngôn ngữ trước.
+ * @since 6.7.0 Bản dịch không còn được tải ngay lập tức, mà được chuyển cho cơ chế tải kịp thời.
  *
- * @global WP_Textdomain_Registry $wp_textdomain_registry WordPress Textdomain Registry.
- * @global array<string, WP_Translations|NOOP_Translations> $l10n An array of all currently loaded text domains.
+ * @global WP_Textdomain_Registry $wp_textdomain_registry Registry Miền văn bản WordPress.
+ * @global array<string, WP_Translations|NOOP_Translations> $l10n Mảng tất cả các miền văn bản đã tải hiện tại.
  *
- * @param string $domain             Text domain. Unique identifier for retrieving translated strings.
- * @param string $mu_plugin_rel_path Optional. Relative to `WPMU_PLUGIN_DIR` directory in which the .mo
- *                                   file resides. Default empty string.
- * @return bool True when textdomain is successfully loaded, false otherwise.
+ * @param string $domain             Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ * @param string $mu_plugin_rel_path Tùy chọn. Tương đối với thư mục `WPMU_PLUGIN_DIR` nơi tệp .mo
+ *                                   nằm. Mặc định chuỗi rỗng.
+ * @return bool True khi miền văn bản được tải thành công, false ngược lại.
  */
 function load_muplugin_textdomain( $domain, $mu_plugin_rel_path = '' ) {
 	/** @var WP_Textdomain_Registry $wp_textdomain_registry */
@@ -1052,7 +1052,7 @@ function load_muplugin_textdomain( $domain, $mu_plugin_rel_path = '' ) {
 
 	$wp_textdomain_registry->set_custom_path( $domain, $path );
 
-	// If just-in-time loading was triggered before, reset the entry so it can be tried again.
+	// Nếu tải kịp thời đã được kích hoạt trước đó, đặt lại mục để có thể thử lại.
 	if ( isset( $l10n[ $domain ] ) && $l10n[ $domain ] instanceof NOOP_Translations ) {
 		unset( $l10n[ $domain ] );
 	}
@@ -1061,24 +1061,24 @@ function load_muplugin_textdomain( $domain, $mu_plugin_rel_path = '' ) {
 }
 
 /**
- * Loads the theme's translated strings.
+ * Tải các chuỗi đã dịch của giao diện.
  *
- * If the current locale exists as a .mo file in the theme's root directory, it
- * will be included in the translated strings by the $domain.
+ * Nếu ngôn ngữ hiện tại tồn tại dưới dạng tệp .mo trong thư mục gốc của giao diện,
+ * nó sẽ được bao gồm trong các chuỗi đã dịch theo $domain.
  *
- * The .mo files must be named based on the locale exactly.
+ * Các tệp .mo phải được đặt tên chính xác theo ngôn ngữ.
  *
  * @since 1.5.0
- * @since 4.6.0 The function now tries to load the .mo file from the languages directory first.
- * @since 6.7.0 Translations are no longer immediately loaded, but handed off to the just-in-time loading mechanism.
+ * @since 4.6.0 Hàm giờ đây thử tải tệp .mo từ thư mục ngôn ngữ trước.
+ * @since 6.7.0 Bản dịch không còn được tải ngay lập tức, mà được chuyển cho cơ chế tải kịp thời.
  *
- * @global WP_Textdomain_Registry $wp_textdomain_registry WordPress Textdomain Registry.
- * @global array<string, WP_Translations|NOOP_Translations> $l10n An array of all currently loaded text domains.
+ * @global WP_Textdomain_Registry $wp_textdomain_registry Registry Miền văn bản WordPress.
+ * @global array<string, WP_Translations|NOOP_Translations> $l10n Mảng tất cả các miền văn bản đã tải hiện tại.
  *
- * @param string       $domain Text domain. Unique identifier for retrieving translated strings.
- * @param string|false $path   Optional. Path to the directory containing the .mo file.
- *                             Default false.
- * @return bool True when textdomain is successfully loaded, false otherwise.
+ * @param string       $domain Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ * @param string|false $path   Tùy chọn. Đường dẫn đến thư mục chứa tệp .mo.
+ *                             Mặc định false.
+ * @return bool True khi miền văn bản được tải thành công, false ngược lại.
  */
 function load_theme_textdomain( $domain, $path = false ) {
 	/** @var WP_Textdomain_Registry $wp_textdomain_registry */
@@ -1095,7 +1095,7 @@ function load_theme_textdomain( $domain, $path = false ) {
 
 	$wp_textdomain_registry->set_custom_path( $domain, $path );
 
-	// If just-in-time loading was triggered before, reset the entry so it can be tried again.
+	// Nếu tải kịp thời đã được kích hoạt trước đó, đặt lại mục để có thể thử lại.
 	if ( isset( $l10n[ $domain ] ) && $l10n[ $domain ] instanceof NOOP_Translations ) {
 		unset( $l10n[ $domain ] );
 	}
@@ -1104,19 +1104,19 @@ function load_theme_textdomain( $domain, $path = false ) {
 }
 
 /**
- * Loads the child theme's translated strings.
+ * Tải các chuỗi đã dịch của giao diện con.
  *
- * If the current locale exists as a .mo file in the child theme's
- * root directory, it will be included in the translated strings by the $domain.
+ * Nếu ngôn ngữ hiện tại tồn tại dưới dạng tệp .mo trong thư mục gốc
+ * của giao diện con, nó sẽ được bao gồm trong các chuỗi đã dịch theo $domain.
  *
- * The .mo files must be named based on the locale exactly.
+ * Các tệp .mo phải được đặt tên chính xác theo ngôn ngữ.
  *
  * @since 2.9.0
  *
- * @param string       $domain Text domain. Unique identifier for retrieving translated strings.
- * @param string|false $path   Optional. Path to the directory containing the .mo file.
- *                             Default false.
- * @return bool True when the theme textdomain is successfully loaded, false otherwise.
+ * @param string       $domain Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ * @param string|false $path   Tùy chọn. Đường dẫn đến thư mục chứa tệp .mo.
+ *                             Mặc định false.
+ * @return bool True khi miền văn bản của giao diện được tải thành công, false ngược lại.
  */
 function load_child_theme_textdomain( $domain, $path = false ) {
 	if ( ! $path ) {
@@ -1126,19 +1126,19 @@ function load_child_theme_textdomain( $domain, $path = false ) {
 }
 
 /**
- * Loads the script translated strings.
+ * Tải các chuỗi đã dịch của script.
  *
  * @since 5.0.0
- * @since 5.0.2 Uses load_script_translations() to load translation data.
- * @since 5.1.0 The `$domain` parameter was made optional.
+ * @since 5.0.2 Sử dụng load_script_translations() để tải dữ liệu dịch.
+ * @since 5.1.0 Tham số `$domain` được đặt là tùy chọn.
  *
  * @see WP_Scripts::set_translations()
  *
- * @param string $handle Name of the script to register a translation domain to.
- * @param string $domain Optional. Text domain. Default 'default'.
- * @param string $path   Optional. The full file path to the directory containing translation files.
- * @return string|false The translated strings in JSON encoding on success,
- *                      false if the script textdomain could not be loaded.
+ * @param string $handle Tên script để đăng ký miền văn bản dịch.
+ * @param string $domain Tùy chọn. Miền văn bản. Mặc định 'default'.
+ * @param string $path   Tùy chọn. Đường dẫn đầy đủ đến thư mục chứa tệp dịch.
+ * @return string|false Các chuỗi đã dịch ở dạng mã hóa JSON khi thành công,
+ *                      false nếu miền văn bản của script không thể được tải.
  */
 function load_script_textdomain( $handle, $domain = 'default', $path = '' ) {
 	$wp_scripts = wp_scripts();
@@ -1150,7 +1150,7 @@ function load_script_textdomain( $handle, $domain = 'default', $path = '' ) {
 	$path   = untrailingslashit( $path );
 	$locale = determine_locale();
 
-	// If a path was given and the handle file exists simply return it.
+	// Nếu đường dẫn đã được cung cấp và tệp handle tồn tại thì trả về ngay.
 	$file_base       = 'default' === $domain ? $locale : $domain . '-' . $locale;
 	$handle_filename = $file_base . '-' . $handle . '.json';
 
@@ -1177,12 +1177,12 @@ function load_script_textdomain( $handle, $domain = 'default', $path = '' ) {
 	$site_url    = wp_parse_url( site_url() );
 	$theme_root  = get_theme_root();
 
-	// If the host is the same or it's a relative URL.
+	// Nếu host giống nhau hoặc là URL tương đối.
 	if (
 		( ! isset( $content_url['path'] ) || str_starts_with( $src_url['path'], $content_url['path'] ) ) &&
 		( ! isset( $src_url['host'] ) || ! isset( $content_url['host'] ) || $src_url['host'] === $content_url['host'] )
 	) {
-		// Make the src relative the specific plugin or theme.
+		// Làm cho src tương đối với plugin hoặc giao diện cụ thể.
 		if ( isset( $content_url['path'] ) ) {
 			$relative = substr( $src_url['path'], strlen( $content_url['path'] ) );
 		} else {
@@ -1192,9 +1192,9 @@ function load_script_textdomain( $handle, $domain = 'default', $path = '' ) {
 		$relative = explode( '/', $relative );
 
 		/*
-		 * Ensure correct languages path when using a custom `WP_PLUGIN_DIR` / `WP_PLUGIN_URL` configuration,
-		 * a custom theme root, and/or using Multisite with subdirectories.
-		 * See https://core.trac.wordpress.org/ticket/60891 and https://core.trac.wordpress.org/ticket/62016.
+		 * Đảm bảo đường dẫn ngôn ngữ đúng khi sử dụng cấu hình `WP_PLUGIN_DIR` / `WP_PLUGIN_URL` tùy chỉnh,
+		 * thư mục gốc giao diện tùy chỉnh, và/hoặc sử dụng Multisite với thư mục con.
+		 * Xem https://core.trac.wordpress.org/ticket/60891 và https://core.trac.wordpress.org/ticket/62016.
 		 */
 
 		$theme_dir = array_slice( explode( '/', $theme_root ), -1 );
@@ -1202,13 +1202,13 @@ function load_script_textdomain( $handle, $domain = 'default', $path = '' ) {
 
 		$languages_path = WP_LANG_DIR . '/' . $dirname;
 
-		$relative = array_slice( $relative, 2 ); // Remove plugins/<plugin name> or themes/<theme name>.
+		$relative = array_slice( $relative, 2 ); // Xóa plugins/<tên plugin> hoặc themes/<tên giao diện>.
 		$relative = implode( '/', $relative );
 	} elseif (
 		( ! isset( $plugins_url['path'] ) || str_starts_with( $src_url['path'], $plugins_url['path'] ) ) &&
 		( ! isset( $src_url['host'] ) || ! isset( $plugins_url['host'] ) || $src_url['host'] === $plugins_url['host'] )
 	) {
-		// Make the src relative the specific plugin.
+		// Làm cho src tương đối với plugin cụ thể.
 		if ( isset( $plugins_url['path'] ) ) {
 			$relative = substr( $src_url['path'], strlen( $plugins_url['path'] ) );
 		} else {
@@ -1219,34 +1219,34 @@ function load_script_textdomain( $handle, $domain = 'default', $path = '' ) {
 
 		$languages_path = WP_LANG_DIR . '/plugins';
 
-		$relative = array_slice( $relative, 1 ); // Remove <plugin name>.
+		$relative = array_slice( $relative, 1 ); // Xóa <tên plugin>.
 		$relative = implode( '/', $relative );
 	} elseif ( ! isset( $src_url['host'] ) || ! isset( $site_url['host'] ) || $src_url['host'] === $site_url['host'] ) {
 		if ( ! isset( $site_url['path'] ) ) {
 			$relative = trim( $src_url['path'], '/' );
 		} elseif ( str_starts_with( $src_url['path'], trailingslashit( $site_url['path'] ) ) ) {
-			// Make the src relative to the WP root.
+			// Làm cho src tương đối với thư mục gốc WP.
 			$relative = substr( $src_url['path'], strlen( $site_url['path'] ) );
 			$relative = trim( $relative, '/' );
 		}
 	}
 
 	/**
-	 * Filters the relative path of scripts used for finding translation files.
+	 * Lọc đường dẫn tương đối của script dùng để tìm tệp dịch.
 	 *
 	 * @since 5.0.2
 	 *
-	 * @param string|false $relative The relative path of the script. False if it could not be determined.
-	 * @param string       $src      The full source URL of the script.
+	 * @param string|false $relative Đường dẫn tương đối của script. False nếu không thể xác định.
+	 * @param string       $src      URL nguồn đầy đủ của script.
 	 */
 	$relative = apply_filters( 'load_script_textdomain_relative_path', $relative, $src );
 
-	// If the source is not from WP.
+	// Nếu nguồn không đến từ WP.
 	if ( false === $relative ) {
 		return load_script_translations( false, $handle, $domain );
 	}
 
-	// Translations are always based on the unminified filename.
+	// Bản dịch luôn dựa trên tên tệp chưa nén.
 	if ( str_ends_with( $relative, '.min.js' ) ) {
 		$relative = substr( $relative, 0, -7 ) . '.js';
 	}
@@ -1271,28 +1271,28 @@ function load_script_textdomain( $handle, $domain = 'default', $path = '' ) {
 }
 
 /**
- * Loads the translation data for the given script handle and text domain.
+ * Tải dữ liệu dịch cho handle script và miền văn bản đã cho.
  *
  * @since 5.0.2
  *
- * @param string|false $file   Path to the translation file to load. False if there isn't one.
- * @param string       $handle Name of the script to register a translation domain to.
- * @param string       $domain The text domain.
- * @return string|false The JSON-encoded translated strings for the given script handle and text domain.
- *                      False if there are none.
+ * @param string|false $file   Đường dẫn đến tệp dịch cần tải. False nếu không có.
+ * @param string       $handle Tên script để đăng ký miền văn bản dịch.
+ * @param string       $domain Miền văn bản.
+ * @return string|false Các chuỗi đã dịch mã hóa JSON cho handle script và miền văn bản đã cho.
+ *                      False nếu không có.
  */
 function load_script_translations( $file, $handle, $domain ) {
 	/**
-	 * Pre-filters script translations for the given file, script handle and text domain.
+	 * Lọc trước bản dịch script cho tệp, handle script và miền văn bản đã cho.
 	 *
-	 * Returning a non-null value allows to override the default logic, effectively short-circuiting the function.
+	 * Trả về giá trị khác null cho phép ghi đè logic mặc định, bỏ qua hoàn toàn hàm.
 	 *
 	 * @since 5.0.2
 	 *
-	 * @param string|false|null $translations JSON-encoded translation data. Default null.
-	 * @param string|false      $file         Path to the translation file to load. False if there isn't one.
-	 * @param string            $handle       Name of the script to register a translation domain to.
-	 * @param string            $domain       The text domain.
+	 * @param string|false|null $translations Dữ liệu dịch mã hóa JSON. Mặc định null.
+	 * @param string|false      $file         Đường dẫn đến tệp dịch cần tải. False nếu không có.
+	 * @param string            $handle       Tên script để đăng ký miền văn bản dịch.
+	 * @param string            $domain       Miền văn bản.
 	 */
 	$translations = apply_filters( 'pre_load_script_translations', null, $file, $handle, $domain );
 
@@ -1301,13 +1301,13 @@ function load_script_translations( $file, $handle, $domain ) {
 	}
 
 	/**
-	 * Filters the file path for loading script translations for the given script handle and text domain.
+	 * Lọc đường dẫn tệp để tải bản dịch script cho handle script và miền văn bản đã cho.
 	 *
 	 * @since 5.0.2
 	 *
-	 * @param string|false $file   Path to the translation file to load. False if there isn't one.
-	 * @param string       $handle Name of the script to register a translation domain to.
-	 * @param string       $domain The text domain.
+	 * @param string|false $file   Đường dẫn đến tệp dịch cần tải. False nếu không có.
+	 * @param string       $handle Tên script để đăng ký miền văn bản dịch.
+	 * @param string       $domain Miền văn bản.
 	 */
 	$file = apply_filters( 'load_script_translation_file', $file, $handle, $domain );
 
@@ -1318,33 +1318,33 @@ function load_script_translations( $file, $handle, $domain ) {
 	$translations = file_get_contents( $file );
 
 	/**
-	 * Filters script translations for the given file, script handle and text domain.
+	 * Lọc bản dịch script cho tệp, handle script và miền văn bản đã cho.
 	 *
 	 * @since 5.0.2
 	 *
-	 * @param string $translations JSON-encoded translation data.
-	 * @param string $file         Path to the translation file that was loaded.
-	 * @param string $handle       Name of the script to register a translation domain to.
-	 * @param string $domain       The text domain.
+	 * @param string $translations Dữ liệu dịch mã hóa JSON.
+	 * @param string $file         Đường dẫn đến tệp dịch đã được tải.
+	 * @param string $handle       Tên script để đăng ký miền văn bản dịch.
+	 * @param string $domain       Miền văn bản.
 	 */
 	return apply_filters( 'load_script_translations', $translations, $file, $handle, $domain );
 }
 
 /**
- * Loads plugin and theme text domains just-in-time.
+ * Tải miền văn bản của plugin và giao diện theo cơ chế kịp thời.
  *
- * When a textdomain is encountered for the first time, we try to load
- * the translation file from `wp-content/languages`, removing the need
- * to call load_plugin_textdomain() or load_theme_textdomain().
+ * Khi một miền văn bản được gặp lần đầu tiên, chúng ta thử tải
+ * tệp dịch từ `wp-content/languages`, loại bỏ nhu cầu
+ * gọi load_plugin_textdomain() hoặc load_theme_textdomain().
  *
  * @since 4.6.0
  * @access private
  *
- * @global MO[]                   $l10n_unloaded          An array of all text domains that have been unloaded again.
- * @global WP_Textdomain_Registry $wp_textdomain_registry WordPress Textdomain Registry.
+ * @global MO[]                   $l10n_unloaded          Mảng tất cả các miền văn bản đã được gỡ tải.
+ * @global WP_Textdomain_Registry $wp_textdomain_registry Registry Miền văn bản WordPress.
  *
- * @param string $domain Text domain. Unique identifier for retrieving translated strings.
- * @return bool True when the textdomain is successfully loaded, false otherwise.
+ * @param string $domain Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ * @return bool True khi miền văn bản được tải thành công, false ngược lại.
  */
 function _load_textdomain_just_in_time( $domain ) {
 	/** @var WP_Textdomain_Registry $wp_textdomain_registry */
@@ -1352,7 +1352,7 @@ function _load_textdomain_just_in_time( $domain ) {
 
 	$l10n_unloaded = (array) $l10n_unloaded;
 
-	// Short-circuit if domain is 'default' which is reserved for core.
+	// Bỏ qua nếu domain là 'default' vì nó được dành riêng cho lõi.
 	if ( 'default' === $domain || isset( $l10n_unloaded[ $domain ] ) ) {
 		return false;
 	}
@@ -1380,7 +1380,7 @@ function _load_textdomain_just_in_time( $domain ) {
 		);
 	}
 
-	// Themes with their language directory outside of WP_LANG_DIR have a different file name.
+	// Các giao diện có thư mục ngôn ngữ ngoài WP_LANG_DIR có tên tệp khác.
 	$template_directory   = trailingslashit( get_template_directory() );
 	$stylesheet_directory = trailingslashit( get_stylesheet_directory() );
 	if ( str_starts_with( $path, $template_directory ) || str_starts_with( $path, $stylesheet_directory ) ) {
@@ -1393,16 +1393,16 @@ function _load_textdomain_just_in_time( $domain ) {
 }
 
 /**
- * Returns the Translations instance for a text domain.
+ * Trả về thể hiện Translations cho một miền văn bản.
  *
- * If there isn't one, returns empty Translations instance.
+ * Nếu không có, trả về thể hiện Translations rỗng.
  *
  * @since 2.8.0
  *
- * @global MO[] $l10n An array of all currently loaded text domains.
+ * @global MO[] $l10n Mảng tất cả các miền văn bản đã tải hiện tại.
  *
- * @param string $domain Text domain. Unique identifier for retrieving translated strings.
- * @return Translations|NOOP_Translations A Translations instance.
+ * @param string $domain Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ * @return Translations|NOOP_Translations Thể hiện Translations.
  */
 function get_translations_for_domain( $domain ) {
 	global $l10n;
@@ -1421,14 +1421,14 @@ function get_translations_for_domain( $domain ) {
 }
 
 /**
- * Determines whether there are translations for the text domain.
+ * Xác định xem có bản dịch cho miền văn bản hay không.
  *
  * @since 3.0.0
  *
- * @global MO[] $l10n An array of all currently loaded text domains.
+ * @global MO[] $l10n Mảng tất cả các miền văn bản đã tải hiện tại.
  *
- * @param string $domain Text domain. Unique identifier for retrieving translated strings.
- * @return bool Whether there are translations.
+ * @param string $domain Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ * @return bool Liệu có bản dịch hay không.
  */
 function is_textdomain_loaded( $domain ) {
 	global $l10n;
@@ -1436,44 +1436,44 @@ function is_textdomain_loaded( $domain ) {
 }
 
 /**
- * Translates role name.
+ * Dịch tên vai trò.
  *
- * Since the role names are in the database and not in the source there
- * are dummy gettext calls to get them into the POT file and this function
- * properly translates them back.
+ * Vì tên vai trò nằm trong cơ sở dữ liệu và không nằm trong mã nguồn nên
+ * có các lệnh gọi gettext giả để đưa chúng vào tệp POT và hàm này
+ * dịch chúng trở lại đúng cách.
  *
- * The before_last_bar() call is needed, because older installations keep the roles
- * using the old context format: 'Role name|User role' and just skipping the
- * content after the last bar is easier than fixing them in the DB. New installations
- * won't suffer from that problem.
+ * Lệnh gọi before_last_bar() cần thiết vì các cài đặt cũ giữ vai trò
+ * sử dụng định dạng ngữ cảnh cũ: 'Role name|User role' và việc bỏ qua
+ * nội dung sau dấu gạch đứng cuối cùng dễ hơn sửa chúng trong DB. Các cài đặt mới
+ * sẽ không gặp vấn đề đó.
  *
  * @since 2.8.0
- * @since 5.2.0 Added the `$domain` parameter.
+ * @since 5.2.0 Thêm tham số `$domain`.
  *
- * @param string $name   The role name.
- * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
- *                       Default 'default'.
- * @return string Translated role name on success, original name on failure.
+ * @param string $name   Tên vai trò.
+ * @param string $domain Tùy chọn. Miền văn bản. Định danh duy nhất để lấy các chuỗi đã dịch.
+ *                       Mặc định 'default'.
+ * @return string Tên vai trò đã dịch khi thành công, tên gốc khi thất bại.
  */
 function translate_user_role( $name, $domain = 'default' ) {
 	return translate_with_gettext_context( before_last_bar( $name ), 'User role', $domain );
 }
 
 /**
- * Gets all available languages based on the presence of *.mo and *.l10n.php files in a given directory.
+ * Lấy tất cả các ngôn ngữ có sẵn dựa trên sự hiện diện của tệp *.mo và *.l10n.php trong thư mục đã cho.
  *
- * The default directory is WP_LANG_DIR.
+ * Thư mục mặc định là WP_LANG_DIR.
  *
  * @since 3.0.0
- * @since 4.7.0 The results are now filterable with the {@see 'get_available_languages'} filter.
- * @since 6.5.0 The initial file list is now cached and also takes into account *.l10n.php files.
+ * @since 4.7.0 Kết quả giờ có thể lọc bằng bộ lọc {@see 'get_available_languages'}.
+ * @since 6.5.0 Danh sách tệp ban đầu giờ được lưu cache và cũng tính đến tệp *.l10n.php.
  *
- * @global WP_Textdomain_Registry $wp_textdomain_registry WordPress Textdomain Registry.
+ * @global WP_Textdomain_Registry $wp_textdomain_registry Registry Miền văn bản WordPress.
  *
- * @param string $dir A directory to search for language files.
- *                    Default WP_LANG_DIR.
- * @return string[] An array of language codes or an empty array if no languages are present.
- *                  Language codes are formed by stripping the file extension from the language file names.
+ * @param string $dir Thư mục để tìm kiếm tệp ngôn ngữ.
+ *                    Mặc định WP_LANG_DIR.
+ * @return string[] Mảng các mã ngôn ngữ hoặc mảng rỗng nếu không có ngôn ngữ nào.
+ *                  Mã ngôn ngữ được tạo bằng cách loại bỏ phần mở rộng tệp từ tên tệp ngôn ngữ.
  */
 function get_available_languages( $dir = null ) {
 	global $wp_textdomain_registry;
@@ -1496,28 +1496,28 @@ function get_available_languages( $dir = null ) {
 	}
 
 	/**
-	 * Filters the list of available language codes.
+	 * Lọc danh sách các mã ngôn ngữ có sẵn.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string[] $languages An array of available language codes.
-	 * @param string   $dir       The directory where the language files were found.
+	 * @param string[] $languages Mảng các mã ngôn ngữ có sẵn.
+	 * @param string   $dir       Thư mục nơi tìm thấy tệp ngôn ngữ.
 	 */
 	return apply_filters( 'get_available_languages', array_unique( $languages ), $dir );
 }
 
 /**
- * Gets installed translations.
+ * Lấy các bản dịch đã cài đặt.
  *
- * Looks in the wp-content/languages directory for translations of
- * plugins or themes.
+ * Tìm trong thư mục wp-content/languages các bản dịch của
+ * plugin hoặc giao diện.
  *
  * @since 3.7.0
  *
- * @global WP_Textdomain_Registry $wp_textdomain_registry WordPress Textdomain Registry.
+ * @global WP_Textdomain_Registry $wp_textdomain_registry Registry Miền văn bản WordPress.
  *
- * @param string $type What to search for. Accepts 'plugins', 'themes', 'core'.
- * @return array Array of language data.
+ * @param string $type Loại cần tìm. Chấp nhận 'plugins', 'themes', 'core'.
+ * @return array Mảng dữ liệu ngôn ngữ.
  */
 function wp_get_installed_translations( $type ) {
 	global $wp_textdomain_registry;
@@ -1560,7 +1560,7 @@ function wp_get_installed_translations( $type ) {
 		} else {
 			$pofile = substr_replace( $file, '.po', - strlen( '.l10n.php' ) );
 
-			// If both a PO and a PHP file exist, prefer the PO file.
+			// Nếu cả tệp PO và PHP đều tồn tại, ưu tiên tệp PO.
 			if ( file_exists( $pofile ) ) {
 				continue;
 			}
@@ -1572,12 +1572,12 @@ function wp_get_installed_translations( $type ) {
 }
 
 /**
- * Extracts headers from a PO file.
+ * Trích xuất tiêu đề từ tệp PO.
  *
  * @since 3.7.0
  *
- * @param string $po_file Path to PO file.
- * @return string[] Array of PO file header values keyed by header name.
+ * @param string $po_file Đường dẫn đến tệp PO.
+ * @return string[] Mảng giá trị tiêu đề tệp PO được đánh khóa theo tên tiêu đề.
  */
 function wp_get_pomo_file_data( $po_file ) {
 	$headers = get_file_data(
@@ -1590,19 +1590,19 @@ function wp_get_pomo_file_data( $po_file ) {
 		)
 	);
 	foreach ( $headers as $header => $value ) {
-		// Remove possible contextual '\n' and closing double quote.
+		// Xóa ký tự '\n' theo ngữ cảnh và dấu ngoặc kép đóng.
 		$headers[ $header ] = preg_replace( '~(\\\n)?"$~', '', $value );
 	}
 	return $headers;
 }
 
 /**
- * Extracts headers from a PHP translation file.
+ * Trích xuất tiêu đề từ tệp dịch PHP.
  *
  * @since 6.6.0
  *
- * @param string $php_file Path to a `.l10n.php` file.
- * @return string[] Array of file header values keyed by header name.
+ * @param string $php_file Đường dẫn đến tệp `.l10n.php`.
+ * @return string[] Mảng giá trị tiêu đề tệp được đánh khóa theo tên tiêu đề.
  */
 function wp_get_l10n_php_file_data( $php_file ) {
 	$data = (array) include $php_file;
@@ -1632,36 +1632,36 @@ function wp_get_l10n_php_file_data( $php_file ) {
 }
 
 /**
- * Displays or returns a Language selector.
+ * Hiển thị hoặc trả về bộ chọn Ngôn ngữ.
  *
  * @since 4.0.0
- * @since 4.3.0 Introduced the `echo` argument.
- * @since 4.7.0 Introduced the `show_option_site_default` argument.
- * @since 5.1.0 Introduced the `show_option_en_us` argument.
- * @since 5.9.0 Introduced the `explicit_option_en_us` argument.
+ * @since 4.3.0 Giới thiệu tham số `echo`.
+ * @since 4.7.0 Giới thiệu tham số `show_option_site_default`.
+ * @since 5.1.0 Giới thiệu tham số `show_option_en_us`.
+ * @since 5.9.0 Giới thiệu tham số `explicit_option_en_us`.
  *
  * @see get_available_languages()
  * @see wp_get_available_translations()
  *
  * @param string|array $args {
- *     Optional. Array or string of arguments for outputting the language selector.
+ *     Tùy chọn. Mảng hoặc chuỗi các tham số để xuất bộ chọn ngôn ngữ.
  *
- *     @type string   $id                           ID attribute of the select element. Default 'locale'.
- *     @type string   $name                         Name attribute of the select element. Default 'locale'.
- *     @type string[] $languages                    List of installed languages, contain only the locales.
- *                                                  Default empty array.
- *     @type array    $translations                 List of available translations. Default result of
+ *     @type string   $id                           Thuộc tính ID của phần tử select. Mặc định 'locale'.
+ *     @type string   $name                         Thuộc tính name của phần tử select. Mặc định 'locale'.
+ *     @type string[] $languages                    Danh sách ngôn ngữ đã cài đặt, chỉ chứa các mã ngôn ngữ.
+ *                                                  Mặc định mảng rỗng.
+ *     @type array    $translations                 Danh sách các bản dịch có sẵn. Mặc định kết quả của
  *                                                  wp_get_available_translations().
- *     @type string   $selected                     Language which should be selected. Default empty.
- *     @type bool|int $echo                         Whether to echo the generated markup. Accepts 0, 1, or their
- *                                                  boolean equivalents. Default 1.
- *     @type bool     $show_available_translations  Whether to show available translations. Default true.
- *     @type bool     $show_option_site_default     Whether to show an option to fall back to the site's locale. Default false.
- *     @type bool     $show_option_en_us            Whether to show an option for English (United States). Default true.
- *     @type bool     $explicit_option_en_us        Whether the English (United States) option uses an explicit value of en_US
- *                                                  instead of an empty value. Default false.
+ *     @type string   $selected                     Ngôn ngữ nên được chọn. Mặc định rỗng.
+ *     @type bool|int $echo                         Có xuất mã HTML đã tạo hay không. Chấp nhận 0, 1, hoặc
+ *                                                  tương đương boolean. Mặc định 1.
+ *     @type bool     $show_available_translations  Có hiển thị các bản dịch có sẵn hay không. Mặc định true.
+ *     @type bool     $show_option_site_default     Có hiển thị tùy chọn để dùng ngôn ngữ mặc định của trang hay không. Mặc định false.
+ *     @type bool     $show_option_en_us            Có hiển thị tùy chọn Tiếng Anh (Hoa Kỳ) hay không. Mặc định true.
+ *     @type bool     $explicit_option_en_us        Tùy chọn Tiếng Anh (Hoa Kỳ) có sử dụng giá trị rõ ràng en_US
+ *                                                  thay vì giá trị rỗng hay không. Mặc định false.
  * }
- * @return string HTML dropdown list of languages.
+ * @return string Danh sách dropdown HTML các ngôn ngữ.
  */
 function wp_dropdown_languages( $args = array() ) {
 
@@ -1681,12 +1681,12 @@ function wp_dropdown_languages( $args = array() ) {
 		)
 	);
 
-	// Bail if no ID or no name.
+	// Thoát nếu không có ID hoặc không có name.
 	if ( ! $parsed_args['id'] || ! $parsed_args['name'] ) {
 		return;
 	}
 
-	// English (United States) uses an empty string for the value attribute.
+	// Tiếng Anh (Hoa Kỳ) sử dụng chuỗi rỗng cho thuộc tính value.
 	if ( 'en_US' === $parsed_args['selected'] && ! $parsed_args['explicit_option_en_us'] ) {
 		$parsed_args['selected'] = '';
 	}
@@ -1698,8 +1698,8 @@ function wp_dropdown_languages( $args = array() ) {
 	}
 
 	/*
-	 * $parsed_args['languages'] should only contain the locales. Find the locale in
-	 * $translations to get the native name. Fall back to locale.
+	 * $parsed_args['languages'] chỉ nên chứa các mã ngôn ngữ. Tìm mã ngôn ngữ trong
+	 * $translations để lấy tên bản địa. Quay về mã ngôn ngữ nếu không tìm thấy.
 	 */
 	$languages = array();
 	foreach ( $parsed_args['languages'] as $locale ) {
@@ -1711,7 +1711,7 @@ function wp_dropdown_languages( $args = array() ) {
 				'lang'        => current( $translation['iso'] ),
 			);
 
-			// Remove installed language from available translations.
+			// Xóa ngôn ngữ đã cài đặt khỏi các bản dịch có sẵn.
 			unset( $translations[ $locale ] );
 		} else {
 			$languages[] = array(
@@ -1724,15 +1724,15 @@ function wp_dropdown_languages( $args = array() ) {
 
 	$translations_available = ( ! empty( $translations ) && $parsed_args['show_available_translations'] );
 
-	// Holds the HTML markup.
+	// Giữ mã HTML.
 	$structure = array();
 
-	// List installed languages.
+	// Liệt kê các ngôn ngữ đã cài đặt.
 	if ( $translations_available ) {
 		$structure[] = '<optgroup label="' . esc_attr_x( 'Installed', 'translations' ) . '">';
 	}
 
-	// Site default.
+	// Mặc định của trang.
 	if ( $parsed_args['show_option_site_default'] ) {
 		$structure[] = sprintf(
 			'<option value="site-default" data-installed="1"%s>%s</option>',
@@ -1750,7 +1750,7 @@ function wp_dropdown_languages( $args = array() ) {
 		);
 	}
 
-	// List installed languages.
+	// Liệt kê các ngôn ngữ đã cài đặt.
 	foreach ( $languages as $language ) {
 		$structure[] = sprintf(
 			'<option value="%s" lang="%s"%s data-installed="1">%s</option>',
@@ -1764,7 +1764,7 @@ function wp_dropdown_languages( $args = array() ) {
 		$structure[] = '</optgroup>';
 	}
 
-	// List available translations.
+	// Liệt kê các bản dịch có sẵn.
 	if ( $translations_available ) {
 		$structure[] = '<optgroup label="' . esc_attr_x( 'Available', 'translations' ) . '">';
 		foreach ( $translations as $translation ) {
@@ -1779,7 +1779,7 @@ function wp_dropdown_languages( $args = array() ) {
 		$structure[] = '</optgroup>';
 	}
 
-	// Combine the output string.
+	// Kết hợp chuỗi đầu ra.
 	$output  = sprintf( '<select name="%s" id="%s">', esc_attr( $parsed_args['name'] ), esc_attr( $parsed_args['id'] ) );
 	$output .= implode( "\n", $structure );
 	$output .= '</select>';
@@ -1792,17 +1792,17 @@ function wp_dropdown_languages( $args = array() ) {
 }
 
 /**
- * Determines whether the current locale is right-to-left (RTL).
+ * Xác định xem ngôn ngữ hiện tại có phải viết từ phải sang trái (RTL) hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm giao diện tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Giao diện.
  *
  * @since 3.0.0
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng ngôn ngữ ngày giờ WordPress.
  *
- * @return bool Whether locale is RTL.
+ * @return bool Liệu ngôn ngữ có phải RTL hay không.
  */
 function is_rtl() {
 	global $wp_locale;
@@ -1813,14 +1813,14 @@ function is_rtl() {
 }
 
 /**
- * Switches the translations according to the given locale.
+ * Chuyển đổi bản dịch theo ngôn ngữ đã cho.
  *
  * @since 4.7.0
  *
- * @global WP_Locale_Switcher $wp_locale_switcher WordPress locale switcher object.
+ * @global WP_Locale_Switcher $wp_locale_switcher Đối tượng chuyển đổi ngôn ngữ WordPress.
  *
- * @param string $locale The locale.
- * @return bool True on success, false on failure.
+ * @param string $locale Ngôn ngữ.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function switch_to_locale( $locale ) {
 	/* @var WP_Locale_Switcher $wp_locale_switcher */
@@ -1834,14 +1834,14 @@ function switch_to_locale( $locale ) {
 }
 
 /**
- * Switches the translations according to the given user's locale.
+ * Chuyển đổi bản dịch theo ngôn ngữ của người dùng đã cho.
  *
  * @since 6.2.0
  *
- * @global WP_Locale_Switcher $wp_locale_switcher WordPress locale switcher object.
+ * @global WP_Locale_Switcher $wp_locale_switcher Đối tượng chuyển đổi ngôn ngữ WordPress.
  *
- * @param int $user_id User ID.
- * @return bool True on success, false on failure.
+ * @param int $user_id ID người dùng.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function switch_to_user_locale( $user_id ) {
 	/* @var WP_Locale_Switcher $wp_locale_switcher */
@@ -1855,13 +1855,13 @@ function switch_to_user_locale( $user_id ) {
 }
 
 /**
- * Restores the translations according to the previous locale.
+ * Khôi phục bản dịch theo ngôn ngữ trước đó.
  *
  * @since 4.7.0
  *
- * @global WP_Locale_Switcher $wp_locale_switcher WordPress locale switcher object.
+ * @global WP_Locale_Switcher $wp_locale_switcher Đối tượng chuyển đổi ngôn ngữ WordPress.
  *
- * @return string|false Locale on success, false on error.
+ * @return string|false Ngôn ngữ khi thành công, false khi lỗi.
  */
 function restore_previous_locale() {
 	/* @var WP_Locale_Switcher $wp_locale_switcher */
@@ -1875,13 +1875,13 @@ function restore_previous_locale() {
 }
 
 /**
- * Restores the translations according to the original locale.
+ * Khôi phục bản dịch theo ngôn ngữ gốc.
  *
  * @since 4.7.0
  *
- * @global WP_Locale_Switcher $wp_locale_switcher WordPress locale switcher object.
+ * @global WP_Locale_Switcher $wp_locale_switcher Đối tượng chuyển đổi ngôn ngữ WordPress.
  *
- * @return string|false Locale on success, false on error.
+ * @return string|false Ngôn ngữ khi thành công, false khi lỗi.
  */
 function restore_current_locale() {
 	/* @var WP_Locale_Switcher $wp_locale_switcher */
@@ -1895,13 +1895,13 @@ function restore_current_locale() {
 }
 
 /**
- * Determines whether switch_to_locale() is in effect.
+ * Xác định xem switch_to_locale() có đang có hiệu lực hay không.
  *
  * @since 4.7.0
  *
- * @global WP_Locale_Switcher $wp_locale_switcher WordPress locale switcher object.
+ * @global WP_Locale_Switcher $wp_locale_switcher Đối tượng chuyển đổi ngôn ngữ WordPress.
  *
- * @return bool True if the locale has been switched, false otherwise.
+ * @return bool True nếu ngôn ngữ đã được chuyển đổi, false ngược lại.
  */
 function is_locale_switched() {
 	/* @var WP_Locale_Switcher $wp_locale_switcher */
@@ -1911,16 +1911,16 @@ function is_locale_switched() {
 }
 
 /**
- * Translates the provided settings value using its i18n schema.
+ * Dịch giá trị cài đặt đã cung cấp bằng schema i18n của nó.
  *
  * @since 5.9.0
  * @access private
  *
- * @param string|string[]|array[]|object $i18n_schema I18n schema for the setting.
- * @param string|string[]|array[]        $settings    Value for the settings.
- * @param string                         $textdomain  Textdomain to use with translations.
+ * @param string|string[]|array[]|object $i18n_schema Schema i18n cho cài đặt.
+ * @param string|string[]|array[]        $settings    Giá trị cho các cài đặt.
+ * @param string                         $textdomain  Miền văn bản để sử dụng với bản dịch.
  *
- * @return string|string[]|array[] Translated settings.
+ * @return string|string[]|array[] Cài đặt đã dịch.
  */
 function translate_settings_using_i18n_schema( $i18n_schema, $settings, $textdomain ) {
 	if ( empty( $i18n_schema ) || empty( $settings ) || empty( $textdomain ) ) {
@@ -1955,19 +1955,19 @@ function translate_settings_using_i18n_schema( $i18n_schema, $settings, $textdom
 }
 
 /**
- * Retrieves the list item separator based on the locale.
+ * Lấy ký tự phân tách mục danh sách dựa trên ngôn ngữ.
  *
  * @since 6.0.0
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng ngôn ngữ ngày giờ WordPress.
  *
- * @return string Locale-specific list item separator.
+ * @return string Ký tự phân tách mục danh sách theo ngôn ngữ.
  */
 function wp_get_list_item_separator() {
 	global $wp_locale;
 
 	if ( ! ( $wp_locale instanceof WP_Locale ) ) {
-		// Default value of WP_Locale::get_list_item_separator().
+		// Giá trị mặc định của WP_Locale::get_list_item_separator().
 		/* translators: Used between list items, there is a space after the comma. */
 		return __( ', ' );
 	}
@@ -1976,20 +1976,20 @@ function wp_get_list_item_separator() {
 }
 
 /**
- * Retrieves the word count type based on the locale.
+ * Lấy kiểu đếm từ dựa trên ngôn ngữ.
  *
  * @since 6.2.0
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng ngôn ngữ ngày giờ WordPress.
  *
- * @return string Locale-specific word count type. Possible values are `characters_excluding_spaces`,
- *                `characters_including_spaces`, or `words`. Defaults to `words`.
+ * @return string Kiểu đếm từ theo ngôn ngữ. Giá trị có thể là `characters_excluding_spaces`,
+ *                `characters_including_spaces`, hoặc `words`. Mặc định `words`.
  */
 function wp_get_word_count_type() {
 	global $wp_locale;
 
 	if ( ! ( $wp_locale instanceof WP_Locale ) ) {
-		// Default value of WP_Locale::get_word_count_type().
+		// Giá trị mặc định của WP_Locale::get_word_count_type().
 		return 'words';
 	}
 
@@ -1997,14 +1997,14 @@ function wp_get_word_count_type() {
 }
 
 /**
- * Returns a boolean to indicate whether a translation exists for a given string with optional text domain and locale.
+ * Trả về giá trị boolean để cho biết liệu bản dịch có tồn tại cho chuỗi đã cho với miền văn bản và ngôn ngữ tùy chọn.
  *
  * @since 6.7.0
  *
- * @param string  $singular   Singular translation to check.
- * @param string  $textdomain Optional. Text domain. Default 'default'.
- * @param ?string $locale     Optional. Locale. Default current locale.
- * @return bool  True if the translation exists, false otherwise.
+ * @param string  $singular   Bản dịch số ít cần kiểm tra.
+ * @param string  $textdomain Tùy chọn. Miền văn bản. Mặc định 'default'.
+ * @param ?string $locale     Tùy chọn. Ngôn ngữ. Mặc định ngôn ngữ hiện tại.
+ * @return bool  True nếu bản dịch tồn tại, false ngược lại.
  */
 function has_translation( string $singular, string $textdomain = 'default', ?string $locale = null ): bool {
 	return WP_Translation_Controller::get_instance()->has_translation( $singular, $textdomain, $locale );

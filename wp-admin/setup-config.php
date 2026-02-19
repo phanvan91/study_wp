@@ -1,28 +1,28 @@
 <?php
 /**
- * Retrieves and creates the wp-config.php file.
+ * Lấy và tạo file wp-config.php.
  *
- * The permissions for the base directory must allow for writing files in order
- * for the wp-config.php to be created using this page.
+ * Quyền của thư mục gốc phải cho phép ghi file để có thể
+ * tạo wp-config.php bằng trang này.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * We are installing.
+ * Chúng ta đang cài đặt.
  */
 define( 'WP_INSTALLING', true );
 
 /**
- * We are blissfully unaware of anything.
+ * Chúng ta không biết gì cả (trạng thái ban đầu).
  */
 define( 'WP_SETUP_CONFIG', true );
 
 /**
- * Disable error reporting
+ * Tắt báo lỗi
  *
- * Set this to error_reporting( -1 ) for debugging
+ * Đặt thành error_reporting( -1 ) để gỡ lỗi
  */
 error_reporting( 0 );
 
@@ -32,15 +32,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require ABSPATH . 'wp-settings.php';
 
-/** Load WordPress Administration Upgrade API */
+/** Nạp API Nâng cấp Quản trị WordPress */
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-/** Load WordPress Translation Installation API */
+/** Nạp API Cài đặt Bản dịch WordPress */
 require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
 nocache_headers();
 
-// Support wp-config-sample.php one level up, for the develop repo.
+// Hỗ trợ wp-config-sample.php ở thư mục cha, dành cho repo phát triển.
 if ( file_exists( ABSPATH . 'wp-config-sample.php' ) ) {
 	$config_file = file( ABSPATH . 'wp-config-sample.php' );
 } elseif ( file_exists( dirname( ABSPATH ) . '/wp-config-sample.php' ) ) {
@@ -55,7 +55,7 @@ if ( file_exists( ABSPATH . 'wp-config-sample.php' ) ) {
 	);
 }
 
-// Check if wp-config.php has been created.
+// Kiểm tra xem wp-config.php đã được tạo chưa.
 if ( file_exists( ABSPATH . 'wp-config.php' ) ) {
 	wp_die(
 		'<p>' . sprintf(
@@ -68,7 +68,7 @@ if ( file_exists( ABSPATH . 'wp-config.php' ) ) {
 	);
 }
 
-// Check if wp-config.php exists above the root directory but is not part of another installation.
+// Kiểm tra xem wp-config.php có tồn tại ở thư mục cha nhưng không thuộc bản cài đặt khác không.
 if ( @file_exists( ABSPATH . '../wp-config.php' ) && ! @file_exists( ABSPATH . '../wp-settings.php' ) ) {
 	wp_die(
 		'<p>' . sprintf(
@@ -84,12 +84,12 @@ if ( @file_exists( ABSPATH . '../wp-config.php' ) && ! @file_exists( ABSPATH . '
 $step = isset( $_GET['step'] ) ? (int) $_GET['step'] : -1;
 
 /**
- * Display setup wp-config.php file header.
+ * Hiển thị phần đầu trang thiết lập file wp-config.php.
  *
  * @ignore
  * @since 2.3.0
  *
- * @param string|string[] $body_classes Class attribute values for the body tag.
+ * @param string|string[] $body_classes Giá trị thuộc tính class cho thẻ body.
  */
 function setup_config_display_header( $body_classes = array() ) {
 	$body_classes   = (array) $body_classes;
@@ -114,11 +114,11 @@ function setup_config_display_header( $body_classes = array() ) {
 <body class="<?php echo implode( ' ', $body_classes ); ?>">
 <p id="logo"><?php _e( 'WordPress' ); ?></p>
 	<?php
-} // End function setup_config_display_header();
+} // Kết thúc hàm setup_config_display_header();
 
 /**
- * @global string    $wp_local_package Locale code of the package.
- * @global WP_Locale $wp_locale        WordPress date and time locale object.
+ * @global string    $wp_local_package Mã ngôn ngữ của gói.
+ * @global WP_Locale $wp_locale        Đối tượng ngôn ngữ ngày giờ WordPress.
  */
 $language = '';
 if ( ! empty( $_REQUEST['language'] ) ) {
@@ -141,7 +141,7 @@ switch ( $step ) {
 			}
 		}
 
-		// Deliberately fall through if we can't reach the translations API.
+		// Cố ý rơi xuống case tiếp theo nếu không thể kết nối API bản dịch.
 
 	case 0:
 		if ( ! empty( $language ) ) {
@@ -304,12 +304,12 @@ switch ( $step ) {
 			wp_die( __( '<strong>Error:</strong> "Table Prefix" must not be empty.' ) . $tryagain_link );
 		}
 
-		// Validate $prefix: it can only contain letters, numbers and underscores.
+		// Kiểm tra $prefix: chỉ được chứa chữ cái, số và dấu gạch dưới.
 		if ( preg_match( '|[^a-z0-9_]|i', $prefix ) ) {
 			wp_die( __( '<strong>Error:</strong> "Table Prefix" can only contain numbers, letters, and underscores.' ) . $tryagain_link );
 		}
 
-		// Test the DB connection.
+		// Kiểm tra kết nối cơ sở dữ liệu.
 		/**#@+
 		 *
 		 * @ignore
@@ -320,13 +320,13 @@ switch ( $step ) {
 		define( 'DB_HOST', $dbhost );
 		/**#@-*/
 
-		// Re-construct $wpdb with these new values.
+		// Tái tạo $wpdb với các giá trị mới này.
 		unset( $wpdb );
 		require_wp_db();
 
 		/*
-		* The wpdb constructor bails when WP_SETUP_CONFIG is set, so we must
-		* fire this manually. We'll fail here if the values are no good.
+		* Hàm khởi tạo wpdb thoát ra khi WP_SETUP_CONFIG được đặt, nên chúng ta phải
+		* gọi thủ công. Sẽ thất bại ở đây nếu các giá trị không hợp lệ.
 		*/
 		$wpdb->db_connect();
 
@@ -339,11 +339,11 @@ switch ( $step ) {
 		$wpdb->suppress_errors( $errors );
 
 		if ( ! $wpdb->last_error ) {
-			// MySQL was able to parse the prefix as a value, which we don't want. Bail.
+			// MySQL có thể phân tích prefix như một giá trị, điều này không mong muốn. Thoát ra.
 			wp_die( __( '<strong>Error:</strong> "Table Prefix" is invalid.' ) );
 		}
 
-		// Generate keys and salts using secure CSPRNG; fallback to API if enabled; further fallback to original wp_generate_password().
+		// Tạo khóa và salt bằng CSPRNG an toàn; dự phòng dùng API nếu được bật; dự phòng tiếp bằng wp_generate_password() gốc.
 		try {
 			$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_ []{}<>~`+=,.;:/?|';
 			$max   = strlen( $chars ) - 1;
@@ -456,8 +456,8 @@ if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
 			<?php
 		else :
 			/*
-			 * If this file doesn't exist, then we are using the wp-config-sample.php
-			 * file one level up, which is for the develop repo.
+			 * Nếu file này không tồn tại, thì chúng ta đang dùng file wp-config-sample.php
+			 * ở thư mục cha, dành cho repo phát triển.
 			 */
 			if ( file_exists( ABSPATH . 'wp-config-sample.php' ) ) {
 				$path_to_wp_config = ABSPATH . 'wp-config.php';
@@ -468,9 +468,9 @@ if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
 			$error_message = '';
 			$handle        = fopen( $path_to_wp_config, 'w' );
 			/*
-			 * Why check for the absence of false instead of checking for resource with is_resource()?
-			 * To future-proof the check for when fopen returns object instead of resource, i.e. a known
-			 * change coming in PHP.
+			 * Tại sao kiểm tra không phải false thay vì kiểm tra resource bằng is_resource()?
+			 * Để đảm bảo tương thích tương lai khi fopen trả về object thay vì resource,
+			 * tức là thay đổi đã biết sắp có trong PHP.
 			 */
 			if ( false !== $handle ) {
 				foreach ( $config_file as $line ) {
@@ -515,7 +515,7 @@ if ( ! /iPad|iPod|iPhone/.test( navigator.userAgent ) ) {
 			endif;
 		endif;
 		break;
-} // End of the steps switch.
+} // Kết thúc switch các bước.
 ?>
 <?php wp_print_scripts( 'language-chooser' ); ?>
 </body>

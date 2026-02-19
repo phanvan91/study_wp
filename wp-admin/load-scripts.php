@@ -1,20 +1,20 @@
 <?php
 
 /*
- * The error_reporting() function can be disabled in php.ini. On systems where that is the case,
- * it's best to add a dummy function to the wp-config.php file, but as this call to the function
- * is run prior to wp-config.php loading, it is wrapped in a function_exists() check.
+ * Hàm error_reporting() có thể bị vô hiệu hóa trong php.ini. Trên các hệ thống như vậy,
+ * tốt nhất nên thêm một hàm giả vào file wp-config.php, nhưng vì lời gọi hàm này
+ * được chạy trước khi wp-config.php được tải, nó được bọc trong kiểm tra function_exists().
  */
 if ( function_exists( 'error_reporting' ) ) {
 	/*
-	 * Disable error reporting.
+	 * Vô hiệu hóa báo cáo lỗi.
 	 *
-	 * Set this to error_reporting( -1 ) for debugging.
+	 * Đặt thành error_reporting( -1 ) để debug.
 	 */
 	error_reporting( 0 );
 }
 
-// Set ABSPATH for execution.
+// Đặt ABSPATH cho việc thực thi.
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 }
@@ -44,7 +44,7 @@ require ABSPATH . 'wp-admin/includes/noop.php';
 require ABSPATH . WPINC . '/script-loader.php';
 require ABSPATH . WPINC . '/version.php';
 
-$expires_offset = 31536000; // 1 year.
+$expires_offset = 31536000; // 1 năm.
 $out            = '';
 
 $wp_scripts = new WP_Scripts();

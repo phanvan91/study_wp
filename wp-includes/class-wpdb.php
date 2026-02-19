@@ -1,8 +1,8 @@
 <?php
 /**
- * WordPress database access abstraction class.
+ * Lớp trừu tượng truy cập cơ sở dữ liệu WordPress.
  *
- * Original code from {@link http://php.justinvincent.com Justin Vincent (justin@visunet.ie)}
+ * Mã nguồn gốc từ {@link http://php.justinvincent.com Justin Vincent (justin@visunet.ie)}
  *
  * @package WordPress
  * @subpackage Database
@@ -19,7 +19,7 @@ define( 'EZSQL_VERSION', 'WP1.25' );
  */
 define( 'OBJECT', 'OBJECT' );
 // phpcs:ignore Generic.NamingConventions.UpperCaseConstantName.ConstantNotUpperCase
-define( 'object', 'OBJECT' ); // Back compat.
+define( 'object', 'OBJECT' ); // Tương thích ngược.
 
 /**
  * @since 2.5.0
@@ -37,15 +37,15 @@ define( 'ARRAY_A', 'ARRAY_A' );
 define( 'ARRAY_N', 'ARRAY_N' );
 
 /**
- * WordPress database access abstraction class.
+ * Lớp trừu tượng truy cập cơ sở dữ liệu WordPress.
  *
- * This class is used to interact with a database without needing to use raw SQL statements.
- * By default, WordPress uses this class to instantiate the global $wpdb object, providing
- * access to the WordPress database.
+ * Lớp này được sử dụng để tương tác với cơ sở dữ liệu mà không cần dùng các câu lệnh SQL thô.
+ * Theo mặc định, WordPress sử dụng lớp này để khởi tạo đối tượng toàn cục $wpdb, cung cấp
+ * quyền truy cập vào cơ sở dữ liệu WordPress.
  *
- * It is possible to replace this class with your own by setting the $wpdb global variable
- * in wp-content/db.php file to your class. The wpdb class will still be included, so you can
- * extend it or simply use your own.
+ * Có thể thay thế lớp này bằng lớp của riêng bạn bằng cách đặt biến toàn cục $wpdb
+ * trong file wp-content/db.php thành lớp của bạn. Lớp wpdb vẫn sẽ được include, vì vậy bạn có thể
+ * kế thừa nó hoặc đơn giản là dùng lớp của riêng bạn.
  *
  * @link https://developer.wordpress.org/reference/classes/wpdb/
  *
@@ -55,9 +55,9 @@ define( 'ARRAY_N', 'ARRAY_N' );
 class wpdb {
 
 	/**
-	 * Whether to show SQL/DB errors.
+	 * Có hiển thị lỗi SQL/DB hay không.
 	 *
-	 * Default is to show errors if both WP_DEBUG and WP_DEBUG_DISPLAY evaluate to true.
+	 * Mặc định là hiển thị lỗi nếu cả WP_DEBUG và WP_DEBUG_DISPLAY đều có giá trị true.
 	 *
 	 * @since 0.71
 	 *
@@ -66,7 +66,7 @@ class wpdb {
 	public $show_errors = false;
 
 	/**
-	 * Whether to suppress errors during the DB bootstrapping. Default false.
+	 * Có ẩn lỗi trong quá trình khởi động DB hay không. Mặc định false.
 	 *
 	 * @since 2.5.0
 	 *
@@ -75,7 +75,7 @@ class wpdb {
 	public $suppress_errors = false;
 
 	/**
-	 * The error encountered during the last query.
+	 * Lỗi gặp phải trong truy vấn cuối cùng.
 	 *
 	 * @since 2.5.0
 	 *
@@ -84,7 +84,7 @@ class wpdb {
 	public $last_error = '';
 
 	/**
-	 * The number of queries made.
+	 * Số lượng truy vấn đã thực hiện.
 	 *
 	 * @since 1.2.0
 	 *
@@ -93,7 +93,7 @@ class wpdb {
 	public $num_queries = 0;
 
 	/**
-	 * Count of rows returned by the last query.
+	 * Số hàng được trả về bởi truy vấn cuối cùng.
 	 *
 	 * @since 0.71
 	 *
@@ -102,7 +102,7 @@ class wpdb {
 	public $num_rows = 0;
 
 	/**
-	 * Count of rows affected by the last query.
+	 * Số hàng bị ảnh hưởng bởi truy vấn cuối cùng.
 	 *
 	 * @since 0.71
 	 *
@@ -111,7 +111,7 @@ class wpdb {
 	public $rows_affected = 0;
 
 	/**
-	 * The ID generated for an AUTO_INCREMENT column by the last query (usually INSERT).
+	 * ID được tạo cho cột AUTO_INCREMENT bởi truy vấn cuối cùng (thường là INSERT).
 	 *
 	 * @since 0.71
 	 *
@@ -120,7 +120,7 @@ class wpdb {
 	public $insert_id = 0;
 
 	/**
-	 * The last query made.
+	 * Truy vấn cuối cùng đã thực hiện.
 	 *
 	 * @since 0.71
 	 *
@@ -129,7 +129,7 @@ class wpdb {
 	public $last_query;
 
 	/**
-	 * Results of the last query.
+	 * Kết quả của truy vấn cuối cùng.
 	 *
 	 * @since 0.71
 	 *
@@ -138,14 +138,14 @@ class wpdb {
 	public $last_result;
 
 	/**
-	 * Database query result.
+	 * Kết quả truy vấn cơ sở dữ liệu.
 	 *
-	 * Possible values:
+	 * Các giá trị có thể:
 	 *
-	 * - `mysqli_result` instance for successful SELECT, SHOW, DESCRIBE, or EXPLAIN queries
-	 * - `true` for other query types that were successful
-	 * - `null` if a query is yet to be made or if the result has since been flushed
-	 * - `false` if the query returned an error
+	 * - Đối tượng `mysqli_result` cho các truy vấn SELECT, SHOW, DESCRIBE, hoặc EXPLAIN thành công
+	 * - `true` cho các loại truy vấn khác thành công
+	 * - `null` nếu chưa thực hiện truy vấn nào hoặc kết quả đã bị xóa
+	 * - `false` nếu truy vấn trả về lỗi
 	 *
 	 * @since 0.71
 	 *

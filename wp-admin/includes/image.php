@@ -1,36 +1,36 @@
 <?php
 /**
- * File contains all the administration image manipulation functions.
+ * File chứa tất cả các hàm xử lý hình ảnh trong quản trị.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Crops an image to a given size.
+ * Cắt hình ảnh theo kích thước cho trước.
  *
  * @since 2.1.0
  *
- * @param string|int   $src      The source file or Attachment ID.
- * @param int          $src_x    The start x position to crop from.
- * @param int          $src_y    The start y position to crop from.
- * @param int          $src_w    The width to crop.
- * @param int          $src_h    The height to crop.
- * @param int          $dst_w    The destination width.
- * @param int          $dst_h    The destination height.
- * @param bool|false   $src_abs  Optional. If the source crop points are absolute.
- * @param string|false $dst_file Optional. The destination file to write to.
- * @return string|WP_Error New filepath on success, WP_Error on failure.
+ * @param string|int   $src      File nguồn hoặc ID đính kèm.
+ * @param int          $src_x    Vị trí x bắt đầu cắt.
+ * @param int          $src_y    Vị trí y bắt đầu cắt.
+ * @param int          $src_w    Chiều rộng cần cắt.
+ * @param int          $src_h    Chiều cao cần cắt.
+ * @param int          $dst_w    Chiều rộng đích.
+ * @param int          $dst_h    Chiều cao đích.
+ * @param bool|false   $src_abs  Tùy chọn. Các điểm cắt nguồn có phải tuyệt đối hay không.
+ * @param string|false $dst_file Tùy chọn. File đích để ghi vào.
+ * @return string|WP_Error Đường dẫn file mới khi thành công, WP_Error khi thất bại.
  */
 function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $src_abs = false, $dst_file = false ) {
 	$src_file = $src;
-	if ( is_numeric( $src ) ) { // Handle int as attachment ID.
+	if ( is_numeric( $src ) ) { // Xử lý số nguyên làm ID đính kèm.
 		$src_file = get_attached_file( $src );
 
 		if ( ! file_exists( $src_file ) ) {
 			/*
-			 * If the file doesn't exist, attempt a URL fopen on the src link.
-			 * This can occur with certain file replication plugins.
+			 * Nếu file không tồn tại, thử fopen URL trên liên kết nguồn.
+			 * Điều này có thể xảy ra với một số plugin sao chép file.
 			 */
 			$src = _load_image_to_edit_path( $src, 'full' );
 		} else {
@@ -53,8 +53,8 @@ function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $s
 	}
 
 	/*
-	 * The directory containing the original file may no longer exist when
-	 * using a replication plugin.
+	 * Thư mục chứa file gốc có thể không còn tồn tại khi
+	 * sử dụng plugin sao chép.
 	 */
 	wp_mkdir_p( dirname( $dst_file ) );
 
@@ -73,16 +73,16 @@ function wp_crop_image( $src, $src_x, $src_y, $src_w, $src_h, $dst_w, $dst_h, $s
 }
 
 /**
- * Compare the existing image sub-sizes (as saved in the attachment meta)
- * to the currently registered image sub-sizes, and return the difference.
+ * So sánh các kích thước phụ hình ảnh hiện có (đã lưu trong meta đính kèm)
+ * với các kích thước phụ hình ảnh đã đăng ký hiện tại, và trả về sự khác biệt.
  *
- * Registered sub-sizes that are larger than the image are skipped.
+ * Các kích thước đã đăng ký lớn hơn hình ảnh sẽ bị bỏ qua.
  *
  * @since 5.3.0
  *
- * @param int $attachment_id The image attachment post ID.
- * @return array[] Associative array of arrays of image sub-size information for
- *                 missing image sizes, keyed by image size name.
+ * @param int $attachment_id ID bài đính kèm hình ảnh.
+ * @return array[] Mảng liên kết chứa các mảng thông tin kích thước phụ hình ảnh
+ *                 cho các kích thước bị thiếu, được đánh khóa theo tên kích thước.
  */
 function wp_get_missing_image_subsizes( $attachment_id ) {
 	if ( ! wp_attachment_is_image( $attachment_id ) ) {
@@ -92,12 +92,12 @@ function wp_get_missing_image_subsizes( $attachment_id ) {
 	$registered_sizes = wp_get_registered_image_subsizes();
 	$image_meta       = wp_get_attachment_metadata( $attachment_id );
 
-	// Meta error?
+	// Lỗi meta?
 	if ( empty( $image_meta ) ) {
 		return $registered_sizes;
 	}
 
-	// Use the originally uploaded image dimensions as full_width and full_height.
+	// Sử dụng kích thước hình ảnh được tải lên ban đầu làm full_width và full_height.
 	if ( ! empty( $image_meta['original_image'] ) ) {
 		$image_file = wp_get_original_image_path( $attachment_id );
 		$imagesize  = wp_getimagesize( $image_file );
@@ -113,7 +113,7 @@ function wp_get_missing_image_subsizes( $attachment_id ) {
 
 	$possible_sizes = array();
 
-	// Skip registered sizes that are too large for the uploaded image.
+	// Bỏ qua các kích thước đã đăng ký quá lớn cho hình ảnh đã tải lên.
 	foreach ( $registered_sizes as $size_name => $size_data ) {
 		if ( image_resize_dimensions( $full_width, $full_height, $size_data['width'], $size_data['height'], $size_data['crop'] ) ) {
 			$possible_sizes[ $size_name ] = $size_data;
@@ -125,36 +125,36 @@ function wp_get_missing_image_subsizes( $attachment_id ) {
 	}
 
 	/*
-	 * Remove sizes that already exist. Only checks for matching "size names".
-	 * It is possible that the dimensions for a particular size name have changed.
-	 * For example the user has changed the values on the Settings -> Media screen.
-	 * However we keep the old sub-sizes with the previous dimensions
-	 * as the image may have been used in an older post.
+	 * Xóa các kích thước đã tồn tại. Chỉ kiểm tra "tên kích thước" khớp nhau.
+	 * Có thể kích thước cho một tên cụ thể đã thay đổi.
+	 * Ví dụ người dùng đã thay đổi giá trị trên màn hình Cài đặt -> Phương tiện.
+	 * Tuy nhiên chúng ta giữ lại các kích thước phụ cũ với kích thước trước đó
+	 * vì hình ảnh có thể đã được sử dụng trong bài viết cũ hơn.
 	 */
 	$missing_sizes = array_diff_key( $possible_sizes, $image_meta['sizes'] );
 
 	/**
-	 * Filters the array of missing image sub-sizes for an uploaded image.
+	 * Lọc mảng các kích thước phụ hình ảnh bị thiếu cho hình ảnh đã tải lên.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param array[] $missing_sizes Associative array of arrays of image sub-size information for
-	 *                               missing image sizes, keyed by image size name.
-	 * @param array   $image_meta    The image meta data.
-	 * @param int     $attachment_id The image attachment post ID.
+	 * @param array[] $missing_sizes Mảng liên kết chứa các mảng thông tin kích thước phụ hình ảnh
+	 *                               cho các kích thước bị thiếu, được đánh khóa theo tên kích thước.
+	 * @param array   $image_meta    Dữ liệu meta hình ảnh.
+	 * @param int     $attachment_id ID bài đính kèm hình ảnh.
 	 */
 	return apply_filters( 'wp_get_missing_image_subsizes', $missing_sizes, $image_meta, $attachment_id );
 }
 
 /**
- * If any of the currently registered image sub-sizes are missing,
- * create them and update the image meta data.
+ * Nếu bất kỳ kích thước phụ hình ảnh đã đăng ký nào bị thiếu,
+ * tạo chúng và cập nhật dữ liệu meta hình ảnh.
  *
  * @since 5.3.0
  *
- * @param int $attachment_id The image attachment post ID.
- * @return array|WP_Error The updated image meta data array or WP_Error object
- *                        if both the image meta and the attached file are missing.
+ * @param int $attachment_id ID bài đính kèm hình ảnh.
+ * @return array|WP_Error Mảng dữ liệu meta hình ảnh đã cập nhật hoặc đối tượng WP_Error
+ *                        nếu cả meta hình ảnh và file đính kèm đều bị thiếu.
  */
 function wp_update_image_subsizes( $attachment_id ) {
 	$image_meta = wp_get_attachment_metadata( $attachment_id );
@@ -162,8 +162,8 @@ function wp_update_image_subsizes( $attachment_id ) {
 
 	if ( empty( $image_meta ) || ! is_array( $image_meta ) ) {
 		/*
-		 * Previously failed upload?
-		 * If there is an uploaded file, make all sub-sizes and generate all of the attachment meta.
+		 * Tải lên thất bại trước đó?
+		 * Nếu có file đã tải lên, tạo tất cả kích thước phụ và sinh toàn bộ meta đính kèm.
 		 */
 		if ( ! empty( $image_file ) ) {
 			$image_meta = wp_create_image_subsizes( $image_file, $attachment_id );
@@ -177,75 +177,75 @@ function wp_update_image_subsizes( $attachment_id ) {
 			return $image_meta;
 		}
 
-		// This also updates the image meta.
+		// Điều này cũng cập nhật meta hình ảnh.
 		$image_meta = _wp_make_subsizes( $missing_sizes, $image_file, $image_meta, $attachment_id );
 	}
 
-	/** This filter is documented in wp-admin/includes/image.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-admin/includes/image.php */
 	$image_meta = apply_filters( 'wp_generate_attachment_metadata', $image_meta, $attachment_id, 'update' );
 
-	// Save the updated metadata.
+	// Lưu metadata đã cập nhật.
 	wp_update_attachment_metadata( $attachment_id, $image_meta );
 
 	return $image_meta;
 }
 
 /**
- * Updates the attached file and image meta data when the original image was edited.
+ * Cập nhật file đính kèm và dữ liệu meta hình ảnh khi hình ảnh gốc được chỉnh sửa.
  *
  * @since 5.3.0
- * @since 6.0.0 The `$filesize` value was added to the returned array.
+ * @since 6.0.0 Giá trị `$filesize` được thêm vào mảng trả về.
  * @access private
  *
- * @param array  $saved_data    The data returned from WP_Image_Editor after successfully saving an image.
- * @param string $original_file Path to the original file.
- * @param array  $image_meta    The image meta data.
- * @param int    $attachment_id The attachment post ID.
- * @return array The updated image meta data.
+ * @param array  $saved_data    Dữ liệu trả về từ WP_Image_Editor sau khi lưu hình ảnh thành công.
+ * @param string $original_file Đường dẫn đến file gốc.
+ * @param array  $image_meta    Mảng dữ liệu meta hình ảnh.
+ * @param int    $attachment_id ID bài đính kèm.
+ * @return array Dữ liệu meta hình ảnh đã cập nhật.
  */
 function _wp_image_meta_replace_original( $saved_data, $original_file, $image_meta, $attachment_id ) {
 	$new_file = $saved_data['path'];
 
-	// Update the attached file meta.
+	// Cập nhật meta file đính kèm.
 	update_attached_file( $attachment_id, $new_file );
 
-	// Width and height of the new image.
+	// Chiều rộng và chiều cao của hình ảnh mới.
 	$image_meta['width']  = $saved_data['width'];
 	$image_meta['height'] = $saved_data['height'];
 
-	// Make the file path relative to the upload dir.
+	// Đặt đường dẫn file tương đối so với thư mục upload.
 	$image_meta['file'] = _wp_relative_upload_path( $new_file );
 
-	// Add image file size.
+	// Thêm kích thước file hình ảnh.
 	$image_meta['filesize'] = wp_filesize( $new_file );
 
-	// Store the original image file name in image_meta.
+	// Lưu tên file hình ảnh gốc trong image_meta.
 	$image_meta['original_image'] = wp_basename( $original_file );
 
 	return $image_meta;
 }
 
 /**
- * Creates image sub-sizes, adds the new data to the image meta `sizes` array, and updates the image metadata.
+ * Tạo các kích thước phụ hình ảnh, thêm dữ liệu mới vào mảng `sizes` trong meta hình ảnh, và cập nhật metadata hình ảnh.
  *
- * Intended for use after an image is uploaded. Saves/updates the image metadata after each
- * sub-size is created. If there was an error, it is added to the returned image metadata array.
+ * Được dùng sau khi hình ảnh được tải lên. Lưu/cập nhật metadata hình ảnh sau mỗi
+ * kích thước phụ được tạo. Nếu có lỗi, nó được thêm vào mảng metadata hình ảnh trả về.
  *
  * @since 5.3.0
  *
- * @param string $file          Full path to the image file.
- * @param int    $attachment_id Attachment ID to process.
- * @return array The image attachment meta data.
+ * @param string $file          Đường dẫn đầy đủ đến file hình ảnh.
+ * @param int    $attachment_id ID đính kèm cần xử lý.
+ * @return array Dữ liệu meta đính kèm hình ảnh.
  */
 function wp_create_image_subsizes( $file, $attachment_id ) {
 	$imagesize = wp_getimagesize( $file );
 
 	if ( empty( $imagesize ) ) {
-		// File is not an image.
+		// File không phải là hình ảnh.
 		return array();
 	}
 
-	// Default image meta.
+	// Meta hình ảnh mặc định.
 	$image_meta = array(
 		'width'    => $imagesize[0],
 		'height'   => $imagesize[1],
@@ -254,7 +254,7 @@ function wp_create_image_subsizes( $file, $attachment_id ) {
 		'sizes'    => array(),
 	);
 
-	// Fetch additional metadata from EXIF/IPTC.
+	// Lấy metadata bổ sung từ EXIF/IPTC.
 	$exif_meta = wp_read_image_metadata( $file );
 
 	if ( $exif_meta ) {
@@ -262,40 +262,40 @@ function wp_create_image_subsizes( $file, $attachment_id ) {
 	}
 
 	/**
-	 * Filters the "BIG image" threshold value.
+	 * Lọc giá trị ngưỡng "hình ảnh LỚN".
 	 *
-	 * If the original image width or height is above the threshold, it will be scaled down. The threshold is
-	 * used as max width and max height. The scaled down image will be used as the largest available size, including
-	 * the `_wp_attached_file` post meta value.
+	 * Nếu chiều rộng hoặc chiều cao hình ảnh gốc vượt quá ngưỡng, nó sẽ được thu nhỏ. Ngưỡng
+	 * được sử dụng làm chiều rộng tối đa và chiều cao tối đa. Hình ảnh đã thu nhỏ sẽ được dùng
+	 * làm kích thước lớn nhất có sẵn, bao gồm giá trị meta bài `_wp_attached_file`.
 	 *
-	 * Returning `false` from the filter callback will disable the scaling.
+	 * Trả về `false` từ callback bộ lọc sẽ vô hiệu hóa việc thu nhỏ.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param int    $threshold     The threshold value in pixels. Default 2560.
+	 * @param int    $threshold     Giá trị ngưỡng tính bằng pixel. Mặc định 2560.
 	 * @param array  $imagesize     {
-	 *     Indexed array of the image width and height in pixels.
+	 *     Mảng chỉ mục chứa chiều rộng và chiều cao hình ảnh tính bằng pixel.
 	 *
-	 *     @type int $0 The image width.
-	 *     @type int $1 The image height.
+	 *     @type int $0 Chiều rộng hình ảnh.
+	 *     @type int $1 Chiều cao hình ảnh.
 	 * }
-	 * @param string $file          Full path to the uploaded image file.
-	 * @param int    $attachment_id Attachment post ID.
+	 * @param string $file          Đường dẫn đầy đủ đến file hình ảnh đã tải lên.
+	 * @param int    $attachment_id ID bài đính kèm.
 	 */
 	$threshold = (int) apply_filters( 'big_image_size_threshold', 2560, $imagesize, $file, $attachment_id );
 
 	/*
-	 * If the original image's dimensions are over the threshold,
-	 * scale the image and use it as the "full" size.
+	 * Nếu kích thước hình ảnh gốc vượt quá ngưỡng,
+	 * thu nhỏ hình ảnh và sử dụng nó làm kích thước "full".
 	 */
 	$scale_down = false;
 	$convert    = false;
 
 	if ( $threshold && ( $image_meta['width'] > $threshold || $image_meta['height'] > $threshold ) ) {
-		// The image will be converted if needed on saving.
+		// Hình ảnh sẽ được chuyển đổi nếu cần khi lưu.
 		$scale_down = true;
 	} else {
-		// The image may need to be converted regardless of its dimensions.
+		// Hình ảnh có thể cần được chuyển đổi bất kể kích thước.
 		$output_format = wp_get_image_editor_output_format( $file, $imagesize['mime'] );
 
 		if (
@@ -311,35 +311,35 @@ function wp_create_image_subsizes( $file, $attachment_id ) {
 		$editor = wp_get_image_editor( $file );
 
 		if ( is_wp_error( $editor ) ) {
-			// This image cannot be edited.
+			// Không thể chỉnh sửa hình ảnh này.
 			return $image_meta;
 		}
 
 		if ( $scale_down ) {
-			// Resize the image. This will also convet it if needed.
+			// Thay đổi kích thước hình ảnh. Điều này cũng sẽ chuyển đổi nếu cần.
 			$resized = $editor->resize( $threshold, $threshold );
 		} elseif ( $convert ) {
-			// The image will be converted (if possible) when saved.
+			// Hình ảnh sẽ được chuyển đổi (nếu có thể) khi lưu.
 			$resized = true;
 		}
 
 		$rotated = null;
 
-		// If there is EXIF data, rotate according to EXIF Orientation.
+		// Nếu có dữ liệu EXIF, xoay theo hướng EXIF.
 		if ( ! is_wp_error( $resized ) && is_array( $exif_meta ) ) {
 			$resized = $editor->maybe_exif_rotate();
-			$rotated = $resized; // bool true or WP_Error
+			$rotated = $resized; // bool true hoặc WP_Error
 		}
 
 		if ( ! is_wp_error( $resized ) ) {
 			/*
-			 * Append "-scaled" to the image file name. It will look like "my_image-scaled.jpg".
-			 * This doesn't affect the sub-sizes names as they are generated from the original image (for best quality).
+			 * Thêm "-scaled" vào tên file hình ảnh. Nó sẽ trông như "my_image-scaled.jpg".
+			 * Điều này không ảnh hưởng đến tên các kích thước phụ vì chúng được sinh từ hình ảnh gốc (để có chất lượng tốt nhất).
 			 */
 			if ( $scale_down ) {
 				$saved = $editor->save( $editor->generate_filename( 'scaled' ) );
 			} elseif ( $convert ) {
-				// Pass an empty string to avoid adding a suffix to converted file names.
+				// Truyền chuỗi rỗng để tránh thêm hậu tố vào tên file đã chuyển đổi.
 				$saved = $editor->save( $editor->generate_filename( '' ) );
 			} else {
 				$saved = $editor->save();
@@ -348,64 +348,64 @@ function wp_create_image_subsizes( $file, $attachment_id ) {
 			if ( ! is_wp_error( $saved ) ) {
 				$image_meta = _wp_image_meta_replace_original( $saved, $file, $image_meta, $attachment_id );
 
-				// If the image was rotated update the stored EXIF data.
+				// Nếu hình ảnh đã được xoay, cập nhật dữ liệu EXIF đã lưu.
 				if ( true === $rotated && ! empty( $image_meta['image_meta']['orientation'] ) ) {
 					$image_meta['image_meta']['orientation'] = 1;
 				}
 			} else {
-				// TODO: Log errors.
+				// TODO: Ghi log lỗi.
 			}
 		} else {
-			// TODO: Log errors.
+			// TODO: Ghi log lỗi.
 		}
 	} elseif ( ! empty( $exif_meta['orientation'] ) && 1 !== (int) $exif_meta['orientation'] ) {
-		// Rotate the whole original image if there is EXIF data and "orientation" is not 1.
+		// Xoay toàn bộ hình ảnh gốc nếu có dữ liệu EXIF và "orientation" không phải 1.
 		$editor = wp_get_image_editor( $file );
 
 		if ( is_wp_error( $editor ) ) {
-			// This image cannot be edited.
+			// Không thể chỉnh sửa hình ảnh này.
 			return $image_meta;
 		}
 
-		// Rotate the image.
+		// Xoay hình ảnh.
 		$rotated = $editor->maybe_exif_rotate();
 
 		if ( true === $rotated ) {
-			// Append `-rotated` to the image file name.
+			// Thêm `-rotated` vào tên file hình ảnh.
 			$saved = $editor->save( $editor->generate_filename( 'rotated' ) );
 
 			if ( ! is_wp_error( $saved ) ) {
 				$image_meta = _wp_image_meta_replace_original( $saved, $file, $image_meta, $attachment_id );
 
-				// Update the stored EXIF data.
+				// Cập nhật dữ liệu EXIF đã lưu.
 				if ( ! empty( $image_meta['image_meta']['orientation'] ) ) {
 					$image_meta['image_meta']['orientation'] = 1;
 				}
 			} else {
-				// TODO: Log errors.
+				// TODO: Ghi log lỗi.
 			}
 		}
 	}
 
 	/*
-	 * Initial save of the new metadata.
-	 * At this point the file was uploaded and moved to the uploads directory
-	 * but the image sub-sizes haven't been created yet and the `sizes` array is empty.
+	 * Lưu ban đầu metadata mới.
+	 * Tại thời điểm này file đã được tải lên và chuyển đến thư mục uploads
+	 * nhưng các kích thước phụ hình ảnh chưa được tạo và mảng `sizes` còn trống.
 	 */
 	wp_update_attachment_metadata( $attachment_id, $image_meta );
 
 	$new_sizes = wp_get_registered_image_subsizes();
 
 	/**
-	 * Filters the image sizes automatically generated when uploading an image.
+	 * Lọc các kích thước hình ảnh được sinh tự động khi tải lên hình ảnh.
 	 *
 	 * @since 2.9.0
-	 * @since 4.4.0 Added the `$image_meta` argument.
-	 * @since 5.3.0 Added the `$attachment_id` argument.
+	 * @since 4.4.0 Thêm đối số `$image_meta`.
+	 * @since 5.3.0 Thêm đối số `$attachment_id`.
 	 *
-	 * @param array $new_sizes     Associative array of image sizes to be created.
-	 * @param array $image_meta    The image meta data: width, height, file, sizes, etc.
-	 * @param int   $attachment_id The attachment post ID for the image.
+	 * @param array $new_sizes     Mảng liên kết các kích thước hình ảnh cần tạo.
+	 * @param array $image_meta    Dữ liệu meta hình ảnh: chiều rộng, chiều cao, file, sizes, v.v.
+	 * @param int   $attachment_id ID bài đính kèm cho hình ảnh.
 	 */
 	$new_sizes = apply_filters( 'intermediate_image_sizes_advanced', $new_sizes, $image_meta, $attachment_id );
 
@@ -413,33 +413,33 @@ function wp_create_image_subsizes( $file, $attachment_id ) {
 }
 
 /**
- * Low-level function to create image sub-sizes.
+ * Hàm cấp thấp để tạo các kích thước phụ hình ảnh.
  *
- * Updates the image meta after each sub-size is created.
- * Errors are stored in the returned image metadata array.
+ * Cập nhật meta hình ảnh sau mỗi kích thước phụ được tạo.
+ * Lỗi được lưu trong mảng metadata hình ảnh trả về.
  *
  * @since 5.3.0
  * @access private
  *
- * @param array  $new_sizes     Array defining what sizes to create.
- * @param string $file          Full path to the image file.
- * @param array  $image_meta    The attachment meta data array.
- * @param int    $attachment_id Attachment ID to process.
- * @return array The attachment meta data with updated `sizes` array. Includes an array of errors encountered while resizing.
+ * @param array  $new_sizes     Mảng định nghĩa các kích thước cần tạo.
+ * @param string $file          Đường dẫn đầy đủ đến file hình ảnh.
+ * @param array  $image_meta    Mảng dữ liệu meta đính kèm.
+ * @param int    $attachment_id ID đính kèm cần xử lý.
+ * @return array Dữ liệu meta đính kèm với mảng `sizes` đã cập nhật. Bao gồm mảng lỗi gặp phải khi thay đổi kích thước.
  */
 function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
 	if ( empty( $image_meta ) || ! is_array( $image_meta ) ) {
-		// Not an image attachment.
+		// Không phải đính kèm hình ảnh.
 		return array();
 	}
 
-	// Check if any of the new sizes already exist.
+	// Kiểm tra xem có kích thước mới nào đã tồn tại không.
 	if ( isset( $image_meta['sizes'] ) && is_array( $image_meta['sizes'] ) ) {
 		foreach ( $image_meta['sizes'] as $size_name => $size_meta ) {
 			/*
-			 * Only checks "size name" so we don't override existing images even if the dimensions
-			 * don't match the currently defined size with the same name.
-			 * To change the behavior, unset changed/mismatched sizes in the `sizes` array in image meta.
+			 * Chỉ kiểm tra "tên kích thước" nên không ghi đè hình ảnh hiện có ngay cả khi kích thước
+			 * không khớp với kích thước đã định nghĩa hiện tại có cùng tên.
+			 * Để thay đổi hành vi, hủy đặt các kích thước đã thay đổi/không khớp trong mảng `sizes` trong meta hình ảnh.
 			 */
 			if ( array_key_exists( $size_name, $new_sizes ) ) {
 				unset( $new_sizes[ $size_name ] );
@@ -450,14 +450,14 @@ function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
 	}
 
 	if ( empty( $new_sizes ) ) {
-		// Nothing to do...
+		// Không có gì để làm...
 		return $image_meta;
 	}
 
 	/*
-	 * Sort the image sub-sizes in order of priority when creating them.
-	 * This ensures there is an appropriate sub-size the user can access immediately
-	 * even when there was an error and not all sub-sizes were created.
+	 * Sắp xếp các kích thước phụ hình ảnh theo thứ tự ưu tiên khi tạo.
+	 * Điều này đảm bảo có một kích thước phụ phù hợp mà người dùng có thể truy cập ngay
+	 * ngay cả khi có lỗi và không phải tất cả kích thước phụ đều được tạo.
 	 */
 	$priority = array(
 		'medium'       => null,
@@ -471,16 +471,16 @@ function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
 	$editor = wp_get_image_editor( $file );
 
 	if ( is_wp_error( $editor ) ) {
-		// The image cannot be edited.
+		// Không thể chỉnh sửa hình ảnh.
 		return $image_meta;
 	}
 
-	// If stored EXIF data exists, rotate the source image before creating sub-sizes.
+	// Nếu có dữ liệu EXIF đã lưu, xoay hình ảnh nguồn trước khi tạo kích thước phụ.
 	if ( ! empty( $image_meta['image_meta'] ) ) {
 		$rotated = $editor->maybe_exif_rotate();
 
 		if ( is_wp_error( $rotated ) ) {
-			// TODO: Log errors.
+			// TODO: Ghi log lỗi.
 		}
 	}
 
@@ -489,15 +489,15 @@ function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
 			$new_size_meta = $editor->make_subsize( $new_size_data );
 
 			if ( is_wp_error( $new_size_meta ) ) {
-				// TODO: Log errors.
+				// TODO: Ghi log lỗi.
 			} else {
-				// Save the size meta value.
+				// Lưu giá trị meta kích thước.
 				$image_meta['sizes'][ $new_size_name ] = $new_size_meta;
 				wp_update_attachment_metadata( $attachment_id, $image_meta );
 			}
 		}
 	} else {
-		// Fall back to `$editor->multi_resize()`.
+		// Quay lại dùng `$editor->multi_resize()`.
 		$created_sizes = $editor->multi_resize( $new_sizes );
 
 		if ( ! empty( $created_sizes ) ) {
@@ -510,14 +510,14 @@ function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
 }
 
 /**
- * Copy parent attachment properties to newly cropped image.
+ * Sao chép thuộc tính đính kèm cha sang hình ảnh mới được cắt.
  *
  * @since 6.5.0
  *
- * @param string $cropped              Path to the cropped image file.
- * @param int    $parent_attachment_id Parent file Attachment ID.
- * @param string $context              Control calling the function.
- * @return array Properties of attachment.
+ * @param string $cropped              Đường dẫn đến file hình ảnh đã cắt.
+ * @param int    $parent_attachment_id ID đính kèm file cha.
+ * @param string $context              Ngữ cảnh gọi hàm.
+ * @return array Thuộc tính của đính kèm.
  */
 function wp_copy_parent_attachment_properties( $cropped, $parent_attachment_id, $context = '' ) {
 	$parent          = get_post( $parent_attachment_id );
@@ -532,8 +532,8 @@ function wp_copy_parent_attachment_properties( $cropped, $parent_attachment_id, 
 	$use_original_title   = (
 		( '' !== trim( $parent->post_title ) ) &&
 		/*
-		 * Check if the original image has a title other than the "filename" default,
-		 * meaning the image had a title when originally uploaded or its title was edited.
+		 * Kiểm tra xem hình ảnh gốc có tiêu đề khác với mặc định "tên file" hay không,
+		 * nghĩa là hình ảnh đã có tiêu đề khi tải lên ban đầu hoặc tiêu đề đã được chỉnh sửa.
 		 */
 		( $parent_basename !== $sanitized_post_title ) &&
 		( pathinfo( $parent_basename, PATHINFO_FILENAME ) !== $sanitized_post_title )
@@ -548,12 +548,12 @@ function wp_copy_parent_attachment_properties( $cropped, $parent_attachment_id, 
 		'context'        => $context,
 	);
 
-	// Copy the image caption attribute (post_excerpt field) from the original image.
+	// Sao chép thuộc tính chú thích hình ảnh (trường post_excerpt) từ hình ảnh gốc.
 	if ( '' !== trim( $parent->post_excerpt ) ) {
 		$attachment['post_excerpt'] = $parent->post_excerpt;
 	}
 
-	// Copy the image alt text attribute from the original image.
+	// Sao chép thuộc tính văn bản thay thế hình ảnh từ hình ảnh gốc.
 	if ( '' !== trim( $parent->_wp_attachment_image_alt ) ) {
 		$attachment['meta_input'] = array(
 			'_wp_attachment_image_alt' => wp_slash( $parent->_wp_attachment_image_alt ),
@@ -566,15 +566,15 @@ function wp_copy_parent_attachment_properties( $cropped, $parent_attachment_id, 
 }
 
 /**
- * Generates attachment meta data and create image sub-sizes for images.
+ * Sinh dữ liệu meta đính kèm và tạo các kích thước phụ cho hình ảnh.
  *
  * @since 2.1.0
- * @since 6.0.0 The `$filesize` value was added to the returned array.
- * @since 6.7.0 The 'image/heic' mime type is supported.
+ * @since 6.0.0 Giá trị `$filesize` được thêm vào mảng trả về.
+ * @since 6.7.0 Hỗ trợ loại mime 'image/heic'.
  *
- * @param int    $attachment_id Attachment ID to process.
- * @param string $file          Filepath of the attached image.
- * @return array Metadata for attachment.
+ * @param int    $attachment_id ID đính kèm cần xử lý.
+ * @param string $file          Đường dẫn file của hình ảnh đính kèm.
+ * @return array Metadata cho đính kèm.
  */
 function wp_generate_attachment_metadata( $attachment_id, $file ) {
 	$attachment = get_post( $attachment_id );
@@ -584,7 +584,7 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 	$mime_type = get_post_mime_type( $attachment );
 
 	if ( 'image/heic' === $mime_type || ( preg_match( '!^image/!', $mime_type ) && file_is_displayable_image( $file ) ) ) {
-		// Make thumbnails and other intermediate sizes.
+		// Tạo ảnh thu nhỏ và các kích thước trung gian khác.
 		$metadata = wp_create_image_subsizes( $file, $attachment_id );
 	} elseif ( wp_attachment_is( 'video', $attachment ) ) {
 		$metadata = wp_read_video_metadata( $file );
@@ -595,16 +595,16 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 	}
 
 	/*
-	 * wp_read_video_metadata() and wp_read_audio_metadata() return `false`
-	 * if the attachment does not exist in the local filesystem,
-	 * so make sure to convert the value to an array.
+	 * wp_read_video_metadata() và wp_read_audio_metadata() trả về `false`
+	 * nếu đính kèm không tồn tại trên hệ thống file cục bộ,
+	 * nên đảm bảo chuyển đổi giá trị thành mảng.
 	 */
 	if ( ! is_array( $metadata ) ) {
 		$metadata = array();
 	}
 
 	if ( $support && ! empty( $metadata['image']['data'] ) ) {
-		// Check for existing cover.
+		// Kiểm tra ảnh bìa đã tồn tại.
 		$hash   = md5( $metadata['image']['data'] );
 		$posts  = get_posts(
 			array(
@@ -643,18 +643,18 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 					'post_content'   => '',
 				);
 				/**
-				 * Filters the parameters for the attachment thumbnail creation.
+				 * Lọc các tham số cho việc tạo ảnh thu nhỏ đính kèm.
 				 *
 				 * @since 3.9.0
 				 *
-				 * @param array $image_attachment An array of parameters to create the thumbnail.
-				 * @param array $metadata         Current attachment metadata.
+				 * @param array $image_attachment Mảng các tham số để tạo ảnh thu nhỏ.
+				 * @param array $metadata         Metadata đính kèm hiện tại.
 				 * @param array $uploaded         {
-				 *     Information about the newly-uploaded file.
+				 *     Thông tin về file mới tải lên.
 				 *
-				 *     @type string $file  Filename of the newly-uploaded file.
-				 *     @type string $url   URL of the uploaded file.
-				 *     @type string $type  File type.
+				 *     @type string $file  Tên file của file mới tải lên.
+				 *     @type string $url   URL của file đã tải lên.
+				 *     @type string $type  Loại file.
 				 * }
 				 */
 				$image_attachment = apply_filters( 'attachment_thumbnail_args', $image_attachment, $metadata, $uploaded );
@@ -667,7 +667,7 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 			}
 		}
 	} elseif ( 'application/pdf' === $mime_type ) {
-		// Try to create image thumbnails for PDFs.
+		// Thử tạo ảnh thu nhỏ cho PDF.
 
 		$fallback_sizes = array(
 			'thumbnail',
@@ -676,31 +676,31 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 		);
 
 		/**
-		 * Filters the image sizes generated for non-image mime types.
+		 * Lọc các kích thước hình ảnh được sinh cho các loại mime không phải hình ảnh.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param string[] $fallback_sizes An array of image size names.
-		 * @param array    $metadata       Current attachment metadata.
+		 * @param string[] $fallback_sizes Mảng tên kích thước hình ảnh.
+		 * @param array    $metadata       Metadata đính kèm hiện tại.
 		 */
 		$fallback_sizes = apply_filters( 'fallback_intermediate_image_sizes', $fallback_sizes, $metadata );
 
 		$registered_sizes = wp_get_registered_image_subsizes();
 		$merged_sizes     = array_intersect_key( $registered_sizes, array_flip( $fallback_sizes ) );
 
-		// Force thumbnails to be soft crops.
+		// Ép ảnh thu nhỏ cắt mềm.
 		if ( isset( $merged_sizes['thumbnail'] ) && is_array( $merged_sizes['thumbnail'] ) ) {
 			$merged_sizes['thumbnail']['crop'] = false;
 		}
 
-		// Only load PDFs in an image editor if we're processing sizes.
+		// Chỉ tải PDF trong trình chỉnh sửa hình ảnh nếu đang xử lý kích thước.
 		if ( ! empty( $merged_sizes ) ) {
 			$editor = wp_get_image_editor( $file );
 
-			if ( ! is_wp_error( $editor ) ) { // No support for this type of file.
+			if ( ! is_wp_error( $editor ) ) { // Không hỗ trợ loại file này.
 				/*
-				 * PDFs may have the same file filename as JPEGs.
-				 * Ensure the PDF preview image does not overwrite any JPEG images that already exist.
+				 * PDF có thể có cùng tên file với JPEG.
+				 * Đảm bảo hình ảnh xem trước PDF không ghi đè bất kỳ hình ảnh JPEG nào đã tồn tại.
 				 */
 				$dirname      = dirname( $file ) . '/';
 				$ext          = '.' . pathinfo( $file, PATHINFO_EXTENSION );
@@ -709,7 +709,7 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 				$uploaded = $editor->save( $preview_file, 'image/jpeg' );
 				unset( $editor );
 
-				// Resize based on the full size image, rather than the source.
+				// Thay đổi kích thước dựa trên hình ảnh kích thước đầy đủ, thay vì nguồn.
 				if ( ! is_wp_error( $uploaded ) ) {
 					$image_file = $uploaded['path'];
 					unset( $uploaded['path'] );
@@ -718,45 +718,45 @@ function wp_generate_attachment_metadata( $attachment_id, $file ) {
 						'full' => $uploaded,
 					);
 
-					// Save the meta data before any image post-processing errors could happen.
+					// Lưu dữ liệu meta trước khi bất kỳ lỗi hậu xử lý hình ảnh nào có thể xảy ra.
 					wp_update_attachment_metadata( $attachment_id, $metadata );
 
-					// Create sub-sizes saving the image meta after each.
+					// Tạo kích thước phụ và lưu meta hình ảnh sau mỗi kích thước.
 					$metadata = _wp_make_subsizes( $merged_sizes, $image_file, $metadata, $attachment_id );
 				}
 			}
 		}
 	}
 
-	// Remove the blob of binary data from the array.
+	// Xóa dữ liệu nhị phân khỏi mảng.
 	unset( $metadata['image']['data'] );
 
-	// Capture file size for cases where it has not been captured yet, such as PDFs.
+	// Ghi nhận kích thước file cho trường hợp chưa được ghi, ví dụ PDF.
 	if ( ! isset( $metadata['filesize'] ) && file_exists( $file ) ) {
 		$metadata['filesize'] = wp_filesize( $file );
 	}
 
 	/**
-	 * Filters the generated attachment meta data.
+	 * Lọc dữ liệu meta đính kèm đã sinh.
 	 *
 	 * @since 2.1.0
-	 * @since 5.3.0 The `$context` parameter was added.
+	 * @since 5.3.0 Thêm tham số `$context`.
 	 *
-	 * @param array  $metadata      An array of attachment meta data.
-	 * @param int    $attachment_id Current attachment ID.
-	 * @param string $context       Additional context. Can be 'create' when metadata was initially created for new attachment
-	 *                              or 'update' when the metadata was updated.
+	 * @param array  $metadata      Mảng dữ liệu meta đính kèm.
+	 * @param int    $attachment_id ID đính kèm hiện tại.
+	 * @param string $context       Ngữ cảnh bổ sung. Có thể là 'create' khi metadata được tạo ban đầu cho đính kèm mới
+	 *                              hoặc 'update' khi metadata được cập nhật.
 	 */
 	return apply_filters( 'wp_generate_attachment_metadata', $metadata, $attachment_id, 'create' );
 }
 
 /**
- * Converts a fraction string to a decimal.
+ * Chuyển đổi chuỗi phân số thành số thập phân.
  *
  * @since 2.5.0
  *
- * @param string $str Fraction string.
- * @return int|float Returns calculated fraction or integer 0 on invalid input.
+ * @param string $str Chuỗi phân số.
+ * @return int|float Trả về phân số đã tính hoặc số nguyên 0 khi đầu vào không hợp lệ.
  */
 function wp_exif_frac2dec( $str ) {
 	if ( ! is_scalar( $str ) || is_bool( $str ) ) {
@@ -764,10 +764,10 @@ function wp_exif_frac2dec( $str ) {
 	}
 
 	if ( ! is_string( $str ) ) {
-		return $str; // This can only be an integer or float, so this is fine.
+		return $str; // Chỉ có thể là số nguyên hoặc số thực, nên điều này ổn.
 	}
 
-	// Fractions passed as a string must contain a single `/`.
+	// Phân số dạng chuỗi phải chứa đúng một `/`.
 	if ( substr_count( $str, '/' ) !== 1 ) {
 		if ( is_numeric( $str ) ) {
 			return (float) $str;
@@ -778,12 +778,12 @@ function wp_exif_frac2dec( $str ) {
 
 	list( $numerator, $denominator ) = explode( '/', $str );
 
-	// Both the numerator and the denominator must be numbers.
+	// Cả tử số và mẫu số đều phải là số.
 	if ( ! is_numeric( $numerator ) || ! is_numeric( $denominator ) ) {
 		return 0;
 	}
 
-	// The denominator must not be zero.
+	// Mẫu số không được bằng không.
 	if ( 0 == $denominator ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual -- Deliberate loose comparison.
 		return 0;
 	}
@@ -792,12 +792,12 @@ function wp_exif_frac2dec( $str ) {
 }
 
 /**
- * Converts the exif date format to a unix timestamp.
+ * Chuyển đổi định dạng ngày exif sang dấu thời gian unix.
  *
  * @since 2.5.0
  *
- * @param string $str A date string expected to be in Exif format (Y:m:d H:i:s).
- * @return int|false The unix timestamp, or false on failure.
+ * @param string $str Chuỗi ngày theo định dạng Exif (Y:m:d H:i:s).
+ * @return int|false Dấu thời gian unix, hoặc false khi thất bại.
  */
 function wp_exif_date2ts( $str ) {
 	list( $date, $time ) = explode( ' ', trim( $str ) );
@@ -807,20 +807,20 @@ function wp_exif_date2ts( $str ) {
 }
 
 /**
- * Gets extended image metadata, exif or iptc as available.
+ * Lấy metadata hình ảnh mở rộng, exif hoặc iptc nếu có.
  *
- * Retrieves the EXIF metadata aperture, credit, camera, caption, copyright, iso
- * created_timestamp, focal_length, shutter_speed, and title.
+ * Trích xuất metadata EXIF gồm aperture, credit, camera, caption, copyright, iso,
+ * created_timestamp, focal_length, shutter_speed, và title.
  *
- * The IPTC metadata that is retrieved is APP13, credit, byline, created date
- * and time, caption, copyright, and title. Also includes FNumber, Model,
- * DateTimeDigitized, FocalLength, ISOSpeedRatings, and ExposureTime.
+ * Metadata IPTC được trích xuất là APP13, credit, byline, ngày và giờ tạo,
+ * caption, copyright, và title. Cũng bao gồm FNumber, Model,
+ * DateTimeDigitized, FocalLength, ISOSpeedRatings, và ExposureTime.
  *
- * @todo Try other exif libraries if available.
+ * @todo Thử các thư viện exif khác nếu có.
  * @since 2.5.0
  *
  * @param string $file
- * @return array|false Image metadata array on success, false on failure.
+ * @return array|false Mảng metadata hình ảnh khi thành công, false khi thất bại.
  */
 function wp_read_image_metadata( $file ) {
 	if ( ! file_exists( $file ) ) {
@@ -830,10 +830,10 @@ function wp_read_image_metadata( $file ) {
 	list( , , $image_type ) = wp_getimagesize( $file );
 
 	/*
-	 * EXIF contains a bunch of data we'll probably never need formatted in ways
-	 * that are difficult to use. We'll normalize it and just extract the fields
-	 * that are likely to be useful. Fractions and numbers are converted to
-	 * floats, dates to unix timestamps, and everything else to strings.
+	 * EXIF chứa nhiều dữ liệu mà chúng ta có lẽ không bao giờ cần, được định dạng
+	 * theo cách khó sử dụng. Chúng ta sẽ chuẩn hóa và chỉ trích xuất các trường
+	 * có thể hữu ích. Phân số và số được chuyển thành
+	 * số thực, ngày thành dấu thời gian unix, và mọi thứ khác thành chuỗi.
 	 */
 	$meta = array(
 		'aperture'          => 0,
@@ -853,20 +853,20 @@ function wp_read_image_metadata( $file ) {
 	$iptc = array();
 	$info = array();
 	/*
-	 * Read IPTC first, since it might contain data not available in exif such
-	 * as caption, description etc.
+	 * Đọc IPTC trước, vì nó có thể chứa dữ liệu không có trong exif như
+	 * caption, description, v.v.
 	 */
 	if ( is_callable( 'iptcparse' ) ) {
 		wp_getimagesize( $file, $info );
 
 		if ( ! empty( $info['APP13'] ) ) {
-			// Don't silence errors when in debug mode, unless running unit tests.
+			// Không tắt lỗi khi ở chế độ debug, trừ khi đang chạy unit test.
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG
 				&& ! defined( 'WP_RUN_CORE_TESTS' )
 			) {
 				$iptc = iptcparse( $info['APP13'] );
 			} else {
-				// Silencing notice and warning is intentional. See https://core.trac.wordpress.org/ticket/42480
+				// Việc tắt notice và warning là có chủ đích. Xem https://core.trac.wordpress.org/ticket/42480
 				$iptc = @iptcparse( $info['APP13'] );
 			}
 
@@ -874,18 +874,18 @@ function wp_read_image_metadata( $file ) {
 				$iptc = array();
 			}
 
-			// Headline, "A brief synopsis of the caption".
+			// Tiêu đề, "Tóm tắt ngắn gọn của chú thích".
 			if ( ! empty( $iptc['2#105'][0] ) ) {
 				$meta['title'] = trim( $iptc['2#105'][0] );
 				/*
-				* Title, "Many use the Title field to store the filename of the image,
-				* though the field may be used in many ways".
+				* Title, "Nhiều người sử dụng trường Title để lưu tên file hình ảnh,
+				* mặc dù trường này có thể được sử dụng theo nhiều cách".
 				*/
 			} elseif ( ! empty( $iptc['2#005'][0] ) ) {
 				$meta['title'] = trim( $iptc['2#005'][0] );
 			}
 
-			if ( ! empty( $iptc['2#120'][0] ) ) { // Description / legacy caption.
+			if ( ! empty( $iptc['2#120'][0] ) ) { // Mô tả / chú thích cũ.
 				$caption = trim( $iptc['2#120'][0] );
 
 				mbstring_binary_safe_encoding();
@@ -893,28 +893,28 @@ function wp_read_image_metadata( $file ) {
 				reset_mbstring_encoding();
 
 				if ( empty( $meta['title'] ) && $caption_length < 80 ) {
-					// Assume the title is stored in 2:120 if it's short.
+					// Giả định tiêu đề được lưu trong 2:120 nếu nó ngắn.
 					$meta['title'] = $caption;
 				}
 
 				$meta['caption'] = $caption;
 			}
 
-			if ( ! empty( $iptc['2#110'][0] ) ) { // Credit.
+			if ( ! empty( $iptc['2#110'][0] ) ) { // Ghi công.
 				$meta['credit'] = trim( $iptc['2#110'][0] );
-			} elseif ( ! empty( $iptc['2#080'][0] ) ) { // Creator / legacy byline.
+			} elseif ( ! empty( $iptc['2#080'][0] ) ) { // Tác giả / byline cũ.
 				$meta['credit'] = trim( $iptc['2#080'][0] );
 			}
 
-			if ( ! empty( $iptc['2#055'][0] ) && ! empty( $iptc['2#060'][0] ) ) { // Created date and time.
+			if ( ! empty( $iptc['2#055'][0] ) && ! empty( $iptc['2#060'][0] ) ) { // Ngày và giờ tạo.
 				$meta['created_timestamp'] = strtotime( $iptc['2#055'][0] . ' ' . $iptc['2#060'][0] );
 			}
 
-			if ( ! empty( $iptc['2#116'][0] ) ) { // Copyright.
+			if ( ! empty( $iptc['2#116'][0] ) ) { // Bản quyền.
 				$meta['copyright'] = trim( $iptc['2#116'][0] );
 			}
 
-			if ( ! empty( $iptc['2#025'][0] ) ) { // Keywords array.
+			if ( ! empty( $iptc['2#025'][0] ) ) { // Mảng từ khóa.
 				$meta['keywords'] = array_values( $iptc['2#025'] );
 			}
 		}
@@ -923,23 +923,23 @@ function wp_read_image_metadata( $file ) {
 	$exif = array();
 
 	/**
-	 * Filters the image types to check for exif data.
+	 * Lọc các loại hình ảnh cần kiểm tra dữ liệu exif.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param int[] $image_types Array of image types to check for exif data. Each value
-	 *                           is usually one of the `IMAGETYPE_*` constants.
+	 * @param int[] $image_types Mảng các loại hình ảnh cần kiểm tra dữ liệu exif. Mỗi giá trị
+	 *                           thường là một trong các hằng số `IMAGETYPE_*`.
 	 */
 	$exif_image_types = apply_filters( 'wp_read_image_metadata_types', array( IMAGETYPE_JPEG, IMAGETYPE_TIFF_II, IMAGETYPE_TIFF_MM ) );
 
 	if ( is_callable( 'exif_read_data' ) && in_array( $image_type, $exif_image_types, true ) ) {
-		// Don't silence errors when in debug mode, unless running unit tests.
+		// Không tắt lỗi khi ở chế độ debug, trừ khi đang chạy unit test.
 		if ( defined( 'WP_DEBUG' ) && WP_DEBUG
 			&& ! defined( 'WP_RUN_CORE_TESTS' )
 		) {
 			$exif = exif_read_data( $file );
 		} else {
-			// Silencing notice and warning is intentional. See https://core.trac.wordpress.org/ticket/42480
+			// Việc tắt notice và warning là có chủ đích. Xem https://core.trac.wordpress.org/ticket/42480
 			$exif = @exif_read_data( $file );
 		}
 
@@ -962,11 +962,11 @@ function wp_read_image_metadata( $file ) {
 			$description_length = strlen( $exif_description );
 			reset_mbstring_encoding();
 			if ( empty( $meta['title'] ) && $description_length < 80 ) {
-				// Assume the title is stored in ImageDescription.
+				// Giả định tiêu đề được lưu trong ImageDescription.
 				$meta['title'] = $exif_description;
 			}
 
-			// If both user comments and description are present.
+			// Nếu cả nhận xét người dùng và mô tả đều có.
 			if ( empty( $meta['caption'] ) && $exif_description && $exif_usercomment ) {
 				if ( ! empty( $meta['title'] ) && $exif_description === $meta['title'] ) {
 					$caption = $exif_usercomment;
@@ -1053,28 +1053,28 @@ function wp_read_image_metadata( $file ) {
 	$meta = wp_kses_post_deep( $meta );
 
 	/**
-	 * Filters the array of meta data read from an image's exif data.
+	 * Lọc mảng dữ liệu meta đọc từ dữ liệu exif của hình ảnh.
 	 *
 	 * @since 2.5.0
-	 * @since 4.4.0 The `$iptc` parameter was added.
-	 * @since 5.0.0 The `$exif` parameter was added.
+	 * @since 4.4.0 Thêm tham số `$iptc`.
+	 * @since 5.0.0 Thêm tham số `$exif`.
 	 *
-	 * @param array  $meta       Image meta data.
-	 * @param string $file       Path to image file.
-	 * @param int    $image_type Type of image, one of the `IMAGETYPE_XXX` constants.
-	 * @param array  $iptc       IPTC data.
-	 * @param array  $exif       EXIF data.
+	 * @param array  $meta       Dữ liệu meta hình ảnh.
+	 * @param string $file       Đường dẫn đến file hình ảnh.
+	 * @param int    $image_type Loại hình ảnh, một trong các hằng số `IMAGETYPE_XXX`.
+	 * @param array  $iptc       Dữ liệu IPTC.
+	 * @param array  $exif       Dữ liệu EXIF.
 	 */
 	return apply_filters( 'wp_read_image_metadata', $meta, $file, $image_type, $iptc, $exif );
 }
 
 /**
- * Validates that file is an image.
+ * Xác thực rằng file là hình ảnh.
  *
  * @since 2.5.0
  *
- * @param string $path File path to test if valid image.
- * @return bool True if valid image, false if not valid image.
+ * @param string $path Đường dẫn file cần kiểm tra có phải hình ảnh hợp lệ hay không.
+ * @return bool True nếu là hình ảnh hợp lệ, false nếu không phải.
  */
 function file_is_valid_image( $path ) {
 	$size = wp_getimagesize( $path );
@@ -1082,12 +1082,12 @@ function file_is_valid_image( $path ) {
 }
 
 /**
- * Validates that file is suitable for displaying within a web page.
+ * Xác thực rằng file phù hợp để hiển thị trên trang web.
  *
  * @since 2.5.0
  *
- * @param string $path File path to test.
- * @return bool True if suitable, false if not suitable.
+ * @param string $path Đường dẫn file cần kiểm tra.
+ * @return bool True nếu phù hợp, false nếu không phù hợp.
  */
 function file_is_displayable_image( $path ) {
 	$displayable_image_types = array( IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_BMP, IMAGETYPE_ICO, IMAGETYPE_WEBP, IMAGETYPE_AVIF );
@@ -1102,27 +1102,27 @@ function file_is_displayable_image( $path ) {
 	}
 
 	/**
-	 * Filters whether the current image is displayable in the browser.
+	 * Lọc xem hình ảnh hiện tại có thể hiển thị trong trình duyệt hay không.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param bool   $result Whether the image can be displayed. Default true.
-	 * @param string $path   Path to the image.
+	 * @param bool   $result Hình ảnh có thể hiển thị hay không. Mặc định true.
+	 * @param string $path   Đường dẫn đến hình ảnh.
 	 */
 	return apply_filters( 'file_is_displayable_image', $result, $path );
 }
 
 /**
- * Loads an image resource for editing.
+ * Tải tài nguyên hình ảnh để chỉnh sửa.
  *
  * @since 2.9.0
  *
- * @param int          $attachment_id Attachment ID.
- * @param string       $mime_type     Image mime type.
- * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array
- *                                    of width and height values in pixels (in that order). Default 'full'.
- * @return resource|GdImage|false The resulting image resource or GdImage instance on success,
- *                                false on failure.
+ * @param int          $attachment_id ID đính kèm.
+ * @param string       $mime_type     Loại mime hình ảnh.
+ * @param string|int[] $size          Tùy chọn. Kích thước hình ảnh. Chấp nhận bất kỳ tên kích thước hình ảnh đã đăng ký,
+ *                                    hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'full'.
+ * @return resource|GdImage|false Tài nguyên hình ảnh hoặc instance GdImage khi thành công,
+ *                                false khi thất bại.
  */
 function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
 	$filepath = _load_image_to_edit_path( $attachment_id, $size );
@@ -1153,14 +1153,14 @@ function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
 
 	if ( is_gd_image( $image ) ) {
 		/**
-		 * Filters the current image being loaded for editing.
+		 * Lọc hình ảnh hiện tại đang được tải để chỉnh sửa.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param resource|GdImage $image         Current image.
-		 * @param int              $attachment_id Attachment ID.
-		 * @param string|int[]     $size          Requested image size. Can be any registered image size name, or
-		 *                                        an array of width and height values in pixels (in that order).
+		 * @param resource|GdImage $image         Hình ảnh hiện tại.
+		 * @param int              $attachment_id ID đính kèm.
+		 * @param string|int[]     $size          Kích thước hình ảnh yêu cầu. Có thể là bất kỳ tên kích thước đã đăng ký,
+		 *                                        hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 		 */
 		$image = apply_filters( 'load_image_to_edit', $image, $attachment_id, $size );
 
@@ -1174,18 +1174,18 @@ function load_image_to_edit( $attachment_id, $mime_type, $size = 'full' ) {
 }
 
 /**
- * Retrieves the path or URL of an attachment's attached file.
+ * Lấy đường dẫn hoặc URL của file đính kèm.
  *
- * If the attached file is not present on the local filesystem (usually due to replication plugins),
- * then the URL of the file is returned if `allow_url_fopen` is supported.
+ * Nếu file đính kèm không có trên hệ thống file cục bộ (thường do plugin sao chép),
+ * thì URL của file sẽ được trả về nếu `allow_url_fopen` được hỗ trợ.
  *
  * @since 3.4.0
  * @access private
  *
- * @param int          $attachment_id Attachment ID.
- * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array
- *                                    of width and height values in pixels (in that order). Default 'full'.
- * @return string|false File path or URL on success, false on failure.
+ * @param int          $attachment_id ID đính kèm.
+ * @param string|int[] $size          Tùy chọn. Kích thước hình ảnh. Chấp nhận bất kỳ tên kích thước hình ảnh đã đăng ký,
+ *                                    hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'full'.
+ * @return string|false Đường dẫn file hoặc URL khi thành công, false khi thất bại.
  */
 function _load_image_to_edit_path( $attachment_id, $size = 'full' ) {
 	$filepath = get_attached_file( $attachment_id );
@@ -1198,57 +1198,57 @@ function _load_image_to_edit_path( $attachment_id, $size = 'full' ) {
 				$filepath = path_join( dirname( $filepath ), $data['file'] );
 
 				/**
-				 * Filters the path to an attachment's file when editing the image.
+				 * Lọc đường dẫn đến file đính kèm khi chỉnh sửa hình ảnh.
 				 *
-				 * The filter is evaluated for all image sizes except 'full'.
+				 * Bộ lọc được đánh giá cho tất cả kích thước hình ảnh ngoại trừ 'full'.
 				 *
 				 * @since 3.1.0
 				 *
-				 * @param string       $path          Path to the current image.
-				 * @param int          $attachment_id Attachment ID.
-				 * @param string|int[] $size          Requested image size. Can be any registered image size name, or
-				 *                                    an array of width and height values in pixels (in that order).
+				 * @param string       $path          Đường dẫn đến hình ảnh hiện tại.
+				 * @param int          $attachment_id ID đính kèm.
+				 * @param string|int[] $size          Kích thước hình ảnh yêu cầu. Có thể là bất kỳ tên kích thước đã đăng ký,
+				 *                                    hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 				 */
 				$filepath = apply_filters( 'load_image_to_edit_filesystempath', $filepath, $attachment_id, $size );
 			}
 		}
 	} elseif ( function_exists( 'fopen' ) && ini_get( 'allow_url_fopen' ) ) {
 		/**
-		 * Filters the path to an attachment's URL when editing the image.
+		 * Lọc đường dẫn đến URL đính kèm khi chỉnh sửa hình ảnh.
 		 *
-		 * The filter is only evaluated if the file isn't stored locally and `allow_url_fopen` is enabled on the server.
+		 * Bộ lọc chỉ được đánh giá nếu file không được lưu trữ cục bộ và `allow_url_fopen` được bật trên server.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string|false $image_url     Current image URL.
-		 * @param int          $attachment_id Attachment ID.
-		 * @param string|int[] $size          Requested image size. Can be any registered image size name, or
-		 *                                    an array of width and height values in pixels (in that order).
+		 * @param string|false $image_url     URL hình ảnh hiện tại.
+		 * @param int          $attachment_id ID đính kèm.
+		 * @param string|int[] $size          Kích thước hình ảnh yêu cầu. Có thể là bất kỳ tên kích thước đã đăng ký,
+		 *                                    hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 		 */
 		$filepath = apply_filters( 'load_image_to_edit_attachmenturl', wp_get_attachment_url( $attachment_id ), $attachment_id, $size );
 	}
 
 	/**
-	 * Filters the returned path or URL of the current image.
+	 * Lọc đường dẫn hoặc URL trả về của hình ảnh hiện tại.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string|false $filepath      File path or URL to current image, or false.
-	 * @param int          $attachment_id Attachment ID.
-	 * @param string|int[] $size          Requested image size. Can be any registered image size name, or
-	 *                                    an array of width and height values in pixels (in that order).
+	 * @param string|false $filepath      Đường dẫn file hoặc URL đến hình ảnh hiện tại, hoặc false.
+	 * @param int          $attachment_id ID đính kèm.
+	 * @param string|int[] $size          Kích thước hình ảnh yêu cầu. Có thể là bất kỳ tên kích thước đã đăng ký,
+	 *                                    hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 	 */
 	return apply_filters( 'load_image_to_edit_path', $filepath, $attachment_id, $size );
 }
 
 /**
- * Copies an existing image file.
+ * Sao chép file hình ảnh đã tồn tại.
  *
  * @since 3.4.0
  * @access private
  *
- * @param int $attachment_id Attachment ID.
- * @return string|false New file path on success, false on failure.
+ * @param int $attachment_id ID đính kèm.
+ * @return string|false Đường dẫn file mới khi thành công, false khi thất bại.
  */
 function _copy_image_file( $attachment_id ) {
 	$dst_file = get_attached_file( $attachment_id );
@@ -1263,8 +1263,8 @@ function _copy_image_file( $attachment_id ) {
 		$dst_file = dirname( $dst_file ) . '/' . wp_unique_filename( dirname( $dst_file ), wp_basename( $dst_file ) );
 
 		/*
-		 * The directory containing the original file may no longer
-		 * exist when using a replication plugin.
+		 * Thư mục chứa file gốc có thể không còn
+		 * tồn tại khi sử dụng plugin sao chép.
 		 */
 		wp_mkdir_p( dirname( $dst_file ) );
 

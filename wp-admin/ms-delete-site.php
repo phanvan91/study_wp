@@ -1,6 +1,6 @@
 <?php
 /**
- * Multisite delete site panel.
+ * Bảng điều khiển xóa trang trong Multisite.
  *
  * @package WordPress
  * @subpackage Multisite
@@ -22,7 +22,7 @@ if ( isset( $_GET['h'] ) && '' !== $_GET['h'] && false !== get_option( 'delete_b
 		wpmu_delete_blog( get_current_blog_id() );
 		wp_die(
 			sprintf(
-				/* translators: %s: Network title. */
+				/* translators: %s: Tiêu đề mạng. */
 				__( 'Thank you for using %s, your site has been deleted. Happy trails to you until we meet again.' ),
 				get_network()->site_name
 			)
@@ -35,7 +35,7 @@ if ( isset( $_GET['h'] ) && '' !== $_GET['h'] && false !== get_option( 'delete_b
 $blog = get_site();
 $user = wp_get_current_user();
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ HTML title.
 $title       = __( 'Delete Site' );
 $parent_file = 'tools.php';
 
@@ -54,7 +54,7 @@ if ( isset( $_POST['action'] ) && 'deleteblog' === $_POST['action'] && isset( $_
 
 	$switched_locale = switch_to_locale( get_locale() );
 
-	/* translators: Do not translate USERNAME, URL_DELETE, SITENAME, SITEURL: those are placeholders. */
+	/* translators: Không dịch USERNAME, URL_DELETE, SITENAME, SITEURL: đó là các placeholder. */
 	$content = __(
 		"Howdy ###USERNAME###,
 
@@ -73,11 +73,11 @@ All at ###SITENAME###
 ###SITEURL###"
 	);
 	/**
-	 * Filters the text for the email sent to the site admin when a request to delete a site in a Multisite network is submitted.
+	 * Lọc nội dung email gửi đến quản trị viên trang khi yêu cầu xóa trang trong mạng Multisite được gửi.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $content The email text.
+	 * @param string $content Nội dung email.
 	 */
 	$content = apply_filters( 'delete_site_email_content', $content );
 
@@ -89,7 +89,7 @@ All at ###SITENAME###
 	wp_mail(
 		get_option( 'admin_email' ),
 		sprintf(
-			/* translators: %s: Site title. */
+			/* translators: %s: Tiêu đề trang. */
 			__( '[%s] Delete My Site' ),
 			wp_specialchars_decode( get_option( 'blogname' ) )
 		),
@@ -109,7 +109,7 @@ All at ###SITENAME###
 	<p>
 	<?php
 		printf(
-			/* translators: %s: Network title. */
+			/* translators: %s: Tiêu đề mạng. */
 			__( 'If you do not want to use your %s site any more, you can delete it using the form below. When you click <strong>Delete My Site Permanently</strong> you will be sent an email with a link in it. Click on this link to delete your site.' ),
 			get_network()->site_name
 		);
@@ -123,7 +123,7 @@ All at ###SITENAME###
 		<p><input id="confirmdelete" type="checkbox" name="confirmdelete" value="1" /> <label for="confirmdelete"><strong>
 		<?php
 			printf(
-				/* translators: %s: Site address. */
+				/* translators: %s: Địa chỉ trang. */
 				__( "I'm sure I want to permanently delete my site, and I am aware I can never get it back or use %s again." ),
 				$blog->domain . $blog->path
 			);

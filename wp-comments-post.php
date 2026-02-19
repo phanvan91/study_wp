@@ -1,8 +1,6 @@
 <?php
 /**
- * Handles Comment Post to WordPress and prevents duplicate comment posting.
- *
- * Xử lý Comment Post đến WordPress và ngăn chặn đăng comment trùng lặp.
+ * Xử lý đăng bình luận lên WordPress và ngăn chặn bình luận trùng lặp.
  *
  * @package WordPress
  */
@@ -19,7 +17,6 @@ if ( 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
 	exit;
 }
 
-/** Sets up the WordPress Environment. */
 /** Thiết lập môi trường WordPress. */
 require __DIR__ . '/wp-load.php';
 
@@ -46,23 +43,20 @@ $user            = wp_get_current_user();
 $cookies_consent = ( isset( $_POST['wp-comment-cookies-consent'] ) );
 
 /**
- * Fires after comment cookies are set.
- *
- * Kích hoạt sau khi comment cookies được thiết lập.
+ * Kích hoạt sau khi cookies bình luận được thiết lập.
  *
  * @since 3.4.0
- * @since 4.9.6 The `$cookies_consent` parameter was added.
+ * @since 4.9.6 Thêm tham số `$cookies_consent`.
  *
- * @param WP_Comment $comment         Comment object.
- * @param WP_User    $user            Comment author's user object. The user may not exist.
- * @param bool       $cookies_consent Comment author's consent to store cookies.
+ * @param WP_Comment $comment         Đối tượng bình luận.
+ * @param WP_User    $user            Đối tượng người dùng của tác giả bình luận. Người dùng có thể không tồn tại.
+ * @param bool       $cookies_consent Sự đồng ý của tác giả bình luận để lưu cookies.
  */
 do_action( 'set_comment_cookies', $comment, $user, $cookies_consent );
 
 $location = empty( $_POST['redirect_to'] ) ? get_comment_link( $comment ) : $_POST['redirect_to'] . '#comment-' . $comment->comment_ID;
 
-// If user didn't consent to cookies, add specific query arguments to display the awaiting moderation message.
-// Nếu user không đồng ý với cookies, thêm các query arguments cụ thể để hiển thị thông báo đang chờ kiểm duyệt.
+// Nếu người dùng không đồng ý lưu cookies, thêm các tham số truy vấn cụ thể để hiển thị thông báo đang chờ kiểm duyệt.
 if ( ! $cookies_consent && 'unapproved' === wp_get_comment_status( $comment ) && ! empty( $comment->comment_author_email ) ) {
 	$location = add_query_arg(
 		array(
@@ -74,14 +68,12 @@ if ( ! $cookies_consent && 'unapproved' === wp_get_comment_status( $comment ) &&
 }
 
 /**
- * Filters the location URI to send the commenter after posting.
- *
- * Filter URI vị trí để gửi commenter sau khi đăng.
+ * Lọc URI vị trí để chuyển hướng người bình luận sau khi đăng.
  *
  * @since 2.0.5
  *
- * @param string     $location The 'redirect_to' URI sent via $_POST.
- * @param WP_Comment $comment  Comment object.
+ * @param string     $location URI 'redirect_to' được gửi qua $_POST.
+ * @param WP_Comment $comment  Đối tượng bình luận.
  */
 $location = apply_filters( 'comment_post_redirect', $location, $comment );
 

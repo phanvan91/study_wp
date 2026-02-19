@@ -1,26 +1,26 @@
 <?php
 /**
- * kses 0.2.2 - HTML/XHTML filter that only allows some elements and attributes
- * Copyright (C) 2002, 2003, 2005  Ulf Harnhammar
+ * kses 0.2.2 - Bộ lọc HTML/XHTML chỉ cho phép một số phần tử và thuộc tính
+ * Bản quyền (C) 2002, 2003, 2005  Ulf Harnhammar
  *
- * This program is free software and open source software; you can redistribute
- * it and/or modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the License,
- * or (at your option) any later version.
+ * Chương trình này là phần mềm tự do và mã nguồn mở; bạn có thể phân phối lại
+ * và/hoặc sửa đổi theo các điều khoản của Giấy phép Công cộng GNU được
+ * công bố bởi Free Software Foundation; phiên bản 2 của Giấy phép,
+ * hoặc (tùy chọn) bất kỳ phiên bản nào mới hơn.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
+ * Chương trình này được phân phối với hy vọng sẽ hữu ích, nhưng KHÔNG CÓ
+ * BẤT KỲ BẢO HÀNH NÀO; kể cả bảo đảm ngụ ý về KHẢ NĂNG BÁN ĐƯỢC hoặc
+ * PHÙ HỢP CHO MỘT MỤC ĐÍCH CỤ THỂ. Xem Giấy phép Công cộng GNU để biết
+ * thêm chi tiết.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
+ * Bạn nên nhận được bản sao Giấy phép Công cộng GNU cùng với
+ * chương trình này; nếu không, hãy viết thư cho Free Software Foundation, Inc.,
  * 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA
  * http://www.gnu.org/licenses/gpl.html
  *
- * [kses strips evil scripts!]
+ * [kses loại bỏ các script độc hại!]
  *
- * Added wp_ prefix to avoid conflicts with existing kses users
+ * Đã thêm tiền tố wp_ để tránh xung đột với người dùng kses hiện có
  *
  * @version 0.2.2
  * @copyright (C) 2002, 2003, 2005
@@ -31,12 +31,12 @@
  */
 
 /**
- * Specifies the default allowable HTML tags.
+ * Chỉ định các thẻ HTML được phép mặc định.
  *
- * Using `CUSTOM_TAGS` is not recommended and should be considered deprecated. The
- * {@see 'wp_kses_allowed_html'} filter is more powerful and supplies context.
+ * Không nên sử dụng `CUSTOM_TAGS` và nên coi là đã ngừng sử dụng. Bộ lọc
+ * {@see 'wp_kses_allowed_html'} mạnh mẽ hơn và cung cấp ngữ cảnh.
  *
- * When using this constant, make sure to set all of these globals to arrays:
+ * Khi sử dụng hằng số này, hãy đảm bảo đặt tất cả các biến toàn cục này thành mảng:
  *
  *  - `$allowedposttags`
  *  - `$allowedtags`
@@ -46,23 +46,23 @@
  * @see wp_kses_allowed_html()
  * @since 1.2.0
  *
- * @var array[]|false Array of default allowable HTML tags, or false to use the defaults.
+ * @var array[]|false Mảng các thẻ HTML được phép mặc định, hoặc false để sử dụng mặc định.
  */
 if ( ! defined( 'CUSTOM_TAGS' ) ) {
 	define( 'CUSTOM_TAGS', false );
 }
 
-// Ensure that these variables are added to the global namespace
-// (e.g. if using namespaces / autoload in the current PHP environment).
+// Đảm bảo các biến này được thêm vào namespace toàn cục
+// (ví dụ: khi sử dụng namespaces / autoload trong môi trường PHP hiện tại).
 global $allowedposttags, $allowedtags, $allowedentitynames, $allowedxmlentitynames;
 
 if ( ! CUSTOM_TAGS ) {
 	/**
-	 * KSES global for default allowable HTML tags.
+	 * Biến toàn cục KSES cho các thẻ HTML được phép mặc định.
 	 *
-	 * Can be overridden with the `CUSTOM_TAGS` constant.
+	 * Có thể ghi đè bằng hằng số `CUSTOM_TAGS`.
 	 *
-	 * @var array[] $allowedposttags Array of default allowable HTML tags.
+	 * @var array[] $allowedposttags Mảng các thẻ HTML được phép mặc định.
 	 * @since 2.0.0
 	 */
 	$allowedposttags = array(
@@ -385,7 +385,7 @@ if ( ! CUSTOM_TAGS ) {
 	);
 
 	/**
-	 * @var array[] $allowedtags Array of KSES allowed HTML elements.
+	 * @var array[] $allowedtags Mảng các phần tử HTML được KSES cho phép.
 	 * @since 1.0.0
 	 */
 	$allowedtags = array(
@@ -419,7 +419,7 @@ if ( ! CUSTOM_TAGS ) {
 	);
 
 	/**
-	 * @var string[] $allowedentitynames Array of KSES allowed HTML entity names.
+	 * @var string[] $allowedentitynames Mảng các tên thực thể HTML được KSES cho phép.
 	 * @since 1.0.0
 	 */
 	$allowedentitynames = array(

@@ -1,12 +1,12 @@
 <?php
 /**
- * Edit links form for inclusion in administration panels.
+ * Form chỉnh sửa liên kết để nhúng vào các bảng quản trị.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
@@ -33,23 +33,23 @@ add_meta_box( 'linktargetdiv', __( 'Target' ), 'link_target_meta_box', null, 'no
 add_meta_box( 'linkxfndiv', __( 'Link Relationship (XFN)' ), 'link_xfn_meta_box', null, 'normal', 'core' );
 add_meta_box( 'linkadvanceddiv', __( 'Advanced' ), 'link_advanced_meta_box', null, 'normal', 'core' );
 
-/** This action is documented in wp-admin/includes/meta-boxes.php */
+/** Action này được ghi nhận trong wp-admin/includes/meta-boxes.php */
 do_action( 'add_meta_boxes', 'link', $link );
 
 /**
- * Fires when link-specific meta boxes are added.
+ * Kích hoạt khi các meta box dành riêng cho liên kết được thêm vào.
  *
  * @since 3.0.0
  *
- * @param object $link Link object.
+ * @param object $link Đối tượng liên kết.
  */
 do_action( 'add_meta_boxes_link', $link );
 
-/** This action is documented in wp-admin/includes/meta-boxes.php */
+/** Action này được ghi nhận trong wp-admin/includes/meta-boxes.php */
 do_action( 'do_meta_boxes', 'link', 'normal', $link );
-/** This action is documented in wp-admin/includes/meta-boxes.php */
+/** Action này được ghi nhận trong wp-admin/includes/meta-boxes.php */
 do_action( 'do_meta_boxes', 'link', 'advanced', $link );
-/** This action is documented in wp-admin/includes/meta-boxes.php */
+/** Action này được ghi nhận trong wp-admin/includes/meta-boxes.php */
 do_action( 'do_meta_boxes', 'link', 'side', $link );
 
 add_screen_option(
@@ -147,7 +147,7 @@ wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false );
 <div id="postbox-container-1" class="postbox-container">
 <?php
 
-/** This action is documented in wp-admin/includes/meta-boxes.php */
+/** Action này được ghi nhận trong wp-admin/includes/meta-boxes.php */
 do_action( 'submitlink_box' );
 $side_meta_boxes = do_meta_boxes( 'link', 'side', $link );
 

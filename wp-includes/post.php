@@ -1,19 +1,19 @@
 <?php
 /**
- * Core Post API
+ * API Bài viết Cốt lõi
  *
  * @package WordPress
  * @subpackage Post
  */
 
 //
-// Post Type registration.
+// Đăng ký Post Type.
 //
 
 /**
- * Creates the initial post types when 'init' action is fired.
+ * Tạo các post type ban đầu khi action 'init' được kích hoạt.
  *
- * See {@see 'init'}.
+ * Xem {@see 'init'}.
  *
  * @since 2.9.0
  */
@@ -27,8 +27,8 @@ function create_initial_post_types() {
 				'name_admin_bar' => _x( 'Post', 'add new from admin bar' ),
 			),
 			'public'                => true,
-			'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
-			'_edit_link'            => 'post.php?post=%d', /* internal use only. don't use this when registering your own post type. */
+			'_builtin'              => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
+			'_edit_link'            => 'post.php?post=%d', /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'capability_type'       => 'post',
 			'map_meta_cap'          => true,
 			'menu_position'         => 5,
@@ -52,8 +52,8 @@ function create_initial_post_types() {
 			),
 			'public'                => true,
 			'publicly_queryable'    => false,
-			'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
-			'_edit_link'            => 'post.php?post=%d', /* internal use only. don't use this when registering your own post type. */
+			'_builtin'              => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
+			'_edit_link'            => 'post.php?post=%d', /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'capability_type'       => 'page',
 			'map_meta_cap'          => true,
 			'menu_position'         => 20,
@@ -82,8 +82,8 @@ function create_initial_post_types() {
 			),
 			'public'                => true,
 			'show_ui'               => true,
-			'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
-			'_edit_link'            => 'post.php?post=%d', /* internal use only. don't use this when registering your own post type. */
+			'_builtin'              => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
+			'_edit_link'            => 'post.php?post=%d', /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'capability_type'       => 'post',
 			'capabilities'          => array(
 				'create_posts' => 'upload_files',
@@ -112,8 +112,8 @@ function create_initial_post_types() {
 				'singular_name' => __( 'Revision' ),
 			),
 			'public'           => false,
-			'_builtin'         => true, /* internal use only. don't use this when registering your own post type. */
-			'_edit_link'       => 'revision.php?revision=%d', /* internal use only. don't use this when registering your own post type. */
+			'_builtin'         => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
+			'_edit_link'       => 'revision.php?revision=%d', /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'capability_type'  => 'post',
 			'map_meta_cap'     => true,
 			'hierarchical'     => false,
@@ -133,7 +133,7 @@ function create_initial_post_types() {
 				'singular_name' => __( 'Navigation Menu Item' ),
 			),
 			'public'                => false,
-			'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'              => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'hierarchical'          => false,
 			'rewrite'               => false,
 			'delete_with_user'      => false,
@@ -141,11 +141,11 @@ function create_initial_post_types() {
 			'map_meta_cap'          => true,
 			'capability_type'       => array( 'edit_theme_options', 'edit_theme_options' ),
 			'capabilities'          => array(
-				// Meta Capabilities.
+				// Quyền Meta.
 				'edit_post'              => 'edit_post',
 				'read_post'              => 'read_post',
 				'delete_post'            => 'delete_post',
-				// Primitive Capabilities.
+				// Quyền Nguyên thủy.
 				'edit_posts'             => 'edit_theme_options',
 				'edit_others_posts'      => 'edit_theme_options',
 				'delete_posts'           => 'edit_theme_options',
@@ -177,7 +177,7 @@ function create_initial_post_types() {
 			'query_var'        => false,
 			'delete_with_user' => false,
 			'can_export'       => true,
-			'_builtin'         => true, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'         => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'supports'         => array( 'title', 'revisions' ),
 			'capabilities'     => array(
 				'delete_posts'           => 'edit_theme_options',
@@ -213,7 +213,7 @@ function create_initial_post_types() {
 				'not_found_in_trash' => __( 'No changesets found in Trash.' ),
 			),
 			'public'           => false,
-			'_builtin'         => true, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'         => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'map_meta_cap'     => true,
 			'hierarchical'     => false,
 			'rewrite'          => false,
@@ -255,7 +255,7 @@ function create_initial_post_types() {
 			'query_var'        => false,
 			'delete_with_user' => false,
 			'can_export'       => false,
-			'_builtin'         => true, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'         => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'supports'         => array(),
 		)
 	);
@@ -268,7 +268,7 @@ function create_initial_post_types() {
 				'singular_name' => __( 'User Request' ),
 			),
 			'public'           => false,
-			'_builtin'         => true, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'         => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'hierarchical'     => false,
 			'rewrite'          => false,
 			'query_var'        => false,
@@ -304,7 +304,7 @@ function create_initial_post_types() {
 				'item_updated'             => __( 'Pattern updated.' ),
 			),
 			'public'                => false,
-			'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'              => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'show_ui'               => true,
 			'show_in_menu'          => false,
 			'rewrite'               => false,
@@ -313,14 +313,14 @@ function create_initial_post_types() {
 			'rest_controller_class' => 'WP_REST_Blocks_Controller',
 			'capability_type'       => 'block',
 			'capabilities'          => array(
-				// You need to be able to edit posts, in order to read blocks in their raw form.
+				// Bạn cần có quyền sửa bài viết để đọc block ở dạng thô.
 				'read'                   => 'edit_posts',
-				// You need to be able to publish posts, in order to create blocks.
+				// Bạn cần có quyền xuất bản bài viết để tạo block.
 				'create_posts'           => 'publish_posts',
 				'edit_posts'             => 'edit_posts',
 				'edit_published_posts'   => 'edit_published_posts',
 				'delete_published_posts' => 'delete_published_posts',
-				// Enables trashing draft posts as well.
+				// Cho phép đưa bài nháp vào thùng rác.
 				'delete_posts'           => 'delete_posts',
 				'edit_others_posts'      => 'edit_others_posts',
 				'delete_others_posts'    => 'delete_others_posts',
@@ -370,8 +370,8 @@ function create_initial_post_types() {
 			),
 			'description'                     => __( 'Templates to include in your theme.' ),
 			'public'                          => false,
-			'_builtin'                        => true, /* internal use only. don't use this when registering your own post type. */
-			'_edit_link'                      => $template_edit_link, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'                        => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
+			'_edit_link'                      => $template_edit_link, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'has_archive'                     => false,
 			'show_ui'                         => false,
 			'show_in_menu'                    => false,
@@ -435,8 +435,8 @@ function create_initial_post_types() {
 			),
 			'description'                     => __( 'Template parts to include in your templates.' ),
 			'public'                          => false,
-			'_builtin'                        => true, /* internal use only. don't use this when registering your own post type. */
-			'_edit_link'                      => $template_edit_link, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'                        => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
+			'_edit_link'                      => $template_edit_link, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'has_archive'                     => false,
 			'show_ui'                         => false,
 			'show_in_menu'                    => false,
@@ -479,8 +479,8 @@ function create_initial_post_types() {
 			'label'                           => _x( 'Global Styles', 'post type general name' ),
 			'description'                     => __( 'Global styles to include in themes.' ),
 			'public'                          => false,
-			'_builtin'                        => true, /* internal use only. don't use this when registering your own post type. */
-			'_edit_link'                      => '/site-editor.php?canvas=edit', /* internal use only. don't use this when registering your own post type. */
+			'_builtin'                        => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
+			'_edit_link'                      => '/site-editor.php?canvas=edit', /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'show_ui'                         => false,
 			'show_in_rest'                    => true,
 			'rewrite'                         => false,
@@ -505,7 +505,7 @@ function create_initial_post_types() {
 			),
 		)
 	);
-	// Disable autosave endpoints for global styles.
+	// Vô hiệu hóa endpoint tự động lưu cho global styles.
 	remove_post_type_support( 'wp_global_styles', 'autosave' );
 
 	$navigation_post_edit_link = 'site-editor.php?' . build_query(
@@ -541,8 +541,8 @@ function create_initial_post_types() {
 			),
 			'description'           => __( 'Navigation menus that can be inserted into your site.' ),
 			'public'                => false,
-			'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
-			'_edit_link'            => $navigation_post_edit_link, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'              => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
+			'_edit_link'            => $navigation_post_edit_link, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'has_archive'           => false,
 			'show_ui'               => true,
 			'show_in_menu'          => false,
@@ -581,7 +581,7 @@ function create_initial_post_types() {
 				'singular_name' => __( 'Font Family' ),
 			),
 			'public'                => false,
-			'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'              => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'hierarchical'          => false,
 			'capabilities'          => array(
 				'read'                   => 'edit_theme_options',
@@ -613,7 +613,7 @@ function create_initial_post_types() {
 				'singular_name' => __( 'Font Face' ),
 			),
 			'public'                => false,
-			'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
+			'_builtin'              => true, /* chỉ sử dụng nội bộ. không dùng khi đăng ký post type của bạn. */
 			'hierarchical'          => false,
 			'capabilities'          => array(
 				'read'                   => 'edit_theme_options',
@@ -642,7 +642,7 @@ function create_initial_post_types() {
 		array(
 			'label'       => _x( 'Published', 'post status' ),
 			'public'      => true,
-			'_builtin'    => true, /* internal use only. */
+			'_builtin'    => true, /* chỉ sử dụng nội bộ. */
 			/* translators: %s: Number of published posts. */
 			'label_count' => _n_noop(
 				'Published <span class="count">(%s)</span>',
@@ -656,7 +656,7 @@ function create_initial_post_types() {
 		array(
 			'label'       => _x( 'Scheduled', 'post status' ),
 			'protected'   => true,
-			'_builtin'    => true, /* internal use only. */
+			'_builtin'    => true, /* chỉ sử dụng nội bộ. */
 			/* translators: %s: Number of scheduled posts. */
 			'label_count' => _n_noop(
 				'Scheduled <span class="count">(%s)</span>',
@@ -670,7 +670,7 @@ function create_initial_post_types() {
 		array(
 			'label'         => _x( 'Draft', 'post status' ),
 			'protected'     => true,
-			'_builtin'      => true, /* internal use only. */
+			'_builtin'      => true, /* chỉ sử dụng nội bộ. */
 			/* translators: %s: Number of draft posts. */
 			'label_count'   => _n_noop(
 				'Draft <span class="count">(%s)</span>',
@@ -685,7 +685,7 @@ function create_initial_post_types() {
 		array(
 			'label'         => _x( 'Pending', 'post status' ),
 			'protected'     => true,
-			'_builtin'      => true, /* internal use only. */
+			'_builtin'      => true, /* chỉ sử dụng nội bộ. */
 			/* translators: %s: Number of pending posts. */
 			'label_count'   => _n_noop(
 				'Pending <span class="count">(%s)</span>',
@@ -700,7 +700,7 @@ function create_initial_post_types() {
 		array(
 			'label'       => _x( 'Private', 'post status' ),
 			'private'     => true,
-			'_builtin'    => true, /* internal use only. */
+			'_builtin'    => true, /* chỉ sử dụng nội bộ. */
 			/* translators: %s: Number of private posts. */
 			'label_count' => _n_noop(
 				'Private <span class="count">(%s)</span>',
@@ -714,7 +714,7 @@ function create_initial_post_types() {
 		array(
 			'label'                     => _x( 'Trash', 'post status' ),
 			'internal'                  => true,
-			'_builtin'                  => true, /* internal use only. */
+			'_builtin'                  => true, /* chỉ sử dụng nội bộ. */
 			/* translators: %s: Number of trashed posts. */
 			'label_count'               => _n_noop(
 				'Trash <span class="count">(%s)</span>',
@@ -729,7 +729,7 @@ function create_initial_post_types() {
 		array(
 			'label'         => 'auto-draft',
 			'internal'      => true,
-			'_builtin'      => true, /* internal use only. */
+			'_builtin'      => true, /* chỉ sử dụng nội bộ. */
 			'date_floating' => true,
 		)
 	);
@@ -739,7 +739,7 @@ function create_initial_post_types() {
 		array(
 			'label'               => 'inherit',
 			'internal'            => true,
-			'_builtin'            => true, /* internal use only. */
+			'_builtin'            => true, /* chỉ sử dụng nội bộ. */
 			'exclude_from_search' => false,
 		)
 	);
@@ -749,7 +749,7 @@ function create_initial_post_types() {
 		array(
 			'label'               => _x( 'Pending', 'request status' ),
 			'internal'            => true,
-			'_builtin'            => true, /* internal use only. */
+			'_builtin'            => true, /* chỉ sử dụng nội bộ. */
 			/* translators: %s: Number of pending requests. */
 			'label_count'         => _n_noop(
 				'Pending <span class="count">(%s)</span>',
@@ -764,7 +764,7 @@ function create_initial_post_types() {
 		array(
 			'label'               => _x( 'Confirmed', 'request status' ),
 			'internal'            => true,
-			'_builtin'            => true, /* internal use only. */
+			'_builtin'            => true, /* chỉ sử dụng nội bộ. */
 			/* translators: %s: Number of confirmed requests. */
 			'label_count'         => _n_noop(
 				'Confirmed <span class="count">(%s)</span>',
@@ -779,7 +779,7 @@ function create_initial_post_types() {
 		array(
 			'label'               => _x( 'Failed', 'request status' ),
 			'internal'            => true,
-			'_builtin'            => true, /* internal use only. */
+			'_builtin'            => true, /* chỉ sử dụng nội bộ. */
 			/* translators: %s: Number of failed requests. */
 			'label_count'         => _n_noop(
 				'Failed <span class="count">(%s)</span>',
@@ -794,7 +794,7 @@ function create_initial_post_types() {
 		array(
 			'label'               => _x( 'Completed', 'request status' ),
 			'internal'            => true,
-			'_builtin'            => true, /* internal use only. */
+			'_builtin'            => true, /* chỉ sử dụng nội bộ. */
 			/* translators: %s: Number of completed requests. */
 			'label_count'         => _n_noop(
 				'Completed <span class="count">(%s)</span>',
@@ -806,26 +806,26 @@ function create_initial_post_types() {
 }
 
 /**
- * Retrieves attached file path based on attachment ID.
+ * Lấy đường dẫn tệp đính kèm dựa trên ID tệp đính kèm.
  *
- * By default the path will go through the {@see 'get_attached_file'} filter, but
- * passing `true` to the `$unfiltered` argument will return the file path unfiltered.
+ * Mặc định đường dẫn sẽ đi qua filter {@see 'get_attached_file'}, nhưng
+ * truyền `true` vào tham số `$unfiltered` sẽ trả về đường dẫn không qua filter.
  *
- * The function works by retrieving the `_wp_attached_file` post meta value.
- * This is a convenience function to prevent looking up the meta name and provide
- * a mechanism for sending the attached filename through a filter.
+ * Hàm hoạt động bằng cách lấy giá trị post meta `_wp_attached_file`.
+ * Đây là hàm tiện ích để tránh phải tra cứu tên meta và cung cấp
+ * cơ chế gửi tên tệp đính kèm qua filter.
  *
  * @since 2.0.0
  *
- * @param int  $attachment_id Attachment ID.
- * @param bool $unfiltered    Optional. Whether to skip the {@see 'get_attached_file'} filter.
- *                            Default false.
- * @return string|false The file path to where the attached file should be, false otherwise.
+ * @param int  $attachment_id ID tệp đính kèm.
+ * @param bool $unfiltered    Tùy chọn. Có bỏ qua filter {@see 'get_attached_file'} hay không.
+ *                            Mặc định false.
+ * @return string|false Đường dẫn tệp nơi tệp đính kèm nên ở, false nếu không có.
  */
 function get_attached_file( $attachment_id, $unfiltered = false ) {
 	$file = get_post_meta( $attachment_id, '_wp_attached_file', true );
 
-	// If the file is relative, prepend upload dir.
+	// Nếu tệp là đường dẫn tương đối, thêm thư mục upload vào đầu.
 	if ( $file && ! str_starts_with( $file, '/' ) && ! preg_match( '|^.:\\\|', $file ) ) {
 		$uploads = wp_get_upload_dir();
 		if ( false === $uploads['error'] ) {
@@ -838,29 +838,29 @@ function get_attached_file( $attachment_id, $unfiltered = false ) {
 	}
 
 	/**
-	 * Filters the attached file based on the given ID.
+	 * Lọc tệp đính kèm dựa trên ID đã cho.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string|false $file          The file path to where the attached file should be, false otherwise.
-	 * @param int          $attachment_id Attachment ID.
+	 * @param string|false $file          Đường dẫn tệp nơi tệp đính kèm nên ở, false nếu không có.
+	 * @param int          $attachment_id ID tệp đính kèm.
 	 */
 	return apply_filters( 'get_attached_file', $file, $attachment_id );
 }
 
 /**
- * Updates attachment file path based on attachment ID.
+ * Cập nhật đường dẫn tệp đính kèm dựa trên ID tệp đính kèm.
  *
- * Used to update the file path of the attachment, which uses post meta name
- * `_wp_attached_file` to store the path of the attachment.
+ * Dùng để cập nhật đường dẫn tệp của tệp đính kèm, sử dụng tên post meta
+ * `_wp_attached_file` để lưu trữ đường dẫn của tệp đính kèm.
  *
  * @since 2.1.0
  *
- * @param int    $attachment_id Attachment ID.
- * @param string $file          File path for the attachment.
- * @return int|bool Meta ID if the `_wp_attached_file` key didn't exist for the attachment.
- *                  True on successful update, false on failure or if the `$file` value passed
- *                  to the function is the same as the one that is already in the database.
+ * @param int    $attachment_id ID tệp đính kèm.
+ * @param string $file          Đường dẫn tệp cho tệp đính kèm.
+ * @return int|bool ID Meta nếu khóa `_wp_attached_file` không tồn tại cho tệp đính kèm.
+ *                  True nếu cập nhật thành công, false nếu thất bại hoặc nếu giá trị `$file`
+ *                  truyền vào hàm giống với giá trị đã có trong cơ sở dữ liệu.
  */
 function update_attached_file( $attachment_id, $file ) {
 	if ( ! get_post( $attachment_id ) ) {
@@ -868,12 +868,12 @@ function update_attached_file( $attachment_id, $file ) {
 	}
 
 	/**
-	 * Filters the path to the attached file to update.
+	 * Lọc đường dẫn đến tệp đính kèm cần cập nhật.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $file          Path to the attached file to update.
-	 * @param int    $attachment_id Attachment ID.
+	 * @param string $file          Đường dẫn đến tệp đính kèm cần cập nhật.
+	 * @param int    $attachment_id ID tệp đính kèm.
 	 */
 	$file = apply_filters( 'update_attached_file', $file, $attachment_id );
 
@@ -886,15 +886,15 @@ function update_attached_file( $attachment_id, $file ) {
 }
 
 /**
- * Returns relative path to an uploaded file.
+ * Trả về đường dẫn tương đối đến tệp đã tải lên.
  *
- * The path is relative to the current upload dir.
+ * Đường dẫn tương đối so với thư mục upload hiện tại.
  *
  * @since 2.9.0
  * @access private
  *
- * @param string $path Full path to the file.
- * @return string Relative path on success, unchanged path on failure.
+ * @param string $path Đường dẫn đầy đủ đến tệp.
+ * @return string Đường dẫn tương đối nếu thành công, đường dẫn không thay đổi nếu thất bại.
  */
 function _wp_relative_upload_path( $path ) {
 	$new_path = $path;
@@ -906,66 +906,64 @@ function _wp_relative_upload_path( $path ) {
 	}
 
 	/**
-	 * Filters the relative path to an uploaded file.
+	 * Lọc đường dẫn tương đối đến tệp đã tải lên.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $new_path Relative path to the file.
-	 * @param string $path     Full path to the file.
+	 * @param string $new_path Đường dẫn tương đối đến tệp.
+	 * @param string $path     Đường dẫn đầy đủ đến tệp.
 	 */
 	return apply_filters( '_wp_relative_upload_path', $new_path, $path );
 }
 
 /**
- * Retrieves all children of the post parent ID.
+ * Lấy tất cả các bài viết con của bài viết cha theo ID.
  *
- * Normally, without any enhancements, the children would apply to pages. In the
- * context of the inner workings of WordPress, pages, posts, and attachments
- * share the same table, so therefore the functionality could apply to any one
- * of them. It is then noted that while this function does not work on posts, it
- * does not mean that it won't work on posts. It is recommended that you know
- * what context you wish to retrieve the children of.
+ * Thông thường, nếu không có cải tiến nào, các bài con sẽ áp dụng cho trang. Trong
+ * ngữ cảnh hoạt động nội bộ của WordPress, trang, bài viết và tệp đính kèm
+ * dùng chung một bảng, nên chức năng này có thể áp dụng cho bất kỳ loại nào.
+ * Cần lưu ý rằng mặc dù hàm này không hoạt động trên bài viết, nhưng điều đó
+ * không có nghĩa là nó không thể hoạt động trên bài viết. Bạn nên biết rõ
+ * ngữ cảnh bạn muốn lấy các bài con.
  *
- * Attachments may also be made the child of a post, so if that is an accurate
- * statement (which needs to be verified), it would then be possible to get
- * all of the attachments for a post. Attachments have since changed since
- * version 2.5, so this is most likely inaccurate, but serves generally as an
- * example of what is possible.
+ * Tệp đính kèm cũng có thể là con của một bài viết, nên nếu đó là câu
+ * khẳng định chính xác (cần được xác minh), thì có thể lấy tất cả các tệp
+ * đính kèm cho một bài viết. Tệp đính kèm đã thay đổi kể từ phiên bản 2.5,
+ * nên điều này có thể không chính xác, nhưng nó là ví dụ chung về những gì có thể làm.
  *
- * The arguments listed as defaults are for this function and also of the
- * get_posts() function. The arguments are combined with the get_children defaults
- * and are then passed to the get_posts() function, which accepts additional arguments.
- * You can replace the defaults in this function, listed below and the additional
- * arguments listed in the get_posts() function.
+ * Các tham số được liệt kê làm mặc định dành cho hàm này và cả hàm
+ * get_posts(). Các tham số được kết hợp với giá trị mặc định của get_children
+ * và sau đó được truyền cho hàm get_posts(), chấp nhận thêm các tham số khác.
+ * Bạn có thể thay thế các giá trị mặc định trong hàm này, được liệt kê bên dưới
+ * và các tham số bổ sung được liệt kê trong hàm get_posts().
  *
- * The 'post_parent' is the most important argument and important attention
- * needs to be paid to the $args parameter. If you pass either an object or an
- * integer (number), then just the 'post_parent' is grabbed and everything else
- * is lost. If you don't specify any arguments, then it is assumed that you are
- * in The Loop and the post parent will be grabbed for from the current post.
+ * 'post_parent' là tham số quan trọng nhất và cần chú ý đặc biệt đến
+ * tham số $args. Nếu bạn truyền đối tượng hoặc số nguyên, thì chỉ
+ * 'post_parent' được lấy và mọi thứ khác bị mất. Nếu bạn không chỉ định
+ * tham số nào, thì hệ thống giả định bạn đang ở trong Vòng lặp (The Loop)
+ * và post parent sẽ được lấy từ bài viết hiện tại.
  *
- * The 'post_parent' argument is the ID to get the children. The 'numberposts'
- * is the amount of posts to retrieve that has a default of '-1', which is
- * used to get all of the posts. Giving a number higher than 0 will only
- * retrieve that amount of posts.
+ * Tham số 'post_parent' là ID để lấy các bài con. 'numberposts' là số
+ * lượng bài viết cần lấy với mặc định là '-1', dùng để lấy tất cả bài viết.
+ * Đặt số lớn hơn 0 sẽ chỉ lấy đúng số lượng bài viết đó.
  *
- * The 'post_type' and 'post_status' arguments can be used to choose what
- * criteria of posts to retrieve. The 'post_type' can be anything, but WordPress
- * post types are 'post', 'pages', and 'attachments'. The 'post_status'
- * argument will accept any post status within the write administration panels.
+ * Tham số 'post_type' và 'post_status' có thể dùng để chọn tiêu chí
+ * bài viết cần lấy. 'post_type' có thể là bất kỳ giá trị nào, nhưng các
+ * post type của WordPress là 'post', 'pages' và 'attachments'. Tham số
+ * 'post_status' sẽ chấp nhận bất kỳ trạng thái bài viết nào trong bảng quản trị.
  *
  * @since 2.0.0
  *
  * @see get_posts()
- * @todo Check validity of description.
+ * @todo Kiểm tra tính hợp lệ của mô tả.
  *
- * @global WP_Post $post Global post object.
+ * @global WP_Post $post Đối tượng bài viết toàn cục.
  *
- * @param mixed  $args   Optional. User defined arguments for replacing the defaults. Default empty.
- * @param string $output Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
- *                       correspond to a WP_Post object, an associative array, or a numeric array,
- *                       respectively. Default OBJECT.
- * @return WP_Post[]|array[]|int[] Array of post objects, arrays, or IDs, depending on `$output`.
+ * @param mixed  $args   Tùy chọn. Tham số do người dùng định nghĩa để thay thế giá trị mặc định. Mặc định rỗng.
+ * @param string $output Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT, ARRAY_A, hoặc ARRAY_N,
+ *                       tương ứng với đối tượng WP_Post, mảng liên kết, hoặc mảng số.
+ *                       Mặc định OBJECT.
+ * @return WP_Post[]|array[]|int[] Mảng các đối tượng bài viết, mảng, hoặc ID, tùy thuộc vào `$output`.
  */
 function get_children( $args = '', $output = OBJECT ) {
 	$kids = array();
@@ -1026,29 +1024,29 @@ function get_children( $args = '', $output = OBJECT ) {
 }
 
 /**
- * Gets extended entry info (<!--more-->).
+ * Lấy thông tin mở rộng của bài viết (<!--more-->).
  *
- * There should not be any space after the second dash and before the word
- * 'more'. There can be text or space(s) after the word 'more', but won't be
- * referenced.
+ * Không nên có khoảng trắng sau dấu gạch ngang thứ hai và trước từ
+ * 'more'. Có thể có văn bản hoặc khoảng trắng sau từ 'more', nhưng sẽ không
+ * được tham chiếu.
  *
- * The returned array has 'main', 'extended', and 'more_text' keys. Main has the text before
- * the `<!--more-->`. The 'extended' key has the content after the
- * `<!--more-->` comment. The 'more_text' key has the custom "Read More" text.
+ * Mảng trả về có các khóa 'main', 'extended' và 'more_text'. Main chứa văn bản trước
+ * thẻ `<!--more-->`. Khóa 'extended' chứa nội dung sau
+ * comment `<!--more-->`. Khóa 'more_text' chứa văn bản "Đọc thêm" tùy chỉnh.
  *
  * @since 1.0.0
  *
- * @param string $post Post content.
+ * @param string $post Nội dung bài viết.
  * @return string[] {
- *     Extended entry info.
+ *     Thông tin mở rộng của bài viết.
  *
- *     @type string $main      Content before the more tag.
- *     @type string $extended  Content after the more tag.
- *     @type string $more_text Custom read more text, or empty string.
+ *     @type string $main      Nội dung trước thẻ more.
+ *     @type string $extended  Nội dung sau thẻ more.
+ *     @type string $more_text Văn bản đọc thêm tùy chỉnh, hoặc chuỗi rỗng.
  * }
  */
 function get_extended( $post ) {
-	// Match the new style more links.
+	// Khớp các liên kết more kiểu mới.
 	if ( preg_match( '/<!--more(.*?)?-->/', $post, $matches ) ) {
 		list($main, $extended) = explode( $matches[0], $post, 2 );
 		$more_text             = $matches[1];
@@ -1058,7 +1056,7 @@ function get_extended( $post ) {
 		$more_text = '';
 	}
 
-	// Leading and trailing whitespace.
+	// Khoảng trắng đầu và cuối.
 	$main      = preg_replace( '/^[\s]*(.*)[\s]*$/', '\\1', $main );
 	$extended  = preg_replace( '/^[\s]*(.*)[\s]*$/', '\\1', $extended );
 	$more_text = preg_replace( '/^[\s]*(.*)[\s]*$/', '\\1', $more_text );
@@ -1071,25 +1069,25 @@ function get_extended( $post ) {
 }
 
 /**
- * Retrieves post data given a post ID or post object.
+ * Lấy dữ liệu bài viết theo ID bài viết hoặc đối tượng bài viết.
  *
- * See sanitize_post() for optional $filter values. Also, the parameter
- * `$post`, must be given as a variable, since it is passed by reference.
+ * Xem sanitize_post() để biết các giá trị $filter tùy chọn. Ngoài ra, tham số
+ * `$post` phải được truyền dưới dạng biến vì nó được truyền theo tham chiếu.
  *
  * @since 1.5.1
  *
- * @global WP_Post $post Global post object.
+ * @global WP_Post $post Đối tượng bài viết toàn cục.
  *
- * @param int|WP_Post|null $post   Optional. Post ID or post object. `null`, `false`, `0` and other PHP falsey values
- *                                 return the current global post inside the loop. A numerically valid post ID that
- *                                 points to a non-existent post returns `null`. Defaults to global $post.
- * @param string           $output Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
- *                                 correspond to a WP_Post object, an associative array, or a numeric array,
- *                                 respectively. Default OBJECT.
- * @param string           $filter Optional. Type of filter to apply. Accepts 'raw', 'edit', 'db',
- *                                 or 'display'. Default 'raw'.
- * @return WP_Post|array|null Type corresponding to $output on success or null on failure.
- *                            When $output is OBJECT, a `WP_Post` instance is returned.
+ * @param int|WP_Post|null $post   Tùy chọn. ID bài viết hoặc đối tượng bài viết. `null`, `false`, `0` và các giá trị
+ *                                 falsey khác của PHP trả về bài viết toàn cục hiện tại trong vòng lặp. ID bài viết
+ *                                 hợp lệ về số nhưng trỏ đến bài không tồn tại trả về `null`. Mặc định global $post.
+ * @param string           $output Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT, ARRAY_A, hoặc ARRAY_N,
+ *                                 tương ứng với đối tượng WP_Post, mảng liên kết, hoặc mảng số.
+ *                                 Mặc định OBJECT.
+ * @param string           $filter Tùy chọn. Loại filter cần áp dụng. Chấp nhận 'raw', 'edit', 'db',
+ *                                 hoặc 'display'. Mặc định 'raw'.
+ * @return WP_Post|array|null Kiểu tương ứng với $output nếu thành công hoặc null nếu thất bại.
+ *                            Khi $output là OBJECT, một instance `WP_Post` được trả về.
  */
 function get_post( $post = null, $output = OBJECT, $filter = 'raw' ) {
 	if ( empty( $post ) && isset( $GLOBALS['post'] ) ) {
@@ -1127,12 +1125,12 @@ function get_post( $post = null, $output = OBJECT, $filter = 'raw' ) {
 }
 
 /**
- * Retrieves the IDs of the ancestors of a post.
+ * Lấy các ID tổ tiên của một bài viết.
  *
  * @since 2.5.0
  *
- * @param int|WP_Post $post Post ID or post object.
- * @return int[] Array of ancestor IDs or empty array if there are none.
+ * @param int|WP_Post $post ID bài viết hoặc đối tượng bài viết.
+ * @return int[] Mảng các ID tổ tiên hoặc mảng rỗng nếu không có.
  */
 function get_post_ancestors( $post ) {
 	$post = get_post( $post );
@@ -1147,7 +1145,7 @@ function get_post_ancestors( $post ) {
 	$ancestors[] = $id;
 
 	while ( $ancestor = get_post( $id ) ) {
-		// Loop detection: If the ancestor has been seen before, break.
+		// Phát hiện vòng lặp: Nếu tổ tiên đã được thấy trước đó, thoát.
 		if ( empty( $ancestor->post_parent ) || $ancestor->post_parent === $post->ID
 			|| in_array( $ancestor->post_parent, $ancestors, true )
 		) {
@@ -1162,24 +1160,24 @@ function get_post_ancestors( $post ) {
 }
 
 /**
- * Retrieves data from a post field based on Post ID.
+ * Lấy dữ liệu từ một trường bài viết dựa trên ID bài viết.
  *
- * Examples of the post field will be, 'post_type', 'post_status', 'post_content',
- * etc and based off of the post object property or key names.
+ * Ví dụ về trường bài viết là 'post_type', 'post_status', 'post_content',
+ * v.v. và dựa trên thuộc tính hoặc tên khóa của đối tượng bài viết.
  *
- * The context values are based off of the taxonomy filter functions and
- * supported values are found within those functions.
+ * Các giá trị ngữ cảnh dựa trên các hàm filter taxonomy và
+ * các giá trị được hỗ trợ nằm trong các hàm đó.
  *
  * @since 2.3.0
- * @since 4.5.0 The `$post` parameter was made optional.
+ * @since 4.5.0 Tham số `$post` được đặt là tùy chọn.
  *
  * @see sanitize_post_field()
  *
- * @param string      $field   Post field name.
- * @param int|WP_Post $post    Optional. Post ID or post object. Defaults to global $post.
- * @param string      $context Optional. How to filter the field. Accepts 'raw', 'edit', 'db',
- *                             or 'display'. Default 'display'.
- * @return string The value of the post field on success, empty string on failure.
+ * @param string      $field   Tên trường bài viết.
+ * @param int|WP_Post $post    Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định global $post.
+ * @param string      $context Tùy chọn. Cách lọc trường. Chấp nhận 'raw', 'edit', 'db',
+ *                             hoặc 'display'. Mặc định 'display'.
+ * @return string Giá trị của trường bài viết nếu thành công, chuỗi rỗng nếu thất bại.
  */
 function get_post_field( $field, $post = null, $context = 'display' ) {
 	$post = get_post( $post );
@@ -1196,15 +1194,15 @@ function get_post_field( $field, $post = null, $context = 'display' ) {
 }
 
 /**
- * Retrieves the mime type of an attachment based on the ID.
+ * Lấy kiểu mime của tệp đính kèm dựa trên ID.
  *
- * This function can be used with any post type, but it makes more sense with
- * attachments.
+ * Hàm này có thể dùng với bất kỳ post type nào, nhưng hợp lý nhất với
+ * tệp đính kèm.
  *
  * @since 2.0.0
  *
- * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
- * @return string|false The mime type on success, false on failure.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định global $post.
+ * @return string|false Kiểu mime nếu thành công, false nếu thất bại.
  */
 function get_post_mime_type( $post = null ) {
 	$post = get_post( $post );
@@ -1217,18 +1215,18 @@ function get_post_mime_type( $post = null ) {
 }
 
 /**
- * Retrieves the post status based on the post ID.
+ * Lấy trạng thái bài viết dựa trên ID bài viết.
  *
- * If the post ID is of an attachment, then the parent post status will be given
- * instead.
+ * Nếu ID bài viết là của tệp đính kèm, thì trạng thái bài viết cha sẽ được
+ * trả về thay thế.
  *
  * @since 2.0.0
  *
- * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
- * @return string|false Post status on success, false on failure.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định global $post.
+ * @return string|false Trạng thái bài viết nếu thành công, false nếu thất bại.
  */
 function get_post_status( $post = null ) {
-	// Normalize the post object if necessary, skip normalization if called from get_sample_permalink().
+	// Chuẩn hóa đối tượng bài viết nếu cần, bỏ qua chuẩn hóa nếu được gọi từ get_sample_permalink().
 	if ( ! $post instanceof WP_Post || ! isset( $post->filter ) || 'sample' !== $post->filter ) {
 		$post = get_post( $post );
 	}
@@ -1248,14 +1246,14 @@ function get_post_status( $post = null ) {
 			! get_post( $post->post_parent ) ||
 			$post->ID === $post->post_parent
 		) {
-			// Unattached attachments with inherit status are assumed to be published.
+			// Tệp đính kèm chưa gắn với trạng thái inherit được giả định là đã xuất bản.
 			$post_status = 'publish';
 		} elseif ( 'trash' === get_post_status( $post->post_parent ) ) {
-			// Get parent status prior to trashing.
+			// Lấy trạng thái cha trước khi đưa vào thùng rác.
 			$post_status = get_post_meta( $post->post_parent, '_wp_trash_meta_status', true );
 
 			if ( ! $post_status ) {
-				// Assume publish as above.
+				// Giả định là đã xuất bản như trên.
 				$post_status = 'publish';
 			}
 		} else {
@@ -1266,36 +1264,36 @@ function get_post_status( $post = null ) {
 		! in_array( $post_status, array( 'private', 'trash', 'auto-draft' ), true )
 	) {
 		/*
-		 * Ensure uninherited attachments have a permitted status either 'private', 'trash', 'auto-draft'.
-		 * This is to match the logic in wp_insert_post().
+		 * Đảm bảo tệp đính kèm không kế thừa có trạng thái được phép là 'private', 'trash', 'auto-draft'.
+		 * Điều này để phù hợp với logic trong wp_insert_post().
 		 *
-		 * Note: 'inherit' is excluded from this check as it is resolved to the parent post's
-		 * status in the logic block above.
+		 * Lưu ý: 'inherit' được loại trừ khỏi kiểm tra này vì nó được giải quyết thành
+		 * trạng thái của bài viết cha trong khối logic phía trên.
 		 */
 		$post_status = 'publish';
 	}
 
 	/**
-	 * Filters the post status.
+	 * Lọc trạng thái bài viết.
 	 *
 	 * @since 4.4.0
-	 * @since 5.7.0 The attachment post type is now passed through this filter.
+	 * @since 5.7.0 Post type tệp đính kèm giờ cũng được truyền qua filter này.
 	 *
-	 * @param string  $post_status The post status.
-	 * @param WP_Post $post        The post object.
+	 * @param string  $post_status Trạng thái bài viết.
+	 * @param WP_Post $post        Đối tượng bài viết.
 	 */
 	return apply_filters( 'get_post_status', $post_status, $post );
 }
 
 /**
- * Retrieves all of the WordPress supported post statuses.
+ * Lấy tất cả các trạng thái bài viết được WordPress hỗ trợ.
  *
- * Posts have a limited set of valid status values, this provides the
- * post_status values and descriptions.
+ * Bài viết có một tập hợp giới hạn các giá trị trạng thái hợp lệ, hàm này cung cấp
+ * các giá trị post_status và mô tả của chúng.
  *
  * @since 2.5.0
  *
- * @return string[] Array of post status labels keyed by their status.
+ * @return string[] Mảng các nhãn trạng thái bài viết được đánh khóa theo trạng thái.
  */
 function get_post_statuses() {
 	$status = array(
@@ -1309,14 +1307,14 @@ function get_post_statuses() {
 }
 
 /**
- * Retrieves all of the WordPress support page statuses.
+ * Lấy tất cả các trạng thái trang được WordPress hỗ trợ.
  *
- * Pages have a limited set of valid status values, this provides the
- * post_status values and descriptions.
+ * Trang có một tập hợp giới hạn các giá trị trạng thái hợp lệ, hàm này cung cấp
+ * các giá trị post_status và mô tả của chúng.
  *
  * @since 2.5.0
  *
- * @return string[] Array of page status labels keyed by their status.
+ * @return string[] Mảng các nhãn trạng thái trang được đánh khóa theo trạng thái.
  */
 function get_page_statuses() {
 	$status = array(
@@ -1329,68 +1327,68 @@ function get_page_statuses() {
 }
 
 /**
- * Returns statuses for privacy requests.
+ * Trả về các trạng thái cho yêu cầu quyền riêng tư.
  *
  * @since 4.9.6
  * @access private
  *
- * @return string[] Array of privacy request status labels keyed by their status.
+ * @return string[] Mảng các nhãn trạng thái yêu cầu quyền riêng tư được đánh khóa theo trạng thái.
  */
 function _wp_privacy_statuses() {
 	return array(
-		'request-pending'   => _x( 'Pending', 'request status' ),      // Pending confirmation from user.
-		'request-confirmed' => _x( 'Confirmed', 'request status' ),    // User has confirmed the action.
-		'request-failed'    => _x( 'Failed', 'request status' ),       // User failed to confirm the action.
-		'request-completed' => _x( 'Completed', 'request status' ),    // Admin has handled the request.
+		'request-pending'   => _x( 'Pending', 'request status' ),      // Đang chờ xác nhận từ người dùng.
+		'request-confirmed' => _x( 'Confirmed', 'request status' ),    // Người dùng đã xác nhận hành động.
+		'request-failed'    => _x( 'Failed', 'request status' ),       // Người dùng xác nhận hành động thất bại.
+		'request-completed' => _x( 'Completed', 'request status' ),    // Quản trị viên đã xử lý yêu cầu.
 	);
 }
 
 /**
- * Registers a post status. Do not use before init.
+ * Đăng ký trạng thái bài viết. Không sử dụng trước init.
  *
- * A simple function for creating or modifying a post status based on the
- * parameters given. The function will accept an array (second optional
- * parameter), along with a string for the post status name.
+ * Một hàm đơn giản để tạo hoặc sửa đổi trạng thái bài viết dựa trên
+ * các tham số đã cho. Hàm sẽ chấp nhận một mảng (tham số tùy chọn thứ hai),
+ * cùng với một chuỗi cho tên trạng thái bài viết.
  *
- * Arguments prefixed with an _underscore shouldn't be used by plugins and themes.
+ * Các đối số có tiền tố gạch dưới _ không nên được plugin và theme sử dụng.
  *
  * @since 3.0.0
  *
- * @global stdClass[] $wp_post_statuses Inserts new post status object into the list
+ * @global stdClass[] $wp_post_statuses Chèn đối tượng trạng thái bài viết mới vào danh sách
  *
- * @param string       $post_status Name of the post status.
+ * @param string       $post_status Tên trạng thái bài viết.
  * @param array|string $args {
- *     Optional. Array or string of post status arguments.
+ *     Tùy chọn. Mảng hoặc chuỗi các đối số trạng thái bài viết.
  *
- *     @type bool|string $label                     A descriptive name for the post status marked
- *                                                  for translation. Defaults to value of $post_status.
- *     @type array|false $label_count               Nooped plural text from _n_noop() to provide the singular
- *                                                  and plural forms of the label for counts. Default false
- *                                                  which means the `$label` argument will be used for both
- *                                                  the singular and plural forms of this label.
- *     @type bool        $exclude_from_search       Whether to exclude posts with this post status
- *                                                  from search results. Default is value of $internal.
- *     @type bool        $_builtin                  Whether the status is built-in. Core-use only.
- *                                                  Default false.
- *     @type bool        $public                    Whether posts of this status should be shown
- *                                                  in the front end of the site. Default false.
- *     @type bool        $internal                  Whether the status is for internal use only.
- *                                                  Default false.
- *     @type bool        $protected                 Whether posts with this status should be protected.
- *                                                  Default false.
- *     @type bool        $private                   Whether posts with this status should be private.
- *                                                  Default false.
- *     @type bool        $publicly_queryable        Whether posts with this status should be publicly-
- *                                                  queryable. Default is value of $public.
- *     @type bool        $show_in_admin_all_list    Whether to include posts in the edit listing for
- *                                                  their post type. Default is the opposite value
- *                                                  of $internal.
- *     @type bool        $show_in_admin_status_list Show in the list of statuses with post counts at
- *                                                  the top of the edit listings,
- *                                                  e.g. All (12) | Published (9) | My Custom Status (2)
- *                                                  Default is the opposite value of $internal.
- *     @type bool        $date_floating             Whether the post has a floating creation date.
- *                                                  Default to false.
+ *     @type bool|string $label                     Tên mô tả cho trạng thái bài viết được đánh dấu
+ *                                                  để dịch. Mặc định là giá trị của $post_status.
+ *     @type array|false $label_count               Văn bản số nhiều nooped từ _n_noop() để cung cấp dạng
+ *                                                  số ít và số nhiều của nhãn cho đếm. Mặc định false
+ *                                                  nghĩa là đối số `$label` sẽ được dùng cho cả
+ *                                                  dạng số ít và số nhiều của nhãn này.
+ *     @type bool        $exclude_from_search       Có loại trừ bài viết với trạng thái này
+ *                                                  khỏi kết quả tìm kiếm không. Mặc định là giá trị của $internal.
+ *     @type bool        $_builtin                  Trạng thái có phải là tích hợp sẵn không. Chỉ dùng cho lõi.
+ *                                                  Mặc định false.
+ *     @type bool        $public                    Bài viết với trạng thái này có nên hiển thị
+ *                                                  ở giao diện người dùng không. Mặc định false.
+ *     @type bool        $internal                  Trạng thái chỉ dùng nội bộ hay không.
+ *                                                  Mặc định false.
+ *     @type bool        $protected                 Bài viết với trạng thái này có nên được bảo vệ không.
+ *                                                  Mặc định false.
+ *     @type bool        $private                   Bài viết với trạng thái này có nên là riêng tư không.
+ *                                                  Mặc định false.
+ *     @type bool        $publicly_queryable        Bài viết với trạng thái này có nên được truy vấn
+ *                                                  công khai không. Mặc định là giá trị của $public.
+ *     @type bool        $show_in_admin_all_list    Có bao gồm bài viết trong danh sách chỉnh sửa cho
+ *                                                  post type của chúng không. Mặc định là giá trị ngược
+ *                                                  của $internal.
+ *     @type bool        $show_in_admin_status_list Hiển thị trong danh sách trạng thái với số đếm bài viết ở
+ *                                                  đầu danh sách chỉnh sửa,
+ *                                                  ví dụ: Tất cả (12) | Đã xuất bản (9) | Trạng thái tùy chỉnh (2)
+ *                                                  Mặc định là giá trị ngược của $internal.
+ *     @type bool        $date_floating             Bài viết có ngày tạo nổi hay không.
+ *                                                  Mặc định false.
  * }
  * @return object
  */
@@ -1401,7 +1399,7 @@ function register_post_status( $post_status, $args = array() ) {
 		$wp_post_statuses = array();
 	}
 
-	// Args prefixed with an underscore are reserved for internal use.
+	// Các đối số có tiền tố gạch dưới được dành riêng cho sử dụng nội bộ.
 	$defaults = array(
 		'label'                     => false,
 		'label_count'               => false,
@@ -1422,7 +1420,7 @@ function register_post_status( $post_status, $args = array() ) {
 	$post_status = sanitize_key( $post_status );
 	$args->name  = $post_status;
 
-	// Set various defaults.
+	// Thiết lập các giá trị mặc định khác nhau.
 	if ( null === $args->public && null === $args->internal && null === $args->protected && null === $args->private ) {
 		$args->internal = true;
 	}
@@ -1478,16 +1476,16 @@ function register_post_status( $post_status, $args = array() ) {
 }
 
 /**
- * Retrieves a post status object by name.
+ * Lấy đối tượng trạng thái bài viết theo tên.
  *
  * @since 3.0.0
  *
- * @global stdClass[] $wp_post_statuses List of post statuses.
+ * @global stdClass[] $wp_post_statuses Danh sách trạng thái bài viết.
  *
  * @see register_post_status()
  *
- * @param string $post_status The name of a registered post status.
- * @return stdClass|null A post status object.
+ * @param string $post_status Tên của trạng thái bài viết đã đăng ký.
+ * @return stdClass|null Đối tượng trạng thái bài viết.
  */
 function get_post_status_object( $post_status ) {
 	global $wp_post_statuses;
@@ -1500,21 +1498,21 @@ function get_post_status_object( $post_status ) {
 }
 
 /**
- * Gets a list of post statuses.
+ * Lấy danh sách các trạng thái bài viết.
  *
  * @since 3.0.0
  *
- * @global stdClass[] $wp_post_statuses List of post statuses.
+ * @global stdClass[] $wp_post_statuses Danh sách trạng thái bài viết.
  *
  * @see register_post_status()
  *
- * @param array|string $args     Optional. Array or string of post status arguments to compare against
- *                               properties of the global `$wp_post_statuses objects`. Default empty array.
- * @param string       $output   Optional. The type of output to return, either 'names' or 'objects'. Default 'names'.
- * @param string       $operator Optional. The logical operation to perform. 'or' means only one element
- *                               from the array needs to match; 'and' means all elements must match.
- *                               Default 'and'.
- * @return string[]|stdClass[] A list of post status names or objects.
+ * @param array|string $args     Tùy chọn. Mảng hoặc chuỗi các đối số trạng thái bài viết để so sánh với
+ *                               các thuộc tính của đối tượng toàn cục `$wp_post_statuses`. Mặc định mảng rỗng.
+ * @param string       $output   Tùy chọn. Kiểu trả về, 'names' hoặc 'objects'. Mặc định 'names'.
+ * @param string       $operator Tùy chọn. Phép toán logic cần thực hiện. 'or' nghĩa là chỉ cần một phần tử
+ *                               từ mảng khớp; 'and' nghĩa là tất cả phần tử phải khớp.
+ *                               Mặc định 'and'.
+ * @return string[]|stdClass[] Danh sách tên hoặc đối tượng trạng thái bài viết.
  */
 function get_post_stati( $args = array(), $output = 'names', $operator = 'and' ) {
 	global $wp_post_statuses;
@@ -1525,16 +1523,16 @@ function get_post_stati( $args = array(), $output = 'names', $operator = 'and' )
 }
 
 /**
- * Determines whether the post type is hierarchical.
+ * Xác định xem post type có phân cấp hay không.
  *
- * A false return value might also mean that the post type does not exist.
+ * Giá trị trả về false cũng có thể có nghĩa là post type không tồn tại.
  *
  * @since 3.0.0
  *
  * @see get_post_type_object()
  *
- * @param string $post_type Post type name
- * @return bool Whether post type is hierarchical.
+ * @param string $post_type Tên post type.
+ * @return bool Post type có phân cấp hay không.
  */
 function is_post_type_hierarchical( $post_type ) {
 	if ( ! post_type_exists( $post_type ) ) {
@@ -1546,30 +1544,30 @@ function is_post_type_hierarchical( $post_type ) {
 }
 
 /**
- * Determines whether a post type is registered.
+ * Xác định xem một post type đã được đăng ký hay chưa.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 3.0.0
  *
  * @see get_post_type_object()
  *
- * @param string $post_type Post type name.
- * @return bool Whether post type is registered.
+ * @param string $post_type Tên post type.
+ * @return bool Post type đã được đăng ký hay chưa.
  */
 function post_type_exists( $post_type ) {
 	return (bool) get_post_type_object( $post_type );
 }
 
 /**
- * Retrieves the post type of the current post or of a given post.
+ * Lấy post type của bài viết hiện tại hoặc bài viết đã cho.
  *
  * @since 2.1.0
  *
- * @param int|WP_Post|null $post Optional. Post ID or post object. Default is global $post.
- * @return string|false          Post type on success, false on failure.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định global $post.
+ * @return string|false          Post type nếu thành công, false nếu thất bại.
  */
 function get_post_type( $post = null ) {
 	$post = get_post( $post );
@@ -1581,17 +1579,17 @@ function get_post_type( $post = null ) {
 }
 
 /**
- * Retrieves a post type object by name.
+ * Lấy đối tượng post type theo tên.
  *
  * @since 3.0.0
- * @since 4.6.0 Object returned is now an instance of `WP_Post_Type`.
+ * @since 4.6.0 Đối tượng trả về giờ là instance của `WP_Post_Type`.
  *
- * @global array $wp_post_types List of post types.
+ * @global array $wp_post_types Danh sách các post type.
  *
  * @see register_post_type()
  *
- * @param string $post_type The name of a registered post type.
- * @return WP_Post_Type|null WP_Post_Type object if it exists, null otherwise.
+ * @param string $post_type Tên của post type đã đăng ký.
+ * @return WP_Post_Type|null Đối tượng WP_Post_Type nếu tồn tại, null nếu không.
  */
 function get_post_type_object( $post_type ) {
 	global $wp_post_types;
@@ -1604,22 +1602,22 @@ function get_post_type_object( $post_type ) {
 }
 
 /**
- * Gets a list of all registered post type objects.
+ * Lấy danh sách tất cả các đối tượng post type đã đăng ký.
  *
  * @since 2.9.0
  *
- * @global array $wp_post_types List of post types.
+ * @global array $wp_post_types Danh sách các post type.
  *
- * @see register_post_type() for accepted arguments.
+ * @see register_post_type() để biết các đối số được chấp nhận.
  *
- * @param array|string $args     Optional. An array of key => value arguments to match against
- *                               the post type objects. Default empty array.
- * @param string       $output   Optional. The type of output to return. Either 'names'
- *                               or 'objects'. Default 'names'.
- * @param string       $operator Optional. The logical operation to perform. 'or' means only one
- *                               element from the array needs to match; 'and' means all elements
- *                               must match; 'not' means no elements may match. Default 'and'.
- * @return string[]|WP_Post_Type[] An array of post type names or objects.
+ * @param array|string $args     Tùy chọn. Mảng các đối số key => value để so khớp với
+ *                               các đối tượng post type. Mặc định mảng rỗng.
+ * @param string       $output   Tùy chọn. Kiểu trả về. 'names'
+ *                               hoặc 'objects'. Mặc định 'names'.
+ * @param string       $operator Tùy chọn. Phép toán logic cần thực hiện. 'or' nghĩa là chỉ cần một
+ *                               phần tử từ mảng khớp; 'and' nghĩa là tất cả phần tử phải khớp;
+ *                               'not' nghĩa là không phần tử nào được khớp. Mặc định 'and'.
+ * @return string[]|WP_Post_Type[] Mảng tên hoặc đối tượng post type.
  */
 function get_post_types( $args = array(), $output = 'names', $operator = 'and' ) {
 	global $wp_post_types;
@@ -1630,166 +1628,166 @@ function get_post_types( $args = array(), $output = 'names', $operator = 'and' )
 }
 
 /**
- * Registers a post type.
+ * Đăng ký một post type.
  *
- * Note: Post type registrations should not be hooked before the
- * {@see 'init'} action. Also, any taxonomy connections should be
- * registered via the `$taxonomies` argument to ensure consistency
- * when hooks such as {@see 'parse_query'} or {@see 'pre_get_posts'}
- * are used.
+ * Lưu ý: Việc đăng ký post type không nên được hook trước action
+ * {@see 'init'}. Ngoài ra, bất kỳ kết nối taxonomy nào cũng nên được
+ * đăng ký qua đối số `$taxonomies` để đảm bảo tính nhất quán
+ * khi các hook như {@see 'parse_query'} hoặc {@see 'pre_get_posts'}
+ * được sử dụng.
  *
- * Post types can support any number of built-in core features such
- * as meta boxes, custom fields, post thumbnails, post statuses,
- * comments, and more. See the `$supports` argument for a complete
- * list of supported features.
+ * Post type có thể hỗ trợ bất kỳ số lượng tính năng lõi tích hợp nào như
+ * meta box, trường tùy chỉnh, ảnh đại diện bài viết, trạng thái bài viết,
+ * bình luận, và nhiều hơn nữa. Xem đối số `$supports` để biết danh sách đầy đủ
+ * các tính năng được hỗ trợ.
  *
  * @since 2.9.0
- * @since 3.0.0 The `show_ui` argument is now enforced on the new post screen.
- * @since 4.4.0 The `show_ui` argument is now enforced on the post type listing
- *              screen and post editing screen.
- * @since 4.6.0 Post type object returned is now an instance of `WP_Post_Type`.
- * @since 4.7.0 Introduced `show_in_rest`, `rest_base` and `rest_controller_class`
- *              arguments to register the post type in REST API.
- * @since 5.0.0 The `template` and `template_lock` arguments were added.
- * @since 5.3.0 The `supports` argument will now accept an array of arguments for a feature.
- * @since 5.9.0 The `rest_namespace` argument was added.
+ * @since 3.0.0 Đối số `show_ui` giờ được áp dụng trên màn hình tạo bài viết mới.
+ * @since 4.4.0 Đối số `show_ui` giờ được áp dụng trên màn hình danh sách post type
+ *              và màn hình chỉnh sửa bài viết.
+ * @since 4.6.0 Đối tượng post type trả về giờ là instance của `WP_Post_Type`.
+ * @since 4.7.0 Giới thiệu đối số `show_in_rest`, `rest_base` và `rest_controller_class`
+ *              để đăng ký post type trong REST API.
+ * @since 5.0.0 Đối số `template` và `template_lock` được thêm vào.
+ * @since 5.3.0 Đối số `supports` giờ chấp nhận mảng đối số cho một tính năng.
+ * @since 5.9.0 Đối số `rest_namespace` được thêm vào.
  *
- * @global array $wp_post_types List of post types.
+ * @global array $wp_post_types Danh sách các post type.
  *
- * @param string       $post_type Post type key. Must not exceed 20 characters and may only contain
- *                                lowercase alphanumeric characters, dashes, and underscores. See sanitize_key().
+ * @param string       $post_type Khóa post type. Không được vượt quá 20 ký tự và chỉ chứa
+ *                                ký tự chữ thường, dấu gạch ngang và gạch dưới. Xem sanitize_key().
  * @param array|string $args {
- *     Array or string of arguments for registering a post type.
+ *     Mảng hoặc chuỗi các đối số để đăng ký post type.
  *
- *     @type string       $label                           Name of the post type shown in the menu. Usually plural.
- *                                                         Default is value of $labels['name'].
- *     @type string[]     $labels                          An array of labels for this post type. If not set, post
- *                                                         labels are inherited for non-hierarchical types and page
- *                                                         labels for hierarchical ones. See get_post_type_labels() for a full
- *                                                         list of supported labels.
- *     @type string       $description                     A short descriptive summary of what the post type is.
- *                                                         Default empty.
- *     @type bool         $public                          Whether a post type is intended for use publicly either via
- *                                                         the admin interface or by front-end users. While the default
- *                                                         settings of $exclude_from_search, $publicly_queryable, $show_ui,
- *                                                         and $show_in_nav_menus are inherited from $public, each does not
- *                                                         rely on this relationship and controls a very specific intention.
- *                                                         Default false.
- *     @type bool         $hierarchical                    Whether the post type is hierarchical (e.g. page). Default false.
- *     @type bool         $exclude_from_search             Whether to exclude posts with this post type from front end search
- *                                                         results. Default is the opposite value of $public.
- *     @type bool         $publicly_queryable              Whether queries can be performed on the front end for the post type
- *                                                         as part of parse_request(). Endpoints would include:
+ *     @type string       $label                           Tên post type hiển thị trong menu. Thường ở dạng số nhiều.
+ *                                                         Mặc định là giá trị của $labels['name'].
+ *     @type string[]     $labels                          Mảng các nhãn cho post type này. Nếu không đặt, nhãn bài viết
+ *                                                         được kế thừa cho loại không phân cấp và nhãn trang
+ *                                                         cho loại phân cấp. Xem get_post_type_labels() để biết danh sách đầy đủ
+ *                                                         các nhãn được hỗ trợ.
+ *     @type string       $description                     Mô tả ngắn gọn về post type.
+ *                                                         Mặc định rỗng.
+ *     @type bool         $public                          Post type có dùng công khai qua giao diện quản trị
+ *                                                         hoặc bởi người dùng front-end không. Mặc dù các thiết lập mặc định
+ *                                                         của $exclude_from_search, $publicly_queryable, $show_ui,
+ *                                                         và $show_in_nav_menus được kế thừa từ $public, mỗi cái không
+ *                                                         phụ thuộc vào mối quan hệ này và kiểm soát một mục đích rất cụ thể.
+ *                                                         Mặc định false.
+ *     @type bool         $hierarchical                    Post type có phân cấp hay không (ví dụ: trang). Mặc định false.
+ *     @type bool         $exclude_from_search             Có loại trừ bài viết của post type này khỏi kết quả
+ *                                                         tìm kiếm front-end không. Mặc định là giá trị ngược của $public.
+ *     @type bool         $publicly_queryable              Có thể thực hiện truy vấn trên front-end cho post type
+ *                                                         như một phần của parse_request() không. Các endpoint bao gồm:
  *                                                          * ?post_type={post_type_key}
  *                                                          * ?{post_type_key}={single_post_slug}
  *                                                          * ?{post_type_query_var}={single_post_slug}
- *                                                         If not set, the default is inherited from $public.
- *     @type bool         $show_ui                         Whether to generate and allow a UI for managing this post type in the
- *                                                         admin. Default is value of $public.
- *     @type bool|string  $show_in_menu                    Where to show the post type in the admin menu. To work, $show_ui
- *                                                         must be true. If true, the post type is shown in its own top level
- *                                                         menu. If false, no menu is shown. If a string of an existing top
- *                                                         level menu ('tools.php' or 'edit.php?post_type=page', for example), the
- *                                                         post type will be placed as a sub-menu of that.
- *                                                         Default is value of $show_ui.
- *     @type bool         $show_in_nav_menus               Makes this post type available for selection in navigation menus.
- *                                                         Default is value of $public.
- *     @type bool         $show_in_admin_bar               Makes this post type available via the admin bar. Default is value
- *                                                         of $show_in_menu.
- *     @type bool         $show_in_rest                    Whether to include the post type in the REST API. Set this to true
- *                                                         for the post type to be available in the block editor.
- *     @type string       $rest_base                       To change the base URL of REST API route. Default is $post_type.
- *     @type string       $rest_namespace                  To change the namespace URL of REST API route. Default is wp/v2.
- *     @type string       $rest_controller_class           REST API controller class name. Default is 'WP_REST_Posts_Controller'.
- *     @type string|bool  $autosave_rest_controller_class  REST API controller class name. Default is 'WP_REST_Autosaves_Controller'.
- *     @type string|bool  $revisions_rest_controller_class REST API controller class name. Default is 'WP_REST_Revisions_Controller'.
- *     @type bool         $late_route_registration         A flag to direct the REST API controllers for autosave / revisions
- *                                                         should be registered before/after the post type controller.
- *     @type int          $menu_position                   The position in the menu order the post type should appear. To work,
- *                                                         $show_in_menu must be true. Default null (at the bottom).
- *     @type string       $menu_icon                       The URL to the icon to be used for this menu. Pass a base64-encoded
- *                                                         SVG using a data URI, which will be colored to match the color scheme
- *                                                         -- this should begin with 'data:image/svg+xml;base64,'. Pass the name
- *                                                         of a Dashicons helper class to use a font icon, e.g.
- *                                                        'dashicons-chart-pie'. Pass 'none' to leave div.wp-menu-image empty
- *                                                         so an icon can be added via CSS. Defaults to use the posts icon.
- *     @type string|array $capability_type                 The string to use to build the read, edit, and delete capabilities.
- *                                                         May be passed as an array to allow for alternative plurals when using
- *                                                         this argument as a base to construct the capabilities, e.g.
- *                                                         array('story', 'stories'). Default 'post'.
- *     @type string[]     $capabilities                    Array of capabilities for this post type. $capability_type is used
- *                                                         as a base to construct capabilities by default.
- *                                                         See get_post_type_capabilities().
- *     @type bool         $map_meta_cap                    Whether to use the internal default meta capability handling.
- *                                                         Default false.
- *     @type array|false  $supports                        Core feature(s) the post type supports. Serves as an alias for calling
- *                                                         add_post_type_support() directly. Core features include 'title',
+ *                                                         Nếu không đặt, mặc định được kế thừa từ $public.
+ *     @type bool         $show_ui                         Có tạo và cho phép UI để quản lý post type này trong
+ *                                                         trang quản trị không. Mặc định là giá trị của $public.
+ *     @type bool|string  $show_in_menu                    Hiển thị post type ở đâu trong menu quản trị. Để hoạt động, $show_ui
+ *                                                         phải là true. Nếu true, post type hiển thị trong menu cấp cao nhất
+ *                                                         riêng. Nếu false, không hiển thị menu. Nếu là chuỗi của menu cấp cao
+ *                                                         đã có ('tools.php' hoặc 'edit.php?post_type=page', ví dụ),
+ *                                                         post type sẽ được đặt làm menu con của menu đó.
+ *                                                         Mặc định là giá trị của $show_ui.
+ *     @type bool         $show_in_nav_menus               Cho phép chọn post type này trong menu điều hướng.
+ *                                                         Mặc định là giá trị của $public.
+ *     @type bool         $show_in_admin_bar               Cho phép post type này hiển thị qua thanh quản trị. Mặc định là giá trị
+ *                                                         của $show_in_menu.
+ *     @type bool         $show_in_rest                    Có bao gồm post type trong REST API không. Đặt true
+ *                                                         để post type có sẵn trong trình soạn thảo block.
+ *     @type string       $rest_base                       Thay đổi URL cơ sở của route REST API. Mặc định là $post_type.
+ *     @type string       $rest_namespace                  Thay đổi URL namespace của route REST API. Mặc định là wp/v2.
+ *     @type string       $rest_controller_class           Tên lớp controller REST API. Mặc định là 'WP_REST_Posts_Controller'.
+ *     @type string|bool  $autosave_rest_controller_class  Tên lớp controller REST API. Mặc định là 'WP_REST_Autosaves_Controller'.
+ *     @type string|bool  $revisions_rest_controller_class Tên lớp controller REST API. Mặc định là 'WP_REST_Revisions_Controller'.
+ *     @type bool         $late_route_registration         Cờ để chỉ định controller REST API cho tự động lưu / bản sửa đổi
+ *                                                         nên được đăng ký trước/sau controller post type.
+ *     @type int          $menu_position                   Vị trí trong thứ tự menu mà post type nên xuất hiện. Để hoạt động,
+ *                                                         $show_in_menu phải là true. Mặc định null (ở cuối).
+ *     @type string       $menu_icon                       URL đến biểu tượng dùng cho menu này. Truyền SVG mã hóa base64
+ *                                                         sử dụng data URI, sẽ được tô màu phù hợp với bảng màu
+ *                                                         -- nên bắt đầu bằng 'data:image/svg+xml;base64,'. Truyền tên
+ *                                                         của lớp trợ giúp Dashicons để dùng biểu tượng font, ví dụ
+ *                                                         'dashicons-chart-pie'. Truyền 'none' để trống div.wp-menu-image
+ *                                                         để có thể thêm biểu tượng qua CSS. Mặc định dùng biểu tượng bài viết.
+ *     @type string|array $capability_type                 Chuỗi dùng để xây dựng quyền đọc, sửa và xóa.
+ *                                                         Có thể truyền dạng mảng để cho phép dạng số nhiều thay thế khi dùng
+ *                                                         đối số này làm cơ sở để xây dựng quyền, ví dụ
+ *                                                         array('story', 'stories'). Mặc định 'post'.
+ *     @type string[]     $capabilities                    Mảng quyền cho post type này. $capability_type được dùng
+ *                                                         làm cơ sở để xây dựng quyền theo mặc định.
+ *                                                         Xem get_post_type_capabilities().
+ *     @type bool         $map_meta_cap                    Có sử dụng xử lý meta capability mặc định nội bộ không.
+ *                                                         Mặc định false.
+ *     @type array|false  $supports                        (Các) tính năng lõi mà post type hỗ trợ. Đóng vai trò bí danh cho việc gọi
+ *                                                         add_post_type_support() trực tiếp. Các tính năng lõi gồm 'title',
  *                                                         'editor', 'comments', 'revisions', 'trackbacks', 'author', 'excerpt',
- *                                                         'page-attributes', 'thumbnail', 'custom-fields', and 'post-formats'.
- *                                                         Additionally, the 'revisions' feature dictates whether the post type
- *                                                         will store revisions, the 'autosave' feature dictates whether the post type
- *                                                         will be autosaved, and the 'comments' feature dictates whether the
- *                                                         comments count will show on the edit screen. For backward compatibility reasons,
- *                                                         adding 'editor' support implies 'autosave' support too. A feature can also be
- *                                                         specified as an array of arguments to provide additional information
- *                                                         about supporting that feature.
- *                                                         Example: `array( 'my_feature', array( 'field' => 'value' ) )`.
- *                                                         If false, no features will be added.
- *                                                         Default is an array containing 'title' and 'editor'.
- *     @type callable     $register_meta_box_cb            Provide a callback function that sets up the meta boxes for the
- *                                                         edit form. Do remove_meta_box() and add_meta_box() calls in the
- *                                                         callback. Default null.
- *     @type string[]     $taxonomies                      An array of taxonomy identifiers that will be registered for the
- *                                                         post type. Taxonomies can be registered later with register_taxonomy()
- *                                                         or register_taxonomy_for_object_type().
- *                                                         Default empty array.
- *     @type bool|string  $has_archive                     Whether there should be post type archives, or if a string, the
- *                                                         archive slug to use. Will generate the proper rewrite rules if
- *                                                         $rewrite is enabled. Default false.
+ *                                                         'page-attributes', 'thumbnail', 'custom-fields', và 'post-formats'.
+ *                                                         Ngoài ra, tính năng 'revisions' quyết định post type có lưu bản sửa đổi không,
+ *                                                         tính năng 'autosave' quyết định post type có được tự động lưu không,
+ *                                                         và tính năng 'comments' quyết định số đếm bình luận có hiển thị
+ *                                                         trên màn hình chỉnh sửa không. Vì lý do tương thích ngược,
+ *                                                         thêm hỗ trợ 'editor' cũng ngầm thêm hỗ trợ 'autosave'. Tính năng cũng có thể
+ *                                                         được chỉ định dạng mảng đối số để cung cấp thông tin bổ sung
+ *                                                         về việc hỗ trợ tính năng đó.
+ *                                                         Ví dụ: `array( 'my_feature', array( 'field' => 'value' ) )`.
+ *                                                         Nếu false, không tính năng nào được thêm.
+ *                                                         Mặc định là mảng chứa 'title' và 'editor'.
+ *     @type callable     $register_meta_box_cb            Cung cấp hàm callback thiết lập các meta box cho
+ *                                                         form chỉnh sửa. Thực hiện lời gọi remove_meta_box() và add_meta_box() trong
+ *                                                         callback. Mặc định null.
+ *     @type string[]     $taxonomies                      Mảng các định danh taxonomy sẽ được đăng ký cho
+ *                                                         post type. Taxonomy có thể đăng ký sau với register_taxonomy()
+ *                                                         hoặc register_taxonomy_for_object_type().
+ *                                                         Mặc định mảng rỗng.
+ *     @type bool|string  $has_archive                     Có nên có lưu trữ post type không, hoặc nếu là chuỗi, slug
+ *                                                         lưu trữ cần dùng. Sẽ tạo quy tắc rewrite phù hợp nếu
+ *                                                         $rewrite được bật. Mặc định false.
  *     @type bool|array   $rewrite                         {
- *         Triggers the handling of rewrites for this post type. To prevent rewrite, set to false.
- *         Defaults to true, using $post_type as slug. To specify rewrite rules, an array can be
- *         passed with any of these keys:
+ *         Kích hoạt xử lý rewrite cho post type này. Để ngăn rewrite, đặt false.
+ *         Mặc định true, dùng $post_type làm slug. Để chỉ định quy tắc rewrite, có thể truyền
+ *         mảng với bất kỳ khóa nào sau đây:
  *
- *         @type string $slug       Customize the permastruct slug. Defaults to $post_type key.
- *         @type bool   $with_front Whether the permastruct should be prepended with WP_Rewrite::$front.
- *                                  Default true.
- *         @type bool   $feeds      Whether the feed permastruct should be built for this post type.
- *                                  Default is value of $has_archive.
- *         @type bool   $pages      Whether the permastruct should provide for pagination. Default true.
- *         @type int    $ep_mask    Endpoint mask to assign. If not specified and permalink_epmask is set,
- *                                  inherits from $permalink_epmask. If not specified and permalink_epmask
- *                                  is not set, defaults to EP_PERMALINK.
+ *         @type string $slug       Tùy chỉnh slug permastruct. Mặc định là khóa $post_type.
+ *         @type bool   $with_front Permastruct có nên được thêm tiền tố WP_Rewrite::$front không.
+ *                                  Mặc định true.
+ *         @type bool   $feeds      Permastruct feed có nên được xây dựng cho post type này không.
+ *                                  Mặc định là giá trị của $has_archive.
+ *         @type bool   $pages      Permastruct có nên hỗ trợ phân trang không. Mặc định true.
+ *         @type int    $ep_mask    Mặt nạ endpoint cần gán. Nếu không chỉ định và permalink_epmask được đặt,
+ *                                  kế thừa từ $permalink_epmask. Nếu không chỉ định và permalink_epmask
+ *                                  chưa đặt, mặc định là EP_PERMALINK.
  *     }
- *     @type string|bool  $query_var                      Sets the query_var key for this post type. Defaults to $post_type
- *                                                        key. If false, a post type cannot be loaded at
- *                                                        ?{query_var}={post_slug}. If specified as a string, the query
- *                                                        ?{query_var_string}={post_slug} will be valid.
- *     @type bool         $can_export                     Whether to allow this post type to be exported. Default true.
- *     @type bool         $delete_with_user               Whether to delete posts of this type when deleting a user.
- *                                                          * If true, posts of this type belonging to the user will be moved
- *                                                            to Trash when the user is deleted.
- *                                                          * If false, posts of this type belonging to the user will *not*
- *                                                            be trashed or deleted.
- *                                                          * If not set (the default), posts are trashed if post type supports
- *                                                            the 'author' feature. Otherwise posts are not trashed or deleted.
- *                                                        Default null.
- *     @type array        $template                       Array of blocks to use as the default initial state for an editor
- *                                                        session. Each item should be an array containing block name and
- *                                                        optional attributes. Default empty array.
- *     @type string|false $template_lock                  Whether the block template should be locked if $template is set.
- *                                                        * If set to 'all', the user is unable to insert new blocks,
- *                                                          move existing blocks and delete blocks.
- *                                                       * If set to 'insert', the user is able to move existing blocks
- *                                                         but is unable to insert new blocks and delete blocks.
- *                                                         Default false.
- *     @type bool         $_builtin                     FOR INTERNAL USE ONLY! True if this post type is a native or
- *                                                      "built-in" post_type. Default false.
- *     @type string       $_edit_link                   FOR INTERNAL USE ONLY! URL segment to use for edit link of
- *                                                      this post type. Default 'post.php?post=%d'.
+ *     @type string|bool  $query_var                      Đặt khóa query_var cho post type này. Mặc định là khóa $post_type.
+ *                                                        Nếu false, post type không thể tải tại
+ *                                                        ?{query_var}={post_slug}. Nếu chỉ định dạng chuỗi, truy vấn
+ *                                                        ?{query_var_string}={post_slug} sẽ hợp lệ.
+ *     @type bool         $can_export                     Có cho phép xuất post type này không. Mặc định true.
+ *     @type bool         $delete_with_user               Có xóa bài viết của loại này khi xóa người dùng không.
+ *                                                          * Nếu true, bài viết của loại này thuộc người dùng sẽ được chuyển
+ *                                                            vào Thùng rác khi người dùng bị xóa.
+ *                                                          * Nếu false, bài viết của loại này thuộc người dùng sẽ *không*
+ *                                                            bị đưa vào thùng rác hoặc xóa.
+ *                                                          * Nếu không đặt (mặc định), bài viết bị đưa vào thùng rác nếu post type hỗ trợ
+ *                                                            tính năng 'author'. Ngược lại bài viết không bị đưa vào thùng rác hoặc xóa.
+ *                                                        Mặc định null.
+ *     @type array        $template                       Mảng các block dùng làm trạng thái khởi tạo mặc định cho phiên
+ *                                                        soạn thảo. Mỗi mục nên là mảng chứa tên block và
+ *                                                        thuộc tính tùy chọn. Mặc định mảng rỗng.
+ *     @type string|false $template_lock                  Template block có nên bị khóa nếu $template được đặt không.
+ *                                                        * Nếu đặt 'all', người dùng không thể chèn block mới,
+ *                                                          di chuyển block hiện có và xóa block.
+ *                                                        * Nếu đặt 'insert', người dùng có thể di chuyển block hiện có
+ *                                                          nhưng không thể chèn block mới và xóa block.
+ *                                                        Mặc định false.
+ *     @type bool         $_builtin                       CHỈ DÙNG NỘI BỘ! True nếu post type này là loại gốc hoặc
+ *                                                        "tích hợp sẵn". Mặc định false.
+ *     @type string       $_edit_link                     CHỈ DÙNG NỘI BỘ! Đoạn URL dùng cho liên kết chỉnh sửa của
+ *                                                        post type này. Mặc định 'post.php?post=%d'.
  * }
- * @return WP_Post_Type|WP_Error The registered post type object on success,
- *                               WP_Error object on failure.
+ * @return WP_Post_Type|WP_Error Đối tượng post type đã đăng ký nếu thành công,
+ *                               đối tượng WP_Error nếu thất bại.
  */
 function register_post_type( $post_type, $args = array() ) {
 	global $wp_post_types;
@@ -1798,7 +1796,7 @@ function register_post_type( $post_type, $args = array() ) {
 		$wp_post_types = array();
 	}
 
-	// Sanitize post type name.
+	// Làm sạch tên post type.
 	$post_type = sanitize_key( $post_type );
 
 	if ( empty( $post_type ) || strlen( $post_type ) > 20 ) {
@@ -1817,22 +1815,22 @@ function register_post_type( $post_type, $args = array() ) {
 	$post_type_object->register_taxonomies();
 
 	/**
-	 * Fires after a post type is registered.
+	 * Kích hoạt sau khi một post type được đăng ký.
 	 *
 	 * @since 3.3.0
-	 * @since 4.6.0 Converted the `$post_type` parameter to accept a `WP_Post_Type` object.
+	 * @since 4.6.0 Chuyển đổi tham số `$post_type` để chấp nhận đối tượng `WP_Post_Type`.
 	 *
 	 * @param string       $post_type        Post type.
-	 * @param WP_Post_Type $post_type_object Arguments used to register the post type.
+	 * @param WP_Post_Type $post_type_object Các đối số dùng để đăng ký post type.
 	 */
 	do_action( 'registered_post_type', $post_type, $post_type_object );
 
 	/**
-	 * Fires after a specific post type is registered.
+	 * Kích hoạt sau khi một post type cụ thể được đăng ký.
 	 *
-	 * The dynamic portion of the filter name, `$post_type`, refers to the post type key.
+	 * Phần động của tên filter, `$post_type`, tham chiếu đến khóa post type.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `registered_post_type_post`
 	 *  - `registered_post_type_page`
@@ -1840,7 +1838,7 @@ function register_post_type( $post_type, $args = array() ) {
 	 * @since 6.0.0
 	 *
 	 * @param string       $post_type        Post type.
-	 * @param WP_Post_Type $post_type_object Arguments used to register the post type.
+	 * @param WP_Post_Type $post_type_object Các đối số dùng để đăng ký post type.
 	 */
 	do_action( "registered_post_type_{$post_type}", $post_type, $post_type_object );
 
@@ -1848,16 +1846,16 @@ function register_post_type( $post_type, $args = array() ) {
 }
 
 /**
- * Unregisters a post type.
+ * Hủy đăng ký một post type.
  *
- * Cannot be used to unregister built-in post types.
+ * Không thể dùng để hủy đăng ký các post type tích hợp sẵn.
  *
  * @since 4.5.0
  *
- * @global array $wp_post_types List of post types.
+ * @global array $wp_post_types Danh sách các post type.
  *
- * @param string $post_type Post type to unregister.
- * @return true|WP_Error True on success, WP_Error on failure or if the post type doesn't exist.
+ * @param string $post_type Post type cần hủy đăng ký.
+ * @return true|WP_Error True nếu thành công, WP_Error nếu thất bại hoặc post type không tồn tại.
  */
 function unregister_post_type( $post_type ) {
 	global $wp_post_types;
@@ -1868,7 +1866,7 @@ function unregister_post_type( $post_type ) {
 
 	$post_type_object = get_post_type_object( $post_type );
 
-	// Do not allow unregistering internal post types.
+	// Không cho phép hủy đăng ký các post type nội bộ.
 	if ( $post_type_object->_builtin ) {
 		return new WP_Error( 'invalid_post_type', __( 'Unregistering a built-in post type is not allowed' ) );
 	}
@@ -1882,11 +1880,11 @@ function unregister_post_type( $post_type ) {
 	unset( $wp_post_types[ $post_type ] );
 
 	/**
-	 * Fires after a post type was unregistered.
+	 * Kích hoạt sau khi một post type đã được hủy đăng ký.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @param string $post_type Post type key.
+	 * @param string $post_type Khóa post type.
 	 */
 	do_action( 'unregistered_post_type', $post_type );
 
@@ -1894,75 +1892,75 @@ function unregister_post_type( $post_type ) {
 }
 
 /**
- * Builds an object with all post type capabilities out of a post type object
+ * Xây dựng đối tượng chứa tất cả quyền của post type từ đối tượng post type.
  *
- * Post type capabilities use the 'capability_type' argument as a base, if the
- * capability is not set in the 'capabilities' argument array or if the
- * 'capabilities' argument is not supplied.
+ * Quyền post type sử dụng đối số 'capability_type' làm cơ sở, nếu quyền
+ * không được đặt trong mảng đối số 'capabilities' hoặc nếu đối số
+ * 'capabilities' không được cung cấp.
  *
- * The capability_type argument can optionally be registered as an array, with
- * the first value being singular and the second plural, e.g. array('story, 'stories')
- * Otherwise, an 's' will be added to the value for the plural form. After
- * registration, capability_type will always be a string of the singular value.
+ * Đối số capability_type có thể được đăng ký tùy chọn dạng mảng, với giá trị
+ * đầu tiên là dạng số ít và giá trị thứ hai là dạng số nhiều, ví dụ array('story', 'stories').
+ * Nếu không, 's' sẽ được thêm vào giá trị để tạo dạng số nhiều. Sau khi
+ * đăng ký, capability_type sẽ luôn là chuỗi của giá trị dạng số ít.
  *
- * By default, eight keys are accepted as part of the capabilities array:
+ * Mặc định, tám khóa được chấp nhận trong mảng capabilities:
  *
- * - edit_post, read_post, and delete_post are meta capabilities, which are then
- *   generally mapped to corresponding primitive capabilities depending on the
- *   context, which would be the post being edited/read/deleted and the user or
- *   role being checked. Thus these capabilities would generally not be granted
- *   directly to users or roles.
+ * - edit_post, read_post, và delete_post là các meta capability, sau đó
+ *   thường được ánh xạ đến các primitive capability tương ứng tùy thuộc vào
+ *   ngữ cảnh, tức là bài viết đang được sửa/đọc/xóa và người dùng hoặc
+ *   vai trò đang được kiểm tra. Do đó các quyền này thường không được cấp
+ *   trực tiếp cho người dùng hoặc vai trò.
  *
- * - edit_posts - Controls whether objects of this post type can be edited.
- * - edit_others_posts - Controls whether objects of this type owned by other users
- *   can be edited. If the post type does not support an author, then this will
- *   behave like edit_posts.
- * - delete_posts - Controls whether objects of this post type can be deleted.
- * - publish_posts - Controls publishing objects of this post type.
- * - read_private_posts - Controls whether private objects can be read.
+ * - edit_posts - Kiểm soát việc các đối tượng của post type này có thể được chỉnh sửa không.
+ * - edit_others_posts - Kiểm soát việc các đối tượng thuộc loại này của người dùng khác
+ *   có thể được chỉnh sửa không. Nếu post type không hỗ trợ tác giả, quyền này sẽ
+ *   hoạt động như edit_posts.
+ * - delete_posts - Kiểm soát việc các đối tượng của post type này có thể bị xóa không.
+ * - publish_posts - Kiểm soát việc xuất bản các đối tượng của post type này.
+ * - read_private_posts - Kiểm soát việc các đối tượng riêng tư có thể được đọc không.
  *
- * These five primitive capabilities are checked in core in various locations.
- * There are also six other primitive capabilities which are not referenced
- * directly in core, except in map_meta_cap(), which takes the three aforementioned
- * meta capabilities and translates them into one or more primitive capabilities
- * that must then be checked against the user or role, depending on the context.
+ * Năm primitive capability này được kiểm tra trong lõi ở nhiều vị trí khác nhau.
+ * Ngoài ra còn có sáu primitive capability khác không được tham chiếu
+ * trực tiếp trong lõi, ngoại trừ trong map_meta_cap(), hàm này lấy ba
+ * meta capability đã đề cập ở trên và chuyển đổi chúng thành một hoặc nhiều primitive
+ * capability phải được kiểm tra với người dùng hoặc vai trò, tùy thuộc vào ngữ cảnh.
  *
- * - read - Controls whether objects of this post type can be read.
- * - delete_private_posts - Controls whether private objects can be deleted.
- * - delete_published_posts - Controls whether published objects can be deleted.
- * - delete_others_posts - Controls whether objects owned by other users can be
- *   can be deleted. If the post type does not support an author, then this will
- *   behave like delete_posts.
- * - edit_private_posts - Controls whether private objects can be edited.
- * - edit_published_posts - Controls whether published objects can be edited.
+ * - read - Kiểm soát việc các đối tượng của post type này có thể được đọc không.
+ * - delete_private_posts - Kiểm soát việc các đối tượng riêng tư có thể bị xóa không.
+ * - delete_published_posts - Kiểm soát việc các đối tượng đã xuất bản có thể bị xóa không.
+ * - delete_others_posts - Kiểm soát việc các đối tượng của người dùng khác có thể
+ *   bị xóa không. Nếu post type không hỗ trợ tác giả, quyền này sẽ
+ *   hoạt động như delete_posts.
+ * - edit_private_posts - Kiểm soát việc các đối tượng riêng tư có thể được chỉnh sửa không.
+ * - edit_published_posts - Kiểm soát việc các đối tượng đã xuất bản có thể được chỉnh sửa không.
  *
- * These additional capabilities are only used in map_meta_cap(). Thus, they are
- * only assigned by default if the post type is registered with the 'map_meta_cap'
- * argument set to true (default is false).
+ * Các quyền bổ sung này chỉ được sử dụng trong map_meta_cap(). Do đó, chúng
+ * chỉ được gán mặc định nếu post type được đăng ký với đối số 'map_meta_cap'
+ * đặt là true (mặc định là false).
  *
  * @since 3.0.0
- * @since 5.4.0 'delete_posts' is included in default capabilities.
+ * @since 5.4.0 'delete_posts' được bao gồm trong quyền mặc định.
  *
  * @see register_post_type()
  * @see map_meta_cap()
  *
- * @param object $args Post type registration arguments.
- * @return object Object with all the capabilities as member variables.
+ * @param object $args Các đối số đăng ký post type.
+ * @return object Đối tượng chứa tất cả quyền dưới dạng biến thành viên.
  */
 function get_post_type_capabilities( $args ) {
 	if ( ! is_array( $args->capability_type ) ) {
 		$args->capability_type = array( $args->capability_type, $args->capability_type . 's' );
 	}
 
-	// Singular base for meta capabilities, plural base for primitive capabilities.
+	// Cơ sở dạng số ít cho meta capability, cơ sở dạng số nhiều cho primitive capability.
 	list( $singular_base, $plural_base ) = $args->capability_type;
 
 	$default_capabilities = array(
-		// Meta capabilities.
+		// Quyền Meta.
 		'edit_post'          => 'edit_' . $singular_base,
 		'read_post'          => 'read_' . $singular_base,
 		'delete_post'        => 'delete_' . $singular_base,
-		// Primitive capabilities used outside of map_meta_cap():
+		// Quyền nguyên thủy được sử dụng ngoài map_meta_cap():
 		'edit_posts'         => 'edit_' . $plural_base,
 		'edit_others_posts'  => 'edit_others_' . $plural_base,
 		'delete_posts'       => 'delete_' . $plural_base,
@@ -1970,7 +1968,7 @@ function get_post_type_capabilities( $args ) {
 		'read_private_posts' => 'read_private_' . $plural_base,
 	);
 
-	// Primitive capabilities used within map_meta_cap():
+	// Quyền nguyên thủy được sử dụng trong map_meta_cap():
 	if ( $args->map_meta_cap ) {
 		$default_capabilities_for_mapping = array(
 			'read'                   => 'read',
@@ -1985,12 +1983,12 @@ function get_post_type_capabilities( $args ) {
 
 	$capabilities = array_merge( $default_capabilities, $args->capabilities );
 
-	// Post creation capability simply maps to edit_posts by default:
+	// Quyền tạo bài viết mặc định ánh xạ đến edit_posts:
 	if ( ! isset( $capabilities['create_posts'] ) ) {
 		$capabilities['create_posts'] = $capabilities['edit_posts'];
 	}
 
-	// Remember meta capabilities for future reference.
+	// Ghi nhớ các meta capability để tham chiếu sau này.
 	if ( $args->map_meta_cap ) {
 		_post_type_meta_capabilities( $capabilities );
 	}
@@ -1999,14 +1997,14 @@ function get_post_type_capabilities( $args ) {
 }
 
 /**
- * Stores or returns a list of post type meta caps for map_meta_cap().
+ * Lưu trữ hoặc trả về danh sách các meta cap của post type cho map_meta_cap().
  *
  * @since 3.1.0
  * @access private
  *
- * @global array $post_type_meta_caps Used to store meta capabilities.
+ * @global array $post_type_meta_caps Dùng để lưu trữ các meta capability.
  *
- * @param string[] $capabilities Post type meta capabilities.
+ * @param string[] $capabilities Các meta capability của post type.
  */
 function _post_type_meta_capabilities( $capabilities = null ) {
 	global $post_type_meta_caps;
@@ -2019,82 +2017,82 @@ function _post_type_meta_capabilities( $capabilities = null ) {
 }
 
 /**
- * Builds an object with all post type labels out of a post type object.
+ * Xây dựng đối tượng chứa tất cả nhãn của post type từ đối tượng post type.
  *
- * Accepted keys of the label array in the post type object:
+ * Các khóa được chấp nhận trong mảng nhãn của đối tượng post type:
  *
- * - `name` - General name for the post type, usually plural. The same and overridden
- *          by `$post_type_object->label`. Default is 'Posts' / 'Pages'.
- * - `singular_name` - Name for one object of this post type. Default is 'Post' / 'Page'.
- * - `add_new` - Label for adding a new item. Default is 'Add Post' / 'Add Page'.
- * - `add_new_item` - Label for adding a new singular item. Default is 'Add Post' / 'Add Page'.
- * - `edit_item` - Label for editing a singular item. Default is 'Edit Post' / 'Edit Page'.
- * - `new_item` - Label for the new item page title. Default is 'New Post' / 'New Page'.
- * - `view_item` - Label for viewing a singular item. Default is 'View Post' / 'View Page'.
- * - `view_items` - Label for viewing post type archives. Default is 'View Posts' / 'View Pages'.
- * - `search_items` - Label for searching plural items. Default is 'Search Posts' / 'Search Pages'.
- * - `not_found` - Label used when no items are found. Default is 'No posts found' / 'No pages found'.
- * - `not_found_in_trash` - Label used when no items are in the Trash. Default is 'No posts found in Trash' /
+ * - `name` - Tên chung cho post type, thường ở dạng số nhiều. Giống và được ghi đè
+ *          bởi `$post_type_object->label`. Mặc định là 'Posts' / 'Pages'.
+ * - `singular_name` - Tên cho một đối tượng của post type này. Mặc định là 'Post' / 'Page'.
+ * - `add_new` - Nhãn để thêm mục mới. Mặc định là 'Add Post' / 'Add Page'.
+ * - `add_new_item` - Nhãn để thêm mục đơn lẻ mới. Mặc định là 'Add Post' / 'Add Page'.
+ * - `edit_item` - Nhãn để chỉnh sửa mục đơn lẻ. Mặc định là 'Edit Post' / 'Edit Page'.
+ * - `new_item` - Nhãn cho tiêu đề trang mục mới. Mặc định là 'New Post' / 'New Page'.
+ * - `view_item` - Nhãn để xem mục đơn lẻ. Mặc định là 'View Post' / 'View Page'.
+ * - `view_items` - Nhãn để xem kho lưu trữ post type. Mặc định là 'View Posts' / 'View Pages'.
+ * - `search_items` - Nhãn để tìm kiếm các mục. Mặc định là 'Search Posts' / 'Search Pages'.
+ * - `not_found` - Nhãn dùng khi không tìm thấy mục nào. Mặc định là 'No posts found' / 'No pages found'.
+ * - `not_found_in_trash` - Nhãn dùng khi không có mục nào trong Thùng rác. Mặc định là 'No posts found in Trash' /
  *                        'No pages found in Trash'.
- * - `parent_item_colon` - Label used to prefix parents of hierarchical items. Not used on non-hierarchical
- *                       post types. Default is 'Parent Page:'.
- * - `all_items` - Label to signify all items in a submenu link. Default is 'All Posts' / 'All Pages'.
- * - `archives` - Label for archives in nav menus. Default is 'Post Archives' / 'Page Archives'.
- * - `attributes` - Label for the attributes meta box. Default is 'Post Attributes' / 'Page Attributes'.
- * - `insert_into_item` - Label for the media frame button. Default is 'Insert into post' / 'Insert into page'.
- * - `uploaded_to_this_item` - Label for the media frame filter. Default is 'Uploaded to this post' /
+ * - `parent_item_colon` - Nhãn dùng làm tiền tố cho cha của các mục phân cấp. Không dùng cho post type
+ *                       không phân cấp. Mặc định là 'Parent Page:'.
+ * - `all_items` - Nhãn biểu thị tất cả mục trong liên kết menu con. Mặc định là 'All Posts' / 'All Pages'.
+ * - `archives` - Nhãn cho kho lưu trữ trong menu điều hướng. Mặc định là 'Post Archives' / 'Page Archives'.
+ * - `attributes` - Nhãn cho hộp meta thuộc tính. Mặc định là 'Post Attributes' / 'Page Attributes'.
+ * - `insert_into_item` - Nhãn cho nút khung media. Mặc định là 'Insert into post' / 'Insert into page'.
+ * - `uploaded_to_this_item` - Nhãn cho bộ lọc khung media. Mặc định là 'Uploaded to this post' /
  *                           'Uploaded to this page'.
- * - `featured_image` - Label for the featured image meta box title. Default is 'Featured image'.
- * - `set_featured_image` - Label for setting the featured image. Default is 'Set featured image'.
- * - `remove_featured_image` - Label for removing the featured image. Default is 'Remove featured image'.
- * - `use_featured_image` - Label in the media frame for using a featured image. Default is 'Use as featured image'.
- * - `menu_name` - Label for the menu name. Default is the same as `name`.
- * - `filter_items_list` - Label for the table views hidden heading. Default is 'Filter posts list' /
+ * - `featured_image` - Nhãn cho tiêu đề hộp meta ảnh đại diện. Mặc định là 'Featured image'.
+ * - `set_featured_image` - Nhãn để đặt ảnh đại diện. Mặc định là 'Set featured image'.
+ * - `remove_featured_image` - Nhãn để xóa ảnh đại diện. Mặc định là 'Remove featured image'.
+ * - `use_featured_image` - Nhãn trong khung media để sử dụng ảnh đại diện. Mặc định là 'Use as featured image'.
+ * - `menu_name` - Nhãn cho tên menu. Mặc định giống `name`.
+ * - `filter_items_list` - Nhãn cho tiêu đề ẩn của các chế độ xem bảng. Mặc định là 'Filter posts list' /
  *                       'Filter pages list'.
- * - `filter_by_date` - Label for the date filter in list tables. Default is 'Filter by date'.
- * - `items_list_navigation` - Label for the table pagination hidden heading. Default is 'Posts list navigation' /
+ * - `filter_by_date` - Nhãn cho bộ lọc ngày trong bảng danh sách. Mặc định là 'Filter by date'.
+ * - `items_list_navigation` - Nhãn cho tiêu đề ẩn phân trang bảng. Mặc định là 'Posts list navigation' /
  *                           'Pages list navigation'.
- * - `items_list` - Label for the table hidden heading. Default is 'Posts list' / 'Pages list'.
- * - `item_published` - Label used when an item is published. Default is 'Post published.' / 'Page published.'
- * - `item_published_privately` - Label used when an item is published with private visibility.
- *                              Default is 'Post published privately.' / 'Page published privately.'
- * - `item_reverted_to_draft` - Label used when an item is switched to a draft.
- *                            Default is 'Post reverted to draft.' / 'Page reverted to draft.'
- * - `item_trashed` - Label used when an item is moved to Trash. Default is 'Post trashed.' / 'Page trashed.'
- * - `item_scheduled` - Label used when an item is scheduled for publishing. Default is 'Post scheduled.' /
+ * - `items_list` - Nhãn cho tiêu đề ẩn của bảng. Mặc định là 'Posts list' / 'Pages list'.
+ * - `item_published` - Nhãn dùng khi mục được xuất bản. Mặc định là 'Post published.' / 'Page published.'
+ * - `item_published_privately` - Nhãn dùng khi mục được xuất bản ở chế độ riêng tư.
+ *                              Mặc định là 'Post published privately.' / 'Page published privately.'
+ * - `item_reverted_to_draft` - Nhãn dùng khi mục được chuyển về bản nháp.
+ *                            Mặc định là 'Post reverted to draft.' / 'Page reverted to draft.'
+ * - `item_trashed` - Nhãn dùng khi mục được chuyển vào Thùng rác. Mặc định là 'Post trashed.' / 'Page trashed.'
+ * - `item_scheduled` - Nhãn dùng khi mục được lên lịch xuất bản. Mặc định là 'Post scheduled.' /
  *                    'Page scheduled.'
- * - `item_updated` - Label used when an item is updated. Default is 'Post updated.' / 'Page updated.'
- * - `item_link` - Title for a navigation link block variation. Default is 'Post Link' / 'Page Link'.
- * - `item_link_description` - Description for a navigation link block variation. Default is 'A link to a post.' /
+ * - `item_updated` - Nhãn dùng khi mục được cập nhật. Mặc định là 'Post updated.' / 'Page updated.'
+ * - `item_link` - Tiêu đề cho biến thể block liên kết điều hướng. Mặc định là 'Post Link' / 'Page Link'.
+ * - `item_link_description` - Mô tả cho biến thể block liên kết điều hướng. Mặc định là 'A link to a post.' /
  *                             'A link to a page.'
  *
- * Above, the first default value is for non-hierarchical post types (like posts)
- * and the second one is for hierarchical post types (like pages).
+ * Ở trên, giá trị mặc định đầu tiên dành cho post type không phân cấp (như bài viết)
+ * và giá trị thứ hai dành cho post type phân cấp (như trang).
  *
- * Note: To set labels used in post type admin notices, see the {@see 'post_updated_messages'} filter.
+ * Lưu ý: Để đặt nhãn dùng trong thông báo quản trị post type, xem filter {@see 'post_updated_messages'}.
  *
  * @since 3.0.0
- * @since 4.3.0 Added the `featured_image`, `set_featured_image`, `remove_featured_image`,
- *              and `use_featured_image` labels.
- * @since 4.4.0 Added the `archives`, `insert_into_item`, `uploaded_to_this_item`, `filter_items_list`,
- *              `items_list_navigation`, and `items_list` labels.
- * @since 4.6.0 Converted the `$post_type` parameter to accept a `WP_Post_Type` object.
- * @since 4.7.0 Added the `view_items` and `attributes` labels.
- * @since 5.0.0 Added the `item_published`, `item_published_privately`, `item_reverted_to_draft`,
- *              `item_scheduled`, and `item_updated` labels.
- * @since 5.7.0 Added the `filter_by_date` label.
- * @since 5.8.0 Added the `item_link` and `item_link_description` labels.
- * @since 6.3.0 Added the `item_trashed` label.
- * @since 6.4.0 Changed default values for the `add_new` label to include the type of content.
- *              This matches `add_new_item` and provides more context for better accessibility.
- * @since 6.6.0 Added the `template_name` label.
- * @since 6.7.0 Restored pre-6.4.0 defaults for the `add_new` label and updated documentation.
- *              Updated core usage to reference `add_new_item`.
+ * @since 4.3.0 Thêm nhãn `featured_image`, `set_featured_image`, `remove_featured_image`,
+ *              và `use_featured_image`.
+ * @since 4.4.0 Thêm nhãn `archives`, `insert_into_item`, `uploaded_to_this_item`, `filter_items_list`,
+ *              `items_list_navigation`, và `items_list`.
+ * @since 4.6.0 Chuyển đổi tham số `$post_type` để chấp nhận đối tượng `WP_Post_Type`.
+ * @since 4.7.0 Thêm nhãn `view_items` và `attributes`.
+ * @since 5.0.0 Thêm nhãn `item_published`, `item_published_privately`, `item_reverted_to_draft`,
+ *              `item_scheduled`, và `item_updated`.
+ * @since 5.7.0 Thêm nhãn `filter_by_date`.
+ * @since 5.8.0 Thêm nhãn `item_link` và `item_link_description`.
+ * @since 6.3.0 Thêm nhãn `item_trashed`.
+ * @since 6.4.0 Thay đổi giá trị mặc định cho nhãn `add_new` để bao gồm loại nội dung.
+ *              Điều này khớp với `add_new_item` và cung cấp thêm ngữ cảnh cho khả năng truy cập tốt hơn.
+ * @since 6.6.0 Thêm nhãn `template_name`.
+ * @since 6.7.0 Khôi phục giá trị mặc định trước 6.4.0 cho nhãn `add_new` và cập nhật tài liệu.
+ *              Cập nhật cách sử dụng trong lõi để tham chiếu `add_new_item`.
  *
  * @access private
  *
- * @param object|WP_Post_Type $post_type_object Post type object.
- * @return object Object with all the labels as member variables.
+ * @param object|WP_Post_Type $post_type_object Đối tượng post type.
+ * @return object Đối tượng chứa tất cả nhãn dưới dạng biến thành viên.
  */
 function get_post_type_labels( $post_type_object ) {
 	$nohier_vs_hier_defaults = WP_Post_Type::get_default_labels();
@@ -2113,12 +2111,12 @@ function get_post_type_labels( $post_type_object ) {
 	$default_labels = clone $labels;
 
 	/**
-	 * Filters the labels of a specific post type.
+	 * Lọc các nhãn của một post type cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$post_type`, refers to
-	 * the post type slug.
+	 * Phần động của tên hook, `$post_type`, tham chiếu đến
+	 * slug của post type.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `post_type_labels_post`
 	 *  - `post_type_labels_page`
@@ -2126,28 +2124,28 @@ function get_post_type_labels( $post_type_object ) {
 	 *
 	 * @since 3.5.0
 	 *
-	 * @see get_post_type_labels() for the full list of labels.
+	 * @see get_post_type_labels() để biết danh sách đầy đủ các nhãn.
 	 *
-	 * @param object $labels Object with labels for the post type as member variables.
+	 * @param object $labels Đối tượng chứa các nhãn cho post type dưới dạng biến thành viên.
 	 */
 	$labels = apply_filters( "post_type_labels_{$post_type}", $labels );
 
-	// Ensure that the filtered labels contain all required default values.
+	// Đảm bảo rằng các nhãn đã lọc chứa tất cả giá trị mặc định cần thiết.
 	$labels = (object) array_merge( (array) $default_labels, (array) $labels );
 
 	return $labels;
 }
 
 /**
- * Builds an object with custom-something object (post type, taxonomy) labels
- * out of a custom-something object
+ * Xây dựng đối tượng chứa các nhãn của đối tượng tùy chỉnh (post type, taxonomy)
+ * từ một đối tượng tùy chỉnh.
  *
  * @since 3.0.0
  * @access private
  *
- * @param object $data_object             A custom-something object.
- * @param array  $nohier_vs_hier_defaults Hierarchical vs non-hierarchical default labels.
- * @return object Object containing labels for the given custom-something object.
+ * @param object $data_object             Đối tượng tùy chỉnh.
+ * @param array  $nohier_vs_hier_defaults Nhãn mặc định phân cấp so với không phân cấp.
+ * @return object Đối tượng chứa nhãn cho đối tượng tùy chỉnh đã cho.
  */
 function _get_custom_object_labels( $data_object, $nohier_vs_hier_defaults ) {
 	$data_object->labels = (array) $data_object->labels;
@@ -2191,7 +2189,7 @@ function _get_custom_object_labels( $data_object, $nohier_vs_hier_defaults ) {
 }
 
 /**
- * Adds submenus for post types.
+ * Thêm menu con cho các post type.
  *
  * @access private
  * @since 3.1.0
@@ -2199,7 +2197,7 @@ function _get_custom_object_labels( $data_object, $nohier_vs_hier_defaults ) {
 function _add_post_type_submenus() {
 	foreach ( get_post_types( array( 'show_ui' => true ) ) as $ptype ) {
 		$ptype_obj = get_post_type_object( $ptype );
-		// Sub-menus only.
+		// Chỉ menu con.
 		if ( ! $ptype_obj->show_in_menu || true === $ptype_obj->show_in_menu ) {
 			continue;
 		}
@@ -2208,22 +2206,22 @@ function _add_post_type_submenus() {
 }
 
 /**
- * Registers support of certain features for a post type.
+ * Đăng ký hỗ trợ các tính năng nhất định cho một post type.
  *
- * All core features are directly associated with a functional area of the edit
- * screen, such as the editor or a meta box. Features include: 'title', 'editor',
+ * Tất cả tính năng lõi đều liên kết trực tiếp với một khu vực chức năng của màn hình
+ * chỉnh sửa, như trình soạn thảo hoặc meta box. Các tính năng bao gồm: 'title', 'editor',
  * 'comments', 'revisions', 'trackbacks', 'author', 'excerpt', 'page-attributes',
- * 'thumbnail', 'custom-fields', and 'post-formats'.
+ * 'thumbnail', 'custom-fields', và 'post-formats'.
  *
- * Additionally, the 'revisions' feature dictates whether the post type will
- * store revisions, the 'autosave' feature dictates whether the post type
- * will be autosaved, and the 'comments' feature dictates whether the comments
- * count will show on the edit screen.
+ * Ngoài ra, tính năng 'revisions' quyết định post type có lưu bản sửa đổi không,
+ * tính năng 'autosave' quyết định post type có được tự động lưu không,
+ * và tính năng 'comments' quyết định số đếm bình luận có hiển thị
+ * trên màn hình chỉnh sửa không.
  *
- * A third, optional parameter can also be passed along with a feature to provide
- * additional information about supporting that feature.
+ * Tham số thứ ba, tùy chọn, cũng có thể được truyền cùng với tính năng để cung cấp
+ * thông tin bổ sung về việc hỗ trợ tính năng đó.
  *
- * Example usage:
+ * Ví dụ sử dụng:
  *
  *     add_post_type_support( 'my_post_type', 'comments' );
  *     add_post_type_support( 'my_post_type', array(
@@ -2234,15 +2232,15 @@ function _add_post_type_submenus() {
  *     ) );
  *
  * @since 3.0.0
- * @since 5.3.0 Formalized the existing and already documented `...$args` parameter
- *              by adding it to the function signature.
+ * @since 5.3.0 Chính thức hóa tham số `...$args` đã có và đã được ghi nhận
+ *              bằng cách thêm vào chữ ký hàm.
  *
  * @global array $_wp_post_type_features
  *
- * @param string       $post_type The post type for which to add the feature.
- * @param string|array $feature   The feature being added, accepts an array of
- *                                feature strings or a single string.
- * @param mixed        ...$args   Optional extra arguments to pass along with certain features.
+ * @param string       $post_type Post type cần thêm tính năng.
+ * @param string|array $feature   Tính năng được thêm, chấp nhận mảng các chuỗi
+ *                                tính năng hoặc một chuỗi đơn.
+ * @param mixed        ...$args   Các đối số bổ sung tùy chọn để truyền cùng với một số tính năng.
  */
 function add_post_type_support( $post_type, $feature, ...$args ) {
 	global $_wp_post_type_features;
@@ -2258,14 +2256,14 @@ function add_post_type_support( $post_type, $feature, ...$args ) {
 }
 
 /**
- * Removes support for a feature from a post type.
+ * Gỡ bỏ hỗ trợ một tính năng từ post type.
  *
  * @since 3.0.0
  *
  * @global array $_wp_post_type_features
  *
- * @param string $post_type The post type for which to remove the feature.
- * @param string $feature   The feature being removed.
+ * @param string $post_type Post type cần gỡ bỏ tính năng.
+ * @param string $feature   Tính năng được gỡ bỏ.
  */
 function remove_post_type_support( $post_type, $feature ) {
 	global $_wp_post_type_features;
@@ -2274,14 +2272,14 @@ function remove_post_type_support( $post_type, $feature ) {
 }
 
 /**
- * Gets all the post type features
+ * Lấy tất cả tính năng của post type.
  *
  * @since 3.4.0
  *
  * @global array $_wp_post_type_features
  *
- * @param string $post_type The post type.
- * @return array Post type supports list.
+ * @param string $post_type Post type.
+ * @return array Danh sách các tính năng mà post type hỗ trợ.
  */
 function get_all_post_type_supports( $post_type ) {
 	global $_wp_post_type_features;
@@ -2294,15 +2292,15 @@ function get_all_post_type_supports( $post_type ) {
 }
 
 /**
- * Checks a post type's support for a given feature.
+ * Kiểm tra xem post type có hỗ trợ một tính năng đã cho hay không.
  *
  * @since 3.0.0
  *
  * @global array $_wp_post_type_features
  *
- * @param string $post_type The post type being checked.
- * @param string $feature   The feature being checked.
- * @return bool Whether the post type supports the given feature.
+ * @param string $post_type Post type đang được kiểm tra.
+ * @param string $feature   Tính năng đang được kiểm tra.
+ * @return bool Post type có hỗ trợ tính năng đã cho hay không.
  */
 function post_type_supports( $post_type, $feature ) {
 	global $_wp_post_type_features;
@@ -2311,18 +2309,18 @@ function post_type_supports( $post_type, $feature ) {
 }
 
 /**
- * Retrieves a list of post type names that support a specific feature.
+ * Lấy danh sách tên các post type hỗ trợ một tính năng cụ thể.
  *
  * @since 4.5.0
  *
- * @global array $_wp_post_type_features Post type features
+ * @global array $_wp_post_type_features Tính năng của post type.
  *
- * @param array|string $feature  Single feature or an array of features the post types should support.
- * @param string       $operator Optional. The logical operation to perform. 'or' means
- *                               only one element from the array needs to match; 'and'
- *                               means all elements must match; 'not' means no elements may
- *                               match. Default 'and'.
- * @return string[] A list of post type names.
+ * @param array|string $feature  Tính năng đơn hoặc mảng các tính năng mà post type cần hỗ trợ.
+ * @param string       $operator Tùy chọn. Phép toán logic cần thực hiện. 'or' nghĩa là
+ *                               chỉ cần một phần tử từ mảng khớp; 'and'
+ *                               nghĩa là tất cả phần tử phải khớp; 'not' nghĩa là không phần tử nào
+ *                               được khớp. Mặc định 'and'.
+ * @return string[] Danh sách tên các post type.
  */
 function get_post_types_by_support( $feature, $operator = 'and' ) {
 	global $_wp_post_type_features;
@@ -2333,18 +2331,18 @@ function get_post_types_by_support( $feature, $operator = 'and' ) {
 }
 
 /**
- * Updates the post type for the post ID.
+ * Cập nhật post type cho ID bài viết.
  *
- * The page or post cache will be cleaned for the post ID.
+ * Bộ nhớ đệm trang hoặc bài viết sẽ được xóa cho ID bài viết.
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int    $post_id   Optional. Post ID to change post type. Default 0.
- * @param string $post_type Optional. Post type. Accepts 'post' or 'page' to
- *                          name a few. Default 'post'.
- * @return int|false Amount of rows changed. Should be 1 for success and 0 for failure.
+ * @param int    $post_id   Tùy chọn. ID bài viết cần thay đổi post type. Mặc định 0.
+ * @param string $post_type Tùy chọn. Post type. Chấp nhận 'post' hoặc 'page'
+ *                          cùng nhiều loại khác. Mặc định 'post'.
+ * @return int|false Số dòng đã thay đổi. Nên là 1 nếu thành công và 0 nếu thất bại.
  */
 function set_post_type( $post_id = 0, $post_type = 'post' ) {
 	global $wpdb;
@@ -2358,18 +2356,18 @@ function set_post_type( $post_id = 0, $post_type = 'post' ) {
 }
 
 /**
- * Determines whether a post type is considered "viewable".
+ * Xác định xem một post type có được coi là "có thể xem" hay không.
  *
- * For built-in post types such as posts and pages, the 'public' value will be evaluated.
- * For all others, the 'publicly_queryable' value will be used.
+ * Đối với các post type tích hợp sẵn như bài viết và trang, giá trị 'public' sẽ được đánh giá.
+ * Đối với tất cả các loại khác, giá trị 'publicly_queryable' sẽ được sử dụng.
  *
  * @since 4.4.0
- * @since 4.5.0 Added the ability to pass a post type name in addition to object.
- * @since 4.6.0 Converted the `$post_type` parameter to accept a `WP_Post_Type` object.
- * @since 5.9.0 Added `is_post_type_viewable` hook to filter the result.
+ * @since 4.5.0 Thêm khả năng truyền tên post type ngoài đối tượng.
+ * @since 4.6.0 Chuyển đổi tham số `$post_type` để chấp nhận đối tượng `WP_Post_Type`.
+ * @since 5.9.0 Thêm hook `is_post_type_viewable` để lọc kết quả.
  *
- * @param string|WP_Post_Type $post_type Post type name or object.
- * @return bool Whether the post type should be considered viewable.
+ * @param string|WP_Post_Type $post_type Tên hoặc đối tượng post type.
+ * @return bool Post type có nên được coi là có thể xem hay không.
  */
 function is_post_type_viewable( $post_type ) {
 	if ( is_scalar( $post_type ) ) {
@@ -2387,33 +2385,33 @@ function is_post_type_viewable( $post_type ) {
 	$is_viewable = $post_type->publicly_queryable || ( $post_type->_builtin && $post_type->public );
 
 	/**
-	 * Filters whether a post type is considered "viewable".
+	 * Lọc xem post type có được coi là "có thể xem" hay không.
 	 *
-	 * The returned filtered value must be a boolean type to ensure
-	 * `is_post_type_viewable()` only returns a boolean. This strictness
-	 * is by design to maintain backwards-compatibility and guard against
-	 * potential type errors in PHP 8.1+. Non-boolean values (even falsey
-	 * and truthy values) will result in the function returning false.
+	 * Giá trị đã lọc trả về phải là kiểu boolean để đảm bảo
+	 * `is_post_type_viewable()` chỉ trả về boolean. Sự nghiêm ngặt này
+	 * được thiết kế để duy trì tương thích ngược và bảo vệ chống lại
+	 * lỗi kiểu tiềm ẩn trong PHP 8.1+. Các giá trị không phải boolean (kể cả falsey
+	 * và truthy) sẽ khiến hàm trả về false.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param bool         $is_viewable Whether the post type is "viewable" (strict type).
-	 * @param WP_Post_Type $post_type   Post type object.
+	 * @param bool         $is_viewable Post type có "có thể xem" hay không (kiểu nghiêm ngặt).
+	 * @param WP_Post_Type $post_type   Đối tượng post type.
 	 */
 	return true === apply_filters( 'is_post_type_viewable', $is_viewable, $post_type );
 }
 
 /**
- * Determines whether a post status is considered "viewable".
+ * Xác định xem trạng thái bài viết có được coi là "có thể xem" hay không.
  *
- * For built-in post statuses such as publish and private, the 'public' value will be evaluated.
- * For all others, the 'publicly_queryable' value will be used.
+ * Đối với trạng thái bài viết tích hợp sẵn như publish và private, giá trị 'public' sẽ được đánh giá.
+ * Đối với tất cả các trạng thái khác, giá trị 'publicly_queryable' sẽ được sử dụng.
  *
  * @since 5.7.0
- * @since 5.9.0 Added `is_post_status_viewable` hook to filter the result.
+ * @since 5.9.0 Thêm hook `is_post_status_viewable` để lọc kết quả.
  *
- * @param string|stdClass $post_status Post status name or object.
- * @return bool Whether the post status should be considered viewable.
+ * @param string|stdClass $post_status Tên hoặc đối tượng trạng thái bài viết.
+ * @return bool Trạng thái bài viết có nên được coi là có thể xem hay không.
  */
 function is_post_status_viewable( $post_status ) {
 	if ( is_scalar( $post_status ) ) {
@@ -2435,32 +2433,32 @@ function is_post_status_viewable( $post_status ) {
 	$is_viewable = $post_status->publicly_queryable || ( $post_status->_builtin && $post_status->public );
 
 	/**
-	 * Filters whether a post status is considered "viewable".
+	 * Lọc xem trạng thái bài viết có được coi là "có thể xem" hay không.
 	 *
-	 * The returned filtered value must be a boolean type to ensure
-	 * `is_post_status_viewable()` only returns a boolean. This strictness
-	 * is by design to maintain backwards-compatibility and guard against
-	 * potential type errors in PHP 8.1+. Non-boolean values (even falsey
-	 * and truthy values) will result in the function returning false.
+	 * Giá trị đã lọc trả về phải là kiểu boolean để đảm bảo
+	 * `is_post_status_viewable()` chỉ trả về boolean. Sự nghiêm ngặt này
+	 * được thiết kế để duy trì tương thích ngược và bảo vệ chống lại
+	 * lỗi kiểu tiềm ẩn trong PHP 8.1+. Các giá trị không phải boolean (kể cả falsey
+	 * và truthy) sẽ khiến hàm trả về false.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param bool     $is_viewable Whether the post status is "viewable" (strict type).
-	 * @param stdClass $post_status Post status object.
+	 * @param bool     $is_viewable Trạng thái bài viết có "có thể xem" hay không (kiểu nghiêm ngặt).
+	 * @param stdClass $post_status Đối tượng trạng thái bài viết.
 	 */
 	return true === apply_filters( 'is_post_status_viewable', $is_viewable, $post_status );
 }
 
 /**
- * Determines whether a post is publicly viewable.
+ * Xác định xem bài viết có thể xem công khai hay không.
  *
- * Posts are considered publicly viewable if both the post status and post type
- * are viewable.
+ * Bài viết được coi là có thể xem công khai nếu cả trạng thái bài viết và post type
+ * đều có thể xem.
  *
  * @since 5.7.0
  *
- * @param int|WP_Post|null $post Optional. Post ID or post object. Defaults to global $post.
- * @return bool Whether the post is publicly viewable.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định global $post.
+ * @return bool Bài viết có thể xem công khai hay không.
  */
 function is_post_publicly_viewable( $post = null ) {
 	$post = get_post( $post );
@@ -2476,12 +2474,12 @@ function is_post_publicly_viewable( $post = null ) {
 }
 
 /**
- * Determines whether a post is embeddable.
+ * Xác định xem bài viết có thể nhúng (embed) hay không.
  *
  * @since 6.8.0
  *
- * @param int|WP_Post|null $post Optional. Post ID or `WP_Post` object. Defaults to global $post.
- * @return bool Whether the post should be considered embeddable.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng `WP_Post`. Mặc định global $post.
+ * @return bool Bài viết có nên được coi là có thể nhúng hay không.
  */
 function is_post_embeddable( $post = null ) {
 	$post = get_post( $post );
@@ -2499,27 +2497,27 @@ function is_post_embeddable( $post = null ) {
 	$is_embeddable = $post_type->embeddable;
 
 	/**
-	 * Filter whether a post is embeddable.
+	 * Lọc xem bài viết có thể nhúng hay không.
 	 *
 	 * @since 6.8.0
 	 *
-	 * @param bool    $is_embeddable Whether the post is embeddable.
-	 * @param WP_Post $post          Post object.
+	 * @param bool    $is_embeddable Bài viết có thể nhúng hay không.
+	 * @param WP_Post $post          Đối tượng bài viết.
 	 */
 	return apply_filters( 'is_post_embeddable', $is_embeddable, $post );
 }
 
 /**
- * Retrieves an array of the latest posts, or posts matching the given criteria.
+ * Lấy mảng các bài viết mới nhất, hoặc bài viết khớp với tiêu chí đã cho.
  *
- * For more information on the accepted arguments, see the
+ * Để biết thêm thông tin về các đối số được chấp nhận, xem tài liệu
  * {@link https://developer.wordpress.org/reference/classes/wp_query/
- * WP_Query} documentation in the Developer Handbook.
+ * WP_Query} trong Sổ tay Nhà phát triển.
  *
- * The `$ignore_sticky_posts` and `$no_found_rows` arguments are ignored by
- * this function and both are set to `true`.
+ * Các đối số `$ignore_sticky_posts` và `$no_found_rows` bị bỏ qua bởi
+ * hàm này và cả hai đều được đặt thành `true`.
  *
- * The defaults are as follows:
+ * Các giá trị mặc định như sau:
  *
  * @since 1.2.0
  *
@@ -2527,18 +2525,18 @@ function is_post_embeddable( $post = null ) {
  * @see WP_Query::parse_query()
  *
  * @param array $args {
- *     Optional. Arguments to retrieve posts. See WP_Query::parse_query() for all available arguments.
+ *     Tùy chọn. Các đối số để lấy bài viết. Xem WP_Query::parse_query() để biết tất cả đối số có sẵn.
  *
- *     @type int        $numberposts      Total number of posts to retrieve. Is an alias of `$posts_per_page`
- *                                        in WP_Query. Accepts -1 for all. Default 5.
- *     @type int|string $category         Category ID or comma-separated list of IDs (this or any children).
- *                                        Is an alias of `$cat` in WP_Query. Default 0.
- *     @type int[]      $include          An array of post IDs to retrieve, sticky posts will be included.
- *                                        Is an alias of `$post__in` in WP_Query. Default empty array.
- *     @type int[]      $exclude          An array of post IDs not to retrieve. Default empty array.
- *     @type bool       $suppress_filters Whether to suppress filters. Default true.
+ *     @type int        $numberposts      Tổng số bài viết cần lấy. Là bí danh của `$posts_per_page`
+ *                                        trong WP_Query. Chấp nhận -1 để lấy tất cả. Mặc định 5.
+ *     @type int|string $category         ID chuyên mục hoặc danh sách ID phân cách bằng dấu phẩy (chuyên mục này hoặc con của nó).
+ *                                        Là bí danh của `$cat` trong WP_Query. Mặc định 0.
+ *     @type int[]      $include          Mảng ID bài viết cần lấy, bài viết ghim sẽ được bao gồm.
+ *                                        Là bí danh của `$post__in` trong WP_Query. Mặc định mảng rỗng.
+ *     @type int[]      $exclude          Mảng ID bài viết không lấy. Mặc định mảng rỗng.
+ *     @type bool       $suppress_filters Có bỏ qua các filter hay không. Mặc định true.
  * }
- * @return WP_Post[]|int[] Array of post objects or post IDs.
+ * @return WP_Post[]|int[] Mảng các đối tượng bài viết hoặc ID bài viết.
  */
 function get_posts( $args = null ) {
 	$defaults = array(
@@ -2566,7 +2564,7 @@ function get_posts( $args = null ) {
 	}
 	if ( ! empty( $parsed_args['include'] ) ) {
 		$incposts                      = wp_parse_id_list( $parsed_args['include'] );
-		$parsed_args['posts_per_page'] = count( $incposts );  // Only the number of posts included.
+		$parsed_args['posts_per_page'] = count( $incposts );  // Chỉ số lượng bài viết được bao gồm.
 		$parsed_args['post__in']       = $incposts;
 	} elseif ( ! empty( $parsed_args['exclude'] ) ) {
 		$parsed_args['post__not_in'] = wp_parse_id_list( $parsed_args['exclude'] );
@@ -2580,31 +2578,31 @@ function get_posts( $args = null ) {
 }
 
 //
-// Post meta functions.
+// Các hàm post meta.
 //
 
 /**
- * Adds a meta field to the given post.
+ * Thêm trường meta cho bài viết đã cho.
  *
- * Post meta data is called "Custom Fields" on the Administration Screen.
+ * Dữ liệu meta bài viết được gọi là "Trường Tùy chỉnh" trên Màn hình Quản trị.
  *
  * @since 1.5.0
  *
- * @param int    $post_id    Post ID.
- * @param string $meta_key   Metadata name.
- * @param mixed  $meta_value Metadata value. Arrays and objects are stored as serialized data and
- *                           will be returned as the same type when retrieved. Other data types will
- *                           be stored as strings in the database:
- *                           - false is stored and retrieved as an empty string ('')
- *                           - true is stored and retrieved as '1'
- *                           - numbers (both integer and float) are stored and retrieved as strings
- *                           Must be serializable if non-scalar.
- * @param bool   $unique     Optional. Whether the same key should not be added.
- *                           Default false.
- * @return int|false Meta ID on success, false on failure.
+ * @param int    $post_id    ID bài viết.
+ * @param string $meta_key   Tên metadata.
+ * @param mixed  $meta_value Giá trị metadata. Mảng và đối tượng được lưu dạng serialize và
+ *                           sẽ được trả về cùng kiểu khi lấy ra. Các kiểu dữ liệu khác sẽ
+ *                           được lưu dạng chuỗi trong cơ sở dữ liệu:
+ *                           - false được lưu và trả về dạng chuỗi rỗng ('')
+ *                           - true được lưu và trả về dạng '1'
+ *                           - số (cả integer và float) được lưu và trả về dạng chuỗi
+ *                           Phải có thể serialize nếu không phải kiểu vô hướng.
+ * @param bool   $unique     Tùy chọn. Có không thêm cùng khóa hay không.
+ *                           Mặc định false.
+ * @return int|false ID Meta nếu thành công, false nếu thất bại.
  */
 function add_post_meta( $post_id, $meta_key, $meta_value, $unique = false ) {
-	// Make sure meta is added to the post, not a revision.
+	// Đảm bảo meta được thêm vào bài viết, không phải bản sửa đổi.
 	$the_post = wp_is_post_revision( $post_id );
 	if ( $the_post ) {
 		$post_id = $the_post;
@@ -2614,23 +2612,23 @@ function add_post_meta( $post_id, $meta_key, $meta_value, $unique = false ) {
 }
 
 /**
- * Deletes a post meta field for the given post ID.
+ * Xóa trường meta bài viết cho ID bài viết đã cho.
  *
- * You can match based on the key, or key and value. Removing based on key and
- * value, will keep from removing duplicate metadata with the same key. It also
- * allows removing all metadata matching the key, if needed.
+ * Bạn có thể so khớp dựa trên khóa, hoặc khóa và giá trị. Xóa dựa trên khóa và
+ * giá trị sẽ tránh việc xóa metadata trùng lặp có cùng khóa. Nó cũng
+ * cho phép xóa tất cả metadata khớp với khóa, nếu cần.
  *
  * @since 1.5.0
  *
- * @param int    $post_id    Post ID.
- * @param string $meta_key   Metadata name.
- * @param mixed  $meta_value Optional. Metadata value. If provided,
- *                           rows will only be removed that match the value.
- *                           Must be serializable if non-scalar. Default empty.
- * @return bool True on success, false on failure.
+ * @param int    $post_id    ID bài viết.
+ * @param string $meta_key   Tên metadata.
+ * @param mixed  $meta_value Tùy chọn. Giá trị metadata. Nếu được cung cấp,
+ *                           chỉ các dòng khớp với giá trị mới bị xóa.
+ *                           Phải có thể serialize nếu không phải kiểu vô hướng. Mặc định rỗng.
+ * @return bool True nếu thành công, false nếu thất bại.
  */
 function delete_post_meta( $post_id, $meta_key, $meta_value = '' ) {
-	// Make sure meta is deleted from the post, not from a revision.
+	// Đảm bảo meta được xóa từ bài viết, không phải từ bản sửa đổi.
 	$the_post = wp_is_post_revision( $post_id );
 	if ( $the_post ) {
 		$post_id = $the_post;
@@ -2640,55 +2638,55 @@ function delete_post_meta( $post_id, $meta_key, $meta_value = '' ) {
 }
 
 /**
- * Retrieves a post meta field for the given post ID.
+ * Lấy trường meta bài viết cho ID bài viết đã cho.
  *
  * @since 1.5.0
  *
- * @param int    $post_id Post ID.
- * @param string $key     Optional. The meta key to retrieve. By default,
- *                        returns data for all keys. Default empty.
- * @param bool   $single  Optional. Whether to return a single value.
- *                        This parameter has no effect if `$key` is not specified.
- *                        Default false.
- * @return mixed An array of values if `$single` is false.
- *               The value of the meta field if `$single` is true.
- *               False for an invalid `$post_id` (non-numeric, zero, or negative value).
- *               An empty array if a valid but non-existing post ID is passed and `$single` is false.
- *               An empty string if a valid but non-existing post ID is passed and `$single` is true.
- *               Note: Non-serialized values are returned as strings:
- *               - false values are returned as empty strings ('')
- *               - true values are returned as '1'
- *               - numbers (both integer and float) are returned as strings
- *               Arrays and objects retain their original type.
+ * @param int    $post_id ID bài viết.
+ * @param string $key     Tùy chọn. Khóa meta cần lấy. Mặc định,
+ *                        trả về dữ liệu cho tất cả các khóa. Mặc định rỗng.
+ * @param bool   $single  Tùy chọn. Có trả về giá trị đơn hay không.
+ *                        Tham số này không có tác dụng nếu `$key` không được chỉ định.
+ *                        Mặc định false.
+ * @return mixed Mảng các giá trị nếu `$single` là false.
+ *               Giá trị của trường meta nếu `$single` là true.
+ *               False cho `$post_id` không hợp lệ (không phải số, bằng không, hoặc giá trị âm).
+ *               Mảng rỗng nếu ID bài viết hợp lệ nhưng không tồn tại được truyền và `$single` là false.
+ *               Chuỗi rỗng nếu ID bài viết hợp lệ nhưng không tồn tại được truyền và `$single` là true.
+ *               Lưu ý: Các giá trị không serialize được trả về dạng chuỗi:
+ *               - giá trị false được trả về dạng chuỗi rỗng ('')
+ *               - giá trị true được trả về dạng '1'
+ *               - số (cả integer và float) được trả về dạng chuỗi
+ *               Mảng và đối tượng giữ nguyên kiểu gốc.
  */
 function get_post_meta( $post_id, $key = '', $single = false ) {
 	return get_metadata( 'post', $post_id, $key, $single );
 }
 
 /**
- * Updates a post meta field based on the given post ID.
+ * Cập nhật trường meta bài viết dựa trên ID bài viết đã cho.
  *
- * Use the `$prev_value` parameter to differentiate between meta fields with the
- * same key and post ID.
+ * Sử dụng tham số `$prev_value` để phân biệt giữa các trường meta có cùng
+ * khóa và ID bài viết.
  *
- * If the meta field for the post does not exist, it will be added and its ID returned.
+ * Nếu trường meta cho bài viết không tồn tại, nó sẽ được thêm mới và ID được trả về.
  *
- * Can be used in place of add_post_meta().
+ * Có thể dùng thay thế cho add_post_meta().
  *
  * @since 1.5.0
  *
- * @param int    $post_id    Post ID.
- * @param string $meta_key   Metadata key.
- * @param mixed  $meta_value Metadata value. Must be serializable if non-scalar.
- * @param mixed  $prev_value Optional. Previous value to check before updating.
- *                           If specified, only update existing metadata entries with
- *                           this value. Otherwise, update all entries. Default empty.
- * @return int|bool Meta ID if the key didn't exist, true on successful update,
- *                  false on failure or if the value passed to the function
- *                  is the same as the one that is already in the database.
+ * @param int    $post_id    ID bài viết.
+ * @param string $meta_key   Khóa metadata.
+ * @param mixed  $meta_value Giá trị metadata. Phải có thể serialize nếu không phải kiểu vô hướng.
+ * @param mixed  $prev_value Tùy chọn. Giá trị trước đó cần kiểm tra trước khi cập nhật.
+ *                           Nếu chỉ định, chỉ cập nhật các mục metadata hiện có với
+ *                           giá trị này. Ngược lại, cập nhật tất cả các mục. Mặc định rỗng.
+ * @return int|bool ID Meta nếu khóa chưa tồn tại, true nếu cập nhật thành công,
+ *                  false nếu thất bại hoặc nếu giá trị truyền vào hàm
+ *                  giống với giá trị đã có trong cơ sở dữ liệu.
  */
 function update_post_meta( $post_id, $meta_key, $meta_value, $prev_value = '' ) {
-	// Make sure meta is updated for the post, not for a revision.
+	// Đảm bảo meta được cập nhật cho bài viết, không phải cho bản sửa đổi.
 	$the_post = wp_is_post_revision( $post_id );
 	if ( $the_post ) {
 		$post_id = $the_post;
@@ -2698,28 +2696,28 @@ function update_post_meta( $post_id, $meta_key, $meta_value, $prev_value = '' ) 
 }
 
 /**
- * Deletes everything from post meta matching the given meta key.
+ * Xóa mọi thứ từ post meta khớp với khóa meta đã cho.
  *
  * @since 2.3.0
  *
- * @param string $post_meta_key Key to search for when deleting.
- * @return bool Whether the post meta key was deleted from the database.
+ * @param string $post_meta_key Khóa cần tìm khi xóa.
+ * @return bool Khóa meta bài viết có được xóa khỏi cơ sở dữ liệu hay không.
  */
 function delete_post_meta_by_key( $post_meta_key ) {
 	return delete_metadata( 'post', null, $post_meta_key, '', true );
 }
 
 /**
- * Registers a meta key for posts.
+ * Đăng ký khóa meta cho bài viết.
  *
  * @since 4.9.8
  *
- * @param string $post_type Post type to register a meta key for. Pass an empty string
- *                          to register the meta key across all existing post types.
- * @param string $meta_key  The meta key to register.
- * @param array  $args      Data used to describe the meta key when registered. See
- *                          {@see register_meta()} for a list of supported arguments.
- * @return bool True if the meta key was successfully registered, false if not.
+ * @param string $post_type Post type cần đăng ký khóa meta. Truyền chuỗi rỗng
+ *                          để đăng ký khóa meta cho tất cả post type hiện có.
+ * @param string $meta_key  Khóa meta cần đăng ký.
+ * @param array  $args      Dữ liệu dùng để mô tả khóa meta khi đăng ký. Xem
+ *                          {@see register_meta()} để biết danh sách đối số được hỗ trợ.
+ * @return bool True nếu khóa meta được đăng ký thành công, false nếu không.
  */
 function register_post_meta( $post_type, $meta_key, array $args ) {
 	$args['object_subtype'] = $post_type;
@@ -2728,32 +2726,32 @@ function register_post_meta( $post_type, $meta_key, array $args ) {
 }
 
 /**
- * Unregisters a meta key for posts.
+ * Hủy đăng ký khóa meta cho bài viết.
  *
  * @since 4.9.8
  *
- * @param string $post_type Post type the meta key is currently registered for. Pass
- *                          an empty string if the meta key is registered across all
- *                          existing post types.
- * @param string $meta_key  The meta key to unregister.
- * @return bool True on success, false if the meta key was not previously registered.
+ * @param string $post_type Post type mà khóa meta hiện đang được đăng ký. Truyền
+ *                          chuỗi rỗng nếu khóa meta được đăng ký cho tất cả
+ *                          post type hiện có.
+ * @param string $meta_key  Khóa meta cần hủy đăng ký.
+ * @return bool True nếu thành công, false nếu khóa meta chưa được đăng ký trước đó.
  */
 function unregister_post_meta( $post_type, $meta_key ) {
 	return unregister_meta_key( 'post', $meta_key, $post_type );
 }
 
 /**
- * Retrieves post meta fields, based on post ID.
+ * Lấy các trường meta bài viết, dựa trên ID bài viết.
  *
- * The post meta fields are retrieved from the cache where possible,
- * so the function is optimized to be called more than once.
+ * Các trường meta bài viết được lấy từ bộ nhớ đệm khi có thể,
+ * nên hàm được tối ưu để gọi nhiều lần.
  *
  * @since 1.2.0
  *
- * @param int $post_id Optional. Post ID. Default is the ID of the global `$post`.
- * @return mixed An array of values.
- *               False for an invalid `$post_id` (non-numeric, zero, or negative value).
- *               An empty string if a valid but non-existing post ID is passed.
+ * @param int $post_id Tùy chọn. ID bài viết. Mặc định là ID của global `$post`.
+ * @return mixed Mảng các giá trị.
+ *               False cho `$post_id` không hợp lệ (không phải số, bằng không, hoặc giá trị âm).
+ *               Chuỗi rỗng nếu ID bài viết hợp lệ nhưng không tồn tại được truyền vào.
  */
 function get_post_custom( $post_id = 0 ) {
 	$post_id = absint( $post_id );
@@ -2766,14 +2764,14 @@ function get_post_custom( $post_id = 0 ) {
 }
 
 /**
- * Retrieves meta field names for a post.
+ * Lấy tên các trường meta cho bài viết.
  *
- * If there are no meta fields, then nothing (null) will be returned.
+ * Nếu không có trường meta, thì không có gì (null) sẽ được trả về.
  *
  * @since 1.2.0
  *
- * @param int $post_id Optional. Post ID. Default is the ID of the global `$post`.
- * @return array|void Array of the keys, if retrieved.
+ * @param int $post_id Tùy chọn. ID bài viết. Mặc định là ID của global `$post`.
+ * @return array|void Mảng các khóa, nếu lấy được.
  */
 function get_post_custom_keys( $post_id = 0 ) {
 	$custom = get_post_custom( $post_id );
@@ -2789,16 +2787,16 @@ function get_post_custom_keys( $post_id = 0 ) {
 }
 
 /**
- * Retrieves values for a custom post field.
+ * Lấy giá trị cho trường tùy chỉnh bài viết.
  *
- * The parameters must not be considered optional. All of the post meta fields
- * will be retrieved and only the meta field key values returned.
+ * Các tham số không nên được coi là tùy chọn. Tất cả các trường meta bài viết
+ * sẽ được lấy và chỉ các giá trị khóa trường meta được trả về.
  *
  * @since 1.2.0
  *
- * @param string $key     Optional. Meta field key. Default empty.
- * @param int    $post_id Optional. Post ID. Default is the ID of the global `$post`.
- * @return array|null Meta field values.
+ * @param string $key     Tùy chọn. Khóa trường meta. Mặc định rỗng.
+ * @param int    $post_id Tùy chọn. ID bài viết. Mặc định là ID của global `$post`.
+ * @return array|null Giá trị trường meta.
  */
 function get_post_custom_values( $key = '', $post_id = 0 ) {
 	if ( ! $key ) {
@@ -2811,19 +2809,19 @@ function get_post_custom_values( $key = '', $post_id = 0 ) {
 }
 
 /**
- * Determines whether a post is sticky.
+ * Xác định xem bài viết có phải là bài ghim hay không.
  *
- * Sticky posts should remain at the top of The Loop. If the post ID is not
- * given, then The Loop ID for the current post will be used.
+ * Bài viết ghim nên nằm ở đầu Vòng lặp (The Loop). Nếu ID bài viết không
+ * được cung cấp, thì ID Vòng lặp cho bài viết hiện tại sẽ được dùng.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 2.7.0
  *
- * @param int $post_id Optional. Post ID. Default is the ID of the global `$post`.
- * @return bool Whether post is sticky.
+ * @param int $post_id Tùy chọn. ID bài viết. Mặc định là ID của global `$post`.
+ * @return bool Bài viết có phải là bài ghim hay không.
  */
 function is_sticky( $post_id = 0 ) {
 	$post_id = absint( $post_id );
@@ -2842,36 +2840,36 @@ function is_sticky( $post_id = 0 ) {
 	}
 
 	/**
-	 * Filters whether a post is sticky.
+	 * Lọc xem bài viết có phải là bài ghim hay không.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param bool $is_sticky Whether a post is sticky.
-	 * @param int  $post_id   Post ID.
+	 * @param bool $is_sticky Bài viết có phải bài ghim hay không.
+	 * @param int  $post_id   ID bài viết.
 	 */
 	return apply_filters( 'is_sticky', $is_sticky, $post_id );
 }
 
 /**
- * Sanitizes every post field.
+ * Làm sạch mọi trường bài viết.
  *
- * If the context is 'raw', then the post object or array will get minimal
- * sanitization of the integer fields.
+ * Nếu ngữ cảnh là 'raw', thì đối tượng hoặc mảng bài viết sẽ được làm sạch
+ * tối thiểu cho các trường kiểu số nguyên.
  *
  * @since 2.3.0
  *
  * @see sanitize_post_field()
  *
- * @param object|WP_Post|array $post    The post object or array
- * @param string               $context Optional. How to sanitize post fields.
- *                                      Accepts 'raw', 'edit', 'db', 'display',
- *                                      'attribute', or 'js'. Default 'display'.
- * @return object|WP_Post|array The now sanitized post object or array (will be the
- *                              same type as `$post`).
+ * @param object|WP_Post|array $post    Đối tượng hoặc mảng bài viết.
+ * @param string               $context Tùy chọn. Cách làm sạch các trường bài viết.
+ *                                      Chấp nhận 'raw', 'edit', 'db', 'display',
+ *                                      'attribute', hoặc 'js'. Mặc định 'display'.
+ * @return object|WP_Post|array Đối tượng hoặc mảng bài viết đã được làm sạch (sẽ có
+ *                              cùng kiểu với `$post`).
  */
 function sanitize_post( $post, $context = 'display' ) {
 	if ( is_object( $post ) ) {
-		// Check if post already filtered for this context.
+		// Kiểm tra xem bài viết đã được lọc cho ngữ cảnh này chưa.
 		if ( isset( $post->filter ) && $context === $post->filter ) {
 			return $post;
 		}
@@ -2883,7 +2881,7 @@ function sanitize_post( $post, $context = 'display' ) {
 		}
 		$post->filter = $context;
 	} elseif ( is_array( $post ) ) {
-		// Check if post already filtered for this context.
+		// Kiểm tra xem bài viết đã được lọc cho ngữ cảnh này chưa.
 		if ( isset( $post['filter'] ) && $context === $post['filter'] ) {
 			return $post;
 		}
@@ -2899,21 +2897,21 @@ function sanitize_post( $post, $context = 'display' ) {
 }
 
 /**
- * Sanitizes a post field based on context.
+ * Làm sạch trường bài viết dựa trên ngữ cảnh.
  *
- * Possible context values are:  'raw', 'edit', 'db', 'display', 'attribute' and
- * 'js'. The 'display' context is used by default. 'attribute' and 'js' contexts
- * are treated like 'display' when calling filters.
+ * Các giá trị ngữ cảnh có thể là: 'raw', 'edit', 'db', 'display', 'attribute' và
+ * 'js'. Ngữ cảnh 'display' được sử dụng mặc định. Ngữ cảnh 'attribute' và 'js'
+ * được xử lý như 'display' khi gọi filter.
  *
  * @since 2.3.0
- * @since 4.4.0 Like `sanitize_post()`, `$context` defaults to 'display'.
+ * @since 4.4.0 Giống `sanitize_post()`, `$context` mặc định là 'display'.
  *
- * @param string $field   The Post Object field name.
- * @param mixed  $value   The Post Object value.
- * @param int    $post_id Post ID.
- * @param string $context Optional. How to sanitize the field. Possible values are 'raw', 'edit',
- *                        'db', 'display', 'attribute' and 'js'. Default 'display'.
- * @return mixed Sanitized value.
+ * @param string $field   Tên trường đối tượng bài viết.
+ * @param mixed  $value   Giá trị đối tượng bài viết.
+ * @param int    $post_id ID bài viết.
+ * @param string $context Tùy chọn. Cách làm sạch trường. Các giá trị có thể là 'raw', 'edit',
+ *                        'db', 'display', 'attribute' và 'js'. Mặc định 'display'.
+ * @return mixed Giá trị đã làm sạch.
  */
 function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 	$int_fields = array( 'ID', 'post_parent', 'menu_order' );
@@ -2921,7 +2919,7 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 		$value = (int) $value;
 	}
 
-	// Fields which contain arrays of integers.
+	// Các trường chứa mảng số nguyên.
 	$array_int_fields = array( 'ancestors' );
 	if ( in_array( $field, $array_int_fields, true ) ) {
 		$value = array_map( 'absint', $value );
@@ -2944,10 +2942,10 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 		if ( $prefixed ) {
 
 			/**
-			 * Filters the value of a specific post field to edit.
+			 * Lọc giá trị của một trường bài viết cụ thể để chỉnh sửa.
 			 *
-			 * The dynamic portion of the hook name, `$field`, refers to the post
-			 * field name. Possible filter names include:
+			 * Phần động của tên hook, `$field`, tham chiếu đến tên
+			 * trường bài viết. Các tên filter có thể bao gồm:
 			 *
 			 *  - `edit_post_author`
 			 *  - `edit_post_date`
@@ -2967,18 +2965,18 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 			 *
 			 * @since 2.3.0
 			 *
-			 * @param mixed $value   Value of the post field.
-			 * @param int   $post_id Post ID.
+			 * @param mixed $value   Giá trị của trường bài viết.
+			 * @param int   $post_id ID bài viết.
 			 */
 			$value = apply_filters( "edit_{$field}", $value, $post_id );
 
 			/**
-			 * Filters the value of a specific post field to edit.
+			 * Lọc giá trị của một trường bài viết cụ thể để chỉnh sửa.
 			 *
-			 * Only applied to post fields with a name which is prefixed with `post_`.
+			 * Chỉ áp dụng cho các trường bài viết có tên bắt đầu bằng `post_`.
 			 *
-			 * The dynamic portion of the hook name, `$field_no_prefix`, refers to the
-			 * post field name minus the `post_` prefix. Possible filter names include:
+			 * Phần động của tên hook, `$field_no_prefix`, tham chiếu đến
+			 * tên trường bài viết không có tiền tố `post_`. Các tên filter có thể bao gồm:
 			 *
 			 *  - `author_edit_pre`
 			 *  - `date_edit_pre`
@@ -2998,18 +2996,18 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 			 *
 			 * @since 2.3.0
 			 *
-			 * @param mixed $value   Value of the post field.
-			 * @param int   $post_id Post ID.
+			 * @param mixed $value   Giá trị của trường bài viết.
+			 * @param int   $post_id ID bài viết.
 			 */
 			$value = apply_filters( "{$field_no_prefix}_edit_pre", $value, $post_id );
 		} else {
 			/**
-			 * Filters the value of a specific post field to edit.
+			 * Lọc giá trị của một trường bài viết cụ thể để chỉnh sửa.
 			 *
-			 * Only applied to post fields not prefixed with `post_`.
+			 * Chỉ áp dụng cho các trường bài viết không có tiền tố `post_`.
 			 *
-			 * The dynamic portion of the hook name, `$field`, refers to the
-			 * post field name. Possible filter names include:
+			 * Phần động của tên hook, `$field`, tham chiếu đến
+			 * tên trường bài viết. Các tên filter có thể bao gồm:
 			 *
 			 *  - `edit_post_ID`
 			 *  - `edit_post_ping_status`
@@ -3022,8 +3020,8 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 			 *
 			 * @since 2.3.0
 			 *
-			 * @param mixed $value   Value of the post field.
-			 * @param int   $post_id Post ID.
+			 * @param mixed $value   Giá trị của trường bài viết.
+			 * @param int   $post_id ID bài viết.
 			 */
 			$value = apply_filters( "edit_post_{$field}", $value, $post_id );
 		}
@@ -3041,12 +3039,12 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 		if ( $prefixed ) {
 
 			/**
-			 * Filters the value of a specific post field before saving.
+			 * Lọc giá trị của một trường bài viết cụ thể trước khi lưu.
 			 *
-			 * Only applied to post fields with a name which is prefixed with `post_`.
+			 * Chỉ áp dụng cho các trường bài viết có tên bắt đầu bằng `post_`.
 			 *
-			 * The dynamic portion of the hook name, `$field`, refers to the post
-			 * field name. Possible filter names include:
+			 * Phần động của tên hook, `$field`, tham chiếu đến tên
+			 * trường bài viết. Các tên filter có thể bao gồm:
 			 *
 			 *  - `pre_post_author`
 			 *  - `pre_post_date`
@@ -3066,17 +3064,17 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 			 *
 			 * @since 2.3.0
 			 *
-			 * @param mixed $value Value of the post field.
+			 * @param mixed $value Giá trị của trường bài viết.
 			 */
 			$value = apply_filters( "pre_{$field}", $value );
 
 			/**
-			 * Filters the value of a specific field before saving.
+			 * Lọc giá trị của một trường cụ thể trước khi lưu.
 			 *
-			 * Only applied to post fields with a name which is prefixed with `post_`.
+			 * Chỉ áp dụng cho các trường bài viết có tên bắt đầu bằng `post_`.
 			 *
-			 * The dynamic portion of the hook name, `$field_no_prefix`, refers to the
-			 * post field name minus the `post_` prefix. Possible filter names include:
+			 * Phần động của tên hook, `$field_no_prefix`, tham chiếu đến
+			 * tên trường bài viết không có tiền tố `post_`. Các tên filter có thể bao gồm:
 			 *
 			 *  - `author_save_pre`
 			 *  - `date_save_pre`
@@ -3096,17 +3094,17 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 			 *
 			 * @since 2.3.0
 			 *
-			 * @param mixed $value Value of the post field.
+			 * @param mixed $value Giá trị của trường bài viết.
 			 */
 			$value = apply_filters( "{$field_no_prefix}_save_pre", $value );
 		} else {
 			/**
-			 * Filters the value of a specific field before saving.
+			 * Lọc giá trị của một trường cụ thể trước khi lưu.
 			 *
-			 * Only applied to post fields with a name which is prefixed with `post_`.
+			 * Chỉ áp dụng cho các trường bài viết có tên bắt đầu bằng `post_`.
 			 *
-			 * The dynamic portion of the hook name, `$field_no_prefix`, refers to the
-			 * post field name minus the `post_` prefix. Possible filter names include:
+			 * Phần động của tên hook, `$field_no_prefix`, tham chiếu đến
+			 * tên trường bài viết không có tiền tố `post_`. Các tên filter có thể bao gồm:
 			 *
 			 *  - `pre_post_ID`
 			 *  - `pre_post_comment_status`
@@ -3119,17 +3117,17 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 			 *
 			 * @since 2.3.0
 			 *
-			 * @param mixed $value Value of the post field.
+			 * @param mixed $value Giá trị của trường bài viết.
 			 */
 			$value = apply_filters( "pre_post_{$field}", $value );
 
 			/**
-			 * Filters the value of a specific post field before saving.
+			 * Lọc giá trị của một trường bài viết cụ thể trước khi lưu.
 			 *
-			 * Only applied to post fields with a name which is *not* prefixed with `post_`.
+			 * Chỉ áp dụng cho các trường bài viết có tên *không* bắt đầu bằng `post_`.
 			 *
-			 * The dynamic portion of the hook name, `$field`, refers to the post
-			 * field name. Possible filter names include:
+			 * Phần động của tên hook, `$field`, tham chiếu đến tên
+			 * trường bài viết. Các tên filter có thể bao gồm:
 			 *
 			 *  - `ID_pre`
 			 *  - `comment_status_pre`
@@ -3142,22 +3140,22 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 			 *
 			 * @since 2.3.0
 			 *
-			 * @param mixed $value Value of the post field.
+			 * @param mixed $value Giá trị của trường bài viết.
 			 */
 			$value = apply_filters( "{$field}_pre", $value );
 		}
 	} else {
 
-		// Use display filters by default.
+		// Sử dụng filter hiển thị theo mặc định.
 		if ( $prefixed ) {
 
 			/**
-			 * Filters the value of a specific post field for display.
+			 * Lọc giá trị của một trường bài viết cụ thể để hiển thị.
 			 *
-			 * Only applied to post fields with a name which is prefixed with `post_`.
+			 * Chỉ áp dụng cho các trường bài viết có tên bắt đầu bằng `post_`.
 			 *
-			 * The dynamic portion of the hook name, `$field`, refers to the post
-			 * field name. Possible filter names include:
+			 * Phần động của tên hook, `$field`, tham chiếu đến tên
+			 * trường bài viết. Các tên filter có thể bao gồm:
 			 *
 			 *  - `post_author`
 			 *  - `post_date`
@@ -3177,21 +3175,21 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 			 *
 			 * @since 2.3.0
 			 *
-			 * @param mixed  $value   Value of the prefixed post field.
-			 * @param int    $post_id Post ID.
-			 * @param string $context Context for how to sanitize the field.
-			 *                        Accepts 'raw', 'edit', 'db', 'display',
-			 *                        'attribute', or 'js'. Default 'display'.
+			 * @param mixed  $value   Giá trị của trường bài viết có tiền tố.
+			 * @param int    $post_id ID bài viết.
+			 * @param string $context Ngữ cảnh cách làm sạch trường.
+			 *                        Chấp nhận 'raw', 'edit', 'db', 'display',
+			 *                        'attribute', hoặc 'js'. Mặc định 'display'.
 			 */
 			$value = apply_filters( "{$field}", $value, $post_id, $context );
 		} else {
 			/**
-			 * Filters the value of a specific post field for display.
+			 * Lọc giá trị của một trường bài viết cụ thể để hiển thị.
 			 *
-			 * Only applied to post fields name which is *not* prefixed with `post_`.
+			 * Chỉ áp dụng cho tên trường bài viết *không* bắt đầu bằng `post_`.
 			 *
-			 * The dynamic portion of the hook name, `$field`, refers to the post
-			 * field name. Possible filter names include:
+			 * Phần động của tên hook, `$field`, tham chiếu đến tên
+			 * trường bài viết. Các tên filter có thể bao gồm:
 			 *
 			 *  - `post_ID`
 			 *  - `post_comment_status`
@@ -3204,11 +3202,11 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 			 *
 			 * @since 2.3.0
 			 *
-			 * @param mixed  $value   Value of the unprefixed post field.
-			 * @param int    $post_id Post ID
-			 * @param string $context Context for how to sanitize the field.
-			 *                        Accepts 'raw', 'edit', 'db', 'display',
-			 *                        'attribute', or 'js'. Default 'display'.
+			 * @param mixed  $value   Giá trị của trường bài viết không có tiền tố.
+			 * @param int    $post_id ID bài viết.
+			 * @param string $context Ngữ cảnh cách làm sạch trường.
+			 *                        Chấp nhận 'raw', 'edit', 'db', 'display',
+			 *                        'attribute', hoặc 'js'. Mặc định 'display'.
 			 */
 			$value = apply_filters( "post_{$field}", $value, $post_id, $context );
 		}
@@ -3220,7 +3218,7 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 		}
 	}
 
-	// Restore the type for integer fields after esc_attr().
+	// Khôi phục kiểu cho các trường số nguyên sau esc_attr().
 	if ( in_array( $field, $int_fields, true ) ) {
 		$value = (int) $value;
 	}
@@ -3228,13 +3226,13 @@ function sanitize_post_field( $field, $value, $post_id, $context = 'display' ) {
 }
 
 /**
- * Makes a post sticky.
+ * Ghim bài viết.
  *
- * Sticky posts should be displayed at the top of the front page.
+ * Bài viết ghim nên được hiển thị ở đầu trang chủ.
  *
  * @since 2.7.0
  *
- * @param int $post_id Post ID.
+ * @param int $post_id ID bài viết.
  */
 function stick_post( $post_id ) {
 	$post_id  = (int) $post_id;
@@ -3254,24 +3252,24 @@ function stick_post( $post_id ) {
 
 	if ( $updated ) {
 		/**
-		 * Fires once a post has been added to the sticky list.
+		 * Kích hoạt khi bài viết đã được thêm vào danh sách ghim.
 		 *
 		 * @since 4.6.0
 		 *
-		 * @param int $post_id ID of the post that was stuck.
+		 * @param int $post_id ID của bài viết đã được ghim.
 		 */
 		do_action( 'post_stuck', $post_id );
 	}
 }
 
 /**
- * Un-sticks a post.
+ * Bỏ ghim bài viết.
  *
- * Sticky posts should be displayed at the top of the front page.
+ * Bài viết ghim nên được hiển thị ở đầu trang chủ.
  *
  * @since 2.7.0
  *
- * @param int $post_id Post ID.
+ * @param int $post_id ID bài viết.
  */
 function unstick_post( $post_id ) {
 	$post_id  = (int) $post_id;
@@ -3298,25 +3296,25 @@ function unstick_post( $post_id ) {
 
 	if ( $updated ) {
 		/**
-		 * Fires once a post has been removed from the sticky list.
+		 * Kích hoạt khi bài viết đã được gỡ khỏi danh sách ghim.
 		 *
 		 * @since 4.6.0
 		 *
-		 * @param int $post_id ID of the post that was unstuck.
+		 * @param int $post_id ID của bài viết đã được bỏ ghim.
 		 */
 		do_action( 'post_unstuck', $post_id );
 	}
 }
 
 /**
- * Returns the cache key for wp_count_posts() based on the passed arguments.
+ * Trả về khóa bộ nhớ đệm cho wp_count_posts() dựa trên các đối số được truyền.
  *
  * @since 3.9.0
  * @access private
  *
- * @param string $type Optional. Post type to retrieve count Default 'post'.
- * @param string $perm Optional. 'readable' or empty. Default empty.
- * @return string The cache key.
+ * @param string $type Tùy chọn. Post type cần lấy số đếm. Mặc định 'post'.
+ * @param string $perm Tùy chọn. 'readable' hoặc rỗng. Mặc định rỗng.
+ * @return string Khóa bộ nhớ đệm.
  */
 function _count_posts_cache_key( $type = 'post', $perm = '' ) {
 	$cache_key = 'posts-' . $type;
@@ -3333,24 +3331,24 @@ function _count_posts_cache_key( $type = 'post', $perm = '' ) {
 }
 
 /**
- * Counts number of posts of a post type and if user has permissions to view.
+ * Đếm số bài viết của một post type và xem người dùng có quyền xem hay không.
  *
- * This function provides an efficient method of finding the amount of post's
- * type a blog has. Another method is to count the amount of items in
- * get_posts(), but that method has a lot of overhead with doing so. Therefore,
- * when developing for 2.5+, use this function instead.
+ * Hàm này cung cấp phương pháp hiệu quả để tìm số lượng bài viết
+ * theo loại mà blog có. Phương pháp khác là đếm số mục trong
+ * get_posts(), nhưng phương pháp đó có nhiều chi phí xử lý. Do đó,
+ * khi phát triển cho phiên bản 2.5+, hãy sử dụng hàm này thay thế.
  *
- * The $perm parameter checks for 'readable' value and if the user can read
- * private posts, it will display that for the user that is signed in.
+ * Tham số $perm kiểm tra giá trị 'readable' và nếu người dùng có thể đọc
+ * bài viết riêng tư, nó sẽ hiển thị cho người dùng đã đăng nhập.
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string $type Optional. Post type to retrieve count. Default 'post'.
- * @param string $perm Optional. 'readable' or empty. Default empty.
- * @return stdClass An object containing the number of posts for each status,
- *                  or an empty object if the post type does not exist.
+ * @param string $type Tùy chọn. Post type cần lấy số đếm. Mặc định 'post'.
+ * @param string $perm Tùy chọn. 'readable' hoặc rỗng. Mặc định rỗng.
+ * @return stdClass Đối tượng chứa số lượng bài viết cho mỗi trạng thái,
+ *                  hoặc đối tượng rỗng nếu post type không tồn tại.
  */
 function wp_count_posts( $type = 'post', $perm = '' ) {
 	global $wpdb;
@@ -3363,7 +3361,7 @@ function wp_count_posts( $type = 'post', $perm = '' ) {
 
 	$counts = wp_cache_get( $cache_key, 'counts' );
 	if ( false !== $counts ) {
-		// We may have cached this before every status was registered.
+		// Có thể đã lưu cache trước khi mọi trạng thái được đăng ký.
 		foreach ( get_post_stati() as $status ) {
 			if ( ! isset( $counts->{$status} ) ) {
 				$counts->{$status} = 0;
@@ -3399,34 +3397,34 @@ function wp_count_posts( $type = 'post', $perm = '' ) {
 	wp_cache_set( $cache_key, $counts, 'counts' );
 
 	/**
-	 * Filters the post counts by status for the current post type.
+	 * Lọc số đếm bài viết theo trạng thái cho post type hiện tại.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param stdClass $counts An object containing the current post_type's post
-	 *                         counts by status.
+	 * @param stdClass $counts Đối tượng chứa số đếm bài viết theo trạng thái
+	 *                         cho post_type hiện tại.
 	 * @param string   $type   Post type.
-	 * @param string   $perm   The permission to determine if the posts are 'readable'
-	 *                         by the current user.
+	 * @param string   $perm   Quyền để xác định bài viết có 'đọc được'
+	 *                         bởi người dùng hiện tại hay không.
 	 */
 	return apply_filters( 'wp_count_posts', $counts, $type, $perm );
 }
 
 /**
- * Counts number of attachments for the mime type(s).
+ * Đếm số tệp đính kèm theo (các) kiểu mime.
  *
- * If you set the optional mime_type parameter, then an array will still be
- * returned, but will only have the item you are looking for. It does not give
- * you the number of attachments that are children of a post. You can get that
- * by counting the number of children that post has.
+ * Nếu bạn đặt tham số mime_type tùy chọn, thì mảng vẫn sẽ được
+ * trả về, nhưng chỉ có mục bạn đang tìm. Hàm không cho bạn
+ * số lượng tệp đính kèm là con của bài viết. Bạn có thể lấy thông tin đó
+ * bằng cách đếm số con mà bài viết có.
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string|string[] $mime_type Optional. Array or comma-separated list of
- *                                   MIME patterns. Default empty.
- * @return stdClass An object containing the attachment counts by mime type.
+ * @param string|string[] $mime_type Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy của
+ *                                   các mẫu MIME. Mặc định rỗng.
+ * @return stdClass Đối tượng chứa số đếm tệp đính kèm theo kiểu mime.
  */
 function wp_count_attachments( $mime_type = '' ) {
 	global $wpdb;
@@ -3452,27 +3450,27 @@ function wp_count_attachments( $mime_type = '' ) {
 	}
 
 	/**
-	 * Filters the attachment counts by mime type.
+	 * Lọc số đếm tệp đính kèm theo kiểu mime.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param stdClass        $counts    An object containing the attachment counts by
-	 *                                   mime type.
-	 * @param string|string[] $mime_type Array or comma-separated list of MIME patterns.
+	 * @param stdClass        $counts    Đối tượng chứa số đếm tệp đính kèm theo
+	 *                                   kiểu mime.
+	 * @param string|string[] $mime_type Mảng hoặc danh sách phân cách bằng dấu phẩy của các mẫu MIME.
 	 */
 	return apply_filters( 'wp_count_attachments', (object) $counts, $mime_type );
 }
 
 /**
- * Gets default post mime types.
+ * Lấy các kiểu mime bài viết mặc định.
  *
  * @since 2.9.0
- * @since 5.3.0 Added the 'Documents', 'Spreadsheets', and 'Archives' mime type groups.
+ * @since 5.3.0 Thêm các nhóm kiểu mime 'Documents', 'Spreadsheets', và 'Archives'.
  *
- * @return array List of post mime types.
+ * @return array Danh sách các kiểu mime bài viết.
  */
 function get_post_mime_types() {
-	$post_mime_types = array(   // array( adj, noun )
+	$post_mime_types = array(   // mảng( tính từ, danh từ )
 		'image'       => array(
 			__( 'Images' ),
 			__( 'Manage Images' ),
@@ -3558,28 +3556,28 @@ function get_post_mime_types() {
 	}
 
 	/**
-	 * Filters the default list of post mime types.
+	 * Lọc danh sách mặc định các kiểu mime bài viết.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param array $post_mime_types Default list of post mime types.
+	 * @param array $post_mime_types Danh sách mặc định các kiểu mime bài viết.
 	 */
 	return apply_filters( 'post_mime_types', $post_mime_types );
 }
 
 /**
- * Checks a MIME-Type against a list.
+ * Kiểm tra kiểu MIME so với danh sách.
  *
- * If the `$wildcard_mime_types` parameter is a string, it must be comma separated
- * list. If the `$real_mime_types` is a string, it is also comma separated to
- * create the list.
+ * Nếu tham số `$wildcard_mime_types` là chuỗi, nó phải là danh sách phân cách
+ * bằng dấu phẩy. Nếu `$real_mime_types` là chuỗi, nó cũng được phân cách bằng dấu phẩy
+ * để tạo danh sách.
  *
  * @since 2.5.0
  *
- * @param string|string[] $wildcard_mime_types Mime types, e.g. `audio/mpeg`, `image` (same as `image/*`),
- *                                             or `flash` (same as `*flash*`).
- * @param string|string[] $real_mime_types     Real post mime type values.
- * @return array array(wildcard=>array(real types)).
+ * @param string|string[] $wildcard_mime_types Các kiểu mime, ví dụ `audio/mpeg`, `image` (giống `image/*`),
+ *                                             hoặc `flash` (giống `*flash*`).
+ * @param string|string[] $real_mime_types     Giá trị kiểu mime thực của bài viết.
+ * @return array mảng(wildcard=>mảng(kiểu thực)).
  */
 function wp_match_mime_types( $wildcard_mime_types, $real_mime_types ) {
 	$matches = array();
@@ -3624,15 +3622,15 @@ function wp_match_mime_types( $wildcard_mime_types, $real_mime_types ) {
 }
 
 /**
- * Converts MIME types into SQL.
+ * Chuyển đổi các kiểu MIME thành SQL.
  *
  * @since 2.5.0
  *
- * @param string|string[] $post_mime_types List of mime types or comma separated string
- *                                         of mime types.
- * @param string          $table_alias     Optional. Specify a table alias, if needed.
- *                                         Default empty.
- * @return string The SQL AND clause for mime searching.
+ * @param string|string[] $post_mime_types Danh sách các kiểu mime hoặc chuỗi phân cách bằng dấu phẩy
+ *                                         của các kiểu mime.
+ * @param string          $table_alias     Tùy chọn. Chỉ định bí danh bảng, nếu cần.
+ *                                         Mặc định rỗng.
+ * @return string Mệnh đề SQL AND cho việc tìm kiếm mime.
  */
 function wp_post_mime_type_where( $post_mime_types, $table_alias = '' ) {
 	$where     = '';
@@ -3683,25 +3681,25 @@ function wp_post_mime_type_where( $post_mime_types, $table_alias = '' ) {
 }
 
 /**
- * Trashes or deletes a post or page.
+ * Đưa vào thùng rác hoặc xóa bài viết hoặc trang.
  *
- * When the post and page is permanently deleted, everything that is tied to
- * it is deleted also. This includes comments, post meta fields, and terms
- * associated with the post.
+ * Khi bài viết và trang bị xóa vĩnh viễn, mọi thứ liên kết với nó
+ * cũng bị xóa. Bao gồm bình luận, trường meta bài viết, và các term
+ * liên kết với bài viết.
  *
- * The post or page is moved to Trash instead of permanently deleted unless
- * Trash is disabled, item is already in the Trash, or $force_delete is true.
+ * Bài viết hoặc trang được chuyển vào Thùng rác thay vì xóa vĩnh viễn trừ khi
+ * Thùng rác bị vô hiệu hóa, mục đã ở trong Thùng rác, hoặc $force_delete là true.
  *
  * @since 1.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  * @see wp_delete_attachment()
  * @see wp_trash_post()
  *
- * @param int  $post_id      Optional. Post ID. Default 0.
- * @param bool $force_delete Optional. Whether to bypass Trash and force deletion.
- *                           Default false.
- * @return WP_Post|false|null Post data on success, false or null on failure.
+ * @param int  $post_id      Tùy chọn. ID bài viết. Mặc định 0.
+ * @param bool $force_delete Tùy chọn. Có bỏ qua Thùng rác và buộc xóa hay không.
+ *                           Mặc định false.
+ * @return WP_Post|false|null Dữ liệu bài viết nếu thành công, false hoặc null nếu thất bại.
  */
 function wp_delete_post( $post_id = 0, $force_delete = false ) {
 	global $wpdb;
@@ -3726,13 +3724,13 @@ function wp_delete_post( $post_id = 0, $force_delete = false ) {
 	}
 
 	/**
-	 * Filters whether a post deletion should take place.
+	 * Lọc xem việc xóa bài viết có nên diễn ra hay không.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_Post|false|null $delete       Whether to go forward with deletion.
-	 * @param WP_Post            $post         Post object.
-	 * @param bool               $force_delete Whether to bypass the Trash.
+	 * @param WP_Post|false|null $delete       Có tiếp tục xóa hay không.
+	 * @param WP_Post            $post         Đối tượng bài viết.
+	 * @param bool               $force_delete Có bỏ qua Thùng rác hay không.
 	 */
 	$check = apply_filters( 'pre_delete_post', null, $post, $force_delete );
 	if ( null !== $check ) {
@@ -3740,15 +3738,15 @@ function wp_delete_post( $post_id = 0, $force_delete = false ) {
 	}
 
 	/**
-	 * Fires before a post is deleted, at the start of wp_delete_post().
+	 * Kích hoạt trước khi bài viết bị xóa, tại đầu wp_delete_post().
 	 *
 	 * @since 3.2.0
-	 * @since 5.5.0 Added the `$post` parameter.
+	 * @since 5.5.0 Thêm tham số `$post`.
 	 *
 	 * @see wp_delete_post()
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
+	 * @param int     $post_id ID bài viết.
+	 * @param WP_Post $post    Đối tượng bài viết.
 	 */
 	do_action( 'before_delete_post', $post_id, $post );
 
@@ -3761,7 +3759,7 @@ function wp_delete_post( $post_id = 0, $force_delete = false ) {
 	$parent_where = array( 'post_parent' => $post_id );
 
 	if ( is_post_type_hierarchical( $post->post_type ) ) {
-		// Point children of this page to its parent, also clean the cache of affected children.
+		// Trỏ các trang con của trang này đến trang cha, đồng thời xóa bộ nhớ đệm của các trang con bị ảnh hưởng.
 		$children_query = $wpdb->prepare(
 			"SELECT * FROM $wpdb->posts WHERE post_parent = %d AND post_type = %s",
 			$post_id,
@@ -3775,17 +3773,17 @@ function wp_delete_post( $post_id = 0, $force_delete = false ) {
 		}
 	}
 
-	// Do raw query. wp_get_post_revisions() is filtered.
+	// Thực hiện truy vấn thô. wp_get_post_revisions() được lọc.
 	$revision_ids = $wpdb->get_col(
 		$wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_parent = %d AND post_type = 'revision'", $post_id )
 	);
 
-	// Use wp_delete_post (via wp_delete_post_revision) again. Ensures any meta/misplaced data gets cleaned up.
+	// Sử dụng lại wp_delete_post (qua wp_delete_post_revision). Đảm bảo mọi dữ liệu meta/đặt sai chỗ được dọn dẹp.
 	foreach ( $revision_ids as $revision_id ) {
 		wp_delete_post_revision( $revision_id );
 	}
 
-	// Point all attachments to this post up one level.
+	// Trỏ tất cả tệp đính kèm của bài viết này lên một cấp.
 	$wpdb->update( $wpdb->posts, $parent_data, $parent_where + array( 'post_type' => 'attachment' ) );
 
 	wp_defer_comment_counting( true );
@@ -3809,26 +3807,26 @@ function wp_delete_post( $post_id = 0, $force_delete = false ) {
 	}
 
 	/**
-	 * Fires immediately before a post is deleted from the database.
+	 * Kích hoạt ngay trước khi bài viết bị xóa khỏi cơ sở dữ liệu.
 	 *
-	 * The dynamic portion of the hook name, `$post->post_type`, refers to
-	 * the post type slug.
+	 * Phần động của tên hook, `$post->post_type`, tham chiếu đến
+	 * slug của post type.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
+	 * @param int     $post_id ID bài viết.
+	 * @param WP_Post $post    Đối tượng bài viết.
 	 */
 	do_action( "delete_post_{$post->post_type}", $post_id, $post );
 
 	/**
-	 * Fires immediately before a post is deleted from the database.
+	 * Kích hoạt ngay trước khi bài viết bị xóa khỏi cơ sở dữ liệu.
 	 *
 	 * @since 1.2.0
-	 * @since 5.5.0 Added the `$post` parameter.
+	 * @since 5.5.0 Thêm tham số `$post`.
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
+	 * @param int     $post_id ID bài viết.
+	 * @param WP_Post $post    Đối tượng bài viết.
 	 */
 	do_action( 'delete_post', $post_id, $post );
 
@@ -3838,26 +3836,26 @@ function wp_delete_post( $post_id = 0, $force_delete = false ) {
 	}
 
 	/**
-	 * Fires immediately after a post is deleted from the database.
+	 * Kích hoạt ngay sau khi bài viết bị xóa khỏi cơ sở dữ liệu.
 	 *
-	 * The dynamic portion of the hook name, `$post->post_type`, refers to
-	 * the post type slug.
+	 * Phần động của tên hook, `$post->post_type`, tham chiếu đến
+	 * slug của post type.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
+	 * @param int     $post_id ID bài viết.
+	 * @param WP_Post $post    Đối tượng bài viết.
 	 */
 	do_action( "deleted_post_{$post->post_type}", $post_id, $post );
 
 	/**
-	 * Fires immediately after a post is deleted from the database.
+	 * Kích hoạt ngay sau khi bài viết bị xóa khỏi cơ sở dữ liệu.
 	 *
 	 * @since 2.2.0
-	 * @since 5.5.0 Added the `$post` parameter.
+	 * @since 5.5.0 Thêm tham số `$post`.
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
+	 * @param int     $post_id ID bài viết.
+	 * @param WP_Post $post    Đối tượng bài viết.
 	 */
 	do_action( 'deleted_post', $post_id, $post );
 
@@ -3872,15 +3870,15 @@ function wp_delete_post( $post_id = 0, $force_delete = false ) {
 	wp_clear_scheduled_hook( 'publish_future_post', array( $post_id ) );
 
 	/**
-	 * Fires after a post is deleted, at the conclusion of wp_delete_post().
+	 * Kích hoạt sau khi bài viết bị xóa, tại cuối wp_delete_post().
 	 *
 	 * @since 3.2.0
-	 * @since 5.5.0 Added the `$post` parameter.
+	 * @since 5.5.0 Thêm tham số `$post`.
 	 *
 	 * @see wp_delete_post()
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
+	 * @param int     $post_id ID bài viết.
+	 * @param WP_Post $post    Đối tượng bài viết.
 	 */
 	do_action( 'after_delete_post', $post_id, $post );
 
@@ -3888,23 +3886,23 @@ function wp_delete_post( $post_id = 0, $force_delete = false ) {
 }
 
 /**
- * Resets the page_on_front, show_on_front, and page_for_post settings when
- * a linked page is deleted or trashed.
+ * Đặt lại các cài đặt page_on_front, show_on_front, và page_for_post khi
+ * trang được liên kết bị xóa hoặc đưa vào thùng rác.
  *
- * Also ensures the post is no longer sticky.
+ * Cũng đảm bảo bài viết không còn là bài ghim.
  *
  * @since 3.7.0
  * @access private
  *
- * @param int $post_id Post ID.
+ * @param int $post_id ID bài viết.
  */
 function _reset_front_page_settings_for_post( $post_id ) {
 	$post = get_post( $post_id );
 
 	if ( 'page' === $post->post_type ) {
 		/*
-		 * If the page is defined in option page_on_front or post_for_posts,
-		 * adjust the corresponding options.
+		 * Nếu trang được định nghĩa trong tùy chọn page_on_front hoặc post_for_posts,
+		 * điều chỉnh các tùy chọn tương ứng.
 		 */
 		if ( (int) get_option( 'page_on_front' ) === $post->ID ) {
 			update_option( 'show_on_front', 'posts' );
@@ -3919,17 +3917,17 @@ function _reset_front_page_settings_for_post( $post_id ) {
 }
 
 /**
- * Moves a post or page to the Trash
+ * Chuyển bài viết hoặc trang vào Thùng rác.
  *
- * If Trash is disabled, the post or page is permanently deleted.
+ * Nếu Thùng rác bị vô hiệu hóa, bài viết hoặc trang sẽ bị xóa vĩnh viễn.
  *
  * @since 2.9.0
  *
  * @see wp_delete_post()
  *
- * @param int $post_id Optional. Post ID. Default is the ID of the global `$post`
- *                     if `EMPTY_TRASH_DAYS` equals true.
- * @return WP_Post|false|null Post data on success, false or null on failure.
+ * @param int $post_id Tùy chọn. ID bài viết. Mặc định là ID của global `$post`
+ *                     nếu `EMPTY_TRASH_DAYS` bằng true.
+ * @return WP_Post|false|null Dữ liệu bài viết nếu thành công, false hoặc null nếu thất bại.
  */
 function wp_trash_post( $post_id = 0 ) {
 	if ( ! EMPTY_TRASH_DAYS ) {
@@ -3949,14 +3947,14 @@ function wp_trash_post( $post_id = 0 ) {
 	$previous_status = $post->post_status;
 
 	/**
-	 * Filters whether a post trashing should take place.
+	 * Lọc xem việc đưa bài viết vào thùng rác có nên diễn ra hay không.
 	 *
 	 * @since 4.9.0
-	 * @since 6.3.0 Added the `$previous_status` parameter.
+	 * @since 6.3.0 Thêm tham số `$previous_status`.
 	 *
-	 * @param bool|null $trash           Whether to go forward with trashing.
-	 * @param WP_Post   $post            Post object.
-	 * @param string    $previous_status The status of the post about to be trashed.
+	 * @param bool|null $trash           Có tiếp tục đưa vào thùng rác hay không.
+	 * @param WP_Post   $post            Đối tượng bài viết.
+	 * @param string    $previous_status Trạng thái của bài viết sắp bị đưa vào thùng rác.
 	 */
 	$check = apply_filters( 'pre_trash_post', null, $post, $previous_status );
 
@@ -3965,13 +3963,13 @@ function wp_trash_post( $post_id = 0 ) {
 	}
 
 	/**
-	 * Fires before a post is sent to the Trash.
+	 * Kích hoạt trước khi bài viết được gửi vào Thùng rác.
 	 *
 	 * @since 3.3.0
-	 * @since 6.3.0 Added the `$previous_status` parameter.
+	 * @since 6.3.0 Thêm tham số `$previous_status`.
 	 *
-	 * @param int    $post_id         Post ID.
-	 * @param string $previous_status The status of the post about to be trashed.
+	 * @param int    $post_id         ID bài viết.
+	 * @param string $previous_status Trạng thái của bài viết sắp bị đưa vào thùng rác.
 	 */
 	do_action( 'wp_trash_post', $post_id, $previous_status );
 
@@ -3992,13 +3990,13 @@ function wp_trash_post( $post_id = 0 ) {
 	wp_trash_post_comments( $post_id );
 
 	/**
-	 * Fires after a post is sent to the Trash.
+	 * Kích hoạt sau khi bài viết được gửi vào Thùng rác.
 	 *
 	 * @since 2.9.0
-	 * @since 6.3.0 Added the `$previous_status` parameter.
+	 * @since 6.3.0 Thêm tham số `$previous_status`.
 	 *
-	 * @param int    $post_id         Post ID.
-	 * @param string $previous_status The status of the post at the point where it was trashed.
+	 * @param int    $post_id         ID bài viết.
+	 * @param string $previous_status Trạng thái của bài viết tại thời điểm bị đưa vào thùng rác.
 	 */
 	do_action( 'trashed_post', $post_id, $previous_status );
 
@@ -4006,14 +4004,14 @@ function wp_trash_post( $post_id = 0 ) {
 }
 
 /**
- * Restores a post from the Trash.
+ * Khôi phục bài viết từ Thùng rác.
  *
  * @since 2.9.0
- * @since 5.6.0 An untrashed post is now returned to 'draft' status by default, except for
- *              attachments which are returned to their original 'inherit' status.
+ * @since 5.6.0 Bài viết khôi phục giờ được trả về trạng thái 'draft' theo mặc định, ngoại trừ
+ *              tệp đính kèm được trả về trạng thái gốc 'inherit'.
  *
- * @param int $post_id Optional. Post ID. Default is the ID of the global `$post`.
- * @return WP_Post|false|null Post data on success, false or null on failure.
+ * @param int $post_id Tùy chọn. ID bài viết. Mặc định là ID của global `$post`.
+ * @return WP_Post|false|null Dữ liệu bài viết nếu thành công, false hoặc null nếu thất bại.
  */
 function wp_untrash_post( $post_id = 0 ) {
 	$post = get_post( $post_id );
@@ -4031,14 +4029,14 @@ function wp_untrash_post( $post_id = 0 ) {
 	$previous_status = get_post_meta( $post_id, '_wp_trash_meta_status', true );
 
 	/**
-	 * Filters whether a post untrashing should take place.
+	 * Lọc xem việc khôi phục bài viết từ thùng rác có nên diễn ra hay không.
 	 *
 	 * @since 4.9.0
-	 * @since 5.6.0 Added the `$previous_status` parameter.
+	 * @since 5.6.0 Thêm tham số `$previous_status`.
 	 *
-	 * @param bool|null $untrash         Whether to go forward with untrashing.
-	 * @param WP_Post   $post            Post object.
-	 * @param string    $previous_status The status of the post at the point where it was trashed.
+	 * @param bool|null $untrash         Có tiếp tục khôi phục hay không.
+	 * @param WP_Post   $post            Đối tượng bài viết.
+	 * @param string    $previous_status Trạng thái của bài viết tại thời điểm bị đưa vào thùng rác.
 	 */
 	$check = apply_filters( 'pre_untrash_post', null, $post, $previous_status );
 	if ( null !== $check ) {
@@ -4046,32 +4044,32 @@ function wp_untrash_post( $post_id = 0 ) {
 	}
 
 	/**
-	 * Fires before a post is restored from the Trash.
+	 * Kích hoạt trước khi bài viết được khôi phục từ Thùng rác.
 	 *
 	 * @since 2.9.0
-	 * @since 5.6.0 Added the `$previous_status` parameter.
+	 * @since 5.6.0 Thêm tham số `$previous_status`.
 	 *
-	 * @param int    $post_id         Post ID.
-	 * @param string $previous_status The status of the post at the point where it was trashed.
+	 * @param int    $post_id         ID bài viết.
+	 * @param string $previous_status Trạng thái của bài viết tại thời điểm bị đưa vào thùng rác.
 	 */
 	do_action( 'untrash_post', $post_id, $previous_status );
 
 	$new_status = ( 'attachment' === $post->post_type ) ? 'inherit' : 'draft';
 
 	/**
-	 * Filters the status that a post gets assigned when it is restored from the trash (untrashed).
+	 * Lọc trạng thái được gán cho bài viết khi được khôi phục từ thùng rác.
 	 *
-	 * By default posts that are restored will be assigned a status of 'draft'. Return the value of `$previous_status`
-	 * in order to assign the status that the post had before it was trashed. The `wp_untrash_post_set_previous_status()`
-	 * function is available for this.
+	 * Mặc định các bài viết được khôi phục sẽ được gán trạng thái 'draft'. Trả về giá trị của `$previous_status`
+	 * để gán trạng thái mà bài viết có trước khi bị đưa vào thùng rác. Hàm `wp_untrash_post_set_previous_status()`
+	 * có sẵn cho mục đích này.
 	 *
-	 * Prior to WordPress 5.6.0, restored posts were always assigned their original status.
+	 * Trước WordPress 5.6.0, các bài viết được khôi phục luôn được gán trạng thái gốc.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param string $new_status      The new status of the post being restored.
-	 * @param int    $post_id         The ID of the post being restored.
-	 * @param string $previous_status The status of the post at the point where it was trashed.
+	 * @param string $new_status      Trạng thái mới của bài viết đang được khôi phục.
+	 * @param int    $post_id         ID của bài viết đang được khôi phục.
+	 * @param string $previous_status Trạng thái của bài viết tại thời điểm bị đưa vào thùng rác.
 	 */
 	$post_status = apply_filters( 'wp_untrash_post_status', $new_status, $post_id, $previous_status );
 
@@ -4092,13 +4090,13 @@ function wp_untrash_post( $post_id = 0 ) {
 	wp_untrash_post_comments( $post_id );
 
 	/**
-	 * Fires after a post is restored from the Trash.
+	 * Kích hoạt sau khi bài viết được khôi phục từ Thùng rác.
 	 *
 	 * @since 2.9.0
-	 * @since 5.6.0 Added the `$previous_status` parameter.
+	 * @since 5.6.0 Thêm tham số `$previous_status`.
 	 *
-	 * @param int    $post_id         Post ID.
-	 * @param string $previous_status The status of the post at the point where it was trashed.
+	 * @param int    $post_id         ID bài viết.
+	 * @param string $previous_status Trạng thái của bài viết tại thời điểm bị đưa vào thùng rác.
 	 */
 	do_action( 'untrashed_post', $post_id, $previous_status );
 
@@ -4106,14 +4104,14 @@ function wp_untrash_post( $post_id = 0 ) {
 }
 
 /**
- * Moves comments for a post to the Trash.
+ * Chuyển các bình luận của bài viết vào Thùng rác.
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int|WP_Post|null $post Optional. Post ID or post object. Defaults to global $post.
- * @return mixed|void False on failure.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định global $post.
+ * @return mixed|void False nếu thất bại.
  */
 function wp_trash_post_comments( $post = null ) {
 	global $wpdb;
@@ -4127,11 +4125,11 @@ function wp_trash_post_comments( $post = null ) {
 	$post_id = $post->ID;
 
 	/**
-	 * Fires before comments are sent to the Trash.
+	 * Kích hoạt trước khi các bình luận được gửi vào Thùng rác.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param int $post_id Post ID.
+	 * @param int $post_id ID bài viết.
 	 */
 	do_action( 'trash_post_comments', $post_id );
 
@@ -4141,25 +4139,25 @@ function wp_trash_post_comments( $post = null ) {
 		return;
 	}
 
-	// Cache current status for each comment.
+	// Lưu trạng thái hiện tại cho mỗi bình luận vào bộ nhớ đệm.
 	$statuses = array();
 	foreach ( $comments as $comment ) {
 		$statuses[ $comment->comment_ID ] = $comment->comment_approved;
 	}
 	add_post_meta( $post_id, '_wp_trash_meta_comments_status', $statuses );
 
-	// Set status for all comments to post-trashed.
+	// Đặt trạng thái cho tất cả bình luận thành post-trashed.
 	$result = $wpdb->update( $wpdb->comments, array( 'comment_approved' => 'post-trashed' ), array( 'comment_post_ID' => $post_id ) );
 
 	clean_comment_cache( array_keys( $statuses ) );
 
 	/**
-	 * Fires after comments are sent to the Trash.
+	 * Kích hoạt sau khi các bình luận được gửi vào Thùng rác.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param int   $post_id  Post ID.
-	 * @param array $statuses Array of comment statuses.
+	 * @param int   $post_id  ID bài viết.
+	 * @param array $statuses Mảng các trạng thái bình luận.
 	 */
 	do_action( 'trashed_post_comments', $post_id, $statuses );
 
@@ -4167,13 +4165,13 @@ function wp_trash_post_comments( $post = null ) {
 }
 
 /**
- * Restores comments for a post from the Trash.
+ * Khôi phục các bình luận của bài viết từ Thùng rác.
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int|WP_Post|null $post Optional. Post ID or post object. Defaults to global $post.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định global $post.
  * @return true|void
  */
 function wp_untrash_post_comments( $post = null ) {
@@ -4194,22 +4192,22 @@ function wp_untrash_post_comments( $post = null ) {
 	}
 
 	/**
-	 * Fires before comments are restored for a post from the Trash.
+	 * Kích hoạt trước khi các bình luận được khôi phục cho bài viết từ Thùng rác.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param int $post_id Post ID.
+	 * @param int $post_id ID bài viết.
 	 */
 	do_action( 'untrash_post_comments', $post_id );
 
-	// Restore each comment to its original status.
+	// Khôi phục mỗi bình luận về trạng thái gốc của nó.
 	$group_by_status = array();
 	foreach ( $statuses as $comment_id => $comment_status ) {
 		$group_by_status[ $comment_status ][] = $comment_id;
 	}
 
 	foreach ( $group_by_status as $status => $comments ) {
-		// Confidence check. This shouldn't happen.
+		// Kiểm tra an toàn. Trường hợp này không nên xảy ra.
 		if ( 'post-trashed' === $status ) {
 			$status = '0';
 		}
@@ -4222,33 +4220,33 @@ function wp_untrash_post_comments( $post = null ) {
 	delete_post_meta( $post_id, '_wp_trash_meta_comments_status' );
 
 	/**
-	 * Fires after comments are restored for a post from the Trash.
+	 * Kích hoạt sau khi các bình luận được khôi phục cho bài viết từ Thùng rác.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param int $post_id Post ID.
+	 * @param int $post_id ID bài viết.
 	 */
 	do_action( 'untrashed_post_comments', $post_id );
 }
 
 /**
- * Retrieves the list of categories for a post.
+ * Lấy danh sách các chuyên mục cho một bài viết.
  *
- * Compatibility layer for themes and plugins. Also an easy layer of abstraction
- * away from the complexity of the taxonomy layer.
+ * Lớp tương thích cho theme và plugin. Cũng là lớp trừu tượng đơn giản
+ * tránh sự phức tạp của lớp taxonomy.
  *
  * @since 2.1.0
  *
  * @see wp_get_object_terms()
  *
- * @param int   $post_id Optional. The Post ID. Does not default to the ID of the
- *                       global $post. Default 0.
- * @param array $args    Optional. Category query parameters. Default empty array.
- *                       See WP_Term_Query::__construct() for supported arguments.
- * @return array|WP_Error List of categories. If the `$fields` argument passed via `$args` is 'all' or
- *                        'all_with_object_id', an array of WP_Term objects will be returned. If `$fields`
- *                        is 'ids', an array of category IDs. If `$fields` is 'names', an array of category names.
- *                        WP_Error object if 'category' taxonomy doesn't exist.
+ * @param int   $post_id Tùy chọn. ID bài viết. Không mặc định là ID của
+ *                       global $post. Mặc định 0.
+ * @param array $args    Tùy chọn. Tham số truy vấn chuyên mục. Mặc định mảng rỗng.
+ *                       Xem WP_Term_Query::__construct() để biết các đối số được hỗ trợ.
+ * @return array|WP_Error Danh sách chuyên mục. Nếu đối số `$fields` được truyền qua `$args` là 'all' hoặc
+ *                        'all_with_object_id', mảng các đối tượng WP_Term được trả về. Nếu `$fields`
+ *                        là 'ids', mảng các ID chuyên mục. Nếu `$fields` là 'names', mảng tên chuyên mục.
+ *                        Đối tượng WP_Error nếu taxonomy 'category' không tồn tại.
  */
 function wp_get_post_categories( $post_id = 0, $args = array() ) {
 	$post_id = (int) $post_id;
@@ -4261,41 +4259,41 @@ function wp_get_post_categories( $post_id = 0, $args = array() ) {
 }
 
 /**
- * Retrieves the tags for a post.
+ * Lấy các thẻ (tag) cho một bài viết.
  *
- * There is only one default for this function, called 'fields' and by default
- * is set to 'all'. There are other defaults that can be overridden in
+ * Chỉ có một giá trị mặc định cho hàm này, gọi là 'fields' và mặc định
+ * được đặt thành 'all'. Có các giá trị mặc định khác có thể ghi đè trong
  * wp_get_object_terms().
  *
  * @since 2.3.0
  *
- * @param int   $post_id Optional. The Post ID. Does not default to the ID of the
- *                       global $post. Default 0.
- * @param array $args    Optional. Tag query parameters. Default empty array.
- *                       See WP_Term_Query::__construct() for supported arguments.
- * @return array|WP_Error Array of WP_Term objects on success or empty array if no tags were found.
- *                        WP_Error object if 'post_tag' taxonomy doesn't exist.
+ * @param int   $post_id Tùy chọn. ID bài viết. Không mặc định là ID của
+ *                       global $post. Mặc định 0.
+ * @param array $args    Tùy chọn. Tham số truy vấn thẻ. Mặc định mảng rỗng.
+ *                       Xem WP_Term_Query::__construct() để biết các đối số được hỗ trợ.
+ * @return array|WP_Error Mảng các đối tượng WP_Term nếu thành công hoặc mảng rỗng nếu không tìm thấy thẻ.
+ *                        Đối tượng WP_Error nếu taxonomy 'post_tag' không tồn tại.
  */
 function wp_get_post_tags( $post_id = 0, $args = array() ) {
 	return wp_get_post_terms( $post_id, 'post_tag', $args );
 }
 
 /**
- * Retrieves the terms for a post.
+ * Lấy các term cho một bài viết.
  *
  * @since 2.8.0
  *
- * @param int             $post_id  Optional. The Post ID. Does not default to the ID of the
- *                                  global $post. Default 0.
- * @param string|string[] $taxonomy Optional. The taxonomy slug or array of slugs for which
- *                                  to retrieve terms. Default 'post_tag'.
+ * @param int             $post_id  Tùy chọn. ID bài viết. Không mặc định là ID của
+ *                                  global $post. Mặc định 0.
+ * @param string|string[] $taxonomy Tùy chọn. Slug taxonomy hoặc mảng các slug
+ *                                  cần lấy term. Mặc định 'post_tag'.
  * @param array           $args     {
- *     Optional. Term query parameters. See WP_Term_Query::__construct() for supported arguments.
+ *     Tùy chọn. Tham số truy vấn term. Xem WP_Term_Query::__construct() để biết các đối số được hỗ trợ.
  *
- *     @type string $fields Term fields to retrieve. Default 'all'.
+ *     @type string $fields Các trường term cần lấy. Mặc định 'all'.
  * }
- * @return array|WP_Error Array of WP_Term objects on success or empty array if no terms were found.
- *                        WP_Error object if `$taxonomy` doesn't exist.
+ * @return array|WP_Error Mảng các đối tượng WP_Term nếu thành công hoặc mảng rỗng nếu không tìm thấy term.
+ *                        Đối tượng WP_Error nếu `$taxonomy` không tồn tại.
  */
 function wp_get_post_terms( $post_id = 0, $taxonomy = 'post_tag', $args = array() ) {
 	$post_id = (int) $post_id;
@@ -4309,18 +4307,18 @@ function wp_get_post_terms( $post_id = 0, $taxonomy = 'post_tag', $args = array(
 }
 
 /**
- * Retrieves a number of recent posts.
+ * Lấy một số bài viết gần đây.
  *
  * @since 1.0.0
  *
  * @see get_posts()
  *
- * @param array  $args   Optional. Arguments to retrieve posts. Default empty array.
- * @param string $output Optional. The required return type. One of OBJECT or ARRAY_A, which
- *                       correspond to a WP_Post object or an associative array, respectively.
- *                       Default ARRAY_A.
- * @return array|false Array of recent posts, where the type of each element is determined
- *                     by the `$output` parameter. Empty array on failure.
+ * @param array  $args   Tùy chọn. Các đối số để lấy bài viết. Mặc định mảng rỗng.
+ * @param string $output Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT hoặc ARRAY_A,
+ *                       tương ứng với đối tượng WP_Post hoặc mảng liên kết.
+ *                       Mặc định ARRAY_A.
+ * @return array|false Mảng các bài viết gần đây, kiểu của mỗi phần tử được xác định
+ *                     bởi tham số `$output`. Mảng rỗng nếu thất bại.
  */
 function wp_get_recent_posts( $args = array(), $output = ARRAY_A ) {
 
@@ -4329,7 +4327,7 @@ function wp_get_recent_posts( $args = array(), $output = ARRAY_A ) {
 		$args = array( 'numberposts' => absint( $args ) );
 	}
 
-	// Set default arguments.
+	// Đặt các đối số mặc định.
 	$defaults = array(
 		'numberposts'      => 10,
 		'offset'           => 0,
@@ -4349,7 +4347,7 @@ function wp_get_recent_posts( $args = array(), $output = ARRAY_A ) {
 
 	$results = get_posts( $parsed_args );
 
-	// Backward compatibility. Prior to 3.1 expected posts to be returned in array.
+	// Tương thích ngược. Trước phiên bản 3.1, bài viết được mong đợi trả về trong mảng.
 	if ( ARRAY_A === $output ) {
 		foreach ( $results as $key => $result ) {
 			$results[ $key ] = get_object_vars( $result );
@@ -4361,78 +4359,78 @@ function wp_get_recent_posts( $args = array(), $output = ARRAY_A ) {
 }
 
 /**
- * Inserts or update a post.
+ * Chèn hoặc cập nhật bài viết.
  *
- * If the $postarr parameter has 'ID' set to a value, then post will be updated.
+ * Nếu tham số $postarr có 'ID' được đặt giá trị, bài viết sẽ được cập nhật.
  *
- * You can set the post date manually, by setting the values for 'post_date'
- * and 'post_date_gmt' keys. You can close the comments or open the comments by
- * setting the value for 'comment_status' key.
+ * Bạn có thể đặt ngày bài viết thủ công bằng cách đặt giá trị cho khóa 'post_date'
+ * và 'post_date_gmt'. Bạn có thể đóng hoặc mở bình luận bằng cách
+ * đặt giá trị cho khóa 'comment_status'.
  *
  * @since 1.0.0
- * @since 2.6.0 Added the `$wp_error` parameter to allow a WP_Error to be returned on failure.
- * @since 4.2.0 Support was added for encoding emoji in the post title, content, and excerpt.
- * @since 4.4.0 A 'meta_input' array can now be passed to `$postarr` to add post meta data.
- * @since 5.6.0 Added the `$fire_after_hooks` parameter.
+ * @since 2.6.0 Thêm tham số `$wp_error` để cho phép trả về WP_Error khi thất bại.
+ * @since 4.2.0 Thêm hỗ trợ mã hóa emoji trong tiêu đề, nội dung và trích dẫn bài viết.
+ * @since 4.4.0 Mảng 'meta_input' giờ có thể được truyền vào `$postarr` để thêm dữ liệu meta bài viết.
+ * @since 5.6.0 Thêm tham số `$fire_after_hooks`.
  *
  * @see sanitize_post()
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
  * @param array $postarr {
- *     An array of elements that make up a post to update or insert.
+ *     Mảng các phần tử tạo nên bài viết để cập nhật hoặc chèn.
  *
- *     @type int    $ID                    The post ID. If equal to something other than 0,
- *                                         the post with that ID will be updated. Default 0.
- *     @type int    $post_author           The ID of the user who added the post. Default is
- *                                         the current user ID.
- *     @type string $post_date             The date of the post. Default is the current time.
- *     @type string $post_date_gmt         The date of the post in the GMT timezone. Default is
- *                                         the value of `$post_date`.
- *     @type string $post_content          The post content. Default empty.
- *     @type string $post_content_filtered The filtered post content. Default empty.
- *     @type string $post_title            The post title. Default empty.
- *     @type string $post_excerpt          The post excerpt. Default empty.
- *     @type string $post_status           The post status. Default 'draft'.
- *     @type string $post_type             The post type. Default 'post'.
- *     @type string $comment_status        Whether the post can accept comments. Accepts 'open' or 'closed'.
- *                                         Default is the value of 'default_comment_status' option.
- *     @type string $ping_status           Whether the post can accept pings. Accepts 'open' or 'closed'.
- *                                         Default is the value of 'default_ping_status' option.
- *     @type string $post_password         The password to access the post. Default empty.
- *     @type string $post_name             The post name. Default is the sanitized post title
- *                                         when creating a new post.
- *     @type string $to_ping               Space or carriage return-separated list of URLs to ping.
- *                                         Default empty.
- *     @type string $pinged                Space or carriage return-separated list of URLs that have
- *                                         been pinged. Default empty.
- *     @type int    $post_parent           Set this for the post it belongs to, if any. Default 0.
- *     @type int    $menu_order            The order the post should be displayed in. Default 0.
- *     @type string $post_mime_type        The mime type of the post. Default empty.
- *     @type string $guid                  Global Unique ID for referencing the post. Default empty.
- *     @type int    $import_id             The post ID to be used when inserting a new post.
- *                                         If specified, must not match any existing post ID. Default 0.
- *     @type int[]  $post_category         Array of category IDs.
- *                                         Defaults to value of the 'default_category' option.
- *     @type array  $tags_input            Array of tag names, slugs, or IDs. Default empty.
- *     @type array  $tax_input             An array of taxonomy terms keyed by their taxonomy name.
- *                                         If the taxonomy is hierarchical, the term list needs to be
- *                                         either an array of term IDs or a comma-separated string of IDs.
- *                                         If the taxonomy is non-hierarchical, the term list can be an array
- *                                         that contains term names or slugs, or a comma-separated string
- *                                         of names or slugs. This is because, in hierarchical taxonomy,
- *                                         child terms can have the same names with different parent terms,
- *                                         so the only way to connect them is using ID. Default empty.
- *     @type array  $meta_input            Array of post meta values keyed by their post meta key. Default empty.
- *     @type string $page_template         Page template to use.
+ *     @type int    $ID                    ID bài viết. Nếu khác 0,
+ *                                         bài viết có ID đó sẽ được cập nhật. Mặc định 0.
+ *     @type int    $post_author           ID của người dùng đã thêm bài viết. Mặc định là
+ *                                         ID người dùng hiện tại.
+ *     @type string $post_date             Ngày của bài viết. Mặc định là thời gian hiện tại.
+ *     @type string $post_date_gmt         Ngày của bài viết theo múi giờ GMT. Mặc định là
+ *                                         giá trị của `$post_date`.
+ *     @type string $post_content          Nội dung bài viết. Mặc định rỗng.
+ *     @type string $post_content_filtered Nội dung bài viết đã lọc. Mặc định rỗng.
+ *     @type string $post_title            Tiêu đề bài viết. Mặc định rỗng.
+ *     @type string $post_excerpt          Trích dẫn bài viết. Mặc định rỗng.
+ *     @type string $post_status           Trạng thái bài viết. Mặc định 'draft'.
+ *     @type string $post_type             Post type. Mặc định 'post'.
+ *     @type string $comment_status        Bài viết có chấp nhận bình luận không. Chấp nhận 'open' hoặc 'closed'.
+ *                                         Mặc định là giá trị tùy chọn 'default_comment_status'.
+ *     @type string $ping_status           Bài viết có chấp nhận ping không. Chấp nhận 'open' hoặc 'closed'.
+ *                                         Mặc định là giá trị tùy chọn 'default_ping_status'.
+ *     @type string $post_password         Mật khẩu để truy cập bài viết. Mặc định rỗng.
+ *     @type string $post_name             Tên bài viết. Mặc định là tiêu đề bài viết đã làm sạch
+ *                                         khi tạo bài viết mới.
+ *     @type string $to_ping               Danh sách URL cần ping phân cách bằng dấu cách hoặc xuống dòng.
+ *                                         Mặc định rỗng.
+ *     @type string $pinged                Danh sách URL đã ping phân cách bằng dấu cách hoặc xuống dòng.
+ *                                         Mặc định rỗng.
+ *     @type int    $post_parent           Đặt bài viết cha nếu có. Mặc định 0.
+ *     @type int    $menu_order            Thứ tự hiển thị bài viết. Mặc định 0.
+ *     @type string $post_mime_type        Kiểu mime của bài viết. Mặc định rỗng.
+ *     @type string $guid                  ID Duy nhất Toàn cầu để tham chiếu bài viết. Mặc định rỗng.
+ *     @type int    $import_id             ID bài viết sẽ dùng khi chèn bài viết mới.
+ *                                         Nếu chỉ định, không được trùng với ID bài viết đã có. Mặc định 0.
+ *     @type int[]  $post_category         Mảng ID chuyên mục.
+ *                                         Mặc định là giá trị tùy chọn 'default_category'.
+ *     @type array  $tags_input            Mảng tên thẻ, slug, hoặc ID. Mặc định rỗng.
+ *     @type array  $tax_input             Mảng các term taxonomy được đánh khóa theo tên taxonomy.
+ *                                         Nếu taxonomy phân cấp, danh sách term cần là
+ *                                         mảng ID term hoặc chuỗi ID phân cách bằng dấu phẩy.
+ *                                         Nếu taxonomy không phân cấp, danh sách term có thể là mảng
+ *                                         chứa tên hoặc slug term, hoặc chuỗi tên hoặc slug phân cách
+ *                                         bằng dấu phẩy. Vì trong taxonomy phân cấp,
+ *                                         term con có thể có cùng tên với term cha khác nhau,
+ *                                         nên cách duy nhất để kết nối chúng là dùng ID. Mặc định rỗng.
+ *     @type array  $meta_input            Mảng giá trị meta bài viết được đánh khóa theo khóa meta. Mặc định rỗng.
+ *     @type string $page_template         Template trang sẽ dùng.
  * }
- * @param bool  $wp_error         Optional. Whether to return a WP_Error on failure. Default false.
- * @param bool  $fire_after_hooks Optional. Whether to fire the after insert hooks. Default true.
- * @return int|WP_Error The post ID on success. The value 0 or WP_Error on failure.
+ * @param bool  $wp_error         Tùy chọn. Có trả về WP_Error khi thất bại hay không. Mặc định false.
+ * @param bool  $fire_after_hooks Tùy chọn. Có kích hoạt các hook sau khi chèn hay không. Mặc định true.
+ * @return int|WP_Error ID bài viết nếu thành công. Giá trị 0 hoặc WP_Error nếu thất bại.
  */
 function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true ) {
 	global $wpdb;
 
-	// Capture original pre-sanitized array for passing into filters.
+	// Lưu mảng gốc chưa làm sạch để truyền vào các filter.
 	$unsanitized_postarr = $postarr;
 
 	$user_id = get_current_user_id();
@@ -4465,7 +4463,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 
 	$postarr = sanitize_post( $postarr, 'db' );
 
-	// Are we updating or creating?
+	// Đang cập nhật hay tạo mới?
 	$post_id = 0;
 	$update  = false;
 	$guid    = $postarr['guid'];
@@ -4473,7 +4471,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 	if ( ! empty( $postarr['ID'] ) ) {
 		$update = true;
 
-		// Get the post ID and GUID.
+		// Lấy ID bài viết và GUID.
 		$post_id     = $postarr['ID'];
 		$post_before = get_post( $post_id );
 
@@ -4500,7 +4498,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 	if ( isset( $postarr['post_name'] ) ) {
 		$post_name = $postarr['post_name'];
 	} elseif ( $update ) {
-		// For an update, don't modify the post_name if it wasn't supplied as an argument.
+		// Khi cập nhật, không thay đổi post_name nếu không được cung cấp dưới dạng đối số.
 		$post_name = $post_before->post_name;
 	}
 
@@ -4511,20 +4509,20 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		&& post_type_supports( $post_type, 'excerpt' );
 
 	/**
-	 * Filters whether the post should be considered "empty".
+	 * Lọc xem bài viết có nên được coi là "rỗng" hay không.
 	 *
-	 * The post is considered "empty" if both:
-	 * 1. The post type supports the title, editor, and excerpt fields
-	 * 2. The title, editor, and excerpt fields are all empty
+	 * Bài viết được coi là "rỗng" nếu cả hai điều kiện:
+	 * 1. Post type hỗ trợ các trường tiêu đề, trình soạn thảo và trích dẫn
+	 * 2. Các trường tiêu đề, trình soạn thảo và trích dẫn đều rỗng
 	 *
-	 * Returning a truthy value from the filter will effectively short-circuit
-	 * the new post being inserted and return 0. If $wp_error is true, a WP_Error
-	 * will be returned instead.
+	 * Trả về giá trị truthy từ filter sẽ hiệu quả ngắn mạch
+	 * việc chèn bài viết mới và trả về 0. Nếu $wp_error là true, WP_Error
+	 * sẽ được trả về thay thế.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param bool  $maybe_empty Whether the post should be considered "empty".
-	 * @param array $postarr     Array of post data.
+	 * @param bool  $maybe_empty Bài viết có nên được coi là "rỗng" hay không.
+	 * @param array $postarr     Mảng dữ liệu bài viết.
 	 */
 	if ( apply_filters( 'wp_insert_post_empty_content', $maybe_empty, $postarr ) ) {
 		if ( $wp_error ) {
@@ -4541,15 +4539,15 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 	}
 
 	if ( ! empty( $postarr['post_category'] ) ) {
-		// Filter out empty terms.
+		// Lọc bỏ các term rỗng.
 		$post_category = array_filter( $postarr['post_category'] );
 	} elseif ( $update && ! isset( $postarr['post_category'] ) ) {
 		$post_category = $post_before->post_category;
 	}
 
-	// Make sure we set a valid category.
+	// Đảm bảo đặt chuyên mục hợp lệ.
 	if ( empty( $post_category ) || 0 === count( $post_category ) || ! is_array( $post_category ) ) {
-		// 'post' requires at least one category.
+		// 'post' yêu cầu ít nhất một chuyên mục.
 		if ( 'post' === $post_type && 'auto-draft' !== $post_status ) {
 			$post_category = array( get_option( 'default_category' ) );
 		} else {
@@ -4558,9 +4556,9 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 	}
 
 	/*
-	 * Don't allow contributors to set the post slug for pending review posts.
+	 * Không cho phép cộng tác viên đặt slug bài viết cho bài viết đang chờ duyệt.
 	 *
-	 * For new posts check the primitive capability, for updates check the meta capability.
+	 * Với bài viết mới kiểm tra quyền primitive, với cập nhật kiểm tra quyền meta.
 	 */
 	if ( 'pending' === $post_status ) {
 		$post_type_object = get_post_type_object( $post_type );
@@ -4573,8 +4571,8 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 	}
 
 	/*
-	 * Create a valid post name. Drafts and pending posts are allowed to have
-	 * an empty post name.
+	 * Tạo tên bài viết hợp lệ. Bài viết nháp và đang chờ duyệt được phép có
+	 * tên bài viết rỗng.
 	 */
 	if ( empty( $post_name ) ) {
 		if ( ! in_array( $post_status, array( 'draft', 'pending', 'auto-draft' ), true ) ) {
@@ -4583,7 +4581,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 			$post_name = '';
 		}
 	} else {
-		// On updates, we need to check to see if it's using the old, fixed sanitization context.
+		// Khi cập nhật, cần kiểm tra xem có đang dùng ngữ cảnh làm sạch cũ, cố định hay không.
 		$check_name = sanitize_title( $post_name, '', 'old-save' );
 
 		if ( $update
@@ -4591,14 +4589,14 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 			&& get_post_field( 'post_name', $post_id ) === $check_name
 		) {
 			$post_name = $check_name;
-		} else { // New post, or slug has changed.
+		} else { // Bài viết mới, hoặc slug đã thay đổi.
 			$post_name = sanitize_title( $post_name );
 		}
 	}
 
 	/*
-	 * Resolve the post date from any provided post date or post date GMT strings;
-	 * if none are provided, the date will be set to now.
+	 * Giải quyết ngày bài viết từ bất kỳ chuỗi ngày bài viết hoặc ngày GMT nào được cung cấp;
+	 * nếu không có, ngày sẽ được đặt thành hiện tại.
 	 */
 	$post_date = wp_resolve_post_date( $postarr['post_date'], $postarr['post_date_gmt'] );
 
@@ -4642,7 +4640,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		}
 	}
 
-	// Comment status.
+	// Trạng thái bình luận.
 	if ( empty( $postarr['comment_status'] ) ) {
 		if ( $update ) {
 			$comment_status = 'closed';
@@ -4653,7 +4651,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		$comment_status = $postarr['comment_status'];
 	}
 
-	// These variables are needed by compact() later.
+	// Các biến này cần thiết cho compact() sau đó.
 	$post_content_filtered = $postarr['post_content_filtered'];
 	$post_author           = isset( $postarr['post_author'] ) ? $postarr['post_author'] : $user_id;
 	$ping_status           = empty( $postarr['ping_status'] ) ? get_default_comment_status( $post_type, 'pingback' ) : $postarr['ping_status'];
@@ -4662,8 +4660,8 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 	$import_id             = isset( $postarr['import_id'] ) ? $postarr['import_id'] : 0;
 
 	/*
-	 * The 'wp_insert_post_parent' filter expects all variables to be present.
-	 * Previously, these variables would have already been extracted
+	 * Filter 'wp_insert_post_parent' mong đợi tất cả các biến đều có mặt.
+	 * Trước đây, các biến này đã được trích xuất sẵn.
 	 */
 	if ( isset( $postarr['menu_order'] ) ) {
 		$menu_order = (int) $postarr['menu_order'];
@@ -4690,20 +4688,20 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 	);
 
 	/**
-	 * Filters the post parent -- used to check for and prevent hierarchy loops.
+	 * Lọc bài viết cha -- dùng để kiểm tra và ngăn chặn vòng lặp phân cấp.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param int   $post_parent Post parent ID.
-	 * @param int   $post_id     Post ID.
-	 * @param array $new_postarr Array of parsed post data.
-	 * @param array $postarr     Array of sanitized, but otherwise unmodified post data.
+	 * @param int   $post_parent ID bài viết cha.
+	 * @param int   $post_id     ID bài viết.
+	 * @param array $new_postarr Mảng dữ liệu bài viết đã phân tích.
+	 * @param array $postarr     Mảng dữ liệu bài viết đã làm sạch, nhưng không thay đổi gì khác.
 	 */
 	$post_parent = apply_filters( 'wp_insert_post_parent', $post_parent, $post_id, $new_postarr, $postarr );
 
 	/*
-	 * If the post is being untrashed and it has a desired slug stored in post meta,
-	 * reassign it.
+	 * Nếu bài viết đang được khôi phục từ thùng rác và có slug mong muốn được lưu trong post meta,
+	 * gán lại nó.
 	 */
 	if ( 'trash' === $previous_status && 'trash' !== $post_status ) {
 		$desired_post_slug = get_post_meta( $post_id, '_wp_desired_post_slug', true );
@@ -4714,16 +4712,16 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		}
 	}
 
-	// If a trashed post has the desired slug, change it and let this post have it.
+	// Nếu bài viết trong thùng rác có slug mong muốn, thay đổi nó và để bài viết này dùng.
 	if ( 'trash' !== $post_status && $post_name ) {
 		/**
-		 * Filters whether or not to add a `__trashed` suffix to trashed posts that match the name of the updated post.
+		 * Lọc có thêm hậu tố `__trashed` vào bài viết trong thùng rác khớp tên bài viết đang cập nhật hay không.
 		 *
 		 * @since 5.4.0
 		 *
-		 * @param bool   $add_trashed_suffix Whether to attempt to add the suffix.
-		 * @param string $post_name          The name of the post being updated.
-		 * @param int    $post_id            Post ID.
+		 * @param bool   $add_trashed_suffix Có cố gắng thêm hậu tố hay không.
+		 * @param string $post_name          Tên bài viết đang được cập nhật.
+		 * @param int    $post_id            ID bài viết.
 		 */
 		$add_trashed_suffix = apply_filters( 'add_trashed_suffix_to_trashed_posts', true, $post_name, $post_id );
 
@@ -4732,17 +4730,17 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		}
 	}
 
-	// When trashing an existing post, change its slug to allow non-trashed posts to use it.
+	// Khi đưa bài viết hiện có vào thùng rác, thay đổi slug để cho phép bài viết không ở thùng rác sử dụng nó.
 	if ( 'trash' === $post_status && 'trash' !== $previous_status && 'new' !== $previous_status ) {
 		$post_name = wp_add_trashed_suffix_to_post_name_for_post( $post_id );
 	}
 
 	$post_name = wp_unique_post_slug( $post_name, $post_id, $post_status, $post_type, $post_parent );
 
-	// Don't unslash.
+	// Không bỏ dấu gạch chéo.
 	$post_mime_type = isset( $postarr['post_mime_type'] ) ? $postarr['post_mime_type'] : '';
 
-	// Expected_slashed (everything!).
+	// Mong đợi có dấu gạch chéo (tất cả!).
 	$data = compact(
 		'post_author',
 		'post_date',
@@ -4781,32 +4779,32 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 
 	if ( 'attachment' === $post_type ) {
 		/**
-		 * Filters attachment post data before it is updated in or added to the database.
+		 * Lọc dữ liệu tệp đính kèm trước khi được cập nhật hoặc thêm vào cơ sở dữ liệu.
 		 *
 		 * @since 3.9.0
-		 * @since 5.4.1 The `$unsanitized_postarr` parameter was added.
-		 * @since 6.0.0 The `$update` parameter was added.
+		 * @since 5.4.1 Thêm tham số `$unsanitized_postarr`.
+		 * @since 6.0.0 Thêm tham số `$update`.
 		 *
-		 * @param array $data                An array of slashed, sanitized, and processed attachment post data.
-		 * @param array $postarr             An array of slashed and sanitized attachment post data, but not processed.
-		 * @param array $unsanitized_postarr An array of slashed yet *unsanitized* and unprocessed attachment post data
-		 *                                   as originally passed to wp_insert_post().
-		 * @param bool  $update              Whether this is an existing attachment post being updated.
+		 * @param array $data                Mảng dữ liệu tệp đính kèm đã có dấu gạch chéo, làm sạch và xử lý.
+		 * @param array $postarr             Mảng dữ liệu tệp đính kèm đã có dấu gạch chéo và làm sạch, nhưng chưa xử lý.
+		 * @param array $unsanitized_postarr Mảng dữ liệu tệp đính kèm đã có dấu gạch chéo nhưng *chưa làm sạch* và chưa xử lý
+		 *                                   như ban đầu được truyền vào wp_insert_post().
+		 * @param bool  $update              Đây có phải là tệp đính kèm hiện có đang được cập nhật hay không.
 		 */
 		$data = apply_filters( 'wp_insert_attachment_data', $data, $postarr, $unsanitized_postarr, $update );
 	} else {
 		/**
-		 * Filters slashed post data just before it is inserted into the database.
+		 * Lọc dữ liệu bài viết đã có dấu gạch chéo ngay trước khi được chèn vào cơ sở dữ liệu.
 		 *
 		 * @since 2.7.0
-		 * @since 5.4.1 The `$unsanitized_postarr` parameter was added.
-		 * @since 6.0.0 The `$update` parameter was added.
+		 * @since 5.4.1 Thêm tham số `$unsanitized_postarr`.
+		 * @since 6.0.0 Thêm tham số `$update`.
 		 *
-		 * @param array $data                An array of slashed, sanitized, and processed post data.
-		 * @param array $postarr             An array of sanitized (and slashed) but otherwise unmodified post data.
-		 * @param array $unsanitized_postarr An array of slashed yet *unsanitized* and unprocessed post data as
-		 *                                   originally passed to wp_insert_post().
-		 * @param bool  $update              Whether this is an existing post being updated.
+		 * @param array $data                Mảng dữ liệu bài viết đã có dấu gạch chéo, làm sạch và xử lý.
+		 * @param array $postarr             Mảng dữ liệu bài viết đã làm sạch (và có dấu gạch chéo) nhưng không thay đổi gì khác.
+		 * @param array $unsanitized_postarr Mảng dữ liệu bài viết đã có dấu gạch chéo nhưng *chưa làm sạch* và chưa xử lý
+		 *                                   như ban đầu được truyền vào wp_insert_post().
+		 * @param bool  $update              Đây có phải là bài viết hiện có đang được cập nhật hay không.
 		 */
 		$data = apply_filters( 'wp_insert_post_data', $data, $postarr, $unsanitized_postarr, $update );
 	}
@@ -4816,12 +4814,12 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 
 	if ( $update ) {
 		/**
-		 * Fires immediately before an existing post is updated in the database.
+		 * Kích hoạt ngay trước khi bài viết hiện có được cập nhật trong cơ sở dữ liệu.
 		 *
 		 * @since 2.5.0
 		 *
-		 * @param int   $post_id Post ID.
-		 * @param array $data    Array of unslashed post data.
+		 * @param int   $post_id ID bài viết.
+		 * @param array $data    Mảng dữ liệu bài viết đã bỏ dấu gạch chéo.
 		 */
 		do_action( 'pre_post_update', $post_id, $data );
 
@@ -4839,7 +4837,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 			}
 		}
 	} else {
-		// If there is a suggested ID, use it if not already present.
+		// Nếu có ID được gợi ý, sử dụng nó nếu chưa tồn tại.
 		if ( ! empty( $import_id ) ) {
 			$import_id = (int) $import_id;
 
@@ -4864,7 +4862,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 
 		$post_id = (int) $wpdb->insert_id;
 
-		// Use the newly generated $post_id.
+		// Sử dụng $post_id mới được tạo.
 		$where = array( 'ID' => $post_id );
 	}
 
@@ -4883,18 +4881,18 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		wp_set_post_tags( $post_id, $postarr['tags_input'] );
 	}
 
-	// Add default term for all associated custom taxonomies.
+	// Thêm term mặc định cho tất cả các taxonomy tùy chỉnh liên kết.
 	if ( 'auto-draft' !== $post_status ) {
 		foreach ( get_object_taxonomies( $post_type, 'object' ) as $taxonomy => $tax_object ) {
 
 			if ( ! empty( $tax_object->default_term ) ) {
 
-				// Filter out empty terms.
+				// Lọc bỏ các term rỗng.
 				if ( isset( $postarr['tax_input'][ $taxonomy ] ) && is_array( $postarr['tax_input'][ $taxonomy ] ) ) {
 					$postarr['tax_input'][ $taxonomy ] = array_filter( $postarr['tax_input'][ $taxonomy ] );
 				}
 
-				// Passed custom taxonomy list overwrites the existing list if not empty.
+				// Danh sách taxonomy tùy chỉnh được truyền ghi đè danh sách hiện có nếu không rỗng.
 				$terms = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'ids' ) );
 				if ( ! empty( $terms ) && empty( $postarr['tax_input'][ $taxonomy ] ) ) {
 					$postarr['tax_input'][ $taxonomy ] = $terms;
@@ -4910,7 +4908,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		}
 	}
 
-	// New-style support for all custom taxonomies.
+	// Hỗ trợ kiểu mới cho tất cả taxonomy tùy chỉnh.
 	if ( ! empty( $postarr['tax_input'] ) ) {
 		foreach ( $postarr['tax_input'] as $taxonomy => $tags ) {
 			$taxonomy_obj = get_taxonomy( $taxonomy );
@@ -4921,7 +4919,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 				continue;
 			}
 
-			// array = hierarchical, string = non-hierarchical.
+			// mảng = phân cấp, chuỗi = không phân cấp.
 			if ( is_array( $tags ) ) {
 				$tags = array_filter( $tags );
 			}
@@ -4940,7 +4938,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 
 	$current_guid = get_post_field( 'guid', $post_id );
 
-	// Set GUID.
+	// Đặt GUID.
 	if ( ! $update && '' === $current_guid ) {
 		$wpdb->update( $wpdb->posts, array( 'guid' => get_permalink( $post_id ) ), $where );
 	}
@@ -4955,7 +4953,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		}
 	}
 
-	// Set or remove featured image.
+	// Đặt hoặc xóa ảnh đại diện.
 	if ( isset( $postarr['_thumbnail_id'] ) ) {
 		$thumbnail_support = current_theme_supports( 'post-thumbnails', $post_type ) && post_type_supports( $post_type, 'thumbnail' ) || 'revision' === $post_type;
 
@@ -5001,34 +4999,34 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 	} else {
 		if ( $update ) {
 			/**
-			 * Fires once an existing attachment has been updated.
+			 * Kích hoạt khi một tệp đính kèm hiện có đã được cập nhật.
 			 *
 			 * @since 2.0.0
 			 *
-			 * @param int $post_id Attachment ID.
+			 * @param int $post_id ID tệp đính kèm.
 			 */
 			do_action( 'edit_attachment', $post_id );
 
 			$post_after = get_post( $post_id );
 
 			/**
-			 * Fires once an existing attachment has been updated.
+			 * Kích hoạt khi một tệp đính kèm hiện có đã được cập nhật.
 			 *
 			 * @since 4.4.0
 			 *
-			 * @param int     $post_id      Post ID.
-			 * @param WP_Post $post_after   Post object following the update.
-			 * @param WP_Post $post_before  Post object before the update.
+			 * @param int     $post_id      ID bài viết.
+			 * @param WP_Post $post_after   Đối tượng bài viết sau khi cập nhật.
+			 * @param WP_Post $post_before  Đối tượng bài viết trước khi cập nhật.
 			 */
 			do_action( 'attachment_updated', $post_id, $post_after, $post_before );
 		} else {
 
 			/**
-			 * Fires once an attachment has been added.
+			 * Kích hoạt khi một tệp đính kèm đã được thêm.
 			 *
 			 * @since 2.0.0
 			 *
-			 * @param int $post_id Attachment ID.
+			 * @param int $post_id ID tệp đính kèm.
 			 */
 			do_action( 'add_attachment', $post_id );
 		}
@@ -5038,85 +5036,85 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 
 	if ( $update ) {
 		/**
-		 * Fires once an existing post has been updated.
+		 * Kích hoạt khi một bài viết hiện có đã được cập nhật.
 		 *
-		 * The dynamic portion of the hook name, `$post->post_type`, refers to
-		 * the post type slug.
+		 * Phần động của tên hook, `$post->post_type`, tham chiếu đến
+		 * slug loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `edit_post_post`
 		 *  - `edit_post_page`
 		 *
 		 * @since 5.1.0
 		 *
-		 * @param int     $post_id Post ID.
-		 * @param WP_Post $post    Post object.
+		 * @param int     $post_id ID bài viết.
+		 * @param WP_Post $post    Đối tượng bài viết.
 		 */
 		do_action( "edit_post_{$post->post_type}", $post_id, $post );
 
 		/**
-		 * Fires once an existing post has been updated.
+		 * Kích hoạt khi một bài viết hiện có đã được cập nhật.
 		 *
 		 * @since 1.2.0
 		 *
-		 * @param int     $post_id Post ID.
-		 * @param WP_Post $post    Post object.
+		 * @param int     $post_id ID bài viết.
+		 * @param WP_Post $post    Đối tượng bài viết.
 		 */
 		do_action( 'edit_post', $post_id, $post );
 
 		$post_after = get_post( $post_id );
 
 		/**
-		 * Fires once an existing post has been updated.
+		 * Kích hoạt khi một bài viết hiện có đã được cập nhật.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param int     $post_id      Post ID.
-		 * @param WP_Post $post_after   Post object following the update.
-		 * @param WP_Post $post_before  Post object before the update.
+		 * @param int     $post_id      ID bài viết.
+		 * @param WP_Post $post_after   Đối tượng bài viết sau khi cập nhật.
+		 * @param WP_Post $post_before  Đối tượng bài viết trước khi cập nhật.
 		 */
 		do_action( 'post_updated', $post_id, $post_after, $post_before );
 	}
 
 	/**
-	 * Fires once a post has been saved.
+	 * Kích hoạt khi một bài viết đã được lưu.
 	 *
-	 * The dynamic portion of the hook name, `$post->post_type`, refers to
-	 * the post type slug.
+	 * Phần động của tên hook, `$post->post_type`, tham chiếu đến
+	 * slug loại bài viết.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `save_post_post`
 	 *  - `save_post_page`
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
-	 * @param bool    $update  Whether this is an existing post being updated.
+	 * @param int     $post_id ID bài viết.
+	 * @param WP_Post $post    Đối tượng bài viết.
+	 * @param bool    $update  Có phải bài viết hiện có đang được cập nhật hay không.
 	 */
 	do_action( "save_post_{$post->post_type}", $post_id, $post, $update );
 
 	/**
-	 * Fires once a post has been saved.
+	 * Kích hoạt khi một bài viết đã được lưu.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
-	 * @param bool    $update  Whether this is an existing post being updated.
+	 * @param int     $post_id ID bài viết.
+	 * @param WP_Post $post    Đối tượng bài viết.
+	 * @param bool    $update  Có phải bài viết hiện có đang được cập nhật hay không.
 	 */
 	do_action( 'save_post', $post_id, $post, $update );
 
 	/**
-	 * Fires once a post has been saved.
+	 * Kích hoạt khi một bài viết đã được lưu.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
-	 * @param bool    $update  Whether this is an existing post being updated.
+	 * @param int     $post_id ID bài viết.
+	 * @param WP_Post $post    Đối tượng bài viết.
+	 * @param bool    $update  Có phải bài viết hiện có đang được cập nhật hay không.
 	 */
 	do_action( 'wp_insert_post', $post_id, $post, $update );
 
@@ -5128,30 +5126,30 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 }
 
 /**
- * Updates a post with new post data.
+ * Cập nhật bài viết với dữ liệu mới.
  *
- * The date does not have to be set for drafts. You can set the date and it will
- * not be overridden.
+ * Ngày không cần phải được đặt cho bài nháp. Bạn có thể đặt ngày và nó sẽ
+ * không bị ghi đè.
  *
  * @since 1.0.0
- * @since 3.5.0 Added the `$wp_error` parameter to allow a WP_Error to be returned on failure.
- * @since 5.6.0 Added the `$fire_after_hooks` parameter.
+ * @since 3.5.0 Thêm tham số `$wp_error` để cho phép trả về WP_Error khi thất bại.
+ * @since 5.6.0 Thêm tham số `$fire_after_hooks`.
  *
- * @param array|object $postarr          Optional. Post data. Arrays are expected to be escaped,
- *                                       objects are not. See wp_insert_post() for accepted arguments.
- *                                       Default array.
- * @param bool         $wp_error         Optional. Whether to return a WP_Error on failure. Default false.
- * @param bool         $fire_after_hooks Optional. Whether to fire the after insert hooks. Default true.
- * @return int|WP_Error The post ID on success. The value 0 or WP_Error on failure.
+ * @param array|object $postarr          Tùy chọn. Dữ liệu bài viết. Mảng phải được escape,
+ *                                       đối tượng thì không. Xem wp_insert_post() để biết các đối số được chấp nhận.
+ *                                       Mặc định mảng rỗng.
+ * @param bool         $wp_error         Tùy chọn. Có trả về WP_Error khi thất bại hay không. Mặc định false.
+ * @param bool         $fire_after_hooks Tùy chọn. Có kích hoạt các hook sau khi chèn hay không. Mặc định true.
+ * @return int|WP_Error ID bài viết nếu thành công. Giá trị 0 hoặc WP_Error nếu thất bại.
  */
 function wp_update_post( $postarr = array(), $wp_error = false, $fire_after_hooks = true ) {
 	if ( is_object( $postarr ) ) {
-		// Non-escaped post was passed.
+		// Bài viết chưa escape được truyền vào.
 		$postarr = get_object_vars( $postarr );
 		$postarr = wp_slash( $postarr );
 	}
 
-	// First, get all of the original fields.
+	// Đầu tiên, lấy tất cả các trường gốc.
 	$post = get_post( $postarr['ID'], ARRAY_A );
 
 	if ( is_null( $post ) ) {
@@ -5161,10 +5159,10 @@ function wp_update_post( $postarr = array(), $wp_error = false, $fire_after_hook
 		return 0;
 	}
 
-	// Escape data pulled from DB.
+	// Escape dữ liệu lấy từ CSDL.
 	$post = wp_slash( $post );
 
-	// Passed post category list overwrites existing category list if not empty.
+	// Danh sách chuyên mục được truyền vào sẽ ghi đè danh sách hiện có nếu không rỗng.
 	if ( isset( $postarr['post_category'] ) && is_array( $postarr['post_category'] )
 		&& count( $postarr['post_category'] ) > 0
 	) {
@@ -5173,7 +5171,7 @@ function wp_update_post( $postarr = array(), $wp_error = false, $fire_after_hook
 		$post_cats = $post['post_category'];
 	}
 
-	// Drafts shouldn't be assigned a date unless explicitly done so by the user.
+	// Bài nháp không nên được gán ngày trừ khi người dùng chủ động làm vậy.
 	if ( isset( $post['post_status'] )
 		&& in_array( $post['post_status'], array( 'draft', 'pending', 'auto-draft' ), true )
 		&& empty( $postarr['edit_date'] ) && ( '0000-00-00 00:00:00' === $post['post_date_gmt'] )
@@ -5183,7 +5181,7 @@ function wp_update_post( $postarr = array(), $wp_error = false, $fire_after_hook
 		$clear_date = false;
 	}
 
-	// Merge old and new fields with new fields overwriting old ones.
+	// Gộp các trường cũ và mới, trường mới ghi đè trường cũ.
 	$postarr                  = array_merge( $post, $postarr );
 	$postarr['post_category'] = $post_cats;
 	if ( $clear_date ) {
@@ -5195,7 +5193,7 @@ function wp_update_post( $postarr = array(), $wp_error = false, $fire_after_hook
 		return wp_insert_attachment( $postarr, false, 0, $wp_error );
 	}
 
-	// Discard 'tags_input' parameter if it's the same as existing post tags.
+	// Bỏ qua tham số 'tags_input' nếu nó giống với thẻ bài viết hiện tại.
 	if ( isset( $postarr['tags_input'] ) && is_object_in_taxonomy( $postarr['post_type'], 'post_tag' ) ) {
 		$tags      = get_the_terms( $postarr['ID'], 'post_tag' );
 		$tag_names = array();
@@ -5213,13 +5211,13 @@ function wp_update_post( $postarr = array(), $wp_error = false, $fire_after_hook
 }
 
 /**
- * Publishes a post by transitioning the post status.
+ * Xuất bản bài viết bằng cách chuyển đổi trạng thái bài viết.
  *
  * @since 2.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int|WP_Post $post Post ID or post object.
+ * @param int|WP_Post $post ID bài viết hoặc đối tượng bài viết.
  */
 function wp_publish_post( $post ) {
 	global $wpdb;
@@ -5236,9 +5234,9 @@ function wp_publish_post( $post ) {
 
 	$post_before = get_post( $post->ID );
 
-	// Ensure at least one term is applied for taxonomies with a default term.
+	// Đảm bảo ít nhất một term được áp dụng cho các taxonomy có term mặc định.
 	foreach ( get_object_taxonomies( $post->post_type, 'object' ) as $taxonomy => $tax_object ) {
-		// Skip taxonomy if no default term is set.
+		// Bỏ qua taxonomy nếu không có term mặc định được đặt.
 		if (
 			'category' !== $taxonomy &&
 			empty( $tax_object->default_term )
@@ -5246,7 +5244,7 @@ function wp_publish_post( $post ) {
 			continue;
 		}
 
-		// Do not modify previously set terms.
+		// Không sửa đổi các term đã được đặt trước đó.
 		if ( ! empty( get_the_terms( $post, $taxonomy ) ) ) {
 			continue;
 		}
@@ -5271,33 +5269,33 @@ function wp_publish_post( $post ) {
 	$post->post_status = 'publish';
 	wp_transition_post_status( 'publish', $old_status, $post );
 
-	/** This action is documented in wp-includes/post.php */
+	/** Action này được ghi tài liệu trong wp-includes/post.php */
 	do_action( "edit_post_{$post->post_type}", $post->ID, $post );
 
-	/** This action is documented in wp-includes/post.php */
+	/** Action này được ghi tài liệu trong wp-includes/post.php */
 	do_action( 'edit_post', $post->ID, $post );
 
-	/** This action is documented in wp-includes/post.php */
+	/** Action này được ghi tài liệu trong wp-includes/post.php */
 	do_action( "save_post_{$post->post_type}", $post->ID, $post, true );
 
-	/** This action is documented in wp-includes/post.php */
+	/** Action này được ghi tài liệu trong wp-includes/post.php */
 	do_action( 'save_post', $post->ID, $post, true );
 
-	/** This action is documented in wp-includes/post.php */
+	/** Action này được ghi tài liệu trong wp-includes/post.php */
 	do_action( 'wp_insert_post', $post->ID, $post, true );
 
 	wp_after_insert_post( $post, true, $post_before );
 }
 
 /**
- * Publishes future post and make sure post ID has future post status.
+ * Xuất bản bài viết tương lai và đảm bảo ID bài viết có trạng thái future.
  *
- * Invoked by cron 'publish_future_post' event. This safeguard prevents cron
- * from publishing drafts, etc.
+ * Được gọi bởi sự kiện cron 'publish_future_post'. Biện pháp bảo vệ này ngăn cron
+ * xuất bản bài nháp, v.v.
  *
  * @since 2.5.0
  *
- * @param int|WP_Post $post Post ID or post object.
+ * @param int|WP_Post $post ID bài viết hoặc đối tượng bài viết.
  */
 function check_and_publish_future_post( $post ) {
 	$post = get_post( $post );
@@ -5312,33 +5310,33 @@ function check_and_publish_future_post( $post ) {
 
 	$time = strtotime( $post->post_date_gmt . ' GMT' );
 
-	// Uh oh, someone jumped the gun!
+	// Ồ, ai đó đã hành động quá sớm!
 	if ( $time > time() ) {
-		wp_clear_scheduled_hook( 'publish_future_post', array( $post->ID ) ); // Clear anything else in the system.
+		wp_clear_scheduled_hook( 'publish_future_post', array( $post->ID ) ); // Xóa mọi thứ khác trong hệ thống.
 		wp_schedule_single_event( $time, 'publish_future_post', array( $post->ID ) );
 		return;
 	}
 
-	// wp_publish_post() returns no meaningful value.
+	// wp_publish_post() không trả về giá trị có ý nghĩa.
 	wp_publish_post( $post->ID );
 }
 
 /**
- * Uses wp_checkdate to return a valid Gregorian-calendar value for post_date.
- * If post_date is not provided, this first checks post_date_gmt if provided,
- * then falls back to use the current time.
+ * Sử dụng wp_checkdate để trả về giá trị lịch Gregorian hợp lệ cho post_date.
+ * Nếu post_date không được cung cấp, trước tiên kiểm tra post_date_gmt nếu có,
+ * sau đó quay về sử dụng thời gian hiện tại.
  *
- * For back-compat purposes in wp_insert_post, an empty post_date and an invalid
- * post_date_gmt will continue to return '1970-01-01 00:00:00' rather than false.
+ * Vì mục đích tương thích ngược trong wp_insert_post, post_date rỗng và
+ * post_date_gmt không hợp lệ sẽ tiếp tục trả về '1970-01-01 00:00:00' thay vì false.
  *
  * @since 5.7.0
  *
- * @param string $post_date     The date in mysql format (`Y-m-d H:i:s`).
- * @param string $post_date_gmt The GMT date in mysql format (`Y-m-d H:i:s`).
- * @return string|false A valid Gregorian-calendar date string, or false on failure.
+ * @param string $post_date     Ngày theo định dạng mysql (`Y-m-d H:i:s`).
+ * @param string $post_date_gmt Ngày GMT theo định dạng mysql (`Y-m-d H:i:s`).
+ * @return string|false Chuỗi ngày lịch Gregorian hợp lệ, hoặc false nếu thất bại.
  */
 function wp_resolve_post_date( $post_date = '', $post_date_gmt = '' ) {
-	// If the date is empty, set the date to now.
+	// Nếu ngày rỗng, đặt ngày thành thời gian hiện tại.
 	if ( empty( $post_date ) || '0000-00-00 00:00:00' === $post_date ) {
 		if ( empty( $post_date_gmt ) || '0000-00-00 00:00:00' === $post_date_gmt ) {
 			$post_date = current_time( 'mysql' );
@@ -5347,7 +5345,7 @@ function wp_resolve_post_date( $post_date = '', $post_date_gmt = '' ) {
 		}
 	}
 
-	// Validate the date.
+	// Xác thực ngày.
 	$month = (int) substr( $post_date, 5, 2 );
 	$day   = (int) substr( $post_date, 8, 2 );
 	$year  = (int) substr( $post_date, 0, 4 );
@@ -5361,19 +5359,19 @@ function wp_resolve_post_date( $post_date = '', $post_date_gmt = '' ) {
 }
 
 /**
- * Computes a unique slug for the post, when given the desired slug and some post details.
+ * Tính toán slug duy nhất cho bài viết, khi được cung cấp slug mong muốn và một số chi tiết bài viết.
  *
  * @since 2.8.0
  *
- * @global wpdb       $wpdb       WordPress database abstraction object.
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global wpdb       $wpdb       Đối tượng trừu tượng cơ sở dữ liệu WordPress.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param string $slug        The desired slug (post_name).
- * @param int    $post_id     Post ID.
- * @param string $post_status No uniqueness checks are made if the post is still draft or pending.
- * @param string $post_type   Post type.
- * @param int    $post_parent Post parent ID.
- * @return string Unique slug for the post, based on $post_name (with a -1, -2, etc. suffix)
+ * @param string $slug        Slug mong muốn (post_name).
+ * @param int    $post_id     ID bài viết.
+ * @param string $post_status Không kiểm tra tính duy nhất nếu bài viết vẫn là nháp hoặc đang chờ duyệt.
+ * @param string $post_type   Loại bài viết.
+ * @param int    $post_parent ID bài viết cha.
+ * @return string Slug duy nhất cho bài viết, dựa trên $post_name (với hậu tố -1, -2, v.v.)
  */
 function wp_unique_post_slug( $slug, $post_id, $post_status, $post_type, $post_parent ) {
 	if ( in_array( $post_status, array( 'draft', 'pending', 'auto-draft' ), true )
@@ -5383,19 +5381,19 @@ function wp_unique_post_slug( $slug, $post_id, $post_status, $post_type, $post_p
 	}
 
 	/**
-	 * Filters the post slug before it is generated to be unique.
+	 * Lọc slug bài viết trước khi nó được tạo thành duy nhất.
 	 *
-	 * Returning a non-null value will short-circuit the
-	 * unique slug generation, returning the passed value instead.
+	 * Trả về giá trị không null sẽ bỏ qua quá trình
+	 * tạo slug duy nhất, trả về giá trị được truyền thay thế.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param string|null $override_slug Short-circuit return value.
-	 * @param string      $slug          The desired slug (post_name).
-	 * @param int         $post_id       Post ID.
-	 * @param string      $post_status   The post status.
-	 * @param string      $post_type     Post type.
-	 * @param int         $post_parent   Post parent ID.
+	 * @param string|null $override_slug Giá trị trả về bỏ qua.
+	 * @param string      $slug          Slug mong muốn (post_name).
+	 * @param int         $post_id       ID bài viết.
+	 * @param string      $post_status   Trạng thái bài viết.
+	 * @param string      $post_type     Loại bài viết.
+	 * @param int         $post_parent   ID bài viết cha.
 	 */
 	$override_slug = apply_filters( 'pre_wp_unique_post_slug', null, $slug, $post_id, $post_status, $post_type, $post_parent );
 	if ( null !== $override_slug ) {
@@ -5412,17 +5410,17 @@ function wp_unique_post_slug( $slug, $post_id, $post_status, $post_type, $post_p
 	}
 
 	if ( 'attachment' === $post_type ) {
-		// Attachment slugs must be unique across all types.
+		// Slug tệp đính kèm phải duy nhất trên tất cả các loại.
 		$check_sql       = "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND ID != %d LIMIT 1";
 		$post_name_check = $wpdb->get_var( $wpdb->prepare( $check_sql, $slug, $post_id ) );
 
 		/**
-		 * Filters whether the post slug would make a bad attachment slug.
+		 * Lọc xem slug bài viết có phải là slug tệp đính kèm xấu hay không.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param bool   $bad_slug Whether the slug would be bad as an attachment slug.
-		 * @param string $slug     The post slug.
+		 * @param bool   $bad_slug Slug có xấu khi dùng làm slug tệp đính kèm hay không.
+		 * @param string $slug     Slug bài viết.
 		 */
 		$is_bad_attachment_slug = apply_filters( 'wp_unique_post_slug_is_bad_attachment_slug', false, $slug );
 
@@ -5444,21 +5442,21 @@ function wp_unique_post_slug( $slug, $post_id, $post_status, $post_type, $post_p
 		}
 
 		/*
-		 * Page slugs must be unique within their own trees. Pages are in a separate
-		 * namespace than posts so page slugs are allowed to overlap post slugs.
+		 * Slug trang phải duy nhất trong cây riêng của chúng. Trang nằm trong không gian tên
+		 * riêng biệt so với bài viết nên slug trang được phép trùng với slug bài viết.
 		 */
 		$check_sql       = "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND post_type IN ( %s, 'attachment' ) AND ID != %d AND post_parent = %d LIMIT 1";
 		$post_name_check = $wpdb->get_var( $wpdb->prepare( $check_sql, $slug, $post_type, $post_id, $post_parent ) );
 
 		/**
-		 * Filters whether the post slug would make a bad hierarchical post slug.
+		 * Lọc xem slug bài viết có phải là slug bài viết phân cấp xấu hay không.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param bool   $bad_slug    Whether the post slug would be bad in a hierarchical post context.
-		 * @param string $slug        The post slug.
-		 * @param string $post_type   Post type.
-		 * @param int    $post_parent Post parent ID.
+		 * @param bool   $bad_slug    Slug bài viết có xấu trong ngữ cảnh bài viết phân cấp hay không.
+		 * @param string $slug        Slug bài viết.
+		 * @param string $post_type   Loại bài viết.
+		 * @param int    $post_parent ID bài viết cha.
 		 */
 		$is_bad_hierarchical_slug = apply_filters( 'wp_unique_post_slug_is_bad_hierarchical_slug', false, $slug, $post_type, $post_parent );
 
@@ -5476,13 +5474,13 @@ function wp_unique_post_slug( $slug, $post_id, $post_status, $post_type, $post_p
 			$slug = $alt_post_name;
 		}
 	} else {
-		// Post slugs must be unique across all posts.
+		// Slug bài viết phải duy nhất trên tất cả các bài viết.
 		$check_sql       = "SELECT post_name FROM $wpdb->posts WHERE post_name = %s AND post_type = %s AND ID != %d LIMIT 1";
 		$post_name_check = $wpdb->get_var( $wpdb->prepare( $check_sql, $slug, $post_type, $post_id ) );
 
 		$post = get_post( $post_id );
 
-		// Prevent new post slugs that could result in URLs that conflict with date archives.
+		// Ngăn chặn slug bài viết mới có thể dẫn đến URL xung đột với lưu trữ theo ngày.
 		$conflicts_with_date_archive = false;
 		if ( 'post' === $post_type && ( ! $post || $post->post_name !== $slug ) && preg_match( '/^[0-9]+$/', $slug ) ) {
 			$slug_num = (int) $slug;
@@ -5492,11 +5490,11 @@ function wp_unique_post_slug( $slug, $post_id, $post_status, $post_type, $post_p
 				$postname_index = array_search( '%postname%', $permastructs, true );
 
 				/*
-				* Potential date clashes are as follows:
+				* Các xung đột ngày tiềm ẩn như sau:
 				*
-				* - Any integer in the first permastruct position could be a year.
-				* - An integer between 1 and 12 that follows 'year' conflicts with 'monthnum'.
-				* - An integer between 1 and 31 that follows 'monthnum' conflicts with 'day'.
+				* - Bất kỳ số nguyên nào ở vị trí permastruct đầu tiên có thể là năm.
+				* - Số nguyên từ 1 đến 12 theo sau 'year' xung đột với 'monthnum'.
+				* - Số nguyên từ 1 đến 31 theo sau 'monthnum' xung đột với 'day'.
 				*/
 				if ( 0 === $postname_index ||
 					( $postname_index && '%year%' === $permastructs[ $postname_index - 1 ] && 13 > $slug_num ) ||
@@ -5508,13 +5506,13 @@ function wp_unique_post_slug( $slug, $post_id, $post_status, $post_type, $post_p
 		}
 
 		/**
-		 * Filters whether the post slug would be bad as a flat slug.
+		 * Lọc xem slug bài viết có xấu khi dùng làm slug phẳng hay không.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param bool   $bad_slug  Whether the post slug would be bad as a flat slug.
-		 * @param string $slug      The post slug.
-		 * @param string $post_type Post type.
+		 * @param bool   $bad_slug  Slug bài viết có xấu khi dùng làm slug phẳng hay không.
+		 * @param string $slug      Slug bài viết.
+		 * @param string $post_type Loại bài viết.
 		 */
 		$is_bad_flat_slug = apply_filters( 'wp_unique_post_slug_is_bad_flat_slug', false, $slug, $post_type );
 
@@ -5534,31 +5532,31 @@ function wp_unique_post_slug( $slug, $post_id, $post_status, $post_type, $post_p
 	}
 
 	/**
-	 * Filters the unique post slug.
+	 * Lọc slug bài viết duy nhất.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string $slug          The post slug.
-	 * @param int    $post_id       Post ID.
-	 * @param string $post_status   The post status.
-	 * @param string $post_type     Post type.
-	 * @param int    $post_parent   Post parent ID
-	 * @param string $original_slug The original post slug.
+	 * @param string $slug          Slug bài viết.
+	 * @param int    $post_id       ID bài viết.
+	 * @param string $post_status   Trạng thái bài viết.
+	 * @param string $post_type     Loại bài viết.
+	 * @param int    $post_parent   ID bài viết cha.
+	 * @param string $original_slug Slug bài viết gốc.
 	 */
 	return apply_filters( 'wp_unique_post_slug', $slug, $post_id, $post_status, $post_type, $post_parent, $original_slug );
 }
 
 /**
- * Truncates a post slug.
+ * Cắt ngắn slug bài viết.
  *
  * @since 3.6.0
  * @access private
  *
  * @see utf8_uri_encode()
  *
- * @param string $slug   The slug to truncate.
- * @param int    $length Optional. Max length of the slug. Default 200 (characters).
- * @return string The truncated slug.
+ * @param string $slug   Slug cần cắt ngắn.
+ * @param int    $length Tùy chọn. Độ dài tối đa của slug. Mặc định 200 (ký tự).
+ * @return string Slug đã cắt ngắn.
  */
 function _truncate_post_slug( $slug, $length = 200 ) {
 	if ( strlen( $slug ) > $length ) {
@@ -5574,55 +5572,55 @@ function _truncate_post_slug( $slug, $length = 200 ) {
 }
 
 /**
- * Adds tags to a post.
+ * Thêm thẻ vào bài viết.
  *
  * @see wp_set_post_tags()
  *
  * @since 2.3.0
  *
- * @param int          $post_id Optional. The Post ID. Does not default to the ID of the global $post.
- * @param string|array $tags    Optional. An array of tags to set for the post, or a string of tags
- *                              separated by commas. Default empty.
- * @return array|false|WP_Error Array of affected term IDs. WP_Error or false on failure.
+ * @param int          $post_id Tùy chọn. ID bài viết. Không mặc định là ID của $post toàn cục.
+ * @param string|array $tags    Tùy chọn. Mảng các thẻ để đặt cho bài viết, hoặc chuỗi các thẻ
+ *                              phân cách bằng dấu phẩy. Mặc định rỗng.
+ * @return array|false|WP_Error Mảng các ID term bị ảnh hưởng. WP_Error hoặc false nếu thất bại.
  */
 function wp_add_post_tags( $post_id = 0, $tags = '' ) {
 	return wp_set_post_tags( $post_id, $tags, true );
 }
 
 /**
- * Sets the tags for a post.
+ * Đặt thẻ cho bài viết.
  *
  * @since 2.3.0
  *
  * @see wp_set_object_terms()
  *
- * @param int          $post_id Optional. The Post ID. Does not default to the ID of the global $post.
- * @param string|array $tags    Optional. An array of tags to set for the post, or a string of tags
- *                              separated by commas. Default empty.
- * @param bool         $append  Optional. If true, don't delete existing tags, just add on. If false,
- *                              replace the tags with the new tags. Default false.
- * @return array|false|WP_Error Array of term taxonomy IDs of affected terms. WP_Error or false on failure.
+ * @param int          $post_id Tùy chọn. ID bài viết. Không mặc định là ID của $post toàn cục.
+ * @param string|array $tags    Tùy chọn. Mảng các thẻ để đặt cho bài viết, hoặc chuỗi các thẻ
+ *                              phân cách bằng dấu phẩy. Mặc định rỗng.
+ * @param bool         $append  Tùy chọn. Nếu true, không xóa thẻ hiện tại, chỉ thêm vào. Nếu false,
+ *                              thay thế thẻ bằng thẻ mới. Mặc định false.
+ * @return array|false|WP_Error Mảng ID term taxonomy của các term bị ảnh hưởng. WP_Error hoặc false nếu thất bại.
  */
 function wp_set_post_tags( $post_id = 0, $tags = '', $append = false ) {
 	return wp_set_post_terms( $post_id, $tags, 'post_tag', $append );
 }
 
 /**
- * Sets the terms for a post.
+ * Đặt các term cho bài viết.
  *
  * @since 2.8.0
  *
  * @see wp_set_object_terms()
  *
- * @param int          $post_id  Optional. The Post ID. Does not default to the ID of the global $post.
- * @param string|array $terms    Optional. An array of terms to set for the post, or a string of terms
- *                               separated by commas. Hierarchical taxonomies must always pass IDs rather
- *                               than names so that children with the same names but different parents
- *                               aren't confused. Default empty.
- * @param string       $taxonomy Optional. Taxonomy name. Default 'post_tag'.
- * @param bool         $append   Optional. If true, don't delete existing terms, just add on. If false,
- *                               replace the terms with the new terms. Default false.
- * @return array|false|WP_Error Array of term taxonomy IDs of affected terms. WP_Error or false on failure.
+ * @param int          $post_id  Tùy chọn. ID bài viết. Không mặc định là ID của $post toàn cục.
+ * @param string|array $terms    Tùy chọn. Mảng các term để đặt cho bài viết, hoặc chuỗi các term
+ *                               phân cách bằng dấu phẩy. Taxonomy phân cấp phải luôn truyền ID thay vì
+ *                               tên để các term con cùng tên nhưng khác cha không bị nhầm lẫn.
+ *                               Mặc định rỗng.
+ * @param string       $taxonomy Tùy chọn. Tên taxonomy. Mặc định 'post_tag'.
+ * @param bool         $append   Tùy chọn. Nếu true, không xóa term hiện tại, chỉ thêm vào. Nếu false,
+ *                               thay thế term bằng term mới. Mặc định false.
+ * @return array|false|WP_Error Mảng ID term taxonomy của các term bị ảnh hưởng. WP_Error hoặc false nếu thất bại.
  */
 function wp_set_post_terms( $post_id = 0, $terms = '', $taxonomy = 'post_tag', $append = false ) {
 	$post_id = (int) $post_id;
@@ -5644,8 +5642,8 @@ function wp_set_post_terms( $post_id = 0, $terms = '', $taxonomy = 'post_tag', $
 	}
 
 	/*
-	 * Hierarchical taxonomies must always pass IDs rather than names so that
-	 * children with the same names but different parents aren't confused.
+	 * Taxonomy phân cấp phải luôn truyền ID thay vì tên để
+	 * các term con cùng tên nhưng khác cha không bị nhầm lẫn.
 	 */
 	if ( is_taxonomy_hierarchical( $taxonomy ) ) {
 		$terms = array_unique( array_map( 'intval', $terms ) );
@@ -5655,39 +5653,39 @@ function wp_set_post_terms( $post_id = 0, $terms = '', $taxonomy = 'post_tag', $
 }
 
 /**
- * Sets categories for a post.
+ * Đặt chuyên mục cho bài viết.
  *
- * If no categories are provided, the default category is used.
+ * Nếu không có chuyên mục nào được cung cấp, chuyên mục mặc định sẽ được sử dụng.
  *
  * @since 2.1.0
  *
- * @param int       $post_id         Optional. The Post ID. Does not default to the ID
- *                                   of the global $post. Default 0.
- * @param int[]|int $post_categories Optional. List of category IDs, or the ID of a single category.
- *                                   Default empty array.
- * @param bool      $append          If true, don't delete existing categories, just add on.
- *                                   If false, replace the categories with the new categories.
- * @return array|false|WP_Error Array of term taxonomy IDs of affected categories. WP_Error or false on failure.
+ * @param int       $post_id         Tùy chọn. ID bài viết. Không mặc định là ID
+ *                                   của $post toàn cục. Mặc định 0.
+ * @param int[]|int $post_categories Tùy chọn. Danh sách ID chuyên mục, hoặc ID của một chuyên mục đơn.
+ *                                   Mặc định mảng rỗng.
+ * @param bool      $append          Nếu true, không xóa chuyên mục hiện tại, chỉ thêm vào.
+ *                                   Nếu false, thay thế chuyên mục bằng chuyên mục mới.
+ * @return array|false|WP_Error Mảng ID term taxonomy của các chuyên mục bị ảnh hưởng. WP_Error hoặc false nếu thất bại.
  */
 function wp_set_post_categories( $post_id = 0, $post_categories = array(), $append = false ) {
 	$post_id     = (int) $post_id;
 	$post_type   = get_post_type( $post_id );
 	$post_status = get_post_status( $post_id );
 
-	// If $post_categories isn't already an array, make it one.
+	// Nếu $post_categories chưa phải là mảng, chuyển nó thành mảng.
 	$post_categories = (array) $post_categories;
 
 	if ( empty( $post_categories ) ) {
 		/**
-		 * Filters post types (in addition to 'post') that require a default category.
+		 * Lọc các loại bài viết (ngoài 'post') yêu cầu chuyên mục mặc định.
 		 *
 		 * @since 5.5.0
 		 *
-		 * @param string[] $post_types An array of post type names. Default empty array.
+		 * @param string[] $post_types Mảng tên các loại bài viết. Mặc định mảng rỗng.
 		 */
 		$default_category_post_types = apply_filters( 'default_category_post_types', array() );
 
-		// Regular posts always require a default category.
+		// Bài viết thông thường luôn yêu cầu chuyên mục mặc định.
 		$default_category_post_types = array_merge( $default_category_post_types, array( 'post' ) );
 
 		if ( in_array( $post_type, $default_category_post_types, true )
@@ -5707,45 +5705,45 @@ function wp_set_post_categories( $post_id = 0, $post_categories = array(), $appe
 }
 
 /**
- * Fires actions related to the transitioning of a post's status.
+ * Kích hoạt các action liên quan đến chuyển đổi trạng thái bài viết.
  *
- * When a post is saved, the post status is "transitioned" from one status to another,
- * though this does not always mean the status has actually changed before and after
- * the save. This function fires a number of action hooks related to that transition:
- * the generic {@see 'transition_post_status'} action, as well as the dynamic hooks
- * {@see '$old_status_to_$new_status'} and {@see '$new_status_$post->post_type'}. Note
- * that the function does not transition the post object in the database.
+ * Khi bài viết được lưu, trạng thái bài viết được "chuyển đổi" từ trạng thái này sang trạng thái khác,
+ * mặc dù điều này không phải lúc nào cũng có nghĩa là trạng thái thực sự đã thay đổi trước và sau
+ * khi lưu. Hàm này kích hoạt một số action hook liên quan đến chuyển đổi đó:
+ * action chung {@see 'transition_post_status'}, cũng như các hook động
+ * {@see '$old_status_to_$new_status'} và {@see '$new_status_$post->post_type'}. Lưu ý
+ * rằng hàm không chuyển đổi đối tượng bài viết trong cơ sở dữ liệu.
  *
- * For instance: When publishing a post for the first time, the post status may transition
- * from 'draft' – or some other status – to 'publish'. However, if a post is already
- * published and is simply being updated, the "old" and "new" statuses may both be 'publish'
- * before and after the transition.
+ * Ví dụ: Khi xuất bản bài viết lần đầu, trạng thái bài viết có thể chuyển đổi
+ * từ 'draft' – hoặc trạng thái khác – sang 'publish'. Tuy nhiên, nếu bài viết đã
+ * được xuất bản và chỉ đang được cập nhật, trạng thái "cũ" và "mới" đều có thể là 'publish'
+ * trước và sau khi chuyển đổi.
  *
  * @since 2.3.0
  *
- * @param string  $new_status Transition to this post status.
- * @param string  $old_status Previous post status.
- * @param WP_Post $post Post data.
+ * @param string  $new_status Chuyển sang trạng thái bài viết này.
+ * @param string  $old_status Trạng thái bài viết trước đó.
+ * @param WP_Post $post Dữ liệu bài viết.
  */
 function wp_transition_post_status( $new_status, $old_status, $post ) {
 	/**
-	 * Fires when a post is transitioned from one status to another.
+	 * Kích hoạt khi bài viết được chuyển đổi từ trạng thái này sang trạng thái khác.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param string  $new_status New post status.
-	 * @param string  $old_status Old post status.
-	 * @param WP_Post $post       Post object.
+	 * @param string  $new_status Trạng thái bài viết mới.
+	 * @param string  $old_status Trạng thái bài viết cũ.
+	 * @param WP_Post $post       Đối tượng bài viết.
 	 */
 	do_action( 'transition_post_status', $new_status, $old_status, $post );
 
 	/**
-	 * Fires when a post is transitioned from one status to another.
+	 * Kích hoạt khi bài viết được chuyển đổi từ trạng thái này sang trạng thái khác.
 	 *
-	 * The dynamic portions of the hook name, `$new_status` and `$old_status`,
-	 * refer to the old and new post statuses, respectively.
+	 * Phần động của tên hook, `$new_status` và `$old_status`,
+	 * tham chiếu đến trạng thái bài viết cũ và mới tương ứng.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `draft_to_publish`
 	 *  - `publish_to_trash`
@@ -5753,17 +5751,17 @@ function wp_transition_post_status( $new_status, $old_status, $post ) {
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param WP_Post $post Post object.
+	 * @param WP_Post $post Đối tượng bài viết.
 	 */
 	do_action( "{$old_status}_to_{$new_status}", $post );
 
 	/**
-	 * Fires when a post is transitioned from one status to another.
+	 * Kích hoạt khi bài viết được chuyển đổi từ trạng thái này sang trạng thái khác.
 	 *
-	 * The dynamic portions of the hook name, `$new_status` and `$post->post_type`,
-	 * refer to the new post status and post type, respectively.
+	 * Phần động của tên hook, `$new_status` và `$post->post_type`,
+	 * tham chiếu đến trạng thái bài viết mới và loại bài viết tương ứng.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `draft_post`
 	 *  - `future_post`
@@ -5780,33 +5778,33 @@ function wp_transition_post_status( $new_status, $old_status, $post ) {
 	 *  - `publish_attachment`
 	 *  - `trash_attachment`
 	 *
-	 * Please note: When this action is hooked using a particular post status (like
-	 * 'publish', as `publish_{$post->post_type}`), it will fire both when a post is
-	 * first transitioned to that status from something else, as well as upon
-	 * subsequent post updates (old and new status are both the same).
+	 * Xin lưu ý: Khi action này được hook bằng một trạng thái bài viết cụ thể (như
+	 * 'publish', dưới dạng `publish_{$post->post_type}`), nó sẽ kích hoạt cả khi bài viết
+	 * lần đầu chuyển đổi sang trạng thái đó từ trạng thái khác, cũng như khi
+	 * cập nhật bài viết sau đó (trạng thái cũ và mới đều giống nhau).
 	 *
-	 * Therefore, if you are looking to only fire a callback when a post is first
-	 * transitioned to a status, use the {@see 'transition_post_status'} hook instead.
+	 * Do đó, nếu bạn chỉ muốn kích hoạt callback khi bài viết lần đầu
+	 * chuyển sang một trạng thái, hãy sử dụng hook {@see 'transition_post_status'} thay thế.
 	 *
 	 * @since 2.3.0
-	 * @since 5.9.0 Added `$old_status` parameter.
+	 * @since 5.9.0 Thêm tham số `$old_status`.
 	 *
-	 * @param int     $post_id    Post ID.
-	 * @param WP_Post $post       Post object.
-	 * @param string  $old_status Old post status.
+	 * @param int     $post_id    ID bài viết.
+	 * @param WP_Post $post       Đối tượng bài viết.
+	 * @param string  $old_status Trạng thái bài viết cũ.
 	 */
 	do_action( "{$new_status}_{$post->post_type}", $post->ID, $post, $old_status );
 }
 
 /**
- * Fires actions after a post, its terms and meta data has been saved.
+ * Kích hoạt các action sau khi bài viết, term và meta data đã được lưu.
  *
  * @since 5.6.0
  *
- * @param int|WP_Post  $post        The post ID or object that has been saved.
- * @param bool         $update      Whether this is an existing post being updated.
- * @param null|WP_Post $post_before Null for new posts, the WP_Post object prior
- *                                  to the update for updated posts.
+ * @param int|WP_Post  $post        ID hoặc đối tượng bài viết đã được lưu.
+ * @param bool         $update      Có phải bài viết hiện có đang được cập nhật hay không.
+ * @param null|WP_Post $post_before Null cho bài viết mới, đối tượng WP_Post trước
+ *                                  khi cập nhật cho bài viết được cập nhật.
  */
 function wp_after_insert_post( $post, $update, $post_before ) {
 	$post = get_post( $post );
@@ -5818,35 +5816,35 @@ function wp_after_insert_post( $post, $update, $post_before ) {
 	$post_id = $post->ID;
 
 	/**
-	 * Fires once a post, its terms and meta data has been saved.
+	 * Kích hoạt sau khi bài viết, term và meta data đã được lưu.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param int          $post_id     Post ID.
-	 * @param WP_Post      $post        Post object.
-	 * @param bool         $update      Whether this is an existing post being updated.
-	 * @param null|WP_Post $post_before Null for new posts, the WP_Post object prior
-	 *                                  to the update for updated posts.
+	 * @param int          $post_id     ID bài viết.
+	 * @param WP_Post      $post        Đối tượng bài viết.
+	 * @param bool         $update      Có phải bài viết hiện có đang được cập nhật hay không.
+	 * @param null|WP_Post $post_before Null cho bài viết mới, đối tượng WP_Post trước
+	 *                                  khi cập nhật cho bài viết được cập nhật.
 	 */
 	do_action( 'wp_after_insert_post', $post_id, $post, $update, $post_before );
 }
 
 //
-// Comment, trackback, and pingback functions.
+// Các hàm bình luận, trackback và pingback.
 //
 
 /**
- * Adds a URL to those already pinged.
+ * Thêm URL vào danh sách đã ping.
  *
  * @since 1.5.0
- * @since 4.7.0 `$post` can be a WP_Post object.
- * @since 4.7.0 `$uri` can be an array of URIs.
+ * @since 4.7.0 `$post` có thể là đối tượng WP_Post.
+ * @since 4.7.0 `$uri` có thể là mảng URI.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int|WP_Post  $post Post ID or post object.
- * @param string|array $uri  Ping URI or array of URIs.
- * @return int|false How many rows were updated.
+ * @param int|WP_Post  $post ID bài viết hoặc đối tượng bài viết.
+ * @param string|array $uri  URI ping hoặc mảng URI.
+ * @return int|false Số hàng đã được cập nhật.
  */
 function add_ping( $post, $uri ) {
 	global $wpdb;
@@ -5868,11 +5866,11 @@ function add_ping( $post, $uri ) {
 	$new = implode( "\n", $pung );
 
 	/**
-	 * Filters the new ping URL to add for the given post.
+	 * Lọc URL ping mới để thêm cho bài viết đã cho.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $new New ping URL to add.
+	 * @param string $new URL ping mới cần thêm.
 	 */
 	$new = apply_filters( 'add_ping', $new );
 
@@ -5882,12 +5880,12 @@ function add_ping( $post, $uri ) {
 }
 
 /**
- * Retrieves enclosures already enclosed for a post.
+ * Lấy các enclosure đã được đính kèm cho bài viết.
  *
  * @since 1.5.0
  *
- * @param int $post_id Post ID.
- * @return string[] Array of enclosures for the given post.
+ * @param int $post_id ID bài viết.
+ * @return string[] Mảng các enclosure cho bài viết đã cho.
  */
 function get_enclosed( $post_id ) {
 	$custom_fields = get_post_custom( $post_id );
@@ -5907,25 +5905,25 @@ function get_enclosed( $post_id ) {
 	}
 
 	/**
-	 * Filters the list of enclosures already enclosed for the given post.
+	 * Lọc danh sách các enclosure đã được đính kèm cho bài viết đã cho.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string[] $pung    Array of enclosures for the given post.
-	 * @param int      $post_id Post ID.
+	 * @param string[] $pung    Mảng các enclosure cho bài viết đã cho.
+	 * @param int      $post_id ID bài viết.
 	 */
 	return apply_filters( 'get_enclosed', $pung, $post_id );
 }
 
 /**
- * Retrieves URLs already pinged for a post.
+ * Lấy các URL đã được ping cho bài viết.
  *
  * @since 1.5.0
  *
- * @since 4.7.0 `$post` can be a WP_Post object.
+ * @since 4.7.0 `$post` có thể là đối tượng WP_Post.
  *
- * @param int|WP_Post $post Post ID or object.
- * @return string[]|false Array of URLs already pinged for the given post, false if the post is not found.
+ * @param int|WP_Post $post ID bài viết hoặc đối tượng.
+ * @return string[]|false Mảng các URL đã ping cho bài viết đã cho, false nếu không tìm thấy bài viết.
  */
 function get_pung( $post ) {
 	$post = get_post( $post );
@@ -5938,23 +5936,23 @@ function get_pung( $post ) {
 	$pung = preg_split( '/\s/', $pung );
 
 	/**
-	 * Filters the list of already-pinged URLs for the given post.
+	 * Lọc danh sách URL đã được ping cho bài viết đã cho.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string[] $pung Array of URLs already pinged for the given post.
+	 * @param string[] $pung Mảng các URL đã ping cho bài viết đã cho.
 	 */
 	return apply_filters( 'get_pung', $pung );
 }
 
 /**
- * Retrieves URLs that need to be pinged.
+ * Lấy các URL cần được ping.
  *
  * @since 1.5.0
- * @since 4.7.0 `$post` can be a WP_Post object.
+ * @since 4.7.0 `$post` có thể là đối tượng WP_Post.
  *
- * @param int|WP_Post $post Post ID or post object.
- * @return string[]|false List of URLs yet to ping.
+ * @param int|WP_Post $post ID bài viết hoặc đối tượng bài viết.
+ * @return string[]|false Danh sách URL chưa được ping.
  */
 function get_to_ping( $post ) {
 	$post = get_post( $post );
@@ -5967,29 +5965,29 @@ function get_to_ping( $post ) {
 	$to_ping = preg_split( '/\s/', $to_ping, -1, PREG_SPLIT_NO_EMPTY );
 
 	/**
-	 * Filters the list of URLs yet to ping for the given post.
+	 * Lọc danh sách URL chưa được ping cho bài viết đã cho.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string[] $to_ping List of URLs yet to ping.
+	 * @param string[] $to_ping Danh sách URL chưa được ping.
 	 */
 	return apply_filters( 'get_to_ping', $to_ping );
 }
 
 /**
- * Does trackbacks for a list of URLs.
+ * Thực hiện trackback cho danh sách URL.
  *
  * @since 1.0.0
  *
- * @param string $tb_list Comma separated list of URLs.
- * @param int    $post_id Post ID.
+ * @param string $tb_list Danh sách URL phân cách bằng dấu phẩy.
+ * @param int    $post_id ID bài viết.
  */
 function trackback_url_list( $tb_list, $post_id ) {
 	if ( ! empty( $tb_list ) ) {
-		// Get post data.
+		// Lấy dữ liệu bài viết.
 		$postdata = get_post( $post_id, ARRAY_A );
 
-		// Form an excerpt.
+		// Tạo đoạn trích.
 		$excerpt = strip_tags( $postdata['post_excerpt'] ? $postdata['post_excerpt'] : $postdata['post_content'] );
 
 		if ( strlen( $excerpt ) > 255 ) {
@@ -6005,17 +6003,17 @@ function trackback_url_list( $tb_list, $post_id ) {
 }
 
 //
-// Page functions.
+// Các hàm trang.
 //
 
 /**
- * Gets a list of page IDs.
+ * Lấy danh sách ID trang.
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @return string[] List of page IDs as strings.
+ * @return string[] Danh sách ID trang dưới dạng chuỗi.
  */
 function get_all_page_ids() {
 	global $wpdb;
@@ -6030,38 +6028,38 @@ function get_all_page_ids() {
 }
 
 /**
- * Retrieves page data given a page ID or page object.
+ * Lấy dữ liệu trang theo ID trang hoặc đối tượng trang.
  *
- * Use get_post() instead of get_page().
+ * Sử dụng get_post() thay vì get_page().
  *
  * @since 1.5.1
- * @deprecated 3.5.0 Use get_post()
+ * @deprecated 3.5.0 Sử dụng get_post()
  *
- * @param int|WP_Post $page   Page object or page ID. Passed by reference.
- * @param string      $output Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
- *                            correspond to a WP_Post object, an associative array, or a numeric array,
- *                            respectively. Default OBJECT.
- * @param string      $filter Optional. How the return value should be filtered. Accepts 'raw',
- *                            'edit', 'db', 'display'. Default 'raw'.
- * @return WP_Post|array|null WP_Post or array on success, null on failure.
+ * @param int|WP_Post $page   Đối tượng trang hoặc ID trang. Truyền theo tham chiếu.
+ * @param string      $output Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT, ARRAY_A, hoặc ARRAY_N,
+ *                            tương ứng với đối tượng WP_Post, mảng liên kết, hoặc mảng số.
+ *                            Mặc định OBJECT.
+ * @param string      $filter Tùy chọn. Cách lọc giá trị trả về. Chấp nhận 'raw',
+ *                            'edit', 'db', 'display'. Mặc định 'raw'.
+ * @return WP_Post|array|null WP_Post hoặc mảng nếu thành công, null nếu thất bại.
  */
 function get_page( $page, $output = OBJECT, $filter = 'raw' ) {
 	return get_post( $page, $output, $filter );
 }
 
 /**
- * Retrieves a page given its path.
+ * Lấy trang theo đường dẫn.
  *
  * @since 2.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string       $page_path Page path.
- * @param string       $output    Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
- *                                correspond to a WP_Post object, an associative array, or a numeric array,
- *                                respectively. Default OBJECT.
- * @param string|array $post_type Optional. Post type or array of post types. Default 'page'.
- * @return WP_Post|array|null WP_Post (or array) on success, or null on failure.
+ * @param string       $page_path Đường dẫn trang.
+ * @param string       $output    Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT, ARRAY_A, hoặc ARRAY_N,
+ *                                tương ứng với đối tượng WP_Post, mảng liên kết, hoặc mảng số.
+ *                                Mặc định OBJECT.
+ * @param string|array $post_type Tùy chọn. Loại bài viết hoặc mảng loại bài viết. Mặc định 'page'.
+ * @return WP_Post|array|null WP_Post (hoặc mảng) nếu thành công, hoặc null nếu thất bại.
  */
 function get_page_by_path( $page_path, $output = OBJECT, $post_type = 'page' ) {
 	global $wpdb;
@@ -6072,7 +6070,7 @@ function get_page_by_path( $page_path, $output = OBJECT, $post_type = 'page' ) {
 	$cache_key = "get_page_by_path:$hash:$last_changed";
 	$cached    = wp_cache_get( $cache_key, 'post-queries' );
 	if ( false !== $cached ) {
-		// Special case: '0' is a bad `$page_path`.
+		// Trường hợp đặc biệt: '0' là `$page_path` không hợp lệ.
 		if ( '0' === $cached || 0 === $cached ) {
 			return;
 		} else {
@@ -6115,8 +6113,8 @@ function get_page_by_path( $page_path, $output = OBJECT, $post_type = 'page' ) {
 			$p     = $page;
 
 			/*
-			 * Loop through the given path parts from right to left,
-			 * ensuring each matches the post ancestry.
+			 * Duyệt qua các phần đường dẫn đã cho từ phải sang trái,
+			 * đảm bảo mỗi phần khớp với tổ tiên bài viết.
 			 */
 			while ( 0 !== (int) $p->post_parent && isset( $pages[ $p->post_parent ] ) ) {
 				++$count;
@@ -6139,7 +6137,7 @@ function get_page_by_path( $page_path, $output = OBJECT, $post_type = 'page' ) {
 		}
 	}
 
-	// We cache misses as well as hits.
+	// Chúng ta cache cả kết quả không tìm thấy lẫn tìm thấy.
 	wp_cache_set( $cache_key, $found_id, 'post-queries' );
 
 	if ( $found_id ) {
@@ -6150,18 +6148,18 @@ function get_page_by_path( $page_path, $output = OBJECT, $post_type = 'page' ) {
 }
 
 /**
- * Identifies descendants of a given page ID in a list of page objects.
+ * Xác định các trang con cháu của ID trang đã cho trong danh sách đối tượng trang.
  *
- * Descendants are identified from the `$pages` array passed to the function. No database queries are performed.
+ * Các trang con cháu được xác định từ mảng `$pages` truyền vào hàm. Không thực hiện truy vấn cơ sở dữ liệu.
  *
  * @since 1.5.1
  *
- * @param int       $page_id Page ID.
- * @param WP_Post[] $pages   List of page objects from which descendants should be identified.
- * @return WP_Post[] List of page children.
+ * @param int       $page_id ID trang.
+ * @param WP_Post[] $pages   Danh sách đối tượng trang để xác định các trang con cháu.
+ * @return WP_Post[] Danh sách trang con.
  */
 function get_page_children( $page_id, $pages ) {
-	// Build a hash of ID -> children.
+	// Xây dựng bảng băm ID -> trang con.
 	$children = array();
 	foreach ( (array) $pages as $page ) {
 		$children[ (int) $page->post_parent ][] = $page;
@@ -6169,9 +6167,9 @@ function get_page_children( $page_id, $pages ) {
 
 	$page_list = array();
 
-	// Start the search by looking at immediate children.
+	// Bắt đầu tìm kiếm bằng cách xem các trang con trực tiếp.
 	if ( isset( $children[ $page_id ] ) ) {
-		// Always start at the end of the stack in order to preserve original `$pages` order.
+		// Luôn bắt đầu từ cuối ngăn xếp để bảo toàn thứ tự `$pages` gốc.
 		$to_look = array_reverse( $children[ $page_id ] );
 
 		while ( $to_look ) {
@@ -6179,7 +6177,7 @@ function get_page_children( $page_id, $pages ) {
 			$page_list[] = $p;
 			if ( isset( $children[ $p->ID ] ) ) {
 				foreach ( array_reverse( $children[ $p->ID ] ) as $child ) {
-					// Append to the `$to_look` stack to descend the tree.
+					// Thêm vào ngăn xếp `$to_look` để đi sâu xuống cây.
 					$to_look[] = $child;
 				}
 			}
@@ -6190,16 +6188,16 @@ function get_page_children( $page_id, $pages ) {
 }
 
 /**
- * Orders the pages with children under parents in a flat list.
+ * Sắp xếp các trang với trang con dưới trang cha trong danh sách phẳng.
  *
- * It uses auxiliary structure to hold parent-children relationships and
- * runs in O(N) complexity
+ * Sử dụng cấu trúc phụ trợ để giữ quan hệ cha-con và
+ * chạy với độ phức tạp O(N).
  *
  * @since 2.0.0
  *
- * @param WP_Post[] $pages   Posts array (passed by reference).
- * @param int       $page_id Optional. Parent page ID. Default 0.
- * @return string[] Array of post names keyed by ID and arranged by hierarchy. Children immediately follow their parents.
+ * @param WP_Post[] $pages   Mảng bài viết (truyền theo tham chiếu).
+ * @param int       $page_id Tùy chọn. ID trang cha. Mặc định 0.
+ * @return string[] Mảng tên bài viết đánh khóa theo ID và sắp xếp theo phân cấp. Trang con theo ngay sau trang cha.
  */
 function get_page_hierarchy( &$pages, $page_id = 0 ) {
 	if ( empty( $pages ) ) {
@@ -6219,18 +6217,18 @@ function get_page_hierarchy( &$pages, $page_id = 0 ) {
 }
 
 /**
- * Traverses and return all the nested children post names of a root page.
+ * Duyệt và trả về tất cả tên bài viết con lồng nhau của trang gốc.
  *
- * $children contains parent-children relations
+ * $children chứa quan hệ cha-con.
  *
  * @since 2.9.0
  * @access private
  *
  * @see _page_traverse_name()
  *
- * @param int      $page_id  Page ID.
- * @param array    $children Parent-children relations (passed by reference).
- * @param string[] $result   Array of page names keyed by ID (passed by reference).
+ * @param int      $page_id  ID trang.
+ * @param array    $children Quan hệ cha-con (truyền theo tham chiếu).
+ * @param string[] $result   Mảng tên trang đánh khóa theo ID (truyền theo tham chiếu).
  */
 function _page_traverse_name( $page_id, &$children, &$result ) {
 	if ( isset( $children[ $page_id ] ) ) {
@@ -6242,15 +6240,15 @@ function _page_traverse_name( $page_id, &$children, &$result ) {
 }
 
 /**
- * Builds the URI path for a page.
+ * Xây dựng đường dẫn URI cho trang.
  *
- * Sub pages will be in the "directory" under the parent page post name.
+ * Trang con sẽ nằm trong "thư mục" dưới tên bài viết trang cha.
  *
  * @since 1.5.0
- * @since 4.6.0 The `$page` parameter was made optional.
+ * @since 4.6.0 Tham số `$page` được đặt là tùy chọn.
  *
- * @param WP_Post|object|int $page Optional. Page ID or WP_Post object. Default is global $post.
- * @return string|false Page URI, false on error.
+ * @param WP_Post|object|int $page Tùy chọn. ID trang hoặc đối tượng WP_Post. Mặc định global $post.
+ * @return string|false URI trang, false nếu lỗi.
  */
 function get_page_uri( $page = 0 ) {
 	if ( ! $page instanceof WP_Post ) {
@@ -6271,58 +6269,58 @@ function get_page_uri( $page = 0 ) {
 	}
 
 	/**
-	 * Filters the URI for a page.
+	 * Lọc URI của trang.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string  $uri  Page URI.
-	 * @param WP_Post $page Page object.
+	 * @param string  $uri  URI trang.
+	 * @param WP_Post $page Đối tượng trang.
 	 */
 	return apply_filters( 'get_page_uri', $uri, $page );
 }
 
 /**
- * Retrieves an array of pages (or hierarchical post type items).
+ * Lấy mảng các trang (hoặc mục loại bài viết phân cấp).
  *
  * @since 1.5.0
- * @since 6.3.0 Use WP_Query internally.
+ * @since 6.3.0 Sử dụng WP_Query nội bộ.
  *
  * @param array|string $args {
- *     Optional. Array or string of arguments to retrieve pages.
+ *     Tùy chọn. Mảng hoặc chuỗi các đối số để lấy trang.
  *
- *     @type int          $child_of     Page ID to return child and grandchild pages of. Note: The value
- *                                      of `$hierarchical` has no bearing on whether `$child_of` returns
- *                                      hierarchical results. Default 0, or no restriction.
- *     @type string       $sort_order   How to sort retrieved pages. Accepts 'ASC', 'DESC'. Default 'ASC'.
- *     @type string       $sort_column  What columns to sort pages by, comma-separated. Accepts 'post_author',
+ *     @type int          $child_of     ID trang để trả về các trang con và cháu. Lưu ý: Giá trị
+ *                                      của `$hierarchical` không ảnh hưởng đến việc `$child_of` trả về
+ *                                      kết quả phân cấp hay không. Mặc định 0, hoặc không giới hạn.
+ *     @type string       $sort_order   Cách sắp xếp trang đã lấy. Chấp nhận 'ASC', 'DESC'. Mặc định 'ASC'.
+ *     @type string       $sort_column  Cột nào để sắp xếp trang, phân cách bằng dấu phẩy. Chấp nhận 'post_author',
  *                                      'post_date', 'post_title', 'post_name', 'post_modified', 'menu_order',
  *                                      'post_modified_gmt', 'post_parent', 'ID', 'rand', 'comment_count'.
- *                                      'post_' can be omitted for any values that start with it.
- *                                      Default 'post_title'.
- *     @type bool         $hierarchical Whether to return pages hierarchically. If false in conjunction with
- *                                      `$child_of` also being false, both arguments will be disregarded.
- *                                      Default true.
- *     @type int[]        $exclude      Array of page IDs to exclude. Default empty array.
- *     @type int[]        $include      Array of page IDs to include. Cannot be used with `$child_of`,
- *                                      `$parent`, `$exclude`, `$meta_key`, `$meta_value`, or `$hierarchical`.
- *                                      Default empty array.
- *     @type string       $meta_key     Only include pages with this meta key. Default empty.
- *     @type string       $meta_value   Only include pages with this meta value. Requires `$meta_key`.
- *                                      Default empty.
- *     @type string       $authors      A comma-separated list of author IDs. Default empty.
- *     @type int          $parent       Page ID to return direct children of. Default -1, or no restriction.
- *     @type string|int[] $exclude_tree Comma-separated string or array of page IDs to exclude.
- *                                      Default empty array.
- *     @type int          $number       The number of pages to return. Default 0, or all pages.
- *     @type int          $offset       The number of pages to skip before returning. Requires `$number`.
- *                                      Default 0.
- *     @type string       $post_type    The post type to query. Default 'page'.
- *     @type string|array $post_status  A comma-separated list or array of post statuses to include.
- *                                      Default 'publish'.
+ *                                      'post_' có thể bỏ qua cho bất kỳ giá trị nào bắt đầu bằng nó.
+ *                                      Mặc định 'post_title'.
+ *     @type bool         $hierarchical Có trả về trang theo phân cấp hay không. Nếu false kết hợp với
+ *                                      `$child_of` cũng false, cả hai đối số sẽ bị bỏ qua.
+ *                                      Mặc định true.
+ *     @type int[]        $exclude      Mảng ID trang cần loại trừ. Mặc định mảng rỗng.
+ *     @type int[]        $include      Mảng ID trang cần bao gồm. Không thể dùng với `$child_of`,
+ *                                      `$parent`, `$exclude`, `$meta_key`, `$meta_value`, hoặc `$hierarchical`.
+ *                                      Mặc định mảng rỗng.
+ *     @type string       $meta_key     Chỉ bao gồm trang có meta key này. Mặc định rỗng.
+ *     @type string       $meta_value   Chỉ bao gồm trang có meta value này. Yêu cầu `$meta_key`.
+ *                                      Mặc định rỗng.
+ *     @type string       $authors      Danh sách ID tác giả phân cách bằng dấu phẩy. Mặc định rỗng.
+ *     @type int          $parent       ID trang để trả về các trang con trực tiếp. Mặc định -1, hoặc không giới hạn.
+ *     @type string|int[] $exclude_tree Chuỗi phân cách bằng dấu phẩy hoặc mảng ID trang cần loại trừ.
+ *                                      Mặc định mảng rỗng.
+ *     @type int          $number       Số trang cần trả về. Mặc định 0, hoặc tất cả trang.
+ *     @type int          $offset       Số trang cần bỏ qua trước khi trả về. Yêu cầu `$number`.
+ *                                      Mặc định 0.
+ *     @type string       $post_type    Loại bài viết cần truy vấn. Mặc định 'page'.
+ *     @type string|array $post_status  Danh sách phân cách bằng dấu phẩy hoặc mảng trạng thái bài viết cần bao gồm.
+ *                                      Mặc định 'publish'.
  * }
- * @return WP_Post[]|false Array of pages (or hierarchical post type items). Boolean false if the
- *                         specified post type is not hierarchical or the specified status is not
- *                         supported by the post type.
+ * @return WP_Post[]|false Mảng các trang (hoặc mục loại bài viết phân cấp). Boolean false nếu
+ *                         loại bài viết được chỉ định không phân cấp hoặc trạng thái được chỉ định không
+ *                         được hỗ trợ bởi loại bài viết.
  */
 function get_pages( $args = array() ) {
 	$defaults = array(
@@ -6355,7 +6353,7 @@ function get_pages( $args = array() ) {
 	$parent       = $parsed_args['parent'];
 	$post_status  = $parsed_args['post_status'];
 
-	// Make sure the post type is hierarchical.
+	// Đảm bảo loại bài viết là phân cấp.
 	$hierarchical_post_types = get_post_types( array( 'hierarchical' => true ) );
 	if ( ! in_array( $parsed_args['post_type'], $hierarchical_post_types, true ) ) {
 		return false;
@@ -6365,7 +6363,7 @@ function get_pages( $args = array() ) {
 		$hierarchical = false;
 	}
 
-	// Make sure we have a valid post status.
+	// Đảm bảo có trạng thái bài viết hợp lệ.
 	if ( ! is_array( $post_status ) ) {
 		$post_status = explode( ',', $post_status );
 	}
@@ -6390,7 +6388,7 @@ function get_pages( $args = array() ) {
 	);
 
 	if ( ! empty( $parsed_args['include'] ) ) {
-		$child_of = 0; // Ignore child_of, parent, exclude, meta_key, and meta_value params if using include.
+		$child_of = 0; // Bỏ qua các tham số child_of, parent, exclude, meta_key và meta_value khi dùng include.
 		$parent   = -1;
 		unset( $query_args['post__not_in'], $query_args['meta_key'], $query_args['meta_value'] );
 		$hierarchical           = false;
@@ -6403,7 +6401,7 @@ function get_pages( $args = array() ) {
 		if ( ! empty( $post_authors ) ) {
 			$query_args['author__in'] = array();
 			foreach ( $post_authors as $post_author ) {
-				// Do we have an author id or an author login?
+				// Đây là ID tác giả hay tên đăng nhập tác giả?
 				if ( 0 === (int) $post_author ) {
 					$post_author = get_user_by( 'login', $post_author );
 					if ( empty( $post_author ) ) {
@@ -6429,9 +6427,9 @@ function get_pages( $args = array() ) {
 	}
 
 	/*
-	 * Maintain backward compatibility for `sort_column` key.
-	 * Additionally to `WP_Query`, it has been supporting the `post_modified_gmt` field, so this logic will translate
-	 * it to `post_modified` which should result in the same order given the two dates in the fields match.
+	 * Duy trì tương thích ngược cho khóa `sort_column`.
+	 * Ngoài `WP_Query`, nó đã hỗ trợ trường `post_modified_gmt`, nên logic này sẽ chuyển đổi
+	 * thành `post_modified` để cho kết quả cùng thứ tự khi hai ngày trong các trường khớp nhau.
 	 */
 	$orderby = wp_parse_list( $parsed_args['sort_column'] );
 	$orderby = array_map(
@@ -6458,12 +6456,12 @@ function get_pages( $args = array() ) {
 	}
 
 	/**
-	 * Filters query arguments passed to WP_Query in get_pages.
+	 * Lọc đối số truy vấn truyền cho WP_Query trong get_pages.
 	 *
 	 * @since 6.3.0
 	 *
-	 * @param array $query_args  Array of arguments passed to WP_Query.
-	 * @param array $parsed_args Array of get_pages() arguments.
+	 * @param array $query_args  Mảng đối số truyền cho WP_Query.
+	 * @param array $parsed_args Mảng đối số get_pages().
 	 */
 	$query_args = apply_filters( 'get_pages_query_args', $query_args, $parsed_args );
 
@@ -6492,31 +6490,31 @@ function get_pages( $args = array() ) {
 	}
 
 	/**
-	 * Filters the retrieved list of pages.
+	 * Lọc danh sách trang đã lấy.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param WP_Post[] $pages       Array of page objects.
-	 * @param array     $parsed_args Array of get_pages() arguments.
+	 * @param WP_Post[] $pages       Mảng đối tượng trang.
+	 * @param array     $parsed_args Mảng đối số get_pages().
 	 */
 	return apply_filters( 'get_pages', $pages, $parsed_args );
 }
 
 //
-// Attachment functions.
+// Các hàm tệp đính kèm.
 //
 
 /**
- * Determines whether an attachment URI is local and really an attachment.
+ * Xác định xem URI tệp đính kèm có phải là cục bộ và thực sự là tệp đính kèm hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 2.0.0
  *
- * @param string $url URL to check
- * @return bool True on success, false on failure.
+ * @param string $url URL cần kiểm tra.
+ * @return bool True nếu thành công, false nếu thất bại.
  */
 function is_local_attachment( $url ) {
 	if ( ! str_contains( $url, home_url() ) ) {
@@ -6537,31 +6535,31 @@ function is_local_attachment( $url ) {
 }
 
 /**
- * Inserts an attachment.
+ * Chèn tệp đính kèm.
  *
- * If you set the 'ID' in the $args parameter, it will mean that you are
- * updating and attempt to update the attachment. You can also set the
- * attachment name or title by setting the key 'post_name' or 'post_title'.
+ * Nếu bạn đặt 'ID' trong tham số $args, điều đó có nghĩa là bạn đang
+ * cập nhật và cố gắng cập nhật tệp đính kèm. Bạn cũng có thể đặt
+ * tên hoặc tiêu đề tệp đính kèm bằng cách đặt khóa 'post_name' hoặc 'post_title'.
  *
- * You can set the dates for the attachment manually by setting the 'post_date'
- * and 'post_date_gmt' keys' values.
+ * Bạn có thể đặt ngày cho tệp đính kèm thủ công bằng cách đặt giá trị các khóa
+ * 'post_date' và 'post_date_gmt'.
  *
- * By default, the comments will use the default settings for whether the
- * comments are allowed. You can close them manually or keep them open by
- * setting the value for the 'comment_status' key.
+ * Theo mặc định, bình luận sẽ sử dụng cài đặt mặc định cho việc bình luận
+ * có được cho phép hay không. Bạn có thể đóng thủ công hoặc giữ mở bằng
+ * cách đặt giá trị cho khóa 'comment_status'.
  *
  * @since 2.0.0
- * @since 4.7.0 Added the `$wp_error` parameter to allow a WP_Error to be returned on failure.
- * @since 5.6.0 Added the `$fire_after_hooks` parameter.
+ * @since 4.7.0 Thêm tham số `$wp_error` để cho phép trả về WP_Error khi thất bại.
+ * @since 5.6.0 Thêm tham số `$fire_after_hooks`.
  *
  * @see wp_insert_post()
  *
- * @param string|array $args             Arguments for inserting an attachment.
- * @param string|false $file             Optional. Filename. Default false.
- * @param int          $parent_post_id   Optional. Parent post ID or 0 for no parent. Default 0.
- * @param bool         $wp_error         Optional. Whether to return a WP_Error on failure. Default false.
- * @param bool         $fire_after_hooks Optional. Whether to fire the after insert hooks. Default true.
- * @return int|WP_Error The attachment ID on success. The value 0 or WP_Error on failure.
+ * @param string|array $args             Đối số để chèn tệp đính kèm.
+ * @param string|false $file             Tùy chọn. Tên tệp. Mặc định false.
+ * @param int          $parent_post_id   Tùy chọn. ID bài viết cha hoặc 0 nếu không có cha. Mặc định 0.
+ * @param bool         $wp_error         Tùy chọn. Có trả về WP_Error khi thất bại hay không. Mặc định false.
+ * @param bool         $fire_after_hooks Tùy chọn. Có kích hoạt các hook sau khi chèn hay không. Mặc định true.
+ * @return int|WP_Error ID tệp đính kèm nếu thành công. Giá trị 0 hoặc WP_Error nếu thất bại.
  */
 function wp_insert_attachment( $args, $file = false, $parent_post_id = 0, $wp_error = false, $fire_after_hooks = true ) {
 	$defaults = array(
@@ -6581,23 +6579,23 @@ function wp_insert_attachment( $args, $file = false, $parent_post_id = 0, $wp_er
 }
 
 /**
- * Trashes or deletes an attachment.
+ * Đưa vào thùng rác hoặc xóa tệp đính kèm.
  *
- * When an attachment is permanently deleted, the file will also be removed.
- * Deletion removes all post meta fields, taxonomy, comments, etc. associated
- * with the attachment (except the main post).
+ * Khi tệp đính kèm bị xóa vĩnh viễn, tệp cũng sẽ bị loại bỏ.
+ * Việc xóa loại bỏ tất cả trường post meta, taxonomy, bình luận, v.v. liên quan
+ * đến tệp đính kèm (ngoại trừ bài viết chính).
  *
- * The attachment is moved to the Trash instead of permanently deleted unless Trash
- * for media is disabled, item is already in the Trash, or $force_delete is true.
+ * Tệp đính kèm được chuyển vào Thùng rác thay vì xóa vĩnh viễn trừ khi Thùng rác
+ * cho phương tiện bị tắt, mục đã ở trong Thùng rác, hoặc $force_delete là true.
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int  $post_id      Attachment ID.
- * @param bool $force_delete Optional. Whether to bypass Trash and force deletion.
- *                           Default false.
- * @return WP_Post|false|null Post data on success, false or null on failure.
+ * @param int  $post_id      ID tệp đính kèm.
+ * @param bool $force_delete Tùy chọn. Có bỏ qua Thùng rác và buộc xóa hay không.
+ *                           Mặc định false.
+ * @return WP_Post|false|null Dữ liệu bài viết nếu thành công, false hoặc null nếu thất bại.
  */
 function wp_delete_attachment( $post_id, $force_delete = false ) {
 	global $wpdb;
@@ -6619,13 +6617,13 @@ function wp_delete_attachment( $post_id, $force_delete = false ) {
 	}
 
 	/**
-	 * Filters whether an attachment deletion should take place.
+	 * Lọc xem việc xóa tệp đính kèm có nên được thực hiện hay không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_Post|false|null $delete       Whether to go forward with deletion.
-	 * @param WP_Post            $post         Post object.
-	 * @param bool               $force_delete Whether to bypass the Trash.
+	 * @param WP_Post|false|null $delete       Có tiếp tục xóa hay không.
+	 * @param WP_Post            $post         Đối tượng bài viết.
+	 * @param bool               $force_delete Có bỏ qua Thùng rác hay không.
 	 */
 	$check = apply_filters( 'pre_delete_attachment', null, $post, $force_delete );
 	if ( null !== $check ) {
@@ -6644,20 +6642,20 @@ function wp_delete_attachment( $post_id, $force_delete = false ) {
 	}
 
 	/**
-	 * Fires before an attachment is deleted, at the start of wp_delete_attachment().
+	 * Kích hoạt trước khi tệp đính kèm bị xóa, ở đầu wp_delete_attachment().
 	 *
 	 * @since 2.0.0
-	 * @since 5.5.0 Added the `$post` parameter.
+	 * @since 5.5.0 Thêm tham số `$post`.
 	 *
-	 * @param int     $post_id Attachment ID.
-	 * @param WP_Post $post    Post object.
+	 * @param int     $post_id ID tệp đính kèm.
+	 * @param WP_Post $post    Đối tượng bài viết.
 	 */
 	do_action( 'delete_attachment', $post_id, $post );
 
 	wp_delete_object_term_relationships( $post_id, array( 'category', 'post_tag' ) );
 	wp_delete_object_term_relationships( $post_id, get_object_taxonomies( $post->post_type ) );
 
-	// Delete all for any posts.
+	// Xóa tất cả cho bất kỳ bài viết nào.
 	delete_metadata( 'post', null, '_thumbnail_id', $post_id, true );
 
 	wp_defer_comment_counting( true );
@@ -6674,13 +6672,13 @@ function wp_delete_attachment( $post_id, $force_delete = false ) {
 		delete_metadata_by_mid( 'post', $mid );
 	}
 
-	/** This action is documented in wp-includes/post.php */
+	/** Action này được ghi tài liệu trong wp-includes/post.php */
 	do_action( 'delete_post', $post_id, $post );
 	$result = $wpdb->delete( $wpdb->posts, array( 'ID' => $post_id ) );
 	if ( ! $result ) {
 		return false;
 	}
-	/** This action is documented in wp-includes/post.php */
+	/** Action này được ghi tài liệu trong wp-includes/post.php */
 	do_action( 'deleted_post', $post_id, $post );
 
 	wp_delete_attachment_files( $post_id, $meta, $backup_sizes, $file );

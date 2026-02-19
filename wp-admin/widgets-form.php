@@ -1,12 +1,12 @@
 <?php
 /**
- * The classic widget administration screen, for use in widgets.php.
+ * Màn hình quản trị widget cổ điển, được sử dụng trong widgets.php.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
@@ -30,8 +30,8 @@ if ( 'on' === $widgets_access ) {
 }
 
 /**
- * Fires early before the Widgets administration screen loads,
- * after scripts are enqueued.
+ * Kích hoạt sớm trước khi màn hình quản trị Widget tải,
+ * sau khi các script được đưa vào hàng đợi.
  *
  * @since 2.2.0
  */
@@ -72,7 +72,7 @@ get_current_screen()->set_help_sidebar(
 	'<p>' . __( '<a href="https://wordpress.org/support/forums/">Support forums</a>' ) . '</p>'
 );
 
-// These are the widgets grouped by sidebar.
+// Đây là các widget được nhóm theo thanh bên.
 $sidebars_widgets = wp_get_sidebars_widgets();
 
 if ( empty( $sidebars_widgets ) ) {
@@ -85,7 +85,7 @@ foreach ( $sidebars_widgets as $sidebar_id => $widgets ) {
 	}
 
 	if ( ! is_registered_sidebar( $sidebar_id ) ) {
-		if ( ! empty( $widgets ) ) { // Register the inactive_widgets area as sidebar.
+		if ( ! empty( $widgets ) ) { // Đăng ký vùng inactive_widgets như một thanh bên.
 			register_sidebar(
 				array(
 					'name'          => __( 'Inactive Sidebar (not used)' ),
@@ -104,7 +104,7 @@ foreach ( $sidebars_widgets as $sidebar_id => $widgets ) {
 	}
 }
 
-// Register the inactive_widgets area as sidebar.
+// Đăng ký vùng inactive_widgets như một thanh bên.
 register_sidebar(
 	array(
 		'name'          => __( 'Inactive Widgets' ),
@@ -120,7 +120,7 @@ register_sidebar(
 
 retrieve_widgets();
 
-// We're saving a widget without JS.
+// Chúng ta đang lưu widget mà không có JS.
 if ( isset( $_POST['savewidget'] ) || isset( $_POST['removewidget'] ) ) {
 	$widget_id = $_POST['widget-id'];
 	check_admin_referer( "save-delete-widget-$widget_id" );
@@ -141,7 +141,7 @@ if ( isset( $_POST['savewidget'] ) || isset( $_POST['removewidget'] ) ) {
 	$id_base = $_POST['id_base'];
 	$sidebar = isset( $sidebars_widgets[ $sidebar_id ] ) ? $sidebars_widgets[ $sidebar_id ] : array();
 
-	// Delete.
+	// Xóa.
 	if ( isset( $_POST['removewidget'] ) && $_POST['removewidget'] ) {
 
 		if ( ! in_array( $widget_id, $sidebar, true ) ) {
@@ -158,13 +158,13 @@ if ( isset( $_POST['savewidget'] ) || isset( $_POST['removewidget'] ) ) {
 		);
 
 		/**
-		 * Fires immediately after a widget has been marked for deletion.
+		 * Kích hoạt ngay sau khi widget được đánh dấu để xóa.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string $widget_id  ID of the widget marked for deletion.
-		 * @param string $sidebar_id ID of the sidebar the widget was deleted from.
-		 * @param string $id_base    ID base for the widget.
+		 * @param string $widget_id  ID của widget được đánh dấu để xóa.
+		 * @param string $sidebar_id ID của thanh bên mà widget bị xóa.
+		 * @param string $id_base    ID cơ sở cho widget.
 		 */
 		do_action( 'delete_widget', $widget_id, $sidebar_id, $id_base );
 	}
@@ -185,7 +185,7 @@ if ( isset( $_POST['savewidget'] ) || isset( $_POST['removewidget'] ) ) {
 
 	$sidebars_widgets[ $sidebar_id ] = $sidebar;
 
-	// Remove old position.
+	// Xóa vị trí cũ.
 	if ( ! isset( $_POST['delete_widget'] ) ) {
 		foreach ( $sidebars_widgets as $key => $sb ) {
 			if ( is_array( $sb ) ) {
@@ -200,7 +200,7 @@ if ( isset( $_POST['savewidget'] ) || isset( $_POST['removewidget'] ) ) {
 	exit;
 }
 
-// Remove inactive widgets without JS.
+// Xóa các widget không hoạt động mà không có JS.
 if ( isset( $_POST['removeinactivewidgets'] ) ) {
 	check_admin_referer( 'remove-inactive-widgets', '_wpnonce_remove_inactive_widgets' );
 
@@ -222,17 +222,17 @@ if ( isset( $_POST['removeinactivewidgets'] ) ) {
 	exit;
 }
 
-// Output the widget form without JS.
+// Xuất biểu mẫu widget mà không có JS.
 if ( isset( $_GET['editwidget'] ) && $_GET['editwidget'] ) {
 	$widget_id = $_GET['editwidget'];
 
 	if ( isset( $_GET['addnew'] ) ) {
-		// Default to the first sidebar.
+		// Mặc định sử dụng thanh bên đầu tiên.
 		$keys    = array_keys( $wp_registered_sidebars );
 		$sidebar = reset( $keys );
 
-		if ( isset( $_GET['base'] ) && isset( $_GET['num'] ) ) { // Multi-widget.
-			// Copy minimal info from an existing instance of this widget to a new instance.
+		if ( isset( $_GET['base'] ) && isset( $_GET['num'] ) ) { // Widget đa phiên bản.
+			// Sao chép thông tin tối thiểu từ phiên bản hiện có của widget này sang phiên bản mới.
 			foreach ( $wp_registered_widget_controls as $control ) {
 				if ( $_GET['base'] === $control['id_base'] ) {
 					$control_callback                                = $control['callback'];
@@ -268,7 +268,7 @@ if ( isset( $_GET['editwidget'] ) && $_GET['editwidget'] ) {
 
 	$id_base = isset( $control['id_base'] ) ? $control['id_base'] : $control['id'];
 
-	// Show the widget form.
+	// Hiển thị biểu mẫu widget.
 	$width = ' style="width:' . max( $control['width'], 350 ) . 'px"';
 	$key   = isset( $_GET['key'] ) ? (int) $_GET['key'] : 0;
 
@@ -426,7 +426,7 @@ if ( isset( $_GET['error'] ) && isset( $errors[ $_GET['error'] ] ) ) {
 }
 
 /**
- * Fires before the Widgets administration page content loads.
+ * Kích hoạt trước khi nội dung trang quản trị Widget tải.
  *
  * @since 3.0.0
  */
@@ -548,7 +548,7 @@ foreach ( $theme_sidebars as $sidebar => $registered_sidebar ) {
 	?>
 	<div class="<?php echo esc_attr( $wrap_class ); ?>">
 		<?php
-		// Show the control forms for each of the widgets in this sidebar.
+		// Hiển thị biểu mẫu điều khiển cho mỗi widget trong thanh bên này.
 		wp_list_widget_controls( $sidebar, $registered_sidebar['name'] );
 		?>
 	</div>
@@ -578,7 +578,7 @@ foreach ( $theme_sidebars as $sidebar => $registered_sidebar ) {
 <?php
 
 /**
- * Fires after the available widgets and sidebars have loaded, before the admin footer.
+ * Kích hoạt sau khi các widget khả dụng và thanh bên đã tải, trước footer quản trị.
  *
  * @since 2.2.0
  */

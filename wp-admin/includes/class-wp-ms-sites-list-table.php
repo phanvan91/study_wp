@@ -1,6 +1,6 @@
 <?php
 /**
- * List Table API: WP_MS_Sites_List_Table class
+ * API Bảng danh sách: Lớp WP_MS_Sites_List_Table
  *
  * @package WordPress
  * @subpackage Administration
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement displaying sites in a list table for the network admin.
+ * Lớp cốt lõi dùng để hiển thị các website trong bảng danh sách cho quản trị mạng.
  *
  * @since 3.1.0
  *
@@ -17,7 +17,7 @@
 class WP_MS_Sites_List_Table extends WP_List_Table {
 
 	/**
-	 * Site status list.
+	 * Danh sách trạng thái website.
 	 *
 	 * @since 4.3.0
 	 * @var array
@@ -25,13 +25,13 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	public $status_list;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @see WP_List_Table::__construct() for more information on default arguments.
+	 * @see WP_List_Table::__construct() để biết thêm thông tin về các tham số mặc định.
 	 *
-	 * @param array $args An associative array of arguments.
+	 * @param array $args Mảng kết hợp các tham số.
 	 */
 	public function __construct( $args = array() ) {
 		$this->status_list = array(
@@ -57,13 +57,13 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Prepares the list of sites for display.
+	 * Chuẩn bị danh sách website để hiển thị.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @global string $mode List table view mode.
+	 * @global string $mode Chế độ xem bảng danh sách.
 	 * @global string $s
-	 * @global wpdb   $wpdb WordPress database abstraction object.
+	 * @global wpdb   $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 */
 	public function prepare_items() {
 		global $mode, $s, $wpdb;
@@ -87,8 +87,8 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		}
 
 		/*
-		 * If the network is large and a search is not being performed, show only
-		 * the latest sites with no paging in order to avoid expensive count queries.
+		 * Nếu mạng lớn và không đang tìm kiếm, chỉ hiển thị
+		 * các website mới nhất không phân trang để tránh truy vấn đếm tốn kém.
 		 */
 		if ( ! $s && wp_is_large_network() ) {
 			if ( ! isset( $_REQUEST['orderby'] ) ) {
@@ -108,13 +108,13 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		);
 
 		if ( empty( $s ) ) {
-			// Nothing to do.
+			// Không có gì để làm.
 		} elseif ( preg_match( '/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $s )
 			|| preg_match( '/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.?$/', $s )
 			|| preg_match( '/^[0-9]{1,3}\.[0-9]{1,3}\.?$/', $s )
 			|| preg_match( '/^[0-9]{1,3}\.$/', $s )
 		) {
-			// IPv4 address.
+			// Địa chỉ IPv4.
 			$reg_blog_ids = $wpdb->get_col(
 				$wpdb->prepare(
 					"SELECT blog_id FROM {$wpdb->registration_log} WHERE {$wpdb->registration_log}.IP LIKE %s",
@@ -137,7 +137,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 
 		$order_by = isset( $_REQUEST['orderby'] ) ? $_REQUEST['orderby'] : '';
 		if ( 'registered' === $order_by ) {
-			// 'registered' is a valid field name.
+			// 'registered' là tên trường hợp lệ.
 		} elseif ( 'lastupdated' === $order_by ) {
 			$order_by = 'last_updated';
 		} elseif ( 'blogname' === $order_by ) {
@@ -164,18 +164,18 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 			$args['no_found_rows'] = false;
 		}
 
-		// Take into account the role the user has selected.
+		// Xét đến vai trò mà người dùng đã chọn.
 		$status = isset( $_REQUEST['status'] ) ? wp_unslash( trim( $_REQUEST['status'] ) ) : '';
 		if ( in_array( $status, array( 'public', 'archived', 'mature', 'spam', 'deleted' ), true ) ) {
 			$args[ $status ] = 1;
 		}
 
 		/**
-		 * Filters the arguments for the site query in the sites list table.
+		 * Lọc các tham số cho truy vấn website trong bảng danh sách website.
 		 *
 		 * @since 4.6.0
 		 *
-		 * @param array $args An array of get_sites() arguments.
+		 * @param array $args Mảng các tham số get_sites().
 		 */
 		$args = apply_filters( 'ms_sites_list_table_query_args', $args );
 
@@ -212,7 +212,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Gets links to filter sites by status.
+	 * Lấy các liên kết để lọc website theo trạng thái.
 	 *
 	 * @since 5.3.0
 	 *
@@ -300,9 +300,9 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global string $mode List table view mode.
+	 * @global string $mode Chế độ xem bảng danh sách.
 	 *
-	 * @param string $which The location of the pagination nav markup: Either 'top' or 'bottom'.
+	 * @param string $which Vị trí điều hướng phân trang: 'top' hoặc 'bottom'.
 	 */
 	protected function pagination( $which ) {
 		global $mode;
@@ -315,11 +315,11 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Displays extra controls between bulk actions and pagination.
+	 * Hiển thị các điều khiển bổ sung giữa hành động hàng loạt và phân trang.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param string $which The location of the extra table nav markup: Either 'top' or 'bottom'.
+	 * @param string $which Vị trí markup điều hướng bảng bổ sung: 'top' hoặc 'bottom'.
 	 */
 	protected function extra_tablenav( $which ) {
 		?>
@@ -329,11 +329,11 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 			ob_start();
 
 			/**
-			 * Fires before the Filter button on the MS sites list table.
+			 * Kích hoạt trước nút Lọc trên bảng danh sách website đa site.
 			 *
 			 * @since 5.3.0
 			 *
-			 * @param string $which The location of the extra table nav markup: Either 'top' or 'bottom'.
+			 * @param string $which Vị trí markup điều hướng bảng bổ sung: 'top' hoặc 'bottom'.
 			 */
 			do_action( 'restrict_manage_sites', $which );
 
@@ -348,18 +348,18 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		</div>
 		<?php
 		/**
-		 * Fires immediately following the closing "actions" div in the tablenav for the
-		 * MS sites list table.
+		 * Kích hoạt ngay sau thẻ đóng div "actions" trong tablenav cho
+		 * bảng danh sách website đa site.
 		 *
 		 * @since 5.3.0
 		 *
-		 * @param string $which The location of the extra table nav markup: Either 'top' or 'bottom'.
+		 * @param string $which Vị trí markup điều hướng bảng bổ sung: 'top' hoặc 'bottom'.
 		 */
 		do_action( 'manage_sites_extra_tablenav', $which );
 	}
 
 	/**
-	 * @return string[] Array of column titles keyed by their column name.
+	 * @return string[] Mảng tiêu đề cột được đánh chỉ mục theo tên cột.
 	 */
 	public function get_columns() {
 		$sites_columns = array(
@@ -375,11 +375,11 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 		}
 
 		/**
-		 * Filters the displayed site columns in Sites list table.
+		 * Lọc các cột website hiển thị trong bảng danh sách Website.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param string[] $sites_columns An array of displayed site columns. Default 'cb',
+		 * @param string[] $sites_columns Mảng các cột website hiển thị. Mặc định 'cb',
 		 *                               'blogname', 'lastupdated', 'registered', 'users'.
 		 */
 		return apply_filters( 'wpmu_blogs_columns', $sites_columns );
@@ -406,15 +406,15 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the checkbox column output.
+	 * Xử lý đầu ra cột hộp kiểm.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$blog` to `$item` to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$blog` thành `$item` để phù hợp với lớp cha cho hỗ trợ tham số đặt tên PHP 8.
 	 *
-	 * @param array $item Current site.
+	 * @param array $item Website hiện tại.
 	 */
 	public function column_cb( $item ) {
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$blog = $item;
 
 		if ( ! is_main_site( $blog['blog_id'] ) ) :
@@ -434,24 +434,24 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the ID column output.
+	 * Xử lý đầu ra cột ID.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $blog Current site.
+	 * @param array $blog Website hiện tại.
 	 */
 	public function column_id( $blog ) {
 		echo $blog['blog_id'];
 	}
 
 	/**
-	 * Handles the site name column output.
+	 * Xử lý đầu ra cột tên website.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @global string $mode List table view mode.
+	 * @global string $mode Chế độ xem bảng danh sách.
 	 *
-	 * @param array $blog Current site.
+	 * @param array $blog Website hiện tại.
 	 */
 	public function column_blogname( $blog ) {
 		global $mode;
@@ -486,13 +486,13 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the lastupdated column output.
+	 * Xử lý đầu ra cột cập nhật lần cuối.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @global string $mode List table view mode.
+	 * @global string $mode Chế độ xem bảng danh sách.
 	 *
-	 * @param array $blog Current site.
+	 * @param array $blog Website hiện tại.
 	 */
 	public function column_lastupdated( $blog ) {
 		global $mode;
@@ -511,13 +511,13 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the registered column output.
+	 * Xử lý đầu ra cột ngày đăng ký.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @global string $mode List table view mode.
+	 * @global string $mode Chế độ xem bảng danh sách.
 	 *
-	 * @param array $blog Current site.
+	 * @param array $blog Website hiện tại.
 	 */
 	public function column_registered( $blog ) {
 		global $mode;
@@ -536,11 +536,11 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the users column output.
+	 * Xử lý đầu ra cột người dùng.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param array $blog Current site.
+	 * @param array $blog Website hiện tại.
 	 */
 	public function column_users( $blog ) {
 		$user_count = wp_cache_get( $blog['blog_id'] . '_user_count', 'blog-details' );
@@ -565,47 +565,47 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the plugins column output.
+	 * Xử lý đầu ra cột plugin.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param array $blog Current site.
+	 * @param array $blog Website hiện tại.
 	 */
 	public function column_plugins( $blog ) {
 		if ( has_filter( 'wpmublogsaction' ) ) {
 			/**
-			 * Fires inside the auxiliary 'Actions' column of the Sites list table.
+			 * Kích hoạt bên trong cột phụ 'Hành động' của bảng danh sách Website.
 			 *
-			 * By default this column is hidden unless something is hooked to the action.
+			 * Mặc định cột này bị ẩn trừ khi có hook nào đó được gắn vào action.
 			 *
 			 * @since MU (3.0.0)
 			 *
-			 * @param int $blog_id The site ID.
+			 * @param int $blog_id ID website.
 			 */
 			do_action( 'wpmublogsaction', $blog['blog_id'] );
 		}
 	}
 
 	/**
-	 * Handles output for the default column.
+	 * Xử lý đầu ra cho cột mặc định.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$blog` to `$item` to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$blog` thành `$item` để phù hợp với lớp cha cho hỗ trợ tham số đặt tên PHP 8.
 	 *
-	 * @param array  $item        Current site.
-	 * @param string $column_name Current column name.
+	 * @param array  $item        Website hiện tại.
+	 * @param string $column_name Tên cột hiện tại.
 	 */
 	public function column_default( $item, $column_name ) {
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$blog = $item;
 
 		/**
-		 * Fires for each registered custom column in the Sites list table.
+		 * Kích hoạt cho mỗi cột tùy chỉnh đã đăng ký trong bảng danh sách Website.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string $column_name The name of the column to display.
-		 * @param int    $blog_id     The site ID.
+		 * @param string $column_name Tên cột cần hiển thị.
+		 * @param int    $blog_id     ID website.
 		 */
 		do_action( 'manage_sites_custom_column', $column_name, $blog['blog_id'] );
 	}
@@ -717,7 +717,7 @@ class WP_MS_Sites_List_Table extends WP_List_Table {
 			return '';
 		}
 
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$blog = $item;
 
 		$blogname = untrailingslashit( $blog['domain'] . $blog['path'] );

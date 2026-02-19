@@ -1,14 +1,13 @@
 <?php
 /**
- * Plugins may load this file to gain access to special helper functions
- * for plugin installation. This file is not included by WordPress and it is
- * recommended, to prevent fatal errors, that this file is included using
- * require_once.
+ * Plugin có thể nạp file này để truy cập các hàm trợ giúp đặc biệt
+ * cho việc cài đặt plugin. File này không được WordPress tự động include và
+ * khuyến nghị sử dụng require_once để tránh lỗi nghiêm trọng.
  *
- * These functions are not optimized for speed, but they should only be used
- * once in a while, so speed shouldn't be a concern. If it is and you are
- * needing to use these functions a lot, you might experience timeouts.
- * If you do, then it is advised to just write the SQL code yourself.
+ * Các hàm này không được tối ưu hóa về tốc độ, nhưng chúng chỉ nên được sử dụng
+ * thỉnh thoảng, nên tốc độ không phải là vấn đề. Nếu bạn cần sử dụng
+ * các hàm này nhiều, bạn có thể gặp timeout.
+ * Khi đó, khuyến nghị tự viết mã SQL.
  *
  *     check_column( 'wp_links', 'link_description', 'mediumtext' );
  *
@@ -16,7 +15,7 @@
  *         echo "ok\n";
  *     }
  *
- *     // Check the column.
+ *     // Kiểm tra cột.
  *     if ( ! check_column( $wpdb->links, 'link_description', 'varchar( 255 )' ) ) {
  *         $ddl = "ALTER TABLE $wpdb->links MODIFY COLUMN link_description varchar(255) NOT NULL DEFAULT '' ";
  *         $q = $wpdb->query( $ddl );
@@ -36,20 +35,20 @@
  * @subpackage Plugin
  */
 
-/** Load WordPress Bootstrap */
+/** Nạp Bootstrap WordPress */
 require_once dirname( __DIR__ ) . '/wp-load.php';
 
 if ( ! function_exists( 'maybe_create_table' ) ) :
 	/**
-	 * Creates a table in the database if it doesn't already exist.
+	 * Tạo bảng trong cơ sở dữ liệu nếu chưa tồn tại.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param string $table_name Database table name.
-	 * @param string $create_ddl SQL statement to create table.
-	 * @return bool True on success or if the table already exists. False on failure.
+	 * @param string $table_name Tên bảng cơ sở dữ liệu.
+	 * @param string $create_ddl Câu lệnh SQL để tạo bảng.
+	 * @return bool True nếu thành công hoặc bảng đã tồn tại. False nếu thất bại.
 	 */
 	function maybe_create_table( $table_name, $create_ddl ) {
 		global $wpdb;
@@ -60,11 +59,11 @@ if ( ! function_exists( 'maybe_create_table' ) ) :
 			}
 		}
 
-		// Didn't find it, so try to create it.
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- No applicable variables for this query.
+		// Không tìm thấy, nên thử tạo mới.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Không có biến áp dụng cho truy vấn này.
 		$wpdb->query( $create_ddl );
 
-		// We cannot directly tell whether this succeeded!
+		// Không thể biết trực tiếp liệu thao tác có thành công không!
 		foreach ( $wpdb->get_col( 'SHOW TABLES', 0 ) as $table ) {
 			if ( $table === $table_name ) {
 				return true;
@@ -77,33 +76,33 @@ endif;
 
 if ( ! function_exists( 'maybe_add_column' ) ) :
 	/**
-	 * Adds column to database table, if it doesn't already exist.
+	 * Thêm cột vào bảng cơ sở dữ liệu, nếu chưa tồn tại.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param string $table_name  Database table name.
-	 * @param string $column_name Table column name.
-	 * @param string $create_ddl  SQL statement to add column.
-	 * @return bool True on success or if the column already exists. False on failure.
+	 * @param string $table_name  Tên bảng cơ sở dữ liệu.
+	 * @param string $column_name Tên cột của bảng.
+	 * @param string $create_ddl  Câu lệnh SQL để thêm cột.
+	 * @return bool True nếu thành công hoặc cột đã tồn tại. False nếu thất bại.
 	 */
 	function maybe_add_column( $table_name, $column_name, $create_ddl ) {
 		global $wpdb;
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Cannot be prepared. Fetches columns for table names.
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Không thể chuẩn bị. Lấy danh sách cột cho tên bảng.
 		foreach ( $wpdb->get_col( "DESC $table_name", 0 ) as $column ) {
 			if ( $column === $column_name ) {
 				return true;
 			}
 		}
 
-		// Didn't find it, so try to create it.
-		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- No applicable variables for this query.
+		// Không tìm thấy, nên thử tạo mới.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Không có biến áp dụng cho truy vấn này.
 		$wpdb->query( $create_ddl );
 
-		// We cannot directly tell whether this succeeded!
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Cannot be prepared. Fetches columns for table names.
+		// Không thể biết trực tiếp liệu thao tác có thành công không!
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Không thể chuẩn bị. Lấy danh sách cột cho tên bảng.
 		foreach ( $wpdb->get_col( "DESC $table_name", 0 ) as $column ) {
 			if ( $column === $column_name ) {
 				return true;
@@ -115,30 +114,30 @@ if ( ! function_exists( 'maybe_add_column' ) ) :
 endif;
 
 /**
- * Drops column from database table, if it exists.
+ * Xóa cột khỏi bảng cơ sở dữ liệu, nếu nó tồn tại.
  *
  * @since 1.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $table_name  Database table name.
- * @param string $column_name Table column name.
- * @param string $drop_ddl    SQL statement to drop column.
- * @return bool True on success or if the column doesn't exist. False on failure.
+ * @param string $table_name  Tên bảng cơ sở dữ liệu.
+ * @param string $column_name Tên cột của bảng.
+ * @param string $drop_ddl    Câu lệnh SQL để xóa cột.
+ * @return bool True nếu thành công hoặc cột không tồn tại. False nếu thất bại.
  */
 function maybe_drop_column( $table_name, $column_name, $drop_ddl ) {
 	global $wpdb;
 
-	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Cannot be prepared. Fetches columns for table names.
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Không thể chuẩn bị. Lấy danh sách cột cho tên bảng.
 	foreach ( $wpdb->get_col( "DESC $table_name", 0 ) as $column ) {
 		if ( $column === $column_name ) {
 
-			// Found it, so try to drop it.
-			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- No applicable variables for this query.
+			// Tìm thấy, nên thử xóa nó.
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Không có biến áp dụng cho truy vấn này.
 			$wpdb->query( $drop_ddl );
 
-			// We cannot directly tell whether this succeeded!
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Cannot be prepared. Fetches columns for table names.
+			// Không thể biết trực tiếp liệu thao tác có thành công không!
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Không thể chuẩn bị. Lấy danh sách cột cho tên bảng.
 			foreach ( $wpdb->get_col( "DESC $table_name", 0 ) as $column ) {
 				if ( $column === $column_name ) {
 					return false;
@@ -147,18 +146,18 @@ function maybe_drop_column( $table_name, $column_name, $drop_ddl ) {
 		}
 	}
 
-	// Else didn't find it.
+	// Không tìm thấy cột.
 	return true;
 }
 
 /**
- * Checks that database table column matches the criteria.
+ * Kiểm tra xem cột trong bảng cơ sở dữ liệu có khớp với tiêu chí hay không.
  *
- * Uses the SQL DESC for retrieving the table info for the column. It will help
- * understand the parameters, if you do more research on what column information
- * is returned by the SQL statement. Pass in null to skip checking that criteria.
+ * Sử dụng lệnh SQL DESC để lấy thông tin bảng cho cột. Việc tìm hiểu thêm
+ * về thông tin cột được trả về từ câu lệnh SQL sẽ giúp bạn hiểu rõ hơn
+ * các tham số. Truyền null để bỏ qua việc kiểm tra tiêu chí đó.
  *
- * Column names returned from DESC table are case sensitive and are as listed:
+ * Tên cột trả về từ DESC table phân biệt chữ hoa chữ thường và được liệt kê như sau:
  *
  *  - Field
  *  - Type
@@ -169,30 +168,30 @@ function maybe_drop_column( $table_name, $column_name, $drop_ddl ) {
  *
  * @since 1.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $table_name    Database table name.
- * @param string $col_name      Table column name.
- * @param string $col_type      Table column type.
- * @param bool   $is_null       Optional. Check is null.
- * @param mixed  $key           Optional. Key info.
- * @param mixed  $default_value Optional. Default value.
- * @param mixed  $extra         Optional. Extra value.
- * @return bool True, if matches. False, if not matching.
+ * @param string $table_name    Tên bảng cơ sở dữ liệu.
+ * @param string $col_name      Tên cột của bảng.
+ * @param string $col_type      Kiểu dữ liệu của cột.
+ * @param bool   $is_null       Tùy chọn. Kiểm tra có null không.
+ * @param mixed  $key           Tùy chọn. Thông tin khóa.
+ * @param mixed  $default_value Tùy chọn. Giá trị mặc định.
+ * @param mixed  $extra         Tùy chọn. Giá trị bổ sung.
+ * @return bool True nếu khớp. False nếu không khớp.
  */
 function check_column( $table_name, $col_name, $col_type, $is_null = null, $key = null, $default_value = null, $extra = null ) {
 	global $wpdb;
 
 	$diffs = 0;
 
-	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Cannot be prepared. Fetches columns for table names.
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Không thể chuẩn bị. Lấy danh sách cột cho tên bảng.
 	$results = $wpdb->get_results( "DESC $table_name" );
 
 	foreach ( $results as $row ) {
 
 		if ( $row->Field === $col_name ) {
 
-			// Got our column, check the params.
+			// Đã tìm thấy cột, kiểm tra các tham số.
 			if ( ( null !== $col_type ) && ( $row->Type !== $col_type ) ) {
 				++$diffs;
 			}
@@ -214,7 +213,7 @@ function check_column( $table_name, $col_name, $col_type, $is_null = null, $key 
 			}
 
 			return true;
-		} // End if found our column.
+		} // Kết thúc kiểm tra cột tìm thấy.
 	}
 
 	return false;

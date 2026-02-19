@@ -1,6 +1,6 @@
 <?php
 /**
- * Multisite network settings administration panel.
+ * Bảng điều khiển cài đặt mạng Multisite.
  *
  * @package WordPress
  * @subpackage Multisite

@@ -1,12 +1,12 @@
 <?php
 /**
- * Comment Management Screen
+ * Màn hình Quản lý Bình luận
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** Load WordPress Bootstrap */
+/** Tải Bootstrap WordPress */
 require_once __DIR__ . '/admin.php';
 
 $parent_file  = 'edit-comments.php';
@@ -41,7 +41,7 @@ if ( isset( $_REQUEST['c'] ) ) {
 	$comment_id = absint( $_REQUEST['c'] );
 	$comment    = get_comment( $comment_id );
 
-	// Prevent actions on a comment associated with a trashed post.
+	// Ngăn các hành động trên bình luận liên kết với bài viết đã bỏ vào Thùng rác.
 	if ( $comment && 'trash' === get_post_status( $comment->comment_post_ID ) ) {
 		wp_die(
 			__( 'You cannot edit this comment because the associated post is in the Trash. Please restore the post first, then try again.' )
@@ -54,7 +54,7 @@ if ( isset( $_REQUEST['c'] ) ) {
 switch ( $action ) {
 
 	case 'editcomment':
-		// Used in the HTML title tag.
+		// Sử dụng trong thẻ HTML title.
 		$title = __( 'Edit Comment' );
 
 		get_current_screen()->add_help_tab(
@@ -98,7 +98,7 @@ switch ( $action ) {
 	case 'approve':
 	case 'trash':
 	case 'spam':
-		// Used in the HTML title tag.
+		// Sử dụng trong thẻ HTML title.
 		$title = __( 'Moderate Comment' );
 
 		if ( ! $comment ) {
@@ -111,7 +111,7 @@ switch ( $action ) {
 			die();
 		}
 
-		// No need to re-approve/re-trash/re-spam a comment.
+		// Không cần phê duyệt lại/bỏ vào thùng rác lại/đánh dấu spam lại bình luận.
 		if ( str_replace( '1', 'approve', $comment->comment_approved ) === $action ) {
 			wp_redirect( admin_url( 'edit-comments.php?same=' . $comment_id ) );
 			die();
@@ -148,7 +148,7 @@ switch ( $action ) {
 				break;
 		}
 
-		if ( '0' !== $comment->comment_approved ) { // If not unapproved.
+		if ( '0' !== $comment->comment_approved ) { // Nếu không phải chưa phê duyệt.
 			$message = '';
 			switch ( $comment->comment_approved ) {
 				case '1':
@@ -198,7 +198,7 @@ switch ( $action ) {
 </tr>
 <?php } ?>
 <tr>
-	<th scope="row"><?php /* translators: Column name or table row header. */ _e( 'In response to' ); ?></th>
+	<th scope="row"><?php /* translators: Tên cột hoặc tiêu đề hàng trong bảng. */ _e( 'In response to' ); ?></th>
 	<td>
 		<?php
 		$post_id = $comment->comment_post_ID;
@@ -215,7 +215,7 @@ switch ( $action ) {
 			$parent_link = esc_url( get_comment_link( $parent ) );
 			$name        = get_comment_author( $parent );
 			printf(
-				/* translators: %s: Comment link. */
+				/* translators: %s: Liên kết bình luận. */
 				' | ' . __( 'In reply to %s.' ),
 				'<a href="' . $parent_link . '">' . $name . '</a>'
 			);
@@ -228,11 +228,11 @@ switch ( $action ) {
 	<td>
 		<?php
 		$submitted = sprintf(
-			/* translators: 1: Comment date, 2: Comment time. */
+			/* translators: 1: Ngày bình luận, 2: Giờ bình luận. */
 			__( '%1$s at %2$s' ),
-			/* translators: Comment date format. See https://www.php.net/manual/datetime.format.php */
+			/* translators: Định dạng ngày bình luận. Xem https://www.php.net/manual/datetime.format.php */
 			get_comment_date( __( 'Y/m/d' ), $comment ),
-			/* translators: Comment time format. See https://www.php.net/manual/datetime.format.php */
+			/* translators: Định dạng giờ bình luận. Xem https://www.php.net/manual/datetime.format.php */
 			get_comment_date( __( 'g:i a' ), $comment )
 		);
 		if ( 'approved' === wp_get_comment_status( $comment ) && ! empty( $comment->comment_post_ID ) ) {
@@ -244,7 +244,7 @@ switch ( $action ) {
 	</td>
 </tr>
 <tr>
-	<th scope="row"><?php /* translators: Field name in comment form. */ _ex( 'Comment', 'noun' ); ?></th>
+	<th scope="row"><?php /* translators: Tên trường trong biểu mẫu bình luận. */ _ex( 'Comment', 'noun' ); ?></th>
 	<td class="comment-content">
 		<?php comment_text( $comment ); ?>
 		<p class="edit-comment">
@@ -367,12 +367,12 @@ switch ( $action ) {
 		$location = ( empty( $_POST['referredby'] ) ? "edit-comments.php?p=$comment_post_id" : $_POST['referredby'] ) . '#comment-' . $comment_id;
 
 		/**
-		 * Filters the URI the user is redirected to after editing a comment in the admin.
+		 * Lọc URI mà người dùng được chuyển hướng đến sau khi chỉnh sửa bình luận trong admin.
 		 *
 		 * @since 2.1.0
 		 *
-		 * @param string $location The URI the user will be redirected to.
-		 * @param int $comment_id The ID of the comment being edited.
+		 * @param string $location URI mà người dùng sẽ được chuyển hướng đến.
+		 * @param int $comment_id ID của bình luận đang được chỉnh sửa.
 		 */
 		$location = apply_filters( 'comment_edit_redirect', $location, $comment_id );
 
@@ -382,6 +382,6 @@ switch ( $action ) {
 	default:
 		wp_die( __( 'Unknown action.' ) );
 
-} // End switch.
+} // Kết thúc switch.
 
 require_once ABSPATH . 'wp-admin/admin-footer.php';

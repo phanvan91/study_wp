@@ -1,6 +1,6 @@
 <?php
 /**
- * Widget API: WP_Widget_Tag_Cloud class
+ * Widget API: Lớp WP_Widget_Tag_Cloud
  *
  * @package WordPress
  * @subpackage Widgets
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement a Tag cloud widget.
+ * Lớp cốt lõi dùng để triển khai widget Đám mây thẻ.
  *
  * @since 2.8.0
  *
@@ -17,7 +17,7 @@
 class WP_Widget_Tag_Cloud extends WP_Widget {
 
 	/**
-	 * Sets up a new Tag Cloud widget instance.
+	 * Thiết lập một phiên bản widget Đám mây thẻ mới.
 	 *
 	 * @since 2.8.0
 	 */
@@ -31,13 +31,13 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the content for the current Tag Cloud widget instance.
+	 * Xuất nội dung cho phiên bản widget Đám mây thẻ hiện tại.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $args     Display arguments including 'before_title', 'after_title',
-	 *                        'before_widget', and 'after_widget'.
-	 * @param array $instance Settings for the current Tag Cloud widget instance.
+	 * @param array $args     Các tham số hiển thị bao gồm 'before_title', 'after_title',
+	 *                        'before_widget', và 'after_widget'.
+	 * @param array $instance Cài đặt cho phiên bản widget Đám mây thẻ hiện tại.
 	 */
 	public function widget( $args, $instance ) {
 		$current_taxonomy = $this->_get_current_taxonomy( $instance );
@@ -59,16 +59,16 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 
 		$tag_cloud = wp_tag_cloud(
 			/**
-			 * Filters the taxonomy used in the Tag Cloud widget.
+			 * Lọc taxonomy được sử dụng trong widget Đám mây thẻ.
 			 *
 			 * @since 2.8.0
-			 * @since 3.0.0 Added taxonomy drop-down.
-			 * @since 4.9.0 Added the `$instance` parameter.
+			 * @since 3.0.0 Thêm danh sách thả xuống taxonomy.
+			 * @since 4.9.0 Thêm tham số `$instance`.
 			 *
 			 * @see wp_tag_cloud()
 			 *
-			 * @param array $args     Args used for the tag cloud widget.
-			 * @param array $instance Array of settings for the current widget.
+			 * @param array $args     Các tham số dùng cho widget đám mây thẻ.
+			 * @param array $instance Mảng cài đặt cho widget hiện tại.
 			 */
 			apply_filters(
 				'widget_tag_cloud_args',
@@ -85,7 +85,7 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 			return;
 		}
 
-		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
+		/** Bộ lọc này được ghi chú tại wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
 		echo $args['before_widget'];
@@ -95,11 +95,11 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 
 		$format = current_theme_supports( 'html5', 'navigation-widgets' ) ? 'html5' : 'xhtml';
 
-		/** This filter is documented in wp-includes/widgets/class-wp-nav-menu-widget.php */
+		/** Bộ lọc này được ghi chú tại wp-includes/widgets/class-wp-nav-menu-widget.php */
 		$format = apply_filters( 'navigation_widgets_format', $format );
 
 		if ( 'html5' === $format ) {
-			// The title may be filtered: Strip out HTML and make sure the aria-label is never empty.
+			// Tiêu đề có thể bị lọc: Loại bỏ HTML và đảm bảo aria-label không bao giờ rỗng.
 			$title      = trim( strip_tags( $title ) );
 			$aria_label = $title ? $title : $default_title;
 			echo '<nav aria-label="' . esc_attr( $aria_label ) . '">';
@@ -119,14 +119,14 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 	}
 
 	/**
-	 * Handles updating settings for the current Tag Cloud widget instance.
+	 * Xử lý cập nhật cài đặt cho phiên bản widget Đám mây thẻ hiện tại.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $new_instance New settings for this instance as input by the user via
+	 * @param array $new_instance Cài đặt mới cho phiên bản này do người dùng nhập qua
 	 *                            WP_Widget::form().
-	 * @param array $old_instance Old settings for this instance.
-	 * @return array Settings to save or bool false to cancel saving.
+	 * @param array $old_instance Cài đặt cũ cho phiên bản này.
+	 * @return array Cài đặt để lưu hoặc bool false để hủy lưu.
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance             = array();
@@ -137,11 +137,11 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the Tag Cloud widget settings form.
+	 * Xuất biểu mẫu cài đặt widget Đám mây thẻ.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $instance Current settings.
+	 * @param array $instance Cài đặt hiện tại.
 	 */
 	public function form( $instance ) {
 		$title = ! empty( $instance['title'] ) ? $instance['title'] : '';
@@ -157,7 +157,7 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 
 		switch ( count( $taxonomies ) ) {
 
-			// No tag cloud supporting taxonomies found, display error message.
+			// Không tìm thấy taxonomy nào hỗ trợ đám mây thẻ, hiển thị thông báo lỗi.
 			case 0:
 				?>
 				<input type="hidden" id="<?php echo $this->get_field_id( 'taxonomy' ); ?>" name="<?php echo $this->get_field_name( 'taxonomy' ); ?>" value="" />
@@ -167,7 +167,7 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 				<?php
 				break;
 
-			// Just a single tag cloud supporting taxonomy found, no need to display a select.
+			// Chỉ tìm thấy một taxonomy hỗ trợ đám mây thẻ, không cần hiển thị danh sách chọn.
 			case 1:
 				$keys     = array_keys( $taxonomies );
 				$taxonomy = reset( $keys );
@@ -176,7 +176,7 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 				<?php
 				break;
 
-			// More than one tag cloud supporting taxonomy found, display a select.
+			// Tìm thấy nhiều hơn một taxonomy hỗ trợ đám mây thẻ, hiển thị danh sách chọn.
 			default:
 				?>
 				<p>
@@ -203,12 +203,12 @@ class WP_Widget_Tag_Cloud extends WP_Widget {
 	}
 
 	/**
-	 * Retrieves the taxonomy for the current Tag cloud widget instance.
+	 * Lấy taxonomy cho phiên bản widget Đám mây thẻ hiện tại.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $instance Current settings.
-	 * @return string Name of the current taxonomy if set, otherwise 'post_tag'.
+	 * @param array $instance Cài đặt hiện tại.
+	 * @return string Tên taxonomy hiện tại nếu được đặt, ngược lại là 'post_tag'.
 	 */
 	public function _get_current_taxonomy( $instance ) {
 		if ( ! empty( $instance['taxonomy'] ) && taxonomy_exists( $instance['taxonomy'] ) ) {

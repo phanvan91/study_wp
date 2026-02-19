@@ -1,8 +1,8 @@
 <?php
 /**
- * Customize API: WP_Customize_Custom_CSS_Setting class
+ * API Tùy biến: Lớp WP_Customize_Custom_CSS_Setting
  *
- * This handles validation, sanitization and saving of the value.
+ * Xử lý việc xác thực, làm sạch và lưu giá trị.
  *
  * @package WordPress
  * @subpackage Customize
@@ -10,7 +10,7 @@
  */
 
 /**
- * Custom Setting to handle WP Custom CSS.
+ * Cài đặt tùy chỉnh để xử lý CSS Tùy chỉnh của WP.
  *
  * @since 4.7.0
  *
@@ -19,7 +19,7 @@
 final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 
 	/**
-	 * The setting type.
+	 * Loại cài đặt.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -27,7 +27,7 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 	public $type = 'custom_css';
 
 	/**
-	 * Setting Transport
+	 * Phương thức truyền tải cài đặt.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -35,7 +35,7 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 	public $transport = 'postMessage';
 
 	/**
-	 * Capability required to edit this setting.
+	 * Quyền hạn cần thiết để chỉnh sửa cài đặt này.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -43,7 +43,7 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 	public $capability = 'edit_css';
 
 	/**
-	 * Stylesheet
+	 * Bảng kiểu.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -51,16 +51,16 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 	public $stylesheet = '';
 
 	/**
-	 * WP_Customize_Custom_CSS_Setting constructor.
+	 * Hàm khởi tạo WP_Customize_Custom_CSS_Setting.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @throws Exception If the setting ID does not match the pattern `custom_css[$stylesheet]`.
+	 * @throws Exception Nếu ID cài đặt không khớp với mẫu `custom_css[$stylesheet]`.
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
-	 * @param string               $id      A specific ID of the setting.
-	 *                                      Can be a theme mod or option name.
-	 * @param array                $args    Setting arguments.
+	 * @param WP_Customize_Manager $manager Đối tượng khởi tạo Trình tùy biến.
+	 * @param string               $id      ID cụ thể của cài đặt.
+	 *                                      Có thể là tên tùy chỉnh giao diện hoặc tùy chọn.
+	 * @param array                $args    Các tham số cài đặt.
 	 */
 	public function __construct( $manager, $id, $args = array() ) {
 		parent::__construct( $manager, $id, $args );
@@ -74,11 +74,11 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 	}
 
 	/**
-	 * Add filter to preview post value.
+	 * Thêm bộ lọc để xem trước giá trị bài viết.
 	 *
 	 * @since 4.7.9
 	 *
-	 * @return bool False when preview short-circuits due no change needing to be previewed.
+	 * @return bool False khi xem trước bị bỏ qua do không có thay đổi nào cần xem trước.
 	 */
 	public function preview() {
 		if ( $this->is_previewed ) {
@@ -90,16 +90,16 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 	}
 
 	/**
-	 * Filters `wp_get_custom_css` for applying the customized value.
+	 * Lọc `wp_get_custom_css` để áp dụng giá trị đã tùy biến.
 	 *
-	 * This is used in the preview when `wp_get_custom_css()` is called for rendering the styles.
+	 * Được sử dụng trong chế độ xem trước khi `wp_get_custom_css()` được gọi để hiển thị kiểu dáng.
 	 *
 	 * @since 4.7.0
 	 *
 	 * @see wp_get_custom_css()
 	 *
-	 * @param string $css        Original CSS.
-	 * @param string $stylesheet Current stylesheet.
+	 * @param string $css        CSS gốc.
+	 * @param string $stylesheet Bảng kiểu hiện tại.
 	 * @return string CSS.
 	 */
 	public function filter_previewed_wp_get_custom_css( $css, $stylesheet ) {
@@ -113,7 +113,7 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 	}
 
 	/**
-	 * Fetch the value of the setting. Will return the previewed value when `preview()` is called.
+	 * Lấy giá trị của cài đặt. Sẽ trả về giá trị xem trước khi `preview()` được gọi.
 	 *
 	 * @since 4.7.0
 	 *
@@ -138,27 +138,27 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 			$value = $this->default;
 		}
 
-		/** This filter is documented in wp-includes/class-wp-customize-setting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/class-wp-customize-setting.php */
 		$value = apply_filters( "customize_value_{$id_base}", $value, $this );
 
 		return $value;
 	}
 
 	/**
-	 * Validate a received value for being valid CSS.
+	 * Xác thực giá trị nhận được có phải CSS hợp lệ hay không.
 	 *
-	 * Checks for imbalanced braces, brackets, and comments.
-	 * Notifications are rendered when the customizer state is saved.
+	 * Kiểm tra dấu ngoặc nhọn, ngoặc vuông và chú thích không cân bằng.
+	 * Thông báo được hiển thị khi trạng thái trình tùy biến được lưu.
 	 *
 	 * @since 4.7.0
-	 * @since 4.9.0 Checking for balanced characters has been moved client-side via linting in code editor.
-	 * @since 5.9.0 Renamed `$css` to `$value` for PHP 8 named parameter support.
+	 * @since 4.9.0 Việc kiểm tra ký tự cân bằng đã được chuyển sang phía máy khách thông qua kiểm tra lỗi trong trình soạn thảo mã.
+	 * @since 5.9.0 Đổi tên `$css` thành `$value` để hỗ trợ tham số có tên trong PHP 8.
 	 *
-	 * @param string $value CSS to validate.
-	 * @return true|WP_Error True if the input was validated, otherwise WP_Error.
+	 * @param string $value CSS cần xác thực.
+	 * @return true|WP_Error True nếu đầu vào đã được xác thực, ngược lại trả về WP_Error.
 	 */
 	public function validate( $value ) {
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$css = $value;
 
 		$validity = new WP_Error();
@@ -174,16 +174,16 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 	}
 
 	/**
-	 * Store the CSS setting value in the custom_css custom post type for the stylesheet.
+	 * Lưu giá trị cài đặt CSS vào loại bài viết tùy chỉnh custom_css cho bảng kiểu.
 	 *
 	 * @since 4.7.0
-	 * @since 5.9.0 Renamed `$css` to `$value` for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$css` thành `$value` để hỗ trợ tham số có tên trong PHP 8.
 	 *
-	 * @param string $value CSS to update.
-	 * @return int|false The post ID or false if the value could not be saved.
+	 * @param string $value CSS cần cập nhật.
+	 * @return int|false ID bài viết hoặc false nếu không thể lưu giá trị.
 	 */
 	public function update( $value ) {
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$css = $value;
 
 		if ( empty( $css ) ) {
@@ -202,7 +202,7 @@ final class WP_Customize_Custom_CSS_Setting extends WP_Customize_Setting {
 		}
 		$post_id = $r->ID;
 
-		// Cache post ID in theme mod for performance to avoid additional DB query.
+		// Lưu đệm ID bài viết trong tùy chỉnh giao diện để cải thiện hiệu suất, tránh truy vấn DB bổ sung.
 		if ( $this->manager->get_stylesheet() === $this->stylesheet ) {
 			set_theme_mod( 'custom_css_post_id', $post_id );
 		}

@@ -1,57 +1,57 @@
 <?php
 /**
- * Block level presets support.
+ * Hỗ trợ thiết lập sẵn cấp block.
  *
  * @package WordPress
  * @since 6.2.0
  */
 
 /**
- * Get the class name used on block level presets.
+ * Lấy tên lớp CSS được sử dụng cho thiết lập sẵn cấp block.
  *
  * @internal
  *
  * @since 6.2.0
  * @access private
  *
- * @param array $block Block object.
- * @return string      The unique class name.
+ * @param array $block Đối tượng block.
+ * @return string      Tên lớp CSS duy nhất.
  */
 function _wp_get_presets_class_name( $block ) {
 	return 'wp-settings-' . md5( serialize( $block ) );
 }
 
 /**
- * Update the block content with block level presets class name.
+ * Cập nhật nội dung block với tên lớp CSS thiết lập sẵn cấp block.
  *
  * @internal
  *
  * @since 6.2.0
  * @access private
  *
- * @param  string $block_content Rendered block content.
- * @param  array  $block         Block object.
- * @return string                Filtered block content.
+ * @param  string $block_content Nội dung block đã được render.
+ * @param  array  $block         Đối tượng block.
+ * @return string                Nội dung block đã được lọc.
  */
 function _wp_add_block_level_presets_class( $block_content, $block ) {
 	if ( ! $block_content ) {
 		return $block_content;
 	}
 
-	// return early if the block doesn't have support for settings.
+	// Trả về sớm nếu block không hỗ trợ thiết lập.
 	$block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block['blockName'] );
 	if ( ! block_has_support( $block_type, '__experimentalSettings', false ) ) {
 		return $block_content;
 	}
 
-	// return early if no settings are found on the block attributes.
+	// Trả về sớm nếu không tìm thấy thiết lập nào trong thuộc tính block.
 	$block_settings = isset( $block['attrs']['settings'] ) ? $block['attrs']['settings'] : null;
 	if ( empty( $block_settings ) ) {
 		return $block_content;
 	}
 
-	// Like the layout hook this assumes the hook only applies to blocks with a single wrapper.
-	// Add the class name to the first element, presuming it's the wrapper, if it exists.
+	// Giống hook layout, giả sử hook chỉ áp dụng cho block có một wrapper duy nhất.
+	// Thêm tên lớp vào phần tử đầu tiên, giả sử đó là wrapper, nếu nó tồn tại.
 	$tags = new WP_HTML_Tag_Processor( $block_content );
 	if ( $tags->next_tag() ) {
 		$tags->add_class( _wp_get_presets_class_name( $block ) );
@@ -61,27 +61,27 @@ function _wp_add_block_level_presets_class( $block_content, $block ) {
 }
 
 /**
- * Render the block level presets stylesheet.
+ * Render bảng kiểu CSS thiết lập sẵn cấp block.
  *
  * @internal
  *
  * @since 6.2.0
- * @since 6.3.0 Updated preset styles to use Selectors API.
+ * @since 6.3.0 Cập nhật kiểu thiết lập sẵn để sử dụng Selectors API.
  * @access private
  *
- * @param string|null $pre_render   The pre-rendered content. Default null.
- * @param array       $block The block being rendered.
+ * @param string|null $pre_render Nội dung đã render trước. Mặc định null.
+ * @param array       $block      Block đang được render.
  *
  * @return null
  */
 function _wp_add_block_level_preset_styles( $pre_render, $block ) {
-	// Return early if the block has not support for descendent block styles.
+	// Trả về sớm nếu block không hỗ trợ kiểu block con cháu.
 	$block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block['blockName'] );
 	if ( ! block_has_support( $block_type, '__experimentalSettings', false ) ) {
 		return null;
 	}
 
-	// return early if no settings are found on the block attributes.
+	// Trả về sớm nếu không tìm thấy thiết lập nào trong thuộc tính block.
 	$block_settings = isset( $block['attrs']['settings'] ) ? $block['attrs']['settings'] : null;
 	if ( empty( $block_settings ) ) {
 		return null;
@@ -89,16 +89,16 @@ function _wp_add_block_level_preset_styles( $pre_render, $block ) {
 
 	$class_name = '.' . _wp_get_presets_class_name( $block );
 
-	// the root selector for preset variables needs to target every possible block selector
-	// in order for the general setting to override any bock specific setting of a parent block or
-	// the site root.
+	// Selector gốc cho biến thiết lập sẵn cần nhắm vào mọi selector block có thể
+	// để thiết lập chung ghi đè bất kỳ thiết lập cụ thể nào của block cha hoặc
+	// gốc trang web.
 	$variables_root_selector = '*,[class*="wp-block"]';
 	$registry                = WP_Block_Type_Registry::get_instance();
 	$blocks                  = $registry->get_all_registered();
 	foreach ( $blocks as $block_type ) {
 		/*
-		 * We only want to append selectors for blocks using custom selectors
-		 * i.e. not `wp-block-<name>`.
+		 * Chúng ta chỉ muốn thêm selector cho các block sử dụng selector tùy chỉnh
+		 * tức là không phải `wp-block-<name>`.
 		 */
 		$has_custom_selector =
 			( isset( $block_type->supports['__experimentalSelector'] ) && is_string( $block_type->supports['__experimentalSelector'] ) ) ||
@@ -110,7 +110,7 @@ function _wp_add_block_level_preset_styles( $pre_render, $block ) {
 	}
 	$variables_root_selector = WP_Theme_JSON::scope_selector( $class_name, $variables_root_selector );
 
-	// Remove any potentially unsafe styles.
+	// Loại bỏ bất kỳ kiểu nào có thể không an toàn.
 	$theme_json_shape  = WP_Theme_JSON::remove_insecure_properties(
 		array(
 			'version'  => WP_Theme_JSON::LATEST_SCHEMA,
@@ -121,7 +121,7 @@ function _wp_add_block_level_preset_styles( $pre_render, $block ) {
 
 	$styles = '';
 
-	// include preset css variables declaration on the stylesheet.
+	// Bao gồm khai báo biến CSS thiết lập sẵn trên bảng kiểu.
 	$styles .= $theme_json_object->get_stylesheet(
 		array( 'variables' ),
 		null,
@@ -131,7 +131,7 @@ function _wp_add_block_level_preset_styles( $pre_render, $block ) {
 		)
 	);
 
-	// include preset css classes on the the stylesheet.
+	// Bao gồm các lớp CSS thiết lập sẵn trên bảng kiểu.
 	$styles .= $theme_json_object->get_stylesheet(
 		array( 'presets' ),
 		null,

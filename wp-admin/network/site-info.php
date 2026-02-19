@@ -1,13 +1,13 @@
 <?php
 /**
- * Edit Site Info Administration Screen
+ * Màn hình Quản trị Chỉnh sửa Thông tin Trang web
  *
  * @package WordPress
  * @subpackage Multisite
  * @since 3.1.0
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( ! current_user_can( 'manage_sites' ) ) {
@@ -40,19 +40,19 @@ if ( isset( $_REQUEST['action'] ) && 'update-site' === $_REQUEST['action'] ) {
 
 	switch_to_blog( $id );
 
-	// Rewrite rules can't be flushed during switch to blog.
+	// Không thể xóa quy tắc viết lại trong khi chuyển đổi blog.
 	delete_option( 'rewrite_rules' );
 
 	$blog_data           = wp_unslash( $_POST['blog'] );
 	$blog_data['scheme'] = $parsed_scheme;
 
 	if ( $is_main_site ) {
-		// On the network's main site, don't allow the domain or path to change.
+		// Trên trang web chính của mạng lưới, không cho phép thay đổi tên miền hoặc đường dẫn.
 		$blog_data['domain'] = $details->domain;
 		$blog_data['path']   = $details->path;
 	} else {
-		// For any other site, the scheme, domain, and path can all be changed. We first
-		// need to ensure a scheme has been provided, otherwise fallback to the existing.
+		// Đối với bất kỳ trang web nào khác, giao thức, tên miền và đường dẫn đều có thể thay đổi. Trước tiên
+		// cần đảm bảo giao thức đã được cung cấp, nếu không sẽ dùng giá trị hiện tại.
 		$new_url_scheme = parse_url( $blog_data['url'], PHP_URL_SCHEME );
 
 		if ( ! $new_url_scheme ) {
@@ -60,14 +60,14 @@ if ( isset( $_REQUEST['action'] ) && 'update-site' === $_REQUEST['action'] ) {
 		}
 		$update_parsed_url = parse_url( $blog_data['url'] );
 
-		// If a path is not provided, use the default of `/`.
+		// Nếu đường dẫn không được cung cấp, sử dụng giá trị mặc định `/`.
 		if ( ! isset( $update_parsed_url['path'] ) ) {
 			$update_parsed_url['path'] = '/';
 		}
 
 		$blog_data['scheme'] = $update_parsed_url['scheme'];
 
-		// Make sure to not lose the port if it was provided.
+		// Đảm bảo không mất cổng nếu nó đã được cung cấp.
 		$blog_data['domain'] = $update_parsed_url['host'];
 		if ( isset( $update_parsed_url['port'] ) ) {
 			$blog_data['domain'] .= ':' . $update_parsed_url['port'];
@@ -89,7 +89,7 @@ if ( isset( $_REQUEST['action'] ) && 'update-site' === $_REQUEST['action'] ) {
 
 	update_blog_details( $id, $blog_data );
 
-	// Maybe update home and siteurl options.
+	// Có thể cập nhật tùy chọn home và siteurl.
 	$new_details = get_site( $id );
 
 	$old_home_url    = trailingslashit( esc_url( get_option( 'home' ) ) );
@@ -130,7 +130,7 @@ if ( isset( $_GET['update'] ) ) {
 	}
 }
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ tiêu đề HTML.
 /* translators: %s: Site title. */
 $title = sprintf( __( 'Edit Site: %s' ), esc_html( $details->blogname ) );
 
@@ -170,7 +170,7 @@ if ( ! empty( $messages ) ) {
 	<input type="hidden" name="id" value="<?php echo esc_attr( $id ); ?>" />
 	<table class="form-table" role="presentation">
 		<?php
-		// The main site of the network should not be updated on this page.
+		// Trang web chính của mạng lưới không nên được cập nhật trên trang này.
 		if ( $is_main_site ) :
 			?>
 		<tr class="form-field">
@@ -178,7 +178,7 @@ if ( ! empty( $messages ) ) {
 			<td><?php echo esc_url( $parsed_scheme . '://' . $details->domain . $details->path ); ?></td>
 		</tr>
 			<?php
-			// For any other site, the scheme, domain, and path can all be changed.
+			// Đối với bất kỳ trang web nào khác, giao thức, tên miền và đường dẫn đều có thể thay đổi.
 		else :
 			?>
 		<tr class="form-field form-required">
@@ -225,11 +225,11 @@ if ( ! empty( $messages ) ) {
 
 	<?php
 	/**
-	 * Fires at the end of the site info form in network admin.
+	 * Kích hoạt ở cuối biểu mẫu thông tin trang web trong quản trị mạng lưới.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param int $id The site ID.
+	 * @param int $id ID của trang web.
 	 */
 	do_action( 'network_site_info_form', $id );
 

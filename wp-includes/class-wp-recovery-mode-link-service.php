@@ -1,13 +1,13 @@
 <?php
 /**
- * Error Protection API: WP_Recovery_Mode_Link_Handler class
+ * API bảo vệ lỗi: Lớp WP_Recovery_Mode_Link_Handler
  *
  * @package WordPress
  * @since 5.2.0
  */
 
 /**
- * Core class used to generate and handle recovery mode links.
+ * Lớp cốt lõi dùng để tạo và xử lý các liên kết chế độ phục hồi.
  *
  * @since 5.2.0
  */
@@ -17,7 +17,7 @@ class WP_Recovery_Mode_Link_Service {
 	const LOGIN_ACTION_ENTERED = 'entered_recovery_mode';
 
 	/**
-	 * Service to generate and validate recovery mode keys.
+	 * Dịch vụ để tạo và xác thực các khóa chế độ phục hồi.
 	 *
 	 * @since 5.2.0
 	 * @var WP_Recovery_Mode_Key_Service
@@ -25,7 +25,7 @@ class WP_Recovery_Mode_Link_Service {
 	private $key_service;
 
 	/**
-	 * Service to handle cookies.
+	 * Dịch vụ để xử lý cookie.
 	 *
 	 * @since 5.2.0
 	 * @var WP_Recovery_Mode_Cookie_Service
@@ -33,12 +33,12 @@ class WP_Recovery_Mode_Link_Service {
 	private $cookie_service;
 
 	/**
-	 * WP_Recovery_Mode_Link_Service constructor.
+	 * Hàm khởi tạo WP_Recovery_Mode_Link_Service.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param WP_Recovery_Mode_Cookie_Service $cookie_service Service to handle setting the recovery mode cookie.
-	 * @param WP_Recovery_Mode_Key_Service    $key_service    Service to handle generating recovery mode keys.
+	 * @param WP_Recovery_Mode_Cookie_Service $cookie_service Dịch vụ để xử lý việc thiết lập cookie chế độ phục hồi.
+	 * @param WP_Recovery_Mode_Key_Service    $key_service    Dịch vụ để xử lý việc tạo các khóa chế độ phục hồi.
 	 */
 	public function __construct( WP_Recovery_Mode_Cookie_Service $cookie_service, WP_Recovery_Mode_Key_Service $key_service ) {
 		$this->cookie_service = $cookie_service;
@@ -46,13 +46,13 @@ class WP_Recovery_Mode_Link_Service {
 	}
 
 	/**
-	 * Generates a URL to begin recovery mode.
+	 * Tạo URL để bắt đầu chế độ phục hồi.
 	 *
-	 * Only one recovery mode URL can may be valid at the same time.
+	 * Chỉ một URL chế độ phục hồi có thể hợp lệ tại cùng một thời điểm.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return string Generated URL.
+	 * @return string URL đã tạo.
 	 */
 	public function generate_url() {
 		$token = $this->key_service->generate_recovery_mode_token();
@@ -62,13 +62,13 @@ class WP_Recovery_Mode_Link_Service {
 	}
 
 	/**
-	 * Enters recovery mode when the user hits wp-login.php with a valid recovery mode link.
+	 * Vào chế độ phục hồi khi người dùng truy cập wp-login.php với một liên kết chế độ phục hồi hợp lệ.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @global string $pagenow The filename of the current screen.
+	 * @global string $pagenow Tên tệp của màn hình hiện tại.
 	 *
-	 * @param int $ttl Number of seconds the link should be valid for.
+	 * @param int $ttl Số giây liên kết có hiệu lực.
 	 */
 	public function handle_begin_link( $ttl ) {
 		if ( ! isset( $GLOBALS['pagenow'] ) || 'wp-login.php' !== $GLOBALS['pagenow'] ) {
@@ -97,13 +97,13 @@ class WP_Recovery_Mode_Link_Service {
 	}
 
 	/**
-	 * Gets a URL to begin recovery mode.
+	 * Lấy URL để bắt đầu chế độ phục hồi.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string $token Recovery Mode token created by {@see generate_recovery_mode_token()}.
-	 * @param string $key   Recovery Mode key created by {@see generate_and_store_recovery_mode_key()}.
-	 * @return string Recovery mode begin URL.
+	 * @param string $token Mã thông báo Chế độ Phục hồi được tạo bởi {@see generate_recovery_mode_token()}.
+	 * @param string $key   Khóa Chế độ Phục hồi được tạo bởi {@see generate_and_store_recovery_mode_key()}.
+	 * @return string URL bắt đầu chế độ phục hồi.
 	 */
 	private function get_recovery_mode_begin_url( $token, $key ) {
 
@@ -117,13 +117,13 @@ class WP_Recovery_Mode_Link_Service {
 		);
 
 		/**
-		 * Filters the URL to begin recovery mode.
+		 * Lọc URL để bắt đầu chế độ phục hồi.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param string $url   The generated recovery mode begin URL.
-		 * @param string $token The token used to identify the key.
-		 * @param string $key   The recovery mode key.
+		 * @param string $url   URL bắt đầu chế độ phục hồi đã tạo.
+		 * @param string $token Mã thông báo dùng để xác định khóa.
+		 * @param string $key   Khóa chế độ phục hồi.
 		 */
 		return apply_filters( 'recovery_mode_begin_url', $url, $token, $key );
 	}

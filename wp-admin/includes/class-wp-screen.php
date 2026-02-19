@@ -1,6 +1,6 @@
 <?php
 /**
- * Screen API: WP_Screen class
+ * API Màn hình: Lớp WP_Screen
  *
  * @package WordPress
  * @subpackage Administration
@@ -8,16 +8,16 @@
  */
 
 /**
- * Core class used to implement an admin screen API.
+ * Lớp lõi được sử dụng để triển khai API màn hình quản trị.
  *
  * @since 3.3.0
  */
 #[AllowDynamicProperties]
 final class WP_Screen {
 	/**
-	 * Any action associated with the screen.
+	 * Bất kỳ hành động nào liên kết với màn hình.
 	 *
-	 * 'add' for *-add.php and *-new.php screens. Empty otherwise.
+	 * 'add' cho các màn hình *-add.php và *-new.php. Rỗng trong các trường hợp khác.
 	 *
 	 * @since 3.3.0
 	 * @var string
@@ -25,10 +25,10 @@ final class WP_Screen {
 	public $action;
 
 	/**
-	 * The base type of the screen.
+	 * Loại cơ sở của màn hình.
 	 *
-	 * This is typically the same as `$id` but with any post types and taxonomies stripped.
-	 * For example, for an `$id` of 'edit-post' the base is 'edit'.
+	 * Thường giống với `$id` nhưng đã loại bỏ các loại bài viết và phân loại.
+	 * Ví dụ, với `$id` là 'edit-post' thì base là 'edit'.
 	 *
 	 * @since 3.3.0
 	 * @var string
@@ -36,7 +36,7 @@ final class WP_Screen {
 	public $base;
 
 	/**
-	 * The number of columns to display. Access with get_columns().
+	 * Số cột để hiển thị. Truy cập bằng get_columns().
 	 *
 	 * @since 3.4.0
 	 * @var int
@@ -44,7 +44,7 @@ final class WP_Screen {
 	private $columns = 0;
 
 	/**
-	 * The unique ID of the screen.
+	 * ID duy nhất của màn hình.
 	 *
 	 * @since 3.3.0
 	 * @var string
@@ -52,7 +52,7 @@ final class WP_Screen {
 	public $id;
 
 	/**
-	 * Which admin the screen is in. network | user | site | false
+	 * Màn hình thuộc khu vực quản trị nào. network | user | site | false
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -60,9 +60,9 @@ final class WP_Screen {
 	protected $in_admin;
 
 	/**
-	 * Whether the screen is in the network admin.
+	 * Màn hình có thuộc khu vực quản trị mạng hay không.
 	 *
-	 * Deprecated. Use in_admin() instead.
+	 * Đã lỗi thời. Sử dụng in_admin() thay thế.
 	 *
 	 * @since 3.3.0
 	 * @deprecated 3.5.0
@@ -71,9 +71,9 @@ final class WP_Screen {
 	public $is_network;
 
 	/**
-	 * Whether the screen is in the user admin.
+	 * Màn hình có thuộc khu vực quản trị người dùng hay không.
 	 *
-	 * Deprecated. Use in_admin() instead.
+	 * Đã lỗi thời. Sử dụng in_admin() thay thế.
 	 *
 	 * @since 3.3.0
 	 * @deprecated 3.5.0
@@ -82,11 +82,11 @@ final class WP_Screen {
 	public $is_user;
 
 	/**
-	 * The base menu parent.
+	 * Menu cha cơ sở.
 	 *
-	 * This is derived from `$parent_file` by removing the query string and any .php extension.
-	 * `$parent_file` values of 'edit.php?post_type=page' and 'edit.php?post_type=post'
-	 * have a `$parent_base` of 'edit'.
+	 * Được suy ra từ `$parent_file` bằng cách loại bỏ chuỗi truy vấn và phần mở rộng .php.
+	 * Các giá trị `$parent_file` là 'edit.php?post_type=page' và 'edit.php?post_type=post'
+	 * có `$parent_base` là 'edit'.
 	 *
 	 * @since 3.3.0
 	 * @var string|null
@@ -94,9 +94,9 @@ final class WP_Screen {
 	public $parent_base;
 
 	/**
-	 * The parent_file for the screen per the admin menu system.
+	 * Tệp cha của màn hình theo hệ thống menu quản trị.
 	 *
-	 * Some `$parent_file` values are 'edit.php?post_type=page', 'edit.php', and 'options-general.php'.
+	 * Một số giá trị `$parent_file` là 'edit.php?post_type=page', 'edit.php', và 'options-general.php'.
 	 *
 	 * @since 3.3.0
 	 * @var string|null
@@ -104,10 +104,10 @@ final class WP_Screen {
 	public $parent_file;
 
 	/**
-	 * The post type associated with the screen, if any.
+	 * Loại bài viết liên kết với màn hình, nếu có.
 	 *
-	 * The 'edit.php?post_type=page' screen has a post type of 'page'.
-	 * The 'edit-tags.php?taxonomy=$taxonomy&post_type=page' screen has a post type of 'page'.
+	 * Màn hình 'edit.php?post_type=page' có loại bài viết là 'page'.
+	 * Màn hình 'edit-tags.php?taxonomy=$taxonomy&post_type=page' có loại bài viết là 'page'.
 	 *
 	 * @since 3.3.0
 	 * @var string
@@ -115,9 +115,9 @@ final class WP_Screen {
 	public $post_type;
 
 	/**
-	 * The taxonomy associated with the screen, if any.
+	 * Phân loại liên kết với màn hình, nếu có.
 	 *
-	 * The 'edit-tags.php?taxonomy=category' screen has a taxonomy of 'category'.
+	 * Màn hình 'edit-tags.php?taxonomy=category' có phân loại là 'category'.
 	 *
 	 * @since 3.3.0
 	 * @var string
@@ -125,7 +125,7 @@ final class WP_Screen {
 	public $taxonomy;
 
 	/**
-	 * The help tab data associated with the screen, if any.
+	 * Dữ liệu tab trợ giúp liên kết với màn hình, nếu có.
 	 *
 	 * @since 3.3.0
 	 * @var array
@@ -133,7 +133,7 @@ final class WP_Screen {
 	private $_help_tabs = array();
 
 	/**
-	 * The help sidebar data associated with screen, if any.
+	 * Dữ liệu thanh bên trợ giúp liên kết với màn hình, nếu có.
 	 *
 	 * @since 3.3.0
 	 * @var string
@@ -141,7 +141,7 @@ final class WP_Screen {
 	private $_help_sidebar = '';
 
 	/**
-	 * The accessible hidden headings and text associated with the screen, if any.
+	 * Các tiêu đề và văn bản ẩn hỗ trợ truy cập liên kết với màn hình, nếu có.
 	 *
 	 * @since 4.4.0
 	 * @var string[]
@@ -149,14 +149,14 @@ final class WP_Screen {
 	private $_screen_reader_content = array();
 
 	/**
-	 * Stores old string-based help.
+	 * Lưu trữ trợ giúp dạng chuỗi cũ.
 	 *
 	 * @var array
 	 */
 	private static $_old_compat_help = array();
 
 	/**
-	 * The screen options associated with screen, if any.
+	 * Các tùy chọn màn hình liên kết với màn hình, nếu có.
 	 *
 	 * @since 3.3.0
 	 * @var array
@@ -164,7 +164,7 @@ final class WP_Screen {
 	private $_options = array();
 
 	/**
-	 * The screen object registry.
+	 * Bộ đăng ký đối tượng màn hình.
 	 *
 	 * @since 3.3.0
 	 *
@@ -173,7 +173,7 @@ final class WP_Screen {
 	private static $_registry = array();
 
 	/**
-	 * Stores the result of the public show_screen_options function.
+	 * Lưu trữ kết quả của hàm công khai show_screen_options.
 	 *
 	 * @since 3.3.0
 	 * @var bool
@@ -181,7 +181,7 @@ final class WP_Screen {
 	private $_show_screen_options;
 
 	/**
-	 * Stores the 'screen_settings' section of screen options.
+	 * Lưu trữ phần 'screen_settings' của tùy chọn màn hình.
 	 *
 	 * @since 3.3.0
 	 * @var string
@@ -189,7 +189,7 @@ final class WP_Screen {
 	private $_screen_settings;
 
 	/**
-	 * Whether the screen is using the block editor.
+	 * Màn hình có đang sử dụng trình soạn thảo khối hay không.
 	 *
 	 * @since 5.0.0
 	 * @var bool
@@ -197,15 +197,15 @@ final class WP_Screen {
 	public $is_block_editor = false;
 
 	/**
-	 * Fetches a screen object.
+	 * Lấy một đối tượng màn hình.
 	 *
 	 * @since 3.3.0
 	 *
 	 * @global string $hook_suffix
 	 *
-	 * @param string|WP_Screen $hook_name Optional. The hook name (also known as the hook suffix) used to determine the screen.
-	 *                                    Defaults to the current $hook_suffix global.
-	 * @return WP_Screen Screen object.
+	 * @param string|WP_Screen $hook_name Tùy chọn. Tên hook (còn gọi là hậu tố hook) dùng để xác định màn hình.
+	 *                                    Mặc định là biến toàn cục $hook_suffix hiện tại.
+	 * @return WP_Screen Đối tượng màn hình.
 	 */
 	public static function get( $hook_name = '' ) {
 		if ( $hook_name instanceof WP_Screen ) {
@@ -225,10 +225,10 @@ final class WP_Screen {
 			$id = $GLOBALS['hook_suffix'];
 		}
 
-		// For those pesky meta boxes.
+		// Dành cho những meta box phiền phức.
 		if ( $hook_name && post_type_exists( $hook_name ) ) {
 			$post_type = $id;
-			$id        = 'post'; // Changes later. Ends up being $base.
+			$id        = 'post'; // Sẽ thay đổi sau. Cuối cùng sẽ là $base.
 		} else {
 			if ( str_ends_with( $id, '.php' ) ) {
 				$id = substr( $id, 0, -4 );
@@ -282,7 +282,7 @@ final class WP_Screen {
 
 		$base = $id;
 
-		// If this is the current screen, see if we can be more accurate for post types and taxonomies.
+		// Nếu đây là màn hình hiện tại, kiểm tra xem có thể chính xác hơn cho loại bài viết và phân loại không.
 		if ( ! $hook_name ) {
 			if ( isset( $_REQUEST['post_type'] ) ) {
 				$post_type = post_type_exists( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : false;
@@ -308,7 +308,7 @@ final class WP_Screen {
 						if ( $post ) {
 							$post_type = $post->post_type;
 
-							/** This filter is documented in wp-admin/post.php */
+							/** Bộ lọc này được ghi chú trong wp-admin/post.php */
 							$replace_editor = apply_filters( 'replace_editor', false, $post );
 
 							if ( ! $replace_editor ) {
@@ -335,7 +335,7 @@ final class WP_Screen {
 					$post_type = 'post';
 				}
 
-				// When creating a new post, use the default block editor support value for the post type.
+				// Khi tạo bài viết mới, sử dụng giá trị hỗ trợ trình soạn thảo khối mặc định cho loại bài viết.
 				if ( empty( $post_id ) ) {
 					$is_block_editor = use_block_editor_for_post_type( $post_type );
 				}
@@ -353,7 +353,7 @@ final class WP_Screen {
 				if ( null === $taxonomy ) {
 					$taxonomy = 'post_tag';
 				}
-				// The edit-tags ID does not contain the post type. Look for it in the request.
+				// ID edit-tags không chứa loại bài viết. Tìm nó trong request.
 				if ( null === $post_type ) {
 					$post_type = 'post';
 					if ( isset( $_REQUEST['post_type'] ) && post_type_exists( $_REQUEST['post_type'] ) ) {
@@ -398,14 +398,14 @@ final class WP_Screen {
 	}
 
 	/**
-	 * Makes the screen object the current screen.
+	 * Đặt đối tượng màn hình thành màn hình hiện tại.
 	 *
 	 * @see set_current_screen()
 	 * @since 3.3.0
 	 *
-	 * @global WP_Screen $current_screen WordPress current screen object.
-	 * @global string    $typenow        The post type of the current screen.
-	 * @global string    $taxnow         The taxonomy of the current screen.
+	 * @global WP_Screen $current_screen Đối tượng màn hình hiện tại của WordPress.
+	 * @global string    $typenow        Loại bài viết của màn hình hiện tại.
+	 * @global string    $taxnow         Phân loại của màn hình hiện tại.
 	 */
 	public function set_current_screen() {
 		global $current_screen, $taxnow, $typenow;
@@ -415,17 +415,17 @@ final class WP_Screen {
 		$taxnow         = $this->taxonomy;
 
 		/**
-		 * Fires after the current screen has been set.
+		 * Kích hoạt sau khi màn hình hiện tại đã được thiết lập.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param WP_Screen $current_screen Current WP_Screen object.
+		 * @param WP_Screen $current_screen Đối tượng WP_Screen hiện tại.
 		 */
 		do_action( 'current_screen', $current_screen );
 	}
 
 	/**
-	 * Constructor
+	 * Hàm khởi tạo
 	 *
 	 * @since 3.3.0
 	 */

@@ -1,15 +1,15 @@
 <?php
 /**
- * About This Version administration panel.
+ * Bảng quản trị Giới thiệu Phiên bản này.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Khởi tạo Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
-// Used in the HTML title tag.
+// Sử dụng trong thẻ HTML title.
 /* translators: Page title of the About WordPress page in the admin. */
 $title = _x( 'About', 'page title' );
 
@@ -374,7 +374,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 
 <?php
 
-// These are strings we may use to describe maintenance/security releases, where we aim for no new strings.
+// Đây là các chuỗi có thể dùng để mô tả các bản phát hành bảo trì/bảo mật, nhằm không thêm chuỗi mới.
 return;
 
 __( 'Maintenance Release' );

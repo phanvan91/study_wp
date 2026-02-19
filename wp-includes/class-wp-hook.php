@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin API: WP_Hook class
+ * API Plugin: Lớp WP_Hook
  *
  * @package WordPress
  * @subpackage Plugin
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement action and filter hook functionality.
+ * Lớp lõi dùng để triển khai chức năng hook action và filter.
  *
  * @since 4.7.0
  *
@@ -19,7 +19,7 @@
 final class WP_Hook implements Iterator, ArrayAccess {
 
 	/**
-	 * Hook callbacks.
+	 * Các callback của hook.
 	 *
 	 * @since 4.7.0
 	 * @var array
@@ -27,7 +27,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	public $callbacks = array();
 
 	/**
-	 * Priorities list.
+	 * Danh sách các mức ưu tiên.
 	 *
 	 * @since 6.4.0
 	 * @var array
@@ -35,7 +35,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	protected $priorities = array();
 
 	/**
-	 * The priority keys of actively running iterations of a hook.
+	 * Các khóa ưu tiên của các vòng lặp đang chạy của hook.
 	 *
 	 * @since 4.7.0
 	 * @var array
@@ -43,7 +43,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	private $iterations = array();
 
 	/**
-	 * The current priority of actively running iterations of a hook.
+	 * Mức ưu tiên hiện tại của các vòng lặp đang chạy của hook.
 	 *
 	 * @since 4.7.0
 	 * @var array
@@ -51,7 +51,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	private $current_priority = array();
 
 	/**
-	 * Number of levels this hook can be recursively called.
+	 * Số cấp độ mà hook này có thể được gọi đệ quy.
 	 *
 	 * @since 4.7.0
 	 * @var int
@@ -59,7 +59,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	private $nesting_level = 0;
 
 	/**
-	 * Flag for if we're currently doing an action, rather than a filter.
+	 * Cờ cho biết chúng ta đang thực thi action hay filter.
 	 *
 	 * @since 4.7.0
 	 * @var bool
@@ -67,17 +67,17 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	private $doing_action = false;
 
 	/**
-	 * Adds a callback function to a filter hook.
+	 * Thêm một hàm callback vào hook filter.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string   $hook_name     The name of the filter to add the callback to.
-	 * @param callable $callback      The callback to be run when the filter is applied.
-	 * @param int      $priority      The order in which the functions associated with a particular filter
-	 *                                are executed. Lower numbers correspond with earlier execution,
-	 *                                and functions with the same priority are executed in the order
-	 *                                in which they were added to the filter.
-	 * @param int      $accepted_args The number of arguments the function accepts.
+	 * @param string   $hook_name     Tên của filter để thêm callback vào.
+	 * @param callable $callback      Callback sẽ được chạy khi filter được áp dụng.
+	 * @param int      $priority      Thứ tự thực thi các hàm gắn với một filter cụ thể.
+	 *                                Số nhỏ hơn tương ứng với thực thi sớm hơn,
+	 *                                và các hàm có cùng mức ưu tiên sẽ được thực thi theo thứ tự
+	 *                                chúng được thêm vào filter.
+	 * @param int      $accepted_args Số lượng tham số mà hàm chấp nhận.
 	 */
 	public function add_filter( $hook_name, $callback, $priority, $accepted_args ) {
 		$idx = _wp_filter_build_unique_id( $hook_name, $callback, $priority );
@@ -89,7 +89,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 			'accepted_args' => (int) $accepted_args,
 		);
 
-		// If we're adding a new priority to the list, put them back in sorted order.
+		// Nếu đang thêm mức ưu tiên mới vào danh sách, sắp xếp lại theo thứ tự.
 		if ( ! $priority_existed && count( $this->callbacks ) > 1 ) {
 			ksort( $this->callbacks, SORT_NUMERIC );
 		}
@@ -102,19 +102,19 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Handles resetting callback priority keys mid-iteration.
+	 * Xử lý việc đặt lại khóa ưu tiên callback trong khi đang lặp.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param false|int $new_priority     Optional. The priority of the new filter being added. Default false,
-	 *                                    for no priority being added.
-	 * @param bool      $priority_existed Optional. Flag for whether the priority already existed before the new
-	 *                                    filter was added. Default false.
+	 * @param false|int $new_priority     Tùy chọn. Mức ưu tiên của filter mới đang được thêm. Mặc định false,
+	 *                                    nghĩa là không có mức ưu tiên nào được thêm.
+	 * @param bool      $priority_existed Tùy chọn. Cờ cho biết mức ưu tiên đã tồn tại trước khi
+	 *                                    filter mới được thêm hay chưa. Mặc định false.
 	 */
 	private function resort_active_iterations( $new_priority = false, $priority_existed = false ) {
 		$new_priorities = $this->priorities;
 
-		// If there are no remaining hooks, clear out all running iterations.
+		// Nếu không còn hook nào, xóa tất cả các vòng lặp đang chạy.
 		if ( ! $new_priorities ) {
 			foreach ( $this->iterations as $index => $iteration ) {
 				$this->iterations[ $index ] = $new_priorities;
@@ -128,7 +128,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 		foreach ( $this->iterations as $index => &$iteration ) {
 			$current = current( $iteration );
 
-			// If we're already at the end of this iteration, just leave the array pointer where it is.
+			// Nếu đã ở cuối vòng lặp này, giữ nguyên con trỏ mảng.
 			if ( false === $current ) {
 				continue;
 			}
@@ -146,26 +146,26 @@ final class WP_Hook implements Iterator, ArrayAccess {
 				}
 			}
 
-			// If we have a new priority that didn't exist, but ::apply_filters() or ::do_action() thinks it's the current priority...
+			// Nếu có mức ưu tiên mới chưa tồn tại, nhưng ::apply_filters() hoặc ::do_action() cho rằng đó là mức ưu tiên hiện tại...
 			if ( $new_priority === $this->current_priority[ $index ] && ! $priority_existed ) {
 				/*
-				 * ...and the new priority is the same as what $this->iterations thinks is the previous
-				 * priority, we need to move back to it.
+				 * ...và mức ưu tiên mới giống với mức ưu tiên trước đó mà $this->iterations cho rằng,
+				 * chúng ta cần quay lại mức đó.
 				 */
 
 				if ( false === current( $iteration ) ) {
-					// If we've already moved off the end of the array, go back to the last element.
+					// Nếu đã di chuyển qua cuối mảng, quay lại phần tử cuối cùng.
 					$prev = end( $iteration );
 				} else {
-					// Otherwise, just go back to the previous element.
+					// Nếu không, quay lại phần tử trước đó.
 					$prev = prev( $iteration );
 				}
 
 				if ( false === $prev ) {
-					// Start of the array. Reset, and go about our day.
+					// Đầu mảng. Đặt lại và tiếp tục.
 					reset( $iteration );
 				} elseif ( $new_priority !== $prev ) {
-					// Previous wasn't the same. Move forward again.
+					// Phần tử trước không giống. Di chuyển tiến lên lại.
 					next( $iteration );
 				}
 			}
@@ -175,16 +175,16 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Removes a callback function from a filter hook.
+	 * Xóa một hàm callback khỏi hook filter.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string                $hook_name The filter hook to which the function to be removed is hooked.
-	 * @param callable|string|array $callback  The callback to be removed from running when the filter is applied.
-	 *                                         This method can be called unconditionally to speculatively remove
-	 *                                         a callback that may or may not exist.
-	 * @param int                   $priority  The exact priority used when adding the original filter callback.
-	 * @return bool Whether the callback existed before it was removed.
+	 * @param string                $hook_name Hook filter mà hàm cần xóa đang được gắn vào.
+	 * @param callable|string|array $callback  Callback cần được xóa khỏi việc chạy khi filter được áp dụng.
+	 *                                         Phương thức này có thể được gọi không điều kiện để xóa
+	 *                                         một callback có thể tồn tại hoặc không.
+	 * @param int                   $priority  Mức ưu tiên chính xác được sử dụng khi thêm callback filter ban đầu.
+	 * @return bool Callback có tồn tại trước khi bị xóa hay không.
 	 */
 	public function remove_filter( $hook_name, $callback, $priority ) {
 		$function_key = _wp_filter_build_unique_id( $hook_name, $callback, $priority );
@@ -209,20 +209,20 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Checks if a specific callback has been registered for this hook.
+	 * Kiểm tra xem một callback cụ thể đã được đăng ký cho hook này chưa.
 	 *
-	 * When using the `$callback` argument, this function may return a non-boolean value
-	 * that evaluates to false (e.g. 0), so use the `===` operator for testing the return value.
+	 * Khi sử dụng tham số `$callback`, hàm này có thể trả về giá trị không phải boolean
+	 * mà đánh giá là false (ví dụ: 0), vì vậy hãy sử dụng toán tử `===` để kiểm tra giá trị trả về.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string                      $hook_name Optional. The name of the filter hook. Default empty.
-	 * @param callable|string|array|false $callback  Optional. The callback to check for.
-	 *                                               This method can be called unconditionally to speculatively check
-	 *                                               a callback that may or may not exist. Default false.
-	 * @return bool|int If `$callback` is omitted, returns boolean for whether the hook has
-	 *                  anything registered. When checking a specific function, the priority
-	 *                  of that hook is returned, or false if the function is not attached.
+	 * @param string                      $hook_name Tùy chọn. Tên của hook filter. Mặc định rỗng.
+	 * @param callable|string|array|false $callback  Tùy chọn. Callback cần kiểm tra.
+	 *                                               Phương thức này có thể được gọi không điều kiện để kiểm tra
+	 *                                               một callback có thể tồn tại hoặc không. Mặc định false.
+	 * @return bool|int Nếu `$callback` bị bỏ qua, trả về boolean cho biết hook có
+	 *                  đăng ký gì không. Khi kiểm tra một hàm cụ thể, mức ưu tiên
+	 *                  của hook đó được trả về, hoặc false nếu hàm không được gắn.
 	 */
 	public function has_filter( $hook_name = '', $callback = false ) {
 		if ( false === $callback ) {
@@ -245,11 +245,11 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Checks if any callbacks have been registered for this hook.
+	 * Kiểm tra xem có callback nào đã được đăng ký cho hook này không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return bool True if callbacks have been registered for the current hook, otherwise false.
+	 * @return bool True nếu có callback đã được đăng ký cho hook hiện tại, ngược lại false.
 	 */
 	public function has_filters() {
 		foreach ( $this->callbacks as $callbacks ) {
@@ -262,11 +262,11 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Removes all callbacks from the current filter.
+	 * Xóa tất cả callback khỏi filter hiện tại.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param int|false $priority Optional. The priority number to remove. Default false.
+	 * @param int|false $priority Tùy chọn. Số mức ưu tiên cần xóa. Mặc định false.
 	 */
 	public function remove_all_filters( $priority = false ) {
 		if ( ! $this->callbacks ) {
@@ -287,14 +287,14 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Calls the callback functions that have been added to a filter hook.
+	 * Gọi các hàm callback đã được thêm vào hook filter.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param mixed $value The value to filter.
-	 * @param array $args  Additional parameters to pass to the callback functions.
-	 *                     This array is expected to include $value at index 0.
-	 * @return mixed The filtered value after all hooked functions are applied to it.
+	 * @param mixed $value Giá trị cần lọc.
+	 * @param array $args  Các tham số bổ sung để truyền cho các hàm callback.
+	 *                     Mảng này được kỳ vọng chứa $value tại chỉ mục 0.
+	 * @return mixed Giá trị đã được lọc sau khi tất cả các hàm đã gắn được áp dụng.
 	 */
 	public function apply_filters( $value, $args ) {
 		if ( ! $this->callbacks ) {
@@ -317,7 +317,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 					$args[0] = $value;
 				}
 
-				// Avoid the array_slice() if possible.
+				// Tránh dùng array_slice() nếu có thể.
 				if ( 0 === $the_['accepted_args'] ) {
 					$value = call_user_func( $the_['function'] );
 				} elseif ( $the_['accepted_args'] >= $num_args ) {
@@ -337,28 +337,28 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Calls the callback functions that have been added to an action hook.
+	 * Gọi các hàm callback đã được thêm vào hook action.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array $args Parameters to pass to the callback functions.
+	 * @param array $args Các tham số truyền cho các hàm callback.
 	 */
 	public function do_action( $args ) {
 		$this->doing_action = true;
 		$this->apply_filters( '', $args );
 
-		// If there are recursive calls to the current action, we haven't finished it until we get to the last one.
+		// Nếu có các lời gọi đệ quy đến action hiện tại, chưa hoàn tất cho đến khi đến lời gọi cuối cùng.
 		if ( ! $this->nesting_level ) {
 			$this->doing_action = false;
 		}
 	}
 
 	/**
-	 * Processes the functions hooked into the 'all' hook.
+	 * Xử lý các hàm được gắn vào hook 'all'.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array $args Arguments to pass to the hook callbacks. Passed by reference.
+	 * @param array $args Các tham số truyền cho các callback của hook. Truyền theo tham chiếu.
 	 */
 	public function do_all_hook( &$args ) {
 		$nesting_level                      = $this->nesting_level++;
@@ -377,12 +377,12 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Return the current priority level of the currently running iteration of the hook.
+	 * Trả về mức ưu tiên hiện tại của vòng lặp đang chạy của hook.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return int|false If the hook is running, return the current priority level.
-	 *                   If it isn't running, return false.
+	 * @return int|false Nếu hook đang chạy, trả về mức ưu tiên hiện tại.
+	 *                   Nếu không chạy, trả về false.
 	 */
 	public function current_priority() {
 		if ( false === current( $this->iterations ) ) {
@@ -393,15 +393,15 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Normalizes filters set up before WordPress has initialized to WP_Hook objects.
+	 * Chuẩn hóa các filter được thiết lập trước khi WordPress khởi tạo thành đối tượng WP_Hook.
 	 *
-	 * The `$filters` parameter should be an array keyed by hook name, with values
-	 * containing either:
+	 * Tham số `$filters` phải là một mảng có khóa là tên hook, với giá trị
+	 * chứa một trong hai:
 	 *
-	 *  - A `WP_Hook` instance
-	 *  - An array of callbacks keyed by their priorities
+	 *  - Một thể hiện `WP_Hook`
+	 *  - Một mảng các callback có khóa theo mức ưu tiên
 	 *
-	 * Examples:
+	 * Ví dụ:
 	 *
 	 *     $filters = array(
 	 *         'wp_fatal_error_handler_enabled' => array(
@@ -418,8 +418,8 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array $filters Filters to normalize. See documentation above for details.
-	 * @return WP_Hook[] Array of normalized filters.
+	 * @param array $filters Các filter cần chuẩn hóa. Xem tài liệu phía trên để biết chi tiết.
+	 * @return WP_Hook[] Mảng các filter đã được chuẩn hóa.
 	 */
 	public static function build_preinitialized_hooks( $filters ) {
 		/** @var WP_Hook[] $normalized */
@@ -433,10 +433,10 @@ final class WP_Hook implements Iterator, ArrayAccess {
 
 			$hook = new WP_Hook();
 
-			// Loop through callback groups.
+			// Lặp qua các nhóm callback.
 			foreach ( $callback_groups as $priority => $callbacks ) {
 
-				// Loop through callbacks.
+				// Lặp qua các callback.
 				foreach ( $callbacks as $cb ) {
 					$hook->add_filter( $hook_name, $cb['function'], $priority, $cb['accepted_args'] );
 				}
@@ -449,14 +449,14 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Determines whether an offset value exists.
+	 * Xác định xem một giá trị offset có tồn tại hay không.
 	 *
 	 * @since 4.7.0
 	 *
 	 * @link https://www.php.net/manual/en/arrayaccess.offsetexists.php
 	 *
-	 * @param mixed $offset An offset to check for.
-	 * @return bool True if the offset exists, false otherwise.
+	 * @param mixed $offset Một offset cần kiểm tra.
+	 * @return bool True nếu offset tồn tại, false nếu không.
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetExists( $offset ) {
@@ -464,14 +464,14 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Retrieves a value at a specified offset.
+	 * Lấy giá trị tại một offset được chỉ định.
 	 *
 	 * @since 4.7.0
 	 *
 	 * @link https://www.php.net/manual/en/arrayaccess.offsetget.php
 	 *
-	 * @param mixed $offset The offset to retrieve.
-	 * @return mixed If set, the value at the specified offset, null otherwise.
+	 * @param mixed $offset Offset cần lấy.
+	 * @return mixed Nếu được thiết lập, giá trị tại offset được chỉ định, ngược lại null.
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetGet( $offset ) {
@@ -479,14 +479,14 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Sets a value at a specified offset.
+	 * Thiết lập giá trị tại một offset được chỉ định.
 	 *
 	 * @since 4.7.0
 	 *
 	 * @link https://www.php.net/manual/en/arrayaccess.offsetset.php
 	 *
-	 * @param mixed $offset The offset to assign the value to.
-	 * @param mixed $value The value to set.
+	 * @param mixed $offset Offset để gán giá trị.
+	 * @param mixed $value Giá trị cần thiết lập.
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ) {
@@ -500,13 +500,13 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Unsets a specified offset.
+	 * Hủy thiết lập một offset được chỉ định.
 	 *
 	 * @since 4.7.0
 	 *
 	 * @link https://www.php.net/manual/en/arrayaccess.offsetunset.php
 	 *
-	 * @param mixed $offset The offset to unset.
+	 * @param mixed $offset Offset cần hủy thiết lập.
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetUnset( $offset ) {
@@ -515,13 +515,13 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Returns the current element.
+	 * Trả về phần tử hiện tại.
 	 *
 	 * @since 4.7.0
 	 *
 	 * @link https://www.php.net/manual/en/iterator.current.php
 	 *
-	 * @return array Of callbacks at current priority.
+	 * @return array Các callback tại mức ưu tiên hiện tại.
 	 */
 	#[ReturnTypeWillChange]
 	public function current() {
@@ -529,13 +529,13 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Moves forward to the next element.
+	 * Di chuyển tiến đến phần tử tiếp theo.
 	 *
 	 * @since 4.7.0
 	 *
 	 * @link https://www.php.net/manual/en/iterator.next.php
 	 *
-	 * @return array Of callbacks at next priority.
+	 * @return array Các callback tại mức ưu tiên tiếp theo.
 	 */
 	#[ReturnTypeWillChange]
 	public function next() {
@@ -543,13 +543,13 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Returns the key of the current element.
+	 * Trả về khóa của phần tử hiện tại.
 	 *
 	 * @since 4.7.0
 	 *
 	 * @link https://www.php.net/manual/en/iterator.key.php
 	 *
-	 * @return mixed Returns current priority on success, or NULL on failure
+	 * @return mixed Trả về mức ưu tiên hiện tại nếu thành công, hoặc NULL nếu thất bại.
 	 */
 	#[ReturnTypeWillChange]
 	public function key() {
@@ -557,13 +557,13 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Checks if current position is valid.
+	 * Kiểm tra xem vị trí hiện tại có hợp lệ hay không.
 	 *
 	 * @since 4.7.0
 	 *
 	 * @link https://www.php.net/manual/en/iterator.valid.php
 	 *
-	 * @return bool Whether the current position is valid.
+	 * @return bool Vị trí hiện tại có hợp lệ hay không.
 	 */
 	#[ReturnTypeWillChange]
 	public function valid() {
@@ -571,7 +571,7 @@ final class WP_Hook implements Iterator, ArrayAccess {
 	}
 
 	/**
-	 * Rewinds the Iterator to the first element.
+	 * Tua lại Iterator về phần tử đầu tiên.
 	 *
 	 * @since 4.7.0
 	 *

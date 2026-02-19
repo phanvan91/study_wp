@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Post_Meta_Fields class
+ * REST API: Lớp WP_REST_Post_Meta_Fields
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to manage meta values for posts via the REST API.
+ * Lớp cốt lõi dùng để quản lý giá trị meta cho bài viết thông qua REST API.
  *
  * @since 4.7.0
  *
@@ -17,7 +17,7 @@
 class WP_REST_Post_Meta_Fields extends WP_REST_Meta_Fields {
 
 	/**
-	 * Post type to register fields for.
+	 * Loại bài viết để đăng ký trường.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -25,46 +25,46 @@ class WP_REST_Post_Meta_Fields extends WP_REST_Meta_Fields {
 	protected $post_type;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string $post_type Post type to register fields for.
+	 * @param string $post_type Loại bài viết để đăng ký trường.
 	 */
 	public function __construct( $post_type ) {
 		$this->post_type = $post_type;
 	}
 
 	/**
-	 * Retrieves the post meta type.
+	 * Lấy loại meta bài viết.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return string The meta type.
+	 * @return string Loại meta.
 	 */
 	protected function get_meta_type() {
 		return 'post';
 	}
 
 	/**
-	 * Retrieves the post meta subtype.
+	 * Lấy loại phụ meta bài viết.
 	 *
 	 * @since 4.9.8
 	 *
-	 * @return string Subtype for the meta type, or empty string if no specific subtype.
+	 * @return string Loại phụ cho loại meta, hoặc chuỗi rỗng nếu không có loại phụ cụ thể.
 	 */
 	protected function get_meta_subtype() {
 		return $this->post_type;
 	}
 
 	/**
-	 * Retrieves the type for register_rest_field().
+	 * Lấy loại cho register_rest_field().
 	 *
 	 * @since 4.7.0
 	 *
 	 * @see register_rest_field()
 	 *
-	 * @return string The REST field type.
+	 * @return string Loại trường REST.
 	 */
 	public function get_rest_field_type() {
 		return $this->post_type;

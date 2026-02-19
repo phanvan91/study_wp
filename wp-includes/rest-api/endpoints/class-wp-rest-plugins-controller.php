@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Plugins_Controller class
+ * REST API: Lớp WP_REST_Plugins_Controller
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class to access plugins via the REST API.
+ * Lớp cốt lõi để truy cập plugin thông qua REST API.
  *
  * @since 5.5.0
  *
@@ -19,7 +19,7 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	const PATTERN = '[^.\/]+(?:\/[^.\/]+)?';
 
 	/**
-	 * Plugins controller constructor.
+	 * Hàm khởi tạo controller plugin.
 	 *
 	 * @since 5.5.0
 	 */
@@ -29,7 +29,7 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Registers the routes for the plugins controller.
+	 * Đăng ký các route cho controller plugin.
 	 *
 	 * @since 5.5.0
 	 */
@@ -102,12 +102,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to get plugins.
+	 * Kiểm tra xem yêu cầu có quyền truy cập để lấy danh sách plugin không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function get_items_permissions_check( $request ) {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -122,12 +122,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves a collection of plugins.
+	 * Lấy danh sách các plugin.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function get_items( $request ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -152,12 +152,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to get a specific plugin.
+	 * Kiểm tra xem yêu cầu có quyền truy cập để lấy một plugin cụ thể không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access for the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc mục, đối tượng WP_Error nếu không.
 	 */
 	public function get_item_permissions_check( $request ) {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -178,12 +178,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves one plugin from the site.
+	 * Lấy một plugin từ trang web.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function get_item( $request ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -198,15 +198,15 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if the given plugin can be viewed by the current user.
+	 * Kiểm tra xem plugin có thể được xem bởi người dùng hiện tại không.
 	 *
-	 * On multisite, this hides non-active network only plugins if the user does not have permission
-	 * to manage network plugins.
+	 * Trên multisite, ẩn các plugin chỉ dành cho mạng không hoạt động nếu người dùng không có quyền
+	 * quản lý plugin mạng.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $plugin The plugin file to check.
-	 * @return true|WP_Error True if can read, a WP_Error instance otherwise.
+	 * @param string $plugin Tệp plugin cần kiểm tra.
+	 * @return true|WP_Error True nếu có thể đọc, một đối tượng WP_Error nếu không.
 	 */
 	protected function check_read_permission( $plugin ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -231,12 +231,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to upload plugins.
+	 * Kiểm tra xem yêu cầu có quyền tải lên plugin không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền tạo mục, đối tượng WP_Error nếu không.
 	 */
 	public function create_item_permissions_check( $request ) {
 		if ( ! current_user_can( 'install_plugins' ) ) {
@@ -261,14 +261,14 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Uploads a plugin and optionally activates it.
+	 * Tải lên plugin và tùy chọn kích hoạt nó.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function create_item( $request ) {
 		global $wp_filesystem;
@@ -280,7 +280,7 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 
 		$slug = $request['slug'];
 
-		// Verify filesystem is accessible first.
+		// Xác minh hệ thống tệp có thể truy cập trước.
 		$filesystem_available = $this->is_filesystem_available();
 		if ( is_wp_error( $filesystem_available ) ) {
 			return $filesystem_available;
@@ -318,7 +318,7 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 			return $result;
 		}
 
-		// This should be the same as $result above.
+		// Điều này nên giống như $result ở trên.
 		if ( is_wp_error( $skin->result ) ) {
 			$skin->result->add_data( array( 'status' => 500 ) );
 
@@ -333,7 +333,7 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 		}
 
 		if ( is_null( $result ) ) {
-			// Pass through the error from WP_Filesystem if one was raised.
+			// Truyền lỗi từ WP_Filesystem nếu có lỗi được phát sinh.
 			if ( $wp_filesystem instanceof WP_Filesystem_Base
 				&& is_wp_error( $wp_filesystem->errors ) && $wp_filesystem->errors->has_errors()
 			) {
@@ -375,7 +375,7 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Install translations.
+		// Cài đặt bản dịch.
 		$installed_locales = array_values( get_available_languages() );
 		/** This filter is documented in wp-includes/update.php */
 		$installed_locales = apply_filters( 'plugins_update_check_locales', $installed_locales );
@@ -397,7 +397,7 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 		if ( $language_packs ) {
 			$lp_upgrader = new Language_Pack_Upgrader( $skin );
 
-			// Install all applicable language packs for the plugin.
+			// Cài đặt tất cả gói ngôn ngữ phù hợp cho plugin.
 			$lp_upgrader->bulk_upgrade( $language_packs );
 		}
 
@@ -413,12 +413,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to update a specific plugin.
+	 * Kiểm tra xem yêu cầu có quyền cập nhật một plugin cụ thể không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to update the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền cập nhật mục, đối tượng WP_Error nếu không.
 	 */
 	public function update_item_permissions_check( $request ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -451,12 +451,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Updates one plugin.
+	 * Cập nhật một plugin.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function update_item( $request ) {
 		require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -485,12 +485,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to delete a specific plugin.
+	 * Kiểm tra xem yêu cầu có quyền xóa một plugin cụ thể không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền xóa mục, đối tượng WP_Error nếu không.
 	 */
 	public function delete_item_permissions_check( $request ) {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -519,12 +519,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Deletes one plugin from the site.
+	 * Xóa một plugin từ trang web.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function delete_item( $request ) {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -567,13 +567,13 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepares the plugin for the REST response.
+	 * Chuẩn bị plugin cho phản hồi REST.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param array           $item    Unmarked up and untranslated plugin data from {@see get_plugin_data()}.
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param array           $item    Dữ liệu plugin chưa được đánh dấu và chưa được dịch từ {@see get_plugin_data()}.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		$fields = $this->get_fields_for_response( $request );
@@ -608,23 +608,23 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 		}
 
 		/**
-		 * Filters plugin data for a REST API response.
+		 * Lọc dữ liệu plugin cho phản hồi REST API.
 		 *
 		 * @since 5.5.0
 		 *
-		 * @param WP_REST_Response $response The response object.
-		 * @param array            $item     The plugin item from {@see get_plugin_data()}.
-		 * @param WP_REST_Request  $request  The request object.
+		 * @param WP_REST_Response $response Đối tượng phản hồi.
+		 * @param array            $item     Mục plugin từ {@see get_plugin_data()}.
+		 * @param WP_REST_Request  $request  Đối tượng yêu cầu.
 		 */
 		return apply_filters( 'rest_prepare_plugin', $response, $item, $request );
 	}
 
 	/**
-	 * Prepares links for the request.
+	 * Chuẩn bị các liên kết cho yêu cầu.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param array $item The plugin item.
+	 * @param array $item Mục plugin.
 	 * @return array[]
 	 */
 	protected function prepare_links( $item ) {
@@ -643,12 +643,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Gets the plugin header data for a plugin.
+	 * Lấy dữ liệu tiêu đề plugin cho một plugin.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $plugin The plugin file to get data for.
-	 * @return array|WP_Error The plugin data, or a WP_Error if the plugin is not installed.
+	 * @param string $plugin Tệp plugin cần lấy dữ liệu.
+	 * @return array|WP_Error Dữ liệu plugin, hoặc WP_Error nếu plugin chưa được cài đặt.
 	 */
 	protected function get_plugin_data( $plugin ) {
 		$plugins = get_plugins();
@@ -664,12 +664,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get's the activation status for a plugin.
+	 * Lấy trạng thái kích hoạt cho một plugin.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $plugin The plugin file to check.
-	 * @return string Either 'network-active', 'active' or 'inactive'.
+	 * @param string $plugin Tệp plugin cần kiểm tra.
+	 * @return string 'network-active', 'active' hoặc 'inactive'.
 	 */
 	protected function get_plugin_status( $plugin ) {
 		if ( is_plugin_active_for_network( $plugin ) ) {
@@ -684,13 +684,13 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Handle updating a plugin's status.
+	 * Xử lý cập nhật trạng thái của plugin.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $plugin         The plugin file to update.
-	 * @param string $new_status     The plugin's new status.
-	 * @param string $current_status The plugin's current status.
+	 * @param string $plugin         Tệp plugin cần cập nhật.
+	 * @param string $new_status     Trạng thái mới của plugin.
+	 * @param string $current_status Trạng thái hiện tại của plugin.
 	 * @return true|WP_Error
 	 */
 	protected function plugin_status_permission_check( $plugin, $new_status, $current_status ) {
@@ -722,13 +722,13 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Handle updating a plugin's status.
+	 * Xử lý cập nhật trạng thái của plugin.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $plugin         The plugin file to update.
-	 * @param string $new_status     The plugin's new status.
-	 * @param string $current_status The plugin's current status.
+	 * @param string $plugin         Tệp plugin cần cập nhật.
+	 * @param string $new_status     Trạng thái mới của plugin.
+	 * @param string $current_status Trạng thái hiện tại của plugin.
 	 * @return true|WP_Error
 	 */
 	protected function handle_plugin_status( $plugin, $new_status, $current_status ) {
@@ -764,11 +764,11 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks that the "plugin" parameter is a valid path.
+	 * Kiểm tra tham số "plugin" có phải là đường dẫn hợp lệ không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $file The plugin file parameter.
+	 * @param string $file Tham số tệp plugin.
 	 * @return bool
 	 */
 	public function validate_plugin_param( $file ) {
@@ -782,11 +782,11 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Sanitizes the "plugin" parameter to be a proper plugin file with ".php" appended.
+	 * Làm sạch tham số "plugin" thành tệp plugin hợp lệ với ".php" được thêm vào.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $file The plugin file parameter.
+	 * @param string $file Tham số tệp plugin.
 	 * @return string
 	 */
 	public function sanitize_plugin_param( $file ) {
@@ -794,12 +794,12 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if the plugin matches the requested parameters.
+	 * Kiểm tra xem plugin có khớp với các tham số yêu cầu không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_REST_Request $request The request to require the plugin matches against.
-	 * @param array           $item    The plugin item.
+	 * @param WP_REST_Request $request Yêu cầu mà plugin cần khớp.
+	 * @param array           $item    Mục plugin.
 	 * @return bool
 	 */
 	protected function does_plugin_match_request( $request, $item ) {
@@ -830,11 +830,11 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if the plugin is installed.
+	 * Kiểm tra xem plugin đã được cài đặt chưa.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $plugin The plugin file.
+	 * @param string $plugin Tệp plugin.
 	 * @return bool
 	 */
 	protected function is_plugin_installed( $plugin ) {
@@ -842,13 +842,13 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Determine if the endpoints are available.
+	 * Xác định xem các endpoint có khả dụng không.
 	 *
-	 * Only the 'Direct' filesystem transport, and SSH/FTP when credentials are stored are supported at present.
+	 * Hiện tại chỉ hỗ trợ phương thức truyền tệp 'Direct', và SSH/FTP khi thông tin đăng nhập được lưu trữ.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @return true|WP_Error True if filesystem is available, WP_Error otherwise.
+	 * @return true|WP_Error True nếu hệ thống tệp khả dụng, WP_Error nếu không.
 	 */
 	protected function is_filesystem_available() {
 		$filesystem_method = get_filesystem_method();
@@ -869,11 +869,11 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves the plugin's schema, conforming to JSON Schema.
+	 * Lấy schema của plugin, tuân thủ JSON Schema.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @return array Item schema data.
+	 * @return array Dữ liệu schema của mục.
 	 */
 	public function get_item_schema() {
 		if ( $this->schema ) {
@@ -977,11 +977,11 @@ class WP_REST_Plugins_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves the query params for the collections.
+	 * Lấy các tham số truy vấn cho bộ sưu tập.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @return array Query parameters for the collection.
+	 * @return array Các tham số truy vấn cho bộ sưu tập.
 	 */
 	public function get_collection_params() {
 		$query_params = parent::get_collection_params();

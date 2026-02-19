@@ -1,6 +1,6 @@
 <?php
 /**
- * Functions related to registering and parsing blocks.
+ * Các hàm liên quan đến đăng ký và phân tích cú pháp block.
  *
  * @package WordPress
  * @subpackage Blocks
@@ -8,12 +8,12 @@
  */
 
 /**
- * Removes the block asset's path prefix if provided.
+ * Xoá tiền tố đường dẫn của tài nguyên block nếu có.
  *
  * @since 5.5.0
  *
- * @param string $asset_handle_or_path Asset handle or prefixed path.
- * @return string Path without the prefix or the original value.
+ * @param string $asset_handle_or_path Handle tài nguyên hoặc đường dẫn có tiền tố.
+ * @return string Đường dẫn không có tiền tố hoặc giá trị gốc.
  */
 function remove_block_asset_path_prefix( $asset_handle_or_path ) {
 	$path_prefix = 'file:';
@@ -31,18 +31,18 @@ function remove_block_asset_path_prefix( $asset_handle_or_path ) {
 }
 
 /**
- * Generates the name for an asset based on the name of the block
- * and the field name provided.
+ * Tạo tên cho tài nguyên dựa trên tên block
+ * và tên trường được cung cấp.
  *
  * @since 5.5.0
- * @since 6.1.0 Added `$index` parameter.
- * @since 6.5.0 Added support for `viewScriptModule` field.
+ * @since 6.1.0 Thêm tham số `$index`.
+ * @since 6.5.0 Thêm hỗ trợ cho trường `viewScriptModule`.
  *
- * @param string $block_name Name of the block.
- * @param string $field_name Name of the metadata field.
- * @param int    $index      Optional. Index of the asset when multiple items passed.
- *                           Default 0.
- * @return string Generated asset name for the block's field.
+ * @param string $block_name Tên của block.
+ * @param string $field_name Tên của trường metadata.
+ * @param int    $index      Tùy chọn. Chỉ mục của tài nguyên khi truyền nhiều mục.
+ *                           Mặc định 0.
+ * @return string Tên tài nguyên được tạo cho trường của block.
  */
 function generate_block_asset_handle( $block_name, $field_name, $index = 0 ) {
 	if ( str_starts_with( $block_name, 'core/' ) ) {
@@ -80,19 +80,19 @@ function generate_block_asset_handle( $block_name, $field_name, $index = 0 ) {
 }
 
 /**
- * Gets the URL to a block asset.
+ * Lấy URL đến tài nguyên block.
  *
  * @since 6.4.0
  *
- * @param string $path A normalized path to a block asset.
- * @return string|false The URL to the block asset or false on failure.
+ * @param string $path Đường dẫn đã chuẩn hoá đến tài nguyên block.
+ * @return string|false URL đến tài nguyên block hoặc false khi thất bại.
  */
 function get_block_asset_url( $path ) {
 	if ( empty( $path ) ) {
 		return false;
 	}
 
-	// Path needs to be normalized to work in Windows env.
+	// Đường dẫn cần được chuẩn hoá để hoạt động trong môi trường Windows.
 	static $wpinc_path_norm = '';
 	if ( ! $wpinc_path_norm ) {
 		$wpinc_path_norm = wp_normalize_path( realpath( ABSPATH . WPINC ) );
@@ -128,19 +128,19 @@ function get_block_asset_url( $path ) {
 }
 
 /**
- * Finds a script module ID for the selected block metadata field. It detects
- * when a path to file was provided and optionally finds a corresponding asset
- * file with details necessary to register the script module under with an
- * automatically generated module ID. It returns unprocessed script module
- * ID otherwise.
+ * Tìm ID module script cho trường metadata block đã chọn. Hàm phát hiện
+ * khi đường dẫn đến tệp được cung cấp và tuỳ chọn tìm tệp tài nguyên
+ * tương ứng với các chi tiết cần thiết để đăng ký module script với
+ * ID module được tạo tự động. Trả về ID module script chưa xử lý
+ * trong trường hợp khác.
  *
  * @since 6.5.0
  *
- * @param array  $metadata   Block metadata.
- * @param string $field_name Field name to pick from metadata.
- * @param int    $index      Optional. Index of the script module ID to register when multiple
- *                           items passed. Default 0.
- * @return string|false Script module ID or false on failure.
+ * @param array  $metadata   Metadata của block.
+ * @param string $field_name Tên trường để lấy từ metadata.
+ * @param int    $index      Tùy chọn. Chỉ mục của ID module script để đăng ký khi truyền
+ *                           nhiều mục. Mặc định 0.
+ * @return string|false ID module script hoặc false khi thất bại.
  */
 function register_block_script_module_id( $metadata, $field_name, $index = 0 ) {
 	if ( empty( $metadata[ $field_name ] ) ) {
@@ -186,21 +186,21 @@ function register_block_script_module_id( $metadata, $field_name, $index = 0 ) {
 }
 
 /**
- * Finds a script handle for the selected block metadata field. It detects
- * when a path to file was provided and optionally finds a corresponding asset
- * file with details necessary to register the script under automatically
- * generated handle name. It returns unprocessed script handle otherwise.
+ * Tìm handle script cho trường metadata block đã chọn. Hàm phát hiện
+ * khi đường dẫn đến tệp được cung cấp và tuỳ chọn tìm tệp tài nguyên
+ * tương ứng với các chi tiết cần thiết để đăng ký script với tên
+ * handle được tạo tự động. Trả về handle script chưa xử lý trong trường hợp khác.
  *
  * @since 5.5.0
- * @since 6.1.0 Added `$index` parameter.
- * @since 6.5.0 The asset file is optional. Added script handle support in the asset file.
+ * @since 6.1.0 Thêm tham số `$index`.
+ * @since 6.5.0 Tệp tài nguyên là tuỳ chọn. Thêm hỗ trợ handle script trong tệp tài nguyên.
  *
- * @param array  $metadata   Block metadata.
- * @param string $field_name Field name to pick from metadata.
- * @param int    $index      Optional. Index of the script to register when multiple items passed.
- *                           Default 0.
- * @return string|false Script handle provided directly or created through
- *                      script's registration, or false on failure.
+ * @param array  $metadata   Metadata của block.
+ * @param string $field_name Tên trường để lấy từ metadata.
+ * @param int    $index      Tùy chọn. Chỉ mục của script để đăng ký khi truyền nhiều mục.
+ *                           Mặc định 0.
+ * @return string|false Handle script được cung cấp trực tiếp hoặc được tạo thông qua
+ *                      việc đăng ký script, hoặc false khi thất bại.
  */
 function register_block_script_handle( $metadata, $field_name, $index = 0 ) {
 	if ( empty( $metadata[ $field_name ] ) ) {
@@ -226,7 +226,7 @@ function register_block_script_handle( $metadata, $field_name, $index = 0 ) {
 		realpath( $script_asset_raw_path )
 	);
 
-	// Asset file for blocks is optional. See https://core.trac.wordpress.org/ticket/60460.
+	// Tệp tài nguyên cho block là tuỳ chọn. Xem https://core.trac.wordpress.org/ticket/60460.
 	$script_asset  = ! empty( $script_asset_path ) ? require $script_asset_path : array();
 	$script_handle = isset( $script_asset['handle'] ) ?
 		$script_asset['handle'] :
@@ -264,19 +264,19 @@ function register_block_script_handle( $metadata, $field_name, $index = 0 ) {
 }
 
 /**
- * Finds a style handle for the block metadata field. It detects when a path
- * to file was provided and registers the style under automatically
- * generated handle name. It returns unprocessed style handle otherwise.
+ * Tìm handle style cho trường metadata block. Hàm phát hiện khi đường dẫn
+ * đến tệp được cung cấp và đăng ký style với tên handle được tạo
+ * tự động. Trả về handle style chưa xử lý trong trường hợp khác.
  *
  * @since 5.5.0
- * @since 6.1.0 Added `$index` parameter.
+ * @since 6.1.0 Thêm tham số `$index`.
  *
- * @param array  $metadata   Block metadata.
- * @param string $field_name Field name to pick from metadata.
- * @param int    $index      Optional. Index of the style to register when multiple items passed.
- *                           Default 0.
- * @return string|false Style handle provided directly or created through
- *                      style's registration, or false on failure.
+ * @param array  $metadata   Metadata của block.
+ * @param string $field_name Tên trường để lấy từ metadata.
+ * @param int    $index      Tùy chọn. Chỉ mục của style để đăng ký khi truyền nhiều mục.
+ *                           Mặc định 0.
+ * @return string|false Handle style được cung cấp trực tiếp hoặc được tạo thông qua
+ *                      việc đăng ký style, hoặc false khi thất bại.
  */
 function register_block_style_handle( $metadata, $field_name, $index = 0 ) {
 	if ( empty( $metadata[ $field_name ] ) ) {
@@ -292,7 +292,7 @@ function register_block_style_handle( $metadata, $field_name, $index = 0 ) {
 	}
 
 	$style_handle_name = generate_block_asset_handle( $metadata['name'], $field_name, $index );
-	// If the style handle is already registered, skip re-registering.
+	// Nếu handle style đã được đăng ký, bỏ qua việc đăng ký lại.
 	if ( wp_style_is( $style_handle_name, 'registered' ) ) {
 		return $style_handle_name;
 	}
@@ -303,23 +303,23 @@ function register_block_style_handle( $metadata, $field_name, $index = 0 ) {
 	}
 
 	$is_core_block = isset( $metadata['file'] ) && str_starts_with( $metadata['file'], $wpinc_path_norm );
-	// Skip registering individual styles for each core block when a bundled version provided.
+	// Bỏ qua việc đăng ký style riêng lẻ cho mỗi block core khi có phiên bản đóng gói.
 	if ( $is_core_block && ! wp_should_load_separate_core_block_assets() ) {
 		return false;
 	}
 
 	$style_path      = remove_block_asset_path_prefix( $style_handle );
 	$is_style_handle = $style_handle === $style_path;
-	// Allow only passing style handles for core blocks.
+	// Chỉ cho phép truyền handle style cho các block core.
 	if ( $is_core_block && ! $is_style_handle ) {
 		return false;
 	}
-	// Return the style handle unless it's the first item for every core block that requires special treatment.
+	// Trả về handle style trừ khi đó là mục đầu tiên cho mỗi block core cần xử lý đặc biệt.
 	if ( $is_style_handle && ! ( $is_core_block && 0 === $index ) ) {
 		return $style_handle;
 	}
 
-	// Check whether styles should have a ".min" suffix or not.
+	// Kiểm tra xem style có nên có hậu tố ".min" hay không.
 	$suffix = SCRIPT_DEBUG ? '' : '.min';
 	if ( $is_core_block ) {
 		$style_path = ( 'editorStyle' === $field_name ) ? "editor{$suffix}.css" : "style{$suffix}.css";
@@ -360,11 +360,11 @@ function register_block_style_handle( $metadata, $field_name, $index = 0 ) {
 }
 
 /**
- * Gets i18n schema for block's metadata read from `block.json` file.
+ * Lấy schema i18n cho metadata của block đọc từ tệp `block.json`.
  *
  * @since 5.9.0
  *
- * @return object The schema for block's metadata.
+ * @return object Schema cho metadata của block.
  */
 function get_block_metadata_i18n_schema() {
 	static $i18n_block_schema;
@@ -377,19 +377,19 @@ function get_block_metadata_i18n_schema() {
 }
 
 /**
- * Registers all block types from a block metadata collection.
+ * Đăng ký tất cả các loại block từ bộ sưu tập metadata block.
  *
- * This can either reference a previously registered metadata collection or, if the `$manifest` parameter is provided,
- * register the metadata collection directly within the same function call.
+ * Hàm này có thể tham chiếu đến một bộ sưu tập metadata đã đăng ký trước đó hoặc, nếu tham số `$manifest` được cung cấp,
+ * đăng ký bộ sưu tập metadata trực tiếp trong cùng lời gọi hàm.
  *
  * @since 6.8.0
  * @see wp_register_block_metadata_collection()
  * @see register_block_type_from_metadata()
  *
- * @param string $path     The absolute base path for the collection ( e.g., WP_PLUGIN_DIR . '/my-plugin/blocks/' ).
- * @param string $manifest Optional. The absolute path to the manifest file containing the metadata collection, in
- *                         order to register the collection. If this parameter is not provided, the `$path` parameter
- *                         must reference a previously registered block metadata collection.
+ * @param string $path     Đường dẫn cơ sở tuyệt đối cho bộ sưu tập (ví dụ: WP_PLUGIN_DIR . '/my-plugin/blocks/').
+ * @param string $manifest Tùy chọn. Đường dẫn tuyệt đối đến tệp manifest chứa bộ sưu tập metadata,
+ *                         để đăng ký bộ sưu tập. Nếu tham số này không được cung cấp, tham số `$path`
+ *                         phải tham chiếu đến bộ sưu tập metadata block đã được đăng ký trước đó.
  */
 function wp_register_block_types_from_metadata_collection( $path, $manifest = '' ) {
 	if ( $manifest ) {
@@ -403,47 +403,47 @@ function wp_register_block_types_from_metadata_collection( $path, $manifest = ''
 }
 
 /**
- * Registers a block metadata collection.
+ * Đăng ký bộ sưu tập metadata block.
  *
- * This function allows core and third-party plugins to register their block metadata
- * collections in a centralized location. Registering collections can improve performance
- * by avoiding multiple reads from the filesystem and parsing JSON.
+ * Hàm này cho phép core và các plugin bên thứ ba đăng ký bộ sưu tập metadata block
+ * của họ tại một vị trí tập trung. Đăng ký bộ sưu tập có thể cải thiện hiệu suất
+ * bằng cách tránh đọc nhiều lần từ hệ thống tệp và phân tích JSON.
  *
  * @since 6.7.0
  *
- * @param string $path     The base path in which block files for the collection reside.
- * @param string $manifest The path to the manifest file for the collection.
+ * @param string $path     Đường dẫn cơ sở nơi các tệp block cho bộ sưu tập nằm.
+ * @param string $manifest Đường dẫn đến tệp manifest cho bộ sưu tập.
  */
 function wp_register_block_metadata_collection( $path, $manifest ) {
 	WP_Block_Metadata_Registry::register_collection( $path, $manifest );
 }
 
 /**
- * Registers a block type from the metadata stored in the `block.json` file.
+ * Đăng ký loại block từ metadata được lưu trữ trong tệp `block.json`.
  *
  * @since 5.5.0
- * @since 5.7.0 Added support for `textdomain` field and i18n handling for all translatable fields.
- * @since 5.9.0 Added support for `variations` and `viewScript` fields.
- * @since 6.1.0 Added support for `render` field.
- * @since 6.3.0 Added `selectors` field.
- * @since 6.4.0 Added support for `blockHooks` field.
- * @since 6.5.0 Added support for `allowedBlocks`, `viewScriptModule`, and `viewStyle` fields.
- * @since 6.7.0 Allow PHP filename as `variations` argument.
+ * @since 5.7.0 Thêm hỗ trợ cho trường `textdomain` và xử lý i18n cho tất cả các trường có thể dịch.
+ * @since 5.9.0 Thêm hỗ trợ cho các trường `variations` và `viewScript`.
+ * @since 6.1.0 Thêm hỗ trợ cho trường `render`.
+ * @since 6.3.0 Thêm trường `selectors`.
+ * @since 6.4.0 Thêm hỗ trợ cho trường `blockHooks`.
+ * @since 6.5.0 Thêm hỗ trợ cho các trường `allowedBlocks`, `viewScriptModule` và `viewStyle`.
+ * @since 6.7.0 Cho phép tên tệp PHP làm đối số `variations`.
  *
- * @param string $file_or_folder Path to the JSON file with metadata definition for
- *                               the block or path to the folder where the `block.json` file is located.
- *                               If providing the path to a JSON file, the filename must end with `block.json`.
- * @param array  $args           Optional. Array of block type arguments. Accepts any public property
- *                               of `WP_Block_Type`. See WP_Block_Type::__construct() for information
- *                               on accepted arguments. Default empty array.
- * @return WP_Block_Type|false The registered block type on success, or false on failure.
+ * @param string $file_or_folder Đường dẫn đến tệp JSON chứa định nghĩa metadata cho
+ *                               block hoặc đường dẫn đến thư mục chứa tệp `block.json`.
+ *                               Nếu cung cấp đường dẫn đến tệp JSON, tên tệp phải kết thúc bằng `block.json`.
+ * @param array  $args           Tùy chọn. Mảng các đối số loại block. Chấp nhận bất kỳ thuộc tính công khai
+ *                               nào của `WP_Block_Type`. Xem WP_Block_Type::__construct() để biết thông tin
+ *                               về các đối số được chấp nhận. Mặc định mảng rỗng.
+ * @return WP_Block_Type|false Loại block đã đăng ký khi thành công, hoặc false khi thất bại.
  */
 function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 	/*
-	 * Get an array of metadata from a PHP file.
-	 * This improves performance for core blocks as it's only necessary to read a single PHP file
-	 * instead of reading a JSON file per-block, and then decoding from JSON to PHP.
-	 * Using a static variable ensures that the metadata is only read once per request.
+	 * Lấy mảng metadata từ tệp PHP.
+	 * Điều này cải thiện hiệu suất cho các block core vì chỉ cần đọc một tệp PHP duy nhất
+	 * thay vì đọc một tệp JSON cho mỗi block, rồi giải mã từ JSON sang PHP.
+	 * Sử dụng biến static đảm bảo metadata chỉ được đọc một lần mỗi request.
 	 */
 
 	$file_or_folder = wp_normalize_path( $file_or_folder );
@@ -471,15 +471,15 @@ function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 	$metadata['file'] = $metadata_file_exists ? wp_normalize_path( realpath( $metadata_file ) ) : null;
 
 	/**
-	 * Filters the metadata provided for registering a block type.
+	 * Lọc metadata được cung cấp để đăng ký loại block.
 	 *
 	 * @since 5.7.0
 	 *
-	 * @param array $metadata Metadata for registering a block type.
+	 * @param array $metadata Metadata để đăng ký loại block.
 	 */
 	$metadata = apply_filters( 'block_type_metadata', $metadata );
 
-	// Add `style` and `editor_style` for core blocks if missing.
+	// Thêm `style` và `editor_style` cho các block core nếu thiếu.
 	if ( ! empty( $metadata['name'] ) && str_starts_with( $metadata['name'], 'core/' ) ) {
 		$block_name = str_replace( 'core/', '', $metadata['name'] );
 
@@ -537,15 +537,15 @@ function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 		);
 		if ( $template_path ) {
 			/**
-			 * Renders the block on the server.
+			 * Render block trên server.
 			 *
 			 * @since 6.1.0
 			 *
-			 * @param array    $attributes Block attributes.
-			 * @param string   $content    Block default content.
-			 * @param WP_Block $block      Block instance.
+			 * @param array    $attributes Các thuộc tính của block.
+			 * @param string   $content    Nội dung mặc định của block.
+			 * @param WP_Block $block      Thực thể block.
 			 *
-			 * @return string Returns the block content.
+			 * @return string Trả về nội dung block.
 			 */
 			$settings['render_callback'] = static function ( $attributes, $content, $block ) use ( $template_path ) {
 				ob_start();
@@ -555,8 +555,8 @@ function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 		}
 	}
 
-	// If `variations` is a string, it's the name of a PHP file that
-	// generates the variations.
+	// Nếu `variations` là chuỗi, đó là tên tệp PHP
+	// tạo ra các biến thể.
 	if ( ! empty( $metadata['variations'] ) && is_string( $metadata['variations'] ) ) {
 		$variations_path = wp_normalize_path(
 			realpath(
@@ -566,19 +566,19 @@ function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 		);
 		if ( $variations_path ) {
 			/**
-			 * Generates the list of block variations.
+			 * Tạo danh sách các biến thể block.
 			 *
 			 * @since 6.7.0
 			 *
-			 * @return string Returns the list of block variations.
+			 * @return string Trả về danh sách các biến thể block.
 			 */
 			$settings['variation_callback'] = static function () use ( $variations_path ) {
 				$variations = require $variations_path;
 				return $variations;
 			};
-			// The block instance's `variations` field is only allowed to be an array
-			// (of known block variations). We unset it so that the block instance will
-			// provide a getter that returns the result of the `variation_callback` instead.
+			// Trường `variations` của thực thể block chỉ được phép là một mảng
+			// (các biến thể block đã biết). Chúng ta unset nó để thực thể block
+			// cung cấp getter trả về kết quả của `variation_callback` thay thế.
 			unset( $settings['variations'] );
 		}
 	}
@@ -693,7 +693,7 @@ function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 
 	if ( ! empty( $metadata['blockHooks'] ) ) {
 		/**
-		 * Map camelCased position string (from block.json) to snake_cased block type position.
+		 * Ánh xạ chuỗi vị trí camelCased (từ block.json) sang vị trí loại block snake_cased.
 		 *
 		 * @var array
 		 */
@@ -706,7 +706,7 @@ function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 
 		$settings['block_hooks'] = array();
 		foreach ( $metadata['blockHooks'] as $anchor_block_name => $position ) {
-			// Avoid infinite recursion (hooking to itself).
+			// Tránh đệ quy vô hạn (gắn hook vào chính nó).
 			if ( $metadata['name'] === $anchor_block_name ) {
 				_doing_it_wrong(
 					__METHOD__,
@@ -725,12 +725,12 @@ function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 	}
 
 	/**
-	 * Filters the settings determined from the block type metadata.
+	 * Lọc các thiết lập được xác định từ metadata loại block.
 	 *
 	 * @since 5.7.0
 	 *
-	 * @param array $settings Array of determined settings for registering a block type.
-	 * @param array $metadata Metadata provided for registering a block type.
+	 * @param array $settings Mảng các thiết lập đã xác định để đăng ký loại block.
+	 * @param array $metadata Metadata được cung cấp để đăng ký loại block.
 	 */
 	$settings = apply_filters( 'block_type_metadata_settings', $settings, $metadata );
 
@@ -743,22 +743,22 @@ function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 }
 
 /**
- * Registers a block type. The recommended way is to register a block type using
- * the metadata stored in the `block.json` file.
+ * Đăng ký loại block. Cách khuyên dùng là đăng ký loại block sử dụng
+ * metadata được lưu trữ trong tệp `block.json`.
  *
  * @since 5.0.0
- * @since 5.8.0 First parameter now accepts a path to the `block.json` file.
+ * @since 5.8.0 Tham số đầu tiên giờ chấp nhận đường dẫn đến tệp `block.json`.
  *
- * @param string|WP_Block_Type $block_type Block type name including namespace, or alternatively
- *                                         a path to the JSON file with metadata definition for the block,
- *                                         or a path to the folder where the `block.json` file is located,
- *                                         or a complete WP_Block_Type instance.
- *                                         In case a WP_Block_Type is provided, the $args parameter will be ignored.
- * @param array                $args       Optional. Array of block type arguments. Accepts any public property
- *                                         of `WP_Block_Type`. See WP_Block_Type::__construct() for information
- *                                         on accepted arguments. Default empty array.
+ * @param string|WP_Block_Type $block_type Tên loại block bao gồm namespace, hoặc
+ *                                         đường dẫn đến tệp JSON chứa định nghĩa metadata cho block,
+ *                                         hoặc đường dẫn đến thư mục chứa tệp `block.json`,
+ *                                         hoặc một thực thể WP_Block_Type đầy đủ.
+ *                                         Trong trường hợp WP_Block_Type được cung cấp, tham số $args sẽ bị bỏ qua.
+ * @param array                $args       Tùy chọn. Mảng các đối số loại block. Chấp nhận bất kỳ thuộc tính công khai
+ *                                         nào của `WP_Block_Type`. Xem WP_Block_Type::__construct() để biết thông tin
+ *                                         về các đối số được chấp nhận. Mặc định mảng rỗng.
  *
- * @return WP_Block_Type|false The registered block type on success, or false on failure.
+ * @return WP_Block_Type|false Loại block đã đăng ký khi thành công, hoặc false khi thất bại.
  */
 function register_block_type( $block_type, $args = array() ) {
 	if ( is_string( $block_type ) && file_exists( $block_type ) ) {
@@ -769,32 +769,32 @@ function register_block_type( $block_type, $args = array() ) {
 }
 
 /**
- * Unregisters a block type.
+ * Hủy đăng ký loại block.
  *
  * @since 5.0.0
  *
- * @param string|WP_Block_Type $name Block type name including namespace, or alternatively
- *                                   a complete WP_Block_Type instance.
- * @return WP_Block_Type|false The unregistered block type on success, or false on failure.
+ * @param string|WP_Block_Type $name Tên loại block bao gồm namespace, hoặc
+ *                                   một thực thể WP_Block_Type đầy đủ.
+ * @return WP_Block_Type|false Loại block đã hủy đăng ký khi thành công, hoặc false khi thất bại.
  */
 function unregister_block_type( $name ) {
 	return WP_Block_Type_Registry::get_instance()->unregister( $name );
 }
 
 /**
- * Determines whether a post or content string has blocks.
+ * Xác định xem bài viết hoặc chuỗi nội dung có chứa block hay không.
  *
- * This test optimizes for performance rather than strict accuracy, detecting
- * the pattern of a block but not validating its structure. For strict accuracy,
- * you should use the block parser on post content.
+ * Kiểm tra này ưu tiên hiệu suất hơn độ chính xác tuyệt đối, phát hiện
+ * mẫu của block nhưng không xác nhận cấu trúc của nó. Để có độ chính xác tuyệt đối,
+ * bạn nên sử dụng trình phân tích block trên nội dung bài viết.
  *
  * @since 5.0.0
  *
  * @see parse_blocks()
  *
- * @param int|string|WP_Post|null $post Optional. Post content, post ID, or post object.
- *                                      Defaults to global $post.
- * @return bool Whether the post has blocks.
+ * @param int|string|WP_Post|null $post Tùy chọn. Nội dung bài viết, ID bài viết, hoặc đối tượng bài viết.
+ *                                      Mặc định là $post toàn cục.
+ * @return bool Liệu bài viết có chứa block hay không.
  */
 function has_blocks( $post = null ) {
 	if ( ! is_string( $post ) ) {
@@ -811,21 +811,21 @@ function has_blocks( $post = null ) {
 }
 
 /**
- * Determines whether a $post or a string contains a specific block type.
+ * Xác định xem bài viết hoặc chuỗi có chứa loại block cụ thể hay không.
  *
- * This test optimizes for performance rather than strict accuracy, detecting
- * whether the block type exists but not validating its structure and not checking
- * synced patterns (formerly called reusable blocks). For strict accuracy,
- * you should use the block parser on post content.
+ * Kiểm tra này ưu tiên hiệu suất hơn độ chính xác tuyệt đối, phát hiện
+ * xem loại block có tồn tại hay không nhưng không xác nhận cấu trúc và không kiểm tra
+ * các pattern đồng bộ (trước đây gọi là block tái sử dụng). Để có độ chính xác tuyệt đối,
+ * bạn nên sử dụng trình phân tích block trên nội dung bài viết.
  *
  * @since 5.0.0
  *
  * @see parse_blocks()
  *
- * @param string                  $block_name Full block type to look for.
- * @param int|string|WP_Post|null $post       Optional. Post content, post ID, or post object.
- *                                            Defaults to global $post.
- * @return bool Whether the post content contains the specified block.
+ * @param string                  $block_name Tên đầy đủ của loại block cần tìm.
+ * @param int|string|WP_Post|null $post       Tùy chọn. Nội dung bài viết, ID bài viết, hoặc đối tượng bài viết.
+ *                                            Mặc định là $post toàn cục.
+ * @return bool Liệu nội dung bài viết có chứa block được chỉ định hay không.
  */
 function has_block( $block_name, $post = null ) {
 	if ( ! has_blocks( $post ) ) {
@@ -840,21 +840,21 @@ function has_block( $block_name, $post = null ) {
 	}
 
 	/*
-	 * Normalize block name to include namespace, if provided as non-namespaced.
-	 * This matches behavior for WordPress 5.0.0 - 5.3.0 in matching blocks by
-	 * their serialized names.
+	 * Chuẩn hóa tên block để bao gồm namespace, nếu được cung cấp không có namespace.
+	 * Điều này khớp với hành vi của WordPress 5.0.0 - 5.3.0 khi so khớp block
+	 * theo tên serialized của chúng.
 	 */
 	if ( ! str_contains( $block_name, '/' ) ) {
 		$block_name = 'core/' . $block_name;
 	}
 
-	// Test for existence of block by its fully qualified name.
+	// Kiểm tra sự tồn tại của block bằng tên đầy đủ.
 	$has_block = str_contains( $post, '<!-- wp:' . $block_name . ' ' );
 
 	if ( ! $has_block ) {
 		/*
-		 * If the given block name would serialize to a different name, test for
-		 * existence by the serialized form.
+		 * Nếu tên block đã cho sẽ serialize thành tên khác, kiểm tra
+		 * sự tồn tại bằng dạng serialized.
 		 */
 		$serialized_block_name = strip_core_block_namespace( $block_name );
 		if ( $serialized_block_name !== $block_name ) {
@@ -866,11 +866,11 @@ function has_block( $block_name, $post = null ) {
 }
 
 /**
- * Returns an array of the names of all registered dynamic block types.
+ * Trả về mảng tên của tất cả các loại block động đã đăng ký.
  *
  * @since 5.0.0
  *
- * @return string[] Array of dynamic block names.
+ * @return string[] Mảng tên các block động.
  */
 function get_dynamic_block_names() {
 	$dynamic_block_names = array();
@@ -886,11 +886,11 @@ function get_dynamic_block_names() {
 }
 
 /**
- * Retrieves block types hooked into the given block, grouped by anchor block type and the relative position.
+ * Lấy các loại block được gắn hook vào block đã cho, được nhóm theo loại block neo và vị trí tương đối.
  *
  * @since 6.4.0
  *
- * @return array[] Array of block types grouped by anchor block type and the relative position.
+ * @return array[] Mảng các loại block được nhóm theo loại block neo và vị trí tương đối.
  */
 function get_hooked_blocks() {
 	$block_types   = WP_Block_Type_Registry::get_instance()->get_all_registered();
@@ -914,16 +914,16 @@ function get_hooked_blocks() {
 }
 
 /**
- * Returns the markup for blocks hooked to the given anchor block in a specific relative position.
+ * Trả về mã đánh dấu cho các block được gắn hook vào block neo đã cho ở vị trí tương đối cụ thể.
  *
  * @since 6.5.0
  * @access private
  *
- * @param array                           $parsed_anchor_block The anchor block, in parsed block array format.
- * @param string                          $relative_position   The relative position of the hooked blocks.
- *                                                             Can be one of 'before', 'after', 'first_child', or 'last_child'.
- * @param array                           $hooked_blocks       An array of hooked block types, grouped by anchor block and relative position.
- * @param WP_Block_Template|WP_Post|array $context             The block template, template part, or pattern that the anchor block belongs to.
+ * @param array                           $parsed_anchor_block Block neo, ở định dạng mảng block đã phân tích.
+ * @param string                          $relative_position   Vị trí tương đối của các block được gắn hook.
+ *                                                             Có thể là 'before', 'after', 'first_child', hoặc 'last_child'.
+ * @param array                           $hooked_blocks       Mảng các loại block được gắn hook, nhóm theo block neo và vị trí tương đối.
+ * @param WP_Block_Template|WP_Post|array $context             Template block, template part, hoặc pattern mà block neo thuộc về.
  * @return string
  */
 function insert_hooked_blocks( &$parsed_anchor_block, $relative_position, $hooked_blocks, $context ) {
@@ -933,16 +933,16 @@ function insert_hooked_blocks( &$parsed_anchor_block, $relative_position, $hooke
 		: array();
 
 	/**
-	 * Filters the list of hooked block types for a given anchor block type and relative position.
+	 * Lọc danh sách các loại block được gắn hook cho loại block neo và vị trí tương đối đã cho.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param string[]                        $hooked_block_types The list of hooked block types.
-	 * @param string                          $relative_position  The relative position of the hooked blocks.
-	 *                                                            Can be one of 'before', 'after', 'first_child', or 'last_child'.
-	 * @param string                          $anchor_block_type  The anchor block type.
-	 * @param WP_Block_Template|WP_Post|array $context            The block template, template part, post object,
-	 *                                                            or pattern that the anchor block belongs to.
+	 * @param string[]                        $hooked_block_types Danh sách các loại block được gắn hook.
+	 * @param string                          $relative_position  Vị trí tương đối của các block được gắn hook.
+	 *                                                            Có thể là 'before', 'after', 'first_child', hoặc 'last_child'.
+	 * @param string                          $anchor_block_type  Loại block neo.
+	 * @param WP_Block_Template|WP_Post|array $context            Template block, template part, đối tượng bài viết,
+	 *                                                            hoặc pattern mà block neo thuộc về.
 	 */
 	$hooked_block_types = apply_filters( 'hooked_block_types', $hooked_block_types, $relative_position, $anchor_block_type, $context );
 
@@ -956,32 +956,32 @@ function insert_hooked_blocks( &$parsed_anchor_block, $relative_position, $hooke
 		);
 
 		/**
-		 * Filters the parsed block array for a given hooked block.
+		 * Lọc mảng block đã phân tích cho block được gắn hook cụ thể.
 		 *
 		 * @since 6.5.0
 		 *
-		 * @param array|null                      $parsed_hooked_block The parsed block array for the given hooked block type, or null to suppress the block.
-		 * @param string                          $hooked_block_type   The hooked block type name.
-		 * @param string                          $relative_position   The relative position of the hooked block.
-		 * @param array                           $parsed_anchor_block The anchor block, in parsed block array format.
-		 * @param WP_Block_Template|WP_Post|array $context             The block template, template part, post object,
-		 *                                                             or pattern that the anchor block belongs to.
+		 * @param array|null                      $parsed_hooked_block Mảng block đã phân tích cho loại block được gắn hook, hoặc null để ẩn block.
+		 * @param string                          $hooked_block_type   Tên loại block được gắn hook.
+		 * @param string                          $relative_position   Vị trí tương đối của block được gắn hook.
+		 * @param array                           $parsed_anchor_block Block neo, ở định dạng mảng block đã phân tích.
+		 * @param WP_Block_Template|WP_Post|array $context             Template block, template part, đối tượng bài viết,
+		 *                                                             hoặc pattern mà block neo thuộc về.
 		 */
 		$parsed_hooked_block = apply_filters( 'hooked_block', $parsed_hooked_block, $hooked_block_type, $relative_position, $parsed_anchor_block, $context );
 
 		/**
-		 * Filters the parsed block array for a given hooked block.
+		 * Lọc mảng block đã phân tích cho block được gắn hook cụ thể.
 		 *
-		 * The dynamic portion of the hook name, `$hooked_block_type`, refers to the block type name of the specific hooked block.
+		 * Phần động của tên hook, `$hooked_block_type`, tham chiếu đến tên loại block của block được gắn hook cụ thể.
 		 *
 		 * @since 6.5.0
 		 *
-		 * @param array|null                      $parsed_hooked_block The parsed block array for the given hooked block type, or null to suppress the block.
-		 * @param string                          $hooked_block_type   The hooked block type name.
-		 * @param string                          $relative_position   The relative position of the hooked block.
-		 * @param array                           $parsed_anchor_block The anchor block, in parsed block array format.
-		 * @param WP_Block_Template|WP_Post|array $context             The block template, template part, post object,
-		 *                                                             or pattern that the anchor block belongs to.
+		 * @param array|null                      $parsed_hooked_block Mảng block đã phân tích cho loại block được gắn hook, hoặc null để ẩn block.
+		 * @param string                          $hooked_block_type   Tên loại block được gắn hook.
+		 * @param string                          $relative_position   Vị trí tương đối của block được gắn hook.
+		 * @param array                           $parsed_anchor_block Block neo, ở định dạng mảng block đã phân tích.
+		 * @param WP_Block_Template|WP_Post|array $context             Template block, template part, đối tượng bài viết,
+		 *                                                             hoặc pattern mà block neo thuộc về.
 		 */
 		$parsed_hooked_block = apply_filters( "hooked_block_{$hooked_block_type}", $parsed_hooked_block, $hooked_block_type, $relative_position, $parsed_anchor_block, $context );
 
@@ -989,8 +989,8 @@ function insert_hooked_blocks( &$parsed_anchor_block, $relative_position, $hooke
 			continue;
 		}
 
-		// It's possible that the filter returned a block of a different type, so we explicitly
-		// look for the original `$hooked_block_type` in the `ignoredHookedBlocks` metadata.
+		// Có thể bộ lọc trả về block thuộc loại khác, nên chúng ta kiểm tra rõ ràng
+		// `$hooked_block_type` gốc trong metadata `ignoredHookedBlocks`.
 		if (
 			! isset( $parsed_anchor_block['attrs']['metadata']['ignoredHookedBlocks'] ) ||
 			! in_array( $hooked_block_type, $parsed_anchor_block['attrs']['metadata']['ignoredHookedBlocks'], true )
@@ -1003,19 +1003,19 @@ function insert_hooked_blocks( &$parsed_anchor_block, $relative_position, $hooke
 }
 
 /**
- * Adds a list of hooked block types to an anchor block's ignored hooked block types.
+ * Thêm danh sách các loại block được gắn hook vào danh sách loại block được gắn hook bị bỏ qua của block neo.
  *
- * This function is meant for internal use only.
+ * Hàm này chỉ dành cho sử dụng nội bộ.
  *
  * @since 6.5.0
  * @access private
  *
- * @param array                           $parsed_anchor_block The anchor block, in parsed block array format.
- * @param string                          $relative_position   The relative position of the hooked blocks.
- *                                                             Can be one of 'before', 'after', 'first_child', or 'last_child'.
- * @param array                           $hooked_blocks       An array of hooked block types, grouped by anchor block and relative position.
- * @param WP_Block_Template|WP_Post|array $context             The block template, template part, or pattern that the anchor block belongs to.
- * @return string Empty string.
+ * @param array                           $parsed_anchor_block Block neo, ở định dạng mảng block đã phân tích.
+ * @param string                          $relative_position   Vị trí tương đối của các block được gắn hook.
+ *                                                             Có thể là 'before', 'after', 'first_child', hoặc 'last_child'.
+ * @param array                           $hooked_blocks       Mảng các loại block được gắn hook, nhóm theo block neo và vị trí tương đối.
+ * @param WP_Block_Template|WP_Post|array $context             Template block, template part, hoặc pattern mà block neo thuộc về.
+ * @return string Chuỗi rỗng.
  */
 function set_ignored_hooked_blocks_metadata( &$parsed_anchor_block, $relative_position, $hooked_blocks, $context ) {
 	$anchor_block_type  = $parsed_anchor_block['blockName'];
@@ -1023,7 +1023,7 @@ function set_ignored_hooked_blocks_metadata( &$parsed_anchor_block, $relative_po
 		? $hooked_blocks[ $anchor_block_type ][ $relative_position ]
 		: array();
 
-	/** This filter is documented in wp-includes/blocks.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/blocks.php */
 	$hooked_block_types = apply_filters( 'hooked_block_types', $hooked_block_types, $relative_position, $anchor_block_type, $context );
 	if ( empty( $hooked_block_types ) ) {
 		return '';
@@ -1037,10 +1037,10 @@ function set_ignored_hooked_blocks_metadata( &$parsed_anchor_block, $relative_po
 			'innerContent' => array(),
 		);
 
-		/** This filter is documented in wp-includes/blocks.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/blocks.php */
 		$parsed_hooked_block = apply_filters( 'hooked_block', $parsed_hooked_block, $hooked_block_type, $relative_position, $parsed_anchor_block, $context );
 
-		/** This filter is documented in wp-includes/blocks.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/blocks.php */
 		$parsed_hooked_block = apply_filters( "hooked_block_{$hooked_block_type}", $parsed_hooked_block, $hooked_block_type, $relative_position, $parsed_anchor_block, $context );
 
 		if ( null === $parsed_hooked_block ) {
@@ -1059,30 +1059,30 @@ function set_ignored_hooked_blocks_metadata( &$parsed_anchor_block, $relative_po
 		)
 	);
 
-	// Markup for the hooked blocks has already been created (in `insert_hooked_blocks`).
+	// Mã đánh dấu cho các block được gắn hook đã được tạo (trong `insert_hooked_blocks`).
 	return '';
 }
 
 /**
- * Runs the hooked blocks algorithm on the given content.
+ * Chạy thuật toán block được gắn hook trên nội dung đã cho.
  *
  * @since 6.6.0
- * @since 6.7.0 Injects the `theme` attribute into Template Part blocks, even if no hooked blocks are registered.
- * @since 6.8.0 Have the `$context` parameter default to `null`, in which case `get_post()` will be called to use the current post as context.
+ * @since 6.7.0 Thêm thuộc tính `theme` vào các block Template Part, ngay cả khi không có block được gắn hook nào được đăng ký.
+ * @since 6.8.0 Tham số `$context` mặc định là `null`, trong trường hợp đó `get_post()` sẽ được gọi để sử dụng bài viết hiện tại làm ngữ cảnh.
  * @access private
  *
- * @param string                               $content  Serialized content.
- * @param WP_Block_Template|WP_Post|array|null $context  A block template, template part, post object, or pattern
- *                                                       that the blocks belong to. If set to `null`, `get_post()`
- *                                                       will be called to use the current post as context.
- *                                                       Default: `null`.
- * @param callable                             $callback A function that will be called for each block to generate
- *                                                       the markup for a given list of blocks that are hooked to it.
- *                                                       Default: 'insert_hooked_blocks'.
- * @return string The serialized markup.
+ * @param string                               $content  Nội dung đã tuần tự hóa.
+ * @param WP_Block_Template|WP_Post|array|null $context  Template block, template part, đối tượng bài viết, hoặc pattern
+ *                                                       mà các block thuộc về. Nếu đặt là `null`, `get_post()`
+ *                                                       sẽ được gọi để sử dụng bài viết hiện tại làm ngữ cảnh.
+ *                                                       Mặc định: `null`.
+ * @param callable                             $callback Hàm sẽ được gọi cho mỗi block để tạo mã đánh dấu
+ *                                                       cho danh sách các block được gắn hook vào nó.
+ *                                                       Mặc định: 'insert_hooked_blocks'.
+ * @return string Mã đánh dấu đã tuần tự hóa.
  */
 function apply_block_hooks_to_content( $content, $context = null, $callback = 'insert_hooked_blocks' ) {
-	// Default to the current post if no context is provided.
+	// Mặc định sử dụng bài viết hiện tại nếu không có ngữ cảnh nào được cung cấp.
 	if ( null === $context ) {
 		$context = get_post();
 	}
@@ -1098,8 +1098,8 @@ function apply_block_hooks_to_content( $content, $context = null, $callback = 'i
 
 	$block_allows_multiple_instances = array();
 	/*
-	 * Remove hooked blocks from `$hooked_block_types` if they have `multiple` set to false and
-	 * are already present in `$content`.
+	 * Xóa các block được gắn hook khỏi `$hooked_block_types` nếu chúng có `multiple` đặt là false và
+	 * đã có mặt trong `$content`.
 	 */
 	foreach ( $hooked_blocks as $anchor_block_type => $relative_positions ) {
 		foreach ( $relative_positions as $relative_position => $hooked_block_types ) {
@@ -1127,8 +1127,8 @@ function apply_block_hooks_to_content( $content, $context = null, $callback = 'i
 	}
 
 	/*
-	 * We also need to cover the case where the hooked block is not present in
-	 * `$content` at first and we're allowed to insert it once -- but not again.
+	 * Chúng ta cũng cần xử lý trường hợp block được gắn hook ban đầu không có mặt trong
+	 * `$content` và chúng ta được phép chèn nó một lần -- nhưng không phải lần nữa.
 	 */
 	$suppress_single_instance_blocks = static function ( $hooked_block_types ) use ( &$block_allows_multiple_instances, $content ) {
 		static $single_instance_blocks_present_in_content = array();
@@ -1145,14 +1145,14 @@ function apply_block_hooks_to_content( $content, $context = null, $callback = 'i
 				continue;
 			}
 
-			// The block doesn't allow multiple instances, so we need to check if it's already present.
+			// Block không cho phép nhiều thực thể, nên chúng ta cần kiểm tra xem nó đã có mặt chưa.
 			if (
 				in_array( $hooked_block_type, $single_instance_blocks_present_in_content, true ) ||
 				has_block( $hooked_block_type, $content )
 			) {
 				unset( $hooked_block_types[ $index ] );
 			} else {
-				// We can insert the block once, but need to remember not to insert it again.
+				// Chúng ta có thể chèn block một lần, nhưng cần nhớ không chèn lại lần nữa.
 				$single_instance_blocks_present_in_content[] = $hooked_block_type;
 			}
 		}
@@ -1170,24 +1170,24 @@ function apply_block_hooks_to_content( $content, $context = null, $callback = 'i
 }
 
 /**
- * Run the Block Hooks algorithm on a post object's content.
+ * Chạy thuật toán Block Hooks trên nội dung của đối tượng bài viết.
  *
- * This function is different from `apply_block_hooks_to_content` in that
- * it takes ignored hooked block information from the post's metadata into
- * account. This ensures that any blocks hooked as first or last child
- * of the block that corresponds to the post type are handled correctly.
+ * Hàm này khác với `apply_block_hooks_to_content` ở chỗ nó tính đến
+ * thông tin block được gắn hook bị bỏ qua từ metadata của bài viết.
+ * Điều này đảm bảo rằng bất kỳ block nào được gắn hook là con đầu tiên hoặc cuối cùng
+ * của block tương ứng với loại bài viết đều được xử lý chính xác.
  *
  * @since 6.8.0
  * @access private
  *
- * @param string       $content  Serialized content.
- * @param WP_Post|null $post     A post object that the content belongs to. If set to `null`,
- *                               `get_post()` will be called to use the current post as context.
- *                               Default: `null`.
- * @param callable     $callback A function that will be called for each block to generate
- *                               the markup for a given list of blocks that are hooked to it.
- *                               Default: 'insert_hooked_blocks'.
- * @return string The serialized markup.
+ * @param string       $content  Nội dung đã tuần tự hóa.
+ * @param WP_Post|null $post     Đối tượng bài viết mà nội dung thuộc về. Nếu đặt là `null`,
+ *                               `get_post()` sẽ được gọi để sử dụng bài viết hiện tại làm ngữ cảnh.
+ *                               Mặc định: `null`.
+ * @param callable     $callback Hàm sẽ được gọi cho mỗi block để tạo mã đánh dấu
+ *                               cho danh sách các block được gắn hook vào nó.
+ *                               Mặc định: 'insert_hooked_blocks'.
+ * @return string Mã đánh dấu đã tuần tự hóa.
  */
 function apply_block_hooks_to_content_from_post_object( $content, $post = null, $callback = 'insert_hooked_blocks' ) {
 	// Default to the current post if no context is provided.
@@ -1287,13 +1287,13 @@ function apply_block_hooks_to_content_from_post_object( $content, $post = null, 
 }
 
 /**
- * Accepts the serialized markup of a block and its inner blocks, and returns serialized markup of the inner blocks.
+ * Nhận mã đánh dấu đã tuần tự hóa của block và các block con bên trong, trả về mã đánh dấu đã tuần tự hóa của các block con bên trong.
  *
  * @since 6.6.0
  * @access private
  *
- * @param string $serialized_block The serialized markup of a block and its inner blocks.
- * @return string The serialized markup of the inner blocks.
+ * @param string $serialized_block Mã đánh dấu đã tuần tự hóa của block và các block con bên trong.
+ * @return string Mã đánh dấu đã tuần tự hóa của các block con bên trong.
  */
 function remove_serialized_parent_block( $serialized_block ) {
 	$start = strpos( $serialized_block, '-->' ) + strlen( '-->' );
@@ -1302,15 +1302,15 @@ function remove_serialized_parent_block( $serialized_block ) {
 }
 
 /**
- * Accepts the serialized markup of a block and its inner blocks, and returns serialized markup of the wrapper block.
+ * Nhận mã đánh dấu đã tuần tự hóa của block và các block con bên trong, trả về mã đánh dấu đã tuần tự hóa của block bao ngoài.
  *
  * @since 6.7.0
  * @access private
  *
  * @see remove_serialized_parent_block()
  *
- * @param string $serialized_block The serialized markup of a block and its inner blocks.
- * @return string The serialized markup of the wrapper block.
+ * @param string $serialized_block Mã đánh dấu đã tuần tự hóa của block và các block con bên trong.
+ * @return string Mã đánh dấu đã tuần tự hóa của block bao ngoài.
  */
 function extract_serialized_parent_block( $serialized_block ) {
 	$start = strpos( $serialized_block, '-->' ) + strlen( '-->' );
@@ -1319,35 +1319,35 @@ function extract_serialized_parent_block( $serialized_block ) {
 }
 
 /**
- * Updates the wp_postmeta with the list of ignored hooked blocks
- * where the inner blocks are stored as post content.
+ * Cập nhật wp_postmeta với danh sách các block được gắn hook bị bỏ qua
+ * trong đó các block con bên trong được lưu trữ dưới dạng nội dung bài viết.
  *
  * @since 6.6.0
- * @since 6.8.0 Support non-`wp_navigation` post types.
+ * @since 6.8.0 Hỗ trợ các loại bài viết không phải `wp_navigation`.
  * @access private
  *
- * @param stdClass $post Post object.
- * @return stdClass The updated post object.
+ * @param stdClass $post Đối tượng bài viết.
+ * @return stdClass Đối tượng bài viết đã cập nhật.
  */
 function update_ignored_hooked_blocks_postmeta( $post ) {
 	/*
-	 * In this scenario the user has likely tried to create a new post object via the REST API.
-	 * In which case we won't have a post ID to work with and store meta against.
+	 * Trong trường hợp này người dùng có thể đã thử tạo đối tượng bài viết mới qua REST API.
+	 * Khi đó chúng ta sẽ không có ID bài viết để làm việc và lưu trữ meta.
 	 */
 	if ( empty( $post->ID ) ) {
 		return $post;
 	}
 
 	/*
-	 * Skip meta generation when consumers intentionally update specific fields
-	 * and omit the content update.
+	 * Bỏ qua việc tạo meta khi các đối tượng tiêu thụ cố ý cập nhật các trường cụ thể
+	 * và bỏ qua việc cập nhật nội dung.
 	 */
 	if ( ! isset( $post->post_content ) ) {
 		return $post;
 	}
 
 	/*
-	 * Skip meta generation if post type is not set.
+	 * Bỏ qua việc tạo meta nếu loại bài viết chưa được thiết lập.
 	 */
 	if ( ! isset( $post->post_type ) ) {
 		return $post;
@@ -1378,7 +1378,7 @@ function update_ignored_hooked_blocks_postmeta( $post ) {
 	);
 
 	$existing_post = get_post( $post->ID );
-	// Merge the existing post object with the updated post object to pass to the block hooks algorithm for context.
+	// Gộp đối tượng bài viết hiện tại với đối tượng bài viết đã cập nhật để truyền cho thuật toán block hooks làm ngữ cảnh.
 	$context          = (object) array_merge( (array) $existing_post, (array) $post );
 	$context          = new WP_Post( $context ); // Convert to WP_Post object.
 	$serialized_block = apply_block_hooks_to_content( $markup, $context, 'set_ignored_hooked_blocks_metadata' );
@@ -1406,19 +1406,19 @@ function update_ignored_hooked_blocks_postmeta( $post ) {
 }
 
 /**
- * Returns the markup for blocks hooked to the given anchor block in a specific relative position and then
- * adds a list of hooked block types to an anchor block's ignored hooked block types.
+ * Trả về mã đánh dấu cho các block được gắn hook vào block neo đã cho ở vị trí tương đối cụ thể và sau đó
+ * thêm danh sách loại block được gắn hook vào danh sách loại block được gắn hook bị bỏ qua của block neo.
  *
- * This function is meant for internal use only.
+ * Hàm này chỉ dành cho sử dụng nội bộ.
  *
  * @since 6.6.0
  * @access private
  *
- * @param array                           $parsed_anchor_block The anchor block, in parsed block array format.
- * @param string                          $relative_position   The relative position of the hooked blocks.
- *                                                             Can be one of 'before', 'after', 'first_child', or 'last_child'.
- * @param array                           $hooked_blocks       An array of hooked block types, grouped by anchor block and relative position.
- * @param WP_Block_Template|WP_Post|array $context             The block template, template part, or pattern that the anchor block belongs to.
+ * @param array                           $parsed_anchor_block Block neo, ở định dạng mảng block đã phân tích.
+ * @param string                          $relative_position   Vị trí tương đối của các block được gắn hook.
+ *                                                             Có thể là 'before', 'after', 'first_child', hoặc 'last_child'.
+ * @param array                           $hooked_blocks       Mảng loại block được gắn hook, nhóm theo block neo và vị trí tương đối.
+ * @param WP_Block_Template|WP_Post|array $context             Mẫu block, phần mẫu, hoặc pattern mà block neo thuộc về.
  * @return string
  */
 function insert_hooked_blocks_and_set_ignored_hooked_blocks_metadata( &$parsed_anchor_block, $relative_position, $hooked_blocks, $context ) {
@@ -1429,14 +1429,14 @@ function insert_hooked_blocks_and_set_ignored_hooked_blocks_metadata( &$parsed_a
 }
 
 /**
- * Hooks into the REST API response for the Posts endpoint and adds the first and last inner blocks.
+ * Gắn hook vào phản hồi REST API cho endpoint Bài viết và thêm các block con bên trong đầu tiên và cuối cùng.
  *
  * @since 6.6.0
- * @since 6.8.0 Support non-`wp_navigation` post types.
+ * @since 6.8.0 Hỗ trợ các loại bài viết không phải `wp_navigation`.
  *
- * @param WP_REST_Response $response The response object.
- * @param WP_Post          $post     Post object.
- * @return WP_REST_Response The response object.
+ * @param WP_REST_Response $response Đối tượng phản hồi.
+ * @param WP_Post          $post     Đối tượng bài viết.
+ * @return WP_REST_Response Đối tượng phản hồi.
  */
 function insert_hooked_blocks_into_rest_response( $response, $post ) {
 	if ( empty( $response->data['content']['raw'] ) ) {
@@ -1449,12 +1449,12 @@ function insert_hooked_blocks_into_rest_response( $response, $post ) {
 		'insert_hooked_blocks_and_set_ignored_hooked_blocks_metadata'
 	);
 
-	// If the rendered content was previously empty, we leave it like that.
+	// Nếu nội dung đã render trước đó là rỗng, chúng ta giữ nguyên như vậy.
 	if ( empty( $response->data['content']['rendered'] ) ) {
 		return $response;
 	}
 
-	// `apply_block_hooks_to_content` is called above. Ensure it is not called again as a filter.
+	// `apply_block_hooks_to_content` đã được gọi ở trên. Đảm bảo nó không được gọi lại như một bộ lọc.
 	$priority = has_filter( 'the_content', 'apply_block_hooks_to_content_from_post_object' );
 	if ( false !== $priority ) {
 		remove_filter( 'the_content', 'apply_block_hooks_to_content_from_post_object', $priority );
@@ -1466,7 +1466,7 @@ function insert_hooked_blocks_into_rest_response( $response, $post ) {
 		$response->data['content']['raw']
 	);
 
-	// Restore the filter if it was set initially.
+	// Khôi phục bộ lọc nếu nó đã được thiết lập ban đầu.
 	if ( false !== $priority ) {
 		add_filter( 'the_content', 'apply_block_hooks_to_content_from_post_object', $priority );
 	}
@@ -1475,39 +1475,39 @@ function insert_hooked_blocks_into_rest_response( $response, $post ) {
 }
 
 /**
- * Returns a function that injects the theme attribute into, and hooked blocks before, a given block.
+ * Trả về hàm chèn thuộc tính giao diện vào, và các block được gắn hook trước, một block đã cho.
  *
- * The returned function can be used as `$pre_callback` argument to `traverse_and_serialize_block(s)`,
- * where it will inject the `theme` attribute into all Template Part blocks, and prepend the markup for
- * any blocks hooked `before` the given block and as its parent's `first_child`, respectively.
+ * Hàm trả về có thể được sử dụng làm tham số `$pre_callback` cho `traverse_and_serialize_block(s)`,
+ * nơi nó sẽ chèn thuộc tính `theme` vào tất cả các block Template Part, và thêm mã đánh dấu
+ * cho bất kỳ block nào được gắn hook `before` block đã cho và là `first_child` của block cha tương ứng.
  *
- * This function is meant for internal use only.
+ * Hàm này chỉ dành cho sử dụng nội bộ.
  *
  * @since 6.4.0
- * @since 6.5.0 Added $callback argument.
+ * @since 6.5.0 Thêm tham số $callback.
  * @access private
  *
- * @param array                           $hooked_blocks An array of blocks hooked to another given block.
- * @param WP_Block_Template|WP_Post|array $context       A block template, template part, post object,
- *                                                       or pattern that the blocks belong to.
- * @param callable                        $callback      A function that will be called for each block to generate
- *                                                       the markup for a given list of blocks that are hooked to it.
- *                                                       Default: 'insert_hooked_blocks'.
- * @return callable A function that returns the serialized markup for the given block,
- *                  including the markup for any hooked blocks before it.
+ * @param array                           $hooked_blocks Mảng các block được gắn hook vào block đã cho khác.
+ * @param WP_Block_Template|WP_Post|array $context       Mẫu block, phần mẫu, đối tượng bài viết,
+ *                                                       hoặc pattern mà các block thuộc về.
+ * @param callable                        $callback      Hàm sẽ được gọi cho mỗi block để tạo
+ *                                                       mã đánh dấu cho danh sách block được gắn hook vào nó.
+ *                                                       Mặc định: 'insert_hooked_blocks'.
+ * @return callable Hàm trả về mã đánh dấu đã tuần tự hóa cho block đã cho,
+ *                  bao gồm mã đánh dấu cho bất kỳ block được gắn hook nào trước nó.
  */
 function make_before_block_visitor( $hooked_blocks, $context, $callback = 'insert_hooked_blocks' ) {
 	/**
-	 * Injects hooked blocks before the given block, injects the `theme` attribute into Template Part blocks, and returns the serialized markup.
+	 * Chèn các block được gắn hook trước block đã cho, chèn thuộc tính `theme` vào block Template Part, và trả về mã đánh dấu đã tuần tự hóa.
 	 *
-	 * If the current block is a Template Part block, inject the `theme` attribute.
-	 * Furthermore, prepend the markup for any blocks hooked `before` the given block and as its parent's
-	 * `first_child`, respectively, to the serialized markup for the given block.
+	 * Nếu block hiện tại là block Template Part, chèn thuộc tính `theme`.
+	 * Ngoài ra, thêm mã đánh dấu cho bất kỳ block nào được gắn hook `before` block đã cho và là
+	 * `first_child` của block cha tương ứng, vào trước mã đánh dấu đã tuần tự hóa cho block đã cho.
 	 *
-	 * @param array $block        The block to inject the theme attribute into, and hooked blocks before. Passed by reference.
-	 * @param array $parent_block The parent block of the given block. Passed by reference. Default null.
-	 * @param array $prev         The previous sibling block of the given block. Default null.
-	 * @return string The serialized markup for the given block, with the markup for any hooked blocks prepended to it.
+	 * @param array $block        Block để chèn thuộc tính giao diện vào, và các block được gắn hook trước. Truyền theo tham chiếu.
+	 * @param array $parent_block Block cha của block đã cho. Truyền theo tham chiếu. Mặc định null.
+	 * @param array $prev         Block anh em trước của block đã cho. Mặc định null.
+	 * @return string Mã đánh dấu đã tuần tự hóa cho block đã cho, với mã đánh dấu cho bất kỳ block được gắn hook nào được thêm vào trước.
 	 */
 	return function ( &$block, &$parent_block = null, $prev = null ) use ( $hooked_blocks, $context, $callback ) {
 		_inject_theme_attribute_in_template_part_block( $block );
@@ -1515,7 +1515,7 @@ function make_before_block_visitor( $hooked_blocks, $context, $callback = 'inser
 		$markup = '';
 
 		if ( $parent_block && ! $prev ) {
-			// Candidate for first-child insertion.
+			// Ứng cử viên cho việc chèn first-child.
 			$markup .= call_user_func_array(
 				$callback,
 				array( &$parent_block, 'first_child', $hooked_blocks, $context )
@@ -1532,38 +1532,38 @@ function make_before_block_visitor( $hooked_blocks, $context, $callback = 'inser
 }
 
 /**
- * Returns a function that injects the hooked blocks after a given block.
+ * Trả về hàm chèn các block được gắn hook sau một block đã cho.
  *
- * The returned function can be used as `$post_callback` argument to `traverse_and_serialize_block(s)`,
- * where it will append the markup for any blocks hooked `after` the given block and as its parent's
- * `last_child`, respectively.
+ * Hàm trả về có thể được sử dụng làm tham số `$post_callback` cho `traverse_and_serialize_block(s)`,
+ * nơi nó sẽ nối thêm mã đánh dấu cho bất kỳ block nào được gắn hook `after` block đã cho và là
+ * `last_child` của block cha tương ứng.
  *
- * This function is meant for internal use only.
+ * Hàm này chỉ dành cho sử dụng nội bộ.
  *
  * @since 6.4.0
- * @since 6.5.0 Added $callback argument.
+ * @since 6.5.0 Thêm tham số $callback.
  * @access private
  *
- * @param array                           $hooked_blocks An array of blocks hooked to another block.
- * @param WP_Block_Template|WP_Post|array $context       A block template, template part, post object,
- *                                                       or pattern that the blocks belong to.
- * @param callable                        $callback      A function that will be called for each block to generate
- *                                                       the markup for a given list of blocks that are hooked to it.
- *                                                       Default: 'insert_hooked_blocks'.
- * @return callable A function that returns the serialized markup for the given block,
- *                  including the markup for any hooked blocks after it.
+ * @param array                           $hooked_blocks Mảng các block được gắn hook vào block khác.
+ * @param WP_Block_Template|WP_Post|array $context       Mẫu block, phần mẫu, đối tượng bài viết,
+ *                                                       hoặc pattern mà các block thuộc về.
+ * @param callable                        $callback      Hàm sẽ được gọi cho mỗi block để tạo
+ *                                                       mã đánh dấu cho danh sách block được gắn hook vào nó.
+ *                                                       Mặc định: 'insert_hooked_blocks'.
+ * @return callable Hàm trả về mã đánh dấu đã tuần tự hóa cho block đã cho,
+ *                  bao gồm mã đánh dấu cho bất kỳ block được gắn hook nào sau nó.
  */
 function make_after_block_visitor( $hooked_blocks, $context, $callback = 'insert_hooked_blocks' ) {
 	/**
-	 * Injects hooked blocks after the given block, and returns the serialized markup.
+	 * Chèn các block được gắn hook sau block đã cho, và trả về mã đánh dấu đã tuần tự hóa.
 	 *
-	 * Append the markup for any blocks hooked `after` the given block and as its parent's
-	 * `last_child`, respectively, to the serialized markup for the given block.
+	 * Nối thêm mã đánh dấu cho bất kỳ block nào được gắn hook `after` block đã cho và là
+	 * `last_child` của block cha tương ứng, vào sau mã đánh dấu đã tuần tự hóa cho block đã cho.
 	 *
-	 * @param array $block        The block to inject the hooked blocks after. Passed by reference.
-	 * @param array $parent_block The parent block of the given block. Passed by reference. Default null.
-	 * @param array $next         The next sibling block of the given block. Default null.
-	 * @return string The serialized markup for the given block, with the markup for any hooked blocks appended to it.
+	 * @param array $block        Block để chèn các block được gắn hook sau. Truyền theo tham chiếu.
+	 * @param array $parent_block Block cha của block đã cho. Truyền theo tham chiếu. Mặc định null.
+	 * @param array $next         Block anh em tiếp theo của block đã cho. Mặc định null.
+	 * @return string Mã đánh dấu đã tuần tự hóa cho block đã cho, với mã đánh dấu cho bất kỳ block được gắn hook nào được nối thêm vào.
 	 */
 	return function ( &$block, &$parent_block = null, $next = null ) use ( $hooked_blocks, $context, $callback ) {
 		$markup = call_user_func_array(
@@ -1572,7 +1572,7 @@ function make_after_block_visitor( $hooked_blocks, $context, $callback = 'insert
 		);
 
 		if ( $parent_block && ! $next ) {
-			// Candidate for last-child insertion.
+			// Ứng cử viên cho việc chèn last-child.
 			$markup .= call_user_func_array(
 				$callback,
 				array( &$parent_block, 'last_child', $hooked_blocks, $context )
@@ -1584,21 +1584,21 @@ function make_after_block_visitor( $hooked_blocks, $context, $callback = 'insert
 }
 
 /**
- * Given an array of attributes, returns a string in the serialized attributes
- * format prepared for post content.
+ * Với mảng thuộc tính đã cho, trả về chuỗi ở định dạng thuộc tính đã tuần tự hóa
+ * chuẩn bị cho nội dung bài viết.
  *
- * The serialized result is a JSON-encoded string, with unicode escape sequence
- * substitution for characters which might otherwise interfere with embedding
- * the result in an HTML comment.
+ * Kết quả tuần tự hóa là chuỗi mã hóa JSON, với chuỗi thoát unicode
+ * thay thế cho các ký tự có thể gây trở ngại khi nhúng
+ * kết quả vào comment HTML.
  *
- * This function must produce output that remains in sync with the output of
- * the serializeAttributes JavaScript function in the block editor in order
- * to ensure consistent operation between PHP and JavaScript.
+ * Hàm này phải tạo đầu ra đồng bộ với đầu ra của
+ * hàm JavaScript serializeAttributes trong trình soạn thảo block để
+ * đảm bảo hoạt động nhất quán giữa PHP và JavaScript.
  *
  * @since 5.3.1
  *
- * @param array $block_attributes Attributes object.
- * @return string Serialized attributes.
+ * @param array $block_attributes Đối tượng thuộc tính.
+ * @return string Thuộc tính đã tuần tự hóa.
  */
 function serialize_block_attributes( $block_attributes ) {
 	$encoded_attributes = wp_json_encode( $block_attributes, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
@@ -1613,14 +1613,14 @@ function serialize_block_attributes( $block_attributes ) {
 }
 
 /**
- * Returns the block name to use for serialization. This will remove the default
- * "core/" namespace from a block name.
+ * Trả về tên block để sử dụng cho tuần tự hóa. Hàm này sẽ xóa
+ * namespace "core/" mặc định khỏi tên block.
  *
  * @since 5.3.1
  *
- * @param string|null $block_name Optional. Original block name. Null if the block name is unknown,
- *                                e.g. Classic blocks have their name set to null. Default null.
- * @return string Block name to use for serialization.
+ * @param string|null $block_name Tùy chọn. Tên block gốc. Null nếu tên block không xác định,
+ *                                ví dụ block Classic có tên được đặt là null. Mặc định null.
+ * @return string Tên block để sử dụng cho tuần tự hóa.
  */
 function strip_core_block_namespace( $block_name = null ) {
 	if ( is_string( $block_name ) && str_starts_with( $block_name, 'core/' ) ) {
@@ -1631,15 +1631,15 @@ function strip_core_block_namespace( $block_name = null ) {
 }
 
 /**
- * Returns the content of a block, including comment delimiters.
+ * Trả về nội dung của block, bao gồm các ký tự phân cách comment.
  *
  * @since 5.3.1
  *
- * @param string|null $block_name       Block name. Null if the block name is unknown,
- *                                      e.g. Classic blocks have their name set to null.
- * @param array       $block_attributes Block attributes.
- * @param string      $block_content    Block save content.
- * @return string Comment-delimited block content.
+ * @param string|null $block_name       Tên block. Null nếu tên block không xác định,
+ *                                      ví dụ block Classic có tên được đặt là null.
+ * @param array       $block_attributes Thuộc tính block.
+ * @param string      $block_content    Nội dung lưu của block.
+ * @return string Nội dung block được phân cách bằng comment.
  */
 function get_comment_delimited_block_content( $block_name, $block_attributes, $block_content ) {
 	if ( is_null( $block_name ) ) {
@@ -1663,28 +1663,28 @@ function get_comment_delimited_block_content( $block_name, $block_attributes, $b
 }
 
 /**
- * Returns the content of a block, including comment delimiters, serializing all
- * attributes from the given parsed block.
+ * Trả về nội dung của block, bao gồm các ký tự phân cách comment, tuần tự hóa tất cả
+ * thuộc tính từ block đã phân tích đã cho.
  *
- * This should be used when preparing a block to be saved to post content.
- * Prefer `render_block` when preparing a block for display. Unlike
- * `render_block`, this does not evaluate a block's `render_callback`, and will
- * instead preserve the markup as parsed.
+ * Nên sử dụng khi chuẩn bị block để lưu vào nội dung bài viết.
+ * Ưu tiên `render_block` khi chuẩn bị block để hiển thị. Khác với
+ * `render_block`, hàm này không đánh giá `render_callback` của block, mà sẽ
+ * giữ nguyên mã đánh dấu như đã phân tích.
  *
  * @since 5.3.1
  *
  * @param array $block {
- *     An associative array of a single parsed block object. See WP_Block_Parser_Block.
+ *     Mảng liên kết của một đối tượng block đã phân tích. Xem WP_Block_Parser_Block.
  *
- *     @type string   $blockName    Name of block.
- *     @type array    $attrs        Attributes from block comment delimiters.
- *     @type array[]  $innerBlocks  List of inner blocks. An array of arrays that
- *                                  have the same structure as this one.
- *     @type string   $innerHTML    HTML from inside block comment delimiters.
- *     @type array    $innerContent List of string fragments and null markers where
- *                                  inner blocks were found.
+ *     @type string   $blockName    Tên của block.
+ *     @type array    $attrs        Thuộc tính từ các ký tự phân cách comment block.
+ *     @type array[]  $innerBlocks  Danh sách các block con bên trong. Mảng các mảng có
+ *                                  cùng cấu trúc với mảng này.
+ *     @type string   $innerHTML    HTML bên trong các ký tự phân cách comment block.
+ *     @type array    $innerContent Danh sách các đoạn chuỗi và điểm đánh dấu null nơi
+ *                                  tìm thấy các block con bên trong.
  * }
- * @return string String of rendered HTML.
+ * @return string Chuỗi HTML đã render.
  */
 function serialize_block( $block ) {
 	$block_content = '';
@@ -1706,65 +1706,65 @@ function serialize_block( $block ) {
 }
 
 /**
- * Returns a joined string of the aggregate serialization of the given
- * parsed blocks.
+ * Trả về chuỗi nối của tổng hợp tuần tự hóa các block đã phân tích
+ * đã cho.
  *
  * @since 5.3.1
  *
  * @param array[] $blocks {
- *     Array of block structures.
+ *     Mảng các cấu trúc block.
  *
  *     @type array ...$0 {
- *         An associative array of a single parsed block object. See WP_Block_Parser_Block.
+ *         Mảng liên kết của một đối tượng block đã phân tích. Xem WP_Block_Parser_Block.
  *
- *         @type string   $blockName    Name of block.
- *         @type array    $attrs        Attributes from block comment delimiters.
- *         @type array[]  $innerBlocks  List of inner blocks. An array of arrays that
- *                                      have the same structure as this one.
- *         @type string   $innerHTML    HTML from inside block comment delimiters.
- *         @type array    $innerContent List of string fragments and null markers where
- *                                      inner blocks were found.
+ *         @type string   $blockName    Tên của block.
+ *         @type array    $attrs        Thuộc tính từ các ký tự phân cách comment block.
+ *         @type array[]  $innerBlocks  Danh sách các block con bên trong. Mảng các mảng có
+ *                                      cùng cấu trúc với mảng này.
+ *         @type string   $innerHTML    HTML bên trong các ký tự phân cách comment block.
+ *         @type array    $innerContent Danh sách các đoạn chuỗi và điểm đánh dấu null nơi
+ *                                      tìm thấy các block con bên trong.
  *     }
  * }
- * @return string String of rendered HTML.
+ * @return string Chuỗi HTML đã render.
  */
 function serialize_blocks( $blocks ) {
 	return implode( '', array_map( 'serialize_block', $blocks ) );
 }
 
 /**
- * Traverses a parsed block tree and applies callbacks before and after serializing it.
+ * Duyệt cây block đã phân tích và áp dụng callback trước và sau khi tuần tự hóa.
  *
- * Recursively traverses the block and its inner blocks and applies the two callbacks provided as
- * arguments, the first one before serializing the block, and the second one after serializing it.
- * If either callback returns a string value, it will be prepended and appended to the serialized
- * block markup, respectively.
+ * Duyệt đệ quy block và các block con bên trong, áp dụng hai callback được cung cấp làm
+ * tham số, callback đầu tiên trước khi tuần tự hóa block, và callback thứ hai sau khi tuần tự hóa.
+ * Nếu callback nào trả về giá trị chuỗi, nó sẽ được thêm vào trước và nối thêm vào sau mã đánh dấu
+ * block đã tuần tự hóa tương ứng.
  *
- * The callbacks will receive a reference to the current block as their first argument, so that they
- * can also modify it, and the current block's parent block as second argument. Finally, the
- * `$pre_callback` receives the previous block, whereas the `$post_callback` receives
- * the next block as third argument.
+ * Các callback sẽ nhận tham chiếu đến block hiện tại làm tham số đầu tiên, để chúng
+ * cũng có thể sửa đổi nó, và block cha của block hiện tại làm tham số thứ hai. Cuối cùng,
+ * `$pre_callback` nhận block trước đó, trong khi `$post_callback` nhận
+ * block tiếp theo làm tham số thứ ba.
  *
- * Serialized blocks are returned including comment delimiters, and with all attributes serialized.
+ * Các block đã tuần tự hóa được trả về bao gồm các ký tự phân cách comment, với tất cả thuộc tính đã tuần tự hóa.
  *
- * This function should be used when there is a need to modify the saved block, or to inject markup
- * into the return value. Prefer `serialize_block` when preparing a block to be saved to post content.
+ * Hàm này nên được sử dụng khi cần sửa đổi block đã lưu, hoặc chèn mã đánh dấu
+ * vào giá trị trả về. Ưu tiên `serialize_block` khi chuẩn bị block để lưu vào nội dung bài viết.
  *
- * This function is meant for internal use only.
+ * Hàm này chỉ dành cho sử dụng nội bộ.
  *
  * @since 6.4.0
  * @access private
  *
  * @see serialize_block()
  *
- * @param array    $block         An associative array of a single parsed block object. See WP_Block_Parser_Block.
- * @param callable $pre_callback  Callback to run on each block in the tree before it is traversed and serialized.
- *                                It is called with the following arguments: &$block, $parent_block, $previous_block.
- *                                Its string return value will be prepended to the serialized block markup.
- * @param callable $post_callback Callback to run on each block in the tree after it is traversed and serialized.
- *                                It is called with the following arguments: &$block, $parent_block, $next_block.
- *                                Its string return value will be appended to the serialized block markup.
- * @return string Serialized block markup.
+ * @param array    $block         Mảng liên kết của một đối tượng block đã phân tích. Xem WP_Block_Parser_Block.
+ * @param callable $pre_callback  Callback để chạy trên mỗi block trong cây trước khi nó được duyệt và tuần tự hóa.
+ *                                Được gọi với các tham số sau: &$block, $parent_block, $previous_block.
+ *                                Giá trị chuỗi trả về sẽ được thêm vào trước mã đánh dấu block đã tuần tự hóa.
+ * @param callable $post_callback Callback để chạy trên mỗi block trong cây sau khi nó được duyệt và tuần tự hóa.
+ *                                Được gọi với các tham số sau: &$block, $parent_block, $next_block.
+ *                                Giá trị chuỗi trả về sẽ được nối thêm vào sau mã đánh dấu block đã tuần tự hóa.
+ * @return string Mã đánh dấu block đã tuần tự hóa.
  */
 function traverse_and_serialize_block( $block, $pre_callback = null, $post_callback = null ) {
 	$block_content = '';

@@ -1,25 +1,24 @@
 <?php
 /**
- * Comment template functions
+ * Các hàm template bình luận
  *
- * These functions are meant to live inside of the WordPress loop.
+ * Các hàm này được thiết kế để sử dụng bên trong vòng lặp WordPress.
  *
  * @package WordPress
  * @subpackage Template
  */
 
 /**
- * Retrieves the author of the current comment.
+ * Lấy tên tác giả của bình luận hiện tại.
  *
- * If the comment has an empty comment_author field, then 'Anonymous' person is
- * assumed.
+ * Nếu bình luận có trường comment_author trống, thì sẽ giả định là người 'Ẩn danh'.
  *
  * @since 1.5.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or the ID of the comment for which to retrieve the author.
- *                                   Default current comment.
- * @return string The comment author
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần lấy tên tác giả.
+ *                                   Mặc định là bình luận hiện tại.
+ * @return string Tên tác giả bình luận
  */
 function get_comment_author( $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -44,26 +43,26 @@ function get_comment_author( $comment_id = 0 ) {
 	}
 
 	/**
-	 * Filters the returned comment author name.
+	 * Lọc tên tác giả bình luận được trả về.
 	 *
 	 * @since 1.5.0
-	 * @since 4.1.0 The `$comment_id` and `$comment` parameters were added.
+	 * @since 4.1.0 Thêm tham số `$comment_id` và `$comment`.
 	 *
-	 * @param string     $comment_author The comment author's username.
-	 * @param string     $comment_id     The comment ID as a numeric string.
-	 * @param WP_Comment $comment        The comment object.
+	 * @param string     $comment_author Tên người dùng của tác giả bình luận.
+	 * @param string     $comment_id     ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment        Đối tượng bình luận.
 	 */
 	return apply_filters( 'get_comment_author', $comment_author, $comment_id, $comment );
 }
 
 /**
- * Displays the author of the current comment.
+ * Hiển thị tên tác giả của bình luận hiện tại.
  *
  * @since 0.71
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or the ID of the comment for which to print the author.
- *                                   Default current comment.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần in tên tác giả.
+ *                                   Mặc định là bình luận hiện tại.
  */
 function comment_author( $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -71,57 +70,57 @@ function comment_author( $comment_id = 0 ) {
 	$comment_author = get_comment_author( $comment );
 
 	/**
-	 * Filters the comment author's name for display.
+	 * Lọc tên tác giả bình luận để hiển thị.
 	 *
 	 * @since 1.2.0
-	 * @since 4.1.0 The `$comment_id` parameter was added.
+	 * @since 4.1.0 Thêm tham số `$comment_id`.
 	 *
-	 * @param string $comment_author The comment author's username.
-	 * @param string $comment_id     The comment ID as a numeric string.
+	 * @param string $comment_author Tên người dùng của tác giả bình luận.
+	 * @param string $comment_id     ID bình luận dưới dạng chuỗi số.
 	 */
 	echo apply_filters( 'comment_author', $comment_author, $comment->comment_ID );
 }
 
 /**
- * Retrieves the email of the author of the current comment.
+ * Lấy email của tác giả bình luận hiện tại.
  *
  * @since 1.5.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or the ID of the comment for which to get the author's email.
- *                                   Default current comment.
- * @return string The current comment author's email
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần lấy email tác giả.
+ *                                   Mặc định là bình luận hiện tại.
+ * @return string Email của tác giả bình luận hiện tại
  */
 function get_comment_author_email( $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
 
 	/**
-	 * Filters the comment author's returned email address.
+	 * Lọc địa chỉ email được trả về của tác giả bình luận.
 	 *
 	 * @since 1.5.0
-	 * @since 4.1.0 The `$comment_id` and `$comment` parameters were added.
+	 * @since 4.1.0 Thêm tham số `$comment_id` và `$comment`.
 	 *
-	 * @param string     $comment_author_email The comment author's email address.
-	 * @param string     $comment_id           The comment ID as a numeric string.
-	 * @param WP_Comment $comment              The comment object.
+	 * @param string     $comment_author_email Địa chỉ email của tác giả bình luận.
+	 * @param string     $comment_id           ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment              Đối tượng bình luận.
 	 */
 	return apply_filters( 'get_comment_author_email', $comment->comment_author_email, $comment->comment_ID, $comment );
 }
 
 /**
- * Displays the email of the author of the current global $comment.
+ * Hiển thị email của tác giả bình luận trong biến toàn cục $comment.
  *
- * Care should be taken to protect the email address and assure that email
- * harvesters do not capture your commenter's email address. Most assume that
- * their email address will not appear in raw form on the site. Doing so will
- * enable anyone, including those that people don't want to get the email
- * address and use it for their own means good and bad.
+ * Cần cẩn thận để bảo vệ địa chỉ email và đảm bảo rằng các chương trình
+ * thu thập email không nắm bắt được địa chỉ email của người bình luận. Hầu hết
+ * đều giả định rằng địa chỉ email của họ sẽ không xuất hiện ở dạng thô trên trang web.
+ * Làm như vậy sẽ cho phép bất kỳ ai, kể cả những người mà người dùng không muốn,
+ * lấy được địa chỉ email và sử dụng cho mục đích riêng, tốt hay xấu.
  *
  * @since 0.71
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or the ID of the comment for which to print the author's email.
- *                                   Default current comment.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần in email tác giả.
+ *                                   Mặc định là bình luận hiện tại.
  */
 function comment_author_email( $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -129,34 +128,34 @@ function comment_author_email( $comment_id = 0 ) {
 	$comment_author_email = get_comment_author_email( $comment );
 
 	/**
-	 * Filters the comment author's email for display.
+	 * Lọc email của tác giả bình luận để hiển thị.
 	 *
 	 * @since 1.2.0
-	 * @since 4.1.0 The `$comment_id` parameter was added.
+	 * @since 4.1.0 Thêm tham số `$comment_id`.
 	 *
-	 * @param string $comment_author_email The comment author's email address.
-	 * @param string $comment_id           The comment ID as a numeric string.
+	 * @param string $comment_author_email Địa chỉ email của tác giả bình luận.
+	 * @param string $comment_id           ID bình luận dưới dạng chuỗi số.
 	 */
 	echo apply_filters( 'author_email', $comment_author_email, $comment->comment_ID );
 }
 
 /**
- * Displays the HTML email link to the author of the current comment.
+ * Hiển thị liên kết email HTML đến tác giả của bình luận hiện tại.
  *
- * Care should be taken to protect the email address and assure that email
- * harvesters do not capture your commenter's email address. Most assume that
- * their email address will not appear in raw form on the site. Doing so will
- * enable anyone, including those that people don't want to get the email
- * address and use it for their own means good and bad.
+ * Cần cẩn thận để bảo vệ địa chỉ email và đảm bảo rằng các chương trình
+ * thu thập email không nắm bắt được địa chỉ email của người bình luận. Hầu hết
+ * đều giả định rằng địa chỉ email của họ sẽ không xuất hiện ở dạng thô trên trang web.
+ * Làm như vậy sẽ cho phép bất kỳ ai, kể cả những người mà người dùng không muốn,
+ * lấy được địa chỉ email và sử dụng cho mục đích riêng, tốt hay xấu.
  *
  * @since 0.71
- * @since 4.6.0 Added the `$comment` parameter.
+ * @since 4.6.0 Thêm tham số `$comment`.
  *
- * @param string         $link_text Optional. Text to display instead of the comment author's email address.
- *                                  Default empty.
- * @param string         $before    Optional. Text or HTML to display before the email link. Default empty.
- * @param string         $after     Optional. Text or HTML to display after the email link. Default empty.
- * @param int|WP_Comment $comment   Optional. Comment ID or WP_Comment object. Default is the current comment.
+ * @param string         $link_text Tùy chọn. Văn bản hiển thị thay vì địa chỉ email của tác giả bình luận.
+ *                                  Mặc định rỗng.
+ * @param string         $before    Tùy chọn. Văn bản hoặc HTML hiển thị trước liên kết email. Mặc định rỗng.
+ * @param string         $after     Tùy chọn. Văn bản hoặc HTML hiển thị sau liên kết email. Mặc định rỗng.
+ * @param int|WP_Comment $comment   Tùy chọn. ID bình luận hoặc đối tượng WP_Comment. Mặc định là bình luận hiện tại.
  */
 function comment_author_email_link( $link_text = '', $before = '', $after = '', $comment = null ) {
 	$link = get_comment_author_email_link( $link_text, $before, $after, $comment );
@@ -166,39 +165,39 @@ function comment_author_email_link( $link_text = '', $before = '', $after = '', 
 }
 
 /**
- * Returns the HTML email link to the author of the current comment.
+ * Trả về liên kết email HTML đến tác giả của bình luận hiện tại.
  *
- * Care should be taken to protect the email address and assure that email
- * harvesters do not capture your commenter's email address. Most assume that
- * their email address will not appear in raw form on the site. Doing so will
- * enable anyone, including those that people don't want to get the email
- * address and use it for their own means good and bad.
+ * Cần cẩn thận để bảo vệ địa chỉ email và đảm bảo rằng các chương trình
+ * thu thập email không nắm bắt được địa chỉ email của người bình luận. Hầu hết
+ * đều giả định rằng địa chỉ email của họ sẽ không xuất hiện ở dạng thô trên trang web.
+ * Làm như vậy sẽ cho phép bất kỳ ai, kể cả những người mà người dùng không muốn,
+ * lấy được địa chỉ email và sử dụng cho mục đích riêng, tốt hay xấu.
  *
  * @since 2.7.0
- * @since 4.6.0 Added the `$comment` parameter.
+ * @since 4.6.0 Thêm tham số `$comment`.
  *
- * @param string         $link_text Optional. Text to display instead of the comment author's email address.
- *                                  Default empty.
- * @param string         $before    Optional. Text or HTML to display before the email link. Default empty.
- * @param string         $after     Optional. Text or HTML to display after the email link. Default empty.
- * @param int|WP_Comment $comment   Optional. Comment ID or WP_Comment object. Default is the current comment.
- * @return string HTML markup for the comment author email link. By default, the email address is obfuscated
- *                via the {@see 'comment_email'} filter with antispambot().
+ * @param string         $link_text Tùy chọn. Văn bản hiển thị thay vì địa chỉ email của tác giả bình luận.
+ *                                  Mặc định rỗng.
+ * @param string         $before    Tùy chọn. Văn bản hoặc HTML hiển thị trước liên kết email. Mặc định rỗng.
+ * @param string         $after     Tùy chọn. Văn bản hoặc HTML hiển thị sau liên kết email. Mặc định rỗng.
+ * @param int|WP_Comment $comment   Tùy chọn. ID bình luận hoặc đối tượng WP_Comment. Mặc định là bình luận hiện tại.
+ * @return string Markup HTML cho liên kết email tác giả bình luận. Mặc định, địa chỉ email được
+ *                làm rối qua bộ lọc {@see 'comment_email'} với antispambot().
  */
 function get_comment_author_email_link( $link_text = '', $before = '', $after = '', $comment = null ) {
 	$comment = get_comment( $comment );
 
 	/**
-	 * Filters the comment author's email for display.
+	 * Lọc email của tác giả bình luận để hiển thị.
 	 *
-	 * Care should be taken to protect the email address and assure that email
-	 * harvesters do not capture your commenter's email address.
+	 * Cần cẩn thận để bảo vệ địa chỉ email và đảm bảo rằng các chương trình
+	 * thu thập email không nắm bắt được địa chỉ email của người bình luận.
 	 *
 	 * @since 1.2.0
-	 * @since 4.1.0 The `$comment` parameter was added.
+	 * @since 4.1.0 Thêm tham số `$comment`.
 	 *
-	 * @param string     $comment_author_email The comment author's email address.
-	 * @param WP_Comment $comment              The comment object.
+	 * @param string     $comment_author_email Địa chỉ email của tác giả bình luận.
+	 * @param WP_Comment $comment              Đối tượng bình luận.
 	 */
 	$comment_author_email = apply_filters( 'comment_email', $comment->comment_author_email, $comment );
 
@@ -218,17 +217,17 @@ function get_comment_author_email_link( $link_text = '', $before = '', $after = 
 }
 
 /**
- * Retrieves the HTML link to the URL of the author of the current comment.
+ * Lấy liên kết HTML đến URL của tác giả bình luận hiện tại.
  *
- * Both get_comment_author_url() and get_comment_author() rely on get_comment(),
- * which falls back to the global comment variable if the $comment_id argument is empty.
+ * Cả get_comment_author_url() và get_comment_author() đều dựa vào get_comment(),
+ * sẽ quay lại sử dụng biến bình luận toàn cục nếu tham số $comment_id trống.
  *
  * @since 1.5.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or the ID of the comment for which to get the author's link.
- *                                   Default current comment.
- * @return string The comment author name or HTML link for author's URL.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần lấy liên kết tác giả.
+ *                                   Mặc định là bình luận hiện tại.
+ * @return string Tên tác giả bình luận hoặc liên kết HTML đến URL của tác giả.
  */
 function get_comment_author_link( $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -256,19 +255,19 @@ function get_comment_author_link( $comment_id = 0 ) {
 		}
 
 		/**
-		 * Filters the rel attributes of the comment author's link.
+		 * Lọc các thuộc tính rel của liên kết tác giả bình luận.
 		 *
 		 * @since 6.2.0
 		 *
-		 * @param string[]   $rel_parts An array of strings representing the rel tags
-		 *                              which will be joined into the anchor's rel attribute.
-		 * @param WP_Comment $comment   The comment object.
+		 * @param string[]   $rel_parts Mảng các chuỗi đại diện cho các thẻ rel
+		 *                              sẽ được nối thành thuộc tính rel của thẻ anchor.
+		 * @param WP_Comment $comment   Đối tượng bình luận.
 		 */
 		$rel_parts = apply_filters( 'comment_author_link_rel', $rel_parts, $comment );
 
 		$rel = implode( ' ', $rel_parts );
 		$rel = esc_attr( $rel );
-		// Empty space before 'rel' is necessary for later sprintf().
+		// Khoảng trắng trước 'rel' là cần thiết cho sprintf() phía sau.
 		$rel = ! empty( $rel ) ? sprintf( ' rel="%s"', $rel ) : '';
 
 		$comment_author_link = sprintf(
@@ -280,80 +279,80 @@ function get_comment_author_link( $comment_id = 0 ) {
 	}
 
 	/**
-	 * Filters the comment author's link for display.
+	 * Lọc liên kết tác giả bình luận để hiển thị.
 	 *
 	 * @since 1.5.0
-	 * @since 4.1.0 The `$comment_author` and `$comment_id` parameters were added.
+	 * @since 4.1.0 Thêm tham số `$comment_author` và `$comment_id`.
 	 *
-	 * @param string $comment_author_link The HTML-formatted comment author link.
-	 *                                    Empty for an invalid URL.
-	 * @param string $comment_author      The comment author's username.
-	 * @param string $comment_id          The comment ID as a numeric string.
+	 * @param string $comment_author_link Liên kết tác giả bình luận được định dạng HTML.
+	 *                                    Rỗng nếu URL không hợp lệ.
+	 * @param string $comment_author      Tên người dùng của tác giả bình luận.
+	 * @param string $comment_id          ID bình luận dưới dạng chuỗi số.
 	 */
 	return apply_filters( 'get_comment_author_link', $comment_author_link, $comment_author, $comment_id );
 }
 
 /**
- * Displays the HTML link to the URL of the author of the current comment.
+ * Hiển thị liên kết HTML đến URL của tác giả bình luận hiện tại.
  *
  * @since 0.71
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or the ID of the comment for which to print the author's link.
- *                                   Default current comment.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần in liên kết tác giả.
+ *                                   Mặc định là bình luận hiện tại.
  */
 function comment_author_link( $comment_id = 0 ) {
 	echo get_comment_author_link( $comment_id );
 }
 
 /**
- * Retrieves the IP address of the author of the current comment.
+ * Lấy địa chỉ IP của tác giả bình luận hiện tại.
  *
  * @since 1.5.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or the ID of the comment for which to get the author's IP address.
- *                                   Default current comment.
- * @return string Comment author's IP address, or an empty string if it's not available.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần lấy địa chỉ IP tác giả.
+ *                                   Mặc định là bình luận hiện tại.
+ * @return string Địa chỉ IP của tác giả bình luận, hoặc chuỗi rỗng nếu không có sẵn.
  */
 function get_comment_author_IP( $comment_id = 0 ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 	$comment = get_comment( $comment_id );
 
 	/**
-	 * Filters the comment author's returned IP address.
+	 * Lọc địa chỉ IP được trả về của tác giả bình luận.
 	 *
 	 * @since 1.5.0
-	 * @since 4.1.0 The `$comment_id` and `$comment` parameters were added.
+	 * @since 4.1.0 Thêm tham số `$comment_id` và `$comment`.
 	 *
-	 * @param string     $comment_author_ip The comment author's IP address, or an empty string if it's not available.
-	 * @param string     $comment_id        The comment ID as a numeric string.
-	 * @param WP_Comment $comment           The comment object.
+	 * @param string     $comment_author_ip Địa chỉ IP của tác giả bình luận, hoặc chuỗi rỗng nếu không có sẵn.
+	 * @param string     $comment_id        ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment           Đối tượng bình luận.
 	 */
 	return apply_filters( 'get_comment_author_IP', $comment->comment_author_IP, $comment->comment_ID, $comment );  // phpcs:ignore WordPress.NamingConventions.ValidHookName.NotLowercase
 }
 
 /**
- * Displays the IP address of the author of the current comment.
+ * Hiển thị địa chỉ IP của tác giả bình luận hiện tại.
  *
  * @since 0.71
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or the ID of the comment for which to print the author's IP address.
- *                                   Default current comment.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần in địa chỉ IP tác giả.
+ *                                   Mặc định là bình luận hiện tại.
  */
 function comment_author_IP( $comment_id = 0 ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 	echo esc_html( get_comment_author_IP( $comment_id ) );
 }
 
 /**
- * Retrieves the URL of the author of the current comment, not linked.
+ * Lấy URL của tác giả bình luận hiện tại, không có liên kết.
  *
  * @since 1.5.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or the ID of the comment for which to get the author's URL.
- *                                   Default current comment.
- * @return string Comment author URL, if provided, an empty string otherwise.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần lấy URL tác giả.
+ *                                   Mặc định là bình luận hiện tại.
+ * @return string URL tác giả bình luận, nếu được cung cấp, ngược lại là chuỗi rỗng.
  */
 function get_comment_author_url( $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -369,26 +368,26 @@ function get_comment_author_url( $comment_id = 0 ) {
 	}
 
 	/**
-	 * Filters the comment author's URL.
+	 * Lọc URL của tác giả bình luận.
 	 *
 	 * @since 1.5.0
-	 * @since 4.1.0 The `$comment_id` and `$comment` parameters were added.
+	 * @since 4.1.0 Thêm tham số `$comment_id` và `$comment`.
 	 *
-	 * @param string          $comment_author_url The comment author's URL, or an empty string.
-	 * @param string|int      $comment_id         The comment ID as a numeric string, or 0 if not found.
-	 * @param WP_Comment|null $comment            The comment object, or null if not found.
+	 * @param string          $comment_author_url URL của tác giả bình luận, hoặc chuỗi rỗng.
+	 * @param string|int      $comment_id         ID bình luận dưới dạng chuỗi số, hoặc 0 nếu không tìm thấy.
+	 * @param WP_Comment|null $comment            Đối tượng bình luận, hoặc null nếu không tìm thấy.
 	 */
 	return apply_filters( 'get_comment_author_url', $comment_author_url, $comment_id, $comment );
 }
 
 /**
- * Displays the URL of the author of the current comment, not linked.
+ * Hiển thị URL của tác giả bình luận hiện tại, không có liên kết.
  *
  * @since 0.71
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or the ID of the comment for which to print the author's URL.
- *                                   Default current comment.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần in URL tác giả.
+ *                                   Mặc định là bình luận hiện tại.
  */
 function comment_author_url( $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -396,39 +395,39 @@ function comment_author_url( $comment_id = 0 ) {
 	$comment_author_url = get_comment_author_url( $comment );
 
 	/**
-	 * Filters the comment author's URL for display.
+	 * Lọc URL của tác giả bình luận để hiển thị.
 	 *
 	 * @since 1.2.0
-	 * @since 4.1.0 The `$comment_id` parameter was added.
+	 * @since 4.1.0 Thêm tham số `$comment_id`.
 	 *
-	 * @param string $comment_author_url The comment author's URL.
-	 * @param string $comment_id         The comment ID as a numeric string.
+	 * @param string $comment_author_url URL của tác giả bình luận.
+	 * @param string $comment_id         ID bình luận dưới dạng chuỗi số.
 	 */
 	echo apply_filters( 'comment_url', $comment_author_url, $comment->comment_ID );
 }
 
 /**
- * Retrieves the HTML link of the URL of the author of the current comment.
+ * Lấy liên kết HTML của URL tác giả bình luận hiện tại.
  *
- * $link_text parameter is only used if the URL does not exist for the comment
- * author. If the URL does exist then the URL will be used and the $link_text
- * will be ignored.
+ * Tham số $link_text chỉ được sử dụng nếu URL không tồn tại cho tác giả
+ * bình luận. Nếu URL tồn tại thì URL sẽ được sử dụng và $link_text
+ * sẽ bị bỏ qua.
  *
- * Encapsulate the HTML link between the $before and $after. So it will appear
- * in the order of $before, link, and finally $after.
+ * Đóng gói liên kết HTML giữa $before và $after. Vì vậy nó sẽ xuất hiện
+ * theo thứ tự $before, liên kết, và cuối cùng $after.
  *
  * @since 1.5.0
- * @since 4.6.0 Added the `$comment` parameter.
+ * @since 4.6.0 Thêm tham số `$comment`.
  *
- * @param string         $link_text Optional. The text to display instead of the comment
- *                                  author's email address. Default empty.
- * @param string         $before    Optional. The text or HTML to display before the email link.
- *                                  Default empty.
- * @param string         $after     Optional. The text or HTML to display after the email link.
- *                                  Default empty.
- * @param int|WP_Comment $comment   Optional. Comment ID or WP_Comment object.
- *                                  Default is the current comment.
- * @return string The HTML link between the $before and $after parameters.
+ * @param string         $link_text Tùy chọn. Văn bản hiển thị thay vì địa chỉ email
+ *                                  của tác giả bình luận. Mặc định rỗng.
+ * @param string         $before    Tùy chọn. Văn bản hoặc HTML hiển thị trước liên kết email.
+ *                                  Mặc định rỗng.
+ * @param string         $after     Tùy chọn. Văn bản hoặc HTML hiển thị sau liên kết email.
+ *                                  Mặc định rỗng.
+ * @param int|WP_Comment $comment   Tùy chọn. ID bình luận hoặc đối tượng WP_Comment.
+ *                                  Mặc định là bình luận hiện tại.
+ * @return string Liên kết HTML nằm giữa các tham số $before và $after.
  */
 function get_comment_author_url_link( $link_text = '', $before = '', $after = '', $comment = 0 ) {
 	$comment_author_url = get_comment_author_url( $comment );
@@ -448,50 +447,50 @@ function get_comment_author_url_link( $link_text = '', $before = '', $after = ''
 	) . $after;
 
 	/**
-	 * Filters the comment author's returned URL link.
+	 * Lọc liên kết URL được trả về của tác giả bình luận.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $comment_author_url_link The HTML-formatted comment author URL link.
+	 * @param string $comment_author_url_link Liên kết URL tác giả bình luận được định dạng HTML.
 	 */
 	return apply_filters( 'get_comment_author_url_link', $comment_author_url_link );
 }
 
 /**
- * Displays the HTML link of the URL of the author of the current comment.
+ * Hiển thị liên kết HTML của URL tác giả bình luận hiện tại.
  *
  * @since 0.71
- * @since 4.6.0 Added the `$comment` parameter.
+ * @since 4.6.0 Thêm tham số `$comment`.
  *
- * @param string         $link_text Optional. Text to display instead of the comment author's
- *                                  email address. Default empty.
- * @param string         $before    Optional. Text or HTML to display before the email link.
- *                                  Default empty.
- * @param string         $after     Optional. Text or HTML to display after the email link.
- *                                  Default empty.
- * @param int|WP_Comment $comment   Optional. Comment ID or WP_Comment object.
- *                                  Default is the current comment.
+ * @param string         $link_text Tùy chọn. Văn bản hiển thị thay vì địa chỉ email
+ *                                  của tác giả bình luận. Mặc định rỗng.
+ * @param string         $before    Tùy chọn. Văn bản hoặc HTML hiển thị trước liên kết email.
+ *                                  Mặc định rỗng.
+ * @param string         $after     Tùy chọn. Văn bản hoặc HTML hiển thị sau liên kết email.
+ *                                  Mặc định rỗng.
+ * @param int|WP_Comment $comment   Tùy chọn. ID bình luận hoặc đối tượng WP_Comment.
+ *                                  Mặc định là bình luận hiện tại.
  */
 function comment_author_url_link( $link_text = '', $before = '', $after = '', $comment = 0 ) {
 	echo get_comment_author_url_link( $link_text, $before, $after, $comment );
 }
 
 /**
- * Generates semantic classes for each comment element.
+ * Tạo các class ngữ nghĩa cho mỗi phần tử bình luận.
  *
  * @since 2.7.0
- * @since 4.4.0 Added the ability for `$comment` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param string|string[] $css_class Optional. One or more classes to add to the class list.
- *                                   Default empty.
- * @param int|WP_Comment  $comment   Optional. Comment ID or WP_Comment object. Default current comment.
- * @param int|WP_Post     $post      Optional. Post ID or WP_Post object. Default current post.
- * @param bool            $display   Optional. Whether to print or return the output.
- *                                   Default true.
- * @return void|string Void if `$display` argument is true, comment classes if `$display` is false.
+ * @param string|string[] $css_class Tùy chọn. Một hoặc nhiều class để thêm vào danh sách class.
+ *                                   Mặc định rỗng.
+ * @param int|WP_Comment  $comment   Tùy chọn. ID bình luận hoặc đối tượng WP_Comment. Mặc định bình luận hiện tại.
+ * @param int|WP_Post     $post      Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định bài viết hiện tại.
+ * @param bool            $display   Tùy chọn. In hay trả về kết quả đầu ra.
+ *                                   Mặc định true.
+ * @return void|string Void nếu tham số `$display` là true, các class bình luận nếu `$display` là false.
  */
 function comment_class( $css_class = '', $comment = null, $post = null, $display = true ) {
-	// Separates classes with a single space, collates classes for comment DIV.
+	// Phân cách các class bằng một khoảng trắng, gom các class cho DIV bình luận.
 	$css_class = 'class="' . implode( ' ', get_comment_class( $css_class, $comment, $post ) ) . '"';
 
 	if ( $display ) {
@@ -502,20 +501,20 @@ function comment_class( $css_class = '', $comment = null, $post = null, $display
 }
 
 /**
- * Returns the classes for the comment div as an array.
+ * Trả về các class cho div bình luận dưới dạng mảng.
  *
  * @since 2.7.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
  * @global int $comment_alt
  * @global int $comment_depth
  * @global int $comment_thread_alt
  *
- * @param string|string[] $css_class  Optional. One or more classes to add to the class list.
- *                                    Default empty.
- * @param int|WP_Comment  $comment_id Optional. Comment ID or WP_Comment object. Default current comment.
- * @param int|WP_Post     $post       Optional. Post ID or WP_Post object. Default current post.
- * @return string[] An array of classes.
+ * @param string|string[] $css_class  Tùy chọn. Một hoặc nhiều class để thêm vào danh sách class.
+ *                                    Mặc định rỗng.
+ * @param int|WP_Comment  $comment_id Tùy chọn. ID bình luận hoặc đối tượng WP_Comment. Mặc định bình luận hiện tại.
+ * @param int|WP_Post     $post       Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định bài viết hiện tại.
+ * @return string[] Mảng các class.
  */
 function get_comment_class( $css_class = '', $comment_id = null, $post = null ) {
 	global $comment_alt, $comment_depth, $comment_thread_alt;
@@ -527,15 +526,15 @@ function get_comment_class( $css_class = '', $comment_id = null, $post = null ) 
 		return $classes;
 	}
 
-	// Get the comment type (comment, trackback).
+	// Lấy loại bình luận (comment, trackback).
 	$classes[] = ( empty( $comment->comment_type ) ) ? 'comment' : $comment->comment_type;
 
-	// Add classes for comment authors that are registered users.
+	// Thêm class cho tác giả bình luận là người dùng đã đăng ký.
 	$user = $comment->user_id ? get_userdata( $comment->user_id ) : false;
 	if ( $user ) {
 		$classes[] = 'byuser';
 		$classes[] = 'comment-author-' . sanitize_html_class( $user->user_nicename, $comment->user_id );
-		// For comment authors who are the author of the post.
+		// Cho tác giả bình luận cũng là tác giả của bài viết.
 		$_post = get_post( $post );
 		if ( $_post ) {
 			if ( $comment->user_id === $_post->post_author ) {
@@ -563,7 +562,7 @@ function get_comment_class( $css_class = '', $comment_id = null, $post = null ) 
 
 	++$comment_alt;
 
-	// Alt for top-level comments.
+	// Alt cho bình luận cấp cao nhất.
 	if ( 1 === $comment_depth ) {
 		if ( $comment_thread_alt % 2 ) {
 			$classes[] = 'thread-odd';
@@ -586,29 +585,29 @@ function get_comment_class( $css_class = '', $comment_id = null, $post = null ) 
 	$classes = array_map( 'esc_attr', $classes );
 
 	/**
-	 * Filters the returned CSS classes for the current comment.
+	 * Lọc các class CSS được trả về cho bình luận hiện tại.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string[]    $classes    An array of comment classes.
-	 * @param string[]    $css_class  An array of additional classes added to the list.
-	 * @param string      $comment_id The comment ID as a numeric string.
-	 * @param WP_Comment  $comment    The comment object.
-	 * @param int|WP_Post $post       The post ID or WP_Post object.
+	 * @param string[]    $classes    Mảng các class bình luận.
+	 * @param string[]    $css_class  Mảng các class bổ sung được thêm vào danh sách.
+	 * @param string      $comment_id ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment  $comment    Đối tượng bình luận.
+	 * @param int|WP_Post $post       ID bài viết hoặc đối tượng WP_Post.
 	 */
 	return apply_filters( 'comment_class', $classes, $css_class, $comment->comment_ID, $comment, $post );
 }
 
 /**
- * Retrieves the comment date of the current comment.
+ * Lấy ngày bình luận của bình luận hiện tại.
  *
  * @since 1.5.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param string         $format     Optional. PHP date format. Defaults to the 'date_format' option.
- * @param int|WP_Comment $comment_id Optional. WP_Comment or ID of the comment for which to get the date.
- *                                   Default current comment.
- * @return string The comment's date.
+ * @param string         $format     Tùy chọn. Định dạng ngày PHP. Mặc định theo tùy chọn 'date_format'.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần lấy ngày.
+ *                                   Mặc định là bình luận hiện tại.
+ * @return string Ngày của bình luận.
  */
 function get_comment_date( $format = '', $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -618,42 +617,42 @@ function get_comment_date( $format = '', $comment_id = 0 ) {
 	$comment_date = mysql2date( $_format, $comment->comment_date );
 
 	/**
-	 * Filters the returned comment date.
+	 * Lọc ngày bình luận được trả về.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string|int $comment_date Formatted date string or Unix timestamp.
-	 * @param string     $format       PHP date format.
-	 * @param WP_Comment $comment      The comment object.
+	 * @param string|int $comment_date Chuỗi ngày đã định dạng hoặc timestamp Unix.
+	 * @param string     $format       Định dạng ngày PHP.
+	 * @param WP_Comment $comment      Đối tượng bình luận.
 	 */
 	return apply_filters( 'get_comment_date', $comment_date, $format, $comment );
 }
 
 /**
- * Displays the comment date of the current comment.
+ * Hiển thị ngày bình luận của bình luận hiện tại.
  *
  * @since 0.71
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param string         $format     Optional. PHP date format. Defaults to the 'date_format' option.
- * @param int|WP_Comment $comment_id WP_Comment or ID of the comment for which to print the date.
- *                                   Default current comment.
+ * @param string         $format     Tùy chọn. Định dạng ngày PHP. Mặc định theo tùy chọn 'date_format'.
+ * @param int|WP_Comment $comment_id WP_Comment hoặc ID của bình luận cần in ngày.
+ *                                   Mặc định là bình luận hiện tại.
  */
 function comment_date( $format = '', $comment_id = 0 ) {
 	echo get_comment_date( $format, $comment_id );
 }
 
 /**
- * Retrieves the excerpt of the given comment.
+ * Lấy đoạn trích của bình luận đã cho.
  *
- * Returns a maximum of 20 words with an ellipsis appended if necessary.
+ * Trả về tối đa 20 từ với dấu ba chấm được thêm vào nếu cần.
  *
  * @since 1.5.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or ID of the comment for which to get the excerpt.
- *                                   Default current comment.
- * @return string The possibly truncated comment excerpt.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần lấy đoạn trích.
+ *                                   Mặc định là bình luận hiện tại.
+ * @return string Đoạn trích bình luận có thể bị cắt ngắn.
  */
 function get_comment_excerpt( $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -668,37 +667,37 @@ function get_comment_excerpt( $comment_id = 0 ) {
 	$comment_excerpt_length = (int) _x( '20', 'comment_excerpt_length' );
 
 	/**
-	 * Filters the maximum number of words used in the comment excerpt.
+	 * Lọc số từ tối đa được sử dụng trong đoạn trích bình luận.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param int $comment_excerpt_length The amount of words you want to display in the comment excerpt.
+	 * @param int $comment_excerpt_length Số từ bạn muốn hiển thị trong đoạn trích bình luận.
 	 */
 	$comment_excerpt_length = apply_filters( 'comment_excerpt_length', $comment_excerpt_length );
 
 	$comment_excerpt = wp_trim_words( $comment_text, $comment_excerpt_length, '&hellip;' );
 
 	/**
-	 * Filters the retrieved comment excerpt.
+	 * Lọc đoạn trích bình luận được trả về.
 	 *
 	 * @since 1.5.0
-	 * @since 4.1.0 The `$comment_id` and `$comment` parameters were added.
+	 * @since 4.1.0 Thêm tham số `$comment_id` và `$comment`.
 	 *
-	 * @param string     $comment_excerpt The comment excerpt text.
-	 * @param string     $comment_id      The comment ID as a numeric string.
-	 * @param WP_Comment $comment         The comment object.
+	 * @param string     $comment_excerpt Văn bản đoạn trích bình luận.
+	 * @param string     $comment_id      ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment         Đối tượng bình luận.
 	 */
 	return apply_filters( 'get_comment_excerpt', $comment_excerpt, $comment->comment_ID, $comment );
 }
 
 /**
- * Displays the excerpt of the current comment.
+ * Hiển thị đoạn trích của bình luận hiện tại.
  *
  * @since 1.2.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or ID of the comment for which to print the excerpt.
- *                                   Default current comment.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần in đoạn trích.
+ *                                   Mặc định là bình luận hiện tại.
  */
 function comment_excerpt( $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -706,23 +705,23 @@ function comment_excerpt( $comment_id = 0 ) {
 	$comment_excerpt = get_comment_excerpt( $comment );
 
 	/**
-	 * Filters the comment excerpt for display.
+	 * Lọc đoạn trích bình luận để hiển thị.
 	 *
 	 * @since 1.2.0
-	 * @since 4.1.0 The `$comment_id` parameter was added.
+	 * @since 4.1.0 Thêm tham số `$comment_id`.
 	 *
-	 * @param string $comment_excerpt The comment excerpt text.
-	 * @param string $comment_id      The comment ID as a numeric string.
+	 * @param string $comment_excerpt Văn bản đoạn trích bình luận.
+	 * @param string $comment_id      ID bình luận dưới dạng chuỗi số.
 	 */
 	echo apply_filters( 'comment_excerpt', $comment_excerpt, $comment->comment_ID );
 }
 
 /**
- * Retrieves the comment ID of the current comment.
+ * Lấy ID bình luận của bình luận hiện tại.
  *
  * @since 1.5.0
  *
- * @return string The comment ID as a numeric string.
+ * @return string ID bình luận dưới dạng chuỗi số.
  */
 function get_comment_ID() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 	$comment = get_comment();
@@ -730,19 +729,19 @@ function get_comment_ID() { // phpcs:ignore WordPress.NamingConventions.ValidFun
 	$comment_id = ! empty( $comment->comment_ID ) ? $comment->comment_ID : '0';
 
 	/**
-	 * Filters the returned comment ID.
+	 * Lọc ID bình luận được trả về.
 	 *
 	 * @since 1.5.0
-	 * @since 4.1.0 The `$comment` parameter was added.
+	 * @since 4.1.0 Thêm tham số `$comment`.
 	 *
-	 * @param string     $comment_id The current comment ID as a numeric string.
-	 * @param WP_Comment $comment    The comment object.
+	 * @param string     $comment_id ID bình luận hiện tại dưới dạng chuỗi số.
+	 * @param WP_Comment $comment    Đối tượng bình luận.
 	 */
 	return apply_filters( 'get_comment_ID', $comment_id, $comment );  // phpcs:ignore WordPress.NamingConventions.ValidHookName.NotLowercase
 }
 
 /**
- * Displays the comment ID of the current comment.
+ * Hiển thị ID bình luận của bình luận hiện tại.
  *
  * @since 0.71
  */
@@ -751,36 +750,36 @@ function comment_ID() { // phpcs:ignore WordPress.NamingConventions.ValidFunctio
 }
 
 /**
- * Retrieves the link to a given comment.
+ * Lấy liên kết đến bình luận đã cho.
  *
  * @since 1.5.0
- * @since 4.4.0 Added the ability for `$comment` to also accept a WP_Comment object. Added `$cpage` argument.
+ * @since 4.4.0 Thêm khả năng cho `$comment` cũng chấp nhận đối tượng WP_Comment. Thêm tham số `$cpage`.
  *
  * @see get_page_of_comment()
  *
- * @global WP_Rewrite $wp_rewrite      WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite      Thành phần rewrite của WordPress.
  * @global bool       $in_comment_loop
  *
- * @param WP_Comment|int|null $comment Optional. Comment to retrieve. Default current comment.
+ * @param WP_Comment|int|null $comment Tùy chọn. Bình luận cần lấy. Mặc định là bình luận hiện tại.
  * @param array               $args {
- *     An array of optional arguments to override the defaults.
+ *     Mảng các tham số tùy chọn để ghi đè giá trị mặc định.
  *
- *     @type string     $type      Passed to get_page_of_comment().
- *     @type int        $page      Current page of comments, for calculating comment pagination.
- *     @type int        $per_page  Per-page value for comment pagination.
- *     @type int        $max_depth Passed to get_page_of_comment().
- *     @type int|string $cpage     Value to use for the comment's "comment-page" or "cpage" value.
- *                                 If provided, this value overrides any value calculated from `$page`
- *                                 and `$per_page`.
+ *     @type string     $type      Truyền cho get_page_of_comment().
+ *     @type int        $page      Trang bình luận hiện tại, để tính phân trang bình luận.
+ *     @type int        $per_page  Giá trị số bình luận mỗi trang cho phân trang.
+ *     @type int        $max_depth Truyền cho get_page_of_comment().
+ *     @type int|string $cpage     Giá trị sử dụng cho "comment-page" hoặc "cpage" của bình luận.
+ *                                 Nếu được cung cấp, giá trị này sẽ ghi đè bất kỳ giá trị nào
+ *                                 được tính từ `$page` và `$per_page`.
  * }
- * @return string The permalink to the given comment.
+ * @return string Đường dẫn cố định đến bình luận đã cho.
  */
 function get_comment_link( $comment = null, $args = array() ) {
 	global $wp_rewrite, $in_comment_loop;
 
 	$comment = get_comment( $comment );
 
-	// Back-compat.
+	// Tương thích ngược.
 	if ( ! is_array( $args ) ) {
 		$args = array( 'page' => $args );
 	}
@@ -797,11 +796,11 @@ function get_comment_link( $comment = null, $args = array() ) {
 
 	$comment_link = get_permalink( $comment->comment_post_ID );
 
-	// The 'cpage' param takes precedence.
+	// Tham số 'cpage' được ưu tiên.
 	if ( ! is_null( $args['cpage'] ) ) {
 		$cpage = $args['cpage'];
 
-		// No 'cpage' is provided, so we calculate one.
+		// Không có 'cpage' được cung cấp, nên chúng ta tính toán một giá trị.
 	} else {
 		if ( '' === $args['per_page'] && get_option( 'page_comments' ) ) {
 			$args['per_page'] = get_option( 'comments_per_page' );
@@ -818,14 +817,14 @@ function get_comment_link( $comment = null, $args = array() ) {
 			if ( ! empty( $in_comment_loop ) ) {
 				$cpage = (int) get_query_var( 'cpage' );
 			} else {
-				// Requires a database hit, so we only do it when we can't figure out from context.
+				// Cần truy vấn cơ sở dữ liệu, nên chỉ thực hiện khi không thể xác định từ ngữ cảnh.
 				$cpage = get_page_of_comment( $comment->comment_ID, $args );
 			}
 		}
 
 		/*
-		 * If the default page displays the oldest comments, the permalinks for comments on the default page
-		 * do not need a 'cpage' query var.
+		 * Nếu trang mặc định hiển thị các bình luận cũ nhất, đường dẫn cố định cho các bình luận
+		 * trên trang mặc định không cần biến truy vấn 'cpage'.
 		 */
 		if ( 'oldest' === get_option( 'default_comments_page' ) && 1 === $cpage ) {
 			$cpage = '';
@@ -851,51 +850,51 @@ function get_comment_link( $comment = null, $args = array() ) {
 	$comment_link = $comment_link . '#comment-' . $comment->comment_ID;
 
 	/**
-	 * Filters the returned single comment permalink.
+	 * Lọc đường dẫn cố định của bình luận đơn lẻ được trả về.
 	 *
 	 * @since 2.8.0
-	 * @since 4.4.0 Added the `$cpage` parameter.
+	 * @since 4.4.0 Thêm tham số `$cpage`.
 	 *
 	 * @see get_page_of_comment()
 	 *
-	 * @param string     $comment_link The comment permalink with '#comment-$id' appended.
-	 * @param WP_Comment $comment      The current comment object.
-	 * @param array      $args         An array of arguments to override the defaults.
-	 * @param int        $cpage        The calculated 'cpage' value.
+	 * @param string     $comment_link Đường dẫn cố định bình luận với '#comment-$id' được nối thêm.
+	 * @param WP_Comment $comment      Đối tượng bình luận hiện tại.
+	 * @param array      $args         Mảng các tham số để ghi đè giá trị mặc định.
+	 * @param int        $cpage        Giá trị 'cpage' đã tính toán.
 	 */
 	return apply_filters( 'get_comment_link', $comment_link, $comment, $args, $cpage );
 }
 
 /**
- * Retrieves the link to the current post comments.
+ * Lấy liên kết đến các bình luận của bài viết hiện tại.
  *
  * @since 1.5.0
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global $post.
- * @return string The link to the comments.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là biến toàn cục $post.
+ * @return string Liên kết đến các bình luận.
  */
 function get_comments_link( $post = 0 ) {
 	$hash          = get_comments_number( $post ) ? '#comments' : '#respond';
 	$comments_link = get_permalink( $post ) . $hash;
 
 	/**
-	 * Filters the returned post comments permalink.
+	 * Lọc đường dẫn cố định của bình luận bài viết được trả về.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string      $comments_link Post comments permalink with '#comments' appended.
-	 * @param int|WP_Post $post          Post ID or WP_Post object.
+	 * @param string      $comments_link Đường dẫn cố định bình luận bài viết với '#comments' được nối thêm.
+	 * @param int|WP_Post $post          ID bài viết hoặc đối tượng WP_Post.
 	 */
 	return apply_filters( 'get_comments_link', $comments_link, $post );
 }
 
 /**
- * Displays the link to the current post comments.
+ * Hiển thị liên kết đến các bình luận của bài viết hiện tại.
  *
  * @since 0.71
  *
- * @param string $deprecated   Not Used.
- * @param string $deprecated_2 Not Used.
+ * @param string $deprecated   Không sử dụng.
+ * @param string $deprecated_2 Không sử dụng.
  */
 function comments_link( $deprecated = '', $deprecated_2 = '' ) {
 	if ( ! empty( $deprecated ) ) {
@@ -908,13 +907,13 @@ function comments_link( $deprecated = '', $deprecated_2 = '' ) {
 }
 
 /**
- * Retrieves the amount of comments a post has.
+ * Lấy số lượng bình luận mà một bài viết có.
  *
  * @since 1.5.0
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is the global `$post`.
- * @return string|int If the post exists, a numeric string representing the number of comments
- *                    the post has, otherwise 0.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là biến toàn cục `$post`.
+ * @return string|int Nếu bài viết tồn tại, chuỗi số đại diện cho số bình luận
+ *                    mà bài viết có, ngược lại là 0.
  */
 function get_comments_number( $post = 0 ) {
 	$post = get_post( $post );
@@ -923,42 +922,42 @@ function get_comments_number( $post = 0 ) {
 	$post_id         = $post ? $post->ID : 0;
 
 	/**
-	 * Filters the returned comment count for a post.
+	 * Lọc số bình luận được trả về cho một bài viết.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string|int $comments_number A string representing the number of comments a post has, otherwise 0.
-	 * @param int        $post_id Post ID.
+	 * @param string|int $comments_number Chuỗi đại diện cho số bình luận mà bài viết có, ngược lại là 0.
+	 * @param int        $post_id ID bài viết.
 	 */
 	return apply_filters( 'get_comments_number', $comments_number, $post_id );
 }
 
 /**
- * Displays the language string for the number of comments the current post has.
+ * Hiển thị chuỗi ngôn ngữ cho số bình luận mà bài viết hiện tại có.
  *
  * @since 0.71
- * @since 5.4.0 The `$deprecated` parameter was changed to `$post`.
+ * @since 5.4.0 Tham số `$deprecated` được đổi thành `$post`.
  *
- * @param string|false $zero Optional. Text for no comments. Default false.
- * @param string|false $one  Optional. Text for one comment. Default false.
- * @param string|false $more Optional. Text for more than one comment. Default false.
- * @param int|WP_Post  $post Optional. Post ID or WP_Post object. Default is the global `$post`.
+ * @param string|false $zero Tùy chọn. Văn bản khi không có bình luận. Mặc định false.
+ * @param string|false $one  Tùy chọn. Văn bản khi có một bình luận. Mặc định false.
+ * @param string|false $more Tùy chọn. Văn bản khi có nhiều hơn một bình luận. Mặc định false.
+ * @param int|WP_Post  $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là biến toàn cục `$post`.
  */
 function comments_number( $zero = false, $one = false, $more = false, $post = 0 ) {
 	echo get_comments_number_text( $zero, $one, $more, $post );
 }
 
 /**
- * Displays the language string for the number of comments the current post has.
+ * Hiển thị chuỗi ngôn ngữ cho số bình luận mà bài viết hiện tại có.
  *
  * @since 4.0.0
- * @since 5.4.0 Added the `$post` parameter to allow using the function outside of the loop.
+ * @since 5.4.0 Thêm tham số `$post` để cho phép sử dụng hàm ngoài vòng lặp.
  *
- * @param string      $zero Optional. Text for no comments. Default false.
- * @param string      $one  Optional. Text for one comment. Default false.
- * @param string      $more Optional. Text for more than one comment. Default false.
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is the global `$post`.
- * @return string Language string for the number of comments a post has.
+ * @param string      $zero Tùy chọn. Văn bản khi không có bình luận. Mặc định false.
+ * @param string      $one  Tùy chọn. Văn bản khi có một bình luận. Mặc định false.
+ * @param string      $more Tùy chọn. Văn bản khi có nhiều hơn một bình luận. Mặc định false.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là biến toàn cục `$post`.
+ * @return string Chuỗi ngôn ngữ cho số bình luận mà bài viết có.
  */
 function get_comments_number_text( $zero = false, $one = false, $more = false, $post = 0 ) {
 	$comments_number = (int) get_comments_number( $post );
@@ -998,37 +997,37 @@ function get_comments_number_text( $zero = false, $one = false, $more = false, $
 		}
 	} elseif ( 0 === $comments_number ) {
 		$comments_number_text = ( false === $zero ) ? __( 'No Comments' ) : $zero;
-	} else { // Must be one.
+	} else { // Phải là một.
 		$comments_number_text = ( false === $one ) ? __( '1 Comment' ) : $one;
 	}
 
 	/**
-	 * Filters the comments count for display.
+	 * Lọc số bình luận để hiển thị.
 	 *
 	 * @since 1.5.0
 	 *
 	 * @see _n()
 	 *
-	 * @param string $comments_number_text A translatable string formatted based on whether the count
-	 *                                     is equal to 0, 1, or 1+.
-	 * @param int    $comments_number      The number of post comments.
+	 * @param string $comments_number_text Chuỗi có thể dịch được, được định dạng dựa trên số lượng
+	 *                                     bằng 0, 1, hoặc hơn 1.
+	 * @param int    $comments_number      Số bình luận của bài viết.
 	 */
 	return apply_filters( 'comments_number', $comments_number_text, $comments_number );
 }
 
 /**
- * Retrieves the text of the current comment.
+ * Lấy nội dung văn bản của bình luận hiện tại.
  *
  * @since 1.5.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
- * @since 5.4.0 Added 'In reply to %s.' prefix to child comments in comments feed.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
+ * @since 5.4.0 Thêm tiền tố 'Trả lời %s.' cho bình luận con trong feed bình luận.
  *
  * @see Walker_Comment::comment()
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or ID of the comment for which to get the text.
- *                                   Default current comment.
- * @param array          $args       Optional. An array of arguments. Default empty array.
- * @return string The comment content.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần lấy nội dung.
+ *                                   Mặc định là bình luận hiện tại.
+ * @param array          $args       Tùy chọn. Mảng các tham số. Mặc định mảng rỗng.
+ * @return string Nội dung bình luận.
  */
 function get_comment_text( $comment_id = 0, $args = array() ) {
 	$comment = get_comment( $comment_id );
@@ -1050,30 +1049,30 @@ function get_comment_text( $comment_id = 0, $args = array() ) {
 	}
 
 	/**
-	 * Filters the text of a comment.
+	 * Lọc nội dung văn bản của bình luận.
 	 *
 	 * @since 1.5.0
 	 *
 	 * @see Walker_Comment::comment()
 	 *
-	 * @param string     $comment_text Text of the comment.
-	 * @param WP_Comment $comment      The comment object.
-	 * @param array      $args         An array of arguments.
+	 * @param string     $comment_text Nội dung văn bản của bình luận.
+	 * @param WP_Comment $comment      Đối tượng bình luận.
+	 * @param array      $args         Mảng các tham số.
 	 */
 	return apply_filters( 'get_comment_text', $comment_text, $comment, $args );
 }
 
 /**
- * Displays the text of the current comment.
+ * Hiển thị nội dung văn bản của bình luận hiện tại.
  *
  * @since 0.71
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
  * @see Walker_Comment::comment()
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or ID of the comment for which to print the text.
- *                                   Default current comment.
- * @param array          $args       Optional. An array of arguments. Default empty array.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần in nội dung.
+ *                                   Mặc định là bình luận hiện tại.
+ * @param array          $args       Tùy chọn. Mảng các tham số. Mặc định mảng rỗng.
  */
 function comment_text( $comment_id = 0, $args = array() ) {
 	$comment = get_comment( $comment_id );
@@ -1081,32 +1080,32 @@ function comment_text( $comment_id = 0, $args = array() ) {
 	$comment_text = get_comment_text( $comment, $args );
 
 	/**
-	 * Filters the text of a comment to be displayed.
+	 * Lọc nội dung văn bản của bình luận để hiển thị.
 	 *
 	 * @since 1.2.0
 	 *
 	 * @see Walker_Comment::comment()
 	 *
-	 * @param string          $comment_text Text of the comment.
-	 * @param WP_Comment|null $comment      The comment object. Null if not found.
-	 * @param array           $args         An array of arguments.
+	 * @param string          $comment_text Nội dung văn bản của bình luận.
+	 * @param WP_Comment|null $comment      Đối tượng bình luận. Null nếu không tìm thấy.
+	 * @param array           $args         Mảng các tham số.
 	 */
 	echo apply_filters( 'comment_text', $comment_text, $comment, $args );
 }
 
 /**
- * Retrieves the comment time of the current comment.
+ * Lấy thời gian bình luận của bình luận hiện tại.
  *
  * @since 1.5.0
- * @since 6.2.0 Added the `$comment_id` parameter.
+ * @since 6.2.0 Thêm tham số `$comment_id`.
  *
- * @param string         $format     Optional. PHP date format. Defaults to the 'time_format' option.
- * @param bool           $gmt        Optional. Whether to use the GMT date. Default false.
- * @param bool           $translate  Optional. Whether to translate the time (for use in feeds).
- *                                   Default true.
- * @param int|WP_Comment $comment_id Optional. WP_Comment or ID of the comment for which to get the time.
- *                                   Default current comment.
- * @return string The formatted time.
+ * @param string         $format     Tùy chọn. Định dạng ngày PHP. Mặc định theo tùy chọn 'time_format'.
+ * @param bool           $gmt        Tùy chọn. Có sử dụng ngày GMT hay không. Mặc định false.
+ * @param bool           $translate  Tùy chọn. Có dịch thời gian hay không (để sử dụng trong feed).
+ *                                   Mặc định true.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần lấy thời gian.
+ *                                   Mặc định là bình luận hiện tại.
+ * @return string Thời gian đã được định dạng.
  */
 function get_comment_time( $format = '', $gmt = false, $translate = true, $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -1122,42 +1121,42 @@ function get_comment_time( $format = '', $gmt = false, $translate = true, $comme
 	$comment_time = mysql2date( $_format, $comment_date, $translate );
 
 	/**
-	 * Filters the returned comment time.
+	 * Lọc thời gian bình luận được trả về.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string|int $comment_time The comment time, formatted as a date string or Unix timestamp.
-	 * @param string     $format       PHP date format.
-	 * @param bool       $gmt          Whether the GMT date is in use.
-	 * @param bool       $translate    Whether the time is translated.
-	 * @param WP_Comment $comment      The comment object.
+	 * @param string|int $comment_time Thời gian bình luận, được định dạng dưới dạng chuỗi ngày hoặc timestamp Unix.
+	 * @param string     $format       Định dạng ngày PHP.
+	 * @param bool       $gmt          Có đang sử dụng ngày GMT hay không.
+	 * @param bool       $translate    Có dịch thời gian hay không.
+	 * @param WP_Comment $comment      Đối tượng bình luận.
 	 */
 	return apply_filters( 'get_comment_time', $comment_time, $format, $gmt, $translate, $comment );
 }
 
 /**
- * Displays the comment time of the current comment.
+ * Hiển thị thời gian bình luận của bình luận hiện tại.
  *
  * @since 0.71
- * @since 6.2.0 Added the `$comment_id` parameter.
+ * @since 6.2.0 Thêm tham số `$comment_id`.
  *
- * @param string         $format     Optional. PHP time format. Defaults to the 'time_format' option.
- * @param int|WP_Comment $comment_id Optional. WP_Comment or ID of the comment for which to print the time.
- *                                   Default current comment.
+ * @param string         $format     Tùy chọn. Định dạng thời gian PHP. Mặc định theo tùy chọn 'time_format'.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần in thời gian.
+ *                                   Mặc định là bình luận hiện tại.
  */
 function comment_time( $format = '', $comment_id = 0 ) {
 	echo get_comment_time( $format, false, true, $comment_id );
 }
 
 /**
- * Retrieves the comment type of the current comment.
+ * Lấy loại bình luận của bình luận hiện tại.
  *
  * @since 1.5.0
- * @since 4.4.0 Added the ability for `$comment_id` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment_id` cũng chấp nhận đối tượng WP_Comment.
  *
- * @param int|WP_Comment $comment_id Optional. WP_Comment or ID of the comment for which to get the type.
- *                                   Default current comment.
- * @return string The comment type.
+ * @param int|WP_Comment $comment_id Tùy chọn. WP_Comment hoặc ID của bình luận cần lấy loại.
+ *                                   Mặc định là bình luận hiện tại.
+ * @return string Loại bình luận.
  */
 function get_comment_type( $comment_id = 0 ) {
 	$comment = get_comment( $comment_id );
@@ -1167,26 +1166,26 @@ function get_comment_type( $comment_id = 0 ) {
 	}
 
 	/**
-	 * Filters the returned comment type.
+	 * Lọc loại bình luận được trả về.
 	 *
 	 * @since 1.5.0
-	 * @since 4.1.0 The `$comment_id` and `$comment` parameters were added.
+	 * @since 4.1.0 Thêm tham số `$comment_id` và `$comment`.
 	 *
-	 * @param string     $comment_type The type of comment, such as 'comment', 'pingback', or 'trackback'.
-	 * @param string     $comment_id   The comment ID as a numeric string.
-	 * @param WP_Comment $comment      The comment object.
+	 * @param string     $comment_type Loại bình luận, chẳng hạn 'comment', 'pingback', hoặc 'trackback'.
+	 * @param string     $comment_id   ID bình luận dưới dạng chuỗi số.
+	 * @param WP_Comment $comment      Đối tượng bình luận.
 	 */
 	return apply_filters( 'get_comment_type', $comment->comment_type, $comment->comment_ID, $comment );
 }
 
 /**
- * Displays the comment type of the current comment.
+ * Hiển thị loại bình luận của bình luận hiện tại.
  *
  * @since 0.71
  *
- * @param string|false $commenttxt   Optional. String to display for comment type. Default false.
- * @param string|false $trackbacktxt Optional. String to display for trackback type. Default false.
- * @param string|false $pingbacktxt  Optional. String to display for pingback type. Default false.
+ * @param string|false $commenttxt   Tùy chọn. Chuỗi hiển thị cho loại bình luận. Mặc định false.
+ * @param string|false $trackbacktxt Tùy chọn. Chuỗi hiển thị cho loại trackback. Mặc định false.
+ * @param string|false $pingbacktxt  Tùy chọn. Chuỗi hiển thị cho loại pingback. Mặc định false.
  */
 function comment_type( $commenttxt = false, $trackbacktxt = false, $pingbacktxt = false ) {
 	if ( false === $commenttxt ) {
@@ -1212,15 +1211,15 @@ function comment_type( $commenttxt = false, $trackbacktxt = false, $pingbacktxt 
 }
 
 /**
- * Retrieves the current post's trackback URL.
+ * Lấy URL trackback của bài viết hiện tại.
  *
- * There is a check to see if permalink's have been enabled and if so, will
- * retrieve the pretty path. If permalinks weren't enabled, the ID of the
- * current post is used and appended to the correct page to go to.
+ * Có kiểm tra xem permalink đã được bật chưa, nếu có sẽ lấy
+ * đường dẫn đẹp. Nếu permalink chưa được bật, ID của bài viết
+ * hiện tại sẽ được sử dụng và nối vào trang chính xác cần đến.
  *
  * @since 1.5.0
  *
- * @return string The trackback URL after being filtered.
+ * @return string URL trackback sau khi được lọc.
  */
 function get_trackback_url() {
 	if ( get_option( 'permalink_structure' ) ) {
@@ -1230,23 +1229,23 @@ function get_trackback_url() {
 	}
 
 	/**
-	 * Filters the returned trackback URL.
+	 * Lọc URL trackback được trả về.
 	 *
 	 * @since 2.2.0
 	 *
-	 * @param string $trackback_url The trackback URL.
+	 * @param string $trackback_url URL trackback.
 	 */
 	return apply_filters( 'trackback_url', $trackback_url );
 }
 
 /**
- * Displays the current post's trackback URL.
+ * Hiển thị URL trackback của bài viết hiện tại.
  *
  * @since 0.71
  *
- * @param bool $deprecated_echo Not used.
- * @return void|string Should only be used to echo the trackback URL, use get_trackback_url()
- *                     for the result instead.
+ * @param bool $deprecated_echo Không sử dụng.
+ * @return void|string Chỉ nên sử dụng để echo URL trackback, dùng get_trackback_url()
+ *                     để lấy kết quả thay thế.
  */
 function trackback_url( $deprecated_echo = true ) {
 	if ( true !== $deprecated_echo ) {
@@ -1269,13 +1268,13 @@ function trackback_url( $deprecated_echo = true ) {
 }
 
 /**
- * Generates and displays the RDF for the trackback information of current post.
+ * Tạo và hiển thị RDF cho thông tin trackback của bài viết hiện tại.
  *
- * Deprecated in 3.0.0, and restored in 3.0.1.
+ * Đã ngừng sử dụng trong 3.0.0, và được khôi phục trong 3.0.1.
  *
  * @since 0.71
  *
- * @param int|string $deprecated Not used (Was $timezone = 0).
+ * @param int|string $deprecated Không sử dụng (Trước đây là $timezone = 0).
  */
 function trackback_rdf( $deprecated = '' ) {
 	if ( ! empty( $deprecated ) ) {
@@ -1301,16 +1300,16 @@ function trackback_rdf( $deprecated = '' ) {
 }
 
 /**
- * Determines whether the current post is open for comments.
+ * Xác định xem bài viết hiện tại có đang mở cho bình luận hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 1.5.0
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default current post.
- * @return bool True if the comments are open.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định bài viết hiện tại.
+ * @return bool True nếu bình luận đang mở.
  */
 function comments_open( $post = null ) {
 	$_post = get_post( $post );
@@ -1319,27 +1318,27 @@ function comments_open( $post = null ) {
 	$comments_open = ( $_post && ( 'open' === $_post->comment_status ) );
 
 	/**
-	 * Filters whether the current post is open for comments.
+	 * Lọc xem bài viết hiện tại có đang mở cho bình luận hay không.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param bool $comments_open Whether the current post is open for comments.
-	 * @param int  $post_id       The post ID.
+	 * @param bool $comments_open Bài viết hiện tại có đang mở cho bình luận hay không.
+	 * @param int  $post_id       ID bài viết.
 	 */
 	return apply_filters( 'comments_open', $comments_open, $post_id );
 }
 
 /**
- * Determines whether the current post is open for pings.
+ * Xác định xem bài viết hiện tại có đang mở cho ping hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 1.5.0
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default current post.
- * @return bool True if pings are accepted
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định bài viết hiện tại.
+ * @return bool True nếu ping được chấp nhận.
  */
 function pings_open( $post = null ) {
 	$_post = get_post( $post );
@@ -1348,27 +1347,27 @@ function pings_open( $post = null ) {
 	$pings_open = ( $_post && ( 'open' === $_post->ping_status ) );
 
 	/**
-	 * Filters whether the current post is open for pings.
+	 * Lọc xem bài viết hiện tại có đang mở cho ping hay không.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param bool $pings_open Whether the current post is open for pings.
-	 * @param int  $post_id    The post ID.
+	 * @param bool $pings_open Bài viết hiện tại có đang mở cho ping hay không.
+	 * @param int  $post_id    ID bài viết.
 	 */
 	return apply_filters( 'pings_open', $pings_open, $post_id );
 }
 
 /**
- * Displays form token for unfiltered comments.
+ * Hiển thị token biểu mẫu cho bình luận không được lọc.
  *
- * Will only display nonce token if the current user has permissions for
- * unfiltered html. Won't display the token for other users.
+ * Chỉ hiển thị token nonce nếu người dùng hiện tại có quyền
+ * HTML không được lọc. Không hiển thị token cho người dùng khác.
  *
- * The function was backported to 2.0.10 and was added to versions 2.1.3 and
- * above. Does not exist in versions prior to 2.0.10 in the 2.0 branch and in
- * the 2.1 branch, prior to 2.1.3. Technically added in 2.2.0.
+ * Hàm này được backport vào 2.0.10 và được thêm vào phiên bản 2.1.3 và
+ * cao hơn. Không tồn tại trong các phiên bản trước 2.0.10 ở nhánh 2.0 và trong
+ * nhánh 2.1, trước 2.1.3. Về mặt kỹ thuật được thêm vào 2.2.0.
  *
- * Backported to 2.0.10.
+ * Backport vào 2.0.10.
  *
  * @since 2.1.3
  */
@@ -1383,40 +1382,40 @@ function wp_comment_form_unfiltered_html_nonce() {
 }
 
 /**
- * Loads the comment template specified in $file.
+ * Tải template bình luận được chỉ định trong $file.
  *
- * Will not display the comments template if not on single post or page, or if
- * the post does not have comments.
+ * Sẽ không hiển thị template bình luận nếu không ở trang bài viết đơn hoặc trang, hoặc nếu
+ * bài viết không có bình luận.
  *
- * Uses the WordPress database object to query for the comments. The comments
- * are passed through the {@see 'comments_array'} filter hook with the list of comments
- * and the post ID respectively.
+ * Sử dụng đối tượng cơ sở dữ liệu WordPress để truy vấn bình luận. Các bình luận
+ * được truyền qua hook lọc {@see 'comments_array'} với danh sách bình luận
+ * và ID bài viết tương ứng.
  *
- * The `$file` path is passed through a filter hook called {@see 'comments_template'},
- * which includes the template directory and $file combined. Tries the $filtered path
- * first and if it fails it will require the default comment template from the
- * default theme. If either does not exist, then the WordPress process will be
- * halted. It is advised for that reason, that the default theme is not deleted.
+ * Đường dẫn `$file` được truyền qua hook lọc gọi là {@see 'comments_template'},
+ * bao gồm thư mục template và $file kết hợp. Thử đường dẫn $filtered
+ * trước và nếu thất bại sẽ yêu cầu template bình luận mặc định từ
+ * theme mặc định. Nếu một trong hai không tồn tại, tiến trình WordPress sẽ bị
+ * dừng. Vì lý do đó, nên không xóa theme mặc định.
  *
- * Will not try to get the comments if the post has none.
+ * Sẽ không cố gắng lấy bình luận nếu bài viết không có.
  *
  * @since 1.5.0
  *
- * @global WP_Query   $wp_query           WordPress Query object.
- * @global WP_Post    $post               Global post object.
- * @global wpdb       $wpdb               WordPress database abstraction object.
+ * @global WP_Query   $wp_query           Đối tượng truy vấn WordPress.
+ * @global WP_Post    $post               Đối tượng bài viết toàn cục.
+ * @global wpdb       $wpdb               Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  * @global int        $id
- * @global WP_Comment $comment            Global comment object.
+ * @global WP_Comment $comment            Đối tượng bình luận toàn cục.
  * @global string     $user_login
  * @global string     $user_identity
  * @global bool       $overridden_cpage
  * @global bool       $withcomments
- * @global string     $wp_stylesheet_path Path to current theme's stylesheet directory.
- * @global string     $wp_template_path   Path to current theme's template directory.
+ * @global string     $wp_stylesheet_path Đường dẫn đến thư mục stylesheet của theme hiện tại.
+ * @global string     $wp_template_path   Đường dẫn đến thư mục template của theme hiện tại.
  *
- * @param string $file              Optional. The file to load. Default '/comments.php'.
- * @param bool   $separate_comments Optional. Whether to separate the comments by comment type.
- *                                  Default false.
+ * @param string $file              Tùy chọn. File cần tải. Mặc định '/comments.php'.
+ * @param bool   $separate_comments Tùy chọn. Có phân tách bình luận theo loại hay không.
+ *                                  Mặc định false.
  */
 function comments_template( $file = '/comments.php', $separate_comments = false ) {
 	global $wp_query, $withcomments, $post, $wpdb, $id, $comment, $user_login, $user_identity, $overridden_cpage, $wp_stylesheet_path, $wp_template_path;
@@ -1432,24 +1431,24 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	$req = get_option( 'require_name_email' );
 
 	/*
-	 * Comment author information fetched from the comment cookies.
+	 * Thông tin tác giả bình luận được lấy từ cookie bình luận.
 	 */
 	$commenter = wp_get_current_commenter();
 
 	/*
-	 * The name of the current comment author escaped for use in attributes.
-	 * Escaped by sanitize_comment_cookies().
+	 * Tên của tác giả bình luận hiện tại được escape để sử dụng trong thuộc tính.
+	 * Được escape bởi sanitize_comment_cookies().
 	 */
 	$comment_author = $commenter['comment_author'];
 
 	/*
-	 * The email address of the current comment author escaped for use in attributes.
-	 * Escaped by sanitize_comment_cookies().
+	 * Địa chỉ email của tác giả bình luận hiện tại được escape để sử dụng trong thuộc tính.
+	 * Được escape bởi sanitize_comment_cookies().
 	 */
 	$comment_author_email = $commenter['comment_author_email'];
 
 	/*
-	 * The URL of the current comment author escaped for use in attributes.
+	 * URL của tác giả bình luận hiện tại được escape để sử dụng trong thuộc tính.
 	 */
 	$comment_author_url = esc_url( $commenter['comment_author_url'] );
 
@@ -1492,7 +1491,7 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 		} elseif ( 'oldest' === get_option( 'default_comments_page' ) ) {
 			$comment_args['offset'] = 0;
 		} else {
-			// If fetching the first page of 'newest', we need a top-level comment count.
+			// Nếu lấy trang đầu tiên của 'newest', chúng ta cần số bình luận cấp cao nhất.
 			$top_level_query = new WP_Comment_Query();
 			$top_level_args  = array(
 				'count'   => true,
@@ -1510,19 +1509,19 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 			}
 
 			/**
-			 * Filters the arguments used in the top level comments query.
+			 * Lọc các tham số được sử dụng trong truy vấn bình luận cấp cao nhất.
 			 *
 			 * @since 5.6.0
 			 *
 			 * @see WP_Comment_Query::__construct()
 			 *
 			 * @param array $top_level_args {
-			 *     The top level query arguments for the comments template.
+			 *     Các tham số truy vấn cấp cao nhất cho template bình luận.
 			 *
-			 *     @type bool         $count   Whether to return a comment count.
-			 *     @type string|array $orderby The field(s) to order by.
-			 *     @type int          $post_id The post ID.
-			 *     @type string|array $status  The comment status to limit results by.
+			 *     @type bool         $count   Có trả về số bình luận hay không.
+			 *     @type string|array $orderby (Các) trường để sắp xếp theo.
+			 *     @type int          $post_id ID bài viết.
+			 *     @type string|array $status  Trạng thái bình luận để giới hạn kết quả.
 			 * }
 			 */
 			$top_level_args = apply_filters( 'comments_template_top_level_query_args', $top_level_args );
@@ -1534,26 +1533,26 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	}
 
 	/**
-	 * Filters the arguments used to query comments in comments_template().
+	 * Lọc các tham số được sử dụng để truy vấn bình luận trong comments_template().
 	 *
 	 * @since 4.5.0
 	 *
 	 * @see WP_Comment_Query::__construct()
 	 *
 	 * @param array $comment_args {
-	 *     Array of WP_Comment_Query arguments.
+	 *     Mảng các tham số WP_Comment_Query.
 	 *
-	 *     @type string|array $orderby                   Field(s) to order by.
-	 *     @type string       $order                     Order of results. Accepts 'ASC' or 'DESC'.
-	 *     @type string       $status                    Comment status.
-	 *     @type array        $include_unapproved        Array of IDs or email addresses whose unapproved comments
-	 *                                                   will be included in results.
-	 *     @type int          $post_id                   ID of the post.
-	 *     @type bool         $no_found_rows             Whether to refrain from querying for found rows.
-	 *     @type bool         $update_comment_meta_cache Whether to prime cache for comment meta.
-	 *     @type bool|string  $hierarchical              Whether to query for comments hierarchically.
-	 *     @type int          $offset                    Comment offset.
-	 *     @type int          $number                    Number of comments to fetch.
+	 *     @type string|array $orderby                   (Các) trường để sắp xếp theo.
+	 *     @type string       $order                     Thứ tự kết quả. Chấp nhận 'ASC' hoặc 'DESC'.
+	 *     @type string       $status                    Trạng thái bình luận.
+	 *     @type array        $include_unapproved        Mảng các ID hoặc địa chỉ email có bình luận chưa duyệt
+	 *                                                   sẽ được bao gồm trong kết quả.
+	 *     @type int          $post_id                   ID của bài viết.
+	 *     @type bool         $no_found_rows             Có bỏ qua truy vấn số dòng tìm thấy hay không.
+	 *     @type bool         $update_comment_meta_cache Có tải trước cache cho comment meta hay không.
+	 *     @type bool|string  $hierarchical              Có truy vấn bình luận theo phân cấp hay không.
+	 *     @type int          $offset                    Vị trí bắt đầu bình luận.
+	 *     @type int          $number                    Số bình luận cần lấy.
 	 * }
 	 */
 	$comment_args = apply_filters( 'comments_template_query_args', $comment_args );
@@ -1561,7 +1560,7 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	$comment_query = new WP_Comment_Query( $comment_args );
 	$_comments     = $comment_query->comments;
 
-	// Trees must be flattened before they're passed to the walker.
+	// Cây phải được làm phẳng trước khi truyền cho walker.
 	if ( $comment_args['hierarchical'] ) {
 		$comments_flat = array();
 		foreach ( $_comments as $_comment ) {
@@ -1583,12 +1582,12 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	}
 
 	/**
-	 * Filters the comments array.
+	 * Lọc mảng bình luận.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param array $comments Array of comments supplied to the comments template.
-	 * @param int   $post_id  Post ID.
+	 * @param array $comments Mảng các bình luận được cung cấp cho template bình luận.
+	 * @param int   $post_id  ID bài viết.
 	 */
 	$wp_query->comments = apply_filters( 'comments_array', $comments_flat, $post->ID );
 
@@ -1617,11 +1616,11 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 	$theme_template = trailingslashit( $wp_stylesheet_path ) . $file;
 
 	/**
-	 * Filters the path to the theme template file used for the comments template.
+	 * Lọc đường dẫn đến file template theme được sử dụng cho template bình luận.
 	 *
 	 * @since 1.5.1
 	 *
-	 * @param string $theme_template The path to the theme template file.
+	 * @param string $theme_template Đường dẫn đến file template theme.
 	 */
 	$include = apply_filters( 'comments_template', $theme_template );
 
@@ -1629,21 +1628,21 @@ function comments_template( $file = '/comments.php', $separate_comments = false 
 		require $include;
 	} elseif ( file_exists( trailingslashit( $wp_template_path ) . $file ) ) {
 		require trailingslashit( $wp_template_path ) . $file;
-	} else { // Backward compat code will be removed in a future release.
+	} else { // Mã tương thích ngược sẽ được loại bỏ trong phiên bản tương lai.
 		require ABSPATH . WPINC . '/theme-compat/comments.php';
 	}
 }
 
 /**
- * Displays the link to the comments for the current post ID.
+ * Hiển thị liên kết đến bình luận cho ID bài viết hiện tại.
  *
  * @since 0.71
  *
- * @param false|string $zero      Optional. String to display when no comments. Default false.
- * @param false|string $one       Optional. String to display when only one comment is available. Default false.
- * @param false|string $more      Optional. String to display when there are more than one comment. Default false.
- * @param string       $css_class Optional. CSS class to use for comments. Default empty.
- * @param false|string $none      Optional. String to display when comments have been turned off. Default false.
+ * @param false|string $zero      Tùy chọn. Chuỗi hiển thị khi không có bình luận. Mặc định false.
+ * @param false|string $one       Tùy chọn. Chuỗi hiển thị khi chỉ có một bình luận. Mặc định false.
+ * @param false|string $more      Tùy chọn. Chuỗi hiển thị khi có nhiều hơn một bình luận. Mặc định false.
+ * @param string       $css_class Tùy chọn. Class CSS sử dụng cho bình luận. Mặc định rỗng.
+ * @param false|string $none      Tùy chọn. Chuỗi hiển thị khi bình luận đã bị tắt. Mặc định false.
  */
 function comments_popup_link( $zero = false, $one = false, $more = false, $css_class = '', $none = false ) {
 	$post_id         = get_the_ID();
@@ -1692,12 +1691,12 @@ function comments_popup_link( $zero = false, $one = false, $more = false, $css_c
 	if ( 0 === $comments_number ) {
 		$respond_link = get_permalink() . '#respond';
 		/**
-		 * Filters the respond link when a post has no comments.
+		 * Lọc liên kết phản hồi khi bài viết không có bình luận.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string $respond_link The default response link.
-		 * @param int    $post_id      The post ID.
+		 * @param string $respond_link Liên kết phản hồi mặc định.
+		 * @param int    $post_id      ID bài viết.
 		 */
 		$comments_link = apply_filters( 'respond_link', $respond_link, $post_id );
 	} else {
@@ -1707,11 +1706,11 @@ function comments_popup_link( $zero = false, $one = false, $more = false, $css_c
 	$link_attributes = '';
 
 	/**
-	 * Filters the comments link attributes for display.
+	 * Lọc các thuộc tính liên kết bình luận để hiển thị.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $link_attributes The comments link attributes. Default empty.
+	 * @param string $link_attributes Các thuộc tính liên kết bình luận. Mặc định rỗng.
 	 */
 	$link_attributes = apply_filters( 'comments_popup_link_attributes', $link_attributes );
 
@@ -1725,36 +1724,36 @@ function comments_popup_link( $zero = false, $one = false, $more = false, $css_c
 }
 
 /**
- * Retrieves HTML content for reply to comment link.
+ * Lấy nội dung HTML cho liên kết trả lời bình luận.
  *
  * @since 2.7.0
- * @since 4.4.0 Added the ability for `$comment` to also accept a WP_Comment object.
+ * @since 4.4.0 Thêm khả năng cho `$comment` cũng chấp nhận đối tượng WP_Comment.
  *
  * @param array          $args {
- *     Optional. Override default arguments.
+ *     Tùy chọn. Ghi đè các tham số mặc định.
  *
- *     @type string $add_below          The first part of the selector used to identify the comment to respond below.
- *                                      The resulting value is passed as the first parameter to addComment.moveForm(),
- *                                      concatenated as $add_below-$comment->comment_ID. Default 'comment'.
- *     @type string $respond_id         The selector identifying the responding comment. Passed as the third parameter
- *                                      to addComment.moveForm(), and appended to the link URL as a hash value.
- *                                      Default 'respond'.
- *     @type string $reply_text         The visible text of the Reply link. Default 'Reply'.
- *     @type string $reply_to_text      The accessible name of the Reply link, using `%s` as a placeholder
- *                                      for the comment author's name. Default 'Reply to %s'.
- *                                      Should start with the visible `reply_text` value.
- *     @type bool   $show_reply_to_text Whether to use `reply_to_text` as visible link text. Default false.
- *     @type string $login_text         The text of the link to reply if logged out. Default 'Log in to Reply'.
- *     @type int    $max_depth          The max depth of the comment tree. Default 0.
- *     @type int    $depth              The depth of the new comment. Must be greater than 0 and less than the value
- *                                      of the 'thread_comments_depth' option set in Settings > Discussion. Default 0.
- *     @type string $before             The text or HTML to add before the reply link. Default empty.
- *     @type string $after              The text or HTML to add after the reply link. Default empty.
+ *     @type string $add_below          Phần đầu tiên của bộ chọn dùng để xác định bình luận cần trả lời phía dưới.
+ *                                      Giá trị kết quả được truyền như tham số đầu tiên cho addComment.moveForm(),
+ *                                      được nối thành $add_below-$comment->comment_ID. Mặc định 'comment'.
+ *     @type string $respond_id         Bộ chọn xác định bình luận đang phản hồi. Được truyền như tham số thứ ba
+ *                                      cho addComment.moveForm(), và được nối vào URL liên kết dưới dạng giá trị hash.
+ *                                      Mặc định 'respond'.
+ *     @type string $reply_text         Văn bản hiển thị của liên kết Trả lời. Mặc định 'Reply'.
+ *     @type string $reply_to_text      Tên truy cập được của liên kết Trả lời, sử dụng `%s` làm chỗ giữ
+ *                                      cho tên tác giả bình luận. Mặc định 'Reply to %s'.
+ *                                      Nên bắt đầu với giá trị `reply_text` hiển thị.
+ *     @type bool   $show_reply_to_text Có sử dụng `reply_to_text` làm văn bản liên kết hiển thị hay không. Mặc định false.
+ *     @type string $login_text         Văn bản của liên kết trả lời nếu chưa đăng nhập. Mặc định 'Log in to Reply'.
+ *     @type int    $max_depth          Độ sâu tối đa của cây bình luận. Mặc định 0.
+ *     @type int    $depth              Độ sâu của bình luận mới. Phải lớn hơn 0 và nhỏ hơn giá trị
+ *                                      của tùy chọn 'thread_comments_depth' trong Cài đặt > Thảo luận. Mặc định 0.
+ *     @type string $before             Văn bản hoặc HTML thêm trước liên kết trả lời. Mặc định rỗng.
+ *     @type string $after              Văn bản hoặc HTML thêm sau liên kết trả lời. Mặc định rỗng.
  * }
- * @param int|WP_Comment $comment Optional. Comment being replied to. Default current comment.
- * @param int|WP_Post    $post    Optional. Post ID or WP_Post object the comment is going to be displayed on.
- *                                Default current post.
- * @return string|false|null Link to show comment form, if successful. False, if comments are closed.
+ * @param int|WP_Comment $comment Tùy chọn. Bình luận đang được trả lời. Mặc định bình luận hiện tại.
+ * @param int|WP_Post    $post    Tùy chọn. ID bài viết hoặc đối tượng WP_Post mà bình luận sẽ được hiển thị.
+ *                                Mặc định bài viết hiện tại.
+ * @return string|false|null Liên kết hiển thị biểu mẫu bình luận nếu thành công. False nếu bình luận đã đóng.
  */
 function get_comment_reply_link( $args = array(), $comment = null, $post = null ) {
 	$defaults = array(
@@ -1803,14 +1802,14 @@ function get_comment_reply_link( $args = array(), $comment = null, $post = null 
 	}
 
 	/**
-	 * Filters the comment reply link arguments.
+	 * Lọc các tham số liên kết trả lời bình luận.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param array      $args    Comment reply link arguments. See get_comment_reply_link()
-	 *                            for more information on accepted arguments.
-	 * @param WP_Comment $comment The object of the comment being replied to.
-	 * @param WP_Post    $post    The WP_Post object.
+	 * @param array      $args    Các tham số liên kết trả lời bình luận. Xem get_comment_reply_link()
+	 *                            để biết thêm thông tin về các tham số được chấp nhận.
+	 * @param WP_Comment $comment Đối tượng của bình luận đang được trả lời.
+	 * @param WP_Post    $post    Đối tượng WP_Post.
 	 */
 	$args = apply_filters( 'comment_reply_link_args', $args, $comment, $post );
 
@@ -1864,56 +1863,56 @@ function get_comment_reply_link( $args = array(), $comment = null, $post = null 
 	$comment_reply_link = $args['before'] . $link . $args['after'];
 
 	/**
-	 * Filters the comment reply link.
+	 * Lọc liên kết trả lời bình luận.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string     $comment_reply_link The HTML markup for the comment reply link.
-	 * @param array      $args               An array of arguments overriding the defaults.
-	 * @param WP_Comment $comment            The object of the comment being replied.
-	 * @param WP_Post    $post               The WP_Post object.
+	 * @param string     $comment_reply_link Markup HTML cho liên kết trả lời bình luận.
+	 * @param array      $args               Mảng các tham số ghi đè giá trị mặc định.
+	 * @param WP_Comment $comment            Đối tượng của bình luận đang được trả lời.
+	 * @param WP_Post    $post               Đối tượng WP_Post.
 	 */
 	return apply_filters( 'comment_reply_link', $comment_reply_link, $args, $comment, $post );
 }
 
 /**
- * Displays the HTML content for reply to comment link.
+ * Hiển thị nội dung HTML cho liên kết trả lời bình luận.
  *
  * @since 2.7.0
  *
  * @see get_comment_reply_link()
  *
- * @param array          $args    Optional. Override default options. Default empty array.
- * @param int|WP_Comment $comment Optional. Comment being replied to. Default current comment.
- * @param int|WP_Post    $post    Optional. Post ID or WP_Post object the comment is going to be displayed on.
- *                                Default current post.
+ * @param array          $args    Tùy chọn. Ghi đè các tùy chọn mặc định. Mặc định mảng rỗng.
+ * @param int|WP_Comment $comment Tùy chọn. Bình luận đang được trả lời. Mặc định bình luận hiện tại.
+ * @param int|WP_Post    $post    Tùy chọn. ID bài viết hoặc đối tượng WP_Post mà bình luận sẽ được hiển thị.
+ *                                Mặc định bài viết hiện tại.
  */
 function comment_reply_link( $args = array(), $comment = null, $post = null ) {
 	echo get_comment_reply_link( $args, $comment, $post );
 }
 
 /**
- * Retrieves HTML content for reply to post link.
+ * Lấy nội dung HTML cho liên kết trả lời bài viết.
  *
  * @since 2.7.0
  *
  * @param array       $args {
- *     Optional. Override default arguments.
+ *     Tùy chọn. Ghi đè các tham số mặc định.
  *
- *     @type string $add_below  The first part of the selector used to identify the comment to respond below.
- *                              The resulting value is passed as the first parameter to addComment.moveForm(),
- *                              concatenated as $add_below-$comment->comment_ID. Default is 'post'.
- *     @type string $respond_id The selector identifying the responding comment. Passed as the third parameter
- *                              to addComment.moveForm(), and appended to the link URL as a hash value.
- *                              Default 'respond'.
- *     @type string $reply_text Text of the Reply link. Default is 'Leave a Comment'.
- *     @type string $login_text Text of the link to reply if logged out. Default is 'Log in to leave a Comment'.
- *     @type string $before     Text or HTML to add before the reply link. Default empty.
- *     @type string $after      Text or HTML to add after the reply link. Default empty.
+ *     @type string $add_below  Phần đầu tiên của bộ chọn dùng để xác định bình luận cần trả lời phía dưới.
+ *                              Giá trị kết quả được truyền như tham số đầu tiên cho addComment.moveForm(),
+ *                              được nối thành $add_below-$comment->comment_ID. Mặc định là 'post'.
+ *     @type string $respond_id Bộ chọn xác định bình luận đang phản hồi. Được truyền như tham số thứ ba
+ *                              cho addComment.moveForm(), và được nối vào URL liên kết dưới dạng giá trị hash.
+ *                              Mặc định 'respond'.
+ *     @type string $reply_text Văn bản của liên kết Trả lời. Mặc định là 'Leave a Comment'.
+ *     @type string $login_text Văn bản của liên kết trả lời nếu chưa đăng nhập. Mặc định là 'Log in to leave a Comment'.
+ *     @type string $before     Văn bản hoặc HTML thêm trước liên kết trả lời. Mặc định rỗng.
+ *     @type string $after      Văn bản hoặc HTML thêm sau liên kết trả lời. Mặc định rỗng.
  * }
- * @param int|WP_Post $post    Optional. Post ID or WP_Post object the comment is going to be displayed on.
- *                             Default current post.
- * @return string|false|null Link to show comment form, if successful. False, if comments are closed.
+ * @param int|WP_Post $post    Tùy chọn. ID bài viết hoặc đối tượng WP_Post mà bình luận sẽ được hiển thị.
+ *                             Mặc định bài viết hiện tại.
+ * @return string|false|null Liên kết hiển thị biểu mẫu bình luận nếu thành công. False nếu bình luận đã đóng.
  */
 function get_post_reply_link( $args = array(), $post = null ) {
 	$defaults = array(
@@ -1958,41 +1957,41 @@ function get_post_reply_link( $args = array(), $post = null ) {
 	$post_reply_link = $args['before'] . $link . $args['after'];
 
 	/**
-	 * Filters the formatted post comments link HTML.
+	 * Lọc HTML liên kết bình luận bài viết được định dạng.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string      $post_reply_link The HTML-formatted post comments link.
-	 * @param int|WP_Post $post            The post ID or WP_Post object.
+	 * @param string      $post_reply_link Liên kết bình luận bài viết được định dạng HTML.
+	 * @param int|WP_Post $post            ID bài viết hoặc đối tượng WP_Post.
 	 */
 	return apply_filters( 'post_comments_link', $post_reply_link, $post );
 }
 
 /**
- * Displays the HTML content for reply to post link.
+ * Hiển thị nội dung HTML cho liên kết trả lời bài viết.
  *
  * @since 2.7.0
  *
  * @see get_post_reply_link()
  *
- * @param array       $args Optional. Override default options. Default empty array.
- * @param int|WP_Post $post Optional. Post ID or WP_Post object the comment is going to be displayed on.
- *                          Default current post.
+ * @param array       $args Tùy chọn. Ghi đè các tùy chọn mặc định. Mặc định mảng rỗng.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post mà bình luận sẽ được hiển thị.
+ *                          Mặc định bài viết hiện tại.
  */
 function post_reply_link( $args = array(), $post = null ) {
 	echo get_post_reply_link( $args, $post );
 }
 
 /**
- * Retrieves HTML content for cancel comment reply link.
+ * Lấy nội dung HTML cho liên kết hủy trả lời bình luận.
  *
  * @since 2.7.0
- * @since 6.2.0 Added the `$post` parameter.
+ * @since 6.2.0 Thêm tham số `$post`.
  *
- * @param string           $link_text Optional. Text to display for cancel reply link. If empty,
- *                                    defaults to 'Click here to cancel reply'. Default empty.
- * @param int|WP_Post|null $post      Optional. The post the comment thread is being
- *                                    displayed for. Defaults to the current global post.
+ * @param string           $link_text Tùy chọn. Văn bản hiển thị cho liên kết hủy trả lời. Nếu rỗng,
+ *                                    mặc định là 'Click here to cancel reply'. Mặc định rỗng.
+ * @param int|WP_Post|null $post      Tùy chọn. Bài viết mà chuỗi bình luận đang được
+ *                                    hiển thị. Mặc định là bài viết toàn cục hiện tại.
  * @return string
  */
 function get_cancel_comment_reply_link( $link_text = '', $post = null ) {
@@ -2013,38 +2012,38 @@ function get_cancel_comment_reply_link( $link_text = '', $post = null ) {
 	);
 
 	/**
-	 * Filters the cancel comment reply link HTML.
+	 * Lọc HTML liên kết hủy trả lời bình luận.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $cancel_comment_reply_link The HTML-formatted cancel comment reply link.
-	 * @param string $link_url                  Cancel comment reply link URL.
-	 * @param string $link_text                 Cancel comment reply link text.
+	 * @param string $cancel_comment_reply_link Liên kết hủy trả lời bình luận được định dạng HTML.
+	 * @param string $link_url                  URL liên kết hủy trả lời bình luận.
+	 * @param string $link_text                 Văn bản liên kết hủy trả lời bình luận.
 	 */
 	return apply_filters( 'cancel_comment_reply_link', $cancel_comment_reply_link, $link_url, $link_text );
 }
 
 /**
- * Displays HTML content for cancel comment reply link.
+ * Hiển thị nội dung HTML cho liên kết hủy trả lời bình luận.
  *
  * @since 2.7.0
  *
- * @param string $link_text Optional. Text to display for cancel reply link. If empty,
- *                     defaults to 'Click here to cancel reply'. Default empty.
+ * @param string $link_text Tùy chọn. Văn bản hiển thị cho liên kết hủy trả lời. Nếu rỗng,
+ *                     mặc định là 'Click here to cancel reply'. Mặc định rỗng.
  */
 function cancel_comment_reply_link( $link_text = '' ) {
 	echo get_cancel_comment_reply_link( $link_text );
 }
 
 /**
- * Retrieves hidden input HTML for replying to comments.
+ * Lấy HTML input ẩn để trả lời bình luận.
  *
  * @since 3.0.0
- * @since 6.2.0 Renamed `$post_id` to `$post` and added WP_Post support.
+ * @since 6.2.0 Đổi tên `$post_id` thành `$post` và thêm hỗ trợ WP_Post.
  *
- * @param int|WP_Post|null $post Optional. The post the comment is being displayed for.
- *                               Defaults to the current global post.
- * @return string Hidden input HTML for replying to comments.
+ * @param int|WP_Post|null $post Tùy chọn. Bài viết mà bình luận đang được hiển thị.
+ *                               Mặc định là bài viết toàn cục hiện tại.
+ * @return string HTML input ẩn để trả lời bình luận.
  */
 function get_comment_id_fields( $post = null ) {
 	$post = get_post( $post );
@@ -2059,59 +2058,59 @@ function get_comment_id_fields( $post = null ) {
 	$comment_id_fields .= "<input type='hidden' name='comment_parent' id='comment_parent' value='$reply_to_id' />\n";
 
 	/**
-	 * Filters the returned comment ID fields.
+	 * Lọc các trường ID bình luận được trả về.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $comment_id_fields The HTML-formatted hidden ID field comment elements.
-	 * @param int    $post_id           The post ID.
-	 * @param int    $reply_to_id       The ID of the comment being replied to.
+	 * @param string $comment_id_fields Các phần tử trường ID ẩn bình luận được định dạng HTML.
+	 * @param int    $post_id           ID bài viết.
+	 * @param int    $reply_to_id       ID của bình luận đang được trả lời.
 	 */
 	return apply_filters( 'comment_id_fields', $comment_id_fields, $post_id, $reply_to_id );
 }
 
 /**
- * Outputs hidden input HTML for replying to comments.
+ * Xuất HTML input ẩn để trả lời bình luận.
  *
- * Adds two hidden inputs to the comment form to identify the `comment_post_ID`
- * and `comment_parent` values for threaded comments.
+ * Thêm hai input ẩn vào biểu mẫu bình luận để xác định các giá trị `comment_post_ID`
+ * và `comment_parent` cho bình luận phân luồng.
  *
- * This tag must be within the `<form>` section of the `comments.php` template.
+ * Thẻ này phải nằm trong phần `<form>` của template `comments.php`.
  *
  * @since 2.7.0
- * @since 6.2.0 Renamed `$post_id` to `$post` and added WP_Post support.
+ * @since 6.2.0 Đổi tên `$post_id` thành `$post` và thêm hỗ trợ WP_Post.
  *
  * @see get_comment_id_fields()
  *
- * @param int|WP_Post|null $post Optional. The post the comment is being displayed for.
- *                               Defaults to the current global post.
+ * @param int|WP_Post|null $post Tùy chọn. Bài viết mà bình luận đang được hiển thị.
+ *                               Mặc định là bài viết toàn cục hiện tại.
  */
 function comment_id_fields( $post = null ) {
 	echo get_comment_id_fields( $post );
 }
 
 /**
- * Displays text based on comment reply status.
+ * Hiển thị văn bản dựa trên trạng thái trả lời bình luận.
  *
- * Only affects users with JavaScript disabled.
+ * Chỉ ảnh hưởng đến người dùng có JavaScript bị tắt.
  *
- * @internal The $comment global must be present to allow template tags access to the current
- *           comment. See https://core.trac.wordpress.org/changeset/36512.
+ * @internal Biến toàn cục $comment phải có mặt để cho phép các thẻ template truy cập
+ *           bình luận hiện tại. Xem https://core.trac.wordpress.org/changeset/36512.
  *
  * @since 2.7.0
- * @since 6.2.0 Added the `$post` parameter.
+ * @since 6.2.0 Thêm tham số `$post`.
  *
- * @global WP_Comment $comment Global comment object.
+ * @global WP_Comment $comment Đối tượng bình luận toàn cục.
  *
- * @param string|false     $no_reply_text  Optional. Text to display when not replying to a comment.
- *                                         Default false.
- * @param string|false     $reply_text     Optional. Text to display when replying to a comment.
- *                                         Default false. Accepts "%s" for the author of the comment
- *                                         being replied to.
- * @param bool             $link_to_parent Optional. Boolean to control making the author's name a link
- *                                         to their comment. Default true.
- * @param int|WP_Post|null $post           Optional. The post that the comment form is being displayed for.
- *                                         Defaults to the current global post.
+ * @param string|false     $no_reply_text  Tùy chọn. Văn bản hiển thị khi không trả lời bình luận.
+ *                                         Mặc định false.
+ * @param string|false     $reply_text     Tùy chọn. Văn bản hiển thị khi trả lời bình luận.
+ *                                         Mặc định false. Chấp nhận "%s" cho tên tác giả bình luận
+ *                                         đang được trả lời.
+ * @param bool             $link_to_parent Tùy chọn. Boolean để kiểm soát việc tạo liên kết tên tác giả
+ *                                         đến bình luận của họ. Mặc định true.
+ * @param int|WP_Post|null $post           Tùy chọn. Bài viết mà biểu mẫu bình luận đang được hiển thị.
+ *                                         Mặc định là bài viết toàn cục hiện tại.
  */
 function comment_form_title( $no_reply_text = false, $reply_text = false, $link_to_parent = true, $post = null ) {
 	global $comment;
@@ -2138,7 +2137,7 @@ function comment_form_title( $no_reply_text = false, $reply_text = false, $link_
 		return;
 	}
 
-	// Sets the global so that template tags can be used in the comment form.
+	// Đặt biến toàn cục để các thẻ template có thể được sử dụng trong biểu mẫu bình luận.
 	$comment = get_comment( $reply_to_id );
 
 	if ( $link_to_parent ) {
@@ -2155,15 +2154,15 @@ function comment_form_title( $no_reply_text = false, $reply_text = false, $link_
 }
 
 /**
- * Gets the comment's reply to ID from the $_GET['replytocom'].
+ * Lấy ID trả lời của bình luận từ $_GET['replytocom'].
  *
  * @since 6.2.0
  *
  * @access private
  *
- * @param int|WP_Post $post The post the comment is being displayed for.
- *                          Defaults to the current global post.
- * @return int Comment's reply to ID.
+ * @param int|WP_Post $post Bài viết mà bình luận đang được hiển thị.
+ *                          Mặc định là bài viết toàn cục hiện tại.
+ * @return int ID trả lời của bình luận.
  */
 function _get_comment_reply_id( $post = null ) {
 	$post = get_post( $post );
@@ -2175,9 +2174,9 @@ function _get_comment_reply_id( $post = null ) {
 	$reply_to_id = (int) $_GET['replytocom'];
 
 	/*
-	 * Validate the comment.
-	 * Bail out if it does not exist, is not approved, or its
-	 * `comment_post_ID` does not match the given post ID.
+	 * Xác thực bình luận.
+	 * Thoát ra nếu bình luận không tồn tại, chưa được duyệt, hoặc
+	 * `comment_post_ID` của nó không khớp với ID bài viết đã cho.
 	 */
 	$comment = get_comment( $reply_to_id );
 
@@ -2193,15 +2192,15 @@ function _get_comment_reply_id( $post = null ) {
 }
 
 /**
- * Displays a list of comments.
+ * Hiển thị danh sách các bình luận.
  *
- * Used in the comments.php template to list comments for a particular post.
+ * Được sử dụng trong template comments.php để liệt kê bình luận cho bài viết cụ thể.
  *
  * @since 2.7.0
  *
  * @see WP_Query::$comments
  *
- * @global WP_Query $wp_query           WordPress Query object.
+ * @global WP_Query $wp_query           Đối tượng truy vấn WordPress.
  * @global int      $comment_alt
  * @global int      $comment_depth
  * @global int      $comment_thread_alt
@@ -2209,30 +2208,30 @@ function _get_comment_reply_id( $post = null ) {
  * @global bool     $in_comment_loop
  *
  * @param string|array $args {
- *     Optional. Formatting options.
+ *     Tùy chọn. Các tùy chọn định dạng.
  *
- *     @type object   $walker            Instance of a Walker class to list comments. Default null.
- *     @type int      $max_depth         The maximum comments depth. Default empty.
- *     @type string   $style             The style of list ordering. Accepts 'ul', 'ol', or 'div'.
- *                                       'div' will result in no additional list markup. Default 'ul'.
- *     @type callable $callback          Callback function to use. Default null.
- *     @type callable $end-callback      Callback function to use at the end. Default null.
- *     @type string   $type              Type of comments to list. Accepts 'all', 'comment',
- *                                       'pingback', 'trackback', 'pings'. Default 'all'.
- *     @type int      $page              Page ID to list comments for. Default empty.
- *     @type int      $per_page          Number of comments to list per page. Default empty.
- *     @type int      $avatar_size       Height and width dimensions of the avatar size. Default 32.
- *     @type bool     $reverse_top_level Ordering of the listed comments. If true, will display
- *                                       newest comments first. Default null.
- *     @type bool     $reverse_children  Whether to reverse child comments in the list. Default null.
- *     @type string   $format            How to format the comments list. Accepts 'html5', 'xhtml'.
- *                                       Default 'html5' if the theme supports it.
- *     @type bool     $short_ping        Whether to output short pings. Default false.
- *     @type bool     $echo              Whether to echo the output or return it. Default true.
+ *     @type object   $walker            Đối tượng của class Walker để liệt kê bình luận. Mặc định null.
+ *     @type int      $max_depth         Độ sâu tối đa của bình luận. Mặc định rỗng.
+ *     @type string   $style             Kiểu sắp xếp danh sách. Chấp nhận 'ul', 'ol', hoặc 'div'.
+ *                                       'div' sẽ không tạo thêm markup danh sách. Mặc định 'ul'.
+ *     @type callable $callback          Hàm callback sử dụng. Mặc định null.
+ *     @type callable $end-callback      Hàm callback sử dụng ở cuối. Mặc định null.
+ *     @type string   $type              Loại bình luận cần liệt kê. Chấp nhận 'all', 'comment',
+ *                                       'pingback', 'trackback', 'pings'. Mặc định 'all'.
+ *     @type int      $page              ID trang để liệt kê bình luận. Mặc định rỗng.
+ *     @type int      $per_page          Số bình luận liệt kê mỗi trang. Mặc định rỗng.
+ *     @type int      $avatar_size       Kích thước chiều cao và chiều rộng của avatar. Mặc định 32.
+ *     @type bool     $reverse_top_level Thứ tự sắp xếp bình luận. Nếu true, sẽ hiển thị
+ *                                       bình luận mới nhất trước. Mặc định null.
+ *     @type bool     $reverse_children  Có đảo ngược bình luận con trong danh sách hay không. Mặc định null.
+ *     @type string   $format            Cách định dạng danh sách bình luận. Chấp nhận 'html5', 'xhtml'.
+ *                                       Mặc định 'html5' nếu theme hỗ trợ.
+ *     @type bool     $short_ping        Có xuất ping ngắn hay không. Mặc định false.
+ *     @type bool     $echo              Có echo đầu ra hay trả về nó. Mặc định true.
  * }
- * @param WP_Comment[] $comments Optional. Array of WP_Comment objects. Default null.
- * @return void|string Void if 'echo' argument is true, or no comments to list.
- *                     Otherwise, HTML list of comments.
+ * @param WP_Comment[] $comments Tùy chọn. Mảng các đối tượng WP_Comment. Mặc định null.
+ * @return void|string Void nếu tham số 'echo' là true, hoặc không có bình luận để liệt kê.
+ *                     Ngược lại, danh sách HTML các bình luận.
  */
 function wp_list_comments( $args = array(), $comments = null ) {
 	global $wp_query, $comment_alt, $comment_depth, $comment_thread_alt, $overridden_cpage, $in_comment_loop;
@@ -2263,17 +2262,17 @@ function wp_list_comments( $args = array(), $comments = null ) {
 	$parsed_args = wp_parse_args( $args, $defaults );
 
 	/**
-	 * Filters the arguments used in retrieving the comment list.
+	 * Lọc các tham số được sử dụng khi lấy danh sách bình luận.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @see wp_list_comments()
 	 *
-	 * @param array $parsed_args An array of arguments for displaying comments.
+	 * @param array $parsed_args Mảng các tham số để hiển thị bình luận.
 	 */
 	$parsed_args = apply_filters( 'wp_list_comments_args', $parsed_args );
 
-	// Figure out what comments we'll be looping through ($_comments).
+	// Xác định bình luận nào chúng ta sẽ lặp qua ($_comments).
 	if ( null !== $comments ) {
 		$comments = (array) $comments;
 		if ( empty( $comments ) ) {
@@ -2290,8 +2289,8 @@ function wp_list_comments( $args = array(), $comments = null ) {
 		}
 	} else {
 		/*
-		 * If 'page' or 'per_page' has been passed, and does not match what's in $wp_query,
-		 * perform a separate comment query and allow Walker_Comment to paginate.
+		 * Nếu 'page' hoặc 'per_page' được truyền, và không khớp với giá trị trong $wp_query,
+		 * thực hiện truy vấn bình luận riêng và cho phép Walker_Comment phân trang.
 		 */
 		if ( $parsed_args['page'] || $parsed_args['per_page'] ) {
 			$current_cpage = (int) get_query_var( 'cpage' );
@@ -2332,7 +2331,7 @@ function wp_list_comments( $args = array(), $comments = null ) {
 				}
 			}
 
-			// Otherwise, fall back on the comments from `$wp_query->comments`.
+			// Nếu không, quay lại sử dụng bình luận từ `$wp_query->comments`.
 		} else {
 			if ( empty( $wp_query->comments ) ) {
 				return;
@@ -2357,8 +2356,8 @@ function wp_list_comments( $args = array(), $comments = null ) {
 					$parsed_args['cpage'] = $cpage;
 				} elseif ( 1 === $cpage ) {
 					/*
-					 * When the first page shows the oldest comments,
-					 * post permalink is the same as the comment permalink.
+					 * Khi trang đầu tiên hiển thị các bình luận cũ nhất,
+					 * permalink bài viết giống với permalink bình luận.
 					 */
 					$parsed_args['cpage'] = '';
 				} else {
@@ -2398,7 +2397,7 @@ function wp_list_comments( $args = array(), $comments = null ) {
 		}
 	}
 
-	// Validation check.
+	// Kiểm tra xác thực.
 	$parsed_args['page']     = (int) $parsed_args['page'];
 	$parsed_args['per_page'] = (int) $parsed_args['per_page'];
 	if ( 0 === $parsed_args['page'] && 0 !== $parsed_args['per_page'] ) {

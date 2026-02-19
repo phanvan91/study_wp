@@ -1,11 +1,11 @@
 <?php
 /**
- * Main WordPress API
+ * API chính của WordPress
  *
  * @package WordPress
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
@@ -13,24 +13,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 require ABSPATH . WPINC . '/option.php';
 
 /**
- * Converts given MySQL date string into a different format.
+ * Chuyển đổi chuỗi ngày MySQL sang định dạng khác.
  *
- *  - `$format` should be a PHP date format string.
- *  - 'U' and 'G' formats will return an integer sum of timestamp with timezone offset.
- *  - `$date` is expected to be local time in MySQL format (`Y-m-d H:i:s`).
+ *  - `$format` phải là chuỗi định dạng ngày PHP.
+ *  - Định dạng 'U' và 'G' sẽ trả về tổng số nguyên của timestamp với độ lệch múi giờ.
+ *  - `$date` được mong đợi là giờ địa phương theo định dạng MySQL (`Y-m-d H:i:s`).
  *
- * Historically UTC time could be passed to the function to produce Unix timestamp.
+ * Trước đây, giờ UTC có thể được truyền vào hàm để tạo Unix timestamp.
  *
- * If `$translate` is true then the given date and format string will
- * be passed to `wp_date()` for translation.
+ * Nếu `$translate` là true thì ngày và chuỗi định dạng đã cho sẽ
+ * được truyền tới `wp_date()` để dịch.
  *
  * @since 0.71
  *
- * @param string $format    Format of the date to return.
- * @param string $date      Date string to convert.
- * @param bool   $translate Whether the return date should be translated. Default true.
- * @return string|int|false Integer if `$format` is 'U' or 'G', string otherwise.
- *                          False on failure.
+ * @param string $format    Định dạng của ngày trả về.
+ * @param string $date      Chuỗi ngày cần chuyển đổi.
+ * @param bool   $translate Có nên dịch ngày trả về hay không. Mặc định true.
+ * @return string|int|false Số nguyên nếu `$format` là 'U' hoặc 'G', chuỗi trong các trường hợp khác.
+ *                          False khi thất bại.
  */
 function mysql2date( $format, $date, $translate = true ) {
 	if ( empty( $date ) ) {
@@ -44,7 +44,7 @@ function mysql2date( $format, $date, $translate = true ) {
 		return false;
 	}
 
-	// Returns a sum of timestamp with timezone offset. Ideally should never be used.
+	// Trả về tổng của timestamp với độ lệch múi giờ. Lý tưởng là không nên sử dụng.
 	if ( 'G' === $format || 'U' === $format ) {
 		return $datetime->getTimestamp() + $datetime->getOffset();
 	}
@@ -57,26 +57,26 @@ function mysql2date( $format, $date, $translate = true ) {
 }
 
 /**
- * Retrieves the current time based on specified type.
+ * Lấy thời gian hiện tại dựa trên loại được chỉ định.
  *
- *  - The 'mysql' type will return the time in the format for MySQL DATETIME field.
- *  - The 'timestamp' or 'U' types will return the current timestamp or a sum of timestamp
- *    and timezone offset, depending on `$gmt`.
- *  - Other strings will be interpreted as PHP date formats (e.g. 'Y-m-d').
+ *  - Loại 'mysql' sẽ trả về thời gian theo định dạng cho trường MySQL DATETIME.
+ *  - Loại 'timestamp' hoặc 'U' sẽ trả về timestamp hiện tại hoặc tổng của timestamp
+ *    và độ lệch múi giờ, tùy thuộc vào `$gmt`.
+ *  - Các chuỗi khác sẽ được hiểu là định dạng ngày PHP (ví dụ: 'Y-m-d').
  *
- * If `$gmt` is a truthy value then both types will use GMT time, otherwise the
- * output is adjusted with the GMT offset for the site.
+ * Nếu `$gmt` là giá trị truthy thì cả hai loại sẽ sử dụng giờ GMT, nếu không
+ * đầu ra sẽ được điều chỉnh với độ lệch GMT của trang web.
  *
  * @since 1.0.0
- * @since 5.3.0 Now returns an integer if `$type` is 'U'. Previously a string was returned.
+ * @since 5.3.0 Bây giờ trả về số nguyên nếu `$type` là 'U'. Trước đây trả về chuỗi.
  *
- * @param string   $type Type of time to retrieve. Accepts 'mysql', 'timestamp', 'U',
- *                       or PHP date format string (e.g. 'Y-m-d').
- * @param int|bool $gmt  Optional. Whether to use GMT timezone. Default false.
- * @return int|string Integer if `$type` is 'timestamp' or 'U', string otherwise.
+ * @param string   $type Loại thời gian cần lấy. Chấp nhận 'mysql', 'timestamp', 'U',
+ *                       hoặc chuỗi định dạng ngày PHP (ví dụ: 'Y-m-d').
+ * @param int|bool $gmt  Tùy chọn. Có sử dụng múi giờ GMT hay không. Mặc định false.
+ * @return int|string Số nguyên nếu `$type` là 'timestamp' hoặc 'U', chuỗi trong các trường hợp khác.
  */
 function current_time( $type, $gmt = 0 ) {
-	// Don't use non-GMT timestamp, unless you know the difference and really need to.
+	// Không sử dụng timestamp không phải GMT, trừ khi bạn hiểu sự khác biệt và thực sự cần.
 	if ( 'timestamp' === $type || 'U' === $type ) {
 		return $gmt ? time() : time() + (int) ( (float) get_option( 'gmt_offset' ) * HOUR_IN_SECONDS );
 	}
@@ -92,23 +92,23 @@ function current_time( $type, $gmt = 0 ) {
 }
 
 /**
- * Retrieves the current time as an object using the site's timezone.
+ * Lấy thời gian hiện tại dưới dạng đối tượng sử dụng múi giờ của trang web.
  *
  * @since 5.3.0
  *
- * @return DateTimeImmutable Date and time object.
+ * @return DateTimeImmutable Đối tượng ngày và giờ.
  */
 function current_datetime() {
 	return new DateTimeImmutable( 'now', wp_timezone() );
 }
 
 /**
- * Retrieves the timezone of the site as a string.
+ * Lấy múi giờ của trang web dưới dạng chuỗi.
  *
- * Uses the `timezone_string` option to get a proper timezone name if available,
- * otherwise falls back to a manual UTC ± offset.
+ * Sử dụng tùy chọn `timezone_string` để lấy tên múi giờ phù hợp nếu có,
+ * nếu không sẽ dùng độ lệch UTC ± thủ công.
  *
- * Example return values:
+ * Ví dụ giá trị trả về:
  *
  *  - 'Europe/Rome'
  *  - 'America/North_Dakota/New_Salem'
@@ -119,7 +119,7 @@ function current_datetime() {
  *
  * @since 5.3.0
  *
- * @return string PHP timezone name or a ±HH:MM offset.
+ * @return string Tên múi giờ PHP hoặc độ lệch ±HH:MM.
  */
 function wp_timezone_string() {
 	$timezone_string = get_option( 'timezone_string' );
@@ -141,64 +141,64 @@ function wp_timezone_string() {
 }
 
 /**
- * Retrieves the timezone of the site as a `DateTimeZone` object.
+ * Lấy múi giờ của trang web dưới dạng đối tượng `DateTimeZone`.
  *
- * Timezone can be based on a PHP timezone string or a ±HH:MM offset.
+ * Múi giờ có thể dựa trên chuỗi múi giờ PHP hoặc độ lệch ±HH:MM.
  *
  * @since 5.3.0
  *
- * @return DateTimeZone Timezone object.
+ * @return DateTimeZone Đối tượng múi giờ.
  */
 function wp_timezone() {
 	return new DateTimeZone( wp_timezone_string() );
 }
 
 /**
- * Retrieves the date in localized format, based on a sum of Unix timestamp and
- * timezone offset in seconds.
+ * Lấy ngày theo định dạng bản địa hóa, dựa trên tổng của Unix timestamp và
+ * độ lệch múi giờ tính bằng giây.
  *
- * If the locale specifies the locale month and weekday, then the locale will
- * take over the format for the date. If it isn't, then the date format string
- * will be used instead.
+ * Nếu locale chỉ định tháng và ngày trong tuần theo locale, thì locale sẽ
+ * đảm nhận định dạng cho ngày. Nếu không, chuỗi định dạng ngày
+ * sẽ được sử dụng thay thế.
  *
- * Note that due to the way WP typically generates a sum of timestamp and offset
- * with `strtotime()`, it implies offset added at a _current_ time, not at the time
- * the timestamp represents. Storing such timestamps or calculating them differently
- * will lead to invalid output.
+ * Lưu ý rằng do cách WP thường tạo tổng của timestamp và độ lệch
+ * bằng `strtotime()`, nó ngụ ý độ lệch được thêm vào thời điểm _hiện tại_, không phải thời điểm
+ * mà timestamp đại diện. Lưu trữ các timestamp như vậy hoặc tính toán chúng khác đi
+ * sẽ dẫn đến đầu ra không hợp lệ.
  *
  * @since 0.71
- * @since 5.3.0 Converted into a wrapper for wp_date().
+ * @since 5.3.0 Được chuyển thành wrapper cho wp_date().
  *
- * @param string   $format                Format to display the date.
- * @param int|bool $timestamp_with_offset Optional. A sum of Unix timestamp and timezone offset
- *                                        in seconds. Default false.
- * @param bool     $gmt                   Optional. Whether to use GMT timezone. Only applies
- *                                        if timestamp is not provided. Default false.
- * @return string The date, translated if locale specifies it.
+ * @param string   $format                Định dạng hiển thị ngày.
+ * @param int|bool $timestamp_with_offset Tùy chọn. Tổng của Unix timestamp và độ lệch múi giờ
+ *                                        tính bằng giây. Mặc định false.
+ * @param bool     $gmt                   Tùy chọn. Có sử dụng múi giờ GMT hay không. Chỉ áp dụng
+ *                                        nếu timestamp không được cung cấp. Mặc định false.
+ * @return string Ngày, được dịch nếu locale chỉ định.
  */
 function date_i18n( $format, $timestamp_with_offset = false, $gmt = false ) {
 	$timestamp = $timestamp_with_offset;
 
-	// If timestamp is omitted it should be current time (summed with offset, unless `$gmt` is true).
+	// Nếu timestamp bị bỏ qua thì nó phải là thời gian hiện tại (cộng với độ lệch, trừ khi `$gmt` là true).
 	if ( ! is_numeric( $timestamp ) ) {
 		// phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested
 		$timestamp = current_time( 'timestamp', $gmt );
 	}
 
 	/*
-	 * This is a legacy implementation quirk that the returned timestamp is also with offset.
-	 * Ideally this function should never be used to produce a timestamp.
+	 * Đây là một đặc điểm triển khai kế thừa rằng timestamp trả về cũng bao gồm độ lệch.
+	 * Lý tưởng thì hàm này không bao giờ nên được sử dụng để tạo timestamp.
 	 */
 	if ( 'U' === $format ) {
 		$date = $timestamp;
-	} elseif ( $gmt && false === $timestamp_with_offset ) { // Current time in UTC.
+	} elseif ( $gmt && false === $timestamp_with_offset ) { // Thời gian hiện tại theo UTC.
 		$date = wp_date( $format, null, new DateTimeZone( 'UTC' ) );
-	} elseif ( false === $timestamp_with_offset ) { // Current time in site's timezone.
+	} elseif ( false === $timestamp_with_offset ) { // Thời gian hiện tại theo múi giờ của trang web.
 		$date = wp_date( $format );
 	} else {
 		/*
-		 * Timestamp with offset is typically produced by a UTC `strtotime()` call on an input without timezone.
-		 * This is the best attempt to reverse that operation into a local time to use.
+		 * Timestamp có độ lệch thường được tạo bởi lệnh gọi `strtotime()` UTC trên đầu vào không có múi giờ.
+		 * Đây là nỗ lực tốt nhất để đảo ngược thao tác đó thành giờ địa phương để sử dụng.
 		 */
 		$local_time = gmdate( 'Y-m-d H:i:s', $timestamp );
 		$timezone   = wp_timezone();
@@ -207,16 +207,16 @@ function date_i18n( $format, $timestamp_with_offset = false, $gmt = false ) {
 	}
 
 	/**
-	 * Filters the date formatted based on the locale.
+	 * Lọc ngày được định dạng dựa trên locale.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $date      Formatted date string.
-	 * @param string $format    Format to display the date.
-	 * @param int    $timestamp A sum of Unix timestamp and timezone offset in seconds.
-	 *                          Might be without offset if input omitted timestamp but requested GMT.
-	 * @param bool   $gmt       Whether to use GMT timezone. Only applies if timestamp was not provided.
-	 *                          Default false.
+	 * @param string $date      Chuỗi ngày đã được định dạng.
+	 * @param string $format    Định dạng hiển thị ngày.
+	 * @param int    $timestamp Tổng của Unix timestamp và độ lệch múi giờ tính bằng giây.
+	 *                          Có thể không có độ lệch nếu đầu vào bỏ qua timestamp nhưng yêu cầu GMT.
+	 * @param bool   $gmt       Có sử dụng múi giờ GMT hay không. Chỉ áp dụng nếu timestamp không được cung cấp.
+	 *                          Mặc định false.
 	 */
 	$date = apply_filters( 'date_i18n', $date, $format, $timestamp, $gmt );
 
@@ -224,22 +224,22 @@ function date_i18n( $format, $timestamp_with_offset = false, $gmt = false ) {
 }
 
 /**
- * Retrieves the date, in localized format.
+ * Lấy ngày theo định dạng bản địa hóa.
  *
- * This is a newer function, intended to replace `date_i18n()` without legacy quirks in it.
+ * Đây là hàm mới hơn, nhằm thay thế `date_i18n()` mà không có các đặc điểm kế thừa.
  *
- * Note that, unlike `date_i18n()`, this function accepts a true Unix timestamp, not summed
- * with timezone offset.
+ * Lưu ý rằng, khác với `date_i18n()`, hàm này chấp nhận Unix timestamp thực sự, không cộng
+ * với độ lệch múi giờ.
  *
  * @since 5.3.0
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày và giờ của WordPress.
  *
- * @param string       $format    PHP date format.
- * @param int          $timestamp Optional. Unix timestamp. Defaults to current time.
- * @param DateTimeZone $timezone  Optional. Timezone to output result in. Defaults to timezone
- *                                from site settings.
- * @return string|false The date, translated if locale specifies it. False on invalid timestamp input.
+ * @param string       $format    Định dạng ngày PHP.
+ * @param int          $timestamp Tùy chọn. Unix timestamp. Mặc định là thời gian hiện tại.
+ * @param DateTimeZone $timezone  Tùy chọn. Múi giờ để xuất kết quả. Mặc định là múi giờ
+ *                                từ cài đặt trang web.
+ * @return string|false Ngày, được dịch nếu locale chỉ định. False nếu đầu vào timestamp không hợp lệ.
  */
 function wp_date( $format, $timestamp = null, $timezone = null ) {
 	global $wp_locale;
@@ -260,7 +260,7 @@ function wp_date( $format, $timestamp = null, $timezone = null ) {
 	if ( empty( $wp_locale->month ) || empty( $wp_locale->weekday ) ) {
 		$date = $datetime->format( $format );
 	} else {
-		// We need to unpack shorthand `r` format because it has parts that might be localized.
+		// Chúng ta cần giải nén định dạng viết tắt `r` vì nó có các phần có thể được bản địa hóa.
 		$format = preg_replace( '/(?<!\\\\)r/', DATE_RFC2822, $format );
 
 		$new_format    = '';
@@ -291,7 +291,7 @@ function wp_date( $format, $timestamp = null, $timezone = null ) {
 				case '\\':
 					$new_format .= $format[ $i ];
 
-					// If character follows a slash, we add it without translating.
+					// Nếu ký tự theo sau dấu gạch chéo, chúng ta thêm nó mà không dịch.
 					if ( $i < $format_length ) {
 						$new_format .= $format[ ++$i ];
 					}
@@ -307,14 +307,14 @@ function wp_date( $format, $timestamp = null, $timezone = null ) {
 	}
 
 	/**
-	 * Filters the date formatted based on the locale.
+	 * Lọc ngày được định dạng dựa trên locale.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param string       $date      Formatted date string.
-	 * @param string       $format    Format to display the date.
+	 * @param string       $date      Chuỗi ngày đã được định dạng.
+	 * @param string       $format    Định dạng hiển thị ngày.
 	 * @param int          $timestamp Unix timestamp.
-	 * @param DateTimeZone $timezone  Timezone.
+	 * @param DateTimeZone $timezone  Múi giờ.
 	 */
 	$date = apply_filters( 'wp_date', $date, $format, $timestamp, $timezone );
 
@@ -322,24 +322,24 @@ function wp_date( $format, $timestamp = null, $timezone = null ) {
 }
 
 /**
- * Determines if the date should be declined.
+ * Xác định xem ngày có nên được chia theo cách (biến cách) hay không.
  *
- * If the locale specifies that month names require a genitive case in certain
- * formats (like 'j F Y'), the month name will be replaced with a correct form.
+ * Nếu locale chỉ định rằng tên tháng yêu cầu cách sở hữu trong một số
+ * định dạng nhất định (như 'j F Y'), tên tháng sẽ được thay thế bằng dạng đúng.
  *
  * @since 4.4.0
- * @since 5.4.0 The `$format` parameter was added.
+ * @since 5.4.0 Tham số `$format` được thêm vào.
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày và giờ của WordPress.
  *
- * @param string $date   Formatted date string.
- * @param string $format Optional. Date format to check. Default empty string.
- * @return string The date, declined if locale specifies it.
+ * @param string $date   Chuỗi ngày đã được định dạng.
+ * @param string $format Tùy chọn. Định dạng ngày để kiểm tra. Mặc định chuỗi rỗng.
+ * @return string Ngày, được biến cách nếu locale chỉ định.
  */
 function wp_maybe_decline_date( $date, $format = '' ) {
 	global $wp_locale;
 
-	// i18n functions are not available in SHORTINIT mode.
+	// Các hàm i18n không khả dụng trong chế độ SHORTINIT.
 	if ( ! function_exists( '_x' ) ) {
 		return $date;
 	}
@@ -354,13 +354,13 @@ function wp_maybe_decline_date( $date, $format = '' ) {
 		$months_genitive = $wp_locale->month_genitive;
 
 		/*
-		 * Match a format like 'j F Y' or 'j. F' (day of the month, followed by month name)
-		 * and decline the month.
+		 * Khớp định dạng như 'j F Y' hoặc 'j. F' (ngày trong tháng, theo sau là tên tháng)
+		 * và biến cách tên tháng.
 		 */
 		if ( $format ) {
 			$decline = preg_match( '#[dj]\.? F#', $format );
 		} else {
-			// If the format is not passed, try to guess it from the date string.
+			// Nếu định dạng không được truyền, thử đoán từ chuỗi ngày.
 			$decline = preg_match( '#\b\d{1,2}\.? [^\d ]+\b#u', $date );
 		}
 
@@ -377,13 +377,13 @@ function wp_maybe_decline_date( $date, $format = '' ) {
 		}
 
 		/*
-		 * Match a format like 'F jS' or 'F j' (month name, followed by day with an optional ordinal suffix)
-		 * and change it to declined 'j F'.
+		 * Khớp định dạng như 'F jS' hoặc 'F j' (tên tháng, theo sau là ngày với hậu tố thứ tự tùy chọn)
+		 * và đổi thành dạng biến cách 'j F'.
 		 */
 		if ( $format ) {
 			$decline = preg_match( '#F [dj]#', $format );
 		} else {
-			// If the format is not passed, try to guess it from the date string.
+			// Nếu định dạng không được truyền, thử đoán từ chuỗi ngày.
 			$decline = preg_match( '#\b[^\d ]+ \d{1,2}(st|nd|rd|th)?\b#u', trim( $date ) );
 		}
 
@@ -400,7 +400,7 @@ function wp_maybe_decline_date( $date, $format = '' ) {
 		}
 	}
 
-	// Used for locale-specific rules.
+	// Được sử dụng cho các quy tắc dành riêng cho locale.
 	$locale = get_locale();
 
 	if ( 'ca' === $locale ) {
@@ -412,15 +412,15 @@ function wp_maybe_decline_date( $date, $format = '' ) {
 }
 
 /**
- * Converts float number to format based on the locale.
+ * Chuyển đổi số thực sang định dạng dựa trên locale.
  *
  * @since 2.3.0
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày và giờ của WordPress.
  *
- * @param float $number   The number to convert based on locale.
- * @param int   $decimals Optional. Precision of the number of decimal places. Default 0.
- * @return string Converted number in string format.
+ * @param float $number   Số cần chuyển đổi dựa trên locale.
+ * @param int   $decimals Tùy chọn. Độ chính xác của số chữ số thập phân. Mặc định 0.
+ * @return string Số đã chuyển đổi ở định dạng chuỗi.
  */
 function number_format_i18n( $number, $decimals = 0 ) {
 	global $wp_locale;
@@ -432,38 +432,38 @@ function number_format_i18n( $number, $decimals = 0 ) {
 	}
 
 	/**
-	 * Filters the number formatted based on the locale.
+	 * Lọc số được định dạng dựa trên locale.
 	 *
 	 * @since 2.8.0
-	 * @since 4.9.0 The `$number` and `$decimals` parameters were added.
+	 * @since 4.9.0 Các tham số `$number` và `$decimals` được thêm vào.
 	 *
-	 * @param string $formatted Converted number in string format.
-	 * @param float  $number    The number to convert based on locale.
-	 * @param int    $decimals  Precision of the number of decimal places.
+	 * @param string $formatted Số đã chuyển đổi ở định dạng chuỗi.
+	 * @param float  $number    Số cần chuyển đổi dựa trên locale.
+	 * @param int    $decimals  Độ chính xác của số chữ số thập phân.
 	 */
 	return apply_filters( 'number_format_i18n', $formatted, $number, $decimals );
 }
 
 /**
- * Converts a number of bytes to the largest unit the bytes will fit into.
+ * Chuyển đổi số byte sang đơn vị lớn nhất mà số byte có thể vừa.
  *
- * It is easier to read 1 KB than 1024 bytes and 1 MB than 1048576 bytes. Converts
- * number of bytes to human readable number by taking the number of that unit
- * that the bytes will go into it. Supports YB value.
+ * Đọc 1 KB dễ hơn 1024 byte và 1 MB dễ hơn 1048576 byte. Chuyển đổi
+ * số byte sang số đọc được bằng cách lấy số đơn vị mà byte
+ * có thể chứa vừa. Hỗ trợ giá trị YB.
  *
- * Please note that integers in PHP are limited to 32 bits, unless they are on
- * 64 bit architecture, then they have 64 bit size. If you need to place the
- * larger size then what PHP integer type will hold, then use a string. It will
- * be converted to a double, which should always have 64 bit length.
+ * Xin lưu ý rằng số nguyên trong PHP bị giới hạn ở 32 bit, trừ khi chúng ở
+ * kiến trúc 64 bit, thì chúng có kích thước 64 bit. Nếu bạn cần đặt
+ * kích thước lớn hơn những gì kiểu số nguyên PHP có thể chứa, hãy sử dụng chuỗi. Nó sẽ
+ * được chuyển đổi sang double, luôn có độ dài 64 bit.
  *
- * Technically the correct unit names for powers of 1024 are KiB, MiB etc.
+ * Về mặt kỹ thuật, tên đơn vị đúng cho lũy thừa của 1024 là KiB, MiB v.v.
  *
  * @since 2.3.0
- * @since 6.0.0 Support for PB, EB, ZB, and YB was added.
+ * @since 6.0.0 Hỗ trợ cho PB, EB, ZB và YB đã được thêm.
  *
- * @param int|string $bytes    Number of bytes. Note max integer size for integers.
- * @param int        $decimals Optional. Precision of number of decimal places. Default 0.
- * @return string|false Number string on success, false on failure.
+ * @param int|string $bytes    Số byte. Lưu ý kích thước số nguyên tối đa cho số nguyên.
+ * @param int        $decimals Tùy chọn. Độ chính xác của số chữ số thập phân. Mặc định 0.
+ * @return string|false Chuỗi số khi thành công, false khi thất bại.
  */
 function size_format( $bytes, $decimals = 0 ) {
 	$quant = array(
@@ -502,13 +502,13 @@ function size_format( $bytes, $decimals = 0 ) {
 }
 
 /**
- * Converts a duration to human readable format.
+ * Chuyển đổi khoảng thời gian sang định dạng đọc được.
  *
  * @since 5.1.0
  *
- * @param string $duration Duration will be in string format (HH:ii:ss) OR (ii:ss),
- *                         with a possible prepended negative sign (-).
- * @return string|false A human readable duration string, false on failure.
+ * @param string $duration Khoảng thời gian sẽ ở định dạng chuỗi (HH:ii:ss) HOẶC (ii:ss),
+ *                         với dấu âm (-) có thể đứng trước.
+ * @return string|false Chuỗi khoảng thời gian đọc được, false khi thất bại.
  */
 function human_readable_duration( $duration = '' ) {
 	if ( ( empty( $duration ) || ! is_string( $duration ) ) ) {
@@ -517,12 +517,12 @@ function human_readable_duration( $duration = '' ) {
 
 	$duration = trim( $duration );
 
-	// Remove prepended negative sign.
+	// Xóa dấu âm đứng trước.
 	if ( str_starts_with( $duration, '-' ) ) {
 		$duration = substr( $duration, 1 );
 	}
 
-	// Extract duration parts.
+	// Trích xuất các phần của khoảng thời gian.
 	$duration_parts = array_reverse( explode( ':', $duration ) );
 	$duration_count = count( $duration_parts );
 
@@ -531,18 +531,18 @@ function human_readable_duration( $duration = '' ) {
 	$second = null;
 
 	if ( 3 === $duration_count ) {
-		// Validate HH:ii:ss duration format.
+		// Xác thực định dạng khoảng thời gian HH:ii:ss.
 		if ( ! ( (bool) preg_match( '/^([0-9]+):([0-5]?[0-9]):([0-5]?[0-9])$/', $duration ) ) ) {
 			return false;
 		}
-		// Three parts: hours, minutes & seconds.
+		// Ba phần: giờ, phút và giây.
 		list( $second, $minute, $hour ) = $duration_parts;
 	} elseif ( 2 === $duration_count ) {
-		// Validate ii:ss duration format.
+		// Xác thực định dạng khoảng thời gian ii:ss.
 		if ( ! ( (bool) preg_match( '/^([0-5]?[0-9]):([0-5]?[0-9])$/', $duration ) ) ) {
 			return false;
 		}
-		// Two parts: minutes & seconds.
+		// Hai phần: phút và giây.
 		list( $second, $minute ) = $duration_parts;
 	} else {
 		return false;
@@ -550,19 +550,19 @@ function human_readable_duration( $duration = '' ) {
 
 	$human_readable_duration = array();
 
-	// Add the hour part to the string.
+	// Thêm phần giờ vào chuỗi.
 	if ( is_numeric( $hour ) ) {
 		/* translators: %s: Time duration in hour or hours. */
 		$human_readable_duration[] = sprintf( _n( '%s hour', '%s hours', $hour ), (int) $hour );
 	}
 
-	// Add the minute part to the string.
+	// Thêm phần phút vào chuỗi.
 	if ( is_numeric( $minute ) ) {
 		/* translators: %s: Time duration in minute or minutes. */
 		$human_readable_duration[] = sprintf( _n( '%s minute', '%s minutes', $minute ), (int) $minute );
 	}
 
-	// Add the second part to the string.
+	// Thêm phần giây vào chuỗi.
 	if ( is_numeric( $second ) ) {
 		/* translators: %s: Time duration in second or seconds. */
 		$human_readable_duration[] = sprintf( _n( '%s second', '%s seconds', $second ), (int) $second );
@@ -572,33 +572,33 @@ function human_readable_duration( $duration = '' ) {
 }
 
 /**
- * Gets the week start and end from the datetime or date string from MySQL.
+ * Lấy ngày bắt đầu và kết thúc tuần từ chuỗi datetime hoặc date của MySQL.
  *
  * @since 0.71
  *
- * @param string     $mysqlstring   Date or datetime field type from MySQL.
- * @param int|string $start_of_week Optional. Start of the week as an integer. Default empty string.
+ * @param string     $mysqlstring   Kiểu trường date hoặc datetime từ MySQL.
+ * @param int|string $start_of_week Tùy chọn. Ngày bắt đầu tuần dưới dạng số nguyên. Mặc định chuỗi rỗng.
  * @return int[] {
- *     Week start and end dates as Unix timestamps.
+ *     Ngày bắt đầu và kết thúc tuần dưới dạng Unix timestamp.
  *
- *     @type int $start The week start date as a Unix timestamp.
- *     @type int $end   The week end date as a Unix timestamp.
+ *     @type int $start Ngày bắt đầu tuần dưới dạng Unix timestamp.
+ *     @type int $end   Ngày kết thúc tuần dưới dạng Unix timestamp.
  * }
  */
 function get_weekstartend( $mysqlstring, $start_of_week = '' ) {
-	// MySQL string year.
+	// Năm từ chuỗi MySQL.
 	$my = substr( $mysqlstring, 0, 4 );
 
-	// MySQL string month.
+	// Tháng từ chuỗi MySQL.
 	$mm = substr( $mysqlstring, 8, 2 );
 
-	// MySQL string day.
+	// Ngày từ chuỗi MySQL.
 	$md = substr( $mysqlstring, 5, 2 );
 
-	// The timestamp for MySQL string day.
+	// Timestamp cho ngày từ chuỗi MySQL.
 	$day = mktime( 0, 0, 0, $md, $mm, $my );
 
-	// The day of the week from the timestamp.
+	// Ngày trong tuần từ timestamp.
 	$weekday = (int) gmdate( 'w', $day );
 
 	if ( ! is_numeric( $start_of_week ) ) {
@@ -609,22 +609,22 @@ function get_weekstartend( $mysqlstring, $start_of_week = '' ) {
 		$weekday += 7;
 	}
 
-	// The most recent week start day on or before $day.
+	// Ngày bắt đầu tuần gần nhất vào hoặc trước $day.
 	$start = $day - DAY_IN_SECONDS * ( $weekday - $start_of_week );
 
-	// $start + 1 week - 1 second.
+	// $start + 1 tuần - 1 giây.
 	$end = $start + WEEK_IN_SECONDS - 1;
 
 	return compact( 'start', 'end' );
 }
 
 /**
- * Serializes data, if needed.
+ * Tuần tự hóa dữ liệu, nếu cần.
  *
  * @since 2.0.5
  *
- * @param string|array|object $data Data that might be serialized.
- * @return mixed A scalar data.
+ * @param string|array|object $data Dữ liệu có thể cần được tuần tự hóa.
+ * @return mixed Dữ liệu vô hướng.
  */
 function maybe_serialize( $data ) {
 	if ( is_array( $data ) || is_object( $data ) ) {
@@ -632,9 +632,9 @@ function maybe_serialize( $data ) {
 	}
 
 	/*
-	 * Double serialization is required for backward compatibility.
-	 * See https://core.trac.wordpress.org/ticket/12930
-	 * Also the world will end. See WP 3.6.1.
+	 * Tuần tự hóa kép là bắt buộc để tương thích ngược.
+	 * Xem https://core.trac.wordpress.org/ticket/12930
+	 * Và thế giới sẽ kết thúc. Xem WP 3.6.1.
 	 */
 	if ( is_serialized( $data, false ) ) {
 		return serialize( $data );
@@ -644,15 +644,15 @@ function maybe_serialize( $data ) {
 }
 
 /**
- * Unserializes data only if it was serialized.
+ * Giải tuần tự hóa dữ liệu chỉ khi nó đã được tuần tự hóa.
  *
  * @since 2.0.0
  *
- * @param string $data Data that might be unserialized.
- * @return mixed Unserialized data can be any type.
+ * @param string $data Dữ liệu có thể cần được giải tuần tự hóa.
+ * @return mixed Dữ liệu đã giải tuần tự hóa có thể là bất kỳ kiểu nào.
  */
 function maybe_unserialize( $data ) {
-	if ( is_serialized( $data ) ) { // Don't attempt to unserialize data that wasn't serialized going in.
+	if ( is_serialized( $data ) ) { // Không cố giải tuần tự hóa dữ liệu chưa được tuần tự hóa.
 		return @unserialize( trim( $data ) );
 	}
 
@@ -660,20 +660,20 @@ function maybe_unserialize( $data ) {
 }
 
 /**
- * Checks value to find if it was serialized.
+ * Kiểm tra giá trị để xác định xem nó đã được tuần tự hóa hay chưa.
  *
- * If $data is not a string, then returned value will always be false.
- * Serialized data is always a string.
+ * Nếu $data không phải là chuỗi, giá trị trả về luôn là false.
+ * Dữ liệu tuần tự hóa luôn là một chuỗi.
  *
  * @since 2.0.5
- * @since 6.1.0 Added Enum support.
+ * @since 6.1.0 Thêm hỗ trợ Enum.
  *
- * @param string $data   Value to check to see if was serialized.
- * @param bool   $strict Optional. Whether to be strict about the end of the string. Default true.
- * @return bool False if not serialized and true if it was.
+ * @param string $data   Giá trị cần kiểm tra xem đã được tuần tự hóa chưa.
+ * @param bool   $strict Tùy chọn. Có nghiêm ngặt về cuối chuỗi hay không. Mặc định true.
+ * @return bool False nếu chưa được tuần tự hóa và true nếu đã được.
  */
 function is_serialized( $data, $strict = true ) {
-	// If it isn't a string, it isn't serialized.
+	// Nếu không phải chuỗi, nó không được tuần tự hóa.
 	if ( ! is_string( $data ) ) {
 		return false;
 	}
@@ -695,11 +695,11 @@ function is_serialized( $data, $strict = true ) {
 	} else {
 		$semicolon = strpos( $data, ';' );
 		$brace     = strpos( $data, '}' );
-		// Either ; or } must exist.
+		// Phải tồn tại ; hoặc }.
 		if ( false === $semicolon && false === $brace ) {
 			return false;
 		}
-		// But neither must be in the first X characters.
+		// Nhưng không được ở trong X ký tự đầu tiên.
 		if ( false !== $semicolon && $semicolon < 3 ) {
 			return false;
 		}
@@ -717,7 +717,7 @@ function is_serialized( $data, $strict = true ) {
 			} elseif ( ! str_contains( $data, '"' ) ) {
 				return false;
 			}
-			// Or else fall through.
+			// Hoặc rơi xuống case tiếp theo.
 		case 'a':
 		case 'O':
 		case 'E':
@@ -732,15 +732,15 @@ function is_serialized( $data, $strict = true ) {
 }
 
 /**
- * Checks whether serialized data is of string type.
+ * Kiểm tra xem dữ liệu tuần tự hóa có phải kiểu chuỗi hay không.
  *
  * @since 2.0.5
  *
- * @param string $data Serialized data.
- * @return bool False if not a serialized string, true if it is.
+ * @param string $data Dữ liệu đã tuần tự hóa.
+ * @return bool False nếu không phải chuỗi tuần tự hóa, true nếu đúng.
  */
 function is_serialized_string( $data ) {
-	// if it isn't a string, it isn't a serialized string.
+	// Nếu không phải chuỗi, nó không phải chuỗi tuần tự hóa.
 	if ( ! is_string( $data ) ) {
 		return false;
 	}
@@ -761,17 +761,17 @@ function is_serialized_string( $data ) {
 }
 
 /**
- * Retrieves post title from XMLRPC XML.
+ * Lấy tiêu đề bài viết từ XML XMLRPC.
  *
- * If the title element is not part of the XML, then the default post title from
- * the $post_default_title will be used instead.
+ * Nếu phần tử title không có trong XML, tiêu đề bài viết mặc định từ
+ * $post_default_title sẽ được sử dụng thay thế.
  *
  * @since 0.71
  *
- * @global string $post_default_title Default XML-RPC post title.
+ * @global string $post_default_title Tiêu đề bài viết XML-RPC mặc định.
  *
- * @param string $content XMLRPC XML Request content
- * @return string Post title
+ * @param string $content Nội dung yêu cầu XML XMLRPC.
+ * @return string Tiêu đề bài viết.
  */
 function xmlrpc_getposttitle( $content ) {
 	global $post_default_title;
@@ -784,18 +784,18 @@ function xmlrpc_getposttitle( $content ) {
 }
 
 /**
- * Retrieves the post category or categories from XMLRPC XML.
+ * Lấy chuyên mục hoặc các chuyên mục bài viết từ XML XMLRPC.
  *
- * If the category element is not found, then the default post category will be
- * used. The return type then would be what $post_default_category. If the
- * category is found, then it will always be an array.
+ * Nếu phần tử category không được tìm thấy, chuyên mục bài viết mặc định sẽ được
+ * sử dụng. Kiểu trả về sẽ là giá trị của $post_default_category. Nếu chuyên mục
+ * được tìm thấy, nó sẽ luôn là một mảng.
  *
  * @since 0.71
  *
- * @global string $post_default_category Default XML-RPC post category.
+ * @global string $post_default_category Chuyên mục bài viết XML-RPC mặc định.
  *
- * @param string $content XMLRPC XML Request content
- * @return string|array List of categories or category name.
+ * @param string $content Nội dung yêu cầu XML XMLRPC.
+ * @return string|array Danh sách chuyên mục hoặc tên chuyên mục.
  */
 function xmlrpc_getpostcategory( $content ) {
 	global $post_default_category;
@@ -809,12 +809,12 @@ function xmlrpc_getpostcategory( $content ) {
 }
 
 /**
- * XMLRPC XML content without title and category elements.
+ * Nội dung XML XMLRPC không có phần tử title và category.
  *
  * @since 0.71
  *
- * @param string $content XML-RPC XML Request content.
- * @return string XMLRPC XML Request content without title and category elements.
+ * @param string $content Nội dung yêu cầu XML XML-RPC.
+ * @return string Nội dung yêu cầu XML XMLRPC không có phần tử title và category.
  */
 function xmlrpc_removepostdata( $content ) {
 	$content = preg_replace( '/<title>(.+?)<\/title>/si', '', $content );
@@ -824,13 +824,13 @@ function xmlrpc_removepostdata( $content ) {
 }
 
 /**
- * Uses RegEx to extract URLs from arbitrary content.
+ * Sử dụng RegEx để trích xuất URL từ nội dung bất kỳ.
  *
  * @since 3.7.0
- * @since 6.0.0 Fixes support for HTML entities (Trac 30580).
+ * @since 6.0.0 Sửa hỗ trợ cho thực thể HTML (Trac 30580).
  *
- * @param string $content Content to extract URLs from.
- * @return string[] Array of URLs found in passed string.
+ * @param string $content Nội dung để trích xuất URL.
+ * @return string[] Mảng các URL tìm thấy trong chuỗi đã truyền.
  */
 function wp_extract_urls( $content ) {
 	preg_match_all(
@@ -853,9 +853,9 @@ function wp_extract_urls( $content ) {
 	$post_links = array_unique(
 		array_map(
 			static function ( $link ) {
-				// Decode to replace valid entities, like &amp;.
+				// Giải mã để thay thế các thực thể hợp lệ, như &amp;.
 				$link = html_entity_decode( $link );
-				// Maintain backward compatibility by removing extraneous semi-colons (`;`).
+				// Duy trì tương thích ngược bằng cách xóa dấu chấm phẩy thừa (`;`).
 				return str_replace( ';', '', $link );
 			},
 			$post_links[2]
@@ -866,23 +866,23 @@ function wp_extract_urls( $content ) {
 }
 
 /**
- * Checks content for video and audio links to add as enclosures.
+ * Kiểm tra nội dung để tìm liên kết video và audio để thêm dưới dạng enclosure.
  *
- * Will not add enclosures that have already been added and will
- * remove enclosures that are no longer in the post. This is called as
- * pingbacks and trackbacks.
+ * Sẽ không thêm enclosure đã được thêm trước đó và sẽ
+ * xóa enclosure không còn trong bài viết. Được gọi như
+ * pingback và trackback.
  *
  * @since 1.5.0
- * @since 5.3.0 The `$content` parameter was made optional, and the `$post` parameter was
- *              updated to accept a post ID or a WP_Post object.
- * @since 5.6.0 The `$content` parameter is no longer optional, but passing `null` to skip it
- *              is still supported.
+ * @since 5.3.0 Tham số `$content` được đặt thành tùy chọn, và tham số `$post` được
+ *              cập nhật để chấp nhận ID bài viết hoặc đối tượng WP_Post.
+ * @since 5.6.0 Tham số `$content` không còn là tùy chọn, nhưng truyền `null` để bỏ qua
+ *              vẫn được hỗ trợ.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string|null $content Post content. If `null`, the `post_content` field from `$post` is used.
- * @param int|WP_Post $post    Post ID or post object.
- * @return void|false Void on success, false if the post is not found.
+ * @param string|null $content Nội dung bài viết. Nếu `null`, trường `post_content` từ `$post` được sử dụng.
+ * @param int|WP_Post $post    ID bài viết hoặc đối tượng bài viết.
+ * @return void|false Void khi thành công, false nếu không tìm thấy bài viết.
  */
 function do_enclose( $content, $post ) {
 	global $wpdb;
@@ -906,7 +906,7 @@ function do_enclose( $content, $post ) {
 	$post_links_temp = wp_extract_urls( $content );
 
 	foreach ( $pung as $link_test ) {
-		// Link is no longer in post.
+		// Liên kết không còn trong bài viết.
 		if ( ! in_array( $link_test, $post_links_temp, true ) ) {
 			$mids = $wpdb->get_col( $wpdb->prepare( "SELECT meta_id FROM $wpdb->postmeta WHERE post_id = %d AND meta_key = 'enclosure' AND meta_value LIKE %s", $post->ID, $wpdb->esc_like( $link_test ) . '%' ) );
 			foreach ( $mids as $mid ) {
@@ -916,7 +916,7 @@ function do_enclose( $content, $post ) {
 	}
 
 	foreach ( (array) $post_links_temp as $link_test ) {
-		// If we haven't pung it already.
+		// Nếu chúng ta chưa ping nó.
 		if ( ! in_array( $link_test, $pung, true ) ) {
 			$test = parse_url( $link_test );
 			if ( false === $test ) {
@@ -931,15 +931,15 @@ function do_enclose( $content, $post ) {
 	}
 
 	/**
-	 * Filters the list of enclosure links before querying the database.
+	 * Lọc danh sách liên kết enclosure trước khi truy vấn cơ sở dữ liệu.
 	 *
-	 * Allows for the addition and/or removal of potential enclosures to save
-	 * to postmeta before checking the database for existing enclosures.
+	 * Cho phép thêm và/hoặc xóa các enclosure tiềm năng để lưu
+	 * vào postmeta trước khi kiểm tra cơ sở dữ liệu cho các enclosure hiện có.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string[] $post_links An array of enclosure links.
-	 * @param int      $post_id    Post ID.
+	 * @param string[] $post_links Mảng các liên kết enclosure.
+	 * @param int      $post_id    ID bài viết.
 	 */
 	$post_links = apply_filters( 'enclosure_links', $post_links, $post->ID );
 
@@ -954,7 +954,7 @@ function do_enclose( $content, $post ) {
 				$type          = isset( $headers['Content-Type'] ) ? $headers['Content-Type'] : '';
 				$allowed_types = array( 'video', 'audio' );
 
-				// Check to see if we can figure out the mime type from the extension.
+				// Kiểm tra xem có thể xác định kiểu mime từ phần mở rộng hay không.
 				$url_parts = parse_url( $url );
 				if ( false !== $url_parts && ! empty( $url_parts['path'] ) ) {
 					$extension = pathinfo( $url_parts['path'], PATHINFO_EXTENSION );
@@ -977,13 +977,13 @@ function do_enclose( $content, $post ) {
 }
 
 /**
- * Retrieves HTTP Headers from URL.
+ * Lấy các Header HTTP từ URL.
  *
  * @since 1.5.1
  *
- * @param string $url        URL to retrieve HTTP headers from.
- * @param bool   $deprecated Not Used.
- * @return \WpOrg\Requests\Utility\CaseInsensitiveDictionary|false Headers on success, false on failure.
+ * @param string $url        URL để lấy các header HTTP.
+ * @param bool   $deprecated Không sử dụng.
+ * @return \WpOrg\Requests\Utility\CaseInsensitiveDictionary|false Các header khi thành công, false khi thất bại.
  */
 function wp_get_http_headers( $url, $deprecated = false ) {
 	if ( ! empty( $deprecated ) ) {
@@ -1000,19 +1000,19 @@ function wp_get_http_headers( $url, $deprecated = false ) {
 }
 
 /**
- * Determines whether the publish date of the current post in the loop is different
- * from the publish date of the previous post in the loop.
+ * Xác định xem ngày đăng của bài viết hiện tại trong vòng lặp có khác
+ * với ngày đăng của bài viết trước đó trong vòng lặp hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 0.71
  *
- * @global string $currentday  The day of the current post in the loop.
- * @global string $previousday The day of the previous post in the loop.
+ * @global string $currentday  Ngày của bài viết hiện tại trong vòng lặp.
+ * @global string $previousday Ngày của bài viết trước đó trong vòng lặp.
  *
- * @return int 1 when new day, 0 if not a new day.
+ * @return int 1 khi là ngày mới, 0 nếu không phải ngày mới.
  */
 function is_new_day() {
 	global $currentday, $previousday;
@@ -1025,40 +1025,40 @@ function is_new_day() {
 }
 
 /**
- * Builds URL query based on an associative and, or indexed array.
+ * Tạo chuỗi truy vấn URL dựa trên mảng liên kết và/hoặc mảng có chỉ mục.
  *
- * This is a convenient function for easily building url queries. It sets the
- * separator to '&' and uses _http_build_query() function.
+ * Đây là hàm tiện lợi để dễ dàng tạo chuỗi truy vấn URL. Nó đặt
+ * dấu phân cách thành '&' và sử dụng hàm _http_build_query().
  *
  * @since 2.3.0
  *
- * @see _http_build_query() Used to build the query
- * @link https://www.php.net/manual/en/function.http-build-query.php for more on what
- *       http_build_query() does.
+ * @see _http_build_query() Được sử dụng để tạo chuỗi truy vấn
+ * @link https://www.php.net/manual/en/function.http-build-query.php để biết thêm về
+ *       chức năng của http_build_query().
  *
- * @param array $data URL-encode key/value pairs.
- * @return string URL-encoded string.
+ * @param array $data Các cặp khóa/giá trị được mã hóa URL.
+ * @return string Chuỗi đã được mã hóa URL.
  */
 function build_query( $data ) {
 	return _http_build_query( $data, null, '&', '', false );
 }
 
 /**
- * From php.net (modified by Mark Jaquith to behave like the native PHP5 function).
+ * Từ php.net (được Mark Jaquith chỉnh sửa để hoạt động giống hàm PHP5 gốc).
  *
  * @since 3.2.0
  * @access private
  *
  * @see https://www.php.net/manual/en/function.http-build-query.php
  *
- * @param array|object $data      An array or object of data. Converted to array.
- * @param string       $prefix    Optional. Numeric index. If set, start parameter numbering with it.
- *                                Default null.
- * @param string       $sep       Optional. Argument separator; defaults to 'arg_separator.output'.
- *                                Default null.
- * @param string       $key       Optional. Used to prefix key name. Default empty string.
- * @param bool         $urlencode Optional. Whether to use urlencode() in the result. Default true.
- * @return string The query string.
+ * @param array|object $data      Mảng hoặc đối tượng dữ liệu. Được chuyển đổi thành mảng.
+ * @param string       $prefix    Tùy chọn. Chỉ mục số. Nếu được đặt, bắt đầu đánh số tham số từ giá trị này.
+ *                                Mặc định null.
+ * @param string       $sep       Tùy chọn. Dấu phân cách đối số; mặc định là 'arg_separator.output'.
+ *                                Mặc định null.
+ * @param string       $key       Tùy chọn. Được sử dụng để thêm tiền tố cho tên khóa. Mặc định chuỗi rỗng.
+ * @param bool         $urlencode Tùy chọn. Có sử dụng urlencode() trong kết quả hay không. Mặc định true.
+ * @return string Chuỗi truy vấn.
  */
 function _http_build_query( $data, $prefix = null, $sep = null, $key = '', $urlencode = true ) {
 	$ret = array();
@@ -1099,41 +1099,41 @@ function _http_build_query( $data, $prefix = null, $sep = null, $key = '', $urle
 }
 
 /**
- * Retrieves a modified URL query string.
+ * Lấy chuỗi truy vấn URL đã được chỉnh sửa.
  *
- * You can rebuild the URL and append query variables to the URL query by using this function.
- * There are two ways to use this function; either a single key and value, or an associative array.
+ * Bạn có thể xây dựng lại URL và thêm biến truy vấn vào chuỗi truy vấn URL bằng hàm này.
+ * Có hai cách sử dụng hàm này: hoặc một khóa và giá trị đơn lẻ, hoặc một mảng liên kết.
  *
- * Using a single key and value:
+ * Sử dụng một khóa và giá trị đơn lẻ:
  *
  *     add_query_arg( 'key', 'value', 'http://example.com' );
  *
- * Using an associative array:
+ * Sử dụng mảng liên kết:
  *
  *     add_query_arg( array(
  *         'key1' => 'value1',
  *         'key2' => 'value2',
  *     ), 'http://example.com' );
  *
- * Omitting the URL from either use results in the current URL being used
- * (the value of `$_SERVER['REQUEST_URI']`).
+ * Bỏ qua URL trong cả hai cách sẽ sử dụng URL hiện tại
+ * (giá trị của `$_SERVER['REQUEST_URI']`).
  *
- * Values are expected to be encoded appropriately with urlencode() or rawurlencode().
+ * Các giá trị được mong đợi đã được mã hóa phù hợp bằng urlencode() hoặc rawurlencode().
  *
- * Setting any query variable's value to boolean false removes the key (see remove_query_arg()).
+ * Đặt giá trị của bất kỳ biến truy vấn nào thành boolean false sẽ xóa khóa đó (xem remove_query_arg()).
  *
- * Important: The return value of add_query_arg() is not escaped by default. Output should be
- * late-escaped with esc_url() or similar to help prevent vulnerability to cross-site scripting
- * (XSS) attacks.
+ * Quan trọng: Giá trị trả về của add_query_arg() không được escape mặc định. Đầu ra nên được
+ * escape muộn bằng esc_url() hoặc tương tự để giúp ngăn chặn lỗ hổng cross-site scripting
+ * (XSS).
  *
  * @since 1.5.0
- * @since 5.3.0 Formalized the existing and already documented parameters
- *              by adding `...$args` to the function signature.
+ * @since 5.3.0 Chính thức hóa các tham số đã tồn tại và đã được tài liệu hóa
+ *              bằng cách thêm `...$args` vào chữ ký hàm.
  *
- * @param string|array $key   Either a query variable key, or an associative array of query variables.
- * @param string       $value Optional. Either a query variable value, or a URL to act upon.
- * @param string       $url   Optional. A URL to act upon.
- * @return string New URL query string (unescaped).
+ * @param string|array $key   Khóa biến truy vấn, hoặc mảng liên kết các biến truy vấn.
+ * @param string       $value Tùy chọn. Giá trị biến truy vấn, hoặc URL để thao tác.
+ * @param string       $url   Tùy chọn. URL để thao tác.
+ * @return string Chuỗi truy vấn URL mới (chưa được escape).
  */
 function add_query_arg( ...$args ) {
 	if ( is_array( $args[0] ) ) {
@@ -1179,7 +1179,7 @@ function add_query_arg( ...$args ) {
 	}
 
 	wp_parse_str( $query, $qs );
-	$qs = urlencode_deep( $qs ); // This re-URL-encodes things that were already in the query string.
+	$qs = urlencode_deep( $qs ); // Điều này mã hóa lại URL cho những thứ đã có trong chuỗi truy vấn.
 	if ( is_array( $args[0] ) ) {
 		foreach ( $args[0] as $k => $v ) {
 			$qs[ $k ] = $v;
@@ -1204,20 +1204,20 @@ function add_query_arg( ...$args ) {
 }
 
 /**
- * Removes an item or items from a query string.
+ * Xóa một mục hoặc nhiều mục khỏi chuỗi truy vấn.
  *
- * Important: The return value of remove_query_arg() is not escaped by default. Output should be
- * late-escaped with esc_url() or similar to help prevent vulnerability to cross-site scripting
- * (XSS) attacks.
+ * Quan trọng: Giá trị trả về của remove_query_arg() không được escape mặc định. Đầu ra nên được
+ * escape muộn bằng esc_url() hoặc tương tự để giúp ngăn chặn lỗ hổng cross-site scripting
+ * (XSS).
  *
  * @since 1.5.0
  *
- * @param string|string[] $key   Query key or keys to remove.
- * @param false|string    $query Optional. When false uses the current URL. Default false.
- * @return string New URL query string.
+ * @param string|string[] $key   Khóa truy vấn hoặc các khóa cần xóa.
+ * @param false|string    $query Tùy chọn. Khi false sử dụng URL hiện tại. Mặc định false.
+ * @return string Chuỗi truy vấn URL mới.
  */
 function remove_query_arg( $key, $query = false ) {
-	if ( is_array( $key ) ) { // Removing multiple keys.
+	if ( is_array( $key ) ) { // Xóa nhiều khóa.
 		foreach ( $key as $k ) {
 			$query = add_query_arg( $k, false, $query );
 		}
@@ -1227,11 +1227,11 @@ function remove_query_arg( $key, $query = false ) {
 }
 
 /**
- * Returns an array of single-use query variable names that can be removed from a URL.
+ * Trả về mảng các tên biến truy vấn dùng một lần có thể được xóa khỏi URL.
  *
  * @since 4.4.0
  *
- * @return string[] An array of query variable names to remove from the URL.
+ * @return string[] Mảng các tên biến truy vấn cần xóa khỏi URL.
  */
 function wp_removable_query_args() {
 	$removable_query_args = array(
@@ -1266,23 +1266,23 @@ function wp_removable_query_args() {
 	);
 
 	/**
-	 * Filters the list of query variable names to remove.
+	 * Lọc danh sách các tên biến truy vấn cần xóa.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param string[] $removable_query_args An array of query variable names to remove from a URL.
+	 * @param string[] $removable_query_args Mảng các tên biến truy vấn cần xóa khỏi URL.
 	 */
 	return apply_filters( 'removable_query_args', $removable_query_args );
 }
 
 /**
- * Walks the array while sanitizing the contents.
+ * Duyệt mảng và làm sạch nội dung.
  *
  * @since 0.71
- * @since 5.5.0 Non-string values are left untouched.
+ * @since 5.5.0 Các giá trị không phải chuỗi được giữ nguyên.
  *
- * @param array $input_array Array to walk while sanitizing contents.
- * @return array Sanitized $input_array.
+ * @param array $input_array Mảng cần duyệt và làm sạch nội dung.
+ * @return array Mảng $input_array đã được làm sạch.
  */
 function add_magic_quotes( $input_array ) {
 	foreach ( (array) $input_array as $k => $v ) {
@@ -1297,14 +1297,14 @@ function add_magic_quotes( $input_array ) {
 }
 
 /**
- * HTTP request for URI to retrieve content.
+ * Yêu cầu HTTP cho URI để lấy nội dung.
  *
  * @since 1.5.1
  *
  * @see wp_safe_remote_get()
  *
- * @param string $uri URI/URL of web page to retrieve.
- * @return string|false HTTP content. False on failure.
+ * @param string $uri URI/URL của trang web cần lấy.
+ * @return string|false Nội dung HTTP. False khi thất bại.
  */
 function wp_remote_fopen( $uri ) {
 	$parsed_url = parse_url( $uri );
@@ -1326,15 +1326,15 @@ function wp_remote_fopen( $uri ) {
 }
 
 /**
- * Sets up the WordPress query.
+ * Thiết lập truy vấn WordPress.
  *
  * @since 2.0.0
  *
- * @global WP       $wp           Current WordPress environment instance.
- * @global WP_Query $wp_query     WordPress Query object.
- * @global WP_Query $wp_the_query Copy of the WordPress Query object.
+ * @global WP       $wp           Thể hiện môi trường WordPress hiện tại.
+ * @global WP_Query $wp_query     Đối tượng truy vấn WordPress.
+ * @global WP_Query $wp_the_query Bản sao của đối tượng truy vấn WordPress.
  *
- * @param string|array $query_vars Default WP_Query arguments.
+ * @param string|array $query_vars Các đối số mặc định của WP_Query.
  */
 function wp( $query_vars = '' ) {
 	global $wp, $wp_query, $wp_the_query;
@@ -1347,18 +1347,18 @@ function wp( $query_vars = '' ) {
 }
 
 /**
- * Retrieves the description for the HTTP status.
+ * Lấy mô tả cho mã trạng thái HTTP.
  *
  * @since 2.3.0
- * @since 3.9.0 Added status codes 418, 428, 429, 431, and 511.
- * @since 4.5.0 Added status codes 308, 421, and 451.
- * @since 5.1.0 Added status code 103.
- * @since 6.6.0 Added status code 425.
+ * @since 3.9.0 Thêm mã trạng thái 418, 428, 429, 431 và 511.
+ * @since 4.5.0 Thêm mã trạng thái 308, 421 và 451.
+ * @since 5.1.0 Thêm mã trạng thái 103.
+ * @since 6.6.0 Thêm mã trạng thái 425.
  *
  * @global array $wp_header_to_desc
  *
- * @param int $code HTTP status code.
- * @return string Status description if found, an empty string otherwise.
+ * @param int $code Mã trạng thái HTTP.
+ * @return string Mô tả trạng thái nếu tìm thấy, chuỗi rỗng nếu không.
  */
 function get_status_header_desc( $code ) {
 	global $wp_header_to_desc;
@@ -1443,16 +1443,16 @@ function get_status_header_desc( $code ) {
 }
 
 /**
- * Sets HTTP status header.
+ * Đặt header trạng thái HTTP.
  *
  * @since 2.0.0
- * @since 4.4.0 Added the `$description` parameter.
+ * @since 4.4.0 Thêm tham số `$description`.
  *
  * @see get_status_header_desc()
  *
- * @param int    $code        HTTP status code.
- * @param string $description Optional. A custom description for the HTTP status.
- *                            Defaults to the result of get_status_header_desc() for the given code.
+ * @param int    $code        Mã trạng thái HTTP.
+ * @param string $description Tùy chọn. Mô tả tùy chỉnh cho trạng thái HTTP.
+ *                            Mặc định là kết quả của get_status_header_desc() cho mã được cung cấp.
  */
 function status_header( $code, $description = '' ) {
 	if ( ! $description ) {
@@ -1468,14 +1468,14 @@ function status_header( $code, $description = '' ) {
 	if ( function_exists( 'apply_filters' ) ) {
 
 		/**
-		 * Filters an HTTP status header.
+		 * Lọc header trạng thái HTTP.
 		 *
 		 * @since 2.2.0
 		 *
-		 * @param string $status_header HTTP status header.
-		 * @param int    $code          HTTP status code.
-		 * @param string $description   Description for the status code.
-		 * @param string $protocol      Server protocol.
+		 * @param string $status_header Header trạng thái HTTP.
+		 * @param int    $code          Mã trạng thái HTTP.
+		 * @param string $description   Mô tả cho mã trạng thái.
+		 * @param string $protocol      Giao thức máy chủ.
 		 */
 		$status_header = apply_filters( 'status_header', $status_header, $code, $description, $protocol );
 	}
@@ -1486,18 +1486,18 @@ function status_header( $code, $description = '' ) {
 }
 
 /**
- * Gets the HTTP header information to prevent caching.
+ * Lấy thông tin header HTTP để ngăn chặn bộ nhớ đệm.
  *
- * The several different headers cover the different ways cache prevention
- * is handled by different browsers or intermediate caches such as proxy servers.
+ * Các header khác nhau bao phủ các cách khác nhau mà việc ngăn chặn bộ nhớ đệm
+ * được xử lý bởi các trình duyệt khác nhau hoặc các bộ nhớ đệm trung gian như máy chủ proxy.
  *
  * @since 2.8.0
- * @since 6.3.0 The `Cache-Control` header for logged in users now includes the
- *              `no-store` and `private` directives.
- * @since 6.8.0 The `Cache-Control` header now includes the `no-store` and `private`
- *              directives regardless of whether a user is logged in.
+ * @since 6.3.0 Header `Cache-Control` cho người dùng đã đăng nhập giờ bao gồm
+ *              các chỉ thị `no-store` và `private`.
+ * @since 6.8.0 Header `Cache-Control` giờ bao gồm các chỉ thị `no-store` và `private`
+ *              bất kể người dùng có đăng nhập hay không.
  *
- * @return array The associative array of header names and field values.
+ * @return array Mảng liên kết của tên header và giá trị trường.
  */
 function wp_get_nocache_headers() {
 	$cache_control = 'no-cache, must-revalidate, max-age=0, no-store, private';
@@ -1509,13 +1509,13 @@ function wp_get_nocache_headers() {
 
 	if ( function_exists( 'apply_filters' ) ) {
 		/**
-		 * Filters the cache-controlling HTTP headers that are used to prevent caching.
+		 * Lọc các header HTTP kiểm soát bộ nhớ đệm được sử dụng để ngăn chặn bộ nhớ đệm.
 		 *
 		 * @since 2.8.0
 		 *
 		 * @see wp_get_nocache_headers()
 		 *
-		 * @param array $headers Header names and field values.
+		 * @param array $headers Tên header và giá trị trường.
 		 */
 		$headers = (array) apply_filters( 'nocache_headers', $headers );
 	}
@@ -1524,11 +1524,11 @@ function wp_get_nocache_headers() {
 }
 
 /**
- * Sets the HTTP headers to prevent caching for the different browsers.
+ * Đặt các header HTTP để ngăn chặn bộ nhớ đệm cho các trình duyệt khác nhau.
  *
- * Different browsers support different nocache headers, so several
- * headers must be sent so that all of them get the point that no
- * caching should occur.
+ * Các trình duyệt khác nhau hỗ trợ các header không cache khác nhau, vì vậy nhiều
+ * header phải được gửi để tất cả đều hiểu rằng không nên
+ * lưu bộ nhớ đệm.
  *
  * @since 2.0.0
  *
@@ -1551,7 +1551,7 @@ function nocache_headers() {
 }
 
 /**
- * Sets the HTTP headers for caching for 10 days with JavaScript content type.
+ * Đặt các header HTTP cho bộ nhớ đệm trong 10 ngày với kiểu nội dung JavaScript.
  *
  * @since 2.1.0
  */
@@ -1559,18 +1559,18 @@ function cache_javascript_headers() {
 	$expires_offset = 10 * DAY_IN_SECONDS;
 
 	header( 'Content-Type: text/javascript; charset=' . get_bloginfo( 'charset' ) );
-	header( 'Vary: Accept-Encoding' ); // Handle proxies.
+	header( 'Vary: Accept-Encoding' ); // Xử lý proxy.
 	header( 'Expires: ' . gmdate( 'D, d M Y H:i:s', time() + $expires_offset ) . ' GMT' );
 }
 
 /**
- * Retrieves the number of database queries during the WordPress execution.
+ * Lấy số lượng truy vấn cơ sở dữ liệu trong quá trình thực thi WordPress.
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @return int Number of database queries.
+ * @return int Số lượng truy vấn cơ sở dữ liệu.
  */
 function get_num_queries() {
 	global $wpdb;
@@ -1578,37 +1578,37 @@ function get_num_queries() {
 }
 
 /**
- * Determines whether input is yes or no.
+ * Xác định xem đầu vào là có hay không.
  *
- * Must be 'y' to be true.
+ * Phải là 'y' để là true.
  *
  * @since 1.0.0
  *
- * @param string $yn Character string containing either 'y' (yes) or 'n' (no).
- * @return bool True if 'y', false on anything else.
+ * @param string $yn Chuỗi ký tự chứa 'y' (có) hoặc 'n' (không).
+ * @return bool True nếu là 'y', false với mọi giá trị khác.
  */
 function bool_from_yn( $yn ) {
 	return ( 'y' === strtolower( $yn ) );
 }
 
 /**
- * Loads the feed template from the use of an action hook.
+ * Tải template feed bằng cách sử dụng action hook.
  *
- * If the feed action does not have a hook, then the function will die with a
- * message telling the visitor that the feed is not valid.
+ * Nếu action feed không có hook, thì hàm sẽ dừng với thông báo
+ * cho khách truy cập rằng feed không hợp lệ.
  *
- * It is better to only have one hook for each feed.
+ * Tốt hơn là chỉ có một hook cho mỗi feed.
  *
  * @since 2.1.0
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng truy vấn WordPress.
  */
 function do_feed() {
 	global $wp_query;
 
 	$feed = get_query_var( 'feed' );
 
-	// Remove the pad, if present.
+	// Xóa phần đệm, nếu có.
 	$feed = preg_replace( '/^_+/', '', $feed );
 
 	if ( '' === $feed || 'feed' === $feed ) {
@@ -1620,11 +1620,11 @@ function do_feed() {
 	}
 
 	/**
-	 * Fires once the given feed is loaded.
+	 * Kích hoạt khi feed đã cho được tải.
 	 *
-	 * The dynamic portion of the hook name, `$feed`, refers to the feed template name.
+	 * Phần động của tên hook, `$feed`, tham chiếu đến tên template feed.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `do_feed_atom`
 	 *  - `do_feed_rdf`
@@ -1632,16 +1632,16 @@ function do_feed() {
 	 *  - `do_feed_rss2`
 	 *
 	 * @since 2.1.0
-	 * @since 4.4.0 The `$feed` parameter was added.
+	 * @since 4.4.0 Tham số `$feed` được thêm vào.
 	 *
-	 * @param bool   $is_comment_feed Whether the feed is a comment feed.
-	 * @param string $feed            The feed name.
+	 * @param bool   $is_comment_feed Liệu feed có phải là feed bình luận hay không.
+	 * @param string $feed            Tên feed.
 	 */
 	do_action( "do_feed_{$feed}", $wp_query->is_comment_feed, $feed );
 }
 
 /**
- * Loads the RDF RSS 0.91 Feed template.
+ * Tải template Feed RDF RSS 0.91.
  *
  * @since 2.1.0
  *
@@ -1652,7 +1652,7 @@ function do_feed_rdf() {
 }
 
 /**
- * Loads the RSS 1.0 Feed Template.
+ * Tải template Feed RSS 1.0.
  *
  * @since 2.1.0
  *
@@ -1663,13 +1663,13 @@ function do_feed_rss() {
 }
 
 /**
- * Loads either the RSS2 comment feed or the RSS2 posts feed.
+ * Tải feed bình luận RSS2 hoặc feed bài viết RSS2.
  *
  * @since 2.1.0
  *
  * @see load_template()
  *
- * @param bool $for_comments True for the comment feed, false for normal feed.
+ * @param bool $for_comments True cho feed bình luận, false cho feed bình thường.
  */
 function do_feed_rss2( $for_comments ) {
 	if ( $for_comments ) {
@@ -1680,13 +1680,13 @@ function do_feed_rss2( $for_comments ) {
 }
 
 /**
- * Loads either Atom comment feed or Atom posts feed.
+ * Tải feed bình luận Atom hoặc feed bài viết Atom.
  *
  * @since 2.1.0
  *
  * @see load_template()
  *
- * @param bool $for_comments True for the comment feed, false for normal feed.
+ * @param bool $for_comments True cho feed bình luận, false cho feed bình thường.
  */
 function do_feed_atom( $for_comments ) {
 	if ( $for_comments ) {
@@ -1697,18 +1697,18 @@ function do_feed_atom( $for_comments ) {
 }
 
 /**
- * Displays the default robots.txt file content.
+ * Hiển thị nội dung file robots.txt mặc định.
  *
  * @since 2.1.0
- * @since 5.3.0 Remove the "Disallow: /" output if search engine visibility is
- *              discouraged in favor of robots meta HTML tag via wp_robots_no_robots()
- *              filter callback.
+ * @since 5.3.0 Xóa đầu ra "Disallow: /" nếu khả năng hiển thị công cụ tìm kiếm
+ *              bị tắt để ưu tiên thẻ meta HTML robots thông qua callback bộ lọc
+ *              wp_robots_no_robots().
  */
 function do_robots() {
 	header( 'Content-Type: text/plain; charset=utf-8' );
 
 	/**
-	 * Fires when displaying the robots.txt file.
+	 * Kích hoạt khi hiển thị file robots.txt.
 	 *
 	 * @since 2.1.0
 	 */
@@ -1723,24 +1723,24 @@ function do_robots() {
 	$output  .= "Allow: $path/wp-admin/admin-ajax.php\n";
 
 	/**
-	 * Filters the robots.txt output.
+	 * Lọc đầu ra robots.txt.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $output The robots.txt output.
-	 * @param bool   $public Whether the site is considered "public".
+	 * @param string $output Đầu ra robots.txt.
+	 * @param bool   $public Liệu trang web có được coi là "công khai" hay không.
 	 */
 	echo apply_filters( 'robots_txt', $output, $public );
 }
 
 /**
- * Displays the favicon.ico file content.
+ * Hiển thị nội dung file favicon.ico.
  *
  * @since 5.4.0
  */
 function do_favicon() {
 	/**
-	 * Fires when serving the favicon.ico file.
+	 * Kích hoạt khi phục vụ file favicon.ico.
 	 *
 	 * @since 5.4.0
 	 */
@@ -1751,30 +1751,30 @@ function do_favicon() {
 }
 
 /**
- * Determines whether WordPress is already installed.
+ * Xác định xem WordPress đã được cài đặt hay chưa.
  *
- * The cache will be checked first. If you have a cache plugin, which saves
- * the cache values, then this will work. If you use the default WordPress
- * cache, and the database goes away, then you might have problems.
+ * Bộ nhớ đệm sẽ được kiểm tra trước. Nếu bạn có plugin cache lưu trữ
+ * các giá trị cache, thì điều này sẽ hoạt động. Nếu bạn sử dụng bộ nhớ đệm
+ * mặc định của WordPress và cơ sở dữ liệu mất kết nối, bạn có thể gặp vấn đề.
  *
- * Checks for the 'siteurl' option for whether WordPress is installed.
+ * Kiểm tra tùy chọn 'siteurl' để xác định WordPress đã được cài đặt chưa.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 2.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @return bool Whether the site is already installed.
+ * @return bool Liệu trang web đã được cài đặt hay chưa.
  */
 function is_blog_installed() {
 	global $wpdb;
 
 	/*
-	 * Check cache first. If options table goes away and we have true
-	 * cached, oh well.
+	 * Kiểm tra bộ nhớ đệm trước. Nếu bảng options mất đi và chúng ta có giá trị
+	 * true trong cache, thì cũng chịu.
 	 */
 	if ( wp_cache_get( 'is_blog_installed' ) ) {
 		return true;
@@ -1786,7 +1786,7 @@ function is_blog_installed() {
 		$alloptions = wp_load_alloptions();
 	}
 
-	// If siteurl is not set to autoload, check it specifically.
+	// Nếu siteurl không được đặt thành autoload, kiểm tra cụ thể.
 	if ( ! isset( $alloptions['siteurl'] ) ) {
 		$installed = $wpdb->get_var( "SELECT option_value FROM $wpdb->options WHERE option_name = 'siteurl'" );
 	} else {
@@ -1802,7 +1802,7 @@ function is_blog_installed() {
 		return true;
 	}
 
-	// If visiting repair.php, return true and let it take over.
+	// Nếu đang truy cập repair.php, trả về true và để nó xử lý.
 	if ( defined( 'WP_REPAIRING' ) ) {
 		return true;
 	}
@@ -1810,13 +1810,13 @@ function is_blog_installed() {
 	$suppress = $wpdb->suppress_errors();
 
 	/*
-	 * Loop over the WP tables. If none exist, then scratch installation is allowed.
-	 * If one or more exist, suggest table repair since we got here because the
-	 * options table could not be accessed.
+	 * Duyệt qua các bảng WP. Nếu không bảng nào tồn tại, thì cho phép cài đặt mới.
+	 * Nếu một hoặc nhiều bảng tồn tại, đề xuất sửa chữa bảng vì chúng ta đến đây
+	 * do bảng options không thể truy cập được.
 	 */
 	$wp_tables = $wpdb->tables();
 	foreach ( $wp_tables as $table ) {
-		// The existence of custom user tables shouldn't suggest an unwise state or prevent a clean installation.
+		// Sự tồn tại của các bảng người dùng tùy chỉnh không nên gợi ý trạng thái không phù hợp hoặc ngăn cài đặt mới.
 		if ( defined( 'CUSTOM_USER_TABLE' ) && CUSTOM_USER_TABLE === $table ) {
 			continue;
 		}
@@ -1833,11 +1833,11 @@ function is_blog_installed() {
 			continue;
 		}
 
-		// One or more tables exist. This is not good.
+		// Một hoặc nhiều bảng tồn tại. Điều này không tốt.
 
 		wp_load_translations_early();
 
-		// Die with a DB error.
+		// Dừng với lỗi cơ sở dữ liệu.
 		$wpdb->error = sprintf(
 			/* translators: %s: Database repair URL. */
 			__( 'One or more database tables are unavailable. The database may need to be <a href="%s">repaired</a>.' ),
@@ -1855,14 +1855,14 @@ function is_blog_installed() {
 }
 
 /**
- * Retrieves URL with nonce added to URL query.
+ * Lấy URL với nonce được thêm vào chuỗi truy vấn URL.
  *
  * @since 2.0.4
  *
- * @param string     $actionurl URL to add nonce action.
- * @param int|string $action    Optional. Nonce action name. Default -1.
- * @param string     $name      Optional. Nonce name. Default '_wpnonce'.
- * @return string Escaped URL with nonce action added.
+ * @param string     $actionurl URL để thêm action nonce.
+ * @param int|string $action    Tùy chọn. Tên action nonce. Mặc định -1.
+ * @param string     $name      Tùy chọn. Tên nonce. Mặc định '_wpnonce'.
+ * @return string URL đã được escape với action nonce được thêm vào.
  */
 function wp_nonce_url( $actionurl, $action = -1, $name = '_wpnonce' ) {
 	$actionurl = str_replace( '&amp;', '&', $actionurl );
@@ -1870,30 +1870,29 @@ function wp_nonce_url( $actionurl, $action = -1, $name = '_wpnonce' ) {
 }
 
 /**
- * Retrieves or display nonce hidden field for forms.
+ * Lấy hoặc hiển thị trường ẩn nonce cho biểu mẫu.
  *
- * The nonce field is used to validate that the contents of the form came from
- * the location on the current site and not somewhere else. The nonce does not
- * offer absolute protection, but should protect against most cases. It is very
- * important to use nonce field in forms.
+ * Trường nonce được sử dụng để xác thực rằng nội dung biểu mẫu đến từ
+ * vị trí trên trang web hiện tại và không phải từ nơi khác. Nonce không
+ * cung cấp bảo vệ tuyệt đối, nhưng sẽ bảo vệ trong hầu hết các trường hợp. Rất
+ * quan trọng để sử dụng trường nonce trong biểu mẫu.
  *
- * The $action and $name are optional, but if you want to have better security,
- * it is strongly suggested to set those two parameters. It is easier to just
- * call the function without any parameters, because validation of the nonce
- * doesn't require any parameters, but since crackers know what the default is
- * it won't be difficult for them to find a way around your nonce and cause
- * damage.
+ * $action và $name là tùy chọn, nhưng nếu bạn muốn có bảo mật tốt hơn,
+ * rất khuyến khích đặt hai tham số đó. Dễ hơn là chỉ gọi hàm mà không có
+ * tham số nào, vì việc xác thực nonce không yêu cầu bất kỳ tham số nào,
+ * nhưng vì kẻ tấn công biết giá trị mặc định là gì nên sẽ không khó để
+ * họ tìm cách vượt qua nonce của bạn và gây thiệt hại.
  *
- * The input name will be whatever $name value you gave. The input value will be
- * the nonce creation value.
+ * Tên input sẽ là bất kỳ giá trị $name nào bạn cung cấp. Giá trị input sẽ là
+ * giá trị tạo nonce.
  *
  * @since 2.0.4
  *
- * @param int|string $action  Optional. Action name. Default -1.
- * @param string     $name    Optional. Nonce name. Default '_wpnonce'.
- * @param bool       $referer Optional. Whether to set the referer field for validation. Default true.
- * @param bool       $display Optional. Whether to display or return hidden form field. Default true.
- * @return string Nonce field HTML markup.
+ * @param int|string $action  Tùy chọn. Tên action. Mặc định -1.
+ * @param string     $name    Tùy chọn. Tên nonce. Mặc định '_wpnonce'.
+ * @param bool       $referer Tùy chọn. Có đặt trường referer để xác thực hay không. Mặc định true.
+ * @param bool       $display Tùy chọn. Có hiển thị hoặc trả về trường ẩn biểu mẫu hay không. Mặc định true.
+ * @return string Mã HTML trường nonce.
  */
 function wp_nonce_field( $action = -1, $name = '_wpnonce', $referer = true, $display = true ) {
 	$name        = esc_attr( $name );
@@ -1911,15 +1910,15 @@ function wp_nonce_field( $action = -1, $name = '_wpnonce', $referer = true, $dis
 }
 
 /**
- * Retrieves or displays referer hidden field for forms.
+ * Lấy hoặc hiển thị trường ẩn referer cho biểu mẫu.
  *
- * The referer link is the current Request URI from the server super global. The
- * input name is '_wp_http_referer', in case you wanted to check manually.
+ * Liên kết referer là URI yêu cầu hiện tại từ biến super global của máy chủ.
+ * Tên input là '_wp_http_referer', trong trường hợp bạn muốn kiểm tra thủ công.
  *
  * @since 2.0.4
  *
- * @param bool $display Optional. Whether to echo or return the referer field. Default true.
- * @return string Referer field HTML markup.
+ * @param bool $display Tùy chọn. Có echo hoặc trả về trường referer hay không. Mặc định true.
+ * @return string Mã HTML trường referer.
  */
 function wp_referer_field( $display = true ) {
 	$request_url   = remove_query_arg( '_wp_http_referer' );
@@ -1933,18 +1932,18 @@ function wp_referer_field( $display = true ) {
 }
 
 /**
- * Retrieves or displays original referer hidden field for forms.
+ * Lấy hoặc hiển thị trường ẩn referer gốc cho biểu mẫu.
  *
- * The input name is '_wp_original_http_referer' and will be either the same
- * value of wp_referer_field(), if that was posted already or it will be the
- * current page, if it doesn't exist.
+ * Tên input là '_wp_original_http_referer' và sẽ là cùng giá trị
+ * của wp_referer_field(), nếu nó đã được gửi trước đó hoặc sẽ là
+ * trang hiện tại, nếu nó không tồn tại.
  *
  * @since 2.0.4
  *
- * @param bool   $display      Optional. Whether to echo the original http referer. Default true.
- * @param string $jump_back_to Optional. Can be 'previous' or page you want to jump back to.
- *                             Default 'current'.
- * @return string Original referer field.
+ * @param bool   $display      Tùy chọn. Có echo referer http gốc hay không. Mặc định true.
+ * @param string $jump_back_to Tùy chọn. Có thể là 'previous' hoặc trang bạn muốn quay lại.
+ *                             Mặc định 'current'.
+ * @return string Trường referer gốc.
  */
 function wp_original_referer_field( $display = true, $jump_back_to = 'current' ) {
 	$ref = wp_get_original_referer();
@@ -1963,16 +1962,16 @@ function wp_original_referer_field( $display = true, $jump_back_to = 'current' )
 }
 
 /**
- * Retrieves referer from '_wp_http_referer' or HTTP referer.
+ * Lấy referer từ '_wp_http_referer' hoặc HTTP referer.
  *
- * If it's the same as the current request URL, will return false.
+ * Nếu nó giống với URL yêu cầu hiện tại, sẽ trả về false.
  *
  * @since 2.0.4
  *
- * @return string|false Referer URL on success, false on failure.
+ * @return string|false URL referer khi thành công, false khi thất bại.
  */
 function wp_get_referer() {
-	// Return early if called before wp_validate_redirect() is defined.
+	// Trả về sớm nếu được gọi trước khi wp_validate_redirect() được định nghĩa.
 	if ( ! function_exists( 'wp_validate_redirect' ) ) {
 		return false;
 	}
@@ -1989,15 +1988,15 @@ function wp_get_referer() {
 }
 
 /**
- * Retrieves unvalidated referer from the '_wp_http_referer' URL query variable or the HTTP referer.
+ * Lấy referer chưa được xác thực từ biến truy vấn URL '_wp_http_referer' hoặc HTTP referer.
  *
- * If the value of the '_wp_http_referer' URL query variable is not a string then it will be ignored.
+ * Nếu giá trị của biến truy vấn URL '_wp_http_referer' không phải là chuỗi thì nó sẽ bị bỏ qua.
  *
- * Do not use for redirects, use wp_get_referer() instead.
+ * Không sử dụng cho chuyển hướng, hãy sử dụng wp_get_referer() thay thế.
  *
  * @since 4.5.0
  *
- * @return string|false Referer URL on success, false on failure.
+ * @return string|false URL referer khi thành công, false khi thất bại.
  */
 function wp_get_raw_referer() {
 	if ( ! empty( $_REQUEST['_wp_http_referer'] ) && is_string( $_REQUEST['_wp_http_referer'] ) ) {
@@ -2010,14 +2009,14 @@ function wp_get_raw_referer() {
 }
 
 /**
- * Retrieves original referer that was posted, if it exists.
+ * Lấy referer gốc đã được gửi, nếu tồn tại.
  *
  * @since 2.0.4
  *
- * @return string|false Original referer URL on success, false on failure.
+ * @return string|false URL referer gốc khi thành công, false khi thất bại.
  */
 function wp_get_original_referer() {
-	// Return early if called before wp_validate_redirect() is defined.
+	// Trả về sớm nếu được gọi trước khi wp_validate_redirect() được định nghĩa.
 	if ( ! function_exists( 'wp_validate_redirect' ) ) {
 		return false;
 	}
@@ -2030,34 +2029,34 @@ function wp_get_original_referer() {
 }
 
 /**
- * Recursive directory creation based on full path.
+ * Tạo thư mục đệ quy dựa trên đường dẫn đầy đủ.
  *
- * Will attempt to set permissions on folders.
+ * Sẽ cố gắng đặt quyền truy cập trên các thư mục.
  *
  * @since 2.0.1
  *
- * @param string $target Full path to attempt to create.
- * @return bool Whether the path was created. True if path already exists.
+ * @param string $target Đường dẫn đầy đủ cần tạo.
+ * @return bool Liệu đường dẫn đã được tạo hay chưa. True nếu đường dẫn đã tồn tại.
  */
 function wp_mkdir_p( $target ) {
 	$wrapper = null;
 
-	// Strip the protocol.
+	// Loại bỏ giao thức.
 	if ( wp_is_stream( $target ) ) {
 		list( $wrapper, $target ) = explode( '://', $target, 2 );
 	}
 
-	// From php.net/mkdir user contributed notes.
+	// Từ ghi chú đóng góp người dùng php.net/mkdir.
 	$target = str_replace( '//', '/', $target );
 
-	// Put the wrapper back on the target.
+	// Đặt lại wrapper vào đường dẫn đích.
 	if ( null !== $wrapper ) {
 		$target = $wrapper . '://' . $target;
 	}
 
 	/*
-	 * Safe mode fails with a trailing slash under certain PHP versions.
-	 * Use rtrim() instead of untrailingslashit to avoid formatting.php dependency.
+	 * Chế độ an toàn thất bại với dấu gạch chéo cuối trong một số phiên bản PHP nhất định.
+	 * Sử dụng rtrim() thay vì untrailingslashit để tránh phụ thuộc formatting.php.
 	 */
 	$target = rtrim( $target, '/' );
 	if ( empty( $target ) ) {
@@ -2068,18 +2067,18 @@ function wp_mkdir_p( $target ) {
 		return @is_dir( $target );
 	}
 
-	// Do not allow path traversals.
+	// Không cho phép duyệt đường dẫn.
 	if ( str_contains( $target, '../' ) || str_contains( $target, '..' . DIRECTORY_SEPARATOR ) ) {
 		return false;
 	}
 
-	// We need to find the permissions of the parent folder that exists and inherit that.
+	// Chúng ta cần tìm quyền truy cập của thư mục cha tồn tại và kế thừa quyền đó.
 	$target_parent = dirname( $target );
 	while ( '.' !== $target_parent && ! is_dir( $target_parent ) && dirname( $target_parent ) !== $target_parent ) {
 		$target_parent = dirname( $target_parent );
 	}
 
-	// Get the permission bits.
+	// Lấy các bit quyền truy cập.
 	$stat = @stat( $target_parent );
 	if ( $stat ) {
 		$dir_perms = $stat['mode'] & 0007777;
@@ -2090,8 +2089,8 @@ function wp_mkdir_p( $target ) {
 	if ( @mkdir( $target, $dir_perms, true ) ) {
 
 		/*
-		 * If a umask is set that modifies $dir_perms, we'll have to re-set
-		 * the $dir_perms correctly with chmod()
+		 * Nếu umask được đặt làm thay đổi $dir_perms, chúng ta sẽ phải đặt lại
+		 * $dir_perms chính xác bằng chmod()
 		 */
 		if ( ( $dir_perms & ~umask() ) !== $dir_perms ) {
 			$folder_parts = explode( '/', substr( $target, strlen( $target_parent ) + 1 ) );
@@ -2107,27 +2106,27 @@ function wp_mkdir_p( $target ) {
 }
 
 /**
- * Tests if a given filesystem path is absolute.
+ * Kiểm tra xem đường dẫn hệ thống file đã cho có phải là tuyệt đối hay không.
  *
- * For example, '/foo/bar', or 'c:\windows'.
+ * Ví dụ, '/foo/bar', hoặc 'c:\windows'.
  *
  * @since 2.5.0
  *
- * @param string $path File path.
- * @return bool True if path is absolute, false is not absolute.
+ * @param string $path Đường dẫn file.
+ * @return bool True nếu đường dẫn là tuyệt đối, false nếu không phải tuyệt đối.
  */
 function path_is_absolute( $path ) {
 	/*
-	 * Check to see if the path is a stream and check to see if its an actual
-	 * path or file as realpath() does not support stream wrappers.
+	 * Kiểm tra xem đường dẫn có phải là stream hay không và kiểm tra xem nó có phải là
+	 * đường dẫn hoặc file thực tế hay không vì realpath() không hỗ trợ stream wrapper.
 	 */
 	if ( wp_is_stream( $path ) && ( is_dir( $path ) || is_file( $path ) ) ) {
 		return true;
 	}
 
 	/*
-	 * This is definitive if true but fails if $path does not exist or contains
-	 * a symbolic link.
+	 * Kết quả này là chính xác nếu true nhưng thất bại nếu $path không tồn tại hoặc chứa
+	 * liên kết tượng trưng.
 	 */
 	if ( realpath( $path ) === $path ) {
 		return true;
@@ -2137,26 +2136,26 @@ function path_is_absolute( $path ) {
 		return false;
 	}
 
-	// Windows allows absolute paths like this.
+	// Windows cho phép đường dẫn tuyệt đối như thế này.
 	if ( preg_match( '#^[a-zA-Z]:\\\\#', $path ) ) {
 		return true;
 	}
 
-	// A path starting with / or \ is absolute; anything else is relative.
+	// Đường dẫn bắt đầu bằng / hoặc \ là tuyệt đối; mọi thứ khác là tương đối.
 	return ( '/' === $path[0] || '\\' === $path[0] );
 }
 
 /**
- * Joins two filesystem paths together.
+ * Nối hai đường dẫn hệ thống file lại với nhau.
  *
- * For example, 'give me $path relative to $base'. If the $path is absolute,
- * then it the full path is returned.
+ * Ví dụ, 'cho tôi $path tương đối với $base'. Nếu $path là tuyệt đối,
+ * thì đường dẫn đầy đủ sẽ được trả về.
  *
  * @since 2.5.0
  *
- * @param string $base Base path.
- * @param string $path Path relative to $base.
- * @return string The path with the base or absolute path.
+ * @param string $base Đường dẫn cơ sở.
+ * @param string $path Đường dẫn tương đối với $base.
+ * @return string Đường dẫn với cơ sở hoặc đường dẫn tuyệt đối.
  */
 function path_join( $base, $path ) {
 	if ( path_is_absolute( $path ) ) {
@@ -2167,20 +2166,20 @@ function path_join( $base, $path ) {
 }
 
 /**
- * Normalizes a filesystem path.
+ * Chuẩn hóa đường dẫn hệ thống file.
  *
- * On windows systems, replaces backslashes with forward slashes
- * and forces upper-case drive letters.
- * Allows for two leading slashes for Windows network shares, but
- * ensures that all other duplicate slashes are reduced to a single.
+ * Trên hệ thống Windows, thay thế dấu gạch chéo ngược bằng dấu gạch chéo xuôi
+ * và ép chữ ổ đĩa thành chữ hoa.
+ * Cho phép hai dấu gạch chéo đầu cho chia sẻ mạng Windows, nhưng
+ * đảm bảo rằng tất cả các dấu gạch chéo trùng lặp khác được giảm xuống còn một.
  *
  * @since 3.9.0
- * @since 4.4.0 Ensures upper-case drive letters on Windows systems.
- * @since 4.5.0 Allows for Windows network shares.
- * @since 4.9.7 Allows for PHP file wrappers.
+ * @since 4.4.0 Đảm bảo chữ ổ đĩa viết hoa trên hệ thống Windows.
+ * @since 4.5.0 Cho phép chia sẻ mạng Windows.
+ * @since 4.9.7 Cho phép PHP file wrapper.
  *
- * @param string $path Path to normalize.
- * @return string Normalized path.
+ * @param string $path Đường dẫn cần chuẩn hóa.
+ * @return string Đường dẫn đã chuẩn hóa.
  */
 function wp_normalize_path( $path ) {
 	$wrapper = '';
@@ -2191,13 +2190,13 @@ function wp_normalize_path( $path ) {
 		$wrapper .= '://';
 	}
 
-	// Standardize all paths to use '/'.
+	// Chuẩn hóa tất cả đường dẫn để sử dụng '/'.
 	$path = str_replace( '\\', '/', $path );
 
-	// Replace multiple slashes down to a singular, allowing for network shares having two slashes.
+	// Thay thế nhiều dấu gạch chéo xuống còn một, cho phép chia sẻ mạng có hai dấu gạch chéo.
 	$path = preg_replace( '|(?<=.)/+|', '/', $path );
 
-	// Windows paths should uppercase the drive letter.
+	// Đường dẫn Windows nên viết hoa chữ ổ đĩa.
 	if ( ':' === substr( $path, 1, 1 ) ) {
 		$path = ucfirst( $path );
 	}
@@ -2206,18 +2205,18 @@ function wp_normalize_path( $path ) {
 }
 
 /**
- * Determines a writable directory for temporary files.
+ * Xác định thư mục có thể ghi cho các file tạm thời.
  *
- * Function's preference is the return value of sys_get_temp_dir(),
- * followed by your PHP temporary upload directory, followed by WP_CONTENT_DIR,
- * before finally defaulting to /tmp/
+ * Ưu tiên của hàm là giá trị trả về của sys_get_temp_dir(),
+ * tiếp theo là thư mục tải lên tạm thời PHP của bạn, tiếp theo là WP_CONTENT_DIR,
+ * cuối cùng mặc định là /tmp/
  *
- * In the event that this function does not find a writable location,
- * It may be overridden by the WP_TEMP_DIR constant in your wp-config.php file.
+ * Trong trường hợp hàm này không tìm thấy vị trí có thể ghi,
+ * nó có thể được ghi đè bởi hằng số WP_TEMP_DIR trong file wp-config.php của bạn.
  *
  * @since 2.5.0
  *
- * @return string Writable temporary directory.
+ * @return string Thư mục tạm thời có thể ghi.
  */
 function get_temp_dir() {
 	static $temp = '';
@@ -2250,17 +2249,17 @@ function get_temp_dir() {
 }
 
 /**
- * Determines if a directory is writable.
+ * Xác định xem thư mục có thể ghi hay không.
  *
- * This function is used to work around certain ACL issues in PHP primarily
- * affecting Windows Servers.
+ * Hàm này được sử dụng để giải quyết một số vấn đề ACL nhất định trong PHP chủ yếu
+ * ảnh hưởng đến máy chủ Windows.
  *
  * @since 3.6.0
  *
  * @see win_is_writable()
  *
- * @param string $path Path to check for write-ability.
- * @return bool Whether the path is writable.
+ * @param string $path Đường dẫn cần kiểm tra khả năng ghi.
+ * @return bool Liệu đường dẫn có thể ghi hay không.
  */
 function wp_is_writable( $path ) {
 	if ( 'Windows' === PHP_OS_FAMILY ) {
@@ -2271,31 +2270,31 @@ function wp_is_writable( $path ) {
 }
 
 /**
- * Workaround for Windows bug in is_writable() function
+ * Giải pháp thay thế cho lỗi Windows trong hàm is_writable()
  *
- * PHP has issues with Windows ACL's for determine if a
- * directory is writable or not, this works around them by
- * checking the ability to open files rather than relying
- * upon PHP to interpret the OS ACL.
+ * PHP có vấn đề với ACL của Windows trong việc xác định xem
+ * thư mục có thể ghi hay không, giải pháp này vượt qua bằng cách
+ * kiểm tra khả năng mở file thay vì dựa vào
+ * PHP để giải thích ACL của hệ điều hành.
  *
  * @since 2.8.0
  *
  * @see https://bugs.php.net/bug.php?id=27609
  * @see https://bugs.php.net/bug.php?id=30931
  *
- * @param string $path Windows path to check for write-ability.
- * @return bool Whether the path is writable.
+ * @param string $path Đường dẫn Windows cần kiểm tra khả năng ghi.
+ * @return bool Liệu đường dẫn có thể ghi hay không.
  */
 function win_is_writable( $path ) {
 	if ( '/' === $path[ strlen( $path ) - 1 ] ) {
-		// If it looks like a directory, check a random file within the directory.
+		// Nếu trông giống thư mục, kiểm tra một file ngẫu nhiên trong thư mục.
 		return win_is_writable( $path . uniqid( mt_rand() ) . '.tmp' );
 	} elseif ( is_dir( $path ) ) {
-		// If it's a directory (and not a file), check a random file within the directory.
+		// Nếu là thư mục (không phải file), kiểm tra một file ngẫu nhiên trong thư mục.
 		return win_is_writable( $path . '/' . uniqid( mt_rand() ) . '.tmp' );
 	}
 
-	// Check tmp file for read/write capabilities.
+	// Kiểm tra file tạm thời để xác định khả năng đọc/ghi.
 	$should_delete_tmp_file = ! file_exists( $path );
 
 	$f = @fopen( $path, 'a' );
@@ -2312,57 +2311,57 @@ function win_is_writable( $path ) {
 }
 
 /**
- * Retrieves uploads directory information.
+ * Lấy thông tin thư mục tải lên.
  *
- * Same as wp_upload_dir() but "light weight" as it doesn't attempt to create the uploads directory.
- * Intended for use in themes, when only 'basedir' and 'baseurl' are needed, generally in all cases
- * when not uploading files.
+ * Giống như wp_upload_dir() nhưng "nhẹ hơn" vì không cố tạo thư mục tải lên.
+ * Dành cho sử dụng trong theme, khi chỉ cần 'basedir' và 'baseurl', thường trong mọi trường hợp
+ * khi không tải file lên.
  *
  * @since 4.5.0
  *
  * @see wp_upload_dir()
  *
- * @return array See wp_upload_dir() for description.
+ * @return array Xem wp_upload_dir() để biết mô tả.
  */
 function wp_get_upload_dir() {
 	return wp_upload_dir( null, false );
 }
 
 /**
- * Returns an array containing the current upload directory's path and URL.
+ * Trả về mảng chứa đường dẫn và URL của thư mục tải lên hiện tại.
  *
- * Checks the 'upload_path' option, which should be from the web root folder,
- * and if it isn't empty it will be used. If it is empty, then the path will be
- * 'WP_CONTENT_DIR/uploads'. If the 'UPLOADS' constant is defined, then it will
- * override the 'upload_path' option and 'WP_CONTENT_DIR/uploads' path.
+ * Kiểm tra tùy chọn 'upload_path', nên từ thư mục gốc web,
+ * và nếu không rỗng thì sẽ được sử dụng. Nếu rỗng, đường dẫn sẽ là
+ * 'WP_CONTENT_DIR/uploads'. Nếu hằng số 'UPLOADS' được định nghĩa, nó sẽ
+ * ghi đè tùy chọn 'upload_path' và đường dẫn 'WP_CONTENT_DIR/uploads'.
  *
- * The upload URL path is set either by the 'upload_url_path' option or by using
- * the 'WP_CONTENT_URL' constant and appending '/uploads' to the path.
+ * Đường dẫn URL tải lên được đặt bởi tùy chọn 'upload_url_path' hoặc bằng cách sử dụng
+ * hằng số 'WP_CONTENT_URL' và thêm '/uploads' vào đường dẫn.
  *
- * If the 'uploads_use_yearmonth_folders' is set to true (checkbox if checked in
- * the administration settings panel), then the time will be used. The format
- * will be year first and then month.
+ * Nếu 'uploads_use_yearmonth_folders' được đặt thành true (checkbox được chọn trong
+ * bảng cài đặt quản trị), thì thời gian sẽ được sử dụng. Định dạng
+ * sẽ là năm trước rồi tháng sau.
  *
- * If the path couldn't be created, then an error will be returned with the key
- * 'error' containing the error message. The error suggests that the parent
- * directory is not writable by the server.
+ * Nếu đường dẫn không thể tạo được, lỗi sẽ được trả về với khóa
+ * 'error' chứa thông báo lỗi. Lỗi gợi ý rằng thư mục cha
+ * không có quyền ghi bởi máy chủ.
  *
  * @since 2.0.0
  * @uses _wp_upload_dir()
  *
- * @param string|null $time          Optional. Time formatted in 'yyyy/mm'. Default null.
- * @param bool        $create_dir    Optional. Whether to check and create the uploads directory.
- *                                   Default true for backward compatibility.
- * @param bool        $refresh_cache Optional. Whether to refresh the cache. Default false.
+ * @param string|null $time          Tùy chọn. Thời gian theo định dạng 'yyyy/mm'. Mặc định null.
+ * @param bool        $create_dir    Tùy chọn. Có kiểm tra và tạo thư mục tải lên hay không.
+ *                                   Mặc định true để tương thích ngược.
+ * @param bool        $refresh_cache Tùy chọn. Có làm mới bộ nhớ đệm hay không. Mặc định false.
  * @return array {
- *     Array of information about the upload directory.
+ *     Mảng thông tin về thư mục tải lên.
  *
- *     @type string       $path    Base directory and subdirectory or full path to upload directory.
- *     @type string       $url     Base URL and subdirectory or absolute URL to upload directory.
- *     @type string       $subdir  Subdirectory if uploads use year/month folders option is on.
- *     @type string       $basedir Path without subdir.
- *     @type string       $baseurl URL path without subdir.
- *     @type string|false $error   False or error message.
+ *     @type string       $path    Thư mục cơ sở và thư mục con hoặc đường dẫn đầy đủ đến thư mục tải lên.
+ *     @type string       $url     URL cơ sở và thư mục con hoặc URL tuyệt đối đến thư mục tải lên.
+ *     @type string       $subdir  Thư mục con nếu tùy chọn sử dụng thư mục năm/tháng được bật.
+ *     @type string       $basedir Đường dẫn không có thư mục con.
+ *     @type string       $baseurl Đường dẫn URL không có thư mục con.
+ *     @type string|false $error   False hoặc thông báo lỗi.
  * }
  */
 function wp_upload_dir( $time = null, $create_dir = true, $refresh_cache = false ) {
@@ -2375,19 +2374,19 @@ function wp_upload_dir( $time = null, $create_dir = true, $refresh_cache = false
 	}
 
 	/**
-	 * Filters the uploads directory data.
+	 * Lọc dữ liệu thư mục tải lên.
 	 *
 	 * @since 2.0.0
 	 *
 	 * @param array $uploads {
-	 *     Array of information about the upload directory.
+	 *     Mảng thông tin về thư mục tải lên.
 	 *
-	 *     @type string       $path    Base directory and subdirectory or full path to upload directory.
-	 *     @type string       $url     Base URL and subdirectory or absolute URL to upload directory.
-	 *     @type string       $subdir  Subdirectory if uploads use year/month folders option is on.
-	 *     @type string       $basedir Path without subdir.
-	 *     @type string       $baseurl URL path without subdir.
-	 *     @type string|false $error   False or error message.
+	 *     @type string       $path    Thư mục cơ sở và thư mục con hoặc đường dẫn đầy đủ đến thư mục tải lên.
+	 *     @type string       $url     URL cơ sở và thư mục con hoặc URL tuyệt đối đến thư mục tải lên.
+	 *     @type string       $subdir  Thư mục con nếu tùy chọn sử dụng thư mục năm/tháng được bật.
+	 *     @type string       $basedir Đường dẫn không có thư mục con.
+	 *     @type string       $baseurl Đường dẫn URL không có thư mục con.
+	 *     @type string|false $error   False hoặc thông báo lỗi.
 	 * }
 	 */
 	$uploads = apply_filters( 'upload_dir', $cache[ $key ] );
@@ -2420,13 +2419,13 @@ function wp_upload_dir( $time = null, $create_dir = true, $refresh_cache = false
 }
 
 /**
- * A non-filtered, non-cached version of wp_upload_dir() that doesn't check the path.
+ * Phiên bản không lọc, không cache của wp_upload_dir() mà không kiểm tra đường dẫn.
  *
  * @since 4.5.0
  * @access private
  *
- * @param string|null $time Optional. Time formatted in 'yyyy/mm'. Default null.
- * @return array See wp_upload_dir()
+ * @param string|null $time Tùy chọn. Thời gian theo định dạng 'yyyy/mm'. Mặc định null.
+ * @return array Xem wp_upload_dir()
  */
 function _wp_upload_dir( $time = null ) {
 	$siteurl     = get_option( 'siteurl' );
@@ -2435,7 +2434,7 @@ function _wp_upload_dir( $time = null ) {
 	if ( empty( $upload_path ) || 'wp-content/uploads' === $upload_path ) {
 		$dir = WP_CONTENT_DIR . '/uploads';
 	} elseif ( ! str_starts_with( $upload_path, ABSPATH ) ) {
-		// $dir is absolute, $upload_path is (maybe) relative to ABSPATH.
+		// $dir là tuyệt đối, $upload_path có thể là tương đối với ABSPATH.
 		$dir = path_join( ABSPATH, $upload_path );
 	} else {
 		$dir = $upload_path;
@@ -2451,25 +2450,25 @@ function _wp_upload_dir( $time = null ) {
 	}
 
 	/*
-	 * Honor the value of UPLOADS. This happens as long as ms-files rewriting is disabled.
-	 * We also sometimes obey UPLOADS when rewriting is enabled -- see the next block.
+	 * Tôn trọng giá trị của UPLOADS. Điều này xảy ra miễn là ghi lại ms-files bị tắt.
+	 * Chúng ta cũng đôi khi tuân theo UPLOADS khi ghi lại được bật -- xem khối tiếp theo.
 	 */
 	if ( defined( 'UPLOADS' ) && ! ( is_multisite() && get_site_option( 'ms_files_rewriting' ) ) ) {
 		$dir = ABSPATH . UPLOADS;
 		$url = trailingslashit( $siteurl ) . UPLOADS;
 	}
 
-	// If multisite (and if not the main site in a post-MU network).
+	// Nếu multisite (và nếu không phải trang chính trong mạng post-MU).
 	if ( is_multisite() && ! ( is_main_network() && is_main_site() && defined( 'MULTISITE' ) ) ) {
 
 		if ( ! get_site_option( 'ms_files_rewriting' ) ) {
 			/*
-			 * If ms-files rewriting is disabled (networks created post-3.5), it is fairly
-			 * straightforward: Append sites/%d if we're not on the main site (for post-MU
-			 * networks). (The extra directory prevents a four-digit ID from conflicting with
-			 * a year-based directory for the main site. But if a MU-era network has disabled
-			 * ms-files rewriting manually, they don't need the extra directory, as they never
-			 * had wp-content/uploads for the main site.)
+			 * Nếu ghi lại ms-files bị tắt (mạng được tạo sau 3.5), khá đơn giản:
+			 * Thêm sites/%d nếu chúng ta không ở trang chính (cho mạng post-MU).
+			 * (Thư mục bổ sung ngăn ID bốn chữ số xung đột với thư mục dựa trên năm
+			 * cho trang chính. Nhưng nếu mạng thời MU đã tắt ghi lại ms-files thủ công,
+			 * họ không cần thư mục bổ sung, vì họ chưa bao giờ có wp-content/uploads
+			 * cho trang chính.)
 			 */
 
 			if ( defined( 'MULTISITE' ) ) {
@@ -2483,17 +2482,17 @@ function _wp_upload_dir( $time = null ) {
 
 		} elseif ( defined( 'UPLOADS' ) && ! ms_is_switched() ) {
 			/*
-			 * Handle the old-form ms-files.php rewriting if the network still has that enabled.
-			 * When ms-files rewriting is enabled, then we only listen to UPLOADS when:
-			 * 1) We are not on the main site in a post-MU network, as wp-content/uploads is used
-			 *    there, and
-			 * 2) We are not switched, as ms_upload_constants() hardcodes these constants to reflect
-			 *    the original blog ID.
+			 * Xử lý ghi lại ms-files.php dạng cũ nếu mạng vẫn bật tính năng đó.
+			 * Khi ghi lại ms-files được bật, chúng ta chỉ lắng nghe UPLOADS khi:
+			 * 1) Chúng ta không ở trang chính trong mạng post-MU, vì wp-content/uploads được sử dụng
+			 *    ở đó, và
+			 * 2) Chúng ta không bị chuyển đổi, vì ms_upload_constants() mã hóa cứng các hằng số này
+			 *    để phản ánh ID blog gốc.
 			 *
-			 * Rather than UPLOADS, we actually use BLOGUPLOADDIR if it is set, as it is absolute.
-			 * (And it will be set, see ms_upload_constants().) Otherwise, UPLOADS can be used, as
-			 * as it is relative to ABSPATH. For the final piece: when UPLOADS is used with ms-files
-			 * rewriting in multisite, the resulting URL is /files. (#WP22702 for background.)
+			 * Thay vì UPLOADS, chúng ta thực sự sử dụng BLOGUPLOADDIR nếu nó được đặt, vì nó là tuyệt đối.
+			 * (Và nó sẽ được đặt, xem ms_upload_constants().) Nếu không, UPLOADS có thể được sử dụng,
+			 * vì nó tương đối với ABSPATH. Phần cuối cùng: khi UPLOADS được sử dụng với ghi lại
+			 * ms-files trong multisite, URL kết quả là /files. (#WP22702 để tham khảo.)
 			 */
 
 			if ( defined( 'BLOGUPLOADDIR' ) ) {
@@ -2510,7 +2509,7 @@ function _wp_upload_dir( $time = null ) {
 
 	$subdir = '';
 	if ( get_option( 'uploads_use_yearmonth_folders' ) ) {
-		// Generate the yearly and monthly directories.
+		// Tạo thư mục theo năm và tháng.
 		if ( ! $time ) {
 			$time = current_time( 'mysql' );
 		}
@@ -2533,33 +2532,33 @@ function _wp_upload_dir( $time = null ) {
 }
 
 /**
- * Gets a filename that is sanitized and unique for the given directory.
+ * Lấy tên file đã được làm sạch và duy nhất cho thư mục đã cho.
  *
- * If the filename is not unique, then a number will be added to the filename
- * before the extension, and will continue adding numbers until the filename
- * is unique.
+ * Nếu tên file không duy nhất, một số sẽ được thêm vào tên file
+ * trước phần mở rộng, và sẽ tiếp tục thêm số cho đến khi tên file
+ * trở thành duy nhất.
  *
- * The callback function allows the caller to use their own method to create
- * unique file names. If defined, the callback should take three arguments:
- * - directory, base filename, and extension - and return a unique filename.
+ * Hàm callback cho phép người gọi sử dụng phương thức riêng để tạo
+ * tên file duy nhất. Nếu được định nghĩa, callback nên nhận ba đối số:
+ * - thư mục, tên file cơ sở, và phần mở rộng - và trả về tên file duy nhất.
  *
  * @since 2.5.0
  *
- * @param string   $dir                      Directory.
- * @param string   $filename                 File name.
- * @param callable $unique_filename_callback Callback. Default null.
- * @return string New filename, if given wasn't unique.
+ * @param string   $dir                      Thư mục.
+ * @param string   $filename                 Tên file.
+ * @param callable $unique_filename_callback Callback. Mặc định null.
+ * @return string Tên file mới, nếu tên đã cho không duy nhất.
  */
 function wp_unique_filename( $dir, $filename, $unique_filename_callback = null ) {
-	// Sanitize the file name before we begin processing.
+	// Làm sạch tên file trước khi bắt đầu xử lý.
 	$filename = sanitize_file_name( $filename );
 	$ext2     = null;
 
-	// Initialize vars used in the wp_unique_filename filter.
+	// Khởi tạo các biến sử dụng trong bộ lọc wp_unique_filename.
 	$number        = '';
 	$alt_filenames = array();
 
-	// Separate the filename into a name and extension.
+	// Tách tên file thành tên và phần mở rộng.
 	$ext  = pathinfo( $filename, PATHINFO_EXTENSION );
 	$name = pathinfo( $filename, PATHINFO_BASENAME );
 
@@ -2567,31 +2566,31 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 		$ext = '.' . $ext;
 	}
 
-	// Edge case: if file is named '.ext', treat as an empty name.
+	// Trường hợp đặc biệt: nếu file có tên '.ext', coi như tên rỗng.
 	if ( $name === $ext ) {
 		$name = '';
 	}
 
 	/*
-	 * Increment the file number until we have a unique file to save in $dir.
-	 * Use callback if supplied.
+	 * Tăng số thứ tự file cho đến khi có file duy nhất để lưu trong $dir.
+	 * Sử dụng callback nếu được cung cấp.
 	 */
 	if ( $unique_filename_callback && is_callable( $unique_filename_callback ) ) {
 		$filename = call_user_func( $unique_filename_callback, $dir, $name, $ext );
 	} else {
 		$fname = pathinfo( $filename, PATHINFO_FILENAME );
 
-		// Always append a number to file names that can potentially match image sub-size file names.
+		// Luôn thêm số vào tên file có thể khớp với tên file kích thước phụ của ảnh.
 		if ( $fname && preg_match( '/-(?:\d+x\d+|scaled|rotated)$/', $fname ) ) {
 			$number = 1;
 
-			// At this point the file name may not be unique. This is tested below and the $number is incremented.
+			// Tại thời điểm này tên file có thể chưa duy nhất. Điều này được kiểm tra bên dưới và $number sẽ tăng.
 			$filename = str_replace( "{$fname}{$ext}", "{$fname}-{$number}{$ext}", $filename );
 		}
 
 		/*
-		 * Get the mime type. Uploaded files were already checked with wp_check_filetype_and_ext()
-		 * in _wp_handle_upload(). Using wp_check_filetype() would be sufficient here.
+		 * Lấy loại mime. Các file đã tải lên đã được kiểm tra bằng wp_check_filetype_and_ext()
+		 * trong _wp_handle_upload(). Sử dụng wp_check_filetype() là đủ ở đây.
 		 */
 		$file_type = wp_check_filetype( $filename );
 		$mime_type = $file_type['type'];
@@ -2604,19 +2603,19 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 		$_dir   = trailingslashit( $dir );
 
 		/*
-		 * If the extension is uppercase add an alternate file name with lowercase extension.
-		 * Both need to be tested for uniqueness as the extension will be changed to lowercase
-		 * for better compatibility with different filesystems. Fixes an inconsistency in WP < 2.9
-		 * where uppercase extensions were allowed but image sub-sizes were created with
-		 * lowercase extensions.
+		 * Nếu phần mở rộng viết hoa, thêm tên file thay thế với phần mở rộng viết thường.
+		 * Cả hai cần được kiểm tra tính duy nhất vì phần mở rộng sẽ được chuyển sang chữ thường
+		 * để tương thích tốt hơn với các hệ thống file khác nhau. Sửa lỗi không nhất quán trong WP < 2.9
+		 * nơi phần mở rộng viết hoa được cho phép nhưng kích thước phụ của ảnh được tạo với
+		 * phần mở rộng viết thường.
 		 */
 		if ( $ext && $lc_ext !== $ext ) {
 			$lc_filename = preg_replace( '|' . preg_quote( $ext ) . '$|', $lc_ext, $filename );
 		}
 
 		/*
-		 * Increment the number added to the file name if there are any files in $dir
-		 * whose names match one of the possible name variations.
+		 * Tăng số được thêm vào tên file nếu có bất kỳ file nào trong $dir
+		 * có tên khớp với một trong các biến thể tên có thể có.
 		 */
 		while ( file_exists( $_dir . $filename ) || ( $lc_filename && file_exists( $_dir . $lc_filename ) ) ) {
 			$new_number = (int) $number + 1;
@@ -2642,43 +2641,43 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 			$number = $new_number;
 		}
 
-		// Change the extension to lowercase if needed.
+		// Chuyển phần mở rộng sang chữ thường nếu cần.
 		if ( $lc_filename ) {
 			$filename = $lc_filename;
 		}
 
 		/*
-		 * Prevent collisions with existing file names that contain dimension-like strings
-		 * (whether they are subsizes or originals uploaded prior to #42437).
+		 * Ngăn xung đột với tên file hiện có chứa chuỗi giống kích thước
+		 * (dù chúng là kích thước phụ hay bản gốc được tải lên trước #42437).
 		 */
 
 		$files = array();
 		$count = 10000;
 
-		// The (resized) image files would have name and extension, and will be in the uploads dir.
+		// Các file ảnh (đã thay đổi kích thước) sẽ có tên và phần mở rộng, và nằm trong thư mục uploads.
 		if ( $name && $ext && @is_dir( $dir ) && str_contains( $dir, $upload_dir['basedir'] ) ) {
 			/**
-			 * Filters the file list used for calculating a unique filename for a newly added file.
+			 * Lọc danh sách file dùng để tính toán tên file duy nhất cho file mới được thêm.
 			 *
-			 * Returning an array from the filter will effectively short-circuit retrieval
-			 * from the filesystem and return the passed value instead.
+			 * Trả về mảng từ bộ lọc sẽ bỏ qua việc lấy danh sách
+			 * từ hệ thống file và trả về giá trị đã truyền thay thế.
 			 *
 			 * @since 5.5.0
 			 *
-			 * @param array|null $files    The list of files to use for filename comparisons.
-			 *                             Default null (to retrieve the list from the filesystem).
-			 * @param string     $dir      The directory for the new file.
-			 * @param string     $filename The proposed filename for the new file.
+			 * @param array|null $files    Danh sách file để so sánh tên file.
+			 *                             Mặc định null (để lấy danh sách từ hệ thống file).
+			 * @param string     $dir      Thư mục cho file mới.
+			 * @param string     $filename Tên file đề xuất cho file mới.
 			 */
 			$files = apply_filters( 'pre_wp_unique_filename_file_list', null, $dir, $filename );
 
 			if ( null === $files ) {
-				// List of all files and directories contained in $dir.
+				// Danh sách tất cả file và thư mục chứa trong $dir.
 				$files = @scandir( $dir );
 			}
 
 			if ( ! empty( $files ) ) {
-				// Remove "dot" dirs.
+				// Xóa các thư mục "dấu chấm".
 				$files = array_diff( $files, array( '.', '..' ) );
 			}
 
@@ -2686,15 +2685,15 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 				$count = count( $files );
 
 				/*
-				 * Ensure this never goes into infinite loop as it uses pathinfo() and regex in the check,
-				 * but string replacement for the changes.
+				 * Đảm bảo không bao giờ rơi vào vòng lặp vô hạn vì nó sử dụng pathinfo() và regex để kiểm tra,
+				 * nhưng thay thế chuỗi cho các thay đổi.
 				 */
 				$i = 0;
 
 				while ( $i <= $count && _wp_check_existing_file_names( $filename, $files ) ) {
 					$new_number = (int) $number + 1;
 
-					// If $ext is uppercase it was replaced with the lowercase version after the previous loop.
+					// Nếu $ext viết hoa, nó đã được thay bằng phiên bản viết thường sau vòng lặp trước.
 					$filename = str_replace(
 						array( "-{$number}{$lc_ext}", "{$number}{$lc_ext}" ),
 						"-{$new_number}{$lc_ext}",
@@ -2708,25 +2707,25 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 		}
 
 		/*
-		 * Check if an image will be converted after uploading or some existing image sub-size file names may conflict
-		 * when regenerated. If yes, ensure the new file name will be unique and will produce unique sub-sizes.
+		 * Kiểm tra xem ảnh có bị chuyển đổi sau khi tải lên hay một số tên file kích thước phụ hiện có có thể xung đột
+		 * khi được tạo lại. Nếu có, đảm bảo tên file mới sẽ duy nhất và tạo ra kích thước phụ duy nhất.
 		 */
 		if ( $is_image ) {
 			$output_formats = wp_get_image_editor_output_format( $_dir . $filename, $mime_type );
 			$alt_types      = array();
 
 			if ( ! empty( $output_formats[ $mime_type ] ) ) {
-				// The image will be converted to this format/mime type.
+				// Ảnh sẽ được chuyển đổi sang định dạng/loại mime này.
 				$alt_mime_type = $output_formats[ $mime_type ];
 
-				// Other types of images whose names may conflict if their sub-sizes are regenerated.
+				// Các loại ảnh khác có tên có thể xung đột nếu kích thước phụ của chúng được tạo lại.
 				$alt_types   = array_keys( array_intersect( $output_formats, array( $mime_type, $alt_mime_type ) ) );
 				$alt_types[] = $alt_mime_type;
 			} elseif ( ! empty( $output_formats ) ) {
 				$alt_types = array_keys( array_intersect( $output_formats, array( $mime_type ) ) );
 			}
 
-			// Remove duplicates and the original mime type. It will be added later if needed.
+			// Xóa trùng lặp và loại mime gốc. Nó sẽ được thêm lại sau nếu cần.
 			$alt_types = array_unique( array_diff( $alt_types, array( $mime_type ) ) );
 
 			foreach ( $alt_types as $alt_type ) {
@@ -2744,12 +2743,12 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 
 			if ( ! empty( $alt_filenames ) ) {
 				/*
-				 * Add the original filename. It needs to be checked again
-				 * together with the alternate filenames when $number is incremented.
+				 * Thêm tên file gốc. Nó cần được kiểm tra lại
+				 * cùng với các tên file thay thế khi $number tăng.
 				 */
 				$alt_filenames[ $lc_ext ] = $filename;
 
-				// Ensure no infinite loop.
+				// Đảm bảo không có vòng lặp vô hạn.
 				$i = 0;
 
 				while ( $i <= $count && _wp_check_alternate_file_names( $alt_filenames, $_dir, $files ) ) {
@@ -2764,8 +2763,8 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 					}
 
 					/*
-					 * Also update the $number in (the output) $filename.
-					 * If the extension was uppercase it was already replaced with the lowercase version.
+					 * Cũng cập nhật $number trong (đầu ra) $filename.
+					 * Nếu phần mở rộng viết hoa, nó đã được thay bằng phiên bản viết thường.
 					 */
 					$filename = str_replace(
 						array( "-{$number}{$lc_ext}", "{$number}{$lc_ext}" ),
@@ -2781,32 +2780,32 @@ function wp_unique_filename( $dir, $filename, $unique_filename_callback = null )
 	}
 
 	/**
-	 * Filters the result when generating a unique file name.
+	 * Lọc kết quả khi tạo tên file duy nhất.
 	 *
 	 * @since 4.5.0
-	 * @since 5.8.1 The `$alt_filenames` and `$number` parameters were added.
+	 * @since 5.8.1 Các tham số `$alt_filenames` và `$number` được thêm vào.
 	 *
-	 * @param string        $filename                 Unique file name.
-	 * @param string        $ext                      File extension. Example: ".png".
-	 * @param string        $dir                      Directory path.
-	 * @param callable|null $unique_filename_callback Callback function that generates the unique file name.
-	 * @param string[]      $alt_filenames            Array of alternate file names that were checked for collisions.
-	 * @param int|string    $number                   The highest number that was used to make the file name unique
-	 *                                                or an empty string if unused.
+	 * @param string        $filename                 Tên file duy nhất.
+	 * @param string        $ext                      Phần mở rộng file. Ví dụ: ".png".
+	 * @param string        $dir                      Đường dẫn thư mục.
+	 * @param callable|null $unique_filename_callback Hàm callback tạo tên file duy nhất.
+	 * @param string[]      $alt_filenames            Mảng tên file thay thế đã được kiểm tra xung đột.
+	 * @param int|string    $number                   Số cao nhất được sử dụng để làm tên file duy nhất
+	 *                                                hoặc chuỗi rỗng nếu không sử dụng.
 	 */
 	return apply_filters( 'wp_unique_filename', $filename, $ext, $dir, $unique_filename_callback, $alt_filenames, $number );
 }
 
 /**
- * Helper function to test if each of an array of file names could conflict with existing files.
+ * Hàm hỗ trợ để kiểm tra xem mỗi tên file trong mảng có thể xung đột với các file hiện có hay không.
  *
  * @since 5.8.1
  * @access private
  *
- * @param string[] $filenames Array of file names to check.
- * @param string   $dir       The directory containing the files.
- * @param array    $files     An array of existing files in the directory. May be empty.
- * @return bool True if the tested file name could match an existing file, false otherwise.
+ * @param string[] $filenames Mảng tên file cần kiểm tra.
+ * @param string   $dir       Thư mục chứa các file.
+ * @param array    $files     Mảng các file hiện có trong thư mục. Có thể rỗng.
+ * @return bool True nếu tên file được kiểm tra có thể khớp với file hiện có, false nếu không.
  */
 function _wp_check_alternate_file_names( $filenames, $dir, $files ) {
 	foreach ( $filenames as $filename ) {
@@ -2823,20 +2822,20 @@ function _wp_check_alternate_file_names( $filenames, $dir, $files ) {
 }
 
 /**
- * Helper function to check if a file name could match an existing image sub-size file name.
+ * Hàm hỗ trợ để kiểm tra xem tên file có thể khớp với tên file kích thước phụ của ảnh hiện có hay không.
  *
  * @since 5.3.1
  * @access private
  *
- * @param string $filename The file name to check.
- * @param array  $files    An array of existing files in the directory.
- * @return bool True if the tested file name could match an existing file, false otherwise.
+ * @param string $filename Tên file cần kiểm tra.
+ * @param array  $files    Mảng các file hiện có trong thư mục.
+ * @return bool True nếu tên file được kiểm tra có thể khớp với file hiện có, false nếu không.
  */
 function _wp_check_existing_file_names( $filename, $files ) {
 	$fname = pathinfo( $filename, PATHINFO_FILENAME );
 	$ext   = pathinfo( $filename, PATHINFO_EXTENSION );
 
-	// Edge case, file names like `.ext`.
+	// Trường hợp đặc biệt, tên file như `.ext`.
 	if ( empty( $fname ) ) {
 		return false;
 	}
@@ -2857,33 +2856,32 @@ function _wp_check_existing_file_names( $filename, $files ) {
 }
 
 /**
- * Creates a file in the upload folder with given content.
+ * Tạo file trong thư mục tải lên với nội dung đã cho.
  *
- * If there is an error, then the key 'error' will exist with the error message.
- * If success, then the key 'file' will have the unique file path, the 'url' key
- * will have the link to the new file. and the 'error' key will be set to false.
+ * Nếu có lỗi, khóa 'error' sẽ tồn tại với thông báo lỗi.
+ * Nếu thành công, khóa 'file' sẽ có đường dẫn file duy nhất, khóa 'url'
+ * sẽ có liên kết đến file mới, và khóa 'error' sẽ được đặt thành false.
  *
- * This function will not move an uploaded file to the upload folder. It will
- * create a new file with the content in $bits parameter. If you move the upload
- * file, read the content of the uploaded file, and then you can give the
- * filename and content to this function, which will add it to the upload
- * folder.
+ * Hàm này sẽ không di chuyển file đã tải lên đến thư mục tải lên. Nó sẽ
+ * tạo file mới với nội dung trong tham số $bits. Nếu bạn di chuyển file
+ * tải lên, đọc nội dung của file đã tải lên, sau đó bạn có thể truyền
+ * tên file và nội dung cho hàm này, và nó sẽ thêm vào thư mục tải lên.
  *
- * The permissions will be set on the new file automatically by this function.
+ * Quyền truy cập sẽ được đặt tự động cho file mới bởi hàm này.
  *
  * @since 2.0.0
  *
- * @param string      $name       Filename.
- * @param null|string $deprecated Never used. Set to null.
- * @param string      $bits       File content
- * @param string|null $time       Optional. Time formatted in 'yyyy/mm'. Default null.
+ * @param string      $name       Tên file.
+ * @param null|string $deprecated Không sử dụng. Đặt thành null.
+ * @param string      $bits       Nội dung file.
+ * @param string|null $time       Tùy chọn. Thời gian theo định dạng 'yyyy/mm'. Mặc định null.
  * @return array {
- *     Information about the newly-uploaded file.
+ *     Thông tin về file vừa được tải lên.
  *
- *     @type string       $file  Filename of the newly-uploaded file.
- *     @type string       $url   URL of the uploaded file.
- *     @type string       $type  File type.
- *     @type string|false $error Error message, if there has been an error.
+ *     @type string       $file  Tên file của file vừa được tải lên.
+ *     @type string       $url   URL của file đã tải lên.
+ *     @type string       $type  Loại file.
+ *     @type string|false $error Thông báo lỗi, nếu có lỗi xảy ra.
  * }
  */
 function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
@@ -2907,14 +2905,14 @@ function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
 	}
 
 	/**
-	 * Filters whether to treat the upload bits as an error.
+	 * Lọc xem có nên coi các bit tải lên là lỗi hay không.
 	 *
-	 * Returning a non-array from the filter will effectively short-circuit preparing the upload bits
-	 * and return that value instead. An error message should be returned as a string.
+	 * Trả về giá trị không phải mảng từ bộ lọc sẽ bỏ qua việc chuẩn bị các bit tải lên
+	 * và trả về giá trị đó thay thế. Thông báo lỗi nên được trả về dưới dạng chuỗi.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array|string $upload_bits_error An array of upload bits data, or error message to return.
+	 * @param array|string $upload_bits_error Mảng dữ liệu bit tải lên, hoặc thông báo lỗi để trả về.
 	 */
 	$upload_bits_error = apply_filters(
 		'wp_upload_bits',
@@ -2959,14 +2957,14 @@ function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
 	fclose( $ifp );
 	clearstatcache();
 
-	// Set correct file permissions.
+	// Đặt quyền truy cập file chính xác.
 	$stat  = @ stat( dirname( $new_file ) );
 	$perms = $stat['mode'] & 0007777;
 	$perms = $perms & 0000666;
 	chmod( $new_file, $perms );
 	clearstatcache();
 
-	// Compute the URL.
+	// Tính toán URL.
 	$url = $upload['url'] . "/$filename";
 
 	if ( is_multisite() ) {
@@ -2987,12 +2985,12 @@ function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
 }
 
 /**
- * Retrieves the file type based on the extension name.
+ * Lấy loại file dựa trên tên phần mở rộng.
  *
  * @since 2.5.0
  *
- * @param string $ext The extension to search.
- * @return string|void The file type, example: audio, video, document, spreadsheet, etc.
+ * @param string $ext Phần mở rộng cần tìm.
+ * @return string|void Loại file, ví dụ: audio, video, document, spreadsheet, v.v.
  */
 function wp_ext2type( $ext ) {
 	$ext = strtolower( $ext );
@@ -3006,8 +3004,8 @@ function wp_ext2type( $ext ) {
 }
 
 /**
- * Returns first matched extension for the mime-type,
- * as mapped from wp_get_mime_types().
+ * Trả về phần mở rộng đầu tiên khớp với loại mime,
+ * được ánh xạ từ wp_get_mime_types().
  *
  * @since 5.8.1
  *
@@ -3026,20 +3024,20 @@ function wp_get_default_extension_for_mime_type( $mime_type ) {
 }
 
 /**
- * Retrieves the file type from the file name.
+ * Lấy loại file từ tên file.
  *
- * You can optionally define the mime array, if needed.
+ * Bạn có thể tùy chọn định nghĩa mảng mime, nếu cần.
  *
  * @since 2.0.4
  *
- * @param string        $filename File name or path.
- * @param string[]|null $mimes    Optional. Array of allowed mime types keyed by their file extension regex.
- *                                Defaults to the result of get_allowed_mime_types().
+ * @param string        $filename Tên file hoặc đường dẫn.
+ * @param string[]|null $mimes    Tùy chọn. Mảng các loại mime được phép được đánh khóa bởi regex phần mở rộng file.
+ *                                Mặc định là kết quả của get_allowed_mime_types().
  * @return array {
- *     Values for the extension and mime type.
+ *     Giá trị cho phần mở rộng và loại mime.
  *
- *     @type string|false $ext  File extension, or false if the file doesn't match a mime type.
- *     @type string|false $type File mime type, or false if the file doesn't match a mime type.
+ *     @type string|false $ext  Phần mở rộng file, hoặc false nếu file không khớp loại mime.
+ *     @type string|false $type Loại mime file, hoặc false nếu file không khớp loại mime.
  * }
  */
 function wp_check_filetype( $filename, $mimes = null ) {
@@ -3062,49 +3060,49 @@ function wp_check_filetype( $filename, $mimes = null ) {
 }
 
 /**
- * Attempts to determine the real file type of a file.
+ * Cố gắng xác định loại file thực của một file.
  *
- * If unable to, the file name extension will be used to determine type.
+ * Nếu không thể, phần mở rộng tên file sẽ được sử dụng để xác định loại.
  *
- * If it's determined that the extension does not match the file's real type,
- * then the "proper_filename" value will be set with a proper filename and extension.
+ * Nếu xác định được rằng phần mở rộng không khớp với loại thực của file,
+ * thì giá trị "proper_filename" sẽ được đặt với tên file và phần mở rộng đúng.
  *
- * Currently this function only supports renaming images validated via wp_get_image_mime().
+ * Hiện tại hàm này chỉ hỗ trợ đổi tên ảnh được xác thực qua wp_get_image_mime().
  *
  * @since 3.0.0
  *
- * @param string        $file     Full path to the file.
- * @param string        $filename The name of the file (may differ from $file due to $file being
- *                                in a tmp directory).
- * @param string[]|null $mimes    Optional. Array of allowed mime types keyed by their file extension regex.
- *                                Defaults to the result of get_allowed_mime_types().
+ * @param string        $file     Đường dẫn đầy đủ đến file.
+ * @param string        $filename Tên file (có thể khác với $file do $file nằm
+ *                                trong thư mục tạm).
+ * @param string[]|null $mimes    Tùy chọn. Mảng các loại mime được phép được đánh khóa bởi regex phần mở rộng file.
+ *                                Mặc định là kết quả của get_allowed_mime_types().
  * @return array {
- *     Values for the extension, mime type, and corrected filename.
+ *     Giá trị cho phần mở rộng, loại mime, và tên file đã sửa.
  *
- *     @type string|false $ext             File extension, or false if the file doesn't match a mime type.
- *     @type string|false $type            File mime type, or false if the file doesn't match a mime type.
- *     @type string|false $proper_filename File name with its correct extension, or false if it cannot be determined.
+ *     @type string|false $ext             Phần mở rộng file, hoặc false nếu file không khớp loại mime.
+ *     @type string|false $type            Loại mime file, hoặc false nếu file không khớp loại mime.
+ *     @type string|false $proper_filename Tên file với phần mở rộng đúng, hoặc false nếu không thể xác định.
  * }
  */
 function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 	$proper_filename = false;
 
-	// Do basic extension validation and MIME mapping.
+	// Thực hiện xác thực phần mở rộng cơ bản và ánh xạ MIME.
 	$wp_filetype = wp_check_filetype( $filename, $mimes );
 	$ext         = $wp_filetype['ext'];
 	$type        = $wp_filetype['type'];
 
-	// We can't do any further validation without a file to work with.
+	// Chúng ta không thể thực hiện xác thực thêm nếu không có file để làm việc.
 	if ( ! file_exists( $file ) ) {
 		return compact( 'ext', 'type', 'proper_filename' );
 	}
 
 	$real_mime = false;
 
-	// Validate image types.
+	// Xác thực loại ảnh.
 	if ( $type && str_starts_with( $type, 'image/' ) ) {
 
-		// Attempt to figure out what type of image it actually is.
+		// Cố gắng xác định loại ảnh thực sự là gì.
 		$real_mime = wp_get_image_mime( $file );
 
 		$heic_images_extensions = array(
@@ -3115,11 +3113,11 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 
 		if ( $real_mime && ( $real_mime !== $type || in_array( $ext, $heic_images_extensions, true ) ) ) {
 			/**
-			 * Filters the list mapping image mime types to their respective extensions.
+			 * Lọc danh sách ánh xạ loại mime ảnh với phần mở rộng tương ứng.
 			 *
 			 * @since 3.0.0
 			 *
-			 * @param array $mime_to_ext Array of image mime types and their matching extensions.
+			 * @param array $mime_to_ext Mảng loại mime ảnh và phần mở rộng tương ứng.
 			 */
 			$mime_to_ext = apply_filters(
 				'getimagesize_mimes_to_exts',
@@ -3133,10 +3131,10 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 					'image/avif'          => 'avif',
 
 					/*
-					 * In theory there are/should be file extensions that correspond to the
-					 * mime types: .heif, .heics and .heifs. However it seems that HEIC images
-					 * with any of the mime types commonly have a .heic file extension.
-					 * Seems keeping the status quo here is best for compatibility.
+					 * Về lý thuyết có/nên có phần mở rộng file tương ứng với các loại
+					 * mime: .heif, .heics và .heifs. Tuy nhiên có vẻ như ảnh HEIC
+					 * với bất kỳ loại mime nào thường có phần mở rộng file .heic.
+					 * Giữ nguyên hiện trạng ở đây có vẻ tốt nhất cho tương thích.
 					 */
 					'image/heic'          => 'heic',
 					'image/heif'          => 'heic',
@@ -3145,7 +3143,7 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 				)
 			);
 
-			// Replace whatever is after the last period in the filename with the correct extension.
+			// Thay thế phần sau dấu chấm cuối cùng trong tên file bằng phần mở rộng đúng.
 			if ( ! empty( $mime_to_ext[ $real_mime ] ) ) {
 				$filename_parts = explode( '.', $filename );
 
@@ -3154,21 +3152,21 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 				$new_filename     = implode( '.', $filename_parts );
 
 				if ( $new_filename !== $filename ) {
-					$proper_filename = $new_filename; // Mark that it changed.
+					$proper_filename = $new_filename; // Đánh dấu rằng nó đã thay đổi.
 				}
 
-				// Redefine the extension / MIME.
+				// Định nghĩa lại phần mở rộng / MIME.
 				$wp_filetype = wp_check_filetype( $new_filename, $mimes );
 				$ext         = $wp_filetype['ext'];
 				$type        = $wp_filetype['type'];
 			} else {
-				// Reset $real_mime and try validating again.
+				// Đặt lại $real_mime và thử xác thực lại.
 				$real_mime = false;
 			}
 		}
 	}
 
-	// Validate files that didn't get validated during previous checks.
+	// Xác thực các file chưa được xác thực trong các lần kiểm tra trước.
 	if ( $type && ! $real_mime && extension_loaded( 'fileinfo' ) ) {
 		$finfo     = finfo_open( FILEINFO_MIME_TYPE );
 		$real_mime = finfo_file( $finfo, $file );
@@ -3201,28 +3199,28 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 		);
 
 		/*
-		 * If $real_mime doesn't match the content type we're expecting from the file's extension,
-		 * we need to do some additional vetting. Media types and those listed in $nonspecific_types are
-		 * allowed some leeway, but anything else must exactly match the real content type.
+		 * Nếu $real_mime không khớp với loại nội dung mà chúng ta mong đợi từ phần mở rộng của file,
+		 * chúng ta cần thực hiện thêm một số kiểm tra. Các loại media và những loại được liệt kê trong $nonspecific_types
+		 * được cho phép một số linh hoạt, nhưng mọi thứ khác phải khớp chính xác với loại nội dung thực.
 		 */
 		if ( in_array( $real_mime, $nonspecific_types, true ) ) {
-			// File is a non-specific binary type. That's ok if it's a type that generally tends to be binary.
+			// File là loại nhị phân không cụ thể. Điều đó chấp nhận được nếu là loại thường có xu hướng là nhị phân.
 			if ( ! in_array( substr( $type, 0, strcspn( $type, '/' ) ), array( 'application', 'video', 'audio' ), true ) ) {
 				$type = false;
 				$ext  = false;
 			}
 		} elseif ( str_starts_with( $real_mime, 'video/' ) || str_starts_with( $real_mime, 'audio/' ) ) {
 			/*
-			 * For these types, only the major type must match the real value.
-			 * This means that common mismatches are forgiven: application/vnd.apple.numbers is often misidentified as application/zip,
-			 * and some media files are commonly named with the wrong extension (.mov instead of .mp4)
+			 * Đối với các loại này, chỉ cần loại chính phải khớp với giá trị thực.
+			 * Điều này có nghĩa là các sai lệch phổ biến được bỏ qua: application/vnd.apple.numbers thường bị nhận dạng sai thành application/zip,
+			 * và một số file media thường được đặt tên với phần mở rộng sai (.mov thay vì .mp4)
 			 */
 			if ( substr( $real_mime, 0, strcspn( $real_mime, '/' ) ) !== substr( $type, 0, strcspn( $type, '/' ) ) ) {
 				$type = false;
 				$ext  = false;
 			}
 		} elseif ( 'text/plain' === $real_mime ) {
-			// A few common file types are occasionally detected as text/plain; allow those.
+			// Một vài loại file phổ biến đôi khi bị phát hiện là text/plain; cho phép những loại đó.
 			if ( ! in_array(
 				$type,
 				array(
@@ -3240,7 +3238,7 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 				$ext  = false;
 			}
 		} elseif ( 'application/csv' === $real_mime ) {
-			// Special casing for CSV files.
+			// Xử lý đặc biệt cho file CSV.
 			if ( ! in_array(
 				$type,
 				array(
@@ -3255,7 +3253,7 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 				$ext  = false;
 			}
 		} elseif ( 'text/rtf' === $real_mime ) {
-			// Special casing for RTF files.
+			// Xử lý đặc biệt cho file RTF.
 			if ( ! in_array(
 				$type,
 				array(
@@ -3272,8 +3270,8 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 		} else {
 			if ( $type !== $real_mime ) {
 				/*
-				 * Everything else including image/* and application/*:
-				 * If the real content type doesn't match the file extension, assume it's dangerous.
+				 * Mọi thứ khác bao gồm image/* và application/*:
+				 * Nếu loại nội dung thực không khớp với phần mở rộng file, coi đó là nguy hiểm.
 				 */
 				$type = false;
 				$ext  = false;
@@ -3281,7 +3279,7 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 		}
 	}
 
-	// The mime type must be allowed.
+	// Loại mime phải được cho phép.
 	if ( $type ) {
 		$allowed = get_allowed_mime_types();
 
@@ -3292,55 +3290,55 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 	}
 
 	/**
-	 * Filters the "real" file type of the given file.
+	 * Lọc loại file "thực" của file đã cho.
 	 *
 	 * @since 3.0.0
-	 * @since 5.1.0 The $real_mime parameter was added.
+	 * @since 5.1.0 Tham số $real_mime được thêm vào.
 	 *
 	 * @param array         $wp_check_filetype_and_ext {
-	 *     Values for the extension, mime type, and corrected filename.
+	 *     Các giá trị cho phần mở rộng, loại mime và tên file đã sửa.
 	 *
-	 *     @type string|false $ext             File extension, or false if the file doesn't match a mime type.
-	 *     @type string|false $type            File mime type, or false if the file doesn't match a mime type.
-	 *     @type string|false $proper_filename File name with its correct extension, or false if it cannot be determined.
+	 *     @type string|false $ext             Phần mở rộng file, hoặc false nếu file không khớp loại mime.
+	 *     @type string|false $type            Loại mime của file, hoặc false nếu file không khớp loại mime.
+	 *     @type string|false $proper_filename Tên file với phần mở rộng đúng, hoặc false nếu không thể xác định.
 	 * }
-	 * @param string        $file                      Full path to the file.
-	 * @param string        $filename                  The name of the file (may differ from $file due to
-	 *                                                 $file being in a tmp directory).
-	 * @param string[]|null $mimes                     Array of mime types keyed by their file extension regex, or null if
-	 *                                                 none were provided.
-	 * @param string|false  $real_mime                 The actual mime type or false if the type cannot be determined.
+	 * @param string        $file                      Đường dẫn đầy đủ đến file.
+	 * @param string        $filename                  Tên của file (có thể khác với $file do
+	 *                                                 $file nằm trong thư mục tạm).
+	 * @param string[]|null $mimes                     Mảng các loại mime được khóa bởi regex phần mở rộng file, hoặc null nếu
+	 *                                                 không có loại nào được cung cấp.
+	 * @param string|false  $real_mime                 Loại mime thực tế hoặc false nếu không thể xác định loại.
 	 */
 	return apply_filters( 'wp_check_filetype_and_ext', compact( 'ext', 'type', 'proper_filename' ), $file, $filename, $mimes, $real_mime );
 }
 
 /**
- * Returns the real mime type of an image file.
+ * Trả về loại mime thực của file hình ảnh.
  *
- * This depends on exif_imagetype() or getimagesize() to determine real mime types.
+ * Hàm này phụ thuộc vào exif_imagetype() hoặc getimagesize() để xác định loại mime thực.
  *
  * @since 4.7.1
- * @since 5.8.0 Added support for WebP images.
- * @since 6.5.0 Added support for AVIF images.
- * @since 6.7.0 Added support for HEIC images.
+ * @since 5.8.0 Thêm hỗ trợ cho ảnh WebP.
+ * @since 6.5.0 Thêm hỗ trợ cho ảnh AVIF.
+ * @since 6.7.0 Thêm hỗ trợ cho ảnh HEIC.
  *
- * @param string $file Full path to the file.
- * @return string|false The actual mime type or false if the type cannot be determined.
+ * @param string $file Đường dẫn đầy đủ đến file.
+ * @return string|false Loại mime thực tế hoặc false nếu không thể xác định loại.
  */
 function wp_get_image_mime( $file ) {
 	/*
-	 * Use exif_imagetype() to check the mimetype if available or fall back to
-	 * getimagesize() if exif isn't available. If either function throws an Exception
-	 * we assume the file could not be validated.
+	 * Sử dụng exif_imagetype() để kiểm tra mimetype nếu có sẵn hoặc dùng
+	 * getimagesize() nếu exif không khả dụng. Nếu một trong hai hàm ném ra Exception
+	 * chúng ta giả định rằng file không thể được xác thực.
 	 */
 	try {
 		if ( is_callable( 'exif_imagetype' ) ) {
 			$imagetype = exif_imagetype( $file );
 			$mime      = ( $imagetype ) ? image_type_to_mime_type( $imagetype ) : false;
 		} elseif ( function_exists( 'getimagesize' ) ) {
-			// Don't silence errors when in debug mode, unless running unit tests.
+			// Không ẩn lỗi khi ở chế độ debug, trừ khi đang chạy unit test.
 			if ( defined( 'WP_DEBUG' ) && WP_DEBUG && ! defined( 'WP_RUN_CORE_TESTS' ) ) {
-				// Not using wp_getimagesize() here to avoid an infinite loop.
+				// Không sử dụng wp_getimagesize() ở đây để tránh vòng lặp vô hạn.
 				$imagesize = getimagesize( $file );
 			} else {
 				$imagesize = @getimagesize( $file );
@@ -3362,8 +3360,8 @@ function wp_get_image_mime( $file ) {
 		}
 
 		/*
-		 * Add WebP fallback detection when image library doesn't support WebP.
-		 * Note: detection values come from LibWebP, see
+		 * Thêm phát hiện dự phòng WebP khi thư viện ảnh không hỗ trợ WebP.
+		 * Lưu ý: giá trị phát hiện lấy từ LibWebP, xem
 		 * https://github.com/webmproject/libwebp/blob/master/imageio/image_dec.c#L30
 		 */
 		$magic = bin2hex( $magic );
@@ -3377,13 +3375,13 @@ function wp_get_image_mime( $file ) {
 		}
 
 		/**
-		 * Add AVIF fallback detection when image library doesn't support AVIF.
+		 * Thêm phát hiện dự phòng AVIF khi thư viện ảnh không hỗ trợ AVIF.
 		 *
-		 * Detection based on section 4.3.1 File-type box definition of the ISO/IEC 14496-12
-		 * specification and the AV1-AVIF spec, see https://aomediacodec.github.io/av1-avif/v1.1.0.html#brands.
+		 * Phát hiện dựa trên mục 4.3.1 Định nghĩa hộp loại file của đặc tả ISO/IEC 14496-12
+		 * và đặc tả AV1-AVIF, xem https://aomediacodec.github.io/av1-avif/v1.1.0.html#brands.
 		 */
 
-		// Divide the header string into 4 byte groups.
+		// Chia chuỗi header thành các nhóm 4 byte.
 		$magic = str_split( $magic, 8 );
 
 		if ( isset( $magic[1] ) && isset( $magic[2] ) && 'ftyp' === hex2bin( $magic[1] ) ) {
@@ -3395,8 +3393,8 @@ function wp_get_image_mime( $file ) {
 				$mime = 'image/heif';
 			} else {
 				/*
-				 * HEIC/HEIF images and image sequences/animations may have other strings here
-				 * like mif1, msf1, etc. For now fall back to using finfo_file() to detect these.
+				 * Ảnh HEIC/HEIF và chuỗi ảnh/hoạt ảnh có thể có các chuỗi khác ở đây
+				 * như mif1, msf1, v.v. Hiện tại dùng finfo_file() để phát hiện những loại này.
 				 */
 				if ( extension_loaded( 'fileinfo' ) ) {
 					$fileinfo  = finfo_open( FILEINFO_MIME_TYPE );
@@ -3417,32 +3415,32 @@ function wp_get_image_mime( $file ) {
 }
 
 /**
- * Retrieves the list of mime types and file extensions.
+ * Lấy danh sách các loại mime và phần mở rộng file.
  *
  * @since 3.5.0
- * @since 4.2.0 Support was added for GIMP (.xcf) files.
- * @since 4.9.2 Support was added for Flac (.flac) files.
- * @since 4.9.6 Support was added for AAC (.aac) files.
- * @since 6.8.0 Support was added for `audio/x-wav`.
+ * @since 4.2.0 Thêm hỗ trợ cho file GIMP (.xcf).
+ * @since 4.9.2 Thêm hỗ trợ cho file Flac (.flac).
+ * @since 4.9.6 Thêm hỗ trợ cho file AAC (.aac).
+ * @since 6.8.0 Thêm hỗ trợ cho `audio/x-wav`.
  *
- * @return string[] Array of mime types keyed by the file extension regex corresponding to those types.
+ * @return string[] Mảng các loại mime được khóa bởi regex phần mở rộng file tương ứng với các loại đó.
  */
 function wp_get_mime_types() {
 	/**
-	 * Filters the list of mime types and file extensions.
+	 * Lọc danh sách các loại mime và phần mở rộng file.
 	 *
-	 * This filter should be used to add, not remove, mime types. To remove
-	 * mime types, use the {@see 'upload_mimes'} filter.
+	 * Bộ lọc này nên được sử dụng để thêm, không phải xóa, các loại mime. Để xóa
+	 * các loại mime, sử dụng bộ lọc {@see 'upload_mimes'}.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string[] $wp_get_mime_types Mime types keyed by the file extension regex
-	 *                                    corresponding to those types.
+	 * @param string[] $wp_get_mime_types Các loại mime được khóa bởi regex phần mở rộng file
+	 *                                    tương ứng với các loại đó.
 	 */
 	return apply_filters(
 		'mime_types',
 		array(
-			// Image formats.
+			// Định dạng ảnh.
 			'jpg|jpeg|jpe'                 => 'image/jpeg',
 			'gif'                          => 'image/gif',
 			'png'                          => 'image/png',
@@ -3452,13 +3450,13 @@ function wp_get_mime_types() {
 			'avif'                         => 'image/avif',
 			'ico'                          => 'image/x-icon',
 
-			// TODO: Needs improvement. All images with the following mime types seem to have .heic file extension.
+			// TODO: Cần cải thiện. Tất cả ảnh với các loại mime sau dường như có phần mở rộng file .heic.
 			'heic'                         => 'image/heic',
 			'heif'                         => 'image/heif',
 			'heics'                        => 'image/heic-sequence',
 			'heifs'                        => 'image/heif-sequence',
 
-			// Video formats.
+			// Định dạng video.
 			'asf|asx'                      => 'video/x-ms-asf',
 			'wmv'                          => 'video/x-ms-wmv',
 			'wmx'                          => 'video/x-ms-wmx',
@@ -3472,9 +3470,9 @@ function wp_get_mime_types() {
 			'ogv'                          => 'video/ogg',
 			'webm'                         => 'video/webm',
 			'mkv'                          => 'video/x-matroska',
-			'3gp|3gpp'                     => 'video/3gpp',  // Can also be audio.
-			'3g2|3gp2'                     => 'video/3gpp2', // Can also be audio.
-			// Text formats.
+			'3gp|3gpp'                     => 'video/3gpp',  // Cũng có thể là audio.
+			'3g2|3gp2'                     => 'video/3gpp2', // Cũng có thể là audio.
+			// Định dạng văn bản.
 			'txt|asc|c|cc|h|srt'           => 'text/plain',
 			'csv'                          => 'text/csv',
 			'tsv'                          => 'text/tab-separated-values',
@@ -3484,7 +3482,7 @@ function wp_get_mime_types() {
 			'htm|html'                     => 'text/html',
 			'vtt'                          => 'text/vtt',
 			'dfxp'                         => 'application/ttaf+xml',
-			// Audio formats.
+			// Định dạng audio.
 			'mp3|m4a|m4b'                  => 'audio/mpeg',
 			'aac'                          => 'audio/aac',
 			'ra|ram'                       => 'audio/x-realaudio',
@@ -3495,7 +3493,7 @@ function wp_get_mime_types() {
 			'wma'                          => 'audio/x-ms-wma',
 			'wax'                          => 'audio/x-ms-wax',
 			'mka'                          => 'audio/x-matroska',
-			// Misc application formats.
+			// Định dạng ứng dụng khác.
 			'rtf'                          => 'application/rtf',
 			'js'                           => 'application/javascript',
 			'pdf'                          => 'application/pdf',
@@ -3509,7 +3507,7 @@ function wp_get_mime_types() {
 			'exe'                          => 'application/x-msdownload',
 			'psd'                          => 'application/octet-stream',
 			'xcf'                          => 'application/octet-stream',
-			// MS Office formats.
+			// Định dạng MS Office.
 			'doc'                          => 'application/msword',
 			'pot|pps|ppt'                  => 'application/vnd.ms-powerpoint',
 			'wri'                          => 'application/vnd.ms-write',
@@ -3538,7 +3536,7 @@ function wp_get_mime_types() {
 			'onetoc|onetoc2|onetmp|onepkg' => 'application/onenote',
 			'oxps'                         => 'application/oxps',
 			'xps'                          => 'application/vnd.ms-xpsdocument',
-			// OpenOffice formats.
+			// Định dạng OpenOffice.
 			'odt'                          => 'application/vnd.oasis.opendocument.text',
 			'odp'                          => 'application/vnd.oasis.opendocument.presentation',
 			'ods'                          => 'application/vnd.oasis.opendocument.spreadsheet',
@@ -3546,9 +3544,9 @@ function wp_get_mime_types() {
 			'odc'                          => 'application/vnd.oasis.opendocument.chart',
 			'odb'                          => 'application/vnd.oasis.opendocument.database',
 			'odf'                          => 'application/vnd.oasis.opendocument.formula',
-			// WordPerfect formats.
+			// Định dạng WordPerfect.
 			'wp|wpd'                       => 'application/wordperfect',
-			// iWork formats.
+			// Định dạng iWork.
 			'key'                          => 'application/vnd.apple.keynote',
 			'numbers'                      => 'application/vnd.apple.numbers',
 			'pages'                        => 'application/vnd.apple.pages',
@@ -3557,22 +3555,22 @@ function wp_get_mime_types() {
 }
 
 /**
- * Retrieves the list of common file extensions and their types.
+ * Lấy danh sách các phần mở rộng file phổ biến và loại của chúng.
  *
  * @since 4.6.0
  *
- * @return array[] Multi-dimensional array of file extensions types keyed by the type of file.
+ * @return array[] Mảng đa chiều các loại phần mở rộng file được khóa bởi loại file.
  */
 function wp_get_ext_types() {
 
 	/**
-	 * Filters file type based on the extension name.
+	 * Lọc loại file dựa trên tên phần mở rộng.
 	 *
 	 * @since 2.5.0
 	 *
 	 * @see wp_ext2type()
 	 *
-	 * @param array[] $ext2type Multi-dimensional array of file extensions types keyed by the type of file.
+	 * @param array[] $ext2type Mảng đa chiều các loại phần mở rộng file được khóa bởi loại file.
 	 */
 	return apply_filters(
 		'ext2type',
@@ -3591,23 +3589,23 @@ function wp_get_ext_types() {
 }
 
 /**
- * Wrapper for PHP filesize with filters and casting the result as an integer.
+ * Wrapper cho PHP filesize với bộ lọc và ép kiểu kết quả thành số nguyên.
  *
  * @since 6.0.0
  *
  * @link https://www.php.net/manual/en/function.filesize.php
  *
- * @param string $path Path to the file.
- * @return int The size of the file in bytes, or 0 in the event of an error.
+ * @param string $path Đường dẫn đến file.
+ * @return int Kích thước file tính bằng byte, hoặc 0 trong trường hợp có lỗi.
  */
 function wp_filesize( $path ) {
 	/**
-	 * Filters the result of wp_filesize before the PHP function is run.
+	 * Lọc kết quả của wp_filesize trước khi hàm PHP được chạy.
 	 *
 	 * @since 6.0.0
 	 *
-	 * @param null|int $size The unfiltered value. Returning an int from the callback bypasses the filesize call.
-	 * @param string   $path Path to the file.
+	 * @param null|int $size Giá trị chưa lọc. Trả về int từ callback sẽ bỏ qua lời gọi filesize.
+	 * @param string   $path Đường dẫn đến file.
 	 */
 	$size = apply_filters( 'pre_wp_filesize', null, $path );
 
@@ -3618,24 +3616,24 @@ function wp_filesize( $path ) {
 	$size = file_exists( $path ) ? (int) filesize( $path ) : 0;
 
 	/**
-	 * Filters the size of the file.
+	 * Lọc kích thước của file.
 	 *
 	 * @since 6.0.0
 	 *
-	 * @param int    $size The result of PHP filesize on the file.
-	 * @param string $path Path to the file.
+	 * @param int    $size Kết quả của PHP filesize trên file.
+	 * @param string $path Đường dẫn đến file.
 	 */
 	return (int) apply_filters( 'wp_filesize', $size, $path );
 }
 
 /**
- * Retrieves the list of allowed mime types and file extensions.
+ * Lấy danh sách các loại mime và phần mở rộng file được phép.
  *
  * @since 2.8.6
  *
- * @param int|WP_User $user Optional. User to check. Defaults to current user.
- * @return string[] Array of mime types keyed by the file extension regex corresponding
- *                  to those types.
+ * @param int|WP_User $user Tùy chọn. Người dùng cần kiểm tra. Mặc định là người dùng hiện tại.
+ * @return string[] Mảng các loại mime được khóa bởi regex phần mở rộng file tương ứng
+ *                  với các loại đó.
  */
 function get_allowed_mime_types( $user = null ) {
 	$t = wp_get_mime_types();
@@ -3650,28 +3648,28 @@ function get_allowed_mime_types( $user = null ) {
 	}
 
 	/**
-	 * Filters the list of allowed mime types and file extensions.
+	 * Lọc danh sách các loại mime và phần mở rộng file được phép.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param array            $t    Mime types keyed by the file extension regex corresponding to those types.
-	 * @param int|WP_User|null $user User ID, User object or null if not provided (indicates current user).
+	 * @param array            $t    Các loại mime được khóa bởi regex phần mở rộng file tương ứng với các loại đó.
+	 * @param int|WP_User|null $user ID người dùng, đối tượng User hoặc null nếu không được cung cấp (chỉ người dùng hiện tại).
 	 */
 	return apply_filters( 'upload_mimes', $t, $user );
 }
 
 /**
- * Displays "Are You Sure" message to confirm the action being taken.
+ * Hiển thị thông báo "Bạn Có Chắc Không" để xác nhận hành động đang thực hiện.
  *
- * If the action has the nonce explain message, then it will be displayed
- * along with the "Are you sure?" message.
+ * Nếu hành động có thông báo giải thích nonce, thì nó sẽ được hiển thị
+ * cùng với thông báo "Bạn có chắc không?".
  *
  * @since 2.0.4
  *
- * @param string $action The nonce action.
+ * @param string $action Hành động nonce.
  */
 function wp_nonce_ays( $action ) {
-	// Default title and response code.
+	// Tiêu đề và mã phản hồi mặc định.
 	$title         = __( 'An error occurred.' );
 	$response_code = 403;
 
@@ -3711,51 +3709,51 @@ function wp_nonce_ays( $action ) {
 }
 
 /**
- * Kills WordPress execution and displays HTML page with an error message.
+ * Dừng thực thi WordPress và hiển thị trang HTML với thông báo lỗi.
  *
- * This function complements the `die()` PHP function. The difference is that
- * HTML will be displayed to the user. It is recommended to use this function
- * only when the execution should not continue any further. It is not recommended
- * to call this function very often, and try to handle as many errors as possible
- * silently or more gracefully.
+ * Hàm này bổ sung cho hàm `die()` của PHP. Điểm khác biệt là
+ * HTML sẽ được hiển thị cho người dùng. Khuyến nghị sử dụng hàm này
+ * chỉ khi quá trình thực thi không nên tiếp tục nữa. Không khuyến nghị
+ * gọi hàm này quá thường xuyên, và nên cố xử lý càng nhiều lỗi càng tốt
+ * một cách im lặng hoặc nhẹ nhàng hơn.
  *
- * As a shorthand, the desired HTTP response code may be passed as an integer to
- * the `$title` parameter (the default title would apply) or the `$args` parameter.
+ * Như một cách viết tắt, mã phản hồi HTTP mong muốn có thể được truyền dưới dạng số nguyên vào
+ * tham số `$title` (tiêu đề mặc định sẽ được áp dụng) hoặc tham số `$args`.
  *
  * @since 2.0.4
- * @since 4.1.0 The `$title` and `$args` parameters were changed to optionally accept
- *              an integer to be used as the response code.
- * @since 5.1.0 The `$link_url`, `$link_text`, and `$exit` arguments were added.
- * @since 5.3.0 The `$charset` argument was added.
- * @since 5.5.0 The `$text_direction` argument has a priority over get_language_attributes()
- *              in the default handler.
+ * @since 4.1.0 Các tham số `$title` và `$args` được thay đổi để tùy chọn chấp nhận
+ *              một số nguyên để sử dụng làm mã phản hồi.
+ * @since 5.1.0 Các tham số `$link_url`, `$link_text` và `$exit` được thêm vào.
+ * @since 5.3.0 Tham số `$charset` được thêm vào.
+ * @since 5.5.0 Tham số `$text_direction` có ưu tiên cao hơn get_language_attributes()
+ *              trong handler mặc định.
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng WordPress Query.
  *
- * @param string|WP_Error  $message Optional. Error message. If this is a WP_Error object,
- *                                  and not an Ajax or XML-RPC request, the error's messages are used.
- *                                  Default empty string.
- * @param string|int       $title   Optional. Error title. If `$message` is a `WP_Error` object,
- *                                  error data with the key 'title' may be used to specify the title.
- *                                  If `$title` is an integer, then it is treated as the response code.
- *                                  Default empty string.
+ * @param string|WP_Error  $message Tùy chọn. Thông báo lỗi. Nếu đây là đối tượng WP_Error,
+ *                                  và không phải là yêu cầu Ajax hoặc XML-RPC, các thông báo lỗi sẽ được sử dụng.
+ *                                  Mặc định chuỗi rỗng.
+ * @param string|int       $title   Tùy chọn. Tiêu đề lỗi. Nếu `$message` là đối tượng `WP_Error`,
+ *                                  dữ liệu lỗi với khóa 'title' có thể được sử dụng để chỉ định tiêu đề.
+ *                                  Nếu `$title` là số nguyên, thì nó được coi là mã phản hồi.
+ *                                  Mặc định chuỗi rỗng.
  * @param string|array|int $args {
- *     Optional. Arguments to control behavior. If `$args` is an integer, then it is treated
- *     as the response code. Default empty array.
+ *     Tùy chọn. Các tham số để điều khiển hành vi. Nếu `$args` là số nguyên, thì nó được coi
+ *     là mã phản hồi. Mặc định mảng rỗng.
  *
- *     @type int    $response       The HTTP response code. Default 200 for Ajax requests, 500 otherwise.
- *     @type string $link_url       A URL to include a link to. Only works in combination with $link_text.
- *                                  Default empty string.
- *     @type string $link_text      A label for the link to include. Only works in combination with $link_url.
- *                                  Default empty string.
- *     @type bool   $back_link      Whether to include a link to go back. Default false.
- *     @type string $text_direction The text direction. This is only useful internally, when WordPress is still
- *                                  loading and the site's locale is not set up yet. Accepts 'rtl' and 'ltr'.
- *                                  Default is the value of is_rtl().
- *     @type string $charset        Character set of the HTML output. Default 'utf-8'.
- *     @type string $code           Error code to use. Default is 'wp_die', or the main error code if $message
- *                                  is a WP_Error.
- *     @type bool   $exit           Whether to exit the process after completion. Default true.
+ *     @type int    $response       Mã phản hồi HTTP. Mặc định 200 cho yêu cầu Ajax, 500 cho các trường hợp khác.
+ *     @type string $link_url       URL để chèn liên kết đến. Chỉ hoạt động kết hợp với $link_text.
+ *                                  Mặc định chuỗi rỗng.
+ *     @type string $link_text      Nhãn cho liên kết cần chèn. Chỉ hoạt động kết hợp với $link_url.
+ *                                  Mặc định chuỗi rỗng.
+ *     @type bool   $back_link      Có chèn liên kết quay lại hay không. Mặc định false.
+ *     @type string $text_direction Hướng văn bản. Chỉ hữu ích nội bộ, khi WordPress vẫn
+ *                                  đang tải và locale của trang chưa được thiết lập. Chấp nhận 'rtl' và 'ltr'.
+ *                                  Mặc định là giá trị của is_rtl().
+ *     @type string $charset        Bộ ký tự của đầu ra HTML. Mặc định 'utf-8'.
+ *     @type string $code           Mã lỗi để sử dụng. Mặc định là 'wp_die', hoặc mã lỗi chính nếu $message
+ *                                  là WP_Error.
+ *     @type bool   $exit           Có thoát tiến trình sau khi hoàn thành hay không. Mặc định true.
  * }
  */
 function wp_die( $message = '', $title = '', $args = array() ) {
@@ -3770,38 +3768,38 @@ function wp_die( $message = '', $title = '', $args = array() ) {
 
 	if ( wp_doing_ajax() ) {
 		/**
-		 * Filters the callback for killing WordPress execution for Ajax requests.
+		 * Lọc callback để dừng thực thi WordPress cho các yêu cầu Ajax.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param callable $callback Callback function name.
+		 * @param callable $callback Tên hàm callback.
 		 */
 		$callback = apply_filters( 'wp_die_ajax_handler', '_ajax_wp_die_handler' );
 	} elseif ( wp_is_json_request() ) {
 		/**
-		 * Filters the callback for killing WordPress execution for JSON requests.
+		 * Lọc callback để dừng thực thi WordPress cho các yêu cầu JSON.
 		 *
 		 * @since 5.1.0
 		 *
-		 * @param callable $callback Callback function name.
+		 * @param callable $callback Tên hàm callback.
 		 */
 		$callback = apply_filters( 'wp_die_json_handler', '_json_wp_die_handler' );
 	} elseif ( wp_is_serving_rest_request() && wp_is_jsonp_request() ) {
 		/**
-		 * Filters the callback for killing WordPress execution for JSONP REST requests.
+		 * Lọc callback để dừng thực thi WordPress cho các yêu cầu JSONP REST.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param callable $callback Callback function name.
+		 * @param callable $callback Tên hàm callback.
 		 */
 		$callback = apply_filters( 'wp_die_jsonp_handler', '_jsonp_wp_die_handler' );
 	} elseif ( defined( 'XMLRPC_REQUEST' ) && XMLRPC_REQUEST ) {
 		/**
-		 * Filters the callback for killing WordPress execution for XML-RPC requests.
+		 * Lọc callback để dừng thực thi WordPress cho các yêu cầu XML-RPC.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param callable $callback Callback function name.
+		 * @param callable $callback Tên hàm callback.
 		 */
 		$callback = apply_filters( 'wp_die_xmlrpc_handler', '_xmlrpc_wp_die_handler' );
 	} elseif ( wp_is_xml_request()
@@ -3810,20 +3808,20 @@ function wp_die( $message = '', $title = '', $args = array() ) {
 			|| function_exists( 'is_comment_feed' ) && is_comment_feed()
 			|| function_exists( 'is_trackback' ) && is_trackback() ) ) {
 		/**
-		 * Filters the callback for killing WordPress execution for XML requests.
+		 * Lọc callback để dừng thực thi WordPress cho các yêu cầu XML.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param callable $callback Callback function name.
+		 * @param callable $callback Tên hàm callback.
 		 */
 		$callback = apply_filters( 'wp_die_xml_handler', '_xml_wp_die_handler' );
 	} else {
 		/**
-		 * Filters the callback for killing WordPress execution for all non-Ajax, non-JSON, non-XML requests.
+		 * Lọc callback để dừng thực thi WordPress cho tất cả yêu cầu không phải Ajax, không phải JSON, không phải XML.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param callable $callback Callback function name.
+		 * @param callable $callback Tên hàm callback.
 		 */
 		$callback = apply_filters( 'wp_die_handler', '_default_wp_die_handler' );
 	}
@@ -3832,17 +3830,17 @@ function wp_die( $message = '', $title = '', $args = array() ) {
 }
 
 /**
- * Kills WordPress execution and displays HTML page with an error message.
+ * Dừng thực thi WordPress và hiển thị trang HTML với thông báo lỗi.
  *
- * This is the default handler for wp_die(). If you want a custom one,
- * you can override this using the {@see 'wp_die_handler'} filter in wp_die().
+ * Đây là handler mặc định cho wp_die(). Nếu bạn muốn tùy chỉnh,
+ * bạn có thể ghi đè bằng bộ lọc {@see 'wp_die_handler'} trong wp_die().
  *
  * @since 3.0.0
  * @access private
  *
- * @param string|WP_Error $message Error message or WP_Error object.
- * @param string          $title   Optional. Error title. Default empty string.
- * @param string|array    $args    Optional. Arguments to control behavior. Default empty array.
+ * @param string|WP_Error $message Thông báo lỗi hoặc đối tượng WP_Error.
+ * @param string          $title   Tùy chọn. Tiêu đề lỗi. Mặc định chuỗi rỗng.
+ * @param string|array    $args    Tùy chọn. Các tham số để điều khiển hành vi. Mặc định mảng rỗng.
  */
 function _default_wp_die_handler( $message, $title = '', $args = array() ) {
 	list( $message, $title, $parsed_args ) = _wp_die_process_input( $message, $title, $args );
@@ -3889,8 +3887,8 @@ function _default_wp_die_handler( $message, $title = '', $args = array() ) {
 		$dir_attr       = "dir='$text_direction'";
 
 		/*
-		 * If `text_direction` was not explicitly passed,
-		 * use get_language_attributes() if available.
+		 * Nếu `text_direction` không được truyền một cách rõ ràng,
+		 * sử dụng get_language_attributes() nếu có sẵn.
 		 */
 		if ( empty( $args['text_direction'] )
 			&& function_exists( 'language_attributes' ) && function_exists( 'is_rtl' )
@@ -3906,7 +3904,7 @@ function _default_wp_die_handler( $message, $title = '', $args = array() ) {
 		<?php
 		if ( function_exists( 'wp_robots' ) && function_exists( 'wp_robots_no_robots' ) && function_exists( 'add_filter' ) ) {
 			add_filter( 'wp_robots', 'wp_robots_no_robots' );
-			// Prevent warnings because of $wp_query not existing.
+			// Ngăn cảnh báo do $wp_query không tồn tại.
 			remove_filter( 'wp_robots', 'wp_robots_noindex_embeds' );
 			remove_filter( 'wp_robots', 'wp_robots_noindex_search' );
 			wp_robots();
@@ -4035,19 +4033,19 @@ function _default_wp_die_handler( $message, $title = '', $args = array() ) {
 }
 
 /**
- * Kills WordPress execution and displays Ajax response with an error message.
+ * Dừng thực thi WordPress và hiển thị phản hồi Ajax với thông báo lỗi.
  *
- * This is the handler for wp_die() when processing Ajax requests.
+ * Đây là handler cho wp_die() khi xử lý các yêu cầu Ajax.
  *
  * @since 3.4.0
  * @access private
  *
- * @param string       $message Error message.
- * @param string       $title   Optional. Error title (unused). Default empty string.
- * @param string|array $args    Optional. Arguments to control behavior. Default empty array.
+ * @param string       $message Thông báo lỗi.
+ * @param string       $title   Tùy chọn. Tiêu đề lỗi (không sử dụng). Mặc định chuỗi rỗng.
+ * @param string|array $args    Tùy chọn. Các tham số để điều khiển hành vi. Mặc định mảng rỗng.
  */
 function _ajax_wp_die_handler( $message, $title = '', $args = array() ) {
-	// Set default 'response' to 200 for Ajax requests.
+	// Đặt 'response' mặc định là 200 cho các yêu cầu Ajax.
 	$args = wp_parse_args(
 		$args,
 		array( 'response' => 200 )
@@ -4056,7 +4054,7 @@ function _ajax_wp_die_handler( $message, $title = '', $args = array() ) {
 	list( $message, $title, $parsed_args ) = _wp_die_process_input( $message, $title, $args );
 
 	if ( ! headers_sent() ) {
-		// This is intentional. For backward-compatibility, support passing null here.
+		// Điều này có chủ ý. Để tương thích ngược, hỗ trợ truyền null ở đây.
 		if ( null !== $args['response'] ) {
 			status_header( $parsed_args['response'] );
 		}
@@ -4077,16 +4075,16 @@ function _ajax_wp_die_handler( $message, $title = '', $args = array() ) {
 }
 
 /**
- * Kills WordPress execution and displays JSON response with an error message.
+ * Dừng thực thi WordPress và hiển thị phản hồi JSON với thông báo lỗi.
  *
- * This is the handler for wp_die() when processing JSON requests.
+ * Đây là handler cho wp_die() khi xử lý các yêu cầu JSON.
  *
  * @since 5.1.0
  * @access private
  *
- * @param string       $message Error message.
- * @param string       $title   Optional. Error title. Default empty string.
- * @param string|array $args    Optional. Arguments to control behavior. Default empty array.
+ * @param string       $message Thông báo lỗi.
+ * @param string       $title   Tùy chọn. Tiêu đề lỗi. Mặc định chuỗi rỗng.
+ * @param string|array $args    Tùy chọn. Các tham số để điều khiển hành vi. Mặc định mảng rỗng.
  */
 function _json_wp_die_handler( $message, $title = '', $args = array() ) {
 	list( $message, $title, $parsed_args ) = _wp_die_process_input( $message, $title, $args );
@@ -4119,16 +4117,16 @@ function _json_wp_die_handler( $message, $title = '', $args = array() ) {
 }
 
 /**
- * Kills WordPress execution and displays JSONP response with an error message.
+ * Dừng thực thi WordPress và hiển thị phản hồi JSONP với thông báo lỗi.
  *
- * This is the handler for wp_die() when processing JSONP requests.
+ * Đây là handler cho wp_die() khi xử lý các yêu cầu JSONP.
  *
  * @since 5.2.0
  * @access private
  *
- * @param string       $message Error message.
- * @param string       $title   Optional. Error title. Default empty string.
- * @param string|array $args    Optional. Arguments to control behavior. Default empty array.
+ * @param string       $message Thông báo lỗi.
+ * @param string       $title   Tùy chọn. Tiêu đề lỗi. Mặc định chuỗi rỗng.
+ * @param string|array $args    Tùy chọn. Các tham số để điều khiển hành vi. Mặc định mảng rỗng.
  */
 function _jsonp_wp_die_handler( $message, $title = '', $args = array() ) {
 	list( $message, $title, $parsed_args ) = _wp_die_process_input( $message, $title, $args );
@@ -4165,18 +4163,18 @@ function _jsonp_wp_die_handler( $message, $title = '', $args = array() ) {
 }
 
 /**
- * Kills WordPress execution and displays XML response with an error message.
+ * Dừng thực thi WordPress và hiển thị phản hồi XML với thông báo lỗi.
  *
- * This is the handler for wp_die() when processing XMLRPC requests.
+ * Đây là handler cho wp_die() khi xử lý các yêu cầu XMLRPC.
  *
  * @since 3.2.0
  * @access private
  *
  * @global wp_xmlrpc_server $wp_xmlrpc_server
  *
- * @param string       $message Error message.
- * @param string       $title   Optional. Error title. Default empty string.
- * @param string|array $args    Optional. Arguments to control behavior. Default empty array.
+ * @param string       $message Thông báo lỗi.
+ * @param string       $title   Tùy chọn. Tiêu đề lỗi. Mặc định chuỗi rỗng.
+ * @param string|array $args    Tùy chọn. Các tham số để điều khiển hành vi. Mặc định mảng rỗng.
  */
 function _xmlrpc_wp_die_handler( $message, $title = '', $args = array() ) {
 	global $wp_xmlrpc_server;
@@ -4197,16 +4195,16 @@ function _xmlrpc_wp_die_handler( $message, $title = '', $args = array() ) {
 }
 
 /**
- * Kills WordPress execution and displays XML response with an error message.
+ * Dừng thực thi WordPress và hiển thị phản hồi XML với thông báo lỗi.
  *
- * This is the handler for wp_die() when processing XML requests.
+ * Đây là handler cho wp_die() khi xử lý các yêu cầu XML.
  *
  * @since 5.2.0
  * @access private
  *
- * @param string       $message Error message.
- * @param string       $title   Optional. Error title. Default empty string.
- * @param string|array $args    Optional. Arguments to control behavior. Default empty array.
+ * @param string       $message Thông báo lỗi.
+ * @param string       $title   Tùy chọn. Tiêu đề lỗi. Mặc định chuỗi rỗng.
+ * @param string|array $args    Tùy chọn. Các tham số để điều khiển hành vi. Mặc định mảng rỗng.
  */
 function _xml_wp_die_handler( $message, $title = '', $args = array() ) {
 	list( $message, $title, $parsed_args ) = _wp_die_process_input( $message, $title, $args );
@@ -4241,17 +4239,17 @@ EOD;
 }
 
 /**
- * Kills WordPress execution and displays an error message.
+ * Dừng thực thi WordPress và hiển thị thông báo lỗi.
  *
- * This is the handler for wp_die() when processing APP requests.
+ * Đây là handler cho wp_die() khi xử lý các yêu cầu APP.
  *
  * @since 3.4.0
- * @since 5.1.0 Added the $title and $args parameters.
+ * @since 5.1.0 Thêm các tham số $title và $args.
  * @access private
  *
- * @param string       $message Optional. Response to print. Default empty string.
- * @param string       $title   Optional. Error title (unused). Default empty string.
- * @param string|array $args    Optional. Arguments to control behavior. Default empty array.
+ * @param string       $message Tùy chọn. Phản hồi để in ra. Mặc định chuỗi rỗng.
+ * @param string       $title   Tùy chọn. Tiêu đề lỗi (không sử dụng). Mặc định chuỗi rỗng.
+ * @param string|array $args    Tùy chọn. Các tham số để điều khiển hành vi. Mặc định mảng rỗng.
  */
 function _scalar_wp_die_handler( $message = '', $title = '', $args = array() ) {
 	list( $message, $title, $parsed_args ) = _wp_die_process_input( $message, $title, $args );
@@ -4269,20 +4267,20 @@ function _scalar_wp_die_handler( $message = '', $title = '', $args = array() ) {
 }
 
 /**
- * Processes arguments passed to wp_die() consistently for its handlers.
+ * Xử lý các tham số được truyền cho wp_die() một cách nhất quán cho các handler của nó.
  *
  * @since 5.1.0
  * @access private
  *
- * @param string|WP_Error $message Error message or WP_Error object.
- * @param string          $title   Optional. Error title. Default empty string.
- * @param string|array    $args    Optional. Arguments to control behavior. Default empty array.
+ * @param string|WP_Error $message Thông báo lỗi hoặc đối tượng WP_Error.
+ * @param string          $title   Tùy chọn. Tiêu đề lỗi. Mặc định chuỗi rỗng.
+ * @param string|array    $args    Tùy chọn. Các tham số để điều khiển hành vi. Mặc định mảng rỗng.
  * @return array {
- *     Processed arguments.
+ *     Các tham số đã xử lý.
  *
- *     @type string $0 Error message.
- *     @type string $1 Error title.
- *     @type array  $2 Arguments to control behavior.
+ *     @type string $0 Thông báo lỗi.
+ *     @type string $1 Tiêu đề lỗi.
+ *     @type array  $2 Các tham số để điều khiển hành vi.
  * }
  */
 function _wp_die_process_input( $message, $title = '', $args = array() ) {
@@ -4336,7 +4334,7 @@ function _wp_die_process_input( $message, $title = '', $args = array() ) {
 
 	$have_gettext = function_exists( '__' );
 
-	// The $title and these specific $args must always have a non-empty value.
+	// $title và các $args cụ thể này phải luôn có giá trị không rỗng.
 	if ( empty( $args['code'] ) ) {
 		$args['code'] = 'wp_die';
 	}
@@ -4361,23 +4359,23 @@ function _wp_die_process_input( $message, $title = '', $args = array() ) {
 }
 
 /**
- * Encodes a variable into JSON, with some confidence checks.
+ * Mã hóa một biến thành JSON, với một số kiểm tra độ tin cậy.
  *
  * @since 4.1.0
- * @since 5.3.0 No longer handles support for PHP < 5.6.
- * @since 6.5.0 The `$data` parameter has been renamed to `$value` and
- *              the `$options` parameter to `$flags` for parity with PHP.
+ * @since 5.3.0 Không còn xử lý hỗ trợ cho PHP < 5.6.
+ * @since 6.5.0 Tham số `$data` được đổi tên thành `$value` và
+ *              tham số `$options` thành `$flags` để tương đồng với PHP.
  *
- * @param mixed $value Variable (usually an array or object) to encode as JSON.
- * @param int   $flags Optional. Options to be passed to json_encode(). Default 0.
- * @param int   $depth Optional. Maximum depth to walk through $value. Must be
- *                     greater than 0. Default 512.
- * @return string|false The JSON encoded string, or false if it cannot be encoded.
+ * @param mixed $value Biến (thường là mảng hoặc đối tượng) để mã hóa thành JSON.
+ * @param int   $flags Tùy chọn. Các tùy chọn để truyền cho json_encode(). Mặc định 0.
+ * @param int   $depth Tùy chọn. Độ sâu tối đa để duyệt qua $value. Phải
+ *                     lớn hơn 0. Mặc định 512.
+ * @return string|false Chuỗi đã mã hóa JSON, hoặc false nếu không thể mã hóa.
  */
 function wp_json_encode( $value, $flags = 0, $depth = 512 ) {
 	$json = json_encode( $value, $flags, $depth );
 
-	// If json_encode() was successful, no need to do more confidence checking.
+	// Nếu json_encode() thành công, không cần kiểm tra độ tin cậy thêm.
 	if ( false !== $json ) {
 		return $json;
 	}
@@ -4392,7 +4390,7 @@ function wp_json_encode( $value, $flags = 0, $depth = 512 ) {
 }
 
 /**
- * Performs confidence checks on data that shall be encoded to JSON.
+ * Thực hiện kiểm tra độ tin cậy trên dữ liệu sẽ được mã hóa thành JSON.
  *
  * @ignore
  * @since 4.1.0
@@ -4400,11 +4398,11 @@ function wp_json_encode( $value, $flags = 0, $depth = 512 ) {
  *
  * @see wp_json_encode()
  *
- * @throws Exception If depth limit is reached.
+ * @throws Exception Nếu đạt đến giới hạn độ sâu.
  *
- * @param mixed $value Variable (usually an array or object) to encode as JSON.
- * @param int   $depth Maximum depth to walk through $value. Must be greater than 0.
- * @return mixed The sanitized data that shall be encoded to JSON.
+ * @param mixed $value Biến (thường là mảng hoặc đối tượng) để mã hóa thành JSON.
+ * @param int   $depth Độ sâu tối đa để duyệt qua $value. Phải lớn hơn 0.
+ * @return mixed Dữ liệu đã làm sạch sẽ được mã hóa thành JSON.
  */
 function _wp_json_sanity_check( $value, $depth ) {
 	if ( $depth < 0 ) {
@@ -4414,14 +4412,14 @@ function _wp_json_sanity_check( $value, $depth ) {
 	if ( is_array( $value ) ) {
 		$output = array();
 		foreach ( $value as $id => $el ) {
-			// Don't forget to sanitize the ID!
+			// Đừng quên làm sạch ID!
 			if ( is_string( $id ) ) {
 				$clean_id = _wp_json_convert_string( $id );
 			} else {
 				$clean_id = $id;
 			}
 
-			// Check the element type, so that we're only recursing if we really have to.
+			// Kiểm tra loại phần tử, để chỉ đệ quy khi thực sự cần thiết.
 			if ( is_array( $el ) || is_object( $el ) ) {
 				$output[ $clean_id ] = _wp_json_sanity_check( $el, $depth - 1 );
 			} elseif ( is_string( $el ) ) {
@@ -4457,7 +4455,7 @@ function _wp_json_sanity_check( $value, $depth ) {
 }
 
 /**
- * Converts a string to UTF-8, so that it can be safely encoded to JSON.
+ * Chuyển đổi chuỗi sang UTF-8, để có thể mã hóa an toàn thành JSON.
  *
  * @ignore
  * @since 4.1.0
@@ -4465,8 +4463,8 @@ function _wp_json_sanity_check( $value, $depth ) {
  *
  * @see _wp_json_sanity_check()
  *
- * @param string $input_string The string which is to be converted.
- * @return string The checked string.
+ * @param string $input_string Chuỗi cần được chuyển đổi.
+ * @return string Chuỗi đã được kiểm tra.
  */
 function _wp_json_convert_string( $input_string ) {
 	static $use_mb = null;
@@ -4487,18 +4485,17 @@ function _wp_json_convert_string( $input_string ) {
 }
 
 /**
- * Prepares response data to be serialized to JSON.
+ * Chuẩn bị dữ liệu phản hồi để tuần tự hóa thành JSON.
  *
- * This supports the JsonSerializable interface for PHP 5.2-5.3 as well.
+ * Hàm này cũng hỗ trợ giao diện JsonSerializable cho PHP 5.2-5.3.
  *
  * @ignore
  * @since 4.4.0
- * @deprecated 5.3.0 This function is no longer needed as support for PHP 5.2-5.3
- *                   has been dropped.
+ * @deprecated 5.3.0 Hàm này không còn cần thiết vì đã ngừng hỗ trợ PHP 5.2-5.3.
  * @access private
  *
- * @param mixed $value Native representation.
- * @return bool|int|float|null|string|array Data ready for `json_encode()`.
+ * @param mixed $value Biểu diễn gốc.
+ * @return bool|int|float|null|string|array Dữ liệu sẵn sàng cho `json_encode()`.
  */
 function _wp_json_prepare_data( $value ) {
 	_deprecated_function( __FUNCTION__, '5.3.0' );
@@ -4506,16 +4503,16 @@ function _wp_json_prepare_data( $value ) {
 }
 
 /**
- * Sends a JSON response back to an Ajax request.
+ * Gửi phản hồi JSON trở lại cho yêu cầu Ajax.
  *
  * @since 3.5.0
- * @since 4.7.0 The `$status_code` parameter was added.
- * @since 5.6.0 The `$flags` parameter was added.
+ * @since 4.7.0 Tham số `$status_code` được thêm vào.
+ * @since 5.6.0 Tham số `$flags` được thêm vào.
  *
- * @param mixed $response    Variable (usually an array or object) to encode as JSON,
- *                           then print and die.
- * @param int   $status_code Optional. The HTTP status code to output. Default null.
- * @param int   $flags       Optional. Options to be passed to json_encode(). Default 0.
+ * @param mixed $response    Biến (thường là mảng hoặc đối tượng) để mã hóa thành JSON,
+ *                           sau đó in ra và dừng.
+ * @param int   $status_code Tùy chọn. Mã trạng thái HTTP để xuất ra. Mặc định null.
+ * @param int   $flags       Tùy chọn. Các tùy chọn để truyền cho json_encode(). Mặc định 0.
  */
 function wp_send_json( $response, $status_code = null, $flags = 0 ) {
 	if ( wp_is_serving_rest_request() ) {
@@ -4554,15 +4551,15 @@ function wp_send_json( $response, $status_code = null, $flags = 0 ) {
 }
 
 /**
- * Sends a JSON response back to an Ajax request, indicating success.
+ * Gửi phản hồi JSON trở lại cho yêu cầu Ajax, biểu thị thành công.
  *
  * @since 3.5.0
- * @since 4.7.0 The `$status_code` parameter was added.
- * @since 5.6.0 The `$flags` parameter was added.
+ * @since 4.7.0 Tham số `$status_code` được thêm vào.
+ * @since 5.6.0 Tham số `$flags` được thêm vào.
  *
- * @param mixed $value       Optional. Data to encode as JSON, then print and die. Default null.
- * @param int   $status_code Optional. The HTTP status code to output. Default null.
- * @param int   $flags       Optional. Options to be passed to json_encode(). Default 0.
+ * @param mixed $value       Tùy chọn. Dữ liệu để mã hóa thành JSON, sau đó in ra và dừng. Mặc định null.
+ * @param int   $status_code Tùy chọn. Mã trạng thái HTTP để xuất ra. Mặc định null.
+ * @param int   $flags       Tùy chọn. Các tùy chọn để truyền cho json_encode(). Mặc định 0.
  */
 function wp_send_json_success( $value = null, $status_code = null, $flags = 0 ) {
 	$response = array( 'success' => true );
@@ -4575,21 +4572,21 @@ function wp_send_json_success( $value = null, $status_code = null, $flags = 0 ) 
 }
 
 /**
- * Sends a JSON response back to an Ajax request, indicating failure.
+ * Gửi phản hồi JSON trở lại cho yêu cầu Ajax, biểu thị thất bại.
  *
- * If the `$value` parameter is a WP_Error object, the errors
- * within the object are processed and output as an array of error
- * codes and corresponding messages. All other types are output
- * without further processing.
+ * Nếu tham số `$value` là đối tượng WP_Error, các lỗi
+ * trong đối tượng sẽ được xử lý và xuất ra dưới dạng mảng mã lỗi
+ * và các thông báo tương ứng. Tất cả các loại khác được xuất ra
+ * mà không cần xử lý thêm.
  *
  * @since 3.5.0
- * @since 4.1.0 The `$value` parameter is now processed if a WP_Error object is passed in.
- * @since 4.7.0 The `$status_code` parameter was added.
- * @since 5.6.0 The `$flags` parameter was added.
+ * @since 4.1.0 Tham số `$value` bây giờ được xử lý nếu một đối tượng WP_Error được truyền vào.
+ * @since 4.7.0 Tham số `$status_code` được thêm vào.
+ * @since 5.6.0 Tham số `$flags` được thêm vào.
  *
- * @param mixed $value       Optional. Data to encode as JSON, then print and die. Default null.
- * @param int   $status_code Optional. The HTTP status code to output. Default null.
- * @param int   $flags       Optional. Options to be passed to json_encode(). Default 0.
+ * @param mixed $value       Tùy chọn. Dữ liệu để mã hóa thành JSON, sau đó in ra và dừng. Mặc định null.
+ * @param int   $status_code Tùy chọn. Mã trạng thái HTTP để xuất ra. Mặc định null.
+ * @param int   $flags       Tùy chọn. Các tùy chọn để truyền cho json_encode(). Mặc định 0.
  */
 function wp_send_json_error( $value = null, $status_code = null, $flags = 0 ) {
 	$response = array( 'success' => false );
@@ -4616,16 +4613,16 @@ function wp_send_json_error( $value = null, $status_code = null, $flags = 0 ) {
 }
 
 /**
- * Checks that a JSONP callback is a valid JavaScript callback name.
+ * Kiểm tra rằng callback JSONP là tên hàm callback JavaScript hợp lệ.
  *
- * Only allows alphanumeric characters and the dot character in callback
- * function names. This helps to mitigate XSS attacks caused by directly
- * outputting user input.
+ * Chỉ cho phép ký tự chữ-số và ký tự dấu chấm trong tên hàm callback.
+ * Điều này giúp giảm thiểu các cuộc tấn công XSS gây ra bởi việc
+ * xuất trực tiếp đầu vào của người dùng.
  *
  * @since 4.6.0
  *
- * @param string $callback Supplied JSONP callback function name.
- * @return bool Whether the callback function name is valid.
+ * @param string $callback Tên hàm callback JSONP được cung cấp.
+ * @return bool Liệu tên hàm callback có hợp lệ hay không.
  */
 function wp_check_jsonp_callback( $callback ) {
 	if ( ! is_string( $callback ) ) {
@@ -4638,20 +4635,20 @@ function wp_check_jsonp_callback( $callback ) {
 }
 
 /**
- * Reads and decodes a JSON file.
+ * Đọc và giải mã một file JSON.
  *
  * @since 5.9.0
  *
- * @param string $filename Path to the JSON file.
+ * @param string $filename Đường dẫn đến file JSON.
  * @param array  $options  {
- *     Optional. Options to be used with `json_decode()`.
+ *     Tùy chọn. Các tùy chọn để sử dụng với `json_decode()`.
  *
- *     @type bool $associative Optional. When `true`, JSON objects will be returned as associative arrays.
- *                             When `false`, JSON objects will be returned as objects. Default false.
+ *     @type bool $associative Tùy chọn. Khi `true`, các đối tượng JSON sẽ được trả về dưới dạng mảng liên kết.
+ *                             Khi `false`, các đối tượng JSON sẽ được trả về dưới dạng đối tượng. Mặc định false.
  * }
  *
- * @return mixed Returns the value encoded in JSON in appropriate PHP type.
- *               `null` is returned if the file is not found, or its content can't be decoded.
+ * @return mixed Trả về giá trị được mã hóa trong JSON dưới kiểu PHP phù hợp.
+ *               `null` được trả về nếu file không tìm thấy, hoặc nội dung không thể giải mã.
  */
 function wp_json_file_decode( $filename, $options = array() ) {
 	$result   = null;
@@ -4689,19 +4686,19 @@ function wp_json_file_decode( $filename, $options = array() ) {
 }
 
 /**
- * Retrieves the WordPress home page URL.
+ * Lấy URL trang chủ WordPress.
  *
- * If the constant named 'WP_HOME' exists, then it will be used and returned
- * by the function. This can be used to counter the redirection on your local
- * development environment.
+ * Nếu hằng số có tên 'WP_HOME' tồn tại, thì nó sẽ được sử dụng và trả về
+ * bởi hàm. Điều này có thể được sử dụng để chống lại việc chuyển hướng trên
+ * môi trường phát triển cục bộ của bạn.
  *
  * @since 2.2.0
  * @access private
  *
  * @see WP_HOME
  *
- * @param string $url URL for the home location.
- * @return string Homepage location.
+ * @param string $url URL cho vị trí trang chủ.
+ * @return string Vị trí trang chủ.
  */
 function _config_wp_home( $url = '' ) {
 	if ( defined( 'WP_HOME' ) ) {
@@ -4711,19 +4708,19 @@ function _config_wp_home( $url = '' ) {
 }
 
 /**
- * Retrieves the WordPress site URL.
+ * Lấy URL trang web WordPress.
  *
- * If the constant named 'WP_SITEURL' is defined, then the value in that
- * constant will always be returned. This can be used for debugging a site
- * on your localhost while not having to change the database to your URL.
+ * Nếu hằng số có tên 'WP_SITEURL' được định nghĩa, thì giá trị trong hằng số
+ * đó sẽ luôn được trả về. Điều này có thể được sử dụng để debug trang web
+ * trên localhost mà không cần thay đổi cơ sở dữ liệu thành URL của bạn.
  *
  * @since 2.2.0
  * @access private
  *
  * @see WP_SITEURL
  *
- * @param string $url URL to set the WordPress site location.
- * @return string The WordPress site URL.
+ * @param string $url URL để đặt vị trí trang web WordPress.
+ * @return string URL trang web WordPress.
  */
 function _config_wp_siteurl( $url = '' ) {
 	if ( defined( 'WP_SITEURL' ) ) {
@@ -4733,7 +4730,7 @@ function _config_wp_siteurl( $url = '' ) {
 }
 
 /**
- * Deletes the fresh site option.
+ * Xóa tùy chọn trang web mới.
  *
  * @since 4.7.0
  * @access private
@@ -4743,21 +4740,21 @@ function _delete_option_fresh_site() {
 }
 
 /**
- * Sets the localized direction for MCE plugin.
+ * Đặt hướng được bản địa hóa cho plugin MCE.
  *
- * Will only set the direction to 'rtl', if the WordPress locale has
- * the text direction set to 'rtl'.
+ * Chỉ đặt hướng thành 'rtl', nếu locale WordPress có
+ * hướng văn bản được đặt thành 'rtl'.
  *
- * Fills in the 'directionality' setting, enables the 'directionality'
- * plugin, and adds the 'ltr' button to 'toolbar1', formerly
- * 'theme_advanced_buttons1' array keys. These keys are then returned
- * in the $mce_init (TinyMCE settings) array.
+ * Điền thiết lập 'directionality', kích hoạt plugin 'directionality',
+ * và thêm nút 'ltr' vào 'toolbar1', trước đây là
+ * các khóa mảng 'theme_advanced_buttons1'. Các khóa này sau đó được trả về
+ * trong mảng $mce_init (cài đặt TinyMCE).
  *
  * @since 2.1.0
  * @access private
  *
- * @param array $mce_init MCE settings array.
- * @return array Direction set for 'rtl', if needed by locale.
+ * @param array $mce_init Mảng cài đặt MCE.
+ * @return array Hướng được đặt cho 'rtl', nếu cần bởi locale.
  */
 function _mce_set_direction( $mce_init ) {
 	if ( is_rtl() ) {
@@ -4777,39 +4774,38 @@ function _mce_set_direction( $mce_init ) {
 }
 
 /**
- * Determines whether WordPress is currently serving a REST API request.
+ * Xác định liệu WordPress có đang phục vụ một yêu cầu REST API hay không.
  *
- * The function relies on the 'REST_REQUEST' global. As such, it only returns true when an actual REST _request_ is
- * being made. It does not return true when a REST endpoint is hit as part of another request, e.g. for preloading a
- * REST response. See {@see wp_is_rest_endpoint()} for that purpose.
+ * Hàm này dựa vào biến toàn cục 'REST_REQUEST'. Do đó, nó chỉ trả về true khi một _yêu cầu_ REST thực tế
+ * đang được thực hiện. Nó không trả về true khi một endpoint REST được gọi như một phần của yêu cầu khác, ví dụ để tải trước
+ * phản hồi REST. Xem {@see wp_is_rest_endpoint()} cho mục đích đó.
  *
- * This function should not be called until the {@see 'parse_request'} action, as the constant is only defined then,
- * even for an actual REST request.
+ * Hàm này không nên được gọi cho đến action {@see 'parse_request'}, vì hằng số chỉ được định nghĩa vào lúc đó,
+ * ngay cả đối với một yêu cầu REST thực tế.
  *
  * @since 6.5.0
  *
- * @return bool True if it's a WordPress REST API request, false otherwise.
+ * @return bool True nếu là yêu cầu WordPress REST API, false nếu ngược lại.
  */
 function wp_is_serving_rest_request() {
 	return defined( 'REST_REQUEST' ) && REST_REQUEST;
 }
 
 /**
- * Converts smiley code to the icon graphic file equivalent.
+ * Chuyển đổi mã biểu tượng cảm xúc thành file đồ họa biểu tượng tương ứng.
  *
- * You can turn off smilies, by going to the write setting screen and unchecking
- * the box, or by setting 'use_smilies' option to false or removing the option.
+ * Bạn có thể tắt biểu tượng cảm xúc, bằng cách vào màn hình cài đặt viết bài và bỏ chọn
+ * hộp kiểm, hoặc bằng cách đặt tùy chọn 'use_smilies' thành false hoặc xóa tùy chọn.
  *
- * Plugins may override the default smiley list by setting the $wpsmiliestrans
- * to an array, with the key the code the blogger types in and the value the
- * image file.
+ * Plugin có thể ghi đè danh sách biểu tượng cảm xúc mặc định bằng cách đặt $wpsmiliestrans
+ * thành một mảng, với khóa là mã mà người viết blog nhập vào và giá trị là
+ * file hình ảnh.
  *
- * The $wp_smiliessearch global is for the regular expression and is set each
- * time the function is called.
+ * Biến toàn cục $wp_smiliessearch dành cho biểu thức chính quy và được đặt mỗi
+ * lần hàm được gọi.
  *
- * The full list of smilies can be found in the function and won't be listed in
- * the description. Probably should create a Codex page for it, so that it is
- * available.
+ * Danh sách đầy đủ các biểu tượng cảm xúc có thể tìm thấy trong hàm và sẽ không được liệt kê trong
+ * mô tả. Có lẽ nên tạo một trang Codex cho nó, để nó có thể sử dụng được.
  *
  * @since 2.2.0
  *
@@ -4819,7 +4815,7 @@ function wp_is_serving_rest_request() {
 function smilies_init() {
 	global $wpsmiliestrans, $wp_smiliessearch;
 
-	// Don't bother setting up smilies if they are disabled.
+	// Không cần thiết lập biểu tượng cảm xúc nếu chúng bị tắt.
 	if ( ! get_option( 'use_smilies' ) ) {
 		return;
 	}
@@ -4857,7 +4853,7 @@ function smilies_init() {
 			':-x'       => "\xf0\x9f\x98\xa1",
 			':-|'       => "\xf0\x9f\x98\x90",
 			';-)'       => "\xf0\x9f\x98\x89",
-			// This one transformation breaks regular text with frequency.
+			// Phép chuyển đổi này thường xuyên làm hỏng văn bản thông thường.
 			//     '8)' => "\xf0\x9f\x98\x8e",
 			'8O'        => "\xf0\x9f\x98\xaf",
 			':('        => "\xf0\x9f\x99\x81",
@@ -4875,14 +4871,14 @@ function smilies_init() {
 	}
 
 	/**
-	 * Filters all the smilies.
+	 * Lọc tất cả các biểu tượng cảm xúc.
 	 *
-	 * This filter must be added before `smilies_init` is run, as
-	 * it is normally only run once to setup the smilies regex.
+	 * Bộ lọc này phải được thêm trước khi `smilies_init` được chạy, vì
+	 * nó thường chỉ được chạy một lần để thiết lập regex biểu tượng cảm xúc.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string[] $wpsmiliestrans List of the smilies' hexadecimal representations, keyed by their smily code.
+	 * @param string[] $wpsmiliestrans Danh sách biểu diễn thập lục phân của biểu tượng cảm xúc, được khóa bởi mã biểu tượng.
 	 */
 	$wpsmiliestrans = apply_filters( 'smilies', $wpsmiliestrans );
 
@@ -4891,15 +4887,15 @@ function smilies_init() {
 	}
 
 	/*
-	 * NOTE: we sort the smilies in reverse key order. This is to make sure
-	 * we match the longest possible smilie (:???: vs :?) as the regular
-	 * expression used below is first-match
+	 * LƯU Ý: chúng ta sắp xếp biểu tượng cảm xúc theo thứ tự khóa ngược. Điều này để đảm bảo
+	 * chúng ta khớp biểu tượng cảm xúc dài nhất có thể (:???: vs :?) vì biểu thức
+	 * chính quy được sử dụng bên dưới là khớp-đầu-tiên
 	 */
 	krsort( $wpsmiliestrans );
 
 	$spaces = wp_spaces_regexp();
 
-	// Begin first "subpattern".
+	// Bắt đầu "mẫu con" đầu tiên.
 	$wp_smiliessearch = '/(?<=' . $spaces . '|^)';
 
 	$subchar = '';
@@ -4907,11 +4903,11 @@ function smilies_init() {
 		$firstchar = substr( $smiley, 0, 1 );
 		$rest      = substr( $smiley, 1 );
 
-		// New subpattern?
+		// Mẫu con mới?
 		if ( $firstchar !== $subchar ) {
 			if ( '' !== $subchar ) {
-				$wp_smiliessearch .= ')(?=' . $spaces . '|$)';  // End previous "subpattern".
-				$wp_smiliessearch .= '|(?<=' . $spaces . '|^)'; // Begin another "subpattern".
+				$wp_smiliessearch .= ')(?=' . $spaces . '|$)';  // Kết thúc "mẫu con" trước.
+				$wp_smiliessearch .= '|(?<=' . $spaces . '|^)'; // Bắt đầu "mẫu con" khác.
 			}
 
 			$subchar           = $firstchar;
@@ -4927,18 +4923,18 @@ function smilies_init() {
 }
 
 /**
- * Merges user defined arguments into defaults array.
+ * Hợp nhất các tham số do người dùng định nghĩa vào mảng mặc định.
  *
- * This function is used throughout WordPress to allow for both string or array
- * to be merged into another array.
+ * Hàm này được sử dụng xuyên suốt WordPress để cho phép cả chuỗi hoặc mảng
+ * được hợp nhất vào một mảng khác.
  *
  * @since 2.2.0
- * @since 2.3.0 `$args` can now also be an object.
+ * @since 2.3.0 `$args` bây giờ cũng có thể là đối tượng.
  *
- * @param string|array|object $args     Value to merge with $defaults.
- * @param array               $defaults Optional. Array that serves as the defaults.
- *                                      Default empty array.
- * @return array Merged user defined values with defaults.
+ * @param string|array|object $args     Giá trị để hợp nhất với $defaults.
+ * @param array               $defaults Tùy chọn. Mảng đóng vai trò làm giá trị mặc định.
+ *                                      Mặc định mảng rỗng.
+ * @return array Giá trị do người dùng định nghĩa đã hợp nhất với giá trị mặc định.
  */
 function wp_parse_args( $args, $defaults = array() ) {
 	if ( is_object( $args ) ) {
@@ -4956,32 +4952,32 @@ function wp_parse_args( $args, $defaults = array() ) {
 }
 
 /**
- * Converts a comma- or space-separated list of scalar values to an array.
+ * Chuyển đổi danh sách giá trị vô hướng phân cách bằng dấu phẩy hoặc khoảng trắng thành mảng.
  *
  * @since 5.1.0
  *
- * @param array|string $input_list List of values.
- * @return array Array of values.
+ * @param array|string $input_list Danh sách các giá trị.
+ * @return array Mảng các giá trị.
  */
 function wp_parse_list( $input_list ) {
 	if ( ! is_array( $input_list ) ) {
 		return preg_split( '/[\s,]+/', $input_list, -1, PREG_SPLIT_NO_EMPTY );
 	}
 
-	// Validate all entries of the list are scalar.
+	// Xác thực tất cả các mục trong danh sách là giá trị vô hướng.
 	$input_list = array_filter( $input_list, 'is_scalar' );
 
 	return $input_list;
 }
 
 /**
- * Cleans up an array, comma- or space-separated list of IDs.
+ * Dọn dẹp một mảng, danh sách ID phân cách bằng dấu phẩy hoặc khoảng trắng.
  *
  * @since 3.0.0
- * @since 5.1.0 Refactored to use wp_parse_list().
+ * @since 5.1.0 Tái cấu trúc để sử dụng wp_parse_list().
  *
- * @param array|string $input_list List of IDs.
- * @return int[] Sanitized array of IDs.
+ * @param array|string $input_list Danh sách các ID.
+ * @return int[] Mảng ID đã được làm sạch.
  */
 function wp_parse_id_list( $input_list ) {
 	$input_list = wp_parse_list( $input_list );
@@ -4990,13 +4986,13 @@ function wp_parse_id_list( $input_list ) {
 }
 
 /**
- * Cleans up an array, comma- or space-separated list of slugs.
+ * Dọn dẹp một mảng, danh sách slug phân cách bằng dấu phẩy hoặc khoảng trắng.
  *
  * @since 4.7.0
- * @since 5.1.0 Refactored to use wp_parse_list().
+ * @since 5.1.0 Tái cấu trúc để sử dụng wp_parse_list().
  *
- * @param array|string $input_list List of slugs.
- * @return string[] Sanitized array of slugs.
+ * @param array|string $input_list Danh sách các slug.
+ * @return string[] Mảng slug đã được làm sạch.
  */
 function wp_parse_slug_list( $input_list ) {
 	$input_list = wp_parse_list( $input_list );
@@ -5005,13 +5001,13 @@ function wp_parse_slug_list( $input_list ) {
 }
 
 /**
- * Extracts a slice of an array, given a list of keys.
+ * Trích xuất một phần của mảng, cho trước một danh sách khóa.
  *
  * @since 3.1.0
  *
- * @param array $input_array The original array.
- * @param array $keys        The list of keys.
- * @return array The array slice.
+ * @param array $input_array Mảng gốc.
+ * @param array $keys        Danh sách các khóa.
+ * @return array Phần mảng đã trích xuất.
  */
 function wp_array_slice_assoc( $input_array, $keys ) {
 	$slice = array();
@@ -5026,14 +5022,14 @@ function wp_array_slice_assoc( $input_array, $keys ) {
 }
 
 /**
- * Sorts the keys of an array alphabetically.
+ * Sắp xếp các khóa của mảng theo thứ tự bảng chữ cái.
  *
- * The array is passed by reference so it doesn't get returned
- * which mimics the behavior of `ksort()`.
+ * Mảng được truyền theo tham chiếu nên nó không được trả về,
+ * mô phỏng hành vi của `ksort()`.
  *
  * @since 6.0.0
  *
- * @param array $input_array The array to sort, passed by reference.
+ * @param array $input_array Mảng cần sắp xếp, được truyền theo tham chiếu.
  */
 function wp_recursive_ksort( &$input_array ) {
 	foreach ( $input_array as &$value ) {
@@ -5046,12 +5042,12 @@ function wp_recursive_ksort( &$input_array ) {
 }
 
 /**
- * Accesses an array in depth based on a path of keys.
+ * Truy cập mảng theo chiều sâu dựa trên đường dẫn các khóa.
  *
- * It is the PHP equivalent of JavaScript's `lodash.get()` and mirroring it may help other components
- * retain some symmetry between client and server implementations.
+ * Đây là phiên bản PHP tương đương của `lodash.get()` trong JavaScript và việc phản chiếu nó có thể giúp các thành phần khác
+ * giữ được sự đối xứng giữa các triển khai phía client và server.
  *
- * Example usage:
+ * Ví dụ sử dụng:
  *
  *     $input_array = array(
  *         'a' => array(
@@ -5067,14 +5063,14 @@ function wp_recursive_ksort( &$input_array ) {
  * @since 5.6.0
  * @access private
  *
- * @param array $input_array   An array from which we want to retrieve some information.
- * @param array $path          An array of keys describing the path with which to retrieve information.
- * @param mixed $default_value Optional. The return value if the path does not exist within the array,
- *                             or if `$input_array` or `$path` are not arrays. Default null.
- * @return mixed The value from the path specified.
+ * @param array $input_array   Mảng mà chúng ta muốn lấy thông tin từ đó.
+ * @param array $path          Mảng các khóa mô tả đường dẫn để lấy thông tin.
+ * @param mixed $default_value Tùy chọn. Giá trị trả về nếu đường dẫn không tồn tại trong mảng,
+ *                             hoặc nếu `$input_array` hoặc `$path` không phải là mảng. Mặc định null.
+ * @return mixed Giá trị từ đường dẫn được chỉ định.
  */
 function _wp_array_get( $input_array, $path, $default_value = null ) {
-	// Confirm $path is valid.
+	// Xác nhận $path hợp lệ.
 	if ( ! is_array( $path ) || 0 === count( $path ) ) {
 		return $default_value;
 	}
@@ -5089,9 +5085,9 @@ function _wp_array_get( $input_array, $path, $default_value = null ) {
 			|| null === $path_element
 		) {
 			/*
-			 * Check if the path element exists in the input array.
-			 * We check with `isset()` first, as it is a lot faster
-			 * than `array_key_exists()`.
+			 * Kiểm tra xem phần tử đường dẫn có tồn tại trong mảng đầu vào không.
+			 * Chúng ta kiểm tra bằng `isset()` trước, vì nó nhanh hơn nhiều
+			 * so với `array_key_exists()`.
 			 */
 			if ( isset( $input_array[ $path_element ] ) ) {
 				$input_array = $input_array[ $path_element ];
@@ -5099,8 +5095,8 @@ function _wp_array_get( $input_array, $path, $default_value = null ) {
 			}
 
 			/*
-			 * If `isset()` returns false, we check with `array_key_exists()`,
-			 * which also checks for `null` values.
+			 * Nếu `isset()` trả về false, chúng ta kiểm tra bằng `array_key_exists()`,
+			 * hàm cũng kiểm tra các giá trị `null`.
 			 */
 			if ( array_key_exists( $path_element, $input_array ) ) {
 				$input_array = $input_array[ $path_element ];
@@ -5115,17 +5111,17 @@ function _wp_array_get( $input_array, $path, $default_value = null ) {
 }
 
 /**
- * Sets an array in depth based on a path of keys.
+ * Đặt giá trị vào mảng theo chiều sâu dựa trên đường dẫn các khóa.
  *
- * It is the PHP equivalent of JavaScript's `lodash.set()` and mirroring it may help other components
- * retain some symmetry between client and server implementations.
+ * Đây là phiên bản PHP tương đương của `lodash.set()` trong JavaScript và việc phản chiếu nó có thể giúp các thành phần khác
+ * giữ được sự đối xứng giữa các triển khai phía client và server.
  *
- * Example usage:
+ * Ví dụ sử dụng:
  *
  *     $input_array = array();
  *     _wp_array_set( $input_array, array( 'a', 'b', 'c', 1 ) );
  *
- *     $input_array becomes:
+ *     $input_array trở thành:
  *     array(
  *         'a' => array(
  *             'b' => array(
@@ -5139,17 +5135,17 @@ function _wp_array_get( $input_array, $path, $default_value = null ) {
  * @since 5.8.0
  * @access private
  *
- * @param array $input_array An array that we want to mutate to include a specific value in a path.
- * @param array $path        An array of keys describing the path that we want to mutate.
- * @param mixed $value       The value that will be set.
+ * @param array $input_array Mảng mà chúng ta muốn thay đổi để bao gồm một giá trị cụ thể trong đường dẫn.
+ * @param array $path        Mảng các khóa mô tả đường dẫn mà chúng ta muốn thay đổi.
+ * @param mixed $value       Giá trị sẽ được đặt.
  */
 function _wp_array_set( &$input_array, $path, $value = null ) {
-	// Confirm $input_array is valid.
+	// Xác nhận $input_array hợp lệ.
 	if ( ! is_array( $input_array ) ) {
 		return;
 	}
 
-	// Confirm $path is valid.
+	// Xác nhận $path hợp lệ.
 	if ( ! is_array( $path ) ) {
 		return;
 	}

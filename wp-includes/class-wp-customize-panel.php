@@ -1,21 +1,21 @@
 <?php
 /**
- * WordPress Customize Panel classes
+ * Các lớp Panel trong WordPress Customize
  *
  * @package WordPress
  * @subpackage Customize
  * @since 4.0.0
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
 /**
- * Customize Panel class.
+ * Lớp Customize Panel.
  *
- * A UI container for sections, managed by the WP_Customize_Manager.
+ * Một container giao diện cho các section, được quản lý bởi WP_Customize_Manager.
  *
  * @since 4.0.0
  *
@@ -25,9 +25,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WP_Customize_Panel {
 
 	/**
-	 * Incremented with each new class instantiation, then stored in $instance_number.
+	 * Tăng dần với mỗi lần khởi tạo lớp mới, sau đó được lưu trong $instance_number.
 	 *
-	 * Used when sorting two instances whose priorities are equal.
+	 * Được sử dụng khi sắp xếp hai thực thể có mức ưu tiên bằng nhau.
 	 *
 	 * @since 4.1.0
 	 * @var int
@@ -35,7 +35,7 @@ class WP_Customize_Panel {
 	protected static $instance_count = 0;
 
 	/**
-	 * Order in which this instance was created in relation to other instances.
+	 * Thứ tự mà thực thể này được tạo so với các thực thể khác.
 	 *
 	 * @since 4.1.0
 	 * @var int
@@ -43,7 +43,7 @@ class WP_Customize_Panel {
 	public $instance_number;
 
 	/**
-	 * WP_Customize_Manager instance.
+	 * Thực thể WP_Customize_Manager.
 	 *
 	 * @since 4.0.0
 	 * @var WP_Customize_Manager
@@ -51,7 +51,7 @@ class WP_Customize_Panel {
 	public $manager;
 
 	/**
-	 * Unique identifier.
+	 * Định danh duy nhất.
 	 *
 	 * @since 4.0.0
 	 * @var string
@@ -59,7 +59,7 @@ class WP_Customize_Panel {
 	public $id;
 
 	/**
-	 * Priority of the panel, defining the display order of panels and sections.
+	 * Mức ưu tiên của panel, xác định thứ tự hiển thị của các panel và section.
 	 *
 	 * @since 4.0.0
 	 * @var int
@@ -67,7 +67,7 @@ class WP_Customize_Panel {
 	public $priority = 160;
 
 	/**
-	 * Capability required for the panel.
+	 * Quyền cần thiết cho panel.
 	 *
 	 * @since 4.0.0
 	 * @var string
@@ -75,7 +75,7 @@ class WP_Customize_Panel {
 	public $capability = 'edit_theme_options';
 
 	/**
-	 * Theme features required to support the panel.
+	 * Các tính năng theme cần thiết để hỗ trợ panel.
 	 *
 	 * @since 4.0.0
 	 * @var mixed[]
@@ -83,7 +83,7 @@ class WP_Customize_Panel {
 	public $theme_supports = '';
 
 	/**
-	 * Title of the panel to show in UI.
+	 * Tiêu đề của panel hiển thị trong giao diện.
 	 *
 	 * @since 4.0.0
 	 * @var string
@@ -91,7 +91,7 @@ class WP_Customize_Panel {
 	public $title = '';
 
 	/**
-	 * Description to show in the UI.
+	 * Mô tả hiển thị trong giao diện.
 	 *
 	 * @since 4.0.0
 	 * @var string
@@ -99,7 +99,7 @@ class WP_Customize_Panel {
 	public $description = '';
 
 	/**
-	 * Auto-expand a section in a panel when the panel is expanded when the panel only has the one section.
+	 * Tự động mở rộng section trong panel khi panel được mở rộng và panel chỉ có một section duy nhất.
 	 *
 	 * @since 4.7.4
 	 * @var bool
@@ -107,7 +107,7 @@ class WP_Customize_Panel {
 	public $auto_expand_sole_section = false;
 
 	/**
-	 * Customizer sections for this panel.
+	 * Các section Customizer cho panel này.
 	 *
 	 * @since 4.0.0
 	 * @var array
@@ -115,7 +115,7 @@ class WP_Customize_Panel {
 	public $sections;
 
 	/**
-	 * Type of this panel.
+	 * Loại của panel này.
 	 *
 	 * @since 4.1.0
 	 * @var string
@@ -123,40 +123,40 @@ class WP_Customize_Panel {
 	public $type = 'default';
 
 	/**
-	 * Active callback.
+	 * Callback kích hoạt.
 	 *
 	 * @since 4.1.0
 	 *
 	 * @see WP_Customize_Section::active()
 	 *
-	 * @var callable Callback is called with one argument, the instance of
-	 *               WP_Customize_Section, and returns bool to indicate whether
-	 *               the section is active (such as it relates to the URL currently
-	 *               being previewed).
+	 * @var callable Callback được gọi với một tham số, thực thể của
+	 *               WP_Customize_Section, và trả về bool để chỉ ra liệu
+	 *               section có đang hoạt động hay không (liên quan đến URL đang
+	 *               được xem trước).
 	 */
 	public $active_callback = '';
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * Any supplied $args override class property defaults.
+	 * Bất kỳ $args nào được cung cấp sẽ ghi đè các giá trị mặc định của thuộc tính lớp.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
-	 * @param string               $id      A specific ID for the panel.
+	 * @param WP_Customize_Manager $manager Thực thể khởi tạo Customizer.
+	 * @param string               $id      ID cụ thể cho panel.
 	 * @param array                $args    {
-	 *     Optional. Array of properties for the new Panel object. Default empty array.
+	 *     Tùy chọn. Mảng các thuộc tính cho đối tượng Panel mới. Mặc định mảng rỗng.
 	 *
-	 *     @type int             $priority        Priority of the panel, defining the display order
-	 *                                            of panels and sections. Default 160.
-	 *     @type string          $capability      Capability required for the panel.
-	 *                                            Default `edit_theme_options`.
-	 *     @type mixed[]         $theme_supports  Theme features required to support the panel.
-	 *     @type string          $title           Title of the panel to show in UI.
-	 *     @type string          $description     Description to show in the UI.
-	 *     @type string          $type            Type of the panel.
-	 *     @type callable        $active_callback Active callback.
+	 *     @type int             $priority        Mức ưu tiên của panel, xác định thứ tự hiển thị
+	 *                                            của các panel và section. Mặc định 160.
+	 *     @type string          $capability      Quyền cần thiết cho panel.
+	 *                                            Mặc định `edit_theme_options`.
+	 *     @type mixed[]         $theme_supports  Các tính năng theme cần thiết để hỗ trợ panel.
+	 *     @type string          $title           Tiêu đề của panel hiển thị trong giao diện.
+	 *     @type string          $description     Mô tả hiển thị trong giao diện.
+	 *     @type string          $type            Loại của panel.
+	 *     @type callable        $active_callback Callback kích hoạt.
 	 * }
 	 */
 	public function __construct( $manager, $id, $args = array() ) {
@@ -175,27 +175,27 @@ class WP_Customize_Panel {
 		self::$instance_count += 1;
 		$this->instance_number = self::$instance_count;
 
-		$this->sections = array(); // Users cannot customize the $sections array.
+		$this->sections = array(); // Người dùng không thể tùy chỉnh mảng $sections.
 	}
 
 	/**
-	 * Check whether panel is active to current Customizer preview.
+	 * Kiểm tra xem panel có đang hoạt động với bản xem trước Customizer hiện tại không.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return bool Whether the panel is active to the current preview.
+	 * @return bool Liệu panel có đang hoạt động với bản xem trước hiện tại hay không.
 	 */
 	final public function active() {
 		$panel  = $this;
 		$active = call_user_func( $this->active_callback, $this );
 
 		/**
-		 * Filters response of WP_Customize_Panel::active().
+		 * Lọc phản hồi của WP_Customize_Panel::active().
 		 *
 		 * @since 4.1.0
 		 *
-		 * @param bool               $active Whether the Customizer panel is active.
-		 * @param WP_Customize_Panel $panel  WP_Customize_Panel instance.
+		 * @param bool               $active Liệu panel Customizer có đang hoạt động hay không.
+		 * @param WP_Customize_Panel $panel  Thực thể WP_Customize_Panel.
 		 */
 		$active = apply_filters( 'customize_panel_active', $active, $panel );
 
@@ -203,25 +203,25 @@ class WP_Customize_Panel {
 	}
 
 	/**
-	 * Default callback used when invoking WP_Customize_Panel::active().
+	 * Callback mặc định được sử dụng khi gọi WP_Customize_Panel::active().
 	 *
-	 * Subclasses can override this with their specific logic, or they may
-	 * provide an 'active_callback' argument to the constructor.
+	 * Các lớp con có thể ghi đè với logic cụ thể của chúng, hoặc có thể
+	 * cung cấp tham số 'active_callback' cho hàm khởi tạo.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return bool Always true.
+	 * @return bool Luôn trả về true.
 	 */
 	public function active_callback() {
 		return true;
 	}
 
 	/**
-	 * Gather the parameters passed to client JavaScript via JSON.
+	 * Thu thập các tham số được truyền cho JavaScript phía client qua JSON.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return array The array to be exported to the client as JSON.
+	 * @return array Mảng được xuất ra cho client dưới dạng JSON.
 	 */
 	public function json() {
 		$array                          = wp_array_slice_assoc( (array) $this, array( 'id', 'description', 'priority', 'type' ) );
@@ -234,13 +234,13 @@ class WP_Customize_Panel {
 	}
 
 	/**
-	 * Checks required user capabilities and whether the theme has the
-	 * feature support required by the panel.
+	 * Kiểm tra quyền người dùng cần thiết và liệu theme có hỗ trợ
+	 * tính năng mà panel yêu cầu hay không.
 	 *
 	 * @since 4.0.0
-	 * @since 5.9.0 Method was marked non-final.
+	 * @since 5.9.0 Phương thức được đánh dấu không phải final.
 	 *
-	 * @return bool False if theme doesn't support the panel or the user doesn't have the capability.
+	 * @return bool False nếu theme không hỗ trợ panel hoặc người dùng không có quyền cần thiết.
 	 */
 	public function check_capabilities() {
 		if ( $this->capability && ! current_user_can( $this->capability ) ) {
@@ -255,11 +255,11 @@ class WP_Customize_Panel {
 	}
 
 	/**
-	 * Get the panel's content template for insertion into the Customizer pane.
+	 * Lấy template nội dung của panel để chèn vào khung Customizer.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @return string Content for the panel.
+	 * @return string Nội dung cho panel.
 	 */
 	final public function get_content() {
 		ob_start();
@@ -268,7 +268,7 @@ class WP_Customize_Panel {
 	}
 
 	/**
-	 * Check capabilities and render the panel.
+	 * Kiểm tra quyền và hiển thị panel.
 	 *
 	 * @since 4.0.0
 	 */
@@ -278,19 +278,19 @@ class WP_Customize_Panel {
 		}
 
 		/**
-		 * Fires before rendering a Customizer panel.
+		 * Kích hoạt trước khi hiển thị một panel Customizer.
 		 *
 		 * @since 4.0.0
 		 *
-		 * @param WP_Customize_Panel $panel WP_Customize_Panel instance.
+		 * @param WP_Customize_Panel $panel Thực thể WP_Customize_Panel.
 		 */
 		do_action( 'customize_render_panel', $this );
 
 		/**
-		 * Fires before rendering a specific Customizer panel.
+		 * Kích hoạt trước khi hiển thị một panel Customizer cụ thể.
 		 *
-		 * The dynamic portion of the hook name, `$this->id`, refers to
-		 * the ID of the specific Customizer panel to be rendered.
+		 * Phần động của tên hook, `$this->id`, tham chiếu đến
+		 * ID của panel Customizer cụ thể sẽ được hiển thị.
 		 *
 		 * @since 4.0.0
 		 */
@@ -300,27 +300,27 @@ class WP_Customize_Panel {
 	}
 
 	/**
-	 * Render the panel container, and then its contents (via `this->render_content()`) in a subclass.
+	 * Hiển thị container của panel, sau đó nội dung của nó (qua `this->render_content()`) trong lớp con.
 	 *
-	 * Panel containers are now rendered in JS by default, see WP_Customize_Panel::print_template().
+	 * Container panel giờ được hiển thị bằng JS theo mặc định, xem WP_Customize_Panel::print_template().
 	 *
 	 * @since 4.0.0
 	 */
 	protected function render() {}
 
 	/**
-	 * Render the panel UI in a subclass.
+	 * Hiển thị giao diện panel trong lớp con.
 	 *
-	 * Panel contents are now rendered in JS by default, see WP_Customize_Panel::print_template().
+	 * Nội dung panel giờ được hiển thị bằng JS theo mặc định, xem WP_Customize_Panel::print_template().
 	 *
 	 * @since 4.1.0
 	 */
 	protected function render_content() {}
 
 	/**
-	 * Render the panel's JS templates.
+	 * Hiển thị các template JS của panel.
 	 *
-	 * This function is only run for panel types that have been registered with
+	 * Hàm này chỉ chạy cho các loại panel đã được đăng ký với
 	 * WP_Customize_Manager::register_panel_type().
 	 *
 	 * @since 4.3.0
@@ -339,10 +339,10 @@ class WP_Customize_Panel {
 	}
 
 	/**
-	 * An Underscore (JS) template for rendering this panel's container.
+	 * Template Underscore (JS) để hiển thị container của panel này.
 	 *
-	 * Class variables for this panel class are available in the `data` JS object;
-	 * export custom variables by overriding WP_Customize_Panel::json().
+	 * Các biến lớp cho lớp panel này có sẵn trong đối tượng JS `data`;
+	 * xuất các biến tùy chỉnh bằng cách ghi đè WP_Customize_Panel::json().
 	 *
 	 * @see WP_Customize_Panel::print_template()
 	 *
@@ -362,10 +362,10 @@ class WP_Customize_Panel {
 	}
 
 	/**
-	 * An Underscore (JS) template for this panel's content (but not its container).
+	 * Template Underscore (JS) cho nội dung của panel này (nhưng không phải container).
 	 *
-	 * Class variables for this panel class are available in the `data` JS object;
-	 * export custom variables by overriding WP_Customize_Panel::json().
+	 * Các biến lớp cho lớp panel này có sẵn trong đối tượng JS `data`;
+	 * xuất các biến tùy chỉnh bằng cách ghi đè WP_Customize_Panel::json().
 	 *
 	 * @see WP_Customize_Panel::print_template()
 	 *
@@ -408,5 +408,5 @@ class WP_Customize_Panel {
 	}
 }
 
-/** WP_Customize_Nav_Menus_Panel class */
+/** Lớp WP_Customize_Nav_Menus_Panel */
 require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menus-panel.php';

@@ -1,6 +1,6 @@
 <?php
 /**
- * Locale API
+ * API Ngôn ngữ
  *
  * @package WordPress
  * @subpackage i18n

@@ -1,6 +1,6 @@
 <?php
 /**
- * Taxonomy API: Walker_Category class
+ * API Taxonomy: Lớp Walker_Category
  *
  * @package WordPress
  * @subpackage Template
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to create an HTML list of categories.
+ * Lớp lõi dùng để tạo danh sách HTML các chuyên mục.
  *
  * @since 2.1.0
  *
@@ -17,7 +17,7 @@
 class Walker_Category extends Walker {
 
 	/**
-	 * What the class handles.
+	 * Loại mà lớp xử lý.
 	 *
 	 * @since 2.1.0
 	 * @var string
@@ -27,13 +27,13 @@ class Walker_Category extends Walker {
 	public $tree_type = 'category';
 
 	/**
-	 * Database fields to use.
+	 * Các trường cơ sở dữ liệu được sử dụng.
 	 *
 	 * @since 2.1.0
 	 * @var string[]
 	 *
 	 * @see Walker::$db_fields
-	 * @todo Decouple this
+	 * @todo Tách rời phần này
 	 */
 	public $db_fields = array(
 		'parent' => 'parent',
@@ -41,16 +41,16 @@ class Walker_Category extends Walker {
 	);
 
 	/**
-	 * Starts the list before the elements are added.
+	 * Bắt đầu danh sách trước khi các phần tử được thêm vào.
 	 *
 	 * @since 2.1.0
 	 *
 	 * @see Walker::start_lvl()
 	 *
-	 * @param string $output Used to append additional content. Passed by reference.
-	 * @param int    $depth  Optional. Depth of category. Used for tab indentation. Default 0.
-	 * @param array  $args   Optional. An array of arguments. Will only append content if style argument
-	 *                       value is 'list'. See wp_list_categories(). Default empty array.
+	 * @param string $output Dùng để nối thêm nội dung. Truyền theo tham chiếu.
+	 * @param int    $depth  Tùy chọn. Độ sâu của chuyên mục. Dùng để thụt lề tab. Mặc định 0.
+	 * @param array  $args   Tùy chọn. Mảng các tham số. Chỉ nối thêm nội dung nếu tham số style
+	 *                       có giá trị 'list'. Xem wp_list_categories(). Mặc định mảng rỗng.
 	 */
 	public function start_lvl( &$output, $depth = 0, $args = array() ) {
 		if ( 'list' !== $args['style'] ) {
@@ -62,16 +62,16 @@ class Walker_Category extends Walker {
 	}
 
 	/**
-	 * Ends the list of after the elements are added.
+	 * Kết thúc danh sách sau khi các phần tử được thêm vào.
 	 *
 	 * @since 2.1.0
 	 *
 	 * @see Walker::end_lvl()
 	 *
-	 * @param string $output Used to append additional content. Passed by reference.
-	 * @param int    $depth  Optional. Depth of category. Used for tab indentation. Default 0.
-	 * @param array  $args   Optional. An array of arguments. Will only append content if style argument
-	 *                       value is 'list'. See wp_list_categories(). Default empty array.
+	 * @param string $output Dùng để nối thêm nội dung. Truyền theo tham chiếu.
+	 * @param int    $depth  Tùy chọn. Độ sâu của chuyên mục. Dùng để thụt lề tab. Mặc định 0.
+	 * @param array  $args   Tùy chọn. Mảng các tham số. Chỉ nối thêm nội dung nếu tham số style
+	 *                       có giá trị 'list'. Xem wp_list_categories(). Mặc định mảng rỗng.
 	 */
 	public function end_lvl( &$output, $depth = 0, $args = array() ) {
 		if ( 'list' !== $args['style'] ) {
@@ -83,29 +83,29 @@ class Walker_Category extends Walker {
 	}
 
 	/**
-	 * Starts the element output.
+	 * Bắt đầu xuất phần tử.
 	 *
 	 * @since 2.1.0
-	 * @since 5.9.0 Renamed `$category` to `$data_object` and `$id` to `$current_object_id`
-	 *              to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$category` thành `$data_object` và `$id` thành `$current_object_id`
+	 *              để khớp với lớp cha hỗ trợ tham số đặt tên trong PHP 8.
 	 *
 	 * @see Walker::start_el()
 	 *
-	 * @param string  $output            Used to append additional content (passed by reference).
-	 * @param WP_Term $data_object       Category data object.
-	 * @param int     $depth             Optional. Depth of category in reference to parents. Default 0.
-	 * @param array   $args              Optional. An array of arguments. See wp_list_categories().
-	 *                                   Default empty array.
-	 * @param int     $current_object_id Optional. ID of the current category. Default 0.
+	 * @param string  $output            Dùng để nối thêm nội dung (truyền theo tham chiếu).
+	 * @param WP_Term $data_object       Đối tượng dữ liệu chuyên mục.
+	 * @param int     $depth             Tùy chọn. Độ sâu chuyên mục so với cha. Mặc định 0.
+	 * @param array   $args              Tùy chọn. Mảng các tham số. Xem wp_list_categories().
+	 *                                   Mặc định mảng rỗng.
+	 * @param int     $current_object_id Tùy chọn. ID của chuyên mục hiện tại. Mặc định 0.
 	 */
 	public function start_el( &$output, $data_object, $depth = 0, $args = array(), $current_object_id = 0 ) {
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả, cụ thể hơn để sử dụng trong phương thức này.
 		$category = $data_object;
 
-		/** This filter is documented in wp-includes/category-template.php */
+		/** Bộ lọc này được ghi chú tài liệu trong wp-includes/category-template.php */
 		$cat_name = apply_filters( 'list_cats', esc_attr( $category->name ), $category );
 
-		// Don't generate an element if the category name is empty.
+		// Không tạo phần tử nếu tên chuyên mục rỗng.
 		if ( '' === $cat_name ) {
 			return;
 		}
@@ -115,31 +115,31 @@ class Walker_Category extends Walker {
 
 		if ( $args['use_desc_for_title'] && ! empty( $category->description ) ) {
 			/**
-			 * Filters the category description for display.
+			 * Lọc mô tả chuyên mục để hiển thị.
 			 *
 			 * @since 1.2.0
 			 *
-			 * @param string  $description Category description.
-			 * @param WP_Term $category    Category object.
+			 * @param string  $description Mô tả chuyên mục.
+			 * @param WP_Term $category    Đối tượng chuyên mục.
 			 */
 			$atts['title'] = strip_tags( apply_filters( 'category_description', $category->description, $category ) );
 		}
 
 		/**
-		 * Filters the HTML attributes applied to a category list item's anchor element.
+		 * Lọc các thuộc tính HTML áp dụng cho phần tử neo của mục danh sách chuyên mục.
 		 *
 		 * @since 5.2.0
 		 *
 		 * @param array   $atts {
-		 *     The HTML attributes applied to the list item's `<a>` element, empty strings are ignored.
+		 *     Các thuộc tính HTML áp dụng cho phần tử `<a>` của mục danh sách, chuỗi rỗng bị bỏ qua.
 		 *
-		 *     @type string $href  The href attribute.
-		 *     @type string $title The title attribute.
+		 *     @type string $href  Thuộc tính href.
+		 *     @type string $title Thuộc tính title.
 		 * }
-		 * @param WP_Term $category          Term data object.
-		 * @param int     $depth             Depth of category, used for padding.
-		 * @param array   $args              An array of arguments.
-		 * @param int     $current_object_id ID of the current category.
+		 * @param WP_Term $category          Đối tượng dữ liệu term.
+		 * @param int     $depth             Độ sâu chuyên mục, dùng để đệm.
+		 * @param array   $args              Mảng các tham số.
+		 * @param int     $current_object_id ID của chuyên mục hiện tại.
 		 */
 		$atts = apply_filters( 'category_list_link_attributes', $atts, $category, $depth, $args, $current_object_id );
 
@@ -167,7 +167,7 @@ class Walker_Category extends Walker {
 			$link .= '<a href="' . esc_url( get_term_feed_link( $category, $category->taxonomy, $args['feed_type'] ) ) . '"';
 
 			if ( empty( $args['feed'] ) ) {
-				/* translators: %s: Category name. */
+				/* translators: %s: Tên chuyên mục. */
 				$alt = ' alt="' . sprintf( __( 'Feed for all posts filed under %s' ), $cat_name ) . '"';
 			} else {
 				$alt   = ' alt="' . $args['feed'] . '"';
@@ -202,7 +202,7 @@ class Walker_Category extends Walker {
 			);
 
 			if ( ! empty( $args['current_category'] ) ) {
-				// 'current_category' can be an array, so we use `get_terms()`.
+				// 'current_category' có thể là mảng, nên dùng `get_terms()`.
 				$_current_terms = get_terms(
 					array(
 						'taxonomy'   => $category->taxonomy,
@@ -231,16 +231,16 @@ class Walker_Category extends Walker {
 			}
 
 			/**
-			 * Filters the list of CSS classes to include with each category in the list.
+			 * Lọc danh sách các lớp CSS để bao gồm với mỗi chuyên mục trong danh sách.
 			 *
 			 * @since 4.2.0
 			 *
 			 * @see wp_list_categories()
 			 *
-			 * @param string[] $css_classes An array of CSS classes to be applied to each list item.
-			 * @param WP_Term  $category    Category data object.
-			 * @param int      $depth       Depth of page, used for padding.
-			 * @param array    $args        An array of wp_list_categories() arguments.
+			 * @param string[] $css_classes Mảng các lớp CSS được áp dụng cho mỗi mục danh sách.
+			 * @param WP_Term  $category    Đối tượng dữ liệu chuyên mục.
+			 * @param int      $depth       Độ sâu trang, dùng để đệm.
+			 * @param array    $args        Mảng các tham số của wp_list_categories().
 			 */
 			$css_classes = implode( ' ', apply_filters( 'category_css_class', $css_classes, $category, $depth, $args ) );
 			$css_classes = $css_classes ? ' class="' . esc_attr( $css_classes ) . '"' : '';
@@ -255,18 +255,18 @@ class Walker_Category extends Walker {
 	}
 
 	/**
-	 * Ends the element output, if needed.
+	 * Kết thúc xuất phần tử, nếu cần.
 	 *
 	 * @since 2.1.0
-	 * @since 5.9.0 Renamed `$page` to `$data_object` to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$page` thành `$data_object` để khớp với lớp cha hỗ trợ tham số đặt tên trong PHP 8.
 	 *
 	 * @see Walker::end_el()
 	 *
-	 * @param string $output      Used to append additional content (passed by reference).
-	 * @param object $data_object Category data object. Not used.
-	 * @param int    $depth       Optional. Depth of category. Not used.
-	 * @param array  $args        Optional. An array of arguments. Only uses 'list' for whether should
-	 *                            append to output. See wp_list_categories(). Default empty array.
+	 * @param string $output      Dùng để nối thêm nội dung (truyền theo tham chiếu).
+	 * @param object $data_object Đối tượng dữ liệu chuyên mục. Không sử dụng.
+	 * @param int    $depth       Tùy chọn. Độ sâu chuyên mục. Không sử dụng.
+	 * @param array  $args        Tùy chọn. Mảng các tham số. Chỉ dùng 'list' để xác định có nối
+	 *                            vào output hay không. Xem wp_list_categories(). Mặc định mảng rỗng.
 	 */
 	public function end_el( &$output, $data_object, $depth = 0, $args = array() ) {
 		if ( 'list' !== $args['style'] ) {

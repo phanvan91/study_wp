@@ -1,7 +1,5 @@
 <?php
 /**
- * Handle Trackbacks and Pingbacks Sent to WordPress
- *
  * Xử lý Trackbacks và Pingbacks được gửi đến WordPress.
  *
  * @since 0.71
@@ -15,24 +13,19 @@ if ( empty( $wp ) ) {
 	wp( array( 'tb' => '1' ) );
 }
 
-// Always run as an unauthenticated user.
-// Luôn chạy như một user chưa xác thực.
+// Luôn chạy như một người dùng chưa xác thực.
 wp_set_current_user( 0 );
 
 /**
- * Response to a trackback.
- *
  * Phản hồi một trackback.
  *
- * Responds with an error or success XML message.
- *
- * Phản hồi với một tin nhắn XML lỗi hoặc thành công.
+ * Phản hồi với một thông báo XML lỗi hoặc thành công.
  *
  * @since 0.71
  *
- * @param int|bool $error         Whether there was an error.
- *                                Default '0'. Accepts '0' or '1', true or false.
- * @param string   $error_message Error message if an error occurred. Default empty string.
+ * @param int|bool $error         Có lỗi xảy ra hay không.
+ *                                Mặc định '0'. Chấp nhận '0' hoặc '1', true hoặc false.
+ * @param string   $error_message Thông báo lỗi nếu có lỗi xảy ra. Mặc định chuỗi rỗng.
  */
 function trackback_response( $error = 0, $error_message = '' ) {
 	header( 'Content-Type: text/xml; charset=' . get_option( 'blog_charset' ) );
@@ -60,8 +53,7 @@ if ( ! isset( $_GET['tb_id'] ) || ! $_GET['tb_id'] ) {
 $trackback_url = isset( $_POST['url'] ) ? $_POST['url'] : '';
 $charset       = isset( $_POST['charset'] ) ? $_POST['charset'] : '';
 
-// These three are stripslashed here so they can be properly escaped after mb_convert_encoding().
-// Ba cái này được stripslashed ở đây để chúng có thể được escape đúng cách sau mb_convert_encoding().
+// Ba giá trị này được stripslash ở đây để chúng có thể được escape đúng cách sau mb_convert_encoding().
 $title     = isset( $_POST['title'] ) ? wp_unslash( $_POST['title'] ) : '';
 $excerpt   = isset( $_POST['excerpt'] ) ? wp_unslash( $_POST['excerpt'] ) : '';
 $blog_name = isset( $_POST['blog_name'] ) ? wp_unslash( $_POST['blog_name'] ) : '';
@@ -69,7 +61,6 @@ $blog_name = isset( $_POST['blog_name'] ) ? wp_unslash( $_POST['blog_name'] ) : 
 if ( $charset ) {
 	$charset = str_replace( array( ',', ' ' ), '', strtoupper( trim( $charset ) ) );
 
-	// Validate the specified "sender" charset is available on the receiving site.
 	// Xác thực charset "sender" được chỉ định có sẵn trên site nhận.
 	if ( function_exists( 'mb_list_encodings' ) && ! in_array( $charset, mb_list_encodings(), true ) ) {
 		$charset = '';
@@ -80,21 +71,18 @@ if ( ! $charset ) {
 	$charset = 'ASCII, UTF-8, ISO-8859-1, JIS, EUC-JP, SJIS';
 }
 
-// No valid uses for UTF-7.
-// Không có sử dụng hợp lệ cho UTF-7.
+// Không có trường hợp sử dụng hợp lệ cho UTF-7.
 if ( str_contains( $charset, 'UTF-7' ) ) {
 	die;
 }
 
-// For international trackbacks.
-// Cho các trackback quốc tế.
+// Dành cho các trackback quốc tế.
 if ( function_exists( 'mb_convert_encoding' ) ) {
 	$title     = mb_convert_encoding( $title, get_option( 'blog_charset' ), $charset );
 	$excerpt   = mb_convert_encoding( $excerpt, get_option( 'blog_charset' ), $charset );
 	$blog_name = mb_convert_encoding( $blog_name, get_option( 'blog_charset' ), $charset );
 }
 
-// Escape values to use in the trackback.
 // Escape các giá trị để sử dụng trong trackback.
 $title     = wp_slash( $title );
 $excerpt   = wp_slash( $excerpt );
@@ -109,7 +97,6 @@ if ( ! isset( $post_id ) || ! (int) $post_id ) {
 }
 
 if ( empty( $title ) && empty( $trackback_url ) && empty( $blog_name ) ) {
-	// If it doesn't look like a trackback at all.
 	// Nếu nó không giống trackback chút nào.
 	wp_redirect( get_permalink( $post_id ) );
 	exit;
@@ -117,18 +104,16 @@ if ( empty( $title ) && empty( $trackback_url ) && empty( $blog_name ) ) {
 
 if ( ! empty( $trackback_url ) && ! empty( $title ) ) {
 	/**
-	 * Fires before the trackback is added to a post.
-	 *
-	 * Kích hoạt trước khi trackback được thêm vào post.
+	 * Kích hoạt trước khi trackback được thêm vào bài viết.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param int    $post_id       Post ID related to the trackback.
-	 * @param string $trackback_url Trackback URL.
-	 * @param string $charset       Character set.
-	 * @param string $title         Trackback title.
-	 * @param string $excerpt       Trackback excerpt.
-	 * @param string $blog_name     Site name.
+	 * @param int    $post_id       ID bài viết liên quan đến trackback.
+	 * @param string $trackback_url URL của trackback.
+	 * @param string $charset       Bộ ký tự.
+	 * @param string $title         Tiêu đề trackback.
+	 * @param string $excerpt       Đoạn trích trackback.
+	 * @param string $blog_name     Tên trang web.
 	 */
 	do_action( 'pre_trackback_post', $post_id, $trackback_url, $charset, $title, $excerpt, $blog_name );
 
@@ -181,13 +166,11 @@ if ( ! empty( $trackback_url ) && ! empty( $title ) ) {
 	$trackback_id = $wpdb->insert_id;
 
 	/**
-	 * Fires after a trackback is added to a post.
-	 *
-	 * Kích hoạt sau khi trackback được thêm vào post.
+	 * Kích hoạt sau khi trackback được thêm vào bài viết.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param int $trackback_id Trackback ID.
+	 * @param int $trackback_id ID của trackback.
 	 */
 	do_action( 'trackback_post', $trackback_id );
 

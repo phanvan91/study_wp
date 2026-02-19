@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Cropped_Image_Control class
+ * API Tùy biến: Lớp WP_Customize_Cropped_Image_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Cropped Image Control class.
+ * Lớp Điều khiển Hình ảnh Cắt xén trong Tùy biến.
  *
  * @since 4.3.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Cropped_Image_Control extends WP_Customize_Image_Control {
 
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -25,7 +25,7 @@ class WP_Customize_Cropped_Image_Control extends WP_Customize_Image_Control {
 	public $type = 'cropped_image';
 
 	/**
-	 * Suggested width for cropped image.
+	 * Chiều rộng đề xuất cho hình ảnh cắt xén.
 	 *
 	 * @since 4.3.0
 	 * @var int
@@ -33,7 +33,7 @@ class WP_Customize_Cropped_Image_Control extends WP_Customize_Image_Control {
 	public $width = 150;
 
 	/**
-	 * Suggested height for cropped image.
+	 * Chiều cao đề xuất cho hình ảnh cắt xén.
 	 *
 	 * @since 4.3.0
 	 * @var int
@@ -41,7 +41,7 @@ class WP_Customize_Cropped_Image_Control extends WP_Customize_Image_Control {
 	public $height = 150;
 
 	/**
-	 * Whether the width is flexible.
+	 * Chiều rộng có linh hoạt hay không.
 	 *
 	 * @since 4.3.0
 	 * @var bool
@@ -49,7 +49,7 @@ class WP_Customize_Cropped_Image_Control extends WP_Customize_Image_Control {
 	public $flex_width = false;
 
 	/**
-	 * Whether the height is flexible.
+	 * Chiều cao có linh hoạt hay không.
 	 *
 	 * @since 4.3.0
 	 * @var bool
@@ -57,7 +57,7 @@ class WP_Customize_Cropped_Image_Control extends WP_Customize_Image_Control {
 	public $flex_height = false;
 
 	/**
-	 * Enqueue control related scripts/styles.
+	 * Nạp các script/style liên quan đến điều khiển.
 	 *
 	 * @since 4.3.0
 	 */
@@ -68,7 +68,7 @@ class WP_Customize_Cropped_Image_Control extends WP_Customize_Image_Control {
 	}
 
 	/**
-	 * Refresh the parameters passed to the JavaScript via JSON.
+	 * Làm mới các tham số được truyền tới JavaScript qua JSON.
 	 *
 	 * @since 4.3.0
 	 *

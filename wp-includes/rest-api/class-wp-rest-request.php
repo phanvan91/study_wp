@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Request class
+ * REST API: Lớp WP_REST_Request
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,19 +8,19 @@
  */
 
 /**
- * Core class used to implement a REST request object.
+ * Lớp cốt lõi dùng để triển khai đối tượng request REST.
  *
- * Contains data from the request, to be passed to the callback.
+ * Chứa dữ liệu từ request, để truyền cho callback.
  *
- * Note: This implements ArrayAccess, and acts as an array of parameters when
- * used in that manner. It does not use ArrayObject (as we cannot rely on SPL),
- * so be aware it may have non-array behavior in some cases.
+ * Lưu ý: Lớp này triển khai ArrayAccess, và hoạt động như một mảng tham số khi
+ * được sử dụng theo cách đó. Nó không sử dụng ArrayObject (vì không thể dựa vào SPL),
+ * nên hãy lưu ý rằng nó có thể có hành vi khác mảng trong một số trường hợp.
  *
- * Note: When using features provided by ArrayAccess, be aware that WordPress deliberately
- * does not distinguish between arguments of the same name for different request methods.
- * For instance, in a request with `GET id=1` and `POST id=2`, `$request['id']` will equal
- * 2 (`POST`) not 1 (`GET`). For more precision between request methods, use
- * WP_REST_Request::get_body_params(), WP_REST_Request::get_url_params(), etc.
+ * Lưu ý: Khi sử dụng các tính năng cung cấp bởi ArrayAccess, hãy lưu ý rằng WordPress cố ý
+ * không phân biệt giữa các tham số cùng tên cho các phương thức request khác nhau.
+ * Ví dụ, trong request có `GET id=1` và `POST id=2`, `$request['id']` sẽ bằng
+ * 2 (`POST`) chứ không phải 1 (`GET`). Để chính xác hơn giữa các phương thức request, hãy dùng
+ * WP_REST_Request::get_body_params(), WP_REST_Request::get_url_params(), v.v.
  *
  * @since 4.4.0
  *
@@ -30,7 +30,7 @@
 class WP_REST_Request implements ArrayAccess {
 
 	/**
-	 * HTTP method.
+	 * Phương thức HTTP.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -38,34 +38,34 @@ class WP_REST_Request implements ArrayAccess {
 	protected $method = '';
 
 	/**
-	 * Parameters passed to the request.
+	 * Các tham số được truyền cho request.
 	 *
-	 * These typically come from the `$_GET`, `$_POST` and `$_FILES`
-	 * superglobals when being created from the global scope.
+	 * Thường được lấy từ các biến siêu toàn cục `$_GET`, `$_POST` và `$_FILES`
+	 * khi được tạo từ phạm vi toàn cục.
 	 *
 	 * @since 4.4.0
-	 * @var array Contains GET, POST and FILES keys mapping to arrays of data.
+	 * @var array Chứa các khóa GET, POST và FILES ánh xạ đến các mảng dữ liệu.
 	 */
 	protected $params;
 
 	/**
-	 * HTTP headers for the request.
+	 * Các header HTTP cho request.
 	 *
 	 * @since 4.4.0
-	 * @var array Map of key to value. Key is always lowercase, as per HTTP specification.
+	 * @var array Bản đồ khóa đến giá trị. Khóa luôn là chữ thường, theo đặc tả HTTP.
 	 */
 	protected $headers = array();
 
 	/**
-	 * Body data.
+	 * Dữ liệu body.
 	 *
 	 * @since 4.4.0
-	 * @var string Binary data from the request.
+	 * @var string Dữ liệu nhị phân từ request.
 	 */
 	protected $body = null;
 
 	/**
-	 * Route matched for the request.
+	 * Route đã khớp cho request.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -73,20 +73,20 @@ class WP_REST_Request implements ArrayAccess {
 	protected $route;
 
 	/**
-	 * Attributes (options) for the route that was matched.
+	 * Các thuộc tính (tùy chọn) cho route đã khớp.
 	 *
-	 * This is the options array used when the route was registered, typically
-	 * containing the callback as well as the valid methods for the route.
+	 * Đây là mảng tùy chọn được sử dụng khi route được đăng ký, thường
+	 * chứa callback cũng như các phương thức hợp lệ cho route.
 	 *
 	 * @since 4.4.0
-	 * @var array Attributes for the request.
+	 * @var array Các thuộc tính cho request.
 	 */
 	protected $attributes = array();
 
 	/**
-	 * Used to determine if the JSON data has been parsed yet.
+	 * Dùng để xác định xem dữ liệu JSON đã được phân tích chưa.
 	 *
-	 * Allows lazy-parsing of JSON data where possible.
+	 * Cho phép phân tích JSON lười biếng khi có thể.
 	 *
 	 * @since 4.4.0
 	 * @var bool
@@ -94,7 +94,7 @@ class WP_REST_Request implements ArrayAccess {
 	protected $parsed_json = false;
 
 	/**
-	 * Used to determine if the body data has been parsed yet.
+	 * Dùng để xác định xem dữ liệu body đã được phân tích chưa.
 	 *
 	 * @since 4.4.0
 	 * @var bool
@@ -102,13 +102,13 @@ class WP_REST_Request implements ArrayAccess {
 	protected $parsed_body = false;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $method     Optional. Request method. Default empty.
-	 * @param string $route      Optional. Request route. Default empty.
-	 * @param array  $attributes Optional. Request attributes. Default empty array.
+	 * @param string $method     Tùy chọn. Phương thức request. Mặc định chuỗi rỗng.
+	 * @param string $route      Tùy chọn. Route request. Mặc định chuỗi rỗng.
+	 * @param array  $attributes Tùy chọn. Thuộc tính request. Mặc định mảng rỗng.
 	 */
 	public function __construct( $method = '', $route = '', $attributes = array() ) {
 		$this->params = array(
@@ -117,7 +117,7 @@ class WP_REST_Request implements ArrayAccess {
 			'POST'     => array(),
 			'FILES'    => array(),
 
-			// See parse_json_params.
+			// Xem parse_json_params.
 			'JSON'     => null,
 
 			'defaults' => array(),
@@ -129,58 +129,58 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves the HTTP method for the request.
+	 * Lấy phương thức HTTP cho request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return string HTTP method.
+	 * @return string Phương thức HTTP.
 	 */
 	public function get_method() {
 		return $this->method;
 	}
 
 	/**
-	 * Sets HTTP method for the request.
+	 * Thiết lập phương thức HTTP cho request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $method HTTP method.
+	 * @param string $method Phương thức HTTP.
 	 */
 	public function set_method( $method ) {
 		$this->method = strtoupper( $method );
 	}
 
 	/**
-	 * Retrieves all headers from the request.
+	 * Lấy tất cả header từ request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Map of key to value. Key is always lowercase, as per HTTP specification.
+	 * @return array Bản đồ khóa đến giá trị. Khóa luôn là chữ thường, theo đặc tả HTTP.
 	 */
 	public function get_headers() {
 		return $this->headers;
 	}
 
 	/**
-	 * Determines if the request is the given method.
+	 * Xác định xem request có phải là phương thức đã cho không.
 	 *
 	 * @since 6.8.0
 	 *
-	 * @param string $method HTTP method.
-	 * @return bool Whether the request is of the given method.
+	 * @param string $method Phương thức HTTP.
+	 * @return bool Request có phải là phương thức đã cho hay không.
 	 */
 	public function is_method( $method ) {
 		return $this->get_method() === strtoupper( $method );
 	}
 
 	/**
-	 * Canonicalizes the header name.
+	 * Chuẩn hóa tên header.
 	 *
-	 * Ensures that header names are always treated the same regardless of
-	 * source. Header names are always case-insensitive.
+	 * Đảm bảo rằng tên header luôn được xử lý giống nhau bất kể
+	 * nguồn gốc. Tên header luôn không phân biệt hoa thường.
 	 *
-	 * Note that we treat `-` (dashes) and `_` (underscores) as the same
-	 * character, as per header parsing rules in both Apache and nginx.
+	 * Lưu ý rằng chúng ta xử lý `-` (dấu gạch ngang) và `_` (dấu gạch dưới) như cùng
+	 * một ký tự, theo quy tắc phân tích header trong cả Apache và nginx.
 	 *
 	 * @link https://stackoverflow.com/q/18185366
 	 * @link https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/#missing-disappearing-http-headers
@@ -188,8 +188,8 @@ class WP_REST_Request implements ArrayAccess {
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $key Header name.
-	 * @return string Canonicalized name.
+	 * @param string $key Tên header.
+	 * @return string Tên đã chuẩn hóa.
 	 */
 	public static function canonicalize_header_name( $key ) {
 		$key = strtolower( $key );
@@ -199,16 +199,16 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves the given header from the request.
+	 * Lấy header đã cho từ request.
 	 *
-	 * If the header has multiple values, they will be concatenated with a comma
-	 * as per the HTTP specification. Be aware that some non-compliant headers
-	 * (notably cookie headers) cannot be joined this way.
+	 * Nếu header có nhiều giá trị, chúng sẽ được nối bằng dấu phẩy
+	 * theo đặc tả HTTP. Lưu ý rằng một số header không tuân thủ
+	 * (đặc biệt header cookie) không thể nối theo cách này.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $key Header name, will be canonicalized to lowercase.
-	 * @return string|null String value if set, null otherwise.
+	 * @param string $key Tên header, sẽ được chuẩn hóa sang chữ thường.
+	 * @return string|null Giá trị chuỗi nếu được thiết lập, null nếu không.
 	 */
 	public function get_header( $key ) {
 		$key = $this->canonicalize_header_name( $key );
@@ -221,12 +221,12 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves header values from the request.
+	 * Lấy các giá trị header từ request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $key Header name, will be canonicalized to lowercase.
-	 * @return array|null List of string values if set, null otherwise.
+	 * @param string $key Tên header, sẽ được chuẩn hóa sang chữ thường.
+	 * @return array|null Danh sách giá trị chuỗi nếu được thiết lập, null nếu không.
 	 */
 	public function get_header_as_array( $key ) {
 		$key = $this->canonicalize_header_name( $key );
@@ -239,12 +239,12 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Sets the header on request.
+	 * Thiết lập header trên request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $key   Header name.
-	 * @param string $value Header value, or list of values.
+	 * @param string $key   Tên header.
+	 * @param string $value Giá trị header, hoặc danh sách giá trị.
 	 */
 	public function set_header( $key, $value ) {
 		$key   = $this->canonicalize_header_name( $key );
@@ -254,12 +254,12 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Appends a header value for the given header.
+	 * Thêm giá trị header cho header đã cho.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $key   Header name.
-	 * @param string $value Header value, or list of values.
+	 * @param string $key   Tên header.
+	 * @param string $value Giá trị header, hoặc danh sách giá trị.
 	 */
 	public function add_header( $key, $value ) {
 		$key   = $this->canonicalize_header_name( $key );
@@ -273,11 +273,11 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Removes all values for a header.
+	 * Xóa tất cả giá trị cho một header.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $key Header name.
+	 * @param string $key Tên header.
 	 */
 	public function remove_header( $key ) {
 		$key = $this->canonicalize_header_name( $key );
@@ -285,12 +285,12 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Sets headers on the request.
+	 * Thiết lập các header trên request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $headers  Map of header name to value.
-	 * @param bool  $override If true, replace the request's headers. Otherwise, merge with existing.
+	 * @param array $headers  Bản đồ tên header đến giá trị.
+	 * @param bool  $override Nếu true, thay thế các header của request. Ngược lại, gộp với các header hiện có.
 	 */
 	public function set_headers( $headers, $override = true ) {
 		if ( true === $override ) {
@@ -303,13 +303,12 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves the Content-Type of the request.
+	 * Lấy Content-Type của request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array|null Map containing 'value' and 'parameters' keys
-	 *                    or null when no valid Content-Type header was
-	 *                    available.
+	 * @return array|null Bản đồ chứa các khóa 'value' và 'parameters'
+	 *                    hoặc null khi không có header Content-Type hợp lệ.
 	 */
 	public function get_content_type() {
 		$value = $this->get_header( 'Content-Type' );
@@ -327,7 +326,7 @@ class WP_REST_Request implements ArrayAccess {
 			return null;
 		}
 
-		// Parse type and subtype out.
+		// Phân tích type và subtype.
 		list( $type, $subtype ) = explode( '/', $value, 2 );
 
 		$data = compact( 'value', 'type', 'subtype', 'parameters' );
@@ -337,11 +336,11 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Checks if the request has specified a JSON Content-Type.
+	 * Kiểm tra xem request có chỉ định Content-Type là JSON không.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @return bool True if the Content-Type header is JSON.
+	 * @return bool True nếu header Content-Type là JSON.
 	 */
 	public function is_json_content_type() {
 		$content_type = $this->get_content_type();
@@ -350,13 +349,13 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves the parameter priority order.
+	 * Lấy thứ tự ưu tiên tham số.
 	 *
-	 * Used when checking parameters in WP_REST_Request::get_param().
+	 * Được sử dụng khi kiểm tra tham số trong WP_REST_Request::get_param().
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return string[] Array of types to check, in order of priority.
+	 * @return string[] Mảng các loại cần kiểm tra, theo thứ tự ưu tiên.
 	 */
 	protected function get_parameter_order() {
 		$order = array();
@@ -367,7 +366,7 @@ class WP_REST_Request implements ArrayAccess {
 
 		$this->parse_json_params();
 
-		// Ensure we parse the body data.
+		// Đảm bảo chúng ta phân tích dữ liệu body.
 		$body = $this->get_body();
 
 		if ( 'POST' !== $this->method && ! empty( $body ) ) {
@@ -384,32 +383,32 @@ class WP_REST_Request implements ArrayAccess {
 		$order[] = 'defaults';
 
 		/**
-		 * Filters the parameter priority order for a REST API request.
+		 * Lọc thứ tự ưu tiên tham số cho request REST API.
 		 *
-		 * The order affects which parameters are checked when using WP_REST_Request::get_param()
-		 * and family. This acts similarly to PHP's `request_order` setting.
+		 * Thứ tự ảnh hưởng đến tham số nào được kiểm tra khi sử dụng WP_REST_Request::get_param()
+		 * và các hàm liên quan. Điều này hoạt động tương tự như cài đặt `request_order` của PHP.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string[]        $order   Array of types to check, in order of priority.
-		 * @param WP_REST_Request $request The request object.
+		 * @param string[]        $order   Mảng các loại cần kiểm tra, theo thứ tự ưu tiên.
+		 * @param WP_REST_Request $request Đối tượng request.
 		 */
 		return apply_filters( 'rest_request_parameter_order', $order, $this );
 	}
 
 	/**
-	 * Retrieves a parameter from the request.
+	 * Lấy một tham số từ request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $key Parameter name.
-	 * @return mixed|null Value if set, null otherwise.
+	 * @param string $key Tên tham số.
+	 * @return mixed|null Giá trị nếu được thiết lập, null nếu không.
 	 */
 	public function get_param( $key ) {
 		$order = $this->get_parameter_order();
 
 		foreach ( $order as $type ) {
-			// Determine if we have the parameter for this type.
+			// Xác định xem chúng ta có tham số cho loại này không.
 			if ( isset( $this->params[ $type ][ $key ] ) ) {
 				return $this->params[ $type ][ $key ];
 			}
@@ -419,15 +418,15 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Checks if a parameter exists in the request.
+	 * Kiểm tra xem tham số có tồn tại trong request không.
 	 *
-	 * This allows distinguishing between an omitted parameter,
-	 * and a parameter specifically set to null.
+	 * Điều này cho phép phân biệt giữa tham số bị bỏ qua
+	 * và tham số được thiết lập cụ thể thành null.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param string $key Parameter name.
-	 * @return bool True if a param exists for the given key.
+	 * @param string $key Tên tham số.
+	 * @return bool True nếu tham số tồn tại cho khóa đã cho.
 	 */
 	public function has_param( $key ) {
 		$order = $this->get_parameter_order();
@@ -442,16 +441,16 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Sets a parameter on the request.
+	 * Thiết lập tham số trên request.
 	 *
-	 * If the given parameter key exists in any parameter type an update will take place,
-	 * otherwise a new param will be created in the first parameter type (respecting
+	 * Nếu khóa tham số đã cho tồn tại trong bất kỳ loại tham số nào, sẽ thực hiện cập nhật,
+	 * ngược lại tham số mới sẽ được tạo trong loại tham số đầu tiên (tôn trọng
 	 * get_parameter_order()).
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $key   Parameter name.
-	 * @param mixed  $value Parameter value.
+	 * @param string $key   Tên tham số.
+	 * @param mixed  $value Giá trị tham số.
 	 */
 	public function set_param( $key, $value ) {
 		$order     = $this->get_parameter_order();
@@ -470,14 +469,14 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves merged parameters from the request.
+	 * Lấy các tham số đã gộp từ request.
 	 *
-	 * The equivalent of get_param(), but returns all parameters for the request.
-	 * Handles merging all the available values into a single array.
+	 * Tương đương với get_param(), nhưng trả về tất cả tham số cho request.
+	 * Xử lý việc gộp tất cả các giá trị có sẵn vào một mảng duy nhất.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Map of key to value.
+	 * @return array Bản đồ khóa đến giá trị.
 	 */
 	public function get_params() {
 		$order = $this->get_parameter_order();
@@ -486,15 +485,15 @@ class WP_REST_Request implements ArrayAccess {
 		$params = array();
 		foreach ( $order as $type ) {
 			/*
-			 * array_merge() / the "+" operator will mess up
-			 * numeric keys, so instead do a manual foreach.
+			 * array_merge() / toán tử "+" sẽ làm lộn xộn
+			 * khóa số, nên thay vào đó dùng foreach thủ công.
 			 */
 			foreach ( (array) $this->params[ $type ] as $key => $value ) {
 				$params[ $key ] = $value;
 			}
 		}
 
-		// Exclude rest_route if pretty permalinks are not enabled.
+		// Loại trừ rest_route nếu permalink đẹp không được bật.
 		if ( ! get_option( 'permalink_structure' ) ) {
 			unset( $params['rest_route'] );
 		}
@@ -503,184 +502,184 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves parameters from the route itself.
+	 * Lấy tham số từ chính route.
 	 *
-	 * These are parsed from the URL using the regex.
+	 * Các tham số này được phân tích từ URL bằng regex.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Parameter map of key to value.
+	 * @return array Bản đồ tham số khóa đến giá trị.
 	 */
 	public function get_url_params() {
 		return $this->params['URL'];
 	}
 
 	/**
-	 * Sets parameters from the route.
+	 * Thiết lập tham số từ route.
 	 *
-	 * Typically, this is set after parsing the URL.
+	 * Thường được thiết lập sau khi phân tích URL.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $params Parameter map of key to value.
+	 * @param array $params Bản đồ tham số khóa đến giá trị.
 	 */
 	public function set_url_params( $params ) {
 		$this->params['URL'] = $params;
 	}
 
 	/**
-	 * Retrieves parameters from the query string.
+	 * Lấy tham số từ chuỗi truy vấn.
 	 *
-	 * These are the parameters you'd typically find in `$_GET`.
+	 * Đây là các tham số bạn thường tìm thấy trong `$_GET`.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Parameter map of key to value
+	 * @return array Bản đồ tham số khóa đến giá trị
 	 */
 	public function get_query_params() {
 		return $this->params['GET'];
 	}
 
 	/**
-	 * Sets parameters from the query string.
+	 * Thiết lập tham số từ chuỗi truy vấn.
 	 *
-	 * Typically, this is set from `$_GET`.
+	 * Thường được thiết lập từ `$_GET`.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $params Parameter map of key to value.
+	 * @param array $params Bản đồ tham số khóa đến giá trị.
 	 */
 	public function set_query_params( $params ) {
 		$this->params['GET'] = $params;
 	}
 
 	/**
-	 * Retrieves parameters from the body.
+	 * Lấy tham số từ body.
 	 *
-	 * These are the parameters you'd typically find in `$_POST`.
+	 * Đây là các tham số bạn thường tìm thấy trong `$_POST`.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Parameter map of key to value.
+	 * @return array Bản đồ tham số khóa đến giá trị.
 	 */
 	public function get_body_params() {
 		return $this->params['POST'];
 	}
 
 	/**
-	 * Sets parameters from the body.
+	 * Thiết lập tham số từ body.
 	 *
-	 * Typically, this is set from `$_POST`.
+	 * Thường được thiết lập từ `$_POST`.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $params Parameter map of key to value.
+	 * @param array $params Bản đồ tham số khóa đến giá trị.
 	 */
 	public function set_body_params( $params ) {
 		$this->params['POST'] = $params;
 	}
 
 	/**
-	 * Retrieves multipart file parameters from the body.
+	 * Lấy tham số file multipart từ body.
 	 *
-	 * These are the parameters you'd typically find in `$_FILES`.
+	 * Đây là các tham số bạn thường tìm thấy trong `$_FILES`.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Parameter map of key to value
+	 * @return array Bản đồ tham số khóa đến giá trị
 	 */
 	public function get_file_params() {
 		return $this->params['FILES'];
 	}
 
 	/**
-	 * Sets multipart file parameters from the body.
+	 * Thiết lập tham số file multipart từ body.
 	 *
-	 * Typically, this is set from `$_FILES`.
+	 * Thường được thiết lập từ `$_FILES`.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $params Parameter map of key to value.
+	 * @param array $params Bản đồ tham số khóa đến giá trị.
 	 */
 	public function set_file_params( $params ) {
 		$this->params['FILES'] = $params;
 	}
 
 	/**
-	 * Retrieves the default parameters.
+	 * Lấy các tham số mặc định.
 	 *
-	 * These are the parameters set in the route registration.
+	 * Đây là các tham số được thiết lập khi đăng ký route.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Parameter map of key to value
+	 * @return array Bản đồ tham số khóa đến giá trị
 	 */
 	public function get_default_params() {
 		return $this->params['defaults'];
 	}
 
 	/**
-	 * Sets default parameters.
+	 * Thiết lập tham số mặc định.
 	 *
-	 * These are the parameters set in the route registration.
+	 * Đây là các tham số được thiết lập khi đăng ký route.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $params Parameter map of key to value.
+	 * @param array $params Bản đồ tham số khóa đến giá trị.
 	 */
 	public function set_default_params( $params ) {
 		$this->params['defaults'] = $params;
 	}
 
 	/**
-	 * Retrieves the request body content.
+	 * Lấy nội dung body của request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return string Binary data from the request body.
+	 * @return string Dữ liệu nhị phân từ body request.
 	 */
 	public function get_body() {
 		return $this->body;
 	}
 
 	/**
-	 * Sets body content.
+	 * Thiết lập nội dung body.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $data Binary data from the request body.
+	 * @param string $data Dữ liệu nhị phân từ body request.
 	 */
 	public function set_body( $data ) {
 		$this->body = $data;
 
-		// Enable lazy parsing.
+		// Cho phép phân tích lười biếng.
 		$this->parsed_json    = false;
 		$this->parsed_body    = false;
 		$this->params['JSON'] = null;
 	}
 
 	/**
-	 * Retrieves the parameters from a JSON-formatted body.
+	 * Lấy các tham số từ body định dạng JSON.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Parameter map of key to value.
+	 * @return array Bản đồ tham số khóa đến giá trị.
 	 */
 	public function get_json_params() {
-		// Ensure the parameters have been parsed out.
+		// Đảm bảo các tham số đã được phân tích.
 		$this->parse_json_params();
 
 		return $this->params['JSON'];
 	}
 
 	/**
-	 * Parses the JSON parameters.
+	 * Phân tích các tham số JSON.
 	 *
-	 * Avoids parsing the JSON data until we need to access it.
+	 * Tránh phân tích dữ liệu JSON cho đến khi chúng ta cần truy cập.
 	 *
 	 * @since 4.4.0
-	 * @since 4.7.0 Returns error instance if value cannot be decoded.
-	 * @return true|WP_Error True if the JSON data was passed or no JSON data was provided, WP_Error if invalid JSON was passed.
+	 * @since 4.7.0 Trả về instance lỗi nếu giá trị không thể giải mã.
+	 * @return true|WP_Error True nếu dữ liệu JSON đã được truyền hoặc không có dữ liệu JSON, WP_Error nếu JSON không hợp lệ.
 	 */
 	protected function parse_json_params() {
 		if ( $this->parsed_json ) {
@@ -689,7 +688,7 @@ class WP_REST_Request implements ArrayAccess {
 
 		$this->parsed_json = true;
 
-		// Check that we actually got JSON.
+		// Kiểm tra xem chúng ta thực sự nhận được JSON không.
 		if ( ! $this->is_json_content_type() ) {
 			return true;
 		}
@@ -702,10 +701,10 @@ class WP_REST_Request implements ArrayAccess {
 		$params = json_decode( $body, true );
 
 		/*
-		 * Check for a parsing error.
+		 * Kiểm tra lỗi phân tích.
 		 */
 		if ( null === $params && JSON_ERROR_NONE !== json_last_error() ) {
-			// Ensure subsequent calls receive error instance.
+			// Đảm bảo các lần gọi tiếp theo nhận được instance lỗi.
 			$this->parsed_json = false;
 
 			$error_data = array(
@@ -723,10 +722,10 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Parses the request body parameters.
+	 * Phân tích các tham số body của request.
 	 *
-	 * Parses out URL-encoded bodies for request methods that aren't supported
-	 * natively by PHP.
+	 * Phân tích body mã hóa URL cho các phương thức request không được
+	 * PHP hỗ trợ tự nhiên.
 	 *
 	 * @since 4.4.0
 	 */
@@ -738,8 +737,8 @@ class WP_REST_Request implements ArrayAccess {
 		$this->parsed_body = true;
 
 		/*
-		 * Check that we got URL-encoded. Treat a missing Content-Type as
-		 * URL-encoded for maximum compatibility.
+		 * Kiểm tra xem chúng ta nhận được URL-encoded không. Xử lý Content-Type bị thiếu như
+		 * URL-encoded để tương thích tối đa.
 		 */
 		$content_type = $this->get_content_type();
 
@@ -750,72 +749,72 @@ class WP_REST_Request implements ArrayAccess {
 		parse_str( $this->get_body(), $params );
 
 		/*
-		 * Add to the POST parameters stored internally. If a user has already
-		 * set these manually (via `set_body_params`), don't override them.
+		 * Thêm vào tham số POST được lưu trữ nội bộ. Nếu người dùng đã
+		 * thiết lập thủ công (qua `set_body_params`), không ghi đè.
 		 */
 		$this->params['POST'] = array_merge( $params, $this->params['POST'] );
 	}
 
 	/**
-	 * Retrieves the route that matched the request.
+	 * Lấy route đã khớp với request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return string Route matching regex.
+	 * @return string Regex khớp route.
 	 */
 	public function get_route() {
 		return $this->route;
 	}
 
 	/**
-	 * Sets the route that matched the request.
+	 * Thiết lập route đã khớp với request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $route Route matching regex.
+	 * @param string $route Regex khớp route.
 	 */
 	public function set_route( $route ) {
 		$this->route = $route;
 	}
 
 	/**
-	 * Retrieves the attributes for the request.
+	 * Lấy các thuộc tính cho request.
 	 *
-	 * These are the options for the route that was matched.
+	 * Đây là các tùy chọn cho route đã khớp.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return array Attributes for the request.
+	 * @return array Các thuộc tính cho request.
 	 */
 	public function get_attributes() {
 		return $this->attributes;
 	}
 
 	/**
-	 * Sets the attributes for the request.
+	 * Thiết lập các thuộc tính cho request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $attributes Attributes for the request.
+	 * @param array $attributes Các thuộc tính cho request.
 	 */
 	public function set_attributes( $attributes ) {
 		$this->attributes = $attributes;
 	}
 
 	/**
-	 * Sanitizes (where possible) the params on the request.
+	 * Làm sạch (khi có thể) các tham số trên request.
 	 *
-	 * This is primarily based off the sanitize_callback param on each registered
-	 * argument.
+	 * Chủ yếu dựa trên sanitize_callback của mỗi tham số
+	 * đã đăng ký.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return true|WP_Error True if parameters were sanitized, WP_Error if an error occurred during sanitization.
+	 * @return true|WP_Error True nếu tham số đã được làm sạch, WP_Error nếu có lỗi xảy ra trong quá trình làm sạch.
 	 */
 	public function sanitize_params() {
 		$attributes = $this->get_attributes();
 
-		// No arguments set, skip sanitizing.
+		// Không có tham số nào được thiết lập, bỏ qua làm sạch.
 		if ( empty( $attributes['args'] ) ) {
 			return true;
 		}
@@ -837,11 +836,11 @@ class WP_REST_Request implements ArrayAccess {
 
 				$param_args = $attributes['args'][ $key ];
 
-				// If the arg has a type but no sanitize_callback attribute, default to rest_parse_request_arg.
+				// Nếu tham số có type nhưng không có thuộc tính sanitize_callback, mặc định dùng rest_parse_request_arg.
 				if ( ! array_key_exists( 'sanitize_callback', $param_args ) && ! empty( $param_args['type'] ) ) {
 					$param_args['sanitize_callback'] = 'rest_parse_request_arg';
 				}
-				// If there's still no sanitize_callback, nothing to do here.
+				// Nếu vẫn không có sanitize_callback, không có gì để làm ở đây.
 				if ( empty( $param_args['sanitize_callback'] ) ) {
 					continue;
 				}
@@ -875,15 +874,15 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Checks whether this request is valid according to its attributes.
+	 * Kiểm tra xem request này có hợp lệ theo các thuộc tính của nó không.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return true|WP_Error True if there are no parameters to validate or if all pass validation,
-	 *                       WP_Error if required parameters are missing.
+	 * @return true|WP_Error True nếu không có tham số cần xác thực hoặc tất cả đều vượt qua xác thực,
+	 *                       WP_Error nếu thiếu tham số bắt buộc.
 	 */
 	public function has_valid_params() {
-		// If JSON data was passed, check for errors.
+		// Nếu dữ liệu JSON được truyền, kiểm tra lỗi.
 		$json_error = $this->parse_json_params();
 		if ( is_wp_error( $json_error ) ) {
 			return $json_error;
@@ -914,9 +913,9 @@ class WP_REST_Request implements ArrayAccess {
 		}
 
 		/*
-		 * Check the validation callbacks for each registered arg.
+		 * Kiểm tra các callback xác thực cho mỗi tham số đã đăng ký.
 		 *
-		 * This is done after required checking as required checking is cheaper.
+		 * Điều này được thực hiện sau kiểm tra bắt buộc vì kiểm tra bắt buộc ít tốn kém hơn.
 		 */
 		$invalid_params  = array();
 		$invalid_details = array();
@@ -961,7 +960,7 @@ class WP_REST_Request implements ArrayAccess {
 			}
 
 			if ( false === $valid_check ) {
-				// A WP_Error instance is preferred, but false is supported for parity with the per-arg validate_callback.
+				// Ưu tiên instance WP_Error, nhưng false được hỗ trợ để tương đồng với validate_callback của từng tham số.
 				return new WP_Error( 'rest_invalid_params', __( 'Invalid parameters.' ), array( 'status' => 400 ) );
 			}
 		}
@@ -970,12 +969,12 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Checks if a parameter is set.
+	 * Kiểm tra xem tham số có được thiết lập không.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $offset Parameter name.
-	 * @return bool Whether the parameter is set.
+	 * @param string $offset Tên tham số.
+	 * @return bool Tham số có được thiết lập hay không.
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetExists( $offset ) {
@@ -991,12 +990,12 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves a parameter from the request.
+	 * Lấy một tham số từ request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $offset Parameter name.
-	 * @return mixed|null Value if set, null otherwise.
+	 * @param string $offset Tên tham số.
+	 * @return mixed|null Giá trị nếu được thiết lập, null nếu không.
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetGet( $offset ) {
@@ -1004,12 +1003,12 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Sets a parameter on the request.
+	 * Thiết lập tham số trên request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $offset Parameter name.
-	 * @param mixed  $value  Parameter value.
+	 * @param string $offset Tên tham số.
+	 * @param mixed  $value  Giá trị tham số.
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ) {
@@ -1017,29 +1016,29 @@ class WP_REST_Request implements ArrayAccess {
 	}
 
 	/**
-	 * Removes a parameter from the request.
+	 * Xóa một tham số khỏi request.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $offset Parameter name.
+	 * @param string $offset Tên tham số.
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetUnset( $offset ) {
 		$order = $this->get_parameter_order();
 
-		// Remove the offset from every group.
+		// Xóa offset khỏi mọi nhóm.
 		foreach ( $order as $type ) {
 			unset( $this->params[ $type ][ $offset ] );
 		}
 	}
 
 	/**
-	 * Retrieves a WP_REST_Request object from a full URL.
+	 * Lấy đối tượng WP_REST_Request từ URL đầy đủ.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @param string $url URL with protocol, domain, path and query args.
-	 * @return WP_REST_Request|false WP_REST_Request object on success, false on failure.
+	 * @param string $url URL với giao thức, tên miền, đường dẫn và tham số truy vấn.
+	 * @return WP_REST_Request|false Đối tượng WP_REST_Request nếu thành công, false nếu thất bại.
 	 */
 	public static function from_url( $url ) {
 		$bits         = parse_url( $url );
@@ -1051,11 +1050,11 @@ class WP_REST_Request implements ArrayAccess {
 
 		$api_root = rest_url();
 		if ( get_option( 'permalink_structure' ) && str_starts_with( $url, $api_root ) ) {
-			// Pretty permalinks on, and URL is under the API root.
+			// Permalink đẹp được bật, và URL nằm dưới gốc API.
 			$api_url_part = substr( $url, strlen( untrailingslashit( $api_root ) ) );
 			$route        = parse_url( $api_url_part, PHP_URL_PATH );
 		} elseif ( ! empty( $query_params['rest_route'] ) ) {
-			// ?rest_route=... set directly.
+			// ?rest_route=... được thiết lập trực tiếp.
 			$route = $query_params['rest_route'];
 			unset( $query_params['rest_route'] );
 		}
@@ -1067,13 +1066,13 @@ class WP_REST_Request implements ArrayAccess {
 		}
 
 		/**
-		 * Filters the REST API request generated from a URL.
+		 * Lọc request REST API được tạo từ URL.
 		 *
 		 * @since 4.5.0
 		 *
-		 * @param WP_REST_Request|false $request Generated request object, or false if URL
-		 *                                       could not be parsed.
-		 * @param string                $url     URL the request was generated from.
+		 * @param WP_REST_Request|false $request Đối tượng request đã tạo, hoặc false nếu
+		 *                                       URL không thể phân tích.
+		 * @param string                $url     URL mà request được tạo từ đó.
 		 */
 		return apply_filters( 'rest_request_from_url', $request, $url );
 	}

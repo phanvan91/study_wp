@@ -1,50 +1,50 @@
 <?php
 /**
- * Upgrade API: WP_Upgrader class
+ * API Nâng cấp: Lớp WP_Upgrader
  *
- * Requires skin classes and WP_Upgrader subclasses for backward compatibility.
+ * Yêu cầu các lớp skin và các lớp con WP_Upgrader để tương thích ngược.
  *
  * @package WordPress
  * @subpackage Upgrader
  * @since 2.8.0
  */
 
-/** WP_Upgrader_Skin class */
+/** Lớp WP_Upgrader_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader-skin.php';
 
-/** Plugin_Upgrader_Skin class */
+/** Lớp Plugin_Upgrader_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-plugin-upgrader-skin.php';
 
-/** Theme_Upgrader_Skin class */
+/** Lớp Theme_Upgrader_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-theme-upgrader-skin.php';
 
-/** Bulk_Upgrader_Skin class */
+/** Lớp Bulk_Upgrader_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-bulk-upgrader-skin.php';
 
-/** Bulk_Plugin_Upgrader_Skin class */
+/** Lớp Bulk_Plugin_Upgrader_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-bulk-plugin-upgrader-skin.php';
 
-/** Bulk_Theme_Upgrader_Skin class */
+/** Lớp Bulk_Theme_Upgrader_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-bulk-theme-upgrader-skin.php';
 
-/** Plugin_Installer_Skin class */
+/** Lớp Plugin_Installer_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-plugin-installer-skin.php';
 
-/** Theme_Installer_Skin class */
+/** Lớp Theme_Installer_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-theme-installer-skin.php';
 
-/** Language_Pack_Upgrader_Skin class */
+/** Lớp Language_Pack_Upgrader_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-language-pack-upgrader-skin.php';
 
-/** Automatic_Upgrader_Skin class */
+/** Lớp Automatic_Upgrader_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-automatic-upgrader-skin.php';
 
-/** WP_Ajax_Upgrader_Skin class */
+/** Lớp WP_Ajax_Upgrader_Skin */
 require_once ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php';
 
 /**
- * Core class used for upgrading/installing a local set of files via
- * the Filesystem Abstraction classes from a Zip file.
+ * Lớp lõi dùng để nâng cấp/cài đặt một tập hợp tệp cục bộ thông qua
+ * các lớp trừu tượng hệ thống tệp từ tệp Zip.
  *
  * @since 2.8.0
  */
@@ -52,7 +52,7 @@ require_once ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php';
 class WP_Upgrader {
 
 	/**
-	 * The error/notification strings used to update the user on the progress.
+	 * Các chuỗi lỗi/thông báo dùng để cập nhật tiến trình cho người dùng.
 	 *
 	 * @since 2.8.0
 	 * @var array $strings
@@ -60,7 +60,7 @@ class WP_Upgrader {
 	public $strings = array();
 
 	/**
-	 * The upgrader skin being used.
+	 * Skin nâng cấp đang được sử dụng.
 	 *
 	 * @since 2.8.0
 	 * @var Automatic_Upgrader_Skin|WP_Upgrader_Skin $skin
@@ -68,34 +68,33 @@ class WP_Upgrader {
 	public $skin = null;
 
 	/**
-	 * The result of the installation.
+	 * Kết quả của quá trình cài đặt.
 	 *
-	 * This is set by WP_Upgrader::install_package(), only when the package is installed
-	 * successfully. It will then be an array, unless a WP_Error is returned by the
-	 * {@see 'upgrader_post_install'} filter. In that case, the WP_Error will be assigned to
-	 * it.
+	 * Giá trị này được thiết lập bởi WP_Upgrader::install_package(), chỉ khi gói được cài đặt
+	 * thành công. Khi đó nó sẽ là một mảng, trừ khi WP_Error được trả về bởi bộ lọc
+	 * {@see 'upgrader_post_install'}. Trong trường hợp đó, WP_Error sẽ được gán cho nó.
 	 *
 	 * @since 2.8.0
 	 *
 	 * @var array|WP_Error $result {
-	 *     @type string $source             The full path to the source the files were installed from.
-	 *     @type string $source_files       List of all the files in the source directory.
-	 *     @type string $destination        The full path to the installation destination folder.
-	 *     @type string $destination_name   The name of the destination folder, or empty if `$destination`
-	 *                                      and `$local_destination` are the same.
-	 *     @type string $local_destination  The full local path to the destination folder. This is usually
-	 *                                      the same as `$destination`.
-	 *     @type string $remote_destination The full remote path to the destination folder
-	 *                                      (i.e., from `$wp_filesystem`).
-	 *     @type bool   $clear_destination  Whether the destination folder was cleared.
+	 *     @type string $source             Đường dẫn đầy đủ tới nguồn mà các tệp được cài đặt từ đó.
+	 *     @type string $source_files       Danh sách tất cả các tệp trong thư mục nguồn.
+	 *     @type string $destination        Đường dẫn đầy đủ tới thư mục đích cài đặt.
+	 *     @type string $destination_name   Tên thư mục đích, hoặc rỗng nếu `$destination`
+	 *                                      và `$local_destination` giống nhau.
+	 *     @type string $local_destination  Đường dẫn cục bộ đầy đủ tới thư mục đích. Thường
+	 *                                      giống với `$destination`.
+	 *     @type string $remote_destination Đường dẫn từ xa đầy đủ tới thư mục đích
+	 *                                      (tức là từ `$wp_filesystem`).
+	 *     @type bool   $clear_destination  Liệu thư mục đích có được xóa hay không.
 	 * }
 	 */
 	public $result = array();
 
 	/**
-	 * The total number of updates being performed.
+	 * Tổng số bản cập nhật đang được thực hiện.
 	 *
-	 * Set by the bulk update methods.
+	 * Được thiết lập bởi các phương thức cập nhật hàng loạt.
 	 *
 	 * @since 3.0.0
 	 * @var int $update_count
@@ -103,9 +102,9 @@ class WP_Upgrader {
 	public $update_count = 0;
 
 	/**
-	 * The current update if multiple updates are being performed.
+	 * Bản cập nhật hiện tại nếu đang thực hiện nhiều bản cập nhật.
 	 *
-	 * Used by the bulk update methods, and incremented for each update.
+	 * Được sử dụng bởi các phương thức cập nhật hàng loạt, và được tăng dần cho mỗi bản cập nhật.
 	 *
 	 * @since 3.0.0
 	 * @var int
@@ -113,9 +112,9 @@ class WP_Upgrader {
 	public $update_current = 0;
 
 	/**
-	 * Stores the list of plugins or themes added to temporary backup directory.
+	 * Lưu trữ danh sách plugin hoặc giao diện đã được thêm vào thư mục sao lưu tạm thời.
 	 *
-	 * Used by the rollback functions.
+	 * Được sử dụng bởi các hàm khôi phục.
 	 *
 	 * @since 6.3.0
 	 * @var array
@@ -123,9 +122,9 @@ class WP_Upgrader {
 	private $temp_backups = array();
 
 	/**
-	 * Stores the list of plugins or themes to be restored from temporary backup directory.
+	 * Lưu trữ danh sách plugin hoặc giao diện cần được khôi phục từ thư mục sao lưu tạm thời.
 	 *
-	 * Used by the rollback functions.
+	 * Được sử dụng bởi các hàm khôi phục.
 	 *
 	 * @since 6.3.0
 	 * @var array
@@ -133,12 +132,12 @@ class WP_Upgrader {
 	private $temp_restores = array();
 
 	/**
-	 * Construct the upgrader with a skin.
+	 * Khởi tạo trình nâng cấp với một skin.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param WP_Upgrader_Skin $skin The upgrader skin to use. Default is a WP_Upgrader_Skin
-	 *                               instance.
+	 * @param WP_Upgrader_Skin $skin Skin nâng cấp để sử dụng. Mặc định là một thực thể
+	 *                               WP_Upgrader_Skin.
 	 */
 	public function __construct( $skin = null ) {
 		if ( null === $skin ) {
@@ -149,15 +148,15 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Initializes the upgrader.
+	 * Khởi tạo trình nâng cấp.
 	 *
-	 * This will set the relationship between the skin being used and this upgrader,
-	 * and also add the generic strings to `WP_Upgrader::$strings`.
+	 * Thiết lập mối quan hệ giữa skin đang sử dụng và trình nâng cấp này,
+	 * đồng thời thêm các chuỗi chung vào `WP_Upgrader::$strings`.
 	 *
-	 * Additionally, it will schedule a weekly task to clean up the temporary backup directory.
+	 * Ngoài ra, nó sẽ lên lịch tác vụ hàng tuần để dọn dẹp thư mục sao lưu tạm thời.
 	 *
 	 * @since 2.8.0
-	 * @since 6.3.0 Added the `schedule_temp_backup_cleanup()` task.
+	 * @since 6.3.0 Thêm tác vụ `schedule_temp_backup_cleanup()`.
 	 */
 	public function init() {
 		$this->skin->set_upgrader( $this );
@@ -169,7 +168,7 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Schedules the cleanup of the temporary backup directory.
+	 * Lên lịch dọn dẹp thư mục sao lưu tạm thời.
 	 *
 	 * @since 6.3.0
 	 */
@@ -180,7 +179,7 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Adds the generic strings to WP_Upgrader::$strings.
+	 * Thêm các chuỗi chung vào WP_Upgrader::$strings.
 	 *
 	 * @since 2.8.0
 	 */
@@ -189,11 +188,11 @@ class WP_Upgrader {
 		$this->strings['fs_unavailable'] = __( 'Could not access filesystem.' );
 		$this->strings['fs_error']       = __( 'Filesystem error.' );
 		$this->strings['fs_no_root_dir'] = __( 'Unable to locate WordPress root directory.' );
-		/* translators: %s: Directory name. */
+		/* translators: %s: Tên thư mục. */
 		$this->strings['fs_no_content_dir'] = sprintf( __( 'Unable to locate WordPress content directory (%s).' ), 'wp-content' );
 		$this->strings['fs_no_plugins_dir'] = __( 'Unable to locate WordPress plugin directory.' );
 		$this->strings['fs_no_themes_dir']  = __( 'Unable to locate WordPress theme directory.' );
-		/* translators: %s: Directory name. */
+		/* translators: %s: Tên thư mục. */
 		$this->strings['fs_no_folder'] = __( 'Unable to locate needed folder (%s).' );
 
 		$this->strings['no_package']           = __( 'Package not available.' );
@@ -213,25 +212,25 @@ class WP_Upgrader {
 		$this->strings['temp_backup_mkdir_failed'] = sprintf( __( 'Could not create the %s directory.' ), 'upgrade-temp-backup' );
 		/* translators: %s: upgrade-temp-backup */
 		$this->strings['temp_backup_move_failed'] = sprintf( __( 'Could not move the old version to the %s directory.' ), 'upgrade-temp-backup' );
-		/* translators: %s: The plugin or theme slug. */
+		/* translators: %s: Slug của plugin hoặc giao diện. */
 		$this->strings['temp_backup_restore_failed'] = __( 'Could not restore the original version of %s.' );
-		/* translators: %s: The plugin or theme slug. */
+		/* translators: %s: Slug của plugin hoặc giao diện. */
 		$this->strings['temp_backup_delete_failed'] = __( 'Could not delete the temporary backup directory for %s.' );
 	}
 
 	/**
-	 * Connects to the filesystem.
+	 * Kết nối tới hệ thống tệp.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
-	 * @param string[] $directories                  Optional. Array of directories. If any of these do
-	 *                                               not exist, a WP_Error object will be returned.
-	 *                                               Default empty array.
-	 * @param bool     $allow_relaxed_file_ownership Whether to allow relaxed file ownership.
-	 *                                               Default false.
-	 * @return bool|WP_Error True if able to connect, false or a WP_Error otherwise.
+	 * @param string[] $directories                  Tùy chọn. Mảng các thư mục. Nếu bất kỳ thư mục nào
+	 *                                               không tồn tại, đối tượng WP_Error sẽ được trả về.
+	 *                                               Mặc định mảng rỗng.
+	 * @param bool     $allow_relaxed_file_ownership Cho phép quyền sở hữu tệp linh hoạt hay không.
+	 *                                               Mặc định false.
+	 * @return bool|WP_Error True nếu có thể kết nối, false hoặc WP_Error nếu không.
 	 */
 	public function fs_connect( $directories = array(), $allow_relaxed_file_ownership = false ) {
 		global $wp_filesystem;
@@ -246,7 +245,7 @@ class WP_Upgrader {
 			if ( is_object( $wp_filesystem ) && $wp_filesystem->errors->has_errors() ) {
 				$error = $wp_filesystem->errors;
 			}
-			// Failed to connect. Error and request again.
+			// Kết nối thất bại. Thông báo lỗi và yêu cầu lại.
 			$this->skin->request_filesystem_credentials( $error, $directories[0], $allow_relaxed_file_ownership );
 			return false;
 		}
@@ -292,38 +291,38 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Downloads a package.
+	 * Tải xuống một gói.
 	 *
 	 * @since 2.8.0
-	 * @since 5.2.0 Added the `$check_signatures` parameter.
-	 * @since 5.5.0 Added the `$hook_extra` parameter.
+	 * @since 5.2.0 Thêm tham số `$check_signatures`.
+	 * @since 5.5.0 Thêm tham số `$hook_extra`.
 	 *
-	 * @param string $package          The URI of the package. If this is the full path to an
-	 *                                 existing local file, it will be returned untouched.
-	 * @param bool   $check_signatures Whether to validate file signatures. Default false.
-	 * @param array  $hook_extra       Extra arguments to pass to the filter hooks. Default empty array.
-	 * @return string|WP_Error The full path to the downloaded package file, or a WP_Error object.
+	 * @param string $package          URI của gói. Nếu đây là đường dẫn đầy đủ tới
+	 *                                 một tệp cục bộ hiện có, nó sẽ được trả về nguyên trạng.
+	 * @param bool   $check_signatures Kiểm tra chữ ký tệp hay không. Mặc định false.
+	 * @param array  $hook_extra       Các tham số bổ sung để truyền vào bộ lọc hook. Mặc định mảng rỗng.
+	 * @return string|WP_Error Đường dẫn đầy đủ tới tệp gói đã tải xuống, hoặc đối tượng WP_Error.
 	 */
 	public function download_package( $package, $check_signatures = false, $hook_extra = array() ) {
 		/**
-		 * Filters whether to return the package.
+		 * Lọc việc có trả về gói hay không.
 		 *
 		 * @since 3.7.0
-		 * @since 5.5.0 Added the `$hook_extra` parameter.
+		 * @since 5.5.0 Thêm tham số `$hook_extra`.
 		 *
-		 * @param bool        $reply      Whether to bail without returning the package.
-		 *                                Default false.
-		 * @param string      $package    The package file name.
-		 * @param WP_Upgrader $upgrader   The WP_Upgrader instance.
-		 * @param array       $hook_extra Extra arguments passed to hooked filters.
+		 * @param bool        $reply      Có bỏ qua mà không trả về gói hay không.
+		 *                                Mặc định false.
+		 * @param string      $package    Tên tệp gói.
+		 * @param WP_Upgrader $upgrader   Thực thể WP_Upgrader.
+		 * @param array       $hook_extra Các tham số bổ sung được truyền vào bộ lọc hook.
 		 */
 		$reply = apply_filters( 'upgrader_pre_download', false, $package, $this, $hook_extra );
 		if ( false !== $reply ) {
 			return $reply;
 		}
 
-		if ( ! preg_match( '!^(http|https|ftp)://!i', $package ) && file_exists( $package ) ) { // Local file or remote?
-			return $package; // Must be a local file.
+		if ( ! preg_match( '!^(http|https|ftp)://!i', $package ) && file_exists( $package ) ) { // Tệp cục bộ hay từ xa?
+			return $package; // Phải là tệp cục bộ.
 		}
 
 		if ( empty( $package ) ) {
@@ -342,16 +341,16 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Unpacks a compressed package file.
+	 * Giải nén tệp gói nén.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
-	 * @param string $package        Full path to the package file.
-	 * @param bool   $delete_package Optional. Whether to delete the package file after attempting
-	 *                               to unpack it. Default true.
-	 * @return string|WP_Error The path to the unpacked contents, or a WP_Error on failure.
+	 * @param string $package        Đường dẫn đầy đủ tới tệp gói.
+	 * @param bool   $delete_package Tùy chọn. Có xóa tệp gói sau khi cố giải nén hay không.
+	 *                               Mặc định true.
+	 * @return string|WP_Error Đường dẫn tới nội dung đã giải nén, hoặc WP_Error khi thất bại.
 	 */
 	public function unpack_package( $package, $delete_package = true ) {
 		global $wp_filesystem;
@@ -364,7 +363,7 @@ class WP_Upgrader {
 
 		$upgrade_folder = $wp_filesystem->wp_content_dir() . 'upgrade/';
 
-		// Clean up contents of upgrade directory beforehand.
+		// Dọn dẹp nội dung thư mục nâng cấp trước đó.
 		$upgrade_files = $wp_filesystem->dirlist( $upgrade_folder );
 		if ( ! empty( $upgrade_files ) ) {
 			foreach ( $upgrade_files as $file ) {
@@ -372,18 +371,18 @@ class WP_Upgrader {
 			}
 		}
 
-		// We need a working directory - strip off any .tmp or .zip suffixes.
+		// Cần một thư mục làm việc - loại bỏ phần đuôi .tmp hoặc .zip.
 		$working_dir = $upgrade_folder . basename( basename( $package, '.tmp' ), '.zip' );
 
-		// Clean up working directory.
+		// Dọn dẹp thư mục làm việc.
 		if ( $wp_filesystem->is_dir( $working_dir ) ) {
 			$wp_filesystem->delete( $working_dir, true );
 		}
 
-		// Unzip package to working directory.
+		// Giải nén gói vào thư mục làm việc.
 		$result = unzip_file( $package, $working_dir );
 
-		// Once extracted, delete the package if required.
+		// Sau khi giải nén, xóa gói nếu cần.
 		if ( $delete_package ) {
 			unlink( $package );
 		}
@@ -400,14 +399,14 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Flattens the results of WP_Filesystem_Base::dirlist() for iterating over.
+	 * Làm phẳng kết quả từ WP_Filesystem_Base::dirlist() để duyệt qua.
 	 *
 	 * @since 4.9.0
 	 * @access protected
 	 *
-	 * @param array  $nested_files Array of files as returned by WP_Filesystem_Base::dirlist().
-	 * @param string $path         Relative path to prepend to child nodes. Optional.
-	 * @return array A flattened array of the $nested_files specified.
+	 * @param array  $nested_files Mảng tệp được trả về bởi WP_Filesystem_Base::dirlist().
+	 * @param string $path         Đường dẫn tương đối để thêm vào trước các nút con. Tùy chọn.
+	 * @return array Mảng đã được làm phẳng của $nested_files đã chỉ định.
 	 */
 	protected function flatten_dirlist( $nested_files, $path = '' ) {
 		$files = array();
@@ -415,11 +414,11 @@ class WP_Upgrader {
 		foreach ( $nested_files as $name => $details ) {
 			$files[ $path . $name ] = $details;
 
-			// Append children recursively.
+			// Thêm các phần tử con theo đệ quy.
 			if ( ! empty( $details['files'] ) ) {
 				$children = $this->flatten_dirlist( $details['files'], $path . $name . '/' );
 
-				// Merge keeping possible numeric keys, which array_merge() will reindex from 0..n.
+				// Gộp giữ nguyên các khóa số, vì array_merge() sẽ đánh lại chỉ mục từ 0..n.
 				$files = $files + $children;
 			}
 		}
@@ -428,35 +427,35 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Clears the directory where this item is going to be installed into.
+	 * Xóa sạch thư mục nơi mục này sẽ được cài đặt vào.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
-	 * @param string $remote_destination The location on the remote filesystem to be cleared.
-	 * @return true|WP_Error True upon success, WP_Error on failure.
+	 * @param string $remote_destination Vị trí trên hệ thống tệp từ xa cần được xóa.
+	 * @return true|WP_Error True khi thành công, WP_Error khi thất bại.
 	 */
 	public function clear_destination( $remote_destination ) {
 		global $wp_filesystem;
 
 		$files = $wp_filesystem->dirlist( $remote_destination, true, true );
 
-		// False indicates that the $remote_destination doesn't exist.
+		// False nghĩa là $remote_destination không tồn tại.
 		if ( false === $files ) {
 			return true;
 		}
 
-		// Flatten the file list to iterate over.
+		// Làm phẳng danh sách tệp để duyệt qua.
 		$files = $this->flatten_dirlist( $files );
 
-		// Check all files are writable before attempting to clear the destination.
+		// Kiểm tra tất cả tệp có thể ghi trước khi cố xóa thư mục đích.
 		$unwritable_files = array();
 
-		// Check writability.
+		// Kiểm tra quyền ghi.
 		foreach ( $files as $filename => $file_details ) {
 			if ( ! $wp_filesystem->is_writable( $remote_destination . $filename ) ) {
-				// Attempt to alter permissions to allow writes and try again.
+				// Cố thay đổi quyền để cho phép ghi và thử lại.
 				$wp_filesystem->chmod( $remote_destination . $filename, ( 'd' === $file_details['type'] ? FS_CHMOD_DIR : FS_CHMOD_FILE ) );
 				if ( ! $wp_filesystem->is_writable( $remote_destination . $filename ) ) {
 					$unwritable_files[] = $filename;
@@ -476,42 +475,42 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Install a package.
+	 * Cài đặt một gói.
 	 *
-	 * Copies the contents of a package from a source directory, and installs them in
-	 * a destination directory. Optionally removes the source. It can also optionally
-	 * clear out the destination folder if it already exists.
+	 * Sao chép nội dung gói từ thư mục nguồn và cài đặt vào thư mục đích.
+	 * Tùy chọn xóa nguồn. Cũng có thể tùy chọn xóa sạch thư mục đích
+	 * nếu nó đã tồn tại.
 	 *
 	 * @since 2.8.0
-	 * @since 6.2.0 Use move_dir() instead of copy_dir() when possible.
+	 * @since 6.2.0 Sử dụng move_dir() thay vì copy_dir() khi có thể.
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem        WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem        Lớp con hệ thống tệp WordPress.
 	 * @global string[]           $wp_theme_directories
 	 *
 	 * @param array|string $args {
-	 *     Optional. Array or string of arguments for installing a package. Default empty array.
+	 *     Tùy chọn. Mảng hoặc chuỗi các tham số để cài đặt gói. Mặc định mảng rỗng.
 	 *
-	 *     @type string $source                      Required path to the package source. Default empty.
-	 *     @type string $destination                 Required path to a folder to install the package in.
-	 *                                               Default empty.
-	 *     @type bool   $clear_destination           Whether to delete any files already in the destination
-	 *                                               folder. Default false.
-	 *     @type bool   $clear_working               Whether to delete the files from the working directory
-	 *                                               after copying them to the destination. Default false.
-	 *     @type bool   $abort_if_destination_exists Whether to abort the installation if
-	 *                                               the destination folder already exists. Default true.
-	 *     @type array  $hook_extra                  Extra arguments to pass to the filter hooks called by
-	 *                                               WP_Upgrader::install_package(). Default empty array.
+	 *     @type string $source                      Đường dẫn bắt buộc tới nguồn gói. Mặc định rỗng.
+	 *     @type string $destination                 Đường dẫn bắt buộc tới thư mục cài đặt gói.
+	 *                                               Mặc định rỗng.
+	 *     @type bool   $clear_destination           Có xóa các tệp đã có trong thư mục đích hay không.
+	 *                                               Mặc định false.
+	 *     @type bool   $clear_working               Có xóa các tệp từ thư mục làm việc sau khi sao chép
+	 *                                               tới đích hay không. Mặc định false.
+	 *     @type bool   $abort_if_destination_exists Có hủy cài đặt nếu thư mục đích đã tồn tại hay không.
+	 *                                               Mặc định true.
+	 *     @type array  $hook_extra                  Các tham số bổ sung để truyền vào bộ lọc hook
+	 *                                               được gọi bởi WP_Upgrader::install_package(). Mặc định mảng rỗng.
 	 * }
 	 *
-	 * @return array|WP_Error The result (also stored in `WP_Upgrader::$result`), or a WP_Error on failure.
+	 * @return array|WP_Error Kết quả (cũng được lưu trong `WP_Upgrader::$result`), hoặc WP_Error khi thất bại.
 	 */
 	public function install_package( $args = array() ) {
 		global $wp_filesystem, $wp_theme_directories;
 
 		$defaults = array(
-			'source'                      => '', // Please always pass this.
-			'destination'                 => '', // ...and this.
+			'source'                      => '', // Xin hãy luôn truyền giá trị này.
+			'destination'                 => '', // ...và giá trị này.
 			'clear_destination'           => false,
 			'clear_working'               => false,
 			'abort_if_destination_exists' => true,
@@ -520,15 +519,15 @@ class WP_Upgrader {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		// These were previously extract()'d.
+		// Các biến này trước đây được extract().
 		$source            = $args['source'];
 		$destination       = $args['destination'];
 		$clear_destination = $args['clear_destination'];
 
 		/*
-		 * Give the upgrade an additional 300 seconds (5 minutes) to ensure the install
-		 * doesn't prematurely timeout having used up the maximum script execution time
-		 * upacking and downloading in WP_Upgrader->run().
+		 * Cho quá trình nâng cấp thêm 300 giây (5 phút) để đảm bảo việc cài đặt
+		 * không bị hết thời gian sớm do đã sử dụng hết thời gian thực thi script tối đa
+		 * khi giải nén và tải xuống trong WP_Upgrader->run().
 		 */
 		if ( function_exists( 'set_time_limit' ) ) {
 			set_time_limit( 300 );
@@ -543,15 +542,15 @@ class WP_Upgrader {
 		$this->skin->feedback( 'installing_package' );
 
 		/**
-		 * Filters the installation response before the installation has started.
+		 * Lọc phản hồi cài đặt trước khi quá trình cài đặt bắt đầu.
 		 *
-		 * Returning a value that could be evaluated as a `WP_Error` will effectively
-		 * short-circuit the installation, returning that value instead.
+		 * Trả về giá trị có thể được đánh giá là `WP_Error` sẽ thực tế
+		 * làm ngắn mạch quá trình cài đặt, trả về giá trị đó thay thế.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param bool|WP_Error $response   Installation response.
-		 * @param array         $hook_extra Extra arguments passed to hooked filters.
+		 * @param bool|WP_Error $response   Phản hồi cài đặt.
+		 * @param array         $hook_extra Các tham số bổ sung được truyền vào bộ lọc hook.
 		 */
 		$res = apply_filters( 'upgrader_pre_install', true, $args['hook_extra'] );
 
@@ -559,7 +558,7 @@ class WP_Upgrader {
 			return $res;
 		}
 
-		// Retain the original source and destinations.
+		// Giữ lại nguồn và đích gốc.
 		$remote_source     = $args['source'];
 		$local_destination = $destination;
 
@@ -572,31 +571,31 @@ class WP_Upgrader {
 		$source_files       = array_keys( $dirlist );
 		$remote_destination = $wp_filesystem->find_folder( $local_destination );
 
-		// Locate which directory to copy to the new folder. This is based on the actual folder holding the files.
+		// Xác định thư mục nào cần sao chép vào thư mục mới. Dựa trên thư mục thực tế chứa các tệp.
 		if ( 1 === count( $source_files ) && $wp_filesystem->is_dir( trailingslashit( $args['source'] ) . $source_files[0] . '/' ) ) {
-			// Only one folder? Then we want its contents.
+			// Chỉ có một thư mục? Thì ta cần nội dung bên trong nó.
 			$source = trailingslashit( $args['source'] ) . trailingslashit( $source_files[0] );
 		} elseif ( 0 === count( $source_files ) ) {
-			// There are no files?
+			// Không có tệp nào?
 			return new WP_Error( 'incompatible_archive_empty', $this->strings['incompatible_archive'], $this->strings['no_files'] );
 		} else {
 			/*
-			 * It's only a single file, the upgrader will use the folder name of this file as the destination folder.
-			 * Folder name is based on zip filename.
+			 * Chỉ có một tệp duy nhất, trình nâng cấp sẽ sử dụng tên thư mục của tệp này làm thư mục đích.
+			 * Tên thư mục dựa trên tên tệp zip.
 			 */
 			$source = trailingslashit( $args['source'] );
 		}
 
 		/**
-		 * Filters the source file location for the upgrade package.
+		 * Lọc vị trí tệp nguồn cho gói nâng cấp.
 		 *
 		 * @since 2.8.0
-		 * @since 4.4.0 The $hook_extra parameter became available.
+		 * @since 4.4.0 Tham số $hook_extra đã có sẵn.
 		 *
-		 * @param string      $source        File source location.
-		 * @param string      $remote_source Remote file source location.
-		 * @param WP_Upgrader $upgrader      WP_Upgrader instance.
-		 * @param array       $hook_extra    Extra arguments passed to hooked filters.
+		 * @param string      $source        Vị trí tệp nguồn.
+		 * @param string      $remote_source Vị trí tệp nguồn từ xa.
+		 * @param WP_Upgrader $upgrader      Thực thể WP_Upgrader.
+		 * @param array       $hook_extra    Các tham số bổ sung được truyền vào bộ lọc hook.
 		 */
 		$source = apply_filters( 'upgrader_source_selection', $source, $remote_source, $this, $args['hook_extra'] );
 
@@ -614,7 +613,7 @@ class WP_Upgrader {
 			$this->temp_backups[] = $args['hook_extra']['temp_backup'];
 		}
 
-		// Has the source location changed? If so, we need a new source_files list.
+		// Vị trí nguồn đã thay đổi chưa? Nếu có, cần danh sách source_files mới.
 		if ( $source !== $remote_source ) {
 			$dirlist = $wp_filesystem->dirlist( $source );
 
@@ -626,11 +625,10 @@ class WP_Upgrader {
 		}
 
 		/*
-		 * Protection against deleting files in any important base directories.
-		 * Theme_Upgrader & Plugin_Upgrader also trigger this, as they pass the
-		 * destination directory (WP_PLUGIN_DIR / wp-content/themes) intending
-		 * to copy the directory into the directory, whilst they pass the source
-		 * as the actual files to copy.
+		 * Bảo vệ chống xóa tệp trong các thư mục gốc quan trọng.
+		 * Theme_Upgrader & Plugin_Upgrader cũng kích hoạt điều này, khi chúng truyền
+		 * thư mục đích (WP_PLUGIN_DIR / wp-content/themes) với ý định sao chép
+		 * thư mục vào thư mục, trong khi chúng truyền nguồn là các tệp thực tế cần sao chép.
 		 */
 		$protected_directories = array( ABSPATH, WP_CONTENT_DIR, WP_PLUGIN_DIR, WP_CONTENT_DIR . '/themes' );
 
@@ -644,21 +642,21 @@ class WP_Upgrader {
 		}
 
 		if ( $clear_destination ) {
-			// We're going to clear the destination if there's something there.
+			// Sẽ xóa sạch đích nếu có gì đó ở đó.
 			$this->skin->feedback( 'remove_old' );
 
 			$removed = $this->clear_destination( $remote_destination );
 
 			/**
-			 * Filters whether the upgrader cleared the destination.
+			 * Lọc xem trình nâng cấp đã xóa sạch đích hay chưa.
 			 *
 			 * @since 2.8.0
 			 *
-			 * @param true|WP_Error $removed            Whether the destination was cleared.
-			 *                                          True upon success, WP_Error on failure.
-			 * @param string        $local_destination  The local package destination.
-			 * @param string        $remote_destination The remote package destination.
-			 * @param array         $hook_extra         Extra arguments passed to hooked filters.
+			 * @param true|WP_Error $removed            Đích đã được xóa hay chưa.
+			 *                                          True khi thành công, WP_Error khi thất bại.
+			 * @param string        $local_destination  Đích gói cục bộ.
+			 * @param string        $remote_destination Đích gói từ xa.
+			 * @param array         $hook_extra         Các tham số bổ sung được truyền vào bộ lọc hook.
 			 */
 			$removed = apply_filters( 'upgrader_clear_destination', $removed, $local_destination, $remote_destination, $args['hook_extra'] );
 
@@ -667,33 +665,33 @@ class WP_Upgrader {
 			}
 		} elseif ( $args['abort_if_destination_exists'] && $wp_filesystem->exists( $remote_destination ) ) {
 			/*
-			 * If we're not clearing the destination folder and something exists there already, bail.
-			 * But first check to see if there are actually any files in the folder.
+			 * Nếu không xóa sạch thư mục đích và đã có gì đó ở đó, hủy bỏ.
+			 * Nhưng trước tiên kiểm tra xem thực sự có tệp nào trong thư mục không.
 			 */
 			$_files = $wp_filesystem->dirlist( $remote_destination );
 			if ( ! empty( $_files ) ) {
-				$wp_filesystem->delete( $remote_source, true ); // Clear out the source files.
+				$wp_filesystem->delete( $remote_source, true ); // Xóa sạch các tệp nguồn.
 				return new WP_Error( 'folder_exists', $this->strings['folder_exists'], $remote_destination );
 			}
 		}
 
 		/*
-		 * If 'clear_working' is false, the source should not be removed, so use copy_dir() instead.
+		 * Nếu 'clear_working' là false, nguồn không nên bị xóa, nên dùng copy_dir() thay thế.
 		 *
-		 * Partial updates, like language packs, may want to retain the destination.
-		 * If the destination exists or has contents, this may be a partial update,
-		 * and the destination should not be removed, so use copy_dir() instead.
+		 * Các bản cập nhật từng phần, như gói ngôn ngữ, có thể muốn giữ lại đích.
+		 * Nếu đích tồn tại hoặc có nội dung, đây có thể là bản cập nhật từng phần,
+		 * và đích không nên bị xóa, nên dùng copy_dir() thay thế.
 		 */
 		if ( $args['clear_working']
 			&& (
-				// Destination does not exist or has no contents.
+				// Đích không tồn tại hoặc không có nội dung.
 				! $wp_filesystem->exists( $remote_destination )
 				|| empty( $wp_filesystem->dirlist( $remote_destination ) )
 			)
 		) {
 			$result = move_dir( $source, $remote_destination, true );
 		} else {
-			// Create destination if needed.
+			// Tạo đích nếu cần.
 			if ( ! $wp_filesystem->exists( $remote_destination ) ) {
 				if ( ! $wp_filesystem->mkdir( $remote_destination, FS_CHMOD_DIR ) ) {
 					return new WP_Error( 'mkdir_failed_destination', $this->strings['mkdir_failed'], $remote_destination );
@@ -702,7 +700,7 @@ class WP_Upgrader {
 			$result = copy_dir( $source, $remote_destination );
 		}
 
-		// Clear the working directory?
+		// Xóa thư mục làm việc?
 		if ( $args['clear_working'] ) {
 			$wp_filesystem->delete( $remote_source, true );
 		}
@@ -719,13 +717,13 @@ class WP_Upgrader {
 		$this->result = compact( 'source', 'source_files', 'destination', 'destination_name', 'local_destination', 'remote_destination', 'clear_destination' );
 
 		/**
-		 * Filters the installation response after the installation has finished.
+		 * Lọc phản hồi cài đặt sau khi quá trình cài đặt hoàn tất.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param bool  $response   Installation response.
-		 * @param array $hook_extra Extra arguments passed to hooked filters.
-		 * @param array $result     Installation result data.
+		 * @param bool  $response   Phản hồi cài đặt.
+		 * @param array $hook_extra Các tham số bổ sung được truyền vào bộ lọc hook.
+		 * @param array $result     Dữ liệu kết quả cài đặt.
 		 */
 		$res = apply_filters( 'upgrader_post_install', true, $args['hook_extra'], $this->result );
 
@@ -734,96 +732,95 @@ class WP_Upgrader {
 			return $res;
 		}
 
-		// Bombard the calling function will all the info which we've just used.
+		// Trả về cho hàm gọi tất cả thông tin vừa được sử dụng.
 		return $this->result;
 	}
 
 	/**
-	 * Runs an upgrade/installation.
+	 * Chạy quá trình nâng cấp/cài đặt.
 	 *
-	 * Attempts to download the package (if it is not a local file), unpack it, and
-	 * install it in the destination folder.
+	 * Cố tải xuống gói (nếu không phải tệp cục bộ), giải nén nó,
+	 * và cài đặt vào thư mục đích.
 	 *
 	 * @since 2.8.0
 	 *
 	 * @param array $options {
-	 *     Array or string of arguments for upgrading/installing a package.
+	 *     Mảng hoặc chuỗi các tham số để nâng cấp/cài đặt gói.
 	 *
-	 *     @type string $package                     The full path or URI of the package to install.
-	 *                                               Default empty.
-	 *     @type string $destination                 The full path to the destination folder.
-	 *                                               Default empty.
-	 *     @type bool   $clear_destination           Whether to delete any files already in the
-	 *                                               destination folder. Default false.
-	 *     @type bool   $clear_working               Whether to delete the files from the working
-	 *                                               directory after copying them to the destination.
-	 *                                               Default true.
-	 *     @type bool   $abort_if_destination_exists Whether to abort the installation if the destination
-	 *                                               folder already exists. When true, `$clear_destination`
-	 *                                               should be false. Default true.
-	 *     @type bool   $is_multi                    Whether this run is one of multiple upgrade/installation
-	 *                                               actions being performed in bulk. When true, the skin
-	 *                                               WP_Upgrader::header() and WP_Upgrader::footer()
-	 *                                               aren't called. Default false.
-	 *     @type array  $hook_extra                  Extra arguments to pass to the filter hooks called by
-	 *                                               WP_Upgrader::run().
+	 *     @type string $package                     Đường dẫn đầy đủ hoặc URI của gói cần cài đặt.
+	 *                                               Mặc định rỗng.
+	 *     @type string $destination                 Đường dẫn đầy đủ tới thư mục đích.
+	 *                                               Mặc định rỗng.
+	 *     @type bool   $clear_destination           Có xóa các tệp đã có trong thư mục đích hay không.
+	 *                                               Mặc định false.
+	 *     @type bool   $clear_working               Có xóa các tệp từ thư mục làm việc sau khi
+	 *                                               sao chép tới đích hay không. Mặc định true.
+	 *     @type bool   $abort_if_destination_exists Có hủy cài đặt nếu thư mục đích đã tồn tại hay không.
+	 *                                               Khi true, `$clear_destination` nên là false.
+	 *                                               Mặc định true.
+	 *     @type bool   $is_multi                    Có phải lần chạy này là một trong nhiều hành động
+	 *                                               nâng cấp/cài đặt đang được thực hiện hàng loạt hay không.
+	 *                                               Khi true, skin WP_Upgrader::header() và
+	 *                                               WP_Upgrader::footer() không được gọi. Mặc định false.
+	 *     @type array  $hook_extra                  Các tham số bổ sung để truyền vào bộ lọc hook
+	 *                                               được gọi bởi WP_Upgrader::run().
 	 * }
-	 * @return array|false|WP_Error The result from self::install_package() on success, otherwise a WP_Error,
-	 *                              or false if unable to connect to the filesystem.
+	 * @return array|false|WP_Error Kết quả từ self::install_package() khi thành công, ngược lại WP_Error,
+	 *                              hoặc false nếu không thể kết nối tới hệ thống tệp.
 	 */
 	public function run( $options ) {
 
 		$defaults = array(
-			'package'                     => '', // Please always pass this.
-			'destination'                 => '', // ...and this.
+			'package'                     => '', // Xin hãy luôn truyền giá trị này.
+			'destination'                 => '', // ...và giá trị này.
 			'clear_destination'           => false,
 			'clear_working'               => true,
-			'abort_if_destination_exists' => true, // Abort if the destination directory exists. Pass clear_destination as false please.
+			'abort_if_destination_exists' => true, // Hủy nếu thư mục đích tồn tại. Xin hãy truyền clear_destination là false.
 			'is_multi'                    => false,
-			'hook_extra'                  => array(), // Pass any extra $hook_extra args here, this will be passed to any hooked filters.
+			'hook_extra'                  => array(), // Truyền bất kỳ tham số $hook_extra bổ sung nào ở đây, sẽ được truyền vào các bộ lọc hook.
 		);
 
 		$options = wp_parse_args( $options, $defaults );
 
 		/**
-		 * Filters the package options before running an update.
+		 * Lọc các tùy chọn gói trước khi chạy bản cập nhật.
 		 *
-		 * See also {@see 'upgrader_process_complete'}.
+		 * Xem thêm {@see 'upgrader_process_complete'}.
 		 *
 		 * @since 4.3.0
 		 *
 		 * @param array $options {
-		 *     Options used by the upgrader.
+		 *     Các tùy chọn được sử dụng bởi trình nâng cấp.
 		 *
-		 *     @type string $package                     Package for update.
-		 *     @type string $destination                 Update location.
-		 *     @type bool   $clear_destination           Clear the destination resource.
-		 *     @type bool   $clear_working               Clear the working resource.
-		 *     @type bool   $abort_if_destination_exists Abort if the Destination directory exists.
-		 *     @type bool   $is_multi                    Whether the upgrader is running multiple times.
+		 *     @type string $package                     Gói cần cập nhật.
+		 *     @type string $destination                 Vị trí cập nhật.
+		 *     @type bool   $clear_destination           Xóa sạch tài nguyên đích.
+		 *     @type bool   $clear_working               Xóa sạch tài nguyên làm việc.
+		 *     @type bool   $abort_if_destination_exists Hủy nếu thư mục đích tồn tại.
+		 *     @type bool   $is_multi                    Trình nâng cấp có đang chạy nhiều lần hay không.
 		 *     @type array  $hook_extra {
-		 *         Extra hook arguments.
+		 *         Các tham số hook bổ sung.
 		 *
-		 *         @type string $action               Type of action. Default 'update'.
-		 *         @type string $type                 Type of update process. Accepts 'plugin', 'theme', or 'core'.
-		 *         @type bool   $bulk                 Whether the update process is a bulk update. Default true.
-		 *         @type string $plugin               Path to the plugin file relative to the plugins directory.
-		 *         @type string $theme                The stylesheet or template name of the theme.
-		 *         @type string $language_update_type The language pack update type. Accepts 'plugin', 'theme',
-		 *                                            or 'core'.
-		 *         @type object $language_update      The language pack update offer.
+		 *         @type string $action               Loại hành động. Mặc định 'update'.
+		 *         @type string $type                 Loại quá trình cập nhật. Chấp nhận 'plugin', 'theme', hoặc 'core'.
+		 *         @type bool   $bulk                 Quá trình cập nhật có phải hàng loạt không. Mặc định true.
+		 *         @type string $plugin               Đường dẫn tệp plugin tương đối so với thư mục plugin.
+		 *         @type string $theme                Tên stylesheet hoặc template của giao diện.
+		 *         @type string $language_update_type Loại cập nhật gói ngôn ngữ. Chấp nhận 'plugin', 'theme',
+		 *                                            hoặc 'core'.
+		 *         @type object $language_update      Bản cập nhật gói ngôn ngữ được đề xuất.
 		 *     }
 		 * }
 		 */
 		$options = apply_filters( 'upgrader_package_options', $options );
 
-		if ( ! $options['is_multi'] ) { // Call $this->header separately if running multiple times.
+		if ( ! $options['is_multi'] ) { // Gọi $this->header riêng nếu chạy nhiều lần.
 			$this->skin->header();
 		}
 
-		// Connect to the filesystem first.
+		// Kết nối tới hệ thống tệp trước.
 		$res = $this->fs_connect( array( WP_CONTENT_DIR, $options['destination'] ) );
-		// Mainly for non-connected filesystem.
+		// Chủ yếu cho hệ thống tệp chưa kết nối.
 		if ( ! $res ) {
 			if ( ! $options['is_multi'] ) {
 				$this->skin->footer();
@@ -843,23 +840,23 @@ class WP_Upgrader {
 		}
 
 		/*
-		 * Download the package. Note: If the package is the full path
-		 * to an existing local file, it will be returned untouched.
+		 * Tải xuống gói. Lưu ý: Nếu gói là đường dẫn đầy đủ
+		 * tới tệp cục bộ hiện có, nó sẽ được trả về nguyên trạng.
 		 */
 		$download = $this->download_package( $options['package'], false, $options['hook_extra'] );
 
 		/*
-		 * Allow for signature soft-fail.
-		 * WARNING: This may be removed in the future.
+		 * Cho phép chữ ký lỗi mềm.
+		 * CẢNH BÁO: Điều này có thể bị loại bỏ trong tương lai.
 		 */
 		if ( is_wp_error( $download ) && $download->get_error_data( 'softfail-filename' ) ) {
 
-			// Don't output the 'no signature could be found' failure message for now.
+			// Tạm thời không xuất thông báo lỗi 'không tìm thấy chữ ký'.
 			if ( 'signature_verification_no_signature' !== $download->get_error_code() || WP_DEBUG ) {
-				// Output the failure error as a normal feedback, and not as an error.
+				// Xuất lỗi thất bại dưới dạng phản hồi bình thường, không phải lỗi.
 				$this->skin->feedback( $download->get_error_message() );
 
-				// Report this failure back to WordPress.org for debugging purposes.
+				// Báo cáo lỗi này về WordPress.org cho mục đích gỡ lỗi.
 				wp_version_check(
 					array(
 						'signature_failure_code' => $download->get_error_code(),
@@ -868,7 +865,7 @@ class WP_Upgrader {
 				);
 			}
 
-			// Pretend this error didn't happen.
+			// Giả vờ lỗi này không xảy ra.
 			$download = $download->get_error_data( 'softfail-filename' );
 		}
 
@@ -881,9 +878,9 @@ class WP_Upgrader {
 			return $download;
 		}
 
-		$delete_package = ( $download !== $options['package'] ); // Do not delete a "local" file.
+		$delete_package = ( $download !== $options['package'] ); // Không xóa tệp "cục bộ".
 
-		// Unzips the file into a temporary directory.
+		// Giải nén tệp vào thư mục tạm thời.
 		$working_dir = $this->unpack_package( $download, $delete_package );
 		if ( is_wp_error( $working_dir ) ) {
 			$this->skin->error( $working_dir );
@@ -894,7 +891,7 @@ class WP_Upgrader {
 			return $working_dir;
 		}
 
-		// With the given options, this installs it to the destination directory.
+		// Với các tùy chọn đã cho, cài đặt gói vào thư mục đích.
 		$result = $this->install_package(
 			array(
 				'source'                      => $working_dir,
@@ -907,31 +904,31 @@ class WP_Upgrader {
 		);
 
 		/**
-		 * Filters the result of WP_Upgrader::install_package().
+		 * Lọc kết quả từ WP_Upgrader::install_package().
 		 *
 		 * @since 5.7.0
 		 *
-		 * @param array|WP_Error $result     Result from WP_Upgrader::install_package().
-		 * @param array          $hook_extra Extra arguments passed to hooked filters.
+		 * @param array|WP_Error $result     Kết quả từ WP_Upgrader::install_package().
+		 * @param array          $hook_extra Các tham số bổ sung được truyền vào bộ lọc hook.
 		 */
 		$result = apply_filters( 'upgrader_install_package_result', $result, $options['hook_extra'] );
 
 		$this->skin->set_result( $result );
 
 		if ( is_wp_error( $result ) ) {
-			// An automatic plugin update will have already performed its rollback.
+			// Bản cập nhật plugin tự động sẽ đã thực hiện khôi phục.
 			if ( ! empty( $options['hook_extra']['temp_backup'] ) ) {
 				$this->temp_restores[] = $options['hook_extra']['temp_backup'];
 
 				/*
-				 * Restore the backup on shutdown.
-				 * Actions running on `shutdown` are immune to PHP timeouts,
-				 * so in case the failure was due to a PHP timeout,
-				 * it will still be able to properly restore the previous version.
+				 * Khôi phục bản sao lưu khi tắt máy.
+				 * Các hành động chạy trên `shutdown` miễn nhiễm với hết giờ PHP,
+				 * nên trong trường hợp thất bại do hết giờ PHP,
+				 * nó vẫn có thể khôi phục đúng phiên bản trước đó.
 				 *
-				 * Zero arguments are accepted as a string can sometimes be passed
-				 * internally during actions, causing an error because
-				 * `WP_Upgrader::restore_temp_backup()` expects an array.
+				 * Không chấp nhận tham số vì đôi khi một chuỗi có thể được truyền
+				 * nội bộ trong các hành động, gây lỗi vì
+				 * `WP_Upgrader::restore_temp_backup()` yêu cầu một mảng.
 				 */
 				add_action( 'shutdown', array( $this, 'restore_temp_backup' ), 10, 0 );
 			}
@@ -941,47 +938,47 @@ class WP_Upgrader {
 				$this->skin->feedback( 'process_failed' );
 			}
 		} else {
-			// Installation succeeded.
+			// Cài đặt thành công.
 			$this->skin->feedback( 'process_success' );
 		}
 
 		$this->skin->after();
 
-		// Clean up the backup kept in the temporary backup directory.
+		// Dọn dẹp bản sao lưu được giữ trong thư mục sao lưu tạm thời.
 		if ( ! empty( $options['hook_extra']['temp_backup'] ) ) {
-			// Delete the backup on `shutdown` to avoid a PHP timeout.
+			// Xóa bản sao lưu khi `shutdown` để tránh hết giờ PHP.
 			add_action( 'shutdown', array( $this, 'delete_temp_backup' ), 100, 0 );
 		}
 
 		if ( ! $options['is_multi'] ) {
 
 			/**
-			 * Fires when the upgrader process is complete.
+			 * Kích hoạt khi quá trình nâng cấp hoàn tất.
 			 *
-			 * See also {@see 'upgrader_package_options'}.
+			 * Xem thêm {@see 'upgrader_package_options'}.
 			 *
 			 * @since 3.6.0
-			 * @since 3.7.0 Added to WP_Upgrader::run().
-			 * @since 4.6.0 `$translations` was added as a possible argument to `$hook_extra`.
+			 * @since 3.7.0 Thêm vào WP_Upgrader::run().
+			 * @since 4.6.0 `$translations` được thêm làm tham số có thể cho `$hook_extra`.
 			 *
-			 * @param WP_Upgrader $upgrader   WP_Upgrader instance. In other contexts this might be a
-			 *                                Theme_Upgrader, Plugin_Upgrader, Core_Upgrade, or Language_Pack_Upgrader instance.
+			 * @param WP_Upgrader $upgrader   Thực thể WP_Upgrader. Trong ngữ cảnh khác có thể là
+			 *                                Theme_Upgrader, Plugin_Upgrader, Core_Upgrade, hoặc Language_Pack_Upgrader.
 			 * @param array       $hook_extra {
-			 *     Array of bulk item update data.
+			 *     Mảng dữ liệu cập nhật mục hàng loạt.
 			 *
-			 *     @type string $action       Type of action. Default 'update'.
-			 *     @type string $type         Type of update process. Accepts 'plugin', 'theme', 'translation', or 'core'.
-			 *     @type bool   $bulk         Whether the update process is a bulk update. Default true.
-			 *     @type array  $plugins      Array of the basename paths of the plugins' main files.
-			 *     @type array  $themes       The theme slugs.
+			 *     @type string $action       Loại hành động. Mặc định 'update'.
+			 *     @type string $type         Loại quá trình cập nhật. Chấp nhận 'plugin', 'theme', 'translation', hoặc 'core'.
+			 *     @type bool   $bulk         Quá trình cập nhật có phải hàng loạt không. Mặc định true.
+			 *     @type array  $plugins      Mảng đường dẫn gốc của tệp chính các plugin.
+			 *     @type array  $themes       Các slug giao diện.
 			 *     @type array  $translations {
-			 *         Array of translations update data.
+			 *         Mảng dữ liệu cập nhật bản dịch.
 			 *
-			 *         @type string $language The locale the translation is for.
-			 *         @type string $type     Type of translation. Accepts 'plugin', 'theme', or 'core'.
-			 *         @type string $slug     Text domain the translation is for. The slug of a theme/plugin or
-			 *                                'default' for core translations.
-			 *         @type string $version  The version of a theme, plugin, or core.
+			 *         @type string $language Ngôn ngữ mà bản dịch dành cho.
+			 *         @type string $type     Loại bản dịch. Chấp nhận 'plugin', 'theme', hoặc 'core'.
+			 *         @type string $slug     Text domain mà bản dịch dành cho. Slug của giao diện/plugin hoặc
+			 *                                'default' cho bản dịch lõi.
+			 *         @type string $version  Phiên bản của giao diện, plugin, hoặc lõi.
 			 *     }
 			 * }
 			 */
@@ -994,15 +991,15 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Toggles maintenance mode for the site.
+	 * Bật/tắt chế độ bảo trì cho trang web.
 	 *
-	 * Creates/deletes the maintenance file to enable/disable maintenance mode.
+	 * Tạo/xóa tệp bảo trì để bật/tắt chế độ bảo trì.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
-	 * @param bool $enable True to enable maintenance mode, false to disable.
+	 * @param bool $enable True để bật chế độ bảo trì, false để tắt.
 	 */
 	public function maintenance_mode( $enable = false ) {
 		global $wp_filesystem;
@@ -1027,7 +1024,7 @@ class WP_Upgrader {
 			if ( ! wp_doing_cron() ) {
 				$this->skin->feedback( 'maintenance_start' );
 			}
-			// Create maintenance file to signal that we are upgrading.
+			// Tạo tệp bảo trì để báo hiệu rằng chúng ta đang nâng cấp.
 			$maintenance_string = '<?php $upgrading = ' . time() . '; ?>';
 			$wp_filesystem->delete( $file );
 			$wp_filesystem->put_contents( $file, $maintenance_string, FS_CHMOD_FILE );
@@ -1040,16 +1037,16 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Creates a lock using WordPress options.
+	 * Tạo khóa sử dụng tùy chọn WordPress.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @global wpdb $wpdb The WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
 	 *
-	 * @param string $lock_name       The name of this unique lock.
-	 * @param int    $release_timeout Optional. The duration in seconds to respect an existing lock.
-	 *                                Default: 1 hour.
-	 * @return bool False if a lock couldn't be created or if the lock is still valid. True otherwise.
+	 * @param string $lock_name       Tên của khóa duy nhất này.
+	 * @param int    $release_timeout Tùy chọn. Thời gian tính bằng giây để tôn trọng khóa hiện có.
+	 *                                Mặc định: 1 giờ.
+	 * @return bool False nếu không thể tạo khóa hoặc khóa vẫn còn hiệu lực. True nếu ngược lại.
 	 */
 	public static function create_lock( $lock_name, $release_timeout = null ) {
 		global $wpdb;
@@ -1058,64 +1055,64 @@ class WP_Upgrader {
 		}
 		$lock_option = $lock_name . '.lock';
 
-		// Try to lock.
+		// Cố tạo khóa.
 		$lock_result = $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO `$wpdb->options` ( `option_name`, `option_value`, `autoload` ) VALUES (%s, %s, 'off') /* LOCK */", $lock_option, time() ) );
 
 		if ( ! $lock_result ) {
 			$lock_result = get_option( $lock_option );
 
-			// If a lock couldn't be created, and there isn't a lock, bail.
+			// Nếu không thể tạo khóa, và không có khóa, thoát.
 			if ( ! $lock_result ) {
 				return false;
 			}
 
-			// Check to see if the lock is still valid. If it is, bail.
+			// Kiểm tra xem khóa có còn hiệu lực không. Nếu có, thoát.
 			if ( $lock_result > ( time() - $release_timeout ) ) {
 				return false;
 			}
 
-			// There must exist an expired lock, clear it and re-gain it.
+			// Phải có khóa đã hết hạn, xóa nó và lấy lại.
 			WP_Upgrader::release_lock( $lock_name );
 
 			return WP_Upgrader::create_lock( $lock_name, $release_timeout );
 		}
 
-		// Update the lock, as by this point we've definitely got a lock, just need to fire the actions.
+		// Cập nhật khóa, vì tại thời điểm này chắc chắn đã có khóa, chỉ cần kích hoạt các hành động.
 		update_option( $lock_option, time(), false );
 
 		return true;
 	}
 
 	/**
-	 * Releases an upgrader lock.
+	 * Giải phóng khóa nâng cấp.
 	 *
 	 * @since 4.5.0
 	 *
 	 * @see WP_Upgrader::create_lock()
 	 *
-	 * @param string $lock_name The name of this unique lock.
-	 * @return bool True if the lock was successfully released. False on failure.
+	 * @param string $lock_name Tên của khóa duy nhất này.
+	 * @return bool True nếu khóa được giải phóng thành công. False khi thất bại.
 	 */
 	public static function release_lock( $lock_name ) {
 		return delete_option( $lock_name . '.lock' );
 	}
 
 	/**
-	 * Moves the plugin or theme being updated into a temporary backup directory.
+	 * Di chuyển plugin hoặc giao diện đang được cập nhật vào thư mục sao lưu tạm thời.
 	 *
 	 * @since 6.3.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
 	 * @param string[] $args {
-	 *     Array of data for the temporary backup.
+	 *     Mảng dữ liệu cho bản sao lưu tạm thời.
 	 *
-	 *     @type string $slug Plugin or theme slug.
-	 *     @type string $src  Path to the root directory for plugins or themes.
-	 *     @type string $dir  Destination subdirectory name. Accepts 'plugins' or 'themes'.
+	 *     @type string $slug Slug của plugin hoặc giao diện.
+	 *     @type string $src  Đường dẫn tới thư mục gốc cho plugin hoặc giao diện.
+	 *     @type string $dir  Tên thư mục con đích. Chấp nhận 'plugins' hoặc 'themes'.
 	 * }
 	 *
-	 * @return bool|WP_Error True on success, false on early exit, otherwise WP_Error.
+	 * @return bool|WP_Error True khi thành công, false khi thoát sớm, ngược lại WP_Error.
 	 */
 	public function move_to_temp_backup_dir( $args ) {
 		global $wp_filesystem;
@@ -1125,11 +1122,11 @@ class WP_Upgrader {
 		}
 
 		/*
-		 * Skip any plugin that has "." as its slug.
-		 * A slug of "." will result in a `$src` value ending in a period.
+		 * Bỏ qua bất kỳ plugin nào có slug là ".".
+		 * Slug "." sẽ dẫn đến giá trị `$src` kết thúc bằng dấu chấm.
 		 *
-		 * On Windows, this will cause the 'plugins' folder to be moved,
-		 * and will cause a failure when attempting to call `mkdir()`.
+		 * Trên Windows, điều này sẽ khiến thư mục 'plugins' bị di chuyển,
+		 * và sẽ gây lỗi khi cố gọi `mkdir()`.
 		 */
 		if ( '.' === $args['slug'] ) {
 			return false;
@@ -1142,14 +1139,14 @@ class WP_Upgrader {
 		$dest_dir = $wp_filesystem->wp_content_dir() . 'upgrade-temp-backup/';
 		$sub_dir  = $dest_dir . $args['dir'] . '/';
 
-		// Create the temporary backup directory if it does not exist.
+		// Tạo thư mục sao lưu tạm thời nếu nó chưa tồn tại.
 		if ( ! $wp_filesystem->is_dir( $sub_dir ) ) {
 			if ( ! $wp_filesystem->is_dir( $dest_dir ) ) {
 				$wp_filesystem->mkdir( $dest_dir, FS_CHMOD_DIR );
 			}
 
 			if ( ! $wp_filesystem->mkdir( $sub_dir, FS_CHMOD_DIR ) ) {
-				// Could not create the backup directory.
+				// Không thể tạo thư mục sao lưu.
 				return new WP_Error( 'fs_temp_backup_mkdir', $this->strings['temp_backup_mkdir_failed'] );
 			}
 		}
@@ -1158,12 +1155,12 @@ class WP_Upgrader {
 		$src     = trailingslashit( $src_dir ) . $args['slug'];
 		$dest    = $dest_dir . trailingslashit( $args['dir'] ) . $args['slug'];
 
-		// Delete the temporary backup directory if it already exists.
+		// Xóa thư mục sao lưu tạm thời nếu nó đã tồn tại.
 		if ( $wp_filesystem->is_dir( $dest ) ) {
 			$wp_filesystem->delete( $dest, true );
 		}
 
-		// Move to the temporary backup directory.
+		// Di chuyển vào thư mục sao lưu tạm thời.
 		$result = move_dir( $src, $dest, true );
 		if ( is_wp_error( $result ) ) {
 			return new WP_Error( 'fs_temp_backup_move', $this->strings['temp_backup_move_failed'] );
@@ -1173,25 +1170,25 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Restores the plugin or theme from temporary backup.
+	 * Khôi phục plugin hoặc giao diện từ bản sao lưu tạm thời.
 	 *
 	 * @since 6.3.0
-	 * @since 6.6.0 Added the `$temp_backups` parameter.
+	 * @since 6.6.0 Thêm tham số `$temp_backups`.
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
 	 * @param array[] $temp_backups {
-	 *     Optional. An array of temporary backups.
+	 *     Tùy chọn. Mảng các bản sao lưu tạm thời.
 	 *
 	 *     @type array ...$0 {
-	 *         Information about the backup.
+	 *         Thông tin về bản sao lưu.
 	 *
-	 *         @type string $dir  The temporary backup location in the upgrade-temp-backup directory.
-	 *         @type string $slug The item's slug.
-	 *         @type string $src  The directory where the original is stored. For example, `WP_PLUGIN_DIR`.
+	 *         @type string $dir  Vị trí sao lưu tạm thời trong thư mục upgrade-temp-backup.
+	 *         @type string $slug Slug của mục.
+	 *         @type string $src  Thư mục lưu trữ bản gốc. Ví dụ: `WP_PLUGIN_DIR`.
 	 *     }
 	 * }
-	 * @return bool|WP_Error True on success, false on early exit, otherwise WP_Error.
+	 * @return bool|WP_Error True khi thành công, false khi thoát sớm, ngược lại WP_Error.
 	 */
 	public function restore_temp_backup( array $temp_backups = array() ) {
 		global $wp_filesystem;
@@ -1217,7 +1214,7 @@ class WP_Upgrader {
 			$dest     = trailingslashit( $dest_dir ) . $args['slug'];
 
 			if ( $wp_filesystem->is_dir( $src ) ) {
-				// Cleanup.
+				// Dọn dẹp.
 				if ( $wp_filesystem->is_dir( $dest ) && ! $wp_filesystem->delete( $dest, true ) ) {
 					$errors->add(
 						'fs_temp_backup_delete',
@@ -1226,7 +1223,7 @@ class WP_Upgrader {
 					continue;
 				}
 
-				// Move it.
+				// Di chuyển.
 				$result = move_dir( $src, $dest, true );
 				if ( is_wp_error( $result ) ) {
 					$errors->add(
@@ -1242,25 +1239,25 @@ class WP_Upgrader {
 	}
 
 	/**
-	 * Deletes a temporary backup.
+	 * Xóa bản sao lưu tạm thời.
 	 *
 	 * @since 6.3.0
-	 * @since 6.6.0 Added the `$temp_backups` parameter.
+	 * @since 6.6.0 Thêm tham số `$temp_backups`.
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
 	 * @param array[] $temp_backups {
-	 *     Optional. An array of temporary backups.
+	 *     Tùy chọn. Mảng các bản sao lưu tạm thời.
 	 *
 	 *     @type array ...$0 {
-	 *         Information about the backup.
+	 *         Thông tin về bản sao lưu.
 	 *
-	 *         @type string $dir  The temporary backup location in the upgrade-temp-backup directory.
-	 *         @type string $slug The item's slug.
-	 *         @type string $src  The directory where the original is stored. For example, `WP_PLUGIN_DIR`.
+	 *         @type string $dir  Vị trí sao lưu tạm thời trong thư mục upgrade-temp-backup.
+	 *         @type string $slug Slug của mục.
+	 *         @type string $src  Thư mục lưu trữ bản gốc. Ví dụ: `WP_PLUGIN_DIR`.
 	 *     }
 	 * }
-	 * @return bool|WP_Error True on success, false on early exit, otherwise WP_Error.
+	 * @return bool|WP_Error True khi thành công, false khi thoát sớm, ngược lại WP_Error.
 	 */
 	public function delete_temp_backup( array $temp_backups = array() ) {
 		global $wp_filesystem;
@@ -1296,20 +1293,20 @@ class WP_Upgrader {
 	}
 }
 
-/** Plugin_Upgrader class */
+/** Lớp Plugin_Upgrader */
 require_once ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php';
 
-/** Theme_Upgrader class */
+/** Lớp Theme_Upgrader */
 require_once ABSPATH . 'wp-admin/includes/class-theme-upgrader.php';
 
-/** Language_Pack_Upgrader class */
+/** Lớp Language_Pack_Upgrader */
 require_once ABSPATH . 'wp-admin/includes/class-language-pack-upgrader.php';
 
-/** Core_Upgrader class */
+/** Lớp Core_Upgrader */
 require_once ABSPATH . 'wp-admin/includes/class-core-upgrader.php';
 
-/** File_Upload_Upgrader class */
+/** Lớp File_Upload_Upgrader */
 require_once ABSPATH . 'wp-admin/includes/class-file-upload-upgrader.php';
 
-/** WP_Automatic_Updater class */
+/** Lớp WP_Automatic_Updater */
 require_once ABSPATH . 'wp-admin/includes/class-wp-automatic-updater.php';

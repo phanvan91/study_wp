@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Site_Icon_Control class
+ * API Tùy biến: Lớp WP_Customize_Site_Icon_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,9 +8,9 @@
  */
 
 /**
- * Customize Site Icon control class.
+ * Lớp Điều khiển Biểu tượng Trang web trong Tùy biến.
  *
- * Used only for custom functionality in JavaScript.
+ * Chỉ được sử dụng cho chức năng tùy chỉnh trong JavaScript.
  *
  * @since 4.3.0
  *
@@ -19,7 +19,7 @@
 class WP_Customize_Site_Icon_Control extends WP_Customize_Cropped_Image_Control {
 
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -27,17 +27,17 @@ class WP_Customize_Site_Icon_Control extends WP_Customize_Cropped_Image_Control 
 	public $type = 'site_icon';
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 4.3.0
 	 *
 	 * @see WP_Customize_Control::__construct()
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
-	 * @param string               $id      Control ID.
-	 * @param array                $args    Optional. Arguments to override class property defaults.
-	 *                                      See WP_Customize_Control::__construct() for information
-	 *                                      on accepted arguments. Default empty array.
+	 * @param WP_Customize_Manager $manager Đối tượng khởi tạo Trình tùy biến.
+	 * @param string               $id      ID của điều khiển.
+	 * @param array                $args    Tùy chọn. Các tham số để ghi đè giá trị mặc định của thuộc tính lớp.
+	 *                                      Xem WP_Customize_Control::__construct() để biết thông tin
+	 *                                      về các tham số được chấp nhận. Mặc định là mảng rỗng.
 	 */
 	public function __construct( $manager, $id, $args = array() ) {
 		parent::__construct( $manager, $id, $args );
@@ -45,7 +45,7 @@ class WP_Customize_Site_Icon_Control extends WP_Customize_Cropped_Image_Control 
 	}
 
 	/**
-	 * Renders a JS template for the content of the site icon control.
+	 * Hiển thị mẫu JS cho nội dung của điều khiển biểu tượng trang web.
 	 *
 	 * @since 4.5.0
 	 */
@@ -69,7 +69,7 @@ class WP_Customize_Site_Icon_Control extends WP_Customize_Cropped_Image_Control 
 								data.attachment.alt ?
 									wp.i18n.sprintf(
 										<?php
-										/* translators: %s: The selected image alt text. */
+										/* translators: %s: Văn bản thay thế của hình ảnh đã chọn. */
 										echo wp_json_encode( __( 'App icon preview: Current image: %s' ) )
 										?>
 										,
@@ -77,7 +77,7 @@ class WP_Customize_Site_Icon_Control extends WP_Customize_Cropped_Image_Control 
 									) :
 									wp.i18n.sprintf(
 										<?php
-										/* translators: %s: The selected image filename. */
+										/* translators: %s: Tên tệp của hình ảnh đã chọn. */
 										echo wp_json_encode( __( 'App icon preview: The current image has no alternative text. The file name is: %s' ) );
 										?>
 										,
@@ -91,7 +91,7 @@ class WP_Customize_Site_Icon_Control extends WP_Customize_Cropped_Image_Control 
 										data.attachment.alt ?
 											wp.i18n.sprintf(
 												<?php
-												/* translators: %s: The selected image alt text. */
+												/* translators: %s: Văn bản thay thế của hình ảnh đã chọn. */
 												echo wp_json_encode( __( 'Browser icon preview: Current image: %s' ) );
 												?>
 												,
@@ -99,7 +99,7 @@ class WP_Customize_Site_Icon_Control extends WP_Customize_Cropped_Image_Control 
 											) :
 											wp.i18n.sprintf(
 												<?php
-												/* translators: %s: The selected image filename. */
+												/* translators: %s: Tên tệp của hình ảnh đã chọn. */
 												echo wp_json_encode( __( 'Browser icon preview: The current image has no alternative text. The file name is: %s' ) );
 												?>
 												,

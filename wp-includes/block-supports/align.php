@@ -1,18 +1,18 @@
 <?php
 /**
- * Align block support flag.
+ * Cờ hỗ trợ căn chỉnh block.
  *
  * @package WordPress
  * @since 5.6.0
  */
 
 /**
- * Registers the align block attribute for block types that support it.
+ * Đăng ký thuộc tính căn chỉnh block cho các loại block hỗ trợ nó.
  *
  * @since 5.6.0
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
+ * @param WP_Block_Type $block_type Loại Block.
  */
 function wp_register_alignment_support( $block_type ) {
 	$has_align_support = block_has_support( $block_type, 'align', false );
@@ -31,15 +31,15 @@ function wp_register_alignment_support( $block_type ) {
 }
 
 /**
- * Adds CSS classes for block alignment to the incoming attributes array.
- * This will be applied to the block markup in the front-end.
+ * Thêm các lớp CSS căn chỉnh block vào mảng thuộc tính đầu vào.
+ * Điều này sẽ được áp dụng cho markup block ở giao diện người dùng.
  *
  * @since 5.6.0
  * @access private
  *
- * @param WP_Block_Type $block_type       Block Type.
- * @param array         $block_attributes Block attributes.
- * @return array Block alignment CSS classes and inline styles.
+ * @param WP_Block_Type $block_type       Loại Block.
+ * @param array         $block_attributes Thuộc tính block.
+ * @return array Các lớp CSS căn chỉnh block và kiểu inline.
  */
 function wp_apply_alignment_support( $block_type, $block_attributes ) {
 	$attributes        = array();
@@ -55,7 +55,7 @@ function wp_apply_alignment_support( $block_type, $block_attributes ) {
 	return $attributes;
 }
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register(
 	'align',
 	array(

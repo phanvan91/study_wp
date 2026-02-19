@@ -1,20 +1,14 @@
 <?php
 /**
- * Used to set up and fix common variables and include
- * the WordPress procedural and class library.
- *
  * Được sử dụng để thiết lập và sửa các biến chung và include
  * thư viện procedural và class của WordPress.
  *
- * Allows for some configuration in wp-config.php (see default-constants.php)
  * Cho phép một số cấu hình trong wp-config.php (xem default-constants.php)
  *
  * @package WordPress
  */
 
 /**
- * Stores the location of the WordPress directory of functions, classes, and core content.
- *
  * Lưu trữ vị trí thư mục WordPress chứa functions, classes, và core content.
  *
  * @since 1.0.0
@@ -22,36 +16,28 @@
 define( 'WPINC', 'wp-includes' );
 
 /**
- * Version information for the current WordPress release.
- *
  * Thông tin phiên bản cho bản phát hành WordPress hiện tại.
- *
- * These can't be directly globalized in version.php. When updating,
- * include version.php from another installation and don't override
- * these values if already set.
  *
  * Các giá trị này không thể được globalize trực tiếp trong version.php. Khi cập nhật,
  * include version.php từ một cài đặt khác và không ghi đè
  * các giá trị này nếu đã được thiết lập.
  *
- * @global string   $wp_version              The WordPress version string.
- * @global int      $wp_db_version           WordPress database version.
- * @global string   $tinymce_version         TinyMCE version.
- * @global string   $required_php_version    The required PHP version string.
- * @global string[] $required_php_extensions The names of required PHP extensions.
- * @global string   $required_mysql_version  The required MySQL version string.
- * @global string   $wp_local_package        Locale code of the package.
+ * @global string   $wp_version              Chuỗi phiên bản WordPress.
+ * @global int      $wp_db_version           Phiên bản cơ sở dữ liệu WordPress.
+ * @global string   $tinymce_version         Phiên bản TinyMCE.
+ * @global string   $required_php_version    Chuỗi phiên bản PHP yêu cầu.
+ * @global string[] $required_php_extensions Tên các extension PHP yêu cầu.
+ * @global string   $required_mysql_version  Chuỗi phiên bản MySQL yêu cầu.
+ * @global string   $wp_local_package        Mã locale của gói.
  */
 global $wp_version, $wp_db_version, $tinymce_version, $required_php_version, $required_php_extensions, $required_mysql_version, $wp_local_package;
 require ABSPATH . WPINC . '/version.php';
 require ABSPATH . WPINC . '/compat.php';
 require ABSPATH . WPINC . '/load.php';
 
-// Check for the required PHP version and for the MySQL extension or a database drop-in.
 // Kiểm tra phiên bản PHP yêu cầu và extension MySQL hoặc database drop-in.
 wp_check_php_mysql_versions();
 
-// Include files required for initialization.
 // Include các file cần thiết cho việc khởi tạo.
 require ABSPATH . WPINC . '/class-wp-paused-extensions-storage.php';
 require ABSPATH . WPINC . '/class-wp-exception.php';
@@ -66,9 +52,6 @@ require ABSPATH . WPINC . '/default-constants.php';
 require_once ABSPATH . WPINC . '/plugin.php';
 
 /**
- * If not already configured, `$blog_id` will default to 1 in a single site
- * configuration. In multisite, it will be overridden by default in ms-settings.php.
- *
  * Nếu chưa được cấu hình, `$blog_id` sẽ mặc định là 1 trong cấu hình single site.
  * Trong multisite, nó sẽ bị ghi đè mặc định trong ms-settings.php.
  *
@@ -78,69 +61,53 @@ require_once ABSPATH . WPINC . '/plugin.php';
  */
 global $blog_id;
 
-// Set initial default constants including WP_MEMORY_LIMIT, WP_MAX_MEMORY_LIMIT, WP_DEBUG, SCRIPT_DEBUG, WP_CONTENT_DIR and WP_CACHE.
 // Thiết lập các hằng số mặc định ban đầu bao gồm WP_MEMORY_LIMIT, WP_MAX_MEMORY_LIMIT, WP_DEBUG, SCRIPT_DEBUG, WP_CONTENT_DIR và WP_CACHE.
 wp_initial_constants();
 
-// Register the shutdown handler for fatal errors as soon as possible.
 // Đăng ký shutdown handler cho fatal errors càng sớm càng tốt.
 wp_register_fatal_error_handler();
 
-// WordPress calculates offsets from UTC.
 // WordPress tính toán offsets từ UTC.
 // phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 date_default_timezone_set( 'UTC' );
 
-// Standardize $_SERVER variables across setups.
 // Chuẩn hóa các biến $_SERVER trên các thiết lập.
 wp_fix_server_vars();
 
-// Check if the site is in maintenance mode.
 // Kiểm tra xem site có đang ở chế độ bảo trì không.
 wp_maintenance();
 
-// Start loading timer.
-// Bắt đầu timer loading.
+// Bắt đầu bộ đếm thời gian tải.
 timer_start();
 
-// Check if WP_DEBUG mode is enabled.
 // Kiểm tra xem chế độ WP_DEBUG có được bật không.
 wp_debug_mode();
 
 /**
- * Filters whether to enable loading of the advanced-cache.php drop-in.
- *
- * Filter xác định có bật load advanced-cache.php drop-in không.
- *
- * This filter runs before it can be used by plugins. It is designed for non-web
- * run-times. If false is returned, advanced-cache.php will never be loaded.
+ * Lọc xác định có bật tải advanced-cache.php drop-in không.
  *
  * Filter này chạy trước khi nó có thể được sử dụng bởi plugins. Nó được thiết kế cho
- * các runtime không phải web. Nếu trả về false, advanced-cache.php sẽ không bao giờ được load.
+ * các runtime không phải web. Nếu trả về false, advanced-cache.php sẽ không bao giờ được tải.
  *
  * @since 4.6.0
  *
- * @param bool $enable_advanced_cache Whether to enable loading advanced-cache.php (if present).
- *                                    Default true.
+ * @param bool $enable_advanced_cache Có bật tải advanced-cache.php (nếu có) không.
+ *                                    Mặc định true.
  */
 if ( WP_CACHE && apply_filters( 'enable_loading_advanced_cache_dropin', true ) && file_exists( WP_CONTENT_DIR . '/advanced-cache.php' ) ) {
-	// For an advanced caching plugin to use. Uses a static drop-in because you would only want one.
 	// Cho plugin caching nâng cao sử dụng. Sử dụng static drop-in vì bạn chỉ muốn một cái.
 	include WP_CONTENT_DIR . '/advanced-cache.php';
 
-	// Re-initialize any hooks added manually by advanced-cache.php.
 	// Khởi tạo lại các hooks được thêm thủ công bởi advanced-cache.php.
 	if ( $wp_filter ) {
 		$wp_filter = WP_Hook::build_preinitialized_hooks( $wp_filter );
 	}
 }
 
-// Define WP_LANG_DIR if not set.
 // Định nghĩa WP_LANG_DIR nếu chưa được thiết lập.
 wp_set_lang_dir();
 
-// Load early WordPress files.
-// Load các file WordPress sớm.
+// Tải các file WordPress giai đoạn đầu.
 require ABSPATH . WPINC . '/class-wp-list-util.php';
 require ABSPATH . WPINC . '/class-wp-token-map.php';
 require ABSPATH . WPINC . '/formatting.php';
@@ -160,33 +127,28 @@ require ABSPATH . WPINC . '/l10n/class-wp-translation-file-php.php';
 /**
  * @since 0.71
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 global $wpdb;
-// Include the wpdb class and, if present, a db.php database drop-in.
 // Include class wpdb và, nếu có, database drop-in db.php.
 require_wp_db();
 
 /**
  * @since 3.3.0
  *
- * @global string $table_prefix The database table prefix.
+ * @global string $table_prefix Tiền tố bảng cơ sở dữ liệu.
  */
 $GLOBALS['table_prefix'] = $table_prefix;
 
-// Set the database table prefix and the format specifiers for database table columns.
-// Thiết lập prefix bảng database và format specifiers cho các cột bảng database.
+// Thiết lập tiền tố bảng cơ sở dữ liệu và các format specifiers cho các cột bảng.
 wp_set_wpdb_vars();
 
-// Start the WordPress object cache, or an external object cache if the drop-in is present.
-// Bắt đầu WordPress object cache, hoặc external object cache nếu drop-in có mặt.
+// Khởi động WordPress object cache, hoặc external object cache nếu drop-in có mặt.
 wp_start_object_cache();
 
-// Attach the default filters.
 // Đính kèm các filter mặc định.
 require ABSPATH . WPINC . '/default-filters.php';
 
-// Initialize multisite if enabled.
 // Khởi tạo multisite nếu được bật.
 if ( is_multisite() ) {
 	require ABSPATH . WPINC . '/class-wp-site-query.php';
@@ -199,25 +161,21 @@ if ( is_multisite() ) {
 
 register_shutdown_function( 'shutdown_action_hook' );
 
-// Stop most of WordPress from being loaded if SHORTINIT is enabled.
-// Dừng hầu hết WordPress khỏi việc được load nếu SHORTINIT được bật.
+// Dừng hầu hết WordPress khỏi việc được tải nếu SHORTINIT được bật.
 if ( SHORTINIT ) {
 	return false;
 }
 
-// Load the L10n library.
-// Load thư viện L10n.
+// Tải thư viện L10n (bản địa hóa).
 require_once ABSPATH . WPINC . '/l10n.php';
 require_once ABSPATH . WPINC . '/class-wp-textdomain-registry.php';
 require_once ABSPATH . WPINC . '/class-wp-locale.php';
 require_once ABSPATH . WPINC . '/class-wp-locale-switcher.php';
 
-// Run the installer if WordPress is not installed.
-// Chạy installer nếu WordPress chưa được cài đặt.
+// Chạy trình cài đặt nếu WordPress chưa được cài đặt.
 wp_not_installed();
 
-// Load most of WordPress.
-// Load hầu hết WordPress.
+// Tải hầu hết WordPress.
 require ABSPATH . WPINC . '/class-wp-walker.php';
 require ABSPATH . WPINC . '/class-wp-ajax-response.php';
 require ABSPATH . WPINC . '/capabilities.php';
@@ -458,14 +416,14 @@ add_action( 'after_setup_theme', array( wp_interactivity(), 'add_hooks' ) );
 /**
  * @since 3.3.0
  *
- * @global WP_Embed $wp_embed WordPress Embed object.
+ * @global WP_Embed $wp_embed Đối tượng WordPress Embed.
  */
 $GLOBALS['wp_embed'] = new WP_Embed();
 
 /**
- * WordPress Textdomain Registry object.
+ * Đối tượng WordPress Textdomain Registry.
  *
- * Used to support just-in-time translations for manually loaded text domains.
+ * Được sử dụng để hỗ trợ dịch thuật just-in-time cho các text domain được tải thủ công.
  *
  * @since 6.1.0
  *
@@ -474,15 +432,15 @@ $GLOBALS['wp_embed'] = new WP_Embed();
 $GLOBALS['wp_textdomain_registry'] = new WP_Textdomain_Registry();
 $GLOBALS['wp_textdomain_registry']->init();
 
-// Load multisite-specific files.
+// Tải các file dành riêng cho multisite.
 if ( is_multisite() ) {
 	require ABSPATH . WPINC . '/ms-functions.php';
 	require ABSPATH . WPINC . '/ms-default-filters.php';
 	require ABSPATH . WPINC . '/ms-deprecated.php';
 }
 
-// Define constants that rely on the API to obtain the default value.
-// Define must-use plugin directory constants, which may be overridden in the sunrise.php drop-in.
+// Định nghĩa các hằng số phụ thuộc vào API để lấy giá trị mặc định.
+// Định nghĩa các hằng số thư mục must-use plugin, có thể bị ghi đè trong sunrise.php drop-in.
 wp_plugin_directory_constants();
 
 /**
@@ -492,38 +450,38 @@ wp_plugin_directory_constants();
  */
 $GLOBALS['wp_plugin_paths'] = array();
 
-// Load must-use plugins.
+// Tải các must-use plugin.
 foreach ( wp_get_mu_plugins() as $mu_plugin ) {
 	$_wp_plugin_file = $mu_plugin;
 	include_once $mu_plugin;
-	$mu_plugin = $_wp_plugin_file; // Avoid stomping of the $mu_plugin variable in a plugin.
+	$mu_plugin = $_wp_plugin_file; // Tránh bị ghi đè biến $mu_plugin trong một plugin.
 
 	/**
-	 * Fires once a single must-use plugin has loaded.
+	 * Kích hoạt khi một must-use plugin đã được tải xong.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param string $mu_plugin Full path to the plugin's main file.
+	 * @param string $mu_plugin Đường dẫn đầy đủ đến file chính của plugin.
 	 */
 	do_action( 'mu_plugin_loaded', $mu_plugin );
 }
 unset( $mu_plugin, $_wp_plugin_file );
 
-// Load network activated plugins.
+// Tải các plugin được kích hoạt trên toàn mạng.
 if ( is_multisite() ) {
 	foreach ( wp_get_active_network_plugins() as $network_plugin ) {
 		wp_register_plugin_realpath( $network_plugin );
 
 		$_wp_plugin_file = $network_plugin;
 		include_once $network_plugin;
-		$network_plugin = $_wp_plugin_file; // Avoid stomping of the $network_plugin variable in a plugin.
+		$network_plugin = $_wp_plugin_file; // Tránh bị ghi đè biến $network_plugin trong một plugin.
 
 		/**
-		 * Fires once a single network-activated plugin has loaded.
+		 * Kích hoạt khi một plugin được kích hoạt trên toàn mạng đã được tải xong.
 		 *
 		 * @since 5.1.0
 		 *
-		 * @param string $network_plugin Full path to the plugin's main file.
+		 * @param string $network_plugin Đường dẫn đầy đủ đến file chính của plugin.
 		 */
 		do_action( 'network_plugin_loaded', $network_plugin );
 	}
@@ -531,7 +489,7 @@ if ( is_multisite() ) {
 }
 
 /**
- * Fires once all must-use and network-activated plugins have loaded.
+ * Kích hoạt khi tất cả must-use và plugin kích hoạt toàn mạng đã được tải xong.
  *
  * @since 2.8.0
  */
@@ -541,34 +499,34 @@ if ( is_multisite() ) {
 	ms_cookie_constants();
 }
 
-// Define constants after multisite is loaded.
+// Định nghĩa các hằng số sau khi multisite được tải.
 wp_cookie_constants();
 
-// Define and enforce our SSL constants.
+// Định nghĩa và áp dụng các hằng số SSL.
 wp_ssl_constants();
 
-// Create common globals.
+// Tạo các biến toàn cục chung.
 require ABSPATH . WPINC . '/vars.php';
 
-// Make taxonomies and posts available to plugins and themes.
-// @plugin authors: warning: these get registered again on the init hook.
+// Làm cho taxonomies và posts khả dụng cho plugins và themes.
+// @plugin authors: cảnh báo: chúng sẽ được đăng ký lại trên hook init.
 create_initial_taxonomies();
 create_initial_post_types();
 
 wp_start_scraping_edited_file_errors();
 
-// Register the default theme directory root.
+// Đăng ký thư mục gốc theme mặc định.
 register_theme_directory( get_theme_root() );
 
 if ( ! is_multisite() && wp_is_fatal_error_handler_enabled() ) {
-	// Handle users requesting a recovery mode link and initiating recovery mode.
+	// Xử lý người dùng yêu cầu liên kết chế độ khôi phục và khởi tạo chế độ khôi phục.
 	wp_recovery_mode()->initialize();
 }
 
-// To make get_plugin_data() available in a way that's compatible with plugins also loading this file, see #62244.
+// Để get_plugin_data() khả dụng theo cách tương thích với các plugin cũng tải file này, xem #62244.
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-// Load active plugins.
+// Tải các plugin đang hoạt động.
 foreach ( wp_get_active_and_valid_plugins() as $plugin ) {
 	wp_register_plugin_realpath( $plugin );
 
@@ -585,92 +543,92 @@ foreach ( wp_get_active_and_valid_plugins() as $plugin ) {
 
 	$_wp_plugin_file = $plugin;
 	include_once $plugin;
-	$plugin = $_wp_plugin_file; // Avoid stomping of the $plugin variable in a plugin.
+	$plugin = $_wp_plugin_file; // Tránh bị ghi đè biến $plugin trong một plugin.
 
 	/**
-	 * Fires once a single activated plugin has loaded.
+	 * Kích hoạt khi một plugin đã kích hoạt được tải xong.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param string $plugin Full path to the plugin's main file.
+	 * @param string $plugin Đường dẫn đầy đủ đến file chính của plugin.
 	 */
 	do_action( 'plugin_loaded', $plugin );
 }
 unset( $plugin, $_wp_plugin_file, $plugin_data, $textdomain );
 
-// Load pluggable functions.
+// Tải các hàm pluggable (có thể ghi đè).
 require ABSPATH . WPINC . '/pluggable.php';
 require ABSPATH . WPINC . '/pluggable-deprecated.php';
 
-// Set internal encoding.
+// Thiết lập mã hóa nội bộ.
 wp_set_internal_encoding();
 
-// Run wp_cache_postload() if object cache is enabled and the function exists.
+// Chạy wp_cache_postload() nếu object cache được bật và hàm tồn tại.
 if ( WP_CACHE && function_exists( 'wp_cache_postload' ) ) {
 	wp_cache_postload();
 }
 
 /**
- * Fires once activated plugins have loaded.
+ * Kích hoạt khi các plugin đã kích hoạt được tải xong.
  *
- * Pluggable functions are also available at this point in the loading order.
+ * Các hàm pluggable cũng khả dụng tại thời điểm này trong thứ tự tải.
  *
  * @since 1.5.0
  */
 do_action( 'plugins_loaded' );
 
-// Define constants which affect functionality if not already defined.
+// Định nghĩa các hằng số ảnh hưởng đến chức năng nếu chưa được định nghĩa.
 wp_functionality_constants();
 
-// Add magic quotes and set up $_REQUEST ( $_GET + $_POST ).
+// Thêm magic quotes và thiết lập $_REQUEST ( $_GET + $_POST ).
 wp_magic_quotes();
 
 /**
- * Fires when comment cookies are sanitized.
+ * Kích hoạt khi các cookie bình luận được làm sạch.
  *
  * @since 2.0.11
  */
 do_action( 'sanitize_comment_cookies' );
 
 /**
- * WordPress Query object
+ * Đối tượng WordPress Query
  *
  * @since 2.0.0
  *
- * @global WP_Query $wp_the_query WordPress Query object.
+ * @global WP_Query $wp_the_query Đối tượng WordPress Query.
  */
 $GLOBALS['wp_the_query'] = new WP_Query();
 
 /**
- * Holds the reference to {@see $wp_the_query}.
- * Use this global for WordPress queries
+ * Giữ tham chiếu đến {@see $wp_the_query}.
+ * Sử dụng biến toàn cục này cho các truy vấn WordPress
  *
  * @since 1.5.0
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng WordPress Query.
  */
 $GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 
 /**
- * Holds the WordPress Rewrite object for creating pretty URLs
+ * Giữ đối tượng WordPress Rewrite để tạo URL đẹp
  *
  * @since 1.5.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  */
 $GLOBALS['wp_rewrite'] = new WP_Rewrite();
 
 /**
- * WordPress Object
+ * Đối tượng WordPress
  *
  * @since 2.0.0
  *
- * @global WP $wp Current WordPress environment instance.
+ * @global WP $wp Thực thể môi trường WordPress hiện tại.
  */
 $GLOBALS['wp'] = new WP();
 
 /**
- * WordPress Widget Factory Object
+ * Đối tượng WordPress Widget Factory
  *
  * @since 2.8.0
  *
@@ -679,26 +637,26 @@ $GLOBALS['wp'] = new WP();
 $GLOBALS['wp_widget_factory'] = new WP_Widget_Factory();
 
 /**
- * WordPress User Roles
+ * Vai trò người dùng WordPress
  *
  * @since 2.0.0
  *
- * @global WP_Roles $wp_roles WordPress role management object.
+ * @global WP_Roles $wp_roles Đối tượng quản lý vai trò WordPress.
  */
 $GLOBALS['wp_roles'] = new WP_Roles();
 
 /**
- * Fires before the theme is loaded.
+ * Kích hoạt trước khi theme được tải.
  *
  * @since 2.6.0
  */
 do_action( 'setup_theme' );
 
-// Define the template related constants and globals.
+// Định nghĩa các hằng số và biến toàn cục liên quan đến template.
 wp_templating_constants();
 wp_set_template_globals();
 
-// Load the default text localization domain.
+// Tải text domain bản địa hóa mặc định.
 load_default_textdomain();
 
 $locale      = get_locale();
@@ -709,25 +667,25 @@ if ( ( 0 === validate_file( $locale ) ) && is_readable( $locale_file ) ) {
 unset( $locale_file );
 
 /**
- * WordPress Locale object for loading locale domain date and various strings.
+ * Đối tượng WordPress Locale để tải ngày tháng theo locale và các chuỗi khác nhau.
  *
  * @since 2.1.0
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày giờ WordPress.
  */
 $GLOBALS['wp_locale'] = new WP_Locale();
 
 /**
- * WordPress Locale Switcher object for switching locales.
+ * Đối tượng WordPress Locale Switcher để chuyển đổi ngôn ngữ.
  *
  * @since 4.7.0
  *
- * @global WP_Locale_Switcher $wp_locale_switcher WordPress locale switcher object.
+ * @global WP_Locale_Switcher $wp_locale_switcher Đối tượng chuyển đổi ngôn ngữ WordPress.
  */
 $GLOBALS['wp_locale_switcher'] = new WP_Locale_Switcher();
 $GLOBALS['wp_locale_switcher']->init();
 
-// Load the functions for the active theme, for both parent and child theme if applicable.
+// Tải các hàm cho theme đang hoạt động, cho cả theme cha và theme con nếu có.
 foreach ( wp_get_active_and_valid_themes() as $theme ) {
 	$wp_theme = wp_get_theme( basename( $theme ) );
 
@@ -740,35 +698,35 @@ foreach ( wp_get_active_and_valid_themes() as $theme ) {
 unset( $theme, $wp_theme );
 
 /**
- * Fires after the theme is loaded.
+ * Kích hoạt sau khi theme được tải.
  *
  * @since 3.0.0
  */
 do_action( 'after_setup_theme' );
 
-// Create an instance of WP_Site_Health so that Cron events may fire.
+// Tạo một instance của WP_Site_Health để các sự kiện Cron có thể kích hoạt.
 if ( ! class_exists( 'WP_Site_Health' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-site-health.php';
 }
 WP_Site_Health::get_instance();
 
-// Set up current user.
+// Thiết lập người dùng hiện tại.
 $GLOBALS['wp']->init();
 
 /**
- * Fires after WordPress has finished loading but before any headers are sent.
+ * Kích hoạt sau khi WordPress đã tải xong nhưng trước khi bất kỳ header nào được gửi.
  *
- * Most of WP is loaded at this stage, and the user is authenticated. WP continues
- * to load on the {@see 'init'} hook that follows (e.g. widgets), and many plugins instantiate
- * themselves on it for all sorts of reasons (e.g. they need a user, a taxonomy, etc.).
+ * Hầu hết WP đã được tải ở giai đoạn này, và người dùng đã được xác thực. WP tiếp tục
+ * tải trên hook {@see 'init'} tiếp theo (ví dụ: widgets), và nhiều plugin khởi tạo
+ * chính mình trên đó vì nhiều lý do khác nhau (ví dụ: cần người dùng, taxonomy, v.v.).
  *
- * If you wish to plug an action once WP is loaded, use the {@see 'wp_loaded'} hook below.
+ * Nếu bạn muốn gắn một action khi WP đã tải xong, hãy sử dụng hook {@see 'wp_loaded'} bên dưới.
  *
  * @since 1.5.0
  */
 do_action( 'init' );
 
-// Check site status.
+// Kiểm tra trạng thái site.
 if ( is_multisite() ) {
 	$file = ms_site_check();
 	if ( true !== $file ) {
@@ -779,10 +737,10 @@ if ( is_multisite() ) {
 }
 
 /**
- * This hook is fired once WP, all plugins, and the theme are fully loaded and instantiated.
+ * Hook này được kích hoạt khi WP, tất cả plugin, và theme đã được tải và khởi tạo đầy đủ.
  *
- * Ajax requests should use wp-admin/admin-ajax.php. admin-ajax.php can handle requests for
- * users not logged in.
+ * Các yêu cầu Ajax nên sử dụng wp-admin/admin-ajax.php. admin-ajax.php có thể xử lý các yêu cầu
+ * cho người dùng chưa đăng nhập.
  *
  * @link https://developer.wordpress.org/plugins/javascript/ajax
  *

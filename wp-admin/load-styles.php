@@ -1,20 +1,20 @@
 <?php
 
 /*
- * The error_reporting() function can be disabled in php.ini. On systems where that is the case,
- * it's best to add a dummy function to the wp-config.php file, but as this call to the function
- * is run prior to wp-config.php loading, it is wrapped in a function_exists() check.
+ * Hàm error_reporting() có thể bị vô hiệu hóa trong php.ini. Trên các hệ thống như vậy,
+ * tốt nhất nên thêm một hàm giả vào file wp-config.php, nhưng vì lời gọi hàm này
+ * được chạy trước khi wp-config.php được tải, nó được bọc trong kiểm tra function_exists().
  */
 if ( function_exists( 'error_reporting' ) ) {
 	/*
-	 * Disable error reporting.
+	 * Vô hiệu hóa báo cáo lỗi.
 	 *
-	 * Set this to error_reporting( -1 ) for debugging.
+	 * Đặt thành error_reporting( -1 ) để debug.
 	 */
 	error_reporting( 0 );
 }
 
-// Set ABSPATH for execution.
+// Đặt ABSPATH cho việc thực thi.
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 }
@@ -49,7 +49,7 @@ if ( empty( $load ) ) {
 }
 
 $rtl            = ( isset( $_GET['dir'] ) && 'rtl' === $_GET['dir'] );
-$expires_offset = 31536000; // 1 year.
+$expires_offset = 31536000; // 1 năm.
 $out            = '';
 
 $wp_styles = new WP_Styles();
@@ -76,13 +76,13 @@ foreach ( $load as $handle ) {
 	$path = ABSPATH . $style->src;
 
 	if ( $rtl && ! empty( $style->extra['rtl'] ) ) {
-		// All default styles have fully independent RTL files.
+		// Tất cả các style mặc định đều có file RTL độc lập hoàn toàn.
 		$path = str_replace( '.min.css', '-rtl.min.css', $path );
 	}
 
 	$content = get_file( $path ) . "\n";
 
-	// Note: str_starts_with() is not used here, as wp-includes/compat.php is not loaded in this file.
+	// Lưu ý: str_starts_with() không được sử dụng ở đây, vì wp-includes/compat.php không được tải trong file này.
 	if ( 0 === strpos( $style->src, '/' . WPINC . '/css/' ) ) {
 		$content = str_replace( '../images/', '../' . WPINC . '/images/', $content );
 		$content = str_replace( '../js/tinymce/', '../' . WPINC . '/js/tinymce/', $content );

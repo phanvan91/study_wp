@@ -1,23 +1,23 @@
 <?php
 /**
- * Post revision functions.
+ * Các hàm phiên bản sửa đổi bài viết.
  *
  * @package WordPress
  * @subpackage Post_Revisions
  */
 
 /**
- * Determines which fields of posts are to be saved in revisions.
+ * Xác định các trường của bài viết sẽ được lưu trong các bản sửa đổi.
  *
  * @since 2.6.0
- * @since 4.5.0 A `WP_Post` object can now be passed to the `$post` parameter.
- * @since 4.5.0 The optional `$autosave` parameter was deprecated and renamed to `$deprecated`.
+ * @since 4.5.0 Đối tượng `WP_Post` giờ có thể được truyền vào tham số `$post`.
+ * @since 4.5.0 Tham số tùy chọn `$autosave` đã bị loại bỏ và đổi tên thành `$deprecated`.
  * @access private
  *
- * @param array|WP_Post $post       Optional. A post array or a WP_Post object being processed
- *                                  for insertion as a post revision. Default empty array.
- * @param bool          $deprecated Not used.
- * @return string[] Array of fields that can be versioned.
+ * @param array|WP_Post $post       Tùy chọn. Mảng bài viết hoặc đối tượng WP_Post đang được xử lý
+ *                                  để chèn dưới dạng bản sửa đổi bài viết. Mặc định mảng rỗng.
+ * @param bool          $deprecated Không sử dụng.
+ * @return string[] Mảng các trường có thể được lưu phiên bản.
  */
 function _wp_post_revision_fields( $post = array(), $deprecated = false ) {
 	static $fields = null;
@@ -27,7 +27,7 @@ function _wp_post_revision_fields( $post = array(), $deprecated = false ) {
 	}
 
 	if ( is_null( $fields ) ) {
-		// Allow these to be versioned.
+		// Cho phép các trường này được lưu phiên bản.
 		$fields = array(
 			'post_title'   => __( 'Title' ),
 			'post_content' => __( 'Content' ),
@@ -36,24 +36,24 @@ function _wp_post_revision_fields( $post = array(), $deprecated = false ) {
 	}
 
 	/**
-	 * Filters the list of fields saved in post revisions.
+	 * Lọc danh sách các trường được lưu trong các bản sửa đổi bài viết.
 	 *
-	 * Included by default: 'post_title', 'post_content' and 'post_excerpt'.
+	 * Mặc định bao gồm: 'post_title', 'post_content' và 'post_excerpt'.
 	 *
-	 * Disallowed fields: 'ID', 'post_name', 'post_parent', 'post_date',
+	 * Các trường không được phép: 'ID', 'post_name', 'post_parent', 'post_date',
 	 * 'post_date_gmt', 'post_status', 'post_type', 'comment_count',
-	 * and 'post_author'.
+	 * và 'post_author'.
 	 *
 	 * @since 2.6.0
-	 * @since 4.5.0 The `$post` parameter was added.
+	 * @since 4.5.0 Tham số `$post` được thêm vào.
 	 *
-	 * @param string[] $fields List of fields to revision. Contains 'post_title',
-	 *                         'post_content', and 'post_excerpt' by default.
-	 * @param array    $post   A post array being processed for insertion as a post revision.
+	 * @param string[] $fields Danh sách các trường để lưu bản sửa đổi. Mặc định chứa 'post_title',
+	 *                         'post_content', và 'post_excerpt'.
+	 * @param array    $post   Mảng bài viết đang được xử lý để chèn dưới dạng bản sửa đổi.
 	 */
 	$fields = apply_filters( '_wp_post_revision_fields', $fields, $post );
 
-	// WP uses these internally either in versioning or elsewhere - they cannot be versioned.
+	// WP sử dụng các trường này nội bộ trong quá trình lưu phiên bản hoặc nơi khác - chúng không thể được lưu phiên bản.
 	foreach ( array( 'ID', 'post_name', 'post_parent', 'post_date', 'post_date_gmt', 'post_status', 'post_type', 'comment_count', 'post_author' ) as $protect ) {
 		unset( $fields[ $protect ] );
 	}
@@ -62,15 +62,15 @@ function _wp_post_revision_fields( $post = array(), $deprecated = false ) {
 }
 
 /**
- * Returns a post array ready to be inserted into the posts table as a post revision.
+ * Trả về mảng bài viết sẵn sàng để chèn vào bảng posts dưới dạng bản sửa đổi.
  *
  * @since 4.5.0
  * @access private
  *
- * @param array|WP_Post $post     Optional. A post array or a WP_Post object to be processed
- *                                for insertion as a post revision. Default empty array.
- * @param bool          $autosave Optional. Is the revision an autosave? Default false.
- * @return array Post array ready to be inserted as a post revision.
+ * @param array|WP_Post $post     Tùy chọn. Mảng bài viết hoặc đối tượng WP_Post cần được xử lý
+ *                                để chèn dưới dạng bản sửa đổi bài viết. Mặc định mảng rỗng.
+ * @param bool          $autosave Tùy chọn. Bản sửa đổi có phải là tự động lưu không? Mặc định false.
+ * @return array Mảng bài viết sẵn sàng để chèn dưới dạng bản sửa đổi.
  */
 function _wp_post_revision_data( $post = array(), $autosave = false ) {
 	if ( ! is_array( $post ) ) {
@@ -88,7 +88,7 @@ function _wp_post_revision_data( $post = array(), $autosave = false ) {
 	$revision_data['post_parent']   = $post['ID'];
 	$revision_data['post_status']   = 'inherit';
 	$revision_data['post_type']     = 'revision';
-	$revision_data['post_name']     = $autosave ? "$post[ID]-autosave-v1" : "$post[ID]-revision-v1"; // "1" is the revisioning system version.
+	$revision_data['post_name']     = $autosave ? "$post[ID]-autosave-v1" : "$post[ID]-revision-v1"; // "1" là phiên bản hệ thống lưu bản sửa đổi.
 	$revision_data['post_date']     = isset( $post['post_modified'] ) ? $post['post_modified'] : '';
 	$revision_data['post_date_gmt'] = isset( $post['post_modified_gmt'] ) ? $post['post_modified_gmt'] : '';
 
@@ -96,13 +96,13 @@ function _wp_post_revision_data( $post = array(), $autosave = false ) {
 }
 
 /**
- * Saves revisions for a post after all changes have been made.
+ * Lưu các bản sửa đổi cho bài viết sau khi tất cả thay đổi đã được thực hiện.
  *
  * @since 6.4.0
  *
- * @param int     $post_id The post id that was inserted.
- * @param WP_Post $post    The post object that was inserted.
- * @param bool    $update  Whether this insert is updating an existing post.
+ * @param int     $post_id ID bài viết đã được chèn.
+ * @param WP_Post $post    Đối tượng bài viết đã được chèn.
+ * @param bool    $update  Liệu việc chèn này có phải đang cập nhật bài viết đã tồn tại hay không.
  */
 function wp_save_post_revision_on_insert( $post_id, $post, $update ) {
 	if ( ! $update ) {
@@ -117,22 +117,22 @@ function wp_save_post_revision_on_insert( $post_id, $post, $update ) {
 }
 
 /**
- * Creates a revision for the current version of a post.
+ * Tạo bản sửa đổi cho phiên bản hiện tại của bài viết.
  *
- * Typically used immediately after a post update, as every update is a revision,
- * and the most recent revision always matches the current post.
+ * Thường được sử dụng ngay sau khi cập nhật bài viết, vì mỗi lần cập nhật là một bản sửa đổi,
+ * và bản sửa đổi gần nhất luôn khớp với bài viết hiện tại.
  *
  * @since 2.6.0
  *
- * @param int $post_id The ID of the post to save as a revision.
- * @return int|WP_Error|void Void or 0 if error, new revision ID, if success.
+ * @param int $post_id ID của bài viết cần lưu dưới dạng bản sửa đổi.
+ * @return int|WP_Error|void Void hoặc 0 nếu lỗi, ID bản sửa đổi mới nếu thành công.
  */
 function wp_save_post_revision( $post_id ) {
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;
 	}
 
-	// Prevent saving post revisions if revisions should be saved on wp_after_insert_post.
+	// Ngăn lưu bản sửa đổi bài viết nếu bản sửa đổi cần được lưu tại wp_after_insert_post.
 	if ( doing_action( 'post_updated' ) && has_action( 'wp_after_insert_post', 'wp_save_post_revision_on_insert' ) ) {
 		return;
 	}
@@ -156,13 +156,13 @@ function wp_save_post_revision( $post_id ) {
 	}
 
 	/*
-	 * Compare the proposed update with the last stored revision verifying that
-	 * they are different, unless a plugin tells us to always save regardless.
-	 * If no previous revisions, save one.
+	 * So sánh bản cập nhật đề xuất với bản sửa đổi được lưu cuối cùng để xác minh
+	 * chúng khác nhau, trừ khi plugin yêu cầu luôn lưu bất kể.
+	 * Nếu không có bản sửa đổi trước đó, lưu một bản.
 	 */
 	$revisions = wp_get_post_revisions( $post_id );
 	if ( $revisions ) {
-		// Grab the latest revision, but not an autosave.
+		// Lấy bản sửa đổi mới nhất, nhưng không phải bản tự động lưu.
 		foreach ( $revisions as $revision ) {
 			if ( str_contains( $revision->post_name, "{$revision->post_parent}-revision" ) ) {
 				$latest_revision = $revision;
@@ -171,17 +171,17 @@ function wp_save_post_revision( $post_id ) {
 		}
 
 		/**
-		 * Filters whether the post has changed since the latest revision.
+		 * Lọc xem bài viết có thay đổi kể từ bản sửa đổi mới nhất hay không.
 		 *
-		 * By default a revision is saved only if one of the revisioned fields has changed.
-		 * This filter can override that so a revision is saved even if nothing has changed.
+		 * Mặc định, bản sửa đổi chỉ được lưu nếu một trong các trường được lưu phiên bản đã thay đổi.
+		 * Bộ lọc này có thể ghi đè điều đó để bản sửa đổi được lưu ngay cả khi không có gì thay đổi.
 		 *
 		 * @since 3.6.0
 		 *
-		 * @param bool    $check_for_changes Whether to check for changes before saving a new revision.
-		 *                                   Default true.
-		 * @param WP_Post $latest_revision   The latest revision post object.
-		 * @param WP_Post $post              The post object.
+		 * @param bool    $check_for_changes Có kiểm tra thay đổi trước khi lưu bản sửa đổi mới không.
+		 *                                   Mặc định true.
+		 * @param WP_Post $latest_revision   Đối tượng bài viết bản sửa đổi mới nhất.
+		 * @param WP_Post $post              Đối tượng bài viết.
 		 */
 		if ( isset( $latest_revision ) && apply_filters( 'wp_save_post_revision_check_for_changes', true, $latest_revision, $post ) ) {
 			$post_has_changed = false;
@@ -194,20 +194,20 @@ function wp_save_post_revision( $post_id ) {
 			}
 
 			/**
-			 * Filters whether a post has changed.
+			 * Lọc xem bài viết có thay đổi hay không.
 			 *
-			 * By default a revision is saved only if one of the revisioned fields has changed.
-			 * This filter allows for additional checks to determine if there were changes.
+			 * Mặc định, bản sửa đổi chỉ được lưu nếu một trong các trường được lưu phiên bản đã thay đổi.
+			 * Bộ lọc này cho phép kiểm tra bổ sung để xác định xem có thay đổi hay không.
 			 *
 			 * @since 4.1.0
 			 *
-			 * @param bool    $post_has_changed Whether the post has changed.
-			 * @param WP_Post $latest_revision  The latest revision post object.
-			 * @param WP_Post $post             The post object.
+			 * @param bool    $post_has_changed Bài viết có thay đổi hay không.
+			 * @param WP_Post $latest_revision  Đối tượng bài viết bản sửa đổi mới nhất.
+			 * @param WP_Post $post             Đối tượng bài viết.
 			 */
 			$post_has_changed = (bool) apply_filters( 'wp_save_post_revision_post_has_changed', $post_has_changed, $latest_revision, $post );
 
-			// Don't save revision if post unchanged.
+			// Không lưu bản sửa đổi nếu bài viết không thay đổi.
 			if ( ! $post_has_changed ) {
 				return;
 			}
@@ -217,8 +217,8 @@ function wp_save_post_revision( $post_id ) {
 	$return = _wp_put_post_revision( $post );
 
 	/*
-	 * If a limit for the number of revisions to keep has been set,
-	 * delete the oldest ones.
+	 * Nếu giới hạn số lượng bản sửa đổi cần giữ đã được thiết lập,
+	 * xóa các bản cũ nhất.
 	 */
 	$revisions_to_keep = wp_revisions_to_keep( $post );
 
@@ -229,12 +229,12 @@ function wp_save_post_revision( $post_id ) {
 	$revisions = wp_get_post_revisions( $post_id, array( 'order' => 'ASC' ) );
 
 	/**
-	 * Filters the revisions to be considered for deletion.
+	 * Lọc các bản sửa đổi được xem xét để xóa.
 	 *
 	 * @since 6.2.0
 	 *
-	 * @param WP_Post[] $revisions Array of revisions, or an empty array if none.
-	 * @param int       $post_id   The ID of the post to save as a revision.
+	 * @param WP_Post[] $revisions Mảng các bản sửa đổi, hoặc mảng rỗng nếu không có.
+	 * @param int       $post_id   ID của bài viết cần lưu dưới dạng bản sửa đổi.
 	 */
 	$revisions = apply_filters(
 		'wp_save_post_revision_revisions_before_deletion',
@@ -262,17 +262,17 @@ function wp_save_post_revision( $post_id ) {
 }
 
 /**
- * Retrieves the autosaved data of the specified post.
+ * Lấy dữ liệu tự động lưu của bài viết được chỉ định.
  *
- * Returns a post object with the information that was autosaved for the specified post.
- * If the optional $user_id is passed, returns the autosave for that user, otherwise
- * returns the latest autosave.
+ * Trả về đối tượng bài viết với thông tin đã được tự động lưu cho bài viết được chỉ định.
+ * Nếu $user_id tùy chọn được truyền, trả về bản tự động lưu cho người dùng đó, nếu không
+ * trả về bản tự động lưu mới nhất.
  *
  * @since 2.6.0
  *
- * @param int $post_id The post ID.
- * @param int $user_id Optional. The post author ID. Default 0.
- * @return WP_Post|false The autosaved data or false on failure or when no autosave exists.
+ * @param int $post_id ID bài viết.
+ * @param int $user_id Tùy chọn. ID tác giả bài viết. Mặc định 0.
+ * @return WP_Post|false Dữ liệu tự động lưu hoặc false khi thất bại hoặc không có bản tự động lưu.
  */
 function wp_get_post_autosave( $post_id, $user_id = 0 ) {
 	$args = array(
@@ -301,12 +301,12 @@ function wp_get_post_autosave( $post_id, $user_id = 0 ) {
 }
 
 /**
- * Determines if the specified post is a revision.
+ * Xác định xem bài viết được chỉ định có phải là bản sửa đổi hay không.
  *
  * @since 2.6.0
  *
- * @param int|WP_Post $post Post ID or post object.
- * @return int|false ID of revision's parent on success, false if not a revision.
+ * @param int|WP_Post $post ID bài viết hoặc đối tượng bài viết.
+ * @return int|false ID của bài viết cha của bản sửa đổi khi thành công, false nếu không phải bản sửa đổi.
  */
 function wp_is_post_revision( $post ) {
 	$post = wp_get_post_revision( $post );
@@ -319,12 +319,12 @@ function wp_is_post_revision( $post ) {
 }
 
 /**
- * Determines if the specified post is an autosave.
+ * Xác định xem bài viết được chỉ định có phải là bản tự động lưu hay không.
  *
  * @since 2.6.0
  *
- * @param int|WP_Post $post Post ID or post object.
- * @return int|false ID of autosave's parent on success, false if not a revision.
+ * @param int|WP_Post $post ID bài viết hoặc đối tượng bài viết.
+ * @return int|false ID của bài viết cha của bản tự động lưu khi thành công, false nếu không phải bản sửa đổi.
  */
 function wp_is_post_autosave( $post ) {
 	$post = wp_get_post_revision( $post );
@@ -341,15 +341,15 @@ function wp_is_post_autosave( $post ) {
 }
 
 /**
- * Inserts post data into the posts table as a post revision.
+ * Chèn dữ liệu bài viết vào bảng posts dưới dạng bản sửa đổi bài viết.
  *
  * @since 2.6.0
  * @access private
  *
- * @param int|WP_Post|array|null $post     Post ID, post object OR post array.
- * @param bool                   $autosave Optional. Whether the revision is an autosave or not.
- *                                         Default false.
- * @return int|WP_Error WP_Error or 0 if error, new revision ID if success.
+ * @param int|WP_Post|array|null $post     ID bài viết, đối tượng bài viết HOẶC mảng bài viết.
+ * @param bool                   $autosave Tùy chọn. Bản sửa đổi có phải là tự động lưu hay không.
+ *                                         Mặc định false.
+ * @return int|WP_Error WP_Error hoặc 0 nếu lỗi, ID bản sửa đổi mới nếu thành công.
  */
 function _wp_put_post_revision( $post = null, $autosave = false ) {
 	if ( is_object( $post ) ) {
@@ -367,7 +367,7 @@ function _wp_put_post_revision( $post = null, $autosave = false ) {
 	}
 
 	$post = _wp_post_revision_data( $post, $autosave );
-	$post = wp_slash( $post ); // Since data is from DB.
+	$post = wp_slash( $post ); // Vì dữ liệu từ cơ sở dữ liệu.
 
 	$revision_id = wp_insert_post( $post, true );
 	if ( is_wp_error( $revision_id ) ) {
@@ -376,13 +376,13 @@ function _wp_put_post_revision( $post = null, $autosave = false ) {
 
 	if ( $revision_id ) {
 		/**
-		 * Fires once a revision has been saved.
+		 * Kích hoạt khi một bản sửa đổi đã được lưu.
 		 *
 		 * @since 2.6.0
-		 * @since 6.4.0 The post_id parameter was added.
+		 * @since 6.4.0 Tham số post_id được thêm vào.
 		 *
-		 * @param int $revision_id Post revision ID.
-		 * @param int $post_id     Post ID.
+		 * @param int $revision_id ID bản sửa đổi bài viết.
+		 * @param int $post_id     ID bài viết.
 		 */
 		do_action( '_wp_put_post_revision', $revision_id, $post['post_parent'] );
 	}
@@ -392,12 +392,12 @@ function _wp_put_post_revision( $post = null, $autosave = false ) {
 
 
 /**
- * Save the revisioned meta fields.
+ * Lưu các trường meta được lưu phiên bản.
  *
  * @since 6.4.0
  *
- * @param int $revision_id The ID of the revision to save the meta to.
- * @param int $post_id     The ID of the post the revision is associated with.
+ * @param int $revision_id ID của bản sửa đổi để lưu meta vào.
+ * @param int $post_id     ID của bài viết liên kết với bản sửa đổi.
  */
 function wp_save_revisioned_meta_fields( $revision_id, $post_id ) {
 	$post_type = get_post_type( $post_id );
@@ -413,16 +413,16 @@ function wp_save_revisioned_meta_fields( $revision_id, $post_id ) {
 }
 
 /**
- * Gets a post revision.
+ * Lấy một bản sửa đổi bài viết.
  *
  * @since 2.6.0
  *
- * @param int|WP_Post $post   Post ID or post object.
- * @param string      $output Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
- *                            correspond to a WP_Post object, an associative array, or a numeric array,
- *                            respectively. Default OBJECT.
- * @param string      $filter Optional sanitization filter. See sanitize_post(). Default 'raw'.
- * @return WP_Post|array|null WP_Post (or array) on success, or null on failure.
+ * @param int|WP_Post $post   ID bài viết hoặc đối tượng bài viết.
+ * @param string      $output Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT, ARRAY_A, hoặc ARRAY_N,
+ *                            tương ứng với đối tượng WP_Post, mảng kết hợp, hoặc mảng số.
+ *                            Mặc định OBJECT.
+ * @param string      $filter Bộ lọc làm sạch tùy chọn. Xem sanitize_post(). Mặc định 'raw'.
+ * @return WP_Post|array|null WP_Post (hoặc mảng) khi thành công, hoặc null khi thất bại.
  */
 function wp_get_post_revision( &$post, $output = OBJECT, $filter = 'raw' ) {
 	$revision = get_post( $post, OBJECT, $filter );
@@ -449,15 +449,15 @@ function wp_get_post_revision( &$post, $output = OBJECT, $filter = 'raw' ) {
 }
 
 /**
- * Restores a post to the specified revision.
+ * Khôi phục bài viết về bản sửa đổi được chỉ định.
  *
- * Can restore a past revision using all fields of the post revision, or only selected fields.
+ * Có thể khôi phục bản sửa đổi trước đó sử dụng tất cả các trường của bản sửa đổi, hoặc chỉ các trường được chọn.
  *
  * @since 2.6.0
  *
- * @param int|WP_Post $revision Revision ID or revision object.
- * @param array       $fields   Optional. What fields to restore from. Defaults to all.
- * @return int|false|null Null if error, false if no fields to restore, (int) post ID if success.
+ * @param int|WP_Post $revision ID bản sửa đổi hoặc đối tượng bản sửa đổi.
+ * @param array       $fields   Tùy chọn. Các trường để khôi phục từ. Mặc định tất cả.
+ * @return int|false|null Null nếu lỗi, false nếu không có trường để khôi phục, (int) ID bài viết nếu thành công.
  */
 function wp_restore_post_revision( $revision, $fields = null ) {
 	$revision = wp_get_post_revision( $revision, ARRAY_A );
@@ -481,7 +481,7 @@ function wp_restore_post_revision( $revision, $fields = null ) {
 
 	$update['ID'] = $revision['post_parent'];
 
-	$update = wp_slash( $update ); // Since data is from DB.
+	$update = wp_slash( $update ); // Vì dữ liệu từ cơ sở dữ liệu.
 
 	$post_id = wp_update_post( $update );
 
@@ -489,16 +489,16 @@ function wp_restore_post_revision( $revision, $fields = null ) {
 		return $post_id;
 	}
 
-	// Update last edit user.
+	// Cập nhật người dùng chỉnh sửa cuối cùng.
 	update_post_meta( $post_id, '_edit_last', get_current_user_id() );
 
 	/**
-	 * Fires after a post revision has been restored.
+	 * Kích hoạt sau khi một bản sửa đổi bài viết đã được khôi phục.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param int $post_id     Post ID.
-	 * @param int $revision_id Post revision ID.
+	 * @param int $post_id     ID bài viết.
+	 * @param int $revision_id ID bản sửa đổi bài viết.
 	 */
 	do_action( 'wp_restore_post_revision', $post_id, $revision['ID'] );
 
@@ -506,12 +506,12 @@ function wp_restore_post_revision( $revision, $fields = null ) {
 }
 
 /**
- * Restore the revisioned meta values for a post.
+ * Khôi phục các giá trị meta được lưu phiên bản cho bài viết.
  *
  * @since 6.4.0
  *
- * @param int $post_id     The ID of the post to restore the meta to.
- * @param int $revision_id The ID of the revision to restore the meta from.
+ * @param int $post_id     ID của bài viết để khôi phục meta vào.
+ * @param int $revision_id ID của bản sửa đổi để khôi phục meta từ.
  */
 function wp_restore_post_revision_meta( $post_id, $revision_id ) {
 	$post_type = get_post_type( $post_id );
@@ -519,10 +519,10 @@ function wp_restore_post_revision_meta( $post_id, $revision_id ) {
 		return;
 	}
 
-	// Restore revisioned meta fields.
+	// Khôi phục các trường meta được lưu phiên bản.
 	foreach ( wp_post_revision_meta_keys( $post_type ) as $meta_key ) {
 
-		// Clear any existing meta.
+		// Xóa mọi meta hiện có.
 		delete_post_meta( $post_id, $meta_key );
 
 		_wp_copy_post_meta( $revision_id, $post_id, $meta_key );
@@ -530,32 +530,32 @@ function wp_restore_post_revision_meta( $post_id, $revision_id ) {
 }
 
 /**
- * Copy post meta for the given key from one post to another.
+ * Sao chép meta bài viết cho khóa đã cho từ bài viết này sang bài viết khác.
  *
  * @since 6.4.0
  *
- * @param int    $source_post_id Post ID to copy meta value(s) from.
- * @param int    $target_post_id Post ID to copy meta value(s) to.
- * @param string $meta_key       Meta key to copy.
+ * @param int    $source_post_id ID bài viết nguồn để sao chép giá trị meta từ.
+ * @param int    $target_post_id ID bài viết đích để sao chép giá trị meta tới.
+ * @param string $meta_key       Khóa meta cần sao chép.
  */
 function _wp_copy_post_meta( $source_post_id, $target_post_id, $meta_key ) {
 
 	foreach ( get_post_meta( $source_post_id, $meta_key ) as $meta_value ) {
 		/**
-		 * We use add_metadata() function vs add_post_meta() here
-		 * to allow for a revision post target OR regular post.
+		 * Chúng ta sử dụng hàm add_metadata() thay vì add_post_meta() ở đây
+		 * để cho phép bài viết đích là bản sửa đổi HOẶC bài viết thông thường.
 		 */
 		add_metadata( 'post', $target_post_id, $meta_key, wp_slash( $meta_value ) );
 	}
 }
 
 /**
- * Determine which post meta fields should be revisioned.
+ * Xác định các trường meta bài viết nào nên được lưu phiên bản.
  *
  * @since 6.4.0
  *
- * @param string $post_type The post type being revisioned.
- * @return array An array of meta keys to be revisioned.
+ * @param string $post_type Loại bài viết đang được lưu phiên bản.
+ * @return array Mảng các khóa meta cần được lưu phiên bản.
  */
 function wp_post_revision_meta_keys( $post_type ) {
 	$registered_meta = array_merge(
@@ -574,25 +574,25 @@ function wp_post_revision_meta_keys( $post_type ) {
 	$wp_revisioned_meta_keys = array_keys( $wp_revisioned_meta_keys );
 
 	/**
-	 * Filter the list of post meta keys to be revisioned.
+	 * Lọc danh sách các khóa meta bài viết cần được lưu phiên bản.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param array  $keys      An array of meta fields to be revisioned.
-	 * @param string $post_type The post type being revisioned.
+	 * @param array  $keys      Mảng các trường meta cần được lưu phiên bản.
+	 * @param string $post_type Loại bài viết đang được lưu phiên bản.
 	 */
 	return apply_filters( 'wp_post_revision_meta_keys', $wp_revisioned_meta_keys, $post_type );
 }
 
 /**
- * Check whether revisioned post meta fields have changed.
+ * Kiểm tra xem các trường meta bài viết được lưu phiên bản có thay đổi không.
  *
  * @since 6.4.0
  *
- * @param bool    $post_has_changed Whether the post has changed.
- * @param WP_Post $last_revision    The last revision post object.
- * @param WP_Post $post             The post object.
- * @return bool Whether the post has changed.
+ * @param bool    $post_has_changed Bài viết có thay đổi hay không.
+ * @param WP_Post $last_revision    Đối tượng bài viết bản sửa đổi cuối cùng.
+ * @param WP_Post $post             Đối tượng bài viết.
+ * @return bool Bài viết có thay đổi hay không.
  */
 function wp_check_revisioned_meta_fields_have_changed( $post_has_changed, WP_Post $last_revision, WP_Post $post ) {
 	foreach ( wp_post_revision_meta_keys( $post->post_type ) as $meta_key ) {
@@ -605,14 +605,14 @@ function wp_check_revisioned_meta_fields_have_changed( $post_has_changed, WP_Pos
 }
 
 /**
- * Deletes a revision.
+ * Xóa một bản sửa đổi.
  *
- * Deletes the row from the posts table corresponding to the specified revision.
+ * Xóa hàng từ bảng posts tương ứng với bản sửa đổi được chỉ định.
  *
  * @since 2.6.0
  *
- * @param int|WP_Post $revision Revision ID or revision object.
- * @return WP_Post|false|null Null or false if error, deleted post object if success.
+ * @param int|WP_Post $revision ID bản sửa đổi hoặc đối tượng bản sửa đổi.
+ * @return WP_Post|false|null Null hoặc false nếu lỗi, đối tượng bài viết đã xóa nếu thành công.
  */
 function wp_delete_post_revision( $revision ) {
 	$revision = wp_get_post_revision( $revision );
@@ -625,12 +625,12 @@ function wp_delete_post_revision( $revision ) {
 
 	if ( $delete ) {
 		/**
-		 * Fires once a post revision has been deleted.
+		 * Kích hoạt khi một bản sửa đổi bài viết đã bị xóa.
 		 *
 		 * @since 2.6.0
 		 *
-		 * @param int     $revision_id Post revision ID.
-		 * @param WP_Post $revision    Post revision object.
+		 * @param int     $revision_id ID bản sửa đổi bài viết.
+		 * @param WP_Post $revision    Đối tượng bản sửa đổi bài viết.
 		 */
 		do_action( 'wp_delete_post_revision', $revision->ID, $revision );
 	}
@@ -639,15 +639,15 @@ function wp_delete_post_revision( $revision ) {
 }
 
 /**
- * Returns all revisions of specified post.
+ * Trả về tất cả các bản sửa đổi của bài viết được chỉ định.
  *
  * @since 2.6.0
  *
  * @see get_children()
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global `$post`.
- * @param array|null  $args Optional. Arguments for retrieving post revisions. Default null.
- * @return WP_Post[]|int[] Array of revision objects or IDs, or an empty array if none.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là biến toàn cục `$post`.
+ * @param array|null  $args Tùy chọn. Các tham số để lấy bản sửa đổi bài viết. Mặc định null.
+ * @return WP_Post[]|int[] Mảng các đối tượng hoặc ID bản sửa đổi, hoặc mảng rỗng nếu không có.
  */
 function wp_get_post_revisions( $post = 0, $args = null ) {
 	$post = get_post( $post );
@@ -686,17 +686,17 @@ function wp_get_post_revisions( $post = 0, $args = null ) {
 }
 
 /**
- * Returns the latest revision ID and count of revisions for a post.
+ * Trả về ID bản sửa đổi mới nhất và số lượng bản sửa đổi cho bài viết.
  *
  * @since 6.1.0
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global $post.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là biến toàn cục $post.
  * @return array|WP_Error {
- *     Returns associative array with latest revision ID and total count,
- *     or a WP_Error if the post does not exist or revisions are not enabled.
+ *     Trả về mảng kết hợp với ID bản sửa đổi mới nhất và tổng số lượng,
+ *     hoặc WP_Error nếu bài viết không tồn tại hoặc bản sửa đổi không được bật.
  *
- *     @type int $latest_id The latest revision post ID or 0 if no revisions exist.
- *     @type int $count     The total count of revisions for the given post.
+ *     @type int $latest_id ID bản sửa đổi bài viết mới nhất hoặc 0 nếu không có bản sửa đổi.
+ *     @type int $count     Tổng số bản sửa đổi cho bài viết đã cho.
  * }
  */
 function wp_get_latest_revision_id_and_total_count( $post = 0 ) {
@@ -738,12 +738,12 @@ function wp_get_latest_revision_id_and_total_count( $post = 0 ) {
 }
 
 /**
- * Returns the url for viewing and potentially restoring revisions of a given post.
+ * Trả về URL để xem và có thể khôi phục các bản sửa đổi của bài viết đã cho.
  *
  * @since 5.9.0
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global `$post`.
- * @return string|null The URL for editing revisions on the given post, otherwise null.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là biến toàn cục `$post`.
+ * @return string|null URL để chỉnh sửa các bản sửa đổi của bài viết đã cho, hoặc null.
  */
 function wp_get_post_revisions_url( $post = 0 ) {
 	$post = get_post( $post );
@@ -752,7 +752,7 @@ function wp_get_post_revisions_url( $post = 0 ) {
 		return null;
 	}
 
-	// If the post is a revision, return early.
+	// Nếu bài viết là bản sửa đổi, trả về sớm.
 	if ( 'revision' === $post->post_type ) {
 		return get_edit_post_link( $post );
 	}
@@ -771,29 +771,29 @@ function wp_get_post_revisions_url( $post = 0 ) {
 }
 
 /**
- * Determines whether revisions are enabled for a given post.
+ * Xác định xem bản sửa đổi có được bật cho bài viết đã cho hay không.
  *
  * @since 3.6.0
  *
- * @param WP_Post $post The post object.
- * @return bool True if number of revisions to keep isn't zero, false otherwise.
+ * @param WP_Post $post Đối tượng bài viết.
+ * @return bool True nếu số bản sửa đổi cần giữ không phải 0, false nếu ngược lại.
  */
 function wp_revisions_enabled( $post ) {
 	return wp_revisions_to_keep( $post ) !== 0;
 }
 
 /**
- * Determines how many revisions to retain for a given post.
+ * Xác định số lượng bản sửa đổi cần giữ lại cho bài viết đã cho.
  *
- * By default, an infinite number of revisions are kept.
+ * Mặc định, số lượng bản sửa đổi được giữ là không giới hạn.
  *
- * The constant WP_POST_REVISIONS can be set in wp-config to specify the limit
- * of revisions to keep.
+ * Hằng số WP_POST_REVISIONS có thể được thiết lập trong wp-config để chỉ định
+ * giới hạn bản sửa đổi cần giữ.
  *
  * @since 3.6.0
  *
- * @param WP_Post $post The post object.
- * @return int The number of revisions to keep.
+ * @param WP_Post $post Đối tượng bài viết.
+ * @return int Số lượng bản sửa đổi cần giữ.
  */
 function wp_revisions_to_keep( $post ) {
 	$num = WP_POST_REVISIONS;
@@ -809,34 +809,34 @@ function wp_revisions_to_keep( $post ) {
 	}
 
 	/**
-	 * Filters the number of revisions to save for the given post.
+	 * Lọc số lượng bản sửa đổi cần lưu cho bài viết đã cho.
 	 *
-	 * Overrides the value of WP_POST_REVISIONS.
+	 * Ghi đè giá trị của WP_POST_REVISIONS.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param int     $num  Number of revisions to store.
-	 * @param WP_Post $post Post object.
+	 * @param int     $num  Số bản sửa đổi cần lưu trữ.
+	 * @param WP_Post $post Đối tượng bài viết.
 	 */
 	$num = apply_filters( 'wp_revisions_to_keep', $num, $post );
 
 	/**
-	 * Filters the number of revisions to save for the given post by its post type.
+	 * Lọc số lượng bản sửa đổi cần lưu cho bài viết đã cho theo loại bài viết.
 	 *
-	 * Overrides both the value of WP_POST_REVISIONS and the {@see 'wp_revisions_to_keep'} filter.
+	 * Ghi đè cả giá trị của WP_POST_REVISIONS và bộ lọc {@see 'wp_revisions_to_keep'}.
 	 *
-	 * The dynamic portion of the hook name, `$post->post_type`, refers to
-	 * the post type slug.
+	 * Phần động của tên hook, `$post->post_type`, tham chiếu đến
+	 * slug loại bài viết.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `wp_post_revisions_to_keep`
 	 *  - `wp_page_revisions_to_keep`
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param int     $num  Number of revisions to store.
-	 * @param WP_Post $post Post object.
+	 * @param int     $num  Số bản sửa đổi cần lưu trữ.
+	 * @param WP_Post $post Đối tượng bài viết.
 	 */
 	$num = apply_filters( "wp_{$post->post_type}_revisions_to_keep", $num, $post );
 
@@ -844,7 +844,7 @@ function wp_revisions_to_keep( $post ) {
 }
 
 /**
- * Sets up the post object for preview based on the post autosave.
+ * Thiết lập đối tượng bài viết cho xem trước dựa trên bản tự động lưu của bài viết.
  *
  * @since 2.7.0
  * @access private
@@ -875,7 +875,7 @@ function _set_preview( $post ) {
 }
 
 /**
- * Filters the latest content for preview from the post autosave.
+ * Lọc nội dung mới nhất để xem trước từ bản tự động lưu của bài viết.
  *
  * @since 2.7.0
  * @access private
@@ -893,7 +893,7 @@ function _show_post_preview() {
 }
 
 /**
- * Filters terms lookup to set the post format.
+ * Lọc tra cứu thuật ngữ để thiết lập định dạng bài viết.
  *
  * @since 3.6.0
  * @access private
@@ -922,7 +922,7 @@ function _wp_preview_terms_filter( $terms, $post_id, $taxonomy ) {
 		$term = get_term_by( 'slug', 'post-format-' . sanitize_key( $_REQUEST['post_format'] ), 'post_format' );
 
 		if ( $term ) {
-			$terms = array( $term ); // Can only have one post format.
+			$terms = array( $term ); // Chỉ có thể có một định dạng bài viết.
 		}
 	}
 
@@ -930,15 +930,15 @@ function _wp_preview_terms_filter( $terms, $post_id, $taxonomy ) {
 }
 
 /**
- * Filters post thumbnail lookup to set the post thumbnail.
+ * Lọc tra cứu ảnh đại diện bài viết để thiết lập ảnh đại diện bài viết.
  *
  * @since 4.6.0
  * @access private
  *
- * @param null|array|string $value    The value to return - a single metadata value, or an array of values.
- * @param int               $post_id  Post ID.
- * @param string            $meta_key Meta key.
- * @return null|array The default return value or the post thumbnail meta array.
+ * @param null|array|string $value    Giá trị trả về - một giá trị metadata đơn, hoặc mảng giá trị.
+ * @param int               $post_id  ID bài viết.
+ * @param string            $meta_key Khóa meta.
+ * @return null|array Giá trị trả về mặc định hoặc mảng meta ảnh đại diện bài viết.
  */
 function _wp_preview_post_thumbnail_filter( $value, $post_id, $meta_key ) {
 	$post = get_post();
@@ -964,7 +964,7 @@ function _wp_preview_post_thumbnail_filter( $value, $post_id, $meta_key ) {
 }
 
 /**
- * Gets the post revision version.
+ * Lấy phiên bản bản sửa đổi bài viết.
  *
  * @since 3.6.0
  * @access private
@@ -987,46 +987,46 @@ function _wp_get_post_revision_version( $revision ) {
 }
 
 /**
- * Upgrades the revisions author, adds the current post as a revision and sets the revisions version to 1.
+ * Nâng cấp tác giả bản sửa đổi, thêm bài viết hiện tại dưới dạng bản sửa đổi và đặt phiên bản bản sửa đổi thành 1.
  *
  * @since 3.6.0
  * @access private
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param WP_Post $post      Post object.
- * @param array   $revisions Current revisions of the post.
- * @return bool true if the revisions were upgraded, false if problems.
+ * @param WP_Post $post      Đối tượng bài viết.
+ * @param array   $revisions Các bản sửa đổi hiện tại của bài viết.
+ * @return bool true nếu các bản sửa đổi đã được nâng cấp, false nếu có vấn đề.
  */
 function _wp_upgrade_revisions_of_post( $post, $revisions ) {
 	global $wpdb;
 
-	// Add post option exclusively.
+	// Thêm tùy chọn bài viết độc quyền.
 	$lock   = "revision-upgrade-{$post->ID}";
 	$now    = time();
 	$result = $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO `$wpdb->options` (`option_name`, `option_value`, `autoload`) VALUES (%s, %s, 'off') /* LOCK */", $lock, $now ) );
 
 	if ( ! $result ) {
-		// If we couldn't get a lock, see how old the previous lock is.
+		// Nếu không thể lấy khóa, xem khóa trước đó đã cũ bao lâu.
 		$locked = get_option( $lock );
 
 		if ( ! $locked ) {
 			/*
-			 * Can't write to the lock, and can't read the lock.
-			 * Something broken has happened.
+			 * Không thể ghi vào khóa, và không thể đọc khóa.
+			 * Đã xảy ra sự cố.
 			 */
 			return false;
 		}
 
 		if ( $locked > $now - HOUR_IN_SECONDS ) {
-			// Lock is not too old: some other process may be upgrading this post. Bail.
+			// Khóa chưa quá cũ: tiến trình khác có thể đang nâng cấp bài viết này. Thoát.
 			return false;
 		}
 
-		// Lock is too old - update it (below) and continue.
+		// Khóa quá cũ - cập nhật nó (bên dưới) và tiếp tục.
 	}
 
-	// If we could get a lock, re-"add" the option to fire all the correct filters.
+	// Nếu chúng ta lấy được khóa, thêm lại tùy chọn để kích hoạt tất cả bộ lọc đúng.
 	update_option( $lock, $now );
 
 	reset( $revisions );
@@ -1038,40 +1038,40 @@ function _wp_upgrade_revisions_of_post( $post, $revisions ) {
 
 		$this_revision_version = _wp_get_post_revision_version( $this_revision );
 
-		// Something terrible happened.
+		// Đã xảy ra lỗi nghiêm trọng.
 		if ( false === $this_revision_version ) {
 			continue;
 		}
 
 		/*
-		 * 1 is the latest revision version, so we're already up to date.
-		 * No need to add a copy of the post as latest revision.
+		 * 1 là phiên bản bản sửa đổi mới nhất, vậy chúng ta đã cập nhật rồi.
+		 * Không cần thêm bản sao của bài viết dưới dạng bản sửa đổi mới nhất.
 		 */
 		if ( 0 < $this_revision_version ) {
 			$add_last = false;
 			continue;
 		}
 
-		// Always update the revision version.
+		// Luôn cập nhật phiên bản bản sửa đổi.
 		$update = array(
 			'post_name' => preg_replace( '/^(\d+-(?:autosave|revision))[\d-]*$/', '$1-v1', $this_revision->post_name ),
 		);
 
 		/*
-		 * If this revision is the oldest revision of the post, i.e. no $prev_revision,
-		 * the correct post_author is probably $post->post_author, but that's only a good guess.
-		 * Update the revision version only and Leave the author as-is.
+		 * Nếu bản sửa đổi này là bản sửa đổi cũ nhất của bài viết, tức là không có $prev_revision,
+		 * post_author đúng có lẽ là $post->post_author, nhưng đó chỉ là phỏng đoán tốt.
+		 * Chỉ cập nhật phiên bản bản sửa đổi và giữ nguyên tác giả.
 		 */
 		if ( $prev_revision ) {
 			$prev_revision_version = _wp_get_post_revision_version( $prev_revision );
 
-			// If the previous revision is already up to date, it no longer has the information we need :(
+			// Nếu bản sửa đổi trước đó đã được cập nhật, nó không còn chứa thông tin chúng ta cần :(
 			if ( $prev_revision_version < 1 ) {
 				$update['post_author'] = $prev_revision->post_author;
 			}
 		}
 
-		// Upgrade this revision.
+		// Nâng cấp bản sửa đổi này.
 		$result = $wpdb->update( $wpdb->posts, $update, array( 'ID' => $this_revision->ID ) );
 
 		if ( $result ) {
@@ -1081,7 +1081,7 @@ function _wp_upgrade_revisions_of_post( $post, $revisions ) {
 
 	delete_option( $lock );
 
-	// Add a copy of the post as latest revision.
+	// Thêm bản sao của bài viết dưới dạng bản sửa đổi mới nhất.
 	if ( $add_last ) {
 		wp_save_post_revision( $post->ID );
 	}
@@ -1090,19 +1090,19 @@ function _wp_upgrade_revisions_of_post( $post, $revisions ) {
 }
 
 /**
- * Filters preview post meta retrieval to get values from the autosave.
+ * Lọc việc lấy meta bài viết xem trước để nhận giá trị từ bản tự động lưu.
  *
- * Filters revisioned meta keys only.
+ * Chỉ lọc các khóa meta được lưu phiên bản.
  *
  * @since 6.4.0
  *
- * @param mixed  $value     Meta value to filter.
- * @param int    $object_id Object ID.
- * @param string $meta_key  Meta key to filter a value for.
- * @param bool   $single    Whether to return a single value.
- * @return mixed Original meta value if the meta key isn't revisioned, the object doesn't exist,
- *               the post type is a revision or the post ID doesn't match the object ID.
- *               Otherwise, the revisioned meta value is returned for the preview.
+ * @param mixed  $value     Giá trị meta cần lọc.
+ * @param int    $object_id ID đối tượng.
+ * @param string $meta_key  Khóa meta cần lọc giá trị cho.
+ * @param bool   $single    Có trả về giá trị đơn hay không.
+ * @return mixed Giá trị meta gốc nếu khóa meta không được lưu phiên bản, đối tượng không tồn tại,
+ *               loại bài viết là bản sửa đổi hoặc ID bài viết không khớp với ID đối tượng.
+ *               Nếu không, giá trị meta được lưu phiên bản sẽ được trả về cho xem trước.
  */
 function _wp_preview_meta_filter( $value, $object_id, $meta_key, $single ) {
 	$post = get_post();

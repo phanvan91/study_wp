@@ -1,13 +1,13 @@
 <?php
 /**
- * Build User Administration Menu.
+ * Xây dựng Menu Quản trị Người dùng.
  *
  * @package WordPress
  * @subpackage Administration
  * @since 3.1.0
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }

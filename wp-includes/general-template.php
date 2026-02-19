@@ -1,39 +1,39 @@
 <?php
 /**
- * General template tags that can go anywhere in a template.
+ * Các thẻ template chung có thể sử dụng ở bất kỳ đâu trong template.
  *
  * @package WordPress
  * @subpackage Template
  */
 
 /**
- * Loads header template.
+ * Tải template header.
  *
- * Includes the header template for a theme or if a name is specified then a
- * specialized header will be included.
+ * Include template header cho theme hoặc nếu chỉ định tên thì sẽ include
+ * một header chuyên biệt.
  *
- * For the parameter, if the file is called "header-special.php" then specify
+ * Đối với tham số, nếu file có tên "header-special.php" thì chỉ định
  * "special".
  *
  * @since 1.5.0
- * @since 5.5.0 A return value was added.
- * @since 5.5.0 The `$args` parameter was added.
+ * @since 5.5.0 Đã thêm giá trị trả về.
+ * @since 5.5.0 Đã thêm tham số `$args`.
  *
- * @param string|null $name The name of the specialized header. Default null.
- * @param array       $args Optional. Additional arguments passed to the header template.
- *                          Default empty array.
- * @return void|false Void on success, false if the template does not exist.
+ * @param string|null $name Tên của header chuyên biệt. Mặc định null.
+ * @param array       $args Tùy chọn. Các đối số bổ sung truyền vào template header.
+ *                          Mặc định mảng rỗng.
+ * @return void|false Void khi thành công, false nếu template không tồn tại.
  */
 function get_header( $name = null, $args = array() ) {
 	/**
-	 * Fires before the header template file is loaded.
+	 * Kích hoạt trước khi file template header được tải.
 	 *
 	 * @since 2.1.0
-	 * @since 2.8.0 The `$name` parameter was added.
-	 * @since 5.5.0 The `$args` parameter was added.
+	 * @since 2.8.0 Đã thêm tham số `$name`.
+	 * @since 5.5.0 Đã thêm tham số `$args`.
 	 *
-	 * @param string|null $name Name of the specific header file to use. Null for the default header.
-	 * @param array       $args Additional arguments passed to the header template.
+	 * @param string|null $name Tên file header cụ thể để sử dụng. Null cho header mặc định.
+	 * @param array       $args Các đối số bổ sung truyền vào template header.
 	 */
 	do_action( 'get_header', $name, $args );
 
@@ -51,33 +51,33 @@ function get_header( $name = null, $args = array() ) {
 }
 
 /**
- * Loads footer template.
+ * Tải template footer.
  *
- * Includes the footer template for a theme or if a name is specified then a
- * specialized footer will be included.
+ * Include template footer cho theme hoặc nếu chỉ định tên thì sẽ include
+ * một footer chuyên biệt.
  *
- * For the parameter, if the file is called "footer-special.php" then specify
+ * Đối với tham số, nếu file có tên "footer-special.php" thì chỉ định
  * "special".
  *
  * @since 1.5.0
- * @since 5.5.0 A return value was added.
- * @since 5.5.0 The `$args` parameter was added.
+ * @since 5.5.0 Đã thêm giá trị trả về.
+ * @since 5.5.0 Đã thêm tham số `$args`.
  *
- * @param string|null $name The name of the specialized footer. Default null.
- * @param array       $args Optional. Additional arguments passed to the footer template.
- *                          Default empty array.
- * @return void|false Void on success, false if the template does not exist.
+ * @param string|null $name Tên của footer chuyên biệt. Mặc định null.
+ * @param array       $args Tùy chọn. Các đối số bổ sung truyền vào template footer.
+ *                          Mặc định mảng rỗng.
+ * @return void|false Void khi thành công, false nếu template không tồn tại.
  */
 function get_footer( $name = null, $args = array() ) {
 	/**
-	 * Fires before the footer template file is loaded.
+	 * Kích hoạt trước khi file template footer được tải.
 	 *
 	 * @since 2.1.0
-	 * @since 2.8.0 The `$name` parameter was added.
-	 * @since 5.5.0 The `$args` parameter was added.
+	 * @since 2.8.0 Đã thêm tham số `$name`.
+	 * @since 5.5.0 Đã thêm tham số `$args`.
 	 *
-	 * @param string|null $name Name of the specific footer file to use. Null for the default footer.
-	 * @param array       $args Additional arguments passed to the footer template.
+	 * @param string|null $name Tên file footer cụ thể để sử dụng. Null cho footer mặc định.
+	 * @param array       $args Các đối số bổ sung truyền vào template footer.
 	 */
 	do_action( 'get_footer', $name, $args );
 
@@ -95,33 +95,33 @@ function get_footer( $name = null, $args = array() ) {
 }
 
 /**
- * Loads sidebar template.
+ * Tải template sidebar.
  *
- * Includes the sidebar template for a theme or if a name is specified then a
- * specialized sidebar will be included.
+ * Include template sidebar cho theme hoặc nếu chỉ định tên thì sẽ include
+ * một sidebar chuyên biệt.
  *
- * For the parameter, if the file is called "sidebar-special.php" then specify
+ * Đối với tham số, nếu file có tên "sidebar-special.php" thì chỉ định
  * "special".
  *
  * @since 1.5.0
- * @since 5.5.0 A return value was added.
- * @since 5.5.0 The `$args` parameter was added.
+ * @since 5.5.0 Đã thêm giá trị trả về.
+ * @since 5.5.0 Đã thêm tham số `$args`.
  *
- * @param string|null $name The name of the specialized sidebar. Default null.
- * @param array       $args Optional. Additional arguments passed to the sidebar template.
- *                          Default empty array.
- * @return void|false Void on success, false if the template does not exist.
+ * @param string|null $name Tên của sidebar chuyên biệt. Mặc định null.
+ * @param array       $args Tùy chọn. Các đối số bổ sung truyền vào template sidebar.
+ *                          Mặc định mảng rỗng.
+ * @return void|false Void khi thành công, false nếu template không tồn tại.
  */
 function get_sidebar( $name = null, $args = array() ) {
 	/**
-	 * Fires before the sidebar template file is loaded.
+	 * Kích hoạt trước khi file template sidebar được tải.
 	 *
 	 * @since 2.2.0
-	 * @since 2.8.0 The `$name` parameter was added.
-	 * @since 5.5.0 The `$args` parameter was added.
+	 * @since 2.8.0 Đã thêm tham số `$name`.
+	 * @since 5.5.0 Đã thêm tham số `$args`.
 	 *
-	 * @param string|null $name Name of the specific sidebar file to use. Null for the default sidebar.
-	 * @param array       $args Additional arguments passed to the sidebar template.
+	 * @param string|null $name Tên file sidebar cụ thể để sử dụng. Null cho sidebar mặc định.
+	 * @param array       $args Các đối số bổ sung truyền vào template sidebar.
 	 */
 	do_action( 'get_sidebar', $name, $args );
 
@@ -139,45 +139,45 @@ function get_sidebar( $name = null, $args = array() ) {
 }
 
 /**
- * Loads a template part into a template.
+ * Tải một phần template vào template.
  *
- * Provides a simple mechanism for child themes to overload reusable sections of code
- * in the theme.
+ * Cung cấp cơ chế đơn giản cho child theme ghi đè các phần mã có thể tái sử dụng
+ * trong theme.
  *
- * Includes the named template part for a theme or if a name is specified then a
- * specialized part will be included. If the theme contains no {slug}.php file
- * then no template will be included.
+ * Include phần template được đặt tên cho theme hoặc nếu chỉ định tên thì sẽ include
+ * một phần chuyên biệt. Nếu theme không chứa file {slug}.php
+ * thì sẽ không có template nào được include.
  *
- * The template is included using require, not require_once, so you may include the
- * same template part multiple times.
+ * Template được include bằng require, không phải require_once, vì vậy bạn có thể include
+ * cùng một phần template nhiều lần.
  *
- * For the $name parameter, if the file is called "{slug}-special.php" then specify
+ * Đối với tham số $name, nếu file có tên "{slug}-special.php" thì chỉ định
  * "special".
  *
  * @since 3.0.0
- * @since 5.5.0 A return value was added.
- * @since 5.5.0 The `$args` parameter was added.
+ * @since 5.5.0 Đã thêm giá trị trả về.
+ * @since 5.5.0 Đã thêm tham số `$args`.
  *
- * @param string      $slug The slug name for the generic template.
- * @param string|null $name Optional. The name of the specialized template. Default null.
- * @param array       $args Optional. Additional arguments passed to the template.
- *                          Default empty array.
- * @return void|false Void on success, false if the template does not exist.
+ * @param string      $slug Tên slug cho template chung.
+ * @param string|null $name Tùy chọn. Tên của template chuyên biệt. Mặc định null.
+ * @param array       $args Tùy chọn. Các đối số bổ sung truyền vào template.
+ *                          Mặc định mảng rỗng.
+ * @return void|false Void khi thành công, false nếu template không tồn tại.
  */
 function get_template_part( $slug, $name = null, $args = array() ) {
 	/**
-	 * Fires before the specified template part file is loaded.
+	 * Kích hoạt trước khi file phần template được chỉ định được tải.
 	 *
-	 * The dynamic portion of the hook name, `$slug`, refers to the slug name
-	 * for the generic template part.
+	 * Phần động của tên hook, `$slug`, tham chiếu đến tên slug
+	 * cho phần template chung.
 	 *
 	 * @since 3.0.0
-	 * @since 5.5.0 The `$args` parameter was added.
+	 * @since 5.5.0 Đã thêm tham số `$args`.
 	 *
-	 * @param string      $slug The slug name for the generic template.
-	 * @param string|null $name The name of the specialized template
-	 *                          or null if there is none.
-	 * @param array       $args Additional arguments passed to the template.
+	 * @param string      $slug Tên slug cho template chung.
+	 * @param string|null $name Tên của template chuyên biệt
+	 *                          hoặc null nếu không có.
+	 * @param array       $args Các đối số bổ sung truyền vào template.
 	 */
 	do_action( "get_template_part_{$slug}", $slug, $name, $args );
 
@@ -190,16 +190,16 @@ function get_template_part( $slug, $name = null, $args = array() ) {
 	$templates[] = "{$slug}.php";
 
 	/**
-	 * Fires before an attempt is made to locate and load a template part.
+	 * Kích hoạt trước khi thực hiện nỗ lực tìm và tải một phần template.
 	 *
 	 * @since 5.2.0
-	 * @since 5.5.0 The `$args` parameter was added.
+	 * @since 5.5.0 Đã thêm tham số `$args`.
 	 *
-	 * @param string   $slug      The slug name for the generic template.
-	 * @param string   $name      The name of the specialized template
-	 *                            or an empty string if there is none.
-	 * @param string[] $templates Array of template files to search for, in order.
-	 * @param array    $args      Additional arguments passed to the template.
+	 * @param string   $slug      Tên slug cho template chung.
+	 * @param string   $name      Tên của template chuyên biệt
+	 *                            hoặc chuỗi rỗng nếu không có.
+	 * @param string[] $templates Mảng các file template để tìm kiếm, theo thứ tự.
+	 * @param array    $args      Các đối số bổ sung truyền vào template.
 	 */
 	do_action( 'get_template_part', $slug, $name, $templates, $args );
 
@@ -209,47 +209,47 @@ function get_template_part( $slug, $name = null, $args = array() ) {
 }
 
 /**
- * Displays search form.
+ * Hiển thị biểu mẫu tìm kiếm.
  *
- * Will first attempt to locate the searchform.php file in either the child or
- * the parent, then load it. If it doesn't exist, then the default search form
- * will be displayed. The default search form is HTML, which will be displayed.
- * There is a filter applied to the search form HTML in order to edit or replace
- * it. The filter is {@see 'get_search_form'}.
+ * Trước tiên sẽ cố gắng tìm file searchform.php trong child theme hoặc
+ * theme cha, sau đó tải nó. Nếu không tồn tại, biểu mẫu tìm kiếm mặc định
+ * sẽ được hiển thị. Biểu mẫu tìm kiếm mặc định là HTML.
+ * Có một bộ lọc được áp dụng cho HTML biểu mẫu tìm kiếm để chỉnh sửa hoặc thay thế
+ * nó. Bộ lọc là {@see 'get_search_form'}.
  *
- * This function is primarily used by themes which want to hardcode the search
- * form into the sidebar and also by the search widget in WordPress.
+ * Hàm này chủ yếu được sử dụng bởi các theme muốn đặt cố định biểu mẫu tìm kiếm
+ * vào sidebar và cũng bởi widget tìm kiếm trong WordPress.
  *
- * There is also an action that is called whenever the function is run called,
- * {@see 'pre_get_search_form'}. This can be useful for outputting JavaScript that the
- * search relies on or various formatting that applies to the beginning of the
- * search. To give a few examples of what it can be used for.
+ * Ngoài ra còn có một action được gọi mỗi khi hàm chạy,
+ * {@see 'pre_get_search_form'}. Điều này hữu ích cho việc xuất JavaScript mà
+ * tìm kiếm cần hoặc các định dạng áp dụng cho phần đầu của
+ * tìm kiếm.
  *
  * @since 2.7.0
- * @since 5.2.0 The `$args` array parameter was added in place of an `$echo` boolean flag.
+ * @since 5.2.0 Tham số mảng `$args` được thêm thay thế cho cờ boolean `$echo`.
  *
  * @param array $args {
- *     Optional. Array of display arguments.
+ *     Tùy chọn. Mảng các đối số hiển thị.
  *
- *     @type bool   $echo       Whether to echo or return the form. Default true.
- *     @type string $aria_label ARIA label for the search form. Useful to distinguish
- *                              multiple search forms on the same page and improve
- *                              accessibility. Default empty.
+ *     @type bool   $echo       Có echo hay trả về biểu mẫu không. Mặc định true.
+ *     @type string $aria_label Nhãn ARIA cho biểu mẫu tìm kiếm. Hữu ích để phân biệt
+ *                              nhiều biểu mẫu tìm kiếm trên cùng một trang và cải thiện
+ *                              khả năng truy cập. Mặc định rỗng.
  * }
- * @return void|string Void if 'echo' argument is true, search form HTML if 'echo' is false.
+ * @return void|string Void nếu đối số 'echo' là true, HTML biểu mẫu tìm kiếm nếu 'echo' là false.
  */
 function get_search_form( $args = array() ) {
 	/**
-	 * Fires before the search form is retrieved, at the start of get_search_form().
+	 * Kích hoạt trước khi biểu mẫu tìm kiếm được lấy, ở đầu get_search_form().
 	 *
-	 * @since 2.7.0 as 'get_search_form' action.
+	 * @since 2.7.0 dưới dạng action 'get_search_form'.
 	 * @since 3.6.0
-	 * @since 5.5.0 The `$args` parameter was added.
+	 * @since 5.5.0 Đã thêm tham số `$args`.
 	 *
 	 * @link https://core.trac.wordpress.org/ticket/19321
 	 *
-	 * @param array $args The array of arguments for building the search form.
-	 *                    See get_search_form() for information on accepted arguments.
+	 * @param array $args Mảng các đối số để xây dựng biểu mẫu tìm kiếm.
+	 *                    Xem get_search_form() để biết thông tin về các đối số được chấp nhận.
 	 */
 	do_action( 'pre_get_search_form', $args );
 
@@ -257,17 +257,17 @@ function get_search_form( $args = array() ) {
 
 	if ( ! is_array( $args ) ) {
 		/*
-		 * Back compat: to ensure previous uses of get_search_form() continue to
-		 * function as expected, we handle a value for the boolean $echo param removed
-		 * in 5.2.0. Then we deal with the $args array and cast its defaults.
+		 * Tương thích ngược: để đảm bảo các lần sử dụng trước của get_search_form() tiếp tục
+		 * hoạt động như mong đợi, chúng ta xử lý giá trị cho tham số boolean $echo đã bị loại bỏ
+		 * trong 5.2.0. Sau đó xử lý mảng $args và ép kiểu các giá trị mặc định.
 		 */
 		$echo = (bool) $args;
 
-		// Set an empty array and allow default arguments to take over.
+		// Đặt mảng rỗng và cho phép các đối số mặc định tiếp quản.
 		$args = array();
 	}
 
-	// Defaults are to echo and to output no custom label on the form.
+	// Mặc định là echo và không xuất nhãn tùy chỉnh trên biểu mẫu.
 	$defaults = array(
 		'echo'       => $echo,
 		'aria_label' => '',
@@ -276,30 +276,30 @@ function get_search_form( $args = array() ) {
 	$args = wp_parse_args( $args, $defaults );
 
 	/**
-	 * Filters the array of arguments used when generating the search form.
+	 * Lọc mảng các đối số được sử dụng khi tạo biểu mẫu tìm kiếm.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param array $args The array of arguments for building the search form.
-	 *                    See get_search_form() for information on accepted arguments.
+	 * @param array $args Mảng các đối số để xây dựng biểu mẫu tìm kiếm.
+	 *                    Xem get_search_form() để biết thông tin về các đối số được chấp nhận.
 	 */
 	$args = apply_filters( 'search_form_args', $args );
 
-	// Ensure that the filtered arguments contain all required default values.
+	// Đảm bảo rằng các đối số đã lọc chứa tất cả các giá trị mặc định cần thiết.
 	$args = array_merge( $defaults, $args );
 
 	$format = current_theme_supports( 'html5', 'search-form' ) ? 'html5' : 'xhtml';
 
 	/**
-	 * Filters the HTML format of the search form.
+	 * Lọc định dạng HTML của biểu mẫu tìm kiếm.
 	 *
 	 * @since 3.6.0
-	 * @since 5.5.0 The `$args` parameter was added.
+	 * @since 5.5.0 Đã thêm tham số `$args`.
 	 *
-	 * @param string $format The type of markup to use in the search form.
-	 *                       Accepts 'html5', 'xhtml'.
-	 * @param array  $args   The array of arguments for building the search form.
-	 *                       See get_search_form() for information on accepted arguments.
+	 * @param string $format Loại đánh dấu sử dụng trong biểu mẫu tìm kiếm.
+	 *                       Chấp nhận 'html5', 'xhtml'.
+	 * @param array  $args   Mảng các đối số để xây dựng biểu mẫu tìm kiếm.
+	 *                       Xem get_search_form() để biết thông tin về các đối số được chấp nhận.
 	 */
 	$format = apply_filters( 'search_form_format', $format, $args );
 
@@ -310,13 +310,13 @@ function get_search_form( $args = array() ) {
 		require $search_form_template;
 		$form = ob_get_clean();
 	} else {
-		// Build a string containing an aria-label to use for the search form.
+		// Xây dựng chuỗi chứa aria-label để sử dụng cho biểu mẫu tìm kiếm.
 		if ( $args['aria_label'] ) {
 			$aria_label = 'aria-label="' . esc_attr( $args['aria_label'] ) . '" ';
 		} else {
 			/*
-			 * If there's no custom aria-label, we can set a default here. At the
-			 * moment it's empty as there's uncertainty about what the default should be.
+			 * Nếu không có aria-label tùy chỉnh, chúng ta có thể đặt giá trị mặc định ở đây. Hiện tại
+			 * nó rỗng vì chưa chắc chắn giá trị mặc định nên là gì.
 			 */
 			$aria_label = '';
 		}
@@ -347,14 +347,14 @@ function get_search_form( $args = array() ) {
 	}
 
 	/**
-	 * Filters the HTML output of the search form.
+	 * Lọc đầu ra HTML của biểu mẫu tìm kiếm.
 	 *
 	 * @since 2.7.0
-	 * @since 5.5.0 The `$args` parameter was added.
+	 * @since 5.5.0 Đã thêm tham số `$args`.
 	 *
-	 * @param string $form The search form HTML output.
-	 * @param array  $args The array of arguments for building the search form.
-	 *                     See get_search_form() for information on accepted arguments.
+	 * @param string $form Đầu ra HTML của biểu mẫu tìm kiếm.
+	 * @param array  $args Mảng các đối số để xây dựng biểu mẫu tìm kiếm.
+	 *                     Xem get_search_form() để biết thông tin về các đối số được chấp nhận.
 	 */
 	$result = apply_filters( 'get_search_form', $form, $args );
 
@@ -370,16 +370,16 @@ function get_search_form( $args = array() ) {
 }
 
 /**
- * Displays the Log In/Out link.
+ * Hiển thị liên kết Đăng nhập/Đăng xuất.
  *
- * Displays a link, which allows users to navigate to the Log In page to log in
- * or log out depending on whether they are currently logged in.
+ * Hiển thị một liên kết cho phép người dùng điều hướng đến trang Đăng nhập để đăng nhập
+ * hoặc đăng xuất tùy thuộc vào việc họ hiện đang đăng nhập hay không.
  *
  * @since 1.5.0
  *
- * @param string $redirect Optional path to redirect to on login/logout.
- * @param bool   $display  Default to echo and not return the link.
- * @return void|string Void if `$display` argument is true, log in/out link if `$display` is false.
+ * @param string $redirect Tùy chọn. Đường dẫn để chuyển hướng khi đăng nhập/đăng xuất.
+ * @param bool   $display  Mặc định echo và không trả về liên kết.
+ * @return void|string Void nếu đối số `$display` là true, liên kết đăng nhập/đăng xuất nếu `$display` là false.
  */
 function wp_loginout( $redirect = '', $display = true ) {
 	if ( ! is_user_logged_in() ) {
@@ -390,28 +390,28 @@ function wp_loginout( $redirect = '', $display = true ) {
 
 	if ( $display ) {
 		/**
-		 * Filters the HTML output for the Log In/Log Out link.
+		 * Lọc đầu ra HTML cho liên kết Đăng nhập/Đăng xuất.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param string $link The HTML link content.
+		 * @param string $link Nội dung liên kết HTML.
 		 */
 		echo apply_filters( 'loginout', $link );
 	} else {
-		/** This filter is documented in wp-includes/general-template.php */
+		/** Bộ lọc này được ghi lại trong wp-includes/general-template.php */
 		return apply_filters( 'loginout', $link );
 	}
 }
 
 /**
- * Retrieves the logout URL.
+ * Lấy URL đăng xuất.
  *
- * Returns the URL that allows the user to log out of the site.
+ * Trả về URL cho phép người dùng đăng xuất khỏi trang web.
  *
  * @since 2.7.0
  *
- * @param string $redirect Path to redirect to on logout.
- * @return string The logout URL. Note: HTML-encoded via esc_html() in wp_nonce_url().
+ * @param string $redirect Đường dẫn để chuyển hướng khi đăng xuất.
+ * @return string URL đăng xuất. Lưu ý: Được mã hóa HTML qua esc_html() trong wp_nonce_url().
  */
 function wp_logout_url( $redirect = '' ) {
 	$args = array();
@@ -423,25 +423,25 @@ function wp_logout_url( $redirect = '' ) {
 	$logout_url = wp_nonce_url( $logout_url, 'log-out' );
 
 	/**
-	 * Filters the logout URL.
+	 * Lọc URL đăng xuất.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $logout_url The HTML-encoded logout URL.
-	 * @param string $redirect   Path to redirect to on logout.
+	 * @param string $logout_url URL đăng xuất đã được mã hóa HTML.
+	 * @param string $redirect   Đường dẫn để chuyển hướng khi đăng xuất.
 	 */
 	return apply_filters( 'logout_url', $logout_url, $redirect );
 }
 
 /**
- * Retrieves the login URL.
+ * Lấy URL đăng nhập.
  *
  * @since 2.7.0
  *
- * @param string $redirect     Path to redirect to on log in.
- * @param bool   $force_reauth Whether to force reauthorization, even if a cookie is present.
- *                             Default false.
- * @return string The login URL. Not HTML-encoded.
+ * @param string $redirect     Đường dẫn để chuyển hướng khi đăng nhập.
+ * @param bool   $force_reauth Có buộc xác thực lại hay không, ngay cả khi cookie đã tồn tại.
+ *                             Mặc định false.
+ * @return string URL đăng nhập. Không được mã hóa HTML.
  */
 function wp_login_url( $redirect = '', $force_reauth = false ) {
 	$login_url = site_url( 'wp-login.php', 'login' );
@@ -455,76 +455,75 @@ function wp_login_url( $redirect = '', $force_reauth = false ) {
 	}
 
 	/**
-	 * Filters the login URL.
+	 * Lọc URL đăng nhập.
 	 *
 	 * @since 2.8.0
-	 * @since 4.2.0 The `$force_reauth` parameter was added.
+	 * @since 4.2.0 Đã thêm tham số `$force_reauth`.
 	 *
-	 * @param string $login_url    The login URL. Not HTML-encoded.
-	 * @param string $redirect     The path to redirect to on login, if supplied.
-	 * @param bool   $force_reauth Whether to force reauthorization, even if a cookie is present.
+	 * @param string $login_url    URL đăng nhập. Không được mã hóa HTML.
+	 * @param string $redirect     Đường dẫn để chuyển hướng khi đăng nhập, nếu được cung cấp.
+	 * @param bool   $force_reauth Có buộc xác thực lại hay không, ngay cả khi cookie đã tồn tại.
 	 */
 	return apply_filters( 'login_url', $login_url, $redirect, $force_reauth );
 }
 
 /**
- * Returns the URL that allows the user to register on the site.
+ * Trả về URL cho phép người dùng đăng ký trên trang web.
  *
  * @since 3.6.0
  *
- * @return string User registration URL.
+ * @return string URL đăng ký người dùng.
  */
 function wp_registration_url() {
 	/**
-	 * Filters the user registration URL.
+	 * Lọc URL đăng ký người dùng.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $register The user registration URL.
+	 * @param string $register URL đăng ký người dùng.
 	 */
 	return apply_filters( 'register_url', site_url( 'wp-login.php?action=register', 'login' ) );
 }
 
 /**
- * Provides a simple login form for use anywhere within WordPress.
+ * Cung cấp biểu mẫu đăng nhập đơn giản để sử dụng ở bất kỳ đâu trong WordPress.
  *
- * The login form HTML is echoed by default. Pass a false value for `$echo` to return it instead.
+ * HTML biểu mẫu đăng nhập được echo theo mặc định. Truyền giá trị false cho `$echo` để trả về thay thế.
  *
  * @since 3.0.0
- * @since 6.6.0 Added `required_username` and `required_password` arguments.
+ * @since 6.6.0 Đã thêm đối số `required_username` và `required_password`.
  *
  * @param array $args {
- *     Optional. Array of options to control the form output. Default empty array.
+ *     Tùy chọn. Mảng các tùy chọn để điều khiển đầu ra biểu mẫu. Mặc định mảng rỗng.
  *
- *     @type bool   $echo              Whether to display the login form or return the form HTML code.
- *                                     Default true (echo).
- *     @type string $redirect          URL to redirect to. Must be absolute, as in "https://example.com/mypage/".
- *                                     Default is to redirect back to the request URI.
- *     @type string $form_id           ID attribute value for the form. Default 'loginform'.
- *     @type string $label_username    Label for the username or email address field. Default 'Username or Email Address'.
- *     @type string $label_password    Label for the password field. Default 'Password'.
- *     @type string $label_remember    Label for the remember field. Default 'Remember Me'.
- *     @type string $label_log_in      Label for the submit button. Default 'Log In'.
- *     @type string $id_username       ID attribute value for the username field. Default 'user_login'.
- *     @type string $id_password       ID attribute value for the password field. Default 'user_pass'.
- *     @type string $id_remember       ID attribute value for the remember field. Default 'rememberme'.
- *     @type string $id_submit         ID attribute value for the submit button. Default 'wp-submit'.
- *     @type bool   $remember          Whether to display the "rememberme" checkbox in the form.
- *     @type string $value_username    Default value for the username field. Default empty.
- *     @type bool   $value_remember    Whether the "Remember Me" checkbox should be checked by default.
- *                                     Default false (unchecked).
- *     @type bool   $required_username Whether the username field has the 'required' attribute.
- *                                     Default false.
- *     @type bool   $required_password Whether the password field has the 'required' attribute.
- *                                     Default false.
+ *     @type bool   $echo              Có hiển thị biểu mẫu đăng nhập hay trả về mã HTML. Mặc định true (echo).
+ *     @type string $redirect          URL để chuyển hướng. Phải là đường dẫn tuyệt đối, ví dụ "https://example.com/mypage/".
+ *                                     Mặc định chuyển hướng về URI yêu cầu.
+ *     @type string $form_id           Giá trị thuộc tính ID cho biểu mẫu. Mặc định 'loginform'.
+ *     @type string $label_username    Nhãn cho trường tên người dùng hoặc địa chỉ email. Mặc định 'Username or Email Address'.
+ *     @type string $label_password    Nhãn cho trường mật khẩu. Mặc định 'Password'.
+ *     @type string $label_remember    Nhãn cho trường ghi nhớ. Mặc định 'Remember Me'.
+ *     @type string $label_log_in      Nhãn cho nút gửi. Mặc định 'Log In'.
+ *     @type string $id_username       Giá trị thuộc tính ID cho trường tên người dùng. Mặc định 'user_login'.
+ *     @type string $id_password       Giá trị thuộc tính ID cho trường mật khẩu. Mặc định 'user_pass'.
+ *     @type string $id_remember       Giá trị thuộc tính ID cho trường ghi nhớ. Mặc định 'rememberme'.
+ *     @type string $id_submit         Giá trị thuộc tính ID cho nút gửi. Mặc định 'wp-submit'.
+ *     @type bool   $remember          Có hiển thị hộp kiểm "rememberme" trong biểu mẫu hay không.
+ *     @type string $value_username    Giá trị mặc định cho trường tên người dùng. Mặc định rỗng.
+ *     @type bool   $value_remember    Có đánh dấu hộp kiểm "Remember Me" theo mặc định hay không.
+ *                                     Mặc định false (không đánh dấu).
+ *     @type bool   $required_username Trường tên người dùng có thuộc tính 'required' hay không.
+ *                                     Mặc định false.
+ *     @type bool   $required_password Trường mật khẩu có thuộc tính 'required' hay không.
+ *                                     Mặc định false.
  *
  * }
- * @return void|string Void if 'echo' argument is true, login form HTML if 'echo' is false.
+ * @return void|string Void nếu đối số 'echo' là true, HTML biểu mẫu đăng nhập nếu 'echo' là false.
  */
 function wp_login_form( $args = array() ) {
 	$defaults = array(
 		'echo'              => true,
-		// Default 'redirect' value takes the user back to the request URI.
+		// Giá trị mặc định 'redirect' đưa người dùng quay lại URI yêu cầu.
 		'redirect'          => ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
 		'form_id'           => 'loginform',
 		'label_username'    => __( 'Username or Email Address' ),
@@ -537,59 +536,58 @@ function wp_login_form( $args = array() ) {
 		'id_submit'         => 'wp-submit',
 		'remember'          => true,
 		'value_username'    => '',
-		// Set 'value_remember' to true to default the "Remember me" checkbox to checked.
+		// Đặt 'value_remember' thành true để mặc định hộp kiểm "Remember me" được đánh dấu.
 		'value_remember'    => false,
-		// Set 'required_username' to true to add the required attribute to username field.
+		// Đặt 'required_username' thành true để thêm thuộc tính required vào trường tên người dùng.
 		'required_username' => false,
-		// Set 'required_password' to true to add the required attribute to password field.
+		// Đặt 'required_password' thành true để thêm thuộc tính required vào trường mật khẩu.
 		'required_password' => false,
 	);
 
 	/**
-	 * Filters the default login form output arguments.
+	 * Lọc các đối số đầu ra mặc định của biểu mẫu đăng nhập.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @see wp_login_form()
 	 *
-	 * @param array $defaults An array of default login form arguments.
+	 * @param array $defaults Mảng các đối số mặc định của biểu mẫu đăng nhập.
 	 */
 	$args = wp_parse_args( $args, apply_filters( 'login_form_defaults', $defaults ) );
 
 	/**
-	 * Filters content to display at the top of the login form.
+	 * Lọc nội dung hiển thị ở đầu biểu mẫu đăng nhập.
 	 *
-	 * The filter evaluates just following the opening form tag element.
+	 * Bộ lọc được đánh giá ngay sau thẻ mở của phần tử form.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $content Content to display. Default empty.
-	 * @param array  $args    Array of login form arguments.
+	 * @param string $content Nội dung để hiển thị. Mặc định rỗng.
+	 * @param array  $args    Mảng các đối số biểu mẫu đăng nhập.
 	 */
 	$login_form_top = apply_filters( 'login_form_top', '', $args );
 
 	/**
-	 * Filters content to display in the middle of the login form.
+	 * Lọc nội dung hiển thị ở giữa biểu mẫu đăng nhập.
 	 *
-	 * The filter evaluates just following the location where the 'login-password'
-	 * field is displayed.
+	 * Bộ lọc được đánh giá ngay sau vị trí hiển thị trường 'login-password'.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $content Content to display. Default empty.
-	 * @param array  $args    Array of login form arguments.
+	 * @param string $content Nội dung để hiển thị. Mặc định rỗng.
+	 * @param array  $args    Mảng các đối số biểu mẫu đăng nhập.
 	 */
 	$login_form_middle = apply_filters( 'login_form_middle', '', $args );
 
 	/**
-	 * Filters content to display at the bottom of the login form.
+	 * Lọc nội dung hiển thị ở cuối biểu mẫu đăng nhập.
 	 *
-	 * The filter evaluates just preceding the closing form tag element.
+	 * Bộ lọc được đánh giá ngay trước thẻ đóng của phần tử form.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $content Content to display. Default empty.
-	 * @param array  $args    Array of login form arguments.
+	 * @param string $content Nội dung để hiển thị. Mặc định rỗng.
+	 * @param array  $args    Mảng các đối số biểu mẫu đăng nhập.
 	 */
 	$login_form_bottom = apply_filters( 'login_form_bottom', '', $args );
 
@@ -648,12 +646,12 @@ function wp_login_form( $args = array() ) {
 }
 
 /**
- * Returns the URL that allows the user to reset the lost password.
+ * Trả về URL cho phép người dùng đặt lại mật khẩu đã mất.
  *
  * @since 2.8.0
  *
- * @param string $redirect Path to redirect to on login.
- * @return string Lost password URL.
+ * @param string $redirect Đường dẫn để chuyển hướng khi đăng nhập.
+ * @return string URL quên mật khẩu.
  */
 function wp_lostpassword_url( $redirect = '' ) {
 	$args = array(
@@ -674,29 +672,29 @@ function wp_lostpassword_url( $redirect = '' ) {
 	$lostpassword_url = add_query_arg( $args, network_site_url( $wp_login_path, 'login' ) );
 
 	/**
-	 * Filters the Lost Password URL.
+	 * Lọc URL quên mật khẩu.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $lostpassword_url The lost password page URL.
-	 * @param string $redirect         The path to redirect to on login.
+	 * @param string $lostpassword_url URL trang quên mật khẩu.
+	 * @param string $redirect         Đường dẫn để chuyển hướng khi đăng nhập.
 	 */
 	return apply_filters( 'lostpassword_url', $lostpassword_url, $redirect );
 }
 
 /**
- * Displays the Registration or Admin link.
+ * Hiển thị liên kết Đăng ký hoặc Quản trị.
  *
- * Display a link which allows the user to navigate to the registration page if
- * not logged in and registration is enabled or to the dashboard if logged in.
+ * Hiển thị một liên kết cho phép người dùng điều hướng đến trang đăng ký nếu
+ * chưa đăng nhập và đăng ký được bật hoặc đến bảng điều khiển nếu đã đăng nhập.
  *
  * @since 1.5.0
  *
- * @param string $before  Text to output before the link. Default `<li>`.
- * @param string $after   Text to output after the link. Default `</li>`.
- * @param bool   $display Default to echo and not return the link.
- * @return void|string Void if `$display` argument is true, registration or admin link
- *                     if `$display` is false.
+ * @param string $before  Văn bản xuất trước liên kết. Mặc định `<li>`.
+ * @param string $after   Văn bản xuất sau liên kết. Mặc định `</li>`.
+ * @param bool   $display Mặc định echo và không trả về liên kết.
+ * @return void|string Void nếu đối số `$display` là true, liên kết đăng ký hoặc quản trị
+ *                     nếu `$display` là false.
  */
 function wp_register( $before = '<li>', $after = '</li>', $display = true ) {
 	if ( ! is_user_logged_in() ) {
@@ -712,14 +710,14 @@ function wp_register( $before = '<li>', $after = '</li>', $display = true ) {
 	}
 
 	/**
-	 * Filters the HTML link to the Registration or Admin page.
+	 * Lọc liên kết HTML đến trang Đăng ký hoặc Quản trị.
 	 *
-	 * Users are sent to the admin page if logged-in, or the registration page
-	 * if enabled and logged-out.
+	 * Người dùng được chuyển đến trang quản trị nếu đã đăng nhập, hoặc trang đăng ký
+	 * nếu được bật và chưa đăng nhập.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $link The HTML code for the link to the Registration or Admin page.
+	 * @param string $link Mã HTML cho liên kết đến trang Đăng ký hoặc Quản trị.
 	 */
 	$link = apply_filters( 'register', $link );
 
@@ -731,18 +729,18 @@ function wp_register( $before = '<li>', $after = '</li>', $display = true ) {
 }
 
 /**
- * Theme container function for the 'wp_meta' action.
+ * Hàm chứa của theme cho action 'wp_meta'.
  *
- * The {@see 'wp_meta'} action can have several purposes, depending on how you use it,
- * but one purpose might have been to allow for theme switching.
+ * Action {@see 'wp_meta'} có thể có nhiều mục đích, tùy thuộc vào cách bạn sử dụng,
+ * nhưng một mục đích có thể là cho phép chuyển đổi theme.
  *
  * @since 1.5.0
  *
- * @link https://core.trac.wordpress.org/ticket/1458 Explanation of 'wp_meta' action.
+ * @link https://core.trac.wordpress.org/ticket/1458 Giải thích action 'wp_meta'.
  */
 function wp_meta() {
 	/**
-	 * Fires before displaying echoed content in the sidebar.
+	 * Kích hoạt trước khi hiển thị nội dung echo trong sidebar.
 	 *
 	 * @since 1.5.0
 	 */
@@ -750,69 +748,69 @@ function wp_meta() {
 }
 
 /**
- * Displays information about the current site.
+ * Hiển thị thông tin về trang web hiện tại.
  *
  * @since 0.71
  *
- * @see get_bloginfo() For possible `$show` values
+ * @see get_bloginfo() Để biết các giá trị `$show` có thể sử dụng
  *
- * @param string $show Optional. Site information to display. Default empty.
+ * @param string $show Tùy chọn. Thông tin trang web để hiển thị. Mặc định rỗng.
  */
 function bloginfo( $show = '' ) {
 	echo get_bloginfo( $show, 'display' );
 }
 
 /**
- * Retrieves information about the current site.
+ * Lấy thông tin về trang web hiện tại.
  *
- * Possible values for `$show` include:
+ * Các giá trị có thể sử dụng cho `$show` bao gồm:
  *
- * - 'name' - Site title (set in Settings > General)
- * - 'description' - Site tagline (set in Settings > General)
- * - 'wpurl' - The WordPress address (URL) (set in Settings > General)
- * - 'url' - The Site address (URL) (set in Settings > General)
- * - 'admin_email' - Admin email (set in Settings > General)
- * - 'charset' - The "Encoding for pages and feeds"  (set in Settings > Reading)
- * - 'version' - The current WordPress version
- * - 'html_type' - The Content-Type (default: "text/html"). Themes and plugins
- *   can override the default value using the {@see 'pre_option_html_type'} filter
- * - 'text_direction' - The text direction determined by the site's language. is_rtl()
- *   should be used instead
- * - 'language' - Language code for the current site
- * - 'stylesheet_url' - URL to the stylesheet for the active theme. An active child theme
- *   will take precedence over this value
- * - 'stylesheet_directory' - Directory path for the active theme.  An active child theme
- *   will take precedence over this value
- * - 'template_url' / 'template_directory' - URL of the active theme's directory. An active
- *   child theme will NOT take precedence over this value
- * - 'pingback_url' - The pingback XML-RPC file URL (xmlrpc.php)
- * - 'atom_url' - The Atom feed URL (/feed/atom)
- * - 'rdf_url' - The RDF/RSS 1.0 feed URL (/feed/rdf)
- * - 'rss_url' - The RSS 0.92 feed URL (/feed/rss)
- * - 'rss2_url' - The RSS 2.0 feed URL (/feed)
- * - 'comments_atom_url' - The comments Atom feed URL (/comments/feed)
- * - 'comments_rss2_url' - The comments RSS 2.0 feed URL (/comments/feed)
+ * - 'name' - Tiêu đề trang web (đặt trong Cài đặt > Tổng quan)
+ * - 'description' - Khẩu hiệu trang web (đặt trong Cài đặt > Tổng quan)
+ * - 'wpurl' - Địa chỉ WordPress (URL) (đặt trong Cài đặt > Tổng quan)
+ * - 'url' - Địa chỉ Trang web (URL) (đặt trong Cài đặt > Tổng quan)
+ * - 'admin_email' - Email quản trị (đặt trong Cài đặt > Tổng quan)
+ * - 'charset' - "Mã hóa cho trang và feed" (đặt trong Cài đặt > Đọc)
+ * - 'version' - Phiên bản WordPress hiện tại
+ * - 'html_type' - Content-Type (mặc định: "text/html"). Theme và plugin
+ *   có thể ghi đè giá trị mặc định bằng bộ lọc {@see 'pre_option_html_type'}
+ * - 'text_direction' - Hướng văn bản được xác định bởi ngôn ngữ trang web. Nên sử dụng
+ *   is_rtl() thay thế
+ * - 'language' - Mã ngôn ngữ cho trang web hiện tại
+ * - 'stylesheet_url' - URL đến stylesheet cho theme đang hoạt động. Child theme đang hoạt động
+ *   sẽ được ưu tiên hơn giá trị này
+ * - 'stylesheet_directory' - Đường dẫn thư mục cho theme đang hoạt động. Child theme đang hoạt động
+ *   sẽ được ưu tiên hơn giá trị này
+ * - 'template_url' / 'template_directory' - URL thư mục của theme đang hoạt động. Child theme đang hoạt động
+ *   sẽ KHÔNG được ưu tiên hơn giá trị này
+ * - 'pingback_url' - URL file pingback XML-RPC (xmlrpc.php)
+ * - 'atom_url' - URL feed Atom (/feed/atom)
+ * - 'rdf_url' - URL feed RDF/RSS 1.0 (/feed/rdf)
+ * - 'rss_url' - URL feed RSS 0.92 (/feed/rss)
+ * - 'rss2_url' - URL feed RSS 2.0 (/feed)
+ * - 'comments_atom_url' - URL feed Atom bình luận (/comments/feed)
+ * - 'comments_rss2_url' - URL feed RSS 2.0 bình luận (/comments/feed)
  *
- * Some `$show` values are deprecated and will be removed in future versions.
- * These options will trigger the _deprecated_argument() function.
+ * Một số giá trị `$show` đã lỗi thời và sẽ bị loại bỏ trong các phiên bản tương lai.
+ * Các tùy chọn này sẽ kích hoạt hàm _deprecated_argument().
  *
- * Deprecated arguments include:
+ * Các đối số đã lỗi thời bao gồm:
  *
- * - 'siteurl' - Use 'url' instead
- * - 'home' - Use 'url' instead
+ * - 'siteurl' - Sử dụng 'url' thay thế
+ * - 'home' - Sử dụng 'url' thay thế
  *
  * @since 0.71
  *
- * @global string $wp_version The WordPress version string.
+ * @global string $wp_version Chuỗi phiên bản WordPress.
  *
- * @param string $show   Optional. Site info to retrieve. Default empty (site name).
- * @param string $filter Optional. How to filter what is retrieved. Default 'raw'.
- * @return string Mostly string values, might be empty.
+ * @param string $show   Tùy chọn. Thông tin trang web cần lấy. Mặc định rỗng (tên trang web).
+ * @param string $filter Tùy chọn. Cách lọc nội dung được lấy. Mặc định 'raw'.
+ * @return string Chủ yếu là giá trị chuỗi, có thể rỗng.
  */
 function get_bloginfo( $show = '', $filter = 'raw' ) {
 	switch ( $show ) {
-		case 'home':    // Deprecated.
-		case 'siteurl': // Deprecated.
+		case 'home':    // Đã lỗi thời.
+		case 'siteurl': // Đã lỗi thời.
 			_deprecated_argument(
 				__FUNCTION__,
 				'2.2.0',
@@ -824,7 +822,7 @@ function get_bloginfo( $show = '', $filter = 'raw' ) {
 					'<code>url</code>'
 				)
 			);
-			// Intentional fall-through to be handled by the 'url' case.
+			// Cố ý fall-through để được xử lý bởi case 'url'.
 		case 'url':
 			$output = home_url();
 			break;
@@ -924,22 +922,22 @@ function get_bloginfo( $show = '', $filter = 'raw' ) {
 			|| str_contains( $show, 'home' )
 		) {
 			/**
-			 * Filters the URL returned by get_bloginfo().
+			 * Lọc URL được trả về bởi get_bloginfo().
 			 *
 			 * @since 2.0.5
 			 *
-			 * @param string $output The URL returned by bloginfo().
-			 * @param string $show   Type of information requested.
+			 * @param string $output URL được trả về bởi bloginfo().
+			 * @param string $show   Loại thông tin được yêu cầu.
 			 */
 			$output = apply_filters( 'bloginfo_url', $output, $show );
 		} else {
 			/**
-			 * Filters the site information returned by get_bloginfo().
+			 * Lọc thông tin trang web được trả về bởi get_bloginfo().
 			 *
 			 * @since 0.71
 			 *
-			 * @param mixed  $output The requested non-URL site information.
-			 * @param string $show   Type of information requested.
+			 * @param mixed  $output Thông tin trang web không phải URL được yêu cầu.
+			 * @param string $show   Loại thông tin được yêu cầu.
 			 */
 			$output = apply_filters( 'bloginfo', $output, $show );
 		}
@@ -949,14 +947,14 @@ function get_bloginfo( $show = '', $filter = 'raw' ) {
 }
 
 /**
- * Returns the Site Icon URL.
+ * Trả về URL biểu tượng trang web.
  *
  * @since 4.3.0
  *
- * @param int    $size    Optional. Size of the site icon. Default 512 (pixels).
- * @param string $url     Optional. Fallback url if no site icon is found. Default empty.
- * @param int    $blog_id Optional. ID of the blog to get the site icon for. Default current blog.
- * @return string Site Icon URL.
+ * @param int    $size    Tùy chọn. Kích thước biểu tượng trang web. Mặc định 512 (pixel).
+ * @param string $url     Tùy chọn. URL dự phòng nếu không tìm thấy biểu tượng trang web. Mặc định rỗng.
+ * @param int    $blog_id Tùy chọn. ID của blog để lấy biểu tượng trang web. Mặc định blog hiện tại.
+ * @return string URL biểu tượng trang web.
  */
 function get_site_icon_url( $size = 512, $url = '', $blog_id = 0 ) {
 	$switched_blog = false;
@@ -982,49 +980,49 @@ function get_site_icon_url( $size = 512, $url = '', $blog_id = 0 ) {
 	}
 
 	/**
-	 * Filters the site icon URL.
+	 * Lọc URL biểu tượng trang web.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $url     Site icon URL.
-	 * @param int    $size    Size of the site icon.
-	 * @param int    $blog_id ID of the blog to get the site icon for.
+	 * @param string $url     URL biểu tượng trang web.
+	 * @param int    $size    Kích thước biểu tượng trang web.
+	 * @param int    $blog_id ID của blog để lấy biểu tượng trang web.
 	 */
 	return apply_filters( 'get_site_icon_url', $url, $size, $blog_id );
 }
 
 /**
- * Displays the Site Icon URL.
+ * Hiển thị URL biểu tượng trang web.
  *
  * @since 4.3.0
  *
- * @param int    $size    Optional. Size of the site icon. Default 512 (pixels).
- * @param string $url     Optional. Fallback url if no site icon is found. Default empty.
- * @param int    $blog_id Optional. ID of the blog to get the site icon for. Default current blog.
+ * @param int    $size    Tùy chọn. Kích thước biểu tượng trang web. Mặc định 512 (pixel).
+ * @param string $url     Tùy chọn. URL dự phòng nếu không tìm thấy biểu tượng trang web. Mặc định rỗng.
+ * @param int    $blog_id Tùy chọn. ID của blog để lấy biểu tượng trang web. Mặc định blog hiện tại.
  */
 function site_icon_url( $size = 512, $url = '', $blog_id = 0 ) {
 	echo esc_url( get_site_icon_url( $size, $url, $blog_id ) );
 }
 
 /**
- * Determines whether the site has a Site Icon.
+ * Xác định xem trang web có biểu tượng trang web hay không.
  *
  * @since 4.3.0
  *
- * @param int $blog_id Optional. ID of the blog in question. Default current blog.
- * @return bool Whether the site has a site icon or not.
+ * @param int $blog_id Tùy chọn. ID của blog được hỏi. Mặc định blog hiện tại.
+ * @return bool Trang web có biểu tượng trang web hay không.
  */
 function has_site_icon( $blog_id = 0 ) {
 	return (bool) get_site_icon_url( 512, '', $blog_id );
 }
 
 /**
- * Determines whether the site has a custom logo.
+ * Xác định xem trang web có logo tùy chỉnh hay không.
  *
  * @since 4.5.0
  *
- * @param int $blog_id Optional. ID of the blog in question. Default is the ID of the current blog.
- * @return bool Whether the site has a custom logo or not.
+ * @param int $blog_id Tùy chọn. ID của blog được hỏi. Mặc định là ID của blog hiện tại.
+ * @return bool Trang web có logo tùy chỉnh hay không.
  */
 function has_custom_logo( $blog_id = 0 ) {
 	$switched_blog = false;
@@ -1045,15 +1043,15 @@ function has_custom_logo( $blog_id = 0 ) {
 }
 
 /**
- * Returns a custom logo, linked to home unless the theme supports removing the link on the home page.
+ * Trả về logo tùy chỉnh, liên kết đến trang chủ trừ khi theme hỗ trợ xóa liên kết trên trang chủ.
  *
  * @since 4.5.0
- * @since 5.5.0 Added option to remove the link on the home page with `unlink-homepage-logo` theme support
- *              for the `custom-logo` theme feature.
- * @since 5.5.1 Disabled lazy-loading by default.
+ * @since 5.5.0 Đã thêm tùy chọn xóa liên kết trên trang chủ với hỗ trợ theme `unlink-homepage-logo`
+ *              cho tính năng theme `custom-logo`.
+ * @since 5.5.1 Đã tắt lazy-loading theo mặc định.
  *
- * @param int $blog_id Optional. ID of the blog in question. Default is the ID of the current blog.
- * @return string Custom logo markup.
+ * @param int $blog_id Tùy chọn. ID của blog được hỏi. Mặc định là ID của blog hiện tại.
+ * @return string Đánh dấu logo tùy chỉnh.
  */
 function get_custom_logo( $blog_id = 0 ) {
 	$html          = '';
@@ -1064,7 +1062,7 @@ function get_custom_logo( $blog_id = 0 ) {
 		$switched_blog = true;
 	}
 
-	// We have a logo. Logo is go.
+	// Chúng ta có logo. Sẵn sàng sử dụng.
 	if ( has_custom_logo() ) {
 		$custom_logo_id   = get_theme_mod( 'custom_logo' );
 		$custom_logo_attr = array(
@@ -1076,14 +1074,14 @@ function get_custom_logo( $blog_id = 0 ) {
 
 		if ( $unlink_homepage_logo && is_front_page() && ! is_paged() ) {
 			/*
-			 * If on the home page, set the logo alt attribute to an empty string,
-			 * as the image is decorative and doesn't need its purpose to be described.
+			 * Nếu ở trang chủ, đặt thuộc tính alt của logo thành chuỗi rỗng,
+			 * vì hình ảnh mang tính trang trí và không cần mô tả mục đích của nó.
 			 */
 			$custom_logo_attr['alt'] = '';
 		} else {
 			/*
-			 * If the logo alt attribute is empty, get the site title and explicitly pass it
-			 * to the attributes used by wp_get_attachment_image().
+			 * Nếu thuộc tính alt của logo rỗng, lấy tiêu đề trang web và truyền trực tiếp
+			 * vào các thuộc tính được sử dụng bởi wp_get_attachment_image().
 			 */
 			$image_alt = get_post_meta( $custom_logo_id, '_wp_attachment_image_alt', true );
 			if ( empty( $image_alt ) ) {
@@ -1092,27 +1090,27 @@ function get_custom_logo( $blog_id = 0 ) {
 		}
 
 		/**
-		 * Filters the list of custom logo image attributes.
+		 * Lọc danh sách các thuộc tính hình ảnh logo tùy chỉnh.
 		 *
 		 * @since 5.5.0
 		 *
-		 * @param array $custom_logo_attr Custom logo image attributes.
-		 * @param int   $custom_logo_id   Custom logo attachment ID.
-		 * @param int   $blog_id          ID of the blog to get the custom logo for.
+		 * @param array $custom_logo_attr Các thuộc tính hình ảnh logo tùy chỉnh.
+		 * @param int   $custom_logo_id   ID đính kèm của logo tùy chỉnh.
+		 * @param int   $blog_id          ID của blog cần lấy logo tùy chỉnh.
 		 */
 		$custom_logo_attr = apply_filters( 'get_custom_logo_image_attributes', $custom_logo_attr, $custom_logo_id, $blog_id );
 
 		/*
-		 * If the alt attribute is not empty, there's no need to explicitly pass it
-		 * because wp_get_attachment_image() already adds the alt attribute.
+		 * Nếu thuộc tính alt không rỗng, không cần truyền nó một cách tường minh
+		 * vì wp_get_attachment_image() đã tự động thêm thuộc tính alt.
 		 */
 		$image = wp_get_attachment_image( $custom_logo_id, 'full', false, $custom_logo_attr );
 
-		// Check that we have a proper HTML img element.
+		// Kiểm tra xem chúng ta có phần tử HTML img hợp lệ hay không.
 		if ( $image ) {
 
 			if ( $unlink_homepage_logo && is_front_page() && ! is_paged() ) {
-				// If on the home page, don't link the logo to home.
+				// Nếu ở trang chủ, không liên kết logo đến trang chủ.
 				$html = sprintf(
 					'<span class="custom-logo-link">%1$s</span>',
 					$image
@@ -1129,7 +1127,7 @@ function get_custom_logo( $blog_id = 0 ) {
 			}
 		}
 	} elseif ( is_customize_preview() ) {
-		// If no logo is set but we're in the Customizer, leave a placeholder (needed for the live preview).
+		// Nếu chưa đặt logo nhưng đang ở trong Trình tùy chỉnh, để lại placeholder (cần cho xem trước trực tiếp).
 		$html = sprintf(
 			'<a href="%1$s" class="custom-logo-link" style="display:none;"><img class="custom-logo" alt="" /></a>',
 			esc_url( home_url( '/' ) )
@@ -1141,49 +1139,49 @@ function get_custom_logo( $blog_id = 0 ) {
 	}
 
 	/**
-	 * Filters the custom logo output.
+	 * Lọc đầu ra logo tùy chỉnh.
 	 *
 	 * @since 4.5.0
-	 * @since 4.6.0 Added the `$blog_id` parameter.
+	 * @since 4.6.0 Đã thêm tham số `$blog_id`.
 	 *
-	 * @param string $html    Custom logo HTML output.
-	 * @param int    $blog_id ID of the blog to get the custom logo for.
+	 * @param string $html    Đầu ra HTML của logo tùy chỉnh.
+	 * @param int    $blog_id ID của blog cần lấy logo tùy chỉnh.
 	 */
 	return apply_filters( 'get_custom_logo', $html, $blog_id );
 }
 
 /**
- * Displays a custom logo, linked to home unless the theme supports removing the link on the home page.
+ * Hiển thị logo tùy chỉnh, liên kết đến trang chủ trừ khi theme hỗ trợ xóa liên kết trên trang chủ.
  *
  * @since 4.5.0
  *
- * @param int $blog_id Optional. ID of the blog in question. Default is the ID of the current blog.
+ * @param int $blog_id Tùy chọn. ID của blog được hỏi. Mặc định là ID của blog hiện tại.
  */
 function the_custom_logo( $blog_id = 0 ) {
 	echo get_custom_logo( $blog_id );
 }
 
 /**
- * Returns document title for the current page.
+ * Trả về tiêu đề tài liệu cho trang hiện tại.
  *
  * @since 4.4.0
  *
- * @global int $page  Page number of a single post.
- * @global int $paged Page number of a list of posts.
+ * @global int $page  Số trang của một bài viết đơn.
+ * @global int $paged Số trang của danh sách bài viết.
  *
- * @return string Tag with the document title.
+ * @return string Thẻ chứa tiêu đề tài liệu.
  */
 function wp_get_document_title() {
 
 	/**
-	 * Filters the document title before it is generated.
+	 * Lọc tiêu đề tài liệu trước khi được tạo.
 	 *
-	 * Passing a non-empty value will short-circuit wp_get_document_title(),
-	 * returning that value instead.
+	 * Truyền giá trị không rỗng sẽ bỏ qua wp_get_document_title(),
+	 * trả về giá trị đó thay thế.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $title The document title. Default empty string.
+	 * @param string $title Tiêu đề tài liệu. Mặc định chuỗi rỗng.
 	 */
 	$title = apply_filters( 'pre_get_document_title', '' );
 	if ( ! empty( $title ) ) {
@@ -1196,44 +1194,44 @@ function wp_get_document_title() {
 		'title' => '',
 	);
 
-	// If it's a 404 page, use a "Page not found" title.
+	// Nếu là trang 404, sử dụng tiêu đề "Không tìm thấy trang".
 	if ( is_404() ) {
 		$title['title'] = __( 'Page not found' );
 
-		// If it's a search, use a dynamic search results title.
+		// Nếu là tìm kiếm, sử dụng tiêu đề kết quả tìm kiếm động.
 	} elseif ( is_search() ) {
 		/* translators: %s: Search query. */
 		$title['title'] = sprintf( __( 'Search Results for &#8220;%s&#8221;' ), get_search_query() );
 
-		// If on the front page, use the site title.
+		// Nếu ở trang chủ, sử dụng tiêu đề trang web.
 	} elseif ( is_front_page() ) {
 		$title['title'] = get_bloginfo( 'name', 'display' );
 
-		// If on a post type archive, use the post type archive title.
+		// Nếu ở trang lưu trữ loại bài viết, sử dụng tiêu đề lưu trữ loại bài viết.
 	} elseif ( is_post_type_archive() ) {
 		$title['title'] = post_type_archive_title( '', false );
 
-		// If on a taxonomy archive, use the term title.
+		// Nếu ở trang lưu trữ taxonomy, sử dụng tiêu đề term.
 	} elseif ( is_tax() ) {
 		$title['title'] = single_term_title( '', false );
 
 		/*
-		* If we're on the blog page that is not the homepage
-		* or a single post of any post type, use the post title.
+		* Nếu chúng ta ở trang blog mà không phải trang chủ
+		* hoặc một bài viết đơn của bất kỳ loại bài viết nào, sử dụng tiêu đề bài viết.
 		*/
 	} elseif ( is_home() || is_singular() ) {
 		$title['title'] = single_post_title( '', false );
 
-		// If on a category or tag archive, use the term title.
+		// Nếu ở trang lưu trữ chuyên mục hoặc thẻ, sử dụng tiêu đề term.
 	} elseif ( is_category() || is_tag() ) {
 		$title['title'] = single_term_title( '', false );
 
-		// If on an author archive, use the author's display name.
+		// Nếu ở trang lưu trữ tác giả, sử dụng tên hiển thị của tác giả.
 	} elseif ( is_author() && get_queried_object() ) {
 		$author         = get_queried_object();
 		$title['title'] = $author->display_name;
 
-		// If it's a date archive, use the date as the title.
+		// Nếu là trang lưu trữ theo ngày, sử dụng ngày làm tiêu đề.
 	} elseif ( is_year() ) {
 		$title['title'] = get_the_date( _x( 'Y', 'yearly archives date format' ) );
 
@@ -1244,13 +1242,13 @@ function wp_get_document_title() {
 		$title['title'] = get_the_date();
 	}
 
-	// Add a page number if necessary.
+	// Thêm số trang nếu cần thiết.
 	if ( ( $paged >= 2 || $page >= 2 ) && ! is_404() ) {
 		/* translators: %s: Page number. */
 		$title['page'] = sprintf( __( 'Page %s' ), max( $paged, $page ) );
 	}
 
-	// Append the description or site title to give context.
+	// Thêm mô tả hoặc tiêu đề trang web để cung cấp ngữ cảnh.
 	if ( is_front_page() ) {
 		$title['tagline'] = get_bloginfo( 'description', 'display' );
 	} else {
@@ -1258,26 +1256,26 @@ function wp_get_document_title() {
 	}
 
 	/**
-	 * Filters the separator for the document title.
+	 * Lọc ký tự phân cách cho tiêu đề tài liệu.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $sep Document title separator. Default '-'.
+	 * @param string $sep Ký tự phân cách tiêu đề tài liệu. Mặc định '-'.
 	 */
 	$sep = apply_filters( 'document_title_separator', '-' );
 
 	/**
-	 * Filters the parts of the document title.
+	 * Lọc các phần của tiêu đề tài liệu.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @param array $title {
-	 *     The document title parts.
+	 *     Các phần của tiêu đề tài liệu.
 	 *
-	 *     @type string $title   Title of the viewed page.
-	 *     @type string $page    Optional. Page number if paginated.
-	 *     @type string $tagline Optional. Site description when on home page.
-	 *     @type string $site    Optional. Site title when not on home page.
+	 *     @type string $title   Tiêu đề của trang đang xem.
+	 *     @type string $page    Tùy chọn. Số trang nếu có phân trang.
+	 *     @type string $tagline Tùy chọn. Mô tả trang web khi ở trang chủ.
+	 *     @type string $site    Tùy chọn. Tiêu đề trang web khi không ở trang chủ.
 	 * }
 	 */
 	$title = apply_filters( 'document_title_parts', $title );
@@ -1285,11 +1283,11 @@ function wp_get_document_title() {
 	$title = implode( " $sep ", array_filter( $title ) );
 
 	/**
-	 * Filters the document title.
+	 * Lọc tiêu đề tài liệu.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $title Document title.
+	 * @param string $title Tiêu đề tài liệu.
 	 */
 	$title = apply_filters( 'document_title', $title );
 
@@ -1297,10 +1295,10 @@ function wp_get_document_title() {
 }
 
 /**
- * Displays title tag with content.
+ * Hiển thị thẻ title với nội dung.
  *
  * @since 4.1.0
- * @since 4.4.0 Improved title output replaced `wp_title()`.
+ * @since 4.4.0 Đầu ra tiêu đề cải tiến thay thế `wp_title()`.
  * @access private
  */
 function _wp_render_title_tag() {
@@ -1312,29 +1310,29 @@ function _wp_render_title_tag() {
 }
 
 /**
- * Displays or retrieves page title for all areas of blog.
+ * Hiển thị hoặc lấy tiêu đề trang cho tất cả các khu vực của blog.
  *
- * By default, the page title will display the separator before the page title,
- * so that the blog title will be before the page title. This is not good for
- * title display, since the blog title shows up on most tabs and not what is
- * important, which is the page that the user is looking at.
+ * Theo mặc định, tiêu đề trang sẽ hiển thị ký tự phân cách trước tiêu đề trang,
+ * để tiêu đề blog sẽ nằm trước tiêu đề trang. Điều này không tốt cho
+ * việc hiển thị tiêu đề, vì tiêu đề blog hiển thị trên hầu hết các tab chứ không phải
+ * nội dung quan trọng, đó là trang mà người dùng đang xem.
  *
- * There are also SEO benefits to having the blog title after or to the 'right'
- * of the page title. However, it is mostly common sense to have the blog title
- * to the right with most browsers supporting tabs. You can achieve this by
- * using the seplocation parameter and setting the value to 'right'. This change
- * was introduced around 2.5.0, in case backward compatibility of themes is
- * important.
+ * Ngoài ra còn có lợi ích SEO khi đặt tiêu đề blog sau hoặc ở bên 'phải'
+ * của tiêu đề trang. Tuy nhiên, chủ yếu là hợp lý khi đặt tiêu đề blog
+ * ở bên phải với hầu hết trình duyệt hỗ trợ tab. Bạn có thể đạt được điều này bằng
+ * cách sử dụng tham số seplocation và đặt giá trị thành 'right'. Thay đổi này
+ * được giới thiệu từ khoảng 2.5.0, trong trường hợp tương thích ngược của theme
+ * là quan trọng.
  *
  * @since 1.0.0
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày và giờ WordPress.
  *
- * @param string $sep         Optional. How to separate the various items within the page title.
- *                            Default '&raquo;'.
- * @param bool   $display     Optional. Whether to display or retrieve title. Default true.
- * @param string $seplocation Optional. Location of the separator (either 'left' or 'right').
- * @return string|void String when `$display` is false, nothing otherwise.
+ * @param string $sep         Tùy chọn. Cách phân cách các mục khác nhau trong tiêu đề trang.
+ *                            Mặc định '&raquo;'.
+ * @param bool   $display     Tùy chọn. Có hiển thị hay lấy tiêu đề. Mặc định true.
+ * @param string $seplocation Tùy chọn. Vị trí của ký tự phân cách ('left' hoặc 'right').
+ * @return string|void Chuỗi khi `$display` là false, không có gì nếu ngược lại.
  */
 function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 	global $wp_locale;
@@ -1346,14 +1344,14 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 	$search   = get_query_var( 's' );
 	$title    = '';
 
-	$t_sep = '%WP_TITLE_SEP%'; // Temporary separator, for accurate flipping, if necessary.
+	$t_sep = '%WP_TITLE_SEP%'; // Ký tự phân cách tạm thời, để đảo ngược chính xác, nếu cần.
 
-	// If there is a post.
+	// Nếu có bài viết.
 	if ( is_single() || ( is_home() && ! is_front_page() ) || ( is_page() && ! is_front_page() ) ) {
 		$title = single_post_title( '', false );
 	}
 
-	// If there's a post type archive.
+	// Nếu có lưu trữ loại bài viết.
 	if ( is_post_type_archive() ) {
 		$post_type = get_query_var( 'post_type' );
 		if ( is_array( $post_type ) ) {
@@ -1365,12 +1363,12 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 		}
 	}
 
-	// If there's a category or tag.
+	// Nếu có chuyên mục hoặc thẻ.
 	if ( is_category() || is_tag() ) {
 		$title = single_term_title( '', false );
 	}
 
-	// If there's a taxonomy.
+	// Nếu có taxonomy.
 	if ( is_tax() ) {
 		$term = get_queried_object();
 		if ( $term ) {
@@ -1379,7 +1377,7 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 		}
 	}
 
-	// If there's an author.
+	// Nếu có tác giả.
 	if ( is_author() && ! is_post_type_archive() ) {
 		$author = get_queried_object();
 		if ( $author ) {
@@ -1387,12 +1385,12 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 		}
 	}
 
-	// Post type archives with has_archive should override terms.
+	// Lưu trữ loại bài viết có has_archive nên ghi đè terms.
 	if ( is_post_type_archive() && $post_type_object->has_archive ) {
 		$title = post_type_archive_title( '', false );
 	}
 
-	// If there's a month.
+	// Nếu có tháng.
 	if ( is_archive() && ! empty( $m ) ) {
 		$my_year  = substr( $m, 0, 4 );
 		$my_month = substr( $m, 4, 2 );
@@ -1402,7 +1400,7 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 			( $my_day ? $t_sep . $my_day : '' );
 	}
 
-	// If there's a year.
+	// Nếu có năm.
 	if ( is_archive() && ! empty( $year ) ) {
 		$title = $year;
 		if ( ! empty( $monthnum ) ) {
@@ -1413,13 +1411,13 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 		}
 	}
 
-	// If it's a search.
+	// Nếu là tìm kiếm.
 	if ( is_search() ) {
 		/* translators: 1: Separator, 2: Search query. */
 		$title = sprintf( __( 'Search Results %1$s %2$s' ), $t_sep, strip_tags( $search ) );
 	}
 
-	// If it's a 404 page.
+	// Nếu là trang 404.
 	if ( is_404() ) {
 		$title = __( 'Page not found' );
 	}
@@ -1430,16 +1428,16 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 	}
 
 	/**
-	 * Filters the parts of the page title.
+	 * Lọc các phần của tiêu đề trang.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string[] $title_array Array of parts of the page title.
+	 * @param string[] $title_array Mảng các phần của tiêu đề trang.
 	 */
 	$title_array = apply_filters( 'wp_title_parts', explode( $t_sep, $title ) );
 
-	// Determines position of the separator and direction of the breadcrumb.
-	if ( 'right' === $seplocation ) { // Separator on right, so reverse the order.
+	// Xác định vị trí ký tự phân cách và hướng của breadcrumb.
+	if ( 'right' === $seplocation ) { // Ký tự phân cách bên phải, nên đảo ngược thứ tự.
 		$title_array = array_reverse( $title_array );
 		$title       = implode( " $sep ", $title_array ) . $prefix;
 	} else {
@@ -1447,17 +1445,17 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 	}
 
 	/**
-	 * Filters the text of the page title.
+	 * Lọc văn bản tiêu đề trang.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $title       Page title.
-	 * @param string $sep         Title separator.
-	 * @param string $seplocation Location of the separator (either 'left' or 'right').
+	 * @param string $title       Tiêu đề trang.
+	 * @param string $sep         Ký tự phân cách tiêu đề.
+	 * @param string $seplocation Vị trí của ký tự phân cách ('left' hoặc 'right').
 	 */
 	$title = apply_filters( 'wp_title', $title, $sep, $seplocation );
 
-	// Send it out.
+	// Xuất kết quả.
 	if ( $display ) {
 		echo $title;
 	} else {
@@ -1466,20 +1464,20 @@ function wp_title( $sep = '&raquo;', $display = true, $seplocation = '' ) {
 }
 
 /**
- * Displays or retrieves page title for post.
+ * Hiển thị hoặc lấy tiêu đề trang cho bài viết.
  *
- * This is optimized for single.php template file for displaying the post title.
+ * Hàm này được tối ưu cho file template single.php để hiển thị tiêu đề bài viết.
  *
- * It does not support placing the separator after the title, but by leaving the
- * prefix parameter empty, you can set the title separator manually. The prefix
- * does not automatically place a space between the prefix, so if there should
- * be a space, the parameter value will need to have it at the end.
+ * Không hỗ trợ đặt ký tự phân cách sau tiêu đề, nhưng bằng cách để trống
+ * tham số prefix, bạn có thể đặt ký tự phân cách tiêu đề thủ công. Prefix
+ * không tự động đặt khoảng trắng giữa prefix và tiêu đề, nên nếu cần
+ * khoảng trắng, giá trị tham số cần có khoảng trắng ở cuối.
  *
  * @since 0.71
  *
- * @param string $prefix  Optional. What to display before the title.
- * @param bool   $display Optional. Whether to display or retrieve title. Default true.
- * @return string|void Title when retrieving.
+ * @param string $prefix  Tùy chọn. Nội dung hiển thị trước tiêu đề.
+ * @param bool   $display Tùy chọn. Có hiển thị hay lấy tiêu đề. Mặc định true.
+ * @return string|void Tiêu đề khi lấy.
  */
 function single_post_title( $prefix = '', $display = true ) {
 	$_post = get_queried_object();
@@ -1489,12 +1487,12 @@ function single_post_title( $prefix = '', $display = true ) {
 	}
 
 	/**
-	 * Filters the page title for a single post.
+	 * Lọc tiêu đề trang cho bài viết đơn.
 	 *
 	 * @since 0.71
 	 *
-	 * @param string  $_post_title The single post page title.
-	 * @param WP_Post $_post       The current post.
+	 * @param string  $_post_title Tiêu đề trang bài viết đơn.
+	 * @param WP_Post $_post       Bài viết hiện tại.
 	 */
 	$title = apply_filters( 'single_post_title', $_post->post_title, $_post );
 	if ( $display ) {
@@ -1505,16 +1503,16 @@ function single_post_title( $prefix = '', $display = true ) {
 }
 
 /**
- * Displays or retrieves title for a post type archive.
+ * Hiển thị hoặc lấy tiêu đề cho lưu trữ loại bài viết.
  *
- * This is optimized for archive.php and archive-{$post_type}.php template files
- * for displaying the title of the post type.
+ * Hàm này được tối ưu cho file template archive.php và archive-{$post_type}.php
+ * để hiển thị tiêu đề của loại bài viết.
  *
  * @since 3.1.0
  *
- * @param string $prefix  Optional. What to display before the title.
- * @param bool   $display Optional. Whether to display or retrieve title. Default true.
- * @return string|void Title when retrieving, null when displaying or failure.
+ * @param string $prefix  Tùy chọn. Nội dung hiển thị trước tiêu đề.
+ * @param bool   $display Tùy chọn. Có hiển thị hay lấy tiêu đề. Mặc định true.
+ * @return string|void Tiêu đề khi lấy, null khi hiển thị hoặc thất bại.
  */
 function post_type_archive_title( $prefix = '', $display = true ) {
 	if ( ! is_post_type_archive() ) {
@@ -1529,12 +1527,12 @@ function post_type_archive_title( $prefix = '', $display = true ) {
 	$post_type_obj = get_post_type_object( $post_type );
 
 	/**
-	 * Filters the post type archive title.
+	 * Lọc tiêu đề lưu trữ loại bài viết.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $post_type_name Post type 'name' label.
-	 * @param string $post_type      Post type.
+	 * @param string $post_type_name Nhãn 'name' của loại bài viết.
+	 * @param string $post_type      Loại bài viết.
 	 */
 	$title = apply_filters( 'post_type_archive_title', $post_type_obj->labels->name, $post_type );
 
@@ -1546,51 +1544,51 @@ function post_type_archive_title( $prefix = '', $display = true ) {
 }
 
 /**
- * Displays or retrieves page title for category archive.
+ * Hiển thị hoặc lấy tiêu đề trang cho lưu trữ chuyên mục.
  *
- * Useful for category template files for displaying the category page title.
- * The prefix does not automatically place a space between the prefix, so if
- * there should be a space, the parameter value will need to have it at the end.
+ * Hữu ích cho file template chuyên mục để hiển thị tiêu đề trang chuyên mục.
+ * Prefix không tự động đặt khoảng trắng giữa prefix và tiêu đề, nên nếu
+ * cần khoảng trắng, giá trị tham số cần có khoảng trắng ở cuối.
  *
  * @since 0.71
  *
- * @param string $prefix  Optional. What to display before the title.
- * @param bool   $display Optional. Whether to display or retrieve title. Default true.
- * @return string|void Title when retrieving.
+ * @param string $prefix  Tùy chọn. Nội dung hiển thị trước tiêu đề.
+ * @param bool   $display Tùy chọn. Có hiển thị hay lấy tiêu đề. Mặc định true.
+ * @return string|void Tiêu đề khi lấy.
  */
 function single_cat_title( $prefix = '', $display = true ) {
 	return single_term_title( $prefix, $display );
 }
 
 /**
- * Displays or retrieves page title for tag post archive.
+ * Hiển thị hoặc lấy tiêu đề trang cho lưu trữ thẻ bài viết.
  *
- * Useful for tag template files for displaying the tag page title. The prefix
- * does not automatically place a space between the prefix, so if there should
- * be a space, the parameter value will need to have it at the end.
+ * Hữu ích cho file template thẻ để hiển thị tiêu đề trang thẻ. Prefix
+ * không tự động đặt khoảng trắng giữa prefix và tiêu đề, nên nếu cần
+ * khoảng trắng, giá trị tham số cần có khoảng trắng ở cuối.
  *
  * @since 2.3.0
  *
- * @param string $prefix  Optional. What to display before the title.
- * @param bool   $display Optional. Whether to display or retrieve title. Default true.
- * @return string|void Title when retrieving.
+ * @param string $prefix  Tùy chọn. Nội dung hiển thị trước tiêu đề.
+ * @param bool   $display Tùy chọn. Có hiển thị hay lấy tiêu đề. Mặc định true.
+ * @return string|void Tiêu đề khi lấy.
  */
 function single_tag_title( $prefix = '', $display = true ) {
 	return single_term_title( $prefix, $display );
 }
 
 /**
- * Displays or retrieves page title for taxonomy term archive.
+ * Hiển thị hoặc lấy tiêu đề trang cho lưu trữ term taxonomy.
  *
- * Useful for taxonomy term template files for displaying the taxonomy term page title.
- * The prefix does not automatically place a space between the prefix, so if there should
- * be a space, the parameter value will need to have it at the end.
+ * Hữu ích cho file template term taxonomy để hiển thị tiêu đề trang term taxonomy.
+ * Prefix không tự động đặt khoảng trắng giữa prefix và tiêu đề, nên nếu cần
+ * khoảng trắng, giá trị tham số cần có khoảng trắng ở cuối.
  *
  * @since 3.1.0
  *
- * @param string $prefix  Optional. What to display before the title.
- * @param bool   $display Optional. Whether to display or retrieve title. Default true.
- * @return string|void Title when retrieving.
+ * @param string $prefix  Tùy chọn. Nội dung hiển thị trước tiêu đề.
+ * @param bool   $display Tùy chọn. Có hiển thị hay lấy tiêu đề. Mặc định true.
+ * @return string|void Tiêu đề khi lấy.
  */
 function single_term_title( $prefix = '', $display = true ) {
 	$term = get_queried_object();
@@ -1601,29 +1599,29 @@ function single_term_title( $prefix = '', $display = true ) {
 
 	if ( is_category() ) {
 		/**
-		 * Filters the category archive page title.
+		 * Lọc tiêu đề trang lưu trữ chuyên mục.
 		 *
 		 * @since 2.0.10
 		 *
-		 * @param string $term_name Category name for archive being displayed.
+		 * @param string $term_name Tên chuyên mục cho lưu trữ đang hiển thị.
 		 */
 		$term_name = apply_filters( 'single_cat_title', $term->name );
 	} elseif ( is_tag() ) {
 		/**
-		 * Filters the tag archive page title.
+		 * Lọc tiêu đề trang lưu trữ thẻ.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param string $term_name Tag name for archive being displayed.
+		 * @param string $term_name Tên thẻ cho lưu trữ đang hiển thị.
 		 */
 		$term_name = apply_filters( 'single_tag_title', $term->name );
 	} elseif ( is_tax() ) {
 		/**
-		 * Filters the custom taxonomy archive page title.
+		 * Lọc tiêu đề trang lưu trữ taxonomy tùy chỉnh.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string $term_name Term name for archive being displayed.
+		 * @param string $term_name Tên term cho lưu trữ đang hiển thị.
 		 */
 		$term_name = apply_filters( 'single_term_title', $term->name );
 	} else {
@@ -1642,20 +1640,20 @@ function single_term_title( $prefix = '', $display = true ) {
 }
 
 /**
- * Displays or retrieves page title for post archive based on date.
+ * Hiển thị hoặc lấy tiêu đề trang cho lưu trữ bài viết theo ngày.
  *
- * Useful for when the template only needs to display the month and year,
- * if either are available. The prefix does not automatically place a space
- * between the prefix, so if there should be a space, the parameter value
- * will need to have it at the end.
+ * Hữu ích khi template chỉ cần hiển thị tháng và năm,
+ * nếu có sẵn. Prefix không tự động đặt khoảng trắng
+ * giữa prefix và tiêu đề, nên nếu cần khoảng trắng, giá trị tham số
+ * cần có khoảng trắng ở cuối.
  *
  * @since 0.71
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày và giờ WordPress.
  *
- * @param string $prefix  Optional. What to display before the title.
- * @param bool   $display Optional. Whether to display or retrieve title. Default true.
- * @return string|false|void False if there's no valid title for the month. Title when retrieving.
+ * @param string $prefix  Tùy chọn. Nội dung hiển thị trước tiêu đề.
+ * @param bool   $display Tùy chọn. Có hiển thị hay lấy tiêu đề. Mặc định true.
+ * @return string|false|void False nếu không có tiêu đề hợp lệ cho tháng. Tiêu đề khi lấy.
  */
 function single_month_title( $prefix = '', $display = true ) {
 	global $wp_locale;
@@ -1685,14 +1683,14 @@ function single_month_title( $prefix = '', $display = true ) {
 }
 
 /**
- * Displays the archive title based on the queried object.
+ * Hiển thị tiêu đề lưu trữ dựa trên đối tượng được truy vấn.
  *
  * @since 4.1.0
  *
  * @see get_the_archive_title()
  *
- * @param string $before Optional. Content to prepend to the title. Default empty.
- * @param string $after  Optional. Content to append to the title. Default empty.
+ * @param string $before Tùy chọn. Nội dung thêm trước tiêu đề. Mặc định rỗng.
+ * @param string $after  Tùy chọn. Nội dung thêm sau tiêu đề. Mặc định rỗng.
  */
 function the_archive_title( $before = '', $after = '' ) {
 	$title = get_the_archive_title();
@@ -1703,12 +1701,12 @@ function the_archive_title( $before = '', $after = '' ) {
 }
 
 /**
- * Retrieves the archive title based on the queried object.
+ * Lấy tiêu đề lưu trữ dựa trên đối tượng được truy vấn.
  *
  * @since 4.1.0
- * @since 5.5.0 The title part is wrapped in a `<span>` element.
+ * @since 5.5.0 Phần tiêu đề được bao bọc trong phần tử `<span>`.
  *
- * @return string Archive title.
+ * @return string Tiêu đề lưu trữ.
  */
 function get_the_archive_title() {
 	$title  = __( 'Archives' );
@@ -1774,11 +1772,11 @@ function get_the_archive_title() {
 	$original_title = $title;
 
 	/**
-	 * Filters the archive title prefix.
+	 * Lọc tiền tố tiêu đề lưu trữ.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $prefix Archive title prefix.
+	 * @param string $prefix Tiền tố tiêu đề lưu trữ.
 	 */
 	$prefix = apply_filters( 'get_the_archive_title_prefix', $prefix );
 	if ( $prefix ) {
@@ -1791,27 +1789,27 @@ function get_the_archive_title() {
 	}
 
 	/**
-	 * Filters the archive title.
+	 * Lọc tiêu đề lưu trữ.
 	 *
 	 * @since 4.1.0
-	 * @since 5.5.0 Added the `$prefix` and `$original_title` parameters.
+	 * @since 5.5.0 Đã thêm tham số `$prefix` và `$original_title`.
 	 *
-	 * @param string $title          Archive title to be displayed.
-	 * @param string $original_title Archive title without prefix.
-	 * @param string $prefix         Archive title prefix.
+	 * @param string $title          Tiêu đề lưu trữ sẽ được hiển thị.
+	 * @param string $original_title Tiêu đề lưu trữ không có tiền tố.
+	 * @param string $prefix         Tiền tố tiêu đề lưu trữ.
 	 */
 	return apply_filters( 'get_the_archive_title', $title, $original_title, $prefix );
 }
 
 /**
- * Displays category, tag, term, or author description.
+ * Hiển thị mô tả chuyên mục, thẻ, term hoặc tác giả.
  *
  * @since 4.1.0
  *
  * @see get_the_archive_description()
  *
- * @param string $before Optional. Content to prepend to the description. Default empty.
- * @param string $after  Optional. Content to append to the description. Default empty.
+ * @param string $before Tùy chọn. Nội dung thêm trước mô tả. Mặc định rỗng.
+ * @param string $after  Tùy chọn. Nội dung thêm sau mô tả. Mặc định rỗng.
  */
 function the_archive_description( $before = '', $after = '' ) {
 	$description = get_the_archive_description();
@@ -1821,15 +1819,15 @@ function the_archive_description( $before = '', $after = '' ) {
 }
 
 /**
- * Retrieves the description for an author, post type, or term archive.
+ * Lấy mô tả cho lưu trữ tác giả, loại bài viết hoặc term.
  *
  * @since 4.1.0
- * @since 4.7.0 Added support for author archives.
- * @since 4.9.0 Added support for post type archives.
+ * @since 4.7.0 Đã thêm hỗ trợ cho lưu trữ tác giả.
+ * @since 4.9.0 Đã thêm hỗ trợ cho lưu trữ loại bài viết.
  *
  * @see term_description()
  *
- * @return string Archive description.
+ * @return string Mô tả lưu trữ.
  */
 function get_the_archive_description() {
 	if ( is_author() ) {
@@ -1841,21 +1839,21 @@ function get_the_archive_description() {
 	}
 
 	/**
-	 * Filters the archive description.
+	 * Lọc mô tả lưu trữ.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param string $description Archive description to be displayed.
+	 * @param string $description Mô tả lưu trữ sẽ được hiển thị.
 	 */
 	return apply_filters( 'get_the_archive_description', $description );
 }
 
 /**
- * Retrieves the description for a post type archive.
+ * Lấy mô tả cho lưu trữ loại bài viết.
  *
  * @since 4.9.0
  *
- * @return string The post type description.
+ * @return string Mô tả loại bài viết.
  */
 function get_the_post_type_description() {
 	$post_type = get_query_var( 'post_type' );
@@ -1866,7 +1864,7 @@ function get_the_post_type_description() {
 
 	$post_type_obj = get_post_type_object( $post_type );
 
-	// Check if a description is set.
+	// Kiểm tra xem mô tả có được đặt hay không.
 	if ( isset( $post_type_obj->description ) ) {
 		$description = $post_type_obj->description;
 	} else {
@@ -1874,50 +1872,49 @@ function get_the_post_type_description() {
 	}
 
 	/**
-	 * Filters the description for a post type archive.
+	 * Lọc mô tả cho lưu trữ loại bài viết.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param string       $description   The post type description.
-	 * @param WP_Post_Type $post_type_obj The post type object.
+	 * @param string       $description   Mô tả loại bài viết.
+	 * @param WP_Post_Type $post_type_obj Đối tượng loại bài viết.
 	 */
 	return apply_filters( 'get_the_post_type_description', $description, $post_type_obj );
 }
 
 /**
- * Retrieves archive link content based on predefined or custom code.
+ * Lấy nội dung liên kết lưu trữ dựa trên mã được định nghĩa trước hoặc tùy chỉnh.
  *
- * The format can be one of four styles. The 'link' for head element, 'option'
- * for use in the select element, 'html' for use in list (either ol or ul HTML
- * elements). Custom content is also supported using the before and after
- * parameters.
+ * Định dạng có thể là một trong bốn kiểu. 'link' cho phần tử head, 'option'
+ * để sử dụng trong phần tử select, 'html' để sử dụng trong danh sách (phần tử HTML ol hoặc ul).
+ * Nội dung tùy chỉnh cũng được hỗ trợ sử dụng các tham số before và after.
  *
- * The 'link' format uses the `<link>` HTML element with the **archives**
- * relationship. The before and after parameters are not used. The text
- * parameter is used to describe the link.
+ * Định dạng 'link' sử dụng phần tử HTML `<link>` với quan hệ **archives**.
+ * Các tham số before và after không được sử dụng. Tham số text
+ * được sử dụng để mô tả liên kết.
  *
- * The 'option' format uses the option HTML element for use in select element.
- * The value is the url parameter and the before and after parameters are used
- * between the text description.
+ * Định dạng 'option' sử dụng phần tử HTML option để sử dụng trong phần tử select.
+ * Giá trị là tham số url và các tham số before và after được sử dụng
+ * giữa mô tả văn bản.
  *
- * The 'html' format, which is the default, uses the li HTML element for use in
- * the list HTML elements. The before parameter is before the link and the after
- * parameter is after the closing link.
+ * Định dạng 'html', là mặc định, sử dụng phần tử HTML li để sử dụng trong
+ * các phần tử HTML danh sách. Tham số before nằm trước liên kết và tham số after
+ * nằm sau thẻ đóng liên kết.
  *
- * The custom format uses the before parameter before the link ('a' HTML
- * element) and the after parameter after the closing link tag. If the above
- * three values for the format are not used, then custom format is assumed.
+ * Định dạng tùy chỉnh sử dụng tham số before trước liên kết (phần tử HTML 'a')
+ * và tham số after sau thẻ đóng liên kết. Nếu ba giá trị trên cho định dạng
+ * không được sử dụng, thì định dạng tùy chỉnh sẽ được áp dụng.
  *
  * @since 1.0.0
- * @since 5.2.0 Added the `$selected` parameter.
+ * @since 5.2.0 Đã thêm tham số `$selected`.
  *
- * @param string $url      URL to archive.
- * @param string $text     Archive text description.
- * @param string $format   Optional. Can be 'link', 'option', 'html', or custom. Default 'html'.
- * @param string $before   Optional. Content to prepend to the description. Default empty.
- * @param string $after    Optional. Content to append to the description. Default empty.
- * @param bool   $selected Optional. Set to true if the current page is the selected archive page. Default false.
- * @return string HTML link content for archive.
+ * @param string $url      URL đến lưu trữ.
+ * @param string $text     Mô tả văn bản lưu trữ.
+ * @param string $format   Tùy chọn. Có thể là 'link', 'option', 'html', hoặc tùy chỉnh. Mặc định 'html'.
+ * @param string $before   Tùy chọn. Nội dung thêm trước mô tả. Mặc định rỗng.
+ * @param string $after    Tùy chọn. Nội dung thêm sau mô tả. Mặc định rỗng.
+ * @param bool   $selected Tùy chọn. Đặt true nếu trang hiện tại là trang lưu trữ được chọn. Mặc định false.
+ * @return string Nội dung liên kết HTML cho lưu trữ.
  */
 function get_archives_link( $url, $text, $format = 'html', $before = '', $after = '', $selected = false ) {
 	$text         = wptexturize( $text );
@@ -1931,67 +1928,67 @@ function get_archives_link( $url, $text, $format = 'html', $before = '', $after 
 		$link_html     = "\t<option value='$url'$selected_attr>$before $text $after</option>\n";
 	} elseif ( 'html' === $format ) {
 		$link_html = "\t<li>$before<a href='$url'$aria_current>$text</a>$after</li>\n";
-	} else { // Custom.
+	} else { // Tùy chỉnh.
 		$link_html = "\t$before<a href='$url'$aria_current>$text</a>$after\n";
 	}
 
 	/**
-	 * Filters the archive link content.
+	 * Lọc nội dung liên kết lưu trữ.
 	 *
 	 * @since 2.6.0
-	 * @since 4.5.0 Added the `$url`, `$text`, `$format`, `$before`, and `$after` parameters.
-	 * @since 5.2.0 Added the `$selected` parameter.
+	 * @since 4.5.0 Đã thêm các tham số `$url`, `$text`, `$format`, `$before`, và `$after`.
+	 * @since 5.2.0 Đã thêm tham số `$selected`.
 	 *
-	 * @param string $link_html The archive HTML link content.
-	 * @param string $url       URL to archive.
-	 * @param string $text      Archive text description.
-	 * @param string $format    Link format. Can be 'link', 'option', 'html', or custom.
-	 * @param string $before    Content to prepend to the description.
-	 * @param string $after     Content to append to the description.
-	 * @param bool   $selected  True if the current page is the selected archive.
+	 * @param string $link_html Nội dung HTML liên kết lưu trữ.
+	 * @param string $url       URL đến lưu trữ.
+	 * @param string $text      Mô tả văn bản lưu trữ.
+	 * @param string $format    Định dạng liên kết. Có thể là 'link', 'option', 'html', hoặc tùy chỉnh.
+	 * @param string $before    Nội dung thêm trước mô tả.
+	 * @param string $after     Nội dung thêm sau mô tả.
+	 * @param bool   $selected  True nếu trang hiện tại là lưu trữ được chọn.
 	 */
 	return apply_filters( 'get_archives_link', $link_html, $url, $text, $format, $before, $after, $selected );
 }
 
 /**
- * Displays archive links based on type and format.
+ * Hiển thị các liên kết lưu trữ dựa trên loại và định dạng.
  *
  * @since 1.2.0
- * @since 4.4.0 The `$post_type` argument was added.
- * @since 5.2.0 The `$year`, `$monthnum`, `$day`, and `$w` arguments were added.
+ * @since 4.4.0 Đã thêm đối số `$post_type`.
+ * @since 5.2.0 Đã thêm các đối số `$year`, `$monthnum`, `$day`, và `$w`.
  *
  * @see get_archives_link()
  *
- * @global wpdb      $wpdb      WordPress database abstraction object.
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global wpdb      $wpdb      Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày và giờ WordPress.
  *
  * @param string|array $args {
- *     Default archive links arguments. Optional.
+ *     Các đối số liên kết lưu trữ mặc định. Tùy chọn.
  *
- *     @type string     $type            Type of archive to retrieve. Accepts 'daily', 'weekly', 'monthly',
- *                                       'yearly', 'postbypost', or 'alpha'. Both 'postbypost' and 'alpha'
- *                                       display the same archive link list as well as post titles instead
- *                                       of displaying dates. The difference between the two is that 'alpha'
- *                                       will order by post title and 'postbypost' will order by post date.
- *                                       Default 'monthly'.
- *     @type string|int $limit           Number of links to limit the query to. Default empty (no limit).
- *     @type string     $format          Format each link should take using the $before and $after args.
- *                                       Accepts 'link' (`<link>` tag), 'option' (`<option>` tag), 'html'
- *                                       (`<li>` tag), or a custom format, which generates a link anchor
- *                                       with $before preceding and $after succeeding. Default 'html'.
- *     @type string     $before          Markup to prepend to the beginning of each link. Default empty.
- *     @type string     $after           Markup to append to the end of each link. Default empty.
- *     @type bool       $show_post_count Whether to display the post count alongside the link. Default false.
- *     @type bool|int   $echo            Whether to echo or return the links list. Default 1|true to echo.
- *     @type string     $order           Whether to use ascending or descending order. Accepts 'ASC', or 'DESC'.
- *                                       Default 'DESC'.
- *     @type string     $post_type       Post type. Default 'post'.
- *     @type string     $year            Year. Default current year.
- *     @type string     $monthnum        Month number. Default current month number.
- *     @type string     $day             Day. Default current day.
- *     @type string     $w               Week. Default current week.
+ *     @type string     $type            Loại lưu trữ cần lấy. Chấp nhận 'daily', 'weekly', 'monthly',
+ *                                       'yearly', 'postbypost', hoặc 'alpha'. Cả 'postbypost' và 'alpha'
+ *                                       hiển thị cùng danh sách liên kết lưu trữ cũng như tiêu đề bài viết thay
+ *                                       vì hiển thị ngày tháng. Sự khác biệt giữa hai loại là 'alpha'
+ *                                       sẽ sắp xếp theo tiêu đề bài viết và 'postbypost' sẽ sắp xếp theo ngày đăng.
+ *                                       Mặc định 'monthly'.
+ *     @type string|int $limit           Số liên kết để giới hạn truy vấn. Mặc định rỗng (không giới hạn).
+ *     @type string     $format          Định dạng mỗi liên kết sử dụng các đối số $before và $after.
+ *                                       Chấp nhận 'link' (thẻ `<link>`), 'option' (thẻ `<option>`), 'html'
+ *                                       (thẻ `<li>`), hoặc định dạng tùy chỉnh, tạo liên kết anchor
+ *                                       với $before đứng trước và $after đứng sau. Mặc định 'html'.
+ *     @type string     $before          Đánh dấu thêm vào đầu mỗi liên kết. Mặc định rỗng.
+ *     @type string     $after           Đánh dấu thêm vào cuối mỗi liên kết. Mặc định rỗng.
+ *     @type bool       $show_post_count Có hiển thị số bài viết bên cạnh liên kết hay không. Mặc định false.
+ *     @type bool|int   $echo            Có echo hay trả về danh sách liên kết. Mặc định 1|true để echo.
+ *     @type string     $order           Sử dụng thứ tự tăng dần hay giảm dần. Chấp nhận 'ASC', hoặc 'DESC'.
+ *                                       Mặc định 'DESC'.
+ *     @type string     $post_type       Loại bài viết. Mặc định 'post'.
+ *     @type string     $year            Năm. Mặc định năm hiện tại.
+ *     @type string     $monthnum        Số tháng. Mặc định số tháng hiện tại.
+ *     @type string     $day             Ngày. Mặc định ngày hiện tại.
+ *     @type string     $w               Tuần. Mặc định tuần hiện tại.
  * }
- * @return void|string Void if 'echo' argument is true, archive links if 'echo' is false.
+ * @return void|string Void nếu đối số 'echo' là true, các liên kết lưu trữ nếu 'echo' là false.
  */
 function wp_get_archives( $args = '' ) {
 	global $wpdb, $wp_locale;
@@ -2035,28 +2032,28 @@ function wp_get_archives( $args = '' ) {
 		$order = 'DESC';
 	}
 
-	// This is what will separate dates on weekly archive links.
+	// Đây là ký tự phân cách ngày trên các liên kết lưu trữ hàng tuần.
 	$archive_week_separator = '&#8211;';
 
 	$sql_where = $wpdb->prepare( "WHERE post_type = %s AND post_status = 'publish'", $parsed_args['post_type'] );
 
 	/**
-	 * Filters the SQL WHERE clause for retrieving archives.
+	 * Lọc mệnh đề SQL WHERE để lấy lưu trữ.
 	 *
 	 * @since 2.2.0
 	 *
-	 * @param string $sql_where   Portion of SQL query containing the WHERE clause.
-	 * @param array  $parsed_args An array of default arguments.
+	 * @param string $sql_where   Phần truy vấn SQL chứa mệnh đề WHERE.
+	 * @param array  $parsed_args Mảng các đối số mặc định.
 	 */
 	$where = apply_filters( 'getarchives_where', $sql_where, $parsed_args );
 
 	/**
-	 * Filters the SQL JOIN clause for retrieving archives.
+	 * Lọc mệnh đề SQL JOIN để lấy lưu trữ.
 	 *
 	 * @since 2.2.0
 	 *
-	 * @param string $sql_join    Portion of SQL query containing JOIN clause.
-	 * @param array  $parsed_args An array of default arguments.
+	 * @param string $sql_join    Phần truy vấn SQL chứa mệnh đề JOIN.
+	 * @param array  $parsed_args Mảng các đối số mặc định.
 	 */
 	$join = apply_filters( 'getarchives_join', '', $parsed_args );
 
@@ -2214,12 +2211,12 @@ function wp_get_archives( $args = '' ) {
 }
 
 /**
- * Gets number of days since the start of the week.
+ * Lấy số ngày kể từ đầu tuần.
  *
  * @since 1.5.0
  *
- * @param int $num Number of day.
- * @return float Days since the start of the week.
+ * @param int $num Số thứ tự ngày.
+ * @return float Số ngày kể từ đầu tuần.
  */
 function calendar_week_mod( $num ) {
 	$base = 7;
@@ -2227,30 +2224,30 @@ function calendar_week_mod( $num ) {
 }
 
 /**
- * Displays calendar with days that have posts as links.
+ * Hiển thị lịch với các ngày có bài viết dưới dạng liên kết.
  *
- * The calendar is cached, which will be retrieved, if it exists. If there are
- * no posts for the month, then it will not be displayed.
+ * Lịch được lưu vào bộ nhớ đệm và sẽ được lấy lại nếu đã tồn tại. Nếu không có
+ * bài viết nào trong tháng thì sẽ không hiển thị.
  *
  * @since 1.0.0
- * @since 6.8.0 Added the `$args` parameter, with backward compatibility
- *              for the replaced `$initial` and `$display` parameters.
+ * @since 6.8.0 Đã thêm tham số `$args`, với khả năng tương thích ngược
+ *              cho các tham số `$initial` và `$display` đã được thay thế.
  *
- * @global wpdb      $wpdb      WordPress database abstraction object.
+ * @global wpdb      $wpdb      Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  * @global int       $m
  * @global int       $monthnum
  * @global int       $year
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày và giờ WordPress.
  * @global array     $posts
  *
  * @param array $args {
- *     Optional. Arguments for the `get_calendar` function.
+ *     Tùy chọn. Các đối số cho hàm `get_calendar`.
  *
- *     @type bool   $initial   Whether to use initial calendar names. Default true.
- *     @type bool   $display   Whether to display the calendar output. Default true.
- *     @type string $post_type Optional. Post type. Default 'post'.
+ *     @type bool   $initial   Có sử dụng tên viết tắt lịch hay không. Mặc định true.
+ *     @type bool   $display   Có hiển thị đầu ra lịch hay không. Mặc định true.
+ *     @type string $post_type Tùy chọn. Loại bài viết. Mặc định 'post'.
  * }
- * @return void|string Void if `$display` argument is true, calendar HTML if `$display` is false.
+ * @return void|string Void nếu đối số `$display` là true, HTML lịch nếu `$display` là false.
  */
 function get_calendar( $args = array() ) {
 	global $wpdb, $m, $monthnum, $year, $wp_locale, $posts;
@@ -2278,18 +2275,18 @@ function get_calendar( $args = array() ) {
 	}
 
 	/**
-	 * Filter the `get_calendar` function arguments before they are used.
+	 * Lọc các đối số hàm `get_calendar` trước khi chúng được sử dụng.
 	 *
 	 * @since 6.8.0
 	 *
 	 * @param array $args {
-	 *     Optional. Arguments for the `get_calendar` function.
+	 *     Tùy chọn. Các đối số cho hàm `get_calendar`.
 	 *
-	 *     @type bool   $initial   Whether to use initial calendar names. Default true.
-	 *     @type bool   $display   Whether to display the calendar output. Default true.
-	 *     @type string $post_type Optional. Post type. Default 'post'.
+	 *     @type bool   $initial   Có sử dụng tên viết tắt lịch hay không. Mặc định true.
+	 *     @type bool   $display   Có hiển thị đầu ra lịch hay không. Mặc định true.
+	 *     @type string $post_type Tùy chọn. Loại bài viết. Mặc định 'post'.
 	 * }
-	 * @return array The arguments for the `get_calendar` function.
+	 * @return array Các đối số cho hàm `get_calendar`.
 	 */
 	$args = apply_filters( 'get_calendar_args', wp_parse_args( $args, $defaults ) );
 
@@ -2303,16 +2300,16 @@ function get_calendar( $args = array() ) {
 	}
 
 	/*
-	 * Normalize the cache key.
+	 * Chuẩn hóa khóa bộ nhớ đệm.
 	 *
-	 * The following ensures the same cache key is used for the same parameter
-	 * and parameter equivalents. This prevents `post_type > post, initial > true`
-	 * from generating a different key from the same values in the reverse order.
+	 * Đoạn mã sau đảm bảo cùng một khóa bộ nhớ đệm được sử dụng cho cùng tham số
+	 * và các tham số tương đương. Điều này ngăn `post_type > post, initial > true`
+	 * tạo ra khóa khác với cùng giá trị theo thứ tự ngược lại.
 	 *
-	 * `display` is excluded from the cache key as the cache contains the same
-	 * HTML regardless of this function's need to echo or return the output.
+	 * `display` được loại trừ khỏi khóa bộ nhớ đệm vì bộ nhớ đệm chứa cùng
+	 * HTML bất kể hàm này cần echo hay trả về đầu ra.
 	 *
-	 * The global values contain data generated by the URL query string variables.
+	 * Các giá trị toàn cục chứa dữ liệu được tạo từ biến chuỗi truy vấn URL.
 	 */
 	$cache_args = $args;
 	unset( $cache_args['display'] );
@@ -2346,7 +2343,7 @@ function get_calendar( $args = array() ) {
 
 	$post_type = $args['post_type'];
 
-	// Quick check. If we have no posts at all, abort!
+	// Kiểm tra nhanh. Nếu không có bài viết nào, dừng lại!
 	if ( ! $posts ) {
 		$gotsome = $wpdb->get_var(
 			$wpdb->prepare(
@@ -2366,17 +2363,17 @@ function get_calendar( $args = array() ) {
 		}
 	}
 
-	// week_begins = 0 stands for Sunday.
+	// week_begins = 0 tương ứng với Chủ nhật.
 	$week_begins = (int) get_option( 'start_of_week' );
 
-	// Let's figure out when we are.
+	// Hãy xác định chúng ta đang ở thời điểm nào.
 	if ( ! empty( $monthnum ) && ! empty( $year ) ) {
 		$thismonth = (int) $monthnum;
 		$thisyear  = (int) $year;
 	} elseif ( ! empty( $w ) ) {
-		// We need to get the month from MySQL.
+		// Chúng ta cần lấy tháng từ MySQL.
 		$thisyear = (int) substr( $m, 0, 4 );
-		// It seems MySQL's weeks disagree with PHP's.
+		// Có vẻ các tuần của MySQL không khớp với PHP.
 		$d         = ( ( $w - 1 ) * 7 ) + 6;
 		$thismonth = (int) $wpdb->get_var(
 			$wpdb->prepare(
@@ -2400,7 +2397,7 @@ function get_calendar( $args = array() ) {
 	$unixmonth = mktime( 0, 0, 0, $thismonth, 1, $thisyear );
 	$last_day  = gmdate( 't', $unixmonth );
 
-	// Get the next and previous month and year with at least one post.
+	// Lấy tháng và năm trước và sau có ít nhất một bài viết.
 	$previous = $wpdb->get_row(
 		$wpdb->prepare(
 			"SELECT MONTH(post_date) AS month, YEAR(post_date) AS year
@@ -2461,7 +2458,7 @@ function get_calendar( $args = array() ) {
 
 	$daywithpost = array();
 
-	// Get days with posts.
+	// Lấy các ngày có bài viết.
 	$dayswithposts = $wpdb->get_results(
 		$wpdb->prepare(
 			"SELECT DISTINCT DAYOFMONTH(post_date)
@@ -2484,7 +2481,7 @@ function get_calendar( $args = array() ) {
 		}
 	}
 
-	// See how much we should pad in the beginning.
+	// Xem cần đệm bao nhiêu ở đầu.
 	$pad = calendar_week_mod( (int) gmdate( 'w', $unixmonth ) - $week_begins );
 	if ( $pad > 0 ) {
 		$calendar_output .= "\n\t\t" . '<td colspan="' . esc_attr( $pad ) . '" class="pad">&nbsp;</td>';
@@ -2510,7 +2507,7 @@ function get_calendar( $args = array() ) {
 		}
 
 		if ( in_array( $day, $daywithpost, true ) ) {
-			// Any posts today?
+			// Có bài viết nào hôm nay không?
 			$date_format = gmdate( _x( 'F j, Y', 'daily archives date format' ), strtotime( "{$thisyear}-{$thismonth}-{$day}" ) );
 			/* translators: Post calendar label. %s: Date. */
 			$label            = sprintf( __( 'Posts published on %s' ), $date_format );
@@ -2571,18 +2568,18 @@ function get_calendar( $args = array() ) {
 	wp_cache_set( 'get_calendar', $cache, 'calendar' );
 
 	/**
-	 * Filters the HTML calendar output.
+	 * Lọc đầu ra HTML lịch.
 	 *
 	 * @since 3.0.0
-	 * @since 6.8.0 Added the `$args` parameter.
+	 * @since 6.8.0 Đã thêm tham số `$args`.
 	 *
-	 * @param string $calendar_output HTML output of the calendar.
+	 * @param string $calendar_output Đầu ra HTML của lịch.
 	 * @param array  $args {
-	 *     Optional. Array of display arguments.
+	 *     Tùy chọn. Mảng các đối số hiển thị.
 	 *
-	 *     @type bool   $initial   Whether to use initial calendar names. Default true.
-	 *     @type bool   $display   Whether to display the calendar output. Default true.
-	 *     @type string $post_type Optional. Post type. Default 'post'.
+	 *     @type bool   $initial   Có sử dụng tên viết tắt lịch hay không. Mặc định true.
+	 *     @type bool   $display   Có hiển thị đầu ra lịch hay không. Mặc định true.
+	 *     @type string $post_type Tùy chọn. Loại bài viết. Mặc định 'post'.
 	 * }
 	 */
 	$calendar_output = apply_filters( 'get_calendar', $calendar_output, $args );
@@ -2596,7 +2593,7 @@ function get_calendar( $args = array() ) {
 }
 
 /**
- * Purges the cached results of get_calendar.
+ * Xóa kết quả bộ nhớ đệm của get_calendar.
  *
  * @see get_calendar()
  * @since 2.1.0
@@ -2606,17 +2603,17 @@ function delete_get_calendar_cache() {
 }
 
 /**
- * Displays all of the allowed tags in HTML format with attributes.
+ * Hiển thị tất cả các thẻ được phép ở định dạng HTML với các thuộc tính.
  *
- * This is useful for displaying in the comment area, which elements and
- * attributes are supported. As well as any plugins which want to display it.
+ * Điều này hữu ích để hiển thị trong khu vực bình luận, cho biết phần tử và
+ * thuộc tính nào được hỗ trợ. Cũng như cho bất kỳ plugin nào muốn hiển thị nó.
  *
  * @since 1.0.1
- * @since 4.4.0 No longer used in core.
+ * @since 4.4.0 Không còn được sử dụng trong core.
  *
  * @global array $allowedtags
  *
- * @return string HTML allowed tags entity encoded.
+ * @return string Các thẻ HTML được phép đã mã hóa entity.
  */
 function allowed_tags() {
 	global $allowedtags;
@@ -2633,10 +2630,10 @@ function allowed_tags() {
 	return htmlentities( $allowed );
 }
 
-/***** Date/Time tags */
+/***** Các thẻ Ngày/Giờ */
 
 /**
- * Outputs the date in iso8601 format for xml files.
+ * Xuất ngày ở định dạng iso8601 cho các file xml.
  *
  * @since 1.0.0
  */
@@ -2645,27 +2642,27 @@ function the_date_xml() {
 }
 
 /**
- * Displays or retrieves the date of the post (once per date).
+ * Hiển thị hoặc lấy ngày của bài viết (mỗi ngày chỉ một lần).
  *
- * Will only output the date if the current post's date is different from the
- * previous one output.
+ * Chỉ xuất ngày nếu ngày của bài viết hiện tại khác với
+ * ngày đã xuất trước đó.
  *
- * i.e. Only one date listing will show per day worth of posts shown in the loop, even if the
- * function is called several times for each post.
+ * Nghĩa là chỉ hiển thị một lần cho mỗi ngày trong vòng lặp, ngay cả khi
+ * hàm được gọi nhiều lần cho mỗi bài viết.
  *
- * HTML output can be filtered with {@see 'the_date'}.
- * Date string output can be filtered with {@see 'get_the_date'}.
+ * Đầu ra HTML có thể được lọc bằng {@see 'the_date'}.
+ * Chuỗi ngày có thể được lọc bằng {@see 'get_the_date'}.
  *
  * @since 0.71
  *
- * @global string $currentday  The day of the current post in the loop.
- * @global string $previousday The day of the previous post in the loop.
+ * @global string $currentday  Ngày của bài viết hiện tại trong vòng lặp.
+ * @global string $previousday Ngày của bài viết trước đó trong vòng lặp.
  *
- * @param string $format  Optional. PHP date format. Defaults to the 'date_format' option.
- * @param string $before  Optional. Output before the date. Default empty.
- * @param string $after   Optional. Output after the date. Default empty.
- * @param bool   $display Optional. Whether to echo the date or return it. Default true.
- * @return string|void String if retrieving.
+ * @param string $format  Tùy chọn. Định dạng ngày PHP. Mặc định theo tùy chọn 'date_format'.
+ * @param string $before  Tùy chọn. Nội dung xuất trước ngày. Mặc định rỗng.
+ * @param string $after   Tùy chọn. Nội dung xuất sau ngày. Mặc định rỗng.
+ * @param bool   $display Tùy chọn. Có echo ngày hay trả về nó. Mặc định true.
+ * @return string|void Chuỗi nếu lấy giá trị.
  */
 function the_date( $format = '', $before = '', $after = '', $display = true ) {
 	global $currentday, $previousday;
@@ -2678,14 +2675,14 @@ function the_date( $format = '', $before = '', $after = '', $display = true ) {
 	}
 
 	/**
-	 * Filters the date of the post, for display.
+	 * Lọc ngày của bài viết để hiển thị.
 	 *
 	 * @since 0.71
 	 *
-	 * @param string $the_date The formatted date string.
-	 * @param string $format   PHP date format.
-	 * @param string $before   HTML output before the date.
-	 * @param string $after    HTML output after the date.
+	 * @param string $the_date Chuỗi ngày đã định dạng.
+	 * @param string $format   Định dạng ngày PHP.
+	 * @param string $before   Đầu ra HTML trước ngày.
+	 * @param string $after    Đầu ra HTML sau ngày.
 	 */
 	$the_date = apply_filters( 'the_date', $the_date, $format, $before, $after );
 
@@ -2697,16 +2694,16 @@ function the_date( $format = '', $before = '', $after = '', $display = true ) {
 }
 
 /**
- * Retrieves the date of the post.
+ * Lấy ngày của bài viết.
  *
- * Unlike the_date() this function will always return the date.
- * Modify output with the {@see 'get_the_date'} filter.
+ * Khác với the_date(), hàm này luôn trả về ngày.
+ * Chỉnh sửa đầu ra bằng bộ lọc {@see 'get_the_date'}.
  *
  * @since 3.0.0
  *
- * @param string      $format Optional. PHP date format. Defaults to the 'date_format' option.
- * @param int|WP_Post $post   Optional. Post ID or WP_Post object. Default current post.
- * @return string|int|false Date the current post was written. False on failure.
+ * @param string      $format Tùy chọn. Định dạng ngày PHP. Mặc định theo tùy chọn 'date_format'.
+ * @param int|WP_Post $post   Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định bài viết hiện tại.
+ * @return string|int|false Ngày bài viết hiện tại được viết. False khi thất bại.
  */
 function get_the_date( $format = '', $post = null ) {
 	$post = get_post( $post );
@@ -2720,40 +2717,40 @@ function get_the_date( $format = '', $post = null ) {
 	$the_date = get_post_time( $_format, false, $post, true );
 
 	/**
-	 * Filters the date of the post.
+	 * Lọc ngày của bài viết.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string|int $the_date Formatted date string or Unix timestamp if `$format` is 'U' or 'G'.
-	 * @param string     $format   PHP date format.
-	 * @param WP_Post    $post     The post object.
+	 * @param string|int $the_date Chuỗi ngày đã định dạng hoặc timestamp Unix nếu `$format` là 'U' hoặc 'G'.
+	 * @param string     $format   Định dạng ngày PHP.
+	 * @param WP_Post    $post     Đối tượng bài viết.
 	 */
 	return apply_filters( 'get_the_date', $the_date, $format, $post );
 }
 
 /**
- * Displays the date on which the post was last modified.
+ * Hiển thị ngày bài viết được chỉnh sửa lần cuối.
  *
  * @since 2.1.0
  *
- * @param string $format  Optional. PHP date format. Defaults to the 'date_format' option.
- * @param string $before  Optional. Output before the date. Default empty.
- * @param string $after   Optional. Output after the date. Default empty.
- * @param bool   $display Optional. Whether to echo the date or return it. Default true.
- * @return string|void String if retrieving.
+ * @param string $format  Tùy chọn. Định dạng ngày PHP. Mặc định theo tùy chọn 'date_format'.
+ * @param string $before  Tùy chọn. Nội dung xuất trước ngày. Mặc định rỗng.
+ * @param string $after   Tùy chọn. Nội dung xuất sau ngày. Mặc định rỗng.
+ * @param bool   $display Tùy chọn. Có echo ngày hay trả về nó. Mặc định true.
+ * @return string|void Chuỗi nếu lấy giá trị.
  */
 function the_modified_date( $format = '', $before = '', $after = '', $display = true ) {
 	$the_modified_date = $before . get_the_modified_date( $format ) . $after;
 
 	/**
-	 * Filters the date a post was last modified, for display.
+	 * Lọc ngày chỉnh sửa cuối cùng của bài viết để hiển thị.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $the_modified_date The last modified date.
-	 * @param string $format            PHP date format.
-	 * @param string $before            HTML output before the date.
-	 * @param string $after             HTML output after the date.
+	 * @param string $the_modified_date Ngày chỉnh sửa cuối cùng.
+	 * @param string $format            Định dạng ngày PHP.
+	 * @param string $before            Đầu ra HTML trước ngày.
+	 * @param string $after             Đầu ra HTML sau ngày.
 	 */
 	$the_modified_date = apply_filters( 'the_modified_date', $the_modified_date, $format, $before, $after );
 
@@ -2765,20 +2762,20 @@ function the_modified_date( $format = '', $before = '', $after = '', $display = 
 }
 
 /**
- * Retrieves the date on which the post was last modified.
+ * Lấy ngày bài viết được chỉnh sửa lần cuối.
  *
  * @since 2.1.0
- * @since 4.6.0 Added the `$post` parameter.
+ * @since 4.6.0 Đã thêm tham số `$post`.
  *
- * @param string      $format Optional. PHP date format. Defaults to the 'date_format' option.
- * @param int|WP_Post $post   Optional. Post ID or WP_Post object. Default current post.
- * @return string|int|false Date the current post was modified. False on failure.
+ * @param string      $format Tùy chọn. Định dạng ngày PHP. Mặc định theo tùy chọn 'date_format'.
+ * @param int|WP_Post $post   Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định bài viết hiện tại.
+ * @return string|int|false Ngày bài viết hiện tại được chỉnh sửa. False khi thất bại.
  */
 function get_the_modified_date( $format = '', $post = null ) {
 	$post = get_post( $post );
 
 	if ( ! $post ) {
-		// For backward compatibility, failures go through the filter below.
+		// Để tương thích ngược, các lỗi vẫn đi qua bộ lọc bên dưới.
 		$the_time = false;
 	} else {
 		$_format = ! empty( $format ) ? $format : get_option( 'date_format' );
@@ -2787,51 +2784,51 @@ function get_the_modified_date( $format = '', $post = null ) {
 	}
 
 	/**
-	 * Filters the date a post was last modified.
+	 * Lọc ngày chỉnh sửa cuối cùng của bài viết.
 	 *
 	 * @since 2.1.0
-	 * @since 4.6.0 Added the `$post` parameter.
+	 * @since 4.6.0 Đã thêm tham số `$post`.
 	 *
-	 * @param string|int|false $the_time The formatted date or false if no post is found.
-	 * @param string           $format   PHP date format.
-	 * @param WP_Post|null     $post     WP_Post object or null if no post is found.
+	 * @param string|int|false $the_time Ngày đã định dạng hoặc false nếu không tìm thấy bài viết.
+	 * @param string           $format   Định dạng ngày PHP.
+	 * @param WP_Post|null     $post     Đối tượng WP_Post hoặc null nếu không tìm thấy bài viết.
 	 */
 	return apply_filters( 'get_the_modified_date', $the_time, $format, $post );
 }
 
 /**
- * Displays the time of the post.
+ * Hiển thị giờ của bài viết.
  *
  * @since 0.71
  *
- * @param string $format Optional. Format to use for retrieving the time the post
- *                       was written. Accepts 'G', 'U', or PHP date format.
- *                       Defaults to the 'time_format' option.
+ * @param string $format Tùy chọn. Định dạng để lấy giờ bài viết
+ *                       được viết. Chấp nhận 'G', 'U', hoặc định dạng ngày PHP.
+ *                       Mặc định theo tùy chọn 'time_format'.
  */
 function the_time( $format = '' ) {
 	/**
-	 * Filters the time of the post, for display.
+	 * Lọc giờ của bài viết để hiển thị.
 	 *
 	 * @since 0.71
 	 *
-	 * @param string $get_the_time The formatted time.
-	 * @param string $format       Format to use for retrieving the time the post
-	 *                             was written. Accepts 'G', 'U', or PHP date format.
+	 * @param string $get_the_time Giờ đã định dạng.
+	 * @param string $format       Định dạng để lấy giờ bài viết
+	 *                             được viết. Chấp nhận 'G', 'U', hoặc định dạng ngày PHP.
 	 */
 	echo apply_filters( 'the_time', get_the_time( $format ), $format );
 }
 
 /**
- * Retrieves the time of the post.
+ * Lấy giờ của bài viết.
  *
  * @since 1.5.0
  *
- * @param string      $format Optional. Format to use for retrieving the time the post
- *                            was written. Accepts 'G', 'U', or PHP date format.
- *                            Defaults to the 'time_format' option.
- * @param int|WP_Post $post   Post ID or post object. Default is global `$post` object.
- * @return string|int|false Formatted date string or Unix timestamp if `$format` is 'U' or 'G'.
- *                          False on failure.
+ * @param string      $format Tùy chọn. Định dạng để lấy giờ bài viết
+ *                            được viết. Chấp nhận 'G', 'U', hoặc định dạng ngày PHP.
+ *                            Mặc định theo tùy chọn 'time_format'.
+ * @param int|WP_Post $post   ID bài viết hoặc đối tượng bài viết. Mặc định là đối tượng `$post` toàn cục.
+ * @return string|int|false Chuỗi ngày đã định dạng hoặc timestamp Unix nếu `$format` là 'U' hoặc 'G'.
+ *                          False khi thất bại.
  */
 function get_the_time( $format = '', $post = null ) {
 	$post = get_post( $post );
@@ -2845,30 +2842,30 @@ function get_the_time( $format = '', $post = null ) {
 	$the_time = get_post_time( $_format, false, $post, true );
 
 	/**
-	 * Filters the time of the post.
+	 * Lọc giờ của bài viết.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string|int $the_time Formatted date string or Unix timestamp if `$format` is 'U' or 'G'.
-	 * @param string     $format   Format to use for retrieving the time the post
-	 *                             was written. Accepts 'G', 'U', or PHP date format.
-	 * @param WP_Post    $post     Post object.
+	 * @param string|int $the_time Chuỗi ngày đã định dạng hoặc timestamp Unix nếu `$format` là 'U' hoặc 'G'.
+	 * @param string     $format   Định dạng để lấy giờ bài viết
+	 *                             được viết. Chấp nhận 'G', 'U', hoặc định dạng ngày PHP.
+	 * @param WP_Post    $post     Đối tượng bài viết.
 	 */
 	return apply_filters( 'get_the_time', $the_time, $format, $post );
 }
 
 /**
- * Retrieves the localized time of the post.
+ * Lấy giờ đã bản địa hóa của bài viết.
  *
  * @since 2.0.0
  *
- * @param string      $format    Optional. Format to use for retrieving the time the post
- *                               was written. Accepts 'G', 'U', or PHP date format. Default 'U'.
- * @param bool        $gmt       Optional. Whether to retrieve the GMT time. Default false.
- * @param int|WP_Post $post      Post ID or post object. Default is global `$post` object.
- * @param bool        $translate Whether to translate the time string. Default false.
- * @return string|int|false Formatted date string or Unix timestamp if `$format` is 'U' or 'G'.
- *                          False on failure.
+ * @param string      $format    Tùy chọn. Định dạng để lấy giờ bài viết
+ *                               được viết. Chấp nhận 'G', 'U', hoặc định dạng ngày PHP. Mặc định 'U'.
+ * @param bool        $gmt       Tùy chọn. Có lấy giờ GMT hay không. Mặc định false.
+ * @param int|WP_Post $post      ID bài viết hoặc đối tượng bài viết. Mặc định là đối tượng `$post` toàn cục.
+ * @param bool        $translate Có dịch chuỗi thời gian hay không. Mặc định false.
+ * @return string|int|false Chuỗi ngày đã định dạng hoặc timestamp Unix nếu `$format` là 'U' hoặc 'G'.
+ *                          False khi thất bại.
  */
 function get_post_time( $format = 'U', $gmt = false, $post = null, $translate = false ) {
 	$post = get_post( $post );
@@ -2887,7 +2884,7 @@ function get_post_time( $format = 'U', $gmt = false, $post = null, $translate = 
 	if ( 'U' === $format || 'G' === $format ) {
 		$time = $datetime->getTimestamp();
 
-		// Returns a sum of timestamp with timezone offset. Ideally should never be used.
+		// Trả về tổng của timestamp với offset múi giờ. Lý tưởng không nên sử dụng.
 		if ( ! $gmt ) {
 			$time += $datetime->getOffset();
 		}
@@ -2902,36 +2899,36 @@ function get_post_time( $format = 'U', $gmt = false, $post = null, $translate = 
 	}
 
 	/**
-	 * Filters the localized time of the post.
+	 * Lọc giờ đã bản địa hóa của bài viết.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param string|int $time   Formatted date string or Unix timestamp if `$format` is 'U' or 'G'.
-	 * @param string     $format Format to use for retrieving the date of the post.
-	 *                           Accepts 'G', 'U', or PHP date format.
-	 * @param bool       $gmt    Whether to retrieve the GMT time.
+	 * @param string|int $time   Chuỗi ngày đã định dạng hoặc timestamp Unix nếu `$format` là 'U' hoặc 'G'.
+	 * @param string     $format Định dạng để lấy ngày của bài viết.
+	 *                           Chấp nhận 'G', 'U', hoặc định dạng ngày PHP.
+	 * @param bool       $gmt    Có lấy giờ GMT hay không.
 	 */
 	return apply_filters( 'get_post_time', $time, $format, $gmt );
 }
 
 /**
- * Retrieves post published or modified time as a `DateTimeImmutable` object instance.
+ * Lấy thời gian đăng hoặc chỉnh sửa bài viết dưới dạng đối tượng `DateTimeImmutable`.
  *
- * The object will be set to the timezone from WordPress settings.
+ * Đối tượng sẽ được đặt theo múi giờ từ cài đặt WordPress.
  *
- * For legacy reasons, this function allows to choose to instantiate from local or UTC time in database.
- * Normally this should make no difference to the result. However, the values might get out of sync in database,
- * typically because of timezone setting changes. The parameter ensures the ability to reproduce backwards
- * compatible behaviors in such cases.
+ * Vì lý do kế thừa, hàm này cho phép chọn khởi tạo từ giờ địa phương hoặc UTC trong cơ sở dữ liệu.
+ * Thông thường điều này không tạo ra sự khác biệt về kết quả. Tuy nhiên, các giá trị có thể bị lệch
+ * trong cơ sở dữ liệu, thường là do thay đổi cài đặt múi giờ. Tham số đảm bảo khả năng tái tạo
+ * các hành vi tương thích ngược trong những trường hợp như vậy.
  *
  * @since 5.3.0
  *
- * @param int|WP_Post $post   Optional. Post ID or post object. Default is global `$post` object.
- * @param string      $field  Optional. Published or modified time to use from database. Accepts 'date' or 'modified'.
- *                            Default 'date'.
- * @param string      $source Optional. Local or UTC time to use from database. Accepts 'local' or 'gmt'.
- *                            Default 'local'.
- * @return DateTimeImmutable|false Time object on success, false on failure.
+ * @param int|WP_Post $post   Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là đối tượng `$post` toàn cục.
+ * @param string      $field  Tùy chọn. Thời gian đăng hoặc chỉnh sửa từ cơ sở dữ liệu. Chấp nhận 'date' hoặc 'modified'.
+ *                            Mặc định 'date'.
+ * @param string      $source Tùy chọn. Giờ địa phương hoặc UTC từ cơ sở dữ liệu. Chấp nhận 'local' hoặc 'gmt'.
+ *                            Mặc định 'local'.
+ * @return DateTimeImmutable|false Đối tượng thời gian khi thành công, false khi thất bại.
  */
 function get_post_datetime( $post = null, $field = 'date', $source = 'local' ) {
 	$post = get_post( $post );
@@ -2964,17 +2961,17 @@ function get_post_datetime( $post = null, $field = 'date', $source = 'local' ) {
 }
 
 /**
- * Retrieves post published or modified time as a Unix timestamp.
+ * Lấy thời gian đăng hoặc chỉnh sửa bài viết dưới dạng timestamp Unix.
  *
- * Note that this function returns a true Unix timestamp, not summed with timezone offset
- * like older WP functions.
+ * Lưu ý rằng hàm này trả về timestamp Unix thực sự, không cộng thêm offset múi giờ
+ * như các hàm WP cũ.
  *
  * @since 5.3.0
  *
- * @param int|WP_Post $post  Optional. Post ID or post object. Default is global `$post` object.
- * @param string      $field Optional. Published or modified time to use from database. Accepts 'date' or 'modified'.
- *                           Default 'date'.
- * @return int|false Unix timestamp on success, false on failure.
+ * @param int|WP_Post $post  Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là đối tượng `$post` toàn cục.
+ * @param string      $field Tùy chọn. Thời gian đăng hoặc chỉnh sửa từ cơ sở dữ liệu. Chấp nhận 'date' hoặc 'modified'.
+ *                           Mặc định 'date'.
+ * @return int|false Timestamp Unix khi thành công, false khi thất bại.
  */
 function get_post_timestamp( $post = null, $field = 'date' ) {
 	$datetime = get_post_datetime( $post, $field );
@@ -2987,44 +2984,44 @@ function get_post_timestamp( $post = null, $field = 'date' ) {
 }
 
 /**
- * Displays the time at which the post was last modified.
+ * Hiển thị giờ bài viết được chỉnh sửa lần cuối.
  *
  * @since 2.0.0
  *
- * @param string $format Optional. Format to use for retrieving the time the post
- *                       was modified. Accepts 'G', 'U', or PHP date format.
- *                       Defaults to the 'time_format' option.
+ * @param string $format Tùy chọn. Định dạng để lấy giờ bài viết
+ *                       được chỉnh sửa. Chấp nhận 'G', 'U', hoặc định dạng ngày PHP.
+ *                       Mặc định theo tùy chọn 'time_format'.
  */
 function the_modified_time( $format = '' ) {
 	/**
-	 * Filters the localized time a post was last modified, for display.
+	 * Lọc giờ bản địa hóa của lần chỉnh sửa cuối cùng để hiển thị.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string|false $get_the_modified_time The formatted time or false if no post is found.
-	 * @param string       $format                Format to use for retrieving the time the post
-	 *                                            was modified. Accepts 'G', 'U', or PHP date format.
+	 * @param string|false $get_the_modified_time Giờ đã định dạng hoặc false nếu không tìm thấy bài viết.
+	 * @param string       $format                Định dạng để lấy giờ bài viết
+	 *                                            được chỉnh sửa. Chấp nhận 'G', 'U', hoặc định dạng ngày PHP.
 	 */
 	echo apply_filters( 'the_modified_time', get_the_modified_time( $format ), $format );
 }
 
 /**
- * Retrieves the time at which the post was last modified.
+ * Lấy giờ bài viết được chỉnh sửa lần cuối.
  *
  * @since 2.0.0
- * @since 4.6.0 Added the `$post` parameter.
+ * @since 4.6.0 Đã thêm tham số `$post`.
  *
- * @param string      $format Optional. Format to use for retrieving the time the post
- *                            was modified. Accepts 'G', 'U', or PHP date format.
- *                            Defaults to the 'time_format' option.
- * @param int|WP_Post $post   Optional. Post ID or WP_Post object. Default current post.
- * @return string|int|false Formatted date string or Unix timestamp. False on failure.
+ * @param string      $format Tùy chọn. Định dạng để lấy giờ bài viết
+ *                            được chỉnh sửa. Chấp nhận 'G', 'U', hoặc định dạng ngày PHP.
+ *                            Mặc định theo tùy chọn 'time_format'.
+ * @param int|WP_Post $post   Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định bài viết hiện tại.
+ * @return string|int|false Chuỗi ngày đã định dạng hoặc timestamp Unix. False khi thất bại.
  */
 function get_the_modified_time( $format = '', $post = null ) {
 	$post = get_post( $post );
 
 	if ( ! $post ) {
-		// For backward compatibility, failures go through the filter below.
+		// Để tương thích ngược, các lỗi vẫn đi qua bộ lọc bên dưới.
 		$the_time = false;
 	} else {
 		$_format = ! empty( $format ) ? $format : get_option( 'time_format' );
@@ -3033,31 +3030,31 @@ function get_the_modified_time( $format = '', $post = null ) {
 	}
 
 	/**
-	 * Filters the localized time a post was last modified.
+	 * Lọc giờ bản địa hóa của lần chỉnh sửa cuối cùng.
 	 *
 	 * @since 2.0.0
-	 * @since 4.6.0 Added the `$post` parameter.
+	 * @since 4.6.0 Đã thêm tham số `$post`.
 	 *
-	 * @param string|int|false $the_time The formatted time or false if no post is found.
-	 * @param string           $format   Format to use for retrieving the time the post
-	 *                                   was modified. Accepts 'G', 'U', or PHP date format.
-	 * @param WP_Post|null     $post     WP_Post object or null if no post is found.
+	 * @param string|int|false $the_time Giờ đã định dạng hoặc false nếu không tìm thấy bài viết.
+	 * @param string           $format   Định dạng để lấy giờ bài viết
+	 *                                   được chỉnh sửa. Chấp nhận 'G', 'U', hoặc định dạng ngày PHP.
+	 * @param WP_Post|null     $post     Đối tượng WP_Post hoặc null nếu không tìm thấy bài viết.
 	 */
 	return apply_filters( 'get_the_modified_time', $the_time, $format, $post );
 }
 
 /**
- * Retrieves the time at which the post was last modified.
+ * Lấy giờ bài viết được chỉnh sửa lần cuối.
  *
  * @since 2.0.0
  *
- * @param string      $format    Optional. Format to use for retrieving the time the post
- *                               was modified. Accepts 'G', 'U', or PHP date format. Default 'U'.
- * @param bool        $gmt       Optional. Whether to retrieve the GMT time. Default false.
- * @param int|WP_Post $post      Post ID or post object. Default is global `$post` object.
- * @param bool        $translate Whether to translate the time string. Default false.
- * @return string|int|false Formatted date string or Unix timestamp if `$format` is 'U' or 'G'.
- *                          False on failure.
+ * @param string      $format    Tùy chọn. Định dạng để lấy giờ bài viết
+ *                               được chỉnh sửa. Chấp nhận 'G', 'U', hoặc định dạng ngày PHP. Mặc định 'U'.
+ * @param bool        $gmt       Tùy chọn. Có lấy giờ GMT hay không. Mặc định false.
+ * @param int|WP_Post $post      ID bài viết hoặc đối tượng bài viết. Mặc định là đối tượng `$post` toàn cục.
+ * @param bool        $translate Có dịch chuỗi thời gian hay không. Mặc định false.
+ * @return string|int|false Chuỗi ngày đã định dạng hoặc timestamp Unix nếu `$format` là 'U' hoặc 'G'.
+ *                          False khi thất bại.
  */
 function get_post_modified_time( $format = 'U', $gmt = false, $post = null, $translate = false ) {
 	$post = get_post( $post );
@@ -3076,7 +3073,7 @@ function get_post_modified_time( $format = 'U', $gmt = false, $post = null, $tra
 	if ( 'U' === $format || 'G' === $format ) {
 		$time = $datetime->getTimestamp();
 
-		// Returns a sum of timestamp with timezone offset. Ideally should never be used.
+		// Trả về tổng của timestamp với offset múi giờ. Lý tưởng không nên sử dụng.
 		if ( ! $gmt ) {
 			$time += $datetime->getOffset();
 		}
@@ -3091,24 +3088,24 @@ function get_post_modified_time( $format = 'U', $gmt = false, $post = null, $tra
 	}
 
 	/**
-	 * Filters the localized time a post was last modified.
+	 * Lọc giờ bản địa hóa của lần chỉnh sửa cuối cùng.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string|int $time   Formatted date string or Unix timestamp if `$format` is 'U' or 'G'.
-	 * @param string     $format Format to use for retrieving the time the post was modified.
-	 *                           Accepts 'G', 'U', or PHP date format. Default 'U'.
-	 * @param bool       $gmt    Whether to retrieve the GMT time. Default false.
+	 * @param string|int $time   Chuỗi ngày đã định dạng hoặc timestamp Unix nếu `$format` là 'U' hoặc 'G'.
+	 * @param string     $format Định dạng để lấy giờ bài viết được chỉnh sửa.
+	 *                           Chấp nhận 'G', 'U', hoặc định dạng ngày PHP. Mặc định 'U'.
+	 * @param bool       $gmt    Có lấy giờ GMT hay không. Mặc định false.
 	 */
 	return apply_filters( 'get_post_modified_time', $time, $format, $gmt );
 }
 
 /**
- * Displays the localized weekday for the post.
+ * Hiển thị ngày trong tuần đã bản địa hóa của bài viết.
  *
  * @since 0.71
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày và giờ WordPress.
  */
 function the_weekday() {
 	global $wp_locale;
@@ -3122,7 +3119,7 @@ function the_weekday() {
 	$the_weekday = $wp_locale->get_weekday( get_post_time( 'w', false, $post ) );
 
 	/**
-	 * Filters the localized weekday of the post, for display.
+	 * Lọc ngày trong tuần đã bản địa hóa của bài viết để hiển thị.
 	 *
 	 * @since 0.71
 	 *
@@ -3132,19 +3129,19 @@ function the_weekday() {
 }
 
 /**
- * Displays the localized weekday for the post.
+ * Hiển thị ngày trong tuần đã bản địa hóa của bài viết.
  *
- * Will only output the weekday if the current post's weekday is different from
- * the previous one output.
+ * Chỉ xuất ngày trong tuần nếu ngày trong tuần của bài viết hiện tại khác với
+ * ngày đã xuất trước đó.
  *
  * @since 0.71
  *
- * @global WP_Locale $wp_locale       WordPress date and time locale object.
- * @global string    $currentday      The day of the current post in the loop.
- * @global string    $previousweekday The day of the previous post in the loop.
+ * @global WP_Locale $wp_locale       Đối tượng locale ngày và giờ WordPress.
+ * @global string    $currentday      Ngày của bài viết hiện tại trong vòng lặp.
+ * @global string    $previousweekday Ngày của bài viết trước đó trong vòng lặp.
  *
- * @param string $before Optional. Output before the date. Default empty.
- * @param string $after  Optional. Output after the date. Default empty.
+ * @param string $before Tùy chọn. Nội dung xuất trước ngày. Mặc định rỗng.
+ * @param string $after  Tùy chọn. Nội dung xuất sau ngày. Mặc định rỗng.
  */
 function the_weekday_date( $before = '', $after = '' ) {
 	global $wp_locale, $currentday, $previousweekday;
@@ -3165,27 +3162,27 @@ function the_weekday_date( $before = '', $after = '' ) {
 	}
 
 	/**
-	 * Filters the localized weekday of the post, for display.
+	 * Lọc ngày trong tuần đã bản địa hóa của bài viết để hiển thị.
 	 *
 	 * @since 0.71
 	 *
-	 * @param string $the_weekday_date The weekday on which the post was written.
-	 * @param string $before           The HTML to output before the date.
-	 * @param string $after            The HTML to output after the date.
+	 * @param string $the_weekday_date Ngày trong tuần mà bài viết được viết.
+	 * @param string $before           HTML xuất trước ngày.
+	 * @param string $after            HTML xuất sau ngày.
 	 */
 	echo apply_filters( 'the_weekday_date', $the_weekday_date, $before, $after );
 }
 
 /**
- * Fires the wp_head action.
+ * Kích hoạt action wp_head.
  *
- * See {@see 'wp_head'}.
+ * Xem {@see 'wp_head'}.
  *
  * @since 1.2.0
  */
 function wp_head() {
 	/**
-	 * Prints scripts or data in the head tag on the front end.
+	 * In script hoặc dữ liệu trong thẻ head ở giao diện người dùng.
 	 *
 	 * @since 1.5.0
 	 */
@@ -3193,15 +3190,15 @@ function wp_head() {
 }
 
 /**
- * Fires the wp_footer action.
+ * Kích hoạt action wp_footer.
  *
- * See {@see 'wp_footer'}.
+ * Xem {@see 'wp_footer'}.
  *
  * @since 1.5.1
  */
 function wp_footer() {
 	/**
-	 * Prints scripts or data before the closing body tag on the front end.
+	 * In script hoặc dữ liệu trước thẻ đóng body ở giao diện người dùng.
 	 *
 	 * @since 1.5.1
 	 */
@@ -3209,15 +3206,15 @@ function wp_footer() {
 }
 
 /**
- * Fires the wp_body_open action.
+ * Kích hoạt action wp_body_open.
  *
- * See {@see 'wp_body_open'}.
+ * Xem {@see 'wp_body_open'}.
  *
  * @since 5.2.0
  */
 function wp_body_open() {
 	/**
-	 * Triggered after the opening body tag.
+	 * Được kích hoạt sau thẻ mở body.
 	 *
 	 * @since 5.2.0
 	 */
@@ -3225,11 +3222,11 @@ function wp_body_open() {
 }
 
 /**
- * Displays the links to the general feeds.
+ * Hiển thị các liên kết đến nguồn cấp dữ liệu chung.
  *
  * @since 2.8.0
  *
- * @param array $args Optional arguments.
+ * @param array $args Các đối số tùy chọn.
  */
 function feed_links( $args = array() ) {
 	if ( ! current_theme_supports( 'automatic-feed-links' ) ) {
@@ -3248,20 +3245,20 @@ function feed_links( $args = array() ) {
 	$args = wp_parse_args( $args, $defaults );
 
 	/**
-	 * Filters the feed links arguments.
+	 * Lọc các đối số liên kết nguồn cấp dữ liệu.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param array $args An array of feed links arguments.
+	 * @param array $args Mảng các đối số liên kết nguồn cấp dữ liệu.
 	 */
 	$args = apply_filters( 'feed_links_args', $args );
 
 	/**
-	 * Filters whether to display the posts feed link.
+	 * Lọc có hiển thị liên kết nguồn cấp bài viết hay không.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param bool $show Whether to display the posts feed link. Default true.
+	 * @param bool $show Có hiển thị liên kết nguồn cấp bài viết hay không. Mặc định true.
 	 */
 	if ( apply_filters( 'feed_links_show_posts_feed', true ) ) {
 		printf(
@@ -3273,11 +3270,11 @@ function feed_links( $args = array() ) {
 	}
 
 	/**
-	 * Filters whether to display the comments feed link.
+	 * Lọc có hiển thị liên kết nguồn cấp bình luận hay không.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param bool $show Whether to display the comments feed link. Default true.
+	 * @param bool $show Có hiển thị liên kết nguồn cấp bình luận hay không. Mặc định true.
 	 */
 	if ( apply_filters( 'feed_links_show_comments_feed', true ) ) {
 		printf(
@@ -3290,11 +3287,11 @@ function feed_links( $args = array() ) {
 }
 
 /**
- * Displays the links to the extra feeds such as category feeds.
+ * Hiển thị các liên kết đến nguồn cấp bổ sung như nguồn cấp chuyên mục.
  *
  * @since 2.8.0
  *
- * @param array $args Optional arguments.
+ * @param array $args Các đối số tùy chọn.
  */
 function feed_links_extra( $args = array() ) {
 	$defaults = array(
@@ -3319,11 +3316,11 @@ function feed_links_extra( $args = array() ) {
 	$args = wp_parse_args( $args, $defaults );
 
 	/**
-	 * Filters the extra feed links arguments.
+	 * Lọc các đối số liên kết nguồn cấp bổ sung.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param array $args An array of extra feed links arguments.
+	 * @param array $args Mảng các đối số liên kết nguồn cấp bổ sung.
 	 */
 	$args = apply_filters( 'feed_links_extra_args', $args );
 
@@ -3335,17 +3332,17 @@ function feed_links_extra( $args = array() ) {
 		$show_comments_feed = apply_filters( 'feed_links_show_comments_feed', true );
 
 		/**
-		 * Filters whether to display the post comments feed link.
+		 * Lọc có hiển thị liên kết nguồn cấp bình luận bài viết hay không.
 		 *
-		 * This filter allows to enable or disable the feed link for a singular post
-		 * in a way that is independent of {@see 'feed_links_show_comments_feed'}
-		 * (which controls the global comments feed). The result of that filter
-		 * is accepted as a parameter.
+		 * Bộ lọc này cho phép bật hoặc tắt liên kết nguồn cấp cho bài viết đơn
+		 * một cách độc lập với {@see 'feed_links_show_comments_feed'}
+		 * (điều khiển nguồn cấp bình luận toàn cục). Kết quả của bộ lọc đó
+		 * được chấp nhận làm tham số.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param bool $show_comments_feed Whether to display the post comments feed link. Defaults to
-		 *                                 the {@see 'feed_links_show_comments_feed'} filter result.
+		 * @param bool $show_comments_feed Có hiển thị liên kết nguồn cấp bình luận bài viết hay không. Mặc định là
+		 *                                 kết quả bộ lọc {@see 'feed_links_show_comments_feed'}.
 		 */
 		$show_post_comments_feed = apply_filters( 'feed_links_extra_show_post_comments_feed', $show_comments_feed );
 
@@ -3365,11 +3362,11 @@ function feed_links_extra( $args = array() ) {
 		}
 	} elseif ( is_post_type_archive() ) {
 		/**
-		 * Filters whether to display the post type archive feed link.
+		 * Lọc có hiển thị liên kết nguồn cấp lưu trữ loại bài viết hay không.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param bool $show Whether to display the post type archive feed link. Default true.
+		 * @param bool $show Có hiển thị liên kết nguồn cấp lưu trữ loại bài viết hay không. Mặc định true.
 		 */
 		$show_post_type_archive_feed = apply_filters( 'feed_links_extra_show_post_type_archive_feed', true );
 
@@ -3393,11 +3390,11 @@ function feed_links_extra( $args = array() ) {
 		}
 	} elseif ( is_category() ) {
 		/**
-		 * Filters whether to display the category feed link.
+		 * Lọc có hiển thị liên kết nguồn cấp chuyên mục hay không.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param bool $show Whether to display the category feed link. Default true.
+		 * @param bool $show Có hiển thị liên kết nguồn cấp chuyên mục hay không. Mặc định true.
 		 */
 		$show_category_feed = apply_filters( 'feed_links_extra_show_category_feed', true );
 
@@ -3417,11 +3414,11 @@ function feed_links_extra( $args = array() ) {
 		}
 	} elseif ( is_tag() ) {
 		/**
-		 * Filters whether to display the tag feed link.
+		 * Lọc có hiển thị liên kết nguồn cấp thẻ hay không.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param bool $show Whether to display the tag feed link. Default true.
+		 * @param bool $show Có hiển thị liên kết nguồn cấp thẻ hay không. Mặc định true.
 		 */
 		$show_tag_feed = apply_filters( 'feed_links_extra_show_tag_feed', true );
 
@@ -3441,11 +3438,11 @@ function feed_links_extra( $args = array() ) {
 		}
 	} elseif ( is_tax() ) {
 		/**
-		 * Filters whether to display the custom taxonomy feed link.
+		 * Lọc có hiển thị liên kết nguồn cấp taxonomy tùy chỉnh hay không.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param bool $show Whether to display the custom taxonomy feed link. Default true.
+		 * @param bool $show Có hiển thị liên kết nguồn cấp taxonomy tùy chỉnh hay không. Mặc định true.
 		 */
 		$show_tax_feed = apply_filters( 'feed_links_extra_show_tax_feed', true );
 
@@ -3468,11 +3465,11 @@ function feed_links_extra( $args = array() ) {
 		}
 	} elseif ( is_author() ) {
 		/**
-		 * Filters whether to display the author feed link.
+		 * Lọc có hiển thị liên kết nguồn cấp tác giả hay không.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param bool $show Whether to display the author feed link. Default true.
+		 * @param bool $show Có hiển thị liên kết nguồn cấp tác giả hay không. Mặc định true.
 		 */
 		$show_author_feed = apply_filters( 'feed_links_extra_show_author_feed', true );
 
@@ -3490,11 +3487,11 @@ function feed_links_extra( $args = array() ) {
 		}
 	} elseif ( is_search() ) {
 		/**
-		 * Filters whether to display the search results feed link.
+		 * Lọc có hiển thị liên kết nguồn cấp kết quả tìm kiếm hay không.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param bool $show Whether to display the search results feed link. Default true.
+		 * @param bool $show Có hiển thị liên kết nguồn cấp kết quả tìm kiếm hay không. Mặc định true.
 		 */
 		$show_search_feed = apply_filters( 'feed_links_extra_show_search_feed', true );
 
@@ -3521,7 +3518,7 @@ function feed_links_extra( $args = array() ) {
 }
 
 /**
- * Displays the link to the Really Simple Discovery service endpoint.
+ * Hiển thị liên kết đến điểm cuối dịch vụ Really Simple Discovery.
  *
  * @link http://archipelago.phrasewise.com/rsd
  * @since 2.0.0
@@ -3534,12 +3531,12 @@ function rsd_link() {
 }
 
 /**
- * Displays a referrer `strict-origin-when-cross-origin` meta tag.
+ * Hiển thị thẻ meta referrer `strict-origin-when-cross-origin`.
  *
- * Outputs a referrer `strict-origin-when-cross-origin` meta tag that tells the browser not to send
- * the full URL as a referrer to other sites when cross-origin assets are loaded.
+ * Xuất thẻ meta referrer `strict-origin-when-cross-origin` yêu cầu trình duyệt không gửi
+ * URL đầy đủ làm referrer đến các trang web khác khi tải tài nguyên cross-origin.
  *
- * Typical usage is as a {@see 'wp_head'} callback:
+ * Cách sử dụng thông thường là làm callback {@see 'wp_head'}:
  *
  *     add_action( 'wp_head', 'wp_strict_cross_origin_referrer' );
  *
@@ -3552,11 +3549,11 @@ function wp_strict_cross_origin_referrer() {
 }
 
 /**
- * Displays site icon meta tags.
+ * Hiển thị các thẻ meta biểu tượng trang web.
  *
  * @since 4.3.0
  *
- * @link https://www.whatwg.org/specs/web-apps/current-work/multipage/links.html#rel-icon HTML5 specification link icon.
+ * @link https://www.whatwg.org/specs/web-apps/current-work/multipage/links.html#rel-icon Biểu tượng liên kết đặc tả HTML5.
  */
 function wp_site_icon() {
 	if ( ! has_site_icon() && ! is_customize_preview() ) {
@@ -3566,7 +3563,7 @@ function wp_site_icon() {
 	$meta_tags = array();
 	$icon_32   = get_site_icon_url( 32 );
 	if ( empty( $icon_32 ) && is_customize_preview() ) {
-		$icon_32 = '/favicon.ico'; // Serve default favicon URL in customizer so element can be updated for preview.
+		$icon_32 = '/favicon.ico'; // Phục vụ URL favicon mặc định trong trình tùy chỉnh để phần tử có thể được cập nhật cho xem trước.
 	}
 	if ( $icon_32 ) {
 		$meta_tags[] = sprintf( '<link rel="icon" href="%s" sizes="32x32" />', esc_url( $icon_32 ) );
@@ -3585,11 +3582,11 @@ function wp_site_icon() {
 	}
 
 	/**
-	 * Filters the site icon meta tags, so plugins can add their own.
+	 * Lọc các thẻ meta biểu tượng trang web để plugin có thể thêm thẻ riêng.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param string[] $meta_tags Array of Site Icon meta tags.
+	 * @param string[] $meta_tags Mảng các thẻ meta biểu tượng trang web.
 	 */
 	$meta_tags = apply_filters( 'site_icon_meta_tags', $meta_tags );
 	$meta_tags = array_filter( $meta_tags );
@@ -3600,14 +3597,14 @@ function wp_site_icon() {
 }
 
 /**
- * Prints resource hints to browsers for pre-fetching, pre-rendering
- * and pre-connecting to websites.
+ * In gợi ý tài nguyên cho trình duyệt để tải trước, kết xuất trước
+ * và kết nối trước đến các trang web.
  *
- * Gives hints to browsers to prefetch specific pages or render them
- * in the background, to perform DNS lookups or to begin the connection
- * handshake (DNS, TCP, TLS) in the background.
+ * Cung cấp gợi ý cho trình duyệt để tải trước các trang cụ thể hoặc kết xuất chúng
+ * trong nền, thực hiện tra cứu DNS hoặc bắt đầu quá trình bắt tay kết nối
+ * (DNS, TCP, TLS) trong nền.
  *
- * These performance improving indicators work by using `<link rel"…">`.
+ * Các chỉ báo cải thiện hiệu suất này hoạt động bằng cách sử dụng `<link rel"...">`.
  *
  * @since 4.6.0
  */
@@ -3623,28 +3620,28 @@ function wp_resource_hints() {
 		$unique_urls = array();
 
 		/**
-		 * Filters domains and URLs for resource hints of the given relation type.
+		 * Lọc tên miền và URL cho gợi ý tài nguyên của loại quan hệ đã cho.
 		 *
 		 * @since 4.6.0
-		 * @since 4.7.0 The `$urls` parameter accepts arrays of specific HTML attributes
-		 *              as its child elements.
+		 * @since 4.7.0 Tham số `$urls` chấp nhận mảng các thuộc tính HTML cụ thể
+		 *              làm phần tử con.
 		 *
 		 * @param array  $urls {
-		 *     Array of resources and their attributes, or URLs to print for resource hints.
+		 *     Mảng các tài nguyên và thuộc tính của chúng, hoặc URL để in cho gợi ý tài nguyên.
 		 *
 		 *     @type array|string ...$0 {
-		 *         Array of resource attributes, or a URL string.
+		 *         Mảng các thuộc tính tài nguyên, hoặc chuỗi URL.
 		 *
-		 *         @type string $href        URL to include in resource hints. Required.
-		 *         @type string $as          How the browser should treat the resource
-		 *                                   (`script`, `style`, `image`, `document`, etc).
-		 *         @type string $crossorigin Indicates the CORS policy of the specified resource.
-		 *         @type float  $pr          Expected probability that the resource hint will be used.
-		 *         @type string $type        Type of the resource (`text/html`, `text/css`, etc).
+		 *         @type string $href        URL để bao gồm trong gợi ý tài nguyên. Bắt buộc.
+		 *         @type string $as          Cách trình duyệt nên xử lý tài nguyên
+		 *                                   (`script`, `style`, `image`, `document`, v.v.).
+		 *         @type string $crossorigin Chỉ định chính sách CORS của tài nguyên được chỉ định.
+		 *         @type float  $pr          Xác suất dự kiến gợi ý tài nguyên sẽ được sử dụng.
+		 *         @type string $type        Loại tài nguyên (`text/html`, `text/css`, v.v.).
 		 *     }
 		 * }
-		 * @param string $relation_type The relation type the URLs are printed for. One of
-		 *                              'dns-prefetch', 'preconnect', 'prefetch', or 'prerender'.
+		 * @param string $relation_type Loại quan hệ mà URL được in cho. Một trong
+		 *                              'dns-prefetch', 'preconnect', 'prefetch', hoặc 'prerender'.
 		 */
 		$urls = apply_filters( 'wp_resource_hints', $urls, $relation_type );
 
@@ -3680,7 +3677,7 @@ function wp_resource_hints() {
 				if ( 'preconnect' === $relation_type && ! empty( $parsed['scheme'] ) ) {
 					$url = $parsed['scheme'] . '://' . $parsed['host'];
 				} else {
-					// Use protocol-relative URLs for dns-prefetch or if scheme is missing.
+					// Sử dụng URL tương đối giao thức cho dns-prefetch hoặc nếu thiếu scheme.
 					$url = '//' . $parsed['host'];
 				}
 			}
@@ -3719,15 +3716,15 @@ function wp_resource_hints() {
 }
 
 /**
- * Prints resource preloads directives to browsers.
+ * In chỉ thị tải trước tài nguyên cho trình duyệt.
  *
- * Gives directive to browsers to preload specific resources that website will
- * need very soon, this ensures that they are available earlier and are less
- * likely to block the page's render. Preload directives should not be used for
- * non-render-blocking elements, as then they would compete with the
- * render-blocking ones, slowing down the render.
+ * Cung cấp chỉ thị cho trình duyệt để tải trước các tài nguyên cụ thể mà trang web sẽ
+ * cần rất sớm, điều này đảm bảo chúng có sẵn sớm hơn và ít
+ * có khả năng chặn kết xuất trang. Chỉ thị tải trước không nên sử dụng cho
+ * các phần tử không chặn kết xuất, vì khi đó chúng sẽ cạnh tranh với
+ * các phần tử chặn kết xuất, làm chậm quá trình kết xuất.
  *
- * These performance improving indicators work by using `<link rel="preload">`.
+ * Các chỉ báo cải thiện hiệu suất này hoạt động bằng cách sử dụng `<link rel="preload">`.
  *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types/preload
  * @link https://web.dev/preload-responsive-images/
@@ -3736,26 +3733,26 @@ function wp_resource_hints() {
  */
 function wp_preload_resources() {
 	/**
-	 * Filters domains and URLs for resource preloads.
+	 * Lọc tên miền và URL cho tải trước tài nguyên.
 	 *
 	 * @since 6.1.0
-	 * @since 6.6.0 Added the `$fetchpriority` attribute.
+	 * @since 6.6.0 Đã thêm thuộc tính `$fetchpriority`.
 	 *
 	 * @param array  $preload_resources {
-	 *     Array of resources and their attributes, or URLs to print for resource preloads.
+	 *     Mảng các tài nguyên và thuộc tính của chúng, hoặc URL để in cho tải trước tài nguyên.
 	 *
 	 *     @type array ...$0 {
-	 *         Array of resource attributes.
+	 *         Mảng các thuộc tính tài nguyên.
 	 *
-	 *         @type string $href          URL to include in resource preloads. Required.
-	 *         @type string $as            How the browser should treat the resource
-	 *                                     (`script`, `style`, `image`, `document`, etc).
-	 *         @type string $crossorigin   Indicates the CORS policy of the specified resource.
-	 *         @type string $type          Type of the resource (`text/html`, `text/css`, etc).
-	 *         @type string $media         Accepts media types or media queries. Allows responsive preloading.
-	 *         @type string $imagesizes    Responsive source size to the source Set.
-	 *         @type string $imagesrcset   Responsive image sources to the source set.
-	 *         @type string $fetchpriority Fetchpriority value for the resource.
+	 *         @type string $href          URL để bao gồm trong tải trước tài nguyên. Bắt buộc.
+	 *         @type string $as            Cách trình duyệt nên xử lý tài nguyên
+	 *                                     (`script`, `style`, `image`, `document`, v.v.).
+	 *         @type string $crossorigin   Chỉ định chính sách CORS của tài nguyên được chỉ định.
+	 *         @type string $type          Loại tài nguyên (`text/html`, `text/css`, v.v.).
+	 *         @type string $media         Chấp nhận loại media hoặc truy vấn media. Cho phép tải trước responsive.
+	 *         @type string $imagesizes    Kích thước nguồn responsive cho tập nguồn.
+	 *         @type string $imagesrcset   Nguồn hình ảnh responsive cho tập nguồn.
+	 *         @type string $fetchpriority Giá trị fetchpriority cho tài nguyên.
 	 *     }
 	 * }
 	 */

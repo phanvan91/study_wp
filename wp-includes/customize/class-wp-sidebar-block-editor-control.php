@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Sidebar_Block_Editor_Control class.
+ * API Tùy biến: Lớp WP_Sidebar_Block_Editor_Control.
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,8 +8,8 @@
  */
 
 /**
- * Core class used to implement the widgets block editor control in the
- * customizer.
+ * Lớp cốt lõi được sử dụng để triển khai điều khiển trình soạn thảo khối widget
+ * trong trình tùy biến.
  *
  * @since 5.8.0
  *
@@ -17,7 +17,7 @@
  */
 class WP_Sidebar_Block_Editor_Control extends WP_Customize_Control {
 	/**
-	 * The control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 5.8.0
 	 *
@@ -26,12 +26,12 @@ class WP_Sidebar_Block_Editor_Control extends WP_Customize_Control {
 	public $type = 'sidebar_block_editor';
 
 	/**
-	 * Render the widgets block editor container.
+	 * Hiển thị vùng chứa trình soạn thảo khối widget.
 	 *
 	 * @since 5.8.0
 	 */
 	public function render_content() {
-		// Render an empty control. The JavaScript in
-		// @wordpress/customize-widgets will do the rest.
+		// Hiển thị một điều khiển rỗng. JavaScript trong
+		// @wordpress/customize-widgets sẽ xử lý phần còn lại.
 	}
 }

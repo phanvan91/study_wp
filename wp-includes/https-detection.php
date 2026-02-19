@@ -1,21 +1,21 @@
 <?php
 /**
- * HTTPS detection functions.
+ * Các hàm phát hiện HTTPS.
  *
  * @package WordPress
  * @since 5.7.0
  */
 
 /**
- * Checks whether the website is using HTTPS.
+ * Kiểm tra xem website có đang sử dụng HTTPS hay không.
  *
- * This is based on whether both the home and site URL are using HTTPS.
+ * Điều này dựa trên việc cả URL trang chủ và URL site đều sử dụng HTTPS.
  *
  * @since 5.7.0
  * @see wp_is_home_url_using_https()
  * @see wp_is_site_url_using_https()
  *
- * @return bool True if using HTTPS, false otherwise.
+ * @return bool True nếu đang sử dụng HTTPS, false nếu không.
  */
 function wp_is_using_https() {
 	if ( ! wp_is_home_url_using_https() ) {
@@ -26,82 +26,81 @@ function wp_is_using_https() {
 }
 
 /**
- * Checks whether the current site URL is using HTTPS.
+ * Kiểm tra xem URL trang chủ hiện tại có đang sử dụng HTTPS hay không.
  *
  * @since 5.7.0
  * @see home_url()
  *
- * @return bool True if using HTTPS, false otherwise.
+ * @return bool True nếu đang sử dụng HTTPS, false nếu không.
  */
 function wp_is_home_url_using_https() {
 	return 'https' === wp_parse_url( home_url(), PHP_URL_SCHEME );
 }
 
 /**
- * Checks whether the current site's URL where WordPress is stored is using HTTPS.
+ * Kiểm tra xem URL nơi WordPress được lưu trữ có đang sử dụng HTTPS hay không.
  *
- * This checks the URL where WordPress application files (e.g. wp-blog-header.php or the wp-admin/ folder)
- * are accessible.
+ * Hàm này kiểm tra URL nơi các file ứng dụng WordPress (ví dụ: wp-blog-header.php hoặc thư mục wp-admin/)
+ * có thể truy cập được.
  *
  * @since 5.7.0
  * @see site_url()
  *
- * @return bool True if using HTTPS, false otherwise.
+ * @return bool True nếu đang sử dụng HTTPS, false nếu không.
  */
 function wp_is_site_url_using_https() {
 	/*
-	 * Use direct option access for 'siteurl' and manually run the 'site_url'
-	 * filter because `site_url()` will adjust the scheme based on what the
-	 * current request is using.
+	 * Sử dụng truy cập trực tiếp option cho 'siteurl' và chạy thủ công bộ lọc 'site_url'
+	 * vì `site_url()` sẽ điều chỉnh scheme dựa trên yêu cầu hiện tại đang sử dụng.
 	 */
-	/** This filter is documented in wp-includes/link-template.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/link-template.php */
 	$site_url = apply_filters( 'site_url', get_option( 'siteurl' ), '', null, null );
 
 	return 'https' === wp_parse_url( $site_url, PHP_URL_SCHEME );
 }
 
 /**
- * Checks whether HTTPS is supported for the server and domain.
+ * Kiểm tra xem HTTPS có được hỗ trợ cho máy chủ và tên miền hay không.
  *
- * This function makes an HTTP request through `wp_get_https_detection_errors()`
- * to check for HTTPS support. As this process can be resource-intensive,
- * it should be used cautiously, especially in performance-sensitive environments,
- * to avoid potential latency issues.
+ * Hàm này thực hiện yêu cầu HTTP thông qua `wp_get_https_detection_errors()`
+ * để kiểm tra hỗ trợ HTTPS. Vì quá trình này có thể tốn nhiều tài nguyên,
+ * nên sử dụng cẩn thận, đặc biệt trong môi trường nhạy cảm về hiệu suất,
+ * để tránh các vấn đề về độ trễ tiềm ẩn.
  *
  * @since 5.7.0
  *
- * @return bool True if HTTPS is supported, false otherwise.
+ * @return bool True nếu HTTPS được hỗ trợ, false nếu không.
  */
 function wp_is_https_supported() {
 	$https_detection_errors = wp_get_https_detection_errors();
 
-	// If there are errors, HTTPS is not supported.
+	// Nếu có lỗi, HTTPS không được hỗ trợ.
 	return empty( $https_detection_errors );
 }
 
 /**
- * Runs a remote HTTPS request to detect whether HTTPS supported, and stores potential errors.
+ * Chạy yêu cầu HTTPS từ xa để phát hiện HTTPS có được hỗ trợ hay không, và lưu trữ các lỗi tiềm ẩn.
  *
- * This function checks for HTTPS support by making an HTTP request. As this process can be resource-intensive,
- * it should be used cautiously, especially in performance-sensitive environments.
- * It is called when HTTPS support needs to be validated.
+ * Hàm này kiểm tra hỗ trợ HTTPS bằng cách thực hiện yêu cầu HTTP. Vì quá trình này có thể tốn nhiều tài nguyên,
+ * nên sử dụng cẩn thận, đặc biệt trong môi trường nhạy cảm về hiệu suất.
+ * Nó được gọi khi cần xác nhận hỗ trợ HTTPS.
  *
  * @since 6.4.0
  * @access private
  *
- * @return array An array containing potential detection errors related to HTTPS, or an empty array if no errors are found.
+ * @return array Mảng chứa các lỗi phát hiện tiềm ẩn liên quan đến HTTPS, hoặc mảng rỗng nếu không tìm thấy lỗi.
  */
 function wp_get_https_detection_errors() {
 	/**
-	 * Short-circuits the process of detecting errors related to HTTPS support.
+	 * Bỏ qua quá trình phát hiện lỗi liên quan đến hỗ trợ HTTPS.
 	 *
-	 * Returning a `WP_Error` from the filter will effectively short-circuit the default logic of trying a remote
-	 * request to the site over HTTPS, storing the errors array from the returned `WP_Error` instead.
+	 * Trả về `WP_Error` từ bộ lọc sẽ bỏ qua logic mặc định của việc thử yêu cầu từ xa
+	 * đến site qua HTTPS, lưu trữ mảng lỗi từ `WP_Error` được trả về thay thế.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param null|WP_Error $pre Error object to short-circuit detection,
-	 *                           or null to continue with the default behavior.
+	 * @param null|WP_Error $pre Đối tượng lỗi để bỏ qua phát hiện,
+	 *                           hoặc null để tiếp tục với hành vi mặc định.
 	 */
 	$support_errors = apply_filters( 'pre_wp_get_https_detection_errors', null );
 	if ( is_wp_error( $support_errors ) ) {
@@ -158,32 +157,32 @@ function wp_get_https_detection_errors() {
 }
 
 /**
- * Checks whether a given HTML string is likely an output from this WordPress site.
+ * Kiểm tra xem một chuỗi HTML có phải là đầu ra từ website WordPress này hay không.
  *
- * This function attempts to check for various common WordPress patterns whether they are included in the HTML string.
- * Since any of these actions may be disabled through third-party code, this function may also return null to indicate
- * that it was not possible to determine ownership.
+ * Hàm này cố gắng kiểm tra các mẫu WordPress phổ biến khác nhau xem chúng có được bao gồm trong chuỗi HTML hay không.
+ * Vì bất kỳ hành động nào cũng có thể bị vô hiệu hóa thông qua mã bên thứ ba, hàm này cũng có thể trả về null
+ * để chỉ ra rằng không thể xác định quyền sở hữu.
  *
  * @since 5.7.0
  * @access private
  *
- * @param string $html Full HTML output string, e.g. from a HTTP response.
- * @return bool|null True/false for whether HTML was generated by this site, null if unable to determine.
+ * @param string $html Chuỗi đầu ra HTML đầy đủ, ví dụ: từ phản hồi HTTP.
+ * @return bool|null True/false cho việc HTML có được tạo bởi site này hay không, null nếu không thể xác định.
  */
 function wp_is_local_html_output( $html ) {
-	// 1. Check if HTML includes the site's Really Simple Discovery link.
+	// 1. Kiểm tra xem HTML có chứa liên kết Really Simple Discovery của site hay không.
 	if ( has_action( 'wp_head', 'rsd_link' ) ) {
-		$pattern = preg_replace( '#^https?:(?=//)#', '', esc_url( site_url( 'xmlrpc.php?rsd', 'rpc' ) ) ); // See rsd_link().
+		$pattern = preg_replace( '#^https?:(?=//)#', '', esc_url( site_url( 'xmlrpc.php?rsd', 'rpc' ) ) ); // Xem rsd_link().
 		return str_contains( $html, $pattern );
 	}
 
-	// 2. Check if HTML includes the site's REST API link.
+	// 2. Kiểm tra xem HTML có chứa liên kết REST API của site hay không.
 	if ( has_action( 'wp_head', 'rest_output_link_wp_head' ) ) {
-		// Try both HTTPS and HTTP since the URL depends on context.
-		$pattern = preg_replace( '#^https?:(?=//)#', '', esc_url( get_rest_url() ) ); // See rest_output_link_wp_head().
+		// Thử cả HTTPS và HTTP vì URL phụ thuộc vào ngữ cảnh.
+		$pattern = preg_replace( '#^https?:(?=//)#', '', esc_url( get_rest_url() ) ); // Xem rest_output_link_wp_head().
 		return str_contains( $html, $pattern );
 	}
 
-	// Otherwise the result cannot be determined.
+	// Nếu không thì không thể xác định kết quả.
 	return null;
 }

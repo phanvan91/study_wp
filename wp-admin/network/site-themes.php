@@ -1,13 +1,13 @@
 <?php
 /**
- * Edit Site Themes Administration Screen
+ * Màn hình Quản trị Giao diện của Trang web
  *
  * @package WordPress
  * @subpackage Multisite
  * @since 3.1.0
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( ! current_user_can( 'manage_sites' ) ) {
@@ -31,7 +31,7 @@ $action = $wp_list_table->current_action();
 
 $s = isset( $_REQUEST['s'] ) ? $_REQUEST['s'] : '';
 
-// Clean up request URI from temporary args for screen options/paging uri's to work as expected.
+// Dọn dẹp URI yêu cầu khỏi các tham số tạm thời để tùy chọn màn hình/phân trang hoạt động đúng.
 $temp_args              = array( 'enabled', 'disabled', 'error' );
 $_SERVER['REQUEST_URI'] = remove_query_arg( $temp_args, $_SERVER['REQUEST_URI'] );
 $referer                = remove_query_arg( $temp_args, wp_get_referer() );
@@ -122,19 +122,19 @@ if ( $action ) {
 				$screen = get_current_screen()->id;
 
 				/**
-				 * Fires when a custom bulk action should be handled.
+				 * Kích hoạt khi một hành động hàng loạt tùy chỉnh cần được xử lý.
 				 *
-				 * The redirect link should be modified with success or failure feedback
-				 * from the action to be used to display feedback to the user.
+				 * Liên kết chuyển hướng nên được sửa đổi với phản hồi thành công hoặc thất bại
+				 * từ hành động để hiển thị phản hồi cho người dùng.
 				 *
-				 * The dynamic portion of the hook name, `$screen`, refers to the current screen ID.
+				 * Phần động của tên hook, `$screen`, tham chiếu đến ID màn hình hiện tại.
 				 *
 				 * @since 4.7.0
 				 *
-				 * @param string $redirect_url The redirect URL.
-				 * @param string $action       The action being taken.
-				 * @param array  $items        The items to take the action on.
-				 * @param int    $site_id      The site ID.
+				 * @param string $redirect_url URL chuyển hướng.
+				 * @param string $action       Hành động đang được thực hiện.
+				 * @param array  $items        Các mục để thực hiện hành động.
+				 * @param int    $site_id      ID của trang web.
 				 */
 				$referer = apply_filters( "handle_network_bulk_actions-{$screen}", $referer, $action, $themes, $id ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 			} else {
@@ -166,7 +166,7 @@ if ( isset( $_GET['action'] ) && 'update-site' === $_GET['action'] ) {
 add_thickbox();
 add_screen_option( 'per_page' );
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ tiêu đề HTML.
 /* translators: %s: Site title. */
 $title = sprintf( __( 'Edit Site: %s' ), esc_html( $details->blogname ) );
 

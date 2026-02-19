@@ -1,6 +1,6 @@
 <?php
 /**
- * Multisite WordPress API
+ * API WordPress Multisite
  *
  * @package WordPress
  * @subpackage Multisite
@@ -8,15 +8,15 @@
  */
 
 /**
- * Gets the network's site and user counts.
+ * Lấy số lượng site và người dùng của mạng.
  *
  * @since MU (3.0.0)
  *
  * @return int[] {
- *     Site and user count for the network.
+ *     Số lượng site và người dùng cho mạng.
  *
- *     @type int $blogs Number of sites on the network.
- *     @type int $users Number of users on the network.
+ *     @type int $blogs Số lượng site trên mạng.
+ *     @type int $users Số lượng người dùng trên mạng.
  * }
  */
 function get_sitestats() {
@@ -29,18 +29,18 @@ function get_sitestats() {
 }
 
 /**
- * Gets one of a user's active blogs.
+ * Lấy một trong các blog hoạt động của người dùng.
  *
- * Returns the user's primary blog, if they have one and
- * it is active. If it's inactive, function returns another
- * active blog of the user. If none are found, the user
- * is added as a Subscriber to the Dashboard Blog and that blog
- * is returned.
+ * Trả về blog chính của người dùng, nếu họ có một blog và
+ * nó đang hoạt động. Nếu không hoạt động, hàm trả về một
+ * blog hoạt động khác của người dùng. Nếu không tìm thấy,
+ * người dùng được thêm làm Subscriber vào Dashboard Blog và blog
+ * đó được trả về.
  *
  * @since MU (3.0.0)
  *
- * @param int $user_id The unique ID of the user
- * @return WP_Site|void The blog object
+ * @param int $user_id ID duy nhất của người dùng
+ * @return WP_Site|void Đối tượng blog
  */
 function get_active_blog_for_user( $user_id ) {
 	$blogs = get_blogs_of_user( $user_id );
@@ -62,7 +62,7 @@ function get_active_blog_for_user( $user_id ) {
 			$primary = get_site( $primary_blog );
 		}
 	} else {
-		// TODO: Review this call to add_user_to_blog too - to get here the user must have a role on this blog?
+		// TODO: Xem xét lại lời gọi add_user_to_blog này - để đến đây người dùng phải có vai trò trên blog này?
 		$result = add_user_to_blog( $first_blog->userblog_id, $user_id, 'subscriber' );
 
 		if ( ! is_wp_error( $result ) ) {
@@ -74,7 +74,7 @@ function get_active_blog_for_user( $user_id ) {
 	if ( ( ! is_object( $primary ) )
 		|| ( '1' === $primary->archived || '1' === $primary->spam || '1' === $primary->deleted )
 	) {
-		$blogs = get_blogs_of_user( $user_id, true ); // If a user's primary blog is shut down, check their other blogs.
+		$blogs = get_blogs_of_user( $user_id, true ); // Nếu blog chính của người dùng bị đóng, kiểm tra các blog khác của họ.
 		$ret   = false;
 
 		if ( is_array( $blogs ) && count( $blogs ) > 0 ) {
@@ -110,32 +110,32 @@ function get_active_blog_for_user( $user_id ) {
 }
 
 /**
- * Gets the number of active sites on the installation.
+ * Lấy số lượng site hoạt động trên hệ thống.
  *
- * The count is cached and updated twice daily. This is not a live count.
+ * Số lượng được cache và cập nhật hai lần mỗi ngày. Đây không phải số liệu thời gian thực.
  *
  * @since MU (3.0.0)
- * @since 3.7.0 The `$network_id` parameter has been deprecated.
- * @since 4.8.0 The `$network_id` parameter is now being used.
+ * @since 3.7.0 Tham số `$network_id` đã bị deprecated.
+ * @since 4.8.0 Tham số `$network_id` hiện đang được sử dụng.
  *
- * @param int|null $network_id ID of the network. Default is the current network.
- * @return int Number of active sites on the network.
+ * @param int|null $network_id ID của mạng. Mặc định là mạng hiện tại.
+ * @return int Số lượng site hoạt động trên mạng.
  */
 function get_blog_count( $network_id = null ) {
 	return get_network_option( $network_id, 'blog_count' );
 }
 
 /**
- * Gets a blog post from any site on the network.
+ * Lấy một bài viết blog từ bất kỳ site nào trên mạng.
  *
- * This function is similar to get_post(), except that it can retrieve a post
- * from any site on the network, not just the current site.
+ * Hàm này tương tự get_post(), ngoại trừ việc nó có thể lấy bài viết
+ * từ bất kỳ site nào trên mạng, không chỉ site hiện tại.
  *
  * @since MU (3.0.0)
  *
- * @param int $blog_id ID of the blog.
- * @param int $post_id ID of the post being looked for.
- * @return WP_Post|null WP_Post object on success, null on failure
+ * @param int $blog_id ID của blog.
+ * @param int $post_id ID của bài viết cần tìm.
+ * @return WP_Post|null Đối tượng WP_Post khi thành công, null khi thất bại
  */
 function get_blog_post( $blog_id, $post_id ) {
 	switch_to_blog( $blog_id );
@@ -146,17 +146,17 @@ function get_blog_post( $blog_id, $post_id ) {
 }
 
 /**
- * Adds a user to a blog, along with specifying the user's role.
+ * Thêm người dùng vào blog, cùng với việc chỉ định vai trò của người dùng.
  *
- * Use the {@see 'add_user_to_blog'} action to fire an event when users are added to a blog.
+ * Sử dụng action {@see 'add_user_to_blog'} để kích hoạt sự kiện khi người dùng được thêm vào blog.
  *
  * @since MU (3.0.0)
  *
- * @param int    $blog_id ID of the blog the user is being added to.
- * @param int    $user_id ID of the user being added.
- * @param string $role    User role.
- * @return true|WP_Error True on success or a WP_Error object if the user doesn't exist
- *                       or could not be added.
+ * @param int    $blog_id ID của blog mà người dùng được thêm vào.
+ * @param int    $user_id ID của người dùng được thêm.
+ * @param string $role    Vai trò người dùng.
+ * @return true|WP_Error True khi thành công hoặc đối tượng WP_Error nếu người dùng không tồn tại
+ *                       hoặc không thể được thêm.
  */
 function add_user_to_blog( $blog_id, $user_id, $role ) {
 	switch_to_blog( $blog_id );
@@ -169,15 +169,15 @@ function add_user_to_blog( $blog_id, $user_id, $role ) {
 	}
 
 	/**
-	 * Filters whether a user should be added to a site.
+	 * Lọc xem người dùng có nên được thêm vào site hay không.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param true|WP_Error $retval  True if the user should be added to the site, error
-	 *                               object otherwise.
-	 * @param int           $user_id User ID.
-	 * @param string        $role    User role.
-	 * @param int           $blog_id Site ID.
+	 * @param true|WP_Error $retval  True nếu người dùng nên được thêm vào site, đối tượng
+	 *                               lỗi nếu không.
+	 * @param int           $user_id ID người dùng.
+	 * @param string        $role    Vai trò người dùng.
+	 * @param int           $blog_id ID site.
 	 */
 	$can_add_user = apply_filters( 'can_add_user_to_blog', true, $user_id, $role, $blog_id );
 
@@ -200,13 +200,13 @@ function add_user_to_blog( $blog_id, $user_id, $role ) {
 	$user->set_role( $role );
 
 	/**
-	 * Fires immediately after a user is added to a site.
+	 * Kích hoạt ngay sau khi người dùng được thêm vào site.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param int    $user_id User ID.
-	 * @param string $role    User role.
-	 * @param int    $blog_id Blog ID.
+	 * @param int    $user_id ID người dùng.
+	 * @param string $role    Vai trò người dùng.
+	 * @param int    $blog_id ID blog.
 	 */
 	do_action( 'add_user_to_blog', $user_id, $role, $blog_id );
 
@@ -219,22 +219,22 @@ function add_user_to_blog( $blog_id, $user_id, $role ) {
 }
 
 /**
- * Removes a user from a blog.
+ * Xóa người dùng khỏi blog.
  *
- * Use the {@see 'remove_user_from_blog'} action to fire an event when
- * users are removed from a blog.
+ * Sử dụng action {@see 'remove_user_from_blog'} để kích hoạt sự kiện khi
+ * người dùng bị xóa khỏi blog.
  *
- * Accepts an optional `$reassign` parameter, if you want to
- * reassign the user's blog posts to another user upon removal.
+ * Chấp nhận tham số `$reassign` tùy chọn, nếu bạn muốn
+ * gán lại các bài viết blog của người dùng cho người dùng khác khi xóa.
  *
  * @since MU (3.0.0)
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int $user_id  ID of the user being removed.
- * @param int $blog_id  Optional. ID of the blog the user is being removed from. Default 0.
- * @param int $reassign Optional. ID of the user to whom to reassign posts. Default 0.
- * @return true|WP_Error True on success or a WP_Error object if the user doesn't exist.
+ * @param int $user_id  ID của người dùng bị xóa.
+ * @param int $blog_id  Tùy chọn. ID của blog mà người dùng bị xóa khỏi. Mặc định 0.
+ * @param int $reassign Tùy chọn. ID của người dùng để gán lại bài viết. Mặc định 0.
+ * @return true|WP_Error True khi thành công hoặc đối tượng WP_Error nếu người dùng không tồn tại.
  */
 function remove_user_from_blog( $user_id, $blog_id = 0, $reassign = 0 ) {
 	global $wpdb;
@@ -245,20 +245,20 @@ function remove_user_from_blog( $user_id, $blog_id = 0, $reassign = 0 ) {
 	switch_to_blog( $blog_id );
 
 	/**
-	 * Fires before a user is removed from a site.
+	 * Kích hoạt trước khi người dùng bị xóa khỏi site.
 	 *
 	 * @since MU (3.0.0)
-	 * @since 5.4.0 Added the `$reassign` parameter.
+	 * @since 5.4.0 Thêm tham số `$reassign`.
 	 *
-	 * @param int $user_id  ID of the user being removed.
-	 * @param int $blog_id  ID of the blog the user is being removed from.
-	 * @param int $reassign ID of the user to whom to reassign posts.
+	 * @param int $user_id  ID của người dùng bị xóa.
+	 * @param int $blog_id  ID của blog mà người dùng bị xóa khỏi.
+	 * @param int $reassign ID của người dùng để gán lại bài viết.
 	 */
 	do_action( 'remove_user_from_blog', $user_id, $blog_id, $reassign );
 
 	/*
-	 * If being removed from the primary blog, set a new primary
-	 * if the user is assigned to multiple blogs.
+	 * Nếu bị xóa khỏi blog chính, đặt blog chính mới
+	 * nếu người dùng được gán cho nhiều blog.
 	 */
 	$primary_blog = (int) get_user_meta( $user_id, 'primary_blog', true );
 	if ( $primary_blog === $blog_id ) {
@@ -315,13 +315,13 @@ function remove_user_from_blog( $user_id, $blog_id = 0, $reassign = 0 ) {
 }
 
 /**
- * Gets the permalink for a post on another blog.
+ * Lấy permalink cho bài viết trên blog khác.
  *
  * @since MU (3.0.0) 1.0
  *
- * @param int $blog_id ID of the source blog.
- * @param int $post_id ID of the desired post.
- * @return string The post's permalink.
+ * @param int $blog_id ID của blog nguồn.
+ * @param int $post_id ID của bài viết cần lấy.
+ * @return string Permalink của bài viết.
  */
 function get_blog_permalink( $blog_id, $post_id ) {
 	switch_to_blog( $blog_id );
@@ -332,27 +332,27 @@ function get_blog_permalink( $blog_id, $post_id ) {
 }
 
 /**
- * Gets a blog's numeric ID from its URL.
+ * Lấy ID số của blog từ URL của nó.
  *
- * On a subdirectory installation like example.com/blog1/,
- * $domain will be the root 'example.com' and $path the
- * subdirectory '/blog1/'. With subdomains like blog1.example.com,
- * $domain is 'blog1.example.com' and $path is '/'.
+ * Trên cài đặt thư mục con như example.com/blog1/,
+ * $domain sẽ là gốc 'example.com' và $path là
+ * thư mục con '/blog1/'. Với subdomain như blog1.example.com,
+ * $domain là 'blog1.example.com' và $path là '/'.
  *
  * @since MU (3.0.0)
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $domain Website domain.
- * @param string $path   Optional. Not required for subdomain installations. Default '/'.
- * @return int 0 if no blog found, otherwise the ID of the matching blog.
+ * @param string $domain Tên miền website.
+ * @param string $path   Tùy chọn. Không cần thiết cho cài đặt subdomain. Mặc định '/'.
+ * @return int 0 nếu không tìm thấy blog, ngược lại là ID của blog phù hợp.
  */
 function get_blog_id_from_url( $domain, $path = '/' ) {
 	$domain = strtolower( $domain );
 	$path   = strtolower( $path );
 	$id     = wp_cache_get( md5( $domain . $path ), 'blog-id-cache' );
 
-	if ( -1 === $id ) { // Blog does not exist.
+	if ( -1 === $id ) { // Blog không tồn tại.
 		return 0;
 	} elseif ( $id ) {
 		return (int) $id;
@@ -379,21 +379,21 @@ function get_blog_id_from_url( $domain, $path = '/' ) {
 }
 
 //
-// Admin functions.
+// Các hàm quản trị.
 //
 
 /**
- * Checks an email address against a list of banned domains.
+ * Kiểm tra địa chỉ email dựa trên danh sách tên miền bị cấm.
  *
- * This function checks against the Banned Email Domains list
- * at wp-admin/network/settings.php. The check is only run on
- * self-registrations; user creation at wp-admin/network/users.php
- * bypasses this check.
+ * Hàm này kiểm tra dựa trên danh sách Tên miền Email Bị cấm
+ * tại wp-admin/network/settings.php. Kiểm tra chỉ chạy trên
+ * đăng ký tự phục vụ; tạo người dùng tại wp-admin/network/users.php
+ * bỏ qua kiểm tra này.
  *
  * @since MU (3.0.0)
  *
- * @param string $user_email The email provided by the user at registration.
- * @return bool True when the email address is banned, false otherwise.
+ * @param string $user_email Email được cung cấp bởi người dùng khi đăng ký.
+ * @return bool True khi địa chỉ email bị cấm, false nếu không.
  */
 function is_email_address_unsafe( $user_email ) {
 	$banned_names = get_site_option( 'banned_email_domains' );
@@ -427,42 +427,42 @@ function is_email_address_unsafe( $user_email ) {
 	}
 
 	/**
-	 * Filters whether an email address is unsafe.
+	 * Lọc xem địa chỉ email có không an toàn hay không.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param bool   $is_email_address_unsafe Whether the email address is "unsafe". Default false.
-	 * @param string $user_email              User email address.
+	 * @param bool   $is_email_address_unsafe Liệu địa chỉ email có "không an toàn" hay không. Mặc định false.
+	 * @param string $user_email              Địa chỉ email người dùng.
 	 */
 	return apply_filters( 'is_email_address_unsafe', $is_email_address_unsafe, $user_email );
 }
 
 /**
- * Sanitizes and validates data required for a user sign-up.
+ * Làm sạch và xác thực dữ liệu cần thiết cho đăng ký người dùng.
  *
- * Verifies the validity and uniqueness of user names and user email addresses,
- * and checks email addresses against allowed and disallowed domains provided by
- * administrators.
+ * Xác minh tính hợp lệ và duy nhất của tên người dùng và địa chỉ email,
+ * và kiểm tra địa chỉ email dựa trên các tên miền được phép và không được phép
+ * do quản trị viên cung cấp.
  *
- * The {@see 'wpmu_validate_user_signup'} hook provides an easy way to modify the sign-up
- * process. The value $result, which is passed to the hook, contains both the user-provided
- * info and the error messages created by the function. {@see 'wpmu_validate_user_signup'}
- * allows you to process the data in any way you'd like, and unset the relevant errors if
- * necessary.
+ * Hook {@see 'wpmu_validate_user_signup'} cung cấp cách dễ dàng để sửa đổi quá trình
+ * đăng ký. Giá trị $result, được truyền vào hook, chứa cả thông tin do người dùng
+ * cung cấp và các thông báo lỗi được tạo bởi hàm. {@see 'wpmu_validate_user_signup'}
+ * cho phép bạn xử lý dữ liệu theo bất kỳ cách nào bạn muốn, và bỏ các lỗi
+ * liên quan nếu cần.
  *
  * @since MU (3.0.0)
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $user_name  The login name provided by the user.
- * @param string $user_email The email provided by the user.
+ * @param string $user_name  Tên đăng nhập do người dùng cung cấp.
+ * @param string $user_email Email do người dùng cung cấp.
  * @return array {
- *     The array of user name, email, and the error messages.
+ *     Mảng tên người dùng, email, và các thông báo lỗi.
  *
- *     @type string   $user_name     Sanitized and unique username.
- *     @type string   $orig_username Original username.
- *     @type string   $user_email    User email address.
- *     @type WP_Error $errors        WP_Error object containing any errors found.
+ *     @type string   $user_name     Tên người dùng đã được làm sạch và duy nhất.
+ *     @type string   $orig_username Tên người dùng gốc.
+ *     @type string   $user_email    Địa chỉ email người dùng.
+ *     @type WP_Error $errors        Đối tượng WP_Error chứa các lỗi tìm thấy.
  * }
  */
 function wpmu_validate_user_signup( $user_name, $user_email ) {
@@ -495,7 +495,7 @@ function wpmu_validate_user_signup( $user_name, $user_email ) {
 		$errors->add( 'user_name', __( 'Sorry, that username is not allowed.' ) );
 	}
 
-	/** This filter is documented in wp-includes/user.php */
+	/** Bộ lọc này được ghi chú trong wp-includes/user.php */
 	$illegal_logins = (array) apply_filters( 'illegal_user_logins', array() );
 
 	if ( in_array( strtolower( $user_name ), array_map( 'strtolower', $illegal_logins ), true ) ) {
@@ -516,7 +516,7 @@ function wpmu_validate_user_signup( $user_name, $user_email ) {
 		$errors->add( 'user_name', __( 'Username may not be longer than 60 characters.' ) );
 	}
 
-	// All numeric?
+	// Toàn số?
 	if ( preg_match( '/^[0-9]*$/', $user_name ) ) {
 		$errors->add( 'user_name', __( 'Sorry, usernames must have letters too!' ) );
 	}
@@ -532,12 +532,12 @@ function wpmu_validate_user_signup( $user_name, $user_email ) {
 		}
 	}
 
-	// Check if the username has been used already.
+	// Kiểm tra xem tên người dùng đã được sử dụng chưa.
 	if ( username_exists( $user_name ) ) {
 		$errors->add( 'user_name', __( 'Sorry, that username already exists!' ) );
 	}
 
-	// Check if the email address has been used already.
+	// Kiểm tra xem địa chỉ email đã được sử dụng chưa.
 	if ( email_exists( $user_email ) ) {
 		$errors->add(
 			'user_email',
@@ -549,13 +549,13 @@ function wpmu_validate_user_signup( $user_name, $user_email ) {
 		);
 	}
 
-	// Has someone already signed up for this username?
+	// Đã có ai đăng ký tên người dùng này chưa?
 	$signup = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->signups WHERE user_login = %s", $user_name ) );
 	if ( $signup instanceof stdClass ) {
 		$registered_at = mysql2date( 'U', $signup->registered );
 		$now           = time();
 		$diff          = $now - $registered_at;
-		// If registered more than two days ago, cancel registration and let this signup go through.
+		// Nếu đăng ký hơn hai ngày trước, hủy đăng ký và cho phép đăng ký này đi qua.
 		if ( $diff > 2 * DAY_IN_SECONDS ) {
 			$wpdb->delete( $wpdb->signups, array( 'user_login' => $user_name ) );
 		} else {
@@ -566,7 +566,7 @@ function wpmu_validate_user_signup( $user_name, $user_email ) {
 	$signup = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->signups WHERE user_email = %s", $user_email ) );
 	if ( $signup instanceof stdClass ) {
 		$diff = time() - mysql2date( 'U', $signup->registered );
-		// If registered more than two days ago, cancel registration and let this signup go through.
+		// Nếu đăng ký hơn hai ngày trước, hủy đăng ký và cho phép đăng ký này đi qua.
 		if ( $diff > 2 * DAY_IN_SECONDS ) {
 			$wpdb->delete( $wpdb->signups, array( 'user_email' => $user_email ) );
 		} else {
@@ -582,57 +582,57 @@ function wpmu_validate_user_signup( $user_name, $user_email ) {
 	);
 
 	/**
-	 * Filters the validated user registration details.
+	 * Lọc chi tiết đăng ký người dùng đã được xác thực.
 	 *
-	 * This does not allow you to override the username or email of the user during
-	 * registration. The values are solely used for validation and error handling.
+	 * Điều này không cho phép bạn ghi đè tên người dùng hoặc email của người dùng trong quá trình
+	 * đăng ký. Các giá trị chỉ được sử dụng để xác thực và xử lý lỗi.
 	 *
 	 * @since MU (3.0.0)
 	 *
 	 * @param array $result {
-	 *     The array of user name, email, and the error messages.
+	 *     Mảng tên người dùng, email, và các thông báo lỗi.
 	 *
-	 *     @type string   $user_name     Sanitized and unique username.
-	 *     @type string   $orig_username Original username.
-	 *     @type string   $user_email    User email address.
-	 *     @type WP_Error $errors        WP_Error object containing any errors found.
+	 *     @type string   $user_name     Tên người dùng đã được làm sạch và duy nhất.
+	 *     @type string   $orig_username Tên người dùng gốc.
+	 *     @type string   $user_email    Địa chỉ email người dùng.
+	 *     @type WP_Error $errors        Đối tượng WP_Error chứa các lỗi tìm thấy.
 	 * }
 	 */
 	return apply_filters( 'wpmu_validate_user_signup', $result );
 }
 
 /**
- * Processes new site registrations.
+ * Xử lý đăng ký site mới.
  *
- * Checks the data provided by the user during blog signup. Verifies
- * the validity and uniqueness of blog paths and domains.
+ * Kiểm tra dữ liệu do người dùng cung cấp trong quá trình đăng ký blog. Xác minh
+ * tính hợp lệ và duy nhất của đường dẫn và tên miền blog.
  *
- * This function prevents the current user from registering a new site
- * with a blogname equivalent to another user's login name. Passing the
- * $user parameter to the function, where $user is the other user, is
- * effectively an override of this limitation.
+ * Hàm này ngăn người dùng hiện tại đăng ký site mới
+ * với blogname tương đương với tên đăng nhập của người dùng khác. Truyền
+ * tham số $user vào hàm, trong đó $user là người dùng khác, là
+ * cách ghi đè giới hạn này.
  *
- * Filter {@see 'wpmu_validate_blog_signup'} if you want to modify
- * the way that WordPress validates new site signups.
+ * Lọc {@see 'wpmu_validate_blog_signup'} nếu bạn muốn sửa đổi
+ * cách WordPress xác thực đăng ký site mới.
  *
  * @since MU (3.0.0)
  *
- * @global wpdb   $wpdb   WordPress database abstraction object.
+ * @global wpdb   $wpdb   Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  * @global string $domain
  *
- * @param string         $blogname   The site name provided by the user. Must be unique.
- * @param string         $blog_title The site title provided by the user.
- * @param WP_User|string $user       Optional. The user object to check against the new site name.
- *                                   Default empty string.
+ * @param string         $blogname   Tên site do người dùng cung cấp. Phải duy nhất.
+ * @param string         $blog_title Tiêu đề site do người dùng cung cấp.
+ * @param WP_User|string $user       Tùy chọn. Đối tượng người dùng để kiểm tra với tên site mới.
+ *                                   Mặc định chuỗi rỗng.
  * @return array {
- *     Array of domain, path, site name, site title, user and error messages.
+ *     Mảng tên miền, đường dẫn, tên site, tiêu đề site, người dùng và thông báo lỗi.
  *
- *     @type string         $domain     Domain for the site.
- *     @type string         $path       Path for the site. Used in subdirectory installations.
- *     @type string         $blogname   The unique site name (slug).
- *     @type string         $blog_title Blog title.
- *     @type string|WP_User $user       By default, an empty string. A user object if provided.
- *     @type WP_Error       $errors     WP_Error containing any errors found.
+ *     @type string         $domain     Tên miền cho site.
+ *     @type string         $path       Đường dẫn cho site. Dùng trong cài đặt thư mục con.
+ *     @type string         $blogname   Tên site duy nhất (slug).
+ *     @type string         $blog_title Tiêu đề blog.
+ *     @type string|WP_User $user       Mặc định là chuỗi rỗng. Đối tượng người dùng nếu được cung cấp.
+ *     @type WP_Error       $errors     WP_Error chứa các lỗi tìm thấy.
  * }
  */
 function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
@@ -652,8 +652,8 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 	}
 
 	/*
-	 * On sub dir installations, some names are so illegal, only a filter can
-	 * spring them from jail.
+	 * Trên cài đặt thư mục con, một số tên bị cấm nghiêm ngặt đến mức chỉ bộ lọc
+	 * mới có thể cho phép chúng.
 	 */
 	if ( ! is_subdomain_install() ) {
 		$illegal_names = array_merge( $illegal_names, get_subdirectory_reserved_names() );
@@ -672,11 +672,11 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 	}
 
 	/**
-	 * Filters the minimum site name length required when validating a site signup.
+	 * Lọc độ dài tên site tối thiểu khi xác thực đăng ký site.
 	 *
 	 * @since 4.8.0
 	 *
-	 * @param int $length The minimum site name length. Default 4.
+	 * @param int $length Độ dài tên site tối thiểu. Mặc định 4.
 	 */
 	$minimum_site_name_length = apply_filters( 'minimum_site_name_length', 4 );
 
@@ -685,25 +685,25 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 		$errors->add( 'blogname', sprintf( _n( 'Site name must be at least %s character.', 'Site name must be at least %s characters.', $minimum_site_name_length ), number_format_i18n( $minimum_site_name_length ) ) );
 	}
 
-	// Do not allow users to create a site that conflicts with a page on the main blog.
+	// Không cho phép người dùng tạo site xung đột với trang trên blog chính.
 	if ( ! is_subdomain_install() && $wpdb->get_var( $wpdb->prepare( 'SELECT post_name FROM ' . $wpdb->get_blog_prefix( $current_network->site_id ) . "posts WHERE post_type = 'page' AND post_name = %s", $blogname ) ) ) {
 		$errors->add( 'blogname', __( 'Sorry, you may not use that site name.' ) );
 	}
 
-	// All numeric?
+	// Toàn số?
 	if ( preg_match( '/^[0-9]*$/', $blogname ) ) {
 		$errors->add( 'blogname', __( 'Sorry, site names must have letters too!' ) );
 	}
 
 	/**
-	 * Filters the new site name during registration.
+	 * Lọc tên site mới trong quá trình đăng ký.
 	 *
-	 * The name is the site's subdomain or the site's subdirectory
-	 * path depending on the network settings.
+	 * Tên là subdomain của site hoặc đường dẫn thư mục con
+	 * của site tùy thuộc vào cài đặt mạng.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string $blogname Site name.
+	 * @param string $blogname Tên site.
 	 */
 	$blogname = apply_filters( 'newblogname', $blogname );
 
@@ -713,7 +713,7 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 		$errors->add( 'blog_title', __( 'Please enter a site title.' ) );
 	}
 
-	// Check if the domain/path has been used already.
+	// Kiểm tra xem tên miền/đường dẫn đã được sử dụng chưa.
 	if ( is_subdomain_install() ) {
 		$mydomain = $blogname . '.' . preg_replace( '|^www\.|', '', $domain );
 		$path     = $base;
@@ -726,8 +726,8 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 	}
 
 	/*
-	 * Do not allow users to create a site that matches an existing user's login name,
-	 * unless it's the user's own username.
+	 * Không cho phép người dùng tạo site trùng với tên đăng nhập của người dùng khác,
+	 * trừ khi đó là tên người dùng của chính họ.
 	 */
 	if ( username_exists( $blogname ) ) {
 		if ( ! is_object( $user ) || ( is_object( $user ) && $user->user_login !== $blogname ) ) {
@@ -736,13 +736,13 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 	}
 
 	/*
-	 * Has someone already signed up for this domain?
-	 * TODO: Check email too?
+	 * Đã có ai đăng ký tên miền này chưa?
+	 * TODO: Kiểm tra email nữa?
 	 */
 	$signup = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->signups WHERE domain = %s AND path = %s", $mydomain, $path ) );
 	if ( $signup instanceof stdClass ) {
 		$diff = time() - mysql2date( 'U', $signup->registered );
-		// If registered more than two days ago, cancel registration and let this signup go through.
+		// Nếu đăng ký hơn hai ngày trước, hủy đăng ký và cho phép đăng ký này đi qua.
 		if ( $diff > 2 * DAY_IN_SECONDS ) {
 			$wpdb->delete(
 				$wpdb->signups,
@@ -766,37 +766,37 @@ function wpmu_validate_blog_signup( $blogname, $blog_title, $user = '' ) {
 	);
 
 	/**
-	 * Filters site details and error messages following registration.
+	 * Lọc chi tiết site và thông báo lỗi sau khi đăng ký.
 	 *
 	 * @since MU (3.0.0)
 	 *
 	 * @param array $result {
-	 *     Array of domain, path, site name, site title, user and error messages.
+	 *     Mảng tên miền, đường dẫn, tên site, tiêu đề site, người dùng và thông báo lỗi.
 	 *
-	 *     @type string         $domain     Domain for the site.
-	 *     @type string         $path       Path for the site. Used in subdirectory installations.
-	 *     @type string         $blogname   The unique site name (slug).
-	 *     @type string         $blog_title Site title.
-	 *     @type string|WP_User $user       By default, an empty string. A user object if provided.
-	 *     @type WP_Error       $errors     WP_Error containing any errors found.
+	 *     @type string         $domain     Tên miền cho site.
+	 *     @type string         $path       Đường dẫn cho site. Dùng trong cài đặt thư mục con.
+	 *     @type string         $blogname   Tên site duy nhất (slug).
+	 *     @type string         $blog_title Tiêu đề site.
+	 *     @type string|WP_User $user       Mặc định là chuỗi rỗng. Đối tượng người dùng nếu được cung cấp.
+	 *     @type WP_Error       $errors     WP_Error chứa các lỗi tìm thấy.
 	 * }
 	 */
 	return apply_filters( 'wpmu_validate_blog_signup', $result );
 }
 
 /**
- * Records site signup information for future activation.
+ * Ghi lại thông tin đăng ký site để kích hoạt trong tương lai.
  *
  * @since MU (3.0.0)
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $domain     The requested domain.
- * @param string $path       The requested path.
- * @param string $title      The requested site title.
- * @param string $user       The user's requested login name.
- * @param string $user_email The user's email address.
- * @param array  $meta       Optional. Signup meta data. By default, contains the requested privacy setting and lang_id.
+ * @param string $domain     Tên miền được yêu cầu.
+ * @param string $path       Đường dẫn được yêu cầu.
+ * @param string $title      Tiêu đề site được yêu cầu.
+ * @param string $user       Tên đăng nhập do người dùng yêu cầu.
+ * @param string $user_email Địa chỉ email của người dùng.
+ * @param array  $meta       Tùy chọn. Dữ liệu meta đăng ký. Mặc định chứa cài đặt quyền riêng tư và lang_id.
  */
 function wpmu_signup_blog( $domain, $path, $title, $user, $user_email, $meta = array() ) {
 	global $wpdb;
@@ -804,19 +804,19 @@ function wpmu_signup_blog( $domain, $path, $title, $user, $user_email, $meta = a
 	$key = substr( md5( time() . wp_rand() . $domain ), 0, 16 );
 
 	/**
-	 * Filters the metadata for a site signup.
+	 * Lọc metadata cho đăng ký site.
 	 *
-	 * The metadata will be serialized prior to storing it in the database.
+	 * Metadata sẽ được serialize trước khi lưu vào cơ sở dữ liệu.
 	 *
 	 * @since 4.8.0
 	 *
-	 * @param array  $meta       Signup meta data. Default empty array.
-	 * @param string $domain     The requested domain.
-	 * @param string $path       The requested path.
-	 * @param string $title      The requested site title.
-	 * @param string $user       The user's requested login name.
-	 * @param string $user_email The user's email address.
-	 * @param string $key        The user's activation key.
+	 * @param array  $meta       Dữ liệu meta đăng ký. Mặc định mảng rỗng.
+	 * @param string $domain     Tên miền được yêu cầu.
+	 * @param string $path       Đường dẫn được yêu cầu.
+	 * @param string $title      Tiêu đề site được yêu cầu.
+	 * @param string $user       Tên đăng nhập do người dùng yêu cầu.
+	 * @param string $user_email Địa chỉ email của người dùng.
+	 * @param string $key        Khóa kích hoạt của người dùng.
 	 */
 	$meta = apply_filters( 'signup_site_meta', $meta, $domain, $path, $title, $user, $user_email, $key );
 
@@ -835,54 +835,54 @@ function wpmu_signup_blog( $domain, $path, $title, $user, $user_email, $meta = a
 	);
 
 	/**
-	 * Fires after site signup information has been written to the database.
+	 * Kích hoạt sau khi thông tin đăng ký site đã được ghi vào cơ sở dữ liệu.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $domain     The requested domain.
-	 * @param string $path       The requested path.
-	 * @param string $title      The requested site title.
-	 * @param string $user       The user's requested login name.
-	 * @param string $user_email The user's email address.
-	 * @param string $key        The user's activation key.
-	 * @param array  $meta       Signup meta data. By default, contains the requested privacy setting and lang_id.
+	 * @param string $domain     Tên miền được yêu cầu.
+	 * @param string $path       Đường dẫn được yêu cầu.
+	 * @param string $title      Tiêu đề site được yêu cầu.
+	 * @param string $user       Tên đăng nhập do người dùng yêu cầu.
+	 * @param string $user_email Địa chỉ email của người dùng.
+	 * @param string $key        Khóa kích hoạt của người dùng.
+	 * @param array  $meta       Dữ liệu meta đăng ký. Mặc định chứa cài đặt quyền riêng tư và lang_id.
 	 */
 	do_action( 'after_signup_site', $domain, $path, $title, $user, $user_email, $key, $meta );
 }
 
 /**
- * Records user signup information for future activation.
+ * Ghi lại thông tin đăng ký người dùng để kích hoạt trong tương lai.
  *
- * This function is used when user registration is open but
- * new site registration is not.
+ * Hàm này được sử dụng khi đăng ký người dùng mở nhưng
+ * đăng ký site mới thì không.
  *
  * @since MU (3.0.0)
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $user       The user's requested login name.
- * @param string $user_email The user's email address.
- * @param array  $meta       Optional. Signup meta data. Default empty array.
+ * @param string $user       Tên đăng nhập do người dùng yêu cầu.
+ * @param string $user_email Địa chỉ email của người dùng.
+ * @param array  $meta       Tùy chọn. Dữ liệu meta đăng ký. Mặc định mảng rỗng.
  */
 function wpmu_signup_user( $user, $user_email, $meta = array() ) {
 	global $wpdb;
 
-	// Format data.
+	// Định dạng dữ liệu.
 	$user       = preg_replace( '/\s+/', '', sanitize_user( $user, true ) );
 	$user_email = sanitize_email( $user_email );
 	$key        = substr( md5( time() . wp_rand() . $user_email ), 0, 16 );
 
 	/**
-	 * Filters the metadata for a user signup.
+	 * Lọc metadata cho đăng ký người dùng.
 	 *
-	 * The metadata will be serialized prior to storing it in the database.
+	 * Metadata sẽ được serialize trước khi lưu vào cơ sở dữ liệu.
 	 *
 	 * @since 4.8.0
 	 *
-	 * @param array  $meta       Signup meta data. Default empty array.
-	 * @param string $user       The user's requested login name.
-	 * @param string $user_email The user's email address.
-	 * @param string $key        The user's activation key.
+	 * @param array  $meta       Dữ liệu meta đăng ký. Mặc định mảng rỗng.
+	 * @param string $user       Tên đăng nhập do người dùng yêu cầu.
+	 * @param string $user_email Địa chỉ email của người dùng.
+	 * @param string $key        Khóa kích hoạt của người dùng.
 	 */
 	$meta = apply_filters( 'signup_user_meta', $meta, $user, $user_email, $key );
 
@@ -901,41 +901,41 @@ function wpmu_signup_user( $user, $user_email, $meta = array() ) {
 	);
 
 	/**
-	 * Fires after a user's signup information has been written to the database.
+	 * Kích hoạt sau khi thông tin đăng ký người dùng đã được ghi vào cơ sở dữ liệu.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $user       The user's requested login name.
-	 * @param string $user_email The user's email address.
-	 * @param string $key        The user's activation key.
-	 * @param array  $meta       Signup meta data. Default empty array.
+	 * @param string $user       Tên đăng nhập do người dùng yêu cầu.
+	 * @param string $user_email Địa chỉ email của người dùng.
+	 * @param string $key        Khóa kích hoạt của người dùng.
+	 * @param array  $meta       Dữ liệu meta đăng ký. Mặc định mảng rỗng.
 	 */
 	do_action( 'after_signup_user', $user, $user_email, $key, $meta );
 }
 
 /**
- * Sends a confirmation request email to a user when they sign up for a new site. The new site will not become active
- * until the confirmation link is clicked.
+ * Gửi email yêu cầu xác nhận cho người dùng khi họ đăng ký site mới. Site mới sẽ không hoạt động
+ * cho đến khi liên kết xác nhận được nhấp.
  *
- * This is the notification function used when site registration
- * is enabled.
+ * Đây là hàm thông báo được sử dụng khi đăng ký site
+ * được bật.
  *
- * Filter {@see 'wpmu_signup_blog_notification'} to bypass this function or
- * replace it with your own notification behavior.
+ * Lọc {@see 'wpmu_signup_blog_notification'} để bỏ qua hàm này hoặc
+ * thay thế bằng hành vi thông báo của riêng bạn.
  *
- * Filter {@see 'wpmu_signup_blog_notification_email'} and
- * {@see 'wpmu_signup_blog_notification_subject'} to change the content
- * and subject line of the email sent to newly registered users.
+ * Lọc {@see 'wpmu_signup_blog_notification_email'} và
+ * {@see 'wpmu_signup_blog_notification_subject'} để thay đổi nội dung
+ * và dòng tiêu đề của email gửi cho người dùng mới đăng ký.
  *
  * @since MU (3.0.0)
  *
- * @param string $domain     The new blog domain.
- * @param string $path       The new blog path.
- * @param string $title      The site title.
- * @param string $user_login The user's login name.
- * @param string $user_email The user's email address.
- * @param string $key        The activation key created in wpmu_signup_blog().
- * @param array  $meta       Optional. Signup meta data. By default, contains the requested privacy setting and lang_id.
+ * @param string $domain     Tên miền blog mới.
+ * @param string $path       Đường dẫn blog mới.
+ * @param string $title      Tiêu đề site.
+ * @param string $user_login Tên đăng nhập của người dùng.
+ * @param string $user_email Địa chỉ email của người dùng.
+ * @param string $key        Khóa kích hoạt được tạo trong wpmu_signup_blog().
+ * @param array  $meta       Tùy chọn. Dữ liệu meta đăng ký. Mặc định chứa cài đặt quyền riêng tư và lang_id.
  * @return bool
  */
 function wpmu_signup_blog_notification(
@@ -949,23 +949,23 @@ function wpmu_signup_blog_notification(
 	$meta = array()
 ) {
 	/**
-	 * Filters whether to bypass the new site email notification.
+	 * Lọc xem có bỏ qua thông báo email site mới hay không.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string|false $domain     Site domain, or false to prevent the email from sending.
-	 * @param string       $path       Site path.
-	 * @param string       $title      Site title.
-	 * @param string       $user_login User login name.
-	 * @param string       $user_email User email address.
-	 * @param string       $key        Activation key created in wpmu_signup_blog().
-	 * @param array        $meta       Signup meta data. By default, contains the requested privacy setting and lang_id.
+	 * @param string|false $domain     Tên miền site, hoặc false để ngăn email gửi đi.
+	 * @param string       $path       Đường dẫn site.
+	 * @param string       $title      Tiêu đề site.
+	 * @param string       $user_login Tên đăng nhập người dùng.
+	 * @param string       $user_email Địa chỉ email người dùng.
+	 * @param string       $key        Khóa kích hoạt được tạo trong wpmu_signup_blog().
+	 * @param array        $meta       Dữ liệu meta đăng ký. Mặc định chứa cài đặt quyền riêng tư và lang_id.
 	 */
 	if ( ! apply_filters( 'wpmu_signup_blog_notification', $domain, $path, $title, $user_login, $user_email, $key, $meta ) ) {
 		return false;
 	}
 
-	// Send email with activation link.
+	// Gửi email với liên kết kích hoạt.
 	if ( ! is_subdomain_install() || get_current_network_id() !== 1 ) {
 		$activate_url = network_site_url( "wp-activate.php?key=$key" );
 	} else {
@@ -988,20 +988,20 @@ function wpmu_signup_blog_notification(
 
 	$message = sprintf(
 		/**
-		 * Filters the message content of the new blog notification email.
+		 * Lọc nội dung tin nhắn của email thông báo blog mới.
 		 *
-		 * Content should be formatted for transmission via wp_mail().
+		 * Nội dung nên được định dạng để truyền qua wp_mail().
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param string $content    Content of the notification email.
-		 * @param string $domain     Site domain.
-		 * @param string $path       Site path.
-		 * @param string $title      Site title.
-		 * @param string $user_login User login name.
-		 * @param string $user_email User email address.
-		 * @param string $key        Activation key created in wpmu_signup_blog().
-		 * @param array  $meta       Signup meta data. By default, contains the requested privacy setting and lang_id.
+		 * @param string $content    Nội dung email thông báo.
+		 * @param string $domain     Tên miền site.
+		 * @param string $path       Đường dẫn site.
+		 * @param string $title      Tiêu đề site.
+		 * @param string $user_login Tên đăng nhập người dùng.
+		 * @param string $user_email Địa chỉ email người dùng.
+		 * @param string $key        Khóa kích hoạt được tạo trong wpmu_signup_blog().
+		 * @param array  $meta       Dữ liệu meta đăng ký. Mặc định chứa cài đặt quyền riêng tư và lang_id.
 		 */
 		apply_filters(
 			'wpmu_signup_blog_notification_email',
@@ -1022,18 +1022,18 @@ function wpmu_signup_blog_notification(
 
 	$subject = sprintf(
 		/**
-		 * Filters the subject of the new blog notification email.
+		 * Lọc tiêu đề của email thông báo blog mới.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param string $subject    Subject of the notification email.
-		 * @param string $domain     Site domain.
-		 * @param string $path       Site path.
-		 * @param string $title      Site title.
-		 * @param string $user_login User login name.
-		 * @param string $user_email User email address.
-		 * @param string $key        Activation key created in wpmu_signup_blog().
-		 * @param array  $meta       Signup meta data. By default, contains the requested privacy setting and lang_id.
+		 * @param string $subject    Tiêu đề email thông báo.
+		 * @param string $domain     Tên miền site.
+		 * @param string $path       Đường dẫn site.
+		 * @param string $title      Tiêu đề site.
+		 * @param string $user_login Tên đăng nhập người dùng.
+		 * @param string $user_email Địa chỉ email người dùng.
+		 * @param string $key        Khóa kích hoạt được tạo trong wpmu_signup_blog().
+		 * @param array  $meta       Dữ liệu meta đăng ký. Mặc định chứa cài đặt quyền riêng tư và lang_id.
 		 */
 		apply_filters(
 			'wpmu_signup_blog_notification_subject',
@@ -1061,25 +1061,25 @@ function wpmu_signup_blog_notification(
 }
 
 /**
- * Sends a confirmation request email to a user when they sign up for a new user account (without signing up for a site
- * at the same time). The user account will not become active until the confirmation link is clicked.
+ * Gửi email yêu cầu xác nhận cho người dùng khi họ đăng ký tài khoản mới (không đăng ký site
+ * cùng lúc). Tài khoản người dùng sẽ không hoạt động cho đến khi liên kết xác nhận được nhấp.
  *
- * This is the notification function used when no new site has
- * been requested.
+ * Đây là hàm thông báo được sử dụng khi không có site mới
+ * được yêu cầu.
  *
- * Filter {@see 'wpmu_signup_user_notification'} to bypass this function or
- * replace it with your own notification behavior.
+ * Lọc {@see 'wpmu_signup_user_notification'} để bỏ qua hàm này hoặc
+ * thay thế bằng hành vi thông báo của riêng bạn.
  *
- * Filter {@see 'wpmu_signup_user_notification_email'} and
- * {@see 'wpmu_signup_user_notification_subject'} to change the content
- * and subject line of the email sent to newly registered users.
+ * Lọc {@see 'wpmu_signup_user_notification_email'} và
+ * {@see 'wpmu_signup_user_notification_subject'} để thay đổi nội dung
+ * và dòng tiêu đề email gửi cho người dùng mới đăng ký.
  *
  * @since MU (3.0.0)
  *
- * @param string $user_login The user's login name.
- * @param string $user_email The user's email address.
- * @param string $key        The activation key created in wpmu_signup_user()
- * @param array  $meta       Optional. Signup meta data. Default empty array.
+ * @param string $user_login Tên đăng nhập của người dùng.
+ * @param string $user_email Địa chỉ email của người dùng.
+ * @param string $key        Khóa kích hoạt được tạo trong wpmu_signup_user()
+ * @param array  $meta       Tùy chọn. Dữ liệu meta đăng ký. Mặc định mảng rỗng.
  * @return bool
  */
 function wpmu_signup_user_notification(
@@ -1090,14 +1090,14 @@ function wpmu_signup_user_notification(
 	$meta = array()
 ) {
 	/**
-	 * Filters whether to bypass the email notification for new user sign-up.
+	 * Lọc xem có bỏ qua thông báo email cho đăng ký người dùng mới hay không.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string $user_login User login name.
-	 * @param string $user_email User email address.
-	 * @param string $key        Activation key created in wpmu_signup_user().
-	 * @param array  $meta       Signup meta data. Default empty array.
+	 * @param string $user_login Tên đăng nhập người dùng.
+	 * @param string $user_email Địa chỉ email người dùng.
+	 * @param string $key        Khóa kích hoạt được tạo trong wpmu_signup_user().
+	 * @param array  $meta       Dữ liệu meta đăng ký. Mặc định mảng rỗng.
 	 */
 	if ( ! apply_filters( 'wpmu_signup_user_notification', $user_login, $user_email, $key, $meta ) ) {
 		return false;
@@ -1106,7 +1106,7 @@ function wpmu_signup_user_notification(
 	$user            = get_user_by( 'login', $user_login );
 	$switched_locale = $user && switch_to_user_locale( $user->ID );
 
-	// Send email with activation link.
+	// Gửi email với liên kết kích hoạt.
 	$admin_email = get_site_option( 'admin_email' );
 
 	if ( '' === $admin_email ) {
@@ -1117,17 +1117,17 @@ function wpmu_signup_user_notification(
 	$message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . 'Content-Type: text/plain; charset="' . get_option( 'blog_charset' ) . "\"\n";
 	$message         = sprintf(
 		/**
-		 * Filters the content of the notification email for new user sign-up.
+		 * Lọc nội dung email thông báo cho đăng ký người dùng mới.
 		 *
-		 * Content should be formatted for transmission via wp_mail().
+		 * Nội dung nên được định dạng để truyền qua wp_mail().
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param string $content    Content of the notification email.
-		 * @param string $user_login User login name.
-		 * @param string $user_email User email address.
-		 * @param string $key        Activation key created in wpmu_signup_user().
-		 * @param array  $meta       Signup meta data. Default empty array.
+		 * @param string $content    Nội dung email thông báo.
+		 * @param string $user_login Tên đăng nhập người dùng.
+		 * @param string $user_email Địa chỉ email người dùng.
+		 * @param string $key        Khóa kích hoạt được tạo trong wpmu_signup_user().
+		 * @param array  $meta       Dữ liệu meta đăng ký. Mặc định mảng rỗng.
 		 */
 		apply_filters(
 			'wpmu_signup_user_notification_email',
@@ -1143,15 +1143,15 @@ function wpmu_signup_user_notification(
 
 	$subject = sprintf(
 		/**
-		 * Filters the subject of the notification email of new user signup.
+		 * Lọc tiêu đề email thông báo đăng ký người dùng mới.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param string $subject    Subject of the notification email.
-		 * @param string $user_login User login name.
-		 * @param string $user_email User email address.
-		 * @param string $key        Activation key created in wpmu_signup_user().
-		 * @param array  $meta       Signup meta data. Default empty array.
+		 * @param string $subject    Tiêu đề email thông báo.
+		 * @param string $user_login Tên đăng nhập người dùng.
+		 * @param string $user_email Địa chỉ email người dùng.
+		 * @param string $key        Khóa kích hoạt được tạo trong wpmu_signup_user().
+		 * @param array  $meta       Dữ liệu meta đăng ký. Mặc định mảng rỗng.
 		 */
 		apply_filters(
 			'wpmu_signup_user_notification_subject',
@@ -1176,19 +1176,19 @@ function wpmu_signup_user_notification(
 }
 
 /**
- * Activates a signup.
+ * Kích hoạt một đăng ký.
  *
- * Hook to {@see 'wpmu_activate_user'} or {@see 'wpmu_activate_blog'} for events
- * that should happen only when users or sites are self-created (since
- * those actions are not called when users and sites are created
- * by a Super Admin).
+ * Hook vào {@see 'wpmu_activate_user'} hoặc {@see 'wpmu_activate_blog'} cho các sự kiện
+ * chỉ xảy ra khi người dùng hoặc site được tự tạo (vì
+ * các action đó không được gọi khi người dùng và site được tạo
+ * bởi Super Admin).
  *
  * @since MU (3.0.0)
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $key The activation key provided to the user.
- * @return array|WP_Error An array containing information about the activated user and/or blog.
+ * @param string $key Khóa kích hoạt được cung cấp cho người dùng.
+ * @return array|WP_Error Mảng chứa thông tin về người dùng và/hoặc blog đã kích hoạt.
  */
 function wpmu_activate_signup(
 	#[\SensitiveParameter]
@@ -1242,13 +1242,13 @@ function wpmu_activate_signup(
 		}
 
 		/**
-		 * Fires immediately after a new user is activated.
+		 * Kích hoạt ngay sau khi người dùng mới được kích hoạt.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param int    $user_id  User ID.
-		 * @param string $password User password.
-		 * @param array  $meta     Signup meta data.
+		 * @param int    $user_id  ID người dùng.
+		 * @param string $password Mật khẩu người dùng.
+		 * @param array  $meta     Dữ liệu meta đăng ký.
 		 */
 		do_action( 'wpmu_activate_user', $user_id, $password, $meta );
 
@@ -1261,12 +1261,12 @@ function wpmu_activate_signup(
 
 	$blog_id = wpmu_create_blog( $signup->domain, $signup->path, $signup->title, $user_id, $meta, get_current_network_id() );
 
-	// TODO: What to do if we create a user but cannot create a blog?
+	// TODO: Phải làm gì nếu chúng ta tạo người dùng nhưng không thể tạo blog?
 	if ( is_wp_error( $blog_id ) ) {
 		/*
-		 * If blog is taken, that means a previous attempt to activate this blog
-		 * failed in between creating the blog and setting the activation flag.
-		 * Let's just set the active flag and instruct the user to reset their password.
+		 * Nếu blog đã bị chiếm, có nghĩa là lần kích hoạt blog trước đó
+		 * đã thất bại giữa quá trình tạo blog và đặt cờ kích hoạt.
+		 * Hãy đặt cờ kích hoạt và hướng dẫn người dùng đặt lại mật khẩu.
 		 */
 		if ( 'blog_taken' === $blog_id->get_error_code() ) {
 			$blog_id->add_data( $signup );
@@ -1292,15 +1292,15 @@ function wpmu_activate_signup(
 	);
 
 	/**
-	 * Fires immediately after a site is activated.
+	 * Kích hoạt ngay sau khi site được kích hoạt.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param int    $blog_id       Blog ID.
-	 * @param int    $user_id       User ID.
-	 * @param string $password      User password.
-	 * @param string $signup_title  Site title.
-	 * @param array  $meta          Signup meta data. By default, contains the requested privacy setting and lang_id.
+	 * @param int    $blog_id       ID blog.
+	 * @param int    $user_id       ID người dùng.
+	 * @param string $password      Mật khẩu người dùng.
+	 * @param string $signup_title  Tiêu đề site.
+	 * @param array  $meta          Dữ liệu meta đăng ký. Mặc định chứa cài đặt quyền riêng tư và lang_id.
 	 */
 	do_action( 'wpmu_activate_blog', $blog_id, $user_id, $password, $signup->title, $meta );
 
@@ -1314,15 +1314,15 @@ function wpmu_activate_signup(
 }
 
 /**
- * Deletes an associated signup entry when a user is deleted from the database.
+ * Xóa mục đăng ký liên quan khi người dùng bị xóa khỏi cơ sở dữ liệu.
  *
  * @since 5.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int      $id       ID of the user to delete.
- * @param int|null $reassign ID of the user to reassign posts and links to.
- * @param WP_User  $user     User object.
+ * @param int      $id       ID của người dùng cần xóa.
+ * @param int|null $reassign ID của người dùng để gán lại bài viết và liên kết.
+ * @param WP_User  $user     Đối tượng người dùng.
  */
 function wp_delete_signup_on_user_delete( $id, $reassign, $user ) {
 	global $wpdb;
@@ -1331,19 +1331,19 @@ function wp_delete_signup_on_user_delete( $id, $reassign, $user ) {
 }
 
 /**
- * Creates a user.
+ * Tạo người dùng.
  *
- * This function runs when a user self-registers as well as when
- * a Super Admin creates a new user. Hook to {@see 'wpmu_new_user'} for events
- * that should affect all new users, but only on Multisite (otherwise
- * use {@see 'user_register'}).
+ * Hàm này chạy khi người dùng tự đăng ký cũng như khi
+ * Super Admin tạo người dùng mới. Hook vào {@see 'wpmu_new_user'} cho các sự kiện
+ * ảnh hưởng đến tất cả người dùng mới, nhưng chỉ trên Multisite (nếu không
+ * hãy dùng {@see 'user_register'}).
  *
  * @since MU (3.0.0)
  *
- * @param string $user_name The new user's login name.
- * @param string $password  The new user's password.
- * @param string $email     The new user's email address.
- * @return int|false Returns false on failure, or int $user_id on success.
+ * @param string $user_name Tên đăng nhập của người dùng mới.
+ * @param string $password  Mật khẩu của người dùng mới.
+ * @param string $email     Địa chỉ email của người dùng mới.
+ * @return int|false Trả về false khi thất bại, hoặc int $user_id khi thành công.
  */
 function wpmu_create_user(
 	$user_name,
@@ -1358,16 +1358,16 @@ function wpmu_create_user(
 		return false;
 	}
 
-	// Newly created users have no roles or caps until they are added to a blog.
+	// Người dùng mới tạo không có vai trò hoặc quyền cho đến khi họ được thêm vào blog.
 	delete_user_option( $user_id, 'capabilities' );
 	delete_user_option( $user_id, 'user_level' );
 
 	/**
-	 * Fires immediately after a new user is created.
+	 * Kích hoạt ngay sau khi người dùng mới được tạo.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param int $user_id User ID.
+	 * @param int $user_id ID người dùng.
 	 */
 	do_action( 'wpmu_new_user', $user_id );
 
@@ -1375,31 +1375,31 @@ function wpmu_create_user(
 }
 
 /**
- * Creates a site.
+ * Tạo một site.
  *
- * This function runs when a user self-registers a new site as well
- * as when a Super Admin creates a new site. Hook to {@see 'wpmu_new_blog'}
- * for events that should affect all new sites.
+ * Hàm này chạy khi người dùng tự đăng ký site mới cũng như
+ * khi Super Admin tạo site mới. Hook vào {@see 'wpmu_new_blog'}
+ * cho các sự kiện ảnh hưởng đến tất cả site mới.
  *
- * On subdirectory installations, $domain is the same as the main site's
- * domain, and the path is the subdirectory name (eg 'example.com'
- * and '/blog1/'). On subdomain installations, $domain is the new subdomain +
- * root domain (eg 'blog1.example.com'), and $path is '/'.
+ * Trên cài đặt thư mục con, $domain giống với tên miền của site chính,
+ * và đường dẫn là tên thư mục con (ví dụ 'example.com'
+ * và '/blog1/'). Trên cài đặt subdomain, $domain là subdomain mới +
+ * tên miền gốc (ví dụ 'blog1.example.com'), và $path là '/'.
  *
  * @since MU (3.0.0)
  *
- * @param string $domain     The new site's domain.
- * @param string $path       The new site's path.
- * @param string $title      The new site's title.
- * @param int    $user_id    The user ID of the new site's admin.
- * @param array  $options    Optional. Array of key=>value pairs used to set initial site options.
- *                           If valid status keys are included ('public', 'archived', 'mature',
- *                           'spam', 'deleted', or 'lang_id') the given site status(es) will be
- *                           updated. Otherwise, keys and values will be used to set options for
- *                           the new site. Default empty array.
- * @param int    $network_id Optional. Network ID. Only relevant on multi-network installations.
- *                           Default 1.
- * @return int|WP_Error Returns WP_Error object on failure, the new site ID on success.
+ * @param string $domain     Tên miền của site mới.
+ * @param string $path       Đường dẫn của site mới.
+ * @param string $title      Tiêu đề của site mới.
+ * @param int    $user_id    ID người dùng của quản trị viên site mới.
+ * @param array  $options    Tùy chọn. Mảng cặp key=>value dùng để đặt tùy chọn site ban đầu.
+ *                           Nếu các key trạng thái hợp lệ được bao gồm ('public', 'archived', 'mature',
+ *                           'spam', 'deleted', hoặc 'lang_id') trạng thái site tương ứng sẽ được
+ *                           cập nhật. Nếu không, key và value sẽ dùng để đặt tùy chọn cho
+ *                           site mới. Mặc định mảng rỗng.
+ * @param int    $network_id Tùy chọn. ID mạng. Chỉ liên quan trên cài đặt đa mạng.
+ *                           Mặc định 1.
+ * @return int|WP_Error Trả về đối tượng WP_Error khi thất bại, ID site mới khi thành công.
  */
 function wpmu_create_blog( $domain, $path, $title, $user_id, $options = array(), $network_id = 1 ) {
 	$defaults = array(
@@ -1410,7 +1410,7 @@ function wpmu_create_blog( $domain, $path, $title, $user_id, $options = array(),
 	$title   = strip_tags( $title );
 	$user_id = (int) $user_id;
 
-	// Check if the domain has been used already. We should return an error message.
+	// Kiểm tra xem tên miền đã được sử dụng chưa. Chúng ta nên trả về thông báo lỗi.
 	if ( domain_exists( $domain, $path, $network_id ) ) {
 		return new WP_Error( 'blog_taken', __( 'Sorry, that site already exists!' ) );
 	}
@@ -1430,7 +1430,7 @@ function wpmu_create_blog( $domain, $path, $title, $user_id, $options = array(),
 		array_intersect_key( $options, array_flip( $allowed_data_fields ) )
 	);
 
-	// Data to pass to wp_initialize_site().
+	// Dữ liệu để truyền cho wp_initialize_site().
 	$site_initialization_data = array(
 		'title'   => $title,
 		'user_id' => $user_id,
@@ -1449,16 +1449,16 @@ function wpmu_create_blog( $domain, $path, $title, $user_id, $options = array(),
 }
 
 /**
- * Notifies the network admin that a new site has been activated.
+ * Thông báo cho quản trị viên mạng rằng site mới đã được kích hoạt.
  *
- * Filter {@see 'newblog_notify_siteadmin'} to change the content of
- * the notification email.
+ * Lọc {@see 'newblog_notify_siteadmin'} để thay đổi nội dung
+ * email thông báo.
  *
  * @since MU (3.0.0)
- * @since 5.1.0 $blog_id now supports input from the {@see 'wp_initialize_site'} action.
+ * @since 5.1.0 $blog_id hiện hỗ trợ đầu vào từ action {@see 'wp_initialize_site'}.
  *
- * @param WP_Site|int $blog_id    The new site's object or ID.
- * @param string      $deprecated Not used.
+ * @param WP_Site|int $blog_id    Đối tượng hoặc ID của site mới.
+ * @param string      $deprecated Không sử dụng.
  * @return bool
  */
 function newblog_notify_siteadmin( $blog_id, $deprecated = '' ) {
@@ -1498,14 +1498,14 @@ Disable these notifications: %4$s'
 		$options_site_url
 	);
 	/**
-	 * Filters the message body of the new site activation email sent
-	 * to the network administrator.
+	 * Lọc nội dung tin nhắn của email kích hoạt site mới gửi
+	 * cho quản trị viên mạng.
 	 *
 	 * @since MU (3.0.0)
-	 * @since 5.4.0 The `$blog_id` parameter was added.
+	 * @since 5.4.0 Thêm tham số `$blog_id`.
 	 *
-	 * @param string     $msg     Email body.
-	 * @param int|string $blog_id The new site's ID as an integer or numeric string.
+	 * @param string     $msg     Nội dung email.
+	 * @param int|string $blog_id ID của site mới dưới dạng số nguyên hoặc chuỗi số.
 	 */
 	$msg = apply_filters( 'newblog_notify_siteadmin', $msg, $blog_id );
 
@@ -1516,14 +1516,14 @@ Disable these notifications: %4$s'
 }
 
 /**
- * Notifies the network admin that a new user has been activated.
+ * Thông báo cho quản trị viên mạng rằng người dùng mới đã được kích hoạt.
  *
- * Filter {@see 'newuser_notify_siteadmin'} to change the content of
- * the notification email.
+ * Lọc {@see 'newuser_notify_siteadmin'} để thay đổi nội dung
+ * email thông báo.
  *
  * @since MU (3.0.0)
  *
- * @param int $user_id The new user's ID.
+ * @param int $user_id ID của người dùng mới.
  * @return bool
  */
 function newuser_notify_siteadmin( $user_id ) {
@@ -1555,13 +1555,13 @@ Disable these notifications: %3$s'
 	);
 
 	/**
-	 * Filters the message body of the new user activation email sent
-	 * to the network administrator.
+	 * Lọc nội dung tin nhắn của email kích hoạt người dùng mới gửi
+	 * cho quản trị viên mạng.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string  $msg  Email body.
-	 * @param WP_User $user WP_User instance of the new user.
+	 * @param string  $msg  Nội dung email.
+	 * @param WP_User $user Đối tượng WP_User của người dùng mới.
 	 */
 	$msg = apply_filters( 'newuser_notify_siteadmin', $msg, $user );
 
@@ -1572,21 +1572,21 @@ Disable these notifications: %3$s'
 }
 
 /**
- * Checks whether a site name is already taken.
+ * Kiểm tra xem tên site đã được sử dụng chưa.
  *
- * The name is the site's subdomain or the site's subdirectory
- * path depending on the network settings.
+ * Tên là subdomain của site hoặc đường dẫn thư mục con
+ * của site tùy thuộc vào cài đặt mạng.
  *
- * Used during the new site registration process to ensure
- * that each site name is unique.
+ * Được sử dụng trong quá trình đăng ký site mới để đảm bảo
+ * rằng mỗi tên site là duy nhất.
  *
  * @since MU (3.0.0)
  *
- * @param string $domain     The domain to be checked.
- * @param string $path       The path to be checked.
- * @param int    $network_id Optional. Network ID. Only relevant on multi-network installations.
- *                           Default 1.
- * @return int|null The site ID if the site name exists, null otherwise.
+ * @param string $domain     Tên miền cần kiểm tra.
+ * @param string $path       Đường dẫn cần kiểm tra.
+ * @param int    $network_id Tùy chọn. ID mạng. Chỉ liên quan trên cài đặt đa mạng.
+ *                           Mặc định 1.
+ * @return int|null ID site nếu tên site tồn tại, null nếu không.
  */
 function domain_exists( $domain, $path, $network_id = 1 ) {
 	$path   = trailingslashit( $path );
@@ -1602,37 +1602,37 @@ function domain_exists( $domain, $path, $network_id = 1 ) {
 	$result = array_shift( $result );
 
 	/**
-	 * Filters whether a site name is taken.
+	 * Lọc xem tên site đã được sử dụng chưa.
 	 *
-	 * The name is the site's subdomain or the site's subdirectory
-	 * path depending on the network settings.
+	 * Tên là subdomain của site hoặc đường dẫn thư mục con
+	 * của site tùy thuộc vào cài đặt mạng.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param int|null $result     The site ID if the site name exists, null otherwise.
-	 * @param string   $domain     Domain to be checked.
-	 * @param string   $path       Path to be checked.
-	 * @param int      $network_id Network ID. Only relevant on multi-network installations.
+	 * @param int|null $result     ID site nếu tên site tồn tại, null nếu không.
+	 * @param string   $domain     Tên miền cần kiểm tra.
+	 * @param string   $path       Đường dẫn cần kiểm tra.
+	 * @param int      $network_id ID mạng. Chỉ liên quan trên cài đặt đa mạng.
 	 */
 	return apply_filters( 'domain_exists', $result, $domain, $path, $network_id );
 }
 
 /**
- * Notifies the site administrator that their site activation was successful.
+ * Thông báo cho quản trị viên site rằng việc kích hoạt site của họ đã thành công.
  *
- * Filter {@see 'wpmu_welcome_notification'} to disable or bypass.
+ * Lọc {@see 'wpmu_welcome_notification'} để tắt hoặc bỏ qua.
  *
- * Filter {@see 'update_welcome_email'} and {@see 'update_welcome_subject'} to
- * modify the content and subject line of the notification email.
+ * Lọc {@see 'update_welcome_email'} và {@see 'update_welcome_subject'} để
+ * sửa đổi nội dung và dòng tiêu đề của email thông báo.
  *
  * @since MU (3.0.0)
  *
- * @param int    $blog_id  Site ID.
- * @param int    $user_id  User ID.
- * @param string $password User password, or "N/A" if the user account is not new.
- * @param string $title    Site title.
- * @param array  $meta     Optional. Signup meta data. By default, contains the requested privacy setting and lang_id.
- * @return bool Whether the email notification was sent.
+ * @param int    $blog_id  ID site.
+ * @param int    $user_id  ID người dùng.
+ * @param string $password Mật khẩu người dùng, hoặc "N/A" nếu tài khoản người dùng không mới.
+ * @param string $title    Tiêu đề site.
+ * @param array  $meta     Tùy chọn. Dữ liệu meta đăng ký. Mặc định chứa cài đặt quyền riêng tư và lang_id.
+ * @return bool Liệu email thông báo đã được gửi hay chưa.
  */
 function wpmu_welcome_notification(
 	$blog_id,
@@ -1645,17 +1645,17 @@ function wpmu_welcome_notification(
 	$current_network = get_network();
 
 	/**
-	 * Filters whether to bypass the welcome email sent to the site administrator after site activation.
+	 * Lọc xem có bỏ qua email chào mừng gửi cho quản trị viên site sau khi kích hoạt site hay không.
 	 *
-	 * Returning false disables the welcome email.
+	 * Trả về false để tắt email chào mừng.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param int|false $blog_id  Site ID, or false to prevent the email from sending.
-	 * @param int       $user_id  User ID of the site administrator.
-	 * @param string    $password User password, or "N/A" if the user account is not new.
-	 * @param string    $title    Site title.
-	 * @param array     $meta     Signup meta data. By default, contains the requested privacy setting and lang_id.
+	 * @param int|false $blog_id  ID site, hoặc false để ngăn email gửi đi.
+	 * @param int       $user_id  ID người dùng của quản trị viên site.
+	 * @param string    $password Mật khẩu người dùng, hoặc "N/A" nếu tài khoản người dùng không mới.
+	 * @param string    $title    Tiêu đề site.
+	 * @param array     $meta     Dữ liệu meta đăng ký. Mặc định chứa cài đặt quyền riêng tư và lang_id.
 	 */
 	if ( ! apply_filters( 'wpmu_welcome_notification', $blog_id, $user_id, $password, $title, $meta ) ) {
 		return false;
@@ -1696,18 +1696,18 @@ We hope you enjoy your new site. Thanks!
 	$welcome_email = str_replace( 'PASSWORD', $password, $welcome_email );
 
 	/**
-	 * Filters the content of the welcome email sent to the site administrator after site activation.
+	 * Lọc nội dung email chào mừng gửi cho quản trị viên site sau khi kích hoạt site.
 	 *
-	 * Content should be formatted for transmission via wp_mail().
+	 * Nội dung nên được định dạng để truyền qua wp_mail().
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string $welcome_email Message body of the email.
-	 * @param int    $blog_id       Site ID.
-	 * @param int    $user_id       User ID of the site administrator.
-	 * @param string $password      User password, or "N/A" if the user account is not new.
-	 * @param string $title         Site title.
-	 * @param array  $meta          Signup meta data. By default, contains the requested privacy setting and lang_id.
+	 * @param string $welcome_email Nội dung tin nhắn của email.
+	 * @param int    $blog_id       ID site.
+	 * @param int    $user_id       ID người dùng của quản trị viên site.
+	 * @param string $password      Mật khẩu người dùng, hoặc "N/A" nếu tài khoản người dùng không mới.
+	 * @param string $title         Tiêu đề site.
+	 * @param array  $meta          Dữ liệu meta đăng ký. Mặc định chứa cài đặt quyền riêng tư và lang_id.
 	 */
 	$welcome_email = apply_filters( 'update_welcome_email', $welcome_email, $blog_id, $user_id, $password, $title, $meta );
 
@@ -1729,11 +1729,11 @@ We hope you enjoy your new site. Thanks!
 	$subject = __( 'New %1$s Site: %2$s' );
 
 	/**
-	 * Filters the subject of the welcome email sent to the site administrator after site activation.
+	 * Lọc tiêu đề email chào mừng gửi cho quản trị viên site sau khi kích hoạt site.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string $subject Subject of the email.
+	 * @param string $subject Tiêu đề của email.
 	 */
 	$subject = apply_filters( 'update_welcome_subject', sprintf( $subject, $current_network->site_name, wp_unslash( $title ) ) );
 
@@ -1747,17 +1747,17 @@ We hope you enjoy your new site. Thanks!
 }
 
 /**
- * Notifies the Multisite network administrator that a new site was created.
+ * Thông báo cho quản trị viên mạng Multisite rằng site mới đã được tạo.
  *
- * Filter {@see 'send_new_site_email'} to disable or bypass.
+ * Lọc {@see 'send_new_site_email'} để tắt hoặc bỏ qua.
  *
- * Filter {@see 'new_site_email'} to filter the contents.
+ * Lọc {@see 'new_site_email'} để lọc nội dung.
  *
  * @since 5.6.0
  *
- * @param int $site_id Site ID of the new site.
- * @param int $user_id User ID of the administrator of the new site.
- * @return bool Whether the email notification was sent.
+ * @param int $site_id ID site của site mới.
+ * @param int $user_id ID người dùng của quản trị viên site mới.
+ * @return bool Liệu email thông báo đã được gửi hay chưa.
  */
 function wpmu_new_site_admin_notification( $site_id, $user_id ) {
 	$site  = get_site( $site_id );
@@ -1769,15 +1769,15 @@ function wpmu_new_site_admin_notification( $site_id, $user_id ) {
 	}
 
 	/**
-	 * Filters whether to send an email to the Multisite network administrator when a new site is created.
+	 * Lọc xem có gửi email cho quản trị viên mạng Multisite khi site mới được tạo hay không.
 	 *
-	 * Return false to disable sending the email.
+	 * Trả về false để tắt việc gửi email.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param bool    $send Whether to send the email.
-	 * @param WP_Site $site Site object of the new site.
-	 * @param WP_User $user User object of the administrator of the new site.
+	 * @param bool    $send Có gửi email hay không.
+	 * @param WP_Site $site Đối tượng site của site mới.
+	 * @param WP_User $user Đối tượng người dùng của quản trị viên site mới.
 	 */
 	if ( ! apply_filters( 'send_new_site_email', true, $site, $user ) ) {
 		return false;
@@ -1787,10 +1787,10 @@ function wpmu_new_site_admin_notification( $site_id, $user_id ) {
 	$network_admin   = get_user_by( 'email', $email );
 
 	if ( $network_admin ) {
-		// If the network admin email address corresponds to a user, switch to their locale.
+		// Nếu địa chỉ email quản trị viên mạng tương ứng với một người dùng, chuyển sang locale của họ.
 		$switched_locale = switch_to_user_locale( $network_admin->ID );
 	} else {
-		// Otherwise switch to the locale of the current site.
+		// Nếu không, chuyển sang locale của site hiện tại.
 		$switched_locale = switch_to_locale( get_locale() );
 	}
 
@@ -1827,22 +1827,22 @@ Name: %3$s'
 	);
 
 	/**
-	 * Filters the content of the email sent to the Multisite network administrator when a new site is created.
+	 * Lọc nội dung email gửi cho quản trị viên mạng Multisite khi site mới được tạo.
 	 *
-	 * Content should be formatted for transmission via wp_mail().
+	 * Nội dung nên được định dạng để truyền qua wp_mail().
 	 *
 	 * @since 5.6.0
 	 *
 	 * @param array $new_site_email {
-	 *     Used to build wp_mail().
+	 *     Dùng để xây dựng wp_mail().
 	 *
-	 *     @type string $to      The email address of the recipient.
-	 *     @type string $subject The subject of the email.
-	 *     @type string $message The content of the email.
-	 *     @type string $headers Headers.
+	 *     @type string $to      Địa chỉ email của người nhận.
+	 *     @type string $subject Tiêu đề của email.
+	 *     @type string $message Nội dung của email.
+	 *     @type string $headers Tiêu đề email.
 	 * }
-	 * @param WP_Site $site         Site object of the new site.
-	 * @param WP_User $user         User object of the administrator of the new site.
+	 * @param WP_Site $site         Đối tượng site của site mới.
+	 * @param WP_User $user         Đối tượng người dùng của quản trị viên site mới.
 	 */
 	$new_site_email = apply_filters( 'new_site_email', $new_site_email, $site, $user );
 
@@ -1861,18 +1861,18 @@ Name: %3$s'
 }
 
 /**
- * Notifies a user that their account activation has been successful.
+ * Thông báo cho người dùng rằng việc kích hoạt tài khoản của họ đã thành công.
  *
- * Filter {@see 'wpmu_welcome_user_notification'} to disable or bypass.
+ * Lọc {@see 'wpmu_welcome_user_notification'} để tắt hoặc bỏ qua.
  *
- * Filter {@see 'update_welcome_user_email'} and {@see 'update_welcome_user_subject'} to
- * modify the content and subject line of the notification email.
+ * Lọc {@see 'update_welcome_user_email'} và {@see 'update_welcome_user_subject'} để
+ * sửa đổi nội dung và dòng tiêu đề của email thông báo.
  *
  * @since MU (3.0.0)
  *
- * @param int    $user_id  User ID.
- * @param string $password User password.
- * @param array  $meta     Optional. Signup meta data. Default empty array.
+ * @param int    $user_id  ID người dùng.
+ * @param string $password Mật khẩu người dùng.
+ * @param array  $meta     Tùy chọn. Dữ liệu meta đăng ký. Mặc định mảng rỗng.
  * @return bool
  */
 function wpmu_welcome_user_notification(
@@ -1884,15 +1884,15 @@ function wpmu_welcome_user_notification(
 	$current_network = get_network();
 
 	/**
-	 * Filters whether to bypass the welcome email after user activation.
+	 * Lọc xem có bỏ qua email chào mừng sau khi kích hoạt người dùng hay không.
 	 *
-	 * Returning false disables the welcome email.
+	 * Trả về false để tắt email chào mừng.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param int    $user_id  User ID.
-	 * @param string $password User password.
-	 * @param array  $meta     Signup meta data. Default empty array.
+	 * @param int    $user_id  ID người dùng.
+	 * @param string $password Mật khẩu người dùng.
+	 * @param array  $meta     Dữ liệu meta đăng ký. Mặc định mảng rỗng.
 	 */
 	if ( ! apply_filters( 'wpmu_welcome_user_notification', $user_id, $password, $meta ) ) {
 		return false;
@@ -1905,16 +1905,16 @@ function wpmu_welcome_user_notification(
 	$switched_locale = switch_to_user_locale( $user_id );
 
 	/**
-	 * Filters the content of the welcome email after user activation.
+	 * Lọc nội dung email chào mừng sau khi kích hoạt người dùng.
 	 *
-	 * Content should be formatted for transmission via wp_mail().
+	 * Nội dung nên được định dạng để truyền qua wp_mail().
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string $welcome_email The message body of the account activation success email.
-	 * @param int    $user_id       User ID.
-	 * @param string $password      User password.
-	 * @param array  $meta          Signup meta data. Default empty array.
+	 * @param string $welcome_email Nội dung tin nhắn của email kích hoạt tài khoản thành công.
+	 * @param int    $user_id       ID người dùng.
+	 * @param string $password      Mật khẩu người dùng.
+	 * @param array  $meta          Dữ liệu meta đăng ký. Mặc định mảng rỗng.
 	 */
 	$welcome_email = apply_filters( 'update_welcome_user_email', $welcome_email, $user_id, $password, $meta );
 	$welcome_email = str_replace( 'SITE_NAME', $current_network->site_name, $welcome_email );
@@ -1940,11 +1940,11 @@ function wpmu_welcome_user_notification(
 	$subject = __( 'New %1$s User: %2$s' );
 
 	/**
-	 * Filters the subject of the welcome email after user activation.
+	 * Lọc tiêu đề email chào mừng sau khi kích hoạt người dùng.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string $subject Subject of the email.
+	 * @param string $subject Tiêu đề của email.
 	 */
 	$subject = apply_filters( 'update_welcome_user_subject', sprintf( $subject, $current_network->site_name, $user->user_login ) );
 
@@ -1958,18 +1958,18 @@ function wpmu_welcome_user_notification(
 }
 
 /**
- * Gets the current network.
+ * Lấy mạng hiện tại.
  *
- * Returns an object containing the 'id', 'domain', 'path', and 'site_name'
- * properties of the network being viewed.
+ * Trả về một đối tượng chứa các thuộc tính 'id', 'domain', 'path', và 'site_name'
+ * của mạng đang được xem.
  *
  * @see wpmu_current_site()
  *
  * @since MU (3.0.0)
  *
- * @global WP_Network $current_site The current network.
+ * @global WP_Network $current_site Mạng hiện tại.
  *
- * @return WP_Network The current network.
+ * @return WP_Network Mạng hiện tại.
  */
 function get_current_site() {
 	global $current_site;
@@ -1977,17 +1977,17 @@ function get_current_site() {
 }
 
 /**
- * Gets a user's most recent post.
+ * Lấy bài viết gần đây nhất của người dùng.
  *
- * Walks through each of a user's blogs to find the post with
- * the most recent post_date_gmt.
+ * Duyệt qua từng blog của người dùng để tìm bài viết có
+ * post_date_gmt gần nhất.
  *
  * @since MU (3.0.0)
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int $user_id User ID.
- * @return array Contains the blog_id, post_id, post_date_gmt, and post_gmt_ts.
+ * @param int $user_id ID người dùng.
+ * @return array Chứa blog_id, post_id, post_date_gmt, và post_gmt_ts.
  */
 function get_most_recent_post_of_user( $user_id ) {
 	global $wpdb;
@@ -1996,21 +1996,21 @@ function get_most_recent_post_of_user( $user_id ) {
 	$most_recent_post = array();
 
 	/*
-	 * Walk through each blog and get the most recent post
-	 * published by $user_id.
+	 * Duyệt qua từng blog và lấy bài viết gần nhất
+	 * được xuất bản bởi $user_id.
 	 */
 	foreach ( (array) $user_blogs as $blog ) {
 		$prefix      = $wpdb->get_blog_prefix( $blog->userblog_id );
 		$recent_post = $wpdb->get_row( $wpdb->prepare( "SELECT ID, post_date_gmt FROM {$prefix}posts WHERE post_author = %d AND post_type = 'post' AND post_status = 'publish' ORDER BY post_date_gmt DESC LIMIT 1", $user_id ), ARRAY_A );
 
-		// Make sure we found a post.
+		// Đảm bảo chúng ta tìm thấy bài viết.
 		if ( isset( $recent_post['ID'] ) ) {
 			$post_gmt_ts = strtotime( $recent_post['post_date_gmt'] );
 
 			/*
-			 * If this is the first post checked
-			 * or if this post is newer than the current recent post,
-			 * make it the new most recent post.
+			 * Nếu đây là bài viết đầu tiên được kiểm tra
+			 * hoặc nếu bài viết này mới hơn bài viết gần đây hiện tại,
+			 * đặt nó làm bài viết gần đây nhất mới.
 			 */
 			if ( ! isset( $most_recent_post['post_gmt_ts'] ) || ( $post_gmt_ts > $most_recent_post['post_gmt_ts'] ) ) {
 				$most_recent_post = array(
@@ -2027,17 +2027,17 @@ function get_most_recent_post_of_user( $user_id ) {
 }
 
 //
-// Misc functions.
+// Các hàm linh tinh.
 //
 
 /**
- * Checks an array of MIME types against a list of allowed types.
+ * Kiểm tra mảng các loại MIME dựa trên danh sách các loại được phép.
  *
- * WordPress ships with a set of allowed upload filetypes,
- * which is defined in wp-includes/functions.php in
- * get_allowed_mime_types(). This function is used to filter
- * that list against the filetypes allowed provided by Multisite
- * Super Admins at wp-admin/network/settings.php.
+ * WordPress được cung cấp sẵn một bộ các loại file upload được phép,
+ * được định nghĩa trong wp-includes/functions.php trong
+ * get_allowed_mime_types(). Hàm này được sử dụng để lọc
+ * danh sách đó dựa trên các loại file được phép do Super Admin
+ * Multisite cung cấp tại wp-admin/network/settings.php.
  *
  * @since MU (3.0.0)
  *
@@ -2058,18 +2058,18 @@ function check_upload_mimes( $mimes ) {
 }
 
 /**
- * Updates a blog's post count.
+ * Cập nhật số lượng bài viết của blog.
  *
- * WordPress MS stores a blog's post count as an option so as
- * to avoid extraneous COUNTs when a blog's details are fetched
- * with get_site(). This function is called when posts are published
- * or unpublished to make sure the count stays current.
+ * WordPress MS lưu trữ số lượng bài viết của blog dưới dạng tùy chọn để
+ * tránh các truy vấn COUNT không cần thiết khi chi tiết blog được lấy
+ * bằng get_site(). Hàm này được gọi khi bài viết được xuất bản
+ * hoặc hủy xuất bản để đảm bảo số đếm luôn cập nhật.
  *
  * @since MU (3.0.0)
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $deprecated Not used.
+ * @param string $deprecated Không sử dụng.
  */
 function update_posts_count( $deprecated = '' ) {
 	global $wpdb;
@@ -2077,15 +2077,15 @@ function update_posts_count( $deprecated = '' ) {
 }
 
 /**
- * Logs the user email, IP, and registration date of a new site.
+ * Ghi lại email người dùng, IP, và ngày đăng ký của site mới.
  *
  * @since MU (3.0.0)
- * @since 5.1.0 Parameters now support input from the {@see 'wp_initialize_site'} action.
+ * @since 5.1.0 Các tham số hiện hỗ trợ đầu vào từ action {@see 'wp_initialize_site'}.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param WP_Site|int $blog_id The new site's object or ID.
- * @param int|array   $user_id User ID, or array of arguments including 'user_id'.
+ * @param WP_Site|int $blog_id Đối tượng hoặc ID của site mới.
+ * @param int|array   $user_id ID người dùng, hoặc mảng các tham số bao gồm 'user_id'.
  */
 function wpmu_log_new_registrations( $blog_id, $user_id ) {
 	global $wpdb;
@@ -2113,16 +2113,16 @@ function wpmu_log_new_registrations( $blog_id, $user_id ) {
 }
 
 /**
- * Ensures that the current site's domain is listed in the allowed redirect host list.
+ * Đảm bảo rằng tên miền của site hiện tại nằm trong danh sách host chuyển hướng được phép.
  *
  * @see wp_validate_redirect()
  * @since MU (3.0.0)
  *
- * @param array|string $deprecated Not used.
+ * @param array|string $deprecated Không sử dụng.
  * @return string[] {
- *     An array containing the current site's domain.
+ *     Mảng chứa tên miền của site hiện tại.
  *
- *     @type string $0 The current site's domain.
+ *     @type string $0 Tên miền của site hiện tại.
  * }
  */
 function redirect_this_site( $deprecated = '' ) {
@@ -2130,12 +2130,12 @@ function redirect_this_site( $deprecated = '' ) {
 }
 
 /**
- * Checks whether an upload is too big.
+ * Kiểm tra xem file upload có quá lớn hay không.
  *
  * @since MU (3.0.0)
  *
- * @param array $upload An array of information about the newly-uploaded file.
- * @return string|array If the upload is under the size limit, $upload is returned. Otherwise returns an error message.
+ * @param array $upload Mảng thông tin về file vừa được upload.
+ * @return string|array Nếu file upload dưới giới hạn kích thước, trả về $upload. Ngược lại trả về thông báo lỗi.
  */
 function upload_is_file_too_big( $upload ) {
 	if ( ! is_array( $upload ) || defined( 'WP_IMPORTING' ) || get_site_option( 'upload_space_check_disabled' ) ) {
@@ -2151,7 +2151,7 @@ function upload_is_file_too_big( $upload ) {
 }
 
 /**
- * Adds a nonce field to the signup page.
+ * Thêm trường nonce vào trang đăng ký.
  *
  * @since MU (3.0.0)
  */
@@ -2162,7 +2162,7 @@ function signup_nonce_fields() {
 }
 
 /**
- * Processes the signup nonce created in signup_nonce_fields().
+ * Xử lý nonce đăng ký được tạo trong signup_nonce_fields().
  *
  * @since MU (3.0.0)
  *
@@ -2182,20 +2182,20 @@ function signup_nonce_check( $result ) {
 }
 
 /**
- * Corrects 404 redirects when NOBLOGREDIRECT is defined.
+ * Sửa chuyển hướng 404 khi NOBLOGREDIRECT được định nghĩa.
  *
  * @since MU (3.0.0)
  */
 function maybe_redirect_404() {
 	if ( is_main_site() && is_404() && defined( 'NOBLOGREDIRECT' ) ) {
 		/**
-		 * Filters the redirect URL for 404s on the main site.
+		 * Lọc URL chuyển hướng cho lỗi 404 trên site chính.
 		 *
-		 * The filter is only evaluated if the NOBLOGREDIRECT constant is defined.
+		 * Bộ lọc chỉ được đánh giá nếu hằng số NOBLOGREDIRECT được định nghĩa.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $no_blog_redirect The redirect URL defined in NOBLOGREDIRECT.
+		 * @param string $no_blog_redirect URL chuyển hướng được định nghĩa trong NOBLOGREDIRECT.
 		 */
 		$destination = apply_filters( 'blog_redirect_404', NOBLOGREDIRECT );
 
@@ -2211,11 +2211,11 @@ function maybe_redirect_404() {
 }
 
 /**
- * Adds a new user to a blog by visiting /newbloguser/{key}/.
+ * Thêm người dùng mới vào blog bằng cách truy cập /newbloguser/{key}/.
  *
- * This will only work when the user's details are saved as an option
- * keyed as 'new_user_{key}', where '{key}' is a hash generated for the user to be
- * added, as when a user is invited through the regular WP Add User interface.
+ * Điều này chỉ hoạt động khi chi tiết người dùng được lưu dưới dạng tùy chọn
+ * với khóa là 'new_user_{key}', trong đó '{key}' là hash được tạo cho người dùng
+ * cần thêm, như khi người dùng được mời qua giao diện Thêm Người dùng WP thông thường.
  *
  * @since MU (3.0.0)
  */
@@ -2259,18 +2259,18 @@ function maybe_add_existing_user_to_blog() {
 }
 
 /**
- * Adds a user to a blog based on details from maybe_add_existing_user_to_blog().
+ * Thêm người dùng vào blog dựa trên chi tiết từ maybe_add_existing_user_to_blog().
  *
  * @since MU (3.0.0)
  *
  * @param array|false $details {
- *     User details. Must at least contain values for the keys listed below.
+ *     Chi tiết người dùng. Phải chứa ít nhất các giá trị cho các khóa liệt kê bên dưới.
  *
- *     @type int    $user_id The ID of the user being added to the current blog.
- *     @type string $role    The role to be assigned to the user.
+ *     @type int    $user_id ID của người dùng được thêm vào blog hiện tại.
+ *     @type string $role    Vai trò được gán cho người dùng.
  * }
- * @return true|WP_Error|void True on success or a WP_Error object if the user doesn't exist
- *                            or could not be added. Void if $details array was not provided.
+ * @return true|WP_Error|void True khi thành công hoặc đối tượng WP_Error nếu người dùng không tồn tại
+ *                            hoặc không thể được thêm. Void nếu mảng $details không được cung cấp.
  */
 function add_existing_user_to_blog( $details = false ) {
 	if ( is_array( $details ) ) {
@@ -2278,13 +2278,13 @@ function add_existing_user_to_blog( $details = false ) {
 		$result  = add_user_to_blog( $blog_id, $details['user_id'], $details['role'] );
 
 		/**
-		 * Fires immediately after an existing user is added to a site.
+		 * Kích hoạt ngay sau khi người dùng hiện tại được thêm vào site.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param int           $user_id User ID.
-		 * @param true|WP_Error $result  True on success or a WP_Error object if the user doesn't exist
-		 *                               or could not be added.
+		 * @param int           $user_id ID người dùng.
+		 * @param true|WP_Error $result  True khi thành công hoặc đối tượng WP_Error nếu người dùng không tồn tại
+		 *                               hoặc không thể được thêm.
 		 */
 		do_action( 'added_existing_user', $details['user_id'], $result );
 
@@ -2293,18 +2293,18 @@ function add_existing_user_to_blog( $details = false ) {
 }
 
 /**
- * Adds a newly created user to the appropriate blog
+ * Thêm người dùng mới tạo vào blog phù hợp.
  *
- * To add a user in general, use add_user_to_blog(). This function
- * is specifically hooked into the {@see 'wpmu_activate_user'} action.
+ * Để thêm người dùng nói chung, sử dụng add_user_to_blog(). Hàm này
+ * được hook cụ thể vào action {@see 'wpmu_activate_user'}.
  *
  * @since MU (3.0.0)
  *
  * @see add_user_to_blog()
  *
- * @param int    $user_id  User ID.
- * @param string $password User password. Ignored.
- * @param array  $meta     Signup meta data.
+ * @param int    $user_id  ID người dùng.
+ * @param string $password Mật khẩu người dùng. Bị bỏ qua.
+ * @param array  $meta     Dữ liệu meta đăng ký.
  */
 function add_new_user_to_blog(
 	$user_id,
@@ -2315,7 +2315,7 @@ function add_new_user_to_blog(
 	if ( ! empty( $meta['add_to_blog'] ) ) {
 		$blog_id = $meta['add_to_blog'];
 		$role    = $meta['new_role'];
-		remove_user_from_blog( $user_id, get_network()->site_id ); // Remove user from main blog.
+		remove_user_from_blog( $user_id, get_network()->site_id ); // Xóa người dùng khỏi blog chính.
 
 		$result = add_user_to_blog( $blog_id, $user_id, $role );
 
@@ -2326,23 +2326,23 @@ function add_new_user_to_blog(
 }
 
 /**
- * Corrects From host on outgoing mail to match the site domain.
+ * Sửa host From trên email gửi đi để khớp với tên miền site.
  *
  * @since MU (3.0.0)
  *
- * @param PHPMailer\PHPMailer\PHPMailer $phpmailer The PHPMailer instance (passed by reference).
+ * @param PHPMailer\PHPMailer\PHPMailer $phpmailer Đối tượng PHPMailer (được truyền theo tham chiếu).
  */
 function fix_phpmailer_messageid( $phpmailer ) {
 	$phpmailer->Hostname = get_network()->domain;
 }
 
 /**
- * Determines whether a user is marked as a spammer, based on user login.
+ * Xác định xem người dùng có bị đánh dấu là spammer hay không, dựa trên tên đăng nhập.
  *
  * @since MU (3.0.0)
  *
- * @param string|WP_User $user Optional. Defaults to current user. WP_User object,
- *                             or user login name as a string.
+ * @param string|WP_User $user Tùy chọn. Mặc định là người dùng hiện tại. Đối tượng WP_User,
+ *                             hoặc tên đăng nhập dưới dạng chuỗi.
  * @return bool
  */
 function is_user_spammy( $user = null ) {
@@ -2358,21 +2358,21 @@ function is_user_spammy( $user = null ) {
 }
 
 /**
- * Updates this blog's 'public' setting in the global blogs table.
+ * Cập nhật cài đặt 'public' của blog này trong bảng blogs toàn cục.
  *
- * Public blogs have a setting of 1, private blogs are 0.
+ * Blog công khai có giá trị 1, blog riêng tư là 0.
  *
  * @since MU (3.0.0)
  *
- * @param int $old_value The old public value.
- * @param int $value     The new public value.
+ * @param int $old_value Giá trị public cũ.
+ * @param int $value     Giá trị public mới.
  */
 function update_blog_public( $old_value, $value ) {
 	update_blog_status( get_current_blog_id(), 'public', (int) $value );
 }
 
 /**
- * Determines whether users can self-register, based on Network settings.
+ * Xác định xem người dùng có thể tự đăng ký hay không, dựa trên cài đặt Mạng.
  *
  * @since MU (3.0.0)
  *
@@ -2384,7 +2384,7 @@ function users_can_register_signup_filter() {
 }
 
 /**
- * Ensures that the welcome message is not empty. Currently unused.
+ * Đảm bảo rằng tin nhắn chào mừng không rỗng. Hiện không sử dụng.
  *
  * @since MU (3.0.0)
  *
@@ -2416,12 +2416,12 @@ Thanks!
 }
 
 /**
- * Determines whether to force SSL on content.
+ * Xác định xem có buộc SSL trên nội dung hay không.
  *
  * @since 2.8.5
  *
  * @param bool $force
- * @return bool True if forced, false if not forced.
+ * @return bool True nếu bị buộc, false nếu không.
  */
 function force_ssl_content( $force = '' ) {
 	static $forced_content = false;
@@ -2436,18 +2436,18 @@ function force_ssl_content( $force = '' ) {
 }
 
 /**
- * Formats a URL to use https.
+ * Định dạng URL để sử dụng https.
  *
- * Useful as a filter.
+ * Hữu ích như một bộ lọc.
  *
  * @since 2.8.5
  *
  * @param string $url URL.
- * @return string URL with https as the scheme.
+ * @return string URL với https làm giao thức.
  */
 function filter_SSL( $url ) {  // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 	if ( ! is_string( $url ) ) {
-		return get_bloginfo( 'url' ); // Return home site URL with proper scheme.
+		return get_bloginfo( 'url' ); // Trả về URL trang chủ với giao thức đúng.
 	}
 
 	if ( force_ssl_content() && is_ssl() ) {
@@ -2458,7 +2458,7 @@ function filter_SSL( $url ) {  // phpcs:ignore WordPress.NamingConventions.Valid
 }
 
 /**
- * Schedules update of the network-wide counts for the current network.
+ * Lên lịch cập nhật số đếm toàn mạng cho mạng hiện tại.
  *
  * @since 3.1.0
  */
@@ -2473,12 +2473,12 @@ function wp_schedule_update_network_counts() {
 }
 
 /**
- * Updates the network-wide counts for the current network.
+ * Cập nhật số đếm toàn mạng cho mạng hiện tại.
  *
  * @since 3.1.0
- * @since 4.8.0 The `$network_id` parameter has been added.
+ * @since 4.8.0 Thêm tham số `$network_id`.
  *
- * @param int|null $network_id ID of the network. Default is the current network.
+ * @param int|null $network_id ID của mạng. Mặc định là mạng hiện tại.
  */
 function wp_update_network_counts( $network_id = null ) {
 	wp_update_network_user_counts( $network_id );
@@ -2486,28 +2486,28 @@ function wp_update_network_counts( $network_id = null ) {
 }
 
 /**
- * Updates the count of sites for the current network.
+ * Cập nhật số lượng site cho mạng hiện tại.
  *
- * If enabled through the {@see 'enable_live_network_counts'} filter, update the sites count
- * on a network when a site is created or its status is updated.
+ * Nếu được bật qua bộ lọc {@see 'enable_live_network_counts'}, cập nhật số đếm site
+ * trên mạng khi site được tạo hoặc trạng thái của nó được cập nhật.
  *
  * @since 3.7.0
- * @since 4.8.0 The `$network_id` parameter has been added.
+ * @since 4.8.0 Thêm tham số `$network_id`.
  *
- * @param int|null $network_id ID of the network. Default is the current network.
+ * @param int|null $network_id ID của mạng. Mặc định là mạng hiện tại.
  */
 function wp_maybe_update_network_site_counts( $network_id = null ) {
 	$is_small_network = ! wp_is_large_network( 'sites', $network_id );
 
 	/**
-	 * Filters whether to update network site or user counts when a new site is created.
+	 * Lọc xem có cập nhật số đếm site hoặc người dùng mạng khi site mới được tạo hay không.
 	 *
 	 * @since 3.7.0
 	 *
 	 * @see wp_is_large_network()
 	 *
-	 * @param bool   $small_network Whether the network is considered small.
-	 * @param string $context       Context. Either 'users' or 'sites'.
+	 * @param bool   $small_network Liệu mạng có được coi là nhỏ hay không.
+	 * @param string $context       Ngữ cảnh. Hoặc 'users' hoặc 'sites'.
 	 */
 	if ( ! apply_filters( 'enable_live_network_counts', $is_small_network, 'sites' ) ) {
 		return;
@@ -2517,20 +2517,20 @@ function wp_maybe_update_network_site_counts( $network_id = null ) {
 }
 
 /**
- * Updates the network-wide users count.
+ * Cập nhật số lượng người dùng toàn mạng.
  *
- * If enabled through the {@see 'enable_live_network_counts'} filter, update the users count
- * on a network when a user is created or its status is updated.
+ * Nếu được bật qua bộ lọc {@see 'enable_live_network_counts'}, cập nhật số đếm người dùng
+ * trên mạng khi người dùng được tạo hoặc trạng thái của họ được cập nhật.
  *
  * @since 3.7.0
- * @since 4.8.0 The `$network_id` parameter has been added.
+ * @since 4.8.0 Thêm tham số `$network_id`.
  *
- * @param int|null $network_id ID of the network. Default is the current network.
+ * @param int|null $network_id ID của mạng. Mặc định là mạng hiện tại.
  */
 function wp_maybe_update_network_user_counts( $network_id = null ) {
 	$is_small_network = ! wp_is_large_network( 'users', $network_id );
 
-	/** This filter is documented in wp-includes/ms-functions.php */
+	/** Bộ lọc này được ghi chú trong wp-includes/ms-functions.php */
 	if ( ! apply_filters( 'enable_live_network_counts', $is_small_network, 'users' ) ) {
 		return;
 	}
@@ -2539,12 +2539,12 @@ function wp_maybe_update_network_user_counts( $network_id = null ) {
 }
 
 /**
- * Updates the network-wide site count.
+ * Cập nhật số lượng site toàn mạng.
  *
  * @since 3.7.0
- * @since 4.8.0 The `$network_id` parameter has been added.
+ * @since 4.8.0 Thêm tham số `$network_id`.
  *
- * @param int|null $network_id ID of the network. Default is the current network.
+ * @param int|null $network_id ID của mạng. Mặc định là mạng hiện tại.
  */
 function wp_update_network_site_counts( $network_id = null ) {
 	$network_id = (int) $network_id;
@@ -2567,32 +2567,32 @@ function wp_update_network_site_counts( $network_id = null ) {
 }
 
 /**
- * Updates the network-wide user count.
+ * Cập nhật số lượng người dùng toàn mạng.
  *
  * @since 3.7.0
- * @since 4.8.0 The `$network_id` parameter has been added.
- * @since 6.0.0 This function is now a wrapper for wp_update_user_counts().
+ * @since 4.8.0 Thêm tham số `$network_id`.
+ * @since 6.0.0 Hàm này hiện là wrapper cho wp_update_user_counts().
  *
- * @param int|null $network_id ID of the network. Default is the current network.
+ * @param int|null $network_id ID của mạng. Mặc định là mạng hiện tại.
  */
 function wp_update_network_user_counts( $network_id = null ) {
 	wp_update_user_counts( $network_id );
 }
 
 /**
- * Returns the space used by the current site.
+ * Trả về dung lượng được sử dụng bởi site hiện tại.
  *
  * @since 3.5.0
  *
- * @return int Used space in megabytes.
+ * @return int Dung lượng đã sử dụng tính bằng megabyte.
  */
 function get_space_used() {
 	/**
-	 * Filters the amount of storage space used by the current site, in megabytes.
+	 * Lọc dung lượng lưu trữ được sử dụng bởi site hiện tại, tính bằng megabyte.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param int|false $space_used The amount of used space, in megabytes. Default false.
+	 * @param int|false $space_used Dung lượng đã sử dụng, tính bằng megabyte. Mặc định false.
 	 */
 	$space_used = apply_filters( 'pre_get_space_used', false );
 
@@ -2605,11 +2605,11 @@ function get_space_used() {
 }
 
 /**
- * Returns the upload quota for the current blog.
+ * Trả về hạn mức upload cho blog hiện tại.
  *
  * @since MU (3.0.0)
  *
- * @return int Quota in megabytes.
+ * @return int Hạn mức tính bằng megabyte.
  */
 function get_space_allowed() {
 	$space_allowed = get_option( 'blog_upload_space' );
@@ -2623,21 +2623,21 @@ function get_space_allowed() {
 	}
 
 	/**
-	 * Filters the upload quota for the current site.
+	 * Lọc hạn mức upload cho site hiện tại.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param int $space_allowed Upload quota in megabytes for the current blog.
+	 * @param int $space_allowed Hạn mức upload tính bằng megabyte cho blog hiện tại.
 	 */
 	return apply_filters( 'get_space_allowed', $space_allowed );
 }
 
 /**
- * Determines if there is any upload space left in the current blog's quota.
+ * Xác định xem còn dung lượng upload nào trong hạn mức của blog hiện tại hay không.
  *
  * @since 3.0.0
  *
- * @return int of upload space available in bytes.
+ * @return int Dung lượng upload còn trống tính bằng byte.
  */
 function get_upload_space_available() {
 	$allowed = get_space_allowed();
@@ -2659,10 +2659,10 @@ function get_upload_space_available() {
 }
 
 /**
- * Determines if there is any upload space left in the current blog's quota.
+ * Xác định xem còn dung lượng upload nào trong hạn mức của blog hiện tại hay không.
  *
  * @since 3.0.0
- * @return bool True if space is available, false otherwise.
+ * @return bool True nếu còn dung lượng, false nếu không.
  */
 function is_upload_space_available() {
 	if ( get_site_option( 'upload_space_check_disabled' ) ) {
@@ -2673,12 +2673,12 @@ function is_upload_space_available() {
 }
 
 /**
- * Filters the maximum upload file size allowed, in bytes.
+ * Lọc kích thước file upload tối đa được phép, tính bằng byte.
  *
  * @since 3.0.0
  *
- * @param int $size Upload size limit in bytes.
- * @return int Upload size limit in bytes.
+ * @param int $size Giới hạn kích thước upload tính bằng byte.
+ * @return int Giới hạn kích thước upload tính bằng byte.
  */
 function upload_size_limit_filter( $size ) {
 	$fileupload_maxk         = (int) get_site_option( 'fileupload_maxk', 1500 );
@@ -2692,17 +2692,17 @@ function upload_size_limit_filter( $size ) {
 }
 
 /**
- * Determines whether or not we have a large network.
+ * Xác định xem chúng ta có mạng lớn hay không.
  *
- * The default criteria for a large network is either more than 10,000 users or more than 10,000 sites.
- * Plugins can alter this criteria using the {@see 'wp_is_large_network'} filter.
+ * Tiêu chí mặc định cho mạng lớn là hơn 10.000 người dùng hoặc hơn 10.000 site.
+ * Plugin có thể thay đổi tiêu chí này bằng bộ lọc {@see 'wp_is_large_network'}.
  *
  * @since 3.3.0
- * @since 4.8.0 The `$network_id` parameter has been added.
+ * @since 4.8.0 Thêm tham số `$network_id`.
  *
- * @param string   $using      'sites' or 'users'. Default is 'sites'.
- * @param int|null $network_id ID of the network. Default is the current network.
- * @return bool True if the network meets the criteria for large. False otherwise.
+ * @param string   $using      'sites' hoặc 'users'. Mặc định là 'sites'.
+ * @param int|null $network_id ID của mạng. Mặc định là mạng hiện tại.
+ * @return bool True nếu mạng đáp ứng tiêu chí lớn. False nếu không.
  */
 function wp_is_large_network( $using = 'sites', $network_id = null ) {
 	$network_id = (int) $network_id;
@@ -2716,31 +2716,31 @@ function wp_is_large_network( $using = 'sites', $network_id = null ) {
 		$is_large_network = wp_is_large_user_count( $network_id );
 
 		/**
-		 * Filters whether the network is considered large.
+		 * Lọc xem mạng có được coi là lớn hay không.
 		 *
 		 * @since 3.3.0
-		 * @since 4.8.0 The `$network_id` parameter has been added.
+		 * @since 4.8.0 Thêm tham số `$network_id`.
 		 *
-		 * @param bool   $is_large_network Whether the network has more than 10000 users or sites.
-		 * @param string $component        The component to count. Accepts 'users', or 'sites'.
-		 * @param int    $count            The count of items for the component.
-		 * @param int    $network_id       The ID of the network being checked.
+		 * @param bool   $is_large_network Liệu mạng có hơn 10000 người dùng hoặc site hay không.
+		 * @param string $component        Thành phần cần đếm. Chấp nhận 'users', hoặc 'sites'.
+		 * @param int    $count            Số lượng mục cho thành phần.
+		 * @param int    $network_id       ID của mạng đang được kiểm tra.
 		 */
 		return apply_filters( 'wp_is_large_network', $is_large_network, 'users', $count, $network_id );
 	}
 
 	$count = get_blog_count( $network_id );
 
-	/** This filter is documented in wp-includes/ms-functions.php */
+	/** Bộ lọc này được ghi chú trong wp-includes/ms-functions.php */
 	return apply_filters( 'wp_is_large_network', $count > 10000, 'sites', $count, $network_id );
 }
 
 /**
- * Retrieves a list of reserved site on a sub-directory Multisite installation.
+ * Lấy danh sách các tên site được giữ riêng trên cài đặt Multisite thư mục con.
  *
  * @since 4.4.0
  *
- * @return string[] Array of reserved names.
+ * @return string[] Mảng các tên được giữ riêng.
  */
 function get_subdirectory_reserved_names() {
 	$names = array(
@@ -2757,26 +2757,26 @@ function get_subdirectory_reserved_names() {
 	);
 
 	/**
-	 * Filters reserved site names on a sub-directory Multisite installation.
+	 * Lọc các tên site được giữ riêng trên cài đặt Multisite thư mục con.
 	 *
 	 * @since 3.0.0
-	 * @since 4.4.0 'wp-admin', 'wp-content', 'wp-includes', 'wp-json', and 'embed' were added
-	 *              to the reserved names list.
+	 * @since 4.4.0 'wp-admin', 'wp-content', 'wp-includes', 'wp-json', và 'embed' đã được thêm
+	 *              vào danh sách tên được giữ riêng.
 	 *
-	 * @param string[] $subdirectory_reserved_names Array of reserved names.
+	 * @param string[] $subdirectory_reserved_names Mảng các tên được giữ riêng.
 	 */
 	return apply_filters( 'subdirectory_reserved_names', $names );
 }
 
 /**
- * Sends a confirmation request email when a change of network admin email address is attempted.
+ * Gửi email yêu cầu xác nhận khi có thay đổi địa chỉ email quản trị viên mạng.
  *
- * The new network admin address will not become active until confirmed.
+ * Địa chỉ email quản trị viên mạng mới sẽ không hoạt động cho đến khi được xác nhận.
  *
  * @since 4.9.0
  *
- * @param string $old_value The old network admin email address.
- * @param string $value     The proposed new network admin email address.
+ * @param string $old_value Địa chỉ email quản trị viên mạng cũ.
+ * @param string $value     Địa chỉ email quản trị viên mạng mới được đề xuất.
  */
 function update_network_option_new_admin_email( $old_value, $value ) {
 	if ( get_site_option( 'admin_email' ) === $value || ! is_email( $value ) ) {
@@ -2813,23 +2813,23 @@ All at ###SITENAME###
 	);
 
 	/**
-	 * Filters the text of the email sent when a change of network admin email address is attempted.
+	 * Lọc văn bản email gửi khi có thay đổi địa chỉ email quản trị viên mạng.
 	 *
-	 * The following strings have a special meaning and will get replaced dynamically:
-	 * ###USERNAME###  The current user's username.
-	 * ###ADMIN_URL### The link to click on to confirm the email change.
-	 * ###EMAIL###     The proposed new network admin email address.
-	 * ###SITENAME###  The name of the network.
-	 * ###SITEURL###   The URL to the network.
+	 * Các chuỗi sau có ý nghĩa đặc biệt và sẽ được thay thế động:
+	 * ###USERNAME###  Tên đăng nhập của người dùng hiện tại.
+	 * ###ADMIN_URL### Liên kết nhấp vào để xác nhận thay đổi email.
+	 * ###EMAIL###     Địa chỉ email quản trị viên mạng mới được đề xuất.
+	 * ###SITENAME###  Tên của mạng.
+	 * ###SITEURL###   URL của mạng.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param string $email_text      Text in the email.
+	 * @param string $email_text      Văn bản trong email.
 	 * @param array  $new_admin_email {
-	 *     Data relating to the new network admin email address.
+	 *     Dữ liệu liên quan đến địa chỉ email quản trị viên mạng mới.
 	 *
-	 *     @type string $hash     The secure hash used in the confirmation link URL.
-	 *     @type string $newemail The proposed new network admin email address.
+	 *     @type string $hash     Hash bảo mật được sử dụng trong URL liên kết xác nhận.
+	 *     @type string $newemail Địa chỉ email quản trị viên mạng mới được đề xuất.
 	 * }
 	 */
 	$content = apply_filters( 'new_network_admin_email_content', $email_text, $new_admin_email );
@@ -2857,32 +2857,32 @@ All at ###SITENAME###
 }
 
 /**
- * Sends an email to the old network admin email address when the network admin email address changes.
+ * Gửi email đến địa chỉ email quản trị viên mạng cũ khi địa chỉ email quản trị viên mạng thay đổi.
  *
  * @since 4.9.0
  *
- * @param string $option_name The relevant database option name.
- * @param string $new_email   The new network admin email address.
- * @param string $old_email   The old network admin email address.
- * @param int    $network_id  ID of the network.
+ * @param string $option_name Tên tùy chọn cơ sở dữ liệu liên quan.
+ * @param string $new_email   Địa chỉ email quản trị viên mạng mới.
+ * @param string $old_email   Địa chỉ email quản trị viên mạng cũ.
+ * @param int    $network_id  ID của mạng.
  */
 function wp_network_admin_email_change_notification( $option_name, $new_email, $old_email, $network_id ) {
 	$send = true;
 
-	// Don't send the notification to the default 'admin_email' value.
+	// Không gửi thông báo đến giá trị 'admin_email' mặc định.
 	if ( 'you@example.com' === $old_email ) {
 		$send = false;
 	}
 
 	/**
-	 * Filters whether to send the network admin email change notification email.
+	 * Lọc xem có gửi email thông báo thay đổi email quản trị viên mạng hay không.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param bool   $send       Whether to send the email notification.
-	 * @param string $old_email  The old network admin email address.
-	 * @param string $new_email  The new network admin email address.
-	 * @param int    $network_id ID of the network.
+	 * @param bool   $send       Có gửi email thông báo hay không.
+	 * @param string $old_email  Địa chỉ email quản trị viên mạng cũ.
+	 * @param string $new_email  Địa chỉ email quản trị viên mạng mới.
+	 * @param int    $network_id ID của mạng.
 	 */
 	$send = apply_filters( 'send_network_admin_email_change_email', $send, $old_email, $new_email, $network_id );
 
@@ -2912,30 +2912,30 @@ All at ###SITENAME###
 		'message' => $email_change_text,
 		'headers' => '',
 	);
-	// Get network name.
+	// Lấy tên mạng.
 	$network_name = wp_specialchars_decode( get_site_option( 'site_name' ), ENT_QUOTES );
 
 	/**
-	 * Filters the contents of the email notification sent when the network admin email address is changed.
+	 * Lọc nội dung email thông báo gửi khi địa chỉ email quản trị viên mạng thay đổi.
 	 *
 	 * @since 4.9.0
 	 *
 	 * @param array $email_change_email {
-	 *     Used to build wp_mail().
+	 *     Dùng để xây dựng wp_mail().
 	 *
-	 *     @type string $to      The intended recipient.
-	 *     @type string $subject The subject of the email.
-	 *     @type string $message The content of the email.
-	 *         The following strings have a special meaning and will get replaced dynamically:
-	 *         - ###OLD_EMAIL### The old network admin email address.
-	 *         - ###NEW_EMAIL### The new network admin email address.
-	 *         - ###SITENAME###  The name of the network.
-	 *         - ###SITEURL###   The URL to the site.
-	 *     @type string $headers Headers.
+	 *     @type string $to      Người nhận dự kiến.
+	 *     @type string $subject Tiêu đề của email.
+	 *     @type string $message Nội dung của email.
+	 *         Các chuỗi sau có ý nghĩa đặc biệt và sẽ được thay thế động:
+	 *         - ###OLD_EMAIL### Địa chỉ email quản trị viên mạng cũ.
+	 *         - ###NEW_EMAIL### Địa chỉ email quản trị viên mạng mới.
+	 *         - ###SITENAME###  Tên của mạng.
+	 *         - ###SITEURL###   URL của site.
+	 *     @type string $headers Tiêu đề email.
 	 * }
-	 * @param string $old_email  The old network admin email address.
-	 * @param string $new_email  The new network admin email address.
-	 * @param int    $network_id ID of the network.
+	 * @param string $old_email  Địa chỉ email quản trị viên mạng cũ.
+	 * @param string $new_email  Địa chỉ email quản trị viên mạng mới.
+	 * @param int    $network_id ID của mạng.
 	 */
 	$email_change_email = apply_filters( 'network_admin_email_change_email', $email_change_email, $old_email, $new_email, $network_id );
 

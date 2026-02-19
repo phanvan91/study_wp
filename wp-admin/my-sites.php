@@ -1,6 +1,6 @@
 <?php
 /**
- * My Sites dashboard.
+ * Bảng điều khiển Các trang của tôi.
  *
  * @package WordPress
  * @subpackage Multisite
@@ -34,7 +34,7 @@ if ( 'updateblogsettings' === $action && isset( $_POST['primary_blog'] ) ) {
 	}
 }
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ HTML title.
 $title       = __( 'My Sites' );
 $parent_file = 'index.php';
 
@@ -76,7 +76,7 @@ echo esc_html( $title );
 
 <?php
 if ( in_array( get_site_option( 'registration' ), array( 'all', 'blog' ), true ) ) {
-	/** This filter is documented in wp-login.php */
+	/** Bộ lọc này được ghi chú trong wp-login.php */
 	$sign_up_url = apply_filters( 'wp_signup_location', network_site_url( 'wp-signup.php' ) );
 	printf( ' <a href="%s" class="page-title-action">%s</a>', esc_url( $sign_up_url ), esc_html__( 'Add New Site' ) );
 }
@@ -100,7 +100,7 @@ else :
 	<?php
 	choose_primary_blog();
 	/**
-	 * Fires before the sites list on the My Sites screen.
+	 * Kích hoạt trước danh sách các trang trên màn hình Các trang của tôi.
 	 *
 	 * @since 3.0.0
 	 */
@@ -110,16 +110,16 @@ else :
 	<ul class="my-sites striped">
 	<?php
 	/**
-	 * Filters the settings HTML markup in the Global Settings section on the My Sites screen.
+	 * Lọc mã HTML cài đặt trong phần Cài đặt toàn cục trên màn hình Các trang của tôi.
 	 *
-	 * By default, the Global Settings section is hidden. Passing a non-empty
-	 * string to this filter will enable the section, and allow new settings
-	 * to be added, either globally or for specific sites.
+	 * Theo mặc định, phần Cài đặt toàn cục bị ẩn. Truyền một chuỗi không rỗng
+	 * vào bộ lọc này sẽ kích hoạt phần đó, và cho phép thêm các cài đặt mới,
+	 * hoặc toàn cục hoặc cho các trang cụ thể.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string $settings_html The settings HTML markup. Default empty.
-	 * @param string $context       Context of the setting (global or site-specific). Default 'global'.
+	 * @param string $settings_html Mã HTML cài đặt. Mặc định rỗng.
+	 * @param string $context       Ngữ cảnh của cài đặt (toàn cục hoặc theo trang cụ thể). Mặc định 'global'.
 	 */
 	$settings_html = apply_filters( 'myblogs_options', '', 'global' );
 
@@ -143,18 +143,18 @@ else :
 		}
 
 		/**
-		 * Filters the row links displayed for each site on the My Sites screen.
+		 * Lọc các liên kết hàng hiển thị cho mỗi trang trên màn hình Các trang của tôi.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param string $actions   The HTML site link markup.
-		 * @param object $user_blog An object containing the site data.
+		 * @param string $actions   Mã HTML liên kết trang.
+		 * @param object $user_blog Đối tượng chứa dữ liệu trang.
 		 */
 		$actions = apply_filters( 'myblogs_blog_actions', $actions, $user_blog );
 
 		echo "<p class='my-sites-actions'>" . $actions . '</p>';
 
-		/** This filter is documented in wp-admin/my-sites.php */
+		/** Bộ lọc này được ghi chú trong wp-admin/my-sites.php */
 		echo apply_filters( 'myblogs_options', '', $user_blog );
 
 		echo '</li>';

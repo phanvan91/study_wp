@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress Comment Administration API.
+ * API Quản trị Bình luận WordPress.
  *
  * @package WordPress
  * @subpackage Administration
@@ -8,20 +8,20 @@
  */
 
 /**
- * Determines if a comment exists based on author and date.
+ * Xác định xem một bình luận có tồn tại hay không dựa trên tác giả và ngày.
  *
- * For best performance, use `$timezone = 'gmt'`, which queries a field that is properly indexed. The default value
- * for `$timezone` is 'blog' for legacy reasons.
+ * Để có hiệu suất tốt nhất, sử dụng `$timezone = 'gmt'`, truy vấn trường được lập chỉ mục đúng cách.
+ * Giá trị mặc định cho `$timezone` là 'blog' vì lý do tương thích ngược.
  *
  * @since 2.0.0
- * @since 4.4.0 Added the `$timezone` parameter.
+ * @since 4.4.0 Thêm tham số `$timezone`.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $comment_author Author of the comment.
- * @param string $comment_date   Date of the comment.
- * @param string $timezone       Timezone. Accepts 'blog' or 'gmt'. Default 'blog'.
- * @return string|null Comment post ID on success.
+ * @param string $comment_author Tác giả của bình luận.
+ * @param string $comment_date   Ngày của bình luận.
+ * @param string $timezone       Múi giờ. Chấp nhận 'blog' hoặc 'gmt'. Mặc định 'blog'.
+ * @return string|null ID bài viết của bình luận khi thành công.
  */
 function comment_exists( $comment_author, $comment_date, $timezone = 'blog' ) {
 	global $wpdb;
@@ -42,13 +42,13 @@ function comment_exists( $comment_author, $comment_date, $timezone = 'blog' ) {
 }
 
 /**
- * Updates a comment with values provided in $_POST.
+ * Cập nhật bình luận với các giá trị được cung cấp trong $_POST.
  *
  * @since 2.0.0
- * @since 5.5.0 A return value was added.
+ * @since 5.5.0 Đã thêm giá trị trả về.
  *
- * @return int|WP_Error The value 1 if the comment was updated, 0 if not updated.
- *                      A WP_Error object on failure.
+ * @return int|WP_Error Giá trị 1 nếu bình luận đã được cập nhật, 0 nếu không được cập nhật.
+ *                      Đối tượng WP_Error khi thất bại.
  */
 function edit_comment() {
 	if ( ! current_user_can( 'edit_comment', (int) $_POST['comment_ID'] ) ) {
@@ -100,12 +100,12 @@ function edit_comment() {
 }
 
 /**
- * Returns a WP_Comment object based on comment ID.
+ * Trả về đối tượng WP_Comment dựa trên ID bình luận.
  *
  * @since 2.0.0
  *
- * @param int $id ID of comment to retrieve.
- * @return WP_Comment|false Comment if found. False on failure.
+ * @param int $id ID của bình luận cần lấy.
+ * @return WP_Comment|false Bình luận nếu tìm thấy. False khi thất bại.
  */
 function get_comment_to_edit( $id ) {
 	$comment = get_comment( $id );
@@ -118,11 +118,11 @@ function get_comment_to_edit( $id ) {
 
 	$comment->comment_content = format_to_edit( $comment->comment_content );
 	/**
-	 * Filters the comment content before editing.
+	 * Lọc nội dung bình luận trước khi chỉnh sửa.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $comment_content Comment content.
+	 * @param string $comment_content Nội dung bình luận.
 	 */
 	$comment->comment_content = apply_filters( 'comment_edit_pre', $comment->comment_content );
 
@@ -135,14 +135,14 @@ function get_comment_to_edit( $id ) {
 }
 
 /**
- * Gets the number of pending comments on a post or posts.
+ * Lấy số lượng bình luận đang chờ duyệt trên một hoặc nhiều bài viết.
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|int[] $post_id Either a single Post ID or an array of Post IDs
- * @return int|int[] Either a single Posts pending comments as an int or an array of ints keyed on the Post IDs
+ * @param int|int[] $post_id Một ID bài viết đơn hoặc mảng các ID bài viết.
+ * @return int|int[] Số bình luận chờ duyệt dạng int hoặc mảng int được đánh khóa theo ID bài viết.
  */
 function get_pending_comments_num( $post_id ) {
 	global $wpdb;
@@ -169,7 +169,7 @@ function get_pending_comments_num( $post_id ) {
 
 	$pending_keyed = array();
 
-	// Default to zero pending for all posts in request.
+	// Mặc định không có bình luận chờ duyệt cho tất cả bài viết trong yêu cầu.
 	foreach ( $post_id_array as $id ) {
 		$pending_keyed[ $id ] = 0;
 	}
@@ -184,12 +184,12 @@ function get_pending_comments_num( $post_id ) {
 }
 
 /**
- * Adds avatars to relevant places in admin.
+ * Thêm ảnh đại diện vào các vị trí liên quan trong trang quản trị.
  *
  * @since 2.5.0
  *
- * @param string $name User name.
- * @return string Avatar with the user name.
+ * @param string $name Tên người dùng.
+ * @return string Ảnh đại diện kèm tên người dùng.
  */
 function floated_admin_avatar( $name ) {
 	$avatar = get_avatar( get_comment(), 32, 'mystery' );
@@ -197,7 +197,7 @@ function floated_admin_avatar( $name ) {
 }
 
 /**
- * Enqueues comment shortcuts jQuery script.
+ * Thêm vào hàng đợi script jQuery phím tắt bình luận.
  *
  * @since 2.7.0
  */
@@ -208,9 +208,9 @@ function enqueue_comment_hotkeys_js() {
 }
 
 /**
- * Displays error message at bottom of comments.
+ * Hiển thị thông báo lỗi ở cuối phần bình luận.
  *
- * @param string $msg Error Message. Assumed to contain HTML and be sanitized.
+ * @param string $msg Thông báo lỗi. Giả định chứa HTML và đã được làm sạch.
  */
 function comment_footer_die( $msg ) {
 	echo "<div class='wrap'><p>$msg</p></div>";

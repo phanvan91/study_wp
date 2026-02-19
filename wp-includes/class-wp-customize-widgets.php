@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress Customize Widgets classes
+ * Các lớp Widget tùy biến của WordPress
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,9 +8,9 @@
  */
 
 /**
- * Customize Widgets class.
+ * Lớp Tùy biến Widget.
  *
- * Implements widget management in the Customizer.
+ * Triển khai quản lý widget trong Trình tùy biến.
  *
  * @since 3.9.0
  *

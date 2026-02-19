@@ -1,6 +1,6 @@
 <?php
 /**
- * Update/Install Plugin/Theme network administration panel.
+ * Trang quản trị mạng lưới Cập nhật/Cài đặt Plugin/Giao diện.
  *
  * @package WordPress
  * @subpackage Multisite
@@ -11,7 +11,7 @@ if ( isset( $_GET['action'] ) && in_array( $_GET['action'], array( 'update-selec
 	define( 'IFRAME_REQUEST', true );
 }
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 require ABSPATH . 'wp-admin/update.php';

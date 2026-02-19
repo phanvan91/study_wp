@@ -1,24 +1,24 @@
 <?php
 /**
- * WordPress Error API.
+ * API Lỗi WordPress.
  *
  * @package WordPress
  */
 
 /**
- * WordPress Error class.
+ * Lớp Lỗi WordPress.
  *
- * Container for checking for WordPress errors and error messages. Return
- * WP_Error and use is_wp_error() to check if this class is returned. Many
- * core WordPress functions pass this class in the event of an error and
- * if not handled properly will result in code errors.
+ * Vùng chứa để kiểm tra lỗi và thông báo lỗi WordPress. Trả về
+ * WP_Error và sử dụng is_wp_error() để kiểm tra xem lớp này có được trả về không. Nhiều
+ * hàm lõi WordPress truyền lớp này khi có lỗi và
+ * nếu không xử lý đúng cách sẽ dẫn đến lỗi code.
  *
  * @since 2.1.0
  */
 #[AllowDynamicProperties]
 class WP_Error {
 	/**
-	 * Stores the list of errors.
+	 * Lưu trữ danh sách các lỗi.
 	 *
 	 * @since 2.1.0
 	 * @var array
@@ -26,7 +26,7 @@ class WP_Error {
 	public $errors = array();
 
 	/**
-	 * Stores the most recently added data for each error code.
+	 * Lưu trữ dữ liệu được thêm gần nhất cho mỗi mã lỗi.
 	 *
 	 * @since 2.1.0
 	 * @var array
@@ -34,7 +34,7 @@ class WP_Error {
 	public $error_data = array();
 
 	/**
-	 * Stores previously added data added for error codes, oldest-to-newest by code.
+	 * Lưu trữ dữ liệu đã thêm trước đó cho các mã lỗi, từ cũ nhất đến mới nhất theo mã.
 	 *
 	 * @since 5.6.0
 	 * @var array[]
@@ -42,21 +42,21 @@ class WP_Error {
 	protected $additional_data = array();
 
 	/**
-	 * Initializes the error.
+	 * Khởi tạo lỗi.
 	 *
-	 * If `$code` is empty, the other parameters will be ignored.
-	 * When `$code` is not empty, `$message` will be used even if
-	 * it is empty. The `$data` parameter will be used only if it
-	 * is not empty.
+	 * Nếu `$code` rỗng, các tham số khác sẽ bị bỏ qua.
+	 * Khi `$code` không rỗng, `$message` sẽ được sử dụng ngay cả khi
+	 * nó rỗng. Tham số `$data` chỉ được sử dụng khi nó
+	 * không rỗng.
 	 *
-	 * Though the class is constructed with a single error code and
-	 * message, multiple codes can be added using the `add()` method.
+	 * Mặc dù lớp được khởi tạo với một mã lỗi và
+	 * thông báo đơn lẻ, nhiều mã có thể được thêm bằng phương thức `add()`.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string|int $code    Error code.
-	 * @param string     $message Error message.
-	 * @param mixed      $data    Optional. Error data. Default empty string.
+	 * @param string|int $code    Mã lỗi.
+	 * @param string     $message Thông báo lỗi.
+	 * @param mixed      $data    Tùy chọn. Dữ liệu lỗi. Mặc định chuỗi rỗng.
 	 */
 	public function __construct( $code = '', $message = '', $data = '' ) {
 		if ( empty( $code ) ) {
@@ -67,11 +67,11 @@ class WP_Error {
 	}
 
 	/**
-	 * Retrieves all error codes.
+	 * Lấy tất cả các mã lỗi.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @return array List of error codes, if available.
+	 * @return array Danh sách mã lỗi, nếu có.
 	 */
 	public function get_error_codes() {
 		if ( ! $this->has_errors() ) {
@@ -82,11 +82,11 @@ class WP_Error {
 	}
 
 	/**
-	 * Retrieves the first error code available.
+	 * Lấy mã lỗi đầu tiên có sẵn.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @return string|int Empty string, if no error codes.
+	 * @return string|int Chuỗi rỗng, nếu không có mã lỗi.
 	 */
 	public function get_error_code() {
 		$codes = $this->get_error_codes();
@@ -99,16 +99,16 @@ class WP_Error {
 	}
 
 	/**
-	 * Retrieves all error messages, or the error messages for the given error code.
+	 * Lấy tất cả thông báo lỗi, hoặc thông báo lỗi cho mã lỗi đã cho.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string|int $code Optional. Error code to retrieve the messages for.
-	 *                         Default empty string.
-	 * @return string[] Error strings on success, or empty array if there are none.
+	 * @param string|int $code Tùy chọn. Mã lỗi để lấy thông báo.
+	 *                         Mặc định chuỗi rỗng.
+	 * @return string[] Chuỗi lỗi nếu thành công, hoặc mảng rỗng nếu không có.
 	 */
 	public function get_error_messages( $code = '' ) {
-		// Return all messages if no code specified.
+		// Trả về tất cả thông báo nếu không chỉ định mã.
 		if ( empty( $code ) ) {
 			$all_messages = array();
 			foreach ( (array) $this->errors as $code => $messages ) {
@@ -126,16 +126,16 @@ class WP_Error {
 	}
 
 	/**
-	 * Gets a single error message.
+	 * Lấy một thông báo lỗi đơn lẻ.
 	 *
-	 * This will get the first message available for the code. If no code is
-	 * given then the first code available will be used.
+	 * Lấy thông báo đầu tiên có sẵn cho mã. Nếu không có mã
+	 * được cung cấp thì mã đầu tiên có sẵn sẽ được sử dụng.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string|int $code Optional. Error code to retrieve the message for.
-	 *                         Default empty string.
-	 * @return string The error message.
+	 * @param string|int $code Tùy chọn. Mã lỗi để lấy thông báo.
+	 *                         Mặc định chuỗi rỗng.
+	 * @return string Thông báo lỗi.
 	 */
 	public function get_error_message( $code = '' ) {
 		if ( empty( $code ) ) {
@@ -149,12 +149,12 @@ class WP_Error {
 	}
 
 	/**
-	 * Retrieves the most recently added error data for an error code.
+	 * Lấy dữ liệu lỗi được thêm gần nhất cho một mã lỗi.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string|int $code Optional. Error code. Default empty string.
-	 * @return mixed Error data, if it exists.
+	 * @param string|int $code Tùy chọn. Mã lỗi. Mặc định chuỗi rỗng.
+	 * @return mixed Dữ liệu lỗi, nếu tồn tại.
 	 */
 	public function get_error_data( $code = '' ) {
 		if ( empty( $code ) ) {
@@ -167,11 +167,11 @@ class WP_Error {
 	}
 
 	/**
-	 * Verifies if the instance contains errors.
+	 * Kiểm tra xem instance có chứa lỗi không.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @return bool If the instance contains errors.
+	 * @return bool Nếu instance có chứa lỗi.
 	 */
 	public function has_errors() {
 		if ( ! empty( $this->errors ) ) {
@@ -181,13 +181,13 @@ class WP_Error {
 	}
 
 	/**
-	 * Adds an error or appends an additional message to an existing error.
+	 * Thêm lỗi hoặc bổ sung thêm thông báo vào lỗi đã có.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string|int $code    Error code.
-	 * @param string     $message Error message.
-	 * @param mixed      $data    Optional. Error data. Default empty string.
+	 * @param string|int $code    Mã lỗi.
+	 * @param string     $message Thông báo lỗi.
+	 * @param mixed      $data    Tùy chọn. Dữ liệu lỗi. Mặc định chuỗi rỗng.
 	 */
 	public function add( $code, $message, $data = '' ) {
 		$this->errors[ $code ][] = $message;
@@ -197,26 +197,26 @@ class WP_Error {
 		}
 
 		/**
-		 * Fires when an error is added to a WP_Error object.
+		 * Kích hoạt khi một lỗi được thêm vào đối tượng WP_Error.
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param string|int $code     Error code.
-		 * @param string     $message  Error message.
-		 * @param mixed      $data     Error data. Might be empty.
-		 * @param WP_Error   $wp_error The WP_Error object.
+		 * @param string|int $code     Mã lỗi.
+		 * @param string     $message  Thông báo lỗi.
+		 * @param mixed      $data     Dữ liệu lỗi. Có thể rỗng.
+		 * @param WP_Error   $wp_error Đối tượng WP_Error.
 		 */
 		do_action( 'wp_error_added', $code, $message, $data, $this );
 	}
 
 	/**
-	 * Adds data to an error with the given code.
+	 * Thêm dữ liệu vào lỗi với mã đã cho.
 	 *
 	 * @since 2.1.0
-	 * @since 5.6.0 Errors can now contain more than one item of error data. {@see WP_Error::$additional_data}.
+	 * @since 5.6.0 Lỗi giờ có thể chứa nhiều hơn một mục dữ liệu lỗi. {@see WP_Error::$additional_data}.
 	 *
-	 * @param mixed      $data Error data.
-	 * @param string|int $code Error code.
+	 * @param mixed      $data Dữ liệu lỗi.
+	 * @param string|int $code Mã lỗi.
 	 */
 	public function add_data( $data, $code = '' ) {
 		if ( empty( $code ) ) {
@@ -231,12 +231,12 @@ class WP_Error {
 	}
 
 	/**
-	 * Retrieves all error data for an error code in the order in which the data was added.
+	 * Lấy tất cả dữ liệu lỗi cho một mã lỗi theo thứ tự dữ liệu được thêm vào.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param string|int $code Error code.
-	 * @return mixed[] Array of error data, if it exists.
+	 * @param string|int $code Mã lỗi.
+	 * @return mixed[] Mảng dữ liệu lỗi, nếu tồn tại.
 	 */
 	public function get_all_error_data( $code = '' ) {
 		if ( empty( $code ) ) {
@@ -257,14 +257,14 @@ class WP_Error {
 	}
 
 	/**
-	 * Removes the specified error.
+	 * Xóa lỗi đã chỉ định.
 	 *
-	 * This function removes all error messages associated with the specified
-	 * error code, along with any error data for that code.
+	 * Hàm này xóa tất cả thông báo lỗi liên kết với mã lỗi
+	 * đã chỉ định, cùng với mọi dữ liệu lỗi cho mã đó.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param string|int $code Error code.
+	 * @param string|int $code Mã lỗi.
 	 */
 	public function remove( $code ) {
 		unset( $this->errors[ $code ] );
@@ -273,34 +273,34 @@ class WP_Error {
 	}
 
 	/**
-	 * Merges the errors in the given error object into this one.
+	 * Gộp các lỗi từ đối tượng lỗi đã cho vào đối tượng này.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param WP_Error $error Error object to merge.
+	 * @param WP_Error $error Đối tượng lỗi cần gộp.
 	 */
 	public function merge_from( WP_Error $error ) {
 		static::copy_errors( $error, $this );
 	}
 
 	/**
-	 * Exports the errors in this object into the given one.
+	 * Xuất các lỗi trong đối tượng này sang đối tượng đã cho.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param WP_Error $error Error object to export into.
+	 * @param WP_Error $error Đối tượng lỗi đích để xuất vào.
 	 */
 	public function export_to( WP_Error $error ) {
 		static::copy_errors( $this, $error );
 	}
 
 	/**
-	 * Copies errors from one WP_Error instance to another.
+	 * Sao chép lỗi từ một instance WP_Error sang instance khác.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param WP_Error $from The WP_Error to copy from.
-	 * @param WP_Error $to   The WP_Error to copy to.
+	 * @param WP_Error $from WP_Error nguồn để sao chép từ.
+	 * @param WP_Error $to   WP_Error đích để sao chép tới.
 	 */
 	protected static function copy_errors( WP_Error $from, WP_Error $to ) {
 		foreach ( $from->get_error_codes() as $code ) {

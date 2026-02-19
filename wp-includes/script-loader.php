@@ -1,50 +1,50 @@
 <?php
 /**
- * WordPress scripts and styles default loader.
+ * Trình tải mặc định cho scripts và styles của WordPress.
  *
- * Several constants are used to manage the loading, concatenating and compression of scripts and CSS:
- * define('SCRIPT_DEBUG', true); loads the development (non-minified) versions of all scripts and CSS, and disables compression and concatenation,
- * define('CONCATENATE_SCRIPTS', false); disables compression and concatenation of scripts and CSS,
- * define('COMPRESS_SCRIPTS', false); disables compression of scripts,
- * define('COMPRESS_CSS', false); disables compression of CSS,
- * define('ENFORCE_GZIP', true); forces gzip for compression (default is deflate).
+ * Một số hằng số được sử dụng để quản lý việc tải, nối và nén scripts và CSS:
+ * define('SCRIPT_DEBUG', true); tải các phiên bản phát triển (chưa nén) của tất cả scripts và CSS, và tắt nén và nối,
+ * define('CONCATENATE_SCRIPTS', false); tắt nén và nối scripts và CSS,
+ * define('COMPRESS_SCRIPTS', false); tắt nén scripts,
+ * define('COMPRESS_CSS', false); tắt nén CSS,
+ * define('ENFORCE_GZIP', true); buộc dùng gzip để nén (mặc định là deflate).
  *
- * The globals $concatenate_scripts, $compress_scripts and $compress_css can be set by plugins
- * to temporarily override the above settings. Also a compression test is run once and the result is saved
- * as option 'can_compress_scripts' (0/1). The test will run again if that option is deleted.
+ * Các biến toàn cục $concatenate_scripts, $compress_scripts và $compress_css có thể được thiết lập bởi plugin
+ * để ghi đè tạm thời các cài đặt trên. Ngoài ra, một bài kiểm tra nén được chạy một lần và kết quả được lưu
+ * dưới dạng tùy chọn 'can_compress_scripts' (0/1). Bài kiểm tra sẽ chạy lại nếu tùy chọn đó bị xóa.
  *
  * @package WordPress
  */
 
-/** WordPress Dependency Class */
+/** Lớp phụ thuộc WordPress */
 require ABSPATH . WPINC . '/class-wp-dependency.php';
 
-/** WordPress Dependencies Class */
+/** Lớp quản lý phụ thuộc WordPress */
 require ABSPATH . WPINC . '/class-wp-dependencies.php';
 
-/** WordPress Scripts Class */
+/** Lớp Scripts WordPress */
 require ABSPATH . WPINC . '/class-wp-scripts.php';
 
-/** WordPress Scripts Functions */
+/** Các hàm Scripts WordPress */
 require ABSPATH . WPINC . '/functions.wp-scripts.php';
 
-/** WordPress Styles Class */
+/** Lớp Styles WordPress */
 require ABSPATH . WPINC . '/class-wp-styles.php';
 
-/** WordPress Styles Functions */
+/** Các hàm Styles WordPress */
 require ABSPATH . WPINC . '/functions.wp-styles.php';
 
 /**
- * Registers TinyMCE scripts.
+ * Đăng ký các script TinyMCE.
  *
  * @since 5.0.0
  *
- * @global string $tinymce_version
- * @global bool   $concatenate_scripts
- * @global bool   $compress_scripts
+ * @global string $tinymce_version     Phiên bản TinyMCE.
+ * @global bool   $concatenate_scripts Có nối scripts hay không.
+ * @global bool   $compress_scripts    Có nén scripts hay không.
  *
- * @param WP_Scripts $scripts            WP_Scripts object.
- * @param bool       $force_uncompressed Whether to forcibly prevent gzip compression. Default false.
+ * @param WP_Scripts $scripts            Đối tượng WP_Scripts.
+ * @param bool       $force_uncompressed Có buộc ngăn nén gzip hay không. Mặc định false.
  */
 function wp_register_tinymce_scripts( $scripts, $force_uncompressed = false ) {
 	global $tinymce_version, $concatenate_scripts, $compress_scripts;
@@ -57,8 +57,8 @@ function wp_register_tinymce_scripts( $scripts, $force_uncompressed = false ) {
 	$compressed = $compress_scripts && $concatenate_scripts && ! $force_uncompressed;
 
 	/*
-	 * Load tinymce.js when running from /src, otherwise load wp-tinymce.js (in production)
-	 * or tinymce.min.js (when SCRIPT_DEBUG is true).
+	 * Tải tinymce.js khi chạy từ /src, nếu không tải wp-tinymce.js (trong môi trường sản xuất)
+	 * hoặc tinymce.min.js (khi SCRIPT_DEBUG là true).
 	 */
 	if ( $compressed ) {
 		$scripts->add( 'wp-tinymce', includes_url( 'js/tinymce/' ) . 'wp-tinymce.js', array(), $tinymce_version );
@@ -71,16 +71,16 @@ function wp_register_tinymce_scripts( $scripts, $force_uncompressed = false ) {
 }
 
 /**
- * Registers all the WordPress vendor scripts that are in the standardized
- * `js/dist/vendor/` location.
+ * Đăng ký tất cả các script vendor của WordPress nằm trong thư mục
+ * chuẩn `js/dist/vendor/`.
  *
- * For the order of `$scripts->add` see `wp_default_scripts`.
+ * Về thứ tự của `$scripts->add` xem `wp_default_scripts`.
  *
  * @since 5.0.0
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng ngôn ngữ ngày giờ WordPress.
  *
- * @param WP_Scripts $scripts WP_Scripts object.
+ * @param WP_Scripts $scripts Đối tượng WP_Scripts.
  */
 function wp_default_packages_vendor( $scripts ) {
 	global $wp_locale;
@@ -167,15 +167,15 @@ function wp_default_packages_vendor( $scripts ) {
 }
 
 /**
- * Returns contents of an inline script used in appending polyfill scripts for
- * browsers which fail the provided tests. The provided array is a mapping from
- * a condition to verify feature support to its polyfill script handle.
+ * Trả về nội dung của script inline dùng để thêm các script polyfill cho
+ * các trình duyệt không đạt các bài kiểm tra được cung cấp. Mảng được cung cấp là ánh xạ từ
+ * điều kiện xác minh hỗ trợ tính năng đến handle của script polyfill tương ứng.
  *
  * @since 5.0.0
  *
- * @param WP_Scripts $scripts WP_Scripts object.
- * @param string[]   $tests   Features to detect.
- * @return string Conditional polyfill inline script.
+ * @param WP_Scripts $scripts Đối tượng WP_Scripts.
+ * @param string[]   $tests   Các tính năng cần phát hiện.
+ * @return string Script inline polyfill có điều kiện.
  */
 function wp_get_script_polyfill( $scripts, $tests ) {
 	$polyfill = '';
@@ -195,7 +195,7 @@ function wp_get_script_polyfill( $scripts, $tests ) {
 			$src = add_query_arg( 'ver', $ver, $src );
 		}
 
-		/** This filter is documented in wp-includes/class-wp-scripts.php */
+		/** Filter này được ghi tài liệu trong wp-includes/class-wp-scripts.php */
 		$src = esc_url( apply_filters( 'script_loader_src', $src, $handle ) );
 
 		if ( ! $src ) {
@@ -203,12 +203,12 @@ function wp_get_script_polyfill( $scripts, $tests ) {
 		}
 
 		$polyfill .= (
-			// Test presence of feature...
+			// Kiểm tra sự hiện diện của tính năng...
 			'( ' . $test . ' ) || ' .
 			/*
-			 * ...appending polyfill on any failures. Cautious viewers may balk
-			 * at the `document.write`. Its caveat of synchronous mid-stream
-			 * blocking write is exactly the behavior we need though.
+			 * ...thêm polyfill khi phát hiện thiếu tính năng. Người đọc cẩn thận có thể
+			 * lo ngại về `document.write`. Tuy nhiên, hành vi ghi chặn đồng bộ giữa luồng
+			 * của nó chính xác là hành vi mà chúng ta cần.
 			 */
 			'document.write( \'<script src="' .
 			$src .
@@ -220,13 +220,13 @@ function wp_get_script_polyfill( $scripts, $tests ) {
 }
 
 /**
- * Registers development scripts that integrate with `@wordpress/scripts`.
+ * Đăng ký các script phát triển tích hợp với `@wordpress/scripts`.
  *
  * @see https://github.com/WordPress/gutenberg/tree/trunk/packages/scripts#start
  *
  * @since 6.0.0
  *
- * @param WP_Scripts $scripts WP_Scripts object.
+ * @param WP_Scripts $scripts Đối tượng WP_Scripts.
  */
 function wp_register_development_scripts( $scripts ) {
 	if (
@@ -260,19 +260,19 @@ function wp_register_development_scripts( $scripts ) {
 }
 
 /**
- * Registers all the WordPress packages scripts that are in the standardized
- * `js/dist/` location.
+ * Đăng ký tất cả các script gói WordPress nằm trong thư mục
+ * chuẩn `js/dist/`.
  *
- * For the order of `$scripts->add` see `wp_default_scripts`.
+ * Về thứ tự của `$scripts->add` xem `wp_default_scripts`.
  *
  * @since 5.0.0
  *
- * @param WP_Scripts $scripts WP_Scripts object.
+ * @param WP_Scripts $scripts Đối tượng WP_Scripts.
  */
 function wp_default_packages_scripts( $scripts ) {
 	$suffix = defined( 'WP_RUN_CORE_TESTS' ) ? '.min' : wp_scripts_get_suffix();
 	/*
-	 * Expects multidimensional array like:
+	 * Kỳ vọng mảng đa chiều như:
 	 *
 	 *     'a11y.js' => array('dependencies' => array(...), 'version' => '...'),
 	 *     'annotations.js' => array('dependencies' => array(...), 'version' => '...'),
@@ -291,7 +291,7 @@ function wp_default_packages_scripts( $scripts ) {
 			$dependencies = array();
 		}
 
-		// Add dependencies that cannot be detected and generated by build tools.
+		// Thêm các phụ thuộc không thể được phát hiện và tạo tự động bởi công cụ build.
 		switch ( $handle ) {
 			case 'wp-block-library':
 				array_push( $dependencies, 'editor' );
@@ -311,12 +311,12 @@ function wp_default_packages_scripts( $scripts ) {
 		}
 
 		/*
-		 * Manually set the text direction localization after wp-i18n is printed.
-		 * This ensures that wp.i18n.isRTL() returns true in RTL languages.
-		 * We cannot use $scripts->set_translations( 'wp-i18n' ) to do this
-		 * because WordPress prints a script's translations *before* the script,
-		 * which means, in the case of wp-i18n, that wp.i18n.setLocaleData()
-		 * is called before wp.i18n is defined.
+		 * Thiết lập thủ công bản địa hóa hướng văn bản sau khi wp-i18n được in.
+		 * Điều này đảm bảo rằng wp.i18n.isRTL() trả về true trong các ngôn ngữ RTL.
+		 * Chúng ta không thể sử dụng $scripts->set_translations( 'wp-i18n' ) để làm điều này
+		 * vì WordPress in bản dịch của script *trước* script đó,
+		 * nghĩa là, trong trường hợp wp-i18n, wp.i18n.setLocaleData()
+		 * được gọi trước khi wp.i18n được định nghĩa.
 		 */
 		if ( 'wp-i18n' === $handle ) {
 			$ltr    = _x( 'ltr', 'text direction' );
@@ -327,15 +327,15 @@ function wp_default_packages_scripts( $scripts ) {
 }
 
 /**
- * Adds inline scripts required for the WordPress JavaScript packages.
+ * Thêm các script inline cần thiết cho các gói JavaScript của WordPress.
  *
  * @since 5.0.0
- * @since 6.4.0 Added relative time strings for the `wp-date` inline script output.
+ * @since 6.4.0 Thêm các chuỗi thời gian tương đối cho đầu ra script inline `wp-date`.
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
- * @global wpdb      $wpdb      WordPress database abstraction object.
+ * @global WP_Locale $wp_locale Đối tượng ngôn ngữ ngày giờ WordPress.
+ * @global wpdb      $wpdb      Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param WP_Scripts $scripts WP_Scripts object.
+ * @param WP_Scripts $scripts Đối tượng WP_Scripts.
  */
 function wp_default_packages_inline_scripts( $scripts ) {
 	global $wp_locale, $wpdb;
@@ -389,7 +389,7 @@ function wp_default_packages_inline_scripts( $scripts ) {
 		)
 	);
 
-	// Backwards compatibility - configure the old wp-data persistence system.
+	// Tương thích ngược - cấu hình hệ thống lưu trữ wp-data cũ.
 	$scripts->add_inline_script(
 		'wp-data',
 		implode(
@@ -405,7 +405,7 @@ function wp_default_packages_inline_scripts( $scripts ) {
 		)
 	);
 
-	// Calculate the timezone abbr (EDT, PST) if possible.
+	// Tính toán viết tắt múi giờ (EDT, PST) nếu có thể.
 	$timezone_string = get_option( 'timezone_string', 'UTC' );
 	$timezone_abbr   = '';
 
@@ -483,7 +483,7 @@ function wp_default_packages_inline_scripts( $scripts ) {
 		'after'
 	);
 
-	// Loading the old editor and its config to ensure the classic block works as expected.
+	// Tải trình soạn thảo cũ và cấu hình của nó để đảm bảo khối classic hoạt động đúng.
 	$scripts->add_inline_script(
 		'editor',
 		'window.wp.oldEditor = window.wp.editor;',
@@ -491,10 +491,10 @@ function wp_default_packages_inline_scripts( $scripts ) {
 	);
 
 	/*
-	 * wp-editor module is exposed as window.wp.editor.
-	 * Problem: there is quite some code expecting window.wp.oldEditor object available under window.wp.editor.
-	 * Solution: fuse the two objects together to maintain backward compatibility.
-	 * For more context, see https://github.com/WordPress/gutenberg/issues/33203.
+	 * Module wp-editor được đưa ra dưới dạng window.wp.editor.
+	 * Vấn đề: có khá nhiều mã nguồn kỳ vọng đối tượng window.wp.oldEditor có sẵn dưới window.wp.editor.
+	 * Giải pháp: hợp nhất hai đối tượng lại để duy trì tương thích ngược.
+	 * Xem thêm ngữ cảnh tại https://github.com/WordPress/gutenberg/issues/33203.
 	 */
 	$scripts->add_inline_script(
 		'wp-editor',
@@ -504,10 +504,10 @@ function wp_default_packages_inline_scripts( $scripts ) {
 }
 
 /**
- * Adds inline scripts required for the TinyMCE in the block editor.
+ * Thêm các script inline cần thiết cho TinyMCE trong trình soạn thảo khối.
  *
- * These TinyMCE init settings are used to extend and override the default settings
- * from `_WP_Editors::default_settings()` for the Classic block.
+ * Các cài đặt khởi tạo TinyMCE này được sử dụng để mở rộng và ghi đè cài đặt mặc định
+ * từ `_WP_Editors::default_settings()` cho khối Classic.
  *
  * @since 5.0.0
  *
@@ -516,7 +516,7 @@ function wp_default_packages_inline_scripts( $scripts ) {
 function wp_tinymce_inline_scripts() {
 	global $wp_scripts;
 
-	/** This filter is documented in wp-includes/class-wp-editor.php */
+	/** Filter này được ghi tài liệu trong wp-includes/class-wp-editor.php */
 	$editor_settings = apply_filters( 'wp_editor_settings', array( 'tinymce' => true ), 'classic-block' );
 
 	$tinymce_plugins = array(
@@ -540,13 +540,13 @@ function wp_tinymce_inline_scripts() {
 		'wpview',
 	);
 
-	/** This filter is documented in wp-includes/class-wp-editor.php */
+	/** Filter này được ghi tài liệu trong wp-includes/class-wp-editor.php */
 	$tinymce_plugins = apply_filters( 'tiny_mce_plugins', $tinymce_plugins, 'classic-block' );
 	$tinymce_plugins = array_unique( $tinymce_plugins );
 
 	$disable_captions = false;
-	// Runs after `tiny_mce_plugins` but before `mce_buttons`.
-	/** This filter is documented in wp-admin/includes/media.php */
+	// Chạy sau `tiny_mce_plugins` nhưng trước `mce_buttons`.
+	/** Filter này được ghi tài liệu trong wp-admin/includes/media.php */
 	if ( apply_filters( 'disable_captions', '' ) ) {
 		$disable_captions = true;
 	}
@@ -569,7 +569,7 @@ function wp_tinymce_inline_scripts() {
 		'wp_adv',
 	);
 
-	/** This filter is documented in wp-includes/class-wp-editor.php */
+	/** Filter này được ghi tài liệu trong wp-includes/class-wp-editor.php */
 	$toolbar1 = apply_filters( 'mce_buttons', $toolbar1, 'classic-block' );
 
 	$toolbar2 = array(
@@ -586,13 +586,13 @@ function wp_tinymce_inline_scripts() {
 		'wp_help',
 	);
 
-	/** This filter is documented in wp-includes/class-wp-editor.php */
+	/** Filter này được ghi tài liệu trong wp-includes/class-wp-editor.php */
 	$toolbar2 = apply_filters( 'mce_buttons_2', $toolbar2, 'classic-block' );
-	/** This filter is documented in wp-includes/class-wp-editor.php */
+	/** Filter này được ghi tài liệu trong wp-includes/class-wp-editor.php */
 	$toolbar3 = apply_filters( 'mce_buttons_3', array(), 'classic-block' );
-	/** This filter is documented in wp-includes/class-wp-editor.php */
+	/** Filter này được ghi tài liệu trong wp-includes/class-wp-editor.php */
 	$toolbar4 = apply_filters( 'mce_buttons_4', array(), 'classic-block' );
-	/** This filter is documented in wp-includes/class-wp-editor.php */
+	/** Filter này được ghi tài liệu trong wp-includes/class-wp-editor.php */
 	$external_plugins = apply_filters( 'mce_external_plugins', array(), 'classic-block' );
 
 	$tinymce_settings = array(
@@ -613,12 +613,12 @@ function wp_tinymce_inline_scripts() {
 		$tinymce_settings = array_merge( $tinymce_settings, $editor_settings['tinymce'] );
 	}
 
-	/** This filter is documented in wp-includes/class-wp-editor.php */
+	/** Filter này được ghi tài liệu trong wp-includes/class-wp-editor.php */
 	$tinymce_settings = apply_filters( 'tiny_mce_before_init', $tinymce_settings, 'classic-block' );
 
 	/*
-	 * Do "by hand" translation from PHP array to js object.
-	 * Prevents breakage in some custom settings.
+	 * Chuyển đổi "thủ công" từ mảng PHP sang đối tượng js.
+	 * Ngăn ngừa lỗi trong một số cài đặt tùy chỉnh.
 	 */
 	$init_obj = '';
 	foreach ( $tinymce_settings as $key => $value ) {
@@ -650,11 +650,11 @@ function wp_tinymce_inline_scripts() {
 }
 
 /**
- * Registers all the WordPress packages scripts.
+ * Đăng ký tất cả các script gói WordPress.
  *
  * @since 5.0.0
  *
- * @param WP_Scripts $scripts WP_Scripts object.
+ * @param WP_Scripts $scripts Đối tượng WP_Scripts.
  */
 function wp_default_packages( $scripts ) {
 	wp_default_packages_vendor( $scripts );
@@ -668,32 +668,32 @@ function wp_default_packages( $scripts ) {
 }
 
 /**
- * Returns the suffix that can be used for the scripts.
+ * Trả về hậu tố có thể dùng cho các script.
  *
- * There are two suffix types, the normal one and the dev suffix.
+ * Có hai loại hậu tố, loại bình thường và hậu tố dev.
  *
  * @since 5.0.0
  *
- * @param string $type The type of suffix to retrieve.
- * @return string The script suffix.
+ * @param string $type Loại hậu tố cần lấy.
+ * @return string Hậu tố script.
  */
 function wp_scripts_get_suffix( $type = '' ) {
 	static $suffixes;
 
 	if ( null === $suffixes ) {
 		/*
-		 * Include an unmodified $wp_version.
+		 * Bao gồm $wp_version chưa chỉnh sửa.
 		 *
-		 * Note: wp_get_wp_version() is not used here, as this file can be included
-		 * via wp-admin/load-scripts.php or wp-admin/load-styles.php, in which case
-		 * wp-includes/functions.php is not loaded.
+		 * Lưu ý: wp_get_wp_version() không được sử dụng ở đây, vì file này có thể được
+		 * bao gồm qua wp-admin/load-scripts.php hoặc wp-admin/load-styles.php, trong trường hợp đó
+		 * wp-includes/functions.php không được tải.
 		 */
 		require ABSPATH . WPINC . '/version.php';
 
 		/*
-		 * Note: str_contains() is not used here, as this file can be included
-		 * via wp-admin/load-scripts.php or wp-admin/load-styles.php, in which case
-		 * the polyfills from wp-includes/compat.php are not loaded.
+		 * Lưu ý: str_contains() không được sử dụng ở đây, vì file này có thể được
+		 * bao gồm qua wp-admin/load-scripts.php hoặc wp-admin/load-styles.php, trong trường hợp đó
+		 * các polyfill từ wp-includes/compat.php không được tải.
 		 */
 		$develop_src = false !== strpos( $wp_version, '-src' );
 
@@ -717,15 +717,15 @@ function wp_scripts_get_suffix( $type = '' ) {
 }
 
 /**
- * Registers all WordPress scripts.
+ * Đăng ký tất cả các script WordPress.
  *
- * Localizes some of them.
- * args order: `$scripts->add( 'handle', 'url', 'dependencies', 'query-string', 1 );`
- * when last arg === 1 queues the script for the footer
+ * Bản địa hóa một số trong đó.
+ * Thứ tự tham số: `$scripts->add( 'handle', 'url', 'dependencies', 'query-string', 1 );`
+ * khi tham số cuối === 1 xếp hàng script cho footer
  *
  * @since 2.6.0
  *
- * @param WP_Scripts $scripts WP_Scripts object.
+ * @param WP_Scripts $scripts Đối tượng WP_Scripts.
  */
 function wp_default_scripts( $scripts ) {
 	$suffix     = wp_scripts_get_suffix();
@@ -765,15 +765,15 @@ function wp_default_scripts( $scripts ) {
 		'common',
 		'bulkActionObserverIds',
 		/**
-		 * Filters the array of field name attributes for bulk actions.
+		 * Lọc mảng các thuộc tính tên trường cho hành động hàng loạt.
 		 *
 		 * @since 6.8.1
 		 *
 		 * @param array $bulk_action_observer_ids {
-		 *      An array of field name attributes for bulk actions.
+		 *      Mảng các thuộc tính tên trường cho hành động hàng loạt.
 		 *
-		 *      @type string $bulk_action The bulk action field name. Default 'action'.
-		 *      @type string $changeit    The new role field name. Default 'new_role'.
+		 *      @type string $bulk_action Tên trường hành động hàng loạt. Mặc định 'action'.
+		 *      @type string $changeit    Tên trường vai trò mới. Mặc định 'new_role'.
 		 * }
 		 */
 		apply_filters( 'bulk_action_observer_ids', $bulk_action_observer_ids )
@@ -837,7 +837,7 @@ function wp_default_scripts( $scripts ) {
 	);
 
 	$scripts->add( 'wp-api-request', "/wp-includes/js/api-request$suffix.js", array( 'jquery' ), false, 1 );
-	// `wpApiSettings` is also used by `wp-api`, which depends on this script.
+	// `wpApiSettings` cũng được sử dụng bởi `wp-api`, phụ thuộc vào script này.
 	did_action( 'init' ) && $scripts->localize(
 		'wp-api-request',
 		'wpApiSettings',
@@ -858,11 +858,11 @@ function wp_default_scripts( $scripts ) {
 		'heartbeat',
 		'heartbeatSettings',
 		/**
-		 * Filters the Heartbeat settings.
+		 * Lọc các cài đặt Heartbeat.
 		 *
 		 * @since 3.6.0
 		 *
-		 * @param array $settings Heartbeat settings array.
+		 * @param array $settings Mảng cài đặt Heartbeat.
 		 */
 		apply_filters( 'heartbeat_settings', array() )
 	);
@@ -875,7 +875,7 @@ function wp_default_scripts( $scripts ) {
 	$scripts->add( 'site-icon', '/wp-admin/js/site-icon.js', array( 'jquery' ), false, 1 );
 	$scripts->set_translations( 'site-icon' );
 
-	// WordPress no longer uses or bundles Prototype or script.aculo.us. These are now pulled from an external source.
+	// WordPress không còn sử dụng hoặc đóng gói Prototype hay script.aculo.us. Chúng được lấy từ nguồn bên ngoài.
 	$scripts->add( 'prototype', 'https://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js', array(), '1.7.1' );
 	$scripts->add( 'scriptaculous-root', 'https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js', array( 'prototype' ), '1.9.0' );
 	$scripts->add( 'scriptaculous-builder', 'https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/builder.js', array( 'scriptaculous-root' ), '1.9.0' );
@@ -886,23 +886,23 @@ function wp_default_scripts( $scripts ) {
 	$scripts->add( 'scriptaculous-controls', 'https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/controls.js', array( 'scriptaculous-root' ), '1.9.0' );
 	$scripts->add( 'scriptaculous', false, array( 'scriptaculous-dragdrop', 'scriptaculous-slider', 'scriptaculous-controls' ) );
 
-	// Not used in core, replaced by Jcrop.js.
+	// Không được dùng trong lõi, thay thế bởi Jcrop.js.
 	$scripts->add( 'cropper', '/wp-includes/js/crop/cropper.js', array( 'scriptaculous-dragdrop' ) );
 
 	/*
 	 * jQuery.
-	 * The unminified jquery.js and jquery-migrate.js are included to facilitate debugging.
+	 * Các file jquery.js và jquery-migrate.js chưa nén được bao gồm để hỗ trợ gỡ lỗi.
 	 */
 	$scripts->add( 'jquery', false, array( 'jquery-core', 'jquery-migrate' ), '3.7.1' );
 	$scripts->add( 'jquery-core', "/wp-includes/js/jquery/jquery$suffix.js", array(), '3.7.1' );
 	$scripts->add( 'jquery-migrate', "/wp-includes/js/jquery/jquery-migrate$suffix.js", array(), '3.4.1' );
 
 	/*
-	 * Full jQuery UI.
-	 * The build process in 1.12.1 has changed significantly.
-	 * In order to keep backwards compatibility, and to keep the optimized loading,
-	 * the source files were flattened and included with some modifications for AMD loading.
-	 * A notable change is that 'jquery-ui-core' now contains 'jquery-ui-position' and 'jquery-ui-widget'.
+	 * Toàn bộ jQuery UI.
+	 * Quy trình build trong 1.12.1 đã thay đổi đáng kể.
+	 * Để duy trì tương thích ngược và giữ tải tối ưu,
+	 * các file nguồn đã được phẳng hóa và bao gồm với một số chỉnh sửa cho tải AMD.
+	 * Thay đổi đáng chú ý là 'jquery-ui-core' giờ chứa 'jquery-ui-position' và 'jquery-ui-widget'.
 	 */
 	$scripts->add( 'jquery-ui-core', "/wp-includes/js/jquery/ui/core$suffix.js", array( 'jquery' ), '1.13.3', 1 );
 	$scripts->add( 'jquery-effects-core', "/wp-includes/js/jquery/ui/effect$suffix.js", array( 'jquery' ), '1.13.3', 1 );
@@ -923,7 +923,7 @@ function wp_default_scripts( $scripts ) {
 	$scripts->add( 'jquery-effects-slide', "/wp-includes/js/jquery/ui/effect-slide$suffix.js", array( 'jquery-effects-core' ), '1.13.3', 1 );
 	$scripts->add( 'jquery-effects-transfer', "/wp-includes/js/jquery/ui/effect-transfer$suffix.js", array( 'jquery-effects-core' ), '1.13.3', 1 );
 
-	// Widgets
+	// Widget
 	$scripts->add( 'jquery-ui-accordion', "/wp-includes/js/jquery/ui/accordion$suffix.js", array( 'jquery-ui-core' ), '1.13.3', 1 );
 	$scripts->add( 'jquery-ui-autocomplete', "/wp-includes/js/jquery/ui/autocomplete$suffix.js", array( 'jquery-ui-menu', 'wp-a11y' ), '1.13.3', 1 );
 	$scripts->add( 'jquery-ui-button', "/wp-includes/js/jquery/ui/button$suffix.js", array( 'jquery-ui-core', 'jquery-ui-controlgroup', 'jquery-ui-checkboxradio' ), '1.13.3', 1 );
@@ -938,11 +938,11 @@ function wp_default_scripts( $scripts ) {
 	$scripts->add( 'jquery-ui-tabs', "/wp-includes/js/jquery/ui/tabs$suffix.js", array( 'jquery-ui-core' ), '1.13.3', 1 );
 	$scripts->add( 'jquery-ui-tooltip', "/wp-includes/js/jquery/ui/tooltip$suffix.js", array( 'jquery-ui-core' ), '1.13.3', 1 );
 
-	// New in 1.12.1
+	// Mới trong 1.12.1
 	$scripts->add( 'jquery-ui-checkboxradio', "/wp-includes/js/jquery/ui/checkboxradio$suffix.js", array( 'jquery-ui-core' ), '1.13.3', 1 );
 	$scripts->add( 'jquery-ui-controlgroup', "/wp-includes/js/jquery/ui/controlgroup$suffix.js", array( 'jquery-ui-core' ), '1.13.3', 1 );
 
-	// Interactions
+	// Tương tác
 	$scripts->add( 'jquery-ui-draggable', "/wp-includes/js/jquery/ui/draggable$suffix.js", array( 'jquery-ui-mouse' ), '1.13.3', 1 );
 	$scripts->add( 'jquery-ui-droppable', "/wp-includes/js/jquery/ui/droppable$suffix.js", array( 'jquery-ui-draggable' ), '1.13.3', 1 );
 	$scripts->add( 'jquery-ui-resizable', "/wp-includes/js/jquery/ui/resizable$suffix.js", array( 'jquery-ui-mouse' ), '1.13.3', 1 );
@@ -950,16 +950,16 @@ function wp_default_scripts( $scripts ) {
 	$scripts->add( 'jquery-ui-sortable', "/wp-includes/js/jquery/ui/sortable$suffix.js", array( 'jquery-ui-mouse' ), '1.13.3', 1 );
 
 	/*
-	 * As of 1.12.1 `jquery-ui-position` and `jquery-ui-widget` are part of `jquery-ui-core`.
-	 * Listed here for back-compat.
+	 * Kể từ 1.12.1 `jquery-ui-position` và `jquery-ui-widget` là một phần của `jquery-ui-core`.
+	 * Được liệt kê ở đây để tương thích ngược.
 	 */
 	$scripts->add( 'jquery-ui-position', false, array( 'jquery-ui-core' ), '1.13.3', 1 );
 	$scripts->add( 'jquery-ui-widget', false, array( 'jquery-ui-core' ), '1.13.3', 1 );
 
-	// Deprecated, not used in core, most functionality is included in jQuery 1.3.
+	// Không còn dùng, không sử dụng trong lõi, hầu hết chức năng đã có trong jQuery 1.3.
 	$scripts->add( 'jquery-form', "/wp-includes/js/jquery/jquery.form$suffix.js", array( 'jquery' ), '4.3.0', 1 );
 
-	// jQuery plugins.
+	// Các plugin jQuery.
 	$scripts->add( 'jquery-color', '/wp-includes/js/jquery/jquery.color.min.js', array( 'jquery' ), '3.0.0', 1 );
 	$scripts->add( 'schedule', '/wp-includes/js/jquery/jquery.schedule.js', array( 'jquery' ), '20m', 1 );
 	$scripts->add( 'jquery-query', '/wp-includes/js/jquery/jquery.query.js', array( 'jquery' ), '2.2.3', 1 );
@@ -968,12 +968,12 @@ function wp_default_scripts( $scripts ) {
 	$scripts->add( 'jquery-table-hotkeys', "/wp-includes/js/jquery/jquery.table-hotkeys$suffix.js", array( 'jquery', 'jquery-hotkeys' ), false, 1 );
 	$scripts->add( 'jquery-touch-punch', '/wp-includes/js/jquery/jquery.ui.touch-punch.js', array( 'jquery-ui-core', 'jquery-ui-mouse' ), '0.2.2', 1 );
 
-	// Not used any more, registered for backward compatibility.
+	// Không còn sử dụng, đăng ký để tương thích ngược.
 	$scripts->add( 'suggest', "/wp-includes/js/jquery/suggest$suffix.js", array( 'jquery' ), '1.1-20110113', 1 );
 
 	/*
-	 * Masonry v2 depended on jQuery. v3 does not. The older jquery-masonry handle is a shiv.
-	 * It sets jQuery as a dependency, as the theme may have been implicitly loading it this way.
+	 * Masonry v2 phụ thuộc vào jQuery. v3 thì không. Handle jquery-masonry cũ là một shiv.
+	 * Nó đặt jQuery là phụ thuộc, vì theme có thể đã ngầm tải nó theo cách này.
 	 */
 	$scripts->add( 'imagesloaded', '/wp-includes/js/imagesloaded.min.js', array(), '5.0.0', 1 );
 	$scripts->add( 'masonry', '/wp-includes/js/masonry.min.js', array( 'imagesloaded' ), '4.2.2', 1 );
@@ -994,12 +994,12 @@ function wp_default_scripts( $scripts ) {
 		)
 	);
 
-	// Not used in core, replaced by imgAreaSelect.
+	// Không được dùng trong lõi, thay thế bởi imgAreaSelect.
 	$scripts->add( 'jcrop', '/wp-includes/js/jcrop/jquery.Jcrop.min.js', array( 'jquery' ), '0.9.15' );
 
 	$scripts->add( 'swfobject', '/wp-includes/js/swfobject.js', array(), '2.2-20120417' );
 
-	// Error messages for Plupload.
+	// Các thông báo lỗi cho Plupload.
 	$uploader_l10n = array(
 		'queue_limit_exceeded'      => __( 'You have attempted to queue too many files.' ),
 		/* translators: %s: File name. */
@@ -1035,7 +1035,7 @@ function wp_default_scripts( $scripts ) {
 
 	$scripts->add( 'moxiejs', "/wp-includes/js/plupload/moxie$suffix.js", array(), '1.3.5.1' );
 	$scripts->add( 'plupload', "/wp-includes/js/plupload/plupload$suffix.js", array( 'moxiejs' ), '2.1.9' );
-	// Back compat handles:
+	// Các handle tương thích ngược:
 	foreach ( array( 'all', 'html5', 'flash', 'silverlight', 'html4' ) as $handle ) {
 		$scripts->add( "plupload-$handle", false, array( 'plupload' ), '2.1.1' );
 	}
@@ -1046,7 +1046,7 @@ function wp_default_scripts( $scripts ) {
 	$scripts->add( 'wp-plupload', "/wp-includes/js/plupload/wp-plupload$suffix.js", array( 'plupload', 'jquery', 'json2', 'media-models' ), false, 1 );
 	did_action( 'init' ) && $scripts->localize( 'wp-plupload', 'pluploadL10n', $uploader_l10n );
 
-	// Keep 'swfupload' for back-compat.
+	// Giữ 'swfupload' để tương thích ngược.
 	$scripts->add( 'swfupload', '/wp-includes/js/swfupload/swfupload.js', array(), '2201-20110113' );
 	$scripts->add( 'swfupload-all', false, array( 'swfupload' ), '2201' );
 	$scripts->add( 'swfupload-handlers', "/wp-includes/js/swfupload/handlers$suffix.js", array( 'swfupload-all', 'jquery' ), '2201-20110524' );
@@ -1175,20 +1175,20 @@ function wp_default_scripts( $scripts ) {
 		'pluginPath'            => includes_url( 'js/mediaelement/', 'relative' ),
 		'classPrefix'           => 'mejs-',
 		'stretching'            => 'responsive',
-		/** This filter is documented in wp-includes/media.php */
+		/** Filter này được ghi tài liệu trong wp-includes/media.php */
 		'audioShortcodeLibrary' => apply_filters( 'wp_audio_shortcode_library', 'mediaelement' ),
-		/** This filter is documented in wp-includes/media.php */
+		/** Filter này được ghi tài liệu trong wp-includes/media.php */
 		'videoShortcodeLibrary' => apply_filters( 'wp_video_shortcode_library', 'mediaelement' ),
 	);
 	did_action( 'init' ) && $scripts->localize(
 		'mediaelement',
 		'_wpmejsSettings',
 		/**
-		 * Filters the MediaElement configuration settings.
+		 * Lọc các cài đặt cấu hình MediaElement.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param array $mejs_settings MediaElement settings array.
+		 * @param array $mejs_settings Mảng cài đặt MediaElement.
 		 */
 		apply_filters( 'mejs_settings', $mejs_settings )
 	);
@@ -1283,7 +1283,7 @@ function wp_default_scripts( $scripts ) {
 
 	$scripts->add( 'hoverIntent', "/wp-includes/js/hoverIntent$suffix.js", array( 'jquery' ), '1.10.2', 1 );
 
-	// JS-only version of hoverintent (no dependencies).
+	// Phiên bản chỉ-JS của hoverintent (không có phụ thuộc).
 	$scripts->add( 'hoverintent-js', '/wp-includes/js/hoverintent-js.min.js', array(), '2.2.1', 1 );
 
 	$scripts->add( 'customize-base', "/wp-includes/js/customize-base$suffix.js", array( 'jquery', 'json2', 'underscore' ), false, 1 );
@@ -1332,7 +1332,7 @@ function wp_default_scripts( $scripts ) {
 			/* translators: %s: URL to the Customizer to load the autosaved version. */
 			'autosaveNotice'          => __( 'There is a more recent autosave of your changes than the one you are previewing. <a href="%s">Restore the autosave</a>' ),
 			'videoHeaderNotice'       => __( 'This theme does not support video headers on this page. Navigate to the front page or another page that supports video headers.' ),
-			// Used for overriding the file types allowed in Plupload.
+			// Dùng để ghi đè các loại file được phép trong Plupload.
 			'allowedFiles'            => __( 'Allowed Files' ),
 			'customCssError'          => array(
 				/* translators: %d: Error count. */
@@ -1400,8 +1400,8 @@ function wp_default_scripts( $scripts ) {
 	did_action( 'init' ) && $scripts->add_data( 'wp-embed', 'strategy', 'defer' );
 
 	/*
-	 * To enqueue media-views or media-editor, call wp_enqueue_media().
-	 * Both rely on numerous settings, styles, and templates to operate correctly.
+	 * Để enqueue media-views hoặc media-editor, gọi wp_enqueue_media().
+	 * Cả hai đều dựa vào nhiều cài đặt, styles và templates để hoạt động đúng.
 	 */
 	$scripts->add( 'media-views', "/wp-includes/js/media-views$suffix.js", array( 'utils', 'media-models', 'wp-plupload', 'jquery-ui-sortable', 'wp-mediaelement', 'wp-api-request', 'wp-a11y', 'clipboard' ), false, 1 );
 	$scripts->set_translations( 'media-views' );
@@ -1513,8 +1513,8 @@ function wp_default_scripts( $scripts ) {
 		$scripts->set_translations( 'set-post-thumbnail' );
 
 		/*
-		 * Navigation Menus: Adding underscore as a dependency to utilize _.debounce
-		 * see https://core.trac.wordpress.org/ticket/42321
+		 * Menu điều hướng: Thêm underscore làm phụ thuộc để sử dụng _.debounce
+		 * xem https://core.trac.wordpress.org/ticket/42321
 		 */
 		$scripts->add( 'nav-menu', "/wp-admin/js/nav-menu$suffix.js", array( 'jquery-ui-sortable', 'jquery-ui-draggable', 'jquery-ui-droppable', 'wp-lists', 'postbox', 'json2', 'underscore' ) );
 		$scripts->set_translations( 'nav-menu' );
@@ -1528,15 +1528,15 @@ function wp_default_scripts( $scripts ) {
 }
 
 /**
- * Assigns default styles to $styles object.
+ * Gán các styles mặc định cho đối tượng $styles.
  *
- * Nothing is returned, because the $styles parameter is passed by reference.
- * Meaning that whatever object is passed will be updated without having to
- * reassign the variable that was passed back to the same value. This saves
- * memory.
+ * Không có gì được trả về, vì tham số $styles được truyền theo tham chiếu.
+ * Nghĩa là bất kỳ đối tượng nào được truyền vào sẽ được cập nhật mà không cần
+ * gán lại biến đã truyền về cùng giá trị. Điều này tiết kiệm
+ * bộ nhớ.
  *
- * Adding default styles is not the only task, it also assigns the base_url
- * property, the default version, and text direction for the object.
+ * Thêm styles mặc định không phải là nhiệm vụ duy nhất, nó cũng gán thuộc tính
+ * base_url, phiên bản mặc định, và hướng văn bản cho đối tượng.
  *
  * @since 2.6.0
  *
@@ -1558,9 +1558,9 @@ function wp_default_styles( $styles ) {
 
 	if ( ! defined( 'SCRIPT_DEBUG' ) ) {
 		/*
-		 * Note: str_contains() is not used here, as this file can be included
-		 * via wp-admin/load-scripts.php or wp-admin/load-styles.php, in which case
-		 * the polyfills from wp-includes/compat.php are not loaded.
+		 * Lưu ý: str_contains() không được sử dụng ở đây, vì file này có thể được
+		 * bao gồm qua wp-admin/load-scripts.php hoặc wp-admin/load-styles.php, trong trường hợp đó
+		 * các polyfill từ wp-includes/compat.php không được tải.
 		 */
 		define( 'SCRIPT_DEBUG', false !== strpos( $wp_version, '-src' ) );
 	}
@@ -1577,7 +1577,7 @@ function wp_default_styles( $styles ) {
 	$styles->text_direction  = function_exists( 'is_rtl' ) && is_rtl() ? 'rtl' : 'ltr';
 	$styles->default_dirs    = array( '/wp-admin/', '/wp-includes/css/' );
 
-	// Open Sans is no longer used by core, but may be relied upon by themes and plugins.
+	// Open Sans không còn được dùng trong lõi, nhưng có thể được theme và plugin phụ thuộc.
 	$open_sans_font_url = '';
 
 	/*
@@ -1601,16 +1601,16 @@ function wp_default_styles( $styles ) {
 			$subsets .= ',vietnamese';
 		}
 
-		// Hotlink Open Sans, for now.
+		// Hotlink Open Sans, tạm thời.
 		$open_sans_font_url = "https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,300,400,600&subset=$subsets&display=fallback";
 	}
 
-	// Register a stylesheet for the selected admin color scheme.
+	// Đăng ký stylesheet cho bộ màu quản trị đã chọn.
 	$styles->add( 'colors', true, array( 'wp-admin', 'buttons' ) );
 
 	$suffix = SCRIPT_DEBUG ? '' : '.min';
 
-	// Admin CSS.
+	// CSS quản trị.
 	$styles->add( 'common', "/wp-admin/css/common$suffix.css" );
 	$styles->add( 'forms', "/wp-admin/css/forms$suffix.css" );
 	$styles->add( 'admin-menu', "/wp-admin/css/admin-menu$suffix.css" );
@@ -1637,11 +1637,11 @@ function wp_default_styles( $styles ) {
 	$styles->add( 'customize-widgets', "/wp-admin/css/customize-widgets$suffix.css", array( 'wp-admin', 'colors' ) );
 	$styles->add( 'customize-nav-menus', "/wp-admin/css/customize-nav-menus$suffix.css", array( 'wp-admin', 'colors' ) );
 
-	// Common dependencies.
+	// Các phụ thuộc chung.
 	$styles->add( 'buttons', "/wp-includes/css/buttons$suffix.css" );
 	$styles->add( 'dashicons', "/wp-includes/css/dashicons$suffix.css" );
 
-	// Includes CSS.
+	// CSS bao gồm.
 	$styles->add( 'admin-bar', "/wp-includes/css/admin-bar$suffix.css", array( 'dashicons' ) );
 	$styles->add( 'wp-auth-check', "/wp-includes/css/wp-auth-check$suffix.css", array( 'dashicons' ) );
 	$styles->add( 'editor-buttons', "/wp-includes/css/editor$suffix.css", array( 'dashicons' ) );
@@ -1652,7 +1652,7 @@ function wp_default_styles( $styles ) {
 	$styles->add( 'wp-empty-template-alert', "/wp-includes/css/wp-empty-template-alert$suffix.css" );
 	$styles->add_data( 'wp-embed-template-ie', 'conditional', 'lte IE 8' );
 
-	// External libraries and friends.
+	// Thư viện bên ngoài.
 	$styles->add( 'imgareaselect', '/wp-includes/js/imgareaselect/imgareaselect.css', array(), '0.9.8' );
 	$styles->add( 'wp-jquery-ui-dialog', "/wp-includes/css/jquery-ui-dialog$suffix.css", array( 'dashicons' ) );
 	$styles->add( 'mediaelement', '/wp-includes/js/mediaelement/mediaelementplayer-legacy.min.css', array(), '4.2.17' );
@@ -1660,7 +1660,7 @@ function wp_default_styles( $styles ) {
 	$styles->add( 'thickbox', '/wp-includes/js/thickbox/thickbox.css', array( 'dashicons' ) );
 	$styles->add( 'wp-codemirror', '/wp-includes/js/codemirror/codemirror.min.css', array(), '5.29.1-alpha-ee20357' );
 
-	// Deprecated CSS.
+	// CSS không còn dùng.
 	$styles->add( 'deprecated-media', "/wp-admin/css/deprecated-media$suffix.css" );
 	$styles->add( 'farbtastic', "/wp-admin/css/farbtastic$suffix.css", array(), '1.3u1' );
 	$styles->add( 'jcrop', '/wp-includes/js/jcrop/jquery.Jcrop.min.css', array(), '0.9.15' );
@@ -1812,7 +1812,7 @@ function wp_default_styles( $styles ) {
 
 	// RTL CSS.
 	$rtl_styles = array(
-		// Admin CSS.
+		// CSS quản trị.
 		'common',
 		'forms',
 		'admin-menu',
@@ -1836,7 +1836,7 @@ function wp_default_styles( $styles ) {
 		'login',
 		'site-health',
 		'wp-empty-template-alert',
-		// Includes CSS.
+		// CSS bao gồm.
 		'buttons',
 		'admin-bar',
 		'wp-auth-check',
@@ -1865,7 +1865,7 @@ function wp_default_styles( $styles ) {
 		'wp-patterns',
 		'wp-nux',
 		'wp-widgets',
-		// Deprecated CSS.
+		// CSS không còn dùng.
 		'deprecated-media',
 		'farbtastic',
 	);

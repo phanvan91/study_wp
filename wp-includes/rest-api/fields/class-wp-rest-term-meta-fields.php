@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Term_Meta_Fields class
+ * REST API: Lớp WP_REST_Term_Meta_Fields
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to manage meta values for terms via the REST API.
+ * Lớp cốt lõi dùng để quản lý giá trị meta cho taxonomy thông qua REST API.
  *
  * @since 4.7.0
  *
@@ -17,7 +17,7 @@
 class WP_REST_Term_Meta_Fields extends WP_REST_Meta_Fields {
 
 	/**
-	 * Taxonomy to register fields for.
+	 * Taxonomy để đăng ký trường.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -25,44 +25,44 @@ class WP_REST_Term_Meta_Fields extends WP_REST_Meta_Fields {
 	protected $taxonomy;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string $taxonomy Taxonomy to register fields for.
+	 * @param string $taxonomy Taxonomy để đăng ký trường.
 	 */
 	public function __construct( $taxonomy ) {
 		$this->taxonomy = $taxonomy;
 	}
 
 	/**
-	 * Retrieves the term meta type.
+	 * Lấy loại meta taxonomy.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return string The meta type.
+	 * @return string Loại meta.
 	 */
 	protected function get_meta_type() {
 		return 'term';
 	}
 
 	/**
-	 * Retrieves the term meta subtype.
+	 * Lấy loại phụ meta taxonomy.
 	 *
 	 * @since 4.9.8
 	 *
-	 * @return string Subtype for the meta type, or empty string if no specific subtype.
+	 * @return string Loại phụ cho loại meta, hoặc chuỗi rỗng nếu không có loại phụ cụ thể.
 	 */
 	protected function get_meta_subtype() {
 		return $this->taxonomy;
 	}
 
 	/**
-	 * Retrieves the type for register_rest_field().
+	 * Lấy loại cho register_rest_field().
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return string The REST field type.
+	 * @return string Loại trường REST.
 	 */
 	public function get_rest_field_type() {
 		return 'post_tag' === $this->taxonomy ? 'tag' : $this->taxonomy;

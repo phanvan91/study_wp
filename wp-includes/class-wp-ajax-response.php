@@ -1,6 +1,6 @@
 <?php
 /**
- * Send XML response back to Ajax request.
+ * Gửi phản hồi XML về cho yêu cầu Ajax.
  *
  * @package WordPress
  * @since 2.1.0
@@ -8,7 +8,7 @@
 #[AllowDynamicProperties]
 class WP_Ajax_Response {
 	/**
-	 * Store XML responses to send.
+	 * Lưu trữ các phản hồi XML để gửi.
 	 *
 	 * @since 2.1.0
 	 * @var array
@@ -16,13 +16,13 @@ class WP_Ajax_Response {
 	public $responses = array();
 
 	/**
-	 * Constructor - Passes args to WP_Ajax_Response::add().
+	 * Hàm khởi tạo - Truyền tham số cho WP_Ajax_Response::add().
 	 *
 	 * @since 2.1.0
 	 *
 	 * @see WP_Ajax_Response::add()
 	 *
-	 * @param string|array $args Optional. Will be passed to add() method.
+	 * @param string|array $args Tùy chọn. Sẽ được truyền cho phương thức add().
 	 */
 	public function __construct( $args = '' ) {
 		if ( ! empty( $args ) ) {
@@ -31,9 +31,9 @@ class WP_Ajax_Response {
 	}
 
 	/**
-	 * Appends data to an XML response based on given arguments.
+	 * Thêm dữ liệu vào phản hồi XML dựa trên các tham số đã cho.
 	 *
-	 * With `$args` defaults, extra data output would be:
+	 * Với các giá trị mặc định của `$args`, đầu ra dữ liệu bổ sung sẽ là:
 	 *
 	 *     <response action='{$action}_$id'>
 	 *      <$what id='$id' position='$position'>
@@ -44,25 +44,25 @@ class WP_Ajax_Response {
 	 * @since 2.1.0
 	 *
 	 * @param string|array $args {
-	 *     Optional. An array or string of XML response arguments.
+	 *     Tùy chọn. Mảng hoặc chuỗi các tham số phản hồi XML.
 	 *
-	 *     @type string          $what         XML-RPC response type. Used as a child element of `<response>`.
-	 *                                         Default 'object' (`<object>`).
-	 *     @type string|false    $action       Value to use for the `action` attribute in `<response>`. Will be
-	 *                                         appended with `_$id` on output. If false, `$action` will default to
-	 *                                         the value of `$_POST['action']`. Default false.
-	 *     @type int|WP_Error    $id           The response ID, used as the response type `id` attribute. Also
-	 *                                         accepts a `WP_Error` object if the ID does not exist. Default 0.
-	 *     @type int|false       $old_id       The previous response ID. Used as the value for the response type
-	 *                                         `old_id` attribute. False hides the attribute. Default false.
-	 *     @type string          $position     Value of the response type `position` attribute. Accepts 1 (bottom),
-	 *                                         -1 (top), HTML ID (after), or -HTML ID (before). Default 1 (bottom).
-	 *     @type string|WP_Error $data         The response content/message. Also accepts a WP_Error object if the
-	 *                                         ID does not exist. Default empty.
-	 *     @type array           $supplemental An array of extra strings that will be output within a `<supplemental>`
-	 *                                         element as CDATA. Default empty array.
+	 *     @type string          $what         Loại phản hồi XML-RPC. Được sử dụng làm phần tử con của `<response>`.
+	 *                                         Mặc định 'object' (`<object>`).
+	 *     @type string|false    $action       Giá trị sử dụng cho thuộc tính `action` trong `<response>`. Sẽ được
+	 *                                         nối thêm `_$id` khi xuất ra. Nếu false, `$action` sẽ mặc định
+	 *                                         theo giá trị của `$_POST['action']`. Mặc định false.
+	 *     @type int|WP_Error    $id           ID phản hồi, được sử dụng làm thuộc tính `id` của loại phản hồi. Cũng
+	 *                                         chấp nhận đối tượng `WP_Error` nếu ID không tồn tại. Mặc định 0.
+	 *     @type int|false       $old_id       ID phản hồi trước đó. Được sử dụng làm giá trị cho thuộc tính
+	 *                                         `old_id` của loại phản hồi. False sẽ ẩn thuộc tính. Mặc định false.
+	 *     @type string          $position     Giá trị thuộc tính `position` của loại phản hồi. Chấp nhận 1 (cuối),
+	 *                                         -1 (đầu), HTML ID (sau), hoặc -HTML ID (trước). Mặc định 1 (cuối).
+	 *     @type string|WP_Error $data         Nội dung/thông điệp phản hồi. Cũng chấp nhận đối tượng WP_Error nếu
+	 *                                         ID không tồn tại. Mặc định rỗng.
+	 *     @type array           $supplemental Mảng các chuỗi bổ sung sẽ được xuất ra bên trong phần tử `<supplemental>`
+	 *                                         dưới dạng CDATA. Mặc định mảng rỗng.
 	 * }
-	 * @return string XML response.
+	 * @return string Phản hồi XML.
 	 */
 	public function add( $args = '' ) {
 		$defaults = array(
@@ -131,7 +131,7 @@ class WP_Ajax_Response {
 			$action = $_POST['action'];
 		}
 		$x  = '';
-		$x .= "<response action='{$action}_$id'>"; // The action attribute in the xml output is formatted like a nonce action.
+		$x .= "<response action='{$action}_$id'>"; // Thuộc tính action trong đầu ra xml được định dạng giống như một nonce action.
 		$x .= "<$what id='$id' " . ( false === $old_id ? '' : "old_id='$old_id' " ) . "position='$position'>";
 		$x .= $response;
 		$x .= $s;
@@ -143,9 +143,9 @@ class WP_Ajax_Response {
 	}
 
 	/**
-	 * Display XML formatted responses.
+	 * Hiển thị các phản hồi định dạng XML.
 	 *
-	 * Sets the content type header to text/xml.
+	 * Thiết lập header content type thành text/xml.
 	 *
 	 * @since 2.1.0
 	 */

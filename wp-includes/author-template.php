@@ -1,8 +1,8 @@
 <?php
 /**
- * Author Template functions for use in themes.
+ * Các hàm Template Tác giả dùng trong theme.
  *
- * These functions must be used within the WordPress Loop.
+ * Các hàm này phải được sử dụng trong Vòng lặp WordPress.
  *
  * @link https://codex.wordpress.org/Author_Templates
  *
@@ -11,15 +11,15 @@
  */
 
 /**
- * Retrieves the author of the current post.
+ * Lấy tên tác giả của bài viết hiện tại.
  *
  * @since 1.5.0
- * @since 6.3.0 Returns an empty string if the author's display name is unknown.
+ * @since 6.3.0 Trả về chuỗi rỗng nếu tên hiển thị của tác giả không xác định.
  *
- * @global WP_User $authordata The current author's data.
+ * @global WP_User $authordata Dữ liệu của tác giả hiện tại.
  *
- * @param string $deprecated Deprecated.
- * @return string The author's display name, empty string if unknown.
+ * @param string $deprecated Đã lỗi thời.
+ * @return string Tên hiển thị của tác giả, chuỗi rỗng nếu không xác định.
  */
 function get_the_author( $deprecated = '' ) {
 	global $authordata;
@@ -29,34 +29,34 @@ function get_the_author( $deprecated = '' ) {
 	}
 
 	/**
-	 * Filters the display name of the current post's author.
+	 * Lọc tên hiển thị của tác giả bài viết hiện tại.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $display_name The author's display name.
+	 * @param string $display_name Tên hiển thị của tác giả.
 	 */
 	return apply_filters( 'the_author', is_object( $authordata ) ? $authordata->display_name : '' );
 }
 
 /**
- * Displays the name of the author of the current post.
+ * Hiển thị tên tác giả của bài viết hiện tại.
  *
- * The behavior of this function is based off of old functionality predating
- * get_the_author(). This function is not deprecated, but is designed to echo
- * the value from get_the_author() and as an result of any old theme that might
- * still use the old behavior will also pass the value from get_the_author().
+ * Hành vi của hàm này dựa trên chức năng cũ trước khi có
+ * get_the_author(). Hàm này không bị lỗi thời, nhưng được thiết kế để echo
+ * giá trị từ get_the_author() và do đó bất kỳ theme cũ nào vẫn
+ * sử dụng hành vi cũ cũng sẽ truyền giá trị từ get_the_author().
  *
- * The normal, expected behavior of this function is to echo the author and not
- * return it. However, backward compatibility has to be maintained.
+ * Hành vi bình thường, mong đợi của hàm này là echo tên tác giả và không
+ * trả về nó. Tuy nhiên, tương thích ngược cần được duy trì.
  *
  * @since 0.71
  *
  * @see get_the_author()
  * @link https://developer.wordpress.org/reference/functions/the_author/
  *
- * @param string $deprecated      Deprecated.
- * @param bool   $deprecated_echo Deprecated. Use get_the_author(). Echo the string or return it.
- * @return string The author's display name, from get_the_author().
+ * @param string $deprecated      Đã lỗi thời.
+ * @param bool   $deprecated_echo Đã lỗi thời. Sử dụng get_the_author(). Echo chuỗi hoặc trả về nó.
+ * @return string Tên hiển thị của tác giả, từ get_the_author().
  */
 function the_author( $deprecated = '', $deprecated_echo = true ) {
 	if ( ! empty( $deprecated ) ) {
@@ -83,11 +83,11 @@ function the_author( $deprecated = '', $deprecated_echo = true ) {
 }
 
 /**
- * Retrieves the author who last edited the current post.
+ * Lấy tên tác giả đã chỉnh sửa cuối cùng bài viết hiện tại.
  *
  * @since 2.8.0
  *
- * @return string|void The author's display name, empty string if unknown.
+ * @return string|void Tên hiển thị của tác giả, chuỗi rỗng nếu không xác định.
  */
 function get_the_modified_author() {
 	$last_id = get_post_meta( get_post()->ID, '_edit_last', true );
@@ -96,19 +96,19 @@ function get_the_modified_author() {
 		$last_user = get_userdata( $last_id );
 
 		/**
-		 * Filters the display name of the author who last edited the current post.
+		 * Lọc tên hiển thị của tác giả đã chỉnh sửa cuối cùng bài viết hiện tại.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param string $display_name The author's display name, empty string if unknown.
+		 * @param string $display_name Tên hiển thị của tác giả, chuỗi rỗng nếu không xác định.
 		 */
 		return apply_filters( 'the_modified_author', $last_user ? $last_user->display_name : '' );
 	}
 }
 
 /**
- * Displays the name of the author who last edited the current post,
- * if the author's ID is available.
+ * Hiển thị tên tác giả đã chỉnh sửa cuối cùng bài viết hiện tại,
+ * nếu ID của tác giả có sẵn.
  *
  * @since 2.8.0
  *
@@ -119,9 +119,9 @@ function the_modified_author() {
 }
 
 /**
- * Retrieves the requested data of the author of the current post.
+ * Lấy dữ liệu được yêu cầu của tác giả bài viết hiện tại.
  *
- * Valid values for the `$field` parameter include:
+ * Các giá trị hợp lệ cho tham số `$field` bao gồm:
  *
  * - admin_color
  * - aim
@@ -153,11 +153,11 @@ function the_modified_author() {
  *
  * @since 2.8.0
  *
- * @global WP_User $authordata The current author's data.
+ * @global WP_User $authordata Dữ liệu của tác giả hiện tại.
  *
- * @param string    $field   Optional. The user field to retrieve. Default empty.
- * @param int|false $user_id Optional. User ID. Defaults to the current post author.
- * @return string The author's field from the current author's DB object, otherwise an empty string.
+ * @param string    $field   Tùy chọn. Trường người dùng cần lấy. Mặc định rỗng.
+ * @param int|false $user_id Tùy chọn. ID người dùng. Mặc định là tác giả bài viết hiện tại.
+ * @return string Trường của tác giả từ đối tượng DB của tác giả hiện tại, ngược lại trả về chuỗi rỗng.
  */
 function get_the_author_meta( $field = '', $user_id = false ) {
 	$original_user_id = $user_id;
@@ -176,28 +176,28 @@ function get_the_author_meta( $field = '', $user_id = false ) {
 	$value = isset( $authordata->$field ) ? $authordata->$field : '';
 
 	/**
-	 * Filters the value of the requested user metadata.
+	 * Lọc giá trị của metadata người dùng được yêu cầu.
 	 *
-	 * The filter name is dynamic and depends on the $field parameter of the function.
+	 * Tên bộ lọc là động và phụ thuộc vào tham số $field của hàm.
 	 *
 	 * @since 2.8.0
-	 * @since 4.3.0 The `$original_user_id` parameter was added.
+	 * @since 4.3.0 Tham số `$original_user_id` đã được thêm vào.
 	 *
-	 * @param string    $value            The value of the metadata.
-	 * @param int       $user_id          The user ID for the value.
-	 * @param int|false $original_user_id The original user ID, as passed to the function.
+	 * @param string    $value            Giá trị của metadata.
+	 * @param int       $user_id          ID người dùng cho giá trị.
+	 * @param int|false $original_user_id ID người dùng gốc, như được truyền vào hàm.
 	 */
 	return apply_filters( "get_the_author_{$field}", $value, $user_id, $original_user_id );
 }
 
 /**
- * Outputs the field from the user's DB object. Defaults to current post's author.
+ * Xuất trường từ đối tượng DB của người dùng. Mặc định là tác giả bài viết hiện tại.
  *
  * @since 2.8.0
  *
- * @param string    $field   Selects the field of the users record. See get_the_author_meta()
- *                           for the list of possible fields.
- * @param int|false $user_id Optional. User ID. Defaults to the current post author.
+ * @param string    $field   Chọn trường từ bản ghi người dùng. Xem get_the_author_meta()
+ *                           để biết danh sách các trường có thể sử dụng.
+ * @param int|false $user_id Tùy chọn. ID người dùng. Mặc định là tác giả bài viết hiện tại.
  *
  * @see get_the_author_meta()
  */
@@ -205,30 +205,30 @@ function the_author_meta( $field = '', $user_id = false ) {
 	$author_meta = get_the_author_meta( $field, $user_id );
 
 	/**
-	 * Filters the value of the requested user metadata.
+	 * Lọc giá trị của metadata người dùng được yêu cầu.
 	 *
-	 * The filter name is dynamic and depends on the $field parameter of the function.
+	 * Tên bộ lọc là động và phụ thuộc vào tham số $field của hàm.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string    $author_meta The value of the metadata.
-	 * @param int|false $user_id     The user ID.
+	 * @param string    $author_meta Giá trị của metadata.
+	 * @param int|false $user_id     ID người dùng.
 	 */
 	echo apply_filters( "the_author_{$field}", $author_meta, $user_id );
 }
 
 /**
- * Retrieves either author's link or author's name.
+ * Lấy liên kết hoặc tên của tác giả.
  *
- * If the author has a home page set, return an HTML link, otherwise just return
- * the author's name.
+ * Nếu tác giả có trang chủ được thiết lập, trả về liên kết HTML, ngược lại chỉ trả về
+ * tên tác giả.
  *
  * @since 3.0.0
  *
- * @global WP_User $authordata The current author's data.
+ * @global WP_User $authordata Dữ liệu của tác giả hiện tại.
  *
- * @return string An HTML link if the author's URL exists in user meta,
- *                otherwise the result of get_the_author().
+ * @return string Liên kết HTML nếu URL của tác giả tồn tại trong user meta,
+ *                ngược lại trả về kết quả của get_the_author().
  */
 function get_the_author_link() {
 	if ( get_the_author_meta( 'url' ) ) {
@@ -246,13 +246,13 @@ function get_the_author_link() {
 		);
 
 		/**
-		 * Filters the author URL link HTML.
+		 * Lọc HTML liên kết URL của tác giả.
 		 *
 		 * @since 6.0.0
 		 *
-		 * @param string  $link       The default rendered author HTML link.
-		 * @param string  $author_url Author's URL.
-		 * @param WP_User $authordata Author user data.
+		 * @param string  $link       HTML liên kết tác giả được render mặc định.
+		 * @param string  $author_url URL của tác giả.
+		 * @param WP_User $authordata Dữ liệu người dùng tác giả.
 		 */
 		return apply_filters( 'the_author_link', $link, $author_url, $authordata );
 	} else {
@@ -261,10 +261,10 @@ function get_the_author_link() {
 }
 
 /**
- * Displays either author's link or author's name.
+ * Hiển thị liên kết hoặc tên của tác giả.
  *
- * If the author has a home page set, echo an HTML link, otherwise just echo the
- * author's name.
+ * Nếu tác giả có trang chủ được thiết lập, echo liên kết HTML, ngược lại chỉ echo
+ * tên tác giả.
  *
  * @link https://developer.wordpress.org/reference/functions/the_author_link/
  *
@@ -275,11 +275,11 @@ function the_author_link() {
 }
 
 /**
- * Retrieves the number of posts by the author of the current post.
+ * Lấy số lượng bài viết của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  *
- * @return int The number of posts by the author.
+ * @return int Số lượng bài viết của tác giả.
  */
 function get_the_author_posts() {
 	$post = get_post();
@@ -290,7 +290,7 @@ function get_the_author_posts() {
 }
 
 /**
- * Displays the number of posts by the author of the current post.
+ * Hiển thị số lượng bài viết của tác giả bài viết hiện tại.
  *
  * @link https://developer.wordpress.org/reference/functions/the_author_posts/
  * @since 0.71
@@ -300,15 +300,15 @@ function the_author_posts() {
 }
 
 /**
- * Retrieves an HTML link to the author page of the current post's author.
+ * Lấy liên kết HTML đến trang tác giả của tác giả bài viết hiện tại.
  *
- * Returns an HTML-formatted link using get_author_posts_url().
+ * Trả về liên kết định dạng HTML sử dụng get_author_posts_url().
  *
  * @since 4.4.0
  *
- * @global WP_User $authordata The current author's data.
+ * @global WP_User $authordata Dữ liệu của tác giả hiện tại.
  *
- * @return string An HTML link to the author page, or an empty string if $authordata is not set.
+ * @return string Liên kết HTML đến trang tác giả, hoặc chuỗi rỗng nếu $authordata chưa được thiết lập.
  */
 function get_the_author_posts_link() {
 	global $authordata;
@@ -326,22 +326,22 @@ function get_the_author_posts_link() {
 	);
 
 	/**
-	 * Filters the link to the author page of the author of the current post.
+	 * Lọc liên kết đến trang tác giả của tác giả bài viết hiện tại.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $link HTML link.
+	 * @param string $link Liên kết HTML.
 	 */
 	return apply_filters( 'the_author_posts_link', $link );
 }
 
 /**
- * Displays an HTML link to the author page of the current post's author.
+ * Hiển thị liên kết HTML đến trang tác giả của tác giả bài viết hiện tại.
  *
  * @since 1.2.0
- * @since 4.4.0 Converted into a wrapper for get_the_author_posts_link()
+ * @since 4.4.0 Được chuyển đổi thành hàm bọc cho get_the_author_posts_link()
  *
- * @param string $deprecated Unused.
+ * @param string $deprecated Không sử dụng.
  */
 function the_author_posts_link( $deprecated = '' ) {
 	if ( ! empty( $deprecated ) ) {
@@ -351,15 +351,15 @@ function the_author_posts_link( $deprecated = '' ) {
 }
 
 /**
- * Retrieves the URL to the author page for the user with the ID provided.
+ * Lấy URL đến trang tác giả cho người dùng với ID được cung cấp.
  *
  * @since 2.1.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần viết lại WordPress.
  *
- * @param int    $author_id       Author ID.
- * @param string $author_nicename Optional. The author's nicename (slug). Default empty.
- * @return string The URL to the author's page.
+ * @param int    $author_id       ID tác giả.
+ * @param string $author_nicename Tùy chọn. Nicename (slug) của tác giả. Mặc định rỗng.
+ * @return string URL đến trang tác giả.
  */
 function get_author_posts_url( $author_id, $author_nicename = '' ) {
 	global $wp_rewrite;
@@ -382,13 +382,13 @@ function get_author_posts_url( $author_id, $author_nicename = '' ) {
 	}
 
 	/**
-	 * Filters the URL to the author's page.
+	 * Lọc URL đến trang tác giả.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $link            The URL to the author's page.
-	 * @param int    $author_id       The author's ID.
-	 * @param string $author_nicename The author's nice name.
+	 * @param string $link            URL đến trang tác giả.
+	 * @param int    $author_id       ID của tác giả.
+	 * @param string $author_nicename Nicename của tác giả.
 	 */
 	$link = apply_filters( 'author_link', $link, $author_id, $author_nicename );
 
@@ -396,40 +396,40 @@ function get_author_posts_url( $author_id, $author_nicename = '' ) {
 }
 
 /**
- * Lists all the authors of the site, with several options available.
+ * Liệt kê tất cả các tác giả của trang web, với nhiều tùy chọn có sẵn.
  *
  * @link https://developer.wordpress.org/reference/functions/wp_list_authors/
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
  * @param string|array $args {
- *     Optional. Array or string of default arguments.
+ *     Tùy chọn. Mảng hoặc chuỗi các đối số mặc định.
  *
- *     @type string       $orderby       How to sort the authors. Accepts 'nicename', 'email', 'url', 'registered',
+ *     @type string       $orderby       Cách sắp xếp tác giả. Chấp nhận 'nicename', 'email', 'url', 'registered',
  *                                       'user_nicename', 'user_email', 'user_url', 'user_registered', 'name',
- *                                       'display_name', 'post_count', 'ID', 'meta_value', 'user_login'. Default 'name'.
- *     @type string       $order         Sorting direction for $orderby. Accepts 'ASC', 'DESC'. Default 'ASC'.
- *     @type int          $number        Maximum authors to return or display. Default empty (all authors).
- *     @type bool         $optioncount   Show the count in parenthesis next to the author's name. Default false.
- *     @type bool         $exclude_admin Whether to exclude the 'admin' account, if it exists. Default true.
- *     @type bool         $show_fullname Whether to show the author's full name. Default false.
- *     @type bool         $hide_empty    Whether to hide any authors with no posts. Default true.
- *     @type string       $feed          If not empty, show a link to the author's feed and use this text as the alt
- *                                       parameter of the link. Default empty.
- *     @type string       $feed_image    If not empty, show a link to the author's feed and use this image URL as
- *                                       clickable anchor. Default empty.
- *     @type string       $feed_type     The feed type to link to. Possible values include 'rss2', 'atom'.
- *                                       Default is the value of get_default_feed().
- *     @type bool         $echo          Whether to output the result or instead return it. Default true.
- *     @type string       $style         If 'list', each author is wrapped in an `<li>` element, otherwise the authors
- *                                       will be separated by commas.
- *     @type bool         $html          Whether to list the items in HTML form or plaintext. Default true.
- *     @type int[]|string $exclude       Array or comma/space-separated list of author IDs to exclude. Default empty.
- *     @type int[]|string $include       Array or comma/space-separated list of author IDs to include. Default empty.
+ *                                       'display_name', 'post_count', 'ID', 'meta_value', 'user_login'. Mặc định 'name'.
+ *     @type string       $order         Hướng sắp xếp cho $orderby. Chấp nhận 'ASC', 'DESC'. Mặc định 'ASC'.
+ *     @type int          $number        Số lượng tác giả tối đa để trả về hoặc hiển thị. Mặc định rỗng (tất cả tác giả).
+ *     @type bool         $optioncount   Hiển thị số lượng trong ngoặc đơn bên cạnh tên tác giả. Mặc định false.
+ *     @type bool         $exclude_admin Có loại trừ tài khoản 'admin' hay không, nếu nó tồn tại. Mặc định true.
+ *     @type bool         $show_fullname Có hiển thị tên đầy đủ của tác giả hay không. Mặc định false.
+ *     @type bool         $hide_empty    Có ẩn các tác giả không có bài viết hay không. Mặc định true.
+ *     @type string       $feed          Nếu không rỗng, hiển thị liên kết đến feed của tác giả và sử dụng văn bản này làm
+ *                                       tham số alt của liên kết. Mặc định rỗng.
+ *     @type string       $feed_image    Nếu không rỗng, hiển thị liên kết đến feed của tác giả và sử dụng URL hình ảnh này
+ *                                       làm anchor có thể nhấp. Mặc định rỗng.
+ *     @type string       $feed_type     Loại feed để liên kết. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                                       Mặc định là giá trị của get_default_feed().
+ *     @type bool         $echo          Có xuất kết quả hay trả về nó. Mặc định true.
+ *     @type string       $style         Nếu 'list', mỗi tác giả được bọc trong phần tử `<li>`, ngược lại các tác giả
+ *                                       sẽ được phân tách bằng dấu phẩy.
+ *     @type bool         $html          Có liệt kê các mục ở dạng HTML hay văn bản thuần. Mặc định true.
+ *     @type int[]|string $exclude       Mảng hoặc danh sách phân tách bằng dấu phẩy/khoảng trắng các ID tác giả cần loại trừ. Mặc định rỗng.
+ *     @type int[]|string $include       Mảng hoặc danh sách phân tách bằng dấu phẩy/khoảng trắng các ID tác giả cần bao gồm. Mặc định rỗng.
  * }
- * @return void|string Void if 'echo' argument is true, list of authors if 'echo' is false.
+ * @return void|string Void nếu đối số 'echo' là true, danh sách tác giả nếu 'echo' là false.
  */
 function wp_list_authors( $args = '' ) {
 	global $wpdb;
@@ -460,12 +460,12 @@ function wp_list_authors( $args = '' ) {
 	$query_args['fields'] = 'ids';
 
 	/**
-	 * Filters the query arguments for the list of all authors of the site.
+	 * Lọc các đối số truy vấn cho danh sách tất cả tác giả của trang web.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param array $query_args  The query arguments for get_users().
-	 * @param array $parsed_args The arguments passed to wp_list_authors() combined with the defaults.
+	 * @param array $query_args  Các đối số truy vấn cho get_users().
+	 * @param array $parsed_args Các đối số được truyền vào wp_list_authors() kết hợp với giá trị mặc định.
 	 */
 	$query_args = apply_filters( 'wp_list_authors_args', $query_args, $parsed_args );
 
@@ -473,12 +473,12 @@ function wp_list_authors( $args = '' ) {
 	$post_counts = array();
 
 	/**
-	 * Filters whether to short-circuit performing the query for author post counts.
+	 * Lọc xem có bỏ qua việc thực hiện truy vấn đếm bài viết của tác giả hay không.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param int[]|false $post_counts Array of post counts, keyed by author ID.
-	 * @param array       $parsed_args The arguments passed to wp_list_authors() combined with the defaults.
+	 * @param int[]|false $post_counts Mảng số lượng bài viết, theo khóa ID tác giả.
+	 * @param array       $parsed_args Các đối số được truyền vào wp_list_authors() kết hợp với giá trị mặc định.
 	 */
 	$post_counts = apply_filters( 'pre_wp_list_authors_post_counts_query', false, $parsed_args );
 
@@ -523,7 +523,7 @@ function wp_list_authors( $args = '' ) {
 		if ( ! $parsed_args['html'] ) {
 			$return .= $name . ', ';
 
-			continue; // No need to go further to process HTML.
+			continue; // Không cần xử lý thêm HTML.
 		}
 
 		if ( 'list' === $parsed_args['style'] ) {
@@ -585,19 +585,19 @@ function wp_list_authors( $args = '' ) {
 }
 
 /**
- * Determines whether this site has more than one author.
+ * Xác định xem trang web này có nhiều hơn một tác giả hay không.
  *
- * Checks to see if more than one author has published posts.
+ * Kiểm tra xem có nhiều hơn một tác giả đã xuất bản bài viết hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Thẻ điều kiện} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 3.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @return bool Whether or not we have more than one author
+ * @return bool Trang web có nhiều hơn một tác giả hay không.
  */
 function is_multi_author() {
 	global $wpdb;
@@ -610,17 +610,17 @@ function is_multi_author() {
 	}
 
 	/**
-	 * Filters whether the site has more than one author with published posts.
+	 * Lọc xem trang web có nhiều hơn một tác giả đã xuất bản bài viết hay không.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param bool $is_multi_author Whether $is_multi_author should evaluate as true.
+	 * @param bool $is_multi_author Giá trị $is_multi_author có nên được đánh giá là true hay không.
 	 */
 	return apply_filters( 'is_multi_author', (bool) $is_multi_author );
 }
 
 /**
- * Helper function to clear the cache for number of authors.
+ * Hàm trợ giúp để xóa bộ nhớ đệm cho số lượng tác giả.
  *
  * @since 3.2.0
  * @access private

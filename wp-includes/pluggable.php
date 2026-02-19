@@ -1,33 +1,33 @@
 <?php
 /**
- * These functions can be replaced via plugins. If plugins do not redefine these
- * functions, then these will be used instead.
+ * Các hàm này có thể được ghi đè thông qua plugin. Nếu plugin không định nghĩa lại
+ * các hàm này, thì các hàm mặc định dưới đây sẽ được sử dụng thay thế.
  *
  * @package WordPress
  */
 
 if ( ! function_exists( 'wp_set_current_user' ) ) :
 	/**
-	 * Changes the current user by ID or name.
+	 * Thay đổi người dùng hiện tại theo ID hoặc tên.
 	 *
-	 * Set $id to null and specify a name if you do not know a user's ID.
+	 * Đặt $id thành null và chỉ định tên nếu bạn không biết ID của người dùng.
 	 *
-	 * Some WordPress functionality is based on the current user and not based on
-	 * the signed in user. Therefore, it opens the ability to edit and perform
-	 * actions on users who aren't signed in.
+	 * Một số chức năng WordPress dựa trên người dùng hiện tại chứ không dựa trên
+	 * người dùng đã đăng nhập. Do đó, nó mở ra khả năng chỉnh sửa và thực hiện
+	 * các hành động trên người dùng chưa đăng nhập.
 	 *
 	 * @since 2.0.3
 	 *
-	 * @global WP_User $current_user The current user object which holds the user data.
+	 * @global WP_User $current_user Đối tượng người dùng hiện tại chứa dữ liệu người dùng.
 	 *
-	 * @param int|null $id   User ID.
-	 * @param string   $name User's username.
-	 * @return WP_User Current user User object.
+	 * @param int|null $id   ID người dùng.
+	 * @param string   $name Tên đăng nhập của người dùng.
+	 * @return WP_User Đối tượng User của người dùng hiện tại.
 	 */
 	function wp_set_current_user( $id, $name = '' ) {
 		global $current_user;
 
-		// If `$id` matches the current user, there is nothing to do.
+		// Nếu `$id` khớp với người dùng hiện tại, không cần làm gì.
 		if ( isset( $current_user )
 		&& ( $current_user instanceof WP_User )
 		&& ( $id === $current_user->ID )
@@ -41,7 +41,7 @@ if ( ! function_exists( 'wp_set_current_user' ) ) :
 		setup_userdata( $current_user->ID );
 
 		/**
-		 * Fires after the current user is set.
+		 * Kích hoạt sau khi người dùng hiện tại được thiết lập.
 		 *
 		 * @since 2.0.1
 		 */
@@ -53,18 +53,18 @@ endif;
 
 if ( ! function_exists( 'wp_get_current_user' ) ) :
 	/**
-	 * Retrieves the current user object.
+	 * Lấy đối tượng người dùng hiện tại.
 	 *
-	 * Will set the current user, if the current user is not set. The current user
-	 * will be set to the logged-in person. If no user is logged-in, then it will
-	 * set the current user to 0, which is invalid and won't have any permissions.
+	 * Sẽ thiết lập người dùng hiện tại nếu chưa được thiết lập. Người dùng hiện tại
+	 * sẽ được đặt thành người đã đăng nhập. Nếu không có người dùng nào đăng nhập,
+	 * người dùng hiện tại sẽ được đặt thành 0, giá trị không hợp lệ và không có quyền nào.
 	 *
 	 * @since 2.0.3
 	 *
 	 * @see _wp_get_current_user()
-	 * @global WP_User $current_user Checks if the current user is set.
+	 * @global WP_User $current_user Kiểm tra xem người dùng hiện tại đã được thiết lập chưa.
 	 *
-	 * @return WP_User Current WP_User instance.
+	 * @return WP_User Thể hiện WP_User hiện tại.
 	 */
 	function wp_get_current_user() {
 		return _wp_get_current_user();
@@ -73,12 +73,12 @@ endif;
 
 if ( ! function_exists( 'get_userdata' ) ) :
 	/**
-	 * Retrieves user info by user ID.
+	 * Lấy thông tin người dùng theo ID.
 	 *
 	 * @since 0.71
 	 *
-	 * @param int $user_id User ID
-	 * @return WP_User|false WP_User object on success, false on failure.
+	 * @param int $user_id ID người dùng.
+	 * @return WP_User|false Đối tượng WP_User khi thành công, false khi thất bại.
 	 */
 	function get_userdata( $user_id ) {
 		return get_user_by( 'id', $user_id );
@@ -87,16 +87,16 @@ endif;
 
 if ( ! function_exists( 'get_user_by' ) ) :
 	/**
-	 * Retrieves user info by a given field.
+	 * Lấy thông tin người dùng theo một trường cho trước.
 	 *
 	 * @since 2.8.0
-	 * @since 4.4.0 Added 'ID' as an alias of 'id' for the `$field` parameter.
+	 * @since 4.4.0 Thêm 'ID' làm bí danh của 'id' cho tham số `$field`.
 	 *
-	 * @global WP_User $current_user The current user object which holds the user data.
+	 * @global WP_User $current_user Đối tượng người dùng hiện tại chứa dữ liệu người dùng.
 	 *
-	 * @param string     $field The field to retrieve the user with. id | ID | slug | email | login.
-	 * @param int|string $value A value for $field. A user ID, slug, email address, or login name.
-	 * @return WP_User|false WP_User object on success, false on failure.
+	 * @param string     $field Trường để tìm người dùng. id | ID | slug | email | login.
+	 * @param int|string $value Giá trị cho $field. ID người dùng, slug, địa chỉ email, hoặc tên đăng nhập.
+	 * @return WP_User|false Đối tượng WP_User khi thành công, false khi thất bại.
 	 */
 	function get_user_by( $field, $value ) {
 		$userdata = WP_User::get_data_by( $field, $value );
@@ -114,13 +114,13 @@ endif;
 
 if ( ! function_exists( 'cache_users' ) ) :
 	/**
-	 * Retrieves info for user lists to prevent multiple queries by get_userdata().
+	 * Lấy thông tin cho danh sách người dùng để tránh truy vấn nhiều lần bởi get_userdata().
 	 *
 	 * @since 3.0.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
 	 *
-	 * @param int[] $user_ids User ID numbers list
+	 * @param int[] $user_ids Danh sách số ID người dùng.
 	 */
 	function cache_users( $user_ids ) {
 		global $wpdb;
@@ -145,31 +145,31 @@ endif;
 
 if ( ! function_exists( 'wp_mail' ) ) :
 	/**
-	 * Sends an email, similar to PHP's mail function.
+	 * Gửi email, tương tự như hàm mail() của PHP.
 	 *
-	 * A true return value does not automatically mean that the user received the
-	 * email successfully. It just only means that the method used was able to
-	 * process the request without any errors.
+	 * Giá trị trả về true không tự động có nghĩa là người dùng đã nhận được
+	 * email thành công. Nó chỉ có nghĩa là phương thức được sử dụng có thể
+	 * xử lý yêu cầu mà không gặp lỗi nào.
 	 *
-	 * The default content type is `text/plain` which does not allow using HTML.
-	 * However, you can set the content type of the email by using the
-	 * {@see 'wp_mail_content_type'} filter.
+	 * Loại nội dung mặc định là `text/plain`, không cho phép sử dụng HTML.
+	 * Tuy nhiên, bạn có thể thiết lập loại nội dung của email bằng bộ lọc
+	 * {@see 'wp_mail_content_type'}.
 	 *
-	 * The default charset is based on the charset used on the blog. The charset can
-	 * be set using the {@see 'wp_mail_charset'} filter.
+	 * Bộ mã ký tự mặc định dựa trên bộ mã ký tự được sử dụng trên blog. Bộ mã ký tự có thể
+	 * được thiết lập bằng bộ lọc {@see 'wp_mail_charset'}.
 	 *
 	 * @since 1.2.1
-	 * @since 5.5.0 is_email() is used for email validation,
-	 *              instead of PHPMailer's default validator.
+	 * @since 5.5.0 is_email() được sử dụng để xác thực email,
+	 *              thay vì trình xác thực mặc định của PHPMailer.
 	 *
 	 * @global PHPMailer\PHPMailer\PHPMailer $phpmailer
 	 *
-	 * @param string|string[] $to          Array or comma-separated list of email addresses to send message.
-	 * @param string          $subject     Email subject.
-	 * @param string          $message     Message contents.
-	 * @param string|string[] $headers     Optional. Additional headers.
-	 * @param string|string[] $attachments Optional. Paths to files to attach.
-	 * @return bool Whether the email was sent successfully.
+	 * @param string|string[] $to          Mảng hoặc danh sách địa chỉ email phân cách bằng dấu phẩy để gửi tin nhắn.
+	 * @param string          $subject     Tiêu đề email.
+	 * @param string          $message     Nội dung tin nhắn.
+	 * @param string|string[] $headers     Tùy chọn. Các header bổ sung.
+	 * @param string|string[] $attachments Tùy chọn. Đường dẫn đến các tệp đính kèm.
+	 * @return bool Email có được gửi thành công hay không.
 	 */
 	function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
 		// Compact the input, apply the filters, and extract them back out.

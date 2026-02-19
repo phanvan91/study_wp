@@ -1,20 +1,20 @@
 <?php
 /**
- * Administration Functions
+ * Các Hàm Quản trị
  *
- * This file is deprecated, use 'wp-admin/includes/admin.php' instead.
+ * File này đã ngừng sử dụng, hãy dùng 'wp-admin/includes/admin.php' thay thế.
  *
  * @deprecated 2.5.0
  * @package WordPress
  * @subpackage Administration
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
 _deprecated_file( basename( __FILE__ ), '2.5.0', 'wp-admin/includes/admin.php' );
 
-/** WordPress Administration API: Includes all Administration functions. */
+/** API Quản trị WordPress: Bao gồm tất cả các hàm Quản trị. */
 require_once ABSPATH . 'wp-admin/includes/admin.php';

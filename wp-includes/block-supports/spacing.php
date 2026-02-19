@@ -1,26 +1,26 @@
 <?php
 /**
- * Spacing block support flag.
+ * Cờ hỗ trợ khoảng cách cho block.
  *
- * For backwards compatibility, this remains separate to the dimensions.php
- * block support despite both belonging under a single panel in the editor.
+ * Để tương thích ngược, phần này được giữ riêng biệt với dimensions.php
+ * mặc dù cả hai đều thuộc cùng một panel trong trình soạn thảo.
  *
  * @package WordPress
  * @since 5.8.0
  */
 
 /**
- * Registers the style block attribute for block types that support it.
+ * Đăng ký thuộc tính kiểu cho các loại block hỗ trợ nó.
  *
  * @since 5.8.0
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
+ * @param WP_Block_Type $block_type Loại Block.
  */
 function wp_register_spacing_support( $block_type ) {
 	$has_spacing_support = block_has_support( $block_type, 'spacing', false );
 
-	// Setup attributes and styles within that if needed.
+	// Thiết lập thuộc tính và kiểu bên trong nếu cần.
 	if ( ! $block_type->attributes ) {
 		$block_type->attributes = array();
 	}
@@ -33,16 +33,16 @@ function wp_register_spacing_support( $block_type ) {
 }
 
 /**
- * Adds CSS classes for block spacing to the incoming attributes array.
- * This will be applied to the block markup in the front-end.
+ * Thêm các lớp CSS cho khoảng cách block vào mảng thuộc tính đầu vào.
+ * Điều này sẽ được áp dụng cho markup block ở giao diện người dùng.
  *
  * @since 5.8.0
- * @since 6.1.0 Implemented the style engine to generate CSS and classnames.
+ * @since 6.1.0 Triển khai engine kiểu để tạo CSS và tên lớp.
  * @access private
  *
- * @param WP_Block_Type $block_type       Block Type.
- * @param array         $block_attributes Block attributes.
- * @return array Block spacing CSS classes and inline styles.
+ * @param WP_Block_Type $block_type       Loại Block.
+ * @param array         $block_attributes Thuộc tính block.
+ * @return array Các lớp CSS và kiểu inline khoảng cách block.
  */
 function wp_apply_spacing_support( $block_type, $block_attributes ) {
 	if ( wp_should_skip_block_supports_serialization( $block_type, 'spacing' ) ) {
@@ -79,7 +79,7 @@ function wp_apply_spacing_support( $block_type, $block_attributes ) {
 	return $attributes;
 }
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register(
 	'spacing',
 	array(

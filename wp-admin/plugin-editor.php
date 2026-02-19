@@ -1,12 +1,12 @@
 <?php
 /**
- * Edit plugin file editor administration panel.
+ * Trang quản trị trình chỉnh sửa tệp plugin.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Tải bootstrap quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( is_multisite() && ! is_network_admin() ) {
@@ -18,7 +18,7 @@ if ( ! current_user_can( 'edit_plugins' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to edit plugins for this site.' ) );
 }
 
-// Used in the HTML title tag.
+// Dùng trong thẻ tiêu đề HTML.
 $title       = __( 'Edit Plugins' );
 $parent_file = 'plugins.php';
 
@@ -57,7 +57,7 @@ if ( isset( $_REQUEST['plugin'] ) ) {
 if ( empty( $plugin ) ) {
 	if ( $file ) {
 
-		// Locate the plugin for a given plugin file being edited.
+		// Xác định plugin cho tệp plugin đang được chỉnh sửa.
 		$file_dirname = dirname( $file );
 		foreach ( array_keys( $plugins ) as $plugin_candidate ) {
 			if ( $plugin_candidate === $file || ( '.' !== $file_dirname && dirname( $plugin_candidate ) === $file_dirname ) ) {
@@ -66,7 +66,7 @@ if ( empty( $plugin ) ) {
 			}
 		}
 
-		// Fallback to the file as the plugin.
+		// Dự phòng sử dụng tệp làm plugin.
 		if ( empty( $plugin ) ) {
 			$plugin = $file;
 		}
@@ -88,7 +88,7 @@ $real_file = WP_PLUGIN_DIR . '/' . $file;
 $plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_files[0] );
 $plugin_name = $plugin_data['Name'];
 
-// Handle fallback editing of file when JavaScript is not available.
+// Xử lý chỉnh sửa tệp dự phòng khi JavaScript không khả dụng.
 $edit_error     = null;
 $posted_content = null;
 
@@ -103,7 +103,7 @@ if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
 		wp_redirect(
 			add_query_arg(
 				array(
-					'a'      => 1, // This means "success" for some reason.
+					'a'      => 1, // Giá trị này có nghĩa là "thành công".
 					'plugin' => $plugin,
 					'file'   => $file,
 				),
@@ -114,16 +114,16 @@ if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
 	}
 }
 
-// List of allowable extensions.
+// Danh sách các phần mở rộng được phép.
 $editable_extensions = wp_get_plugin_file_editable_extensions( $plugin );
 
 if ( ! is_file( $real_file ) ) {
 	wp_die( sprintf( '<p>%s</p>', __( 'File does not exist! Please double check the name and try again.' ) ) );
 } else {
-	// Get the extension of the file.
+	// Lấy phần mở rộng của tệp.
 	if ( preg_match( '/\.([^.]+)$/', $real_file, $matches ) ) {
 		$ext = strtolower( $matches[1] );
-		// If extension is not in the acceptable list, skip it.
+		// Nếu phần mở rộng không nằm trong danh sách chấp nhận, bỏ qua.
 		if ( ! in_array( $ext, $editable_extensions, true ) ) {
 			wp_die( sprintf( '<p>%s</p>', __( 'Files of this type are not editable.' ) ) );
 		}
@@ -346,7 +346,7 @@ printf(
 <?php
 $dismissed_pointers = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
 if ( ! in_array( 'plugin_editor_notice', $dismissed_pointers, true ) ) :
-	// Get a back URL.
+	// Lấy URL quay lại.
 	$referer = wp_get_referer();
 
 	$excluded_referer_basenames = array( 'plugin-editor.php', 'wp-login.php' );
@@ -376,6 +376,6 @@ if ( ! in_array( 'plugin_editor_notice', $dismissed_pointers, true ) ) :
 		</div>
 	</div>
 	<?php
-endif; // Editor warning notice.
+endif; // Thông báo cảnh báo trình chỉnh sửa.
 
 require_once ABSPATH . 'wp-admin/admin-footer.php';

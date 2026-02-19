@@ -1,8 +1,8 @@
 <?php
 /**
- * Block Bindings API
+ * API Block Bindings
  *
- * Contains functions for managing block bindings in WordPress.
+ * Chứa các hàm để quản lý block bindings trong WordPress.
  *
  * @package WordPress
  * @subpackage Block Bindings
@@ -10,33 +10,33 @@
  */
 
 /**
- * Registers a new block bindings source.
+ * Đăng ký một nguồn block bindings mới.
  *
- * Registering a source consists of defining a **name** for that source and a callback function specifying
- * how to get a value from that source and pass it to a block attribute.
+ * Việc đăng ký một nguồn bao gồm việc định nghĩa một **tên** cho nguồn đó và một hàm callback
+ * chỉ định cách lấy giá trị từ nguồn đó và truyền nó cho thuộc tính block.
  *
- * Once a source is registered, any block that supports the Block Bindings API can use a value
- * from that source by setting its `metadata.bindings` attribute to a value that refers to the source.
+ * Khi nguồn đã được đăng ký, bất kỳ block nào hỗ trợ API Block Bindings đều có thể sử dụng giá trị
+ * từ nguồn đó bằng cách thiết lập thuộc tính `metadata.bindings` của nó tham chiếu đến nguồn.
  *
- * Note that `register_block_bindings_source()` should be called from a handler attached to the `init` hook.
+ * Lưu ý rằng `register_block_bindings_source()` nên được gọi từ handler gắn vào hook `init`.
  *
  *
- * ## Example
+ * ## Ví dụ
  *
- * ### Registering a source
+ * ### Đăng ký một nguồn
  *
- * First, you need to define a function that will be used to get the value from the source.
+ * Đầu tiên, bạn cần định nghĩa một hàm sẽ được sử dụng để lấy giá trị từ nguồn.
  *
  *     function my_plugin_get_custom_source_value( array $source_args, $block_instance, string $attribute_name ) {
- *       // Your custom logic to get the value from the source.
- *       // For example, you can use the `$source_args` to look up a value in a custom table or get it from an external API.
+ *       // Logic tùy chỉnh của bạn để lấy giá trị từ nguồn.
+ *       // Ví dụ, bạn có thể sử dụng `$source_args` để tra cứu giá trị trong bảng tùy chỉnh hoặc lấy từ API bên ngoài.
  *       $value = $source_args['key'];
  *
- *       return "The value passed to the block is: $value"
+ *       return "Giá trị được truyền cho block là: $value"
  *     }
  *
- * The `$source_args` will contain the arguments passed to the source in the block's
- * `metadata.bindings` attribute. See the example in the "Usage in a block" section below.
+ * `$source_args` sẽ chứa các đối số được truyền cho nguồn trong thuộc tính
+ * `metadata.bindings` của block. Xem ví dụ trong phần "Sử dụng trong block" bên dưới.
  *
  *     function my_plugin_register_block_bindings_sources() {
  *       register_block_bindings_source( 'my-plugin/my-custom-source', array(
@@ -46,11 +46,11 @@
  *     }
  *     add_action( 'init', 'my_plugin_register_block_bindings_sources' );
  *
- * ### Usage in a block
+ * ### Sử dụng trong block
  *
- * In a block's `metadata.bindings` attribute, you can specify the source and
- * its arguments. Such a block will use the source to override the block
- * attribute's value. For example:
+ * Trong thuộc tính `metadata.bindings` của block, bạn có thể chỉ định nguồn và
+ * các đối số của nó. Block như vậy sẽ sử dụng nguồn để ghi đè giá trị thuộc tính
+ * của block. Ví dụ:
  *
  *     <!-- wp:paragraph {
  *       "metadata": {
@@ -69,62 +69,62 @@
  *
  * @since 6.5.0
  *
- * @param string $source_name       The name of the source. It must be a string containing a namespace prefix, i.e.
- *                                  `my-plugin/my-custom-source`. It must only contain lowercase alphanumeric
- *                                  characters, the forward slash `/` and dashes.
+ * @param string $source_name       Tên của nguồn. Phải là chuỗi chứa tiền tố namespace, ví dụ
+ *                                  `my-plugin/my-custom-source`. Chỉ chứa ký tự chữ thường, số,
+ *                                  dấu gạch chéo `/` và dấu gạch ngang.
  * @param array  $source_properties {
- *     The array of arguments that are used to register a source.
+ *     Mảng các đối số được sử dụng để đăng ký nguồn.
  *
- *     @type string   $label              The label of the source.
- *     @type callable $get_value_callback A callback executed when the source is processed during block rendering.
- *                                        The callback should have the following signature:
+ *     @type string   $label              Nhãn của nguồn.
+ *     @type callable $get_value_callback Callback được thực thi khi nguồn được xử lý trong quá trình render block.
+ *                                        Callback nên có chữ ký sau:
  *
  *                                        `function( $source_args, $block_instance, $attribute_name ): mixed`
- *                                            - @param array    $source_args    Array containing source arguments
- *                                                                              used to look up the override value,
- *                                                                              i.e. {"key": "foo"}.
- *                                            - @param WP_Block $block_instance The block instance.
- *                                            - @param string   $attribute_name The name of an attribute.
- *                                        The callback has a mixed return type; it may return a string to override
- *                                        the block's original value, null, false to remove an attribute, etc.
- *     @type string[] $uses_context       Optional. Array of values to add to block `uses_context` needed by the source.
+ *                                            - @param array    $source_args    Mảng chứa đối số nguồn
+ *                                                                              dùng để tra cứu giá trị ghi đè,
+ *                                                                              ví dụ {"key": "foo"}.
+ *                                            - @param WP_Block $block_instance Instance của block.
+ *                                            - @param string   $attribute_name Tên của thuộc tính.
+ *                                        Callback có kiểu trả về hỗn hợp; có thể trả về chuỗi để ghi đè
+ *                                        giá trị gốc của block, null, false để xóa thuộc tính, v.v.
+ *     @type string[] $uses_context       Tùy chọn. Mảng các giá trị để thêm vào `uses_context` của block cần thiết cho nguồn.
  * }
- * @return WP_Block_Bindings_Source|false Source when the registration was successful, or `false` on failure.
+ * @return WP_Block_Bindings_Source|false Nguồn khi đăng ký thành công, hoặc `false` khi thất bại.
  */
 function register_block_bindings_source( string $source_name, array $source_properties ) {
 	return WP_Block_Bindings_Registry::get_instance()->register( $source_name, $source_properties );
 }
 
 /**
- * Unregisters a block bindings source.
+ * Hủy đăng ký một nguồn block bindings.
  *
  * @since 6.5.0
  *
- * @param string $source_name Block bindings source name including namespace.
- * @return WP_Block_Bindings_Source|false The unregistered block bindings source on success and `false` otherwise.
+ * @param string $source_name Tên nguồn block bindings bao gồm namespace.
+ * @return WP_Block_Bindings_Source|false Nguồn block bindings đã hủy đăng ký khi thành công và `false` trong trường hợp khác.
  */
 function unregister_block_bindings_source( string $source_name ) {
 	return WP_Block_Bindings_Registry::get_instance()->unregister( $source_name );
 }
 
 /**
- * Retrieves the list of all registered block bindings sources.
+ * Lấy danh sách tất cả các nguồn block bindings đã đăng ký.
  *
  * @since 6.5.0
  *
- * @return WP_Block_Bindings_Source[] The array of registered block bindings sources.
+ * @return WP_Block_Bindings_Source[] Mảng các nguồn block bindings đã đăng ký.
  */
 function get_all_registered_block_bindings_sources() {
 	return WP_Block_Bindings_Registry::get_instance()->get_all_registered();
 }
 
 /**
- * Retrieves a registered block bindings source.
+ * Lấy một nguồn block bindings đã đăng ký.
  *
  * @since 6.5.0
  *
- * @param string $source_name The name of the source.
- * @return WP_Block_Bindings_Source|null The registered block bindings source, or `null` if it is not registered.
+ * @param string $source_name Tên của nguồn.
+ * @return WP_Block_Bindings_Source|null Nguồn block bindings đã đăng ký, hoặc `null` nếu chưa được đăng ký.
  */
 function get_block_bindings_source( string $source_name ) {
 	return WP_Block_Bindings_Registry::get_instance()->get_registered( $source_name );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Administration API: WP_List_Table class
+ * API Quản trị: Lớp WP_List_Table
  *
  * @package WordPress
  * @subpackage List_Table
@@ -8,7 +8,7 @@
  */
 
 /**
- * Base class for displaying a list of items in an ajaxified HTML table.
+ * Lớp cơ sở để hiển thị danh sách các mục trong bảng HTML hỗ trợ Ajax.
  *
  * @since 3.1.0
  */
@@ -16,7 +16,7 @@
 class WP_List_Table {
 
 	/**
-	 * The current list of items.
+	 * Danh sách các mục hiện tại.
 	 *
 	 * @since 3.1.0
 	 * @var array
@@ -24,7 +24,7 @@ class WP_List_Table {
 	public $items;
 
 	/**
-	 * Various information about the current table.
+	 * Các thông tin khác nhau về bảng hiện tại.
 	 *
 	 * @since 3.1.0
 	 * @var array
@@ -32,7 +32,7 @@ class WP_List_Table {
 	protected $_args;
 
 	/**
-	 * Various information needed for displaying the pagination.
+	 * Các thông tin cần thiết để hiển thị phân trang.
 	 *
 	 * @since 3.1.0
 	 * @var array
@@ -40,7 +40,7 @@ class WP_List_Table {
 	protected $_pagination_args = array();
 
 	/**
-	 * The current screen.
+	 * Màn hình hiện tại.
 	 *
 	 * @since 3.1.0
 	 * @var WP_Screen
@@ -48,7 +48,7 @@ class WP_List_Table {
 	protected $screen;
 
 	/**
-	 * Cached bulk actions.
+	 * Các hành động hàng loạt đã được lưu đệm.
 	 *
 	 * @since 3.1.0
 	 * @var array
@@ -56,7 +56,7 @@ class WP_List_Table {
 	private $_actions;
 
 	/**
-	 * Cached pagination output.
+	 * Kết quả phân trang đã được lưu đệm.
 	 *
 	 * @since 3.1.0
 	 * @var string
@@ -64,7 +64,7 @@ class WP_List_Table {
 	private $_pagination;
 
 	/**
-	 * The view switcher modes.
+	 * Các chế độ chuyển đổi giao diện.
 	 *
 	 * @since 4.1.0
 	 * @var array
@@ -72,7 +72,7 @@ class WP_List_Table {
 	protected $modes = array();
 
 	/**
-	 * Stores the value returned by ->get_column_info().
+	 * Lưu trữ giá trị trả về bởi ->get_column_info().
 	 *
 	 * @since 4.1.0
 	 * @var array
@@ -80,14 +80,14 @@ class WP_List_Table {
 	protected $_column_headers;
 
 	/**
-	 * {@internal Missing Summary}
+	 * {@internal Thiếu tóm tắt}
 	 *
 	 * @var array
 	 */
 	protected $compat_fields = array( '_args', '_pagination_args', 'screen', '_actions', '_pagination' );
 
 	/**
-	 * {@internal Missing Summary}
+	 * {@internal Thiếu tóm tắt}
 	 *
 	 * @var array
 	 */
@@ -111,28 +111,28 @@ class WP_List_Table {
 	);
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * The child class should call this constructor from its own constructor to override
-	 * the default $args.
+	 * Lớp con nên gọi hàm khởi tạo này từ hàm khởi tạo của chính nó để ghi đè
+	 * các $args mặc định.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @param array|string $args {
-	 *     Array or string of arguments.
+	 *     Mảng hoặc chuỗi các đối số.
 	 *
-	 *     @type string $plural   Plural value used for labels and the objects being listed.
-	 *                            This affects things such as CSS class-names and nonces used
-	 *                            in the list table, e.g. 'posts'. Default empty.
-	 *     @type string $singular Singular label for an object being listed, e.g. 'post'.
-	 *                            Default empty
-	 *     @type bool   $ajax     Whether the list table supports Ajax. This includes loading
-	 *                            and sorting data, for example. If true, the class will call
-	 *                            the _js_vars() method in the footer to provide variables
-	 *                            to any scripts handling Ajax events. Default false.
-	 *     @type string $screen   String containing the hook name used to determine the current
-	 *                            screen. If left null, the current screen will be automatically set.
-	 *                            Default null.
+	 *     @type string $plural   Giá trị số nhiều dùng cho nhãn và các đối tượng được liệt kê.
+	 *                            Ảnh hưởng đến tên lớp CSS và nonce sử dụng
+	 *                            trong bảng danh sách, ví dụ: 'posts'. Mặc định rỗng.
+	 *     @type string $singular Nhãn số ít cho đối tượng được liệt kê, ví dụ: 'post'.
+	 *                            Mặc định rỗng.
+	 *     @type bool   $ajax     Bảng danh sách có hỗ trợ Ajax hay không. Bao gồm tải
+	 *                            và sắp xếp dữ liệu. Nếu true, lớp sẽ gọi
+	 *                            phương thức _js_vars() ở footer để cung cấp biến
+	 *                            cho các script xử lý sự kiện Ajax. Mặc định false.
+	 *     @type string $screen   Chuỗi chứa tên hook dùng để xác định màn hình
+	 *                            hiện tại. Nếu để null, màn hình hiện tại sẽ được tự động thiết lập.
+	 *                            Mặc định null.
 	 * }
 	 */
 	public function __construct( $args = array() ) {
@@ -173,13 +173,13 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Makes private properties readable for backward compatibility.
+	 * Cho phép đọc các thuộc tính private để tương thích ngược.
 	 *
 	 * @since 4.0.0
-	 * @since 6.4.0 Getting a dynamic property is deprecated.
+	 * @since 6.4.0 Việc lấy thuộc tính động đã bị loại bỏ.
 	 *
-	 * @param string $name Property to get.
-	 * @return mixed Property.
+	 * @param string $name Thuộc tính cần lấy.
+	 * @return mixed Thuộc tính.
 	 */
 	public function __get( $name ) {
 		if ( in_array( $name, $this->compat_fields, true ) ) {
@@ -196,13 +196,13 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Makes private properties settable for backward compatibility.
+	 * Cho phép gán các thuộc tính private để tương thích ngược.
 	 *
 	 * @since 4.0.0
-	 * @since 6.4.0 Setting a dynamic property is deprecated.
+	 * @since 6.4.0 Việc gán thuộc tính động đã bị loại bỏ.
 	 *
-	 * @param string $name  Property to check if set.
-	 * @param mixed  $value Property value.
+	 * @param string $name  Thuộc tính cần kiểm tra đã được gán chưa.
+	 * @param mixed  $value Giá trị thuộc tính.
 	 */
 	public function __set( $name, $value ) {
 		if ( in_array( $name, $this->compat_fields, true ) ) {
@@ -219,13 +219,13 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Makes private properties checkable for backward compatibility.
+	 * Cho phép kiểm tra các thuộc tính private để tương thích ngược.
 	 *
 	 * @since 4.0.0
-	 * @since 6.4.0 Checking a dynamic property is deprecated.
+	 * @since 6.4.0 Việc kiểm tra thuộc tính động đã bị loại bỏ.
 	 *
-	 * @param string $name Property to check if set.
-	 * @return bool Whether the property is a back-compat property and it is set.
+	 * @param string $name Thuộc tính cần kiểm tra đã được gán chưa.
+	 * @return bool Thuộc tính có phải là thuộc tính tương thích ngược và đã được gán hay không.
 	 */
 	public function __isset( $name ) {
 		if ( in_array( $name, $this->compat_fields, true ) ) {
@@ -242,12 +242,12 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Makes private properties un-settable for backward compatibility.
+	 * Cho phép hủy gán các thuộc tính private để tương thích ngược.
 	 *
 	 * @since 4.0.0
-	 * @since 6.4.0 Unsetting a dynamic property is deprecated.
+	 * @since 6.4.0 Việc hủy gán thuộc tính động đã bị loại bỏ.
 	 *
-	 * @param string $name Property to unset.
+	 * @param string $name Thuộc tính cần hủy gán.
 	 */
 	public function __unset( $name ) {
 		if ( in_array( $name, $this->compat_fields, true ) ) {
@@ -264,13 +264,13 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Makes private/protected methods readable for backward compatibility.
+	 * Cho phép gọi các phương thức private/protected để tương thích ngược.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $name      Method to call.
-	 * @param array  $arguments Arguments to pass when calling.
-	 * @return mixed|bool Return value of the callback, false otherwise.
+	 * @param string $name      Phương thức cần gọi.
+	 * @param array  $arguments Các đối số truyền vào khi gọi.
+	 * @return mixed|bool Giá trị trả về của callback, false nếu không tìm thấy.
 	 */
 	public function __call( $name, $arguments ) {
 		if ( in_array( $name, $this->compat_methods, true ) ) {
@@ -280,7 +280,7 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Checks the current user's permissions
+	 * Kiểm tra quyền của người dùng hiện tại.
 	 *
 	 * @since 3.1.0
 	 * @abstract
@@ -290,7 +290,7 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Prepares the list of items for displaying.
+	 * Chuẩn bị danh sách các mục để hiển thị.
 	 *
 	 * @uses WP_List_Table::set_pagination_args()
 	 *
@@ -302,11 +302,11 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Sets all the necessary pagination arguments.
+	 * Thiết lập tất cả các đối số phân trang cần thiết.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param array|string $args Array or string of arguments with information about the pagination.
+	 * @param array|string $args Mảng hoặc chuỗi các đối số chứa thông tin về phân trang.
 	 */
 	protected function set_pagination_args( $args ) {
 		$args = wp_parse_args(
@@ -322,7 +322,7 @@ class WP_List_Table {
 			$args['total_pages'] = (int) ceil( $args['total_items'] / $args['per_page'] );
 		}
 
-		// Redirect if page number is invalid and headers are not already sent.
+		// Chuyển hướng nếu số trang không hợp lệ và header chưa được gửi.
 		if ( ! headers_sent() && ! wp_doing_ajax() && $args['total_pages'] > 0 && $this->get_pagenum() > $args['total_pages'] ) {
 			wp_redirect( add_query_arg( 'paged', $args['total_pages'] ) );
 			exit;
@@ -332,13 +332,13 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Access the pagination args.
+	 * Truy cập các đối số phân trang.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $key Pagination argument to retrieve. Common values include 'total_items',
-	 *                    'total_pages', 'per_page', or 'infinite_scroll'.
-	 * @return int Number of items that correspond to the given pagination argument.
+	 * @param string $key Đối số phân trang cần lấy. Các giá trị phổ biến bao gồm 'total_items',
+	 *                    'total_pages', 'per_page', hoặc 'infinite_scroll'.
+	 * @return int Số lượng mục tương ứng với đối số phân trang đã cho.
 	 */
 	public function get_pagination_arg( $key ) {
 		if ( 'page' === $key ) {
@@ -353,7 +353,7 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Determines whether the table has items to display or not
+	 * Xác định bảng có mục để hiển thị hay không.
 	 *
 	 * @since 3.1.0
 	 *
@@ -364,7 +364,7 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Message to be displayed when there are no items
+	 * Thông báo hiển thị khi không có mục nào.
 	 *
 	 * @since 3.1.0
 	 */
@@ -373,12 +373,12 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Displays the search box.
+	 * Hiển thị hộp tìm kiếm.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $text     The 'submit' button label.
-	 * @param string $input_id ID attribute value for the search input field.
+	 * @param string $text     Nhãn của nút 'gửi'.
+	 * @param string $input_id Giá trị thuộc tính ID cho trường nhập tìm kiếm.
 	 */
 	public function search_box( $text, $input_id ) {
 		if ( empty( $_REQUEST['s'] ) && ! $this->has_items() ) {
@@ -415,18 +415,18 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Generates views links.
+	 * Tạo các liên kết giao diện xem.
 	 *
 	 * @since 6.1.0
 	 *
 	 * @param array $link_data {
-	 *     An array of link data.
+	 *     Mảng dữ liệu liên kết.
 	 *
-	 *     @type string $url     The link URL.
-	 *     @type string $label   The link label.
-	 *     @type bool   $current Optional. Whether this is the currently selected view.
+	 *     @type string $url     URL của liên kết.
+	 *     @type string $label   Nhãn của liên kết.
+	 *     @type bool   $current Tùy chọn. Đây có phải là giao diện xem đang được chọn hay không.
 	 * }
-	 * @return string[] An array of link markup. Keys match the `$link_data` input array.
+	 * @return string[] Mảng mã HTML liên kết. Các khóa khớp với mảng đầu vào `$link_data`.
 	 */
 	protected function get_views_links( $link_data = array() ) {
 		if ( ! is_array( $link_data ) ) {
@@ -488,9 +488,9 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Gets the list of views available on this table.
+	 * Lấy danh sách các giao diện xem có sẵn trên bảng này.
 	 *
-	 * The format is an associative array:
+	 * Định dạng là mảng kết hợp:
 	 * - `'id' => 'link'`
 	 *
 	 * @since 3.1.0
@@ -502,21 +502,21 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Displays the list of views available on this table.
+	 * Hiển thị danh sách các giao diện xem có sẵn trên bảng này.
 	 *
 	 * @since 3.1.0
 	 */
 	public function views() {
 		$views = $this->get_views();
 		/**
-		 * Filters the list of available list table views.
+		 * Lọc danh sách các giao diện xem có sẵn của bảng danh sách.
 		 *
-		 * The dynamic portion of the hook name, `$this->screen->id`, refers
-		 * to the ID of the current screen.
+		 * Phần động của tên hook, `$this->screen->id`, tham chiếu
+		 * đến ID của màn hình hiện tại.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param string[] $views An array of available list table views.
+		 * @param string[] $views Mảng các giao diện xem có sẵn của bảng danh sách.
 		 */
 		$views = apply_filters( "views_{$this->screen->id}", $views );
 
@@ -535,17 +535,17 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Retrieves the list of bulk actions available for this table.
+	 * Lấy danh sách các hành động hàng loạt có sẵn cho bảng này.
 	 *
-	 * The format is an associative array where each element represents either a top level option value and label, or
-	 * an array representing an optgroup and its options.
+	 * Định dạng là mảng kết hợp trong đó mỗi phần tử đại diện cho một giá trị và nhãn tùy chọn cấp cao nhất,
+	 * hoặc một mảng đại diện cho optgroup và các tùy chọn của nó.
 	 *
-	 * For a standard option, the array element key is the field value and the array element value is the field label.
+	 * Với tùy chọn tiêu chuẩn, khóa phần tử mảng là giá trị trường và giá trị phần tử mảng là nhãn trường.
 	 *
-	 * For an optgroup, the array element key is the label and the array element value is an associative array of
-	 * options as above.
+	 * Với optgroup, khóa phần tử mảng là nhãn và giá trị phần tử mảng là mảng kết hợp
+	 * các tùy chọn như trên.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     [
 	 *         'edit'         => 'Edit',
@@ -557,7 +557,7 @@ class WP_List_Table {
 	 *     ]
 	 *
 	 * @since 3.1.0
-	 * @since 5.6.0 A bulk action can now contain an array of options in order to create an optgroup.
+	 * @since 5.6.0 Hành động hàng loạt giờ có thể chứa mảng tùy chọn để tạo optgroup.
 	 *
 	 * @return array
 	 */
@@ -566,27 +566,27 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Displays the bulk actions dropdown.
+	 * Hiển thị dropdown hành động hàng loạt.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $which The location of the bulk actions: Either 'top' or 'bottom'.
-	 *                      This is designated as optional for backward compatibility.
+	 * @param string $which Vị trí của hành động hàng loạt: 'top' hoặc 'bottom'.
+	 *                      Được đánh dấu là tùy chọn để tương thích ngược.
 	 */
 	protected function bulk_actions( $which = '' ) {
 		if ( is_null( $this->_actions ) ) {
 			$this->_actions = $this->get_bulk_actions();
 
 			/**
-			 * Filters the items in the bulk actions menu of the list table.
+			 * Lọc các mục trong menu hành động hàng loạt của bảng danh sách.
 			 *
-			 * The dynamic portion of the hook name, `$this->screen->id`, refers
-			 * to the ID of the current screen.
+			 * Phần động của tên hook, `$this->screen->id`, tham chiếu
+			 * đến ID của màn hình hiện tại.
 			 *
 			 * @since 3.1.0
-			 * @since 5.6.0 A bulk action can now contain an array of options in order to create an optgroup.
+			 * @since 5.6.0 Hành động hàng loạt giờ có thể chứa mảng tùy chọn để tạo optgroup.
 			 *
-			 * @param array $actions An array of the available bulk actions.
+			 * @param array $actions Mảng các hành động hàng loạt có sẵn.
 			 */
 			$this->_actions = apply_filters( "bulk_actions-{$this->screen->id}", $this->_actions ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
@@ -630,11 +630,11 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Gets the current action selected from the bulk actions dropdown.
+	 * Lấy hành động hiện tại được chọn từ dropdown hành động hàng loạt.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @return string|false The action name. False if no action was selected.
+	 * @return string|false Tên hành động. False nếu không có hành động nào được chọn.
 	 */
 	public function current_action() {
 		if ( isset( $_REQUEST['filter_action'] ) && ! empty( $_REQUEST['filter_action'] ) ) {
@@ -649,13 +649,13 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Generates the required HTML for a list of row action links.
+	 * Tạo mã HTML cần thiết cho danh sách các liên kết hành động hàng.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string[] $actions        An array of action links.
-	 * @param bool     $always_visible Whether the actions should be always visible.
-	 * @return string The HTML for the row actions.
+	 * @param string[] $actions        Mảng các liên kết hành động.
+	 * @param bool     $always_visible Các hành động có luôn hiển thị hay không.
+	 * @return string Mã HTML cho các hành động hàng.
 	 */
 	protected function row_actions( $actions, $always_visible = false ) {
 		$action_count = count( $actions );
@@ -693,37 +693,37 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Displays a dropdown for filtering items in the list table by month.
+	 * Hiển thị dropdown để lọc các mục trong bảng danh sách theo tháng.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @global wpdb      $wpdb      WordPress database abstraction object.
-	 * @global WP_Locale $wp_locale WordPress date and time locale object.
+	 * @global wpdb      $wpdb      Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
+	 * @global WP_Locale $wp_locale Đối tượng ngôn ngữ ngày giờ WordPress.
 	 *
-	 * @param string $post_type The post type.
+	 * @param string $post_type Loại bài viết.
 	 */
 	protected function months_dropdown( $post_type ) {
 		global $wpdb, $wp_locale;
 
 		/**
-		 * Filters whether to remove the 'Months' drop-down from the post list table.
+		 * Lọc có xóa dropdown 'Tháng' khỏi bảng danh sách bài viết hay không.
 		 *
 		 * @since 4.2.0
 		 *
-		 * @param bool   $disable   Whether to disable the drop-down. Default false.
-		 * @param string $post_type The post type.
+		 * @param bool   $disable   Có vô hiệu hóa dropdown hay không. Mặc định false.
+		 * @param string $post_type Loại bài viết.
 		 */
 		if ( apply_filters( 'disable_months_dropdown', false, $post_type ) ) {
 			return;
 		}
 
 		/**
-		 * Filters whether to short-circuit performing the months dropdown query.
+		 * Lọc có bỏ qua việc thực hiện truy vấn dropdown tháng hay không.
 		 *
 		 * @since 5.7.0
 		 *
-		 * @param object[]|false $months   'Months' drop-down results. Default false.
-		 * @param string         $post_type The post type.
+		 * @param object[]|false $months    Kết quả dropdown 'Tháng'. Mặc định false.
+		 * @param string         $post_type Loại bài viết.
 		 */
 		$months = apply_filters( 'pre_months_dropdown_query', false, $post_type );
 
@@ -748,12 +748,12 @@ class WP_List_Table {
 		}
 
 		/**
-		 * Filters the 'Months' drop-down results.
+		 * Lọc kết quả dropdown 'Tháng'.
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param object[] $months    Array of the months drop-down query results.
-		 * @param string   $post_type The post type.
+		 * @param object[] $months    Mảng kết quả truy vấn dropdown tháng.
+		 * @param string   $post_type Loại bài viết.
 		 */
 		$months = apply_filters( 'months_dropdown_results', $months, $post_type );
 
@@ -791,11 +791,11 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Displays a view switcher.
+	 * Hiển thị bộ chuyển đổi giao diện xem.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $current_mode
+	 * @param string $current_mode Chế độ xem hiện tại.
 	 */
 	protected function view_switcher( $current_mode ) {
 		?>
@@ -826,12 +826,12 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Displays a comment count bubble.
+	 * Hiển thị bong bóng đếm bình luận.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param int $post_id          The post ID.
-	 * @param int $pending_comments Number of pending comments.
+	 * @param int $post_id          ID bài viết.
+	 * @param int $pending_comments Số bình luận đang chờ duyệt.
 	 */
 	protected function comments_bubble( $post_id, $pending_comments ) {
 		$post_object   = get_post( $post_id );
@@ -841,7 +841,7 @@ class WP_List_Table {
 			&& ( post_password_required( $post_id )
 				|| ! current_user_can( 'read_post', $post_id ) )
 		) {
-			// The user has no access to the post and thus cannot see the comments.
+			// Người dùng không có quyền truy cập bài viết nên không thể xem bình luận.
 			return false;
 		}
 
@@ -869,14 +869,14 @@ class WP_List_Table {
 		);
 
 		if ( ! $approved_comments && ! $pending_comments ) {
-			// No comments at all.
+			// Không có bình luận nào.
 			printf(
 				'<span aria-hidden="true">&#8212;</span>' .
 				'<span class="screen-reader-text">%s</span>',
 				__( 'No comments' )
 			);
 		} elseif ( $approved_comments && 'trash' === get_post_status( $post_id ) ) {
-			// Don't link the comment bubble for a trashed post.
+			// Không tạo liên kết bong bóng bình luận cho bài viết đã xóa.
 			printf(
 				'<span class="post-com-count post-com-count-approved">' .
 					'<span class="comment-count-approved" aria-hidden="true">%s</span>' .
@@ -886,7 +886,7 @@ class WP_List_Table {
 				$pending_comments ? $approved_phrase : $approved_only_phrase
 			);
 		} elseif ( $approved_comments ) {
-			// Link the comment bubble to approved comments.
+			// Liên kết bong bóng bình luận đến các bình luận đã duyệt.
 			printf(
 				'<a href="%s" class="post-com-count post-com-count-approved">' .
 					'<span class="comment-count-approved" aria-hidden="true">%s</span>' .
@@ -905,7 +905,7 @@ class WP_List_Table {
 				$pending_comments ? $approved_phrase : $approved_only_phrase
 			);
 		} else {
-			// Don't link the comment bubble when there are no approved comments.
+			// Không liên kết bong bóng bình luận khi không có bình luận đã duyệt.
 			printf(
 				'<span class="post-com-count post-com-count-no-comments">' .
 					'<span class="comment-count comment-count-no-comments" aria-hidden="true">%s</span>' .
@@ -955,7 +955,7 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Gets the current page number.
+	 * Lấy số trang hiện tại.
 	 *
 	 * @since 3.1.0
 	 *
@@ -972,12 +972,12 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Gets the number of items to display on a single page.
+	 * Lấy số lượng mục hiển thị trên một trang.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $option        User option name.
-	 * @param int    $default_value Optional. The number of items to display. Default 20.
+	 * @param string $option        Tên tùy chọn người dùng.
+	 * @param int    $default_value Tùy chọn. Số lượng mục hiển thị. Mặc định 20.
 	 * @return int
 	 */
 	protected function get_items_per_page( $option, $default_value = 20 ) {
@@ -987,10 +987,10 @@ class WP_List_Table {
 		}
 
 		/**
-		 * Filters the number of items to be displayed on each page of the list table.
+		 * Lọc số lượng mục hiển thị trên mỗi trang của bảng danh sách.
 		 *
-		 * The dynamic hook name, `$option`, refers to the `per_page` option depending
-		 * on the type of list table in use. Possible filter names include:
+		 * Tên hook động, `$option`, tham chiếu đến tùy chọn `per_page` tùy thuộc
+		 * vào loại bảng danh sách đang sử dụng. Các tên bộ lọc có thể bao gồm:
 		 *
 		 *  - `edit_comments_per_page`
 		 *  - `sites_network_per_page`
@@ -1008,17 +1008,17 @@ class WP_List_Table {
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param int $per_page Number of items to be displayed. Default 20.
+		 * @param int $per_page Số lượng mục hiển thị. Mặc định 20.
 		 */
 		return (int) apply_filters( "{$option}", $per_page );
 	}
 
 	/**
-	 * Displays the pagination.
+	 * Hiển thị phân trang.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $which The location of the pagination: Either 'top' or 'bottom'.
+	 * @param string $which Vị trí phân trang: 'top' hoặc 'bottom'.
 	 */
 	protected function pagination( $which ) {
 		if ( empty( $this->_pagination_args ) ) {
@@ -1176,10 +1176,10 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Gets a list of columns.
+	 * Lấy danh sách các cột.
 	 *
-	 * The format is:
-	 * - `'internal-name' => 'Title'`
+	 * Định dạng là:
+	 * - `'tên-nội-bộ' => 'Tiêu đề'`
 	 *
 	 * @since 3.1.0
 	 * @abstract
@@ -1191,21 +1191,21 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Gets a list of sortable columns.
+	 * Lấy danh sách các cột có thể sắp xếp.
 	 *
-	 * The format is:
-	 * - `'internal-name' => 'orderby'`
-	 * - `'internal-name' => array( 'orderby', bool, 'abbr', 'orderby-text', 'initially-sorted-column-order' )` -
-	 * - `'internal-name' => array( 'orderby', 'asc' )` - The second element sets the initial sorting order.
-	 * - `'internal-name' => array( 'orderby', true )`  - The second element makes the initial order descending.
+	 * Định dạng là:
+	 * - `'tên-nội-bộ' => 'orderby'`
+	 * - `'tên-nội-bộ' => array( 'orderby', bool, 'abbr', 'orderby-text', 'initially-sorted-column-order' )` -
+	 * - `'tên-nội-bộ' => array( 'orderby', 'asc' )` - Phần tử thứ hai thiết lập thứ tự sắp xếp ban đầu.
+	 * - `'tên-nội-bộ' => array( 'orderby', true )`  - Phần tử thứ hai đặt thứ tự ban đầu là giảm dần.
 	 *
-	 * In the second format, passing true as second parameter will make the initial
-	 * sorting order be descending. Following parameters add a short column name to
-	 * be used as 'abbr' attribute, a translatable string for the current sorting,
-	 * and the initial order for the initial sorted column, 'asc' or 'desc' (default: false).
+	 * Ở định dạng thứ hai, truyền true làm tham số thứ hai sẽ đặt thứ tự
+	 * sắp xếp ban đầu là giảm dần. Các tham số tiếp theo thêm tên cột viết tắt
+	 * dùng cho thuộc tính 'abbr', chuỗi có thể dịch cho sắp xếp hiện tại,
+	 * và thứ tự ban đầu cho cột sắp xếp mặc định, 'asc' hoặc 'desc' (mặc định: false).
 	 *
 	 * @since 3.1.0
-	 * @since 6.3.0 Added 'abbr', 'orderby-text' and 'initially-sorted-column-order'.
+	 * @since 6.3.0 Thêm 'abbr', 'orderby-text' và 'initially-sorted-column-order'.
 	 *
 	 * @return array
 	 */
@@ -1214,11 +1214,11 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Gets the name of the default primary column.
+	 * Lấy tên cột chính mặc định.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @return string Name of the default primary column, in this case, an empty string.
+	 * @return string Tên cột chính mặc định, trong trường hợp này là chuỗi rỗng.
 	 */
 	protected function get_default_primary_column_name() {
 		$columns = $this->get_columns();
@@ -1229,8 +1229,8 @@ class WP_List_Table {
 		}
 
 		/*
-		 * We need a primary defined so responsive views show something,
-		 * so let's fall back to the first non-checkbox column.
+		 * Cần xác định cột chính để giao diện đáp ứng hiển thị nội dung,
+		 * vì vậy sử dụng cột đầu tiên không phải checkbox làm mặc định.
 		 */
 		foreach ( $columns as $col => $column_name ) {
 			if ( 'cb' === $col ) {
@@ -1245,32 +1245,32 @@ class WP_List_Table {
 	}
 
 	/**
-	 * Gets the name of the primary column.
+	 * Lấy tên cột chính.
 	 *
-	 * Public wrapper for WP_List_Table::get_default_primary_column_name().
+	 * Phương thức công khai bọc WP_List_Table::get_default_primary_column_name().
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return string Name of the default primary column.
+	 * @return string Tên cột chính mặc định.
 	 */
 	public function get_primary_column() {
 		return $this->get_primary_column_name();
 	}
 
 	/**
-	 * Gets the name of the primary column.
+	 * Lấy tên cột chính.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @return string The name of the primary column.
+	 * @return string Tên cột chính.
 	 */
 	protected function get_primary_column_name() {
 		$columns = get_column_headers( $this->screen );
 		$default = $this->get_default_primary_column_name();
 
 		/*
-		 * If the primary column doesn't exist,
-		 * fall back to the first non-checkbox column.
+		 * Nếu cột chính không tồn tại,
+		 * sử dụng cột đầu tiên không phải checkbox làm mặc định.
 		 */
 		if ( ! isset( $columns[ $default ] ) ) {
 			$default = self::get_default_primary_column_name();

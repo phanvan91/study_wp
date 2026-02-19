@@ -1,6 +1,6 @@
 <?php
 /**
- * Upgrader API: Plugin_Upgrader_Skin class
+ * API Nâng cấp: Lớp Plugin_Upgrader_Skin
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -8,17 +8,17 @@
  */
 
 /**
- * Plugin Upgrader Skin for WordPress Plugin Upgrades.
+ * Giao diện nâng cấp plugin cho việc nâng cấp plugin WordPress.
  *
  * @since 2.8.0
- * @since 4.6.0 Moved to its own file from wp-admin/includes/class-wp-upgrader-skins.php.
+ * @since 4.6.0 Được chuyển sang file riêng từ wp-admin/includes/class-wp-upgrader-skins.php.
  *
  * @see WP_Upgrader_Skin
  */
 class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 
 	/**
-	 * Holds the plugin slug in the Plugin Directory.
+	 * Lưu trữ slug plugin trong Thư mục Plugin.
 	 *
 	 * @since 2.8.0
 	 *
@@ -27,7 +27,7 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 	public $plugin = '';
 
 	/**
-	 * Whether the plugin is active.
+	 * Plugin có đang hoạt động hay không.
 	 *
 	 * @since 2.8.0
 	 *
@@ -36,7 +36,7 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 	public $plugin_active = false;
 
 	/**
-	 * Whether the plugin is active for the entire network.
+	 * Plugin có đang hoạt động cho toàn bộ mạng hay không.
 	 *
 	 * @since 2.8.0
 	 *
@@ -45,14 +45,14 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 	public $plugin_network_active = false;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * Sets up the plugin upgrader skin.
+	 * Thiết lập giao diện nâng cấp plugin.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $args Optional. The plugin upgrader skin arguments to
-	 *                    override default options. Default empty array.
+	 * @param array $args Tùy chọn. Các tham số giao diện nâng cấp plugin
+	 *                    để ghi đè các tùy chọn mặc định. Mặc định mảng rỗng.
 	 */
 	public function __construct( $args = array() ) {
 		$defaults = array(
@@ -72,14 +72,14 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Performs an action following a single plugin update.
+	 * Thực hiện hành động sau khi cập nhật một plugin.
 	 *
 	 * @since 2.8.0
 	 */
 	public function after() {
 		$this->plugin = $this->upgrader->plugin_info();
 		if ( ! empty( $this->plugin ) && ! is_wp_error( $this->result ) && $this->plugin_active ) {
-			// Currently used only when JS is off for a single plugin update?
+			// Hiện chỉ được sử dụng khi JS bị tắt cho cập nhật một plugin?
 			printf(
 				'<iframe title="%s" style="border:0;overflow:hidden" width="100%%" height="170" src="%s"></iframe>',
 				esc_attr__( 'Update progress' ),
@@ -107,12 +107,12 @@ class Plugin_Upgrader_Skin extends WP_Upgrader_Skin {
 		}
 
 		/**
-		 * Filters the list of action links available following a single plugin update.
+		 * Lọc danh sách liên kết hành động có sẵn sau khi cập nhật một plugin.
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param string[] $update_actions Array of plugin action links.
-		 * @param string   $plugin         Path to the plugin file relative to the plugins directory.
+		 * @param string[] $update_actions Mảng các liên kết hành động plugin.
+		 * @param string   $plugin         Đường dẫn tới tệp plugin tương đối so với thư mục plugin.
 		 */
 		$update_actions = apply_filters( 'update_plugin_complete_actions', $update_actions, $this->plugin );
 

@@ -1,54 +1,54 @@
 <?php
 /**
- * WordPress Post Thumbnail Template Functions.
+ * Các hàm Template Ảnh đại diện Bài viết WordPress.
  *
- * Support for post thumbnails.
- * Theme's functions.php must call add_theme_support( 'post-thumbnails' ) to use these.
+ * Hỗ trợ ảnh đại diện bài viết.
+ * Tệp functions.php của theme phải gọi add_theme_support( 'post-thumbnails' ) để sử dụng.
  *
  * @package WordPress
  * @subpackage Template
  */
 
 /**
- * Determines whether a post has an image attached.
+ * Xác định xem bài viết có hình ảnh đính kèm hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Thẻ điều kiện} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 2.9.0
- * @since 4.4.0 `$post` can be a post ID or WP_Post object.
+ * @since 4.4.0 `$post` có thể là ID bài viết hoặc đối tượng WP_Post.
  *
- * @param int|WP_Post|null $post Optional. Post ID or WP_Post object. Default is global `$post`.
- * @return bool Whether the post has an image attached.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là `$post` toàn cục.
+ * @return bool Bài viết có hình ảnh đính kèm hay không.
  */
 function has_post_thumbnail( $post = null ) {
 	$thumbnail_id  = get_post_thumbnail_id( $post );
 	$has_thumbnail = (bool) $thumbnail_id;
 
 	/**
-	 * Filters whether a post has a post thumbnail.
+	 * Lọc kết quả kiểm tra bài viết có ảnh đại diện hay không.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param bool             $has_thumbnail true if the post has a post thumbnail, otherwise false.
-	 * @param int|WP_Post|null $post          Post ID or WP_Post object. Default is global `$post`.
-	 * @param int|false        $thumbnail_id  Post thumbnail ID or false if the post does not exist.
+	 * @param bool             $has_thumbnail true nếu bài viết có ảnh đại diện, ngược lại false.
+	 * @param int|WP_Post|null $post          ID bài viết hoặc đối tượng WP_Post. Mặc định là `$post` toàn cục.
+	 * @param int|false        $thumbnail_id  ID ảnh đại diện hoặc false nếu bài viết không tồn tại.
 	 */
 	return (bool) apply_filters( 'has_post_thumbnail', $has_thumbnail, $post, $thumbnail_id );
 }
 
 /**
- * Retrieves the post thumbnail ID.
+ * Lấy ID ảnh đại diện của bài viết.
  *
  * @since 2.9.0
- * @since 4.4.0 `$post` can be a post ID or WP_Post object.
- * @since 5.5.0 The return value for a non-existing post
- *              was changed to false instead of an empty string.
+ * @since 4.4.0 `$post` có thể là ID bài viết hoặc đối tượng WP_Post.
+ * @since 5.5.0 Giá trị trả về cho bài viết không tồn tại
+ *              đã được thay đổi thành false thay vì chuỗi rỗng.
  *
- * @param int|WP_Post|null $post Optional. Post ID or WP_Post object. Default is global `$post`.
- * @return int|false Post thumbnail ID (which can be 0 if the thumbnail is not set),
- *                   or false if the post does not exist.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là `$post` toàn cục.
+ * @return int|false ID ảnh đại diện bài viết (có thể là 0 nếu chưa đặt ảnh đại diện),
+ *                   hoặc false nếu bài viết không tồn tại.
  */
 function get_post_thumbnail_id( $post = null ) {
 	$post = get_post( $post );
@@ -60,46 +60,47 @@ function get_post_thumbnail_id( $post = null ) {
 	$thumbnail_id = (int) get_post_meta( $post->ID, '_thumbnail_id', true );
 
 	/**
-	 * Filters the post thumbnail ID.
+	 * Lọc ID ảnh đại diện bài viết.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param int|false        $thumbnail_id Post thumbnail ID or false if the post does not exist.
-	 * @param int|WP_Post|null $post         Post ID or WP_Post object. Default is global `$post`.
+	 * @param int|false        $thumbnail_id ID ảnh đại diện hoặc false nếu bài viết không tồn tại.
+	 * @param int|WP_Post|null $post         ID bài viết hoặc đối tượng WP_Post. Mặc định là `$post` toàn cục.
 	 */
 	return (int) apply_filters( 'post_thumbnail_id', $thumbnail_id, $post );
 }
 
 /**
- * Displays the post thumbnail.
+ * Hiển thị ảnh đại diện bài viết.
  *
- * When a theme adds 'post-thumbnail' support, a special 'post-thumbnail' image size
- * is registered, which differs from the 'thumbnail' image size managed via the
- * Settings > Media screen.
+ * Khi theme thêm hỗ trợ 'post-thumbnail', một kích thước hình ảnh đặc biệt 'post-thumbnail'
+ * được đăng ký, khác với kích thước hình ảnh 'thumbnail' được quản lý qua
+ * màn hình Cài đặt > Phương tiện.
  *
- * When using the_post_thumbnail() or related functions, the 'post-thumbnail' image
- * size is used by default, though a different size can be specified instead as needed.
+ * Khi sử dụng the_post_thumbnail() hoặc các hàm liên quan, kích thước hình ảnh 'post-thumbnail'
+ * được sử dụng mặc định, mặc dù có thể chỉ định kích thước khác nếu cần.
  *
  * @since 2.9.0
  *
  * @see get_the_post_thumbnail()
  *
- * @param string|int[] $size Optional. Image size. Accepts any registered image size name, or an array of
- *                           width and height values in pixels (in that order). Default 'post-thumbnail'.
- * @param string|array $attr Optional. Query string or array of attributes. Default empty.
+ * @param string|int[] $size Tùy chọn. Kích thước hình ảnh. Chấp nhận bất kỳ tên kích thước hình ảnh đã đăng ký,
+ *                           hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+ *                           Mặc định 'post-thumbnail'.
+ * @param string|array $attr Tùy chọn. Chuỗi truy vấn hoặc mảng thuộc tính. Mặc định rỗng.
  */
 function the_post_thumbnail( $size = 'post-thumbnail', $attr = '' ) {
 	echo get_the_post_thumbnail( null, $size, $attr );
 }
 
 /**
- * Updates cache for thumbnails in the current loop.
+ * Cập nhật cache cho ảnh đại diện trong vòng lặp hiện tại.
  *
  * @since 3.2.0
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng WordPress Query.
  *
- * @param WP_Query|null $wp_query Optional. A WP_Query instance. Defaults to the $wp_query global.
+ * @param WP_Query|null $wp_query Tùy chọn. Một thể hiện WP_Query. Mặc định là biến toàn cục $wp_query.
  */
 function update_post_thumbnail_cache( $wp_query = null ) {
 	if ( ! $wp_query ) {
@@ -113,11 +114,11 @@ function update_post_thumbnail_cache( $wp_query = null ) {
 	$thumb_ids = array();
 
 	/*
-	 * $wp_query may contain an array of post objects or post IDs.
+	 * $wp_query có thể chứa mảng đối tượng bài viết hoặc ID bài viết.
 	 *
-	 * This ensures the cache is primed for all post objects to avoid
-	 * `get_post()` calls in `get_the_post_thumbnail()` triggering an
-	 * additional database call for each post.
+	 * Điều này đảm bảo cache được chuẩn bị cho tất cả đối tượng bài viết để tránh
+	 * các lệnh gọi `get_post()` trong `get_the_post_thumbnail()` kích hoạt
+	 * truy vấn cơ sở dữ liệu bổ sung cho mỗi bài viết.
 	 */
 	$parent_post_ids = array();
 	foreach ( $wp_query->posts as $post ) {
@@ -144,23 +145,24 @@ function update_post_thumbnail_cache( $wp_query = null ) {
 }
 
 /**
- * Retrieves the post thumbnail.
+ * Lấy ảnh đại diện bài viết.
  *
- * When a theme adds 'post-thumbnail' support, a special 'post-thumbnail' image size
- * is registered, which differs from the 'thumbnail' image size managed via the
- * Settings > Media screen.
+ * Khi theme thêm hỗ trợ 'post-thumbnail', một kích thước hình ảnh đặc biệt 'post-thumbnail'
+ * được đăng ký, khác với kích thước hình ảnh 'thumbnail' được quản lý qua
+ * màn hình Cài đặt > Phương tiện.
  *
- * When using the_post_thumbnail() or related functions, the 'post-thumbnail' image
- * size is used by default, though a different size can be specified instead as needed.
+ * Khi sử dụng the_post_thumbnail() hoặc các hàm liên quan, kích thước hình ảnh 'post-thumbnail'
+ * được sử dụng mặc định, mặc dù có thể chỉ định kích thước khác nếu cần.
  *
  * @since 2.9.0
- * @since 4.4.0 `$post` can be a post ID or WP_Post object.
+ * @since 4.4.0 `$post` có thể là ID bài viết hoặc đối tượng WP_Post.
  *
- * @param int|WP_Post|null $post Optional. Post ID or WP_Post object.  Default is global `$post`.
- * @param string|int[]     $size Optional. Image size. Accepts any registered image size name, or an array of
- *                               width and height values in pixels (in that order). Default 'post-thumbnail'.
- * @param string|array     $attr Optional. Query string or array of attributes. Default empty.
- * @return string The post thumbnail image tag.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là `$post` toàn cục.
+ * @param string|int[]     $size Tùy chọn. Kích thước hình ảnh. Chấp nhận bất kỳ tên kích thước hình ảnh đã đăng ký,
+ *                               hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+ *                               Mặc định 'post-thumbnail'.
+ * @param string|array     $attr Tùy chọn. Chuỗi truy vấn hoặc mảng thuộc tính. Mặc định rỗng.
+ * @return string Thẻ hình ảnh ảnh đại diện bài viết.
  */
 function get_the_post_thumbnail( $post = null, $size = 'post-thumbnail', $attr = '' ) {
 	$post = get_post( $post );
@@ -172,30 +174,30 @@ function get_the_post_thumbnail( $post = null, $size = 'post-thumbnail', $attr =
 	$post_thumbnail_id = get_post_thumbnail_id( $post );
 
 	/**
-	 * Filters the post thumbnail size.
+	 * Lọc kích thước ảnh đại diện bài viết.
 	 *
 	 * @since 2.9.0
-	 * @since 4.9.0 Added the `$post_id` parameter.
+	 * @since 4.9.0 Thêm tham số `$post_id`.
 	 *
-	 * @param string|int[] $size    Requested image size. Can be any registered image size name, or
-	 *                              an array of width and height values in pixels (in that order).
-	 * @param int          $post_id The post ID.
+	 * @param string|int[] $size    Kích thước hình ảnh yêu cầu. Có thể là bất kỳ tên kích thước đã đăng ký,
+	 *                              hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+	 * @param int          $post_id ID bài viết.
 	 */
 	$size = apply_filters( 'post_thumbnail_size', $size, $post->ID );
 
 	if ( $post_thumbnail_id ) {
 
 		/**
-		 * Fires before fetching the post thumbnail HTML.
+		 * Kích hoạt trước khi lấy HTML ảnh đại diện bài viết.
 		 *
-		 * Provides "just in time" filtering of all filters in wp_get_attachment_image().
+		 * Cung cấp bộ lọc "đúng lúc" cho tất cả bộ lọc trong wp_get_attachment_image().
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param int          $post_id           The post ID.
-		 * @param int          $post_thumbnail_id The post thumbnail ID.
-		 * @param string|int[] $size              Requested image size. Can be any registered image size name, or
-		 *                                        an array of width and height values in pixels (in that order).
+		 * @param int          $post_id           ID bài viết.
+		 * @param int          $post_thumbnail_id ID ảnh đại diện bài viết.
+		 * @param string|int[] $size              Kích thước hình ảnh yêu cầu. Có thể là bất kỳ tên kích thước đã đăng ký,
+		 *                                        hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 		 */
 		do_action( 'begin_fetch_post_thumbnail_html', $post->ID, $post_thumbnail_id, $size );
 
@@ -206,14 +208,14 @@ function get_the_post_thumbnail( $post = null, $size = 'post-thumbnail', $attr =
 		$html = wp_get_attachment_image( $post_thumbnail_id, $size, false, $attr );
 
 		/**
-		 * Fires after fetching the post thumbnail HTML.
+		 * Kích hoạt sau khi lấy HTML ảnh đại diện bài viết.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param int          $post_id           The post ID.
-		 * @param int          $post_thumbnail_id The post thumbnail ID.
-		 * @param string|int[] $size              Requested image size. Can be any registered image size name, or
-		 *                                        an array of width and height values in pixels (in that order).
+		 * @param int          $post_id           ID bài viết.
+		 * @param int          $post_thumbnail_id ID ảnh đại diện bài viết.
+		 * @param string|int[] $size              Kích thước hình ảnh yêu cầu. Có thể là bất kỳ tên kích thước đã đăng ký,
+		 *                                        hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
 		 */
 		do_action( 'end_fetch_post_thumbnail_html', $post->ID, $post_thumbnail_id, $size );
 
@@ -222,30 +224,30 @@ function get_the_post_thumbnail( $post = null, $size = 'post-thumbnail', $attr =
 	}
 
 	/**
-	 * Filters the post thumbnail HTML.
+	 * Lọc HTML ảnh đại diện bài viết.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string       $html              The post thumbnail HTML.
-	 * @param int          $post_id           The post ID.
-	 * @param int          $post_thumbnail_id The post thumbnail ID, or 0 if there isn't one.
-	 * @param string|int[] $size              Requested image size. Can be any registered image size name, or
-	 *                                        an array of width and height values in pixels (in that order).
-	 * @param string|array $attr              Query string or array of attributes.
+	 * @param string       $html              HTML ảnh đại diện bài viết.
+	 * @param int          $post_id           ID bài viết.
+	 * @param int          $post_thumbnail_id ID ảnh đại diện bài viết, hoặc 0 nếu không có.
+	 * @param string|int[] $size              Kích thước hình ảnh yêu cầu. Có thể là bất kỳ tên kích thước đã đăng ký,
+	 *                                        hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+	 * @param string|array $attr              Chuỗi truy vấn hoặc mảng thuộc tính.
 	 */
 	return apply_filters( 'post_thumbnail_html', $html, $post->ID, $post_thumbnail_id, $size, $attr );
 }
 
 /**
- * Returns the post thumbnail URL.
+ * Trả về URL ảnh đại diện bài viết.
  *
  * @since 4.4.0
  *
- * @param int|WP_Post|null $post Optional. Post ID or WP_Post object.  Default is global `$post`.
- * @param string|int[]     $size Optional. Registered image size to retrieve the source for or a flat array
- *                               of height and width dimensions. Default 'post-thumbnail'.
- * @return string|false Post thumbnail URL or false if no image is available. If `$size` does not match
- *                      any registered image size, the original image URL will be returned.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là `$post` toàn cục.
+ * @param string|int[]     $size Tùy chọn. Kích thước hình ảnh đã đăng ký để lấy nguồn hoặc mảng phẳng
+ *                               giá trị chiều cao và chiều rộng. Mặc định 'post-thumbnail'.
+ * @return string|false URL ảnh đại diện bài viết hoặc false nếu không có hình ảnh. Nếu `$size` không khớp
+ *                      với bất kỳ kích thước hình ảnh đã đăng ký nào, URL hình ảnh gốc sẽ được trả về.
  */
 function get_the_post_thumbnail_url( $post = null, $size = 'post-thumbnail' ) {
 	$post_thumbnail_id = get_post_thumbnail_id( $post );
@@ -257,26 +259,26 @@ function get_the_post_thumbnail_url( $post = null, $size = 'post-thumbnail' ) {
 	$thumbnail_url = wp_get_attachment_image_url( $post_thumbnail_id, $size );
 
 	/**
-	 * Filters the post thumbnail URL.
+	 * Lọc URL ảnh đại diện bài viết.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param string|false     $thumbnail_url Post thumbnail URL or false if the post does not exist.
-	 * @param int|WP_Post|null $post          Post ID or WP_Post object. Default is global `$post`.
-	 * @param string|int[]     $size          Registered image size to retrieve the source for or a flat array
-	 *                                        of height and width dimensions. Default 'post-thumbnail'.
+	 * @param string|false     $thumbnail_url URL ảnh đại diện hoặc false nếu bài viết không tồn tại.
+	 * @param int|WP_Post|null $post          ID bài viết hoặc đối tượng WP_Post. Mặc định là `$post` toàn cục.
+	 * @param string|int[]     $size          Kích thước hình ảnh đã đăng ký để lấy nguồn hoặc mảng phẳng
+	 *                                        giá trị chiều cao và chiều rộng. Mặc định 'post-thumbnail'.
 	 */
 	return apply_filters( 'post_thumbnail_url', $thumbnail_url, $post, $size );
 }
 
 /**
- * Displays the post thumbnail URL.
+ * Hiển thị URL ảnh đại diện bài viết.
  *
  * @since 4.4.0
  *
- * @param string|int[] $size Optional. Image size to use. Accepts any valid image size,
- *                           or an array of width and height values in pixels (in that order).
- *                           Default 'post-thumbnail'.
+ * @param string|int[] $size Tùy chọn. Kích thước hình ảnh sử dụng. Chấp nhận bất kỳ kích thước hình ảnh hợp lệ,
+ *                           hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+ *                           Mặc định 'post-thumbnail'.
  */
 function the_post_thumbnail_url( $size = 'post-thumbnail' ) {
 	$url = get_the_post_thumbnail_url( null, $size );
@@ -287,12 +289,12 @@ function the_post_thumbnail_url( $size = 'post-thumbnail' ) {
 }
 
 /**
- * Returns the post thumbnail caption.
+ * Trả về chú thích ảnh đại diện bài viết.
  *
  * @since 4.6.0
  *
- * @param int|WP_Post|null $post Optional. Post ID or WP_Post object. Default is global `$post`.
- * @return string Post thumbnail caption.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là `$post` toàn cục.
+ * @return string Chú thích ảnh đại diện bài viết.
  */
 function get_the_post_thumbnail_caption( $post = null ) {
 	$post_thumbnail_id = get_post_thumbnail_id( $post );
@@ -311,19 +313,19 @@ function get_the_post_thumbnail_caption( $post = null ) {
 }
 
 /**
- * Displays the post thumbnail caption.
+ * Hiển thị chú thích ảnh đại diện bài viết.
  *
  * @since 4.6.0
  *
- * @param int|WP_Post|null $post Optional. Post ID or WP_Post object. Default is global `$post`.
+ * @param int|WP_Post|null $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là `$post` toàn cục.
  */
 function the_post_thumbnail_caption( $post = null ) {
 	/**
-	 * Filters the displayed post thumbnail caption.
+	 * Lọc chú thích ảnh đại diện bài viết được hiển thị.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param string $caption Caption for the given attachment.
+	 * @param string $caption Chú thích cho tệp đính kèm đã cho.
 	 */
 	echo apply_filters( 'the_post_thumbnail_caption', get_the_post_thumbnail_caption( $post ) );
 }

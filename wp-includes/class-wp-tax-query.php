@@ -1,6 +1,6 @@
 <?php
 /**
- * Taxonomy API: WP_Tax_Query class
+ * API Taxonomy: Lớp WP_Tax_Query
  *
  * @package WordPress
  * @subpackage Taxonomy
@@ -8,14 +8,13 @@
  */
 
 /**
- * Core class used to implement taxonomy queries for the Taxonomy API.
+ * Lớp lõi dùng để triển khai truy vấn taxonomy cho API Taxonomy.
  *
- * Used for generating SQL clauses that filter a primary query according to object
- * taxonomy terms.
+ * Dùng để tạo các mệnh đề SQL lọc truy vấn chính theo các term taxonomy của đối tượng.
  *
- * WP_Tax_Query is a helper that allows primary query classes, such as WP_Query, to filter
- * their results by object metadata, by generating `JOIN` and `WHERE` subclauses to be
- * attached to the primary SQL query string.
+ * WP_Tax_Query là trình trợ giúp cho phép các lớp truy vấn chính, như WP_Query, lọc
+ * kết quả theo metadata đối tượng, bằng cách tạo các mệnh đề con `JOIN` và `WHERE` để
+ * gắn vào chuỗi truy vấn SQL chính.
  *
  * @since 3.1.0
  */
@@ -23,9 +22,9 @@
 class WP_Tax_Query {
 
 	/**
-	 * Array of taxonomy queries.
+	 * Mảng các truy vấn taxonomy.
 	 *
-	 * See WP_Tax_Query::__construct() for information on tax query arguments.
+	 * Xem WP_Tax_Query::__construct() để biết thông tin về tham số truy vấn tax.
 	 *
 	 * @since 3.1.0
 	 * @var array
@@ -33,7 +32,7 @@ class WP_Tax_Query {
 	public $queries = array();
 
 	/**
-	 * The relation between the queries. Can be one of 'AND' or 'OR'.
+	 * Mối quan hệ giữa các truy vấn. Có thể là 'AND' hoặc 'OR'.
 	 *
 	 * @since 3.1.0
 	 * @var string
@@ -41,7 +40,7 @@ class WP_Tax_Query {
 	public $relation;
 
 	/**
-	 * Standard response when the query should not return any rows.
+	 * Phản hồi chuẩn khi truy vấn không nên trả về bất kỳ hàng nào.
 	 *
 	 * @since 3.2.0
 	 * @var string
@@ -52,7 +51,7 @@ class WP_Tax_Query {
 	);
 
 	/**
-	 * A flat list of table aliases used in the JOIN clauses.
+	 * Danh sách phẳng các bí danh bảng được sử dụng trong các mệnh đề JOIN.
 	 *
 	 * @since 4.1.0
 	 * @var array
@@ -60,10 +59,10 @@ class WP_Tax_Query {
 	protected $table_aliases = array();
 
 	/**
-	 * Terms and taxonomies fetched by this query.
+	 * Các term và taxonomy được lấy bởi truy vấn này.
 	 *
-	 * We store this data in a flat array because they are referenced in a
-	 * number of places by WP_Query.
+	 * Chúng ta lưu dữ liệu này trong mảng phẳng vì chúng được tham chiếu ở
+	 * nhiều nơi bởi WP_Query.
 	 *
 	 * @since 4.1.0
 	 * @var array
@@ -71,7 +70,7 @@ class WP_Tax_Query {
 	public $queried_terms = array();
 
 	/**
-	 * Database table that where the metadata's objects are stored (eg $wpdb->users).
+	 * Bảng cơ sở dữ liệu nơi lưu trữ các đối tượng của metadata (vd: $wpdb->users).
 	 *
 	 * @since 4.1.0
 	 * @var string
@@ -79,7 +78,7 @@ class WP_Tax_Query {
 	public $primary_table;
 
 	/**
-	 * Column in 'primary_table' that represents the ID of the object.
+	 * Cột trong 'primary_table' đại diện cho ID của đối tượng.
 	 *
 	 * @since 4.1.0
 	 * @var string
@@ -87,28 +86,28 @@ class WP_Tax_Query {
 	public $primary_id_column;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 3.1.0
-	 * @since 4.1.0 Added support for `$operator` 'NOT EXISTS' and 'EXISTS' values.
+	 * @since 4.1.0 Thêm hỗ trợ cho giá trị 'NOT EXISTS' và 'EXISTS' của `$operator`.
 	 *
 	 * @param array $tax_query {
-	 *     Array of taxonomy query clauses.
+	 *     Mảng các mệnh đề truy vấn taxonomy.
 	 *
-	 *     @type string $relation Optional. The MySQL keyword used to join
-	 *                            the clauses of the query. Accepts 'AND', or 'OR'. Default 'AND'.
+	 *     @type string $relation Tùy chọn. Từ khóa MySQL dùng để nối
+	 *                            các mệnh đề của truy vấn. Chấp nhận 'AND' hoặc 'OR'. Mặc định 'AND'.
 	 *     @type array  ...$0 {
-	 *         An array of first-order clause parameters, or another fully-formed tax query.
+	 *         Mảng tham số mệnh đề bậc một, hoặc một truy vấn tax đầy đủ khác.
 	 *
-	 *         @type string           $taxonomy         Taxonomy being queried. Optional when field=term_taxonomy_id.
-	 *         @type string|int|array $terms            Term or terms to filter by.
-	 *         @type string           $field            Field to match $terms against. Accepts 'term_id', 'slug',
-	 *                                                 'name', or 'term_taxonomy_id'. Default: 'term_id'.
-	 *         @type string           $operator         MySQL operator to be used with $terms in the WHERE clause.
-	 *                                                  Accepts 'AND', 'IN', 'NOT IN', 'EXISTS', 'NOT EXISTS'.
-	 *                                                  Default: 'IN'.
-	 *         @type bool             $include_children Optional. Whether to include child terms.
-	 *                                                  Requires a $taxonomy. Default: true.
+	 *         @type string           $taxonomy         Taxonomy đang được truy vấn. Tùy chọn khi field=term_taxonomy_id.
+	 *         @type string|int|array $terms            Term hoặc các term để lọc.
+	 *         @type string           $field            Trường để so khớp $terms. Chấp nhận 'term_id', 'slug',
+	 *                                                 'name', hoặc 'term_taxonomy_id'. Mặc định: 'term_id'.
+	 *         @type string           $operator         Toán tử MySQL dùng với $terms trong mệnh đề WHERE.
+	 *                                                  Chấp nhận 'AND', 'IN', 'NOT IN', 'EXISTS', 'NOT EXISTS'.
+	 *                                                  Mặc định: 'IN'.
+	 *         @type bool             $include_children Tùy chọn. Có bao gồm các term con hay không.
+	 *                                                  Yêu cầu một $taxonomy. Mặc định: true.
 	 *     }
 	 * }
 	 */
@@ -123,15 +122,15 @@ class WP_Tax_Query {
 	}
 
 	/**
-	 * Ensures the 'tax_query' argument passed to the class constructor is well-formed.
+	 * Đảm bảo tham số 'tax_query' được truyền vào hàm khởi tạo có định dạng đúng.
 	 *
-	 * Ensures that each query-level clause has a 'relation' key, and that
-	 * each first-order clause contains all the necessary keys from `$defaults`.
+	 * Đảm bảo rằng mỗi mệnh đề cấp truy vấn có khóa 'relation', và
+	 * mỗi mệnh đề bậc một chứa tất cả các khóa cần thiết từ `$defaults`.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param array $queries Array of queries clauses.
-	 * @return array Sanitized array of query clauses.
+	 * @param array $queries Mảng các mệnh đề truy vấn.
+	 * @return array Mảng mệnh đề truy vấn đã được làm sạch.
 	 */
 	public function sanitize_query( $queries ) {
 		$cleaned_query = array();
@@ -148,7 +147,7 @@ class WP_Tax_Query {
 			if ( 'relation' === $key ) {
 				$cleaned_query['relation'] = $this->sanitize_relation( $query );
 
-				// First-order clause.
+				// Mệnh đề bậc một.
 			} elseif ( self::is_first_order_clause( $query ) ) {
 
 				$cleaned_clause          = array_merge( $defaults, $query );
@@ -156,8 +155,8 @@ class WP_Tax_Query {
 				$cleaned_query[]         = $cleaned_clause;
 
 				/*
-				 * Keep a copy of the clause in the flate
-				 * $queried_terms array, for use in WP_Query.
+				 * Giữ bản sao của mệnh đề trong mảng phẳng
+				 * $queried_terms, để sử dụng trong WP_Query.
 				 */
 				if ( ! empty( $cleaned_clause['taxonomy'] ) && 'NOT IN' !== $cleaned_clause['operator'] ) {
 					$taxonomy = $cleaned_clause['taxonomy'];
@@ -166,8 +165,8 @@ class WP_Tax_Query {
 					}
 
 					/*
-					 * Backward compatibility: Only store the first
-					 * 'terms' and 'field' found for a given taxonomy.
+					 * Tương thích ngược: Chỉ lưu 'terms' và 'field' đầu tiên
+					 * tìm thấy cho một taxonomy nhất định.
 					 */
 					if ( ! empty( $cleaned_clause['terms'] ) && ! isset( $this->queried_terms[ $taxonomy ]['terms'] ) ) {
 						$this->queried_terms[ $taxonomy ]['terms'] = $cleaned_clause['terms'];
@@ -178,12 +177,12 @@ class WP_Tax_Query {
 					}
 				}
 
-				// Otherwise, it's a nested query, so we recurse.
+				// Nếu không, đây là truy vấn lồng nhau, nên chúng ta đệ quy.
 			} elseif ( is_array( $query ) ) {
 				$cleaned_subquery = $this->sanitize_query( $query );
 
 				if ( ! empty( $cleaned_subquery ) ) {
-					// All queries with children must have a relation.
+					// Tất cả truy vấn có con phải có quan hệ.
 					if ( ! isset( $cleaned_subquery['relation'] ) ) {
 						$cleaned_subquery['relation'] = 'AND';
 					}
@@ -197,12 +196,12 @@ class WP_Tax_Query {
 	}
 
 	/**
-	 * Sanitizes a 'relation' operator.
+	 * Làm sạch toán tử 'relation'.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param string $relation Raw relation key from the query argument.
-	 * @return string Sanitized relation. Either 'AND' or 'OR'.
+	 * @param string $relation Khóa relation thô từ tham số truy vấn.
+	 * @return string Relation đã được làm sạch. Có thể là 'AND' hoặc 'OR'.
 	 */
 	public function sanitize_relation( $relation ) {
 		if ( 'OR' === strtoupper( $relation ) ) {
@@ -213,35 +212,35 @@ class WP_Tax_Query {
 	}
 
 	/**
-	 * Determines whether a clause is first-order.
+	 * Xác định xem một mệnh đề có phải là bậc một hay không.
 	 *
-	 * A "first-order" clause is one that contains any of the first-order
-	 * clause keys ('terms', 'taxonomy', 'include_children', 'field',
-	 * 'operator'). An empty clause also counts as a first-order clause,
-	 * for backward compatibility. Any clause that doesn't meet this is
-	 * determined, by process of elimination, to be a higher-order query.
+	 * Mệnh đề "bậc một" là mệnh đề chứa bất kỳ khóa nào của mệnh đề bậc một
+	 * ('terms', 'taxonomy', 'include_children', 'field', 'operator').
+	 * Mệnh đề rỗng cũng được tính là mệnh đề bậc một, để tương thích ngược.
+	 * Bất kỳ mệnh đề nào không đáp ứng điều này được xác định, bằng cách loại trừ,
+	 * là truy vấn bậc cao hơn.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param array $query Tax query arguments.
-	 * @return bool Whether the query clause is a first-order clause.
+	 * @param array $query Tham số truy vấn tax.
+	 * @return bool Mệnh đề truy vấn có phải là mệnh đề bậc một hay không.
 	 */
 	protected static function is_first_order_clause( $query ) {
 		return is_array( $query ) && ( empty( $query ) || array_key_exists( 'terms', $query ) || array_key_exists( 'taxonomy', $query ) || array_key_exists( 'include_children', $query ) || array_key_exists( 'field', $query ) || array_key_exists( 'operator', $query ) );
 	}
 
 	/**
-	 * Generates SQL clauses to be appended to a main query.
+	 * Tạo các mệnh đề SQL để nối vào truy vấn chính.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $primary_table     Database table where the object being filtered is stored (eg wp_users).
-	 * @param string $primary_id_column ID column for the filtered object in $primary_table.
+	 * @param string $primary_table     Bảng cơ sở dữ liệu nơi đối tượng được lọc được lưu trữ (vd: wp_users).
+	 * @param string $primary_id_column Cột ID cho đối tượng được lọc trong $primary_table.
 	 * @return string[] {
-	 *     Array containing JOIN and WHERE SQL clauses to append to the main query.
+	 *     Mảng chứa các mệnh đề SQL JOIN và WHERE để nối vào truy vấn chính.
 	 *
-	 *     @type string $join  SQL fragment to append to the main JOIN clause.
-	 *     @type string $where SQL fragment to append to the main WHERE clause.
+	 *     @type string $join  Đoạn SQL để nối vào mệnh đề JOIN chính.
+	 *     @type string $where Đoạn SQL để nối vào mệnh đề WHERE chính.
 	 * }
 	 */
 	public function get_sql( $primary_table, $primary_id_column ) {
@@ -252,24 +251,24 @@ class WP_Tax_Query {
 	}
 
 	/**
-	 * Generates SQL clauses to be appended to a main query.
+	 * Tạo các mệnh đề SQL để nối vào truy vấn chính.
 	 *
-	 * Called by the public WP_Tax_Query::get_sql(), this method
-	 * is abstracted out to maintain parity with the other Query classes.
+	 * Được gọi bởi phương thức công khai WP_Tax_Query::get_sql(), phương thức này
+	 * được tách ra để duy trì sự tương đồng với các lớp Query khác.
 	 *
 	 * @since 4.1.0
 	 *
 	 * @return string[] {
-	 *     Array containing JOIN and WHERE SQL clauses to append to the main query.
+	 *     Mảng chứa các mệnh đề SQL JOIN và WHERE để nối vào truy vấn chính.
 	 *
-	 *     @type string $join  SQL fragment to append to the main JOIN clause.
-	 *     @type string $where SQL fragment to append to the main WHERE clause.
+	 *     @type string $join  Đoạn SQL để nối vào mệnh đề JOIN chính.
+	 *     @type string $where Đoạn SQL để nối vào mệnh đề WHERE chính.
 	 * }
 	 */
 	protected function get_sql_clauses() {
 		/*
-		 * $queries are passed by reference to get_sql_for_query() for recursion.
-		 * To keep $this->queries unaltered, pass a copy.
+		 * $queries được truyền bằng tham chiếu cho get_sql_for_query() để đệ quy.
+		 * Để giữ $this->queries không thay đổi, truyền một bản sao.
 		 */
 		$queries = $this->queries;
 		$sql     = $this->get_sql_for_query( $queries );
@@ -282,21 +281,21 @@ class WP_Tax_Query {
 	}
 
 	/**
-	 * Generates SQL clauses for a single query array.
+	 * Tạo các mệnh đề SQL cho một mảng truy vấn đơn.
 	 *
-	 * If nested subqueries are found, this method recurses the tree to
-	 * produce the properly nested SQL.
+	 * Nếu tìm thấy các truy vấn con lồng nhau, phương thức này đệ quy cây
+	 * để tạo SQL lồng nhau đúng cách.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param array $query Query to parse (passed by reference).
-	 * @param int   $depth Optional. Number of tree levels deep we currently are.
-	 *                     Used to calculate indentation. Default 0.
+	 * @param array $query Truy vấn cần phân tích (truyền bằng tham chiếu).
+	 * @param int   $depth Tùy chọn. Số cấp độ cây sâu hiện tại.
+	 *                     Dùng để tính thụt lề. Mặc định 0.
 	 * @return string[] {
-	 *     Array containing JOIN and WHERE SQL clauses to append to a single query array.
+	 *     Mảng chứa các mệnh đề SQL JOIN và WHERE để nối vào một mảng truy vấn đơn.
 	 *
-	 *     @type string $join  SQL fragment to append to the main JOIN clause.
-	 *     @type string $where SQL fragment to append to the main WHERE clause.
+	 *     @type string $join  Đoạn SQL để nối vào mệnh đề JOIN chính.
+	 *     @type string $where Đoạn SQL để nối vào mệnh đề WHERE chính.
 	 * }
 	 */
 	protected function get_sql_for_query( &$query, $depth = 0 ) {
@@ -320,7 +319,7 @@ class WP_Tax_Query {
 				$relation = $query['relation'];
 			} elseif ( is_array( $clause ) ) {
 
-				// This is a first-order clause.
+				// Đây là mệnh đề bậc một.
 				if ( $this->is_first_order_clause( $clause ) ) {
 					$clause_sql = $this->get_sql_for_clause( $clause, $query );
 
@@ -334,7 +333,7 @@ class WP_Tax_Query {
 					}
 
 					$sql_chunks['join'] = array_merge( $sql_chunks['join'], $clause_sql['join'] );
-					// This is a subquery, so we recurse.
+					// Đây là truy vấn con, nên chúng ta đệ quy.
 				} else {
 					$clause_sql = $this->get_sql_for_query( $clause, $depth + 1 );
 
@@ -344,7 +343,7 @@ class WP_Tax_Query {
 			}
 		}
 
-		// Filter to remove empties.
+		// Lọc để loại bỏ các phần tử rỗng.
 		$sql_chunks['join']  = array_filter( $sql_chunks['join'] );
 		$sql_chunks['where'] = array_filter( $sql_chunks['where'] );
 
@@ -352,12 +351,12 @@ class WP_Tax_Query {
 			$relation = 'AND';
 		}
 
-		// Filter duplicate JOIN clauses and combine into a single string.
+		// Lọc các mệnh đề JOIN trùng lặp và kết hợp thành một chuỗi đơn.
 		if ( ! empty( $sql_chunks['join'] ) ) {
 			$sql['join'] = implode( ' ', array_unique( $sql_chunks['join'] ) );
 		}
 
-		// Generate a single WHERE clause with proper brackets and indentation.
+		// Tạo một mệnh đề WHERE đơn với ngoặc và thụt lề đúng cách.
 		if ( ! empty( $sql_chunks['where'] ) ) {
 			$sql['where'] = '( ' . "\n  " . $indent . implode( ' ' . "\n  " . $indent . $relation . ' ' . "\n  " . $indent, $sql_chunks['where'] ) . "\n" . $indent . ')';
 		}
@@ -366,19 +365,19 @@ class WP_Tax_Query {
 	}
 
 	/**
-	 * Generates SQL JOIN and WHERE clauses for a "first-order" query clause.
+	 * Tạo các mệnh đề SQL JOIN và WHERE cho mệnh đề truy vấn "bậc một".
 	 *
 	 * @since 4.1.0
 	 *
-	 * @global wpdb $wpdb The WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param array $clause       Query clause (passed by reference).
-	 * @param array $parent_query Parent query array.
+	 * @param array $clause       Mệnh đề truy vấn (truyền bằng tham chiếu).
+	 * @param array $parent_query Mảng truy vấn cha.
 	 * @return array {
-	 *     Array containing JOIN and WHERE SQL clauses to append to a first-order query.
+	 *     Mảng chứa các mệnh đề SQL JOIN và WHERE để nối vào truy vấn bậc một.
 	 *
-	 *     @type string[] $join  Array of SQL fragments to append to the main JOIN clause.
-	 *     @type string[] $where Array of SQL fragments to append to the main WHERE clause.
+	 *     @type string[] $join  Mảng các đoạn SQL để nối vào mệnh đề JOIN chính.
+	 *     @type string[] $where Mảng các đoạn SQL để nối vào mệnh đề WHERE chính.
 	 * }
 	 */
 	public function get_sql_for_clause( &$clause, $parent_query ) {
@@ -410,18 +409,18 @@ class WP_Tax_Query {
 			$terms = implode( ',', $terms );
 
 			/*
-			 * Before creating another table join, see if this clause has a
-			 * sibling with an existing join that can be shared.
+			 * Trước khi tạo một join bảng khác, kiểm tra xem mệnh đề này có
+			 * mệnh đề anh em với join hiện có có thể chia sẻ không.
 			 */
 			$alias = $this->find_compatible_table_alias( $clause, $parent_query );
 			if ( false === $alias ) {
 				$i     = count( $this->table_aliases );
 				$alias = $i ? 'tt' . $i : $wpdb->term_relationships;
 
-				// Store the alias as part of a flat array to build future iterators.
+				// Lưu bí danh như phần của mảng phẳng để xây dựng các bộ lặp trong tương lai.
 				$this->table_aliases[] = $alias;
 
-				// Store the alias with this clause, so later siblings can use it.
+				// Lưu bí danh với mệnh đề này, để các mệnh đề anh em sau có thể sử dụng.
 				$clause['alias'] = $alias;
 
 				$join .= " LEFT JOIN $wpdb->term_relationships";
@@ -484,33 +483,32 @@ class WP_Tax_Query {
 	}
 
 	/**
-	 * Identifies an existing table alias that is compatible with the current query clause.
+	 * Xác định bí danh bảng hiện có tương thích với mệnh đề truy vấn hiện tại.
 	 *
-	 * We avoid unnecessary table joins by allowing each clause to look for
-	 * an existing table alias that is compatible with the query that it
-	 * needs to perform.
+	 * Chúng ta tránh các join bảng không cần thiết bằng cách cho phép mỗi mệnh đề
+	 * tìm kiếm bí danh bảng hiện có tương thích với truy vấn mà nó cần thực hiện.
 	 *
-	 * An existing alias is compatible if (a) it is a sibling of `$clause`
-	 * (ie, it's under the scope of the same relation), and (b) the combination
-	 * of operator and relation between the clauses allows for a shared table
-	 * join. In the case of WP_Tax_Query, this only applies to 'IN'
-	 * clauses that are connected by the relation 'OR'.
+	 * Bí danh hiện có tương thích nếu (a) nó là anh em của `$clause`
+	 * (tức là nằm trong phạm vi của cùng một relation), và (b) sự kết hợp
+	 * của toán tử và relation giữa các mệnh đề cho phép chia sẻ join bảng.
+	 * Trong trường hợp WP_Tax_Query, điều này chỉ áp dụng cho các mệnh đề
+	 * 'IN' được kết nối bởi relation 'OR'.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param array $clause       Query clause.
-	 * @param array $parent_query Parent query of $clause.
-	 * @return string|false Table alias if found, otherwise false.
+	 * @param array $clause       Mệnh đề truy vấn.
+	 * @param array $parent_query Truy vấn cha của $clause.
+	 * @return string|false Bí danh bảng nếu tìm thấy, ngược lại false.
 	 */
 	protected function find_compatible_table_alias( $clause, $parent_query ) {
 		$alias = false;
 
-		// Confidence check. Only IN queries use the JOIN syntax.
+		// Kiểm tra xác nhận. Chỉ các truy vấn IN sử dụng cú pháp JOIN.
 		if ( ! isset( $clause['operator'] ) || 'IN' !== $clause['operator'] ) {
 			return $alias;
 		}
 
-		// Since we're only checking IN queries, we're only concerned with OR relations.
+		// Vì chúng ta chỉ kiểm tra truy vấn IN, nên chỉ quan tâm đến relation OR.
 		if ( ! isset( $parent_query['relation'] ) || 'OR' !== $parent_query['relation'] ) {
 			return $alias;
 		}
@@ -526,7 +524,7 @@ class WP_Tax_Query {
 				continue;
 			}
 
-			// The sibling must both have compatible operator to share its alias.
+			// Mệnh đề anh em phải có toán tử tương thích để chia sẻ bí danh.
 			if ( in_array( strtoupper( $sibling['operator'] ), $compatible_operators, true ) ) {
 				$alias = preg_replace( '/\W/', '_', $sibling['alias'] );
 				break;
@@ -537,11 +535,11 @@ class WP_Tax_Query {
 	}
 
 	/**
-	 * Validates a single query.
+	 * Xác thực một truy vấn đơn.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array $query The single query. Passed by reference.
+	 * @param array $query Truy vấn đơn. Truyền bằng tham chiếu.
 	 */
 	private function clean_query( &$query ) {
 		if ( empty( $query['taxonomy'] ) ) {
@@ -550,7 +548,7 @@ class WP_Tax_Query {
 				return;
 			}
 
-			// So long as there are shared terms, 'include_children' requires that a taxonomy is set.
+			// Miễn là có các term được chia sẻ, 'include_children' yêu cầu phải đặt taxonomy.
 			$query['include_children'] = false;
 		} elseif ( ! taxonomy_exists( $query['taxonomy'] ) ) {
 			$query = new WP_Error( 'invalid_taxonomy', __( 'Invalid taxonomy.' ) );
@@ -582,16 +580,16 @@ class WP_Tax_Query {
 	}
 
 	/**
-	 * Transforms a single query, from one field to another.
+	 * Chuyển đổi một truy vấn đơn, từ trường này sang trường khác.
 	 *
-	 * Operates on the `$query` object by reference. In the case of error,
-	 * `$query` is converted to a WP_Error object.
+	 * Thao tác trên đối tượng `$query` bằng tham chiếu. Trong trường hợp lỗi,
+	 * `$query` được chuyển đổi thành đối tượng WP_Error.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param array  $query           The single query. Passed by reference.
-	 * @param string $resulting_field The resulting field. Accepts 'slug', 'name', 'term_taxonomy_id',
-	 *                                or 'term_id'. Default 'term_id'.
+	 * @param array  $query           Truy vấn đơn. Truyền bằng tham chiếu.
+	 * @param string $resulting_field Trường kết quả. Chấp nhận 'slug', 'name', 'term_taxonomy_id',
+	 *                                hoặc 'term_id'. Mặc định 'term_id'.
 	 */
 	public function transform_query( &$query, $resulting_field ) {
 		if ( empty( $query['terms'] ) ) {
@@ -604,7 +602,7 @@ class WP_Tax_Query {
 
 		$resulting_field = sanitize_key( $resulting_field );
 
-		// Empty 'terms' always results in a null transformation.
+		// 'terms' rỗng luôn dẫn đến chuyển đổi null.
 		$terms = array_filter( $query['terms'] );
 		if ( empty( $terms ) ) {
 			$query['terms'] = array();
@@ -620,7 +618,7 @@ class WP_Tax_Query {
 			'orderby'                => 'none',
 		);
 
-		// Term query parameter name depends on the 'field' being searched on.
+		// Tên tham số truy vấn term phụ thuộc vào 'field' đang được tìm kiếm.
 		switch ( $query['field'] ) {
 			case 'slug':
 				$args['slug'] = $terms;

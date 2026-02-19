@@ -1,17 +1,17 @@
 <?php
 /**
- * WordPress Administration Update API
+ * API Cập nhật Quản trị WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Selects the first update version from the update_core option.
+ * Chọn phiên bản cập nhật đầu tiên từ tùy chọn update_core.
  *
  * @since 2.7.0
  *
- * @return object|array|false The response from the API on success, false on failure.
+ * @return object|array|false Phản hồi từ API khi thành công, false khi thất bại.
  */
 function get_preferred_from_update_core() {
 	$updates = get_core_updates();
@@ -28,13 +28,13 @@ function get_preferred_from_update_core() {
 }
 
 /**
- * Gets available core updates.
+ * Lấy các bản cập nhật core có sẵn.
  *
  * @since 2.7.0
  *
- * @param array $options Set $options['dismissed'] to true to show dismissed upgrades too,
- *                       set $options['available'] to false to skip not-dismissed updates.
- * @return array|false Array of the update objects on success, false on failure.
+ * @param array $options Đặt $options['dismissed'] là true để hiển thị cả các bản nâng cấp đã bỏ qua,
+ *                       đặt $options['available'] là false để bỏ qua các bản cập nhật chưa bị bỏ qua.
+ * @return array|false Mảng các đối tượng cập nhật khi thành công, false khi thất bại.
  */
 function get_core_updates( $options = array() ) {
 	$options = array_merge(
@@ -82,13 +82,13 @@ function get_core_updates( $options = array() ) {
 }
 
 /**
- * Gets the best available (and enabled) Auto-Update for WordPress core.
+ * Lấy bản Tự động Cập nhật tốt nhất có sẵn (và được bật) cho WordPress core.
  *
- * If there's 1.2.3 and 1.3 on offer, it'll choose 1.3 if the installation allows it, else, 1.2.3.
+ * Nếu có 1.2.3 và 1.3, nó sẽ chọn 1.3 nếu cài đặt cho phép, nếu không sẽ chọn 1.2.3.
  *
  * @since 3.7.0
  *
- * @return object|false The core update offering on success, false on failure.
+ * @return object|false Đề xuất cập nhật core khi thành công, false khi thất bại.
  */
 function find_core_auto_update() {
 	$updates = get_site_transient( 'update_core' );
@@ -120,13 +120,13 @@ function find_core_auto_update() {
 }
 
 /**
- * Gets and caches the checksums for the given version of WordPress.
+ * Lấy và lưu vào bộ nhớ đệm các checksum cho phiên bản WordPress được chỉ định.
  *
  * @since 3.7.0
  *
- * @param string $version Version string to query.
- * @param string $locale  Locale to query.
- * @return array|false An array of checksums on success, false on failure.
+ * @param string $version Chuỗi phiên bản cần truy vấn.
+ * @param string $locale  Ngôn ngữ cần truy vấn.
+ * @return array|false Mảng các checksum khi thành công, false khi thất bại.
  */
 function get_core_checksums( $version, $locale ) {
 	$http_url = 'http://api.wordpress.org/core/checksums/1.0/?' . http_build_query( compact( 'version', 'locale' ), '', '&' );
@@ -173,11 +173,11 @@ function get_core_checksums( $version, $locale ) {
 }
 
 /**
- * Dismisses core update.
+ * Bỏ qua bản cập nhật core.
  *
  * @since 2.7.0
  *
- * @param object $update
+ * @param object $update Đối tượng cập nhật.
  * @return bool
  */
 function dismiss_core_update( $update ) {
@@ -188,12 +188,12 @@ function dismiss_core_update( $update ) {
 }
 
 /**
- * Undismisses core update.
+ * Khôi phục bản cập nhật core đã bị bỏ qua.
  *
  * @since 2.7.0
  *
- * @param string $version
- * @param string $locale
+ * @param string $version Chuỗi phiên bản.
+ * @param string $locale  Ngôn ngữ.
  * @return bool
  */
 function undismiss_core_update( $version, $locale ) {
@@ -210,13 +210,13 @@ function undismiss_core_update( $version, $locale ) {
 }
 
 /**
- * Finds the available update for WordPress core.
+ * Tìm bản cập nhật có sẵn cho WordPress core.
  *
  * @since 2.7.0
  *
- * @param string $version Version string to find the update for.
- * @param string $locale  Locale to find the update for.
- * @return object|false The core update offering on success, false on failure.
+ * @param string $version Chuỗi phiên bản cần tìm bản cập nhật.
+ * @param string $locale  Ngôn ngữ cần tìm bản cập nhật.
+ * @return object|false Đề xuất cập nhật core khi thành công, false khi thất bại.
  */
 function find_core_update( $version, $locale ) {
 	$from_api = get_site_transient( 'update_core' );
@@ -237,11 +237,11 @@ function find_core_update( $version, $locale ) {
 }
 
 /**
- * Returns core update footer message.
+ * Trả về thông báo chân trang cập nhật core.
  *
  * @since 2.3.0
  *
- * @param string $msg
+ * @param string $msg Thông báo.
  * @return string
  */
 function core_update_footer( $msg = '' ) {
@@ -292,11 +292,11 @@ function core_update_footer( $msg = '' ) {
 }
 
 /**
- * Returns core update notification message.
+ * Trả về thông báo nhắc nhở cập nhật core.
  *
  * @since 2.3.0
  *
- * @global string $pagenow The filename of the current screen.
+ * @global string $pagenow Tên tệp của màn hình hiện tại.
  * @return void|false
  */
 function update_nag() {
@@ -351,7 +351,7 @@ function update_nag() {
 }
 
 /**
- * Displays WordPress version and active theme in the 'At a Glance' dashboard widget.
+ * Hiển thị phiên bản WordPress và giao diện đang hoạt động trong widget bảng điều khiển 'Tổng quan'.
  *
  * @since 2.5.0
  */
@@ -381,13 +381,13 @@ function update_right_now_message() {
 	$content = __( 'WordPress %1$s running %2$s theme.' );
 
 	/**
-	 * Filters the text displayed in the 'At a Glance' dashboard widget.
+	 * Lọc văn bản hiển thị trong widget bảng điều khiển 'Tổng quan'.
 	 *
-	 * Prior to 3.8.0, the widget was named 'Right Now'.
+	 * Trước phiên bản 3.8.0, widget này có tên là 'Right Now'.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $content Default text.
+	 * @param string $content Văn bản mặc định.
 	 */
 	$content = apply_filters( 'update_right_now_text', $content );
 
@@ -397,7 +397,7 @@ function update_right_now_message() {
 }
 
 /**
- * Retrieves plugins with updates available.
+ * Lấy các plugin có bản cập nhật có sẵn.
  *
  * @since 2.9.0
  *
@@ -419,7 +419,7 @@ function get_plugin_updates() {
 }
 
 /**
- * Adds a callback to display update information for plugins with updates available.
+ * Thêm callback để hiển thị thông tin cập nhật cho các plugin có bản cập nhật có sẵn.
  *
  * @since 2.9.0
  */
@@ -440,12 +440,12 @@ function wp_plugin_update_rows() {
 }
 
 /**
- * Displays update information for a plugin.
+ * Hiển thị thông tin cập nhật cho một plugin.
  *
  * @since 2.3.0
  *
- * @param string $file        Plugin basename.
- * @param array  $plugin_data Plugin information.
+ * @param string $file        Tên cơ sở của plugin.
+ * @param array  $plugin_data Thông tin plugin.
  * @return void|false
  */
 function wp_plugin_update_row( $file, $plugin_data ) {
@@ -585,32 +585,32 @@ function wp_plugin_update_row( $file, $plugin_data ) {
 		}
 
 		/**
-		 * Fires at the end of the update message container in each
-		 * row of the plugins list table.
+		 * Kích hoạt ở cuối container thông báo cập nhật trong mỗi
+		 * hàng của bảng danh sách plugin.
 		 *
-		 * The dynamic portion of the hook name, `$file`, refers to the path
-		 * of the plugin's primary file relative to the plugins directory.
+		 * Phần động của tên hook, `$file`, tham chiếu đến đường dẫn
+		 * của tệp chính của plugin tương đối với thư mục plugin.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param array  $plugin_data An array of plugin metadata. See get_plugin_data()
-		 *                            and the {@see 'plugin_row_meta'} filter for the list
-		 *                            of possible values.
+		 * @param array  $plugin_data Mảng siêu dữ liệu plugin. Xem get_plugin_data()
+		 *                            và bộ lọc {@see 'plugin_row_meta'} để biết danh sách
+		 *                            các giá trị có thể có.
 		 * @param object $response {
-		 *     An object of metadata about the available plugin update.
+		 *     Đối tượng siêu dữ liệu về bản cập nhật plugin có sẵn.
 		 *
-		 *     @type string   $id           Plugin ID, e.g. `w.org/plugins/[plugin-name]`.
-		 *     @type string   $slug         Plugin slug.
-		 *     @type string   $plugin       Plugin basename.
-		 *     @type string   $new_version  New plugin version.
-		 *     @type string   $url          Plugin URL.
-		 *     @type string   $package      Plugin update package URL.
-		 *     @type string[] $icons        An array of plugin icon URLs.
-		 *     @type string[] $banners      An array of plugin banner URLs.
-		 *     @type string[] $banners_rtl  An array of plugin RTL banner URLs.
-		 *     @type string   $requires     The version of WordPress which the plugin requires.
-		 *     @type string   $tested       The version of WordPress the plugin is tested against.
-		 *     @type string   $requires_php The version of PHP which the plugin requires.
+		 *     @type string   $id           ID plugin, ví dụ `w.org/plugins/[plugin-name]`.
+		 *     @type string   $slug         Slug plugin.
+		 *     @type string   $plugin       Tên cơ sở plugin.
+		 *     @type string   $new_version  Phiên bản plugin mới.
+		 *     @type string   $url          URL plugin.
+		 *     @type string   $package      URL gói cập nhật plugin.
+		 *     @type string[] $icons        Mảng các URL biểu tượng plugin.
+		 *     @type string[] $banners      Mảng các URL banner plugin.
+		 *     @type string[] $banners_rtl  Mảng các URL banner RTL plugin.
+		 *     @type string   $requires     Phiên bản WordPress mà plugin yêu cầu.
+		 *     @type string   $tested       Phiên bản WordPress mà plugin đã được kiểm thử.
+		 *     @type string   $requires_php Phiên bản PHP mà plugin yêu cầu.
 		 * }
 		 */
 		do_action( "in_plugin_update_message-{$file}", $plugin_data, $response ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
@@ -620,7 +620,7 @@ function wp_plugin_update_row( $file, $plugin_data ) {
 }
 
 /**
- * Retrieves themes with updates available.
+ * Lấy các giao diện có bản cập nhật có sẵn.
  *
  * @since 2.9.0
  *
@@ -644,7 +644,7 @@ function get_theme_updates() {
 }
 
 /**
- * Adds a callback to display update information for themes with updates available.
+ * Thêm callback để hiển thị thông tin cập nhật cho các giao diện có bản cập nhật có sẵn.
  *
  * @since 3.1.0
  */
@@ -665,12 +665,12 @@ function wp_theme_update_rows() {
 }
 
 /**
- * Displays update information for a theme.
+ * Hiển thị thông tin cập nhật cho một giao diện.
  *
  * @since 3.1.0
  *
- * @param string   $theme_key Theme stylesheet.
- * @param WP_Theme $theme     Theme object.
+ * @param string   $theme_key Stylesheet của giao diện.
+ * @param WP_Theme $theme     Đối tượng giao diện.
  * @return void|false
  */
 function wp_theme_update_row( $theme_key, $theme ) {
@@ -819,21 +819,21 @@ function wp_theme_update_row( $theme_key, $theme ) {
 	}
 
 	/**
-	 * Fires at the end of the update message container in each
-	 * row of the themes list table.
+	 * Kích hoạt ở cuối container thông báo cập nhật trong mỗi
+	 * hàng của bảng danh sách giao diện.
 	 *
-	 * The dynamic portion of the hook name, `$theme_key`, refers to
-	 * the theme slug as found in the WordPress.org themes repository.
+	 * Phần động của tên hook, `$theme_key`, tham chiếu đến
+	 * slug giao diện như được tìm thấy trong kho giao diện WordPress.org.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param WP_Theme $theme    The WP_Theme object.
+	 * @param WP_Theme $theme    Đối tượng WP_Theme.
 	 * @param array    $response {
-	 *     An array of metadata about the available theme update.
+	 *     Mảng siêu dữ liệu về bản cập nhật giao diện có sẵn.
 	 *
-	 *     @type string $new_version New theme version.
-	 *     @type string $url         Theme URL.
-	 *     @type string $package     Theme update package URL.
+	 *     @type string $new_version Phiên bản giao diện mới.
+	 *     @type string $url         URL giao diện.
+	 *     @type string $package     URL gói cập nhật giao diện.
 	 * }
 	 */
 	do_action( "in_theme_update_message-{$theme_key}", $theme, $response ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
@@ -842,11 +842,11 @@ function wp_theme_update_row( $theme_key, $theme ) {
 }
 
 /**
- * Displays maintenance nag HTML message.
+ * Hiển thị thông báo nhắc nhở bảo trì bằng HTML.
  *
  * @since 2.7.0
  *
- * @global int $upgrading
+ * @global int $upgrading Thời gian bắt đầu nâng cấp.
  *
  * @return void|false
  */
@@ -858,14 +858,14 @@ function maintenance_nag() {
 	if ( ! $nag ) {
 		$failed = get_site_option( 'auto_core_update_failed' );
 		/*
-		 * If an update failed critically, we may have copied over version.php but not other files.
-		 * In that case, if the installation claims we're running the version we attempted, nag.
-		 * This is serious enough to err on the side of nagging.
+		 * Nếu một bản cập nhật thất bại nghiêm trọng, chúng ta có thể đã sao chép version.php nhưng không sao chép các tệp khác.
+		 * Trong trường hợp đó, nếu cài đặt cho rằng chúng ta đang chạy phiên bản đã cố cập nhật, thì hiển thị nhắc nhở.
+		 * Đây là vấn đề đủ nghiêm trọng để thiên về việc hiển thị nhắc nhở.
 		 *
-		 * If we simply failed to update before we tried to copy any files, then assume things are
-		 * OK if they are now running the latest.
+		 * Nếu chỉ đơn giản là thất bại khi cập nhật trước khi cố sao chép bất kỳ tệp nào, thì giả sử mọi thứ
+		 * ổn nếu hiện đang chạy phiên bản mới nhất.
 		 *
-		 * This flag is cleared whenever a successful update occurs using Core_Upgrader.
+		 * Cờ này được xóa mỗi khi cập nhật thành công bằng Core_Upgrader.
 		 */
 		$comparison = ! empty( $failed['critical'] ) ? '>=' : '>';
 		if ( isset( $failed['attempted'] ) && version_compare( $failed['attempted'], wp_get_wp_version(), $comparison ) ) {

@@ -1,26 +1,26 @@
 <?php
 /**
- * Deprecated functions from past WordPress versions. You shouldn't use these
- * functions and look for the alternatives instead. The functions will be
- * removed in a later version.
+ * Các hàm đã lỗi thời từ các phiên bản WordPress trước. Bạn không nên sử dụng
+ * các hàm này mà hãy tìm các hàm thay thế. Các hàm này sẽ bị
+ * xóa bỏ trong phiên bản sau.
  *
  * @package WordPress
  * @subpackage Deprecated
  */
 
 /*
- * Deprecated functions come here to die.
+ * Các hàm đã lỗi thời đến đây để chết.
  */
 
 /**
- * Retrieves all post data for a given post.
+ * Lấy tất cả dữ liệu bài viết cho một bài viết cụ thể.
  *
  * @since 0.71
  * @deprecated 1.5.1 Use get_post()
  * @see get_post()
  *
- * @param int $postid Post ID.
- * @return array Post data.
+ * @param int $postid ID bài viết.
+ * @return array Dữ liệu bài viết.
  */
 function get_postdata($postid) {
 	_deprecated_function( __FUNCTION__, '1.5.1', 'get_post()' );
@@ -49,42 +49,42 @@ function get_postdata($postid) {
 }
 
 /**
- * Sets up the WordPress Loop.
+ * Thiết lập Vòng lặp WordPress.
  *
- * Use The Loop instead.
+ * Sử dụng Vòng lặp thay thế.
  *
  * @link https://developer.wordpress.org/themes/basics/the-loop/
  *
  * @since 1.0.1
  * @deprecated 1.5.0
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng truy vấn WordPress.
  */
 function start_wp() {
 	global $wp_query;
 
 	_deprecated_function( __FUNCTION__, '1.5.0', __('new WordPress Loop') );
 
-	// Since the old style loop is being used, advance the query iterator here.
+	// Vì vòng lặp kiểu cũ đang được sử dụng, tăng bộ lặp truy vấn ở đây.
 	$wp_query->next_post();
 
 	setup_postdata( get_post() );
 }
 
 /**
- * Returns or prints a category ID.
+ * Trả về hoặc in ra ID chuyên mục.
  *
  * @since 0.71
  * @deprecated 0.71 Use get_the_category()
  * @see get_the_category()
  *
- * @param bool $display Optional. Whether to display the output. Default true.
- * @return int Category ID.
+ * @param bool $display Tùy chọn. Có hiển thị đầu ra hay không. Mặc định true.
+ * @return int ID chuyên mục.
  */
 function the_category_ID($display = true) {
 	_deprecated_function( __FUNCTION__, '0.71', 'get_the_category()' );
 
-	// Grab the first cat in the list.
+	// Lấy chuyên mục đầu tiên trong danh sách.
 	$categories = get_the_category();
 	$cat = $categories[0]->term_id;
 
@@ -95,21 +95,21 @@ function the_category_ID($display = true) {
 }
 
 /**
- * Prints a category with optional text before and after.
+ * In ra chuyên mục với văn bản tùy chọn trước và sau.
  *
  * @since 0.71
  * @deprecated 0.71 Use get_the_category_by_ID()
  * @see get_the_category_by_ID()
  *
- * @param string $before Optional. Text to display before the category. Default empty.
- * @param string $after  Optional. Text to display after the category. Default empty.
+ * @param string $before Tùy chọn. Văn bản hiển thị trước chuyên mục. Mặc định rỗng.
+ * @param string $after  Tùy chọn. Văn bản hiển thị sau chuyên mục. Mặc định rỗng.
  */
 function the_category_head( $before = '', $after = '' ) {
 	global $currentcat, $previouscat;
 
 	_deprecated_function( __FUNCTION__, '0.71', 'get_the_category_by_ID()' );
 
-	// Grab the first cat in the list.
+	// Lấy chuyên mục đầu tiên trong danh sách.
 	$categories = get_the_category();
 	$currentcat = $categories[0]->category_id;
 	if ( $currentcat != $previouscat ) {
@@ -121,7 +121,7 @@ function the_category_head( $before = '', $after = '' ) {
 }
 
 /**
- * Prints a link to the previous post.
+ * In ra liên kết đến bài viết trước.
  *
  * @since 1.5.0
  * @deprecated 2.0.0 Use previous_post_link()
@@ -157,7 +157,7 @@ function previous_post($format='%', $previous='previous post: ', $title='yes', $
 }
 
 /**
- * Prints link to the next post.
+ * In ra liên kết đến bài viết tiếp theo.
  *
  * @since 0.71
  * @deprecated 2.0.0 Use next_post_link()
@@ -192,15 +192,15 @@ function next_post($format='%', $next='next post: ', $title='yes', $in_same_cat=
 }
 
 /**
- * Whether user can create a post.
+ * Kiểm tra xem người dùng có thể tạo bài viết không.
  *
  * @since 1.5.0
  * @deprecated 2.0.0 Use current_user_can()
  * @see current_user_can()
  *
  * @param int $user_id
- * @param int $blog_id Not Used
- * @param int $category_id Not Used
+ * @param int $blog_id Không sử dụng
+ * @param int $category_id Không sử dụng
  * @return bool
  */
 function user_can_create_post($user_id, $blog_id = 1, $category_id = 'None') {
@@ -211,15 +211,15 @@ function user_can_create_post($user_id, $blog_id = 1, $category_id = 'None') {
 }
 
 /**
- * Whether user can create a post.
+ * Kiểm tra xem người dùng có thể tạo bản nháp không.
  *
  * @since 1.5.0
  * @deprecated 2.0.0 Use current_user_can()
  * @see current_user_can()
  *
  * @param int $user_id
- * @param int $blog_id Not Used
- * @param int $category_id Not Used
+ * @param int $blog_id Không sử dụng
+ * @param int $category_id Không sử dụng
  * @return bool
  */
 function user_can_create_draft($user_id, $blog_id = 1, $category_id = 'None') {
@@ -230,7 +230,7 @@ function user_can_create_draft($user_id, $blog_id = 1, $category_id = 'None') {
 }
 
 /**
- * Whether user can edit a post.
+ * Kiểm tra xem người dùng có thể sửa bài viết không.
  *
  * @since 1.5.0
  * @deprecated 2.0.0 Use current_user_can()
@@ -238,7 +238,7 @@ function user_can_create_draft($user_id, $blog_id = 1, $category_id = 'None') {
  *
  * @param int $user_id
  * @param int $post_id
- * @param int $blog_id Not Used
+ * @param int $blog_id Không sử dụng
  * @return bool
  */
 function user_can_edit_post($user_id, $post_id, $blog_id = 1) {
@@ -258,7 +258,7 @@ function user_can_edit_post($user_id, $post_id, $blog_id = 1) {
 }
 
 /**
- * Whether user can delete a post.
+ * Kiểm tra xem người dùng có thể xóa bài viết không.
  *
  * @since 1.5.0
  * @deprecated 2.0.0 Use current_user_can()
@@ -266,26 +266,26 @@ function user_can_edit_post($user_id, $post_id, $blog_id = 1) {
  *
  * @param int $user_id
  * @param int $post_id
- * @param int $blog_id Not Used
+ * @param int $blog_id Không sử dụng
  * @return bool
  */
 function user_can_delete_post($user_id, $post_id, $blog_id = 1) {
 	_deprecated_function( __FUNCTION__, '2.0.0', 'current_user_can()' );
 
-	// Right now if one can edit, one can delete.
+	// Hiện tại nếu có thể sửa thì có thể xóa.
 	return user_can_edit_post($user_id, $post_id, $blog_id);
 }
 
 /**
- * Whether user can set new posts' dates.
+ * Kiểm tra xem người dùng có thể đặt ngày cho bài viết mới không.
  *
  * @since 1.5.0
  * @deprecated 2.0.0 Use current_user_can()
  * @see current_user_can()
  *
  * @param int $user_id
- * @param int $blog_id Not Used
- * @param int $category_id Not Used
+ * @param int $blog_id Không sử dụng
+ * @param int $category_id Không sử dụng
  * @return bool
  */
 function user_can_set_post_date($user_id, $blog_id = 1, $category_id = 'None') {
@@ -296,7 +296,7 @@ function user_can_set_post_date($user_id, $blog_id = 1, $category_id = 'None') {
 }
 
 /**
- * Whether user can delete a post.
+ * Kiểm tra xem người dùng có thể sửa ngày bài viết không.
  *
  * @since 1.5.0
  * @deprecated 2.0.0 Use current_user_can()
@@ -304,8 +304,8 @@ function user_can_set_post_date($user_id, $blog_id = 1, $category_id = 'None') {
  *
  * @param int $user_id
  * @param int $post_id
- * @param int $blog_id Not Used
- * @return bool returns true if $user_id can edit $post_id's date
+ * @param int $blog_id Không sử dụng
+ * @return bool Trả về true nếu $user_id có thể sửa ngày của $post_id
  */
 function user_can_edit_post_date($user_id, $post_id, $blog_id = 1) {
 	_deprecated_function( __FUNCTION__, '2.0.0', 'current_user_can()' );
@@ -315,7 +315,7 @@ function user_can_edit_post_date($user_id, $post_id, $blog_id = 1) {
 }
 
 /**
- * Whether user can delete a post.
+ * Kiểm tra xem người dùng có thể sửa bình luận bài viết không.
  *
  * @since 1.5.0
  * @deprecated 2.0.0 Use current_user_can()
@@ -323,18 +323,18 @@ function user_can_edit_post_date($user_id, $post_id, $blog_id = 1) {
  *
  * @param int $user_id
  * @param int $post_id
- * @param int $blog_id Not Used
- * @return bool returns true if $user_id can edit $post_id's comments
+ * @param int $blog_id Không sử dụng
+ * @return bool Trả về true nếu $user_id có thể sửa bình luận của $post_id
  */
 function user_can_edit_post_comments($user_id, $post_id, $blog_id = 1) {
 	_deprecated_function( __FUNCTION__, '2.0.0', 'current_user_can()' );
 
-	// Right now if one can edit a post, one can edit comments made on it.
+	// Hiện tại nếu có thể sửa bài viết thì có thể sửa bình luận trên đó.
 	return user_can_edit_post($user_id, $post_id, $blog_id);
 }
 
 /**
- * Whether user can delete a post.
+ * Kiểm tra xem người dùng có thể xóa bình luận bài viết không.
  *
  * @since 1.5.0
  * @deprecated 2.0.0 Use current_user_can()
@@ -342,18 +342,18 @@ function user_can_edit_post_comments($user_id, $post_id, $blog_id = 1) {
  *
  * @param int $user_id
  * @param int $post_id
- * @param int $blog_id Not Used
- * @return bool returns true if $user_id can delete $post_id's comments
+ * @param int $blog_id Không sử dụng
+ * @return bool Trả về true nếu $user_id có thể xóa bình luận của $post_id
  */
 function user_can_delete_post_comments($user_id, $post_id, $blog_id = 1) {
 	_deprecated_function( __FUNCTION__, '2.0.0', 'current_user_can()' );
 
-	// Right now if one can edit comments, one can delete comments.
+	// Hiện tại nếu có thể sửa bình luận thì có thể xóa bình luận.
 	return user_can_edit_post_comments($user_id, $post_id, $blog_id);
 }
 
 /**
- * Can user can edit other user.
+ * Kiểm tra xem người dùng có thể sửa thông tin người dùng khác không.
  *
  * @since 1.5.0
  * @deprecated 2.0.0 Use current_user_can()
@@ -375,29 +375,29 @@ function user_can_edit_user($user_id, $other_user) {
 }
 
 /**
- * Gets the links associated with category $cat_name.
+ * Lấy các liên kết liên quan đến chuyên mục $cat_name.
  *
  * @since 0.71
  * @deprecated 2.1.0 Use get_bookmarks()
  * @see get_bookmarks()
  *
- * @param string $cat_name         Optional. The category name to use. If no match is found, uses all.
- *                                 Default 'noname'.
- * @param string $before           Optional. The HTML to output before the link. Default empty.
- * @param string $after            Optional. The HTML to output after the link. Default '<br />'.
- * @param string $between          Optional. The HTML to output between the link/image and its description.
- *                                 Not used if no image or $show_images is true. Default ' '.
- * @param bool   $show_images      Optional. Whether to show images (if defined). Default true.
- * @param string $orderby          Optional. The order to output the links. E.g. 'id', 'name', 'url',
- *                                 'description', 'rating', or 'owner'. Default 'id'.
- *                                 If you start the name with an underscore, the order will be reversed.
- *                                 Specifying 'rand' as the order will return links in a random order.
- * @param bool   $show_description Optional. Whether to show the description if show_images=false/not defined.
- *                                 Default true.
- * @param bool   $show_rating      Optional. Show rating stars/chars. Default false.
- * @param int    $limit            Optional. Limit to X entries. If not specified, all entries are shown.
- *                                 Default -1.
- * @param int    $show_updated     Optional. Whether to show last updated timestamp. Default 0.
+ * @param string $cat_name         Tùy chọn. Tên chuyên mục để sử dụng. Nếu không tìm thấy, sử dụng tất cả.
+ *                                 Mặc định 'noname'.
+ * @param string $before           Tùy chọn. HTML xuất ra trước liên kết. Mặc định rỗng.
+ * @param string $after            Tùy chọn. HTML xuất ra sau liên kết. Mặc định '<br />'.
+ * @param string $between          Tùy chọn. HTML xuất ra giữa liên kết/hình ảnh và mô tả.
+ *                                 Không sử dụng nếu không có hình ảnh hoặc $show_images là true. Mặc định ' '.
+ * @param bool   $show_images      Tùy chọn. Có hiển thị hình ảnh không (nếu được định nghĩa). Mặc định true.
+ * @param string $orderby          Tùy chọn. Thứ tự xuất ra liên kết. Ví dụ 'id', 'name', 'url',
+ *                                 'description', 'rating', hoặc 'owner'. Mặc định 'id'.
+ *                                 Nếu bắt đầu tên bằng dấu gạch dưới, thứ tự sẽ bị đảo ngược.
+ *                                 Chỉ định 'rand' sẽ trả về liên kết theo thứ tự ngẫu nhiên.
+ * @param bool   $show_description Tùy chọn. Có hiển thị mô tả nếu show_images=false/chưa định nghĩa.
+ *                                 Mặc định true.
+ * @param bool   $show_rating      Tùy chọn. Hiển thị sao/ký tự xếp hạng. Mặc định false.
+ * @param int    $limit            Tùy chọn. Giới hạn X mục. Nếu không chỉ định, hiển thị tất cả.
+ *                                 Mặc định -1.
+ * @param int    $show_updated     Tùy chọn. Có hiển thị dấu thời gian cập nhật cuối không. Mặc định 0.
  */
 function get_linksbyname($cat_name = "noname", $before = '', $after = '<br />', $between = " ", $show_images = true, $orderby = 'id',
 						$show_description = true, $show_rating = false,
@@ -413,13 +413,13 @@ function get_linksbyname($cat_name = "noname", $before = '', $after = '<br />', 
 }
 
 /**
- * Gets the links associated with the named category.
+ * Lấy các liên kết liên quan đến chuyên mục được đặt tên.
  *
  * @since 1.0.1
  * @deprecated 2.1.0 Use wp_list_bookmarks()
  * @see wp_list_bookmarks()
  *
- * @param string $category The category to use.
+ * @param string $category Chuyên mục để sử dụng.
  * @param string $args
  * @return string|null
  */
@@ -443,7 +443,7 @@ function wp_get_linksbyname($category, $args = '') {
 }
 
 /**
- * Gets an array of link objects associated with category $cat_name.
+ * Lấy mảng các đối tượng liên kết liên quan đến chuyên mục $cat_name.
  *
  *     $links = get_linkobjectsbyname( 'fred' );
  *     foreach ( $links as $link ) {
@@ -454,14 +454,14 @@ function wp_get_linksbyname($category, $args = '') {
  * @deprecated 2.1.0 Use get_bookmarks()
  * @see get_bookmarks()
  *
- * @param string $cat_name Optional. The category name to use. If no match is found, uses all.
- *                         Default 'noname'.
- * @param string $orderby  Optional. The order to output the links. E.g. 'id', 'name', 'url',
- *                         'description', 'rating', or 'owner'. Default 'name'.
- *                         If you start the name with an underscore, the order will be reversed.
- *                         Specifying 'rand' as the order will return links in a random order.
- * @param int    $limit    Optional. Limit to X entries. If not specified, all entries are shown.
- *                         Default -1.
+ * @param string $cat_name Tùy chọn. Tên chuyên mục để sử dụng. Nếu không tìm thấy, sử dụng tất cả.
+ *                         Mặc định 'noname'.
+ * @param string $orderby  Tùy chọn. Thứ tự xuất ra liên kết. Ví dụ 'id', 'name', 'url',
+ *                         'description', 'rating', hoặc 'owner'. Mặc định 'name'.
+ *                         Nếu bắt đầu tên bằng dấu gạch dưới, thứ tự sẽ bị đảo ngược.
+ *                         Chỉ định 'rand' sẽ trả về liên kết theo thứ tự ngẫu nhiên.
+ * @param int    $limit    Tùy chọn. Giới hạn X mục. Nếu không chỉ định, hiển thị tất cả.
+ *                         Mặc định -1.
  * @return array
  */
 function get_linkobjectsbyname($cat_name = "noname" , $orderby = 'name', $limit = -1) {
@@ -476,9 +476,9 @@ function get_linkobjectsbyname($cat_name = "noname" , $orderby = 'name', $limit 
 }
 
 /**
- * Gets an array of link objects associated with category n.
+ * Lấy mảng các đối tượng liên kết liên quan đến chuyên mục n.
  *
- * Usage:
+ * Cách sử dụng:
  *
  *     $links = get_linkobjects(1);
  *     if ($links) {
@@ -487,7 +487,7 @@ function get_linkobjectsbyname($cat_name = "noname" , $orderby = 'name', $limit 
  *     	}
  *     }
  *
- * Fields are:
+ * Các trường:
  *
  * - link_id
  * - link_url
@@ -507,14 +507,14 @@ function get_linkobjectsbyname($cat_name = "noname" , $orderby = 'name', $limit 
  * @deprecated 2.1.0 Use get_bookmarks()
  * @see get_bookmarks()
  *
- * @param int    $category Optional. The category to use. If no category supplied, uses all.
- *                         Default 0.
- * @param string $orderby  Optional. The order to output the links. E.g. 'id', 'name', 'url',
- *                         'description', 'rating', or 'owner'. Default 'name'.
- *                         If you start the name with an underscore, the order will be reversed.
- *                         Specifying 'rand' as the order will return links in a random order.
- * @param int    $limit    Optional. Limit to X entries. If not specified, all entries are shown.
- *                         Default 0.
+ * @param int    $category Tùy chọn. Chuyên mục để sử dụng. Nếu không cung cấp chuyên mục, sử dụng tất cả.
+ *                         Mặc định 0.
+ * @param string $orderby  Tùy chọn. Thứ tự xuất ra liên kết. Ví dụ 'id', 'name', 'url',
+ *                         'description', 'rating', hoặc 'owner'. Mặc định 'name'.
+ *                         Nếu bắt đầu tên bằng dấu gạch dưới, thứ tự sẽ bị đảo ngược.
+ *                         Chỉ định 'rand' sẽ trả về liên kết theo thứ tự ngẫu nhiên.
+ * @param int    $limit    Tùy chọn. Giới hạn X mục. Nếu không chỉ định, hiển thị tất cả.
+ *                         Mặc định 0.
  * @return array
  */
 function get_linkobjects($category = 0, $orderby = 'name', $limit = 0) {
@@ -530,28 +530,28 @@ function get_linkobjects($category = 0, $orderby = 'name', $limit = 0) {
 }
 
 /**
- * Gets the links associated with category 'cat_name' and display rating stars/chars.
+ * Lấy các liên kết liên quan đến chuyên mục 'cat_name' và hiển thị sao/ký tự xếp hạng.
  *
  * @since 0.71
  * @deprecated 2.1.0 Use get_bookmarks()
  * @see get_bookmarks()
  *
- * @param string $cat_name         Optional. The category name to use. If no match is found, uses all.
- *                                 Default 'noname'.
- * @param string $before           Optional. The HTML to output before the link. Default empty.
- * @param string $after            Optional. The HTML to output after the link. Default '<br />'.
- * @param string $between          Optional. The HTML to output between the link/image and its description.
- *                                 Not used if no image or $show_images is true. Default ' '.
- * @param bool   $show_images      Optional. Whether to show images (if defined). Default true.
- * @param string $orderby          Optional. The order to output the links. E.g. 'id', 'name', 'url',
- *                                 'description', 'rating', or 'owner'. Default 'id'.
- *                                 If you start the name with an underscore, the order will be reversed.
- *                                 Specifying 'rand' as the order will return links in a random order.
- * @param bool   $show_description Optional. Whether to show the description if show_images=false/not defined.
- *                                 Default true.
- * @param int    $limit		       Optional. Limit to X entries. If not specified, all entries are shown.
- *                                 Default -1.
- * @param int    $show_updated     Optional. Whether to show last updated timestamp. Default 0.
+ * @param string $cat_name         Tùy chọn. Tên chuyên mục để sử dụng. Nếu không tìm thấy, sử dụng tất cả.
+ *                                 Mặc định 'noname'.
+ * @param string $before           Tùy chọn. HTML xuất ra trước liên kết. Mặc định rỗng.
+ * @param string $after            Tùy chọn. HTML xuất ra sau liên kết. Mặc định '<br />'.
+ * @param string $between          Tùy chọn. HTML xuất ra giữa liên kết/hình ảnh và mô tả.
+ *                                 Không sử dụng nếu không có hình ảnh hoặc $show_images là true. Mặc định ' '.
+ * @param bool   $show_images      Tùy chọn. Có hiển thị hình ảnh không (nếu được định nghĩa). Mặc định true.
+ * @param string $orderby          Tùy chọn. Thứ tự xuất ra liên kết. Ví dụ 'id', 'name', 'url',
+ *                                 'description', 'rating', hoặc 'owner'. Mặc định 'id'.
+ *                                 Nếu bắt đầu tên bằng dấu gạch dưới, thứ tự sẽ bị đảo ngược.
+ *                                 Chỉ định 'rand' sẽ trả về liên kết theo thứ tự ngẫu nhiên.
+ * @param bool   $show_description Tùy chọn. Có hiển thị mô tả nếu show_images=false/chưa định nghĩa.
+ *                                 Mặc định true.
+ * @param int    $limit		       Tùy chọn. Giới hạn X mục. Nếu không chỉ định, hiển thị tất cả.
+ *                                 Mặc định -1.
+ * @param int    $show_updated     Tùy chọn. Có hiển thị dấu thời gian cập nhật cuối không. Mặc định 0.
  */
 function get_linksbyname_withrating($cat_name = "noname", $before = '', $after = '<br />', $between = " ",
 									$show_images = true, $orderby = 'id', $show_description = true, $limit = -1, $show_updated = 0) {
@@ -561,28 +561,28 @@ function get_linksbyname_withrating($cat_name = "noname", $before = '', $after =
 }
 
 /**
- * Gets the links associated with category n and display rating stars/chars.
+ * Lấy các liên kết liên quan đến chuyên mục n và hiển thị sao/ký tự xếp hạng.
  *
  * @since 0.71
  * @deprecated 2.1.0 Use get_bookmarks()
  * @see get_bookmarks()
  *
- * @param int    $category         Optional. The category to use. If no category supplied, uses all.
- *                                 Default 0.
- * @param string $before           Optional. The HTML to output before the link. Default empty.
- * @param string $after            Optional. The HTML to output after the link. Default '<br />'.
- * @param string $between          Optional. The HTML to output between the link/image and its description.
- *                                 Not used if no image or $show_images is true. Default ' '.
- * @param bool   $show_images      Optional. Whether to show images (if defined). Default true.
- * @param string $orderby          Optional. The order to output the links. E.g. 'id', 'name', 'url',
- *                                 'description', 'rating', or 'owner'. Default 'id'.
- *                                 If you start the name with an underscore, the order will be reversed.
- *                                 Specifying 'rand' as the order will return links in a random order.
- * @param bool   $show_description Optional. Whether to show the description if show_images=false/not defined.
- *                                 Default true.
- * @param int    $limit		       Optional. Limit to X entries. If not specified, all entries are shown.
- *                                 Default -1.
- * @param int    $show_updated     Optional. Whether to show last updated timestamp. Default 0.
+ * @param int    $category         Tùy chọn. Chuyên mục để sử dụng. Nếu không cung cấp chuyên mục, sử dụng tất cả.
+ *                                 Mặc định 0.
+ * @param string $before           Tùy chọn. HTML xuất ra trước liên kết. Mặc định rỗng.
+ * @param string $after            Tùy chọn. HTML xuất ra sau liên kết. Mặc định '<br />'.
+ * @param string $between          Tùy chọn. HTML xuất ra giữa liên kết/hình ảnh và mô tả.
+ *                                 Không sử dụng nếu không có hình ảnh hoặc $show_images là true. Mặc định ' '.
+ * @param bool   $show_images      Tùy chọn. Có hiển thị hình ảnh không (nếu được định nghĩa). Mặc định true.
+ * @param string $orderby          Tùy chọn. Thứ tự xuất ra liên kết. Ví dụ 'id', 'name', 'url',
+ *                                 'description', 'rating', hoặc 'owner'. Mặc định 'id'.
+ *                                 Nếu bắt đầu tên bằng dấu gạch dưới, thứ tự sẽ bị đảo ngược.
+ *                                 Chỉ định 'rand' sẽ trả về liên kết theo thứ tự ngẫu nhiên.
+ * @param bool   $show_description Tùy chọn. Có hiển thị mô tả nếu show_images=false/chưa định nghĩa.
+ *                                 Mặc định true.
+ * @param int    $limit		       Tùy chọn. Giới hạn X mục. Nếu không chỉ định, hiển thị tất cả.
+ *                                 Mặc định -1.
+ * @param int    $show_updated     Tùy chọn. Có hiển thị dấu thời gian cập nhật cuối không. Mặc định 0.
  */
 function get_links_withrating($category = -1, $before = '', $after = '<br />', $between = " ", $show_images = true,
 							$orderby = 'id', $show_description = true, $limit = -1, $show_updated = 0) {
@@ -592,13 +592,13 @@ function get_links_withrating($category = -1, $before = '', $after = '<br />', $
 }
 
 /**
- * Gets the auto_toggle setting.
+ * Lấy cài đặt auto_toggle.
  *
  * @since 0.71
  * @deprecated 2.1.0
  *
- * @param int $id The category to get. If no category supplied uses 0
- * @return int Only returns 0.
+ * @param int $id Chuyên mục cần lấy. Nếu không cung cấp chuyên mục, sử dụng 0
+ * @return int Chỉ trả về 0.
  */
 function get_autotoggle($id = 0) {
 	_deprecated_function( __FUNCTION__, '2.1.0' );
@@ -606,7 +606,7 @@ function get_autotoggle($id = 0) {
 }
 
 /**
- * Lists categories.
+ * Liệt kê các chuyên mục.
  *
  * @since 0.71
  * @deprecated 2.1.0 Use wp_list_categories()
@@ -643,7 +643,7 @@ function list_cats($optionall = 1, $all = 'All', $sort_column = 'ID', $sort_orde
 }
 
 /**
- * Lists categories.
+ * Liệt kê các chuyên mục.
  *
  * @since 1.2.0
  * @deprecated 2.1.0 Use wp_list_categories()
@@ -657,7 +657,7 @@ function wp_list_cats($args = '') {
 
 	$parsed_args = wp_parse_args( $args );
 
-	// Map to new names.
+	// Ánh xạ sang tên mới.
 	if ( isset($parsed_args['optionall']) && isset($parsed_args['all']))
 		$parsed_args['show_option_all'] = $parsed_args['all'];
 	if ( isset($parsed_args['sort_column']) )
@@ -676,7 +676,7 @@ function wp_list_cats($args = '') {
 }
 
 /**
- * Deprecated method for generating a drop-down of categories.
+ * Phương thức đã lỗi thời để tạo danh sách thả xuống chuyên mục.
  *
  * @since 0.71
  * @deprecated 2.1.0 Use wp_dropdown_categories()
@@ -714,7 +714,7 @@ function dropdown_cats($optionall = 1, $all = 'All', $orderby = 'ID', $order = '
 }
 
 /**
- * Lists authors.
+ * Liệt kê các tác giả.
  *
  * @since 1.2.0
  * @deprecated 2.1.0 Use wp_list_authors()
@@ -736,13 +736,13 @@ function list_authors($optioncount = false, $exclude_admin = true, $show_fullnam
 }
 
 /**
- * Retrieves a list of post categories.
+ * Lấy danh sách chuyên mục bài viết.
  *
  * @since 1.0.1
  * @deprecated 2.1.0 Use wp_get_post_categories()
  * @see wp_get_post_categories()
  *
- * @param int $blogid Not Used
+ * @param int $blogid Không sử dụng
  * @param int $post_id
  * @return array
  */
@@ -752,14 +752,14 @@ function wp_get_post_cats($blogid = '1', $post_id = 0) {
 }
 
 /**
- * Sets the categories that the post ID belongs to.
+ * Thiết lập các chuyên mục mà ID bài viết thuộc về.
  *
  * @since 1.0.1
  * @deprecated 2.1.0
  * @deprecated Use wp_set_post_categories()
  * @see wp_set_post_categories()
  *
- * @param int $blogid Not used
+ * @param int $blogid Không sử dụng
  * @param int $post_id
  * @param array $post_categories
  * @return bool|mixed
@@ -770,7 +770,7 @@ function wp_set_post_cats($blogid = '1', $post_id = 0, $post_categories = array(
 }
 
 /**
- * Retrieves a list of archives.
+ * Lấy danh sách lưu trữ.
  *
  * @since 0.71
  * @deprecated 2.1.0 Use wp_get_archives()
@@ -791,7 +791,7 @@ function get_archives($type='', $limit='', $format='html', $before = '', $after 
 }
 
 /**
- * Returns or Prints link to the author's posts.
+ * Trả về hoặc in ra liên kết đến các bài viết của tác giả.
  *
  * @since 1.2.0
  * @deprecated 2.1.0 Use get_author_posts_url()
@@ -799,7 +799,7 @@ function get_archives($type='', $limit='', $format='html', $before = '', $after 
  *
  * @param bool $display
  * @param int $author_id
- * @param string $author_nicename Optional.
+ * @param string $author_nicename Tùy chọn.
  * @return string|null
  */
 function get_author_link($display, $author_id, $author_nicename = '') {
@@ -813,7 +813,7 @@ function get_author_link($display, $author_id, $author_nicename = '') {
 }
 
 /**
- * Print list of pages based on arguments.
+ * In danh sách trang dựa trên đối số.
  *
  * @since 0.71
  * @deprecated 2.1.0 Use wp_link_pages()
@@ -837,7 +837,7 @@ function link_pages($before='<br />', $after='<br />', $next_or_number='number',
 }
 
 /**
- * Get value based on option.
+ * Lấy giá trị dựa trên tùy chọn.
  *
  * @since 0.71
  * @deprecated 2.1.0 Use get_option()
@@ -853,7 +853,7 @@ function get_settings($option) {
 }
 
 /**
- * Print the permalink of the current post in the loop.
+ * In đường dẫn tĩnh của bài viết hiện tại trong vòng lặp.
  *
  * @since 0.71
  * @deprecated 1.2.0 Use the_permalink()
@@ -865,7 +865,7 @@ function permalink_link() {
 }
 
 /**
- * Print the permalink to the RSS feed.
+ * In đường dẫn tĩnh đến nguồn cấp RSS.
  *
  * @since 0.71
  * @deprecated 2.3.0 Use the_permalink_rss()
@@ -879,13 +879,13 @@ function permalink_single_rss($deprecated = '') {
 }
 
 /**
- * Gets the links associated with category.
+ * Lấy các liên kết liên quan đến chuyên mục.
  *
  * @since 1.0.1
  * @deprecated 2.1.0 Use wp_list_bookmarks()
  * @see wp_list_bookmarks()
  *
- * @param string $args a query string
+ * @param string $args Chuỗi truy vấn
  * @return null|string
  */
 function wp_get_links($args = '') {
@@ -918,30 +918,30 @@ function wp_get_links($args = '') {
 }
 
 /**
- * Gets the links associated with category by ID.
+ * Lấy các liên kết liên quan đến chuyên mục theo ID.
  *
  * @since 0.71
  * @deprecated 2.1.0 Use get_bookmarks()
  * @see get_bookmarks()
  *
- * @param int    $category         Optional. The category to use. If no category supplied uses all.
- *                                 Default 0.
- * @param string $before           Optional. The HTML to output before the link. Default empty.
- * @param string $after            Optional. The HTML to output after the link. Default '<br />'.
- * @param string $between          Optional. The HTML to output between the link/image and its description.
- *                                 Not used if no image or $show_images is true. Default ' '.
- * @param bool   $show_images      Optional. Whether to show images (if defined). Default true.
- * @param string $orderby          Optional. The order to output the links. E.g. 'id', 'name', 'url',
- *                                 'description', 'rating', or 'owner'. Default 'name'.
- *                                 If you start the name with an underscore, the order will be reversed.
- *                                 Specifying 'rand' as the order will return links in a random order.
- * @param bool   $show_description Optional. Whether to show the description if show_images=false/not defined.
- *                                 Default true.
- * @param bool   $show_rating      Optional. Show rating stars/chars. Default false.
- * @param int    $limit            Optional. Limit to X entries. If not specified, all entries are shown.
- *                                 Default -1.
- * @param int    $show_updated     Optional. Whether to show last updated timestamp. Default 1.
- * @param bool   $display          Whether to display the results, or return them instead.
+ * @param int    $category         Tùy chọn. Chuyên mục để sử dụng. Nếu không cung cấp chuyên mục, sử dụng tất cả.
+ *                                 Mặc định 0.
+ * @param string $before           Tùy chọn. HTML xuất ra trước liên kết. Mặc định rỗng.
+ * @param string $after            Tùy chọn. HTML xuất ra sau liên kết. Mặc định '<br />'.
+ * @param string $between          Tùy chọn. HTML xuất ra giữa liên kết/hình ảnh và mô tả.
+ *                                 Không sử dụng nếu không có hình ảnh hoặc $show_images là true. Mặc định ' '.
+ * @param bool   $show_images      Tùy chọn. Có hiển thị hình ảnh không (nếu được định nghĩa). Mặc định true.
+ * @param string $orderby          Tùy chọn. Thứ tự xuất ra liên kết. Ví dụ 'id', 'name', 'url',
+ *                                 'description', 'rating', hoặc 'owner'. Mặc định 'name'.
+ *                                 Nếu bắt đầu tên bằng dấu gạch dưới, thứ tự sẽ bị đảo ngược.
+ *                                 Chỉ định 'rand' sẽ trả về liên kết theo thứ tự ngẫu nhiên.
+ * @param bool   $show_description Tùy chọn. Có hiển thị mô tả nếu show_images=false/chưa định nghĩa.
+ *                                 Mặc định true.
+ * @param bool   $show_rating      Tùy chọn. Hiển thị sao/ký tự xếp hạng. Mặc định false.
+ * @param int    $limit            Tùy chọn. Giới hạn X mục. Nếu không chỉ định, hiển thị tất cả.
+ *                                 Mặc định -1.
+ * @param int    $show_updated     Tùy chọn. Có hiển thị dấu thời gian cập nhật cuối không. Mặc định 1.
+ * @param bool   $display          Có hiển thị kết quả hay trả về thay thế.
  * @return null|string
  */
 function get_links($category = -1, $before = '', $after = '<br />', $between = ' ', $show_images = true, $orderby = 'name',
@@ -954,7 +954,7 @@ function get_links($category = -1, $before = '', $after = '<br />', $between = '
 		$orderby = substr($orderby, 1);
 	}
 
-	if ( $category == -1 ) // get_bookmarks() uses '' to signify all categories.
+	if ( $category == -1 ) // get_bookmarks() sử dụng '' để chỉ tất cả chuyên mục.
 		$category = '';
 
 	$results = get_bookmarks(array('category' => $category, 'orderby' => $orderby, 'order' => $order, 'show_updated' => $show_updated, 'limit' => $limit));
@@ -999,7 +999,7 @@ function get_links($category = -1, $before = '', $after = '<br />', $between = '
 		if ( '' != $row->link_image && $show_images ) {
 			if ( str_contains( $row->link_image, 'http' ) )
 				$output .= '<img src="' . $row->link_image . '"' . $alt . $title . ' />';
-			else // If it's a relative path.
+			else // Nếu là đường dẫn tương đối.
 				$output .= '<img src="' . get_option('siteurl') . $row->link_image . '"' . $alt . $title . ' />';
 		} else {
 			$output .= $name;
@@ -1018,7 +1018,7 @@ function get_links($category = -1, $before = '', $after = '<br />', $between = '
 		}
 
 		$output .= "$after\n";
-	} // End while.
+	} // Kết thúc vòng lặp.
 
 	if ( !$display )
 		return $output;
@@ -1026,23 +1026,23 @@ function get_links($category = -1, $before = '', $after = '<br />', $between = '
 }
 
 /**
- * Output entire list of links by category.
+ * Xuất toàn bộ danh sách liên kết theo chuyên mục.
  *
- * Output a list of all links, listed by category, using the settings in
- * $wpdb->linkcategories and output it as a nested HTML unordered list.
+ * Xuất danh sách tất cả liên kết, được liệt kê theo chuyên mục, sử dụng cài đặt trong
+ * $wpdb->linkcategories và xuất ra dưới dạng danh sách HTML không có thứ tự lồng nhau.
  *
  * @since 1.0.1
  * @deprecated 2.1.0 Use wp_list_bookmarks()
  * @see wp_list_bookmarks()
  *
- * @param string $order Sort link categories by 'name' or 'id'
+ * @param string $order Sắp xếp chuyên mục liên kết theo 'name' hoặc 'id'
  */
 function get_links_list($order = 'name') {
 	_deprecated_function( __FUNCTION__, '2.1.0', 'wp_list_bookmarks()' );
 
 	$order = strtolower($order);
 
-	// Handle link category sorting.
+	// Xử lý sắp xếp chuyên mục liên kết.
 	$direction = 'ASC';
 	if ( str_starts_with( $order, '_' ) ) {
 		$direction = 'DESC';
@@ -1054,47 +1054,47 @@ function get_links_list($order = 'name') {
 
 	$cats = get_categories(array('type' => 'link', 'orderby' => $order, 'order' => $direction, 'hierarchical' => 0));
 
-	// Display each category.
+	// Hiển thị từng chuyên mục.
 	if ( $cats ) {
 		foreach ( (array) $cats as $cat ) {
-			// Handle each category.
+			// Xử lý từng chuyên mục.
 
-			// Display the category name.
+			// Hiển thị tên chuyên mục.
 			echo '  <li id="linkcat-' . $cat->term_id . '" class="linkcat"><h2>' . apply_filters('link_category', $cat->name ) . "</h2>\n\t<ul>\n";
-			// Call get_links() with all the appropriate params.
+			// Gọi get_links() với tất cả tham số phù hợp.
 			get_links($cat->term_id, '<li>', "</li>", "\n", true, 'name', false);
 
-			// Close the last category.
+			// Đóng chuyên mục cuối cùng.
 			echo "\n\t</ul>\n</li>\n";
 		}
 	}
 }
 
 /**
- * Show the link to the links popup and the number of links.
+ * Hiển thị liên kết đến cửa sổ bật lên liên kết và số lượng liên kết.
  *
  * @since 0.71
  * @deprecated 2.1.0
  *
- * @param string $text the text of the link
- * @param int $width the width of the popup window
- * @param int $height the height of the popup window
- * @param string $file the page to open in the popup window
- * @param bool $count the number of links in the db
+ * @param string $text Văn bản của liên kết
+ * @param int $width Chiều rộng của cửa sổ bật lên
+ * @param int $height Chiều cao của cửa sổ bật lên
+ * @param string $file Trang để mở trong cửa sổ bật lên
+ * @param bool $count Số lượng liên kết trong cơ sở dữ liệu
  */
 function links_popup_script($text = 'Links', $width=400, $height=400, $file='links.all.php', $count = true) {
 	_deprecated_function( __FUNCTION__, '2.1.0' );
 }
 
 /**
- * Legacy function that retrieved the value of a link's link_rating field.
+ * Hàm cũ lấy giá trị của trường link_rating của liên kết.
  *
  * @since 1.0.1
  * @deprecated 2.1.0 Use sanitize_bookmark_field()
  * @see sanitize_bookmark_field()
  *
- * @param object $link Link object.
- * @return mixed Value of the 'link_rating' field, false otherwise.
+ * @param object $link Đối tượng liên kết.
+ * @return mixed Giá trị của trường 'link_rating', false nếu không có.
  */
 function get_linkrating( $link ) {
 	_deprecated_function( __FUNCTION__, '2.1.0', 'sanitize_bookmark_field()' );
@@ -1102,13 +1102,13 @@ function get_linkrating( $link ) {
 }
 
 /**
- * Gets the name of category by ID.
+ * Lấy tên chuyên mục theo ID.
  *
  * @since 0.71
  * @deprecated 2.1.0 Use get_category()
  * @see get_category()
  *
- * @param int $id The category to get. If no category supplied uses 0
+ * @param int $id Chuyên mục cần lấy. Nếu không cung cấp chuyên mục, sử dụng 0
  * @return string
  */
 function get_linkcatname($id = 0) {
@@ -1124,14 +1124,14 @@ function get_linkcatname($id = 0) {
 	if ( empty($cats) || ! is_array($cats) )
 		return '';
 
-	$cat_id = (int) $cats[0]; // Take the first cat.
+	$cat_id = (int) $cats[0]; // Lấy chuyên mục đầu tiên.
 
 	$cat = get_category($cat_id);
 	return $cat->name;
 }
 
 /**
- * Print RSS comment feed link.
+ * In liên kết nguồn cấp RSS bình luận.
  *
  * @since 1.0.1
  * @deprecated 2.5.0 Use post_comments_feed_link()
@@ -1145,7 +1145,7 @@ function comments_rss_link($link_text = 'Comments RSS') {
 }
 
 /**
- * Print/Return link to category RSS2 feed.
+ * In/Trả về liên kết đến nguồn cấp RSS2 chuyên mục.
  *
  * @since 1.2.0
  * @deprecated 2.5.0 Use get_category_feed_link()
@@ -1166,7 +1166,7 @@ function get_category_rss_link($display = false, $cat_id = 1) {
 }
 
 /**
- * Print/Return link to author RSS feed.
+ * In/Trả về liên kết đến nguồn cấp RSS tác giả.
  *
  * @since 1.2.0
  * @deprecated 2.5.0 Use get_author_feed_link()
@@ -1186,7 +1186,7 @@ function get_author_rss_link($display = false, $author_id = 1) {
 }
 
 /**
- * Return link to the post RSS feed.
+ * Trả về liên kết đến nguồn cấp RSS của bài viết.
  *
  * @since 1.5.0
  * @deprecated 2.2.0 Use get_post_comments_feed_link()
@@ -1200,16 +1200,16 @@ function comments_rss() {
 }
 
 /**
- * An alias of wp_create_user().
+ * Bí danh của wp_create_user().
  *
  * @since 2.0.0
  * @deprecated 2.0.0 Use wp_create_user()
  * @see wp_create_user()
  *
- * @param string $username The user's username.
- * @param string $password The user's password.
- * @param string $email    The user's email.
- * @return int The new user's ID.
+ * @param string $username Tên đăng nhập của người dùng.
+ * @param string $password Mật khẩu của người dùng.
+ * @param string $email    Email của người dùng.
+ * @return int ID của người dùng mới.
  */
 function create_user($username, $password, $email) {
 	_deprecated_function( __FUNCTION__, '2.0.0', 'wp_create_user()' );
@@ -1217,7 +1217,7 @@ function create_user($username, $password, $email) {
 }
 
 /**
- * Unused function.
+ * Hàm không sử dụng.
  *
  * @deprecated 2.5.0
  */
@@ -1227,16 +1227,16 @@ function gzip_compression() {
 }
 
 /**
- * Retrieve an array of comment data about comment $comment_id.
+ * Lấy mảng dữ liệu bình luận về bình luận $comment_id.
  *
  * @since 0.71
  * @deprecated 2.7.0 Use get_comment()
  * @see get_comment()
  *
- * @param int $comment_id The ID of the comment
- * @param int $no_cache Whether to use the cache (cast to bool)
- * @param bool $include_unapproved Whether to include unapproved comments
- * @return array The comment data
+ * @param int $comment_id ID của bình luận
+ * @param int $no_cache Có sử dụng bộ nhớ đệm không (ép kiểu sang bool)
+ * @param bool $include_unapproved Có bao gồm bình luận chưa duyệt không
+ * @return array Dữ liệu bình luận
  */
 function get_commentdata( $comment_id, $no_cache = 0, $include_unapproved = false ) {
 	_deprecated_function( __FUNCTION__, '2.7.0', 'get_comment()' );
@@ -1244,14 +1244,14 @@ function get_commentdata( $comment_id, $no_cache = 0, $include_unapproved = fals
 }
 
 /**
- * Retrieve the category name by the category ID.
+ * Lấy tên chuyên mục theo ID chuyên mục.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use get_cat_name()
  * @see get_cat_name()
  *
- * @param int $cat_id Category ID
- * @return string category name
+ * @param int $cat_id ID chuyên mục
+ * @return string Tên chuyên mục
  */
 function get_catname( $cat_id ) {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_cat_name()' );
@@ -1259,17 +1259,17 @@ function get_catname( $cat_id ) {
 }
 
 /**
- * Retrieve category children list separated before and after the term IDs.
+ * Lấy danh sách chuyên mục con được phân tách trước và sau các ID thuật ngữ.
  *
  * @since 1.2.0
  * @deprecated 2.8.0 Use get_term_children()
  * @see get_term_children()
  *
- * @param int    $id      Category ID to retrieve children.
- * @param string $before  Optional. Prepend before category term ID. Default '/'.
- * @param string $after   Optional. Append after category term ID. Default empty string.
- * @param array  $visited Optional. Category Term IDs that have already been added.
- *                        Default empty array.
+ * @param int    $id      ID chuyên mục để lấy các chuyên mục con.
+ * @param string $before  Tùy chọn. Thêm trước ID thuật ngữ chuyên mục. Mặc định '/'.
+ * @param string $after   Tùy chọn. Thêm sau ID thuật ngữ chuyên mục. Mặc định chuỗi rỗng.
+ * @param array  $visited Tùy chọn. Các ID thuật ngữ chuyên mục đã được thêm rồi.
+ *                        Mặc định mảng rỗng.
  * @return string
  */
 function get_category_children( $id, $before = '/', $after = '', $visited = array() ) {
@@ -1278,7 +1278,7 @@ function get_category_children( $id, $before = '/', $after = '', $visited = arra
 		return '';
 
 	$chain = '';
-	/** TODO: Consult hierarchy */
+	/** TODO: Tham khảo phân cấp */
 	$cat_ids = get_all_category_ids();
 	foreach ( (array) $cat_ids as $cat_id ) {
 		if ( $cat_id == $id )
@@ -1297,7 +1297,7 @@ function get_category_children( $id, $before = '/', $after = '', $visited = arra
 }
 
 /**
- * Retrieves all category IDs.
+ * Lấy tất cả ID chuyên mục.
  *
  * @since 2.0.0
  * @deprecated 4.0.0 Use get_terms()
@@ -1305,7 +1305,7 @@ function get_category_children( $id, $before = '/', $after = '', $visited = arra
  *
  * @link https://developer.wordpress.org/reference/functions/get_all_category_ids/
  *
- * @return int[] List of all of the category IDs.
+ * @return int[] Danh sách tất cả ID chuyên mục.
  */
 function get_all_category_ids() {
 	_deprecated_function( __FUNCTION__, '4.0.0', 'get_terms()' );
@@ -1322,13 +1322,13 @@ function get_all_category_ids() {
 }
 
 /**
- * Retrieve the description of the author of the current post.
+ * Lấy mô tả của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The author's description.
+ * @return string Mô tả của tác giả.
  */
 function get_the_author_description() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'description\')' );
@@ -1336,7 +1336,7 @@ function get_the_author_description() {
 }
 
 /**
- * Display the description of the author of the current post.
+ * Hiển thị mô tả của tác giả bài viết hiện tại.
  *
  * @since 1.0.0
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1348,13 +1348,13 @@ function the_author_description() {
 }
 
 /**
- * Retrieve the login name of the author of the current post.
+ * Lấy tên đăng nhập của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The author's login name (username).
+ * @return string Tên đăng nhập (username) của tác giả.
  */
 function get_the_author_login() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'login\')' );
@@ -1362,7 +1362,7 @@ function get_the_author_login() {
 }
 
 /**
- * Display the login name of the author of the current post.
+ * Hiển thị tên đăng nhập của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1374,13 +1374,13 @@ function the_author_login() {
 }
 
 /**
- * Retrieve the first name of the author of the current post.
+ * Lấy tên (first name) của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The author's first name.
+ * @return string Tên của tác giả.
  */
 function get_the_author_firstname() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'first_name\')' );
@@ -1388,7 +1388,7 @@ function get_the_author_firstname() {
 }
 
 /**
- * Display the first name of the author of the current post.
+ * Hiển thị tên (first name) của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1400,13 +1400,13 @@ function the_author_firstname() {
 }
 
 /**
- * Retrieve the last name of the author of the current post.
+ * Lấy họ (last name) của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The author's last name.
+ * @return string Họ của tác giả.
  */
 function get_the_author_lastname() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'last_name\')' );
@@ -1414,7 +1414,7 @@ function get_the_author_lastname() {
 }
 
 /**
- * Display the last name of the author of the current post.
+ * Hiển thị họ (last name) của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1426,13 +1426,13 @@ function the_author_lastname() {
 }
 
 /**
- * Retrieve the nickname of the author of the current post.
+ * Lấy biệt danh của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The author's nickname.
+ * @return string Biệt danh của tác giả.
  */
 function get_the_author_nickname() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'nickname\')' );
@@ -1440,7 +1440,7 @@ function get_the_author_nickname() {
 }
 
 /**
- * Display the nickname of the author of the current post.
+ * Hiển thị biệt danh của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1452,13 +1452,13 @@ function the_author_nickname() {
 }
 
 /**
- * Retrieve the email of the author of the current post.
+ * Lấy email của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The author's username.
+ * @return string Email của tác giả.
  */
 function get_the_author_email() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'email\')' );
@@ -1466,7 +1466,7 @@ function get_the_author_email() {
 }
 
 /**
- * Display the email of the author of the current post.
+ * Hiển thị email của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1478,13 +1478,13 @@ function the_author_email() {
 }
 
 /**
- * Retrieve the ICQ number of the author of the current post.
+ * Lấy số ICQ của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The author's ICQ number.
+ * @return string Số ICQ của tác giả.
  */
 function get_the_author_icq() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'icq\')' );
@@ -1492,7 +1492,7 @@ function get_the_author_icq() {
 }
 
 /**
- * Display the ICQ number of the author of the current post.
+ * Hiển thị số ICQ của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1504,13 +1504,13 @@ function the_author_icq() {
 }
 
 /**
- * Retrieve the Yahoo! IM name of the author of the current post.
+ * Lấy tên Yahoo! IM của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The author's Yahoo! IM name.
+ * @return string Tên Yahoo! IM của tác giả.
  */
 function get_the_author_yim() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'yim\')' );
@@ -1518,7 +1518,7 @@ function get_the_author_yim() {
 }
 
 /**
- * Display the Yahoo! IM name of the author of the current post.
+ * Hiển thị tên Yahoo! IM của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1530,13 +1530,13 @@ function the_author_yim() {
 }
 
 /**
- * Retrieve the MSN address of the author of the current post.
+ * Lấy địa chỉ MSN của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The author's MSN address.
+ * @return string Địa chỉ MSN của tác giả.
  */
 function get_the_author_msn() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'msn\')' );
@@ -1544,7 +1544,7 @@ function get_the_author_msn() {
 }
 
 /**
- * Display the MSN address of the author of the current post.
+ * Hiển thị địa chỉ MSN của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1556,13 +1556,13 @@ function the_author_msn() {
 }
 
 /**
- * Retrieve the AIM address of the author of the current post.
+ * Lấy địa chỉ AIM của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The author's AIM address.
+ * @return string Địa chỉ AIM của tác giả.
  */
 function get_the_author_aim() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'aim\')' );
@@ -1570,7 +1570,7 @@ function get_the_author_aim() {
 }
 
 /**
- * Display the AIM address of the author of the current post.
+ * Hiển thị địa chỉ AIM của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta('aim')
@@ -1582,14 +1582,14 @@ function the_author_aim() {
 }
 
 /**
- * Retrieve the specified author's preferred display name.
+ * Lấy tên hiển thị ưa thích của tác giả được chỉ định.
  *
  * @since 1.0.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @param int $auth_id The ID of the author.
- * @return string The author's display name.
+ * @param int $auth_id ID của tác giả.
+ * @return string Tên hiển thị của tác giả.
  */
 function get_author_name( $auth_id = false ) {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'display_name\')' );
@@ -1597,13 +1597,13 @@ function get_author_name( $auth_id = false ) {
 }
 
 /**
- * Retrieve the URL to the home page of the author of the current post.
+ * Lấy URL trang chủ của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string The URL to the author's page.
+ * @return string URL đến trang của tác giả.
  */
 function get_the_author_url() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'url\')' );
@@ -1611,7 +1611,7 @@ function get_the_author_url() {
 }
 
 /**
- * Display the URL to the home page of the author of the current post.
+ * Hiển thị URL trang chủ của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1623,13 +1623,13 @@ function the_author_url() {
 }
 
 /**
- * Retrieve the ID of the author of the current post.
+ * Lấy ID của tác giả bài viết hiện tại.
  *
  * @since 1.5.0
  * @deprecated 2.8.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @return string|int The author's ID.
+ * @return string|int ID của tác giả.
  */
 function get_the_author_ID() {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'get_the_author_meta(\'ID\')' );
@@ -1637,7 +1637,7 @@ function get_the_author_ID() {
 }
 
 /**
- * Display the ID of the author of the current post.
+ * Hiển thị ID của tác giả bài viết hiện tại.
  *
  * @since 0.71
  * @deprecated 2.8.0 Use the_author_meta()
@@ -1649,44 +1649,44 @@ function the_author_ID() {
 }
 
 /**
- * Display the post content for the feed.
+ * Hiển thị nội dung bài viết cho nguồn cấp dữ liệu.
  *
- * For encoding the HTML or the $encode_html parameter, there are three possible values:
- * - '0' will make urls footnotes and use make_url_footnote().
- * - '1' will encode special characters and automatically display all of the content.
- * - '2' will strip all HTML tags from the content.
+ * Đối với mã hóa HTML hoặc tham số $encode_html, có ba giá trị có thể:
+ * - '0' sẽ biến các URL thành chú thích và sử dụng make_url_footnote().
+ * - '1' sẽ mã hóa các ký tự đặc biệt và tự động hiển thị toàn bộ nội dung.
+ * - '2' sẽ loại bỏ tất cả thẻ HTML khỏi nội dung.
  *
- * Also note that you cannot set the amount of words and not set the HTML encoding.
- * If that is the case, then the HTML encoding will default to 2, which will strip
- * all HTML tags.
+ * Cũng lưu ý rằng bạn không thể đặt số lượng từ mà không đặt mã hóa HTML.
+ * Nếu là trường hợp đó, thì mã hóa HTML sẽ mặc định là 2, sẽ loại bỏ
+ * tất cả thẻ HTML.
  *
- * To restrict the amount of words of the content, you can use the cut parameter.
- * If the content is less than the amount, then there won't be any dots added to the end.
- * If there is content left over, then dots will be added and the rest of the content
- * will be removed.
+ * Để giới hạn số lượng từ của nội dung, bạn có thể sử dụng tham số cut.
+ * Nếu nội dung ít hơn số lượng, thì sẽ không có dấu chấm nào được thêm vào cuối.
+ * Nếu có nội dung còn lại, thì dấu chấm sẽ được thêm vào và phần nội dung còn lại
+ * sẽ bị xóa bỏ.
  *
  * @since 0.71
  *
  * @deprecated 2.9.0 Use the_content_feed()
  * @see the_content_feed()
  *
- * @param string $more_link_text Optional. Text to display when more content is available
- *                               but not displayed. Default '(more...)'.
- * @param int    $stripteaser    Optional. Default 0.
- * @param string $more_file      Optional.
- * @param int    $cut            Optional. Amount of words to keep for the content.
- * @param int    $encode_html    Optional. How to encode the content.
+ * @param string $more_link_text Tùy chọn. Văn bản hiển thị khi có thêm nội dung nhưng
+ *                               không được hiển thị. Mặc định '(more...)'.
+ * @param int    $stripteaser    Tùy chọn. Mặc định 0.
+ * @param string $more_file      Tùy chọn.
+ * @param int    $cut            Tùy chọn. Số lượng từ giữ lại cho nội dung.
+ * @param int    $encode_html    Tùy chọn. Cách mã hóa nội dung.
  */
 function the_content_rss($more_link_text='(more...)', $stripteaser=0, $more_file='', $cut = 0, $encode_html = 0) {
 	_deprecated_function( __FUNCTION__, '2.9.0', 'the_content_feed()' );
 	$content = get_the_content($more_link_text, $stripteaser);
 
 	/**
-	 * Filters the post content in the context of an RSS feed.
+	 * Lọc nội dung bài viết trong ngữ cảnh nguồn cấp RSS.
 	 *
 	 * @since 0.71
 	 *
-	 * @param string $content Content of the current post.
+	 * @param string $content Nội dung của bài viết hiện tại.
 	 */
 	$content = apply_filters('the_content_rss', $content);
 	if ( $cut && !$encode_html )
@@ -1709,7 +1709,7 @@ function the_content_rss($more_link_text='(more...)', $stripteaser=0, $more_file
 			$use_dotdotdot = 0;
 		}
 
-		/** @todo Check performance, might be faster to use array slice instead. */
+		/** @todo Kiểm tra hiệu suất, có thể nhanh hơn khi sử dụng array slice thay thế. */
 		for ( $i=0; $i<$k; $i++ )
 			$excerpt .= $blah[$i].' ';
 		$excerpt .= ($use_dotdotdot) ? '...' : '';
@@ -1720,16 +1720,16 @@ function the_content_rss($more_link_text='(more...)', $stripteaser=0, $more_file
 }
 
 /**
- * Strip HTML and put links at the bottom of stripped content.
+ * Loại bỏ HTML và đặt các liên kết ở cuối nội dung đã loại bỏ.
  *
- * Searches for all of the links, strips them out of the content, and places
- * them at the bottom of the content with numbers.
+ * Tìm kiếm tất cả các liên kết, loại bỏ chúng khỏi nội dung, và đặt
+ * chúng ở cuối nội dung với các số thứ tự.
  *
  * @since 0.71
  * @deprecated 2.9.0
  *
- * @param string $content Content to get links.
- * @return string HTML stripped out of content with links at the bottom.
+ * @param string $content Nội dung để lấy liên kết.
+ * @return string HTML đã loại bỏ khỏi nội dung với các liên kết ở cuối.
  */
 function make_url_footnote( $content ) {
 	_deprecated_function( __FUNCTION__, '2.9.0', '' );
@@ -1750,25 +1750,25 @@ function make_url_footnote( $content ) {
 }
 
 /**
- * Retrieve translated string with vertical bar context
+ * Lấy chuỗi đã dịch với ngữ cảnh dấu gạch đứng
  *
- * Quite a few times, there will be collisions with similar translatable text
- * found in more than two places but with different translated context.
+ * Khá nhiều lần, sẽ có xung đột với văn bản có thể dịch tương tự
+ * được tìm thấy ở nhiều hơn hai nơi nhưng với ngữ cảnh dịch khác nhau.
  *
- * In order to use the separate contexts, the _c() function is used and the
- * translatable string uses a pipe ('|') which has the context the string is in.
+ * Để sử dụng các ngữ cảnh riêng biệt, hàm _c() được sử dụng và
+ * chuỗi có thể dịch sử dụng dấu gạch đứng ('|') chứa ngữ cảnh của chuỗi.
  *
- * When the translated string is returned, it is everything before the pipe, not
- * including the pipe character. If there is no pipe in the translated text then
- * everything is returned.
+ * Khi chuỗi đã dịch được trả về, đó là mọi thứ trước dấu gạch đứng, không
+ * bao gồm ký tự dấu gạch đứng. Nếu không có dấu gạch đứng trong văn bản đã dịch thì
+ * mọi thứ được trả về.
  *
  * @since 2.2.0
  * @deprecated 2.9.0 Use _x()
  * @see _x()
  *
- * @param string $text Text to translate.
- * @param string $domain Optional. Domain to retrieve the translated text.
- * @return string Translated context string without pipe.
+ * @param string $text Văn bản cần dịch.
+ * @param string $domain Tùy chọn. Miền để lấy văn bản đã dịch.
+ * @return string Chuỗi ngữ cảnh đã dịch không có dấu gạch đứng.
  */
 function _c( $text, $domain = 'default' ) {
 	_deprecated_function( __FUNCTION__, '2.9.0', '_x()' );
@@ -1776,16 +1776,16 @@ function _c( $text, $domain = 'default' ) {
 }
 
 /**
- * Translates $text like translate(), but assumes that the text
- * contains a context after its last vertical bar.
+ * Dịch $text như translate(), nhưng giả định rằng văn bản
+ * chứa ngữ cảnh sau dấu gạch đứng cuối cùng.
  *
  * @since 2.5.0
  * @deprecated 3.0.0 Use _x()
  * @see _x()
  *
- * @param string $text Text to translate.
- * @param string $domain Domain to retrieve the translated text.
- * @return string Translated text.
+ * @param string $text Văn bản cần dịch.
+ * @param string $domain Miền để lấy văn bản đã dịch.
+ * @return string Văn bản đã dịch.
  */
 function translate_with_context( $text, $domain = 'default' ) {
 	_deprecated_function( __FUNCTION__, '2.9.0', '_x()' );
@@ -1793,20 +1793,20 @@ function translate_with_context( $text, $domain = 'default' ) {
 }
 
 /**
- * Legacy version of _n(), which supports contexts.
+ * Phiên bản cũ của _n(), hỗ trợ ngữ cảnh.
  *
- * Strips everything from the translation after the last bar.
+ * Loại bỏ mọi thứ từ bản dịch sau dấu gạch đứng cuối cùng.
  *
  * @since 2.7.0
  * @deprecated 3.0.0 Use _nx()
  * @see _nx()
  *
- * @param string $single The text to be used if the number is singular.
- * @param string $plural The text to be used if the number is plural.
- * @param int    $number The number to compare against to use either the singular or plural form.
- * @param string $domain Optional. Text domain. Unique identifier for retrieving translated strings.
- *                       Default 'default'.
- * @return string The translated singular or plural form.
+ * @param string $single Văn bản được sử dụng nếu số lượng là số ít.
+ * @param string $plural Văn bản được sử dụng nếu số lượng là số nhiều.
+ * @param int    $number Số để so sánh để sử dụng dạng số ít hoặc số nhiều.
+ * @param string $domain Tùy chọn. Miền văn bản. Định danh duy nhất để lấy chuỗi đã dịch.
+ *                       Mặc định 'default'.
+ * @return string Dạng số ít hoặc số nhiều đã dịch.
  */
 function _nc( $single, $plural, $number, $domain = 'default' ) {
 	_deprecated_function( __FUNCTION__, '2.9.0', '_nx()' );
@@ -1814,7 +1814,7 @@ function _nc( $single, $plural, $number, $domain = 'default' ) {
 }
 
 /**
- * Retrieve the plural or single form based on the amount.
+ * Lấy dạng số nhiều hoặc số ít dựa trên số lượng.
  *
  * @since 1.2.0
  * @deprecated 2.8.0 Use _n()
@@ -1826,7 +1826,7 @@ function __ngettext( ...$args ) { // phpcs:ignore PHPCompatibility.FunctionNameR
 }
 
 /**
- * Register plural strings in POT file, but don't translate them.
+ * Đăng ký chuỗi số nhiều trong tệp POT, nhưng không dịch chúng.
  *
  * @since 2.5.0
  * @deprecated 2.8.0 Use _n_noop()
@@ -1839,13 +1839,13 @@ function __ngettext_noop( ...$args ) { // phpcs:ignore PHPCompatibility.Function
 }
 
 /**
- * Retrieve all autoload options, or all options if no autoloaded ones exist.
+ * Lấy tất cả tùy chọn tự động tải, hoặc tất cả tùy chọn nếu không có tùy chọn tự động tải nào.
  *
  * @since 1.0.0
  * @deprecated 3.0.0 Use wp_load_alloptions())
  * @see wp_load_alloptions()
  *
- * @return array List of all options.
+ * @return array Danh sách tất cả tùy chọn.
  */
 function get_alloptions() {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'wp_load_alloptions()' );
@@ -1853,16 +1853,16 @@ function get_alloptions() {
 }
 
 /**
- * Retrieve HTML content of attachment image with link.
+ * Lấy nội dung HTML của hình ảnh đính kèm có liên kết.
  *
  * @since 2.0.0
  * @deprecated 2.5.0 Use wp_get_attachment_link()
  * @see wp_get_attachment_link()
  *
- * @param int   $id       Optional. Post ID.
- * @param bool  $fullsize Optional. Whether to use full size image. Default false.
- * @param array $max_dims Optional. Max image dimensions.
- * @param bool $permalink Optional. Whether to include permalink to image. Default false.
+ * @param int   $id       Tùy chọn. ID bài viết.
+ * @param bool  $fullsize Tùy chọn. Có sử dụng hình ảnh kích thước đầy đủ không. Mặc định false.
+ * @param array $max_dims Tùy chọn. Kích thước hình ảnh tối đa.
+ * @param bool $permalink Tùy chọn. Có bao gồm đường dẫn tĩnh đến hình ảnh không. Mặc định false.
  * @return string
  */
 function get_the_attachment_link($id = 0, $fullsize = false, $max_dims = false, $permalink = false) {
@@ -1883,15 +1883,15 @@ function get_the_attachment_link($id = 0, $fullsize = false, $max_dims = false, 
 }
 
 /**
- * Retrieve icon URL and Path.
+ * Lấy URL và đường dẫn biểu tượng.
  *
  * @since 2.1.0
  * @deprecated 2.5.0 Use wp_get_attachment_image_src()
  * @see wp_get_attachment_image_src()
  *
- * @param int  $id       Optional. Post ID.
- * @param bool $fullsize Optional. Whether to have full image. Default false.
- * @return array Icon URL and full path to file, respectively.
+ * @param int  $id       Tùy chọn. ID bài viết.
+ * @param bool $fullsize Tùy chọn. Có lấy hình ảnh kích thước đầy đủ không. Mặc định false.
+ * @return array URL biểu tượng và đường dẫn đầy đủ đến tệp, tương ứng.
  */
 function get_attachment_icon_src( $id = 0, $fullsize = false ) {
 	_deprecated_function( __FUNCTION__, '2.5.0', 'wp_get_attachment_image_src()' );
@@ -1902,18 +1902,18 @@ function get_attachment_icon_src( $id = 0, $fullsize = false ) {
 	$file = get_attached_file( $post->ID );
 
 	if ( !$fullsize && $src = wp_get_attachment_thumb_url( $post->ID ) ) {
-		// We have a thumbnail desired, specified and existing.
+		// Chúng ta có ảnh thu nhỏ mong muốn, được chỉ định và tồn tại.
 
 		$src_file = wp_basename($src);
 	} elseif ( wp_attachment_is_image( $post->ID ) ) {
-		// We have an image without a thumbnail.
+		// Chúng ta có hình ảnh không có ảnh thu nhỏ.
 
 		$src = wp_get_attachment_url( $post->ID );
 		$src_file = & $file;
 	} elseif ( $src = wp_mime_type_icon( $post->ID, '.svg' ) ) {
-		// No thumb, no image. We'll look for a mime-related icon instead.
+		// Không có ảnh thu nhỏ, không có hình ảnh. Chúng ta sẽ tìm biểu tượng liên quan đến mime thay thế.
 
-		/** This filter is documented in wp-includes/post.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/post.php */
 		$icon_dir = apply_filters( 'icon_dir', get_template_directory() . '/images' );
 		$src_file = $icon_dir . '/' . wp_basename($src);
 	}
@@ -1925,16 +1925,16 @@ function get_attachment_icon_src( $id = 0, $fullsize = false ) {
 }
 
 /**
- * Retrieve HTML content of icon attachment image element.
+ * Lấy nội dung HTML của phần tử hình ảnh biểu tượng đính kèm.
  *
  * @since 2.0.0
  * @deprecated 2.5.0 Use wp_get_attachment_image()
  * @see wp_get_attachment_image()
  *
- * @param int   $id       Optional. Post ID.
- * @param bool  $fullsize Optional. Whether to have full size image. Default false.
- * @param array $max_dims Optional. Dimensions of image.
- * @return string|false HTML content.
+ * @param int   $id       Tùy chọn. ID bài viết.
+ * @param bool  $fullsize Tùy chọn. Có lấy hình ảnh kích thước đầy đủ không. Mặc định false.
+ * @param array $max_dims Tùy chọn. Kích thước của hình ảnh.
+ * @return string|false Nội dung HTML.
  */
 function get_attachment_icon( $id = 0, $fullsize = false, $max_dims = false ) {
 	_deprecated_function( __FUNCTION__, '2.5.0', 'wp_get_attachment_image()' );
@@ -1947,7 +1947,7 @@ function get_attachment_icon( $id = 0, $fullsize = false, $max_dims = false ) {
 
 	list($src, $src_file) = $src;
 
-	// Do we need to constrain the image?
+	// Chúng ta có cần giới hạn kích thước hình ảnh không?
 	if ( ($max_dims = apply_filters('attachment_max_dims', $max_dims)) && file_exists($src_file) ) {
 
 		$imagesize = wp_getimagesize($src_file);
@@ -1981,15 +1981,15 @@ function get_attachment_icon( $id = 0, $fullsize = false, $max_dims = false ) {
 }
 
 /**
- * Retrieve HTML content of image element.
+ * Lấy nội dung HTML của phần tử hình ảnh.
  *
  * @since 2.0.0
  * @deprecated 2.5.0 Use wp_get_attachment_image()
  * @see wp_get_attachment_image()
  *
- * @param int   $id       Optional. Post ID.
- * @param bool  $fullsize Optional. Whether to have full size image. Default false.
- * @param array $max_dims Optional. Dimensions of image.
+ * @param int   $id       Tùy chọn. ID bài viết.
+ * @param bool  $fullsize Tùy chọn. Có lấy hình ảnh kích thước đầy đủ không. Mặc định false.
+ * @param array $max_dims Tùy chọn. Kích thước của hình ảnh.
  * @return string|false
  */
 function get_attachment_innerHTML($id = 0, $fullsize = false, $max_dims = false) {
@@ -2007,18 +2007,18 @@ function get_attachment_innerHTML($id = 0, $fullsize = false, $max_dims = false)
 }
 
 /**
- * Retrieves bookmark data based on ID.
+ * Lấy dữ liệu dấu trang dựa trên ID.
  *
  * @since 2.0.0
  * @deprecated 2.1.0 Use get_bookmark()
  * @see get_bookmark()
  *
- * @param int    $bookmark_id ID of link
- * @param string $output      Optional. Type of output. Accepts OBJECT, ARRAY_N, or ARRAY_A.
- *                            Default OBJECT.
- * @param string $filter      Optional. How to filter the link for output. Accepts 'raw', 'edit',
- *                            'attribute', 'js', 'db', or 'display'. Default 'raw'.
- * @return object|array Bookmark object or array, depending on the type specified by `$output`.
+ * @param int    $bookmark_id ID của liên kết
+ * @param string $output      Tùy chọn. Loại đầu ra. Chấp nhận OBJECT, ARRAY_N, hoặc ARRAY_A.
+ *                            Mặc định OBJECT.
+ * @param string $filter      Tùy chọn. Cách lọc liên kết cho đầu ra. Chấp nhận 'raw', 'edit',
+ *                            'attribute', 'js', 'db', hoặc 'display'. Mặc định 'raw'.
+ * @return object|array Đối tượng hoặc mảng dấu trang, tùy thuộc vào loại được chỉ định bởi `$output`.
  */
 function get_link( $bookmark_id, $output = OBJECT, $filter = 'raw' ) {
 	_deprecated_function( __FUNCTION__, '2.1.0', 'get_bookmark()' );
@@ -2026,20 +2026,20 @@ function get_link( $bookmark_id, $output = OBJECT, $filter = 'raw' ) {
 }
 
 /**
- * Checks and cleans a URL.
+ * Kiểm tra và làm sạch URL.
  *
- * A number of characters are removed from the URL. If the URL is for displaying
- * (the default behavior) ampersands are also replaced. The 'clean_url' filter
- * is applied to the returned cleaned URL.
+ * Một số ký tự được xóa khỏi URL. Nếu URL dùng để hiển thị
+ * (hành vi mặc định) thì các ký tự ampersand cũng được thay thế. Bộ lọc 'clean_url'
+ * được áp dụng cho URL đã làm sạch được trả về.
  *
  * @since 1.2.0
  * @deprecated 3.0.0 Use esc_url()
  * @see esc_url()
  *
- * @param string $url The URL to be cleaned.
- * @param array $protocols Optional. An array of acceptable protocols.
- * @param string $context Optional. How the URL will be used. Default is 'display'.
- * @return string The cleaned $url after the {@see 'clean_url'} filter is applied.
+ * @param string $url URL cần làm sạch.
+ * @param array $protocols Tùy chọn. Mảng các giao thức được chấp nhận.
+ * @param string $context Tùy chọn. URL sẽ được sử dụng như thế nào. Mặc định 'display'.
+ * @return string URL $url đã làm sạch sau khi bộ lọc {@see 'clean_url'} được áp dụng.
  */
 function clean_url( $url, $protocols = null, $context = 'display' ) {
 	if ( $context == 'db' )
@@ -2050,16 +2050,16 @@ function clean_url( $url, $protocols = null, $context = 'display' ) {
 }
 
 /**
- * Escape single quotes, specialchar double quotes, and fix line endings.
+ * Thoát dấu nháy đơn, ký tự đặc biệt dấu nháy kép, và sửa kết thúc dòng.
  *
- * The filter {@see 'js_escape'} is also applied by esc_js().
+ * Bộ lọc {@see 'js_escape'} cũng được áp dụng bởi esc_js().
  *
  * @since 2.0.4
  * @deprecated 2.8.0 Use esc_js()
  * @see esc_js()
  *
- * @param string $text The text to be escaped.
- * @return string Escaped text.
+ * @param string $text Văn bản cần thoát.
+ * @return string Văn bản đã thoát.
  */
 function js_escape( $text ) {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'esc_js()' );
@@ -2067,20 +2067,20 @@ function js_escape( $text ) {
 }
 
 /**
- * Legacy escaping for HTML blocks.
+ * Thoát cũ cho các khối HTML.
  *
  * @deprecated 2.8.0 Use esc_html()
  * @see esc_html()
  *
- * @param string       $text          Text to escape.
- * @param string       $quote_style   Unused.
- * @param false|string $charset       Unused.
- * @param false        $double_encode Whether to double encode. Unused.
- * @return string Escaped `$text`.
+ * @param string       $text          Văn bản cần thoát.
+ * @param string       $quote_style   Không sử dụng.
+ * @param false|string $charset       Không sử dụng.
+ * @param false        $double_encode Có mã hóa kép không. Không sử dụng.
+ * @return string `$text` đã thoát.
  */
 function wp_specialchars( $text, $quote_style = ENT_NOQUOTES, $charset = false, $double_encode = false ) {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'esc_html()' );
-	if ( func_num_args() > 1 ) { // Maintain back-compat for people passing additional arguments.
+	if ( func_num_args() > 1 ) { // Duy trì tương thích ngược cho những người truyền thêm đối số.
 		return _wp_specialchars( $text, $quote_style, $charset, $double_encode );
 	} else {
 		return esc_html( $text );
@@ -2088,7 +2088,7 @@ function wp_specialchars( $text, $quote_style = ENT_NOQUOTES, $charset = false, 
 }
 
 /**
- * Escaping for HTML attributes.
+ * Thoát cho thuộc tính HTML.
  *
  * @since 2.0.6
  * @deprecated 2.8.0 Use esc_attr()
@@ -2103,27 +2103,27 @@ function attribute_escape( $text ) {
 }
 
 /**
- * Register widget for sidebar with backward compatibility.
+ * Đăng ký widget cho thanh bên với tương thích ngược.
  *
- * Allows $name to be an array that accepts either three elements to grab the
- * first element and the third for the name or just uses the first element of
- * the array for the name.
+ * Cho phép $name là mảng chấp nhận ba phần tử để lấy
+ * phần tử đầu tiên và phần tử thứ ba cho tên hoặc chỉ sử dụng phần tử đầu tiên của
+ * mảng cho tên.
  *
- * Passes to wp_register_sidebar_widget() after argument list and backward
- * compatibility is complete.
+ * Chuyển đến wp_register_sidebar_widget() sau khi danh sách đối số và tương thích
+ * ngược hoàn tất.
  *
  * @since 2.2.0
  * @deprecated 2.8.0 Use wp_register_sidebar_widget()
  * @see wp_register_sidebar_widget()
  *
- * @param string|int $name            Widget ID.
- * @param callable   $output_callback Run when widget is called.
- * @param string     $classname       Optional. Classname widget option. Default empty.
- * @param mixed      ...$params       Widget parameters.
+ * @param string|int $name            ID widget.
+ * @param callable   $output_callback Chạy khi widget được gọi.
+ * @param string     $classname       Tùy chọn. Tùy chọn classname widget. Mặc định rỗng.
+ * @param mixed      ...$params       Các tham số widget.
  */
 function register_sidebar_widget($name, $output_callback, $classname = '', ...$params) {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'wp_register_sidebar_widget()' );
-	// Compat.
+	// Tương thích.
 	if ( is_array( $name ) ) {
 		if ( count( $name ) === 3 ) {
 			$name = sprintf( $name[0], $name[2] );
@@ -2142,13 +2142,13 @@ function register_sidebar_widget($name, $output_callback, $classname = '', ...$p
 }
 
 /**
- * Serves as an alias of wp_unregister_sidebar_widget().
+ * Phục vụ như bí danh của wp_unregister_sidebar_widget().
  *
  * @since 2.2.0
  * @deprecated 2.8.0 Use wp_unregister_sidebar_widget()
  * @see wp_unregister_sidebar_widget()
  *
- * @param int|string $id Widget ID.
+ * @param int|string $id ID widget.
  */
 function unregister_sidebar_widget($id) {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'wp_unregister_sidebar_widget()' );
@@ -2156,28 +2156,28 @@ function unregister_sidebar_widget($id) {
 }
 
 /**
- * Registers widget control callback for customizing options.
+ * Đăng ký callback điều khiển widget để tùy chỉnh tùy chọn.
  *
- * Allows $name to be an array that accepts either three elements to grab the
- * first element and the third for the name or just uses the first element of
- * the array for the name.
+ * Cho phép $name là mảng chấp nhận ba phần tử để lấy
+ * phần tử đầu tiên và phần tử thứ ba cho tên hoặc chỉ sử dụng phần tử đầu tiên của
+ * mảng cho tên.
  *
- * Passes to wp_register_widget_control() after the argument list has
- * been compiled.
+ * Chuyển đến wp_register_widget_control() sau khi danh sách đối số
+ * được biên soạn xong.
  *
  * @since 2.2.0
  * @deprecated 2.8.0 Use wp_register_widget_control()
  * @see wp_register_widget_control()
  *
- * @param int|string $name             Sidebar ID.
- * @param callable   $control_callback Widget control callback to display and process form.
- * @param int        $width            Widget width.
- * @param int        $height           Widget height.
- * @param mixed      ...$params        Widget parameters.
+ * @param int|string $name             ID thanh bên.
+ * @param callable   $control_callback Callback điều khiển widget để hiển thị và xử lý biểu mẫu.
+ * @param int        $width            Chiều rộng widget.
+ * @param int        $height           Chiều cao widget.
+ * @param mixed      ...$params        Các tham số widget.
  */
 function register_widget_control($name, $control_callback, $width = '', $height = '', ...$params) {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'wp_register_widget_control()' );
-	// Compat.
+	// Tương thích.
 	if ( is_array( $name ) ) {
 		if ( count( $name ) === 3 ) {
 			$name = sprintf( $name[0], $name[2] );
@@ -2199,13 +2199,13 @@ function register_widget_control($name, $control_callback, $width = '', $height 
 }
 
 /**
- * Alias of wp_unregister_widget_control().
+ * Bí danh của wp_unregister_widget_control().
  *
  * @since 2.2.0
  * @deprecated 2.8.0 Use wp_unregister_widget_control()
  * @see wp_unregister_widget_control()
  *
- * @param int|string $id Widget ID.
+ * @param int|string $id ID widget.
  */
 function unregister_widget_control($id) {
 	_deprecated_function( __FUNCTION__, '2.8.0', 'wp_unregister_widget_control()' );
@@ -2213,18 +2213,18 @@ function unregister_widget_control($id) {
 }
 
 /**
- * Remove user meta data.
+ * Xóa dữ liệu meta người dùng.
  *
  * @since 2.0.0
  * @deprecated 3.0.0 Use delete_user_meta()
  * @see delete_user_meta()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int $user_id User ID.
- * @param string $meta_key Metadata key.
- * @param mixed $meta_value Optional. Metadata value. Default empty.
- * @return bool True deletion completed and false if user_id is not a number.
+ * @param int $user_id ID người dùng.
+ * @param string $meta_key Khóa metadata.
+ * @param mixed $meta_value Tùy chọn. Giá trị metadata. Mặc định rỗng.
+ * @return bool True nếu xóa hoàn tất và false nếu user_id không phải số.
  */
 function delete_usermeta( $user_id, $meta_key, $meta_value = '' ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'delete_user_meta()' );
@@ -2257,21 +2257,21 @@ function delete_usermeta( $user_id, $meta_key, $meta_value = '' ) {
 }
 
 /**
- * Retrieve user metadata.
+ * Lấy metadata người dùng.
  *
- * If $user_id is not a number, then the function will fail over with a 'false'
- * boolean return value. Other returned values depend on whether there is only
- * one item to be returned, which be that single item type. If there is more
- * than one metadata value, then it will be list of metadata values.
+ * Nếu $user_id không phải là số, thì hàm sẽ trả về giá trị boolean 'false'.
+ * Các giá trị trả về khác phụ thuộc vào việc chỉ có một mục để trả về,
+ * sẽ là loại mục đơn đó. Nếu có nhiều hơn một giá trị metadata,
+ * thì đó sẽ là danh sách các giá trị metadata.
  *
  * @since 2.0.0
  * @deprecated 3.0.0 Use get_user_meta()
  * @see get_user_meta()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int $user_id User ID
- * @param string $meta_key Optional. Metadata key. Default empty.
+ * @param int $user_id ID người dùng
+ * @param string $meta_key Tùy chọn. Khóa metadata. Mặc định rỗng.
  * @return mixed
  */
 function get_usermeta( $user_id, $meta_key = '' ) {
@@ -2285,7 +2285,7 @@ function get_usermeta( $user_id, $meta_key = '' ) {
 	if ( !empty($meta_key) ) {
 		$meta_key = preg_replace('|[^a-z0-9_]|i', '', $meta_key);
 		$user = wp_cache_get($user_id, 'users');
-		// Check the cached user object.
+		// Kiểm tra đối tượng người dùng đã được lưu trong bộ nhớ đệm.
 		if ( false !== $user && isset($user->$meta_key) )
 			$metas = array($user->$meta_key);
 		else
@@ -2310,24 +2310,24 @@ function get_usermeta( $user_id, $meta_key = '' ) {
 }
 
 /**
- * Update metadata of user.
+ * Cập nhật metadata của người dùng.
  *
- * There is no need to serialize values, they will be serialized if it is
- * needed. The metadata key can only be a string with underscores. All else will
- * be removed.
+ * Không cần serialize giá trị, chúng sẽ được serialize nếu cần thiết.
+ * Khóa metadata chỉ có thể là chuỗi với dấu gạch dưới. Tất cả những thứ khác sẽ
+ * bị xóa bỏ.
  *
- * Will remove the metadata, if the meta value is empty.
+ * Sẽ xóa metadata, nếu giá trị meta rỗng.
  *
  * @since 2.0.0
  * @deprecated 3.0.0 Use update_user_meta()
  * @see update_user_meta()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int $user_id User ID
- * @param string $meta_key Metadata key.
- * @param mixed $meta_value Metadata value.
- * @return bool True on successful update, false on failure.
+ * @param int $user_id ID người dùng
+ * @param string $meta_key Khóa metadata.
+ * @param mixed $meta_value Giá trị metadata.
+ * @return bool True nếu cập nhật thành công, false nếu thất bại.
  */
 function update_usermeta( $user_id, $meta_key, $meta_value ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'update_user_meta()' );
@@ -2336,7 +2336,7 @@ function update_usermeta( $user_id, $meta_key, $meta_value ) {
 		return false;
 	$meta_key = preg_replace('|[^a-z0-9_]|i', '', $meta_key);
 
-	/** @todo Might need fix because usermeta data is assumed to be already escaped */
+	/** @todo Có thể cần sửa vì dữ liệu usermeta được giả định là đã được thoát */
 	if ( is_string($meta_value) )
 		$meta_value = stripslashes($meta_value);
 	$meta_value = maybe_serialize($meta_value);
@@ -2369,19 +2369,19 @@ function update_usermeta( $user_id, $meta_key, $meta_value ) {
 }
 
 /**
- * Get users for the site.
+ * Lấy người dùng cho trang web.
  *
- * For setups that use the multisite feature. Can be used outside of the
- * multisite feature.
+ * Dành cho các cài đặt sử dụng tính năng đa trang. Có thể sử dụng ngoài
+ * tính năng đa trang.
  *
  * @since 2.2.0
  * @deprecated 3.1.0 Use get_users()
  * @see get_users()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int $id Site ID.
- * @return array List of users that are part of that site ID
+ * @param int $id ID trang web.
+ * @return array Danh sách người dùng thuộc ID trang web đó
  */
 function get_users_of_blog( $id = '' ) {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_users()' );
@@ -2396,13 +2396,13 @@ function get_users_of_blog( $id = '' ) {
 }
 
 /**
- * Enable/disable automatic general feed link outputting.
+ * Bật/tắt xuất liên kết nguồn cấp dữ liệu chung tự động.
  *
  * @since 2.8.0
  * @deprecated 3.0.0 Use add_theme_support()
  * @see add_theme_support()
  *
- * @param bool $add Optional. Add or remove links. Default true.
+ * @param bool $add Tùy chọn. Thêm hoặc xóa liên kết. Mặc định true.
  */
 function automatic_feed_links( $add = true ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', "add_theme_support( 'automatic-feed-links' )" );
@@ -2410,19 +2410,19 @@ function automatic_feed_links( $add = true ) {
 	if ( $add )
 		add_theme_support( 'automatic-feed-links' );
 	else
-		remove_action( 'wp_head', 'feed_links_extra', 3 ); // Just do this yourself in 3.0+.
+		remove_action( 'wp_head', 'feed_links_extra', 3 ); // Hãy tự làm điều này trong phiên bản 3.0+.
 }
 
 /**
- * Retrieve user data based on field.
+ * Lấy dữ liệu người dùng dựa trên trường.
  *
  * @since 1.5.0
  * @deprecated 3.0.0 Use get_the_author_meta()
  * @see get_the_author_meta()
  *
- * @param string    $field User meta field.
- * @param false|int $user  Optional. User ID to retrieve the field for. Default false (current user).
- * @return string The author's field from the current author's DB object.
+ * @param string    $field Trường meta người dùng.
+ * @param false|int $user  Tùy chọn. ID người dùng để lấy trường. Mặc định false (người dùng hiện tại).
+ * @return string Trường của tác giả từ đối tượng DB của tác giả hiện tại.
  */
 function get_profile( $field, $user = false ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'get_the_author_meta()' );
@@ -2434,14 +2434,14 @@ function get_profile( $field, $user = false ) {
 }
 
 /**
- * Retrieves the number of posts a user has written.
+ * Lấy số lượng bài viết mà người dùng đã viết.
  *
  * @since 0.71
  * @deprecated 3.0.0 Use count_user_posts()
  * @see count_user_posts()
  *
- * @param int $userid User to count posts for.
- * @return int Number of posts the given user has written.
+ * @param int $userid Người dùng để đếm bài viết.
+ * @return int Số lượng bài viết mà người dùng đã viết.
  */
 function get_usernumposts( $userid ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'count_user_posts()' );
@@ -2449,23 +2449,23 @@ function get_usernumposts( $userid ) {
 }
 
 /**
- * Callback used to change %uXXXX to &#YYY; syntax
+ * Callback dùng để chuyển đổi cú pháp %uXXXX sang &#YYY;
  *
  * @since 2.8.0
  * @access private
  * @deprecated 3.0.0
  *
- * @param array $matches Single Match
- * @return string An HTML entity
+ * @param array $matches Kết quả khớp đơn
+ * @return string Một thực thể HTML
  */
 function funky_javascript_callback($matches) {
 	return "&#".base_convert($matches[1],16,10).";";
 }
 
 /**
- * Fixes JavaScript bugs in browsers.
+ * Sửa lỗi JavaScript trong các trình duyệt.
  *
- * Converts unicode characters to HTML numbered entities.
+ * Chuyển đổi các ký tự unicode thành thực thể HTML có đánh số.
  *
  * @since 1.5.0
  * @deprecated 3.0.0
@@ -2473,8 +2473,8 @@ function funky_javascript_callback($matches) {
  * @global $is_macIE
  * @global $is_winIE
  *
- * @param string $text Text to be made safe.
- * @return string Fixed text.
+ * @param string $text Văn bản cần làm an toàn.
+ * @return string Văn bản đã sửa.
  */
 function funky_javascript_fix($text) {
 	_deprecated_function( __FUNCTION__, '3.0.0' );
@@ -2490,14 +2490,14 @@ function funky_javascript_fix($text) {
 }
 
 /**
- * Checks that the taxonomy name exists.
+ * Kiểm tra tên taxonomy có tồn tại không.
  *
  * @since 2.3.0
  * @deprecated 3.0.0 Use taxonomy_exists()
  * @see taxonomy_exists()
  *
- * @param string $taxonomy Name of taxonomy object
- * @return bool Whether the taxonomy exists.
+ * @param string $taxonomy Tên đối tượng taxonomy
+ * @return bool Taxonomy có tồn tại hay không.
  */
 function is_taxonomy( $taxonomy ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'taxonomy_exists()' );
@@ -2505,16 +2505,16 @@ function is_taxonomy( $taxonomy ) {
 }
 
 /**
- * Check if Term exists.
+ * Kiểm tra xem Term có tồn tại không.
  *
  * @since 2.3.0
  * @deprecated 3.0.0 Use term_exists()
  * @see term_exists()
  *
- * @param int|string $term The term to check
- * @param string $taxonomy The taxonomy name to use
- * @param int $parent ID of parent term under which to confine the exists search.
- * @return mixed Get the term ID or term object, if exists.
+ * @param int|string $term Term cần kiểm tra
+ * @param string $taxonomy Tên taxonomy cần sử dụng
+ * @param int $parent ID của term cha để giới hạn phạm vi tìm kiếm.
+ * @return mixed Lấy ID hoặc đối tượng term, nếu tồn tại.
  */
 function is_term( $term, $taxonomy = '', $parent = 0 ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'term_exists()' );
@@ -2522,13 +2522,13 @@ function is_term( $term, $taxonomy = '', $parent = 0 ) {
 }
 
 /**
- * Determines whether the current admin page is generated by a plugin.
+ * Xác định xem trang quản trị hiện tại có được tạo bởi plugin không.
  *
- * Use global $plugin_page and/or get_plugin_page_hookname() hooks.
+ * Sử dụng biến toàn cục $plugin_page và/hoặc các hook get_plugin_page_hookname().
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 1.5.0
  * @deprecated 3.1.0
@@ -2549,16 +2549,16 @@ function is_plugin_page() {
 }
 
 /**
- * Update the categories cache.
+ * Cập nhật bộ nhớ đệm chuyên mục.
  *
- * This function does not appear to be used anymore or does not appear to be
- * needed. It might be a legacy function left over from when there was a need
- * for updating the category cache.
+ * Hàm này dường như không còn được sử dụng hoặc không cần thiết nữa.
+ * Có thể là hàm cũ còn sót lại từ khi cần cập nhật
+ * bộ nhớ đệm chuyên mục.
  *
  * @since 1.5.0
  * @deprecated 3.1.0
  *
- * @return bool Always return True
+ * @return bool Luôn trả về True
  */
 function update_category_cache() {
 	_deprecated_function( __FUNCTION__, '3.1.0' );
@@ -2567,7 +2567,7 @@ function update_category_cache() {
 }
 
 /**
- * Check for PHP timezone support
+ * Kiểm tra hỗ trợ múi giờ PHP
  *
  * @since 2.9.0
  * @deprecated 3.2.0
@@ -2581,18 +2581,18 @@ function wp_timezone_supported() {
 }
 
 /**
- * Displays an editor: TinyMCE, HTML, or both.
+ * Hiển thị trình soạn thảo: TinyMCE, HTML, hoặc cả hai.
  *
  * @since 2.1.0
  * @deprecated 3.3.0 Use wp_editor()
  * @see wp_editor()
  *
- * @param string $content       Textarea content.
- * @param string $id            Optional. HTML ID attribute value. Default 'content'.
- * @param string $prev_id       Optional. Unused.
- * @param bool   $media_buttons Optional. Whether to display media buttons. Default true.
- * @param int    $tab_index     Optional. Unused.
- * @param bool   $extended      Optional. Unused.
+ * @param string $content       Nội dung textarea.
+ * @param string $id            Tùy chọn. Giá trị thuộc tính ID HTML. Mặc định 'content'.
+ * @param string $prev_id       Tùy chọn. Không sử dụng.
+ * @param bool   $media_buttons Tùy chọn. Có hiển thị các nút media không. Mặc định true.
+ * @param int    $tab_index     Tùy chọn. Không sử dụng.
+ * @param bool   $extended      Tùy chọn. Không sử dụng.
  */
 function the_editor($content, $id = 'content', $prev_id = 'title', $media_buttons = true, $tab_index = 2, $extended = true) {
 	_deprecated_function( __FUNCTION__, '3.3.0', 'wp_editor()' );
@@ -2601,13 +2601,13 @@ function the_editor($content, $id = 'content', $prev_id = 'title', $media_button
 }
 
 /**
- * Perform the query to get the $metavalues array(s) needed by _fill_user and _fill_many_users
+ * Thực hiện truy vấn để lấy mảng $metavalues cần thiết cho _fill_user và _fill_many_users
  *
  * @since 3.0.0
  * @deprecated 3.3.0
  *
- * @param array $ids User ID numbers list.
- * @return array of arrays. The array is indexed by user_id, containing $metavalues object arrays.
+ * @param array $ids Danh sách số ID người dùng.
+ * @return array Mảng các mảng. Mảng được đánh chỉ mục theo user_id, chứa các mảng đối tượng $metavalues.
  */
 function get_user_metavalues($ids) {
 	_deprecated_function( __FUNCTION__, '3.3.0' );
@@ -2632,16 +2632,16 @@ function get_user_metavalues($ids) {
 }
 
 /**
- * Sanitize every user field.
+ * Làm sạch mọi trường người dùng.
  *
- * If the context is 'raw', then the user object or array will get minimal sanitization of the int fields.
+ * Nếu ngữ cảnh là 'raw', đối tượng hoặc mảng người dùng sẽ được làm sạch tối thiểu cho các trường int.
  *
  * @since 2.3.0
  * @deprecated 3.3.0
  *
- * @param object|array $user    The user object or array.
- * @param string       $context Optional. How to sanitize user fields. Default 'display'.
- * @return object|array The now sanitized user object or array (will be the same type as $user).
+ * @param object|array $user    Đối tượng hoặc mảng người dùng.
+ * @param string       $context Tùy chọn. Cách làm sạch các trường người dùng. Mặc định 'display'.
+ * @return object|array Đối tượng hoặc mảng người dùng đã được làm sạch (cùng kiểu với $user).
  */
 function sanitize_user_object($user, $context = 'display') {
 	_deprecated_function( __FUNCTION__, '3.3.0' );
@@ -2669,30 +2669,30 @@ function sanitize_user_object($user, $context = 'display') {
 }
 
 /**
- * Get boundary post relational link.
+ * Lấy liên kết quan hệ bài viết đầu/cuối.
  *
- * Can either be start or end post relational link.
+ * Có thể là liên kết quan hệ bài viết đầu hoặc cuối.
  *
  * @since 2.8.0
  * @deprecated 3.3.0
  *
- * @param string $title               Optional. Link title format. Default '%title'.
- * @param bool   $in_same_cat         Optional. Whether link should be in a same category.
- *                                    Default false.
- * @param string $excluded_categories Optional. Excluded categories IDs. Default empty.
- * @param bool   $start               Optional. Whether to display link to first or last post.
- *                                    Default true.
+ * @param string $title               Tùy chọn. Định dạng tiêu đề liên kết. Mặc định '%title'.
+ * @param bool   $in_same_cat         Tùy chọn. Liên kết có nên cùng chuyên mục không.
+ *                                    Mặc định false.
+ * @param string $excluded_categories Tùy chọn. ID các chuyên mục bị loại trừ. Mặc định rỗng.
+ * @param bool   $start               Tùy chọn. Hiển thị liên kết đến bài viết đầu tiên hay cuối cùng.
+ *                                    Mặc định true.
  * @return string
  */
 function get_boundary_post_rel_link($title = '%title', $in_same_cat = false, $excluded_categories = '', $start = true) {
 	_deprecated_function( __FUNCTION__, '3.3.0' );
 
 	$posts = get_boundary_post($in_same_cat, $excluded_categories, $start);
-	// If there is no post, stop.
+	// Nếu không có bài viết, dừng lại.
 	if ( empty($posts) )
 		return;
 
-	// Even though we limited get_posts() to return only 1 item it still returns an array of objects.
+	// Mặc dù giới hạn get_posts() chỉ trả về 1 mục nhưng nó vẫn trả về mảng các đối tượng.
 	$post = $posts[0];
 
 	if ( empty($post->post_title) )
@@ -2713,14 +2713,14 @@ function get_boundary_post_rel_link($title = '%title', $in_same_cat = false, $ex
 }
 
 /**
- * Display relational link for the first post.
+ * Hiển thị liên kết quan hệ cho bài viết đầu tiên.
  *
  * @since 2.8.0
  * @deprecated 3.3.0
  *
- * @param string $title Optional. Link title format.
- * @param bool $in_same_cat Optional. Whether link should be in a same category.
- * @param string $excluded_categories Optional. Excluded categories IDs.
+ * @param string $title Tùy chọn. Định dạng tiêu đề liên kết.
+ * @param bool $in_same_cat Tùy chọn. Liên kết có nên cùng chuyên mục không.
+ * @param string $excluded_categories Tùy chọn. ID các chuyên mục bị loại trừ.
  */
 function start_post_rel_link($title = '%title', $in_same_cat = false, $excluded_categories = '') {
 	_deprecated_function( __FUNCTION__, '3.3.0' );
@@ -2729,7 +2729,7 @@ function start_post_rel_link($title = '%title', $in_same_cat = false, $excluded_
 }
 
 /**
- * Get site index relational link.
+ * Lấy liên kết quan hệ trang chủ.
  *
  * @since 2.8.0
  * @deprecated 3.3.0
@@ -2744,7 +2744,7 @@ function get_index_rel_link() {
 }
 
 /**
- * Display relational link for the site index.
+ * Hiển thị liên kết quan hệ cho trang chủ.
  *
  * @since 2.8.0
  * @deprecated 3.3.0
@@ -2756,14 +2756,14 @@ function index_rel_link() {
 }
 
 /**
- * Get parent post relational link.
+ * Lấy liên kết quan hệ bài viết cha.
  *
  * @since 2.8.0
  * @deprecated 3.3.0
  *
- * @global WP_Post $post Global post object.
+ * @global WP_Post $post Đối tượng bài viết toàn cục.
  *
- * @param string $title Optional. Link title format. Default '%title'.
+ * @param string $title Tùy chọn. Định dạng tiêu đề liên kết. Mặc định '%title'.
  * @return string
  */
 function get_parent_post_rel_link( $title = '%title' ) {
@@ -2789,12 +2789,12 @@ function get_parent_post_rel_link( $title = '%title' ) {
 }
 
 /**
- * Display relational link for parent item
+ * Hiển thị liên kết quan hệ cho mục cha
  *
  * @since 2.8.0
  * @deprecated 3.3.0
  *
- * @param string $title Optional. Link title format. Default '%title'.
+ * @param string $title Tùy chọn. Định dạng tiêu đề liên kết. Mặc định '%title'.
  */
 function parent_post_rel_link( $title = '%title' ) {
 	_deprecated_function( __FUNCTION__, '3.3.0' );
@@ -2803,12 +2803,12 @@ function parent_post_rel_link( $title = '%title' ) {
 }
 
 /**
- * Add the "Dashboard"/"Visit Site" menu.
+ * Thêm menu "Bảng điều khiển"/"Xem trang web".
  *
  * @since 3.2.0
  * @deprecated 3.3.0
  *
- * @param WP_Admin_Bar $wp_admin_bar WP_Admin_Bar instance.
+ * @param WP_Admin_Bar $wp_admin_bar Thể hiện WP_Admin_Bar.
  */
 function wp_admin_bar_dashboard_view_site_menu( $wp_admin_bar ) {
 	_deprecated_function( __FUNCTION__, '3.3.0' );
@@ -2826,14 +2826,14 @@ function wp_admin_bar_dashboard_view_site_menu( $wp_admin_bar ) {
 }
 
 /**
- * Checks if the current user belong to a given site.
+ * Kiểm tra xem người dùng hiện tại có thuộc trang web cho trước không.
  *
  * @since MU (3.0.0)
  * @deprecated 3.3.0 Use is_user_member_of_blog()
  * @see is_user_member_of_blog()
  *
- * @param int $blog_id Site ID
- * @return bool True if the current users belong to $blog_id, false if not.
+ * @param int $blog_id ID trang web
+ * @return bool True nếu người dùng hiện tại thuộc $blog_id, false nếu không.
  */
 function is_blog_user( $blog_id = 0 ) {
 	_deprecated_function( __FUNCTION__, '3.3.0', 'is_user_member_of_blog()' );
@@ -2842,7 +2842,7 @@ function is_blog_user( $blog_id = 0 ) {
 }
 
 /**
- * Open the file handle for debugging.
+ * Mở con trỏ tệp để gỡ lỗi.
  *
  * @since 0.71
  * @deprecated 3.4.0 Use error_log()
@@ -2850,9 +2850,9 @@ function is_blog_user( $blog_id = 0 ) {
  *
  * @link https://www.php.net/manual/en/function.error-log.php
  *
- * @param string $filename File name.
- * @param string $mode     Type of access you required to the stream.
- * @return false Always false.
+ * @param string $filename Tên tệp.
+ * @param string $mode     Loại quyền truy cập bạn cần cho luồng.
+ * @return false Luôn trả về false.
  */
 function debug_fopen( $filename, $mode ) {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'error_log()' );
@@ -2860,7 +2860,7 @@ function debug_fopen( $filename, $mode ) {
 }
 
 /**
- * Write contents to the file used for debugging.
+ * Ghi nội dung vào tệp dùng để gỡ lỗi.
  *
  * @since 0.71
  * @deprecated 3.4.0 Use error_log()
@@ -2868,8 +2868,8 @@ function debug_fopen( $filename, $mode ) {
  *
  * @link https://www.php.net/manual/en/function.error-log.php
  *
- * @param mixed  $fp      Unused.
- * @param string $message Message to log.
+ * @param mixed  $fp      Không sử dụng.
+ * @param string $message Thông báo để ghi log.
  */
 function debug_fwrite( $fp, $message ) {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'error_log()' );
@@ -2878,7 +2878,7 @@ function debug_fwrite( $fp, $message ) {
 }
 
 /**
- * Close the debugging file handle.
+ * Đóng con trỏ tệp gỡ lỗi.
  *
  * @since 0.71
  * @deprecated 3.4.0 Use error_log()
@@ -2886,24 +2886,24 @@ function debug_fwrite( $fp, $message ) {
  *
  * @link https://www.php.net/manual/en/function.error-log.php
  *
- * @param mixed $fp Unused.
+ * @param mixed $fp Không sử dụng.
  */
 function debug_fclose( $fp ) {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'error_log()' );
 }
 
 /**
- * Retrieve list of themes with theme data in theme directory.
+ * Lấy danh sách theme với dữ liệu theme trong thư mục theme.
  *
- * The theme is broken, if it doesn't have a parent theme and is missing either
- * style.css and, or index.php. If the theme has a parent theme then it is
- * broken, if it is missing style.css; index.php is optional.
+ * Theme bị lỗi nếu nó không có theme cha và thiếu
+ * style.css và/hoặc index.php. Nếu theme có theme cha thì nó
+ * bị lỗi nếu thiếu style.css; index.php là tùy chọn.
  *
  * @since 1.5.0
  * @deprecated 3.4.0 Use wp_get_themes()
  * @see wp_get_themes()
  *
- * @return array Theme list with theme data.
+ * @return array Danh sách theme với dữ liệu theme.
  */
 function get_themes() {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'wp_get_themes()' );
@@ -2927,14 +2927,14 @@ function get_themes() {
 }
 
 /**
- * Retrieve theme data.
+ * Lấy dữ liệu theme.
  *
  * @since 1.5.0
  * @deprecated 3.4.0 Use wp_get_theme()
  * @see wp_get_theme()
  *
- * @param string $theme Theme name.
- * @return array|null Null, if theme name does not exist. Theme data, if exists.
+ * @param string $theme Tên theme.
+ * @return array|null Null, nếu tên theme không tồn tại. Dữ liệu theme, nếu tồn tại.
  */
 function get_theme( $theme ) {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'wp_get_theme( $stylesheet )' );
@@ -2946,7 +2946,7 @@ function get_theme( $theme ) {
 }
 
 /**
- * Retrieve current theme name.
+ * Lấy tên theme hiện tại.
  *
  * @since 1.5.0
  * @deprecated 3.4.0 Use wp_get_theme()
@@ -2964,16 +2964,16 @@ function get_current_theme() {
 }
 
 /**
- * Accepts matches array from preg_replace_callback in wpautop() or a string.
+ * Nhận mảng kết quả khớp từ preg_replace_callback trong wpautop() hoặc chuỗi.
  *
- * Ensures that the contents of a `<pre>...</pre>` HTML block are not
- * converted into paragraphs or line breaks.
+ * Đảm bảo rằng nội dung của khối HTML `<pre>...</pre>` không bị
+ * chuyển đổi thành đoạn văn hoặc ngắt dòng.
  *
  * @since 1.2.0
  * @deprecated 3.4.0
  *
- * @param array|string $matches The array or string
- * @return string The pre block without paragraph/line break conversion.
+ * @param array|string $matches Mảng hoặc chuỗi
+ * @return string Khối pre không bị chuyển đổi đoạn văn/ngắt dòng.
  */
 function clean_pre($matches) {
 	_deprecated_function( __FUNCTION__, '3.4.0' );
@@ -2992,15 +2992,15 @@ function clean_pre($matches) {
 
 
 /**
- * Add callbacks for image header display.
+ * Thêm callback hiển thị ảnh đầu trang.
  *
  * @since 2.1.0
  * @deprecated 3.4.0 Use add_theme_support()
  * @see add_theme_support()
  *
- * @param callable $wp_head_callback Call on the {@see 'wp_head'} action.
- * @param callable $admin_head_callback Call on custom header administration screen.
- * @param callable $admin_preview_callback Output a custom header image div on the custom header administration screen. Optional.
+ * @param callable $wp_head_callback Gọi trên action {@see 'wp_head'}.
+ * @param callable $admin_head_callback Gọi trên màn hình quản trị đầu trang tùy chỉnh.
+ * @param callable $admin_preview_callback Xuất div ảnh đầu trang tùy chỉnh trên màn hình quản trị đầu trang tùy chỉnh. Tùy chọn.
  */
 function add_custom_image_header( $wp_head_callback, $admin_head_callback, $admin_preview_callback = '' ) {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'add_theme_support( \'custom-header\', $args )' );
@@ -3014,13 +3014,13 @@ function add_custom_image_header( $wp_head_callback, $admin_head_callback, $admi
 }
 
 /**
- * Remove image header support.
+ * Xóa hỗ trợ ảnh đầu trang.
  *
  * @since 3.1.0
  * @deprecated 3.4.0 Use remove_theme_support()
  * @see remove_theme_support()
  *
- * @return null|bool Whether support was removed.
+ * @return null|bool Hỗ trợ có được xóa hay không.
  */
 function remove_custom_image_header() {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'remove_theme_support( \'custom-header\' )' );
@@ -3028,15 +3028,15 @@ function remove_custom_image_header() {
 }
 
 /**
- * Add callbacks for background image display.
+ * Thêm callback hiển thị ảnh nền.
  *
  * @since 3.0.0
  * @deprecated 3.4.0 Use add_theme_support()
  * @see add_theme_support()
  *
- * @param callable $wp_head_callback Call on the {@see 'wp_head'} action.
- * @param callable $admin_head_callback Call on custom background administration screen.
- * @param callable $admin_preview_callback Output a custom background image div on the custom background administration screen. Optional.
+ * @param callable $wp_head_callback Gọi trên action {@see 'wp_head'}.
+ * @param callable $admin_head_callback Gọi trên màn hình quản trị nền tùy chỉnh.
+ * @param callable $admin_preview_callback Xuất div ảnh nền tùy chỉnh trên màn hình quản trị nền tùy chỉnh. Tùy chọn.
  */
 function add_custom_background( $wp_head_callback = '', $admin_head_callback = '', $admin_preview_callback = '' ) {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'add_theme_support( \'custom-background\', $args )' );
@@ -3051,13 +3051,13 @@ function add_custom_background( $wp_head_callback = '', $admin_head_callback = '
 }
 
 /**
- * Remove custom background support.
+ * Xóa hỗ trợ nền tùy chỉnh.
  *
  * @since 3.1.0
  * @deprecated 3.4.0 Use add_custom_background()
  * @see add_custom_background()
  *
- * @return null|bool Whether support was removed.
+ * @return null|bool Hỗ trợ có được xóa hay không.
  */
 function remove_custom_background() {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'remove_theme_support( \'custom-background\' )' );
@@ -3065,14 +3065,14 @@ function remove_custom_background() {
 }
 
 /**
- * Retrieve theme data from parsed theme file.
+ * Lấy dữ liệu theme từ tệp theme đã phân tích.
  *
  * @since 1.5.0
  * @deprecated 3.4.0 Use wp_get_theme()
  * @see wp_get_theme()
  *
- * @param string $theme_file Theme file path.
- * @return array Theme data.
+ * @param string $theme_file Đường dẫn tệp theme.
+ * @return array Dữ liệu theme.
  */
 function get_theme_data( $theme_file ) {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'wp_get_theme()' );
@@ -3101,15 +3101,15 @@ function get_theme_data( $theme_file ) {
 }
 
 /**
- * Alias of update_post_cache().
+ * Bí danh của update_post_cache().
  *
- * @see update_post_cache() Posts and pages are the same, alias is intentional
+ * @see update_post_cache() Bài viết và trang giống nhau, bí danh là có chủ đích
  *
  * @since 1.5.1
  * @deprecated 3.4.0 Use update_post_cache()
  * @see update_post_cache()
  *
- * @param array $pages list of page objects
+ * @param array $pages Danh sách các đối tượng trang
  */
 function update_page_cache( &$pages ) {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'update_post_cache()' );
@@ -3118,16 +3118,16 @@ function update_page_cache( &$pages ) {
 }
 
 /**
- * Will clean the page in the cache.
+ * Xóa trang trong bộ nhớ đệm.
  *
- * Clean (read: delete) page from cache that matches $id. Will also clean cache
- * associated with 'all_page_ids' and 'get_pages'.
+ * Xóa trang khỏi bộ nhớ đệm khớp với $id. Cũng sẽ xóa bộ nhớ đệm
+ * liên quan đến 'all_page_ids' và 'get_pages'.
  *
  * @since 2.0.0
  * @deprecated 3.4.0 Use clean_post_cache
  * @see clean_post_cache()
  *
- * @param int $id Page ID to clean
+ * @param int $id ID trang cần xóa
  */
 function clean_page_cache( $id ) {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'clean_post_cache()' );
@@ -3136,16 +3136,16 @@ function clean_page_cache( $id ) {
 }
 
 /**
- * Retrieve nonce action "Are you sure" message.
+ * Lấy thông báo "Bạn có chắc không" cho hành động nonce.
  *
- * Deprecated in 3.4.1 and 3.5.0. Backported to 3.3.3.
+ * Ngưng sử dụng từ 3.4.1 và 3.5.0. Được backport về 3.3.3.
  *
  * @since 2.0.4
  * @deprecated 3.4.1 Use wp_nonce_ays()
  * @see wp_nonce_ays()
  *
- * @param string $action Nonce action.
- * @return string Are you sure message.
+ * @param string $action Hành động nonce.
+ * @return string Thông báo xác nhận.
  */
 function wp_explain_nonce( $action ) {
 	_deprecated_function( __FUNCTION__, '3.4.1', 'wp_nonce_ays()' );
@@ -3153,13 +3153,13 @@ function wp_explain_nonce( $action ) {
 }
 
 /**
- * Display "sticky" CSS class, if a post is sticky.
+ * Hiển thị class CSS "sticky", nếu bài viết được ghim.
  *
  * @since 2.7.0
  * @deprecated 3.5.0 Use post_class()
  * @see post_class()
  *
- * @param int $post_id An optional post ID.
+ * @param int $post_id Tùy chọn. ID bài viết.
  */
 function sticky_class( $post_id = null ) {
 	_deprecated_function( __FUNCTION__, '3.5.0', 'post_class()' );
@@ -3168,31 +3168,31 @@ function sticky_class( $post_id = null ) {
 }
 
 /**
- * Retrieve post ancestors.
+ * Lấy tổ tiên bài viết.
  *
- * This is no longer needed as WP_Post lazy-loads the ancestors
- * property with get_post_ancestors().
+ * Hàm này không còn cần thiết vì WP_Post tải lười thuộc tính
+ * ancestors bằng get_post_ancestors().
  *
  * @since 2.3.4
  * @deprecated 3.5.0 Use get_post_ancestors()
  * @see get_post_ancestors()
  *
- * @param WP_Post $post Post object, passed by reference (unused).
+ * @param WP_Post $post Đối tượng bài viết, truyền theo tham chiếu (không sử dụng).
  */
 function _get_post_ancestors( &$post ) {
 	_deprecated_function( __FUNCTION__, '3.5.0' );
 }
 
 /**
- * Load an image from a string, if PHP supports it.
+ * Tải ảnh từ chuỗi, nếu PHP hỗ trợ.
  *
  * @since 2.1.0
  * @deprecated 3.5.0 Use wp_get_image_editor()
  * @see wp_get_image_editor()
  *
- * @param string $file Filename of the image to load.
- * @return resource|GdImage|string The resulting image resource or GdImage instance on success,
- *                                 error string on failure.
+ * @param string $file Tên tệp ảnh cần tải.
+ * @return resource|GdImage|string Tài nguyên ảnh hoặc thể hiện GdImage khi thành công,
+ *                                 chuỗi lỗi khi thất bại.
  */
 function wp_load_image( $file ) {
 	_deprecated_function( __FUNCTION__, '3.5.0', 'wp_get_image_editor()' );
@@ -3208,7 +3208,7 @@ function wp_load_image( $file ) {
 	if ( ! function_exists('imagecreatefromstring') )
 		return __('The GD image library is not installed.');
 
-	// Set artificially high because GD uses uncompressed images in memory.
+	// Đặt cao giả tạo vì GD sử dụng ảnh không nén trong bộ nhớ.
 	wp_raise_memory_limit( 'image' );
 
 	$image = imagecreatefromstring( file_get_contents( $file ) );
@@ -3222,28 +3222,28 @@ function wp_load_image( $file ) {
 }
 
 /**
- * Scale down an image to fit a particular size and save a new copy of the image.
+ * Thu nhỏ ảnh để vừa kích thước cụ thể và lưu bản sao mới của ảnh.
  *
- * The PNG transparency will be preserved using the function, as well as the
- * image type. If the file going in is PNG, then the resized image is going to
- * be PNG. The only supported image types are PNG, GIF, and JPEG.
+ * Độ trong suốt PNG sẽ được bảo toàn khi sử dụng hàm này, cũng như
+ * loại ảnh. Nếu tệp đầu vào là PNG, thì ảnh đã thay đổi kích thước cũng sẽ
+ * là PNG. Các loại ảnh được hỗ trợ duy nhất là PNG, GIF, và JPEG.
  *
- * Some functionality requires API to exist, so some PHP version may lose out
- * support. This is not the fault of WordPress (where functionality is
- * downgraded, not actual defects), but of your PHP version.
+ * Một số chức năng yêu cầu API tồn tại, nên một số phiên bản PHP có thể mất
+ * hỗ trợ. Đây không phải lỗi của WordPress (nơi chức năng bị
+ * hạ cấp, không phải lỗi thực sự), mà là của phiên bản PHP của bạn.
  *
  * @since 2.5.0
  * @deprecated 3.5.0 Use wp_get_image_editor()
  * @see wp_get_image_editor()
  *
- * @param string $file         Image file path.
- * @param int    $max_w        Maximum width to resize to.
- * @param int    $max_h        Maximum height to resize to.
- * @param bool   $crop         Optional. Whether to crop image or resize. Default false.
- * @param string $suffix       Optional. File suffix. Default null.
- * @param string $dest_path    Optional. New image file path. Default null.
- * @param int    $jpeg_quality Optional. Image quality percentage. Default 90.
- * @return mixed WP_Error on failure. String with new destination path.
+ * @param string $file         Đường dẫn tệp ảnh.
+ * @param int    $max_w        Chiều rộng tối đa để thay đổi kích thước.
+ * @param int    $max_h        Chiều cao tối đa để thay đổi kích thước.
+ * @param bool   $crop         Tùy chọn. Cắt ảnh hay thay đổi kích thước. Mặc định false.
+ * @param string $suffix       Tùy chọn. Hậu tố tệp. Mặc định null.
+ * @param string $dest_path    Tùy chọn. Đường dẫn tệp ảnh mới. Mặc định null.
+ * @param int    $jpeg_quality Tùy chọn. Phần trăm chất lượng ảnh. Mặc định 90.
+ * @return mixed WP_Error khi thất bại. Chuỗi với đường dẫn đích mới.
  */
 function image_resize( $file, $max_w, $max_h, $crop = false, $suffix = null, $dest_path = null, $jpeg_quality = 90 ) {
 	_deprecated_function( __FUNCTION__, '3.5.0', 'wp_get_image_editor()' );
@@ -3267,18 +3267,18 @@ function image_resize( $file, $max_w, $max_h, $crop = false, $suffix = null, $de
 }
 
 /**
- * Retrieve a single post, based on post ID.
+ * Lấy một bài viết duy nhất, dựa trên ID bài viết.
  *
- * Has categories in 'post_category' property or key. Has tags in 'tags_input'
- * property or key.
+ * Có chuyên mục trong thuộc tính hoặc khóa 'post_category'. Có thẻ trong thuộc tính
+ * hoặc khóa 'tags_input'.
  *
  * @since 1.0.0
  * @deprecated 3.5.0 Use get_post()
  * @see get_post()
  *
- * @param int $postid Post ID.
- * @param string $mode How to return result, either OBJECT, ARRAY_N, or ARRAY_A.
- * @return WP_Post|null Post object or array holding post contents and information
+ * @param int $postid ID bài viết.
+ * @param string $mode Cách trả về kết quả, OBJECT, ARRAY_N, hoặc ARRAY_A.
+ * @return WP_Post|null Đối tượng hoặc mảng bài viết chứa nội dung và thông tin bài viết
  */
 function wp_get_single_post( $postid = 0, $mode = OBJECT ) {
 	_deprecated_function( __FUNCTION__, '3.5.0', 'get_post()' );
@@ -3286,15 +3286,15 @@ function wp_get_single_post( $postid = 0, $mode = OBJECT ) {
 }
 
 /**
- * Check that the user login name and password is correct.
+ * Kiểm tra tên đăng nhập và mật khẩu người dùng có đúng không.
  *
  * @since 0.71
  * @deprecated 3.5.0 Use wp_authenticate()
  * @see wp_authenticate()
  *
- * @param string $user_login User name.
- * @param string $user_pass User password.
- * @return bool False if does not authenticate, true if username and password authenticates.
+ * @param string $user_login Tên người dùng.
+ * @param string $user_pass Mật khẩu người dùng.
+ * @return bool False nếu không xác thực được, true nếu tên người dùng và mật khẩu xác thực thành công.
  */
 function user_pass_ok($user_login, $user_pass) {
 	_deprecated_function( __FUNCTION__, '3.5.0', 'wp_authenticate()' );
@@ -3306,7 +3306,7 @@ function user_pass_ok($user_login, $user_pass) {
 }
 
 /**
- * Callback formerly fired on the save_post hook. No longer needed.
+ * Callback trước đây được kích hoạt trên hook save_post. Không còn cần thiết.
  *
  * @since 2.3.0
  * @deprecated 3.5.0
@@ -3314,7 +3314,7 @@ function user_pass_ok($user_login, $user_pass) {
 function _save_post_hook() {}
 
 /**
- * Check if the installed version of GD supports particular image type
+ * Kiểm tra phiên bản GD đã cài đặt có hỗ trợ loại ảnh cụ thể không
  *
  * @since 2.9.0
  * @deprecated 3.5.0 Use wp_image_editor_supports()
@@ -3357,14 +3357,14 @@ function gd_edit_image_support($mime_type) {
 }
 
 /**
- * Converts an integer byte value to a shorthand byte value.
+ * Chuyển đổi giá trị byte số nguyên sang giá trị byte viết tắt.
  *
  * @since 2.3.0
  * @deprecated 3.6.0 Use size_format()
  * @see size_format()
  *
- * @param int $bytes An integer byte value.
- * @return string A shorthand byte value.
+ * @param int $bytes Giá trị byte số nguyên.
+ * @return string Giá trị byte viết tắt.
  */
 function wp_convert_bytes_to_hr( $bytes ) {
 	_deprecated_function( __FUNCTION__, '3.6.0', 'size_format()' );
@@ -3385,14 +3385,14 @@ function wp_convert_bytes_to_hr( $bytes ) {
 }
 
 /**
- * Formerly used internally to tidy up the search terms.
+ * Trước đây được sử dụng nội bộ để dọn dẹp các từ khóa tìm kiếm.
  *
  * @since 2.9.0
  * @access private
  * @deprecated 3.7.0
  *
- * @param string $t Search terms to "tidy", e.g. trim.
- * @return string Trimmed search terms.
+ * @param string $t Từ khóa tìm kiếm cần "dọn dẹp", ví dụ trim.
+ * @return string Từ khóa tìm kiếm đã được cắt bỏ khoảng trắng.
  */
 function _search_terms_tidy( $t ) {
 	_deprecated_function( __FUNCTION__, '3.7.0' );
@@ -3400,15 +3400,15 @@ function _search_terms_tidy( $t ) {
 }
 
 /**
- * Determine if TinyMCE is available.
+ * Xác định xem TinyMCE có khả dụng không.
  *
- * Checks to see if the user has deleted the tinymce files to slim down
- * their WordPress installation.
+ * Kiểm tra xem người dùng đã xóa các tệp tinymce để giảm bớt
+ * bản cài đặt WordPress của họ hay chưa.
  *
  * @since 2.1.0
  * @deprecated 3.9.0
  *
- * @return bool Whether TinyMCE exists.
+ * @return bool TinyMCE có tồn tại hay không.
  */
 function rich_edit_exists() {
 	global $wp_rich_edit_exists;
@@ -3421,29 +3421,29 @@ function rich_edit_exists() {
 }
 
 /**
- * Old callback for tag link tooltips.
+ * Callback cũ cho tooltip liên kết thẻ.
  *
  * @since 2.7.0
  * @access private
  * @deprecated 3.9.0
  *
- * @param int $count Number of topics.
- * @return int Number of topics.
+ * @param int $count Số lượng chủ đề.
+ * @return int Số lượng chủ đề.
  */
 function default_topic_count_text( $count ) {
 	return $count;
 }
 
 /**
- * Formerly used to escape strings before inserting into the DB.
+ * Trước đây dùng để thoát chuỗi trước khi chèn vào DB.
  *
- * Has not performed this function for many, many years. Use wpdb::prepare() instead.
+ * Đã không thực hiện chức năng này trong rất nhiều năm. Sử dụng wpdb::prepare() thay thế.
  *
  * @since 0.71
  * @deprecated 3.9.0
  *
- * @param string $content The text to format.
- * @return string The very same text.
+ * @param string $content Văn bản cần định dạng.
+ * @return string Chính văn bản đó.
  */
 function format_to_post( $content ) {
 	_deprecated_function( __FUNCTION__, '3.9.0' );
@@ -3451,14 +3451,14 @@ function format_to_post( $content ) {
 }
 
 /**
- * Formerly used to escape strings before searching the DB. It was poorly documented and never worked as described.
+ * Trước đây dùng để thoát chuỗi trước khi tìm kiếm DB. Tài liệu kém và không bao giờ hoạt động như mô tả.
  *
  * @since 2.5.0
  * @deprecated 4.0.0 Use wpdb::esc_like()
  * @see wpdb::esc_like()
  *
- * @param string $text The text to be escaped.
- * @return string text, safe for inclusion in LIKE query.
+ * @param string $text Văn bản cần thoát.
+ * @return string Văn bản, an toàn để sử dụng trong truy vấn LIKE.
  */
 function like_escape($text) {
 	_deprecated_function( __FUNCTION__, '4.0.0', 'wpdb::esc_like()' );
@@ -3466,16 +3466,16 @@ function like_escape($text) {
 }
 
 /**
- * Determines if the URL can be accessed over SSL.
+ * Xác định xem URL có thể truy cập qua SSL không.
  *
- * Determines if the URL can be accessed over SSL by using the WordPress HTTP API to access
- * the URL using https as the scheme.
+ * Xác định xem URL có thể truy cập qua SSL bằng cách sử dụng WordPress HTTP API để truy cập
+ * URL sử dụng https làm giao thức.
  *
  * @since 2.5.0
  * @deprecated 4.0.0
  *
- * @param string $url The URL to test.
- * @return bool Whether SSL access is available.
+ * @param string $url URL cần kiểm tra.
+ * @return bool Truy cập SSL có khả dụng hay không.
  */
 function url_is_accessable_via_ssl( $url ) {
 	_deprecated_function( __FUNCTION__, '4.0.0' );
@@ -3493,10 +3493,10 @@ function url_is_accessable_via_ssl( $url ) {
 }
 
 /**
- * Start preview theme output buffer.
+ * Bắt đầu bộ đệm xuất xem trước theme.
  *
- * Will only perform task if the user has permissions and template and preview
- * query variables exist.
+ * Chỉ thực hiện tác vụ nếu người dùng có quyền và các biến truy vấn
+ * template và preview tồn tại.
  *
  * @since 2.6.0
  * @deprecated 4.3.0
@@ -3506,7 +3506,7 @@ function preview_theme() {
 }
 
 /**
- * Private function to modify the current template when previewing a theme
+ * Hàm riêng để thay đổi template hiện tại khi xem trước theme
  *
  * @since 2.9.0
  * @deprecated 4.3.0
@@ -3520,7 +3520,7 @@ function _preview_theme_template_filter() {
 }
 
 /**
- * Private function to modify the current stylesheet when previewing a theme
+ * Hàm riêng để thay đổi stylesheet hiện tại khi xem trước theme
  *
  * @since 2.9.0
  * @deprecated 4.3.0
@@ -3534,7 +3534,7 @@ function _preview_theme_stylesheet_filter() {
 }
 
 /**
- * Callback function for ob_start() to capture all links in the theme.
+ * Hàm callback cho ob_start() để bắt tất cả liên kết trong theme.
  *
  * @since 2.6.0
  * @deprecated 4.3.0
@@ -3549,9 +3549,9 @@ function preview_theme_ob_filter( $content ) {
 }
 
 /**
- * Manipulates preview theme links in order to control and maintain location.
+ * Thao tác liên kết xem trước theme để kiểm soát và duy trì vị trí.
  *
- * Callback function for preg_replace_callback() to accept and filter matches.
+ * Hàm callback cho preg_replace_callback() để nhận và lọc kết quả khớp.
  *
  * @since 2.6.0
  * @deprecated 4.3.0
@@ -3566,36 +3566,36 @@ function preview_theme_ob_filter_callback( $matches ) {
 }
 
 /**
- * Formats text for the rich text editor.
+ * Định dạng văn bản cho trình soạn thảo văn bản phong phú.
  *
- * The {@see 'richedit_pre'} filter is applied here. If `$text` is empty the filter will
- * be applied to an empty string.
+ * Bộ lọc {@see 'richedit_pre'} được áp dụng ở đây. Nếu `$text` rỗng, bộ lọc sẽ
+ * được áp dụng cho chuỗi rỗng.
  *
  * @since 2.0.0
  * @deprecated 4.3.0 Use format_for_editor()
  * @see format_for_editor()
  *
- * @param string $text The text to be formatted.
- * @return string The formatted text after filter is applied.
+ * @param string $text Văn bản cần định dạng.
+ * @return string Văn bản đã định dạng sau khi áp dụng bộ lọc.
  */
 function wp_richedit_pre($text) {
 	_deprecated_function( __FUNCTION__, '4.3.0', 'format_for_editor()' );
 
 	if ( empty( $text ) ) {
 		/**
-		 * Filters text returned for the rich text editor.
+		 * Lọc văn bản trả về cho trình soạn thảo văn bản phong phú.
 		 *
-		 * This filter is first evaluated, and the value returned, if an empty string
-		 * is passed to wp_richedit_pre(). If an empty string is passed, it results
-		 * in a break tag and line feed.
+		 * Bộ lọc này được đánh giá trước và giá trị được trả về, nếu chuỗi rỗng
+		 * được truyền vào wp_richedit_pre(). Nếu chuỗi rỗng được truyền, kết quả
+		 * là thẻ ngắt dòng và dòng mới.
 		 *
-		 * If a non-empty string is passed, the filter is evaluated on the wp_richedit_pre()
-		 * return after being formatted.
+		 * Nếu chuỗi không rỗng được truyền, bộ lọc được đánh giá trên giá trị trả về
+		 * của wp_richedit_pre() sau khi được định dạng.
 		 *
 		 * @since 2.0.0
 		 * @deprecated 4.3.0
 		 *
-		 * @param string $output Text for the rich text editor.
+		 * @param string $output Văn bản cho trình soạn thảo văn bản phong phú.
 		 */
 		return apply_filters( 'richedit_pre', '' );
 	}
@@ -3604,48 +3604,48 @@ function wp_richedit_pre($text) {
 	$output = wpautop($output);
 	$output = htmlspecialchars($output, ENT_NOQUOTES, get_option( 'blog_charset' ) );
 
-	/** This filter is documented in wp-includes/deprecated.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/deprecated.php */
 	return apply_filters( 'richedit_pre', $output );
 }
 
 /**
- * Formats text for the HTML editor.
+ * Định dạng văn bản cho trình soạn thảo HTML.
  *
- * Unless $output is empty it will pass through htmlspecialchars before the
- * {@see 'htmledit_pre'} filter is applied.
+ * Trừ khi $output rỗng, nó sẽ đi qua htmlspecialchars trước khi
+ * bộ lọc {@see 'htmledit_pre'} được áp dụng.
  *
  * @since 2.5.0
  * @deprecated 4.3.0 Use format_for_editor()
  * @see format_for_editor()
  *
- * @param string $output The text to be formatted.
- * @return string Formatted text after filter applied.
+ * @param string $output Văn bản cần định dạng.
+ * @return string Văn bản đã định dạng sau khi áp dụng bộ lọc.
  */
 function wp_htmledit_pre($output) {
 	_deprecated_function( __FUNCTION__, '4.3.0', 'format_for_editor()' );
 
 	if ( !empty($output) )
-		$output = htmlspecialchars($output, ENT_NOQUOTES, get_option( 'blog_charset' ) ); // Convert only '< > &'.
+		$output = htmlspecialchars($output, ENT_NOQUOTES, get_option( 'blog_charset' ) ); // Chỉ chuyển đổi '< > &'.
 
 	/**
-	 * Filters the text before it is formatted for the HTML editor.
+	 * Lọc văn bản trước khi được định dạng cho trình soạn thảo HTML.
 	 *
 	 * @since 2.5.0
 	 * @deprecated 4.3.0
 	 *
-	 * @param string $output The HTML-formatted text.
+	 * @param string $output Văn bản đã định dạng HTML.
 	 */
 	return apply_filters( 'htmledit_pre', $output );
 }
 
 /**
- * Retrieve permalink from post ID.
+ * Lấy đường dẫn cố định từ ID bài viết.
  *
  * @since 1.0.0
  * @deprecated 4.4.0 Use get_permalink()
  * @see get_permalink()
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global $post.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là $post toàn cục.
  * @return string|false
  */
 function post_permalink( $post = 0 ) {
@@ -3655,25 +3655,25 @@ function post_permalink( $post = 0 ) {
 }
 
 /**
- * Perform a HTTP HEAD or GET request.
+ * Thực hiện yêu cầu HTTP HEAD hoặc GET.
  *
- * If $file_path is a writable filename, this will do a GET request and write
- * the file to that path.
+ * Nếu $file_path là tên tệp có thể ghi, hàm này sẽ thực hiện yêu cầu GET và ghi
+ * tệp vào đường dẫn đó.
  *
  * @since 2.5.0
  * @deprecated 4.4.0 Use WP_Http
  * @see WP_Http
  *
- * @param string      $url       URL to fetch.
- * @param string|bool $file_path Optional. File path to write request to. Default false.
- * @param int         $red       Optional. The number of Redirects followed, Upon 5 being hit,
- *                               returns false. Default 1.
- * @return \WpOrg\Requests\Utility\CaseInsensitiveDictionary|false Headers on success, false on failure.
+ * @param string      $url       URL cần tải.
+ * @param string|bool $file_path Tùy chọn. Đường dẫn tệp để ghi yêu cầu. Mặc định false.
+ * @param int         $red       Tùy chọn. Số lần chuyển hướng đã theo, khi đạt 5,
+ *                               trả về false. Mặc định 1.
+ * @return \WpOrg\Requests\Utility\CaseInsensitiveDictionary|false Headers khi thành công, false khi thất bại.
  */
 function wp_get_http( $url, $file_path = false, $red = 1 ) {
 	_deprecated_function( __FUNCTION__, '4.4.0', 'WP_Http' );
 
-	// Add 60 seconds to the script timeout to ensure the remote request has enough time.
+	// Thêm 60 giây vào thời gian chờ script để đảm bảo yêu cầu từ xa có đủ thời gian.
 	if ( function_exists( 'set_time_limit' ) ) {
 		@set_time_limit( 60 );
 	}
@@ -3697,7 +3697,7 @@ function wp_get_http( $url, $file_path = false, $red = 1 ) {
 	$headers = wp_remote_retrieve_headers( $response );
 	$headers['response'] = wp_remote_retrieve_response_code( $response );
 
-	// WP_HTTP no longer follows redirects for HEAD requests.
+	// WP_HTTP không còn theo chuyển hướng cho yêu cầu HEAD.
 	if ( 'HEAD' == $options['method'] && in_array($headers['response'], array(301, 302)) && isset( $headers['location'] ) ) {
 		return wp_get_http( $headers['location'], $file_path, ++$red );
 	}
@@ -3705,7 +3705,7 @@ function wp_get_http( $url, $file_path = false, $red = 1 ) {
 	if ( false == $file_path )
 		return $headers;
 
-	// GET request - write it to the supplied filename.
+	// Yêu cầu GET - ghi vào tên tệp được cung cấp.
 	$out_fp = fopen($file_path, 'w');
 	if ( !$out_fp )
 		return $headers;
@@ -3718,14 +3718,14 @@ function wp_get_http( $url, $file_path = false, $red = 1 ) {
 }
 
 /**
- * Whether SSL login should be forced.
+ * Có nên bắt buộc đăng nhập SSL không.
  *
  * @since 2.6.0
  * @deprecated 4.4.0 Use force_ssl_admin()
  * @see force_ssl_admin()
  *
- * @param string|bool $force Optional Whether to force SSL login. Default null.
- * @return bool True if forced, false if not forced.
+ * @param string|bool $force Tùy chọn. Có bắt buộc đăng nhập SSL không. Mặc định null.
+ * @return bool True nếu bắt buộc, false nếu không bắt buộc.
  */
 function force_ssl_login( $force = null ) {
 	_deprecated_function( __FUNCTION__, '4.4.0', 'force_ssl_admin()' );
@@ -3733,12 +3733,12 @@ function force_ssl_login( $force = null ) {
 }
 
 /**
- * Retrieve path of comment popup template in current or parent template.
+ * Lấy đường dẫn template popup bình luận trong template hiện tại hoặc template cha.
  *
  * @since 1.5.0
  * @deprecated 4.5.0
  *
- * @return string Full path to comments popup template file.
+ * @return string Đường dẫn đầy đủ đến tệp template popup bình luận.
  */
 function get_comments_popup_template() {
 	_deprecated_function( __FUNCTION__, '4.5.0' );
@@ -3747,16 +3747,16 @@ function get_comments_popup_template() {
 }
 
 /**
- * Determines whether the current URL is within the comments popup window.
+ * Xác định xem URL hiện tại có nằm trong cửa sổ popup bình luận không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 1.5.0
  * @deprecated 4.5.0
  *
- * @return false Always returns false.
+ * @return false Luôn trả về false.
  */
 function is_comments_popup() {
 	_deprecated_function( __FUNCTION__, '4.5.0' );
@@ -3765,7 +3765,7 @@ function is_comments_popup() {
 }
 
 /**
- * Display the JS popup script to show a comment.
+ * Hiển thị script JS popup để hiện bình luận.
  *
  * @since 0.71
  * @deprecated 4.5.0
@@ -3775,13 +3775,13 @@ function comments_popup_script() {
 }
 
 /**
- * Adds element attributes to open links in new tabs.
+ * Thêm thuộc tính phần tử để mở liên kết trong tab mới.
  *
  * @since 0.71
  * @deprecated 4.5.0
  *
- * @param string $text Content to replace links to open in a new tab.
- * @return string Content that has filtered links.
+ * @param string $text Nội dung cần thay thế liên kết để mở trong tab mới.
+ * @return string Nội dung có các liên kết đã được lọc.
  */
 function popuplinks( $text ) {
 	_deprecated_function( __FUNCTION__, '4.5.0' );
@@ -3790,15 +3790,15 @@ function popuplinks( $text ) {
 }
 
 /**
- * The Google Video embed handler callback.
+ * Callback xử lý nhúng Google Video.
  *
- * Deprecated function that previously assisted in turning Google Video URLs
- * into embeds but that service has since been shut down.
+ * Hàm ngưng sử dụng trước đây hỗ trợ chuyển đổi URL Google Video
+ * thành nội dung nhúng nhưng dịch vụ đó đã ngừng hoạt động.
  *
  * @since 2.9.0
  * @deprecated 4.6.0
  *
- * @return string An empty string.
+ * @return string Chuỗi rỗng.
  */
 function wp_embed_handler_googlevideo( $matches, $attr, $url, $rawattr ) {
 	_deprecated_function( __FUNCTION__, '4.6.0' );
@@ -3807,12 +3807,12 @@ function wp_embed_handler_googlevideo( $matches, $attr, $url, $rawattr ) {
 }
 
 /**
- * Retrieve path of paged template in current or parent template.
+ * Lấy đường dẫn template phân trang trong template hiện tại hoặc template cha.
  *
  * @since 1.5.0
- * @deprecated 4.7.0 The paged.php template is no longer part of the theme template hierarchy.
+ * @deprecated 4.7.0 Template paged.php không còn là một phần của hệ thống phân cấp template theme.
  *
- * @return string Full path to paged template file.
+ * @return string Đường dẫn đầy đủ đến tệp template phân trang.
  */
 function get_paged_template() {
 	_deprecated_function( __FUNCTION__, '4.7.0' );
@@ -3821,21 +3821,21 @@ function get_paged_template() {
 }
 
 /**
- * Removes the HTML JavaScript entities found in early versions of Netscape 4.
+ * Xóa các thực thể JavaScript HTML được tìm thấy trong các phiên bản đầu tiên của Netscape 4.
  *
- * Previously, this function was pulled in from the original
- * import of kses and removed a specific vulnerability only
- * existent in early version of Netscape 4. However, this
- * vulnerability never affected any other browsers and can
- * be considered safe for the modern web.
+ * Trước đây, hàm này được lấy từ bản nhập gốc
+ * của kses và xóa một lỗ hổng cụ thể chỉ
+ * tồn tại trong phiên bản đầu tiên của Netscape 4. Tuy nhiên, lỗ hổng
+ * này không bao giờ ảnh hưởng đến trình duyệt khác và có thể
+ * được coi là an toàn cho web hiện đại.
  *
- * The regular expression which sanitized this vulnerability
- * has been removed in consideration of the performance and
- * energy demands it placed, now merely passing through its
- * input to the return.
+ * Biểu thức chính quy làm sạch lỗ hổng này
+ * đã được loại bỏ xét đến hiệu suất và
+ * yêu cầu năng lượng mà nó đặt ra, giờ chỉ đơn giản truyền
+ * đầu vào sang đầu ra.
  *
  * @since 1.0.0
- * @deprecated 4.7.0 Officially dropped security support for Netscape 4.
+ * @deprecated 4.7.0 Chính thức ngừng hỗ trợ bảo mật cho Netscape 4.
  *
  * @param string $content
  * @return string
@@ -3847,10 +3847,10 @@ function wp_kses_js_entities( $content ) {
 }
 
 /**
- * Sort categories by ID.
+ * Sắp xếp chuyên mục theo ID.
  *
- * Used by usort() as a callback, should not be used directly. Can actually be
- * used to sort any term object.
+ * Được sử dụng bởi usort() làm callback, không nên sử dụng trực tiếp. Thực tế có thể
+ * được dùng để sắp xếp bất kỳ đối tượng term nào.
  *
  * @since 2.3.0
  * @deprecated 4.7.0 Use wp_list_sort()
@@ -3872,10 +3872,10 @@ function _usort_terms_by_ID( $a, $b ) {
 }
 
 /**
- * Sort categories by name.
+ * Sắp xếp chuyên mục theo tên.
  *
- * Used by usort() as a callback, should not be used directly. Can actually be
- * used to sort any term object.
+ * Được sử dụng bởi usort() làm callback, không nên sử dụng trực tiếp. Thực tế có thể
+ * được dùng để sắp xếp bất kỳ đối tượng term nào.
  *
  * @since 2.3.0
  * @deprecated 4.7.0 Use wp_list_sort()
@@ -3892,7 +3892,7 @@ function _usort_terms_by_name( $a, $b ) {
 }
 
 /**
- * Sort menu items by the desired key.
+ * Sắp xếp mục menu theo khóa mong muốn.
  *
  * @since 3.0.0
  * @deprecated 4.7.0 Use wp_list_sort()
@@ -3900,9 +3900,9 @@ function _usort_terms_by_name( $a, $b ) {
  *
  * @global string $_menu_item_sort_prop
  *
- * @param object $a The first object to compare
- * @param object $b The second object to compare
- * @return int -1, 0, or 1 if $a is considered to be respectively less than, equal to, or greater than $b.
+ * @param object $a Đối tượng đầu tiên để so sánh
+ * @param object $b Đối tượng thứ hai để so sánh
+ * @return int -1, 0, hoặc 1 nếu $a được coi là nhỏ hơn, bằng, hoặc lớn hơn $b tương ứng.
  */
 function _sort_nav_menu_items( $a, $b ) {
 	global $_menu_item_sort_prop;
@@ -3927,7 +3927,7 @@ function _sort_nav_menu_items( $a, $b ) {
 }
 
 /**
- * Retrieves the Press This bookmarklet link.
+ * Lấy liên kết bookmarklet Press This.
  *
  * @since 2.6.0
  * @deprecated 4.9.0
@@ -3939,18 +3939,18 @@ function get_shortcut_link() {
 	$link = '';
 
 	/**
-	 * Filters the Press This bookmarklet link.
+	 * Lọc liên kết bookmarklet Press This.
 	 *
 	 * @since 2.6.0
 	 * @deprecated 4.9.0
 	 *
-	 * @param string $link The Press This bookmarklet link.
+	 * @param string $link Liên kết bookmarklet Press This.
 	 */
 	return apply_filters( 'shortcut_link', $link );
 }
 
 /**
- * Ajax handler for saving a post from Press This.
+ * Trình xử lý Ajax để lưu bài viết từ Press This.
  *
  * @since 4.2.0
  * @deprecated 4.9.0
@@ -3967,7 +3967,7 @@ function wp_ajax_press_this_save_post() {
 }
 
 /**
- * Ajax handler for creating new category from Press This.
+ * Trình xử lý Ajax để tạo chuyên mục mới từ Press This.
  *
  * @since 4.2.0
  * @deprecated 4.9.0
@@ -3984,13 +3984,13 @@ function wp_ajax_press_this_add_category() {
 }
 
 /**
- * Return the user request object for the specified request ID.
+ * Trả về đối tượng yêu cầu người dùng cho ID yêu cầu được chỉ định.
  *
  * @since 4.9.6
  * @deprecated 5.4.0 Use wp_get_user_request()
  * @see wp_get_user_request()
  *
- * @param int $request_id The ID of the user request.
+ * @param int $request_id ID của yêu cầu người dùng.
  * @return WP_User_Request|false
  */
 function wp_get_user_request_data( $request_id ) {
@@ -3999,49 +3999,49 @@ function wp_get_user_request_data( $request_id ) {
 }
 
 /**
- * Filters 'img' elements in post content to add 'srcset' and 'sizes' attributes.
+ * Lọc phần tử 'img' trong nội dung bài viết để thêm thuộc tính 'srcset' và 'sizes'.
  *
  * @since 4.4.0
  * @deprecated 5.5.0
  *
  * @see wp_image_add_srcset_and_sizes()
  *
- * @param string $content The raw post content to be filtered.
- * @return string Converted content with 'srcset' and 'sizes' attributes added to images.
+ * @param string $content Nội dung bài viết thô cần lọc.
+ * @return string Nội dung đã chuyển đổi với thuộc tính 'srcset' và 'sizes' được thêm vào ảnh.
  */
 function wp_make_content_images_responsive( $content ) {
 	_deprecated_function( __FUNCTION__, '5.5.0', 'wp_filter_content_tags()' );
 
-	// This will also add the `loading` attribute to `img` tags, if enabled.
+	// Hàm này cũng sẽ thêm thuộc tính `loading` vào thẻ `img`, nếu được bật.
 	return wp_filter_content_tags( $content );
 }
 
 /**
- * Turn register globals off.
+ * Tắt register globals.
  *
  * @since 2.1.0
  * @access private
  * @deprecated 5.5.0
  */
 function wp_unregister_GLOBALS() {
-	// register_globals was deprecated in PHP 5.3 and removed entirely in PHP 5.4.
+	// register_globals đã ngưng sử dụng trong PHP 5.3 và bị loại bỏ hoàn toàn trong PHP 5.4.
 	_deprecated_function( __FUNCTION__, '5.5.0' );
 }
 
 /**
- * Does comment contain disallowed characters or words.
+ * Bình luận có chứa ký tự hoặc từ không được phép không.
  *
  * @since 1.5.0
  * @deprecated 5.5.0 Use wp_check_comment_disallowed_list() instead.
  *                   Please consider writing more inclusive code.
  *
- * @param string $author The author of the comment
- * @param string $email The email of the comment
- * @param string $url The url used in the comment
- * @param string $comment The comment content
- * @param string $user_ip The comment author's IP address
- * @param string $user_agent The author's browser user agent
- * @return bool True if comment contains disallowed content, false if comment does not
+ * @param string $author Tác giả bình luận
+ * @param string $email Email của bình luận
+ * @param string $url URL được sử dụng trong bình luận
+ * @param string $comment Nội dung bình luận
+ * @param string $user_ip Địa chỉ IP của tác giả bình luận
+ * @param string $user_agent User agent trình duyệt của tác giả
+ * @return bool True nếu bình luận chứa nội dung không được phép, false nếu không
  */
 function wp_blacklist_check( $author, $email, $url, $comment, $user_ip, $user_agent ) {
 	_deprecated_function( __FUNCTION__, '5.5.0', 'wp_check_comment_disallowed_list()' );
@@ -4050,19 +4050,19 @@ function wp_blacklist_check( $author, $email, $url, $comment, $user_ip, $user_ag
 }
 
 /**
- * Filters out `register_meta()` args based on an allowed list.
+ * Lọc các tham số `register_meta()` dựa trên danh sách được phép.
  *
- * `register_meta()` args may change over time, so requiring the allowed list
- * to be explicitly turned off is a warranty seal of sorts.
+ * Tham số `register_meta()` có thể thay đổi theo thời gian, nên việc yêu cầu danh sách được phép
+ * phải được tắt rõ ràng là một dạng đảm bảo.
  *
  * @access private
  * @since 4.6.0
  * @deprecated 5.5.0 Use _wp_register_meta_args_allowed_list() instead.
  *                   Please consider writing more inclusive code.
  *
- * @param array $args         Arguments from `register_meta()`.
- * @param array $default_args Default arguments for `register_meta()`.
- * @return array Filtered arguments.
+ * @param array $args         Tham số từ `register_meta()`.
+ * @param array $default_args Tham số mặc định cho `register_meta()`.
+ * @return array Tham số đã lọc.
  */
 function _wp_register_meta_args_whitelist( $args, $default_args ) {
 	_deprecated_function( __FUNCTION__, '5.5.0', '_wp_register_meta_args_allowed_list()' );
@@ -4071,7 +4071,7 @@ function _wp_register_meta_args_whitelist( $args, $default_args ) {
 }
 
 /**
- * Adds an array of options to the list of allowed options.
+ * Thêm mảng tùy chọn vào danh sách tùy chọn được phép.
  *
  * @since 2.7.0
  * @deprecated 5.5.0 Use add_allowed_options() instead.
@@ -4088,7 +4088,7 @@ function add_option_whitelist( $new_options, $options = '' ) {
 }
 
 /**
- * Removes a list of options from the allowed options list.
+ * Xóa danh sách tùy chọn khỏi danh sách tùy chọn được phép.
  *
  * @since 2.7.0
  * @deprecated 5.5.0 Use remove_allowed_options() instead.
@@ -4105,25 +4105,25 @@ function remove_option_whitelist( $del_options, $options = '' ) {
 }
 
 /**
- * Adds slashes to only string values in an array of values.
+ * Thêm dấu gạch chéo chỉ cho các giá trị chuỗi trong mảng giá trị.
  *
- * This should be used when preparing data for core APIs that expect slashed data.
- * This should not be used to escape data going directly into an SQL query.
+ * Nên sử dụng khi chuẩn bị dữ liệu cho API lõi yêu cầu dữ liệu có dấu gạch chéo.
+ * Không nên sử dụng để thoát dữ liệu đi trực tiếp vào truy vấn SQL.
  *
  * @since 5.3.0
  * @deprecated 5.6.0 Use wp_slash()
  *
  * @see wp_slash()
  *
- * @param mixed $value Scalar or array of scalars.
- * @return mixed Slashes $value
+ * @param mixed $value Giá trị vô hướng hoặc mảng giá trị vô hướng.
+ * @return mixed Giá trị $value đã thêm dấu gạch chéo
  */
 function wp_slash_strings_only( $value ) {
 	return map_deep( $value, 'addslashes_strings_only' );
 }
 
 /**
- * Adds slashes only if the provided value is a string.
+ * Thêm dấu gạch chéo chỉ khi giá trị được cung cấp là chuỗi.
  *
  * @since 5.3.0
  * @deprecated 5.6.0
@@ -4138,12 +4138,12 @@ function addslashes_strings_only( $value ) {
 }
 
 /**
- * Displays a `noindex` meta tag if required by the blog configuration.
+ * Hiển thị thẻ meta `noindex` nếu cấu hình blog yêu cầu.
  *
- * If a blog is marked as not being public then the `noindex` meta tag will be
- * output to tell web robots not to index the page content.
+ * Nếu blog được đánh dấu là không công khai thì thẻ meta `noindex` sẽ được
+ * xuất ra để thông báo cho robot web không lập chỉ mục nội dung trang.
  *
- * Typical usage is as a {@see 'wp_head'} callback:
+ * Cách sử dụng điển hình là callback {@see 'wp_head'}:
  *
  *     add_action( 'wp_head', 'noindex' );
  *
@@ -4155,23 +4155,23 @@ function addslashes_strings_only( $value ) {
 function noindex() {
 	_deprecated_function( __FUNCTION__, '5.7.0', 'wp_robots_noindex()' );
 
-	// If the blog is not public, tell robots to go away.
+	// Nếu blog không công khai, thông báo cho robot đi đi.
 	if ( '0' == get_option( 'blog_public' ) ) {
 		wp_no_robots();
 	}
 }
 
 /**
- * Display a `noindex` meta tag.
+ * Hiển thị thẻ meta `noindex`.
  *
- * Outputs a `noindex` meta tag that tells web robots not to index the page content.
+ * Xuất thẻ meta `noindex` thông báo cho robot web không lập chỉ mục nội dung trang.
  *
- * Typical usage is as a {@see 'wp_head'} callback:
+ * Cách sử dụng điển hình là callback {@see 'wp_head'}:
  *
  *     add_action( 'wp_head', 'wp_no_robots' );
  *
  * @since 3.3.0
- * @since 5.3.0 Echo `noindex,nofollow` if search engine visibility is discouraged.
+ * @since 5.3.0 Xuất `noindex,nofollow` nếu khả năng hiển thị công cụ tìm kiếm bị hạn chế.
  * @deprecated 5.7.0 Use wp_robots_no_robots() instead on 'wp_robots' filter.
  */
 function wp_no_robots() {

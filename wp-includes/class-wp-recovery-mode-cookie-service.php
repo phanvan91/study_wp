@@ -1,13 +1,13 @@
 <?php
 /**
- * Error Protection API: WP_Recovery_Mode_Cookie_Service class
+ * API bảo vệ lỗi: Lớp WP_Recovery_Mode_Cookie_Service
  *
  * @package WordPress
  * @since 5.2.0
  */
 
 /**
- * Core class used to set, validate, and clear cookies that identify a Recovery Mode session.
+ * Lớp cốt lõi dùng để thiết lập, xác thực và xóa cookie xác định một phiên Chế độ Phục hồi.
  *
  * @since 5.2.0
  */
@@ -15,20 +15,20 @@
 final class WP_Recovery_Mode_Cookie_Service {
 
 	/**
-	 * Checks whether the recovery mode cookie is set.
+	 * Kiểm tra xem cookie chế độ phục hồi đã được thiết lập hay chưa.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return bool True if the cookie is set, false otherwise.
+	 * @return bool True nếu cookie đã được thiết lập, false nếu ngược lại.
 	 */
 	public function is_cookie_set() {
 		return ! empty( $_COOKIE[ RECOVERY_MODE_COOKIE ] );
 	}
 
 	/**
-	 * Sets the recovery mode cookie.
+	 * Thiết lập cookie chế độ phục hồi.
 	 *
-	 * This must be immediately followed by exiting the request.
+	 * Điều này phải được thực hiện ngay sau khi thoát khỏi yêu cầu.
 	 *
 	 * @since 5.2.0
 	 */
@@ -37,11 +37,11 @@ final class WP_Recovery_Mode_Cookie_Service {
 		$value = $this->generate_cookie();
 
 		/**
-		 * Filters the length of time a Recovery Mode cookie is valid for.
+		 * Lọc thời gian hiệu lực của cookie Chế độ Phục hồi.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param int $length Length in seconds.
+		 * @param int $length Thời gian tính bằng giây.
 		 */
 		$length = apply_filters( 'recovery_mode_cookie_length', WEEK_IN_SECONDS );
 
@@ -55,7 +55,7 @@ final class WP_Recovery_Mode_Cookie_Service {
 	}
 
 	/**
-	 * Clears the recovery mode cookie.
+	 * Xóa cookie chế độ phục hồi.
 	 *
 	 * @since 5.2.0
 	 */
@@ -65,13 +65,13 @@ final class WP_Recovery_Mode_Cookie_Service {
 	}
 
 	/**
-	 * Validates the recovery mode cookie.
+	 * Xác thực cookie chế độ phục hồi.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string $cookie Optionally specify the cookie string.
-	 *                       If omitted, it will be retrieved from the super global.
-	 * @return true|WP_Error True on success, error object on failure.
+	 * @param string $cookie Tùy chọn chỉ định chuỗi cookie.
+	 *                       Nếu bỏ qua, nó sẽ được lấy từ biến siêu toàn cầu.
+	 * @return true|WP_Error True nếu thành công, đối tượng lỗi nếu thất bại.
 	 */
 	public function validate_cookie( $cookie = '' ) {
 
@@ -113,15 +113,15 @@ final class WP_Recovery_Mode_Cookie_Service {
 	}
 
 	/**
-	 * Gets the session identifier from the cookie.
+	 * Lấy định danh phiên từ cookie.
 	 *
-	 * The cookie should be validated before calling this API.
+	 * Cookie phải được xác thực trước khi gọi API này.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string $cookie Optionally specify the cookie string.
-	 *                       If omitted, it will be retrieved from the super global.
-	 * @return string|WP_Error Session ID on success, or error object on failure.
+	 * @param string $cookie Tùy chọn chỉ định chuỗi cookie.
+	 *                       Nếu bỏ qua, nó sẽ được lấy từ biến siêu toàn cầu.
+	 * @return string|WP_Error ID phiên nếu thành công, hoặc đối tượng lỗi nếu thất bại.
 	 */
 	public function get_session_id_from_cookie( $cookie = '' ) {
 		if ( ! $cookie ) {
@@ -143,12 +143,12 @@ final class WP_Recovery_Mode_Cookie_Service {
 	}
 
 	/**
-	 * Parses the cookie into its four parts.
+	 * Phân tích cookie thành bốn phần.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string $cookie Cookie content.
-	 * @return array|WP_Error Cookie parts array, or error object on failure.
+	 * @param string $cookie Nội dung cookie.
+	 * @return array|WP_Error Mảng các phần cookie, hoặc đối tượng lỗi nếu thất bại.
 	 */
 	private function parse_cookie( $cookie ) {
 		$cookie = base64_decode( $cookie );
@@ -162,20 +162,20 @@ final class WP_Recovery_Mode_Cookie_Service {
 	}
 
 	/**
-	 * Generates the recovery mode cookie value.
+	 * Tạo giá trị cookie chế độ phục hồi.
 	 *
-	 * The cookie is a base64 encoded string with the following format:
+	 * Cookie là một chuỗi được mã hóa base64 với định dạng sau:
 	 *
 	 * recovery_mode|iat|rand|signature
 	 *
-	 * Where "recovery_mode" is a constant string,
-	 * iat is the time the cookie was generated at,
-	 * rand is a randomly generated password that is also used as a session identifier
-	 * and signature is an hmac of the preceding 3 parts.
+	 * Trong đó "recovery_mode" là một chuỗi hằng,
+	 * iat là thời gian cookie được tạo,
+	 * rand là một mật khẩu được tạo ngẫu nhiên cũng được dùng làm định danh phiên
+	 * và signature là một hmac của 3 phần trước đó.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return string Generated cookie content.
+	 * @return string Nội dung cookie đã tạo.
 	 */
 	private function generate_cookie() {
 		$to_sign = sprintf( 'recovery_mode|%s|%s', time(), wp_generate_password( 20, false ) );
@@ -185,17 +185,18 @@ final class WP_Recovery_Mode_Cookie_Service {
 	}
 
 	/**
-	 * Gets a form of `wp_hash()` specific to Recovery Mode.
+	 * Lấy một dạng `wp_hash()` cụ thể cho Chế độ Phục hồi.
 	 *
-	 * We cannot use `wp_hash()` because it is defined in `pluggable.php` which is not loaded until after plugins are loaded,
-	 * which is too late to verify the recovery mode cookie.
+	 * Chúng ta không thể sử dụng `wp_hash()` vì nó được định nghĩa trong `pluggable.php`
+	 * mà không được tải cho đến sau khi các plugin được tải, quá muộn để xác minh cookie chế độ phục hồi.
 	 *
-	 * This tries to use the `AUTH` salts first, but if they aren't valid specific salts will be generated and stored.
+	 * Hàm này cố gắng sử dụng các salt `AUTH` trước, nhưng nếu chúng không hợp lệ,
+	 * các salt cụ thể sẽ được tạo và lưu trữ.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string $data Data to hash.
-	 * @return string|false The hashed $data, or false on failure.
+	 * @param string $data Dữ liệu cần băm.
+	 * @return string|false Dữ liệu $data đã băm, hoặc false nếu thất bại.
 	 */
 	private function recovery_mode_hash( $data ) {
 		$default_keys = array_unique(

@@ -1,26 +1,26 @@
 <?php
 /**
- * WordPress Export Administration Screen
+ * Màn hình quản trị Xuất WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** Load WordPress Bootstrap */
+/** Tải Bootstrap WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( ! current_user_can( 'export' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to export the content of this site.' ) );
 }
 
-/** Load WordPress export API */
+/** Tải API xuất WordPress */
 require_once ABSPATH . 'wp-admin/includes/export.php';
 
-// Used in the HTML title tag.
+// Sử dụng trong thẻ HTML title.
 $title = __( 'Export' );
 
 /**
- * Display JavaScript on the page.
+ * Hiển thị JavaScript trên trang.
  *
  * @since 3.5.0
  */
@@ -60,7 +60,7 @@ get_current_screen()->set_help_sidebar(
 	'<p>' . __( '<a href="https://wordpress.org/support/forums/">Support forums</a>' ) . '</p>'
 );
 
-// If the 'download' URL parameter is set, a WXR export file is baked and returned.
+// Nếu tham số URL 'download' được đặt, một file xuất WXR sẽ được tạo và trả về.
 if ( isset( $_GET['download'] ) ) {
 	$args = array();
 
@@ -112,11 +112,11 @@ if ( isset( $_GET['download'] ) ) {
 	}
 
 	/**
-	 * Filters the export args.
+	 * Lọc các tham số xuất.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param array $args The arguments to send to the exporter.
+	 * @param array $args Các tham số gửi đến trình xuất.
 	 */
 	$args = apply_filters( 'export_args', $args );
 
@@ -127,14 +127,14 @@ if ( isset( $_GET['download'] ) ) {
 require_once ABSPATH . 'wp-admin/admin-header.php';
 
 /**
- * Creates the date options fields for exporting a given post type.
+ * Tạo các trường tùy chọn ngày để xuất một loại bài viết cho trước.
  *
  * @since 3.1.0
  *
- * @global wpdb      $wpdb      WordPress database abstraction object.
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global wpdb      $wpdb      Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày và giờ WordPress.
  *
- * @param string $post_type The post type. Default 'post'.
+ * @param string $post_type Loại bài viết. Mặc định 'post'.
  */
 function export_date_options( $post_type = 'post' ) {
 	global $wpdb, $wp_locale;
@@ -182,7 +182,7 @@ function export_date_options( $post_type = 'post' ) {
 <fieldset>
 <legend class="screen-reader-text">
 	<?php
-	/* translators: Hidden accessibility text. */
+	/* translators: Văn bản trợ năng ẩn. */
 	_e( 'Content to export' );
 	?>
 </legend>
@@ -217,7 +217,7 @@ function export_date_options( $post_type = 'post' ) {
 		<fieldset>
 		<legend class="screen-reader-text">
 			<?php
-			/* translators: Hidden accessibility text. */
+			/* translators: Văn bản trợ năng ẩn. */
 			_e( 'Date range:' )
 			?>
 		</legend>
@@ -269,7 +269,7 @@ function export_date_options( $post_type = 'post' ) {
 		<fieldset>
 		<legend class="screen-reader-text">
 			<?php
-			/* translators: Hidden accessibility text. */
+			/* translators: Văn bản trợ năng ẩn. */
 			_e( 'Date range:' );
 			?>
 		</legend>
@@ -314,7 +314,7 @@ foreach ( get_post_types(
 		<fieldset>
 		<legend class="screen-reader-text">
 			<?php
-			/* translators: Hidden accessibility text. */
+			/* translators: Văn bản trợ năng ẩn. */
 			_e( 'Date range:' );
 			?>
 		</legend>
@@ -335,7 +335,7 @@ foreach ( get_post_types(
 </fieldset>
 <?php
 /**
- * Fires at the end of the export filters form.
+ * Kích hoạt ở cuối biểu mẫu bộ lọc xuất.
  *
  * @since 3.5.0
  */

@@ -1,35 +1,35 @@
 /*
 Theme Name: Parent Theme Child
-Description: Child theme example for WordPress
+Description: Ví dụ child theme cho WordPress
 Author: Your Name
 Template: twentytwentyfour
 Version: 1.0.0
 Text Domain: child-theme
 */
 
-/* Import parent theme styles */
+/* Import styles của parent theme */
 @import url("../twentytwentyfour/style.css");
 
 /* ============================================
-   Custom Styles Below
+   Styles Tùy Chỉnh Bên Dưới
    ============================================ */
 
-/* Example: Change body background color */
+/* Ví dụ: Thay đổi màu nền body */
 body {
     /* background-color: #f5f5f5; */
 }
 
-/* Example: Custom header styles */
+/* Ví dụ: Tùy chỉnh styles cho header */
 .site-header {
-    /* Add your custom header styles here */
+    /* Thêm styles tùy chỉnh cho header ở đây */
 }
 
-/* Example: Custom footer styles */
+/* Ví dụ: Tùy chỉnh styles cho footer */
 .site-footer {
-    /* Add your custom footer styles here */
+    /* Thêm styles tùy chỉnh cho footer ở đây */
 }
 
-/* Example: Custom button styles */
+/* Ví dụ: Tùy chỉnh styles cho button */
 .button-custom {
     background-color: #0073aa;
     color: #ffffff;

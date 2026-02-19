@@ -1,16 +1,16 @@
 <?php
 /**
- * Credits administration panel.
+ * Bảng quản trị Công trạng.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Khởi tạo Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 require_once __DIR__ . '/includes/credits.php';
 
-// Used in the HTML title tag.
+// Sử dụng trong thẻ HTML title.
 $title = __( 'Credits' );
 
 list( $display_version ) = explode( '-', get_bloginfo( 'version' ) );
@@ -123,7 +123,7 @@ require_once ABSPATH . 'wp-admin/admin-footer.php';
 
 return;
 
-// These are strings returned by the API that we want to be translatable.
+// Đây là các chuỗi được trả về từ API mà chúng ta muốn có thể dịch được.
 __( 'Project Leaders' );
 /* translators: %s: The current WordPress version number. */
 __( 'Core Contributors to WordPress %s' );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Multisite administration functions.
+ * Các hàm quản trị Multisite.
  *
  * @package WordPress
  * @subpackage Multisite
@@ -8,19 +8,19 @@
  */
 
 /**
- * Determines whether uploaded file exceeds space quota.
+ * Xác định xem tệp tải lên có vượt quá hạn mức dung lượng không.
  *
  * @since 3.0.0
  *
- * @param array $file An element from the `$_FILES` array for a given file.
- * @return array The `$_FILES` array element with 'error' key set if file exceeds quota. 'error' is empty otherwise.
+ * @param array $file Một phần tử từ mảng `$_FILES` cho tệp được chỉ định.
+ * @return array Phần tử mảng `$_FILES` với khóa 'error' được đặt nếu tệp vượt quá hạn mức. 'error' trống nếu không vượt quá.
  */
 function check_upload_size( $file ) {
 	if ( get_site_option( 'upload_space_check_disabled' ) ) {
 		return $file;
 	}
 
-	if ( $file['error'] > 0 ) { // There's already an error.
+	if ( $file['error'] > 0 ) { // Đã có lỗi rồi.
 		return $file;
 	}
 
@@ -53,13 +53,13 @@ function check_upload_size( $file ) {
 }
 
 /**
- * Deletes a site.
+ * Xóa một site.
  *
  * @since 3.0.0
- * @since 5.1.0 Use wp_delete_site() internally to delete the site row from the database.
+ * @since 5.1.0 Sử dụng wp_delete_site() nội bộ để xóa hàng site khỏi cơ sở dữ liệu.
  *
- * @param int  $blog_id Site ID.
- * @param bool $drop    True if site's database tables should be dropped. Default false.
+ * @param int  $blog_id ID của site.
+ * @param bool $drop    True nếu các bảng cơ sở dữ liệu của site cần bị xóa. Mặc định false.
  */
 function wpmu_delete_blog( $blog_id, $drop = false ) {
 	$blog_id = (int) $blog_id;
@@ -74,12 +74,12 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
 
 	$current_network = get_network();
 
-	// If a full blog object is not available, do not destroy anything.
+	// Nếu không có đối tượng blog đầy đủ, không xóa bất cứ thứ gì.
 	if ( $drop && ! $blog ) {
 		$drop = false;
 	}
 
-	// Don't destroy the initial, main, or root blog.
+	// Không xóa blog ban đầu, blog chính, hoặc blog gốc.
 	if ( $drop
 		&& ( 1 === $blog_id || is_main_site( $blog_id )
 			|| ( $blog->path === $current_network->path && $blog->domain === $current_network->domain ) )
@@ -89,7 +89,7 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
 
 	$upload_path = trim( get_option( 'upload_path' ) );
 
-	// If ms_files_rewriting is enabled and upload_path is empty, wp_upload_dir is not reliable.
+	// Nếu ms_files_rewriting được bật và upload_path trống, wp_upload_dir không đáng tin cậy.
 	if ( $drop && get_site_option( 'ms_files_rewriting' ) && empty( $upload_path ) ) {
 		$drop = false;
 	}
@@ -97,7 +97,7 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
 	if ( $drop ) {
 		wp_delete_site( $blog_id );
 	} else {
-		/** This action is documented in wp-includes/ms-blogs.php */
+		/** Hành động này được ghi tài liệu trong wp-includes/ms-blogs.php */
 		do_action_deprecated( 'delete_blog', array( $blog_id, false ), '5.1.0' );
 
 		$users = get_users(
@@ -107,7 +107,7 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
 			)
 		);
 
-		// Remove users from this blog.
+		// Xóa người dùng khỏi blog này.
 		if ( ! empty( $users ) ) {
 			foreach ( $users as $user_id ) {
 				remove_user_from_blog( $user_id, $blog_id );
@@ -116,7 +116,7 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
 
 		update_blog_status( $blog_id, 'deleted', 1 );
 
-		/** This action is documented in wp-includes/ms-blogs.php */
+		/** Hành động này được ghi tài liệu trong wp-includes/ms-blogs.php */
 		do_action_deprecated( 'deleted_blog', array( $blog_id, false ), '5.1.0' );
 	}
 
@@ -126,21 +126,21 @@ function wpmu_delete_blog( $blog_id, $drop = false ) {
 }
 
 /**
- * Deletes a user and all of their posts from the network.
+ * Xóa một người dùng và tất cả bài viết của họ khỏi mạng lưới.
  *
- * This function:
+ * Hàm này:
  *
- * - Deletes all posts (of all post types) authored by the user on all sites on the network
- * - Deletes all links owned by the user on all sites on the network
- * - Removes the user from all sites on the network
- * - Deletes the user from the database
+ * - Xóa tất cả bài viết (của mọi loại bài viết) do người dùng tạo trên tất cả site trong mạng lưới
+ * - Xóa tất cả liên kết thuộc sở hữu của người dùng trên tất cả site trong mạng lưới
+ * - Xóa người dùng khỏi tất cả site trong mạng lưới
+ * - Xóa người dùng khỏi cơ sở dữ liệu
  *
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int $id The user ID.
- * @return bool True if the user was deleted, false otherwise.
+ * @param int $id ID của người dùng.
+ * @return bool True nếu người dùng đã bị xóa, false nếu không.
  */
 function wpmu_delete_user( $id ) {
 	global $wpdb;
@@ -156,20 +156,20 @@ function wpmu_delete_user( $id ) {
 		return false;
 	}
 
-	// Global super-administrators are protected, and cannot be deleted.
+	// Các quản trị viên cấp cao toàn cục được bảo vệ và không thể bị xóa.
 	$_super_admins = get_super_admins();
 	if ( in_array( $user->user_login, $_super_admins, true ) ) {
 		return false;
 	}
 
 	/**
-	 * Fires before a user is deleted from the network.
+	 * Kích hoạt trước khi một người dùng bị xóa khỏi mạng lưới.
 	 *
 	 * @since MU (3.0.0)
-	 * @since 5.5.0 Added the `$user` parameter.
+	 * @since 5.5.0 Thêm tham số `$user`.
 	 *
-	 * @param int     $id   ID of the user about to be deleted from the network.
-	 * @param WP_User $user WP_User object of the user about to be deleted from the network.
+	 * @param int     $id   ID của người dùng sắp bị xóa khỏi mạng lưới.
+	 * @param WP_User $user Đối tượng WP_User của người dùng sắp bị xóa khỏi mạng lưới.
 	 */
 	do_action( 'wpmu_delete_user', $id, $user );
 
@@ -185,7 +185,7 @@ function wpmu_delete_user( $id ) {
 				wp_delete_post( $post_id );
 			}
 
-			// Clean links.
+			// Dọn dẹp liên kết.
 			$link_ids = $wpdb->get_col( $wpdb->prepare( "SELECT link_id FROM $wpdb->links WHERE link_owner = %d", $id ) );
 
 			if ( $link_ids ) {
@@ -207,20 +207,20 @@ function wpmu_delete_user( $id ) {
 
 	clean_user_cache( $user );
 
-	/** This action is documented in wp-admin/includes/user.php */
+	/** Hành động này được ghi tài liệu trong wp-admin/includes/user.php */
 	do_action( 'deleted_user', $id, null, $user );
 
 	return true;
 }
 
 /**
- * Checks whether a site has used its allotted upload space.
+ * Kiểm tra xem một site đã sử dụng hết dung lượng tải lên được phân bổ chưa.
  *
  * @since MU (3.0.0)
  *
- * @param bool $display_message Optional. If set to true and the quota is exceeded,
- *                              a warning message is displayed. Default true.
- * @return bool True if user is over upload space quota, otherwise false.
+ * @param bool $display_message Tùy chọn. Nếu đặt là true và hạn mức bị vượt quá,
+ *                              một thông báo cảnh báo sẽ được hiển thị. Mặc định true.
+ * @return bool True nếu người dùng vượt quá hạn mức dung lượng tải lên, ngược lại false.
  */
 function upload_is_user_over_quota( $display_message = true ) {
 	if ( get_site_option( 'upload_space_check_disabled' ) ) {
@@ -229,7 +229,7 @@ function upload_is_user_over_quota( $display_message = true ) {
 
 	$space_allowed = get_space_allowed();
 	if ( ! is_numeric( $space_allowed ) ) {
-		$space_allowed = 10; // Default space allowed is 10 MB.
+		$space_allowed = 10; // Dung lượng mặc định cho phép là 10 MB.
 	}
 	$space_used = get_space_used();
 
@@ -248,7 +248,7 @@ function upload_is_user_over_quota( $display_message = true ) {
 }
 
 /**
- * Displays the amount of disk space used by the current site. Not used in core.
+ * Hiển thị lượng dung lượng đĩa được sử dụng bởi site hiện tại. Không được sử dụng trong core.
  *
  * @since MU (3.0.0)
  */
@@ -270,12 +270,12 @@ function display_space_usage() {
 }
 
 /**
- * Gets the remaining upload space for this site.
+ * Lấy dung lượng tải lên còn lại cho site này.
  *
  * @since MU (3.0.0)
  *
- * @param int $size Current max size in bytes.
- * @return int Max size in bytes.
+ * @param int $size Kích thước tối đa hiện tại tính bằng byte.
+ * @return int Kích thước tối đa tính bằng byte.
  */
 function fix_import_form_size( $size ) {
 	if ( upload_is_user_over_quota( false ) ) {
@@ -286,11 +286,11 @@ function fix_import_form_size( $size ) {
 }
 
 /**
- * Displays the site upload space quota setting form on the Edit Site Settings screen.
+ * Hiển thị biểu mẫu cài đặt hạn mức dung lượng tải lên của site trên màn hình Chỉnh sửa Cài đặt Site.
  *
  * @since 3.0.0
  *
- * @param int $id The ID of the site to display the setting for.
+ * @param int $id ID của site để hiển thị cài đặt.
  */
 function upload_space_setting( $id ) {
 	switch_to_blog( $id );
@@ -320,12 +320,12 @@ function upload_space_setting( $id ) {
 }
 
 /**
- * Cleans the user cache for a specific user.
+ * Xóa bộ nhớ đệm người dùng cho một người dùng cụ thể.
  *
  * @since 3.0.0
  *
- * @param int $id The user ID.
- * @return int|false The ID of the refreshed user or false if the user does not exist.
+ * @param int $id ID của người dùng.
+ * @return int|false ID của người dùng đã được làm mới hoặc false nếu người dùng không tồn tại.
  */
 function refresh_user_details( $id ) {
 	$id = (int) $id;
@@ -341,13 +341,13 @@ function refresh_user_details( $id ) {
 }
 
 /**
- * Returns the language for a language code.
+ * Trả về ngôn ngữ cho một mã ngôn ngữ.
  *
  * @since 3.0.0
  *
- * @param string $code Optional. The two-letter language code. Default empty.
- * @return string The language corresponding to $code if it exists. If it does not exist,
- *                then the first two letters of $code is returned.
+ * @param string $code Tùy chọn. Mã ngôn ngữ hai chữ cái. Mặc định trống.
+ * @return string Ngôn ngữ tương ứng với $code nếu tồn tại. Nếu không tồn tại,
+ *                thì hai chữ cái đầu tiên của $code được trả về.
  */
 function format_code_lang( $code = '' ) {
 	$code       = strtolower( substr( $code, 0, 2 ) );
@@ -540,20 +540,20 @@ function format_code_lang( $code = '' ) {
 	);
 
 	/**
-	 * Filters the language codes.
+	 * Lọc các mã ngôn ngữ.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string[] $lang_codes Array of key/value pairs of language codes where key is the short version.
-	 * @param string   $code       A two-letter designation of the language.
+	 * @param string[] $lang_codes Mảng các cặp khóa/giá trị của mã ngôn ngữ trong đó khóa là phiên bản rút gọn.
+	 * @param string   $code       Ký hiệu hai chữ cái của ngôn ngữ.
 	 */
 	$lang_codes = apply_filters( 'lang_codes', $lang_codes, $code );
 	return strtr( $code, $lang_codes );
 }
 
 /**
- * Displays an access denied message when a user tries to view a site's dashboard they
- * do not have access to.
+ * Hiển thị thông báo từ chối truy cập khi người dùng cố xem bảng điều khiển của một site mà
+ * họ không có quyền truy cập.
  *
  * @since 3.2.0
  * @access private
@@ -606,12 +606,12 @@ function _access_denied_splash() {
 }
 
 /**
- * Checks if the current user has permissions to import new users.
+ * Kiểm tra xem người dùng hiện tại có quyền nhập người dùng mới không.
  *
  * @since 3.0.0
  *
- * @param string $permission A permission to be checked. Currently not used.
- * @return bool True if the user has proper permissions, false if they do not.
+ * @param string $permission Quyền cần kiểm tra. Hiện tại không được sử dụng.
+ * @return bool True nếu người dùng có đủ quyền, false nếu không.
  */
 function check_import_new_users( $permission ) {
 	if ( ! current_user_can( 'manage_network_users' ) ) {
@@ -620,15 +620,15 @@ function check_import_new_users( $permission ) {
 
 	return true;
 }
-// See "import_allow_fetch_attachments" and "import_attachment_size_limit" filters too.
+// Xem thêm bộ lọc "import_allow_fetch_attachments" và "import_attachment_size_limit".
 
 /**
- * Generates and displays a drop-down of available languages.
+ * Tạo và hiển thị danh sách thả xuống các ngôn ngữ có sẵn.
  *
  * @since 3.0.0
  *
- * @param string[] $lang_files Optional. An array of the language files. Default empty array.
- * @param string   $current    Optional. The current language code. Default empty.
+ * @param string[] $lang_files Tùy chọn. Mảng các tệp ngôn ngữ. Mặc định mảng trống.
+ * @param string   $current    Tùy chọn. Mã ngôn ngữ hiện tại. Mặc định trống.
  */
 function mu_dropdown_languages( $lang_files = array(), $current = '' ) {
 	$flag   = false;
@@ -637,11 +637,11 @@ function mu_dropdown_languages( $lang_files = array(), $current = '' ) {
 	foreach ( (array) $lang_files as $val ) {
 		$code_lang = basename( $val, '.mo' );
 
-		if ( 'en_US' === $code_lang ) { // American English.
+		if ( 'en_US' === $code_lang ) { // Tiếng Anh Mỹ.
 			$flag          = true;
 			$ae            = __( 'American English' );
 			$output[ $ae ] = '<option value="' . esc_attr( $code_lang ) . '"' . selected( $current, $code_lang, false ) . '> ' . $ae . '</option>';
-		} elseif ( 'en_GB' === $code_lang ) { // British English.
+		} elseif ( 'en_GB' === $code_lang ) { // Tiếng Anh Anh.
 			$flag          = true;
 			$be            = __( 'British English' );
 			$output[ $be ] = '<option value="' . esc_attr( $code_lang ) . '"' . selected( $current, $code_lang, false ) . '> ' . $be . '</option>';
@@ -651,21 +651,21 @@ function mu_dropdown_languages( $lang_files = array(), $current = '' ) {
 		}
 	}
 
-	if ( false === $flag ) { // WordPress English.
+	if ( false === $flag ) { // Tiếng Anh WordPress.
 		$output[] = '<option value=""' . selected( $current, '', false ) . '>' . __( 'English' ) . '</option>';
 	}
 
-	// Order by name.
+	// Sắp xếp theo tên.
 	uksort( $output, 'strnatcasecmp' );
 
 	/**
-	 * Filters the languages available in the dropdown.
+	 * Lọc các ngôn ngữ có sẵn trong danh sách thả xuống.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string[] $output     Array of HTML output for the dropdown.
-	 * @param string[] $lang_files Array of available language files.
-	 * @param string   $current    The current language code.
+	 * @param string[] $output     Mảng đầu ra HTML cho danh sách thả xuống.
+	 * @param string[] $lang_files Mảng các tệp ngôn ngữ có sẵn.
+	 * @param string   $current    Mã ngôn ngữ hiện tại.
 	 */
 	$output = apply_filters( 'mu_dropdown_languages', $output, $lang_files, $current );
 
@@ -673,14 +673,14 @@ function mu_dropdown_languages( $lang_files = array(), $current = '' ) {
 }
 
 /**
- * Displays an admin notice to upgrade all sites after a core upgrade.
+ * Hiển thị thông báo quản trị để nâng cấp tất cả site sau khi nâng cấp core.
  *
  * @since 3.0.0
  *
- * @global int    $wp_db_version WordPress database version.
- * @global string $pagenow       The filename of the current screen.
+ * @global int    $wp_db_version Phiên bản cơ sở dữ liệu WordPress.
+ * @global string $pagenow       Tên tệp của màn hình hiện tại.
  *
- * @return void|false Void on success. False if the current user is not a super admin.
+ * @return void|false Void khi thành công. False nếu người dùng hiện tại không phải quản trị viên cấp cao.
  */
 function site_admin_notice() {
 	global $wp_db_version, $pagenow;
@@ -712,16 +712,16 @@ function site_admin_notice() {
 }
 
 /**
- * Avoids a collision between a site slug and a permalink slug.
+ * Tránh xung đột giữa slug của site và slug của đường dẫn tĩnh.
  *
- * In a subdirectory installation this will make sure that a site and a post do not use the
- * same subdirectory by checking for a site with the same name as a new post.
+ * Trong cài đặt thư mục con, hàm này đảm bảo rằng một site và một bài viết không sử dụng
+ * cùng thư mục con bằng cách kiểm tra site có cùng tên với bài viết mới.
  *
  * @since 3.0.0
  *
- * @param array $data    An array of post data.
- * @param array $postarr An array of posts. Not currently used.
- * @return array The new array of post data after checking for collisions.
+ * @param array $data    Mảng dữ liệu bài viết.
+ * @param array $postarr Mảng các bài viết. Hiện tại không được sử dụng.
+ * @return array Mảng dữ liệu bài viết mới sau khi kiểm tra xung đột.
  */
 function avoid_blog_page_permalink_collision( $data, $postarr ) {
 	if ( is_subdomain_install() ) {
@@ -756,10 +756,10 @@ function avoid_blog_page_permalink_collision( $data, $postarr ) {
 }
 
 /**
- * Handles the display of choosing a user's primary site.
+ * Xử lý hiển thị lựa chọn site chính của người dùng.
  *
- * This displays the user's primary site and allows the user to choose
- * which site is primary.
+ * Hàm này hiển thị site chính của người dùng và cho phép người dùng chọn
+ * site nào là site chính.
  *
  * @since 3.0.0
  */
@@ -796,7 +796,7 @@ function choose_primary_blog() {
 		} elseif ( 1 === count( $all_blogs ) ) {
 			$blog = reset( $all_blogs );
 			echo esc_url( get_home_url( $blog->userblog_id ) );
-			if ( $blog->userblog_id !== $primary_blog ) { // Set the primary blog again if it's out of sync with blog list.
+			if ( $blog->userblog_id !== $primary_blog ) { // Đặt lại blog chính nếu nó không đồng bộ với danh sách blog.
 				update_user_meta( get_current_user_id(), 'primary_blog', $blog->userblog_id );
 			}
 		} else {
@@ -810,15 +810,15 @@ function choose_primary_blog() {
 }
 
 /**
- * Determines whether or not this network from this page can be edited.
+ * Xác định xem mạng lưới này có thể được chỉnh sửa từ trang này không.
  *
- * By default editing of network is restricted to the Network Admin for that `$network_id`.
- * This function allows for this to be overridden.
+ * Mặc định, việc chỉnh sửa mạng lưới bị giới hạn cho Quản trị Mạng lưới của `$network_id` đó.
+ * Hàm này cho phép ghi đè điều này.
  *
  * @since 3.1.0
  *
- * @param int $network_id The network ID to check.
- * @return bool True if network can be edited, false otherwise.
+ * @param int $network_id ID mạng lưới cần kiểm tra.
+ * @return bool True nếu mạng lưới có thể chỉnh sửa, false nếu không.
  */
 function can_edit_network( $network_id ) {
 	if ( get_current_network_id() === (int) $network_id ) {
@@ -828,18 +828,18 @@ function can_edit_network( $network_id ) {
 	}
 
 	/**
-	 * Filters whether this network can be edited from this page.
+	 * Lọc xem mạng lưới này có thể được chỉnh sửa từ trang này không.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param bool $result     Whether the network can be edited from this page.
-	 * @param int  $network_id The network ID to check.
+	 * @param bool $result     Liệu mạng lưới có thể được chỉnh sửa từ trang này không.
+	 * @param int  $network_id ID mạng lưới cần kiểm tra.
 	 */
 	return apply_filters( 'can_edit_network', $result, $network_id );
 }
 
 /**
- * Prints thickbox image paths for Network Admin.
+ * In đường dẫn hình ảnh thickbox cho Quản trị Mạng lưới.
  *
  * @since 3.1.0
  *
@@ -854,7 +854,7 @@ var tb_pathToImage = "<?php echo esc_js( includes_url( 'js/thickbox/loadingAnima
 }
 
 /**
- * @param array $users
+ * @param array $users Mảng người dùng.
  * @return bool
  */
 function confirm_delete_users( $users ) {
@@ -983,7 +983,7 @@ function confirm_delete_users( $users ) {
 	?>
 	</table>
 	<?php
-	/** This action is documented in wp-admin/users.php */
+	/** Hành động này được ghi tài liệu trong wp-admin/users.php */
 	do_action( 'delete_user_form', $current_user, $allusers );
 
 	if ( 1 === count( $users ) ) :
@@ -1002,7 +1002,7 @@ function confirm_delete_users( $users ) {
 }
 
 /**
- * Prints JavaScript in the header on the Network Settings screen.
+ * In JavaScript vào phần header trên màn hình Cài đặt Mạng lưới.
  *
  * @since 4.1.0
  */
@@ -1013,8 +1013,8 @@ jQuery( function($) {
 	var languageSelect = $( '#WPLANG' );
 	$( 'form' ).on( 'submit', function() {
 		/*
-		 * Don't show a spinner for English and installed languages,
-		 * as there is nothing to download.
+		 * Không hiển thị spinner cho tiếng Anh và các ngôn ngữ đã cài đặt,
+		 * vì không có gì để tải xuống.
 		 */
 		if ( ! languageSelect.find( 'option:selected' ).data( 'installed' ) ) {
 			$( '#submit', this ).after( '<span class="spinner language-install-spinner is-active" />' );
@@ -1026,38 +1026,38 @@ jQuery( function($) {
 }
 
 /**
- * Outputs the HTML for a network's "Edit Site" tabular interface.
+ * Xuất HTML cho giao diện tab "Chỉnh sửa Site" của mạng lưới.
  *
  * @since 4.6.0
  *
- * @global string $pagenow The filename of the current screen.
+ * @global string $pagenow Tên tệp của màn hình hiện tại.
  *
  * @param array $args {
- *     Optional. Array or string of Query parameters. Default empty array.
+ *     Tùy chọn. Mảng hoặc chuỗi tham số truy vấn. Mặc định mảng trống.
  *
- *     @type int    $blog_id  The site ID. Default is the current site.
- *     @type array  $links    The tabs to include with (label|url|cap) keys.
- *     @type string $selected The ID of the selected link.
+ *     @type int    $blog_id  ID của site. Mặc định là site hiện tại.
+ *     @type array  $links    Các tab cần bao gồm với khóa (label|url|cap).
+ *     @type string $selected ID của liên kết được chọn.
  * }
  */
 function network_edit_site_nav( $args = array() ) {
 
 	/**
-	 * Filters the links that appear on site-editing network pages.
+	 * Lọc các liên kết xuất hiện trên các trang mạng lưới chỉnh sửa site.
 	 *
-	 * Default links: 'site-info', 'site-users', 'site-themes', and 'site-settings'.
+	 * Các liên kết mặc định: 'site-info', 'site-users', 'site-themes', và 'site-settings'.
 	 *
 	 * @since 4.6.0
 	 *
 	 * @param array $links {
-	 *     An array of link data representing individual network admin pages.
+	 *     Mảng dữ liệu liên kết đại diện cho các trang quản trị mạng lưới riêng lẻ.
 	 *
 	 *     @type array $link_slug {
-	 *         An array of information about the individual link to a page.
+	 *         Mảng thông tin về liên kết riêng lẻ đến một trang.
 	 *
-	 *         $type string $label Label to use for the link.
-	 *         $type string $url   URL, relative to `network_admin_url()` to use for the link.
-	 *         $type string $cap   Capability required to see the link.
+	 *         $type string $label Nhãn sử dụng cho liên kết.
+	 *         $type string $url   URL, tương đối với `network_admin_url()` sử dụng cho liên kết.
+	 *         $type string $cap   Quyền cần thiết để xem liên kết.
 	 *     }
 	 * }
 	 */
@@ -1087,7 +1087,7 @@ function network_edit_site_nav( $args = array() ) {
 		)
 	);
 
-	// Parse arguments.
+	// Phân tích tham số.
 	$parsed_args = wp_parse_args(
 		$args,
 		array(
@@ -1097,51 +1097,51 @@ function network_edit_site_nav( $args = array() ) {
 		)
 	);
 
-	// Setup the links array.
+	// Thiết lập mảng liên kết.
 	$screen_links = array();
 
-	// Loop through tabs.
+	// Lặp qua các tab.
 	foreach ( $parsed_args['links'] as $link_id => $link ) {
 
-		// Skip link if user can't access.
+		// Bỏ qua liên kết nếu người dùng không có quyền truy cập.
 		if ( ! current_user_can( $link['cap'], $parsed_args['blog_id'] ) ) {
 			continue;
 		}
 
-		// Link classes.
+		// Các lớp CSS cho liên kết.
 		$classes = array( 'nav-tab' );
 
-		// Aria-current attribute.
+		// Thuộc tính Aria-current.
 		$aria_current = '';
 
-		// Selected is set by the parent OR assumed by the $pagenow global.
+		// Mục được chọn được đặt bởi trang cha HOẶC được suy ra từ biến toàn cục $pagenow.
 		if ( $parsed_args['selected'] === $link_id || $link['url'] === $GLOBALS['pagenow'] ) {
 			$classes[]    = 'nav-tab-active';
 			$aria_current = ' aria-current="page"';
 		}
 
-		// Escape each class.
+		// Escape từng lớp CSS.
 		$esc_classes = implode( ' ', $classes );
 
-		// Get the URL for this link.
+		// Lấy URL cho liên kết này.
 		$url = add_query_arg( array( 'id' => $parsed_args['blog_id'] ), network_admin_url( $link['url'] ) );
 
-		// Add link to nav links.
+		// Thêm liên kết vào danh sách liên kết điều hướng.
 		$screen_links[ $link_id ] = '<a href="' . esc_url( $url ) . '" id="' . esc_attr( $link_id ) . '" class="' . $esc_classes . '"' . $aria_current . '>' . esc_html( $link['label'] ) . '</a>';
 	}
 
-	// All done!
+	// Hoàn tất!
 	echo '<nav class="nav-tab-wrapper wp-clearfix" aria-label="' . esc_attr__( 'Secondary menu' ) . '">';
 	echo implode( '', $screen_links );
 	echo '</nav>';
 }
 
 /**
- * Returns the arguments for the help tab on the Edit Site screens.
+ * Trả về các tham số cho tab trợ giúp trên màn hình Chỉnh sửa Site.
  *
  * @since 4.9.0
  *
- * @return array Help tab arguments.
+ * @return array Các tham số tab trợ giúp.
  */
 function get_site_screen_help_tab_args() {
 	return array(
@@ -1161,11 +1161,11 @@ function get_site_screen_help_tab_args() {
 }
 
 /**
- * Returns the content for the help sidebar on the Edit Site screens.
+ * Trả về nội dung cho thanh bên trợ giúp trên màn hình Chỉnh sửa Site.
  *
  * @since 4.9.0
  *
- * @return string Help sidebar content.
+ * @return string Nội dung thanh bên trợ giúp.
  */
 function get_site_screen_help_sidebar_content() {
 	return '<p><strong>' . __( 'For more information:' ) . '</strong></p>' .
@@ -1174,11 +1174,11 @@ function get_site_screen_help_sidebar_content() {
 }
 
 /**
- * Stop execution if the role can not be assigned by the current user.
+ * Dừng thực thi nếu vai trò không thể được gán bởi người dùng hiện tại.
  *
  * @since 6.8.0
  *
- * @param string $role Role the user is attempting to assign.
+ * @param string $role Vai trò mà người dùng đang cố gán.
  */
 function wp_ensure_editable_role( $role ) {
 	$roles = get_editable_roles();

@@ -1,15 +1,15 @@
 <?php
 /**
- * Edit user administration panel.
+ * Trang quản trị chỉnh sửa người dùng.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Nạp tệp khởi động Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
-/** WordPress Translation Installation API */
+/** API Cài đặt Bản dịch WordPress */
 require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
 $action          = ! empty( $_REQUEST['action'] ) ? sanitize_text_field( $_REQUEST['action'] ) : '';
@@ -37,10 +37,10 @@ if ( wp_is_application_passwords_available_for_user( $user_id ) ) {
 }
 
 if ( IS_PROFILE_PAGE ) {
-	// Used in the HTML title tag.
+	// Dùng trong thẻ tiêu đề HTML.
 	$title = __( 'Profile' );
 } else {
-	// Used in the HTML title tag.
+	// Dùng trong thẻ tiêu đề HTML.
 	/* translators: %s: User's display name. */
 	$title = __( 'Edit User %s' );
 }
@@ -84,17 +84,17 @@ $wp_http_referer = remove_query_arg( array( 'update', 'delete_count', 'user_id' 
 $user_can_edit = current_user_can( 'edit_posts' ) || current_user_can( 'edit_pages' );
 
 /**
- * Filters whether to allow administrators on Multisite to edit every user.
+ * Lọc xem có cho phép quản trị viên trên Đa trang chỉnh sửa mọi người dùng hay không.
  *
- * Enabling the user editing form via this filter also hinges on the user holding
- * the 'manage_network_users' cap, and the logged-in user not matching the user
- * profile open for editing.
+ * Việc bật biểu mẫu chỉnh sửa người dùng qua bộ lọc này cũng phụ thuộc vào việc
+ * người dùng có quyền 'manage_network_users', và người dùng đang đăng nhập không
+ * trùng với hồ sơ người dùng đang được mở để chỉnh sửa.
  *
- * The filter was introduced to replace the EDIT_ANY_USER constant.
+ * Bộ lọc này được giới thiệu để thay thế hằng số EDIT_ANY_USER.
  *
  * @since 3.0.0
  *
- * @param bool $allow Whether to allow editing of any user. Default true.
+ * @param bool $allow Có cho phép chỉnh sửa bất kỳ người dùng nào không. Mặc định true.
  */
 if ( is_multisite()
 	&& ! current_user_can( 'manage_network_users' )
@@ -104,7 +104,7 @@ if ( is_multisite()
 	wp_die( __( 'Sorry, you are not allowed to edit this user.' ) );
 }
 
-// Execute confirmed email change. See send_confirmation_on_profile_email().
+// Thực thi thay đổi email đã xác nhận. Xem send_confirmation_on_profile_email().
 if ( IS_PROFILE_PAGE && isset( $_GET['newuseremail'] ) && $current_user->ID ) {
 	$new_email = get_user_meta( $current_user->ID, '_new_email', true );
 	if ( $new_email && hash_equals( $new_email['hash'], $_GET['newuseremail'] ) ) {
@@ -138,27 +138,27 @@ switch ( $action ) {
 
 		if ( IS_PROFILE_PAGE ) {
 			/**
-			 * Fires before the page loads on the 'Profile' editing screen.
+			 * Kích hoạt trước khi trang tải trên màn hình chỉnh sửa 'Hồ sơ'.
 			 *
-			 * The action only fires if the current user is editing their own profile.
+			 * Hành động này chỉ kích hoạt nếu người dùng hiện tại đang chỉnh sửa hồ sơ của chính họ.
 			 *
 			 * @since 2.0.0
 			 *
-			 * @param int $user_id The user ID.
+			 * @param int $user_id ID người dùng.
 			 */
 			do_action( 'personal_options_update', $user_id );
 		} else {
 			/**
-			 * Fires before the page loads on the 'Edit User' screen.
+			 * Kích hoạt trước khi trang tải trên màn hình 'Chỉnh sửa Người dùng'.
 			 *
 			 * @since 2.7.0
 			 *
-			 * @param int $user_id The user ID.
+			 * @param int $user_id ID người dùng.
 			 */
 			do_action( 'edit_user_profile_update', $user_id );
 		}
 
-		// Update the email address in signups, if present.
+		// Cập nhật địa chỉ email trong bảng đăng ký, nếu có.
 		if ( is_multisite() ) {
 			$user = get_userdata( $user_id );
 
@@ -167,10 +167,10 @@ switch ( $action ) {
 			}
 		}
 
-		// Update the user.
+		// Cập nhật người dùng.
 		$errors = edit_user( $user_id );
 
-		// Grant or revoke super admin status if requested.
+		// Cấp hoặc thu hồi trạng thái quản trị viên cấp cao nếu được yêu cầu.
 		if ( is_multisite() && is_network_admin()
 			&& ! IS_PROFILE_PAGE && current_user_can( 'manage_network_options' )
 			&& ! isset( $super_admins ) && empty( $_POST['super_admin'] ) === is_super_admin( $user_id )
@@ -187,7 +187,7 @@ switch ( $action ) {
 			exit;
 		}
 
-		// Intentional fall-through to display $errors.
+		// Cố ý chuyển tiếp xuống để hiển thị $errors.
 	default:
 		$profile_user = get_user_to_edit( $user_id );
 
@@ -277,7 +277,7 @@ switch ( $action ) {
 			<form id="your-profile" action="<?php echo esc_url( self_admin_url( IS_PROFILE_PAGE ? 'profile.php' : 'user-edit.php' ) ); ?>" method="post" novalidate="novalidate"
 				<?php
 				/**
-				 * Fires inside the your-profile form tag on the user editing screen.
+				 * Kích hoạt bên trong thẻ form your-profile trên màn hình chỉnh sửa người dùng.
 				 *
 				 * @since 3.0.0
 				 */
@@ -309,13 +309,13 @@ switch ( $action ) {
 
 					<?php
 					$show_syntax_highlighting_preference = (
-					// For Custom HTML widget and Additional CSS in Customizer.
+					// Dành cho widget HTML Tùy chỉnh và CSS Bổ sung trong Trình tùy biến.
 					user_can( $profile_user, 'edit_theme_options' )
 					||
-					// Edit plugins.
+					// Chỉnh sửa plugin.
 					user_can( $profile_user, 'edit_plugins' )
 					||
-					// Edit themes.
+					// Chỉnh sửa giao diện.
 					user_can( $profile_user, 'edit_themes' )
 					);
 					?>
@@ -337,21 +337,21 @@ switch ( $action ) {
 						<td>
 							<?php
 							/**
-							 * Fires in the 'Admin Color Scheme' section of the user editing screen.
+							 * Kích hoạt trong phần 'Bảng Màu Quản trị' trên màn hình chỉnh sửa người dùng.
 							 *
-							 * The section is only enabled if a callback is hooked to the action,
-							 * and if there is more than one defined color scheme for the admin.
+							 * Phần này chỉ được bật nếu có callback gắn vào hành động,
+							 * và nếu có nhiều hơn một bảng màu được định nghĩa cho trang quản trị.
 							 *
 							 * @since 3.0.0
-							 * @since 3.8.1 Added `$user_id` parameter.
+							 * @since 3.8.1 Thêm tham số `$user_id`.
 							 *
-							 * @param int $user_id The user ID.
+							 * @param int $user_id ID người dùng.
 							 */
 							do_action( 'admin_color_scheme_picker', $user_id );
 							?>
 						</td>
 					</tr>
-					<?php endif; // End if count ( $_wp_admin_css_colors ) > 1 ?>
+					<?php endif; // Kết thúc if count ( $_wp_admin_css_colors ) > 1 ?>
 
 					<?php if ( ! ( IS_PROFILE_PAGE && ! $user_can_edit ) ) : ?>
 					<tr class="user-comment-shortcuts-wrap">
@@ -413,11 +413,11 @@ switch ( $action ) {
 
 					<?php
 					/**
-					 * Fires at the end of the 'Personal Options' settings table on the user editing screen.
+					 * Kích hoạt ở cuối bảng cài đặt 'Tùy chọn Cá nhân' trên màn hình chỉnh sửa người dùng.
 					 *
 					 * @since 2.7.0
 					 *
-					 * @param WP_User $profile_user The current WP_User object.
+					 * @param WP_User $profile_user Đối tượng WP_User hiện tại.
 					 */
 					do_action( 'personal_options', $profile_user );
 					?>
@@ -426,13 +426,13 @@ switch ( $action ) {
 				<?php
 				if ( IS_PROFILE_PAGE ) {
 					/**
-					 * Fires after the 'Personal Options' settings table on the 'Profile' editing screen.
+					 * Kích hoạt sau bảng cài đặt 'Tùy chọn Cá nhân' trên màn hình chỉnh sửa 'Hồ sơ'.
 					 *
-					 * The action only fires if the current user is editing their own profile.
+					 * Hành động này chỉ kích hoạt nếu người dùng hiện tại đang chỉnh sửa hồ sơ của chính họ.
 					 *
 					 * @since 2.0.0
 					 *
-					 * @param WP_User $profile_user The current WP_User object.
+					 * @param WP_User $profile_user Đối tượng WP_User hiện tại.
 					 */
 					do_action( 'profile_personal_options', $profile_user );
 				}
@@ -452,14 +452,14 @@ switch ( $action ) {
 							<td>
 								<select name="role" id="role">
 									<?php
-									// Compare user role against currently editable roles.
+									// So sánh vai trò người dùng với các vai trò có thể chỉnh sửa hiện tại.
 									$user_roles = array_intersect( array_values( $profile_user->roles ), array_keys( get_editable_roles() ) );
 									$user_role  = reset( $user_roles );
 
-									// Print the full list of roles with the primary one selected.
+									// In danh sách đầy đủ các vai trò với vai trò chính được chọn.
 									wp_dropdown_roles( $user_role );
 
-									// Print the 'no role' option. Make it selected if the user has no role yet.
+									// In tùy chọn 'không có vai trò'. Chọn nó nếu người dùng chưa có vai trò.
 									if ( $user_role ) {
 										echo '<option value="">' . __( '&mdash; No role for this site &mdash;' ) . '</option>';
 									} else {
@@ -469,7 +469,7 @@ switch ( $action ) {
 							</select>
 							</td>
 						</tr>
-					<?php endif; // End if ! IS_PROFILE_PAGE. ?>
+					<?php endif; // Kết thúc if ! IS_PROFILE_PAGE. ?>
 
 					<?php if ( is_multisite() && is_network_admin() && ! IS_PROFILE_PAGE && current_user_can( 'manage_network_options' ) && ! isset( $super_admins ) ) : ?>
 						<tr class="user-super-admin-wrap">
@@ -523,7 +523,7 @@ switch ( $action ) {
 									$public_display['display_lastfirst'] = $profile_user->last_name . ' ' . $profile_user->first_name;
 								}
 
-								if ( ! in_array( $profile_user->display_name, $public_display, true ) ) { // Only add this if it isn't duplicated elsewhere.
+								if ( ! in_array( $profile_user->display_name, $public_display, true ) ) { // Chỉ thêm nếu chưa bị trùng ở nơi khác.
 									$public_display = array( 'display_displayname' => $profile_user->display_name ) + $public_display;
 								}
 
@@ -590,14 +590,14 @@ switch ( $action ) {
 							<label for="<?php echo $name; ?>">
 							<?php
 							/**
-							 * Filters a user contactmethod label.
+							 * Lọc nhãn phương thức liên hệ của người dùng.
 							 *
-							 * The dynamic portion of the hook name, `$name`, refers to
-							 * each of the keys in the contact methods array.
+							 * Phần động của tên hook, `$name`, tham chiếu đến
+							 * mỗi khóa trong mảng phương thức liên hệ.
 							 *
 							 * @since 2.9.0
 							 *
-							 * @param string $desc The translatable label for the contact method.
+							 * @param string $desc Nhãn có thể dịch cho phương thức liên hệ.
 							 */
 							echo apply_filters( "user_{$name}_label", $desc );
 							?>
@@ -615,7 +615,7 @@ switch ( $action ) {
 				<table class="form-table" role="presentation">
 					<tr class="user-description-wrap">
 						<th><label for="description"><?php _e( 'Biographical Info' ); ?></label></th>
-						<td><textarea name="description" id="description" rows="5" cols="30"><?php echo $profile_user->description; // textarea_escaped ?></textarea>
+						<td><textarea name="description" id="description" rows="5" cols="30"><?php echo $profile_user->description; // đã được escape trong textarea ?></textarea>
 						<p class="description"><?php _e( 'Share a little biographical information to fill out your profile. This may be shown publicly.' ); ?></p></td>
 					</tr>
 
@@ -638,13 +638,13 @@ switch ( $action ) {
 									}
 
 									/**
-									 * Filters the user profile picture description displayed under the Gravatar.
+									 * Lọc mô tả ảnh hồ sơ người dùng hiển thị dưới Gravatar.
 									 *
 									 * @since 4.4.0
-									 * @since 4.7.0 Added the `$profile_user` parameter.
+									 * @since 4.7.0 Thêm tham số `$profile_user`.
 									 *
-									 * @param string  $description  The description that will be printed.
-									 * @param WP_User $profile_user The current WP_User object.
+									 * @param string  $description  Mô tả sẽ được in ra.
+									 * @param WP_User $profile_user Đối tượng WP_User hiện tại.
 									 */
 									echo apply_filters( 'user_profile_picture_description', $description, $profile_user );
 									?>
@@ -654,14 +654,14 @@ switch ( $action ) {
 					<?php endif; ?>
 					<?php
 					/**
-					 * Filters the display of the password fields.
+					 * Lọc việc hiển thị các trường mật khẩu.
 					 *
 					 * @since 1.5.1
-					 * @since 2.8.0 Added the `$profile_user` parameter.
-					 * @since 4.4.0 Now evaluated only in user-edit.php.
+					 * @since 2.8.0 Thêm tham số `$profile_user`.
+					 * @since 4.4.0 Chỉ được đánh giá trong user-edit.php.
 					 *
-					 * @param bool    $show         Whether to show the password fields. Default true.
-					 * @param WP_User $profile_user User object for the current user to edit.
+					 * @param bool    $show         Có hiển thị các trường mật khẩu hay không. Mặc định true.
+					 * @param WP_User $profile_user Đối tượng người dùng đang được chỉnh sửa.
 					 */
 					$show_password_fields = apply_filters( 'show_password_fields', true, $profile_user );
 					?>
@@ -674,7 +674,7 @@ switch ( $action ) {
 							<tr id="password" class="user-pass1-wrap">
 								<th><label for="pass1"><?php _e( 'New Password' ); ?></label></th>
 								<td>
-									<input type="hidden" value=" " /><!-- #24364 workaround -->
+									<input type="hidden" value=" " /><!-- Giải pháp cho lỗi #24364 -->
 									<button type="button" class="button wp-generate-pw hide-if-no-js" aria-expanded="false"><?php _e( 'Set New Password' ); ?></button>
 									<div class="wp-pwd hide-if-js">
 										<div class="password-input-wrapper">
@@ -712,7 +712,7 @@ switch ( $action ) {
 									</label>
 								</td>
 							</tr>
-							<?php endif; // End Show Password Fields. ?>
+							<?php endif; // Kết thúc Hiển thị Trường Mật khẩu. ?>
 
 							<?php // Allow admins to send reset password link. ?>
 							<?php if ( ! IS_PROFILE_PAGE && true === wp_is_password_reset_allowed_for_user( $profile_user ) ) : ?>

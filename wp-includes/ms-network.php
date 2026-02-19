@@ -1,6 +1,6 @@
 <?php
 /**
- * Network API
+ * API Mạng
  *
  * @package WordPress
  * @subpackage Multisite
@@ -8,17 +8,17 @@
  */
 
 /**
- * Retrieves network data given a network ID or network object.
+ * Lấy dữ liệu mạng theo ID mạng hoặc đối tượng mạng.
  *
- * Network data will be cached and returned after being passed through a filter.
- * If the provided network is empty, the current network global will be used.
+ * Dữ liệu mạng sẽ được lưu vào bộ nhớ đệm và trả về sau khi được truyền qua bộ lọc.
+ * Nếu mạng được cung cấp rỗng, biến toàn cục mạng hiện tại sẽ được sử dụng.
  *
  * @since 4.6.0
  *
  * @global WP_Network $current_site
  *
- * @param WP_Network|int|null $network Optional. Network to retrieve. Default is the current network.
- * @return WP_Network|null The network object or null if not found.
+ * @param WP_Network|int|null $network Tùy chọn. Mạng cần lấy. Mặc định là mạng hiện tại.
+ * @return WP_Network|null Đối tượng mạng hoặc null nếu không tìm thấy.
  */
 function get_network( $network = null ) {
 	global $current_site;
@@ -39,11 +39,11 @@ function get_network( $network = null ) {
 	}
 
 	/**
-	 * Fires after a network is retrieved.
+	 * Kích hoạt sau khi một mạng được lấy.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param WP_Network $_network Network data.
+	 * @param WP_Network $_network Dữ liệu mạng.
 	 */
 	$_network = apply_filters( 'get_network', $_network );
 
@@ -51,14 +51,14 @@ function get_network( $network = null ) {
 }
 
 /**
- * Retrieves a list of networks.
+ * Lấy danh sách các mạng.
  *
  * @since 4.6.0
  *
- * @param string|array $args Optional. Array or string of arguments. See WP_Network_Query::parse_query()
- *                           for information on accepted arguments. Default empty array.
- * @return array|int List of WP_Network objects, a list of network IDs when 'fields' is set to 'ids',
- *                   or the number of networks when 'count' is passed as a query var.
+ * @param string|array $args Tùy chọn. Mảng hoặc chuỗi tham số. Xem WP_Network_Query::parse_query()
+ *                           để biết thông tin về các tham số được chấp nhận. Mặc định mảng rỗng.
+ * @return array|int Danh sách các đối tượng WP_Network, danh sách ID mạng khi 'fields' được đặt thành 'ids',
+ *                   hoặc số lượng mạng khi 'count' được truyền dưới dạng biến truy vấn.
  */
 function get_networks( $args = array() ) {
 	$query = new WP_Network_Query();
@@ -67,13 +67,13 @@ function get_networks( $args = array() ) {
 }
 
 /**
- * Removes a network from the object cache.
+ * Xóa một mạng khỏi bộ nhớ đệm đối tượng.
  *
  * @since 4.6.0
  *
  * @global bool $_wp_suspend_cache_invalidation
  *
- * @param int|array $ids Network ID or an array of network IDs to remove from cache.
+ * @param int|array $ids ID mạng hoặc mảng các ID mạng cần xóa khỏi bộ nhớ đệm.
  */
 function clean_network_cache( $ids ) {
 	global $_wp_suspend_cache_invalidation;
@@ -87,11 +87,11 @@ function clean_network_cache( $ids ) {
 
 	foreach ( $network_ids as $id ) {
 		/**
-		 * Fires immediately after a network has been removed from the object cache.
+		 * Kích hoạt ngay sau khi một mạng đã được xóa khỏi bộ nhớ đệm đối tượng.
 		 *
 		 * @since 4.6.0
 		 *
-		 * @param int $id Network ID.
+		 * @param int $id ID mạng.
 		 */
 		do_action( 'clean_network_cache', $id );
 	}
@@ -100,15 +100,15 @@ function clean_network_cache( $ids ) {
 }
 
 /**
- * Updates the network cache of given networks.
+ * Cập nhật bộ nhớ đệm mạng của các mạng đã cho.
  *
- * Will add the networks in $networks to the cache. If network ID already exists
- * in the network cache then it will not be updated. The network is added to the
- * cache using the network group with the key using the ID of the networks.
+ * Sẽ thêm các mạng trong $networks vào bộ nhớ đệm. Nếu ID mạng đã tồn tại
+ * trong bộ nhớ đệm thì sẽ không được cập nhật. Mạng được thêm vào
+ * bộ nhớ đệm sử dụng nhóm mạng với khóa sử dụng ID của các mạng.
  *
  * @since 4.6.0
  *
- * @param array $networks Array of network row objects.
+ * @param array $networks Mảng các đối tượng hàng mạng.
  */
 function update_network_cache( $networks ) {
 	$data = array();
@@ -119,15 +119,15 @@ function update_network_cache( $networks ) {
 }
 
 /**
- * Adds any networks from the given IDs to the cache that do not already exist in cache.
+ * Thêm bất kỳ mạng nào từ các ID đã cho vào bộ nhớ đệm mà chưa tồn tại trong bộ nhớ đệm.
  *
  * @since 4.6.0
- * @since 6.1.0 This function is no longer marked as "private".
+ * @since 6.1.0 Hàm này không còn được đánh dấu là "private".
  *
  * @see update_network_cache()
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param array $network_ids Array of network IDs.
+ * @param array $network_ids Mảng các ID mạng.
  */
 function _prime_network_caches( $network_ids ) {
 	global $wpdb;

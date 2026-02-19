@@ -1,24 +1,24 @@
 <?php
 /**
- * Generated classname block support flag.
+ * Cờ hỗ trợ tên lớp được tạo tự động cho block.
  *
  * @package WordPress
  * @since 5.6.0
  */
 
 /**
- * Gets the generated classname from a given block name.
+ * Lấy tên lớp được tạo tự động từ tên block cho trước.
  *
  * @since 5.6.0
  *
  * @access private
  *
- * @param string $block_name Block Name.
- * @return string Generated classname.
+ * @param string $block_name Tên Block.
+ * @return string Tên lớp được tạo tự động.
  */
 function wp_get_block_default_classname( $block_name ) {
-	// Generated HTML classes for blocks follow the `wp-block-{name}` nomenclature.
-	// Blocks provided by WordPress drop the prefixes 'core/' or 'core-' (historically used in 'core-embed/').
+	// Các lớp HTML được tạo cho block tuân theo quy tắc đặt tên `wp-block-{name}`.
+	// Các block do WordPress cung cấp sẽ bỏ tiền tố 'core/' hoặc 'core-' (được sử dụng trước đây trong 'core-embed/').
 	$classname = 'wp-block-' . preg_replace(
 		'/^core-/',
 		'',
@@ -26,12 +26,12 @@ function wp_get_block_default_classname( $block_name ) {
 	);
 
 	/**
-	 * Filters the default block className for server rendered blocks.
+	 * Lọc tên lớp mặc định cho các block được render phía server.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param string $class_name The current applied classname.
-	 * @param string $block_name The block name.
+	 * @param string $class_name Tên lớp hiện đang được áp dụng.
+	 * @param string $block_name Tên block.
 	 */
 	$classname = apply_filters( 'block_default_classname', $classname, $block_name );
 
@@ -39,14 +39,14 @@ function wp_get_block_default_classname( $block_name ) {
 }
 
 /**
- * Adds the generated classnames to the output.
+ * Thêm các tên lớp được tạo tự động vào đầu ra.
  *
  * @since 5.6.0
  *
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
- * @return array Block CSS classes and inline styles.
+ * @param WP_Block_Type $block_type Loại Block.
+ * @return array Các lớp CSS và kiểu inline của block.
  */
 function wp_apply_generated_classname_support( $block_type ) {
 	$attributes                      = array();
@@ -62,7 +62,7 @@ function wp_apply_generated_classname_support( $block_type ) {
 	return $attributes;
 }
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register(
 	'generated-classname',
 	array(

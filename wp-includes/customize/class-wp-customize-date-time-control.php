@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Date_Time_Control class
+ * API Tùy biến: Lớp WP_Customize_Date_Time_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Date Time Control class.
+ * Lớp Điều khiển Ngày Giờ trong Tùy biến.
  *
  * @since 4.9.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 
 	/**
-	 * Customize control type.
+	 * Loại điều khiển tùy biến.
 	 *
 	 * @since 4.9.0
 	 * @var string
@@ -25,7 +25,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 	public $type = 'date_time';
 
 	/**
-	 * Minimum Year.
+	 * Năm tối thiểu.
 	 *
 	 * @since 4.9.0
 	 * @var int
@@ -33,7 +33,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 	public $min_year = 1000;
 
 	/**
-	 * Maximum Year.
+	 * Năm tối đa.
 	 *
 	 * @since 4.9.0
 	 * @var int
@@ -41,7 +41,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 	public $max_year = 9999;
 
 	/**
-	 * Allow past date, if set to false user can only select future date.
+	 * Cho phép ngày trong quá khứ, nếu đặt thành false người dùng chỉ có thể chọn ngày trong tương lai.
 	 *
 	 * @since 4.9.0
 	 * @var bool
@@ -49,7 +49,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 	public $allow_past_date = true;
 
 	/**
-	 * Whether hours, minutes, and meridian should be shown.
+	 * Có hiển thị giờ, phút và buổi sáng/chiều hay không.
 	 *
 	 * @since 4.9.0
 	 * @var bool
@@ -57,8 +57,8 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 	public $include_time = true;
 
 	/**
-	 * If set to false the control will appear in 24 hour format,
-	 * the value will still be saved in Y-m-d H:i:s format.
+	 * Nếu đặt thành false, điều khiển sẽ hiển thị ở định dạng 24 giờ,
+	 * giá trị vẫn được lưu ở định dạng Y-m-d H:i:s.
 	 *
 	 * @since 4.9.0
 	 * @var bool
@@ -66,14 +66,14 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 	public $twelve_hour_format = true;
 
 	/**
-	 * Don't render the control's content - it's rendered with a JS template.
+	 * Không hiển thị nội dung điều khiển - được hiển thị bằng mẫu JS.
 	 *
 	 * @since 4.9.0
 	 */
 	public function render_content() {}
 
 	/**
-	 * Export data to JS.
+	 * Xuất dữ liệu sang JS.
 	 *
 	 * @since 4.9.0
 	 * @return array
@@ -91,7 +91,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Renders a JS template for the content of date time control.
+	 * Hiển thị mẫu JS cho nội dung của điều khiển ngày giờ.
 	 *
 	 * @since 4.9.0
 	 */
@@ -104,7 +104,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 		$date_format = preg_replace( '/(?<!\\\\)[FmMn]/', '%2$s', $date_format );
 		$date_format = preg_replace( '/(?<!\\\\)[jd]/', '%3$s', $date_format );
 
-		// Fallback to ISO date format if year, month, or day are missing from the date format.
+		// Trở về định dạng ngày ISO nếu năm, tháng hoặc ngày bị thiếu trong định dạng ngày.
 		if ( 1 !== substr_count( $date_format, '%1$s' ) || 1 !== substr_count( $date_format, '%2$s' ) || 1 !== substr_count( $date_format, '%3$s' ) ) {
 			$date_format = '%1$s-%2$s-%3$s';
 		}
@@ -129,7 +129,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 					<?php ob_start(); ?>
 					<label for="{{ idPrefix }}date-time-month" class="screen-reader-text">
 						<?php
-						/* translators: Hidden accessibility text. */
+						/* translators: Văn bản trợ năng ẩn. */
 						esc_html_e( 'Month' );
 						?>
 					</label>
@@ -150,7 +150,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 					<?php ob_start(); ?>
 					<label for="{{ idPrefix }}date-time-day" class="screen-reader-text">
 						<?php
-						/* translators: Hidden accessibility text. */
+						/* translators: Văn bản trợ năng ẩn. */
 						esc_html_e( 'Day' );
 						?>
 					</label>
@@ -160,7 +160,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 					<?php ob_start(); ?>
 					<label for="{{ idPrefix }}date-time-year" class="screen-reader-text">
 						<?php
-						/* translators: Hidden accessibility text. */
+						/* translators: Văn bản trợ năng ẩn. */
 						esc_html_e( 'Year' );
 						?>
 					</label>
@@ -176,7 +176,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 					<div class="time-fields clear">
 						<label for="{{ idPrefix }}date-time-hour" class="screen-reader-text">
 							<?php
-							/* translators: Hidden accessibility text. */
+							/* translators: Văn bản trợ năng ẩn. */
 							esc_html_e( 'Hour' );
 							?>
 						</label>
@@ -186,7 +186,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 						:
 						<label for="{{ idPrefix }}date-time-minute" class="screen-reader-text">
 							<?php
-							/* translators: Hidden accessibility text. */
+							/* translators: Văn bản trợ năng ẩn. */
 							esc_html_e( 'Minute' );
 							?>
 						</label>
@@ -194,7 +194,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 						<# if ( data.twelveHourFormat ) { #>
 							<label for="{{ idPrefix }}date-time-meridian" class="screen-reader-text">
 								<?php
-								/* translators: Hidden accessibility text. */
+								/* translators: Văn bản trợ năng ẩn. */
 								esc_html_e( 'Meridian' );
 								?>
 							</label>
@@ -212,15 +212,15 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Generate options for the month Select.
+	 * Tạo các tùy chọn cho Select tháng.
 	 *
-	 * Based on touch_time().
+	 * Dựa trên touch_time().
 	 *
 	 * @since 4.9.0
 	 *
 	 * @see touch_time()
 	 *
-	 * @global WP_Locale $wp_locale WordPress date and time locale object.
+	 * @global WP_Locale $wp_locale Đối tượng ngôn ngữ ngày và giờ của WordPress.
 	 *
 	 * @return array
 	 */
@@ -230,7 +230,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 		for ( $i = 1; $i < 13; $i++ ) {
 			$month_text = $wp_locale->get_month_abbrev( $wp_locale->get_month( $i ) );
 
-			/* translators: 1: Month number (01, 02, etc.), 2: Month abbreviation. */
+			/* translators: 1: Số tháng (01, 02, v.v.), 2: Viết tắt tháng. */
 			$months[ $i ]['text']  = sprintf( __( '%1$s-%2$s' ), $i, $month_text );
 			$months[ $i ]['value'] = $i;
 		}
@@ -240,15 +240,15 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Get timezone info.
+	 * Lấy thông tin múi giờ.
 	 *
 	 * @since 4.9.0
 	 *
 	 * @return array {
-	 *     Timezone info. All properties are optional.
+	 *     Thông tin múi giờ. Tất cả thuộc tính đều là tùy chọn.
 	 *
-	 *     @type string $abbr        Timezone abbreviation. Examples: PST or CEST.
-	 *     @type string $description Human-readable timezone description as HTML.
+	 *     @type string $abbr        Viết tắt múi giờ. Ví dụ: PST hoặc CEST.
+	 *     @type string $description Mô tả múi giờ dễ đọc dưới dạng HTML.
 	 * }
 	 */
 	public function get_timezone_info() {
@@ -269,7 +269,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 				$timezone_info['abbr'] = $now->format( 'T' );
 
 				$timezone_info['description'] = sprintf(
-					/* translators: 1: Timezone name, 2: Timezone abbreviation, 3: UTC abbreviation and offset, 4: UTC offset. */
+					/* translators: 1: Tên múi giờ, 2: Viết tắt múi giờ, 3: Viết tắt UTC và độ lệch, 4: Độ lệch UTC. */
 					__( 'Your timezone is set to %1$s (%2$s), currently %3$s (Coordinated Universal Time %4$s).' ),
 					$tz_name,
 					'<abbr>' . $timezone_info['abbr'] . '</abbr>',
@@ -283,7 +283,7 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 			$formatted_gmt_offset = $this->format_gmt_offset( (int) get_option( 'gmt_offset', 0 ) );
 
 			$timezone_info['description'] = sprintf(
-				/* translators: 1: UTC abbreviation and offset, 2: UTC offset. */
+				/* translators: 1: Viết tắt UTC và độ lệch, 2: Độ lệch UTC. */
 				__( 'Your timezone is set to %1$s (Coordinated Universal Time %2$s).' ),
 				'<abbr>UTC</abbr>' . $formatted_gmt_offset,
 				$formatted_gmt_offset
@@ -294,14 +294,14 @@ class WP_Customize_Date_Time_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Format GMT Offset.
+	 * Định dạng độ lệch GMT.
 	 *
 	 * @since 4.9.0
 	 *
 	 * @see wp_timezone_choice()
 	 *
-	 * @param float $offset Offset in hours.
-	 * @return string Formatted offset.
+	 * @param float $offset Độ lệch tính bằng giờ.
+	 * @return string Độ lệch đã định dạng.
 	 */
 	public function format_gmt_offset( $offset ) {
 		if ( 0 <= $offset ) {

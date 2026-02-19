@@ -1,18 +1,18 @@
 <?php
 /**
- * Authorize Application Screen
+ * Màn hình Ủy quyền Ứng dụng
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Khởi tạo Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 $error        = null;
 $new_password = '';
 
-// This is the no-js fallback script. Generally this will all be handled by `auth-app.js`.
+// Đây là script dự phòng khi không có JS. Thông thường tất cả sẽ được xử lý bởi `auth-app.js`.
 if ( isset( $_POST['action'] ) && 'authorize_application_password' === $_POST['action'] ) {
 	check_admin_referer( 'authorize_application_password' );
 
@@ -56,13 +56,13 @@ if ( isset( $_POST['action'] ) && 'authorize_application_password' === $_POST['a
 	}
 
 	if ( $redirect ) {
-		// Explicitly not using wp_safe_redirect b/c sends to arbitrary domain.
+		// Không sử dụng wp_safe_redirect vì chuyển hướng đến tên miền tùy ý.
 		wp_redirect( $redirect );
 		exit;
 	}
 }
 
-// Used in the HTML title tag.
+// Sử dụng trong thẻ HTML title.
 $title = __( 'Authorize Application' );
 
 $app_name    = ! empty( $_REQUEST['app_name'] ) ? $_REQUEST['app_name'] : '';
@@ -221,17 +221,17 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 			wp_admin_notice( $message, $args );
 
 			/**
-			 * Fires in the Authorize Application Password new password section in the no-JS version.
+			 * Kích hoạt trong phần mật khẩu mới của Ủy quyền Mật khẩu Ứng dụng ở phiên bản không có JS.
 			 *
-			 * In most cases, this should be used in combination with the {@see 'wp_application_passwords_approve_app_request_success'}
-			 * action to ensure that both the JS and no-JS variants are handled.
+			 * Trong hầu hết trường hợp, nên sử dụng kết hợp với action {@see 'wp_application_passwords_approve_app_request_success'}
+			 * để đảm bảo cả hai biến thể JS và không JS đều được xử lý.
 			 *
 			 * @since 5.6.0
-			 * @since 5.6.1 Corrected action name and signature.
+			 * @since 5.6.1 Đã sửa tên và chữ ký action.
 			 *
-			 * @param string  $new_password The newly generated application password.
-			 * @param array   $request      The array of request data. All arguments are optional and may be empty.
-			 * @param WP_User $user         The user authorizing the application.
+			 * @param string  $new_password Mật khẩu ứng dụng mới được tạo.
+			 * @param array   $request      Mảng dữ liệu yêu cầu. Tất cả tham số là tùy chọn và có thể rỗng.
+			 * @param WP_User $user         Người dùng ủy quyền cho ứng dụng.
 			 */
 			do_action( 'wp_authorize_application_password_form_approved_no_js', $new_password, $request, $user );
 		else :
@@ -250,18 +250,18 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 
 				<?php
 				/**
-				 * Fires in the Authorize Application Password form before the submit buttons.
+				 * Kích hoạt trong form Ủy quyền Mật khẩu Ứng dụng trước các nút gửi.
 				 *
 				 * @since 5.6.0
 				 *
 				 * @param array   $request {
-				 *     The array of request data. All arguments are optional and may be empty.
+				 *     Mảng dữ liệu yêu cầu. Tất cả tham số là tùy chọn và có thể rỗng.
 				 *
-				 *     @type string $app_name    The suggested name of the application.
-				 *     @type string $success_url The URL the user will be redirected to after approving the application.
-				 *     @type string $reject_url  The URL the user will be redirected to after rejecting the application.
+				 *     @type string $app_name    Tên gợi ý của ứng dụng.
+				 *     @type string $success_url URL người dùng sẽ được chuyển hướng đến sau khi chấp thuận ứng dụng.
+				 *     @type string $reject_url  URL người dùng sẽ được chuyển hướng đến sau khi từ chối ứng dụng.
 				 * }
-				 * @param WP_User $user The user authorizing the application.
+				 * @param WP_User $user Người dùng ủy quyền cho ứng dụng.
 				 */
 				do_action( 'wp_authorize_application_password_form', $request, $user );
 				?>

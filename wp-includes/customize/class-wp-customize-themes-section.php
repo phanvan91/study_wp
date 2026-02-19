@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Themes_Section class
+ * API Tùy biến: Lớp WP_Customize_Themes_Section
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,9 +8,9 @@
  */
 
 /**
- * Customize Themes Section class.
+ * Lớp Phần Giao diện trong Tùy biến.
  *
- * A UI container for theme controls, which are displayed within sections.
+ * Vùng chứa giao diện cho các điều khiển giao diện, được hiển thị trong các phần.
  *
  * @since 4.2.0
  *
@@ -19,7 +19,7 @@
 class WP_Customize_Themes_Section extends WP_Customize_Section {
 
 	/**
-	 * Section type.
+	 * Loại phần.
 	 *
 	 * @since 4.2.0
 	 * @var string
@@ -27,9 +27,9 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 	public $type = 'themes';
 
 	/**
-	 * Theme section action.
+	 * Hành động phần giao diện.
 	 *
-	 * Defines the type of themes to load (installed, wporg, etc.).
+	 * Xác định loại giao diện cần tải (đã cài đặt, wporg, v.v.).
 	 *
 	 * @since 4.9.0
 	 * @var string
@@ -37,10 +37,10 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 	public $action = '';
 
 	/**
-	 * Theme section filter type.
+	 * Loại bộ lọc phần giao diện.
 	 *
-	 * Determines whether filters are applied to loaded (local) themes or by initiating a new remote query (remote).
-	 * When filtering is local, the initial themes query is not paginated by default.
+	 * Xác định bộ lọc được áp dụng cho giao diện đã tải (cục bộ) hay bằng cách khởi tạo truy vấn từ xa mới (từ xa).
+	 * Khi lọc cục bộ, truy vấn giao diện ban đầu không được phân trang theo mặc định.
 	 *
 	 * @since 4.9.0
 	 * @var string
@@ -48,10 +48,10 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 	public $filter_type = 'local';
 
 	/**
-	 * Gets section parameters for JS.
+	 * Lấy các tham số phần cho JS.
 	 *
 	 * @since 4.9.0
-	 * @return array Exported parameters.
+	 * @return array Các tham số đã được xuất.
 	 */
 	public function json() {
 		$exported                = parent::json();
@@ -62,9 +62,9 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 	}
 
 	/**
-	 * Renders a themes section as a JS template.
+	 * Hiển thị phần giao diện dưới dạng mẫu JS.
 	 *
-	 * The template is only rendered by PHP once, so all actions are prepared at once on the server side.
+	 * Mẫu chỉ được hiển thị bởi PHP một lần, vì vậy tất cả các hành động được chuẩn bị cùng lúc ở phía máy chủ.
 	 *
 	 * @since 4.9.0
 	 */
@@ -72,7 +72,7 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 		?>
 		<li id="accordion-section-{{ data.id }}" class="theme-section">
 			<button type="button" class="customize-themes-section-title themes-section-{{ data.id }}">{{ data.title }}</button>
-			<?php if ( current_user_can( 'install_themes' ) || is_multisite() ) : // @todo Upload support. ?>
+			<?php if ( current_user_can( 'install_themes' ) || is_multisite() ) : // @todo Hỗ trợ tải lên. ?>
 			<?php endif; ?>
 			<div class="customize-themes-section themes-section-{{ data.id }} control-section-content themes-php">
 				<div class="theme-overlay" tabindex="0" role="dialog" aria-label="<?php esc_attr_e( 'Theme Details' ); ?>"></div>
@@ -85,7 +85,7 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 						<p>
 							<?php
 							printf(
-								/* translators: %s: Support forums URL. */
+								/* translators: %s: URL diễn đàn hỗ trợ. */
 								__( 'An unexpected error occurred. Something may be wrong with WordPress.org or this server&#8217;s configuration. If you continue to have problems, please try the <a href="%s">support forums</a>.' ),
 								__( 'https://wordpress.org/support/forums/' )
 							);
@@ -98,7 +98,7 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 					<p class="no-themes-local">
 						<?php
 						printf(
-							/* translators: %s: "Search WordPress.org themes" button text. */
+							/* translators: %s: Văn bản nút "Tìm kiếm giao diện WordPress.org". */
 							__( 'No themes found. Try a different search, or %s.' ),
 							sprintf( '<button type="button" class="button-link search-dotorg-themes">%s</button>', __( 'Search WordPress.org themes' ) )
 						);
@@ -112,10 +112,10 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 	}
 
 	/**
-	 * Renders the filter bar portion of a themes section as a JS template.
+	 * Hiển thị phần thanh bộ lọc của phần giao diện dưới dạng mẫu JS.
 	 *
-	 * The template is only rendered by PHP once, so all actions are prepared at once on the server side.
-	 * The filter bar container is rendered by {@see render_template()}.
+	 * Mẫu chỉ được hiển thị bởi PHP một lần, vì vậy tất cả các hành động được chuẩn bị cùng lúc ở phía máy chủ.
+	 * Vùng chứa thanh bộ lọc được hiển thị bởi {@see render_template()}.
 	 *
 	 * @since 4.9.0
 	 */
@@ -130,7 +130,7 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 					<div class="search-icon" aria-hidden="true"></div>
 					<span id="{{ data.id }}-live-search-desc" class="screen-reader-text">
 						<?php
-						/* translators: Hidden accessibility text. */
+						/* translators: Văn bản trợ năng ẩn. */
 						_e( 'The search results will be updated as you type.' );
 						?>
 					</span>
@@ -144,7 +144,7 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 					<div class="search-icon" aria-hidden="true"></div>
 					<span id="{{ data.id }}-live-search-desc" class="screen-reader-text">
 						<?php
-						/* translators: Hidden accessibility text. */
+						/* translators: Văn bản trợ năng ẩn. */
 						_e( 'The search results will be updated as you type.' );
 						?>
 					</span>
@@ -156,7 +156,7 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 			<button type="button" class="button feature-filter-toggle">
 				<span class="filter-count-0"><?php _e( 'Filter themes' ); ?></span><span class="filter-count-filters">
 					<?php
-					/* translators: %s: Number of filters selected. */
+					/* translators: %s: Số bộ lọc đã chọn. */
 					printf( __( 'Filter themes (%s)' ), '<span class="theme-filter-count">0</span>' );
 					?>
 				</span>
@@ -165,7 +165,7 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 			<div class="filter-themes-count">
 				<span class="themes-displayed">
 					<?php
-					/* translators: %s: Number of themes displayed. */
+					/* translators: %s: Số giao diện được hiển thị. */
 					printf( __( '%s themes' ), '<span class="theme-count">0</span>' );
 					?>
 				</span>
@@ -175,16 +175,16 @@ class WP_Customize_Themes_Section extends WP_Customize_Section {
 	}
 
 	/**
-	 * Renders the filter drawer portion of a themes section as a JS template.
+	 * Hiển thị phần ngăn kéo bộ lọc của phần giao diện dưới dạng mẫu JS.
 	 *
-	 * The filter bar container is rendered by {@see render_template()}.
+	 * Vùng chứa thanh bộ lọc được hiển thị bởi {@see render_template()}.
 	 *
 	 * @since 4.9.0
 	 */
 	protected function filter_drawer_content_template() {
 		/*
-		 * @todo Use the .org API instead of the local core feature list.
-		 * The .org API is currently outdated and will be reconciled when the .org themes directory is next redesigned.
+		 * @todo Sử dụng API .org thay vì danh sách tính năng cốt lõi cục bộ.
+		 * API .org hiện đã lỗi thời và sẽ được điều chỉnh khi thư mục giao diện .org được thiết kế lại tiếp theo.
 		 */
 		$feature_list = get_theme_feature_list( false );
 		?>

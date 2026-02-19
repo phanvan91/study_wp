@@ -1,22 +1,22 @@
 <?php
 /**
- * WordPress Post Administration API.
+ * API Quản trị Bài viết WordPress.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Renames `$_POST` data from form names to DB post columns.
+ * Đổi tên dữ liệu `$_POST` từ tên form sang cột bài viết trong DB.
  *
- * Manipulates `$_POST` directly.
+ * Thao tác trực tiếp trên `$_POST`.
  *
  * @since 2.6.0
  *
- * @param bool       $update    Whether the post already exists.
- * @param array|null $post_data Optional. The array of post data to process.
- *                              Defaults to the `$_POST` superglobal.
- * @return array|WP_Error Array of post data on success, WP_Error on failure.
+ * @param bool       $update    Bài viết đã tồn tại hay chưa.
+ * @param array|null $post_data Tùy chọn. Mảng dữ liệu bài viết cần xử lý.
+ *                              Mặc định là superglobal `$_POST`.
+ * @return array|WP_Error Mảng dữ liệu bài viết khi thành công, WP_Error khi thất bại.
  */
 function _wp_translate_postdata( $update = false, $post_data = null ) {
 
@@ -93,7 +93,7 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 	if ( ! empty( $post_data['post_status'] ) ) {
 		$post_data['post_status'] = sanitize_key( $post_data['post_status'] );
 
-		// No longer an auto-draft.
+		// Không còn là bản nháp tự động.
 		if ( 'auto-draft' === $post_data['post_status'] ) {
 			$post_data['post_status'] = 'draft';
 		}
@@ -103,7 +103,7 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 		}
 	}
 
-	// What to do based on which button they pressed.
+	// Xử lý dựa trên nút nào họ đã nhấn.
 	if ( isset( $post_data['saveasdraft'] ) && '' !== $post_data['saveasdraft'] ) {
 		$post_data['post_status'] = 'draft';
 	}
@@ -136,8 +136,8 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 	$published_statuses = array( 'publish', 'future' );
 
 	/*
-	 * Posts 'submitted for approval' are submitted to $_POST the same as if they were being published.
-	 * Change status from 'publish' to 'pending' if user lacks permissions to publish or to resave published posts.
+	 * Bài viết 'gửi để duyệt' được gửi qua $_POST giống như khi được xuất bản.
+	 * Thay đổi trạng thái từ 'publish' sang 'pending' nếu người dùng không có quyền xuất bản hoặc lưu lại bài viết đã xuất bản.
 	 */
 	if ( isset( $post_data['post_status'] )
 		&& ( in_array( $post_data['post_status'], $published_statuses, true )
@@ -194,8 +194,8 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 		}
 
 		/*
-		 * Only assign a post date if the user has explicitly set a new value.
-		 * See #59125 and #19907.
+		 * Chỉ gán ngày bài viết nếu người dùng đã thiết lập giá trị mới một cách rõ ràng.
+		 * Xem #59125 và #19907.
 		 */
 		$previous_date = $post_id ? get_post_field( 'post_date', $post_id ) : false;
 		if ( $previous_date && $previous_date !== $post_data['post_date'] ) {
@@ -219,20 +219,20 @@ function _wp_translate_postdata( $update = false, $post_data = null ) {
 }
 
 /**
- * Returns only allowed post data fields.
+ * Trả về chỉ các trường dữ liệu bài viết được phép.
  *
  * @since 5.0.1
  *
- * @param array|WP_Error|null $post_data The array of post data to process, or an error object.
- *                                       Defaults to the `$_POST` superglobal.
- * @return array|WP_Error Array of post data on success, WP_Error on failure.
+ * @param array|WP_Error|null $post_data Mảng dữ liệu bài viết cần xử lý, hoặc đối tượng lỗi.
+ *                                       Mặc định là superglobal `$_POST`.
+ * @return array|WP_Error Mảng dữ liệu bài viết khi thành công, WP_Error khi thất bại.
  */
 function _wp_get_allowed_postdata( $post_data = null ) {
 	if ( empty( $post_data ) ) {
 		$post_data = $_POST;
 	}
 
-	// Pass through errors.
+	// Truyền qua các lỗi.
 	if ( is_wp_error( $post_data ) ) {
 		return $post_data;
 	}
@@ -241,20 +241,20 @@ function _wp_get_allowed_postdata( $post_data = null ) {
 }
 
 /**
- * Updates an existing post with values provided in `$_POST`.
+ * Cập nhật bài viết hiện có với các giá trị được cung cấp trong `$_POST`.
  *
- * If post data is passed as an argument, it is treated as an array of data
- * keyed appropriately for turning into a post object.
+ * Nếu dữ liệu bài viết được truyền như tham số, nó được xử lý như một mảng dữ liệu
+ * có khóa phù hợp để chuyển thành đối tượng bài viết.
  *
- * If post data is not passed, the `$_POST` global variable is used instead.
+ * Nếu dữ liệu bài viết không được truyền, biến toàn cục `$_POST` sẽ được sử dụng thay thế.
  *
  * @since 1.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param array|null $post_data Optional. The array of post data to process.
- *                              Defaults to the `$_POST` superglobal.
- * @return int Post ID.
+ * @param array|null $post_data Tùy chọn. Mảng dữ liệu bài viết cần xử lý.
+ *                              Mặc định là superglobal `$_POST`.
+ * @return int ID bài viết.
  */
 function edit_post( $post_data = null ) {
 	global $wpdb;
@@ -263,7 +263,7 @@ function edit_post( $post_data = null ) {
 		$post_data = &$_POST;
 	}
 
-	// Clear out any data in internal vars.
+	// Xóa mọi dữ liệu trong các biến nội bộ.
 	unset( $post_data['filter'] );
 
 	$post_id = (int) $post_data['post_ID'];
@@ -299,7 +299,7 @@ function edit_post( $post_data = null ) {
 		);
 		$revision  = current( $revisions );
 
-		// Check if the revisions have been upgraded.
+		// Kiểm tra xem các bản sửa đổi đã được nâng cấp chưa.
 		if ( $revisions && _wp_get_post_revision_version( $revision ) < 1 ) {
 			_wp_upgrade_revisions_of_post( $post, wp_get_post_revisions( $post_id ) );
 		}
@@ -327,7 +327,7 @@ function edit_post( $post_data = null ) {
 	}
 	$translated = _wp_get_allowed_postdata( $post_data );
 
-	// Post formats.
+	// Định dạng bài viết.
 	if ( isset( $post_data['post_format'] ) ) {
 		set_post_format( $post_id, $post_data['post_format'] );
 	}
@@ -367,7 +367,7 @@ function edit_post( $post_data = null ) {
 		wp_update_attachment_metadata( $post_id, $id3data );
 	}
 
-	// Meta stuff.
+	// Xử lý meta.
 	if ( isset( $post_data['meta'] ) && $post_data['meta'] ) {
 		foreach ( $post_data['meta'] as $key => $value ) {
 			$meta = get_post_meta_by_id( $key );
@@ -416,7 +416,7 @@ function edit_post( $post_data = null ) {
 		}
 	}
 
-	// Attachment stuff.
+	// Xử lý đính kèm.
 	if ( 'attachment' === $post_data['post_type'] ) {
 		if ( isset( $post_data['_wp_attachment_image_alt'] ) ) {
 			$image_alt = wp_unslash( $post_data['_wp_attachment_image_alt'] );
@@ -424,18 +424,18 @@ function edit_post( $post_data = null ) {
 			if ( get_post_meta( $post_id, '_wp_attachment_image_alt', true ) !== $image_alt ) {
 				$image_alt = wp_strip_all_tags( $image_alt, true );
 
-				// update_post_meta() expects slashed.
+				// update_post_meta() cần dữ liệu đã được escape bằng slash.
 				update_post_meta( $post_id, '_wp_attachment_image_alt', wp_slash( $image_alt ) );
 			}
 		}
 
 		$attachment_data = isset( $post_data['attachments'][ $post_id ] ) ? $post_data['attachments'][ $post_id ] : array();
 
-		/** This filter is documented in wp-admin/includes/media.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-admin/includes/media.php */
 		$translated = apply_filters( 'attachment_fields_to_save', $translated, $attachment_data );
 	}
 
-	// Convert taxonomy input to term IDs, to avoid ambiguity.
+	// Chuyển đổi đầu vào phân loại sang ID thuật ngữ, để tránh nhập nhằng.
 	if ( isset( $post_data['tax_input'] ) ) {
 		foreach ( (array) $post_data['tax_input'] as $taxonomy => $terms ) {
 			$tax_object = get_taxonomy( $taxonomy );
@@ -452,7 +452,7 @@ function edit_post( $post_data = null ) {
 
 	$success = wp_update_post( $translated );
 
-	// If the save failed, see if we can confidence check the main fields and try again.
+	// Nếu lưu thất bại, kiểm tra lại các trường chính và thử lại.
 	if ( ! $success && is_callable( array( $wpdb, 'strip_invalid_text_for_column' ) ) ) {
 		$fields = array( 'post_title', 'post_content', 'post_excerpt' );
 
@@ -465,7 +465,7 @@ function edit_post( $post_data = null ) {
 		wp_update_post( $translated );
 	}
 
-	// Now that we have an ID we can fix any attachment anchor hrefs.
+	// Bây giờ đã có ID, ta có thể sửa các liên kết href của tệp đính kèm.
 	_fix_attachment_links( $post_id );
 
 	wp_set_post_lock( $post_id );
@@ -482,23 +482,23 @@ function edit_post( $post_data = null ) {
 }
 
 /**
- * Processes the post data for the bulk editing of posts.
+ * Xử lý dữ liệu bài viết cho chức năng chỉnh sửa hàng loạt.
  *
- * Updates all bulk edited posts/pages, adding (but not removing) tags and
- * categories. Skips pages when they would be their own parent or child.
+ * Cập nhật tất cả bài viết/trang được chỉnh sửa hàng loạt, thêm (nhưng không xóa) thẻ và
+ * chuyên mục. Bỏ qua trang khi chúng sẽ trở thành cha mẹ hoặc con của chính mình.
  *
  * @since 2.7.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param array|null $post_data Optional. The array of post data to process.
- *                              Defaults to the `$_POST` superglobal.
+ * @param array|null $post_data Tùy chọn. Mảng dữ liệu bài viết cần xử lý.
+ *                              Mặc định là superglobal `$_POST`.
  * @return array {
- *     An array of updated, skipped, and locked post IDs.
+ *     Mảng chứa ID bài viết đã cập nhật, bị bỏ qua và bị khóa.
  *
- *     @type int[] $updated An array of updated post IDs.
- *     @type int[] $skipped An array of skipped post IDs.
- *     @type int[] $locked  An array of locked post IDs.
+ *     @type int[] $updated Mảng ID bài viết đã cập nhật.
+ *     @type int[] $skipped Mảng ID bài viết bị bỏ qua.
+ *     @type int[] $locked  Mảng ID bài viết bị khóa.
  * }
  */
 function bulk_edit_posts( $post_data = null ) {
@@ -611,7 +611,7 @@ function bulk_edit_posts( $post_data = null ) {
 	$shared_post_data = $post_data;
 
 	foreach ( $post_ids as $post_id ) {
-		// Start with fresh post data with each iteration.
+		// Bắt đầu với dữ liệu bài viết mới trong mỗi lần lặp.
 		$post_data = $shared_post_data;
 
 		$post_type_object = get_post_type_object( get_post_type( $post_id ) );
@@ -694,10 +694,10 @@ function bulk_edit_posts( $post_data = null ) {
 			set_post_format( $post_id, $shared_post_data['post_format'] );
 		}
 
-		// Prevent wp_insert_post() from overwriting post format with the old data.
+		// Ngăn wp_insert_post() ghi đè định dạng bài viết bằng dữ liệu cũ.
 		unset( $post_data['tax_input']['post_format'] );
 
-		// Reset post date of scheduled post to be published.
+		// Đặt lại ngày bài viết của bài đã lên lịch sẽ được xuất bản.
 		if (
 			in_array( $post->post_status, array( 'future', 'draft' ), true ) &&
 			'publish' === $post_data['post_status']
@@ -720,12 +720,12 @@ function bulk_edit_posts( $post_data = null ) {
 	}
 
 	/**
-	 * Fires after processing the post data for bulk edit.
+	 * Kích hoạt sau khi xử lý dữ liệu bài viết cho chỉnh sửa hàng loạt.
 	 *
 	 * @since 6.3.0
 	 *
-	 * @param int[] $updated          An array of updated post IDs.
-	 * @param array $shared_post_data Associative array containing the post data.
+	 * @param int[] $updated          Mảng ID bài viết đã cập nhật.
+	 * @param array $shared_post_data Mảng kết hợp chứa dữ liệu bài viết.
 	 */
 	do_action( 'bulk_edit_posts', $updated, $shared_post_data );
 
@@ -737,13 +737,13 @@ function bulk_edit_posts( $post_data = null ) {
 }
 
 /**
- * Returns default post information to use when populating the "Write Post" form.
+ * Trả về thông tin bài viết mặc định để sử dụng khi điền vào form "Viết Bài".
  *
  * @since 2.0.0
  *
- * @param string $post_type    Optional. A post type string. Default 'post'.
- * @param bool   $create_in_db Optional. Whether to insert the post into database. Default false.
- * @return WP_Post Post object containing all the default post data as attributes
+ * @param string $post_type    Tùy chọn. Chuỗi loại bài viết. Mặc định 'post'.
+ * @param bool   $create_in_db Tùy chọn. Có chèn bài viết vào cơ sở dữ liệu hay không. Mặc định false.
+ * @return WP_Post Đối tượng bài viết chứa tất cả dữ liệu bài viết mặc định dưới dạng thuộc tính.
  */
 function get_default_post_to_edit( $post_type = 'post', $create_in_db = false ) {
 	$post_title = '';
@@ -777,7 +777,7 @@ function get_default_post_to_edit( $post_type = 'post', $create_in_db = false ) 
 		}
 		wp_after_insert_post( $post, false, null );
 
-		// Schedule auto-draft cleanup.
+		// Lên lịch dọn dẹp bản nháp tự động.
 		if ( ! wp_next_scheduled( 'wp_scheduled_auto_draft_delete' ) ) {
 			wp_schedule_event( time(), 'daily', 'wp_scheduled_auto_draft_delete' );
 		}
@@ -804,32 +804,32 @@ function get_default_post_to_edit( $post_type = 'post', $create_in_db = false ) 
 	}
 
 	/**
-	 * Filters the default post content initially used in the "Write Post" form.
+	 * Lọc nội dung bài viết mặc định ban đầu được sử dụng trong form "Viết Bài".
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string  $post_content Default post content.
-	 * @param WP_Post $post         Post object.
+	 * @param string  $post_content Nội dung bài viết mặc định.
+	 * @param WP_Post $post         Đối tượng bài viết.
 	 */
 	$post->post_content = (string) apply_filters( 'default_content', $post_content, $post );
 
 	/**
-	 * Filters the default post title initially used in the "Write Post" form.
+	 * Lọc tiêu đề bài viết mặc định ban đầu được sử dụng trong form "Viết Bài".
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string  $post_title Default post title.
-	 * @param WP_Post $post       Post object.
+	 * @param string  $post_title Tiêu đề bài viết mặc định.
+	 * @param WP_Post $post       Đối tượng bài viết.
 	 */
 	$post->post_title = (string) apply_filters( 'default_title', $post_title, $post );
 
 	/**
-	 * Filters the default post excerpt initially used in the "Write Post" form.
+	 * Lọc tóm tắt bài viết mặc định ban đầu được sử dụng trong form "Viết Bài".
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string  $post_excerpt Default post excerpt.
-	 * @param WP_Post $post         Post object.
+	 * @param string  $post_excerpt Tóm tắt bài viết mặc định.
+	 * @param WP_Post $post         Đối tượng bài viết.
 	 */
 	$post->post_excerpt = (string) apply_filters( 'default_excerpt', $post_excerpt, $post );
 
@@ -837,20 +837,20 @@ function get_default_post_to_edit( $post_type = 'post', $create_in_db = false ) 
 }
 
 /**
- * Determines if a post exists based on title, content, date and type.
+ * Xác định xem bài viết có tồn tại hay không dựa trên tiêu đề, nội dung, ngày và loại.
  *
  * @since 2.0.0
- * @since 5.2.0 Added the `$type` parameter.
- * @since 5.8.0 Added the `$status` parameter.
+ * @since 5.2.0 Thêm tham số `$type`.
+ * @since 5.8.0 Thêm tham số `$status`.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $title   Post title.
- * @param string $content Optional. Post content.
- * @param string $date    Optional. Post date.
- * @param string $type    Optional. Post type.
- * @param string $status  Optional. Post status.
- * @return int Post ID if post exists, 0 otherwise.
+ * @param string $title   Tiêu đề bài viết.
+ * @param string $content Tùy chọn. Nội dung bài viết.
+ * @param string $date    Tùy chọn. Ngày bài viết.
+ * @param string $type    Tùy chọn. Loại bài viết.
+ * @param string $status  Tùy chọn. Trạng thái bài viết.
+ * @return int ID bài viết nếu tồn tại, 0 nếu không.
  */
 function post_exists( $title, $content = '', $date = '', $type = '', $status = '' ) {
 	global $wpdb;
@@ -897,13 +897,13 @@ function post_exists( $title, $content = '', $date = '', $type = '', $status = '
 }
 
 /**
- * Creates a new post from the "Write Post" form using `$_POST` information.
+ * Tạo bài viết mới từ form "Viết Bài" sử dụng thông tin `$_POST`.
  *
  * @since 2.1.0
  *
  * @global WP_User $current_user
  *
- * @return int|WP_Error Post ID on success, WP_Error on failure.
+ * @return int|WP_Error ID bài viết khi thành công, WP_Error khi thất bại.
  */
 function wp_write_post() {
 	if ( isset( $_POST['post_type'] ) ) {
@@ -922,10 +922,10 @@ function wp_write_post() {
 
 	$_POST['post_mime_type'] = '';
 
-	// Clear out any data in internal vars.
+	// Xóa mọi dữ liệu trong các biến nội bộ.
 	unset( $_POST['filter'] );
 
-	// Edit, don't write, if we have a post ID.
+	// Chỉnh sửa, không viết mới, nếu đã có ID bài viết.
 	if ( isset( $_POST['post_ID'] ) ) {
 		return edit_post();
 	}
@@ -952,7 +952,7 @@ function wp_write_post() {
 	}
 	$translated = _wp_get_allowed_postdata( $translated );
 
-	// Create the post.
+	// Tạo bài viết.
 	$post_id = wp_insert_post( $translated );
 	if ( is_wp_error( $post_id ) ) {
 		return $post_id;
@@ -966,7 +966,7 @@ function wp_write_post() {
 
 	add_post_meta( $post_id, '_edit_last', $GLOBALS['current_user']->ID );
 
-	// Now that we have an ID we can fix any attachment anchor hrefs.
+	// Bây giờ đã có ID, ta có thể sửa các liên kết href của tệp đính kèm.
 	_fix_attachment_links( $post_id );
 
 	wp_set_post_lock( $post_id );
@@ -975,11 +975,11 @@ function wp_write_post() {
 }
 
 /**
- * Calls wp_write_post() and handles the errors.
+ * Gọi wp_write_post() và xử lý các lỗi.
  *
  * @since 2.0.0
  *
- * @return int|void Post ID on success, void on failure.
+ * @return int|void ID bài viết khi thành công, void khi thất bại.
  */
 function write_post() {
 	$result = wp_write_post();
@@ -991,11 +991,11 @@ function write_post() {
 }
 
 //
-// Post Meta.
+// Meta Bài viết.
 //
 
 /**
- * Adds post meta data defined in the `$_POST` superglobal for a post with given ID.
+ * Thêm dữ liệu meta bài viết được định nghĩa trong superglobal `$_POST` cho bài viết với ID cho trước.
  *
  * @since 1.2.0
  *
@@ -1014,15 +1014,15 @@ function add_meta( $post_id ) {
 
 	if ( ( ( '#NONE#' !== $metakeyselect ) && ! empty( $metakeyselect ) ) || ! empty( $metakeyinput ) ) {
 		/*
-		 * We have a key/value pair. If both the select and the input
-		 * for the key have data, the input takes precedence.
+		 * Chúng ta có cặp khóa/giá trị. Nếu cả phần chọn và phần nhập
+		 * cho khóa đều có dữ liệu, phần nhập sẽ được ưu tiên.
 		 */
 		if ( '#NONE#' !== $metakeyselect ) {
 			$metakey = $metakeyselect;
 		}
 
 		if ( $metakeyinput ) {
-			$metakey = $metakeyinput; // Default.
+			$metakey = $metakeyinput; // Mặc định.
 		}
 
 		if ( is_protected_meta( $metakey, 'post' ) || ! current_user_can( 'add_post_meta', $post_id, $metakey ) ) {
@@ -1038,7 +1038,7 @@ function add_meta( $post_id ) {
 }
 
 /**
- * Deletes post meta data by meta ID.
+ * Xóa dữ liệu meta bài viết theo ID meta.
  *
  * @since 1.2.0
  *
@@ -1050,13 +1050,13 @@ function delete_meta( $mid ) {
 }
 
 /**
- * Returns a list of previously defined keys.
+ * Trả về danh sách các khóa đã được định nghĩa trước đó.
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @return string[] Array of meta key names.
+ * @return string[] Mảng tên khóa meta.
  */
 function get_meta_keys() {
 	global $wpdb;
@@ -1072,7 +1072,7 @@ function get_meta_keys() {
 }
 
 /**
- * Returns post meta data by meta ID.
+ * Trả về dữ liệu meta bài viết theo ID meta.
  *
  * @since 2.1.0
  *
@@ -1084,23 +1084,23 @@ function get_post_meta_by_id( $mid ) {
 }
 
 /**
- * Returns meta data for the given post ID.
+ * Trả về dữ liệu meta cho ID bài viết cho trước.
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int $post_id A post ID.
+ * @param int $post_id ID bài viết.
  * @return array[] {
- *     Array of meta data arrays for the given post ID.
+ *     Mảng các mảng dữ liệu meta cho ID bài viết cho trước.
  *
  *     @type array ...$0 {
- *         Associative array of meta data.
+ *         Mảng kết hợp dữ liệu meta.
  *
- *         @type string $meta_key   Meta key.
- *         @type mixed  $meta_value Meta value.
- *         @type string $meta_id    Meta ID as a numeric string.
- *         @type string $post_id    Post ID as a numeric string.
+ *         @type string $meta_key   Khóa meta.
+ *         @type mixed  $meta_value Giá trị meta.
+ *         @type string $meta_id    ID meta dưới dạng chuỗi số.
+ *         @type string $post_id    ID bài viết dưới dạng chuỗi số.
  *     }
  * }
  */
@@ -1119,13 +1119,13 @@ function has_meta( $post_id ) {
 }
 
 /**
- * Updates post meta data by meta ID.
+ * Cập nhật dữ liệu meta bài viết theo ID meta.
  *
  * @since 1.2.0
  *
- * @param int    $meta_id    Meta ID.
- * @param string $meta_key   Meta key. Expect slashed.
- * @param string $meta_value Meta value. Expect slashed.
+ * @param int    $meta_id    ID meta.
+ * @param string $meta_key   Khóa meta. Cần được escape bằng slash.
+ * @param string $meta_value Giá trị meta. Cần được escape bằng slash.
  * @return bool
  */
 function update_meta( $meta_id, $meta_key, $meta_value ) {
@@ -1136,28 +1136,28 @@ function update_meta( $meta_id, $meta_key, $meta_value ) {
 }
 
 //
-// Private.
+// Riêng tư.
 //
 
 /**
- * Replaces hrefs of attachment anchors with up-to-date permalinks.
+ * Thay thế href của liên kết đính kèm bằng permalink cập nhật.
  *
  * @since 2.3.0
  * @access private
  *
- * @param int|WP_Post $post Post ID or post object.
- * @return void|int|WP_Error Void if nothing fixed. 0 or WP_Error on update failure. The post ID on update success.
+ * @param int|WP_Post $post ID bài viết hoặc đối tượng bài viết.
+ * @return void|int|WP_Error Void nếu không sửa gì. 0 hoặc WP_Error khi cập nhật thất bại. ID bài viết khi cập nhật thành công.
  */
 function _fix_attachment_links( $post ) {
 	$post    = get_post( $post, ARRAY_A );
 	$content = $post['post_content'];
 
-	// Don't run if no pretty permalinks or post is not published, scheduled, or privately published.
+	// Không chạy nếu không có permalink đẹp hoặc bài viết chưa được xuất bản, lên lịch, hoặc xuất bản riêng tư.
 	if ( ! get_option( 'permalink_structure' ) || ! in_array( $post['post_status'], array( 'publish', 'future', 'private' ), true ) ) {
 		return;
 	}
 
-	// Short if there aren't any links or no '?attachment_id=' strings (strpos cannot be zero).
+	// Bỏ qua nếu không có liên kết nào hoặc không có chuỗi '?attachment_id=' (strpos không thể bằng 0).
 	if ( ! strpos( $content, '?attachment_id=' ) || ! preg_match_all( '/<a ([^>]+)>[\s\S]+?<\/a>/', $content, $link_matches ) ) {
 		return;
 	}
@@ -1173,7 +1173,7 @@ function _fix_attachment_links( $post ) {
 				continue;
 		}
 
-		$quote  = $url_match[1]; // The quote (single or double).
+		$quote  = $url_match[1]; // Dấu ngoặc kép (đơn hoặc đôi).
 		$url_id = (int) $url_match[2];
 		$rel_id = (int) $rel_match[1];
 
@@ -1189,7 +1189,7 @@ function _fix_attachment_links( $post ) {
 
 	if ( $replace ) {
 		$post['post_content'] = $content;
-		// Escape data pulled from DB.
+		// Escape dữ liệu lấy từ DB.
 		$post = add_magic_quotes( $post );
 
 		return wp_update_post( $post );
@@ -1197,12 +1197,12 @@ function _fix_attachment_links( $post ) {
 }
 
 /**
- * Returns all the possible statuses for a post type.
+ * Trả về tất cả các trạng thái có thể có cho một loại bài viết.
  *
  * @since 2.5.0
  *
- * @param string $type The post_type you want the statuses for. Default 'post'.
- * @return string[] An array of all the statuses for the supplied post type.
+ * @param string $type Loại bài viết cần lấy trạng thái. Mặc định 'post'.
+ * @return string[] Mảng tất cả các trạng thái cho loại bài viết được cung cấp.
  */
 function get_available_post_statuses( $type = 'post' ) {
 	$statuses = wp_count_posts( $type );
@@ -1211,13 +1211,13 @@ function get_available_post_statuses( $type = 'post' ) {
 }
 
 /**
- * Runs the query to fetch the posts for listing on the edit posts page.
+ * Chạy truy vấn để lấy các bài viết hiển thị trên trang chỉnh sửa bài viết.
  *
  * @since 2.5.0
  *
- * @param array|false $q Optional. Array of query variables to use to build the query.
- *                       Defaults to the `$_GET` superglobal.
- * @return string[] An array of all the statuses for the queried post type.
+ * @param array|false $q Tùy chọn. Mảng biến truy vấn để xây dựng truy vấn.
+ *                       Mặc định là superglobal `$_GET`.
+ * @return string[] Mảng tất cả các trạng thái cho loại bài viết được truy vấn.
  */
 function wp_edit_posts_query( $q = false ) {
 	if ( false === $q ) {
@@ -1267,11 +1267,11 @@ function wp_edit_posts_query( $q = false ) {
 	}
 
 	/**
-	 * Filters the number of items per page to show for a specific 'per_page' type.
+	 * Lọc số mục hiển thị mỗi trang cho loại 'per_page' cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$post_type`, refers to the post type.
+	 * Phần động của tên hook, `$post_type`, tham chiếu đến loại bài viết.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể có:
 	 *
 	 *  - `edit_post_per_page`
 	 *  - `edit_page_per_page`
@@ -1279,24 +1279,24 @@ function wp_edit_posts_query( $q = false ) {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int $posts_per_page Number of posts to display per page for the given post
-	 *                            type. Default 20.
+	 * @param int $posts_per_page Số bài viết hiển thị mỗi trang cho loại bài viết cho trước.
+	 *                            Mặc định 20.
 	 */
 	$posts_per_page = apply_filters( "edit_{$post_type}_per_page", $posts_per_page );
 
 	/**
-	 * Filters the number of posts displayed per page when specifically listing "posts".
+	 * Lọc số bài viết hiển thị mỗi trang khi liệt kê cụ thể "bài viết".
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param int    $posts_per_page Number of posts to be displayed. Default 20.
-	 * @param string $post_type      The post type.
+	 * @param int    $posts_per_page Số bài viết được hiển thị. Mặc định 20.
+	 * @param string $post_type      Loại bài viết.
 	 */
 	$posts_per_page = apply_filters( 'edit_posts_per_page', $posts_per_page, $post_type );
 
 	$query = compact( 'post_type', 'post_status', 'perm', 'order', 'orderby', 'posts_per_page' );
 
-	// Hierarchical types require special args.
+	// Các loại bài viết phân cấp yêu cầu tham số đặc biệt.
 	if ( is_post_type_hierarchical( $post_type ) && empty( $orderby ) ) {
 		$query['orderby']                = 'menu_order title';
 		$query['order']                  = 'asc';
@@ -1315,13 +1315,13 @@ function wp_edit_posts_query( $q = false ) {
 }
 
 /**
- * Returns the query variables for the current attachments request.
+ * Trả về các biến truy vấn cho yêu cầu tệp đính kèm hiện tại.
  *
  * @since 4.2.0
  *
- * @param array|false $q Optional. Array of query variables to use to build the query.
- *                       Defaults to the `$_GET` superglobal.
- * @return array The parsed query vars.
+ * @param array|false $q Tùy chọn. Mảng biến truy vấn để xây dựng truy vấn.
+ *                       Mặc định là superglobal `$_GET`.
+ * @return array Các biến truy vấn đã phân tích.
  */
 function wp_edit_attachments_query_vars( $q = false ) {
 	if ( false === $q ) {
@@ -1345,11 +1345,11 @@ function wp_edit_attachments_query_vars( $q = false ) {
 	}
 
 	/**
-	 * Filters the number of items to list per page when listing media items.
+	 * Lọc số mục hiển thị mỗi trang khi liệt kê các mục media.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param int $media_per_page Number of media to list. Default 20.
+	 * @param int $media_per_page Số media cần liệt kê. Mặc định 20.
 	 */
 	$q['posts_per_page'] = apply_filters( 'upload_per_page', $media_per_page );
 
@@ -1373,7 +1373,7 @@ function wp_edit_attachments_query_vars( $q = false ) {
 		$q['author'] = get_current_user_id();
 	}
 
-	// Filter query clauses to include filenames.
+	// Lọc mệnh đề truy vấn để bao gồm tên tệp.
 	if ( isset( $q['s'] ) ) {
 		add_filter( 'wp_allow_query_attachment_by_filename', '__return_true' );
 	}
@@ -1382,18 +1382,18 @@ function wp_edit_attachments_query_vars( $q = false ) {
 }
 
 /**
- * Executes a query for attachments. An array of WP_Query arguments
- * can be passed in, which will override the arguments set by this function.
+ * Thực thi truy vấn cho tệp đính kèm. Một mảng tham số WP_Query
+ * có thể được truyền vào, sẽ ghi đè các tham số được thiết lập bởi hàm này.
  *
  * @since 2.5.0
  *
- * @param array|false $q Optional. Array of query variables to use to build the query.
- *                       Defaults to the `$_GET` superglobal.
+ * @param array|false $q Tùy chọn. Mảng biến truy vấn để xây dựng truy vấn.
+ *                       Mặc định là superglobal `$_GET`.
  * @return array {
- *     Array containing the post mime types and available post mime types.
+ *     Mảng chứa các loại MIME bài viết và các loại MIME bài viết có sẵn.
  *
- *     @type array[]  $post_mime_types       Post mime types.
- *     @type string[] $avail_post_mime_types Available post mime types.
+ *     @type array[]  $post_mime_types       Các loại MIME bài viết.
+ *     @type string[] $avail_post_mime_types Các loại MIME bài viết có sẵn.
  * }
  */
 function wp_edit_attachments_query( $q = false ) {
@@ -1406,13 +1406,13 @@ function wp_edit_attachments_query( $q = false ) {
 }
 
 /**
- * Returns the list of classes to be used by a meta box.
+ * Trả về danh sách các lớp CSS được sử dụng bởi một meta box.
  *
  * @since 2.5.0
  *
- * @param string $box_id    Meta box ID (used in the 'id' attribute for the meta box).
- * @param string $screen_id The screen on which the meta box is shown.
- * @return string Space-separated string of class names.
+ * @param string $box_id    ID meta box (được dùng trong thuộc tính 'id' của meta box).
+ * @param string $screen_id Màn hình mà meta box được hiển thị.
+ * @return string Chuỗi tên lớp CSS phân tách bằng khoảng trắng.
  */
 function postbox_classes( $box_id, $screen_id ) {
 	if ( isset( $_GET['edit'] ) && $_GET['edit'] === $box_id ) {
@@ -1429,14 +1429,14 @@ function postbox_classes( $box_id, $screen_id ) {
 	}
 
 	/**
-	 * Filters the postbox classes for a specific screen and box ID combo.
+	 * Lọc các lớp CSS của postbox cho tổ hợp màn hình và ID box cụ thể.
 	 *
-	 * The dynamic portions of the hook name, `$screen_id` and `$box_id`, refer to
-	 * the screen ID and meta box ID, respectively.
+	 * Các phần động của tên hook, `$screen_id` và `$box_id`, tham chiếu đến
+	 * ID màn hình và ID meta box tương ứng.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param string[] $classes An array of postbox classes.
+	 * @param string[] $classes Mảng các lớp CSS của postbox.
 	 */
 	$classes = apply_filters( "postbox_classes_{$screen_id}_{$box_id}", $classes );
 
@@ -1444,19 +1444,19 @@ function postbox_classes( $box_id, $screen_id ) {
 }
 
 /**
- * Returns a sample permalink based on the post name.
+ * Trả về một permalink mẫu dựa trên tên bài viết.
  *
  * @since 2.5.0
  *
- * @param int|WP_Post $post  Post ID or post object.
- * @param string|null $title Optional. Title to override the post's current title
- *                           when generating the post name. Default null.
- * @param string|null $name  Optional. Name to override the post name. Default null.
+ * @param int|WP_Post $post  ID bài viết hoặc đối tượng bài viết.
+ * @param string|null $title Tùy chọn. Tiêu đề để ghi đè tiêu đề hiện tại của bài viết
+ *                           khi tạo tên bài viết. Mặc định null.
+ * @param string|null $name  Tùy chọn. Tên để ghi đè tên bài viết. Mặc định null.
  * @return array {
- *     Array containing the sample permalink with placeholder for the post name, and the post name.
+ *     Mảng chứa permalink mẫu với chỗ giữ cho tên bài viết, và tên bài viết.
  *
- *     @type string $0 The permalink with placeholder for the post name.
- *     @type string $1 The post name.
+ *     @type string $0 Permalink với chỗ giữ cho tên bài viết.
+ *     @type string $1 Tên bài viết.
  * }
  */
 function get_sample_permalink( $post, $title = null, $name = null ) {
@@ -1473,15 +1473,15 @@ function get_sample_permalink( $post, $title = null, $name = null ) {
 	$original_name   = $post->post_name;
 	$original_filter = $post->filter;
 
-	// Hack: get_permalink() would return plain permalink for drafts, so we will fake that our post is published.
+	// Hack: get_permalink() sẽ trả về permalink thuần cho bản nháp, nên ta giả lập rằng bài viết đã được xuất bản.
 	if ( in_array( $post->post_status, array( 'auto-draft', 'draft', 'pending', 'future' ), true ) ) {
 		$post->post_status = 'publish';
 		$post->post_name   = sanitize_title( $post->post_name ? $post->post_name : $post->post_title, $post->ID );
 	}
 
 	/*
-	 * If the user wants to set a new name -- override the current one.
-	 * Note: if empty name is supplied -- use the title instead, see #6072.
+	 * Nếu người dùng muốn đặt tên mới -- ghi đè tên hiện tại.
+	 * Lưu ý: nếu tên rỗng được cung cấp -- sử dụng tiêu đề thay thế, xem #6072.
 	 */
 	if ( ! is_null( $name ) ) {
 		$post->post_name = sanitize_title( $name ? $name : $title, $post->ID );
@@ -1493,10 +1493,10 @@ function get_sample_permalink( $post, $title = null, $name = null ) {
 
 	$permalink = get_permalink( $post, true );
 
-	// Replace custom post_type token with generic pagename token for ease of use.
+	// Thay thế token post_type tùy chỉnh bằng token pagename chung để dễ sử dụng.
 	$permalink = str_replace( "%$post->post_type%", '%pagename%', $permalink );
 
-	// Handle page hierarchy.
+	// Xử lý phân cấp trang.
 	if ( $ptype->hierarchical ) {
 		$uri = get_page_uri( $post );
 		if ( $uri ) {
@@ -1505,7 +1505,7 @@ function get_sample_permalink( $post, $title = null, $name = null ) {
 			$uri = untrailingslashit( $uri );
 		}
 
-		/** This filter is documented in wp-admin/edit-tag-form.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-admin/edit-tag-form.php */
 		$uri = apply_filters( 'editable_slug', $uri, $post );
 		if ( ! empty( $uri ) ) {
 			$uri .= '/';
@@ -1513,7 +1513,7 @@ function get_sample_permalink( $post, $title = null, $name = null ) {
 		$permalink = str_replace( '%pagename%', "{$uri}%pagename%", $permalink );
 	}
 
-	/** This filter is documented in wp-admin/edit-tag-form.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-admin/edit-tag-form.php */
 	$permalink         = array( $permalink, apply_filters( 'editable_slug', $post->post_name, $post ) );
 	$post->post_status = $original_status;
 	$post->post_date   = $original_date;
@@ -1521,33 +1521,33 @@ function get_sample_permalink( $post, $title = null, $name = null ) {
 	$post->filter      = $original_filter;
 
 	/**
-	 * Filters the sample permalink.
+	 * Lọc permalink mẫu.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @param array   $permalink {
-	 *     Array containing the sample permalink with placeholder for the post name, and the post name.
+	 *     Mảng chứa permalink mẫu với chỗ giữ cho tên bài viết, và tên bài viết.
 	 *
-	 *     @type string $0 The permalink with placeholder for the post name.
-	 *     @type string $1 The post name.
+	 *     @type string $0 Permalink với chỗ giữ cho tên bài viết.
+	 *     @type string $1 Tên bài viết.
 	 * }
-	 * @param int     $post_id Post ID.
-	 * @param string  $title   Post title.
-	 * @param string  $name    Post name (slug).
-	 * @param WP_Post $post    Post object.
+	 * @param int     $post_id ID bài viết.
+	 * @param string  $title   Tiêu đề bài viết.
+	 * @param string  $name    Tên bài viết (slug).
+	 * @param WP_Post $post    Đối tượng bài viết.
 	 */
 	return apply_filters( 'get_sample_permalink', $permalink, $post->ID, $title, $name, $post );
 }
 
 /**
- * Returns the HTML of the sample permalink slug editor.
+ * Trả về HTML của trình chỉnh sửa slug permalink mẫu.
  *
  * @since 2.5.0
  *
- * @param int|WP_Post $post      Post ID or post object.
- * @param string|null $new_title Optional. New title. Default null.
- * @param string|null $new_slug  Optional. New slug. Default null.
- * @return string The HTML of the sample permalink slug editor.
+ * @param int|WP_Post $post      ID bài viết hoặc đối tượng bài viết.
+ * @param string|null $new_title Tùy chọn. Tiêu đề mới. Mặc định null.
+ * @param string|null $new_slug  Tùy chọn. Slug mới. Mặc định null.
+ * @return string HTML của trình chỉnh sửa slug permalink mẫu.
  */
 function get_sample_permalink_html( $post, $new_title = null, $new_slug = null ) {
 	$post = get_post( $post );
@@ -1569,13 +1569,13 @@ function get_sample_permalink_html( $post, $new_title = null, $new_slug = null )
 			if ( 'publish' === $post->post_status || 'attachment' === $post->post_type ) {
 				$view_link = get_permalink( $post );
 			} else {
-				// Allow non-published (private, future) to be viewed at a pretty permalink, in case $post->post_name is set.
+				// Cho phép bài chưa xuất bản (riêng tư, lên lịch) được xem tại permalink đẹp, trong trường hợp $post->post_name đã được thiết lập.
 				$view_link = str_replace( array( '%pagename%', '%postname%' ), $post->post_name, $permalink );
 			}
 		}
 	}
 
-	// Permalinks without a post/page name placeholder don't have anything to edit.
+	// Permalink không có chỗ giữ tên bài viết/trang thì không có gì để chỉnh sửa.
 	if ( ! str_contains( $permalink, '%postname%' ) && ! str_contains( $permalink, '%pagename%' ) ) {
 		$return = '<strong>' . __( 'Permalink:' ) . "</strong>\n";
 
@@ -1586,7 +1586,7 @@ function get_sample_permalink_html( $post, $new_title = null, $new_slug = null )
 			$return .= '<span id="sample-permalink">' . $permalink . "</span>\n";
 		}
 
-		// Encourage a pretty permalink setting.
+		// Khuyến khích thiết lập permalink đẹp.
 		if ( ! get_option( 'permalink_structure' ) && current_user_can( 'manage_options' )
 			&& ! ( 'page' === get_option( 'show_on_front' ) && (int) get_option( 'page_on_front' ) === $post->ID )
 		) {
@@ -1604,22 +1604,22 @@ function get_sample_permalink_html( $post, $new_title = null, $new_slug = null )
 
 		$return  = '<strong>' . __( 'Permalink:' ) . "</strong>\n";
 		$return .= '<span id="sample-permalink"><a href="' . esc_url( $view_link ) . '"' . $preview_target . '>' . $display_link . "</a></span>\n";
-		$return .= '&lrm;'; // Fix bi-directional text display defect in RTL languages.
+		$return .= '&lrm;'; // Sửa lỗi hiển thị văn bản hai chiều trong các ngôn ngữ RTL.
 		$return .= '<span id="edit-slug-buttons"><button type="button" class="edit-slug button button-small hide-if-no-js" aria-label="' . __( 'Edit permalink' ) . '">' . __( 'Edit' ) . "</button></span>\n";
 		$return .= '<span id="editable-post-name-full">' . esc_html( $post_name ) . "</span>\n";
 	}
 
 	/**
-	 * Filters the sample permalink HTML markup.
+	 * Lọc mã HTML của permalink mẫu.
 	 *
 	 * @since 2.9.0
-	 * @since 4.4.0 Added `$post` parameter.
+	 * @since 4.4.0 Thêm tham số `$post`.
 	 *
-	 * @param string      $return    Sample permalink HTML markup.
-	 * @param int         $post_id   Post ID.
-	 * @param string|null $new_title New sample permalink title.
-	 * @param string|null $new_slug  New sample permalink slug.
-	 * @param WP_Post     $post      Post object.
+	 * @param string      $return    Mã HTML của permalink mẫu.
+	 * @param int         $post_id   ID bài viết.
+	 * @param string|null $new_title Tiêu đề permalink mẫu mới.
+	 * @param string|null $new_slug  Slug permalink mẫu mới.
+	 * @param WP_Post     $post      Đối tượng bài viết.
 	 */
 	$return = apply_filters( 'get_sample_permalink_html', $return, $post->ID, $new_title, $new_slug, $post );
 
@@ -1627,14 +1627,14 @@ function get_sample_permalink_html( $post, $new_title = null, $new_slug = null )
 }
 
 /**
- * Returns HTML for the post thumbnail meta box.
+ * Trả về HTML cho meta box ảnh đại diện bài viết.
  *
  * @since 2.9.0
  *
- * @param int|null         $thumbnail_id Optional. Thumbnail attachment ID. Default null.
- * @param int|WP_Post|null $post         Optional. The post ID or object associated
- *                                       with the thumbnail. Defaults to global $post.
- * @return string The post thumbnail HTML.
+ * @param int|null         $thumbnail_id Tùy chọn. ID tệp đính kèm ảnh đại diện. Mặc định null.
+ * @param int|WP_Post|null $post         Tùy chọn. ID bài viết hoặc đối tượng được liên kết
+ *                                       với ảnh đại diện. Mặc định là biến toàn cục $post.
+ * @return string HTML ảnh đại diện bài viết.
  */
 function _wp_post_thumbnail_html( $thumbnail_id = null, $post = null ) {
 	$_wp_additional_image_sizes = wp_get_additional_image_sizes();
@@ -1647,7 +1647,7 @@ function _wp_post_thumbnail_html( $thumbnail_id = null, $post = null ) {
 	$content = sprintf(
 		$set_thumbnail_link,
 		esc_url( $upload_iframe_src ),
-		'', // Empty when there's no featured image set, `aria-describedby` attribute otherwise.
+		'', // Rỗng khi chưa đặt ảnh đại diện, thuộc tính `aria-describedby` trong trường hợp còn lại.
 		esc_html( $post_type_object->labels->set_featured_image )
 	);
 
@@ -1655,18 +1655,18 @@ function _wp_post_thumbnail_html( $thumbnail_id = null, $post = null ) {
 		$size = isset( $_wp_additional_image_sizes['post-thumbnail'] ) ? 'post-thumbnail' : array( 266, 266 );
 
 		/**
-		 * Filters the size used to display the post thumbnail image in the 'Featured image' meta box.
+		 * Lọc kích thước được sử dụng để hiển thị ảnh đại diện bài viết trong meta box 'Ảnh đại diện'.
 		 *
-		 * Note: When a theme adds 'post-thumbnail' support, a special 'post-thumbnail'
-		 * image size is registered, which differs from the 'thumbnail' image size
-		 * managed via the Settings > Media screen.
+		 * Lưu ý: Khi giao diện thêm hỗ trợ 'post-thumbnail', một kích thước ảnh 'post-thumbnail'
+		 * đặc biệt được đăng ký, khác với kích thước ảnh 'thumbnail'
+		 * được quản lý qua màn hình Cài đặt > Media.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string|int[] $size         Requested image size. Can be any registered image size name, or
-		 *                                   an array of width and height values in pixels (in that order).
-		 * @param int          $thumbnail_id Post thumbnail attachment ID.
-		 * @param WP_Post      $post         The post object associated with the thumbnail.
+		 * @param string|int[] $size         Kích thước ảnh được yêu cầu. Có thể là tên kích thước ảnh đã đăng ký,
+		 *                                   hoặc mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+		 * @param int          $thumbnail_id ID tệp đính kèm ảnh đại diện bài viết.
+		 * @param WP_Post      $post         Đối tượng bài viết được liên kết với ảnh đại diện.
 		 */
 		$size = apply_filters( 'admin_post_thumbnail_size', $size, $thumbnail_id, $post );
 
@@ -1687,27 +1687,27 @@ function _wp_post_thumbnail_html( $thumbnail_id = null, $post = null ) {
 	$content .= '<input type="hidden" id="_thumbnail_id" name="_thumbnail_id" value="' . esc_attr( $thumbnail_id ? $thumbnail_id : '-1' ) . '" />';
 
 	/**
-	 * Filters the admin post thumbnail HTML markup to return.
+	 * Lọc mã HTML ảnh đại diện bài viết trong trang quản trị để trả về.
 	 *
 	 * @since 2.9.0
-	 * @since 3.5.0 Added the `$post_id` parameter.
-	 * @since 4.6.0 Added the `$thumbnail_id` parameter.
+	 * @since 3.5.0 Thêm tham số `$post_id`.
+	 * @since 4.6.0 Thêm tham số `$thumbnail_id`.
 	 *
-	 * @param string   $content      Admin post thumbnail HTML markup.
-	 * @param int      $post_id      Post ID.
-	 * @param int|null $thumbnail_id Thumbnail attachment ID, or null if there isn't one.
+	 * @param string   $content      Mã HTML ảnh đại diện bài viết trong trang quản trị.
+	 * @param int      $post_id      ID bài viết.
+	 * @param int|null $thumbnail_id ID tệp đính kèm ảnh đại diện, hoặc null nếu không có.
 	 */
 	return apply_filters( 'admin_post_thumbnail_html', $content, $post->ID, $thumbnail_id );
 }
 
 /**
- * Determines whether the post is currently being edited by another user.
+ * Xác định xem bài viết hiện đang được chỉnh sửa bởi người dùng khác hay không.
  *
  * @since 2.5.0
  *
- * @param int|WP_Post $post ID or object of the post to check for editing.
- * @return int|false ID of the user with lock. False if the post does not exist, post is not locked,
- *                   the user with lock does not exist, or the post is locked by current user.
+ * @param int|WP_Post $post ID hoặc đối tượng của bài viết cần kiểm tra.
+ * @return int|false ID của người dùng đang giữ khóa. False nếu bài viết không tồn tại, bài viết không bị khóa,
+ *                   người dùng giữ khóa không tồn tại, hoặc bài viết bị khóa bởi người dùng hiện tại.
  */
 function wp_check_post_lock( $post ) {
 	$post = get_post( $post );
@@ -1730,7 +1730,7 @@ function wp_check_post_lock( $post ) {
 		return false;
 	}
 
-	/** This filter is documented in wp-admin/includes/ajax-actions.php */
+	/** Bộ lọc này được ghi tài liệu trong wp-admin/includes/ajax-actions.php */
 	$time_window = apply_filters( 'wp_check_post_lock_window', 150 );
 
 	if ( $time && $time > time() - $time_window && get_current_user_id() !== $user ) {
@@ -1741,17 +1741,17 @@ function wp_check_post_lock( $post ) {
 }
 
 /**
- * Marks the post as currently being edited by the current user.
+ * Đánh dấu bài viết đang được chỉnh sửa bởi người dùng hiện tại.
  *
  * @since 2.5.0
  *
- * @param int|WP_Post $post ID or object of the post being edited.
+ * @param int|WP_Post $post ID hoặc đối tượng của bài viết đang được chỉnh sửa.
  * @return array|false {
- *     Array of the lock time and user ID. False if the post does not exist, or there
- *     is no current user.
+ *     Mảng chứa thời gian khóa và ID người dùng. False nếu bài viết không tồn tại, hoặc
+ *     không có người dùng hiện tại.
  *
- *     @type int $0 The current time as a Unix timestamp.
- *     @type int $1 The ID of the current user.
+ *     @type int $0 Thời gian hiện tại dưới dạng dấu thời gian Unix.
+ *     @type int $1 ID của người dùng hiện tại.
  * }
  */
 function wp_set_post_lock( $post ) {
@@ -1776,7 +1776,7 @@ function wp_set_post_lock( $post ) {
 }
 
 /**
- * Outputs the HTML for the notice to say that someone else is editing or has taken over editing of this post.
+ * Xuất HTML cho thông báo rằng người khác đang chỉnh sửa hoặc đã tiếp quản chỉnh sửa bài viết này.
  *
  * @since 2.8.5
  */
@@ -1796,15 +1796,15 @@ function _admin_notice_post_locked() {
 
 	if ( $user ) {
 		/**
-		 * Filters whether to show the post locked dialog.
+		 * Lọc có hiển thị hộp thoại bài viết bị khóa hay không.
 		 *
-		 * Returning false from the filter will prevent the dialog from being displayed.
+		 * Trả về false từ bộ lọc sẽ ngăn hộp thoại được hiển thị.
 		 *
 		 * @since 3.6.0
 		 *
-		 * @param bool    $display Whether to display the dialog. Default true.
-		 * @param WP_Post $post    Post object.
-		 * @param WP_User $user    The user with the lock for the post.
+		 * @param bool    $display Có hiển thị hộp thoại hay không. Mặc định true.
+		 * @param WP_Post $post    Đối tượng bài viết.
+		 * @param WP_User $user    Người dùng đang giữ khóa bài viết.
 		 */
 		if ( ! apply_filters( 'show_post_locked_dialog', true, $post, $user ) ) {
 			return;
@@ -1844,7 +1844,7 @@ function _admin_notice_post_locked() {
 		$query_args = array();
 		if ( get_post_type_object( $post->post_type )->public ) {
 			if ( 'publish' === $post->post_status || $user->ID !== (int) $post->post_author ) {
-				// Latest content is in autosave.
+				// Nội dung mới nhất nằm trong bản lưu tự động.
 				$nonce                       = wp_create_nonce( 'post_preview_' . $post->ID );
 				$query_args['preview_id']    = $post->ID;
 				$query_args['preview_nonce'] = $nonce;
@@ -1854,16 +1854,16 @@ function _admin_notice_post_locked() {
 		$preview_link = get_preview_post_link( $post->ID, $query_args );
 
 		/**
-		 * Filters whether to allow the post lock to be overridden.
+		 * Lọc có cho phép ghi đè khóa bài viết hay không.
 		 *
-		 * Returning false from the filter will disable the ability
-		 * to override the post lock.
+		 * Trả về false từ bộ lọc sẽ vô hiệu hóa khả năng
+		 * ghi đè khóa bài viết.
 		 *
 		 * @since 3.6.0
 		 *
-		 * @param bool    $override Whether to allow the post lock to be overridden. Default true.
-		 * @param WP_Post $post     Post object.
-		 * @param WP_User $user     The user with the lock for the post.
+		 * @param bool    $override Có cho phép ghi đè khóa bài viết hay không. Mặc định true.
+		 * @param WP_Post $post     Đối tượng bài viết.
+		 * @param WP_User $user     Người dùng đang giữ khóa bài viết.
 		 */
 		$override = apply_filters( 'override_post_lock', true, $post, $user );
 		$tab_last = $override ? '' : ' wp-tab-last';
@@ -1884,13 +1884,13 @@ function _admin_notice_post_locked() {
 		</p>
 		<?php
 		/**
-		 * Fires inside the post locked dialog before the buttons are displayed.
+		 * Kích hoạt bên trong hộp thoại bài viết bị khóa trước khi các nút được hiển thị.
 		 *
 		 * @since 3.6.0
-		 * @since 5.4.0 The $user parameter was added.
+		 * @since 5.4.0 Thêm tham số $user.
 		 *
-		 * @param WP_Post $post Post object.
-		 * @param WP_User $user The user with the lock for the post.
+		 * @param WP_Post $post Đối tượng bài viết.
+		 * @param WP_User $user Người dùng đang giữ khóa bài viết.
 		 */
 		do_action( 'post_locked_dialog', $post, $user );
 		?>
@@ -1901,7 +1901,7 @@ function _admin_notice_post_locked() {
 			<?php
 		}
 
-		// Allow plugins to prevent some users overriding the post lock.
+		// Cho phép plugin ngăn một số người dùng ghi đè khóa bài viết.
 		if ( $override ) {
 			?>
 	<a class="button button-primary wp-tab-last" href="<?php echo esc_url( add_query_arg( 'get-post-lock', '1', wp_nonce_url( get_edit_post_link( $post->ID, 'url' ), 'lock-post_' . $post->ID ) ) ); ?>"><?php _e( 'Take over' ); ?></a>
@@ -1923,11 +1923,11 @@ function _admin_notice_post_locked() {
 			</p>
 			<?php
 			/**
-			 * Fires inside the dialog displayed when a user has lost the post lock.
+			 * Kích hoạt bên trong hộp thoại hiển thị khi người dùng đã mất quyền khóa bài viết.
 			 *
 			 * @since 3.6.0
 			 *
-			 * @param WP_Post $post Post object.
+			 * @param WP_Post $post Đối tượng bài viết.
 			 */
 			do_action( 'post_lock_lost_dialog', $post );
 			?>
@@ -1943,13 +1943,13 @@ function _admin_notice_post_locked() {
 }
 
 /**
- * Creates autosave data for the specified post from `$_POST` data.
+ * Tạo dữ liệu lưu tự động cho bài viết được chỉ định từ dữ liệu `$_POST`.
  *
  * @since 2.6.0
  *
- * @param array|int $post_data Associative array containing the post data, or integer post ID.
- *                             If a numeric post ID is provided, will use the `$_POST` superglobal.
- * @return int|WP_Error The autosave revision ID. WP_Error or 0 on error.
+ * @param array|int $post_data Mảng kết hợp chứa dữ liệu bài viết, hoặc ID bài viết dạng số nguyên.
+ *                             Nếu ID bài viết dạng số được cung cấp, sẽ sử dụng superglobal `$_POST`.
+ * @return int|WP_Error ID bản sửa đổi lưu tự động. WP_Error hoặc 0 khi lỗi.
  */
 function wp_create_post_autosave( $post_data ) {
 	if ( is_numeric( $post_data ) ) {
@@ -1967,7 +1967,7 @@ function wp_create_post_autosave( $post_data ) {
 
 	$post_author = get_current_user_id();
 
-	// Store one autosave per author. If there is already an autosave, overwrite it.
+	// Lưu một bản lưu tự động cho mỗi tác giả. Nếu đã có bản lưu tự động, ghi đè lên nó.
 	$old_autosave = wp_get_post_autosave( $post_id, $post_author );
 	if ( $old_autosave ) {
 		$new_autosave                = _wp_post_revision_data( $post_data, true );
@@ -1976,7 +1976,7 @@ function wp_create_post_autosave( $post_data ) {
 
 		$post = get_post( $post_id );
 
-		// If the new autosave has the same content as the post, delete the autosave.
+		// Nếu bản lưu tự động mới có cùng nội dung với bài viết, xóa bản lưu tự động.
 		$autosave_is_different = false;
 		foreach ( array_intersect( array_keys( $new_autosave ), array_keys( _wp_post_revision_fields( $post ) ) ) as $field ) {
 			if ( normalize_whitespace( $new_autosave[ $field ] ) !== normalize_whitespace( $post->$field ) ) {
@@ -1991,27 +1991,27 @@ function wp_create_post_autosave( $post_data ) {
 		}
 
 		/**
-		 * Fires before an autosave is stored.
+		 * Kích hoạt trước khi bản lưu tự động được lưu trữ.
 		 *
 		 * @since 4.1.0
-		 * @since 6.4.0 The `$is_update` parameter was added to indicate if the autosave is being updated or was newly created.
+		 * @since 6.4.0 Thêm tham số `$is_update` để chỉ ra bản lưu tự động đang được cập nhật hay mới tạo.
 		 *
-		 * @param array $new_autosave Post array - the autosave that is about to be saved.
-		 * @param bool  $is_update    Whether this is an existing autosave.
+		 * @param array $new_autosave Mảng bài viết - bản lưu tự động sắp được lưu.
+		 * @param bool  $is_update    Đây có phải là bản lưu tự động đã tồn tại hay không.
 		 */
 		do_action( 'wp_creating_autosave', $new_autosave, true );
 		return wp_update_post( $new_autosave );
 	}
 
-	// _wp_put_post_revision() expects unescaped.
+	// _wp_put_post_revision() mong đợi dữ liệu chưa được escape.
 	$post_data = wp_unslash( $post_data );
 
-	// Otherwise create the new autosave as a special post revision.
+	// Nếu không, tạo bản lưu tự động mới dưới dạng bản sửa đổi bài viết đặc biệt.
 	$revision = _wp_put_post_revision( $post_data, true );
 
 	if ( ! is_wp_error( $revision ) && 0 !== $revision ) {
 
-		/** This action is documented in wp-admin/includes/post.php */
+		/** Hành động này được ghi tài liệu trong wp-admin/includes/post.php */
 		do_action( 'wp_creating_autosave', get_post( $revision, ARRAY_A ), false );
 	}
 
@@ -2019,31 +2019,31 @@ function wp_create_post_autosave( $post_data ) {
 }
 
 /**
- * Autosaves the revisioned meta fields.
+ * Lưu tự động các trường meta có bản sửa đổi.
  *
- * Iterates through the revisioned meta fields and checks each to see if they are set,
- * and have a changed value. If so, the meta value is saved and attached to the autosave.
+ * Duyệt qua các trường meta có bản sửa đổi và kiểm tra từng trường xem chúng có được thiết lập hay không,
+ * và có giá trị thay đổi hay không. Nếu có, giá trị meta được lưu và đính kèm vào bản lưu tự động.
  *
  * @since 6.4.0
  *
- * @param array $new_autosave The new post data being autosaved.
+ * @param array $new_autosave Dữ liệu bài viết mới đang được lưu tự động.
  */
 function wp_autosave_post_revisioned_meta_fields( $new_autosave ) {
 	/*
-	 * The post data arrives as either $_POST['data']['wp_autosave'] or the $_POST
-	 * itself. This sets $posted_data to the correct variable.
+	 * Dữ liệu bài viết đến dưới dạng $_POST['data']['wp_autosave'] hoặc chính $_POST.
+	 * Đoạn này thiết lập $posted_data thành biến đúng.
 	 *
-	 * Ignoring sanitization to avoid altering meta. Ignoring the nonce check because
-	 * this is hooked on inner core hooks where a valid nonce was already checked.
+	 * Bỏ qua việc làm sạch để tránh thay đổi meta. Bỏ qua kiểm tra nonce vì
+	 * đây được hook vào các hook lõi bên trong nơi nonce hợp lệ đã được kiểm tra.
 	 */
 	$posted_data = isset( $_POST['data']['wp_autosave'] ) ? $_POST['data']['wp_autosave'] : $_POST;
 
 	$post_type = get_post_type( $new_autosave['post_parent'] );
 
 	/*
-	 * Go through the revisioned meta keys and save them as part of the autosave,
-	 * if the meta key is part of the posted data, the meta value is not blank,
-	 * and the meta value has changes from the last autosaved value.
+	 * Duyệt qua các khóa meta có bản sửa đổi và lưu chúng như một phần của bản lưu tự động,
+	 * nếu khóa meta là một phần của dữ liệu đã gửi, giá trị meta không trống,
+	 * và giá trị meta đã thay đổi so với giá trị lưu tự động lần cuối.
 	 */
 	foreach ( wp_post_revision_meta_keys( $post_type ) as $meta_key ) {
 
@@ -2051,15 +2051,15 @@ function wp_autosave_post_revisioned_meta_fields( $new_autosave ) {
 			&& get_post_meta( $new_autosave['ID'], $meta_key, true ) !== wp_unslash( $posted_data[ $meta_key ] )
 		) {
 			/*
-			 * Use the underlying delete_metadata() and add_metadata() functions
-			 * vs delete_post_meta() and add_post_meta() to make sure we're working
-			 * with the actual revision meta.
+			 * Sử dụng các hàm delete_metadata() và add_metadata() cơ bản
+			 * thay vì delete_post_meta() và add_post_meta() để đảm bảo chúng ta đang làm việc
+			 * với meta bản sửa đổi thực tế.
 			 */
 			delete_metadata( 'post', $new_autosave['ID'], $meta_key );
 
-			// One last check to ensure meta value is not empty.
+			// Kiểm tra lần cuối để đảm bảo giá trị meta không trống.
 			if ( ! empty( $posted_data[ $meta_key ] ) ) {
-				// Add the revisions meta data to the autosave.
+				// Thêm dữ liệu meta bản sửa đổi vào bản lưu tự động.
 				add_metadata( 'post', $new_autosave['ID'], $meta_key, $posted_data[ $meta_key ] );
 			}
 		}
@@ -2067,11 +2067,11 @@ function wp_autosave_post_revisioned_meta_fields( $new_autosave ) {
 }
 
 /**
- * Saves a draft or manually autosaves for the purpose of showing a post preview.
+ * Lưu bản nháp hoặc lưu tự động thủ công để phục vụ hiển thị bản xem trước bài viết.
  *
  * @since 2.7.0
  *
- * @return string URL to redirect to show the preview.
+ * @return string URL chuyển hướng để hiển thị bản xem trước.
  */
 function post_preview() {
 
@@ -2127,18 +2127,18 @@ function post_preview() {
 }
 
 /**
- * Saves a post submitted with XHR.
+ * Lưu bài viết được gửi qua XHR.
  *
- * Intended for use with heartbeat and autosave.js
+ * Dành cho sử dụng với heartbeat và autosave.js
  *
  * @since 3.9.0
  *
- * @param array $post_data Associative array of the submitted post data.
- * @return mixed The value 0 or WP_Error on failure. The saved post ID on success.
- *               The ID can be the draft post_id or the autosave revision post_id.
+ * @param array $post_data Mảng kết hợp chứa dữ liệu bài viết đã gửi.
+ * @return mixed Giá trị 0 hoặc WP_Error khi thất bại. ID bài viết đã lưu khi thành công.
+ *               ID có thể là post_id bản nháp hoặc post_id bản sửa đổi lưu tự động.
  */
 function wp_autosave( $post_data ) {
-	// Back-compat.
+	// Tương thích ngược.
 	if ( ! defined( 'DOING_AUTOSAVE' ) ) {
 		define( 'DOING_AUTOSAVE', true );
 	}
@@ -2168,23 +2168,23 @@ function wp_autosave( $post_data ) {
 	if ( ! wp_check_post_lock( $post->ID ) && get_current_user_id() === (int) $post->post_author
 		&& ( 'auto-draft' === $post->post_status || 'draft' === $post->post_status )
 	) {
-		// Drafts and auto-drafts are just overwritten by autosave for the same user if the post is not locked.
+		// Bản nháp và bản nháp tự động chỉ bị ghi đè bởi lưu tự động cho cùng người dùng nếu bài viết không bị khóa.
 		return edit_post( wp_slash( $post_data ) );
 	} else {
 		/*
-		 * Non-drafts or other users' drafts are not overwritten.
-		 * The autosave is stored in a special post revision for each user.
+		 * Bài không phải bản nháp hoặc bản nháp của người dùng khác sẽ không bị ghi đè.
+		 * Bản lưu tự động được lưu trữ trong một bản sửa đổi bài viết đặc biệt cho mỗi người dùng.
 		 */
 		return wp_create_post_autosave( wp_slash( $post_data ) );
 	}
 }
 
 /**
- * Redirects to previous page.
+ * Chuyển hướng đến trang trước đó.
  *
  * @since 2.7.0
  *
- * @param int $post_id Optional. Post ID.
+ * @param int $post_id Tùy chọn. ID bài viết.
  */
 function redirect_post( $post_id = '' ) {
 	if ( isset( $_POST['save'] ) || isset( $_POST['publish'] ) ) {
@@ -2219,44 +2219,44 @@ function redirect_post( $post_id = '' ) {
 	}
 
 	/**
-	 * Filters the post redirect destination URL.
+	 * Lọc URL đích chuyển hướng bài viết.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $location The destination URL.
-	 * @param int    $post_id  The post ID.
+	 * @param string $location URL đích.
+	 * @param int    $post_id  ID bài viết.
 	 */
 	wp_redirect( apply_filters( 'redirect_post_location', $location, $post_id ) );
 	exit;
 }
 
 /**
- * Sanitizes POST values from a checkbox taxonomy metabox.
+ * Làm sạch giá trị POST từ metabox phân loại dạng checkbox.
  *
  * @since 5.1.0
  *
- * @param string $taxonomy The taxonomy name.
- * @param array  $terms    Raw term data from the 'tax_input' field.
- * @return int[] Array of sanitized term IDs.
+ * @param string $taxonomy Tên phân loại.
+ * @param array  $terms    Dữ liệu thuật ngữ thô từ trường 'tax_input'.
+ * @return int[] Mảng ID thuật ngữ đã được làm sạch.
  */
 function taxonomy_meta_box_sanitize_cb_checkboxes( $taxonomy, $terms ) {
 	return array_map( 'intval', $terms );
 }
 
 /**
- * Sanitizes POST values from an input taxonomy metabox.
+ * Làm sạch giá trị POST từ metabox phân loại dạng input.
  *
  * @since 5.1.0
  *
- * @param string       $taxonomy The taxonomy name.
- * @param array|string $terms    Raw term data from the 'tax_input' field.
+ * @param string       $taxonomy Tên phân loại.
+ * @param array|string $terms    Dữ liệu thuật ngữ thô từ trường 'tax_input'.
  * @return array
  */
 function taxonomy_meta_box_sanitize_cb_input( $taxonomy, $terms ) {
 	/*
-	 * Assume that a 'tax_input' string is a comma-separated list of term names.
-	 * Some languages may use a character other than a comma as a delimiter, so we standardize on
-	 * commas before parsing the list.
+	 * Giả định rằng chuỗi 'tax_input' là danh sách tên thuật ngữ phân tách bằng dấu phẩy.
+	 * Một số ngôn ngữ có thể sử dụng ký tự khác dấu phẩy làm dấu phân cách, vì vậy ta chuẩn hóa
+	 * thành dấu phẩy trước khi phân tích danh sách.
 	 */
 	if ( ! is_array( $terms ) ) {
 		$comma = _x( ',', 'tag delimiter' );
@@ -2268,7 +2268,7 @@ function taxonomy_meta_box_sanitize_cb_input( $taxonomy, $terms ) {
 
 	$clean_terms = array();
 	foreach ( $terms as $term ) {
-		// Empty terms are invalid input.
+		// Thuật ngữ rỗng là đầu vào không hợp lệ.
 		if ( empty( $term ) ) {
 			continue;
 		}
@@ -2285,7 +2285,7 @@ function taxonomy_meta_box_sanitize_cb_input( $taxonomy, $terms ) {
 		if ( ! empty( $_term ) ) {
 			$clean_terms[] = (int) $_term[0];
 		} else {
-			// No existing term was found, so pass the string. A new term will be created.
+			// Không tìm thấy thuật ngữ hiện có, nên truyền chuỗi. Một thuật ngữ mới sẽ được tạo.
 			$clean_terms[] = $term;
 		}
 	}
@@ -2294,16 +2294,16 @@ function taxonomy_meta_box_sanitize_cb_input( $taxonomy, $terms ) {
 }
 
 /**
- * Prepares server-registered blocks for the block editor.
+ * Chuẩn bị các block đã đăng ký phía server cho trình soạn thảo block.
  *
- * Returns an associative array of registered block data keyed by block name. Data includes properties
- * of a block relevant for client registration.
+ * Trả về mảng kết hợp chứa dữ liệu block đã đăng ký được đánh khóa theo tên block. Dữ liệu bao gồm các thuộc tính
+ * của block liên quan đến việc đăng ký phía client.
  *
  * @since 5.0.0
- * @since 6.3.0 Added `selectors` field.
- * @since 6.4.0 Added `block_hooks` field.
+ * @since 6.3.0 Thêm trường `selectors`.
+ * @since 6.4.0 Thêm trường `block_hooks`.
  *
- * @return array An associative array of registered block data.
+ * @return array Mảng kết hợp chứa dữ liệu block đã đăng ký.
  */
 function get_block_editor_server_block_settings() {
 	$block_registry = WP_Block_Type_Registry::get_instance();
@@ -2348,35 +2348,35 @@ function get_block_editor_server_block_settings() {
 }
 
 /**
- * Renders the meta boxes forms.
+ * Hiển thị các form meta box.
  *
  * @since 5.0.0
  *
- * @global WP_Post   $post           Global post object.
- * @global WP_Screen $current_screen WordPress current screen object.
- * @global array     $wp_meta_boxes  Global meta box state.
+ * @global WP_Post   $post           Đối tượng bài viết toàn cục.
+ * @global WP_Screen $current_screen Đối tượng màn hình hiện tại WordPress.
+ * @global array     $wp_meta_boxes  Trạng thái meta box toàn cục.
  */
 function the_block_editor_meta_boxes() {
 	global $post, $current_screen, $wp_meta_boxes;
 
-	// Handle meta box state.
+	// Xử lý trạng thái meta box.
 	$_original_meta_boxes = $wp_meta_boxes;
 
 	/**
-	 * Fires right before the meta boxes are rendered.
+	 * Kích hoạt ngay trước khi các meta box được hiển thị.
 	 *
-	 * This allows for the filtering of meta box data, that should already be
-	 * present by this point. Do not use as a means of adding meta box data.
+	 * Điều này cho phép lọc dữ liệu meta box, mà tại thời điểm này
+	 * đã phải có sẵn. Không sử dụng để thêm dữ liệu meta box.
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param array $wp_meta_boxes Global meta box state.
+	 * @param array $wp_meta_boxes Trạng thái meta box toàn cục.
 	 */
 	$wp_meta_boxes = apply_filters( 'filter_block_editor_meta_boxes', $wp_meta_boxes );
 	$locations     = array( 'side', 'normal', 'advanced' );
 	$priorities    = array( 'high', 'sorted', 'core', 'default', 'low' );
 
-	// Render meta boxes.
+	// Hiển thị meta box.
 	?>
 	<form class="metabox-base-form">
 	<?php the_block_editor_meta_box_post_form_hidden_fields( $post ); ?>
@@ -2421,7 +2421,7 @@ function the_block_editor_meta_boxes() {
 					continue;
 				}
 
-				// If a meta box is just here for back compat, don't show it in the block editor.
+				// Nếu meta box chỉ có mặt để tương thích ngược, không hiển thị nó trong trình soạn thảo block.
 				if ( isset( $meta_box['args']['__back_compat_meta_box'] ) && $meta_box['args']['__back_compat_meta_box'] ) {
 					continue;
 				}
@@ -2435,11 +2435,11 @@ function the_block_editor_meta_boxes() {
 	}
 
 	/*
-	 * Sadly we probably cannot add this data directly into editor settings.
+	 * Đáng tiếc là chúng ta có lẽ không thể thêm dữ liệu này trực tiếp vào cài đặt trình soạn thảo.
 	 *
-	 * Some meta boxes need `admin_head` to fire for meta box registry.
-	 * `admin_head` fires after `admin_enqueue_scripts`, which is where we create
-	 * our editor instance.
+	 * Một số meta box cần `admin_head` kích hoạt để đăng ký meta box.
+	 * `admin_head` kích hoạt sau `admin_enqueue_scripts`, là nơi chúng ta tạo
+	 * phiên bản trình soạn thảo.
 	 */
 	$script = 'window._wpLoadBlockEditor.then( function() {
 		wp.data.dispatch( \'core/edit-post\' ).setAvailableMetaBoxesPerLocation( ' . wp_json_encode( $meta_boxes_per_location ) . ' );
@@ -2448,17 +2448,17 @@ function the_block_editor_meta_boxes() {
 	wp_add_inline_script( 'wp-edit-post', $script );
 
 	/*
-	 * When `wp-edit-post` is output in the `<head>`, the inline script needs to be manually printed.
-	 * Otherwise, meta boxes will not display because inline scripts for `wp-edit-post`
-	 * will not be printed again after this point.
+	 * Khi `wp-edit-post` được xuất trong `<head>`, script inline cần được in thủ công.
+	 * Nếu không, meta box sẽ không hiển thị vì script inline cho `wp-edit-post`
+	 * sẽ không được in lại sau thời điểm này.
 	 */
 	if ( wp_script_is( 'wp-edit-post', 'done' ) ) {
 		printf( "<script type='text/javascript'>\n%s\n</script>\n", trim( $script ) );
 	}
 
 	/*
-	 * If the 'postcustom' meta box is enabled, then we need to perform
-	 * some extra initialization on it.
+	 * Nếu meta box 'postcustom' được bật, thì chúng ta cần thực hiện
+	 * một số khởi tạo bổ sung trên nó.
 	 */
 	$enable_custom_fields = (bool) get_user_meta( get_current_user_id(), 'enable_custom_fields', true );
 
@@ -2481,9 +2481,9 @@ function the_block_editor_meta_boxes() {
 	}
 
 	/*
-	 * Refresh nonces used by the meta box loader.
+	 * Làm mới nonce được sử dụng bởi trình tải meta box.
 	 *
-	 * The logic is very similar to that provided by post.js for the classic editor.
+	 * Logic rất tương tự với logic được cung cấp bởi post.js cho trình soạn thảo cổ điển.
 	 */
 	$script = "( function( $ ) {
 		var check, timeout;
@@ -2524,7 +2524,7 @@ function the_block_editor_meta_boxes() {
 	} )( jQuery );";
 	wp_add_inline_script( 'heartbeat', $script );
 
-	// Reset meta box data.
+	// Đặt lại dữ liệu meta box.
 	$wp_meta_boxes = $_original_meta_boxes;
 }
 

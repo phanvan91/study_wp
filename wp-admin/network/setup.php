@@ -1,13 +1,13 @@
 <?php
 /**
- * Network Setup administration panel.
+ * Trang quản trị Thiết lập Mạng lưới.
  *
  * @package WordPress
  * @subpackage Multisite
  * @since 3.1.0
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 require ABSPATH . 'wp-admin/network.php';

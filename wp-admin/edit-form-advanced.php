@@ -1,24 +1,24 @@
 <?php
 /**
- * Post advanced form for inclusion in the administration panels.
+ * Biểu mẫu nâng cao bài viết để nhúng vào các bảng quản trị.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
 /**
- * @global string       $post_type        Global post type.
- * @global WP_Post_Type $post_type_object Global post type object.
- * @global WP_Post      $post             Global post object.
+ * @global string       $post_type        Loại bài viết toàn cục.
+ * @global WP_Post_Type $post_type_object Đối tượng loại bài viết toàn cục.
+ * @global WP_Post      $post             Đối tượng bài viết toàn cục.
  */
 global $post_type, $post_type_object, $post;
 
-// Flag that we're not loading the block editor.
+// Đánh dấu rằng chúng ta không tải trình soạn thảo khối.
 $current_screen = get_current_screen();
 $current_screen->is_block_editor( false );
 
@@ -42,13 +42,13 @@ if ( post_type_supports( $post_type, 'editor' )
 	&& ! ( $is_IE && preg_match( '/MSIE [5678]/', $_SERVER['HTTP_USER_AGENT'] ) )
 ) {
 	/**
-	 * Filters whether to enable the 'expand' functionality in the post editor.
+	 * Lọc có bật chức năng 'mở rộng' trong trình soạn thảo bài viết hay không.
 	 *
 	 * @since 4.0.0
-	 * @since 4.1.0 Added the `$post_type` parameter.
+	 * @since 4.1.0 Thêm tham số `$post_type`.
 	 *
-	 * @param bool   $expand    Whether to enable the 'expand' functionality. Default true.
-	 * @param string $post_type Post type.
+	 * @param bool   $expand    Có bật chức năng 'mở rộng' hay không. Mặc định true.
+	 * @param string $post_type Loại bài viết.
 	 */
 	if ( apply_filters( 'wp_editor_expand', true, $post_type ) ) {
 		wp_enqueue_script( 'editor-expand' );
@@ -62,7 +62,7 @@ if ( wp_is_mobile() ) {
 }
 
 /**
- * Post ID global
+ * ID bài viết toàn cục
  *
  * @name $post_ID
  * @var int
@@ -90,11 +90,11 @@ if ( $thumbnail_support ) {
 	wp_enqueue_media( array( 'post' => $post->ID ) );
 }
 
-// Add the local autosave notice HTML.
+// Thêm HTML thông báo tự động lưu cục bộ.
 add_action( 'admin_footer', '_local_storage_notice' );
 
 /*
- * @todo Document the $messages array(s).
+ * @todo Viết tài liệu cho các mảng $messages.
  */
 $permalink = get_permalink( $post->ID );
 if ( ! $permalink ) {
@@ -117,42 +117,42 @@ $viewable = is_post_type_viewable( $post_type_object );
 
 if ( $viewable ) {
 
-	// Preview post link.
+	// Liên kết xem trước bài viết.
 	$preview_post_link_html = sprintf(
 		' <a target="_blank" href="%1$s">%2$s</a>',
 		esc_url( $preview_url ),
 		__( 'Preview post' )
 	);
 
-	// Scheduled post preview link.
+	// Liên kết xem trước bài viết đã lên lịch.
 	$scheduled_post_link_html = sprintf(
 		' <a target="_blank" href="%1$s">%2$s</a>',
 		esc_url( $permalink ),
 		__( 'Preview post' )
 	);
 
-	// View post link.
+	// Liên kết xem bài viết.
 	$view_post_link_html = sprintf(
 		' <a href="%1$s">%2$s</a>',
 		esc_url( $permalink ),
 		__( 'View post' )
 	);
 
-	// Preview page link.
+	// Liên kết xem trước trang.
 	$preview_page_link_html = sprintf(
 		' <a target="_blank" href="%1$s">%2$s</a>',
 		esc_url( $preview_url ),
 		__( 'Preview page' )
 	);
 
-	// Scheduled page preview link.
+	// Liên kết xem trước trang đã lên lịch.
 	$scheduled_page_link_html = sprintf(
 		' <a target="_blank" href="%1$s">%2$s</a>',
 		esc_url( $permalink ),
 		__( 'Preview page' )
 	);
 
-	// View page link.
+	// Liên kết xem trang.
 	$view_page_link_html = sprintf(
 		' <a href="%1$s">%2$s</a>',
 		esc_url( $permalink ),
@@ -171,7 +171,7 @@ $scheduled_date = sprintf(
 );
 
 $messages['post']       = array(
-	0  => '', // Unused. Messages start at index 1.
+	0  => '', // Không sử dụng. Thông báo bắt đầu từ chỉ số 1.
 	1  => __( 'Post updated.' ) . $view_post_link_html,
 	2  => __( 'Custom field updated.' ),
 	3  => __( 'Custom field deleted.' ),
@@ -186,7 +186,7 @@ $messages['post']       = array(
 	10 => __( 'Post draft updated.' ) . $preview_post_link_html,
 );
 $messages['page']       = array(
-	0  => '', // Unused. Messages start at index 1.
+	0  => '', // Không sử dụng. Thông báo bắt đầu từ chỉ số 1.
 	1  => __( 'Page updated.' ) . $view_page_link_html,
 	2  => __( 'Custom field updated.' ),
 	3  => __( 'Custom field deleted.' ),
@@ -200,14 +200,14 @@ $messages['page']       = array(
 	9  => sprintf( __( 'Page scheduled for: %s.' ), '<strong>' . $scheduled_date . '</strong>' ) . $scheduled_page_link_html,
 	10 => __( 'Page draft updated.' ) . $preview_page_link_html,
 );
-$messages['attachment'] = array_fill( 1, 10, __( 'Media file updated.' ) ); // Hack, for now.
+$messages['attachment'] = array_fill( 1, 10, __( 'Media file updated.' ) ); // Giải pháp tạm thời.
 
 /**
- * Filters the post updated messages.
+ * Lọc các thông báo cập nhật bài viết.
  *
  * @since 3.0.0
  *
- * @param array[] $messages Post updated messages. For defaults see `$messages` declarations above.
+ * @param array[] $messages Thông báo cập nhật bài viết. Để xem giá trị mặc định, xem khai báo `$messages` ở trên.
  */
 $messages = apply_filters( 'post_updated_messages', $messages );
 
@@ -237,7 +237,7 @@ $form_action  = 'editpost';
 $nonce_action = 'update-post_' . $post->ID;
 $form_extra  .= "<input type='hidden' id='post_ID' name='post_ID' value='" . esc_attr( $post->ID ) . "' />";
 
-// Detect if there exists an autosave newer than the post and if that autosave is different than the post.
+// Phát hiện nếu tồn tại bản tự động lưu mới hơn bài viết và bản tự động lưu đó khác với bài viết.
 if ( $autosave && mysql2date( 'U', $autosave->post_modified_gmt, false ) > mysql2date( 'U', $post->post_modified_gmt, false ) ) {
 	foreach ( _wp_post_revision_fields( $post ) as $autosave_field => $_autosave_field ) {
 		if ( normalize_whitespace( $autosave->$autosave_field ) !== normalize_whitespace( $post->$autosave_field ) ) {
@@ -249,7 +249,7 @@ if ( $autosave && mysql2date( 'U', $autosave->post_modified_gmt, false ) > mysql
 			break;
 		}
 	}
-	// If this autosave isn't different from the current post, begone.
+	// Nếu bản tự động lưu này không khác bài viết hiện tại, xóa nó đi.
 	if ( ! $notice ) {
 		wp_delete_post_revision( $autosave->ID );
 	}
@@ -258,7 +258,7 @@ if ( $autosave && mysql2date( 'U', $autosave->post_modified_gmt, false ) > mysql
 
 $post_type_object = get_post_type_object( $post_type );
 
-// All meta boxes should be defined and added before the first do_meta_boxes() call (or potentially during the do_meta_boxes action).
+// Tất cả meta box nên được định nghĩa và thêm trước lời gọi do_meta_boxes() đầu tiên (hoặc có thể trong action do_meta_boxes).
 require_once ABSPATH . 'wp-admin/includes/meta-boxes.php';
 
 register_and_do_post_meta_boxes( $post );
@@ -473,11 +473,11 @@ wp_admin_notice(
 <form name="post" action="post.php" method="post" id="post"
 <?php
 /**
- * Fires inside the post editor form tag.
+ * Kích hoạt bên trong thẻ form trình soạn thảo bài viết.
  *
  * @since 3.0.0
  *
- * @param WP_Post $post Post object.
+ * @param WP_Post $post Đối tượng bài viết.
  */
 do_action( 'post_edit_form_tag', $post );
 
@@ -508,13 +508,13 @@ wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 
 <?php
 /**
- * Fires at the beginning of the edit form.
+ * Kích hoạt ở đầu form chỉnh sửa.
  *
- * At this point, the required hidden fields and nonces have already been output.
+ * Tại thời điểm này, các trường ẩn bắt buộc và nonce đã được xuất ra.
  *
  * @since 3.7.0
  *
- * @param WP_Post $post Post object.
+ * @param WP_Post $post Đối tượng bài viết.
  */
 do_action( 'edit_form_top', $post );
 ?>
@@ -528,12 +528,12 @@ do_action( 'edit_form_top', $post );
 <div id="titlewrap">
 	<?php
 	/**
-	 * Filters the title field placeholder text.
+	 * Lọc văn bản placeholder của trường tiêu đề.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string  $text Placeholder text. Default 'Add title'.
-	 * @param WP_Post $post Post object.
+	 * @param string  $text Văn bản placeholder. Mặc định 'Add title'.
+	 * @param WP_Post $post Đối tượng bài viết.
 	 */
 	$title_placeholder = apply_filters( 'enter_title_here', __( 'Add title' ), $post );
 	?>
@@ -549,11 +549,11 @@ do_action( 'edit_form_top', $post );
 </div>
 	<?php
 	/**
-	 * Fires before the permalink field in the edit form.
+	 * Kích hoạt trước trường permalink trong form chỉnh sửa.
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param WP_Post $post Post object.
+	 * @param WP_Post $post Đối tượng bài viết.
 	 */
 	do_action( 'edit_form_before_permalink', $post );
 	?>
@@ -562,7 +562,7 @@ do_action( 'edit_form_top', $post );
 	if ( $viewable ) :
 		$sample_permalink_html = $post_type_object->public ? get_sample_permalink_html( $post->ID ) : '';
 
-		// As of 4.4, the Get Shortlink button is hidden by default.
+		// Kể từ 4.4, nút Lấy liên kết ngắn được ẩn theo mặc định.
 		if ( has_filter( 'pre_get_shortlink' ) || has_filter( 'get_shortlink' ) ) {
 			$shortlink = wp_get_shortlink( $post->ID, 'post' );
 
@@ -598,11 +598,11 @@ endif;
 	<?php
 }
 /**
- * Fires after the title field.
+ * Kích hoạt sau trường tiêu đề.
  *
  * @since 3.5.0
  *
- * @param WP_Post $post Post object.
+ * @param WP_Post $post Đối tượng bài viết.
  */
 do_action( 'edit_form_after_title', $post );
 
@@ -673,11 +673,11 @@ if ( post_type_supports( $post_type, 'editor' ) ) {
 	<?php
 }
 /**
- * Fires after the content editor.
+ * Kích hoạt sau trình soạn thảo nội dung.
  *
  * @since 3.5.0
  *
- * @param WP_Post $post Post object.
+ * @param WP_Post $post Đối tượng bài viết.
  */
 do_action( 'edit_form_after_editor', $post );
 ?>
@@ -688,24 +688,24 @@ do_action( 'edit_form_after_editor', $post );
 
 if ( 'page' === $post_type ) {
 	/**
-	 * Fires before meta boxes with 'side' context are output for the 'page' post type.
+	 * Kích hoạt trước khi các meta box với ngữ cảnh 'side' được xuất ra cho loại bài viết 'page'.
 	 *
-	 * The submitpage box is a meta box with 'side' context, so this hook fires just before it is output.
+	 * Hộp submitpage là meta box với ngữ cảnh 'side', vì vậy hook này kích hoạt ngay trước khi nó được xuất ra.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param WP_Post $post Post object.
+	 * @param WP_Post $post Đối tượng bài viết.
 	 */
 	do_action( 'submitpage_box', $post );
 } else {
 	/**
-	 * Fires before meta boxes with 'side' context are output for all post types other than 'page'.
+	 * Kích hoạt trước khi các meta box với ngữ cảnh 'side' được xuất ra cho tất cả loại bài viết ngoại trừ 'page'.
 	 *
-	 * The submitpost box is a meta box with 'side' context, so this hook fires just before it is output.
+	 * Hộp submitpost là meta box với ngữ cảnh 'side', vì vậy hook này kích hoạt ngay trước khi nó được xuất ra.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param WP_Post $post Post object.
+	 * @param WP_Post $post Đối tượng bài viết.
 	 */
 	do_action( 'submitpost_box', $post );
 }
@@ -722,11 +722,11 @@ do_meta_boxes( null, 'normal', $post );
 
 if ( 'page' === $post_type ) {
 	/**
-	 * Fires after 'normal' context meta boxes have been output for the 'page' post type.
+	 * Kích hoạt sau khi các meta box ngữ cảnh 'normal' được xuất ra cho loại bài viết 'page'.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param WP_Post $post Post object.
+	 * @param WP_Post $post Đối tượng bài viết.
 	 */
 	do_action( 'edit_page_form', $post );
 } else {

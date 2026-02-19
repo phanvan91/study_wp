@@ -1,57 +1,55 @@
 <?php
 /**
- * WordPress Export Administration API
+ * API Quản trị Xuất dữ liệu WordPress.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Version number for the export format.
+ * Số phiên bản cho định dạng xuất.
  *
- * Bump this when something changes that might affect compatibility.
+ * Tăng số này khi có thay đổi có thể ảnh hưởng đến tính tương thích.
  *
  * @since 2.5.0
  */
 define( 'WXR_VERSION', '1.2' );
 
 /**
- * Generates the WXR export file for download.
+ * Tạo tệp xuất WXR để tải về.
  *
- * Default behavior is to export all content, however, note that post content will only
- * be exported for post types with the `can_export` argument enabled. Any posts with the
- * 'auto-draft' status will be skipped.
+ * Hành vi mặc định là xuất tất cả nội dung, tuy nhiên lưu ý rằng nội dung bài viết chỉ
+ * được xuất cho các loại bài viết có đối số `can_export` được bật. Mọi bài viết với
+ * trạng thái 'auto-draft' sẽ bị bỏ qua.
  *
  * @since 2.1.0
- * @since 5.7.0 Added the `post_modified` and `post_modified_gmt` fields to the export file.
+ * @since 5.7.0 Thêm các trường `post_modified` và `post_modified_gmt` vào tệp xuất.
  *
- * @global wpdb    $wpdb WordPress database abstraction object.
- * @global WP_Post $post Global post object.
+ * @global wpdb    $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
+ * @global WP_Post $post Đối tượng bài viết toàn cục.
  *
  * @param array $args {
- *     Optional. Arguments for generating the WXR export file for download. Default empty array.
+ *     Tùy chọn. Đối số để tạo tệp xuất WXR để tải về. Mặc định mảng rỗng.
  *
- *     @type string $content    Type of content to export. If set, only the post content of this post type
- *                              will be exported. Accepts 'all', 'post', 'page', 'attachment', or a defined
- *                              custom post. If an invalid custom post type is supplied, every post type for
- *                              which `can_export` is enabled will be exported instead. If a valid custom post
- *                              type is supplied but `can_export` is disabled, then 'posts' will be exported
- *                              instead. When 'all' is supplied, only post types with `can_export` enabled will
- *                              be exported. Default 'all'.
- *     @type string $author     Author to export content for. Only used when `$content` is 'post', 'page', or
- *                              'attachment'. Accepts false (all) or a specific author ID. Default false (all).
- *     @type string $category   Category (slug) to export content for. Used only when `$content` is 'post'. If
- *                              set, only post content assigned to `$category` will be exported. Accepts false
- *                              or a specific category slug. Default is false (all categories).
- *     @type string $start_date Start date to export content from. Expected date format is 'Y-m-d'. Used only
- *                              when `$content` is 'post', 'page' or 'attachment'. Default false (since the
- *                              beginning of time).
- *     @type string $end_date   End date to export content to. Expected date format is 'Y-m-d'. Used only when
- *                              `$content` is 'post', 'page' or 'attachment'. Default false (latest publish date).
- *     @type string $status     Post status to export posts for. Used only when `$content` is 'post' or 'page'.
- *                              Accepts false (all statuses except 'auto-draft'), or a specific status, i.e.
- *                              'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', or
- *                              'trash'. Default false (all statuses except 'auto-draft').
+ *     @type string $content    Loại nội dung để xuất. Nếu được đặt, chỉ nội dung bài viết của loại bài viết này
+ *                              sẽ được xuất. Chấp nhận 'all', 'post', 'page', 'attachment', hoặc một custom post
+ *                              đã định nghĩa. Nếu cung cấp custom post type không hợp lệ, mọi loại bài viết có
+ *                              `can_export` được bật sẽ được xuất thay thế. Nếu cung cấp custom post type hợp lệ
+ *                              nhưng `can_export` bị tắt, thì 'posts' sẽ được xuất thay thế. Khi cung cấp 'all',
+ *                              chỉ các loại bài viết có `can_export` được bật mới được xuất. Mặc định 'all'.
+ *     @type string $author     Tác giả để xuất nội dung. Chỉ dùng khi `$content` là 'post', 'page', hoặc
+ *                              'attachment'. Chấp nhận false (tất cả) hoặc ID tác giả cụ thể. Mặc định false (tất cả).
+ *     @type string $category   Chuyên mục (slug) để xuất nội dung. Chỉ dùng khi `$content` là 'post'. Nếu
+ *                              được đặt, chỉ nội dung bài viết thuộc `$category` sẽ được xuất. Chấp nhận false
+ *                              hoặc slug chuyên mục cụ thể. Mặc định false (tất cả chuyên mục).
+ *     @type string $start_date Ngày bắt đầu để xuất nội dung. Định dạng ngày mong đợi là 'Y-m-d'. Chỉ dùng
+ *                              khi `$content` là 'post', 'page' hoặc 'attachment'. Mặc định false (từ đầu).
+ *     @type string $end_date   Ngày kết thúc để xuất nội dung. Định dạng ngày mong đợi là 'Y-m-d'. Chỉ dùng khi
+ *                              `$content` là 'post', 'page' hoặc 'attachment'. Mặc định false (ngày xuất bản mới nhất).
+ *     @type string $status     Trạng thái bài viết để xuất. Chỉ dùng khi `$content` là 'post' hoặc 'page'.
+ *                              Chấp nhận false (tất cả trạng thái trừ 'auto-draft'), hoặc trạng thái cụ thể,
+ *                              ví dụ 'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit',
+ *                              hoặc 'trash'. Mặc định false (tất cả trạng thái trừ 'auto-draft').
  * }
  */
 function export_wp( $args = array() ) {
@@ -68,11 +66,11 @@ function export_wp( $args = array() ) {
 	$args     = wp_parse_args( $args, $defaults );
 
 	/**
-	 * Fires at the beginning of an export, before any headers are sent.
+	 * Kích hoạt khi bắt đầu xuất, trước khi gửi bất kỳ header nào.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param array $args An array of export arguments.
+	 * @param array $args Mảng các đối số xuất.
 	 */
 	do_action( 'export_wp', $args );
 
@@ -83,13 +81,13 @@ function export_wp( $args = array() ) {
 	$date        = gmdate( 'Y-m-d' );
 	$wp_filename = $sitename . 'WordPress.' . $date . '.xml';
 	/**
-	 * Filters the export filename.
+	 * Lọc tên tệp xuất.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $wp_filename The name of the file for download.
-	 * @param string $sitename    The site name.
-	 * @param string $date        Today's date, formatted.
+	 * @param string $wp_filename Tên tệp để tải về.
+	 * @param string $sitename    Tên trang web.
+	 * @param string $date        Ngày hôm nay, đã định dạng.
 	 */
 	$filename = apply_filters( 'export_wp_filename', $wp_filename, $sitename, $date );
 
@@ -141,15 +139,15 @@ function export_wp( $args = array() ) {
 		}
 	}
 
-	// Grab a snapshot of post IDs, just in case it changes during the export.
+	// Lấy ảnh chụp nhanh các ID bài viết, phòng trường hợp thay đổi trong quá trình xuất.
 	$post_ids = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} $join WHERE $where" );
 
-	// Get IDs for the attachments of each post, unless all content is already being exported.
+	// Lấy ID các tệp đính kèm của mỗi bài viết, trừ khi tất cả nội dung đã được xuất.
 	if ( ! in_array( $args['content'], array( 'all', 'attachment' ), true ) ) {
-		// Array to hold all additional IDs (attachments and thumbnails).
+		// Mảng chứa tất cả ID bổ sung (tệp đính kèm và ảnh đại diện).
 		$additional_ids = array();
 
-		// Create a copy of the post IDs array to avoid modifying the original array.
+		// Tạo bản sao mảng ID bài viết để tránh thay đổi mảng gốc.
 		$processing_ids = $post_ids;
 
 		while ( $next_posts = array_splice( $processing_ids, 0, 20 ) ) {

@@ -1,7 +1,7 @@
 <?php
 /**
- * WordPress Administration for Navigation Menus
- * Interface functions
+ * Quản trị WordPress cho Menu Điều hướng
+ * Các hàm giao diện
  *
  * @version 2.0.0
  *
@@ -9,17 +9,17 @@
  * @subpackage Administration
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
-// Load all the nav menu interface functions.
+// Tải tất cả các hàm giao diện menu điều hướng.
 require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
 
 if ( ! current_theme_supports( 'menus' ) && ! current_theme_supports( 'widgets' ) ) {
 	wp_die( __( 'Your theme does not support navigation menus or widgets.' ) );
 }
 
-// Permissions check.
+// Kiểm tra quyền hạn.
 if ( ! current_user_can( 'edit_theme_options' ) ) {
 	wp_die(
 		'<h1>' . __( 'You need a higher level of permission.' ) . '</h1>' .
@@ -28,7 +28,7 @@ if ( ! current_user_can( 'edit_theme_options' ) ) {
 	);
 }
 
-// Used in the HTML title tag.
+// Được dùng trong thẻ HTML title.
 $title = __( 'Menus' );
 
 wp_enqueue_script( 'nav-menu' );
@@ -37,26 +37,26 @@ if ( wp_is_mobile() ) {
 	wp_enqueue_script( 'jquery-touch-punch' );
 }
 
-// Container for any messages displayed to the user.
+// Biến chứa các thông báo hiển thị cho người dùng.
 $messages = array();
 
-// Container that stores the name of the active menu.
+// Biến lưu tên của menu đang hoạt động.
 $nav_menu_selected_title = '';
 
-// The menu id of the current menu being edited.
+// ID menu của menu đang được chỉnh sửa.
 $nav_menu_selected_id = isset( $_REQUEST['menu'] ) ? (int) $_REQUEST['menu'] : 0;
 
-// Get existing menu locations assignments.
+// Lấy các gán vị trí menu hiện có.
 $locations      = get_registered_nav_menus();
 $menu_locations = get_nav_menu_locations();
 $num_locations  = count( array_keys( $locations ) );
 
-// Allowed actions: add, update, delete.
+// Các hành động được phép: add, update, delete.
 $action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'edit';
 
 /*
- * If a JSON blob of navigation menu data is found, expand it and inject it
- * into `$_POST` to avoid PHP `max_input_vars` limitations. See #14134.
+ * Nếu tìm thấy dữ liệu JSON của menu điều hướng, mở rộng và chèn nó
+ * vào `$_POST` để tránh giới hạn `max_input_vars` của PHP. Xem #14134.
  */
 _wp_expand_nav_menu_post_data();
 
@@ -73,7 +73,7 @@ switch ( $action ) {
 		break;
 
 	case 'move-down-menu-item':
-		// Moving down a menu item is the same as moving up the next in order.
+		// Di chuyển xuống một mục menu tương đương với di chuyển lên mục tiếp theo theo thứ tự.
 		check_admin_referer( 'move-menu_item' );
 
 		$menu_item_id = isset( $_REQUEST['menu-item'] ) ? (int) $_REQUEST['menu-item'] : 0;
@@ -86,7 +86,7 @@ switch ( $action ) {
 				$ordered_menu_items = wp_get_nav_menu_items( $menu_id );
 				$menu_item_data     = (array) wp_setup_nav_menu_item( get_post( $menu_item_id ) );
 
-				// Set up the data we need in one pass through the array of menu items.
+				// Thiết lập dữ liệu cần thiết trong một lần duyệt qua mảng các mục menu.
 				$dbids_to_orders = array();
 				$orders_to_dbids = array();
 
@@ -99,12 +99,12 @@ switch ( $action ) {
 					}
 				}
 
-				// Get next in order.
+				// Lấy mục tiếp theo theo thứ tự.
 				if ( isset( $orders_to_dbids[ $dbids_to_orders[ $menu_item_id ] + 1 ] ) ) {
 					$next_item_id   = $orders_to_dbids[ $dbids_to_orders[ $menu_item_id ] + 1 ];
 					$next_item_data = (array) wp_setup_nav_menu_item( get_post( $next_item_id ) );
 
-					// If not siblings of same parent, bubble menu item up but keep order.
+					// Nếu không phải anh em cùng cha, đẩy mục menu lên nhưng giữ thứ tự.
 					if ( ! empty( $menu_item_data['menu_item_parent'] )
 						&& ( empty( $next_item_data['menu_item_parent'] )
 							|| (int) $next_item_data['menu_item_parent'] !== (int) $menu_item_data['menu_item_parent'] )
@@ -121,20 +121,20 @@ switch ( $action ) {
 							$parent_data                        = (array) $parent_object;
 							$menu_item_data['menu_item_parent'] = $parent_data['menu_item_parent'];
 
-							// Reset invalid `menu_item_parent`.
+							// Đặt lại `menu_item_parent` không hợp lệ.
 							$menu_item_data = _wp_reset_invalid_menu_item_parent( $menu_item_data );
 
 							update_post_meta( $menu_item_data['ID'], '_menu_item_menu_item_parent', (int) $menu_item_data['menu_item_parent'] );
 						}
 
-						// Make menu item a child of its next sibling.
+						// Biến mục menu thành con của mục anh em tiếp theo.
 					} else {
 						$next_item_data['menu_order'] = $next_item_data['menu_order'] - 1;
 						$menu_item_data['menu_order'] = $menu_item_data['menu_order'] + 1;
 
 						$menu_item_data['menu_item_parent'] = $next_item_data['ID'];
 
-						// Reset invalid `menu_item_parent`.
+						// Đặt lại `menu_item_parent` không hợp lệ.
 						$menu_item_data = _wp_reset_invalid_menu_item_parent( $menu_item_data );
 
 						update_post_meta( $menu_item_data['ID'], '_menu_item_menu_item_parent', (int) $menu_item_data['menu_item_parent'] );
@@ -143,13 +143,13 @@ switch ( $action ) {
 						wp_update_post( $next_item_data );
 					}
 
-					// The item is last but still has a parent, so bubble up.
+					// Mục này là cuối cùng nhưng vẫn có cha, nên đẩy lên.
 				} elseif ( ! empty( $menu_item_data['menu_item_parent'] )
 					&& in_array( (int) $menu_item_data['menu_item_parent'], $orders_to_dbids, true )
 				) {
 					$menu_item_data['menu_item_parent'] = (int) get_post_meta( $menu_item_data['menu_item_parent'], '_menu_item_menu_item_parent', true );
 
-					// Reset invalid `menu_item_parent`.
+					// Đặt lại `menu_item_parent` không hợp lệ.
 					$menu_item_data = _wp_reset_invalid_menu_item_parent( $menu_item_data );
 
 					update_post_meta( $menu_item_data['ID'], '_menu_item_menu_item_parent', (int) $menu_item_data['menu_item_parent'] );
@@ -176,7 +176,7 @@ switch ( $action ) {
 				$ordered_menu_items = wp_get_nav_menu_items( $menu_id );
 				$menu_item_data     = (array) wp_setup_nav_menu_item( get_post( $menu_item_id ) );
 
-				// Set up the data we need in one pass through the array of menu items.
+				// Thiết lập dữ liệu cần thiết trong một lần duyệt qua mảng các mục menu.
 				$dbids_to_orders = array();
 				$orders_to_dbids = array();
 
@@ -189,12 +189,12 @@ switch ( $action ) {
 					}
 				}
 
-				// If this menu item is not first.
+				// Nếu mục menu này không phải là đầu tiên.
 				if ( ! empty( $dbids_to_orders[ $menu_item_id ] )
 					&& ! empty( $orders_to_dbids[ $dbids_to_orders[ $menu_item_id ] - 1 ] )
 				) {
 
-					// If this menu item is a child of the previous.
+					// Nếu mục menu này là con của mục trước đó.
 					if ( ! empty( $menu_item_data['menu_item_parent'] )
 						&& in_array( (int) $menu_item_data['menu_item_parent'], array_keys( $dbids_to_orders ), true )
 						&& isset( $orders_to_dbids[ $dbids_to_orders[ $menu_item_id ] - 1 ] )
@@ -212,8 +212,8 @@ switch ( $action ) {
 							$parent_data = (array) $parent_object;
 
 							/*
-							 * If there is something before the parent and parent a child of it,
-							 * make menu item a child also of it.
+							 * Nếu có mục nào đó trước cha và cha là con của nó,
+							 * biến mục menu cũng thành con của nó.
 							 */
 							if ( ! empty( $dbids_to_orders[ $parent_db_id ] )
 								&& ! empty( $orders_to_dbids[ $dbids_to_orders[ $parent_db_id ] - 1 ] )
@@ -222,8 +222,8 @@ switch ( $action ) {
 								$menu_item_data['menu_item_parent'] = $parent_data['menu_item_parent'];
 
 								/*
-								* Else if there is something before parent and parent not a child of it,
-								* make menu item a child of that something's parent
+								* Ngược lại nếu có mục nào đó trước cha và cha không phải con của nó,
+								* biến mục menu thành con của cha của mục đó
 								*/
 							} elseif ( ! empty( $dbids_to_orders[ $parent_db_id ] )
 								&& ! empty( $orders_to_dbids[ $dbids_to_orders[ $parent_db_id ] - 1 ] )
@@ -236,34 +236,34 @@ switch ( $action ) {
 									$menu_item_data['menu_item_parent'] = 0;
 								}
 
-								// Else there isn't something before the parent.
+								// Ngược lại không có mục nào trước cha.
 							} else {
 								$menu_item_data['menu_item_parent'] = 0;
 							}
 
-							// Set former parent's [menu_order] to that of menu-item's.
+							// Đặt [menu_order] của cha cũ bằng giá trị của mục menu.
 							$parent_data['menu_order'] = $parent_data['menu_order'] + 1;
 
-							// Set menu-item's [menu_order] to that of former parent.
+							// Đặt [menu_order] của mục menu bằng giá trị của cha cũ.
 							$menu_item_data['menu_order'] = $menu_item_data['menu_order'] - 1;
 
-							// Save changes.
+							// Lưu thay đổi.
 							update_post_meta( $menu_item_data['ID'], '_menu_item_menu_item_parent', (int) $menu_item_data['menu_item_parent'] );
 							wp_update_post( $menu_item_data );
 							wp_update_post( $parent_data );
 						}
 
-						// Else this menu item is not a child of the previous.
+						// Ngược lại mục menu này không phải là con của mục trước đó.
 					} elseif ( empty( $menu_item_data['menu_order'] )
 						|| empty( $menu_item_data['menu_item_parent'] )
 						|| ! in_array( (int) $menu_item_data['menu_item_parent'], array_keys( $dbids_to_orders ), true )
 						|| empty( $orders_to_dbids[ $dbids_to_orders[ $menu_item_id ] - 1 ] )
 						|| $orders_to_dbids[ $dbids_to_orders[ $menu_item_id ] - 1 ] !== (int) $menu_item_data['menu_item_parent']
 					) {
-						// Just make it a child of the previous; keep the order.
+						// Chỉ cần biến nó thành con của mục trước đó; giữ nguyên thứ tự.
 						$menu_item_data['menu_item_parent'] = (int) $orders_to_dbids[ $dbids_to_orders[ $menu_item_id ] - 1 ];
 
-						// Reset invalid `menu_item_parent`.
+						// Đặt lại `menu_item_parent` không hợp lệ.
 						$menu_item_data = _wp_reset_invalid_menu_item_parent( $menu_item_data );
 
 						update_post_meta( $menu_item_data['ID'], '_menu_item_menu_item_parent', (int) $menu_item_data['menu_item_parent'] );
@@ -299,7 +299,7 @@ switch ( $action ) {
 		if ( is_nav_menu( $nav_menu_selected_id ) ) {
 			$deletion = wp_delete_nav_menu( $nav_menu_selected_id );
 		} else {
-			// Reset the selected menu.
+			// Đặt lại menu đã chọn.
 			$nav_menu_selected_id = 0;
 			unset( $_REQUEST['menu'] );
 		}
@@ -369,14 +369,14 @@ switch ( $action ) {
 	case 'update':
 		check_admin_referer( 'update-nav_menu', 'update-nav-menu-nonce' );
 
-		// Merge new and existing menu locations if any new ones are set.
+		// Gộp các vị trí menu mới và hiện có nếu có vị trí mới được đặt.
 		$new_menu_locations = array();
 		if ( isset( $_POST['menu-locations'] ) ) {
 			$new_menu_locations = array_map( 'absint', $_POST['menu-locations'] );
 			$menu_locations     = array_merge( $menu_locations, $new_menu_locations );
 		}
 
-		// Add Menu.
+		// Thêm Menu.
 		if ( 0 === $nav_menu_selected_id ) {
 			$new_menu_title = trim( esc_html( $_POST['menu-name'] ) );
 
@@ -402,22 +402,22 @@ switch ( $action ) {
 					}
 
 					if ( isset( $_REQUEST['zero-menu-state'] ) || ! empty( $_POST['auto-add-pages'] ) ) {
-						// If there are menu items, add them.
+						// Nếu có các mục menu, thêm chúng vào.
 						wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selected_title );
 					}
 
 					if ( isset( $_REQUEST['zero-menu-state'] ) ) {
-						// Auto-save nav_menu_locations.
+						// Tự động lưu nav_menu_locations.
 						$locations = get_nav_menu_locations();
 
 						foreach ( $locations as $location => $menu_id ) {
 								$locations[ $location ] = $nav_menu_selected_id;
-								break; // There should only be 1.
+								break; // Chỉ nên có 1.
 						}
 
 						set_theme_mod( 'nav_menu_locations', $locations );
 					} elseif ( count( $new_menu_locations ) > 0 ) {
-						// If locations have been selected for the new menu, save those.
+						// Nếu các vị trí đã được chọn cho menu mới, lưu chúng.
 						$locations = get_nav_menu_locations();
 
 						foreach ( array_keys( $new_menu_locations ) as $location ) {
@@ -452,9 +452,9 @@ switch ( $action ) {
 				);
 			}
 
-			// Update existing menu.
+			// Cập nhật menu hiện có.
 		} else {
-			// Remove menu locations that have been unchecked.
+			// Xóa các vị trí menu đã bị bỏ chọn.
 			foreach ( $locations as $location => $description ) {
 				if ( ( empty( $_POST['menu-locations'] ) || empty( $_POST['menu-locations'][ $location ] ) )
 					&& isset( $menu_locations[ $location ] ) && $menu_locations[ $location ] === $nav_menu_selected_id
@@ -463,7 +463,7 @@ switch ( $action ) {
 				}
 			}
 
-			// Set menu locations.
+			// Đặt vị trí menu.
 			set_theme_mod( 'nav_menu_locations', $menu_locations );
 
 			$_menu_object = wp_get_nav_menu_object( $nav_menu_selected_id );
@@ -501,11 +501,11 @@ switch ( $action ) {
 				}
 			}
 
-			// Update menu items.
+			// Cập nhật các mục menu.
 			if ( ! is_wp_error( $_menu_object ) ) {
 				$messages = array_merge( $messages, wp_nav_menu_update_menu_items( $_nav_menu_selected_id, $nav_menu_selected_title ) );
 
-				// If the menu ID changed, redirect to the new URL.
+				// Nếu ID menu đã thay đổi, chuyển hướng đến URL mới.
 				if ( $nav_menu_selected_id !== $_nav_menu_selected_id ) {
 					wp_redirect( admin_url( 'nav-menus.php?menu=' . (int) $_nav_menu_selected_id ) );
 					exit;
@@ -528,7 +528,7 @@ switch ( $action ) {
 
 			$new_menu_locations = array_map( 'absint', $_POST['menu-locations'] );
 			$menu_locations     = array_merge( $menu_locations, $new_menu_locations );
-			// Set menu locations.
+			// Đặt vị trí menu.
 			set_theme_mod( 'nav_menu_locations', $menu_locations );
 
 			$messages[] = wp_get_admin_notice(
@@ -544,11 +544,11 @@ switch ( $action ) {
 		break;
 }
 
-// Get all nav menus.
+// Lấy tất cả menu điều hướng.
 $nav_menus  = wp_get_nav_menus();
 $menu_count = count( $nav_menus );
 
-// Are we on the add new screen?
+// Có phải đang ở màn hình thêm mới không?
 $add_new_screen = ( isset( $_GET['menu'] ) && 0 === (int) $_GET['menu'] ) ? true : false;
 
 $locations_screen = ( isset( $_GET['action'] ) && 'locations' === $_GET['action'] ) ? true : false;
@@ -556,8 +556,8 @@ $locations_screen = ( isset( $_GET['action'] ) && 'locations' === $_GET['action'
 $page_count = wp_count_posts( 'page' );
 
 /*
- * If we have one theme location, and zero menus, we take them right
- * into editing their first menu.
+ * Nếu chúng ta có một vị trí giao diện, và không có menu nào, đưa người dùng
+ * trực tiếp vào chỉnh sửa menu đầu tiên.
  */
 if ( 1 === count( get_registered_nav_menus() ) && ! $add_new_screen
 	&& empty( $nav_menus ) && ! empty( $page_count->publish )
@@ -603,69 +603,69 @@ $nav_menus_l10n = array(
 wp_localize_script( 'nav-menu', 'menus', $nav_menus_l10n );
 
 /*
- * Redirect to add screen if there are no menus and this users has either zero,
- * or more than 1 theme locations.
+ * Chuyển hướng đến màn hình thêm mới nếu không có menu nào và người dùng này
+ * có không hoặc nhiều hơn 1 vị trí giao diện.
  */
 if ( 0 === $menu_count && ! $add_new_screen && ! $one_theme_location_no_menus ) {
 	wp_redirect( admin_url( 'nav-menus.php?action=edit&menu=0' ) );
 }
 
-// Get recently edited nav menu.
+// Lấy menu điều hướng được chỉnh sửa gần đây.
 $recently_edited = absint( get_user_option( 'nav_menu_recently_edited' ) );
 if ( empty( $recently_edited ) && is_nav_menu( $nav_menu_selected_id ) ) {
 	$recently_edited = $nav_menu_selected_id;
 }
 
-// Use $recently_edited if none are selected.
+// Sử dụng $recently_edited nếu chưa có menu nào được chọn.
 if ( empty( $nav_menu_selected_id ) && ! isset( $_GET['menu'] ) && is_nav_menu( $recently_edited ) ) {
 	$nav_menu_selected_id = $recently_edited;
 }
 
-// On deletion of menu, if another menu exists, show it.
+// Khi xóa menu, nếu còn menu khác, hiển thị menu đó.
 if ( ! $add_new_screen && $menu_count > 0 && isset( $_GET['action'] ) && 'delete' === $_GET['action'] ) {
 	$nav_menu_selected_id = $nav_menus[0]->term_id;
 }
 
-// Set $nav_menu_selected_id to 0 if no menus.
+// Đặt $nav_menu_selected_id thành 0 nếu không có menu.
 if ( $one_theme_location_no_menus ) {
 	$nav_menu_selected_id = 0;
 } elseif ( empty( $nav_menu_selected_id ) && ! empty( $nav_menus ) && ! $add_new_screen ) {
-	// If we have no selection yet, and we have menus, set to the first one in the list.
+	// Nếu chưa có lựa chọn nào, và có menu, đặt thành menu đầu tiên trong danh sách.
 	$nav_menu_selected_id = $nav_menus[0]->term_id;
 }
 
-// Update the user's setting.
+// Cập nhật cài đặt của người dùng.
 if ( $nav_menu_selected_id !== $recently_edited && is_nav_menu( $nav_menu_selected_id ) ) {
 	update_user_meta( $current_user->ID, 'nav_menu_recently_edited', $nav_menu_selected_id );
 }
 
-// If there's a menu, get its name.
+// Nếu có menu, lấy tên của nó.
 if ( ! $nav_menu_selected_title && is_nav_menu( $nav_menu_selected_id ) ) {
 	$_menu_object            = wp_get_nav_menu_object( $nav_menu_selected_id );
 	$nav_menu_selected_title = ! is_wp_error( $_menu_object ) ? $_menu_object->name : '';
 }
 
-// Generate truncated menu names.
+// Tạo tên menu được cắt ngắn.
 foreach ( (array) $nav_menus as $key => $_nav_menu ) {
 	$nav_menus[ $key ]->truncated_name = wp_html_excerpt( $_nav_menu->name, 40, '&hellip;' );
 }
 
-// Retrieve menu locations.
+// Lấy các vị trí menu.
 if ( current_theme_supports( 'menus' ) ) {
 	$locations      = get_registered_nav_menus();
 	$menu_locations = get_nav_menu_locations();
 }
 
 /*
- * Ensure the user will be able to scroll horizontally
- * by adding a class for the max menu depth.
+ * Đảm bảo người dùng có thể cuộn ngang
+ * bằng cách thêm class cho độ sâu menu tối đa.
  *
  * @global int $_wp_nav_menu_max_depth
  */
 global $_wp_nav_menu_max_depth;
 $_wp_nav_menu_max_depth = 0;
 
-// Calling wp_get_nav_menu_to_edit generates $_wp_nav_menu_max_depth.
+// Gọi wp_get_nav_menu_to_edit sẽ tạo ra $_wp_nav_menu_max_depth.
 if ( is_nav_menu( $nav_menu_selected_id ) ) {
 	$menu_items  = wp_get_nav_menu_items( $nav_menu_selected_id, array( 'post_status' => 'any' ) );
 	$edit_markup = wp_get_nav_menu_to_edit( $nav_menu_selected_id );
@@ -676,8 +676,8 @@ if ( is_nav_menu( $nav_menu_selected_id ) ) {
  *
  * @since 3.0.0
  *
- * @param string $classes
- * @return string
+ * @param string $classes Các lớp CSS.
+ * @return string Các lớp CSS đã được thêm.
  */
 function wp_nav_menu_max_depth( $classes ) {
 	global $_wp_nav_menu_max_depth;
@@ -774,7 +774,7 @@ get_current_screen()->set_help_sidebar(
 	'<p>' . __( '<a href="https://wordpress.org/support/forums/">Support forums</a>' ) . '</p>'
 );
 
-// Get the admin header.
+// Lấy header quản trị.
 require_once ABSPATH . 'wp-admin/admin-header.php';
 ?>
 <div class="wrap">
@@ -922,7 +922,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 							</div><!-- .locations-row-links -->
 						</td><!-- .menu-location-menus -->
 					</tr><!-- .menu-locations-row -->
-				<?php } // End foreach. ?>
+				<?php } // Kết thúc foreach. ?>
 				</tbody>
 			</table>
 			<p class="button-controls wp-clearfix"><?php submit_button( __( 'Save Changes' ), 'primary left', 'nav-menu-locations', false ); ?></p>
@@ -932,7 +932,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 	</div><!-- #menu-locations-wrap -->
 		<?php
 		/**
-		 * Fires after the menu locations table is displayed.
+		 * Kích hoạt sau khi bảng vị trí menu được hiển thị.
 		 *
 		 * @since 3.6.0
 		 */
@@ -997,17 +997,17 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 							}
 
 							/**
-							 * Filters the number of locations listed per menu in the drop-down select.
+							 * Lọc số lượng vị trí được liệt kê cho mỗi menu trong danh sách thả xuống.
 							 *
 							 * @since 3.6.0
 							 *
-							 * @param int $locations Number of menu locations to list. Default 3.
+							 * @param int $locations Số lượng vị trí menu cần liệt kê. Mặc định 3.
 							 */
 							$locations_listed_per_menu = absint( apply_filters( 'wp_nav_locations_listed_per_menu', 3 ) );
 
 							$assigned_locations = array_slice( $locations_assigned_to_this_menu, 0, $locations_listed_per_menu );
 
-							// Adds ellipses following the number of locations defined in $assigned_locations.
+							// Thêm dấu ba chấm sau số lượng vị trí được xác định trong $assigned_locations.
 							if ( ! empty( $assigned_locations ) ) {
 								printf(
 									' (%1$s%2$s)',

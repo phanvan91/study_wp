@@ -1,13 +1,13 @@
 <?php
 /**
- * Edit Site Settings Administration Screen
+ * Màn hình Quản trị Chỉnh sửa Cài đặt Trang web
  *
  * @package WordPress
  * @subpackage Multisite
  * @since 3.1.0
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( ! current_user_can( 'manage_sites' ) ) {
@@ -39,23 +39,23 @@ if ( isset( $_REQUEST['action'] ) && 'update-site' === $_REQUEST['action'] && is
 
 	switch_to_blog( $id );
 
-	$skip_options = array( 'allowedthemes' ); // Don't update these options since they are handled elsewhere in the form.
+	$skip_options = array( 'allowedthemes' ); // Không cập nhật các tùy chọn này vì chúng được xử lý ở nơi khác trong biểu mẫu.
 	foreach ( (array) $_POST['option'] as $key => $val ) {
 		$key = wp_unslash( $key );
 		$val = wp_unslash( $val );
 		if ( 0 === $key || is_array( $val ) || in_array( $key, $skip_options, true ) ) {
-			continue; // Avoids "0 is a protected WP option and may not be modified" error when editing blog options.
+			continue; // Tránh lỗi "0 là tùy chọn WP được bảo vệ và không thể sửa đổi" khi chỉnh sửa tùy chọn blog.
 		}
 		update_option( $key, $val );
 	}
 
 	/**
-	 * Fires after the site options are updated.
+	 * Kích hoạt sau khi các tùy chọn trang web được cập nhật.
 	 *
 	 * @since 3.0.0
-	 * @since 4.4.0 Added `$id` parameter.
+	 * @since 4.4.0 Thêm tham số `$id`.
 	 *
-	 * @param int $id The ID of the site being updated.
+	 * @param int $id ID của trang web đang được cập nhật.
 	 */
 	do_action( 'wpmu_update_blog_options', $id );
 
@@ -79,7 +79,7 @@ if ( isset( $_GET['update'] ) ) {
 	}
 }
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ tiêu đề HTML.
 /* translators: %s: Site title. */
 $title = sprintf( __( 'Edit Site: %s' ), esc_html( $details->blogname ) );
 
@@ -168,14 +168,14 @@ if ( ! empty( $messages ) ) {
 				</tr>
 				<?php
 			}
-		} // End foreach.
+		} // Kết thúc foreach.
 
 		/**
-		 * Fires at the end of the Edit Site form, before the submit button.
+		 * Kích hoạt ở cuối biểu mẫu Chỉnh sửa Trang web, trước nút gửi.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param int $id Site ID.
+		 * @param int $id ID của trang web.
 		 */
 		do_action( 'wpmueditblogaction', $id );
 		?>

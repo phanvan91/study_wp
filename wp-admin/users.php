@@ -1,13 +1,13 @@
 <?php
 /**
- * User administration panel
+ * Trang quản trị người dùng
  *
  * @package WordPress
  * @subpackage Administration
  * @since 1.0.0
  */
 
-/** WordPress Administration Bootstrap */
+/** Nạp tệp khởi động Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( ! current_user_can( 'list_users' ) ) {
@@ -21,13 +21,13 @@ if ( ! current_user_can( 'list_users' ) ) {
 $wp_list_table = _get_list_table( 'WP_Users_List_Table' );
 $pagenum       = $wp_list_table->get_pagenum();
 
-// Used in the HTML title tag.
+// Dùng trong thẻ tiêu đề HTML.
 $title       = __( 'Users' );
 $parent_file = 'users.php';
 
 add_screen_option( 'per_page' );
 
-// Contextual help - choose Help on the top right of admin panel to preview this.
+// Trợ giúp theo ngữ cảnh - chọn Trợ giúp ở góc trên bên phải bảng quản trị để xem trước.
 get_current_screen()->add_help_tab(
 	array(
 		'id'      => 'overview',
@@ -106,7 +106,7 @@ $update = '';
 
 switch ( $wp_list_table->current_action() ) {
 
-	/* Bulk Dropdown menu Role changes */
+	/* Thay đổi vai trò từ menu thả xuống hàng loạt */
 	case 'promote':
 		check_admin_referer( 'bulk-users' );
 
@@ -122,7 +122,7 @@ switch ( $wp_list_table->current_action() ) {
 		$editable_roles = get_editable_roles();
 		$role           = $_REQUEST['new_role'];
 
-		// Mocking the `none` role so we are able to save it to the database
+		// Giả lập vai trò `none` để có thể lưu vào cơ sở dữ liệu
 		$editable_roles['none'] = array(
 			'name' => __( '&mdash; No role for this site &mdash;' ),
 		);
@@ -143,7 +143,7 @@ switch ( $wp_list_table->current_action() ) {
 				wp_die( __( 'Sorry, you are not allowed to edit this user.' ), 403 );
 			}
 
-			// The new role of the current user must also have the promote_users cap or be a multisite super admin.
+			// Vai trò mới của người dùng hiện tại cũng phải có quyền promote_users hoặc là quản trị viên cấp cao đa trang.
 			if ( $id === $current_user->ID
 				&& ! $wp_roles->role_objects[ $role ]->has_cap( 'promote_users' )
 				&& ! ( is_multisite() && current_user_can( 'manage_network_users' ) )
@@ -152,7 +152,7 @@ switch ( $wp_list_table->current_action() ) {
 					continue;
 			}
 
-			// If the user doesn't already belong to the blog, bail.
+			// Nếu người dùng chưa thuộc về trang blog, thoát.
 			if ( is_multisite() && ! is_user_member_of_blog( $id ) ) {
 				wp_die(
 					'<h1>' . __( 'An error occurred.' ) . '</h1>' .
@@ -254,7 +254,7 @@ switch ( $wp_list_table->current_action() ) {
 				continue;
 			}
 
-			// Send the password reset link.
+			// Gửi liên kết đặt lại mật khẩu.
 			$user = get_userdata( $id );
 			if ( true === retrieve_password( $user->user_login ) ) {
 				++$reset_count;
@@ -300,13 +300,13 @@ switch ( $wp_list_table->current_action() ) {
 		}
 
 		/**
-		 * Filters whether the users being deleted have additional content
-		 * associated with them outside of the `post_author` and `link_owner` relationships.
+		 * Lọc xem các người dùng đang bị xóa có nội dung bổ sung
+		 * liên kết với họ ngoài các quan hệ `post_author` và `link_owner` hay không.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param bool  $users_have_additional_content Whether the users have additional content. Default false.
-		 * @param int[] $user_ids                      Array of IDs for users being deleted.
+		 * @param bool  $users_have_additional_content Liệu người dùng có nội dung bổ sung. Mặc định false.
+		 * @param int[] $user_ids                      Mảng ID của các người dùng đang bị xóa.
 		 */
 		$users_have_content = (bool) apply_filters( 'users_have_additional_content', false, $user_ids );
 
@@ -430,13 +430,13 @@ switch ( $wp_list_table->current_action() ) {
 			endif;
 
 			/**
-			 * Fires at the end of the delete users form prior to the confirm button.
+			 * Kích hoạt ở cuối biểu mẫu xóa người dùng trước nút xác nhận.
 			 *
 			 * @since 4.0.0
-			 * @since 4.5.0 The `$user_ids` parameter was added.
+			 * @since 4.5.0 Thêm tham số `$user_ids`.
 			 *
-			 * @param WP_User $current_user WP_User object for the current user.
-			 * @param int[]   $user_ids     Array of IDs for users being deleted.
+			 * @param WP_User $current_user Đối tượng WP_User của người dùng hiện tại.
+			 * @param int[]   $user_ids     Mảng ID của các người dùng đang bị xóa.
 			 */
 			do_action( 'delete_user_form', $current_user, $user_ids );
 			?>
@@ -586,7 +586,7 @@ switch ( $wp_list_table->current_action() ) {
 			$sendback = wp_get_referer();
 			$user_ids = array_map( 'intval', (array) $_REQUEST['users'] );
 
-			/** This action is documented in wp-admin/edit.php */
+			/** Hành động này được ghi nhận tại wp-admin/edit.php */
 			$sendback = apply_filters( "handle_bulk_actions-{$screen}", $sendback, $wp_list_table->current_action(), $user_ids ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
 			wp_safe_redirect( $sendback );
@@ -820,6 +820,6 @@ switch ( $wp_list_table->current_action() ) {
 		<?php
 		break;
 
-} // End of the $doaction switch.
+} // Kết thúc câu lệnh switch $doaction.
 
 require_once ABSPATH . 'wp-admin/admin-footer.php';

@@ -1,15 +1,15 @@
 <?php
 /**
- * Widget administration screen.
+ * Màn hình quản trị Widget.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Tệp khởi động Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
-/** WordPress Administration Widgets API */
+/** API Widget Quản trị WordPress */
 require_once ABSPATH . 'wp-admin/includes/widgets.php';
 
 if ( ! current_user_can( 'edit_theme_options' ) ) {
@@ -24,7 +24,7 @@ if ( ! current_theme_supports( 'widgets' ) ) {
 	wp_die( __( 'The theme you are currently using is not widget-aware, meaning that it has no sidebars that you are able to change. For information on making your theme widget-aware, please <a href="https://developer.wordpress.org/themes/functionality/widgets/">follow these instructions</a>.' ) );
 }
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ HTML title.
 $title       = __( 'Widgets' );
 $parent_file = 'themes.php';
 

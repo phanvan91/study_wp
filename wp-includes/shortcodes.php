@@ -1,25 +1,25 @@
 <?php
 /**
- * WordPress API for creating bbcode-like tags or what WordPress calls
- * "shortcodes". The tag and attribute parsing or regular expression code is
- * based on the Textpattern tag parser.
+ * API WordPress để tạo các thẻ dạng bbcode hay còn gọi là "shortcode" trong WordPress.
+ * Mã phân tích thẻ và thuộc tính hoặc biểu thức chính quy được dựa trên
+ * bộ phân tích thẻ của Textpattern.
  *
- * A few examples are below:
+ * Một vài ví dụ bên dưới:
  *
  * [shortcode /]
  * [shortcode foo="bar" baz="bing" /]
- * [shortcode foo="bar"]content[/shortcode]
+ * [shortcode foo="bar"]nội dung[/shortcode]
  *
- * Shortcode tags support attributes and enclosed content, but does not entirely
- * support inline shortcodes in other shortcodes. You will have to call the
- * shortcode parser in your function to account for that.
+ * Thẻ shortcode hỗ trợ thuộc tính và nội dung được bao bọc, nhưng không hoàn toàn
+ * hỗ trợ shortcode nội tuyến trong các shortcode khác. Bạn sẽ cần gọi
+ * bộ phân tích shortcode trong hàm của bạn để xử lý điều đó.
  *
  * {@internal
- * Please be aware that the above note was made during the beta of WordPress 2.6
- * and in the future may not be accurate. Please update the note when it is no
- * longer the case.}}
+ * Xin lưu ý rằng ghi chú ở trên được viết trong giai đoạn beta của WordPress 2.6
+ * và trong tương lai có thể không chính xác. Vui lòng cập nhật ghi chú khi nó không
+ * còn đúng.}}
  *
- * To apply shortcode tags to content:
+ * Để áp dụng thẻ shortcode vào nội dung:
  *
  *     $out = do_shortcode( $content );
  *
@@ -31,7 +31,7 @@
  */
 
 /**
- * Container for storing shortcode tags and their hook to call for the shortcode.
+ * Bộ chứa để lưu trữ các thẻ shortcode và hook callback tương ứng.
  *
  * @since 2.5.0
  *
@@ -42,23 +42,23 @@
 $shortcode_tags = array();
 
 /**
- * Adds a new shortcode.
+ * Thêm một shortcode mới.
  *
- * Care should be taken through prefixing or other means to ensure that the
- * shortcode tag being added is unique and will not conflict with other,
- * already-added shortcode tags. In the event of a duplicated tag, the tag
- * loaded last will take precedence.
+ * Cần cẩn thận thông qua tiền tố hoặc các cách khác để đảm bảo rằng
+ * thẻ shortcode được thêm là duy nhất và sẽ không xung đột với các
+ * thẻ shortcode đã được thêm trước đó. Trong trường hợp thẻ trùng lặp,
+ * thẻ được tải sau cùng sẽ được ưu tiên.
  *
  * @since 2.5.0
  *
  * @global array $shortcode_tags
  *
- * @param string   $tag      Shortcode tag to be searched in post content.
- * @param callable $callback The callback function to run when the shortcode is found.
- *                           Every shortcode callback is passed three parameters by default,
- *                           including an array of attributes (`$atts`), the shortcode content
- *                           or null if not set (`$content`), and finally the shortcode tag
- *                           itself (`$shortcode_tag`), in that order.
+ * @param string   $tag      Thẻ shortcode cần tìm kiếm trong nội dung bài viết.
+ * @param callable $callback Hàm callback sẽ chạy khi tìm thấy shortcode.
+ *                           Mỗi callback shortcode mặc định nhận ba tham số,
+ *                           bao gồm một mảng thuộc tính (`$atts`), nội dung shortcode
+ *                           hoặc null nếu không được đặt (`$content`), và cuối cùng là
+ *                           chính thẻ shortcode (`$shortcode_tag`), theo thứ tự đó.
  */
 function add_shortcode( $tag, $callback ) {
 	global $shortcode_tags;
@@ -90,13 +90,13 @@ function add_shortcode( $tag, $callback ) {
 }
 
 /**
- * Removes hook for shortcode.
+ * Gỡ bỏ hook cho shortcode.
  *
  * @since 2.5.0
  *
  * @global array $shortcode_tags
  *
- * @param string $tag Shortcode tag to remove hook for.
+ * @param string $tag Thẻ shortcode cần gỡ bỏ hook.
  */
 function remove_shortcode( $tag ) {
 	global $shortcode_tags;
@@ -105,10 +105,10 @@ function remove_shortcode( $tag ) {
 }
 
 /**
- * Clears all shortcodes.
+ * Xóa tất cả shortcode.
  *
- * This function clears all of the shortcode tags by replacing the shortcodes global with
- * an empty array. This is actually an efficient method for removing all shortcodes.
+ * Hàm này xóa tất cả các thẻ shortcode bằng cách thay thế biến toàn cục shortcodes bằng
+ * một mảng rỗng. Đây thực chất là một phương pháp hiệu quả để gỡ bỏ tất cả shortcode.
  *
  * @since 2.5.0
  *
@@ -121,14 +121,14 @@ function remove_all_shortcodes() {
 }
 
 /**
- * Determines whether a registered shortcode exists named $tag.
+ * Xác định xem có shortcode đã đăng ký nào có tên $tag hay không.
  *
  * @since 3.6.0
  *
- * @global array $shortcode_tags List of shortcode tags and their callback hooks.
+ * @global array $shortcode_tags Danh sách các thẻ shortcode và hook callback tương ứng.
  *
- * @param string $tag Shortcode tag to check.
- * @return bool Whether the given shortcode exists.
+ * @param string $tag Thẻ shortcode cần kiểm tra.
+ * @return bool Shortcode đã cho có tồn tại hay không.
  */
 function shortcode_exists( $tag ) {
 	global $shortcode_tags;
@@ -136,15 +136,15 @@ function shortcode_exists( $tag ) {
 }
 
 /**
- * Determines whether the passed content contains the specified shortcode.
+ * Xác định xem nội dung được truyền có chứa shortcode đã chỉ định hay không.
  *
  * @since 3.6.0
  *
  * @global array $shortcode_tags
  *
- * @param string $content Content to search for shortcodes.
- * @param string $tag     Shortcode tag to check.
- * @return bool Whether the passed content contains the given shortcode.
+ * @param string $content Nội dung cần tìm kiếm shortcode.
+ * @param string $tag     Thẻ shortcode cần kiểm tra.
+ * @return bool Nội dung được truyền có chứa shortcode đã cho hay không.
  */
 function has_shortcode( $content, $tag ) {
 	if ( ! str_contains( $content, '[' ) ) {
@@ -169,17 +169,17 @@ function has_shortcode( $content, $tag ) {
 }
 
 /**
- * Returns a list of registered shortcode names found in the given content.
+ * Trả về danh sách tên shortcode đã đăng ký được tìm thấy trong nội dung đã cho.
  *
- * Example usage:
+ * Ví dụ sử dụng:
  *
  *     get_shortcode_tags_in_content( '[audio src="file.mp3"][/audio] [foo] [gallery ids="1,2,3"]' );
  *     // array( 'audio', 'gallery' )
  *
  * @since 6.3.2
  *
- * @param string $content The content to check.
- * @return string[] An array of registered shortcode names found in the content.
+ * @param string $content Nội dung cần kiểm tra.
+ * @return string[] Mảng tên shortcode đã đăng ký được tìm thấy trong nội dung.
  */
 function get_shortcode_tags_in_content( $content ) {
 	if ( false === strpos( $content, '[' ) ) {
@@ -207,38 +207,38 @@ function get_shortcode_tags_in_content( $content ) {
 }
 
 /**
- * Searches content for shortcodes and filter shortcodes through their hooks.
+ * Tìm kiếm shortcode trong nội dung và lọc shortcode qua các hook tương ứng.
  *
- * This function is an alias for do_shortcode().
+ * Hàm này là bí danh của do_shortcode().
  *
  * @since 5.4.0
  *
  * @see do_shortcode()
  *
- * @param string $content     Content to search for shortcodes.
- * @param bool   $ignore_html When true, shortcodes inside HTML elements will be skipped.
- *                            Default false.
- * @return string Content with shortcodes filtered out.
+ * @param string $content     Nội dung cần tìm kiếm shortcode.
+ * @param bool   $ignore_html Khi true, shortcode bên trong phần tử HTML sẽ bị bỏ qua.
+ *                            Mặc định false.
+ * @return string Nội dung đã lọc bỏ shortcode.
  */
 function apply_shortcodes( $content, $ignore_html = false ) {
 	return do_shortcode( $content, $ignore_html );
 }
 
 /**
- * Searches content for shortcodes and filter shortcodes through their hooks.
+ * Tìm kiếm shortcode trong nội dung và lọc shortcode qua các hook tương ứng.
  *
- * If there are no shortcode tags defined, then the content will be returned
- * without any filtering. This might cause issues when plugins are disabled but
- * the shortcode will still show up in the post or content.
+ * Nếu không có thẻ shortcode nào được định nghĩa, nội dung sẽ được trả về
+ * mà không có bất kỳ bộ lọc nào. Điều này có thể gây ra vấn đề khi plugin bị vô hiệu hóa nhưng
+ * shortcode vẫn hiển thị trong bài viết hoặc nội dung.
  *
  * @since 2.5.0
  *
- * @global array $shortcode_tags List of shortcode tags and their callback hooks.
+ * @global array $shortcode_tags Danh sách các thẻ shortcode và hook callback tương ứng.
  *
- * @param string $content     Content to search for shortcodes.
- * @param bool   $ignore_html When true, shortcodes inside HTML elements will be skipped.
- *                            Default false.
- * @return string Content with shortcodes filtered out.
+ * @param string $content     Nội dung cần tìm kiếm shortcode.
+ * @param bool   $ignore_html Khi true, shortcode bên trong phần tử HTML sẽ bị bỏ qua.
+ *                            Mặc định false.
+ * @return string Nội dung đã lọc bỏ shortcode.
  */
 function do_shortcode( $content, $ignore_html = false ) {
 	global $shortcode_tags;
@@ -251,7 +251,7 @@ function do_shortcode( $content, $ignore_html = false ) {
 		return $content;
 	}
 
-	// Find all registered tag names in $content.
+	// Tìm tất cả tên thẻ đã đăng ký trong $content.
 	preg_match_all( '@\[([^<>&/\[\]\x00-\x20=]++)@', $content, $matches );
 	$tagnames = array_intersect( array_keys( $shortcode_tags ), $matches[1] );
 
@@ -259,7 +259,7 @@ function do_shortcode( $content, $ignore_html = false ) {
 		return $content;
 	}
 
-	// Ensure this context is only added once if shortcodes are nested.
+	// Đảm bảo ngữ cảnh này chỉ được thêm một lần nếu shortcode lồng nhau.
 	$has_filter   = has_filter( 'wp_get_attachment_image_context', '_filter_do_shortcode_context' );
 	$filter_added = false;
 
@@ -272,10 +272,10 @@ function do_shortcode( $content, $ignore_html = false ) {
 	$pattern = get_shortcode_regex( $tagnames );
 	$content = preg_replace_callback( "/$pattern/", 'do_shortcode_tag', $content );
 
-	// Always restore square braces so we don't break things like <!--[if IE ]>.
+	// Luôn khôi phục dấu ngoặc vuông để không làm hỏng các thứ như <!--[if IE ]>.
 	$content = unescape_invalid_shortcodes( $content );
 
-	// Only remove the filter if it was added in this scope.
+	// Chỉ gỡ bỏ filter nếu nó được thêm trong phạm vi này.
 	if ( $filter_added ) {
 		remove_filter( 'wp_get_attachment_image_context', '_filter_do_shortcode_context' );
 	}
@@ -284,42 +284,42 @@ function do_shortcode( $content, $ignore_html = false ) {
 }
 
 /**
- * Filter the `wp_get_attachment_image_context` hook during shortcode rendering.
+ * Lọc hook `wp_get_attachment_image_context` trong quá trình render shortcode.
  *
- * When wp_get_attachment_image() is called during shortcode rendering, we need to make clear
- * that the context is a shortcode and not part of the theme's template rendering logic.
+ * Khi wp_get_attachment_image() được gọi trong quá trình render shortcode, chúng ta cần làm rõ
+ * rằng ngữ cảnh là shortcode chứ không phải một phần của logic render template của theme.
  *
  * @since 6.3.0
  * @access private
  *
- * @return string The filtered context value for wp_get_attachment_images when doing shortcodes.
+ * @return string Giá trị ngữ cảnh đã lọc cho wp_get_attachment_images khi thực thi shortcode.
  */
 function _filter_do_shortcode_context() {
 	return 'do_shortcode';
 }
 
 /**
- * Retrieves the shortcode regular expression for searching.
+ * Lấy biểu thức chính quy shortcode để tìm kiếm.
  *
- * The regular expression combines the shortcode tags in the regular expression
- * in a regex class.
+ * Biểu thức chính quy kết hợp các thẻ shortcode trong biểu thức chính quy
+ * dưới dạng lớp regex.
  *
- * The regular expression contains 6 different sub matches to help with parsing.
+ * Biểu thức chính quy chứa 6 nhóm con khớp khác nhau để hỗ trợ phân tích.
  *
- * 1 - An extra [ to allow for escaping shortcodes with double [[]]
- * 2 - The shortcode name
- * 3 - The shortcode argument list
- * 4 - The self closing /
- * 5 - The content of a shortcode when it wraps some content.
- * 6 - An extra ] to allow for escaping shortcodes with double [[]]
+ * 1 - Dấu [ thêm để cho phép thoát shortcode bằng dấu ngoặc kép [[]]
+ * 2 - Tên shortcode
+ * 3 - Danh sách đối số shortcode
+ * 4 - Dấu / tự đóng
+ * 5 - Nội dung của shortcode khi nó bao bọc một số nội dung.
+ * 6 - Dấu ] thêm để cho phép thoát shortcode bằng dấu ngoặc kép [[]]
  *
  * @since 2.5.0
- * @since 4.4.0 Added the `$tagnames` parameter.
+ * @since 4.4.0 Thêm tham số `$tagnames`.
  *
  * @global array $shortcode_tags
  *
- * @param array $tagnames Optional. List of shortcodes to find. Defaults to all registered shortcodes.
- * @return string The shortcode search regular expression
+ * @param array $tagnames Tùy chọn. Danh sách shortcode cần tìm. Mặc định là tất cả shortcode đã đăng ký.
+ * @return string Biểu thức chính quy tìm kiếm shortcode.
  */
 function get_shortcode_regex( $tagnames = null ) {
 	global $shortcode_tags;
@@ -330,46 +330,46 @@ function get_shortcode_regex( $tagnames = null ) {
 	$tagregexp = implode( '|', array_map( 'preg_quote', $tagnames ) );
 
 	/*
-	 * WARNING! Do not change this regex without changing do_shortcode_tag() and strip_shortcode_tag().
-	 * Also, see shortcode_unautop() and shortcode.js.
+	 * CẢNH BÁO! Không thay đổi regex này mà không thay đổi do_shortcode_tag() và strip_shortcode_tag().
+	 * Đồng thời, xem shortcode_unautop() và shortcode.js.
 	 */
 
 	// phpcs:disable Squiz.Strings.ConcatenationSpacing.PaddingFound -- don't remove regex indentation
-	return '\\['                             // Opening bracket.
-		. '(\\[?)'                           // 1: Optional second opening bracket for escaping shortcodes: [[tag]].
-		. "($tagregexp)"                     // 2: Shortcode name.
-		. '(?![\\w-])'                       // Not followed by word character or hyphen.
-		. '('                                // 3: Unroll the loop: Inside the opening shortcode tag.
-		.     '[^\\]\\/]*'                   // Not a closing bracket or forward slash.
+	return '\\['                             // Dấu ngoặc mở.
+		. '(\\[?)'                           // 1: Dấu ngoặc mở thứ hai tùy chọn để thoát shortcode: [[tag]].
+		. "($tagregexp)"                     // 2: Tên shortcode.
+		. '(?![\\w-])'                       // Không theo sau bởi ký tự từ hoặc dấu gạch ngang.
+		. '('                                // 3: Mở vòng lặp: Bên trong thẻ shortcode mở.
+		.     '[^\\]\\/]*'                   // Không phải dấu đóng ngoặc hoặc gạch chéo xuôi.
 		.     '(?:'
-		.         '\\/(?!\\])'               // A forward slash not followed by a closing bracket.
-		.         '[^\\]\\/]*'               // Not a closing bracket or forward slash.
+		.         '\\/(?!\\])'               // Gạch chéo xuôi không theo sau bởi dấu đóng ngoặc.
+		.         '[^\\]\\/]*'               // Không phải dấu đóng ngoặc hoặc gạch chéo xuôi.
 		.     ')*?'
 		. ')'
 		. '(?:'
-		.     '(\\/)'                        // 4: Self closing tag...
-		.     '\\]'                          // ...and closing bracket.
+		.     '(\\/)'                        // 4: Thẻ tự đóng...
+		.     '\\]'                          // ...và dấu đóng ngoặc.
 		. '|'
-		.     '\\]'                          // Closing bracket.
+		.     '\\]'                          // Dấu đóng ngoặc.
 		.     '(?:'
-		.         '('                        // 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags.
-		.             '[^\\[]*+'             // Not an opening bracket.
+		.         '('                        // 5: Mở vòng lặp: Tùy chọn, bất kỳ thứ gì giữa thẻ shortcode mở và đóng.
+		.             '[^\\[]*+'             // Không phải dấu mở ngoặc.
 		.             '(?:'
-		.                 '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag.
-		.                 '[^\\[]*+'         // Not an opening bracket.
+		.                 '\\[(?!\\/\\2\\])' // Dấu mở ngoặc không theo sau bởi thẻ đóng shortcode.
+		.                 '[^\\[]*+'         // Không phải dấu mở ngoặc.
 		.             ')*+'
 		.         ')'
-		.         '\\[\\/\\2\\]'             // Closing shortcode tag.
+		.         '\\[\\/\\2\\]'             // Thẻ đóng shortcode.
 		.     ')?'
 		. ')'
-		. '(\\]?)';                          // 6: Optional second closing bracket for escaping shortcodes: [[tag]].
+		. '(\\]?)';                          // 6: Dấu đóng ngoặc thứ hai tùy chọn để thoát shortcode: [[tag]].
 	// phpcs:enable
 }
 
 /**
- * Regular Expression callable for do_shortcode() for calling shortcode hook.
+ * Hàm callback biểu thức chính quy cho do_shortcode() để gọi hook shortcode.
  *
- * @see get_shortcode_regex() for details of the match array contents.
+ * @see get_shortcode_regex() để biết chi tiết về nội dung mảng khớp.
  *
  * @since 2.5.0
  * @access private
@@ -377,22 +377,22 @@ function get_shortcode_regex( $tagnames = null ) {
  * @global array $shortcode_tags
  *
  * @param array $m {
- *     Regular expression match array.
+ *     Mảng kết quả khớp biểu thức chính quy.
  *
- *     @type string $0 Entire matched shortcode text.
- *     @type string $1 Optional second opening bracket for escaping shortcodes.
- *     @type string $2 Shortcode name.
- *     @type string $3 Shortcode arguments list.
- *     @type string $4 Optional self closing slash.
- *     @type string $5 Content of a shortcode when it wraps some content.
- *     @type string $6 Optional second closing bracket for escaping shortcodes.
+ *     @type string $0 Toàn bộ văn bản shortcode đã khớp.
+ *     @type string $1 Dấu mở ngoặc thứ hai tùy chọn để thoát shortcode.
+ *     @type string $2 Tên shortcode.
+ *     @type string $3 Danh sách đối số shortcode.
+ *     @type string $4 Dấu gạch chéo tự đóng tùy chọn.
+ *     @type string $5 Nội dung của shortcode khi nó bao bọc nội dung.
+ *     @type string $6 Dấu đóng ngoặc thứ hai tùy chọn để thoát shortcode.
  * }
- * @return string Shortcode output.
+ * @return string Kết quả xuất ra của shortcode.
  */
 function do_shortcode_tag( $m ) {
 	global $shortcode_tags;
 
-	// Allow [[foo]] syntax for escaping a tag.
+	// Cho phép cú pháp [[foo]] để thoát thẻ.
 	if ( '[' === $m[1] && ']' === $m[6] ) {
 		return substr( $m[0], 1, -1 );
 	}
@@ -411,18 +411,18 @@ function do_shortcode_tag( $m ) {
 	}
 
 	/**
-	 * Filters whether to call a shortcode callback.
+	 * Lọc xem có nên gọi callback shortcode hay không.
 	 *
-	 * Returning a non-false value from filter will short-circuit the
-	 * shortcode generation process, returning that value instead.
+	 * Trả về giá trị khác false từ filter sẽ bỏ qua quá trình
+	 * tạo shortcode, trả về giá trị đó thay thế.
 	 *
 	 * @since 4.7.0
-	 * @since 6.5.0 The `$attr` parameter is always an array.
+	 * @since 6.5.0 Tham số `$attr` luôn là một mảng.
 	 *
-	 * @param false|string $output Short-circuit return value. Either false or the value to replace the shortcode with.
-	 * @param string       $tag    Shortcode name.
-	 * @param array        $attr   Shortcode attributes array, can be empty if the original arguments string cannot be parsed.
-	 * @param array        $m      Regular expression match array.
+	 * @param false|string $output Giá trị trả về bỏ qua. Hoặc false hoặc giá trị thay thế cho shortcode.
+	 * @param string       $tag    Tên shortcode.
+	 * @param array        $attr   Mảng thuộc tính shortcode, có thể rỗng nếu chuỗi đối số gốc không thể phân tích.
+	 * @param array        $m      Mảng kết quả khớp biểu thức chính quy.
 	 */
 	$return = apply_filters( 'pre_do_shortcode_tag', false, $tag, $attr, $m );
 	if ( false !== $return ) {
@@ -434,36 +434,36 @@ function do_shortcode_tag( $m ) {
 	$output = $m[1] . call_user_func( $shortcode_tags[ $tag ], $attr, $content, $tag ) . $m[6];
 
 	/**
-	 * Filters the output created by a shortcode callback.
+	 * Lọc kết quả xuất ra được tạo bởi callback shortcode.
 	 *
 	 * @since 4.7.0
-	 * @since 6.5.0 The `$attr` parameter is always an array.
+	 * @since 6.5.0 Tham số `$attr` luôn là một mảng.
 	 *
-	 * @param string $output Shortcode output.
-	 * @param string $tag    Shortcode name.
-	 * @param array  $attr   Shortcode attributes array, can be empty if the original arguments string cannot be parsed.
-	 * @param array  $m      Regular expression match array.
+	 * @param string $output Kết quả xuất ra của shortcode.
+	 * @param string $tag    Tên shortcode.
+	 * @param array  $attr   Mảng thuộc tính shortcode, có thể rỗng nếu chuỗi đối số gốc không thể phân tích.
+	 * @param array  $m      Mảng kết quả khớp biểu thức chính quy.
 	 */
 	return apply_filters( 'do_shortcode_tag', $output, $tag, $attr, $m );
 }
 
 /**
- * Searches only inside HTML elements for shortcodes and process them.
+ * Tìm kiếm chỉ bên trong các phần tử HTML để tìm shortcode và xử lý chúng.
  *
- * Any [ or ] characters remaining inside elements will be HTML encoded
- * to prevent interference with shortcodes that are outside the elements.
- * Assumes $content processed by KSES already.  Users with unfiltered_html
- * capability may get unexpected output if angle braces are nested in tags.
+ * Bất kỳ ký tự [ hoặc ] nào còn lại bên trong phần tử sẽ được mã hóa HTML
+ * để tránh can thiệp với shortcode bên ngoài phần tử.
+ * Giả định $content đã được xử lý bởi KSES. Người dùng có quyền unfiltered_html
+ * có thể nhận kết quả không mong muốn nếu dấu ngoặc nhọn lồng nhau trong thẻ.
  *
  * @since 4.2.3
  *
- * @param string $content     Content to search for shortcodes.
- * @param bool   $ignore_html When true, all square braces inside elements will be encoded.
- * @param array  $tagnames    List of shortcodes to find.
- * @return string Content with shortcodes filtered out.
+ * @param string $content     Nội dung cần tìm kiếm shortcode.
+ * @param bool   $ignore_html Khi true, tất cả dấu ngoặc vuông bên trong phần tử sẽ được mã hóa.
+ * @param array  $tagnames    Danh sách shortcode cần tìm.
+ * @return string Nội dung đã lọc bỏ shortcode.
  */
 function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
-	// Normalize entities in unfiltered HTML before adding placeholders.
+	// Chuẩn hóa thực thể trong HTML chưa lọc trước khi thêm placeholder.
 	$trans   = array(
 		'&#91;' => '&#091;',
 		'&#93;' => '&#093;',
@@ -485,68 +485,68 @@ function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
 		$noopen  = ! str_contains( $element, '[' );
 		$noclose = ! str_contains( $element, ']' );
 		if ( $noopen || $noclose ) {
-			// This element does not contain shortcodes.
+			// Phần tử này không chứa shortcode.
 			if ( $noopen xor $noclose ) {
-				// Need to encode stray '[' or ']' chars.
+				// Cần mã hóa ký tự '[' hoặc ']' lạc.
 				$element = strtr( $element, $trans );
 			}
 			continue;
 		}
 
 		if ( $ignore_html || str_starts_with( $element, '<!--' ) || str_starts_with( $element, '<![CDATA[' ) ) {
-			// Encode all '[' and ']' chars.
+			// Mã hóa tất cả ký tự '[' và ']'.
 			$element = strtr( $element, $trans );
 			continue;
 		}
 
 		$attributes = wp_kses_attr_parse( $element );
 		if ( false === $attributes ) {
-			// Some plugins are doing things like [name] <[email]>.
+			// Một số plugin đang làm những thứ như [name] <[email]>.
 			if ( 1 === preg_match( '%^<\s*\[\[?[^\[\]]+\]%', $element ) ) {
 				$element = preg_replace_callback( "/$pattern/", 'do_shortcode_tag', $element );
 			}
 
-			// Looks like we found some unexpected unfiltered HTML. Skipping it for confidence.
+			// Có vẻ như chúng ta tìm thấy HTML chưa lọc không mong muốn. Bỏ qua để đảm bảo an toàn.
 			$element = strtr( $element, $trans );
 			continue;
 		}
 
-		// Get element name.
+		// Lấy tên phần tử.
 		$front   = array_shift( $attributes );
 		$back    = array_pop( $attributes );
 		$matches = array();
 		preg_match( '%[a-zA-Z0-9]+%', $front, $matches );
 		$elname = $matches[0];
 
-		// Look for shortcodes in each attribute separately.
+		// Tìm shortcode trong từng thuộc tính riêng biệt.
 		foreach ( $attributes as &$attr ) {
 			$open  = strpos( $attr, '[' );
 			$close = strpos( $attr, ']' );
 			if ( false === $open || false === $close ) {
-				continue; // Go to next attribute. Square braces will be escaped at end of loop.
+				continue; // Chuyển sang thuộc tính tiếp theo. Dấu ngoặc vuông sẽ được thoát ở cuối vòng lặp.
 			}
 			$double = strpos( $attr, '"' );
 			$single = strpos( $attr, "'" );
 			if ( ( false === $single || $open < $single ) && ( false === $double || $open < $double ) ) {
 				/*
-				 * $attr like '[shortcode]' or 'name = [shortcode]' implies unfiltered_html.
-				 * In this specific situation we assume KSES did not run because the input
-				 * was written by an administrator, so we should avoid changing the output
-				 * and we do not need to run KSES here.
+				 * $attr như '[shortcode]' hoặc 'name = [shortcode]' ngụ ý unfiltered_html.
+				 * Trong trường hợp cụ thể này chúng ta giả định KSES không chạy vì đầu vào
+				 * được viết bởi quản trị viên, vì vậy chúng ta nên tránh thay đổi đầu ra
+				 * và không cần chạy KSES ở đây.
 				 */
 				$attr = preg_replace_callback( "/$pattern/", 'do_shortcode_tag', $attr );
 			} else {
 				/*
-				 * $attr like 'name = "[shortcode]"' or "name = '[shortcode]'".
-				 * We do not know if $content was unfiltered. Assume KSES ran before shortcodes.
+				 * $attr như 'name = "[shortcode]"' hoặc "name = '[shortcode]'".
+				 * Chúng ta không biết $content có chưa được lọc không. Giả định KSES đã chạy trước shortcode.
 				 */
 				$count    = 0;
 				$new_attr = preg_replace_callback( "/$pattern/", 'do_shortcode_tag', $attr, -1, $count );
 				if ( $count > 0 ) {
-					// Sanitize the shortcode output using KSES.
+					// Làm sạch đầu ra shortcode bằng KSES.
 					$new_attr = wp_kses_one_attr( $new_attr, $elname );
 					if ( '' !== trim( $new_attr ) ) {
-						// The shortcode is safe to use now.
+						// Shortcode đã an toàn để sử dụng.
 						$attr = $new_attr;
 					}
 				}
@@ -554,7 +554,7 @@ function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
 		}
 		$element = $front . implode( '', $attributes ) . $back;
 
-		// Now encode any remaining '[' or ']' chars.
+		// Bây giờ mã hóa bất kỳ ký tự '[' hoặc ']' còn lại.
 		$element = strtr( $element, $trans );
 	}
 
@@ -564,15 +564,15 @@ function do_shortcodes_in_html_tags( $content, $ignore_html, $tagnames ) {
 }
 
 /**
- * Removes placeholders added by do_shortcodes_in_html_tags().
+ * Gỡ bỏ các placeholder được thêm bởi do_shortcodes_in_html_tags().
  *
  * @since 4.2.3
  *
- * @param string $content Content to search for placeholders.
- * @return string Content with placeholders removed.
+ * @param string $content Nội dung cần tìm kiếm placeholder.
+ * @return string Nội dung đã gỡ bỏ placeholder.
  */
 function unescape_invalid_shortcodes( $content ) {
-	// Clean up entire string, avoids re-parsing HTML.
+	// Dọn dẹp toàn bộ chuỗi, tránh phân tích lại HTML.
 	$trans = array(
 		'&#91;' => '[',
 		'&#93;' => ']',
@@ -584,31 +584,31 @@ function unescape_invalid_shortcodes( $content ) {
 }
 
 /**
- * Retrieves the shortcode attributes regex.
+ * Lấy biểu thức chính quy thuộc tính shortcode.
  *
  * @since 4.4.0
  *
- * @return string The shortcode attribute regular expression.
+ * @return string Biểu thức chính quy thuộc tính shortcode.
  */
 function get_shortcode_atts_regex() {
 	return '/([\w-]+)\s*=\s*"([^"]*)"(?:\s|$)|([\w-]+)\s*=\s*\'([^\']*)\'(?:\s|$)|([\w-]+)\s*=\s*([^\s\'"]+)(?:\s|$)|"([^"]*)"(?:\s|$)|\'([^\']*)\'(?:\s|$)|(\S+)(?:\s|$)/';
 }
 
 /**
- * Retrieves all attributes from the shortcodes tag.
+ * Lấy tất cả thuộc tính từ thẻ shortcode.
  *
- * The attributes list has the attribute name as the key and the value of the
- * attribute as the value in the key/value pair. This allows for easier
- * retrieval of the attributes, since all attributes have to be known.
+ * Danh sách thuộc tính có tên thuộc tính làm khóa và giá trị thuộc tính
+ * làm giá trị trong cặp khóa/giá trị. Điều này cho phép truy xuất thuộc tính
+ * dễ dàng hơn, vì tất cả thuộc tính cần phải được biết trước.
  *
  * @since 2.5.0
- * @since 6.5.0 The function now always returns an array,
- *              even if the original arguments string cannot be parsed or is empty.
+ * @since 6.5.0 Hàm bây giờ luôn trả về một mảng,
+ *              ngay cả khi chuỗi đối số gốc không thể phân tích hoặc rỗng.
  *
- * @param string $text Shortcode arguments list.
- * @return array Array of attribute values keyed by attribute name.
- *               Returns empty array if there are no attributes
- *               or if the original arguments string cannot be parsed.
+ * @param string $text Danh sách đối số shortcode.
+ * @return array Mảng giá trị thuộc tính được đánh khóa bởi tên thuộc tính.
+ *               Trả về mảng rỗng nếu không có thuộc tính
+ *               hoặc nếu chuỗi đối số gốc không thể phân tích.
  */
 function shortcode_parse_atts( $text ) {
 	$atts    = array();
@@ -631,7 +631,7 @@ function shortcode_parse_atts( $text ) {
 			}
 		}
 
-		// Reject any unclosed HTML elements.
+		// Loại bỏ bất kỳ phần tử HTML chưa đóng nào.
 		foreach ( $atts as &$value ) {
 			if ( str_contains( $value, '<' ) ) {
 				if ( 1 !== preg_match( '/^[^<]*+(?:<[^>]*+>[^<]*+)*+$/', $value ) ) {
@@ -645,21 +645,21 @@ function shortcode_parse_atts( $text ) {
 }
 
 /**
- * Combines user attributes with known attributes and fill in defaults when needed.
+ * Kết hợp thuộc tính người dùng với thuộc tính đã biết và điền giá trị mặc định khi cần.
  *
- * The pairs should be considered to be all of the attributes which are
- * supported by the caller and given as a list. The returned attributes will
- * only contain the attributes in the $pairs list.
+ * Các cặp nên được coi là tất cả thuộc tính được hỗ trợ bởi
+ * hàm gọi và được cung cấp dưới dạng danh sách. Thuộc tính trả về sẽ
+ * chỉ chứa các thuộc tính trong danh sách $pairs.
  *
- * If the $atts list has unsupported attributes, then they will be ignored and
- * removed from the final returned list.
+ * Nếu danh sách $atts có các thuộc tính không được hỗ trợ, chúng sẽ bị bỏ qua và
+ * loại bỏ khỏi danh sách trả về cuối cùng.
  *
  * @since 2.5.0
  *
- * @param array  $pairs     Entire list of supported attributes and their defaults.
- * @param array  $atts      User defined attributes in shortcode tag.
- * @param string $shortcode Optional. The name of the shortcode, provided for context to enable filtering
- * @return array Combined and filtered attribute list.
+ * @param array  $pairs     Toàn bộ danh sách thuộc tính được hỗ trợ và giá trị mặc định của chúng.
+ * @param array  $atts      Thuộc tính do người dùng định nghĩa trong thẻ shortcode.
+ * @param string $shortcode Tùy chọn. Tên của shortcode, cung cấp ngữ cảnh để cho phép lọc.
+ * @return array Danh sách thuộc tính đã kết hợp và lọc.
  */
 function shortcode_atts( $pairs, $atts, $shortcode = '' ) {
 	$atts = (array) $atts;
@@ -674,18 +674,18 @@ function shortcode_atts( $pairs, $atts, $shortcode = '' ) {
 
 	if ( $shortcode ) {
 		/**
-		 * Filters shortcode attributes.
+		 * Lọc thuộc tính shortcode.
 		 *
-		 * If the third parameter of the shortcode_atts() function is present then this filter is available.
-		 * The third parameter, $shortcode, is the name of the shortcode.
+		 * Nếu tham số thứ ba của hàm shortcode_atts() có mặt thì filter này khả dụng.
+		 * Tham số thứ ba, $shortcode, là tên của shortcode.
 		 *
 		 * @since 3.6.0
-		 * @since 4.4.0 Added the `$shortcode` parameter.
+		 * @since 4.4.0 Thêm tham số `$shortcode`.
 		 *
-		 * @param array  $out       The output array of shortcode attributes.
-		 * @param array  $pairs     The supported attributes and their defaults.
-		 * @param array  $atts      The user defined shortcode attributes.
-		 * @param string $shortcode The shortcode name.
+		 * @param array  $out       Mảng đầu ra của thuộc tính shortcode.
+		 * @param array  $pairs     Các thuộc tính được hỗ trợ và giá trị mặc định của chúng.
+		 * @param array  $atts      Thuộc tính shortcode do người dùng định nghĩa.
+		 * @param string $shortcode Tên shortcode.
 		 */
 		$out = apply_filters( "shortcode_atts_{$shortcode}", $out, $pairs, $atts, $shortcode );
 	}
@@ -694,14 +694,14 @@ function shortcode_atts( $pairs, $atts, $shortcode = '' ) {
 }
 
 /**
- * Removes all shortcode tags from the given content.
+ * Gỡ bỏ tất cả thẻ shortcode khỏi nội dung đã cho.
  *
  * @since 2.5.0
  *
  * @global array $shortcode_tags
  *
- * @param string $content Content to remove shortcode tags.
- * @return string Content without shortcode tags.
+ * @param string $content Nội dung cần gỡ bỏ thẻ shortcode.
+ * @return string Nội dung không có thẻ shortcode.
  */
 function strip_shortcodes( $content ) {
 	global $shortcode_tags;
@@ -714,18 +714,18 @@ function strip_shortcodes( $content ) {
 		return $content;
 	}
 
-	// Find all registered tag names in $content.
+	// Tìm tất cả tên thẻ đã đăng ký trong $content.
 	preg_match_all( '@\[([^<>&/\[\]\x00-\x20=]++)@', $content, $matches );
 
 	$tags_to_remove = array_keys( $shortcode_tags );
 
 	/**
-	 * Filters the list of shortcode tags to remove from the content.
+	 * Lọc danh sách thẻ shortcode cần gỡ bỏ khỏi nội dung.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array  $tags_to_remove Array of shortcode tags to remove.
-	 * @param string $content        Content shortcodes are being removed from.
+	 * @param array  $tags_to_remove Mảng thẻ shortcode cần gỡ bỏ.
+	 * @param string $content        Nội dung đang được gỡ bỏ shortcode.
 	 */
 	$tags_to_remove = apply_filters( 'strip_shortcodes_tagnames', $tags_to_remove, $content );
 
@@ -740,22 +740,22 @@ function strip_shortcodes( $content ) {
 	$pattern = get_shortcode_regex( $tagnames );
 	$content = preg_replace_callback( "/$pattern/", 'strip_shortcode_tag', $content );
 
-	// Always restore square braces so we don't break things like <!--[if IE ]>.
+	// Luôn khôi phục dấu ngoặc vuông để không làm hỏng các thứ như <!--[if IE ]>.
 	$content = unescape_invalid_shortcodes( $content );
 
 	return $content;
 }
 
 /**
- * Strips a shortcode tag based on RegEx matches against post content.
+ * Gỡ bỏ thẻ shortcode dựa trên kết quả khớp biểu thức chính quy với nội dung bài viết.
  *
  * @since 3.3.0
  *
- * @param array $m RegEx matches against post content.
- * @return string|false The content stripped of the tag, otherwise false.
+ * @param array $m Kết quả khớp biểu thức chính quy với nội dung bài viết.
+ * @return string|false Nội dung đã gỡ bỏ thẻ, nếu không trả về false.
  */
 function strip_shortcode_tag( $m ) {
-	// Allow [[foo]] syntax for escaping a tag.
+	// Cho phép cú pháp [[foo]] để thoát thẻ.
 	if ( '[' === $m[1] && ']' === $m[6] ) {
 		return substr( $m[0], 1, -1 );
 	}

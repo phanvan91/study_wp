@@ -1,26 +1,26 @@
 <?php
 /**
- * Background block support flag.
+ * Cờ hỗ trợ nền cho block.
  *
  * @package WordPress
  * @since 6.4.0
  */
 
 /**
- * Registers the style block attribute for block types that support it.
+ * Đăng ký thuộc tính kiểu cho các loại block hỗ trợ nó.
  *
  * @since 6.4.0
  * @access private
  *
- * @param WP_Block_Type $block_type Block Type.
+ * @param WP_Block_Type $block_type Loại Block.
  */
 function wp_register_background_support( $block_type ) {
-	// Setup attributes and styles within that if needed.
+	// Thiết lập thuộc tính và kiểu bên trong nếu cần.
 	if ( ! $block_type->attributes ) {
 		$block_type->attributes = array();
 	}
 
-	// Check for existing style attribute definition e.g. from block.json.
+	// Kiểm tra định nghĩa thuộc tính style đã có sẵn, ví dụ từ block.json.
 	if ( array_key_exists( 'style', $block_type->attributes ) ) {
 		return;
 	}
@@ -35,20 +35,20 @@ function wp_register_background_support( $block_type ) {
 }
 
 /**
- * Renders the background styles to the block wrapper.
- * This block support uses the `render_block` hook to ensure that
- * it is also applied to non-server-rendered blocks.
+ * Render các kiểu nền cho wrapper của block.
+ * Hỗ trợ block này sử dụng hook `render_block` để đảm bảo rằng
+ * nó cũng được áp dụng cho các block không được render phía server.
  *
  * @since 6.4.0
- * @since 6.5.0 Added support for `backgroundPosition` and `backgroundRepeat` output.
- * @since 6.6.0 Removed requirement for `backgroundImage.source`. A file/url is the default.
- * @since 6.7.0 Added support for `backgroundAttachment` output.
+ * @since 6.5.0 Thêm hỗ trợ xuất `backgroundPosition` và `backgroundRepeat`.
+ * @since 6.6.0 Bỏ yêu cầu `backgroundImage.source`. File/url là mặc định.
+ * @since 6.7.0 Thêm hỗ trợ xuất `backgroundAttachment`.
  *
  * @access private
  *
- * @param  string $block_content Rendered block content.
- * @param  array  $block         Block object.
- * @return string Filtered block content.
+ * @param  string $block_content Nội dung block đã được render.
+ * @param  array  $block         Đối tượng block.
+ * @return string Nội dung block đã được lọc.
  */
 function wp_render_background_support( $block_content, $block ) {
 	$block_type                   = WP_Block_Type_Registry::get_instance()->get_registered( $block['blockName'] );
@@ -73,7 +73,7 @@ function wp_render_background_support( $block_content, $block ) {
 	if ( ! empty( $background_styles['backgroundImage'] ) ) {
 		$background_styles['backgroundSize'] = $background_styles['backgroundSize'] ?? 'cover';
 
-		// If the background size is set to `contain` and no position is set, set the position to `center`.
+		// Nếu kích thước nền được đặt là `contain` và không có vị trí nào được đặt, đặt vị trí thành `center`.
 		if ( 'contain' === $background_styles['backgroundSize'] && ! $background_styles['backgroundPosition'] ) {
 			$background_styles['backgroundPosition'] = '50% 50%';
 		}
@@ -82,7 +82,7 @@ function wp_render_background_support( $block_content, $block ) {
 	$styles = wp_style_engine_get_styles( array( 'background' => $background_styles ) );
 
 	if ( ! empty( $styles['css'] ) ) {
-		// Inject background styles to the first element, presuming it's the wrapper, if it exists.
+		// Chèn kiểu nền vào phần tử đầu tiên, giả sử đó là wrapper, nếu nó tồn tại.
 		$tags = new WP_HTML_Tag_Processor( $block_content );
 
 		if ( $tags->next_tag() ) {
@@ -107,7 +107,7 @@ function wp_render_background_support( $block_content, $block ) {
 	return $block_content;
 }
 
-// Register the block support.
+// Đăng ký hỗ trợ block.
 WP_Block_Supports::get_instance()->register(
 	'background',
 	array(

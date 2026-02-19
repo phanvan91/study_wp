@@ -1,8 +1,8 @@
 <?php
 /**
- * Network installation administration panel.
+ * Bảng điều khiển cài đặt mạng lưới.
  *
- * A multi-step process allowing the user to enable a network of WordPress sites.
+ * Quy trình nhiều bước cho phép người dùng kích hoạt mạng lưới các trang WordPress.
  *
  * @since 3.0.0
  *
@@ -12,7 +12,7 @@
 
 define( 'WP_INSTALLING_NETWORK', true );
 
-/** WordPress Administration Bootstrap */
+/** Tệp khởi động Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( ! current_user_can( 'setup_network' ) ) {
@@ -32,7 +32,7 @@ if ( is_multisite() ) {
 
 require_once __DIR__ . '/includes/network.php';
 
-// We need to create references to ms global tables to enable Network.
+// Chúng ta cần tạo tham chiếu đến các bảng toàn cục ms để kích hoạt Mạng lưới.
 foreach ( $wpdb->tables( 'ms_global' ) as $table => $prefixed_table ) {
 	$wpdb->$table = $prefixed_table;
 }
@@ -49,11 +49,11 @@ if ( ! network_domain_check() && ( ! defined( 'WP_ALLOW_MULTISITE' ) || ! WP_ALL
 }
 
 if ( is_network_admin() ) {
-	// Used in the HTML title tag.
+	// Được sử dụng trong thẻ HTML title.
 	$title       = __( 'Network Setup' );
 	$parent_file = 'settings.php';
 } else {
-	// Used in the HTML title tag.
+	// Được sử dụng trong thẻ HTML title.
 	$title       = __( 'Create a Network of WordPress Sites' );
 	$parent_file = 'tools.php';
 }
@@ -94,7 +94,7 @@ if ( $_POST ) {
 	check_admin_referer( 'install-network-1' );
 
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-	// Create network tables.
+	// Tạo các bảng mạng lưới.
 	install_network();
 	$base              = parse_url( trailingslashit( get_option( 'home' ) ), PHP_URL_PATH );
 	$subdomain_install = allow_subdomain_install() ? ! empty( $_POST['subdomain_install'] ) : false;

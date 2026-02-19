@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Meta_Fields class
+ * REST API: Lớp WP_REST_Meta_Fields
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class to manage meta values for an object via the REST API.
+ * Lớp cốt lõi để quản lý giá trị meta cho đối tượng thông qua REST API.
  *
  * @since 4.7.0
  */
@@ -16,37 +16,37 @@
 abstract class WP_REST_Meta_Fields {
 
 	/**
-	 * Retrieves the object meta type.
+	 * Lấy loại meta của đối tượng.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return string One of 'post', 'comment', 'term', 'user', or anything
-	 *                else supported by `_get_meta_table()`.
+	 * @return string Một trong 'post', 'comment', 'term', 'user', hoặc bất kỳ
+	 *                loại nào khác được hỗ trợ bởi `_get_meta_table()`.
 	 */
 	abstract protected function get_meta_type();
 
 	/**
-	 * Retrieves the object meta subtype.
+	 * Lấy loại phụ meta của đối tượng.
 	 *
 	 * @since 4.9.8
 	 *
-	 * @return string Subtype for the meta type, or empty string if no specific subtype.
+	 * @return string Loại phụ cho loại meta, hoặc chuỗi rỗng nếu không có loại phụ cụ thể.
 	 */
 	protected function get_meta_subtype() {
 		return '';
 	}
 
 	/**
-	 * Retrieves the object type for register_rest_field().
+	 * Lấy loại đối tượng cho register_rest_field().
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return string The REST field type, such as post type name, taxonomy name, 'comment', or `user`.
+	 * @return string Loại trường REST, ví dụ như tên loại bài viết, tên taxonomy, 'comment', hoặc 'user'.
 	 */
 	abstract protected function get_rest_field_type();
 
 	/**
-	 * Registers the meta field.
+	 * Đăng ký trường meta.
 	 *
 	 * @since 4.7.0
 	 * @deprecated 5.6.0
@@ -68,13 +68,13 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Retrieves the meta field value.
+	 * Lấy giá trị trường meta.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param int             $object_id Object ID to fetch meta for.
-	 * @param WP_REST_Request $request   Full details about the request.
-	 * @return array Array containing the meta values keyed by name.
+	 * @param int             $object_id ID đối tượng để lấy meta.
+	 * @param WP_REST_Request $request   Chi tiết đầy đủ về request.
+	 * @return array Mảng chứa các giá trị meta được đánh khóa theo tên.
 	 */
 	public function get_value( $object_id, $request ) {
 		$fields   = $this->get_registered_fields();
@@ -109,18 +109,18 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Prepares a meta value for a response.
+	 * Chuẩn bị giá trị meta cho phản hồi.
 	 *
-	 * This is required because some native types cannot be stored correctly
-	 * in the database, such as booleans. We need to cast back to the relevant
-	 * type before passing back to JSON.
+	 * Điều này là cần thiết vì một số kiểu dữ liệu gốc không thể lưu trữ
+	 * chính xác trong cơ sở dữ liệu, chẳng hạn như boolean. Chúng ta cần ép kiểu
+	 * về loại phù hợp trước khi truyền lại cho JSON.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param mixed           $value   Meta value to prepare.
-	 * @param WP_REST_Request $request Current request object.
-	 * @param array           $args    Options for the field.
-	 * @return mixed Prepared value.
+	 * @param mixed           $value   Giá trị meta cần chuẩn bị.
+	 * @param WP_REST_Request $request Đối tượng request hiện tại.
+	 * @param array           $args    Các tùy chọn cho trường.
+	 * @return mixed Giá trị đã được chuẩn bị.
 	 */
 	protected function prepare_value_for_response( $value, $request, $args ) {
 		if ( ! empty( $args['prepare_callback'] ) ) {
@@ -131,13 +131,13 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Updates meta values.
+	 * Cập nhật các giá trị meta.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array $meta      Array of meta parsed from the request.
-	 * @param int   $object_id Object ID to fetch meta for.
-	 * @return null|WP_Error Null on success, WP_Error object on failure.
+	 * @param array $meta      Mảng meta được phân tích từ request.
+	 * @param int   $object_id ID đối tượng để lấy meta.
+	 * @return null|WP_Error Null nếu thành công, đối tượng WP_Error nếu thất bại.
 	 */
 	public function update_value( $meta, $object_id ) {
 		$fields = $this->get_registered_fields();
@@ -152,10 +152,10 @@ abstract class WP_REST_Meta_Fields {
 			$value = $meta[ $name ];
 
 			/*
-			 * A null value means reset the field, which is essentially deleting it
-			 * from the database and then relying on the default value.
+			 * Giá trị null có nghĩa là đặt lại trường, về cơ bản là xóa nó
+			 * khỏi cơ sở dữ liệu và sau đó dựa vào giá trị mặc định.
 			 *
-			 * Non-single meta can also be removed by passing an empty array.
+			 * Meta không đơn cũng có thể được xóa bằng cách truyền mảng rỗng.
 			 */
 			if ( is_null( $value ) || ( array() === $value && ! $args['single'] ) ) {
 				$args = $this->get_registered_fields()[ $meta_key ];
@@ -220,14 +220,14 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Deletes a meta value for an object.
+	 * Xóa giá trị meta cho một đối tượng.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param int    $object_id Object ID the field belongs to.
-	 * @param string $meta_key  Key for the field.
-	 * @param string $name      Name for the field that is exposed in the REST API.
-	 * @return true|WP_Error True if meta field is deleted, WP_Error otherwise.
+	 * @param int    $object_id ID đối tượng mà trường thuộc về.
+	 * @param string $meta_key  Khóa cho trường.
+	 * @param string $name      Tên cho trường được hiển thị trong REST API.
+	 * @return true|WP_Error True nếu trường meta bị xóa, WP_Error nếu ngược lại.
 	 */
 	protected function delete_meta_value( $object_id, $meta_key, $name ) {
 		$meta_type = $this->get_meta_type();
@@ -263,18 +263,18 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Updates multiple meta values for an object.
+	 * Cập nhật nhiều giá trị meta cho một đối tượng.
 	 *
-	 * Alters the list of values in the database to match the list of provided values.
+	 * Thay đổi danh sách giá trị trong cơ sở dữ liệu để khớp với danh sách giá trị được cung cấp.
 	 *
 	 * @since 4.7.0
-	 * @since 6.7.0 Stores values into DB even if provided registered default value.
+	 * @since 6.7.0 Lưu giá trị vào DB ngay cả khi cung cấp giá trị mặc định đã đăng ký.
 	 *
-	 * @param int    $object_id Object ID to update.
-	 * @param string $meta_key  Key for the custom field.
-	 * @param string $name      Name for the field that is exposed in the REST API.
-	 * @param array  $values    List of values to update to.
-	 * @return true|WP_Error True if meta fields are updated, WP_Error otherwise.
+	 * @param int    $object_id ID đối tượng cần cập nhật.
+	 * @param string $meta_key  Khóa cho trường tùy chỉnh.
+	 * @param string $name      Tên cho trường được hiển thị trong REST API.
+	 * @param array  $values    Danh sách giá trị cần cập nhật.
+	 * @return true|WP_Error True nếu các trường meta được cập nhật, WP_Error nếu ngược lại.
 	 */
 	protected function update_multi_meta_value( $object_id, $meta_key, $name, $values ) {
 		$meta_type = $this->get_meta_type();
@@ -316,7 +316,7 @@ abstract class WP_REST_Meta_Fields {
 			}
 
 			if ( count( $remove_keys ) > 1 ) {
-				// To remove, we need to remove first, then add, so don't touch.
+				// Để xóa, chúng ta cần xóa trước rồi thêm sau, nên không chạm vào.
 				continue;
 			}
 
@@ -327,9 +327,9 @@ abstract class WP_REST_Meta_Fields {
 		}
 
 		/*
-		 * `delete_metadata` removes _all_ instances of the value, so only call once. Otherwise,
-		 * `delete_metadata` will return false for subsequent calls of the same value.
-		 * Use serialization to produce a predictable string that can be used by array_unique.
+		 * `delete_metadata` xóa _tất cả_ các instance của giá trị, nên chỉ gọi một lần. Nếu không,
+		 * `delete_metadata` sẽ trả về false cho các lần gọi tiếp theo với cùng giá trị.
+		 * Sử dụng serialize để tạo chuỗi dự đoán được mà array_unique có thể sử dụng.
 		 */
 		$to_remove = array_map( 'maybe_unserialize', array_unique( array_map( 'maybe_serialize', $to_remove ) ) );
 
@@ -365,21 +365,21 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Updates a meta value for an object.
+	 * Cập nhật giá trị meta cho một đối tượng.
 	 *
 	 * @since 4.7.0
-	 * @since 6.7.0 Stores values into DB even if provided registered default value.
+	 * @since 6.7.0 Lưu giá trị vào DB ngay cả khi cung cấp giá trị mặc định đã đăng ký.
 	 *
-	 * @param int    $object_id Object ID to update.
-	 * @param string $meta_key  Key for the custom field.
-	 * @param string $name      Name for the field that is exposed in the REST API.
-	 * @param mixed  $value     Updated value.
-	 * @return true|WP_Error True if the meta field was updated, WP_Error otherwise.
+	 * @param int    $object_id ID đối tượng cần cập nhật.
+	 * @param string $meta_key  Khóa cho trường tùy chỉnh.
+	 * @param string $name      Tên cho trường được hiển thị trong REST API.
+	 * @param mixed  $value     Giá trị đã cập nhật.
+	 * @return true|WP_Error True nếu trường meta được cập nhật, WP_Error nếu ngược lại.
 	 */
 	protected function update_meta_value( $object_id, $meta_key, $name, $value ) {
 		$meta_type = $this->get_meta_type();
 
-		// Do the exact same check for a duplicate value as in update_metadata() to avoid update_metadata() returning false.
+		// Thực hiện kiểm tra giá trị trùng lặp giống hệt như trong update_metadata() để tránh update_metadata() trả về false.
 		$old_value = get_metadata_raw( $meta_type, $object_id, $meta_key );
 		$subtype   = get_object_subtype( $meta_type, $object_id );
 
@@ -417,14 +417,14 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Checks if the user provided value is equivalent to a stored value for the given meta key.
+	 * Kiểm tra xem giá trị người dùng cung cấp có tương đương với giá trị đã lưu cho khóa meta đã cho không.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $meta_key     The meta key being checked.
-	 * @param string $subtype      The object subtype.
-	 * @param mixed  $stored_value The currently stored value retrieved from get_metadata().
-	 * @param mixed  $user_value   The value provided by the user.
+	 * @param string $meta_key     Khóa meta đang được kiểm tra.
+	 * @param string $subtype      Loại phụ đối tượng.
+	 * @param mixed  $stored_value Giá trị hiện đang lưu trữ được lấy từ get_metadata().
+	 * @param mixed  $user_value   Giá trị do người dùng cung cấp.
 	 * @return bool
 	 */
 	protected function is_meta_value_same_as_stored_value( $meta_key, $subtype, $stored_value, $user_value ) {
@@ -432,7 +432,7 @@ abstract class WP_REST_Meta_Fields {
 		$sanitized = sanitize_meta( $meta_key, $user_value, $this->get_meta_type(), $subtype );
 
 		if ( in_array( $args['type'], array( 'string', 'number', 'integer', 'boolean' ), true ) ) {
-			// The return value of get_metadata will always be a string for scalar types.
+			// Giá trị trả về của get_metadata luôn là chuỗi cho các kiểu vô hướng.
 			$sanitized = (string) $sanitized;
 		}
 
@@ -440,11 +440,11 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Retrieves all the registered meta fields.
+	 * Lấy tất cả các trường meta đã đăng ký.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return array Registered fields.
+	 * @return array Các trường đã đăng ký.
 	 */
 	protected function get_registered_fields() {
 		$registered = array();
@@ -513,11 +513,11 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Retrieves the object's meta schema, conforming to JSON Schema.
+	 * Lấy schema meta của đối tượng, tuân theo JSON Schema.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return array Field schema data.
+	 * @return array Dữ liệu schema trường.
 	 */
 	public function get_field_schema() {
 		$fields = $this->get_registered_fields();
@@ -541,17 +541,17 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Prepares a meta value for output.
+	 * Chuẩn bị giá trị meta cho đầu ra.
 	 *
-	 * Default preparation for meta fields. Override by passing the
-	 * `prepare_callback` in your `show_in_rest` options.
+	 * Chuẩn bị mặc định cho các trường meta. Ghi đè bằng cách truyền
+	 * `prepare_callback` trong tùy chọn `show_in_rest` của bạn.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param mixed           $value   Meta value from the database.
-	 * @param WP_REST_Request $request Request object.
-	 * @param array           $args    REST-specific options for the meta key.
-	 * @return mixed Value prepared for output. If a non-JsonSerializable object, null.
+	 * @param mixed           $value   Giá trị meta từ cơ sở dữ liệu.
+	 * @param WP_REST_Request $request Đối tượng request.
+	 * @param array           $args    Các tùy chọn dành riêng cho REST của khóa meta.
+	 * @return mixed Giá trị đã chuẩn bị cho đầu ra. Nếu là đối tượng không JsonSerializable, trả về null.
 	 */
 	public static function prepare_value( $value, $request, $args ) {
 		if ( $args['single'] ) {
@@ -572,14 +572,14 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Check the 'meta' value of a request is an associative array.
+	 * Kiểm tra giá trị 'meta' của request có phải là mảng kết hợp không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param mixed           $value   The meta value submitted in the request.
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @param string          $param   The parameter name.
-	 * @return array|false The meta array, if valid, false otherwise.
+	 * @param mixed           $value   Giá trị meta được gửi trong request.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về request.
+	 * @param string          $param   Tên tham số.
+	 * @return array|false Mảng meta nếu hợp lệ, false nếu không.
 	 */
 	public function check_meta_is_array( $value, $request, $param ) {
 		if ( ! is_array( $value ) ) {
@@ -590,17 +590,17 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Recursively add additionalProperties = false to all objects in a schema if no additionalProperties setting
-	 * is specified.
+	 * Đệ quy thêm additionalProperties = false cho tất cả các object trong schema nếu không có
+	 * cài đặt additionalProperties nào được chỉ định.
 	 *
-	 * This is needed to restrict properties of objects in meta values to only
-	 * registered items, as the REST API will allow additional properties by
-	 * default.
+	 * Điều này cần thiết để giới hạn thuộc tính của object trong giá trị meta chỉ
+	 * cho các mục đã đăng ký, vì REST API sẽ cho phép thuộc tính bổ sung
+	 * theo mặc định.
 	 *
 	 * @since 5.3.0
-	 * @deprecated 5.6.0 Use rest_default_additional_properties_to_false() instead.
+	 * @deprecated 5.6.0 Sử dụng rest_default_additional_properties_to_false() thay thế.
 	 *
-	 * @param array $schema The schema array.
+	 * @param array $schema Mảng schema.
 	 * @return array
 	 */
 	protected function default_additional_properties_to_false( $schema ) {
@@ -610,11 +610,11 @@ abstract class WP_REST_Meta_Fields {
 	}
 
 	/**
-	 * Gets the empty value for a schema type.
+	 * Lấy giá trị rỗng cho một kiểu schema.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param string $type The schema type.
+	 * @param string $type Kiểu schema.
 	 * @return mixed
 	 */
 	protected static function get_empty_value_for_type( $type ) {

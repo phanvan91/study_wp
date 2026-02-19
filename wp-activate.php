@@ -1,8 +1,5 @@
 <?php
 /**
- * Confirms that the activation key that is sent in an email after a user signs
- * up for a new site matches the key for that user and then displays confirmation.
- *
  * Xác nhận rằng activation key được gửi trong email sau khi người dùng đăng ký
  * site mới khớp với key của người dùng đó và sau đó hiển thị xác nhận.
  *
@@ -11,7 +8,6 @@
 
 define( 'WP_INSTALLING', true );
 
-/** Sets up the WordPress Environment. */
 /** Thiết lập môi trường WordPress. */
 require __DIR__ . '/wp-load.php';
 
@@ -72,13 +68,10 @@ if ( is_object( $wp_object_cache ) ) {
 	$wp_object_cache->cache_enabled = false;
 }
 
-// Fix for page title.
 // Sửa cho tiêu đề trang.
 $wp_query->is_404 = false;
 
 /**
- * Fires before the Site Activation page is loaded.
- *
  * Kích hoạt trước khi trang Site Activation được load.
  *
  * @since 3.0.0
@@ -86,22 +79,16 @@ $wp_query->is_404 = false;
 do_action( 'activate_header' );
 
 /**
- * Adds an action hook specific to this page.
- *
  * Thêm action hook cụ thể cho trang này.
  *
- * Fires on {@see 'wp_head'}.
  * Kích hoạt trên {@see 'wp_head'}.
  *
  * @since MU (3.0.0)
  */
 function do_activate_header() {
 	/**
-	 * Fires within the `<head>` section of the Site Activation page.
-	 *
 	 * Kích hoạt trong phần `<head>` của trang Site Activation.
 	 *
-	 * Fires on the {@see 'wp_head'} action.
 	 * Kích hoạt trên action {@see 'wp_head'}.
 	 *
 	 * @since 3.0.0
@@ -111,8 +98,6 @@ function do_activate_header() {
 add_action( 'wp_head', 'do_activate_header' );
 
 /**
- * Loads styles specific to this page.
- *
  * Load các style cụ thể cho trang này.
  *
  * @since MU (3.0.0)
@@ -163,7 +148,7 @@ $blog_details = get_site();
 			echo '<p class="lead-in">';
 			if ( '' === $signup->domain . $signup->path ) {
 				printf(
-					/* translators: 1: Login URL, 2: Username, 3: User email address, 4: Lost password URL. */
+					/* translators: 1: URL đăng nhập, 2: Tên người dùng, 3: Địa chỉ email người dùng, 4: URL quên mật khẩu. */
 					__( 'Your account has been activated. You may now <a href="%1$s">log in</a> to the site using your chosen username of &#8220;%2$s&#8221;. Please check your email inbox at %3$s for your password and login instructions. If you do not receive an email, please check your junk or spam folder. If you still do not receive an email within an hour, you can <a href="%4$s">reset your password</a>.' ),
 					esc_url( network_site_url( $blog_details->path . 'wp-login.php', 'login' ) ),
 					esc_html( $signup->user_login ),
@@ -172,7 +157,7 @@ $blog_details = get_site();
 				);
 			} else {
 				printf(
-					/* translators: 1: Site URL, 2: Username, 3: User email address, 4: Lost password URL. */
+					/* translators: 1: URL site, 2: Tên người dùng, 3: Địa chỉ email người dùng, 4: URL quên mật khẩu. */
 					__( 'Your site at %1$s is active. You may now log in to your site using your chosen username of &#8220;%2$s&#8221;. Please check your email inbox at %3$s for your password and login instructions. If you do not receive an email, please check your junk or spam folder. If you still do not receive an email within an hour, you can <a href="%4$s">reset your password</a>.' ),
 					sprintf( '<a href="http://%1$s">%1$s</a>', esc_url( $signup->domain . $blog_details->path ) ),
 					esc_html( $signup->user_login ),
@@ -207,7 +192,7 @@ $blog_details = get_site();
 				?>
 				<p class="view">
 				<?php
-					/* translators: 1: Site URL, 2: Login URL. */
+					/* translators: 1: URL site, 2: URL đăng nhập. */
 					printf( __( 'Your account is now activated. <a href="%1$s">View your site</a> or <a href="%2$s">Log in</a>' ), esc_url( $url ), esc_url( $login_url ) );
 				?>
 				</p>
@@ -215,7 +200,7 @@ $blog_details = get_site();
 				<p class="view">
 				<?php
 					printf(
-						/* translators: 1: Login URL, 2: Network home URL. */
+						/* translators: 1: URL đăng nhập, 2: URL trang chủ mạng. */
 						__( 'Your account is now activated. <a href="%1$s">Log in</a> or go back to the <a href="%2$s">homepage</a>.' ),
 						esc_url( network_site_url( $blog_details->path . 'wp-login.php', 'login' ) ),
 						esc_url( network_home_url( $blog_details->path ) )

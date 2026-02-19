@@ -1,13 +1,13 @@
 <?php
 /**
- * Edit user network administration panel.
+ * Trang quản trị mạng lưới Chỉnh sửa Người dùng.
  *
  * @package WordPress
  * @subpackage Multisite
  * @since 3.1.0
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 require ABSPATH . 'wp-admin/user-edit.php';

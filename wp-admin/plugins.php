@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugins administration panel.
+ * Trang quản trị plugin.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Tải bootstrap quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -21,7 +21,7 @@ $action = $wp_list_table->current_action();
 $plugin = isset( $_REQUEST['plugin'] ) ? wp_unslash( $_REQUEST['plugin'] ) : '';
 $s      = isset( $_REQUEST['s'] ) ? urlencode( wp_unslash( $_REQUEST['s'] ) ) : '';
 
-// Clean up request URI from temporary args for screen options/paging uri's to work as expected.
+// Dọn dẹp URI yêu cầu khỏi các tham số tạm thời để tùy chọn màn hình/phân trang hoạt động đúng.
 $query_args_to_remove = array(
 	'error',
 	'deleted',
@@ -79,12 +79,12 @@ if ( $action ) {
 			}
 
 			if ( isset( $_GET['from'] ) && 'import' === $_GET['from'] ) {
-				// Overrides the ?error=true one above and redirects to the Imports page, stripping the -importer suffix.
+				// Ghi đè tham số ?error=true ở trên và chuyển hướng đến trang Nhập, loại bỏ hậu tố -importer.
 				wp_redirect( self_admin_url( 'import.php?import=' . str_replace( '-importer', '', dirname( $plugin ) ) ) );
 			} elseif ( isset( $_GET['from'] ) && 'press-this' === $_GET['from'] ) {
 				wp_redirect( self_admin_url( 'press-this.php' ) );
 			} else {
-				// Overrides the ?error=true one above.
+				// Ghi đè tham số ?error=true ở trên.
 				wp_redirect( self_admin_url( "plugins.php?activate=true&plugin_status=$status&paged=$page&s=$s" ) );
 			}
 			exit;
@@ -100,18 +100,18 @@ if ( $action ) {
 
 			if ( is_network_admin() ) {
 				foreach ( $plugins as $i => $plugin ) {
-					// Only activate plugins which are not already network activated.
+					// Chỉ kích hoạt các plugin chưa được kích hoạt trên toàn mạng.
 					if ( is_plugin_active_for_network( $plugin ) ) {
 						unset( $plugins[ $i ] );
 					}
 				}
 			} else {
 				foreach ( $plugins as $i => $plugin ) {
-					// Only activate plugins which are not already active and are not network-only when on Multisite.
+					// Chỉ kích hoạt các plugin chưa hoạt động và không phải plugin chỉ dành cho mạng khi dùng Multisite.
 					if ( is_plugin_active( $plugin ) || ( is_multisite() && is_network_only_plugin( $plugin ) ) ) {
 						unset( $plugins[ $i ] );
 					}
-					// Only activate plugins which the user can activate.
+					// Chỉ kích hoạt các plugin mà người dùng có quyền kích hoạt.
 					if ( ! current_user_can( 'activate_plugin', $plugin ) ) {
 						unset( $plugins[ $i ] );
 					}
@@ -155,7 +155,7 @@ if ( $action ) {
 				$plugins = array();
 			}
 
-			// Used in the HTML title tag.
+			// Dùng trong thẻ tiêu đề HTML.
 			$title       = __( 'Update Plugins' );
 			$parent_file = 'plugins.php';
 
@@ -189,10 +189,10 @@ if ( $action ) {
 				error_reporting( E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_WARNING | E_PARSE | E_USER_ERROR | E_USER_WARNING | E_RECOVERABLE_ERROR );
 			}
 
-			ini_set( 'display_errors', true ); // Ensure that fatal errors are displayed.
-			// Go back to "sandbox" scope so we get the same errors as before.
+			ini_set( 'display_errors', true ); // Đảm bảo các lỗi nghiêm trọng được hiển thị.
+			// Quay lại phạm vi "sandbox" để nhận được các lỗi giống như trước.
 			plugin_sandbox_scrape( $plugin );
-			/** This action is documented in wp-admin/includes/plugin.php */
+			/** Action này được mô tả trong wp-admin/includes/plugin.php */
 			do_action( "activate_{$plugin}" );
 			exit;
 
@@ -231,7 +231,7 @@ if ( $action ) {
 			check_admin_referer( 'bulk-plugins' );
 
 			$plugins = isset( $_POST['checked'] ) ? (array) wp_unslash( $_POST['checked'] ) : array();
-			// Do not deactivate plugins which are already deactivated.
+			// Không vô hiệu hóa các plugin đã bị vô hiệu hóa rồi.
 			if ( is_network_admin() ) {
 				$plugins = array_filter( $plugins, 'is_plugin_active_for_network' );
 			} else {
@@ -239,7 +239,7 @@ if ( $action ) {
 				$plugins = array_diff( $plugins, array_filter( $plugins, 'is_plugin_active_for_network' ) );
 
 				foreach ( $plugins as $i => $plugin ) {
-					// Only deactivate plugins which the user can deactivate.
+					// Chỉ vô hiệu hóa các plugin mà người dùng có quyền vô hiệu hóa.
 					if ( ! current_user_can( 'deactivate_plugin', $plugin ) ) {
 						unset( $plugins[ $i ] );
 					}
@@ -273,21 +273,21 @@ if ( $action ) {
 
 			check_admin_referer( 'bulk-plugins' );
 
-			// $_POST = from the plugin form; $_GET = from the FTP details screen.
+			// $_POST = từ form plugin; $_GET = từ màn hình chi tiết FTP.
 			$plugins = isset( $_REQUEST['checked'] ) ? (array) wp_unslash( $_REQUEST['checked'] ) : array();
 			if ( empty( $plugins ) ) {
 				wp_redirect( self_admin_url( "plugins.php?plugin_status=$status&paged=$page&s=$s" ) );
 				exit;
 			}
 
-			$plugins = array_filter( $plugins, 'is_plugin_inactive' ); // Do not allow to delete activated plugins.
+			$plugins = array_filter( $plugins, 'is_plugin_inactive' ); // Không cho phép xóa các plugin đang hoạt động.
 			if ( empty( $plugins ) ) {
 				wp_redirect( self_admin_url( "plugins.php?error=true&main=true&plugin_status=$status&paged=$page&s=$s" ) );
 				exit;
 			}
 
-			// Bail on all if any paths are invalid.
-			// validate_file() returns truthy for invalid files.
+			// Hủy bỏ tất cả nếu có đường dẫn nào không hợp lệ.
+			// validate_file() trả về giá trị truthy cho các tệp không hợp lệ.
 			$invalid_plugin_files = array_filter( $plugins, 'validate_file' );
 			if ( $invalid_plugin_files ) {
 				wp_redirect( self_admin_url( "plugins.php?plugin_status=$status&paged=$page&s=$s" ) );
@@ -322,7 +322,7 @@ if ( $action ) {
 							}
 						}
 					} else {
-						// Get plugins list from that folder.
+						// Lấy danh sách plugin từ thư mục đó.
 						$folder_plugins = get_plugins( '/' . $plugin_slug );
 						if ( $folder_plugins ) {
 							foreach ( $folder_plugins as $plugin_file => $data ) {
@@ -425,12 +425,12 @@ if ( $action ) {
 				exit;
 			} else {
 				$plugins_to_delete = count( $plugins );
-			} // End if verify-delete.
+			} // Kết thúc kiểm tra verify-delete.
 
 			$delete_result = delete_plugins( $plugins );
 
-			// Store the result in an option rather than a URL param due to object type & length.
-			// Cannot use transient/cache, as that could get flushed if any plugin flushes data on uninstall/delete.
+			// Lưu kết quả trong option thay vì tham số URL do kiểu đối tượng và độ dài.
+			// Không thể dùng transient/cache vì có thể bị xóa nếu plugin nào đó xóa dữ liệu khi gỡ cài đặt/xóa.
 			update_option( 'plugins_delete_result_' . $user_ID, $delete_result, false );
 			wp_redirect( self_admin_url( "plugins.php?deleted=$plugins_to_delete&plugin_status=$status&paged=$page&s=$s" ) );
 			exit;
@@ -512,8 +512,8 @@ if ( $action ) {
 					$query_args       = array( 'disabled-auto-update-multi' => 'true' );
 				}
 
-				// Return early if all selected plugins already have auto-updates enabled or disabled.
-				// Must use non-strict comparison, so that array order is not treated as significant.
+				// Trả về sớm nếu tất cả plugin đã chọn đã bật hoặc tắt tự động cập nhật.
+				// Phải dùng so sánh không nghiêm ngặt để thứ tự mảng không được coi là quan trọng.
 				if ( $new_auto_updates == $auto_updates ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual
 					wp_redirect( $redirect );
 					exit;
@@ -523,10 +523,10 @@ if ( $action ) {
 				$redirect     = add_query_arg( $query_args, $redirect );
 			}
 
-			/** This filter is documented in wp-admin/includes/class-wp-plugins-list-table.php */
+			/** Bộ lọc này được mô tả trong wp-admin/includes/class-wp-plugins-list-table.php */
 			$all_items = apply_filters( 'all_plugins', get_plugins() );
 
-			// Remove plugins that don't exist or have been deleted since the option was last updated.
+			// Loại bỏ các plugin không tồn tại hoặc đã bị xóa kể từ lần cập nhật option cuối cùng.
 			$auto_updates = array_intersect( $auto_updates, array_keys( $all_items ) );
 
 			update_site_option( 'auto_update_plugins', $auto_updates );
@@ -541,7 +541,7 @@ if ( $action ) {
 				$sendback = wp_get_referer();
 				$plugins  = isset( $_POST['checked'] ) ? (array) wp_unslash( $_POST['checked'] ) : array();
 
-				/** This action is documented in wp-admin/edit.php */
+				/** Action này được mô tả trong wp-admin/edit.php */
 				$sendback = apply_filters( "handle_bulk_actions-{$screen}", $sendback, $action, $plugins ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 				wp_safe_redirect( $sendback );
 				exit;
@@ -630,7 +630,7 @@ get_current_screen()->set_screen_reader_content(
 	)
 );
 
-// Used in the HTML title tag.
+// Dùng trong thẻ tiêu đề HTML.
 $title       = __( 'Plugins' );
 $parent_file = 'plugins.php';
 
@@ -655,7 +655,7 @@ if ( ! empty( $invalid ) ) {
 	}
 }
 
-// Used by wp_admin_notice() updated notices.
+// Dùng bởi wp_admin_notice() cho các thông báo đã cập nhật.
 $updated_notice_args = array(
 	'id'                 => 'message',
 	'additional_classes' => array( 'updated' ),
@@ -707,7 +707,7 @@ if ( isset( $_GET['error'] ) ) {
 
 } elseif ( isset( $_GET['deleted'] ) ) {
 	$delete_result = get_option( 'plugins_delete_result_' . $user_ID );
-	// Delete it once we're done.
+	// Xóa nó sau khi xử lý xong.
 	delete_option( 'plugins_delete_result_' . $user_ID );
 
 	if ( is_wp_error( $delete_result ) ) {
@@ -786,16 +786,16 @@ if ( strlen( $s ) ) {
 
 <?php
 /**
- * Fires before the plugins list table is rendered.
+ * Kích hoạt trước khi bảng danh sách plugin được hiển thị.
  *
- * This hook also fires before the plugins list table is rendered in the Network Admin.
+ * Hook này cũng kích hoạt trước khi bảng danh sách plugin được hiển thị trong Quản trị Mạng.
  *
- * Please note: The 'active' portion of the hook name does not refer to whether the current
- * view is for active plugins, but rather all plugins actively-installed.
+ * Lưu ý: Phần 'active' trong tên hook không đề cập đến việc chế độ xem hiện tại
+ * dành cho plugin đang hoạt động, mà là tất cả plugin đã được cài đặt.
  *
  * @since 3.0.0
  *
- * @param array[] $plugins_all An array of arrays containing information on all installed plugins.
+ * @param array[] $plugins_all Mảng các mảng chứa thông tin về tất cả plugin đã cài đặt.
  */
 do_action( 'pre_current_active_plugins', $plugins['all'] );
 ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * WordPress Customize Manager classes
+ * Các lớp Trình quản lý Tùy biến WordPress
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,22 +8,22 @@
  */
 
 /**
- * Customize Manager class.
+ * Lớp Trình quản lý Tùy biến.
  *
- * Bootstraps the Customize experience on the server-side.
+ * Khởi tạo trải nghiệm Tùy biến ở phía máy chủ.
  *
- * Sets up the theme-switching process if a theme other than the active one is
- * being previewed and customized.
+ * Thiết lập quy trình chuyển đổi giao diện nếu một giao diện khác
+ * giao diện đang hoạt động đang được xem trước và tùy biến.
  *
- * Serves as a factory for Customize Controls and Settings, and
- * instantiates default Customize Controls and Settings.
+ * Đóng vai trò như factory cho các Control và Setting Tùy biến, và
+ * khởi tạo các Control và Setting Tùy biến mặc định.
  *
  * @since 3.4.0
  */
 #[AllowDynamicProperties]
 final class WP_Customize_Manager {
 	/**
-	 * An instance of the theme being previewed.
+	 * Một thể hiện của giao diện đang được xem trước.
 	 *
 	 * @since 3.4.0
 	 * @var WP_Theme
@@ -31,7 +31,7 @@ final class WP_Customize_Manager {
 	protected $theme;
 
 	/**
-	 * The directory name of the previously active theme (within the theme_root).
+	 * Tên thư mục của giao diện đã hoạt động trước đó (trong theme_root).
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -39,7 +39,7 @@ final class WP_Customize_Manager {
 	protected $original_stylesheet;
 
 	/**
-	 * Whether this is a Customizer pageload.
+	 * Có phải đây là lần tải trang Trình tùy biến hay không.
 	 *
 	 * @since 3.4.0
 	 * @var bool
@@ -47,7 +47,7 @@ final class WP_Customize_Manager {
 	protected $previewing = false;
 
 	/**
-	 * Methods and properties dealing with managing widgets in the Customizer.
+	 * Các phương thức và thuộc tính xử lý việc quản lý widget trong Trình tùy biến.
 	 *
 	 * @since 3.9.0
 	 * @var WP_Customize_Widgets
@@ -55,7 +55,7 @@ final class WP_Customize_Manager {
 	public $widgets;
 
 	/**
-	 * Methods and properties dealing with managing nav menus in the Customizer.
+	 * Các phương thức và thuộc tính xử lý việc quản lý menu điều hướng trong Trình tùy biến.
 	 *
 	 * @since 4.3.0
 	 * @var WP_Customize_Nav_Menus
@@ -63,7 +63,7 @@ final class WP_Customize_Manager {
 	public $nav_menus;
 
 	/**
-	 * Methods and properties dealing with selective refresh in the Customizer preview.
+	 * Các phương thức và thuộc tính xử lý việc làm mới có chọn lọc trong bản xem trước Trình tùy biến.
 	 *
 	 * @since 4.5.0
 	 * @var WP_Customize_Selective_Refresh
@@ -71,7 +71,7 @@ final class WP_Customize_Manager {
 	public $selective_refresh;
 
 	/**
-	 * Registered instances of WP_Customize_Setting.
+	 * Các thể hiện đã đăng ký của WP_Customize_Setting.
 	 *
 	 * @since 3.4.0
 	 * @var array
@@ -79,7 +79,7 @@ final class WP_Customize_Manager {
 	protected $settings = array();
 
 	/**
-	 * Sorted top-level instances of WP_Customize_Panel and WP_Customize_Section.
+	 * Các thể hiện cấp cao nhất đã được sắp xếp của WP_Customize_Panel và WP_Customize_Section.
 	 *
 	 * @since 4.0.0
 	 * @var array
@@ -87,7 +87,7 @@ final class WP_Customize_Manager {
 	protected $containers = array();
 
 	/**
-	 * Registered instances of WP_Customize_Panel.
+	 * Các thể hiện đã đăng ký của WP_Customize_Panel.
 	 *
 	 * @since 4.0.0
 	 * @var array
@@ -95,7 +95,7 @@ final class WP_Customize_Manager {
 	protected $panels = array();
 
 	/**
-	 * List of core components.
+	 * Danh sách các thành phần lõi.
 	 *
 	 * @since 4.5.0
 	 * @var array
@@ -103,7 +103,7 @@ final class WP_Customize_Manager {
 	protected $components = array( 'nav_menus' );
 
 	/**
-	 * Registered instances of WP_Customize_Section.
+	 * Các thể hiện đã đăng ký của WP_Customize_Section.
 	 *
 	 * @since 3.4.0
 	 * @var array
@@ -111,7 +111,7 @@ final class WP_Customize_Manager {
 	protected $sections = array();
 
 	/**
-	 * Registered instances of WP_Customize_Control.
+	 * Các thể hiện đã đăng ký của WP_Customize_Control.
 	 *
 	 * @since 3.4.0
 	 * @var array
@@ -119,7 +119,7 @@ final class WP_Customize_Manager {
 	protected $controls = array();
 
 	/**
-	 * Panel types that may be rendered from JS templates.
+	 * Các loại panel có thể được render từ mẫu JS.
 	 *
 	 * @since 4.3.0
 	 * @var array
@@ -127,7 +127,7 @@ final class WP_Customize_Manager {
 	protected $registered_panel_types = array();
 
 	/**
-	 * Section types that may be rendered from JS templates.
+	 * Các loại section có thể được render từ mẫu JS.
 	 *
 	 * @since 4.3.0
 	 * @var array
@@ -135,7 +135,7 @@ final class WP_Customize_Manager {
 	protected $registered_section_types = array();
 
 	/**
-	 * Control types that may be rendered from JS templates.
+	 * Các loại control có thể được render từ mẫu JS.
 	 *
 	 * @since 4.1.0
 	 * @var array
@@ -143,7 +143,7 @@ final class WP_Customize_Manager {
 	protected $registered_control_types = array();
 
 	/**
-	 * Initial URL being previewed.
+	 * URL ban đầu đang được xem trước.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -151,7 +151,7 @@ final class WP_Customize_Manager {
 	protected $preview_url;
 
 	/**
-	 * URL to link the user to when closing the Customizer.
+	 * URL để dẫn người dùng đến khi đóng Trình tùy biến.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -159,7 +159,7 @@ final class WP_Customize_Manager {
 	protected $return_url;
 
 	/**
-	 * Mapping of 'panel', 'section', 'control' to the ID which should be autofocused.
+	 * Ánh xạ từ 'panel', 'section', 'control' tới ID cần được tự động lấy nét.
 	 *
 	 * @since 4.4.0
 	 * @var string[]
@@ -167,7 +167,7 @@ final class WP_Customize_Manager {
 	protected $autofocus = array();
 
 	/**
-	 * Messenger channel.
+	 * Kênh truyền thông điệp.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -175,7 +175,7 @@ final class WP_Customize_Manager {
 	protected $messenger_channel;
 
 	/**
-	 * Whether the autosave revision of the changeset should be loaded.
+	 * Có nên tải bản sửa đổi tự động lưu của changeset hay không.
 	 *
 	 * @since 4.9.0
 	 * @var bool
@@ -183,7 +183,7 @@ final class WP_Customize_Manager {
 	protected $autosaved = false;
 
 	/**
-	 * Whether the changeset branching is allowed.
+	 * Có cho phép phân nhánh changeset hay không.
 	 *
 	 * @since 4.9.0
 	 * @var bool
@@ -191,7 +191,7 @@ final class WP_Customize_Manager {
 	protected $branching = true;
 
 	/**
-	 * Whether settings should be previewed.
+	 * Có nên xem trước các cài đặt hay không.
 	 *
 	 * @since 4.9.0
 	 * @var bool
@@ -199,7 +199,7 @@ final class WP_Customize_Manager {
 	protected $settings_previewed = true;
 
 	/**
-	 * Whether a starter content changeset was saved.
+	 * Có phải một changeset nội dung khởi đầu đã được lưu hay không.
 	 *
 	 * @since 4.9.0
 	 * @var bool
@@ -207,14 +207,14 @@ final class WP_Customize_Manager {
 	protected $saved_starter_content_changeset = false;
 
 	/**
-	 * Unsanitized values for Customize Settings parsed from $_POST['customized'].
+	 * Các giá trị chưa được làm sạch cho Cài đặt Tùy biến được phân tích từ $_POST['customized'].
 	 *
 	 * @var array
 	 */
 	private $_post_values;
 
 	/**
-	 * Changeset UUID.
+	 * UUID của changeset.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -222,7 +222,7 @@ final class WP_Customize_Manager {
 	private $_changeset_uuid;
 
 	/**
-	 * Changeset post ID.
+	 * ID bài viết changeset.
 	 *
 	 * @since 4.7.0
 	 * @var int|false
@@ -230,7 +230,7 @@ final class WP_Customize_Manager {
 	private $_changeset_post_id;
 
 	/**
-	 * Changeset data loaded from a customize_changeset post.
+	 * Dữ liệu changeset được tải từ bài viết customize_changeset.
 	 *
 	 * @since 4.7.0
 	 * @var array|null
@@ -238,25 +238,25 @@ final class WP_Customize_Manager {
 	private $_changeset_data;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 3.4.0
-	 * @since 4.7.0 Added `$args` parameter.
+	 * @since 4.7.0 Thêm tham số `$args`.
 	 *
 	 * @param array $args {
-	 *     Args.
+	 *     Các tham số.
 	 *
-	 *     @type null|string|false $changeset_uuid     Changeset UUID, the `post_name` for the customize_changeset post containing the customized state.
-	 *                                                 Defaults to `null` resulting in a UUID to be immediately generated. If `false` is provided, then
-	 *                                                 then the changeset UUID will be determined during `after_setup_theme`: when the
-	 *                                                 `customize_changeset_branching` filter returns false, then the default UUID will be that
-	 *                                                 of the most recent `customize_changeset` post that has a status other than 'auto-draft',
-	 *                                                 'publish', or 'trash'. Otherwise, if changeset branching is enabled, then a random UUID will be used.
-	 *     @type string            $theme              Theme to be previewed (for theme switch). Defaults to customize_theme or theme query params.
-	 *     @type string            $messenger_channel  Messenger channel. Defaults to customize_messenger_channel query param.
-	 *     @type bool              $settings_previewed If settings should be previewed. Defaults to true.
-	 *     @type bool              $branching          If changeset branching is allowed; otherwise, changesets are linear. Defaults to true.
-	 *     @type bool              $autosaved          If data from a changeset's autosaved revision should be loaded if it exists. Defaults to false.
+	 *     @type null|string|false $changeset_uuid     UUID của changeset, là `post_name` cho bài viết customize_changeset chứa trạng thái đã tùy biến.
+	 *                                                 Mặc định là `null` dẫn đến UUID được tạo ngay lập tức. Nếu cung cấp `false`, thì
+	 *                                                 UUID changeset sẽ được xác định trong `after_setup_theme`: khi bộ lọc
+	 *                                                 `customize_changeset_branching` trả về false, thì UUID mặc định sẽ là
+	 *                                                 của bài viết `customize_changeset` gần nhất có trạng thái khác 'auto-draft',
+	 *                                                 'publish', hoặc 'trash'. Ngược lại, nếu phân nhánh changeset được bật, thì UUID ngẫu nhiên sẽ được sử dụng.
+	 *     @type string            $theme              Giao diện để xem trước (cho chuyển đổi giao diện). Mặc định là tham số truy vấn customize_theme hoặc theme.
+	 *     @type string            $messenger_channel  Kênh truyền thông điệp. Mặc định là tham số truy vấn customize_messenger_channel.
+	 *     @type bool              $settings_previewed Có nên xem trước các cài đặt hay không. Mặc định là true.
+	 *     @type bool              $branching          Có cho phép phân nhánh changeset hay không; nếu không, các changeset là tuyến tính. Mặc định là true.
+	 *     @type bool              $autosaved          Có nên tải dữ liệu từ bản sửa đổi tự động lưu của changeset nếu có hay không. Mặc định là false.
 	 * }
 	 */
 	public function __construct( $args = array() ) {
@@ -266,19 +266,19 @@ final class WP_Customize_Manager {
 			$args
 		);
 
-		// Note that the UUID format will be validated in the setup_theme() method.
+		// Lưu ý rằng định dạng UUID sẽ được xác thực trong phương thức setup_theme().
 		if ( ! isset( $args['changeset_uuid'] ) ) {
 			$args['changeset_uuid'] = wp_generate_uuid4();
 		}
 
 		/*
-		 * The theme and messenger_channel should be supplied via $args,
-		 * but they are also looked at in the $_REQUEST global here for back-compat.
+		 * Giao diện và messenger_channel nên được cung cấp qua $args,
+		 * nhưng chúng cũng được kiểm tra trong biến toàn cục $_REQUEST ở đây để tương thích ngược.
 		 */
 		if ( ! isset( $args['theme'] ) ) {
 			if ( isset( $_REQUEST['customize_theme'] ) ) {
 				$args['theme'] = wp_unslash( $_REQUEST['customize_theme'] );
-			} elseif ( isset( $_REQUEST['theme'] ) ) { // Deprecated.
+			} elseif ( isset( $_REQUEST['theme'] ) ) { // Không còn dùng.
 				$args['theme'] = wp_unslash( $_REQUEST['theme'] );
 			}
 		}
@@ -286,7 +286,7 @@ final class WP_Customize_Manager {
 			$args['messenger_channel'] = sanitize_key( wp_unslash( $_REQUEST['customize_messenger_channel'] ) );
 		}
 
-		// Do not load 'widgets' component if a block theme is activated.
+		// Không tải thành phần 'widgets' nếu giao diện khối được kích hoạt.
 		if ( ! wp_is_block_theme() ) {
 			$this->components[] = 'widgets';
 		}
@@ -342,19 +342,19 @@ final class WP_Customize_Manager {
 		require_once ABSPATH . WPINC . '/customize/class-wp-customize-nav-menu-setting.php';
 
 		/**
-		 * Filters the core Customizer components to load.
+		 * Lọc các thành phần lõi của Trình tùy biến cần tải.
 		 *
-		 * This allows Core components to be excluded from being instantiated by
-		 * filtering them out of the array. Note that this filter generally runs
-		 * during the {@see 'plugins_loaded'} action, so it cannot be added
-		 * in a theme.
+		 * Điều này cho phép loại trừ các thành phần lõi khỏi việc khởi tạo bằng
+		 * cách lọc chúng ra khỏi mảng. Lưu ý rằng bộ lọc này thường chạy
+		 * trong hành động {@see 'plugins_loaded'}, nên không thể thêm
+		 * trong giao diện.
 		 *
 		 * @since 4.4.0
 		 *
 		 * @see WP_Customize_Manager::__construct()
 		 *
-		 * @param string[]             $components Array of core components to load.
-		 * @param WP_Customize_Manager $manager    WP_Customize_Manager instance.
+		 * @param string[]             $components Mảng các thành phần lõi cần tải.
+		 * @param WP_Customize_Manager $manager    Thể hiện WP_Customize_Manager.
 		 */
 		$components = apply_filters( 'customize_loaded_components', $this->components, $this );
 
@@ -374,10 +374,10 @@ final class WP_Customize_Manager {
 		add_action( 'setup_theme', array( $this, 'setup_theme' ) );
 		add_action( 'wp_loaded', array( $this, 'wp_loaded' ) );
 
-		// Do not spawn cron (especially the alternate cron) while running the Customizer.
+		// Không sinh tiến trình cron (đặc biệt là cron thay thế) khi đang chạy Trình tùy biến.
 		remove_action( 'init', 'wp_cron' );
 
-		// Do not run update checks when rendering the controls.
+		// Không chạy kiểm tra cập nhật khi render các control.
 		remove_action( 'admin_init', '_maybe_update_core' );
 		remove_action( 'admin_init', '_maybe_update_plugins' );
 		remove_action( 'admin_init', '_maybe_update_themes' );
@@ -392,22 +392,22 @@ final class WP_Customize_Manager {
 		add_action( 'wp_ajax_customize_dismiss_autosave_or_lock', array( $this, 'handle_dismiss_autosave_or_lock_request' ) );
 
 		add_action( 'customize_register', array( $this, 'register_controls' ) );
-		add_action( 'customize_register', array( $this, 'register_dynamic_settings' ), 11 ); // Allow code to create settings first.
+		add_action( 'customize_register', array( $this, 'register_dynamic_settings' ), 11 ); // Cho phép mã nguồn tạo cài đặt trước.
 		add_action( 'customize_controls_init', array( $this, 'prepare_controls' ) );
 		add_action( 'customize_controls_enqueue_scripts', array( $this, 'enqueue_control_scripts' ) );
 
-		// Render Common, Panel, Section, and Control templates.
+		// Render các mẫu Common, Panel, Section, và Control.
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'render_panel_templates' ), 1 );
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'render_section_templates' ), 1 );
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'render_control_templates' ), 1 );
 
-		// Export header video settings with the partial response.
+		// Xuất cài đặt video header cùng với phản hồi từng phần.
 		add_filter( 'customize_render_partials_response', array( $this, 'export_header_video_settings' ), 10, 3 );
 
-		// Export the settings to JS via the _wpCustomizeSettings variable.
+		// Xuất các cài đặt sang JS thông qua biến _wpCustomizeSettings.
 		add_action( 'customize_controls_print_footer_scripts', array( $this, 'customize_pane_settings' ), 1000 );
 
-		// Add theme update notices.
+		// Thêm thông báo cập nhật giao diện.
 		if ( current_user_can( 'install_themes' ) || current_user_can( 'update_themes' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/update.php';
 			add_action( 'customize_controls_print_footer_scripts', 'wp_print_admin_notice_templates' );
@@ -415,13 +415,13 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Returns true if it's an Ajax request.
+	 * Trả về true nếu đây là yêu cầu Ajax.
 	 *
 	 * @since 3.4.0
-	 * @since 4.2.0 Added `$action` param.
+	 * @since 4.2.0 Thêm tham số `$action`.
 	 *
-	 * @param string|null $action Whether the supplied Ajax action is being run.
-	 * @return bool True if it's an Ajax request, false otherwise.
+	 * @param string|null $action Hành động Ajax được cung cấp có đang chạy hay không.
+	 * @return bool True nếu là yêu cầu Ajax, false nếu không.
 	 */
 	public function doing_ajax( $action = null ) {
 		if ( ! wp_doing_ajax() ) {
@@ -432,21 +432,21 @@ final class WP_Customize_Manager {
 			return true;
 		} else {
 			/*
-			 * Note: we can't just use doing_action( "wp_ajax_{$action}" ) because we need
-			 * to check before admin-ajax.php gets to that point.
+			 * Lưu ý: chúng ta không thể chỉ dùng doing_action( "wp_ajax_{$action}" ) vì cần
+			 * kiểm tra trước khi admin-ajax.php đến được điểm đó.
 			 */
 			return isset( $_REQUEST['action'] ) && wp_unslash( $_REQUEST['action'] ) === $action;
 		}
 	}
 
 	/**
-	 * Custom wp_die wrapper. Returns either the standard message for UI
-	 * or the Ajax message.
+	 * Hàm bọc wp_die tùy chỉnh. Trả về thông báo tiêu chuẩn cho giao diện
+	 * hoặc thông báo Ajax.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string|WP_Error $ajax_message Ajax return.
-	 * @param string          $message      Optional. UI message.
+	 * @param string|WP_Error $ajax_message Giá trị trả về Ajax.
+	 * @param string          $message      Tùy chọn. Thông báo giao diện người dùng.
 	 */
 	protected function wp_die( $ajax_message, $message = null ) {
 		if ( $this->doing_ajax() ) {
@@ -486,12 +486,12 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Returns the Ajax wp_die() handler if it's a customized request.
+	 * Trả về trình xử lý wp_die() Ajax nếu đây là yêu cầu tùy biến.
 	 *
 	 * @since 3.4.0
 	 * @deprecated 4.7.0
 	 *
-	 * @return callable Die handler.
+	 * @return callable Trình xử lý die.
 	 */
 	public function wp_die_handler() {
 		_deprecated_function( __METHOD__, '4.7.0' );
@@ -504,18 +504,18 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Starts preview and customize theme.
+	 * Bắt đầu xem trước và tùy biến giao diện.
 	 *
-	 * Check if customize query variable exist. Init filters to filter the active theme.
+	 * Kiểm tra xem biến truy vấn customize có tồn tại không. Khởi tạo bộ lọc để lọc giao diện đang hoạt động.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @global string $pagenow The filename of the current screen.
+	 * @global string $pagenow Tên tệp của màn hình hiện tại.
 	 */
 	public function setup_theme() {
 		global $pagenow;
 
-		// Check permissions for customize.php access since this method is called before customize.php can run any code.
+		// Kiểm tra quyền truy cập customize.php vì phương thức này được gọi trước khi customize.php có thể chạy bất kỳ mã nào.
 		if ( 'customize.php' === $pagenow && ! current_user_can( 'customize' ) ) {
 			if ( ! is_user_logged_in() ) {
 				auth_redirect();
@@ -529,16 +529,16 @@ final class WP_Customize_Manager {
 			return;
 		}
 
-		// If a changeset was provided is invalid.
+		// Nếu changeset được cung cấp không hợp lệ.
 		if ( isset( $this->_changeset_uuid ) && false !== $this->_changeset_uuid && ! wp_is_uuid( $this->_changeset_uuid ) ) {
 			$this->wp_die( -1, __( 'Invalid changeset UUID' ) );
 		}
 
 		/*
-		 * Clear incoming post data if the user lacks a CSRF token (nonce). Note that the customizer
-		 * application will inject the customize_preview_nonce query parameter into all Ajax requests.
-		 * For similar behavior elsewhere in WordPress, see rest_cookie_check_errors() which logs out
-		 * a user when a valid nonce isn't present.
+		 * Xóa dữ liệu post đến nếu người dùng thiếu token CSRF (nonce). Lưu ý rằng ứng dụng
+		 * tùy biến sẽ chèn tham số truy vấn customize_preview_nonce vào tất cả các yêu cầu Ajax.
+		 * Đối với hành vi tương tự ở nơi khác trong WordPress, xem rest_cookie_check_errors() sẽ đăng xuất
+		 * người dùng khi không có nonce hợp lệ.
 		 */
 		$has_post_data_nonce = (
 			check_ajax_referer( 'preview-customize_' . $this->get_stylesheet(), 'nonce', false )
@@ -553,9 +553,9 @@ final class WP_Customize_Manager {
 		}
 
 		/*
-		 * If unauthenticated then require a valid changeset UUID to load the preview.
-		 * In this way, the UUID serves as a secret key. If the messenger channel is present,
-		 * then send unauthenticated code to prompt re-auth.
+		 * Nếu chưa xác thực thì yêu cầu UUID changeset hợp lệ để tải bản xem trước.
+		 * Theo cách này, UUID đóng vai trò như khóa bí mật. Nếu kênh truyền thông điệp có mặt,
+		 * thì gửi mã chưa xác thực để yêu cầu xác thực lại.
 		 */
 		if ( ! current_user_can( 'customize' ) && ! $this->changeset_post_id() ) {
 			$this->wp_die( $this->messenger_channel ? 0 : -1, __( 'Non-existent changeset UUID.' ) );
@@ -565,41 +565,41 @@ final class WP_Customize_Manager {
 			send_origin_headers();
 		}
 
-		// Hide the admin bar if we're embedded in the customizer iframe.
+		// Ẩn thanh quản trị nếu chúng ta đang nhúng trong iframe tùy biến.
 		if ( $this->messenger_channel ) {
 			show_admin_bar( false );
 		}
 
 		if ( $this->is_theme_active() ) {
-			// Once the theme is loaded, we'll validate it.
+			// Khi giao diện được tải xong, chúng ta sẽ xác thực nó.
 			add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
 		} else {
 			/*
-			 * If the requested theme is not the active theme and the user doesn't have
-			 * the switch_themes cap, bail.
+			 * Nếu giao diện được yêu cầu không phải là giao diện đang hoạt động và người dùng không có
+			 * quyền switch_themes, thoát.
 			 */
 			if ( ! current_user_can( 'switch_themes' ) ) {
 				$this->wp_die( -1, __( 'Sorry, you are not allowed to edit theme options on this site.' ) );
 			}
 
-			// If the theme has errors while loading, bail.
+			// Nếu giao diện có lỗi khi tải, thoát.
 			if ( $this->theme()->errors() ) {
 				$this->wp_die( -1, $this->theme()->errors()->get_error_message() );
 			}
 
-			// If the theme isn't allowed per multisite settings, bail.
+			// Nếu giao diện không được phép theo cài đặt multisite, thoát.
 			if ( ! $this->theme()->is_allowed() ) {
 				$this->wp_die( -1, __( 'The requested theme does not exist.' ) );
 			}
 		}
 
-		// Make sure changeset UUID is established immediately after the theme is loaded.
+		// Đảm bảo UUID changeset được thiết lập ngay sau khi giao diện được tải.
 		add_action( 'after_setup_theme', array( $this, 'establish_loaded_changeset' ), 5 );
 
 		/*
-		 * Import theme starter content for fresh installations when landing in the customizer.
-		 * Import starter content at after_setup_theme:100 so that any
-		 * add_theme_support( 'starter-content' ) calls will have been made.
+		 * Nhập nội dung khởi đầu của giao diện cho các cài đặt mới khi vào trình tùy biến.
+		 * Nhập nội dung khởi đầu tại after_setup_theme:100 để bất kỳ
+		 * lệnh gọi add_theme_support( 'starter-content' ) nào đã được thực hiện.
 		 */
 		if ( get_option( 'fresh_site' ) && 'customize.php' === $pagenow ) {
 			add_action( 'after_setup_theme', array( $this, 'import_theme_starter_content' ), 100 );
@@ -609,17 +609,17 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Establishes the loaded changeset.
+	 * Thiết lập changeset đã tải.
 	 *
-	 * This method runs right at after_setup_theme and applies the 'customize_changeset_branching' filter to determine
-	 * whether concurrent changesets are allowed. Then if the Customizer is not initialized with a `changeset_uuid` param,
-	 * this method will determine which UUID should be used. If changeset branching is disabled, then the most saved
-	 * changeset will be loaded by default. Otherwise, if there are no existing saved changesets or if changeset branching is
-	 * enabled, then a new UUID will be generated.
+	 * Phương thức này chạy ngay tại after_setup_theme và áp dụng bộ lọc 'customize_changeset_branching' để xác định
+	 * xem các changeset đồng thời có được phép hay không. Sau đó nếu Trình tùy biến không được khởi tạo với tham số `changeset_uuid`,
+	 * phương thức này sẽ xác định UUID nào nên được sử dụng. Nếu phân nhánh changeset bị tắt, thì changeset được lưu gần nhất
+	 * sẽ được tải theo mặc định. Ngược lại, nếu không có changeset đã lưu nào hoặc nếu phân nhánh changeset
+	 * được bật, thì UUID mới sẽ được tạo.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @global string $pagenow The filename of the current screen.
+	 * @global string $pagenow Tên tệp của màn hình hiện tại.
 	 */
 	public function establish_loaded_changeset() {
 		global $pagenow;
@@ -644,7 +644,7 @@ final class WP_Customize_Manager {
 				}
 			}
 
-			// If no changeset UUID has been set yet, then generate a new one.
+			// Nếu chưa có UUID changeset nào được thiết lập, thì tạo một UUID mới.
 			if ( empty( $changeset_uuid ) ) {
 				$changeset_uuid = wp_generate_uuid4();
 			}
@@ -658,7 +658,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Callback to validate a theme once it is loaded
+	 * Callback để xác thực giao diện khi nó đã được tải
 	 *
 	 * @since 3.4.0
 	 */
@@ -671,13 +671,13 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * If the theme to be previewed isn't the active theme, add filter callbacks
-	 * to swap it out at runtime.
+	 * Nếu giao diện cần xem trước không phải là giao diện đang hoạt động, thêm các callback bộ lọc
+	 * để thay thế nó khi chạy.
 	 *
 	 * @since 3.4.0
 	 */
 	public function start_previewing_theme() {
-		// Bail if we're already previewing.
+		// Thoát nếu đã đang xem trước.
 		if ( $this->is_preview() ) {
 			return;
 		}
@@ -693,25 +693,25 @@ final class WP_Customize_Manager {
 			add_filter( 'pre_option_stylesheet', array( $this, 'get_stylesheet' ) );
 			add_filter( 'pre_option_template', array( $this, 'get_template' ) );
 
-			// Handle custom theme roots.
+			// Xử lý thư mục gốc giao diện tùy chỉnh.
 			add_filter( 'pre_option_stylesheet_root', array( $this, 'get_stylesheet_root' ) );
 			add_filter( 'pre_option_template_root', array( $this, 'get_template_root' ) );
 		}
 
 		/**
-		 * Fires once the Customizer theme preview has started.
+		 * Kích hoạt khi bản xem trước giao diện Trình tùy biến đã bắt đầu.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param WP_Customize_Manager $manager WP_Customize_Manager instance.
+		 * @param WP_Customize_Manager $manager Thể hiện WP_Customize_Manager.
 		 */
 		do_action( 'start_previewing_theme', $this );
 	}
 
 	/**
-	 * Stops previewing the selected theme.
+	 * Dừng xem trước giao diện đã chọn.
 	 *
-	 * Removes filters to change the active theme.
+	 * Gỡ bỏ các bộ lọc thay đổi giao diện đang hoạt động.
 	 *
 	 * @since 3.4.0
 	 */
@@ -731,23 +731,23 @@ final class WP_Customize_Manager {
 			remove_filter( 'pre_option_stylesheet', array( $this, 'get_stylesheet' ) );
 			remove_filter( 'pre_option_template', array( $this, 'get_template' ) );
 
-			// Handle custom theme roots.
+			// Xử lý thư mục gốc giao diện tùy chỉnh.
 			remove_filter( 'pre_option_stylesheet_root', array( $this, 'get_stylesheet_root' ) );
 			remove_filter( 'pre_option_template_root', array( $this, 'get_template_root' ) );
 		}
 
 		/**
-		 * Fires once the Customizer theme preview has stopped.
+		 * Kích hoạt khi bản xem trước giao diện Trình tùy biến đã dừng.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param WP_Customize_Manager $manager WP_Customize_Manager instance.
+		 * @param WP_Customize_Manager $manager Thể hiện WP_Customize_Manager.
 		 */
 		do_action( 'stop_previewing_theme', $this );
 	}
 
 	/**
-	 * Gets whether settings are or will be previewed.
+	 * Lấy trạng thái xem các cài đặt có đang hoặc sẽ được xem trước hay không.
 	 *
 	 * @since 4.9.0
 	 *
@@ -760,52 +760,52 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets whether data from a changeset's autosaved revision should be loaded if it exists.
+	 * Lấy trạng thái xem dữ liệu từ bản sửa đổi tự động lưu của changeset có nên được tải hay không nếu nó tồn tại.
 	 *
 	 * @since 4.9.0
 	 *
 	 * @see WP_Customize_Manager::changeset_data()
 	 *
-	 * @return bool Is using autosaved changeset revision.
+	 * @return bool Có đang sử dụng bản sửa đổi changeset tự động lưu hay không.
 	 */
 	public function autosaved() {
 		return $this->autosaved;
 	}
 
 	/**
-	 * Whether the changeset branching is allowed.
+	 * Xem phân nhánh changeset có được phép hay không.
 	 *
 	 * @since 4.9.0
 	 *
 	 * @see WP_Customize_Manager::establish_loaded_changeset()
 	 *
-	 * @return bool Is changeset branching.
+	 * @return bool Có phải đang phân nhánh changeset hay không.
 	 */
 	public function branching() {
 
 		/**
-		 * Filters whether or not changeset branching is allowed.
+		 * Lọc xem phân nhánh changeset có được phép hay không. / Filters whether or not changeset branching is allowed.
 		 *
-		 * By default in core, when changeset branching is not allowed, changesets will operate
-		 * linearly in that only one saved changeset will exist at a time (with a 'draft' or
-		 * 'future' status). This makes the Customizer operate in a way that is similar to going to
-		 * "edit" to one existing post: all users will be making changes to the same post, and autosave
-		 * revisions will be made for that post.
+		 * Theo mặc định trong lõi, khi phân nhánh changeset không được phép, các changeset sẽ hoạt động
+		 * tuyến tính trong đó chỉ có một changeset đã lưu tồn tại tại một thời điểm (với trạng thái 'draft' hoặc
+		 * 'future'). Điều này làm cho Trình tùy biến hoạt động theo cách tương tự như đi đến
+		 * "chỉnh sửa" một bài viết hiện có: tất cả người dùng sẽ thay đổi cùng một bài viết, và bản sửa đổi
+		 * tự động lưu sẽ được tạo cho bài viết đó.
 		 *
-		 * By contrast, when changeset branching is allowed, then the model is like users going
-		 * to "add new" for a page and each user makes changes independently of each other since
-		 * they are all operating on their own separate pages, each getting their own separate
-		 * initial auto-drafts and then once initially saved, autosave revisions on top of that
-		 * user's specific post.
+		 * Ngược lại, khi phân nhánh changeset được phép, thì mô hình giống như người dùng đi đến
+		 * "thêm mới" cho một trang và mỗi người dùng thay đổi độc lập với nhau vì
+		 * họ đều đang hoạt động trên các trang riêng biệt của mình, mỗi người nhận được
+		 * bản nháp tự động ban đầu riêng và sau khi được lưu lần đầu, các bản sửa đổi tự động lưu trên đầu
+		 * bài viết cụ thể của người dùng đó.
 		 *
-		 * Since linear changesets are deemed to be more suitable for the majority of WordPress users,
-		 * they are the default. For WordPress sites that have heavy site management in the Customizer
-		 * by multiple users then branching changesets should be enabled by means of this filter.
+		 * Vì các changeset tuyến tính được coi là phù hợp hơn cho đa số người dùng WordPress,
+		 * chúng là mặc định. Đối với các trang WordPress có quản lý trang web nặng trong Trình tùy biến
+		 * bởi nhiều người dùng thì nên bật phân nhánh changeset bằng bộ lọc này.
 		 *
 		 * @since 4.9.0
 		 *
-		 * @param bool                 $allow_branching Whether branching is allowed. If `false`, the default,
-		 *                                              then only one saved changeset exists at a time.
+		 * @param bool                 $allow_branching Có cho phép phân nhánh hay không. Nếu `false`, mặc định,
+		 *                                              thì chỉ có một changeset đã lưu tồn tại tại một thời điểm.
 		 * @param WP_Customize_Manager $wp_customize    Manager instance.
 		 */
 		$this->branching = apply_filters( 'customize_changeset_branching', $this->branching, $this );
@@ -814,7 +814,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets the changeset UUID.
+	 * Lấy UUID của changeset.
 	 *
 	 * @since 4.7.0
 	 *
@@ -830,7 +830,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets the theme being customized.
+	 * Lấy giao diện đang được tùy biến.
 	 *
 	 * @since 3.4.0
 	 *
@@ -844,7 +844,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets the registered settings.
+	 * Lấy các cài đặt đã đăng ký.
 	 *
 	 * @since 3.4.0
 	 *
@@ -855,7 +855,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets the registered controls.
+	 * Lấy các control đã đăng ký.
 	 *
 	 * @since 3.4.0
 	 *
@@ -866,7 +866,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets the registered containers.
+	 * Lấy các container đã đăng ký.
 	 *
 	 * @since 4.0.0
 	 *
@@ -877,7 +877,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets the registered sections.
+	 * Lấy các section đã đăng ký.
 	 *
 	 * @since 3.4.0
 	 *
@@ -888,18 +888,18 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets the registered panels.
+	 * Lấy các panel đã đăng ký.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @return array Panels.
+	 * @return array Các panel.
 	 */
 	public function panels() {
 		return $this->panels;
 	}
 
 	/**
-	 * Checks if the current theme is active.
+	 * Kiểm tra xem giao diện hiện tại có đang hoạt động hay không.
 	 *
 	 * @since 3.4.0
 	 *
@@ -910,15 +910,15 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Registers styles/scripts and initialize the preview of each setting
+	 * Đăng ký styles/scripts và khởi tạo bản xem trước của mỗi cài đặt
 	 *
 	 * @since 3.4.0
 	 */
 	public function wp_loaded() {
 
 		/*
-		 * Unconditionally register core types for panels, sections, and controls
-		 * in case plugin unhooks all customize_register actions.
+		 * Đăng ký vô điều kiện các loại lõi cho panel, section, và control
+		 * trong trường hợp plugin gỡ bỏ tất cả các hành động customize_register.
 		 */
 		$this->register_panel_type( 'WP_Customize_Panel' );
 		$this->register_panel_type( 'WP_Customize_Themes_Panel' );
@@ -938,11 +938,11 @@ final class WP_Customize_Manager {
 		$this->register_control_type( 'WP_Customize_Date_Time_Control' );
 
 		/**
-		 * Fires once WordPress has loaded, allowing scripts and styles to be initialized.
+		 * Kích hoạt khi WordPress đã tải xong, cho phép khởi tạo scripts và styles.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param WP_Customize_Manager $manager WP_Customize_Manager instance.
+		 * @param WP_Customize_Manager $manager Thể hiện WP_Customize_Manager.
 		 */
 		do_action( 'customize_register', $this );
 
@@ -958,15 +958,15 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Prevents Ajax requests from following redirects when previewing a theme
-	 * by issuing a 200 response instead of a 30x.
+	 * Ngăn các yêu cầu Ajax theo dõi chuyển hướng khi xem trước giao diện
+	 * bằng cách trả về phản hồi 200 thay vì 30x.
 	 *
-	 * Instead, the JS will sniff out the location header.
+	 * Thay vào đó, JS sẽ phát hiện header location.
 	 *
 	 * @since 3.4.0
 	 * @deprecated 4.7.0
 	 *
-	 * @param int $status Status.
+	 * @param int $status Trạng thái.
 	 * @return int
 	 */
 	public function wp_redirect_status( $status ) {
@@ -980,12 +980,12 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Finds the changeset post ID for a given changeset UUID.
+	 * Tìm ID bài viết changeset cho một UUID changeset cho trước.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string $uuid Changeset UUID.
-	 * @return int|null Returns post ID on success and null on failure.
+	 * @param string $uuid UUID của changeset.
+	 * @return int|null Trả về ID bài viết nếu thành công và null nếu thất bại.
 	 */
 	public function find_changeset_post_id( $uuid ) {
 		$cache_group       = 'customize_changeset_post';
@@ -1008,7 +1008,7 @@ final class WP_Customize_Manager {
 			)
 		);
 		if ( ! empty( $changeset_post_query->posts ) ) {
-			// Note: 'fields'=>'ids' is not being used in order to cache the post object as it will be needed.
+			// Lưu ý: 'fields'=>'ids' không được sử dụng để lưu cache đối tượng bài viết vì nó sẽ cần thiết.
 			$changeset_post_id = $changeset_post_query->posts[0]->ID;
 			wp_cache_set( $uuid, $changeset_post_id, $cache_group );
 			return $changeset_post_id;
@@ -1018,19 +1018,19 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets changeset posts.
+	 * Lấy các bài viết changeset.
 	 *
 	 * @since 4.9.0
 	 *
 	 * @param array $args {
-	 *     Args to pass into `get_posts()` to query changesets.
+	 *     Các tham số truyền vào `get_posts()` để truy vấn changeset.
 	 *
-	 *     @type int    $posts_per_page             Number of posts to return. Defaults to -1 (all posts).
-	 *     @type int    $author                     Post author. Defaults to current user.
-	 *     @type string $post_status                Status of changeset. Defaults to 'auto-draft'.
-	 *     @type bool   $exclude_restore_dismissed  Whether to exclude changeset auto-drafts that have been dismissed. Defaults to true.
+	 *     @type int    $posts_per_page             Số bài viết trả về. Mặc định là -1 (tất cả bài viết).
+	 *     @type int    $author                     Tác giả bài viết. Mặc định là người dùng hiện tại.
+	 *     @type string $post_status                Trạng thái changeset. Mặc định là 'auto-draft'.
+	 *     @type bool   $exclude_restore_dismissed  Có loại trừ các bản nháp tự động changeset đã bị bỏ qua hay không. Mặc định là true.
 	 * }
-	 * @return WP_Post[] Auto-draft changesets.
+	 * @return WP_Post[] Các changeset bản nháp tự động.
 	 */
 	protected function get_changeset_posts( $args = array() ) {
 		$default_args = array(
@@ -1065,10 +1065,10 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Dismisses all of the current user's auto-drafts (other than the present one).
+	 * Bỏ qua tất cả các bản nháp tự động của người dùng hiện tại (ngoại trừ bản hiện tại).
 	 *
 	 * @since 4.9.0
-	 * @return int The number of auto-drafts that were dismissed.
+	 * @return int Số lượng bản nháp tự động đã bị bỏ qua.
 	 */
 	protected function dismiss_user_auto_draft_changesets() {
 		$changeset_autodraft_posts = $this->get_changeset_posts(
@@ -1091,11 +1091,11 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets the changeset post ID for the loaded changeset.
+	 * Lấy ID bài viết changeset cho changeset đã tải.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @return int|null Post ID on success or null if there is no post yet saved.
+	 * @return int|null ID bài viết nếu thành công hoặc null nếu chưa có bài viết nào được lưu.
 	 */
 	public function changeset_post_id() {
 		if ( ! isset( $this->_changeset_post_id ) ) {
@@ -1112,12 +1112,12 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets the data stored in a changeset post.
+	 * Lấy dữ liệu được lưu trong bài viết changeset.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param int $post_id Changeset post ID.
-	 * @return array|WP_Error Changeset data or WP_Error on error.
+	 * @param int $post_id ID bài viết changeset.
+	 * @return array|WP_Error Dữ liệu changeset hoặc WP_Error nếu có lỗi.
 	 */
 	protected function get_changeset_post_data( $post_id ) {
 		if ( ! $post_id ) {
@@ -1146,12 +1146,12 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets changeset data.
+	 * Lấy dữ liệu changeset.
 	 *
 	 * @since 4.7.0
-	 * @since 4.9.0 This will return the changeset's data with a user's autosave revision merged on top, if one exists and $autosaved is true.
+	 * @since 4.9.0 Phương thức này sẽ trả về dữ liệu changeset với bản sửa đổi tự động lưu của người dùng được gộp lên trên, nếu có và $autosaved là true.
 	 *
-	 * @return array Changeset data.
+	 * @return array Dữ liệu changeset.
 	 */
 	public function changeset_data() {
 		if ( isset( $this->_changeset_data ) ) {
@@ -1171,7 +1171,7 @@ final class WP_Customize_Manager {
 				}
 			}
 
-			// Load data from the changeset if it was not loaded from an autosave.
+			// Tải dữ liệu từ changeset nếu nó chưa được tải từ bản tự động lưu.
 			if ( ! isset( $this->_changeset_data ) ) {
 				$data = $this->get_changeset_post_data( $changeset_post_id );
 				if ( ! is_wp_error( $data ) ) {
@@ -1185,7 +1185,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Starter content setting IDs.
+	 * Các ID cài đặt nội dung khởi đầu.
 	 *
 	 * @since 4.7.0
 	 * @var array
@@ -1193,11 +1193,11 @@ final class WP_Customize_Manager {
 	protected $pending_starter_content_settings_ids = array();
 
 	/**
-	 * Imports theme starter content into the customized state.
+	 * Nhập nội dung khởi đầu của giao diện vào trạng thái đã tùy biến.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array $starter_content Starter content. Defaults to `get_theme_starter_content()`.
+	 * @param array $starter_content Nội dung khởi đầu. Mặc định là `get_theme_starter_content()`.
 	 */
 	public function import_theme_starter_content( $starter_content = array() ) {
 		if ( empty( $starter_content ) ) {
@@ -1239,7 +1239,7 @@ final class WP_Customize_Manager {
 
 				if ( ! isset( $max_widget_numbers[ $id_base ] ) ) {
 
-					// When $settings is an array-like object, get an intrinsic array for use with array_keys().
+					// Khi $settings là đối tượng dạng mảng, lấy mảng nội tại để sử dụng với array_keys().
 					$settings = get_option( "widget_{$id_base}", array() );
 					if ( $settings instanceof ArrayObject || $settings instanceof ArrayIterator ) {
 						$settings = $settings->getArrayCopy();
@@ -1247,7 +1247,7 @@ final class WP_Customize_Manager {
 
 					unset( $settings['_multiwidget'] );
 
-					// Find the max widget number for this type.
+					// Tìm số widget tối đa cho loại này.
 					$widget_numbers = array_keys( $settings );
 					if ( count( $widget_numbers ) > 0 ) {
 						$widget_numbers[]               = 1;
@@ -1281,7 +1281,7 @@ final class WP_Customize_Manager {
 			$starter_content_auto_draft_post_ids = array_merge( $starter_content_auto_draft_post_ids, $changeset_data['nav_menus_created_posts']['value'] );
 		}
 
-		// Make an index of all the posts needed and what their slugs are.
+		// Tạo chỉ mục tất cả các bài viết cần thiết và slug của chúng.
 		$needed_posts = array();
 		$attachments  = $this->prepare_starter_content_attachments( $attachments );
 		foreach ( $attachments as $attachment ) {
@@ -1312,7 +1312,7 @@ final class WP_Customize_Manager {
 		 */
 		$post_types = array_filter( array_merge( array( 'attachment' ), wp_list_pluck( $posts, 'post_type' ) ) );
 
-		// Re-use auto-draft starter content posts referenced in the current customized state.
+		// Tái sử dụng các bài viết nội dung khởi đầu bản nháp tự động được tham chiếu trong trạng thái tùy biến hiện tại.
 		$existing_starter_content_posts = array();
 		if ( ! empty( $starter_content_auto_draft_post_ids ) ) {
 			$existing_posts_query = new WP_Query(
@@ -1332,7 +1332,7 @@ final class WP_Customize_Manager {
 			}
 		}
 
-		// Re-use non-auto-draft posts.
+		// Tái sử dụng các bài viết không phải bản nháp tự động.
 		if ( ! empty( $all_post_slugs ) ) {
 			$existing_posts_query = new WP_Query(
 				array(
@@ -1350,7 +1350,7 @@ final class WP_Customize_Manager {
 			}
 		}
 
-		// Attachments are technically posts but handled differently.
+		// Tệp đính kèm về mặt kỹ thuật là bài viết nhưng được xử lý khác.
 		if ( ! empty( $attachments ) ) {
 
 			$attachment_ids = array();
@@ -1371,17 +1371,17 @@ final class WP_Customize_Manager {
 						$attached_file = null;
 					} elseif ( $this->get_stylesheet() !== get_post_meta( $attachment_post->ID, '_starter_content_theme', true ) ) {
 
-						// Re-generate attachment metadata since it was previously generated for a different theme.
+						// Tạo lại metadata tệp đính kèm vì nó đã được tạo trước đó cho một giao diện khác.
 						$metadata = wp_generate_attachment_metadata( $attachment_post->ID, $attached_file );
 						wp_update_attachment_metadata( $attachment_id, $metadata );
 						update_post_meta( $attachment_id, '_starter_content_theme', $this->get_stylesheet() );
 					}
 				}
 
-				// Insert the attachment auto-draft because it doesn't yet exist or the attached file is gone.
+				// Chèn bản nháp tự động tệp đính kèm vì nó chưa tồn tại hoặc tệp đính kèm đã bị mất.
 				if ( ! $attachment_id ) {
 
-					// Copy file to temp location so that original file won't get deleted from theme after sideloading.
+					// Sao chép tệp đến vị trí tạm để tệp gốc không bị xóa khỏi giao diện sau khi sideload.
 					$temp_file_name = wp_tempnam( wp_basename( $file_path ) );
 					if ( $temp_file_name && copy( $file_path, $temp_file_name ) ) {
 						$file_array['tmp_name'] = $temp_file_name;
@@ -1393,7 +1393,7 @@ final class WP_Customize_Manager {
 					$attachment_post_data = array_merge(
 						wp_array_slice_assoc( $attachment, array( 'post_title', 'post_content', 'post_excerpt' ) ),
 						array(
-							'post_status' => 'auto-draft', // So attachment will be garbage collected in a week if changeset is never published.
+							'post_status' => 'auto-draft', // Để tệp đính kèm sẽ được dọn rác trong một tuần nếu changeset không bao giờ được xuất bản.
 						)
 					);
 
@@ -1410,7 +1410,7 @@ final class WP_Customize_Manager {
 			$starter_content_auto_draft_post_ids = array_merge( $starter_content_auto_draft_post_ids, array_values( $attachment_ids ) );
 		}
 
-		// Posts & pages.
+		// Bài viết & trang.
 		if ( ! empty( $posts ) ) {
 			foreach ( array_keys( $posts ) as $post_symbol ) {
 				if ( empty( $posts[ $post_symbol ]['post_type'] ) || empty( $posts[ $post_symbol ]['post_name'] ) ) {
@@ -1425,13 +1425,13 @@ final class WP_Customize_Manager {
 					continue;
 				}
 
-				// Use existing auto-draft post if one already exists with the same type and name.
+				// Sử dụng bài viết bản nháp tự động hiện có nếu đã tồn tại một bài với cùng loại và tên.
 				if ( isset( $existing_starter_content_posts[ $post_type . ':' . $post_name ] ) ) {
 					$posts[ $post_symbol ]['ID'] = $existing_starter_content_posts[ $post_type . ':' . $post_name ]->ID;
 					continue;
 				}
 
-				// Translate the featured image symbol.
+				// Chuyển đổi ký hiệu ảnh đại diện.
 				if ( ! empty( $posts[ $post_symbol ]['thumbnail'] )
 					&& preg_match( '/^{{(?P<symbol>.+)}}$/', $posts[ $post_symbol ]['thumbnail'], $matches )
 					&& isset( $attachment_ids[ $matches['symbol'] ] ) ) {
@@ -1451,14 +1451,14 @@ final class WP_Customize_Manager {
 			$starter_content_auto_draft_post_ids = array_merge( $starter_content_auto_draft_post_ids, wp_list_pluck( $posts, 'ID' ) );
 		}
 
-		// The nav_menus_created_posts setting is why nav_menus component is dependency for adding posts.
+		// Cài đặt nav_menus_created_posts là lý do tại sao thành phần nav_menus là phụ thuộc để thêm bài viết.
 		if ( ! empty( $this->nav_menus ) && ! empty( $starter_content_auto_draft_post_ids ) ) {
 			$setting_id = 'nav_menus_created_posts';
 			$this->set_post_value( $setting_id, array_unique( array_values( $starter_content_auto_draft_post_ids ) ) );
 			$this->pending_starter_content_settings_ids[] = $setting_id;
 		}
 
-		// Nav menus.
+		// Menu điều hướng.
 		$placeholder_id              = -1;
 		$reused_nav_menu_setting_ids = array();
 		foreach ( $nav_menus as $nav_menu_location => $nav_menu ) {
@@ -1467,7 +1467,7 @@ final class WP_Customize_Manager {
 			$nav_menu_setting_id = null;
 			$matches             = array();
 
-			// Look for an existing placeholder menu with starter content to re-use.
+			// Tìm menu giữ chỗ hiện có với nội dung khởi đầu để tái sử dụng.
 			foreach ( $changeset_data as $setting_id => $setting_params ) {
 				$can_reuse = (
 					! empty( $setting_params['starter_content'] )
@@ -1500,7 +1500,7 @@ final class WP_Customize_Manager {
 			);
 			$this->pending_starter_content_settings_ids[] = $nav_menu_setting_id;
 
-			// @todo Add support for menu_item_parent.
+			// @todo Thêm hỗ trợ cho menu_item_parent.
 			$position = 0;
 			foreach ( $nav_menu['items'] as $nav_menu_item ) {
 				$nav_menu_item_setting_id = sprintf( 'nav_menu_item[%d]', $placeholder_id-- );
@@ -1536,10 +1536,10 @@ final class WP_Customize_Manager {
 			}
 		}
 
-		// Options.
+		// Tùy chọn.
 		foreach ( $options as $name => $value ) {
 
-			// Serialize the value to check for post symbols.
+			// Tuần tự hóa giá trị để kiểm tra các ký hiệu bài viết.
 			$value = maybe_serialize( $value );
 
 			if ( is_serialized( $value ) ) {
@@ -1550,9 +1550,9 @@ final class WP_Customize_Manager {
 						$symbol_match = $attachment_ids[ $matches['symbol'] ];
 					}
 
-					// If we have any symbol matches, update the values.
+					// Nếu có bất kỳ kết quả khớp ký hiệu nào, cập nhật giá trị.
 					if ( isset( $symbol_match ) ) {
-						// Replace found string matches with post IDs.
+						// Thay thế các kết quả khớp chuỗi tìm được bằng ID bài viết.
 						$value = str_replace( $matches[0], "i:{$symbol_match}", $value );
 					} else {
 						continue;
@@ -1568,7 +1568,7 @@ final class WP_Customize_Manager {
 				}
 			}
 
-			// Unserialize values after checking for post symbols, so they can be properly referenced.
+			// Giải tuần tự hóa giá trị sau khi kiểm tra các ký hiệu bài viết, để chúng có thể được tham chiếu đúng.
 			$value = maybe_unserialize( $value );
 
 			if ( empty( $changeset_data[ $name ] ) || ! empty( $changeset_data[ $name ]['starter_content'] ) ) {
@@ -1577,13 +1577,13 @@ final class WP_Customize_Manager {
 			}
 		}
 
-		// Theme mods.
+		// Tùy chỉnh giao diện.
 		foreach ( $theme_mods as $name => $value ) {
 
-			// Serialize the value to check for post symbols.
+			// Tuần tự hóa giá trị để kiểm tra các ký hiệu bài viết.
 			$value = maybe_serialize( $value );
 
-			// Check if value was serialized.
+			// Kiểm tra xem giá trị đã được tuần tự hóa chưa.
 			if ( is_serialized( $value ) ) {
 				if ( preg_match( '/s:\d+:"{{(?P<symbol>.+)}}"/', $value, $matches ) ) {
 					if ( isset( $posts[ $matches['symbol'] ] ) ) {
@@ -1592,9 +1592,9 @@ final class WP_Customize_Manager {
 						$symbol_match = $attachment_ids[ $matches['symbol'] ];
 					}
 
-					// If we have any symbol matches, update the values.
+					// Nếu có bất kỳ kết quả khớp ký hiệu nào, cập nhật giá trị.
 					if ( isset( $symbol_match ) ) {
-						// Replace found string matches with post IDs.
+						// Thay thế các kết quả khớp chuỗi tìm được bằng ID bài viết.
 						$value = str_replace( $matches[0], "i:{$symbol_match}", $value );
 					} else {
 						continue;
@@ -1610,10 +1610,10 @@ final class WP_Customize_Manager {
 				}
 			}
 
-			// Unserialize values after checking for post symbols, so they can be properly referenced.
+			// Giải tuần tự hóa giá trị sau khi kiểm tra các ký hiệu bài viết, để chúng có thể được tham chiếu đúng.
 			$value = maybe_unserialize( $value );
 
-			// Handle header image as special case since setting has a legacy format.
+			// Xử lý ảnh header như trường hợp đặc biệt vì cài đặt có định dạng cũ.
 			if ( 'header_image' === $name ) {
 				$name     = 'header_image_data';
 				$metadata = wp_get_attachment_metadata( $value );
@@ -1646,14 +1646,14 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Prepares starter content attachments.
+	 * Chuẩn bị các tệp đính kèm nội dung khởi đầu.
 	 *
-	 * Ensure that the attachments are valid and that they have slugs and file name/path.
+	 * Đảm bảo rằng các tệp đính kèm hợp lệ và có slug và tên/đường dẫn tệp.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array $attachments Attachments.
-	 * @return array Prepared attachments.
+	 * @param array $attachments Các tệp đính kèm.
+	 * @return array Các tệp đính kèm đã chuẩn bị.
 	 */
 	protected function prepare_starter_content_attachments( $attachments ) {
 		$prepared_attachments = array();
@@ -1661,21 +1661,21 @@ final class WP_Customize_Manager {
 			return $prepared_attachments;
 		}
 
-		// Such is The WordPress Way.
+		// Đây là Cách của WordPress.
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/media.php';
 		require_once ABSPATH . 'wp-admin/includes/image.php';
 
 		foreach ( $attachments as $symbol => $attachment ) {
 
-			// A file is required and URLs to files are not currently allowed.
+			// Cần có tệp và URL đến tệp hiện không được phép.
 			if ( empty( $attachment['file'] ) || preg_match( '#^https?://$#', $attachment['file'] ) ) {
 				continue;
 			}
 
 			$file_path = null;
 			if ( file_exists( $attachment['file'] ) ) {
-				$file_path = $attachment['file']; // Could be absolute path to file in plugin.
+				$file_path = $attachment['file']; // Có thể là đường dẫn tuyệt đối đến tệp trong plugin.
 			} elseif ( is_child_theme() && file_exists( get_stylesheet_directory() . '/' . $attachment['file'] ) ) {
 				$file_path = get_stylesheet_directory() . '/' . $attachment['file'];
 			} elseif ( file_exists( get_template_directory() . '/' . $attachment['file'] ) ) {
@@ -1685,13 +1685,13 @@ final class WP_Customize_Manager {
 			}
 			$file_name = wp_basename( $attachment['file'] );
 
-			// Skip file types that are not recognized.
+			// Bỏ qua các loại tệp không được nhận dạng.
 			$checked_filetype = wp_check_filetype( $file_name );
 			if ( empty( $checked_filetype['type'] ) ) {
 				continue;
 			}
 
-			// Ensure post_name is set since not automatically derived from post_title for new auto-draft posts.
+			// Đảm bảo post_name được thiết lập vì nó không tự động được tạo từ post_title cho các bài viết bản nháp tự động mới.
 			if ( empty( $attachment['post_name'] ) ) {
 				if ( ! empty( $attachment['post_title'] ) ) {
 					$attachment['post_name'] = sanitize_title( $attachment['post_title'] );
@@ -1708,7 +1708,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Saves starter content changeset.
+	 * Lưu changeset nội dung khởi đầu.
 	 *
 	 * @since 4.7.0
 	 */
@@ -1730,29 +1730,29 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets dirty pre-sanitized setting values in the current customized state.
+	 * Lấy các giá trị cài đặt chưa được làm sạch đã thay đổi trong trạng thái tùy biến hiện tại.
 	 *
-	 * The returned array consists of a merge of three sources:
-	 * 1. If the theme is not currently active, then the base array is any stashed
-	 *    theme mods that were modified previously but never published.
-	 * 2. The values from the current changeset, if it exists.
-	 * 3. If the user can customize, the values parsed from the incoming
-	 *    `$_POST['customized']` JSON data.
-	 * 4. Any programmatically-set post values via `WP_Customize_Manager::set_post_value()`.
+	 * Mảng trả về bao gồm sự hợp nhất của ba nguồn:
+	 * 1. Nếu giao diện hiện không hoạt động, thì mảng cơ sở là bất kỳ
+	 *    theme mods nào đã được lưu tạm đã sửa đổi trước đó nhưng chưa được xuất bản.
+	 * 2. Các giá trị từ changeset hiện tại, nếu tồn tại.
+	 * 3. Nếu người dùng có quyền tùy biến, các giá trị được phân tích từ
+	 *    dữ liệu JSON `$_POST['customized']` đến.
+	 * 4. Bất kỳ giá trị post nào được thiết lập bằng lập trình qua `WP_Customize_Manager::set_post_value()`.
 	 *
-	 * The name "unsanitized_post_values" is a carry-over from when the customized
-	 * state was exclusively sourced from `$_POST['customized']`. Nevertheless,
-	 * the value returned will come from the current changeset post and from the
-	 * incoming post data.
+	 * Tên "unsanitized_post_values" là tên kế thừa từ khi trạng thái tùy biến
+	 * chỉ được lấy từ `$_POST['customized']`. Tuy nhiên,
+	 * giá trị trả về sẽ đến từ bài viết changeset hiện tại và từ
+	 * dữ liệu post đến.
 	 *
 	 * @since 4.1.1
-	 * @since 4.7.0 Added `$args` parameter and merging with changeset values and stashed theme mods.
+	 * @since 4.7.0 Thêm tham số `$args` và gộp với giá trị changeset và theme mods đã lưu tạm.
 	 *
 	 * @param array $args {
-	 *     Args.
+	 *     Các tham số.
 	 *
-	 *     @type bool $exclude_changeset Whether the changeset values should also be excluded. Defaults to false.
-	 *     @type bool $exclude_post_data Whether the post input values should also be excluded. Defaults to false when lacking the customize capability.
+	 *     @type bool $exclude_changeset Có nên loại trừ giá trị changeset hay không. Mặc định là false.
+	 *     @type bool $exclude_post_data Có nên loại trừ giá trị post đầu vào hay không. Mặc định là false khi thiếu quyền customize.
 	 * }
 	 * @return array
 	 */
@@ -1767,7 +1767,7 @@ final class WP_Customize_Manager {
 
 		$values = array();
 
-		// Let default values be from the stashed theme mods if doing a theme switch and if no changeset is present.
+		// Cho phép giá trị mặc định là từ theme mods đã lưu tạm nếu đang chuyển đổi giao diện và không có changeset nào.
 		if ( ! $this->is_theme_active() ) {
 			$stashed_theme_mods = get_option( 'customize_stashed_theme_mods' );
 			$stylesheet         = $this->get_stylesheet();
@@ -1783,7 +1783,7 @@ final class WP_Customize_Manager {
 				}
 				if ( isset( $setting_params['type'] ) && 'theme_mod' === $setting_params['type'] ) {
 
-					// Ensure that theme mods values are only used if they were saved under the active theme.
+					// Đảm bảo rằng các giá trị theme mods chỉ được sử dụng nếu chúng được lưu dưới giao diện đang hoạt động.
 					$namespace_pattern = '/^(?P<stylesheet>.+?)::(?P<setting_id>.+)$/';
 					if ( preg_match( $namespace_pattern, $setting_id, $matches ) && $this->get_stylesheet() === $matches['stylesheet'] ) {
 						$values[ $matches['setting_id'] ] = $setting_params['value'];
@@ -1813,24 +1813,24 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Returns the sanitized value for a given setting from the current customized state.
+	 * Trả về giá trị đã được làm sạch cho một cài đặt cho trước từ trạng thái tùy biến hiện tại.
 	 *
-	 * The name "post_value" is a carry-over from when the customized state was exclusively
-	 * sourced from `$_POST['customized']`. Nevertheless, the value returned will come
-	 * from the current changeset post and from the incoming post data.
+	 * Tên "post_value" là tên kế thừa từ khi trạng thái tùy biến chỉ
+	 * được lấy từ `$_POST['customized']`. Tuy nhiên, giá trị trả về sẽ đến
+	 * từ bài viết changeset hiện tại và từ dữ liệu post đến.
 	 *
 	 * @since 3.4.0
-	 * @since 4.1.1 Introduced the `$default_value` parameter.
-	 * @since 4.6.0 `$default_value` is now returned early when the setting post value is invalid.
+	 * @since 4.1.1 Giới thiệu tham số `$default_value`.
+	 * @since 4.6.0 `$default_value` giờ được trả về sớm khi giá trị post của cài đặt không hợp lệ.
 	 *
 	 * @see WP_REST_Server::dispatch()
 	 * @see WP_REST_Request::sanitize_params()
 	 * @see WP_REST_Request::has_valid_params()
 	 *
-	 * @param WP_Customize_Setting $setting       A WP_Customize_Setting derived object.
-	 * @param mixed                $default_value Value returned if `$setting` has no post value (added in 4.2.0)
-	 *                                            or the post value is invalid (added in 4.6.0).
-	 * @return string|mixed Sanitized value or the `$default_value` provided.
+	 * @param WP_Customize_Setting $setting       Đối tượng kế thừa từ WP_Customize_Setting.
+	 * @param mixed                $default_value Giá trị trả về nếu `$setting` không có giá trị post (thêm từ 4.2.0)
+	 *                                            hoặc giá trị post không hợp lệ (thêm từ 4.6.0).
+	 * @return string|mixed Giá trị đã làm sạch hoặc `$default_value` được cung cấp.
 	 */
 	public function post_value( $setting, $default_value = null ) {
 		$post_values = $this->unsanitized_post_values();
@@ -1853,65 +1853,65 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Overrides a setting's value in the current customized state.
+	 * Ghi đè giá trị của một cài đặt trong trạng thái tùy biến hiện tại.
 	 *
-	 * The name "post_value" is a carry-over from when the customized state was
-	 * exclusively sourced from `$_POST['customized']`.
+	 * Tên "post_value" là tên kế thừa từ khi trạng thái tùy biến
+	 * chỉ được lấy từ `$_POST['customized']`.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param string $setting_id ID for the WP_Customize_Setting instance.
-	 * @param mixed  $value      Post value.
+	 * @param string $setting_id ID cho thể hiện WP_Customize_Setting.
+	 * @param mixed  $value      Giá trị post.
 	 */
 	public function set_post_value( $setting_id, $value ) {
-		$this->unsanitized_post_values(); // Populate _post_values from $_POST['customized'].
+		$this->unsanitized_post_values(); // Điền _post_values từ $_POST['customized'].
 		$this->_post_values[ $setting_id ] = $value;
 
 		/**
-		 * Announces when a specific setting's unsanitized post value has been set.
+		 * Thông báo khi giá trị post chưa làm sạch của một cài đặt cụ thể đã được thiết lập.
 		 *
-		 * Fires when the WP_Customize_Manager::set_post_value() method is called.
+		 * Kích hoạt khi phương thức WP_Customize_Manager::set_post_value() được gọi.
 		 *
-		 * The dynamic portion of the hook name, `$setting_id`, refers to the setting ID.
+		 * Phần động của tên hook, `$setting_id`, tham chiếu đến ID cài đặt.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param mixed                $value   Unsanitized setting post value.
-		 * @param WP_Customize_Manager $manager WP_Customize_Manager instance.
+		 * @param mixed                $value   Giá trị post chưa làm sạch của cài đặt.
+		 * @param WP_Customize_Manager $manager Thể hiện WP_Customize_Manager.
 		 */
 		do_action( "customize_post_value_set_{$setting_id}", $value, $this );
 
 		/**
-		 * Announces when any setting's unsanitized post value has been set.
+		 * Thông báo khi giá trị post chưa làm sạch của bất kỳ cài đặt nào đã được thiết lập.
 		 *
-		 * Fires when the WP_Customize_Manager::set_post_value() method is called.
+		 * Kích hoạt khi phương thức WP_Customize_Manager::set_post_value() được gọi.
 		 *
-		 * This is useful for `WP_Customize_Setting` instances to watch
-		 * in order to update a cached previewed value.
+		 * Điều này hữu ích cho các thể hiện `WP_Customize_Setting` theo dõi
+		 * để cập nhật giá trị xem trước đã được lưu cache.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string               $setting_id Setting ID.
-		 * @param mixed                $value      Unsanitized setting post value.
-		 * @param WP_Customize_Manager $manager    WP_Customize_Manager instance.
+		 * @param string               $setting_id ID cài đặt.
+		 * @param mixed                $value      Giá trị post chưa làm sạch của cài đặt.
+		 * @param WP_Customize_Manager $manager    Thể hiện WP_Customize_Manager.
 		 */
 		do_action( 'customize_post_value_set', $setting_id, $value, $this );
 	}
 
 	/**
-	 * Prints JavaScript settings.
+	 * In các cài đặt JavaScript.
 	 *
 	 * @since 3.4.0
 	 */
 	public function customize_preview_init() {
 
 		/*
-		 * Now that Customizer previews are loaded into iframes via GET requests
-		 * and natural URLs with transaction UUIDs added, we need to ensure that
-		 * the responses are never cached by proxies. In practice, this will not
-		 * be needed if the user is logged-in anyway. But if anonymous access is
-		 * allowed then the auth cookies would not be sent and WordPress would
-		 * not send no-cache headers by default.
+		 * Giờ đây các bản xem trước Trình tùy biến được tải vào iframe qua yêu cầu GET
+		 * và URL tự nhiên với UUID giao dịch được thêm vào, chúng ta cần đảm bảo rằng
+		 * các phản hồi không bao giờ được cache bởi proxy. Trong thực tế, điều này sẽ không
+		 * cần thiết nếu người dùng đã đăng nhập. Nhưng nếu truy cập ẩn danh được
+		 * cho phép thì cookie xác thực sẽ không được gửi và WordPress sẽ
+		 * không gửi header không cache theo mặc định.
 		 */
 		if ( ! headers_sent() ) {
 			nocache_headers();
@@ -1922,9 +1922,9 @@ final class WP_Customize_Manager {
 		add_filter( 'wp_headers', array( $this, 'filter_iframe_security_headers' ) );
 
 		/*
-		 * If preview is being served inside the customizer preview iframe, and
-		 * if the user doesn't have customize capability, then it is assumed
-		 * that the user's session has expired and they need to re-authenticate.
+		 * Nếu bản xem trước đang được phục vụ bên trong iframe xem trước Trình tùy biến, và
+		 * nếu người dùng không có quyền customize, thì được giả định rằng
+		 * phiên của người dùng đã hết hạn và họ cần xác thực lại.
 		 */
 		if ( $this->messenger_channel && ! current_user_can( 'customize' ) ) {
 			$this->wp_die(
@@ -1950,23 +1950,23 @@ final class WP_Customize_Manager {
 		add_filter( 'get_edit_post_link', '__return_empty_string' );
 
 		/**
-		 * Fires once the Customizer preview has initialized and JavaScript
-		 * settings have been printed.
+		 * Kích hoạt khi bản xem trước Trình tùy biến đã được khởi tạo và các cài đặt
+		 * JavaScript đã được in.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param WP_Customize_Manager $manager WP_Customize_Manager instance.
+		 * @param WP_Customize_Manager $manager Thể hiện WP_Customize_Manager.
 		 */
 		do_action( 'customize_preview_init', $this );
 	}
 
 	/**
-	 * Filters the X-Frame-Options and Content-Security-Policy headers to ensure frontend can load in customizer.
+	 * Lọc các header X-Frame-Options và Content-Security-Policy để đảm bảo giao diện có thể tải trong trình tùy biến.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array $headers Headers.
-	 * @return array Headers.
+	 * @param array $headers Các header.
+	 * @return array Các header.
 	 */
 	public function filter_iframe_security_headers( $headers ) {
 		$headers['X-Frame-Options']         = 'SAMEORIGIN';
@@ -1975,7 +1975,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Adds customize state query params to a given URL if preview is allowed.
+	 * Thêm các tham số truy vấn trạng thái tùy biến vào URL cho trước nếu xem trước được cho phép.
 	 *
 	 * @since 4.7.0
 	 *

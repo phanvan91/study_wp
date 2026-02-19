@@ -1,12 +1,12 @@
 <?php
 /**
- * New User Administration Screen.
+ * Màn hình quản trị Thêm Người dùng Mới.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Nạp tệp khởi động Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( is_multisite() ) {
@@ -59,7 +59,7 @@ if ( isset( $_REQUEST['action'] ) && 'adduser' === $_REQUEST['action'] ) {
 		);
 	}
 
-	// Adding an existing user to this blog.
+	// Thêm một người dùng hiện có vào blog này.
 	$new_user_email = array();
 	$redirect       = 'user-new.php';
 	$username       = $user_details->user_login;
@@ -105,13 +105,13 @@ if ( isset( $_REQUEST['action'] ) && 'adduser' === $_REQUEST['action'] ) {
 			$role  = $roles[ $_REQUEST['role'] ];
 
 			/**
-			 * Fires immediately after an existing user is invited to join the site, but before the notification is sent.
+			 * Kích hoạt ngay sau khi một người dùng hiện có được mời tham gia trang, nhưng trước khi thông báo được gửi đi.
 			 *
 			 * @since 4.4.0
 			 *
-			 * @param int    $user_id     The invited user's ID.
-			 * @param array  $role        Array containing role information for the invited user.
-			 * @param string $newuser_key The key of the invitation.
+			 * @param int    $user_id     ID của người dùng được mời.
+			 * @param array  $role        Mảng chứa thông tin vai trò cho người dùng được mời.
+			 * @param string $newuser_key Khóa của lời mời.
 			 */
 			do_action( 'invite_user', $user_id, $role, $newuser_key );
 

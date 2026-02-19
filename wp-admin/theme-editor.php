@@ -1,12 +1,12 @@
 <?php
 /**
- * Theme file editor administration panel.
+ * Bảng quản trị trình chỉnh sửa tệp giao diện.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Tải bootstrap quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( is_multisite() && ! is_network_admin() ) {
@@ -18,7 +18,7 @@ if ( ! current_user_can( 'edit_themes' ) ) {
 	wp_die( '<p>' . __( 'Sorry, you are not allowed to edit templates for this site.' ) . '</p>' );
 }
 
-// Used in the HTML title tag.
+// Dùng trong thẻ tiêu đề HTML.
 $title       = __( 'Edit Themes' );
 $parent_file = 'themes.php';
 
@@ -98,7 +98,7 @@ foreach ( $file_types as $type ) {
 	}
 }
 
-// Move functions.php and style.css to the top.
+// Đưa functions.php và style.css lên đầu.
 if ( isset( $allowed_files['functions.php'] ) ) {
 	$allowed_files = array( 'functions.php' => $allowed_files['functions.php'] ) + $allowed_files;
 }
@@ -116,7 +116,7 @@ if ( empty( $file ) ) {
 
 validate_file_to_edit( $file, $allowed_files );
 
-// Handle fallback editing of file when JavaScript is not available.
+// Xử lý chỉnh sửa tệp dự phòng khi JavaScript không khả dụng.
 $edit_error     = null;
 $posted_content = null;
 
@@ -131,7 +131,7 @@ if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
 		wp_redirect(
 			add_query_arg(
 				array(
-					'a'     => 1, // This means "success" for some reason.
+					'a'     => 1, // Giá trị này có nghĩa là "thành công".
 					'theme' => $stylesheet,
 					'file'  => $relative_file,
 				),
@@ -376,14 +376,14 @@ else :
 		<?php wp_print_file_editor_templates(); ?>
 	</form>
 	<?php
-endif; // End if $error.
+endif; // Kết thúc if $error.
 ?>
 <br class="clear" />
 </div>
 <?php
 $dismissed_pointers = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
 if ( ! in_array( 'theme_editor_notice', $dismissed_pointers, true ) ) {
-	// Get a back URL.
+	// Lấy URL quay lại.
 	$referer = wp_get_referer();
 
 	$excluded_referer_basenames = array( 'theme-editor.php', 'wp-login.php' );
@@ -428,6 +428,6 @@ if ( ! in_array( 'theme_editor_notice', $dismissed_pointers, true ) ) {
 		</div>
 	</div>
 	<?php
-} // Editor warning notice.
+} // Thông báo cảnh báo trình chỉnh sửa.
 
 require_once ABSPATH . 'wp-admin/admin-footer.php';

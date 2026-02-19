@@ -1,6 +1,6 @@
 <?php
 /**
- * Defines constants and global variables that can be overridden, generally in wp-config.php.
+ * Định nghĩa các hằng số và biến toàn cục có thể được ghi đè, thường trong wp-config.php.
  *
  * @package WordPress
  * @subpackage Multisite
@@ -8,36 +8,36 @@
  */
 
 /**
- * Defines Multisite upload constants.
+ * Định nghĩa các hằng số upload cho Multisite.
  *
- * Exists for backward compatibility with legacy file-serving through
- * wp-includes/ms-files.php (wp-content/blogs.php in MU).
+ * Tồn tại để tương thích ngược với phục vụ tệp cũ qua
+ * wp-includes/ms-files.php (wp-content/blogs.php trong MU).
  *
  * @since 3.0.0
  */
 function ms_upload_constants() {
-	// This filter is attached in ms-default-filters.php but that file is not included during SHORTINIT.
+	// Bộ lọc này được gắn trong ms-default-filters.php nhưng tệp đó không được bao gồm trong SHORTINIT.
 	add_filter( 'default_site_option_ms_files_rewriting', '__return_true' );
 
 	if ( ! get_site_option( 'ms_files_rewriting' ) ) {
 		return;
 	}
 
-	// Base uploads dir relative to ABSPATH.
+	// Thư mục uploads gốc tương đối so với ABSPATH.
 	if ( ! defined( 'UPLOADBLOGSDIR' ) ) {
 		define( 'UPLOADBLOGSDIR', 'wp-content/blogs.dir' );
 	}
 
 	/*
-	 * Note, the main site in a post-MU network uses wp-content/uploads.
-	 * This is handled in wp_upload_dir() by ignoring UPLOADS for this case.
+	 * Lưu ý, site chính trong mạng hậu MU sử dụng wp-content/uploads.
+	 * Điều này được xử lý trong wp_upload_dir() bằng cách bỏ qua UPLOADS cho trường hợp này.
 	 */
 	if ( ! defined( 'UPLOADS' ) ) {
 		$site_id = get_current_blog_id();
 
 		define( 'UPLOADS', UPLOADBLOGSDIR . '/' . $site_id . '/files/' );
 
-		// Uploads dir relative to ABSPATH.
+		// Thư mục uploads tương đối so với ABSPATH.
 		if ( 'wp-content/blogs.dir' === UPLOADBLOGSDIR && ! defined( 'BLOGUPLOADDIR' ) ) {
 			define( 'BLOGUPLOADDIR', WP_CONTENT_DIR . '/blogs.dir/' . $site_id . '/files/' );
 		}
@@ -45,7 +45,7 @@ function ms_upload_constants() {
 }
 
 /**
- * Defines Multisite cookie constants.
+ * Định nghĩa các hằng số cookie cho Multisite.
  *
  * @since 3.0.0
  */
@@ -91,16 +91,16 @@ function ms_cookie_constants() {
 }
 
 /**
- * Defines Multisite file constants.
+ * Định nghĩa các hằng số tệp cho Multisite.
  *
- * Exists for backward compatibility with legacy file-serving through
- * wp-includes/ms-files.php (wp-content/blogs.php in MU).
+ * Tồn tại để tương thích ngược với phục vụ tệp cũ qua
+ * wp-includes/ms-files.php (wp-content/blogs.php trong MU).
  *
  * @since 3.0.0
  */
 function ms_file_constants() {
 	/**
-	 * Optional support for X-Sendfile header
+	 * Hỗ trợ tùy chọn cho header X-Sendfile
 	 *
 	 * @since 3.0.0
 	 */
@@ -109,7 +109,7 @@ function ms_file_constants() {
 	}
 
 	/**
-	 * Optional support for X-Accel-Redirect header
+	 * Hỗ trợ tùy chọn cho header X-Accel-Redirect
 	 *
 	 * @since 3.0.0
 	 */
@@ -119,12 +119,12 @@ function ms_file_constants() {
 }
 
 /**
- * Defines Multisite subdomain constants and handles warnings and notices.
+ * Định nghĩa các hằng số subdomain cho Multisite và xử lý cảnh báo và thông báo.
  *
- * VHOST is deprecated in favor of SUBDOMAIN_INSTALL, which is a bool.
+ * VHOST đã bị loại bỏ để ưu tiên SUBDOMAIN_INSTALL, là kiểu bool.
  *
- * On first call, the constants are checked and defined. On second call,
- * we will have translations loaded and can trigger warnings easily.
+ * Khi gọi lần đầu, các hằng số được kiểm tra và định nghĩa. Khi gọi lần hai,
+ * chúng ta đã tải xong bản dịch và có thể kích hoạt cảnh báo dễ dàng.
  *
  * @since 3.0.0
  */

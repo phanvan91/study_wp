@@ -1,6 +1,6 @@
 <?php
 /**
- * Widget API: WP_Widget_Meta class
+ * Widget API: Lớp WP_Widget_Meta
  *
  * @package WordPress
  * @subpackage Widgets
@@ -8,9 +8,9 @@
  */
 
 /**
- * Core class used to implement a Meta widget.
+ * Lớp cốt lõi dùng để triển khai widget Meta.
  *
- * Displays log in/out, RSS feed links, etc.
+ * Hiển thị đăng nhập/đăng xuất, liên kết nguồn cấp RSS, v.v.
  *
  * @since 2.8.0
  *
@@ -19,7 +19,7 @@
 class WP_Widget_Meta extends WP_Widget {
 
 	/**
-	 * Sets up a new Meta widget instance.
+	 * Thiết lập một phiên bản widget Meta mới.
 	 *
 	 * @since 2.8.0
 	 */
@@ -34,19 +34,19 @@ class WP_Widget_Meta extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the content for the current Meta widget instance.
+	 * Xuất nội dung cho phiên bản widget Meta hiện tại.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $args     Display arguments including 'before_title', 'after_title',
-	 *                        'before_widget', and 'after_widget'.
-	 * @param array $instance Settings for the current Meta widget instance.
+	 * @param array $args     Các tham số hiển thị bao gồm 'before_title', 'after_title',
+	 *                        'before_widget', và 'after_widget'.
+	 * @param array $instance Cài đặt cho phiên bản widget Meta hiện tại.
 	 */
 	public function widget( $args, $instance ) {
 		$default_title = __( 'Meta' );
 		$title         = ! empty( $instance['title'] ) ? $instance['title'] : $default_title;
 
-		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
+		/** Bộ lọc này được ghi chú tại wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
 		echo $args['before_widget'];
@@ -57,11 +57,11 @@ class WP_Widget_Meta extends WP_Widget {
 
 		$format = current_theme_supports( 'html5', 'navigation-widgets' ) ? 'html5' : 'xhtml';
 
-		/** This filter is documented in wp-includes/widgets/class-wp-nav-menu-widget.php */
+		/** Bộ lọc này được ghi chú tại wp-includes/widgets/class-wp-nav-menu-widget.php */
 		$format = apply_filters( 'navigation_widgets_format', $format );
 
 		if ( 'html5' === $format ) {
-			// The title may be filtered: Strip out HTML and make sure the aria-label is never empty.
+			// Tiêu đề có thể bị lọc: Loại bỏ HTML và đảm bảo aria-label không bao giờ rỗng.
 			$title      = trim( strip_tags( $title ) );
 			$aria_label = $title ? $title : $default_title;
 			echo '<nav aria-label="' . esc_attr( $aria_label ) . '">';
@@ -76,13 +76,13 @@ class WP_Widget_Meta extends WP_Widget {
 
 			<?php
 			/**
-			 * Filters the "WordPress.org" list item HTML in the Meta widget.
+			 * Lọc HTML mục danh sách "WordPress.org" trong widget Meta.
 			 *
 			 * @since 3.6.0
-			 * @since 4.9.0 Added the `$instance` parameter.
+			 * @since 4.9.0 Thêm tham số `$instance`.
 			 *
-			 * @param string $html     Default HTML for the WordPress.org list item.
-			 * @param array  $instance Array of settings for the current widget.
+			 * @param string $html     HTML mặc định cho mục danh sách WordPress.org.
+			 * @param array  $instance Mảng cài đặt cho widget hiện tại.
 			 */
 			echo apply_filters(
 				'widget_meta_poweredby',
@@ -108,14 +108,14 @@ class WP_Widget_Meta extends WP_Widget {
 	}
 
 	/**
-	 * Handles updating settings for the current Meta widget instance.
+	 * Xử lý cập nhật cài đặt cho phiên bản widget Meta hiện tại.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $new_instance New settings for this instance as input by the user via
+	 * @param array $new_instance Cài đặt mới cho phiên bản này do người dùng nhập qua
 	 *                            WP_Widget::form().
-	 * @param array $old_instance Old settings for this instance.
-	 * @return array Updated settings to save.
+	 * @param array $old_instance Cài đặt cũ cho phiên bản này.
+	 * @return array Cài đặt đã cập nhật để lưu.
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance          = $old_instance;
@@ -125,11 +125,11 @@ class WP_Widget_Meta extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the settings form for the Meta widget.
+	 * Xuất biểu mẫu cài đặt cho widget Meta.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $instance Current settings.
+	 * @param array $instance Cài đặt hiện tại.
 	 */
 	public function form( $instance ) {
 		$instance = wp_parse_args( (array) $instance, array( 'title' => '' ) );

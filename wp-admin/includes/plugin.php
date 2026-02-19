@@ -1,74 +1,74 @@
 <?php
 /**
- * WordPress Plugin Administration API
+ * API Quản trị Plugin WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Parses the plugin contents to retrieve plugin's metadata.
+ * Phân tích nội dung plugin để lấy metadata của plugin.
  *
- * All plugin headers must be on their own line. Plugin description must not have
- * any newlines, otherwise only parts of the description will be displayed.
- * The below is formatted for printing.
+ * Tất cả các header của plugin phải nằm trên dòng riêng. Mô tả plugin không được có
+ * ký tự xuống dòng, nếu không chỉ một phần mô tả sẽ được hiển thị.
+ * Phần dưới đây được định dạng để in.
  *
  *     /*
- *     Plugin Name: Name of the plugin.
- *     Plugin URI: The home page of the plugin.
- *     Description: Plugin description.
- *     Author: Plugin author's name.
- *     Author URI: Link to the author's website.
- *     Version: Plugin version.
- *     Text Domain: Optional. Unique identifier, should be same as the one used in
+ *     Plugin Name: Tên của plugin.
+ *     Plugin URI: Trang chủ của plugin.
+ *     Description: Mô tả plugin.
+ *     Author: Tên tác giả plugin.
+ *     Author URI: Liên kết đến website tác giả.
+ *     Version: Phiên bản plugin.
+ *     Text Domain: Tùy chọn. Định danh duy nhất, nên giống với giá trị được sử dụng trong
  *          load_plugin_textdomain().
- *     Domain Path: Optional. Only useful if the translations are located in a
- *          folder above the plugin's base path. For example, if .mo files are
- *          located in the locale folder then Domain Path will be "/locale/" and
- *          must have the first slash. Defaults to the base folder the plugin is
- *          located in.
- *     Network: Optional. Specify "Network: true" to require that a plugin is activated
- *          across all sites in an installation. This will prevent a plugin from being
- *          activated on a single site when Multisite is enabled.
- *     Requires at least: Optional. Specify the minimum required WordPress version.
- *     Requires PHP: Optional. Specify the minimum required PHP version.
- *     * / # Remove the space to close comment.
+ *     Domain Path: Tùy chọn. Chỉ hữu ích khi các bản dịch nằm trong thư mục
+ *          phía trên đường dẫn gốc của plugin. Ví dụ, nếu các file .mo nằm
+ *          trong thư mục locale thì Domain Path sẽ là "/locale/" và
+ *          phải có dấu gạch chéo đầu tiên. Mặc định là thư mục gốc nơi plugin
+ *          được đặt.
+ *     Network: Tùy chọn. Chỉ định "Network: true" để yêu cầu plugin phải được kích hoạt
+ *          trên tất cả các site trong bản cài đặt. Điều này sẽ ngăn plugin
+ *          được kích hoạt trên một site đơn lẻ khi Multisite được bật.
+ *     Requires at least: Tùy chọn. Chỉ định phiên bản WordPress tối thiểu yêu cầu.
+ *     Requires PHP: Tùy chọn. Chỉ định phiên bản PHP tối thiểu yêu cầu.
+ *     * / # Xóa khoảng trắng để đóng comment.
  *
- * The first 8 KB of the file will be pulled in and if the plugin data is not
- * within that first 8 KB, then the plugin author should correct their plugin
- * and move the plugin data headers to the top.
+ * 8 KB đầu tiên của file sẽ được đọc và nếu dữ liệu plugin không nằm
+ * trong 8 KB đầu tiên đó, tác giả plugin nên sửa lại plugin
+ * và di chuyển các header dữ liệu plugin lên đầu.
  *
- * The plugin file is assumed to have permissions to allow for scripts to read
- * the file. This is not checked however and the file is only opened for
- * reading.
+ * File plugin được giả định có quyền cho phép script đọc
+ * file. Tuy nhiên điều này không được kiểm tra và file chỉ được mở để
+ * đọc.
  *
  * @since 1.5.0
- * @since 5.3.0 Added support for `Requires at least` and `Requires PHP` headers.
- * @since 5.8.0 Added support for `Update URI` header.
- * @since 6.5.0 Added support for `Requires Plugins` header.
+ * @since 5.3.0 Thêm hỗ trợ cho header `Requires at least` và `Requires PHP`.
+ * @since 5.8.0 Thêm hỗ trợ cho header `Update URI`.
+ * @since 6.5.0 Thêm hỗ trợ cho header `Requires Plugins`.
  *
- * @param string $plugin_file Absolute path to the main plugin file.
- * @param bool   $markup      Optional. If the returned data should have HTML markup applied.
- *                            Default true.
- * @param bool   $translate   Optional. If the returned data should be translated. Default true.
+ * @param string $plugin_file Đường dẫn tuyệt đối đến file plugin chính.
+ * @param bool   $markup      Tùy chọn. Dữ liệu trả về có áp dụng đánh dấu HTML không.
+ *                            Mặc định true.
+ * @param bool   $translate   Tùy chọn. Dữ liệu trả về có được dịch không. Mặc định true.
  * @return array {
- *     Plugin data. Values will be empty if not supplied by the plugin.
+ *     Dữ liệu plugin. Giá trị sẽ trống nếu plugin không cung cấp.
  *
- *     @type string $Name            Name of the plugin. Should be unique.
- *     @type string $PluginURI       Plugin URI.
- *     @type string $Version         Plugin version.
- *     @type string $Description     Plugin description.
- *     @type string $Author          Plugin author's name.
- *     @type string $AuthorURI       Plugin author's website address (if set).
- *     @type string $TextDomain      Plugin textdomain.
- *     @type string $DomainPath      Plugin's relative directory path to .mo files.
- *     @type bool   $Network         Whether the plugin can only be activated network-wide.
- *     @type string $RequiresWP      Minimum required version of WordPress.
- *     @type string $RequiresPHP     Minimum required version of PHP.
- *     @type string $UpdateURI       ID of the plugin for update purposes, should be a URI.
- *     @type string $RequiresPlugins Comma separated list of dot org plugin slugs.
- *     @type string $Title           Title of the plugin and link to the plugin's site (if set).
- *     @type string $AuthorName      Plugin author's name.
+ *     @type string $Name            Tên của plugin. Nên là duy nhất.
+ *     @type string $PluginURI       URI của plugin.
+ *     @type string $Version         Phiên bản plugin.
+ *     @type string $Description     Mô tả plugin.
+ *     @type string $Author          Tên tác giả plugin.
+ *     @type string $AuthorURI       Địa chỉ website tác giả plugin (nếu có).
+ *     @type string $TextDomain      Textdomain của plugin.
+ *     @type string $DomainPath      Đường dẫn thư mục tương đối đến các file .mo.
+ *     @type bool   $Network         Plugin có chỉ được kích hoạt trên toàn mạng không.
+ *     @type string $RequiresWP      Phiên bản WordPress tối thiểu yêu cầu.
+ *     @type string $RequiresPHP     Phiên bản PHP tối thiểu yêu cầu.
+ *     @type string $UpdateURI       ID của plugin cho mục đích cập nhật, nên là URI.
+ *     @type string $RequiresPlugins Danh sách slug plugin dot org phân tách bằng dấu phẩy.
+ *     @type string $Title           Tiêu đề plugin và liên kết đến site của plugin (nếu có).
+ *     @type string $AuthorName      Tên tác giả plugin.
  * }
  */
 function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
@@ -87,13 +87,13 @@ function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
 		'RequiresPHP'     => 'Requires PHP',
 		'UpdateURI'       => 'Update URI',
 		'RequiresPlugins' => 'Requires Plugins',
-		// Site Wide Only is deprecated in favor of Network.
+		// Site Wide Only không còn được sử dụng, thay bằng Network.
 		'_sitewide'       => 'Site Wide Only',
 	);
 
 	$plugin_data = get_file_data( $plugin_file, $default_headers, 'plugin' );
 
-	// Site Wide Only is the old header for Network.
+	// Site Wide Only là header cũ cho Network.
 	if ( ! $plugin_data['Network'] && $plugin_data['_sitewide'] ) {
 		/* translators: 1: Site Wide Only: true, 2: Network: true */
 		_deprecated_argument( __FUNCTION__, '3.0.0', sprintf( __( 'The %1$s plugin header is deprecated. Use %2$s instead.' ), '<code>Site Wide Only: true</code>', '<code>Network: true</code>' ) );
@@ -102,7 +102,7 @@ function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
 	$plugin_data['Network'] = ( 'true' === strtolower( $plugin_data['Network'] ) );
 	unset( $plugin_data['_sitewide'] );
 
-	// If no text domain is defined fall back to the plugin slug.
+	// Nếu không có text domain được định nghĩa, sử dụng slug của plugin.
 	if ( ! $plugin_data['TextDomain'] ) {
 		$plugin_slug = dirname( plugin_basename( $plugin_file ) );
 		if ( '.' !== $plugin_slug && ! str_contains( $plugin_slug, '/' ) ) {
@@ -121,7 +121,7 @@ function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
 }
 
 /**
- * Sanitizes plugin data, optionally adds markup, optionally translates.
+ * Làm sạch dữ liệu plugin, tùy chọn thêm đánh dấu HTML, tùy chọn dịch.
  *
  * @since 2.7.0
  *
@@ -129,20 +129,20 @@ function get_plugin_data( $plugin_file, $markup = true, $translate = true ) {
  *
  * @access private
  *
- * @param string $plugin_file Path to the main plugin file.
- * @param array  $plugin_data An array of plugin data. See get_plugin_data().
- * @param bool   $markup      Optional. If the returned data should have HTML markup applied.
- *                            Default true.
- * @param bool   $translate   Optional. If the returned data should be translated. Default true.
- * @return array Plugin data. Values will be empty if not supplied by the plugin.
- *               See get_plugin_data() for the list of possible values.
+ * @param string $plugin_file Đường dẫn đến file plugin chính.
+ * @param array  $plugin_data Mảng dữ liệu plugin. Xem get_plugin_data().
+ * @param bool   $markup      Tùy chọn. Dữ liệu trả về có áp dụng đánh dấu HTML không.
+ *                            Mặc định true.
+ * @param bool   $translate   Tùy chọn. Dữ liệu trả về có được dịch không. Mặc định true.
+ * @return array Dữ liệu plugin. Giá trị sẽ trống nếu plugin không cung cấp.
+ *               Xem get_plugin_data() để biết danh sách các giá trị có thể.
  */
 function _get_plugin_data_markup_translate( $plugin_file, $plugin_data, $markup = true, $translate = true ) {
 
-	// Sanitize the plugin filename to a WP_PLUGIN_DIR relative path.
+	// Làm sạch tên file plugin thành đường dẫn tương đối so với WP_PLUGIN_DIR.
 	$plugin_file = plugin_basename( $plugin_file );
 
-	// Translate fields.
+	// Dịch các trường.
 	if ( $translate ) {
 		$textdomain = $plugin_data['TextDomain'];
 		if ( $textdomain ) {
@@ -166,7 +166,7 @@ function _get_plugin_data_markup_translate( $plugin_file, $plugin_data, $markup 
 		}
 	}
 
-	// Sanitize fields.
+	// Làm sạch các trường.
 	$allowed_tags_in_links = array(
 		'abbr'    => array( 'title' => true ),
 		'acronym' => array( 'title' => true ),
@@ -182,8 +182,8 @@ function _get_plugin_data_markup_translate( $plugin_file, $plugin_data, $markup 
 	);
 
 	/*
-	 * Name is marked up inside <a> tags. Don't allow these.
-	 * Author is too, but some plugins have used <a> here (omitting Author URI).
+	 * Tên được đánh dấu bên trong thẻ <a>. Không cho phép các thẻ này.
+	 * Tác giả cũng vậy, nhưng một số plugin đã sử dụng <a> ở đây (bỏ qua Author URI).
 	 */
 	$plugin_data['Name']   = wp_kses( $plugin_data['Name'], $allowed_tags_in_links );
 	$plugin_data['Author'] = wp_kses( $plugin_data['Author'], $allowed_tags );
@@ -197,7 +197,7 @@ function _get_plugin_data_markup_translate( $plugin_file, $plugin_data, $markup 
 	$plugin_data['Title']      = $plugin_data['Name'];
 	$plugin_data['AuthorName'] = $plugin_data['Author'];
 
-	// Apply markup.
+	// Áp dụng đánh dấu HTML.
 	if ( $markup ) {
 		if ( $plugin_data['PluginURI'] && $plugin_data['Name'] ) {
 			$plugin_data['Title'] = '<a href="' . $plugin_data['PluginURI'] . '">' . $plugin_data['Name'] . '</a>';
@@ -222,12 +222,12 @@ function _get_plugin_data_markup_translate( $plugin_file, $plugin_data, $markup 
 }
 
 /**
- * Gets a list of a plugin's files.
+ * Lấy danh sách các file của plugin.
  *
  * @since 2.8.0
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return string[] Array of file names relative to the plugin root.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return string[] Mảng tên file tương đối so với thư mục gốc plugin.
  */
 function get_plugin_files( $plugin ) {
 	$plugin_file = WP_PLUGIN_DIR . '/' . $plugin;
@@ -238,11 +238,11 @@ function get_plugin_files( $plugin ) {
 	if ( is_dir( $dir ) && WP_PLUGIN_DIR !== $dir ) {
 
 		/**
-		 * Filters the array of excluded directories and files while scanning the folder.
+		 * Lọc mảng các thư mục và file bị loại trừ khi quét thư mục.
 		 *
 		 * @since 4.9.0
 		 *
-		 * @param string[] $exclusions Array of excluded directories and files.
+		 * @param string[] $exclusions Mảng các thư mục và file bị loại trừ.
 		 */
 		$exclusions = (array) apply_filters( 'plugin_files_exclusions', array( 'CVS', 'node_modules', 'vendor', 'bower_components' ) );
 
@@ -257,24 +257,24 @@ function get_plugin_files( $plugin ) {
 }
 
 /**
- * Checks the plugins directory and retrieve all plugin files with plugin data.
+ * Kiểm tra thư mục plugins và lấy tất cả file plugin cùng dữ liệu plugin.
  *
- * WordPress only supports plugin files in the base plugins directory
- * (wp-content/plugins) and in one directory above the plugins directory
- * (wp-content/plugins/my-plugin). The file it looks for has the plugin data
- * and must be found in those two locations. It is recommended to keep your
- * plugin files in their own directories.
+ * WordPress chỉ hỗ trợ các file plugin trong thư mục plugins gốc
+ * (wp-content/plugins) và trong một thư mục phía trên thư mục plugins
+ * (wp-content/plugins/my-plugin). File mà nó tìm kiếm chứa dữ liệu plugin
+ * và phải được tìm thấy ở hai vị trí đó. Nên giữ các file plugin
+ * trong thư mục riêng của chúng.
  *
- * The file with the plugin data is the file that will be included and therefore
- * needs to have the main execution for the plugin. This does not mean
- * everything must be contained in the file and it is recommended that the file
- * be split for maintainability. Keep everything in one file for extreme
- * optimization purposes.
+ * File chứa dữ liệu plugin là file sẽ được include và do đó
+ * cần có phần thực thi chính cho plugin. Điều này không có nghĩa
+ * mọi thứ phải nằm trong file đó và nên chia file
+ * để dễ bảo trì. Chỉ giữ mọi thứ trong một file để
+ * tối ưu hóa tối đa.
  *
  * @since 1.5.0
  *
- * @param string $plugin_folder Optional. Relative path to single plugin folder.
- * @return array[] Array of arrays of plugin data, keyed by plugin file name. See get_plugin_data().
+ * @param string $plugin_folder Tùy chọn. Đường dẫn tương đối đến thư mục plugin đơn.
+ * @return array[] Mảng các mảng dữ liệu plugin, được đánh khóa bởi tên file plugin. Xem get_plugin_data().
  */
 function get_plugins( $plugin_folder = '' ) {
 
@@ -293,7 +293,7 @@ function get_plugins( $plugin_folder = '' ) {
 		$plugin_root .= $plugin_folder;
 	}
 
-	// Files in wp-content/plugins directory.
+	// Các file trong thư mục wp-content/plugins.
 	$plugins_dir  = @opendir( $plugin_root );
 	$plugin_files = array();
 
@@ -336,7 +336,7 @@ function get_plugins( $plugin_folder = '' ) {
 			continue;
 		}
 
-		// Do not apply markup/translate as it will be cached.
+		// Không áp dụng đánh dấu/dịch vì sẽ được lưu cache.
 		$plugin_data = get_plugin_data( "$plugin_root/$plugin_file", false, false );
 
 		if ( empty( $plugin_data['Name'] ) ) {
@@ -355,12 +355,12 @@ function get_plugins( $plugin_folder = '' ) {
 }
 
 /**
- * Checks the mu-plugins directory and retrieve all mu-plugin files with any plugin data.
+ * Kiểm tra thư mục mu-plugins và lấy tất cả file mu-plugin cùng dữ liệu plugin.
  *
- * WordPress only includes mu-plugin files in the base mu-plugins directory (wp-content/mu-plugins).
+ * WordPress chỉ bao gồm các file mu-plugin trong thư mục mu-plugins gốc (wp-content/mu-plugins).
  *
  * @since 3.0.0
- * @return array[] Array of arrays of mu-plugin data, keyed by plugin file name. See get_plugin_data().
+ * @return array[] Mảng các mảng dữ liệu mu-plugin, được đánh khóa bởi tên file plugin. Xem get_plugin_data().
  */
 function get_mu_plugins() {
 	$wp_plugins   = array();
@@ -370,7 +370,7 @@ function get_mu_plugins() {
 		return $wp_plugins;
 	}
 
-	// Files in wp-content/mu-plugins directory.
+	// Các file trong thư mục wp-content/mu-plugins.
 	$plugins_dir = @opendir( WPMU_PLUGIN_DIR );
 	if ( $plugins_dir ) {
 		while ( ( $file = readdir( $plugins_dir ) ) !== false ) {
@@ -393,7 +393,7 @@ function get_mu_plugins() {
 			continue;
 		}
 
-		// Do not apply markup/translate as it will be cached.
+		// Không áp dụng đánh dấu/dịch vì sẽ được lưu cache.
 		$plugin_data = get_plugin_data( WPMU_PLUGIN_DIR . "/$plugin_file", false, false );
 
 		if ( empty( $plugin_data['Name'] ) ) {
@@ -404,7 +404,7 @@ function get_mu_plugins() {
 	}
 
 	if ( isset( $wp_plugins['index.php'] ) && filesize( WPMU_PLUGIN_DIR . '/index.php' ) <= 30 ) {
-		// Silence is golden.
+		// Im lặng là vàng.
 		unset( $wp_plugins['index.php'] );
 	}
 
@@ -414,25 +414,25 @@ function get_mu_plugins() {
 }
 
 /**
- * Declares a callback to sort array by a 'Name' key.
+ * Khai báo callback để sắp xếp mảng theo khóa 'Name'.
  *
  * @since 3.1.0
  *
  * @access private
  *
- * @param array $a array with 'Name' key.
- * @param array $b array with 'Name' key.
- * @return int Return 0 or 1 based on two string comparison.
+ * @param array $a Mảng có khóa 'Name'.
+ * @param array $b Mảng có khóa 'Name'.
+ * @return int Trả về 0 hoặc 1 dựa trên so sánh hai chuỗi.
  */
 function _sort_uname_callback( $a, $b ) {
 	return strnatcasecmp( $a['Name'], $b['Name'] );
 }
 
 /**
- * Checks the wp-content directory and retrieve all drop-ins with any plugin data.
+ * Kiểm tra thư mục wp-content và lấy tất cả drop-in cùng dữ liệu plugin.
  *
  * @since 3.0.0
- * @return array[] Array of arrays of dropin plugin data, keyed by plugin file name. See get_plugin_data().
+ * @return array[] Mảng các mảng dữ liệu plugin drop-in, được đánh khóa bởi tên file plugin. Xem get_plugin_data().
  */
 function get_dropins() {
 	$dropins      = array();
@@ -440,7 +440,7 @@ function get_dropins() {
 
 	$_dropins = _get_dropins();
 
-	// Files in wp-content directory.
+	// Các file trong thư mục wp-content.
 	$plugins_dir = @opendir( WP_CONTENT_DIR );
 	if ( $plugins_dir ) {
 		while ( ( $file = readdir( $plugins_dir ) ) !== false ) {
@@ -463,7 +463,7 @@ function get_dropins() {
 			continue;
 		}
 
-		// Do not apply markup/translate as it will be cached.
+		// Không áp dụng đánh dấu/dịch vì sẽ được lưu cache.
 		$plugin_data = get_plugin_data( WP_CONTENT_DIR . "/$plugin_file", false, false );
 
 		if ( empty( $plugin_data['Name'] ) ) {
@@ -479,21 +479,21 @@ function get_dropins() {
 }
 
 /**
- * Returns drop-in plugins that WordPress uses.
+ * Trả về các plugin drop-in mà WordPress sử dụng.
  *
- * Includes Multisite drop-ins only when is_multisite()
+ * Chỉ bao gồm drop-in Multisite khi is_multisite()
  *
  * @since 3.0.0
  *
  * @return array[] {
- *     Key is file name. The value is an array of data about the drop-in.
+ *     Khóa là tên file. Giá trị là mảng dữ liệu về drop-in.
  *
  *     @type array ...$0 {
- *         Data about the drop-in.
+ *         Dữ liệu về drop-in.
  *
- *         @type string      $0 The purpose of the drop-in.
- *         @type string|true $1 Name of the constant that must be true for the drop-in
- *                              to be used, or true if no constant is required.
+ *         @type string      $0 Mục đích của drop-in.
+ *         @type string|true $1 Tên hằng số phải là true để drop-in
+ *                              được sử dụng, hoặc true nếu không cần hằng số.
  *     }
  * }
  */
@@ -520,62 +520,62 @@ function _get_dropins() {
 }
 
 /**
- * Determines whether a plugin is active.
+ * Xác định xem plugin có đang hoạt động không.
  *
- * Only plugins installed in the plugins/ folder can be active.
+ * Chỉ các plugin được cài trong thư mục plugins/ mới có thể hoạt động.
  *
- * Plugins in the mu-plugins/ folder can't be "activated," so this function will
- * return false for those plugins.
+ * Các plugin trong thư mục mu-plugins/ không thể được "kích hoạt," nên hàm này sẽ
+ * trả về false cho các plugin đó.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 2.5.0
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return bool True, if in the active plugins list. False, not in the list.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return bool True nếu nằm trong danh sách plugin hoạt động. False nếu không.
  */
 function is_plugin_active( $plugin ) {
 	return in_array( $plugin, (array) get_option( 'active_plugins', array() ), true ) || is_plugin_active_for_network( $plugin );
 }
 
 /**
- * Determines whether the plugin is inactive.
+ * Xác định xem plugin có không hoạt động không.
  *
- * Reverse of is_plugin_active(). Used as a callback.
+ * Ngược lại với is_plugin_active(). Được sử dụng làm callback.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 3.1.0
  *
  * @see is_plugin_active()
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return bool True if inactive. False if active.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return bool True nếu không hoạt động. False nếu đang hoạt động.
  */
 function is_plugin_inactive( $plugin ) {
 	return ! is_plugin_active( $plugin );
 }
 
 /**
- * Determines whether the plugin is active for the entire network.
+ * Xác định xem plugin có đang hoạt động cho toàn bộ mạng không.
  *
- * Only plugins installed in the plugins/ folder can be active.
+ * Chỉ các plugin được cài trong thư mục plugins/ mới có thể hoạt động.
  *
- * Plugins in the mu-plugins/ folder can't be "activated," so this function will
- * return false for those plugins.
+ * Các plugin trong thư mục mu-plugins/ không thể được "kích hoạt," nên hàm này sẽ
+ * trả về false cho các plugin đó.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 3.0.0
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return bool True if active for the network, otherwise false.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return bool True nếu hoạt động cho toàn mạng, ngược lại false.
  */
 function is_plugin_active_for_network( $plugin ) {
 	if ( ! is_multisite() ) {
@@ -591,16 +591,16 @@ function is_plugin_active_for_network( $plugin ) {
 }
 
 /**
- * Checks for "Network: true" in the plugin header to see if this should
- * be activated only as a network wide plugin. The plugin would also work
- * when Multisite is not enabled.
+ * Kiểm tra "Network: true" trong header plugin để xem plugin có nên
+ * chỉ được kích hoạt như plugin toàn mạng không. Plugin cũng sẽ hoạt động
+ * khi Multisite không được bật.
  *
- * Checks for "Site Wide Only: true" for backward compatibility.
+ * Kiểm tra "Site Wide Only: true" để tương thích ngược.
  *
  * @since 3.0.0
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return bool True if plugin is network only, false otherwise.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return bool True nếu plugin chỉ dành cho mạng, ngược lại false.
  */
 function is_network_only_plugin( $plugin ) {
 	$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
@@ -611,32 +611,32 @@ function is_network_only_plugin( $plugin ) {
 }
 
 /**
- * Attempts activation of plugin in a "sandbox" and redirects on success.
+ * Thử kích hoạt plugin trong "sandbox" và chuyển hướng khi thành công.
  *
- * A plugin that is already activated will not attempt to be activated again.
+ * Plugin đã được kích hoạt sẽ không bị kích hoạt lại.
  *
- * The way it works is by setting the redirection to the error before trying to
- * include the plugin file. If the plugin fails, then the redirection will not
- * be overwritten with the success message. Also, the options will not be
- * updated and the activation hook will not be called on plugin error.
+ * Cách hoạt động là thiết lập chuyển hướng đến lỗi trước khi thử
+ * include file plugin. Nếu plugin thất bại, chuyển hướng sẽ không
+ * bị ghi đè bằng thông báo thành công. Ngoài ra, các tùy chọn sẽ không
+ * được cập nhật và hook kích hoạt sẽ không được gọi khi plugin lỗi.
  *
- * It should be noted that in no way the below code will actually prevent errors
- * within the file. The code should not be used elsewhere to replicate the
- * "sandbox", which uses redirection to work.
+ * Cần lưu ý rằng đoạn code bên dưới không thực sự ngăn chặn lỗi
+ * trong file. Code không nên được sử dụng ở nơi khác để tái tạo
+ * "sandbox", vốn sử dụng chuyển hướng để hoạt động.
  * {@source 13 1}
  *
- * If any errors are found or text is outputted, then it will be captured to
- * ensure that the success redirection will update the error redirection.
+ * Nếu tìm thấy lỗi hoặc có văn bản được xuất ra, nó sẽ được bắt lại
+ * để đảm bảo chuyển hướng thành công sẽ cập nhật chuyển hướng lỗi.
  *
  * @since 2.5.0
- * @since 5.2.0 Test for WordPress version and PHP version compatibility.
+ * @since 5.2.0 Kiểm tra tương thích phiên bản WordPress và PHP.
  *
- * @param string $plugin       Path to the plugin file relative to the plugins directory.
- * @param string $redirect     Optional. URL to redirect to.
- * @param bool   $network_wide Optional. Whether to enable the plugin for all sites in the network
- *                             or just the current site. Multisite only. Default false.
- * @param bool   $silent       Optional. Whether to prevent calling activation hooks. Default false.
- * @return null|WP_Error Null on success, WP_Error on invalid file.
+ * @param string $plugin       Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @param string $redirect     Tùy chọn. URL để chuyển hướng đến.
+ * @param bool   $network_wide Tùy chọn. Có bật plugin cho tất cả site trong mạng
+ *                             hay chỉ site hiện tại. Chỉ Multisite. Mặc định false.
+ * @param bool   $silent       Tùy chọn. Có ngăn gọi các hook kích hoạt không. Mặc định false.
+ * @return null|WP_Error Null khi thành công, WP_Error khi file không hợp lệ.
  */
 function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silent = false ) {
 	$plugin = plugin_basename( trim( $plugin ) );
@@ -663,42 +663,42 @@ function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silen
 		|| ! $network_wide && ! in_array( $plugin, $current, true )
 	) {
 		if ( ! empty( $redirect ) ) {
-			// We'll override this later if the plugin can be included without fatal error.
+			// Chúng ta sẽ ghi đè điều này sau nếu plugin có thể được include mà không có lỗi nghiêm trọng.
 			wp_redirect( add_query_arg( '_error_nonce', wp_create_nonce( 'plugin-activation-error_' . $plugin ), $redirect ) );
 		}
 
 		ob_start();
 
-		// Load the plugin to test whether it throws any errors.
+		// Tải plugin để kiểm tra xem nó có gây ra lỗi nào không.
 		plugin_sandbox_scrape( $plugin );
 
 		if ( ! $silent ) {
 			/**
-			 * Fires before a plugin is activated.
+			 * Kích hoạt trước khi plugin được bật.
 			 *
-			 * If a plugin is silently activated (such as during an update),
-			 * this hook does not fire.
+			 * Nếu plugin được kích hoạt ngầm (ví dụ trong quá trình cập nhật),
+			 * hook này không được kích hoạt.
 			 *
 			 * @since 2.9.0
 			 *
-			 * @param string $plugin       Path to the plugin file relative to the plugins directory.
-			 * @param bool   $network_wide Whether to enable the plugin for all sites in the network
-			 *                             or just the current site. Multisite only. Default false.
+			 * @param string $plugin       Đường dẫn đến file plugin tương đối so với thư mục plugins.
+			 * @param bool   $network_wide Có bật plugin cho tất cả site trong mạng
+			 *                             hay chỉ site hiện tại. Chỉ Multisite. Mặc định false.
 			 */
 			do_action( 'activate_plugin', $plugin, $network_wide );
 
 			/**
-			 * Fires as a specific plugin is being activated.
+			 * Kích hoạt khi một plugin cụ thể đang được bật.
 			 *
-			 * This hook is the "activation" hook used internally by register_activation_hook().
-			 * The dynamic portion of the hook name, `$plugin`, refers to the plugin basename.
+			 * Hook này là hook "kích hoạt" được sử dụng nội bộ bởi register_activation_hook().
+			 * Phần động của tên hook, `$plugin`, tham chiếu đến basename của plugin.
 			 *
-			 * If a plugin is silently activated (such as during an update), this hook does not fire.
+			 * Nếu plugin được kích hoạt ngầm (ví dụ trong quá trình cập nhật), hook này không được kích hoạt.
 			 *
 			 * @since 2.0.0
 			 *
-			 * @param bool $network_wide Whether to enable the plugin for all sites in the network
-			 *                           or just the current site. Multisite only. Default false.
+			 * @param bool $network_wide Có bật plugin cho tất cả site trong mạng
+			 *                           hay chỉ site hiện tại. Chỉ Multisite. Mặc định false.
 			 */
 			do_action( "activate_{$plugin}", $network_wide );
 		}
@@ -716,16 +716,16 @@ function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silen
 
 		if ( ! $silent ) {
 			/**
-			 * Fires after a plugin has been activated.
+			 * Kích hoạt sau khi một plugin đã được bật.
 			 *
-			 * If a plugin is silently activated (such as during an update),
-			 * this hook does not fire.
+			 * Nếu plugin được kích hoạt ngầm (ví dụ trong quá trình cập nhật),
+			 * hook này không được kích hoạt.
 			 *
 			 * @since 2.9.0
 			 *
-			 * @param string $plugin       Path to the plugin file relative to the plugins directory.
-			 * @param bool   $network_wide Whether to enable the plugin for all sites in the network
-			 *                             or just the current site. Multisite only. Default false.
+			 * @param string $plugin       Đường dẫn đến file plugin tương đối so với thư mục plugins.
+			 * @param bool   $network_wide Có bật plugin cho tất cả site trong mạng
+			 *                             hay chỉ site hiện tại. Chỉ Multisite. Mặc định false.
 			 */
 			do_action( 'activated_plugin', $plugin, $network_wide );
 		}
@@ -742,18 +742,18 @@ function activate_plugin( $plugin, $redirect = '', $network_wide = false, $silen
 }
 
 /**
- * Deactivates a single plugin or multiple plugins.
+ * Vô hiệu hóa một hoặc nhiều plugin.
  *
- * The deactivation hook is disabled by the plugin upgrader by using the $silent
- * parameter.
+ * Hook vô hiệu hóa bị tắt bởi trình nâng cấp plugin bằng cách sử dụng tham số
+ * $silent.
  *
  * @since 2.5.0
  *
- * @param string|string[] $plugins      Single plugin or list of plugins to deactivate.
- * @param bool            $silent       Prevent calling deactivation hooks. Default false.
- * @param bool|null       $network_wide Whether to deactivate the plugin for all sites in the network.
- *                                      A value of null will deactivate plugins for both the network
- *                                      and the current site. Multisite only. Default null.
+ * @param string|string[] $plugins      Một plugin hoặc danh sách plugin cần vô hiệu hóa.
+ * @param bool            $silent       Ngăn gọi các hook vô hiệu hóa. Mặc định false.
+ * @param bool|null       $network_wide Có vô hiệu hóa plugin cho tất cả site trong mạng không.
+ *                                      Giá trị null sẽ vô hiệu hóa plugin cho cả mạng
+ *                                      và site hiện tại. Chỉ Multisite. Mặc định null.
  */
 function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
 	if ( is_multisite() ) {
@@ -773,16 +773,16 @@ function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
 
 		if ( ! $silent ) {
 			/**
-			 * Fires before a plugin is deactivated.
+			 * Kích hoạt trước khi một plugin bị vô hiệu hóa.
 			 *
-			 * If a plugin is silently deactivated (such as during an update),
-			 * this hook does not fire.
+			 * Nếu plugin bị vô hiệu hóa ngầm (ví dụ trong quá trình cập nhật),
+			 * hook này không được kích hoạt.
 			 *
 			 * @since 2.9.0
 			 *
-			 * @param string $plugin               Path to the plugin file relative to the plugins directory.
-			 * @param bool   $network_deactivating Whether the plugin is deactivated for all sites in the network
-			 *                                     or just the current site. Multisite only. Default false.
+			 * @param string $plugin               Đường dẫn đến file plugin tương đối so với thư mục plugins.
+			 * @param bool   $network_deactivating Plugin có bị vô hiệu hóa cho tất cả site trong mạng
+			 *                                     hay chỉ site hiện tại. Chỉ Multisite. Mặc định false.
 			 */
 			do_action( 'deactivate_plugin', $plugin, $network_deactivating );
 		}
@@ -811,31 +811,31 @@ function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
 
 		if ( ! $silent ) {
 			/**
-			 * Fires as a specific plugin is being deactivated.
+			 * Kích hoạt khi một plugin cụ thể đang bị vô hiệu hóa.
 			 *
-			 * This hook is the "deactivation" hook used internally by register_deactivation_hook().
-			 * The dynamic portion of the hook name, `$plugin`, refers to the plugin basename.
+			 * Hook này là hook "vô hiệu hóa" được sử dụng nội bộ bởi register_deactivation_hook().
+			 * Phần động của tên hook, `$plugin`, tham chiếu đến basename của plugin.
 			 *
-			 * If a plugin is silently deactivated (such as during an update), this hook does not fire.
+			 * Nếu plugin bị vô hiệu hóa ngầm (ví dụ trong quá trình cập nhật), hook này không được kích hoạt.
 			 *
 			 * @since 2.0.0
 			 *
-			 * @param bool $network_deactivating Whether the plugin is deactivated for all sites in the network
-			 *                                   or just the current site. Multisite only. Default false.
+			 * @param bool $network_deactivating Plugin có bị vô hiệu hóa cho tất cả site trong mạng
+			 *                                   hay chỉ site hiện tại. Chỉ Multisite. Mặc định false.
 			 */
 			do_action( "deactivate_{$plugin}", $network_deactivating );
 
 			/**
-			 * Fires after a plugin is deactivated.
+			 * Kích hoạt sau khi một plugin đã bị vô hiệu hóa.
 			 *
-			 * If a plugin is silently deactivated (such as during an update),
-			 * this hook does not fire.
+			 * Nếu plugin bị vô hiệu hóa ngầm (ví dụ trong quá trình cập nhật),
+			 * hook này không được kích hoạt.
 			 *
 			 * @since 2.9.0
 			 *
-			 * @param string $plugin               Path to the plugin file relative to the plugins directory.
-			 * @param bool   $network_deactivating Whether the plugin is deactivated for all sites in the network
-			 *                                     or just the current site. Multisite only. Default false.
+			 * @param string $plugin               Đường dẫn đến file plugin tương đối so với thư mục plugins.
+			 * @param bool   $network_deactivating Plugin có bị vô hiệu hóa cho tất cả site trong mạng
+			 *                                     hay chỉ site hiện tại. Chỉ Multisite. Mặc định false.
 			 */
 			do_action( 'deactivated_plugin', $plugin, $network_deactivating );
 		}
@@ -850,21 +850,21 @@ function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
 }
 
 /**
- * Activates multiple plugins.
+ * Kích hoạt nhiều plugin.
  *
- * When WP_Error is returned, it does not mean that one of the plugins had
- * errors. It means that one or more of the plugin file paths were invalid.
+ * Khi WP_Error được trả về, không có nghĩa là một trong các plugin có
+ * lỗi. Nghĩa là một hoặc nhiều đường dẫn file plugin không hợp lệ.
  *
- * The execution will be halted as soon as one of the plugins has an error.
+ * Việc thực thi sẽ bị dừng ngay khi một trong các plugin có lỗi.
  *
  * @since 2.6.0
  *
- * @param string|string[] $plugins      Single plugin or list of plugins to activate.
- * @param string          $redirect     Redirect to page after successful activation.
- * @param bool            $network_wide Whether to enable the plugin for all sites in the network.
- *                                      Default false.
- * @param bool            $silent       Prevent calling activation hooks. Default false.
- * @return true|WP_Error True when finished or WP_Error if there were errors during a plugin activation.
+ * @param string|string[] $plugins      Một plugin hoặc danh sách plugin cần kích hoạt.
+ * @param string          $redirect     Chuyển hướng đến trang sau khi kích hoạt thành công.
+ * @param bool            $network_wide Có bật plugin cho tất cả site trong mạng không.
+ *                                      Mặc định false.
+ * @param bool            $silent       Ngăn gọi các hook kích hoạt. Mặc định false.
+ * @return true|WP_Error True khi hoàn thành hoặc WP_Error nếu có lỗi trong quá trình kích hoạt plugin.
  */
 function activate_plugins( $plugins, $redirect = '', $network_wide = false, $silent = false ) {
 	if ( ! is_array( $plugins ) ) {
@@ -890,16 +890,16 @@ function activate_plugins( $plugins, $redirect = '', $network_wide = false, $sil
 }
 
 /**
- * Removes directory and files of a plugin for a list of plugins.
+ * Xóa thư mục và file của plugin cho một danh sách plugin.
  *
  * @since 2.6.0
  *
- * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+ * @global WP_Filesystem_Base $wp_filesystem Lớp con filesystem của WordPress.
  *
- * @param string[] $plugins    List of plugin paths to delete, relative to the plugins directory.
- * @param string   $deprecated Not used.
- * @return bool|null|WP_Error True on success, false if `$plugins` is empty, `WP_Error` on failure.
- *                            `null` if filesystem credentials are required to proceed.
+ * @param string[] $plugins    Danh sách đường dẫn plugin cần xóa, tương đối so với thư mục plugins.
+ * @param string   $deprecated Không sử dụng.
+ * @return bool|null|WP_Error True khi thành công, false nếu `$plugins` rỗng, `WP_Error` khi thất bại.
+ *                            `null` nếu cần thông tin xác thực filesystem để tiếp tục.
  */
 function delete_plugins( $plugins, $deprecated = '' ) {
 	global $wp_filesystem;
@@ -931,7 +931,7 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 
 	if ( ! WP_Filesystem( $credentials ) ) {
 		ob_start();
-		// Failed to connect. Error and request again.
+		// Kết nối thất bại. Hiển thị lỗi và yêu cầu lại.
 		request_filesystem_credentials( $url, '', true );
 		$data = ob_get_clean();
 
@@ -952,7 +952,7 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 		return new WP_Error( 'fs_error', __( 'Filesystem error.' ), $wp_filesystem->errors );
 	}
 
-	// Get the base plugin folder.
+	// Lấy thư mục plugin gốc.
 	$plugins_dir = $wp_filesystem->wp_plugins_dir();
 	if ( empty( $plugins_dir ) ) {
 		return new WP_Error( 'fs_no_plugins_dir', __( 'Unable to locate WordPress plugin directory.' ) );
@@ -965,25 +965,25 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 	$errors = array();
 
 	foreach ( $plugins as $plugin_file ) {
-		// Run Uninstall hook.
+		// Chạy hook gỡ cài đặt.
 		if ( is_uninstallable_plugin( $plugin_file ) ) {
 			uninstall_plugin( $plugin_file );
 		}
 
 		/**
-		 * Fires immediately before a plugin deletion attempt.
+		 * Kích hoạt ngay trước khi thử xóa plugin.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string $plugin_file Path to the plugin file relative to the plugins directory.
+		 * @param string $plugin_file Đường dẫn đến file plugin tương đối so với thư mục plugins.
 		 */
 		do_action( 'delete_plugin', $plugin_file );
 
 		$this_plugin_dir = trailingslashit( dirname( $plugins_dir . $plugin_file ) );
 
 		/*
-		 * If plugin is in its own directory, recursively delete the directory.
-		 * Base check on if plugin includes directory separator AND that it's not the root plugin folder.
+		 * Nếu plugin nằm trong thư mục riêng, xóa đệ quy thư mục đó.
+		 * Kiểm tra cơ bản dựa trên việc plugin có chứa dấu phân tách thư mục VÀ không phải thư mục plugin gốc.
 		 */
 		if ( strpos( $plugin_file, '/' ) && $this_plugin_dir !== $plugins_dir ) {
 			$deleted = $wp_filesystem->delete( $this_plugin_dir, true );
@@ -992,12 +992,12 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 		}
 
 		/**
-		 * Fires immediately after a plugin deletion attempt.
+		 * Kích hoạt ngay sau khi thử xóa plugin.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string $plugin_file Path to the plugin file relative to the plugins directory.
-		 * @param bool   $deleted     Whether the plugin deletion was successful.
+		 * @param string $plugin_file Đường dẫn đến file plugin tương đối so với thư mục plugins.
+		 * @param bool   $deleted     Việc xóa plugin có thành công không.
 		 */
 		do_action( 'deleted_plugin', $plugin_file, $deleted );
 
@@ -1012,7 +1012,7 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 			$plugin_slug = 'hello-dolly';
 		}
 
-		// Remove language files, silently.
+		// Xóa file ngôn ngữ, không hiển thị lỗi.
 		if ( '.' !== $plugin_slug && ! empty( $plugin_translations[ $plugin_slug ] ) ) {
 			$translations = $plugin_translations[ $plugin_slug ];
 
@@ -1029,10 +1029,10 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 		}
 	}
 
-	// Remove deleted plugins from the plugin updates list.
+	// Xóa các plugin đã xóa khỏi danh sách cập nhật plugin.
 	$current = get_site_transient( 'update_plugins' );
 	if ( $current ) {
-		// Don't remove the plugins that weren't deleted.
+		// Không xóa các plugin chưa được xóa.
 		$deleted = array_diff( $plugins, $errors );
 
 		foreach ( $deleted as $plugin_file ) {
@@ -1058,17 +1058,17 @@ function delete_plugins( $plugins, $deprecated = '' ) {
 }
 
 /**
- * Validates active plugins.
+ * Xác thực các plugin đang hoạt động.
  *
- * Validate all active plugins, deactivates invalid and
- * returns an array of deactivated ones.
+ * Xác thực tất cả plugin đang hoạt động, vô hiệu hóa các plugin không hợp lệ
+ * và trả về mảng các plugin đã bị vô hiệu hóa.
  *
  * @since 2.5.0
- * @return WP_Error[] Array of plugin errors keyed by plugin file name.
+ * @return WP_Error[] Mảng lỗi plugin được đánh khóa bởi tên file plugin.
  */
 function validate_active_plugins() {
 	$plugins = get_option( 'active_plugins', array() );
-	// Validate vartype: array.
+	// Kiểm tra kiểu biến: array.
 	if ( ! is_array( $plugins ) ) {
 		update_option( 'active_plugins', array() );
 		$plugins = array();
@@ -1085,7 +1085,7 @@ function validate_active_plugins() {
 
 	$invalid = array();
 
-	// Invalid plugins get deactivated.
+	// Các plugin không hợp lệ bị vô hiệu hóa.
 	foreach ( $plugins as $plugin ) {
 		$result = validate_plugin( $plugin );
 		if ( is_wp_error( $result ) ) {
@@ -1097,14 +1097,14 @@ function validate_active_plugins() {
 }
 
 /**
- * Validates the plugin path.
+ * Xác thực đường dẫn plugin.
  *
- * Checks that the main plugin file exists and is a valid plugin. See validate_file().
+ * Kiểm tra rằng file plugin chính tồn tại và là plugin hợp lệ. Xem validate_file().
  *
  * @since 2.5.0
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return int|WP_Error 0 on success, WP_Error on failure.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return int|WP_Error 0 khi thành công, WP_Error khi thất bại.
  */
 function validate_plugin( $plugin ) {
 	if ( validate_file( $plugin ) ) {
@@ -1122,19 +1122,19 @@ function validate_plugin( $plugin ) {
 }
 
 /**
- * Validates the plugin requirements for WordPress version and PHP version.
+ * Xác thực yêu cầu plugin cho phiên bản WordPress và PHP.
  *
- * Uses the information from `Requires at least`, `Requires PHP` and `Requires Plugins` headers
- * defined in the plugin's main PHP file.
+ * Sử dụng thông tin từ các header `Requires at least`, `Requires PHP` và `Requires Plugins`
+ * được định nghĩa trong file PHP chính của plugin.
  *
  * @since 5.2.0
- * @since 5.3.0 Added support for reading the headers from the plugin's
- *              main PHP file, with `readme.txt` as a fallback.
- * @since 5.8.0 Removed support for using `readme.txt` as a fallback.
- * @since 6.5.0 Added support for the 'Requires Plugins' header.
+ * @since 5.3.0 Thêm hỗ trợ đọc header từ file PHP chính của plugin,
+ *              với `readme.txt` làm phương án dự phòng.
+ * @since 5.8.0 Loại bỏ hỗ trợ sử dụng `readme.txt` làm phương án dự phòng.
+ * @since 6.5.0 Thêm hỗ trợ cho header 'Requires Plugins'.
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return true|WP_Error True if requirements are met, WP_Error on failure.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return true|WP_Error True nếu đáp ứng yêu cầu, WP_Error khi thất bại.
  */
 function validate_plugin_requirements( $plugin ) {
 	$plugin_headers = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin );
@@ -1257,12 +1257,12 @@ function validate_plugin_requirements( $plugin ) {
 }
 
 /**
- * Determines whether the plugin can be uninstalled.
+ * Xác định xem plugin có thể được gỡ cài đặt không.
  *
  * @since 2.7.0
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return bool Whether plugin can be uninstalled.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return bool Plugin có thể được gỡ cài đặt hay không.
  */
 function is_uninstallable_plugin( $plugin ) {
 	$file = plugin_basename( $plugin );
@@ -1276,15 +1276,15 @@ function is_uninstallable_plugin( $plugin ) {
 }
 
 /**
- * Uninstalls a single plugin.
+ * Gỡ cài đặt một plugin đơn lẻ.
  *
- * Calls the uninstall hook, if it is available.
+ * Gọi hook gỡ cài đặt, nếu có.
  *
  * @since 2.7.0
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return true|void True if a plugin's uninstall.php file has been found and included.
- *                   Void otherwise.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return true|void True nếu file uninstall.php của plugin đã được tìm thấy và include.
+ *                   Void trong trường hợp khác.
  */
 function uninstall_plugin( $plugin ) {
 	$file = plugin_basename( $plugin );
@@ -1292,12 +1292,12 @@ function uninstall_plugin( $plugin ) {
 	$uninstallable_plugins = (array) get_option( 'uninstall_plugins' );
 
 	/**
-	 * Fires in uninstall_plugin() immediately before the plugin is uninstalled.
+	 * Kích hoạt trong uninstall_plugin() ngay trước khi plugin được gỡ cài đặt.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @param string $plugin                Path to the plugin file relative to the plugins directory.
-	 * @param array  $uninstallable_plugins Uninstallable plugins.
+	 * @param string $plugin                Đường dẫn đến file plugin tương đối so với thư mục plugins.
+	 * @param array  $uninstallable_plugins Các plugin có thể gỡ cài đặt.
 	 */
 	do_action( 'pre_uninstall_plugin', $plugin, $uninstallable_plugins );
 
@@ -1328,10 +1328,10 @@ function uninstall_plugin( $plugin ) {
 		add_action( "uninstall_{$file}", $callable );
 
 		/**
-		 * Fires in uninstall_plugin() once the plugin has been uninstalled.
+		 * Kích hoạt trong uninstall_plugin() khi plugin đã được gỡ cài đặt.
 		 *
-		 * The action concatenates the 'uninstall_' prefix with the basename of the
-		 * plugin passed to uninstall_plugin() to create a dynamically-named action.
+		 * Action này nối tiền tố 'uninstall_' với basename của plugin
+		 * được truyền vào uninstall_plugin() để tạo action có tên động.
 		 *
 		 * @since 2.7.0
 		 */
@@ -1344,13 +1344,13 @@ function uninstall_plugin( $plugin ) {
 //
 
 /**
- * Adds a top-level menu page.
+ * Thêm một trang menu cấp cao nhất.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 1.5.0
  *
@@ -1359,21 +1359,21 @@ function uninstall_plugin( $plugin ) {
  * @global array $_registered_pages
  * @global array $_parent_pages
  *
- * @param string    $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string    $menu_title The text to be used for the menu.
- * @param string    $capability The capability required for this menu to be displayed to the user.
- * @param string    $menu_slug  The slug name to refer to this menu by. Should be unique for this menu page and only
- *                              include lowercase alphanumeric, dashes, and underscores characters to be compatible
- *                              with sanitize_key().
- * @param callable  $callback   Optional. The function to be called to output the content for this page.
- * @param string    $icon_url   Optional. The URL to the icon to be used for this menu.
- *                              * Pass a base64-encoded SVG using a data URI, which will be colored to match
- *                                the color scheme. This should begin with 'data:image/svg+xml;base64,'.
- *                              * Pass the name of a Dashicons helper class to use a font icon,
- *                                e.g. 'dashicons-chart-pie'.
- *                              * Pass 'none' to leave div.wp-menu-image empty so an icon can be added via CSS.
- * @param int|float $position   Optional. The position in the menu order this item should appear.
- * @return string The resulting page's hook_suffix.
+ * @param string    $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string    $menu_title Văn bản sử dụng cho menu.
+ * @param string    $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string    $menu_slug  Tên slug để tham chiếu đến menu này. Nên là duy nhất cho trang menu này và chỉ
+ *                              bao gồm các ký tự chữ thường, số, gạch ngang và gạch dưới để tương thích
+ *                              với sanitize_key().
+ * @param callable  $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param string    $icon_url   Tùy chọn. URL đến biểu tượng sử dụng cho menu này.
+ *                              * Truyền SVG mã hóa base64 sử dụng data URI, sẽ được tô màu phù hợp
+ *                                với bảng màu. Nên bắt đầu bằng 'data:image/svg+xml;base64,'.
+ *                              * Truyền tên lớp helper Dashicons để sử dụng biểu tượng font,
+ *                                ví dụ 'dashicons-chart-pie'.
+ *                              * Truyền 'none' để để trống div.wp-menu-image và thêm biểu tượng qua CSS.
+ * @param int|float $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string Hook_suffix của trang kết quả.
  */
 function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $icon_url = '', $position = null ) {
 	global $menu, $admin_page_hooks, $_registered_pages, $_parent_pages;
@@ -1419,12 +1419,12 @@ function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $call
 		$menu[ $position ] = $new_menu;
 	} else {
 		/*
-		 * Cast menu position to a string.
+		 * Ép kiểu vị trí menu sang chuỗi.
 		 *
-		 * This allows for floats to be passed as the position. PHP will normally cast a float to an
-		 * integer value, this ensures the float retains its mantissa (positive fractional part).
+		 * Điều này cho phép truyền số thực làm vị trí. PHP thường ép số thực sang
+		 * số nguyên, cách này đảm bảo số thực giữ lại phần thập phân.
 		 *
-		 * A string containing an integer value, eg "10", is treated as a numeric index.
+		 * Chuỗi chứa giá trị số nguyên, ví dụ "10", được xử lý như chỉ mục số.
 		 */
 		$position          = (string) $position;
 		$menu[ $position ] = $new_menu;
@@ -1432,23 +1432,23 @@ function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $call
 
 	$_registered_pages[ $hookname ] = true;
 
-	// No parent as top level.
+	// Không có parent vì là cấp cao nhất.
 	$_parent_pages[ $menu_slug ] = false;
 
 	return $hookname;
 }
 
 /**
- * Adds a submenu page.
+ * Thêm một trang menu con.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 1.5.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
  * @global array $submenu
  * @global array $menu
@@ -1457,18 +1457,18 @@ function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $call
  * @global array $_registered_pages
  * @global array $_parent_pages
  *
- * @param string    $parent_slug The slug name for the parent menu (or the file name of a standard
- *                               WordPress admin page).
- * @param string    $page_title  The text to be displayed in the title tags of the page when the menu
- *                               is selected.
- * @param string    $menu_title  The text to be used for the menu.
- * @param string    $capability  The capability required for this menu to be displayed to the user.
- * @param string    $menu_slug   The slug name to refer to this menu by. Should be unique for this menu
- *                               and only include lowercase alphanumeric, dashes, and underscores characters
- *                               to be compatible with sanitize_key().
- * @param callable  $callback    Optional. The function to be called to output the content for this page.
- * @param int|float $position    Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string    $parent_slug Tên slug cho menu cha (hoặc tên file của trang quản trị
+ *                               WordPress chuẩn).
+ * @param string    $page_title  Văn bản hiển thị trong thẻ title của trang khi menu
+ *                               được chọn.
+ * @param string    $menu_title  Văn bản sử dụng cho menu.
+ * @param string    $capability  Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string    $menu_slug   Tên slug để tham chiếu đến menu này. Nên là duy nhất cho menu này
+ *                               và chỉ bao gồm các ký tự chữ thường, số, gạch ngang và gạch dưới
+ *                               để tương thích với sanitize_key().
+ * @param callable  $callback    Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int|float $position    Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	global $submenu, $menu, $_wp_real_parent_file, $_wp_submenu_nopriv,
@@ -1487,10 +1487,10 @@ function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, 
 	}
 
 	/*
-	 * If the parent doesn't already have a submenu, add a link to the parent
-	 * as the first item in the submenu. If the submenu file is the same as the
-	 * parent file someone is trying to link back to the parent manually. In
-	 * this case, don't automatically add a link back to avoid duplication.
+	 * Nếu parent chưa có submenu, thêm liên kết đến parent
+	 * làm mục đầu tiên trong submenu. Nếu file submenu giống file
+	 * parent thì ai đó đang cố liên kết ngược lại parent thủ công. Trong
+	 * trường hợp này, không tự động thêm liên kết ngược để tránh trùng lặp.
 	 */
 	if ( ! isset( $submenu[ $parent_slug ] ) && $menu_slug !== $parent_slug ) {
 		foreach ( (array) $menu as $parent_menu ) {
@@ -1521,25 +1521,25 @@ function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, 
 	) {
 		$submenu[ $parent_slug ][] = $new_sub_menu;
 	} else {
-		// Test for a negative position.
+		// Kiểm tra vị trí âm.
 		$position = max( $position, 0 );
 		if ( 0 === $position ) {
-			// For negative or `0` positions, prepend the submenu.
+			// Với vị trí âm hoặc `0`, thêm submenu vào đầu.
 			array_unshift( $submenu[ $parent_slug ], $new_sub_menu );
 		} else {
 			$position = absint( $position );
-			// Grab all of the items before the insertion point.
+			// Lấy tất cả các mục trước điểm chèn.
 			$before_items = array_slice( $submenu[ $parent_slug ], 0, $position, true );
-			// Grab all of the items after the insertion point.
+			// Lấy tất cả các mục sau điểm chèn.
 			$after_items = array_slice( $submenu[ $parent_slug ], $position, null, true );
-			// Add the new item.
+			// Thêm mục mới.
 			$before_items[] = $new_sub_menu;
-			// Merge the items.
+			// Gộp các mục.
 			$submenu[ $parent_slug ] = array_merge( $before_items, $after_items );
 		}
 	}
 
-	// Sort the parent array.
+	// Sắp xếp mảng parent.
 	ksort( $submenu[ $parent_slug ] );
 
 	$hookname = get_plugin_page_hookname( $menu_slug, $parent_slug );
@@ -1550,134 +1550,134 @@ function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, 
 	$_registered_pages[ $hookname ] = true;
 
 	/*
-	 * Backward-compatibility for plugins using add_management_page().
-	 * See wp-admin/admin.php for redirect from edit.php to tools.php.
+	 * Tương thích ngược cho các plugin sử dụng add_management_page().
+	 * Xem wp-admin/admin.php để biết về chuyển hướng từ edit.php sang tools.php.
 	 */
 	if ( 'tools.php' === $parent_slug ) {
 		$_registered_pages[ get_plugin_page_hookname( $menu_slug, 'edit.php' ) ] = true;
 	}
 
-	// No parent as top level.
+	// Không có parent vì là cấp cao nhất.
 	$_parent_pages[ $menu_slug ] = $parent_slug;
 
 	return $hookname;
 }
 
 /**
- * Adds a submenu page to the Tools main menu.
+ * Thêm trang menu con vào menu chính Công cụ.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 1.5.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_management_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	return add_submenu_page( 'tools.php', $page_title, $menu_title, $capability, $menu_slug, $callback, $position );
 }
 
 /**
- * Adds a submenu page to the Settings main menu.
+ * Thêm trang menu con vào menu chính Cài đặt.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 1.5.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_options_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	return add_submenu_page( 'options-general.php', $page_title, $menu_title, $capability, $menu_slug, $callback, $position );
 }
 
 /**
- * Adds a submenu page to the Appearance main menu.
+ * Thêm trang menu con vào menu chính Giao diện.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 2.0.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_theme_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	return add_submenu_page( 'themes.php', $page_title, $menu_title, $capability, $menu_slug, $callback, $position );
 }
 
 /**
- * Adds a submenu page to the Plugins main menu.
+ * Thêm trang menu con vào menu chính Plugin.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 3.0.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_plugins_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	return add_submenu_page( 'plugins.php', $page_title, $menu_title, $capability, $menu_slug, $callback, $position );
 }
 
 /**
- * Adds a submenu page to the Users/Profile main menu.
+ * Thêm trang menu con vào menu chính Người dùng/Hồ sơ.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 2.1.3
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_users_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	if ( current_user_can( 'edit_users' ) ) {
@@ -1689,153 +1689,153 @@ function add_users_page( $page_title, $menu_title, $capability, $menu_slug, $cal
 }
 
 /**
- * Adds a submenu page to the Dashboard main menu.
+ * Thêm trang menu con vào menu chính Bảng tin.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 2.7.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_dashboard_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	return add_submenu_page( 'index.php', $page_title, $menu_title, $capability, $menu_slug, $callback, $position );
 }
 
 /**
- * Adds a submenu page to the Posts main menu.
+ * Thêm trang menu con vào menu chính Bài viết.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 2.7.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_posts_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	return add_submenu_page( 'edit.php', $page_title, $menu_title, $capability, $menu_slug, $callback, $position );
 }
 
 /**
- * Adds a submenu page to the Media main menu.
+ * Thêm trang menu con vào menu chính Phương tiện.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 2.7.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_media_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	return add_submenu_page( 'upload.php', $page_title, $menu_title, $capability, $menu_slug, $callback, $position );
 }
 
 /**
- * Adds a submenu page to the Links main menu.
+ * Thêm trang menu con vào menu chính Liên kết.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 2.7.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_links_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	return add_submenu_page( 'link-manager.php', $page_title, $menu_title, $capability, $menu_slug, $callback, $position );
 }
 
 /**
- * Adds a submenu page to the Pages main menu.
+ * Thêm trang menu con vào menu chính Trang.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 2.7.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_pages_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	return add_submenu_page( 'edit.php?post_type=page', $page_title, $menu_title, $capability, $menu_slug, $callback, $position );
 }
 
 /**
- * Adds a submenu page to the Comments main menu.
+ * Thêm trang menu con vào menu chính Bình luận.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một capability sẽ được sử dụng để xác định trang có
+ * được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được hook vào để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có capability yêu cầu.
  *
  * @since 2.7.0
- * @since 5.3.0 Added the `$position` parameter.
+ * @since 5.3.0 Thêm tham số `$position`.
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param int      $position   Optional. The position in the menu order this item should appear.
- * @return string|false The resulting page's hook_suffix, or false if the user does not have the capability required.
+ * @param string   $page_title Văn bản hiển thị trong thẻ title của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Capability yêu cầu để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param int      $position   Tùy chọn. Vị trí trong thứ tự menu mà mục này nên xuất hiện.
+ * @return string|false Hook_suffix của trang kết quả, hoặc false nếu người dùng không có capability yêu cầu.
  */
 function add_comments_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $position = null ) {
 	return add_submenu_page( 'edit-comments.php', $page_title, $menu_title, $capability, $menu_slug, $callback, $position );
 }
 
 /**
- * Removes a top-level admin menu.
+ * Xóa một menu quản trị cấp cao nhất.
  *
- * Example usage:
+ * Ví dụ sử dụng:
  *
  *  - `remove_menu_page( 'tools.php' )`
  *  - `remove_menu_page( 'plugin_menu_slug' )`
@@ -1844,8 +1844,8 @@ function add_comments_page( $page_title, $menu_title, $capability, $menu_slug, $
  *
  * @global array $menu
  *
- * @param string $menu_slug The slug of the menu.
- * @return array|false The removed menu on success, false if not found.
+ * @param string $menu_slug Slug của menu.
+ * @return array|false Menu đã xóa khi thành công, false nếu không tìm thấy.
  */
 function remove_menu_page( $menu_slug ) {
 	global $menu;
@@ -1861,9 +1861,9 @@ function remove_menu_page( $menu_slug ) {
 }
 
 /**
- * Removes an admin submenu.
+ * Xóa một menu con quản trị.
  *
- * Example usage:
+ * Ví dụ sử dụng:
  *
  *  - `remove_submenu_page( 'themes.php', 'nav-menus.php' )`
  *  - `remove_submenu_page( 'tools.php', 'plugin_submenu_slug' )`
@@ -1873,9 +1873,9 @@ function remove_menu_page( $menu_slug ) {
  *
  * @global array $submenu
  *
- * @param string $menu_slug    The slug for the parent menu.
- * @param string $submenu_slug The slug of the submenu.
- * @return array|false The removed submenu on success, false if not found.
+ * @param string $menu_slug    Slug cho menu cha.
+ * @param string $submenu_slug Slug của menu con.
+ * @return array|false Menu con đã xóa khi thành công, false nếu không tìm thấy.
  */
 function remove_submenu_page( $menu_slug, $submenu_slug ) {
 	global $submenu;
@@ -1895,17 +1895,17 @@ function remove_submenu_page( $menu_slug, $submenu_slug ) {
 }
 
 /**
- * Gets the URL to access a particular menu page based on the slug it was registered with.
+ * Lấy URL để truy cập một trang menu cụ thể dựa trên slug đã đăng ký.
  *
- * If the slug hasn't been registered properly, no URL will be returned.
+ * Nếu slug chưa được đăng ký đúng cách, sẽ không trả về URL.
  *
  * @since 3.0.0
  *
  * @global array $_parent_pages
  *
- * @param string $menu_slug The slug name to refer to this menu by (should be unique for this menu).
- * @param bool   $display   Optional. Whether or not to display the URL. Default true.
- * @return string The menu page URL.
+ * @param string $menu_slug Tên slug để tham chiếu đến menu này (nên là duy nhất cho menu này).
+ * @param bool   $display   Tùy chọn. Có hiển thị URL hay không. Mặc định true.
+ * @return string URL trang menu.
  */
 function menu_page_url( $menu_slug, $display = true ) {
 	global $_parent_pages;
@@ -1932,26 +1932,26 @@ function menu_page_url( $menu_slug, $display = true ) {
 }
 
 //
-// Pluggable Menu Support -- Private.
+// Hỗ trợ Menu có thể ghi đè -- Riêng tư.
 //
 /**
- * Gets the parent file of the current admin page.
+ * Lấy file cha của trang quản trị hiện tại.
  *
  * @since 1.5.0
  *
  * @global string $parent_file
  * @global array  $menu
  * @global array  $submenu
- * @global string $pagenow              The filename of the current screen.
- * @global string $typenow              The post type of the current screen.
+ * @global string $pagenow              Tên file của màn hình hiện tại.
+ * @global string $typenow              Loại bài viết của màn hình hiện tại.
  * @global string $plugin_page
  * @global array  $_wp_real_parent_file
  * @global array  $_wp_menu_nopriv
  * @global array  $_wp_submenu_nopriv
  *
- * @param string $parent_page Optional. The slug name for the parent menu (or the file name
- *                            of a standard WordPress admin page). Default empty string.
- * @return string The parent file of the current admin page.
+ * @param string $parent_page Tùy chọn. Tên slug cho menu cha (hoặc tên file
+ *                            của trang quản trị WordPress chuẩn). Mặc định chuỗi rỗng.
+ * @return string File cha của trang quản trị hiện tại.
  */
 function get_admin_page_parent( $parent_page = '' ) {
 	global $parent_file, $menu, $submenu, $pagenow, $typenow,
@@ -2026,18 +2026,18 @@ function get_admin_page_parent( $parent_page = '' ) {
 }
 
 /**
- * Gets the title of the current admin page.
+ * Lấy tiêu đề của trang quản trị hiện tại.
  *
  * @since 1.5.0
  *
- * @global string $title       The title of the current screen.
+ * @global string $title       Tiêu đề của màn hình hiện tại.
  * @global array  $menu
  * @global array  $submenu
- * @global string $pagenow     The filename of the current screen.
- * @global string $typenow     The post type of the current screen.
+ * @global string $pagenow     Tên file của màn hình hiện tại.
+ * @global string $typenow     Loại bài viết của màn hình hiện tại.
  * @global string $plugin_page
  *
- * @return string The title of the current admin page.
+ * @return string Tiêu đề của trang quản trị hiện tại.
  */
 function get_admin_page_title() {
 	global $title, $menu, $submenu, $pagenow, $typenow, $plugin_page;
@@ -2081,7 +2081,7 @@ function get_admin_page_title() {
 						return $submenu_array[3];
 				}
 
-				if ( $submenu_array[2] !== $pagenow || isset( $_GET['page'] ) ) { // Not the current page.
+				if ( $submenu_array[2] !== $pagenow || isset( $_GET['page'] ) ) { // Không phải trang hiện tại.
 					continue;
 				}
 
@@ -2112,14 +2112,14 @@ function get_admin_page_title() {
 }
 
 /**
- * Gets the hook attached to the administrative page of a plugin.
+ * Lấy hook được gắn vào trang quản trị của plugin.
  *
  * @since 1.5.0
  *
- * @param string $plugin_page The slug name of the plugin page.
- * @param string $parent_page The slug name for the parent menu (or the file name of a standard
- *                            WordPress admin page).
- * @return string|null Hook attached to the plugin page, null otherwise.
+ * @param string $plugin_page Tên slug của trang plugin.
+ * @param string $parent_page Tên slug cho menu cha (hoặc tên file của trang
+ *                            quản trị WordPress chuẩn).
+ * @return string|null Hook được gắn vào trang plugin, null trong trường hợp khác.
  */
 function get_plugin_page_hook( $plugin_page, $parent_page ) {
 	$hook = get_plugin_page_hookname( $plugin_page, $parent_page );
@@ -2131,16 +2131,16 @@ function get_plugin_page_hook( $plugin_page, $parent_page ) {
 }
 
 /**
- * Gets the hook name for the administrative page of a plugin.
+ * Lấy tên hook cho trang quản trị của plugin.
  *
  * @since 1.5.0
  *
  * @global array $admin_page_hooks
  *
- * @param string $plugin_page The slug name of the plugin page.
- * @param string $parent_page The slug name for the parent menu (or the file name of a standard
- *                            WordPress admin page).
- * @return string Hook name for the plugin page.
+ * @param string $plugin_page Tên slug của trang plugin.
+ * @param string $parent_page Tên slug cho menu cha (hoặc tên file của trang
+ *                            quản trị WordPress chuẩn).
+ * @return string Tên hook cho trang plugin.
  */
 function get_plugin_page_hookname( $plugin_page, $parent_page ) {
 	global $admin_page_hooks;
@@ -2164,11 +2164,11 @@ function get_plugin_page_hookname( $plugin_page, $parent_page ) {
 }
 
 /**
- * Determines whether the current user can access the current admin page.
+ * Xác định xem người dùng hiện tại có thể truy cập trang quản trị hiện tại không.
  *
  * @since 1.5.0
  *
- * @global string $pagenow            The filename of the current screen.
+ * @global string $pagenow            Tên file của màn hình hiện tại.
  * @global array  $menu
  * @global array  $submenu
  * @global array  $_wp_menu_nopriv
@@ -2176,7 +2176,7 @@ function get_plugin_page_hookname( $plugin_page, $parent_page ) {
  * @global string $plugin_page
  * @global array  $_registered_pages
  *
- * @return bool True if the current user can access the admin page, false otherwise.
+ * @return bool True nếu người dùng hiện tại có thể truy cập trang quản trị, false trong trường hợp khác.
  */
 function user_can_access_admin_page() {
 	global $pagenow, $menu, $submenu, $_wp_menu_nopriv, $_wp_submenu_nopriv,
@@ -2249,16 +2249,16 @@ function user_can_access_admin_page() {
 	return true;
 }
 
-/* Allowed list functions */
+/* Các hàm danh sách được phép */
 
 /**
- * Refreshes the value of the allowed options list available via the 'allowed_options' hook.
+ * Làm mới giá trị danh sách tùy chọn được phép qua hook 'allowed_options'.
  *
- * See the {@see 'allowed_options'} filter.
+ * Xem bộ lọc {@see 'allowed_options'}.
  *
  * @since 2.7.0
- * @since 5.5.0 `$new_whitelist_options` was renamed to `$new_allowed_options`.
- *              Please consider writing more inclusive code.
+ * @since 5.5.0 `$new_whitelist_options` được đổi tên thành `$new_allowed_options`.
+ *              Hãy cân nhắc viết code bao hàm hơn.
  *
  * @global array $new_allowed_options
  *
@@ -2276,7 +2276,7 @@ function option_update_filter( $options ) {
 }
 
 /**
- * Adds an array of options to the list of allowed options.
+ * Thêm một mảng tùy chọn vào danh sách tùy chọn được phép.
  *
  * @since 5.5.0
  *
@@ -2311,7 +2311,7 @@ function add_allowed_options( $new_options, $options = '' ) {
 }
 
 /**
- * Removes a list of options from the allowed options list.
+ * Xóa một danh sách tùy chọn khỏi danh sách tùy chọn được phép.
  *
  * @since 5.5.0
  *
@@ -2343,12 +2343,12 @@ function remove_allowed_options( $del_options, $options = '' ) {
 }
 
 /**
- * Outputs nonce, action, and option_page fields for a settings page.
+ * Xuất các trường nonce, action và option_page cho trang cài đặt.
  *
  * @since 2.7.0
  *
- * @param string $option_group A settings group name. This should match the group name
- *                             used in register_setting().
+ * @param string $option_group Tên nhóm cài đặt. Nên khớp với tên nhóm
+ *                             được sử dụng trong register_setting().
  */
 function settings_fields( $option_group ) {
 	echo "<input type='hidden' name='option_page' value='" . esc_attr( $option_group ) . "' />";
@@ -2357,11 +2357,11 @@ function settings_fields( $option_group ) {
 }
 
 /**
- * Clears the plugins cache used by get_plugins() and by default, the plugin updates cache.
+ * Xóa bộ nhớ đệm plugin được sử dụng bởi get_plugins() và mặc định, bộ nhớ đệm cập nhật plugin.
  *
  * @since 3.7.0
  *
- * @param bool $clear_update_cache Whether to clear the plugin updates cache. Default true.
+ * @param bool $clear_update_cache Có xóa bộ nhớ đệm cập nhật plugin không. Mặc định true.
  */
 function wp_clean_plugins_cache( $clear_update_cache = true ) {
 	if ( $clear_update_cache ) {
@@ -2371,12 +2371,12 @@ function wp_clean_plugins_cache( $clear_update_cache = true ) {
 }
 
 /**
- * Loads a given plugin attempt to generate errors.
+ * Tải một plugin nhất định để thử tạo lỗi.
  *
  * @since 3.0.0
- * @since 4.4.0 Function was moved into the `wp-admin/includes/plugin.php` file.
+ * @since 4.4.0 Hàm được chuyển vào file `wp-admin/includes/plugin.php`.
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
  */
 function plugin_sandbox_scrape( $plugin ) {
 	if ( ! defined( 'WP_SANDBOX_SCRAPING' ) ) {
@@ -2388,30 +2388,30 @@ function plugin_sandbox_scrape( $plugin ) {
 }
 
 /**
- * Declares a helper function for adding content to the Privacy Policy Guide.
+ * Khai báo hàm trợ giúp để thêm nội dung vào Hướng dẫn Chính sách Quyền riêng tư.
  *
- * Plugins and themes should suggest text for inclusion in the site's privacy policy.
- * The suggested text should contain information about any functionality that affects user privacy,
- * and will be shown on the Privacy Policy Guide screen.
+ * Plugin và theme nên đề xuất văn bản để đưa vào chính sách quyền riêng tư của site.
+ * Văn bản đề xuất nên chứa thông tin về bất kỳ chức năng nào ảnh hưởng đến quyền riêng tư người dùng,
+ * và sẽ được hiển thị trên màn hình Hướng dẫn Chính sách Quyền riêng tư.
  *
- * A plugin or theme can use this function multiple times as long as it will help to better present
- * the suggested policy content. For example modular plugins such as WooCommerse or Jetpack
- * can add or remove suggested content depending on the modules/extensions that are enabled.
- * For more information see the Plugin Handbook:
+ * Plugin hoặc theme có thể sử dụng hàm này nhiều lần miễn là giúp trình bày tốt hơn
+ * nội dung chính sách đề xuất. Ví dụ các plugin dạng module như WooCommerce hoặc Jetpack
+ * có thể thêm hoặc xóa nội dung đề xuất tùy thuộc vào các module/extension được bật.
+ * Để biết thêm thông tin xem Plugin Handbook:
  * https://developer.wordpress.org/plugins/privacy/suggesting-text-for-the-site-privacy-policy/.
  *
- * The HTML contents of the `$policy_text` supports use of a specialized `.privacy-policy-tutorial`
- * CSS class which can be used to provide supplemental information. Any content contained within
- * HTML elements that have the `.privacy-policy-tutorial` CSS class applied will be omitted
- * from the clipboard when the section content is copied.
+ * Nội dung HTML của `$policy_text` hỗ trợ sử dụng lớp CSS chuyên biệt `.privacy-policy-tutorial`
+ * có thể được dùng để cung cấp thông tin bổ sung. Bất kỳ nội dung nào nằm trong
+ * các phần tử HTML có lớp CSS `.privacy-policy-tutorial` sẽ bị bỏ qua
+ * khỏi clipboard khi nội dung phần được sao chép.
  *
- * Intended for use with the `'admin_init'` action.
+ * Dành để sử dụng với action `'admin_init'`.
  *
  * @since 4.9.6
  *
- * @param string $plugin_name The name of the plugin or theme that is suggesting content
- *                            for the site's privacy policy.
- * @param string $policy_text The suggested content for inclusion in the policy.
+ * @param string $plugin_name Tên plugin hoặc theme đang đề xuất nội dung
+ *                            cho chính sách quyền riêng tư của site.
+ * @param string $policy_text Nội dung đề xuất để đưa vào chính sách.
  */
 function wp_add_privacy_policy_content( $plugin_name, $policy_text ) {
 	if ( ! is_admin() ) {
@@ -2446,19 +2446,19 @@ function wp_add_privacy_policy_content( $plugin_name, $policy_text ) {
 }
 
 /**
- * Determines whether a plugin is technically active but was paused while
- * loading.
+ * Xác định xem plugin có hoạt động về mặt kỹ thuật nhưng bị tạm dừng trong quá trình
+ * tải không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 5.2.0
  *
  * @global WP_Paused_Extensions_Storage $_paused_plugins
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return bool True, if in the list of paused plugins. False, if not in the list.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return bool True nếu nằm trong danh sách plugin bị tạm dừng. False nếu không.
  */
 function is_plugin_paused( $plugin ) {
 	if ( ! isset( $GLOBALS['_paused_plugins'] ) ) {
@@ -2475,15 +2475,15 @@ function is_plugin_paused( $plugin ) {
 }
 
 /**
- * Gets the error that was recorded for a paused plugin.
+ * Lấy lỗi đã được ghi lại cho plugin bị tạm dừng.
  *
  * @since 5.2.0
  *
  * @global WP_Paused_Extensions_Storage $_paused_plugins
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return array|false Array of error information as returned by `error_get_last()`,
- *                     or false if none was recorded.
+ * @param string $plugin Đường dẫn đến file plugin tương đối so với thư mục plugins.
+ * @return array|false Mảng thông tin lỗi như được trả về bởi `error_get_last()`,
+ *                     hoặc false nếu không có lỗi nào được ghi lại.
  */
 function wp_get_plugin_error( $plugin ) {
 	if ( ! isset( $GLOBALS['_paused_plugins'] ) ) {
@@ -2500,26 +2500,26 @@ function wp_get_plugin_error( $plugin ) {
 }
 
 /**
- * Tries to resume a single plugin.
+ * Thử tiếp tục chạy một plugin đơn lẻ.
  *
- * If a redirect was provided, we first ensure the plugin does not throw fatal
- * errors anymore.
+ * Nếu có URL chuyển hướng được cung cấp, trước tiên đảm bảo plugin không còn
+ * gây ra lỗi nghiêm trọng.
  *
- * The way it works is by setting the redirection to the error before trying to
- * include the plugin file. If the plugin fails, then the redirection will not
- * be overwritten with the success message and the plugin will not be resumed.
+ * Cách hoạt động là thiết lập chuyển hướng đến lỗi trước khi thử
+ * include file plugin. Nếu plugin thất bại, chuyển hướng sẽ không
+ * bị ghi đè bằng thông báo thành công và plugin sẽ không được tiếp tục.
  *
  * @since 5.2.0
  *
- * @param string $plugin   Single plugin to resume.
- * @param string $redirect Optional. URL to redirect to. Default empty string.
- * @return true|WP_Error True on success, false if `$plugin` was not paused,
- *                       `WP_Error` on failure.
+ * @param string $plugin   Plugin đơn lẻ cần tiếp tục chạy.
+ * @param string $redirect Tùy chọn. URL để chuyển hướng đến. Mặc định chuỗi rỗng.
+ * @return true|WP_Error True khi thành công, false nếu `$plugin` không bị tạm dừng,
+ *                       `WP_Error` khi thất bại.
  */
 function resume_plugin( $plugin, $redirect = '' ) {
 	/*
-	 * We'll override this later if the plugin could be resumed without
-	 * creating a fatal error.
+	 * Chúng ta sẽ ghi đè điều này sau nếu plugin có thể được tiếp tục
+	 * mà không gây ra lỗi nghiêm trọng.
 	 */
 	if ( ! empty( $redirect ) ) {
 		wp_redirect(
@@ -2530,7 +2530,7 @@ function resume_plugin( $plugin, $redirect = '' ) {
 			)
 		);
 
-		// Load the plugin to test whether it throws a fatal error.
+		// Tải plugin để kiểm tra xem nó có gây ra lỗi nghiêm trọng không.
 		ob_start();
 		plugin_sandbox_scrape( $plugin );
 		ob_clean();
@@ -2551,11 +2551,11 @@ function resume_plugin( $plugin, $redirect = '' ) {
 }
 
 /**
- * Renders an admin notice in case some plugins have been paused due to errors.
+ * Hiển thị thông báo quản trị trong trường hợp một số plugin bị tạm dừng do lỗi.
  *
  * @since 5.2.0
  *
- * @global string                       $pagenow         The filename of the current screen.
+ * @global string                       $pagenow         Tên file của màn hình hiện tại.
  * @global WP_Paused_Extensions_Storage $_paused_plugins
  */
 function paused_plugins_notice() {
@@ -2585,16 +2585,16 @@ function paused_plugins_notice() {
 }
 
 /**
- * Renders an admin notice when a plugin was deactivated during an update.
+ * Hiển thị thông báo quản trị khi plugin bị vô hiệu hóa trong quá trình cập nhật.
  *
- * Displays an admin notice in case a plugin has been deactivated during an
- * upgrade due to incompatibility with the current version of WordPress.
+ * Hiển thị thông báo quản trị trong trường hợp plugin bị vô hiệu hóa trong quá trình
+ * nâng cấp do không tương thích với phiên bản WordPress hiện tại.
  *
  * @since 5.8.0
  * @access private
  *
- * @global string $pagenow    The filename of the current screen.
- * @global string $wp_version The WordPress version string.
+ * @global string $pagenow    Tên file của màn hình hiện tại.
+ * @global string $wp_version Chuỗi phiên bản WordPress.
  */
 function deactivated_plugins_notice() {
 	if ( 'plugins.php' === $GLOBALS['pagenow'] ) {
@@ -2609,20 +2609,20 @@ function deactivated_plugins_notice() {
 	$site_deactivated_plugins = array();
 
 	if ( false === $blog_deactivated_plugins ) {
-		// Option not in database, add an empty array to avoid extra DB queries on subsequent loads.
+		// Tùy chọn không có trong cơ sở dữ liệu, thêm mảng rỗng để tránh các truy vấn DB thêm trong các lần tải tiếp theo.
 		update_option( 'wp_force_deactivated_plugins', array(), false );
 	}
 
 	if ( is_multisite() ) {
 		$site_deactivated_plugins = get_site_option( 'wp_force_deactivated_plugins' );
 		if ( false === $site_deactivated_plugins ) {
-			// Option not in database, add an empty array to avoid extra DB queries on subsequent loads.
+			// Tùy chọn không có trong cơ sở dữ liệu, thêm mảng rỗng để tránh các truy vấn DB thêm trong các lần tải tiếp theo.
 			update_site_option( 'wp_force_deactivated_plugins', array() );
 		}
 	}
 
 	if ( empty( $blog_deactivated_plugins ) && empty( $site_deactivated_plugins ) ) {
-		// No deactivated plugins.
+		// Không có plugin bị vô hiệu hóa.
 		return;
 	}
 
@@ -2663,7 +2663,7 @@ function deactivated_plugins_notice() {
 		wp_admin_notice( $message, array( 'type' => 'warning' ) );
 	}
 
-	// Empty the options.
+	// Xóa rỗng các tùy chọn.
 	update_option( 'wp_force_deactivated_plugins', array(), false );
 	if ( is_multisite() ) {
 		update_site_option( 'wp_force_deactivated_plugins', array() );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Install theme network administration panel.
+ * Trang quản trị mạng lưới Cài đặt Giao diện.
  *
  * @package WordPress
  * @subpackage Multisite
@@ -11,7 +11,7 @@ if ( isset( $_GET['tab'] ) && ( 'theme-information' === $_GET['tab'] ) ) {
 	define( 'IFRAME_REQUEST', true );
 }
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
 require ABSPATH . 'wp-admin/theme-install.php';

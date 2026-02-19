@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Nav_Menus_Panel class
+ * API Tùy biến: Lớp WP_Customize_Nav_Menus_Panel
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,9 +8,9 @@
  */
 
 /**
- * Customize Nav Menus Panel Class
+ * Lớp Bảng điều khiển Menu Điều hướng trong Tùy biến
  *
- * Needed to add screen options.
+ * Cần thiết để thêm các tùy chọn màn hình.
  *
  * @since 4.3.0
  *
@@ -19,7 +19,7 @@
 class WP_Customize_Nav_Menus_Panel extends WP_Customize_Panel {
 
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -27,27 +27,27 @@ class WP_Customize_Nav_Menus_Panel extends WP_Customize_Panel {
 	public $type = 'nav_menus';
 
 	/**
-	 * Render screen options for Menus.
+	 * Hiển thị các tùy chọn màn hình cho Menu.
 	 *
 	 * @since 4.3.0
 	 */
 	public function render_screen_options() {
-		// Adds the screen options.
+		// Thêm các tùy chọn màn hình.
 		require_once ABSPATH . 'wp-admin/includes/nav-menu.php';
 		add_filter( 'manage_nav-menus_columns', 'wp_nav_menu_manage_columns' );
 
-		// Display screen options.
+		// Hiển thị tùy chọn màn hình.
 		$screen = WP_Screen::get( 'nav-menus.php' );
 		$screen->render_screen_options( array( 'wrap' => false ) );
 	}
 
 	/**
-	 * Returns the advanced options for the nav menus page.
+	 * Trả về các tùy chọn nâng cao cho trang menu điều hướng.
 	 *
-	 * Link title attribute added as it's a relatively advanced concept for new users.
+	 * Thuộc tính tiêu đề liên kết được thêm vào vì đây là khái niệm tương đối nâng cao cho người dùng mới.
 	 *
 	 * @since 4.3.0
-	 * @deprecated 4.5.0 Deprecated in favor of wp_nav_menu_manage_columns().
+	 * @deprecated 4.5.0 Không còn được sử dụng, thay thế bằng wp_nav_menu_manage_columns().
 	 */
 	public function wp_nav_menu_manage_columns() {
 		_deprecated_function( __METHOD__, '4.5.0', 'wp_nav_menu_manage_columns' );
@@ -56,10 +56,10 @@ class WP_Customize_Nav_Menus_Panel extends WP_Customize_Panel {
 	}
 
 	/**
-	 * An Underscore (JS) template for this panel's content (but not its container).
+	 * Mẫu Underscore (JS) cho nội dung của bảng điều khiển này (nhưng không phải vùng chứa).
 	 *
-	 * Class variables for this panel class are available in the `data` JS object;
-	 * export custom variables by overriding WP_Customize_Panel::json().
+	 * Các biến lớp cho lớp bảng điều khiển này có sẵn trong đối tượng JS `data`;
+	 * xuất các biến tùy chỉnh bằng cách ghi đè WP_Customize_Panel::json().
 	 *
 	 * @since 4.3.0
 	 *
@@ -71,7 +71,7 @@ class WP_Customize_Nav_Menus_Panel extends WP_Customize_Panel {
 			<button type="button" class="customize-panel-back" tabindex="-1">
 				<span class="screen-reader-text">
 					<?php
-					/* translators: Hidden accessibility text. */
+					/* translators: Văn bản trợ năng ẩn. */
 					_e( 'Back' );
 					?>
 				</span>
@@ -79,14 +79,14 @@ class WP_Customize_Nav_Menus_Panel extends WP_Customize_Panel {
 			<div class="accordion-section-title">
 				<span class="preview-notice">
 					<?php
-					/* translators: %s: The site/panel title in the Customizer. */
+					/* translators: %s: Tiêu đề trang/bảng điều khiển trong Trình tùy biến. */
 					printf( __( 'You are customizing %s' ), '<strong class="panel-title">{{ data.title }}</strong>' );
 					?>
 				</span>
 				<button type="button" class="customize-help-toggle dashicons dashicons-editor-help" aria-expanded="false">
 					<span class="screen-reader-text">
 						<?php
-						/* translators: Hidden accessibility text. */
+						/* translators: Văn bản trợ năng ẩn. */
 						_e( 'Help' );
 						?>
 					</span>
@@ -94,7 +94,7 @@ class WP_Customize_Nav_Menus_Panel extends WP_Customize_Panel {
 				<button type="button" class="customize-screen-options-toggle" aria-expanded="false">
 					<span class="screen-reader-text">
 						<?php
-						/* translators: Hidden accessibility text. */
+						/* translators: Văn bản trợ năng ẩn. */
 						_e( 'Menu Options' );
 						?>
 					</span>
@@ -108,7 +108,7 @@ class WP_Customize_Nav_Menus_Panel extends WP_Customize_Panel {
 			</div>
 		</li>
 		<?php
-		// NOTE: The following is a workaround for an inability to treat (and thus label) a list of sections as a whole.
+		// LƯU Ý: Phần sau là cách giải quyết thay thế cho việc không thể xử lý (và do đó gán nhãn) một danh sách các phần như một tổng thể.
 		?>
 		<li class="customize-control-title customize-section-title-nav_menus-heading"><?php _e( 'Menus' ); ?></li>
 		<?php

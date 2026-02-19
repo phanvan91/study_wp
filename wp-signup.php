@@ -1,17 +1,12 @@
 <?php
 /**
- * WordPress Signup Page
- *
  * Trang đăng ký WordPress.
- *
- * Handles the user registration and site creation process for multisite installations.
  *
  * Xử lý quá trình đăng ký người dùng và tạo site cho các cài đặt multisite.
  *
  * @package WordPress
  */
 
-/** Sets up the WordPress Environment. */
 /** Thiết lập môi trường WordPress. */
 require __DIR__ . '/wp-load.php';
 
@@ -27,16 +22,12 @@ if ( is_array( get_site_option( 'illegal_names' ) ) && isset( $_GET['new'] ) && 
 }
 
 /**
- * Prints signup_header via wp_head.
- *
  * In signup_header qua wp_head.
  *
  * @since MU (3.0.0)
  */
 function do_signup_header() {
 	/**
-	 * Fires within the head section of the site sign-up screen.
-	 *
 	 * Kích hoạt trong phần head của màn hình đăng ký site.
 	 *
 	 * @since 3.0.0
@@ -55,23 +46,18 @@ if ( ! is_main_site() ) {
 	die();
 }
 
-// Fix for page title.
 // Sửa cho tiêu đề trang.
 $wp_query->is_404 = false;
 
 /**
- * Fires before the Site Sign-up page is loaded.
- *
- * Kích hoạt trước khi trang Site Sign-up được load.
+ * Kích hoạt trước khi trang Đăng ký Site được tải.
  *
  * @since 4.4.0
  */
 do_action( 'before_signup_header' );
 
 /**
- * Prints styles for front-end Multisite Sign-up pages.
- *
- * In các style cho các trang Multisite Sign-up front-end.
+ * In các style cho các trang đăng ký Multisite ở front-end.
  *
  * @since MU (3.0.0)
  */
@@ -110,7 +96,7 @@ add_action( 'wp_head', 'wpmu_signup_stylesheet' );
 get_header( 'wp-signup' );
 
 /**
- * Fires before the site Sign-up form.
+ * Kích hoạt trước biểu mẫu đăng ký site.
  *
  * @since 3.0.0
  */
@@ -120,13 +106,13 @@ do_action( 'before_signup_form' );
 <div class="mu_register wp-signup-container" role="main">
 <?php
 /**
- * Generates and displays the Sign-up and Create Site forms.
+ * Tạo và hiển thị các biểu mẫu Đăng ký và Tạo Site.
  *
  * @since MU (3.0.0)
  *
- * @param string          $blogname   The new site name.
- * @param string          $blog_title The new site title.
- * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
+ * @param string          $blogname   Tên site mới.
+ * @param string          $blog_title Tiêu đề site mới.
+ * @param WP_Error|string $errors     Đối tượng WP_Error chứa các lỗi hiện có. Mặc định là chuỗi rỗng.
  */
 function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 	if ( ! is_wp_error( $errors ) ) {
@@ -134,7 +120,7 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 	}
 
 	$current_network = get_network();
-	// Site name.
+	// Tên site.
 	if ( ! is_subdomain_install() ) {
 		echo '<label for="blogname">' . __( 'Site Name (subdirectory only):' ) . '</label>';
 	} else {
@@ -170,7 +156,7 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 		);
 	}
 
-	// Site Title.
+	// Tiêu đề site.
 	?>
 	<label for="blog_title"><?php _e( 'Site Title:' ); ?></label>
 	<?php
@@ -184,7 +170,7 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 	?>
 
 	<?php
-	// Site Language.
+	// Ngôn ngữ site.
 	$languages = signup_get_available_languages();
 
 	if ( ! empty( $languages ) ) :
@@ -192,14 +178,14 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 		<p>
 			<label for="site-language"><?php _e( 'Site Language:' ); ?></label>
 			<?php
-			// Network default.
+			// Mặc định của mạng.
 			$lang = get_site_option( 'WPLANG' );
 
 			if ( isset( $_POST['WPLANG'] ) ) {
 				$lang = $_POST['WPLANG'];
 			}
 
-			// Use US English if the default isn't available.
+			// Sử dụng tiếng Anh Mỹ nếu ngôn ngữ mặc định không khả dụng.
 			if ( ! in_array( $lang, $languages, true ) ) {
 				$lang = '';
 			}
@@ -216,7 +202,7 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 			?>
 		</p>
 		<?php
-		endif; // Languages.
+		endif; // Ngôn ngữ.
 
 		$blog_public_on_checked  = '';
 		$blog_public_off_checked = '';
@@ -248,22 +234,22 @@ function show_blog_form( $blogname = '', $blog_title = '', $errors = '' ) {
 
 	<?php
 	/**
-	 * Fires after the site sign-up form.
+	 * Kích hoạt sau biểu mẫu đăng ký site.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param WP_Error $errors A WP_Error object possibly containing 'blogname' or 'blog_title' errors.
+	 * @param WP_Error $errors Đối tượng WP_Error có thể chứa lỗi 'blogname' hoặc 'blog_title'.
 	 */
 	do_action( 'signup_blogform', $errors );
 }
 
 /**
- * Validates the new site sign-up.
+ * Xác thực đăng ký site mới.
  *
  * @since MU (3.0.0)
  *
- * @return array Contains the new site data and error messages.
- *               See wpmu_validate_blog_signup() for details.
+ * @return array Chứa dữ liệu site mới và các thông báo lỗi.
+ *               Xem wpmu_validate_blog_signup() để biết chi tiết.
  */
 function validate_blog_form() {
 	$user = '';
@@ -275,20 +261,20 @@ function validate_blog_form() {
 }
 
 /**
- * Displays the fields for the new user account registration form.
+ * Hiển thị các trường cho biểu mẫu đăng ký tài khoản người dùng mới.
  *
  * @since MU (3.0.0)
  *
- * @param string          $user_name  The entered username.
- * @param string          $user_email The entered email address.
- * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
+ * @param string          $user_name  Tên người dùng đã nhập.
+ * @param string          $user_email Địa chỉ email đã nhập.
+ * @param WP_Error|string $errors     Đối tượng WP_Error chứa các lỗi hiện có. Mặc định là chuỗi rỗng.
  */
 function show_user_form( $user_name = '', $user_email = '', $errors = '' ) {
 	if ( ! is_wp_error( $errors ) ) {
 		$errors = new WP_Error();
 	}
 
-	// Username.
+	// Tên người dùng.
 	echo '<label for="user_name">' . __( 'Username:' ) . '</label>';
 	$errmsg_username      = $errors->get_error_message( 'user_name' );
 	$errmsg_username_aria = '';
@@ -301,7 +287,7 @@ function show_user_form( $user_name = '', $user_email = '', $errors = '' ) {
 	<p id="wp-signup-username-description"><?php _e( '(Must be at least 4 characters, lowercase letters and numbers only.)' ); ?></p>
 
 	<?php
-	// Email address.
+	// Địa chỉ email.
 	echo '<label for="user_email">' . __( 'Email&nbsp;Address:' ) . '</label>';
 	$errmsg_email      = $errors->get_error_message( 'user_email' );
 	$errmsg_email_aria = '';
@@ -314,41 +300,41 @@ function show_user_form( $user_name = '', $user_email = '', $errors = '' ) {
 	<p id="wp-signup-email-description"><?php _e( 'Your registration email is sent to this address. (Double-check your email address before continuing.)' ); ?></p>
 
 	<?php
-	// Extra fields.
+	// Các trường bổ sung.
 	$errmsg_generic = $errors->get_error_message( 'generic' );
 	if ( $errmsg_generic ) {
 		echo '<p class="error" id="wp-signup-generic-error">' . $errmsg_generic . '</p>';
 	}
 	/**
-	 * Fires at the end of the new user account registration form.
+	 * Kích hoạt ở cuối biểu mẫu đăng ký tài khoản người dùng mới.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param WP_Error $errors A WP_Error object containing 'user_name' or 'user_email' errors.
+	 * @param WP_Error $errors Đối tượng WP_Error chứa lỗi 'user_name' hoặc 'user_email'.
 	 */
 	do_action( 'signup_extra_fields', $errors );
 }
 
 /**
- * Validates user sign-up name and email.
+ * Xác thực tên đăng ký và email của người dùng.
  *
  * @since MU (3.0.0)
  *
- * @return array Contains username, email, and error messages.
- *               See wpmu_validate_user_signup() for details.
+ * @return array Chứa tên người dùng, email và các thông báo lỗi.
+ *               Xem wpmu_validate_user_signup() để biết chi tiết.
  */
 function validate_user_form() {
 	return wpmu_validate_user_signup( $_POST['user_name'], $_POST['user_email'] );
 }
 
 /**
- * Shows a form for returning users to sign up for another site.
+ * Hiển thị biểu mẫu cho người dùng quay lại để đăng ký thêm site khác.
  *
  * @since MU (3.0.0)
  *
- * @param string          $blogname   The new site name
- * @param string          $blog_title The new site title.
- * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
+ * @param string          $blogname   Tên site mới.
+ * @param string          $blog_title Tiêu đề site mới.
+ * @param WP_Error|string $errors     Đối tượng WP_Error chứa các lỗi hiện có. Mặc định là chuỗi rỗng.
  */
 function signup_another_blog( $blogname = '', $blog_title = '', $errors = '' ) {
 	$current_user = wp_get_current_user();
@@ -364,16 +350,16 @@ function signup_another_blog( $blogname = '', $blog_title = '', $errors = '' ) {
 	);
 
 	/**
-	 * Filters the default site sign-up variables.
+	 * Lọc các biến mặc định của đăng ký site.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @param array $signup_defaults {
-	 *     An array of default site sign-up variables.
+	 *     Mảng các biến mặc định của đăng ký site.
 	 *
-	 *     @type string   $blogname   The site blogname.
-	 *     @type string   $blog_title The site title.
-	 *     @type WP_Error $errors     A WP_Error object possibly containing 'blogname' or 'blog_title' errors.
+	 *     @type string   $blogname   Tên blog của site.
+	 *     @type string   $blog_title Tiêu đề site.
+	 *     @type WP_Error $errors     Đối tượng WP_Error có thể chứa lỗi 'blogname' hoặc 'blog_title'.
 	 * }
 	 */
 	$filtered_results = apply_filters( 'signup_another_blog_init', $signup_defaults );
@@ -420,12 +406,12 @@ function signup_another_blog( $blogname = '', $blog_title = '', $errors = '' ) {
 		<input type="hidden" name="stage" value="gimmeanotherblog" />
 		<?php
 		/**
-		 * Fires when hidden sign-up form fields output when creating another site or user.
+		 * Kích hoạt khi xuất các trường ẩn của biểu mẫu đăng ký khi tạo site hoặc người dùng khác.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param string $context A string describing the steps of the sign-up process. The value can be
-		 *                        'create-another-site', 'validate-user', or 'validate-site'.
+		 * @param string $context Chuỗi mô tả các bước của quá trình đăng ký. Giá trị có thể là
+		 *                        'create-another-site', 'validate-user', hoặc 'validate-site'.
 		 */
 		do_action( 'signup_hidden_fields', 'create-another-site' );
 		?>
@@ -436,18 +422,18 @@ function signup_another_blog( $blogname = '', $blog_title = '', $errors = '' ) {
 }
 
 /**
- * Validates a new site sign-up for an existing user.
+ * Xác thực đăng ký site mới cho người dùng hiện có.
  *
  * @since MU (3.0.0)
  *
- * @global string   $blogname   The new site's subdomain or directory name.
- * @global string   $blog_title The new site's title.
- * @global WP_Error $errors     Existing errors in the global scope.
- * @global string   $domain     The new site's domain.
- * @global string   $path       The new site's path.
+ * @global string   $blogname   Tên thư mục con hoặc subdomain của site mới.
+ * @global string   $blog_title Tiêu đề của site mới.
+ * @global WP_Error $errors     Các lỗi hiện có trong phạm vi toàn cục.
+ * @global string   $domain     Tên miền của site mới.
+ * @global string   $path       Đường dẫn của site mới.
  *
- * @return null|bool True if site signup was validated, false on error.
- *                   The function halts all execution if the user is not logged in.
+ * @return null|bool True nếu đăng ký site được xác thực, false nếu có lỗi.
+ *                   Hàm dừng toàn bộ thực thi nếu người dùng chưa đăng nhập.
  */
 function validate_another_blog_signup() {
 	global $blogname, $blog_title, $errors, $domain, $path;
@@ -458,7 +444,7 @@ function validate_another_blog_signup() {
 
 	$result = validate_blog_form();
 
-	// Extracted values set/overwrite globals.
+	// Các giá trị được trích xuất sẽ thiết lập/ghi đè các biến toàn cục.
 	$domain     = $result['domain'];
 	$path       = $result['path'];
 	$blogname   = $result['blogname'];
@@ -477,7 +463,7 @@ function validate_another_blog_signup() {
 		'public'  => $public,
 	);
 
-	// Handle the language setting for the new site.
+	// Xử lý cài đặt ngôn ngữ cho site mới.
 	if ( ! empty( $_POST['WPLANG'] ) ) {
 
 		$languages = signup_get_available_languages();
@@ -492,27 +478,27 @@ function validate_another_blog_signup() {
 	}
 
 	/**
-	 * Filters the new site meta variables.
+	 * Lọc các biến meta của site mới.
 	 *
-	 * Use the {@see 'add_signup_meta'} filter instead.
+	 * Sử dụng bộ lọc {@see 'add_signup_meta'} thay thế.
 	 *
 	 * @since MU (3.0.0)
-	 * @deprecated 3.0.0 Use the {@see 'add_signup_meta'} filter instead.
+	 * @deprecated 3.0.0 Sử dụng bộ lọc {@see 'add_signup_meta'} thay thế.
 	 *
-	 * @param array $blog_meta_defaults An array of default blog meta variables.
+	 * @param array $blog_meta_defaults Mảng các biến meta mặc định của blog.
 	 */
 	$meta_defaults = apply_filters_deprecated( 'signup_create_blog_meta', array( $blog_meta_defaults ), '3.0.0', 'add_signup_meta' );
 
 	/**
-	 * Filters the new default site meta variables.
+	 * Lọc các biến meta mặc định của site mới.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @param array $meta {
-	 *     An array of default site meta variables.
+	 *     Mảng các biến meta mặc định của site.
 	 *
-	 *     @type int $lang_id     The language ID.
-	 *     @type int $blog_public Whether search engines should be discouraged from indexing the site. 1 for true, 0 for false.
+	 *     @type int $lang_id     ID ngôn ngữ.
+	 *     @type int $blog_public Có nên ngăn công cụ tìm kiếm lập chỉ mục site hay không. 1 là có, 0 là không.
 	 * }
 	 */
 	$meta = apply_filters( 'add_signup_meta', $meta_defaults );
@@ -528,18 +514,18 @@ function validate_another_blog_signup() {
 }
 
 /**
- * Shows a message confirming that the new site has been created.
+ * Hiển thị thông báo xác nhận rằng site mới đã được tạo.
  *
  * @since MU (3.0.0)
- * @since 4.4.0 Added the `$blog_id` parameter.
+ * @since 4.4.0 Thêm tham số `$blog_id`.
  *
- * @param string $domain     The domain URL.
- * @param string $path       The site root path.
- * @param string $blog_title The site title.
- * @param string $user_name  The username.
- * @param string $user_email The user's email address.
- * @param array  $meta       Any additional meta from the {@see 'add_signup_meta'} filter in validate_blog_signup().
- * @param int    $blog_id    The site ID.
+ * @param string $domain     URL tên miền.
+ * @param string $path       Đường dẫn gốc của site.
+ * @param string $blog_title Tiêu đề site.
+ * @param string $user_name  Tên người dùng.
+ * @param string $user_email Địa chỉ email của người dùng.
+ * @param array  $meta       Bất kỳ meta bổ sung nào từ bộ lọc {@see 'add_signup_meta'} trong validate_blog_signup().
+ * @param int    $blog_id    ID của site.
  */
 function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $user_email = '', $meta = array(), $blog_id = 0 ) {
 
@@ -583,7 +569,7 @@ function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $
 	</p>
 	<?php
 	/**
-	 * Fires when the site or user sign-up process is complete.
+	 * Kích hoạt khi quá trình đăng ký site hoặc người dùng hoàn tất.
 	 *
 	 * @since 3.0.0
 	 */
@@ -591,16 +577,16 @@ function confirm_another_blog_signup( $domain, $path, $blog_title, $user_name, $
 }
 
 /**
- * Shows a form for a visitor to sign up for a new user account.
+ * Hiển thị biểu mẫu cho khách truy cập đăng ký tài khoản người dùng mới.
  *
  * @since MU (3.0.0)
  *
- * @global string $active_signup String that returns registration type. The value can be
- *                               'all', 'none', 'blog', or 'user'.
+ * @global string $active_signup Chuỗi trả về loại đăng ký. Giá trị có thể là
+ *                               'all', 'none', 'blog', hoặc 'user'.
  *
- * @param string          $user_name  The username.
- * @param string          $user_email The user's email.
- * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
+ * @param string          $user_name  Tên người dùng.
+ * @param string          $user_email Email của người dùng.
+ * @param WP_Error|string $errors     Đối tượng WP_Error chứa các lỗi hiện có. Mặc định là chuỗi rỗng.
  */
 function signup_user( $user_name = '', $user_email = '', $errors = '' ) {
 	global $active_signup;
@@ -618,16 +604,16 @@ function signup_user( $user_name = '', $user_email = '', $errors = '' ) {
 	);
 
 	/**
-	 * Filters the default user variables used on the user sign-up form.
+	 * Lọc các biến người dùng mặc định được sử dụng trên biểu mẫu đăng ký người dùng.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @param array $signup_user_defaults {
-	 *     An array of default user variables.
+	 *     Mảng các biến người dùng mặc định.
 	 *
-	 *     @type string   $user_name  The user username.
-	 *     @type string   $user_email The user email address.
-	 *     @type WP_Error $errors     A WP_Error object with possible errors relevant to the sign-up user.
+	 *     @type string   $user_name  Tên người dùng.
+	 *     @type string   $user_email Địa chỉ email người dùng.
+	 *     @type WP_Error $errors     Đối tượng WP_Error với các lỗi có thể liên quan đến người dùng đăng ký.
 	 * }
 	 */
 	$filtered_results = apply_filters( 'signup_user_init', $signup_user_defaults );
@@ -646,7 +632,7 @@ function signup_user( $user_name = '', $user_email = '', $errors = '' ) {
 	<form id="setupform" method="post" action="wp-signup.php" novalidate="novalidate">
 		<input type="hidden" name="stage" value="validate-user-signup" />
 		<?php
-		/** This action is documented in wp-signup.php */
+		/** Hành động này được ghi nhận trong wp-signup.php */
 		do_action( 'signup_hidden_fields', 'validate-user' );
 		?>
 		<?php show_user_form( $user_name, $user_email, $errors ); ?>
@@ -677,11 +663,11 @@ function signup_user( $user_name = '', $user_email = '', $errors = '' ) {
 }
 
 /**
- * Validates the new user sign-up.
+ * Xác thực đăng ký người dùng mới.
  *
  * @since MU (3.0.0)
  *
- * @return bool True if new user sign-up was validated, false on error.
+ * @return bool True nếu đăng ký người dùng mới được xác thực, false nếu có lỗi.
  */
 function validate_user_signup() {
 	$result     = validate_user_form();
@@ -699,7 +685,7 @@ function validate_user_signup() {
 		return false;
 	}
 
-	/** This filter is documented in wp-signup.php */
+	/** Bộ lọc này được ghi nhận trong wp-signup.php */
 	wpmu_signup_user( $user_name, $user_email, apply_filters( 'add_signup_meta', array() ) );
 
 	confirm_user_signup( $user_name, $user_email );
@@ -707,12 +693,12 @@ function validate_user_signup() {
 }
 
 /**
- * Shows a message confirming that the new user has been registered and is awaiting activation.
+ * Hiển thị thông báo xác nhận rằng người dùng mới đã được đăng ký và đang chờ kích hoạt.
  *
  * @since MU (3.0.0)
  *
- * @param string $user_name  The username.
- * @param string $user_email The user's email address.
+ * @param string $user_name  Tên người dùng.
+ * @param string $user_email Địa chỉ email của người dùng.
  */
 function confirm_user_signup( $user_name, $user_email ) {
 	?>
@@ -731,20 +717,20 @@ function confirm_user_signup( $user_name, $user_email ) {
 	</p>
 	<p><?php _e( 'If you do not activate your username within two days, you will have to sign up again.' ); ?></p>
 	<?php
-	/** This action is documented in wp-signup.php */
+	/** Hành động này được ghi nhận trong wp-signup.php */
 	do_action( 'signup_finished' );
 }
 
 /**
- * Shows a form for a user or visitor to sign up for a new site.
+ * Hiển thị biểu mẫu cho người dùng hoặc khách truy cập đăng ký site mới.
  *
  * @since MU (3.0.0)
  *
- * @param string          $user_name  The username.
- * @param string          $user_email The user's email address.
- * @param string          $blogname   The site name.
- * @param string          $blog_title The site title.
- * @param WP_Error|string $errors     A WP_Error object containing existing errors. Defaults to empty string.
+ * @param string          $user_name  Tên người dùng.
+ * @param string          $user_email Địa chỉ email của người dùng.
+ * @param string          $blogname   Tên site.
+ * @param string          $blog_title Tiêu đề site.
+ * @param WP_Error|string $errors     Đối tượng WP_Error chứa các lỗi hiện có. Mặc định là chuỗi rỗng.
  */
 function signup_blog( $user_name = '', $user_email = '', $blogname = '', $blog_title = '', $errors = '' ) {
 	if ( ! is_wp_error( $errors ) ) {
@@ -760,18 +746,18 @@ function signup_blog( $user_name = '', $user_email = '', $blogname = '', $blog_t
 	);
 
 	/**
-	 * Filters the default site creation variables for the site sign-up form.
+	 * Lọc các biến mặc định tạo site cho biểu mẫu đăng ký site.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @param array $signup_blog_defaults {
-	 *     An array of default site creation variables.
+	 *     Mảng các biến mặc định tạo site.
 	 *
-	 *     @type string   $user_name  The user username.
-	 *     @type string   $user_email The user email address.
-	 *     @type string   $blogname   The blogname.
-	 *     @type string   $blog_title The title of the site.
-	 *     @type WP_Error $errors     A WP_Error object with possible errors relevant to new site creation variables.
+	 *     @type string   $user_name  Tên người dùng.
+	 *     @type string   $user_email Địa chỉ email người dùng.
+	 *     @type string   $blogname   Tên blog.
+	 *     @type string   $blog_title Tiêu đề của site.
+	 *     @type WP_Error $errors     Đối tượng WP_Error với các lỗi có thể liên quan đến các biến tạo site mới.
 	 * }
 	 */
 	$filtered_results = apply_filters( 'signup_blog_init', $signup_blog_defaults );
@@ -791,7 +777,7 @@ function signup_blog( $user_name = '', $user_email = '', $blogname = '', $blog_t
 		<input type="hidden" name="user_name" value="<?php echo esc_attr( $user_name ); ?>" />
 		<input type="hidden" name="user_email" value="<?php echo esc_attr( $user_email ); ?>" />
 		<?php
-		/** This action is documented in wp-signup.php */
+		/** Hành động này được ghi nhận trong wp-signup.php */
 		do_action( 'signup_hidden_fields', 'validate-site' );
 		?>
 		<?php show_blog_form( $blogname, $blog_title, $errors ); ?>
@@ -801,14 +787,14 @@ function signup_blog( $user_name = '', $user_email = '', $blogname = '', $blog_t
 }
 
 /**
- * Validates new site signup.
+ * Xác thực đăng ký site mới.
  *
  * @since MU (3.0.0)
  *
- * @return bool True if the site sign-up was validated, false on error.
+ * @return bool True nếu đăng ký site được xác thực, false nếu có lỗi.
  */
 function validate_blog_signup() {
-	// Re-validate user info.
+	// Xác thực lại thông tin người dùng.
 	$user_result = wpmu_validate_user_signup( $_POST['user_name'], $_POST['user_email'] );
 	$user_name   = $user_result['user_name'];
 	$user_email  = $user_result['user_email'];
@@ -837,7 +823,7 @@ function validate_blog_signup() {
 		'public'  => $public,
 	);
 
-	// Handle the language setting for the new site.
+	// Xử lý cài đặt ngôn ngữ cho site mới.
 	if ( ! empty( $_POST['WPLANG'] ) ) {
 
 		$languages = signup_get_available_languages();
@@ -851,7 +837,7 @@ function validate_blog_signup() {
 		}
 	}
 
-	/** This filter is documented in wp-signup.php */
+	/** Bộ lọc này được ghi nhận trong wp-signup.php */
 	$meta = apply_filters( 'add_signup_meta', $signup_meta );
 
 	wpmu_signup_blog( $domain, $path, $blog_title, $user_name, $user_email, $meta );
@@ -860,16 +846,16 @@ function validate_blog_signup() {
 }
 
 /**
- * Shows a message confirming that the new site has been registered and is awaiting activation.
+ * Hiển thị thông báo xác nhận rằng site mới đã được đăng ký và đang chờ kích hoạt.
  *
  * @since MU (3.0.0)
  *
- * @param string $domain     The domain or subdomain of the site.
- * @param string $path       The path of the site.
- * @param string $blog_title The title of the new site.
- * @param string $user_name  The user's username.
- * @param string $user_email The user's email address.
- * @param array  $meta       Any additional meta from the {@see 'add_signup_meta'} filter in validate_blog_signup().
+ * @param string $domain     Tên miền hoặc subdomain của site.
+ * @param string $path       Đường dẫn của site.
+ * @param string $blog_title Tiêu đề của site mới.
+ * @param string $user_name  Tên người dùng.
+ * @param string $user_email Địa chỉ email của người dùng.
+ * @param array  $meta       Bất kỳ meta bổ sung nào từ bộ lọc {@see 'add_signup_meta'} trong validate_blog_signup().
  */
 function confirm_blog_signup( $domain, $path, $blog_title, $user_name = '', $user_email = '', $meta = array() ) {
 	?>
@@ -901,55 +887,55 @@ function confirm_blog_signup( $domain, $path, $blog_title, $user_name = '', $use
 		</li>
 	</ul>
 	<?php
-	/** This action is documented in wp-signup.php */
+	/** Hành động này được ghi nhận trong wp-signup.php */
 	do_action( 'signup_finished' );
 }
 
 /**
- * Retrieves languages available during the site/user sign-up process.
+ * Lấy các ngôn ngữ khả dụng trong quá trình đăng ký site/người dùng.
  *
  * @since 4.4.0
  *
  * @see get_available_languages()
  *
- * @return string[] Array of available language codes. Language codes are formed by
- *                  stripping the .mo extension from the language file names.
+ * @return string[] Mảng các mã ngôn ngữ khả dụng. Mã ngôn ngữ được tạo bằng cách
+ *                  loại bỏ phần mở rộng .mo khỏi tên file ngôn ngữ.
  */
 function signup_get_available_languages() {
 	/**
-	 * Filters the list of available languages for front-end site sign-ups.
+	 * Lọc danh sách các ngôn ngữ khả dụng cho đăng ký site ở front-end.
 	 *
-	 * Passing an empty array to this hook will disable output of the setting on the
-	 * sign-up form, and the default language will be used when creating the site.
+	 * Truyền một mảng rỗng vào hook này sẽ vô hiệu hóa hiển thị cài đặt trên
+	 * biểu mẫu đăng ký, và ngôn ngữ mặc định sẽ được sử dụng khi tạo site.
 	 *
-	 * Languages not already installed will be stripped.
+	 * Các ngôn ngữ chưa được cài đặt sẽ bị loại bỏ.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string[] $languages Array of available language codes. Language codes are formed by
-	 *                            stripping the .mo extension from the language file names.
+	 * @param string[] $languages Mảng các mã ngôn ngữ khả dụng. Mã ngôn ngữ được tạo bằng cách
+	 *                            loại bỏ phần mở rộng .mo khỏi tên file ngôn ngữ.
 	 */
 	$languages = (array) apply_filters( 'signup_get_available_languages', get_available_languages() );
 
 	/*
-	 * Strip any non-installed languages and return.
+	 * Loại bỏ các ngôn ngữ chưa được cài đặt và trả về.
 	 *
-	 * Re-call get_available_languages() here in case a language pack was installed
-	 * in a callback hooked to the 'signup_get_available_languages' filter before this point.
+	 * Gọi lại get_available_languages() ở đây trong trường hợp gói ngôn ngữ đã được cài đặt
+	 * trong callback được gắn vào bộ lọc 'signup_get_available_languages' trước thời điểm này.
 	 */
 	return array_intersect_assoc( $languages, get_available_languages() );
 }
 
-// Main.
+// Chính.
 $active_signup = get_site_option( 'registration', 'none' );
 
 /**
- * Filters the type of site sign-up.
+ * Lọc loại đăng ký site.
  *
  * @since 3.0.0
  *
- * @param string $active_signup String that returns registration type. The value can be
- *                              'all', 'none', 'blog', or 'user'.
+ * @param string $active_signup Chuỗi trả về loại đăng ký. Giá trị có thể là
+ *                              'all', 'none', 'blog', hoặc 'user'.
  */
 $active_signup = apply_filters( 'wpmu_active_signup', $active_signup );
 
@@ -1016,7 +1002,7 @@ if ( 'none' === $active_signup ) {
 		default:
 			$user_email = isset( $_POST['user_email'] ) ? $_POST['user_email'] : '';
 			/**
-			 * Fires when the site sign-up form is sent.
+			 * Kích hoạt khi biểu mẫu đăng ký site được gửi.
 			 *
 			 * @since 3.0.0
 			 */
@@ -1056,7 +1042,7 @@ if ( 'none' === $active_signup ) {
 </div>
 <?php
 /**
- * Fires after the sign-up forms, before wp_footer.
+ * Kích hoạt sau các biểu mẫu đăng ký, trước wp_footer.
  *
  * @since 3.0.0
  */

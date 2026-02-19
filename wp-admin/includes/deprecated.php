@@ -1,20 +1,22 @@
 <?php
 /**
- * Deprecated admin functions from past WordPress versions. You shouldn't use these
- * functions and look for the alternatives instead. The functions will be removed
- * in a later version.
+ * Các hàm quản trị đã ngừng sử dụng từ các phiên bản WordPress trước. Bạn không nên dùng
+ * các hàm này mà hãy tìm các hàm thay thế. Các hàm sẽ bị loại bỏ
+ * trong phiên bản sau.
  *
  * @package WordPress
  * @subpackage Deprecated
  */
 
 /*
- * Deprecated functions come here to die.
+ * Các hàm ngừng sử dụng đến đây để chết.
  */
 
 /**
+ * Hàm đã ngừng sử dụng để bao gồm TinyMCE.
+ *
  * @since 2.1.0
- * @deprecated 2.1.0 Use wp_editor()
+ * @deprecated 2.1.0 Sử dụng wp_editor()
  * @see wp_editor()
  */
 function tinymce_include() {
@@ -24,7 +26,7 @@ function tinymce_include() {
 }
 
 /**
- * Unused Admin function.
+ * Hàm quản trị không còn sử dụng.
  *
  * @since 2.0.0
  * @deprecated 2.5.0
@@ -35,17 +37,17 @@ function documentation_link() {
 }
 
 /**
- * Calculates the new dimensions for a downsampled image.
+ * Tính toán kích thước mới cho hình ảnh được thu nhỏ.
  *
  * @since 2.0.0
- * @deprecated 3.0.0 Use wp_constrain_dimensions()
+ * @deprecated 3.0.0 Sử dụng wp_constrain_dimensions()
  * @see wp_constrain_dimensions()
  *
- * @param int $width Current width of the image
- * @param int $height Current height of the image
- * @param int $wmax Maximum wanted width
- * @param int $hmax Maximum wanted height
- * @return array Shrunk dimensions (width, height).
+ * @param int $width  Chiều rộng hiện tại của hình ảnh
+ * @param int $height Chiều cao hiện tại của hình ảnh
+ * @param int $wmax   Chiều rộng tối đa mong muốn
+ * @param int $hmax   Chiều cao tối đa mong muốn
+ * @return array Kích thước đã thu nhỏ (chiều rộng, chiều cao).
  */
 function wp_shrink_dimensions( $width, $height, $wmax = 128, $hmax = 96 ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'wp_constrain_dimensions()' );
@@ -53,15 +55,15 @@ function wp_shrink_dimensions( $width, $height, $wmax = 128, $hmax = 96 ) {
 }
 
 /**
- * Calculated the new dimensions for a downsampled image.
+ * Đã tính toán kích thước mới cho hình ảnh được thu nhỏ.
  *
  * @since 2.0.0
- * @deprecated 3.5.0 Use wp_constrain_dimensions()
+ * @deprecated 3.5.0 Sử dụng wp_constrain_dimensions()
  * @see wp_constrain_dimensions()
  *
- * @param int $width Current width of the image
- * @param int $height Current height of the image
- * @return array Shrunk dimensions (width, height).
+ * @param int $width  Chiều rộng hiện tại của hình ảnh
+ * @param int $height Chiều cao hiện tại của hình ảnh
+ * @return array Kích thước đã thu nhỏ (chiều rộng, chiều cao).
  */
 function get_udims( $width, $height ) {
 	_deprecated_function( __FUNCTION__, '3.5.0', 'wp_constrain_dimensions()' );
@@ -69,17 +71,17 @@ function get_udims( $width, $height ) {
 }
 
 /**
- * Legacy function used to generate the categories checklist control.
+ * Hàm kế thừa dùng để tạo điều khiển danh sách chọn chuyên mục.
  *
  * @since 0.71
- * @deprecated 2.6.0 Use wp_category_checklist()
+ * @deprecated 2.6.0 Sử dụng wp_category_checklist()
  * @see wp_category_checklist()
  *
  * @global int $post_ID
  *
- * @param int   $default_category Unused.
- * @param int   $category_parent  Unused.
- * @param array $popular_ids      Unused.
+ * @param int   $default_category Không sử dụng.
+ * @param int   $category_parent  Không sử dụng.
+ * @param array $popular_ids      Không sử dụng.
  */
 function dropdown_categories( $default_category = 0, $category_parent = 0, $popular_ids = array() ) {
 	_deprecated_function( __FUNCTION__, '2.6.0', 'wp_category_checklist()' );
@@ -88,15 +90,15 @@ function dropdown_categories( $default_category = 0, $category_parent = 0, $popu
 }
 
 /**
- * Legacy function used to generate a link categories checklist control.
+ * Hàm kế thừa dùng để tạo điều khiển danh sách chọn chuyên mục liên kết.
  *
  * @since 2.1.0
- * @deprecated 2.6.0 Use wp_link_category_checklist()
+ * @deprecated 2.6.0 Sử dụng wp_link_category_checklist()
  * @see wp_link_category_checklist()
  *
  * @global int $link_id
  *
- * @param int $default_link_category Unused.
+ * @param int $default_link_category Không sử dụng.
  */
 function dropdown_link_categories( $default_link_category = 0 ) {
 	_deprecated_function( __FUNCTION__, '2.6.0', 'wp_link_category_checklist()' );
@@ -105,14 +107,14 @@ function dropdown_link_categories( $default_link_category = 0 ) {
 }
 
 /**
- * Get the real filesystem path to a file to edit within the admin.
+ * Lấy đường dẫn hệ thống tệp thực tế đến tệp để chỉnh sửa trong trang quản trị.
  *
  * @since 1.5.0
  * @deprecated 2.9.0
- * @uses WP_CONTENT_DIR Full filesystem path to the wp-content directory.
+ * @uses WP_CONTENT_DIR Đường dẫn hệ thống tệp đầy đủ đến thư mục wp-content.
  *
- * @param string $file Filesystem path relative to the wp-content directory.
- * @return string Full filesystem path to edit.
+ * @param string $file Đường dẫn hệ thống tệp tương đối với thư mục wp-content.
+ * @return string Đường dẫn hệ thống tệp đầy đủ để chỉnh sửa.
  */
 function get_real_file_to_edit( $file ) {
 	_deprecated_function( __FUNCTION__, '2.9.0' );
@@ -121,18 +123,18 @@ function get_real_file_to_edit( $file ) {
 }
 
 /**
- * Legacy function used for generating a categories drop-down control.
+ * Hàm kế thừa dùng để tạo điều khiển danh sách thả xuống chuyên mục.
  *
  * @since 1.2.0
- * @deprecated 3.0.0 Use wp_dropdown_categories()
+ * @deprecated 3.0.0 Sử dụng wp_dropdown_categories()
  * @see wp_dropdown_categories()
  *
- * @param int $current_cat     Optional. ID of the current category. Default 0.
- * @param int $current_parent  Optional. Current parent category ID. Default 0.
- * @param int $category_parent Optional. Parent ID to retrieve categories for. Default 0.
- * @param int $level           Optional. Number of levels deep to display. Default 0.
- * @param array $categories    Optional. Categories to include in the control. Default 0.
- * @return void|false Void on success, false if no categories were found.
+ * @param int   $current_cat     Tùy chọn. ID của chuyên mục hiện tại. Mặc định 0.
+ * @param int   $current_parent  Tùy chọn. ID chuyên mục cha hiện tại. Mặc định 0.
+ * @param int   $category_parent Tùy chọn. ID cha để lấy các chuyên mục. Mặc định 0.
+ * @param int   $level           Tùy chọn. Số cấp độ sâu để hiển thị. Mặc định 0.
+ * @param array $categories      Tùy chọn. Các chuyên mục để bao gồm trong điều khiển. Mặc định 0.
+ * @return void|false Void nếu thành công, false nếu không tìm thấy chuyên mục nào.
  */
 function wp_dropdown_cats( $current_cat = 0, $current_parent = 0, $category_parent = 0, $level = 0, $categories = 0 ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'wp_dropdown_categories()' );
@@ -157,17 +159,17 @@ function wp_dropdown_cats( $current_cat = 0, $current_parent = 0, $category_pare
 }
 
 /**
- * Register a setting and its sanitization callback
+ * Đăng ký một cài đặt và hàm callback lọc dữ liệu của nó.
  *
  * @since 2.7.0
- * @deprecated 3.0.0 Use register_setting()
+ * @deprecated 3.0.0 Sử dụng register_setting()
  * @see register_setting()
  *
- * @param string   $option_group      A settings group name. Should correspond to an allowed option key name.
- *                                    Default allowed option key names include 'general', 'discussion', 'media',
- *                                    'reading', 'writing', and 'options'.
- * @param string   $option_name       The name of an option to sanitize and save.
- * @param callable $sanitize_callback Optional. A callback function that sanitizes the option's value.
+ * @param string   $option_group      Tên nhóm cài đặt. Nên tương ứng với tên khóa tùy chọn được phép.
+ *                                    Tên khóa tùy chọn được phép mặc định bao gồm 'general', 'discussion', 'media',
+ *                                    'reading', 'writing', và 'options'.
+ * @param string   $option_name       Tên của tùy chọn để lọc và lưu.
+ * @param callable $sanitize_callback Tùy chọn. Hàm callback lọc giá trị của tùy chọn.
  */
 function add_option_update_handler( $option_group, $option_name, $sanitize_callback = '' ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'register_setting()' );
@@ -175,15 +177,15 @@ function add_option_update_handler( $option_group, $option_name, $sanitize_callb
 }
 
 /**
- * Unregister a setting
+ * Hủy đăng ký một cài đặt.
  *
  * @since 2.7.0
- * @deprecated 3.0.0 Use unregister_setting()
+ * @deprecated 3.0.0 Sử dụng unregister_setting()
  * @see unregister_setting()
  *
- * @param string   $option_group      The settings group name used during registration.
- * @param string   $option_name       The name of the option to unregister.
- * @param callable $sanitize_callback Optional. Deprecated.
+ * @param string   $option_group      Tên nhóm cài đặt được sử dụng khi đăng ký.
+ * @param string   $option_name       Tên của tùy chọn cần hủy đăng ký.
+ * @param callable $sanitize_callback Tùy chọn. Đã ngừng sử dụng.
  */
 function remove_option_update_handler( $option_group, $option_name, $sanitize_callback = '' ) {
 	_deprecated_function( __FUNCTION__, '3.0.0', 'unregister_setting()' );
@@ -191,7 +193,7 @@ function remove_option_update_handler( $option_group, $option_name, $sanitize_ca
 }
 
 /**
- * Determines the language to use for CodePress syntax highlighting.
+ * Xác định ngôn ngữ sử dụng cho tô sáng cú pháp CodePress.
  *
  * @since 2.8.0
  * @deprecated 3.0.0
@@ -203,7 +205,7 @@ function codepress_get_lang( $filename ) {
 }
 
 /**
- * Adds JavaScript required to make CodePress work on the theme/plugin file editors.
+ * Thêm JavaScript cần thiết để CodePress hoạt động trên trình soạn thảo tệp giao diện/plugin.
  *
  * @since 2.8.0
  * @deprecated 3.0.0
@@ -213,7 +215,7 @@ function codepress_footer_js() {
 }
 
 /**
- * Determine whether to use CodePress.
+ * Xác định có nên sử dụng CodePress hay không.
  *
  * @since 2.8.0
  * @deprecated 3.0.0
@@ -223,13 +225,13 @@ function use_codepress() {
 }
 
 /**
- * Get all user IDs.
+ * Lấy tất cả ID người dùng.
  *
- * @deprecated 3.1.0 Use get_users()
+ * @deprecated 3.1.0 Sử dụng get_users()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @return array List of user IDs.
+ * @return array Danh sách ID người dùng.
  */
 function get_author_user_ids() {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_users()' );
@@ -238,20 +240,20 @@ function get_author_user_ids() {
 	if ( !is_multisite() )
 		$level_key = $wpdb->get_blog_prefix() . 'user_level';
 	else
-		$level_key = $wpdb->get_blog_prefix() . 'capabilities'; // WPMU site admins don't have user_levels.
+		$level_key = $wpdb->get_blog_prefix() . 'capabilities'; // Quản trị viên trang WPMU không có user_levels.
 
 	return $wpdb->get_col( $wpdb->prepare("SELECT user_id FROM $wpdb->usermeta WHERE meta_key = %s AND meta_value != '0'", $level_key) );
 }
 
 /**
- * Gets author users who can edit posts.
+ * Lấy danh sách người dùng tác giả có thể chỉnh sửa bài viết.
  *
- * @deprecated 3.1.0 Use get_users()
+ * @deprecated 3.1.0 Sử dụng get_users()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int $user_id User ID.
- * @return array|false List of editable authors. False if no editable users.
+ * @param int $user_id ID người dùng.
+ * @return array|false Danh sách các tác giả có thể chỉnh sửa. False nếu không có người dùng nào có thể chỉnh sửa.
  */
 function get_editable_authors( $user_id ) {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_users()' );
@@ -271,15 +273,15 @@ function get_editable_authors( $user_id ) {
 }
 
 /**
- * Gets the IDs of any users who can edit posts.
+ * Lấy ID của bất kỳ người dùng nào có thể chỉnh sửa bài viết.
  *
- * @deprecated 3.1.0 Use get_users()
+ * @deprecated 3.1.0 Sử dụng get_users()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int  $user_id       User ID.
- * @param bool $exclude_zeros Optional. Whether to exclude zeroes. Default true.
- * @return array Array of editable user IDs, empty array otherwise.
+ * @param int  $user_id       ID người dùng.
+ * @param bool $exclude_zeros Tùy chọn. Có loại trừ giá trị không hay không. Mặc định true.
+ * @return array Mảng ID người dùng có thể chỉnh sửa, mảng rỗng nếu không có.
  */
 function get_editable_user_ids( $user_id, $exclude_zeros = true, $post_type = 'post' ) {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_users()' );
@@ -300,7 +302,7 @@ function get_editable_user_ids( $user_id, $exclude_zeros = true, $post_type = 'p
 	if ( !is_multisite() )
 		$level_key = $wpdb->get_blog_prefix() . 'user_level';
 	else
-		$level_key = $wpdb->get_blog_prefix() . 'capabilities'; // WPMU site admins don't have user_levels.
+		$level_key = $wpdb->get_blog_prefix() . 'capabilities'; // Quản trị viên trang WPMU không có user_levels.
 
 	$query = $wpdb->prepare("SELECT user_id FROM $wpdb->usermeta WHERE meta_key = %s", $level_key);
 	if ( $exclude_zeros )
@@ -310,11 +312,11 @@ function get_editable_user_ids( $user_id, $exclude_zeros = true, $post_type = 'p
 }
 
 /**
- * Gets all users who are not authors.
+ * Lấy tất cả người dùng không phải là tác giả.
  *
- * @deprecated 3.1.0 Use get_users()
+ * @deprecated 3.1.0 Sử dụng get_users()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function get_nonauthor_user_ids() {
 	_deprecated_function( __FUNCTION__, '3.1.0', 'get_users()' );
@@ -324,22 +326,22 @@ function get_nonauthor_user_ids() {
 	if ( !is_multisite() )
 		$level_key = $wpdb->get_blog_prefix() . 'user_level';
 	else
-		$level_key = $wpdb->get_blog_prefix() . 'capabilities'; // WPMU site admins don't have user_levels.
+		$level_key = $wpdb->get_blog_prefix() . 'capabilities'; // Quản trị viên trang WPMU không có user_levels.
 
 	return $wpdb->get_col( $wpdb->prepare("SELECT user_id FROM $wpdb->usermeta WHERE meta_key = %s AND meta_value = '0'", $level_key) );
 }
 
 if ( ! class_exists( 'WP_User_Search', false ) ) :
 /**
- * WordPress User Search class.
+ * Lớp Tìm kiếm Người dùng WordPress.
  *
  * @since 2.1.0
- * @deprecated 3.1.0 Use WP_User_Query
+ * @deprecated 3.1.0 Sử dụng WP_User_Query
  */
 class WP_User_Search {
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 2.1.0
 	 * @access private
@@ -348,7 +350,7 @@ class WP_User_Search {
 	var $results;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 2.1.0
 	 * @access private
@@ -357,7 +359,7 @@ class WP_User_Search {
 	var $search_term;
 
 	/**
-	 * Page number.
+	 * Số trang.
 	 *
 	 * @since 2.1.0
 	 * @access private
@@ -366,7 +368,7 @@ class WP_User_Search {
 	var $page;
 
 	/**
-	 * Role name that users have.
+	 * Tên vai trò mà người dùng có.
 	 *
 	 * @since 2.5.0
 	 * @access private
@@ -375,7 +377,7 @@ class WP_User_Search {
 	var $role;
 
 	/**
-	 * Raw page number.
+	 * Số trang thô.
 	 *
 	 * @since 2.1.0
 	 * @access private
@@ -384,7 +386,7 @@ class WP_User_Search {
 	var $raw_page;
 
 	/**
-	 * Amount of users to display per page.
+	 * Số lượng người dùng hiển thị mỗi trang.
 	 *
 	 * @since 2.1.0
 	 * @access public
@@ -393,7 +395,7 @@ class WP_User_Search {
 	var $users_per_page = 50;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 2.1.0
 	 * @access private
@@ -402,7 +404,7 @@ class WP_User_Search {
 	var $first_user;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 2.1.0
 	 * @access private
@@ -411,7 +413,7 @@ class WP_User_Search {
 	var $last_user;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 2.1.0
 	 * @access private
@@ -420,7 +422,7 @@ class WP_User_Search {
 	var $query_limit;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 3.0.0
 	 * @access private
@@ -429,7 +431,7 @@ class WP_User_Search {
 	var $query_orderby;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 3.0.0
 	 * @access private
@@ -438,7 +440,7 @@ class WP_User_Search {
 	var $query_from;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 3.0.0
 	 * @access private
@@ -447,7 +449,7 @@ class WP_User_Search {
 	var $query_where;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 2.1.0
 	 * @access private
@@ -456,7 +458,7 @@ class WP_User_Search {
 	var $total_users_for_query = 0;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 2.1.0
 	 * @access private
@@ -465,7 +467,7 @@ class WP_User_Search {
 	var $too_many_total_users = false;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 2.1.0
 	 * @access private
@@ -474,7 +476,7 @@ class WP_User_Search {
 	var $search_errors;
 
 	/**
-	 * {@internal Missing Description}}
+	 * {@internal Thiếu mô tả}}
 	 *
 	 * @since 2.7.0
 	 * @access private
@@ -483,13 +485,13 @@ class WP_User_Search {
 	var $paging_text;
 
 	/**
-	 * PHP5 Constructor - Sets up the object properties.
+	 * Hàm khởi tạo PHP5 - Thiết lập các thuộc tính của đối tượng.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $search_term Search terms string.
-	 * @param int $page Optional. Page ID.
-	 * @param string $role Role name.
+	 * @param string $search_term Chuỗi từ khóa tìm kiếm.
+	 * @param int    $page        Tùy chọn. ID trang.
+	 * @param string $role        Tên vai trò.
 	 * @return WP_User_Search
 	 */
 	function __construct( $search_term = '', $page = '', $role = '' ) {
@@ -506,13 +508,13 @@ class WP_User_Search {
 	}
 
 	/**
-	 * PHP4 Constructor - Sets up the object properties.
+	 * Hàm khởi tạo PHP4 - Thiết lập các thuộc tính của đối tượng.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $search_term Search terms string.
-	 * @param int $page Optional. Page ID.
-	 * @param string $role Role name.
+	 * @param string $search_term Chuỗi từ khóa tìm kiếm.
+	 * @param int    $page        Tùy chọn. ID trang.
+	 * @param string $role        Tên vai trò.
 	 * @return WP_User_Search
 	 */
 	public function WP_User_Search( $search_term = '', $page = '', $role = '' ) {
@@ -521,12 +523,12 @@ class WP_User_Search {
 	}
 
 	/**
-	 * Prepares the user search query (legacy).
+	 * Chuẩn bị truy vấn tìm kiếm người dùng (kế thừa).
 	 *
 	 * @since 2.1.0
 	 * @access public
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 */
 	public function prepare_query() {
 		global $wpdb;
@@ -552,7 +554,7 @@ class WP_User_Search {
 			$this->query_from .= " INNER JOIN $wpdb->usermeta ON $wpdb->users.ID = $wpdb->usermeta.user_id";
 			$this->query_where .= $wpdb->prepare(" AND $wpdb->usermeta.meta_key = '{$wpdb->prefix}capabilities' AND $wpdb->usermeta.meta_value LIKE %s", '%' . $this->role . '%');
 		} elseif ( is_multisite() ) {
-			$level_key = $wpdb->prefix . 'capabilities'; // WPMU site admins don't have user_levels.
+			$level_key = $wpdb->prefix . 'capabilities'; // Quản trị viên trang WPMU không có user_levels.
 			$this->query_from .= ", $wpdb->usermeta";
 			$this->query_where .= " AND $wpdb->users.ID = $wpdb->usermeta.user_id AND meta_key = '{$level_key}'";
 		}
@@ -561,12 +563,12 @@ class WP_User_Search {
 	}
 
 	/**
-	 * Executes the user search query.
+	 * Thực thi truy vấn tìm kiếm người dùng.
 	 *
 	 * @since 2.1.0
 	 * @access public
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 */
 	public function query() {
 		global $wpdb;
@@ -574,13 +576,13 @@ class WP_User_Search {
 		$this->results = $wpdb->get_col("SELECT DISTINCT($wpdb->users.ID)" . $this->query_from . $this->query_where . $this->query_orderby . $this->query_limit);
 
 		if ( $this->results )
-			$this->total_users_for_query = $wpdb->get_var("SELECT COUNT(DISTINCT($wpdb->users.ID))" . $this->query_from . $this->query_where); // No limit.
+			$this->total_users_for_query = $wpdb->get_var("SELECT COUNT(DISTINCT($wpdb->users.ID))" . $this->query_from . $this->query_where); // Không giới hạn.
 		else
 			$this->search_errors = new WP_Error('no_matching_users_found', __('No users found.'));
 	}
 
 	/**
-	 * Prepares variables for use in templates.
+	 * Chuẩn bị các biến để sử dụng trong mẫu.
 	 *
 	 * @since 2.1.0
 	 * @access public
@@ -588,13 +590,13 @@ class WP_User_Search {
 	function prepare_vars_for_template_usage() {}
 
 	/**
-	 * Handles paging for the user search query.
+	 * Xử lý phân trang cho truy vấn tìm kiếm người dùng.
 	 *
 	 * @since 2.1.0
 	 * @access public
 	 */
 	public function do_paging() {
-		if ( $this->total_users_for_query > $this->users_per_page ) { // Have to page the results.
+		if ( $this->total_users_for_query > $this->users_per_page ) { // Phải phân trang kết quả.
 			$args = array();
 			if ( ! empty($this->search_term) )
 				$args['usersearch'] = urlencode($this->search_term);
@@ -622,7 +624,7 @@ class WP_User_Search {
 	}
 
 	/**
-	 * Retrieves the user search query results.
+	 * Lấy kết quả truy vấn tìm kiếm người dùng.
 	 *
 	 * @since 2.1.0
 	 * @access public
@@ -634,9 +636,9 @@ class WP_User_Search {
 	}
 
 	/**
-	 * Displaying paging text.
+	 * Hiển thị văn bản phân trang.
 	 *
-	 * @see do_paging() Builds paging text.
+	 * @see do_paging() Xây dựng văn bản phân trang.
 	 *
 	 * @since 2.1.0
 	 * @access public
@@ -646,9 +648,9 @@ class WP_User_Search {
 	}
 
 	/**
-	 * Whether paging is enabled.
+	 * Kiểm tra phân trang có được bật hay không.
 	 *
-	 * @see do_paging() Builds paging text.
+	 * @see do_paging() Xây dựng văn bản phân trang.
 	 *
 	 * @since 2.1.0
 	 * @access public
@@ -662,7 +664,7 @@ class WP_User_Search {
 	}
 
 	/**
-	 * Whether there are search terms.
+	 * Kiểm tra có từ khóa tìm kiếm hay không.
 	 *
 	 * @since 2.1.0
 	 * @access public
@@ -678,18 +680,18 @@ class WP_User_Search {
 endif;
 
 /**
- * Retrieves editable posts from other users.
+ * Lấy các bài viết có thể chỉnh sửa từ người dùng khác.
  *
  * @since 2.3.0
- * @deprecated 3.1.0 Use get_posts()
+ * @deprecated 3.1.0 Sử dụng get_posts()
  * @see get_posts()
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int    $user_id User ID to not retrieve posts from.
- * @param string $type    Optional. Post type to retrieve. Accepts 'draft', 'pending' or 'any' (all).
- *                        Default 'any'.
- * @return array List of posts from others.
+ * @param int    $user_id ID người dùng không lấy bài viết từ đó.
+ * @param string $type    Tùy chọn. Loại bài viết cần lấy. Chấp nhận 'draft', 'pending' hoặc 'any' (tất cả).
+ *                        Mặc định 'any'.
+ * @return array Danh sách bài viết từ người dùng khác.
  */
 function get_others_unpublished_posts( $user_id, $type = 'any' ) {
 	_deprecated_function( __FUNCTION__, '3.1.0' );
@@ -716,13 +718,13 @@ function get_others_unpublished_posts( $user_id, $type = 'any' ) {
 }
 
 /**
- * Retrieve drafts from other users.
+ * Lấy bản nháp từ người dùng khác.
  *
- * @deprecated 3.1.0 Use get_posts()
+ * @deprecated 3.1.0 Sử dụng get_posts()
  * @see get_posts()
  *
- * @param int $user_id User ID.
- * @return array List of drafts from other users.
+ * @param int $user_id ID người dùng.
+ * @return array Danh sách bản nháp từ người dùng khác.
  */
 function get_others_drafts($user_id) {
 	_deprecated_function( __FUNCTION__, '3.1.0' );
@@ -731,13 +733,13 @@ function get_others_drafts($user_id) {
 }
 
 /**
- * Retrieve pending review posts from other users.
+ * Lấy các bài viết đang chờ duyệt từ người dùng khác.
  *
- * @deprecated 3.1.0 Use get_posts()
+ * @deprecated 3.1.0 Sử dụng get_posts()
  * @see get_posts()
  *
- * @param int $user_id User ID.
- * @return array List of posts with pending review post type from other users.
+ * @param int $user_id ID người dùng.
+ * @return array Danh sách bài viết có trạng thái chờ duyệt từ người dùng khác.
  */
 function get_others_pending($user_id) {
 	_deprecated_function( __FUNCTION__, '3.1.0' );
@@ -746,10 +748,10 @@ function get_others_pending($user_id) {
 }
 
 /**
- * Output the QuickPress dashboard widget.
+ * Xuất widget bảng điều khiển QuickPress.
  *
  * @since 3.0.0
- * @deprecated 3.2.0 Use wp_dashboard_quick_press()
+ * @deprecated 3.2.0 Sử dụng wp_dashboard_quick_press()
  * @see wp_dashboard_quick_press()
  */
 function wp_dashboard_quick_press_output() {
@@ -758,10 +760,10 @@ function wp_dashboard_quick_press_output() {
 }
 
 /**
- * Outputs the TinyMCE editor.
+ * Xuất trình soạn thảo TinyMCE.
  *
  * @since 2.7.0
- * @deprecated 3.3.0 Use wp_editor()
+ * @deprecated 3.3.0 Sử dụng wp_editor()
  * @see wp_editor()
  */
 function wp_tiny_mce( $teeny = false, $settings = false ) {
@@ -785,9 +787,9 @@ function wp_tiny_mce( $teeny = false, $settings = false ) {
 }
 
 /**
- * Preloads TinyMCE dialogs.
+ * Tải trước các hộp thoại TinyMCE.
  *
- * @deprecated 3.3.0 Use wp_editor()
+ * @deprecated 3.3.0 Sử dụng wp_editor()
  * @see wp_editor()
  */
 function wp_preload_dialogs() {
@@ -795,9 +797,9 @@ function wp_preload_dialogs() {
 }
 
 /**
- * Prints TinyMCE editor JS.
+ * In JavaScript của trình soạn thảo TinyMCE.
  *
- * @deprecated 3.3.0 Use wp_editor()
+ * @deprecated 3.3.0 Sử dụng wp_editor()
  * @see wp_editor()
  */
 function wp_print_editor_js() {
@@ -805,9 +807,9 @@ function wp_print_editor_js() {
 }
 
 /**
- * Handles quicktags.
+ * Xử lý quicktags.
  *
- * @deprecated 3.3.0 Use wp_editor()
+ * @deprecated 3.3.0 Sử dụng wp_editor()
  * @see wp_editor()
  */
 function wp_quicktags() {
@@ -815,7 +817,7 @@ function wp_quicktags() {
 }
 
 /**
- * Returns the screen layout options.
+ * Trả về các tùy chọn bố cục màn hình.
  *
  * @since 2.8.0
  * @deprecated 3.3.0 WP_Screen::render_screen_layout()
@@ -835,10 +837,10 @@ function screen_layout( $screen ) {
 }
 
 /**
- * Returns the screen's per-page options.
+ * Trả về các tùy chọn số mục mỗi trang của màn hình.
  *
  * @since 2.8.0
- * @deprecated 3.3.0 Use WP_Screen::render_per_page_options()
+ * @deprecated 3.3.0 Sử dụng WP_Screen::render_per_page_options()
  * @see WP_Screen::render_per_page_options()
  */
 function screen_options( $screen ) {
@@ -855,10 +857,10 @@ function screen_options( $screen ) {
 }
 
 /**
- * Renders the screen's help.
+ * Hiển thị trợ giúp của màn hình.
  *
  * @since 2.7.0
- * @deprecated 3.3.0 Use WP_Screen::render_screen_meta()
+ * @deprecated 3.3.0 Sử dụng WP_Screen::render_screen_meta()
  * @see WP_Screen::render_screen_meta()
  */
 function screen_meta( $screen ) {
@@ -867,10 +869,10 @@ function screen_meta( $screen ) {
 }
 
 /**
- * Favorite actions were deprecated in version 3.2. Use the admin bar instead.
+ * Hành động yêu thích đã ngừng sử dụng trong phiên bản 3.2. Sử dụng thanh quản trị thay thế.
  *
  * @since 2.7.0
- * @deprecated 3.2.0 Use WP_Admin_Bar
+ * @deprecated 3.2.0 Sử dụng WP_Admin_Bar
  * @see WP_Admin_Bar
  */
 function favorite_actions() {
@@ -878,9 +880,9 @@ function favorite_actions() {
 }
 
 /**
- * Handles uploading an image.
+ * Xử lý tải lên hình ảnh.
  *
- * @deprecated 3.3.0 Use wp_media_upload_handler()
+ * @deprecated 3.3.0 Sử dụng wp_media_upload_handler()
  * @see wp_media_upload_handler()
  *
  * @return null|string
@@ -891,9 +893,9 @@ function media_upload_image() {
 }
 
 /**
- * Handles uploading an audio file.
+ * Xử lý tải lên tệp âm thanh.
  *
- * @deprecated 3.3.0 Use wp_media_upload_handler()
+ * @deprecated 3.3.0 Sử dụng wp_media_upload_handler()
  * @see wp_media_upload_handler()
  *
  * @return null|string
@@ -904,9 +906,9 @@ function media_upload_audio() {
 }
 
 /**
- * Handles uploading a video file.
+ * Xử lý tải lên tệp video.
  *
- * @deprecated 3.3.0 Use wp_media_upload_handler()
+ * @deprecated 3.3.0 Sử dụng wp_media_upload_handler()
  * @see wp_media_upload_handler()
  *
  * @return null|string
@@ -917,9 +919,9 @@ function media_upload_video() {
 }
 
 /**
- * Handles uploading a generic file.
+ * Xử lý tải lên tệp chung.
  *
- * @deprecated 3.3.0 Use wp_media_upload_handler()
+ * @deprecated 3.3.0 Sử dụng wp_media_upload_handler()
  * @see wp_media_upload_handler()
  *
  * @return null|string
@@ -930,9 +932,9 @@ function media_upload_file() {
 }
 
 /**
- * Handles retrieving the insert-from-URL form for an image.
+ * Xử lý lấy biểu mẫu chèn từ URL cho hình ảnh.
  *
- * @deprecated 3.3.0 Use wp_media_insert_url_form()
+ * @deprecated 3.3.0 Sử dụng wp_media_insert_url_form()
  * @see wp_media_insert_url_form()
  *
  * @return string
@@ -943,9 +945,9 @@ function type_url_form_image() {
 }
 
 /**
- * Handles retrieving the insert-from-URL form for an audio file.
+ * Xử lý lấy biểu mẫu chèn từ URL cho tệp âm thanh.
  *
- * @deprecated 3.3.0 Use wp_media_insert_url_form()
+ * @deprecated 3.3.0 Sử dụng wp_media_insert_url_form()
  * @see wp_media_insert_url_form()
  *
  * @return string
@@ -956,9 +958,9 @@ function type_url_form_audio() {
 }
 
 /**
- * Handles retrieving the insert-from-URL form for a video file.
+ * Xử lý lấy biểu mẫu chèn từ URL cho tệp video.
  *
- * @deprecated 3.3.0 Use wp_media_insert_url_form()
+ * @deprecated 3.3.0 Sử dụng wp_media_insert_url_form()
  * @see wp_media_insert_url_form()
  *
  * @return string
@@ -969,9 +971,9 @@ function type_url_form_video() {
 }
 
 /**
- * Handles retrieving the insert-from-URL form for a generic file.
+ * Xử lý lấy biểu mẫu chèn từ URL cho tệp chung.
  *
- * @deprecated 3.3.0 Use wp_media_insert_url_form()
+ * @deprecated 3.3.0 Sử dụng wp_media_insert_url_form()
  * @see wp_media_insert_url_form()
  *
  * @return string
@@ -982,17 +984,17 @@ function type_url_form_file() {
 }
 
 /**
- * Add contextual help text for a page.
+ * Thêm văn bản trợ giúp theo ngữ cảnh cho một trang.
  *
- * Creates an 'Overview' help tab.
+ * Tạo tab trợ giúp 'Tổng quan'.
  *
  * @since 2.7.0
- * @deprecated 3.3.0 Use WP_Screen::add_help_tab()
+ * @deprecated 3.3.0 Sử dụng WP_Screen::add_help_tab()
  * @see WP_Screen::add_help_tab()
  *
- * @param string    $screen The handle for the screen to add help to. This is usually
- *                          the hook name returned by the `add_*_page()` functions.
- * @param string    $help   The content of an 'Overview' help tab.
+ * @param string $screen Handle cho màn hình cần thêm trợ giúp. Thường là
+ *                       tên hook được trả về bởi các hàm `add_*_page()`.
+ * @param string $help   Nội dung của tab trợ giúp 'Tổng quan'.
  */
 function add_contextual_help( $screen, $help ) {
 	_deprecated_function( __FUNCTION__, '3.3.0', 'get_current_screen()->add_help_tab()' );
@@ -1004,13 +1006,13 @@ function add_contextual_help( $screen, $help ) {
 }
 
 /**
- * Get the allowed themes for the current site.
+ * Lấy các giao diện được phép cho trang hiện tại.
  *
  * @since 3.0.0
- * @deprecated 3.4.0 Use wp_get_themes()
+ * @deprecated 3.4.0 Sử dụng wp_get_themes()
  * @see wp_get_themes()
  *
- * @return WP_Theme[] Array of WP_Theme objects keyed by their name.
+ * @return WP_Theme[] Mảng các đối tượng WP_Theme được đánh chỉ mục theo tên.
  */
 function get_allowed_themes() {
 	_deprecated_function( __FUNCTION__, '3.4.0', "wp_get_themes( array( 'allowed' => true ) )" );
@@ -1026,10 +1028,10 @@ function get_allowed_themes() {
 }
 
 /**
- * Retrieves a list of broken themes.
+ * Lấy danh sách các giao diện bị lỗi.
  *
  * @since 1.5.0
- * @deprecated 3.4.0 Use wp_get_themes()
+ * @deprecated 3.4.0 Sử dụng wp_get_themes()
  * @see wp_get_themes()
  *
  * @return array
@@ -1051,10 +1053,10 @@ function get_broken_themes() {
 }
 
 /**
- * Retrieves information on the current active theme.
+ * Lấy thông tin về giao diện đang kích hoạt hiện tại.
  *
  * @since 2.0.0
- * @deprecated 3.4.0 Use wp_get_theme()
+ * @deprecated 3.4.0 Sử dụng wp_get_theme()
  * @see wp_get_theme()
  *
  * @return WP_Theme
@@ -1066,9 +1068,9 @@ function current_theme_info() {
 }
 
 /**
- * This was once used to display an 'Insert into Post' button.
+ * Trước đây dùng để hiển thị nút 'Chèn vào Bài viết'.
  *
- * Now it is deprecated and stubbed.
+ * Hiện đã ngừng sử dụng và chỉ còn là hàm rỗng.
  *
  * @deprecated 3.5.0
  */
@@ -1077,9 +1079,9 @@ function _insert_into_post_button( $type ) {
 }
 
 /**
- * This was once used to display a media button.
+ * Trước đây dùng để hiển thị nút phương tiện.
  *
- * Now it is deprecated and stubbed.
+ * Hiện đã ngừng sử dụng và chỉ còn là hàm rỗng.
  *
  * @deprecated 3.5.0
  */
@@ -1088,10 +1090,10 @@ function _media_button($title, $icon, $type, $id) {
 }
 
 /**
- * Gets an existing post and format it for editing.
+ * Lấy bài viết hiện có và định dạng nó để chỉnh sửa.
  *
  * @since 2.0.0
- * @deprecated 3.5.0 Use get_post()
+ * @deprecated 3.5.0 Sử dụng get_post()
  * @see get_post()
  *
  * @param int $id
@@ -1104,13 +1106,13 @@ function get_post_to_edit( $id ) {
 }
 
 /**
- * Gets the default page information to use.
+ * Lấy thông tin trang mặc định để sử dụng.
  *
  * @since 2.5.0
- * @deprecated 3.5.0 Use get_default_post_to_edit()
+ * @deprecated 3.5.0 Sử dụng get_default_post_to_edit()
  * @see get_default_post_to_edit()
  *
- * @return WP_Post Post object containing all the default post data as attributes
+ * @return WP_Post Đối tượng bài viết chứa tất cả dữ liệu bài viết mặc định làm thuộc tính
  */
 function get_default_page_to_edit() {
 	_deprecated_function( __FUNCTION__, '3.5.0', "get_default_post_to_edit( 'page' )" );
@@ -1121,16 +1123,16 @@ function get_default_page_to_edit() {
 }
 
 /**
- * This was once used to create a thumbnail from an Image given a maximum side size.
+ * Trước đây dùng để tạo ảnh thu nhỏ từ hình ảnh với kích thước cạnh tối đa cho trước.
  *
  * @since 1.2.0
- * @deprecated 3.5.0 Use image_resize()
+ * @deprecated 3.5.0 Sử dụng image_resize()
  * @see image_resize()
  *
- * @param mixed $file Filename of the original image, Or attachment ID.
- * @param int $max_side Maximum length of a single side for the thumbnail.
- * @param mixed $deprecated Never used.
- * @return string Thumbnail path on success, Error string on failure.
+ * @param mixed $file       Tên tệp hình ảnh gốc, hoặc ID đính kèm.
+ * @param int   $max_side   Chiều dài tối đa của một cạnh cho ảnh thu nhỏ.
+ * @param mixed $deprecated Không bao giờ sử dụng.
+ * @return string Đường dẫn ảnh thu nhỏ nếu thành công, chuỗi lỗi nếu thất bại.
  */
 function wp_create_thumbnail( $file, $max_side, $deprecated = '' ) {
 	_deprecated_function( __FUNCTION__, '3.5.0', 'image_resize()' );
@@ -1138,9 +1140,9 @@ function wp_create_thumbnail( $file, $max_side, $deprecated = '' ) {
 }
 
 /**
- * This was once used to display a meta box for the nav menu theme locations.
+ * Trước đây dùng để hiển thị hộp meta cho vị trí giao diện menu điều hướng.
  *
- * Deprecated in favor of a 'Manage Locations' tab added to nav menus management screen.
+ * Ngừng sử dụng để thay bằng tab 'Quản lý Vị trí' được thêm vào màn hình quản lý menu điều hướng.
  *
  * @since 3.0.0
  * @deprecated 3.6.0
@@ -1150,13 +1152,13 @@ function wp_nav_menu_locations_meta_box() {
 }
 
 /**
- * This was once used to kick-off the Core Updater.
+ * Trước đây dùng để khởi chạy Trình cập nhật lõi.
  *
- * Deprecated in favor of instantiating a Core_Upgrader instance directly,
- * and calling the 'upgrade' method.
+ * Ngừng sử dụng để thay bằng việc khởi tạo trực tiếp một instance Core_Upgrader,
+ * và gọi phương thức 'upgrade'.
  *
  * @since 2.7.0
- * @deprecated 3.7.0 Use Core_Upgrader
+ * @deprecated 3.7.0 Sử dụng Core_Upgrader
  * @see Core_Upgrader
  */
 function wp_update_core($current, $feedback = '') {
@@ -1172,14 +1174,14 @@ function wp_update_core($current, $feedback = '') {
 }
 
 /**
- * This was once used to kick-off the Plugin Updater.
+ * Trước đây dùng để khởi chạy Trình cập nhật Plugin.
  *
- * Deprecated in favor of instantiating a Plugin_Upgrader instance directly,
- * and calling the 'upgrade' method.
- * Unused since 2.8.0.
+ * Ngừng sử dụng để thay bằng việc khởi tạo trực tiếp một instance Plugin_Upgrader,
+ * và gọi phương thức 'upgrade'.
+ * Không sử dụng từ 2.8.0.
  *
  * @since 2.5.0
- * @deprecated 3.7.0 Use Plugin_Upgrader
+ * @deprecated 3.7.0 Sử dụng Plugin_Upgrader
  * @see Plugin_Upgrader
  */
 function wp_update_plugin($plugin, $feedback = '') {
@@ -1194,14 +1196,14 @@ function wp_update_plugin($plugin, $feedback = '') {
 }
 
 /**
- * This was once used to kick-off the Theme Updater.
+ * Trước đây dùng để khởi chạy Trình cập nhật Giao diện.
  *
- * Deprecated in favor of instantiating a Theme_Upgrader instance directly,
- * and calling the 'upgrade' method.
- * Unused since 2.8.0.
+ * Ngừng sử dụng để thay bằng việc khởi tạo trực tiếp một instance Theme_Upgrader,
+ * và gọi phương thức 'upgrade'.
+ * Không sử dụng từ 2.8.0.
  *
  * @since 2.7.0
- * @deprecated 3.7.0 Use Theme_Upgrader
+ * @deprecated 3.7.0 Sử dụng Theme_Upgrader
  * @see Theme_Upgrader
  */
 function wp_update_theme($theme, $feedback = '') {
@@ -1216,7 +1218,7 @@ function wp_update_theme($theme, $feedback = '') {
 }
 
 /**
- * This was once used to display attachment links. Now it is deprecated and stubbed.
+ * Trước đây dùng để hiển thị liên kết đính kèm. Hiện đã ngừng sử dụng và chỉ còn là hàm rỗng.
  *
  * @since 2.0.0
  * @deprecated 3.7.0
@@ -1228,7 +1230,7 @@ function the_attachment_links( $id = false ) {
 }
 
 /**
- * Displays a screen icon.
+ * Hiển thị biểu tượng màn hình.
  *
  * @since 2.7.0
  * @deprecated 3.8.0
@@ -1239,12 +1241,12 @@ function screen_icon() {
 }
 
 /**
- * Retrieves the screen icon (no longer used in 3.8+).
+ * Lấy biểu tượng màn hình (không còn sử dụng từ 3.8+).
  *
  * @since 3.2.0
  * @deprecated 3.8.0
  *
- * @return string An HTML comment explaining that icons are no longer used.
+ * @return string Nhận xét HTML giải thích rằng biểu tượng không còn được sử dụng.
  */
 function get_screen_icon() {
 	_deprecated_function( __FUNCTION__, '3.8.0' );
@@ -1252,7 +1254,7 @@ function get_screen_icon() {
 }
 
 /**
- * Deprecated dashboard widget controls.
+ * Điều khiển widget bảng điều khiển đã ngừng sử dụng.
  *
  * @since 2.5.0
  * @deprecated 3.8.0
@@ -1260,14 +1262,14 @@ function get_screen_icon() {
 function wp_dashboard_incoming_links_output() {}
 
 /**
- * Deprecated dashboard secondary output.
+ * Đầu ra phụ bảng điều khiển đã ngừng sử dụng.
  *
  * @deprecated 3.8.0
  */
 function wp_dashboard_secondary_output() {}
 
 /**
- * Deprecated dashboard widget controls.
+ * Điều khiển widget bảng điều khiển đã ngừng sử dụng.
  *
  * @since 2.7.0
  * @deprecated 3.8.0
@@ -1275,60 +1277,60 @@ function wp_dashboard_secondary_output() {}
 function wp_dashboard_incoming_links() {}
 
 /**
- * Deprecated dashboard incoming links control.
+ * Điều khiển liên kết đến bảng điều khiển đã ngừng sử dụng.
  *
  * @deprecated 3.8.0
  */
 function wp_dashboard_incoming_links_control() {}
 
 /**
- * Deprecated dashboard plugins control.
+ * Điều khiển plugin bảng điều khiển đã ngừng sử dụng.
  *
  * @deprecated 3.8.0
  */
 function wp_dashboard_plugins() {}
 
 /**
- * Deprecated dashboard primary control.
+ * Điều khiển chính bảng điều khiển đã ngừng sử dụng.
  *
  * @deprecated 3.8.0
  */
 function wp_dashboard_primary_control() {}
 
 /**
- * Deprecated dashboard recent comments control.
+ * Điều khiển bình luận gần đây bảng điều khiển đã ngừng sử dụng.
  *
  * @deprecated 3.8.0
  */
 function wp_dashboard_recent_comments_control() {}
 
 /**
- * Deprecated dashboard secondary section.
+ * Phần phụ bảng điều khiển đã ngừng sử dụng.
  *
  * @deprecated 3.8.0
  */
 function wp_dashboard_secondary() {}
 
 /**
- * Deprecated dashboard secondary control.
+ * Điều khiển phụ bảng điều khiển đã ngừng sử dụng.
  *
  * @deprecated 3.8.0
  */
 function wp_dashboard_secondary_control() {}
 
 /**
- * Display plugins text for the WordPress news widget.
+ * Hiển thị văn bản plugin cho widget tin tức WordPress.
  *
  * @since 2.5.0
  * @deprecated 4.8.0
  *
- * @param string $rss  The RSS feed URL.
- * @param array  $args Array of arguments for this RSS feed.
+ * @param string $rss  URL nguồn cấp RSS.
+ * @param array  $args Mảng tham số cho nguồn cấp RSS này.
  */
 function wp_dashboard_plugins_output( $rss, $args = array() ) {
 	_deprecated_function( __FUNCTION__, '4.8.0' );
 
-	// Plugin feeds plus link to install them.
+	// Nguồn cấp plugin cùng liên kết để cài đặt chúng.
 	$popular = fetch_feed( $args['url']['popular'] );
 
 	if ( false === $plugin_slugs = get_transient( 'plugin_slugs' ) ) {
@@ -1344,9 +1346,9 @@ function wp_dashboard_plugins_output( $rss, $args = array() ) {
 
 		$items = $feed->get_items(0, 5);
 
-		// Pick a random, non-installed plugin.
+		// Chọn một plugin ngẫu nhiên chưa được cài đặt.
 		while ( true ) {
-			// Abort this foreach loop iteration if there's no plugins left of this type.
+			// Hủy vòng lặp foreach này nếu không còn plugin nào thuộc loại này.
 			if ( 0 === count($items) )
 				continue 2;
 
@@ -1363,7 +1365,7 @@ function wp_dashboard_plugins_output( $rss, $args = array() ) {
 				continue;
 			}
 
-			// Is this random plugin's slug already installed? If so, try again.
+			// Slug của plugin ngẫu nhiên này đã được cài đặt chưa? Nếu rồi, thử lại.
 			reset( $plugin_slugs );
 			foreach ( $plugin_slugs as $plugin_slug ) {
 				if ( str_starts_with( $plugin_slug, $slug ) ) {
@@ -1372,11 +1374,11 @@ function wp_dashboard_plugins_output( $rss, $args = array() ) {
 				}
 			}
 
-			// If we get to this point, then the random plugin isn't installed and we can stop the while().
+			// Nếu đến được điểm này, thì plugin ngẫu nhiên chưa được cài đặt và chúng ta có thể dừng vòng while().
 			break;
 		}
 
-		// Eliminate some common badly formed plugin descriptions.
+		// Loại bỏ một số mô tả plugin được định dạng sai thường gặp.
 		while ( ( null !== $item_key = array_rand($items) ) && str_contains( $items[$item_key]->get_description(), 'Plugin Name:' ) )
 			unset($items[$item_key]);
 
@@ -1399,7 +1401,7 @@ function wp_dashboard_plugins_output( $rss, $args = array() ) {
 }
 
 /**
- * This was once used to move child posts to a new parent.
+ * Trước đây dùng để di chuyển bài viết con sang bài viết cha mới.
  *
  * @since 2.3.0
  * @deprecated 3.9.0
@@ -1413,27 +1415,27 @@ function _relocate_children( $old_ID, $new_ID ) {
 }
 
 /**
- * Add a top-level menu page in the 'objects' section.
+ * Thêm trang menu cấp cao nhất trong phần 'đối tượng'.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một quyền hạn sẽ được dùng để xác định xem
+ * trang có được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được gắn hook để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có quyền hạn cần thiết.
  *
  * @since 2.7.0
  *
- * @deprecated 4.5.0 Use add_menu_page()
+ * @deprecated 4.5.0 Sử dụng add_menu_page()
  * @see add_menu_page()
  * @global int $_wp_last_object_menu
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param string   $icon_url   Optional. The URL to the icon to be used for this menu.
- * @return string The resulting page's hook_suffix.
+ * @param string   $page_title Văn bản hiển thị trong thẻ tiêu đề của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Quyền hạn cần thiết để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param string   $icon_url   Tùy chọn. URL đến biểu tượng sử dụng cho menu này.
+ * @return string Hook_suffix của trang kết quả.
  */
 function add_object_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $icon_url = '') {
 	_deprecated_function( __FUNCTION__, '4.5.0', 'add_menu_page()' );
@@ -1446,27 +1448,27 @@ function add_object_page( $page_title, $menu_title, $capability, $menu_slug, $ca
 }
 
 /**
- * Add a top-level menu page in the 'utility' section.
+ * Thêm trang menu cấp cao nhất trong phần 'tiện ích'.
  *
- * This function takes a capability which will be used to determine whether
- * or not a page is included in the menu.
+ * Hàm này nhận một quyền hạn sẽ được dùng để xác định xem
+ * trang có được bao gồm trong menu hay không.
  *
- * The function which is hooked in to handle the output of the page must check
- * that the user has the required capability as well.
+ * Hàm được gắn hook để xử lý đầu ra của trang cũng phải kiểm tra
+ * rằng người dùng có quyền hạn cần thiết.
  *
  * @since 2.7.0
  *
- * @deprecated 4.5.0 Use add_menu_page()
+ * @deprecated 4.5.0 Sử dụng add_menu_page()
  * @see add_menu_page()
  * @global int $_wp_last_utility_menu
  *
- * @param string   $page_title The text to be displayed in the title tags of the page when the menu is selected.
- * @param string   $menu_title The text to be used for the menu.
- * @param string   $capability The capability required for this menu to be displayed to the user.
- * @param string   $menu_slug  The slug name to refer to this menu by (should be unique for this menu).
- * @param callable $callback   Optional. The function to be called to output the content for this page.
- * @param string   $icon_url   Optional. The URL to the icon to be used for this menu.
- * @return string The resulting page's hook_suffix.
+ * @param string   $page_title Văn bản hiển thị trong thẻ tiêu đề của trang khi menu được chọn.
+ * @param string   $menu_title Văn bản sử dụng cho menu.
+ * @param string   $capability Quyền hạn cần thiết để menu này hiển thị cho người dùng.
+ * @param string   $menu_slug  Tên slug để tham chiếu menu này (nên là duy nhất cho menu này).
+ * @param callable $callback   Tùy chọn. Hàm được gọi để xuất nội dung cho trang này.
+ * @param string   $icon_url   Tùy chọn. URL đến biểu tượng sử dụng cho menu này.
+ * @return string Hook_suffix của trang kết quả.
  */
 function add_utility_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $icon_url = '') {
 	_deprecated_function( __FUNCTION__, '4.5.0', 'add_menu_page()' );
@@ -1479,11 +1481,11 @@ function add_utility_page( $page_title, $menu_title, $capability, $menu_slug, $c
 }
 
 /**
- * Disables autocomplete on the 'post' form (Add/Edit Post screens) for WebKit browsers,
- * as they disregard the autocomplete setting on the editor textarea. That can break the editor
- * when the user navigates to it with the browser's Back button. See #28037
+ * Vô hiệu hóa tự động hoàn thành trên biểu mẫu 'bài viết' (màn hình Thêm/Sửa Bài viết) cho trình duyệt WebKit,
+ * vì chúng bỏ qua cài đặt autocomplete trên textarea trình soạn thảo. Điều này có thể làm hỏng trình soạn thảo
+ * khi người dùng điều hướng đến nó bằng nút Quay lại của trình duyệt. Xem #28037
  *
- * Replaced with wp_page_reload_on_back_button_js() that also fixes this problem.
+ * Được thay thế bằng wp_page_reload_on_back_button_js() cũng khắc phục vấn đề này.
  *
  * @since 4.0.0
  * @deprecated 4.6.0
@@ -1504,7 +1506,7 @@ function post_form_autocomplete_off() {
 }
 
 /**
- * Display JavaScript on the page.
+ * Hiển thị JavaScript trên trang.
  *
  * @since 3.5.0
  * @deprecated 4.9.0
@@ -1527,7 +1529,7 @@ function options_permalink_add_js() {
 }
 
 /**
- * Previous class for list table for privacy data export requests.
+ * Lớp trước đây cho bảng danh sách yêu cầu xuất dữ liệu riêng tư.
  *
  * @since 4.9.6
  * @deprecated 5.3.0
@@ -1545,7 +1547,7 @@ class WP_Privacy_Data_Export_Requests_Table extends WP_Privacy_Data_Export_Reque
 }
 
 /**
- * Previous class for list table for privacy data erasure requests.
+ * Lớp trước đây cho bảng danh sách yêu cầu xóa dữ liệu riêng tư.
  *
  * @since 4.9.6
  * @deprecated 5.3.0
@@ -1563,7 +1565,7 @@ class WP_Privacy_Data_Removal_Requests_Table extends WP_Privacy_Data_Removal_Req
 }
 
 /**
- * Was used to add options for the privacy requests screens before they were separate files.
+ * Trước đây dùng để thêm tùy chọn cho các màn hình yêu cầu riêng tư trước khi chúng là các file riêng biệt.
  *
  * @since 4.9.8
  * @access private
@@ -1574,15 +1576,15 @@ function _wp_privacy_requests_screen_options() {
 }
 
 /**
- * Was used to filter input from media_upload_form_handler() and to assign a default
- * post_title from the file name if none supplied.
+ * Trước đây dùng để lọc đầu vào từ media_upload_form_handler() và gán post_title
+ * mặc định từ tên file nếu không được cung cấp.
  *
  * @since 2.5.0
  * @deprecated 6.0.0
  *
- * @param array $post       The WP_Post attachment object converted to an array.
- * @param array $attachment An array of attachment metadata.
- * @return array Attachment post object converted to an array.
+ * @param array $post       Đối tượng đính kèm WP_Post được chuyển đổi thành mảng.
+ * @param array $attachment Mảng metadata đính kèm.
+ * @return array Đối tượng bài viết đính kèm được chuyển đổi thành mảng.
  */
 function image_attachment_fields_to_save( $post, $attachment ) {
 	_deprecated_function( __FUNCTION__, '6.0.0' );

@@ -1,24 +1,24 @@
 <?php
 /**
- * Options Management Administration Screen.
+ * Màn hình quản trị Quản lý Tùy chọn.
  *
- * If accessed directly in a browser this page shows a list of all saved options
- * along with editable fields for their values. Serialized data is not supported
- * and there is no way to remove options via this page. It is not linked to from
- * anywhere else in the admin.
+ * Nếu truy cập trực tiếp qua trình duyệt, trang này hiển thị danh sách tất cả
+ * các tùy chọn đã lưu cùng với các trường có thể chỉnh sửa giá trị. Dữ liệu
+ * được serialize không được hỗ trợ và không có cách nào để xóa tùy chọn qua
+ * trang này. Trang này không được liên kết từ bất kỳ nơi nào khác trong admin.
  *
- * This file is also the target of the forms in core and custom options pages
- * that use the Settings API. In this case it saves the new option values
- * and returns the user to their page of origin.
+ * File này cũng là đích đến của các biểu mẫu trong các trang tùy chọn lõi và
+ * tùy chỉnh sử dụng Settings API. Trong trường hợp này, nó lưu các giá trị
+ * tùy chọn mới và đưa người dùng trở lại trang gốc.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Khởi tạo Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ HTML title.
 $title       = __( 'Settings' );
 $this_file   = 'options.php';
 $parent_file = 'options-general.php';
@@ -34,14 +34,14 @@ if ( empty( $option_page ) ) {
 } else {
 
 	/**
-	 * Filters the capability required when using the Settings API.
+	 * Lọc quyền hạn cần thiết khi sử dụng Settings API.
 	 *
-	 * By default, the options groups for all registered settings require the manage_options capability.
-	 * This filter is required to change the capability required for a certain options page.
+	 * Theo mặc định, các nhóm tùy chọn cho tất cả cài đặt đã đăng ký yêu cầu quyền manage_options.
+	 * Bộ lọc này cần thiết để thay đổi quyền hạn yêu cầu cho một trang tùy chọn nhất định.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param string $capability The capability used for the page, which is manage_options by default.
+	 * @param string $capability Quyền hạn được sử dụng cho trang, mặc định là manage_options.
 	 */
 	$capability = apply_filters( "option_page_capability_{$option_page}", $capability );
 }
@@ -54,7 +54,7 @@ if ( ! current_user_can( $capability ) ) {
 	);
 }
 
-// Handle admin email change requests.
+// Xử lý các yêu cầu thay đổi email quản trị.
 if ( ! empty( $_GET['adminhash'] ) ) {
 	$new_admin_details = get_option( 'adminhash' );
 	$redirect          = 'options-general.php?updated=false';
@@ -159,11 +159,11 @@ $allowed_options['options'] = array();
 $allowed_options['privacy'] = array();
 
 /**
- * Filters whether the post-by-email functionality is enabled.
+ * Lọc xem chức năng đăng bài qua email có được bật hay không.
  *
  * @since 3.0.0
  *
- * @param bool $enabled Whether post-by-email configuration is enabled. Default true.
+ * @param bool $enabled Chức năng đăng bài qua email có được bật không. Mặc định true.
  */
 if ( apply_filters( 'enable_post_by_email_configuration', true ) ) {
 	$allowed_options['writing'][] = 'mailserver_url';
@@ -199,9 +199,9 @@ if ( ! is_multisite() ) {
 	$allowed_options['media'][] = 'uploads_use_yearmonth_folders';
 
 	/*
-	 * If upload_url_path is not the default (empty),
-	 * or upload_path is not the default ('wp-content/uploads' or empty),
-	 * they can be edited, otherwise they're locked.
+	 * Nếu upload_url_path không phải giá trị mặc định (rỗng),
+	 * hoặc upload_path không phải giá trị mặc định ('wp-content/uploads' hoặc rỗng),
+	 * chúng có thể được chỉnh sửa, ngược lại chúng bị khóa.
 	 */
 	if ( get_option( 'upload_url_path' )
 		|| get_option( 'upload_path' ) && 'wp-content/uploads' !== get_option( 'upload_path' )
@@ -212,12 +212,12 @@ if ( ! is_multisite() ) {
 }
 
 /**
- * Filters the allowed options list.
+ * Lọc danh sách các tùy chọn được phép.
  *
  * @since 2.7.0
- * @deprecated 5.5.0 Use {@see 'allowed_options'} instead.
+ * @deprecated 5.5.0 Sử dụng {@see 'allowed_options'} thay thế.
  *
- * @param array $allowed_options The allowed options list.
+ * @param array $allowed_options Danh sách các tùy chọn được phép.
  */
 $allowed_options = apply_filters_deprecated(
 	'whitelist_options',
@@ -228,16 +228,16 @@ $allowed_options = apply_filters_deprecated(
 );
 
 /**
- * Filters the allowed options list.
+ * Lọc danh sách các tùy chọn được phép.
  *
  * @since 5.5.0
  *
- * @param array $allowed_options The allowed options list.
+ * @param array $allowed_options Danh sách các tùy chọn được phép.
  */
 $allowed_options = apply_filters( 'allowed_options', $allowed_options );
 
-if ( 'update' === $action ) { // We are saving settings sent from a settings page.
-	if ( 'options' === $option_page && ! isset( $_POST['option_page'] ) ) { // This is for back compat and will eventually be removed.
+if ( 'update' === $action ) { // Chúng ta đang lưu cài đặt được gửi từ một trang cài đặt.
+	if ( 'options' === $option_page && ! isset( $_POST['option_page'] ) ) { // Đây là để tương thích ngược và cuối cùng sẽ bị xóa.
 		$unregistered = true;
 		check_admin_referer( 'update-options' );
 	} else {
@@ -265,7 +265,7 @@ if ( 'update' === $action ) { // We are saving settings sent from a settings pag
 	}
 
 	if ( 'general' === $option_page ) {
-		// Handle custom date/time formats.
+		// Xử lý các định dạng ngày/giờ tùy chỉnh.
 		if ( ! empty( $_POST['date_format'] ) && isset( $_POST['date_format_custom'] )
 			&& '\c\u\s\t\o\m' === wp_unslash( $_POST['date_format'] )
 		) {
@@ -278,13 +278,13 @@ if ( 'update' === $action ) { // We are saving settings sent from a settings pag
 			$_POST['time_format'] = $_POST['time_format_custom'];
 		}
 
-		// Map UTC+- timezones to gmt_offsets and set timezone_string to empty.
+		// Ánh xạ múi giờ UTC+- sang gmt_offsets và đặt timezone_string thành rỗng.
 		if ( ! empty( $_POST['timezone_string'] ) && preg_match( '/^UTC[+-]/', $_POST['timezone_string'] ) ) {
 			$_POST['gmt_offset']      = $_POST['timezone_string'];
 			$_POST['gmt_offset']      = preg_replace( '/UTC\+?/', '', $_POST['gmt_offset'] );
 			$_POST['timezone_string'] = '';
 		} elseif ( isset( $_POST['timezone_string'] ) && ! in_array( $_POST['timezone_string'], timezone_identifiers_list( DateTimeZone::ALL_WITH_BC ), true ) ) {
-			// Reset to the current value.
+			// Đặt lại về giá trị hiện tại.
 			$current_timezone_string = get_option( 'timezone_string' );
 
 			if ( ! empty( $current_timezone_string ) ) {
@@ -302,7 +302,7 @@ if ( 'update' === $action ) { // We are saving settings sent from a settings pag
 			);
 		}
 
-		// Handle translation installation.
+		// Xử lý cài đặt bản dịch.
 		if ( ! empty( $_POST['WPLANG'] ) && current_user_can( 'install_languages' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
@@ -345,9 +345,9 @@ if ( 'update' === $action ) { // We are saving settings sent from a settings pag
 		}
 
 		/*
-		 * Switch translation in case WPLANG was changed.
-		 * The global $locale is used in get_locale() which is
-		 * used as a fallback in get_user_locale().
+		 * Chuyển đổi bản dịch trong trường hợp WPLANG bị thay đổi.
+		 * Biến toàn cục $locale được sử dụng trong get_locale(),
+		 * được dùng làm giá trị dự phòng trong get_user_locale().
 		 */
 		unset( $GLOBALS['locale'] );
 		$user_language_new = get_user_locale();
@@ -359,17 +359,17 @@ if ( 'update' === $action ) { // We are saving settings sent from a settings pag
 	}
 
 	/*
-	 * Handle settings errors and return to options page.
+	 * Xử lý lỗi cài đặt và quay lại trang tùy chọn.
 	 */
 
-	// If no settings errors were registered add a general 'updated' message.
+	// Nếu không có lỗi cài đặt nào được đăng ký, thêm thông báo 'đã cập nhật' chung.
 	if ( ! count( get_settings_errors() ) ) {
 		add_settings_error( 'general', 'settings_updated', __( 'Settings saved.' ), 'success' );
 	}
 
-	set_transient( 'settings_errors', get_settings_errors(), 30 ); // 30 seconds.
+	set_transient( 'settings_errors', get_settings_errors(), 30 ); // 30 giây.
 
-	// Redirect back to the settings page that was submitted.
+	// Chuyển hướng trở lại trang cài đặt đã được gửi.
 	$goback = add_query_arg( 'settings-updated', 'true', wp_get_referer() );
 	wp_redirect( $goback );
 	exit;
@@ -406,7 +406,7 @@ foreach ( (array) $options as $option ) :
 
 	if ( is_serialized( $option->option_value ) ) {
 		if ( is_serialized_string( $option->option_value ) ) {
-			// This is a serialized string, so we should display it.
+			// Đây là chuỗi được serialize, vì vậy chúng ta nên hiển thị nó.
 			$value               = maybe_unserialize( $option->option_value );
 			$options_to_update[] = $option->option_name;
 			$class               = 'all-options';

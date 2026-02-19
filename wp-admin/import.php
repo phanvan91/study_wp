@@ -1,6 +1,6 @@
 <?php
 /**
- * Import WordPress Administration Screen
+ * Màn hình quản trị Nhập WordPress
  *
  * @package WordPress
  * @subpackage Administration
@@ -8,14 +8,14 @@
 
 define( 'WP_LOAD_IMPORTERS', true );
 
-/** Load WordPress Bootstrap */
+/** Tải Bootstrap WordPress */
 require_once __DIR__ . '/admin.php';
 
 if ( ! current_user_can( 'import' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to import content into this site.' ) );
 }
 
-// Used in the HTML title tag.
+// Sử dụng trong thẻ HTML title.
 $title = __( 'Import' );
 
 get_current_screen()->add_help_tab(
@@ -34,16 +34,16 @@ get_current_screen()->set_help_sidebar(
 );
 
 if ( current_user_can( 'install_plugins' ) ) {
-	// List of popular importer plugins from the WordPress.org API.
+	// Danh sách các trình nhập phổ biến từ API WordPress.org.
 	$popular_importers = wp_get_popular_importers();
 } else {
 	$popular_importers = array();
 }
 
-// Detect and redirect invalid importers like 'movabletype', which is registered as 'mt'.
+// Phát hiện và chuyển hướng các trình nhập không hợp lệ như 'movabletype', được đăng ký là 'mt'.
 if ( ! empty( $_GET['invalid'] ) && isset( $popular_importers[ $_GET['invalid'] ] ) ) {
 	$importer_id = $popular_importers[ $_GET['invalid'] ]['importer-id'];
-	if ( $importer_id !== $_GET['invalid'] ) { // Prevent redirect loops.
+	if ( $importer_id !== $_GET['invalid'] ) { // Ngăn vòng lặp chuyển hướng.
 		wp_redirect( admin_url( 'admin.php?import=' . $importer_id ) );
 		exit;
 	}
@@ -63,7 +63,7 @@ $parent_file = 'tools.php';
 <?php
 if ( ! empty( $_GET['invalid'] ) ) :
 	$importer_not_installed = '<strong>' . __( 'Error:' ) . '</strong> ' . sprintf(
-		/* translators: %s: Importer slug. */
+		/* translators: %s: Slug của trình nhập. */
 		__( 'The %s importer is invalid or is not installed.' ),
 		'<strong>' . esc_html( $_GET['invalid'] ) . '</strong>'
 	);
@@ -78,10 +78,10 @@ endif;
 <p><?php _e( 'If you have posts or comments in another system, WordPress can import those into this site. To get started, choose a system to import from below:' ); ?></p>
 
 <?php
-// Registered (already installed) importers. They're stored in the global $wp_importers.
+// Các trình nhập đã đăng ký (đã cài đặt). Chúng được lưu trong biến toàn cục $wp_importers.
 $importers = get_importers();
 
-// If a popular importer is not registered, create a dummy registration that links to the plugin installer.
+// Nếu một trình nhập phổ biến chưa được đăng ký, tạo một đăng ký giả liên kết đến trình cài đặt plugin.
 foreach ( $popular_importers as $pop_importer => $pop_data ) {
 	if ( isset( $importers[ $pop_importer ] ) ) {
 		continue;
@@ -90,7 +90,7 @@ foreach ( $popular_importers as $pop_importer => $pop_data ) {
 		continue;
 	}
 
-	// Fill the array of registered (already installed) importers with data of the popular importers from the WordPress.org API.
+	// Điền mảng các trình nhập đã đăng ký (đã cài đặt) với dữ liệu của các trình nhập phổ biến từ API WordPress.org.
 	$importers[ $pop_data['importer-id'] ] = array(
 		$pop_data['name'],
 		$pop_data['description'],
@@ -99,7 +99,7 @@ foreach ( $popular_importers as $pop_importer => $pop_data ) {
 }
 
 if ( empty( $importers ) ) {
-	echo '<p>' . __( 'No importers are available.' ) . '</p>'; // TODO: Make more helpful.
+	echo '<p>' . __( 'No importers are available.' ) . '</p>'; // TODO: Làm cho hữu ích hơn.
 } else {
 	uasort( $importers, '_usort_by_first_member' );
 	?>
@@ -115,7 +115,7 @@ if ( empty( $importers ) ) {
 			$plugin_slug = $data['install'];
 
 			if ( file_exists( WP_PLUGIN_DIR . '/' . $plugin_slug ) ) {
-				// Looks like an importer is installed, but not active.
+				// Có vẻ như trình nhập đã được cài đặt, nhưng chưa kích hoạt.
 				$plugins = get_plugins( '/' . $plugin_slug );
 				if ( ! empty( $plugins ) ) {
 					$keys        = array_keys( $plugins );
@@ -134,7 +134,7 @@ if ( empty( $importers ) ) {
 					$action      = sprintf(
 						'<a href="%s" aria-label="%s">%s</a>',
 						esc_url( $url ),
-						/* translators: %s: Importer name. */
+						/* translators: %s: Tên trình nhập. */
 						esc_attr( sprintf( __( 'Run %s' ), $data[0] ) ),
 						__( 'Run Importer' )
 					);
@@ -161,13 +161,13 @@ if ( empty( $importers ) ) {
 						esc_url( $url ),
 						esc_attr( $plugin_slug ),
 						esc_attr( $data[0] ),
-						/* translators: %s: Importer name. */
+						/* translators: %s: Tên trình nhập. */
 						esc_attr( sprintf( _x( 'Install %s now', 'plugin' ), $data[0] ) ),
 						_x( 'Install Now', 'plugin' )
 					);
 				} else {
 					$action = sprintf(
-						/* translators: %s: URL to Import screen on the main site. */
+						/* translators: %s: URL đến màn hình Nhập trên site chính. */
 						__( 'This importer is not installed. Please install importers from <a href="%s">the main site</a>.' ),
 						get_admin_url( get_current_network_id(), 'import.php' )
 					);
@@ -183,7 +183,7 @@ if ( empty( $importers ) ) {
 			$action = sprintf(
 				'<a href="%1$s" aria-label="%2$s">%3$s</a>',
 				esc_url( $url ),
-				/* translators: %s: Importer name. */
+				/* translators: %s: Tên trình nhập. */
 				esc_attr( sprintf( __( 'Run %s' ), $data[0] ) ),
 				__( 'Run Importer' )
 			);
@@ -206,7 +206,7 @@ if ( empty( $importers ) ) {
 			$action .= sprintf(
 				' | <a href="%1$s" class="thickbox open-plugin-details-modal" aria-label="%2$s">%3$s</a>',
 				esc_url( $url ),
-				/* translators: %s: Importer name. */
+				/* translators: %s: Tên trình nhập. */
 				esc_attr( sprintf( __( 'More information about %s' ), $data[0] ) ),
 				__( 'Details' )
 			);
@@ -230,14 +230,14 @@ if ( empty( $importers ) ) {
 
 if ( current_user_can( 'install_plugins' ) ) {
 	echo '<p>' . sprintf(
-		/* translators: %s: URL to Add Plugins screen. */
+		/* translators: %s: URL đến màn hình Thêm Plugin. */
 		__( 'If the importer you need is not listed, <a href="%s">search the plugin directory</a> to see if an importer is available.' ),
 		esc_url( network_admin_url( 'plugin-install.php?tab=search&type=tag&s=importer' ) )
 	) . '</p>';
 }
 
 /**
- * Fires at the end of the Import screen.
+ * Kích hoạt ở cuối màn hình Nhập.
  *
  * @since 6.8.0
  */

@@ -1,30 +1,30 @@
 <?php
 /**
- * WordPress Administration Meta Boxes API.
+ * API Meta Box quản trị WordPress.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 //
-// Post-related Meta Boxes.
+// Meta Box liên quan đến bài viết.
 //
 
 /**
- * Displays post submit form fields.
+ * Hiển thị các trường form gửi bài viết.
  *
  * @since 2.7.0
  *
  * @global string $action
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  * @param array   $args {
- *     Array of arguments for building the post submit meta box.
+ *     Mảng tham số để xây dựng meta box gửi bài viết.
  *
- *     @type string   $id       Meta box 'id' attribute.
- *     @type string   $title    Meta box title.
- *     @type callable $callback Meta box display callback.
- *     @type array    $args     Extra meta box arguments.
+ *     @type string   $id       Thuộc tính 'id' của meta box.
+ *     @type string   $title    Tiêu đề meta box.
+ *     @type callable $callback Hàm callback hiển thị meta box.
+ *     @type array    $args     Tham số bổ sung cho meta box.
  * }
  */
 function post_submit_meta_box( $post, $args = array() ) {
@@ -39,7 +39,7 @@ function post_submit_meta_box( $post, $args = array() ) {
 
 <div id="minor-publishing">
 
-	<?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key. ?>
+	<?php // Nút submit ẩn ở đầu để trình duyệt chọn đúng nút khi form được gửi bằng phím Enter. ?>
 	<div style="display:none;">
 		<?php submit_button( __( 'Save' ), '', 'save' ); ?>
 	</div>
@@ -87,12 +87,12 @@ function post_submit_meta_box( $post, $args = array() ) {
 		endif;
 
 		/**
-		 * Fires after the Save Draft (or Save as Pending) and Preview (or Preview Changes) buttons
-		 * in the Publish meta box.
+		 * Kích hoạt sau các nút Lưu Bản nháp (hoặc Lưu Chờ duyệt) và Xem trước (hoặc Xem trước Thay đổi)
+		 * trong meta box Xuất bản.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param WP_Post $post WP_Post object for the current post.
+		 * @param WP_Post $post Đối tượng WP_Post cho bài viết hiện tại.
 		 */
 		do_action( 'post_submitbox_minor_actions', $post );
 		?>
@@ -236,18 +236,18 @@ function post_submit_meta_box( $post, $args = array() ) {
 		$time_format = _x( 'H:i', 'publish box time format' );
 
 		if ( 0 !== $post_id ) {
-			if ( 'future' === $post->post_status ) { // Scheduled for publishing at a future date.
+			if ( 'future' === $post->post_status ) { // Đã lên lịch xuất bản vào ngày tương lai.
 				/* translators: Post date information. %s: Date on which the post is currently scheduled to be published. */
 				$stamp = __( 'Scheduled for: %s' );
-			} elseif ( 'publish' === $post->post_status || 'private' === $post->post_status ) { // Already published.
+			} elseif ( 'publish' === $post->post_status || 'private' === $post->post_status ) { // Đã xuất bản.
 				/* translators: Post date information. %s: Date on which the post was published. */
 				$stamp = __( 'Published on: %s' );
-			} elseif ( '0000-00-00 00:00:00' === $post->post_date_gmt ) { // Draft, 1 or more saves, no date specified.
+			} elseif ( '0000-00-00 00:00:00' === $post->post_date_gmt ) { // Bản nháp, 1 hoặc nhiều lần lưu, chưa chỉ định ngày.
 				$stamp = __( 'Publish <b>immediately</b>' );
-			} elseif ( time() < strtotime( $post->post_date_gmt . ' +0000' ) ) { // Draft, 1 or more saves, future date specified.
+			} elseif ( time() < strtotime( $post->post_date_gmt . ' +0000' ) ) { // Bản nháp, 1 hoặc nhiều lần lưu, đã chỉ định ngày tương lai.
 				/* translators: Post date information. %s: Date on which the post is to be published. */
 				$stamp = __( 'Schedule for: %s' );
-			} else { // Draft, 1 or more saves, date specified.
+			} else { // Bản nháp, 1 hoặc nhiều lần lưu, đã chỉ định ngày.
 				/* translators: Post date information. %s: Date on which the post is to be published. */
 				$stamp = __( 'Publish on: %s' );
 			}
@@ -256,7 +256,7 @@ function post_submit_meta_box( $post, $args = array() ) {
 				date_i18n( $date_format, strtotime( $post->post_date ) ),
 				date_i18n( $time_format, strtotime( $post->post_date ) )
 			);
-		} else { // Draft (no saves, and thus no date specified).
+		} else { // Bản nháp (chưa lưu lần nào, do đó chưa chỉ định ngày).
 			$stamp = __( 'Publish <b>immediately</b>' );
 			$date  = sprintf(
 				$date_string,
@@ -282,7 +282,7 @@ function post_submit_meta_box( $post, $args = array() ) {
 			<?php
 		endif;
 
-		if ( $can_publish ) : // Contributors don't get to choose the date of publish.
+		if ( $can_publish ) : // Người đóng góp không được chọn ngày xuất bản.
 			?>
 			<div class="misc-pub-section curtime misc-pub-curtime">
 				<span id="timestamp">
@@ -332,12 +332,12 @@ function post_submit_meta_box( $post, $args = array() ) {
 		endif;
 
 		/**
-		 * Fires after the post time/date setting in the Publish meta box.
+		 * Kích hoạt sau phần cài đặt thời gian/ngày bài viết trong meta box Xuất bản.
 		 *
 		 * @since 2.9.0
-		 * @since 4.4.0 Added the `$post` parameter.
+		 * @since 4.4.0 Thêm tham số `$post`.
 		 *
-		 * @param WP_Post $post WP_Post object for the current post.
+		 * @param WP_Post $post Đối tượng WP_Post cho bài viết hiện tại.
 		 */
 		do_action( 'post_submitbox_misc_actions', $post );
 		?>

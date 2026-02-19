@@ -1,12 +1,12 @@
 <?php
 /**
- * Install theme administration panel.
+ * Bảng quản trị cài đặt giao diện.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Tải bootstrap quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 require ABSPATH . 'wp-admin/includes/theme-install.php';
 
@@ -21,7 +21,7 @@ if ( is_multisite() && ! is_network_admin() ) {
 	exit;
 }
 
-// Used in the HTML title tag.
+// Dùng trong thẻ tiêu đề HTML.
 $title       = __( 'Add Themes' );
 $parent_file = 'themes.php';
 
@@ -36,7 +36,7 @@ if ( false === $installed_themes ) {
 }
 
 foreach ( $installed_themes as $theme_slug => $theme_data ) {
-	// Ignore child themes.
+	// Bỏ qua các giao diện con.
 	if ( str_contains( $theme_slug, '/' ) ) {
 		unset( $installed_themes[ $theme_slug ] );
 	}
@@ -82,12 +82,12 @@ wp_enqueue_script( 'updates' );
 
 if ( $tab ) {
 	/**
-	 * Fires before each of the tabs are rendered on the Install Themes page.
+	 * Kích hoạt trước khi mỗi tab trên trang Cài đặt Giao diện được hiển thị.
 	 *
-	 * The dynamic portion of the hook name, `$tab`, refers to the current
-	 * theme installation tab.
+	 * Phần động của tên hook, `$tab`, tham chiếu đến
+	 * tab cài đặt giao diện hiện tại.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể có:
 	 *
 	 *  - `install_themes_pre_block-themes`
 	 *  - `install_themes_pre_dashboard`
@@ -98,7 +98,7 @@ if ( $tab ) {
 	 *  - `install_themes_pre_upload`
 	 *
 	 * @since 2.8.0
-	 * @since 6.1.0 Added the `install_themes_pre_block-themes` hook name.
+	 * @since 6.1.0 Thêm tên hook `install_themes_pre_block-themes`.
 	 */
 	do_action( "install_themes_pre_{$tab}" );
 }
@@ -137,7 +137,7 @@ get_current_screen()->add_help_tab(
 	)
 );
 
-// Help tab: Block themes.
+// Tab trợ giúp: Giao diện khối.
 $help_block_themes =
 	'<p>' . __( 'A block theme is a theme that uses blocks for all parts of a site including navigation menus, header, content, and site footer. These themes are built for the features that allow you to edit and customize all parts of your site.' ) . '</p>' .
 	'<p>' . __( 'With a block theme, you can place and edit blocks without affecting your content by customizing or creating new templates.' ) . '</p>';
@@ -166,13 +166,13 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 	<?php
 
 	/**
-	 * Filters the tabs shown on the Add Themes screen.
+	 * Lọc các tab hiển thị trên màn hình Thêm Giao diện.
 	 *
-	 * This filter is for backward compatibility only, for the suppression of the upload tab.
+	 * Bộ lọc này chỉ dùng để tương thích ngược, cho việc ẩn tab tải lên.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string[] $tabs Associative array of the tabs shown on the Add Themes screen. Default is 'upload'.
+	 * @param string[] $tabs Mảng kết hợp các tab hiển thị trên màn hình Thêm Giao diện. Mặc định là 'upload'.
 	 */
 	$tabs = apply_filters( 'install_themes_tabs', array( 'upload' => __( 'Upload Theme' ) ) );
 	if ( ! empty( $tabs['upload'] ) && current_user_can( 'upload_themes' ) ) {
@@ -244,8 +244,8 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 				<button type="button" class="clear-filters button" aria-label="<?php esc_attr_e( 'Clear current filters' ); ?>"><?php _e( 'Clear' ); ?></button>
 			</div>
 		<?php
-		// Use the core list, rather than the .org API, due to inconsistencies
-		// and to ensure tags are translated.
+		// Sử dụng danh sách lõi thay vì API .org, do sự không nhất quán
+		// và để đảm bảo các thẻ được dịch.
 		$feature_list = get_theme_feature_list( false );
 
 		foreach ( $feature_list as $feature_group => $features ) {
@@ -287,12 +287,12 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 <?php
 if ( $tab ) {
 	/**
-	 * Fires at the top of each of the tabs on the Install Themes page.
+	 * Kích hoạt ở đầu mỗi tab trên trang Cài đặt Giao diện.
 	 *
-	 * The dynamic portion of the hook name, `$tab`, refers to the current
-	 * theme installation tab.
+	 * Phần động của tên hook, `$tab`, tham chiếu đến
+	 * tab cài đặt giao diện hiện tại.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể có:
 	 *
 	 *  - `install_themes_block-themes`
 	 *  - `install_themes_dashboard`
@@ -303,9 +303,9 @@ if ( $tab ) {
 	 *  - `install_themes_upload`
 	 *
 	 * @since 2.8.0
-	 * @since 6.1.0 Added the `install_themes_block-themes` hook name.
+	 * @since 6.1.0 Thêm tên hook `install_themes_block-themes`.
 	 *
-	 * @param int $paged Number of the current page of results being viewed.
+	 * @param int $paged Số trang hiện tại của kết quả đang được xem.
 	 */
 	do_action( "install_themes_{$tab}", $paged );
 }

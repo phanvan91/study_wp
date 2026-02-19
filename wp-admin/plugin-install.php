@@ -1,17 +1,17 @@
 <?php
 /**
- * Install plugin administration panel.
+ * Trang quản trị cài đặt plugin.
  *
  * @package WordPress
  * @subpackage Administration
  */
-// TODO: Route this page via a specific iframe handler instead of the do_action below.
+// TODO: Điều hướng trang này qua trình xử lý iframe cụ thể thay vì do_action bên dưới.
 if ( ! defined( 'IFRAME_REQUEST' ) && isset( $_GET['tab'] ) && ( 'plugin-information' === $_GET['tab'] ) ) {
 	define( 'IFRAME_REQUEST', true );
 }
 
 /**
- * WordPress Administration Bootstrap.
+ * Tải bootstrap quản trị WordPress.
  */
 require_once __DIR__ . '/admin.php';
 
@@ -47,7 +47,7 @@ if ( $pagenum > $total_pages && $total_pages > 0 ) {
 	exit;
 }
 
-// Used in the HTML title tag.
+// Dùng trong thẻ tiêu đề HTML.
 $title       = __( 'Add Plugins' );
 $parent_file = 'plugins.php';
 
@@ -61,12 +61,12 @@ $body_id = $tab;
 wp_enqueue_script( 'updates' );
 
 /**
- * Fires before each tab on the Install Plugins screen is loaded.
+ * Kích hoạt trước khi mỗi tab trên màn hình Cài đặt Plugin được tải.
  *
- * The dynamic portion of the hook name, `$tab`, allows for targeting
- * individual tabs.
+ * Phần động của tên hook, `$tab`, cho phép nhắm đến
+ * từng tab riêng lẻ.
  *
- * Possible hook names include:
+ * Các tên hook có thể có:
  *
  *  - `install_plugins_pre_beta`
  *  - `install_plugins_pre_favorites`
@@ -82,11 +82,11 @@ wp_enqueue_script( 'updates' );
 do_action( "install_plugins_pre_{$tab}" );
 
 /*
- * Call the pre upload action on every non-upload plugin installation screen
- * because the form is always displayed on these screens.
+ * Gọi action tải lên trước trên mọi màn hình cài đặt plugin không phải tải lên
+ * vì form luôn được hiển thị trên các màn hình này.
  */
 if ( 'upload' !== $tab ) {
-	/** This action is documented in wp-admin/plugin-install.php */
+	/** Action này được mô tả trong wp-admin/plugin-install.php */
 	do_action( 'install_plugins_pre_upload' );
 }
 
@@ -131,7 +131,7 @@ get_current_screen()->set_screen_reader_content(
 );
 
 /**
- * WordPress Administration Template Header.
+ * Tải mẫu tiêu đề quản trị WordPress.
  */
 require_once ABSPATH . 'wp-admin/admin-header.php';
 
@@ -161,14 +161,14 @@ if ( ! empty( $tabs['upload'] ) && current_user_can( 'upload_plugins' ) ) {
 
 <?php
 /*
- * Output the upload plugin form on every non-upload plugin installation screen, so it can be
- * displayed via JavaScript rather then opening up the devoted upload plugin page.
+ * Xuất form tải lên plugin trên mọi màn hình cài đặt plugin không phải tải lên, để có thể
+ * hiển thị qua JavaScript thay vì mở trang tải lên plugin riêng.
  */
 if ( 'upload' !== $tab ) {
 	?>
 	<div class="upload-plugin-wrap">
 		<?php
-		/** This action is documented in wp-admin/plugin-install.php */
+		/** Action này được mô tả trong wp-admin/plugin-install.php */
 		do_action( 'install_plugins_upload' );
 		?>
 	</div>
@@ -177,12 +177,12 @@ if ( 'upload' !== $tab ) {
 }
 
 /**
- * Fires after the plugins list table in each tab of the Install Plugins screen.
+ * Kích hoạt sau bảng danh sách plugin trong mỗi tab của màn hình Cài đặt Plugin.
  *
- * The dynamic portion of the hook name, `$tab`, allows for targeting
- * individual tabs.
+ * Phần động của tên hook, `$tab`, cho phép nhắm đến
+ * từng tab riêng lẻ.
  *
- * Possible hook names include:
+ * Các tên hook có thể có:
  *
  *  - `install_plugins_beta`
  *  - `install_plugins_favorites`
@@ -195,7 +195,7 @@ if ( 'upload' !== $tab ) {
  *
  * @since 2.7.0
  *
- * @param int $paged The current page number of the plugins list table.
+ * @param int $paged Số trang hiện tại của bảng danh sách plugin.
  */
 do_action( "install_plugins_{$tab}", $paged );
 ?>
@@ -208,6 +208,6 @@ wp_print_request_filesystem_credentials_modal();
 wp_print_admin_notice_templates();
 
 /**
- * WordPress Administration Template Footer.
+ * Tải mẫu chân trang quản trị WordPress.
  */
 require_once ABSPATH . 'wp-admin/admin-footer.php';

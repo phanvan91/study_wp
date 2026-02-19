@@ -1,17 +1,17 @@
 <?php
 /**
- * Filesystem API: Top-level functionality
+ * API Hệ thống tệp: Chức năng cấp cao nhất
  *
- * Functions for reading, writing, modifying, and deleting files on the file system.
- * Includes functionality for theme-specific files as well as operations for uploading,
- * archiving, and rendering output when necessary.
+ * Các hàm để đọc, ghi, sửa đổi và xóa tệp trên hệ thống tệp.
+ * Bao gồm chức năng dành riêng cho giao diện cũng như các thao tác tải lên,
+ * lưu trữ và hiển thị đầu ra khi cần thiết.
  *
  * @package WordPress
  * @subpackage Filesystem
  * @since 2.3.0
  */
 
-/** The descriptions for theme files. */
+/** Mô tả cho các tệp giao diện. */
 $wp_file_descriptions = array(
 	'functions.php'         => __( 'Theme Functions' ),
 	'header.php'            => __( 'Theme Header' ),
@@ -22,7 +22,7 @@ $wp_file_descriptions = array(
 	'404.php'               => __( '404 Template' ),
 	'link.php'              => __( 'Links Template' ),
 	'theme.json'            => __( 'Theme Styles & Block Settings' ),
-	// Archives.
+	// Trang lưu trữ.
 	'index.php'             => __( 'Main Index Template' ),
 	'archive.php'           => __( 'Archives' ),
 	'author.php'            => __( 'Author Template' ),
@@ -32,33 +32,33 @@ $wp_file_descriptions = array(
 	'home.php'              => __( 'Posts Page' ),
 	'search.php'            => __( 'Search Results' ),
 	'date.php'              => __( 'Date Template' ),
-	// Content.
+	// Nội dung.
 	'singular.php'          => __( 'Singular Template' ),
 	'single.php'            => __( 'Single Post' ),
 	'page.php'              => __( 'Single Page' ),
 	'front-page.php'        => __( 'Homepage' ),
 	'privacy-policy.php'    => __( 'Privacy Policy Page' ),
-	// Attachments.
+	// Tệp đính kèm.
 	'attachment.php'        => __( 'Attachment Template' ),
 	'image.php'             => __( 'Image Attachment Template' ),
 	'video.php'             => __( 'Video Attachment Template' ),
 	'audio.php'             => __( 'Audio Attachment Template' ),
 	'application.php'       => __( 'Application Attachment Template' ),
-	// Embeds.
+	// Nhúng.
 	'embed.php'             => __( 'Embed Template' ),
 	'embed-404.php'         => __( 'Embed 404 Template' ),
 	'embed-content.php'     => __( 'Embed Content Template' ),
 	'header-embed.php'      => __( 'Embed Header Template' ),
 	'footer-embed.php'      => __( 'Embed Footer Template' ),
-	// Stylesheets.
+	// Bảng kiểu.
 	'style.css'             => __( 'Stylesheet' ),
 	'editor-style.css'      => __( 'Visual Editor Stylesheet' ),
 	'editor-style-rtl.css'  => __( 'Visual Editor RTL Stylesheet' ),
 	'rtl.css'               => __( 'RTL Stylesheet' ),
-	// Other.
+	// Khác.
 	'my-hacks.php'          => __( 'my-hacks.php (legacy hacks support)' ),
 	'.htaccess'             => __( '.htaccess (for rewrite rules )' ),
-	// Deprecated files.
+	// Tệp không còn sử dụng.
 	'wp-layout.css'         => __( 'Stylesheet' ),
 	'wp-comments.php'       => __( 'Comments Template' ),
 	'wp-comments-popup.php' => __( 'Popup Comments Template' ),
@@ -66,16 +66,16 @@ $wp_file_descriptions = array(
 );
 
 /**
- * Gets the description for standard WordPress theme files.
+ * Lấy mô tả cho các tệp giao diện WordPress tiêu chuẩn.
  *
  * @since 1.5.0
  *
- * @global array $wp_file_descriptions Theme file descriptions.
- * @global array $allowed_files        List of allowed files.
+ * @global array $wp_file_descriptions Mô tả các tệp giao diện.
+ * @global array $allowed_files        Danh sách các tệp được phép.
  *
- * @param string $file Filesystem path or filename.
- * @return string Description of file from $wp_file_descriptions or basename of $file if description doesn't exist.
- *                Appends 'Page Template' to basename of $file if the file is a page template.
+ * @param string $file Đường dẫn hệ thống tệp hoặc tên tệp.
+ * @return string Mô tả tệp từ $wp_file_descriptions hoặc tên cơ sở của $file nếu mô tả không tồn tại.
+ *                Thêm 'Page Template' vào tên cơ sở của $file nếu tệp là mẫu trang.
  */
 function get_file_description( $file ) {
 	global $wp_file_descriptions, $allowed_files;
@@ -98,11 +98,11 @@ function get_file_description( $file ) {
 }
 
 /**
- * Gets the absolute filesystem path to the root of the WordPress installation.
+ * Lấy đường dẫn tuyệt đối trên hệ thống tệp đến thư mục gốc của bản cài đặt WordPress.
  *
  * @since 1.5.0
  *
- * @return string Full filesystem path to the root of the WordPress installation.
+ * @return string Đường dẫn đầy đủ trên hệ thống tệp đến thư mục gốc của bản cài đặt WordPress.
  */
 function get_home_path() {
 	$home    = set_url_scheme( get_option( 'home' ), 'http' );
@@ -121,20 +121,20 @@ function get_home_path() {
 }
 
 /**
- * Returns a listing of all files in the specified folder and all subdirectories up to 100 levels deep.
+ * Trả về danh sách tất cả các tệp trong thư mục được chỉ định và tất cả thư mục con sâu tối đa 100 cấp.
  *
- * The depth of the recursiveness can be controlled by the $levels param.
+ * Độ sâu đệ quy có thể được kiểm soát bằng tham số $levels.
  *
  * @since 2.6.0
- * @since 4.9.0 Added the `$exclusions` parameter.
- * @since 6.3.0 Added the `$include_hidden` parameter.
+ * @since 4.9.0 Thêm tham số `$exclusions`.
+ * @since 6.3.0 Thêm tham số `$include_hidden`.
  *
- * @param string   $folder         Optional. Full path to folder. Default empty.
- * @param int      $levels         Optional. Levels of folders to follow, Default 100 (PHP Loop limit).
- * @param string[] $exclusions     Optional. List of folders and files to skip.
- * @param bool     $include_hidden Optional. Whether to include details of hidden ("." prefixed) files.
- *                                 Default false.
- * @return string[]|false Array of files on success, false on failure.
+ * @param string   $folder         Tùy chọn. Đường dẫn đầy đủ đến thư mục. Mặc định rỗng.
+ * @param int      $levels         Tùy chọn. Số cấp thư mục để duyệt, Mặc định 100 (giới hạn vòng lặp PHP).
+ * @param string[] $exclusions     Tùy chọn. Danh sách các thư mục và tệp cần bỏ qua.
+ * @param bool     $include_hidden Tùy chọn. Có bao gồm chi tiết các tệp ẩn (tiền tố ".") hay không.
+ *                                 Mặc định false.
+ * @return string[]|false Mảng các tệp khi thành công, false khi thất bại.
  */
 function list_files( $folder = '', $levels = 100, $exclusions = array(), $include_hidden = false ) {
 	if ( empty( $folder ) ) {
@@ -153,12 +153,12 @@ function list_files( $folder = '', $levels = 100, $exclusions = array(), $includ
 
 	if ( $dir ) {
 		while ( ( $file = readdir( $dir ) ) !== false ) {
-			// Skip current and parent folder links.
+			// Bỏ qua liên kết thư mục hiện tại và thư mục cha.
 			if ( in_array( $file, array( '.', '..' ), true ) ) {
 				continue;
 			}
 
-			// Skip hidden and excluded files.
+			// Bỏ qua các tệp ẩn và tệp bị loại trừ.
 			if ( ( ! $include_hidden && '.' === $file[0] ) || in_array( $file, $exclusions, true ) ) {
 				continue;
 			}
@@ -182,12 +182,12 @@ function list_files( $folder = '', $levels = 100, $exclusions = array(), $includ
 }
 
 /**
- * Gets the list of file extensions that are editable in plugins.
+ * Lấy danh sách các phần mở rộng tệp có thể chỉnh sửa trong plugin.
  *
  * @since 4.9.0
  *
- * @param string $plugin Path to the plugin file relative to the plugins directory.
- * @return string[] Array of editable file extensions.
+ * @param string $plugin Đường dẫn đến tệp plugin tương đối với thư mục plugins.
+ * @return string[] Mảng các phần mở rộng tệp có thể chỉnh sửa.
  */
 function wp_get_plugin_file_editable_extensions( $plugin ) {
 
@@ -227,13 +227,13 @@ function wp_get_plugin_file_editable_extensions( $plugin ) {
 	);
 
 	/**
-	 * Filters the list of file types allowed for editing in the plugin file editor.
+	 * Lọc danh sách các loại tệp được phép chỉnh sửa trong trình sửa tệp plugin.
 	 *
 	 * @since 2.8.0
-	 * @since 4.9.0 Added the `$plugin` parameter.
+	 * @since 4.9.0 Thêm tham số `$plugin`.
 	 *
-	 * @param string[] $default_types An array of editable plugin file extensions.
-	 * @param string   $plugin        Path to the plugin file relative to the plugins directory.
+	 * @param string[] $default_types Mảng các phần mở rộng tệp plugin có thể chỉnh sửa.
+	 * @param string   $plugin        Đường dẫn đến tệp plugin tương đối với thư mục plugins.
 	 */
 	$file_types = (array) apply_filters( 'editable_extensions', $default_types, $plugin );
 
@@ -241,12 +241,12 @@ function wp_get_plugin_file_editable_extensions( $plugin ) {
 }
 
 /**
- * Gets the list of file extensions that are editable for a given theme.
+ * Lấy danh sách các phần mở rộng tệp có thể chỉnh sửa cho một giao diện cụ thể.
  *
  * @since 4.9.0
  *
- * @param WP_Theme $theme Theme object.
- * @return string[] Array of editable file extensions.
+ * @param WP_Theme $theme Đối tượng giao diện.
+ * @return string[] Mảng các phần mở rộng tệp có thể chỉnh sửa.
  */
 function wp_get_theme_file_editable_extensions( $theme ) {
 
@@ -286,21 +286,21 @@ function wp_get_theme_file_editable_extensions( $theme ) {
 	);
 
 	/**
-	 * Filters the list of file types allowed for editing in the theme file editor.
+	 * Lọc danh sách các loại tệp được phép chỉnh sửa trong trình sửa tệp giao diện.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string[] $default_types An array of editable theme file extensions.
-	 * @param WP_Theme $theme         The active theme object.
+	 * @param string[] $default_types Mảng các phần mở rộng tệp giao diện có thể chỉnh sửa.
+	 * @param WP_Theme $theme         Đối tượng giao diện đang hoạt động.
 	 */
 	$file_types = apply_filters( 'wp_theme_editor_filetypes', $default_types, $theme );
 
-	// Ensure that default types are still there.
+	// Đảm bảo rằng các loại mặc định vẫn còn.
 	return array_unique( array_merge( $file_types, $default_types ) );
 }
 
 /**
- * Prints file editor templates (for plugins and themes).
+ * In ra các mẫu trình sửa tệp (cho plugin và giao diện).
  *
  * @since 4.9.0
  */
@@ -355,25 +355,25 @@ function wp_print_file_editor_templates() {
 }
 
 /**
- * Attempts to edit a file for a theme or plugin.
+ * Cố gắng chỉnh sửa một tệp cho giao diện hoặc plugin.
  *
- * When editing a PHP file, loopback requests will be made to the admin and the homepage
- * to attempt to see if there is a fatal error introduced. If so, the PHP change will be
- * reverted.
+ * Khi chỉnh sửa tệp PHP, các yêu cầu loopback sẽ được gửi đến trang quản trị và trang chủ
+ * để kiểm tra xem có lỗi nghiêm trọng nào được đưa vào không. Nếu có, thay đổi PHP sẽ được
+ * hoàn tác.
  *
  * @since 4.9.0
  *
  * @param string[] $args {
- *     Args. Note that all of the arg values are already unslashed. They are, however,
- *     coming straight from `$_POST` and are not validated or sanitized in any way.
+ *     Các tham số. Lưu ý rằng tất cả các giá trị tham số đã được unslash. Tuy nhiên, chúng
+ *     đến trực tiếp từ `$_POST` và không được xác thực hoặc làm sạch dữ liệu theo bất kỳ cách nào.
  *
- *     @type string $file       Relative path to file.
- *     @type string $plugin     Path to the plugin file relative to the plugins directory.
- *     @type string $theme      Theme being edited.
- *     @type string $newcontent New content for the file.
+ *     @type string $file       Đường dẫn tương đối đến tệp.
+ *     @type string $plugin     Đường dẫn đến tệp plugin tương đối với thư mục plugins.
+ *     @type string $theme      Giao diện đang được chỉnh sửa.
+ *     @type string $newcontent Nội dung mới cho tệp.
  *     @type string $nonce      Nonce.
  * }
- * @return true|WP_Error True on success or `WP_Error` on failure.
+ * @return true|WP_Error True khi thành công hoặc `WP_Error` khi thất bại.
  */
 function wp_edit_theme_plugin_file( $args ) {
 	if ( empty( $args['file'] ) ) {
@@ -474,7 +474,7 @@ function wp_edit_theme_plugin_file( $args ) {
 			}
 		}
 
-		// Compare based on relative paths.
+		// So sánh dựa trên đường dẫn tương đối.
 		if ( 0 !== validate_file( $file, array_keys( $allowed_files ) ) ) {
 			return new WP_Error( 'disallowed_theme_file', __( 'Sorry, that file cannot be edited.' ) );
 		}
@@ -487,12 +487,12 @@ function wp_edit_theme_plugin_file( $args ) {
 		return new WP_Error( 'missing_theme_or_plugin' );
 	}
 
-	// Ensure file is real.
+	// Đảm bảo tệp tồn tại thực sự.
 	if ( ! is_file( $real_file ) ) {
 		return new WP_Error( 'file_does_not_exist', __( 'File does not exist! Please double check the name and try again.' ) );
 	}
 
-	// Ensure file extension is allowed.
+	// Đảm bảo phần mở rộng tệp được phép.
 	$extension = null;
 	if ( preg_match( '/\.([^.]+)$/', $real_file, $matches ) ) {
 		$extension = strtolower( $matches[1] );
@@ -527,7 +527,7 @@ function wp_edit_theme_plugin_file( $args ) {
 		$scrape_key   = md5( rand() );
 		$transient    = 'scrape_key_' . $scrape_key;
 		$scrape_nonce = (string) rand();
-		// It shouldn't take more than 60 seconds to make the two loopback requests.
+		// Không nên mất quá 60 giây để thực hiện hai yêu cầu loopback.
 		set_transient( $transient, $scrape_nonce, 60 );
 
 		$cookies       = wp_unslash( $_COOKIE );
@@ -539,26 +539,26 @@ function wp_edit_theme_plugin_file( $args ) {
 			'Cache-Control' => 'no-cache',
 		);
 
-		/** This filter is documented in wp-includes/class-wp-http-streams.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-includes/class-wp-http-streams.php */
 		$sslverify = apply_filters( 'https_local_ssl_verify', false );
 
-		// Include Basic auth in loopback requests.
+		// Bao gồm xác thực Basic trong các yêu cầu loopback.
 		if ( isset( $_SERVER['PHP_AUTH_USER'] ) && isset( $_SERVER['PHP_AUTH_PW'] ) ) {
 			$headers['Authorization'] = 'Basic ' . base64_encode( wp_unslash( $_SERVER['PHP_AUTH_USER'] ) . ':' . wp_unslash( $_SERVER['PHP_AUTH_PW'] ) );
 		}
 
-		// Make sure PHP process doesn't die before loopback requests complete.
+		// Đảm bảo tiến trình PHP không kết thúc trước khi các yêu cầu loopback hoàn tất.
 		if ( function_exists( 'set_time_limit' ) ) {
 			set_time_limit( 5 * MINUTE_IN_SECONDS );
 		}
 
-		// Time to wait for loopback requests to finish.
-		$timeout = 100; // 100 seconds.
+		// Thời gian chờ các yêu cầu loopback hoàn tất.
+		$timeout = 100; // 100 giây.
 
 		$needle_start = "###### wp_scraping_result_start:$scrape_key ######";
 		$needle_end   = "###### wp_scraping_result_end:$scrape_key ######";
 
-		// Attempt loopback request to editor to see if user just whitescreened themselves.
+		// Thử yêu cầu loopback đến trình sửa để xem người dùng có gây ra lỗi trắng màn hình không.
 		if ( $plugin ) {
 			$url = add_query_arg( compact( 'plugin', 'file' ), admin_url( 'plugin-editor.php' ) );
 		} elseif ( isset( $stylesheet ) ) {
@@ -575,8 +575,8 @@ function wp_edit_theme_plugin_file( $args ) {
 
 		if ( function_exists( 'session_status' ) && PHP_SESSION_ACTIVE === session_status() ) {
 			/*
-			 * Close any active session to prevent HTTP requests from timing out
-			 * when attempting to connect back to the site.
+			 * Đóng mọi phiên đang hoạt động để ngăn các yêu cầu HTTP bị hết thời gian chờ
+			 * khi cố gắng kết nối lại trang web.
 			 */
 			session_write_close();
 		}
@@ -607,7 +607,7 @@ function wp_edit_theme_plugin_file( $args ) {
 			}
 		}
 
-		// Try making request to homepage as well to see if visitors have been whitescreened.
+		// Thử gửi yêu cầu đến trang chủ để xem khách truy cập có bị lỗi trắng màn hình không.
 		if ( true === $result ) {
 			$url                    = home_url( '/' );
 			$url                    = add_query_arg( $scrape_params, $url );
@@ -630,7 +630,7 @@ function wp_edit_theme_plugin_file( $args ) {
 		delete_transient( $transient );
 
 		if ( true !== $result ) {
-			// Roll-back file change.
+			// Hoàn tác thay đổi tệp.
 			file_put_contents( $real_file, $previous_content );
 			wp_opcache_invalidate( $real_file, true );
 
@@ -654,19 +654,19 @@ function wp_edit_theme_plugin_file( $args ) {
 
 
 /**
- * Returns a filename of a temporary unique file.
+ * Trả về tên tệp tạm thời duy nhất.
  *
- * Please note that the calling function must delete or move the file.
+ * Xin lưu ý rằng hàm gọi phải xóa hoặc di chuyển tệp.
  *
- * The filename is based off the passed parameter or defaults to the current unix timestamp,
- * while the directory can either be passed as well, or by leaving it blank, default to a writable
- * temporary directory.
+ * Tên tệp dựa trên tham số được truyền vào hoặc mặc định là dấu thời gian unix hiện tại,
+ * trong khi thư mục có thể được truyền vào, hoặc để trống sẽ mặc định là thư mục
+ * tạm thời có thể ghi.
  *
  * @since 2.6.0
  *
- * @param string $filename Optional. Filename to base the Unique file off. Default empty.
- * @param string $dir      Optional. Directory to store the file in. Default empty.
- * @return string A writable filename.
+ * @param string $filename Tùy chọn. Tên tệp cơ sở cho tệp duy nhất. Mặc định rỗng.
+ * @param string $dir      Tùy chọn. Thư mục để lưu trữ tệp. Mặc định rỗng.
+ * @return string Tên tệp có thể ghi.
  */
 function wp_tempnam( $filename = '', $dir = '' ) {
 	if ( empty( $dir ) ) {
@@ -677,29 +677,29 @@ function wp_tempnam( $filename = '', $dir = '' ) {
 		$filename = uniqid();
 	}
 
-	// Use the basename of the given file without the extension as the name for the temporary directory.
+	// Sử dụng tên cơ sở của tệp đã cho (không có phần mở rộng) làm tên cho thư mục tạm thời.
 	$temp_filename = basename( $filename );
 	$temp_filename = preg_replace( '|\.[^.]*$|', '', $temp_filename );
 
-	// If the folder is falsey, use its parent directory name instead.
+	// Nếu thư mục là giá trị falsey, sử dụng tên thư mục cha thay thế.
 	if ( ! $temp_filename ) {
 		return wp_tempnam( dirname( $filename ), $dir );
 	}
 
-	// Suffix some random data to avoid filename conflicts.
+	// Thêm hậu tố dữ liệu ngẫu nhiên để tránh xung đột tên tệp.
 	$temp_filename .= '-' . wp_generate_password( 6, false );
 	$temp_filename .= '.tmp';
 	$temp_filename  = wp_unique_filename( $dir, $temp_filename );
 
 	/*
-	 * Filesystems typically have a limit of 255 characters for a filename.
+	 * Hệ thống tệp thường có giới hạn 255 ký tự cho tên tệp.
 	 *
-	 * If the generated unique filename exceeds this, truncate the initial
-	 * filename and try again.
+	 * Nếu tên tệp duy nhất được tạo vượt quá giới hạn này, cắt ngắn tên tệp
+	 * ban đầu và thử lại.
 	 *
-	 * As it's possible that the truncated filename may exist, producing a
-	 * suffix of "-1" or "-10" which could exceed the limit again, truncate
-	 * it to 252 instead.
+	 * Vì có khả năng tên tệp bị cắt ngắn có thể đã tồn tại, tạo ra hậu tố
+	 * "-1" hoặc "-10" có thể vượt quá giới hạn một lần nữa, nên cắt ngắn
+	 * xuống còn 252 thay thế.
 	 */
 	$characters_over_limit = strlen( $temp_filename ) - 252;
 	if ( $characters_over_limit > 0 ) {
@@ -723,16 +723,16 @@ function wp_tempnam( $filename = '', $dir = '' ) {
 }
 
 /**
- * Makes sure that the file that was requested to be edited is allowed to be edited.
+ * Đảm bảo rằng tệp được yêu cầu chỉnh sửa có được phép chỉnh sửa.
  *
- * Function will die if you are not allowed to edit the file.
+ * Hàm sẽ dừng thực thi nếu bạn không được phép chỉnh sửa tệp.
  *
  * @since 1.5.0
  *
- * @param string   $file          File the user is attempting to edit.
- * @param string[] $allowed_files Optional. Array of allowed files to edit.
- *                                `$file` must match an entry exactly.
- * @return string|void Returns the file name on success, dies on failure.
+ * @param string   $file          Tệp mà người dùng đang cố chỉnh sửa.
+ * @param string[] $allowed_files Tùy chọn. Mảng các tệp được phép chỉnh sửa.
+ *                                `$file` phải khớp chính xác với một mục.
+ * @return string|void Trả về tên tệp khi thành công, dừng thực thi khi thất bại.
  */
 function validate_file_to_edit( $file, $allowed_files = array() ) {
 	$code = validate_file( $file, $allowed_files );
@@ -754,10 +754,10 @@ function validate_file_to_edit( $file, $allowed_files = array() ) {
 }
 
 /**
- * Handles PHP uploads in WordPress.
+ * Xử lý tải lên tệp PHP trong WordPress.
  *
- * Sanitizes file names, checks extensions for mime type, and moves the file
- * to the appropriate directory within the uploads directory.
+ * Làm sạch tên tệp, kiểm tra phần mở rộng cho loại mime, và di chuyển tệp
+ * đến thư mục phù hợp trong thư mục uploads.
  *
  * @access private
  * @since 4.0.0
@@ -765,42 +765,42 @@ function validate_file_to_edit( $file, $allowed_files = array() ) {
  * @see wp_handle_upload_error
  *
  * @param array       $file      {
- *     Reference to a single element from `$_FILES`. Call the function once for each uploaded file.
+ *     Tham chiếu đến một phần tử đơn từ `$_FILES`. Gọi hàm một lần cho mỗi tệp được tải lên.
  *
- *     @type string $name     The original name of the file on the client machine.
- *     @type string $type     The mime type of the file, if the browser provided this information.
- *     @type string $tmp_name The temporary filename of the file in which the uploaded file was stored on the server.
- *     @type int    $size     The size, in bytes, of the uploaded file.
- *     @type int    $error    The error code associated with this file upload.
+ *     @type string $name     Tên gốc của tệp trên máy khách.
+ *     @type string $type     Loại mime của tệp, nếu trình duyệt cung cấp thông tin này.
+ *     @type string $tmp_name Tên tệp tạm thời nơi tệp tải lên được lưu trữ trên máy chủ.
+ *     @type int    $size     Kích thước tệp tải lên, tính bằng byte.
+ *     @type int    $error    Mã lỗi liên quan đến việc tải lên tệp này.
  * }
  * @param array|false $overrides {
- *     An array of override parameters for this file, or boolean false if none are provided.
+ *     Mảng các tham số ghi đè cho tệp này, hoặc boolean false nếu không có tham số nào được cung cấp.
  *
- *     @type callable $upload_error_handler     Function to call when there is an error during the upload process.
- *                                              See {@see wp_handle_upload_error()}.
- *     @type callable $unique_filename_callback Function to call when determining a unique file name for the file.
- *                                              See {@see wp_unique_filename()}.
- *     @type string[] $upload_error_strings     The strings that describe the error indicated in
+ *     @type callable $upload_error_handler     Hàm gọi khi có lỗi trong quá trình tải lên.
+ *                                              Xem {@see wp_handle_upload_error()}.
+ *     @type callable $unique_filename_callback Hàm gọi khi xác định tên tệp duy nhất cho tệp.
+ *                                              Xem {@see wp_unique_filename()}.
+ *     @type string[] $upload_error_strings     Các chuỗi mô tả lỗi được chỉ ra trong
  *                                              `$_FILES[{form field}]['error']`.
- *     @type bool     $test_form                Whether to test that the `$_POST['action']` parameter is as expected.
- *     @type bool     $test_size                Whether to test that the file size is greater than zero bytes.
- *     @type bool     $test_type                Whether to test that the mime type of the file is as expected.
- *     @type string[] $mimes                    Array of allowed mime types keyed by their file extension regex.
+ *     @type bool     $test_form                Có kiểm tra tham số `$_POST['action']` đúng như mong đợi không.
+ *     @type bool     $test_size                Có kiểm tra kích thước tệp lớn hơn 0 byte không.
+ *     @type bool     $test_type                Có kiểm tra loại mime của tệp đúng như mong đợi không.
+ *     @type string[] $mimes                    Mảng các loại mime được phép, khóa bởi regex phần mở rộng tệp.
  * }
- * @param string      $time      Time formatted in 'yyyy/mm'.
- * @param string      $action    Expected value for `$_POST['action']`.
+ * @param string      $time      Thời gian được định dạng theo 'yyyy/mm'.
+ * @param string      $action    Giá trị mong đợi cho `$_POST['action']`.
  * @return array {
- *     On success, returns an associative array of file attributes.
- *     On failure, returns `$overrides['upload_error_handler']( &$file, $message )`
- *     or `array( 'error' => $message )`.
+ *     Khi thành công, trả về mảng kết hợp các thuộc tính tệp.
+ *     Khi thất bại, trả về `$overrides['upload_error_handler']( &$file, $message )`
+ *     hoặc `array( 'error' => $message )`.
  *
- *     @type string $file Filename of the newly-uploaded file.
- *     @type string $url  URL of the newly-uploaded file.
- *     @type string $type Mime type of the newly-uploaded file.
+ *     @type string $file Tên tệp của tệp vừa tải lên.
+ *     @type string $url  URL của tệp vừa tải lên.
+ *     @type string $type Loại mime của tệp vừa tải lên.
  * }
  */
 function _wp_handle_upload( &$file, $overrides, $time, $action ) {
-	// The default error handler.
+	// Hàm xử lý lỗi mặc định.
 	if ( ! function_exists( 'wp_handle_upload_error' ) ) {
 		function wp_handle_upload_error( &$file, $message ) {
 			return array( 'error' => $message );
@@ -808,83 +808,83 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 	}
 
 	/**
-	 * Filters the data for a file before it is uploaded to WordPress.
+	 * Lọc dữ liệu cho một tệp trước khi nó được tải lên WordPress.
 	 *
-	 * The dynamic portion of the hook name, `$action`, refers to the post action.
+	 * Phần động của tên hook, `$action`, tham chiếu đến hành động bài viết.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `wp_handle_sideload_prefilter`
 	 *  - `wp_handle_upload_prefilter`
 	 *
-	 * @since 2.9.0 as 'wp_handle_upload_prefilter'.
-	 * @since 4.0.0 Converted to a dynamic hook with `$action`.
+	 * @since 2.9.0 với tên 'wp_handle_upload_prefilter'.
+	 * @since 4.0.0 Chuyển đổi thành hook động với `$action`.
 	 *
 	 * @param array $file {
-	 *     Reference to a single element from `$_FILES`.
+	 *     Tham chiếu đến một phần tử đơn từ `$_FILES`.
 	 *
-	 *     @type string $name     The original name of the file on the client machine.
-	 *     @type string $type     The mime type of the file, if the browser provided this information.
-	 *     @type string $tmp_name The temporary filename of the file in which the uploaded file was stored on the server.
-	 *     @type int    $size     The size, in bytes, of the uploaded file.
-	 *     @type int    $error    The error code associated with this file upload.
+	 *     @type string $name     Tên gốc của tệp trên máy khách.
+	 *     @type string $type     Loại mime của tệp, nếu trình duyệt cung cấp thông tin này.
+	 *     @type string $tmp_name Tên tệp tạm thời nơi tệp tải lên được lưu trữ trên máy chủ.
+	 *     @type int    $size     Kích thước tệp tải lên, tính bằng byte.
+	 *     @type int    $error    Mã lỗi liên quan đến việc tải lên tệp này.
 	 * }
 	 */
 	$file = apply_filters( "{$action}_prefilter", $file );
 
 	/**
-	 * Filters the override parameters for a file before it is uploaded to WordPress.
+	 * Lọc các tham số ghi đè cho một tệp trước khi nó được tải lên WordPress.
 	 *
-	 * The dynamic portion of the hook name, `$action`, refers to the post action.
+	 * Phần động của tên hook, `$action`, tham chiếu đến hành động bài viết.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `wp_handle_sideload_overrides`
 	 *  - `wp_handle_upload_overrides`
 	 *
 	 * @since 5.7.0
 	 *
-	 * @param array|false $overrides An array of override parameters for this file. Boolean false if none are
-	 *                               provided. See {@see _wp_handle_upload()}.
+	 * @param array|false $overrides Mảng các tham số ghi đè cho tệp này. Boolean false nếu không có
+	 *                               tham số nào được cung cấp. Xem {@see _wp_handle_upload()}.
 	 * @param array       $file      {
-	 *     Reference to a single element from `$_FILES`.
+	 *     Tham chiếu đến một phần tử đơn từ `$_FILES`.
 	 *
-	 *     @type string $name     The original name of the file on the client machine.
-	 *     @type string $type     The mime type of the file, if the browser provided this information.
-	 *     @type string $tmp_name The temporary filename of the file in which the uploaded file was stored on the server.
-	 *     @type int    $size     The size, in bytes, of the uploaded file.
-	 *     @type int    $error    The error code associated with this file upload.
+	 *     @type string $name     Tên gốc của tệp trên máy khách.
+	 *     @type string $type     Loại mime của tệp, nếu trình duyệt cung cấp thông tin này.
+	 *     @type string $tmp_name Tên tệp tạm thời nơi tệp tải lên được lưu trữ trên máy chủ.
+	 *     @type int    $size     Kích thước tệp tải lên, tính bằng byte.
+	 *     @type int    $error    Mã lỗi liên quan đến việc tải lên tệp này.
 	 * }
 	 */
 	$overrides = apply_filters( "{$action}_overrides", $overrides, $file );
 
-	// You may define your own function and pass the name in $overrides['upload_error_handler'].
+	// Bạn có thể định nghĩa hàm riêng và truyền tên vào $overrides['upload_error_handler'].
 	$upload_error_handler = 'wp_handle_upload_error';
 	if ( isset( $overrides['upload_error_handler'] ) ) {
 		$upload_error_handler = $overrides['upload_error_handler'];
 	}
 
-	// You may have had one or more 'wp_handle_upload_prefilter' functions error out the file. Handle that gracefully.
+	// Có thể một hoặc nhiều hàm 'wp_handle_upload_prefilter' đã báo lỗi cho tệp. Xử lý điều đó một cách nhẹ nhàng.
 	if ( isset( $file['error'] ) && ! is_numeric( $file['error'] ) && $file['error'] ) {
 		return call_user_func_array( $upload_error_handler, array( &$file, $file['error'] ) );
 	}
 
-	// Install user overrides. Did we mention that this voids your warranty?
+	// Cài đặt các ghi đè của người dùng. Lưu ý rằng điều này sẽ vô hiệu bảo hành của bạn.
 
-	// You may define your own function and pass the name in $overrides['unique_filename_callback'].
+	// Bạn có thể định nghĩa hàm riêng và truyền tên vào $overrides['unique_filename_callback'].
 	$unique_filename_callback = null;
 	if ( isset( $overrides['unique_filename_callback'] ) ) {
 		$unique_filename_callback = $overrides['unique_filename_callback'];
 	}
 
 	/*
-	 * This may not have originally been intended to be overridable,
-	 * but historically has been.
+	 * Điều này ban đầu có thể không được dự định cho phép ghi đè,
+	 * nhưng trong lịch sử đã cho phép.
 	 */
 	if ( isset( $overrides['upload_error_strings'] ) ) {
 		$upload_error_strings = $overrides['upload_error_strings'];
 	} else {
-		// Courtesy of php.net, the strings that describe the error indicated in $_FILES[{form field}]['error'].
+		// Theo php.net, các chuỗi mô tả lỗi được chỉ ra trong $_FILES[{form field}]['error'].
 		$upload_error_strings = array(
 			false,
 			sprintf(
@@ -907,32 +907,32 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 		);
 	}
 
-	// All tests are on by default. Most can be turned off by $overrides[{test_name}] = false;
+	// Tất cả các kiểm tra được bật mặc định. Hầu hết có thể được tắt bằng $overrides[{test_name}] = false;
 	$test_form = isset( $overrides['test_form'] ) ? $overrides['test_form'] : true;
 	$test_size = isset( $overrides['test_size'] ) ? $overrides['test_size'] : true;
 
-	// If you override this, you must provide $ext and $type!!
+	// Nếu bạn ghi đè điều này, bạn phải cung cấp $ext và $type!!
 	$test_type = isset( $overrides['test_type'] ) ? $overrides['test_type'] : true;
 	$mimes     = isset( $overrides['mimes'] ) ? $overrides['mimes'] : null;
 
-	// A correct form post will pass this test.
+	// Một form post đúng sẽ vượt qua kiểm tra này.
 	if ( $test_form && ( ! isset( $_POST['action'] ) || $_POST['action'] !== $action ) ) {
 		return call_user_func_array( $upload_error_handler, array( &$file, __( 'Invalid form submission.' ) ) );
 	}
 
-	// A successful upload will pass this test. It makes no sense to override this one.
+	// Một tải lên thành công sẽ vượt qua kiểm tra này. Không có lý do để ghi đè kiểm tra này.
 	if ( isset( $file['error'] ) && $file['error'] > 0 ) {
 		return call_user_func_array( $upload_error_handler, array( &$file, $upload_error_strings[ $file['error'] ] ) );
 	}
 
-	// A properly uploaded file will pass this test. There should be no reason to override this one.
+	// Một tệp được tải lên đúng cách sẽ vượt qua kiểm tra này. Không nên có lý do để ghi đè kiểm tra này.
 	$test_uploaded_file = 'wp_handle_upload' === $action ? is_uploaded_file( $file['tmp_name'] ) : @is_readable( $file['tmp_name'] );
 	if ( ! $test_uploaded_file ) {
 		return call_user_func_array( $upload_error_handler, array( &$file, __( 'Specified file failed upload test.' ) ) );
 	}
 
 	$test_file_size = 'wp_handle_upload' === $action ? $file['size'] : filesize( $file['tmp_name'] );
-	// A non-empty file will pass this test.
+	// Một tệp không rỗng sẽ vượt qua kiểm tra này.
 	if ( $test_size && ! ( $test_file_size > 0 ) ) {
 		if ( is_multisite() ) {
 			$error_msg = __( 'File is empty. Please upload something more substantial.' );
@@ -949,14 +949,14 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 		return call_user_func_array( $upload_error_handler, array( &$file, $error_msg ) );
 	}
 
-	// A correct MIME type will pass this test. Override $mimes or use the upload_mimes filter.
+	// Một loại MIME đúng sẽ vượt qua kiểm tra này. Ghi đè $mimes hoặc sử dụng bộ lọc upload_mimes.
 	if ( $test_type ) {
 		$wp_filetype     = wp_check_filetype_and_ext( $file['tmp_name'], $file['name'], $mimes );
 		$ext             = empty( $wp_filetype['ext'] ) ? '' : $wp_filetype['ext'];
 		$type            = empty( $wp_filetype['type'] ) ? '' : $wp_filetype['type'];
 		$proper_filename = empty( $wp_filetype['proper_filename'] ) ? '' : $wp_filetype['proper_filename'];
 
-		// Check to see if wp_check_filetype_and_ext() determined the filename was incorrect.
+		// Kiểm tra xem wp_check_filetype_and_ext() có xác định tên tệp không chính xác không.
 		if ( $proper_filename ) {
 			$file['name'] = $proper_filename;
 		}
@@ -973,8 +973,8 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 	}
 
 	/*
-	 * A writable uploads dir will pass this test. Again, there's no point
-	 * overriding this one.
+	 * Một thư mục uploads có quyền ghi sẽ vượt qua kiểm tra này. Một lần nữa, không có lý do
+	 * để ghi đè kiểm tra này.
 	 */
 	$uploads = wp_upload_dir( $time );
 	if ( ! ( $uploads && false === $uploads['error'] ) ) {
@@ -983,29 +983,29 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 
 	$filename = wp_unique_filename( $uploads['path'], $file['name'], $unique_filename_callback );
 
-	// Move the file to the uploads dir.
+	// Di chuyển tệp đến thư mục uploads.
 	$new_file = $uploads['path'] . "/$filename";
 
 	/**
-	 * Filters whether to short-circuit moving the uploaded file after passing all checks.
+	 * Lọc có bỏ qua việc di chuyển tệp tải lên sau khi vượt qua tất cả kiểm tra hay không.
 	 *
-	 * If a non-null value is returned from the filter, moving the file and any related
-	 * error reporting will be completely skipped.
+	 * Nếu một giá trị khác null được trả về từ bộ lọc, việc di chuyển tệp và bất kỳ
+	 * báo cáo lỗi liên quan nào sẽ bị bỏ qua hoàn toàn.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param mixed    $move_new_file If null (default) move the file after the upload.
+	 * @param mixed    $move_new_file Nếu null (mặc định) di chuyển tệp sau khi tải lên.
 	 * @param array    $file          {
-	 *     Reference to a single element from `$_FILES`.
+	 *     Tham chiếu đến một phần tử đơn từ `$_FILES`.
 	 *
-	 *     @type string $name     The original name of the file on the client machine.
-	 *     @type string $type     The mime type of the file, if the browser provided this information.
-	 *     @type string $tmp_name The temporary filename of the file in which the uploaded file was stored on the server.
-	 *     @type int    $size     The size, in bytes, of the uploaded file.
-	 *     @type int    $error    The error code associated with this file upload.
+	 *     @type string $name     Tên gốc của tệp trên máy khách.
+	 *     @type string $type     Loại mime của tệp, nếu trình duyệt cung cấp thông tin này.
+	 *     @type string $tmp_name Tên tệp tạm thời nơi tệp tải lên được lưu trữ trên máy chủ.
+	 *     @type int    $size     Kích thước tệp tải lên, tính bằng byte.
+	 *     @type int    $error    Mã lỗi liên quan đến việc tải lên tệp này.
 	 * }
-	 * @param string   $new_file      Filename of the newly-uploaded file.
-	 * @param string   $type          Mime type of the newly-uploaded file.
+	 * @param string   $new_file      Tên tệp của tệp vừa tải lên.
+	 * @param string   $type          Loại mime của tệp vừa tải lên.
 	 */
 	$move_new_file = apply_filters( 'pre_move_uploaded_file', null, $file, $new_file, $type );
 
@@ -1013,7 +1013,7 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 		if ( 'wp_handle_upload' === $action ) {
 			$move_new_file = @move_uploaded_file( $file['tmp_name'], $new_file );
 		} else {
-			// Use copy and unlink because rename breaks streams.
+			// Sử dụng copy và unlink vì rename làm hỏng luồng dữ liệu.
 			// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 			$move_new_file = @copy( $file['tmp_name'], $new_file );
 			unlink( $file['tmp_name'] );
@@ -1037,12 +1037,12 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 		}
 	}
 
-	// Set correct file permissions.
+	// Đặt quyền tệp đúng.
 	$stat  = stat( dirname( $new_file ) );
 	$perms = $stat['mode'] & 0000666;
 	chmod( $new_file, $perms );
 
-	// Compute the URL.
+	// Tính toán URL.
 	$url = $uploads['url'] . "/$filename";
 
 	if ( is_multisite() ) {
@@ -1050,18 +1050,18 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 	}
 
 	/**
-	 * Filters the data array for the uploaded file.
+	 * Lọc mảng dữ liệu cho tệp đã tải lên.
 	 *
 	 * @since 2.1.0
 	 *
 	 * @param array  $upload {
-	 *     Array of upload data.
+	 *     Mảng dữ liệu tải lên.
 	 *
-	 *     @type string $file Filename of the newly-uploaded file.
-	 *     @type string $url  URL of the newly-uploaded file.
-	 *     @type string $type Mime type of the newly-uploaded file.
+	 *     @type string $file Tên tệp của tệp vừa tải lên.
+	 *     @type string $url  URL của tệp vừa tải lên.
+	 *     @type string $type Loại mime của tệp vừa tải lên.
 	 * }
-	 * @param string $context The type of upload action. Values include 'upload' or 'sideload'.
+	 * @param string $context Loại hành động tải lên. Các giá trị bao gồm 'upload' hoặc 'sideload'.
 	 */
 	return apply_filters(
 		'wp_handle_upload',
@@ -1075,27 +1075,27 @@ function _wp_handle_upload( &$file, $overrides, $time, $action ) {
 }
 
 /**
- * Wrapper for _wp_handle_upload().
+ * Hàm bọc cho _wp_handle_upload().
  *
- * Passes the {@see 'wp_handle_upload'} action.
+ * Truyền action {@see 'wp_handle_upload'}.
  *
  * @since 2.0.0
  *
  * @see _wp_handle_upload()
  *
- * @param array       $file      Reference to a single element of `$_FILES`.
- *                               Call the function once for each uploaded file.
- *                               See _wp_handle_upload() for accepted values.
- * @param array|false $overrides Optional. An associative array of names => values
- *                               to override default variables. Default false.
- *                               See _wp_handle_upload() for accepted values.
- * @param string|null $time      Optional. Time formatted in 'yyyy/mm'. Default null.
- * @return array See _wp_handle_upload() for return value.
+ * @param array       $file      Tham chiếu đến một phần tử đơn của `$_FILES`.
+ *                               Gọi hàm một lần cho mỗi tệp được tải lên.
+ *                               Xem _wp_handle_upload() để biết các giá trị được chấp nhận.
+ * @param array|false $overrides Tùy chọn. Mảng kết hợp tên => giá trị
+ *                               để ghi đè các biến mặc định. Mặc định false.
+ *                               Xem _wp_handle_upload() để biết các giá trị được chấp nhận.
+ * @param string|null $time      Tùy chọn. Thời gian định dạng 'yyyy/mm'. Mặc định null.
+ * @return array Xem _wp_handle_upload() để biết giá trị trả về.
  */
 function wp_handle_upload( &$file, $overrides = false, $time = null ) {
 	/*
-	 *  $_POST['action'] must be set and its value must equal $overrides['action']
-	 *  or this:
+	 *  $_POST['action'] phải được thiết lập và giá trị của nó phải bằng $overrides['action']
+	 *  hoặc giá trị sau:
 	 */
 	$action = 'wp_handle_upload';
 	if ( isset( $overrides['action'] ) ) {
@@ -1106,27 +1106,27 @@ function wp_handle_upload( &$file, $overrides = false, $time = null ) {
 }
 
 /**
- * Wrapper for _wp_handle_upload().
+ * Hàm bọc cho _wp_handle_upload().
  *
- * Passes the {@see 'wp_handle_sideload'} action.
+ * Truyền action {@see 'wp_handle_sideload'}.
  *
  * @since 2.6.0
  *
  * @see _wp_handle_upload()
  *
- * @param array       $file      Reference to a single element of `$_FILES`.
- *                               Call the function once for each uploaded file.
- *                               See _wp_handle_upload() for accepted values.
- * @param array|false $overrides Optional. An associative array of names => values
- *                               to override default variables. Default false.
- *                               See _wp_handle_upload() for accepted values.
- * @param string|null $time      Optional. Time formatted in 'yyyy/mm'. Default null.
- * @return array See _wp_handle_upload() for return value.
+ * @param array       $file      Tham chiếu đến một phần tử đơn của `$_FILES`.
+ *                               Gọi hàm một lần cho mỗi tệp được tải lên.
+ *                               Xem _wp_handle_upload() để biết các giá trị được chấp nhận.
+ * @param array|false $overrides Tùy chọn. Mảng kết hợp tên => giá trị
+ *                               để ghi đè các biến mặc định. Mặc định false.
+ *                               Xem _wp_handle_upload() để biết các giá trị được chấp nhận.
+ * @param string|null $time      Tùy chọn. Thời gian định dạng 'yyyy/mm'. Mặc định null.
+ * @return array Xem _wp_handle_upload() để biết giá trị trả về.
  */
 function wp_handle_sideload( &$file, $overrides = false, $time = null ) {
 	/*
-	 *  $_POST['action'] must be set and its value must equal $overrides['action']
-	 *  or this:
+	 *  $_POST['action'] phải được thiết lập và giá trị của nó phải bằng $overrides['action']
+	 *  hoặc giá trị sau:
 	 */
 	$action = 'wp_handle_sideload';
 	if ( isset( $overrides['action'] ) ) {
@@ -1137,23 +1137,23 @@ function wp_handle_sideload( &$file, $overrides = false, $time = null ) {
 }
 
 /**
- * Downloads a URL to a local temporary file using the WordPress HTTP API.
+ * Tải xuống một URL đến tệp tạm thời cục bộ sử dụng API HTTP WordPress.
  *
- * Please note that the calling function must delete or move the file.
+ * Xin lưu ý rằng hàm gọi phải xóa hoặc di chuyển tệp.
  *
  * @since 2.5.0
- * @since 5.2.0 Signature Verification with SoftFail was added.
- * @since 5.9.0 Support for Content-Disposition filename was added.
+ * @since 5.2.0 Thêm Xác minh Chữ ký với SoftFail.
+ * @since 5.9.0 Thêm hỗ trợ cho tên tệp Content-Disposition.
  *
- * @param string $url                    The URL of the file to download.
- * @param int    $timeout                The timeout for the request to download the file.
- *                                       Default 300 seconds.
- * @param bool   $signature_verification Whether to perform Signature Verification.
- *                                       Default false.
- * @return string|WP_Error Filename on success, WP_Error on failure.
+ * @param string $url                    URL của tệp cần tải xuống.
+ * @param int    $timeout                Thời gian chờ cho yêu cầu tải xuống tệp.
+ *                                       Mặc định 300 giây.
+ * @param bool   $signature_verification Có thực hiện Xác minh Chữ ký hay không.
+ *                                       Mặc định false.
+ * @return string|WP_Error Tên tệp khi thành công, WP_Error khi thất bại.
  */
 function download_url( $url, $timeout = 300, $signature_verification = false ) {
-	// WARNING: The file is not automatically deleted, the script must delete or move the file.
+	// CẢNH BÁO: Tệp không được tự động xóa, script phải xóa hoặc di chuyển tệp.
 	if ( ! $url ) {
 		return new WP_Error( 'http_no_url', __( 'No URL Provided.' ) );
 	}
@@ -1190,18 +1190,18 @@ function download_url( $url, $timeout = 300, $signature_verification = false ) {
 			'code' => $response_code,
 		);
 
-		// Retrieve a sample of the response body for debugging purposes.
+		// Lấy một mẫu nội dung phản hồi để phục vụ mục đích gỡ lỗi.
 		$tmpf = fopen( $tmpfname, 'rb' );
 
 		if ( $tmpf ) {
 			/**
-			 * Filters the maximum error response body size in `download_url()`.
+			 * Lọc kích thước tối đa nội dung phản hồi lỗi trong `download_url()`.
 			 *
 			 * @since 5.1.0
 			 *
 			 * @see download_url()
 			 *
-			 * @param int $size The maximum error response body size. Default 1 KB.
+			 * @param int $size Kích thước tối đa nội dung phản hồi lỗi. Mặc định 1 KB.
 			 */
 			$response_size = apply_filters( 'download_url_error_max_body_size', KB_IN_BYTES );
 
@@ -1225,7 +1225,7 @@ function download_url( $url, $timeout = 300, $signature_verification = false ) {
 			$tmpfname_disposition = '';
 		}
 
-		// Potential file name must be valid string.
+		// Tên tệp tiềm năng phải là chuỗi hợp lệ.
 		if ( $tmpfname_disposition && is_string( $tmpfname_disposition )
 			&& ( 0 === validate_file( $tmpfname_disposition ) )
 		) {
@@ -1270,28 +1270,28 @@ function download_url( $url, $timeout = 300, $signature_verification = false ) {
 		}
 	}
 
-	// If the caller expects signature verification to occur, check to see if this URL supports it.
+	// Nếu hàm gọi mong đợi xác minh chữ ký xảy ra, kiểm tra xem URL này có hỗ trợ không.
 	if ( $signature_verification ) {
 		/**
-		 * Filters the list of hosts which should have Signature Verification attempted on.
+		 * Lọc danh sách các host cần thực hiện Xác minh Chữ ký.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param string[] $hostnames List of hostnames.
+		 * @param string[] $hostnames Danh sách tên host.
 		 */
 		$signed_hostnames = apply_filters( 'wp_signature_hosts', array( 'wordpress.org', 'downloads.wordpress.org', 's.w.org' ) );
 
 		$signature_verification = in_array( parse_url( $url, PHP_URL_HOST ), $signed_hostnames, true );
 	}
 
-	// Perform signature validation if supported.
+	// Thực hiện xác minh chữ ký nếu được hỗ trợ.
 	if ( $signature_verification ) {
 		$signature = wp_remote_retrieve_header( $response, 'X-Content-Signature' );
 
 		if ( ! $signature ) {
 			/*
-			 * Retrieve signatures from a file if the header wasn't included.
-			 * WordPress.org stores signatures at $package_url.sig.
+			 * Lấy chữ ký từ một tệp nếu header không được bao gồm.
+			 * WordPress.org lưu trữ chữ ký tại $package_url.sig.
 			 */
 
 			$signature_url = false;
@@ -1301,12 +1301,12 @@ function download_url( $url, $timeout = 300, $signature_verification = false ) {
 			}
 
 			/**
-			 * Filters the URL where the signature for a file is located.
+			 * Lọc URL nơi chữ ký cho một tệp được lưu trữ.
 			 *
 			 * @since 5.2.0
 			 *
-			 * @param false|string $signature_url The URL where signatures can be found for a file, or false if none are known.
-			 * @param string $url                 The URL being verified.
+			 * @param false|string $signature_url URL nơi có thể tìm thấy chữ ký cho tệp, hoặc false nếu không biết.
+			 * @param string $url                 URL đang được xác minh.
 			 */
 			$signature_url = apply_filters( 'wp_signature_url', $signature_url, $url );
 
@@ -1324,27 +1324,27 @@ function download_url( $url, $timeout = 300, $signature_verification = false ) {
 			}
 		}
 
-		// Perform the checks.
+		// Thực hiện các kiểm tra.
 		$signature_verification = verify_file_signature( $tmpfname, $signature, $url_filename );
 	}
 
 	if ( is_wp_error( $signature_verification ) ) {
 		if (
 			/**
-			 * Filters whether Signature Verification failures should be allowed to soft fail.
+			 * Lọc xem các lỗi Xác minh Chữ ký có được phép thất bại nhẹ hay không.
 			 *
-			 * WARNING: This may be removed from a future release.
+			 * CẢNH BÁO: Điều này có thể bị loại bỏ trong phiên bản tương lai.
 			 *
 			 * @since 5.2.0
 			 *
-			 * @param bool   $signature_softfail If a softfail is allowed.
-			 * @param string $url                The url being accessed.
+			 * @param bool   $signature_softfail Có cho phép thất bại nhẹ hay không.
+			 * @param string $url                URL đang được truy cập.
 			 */
 			apply_filters( 'wp_signature_softfail', true, $url )
 		) {
 			$signature_verification->add_data( $tmpfname, 'softfail-filename' );
 		} else {
-			// Hard-fail.
+			// Thất bại cứng.
 			unlink( $tmpfname );
 		}
 
@@ -1355,15 +1355,15 @@ function download_url( $url, $timeout = 300, $signature_verification = false ) {
 }
 
 /**
- * Calculates and compares the MD5 of a file to its expected value.
+ * Tính toán và so sánh MD5 của một tệp với giá trị mong đợi.
  *
  * @since 3.7.0
  *
- * @param string $filename     The filename to check the MD5 of.
- * @param string $expected_md5 The expected MD5 of the file, either a base64-encoded raw md5,
- *                             or a hex-encoded md5.
- * @return bool|WP_Error True on success, false when the MD5 format is unknown/unexpected,
- *                       WP_Error on failure.
+ * @param string $filename     Tên tệp cần kiểm tra MD5.
+ * @param string $expected_md5 MD5 mong đợi của tệp, là md5 thô được mã hóa base64,
+ *                             hoặc md5 được mã hóa hex.
+ * @return bool|WP_Error True khi thành công, false khi định dạng MD5 không xác định/không mong đợi,
+ *                       WP_Error khi thất bại.
  */
 function verify_file_md5( $filename, $expected_md5 ) {
 	if ( 32 === strlen( $expected_md5 ) ) {
@@ -1371,7 +1371,7 @@ function verify_file_md5( $filename, $expected_md5 ) {
 	} elseif ( 24 === strlen( $expected_md5 ) ) {
 		$expected_raw_md5 = base64_decode( $expected_md5 );
 	} else {
-		return false; // Unknown format.
+		return false; // Định dạng không xác định.
 	}
 
 	$file_md5 = md5_file( $filename, true );
@@ -1392,22 +1392,22 @@ function verify_file_md5( $filename, $expected_md5 ) {
 }
 
 /**
- * Verifies the contents of a file against its ED25519 signature.
+ * Xác minh nội dung của một tệp dựa trên chữ ký ED25519 của nó.
  *
  * @since 5.2.0
  *
- * @param string       $filename            The file to validate.
- * @param string|array $signatures          A Signature provided for the file.
- * @param string|false $filename_for_errors Optional. A friendly filename for errors.
- * @return bool|WP_Error True on success, false if verification not attempted,
- *                       or WP_Error describing an error condition.
+ * @param string       $filename            Tệp cần xác thực.
+ * @param string|array $signatures          Chữ ký được cung cấp cho tệp.
+ * @param string|false $filename_for_errors Tùy chọn. Tên tệp thân thiện cho thông báo lỗi.
+ * @return bool|WP_Error True khi thành công, false nếu xác minh không được thực hiện,
+ *                       hoặc WP_Error mô tả tình trạng lỗi.
  */
 function verify_file_signature( $filename, $signatures, $filename_for_errors = false ) {
 	if ( ! $filename_for_errors ) {
 		$filename_for_errors = wp_basename( $filename );
 	}
 
-	// Check we can process signatures.
+	// Kiểm tra xem chúng ta có thể xử lý chữ ký hay không.
 	if ( ! function_exists( 'sodium_crypto_sign_verify_detached' ) || ! in_array( 'sha384', array_map( 'strtolower', hash_algos() ), true ) ) {
 		return new WP_Error(
 			'signature_verification_unsupported',
@@ -1420,15 +1420,15 @@ function verify_file_signature( $filename, $signatures, $filename_for_errors = f
 		);
 	}
 
-	// Verify runtime speed of Sodium_Compat is acceptable.
+	// Xác minh tốc độ chạy của Sodium_Compat có thể chấp nhận được.
 	if ( ! extension_loaded( 'sodium' ) && ! ParagonIE_Sodium_Compat::polyfill_is_fast() ) {
 		$sodium_compat_is_fast = false;
 
-		// Allow for an old version of Sodium_Compat being loaded before the bundled WordPress one.
+		// Cho phép phiên bản cũ của Sodium_Compat được tải trước phiên bản đi kèm WordPress.
 		if ( method_exists( 'ParagonIE_Sodium_Compat', 'runtime_speed_test' ) ) {
 			/*
-			 * Run `ParagonIE_Sodium_Compat::runtime_speed_test()` in optimized integer mode,
-			 * as that's what WordPress utilizes during signing verifications.
+			 * Chạy `ParagonIE_Sodium_Compat::runtime_speed_test()` ở chế độ số nguyên tối ưu,
+			 * vì đó là những gì WordPress sử dụng trong quá trình xác minh chữ ký.
 			 */
 			// phpcs:disable WordPress.NamingConventions.ValidVariableName
 			$old_fastMult                      = ParagonIE_Sodium_Compat::$fastMult;
@@ -1439,7 +1439,7 @@ function verify_file_signature( $filename, $signatures, $filename_for_errors = f
 		}
 
 		/*
-		 * This cannot be performed in a reasonable amount of time.
+		 * Điều này không thể được thực hiện trong một khoảng thời gian hợp lý.
 		 * https://github.com/paragonie/sodium_compat#help-sodium_compat-is-slow-how-can-i-make-it-fast
 		 */
 		if ( ! $sodium_compat_is_fast ) {
@@ -1485,7 +1485,7 @@ function verify_file_signature( $filename, $signatures, $filename_for_errors = f
 	foreach ( (array) $signatures as $signature ) {
 		$signature_raw = base64_decode( $signature );
 
-		// Ensure only valid-length signatures are considered.
+		// Đảm bảo chỉ xét các chữ ký có độ dài hợp lệ.
 		if ( SODIUM_CRYPTO_SIGN_BYTES !== strlen( $signature_raw ) ) {
 			++$skipped_signature;
 			continue;
@@ -1494,7 +1494,7 @@ function verify_file_signature( $filename, $signatures, $filename_for_errors = f
 		foreach ( (array) $trusted_keys as $key ) {
 			$key_raw = base64_decode( $key );
 
-			// Only pass valid public keys through.
+			// Chỉ cho phép các khóa công khai hợp lệ đi qua.
 			if ( SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES !== strlen( $key_raw ) ) {
 				++$skipped_key;
 				continue;
@@ -1516,7 +1516,7 @@ function verify_file_signature( $filename, $signatures, $filename_for_errors = f
 			__( 'The authenticity of %s could not be verified.' ),
 			'<span class="code">' . esc_html( $filename_for_errors ) . '</span>'
 		),
-		// Error data helpful for debugging:
+		// Dữ liệu lỗi hữu ích cho việc gỡ lỗi:
 		array(
 			'filename'    => $filename_for_errors,
 			'keys'        => $trusted_keys,
@@ -1531,42 +1531,42 @@ function verify_file_signature( $filename, $signatures, $filename_for_errors = f
 }
 
 /**
- * Retrieves the list of signing keys trusted by WordPress.
+ * Lấy danh sách các khóa ký được WordPress tin cậy.
  *
  * @since 5.2.0
  *
- * @return string[] Array of base64-encoded signing keys.
+ * @return string[] Mảng các khóa ký được mã hóa base64.
  */
 function wp_trusted_keys() {
 	$trusted_keys = array();
 
 	if ( time() < 1617235200 ) {
-		// WordPress.org Key #1 - This key is only valid before April 1st, 2021.
+		// Khóa WordPress.org #1 - Khóa này chỉ hợp lệ trước ngày 1 tháng 4 năm 2021.
 		$trusted_keys[] = 'fRPyrxb/MvVLbdsYi+OOEv4xc+Eqpsj+kkAS6gNOkI0=';
 	}
 
-	// TODO: Add key #2 with longer expiration.
+	// TODO: Thêm khóa #2 với thời hạn dài hơn.
 
 	/**
-	 * Filters the valid signing keys used to verify the contents of files.
+	 * Lọc các khóa ký hợp lệ được sử dụng để xác minh nội dung tệp.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string[] $trusted_keys The trusted keys that may sign packages.
+	 * @param string[] $trusted_keys Các khóa đáng tin cậy có thể ký gói.
 	 */
 	return apply_filters( 'wp_trusted_keys', $trusted_keys );
 }
 
 /**
- * Determines whether the given file is a valid ZIP file.
+ * Xác định xem tệp đã cho có phải là tệp ZIP hợp lệ hay không.
  *
- * This function does not test to ensure that a file exists. Non-existent files
- * are not valid ZIPs, so those will also return false.
+ * Hàm này không kiểm tra để đảm bảo tệp tồn tại. Các tệp không tồn tại
+ * không phải là ZIP hợp lệ, nên chúng cũng sẽ trả về false.
  *
  * @since 6.4.4
  *
- * @param string $file Full path to the ZIP file.
- * @return bool Whether the file is a valid ZIP file.
+ * @param string $file Đường dẫn đầy đủ đến tệp ZIP.
+ * @return bool Tệp có phải là tệp ZIP hợp lệ hay không.
  */
 function wp_zip_file_is_valid( $file ) {
 	/** This filter is documented in wp-admin/includes/file.php */
@@ -1579,7 +1579,7 @@ function wp_zip_file_is_valid( $file ) {
 		}
 	}
 
-	// Fall through to PclZip if ZipArchive is not available, or encountered an error opening the file.
+	// Chuyển sang PclZip nếu ZipArchive không khả dụng, hoặc gặp lỗi khi mở tệp.
 	require_once ABSPATH . 'wp-admin/includes/class-pclzip.php';
 
 	$archive          = new PclZip( $file );
@@ -1589,22 +1589,22 @@ function wp_zip_file_is_valid( $file ) {
 }
 
 /**
- * Unzips a specified ZIP file to a location on the filesystem via the WordPress
- * Filesystem Abstraction.
+ * Giải nén một tệp ZIP được chỉ định đến một vị trí trên hệ thống tệp thông qua
+ * Lớp trừu tượng hệ thống tệp WordPress.
  *
- * Assumes that WP_Filesystem() has already been called and set up. Does not extract
- * a root-level __MACOSX directory, if present.
+ * Giả định rằng WP_Filesystem() đã được gọi và thiết lập. Không giải nén
+ * thư mục __MACOSX ở cấp gốc, nếu có.
  *
- * Attempts to increase the PHP memory limit to 256M before uncompressing. However,
- * the most memory required shouldn't be much larger than the archive itself.
+ * Cố gắng tăng giới hạn bộ nhớ PHP lên 256M trước khi giải nén. Tuy nhiên,
+ * bộ nhớ cần thiết nhất không nên lớn hơn nhiều so với chính tệp lưu trữ.
  *
  * @since 2.5.0
  *
- * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+ * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
  *
- * @param string $file Full path and filename of ZIP archive.
- * @param string $to   Full path on the filesystem to extract archive to.
- * @return true|WP_Error True on success, WP_Error on failure.
+ * @param string $file Đường dẫn đầy đủ và tên tệp của lưu trữ ZIP.
+ * @param string $to   Đường dẫn đầy đủ trên hệ thống tệp để giải nén lưu trữ đến.
+ * @return true|WP_Error True khi thành công, WP_Error khi thất bại.
  */
 function unzip_file( $file, $to ) {
 	global $wp_filesystem;
@@ -1613,14 +1613,14 @@ function unzip_file( $file, $to ) {
 		return new WP_Error( 'fs_unavailable', __( 'Could not access filesystem.' ) );
 	}
 
-	// Unzip can use a lot of memory, but not this much hopefully.
+	// Giải nén có thể sử dụng nhiều bộ nhớ, nhưng hy vọng không nhiều đến mức này.
 	wp_raise_memory_limit( 'admin' );
 
 	$needed_dirs = array();
 	$to          = trailingslashit( $to );
 
-	// Determine any parent directories needed (of the upgrade directory).
-	if ( ! $wp_filesystem->is_dir( $to ) ) { // Only do parents if no children exist.
+	// Xác định các thư mục cha cần thiết (của thư mục nâng cấp).
+	if ( ! $wp_filesystem->is_dir( $to ) ) { // Chỉ xử lý thư mục cha nếu không có thư mục con tồn tại.
 		$path = preg_split( '![/\\\]!', untrailingslashit( $to ) );
 		for ( $i = count( $path ); $i >= 0; $i-- ) {
 			if ( empty( $path[ $i ] ) ) {
@@ -1628,24 +1628,24 @@ function unzip_file( $file, $to ) {
 			}
 
 			$dir = implode( '/', array_slice( $path, 0, $i + 1 ) );
-			if ( preg_match( '!^[a-z]:$!i', $dir ) ) { // Skip it if it looks like a Windows Drive letter.
+			if ( preg_match( '!^[a-z]:$!i', $dir ) ) { // Bỏ qua nếu nó trông giống ký tự ổ đĩa Windows.
 				continue;
 			}
 
 			if ( ! $wp_filesystem->is_dir( $dir ) ) {
 				$needed_dirs[] = $dir;
 			} else {
-				break; // A folder exists, therefore we don't need to check the levels below this.
+				break; // Một thư mục tồn tại, do đó chúng ta không cần kiểm tra các cấp bên dưới.
 			}
 		}
 	}
 
 	/**
-	 * Filters whether to use ZipArchive to unzip archives.
+	 * Lọc có sử dụng ZipArchive để giải nén lưu trữ hay không.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param bool $ziparchive Whether to use ZipArchive. Default true.
+	 * @param bool $ziparchive Có sử dụng ZipArchive hay không. Mặc định true.
 	 */
 	if ( class_exists( 'ZipArchive', false ) && apply_filters( 'unzip_file_use_ziparchive', true ) ) {
 		$result = _unzip_file_ziparchive( $file, $to, $needed_dirs );
@@ -1657,28 +1657,28 @@ function unzip_file( $file, $to ) {
 			}
 		}
 	}
-	// Fall through to PclZip if ZipArchive is not available, or encountered an error opening the file.
+	// Chuyển sang PclZip nếu ZipArchive không khả dụng, hoặc gặp lỗi khi mở tệp.
 	return _unzip_file_pclzip( $file, $to, $needed_dirs );
 }
 
 /**
- * Attempts to unzip an archive using the ZipArchive class.
+ * Cố gắng giải nén lưu trữ bằng lớp ZipArchive.
  *
- * This function should not be called directly, use `unzip_file()` instead.
+ * Hàm này không nên được gọi trực tiếp, sử dụng `unzip_file()` thay thế.
  *
- * Assumes that WP_Filesystem() has already been called and set up.
+ * Giả định rằng WP_Filesystem() đã được gọi và thiết lập.
  *
  * @since 3.0.0
  * @access private
  *
  * @see unzip_file()
  *
- * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+ * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
  *
- * @param string   $file        Full path and filename of ZIP archive.
- * @param string   $to          Full path on the filesystem to extract archive to.
- * @param string[] $needed_dirs A partial list of required folders needed to be created.
- * @return true|WP_Error True on success, WP_Error on failure.
+ * @param string   $file        Đường dẫn đầy đủ và tên tệp của lưu trữ ZIP.
+ * @param string   $to          Đường dẫn đầy đủ trên hệ thống tệp để giải nén lưu trữ đến.
+ * @param string[] $needed_dirs Danh sách một phần các thư mục cần thiết cần được tạo.
+ * @return true|WP_Error True khi thành công, WP_Error khi thất bại.
  */
 function _unzip_file_ziparchive( $file, $to, $needed_dirs = array() ) {
 	global $wp_filesystem;
@@ -1701,11 +1701,11 @@ function _unzip_file_ziparchive( $file, $to, $needed_dirs = array() ) {
 			return new WP_Error( 'stat_failed_ziparchive', __( 'Could not retrieve file from archive.' ) );
 		}
 
-		if ( str_starts_with( $info['name'], '__MACOSX/' ) ) { // Skip the OS X-created __MACOSX directory.
+		if ( str_starts_with( $info['name'], '__MACOSX/' ) ) { // Bỏ qua thư mục __MACOSX do OS X tạo.
 			continue;
 		}
 
-		// Don't extract invalid files:
+		// Không giải nén các tệp không hợp lệ:
 		if ( 0 !== validate_file( $info['name'] ) ) {
 			continue;
 		}
@@ -1715,21 +1715,21 @@ function _unzip_file_ziparchive( $file, $to, $needed_dirs = array() ) {
 		$dirname = dirname( $info['name'] );
 
 		if ( str_ends_with( $info['name'], '/' ) ) {
-			// Directory.
+			// Thư mục.
 			$needed_dirs[] = $to . untrailingslashit( $info['name'] );
 		} elseif ( '.' !== $dirname ) {
-			// Path to a file.
+			// Đường dẫn đến tệp.
 			$needed_dirs[] = $to . untrailingslashit( $dirname );
 		}
 	}
 
-	// Enough space to unzip the file and copy its contents, with a 10% buffer.
+	// Đủ dung lượng để giải nén tệp và sao chép nội dung, với bộ đệm 10%.
 	$required_space = $uncompressed_size * 2.1;
 
 	/*
-	 * disk_free_space() could return false. Assume that any falsey value is an error.
-	 * A disk that has zero free bytes has bigger problems.
-	 * Require we have enough space to unzip the file and copy its contents, with a 10% buffer.
+	 * disk_free_space() có thể trả về false. Giả định rằng bất kỳ giá trị falsey nào là lỗi.
+	 * Một đĩa có 0 byte trống có vấn đề lớn hơn.
+	 * Yêu cầu đủ dung lượng để giải nén tệp và sao chép nội dung, với bộ đệm 10%.
 	 */
 	if ( wp_doing_cron() ) {
 		$available_space = function_exists( 'disk_free_space' ) ? @disk_free_space( WP_CONTENT_DIR ) : false;
@@ -1747,12 +1747,12 @@ function _unzip_file_ziparchive( $file, $to, $needed_dirs = array() ) {
 	$needed_dirs = array_unique( $needed_dirs );
 
 	foreach ( $needed_dirs as $dir ) {
-		// Check the parent folders of the folders all exist within the creation array.
-		if ( untrailingslashit( $to ) === $dir ) { // Skip over the working directory, we know this exists (or will exist).
+		// Kiểm tra thư mục cha của các thư mục đều tồn tại trong mảng tạo.
+		if ( untrailingslashit( $to ) === $dir ) { // Bỏ qua thư mục làm việc, chúng ta biết nó tồn tại (hoặc sẽ tồn tại).
 			continue;
 		}
 
-		if ( ! str_contains( $dir, $to ) ) { // If the directory is not within the working directory, skip it.
+		if ( ! str_contains( $dir, $to ) ) { // Nếu thư mục không nằm trong thư mục làm việc, bỏ qua.
 			continue;
 		}
 
@@ -1769,9 +1769,9 @@ function _unzip_file_ziparchive( $file, $to, $needed_dirs = array() ) {
 
 	asort( $needed_dirs );
 
-	// Create those directories if need be:
+	// Tạo các thư mục đó nếu cần:
 	foreach ( $needed_dirs as $_dir ) {
-		// Only check to see if the Dir exists upon creation failure. Less I/O this way.
+		// Chỉ kiểm tra xem thư mục có tồn tại không khi tạo thất bại. Giảm I/O theo cách này.
 		if ( ! $wp_filesystem->mkdir( $_dir, FS_CHMOD_DIR ) && ! $wp_filesystem->is_dir( $_dir ) ) {
 			$z->close();
 			return new WP_Error( 'mkdir_failed_ziparchive', __( 'Could not create directory.' ), $_dir );
@@ -1779,20 +1779,20 @@ function _unzip_file_ziparchive( $file, $to, $needed_dirs = array() ) {
 	}
 
 	/**
-	 * Filters archive unzipping to override with a custom process.
+	 * Lọc việc giải nén lưu trữ để ghi đè bằng quy trình tùy chỉnh.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param null|true|WP_Error $result         The result of the override. True on success, otherwise WP Error. Default null.
-	 * @param string             $file           Full path and filename of ZIP archive.
-	 * @param string             $to             Full path on the filesystem to extract archive to.
-	 * @param string[]           $needed_dirs    A full list of required folders that need to be created.
-	 * @param float              $required_space The space required to unzip the file and copy its contents, with a 10% buffer.
+	 * @param null|true|WP_Error $result         Kết quả của việc ghi đè. True khi thành công, ngược lại WP_Error. Mặc định null.
+	 * @param string             $file           Đường dẫn đầy đủ và tên tệp của lưu trữ ZIP.
+	 * @param string             $to             Đường dẫn đầy đủ trên hệ thống tệp để giải nén lưu trữ đến.
+	 * @param string[]           $needed_dirs    Danh sách đầy đủ các thư mục cần thiết cần được tạo.
+	 * @param float              $required_space Dung lượng cần thiết để giải nén tệp và sao chép nội dung, với bộ đệm 10%.
 	 */
 	$pre = apply_filters( 'pre_unzip_file', null, $file, $to, $needed_dirs, $required_space );
 
 	if ( null !== $pre ) {
-		// Ensure the ZIP file archive has been closed.
+		// Đảm bảo tệp lưu trữ ZIP đã được đóng.
 		$z->close();
 
 		return $pre;
@@ -1806,15 +1806,15 @@ function _unzip_file_ziparchive( $file, $to, $needed_dirs = array() ) {
 			return new WP_Error( 'stat_failed_ziparchive', __( 'Could not retrieve file from archive.' ) );
 		}
 
-		if ( str_ends_with( $info['name'], '/' ) ) { // Directory.
+		if ( str_ends_with( $info['name'], '/' ) ) { // Thư mục.
 			continue;
 		}
 
-		if ( str_starts_with( $info['name'], '__MACOSX/' ) ) { // Don't extract the OS X-created __MACOSX directory files.
+		if ( str_starts_with( $info['name'], '__MACOSX/' ) ) { // Không giải nén các tệp thư mục __MACOSX do OS X tạo.
 			continue;
 		}
 
-		// Don't extract invalid files:
+		// Không giải nén các tệp không hợp lệ:
 		if ( 0 !== validate_file( $info['name'] ) ) {
 			continue;
 		}
@@ -1835,15 +1835,15 @@ function _unzip_file_ziparchive( $file, $to, $needed_dirs = array() ) {
 	$z->close();
 
 	/**
-	 * Filters the result of unzipping an archive.
+	 * Lọc kết quả giải nén lưu trữ.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param true|WP_Error $result         The result of unzipping the archive. True on success, otherwise WP_Error. Default true.
-	 * @param string        $file           Full path and filename of ZIP archive.
-	 * @param string        $to             Full path on the filesystem the archive was extracted to.
-	 * @param string[]      $needed_dirs    A full list of required folders that were created.
-	 * @param float         $required_space The space required to unzip the file and copy its contents, with a 10% buffer.
+	 * @param true|WP_Error $result         Kết quả giải nén lưu trữ. True khi thành công, ngược lại WP_Error. Mặc định true.
+	 * @param string        $file           Đường dẫn đầy đủ và tên tệp của lưu trữ ZIP.
+	 * @param string        $to             Đường dẫn đầy đủ trên hệ thống tệp nơi lưu trữ được giải nén đến.
+	 * @param string[]      $needed_dirs    Danh sách đầy đủ các thư mục cần thiết đã được tạo.
+	 * @param float         $required_space Dung lượng cần thiết để giải nén tệp và sao chép nội dung, với bộ đệm 10%.
 	 */
 	$result = apply_filters( 'unzip_file', true, $file, $to, $needed_dirs, $required_space );
 
@@ -1853,23 +1853,23 @@ function _unzip_file_ziparchive( $file, $to, $needed_dirs = array() ) {
 }
 
 /**
- * Attempts to unzip an archive using the PclZip library.
+ * Cố gắng giải nén lưu trữ bằng thư viện PclZip.
  *
- * This function should not be called directly, use `unzip_file()` instead.
+ * Hàm này không nên được gọi trực tiếp, sử dụng `unzip_file()` thay thế.
  *
- * Assumes that WP_Filesystem() has already been called and set up.
+ * Giả định rằng WP_Filesystem() đã được gọi và thiết lập.
  *
  * @since 3.0.0
  * @access private
  *
  * @see unzip_file()
  *
- * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+ * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
  *
- * @param string   $file        Full path and filename of ZIP archive.
- * @param string   $to          Full path on the filesystem to extract archive to.
- * @param string[] $needed_dirs A partial list of required folders needed to be created.
- * @return true|WP_Error True on success, WP_Error on failure.
+ * @param string   $file        Đường dẫn đầy đủ và tên tệp của lưu trữ ZIP.
+ * @param string   $to          Đường dẫn đầy đủ trên hệ thống tệp để giải nén lưu trữ đến.
+ * @param string[] $needed_dirs Danh sách một phần các thư mục cần thiết cần được tạo.
+ * @return true|WP_Error True khi thành công, WP_Error khi thất bại.
  */
 function _unzip_file_pclzip( $file, $to, $needed_dirs = array() ) {
 	global $wp_filesystem;
@@ -1884,7 +1884,7 @@ function _unzip_file_pclzip( $file, $to, $needed_dirs = array() ) {
 
 	reset_mbstring_encoding();
 
-	// Is the archive valid?
+	// Lưu trữ có hợp lệ không?
 	if ( ! is_array( $archive_files ) ) {
 		return new WP_Error( 'incompatible_archive', __( 'Incompatible Archive.' ), $archive->errorInfo( true ) );
 	}
@@ -1895,9 +1895,9 @@ function _unzip_file_pclzip( $file, $to, $needed_dirs = array() ) {
 
 	$uncompressed_size = 0;
 
-	// Determine any children directories needed (From within the archive).
+	// Xác định các thư mục con cần thiết (Từ bên trong lưu trữ).
 	foreach ( $archive_files as $file ) {
-		if ( str_starts_with( $file['filename'], '__MACOSX/' ) ) { // Skip the OS X-created __MACOSX directory.
+		if ( str_starts_with( $file['filename'], '__MACOSX/' ) ) { // Bỏ qua thư mục __MACOSX do OS X tạo.
 			continue;
 		}
 
@@ -1906,13 +1906,13 @@ function _unzip_file_pclzip( $file, $to, $needed_dirs = array() ) {
 		$needed_dirs[] = $to . untrailingslashit( $file['folder'] ? $file['filename'] : dirname( $file['filename'] ) );
 	}
 
-	// Enough space to unzip the file and copy its contents, with a 10% buffer.
+	// Đủ dung lượng để giải nén tệp và sao chép nội dung, với bộ đệm 10%.
 	$required_space = $uncompressed_size * 2.1;
 
 	/*
-	 * disk_free_space() could return false. Assume that any falsey value is an error.
-	 * A disk that has zero free bytes has bigger problems.
-	 * Require we have enough space to unzip the file and copy its contents, with a 10% buffer.
+	 * disk_free_space() có thể trả về false. Giả định rằng bất kỳ giá trị falsey nào là lỗi.
+	 * Một đĩa có 0 byte trống có vấn đề lớn hơn.
+	 * Yêu cầu đủ dung lượng để giải nén tệp và sao chép nội dung, với bộ đệm 10%.
 	 */
 	if ( wp_doing_cron() ) {
 		$available_space = function_exists( 'disk_free_space' ) ? @disk_free_space( WP_CONTENT_DIR ) : false;
@@ -1929,12 +1929,12 @@ function _unzip_file_pclzip( $file, $to, $needed_dirs = array() ) {
 	$needed_dirs = array_unique( $needed_dirs );
 
 	foreach ( $needed_dirs as $dir ) {
-		// Check the parent folders of the folders all exist within the creation array.
-		if ( untrailingslashit( $to ) === $dir ) { // Skip over the working directory, we know this exists (or will exist).
+		// Kiểm tra thư mục cha của các thư mục đều tồn tại trong mảng tạo.
+		if ( untrailingslashit( $to ) === $dir ) { // Bỏ qua thư mục làm việc, chúng ta biết nó tồn tại (hoặc sẽ tồn tại).
 			continue;
 		}
 
-		if ( ! str_contains( $dir, $to ) ) { // If the directory is not within the working directory, skip it.
+		if ( ! str_contains( $dir, $to ) ) { // Nếu thư mục không nằm trong thư mục làm việc, bỏ qua.
 			continue;
 		}
 
@@ -1951,9 +1951,9 @@ function _unzip_file_pclzip( $file, $to, $needed_dirs = array() ) {
 
 	asort( $needed_dirs );
 
-	// Create those directories if need be:
+	// Tạo các thư mục đó nếu cần:
 	foreach ( $needed_dirs as $_dir ) {
-		// Only check to see if the dir exists upon creation failure. Less I/O this way.
+		// Chỉ kiểm tra xem thư mục có tồn tại không khi tạo thất bại. Giảm I/O theo cách này.
 		if ( ! $wp_filesystem->mkdir( $_dir, FS_CHMOD_DIR ) && ! $wp_filesystem->is_dir( $_dir ) ) {
 			return new WP_Error( 'mkdir_failed_pclzip', __( 'Could not create directory.' ), $_dir );
 		}

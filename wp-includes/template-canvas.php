@@ -1,13 +1,13 @@
 <?php
 /**
- * Template canvas file to render the current 'wp_template'.
+ * File canvas template để render 'wp_template' hiện tại.
  *
  * @package WordPress
  */
 
 /*
- * Get the template HTML.
- * This needs to run before <head> so that blocks can add scripts and styles in wp_head().
+ * Lấy HTML của template.
+ * Cần chạy trước <head> để các block có thể thêm script và style trong wp_head().
  */
 $template_html = get_the_block_template_html();
 ?><!DOCTYPE html>

@@ -1,16 +1,16 @@
 <?php
 /**
- * Add Site Administration Screen
+ * Màn hình Quản trị Thêm Trang web
  *
  * @package WordPress
  * @subpackage Multisite
  * @since 3.1.0
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải Bootstrap Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
-/** WordPress Translation Installation API */
+/** API Cài đặt Bản dịch WordPress */
 require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 
 if ( ! current_user_can( 'create_sites' ) ) {
@@ -48,7 +48,7 @@ if ( isset( $_REQUEST['action'] ) && 'add-site' === $_REQUEST['action'] ) {
 		$domain = strtolower( $blog['domain'] );
 	}
 
-	// If not a subdomain installation, make sure the domain isn't a reserved word.
+	// Nếu không phải cài đặt subdomain, đảm bảo tên miền không phải là từ dành riêng.
 	if ( ! is_subdomain_install() ) {
 		$subdirectory_reserved_names = get_subdirectory_reserved_names();
 
@@ -69,10 +69,10 @@ if ( isset( $_REQUEST['action'] ) && 'add-site' === $_REQUEST['action'] ) {
 		'public' => 1,
 	);
 
-	// Handle translation installation for the new site.
+	// Xử lý cài đặt bản dịch cho trang web mới.
 	if ( isset( $_POST['WPLANG'] ) ) {
 		if ( '' === $_POST['WPLANG'] ) {
-			$meta['WPLANG'] = ''; // en_US
+			$meta['WPLANG'] = ''; // tiếng Anh (en_US)
 		} elseif ( in_array( $_POST['WPLANG'], get_available_languages(), true ) ) {
 			$meta['WPLANG'] = $_POST['WPLANG'];
 		} elseif ( current_user_can( 'install_languages' ) && wp_can_install_language_pack() ) {
@@ -110,13 +110,13 @@ if ( isset( $_REQUEST['action'] ) && 'add-site' === $_REQUEST['action'] ) {
 
 	$password = 'N/A';
 	$user_id  = email_exists( $email );
-	if ( ! $user_id ) { // Create a new user with a random password.
+	if ( ! $user_id ) { // Tạo người dùng mới với mật khẩu ngẫu nhiên.
 		/**
-		 * Fires immediately before a new user is created via the network site-new.php page.
+		 * Kích hoạt ngay trước khi người dùng mới được tạo qua trang site-new.php của mạng lưới.
 		 *
 		 * @since 4.5.0
 		 *
-		 * @param string $email Email of the non-existent user.
+		 * @param string $email Email của người dùng chưa tồn tại.
 		 */
 		do_action( 'pre_network_site_new_created_user', $email );
 
@@ -131,11 +131,11 @@ if ( isset( $_REQUEST['action'] ) && 'add-site' === $_REQUEST['action'] ) {
 		}
 
 		/**
-		 * Fires after a new user has been created via the network site-new.php page.
+		 * Kích hoạt sau khi người dùng mới đã được tạo qua trang site-new.php của mạng lưới.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param int $user_id ID of the newly created user.
+		 * @param int $user_id ID của người dùng mới được tạo.
 		 */
 		do_action( 'network_site_new_created_user', $user_id );
 	}
@@ -178,7 +178,7 @@ if ( isset( $_GET['update'] ) ) {
 	}
 }
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ tiêu đề HTML.
 $title       = __( 'Add Site' );
 $parent_file = 'sites.php';
 
@@ -250,10 +250,10 @@ if ( ! empty( $messages ) ) {
 				<th scope="row"><label for="site-language"><?php _e( 'Site Language' ); ?></label></th>
 				<td>
 					<?php
-					// Network default.
+					// Mặc định của mạng lưới.
 					$lang = get_site_option( 'WPLANG' );
 
-					// Use English if the default isn't available.
+					// Sử dụng tiếng Anh nếu mặc định không có sẵn.
 					if ( ! in_array( $lang, $languages, true ) ) {
 						$lang = '';
 					}
@@ -271,7 +271,7 @@ if ( ! empty( $messages ) ) {
 					?>
 				</td>
 			</tr>
-		<?php endif; // Languages. ?>
+		<?php endif; // Ngôn ngữ. ?>
 		<tr class="form-field form-required">
 			<th scope="row">
 				<label for="admin-email">
@@ -290,7 +290,7 @@ if ( ! empty( $messages ) ) {
 
 	<?php
 	/**
-	 * Fires at the end of the new site form in network admin.
+	 * Kích hoạt ở cuối biểu mẫu trang web mới trong quản trị mạng lưới.
 	 *
 	 * @since 4.5.0
 	 */

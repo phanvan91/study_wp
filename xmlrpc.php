@@ -1,38 +1,30 @@
 <?php
 /**
- * XML-RPC protocol support for WordPress
- *
  * Hỗ trợ giao thức XML-RPC cho WordPress.
  *
  * @package WordPress
  */
 
 /**
- * Whether this is an XML-RPC Request.
- *
- * Có phải đây là XML-RPC Request không.
+ * Có phải đây là một yêu cầu XML-RPC hay không.
  *
  * @var bool
  */
 define( 'XMLRPC_REQUEST', true );
 
-// Discard unneeded cookies sent by some browser-embedded clients.
-// Loại bỏ các cookies không cần thiết được gửi bởi một số client nhúng trong trình duyệt.
+// Loại bỏ các cookie không cần thiết được gửi bởi một số client nhúng trong trình duyệt.
 $_COOKIE = array();
 
-// $HTTP_RAW_POST_DATA was deprecated in PHP 5.6 and removed in PHP 7.0.
-// $HTTP_RAW_POST_DATA đã bị deprecated trong PHP 5.6 và bị xóa trong PHP 7.0.
+// $HTTP_RAW_POST_DATA đã bị loại bỏ trong PHP 5.6 và bị xóa trong PHP 7.0.
 // phpcs:disable PHPCompatibility.Variables.RemovedPredefinedGlobalVariables.http_raw_post_dataDeprecatedRemoved
 if ( ! isset( $HTTP_RAW_POST_DATA ) ) {
 	$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
 }
 
-// Fix for mozBlog and other cases where '<?xml' isn't on the very first line.
-// Sửa cho mozBlog và các trường hợp khác nơi '<?xml' không ở dòng đầu tiên.
+// Sửa lỗi cho mozBlog và các trường hợp khác khi '<?xml' không nằm ở dòng đầu tiên.
 $HTTP_RAW_POST_DATA = trim( $HTTP_RAW_POST_DATA );
 // phpcs:enable
 
-/** Include the bootstrap for setting up WordPress environment */
 /** Include bootstrap để thiết lập môi trường WordPress */
 require_once __DIR__ . '/wp-load.php';
 
@@ -52,9 +44,7 @@ if ( isset( $_GET['rsd'] ) ) { // https://cyber.harvard.edu/blogs/gems/tech/rsd.
 			<api name="Blogger" blogID="1" preferred="false" apiLink="<?php echo site_url( 'xmlrpc.php', 'rpc' ); ?>" />
 			<?php
 			/**
-			 * Fires when adding APIs to the Really Simple Discovery (RSD) endpoint.
-			 *
-			 * Kích hoạt khi thêm APIs vào endpoint Really Simple Discovery (RSD).
+			 * Kích hoạt khi thêm các API vào điểm cuối Really Simple Discovery (RSD).
 			 *
 			 * @link https://cyber.harvard.edu/blogs/gems/tech/rsd.html
 			 *
@@ -74,9 +64,7 @@ require_once ABSPATH . WPINC . '/class-IXR.php';
 require_once ABSPATH . WPINC . '/class-wp-xmlrpc-server.php';
 
 /**
- * Posts submitted via the XML-RPC interface get that title
- *
- * Các post được gửi qua giao diện XML-RPC nhận title đó.
+ * Các bài viết được gửi qua giao diện XML-RPC sẽ nhận tiêu đề này.
  *
  * @name post_default_title
  * @var string
@@ -84,36 +72,31 @@ require_once ABSPATH . WPINC . '/class-wp-xmlrpc-server.php';
 $post_default_title = '';
 
 /**
- * Filters the class used for handling XML-RPC requests.
- *
- * Filter class được sử dụng để xử lý XML-RPC requests.
+ * Lọc lớp được sử dụng để xử lý các yêu cầu XML-RPC.
  *
  * @since 3.1.0
  *
- * @param string $class The name of the XML-RPC server class.
+ * @param string $class Tên lớp máy chủ XML-RPC.
  */
 $wp_xmlrpc_server_class = apply_filters( 'wp_xmlrpc_server_class', 'wp_xmlrpc_server' );
 $wp_xmlrpc_server       = new $wp_xmlrpc_server_class();
 
-// Fire off the request.
-// Kích hoạt request.
+// Kích hoạt yêu cầu.
 $wp_xmlrpc_server->serve_request();
 
 exit;
 
 /**
- * logIO() - Writes logging info to a file.
- *
- * logIO() - Ghi thông tin logging vào file.
+ * logIO() - Ghi thông tin nhật ký vào tệp.
  *
  * @since 1.2.0
- * @deprecated 3.4.0 Use error_log()
+ * @deprecated 3.4.0 Sử dụng error_log()
  * @see error_log()
  *
- * @global int|bool $xmlrpc_logging Whether to enable XML-RPC logging.
+ * @global int|bool $xmlrpc_logging Có bật ghi nhật ký XML-RPC hay không.
  *
- * @param string $io  Whether input or output.
- * @param string $msg Information describing logging reason.
+ * @param string $io  Đầu vào hay đầu ra.
+ * @param string $msg Thông tin mô tả lý do ghi nhật ký.
  */
 function logIO( $io, $msg ) {
 	_deprecated_function( __FUNCTION__, '3.4.0', 'error_log()' );

@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Widget_Area_Customize_Control class
+ * API Tùy biến: Lớp WP_Widget_Area_Customize_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Widget Area Customize Control class.
+ * Lớp Điều khiển Vùng Widget trong Tùy biến.
  *
  * @since 3.9.0
  *
@@ -17,7 +17,7 @@
 class WP_Widget_Area_Customize_Control extends WP_Customize_Control {
 
 	/**
-	 * Customize control type.
+	 * Loại điều khiển tùy biến.
 	 *
 	 * @since 3.9.0
 	 * @var string
@@ -25,7 +25,7 @@ class WP_Widget_Area_Customize_Control extends WP_Customize_Control {
 	public $type = 'sidebar_widgets';
 
 	/**
-	 * Sidebar ID.
+	 * ID thanh bên.
 	 *
 	 * @since 3.9.0
 	 * @var int|string
@@ -33,7 +33,7 @@ class WP_Widget_Area_Customize_Control extends WP_Customize_Control {
 	public $sidebar_id;
 
 	/**
-	 * Refreshes the parameters passed to the JavaScript via JSON.
+	 * Làm mới các tham số được truyền tới JavaScript qua JSON.
 	 *
 	 * @since 3.9.0
 	 */
@@ -46,7 +46,7 @@ class WP_Widget_Area_Customize_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Renders the control's content.
+	 * Hiển thị nội dung của điều khiển.
 	 *
 	 * @since 3.9.0
 	 */
@@ -62,7 +62,7 @@ class WP_Widget_Area_Customize_Control extends WP_Customize_Control {
 		</button>
 		<p class="screen-reader-text" id="<?php echo esc_attr( $id ); ?>">
 			<?php
-			/* translators: Hidden accessibility text. */
+			/* translators: Văn bản trợ năng ẩn. */
 			_e( 'When in reorder mode, additional controls to reorder widgets will be available in the widgets list above.' );
 			?>
 		</p>

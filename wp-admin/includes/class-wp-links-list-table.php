@@ -1,6 +1,6 @@
 <?php
 /**
- * List Table API: WP_Links_List_Table class
+ * API Bảng danh sách: Lớp WP_Links_List_Table
  *
  * @package WordPress
  * @subpackage Administration
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement displaying links in a list table.
+ * Lớp lõi được sử dụng để triển khai hiển thị liên kết trong bảng danh sách.
  *
  * @since 3.1.0
  *
@@ -17,13 +17,13 @@
 class WP_Links_List_Table extends WP_List_Table {
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @see WP_List_Table::__construct() for more information on default arguments.
+	 * @see WP_List_Table::__construct() để biết thêm thông tin về các đối số mặc định.
 	 *
-	 * @param array $args An associative array of arguments.
+	 * @param array $args Mảng kết hợp các đối số.
 	 */
 	public function __construct( $args = array() ) {
 		parent::__construct(
@@ -42,10 +42,10 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global int    $cat_id
-	 * @global string $s
-	 * @global string $orderby
-	 * @global string $order
+	 * @global int    $cat_id  ID chuyên mục.
+	 * @global string $s       Từ khóa tìm kiếm.
+	 * @global string $orderby Trường sắp xếp.
+	 * @global string $order   Thứ tự sắp xếp.
 	 */
 	public function prepare_items() {
 		global $cat_id, $s, $orderby, $order;
@@ -93,8 +93,8 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @global int $cat_id
-	 * @param string $which
+	 * @global int $cat_id ID chuyên mục.
+	 * @param string $which Vị trí của điều hướng bảng.
 	 */
 	protected function extra_tablenav( $which ) {
 		global $cat_id;
@@ -127,7 +127,7 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @return string[] Array of column titles keyed by their column name.
+	 * @return string[] Mảng tiêu đề cột được đánh khóa theo tên cột.
 	 */
 	public function get_columns() {
 		return array(
@@ -154,26 +154,26 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Gets the name of the default primary column.
+	 * Lấy tên cột chính mặc định.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @return string Name of the default primary column, in this case, 'name'.
+	 * @return string Tên cột chính mặc định, trong trường hợp này là 'name'.
 	 */
 	protected function get_default_primary_column_name() {
 		return 'name';
 	}
 
 	/**
-	 * Handles the checkbox column output.
+	 * Xử lý đầu ra cột checkbox.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$link` to `$item` to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$link` thành `$item` để khớp với lớp cha cho hỗ trợ tham số có tên PHP 8.
 	 *
-	 * @param object $item The current link object.
+	 * @param object $item Đối tượng liên kết hiện tại.
 	 */
 	public function column_cb( $item ) {
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$link = $item;
 
 		?>
@@ -190,11 +190,11 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the link name column output.
+	 * Xử lý đầu ra cột tên liên kết.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param object $link The current link object.
+	 * @param object $link Đối tượng liên kết hiện tại.
 	 */
 	public function column_name( $link ) {
 		$edit_link = get_edit_bookmark_link( $link );
@@ -208,11 +208,11 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the link URL column output.
+	 * Xử lý đầu ra cột URL liên kết.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param object $link The current link object.
+	 * @param object $link Đối tượng liên kết hiện tại.
 	 */
 	public function column_url( $link ) {
 		$short_url = url_shorten( $link->link_url );
@@ -220,13 +220,13 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the link categories column output.
+	 * Xử lý đầu ra cột chuyên mục liên kết.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @global int $cat_id
+	 * @global int $cat_id ID chuyên mục.
 	 *
-	 * @param object $link The current link object.
+	 * @param object $link Đối tượng liên kết hiện tại.
 	 */
 	public function column_categories( $link ) {
 		global $cat_id;
@@ -247,22 +247,22 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the link relation column output.
+	 * Xử lý đầu ra cột quan hệ liên kết.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param object $link The current link object.
+	 * @param object $link Đối tượng liên kết hiện tại.
 	 */
 	public function column_rel( $link ) {
 		echo empty( $link->link_rel ) ? '<br />' : $link->link_rel;
 	}
 
 	/**
-	 * Handles the link visibility column output.
+	 * Xử lý đầu ra cột hiển thị liên kết.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param object $link The current link object.
+	 * @param object $link Đối tượng liên kết hiện tại.
 	 */
 	public function column_visible( $link ) {
 		if ( 'Y' === $link->link_visible ) {
@@ -273,42 +273,42 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handles the link rating column output.
+	 * Xử lý đầu ra cột đánh giá liên kết.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param object $link The current link object.
+	 * @param object $link Đối tượng liên kết hiện tại.
 	 */
 	public function column_rating( $link ) {
 		echo $link->link_rating;
 	}
 
 	/**
-	 * Handles the default column output.
+	 * Xử lý đầu ra cột mặc định.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$link` to `$item` to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$link` thành `$item` để khớp với lớp cha cho hỗ trợ tham số có tên PHP 8.
 	 *
-	 * @param object $item        Link object.
-	 * @param string $column_name Current column name.
+	 * @param object $item        Đối tượng liên kết.
+	 * @param string $column_name Tên cột hiện tại.
 	 */
 	public function column_default( $item, $column_name ) {
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$link = $item;
 
 		/**
-		 * Fires for each registered custom link column.
+		 * Kích hoạt cho mỗi cột tùy chỉnh liên kết đã đăng ký.
 		 *
 		 * @since 2.1.0
 		 *
-		 * @param string $column_name Name of the custom column.
-		 * @param int    $link_id     Link ID.
+		 * @param string $column_name Tên cột tùy chỉnh.
+		 * @param int    $link_id     ID liên kết.
 		 */
 		do_action( 'manage_link_custom_column', $column_name, $link->link_id );
 	}
 
 	/**
-	 * Generates the list table rows.
+	 * Tạo các hàng của bảng danh sách.
 	 *
 	 * @since 3.1.0
 	 */
@@ -326,23 +326,23 @@ class WP_Links_List_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Generates and displays row action links.
+	 * Tạo và hiển thị các liên kết hành động hàng.
 	 *
 	 * @since 4.3.0
-	 * @since 5.9.0 Renamed `$link` to `$item` to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$link` thành `$item` để khớp với lớp cha cho hỗ trợ tham số có tên PHP 8.
 	 *
-	 * @param object $item        Link being acted upon.
-	 * @param string $column_name Current column name.
-	 * @param string $primary     Primary column name.
-	 * @return string Row actions output for links, or an empty string
-	 *                if the current column is not the primary column.
+	 * @param object $item        Liên kết đang được thao tác.
+	 * @param string $column_name Tên cột hiện tại.
+	 * @param string $primary     Tên cột chính.
+	 * @return string Đầu ra hành động hàng cho liên kết, hoặc chuỗi rỗng
+	 *                nếu cột hiện tại không phải là cột chính.
 	 */
 	protected function handle_row_actions( $item, $column_name, $primary ) {
 		if ( $primary !== $column_name ) {
 			return '';
 		}
 
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$link = $item;
 
 		$edit_link = get_edit_bookmark_link( $link );

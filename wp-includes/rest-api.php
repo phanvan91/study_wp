@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API functions.
+ * Các hàm REST API.
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,35 +8,35 @@
  */
 
 /**
- * Version number for our API.
+ * Số phiên bản cho API của chúng ta.
  *
  * @var string
  */
 define( 'REST_API_VERSION', '2.0' );
 
 /**
- * Registers a REST API route.
+ * Đăng ký một route REST API.
  *
- * Note: Do not use before the {@see 'rest_api_init'} hook.
+ * Lưu ý: Không sử dụng trước hook {@see 'rest_api_init'}.
  *
  * @since 4.4.0
- * @since 5.1.0 Added a `_doing_it_wrong()` notice when not called on or after the `rest_api_init` hook.
- * @since 5.5.0 Added a `_doing_it_wrong()` notice when the required `permission_callback` argument is not set.
+ * @since 5.1.0 Thêm thông báo `_doing_it_wrong()` khi không được gọi tại hoặc sau hook `rest_api_init`.
+ * @since 5.5.0 Thêm thông báo `_doing_it_wrong()` khi tham số bắt buộc `permission_callback` không được đặt.
  *
- * @param string $route_namespace The first URL segment after core prefix. Should be unique to your package/plugin.
- * @param string $route           The base URL for route you are adding.
- * @param array  $args            Optional. Either an array of options for the endpoint, or an array of arrays for
- *                                multiple methods. Default empty array.
- * @param bool   $override        Optional. If the route already exists, should we override it? True overrides,
- *                                false merges (with newer overriding if duplicate keys exist). Default false.
- * @return bool True on success, false on error.
+ * @param string $route_namespace Phân đoạn URL đầu tiên sau tiền tố core. Nên là duy nhất cho gói/plugin của bạn.
+ * @param string $route           URL cơ sở cho route bạn đang thêm.
+ * @param array  $args            Tùy chọn. Mảng các tùy chọn cho endpoint, hoặc mảng các mảng cho
+ *                                nhiều phương thức. Mặc định mảng rỗng.
+ * @param bool   $override        Tùy chọn. Nếu route đã tồn tại, có nên ghi đè không? True ghi đè,
+ *                                false hợp nhất (cái mới sẽ ghi đè nếu trùng key). Mặc định false.
+ * @return bool True khi thành công, false khi có lỗi.
  */
 function register_rest_route( $route_namespace, $route, $args = array(), $override = false ) {
 	if ( empty( $route_namespace ) ) {
 		/*
-		 * Non-namespaced routes are not allowed, with the exception of the main
-		 * and namespace indexes. If you really need to register a
-		 * non-namespaced route, call `WP_REST_Server::register_route` directly.
+		 * Các route không có namespace không được phép, ngoại trừ chỉ mục chính
+		 * và chỉ mục namespace. Nếu bạn thực sự cần đăng ký một
+		 * route không có namespace, hãy gọi trực tiếp `WP_REST_Server::register_route`.
 		 */
 		_doing_it_wrong(
 			__FUNCTION__,
@@ -100,7 +100,7 @@ function register_rest_route( $route_namespace, $route, $args = array(), $overri
 	}
 
 	if ( isset( $args['callback'] ) ) {
-		// Upgrade a single set to multiple.
+		// Nâng cấp một tập đơn thành nhiều tập.
 		$args = array( $args );
 	}
 
@@ -112,7 +112,7 @@ function register_rest_route( $route_namespace, $route, $args = array(), $overri
 
 	foreach ( $args as $key => &$arg_group ) {
 		if ( ! is_numeric( $key ) ) {
-			// Route option, skip here.
+			// Tùy chọn route, bỏ qua ở đây.
 			continue;
 		}
 
@@ -145,7 +145,7 @@ function register_rest_route( $route_namespace, $route, $args = array(), $overri
 					),
 					'6.1.0'
 				);
-				break; // Leave the foreach loop once a non-array argument was found.
+				break; // Thoát vòng lặp foreach khi tìm thấy tham số không phải mảng.
 			}
 		}
 	}
@@ -156,27 +156,27 @@ function register_rest_route( $route_namespace, $route, $args = array(), $overri
 }
 
 /**
- * Registers a new field on an existing WordPress object type.
+ * Đăng ký một trường mới trên loại đối tượng WordPress hiện có.
  *
  * @since 4.7.0
  *
- * @global array $wp_rest_additional_fields Holds registered fields, organized
- *                                          by object type.
+ * @global array $wp_rest_additional_fields Chứa các trường đã đăng ký, được tổ chức
+ *                                          theo loại đối tượng.
  *
- * @param string|array $object_type Object(s) the field is being registered to,
- *                                  "post"|"term"|"comment" etc.
- * @param string       $attribute   The attribute name.
+ * @param string|array $object_type Đối tượng mà trường đang được đăng ký,
+ *                                  "post"|"term"|"comment" v.v.
+ * @param string       $attribute   Tên thuộc tính.
  * @param array        $args {
- *     Optional. An array of arguments used to handle the registered field.
+ *     Tùy chọn. Mảng các tham số dùng để xử lý trường đã đăng ký.
  *
- *     @type callable|null $get_callback    Optional. The callback function used to retrieve the field value. Default is
- *                                          'null', the field will not be returned in the response. The function will
- *                                          be passed the prepared object data.
- *     @type callable|null $update_callback Optional. The callback function used to set and update the field value. Default
- *                                          is 'null', the value cannot be set or updated. The function will be passed
- *                                          the model object, like WP_Post.
- *     @type array|null $schema             Optional. The schema for this field.
- *                                          Default is 'null', no schema entry will be returned.
+ *     @type callable|null $get_callback    Tùy chọn. Hàm callback dùng để lấy giá trị trường. Mặc định là
+ *                                          'null', trường sẽ không được trả về trong phản hồi. Hàm sẽ
+ *                                          được truyền dữ liệu đối tượng đã chuẩn bị.
+ *     @type callable|null $update_callback Tùy chọn. Hàm callback dùng để đặt và cập nhật giá trị trường. Mặc định
+ *                                          là 'null', giá trị không thể được đặt hoặc cập nhật. Hàm sẽ được truyền
+ *                                          đối tượng model, như WP_Post.
+ *     @type array|null $schema             Tùy chọn. Schema cho trường này.
+ *                                          Mặc định là 'null', không có mục schema nào được trả về.
  * }
  */
 function register_rest_field( $object_type, $attribute, $args = array() ) {
@@ -198,12 +198,12 @@ function register_rest_field( $object_type, $attribute, $args = array() ) {
 }
 
 /**
- * Registers rewrite rules for the REST API.
+ * Đăng ký các quy tắc rewrite cho REST API.
  *
  * @since 4.4.0
  *
  * @see rest_api_register_rewrites()
- * @global WP $wp Current WordPress environment instance.
+ * @global WP $wp Thực thể môi trường WordPress hiện tại.
  */
 function rest_api_init() {
 	rest_api_register_rewrites();
@@ -213,12 +213,12 @@ function rest_api_init() {
 }
 
 /**
- * Adds REST rewrite rules.
+ * Thêm các quy tắc rewrite REST.
  *
  * @since 4.4.0
  *
  * @see add_rewrite_rule()
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  */
 function rest_api_register_rewrites() {
 	global $wp_rewrite;
@@ -230,16 +230,16 @@ function rest_api_register_rewrites() {
 }
 
 /**
- * Registers the default REST API filters.
+ * Đăng ký các bộ lọc REST API mặc định.
  *
- * Attached to the {@see 'rest_api_init'} action
- * to make testing and disabling these filters easier.
+ * Được gắn vào action {@see 'rest_api_init'}
+ * để việc kiểm thử và tắt các bộ lọc này dễ dàng hơn.
  *
  * @since 4.4.0
  */
 function rest_api_default_filters() {
 	if ( wp_is_serving_rest_request() ) {
-		// Deprecated reporting.
+		// Báo cáo deprecated.
 		add_action( 'deprecated_function_run', 'rest_handle_deprecated_function', 10, 3 );
 		add_filter( 'deprecated_function_trigger_error', '__return_false' );
 		add_action( 'deprecated_argument_run', 'rest_handle_deprecated_argument', 10, 3 );
@@ -248,7 +248,7 @@ function rest_api_default_filters() {
 		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
 	}
 
-	// Default serving.
+	// Phục vụ mặc định.
 	add_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 	add_filter( 'rest_post_dispatch', 'rest_send_allow_header', 10, 3 );
 	add_filter( 'rest_post_dispatch', 'rest_filter_response_fields', 10, 3 );
@@ -258,7 +258,7 @@ function rest_api_default_filters() {
 }
 
 /**
- * Registers default REST API routes.
+ * Đăng ký các route REST API mặc định.
  *
  * @since 4.7.0
  */
@@ -289,19 +289,19 @@ function create_initial_rest_routes() {
 		}
 	}
 
-	// Post types.
+	// Loại bài viết.
 	$controller = new WP_REST_Post_Types_Controller();
 	$controller->register_routes();
 
-	// Post statuses.
+	// Trạng thái bài viết.
 	$controller = new WP_REST_Post_Statuses_Controller();
 	$controller->register_routes();
 
-	// Taxonomies.
+	// Phân loại.
 	$controller = new WP_REST_Taxonomies_Controller();
 	$controller->register_routes();
 
-	// Terms.
+	// Thuật ngữ.
 	foreach ( get_taxonomies( array( 'show_in_rest' => true ), 'object' ) as $taxonomy ) {
 		$controller = $taxonomy->get_rest_controller();
 
@@ -312,11 +312,11 @@ function create_initial_rest_routes() {
 		$controller->register_routes();
 	}
 
-	// Users.
+	// Người dùng.
 	$controller = new WP_REST_Users_Controller();
 	$controller->register_routes();
 
-	// Application Passwords
+	// Mật khẩu ứng dụng.
 	$controller = new WP_REST_Application_Passwords_Controller();
 	$controller->register_routes();
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Navigation Menu functions
+ * Các hàm Menu Điều hướng
  *
  * @package WordPress
  * @subpackage Nav_Menus
@@ -8,12 +8,12 @@
  */
 
 /**
- * Returns a navigation menu object.
+ * Trả về đối tượng menu điều hướng.
  *
  * @since 3.0.0
  *
- * @param int|string|WP_Term $menu Menu ID, slug, name, or object.
- * @return WP_Term|false Menu object on success, false if $menu param isn't supplied or term does not exist.
+ * @param int|string|WP_Term $menu ID menu, slug, tên, hoặc đối tượng.
+ * @return WP_Term|false Đối tượng menu khi thành công, false nếu tham số $menu không được cung cấp hoặc term không tồn tại.
  */
 function wp_get_nav_menu_object( $menu ) {
 	$menu_obj = false;
@@ -39,25 +39,25 @@ function wp_get_nav_menu_object( $menu ) {
 	}
 
 	/**
-	 * Filters the nav_menu term retrieved for wp_get_nav_menu_object().
+	 * Lọc term nav_menu được truy xuất cho wp_get_nav_menu_object().
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param WP_Term|false      $menu_obj Term from nav_menu taxonomy, or false if nothing had been found.
-	 * @param int|string|WP_Term $menu     The menu ID, slug, name, or object passed to wp_get_nav_menu_object().
+	 * @param WP_Term|false      $menu_obj Term từ taxonomy nav_menu, hoặc false nếu không tìm thấy gì.
+	 * @param int|string|WP_Term $menu     ID menu, slug, tên, hoặc đối tượng được truyền vào wp_get_nav_menu_object().
 	 */
 	return apply_filters( 'wp_get_nav_menu_object', $menu_obj, $menu );
 }
 
 /**
- * Determines whether the given ID is a navigation menu.
+ * Xác định xem ID đã cho có phải là menu điều hướng hay không.
  *
- * Returns true if it is; false otherwise.
+ * Trả về true nếu đúng; false nếu không.
  *
  * @since 3.0.0
  *
- * @param int|string|WP_Term $menu Menu ID, slug, name, or object of menu to check.
- * @return bool Whether the menu exists.
+ * @param int|string|WP_Term $menu ID menu, slug, tên, hoặc đối tượng menu cần kiểm tra.
+ * @return bool Menu có tồn tại hay không.
  */
 function is_nav_menu( $menu ) {
 	if ( ! $menu ) {
@@ -79,13 +79,13 @@ function is_nav_menu( $menu ) {
 }
 
 /**
- * Registers navigation menu locations for a theme.
+ * Đăng ký các vị trí menu điều hướng cho theme.
  *
  * @since 3.0.0
  *
  * @global array $_wp_registered_nav_menus
  *
- * @param string[] $locations Associative array of menu location identifiers (like a slug) and descriptive text.
+ * @param string[] $locations Mảng liên kết các định danh vị trí menu (giống slug) và văn bản mô tả.
  */
 function register_nav_menus( $locations = array() ) {
 	global $_wp_registered_nav_menus;
@@ -103,14 +103,14 @@ function register_nav_menus( $locations = array() ) {
 }
 
 /**
- * Unregisters a navigation menu location for a theme.
+ * Hủy đăng ký vị trí menu điều hướng cho theme.
  *
  * @since 3.1.0
  *
  * @global array $_wp_registered_nav_menus
  *
- * @param string $location The menu location identifier.
- * @return bool True on success, false on failure.
+ * @param string $location Định danh vị trí menu.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function unregister_nav_menu( $location ) {
 	global $_wp_registered_nav_menus;
@@ -126,25 +126,25 @@ function unregister_nav_menu( $location ) {
 }
 
 /**
- * Registers a navigation menu location for a theme.
+ * Đăng ký một vị trí menu điều hướng cho theme.
  *
  * @since 3.0.0
  *
- * @param string $location    Menu location identifier, like a slug.
- * @param string $description Menu location descriptive text.
+ * @param string $location    Định danh vị trí menu, giống slug.
+ * @param string $description Văn bản mô tả vị trí menu.
  */
 function register_nav_menu( $location, $description ) {
 	register_nav_menus( array( $location => $description ) );
 }
 /**
- * Retrieves all registered navigation menu locations in a theme.
+ * Truy xuất tất cả vị trí menu điều hướng đã đăng ký trong theme.
  *
  * @since 3.0.0
  *
  * @global array $_wp_registered_nav_menus
  *
- * @return string[] Associative array of registered navigation menu descriptions keyed
- *                  by their location. If none are registered, an empty array.
+ * @return string[] Mảng liên kết các mô tả menu điều hướng đã đăng ký theo khóa
+ *                  là vị trí của chúng. Nếu không có đăng ký nào, trả về mảng rỗng.
  */
 function get_registered_nav_menus() {
 	global $_wp_registered_nav_menus;
@@ -155,12 +155,12 @@ function get_registered_nav_menus() {
 }
 
 /**
- * Retrieves all registered navigation menu locations and the menus assigned to them.
+ * Truy xuất tất cả vị trí menu điều hướng đã đăng ký và các menu được gán cho chúng.
  *
  * @since 3.0.0
  *
- * @return int[] Associative array of registered navigation menu IDs keyed by their
- *               location name. If none are registered, an empty array.
+ * @return int[] Mảng liên kết các ID menu điều hướng đã đăng ký theo khóa
+ *               là tên vị trí. Nếu không có đăng ký nào, trả về mảng rỗng.
  */
 function get_nav_menu_locations() {
 	$locations = get_theme_mod( 'nav_menu_locations' );
@@ -168,12 +168,12 @@ function get_nav_menu_locations() {
 }
 
 /**
- * Determines whether a registered nav menu location has a menu assigned to it.
+ * Xác định xem vị trí menu điều hướng đã đăng ký có menu được gán hay không.
  *
  * @since 3.0.0
  *
- * @param string $location Menu location identifier.
- * @return bool Whether location has a menu.
+ * @param string $location Định danh vị trí menu.
+ * @return bool Vị trí có menu hay không.
  */
 function has_nav_menu( $location ) {
 	$has_nav_menu = false;
@@ -185,23 +185,23 @@ function has_nav_menu( $location ) {
 	}
 
 	/**
-	 * Filters whether a nav menu is assigned to the specified location.
+	 * Lọc xem menu điều hướng có được gán cho vị trí chỉ định hay không.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param bool   $has_nav_menu Whether there is a menu assigned to a location.
-	 * @param string $location     Menu location.
+	 * @param bool   $has_nav_menu Có menu được gán cho vị trí hay không.
+	 * @param string $location     Vị trí menu.
 	 */
 	return apply_filters( 'has_nav_menu', $has_nav_menu, $location );
 }
 
 /**
- * Returns the name of a navigation menu.
+ * Trả về tên của menu điều hướng.
  *
  * @since 4.9.0
  *
- * @param string $location Menu location identifier.
- * @return string Menu name.
+ * @param string $location Định danh vị trí menu.
+ * @return string Tên menu.
  */
 function wp_get_nav_menu_name( $location ) {
 	$menu_name = '';
@@ -217,50 +217,50 @@ function wp_get_nav_menu_name( $location ) {
 	}
 
 	/**
-	 * Filters the navigation menu name being returned.
+	 * Lọc tên menu điều hướng đang được trả về.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param string $menu_name Menu name.
-	 * @param string $location  Menu location identifier.
+	 * @param string $menu_name Tên menu.
+	 * @param string $location  Định danh vị trí menu.
 	 */
 	return apply_filters( 'wp_get_nav_menu_name', $menu_name, $location );
 }
 
 /**
- * Determines whether the given ID is a nav menu item.
+ * Xác định xem ID đã cho có phải là mục menu điều hướng hay không.
  *
  * @since 3.0.0
  *
- * @param int $menu_item_id The ID of the potential nav menu item.
- * @return bool Whether the given ID is that of a nav menu item.
+ * @param int $menu_item_id ID của mục menu điều hướng tiềm năng.
+ * @return bool ID đã cho có phải là mục menu điều hướng hay không.
  */
 function is_nav_menu_item( $menu_item_id = 0 ) {
 	return ( ! is_wp_error( $menu_item_id ) && ( 'nav_menu_item' === get_post_type( $menu_item_id ) ) );
 }
 
 /**
- * Creates a navigation menu.
+ * Tạo menu điều hướng.
  *
- * Note that `$menu_name` is expected to be pre-slashed.
+ * Lưu ý rằng `$menu_name` được kỳ vọng đã được thêm dấu gạch chéo trước.
  *
  * @since 3.0.0
  *
- * @param string $menu_name Menu name.
- * @return int|WP_Error Menu ID on success, WP_Error object on failure.
+ * @param string $menu_name Tên menu.
+ * @return int|WP_Error ID menu khi thành công, đối tượng WP_Error khi thất bại.
  */
 function wp_create_nav_menu( $menu_name ) {
-	// expected_slashed ($menu_name)
+	// đã_thêm_gạch_chéo ($menu_name)
 	return wp_update_nav_menu_object( 0, array( 'menu-name' => $menu_name ) );
 }
 
 /**
- * Deletes a navigation menu.
+ * Xóa menu điều hướng.
  *
  * @since 3.0.0
  *
- * @param int|string|WP_Term $menu Menu ID, slug, name, or object.
- * @return bool|WP_Error True on success, false or WP_Error object on failure.
+ * @param int|string|WP_Term $menu ID menu, slug, tên, hoặc đối tượng.
+ * @return bool|WP_Error True khi thành công, false hoặc đối tượng WP_Error khi thất bại.
  */
 function wp_delete_nav_menu( $menu ) {
 	$menu = wp_get_nav_menu_object( $menu );
@@ -277,7 +277,7 @@ function wp_delete_nav_menu( $menu ) {
 
 	$result = wp_delete_term( $menu->term_id, 'nav_menu' );
 
-	// Remove this menu from any locations.
+	// Xóa menu này khỏi bất kỳ vị trí nào.
 	$locations = get_nav_menu_locations();
 	foreach ( $locations as $location => $menu_id ) {
 		if ( $menu_id === $menu->term_id ) {
@@ -289,11 +289,11 @@ function wp_delete_nav_menu( $menu ) {
 	if ( $result && ! is_wp_error( $result ) ) {
 
 		/**
-		 * Fires after a navigation menu has been successfully deleted.
+		 * Kích hoạt sau khi menu điều hướng đã được xóa thành công.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param int $term_id ID of the deleted menu.
+		 * @param int $term_id ID của menu đã xóa.
 		 */
 		do_action( 'wp_delete_nav_menu', $menu->term_id );
 	}
@@ -302,18 +302,18 @@ function wp_delete_nav_menu( $menu ) {
 }
 
 /**
- * Saves the properties of a menu or create a new menu with those properties.
+ * Lưu thuộc tính của menu hoặc tạo menu mới với các thuộc tính đó.
  *
- * Note that `$menu_data` is expected to be pre-slashed.
+ * Lưu ý rằng `$menu_data` được kỳ vọng đã được thêm dấu gạch chéo trước.
  *
  * @since 3.0.0
  *
- * @param int   $menu_id   The ID of the menu or "0" to create a new menu.
- * @param array $menu_data The array of menu data.
- * @return int|WP_Error Menu ID on success, WP_Error object on failure.
+ * @param int   $menu_id   ID của menu hoặc "0" để tạo menu mới.
+ * @param array $menu_data Mảng dữ liệu menu.
+ * @return int|WP_Error ID menu khi thành công, đối tượng WP_Error khi thất bại.
  */
 function wp_update_nav_menu_object( $menu_id = 0, $menu_data = array() ) {
-	// expected_slashed ($menu_data)
+	// đã_thêm_gạch_chéo ($menu_data)
 	$menu_id = (int) $menu_id;
 
 	$_menu = wp_get_nav_menu_object( $menu_id );
@@ -325,7 +325,7 @@ function wp_update_nav_menu_object( $menu_id = 0, $menu_data = array() ) {
 		'slug'        => null,
 	);
 
-	// Double-check that we're not going to have one menu take the name of another.
+	// Kiểm tra kỹ rằng chúng ta không để một menu lấy tên của menu khác.
 	$_possible_existing = get_term_by( 'name', $menu_data['menu-name'], 'nav_menu' );
 	if (
 		$_possible_existing &&
@@ -343,7 +343,7 @@ function wp_update_nav_menu_object( $menu_id = 0, $menu_data = array() ) {
 		);
 	}
 
-	// Menu doesn't already exist, so create a new menu.
+	// Menu chưa tồn tại, nên tạo menu mới.
 	if ( ! $_menu || is_wp_error( $_menu ) ) {
 		$menu_exists = get_term_by( 'name', $menu_data['menu-name'], 'nav_menu' );
 
@@ -365,12 +365,12 @@ function wp_update_nav_menu_object( $menu_id = 0, $menu_data = array() ) {
 		}
 
 		/**
-		 * Fires after a navigation menu is successfully created.
+		 * Kích hoạt sau khi menu điều hướng được tạo thành công.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param int   $term_id   ID of the new menu.
-		 * @param array $menu_data An array of menu data.
+		 * @param int   $term_id   ID của menu mới.
+		 * @param array $menu_data Mảng dữ liệu menu.
 		 */
 		do_action( 'wp_create_nav_menu', $_menu['term_id'], $menu_data );
 
@@ -392,37 +392,37 @@ function wp_update_nav_menu_object( $menu_id = 0, $menu_data = array() ) {
 	$menu_id = (int) $update_response['term_id'];
 
 	/**
-	 * Fires after a navigation menu has been successfully updated.
+	 * Kích hoạt sau khi menu điều hướng đã được cập nhật thành công.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int   $menu_id   ID of the updated menu.
-	 * @param array $menu_data An array of menu data.
+	 * @param int   $menu_id   ID của menu đã cập nhật.
+	 * @param array $menu_data Mảng dữ liệu menu.
 	 */
 	do_action( 'wp_update_nav_menu', $menu_id, $menu_data );
 	return $menu_id;
 }
 
 /**
- * Saves the properties of a menu item or create a new one.
+ * Lưu thuộc tính của mục menu hoặc tạo mục mới.
  *
- * The menu-item-title, menu-item-description and menu-item-attr-title are expected
- * to be pre-slashed since they are passed directly to APIs that expect slashed data.
+ * Các trường menu-item-title, menu-item-description và menu-item-attr-title được kỳ vọng
+ * đã thêm dấu gạch chéo vì chúng được truyền trực tiếp đến các API yêu cầu dữ liệu đã thêm gạch chéo.
  *
  * @since 3.0.0
- * @since 5.9.0 Added the `$fire_after_hooks` parameter.
+ * @since 5.9.0 Thêm tham số `$fire_after_hooks`.
  *
- * @param int   $menu_id          The ID of the menu. If 0, makes the menu item a draft orphan.
- * @param int   $menu_item_db_id  The ID of the menu item. If 0, creates a new menu item.
- * @param array $menu_item_data   The menu item's data.
- * @param bool  $fire_after_hooks Whether to fire the after insert hooks. Default true.
- * @return int|WP_Error The menu item's database ID or WP_Error object on failure.
+ * @param int   $menu_id          ID của menu. Nếu là 0, biến mục menu thành bản nháp mồ côi.
+ * @param int   $menu_item_db_id  ID của mục menu. Nếu là 0, tạo mục menu mới.
+ * @param array $menu_item_data   Dữ liệu của mục menu.
+ * @param bool  $fire_after_hooks Có kích hoạt các hook sau khi chèn hay không. Mặc định true.
+ * @return int|WP_Error ID cơ sở dữ liệu của mục menu hoặc đối tượng WP_Error khi thất bại.
  */
 function wp_update_nav_menu_item( $menu_id = 0, $menu_item_db_id = 0, $menu_item_data = array(), $fire_after_hooks = true ) {
 	$menu_id         = (int) $menu_id;
 	$menu_item_db_id = (int) $menu_item_db_id;
 
-	// Make sure that we don't convert non-nav_menu_item objects into nav_menu_item objects.
+	// Đảm bảo rằng chúng ta không chuyển đổi các đối tượng không phải nav_menu_item thành đối tượng nav_menu_item.
 	if ( ! empty( $menu_item_db_id ) && ! is_nav_menu_item( $menu_item_db_id ) ) {
 		return new WP_Error( 'update_nav_menu_item_failed', __( 'The given object ID is not that of a menu item.' ) );
 	}

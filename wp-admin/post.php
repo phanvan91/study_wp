@@ -1,14 +1,14 @@
 <?php
 /**
- * Edit post administration panel.
+ * Bảng quản trị chỉnh sửa bài viết.
  *
- * Manage Post actions: post, edit, delete, etc.
+ * Quản lý các hành động Bài viết: đăng, sửa, xóa, v.v.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Tải WordPress Administration Bootstrap */
 require_once __DIR__ . '/admin.php';
 
 $parent_file  = 'edit.php';
@@ -28,9 +28,9 @@ if ( isset( $_GET['post'] ) && isset( $_POST['post_ID'] ) && (int) $_GET['post']
 $post_ID = $post_id;
 
 /**
- * @global string       $post_type        Global post type.
- * @global WP_Post_Type $post_type_object Global post type object.
- * @global WP_Post      $post             Global post object.
+ * @global string       $post_type        Loại bài viết toàn cục.
+ * @global WP_Post_Type $post_type_object Đối tượng loại bài viết toàn cục.
+ * @global WP_Post      $post             Đối tượng bài viết toàn cục.
  */
 global $post_type, $post_type_object, $post;
 
@@ -71,11 +71,11 @@ if ( ! $sendback ||
 
 switch ( $action ) {
 	case 'post-quickdraft-save':
-		// Check nonce and capabilities.
+		// Kiểm tra nonce và quyền hạn.
 		$nonce     = $_REQUEST['_wpnonce'];
 		$error_msg = false;
 
-		// For output of the Quick Draft dashboard widget.
+		// Để xuất widget Nháp nhanh trên bảng điều khiển.
 		require_once ABSPATH . 'wp-admin/includes/dashboard.php';
 
 		if ( ! wp_verify_nonce( $nonce, 'add-post' ) ) {
@@ -96,7 +96,7 @@ switch ( $action ) {
 		$_POST['comment_status'] = get_default_comment_status( $post->post_type );
 		$_POST['ping_status']    = get_default_comment_status( $post->post_type, 'pingback' );
 
-		// Wrap Quick Draft content in the Paragraph block.
+		// Bọc nội dung Nháp nhanh trong khối Đoạn văn.
 		if ( ! str_contains( $_POST['content'], '<!-- wp:paragraph -->' ) ) {
 			$_POST['content'] = sprintf(
 				'<!-- wp:paragraph -->%s<!-- /wp:paragraph -->',
@@ -172,12 +172,12 @@ switch ( $action ) {
 		$title = $post_type_object->labels->edit_item;
 
 		/**
-		 * Allows replacement of the editor.
+		 * Cho phép thay thế trình soạn thảo.
 		 *
 		 * @since 4.9.0
 		 *
-		 * @param bool    $replace Whether to replace the editor. Default false.
-		 * @param WP_Post $post    Post object.
+		 * @param bool    $replace Có thay thế trình soạn thảo hay không. Mặc định false.
+		 * @param WP_Post $post    Đối tượng bài viết.
 		 */
 		if ( true === apply_filters( 'replace_editor', false, $post ) ) {
 			break;
@@ -210,28 +210,28 @@ switch ( $action ) {
 	case 'editattachment':
 		check_admin_referer( 'update-post_' . $post_id );
 
-		// Don't let these be changed.
+		// Không cho phép thay đổi các giá trị này.
 		unset( $_POST['guid'] );
 		$_POST['post_type'] = 'attachment';
 
-		// Update the thumbnail filename.
+		// Cập nhật tên tệp ảnh thu nhỏ.
 		$newmeta          = wp_get_attachment_metadata( $post_id, true );
 		$newmeta['thumb'] = wp_basename( $_POST['thumb'] );
 
 		wp_update_attachment_metadata( $post_id, $newmeta );
 
-		// Intentional fall-through to trigger the edit_post() call.
+		// Cố ý rơi xuống để kích hoạt lời gọi edit_post().
 	case 'editpost':
 		check_admin_referer( 'update-post_' . $post_id );
 
 		$post_id = edit_post();
 
-		// Session cookie flag that the post was saved.
+		// Cờ cookie phiên cho biết bài viết đã được lưu.
 		if ( isset( $_COOKIE['wp-saving-post'] ) && $_COOKIE['wp-saving-post'] === $post_id . '-check' ) {
 			setcookie( 'wp-saving-post', $post_id . '-saved', time() + DAY_IN_SECONDS, ADMIN_COOKIE_PATH, COOKIE_DOMAIN, is_ssl() );
 		}
 
-		redirect_post( $post_id ); // Send user on their way while we keep working.
+		redirect_post( $post_id ); // Chuyển hướng người dùng trong khi chúng ta tiếp tục xử lý.
 
 		exit;
 
@@ -253,7 +253,7 @@ switch ( $action ) {
 		$user_id = wp_check_post_lock( $post_id );
 		if ( $user_id ) {
 			$user = get_userdata( $user_id );
-			/* translators: %s: User's display name. */
+			/* translators: %s: Tên hiển thị của người dùng. */
 			wp_die( sprintf( __( 'You cannot move this item to the Trash. %s is currently editing.' ), $user->display_name ) );
 		}
 
@@ -352,18 +352,18 @@ switch ( $action ) {
 
 	default:
 		/**
-		 * Fires for a given custom post action request.
+		 * Kích hoạt khi có yêu cầu hành động bài viết tùy chỉnh.
 		 *
-		 * The dynamic portion of the hook name, `$action`, refers to the custom post action.
+		 * Phần động của tên hook, `$action`, tham chiếu đến hành động bài viết tùy chỉnh.
 		 *
 		 * @since 4.6.0
 		 *
-		 * @param int $post_id Post ID sent with the request.
+		 * @param int $post_id ID bài viết được gửi cùng yêu cầu.
 		 */
 		do_action( "post_action_{$action}", $post_id );
 
 		wp_redirect( admin_url( 'edit.php' ) );
 		exit;
-} // End switch.
+} // Kết thúc switch.
 
 require_once ABSPATH . 'wp-admin/admin-footer.php';

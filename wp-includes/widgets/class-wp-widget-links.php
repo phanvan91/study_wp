@@ -1,6 +1,6 @@
 <?php
 /**
- * Widget API: WP_Widget_Links class
+ * Widget API: Lớp WP_Widget_Links
  *
  * @package WordPress
  * @subpackage Widgets
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement a Links widget.
+ * Lớp cốt lõi dùng để triển khai widget Liên kết.
  *
  * @since 2.8.0
  *
@@ -17,7 +17,7 @@
 class WP_Widget_Links extends WP_Widget {
 
 	/**
-	 * Sets up a new Links widget instance.
+	 * Thiết lập một phiên bản widget Liên kết mới.
 	 *
 	 * @since 2.8.0
 	 */
@@ -30,13 +30,13 @@ class WP_Widget_Links extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the content for the current Links widget instance.
+	 * Xuất nội dung cho phiên bản widget Liên kết hiện tại.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $args     Display arguments including 'before_title', 'after_title',
-	 *                        'before_widget', and 'after_widget'.
-	 * @param array $instance Settings for the current Links widget instance.
+	 * @param array $args     Các tham số hiển thị bao gồm 'before_title', 'after_title',
+	 *                        'before_widget', và 'after_widget'.
+	 * @param array $instance Cài đặt cho phiên bản widget Liên kết hiện tại.
 	 */
 	public function widget( $args, $instance ) {
 		$show_description = isset( $instance['description'] ) ? $instance['description'] : false;
@@ -67,28 +67,28 @@ class WP_Widget_Links extends WP_Widget {
 		);
 
 		/**
-		 * Filters the arguments for the Links widget.
+		 * Lọc các tham số cho widget Liên kết.
 		 *
 		 * @since 2.6.0
-		 * @since 4.4.0 Added the `$instance` parameter.
+		 * @since 4.4.0 Thêm tham số `$instance`.
 		 *
 		 * @see wp_list_bookmarks()
 		 *
-		 * @param array $widget_links_args An array of arguments to retrieve the links list.
-		 * @param array $instance          The settings for the particular instance of the widget.
+		 * @param array $widget_links_args Mảng các tham số để truy xuất danh sách liên kết.
+		 * @param array $instance          Cài đặt cho phiên bản widget cụ thể.
 		 */
 		wp_list_bookmarks( apply_filters( 'widget_links_args', $widget_links_args, $instance ) );
 	}
 
 	/**
-	 * Handles updating settings for the current Links widget instance.
+	 * Xử lý cập nhật cài đặt cho phiên bản widget Liên kết hiện tại.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $new_instance New settings for this instance as input by the user via
+	 * @param array $new_instance Cài đặt mới cho phiên bản này do người dùng nhập qua
 	 *                            WP_Widget::form().
-	 * @param array $old_instance Old settings for this instance.
-	 * @return array Updated settings to save.
+	 * @param array $old_instance Cài đặt cũ cho phiên bản này.
+	 * @return array Cài đặt đã cập nhật để lưu.
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$new_instance = (array) $new_instance;
@@ -116,15 +116,15 @@ class WP_Widget_Links extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the settings form for the Links widget.
+	 * Xuất biểu mẫu cài đặt cho widget Liên kết.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $instance Current settings.
+	 * @param array $instance Cài đặt hiện tại.
 	 */
 	public function form( $instance ) {
 
-		// Defaults.
+		// Giá trị mặc định.
 		$instance  = wp_parse_args(
 			(array) $instance,
 			array(

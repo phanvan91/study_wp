@@ -1,6 +1,6 @@
 <?php
 /**
- * The block editor page.
+ * Trang trình soạn thảo khối.
  *
  * @since 5.0.0
  *
@@ -8,27 +8,27 @@
  * @subpackage Administration
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
 /**
- * @global string       $post_type        Global post type.
- * @global WP_Post_Type $post_type_object Global post type object.
- * @global WP_Post      $post             Global post object.
- * @global string       $title            The title of the current screen.
- * @global array        $wp_meta_boxes    Global meta box state.
+ * @global string       $post_type        Loại bài viết toàn cục.
+ * @global WP_Post_Type $post_type_object Đối tượng loại bài viết toàn cục.
+ * @global WP_Post      $post             Đối tượng bài viết toàn cục.
+ * @global string       $title            Tiêu đề của màn hình hiện tại.
+ * @global array        $wp_meta_boxes    Trạng thái hộp meta toàn cục.
  */
 global $post_type, $post_type_object, $post, $title, $wp_meta_boxes;
 
 $block_editor_context = new WP_Block_Editor_Context( array( 'post' => $post ) );
 
-// Flag that we're loading the block editor.
+// Đánh dấu rằng chúng ta đang tải trình soạn thảo khối.
 $current_screen = get_current_screen();
 $current_screen->is_block_editor( true );
 
-// Default to is-fullscreen-mode to avoid jumps in the UI.
+// Mặc định là chế độ toàn màn hình để tránh nhảy giao diện.
 add_filter(
 	'admin_body_class',
 	static function ( $classes ) {
@@ -37,12 +37,12 @@ add_filter(
 );
 
 /*
- * Emoji replacement is disabled for now, until it plays nicely with React.
+ * Thay thế emoji hiện đang bị tắt, cho đến khi hoạt động tốt với React.
  */
 remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 
 /*
- * Block editor implements its own Options menu for toggling Document Panels.
+ * Trình soạn thảo khối tự triển khai menu Tùy chọn riêng để bật/tắt các Bảng Tài liệu.
  */
 add_filter( 'screen_options_show_screen', '__return_false' );
 
@@ -57,7 +57,7 @@ $template_lookup_slug           = 'page' === $post->post_type ? 'page' : 'single
 if ( ! empty( $post->post_name ) ) {
 	$template_lookup_slug .= '-' . $post->post_name;
 }
-// Preload common data.
+// Tải trước dữ liệu thường dùng.
 $preload_paths = array(
 	'/wp/v2/types?context=view',
 	'/wp/v2/taxonomies?context=view',
@@ -76,14 +76,14 @@ $preload_paths = array(
 	'/wp/v2/themes?context=edit&status=active',
 	array( '/wp/v2/global-styles/' . WP_Theme_JSON_Resolver::get_user_global_styles_post_id(), 'OPTIONS' ),
 	/*
-	 * Preload the global styles path with the correct context based on user caps.
-	 * NOTE: There is an equivalent conditional check in the client-side code to fetch
-	 * the global styles entity using the appropriate context value.
-	 * See the call to `canUser()`, under `useGlobalStylesUserConfig()` in `packages/edit-site/src/components/use-global-styles-user-config/index.js`.
-	 * Please ensure that the equivalent check is kept in sync with this preload path.
+	 * Tải trước đường dẫn kiểu toàn cục với ngữ cảnh đúng dựa trên quyền người dùng.
+	 * LƯU Ý: Có một kiểm tra điều kiện tương đương trong mã phía client để lấy
+	 * thực thể kiểu toàn cục sử dụng giá trị ngữ cảnh phù hợp.
+	 * Xem lời gọi `canUser()`, trong `useGlobalStylesUserConfig()` tại `packages/edit-site/src/components/use-global-styles-user-config/index.js`.
+	 * Hãy đảm bảo rằng kiểm tra tương đương được đồng bộ với đường dẫn tải trước này.
 	 */
 	'/wp/v2/global-styles/' . WP_Theme_JSON_Resolver::get_user_global_styles_post_id() . '?context=' . $global_styles_endpoint_context,
-	// Used by getBlockPatternCategories in useBlockEditorSettings.
+	// Được sử dụng bởi getBlockPatternCategories trong useBlockEditorSettings.
 	'/wp/v2/block-patterns/categories',
 	// @see packages/core-data/src/entities.js
 	'/?_fields=' . implode(
@@ -120,14 +120,14 @@ wp_add_inline_script(
 );
 
 /*
- * Assign initial edits, if applicable. These are not initially assigned to the persisted post,
- * but should be included in its save payload.
+ * Gán các chỉnh sửa ban đầu, nếu có. Chúng không được gán ngay cho bài viết đã lưu,
+ * nhưng sẽ được bao gồm trong dữ liệu lưu của nó.
  */
 $initial_edits = array();
 $is_new_post   = false;
 if ( 'auto-draft' === $post->post_status ) {
 	$is_new_post = true;
-	// Override "(Auto Draft)" new post default title with empty string, or filtered value.
+	// Ghi đè tiêu đề mặc định "(Bản nháp tự động)" của bài viết mới bằng chuỗi rỗng, hoặc giá trị đã lọc.
 	if ( post_type_supports( $post->post_type, 'title' ) ) {
 		$initial_edits['title'] = $post->post_title;
 	}
@@ -141,13 +141,13 @@ if ( 'auto-draft' === $post->post_status ) {
 	}
 }
 
-// Preload server-registered block schemas.
+// Tải trước các lược đồ khối đã đăng ký trên máy chủ.
 wp_add_inline_script(
 	'wp-blocks',
 	'wp.blocks.unstable__bootstrapServerSideBlockDefinitions(' . wp_json_encode( get_block_editor_server_block_settings() ) . ');'
 );
 
-// Preload server-registered block bindings sources.
+// Tải trước các nguồn liên kết khối đã đăng ký trên máy chủ.
 $registered_sources = get_all_registered_block_bindings_sources();
 if ( ! empty( $registered_sources ) ) {
 	$filtered_sources = array();
@@ -165,7 +165,7 @@ if ( ! empty( $registered_sources ) ) {
 	);
 }
 
-// Get admin url for handling meta boxes.
+// Lấy URL quản trị để xử lý các hộp meta.
 $meta_box_url = admin_url( 'post.php' );
 $meta_box_url = add_query_arg(
 	array(
@@ -182,7 +182,7 @@ wp_add_inline_script(
 	'before'
 );
 
-// Set Heartbeat interval to 10 seconds, used to refresh post locks.
+// Đặt khoảng thời gian Heartbeat là 10 giây, dùng để làm mới khóa bài viết.
 wp_add_inline_script(
 	'heartbeat',
 	'jQuery( function() {
@@ -192,10 +192,10 @@ wp_add_inline_script(
 );
 
 /*
- * Get all available templates for the post/page attributes meta-box.
- * The "Default template" array element should only be added if the array is
- * not empty so we do not trigger the template select element without any options
- * besides the default value.
+ * Lấy tất cả các mẫu khả dụng cho hộp meta thuộc tính bài viết/trang.
+ * Phần tử mảng "Mẫu mặc định" chỉ nên được thêm nếu mảng không rỗng
+ * để không kích hoạt phần tử chọn mẫu mà không có tùy chọn nào
+ * ngoài giá trị mặc định.
  */
 $available_templates = wp_get_theme()->get_page_templates( get_post( $post->ID ) );
 $available_templates = ! empty( $available_templates ) ? array_replace(
@@ -206,7 +206,7 @@ $available_templates = ! empty( $available_templates ) ? array_replace(
 	$available_templates
 ) : $available_templates;
 
-// Lock settings.
+// Cài đặt khóa bài viết.
 $user_id = wp_check_post_lock( $post->ID );
 if ( $user_id ) {
 	$locked = false;
@@ -233,7 +233,7 @@ if ( $user_id ) {
 		'user'     => $user_details,
 	);
 } else {
-	// Lock the post.
+	// Khóa bài viết.
 	$active_post_lock = wp_set_post_lock( $post->ID );
 	if ( $active_post_lock ) {
 		$active_post_lock = esc_attr( implode( ':', $active_post_lock ) );
@@ -246,13 +246,13 @@ if ( $user_id ) {
 }
 
 /**
- * Filters the body placeholder text.
+ * Lọc văn bản chỗ giữ chỗ cho nội dung.
  *
  * @since 5.0.0
- * @since 5.8.0 Changed the default placeholder text.
+ * @since 5.8.0 Thay đổi văn bản chỗ giữ chỗ mặc định.
  *
- * @param string  $text Placeholder text. Default 'Type / to choose a block'.
- * @param WP_Post $post Post object.
+ * @param string  $text Văn bản chỗ giữ chỗ. Mặc định 'Type / to choose a block'.
+ * @param WP_Post $post Đối tượng bài viết.
  */
 $body_placeholder = apply_filters( 'write_your_story', __( 'Type / to choose a block' ), $post );
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Color_Control class
+ * API Tùy biến: Lớp WP_Customize_Color_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Color Control class.
+ * Lớp Điều khiển Màu sắc trong Tùy biến.
  *
  * @since 3.4.0
  *
@@ -16,21 +16,21 @@
  */
 class WP_Customize_Color_Control extends WP_Customize_Control {
 	/**
-	 * Type.
+	 * Loại.
 	 *
 	 * @var string
 	 */
 	public $type = 'color';
 
 	/**
-	 * Statuses.
+	 * Các trạng thái.
 	 *
 	 * @var array
 	 */
 	public $statuses;
 
 	/**
-	 * Mode.
+	 * Chế độ.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -38,17 +38,17 @@ class WP_Customize_Color_Control extends WP_Customize_Control {
 	public $mode = 'full';
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see WP_Customize_Control::__construct()
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
-	 * @param string               $id      Control ID.
-	 * @param array                $args    Optional. Arguments to override class property defaults.
-	 *                                      See WP_Customize_Control::__construct() for information
-	 *                                      on accepted arguments. Default empty array.
+	 * @param WP_Customize_Manager $manager Đối tượng khởi tạo Trình tùy biến.
+	 * @param string               $id      ID của điều khiển.
+	 * @param array                $args    Tùy chọn. Các tham số để ghi đè giá trị mặc định của thuộc tính lớp.
+	 *                                      Xem WP_Customize_Control::__construct() để biết thông tin
+	 *                                      về các tham số được chấp nhận. Mặc định là mảng rỗng.
 	 */
 	public function __construct( $manager, $id, $args = array() ) {
 		$this->statuses = array( '' => __( 'Default' ) );
@@ -56,7 +56,7 @@ class WP_Customize_Color_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Enqueue scripts/styles for the color picker.
+	 * Nạp các script/style cho bộ chọn màu.
 	 *
 	 * @since 3.4.0
 	 */
@@ -66,7 +66,7 @@ class WP_Customize_Color_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Refresh the parameters passed to the JavaScript via JSON.
+	 * Làm mới các tham số được truyền tới JavaScript qua JSON.
 	 *
 	 * @since 3.4.0
 	 * @uses WP_Customize_Control::to_json()
@@ -79,14 +79,14 @@ class WP_Customize_Color_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Don't render the control content from PHP, as it's rendered via JS on load.
+	 * Không hiển thị nội dung điều khiển từ PHP, vì nó được hiển thị qua JS khi tải trang.
 	 *
 	 * @since 3.4.0
 	 */
 	public function render_content() {}
 
 	/**
-	 * Render a JS template for the content of the color picker control.
+	 * Hiển thị mẫu JS cho nội dung của điều khiển bộ chọn màu.
 	 *
 	 * @since 4.1.0
 	 */

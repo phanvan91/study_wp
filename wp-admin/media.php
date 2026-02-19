@@ -1,15 +1,15 @@
 <?php
 /**
- * Media management action handler.
+ * Trình xử lý hành động quản lý media.
  *
- * This file is deprecated, use 'wp-admin/upload.php' instead.
+ * File này đã bị loại bỏ, sử dụng 'wp-admin/upload.php' thay thế.
  *
  * @deprecated 6.3.0
  * @package WordPress
  * @subpackage Administration
  */
 
-/** Load WordPress Administration Bootstrap. */
+/** Tải Bootstrap Quản trị WordPress. */
 require_once __DIR__ . '/admin.php';
 
 $parent_file  = 'upload.php';

@@ -1,18 +1,18 @@
 <?php
 /**
- * Error Protection API: WP_Fatal_Error_Handler class
+ * API Bảo vệ Lỗi: Lớp WP_Fatal_Error_Handler
  *
  * @package WordPress
  * @since 5.2.0
  */
 
 /**
- * Core class used as the default shutdown handler for fatal errors.
+ * Lớp lõi được sử dụng làm trình xử lý tắt máy mặc định cho các lỗi nghiêm trọng.
  *
- * A drop-in 'fatal-error-handler.php' can be used to override the instance of this class and use a custom
- * implementation for the fatal error handler that WordPress registers. The custom class should extend this class and
- * can override its methods individually as necessary. The file must return the instance of the class that should be
- * registered.
+ * Một drop-in 'fatal-error-handler.php' có thể được sử dụng để ghi đè instance của lớp này và sử dụng một
+ * triển khai tùy chỉnh cho trình xử lý lỗi nghiêm trọng mà WordPress đăng ký. Lớp tùy chỉnh nên kế thừa lớp này và
+ * có thể ghi đè các phương thức riêng lẻ khi cần thiết. File phải trả về instance của lớp cần được
+ * đăng ký.
  *
  * @since 5.2.0
  */
@@ -20,26 +20,26 @@
 class WP_Fatal_Error_Handler {
 
 	/**
-	 * Runs the shutdown handler.
+	 * Chạy trình xử lý tắt máy.
 	 *
-	 * This method is registered via `register_shutdown_function()`.
+	 * Phương thức này được đăng ký thông qua `register_shutdown_function()`.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @global WP_Locale $wp_locale WordPress date and time locale object.
+	 * @global WP_Locale $wp_locale Đối tượng locale ngày giờ của WordPress.
 	 */
 	public function handle() {
 		if ( defined( 'WP_SANDBOX_SCRAPING' ) && WP_SANDBOX_SCRAPING ) {
 			return;
 		}
 
-		// Do not trigger the fatal error handler while updates are being installed.
+		// Không kích hoạt trình xử lý lỗi nghiêm trọng khi đang cài đặt cập nhật.
 		if ( wp_is_maintenance_mode() ) {
 			return;
 		}
 
 		try {
-			// Bail if no error found.
+			// Thoát nếu không tìm thấy lỗi.
 			$error = $this->detect_error();
 			if ( ! $error ) {
 				return;
@@ -55,32 +55,32 @@ class WP_Fatal_Error_Handler {
 				$handled = wp_recovery_mode()->handle_error( $error );
 			}
 
-			// Display the PHP error template if headers not sent.
+			// Hiển thị template lỗi PHP nếu header chưa được gửi.
 			if ( is_admin() || ! headers_sent() ) {
 				$this->display_error_template( $error, $handled );
 			}
 		} catch ( Exception $e ) {
-			// Catch exceptions and remain silent.
+			// Bắt ngoại lệ và giữ im lặng.
 		}
 	}
 
 	/**
-	 * Detects the error causing the crash if it should be handled.
+	 * Phát hiện lỗi gây ra sự cố nếu cần được xử lý.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return array|null Error information returned by `error_get_last()`, or null
-	 *                    if none was recorded or the error should not be handled.
+	 * @return array|null Thông tin lỗi được trả về bởi `error_get_last()`, hoặc null
+	 *                    nếu không có lỗi nào được ghi nhận hoặc lỗi không cần được xử lý.
 	 */
 	protected function detect_error() {
 		$error = error_get_last();
 
-		// No error, just skip the error handling code.
+		// Không có lỗi, bỏ qua mã xử lý lỗi.
 		if ( null === $error ) {
 			return null;
 		}
 
-		// Bail if this error should not be handled.
+		// Thoát nếu lỗi này không cần được xử lý.
 		if ( ! $this->should_handle_error( $error ) ) {
 			return null;
 		}
@@ -89,13 +89,13 @@ class WP_Fatal_Error_Handler {
 	}
 
 	/**
-	 * Determines whether we are dealing with an error that WordPress should handle
-	 * in order to protect the admin backend against WSODs.
+	 * Xác định xem có phải đang xử lý một lỗi mà WordPress nên xử lý hay không
+	 * để bảo vệ backend quản trị khỏi WSOD (Màn hình trắng chết chóc).
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param array $error Error information retrieved from `error_get_last()`.
-	 * @return bool Whether WordPress should handle this error.
+	 * @param array $error Thông tin lỗi được lấy từ `error_get_last()`.
+	 * @return bool Liệu WordPress có nên xử lý lỗi này hay không.
 	 */
 	protected function should_handle_error( $error ) {
 		$error_types_to_handle = array(
@@ -111,35 +111,35 @@ class WP_Fatal_Error_Handler {
 		}
 
 		/**
-		 * Filters whether a given thrown error should be handled by the fatal error handler.
+		 * Lọc xem một lỗi được ném ra có nên được xử lý bởi trình xử lý lỗi nghiêm trọng hay không.
 		 *
-		 * This filter is only fired if the error is not already configured to be handled by WordPress core. As such,
-		 * it exclusively allows adding further rules for which errors should be handled, but not removing existing
-		 * ones.
+		 * Bộ lọc này chỉ được kích hoạt nếu lỗi chưa được cấu hình để WordPress lõi xử lý. Do đó,
+		 * nó chỉ cho phép thêm các quy tắc mới cho những lỗi nào nên được xử lý, chứ không loại bỏ
+		 * các quy tắc hiện có.
 		 *
 		 * @since 5.2.0
 		 *
-		 * @param bool  $should_handle_error Whether the error should be handled by the fatal error handler.
-		 * @param array $error               Error information retrieved from `error_get_last()`.
+		 * @param bool  $should_handle_error Liệu lỗi có nên được xử lý bởi trình xử lý lỗi nghiêm trọng hay không.
+		 * @param array $error               Thông tin lỗi được lấy từ `error_get_last()`.
 		 */
 		return (bool) apply_filters( 'wp_should_handle_php_error', false, $error );
 	}
 
 	/**
-	 * Displays the PHP error template and sends the HTTP status code, typically 500.
+	 * Hiển thị template lỗi PHP và gửi mã trạng thái HTTP, thường là 500.
 	 *
-	 * A drop-in 'php-error.php' can be used as a custom template. This drop-in should control the HTTP status code and
-	 * print the HTML markup indicating that a PHP error occurred. Note that this drop-in may potentially be executed
-	 * very early in the WordPress bootstrap process, so any core functions used that are not part of
-	 * `wp-includes/load.php` should be checked for before being called.
+	 * Một drop-in 'php-error.php' có thể được sử dụng làm template tùy chỉnh. Drop-in này nên kiểm soát mã trạng thái HTTP và
+	 * in markup HTML chỉ ra rằng đã xảy ra lỗi PHP. Lưu ý rằng drop-in này có thể được thực thi
+	 * rất sớm trong quá trình khởi động WordPress, vì vậy bất kỳ hàm lõi nào được sử dụng mà không thuộc
+	 * `wp-includes/load.php` nên được kiểm tra trước khi gọi.
 	 *
-	 * If no such drop-in is available, this will call {@see WP_Fatal_Error_Handler::display_default_error_template()}.
+	 * Nếu không có drop-in nào khả dụng, phương thức này sẽ gọi {@see WP_Fatal_Error_Handler::display_default_error_template()}.
 	 *
 	 * @since 5.2.0
-	 * @since 5.3.0 The `$handled` parameter was added.
+	 * @since 5.3.0 Tham số `$handled` được thêm vào.
 	 *
-	 * @param array         $error   Error information retrieved from `error_get_last()`.
-	 * @param true|WP_Error $handled Whether Recovery Mode handled the fatal error.
+	 * @param array         $error   Thông tin lỗi được lấy từ `error_get_last()`.
+	 * @param true|WP_Error $handled Liệu Recovery Mode đã xử lý lỗi nghiêm trọng hay chưa.
 	 */
 	protected function display_error_template( $error, $handled ) {
 		if ( defined( 'WP_CONTENT_DIR' ) ) {

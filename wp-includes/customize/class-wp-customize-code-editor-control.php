@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Code_Editor_Control class
+ * API Tùy biến: Lớp WP_Customize_Code_Editor_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Code Editor Control class.
+ * Lớp Điều khiển Trình soạn thảo mã trong Tùy biến.
  *
  * @since 4.9.0
  *
@@ -17,7 +17,7 @@
 class WP_Customize_Code_Editor_Control extends WP_Customize_Control {
 
 	/**
-	 * Customize control type.
+	 * Loại điều khiển tùy biến.
 	 *
 	 * @since 4.9.0
 	 * @var string
@@ -25,7 +25,7 @@ class WP_Customize_Code_Editor_Control extends WP_Customize_Control {
 	public $type = 'code_editor';
 
 	/**
-	 * Type of code that is being edited.
+	 * Loại mã đang được chỉnh sửa.
 	 *
 	 * @since 4.9.0
 	 * @var string
@@ -33,7 +33,7 @@ class WP_Customize_Code_Editor_Control extends WP_Customize_Control {
 	public $code_type = '';
 
 	/**
-	 * Code editor settings.
+	 * Cài đặt trình soạn thảo mã.
 	 *
 	 * @see wp_enqueue_code_editor()
 	 * @since 4.9.0
@@ -42,7 +42,7 @@ class WP_Customize_Code_Editor_Control extends WP_Customize_Control {
 	public $editor_settings = array();
 
 	/**
-	 * Enqueue control related scripts/styles.
+	 * Nạp các script/style liên quan đến điều khiển.
 	 *
 	 * @since 4.9.0
 	 */
@@ -62,13 +62,13 @@ class WP_Customize_Code_Editor_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Refresh the parameters passed to the JavaScript via JSON.
+	 * Làm mới các tham số được truyền tới JavaScript qua JSON.
 	 *
 	 * @since 4.9.0
 	 *
 	 * @see WP_Customize_Control::json()
 	 *
-	 * @return array Array of parameters passed to the JavaScript.
+	 * @return array Mảng các tham số được truyền tới JavaScript.
 	 */
 	public function json() {
 		$json                    = parent::json();
@@ -78,14 +78,14 @@ class WP_Customize_Code_Editor_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Don't render the control content from PHP, as it's rendered via JS on load.
+	 * Không hiển thị nội dung điều khiển từ PHP, vì nó được hiển thị qua JS khi tải trang.
 	 *
 	 * @since 4.9.0
 	 */
 	public function render_content() {}
 
 	/**
-	 * Render a JS template for control display.
+	 * Hiển thị mẫu JS cho giao diện điều khiển.
 	 *
 	 * @since 4.9.0
 	 */

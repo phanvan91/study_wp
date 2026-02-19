@@ -1,6 +1,6 @@
 <?php
 /**
- * Upgrade API: Language_Pack_Upgrader class
+ * API Nâng cấp: Lớp Language_Pack_Upgrader
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -8,18 +8,18 @@
  */
 
 /**
- * Core class used for updating/installing language packs (translations)
- * for plugins, themes, and core.
+ * Lớp lõi dùng để cập nhật/cài đặt gói ngôn ngữ (bản dịch)
+ * cho plugin, giao diện và lõi.
  *
  * @since 3.7.0
- * @since 4.6.0 Moved to its own file from wp-admin/includes/class-wp-upgrader.php.
+ * @since 4.6.0 Được chuyển sang file riêng từ wp-admin/includes/class-wp-upgrader.php.
  *
  * @see WP_Upgrader
  */
 class Language_Pack_Upgrader extends WP_Upgrader {
 
 	/**
-	 * Result of the language pack upgrade.
+	 * Kết quả của việc nâng cấp gói ngôn ngữ.
 	 *
 	 * @since 3.7.0
 	 * @var array|WP_Error $result
@@ -28,7 +28,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	public $result;
 
 	/**
-	 * Whether a bulk upgrade/installation is being performed.
+	 * Có đang thực hiện nâng cấp/cài đặt hàng loạt hay không.
 	 *
 	 * @since 3.7.0
 	 * @var bool $bulk
@@ -36,31 +36,31 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	public $bulk = true;
 
 	/**
-	 * Asynchronously upgrades language packs after other upgrades have been made.
+	 * Nâng cấp gói ngôn ngữ bất đồng bộ sau khi các nâng cấp khác đã hoàn thành.
 	 *
-	 * Hooked to the {@see 'upgrader_process_complete'} action by default.
+	 * Được gắn vào hành động {@see 'upgrader_process_complete'} theo mặc định.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param false|WP_Upgrader $upgrader Optional. WP_Upgrader instance or false. If `$upgrader` is
-	 *                                    a Language_Pack_Upgrader instance, the method will bail to
-	 *                                    avoid recursion. Otherwise unused. Default false.
+	 * @param false|WP_Upgrader $upgrader Tùy chọn. Đối tượng WP_Upgrader hoặc false. Nếu `$upgrader` là
+	 *                                    một đối tượng Language_Pack_Upgrader, phương thức sẽ thoát để
+	 *                                    tránh đệ quy. Ngoài ra không sử dụng. Mặc định false.
 	 */
 	public static function async_upgrade( $upgrader = false ) {
-		// Avoid recursion.
+		// Tránh đệ quy.
 		if ( $upgrader && $upgrader instanceof Language_Pack_Upgrader ) {
 			return;
 		}
 
-		// Nothing to do?
+		// Không có gì cần làm?
 		$language_updates = wp_get_translation_updates();
 		if ( ! $language_updates ) {
 			return;
 		}
 
 		/*
-		 * Avoid messing with VCS installations, at least for now.
-		 * Noted: this is not the ideal way to accomplish this.
+		 * Tránh can thiệp vào các cài đặt VCS, ít nhất là hiện tại.
+		 * Lưu ý: đây không phải là cách lý tưởng để thực hiện điều này.
 		 */
 		$check_vcs = new WP_Automatic_Updater();
 		if ( $check_vcs->is_vcs_checkout( WP_CONTENT_DIR ) ) {
@@ -71,12 +71,12 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			$update = ! empty( $language_update->autoupdate );
 
 			/**
-			 * Filters whether to asynchronously update translation for core, a plugin, or a theme.
+			 * Lọc việc có cập nhật bản dịch bất đồng bộ cho lõi, plugin hoặc giao diện hay không.
 			 *
 			 * @since 4.0.0
 			 *
-			 * @param bool   $update          Whether to update.
-			 * @param object $language_update The update offer.
+			 * @param bool   $update          Có cập nhật hay không.
+			 * @param object $language_update Đề nghị cập nhật.
 			 */
 			$update = apply_filters( 'async_update_translation', $update, $language_update );
 
@@ -89,7 +89,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			return;
 		}
 
-		// Re-use the automatic upgrader skin if the parent upgrader is using it.
+		// Tái sử dụng giao diện nâng cấp tự động nếu trình nâng cấp cha đang sử dụng nó.
 		if ( $upgrader && $upgrader->skin instanceof Automatic_Upgrader_Skin ) {
 			$skin = $upgrader->skin;
 		} else {
@@ -105,7 +105,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Initializes the upgrade strings.
+	 * Khởi tạo các chuỗi nâng cấp.
 	 *
 	 * @since 3.7.0
 	 */
@@ -123,14 +123,14 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Upgrades a language pack.
+	 * Nâng cấp một gói ngôn ngữ.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param string|false $update Optional. Whether an update offer is available. Default false.
-	 * @param array        $args   Optional. Other optional arguments, see
-	 *                             Language_Pack_Upgrader::bulk_upgrade(). Default empty array.
-	 * @return array|bool|WP_Error The result of the upgrade, or a WP_Error object instead.
+	 * @param string|false $update Tùy chọn. Có đề nghị cập nhật hay không. Mặc định false.
+	 * @param array        $args   Tùy chọn. Các tham số tùy chọn khác, xem
+	 *                             Language_Pack_Upgrader::bulk_upgrade(). Mặc định mảng rỗng.
+	 * @return array|bool|WP_Error Kết quả nâng cấp, hoặc đối tượng WP_Error.
 	 */
 	public function upgrade( $update = false, $args = array() ) {
 		if ( $update ) {
@@ -147,22 +147,22 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Upgrades several language packs at once.
+	 * Nâng cấp nhiều gói ngôn ngữ cùng lúc.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
-	 * @param object[] $language_updates Optional. Array of language packs to update. See {@see wp_get_translation_updates()}.
-	 *                                   Default empty array.
+	 * @param object[] $language_updates Tùy chọn. Mảng các gói ngôn ngữ cần cập nhật. Xem {@see wp_get_translation_updates()}.
+	 *                                   Mặc định mảng rỗng.
 	 * @param array    $args {
-	 *     Other arguments for upgrading multiple language packs. Default empty array.
+	 *     Các tham số khác cho nâng cấp nhiều gói ngôn ngữ. Mặc định mảng rỗng.
 	 *
-	 *     @type bool $clear_update_cache Whether to clear the update cache when done.
-	 *                                    Default true.
+	 *     @type bool $clear_update_cache Có xóa bộ nhớ đệm cập nhật khi hoàn thành hay không.
+	 *                                    Mặc định true.
 	 * }
-	 * @return array|bool|WP_Error Will return an array of results, or true if there are no updates,
-	 *                             false or WP_Error for initial errors.
+	 * @return array|bool|WP_Error Sẽ trả về mảng kết quả, hoặc true nếu không có cập nhật,
+	 *                             false hoặc WP_Error cho lỗi ban đầu.
 	 */
 	public function bulk_upgrade( $language_updates = array(), $args = array() ) {
 		global $wp_filesystem;
@@ -192,7 +192,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			$this->skin->feedback( 'starting_upgrade' );
 		}
 
-		// Remove any existing upgrade filters from the plugin/theme upgraders #WP29425 & #WP29230.
+		// Gỡ bỏ bất kỳ bộ lọc nâng cấp hiện có nào từ các trình nâng cấp plugin/giao diện #WP29425 & #WP29230.
 		remove_all_filters( 'upgrader_pre_install' );
 		remove_all_filters( 'upgrader_clear_destination' );
 		remove_all_filters( 'upgrader_post_install' );
@@ -202,7 +202,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 
 		$this->skin->header();
 
-		// Connect to the filesystem first.
+		// Kết nối tới hệ thống tệp trước.
 		$res = $this->fs_connect( array( WP_CONTENT_DIR, WP_LANG_DIR ) );
 		if ( ! $res ) {
 			$this->skin->footer();
@@ -215,8 +215,8 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 		$this->update_current = 0;
 
 		/*
-		 * The filesystem's mkdir() is not recursive. Make sure WP_LANG_DIR exists,
-		 * as we then may need to create a /plugins or /themes directory inside of it.
+		 * Hàm mkdir() của hệ thống tệp không đệ quy. Đảm bảo WP_LANG_DIR tồn tại,
+		 * vì sau đó chúng ta có thể cần tạo thư mục /plugins hoặc /themes bên trong nó.
 		 */
 		$remote_destination = $wp_filesystem->find_folder( WP_LANG_DIR );
 		if ( ! $wp_filesystem->exists( $remote_destination ) ) {
@@ -244,7 +244,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 				'package'                     => $language_update->package,
 				'destination'                 => $destination,
 				'clear_destination'           => true,
-				'abort_if_destination_exists' => false, // We expect the destination to exist.
+				'abort_if_destination_exists' => false, // Chúng ta mong đợi đích đến đã tồn tại.
 				'clear_working'               => true,
 				'is_multi'                    => true,
 				'hook_extra'                  => array(
@@ -257,7 +257,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 
 			$results[] = $this->result;
 
-			// Prevent credentials auth screen from displaying multiple times.
+			// Ngăn màn hình xác thực thông tin đăng nhập hiển thị nhiều lần.
 			if ( false === $result ) {
 				break;
 			}
@@ -270,13 +270,13 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			);
 		}
 
-		// Remove upgrade hooks which are not required for translation updates.
+		// Gỡ bỏ các hook nâng cấp không cần thiết cho cập nhật bản dịch.
 		remove_action( 'upgrader_process_complete', array( 'Language_Pack_Upgrader', 'async_upgrade' ), 20 );
 		remove_action( 'upgrader_process_complete', 'wp_version_check' );
 		remove_action( 'upgrader_process_complete', 'wp_update_plugins' );
 		remove_action( 'upgrader_process_complete', 'wp_update_themes' );
 
-		/** This action is documented in wp-admin/includes/class-wp-upgrader.php */
+		/** Hành động này được ghi nhận trong wp-admin/includes/class-wp-upgrader.php */
 		do_action(
 			'upgrader_process_complete',
 			$this,
@@ -288,7 +288,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			)
 		);
 
-		// Re-add upgrade hooks.
+		// Thêm lại các hook nâng cấp.
 		add_action( 'upgrader_process_complete', array( 'Language_Pack_Upgrader', 'async_upgrade' ), 20 );
 		add_action( 'upgrader_process_complete', 'wp_version_check', 10, 0 );
 		add_action( 'upgrader_process_complete', 'wp_update_plugins', 10, 0 );
@@ -298,7 +298,7 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 
 		$this->skin->footer();
 
-		// Clean up our hooks, in case something else does an upgrade on this connection.
+		// Dọn dẹp các hook, phòng trường hợp có nâng cấp khác trên kết nối này.
 		remove_filter( 'upgrader_source_selection', array( $this, 'check_package' ) );
 
 		if ( $parsed_args['clear_update_cache'] ) {
@@ -309,18 +309,18 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Checks that the package source contains .mo and .po files.
+	 * Kiểm tra nguồn gói có chứa các tệp .mo và .po hay không.
 	 *
-	 * Hooked to the {@see 'upgrader_source_selection'} filter by
+	 * Được gắn vào bộ lọc {@see 'upgrader_source_selection'} bởi
 	 * Language_Pack_Upgrader::bulk_upgrade().
 	 *
 	 * @since 3.7.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
-	 * @param string|WP_Error $source        The path to the downloaded package source.
-	 * @param string          $remote_source Remote file source location.
-	 * @return string|WP_Error The source as passed, or a WP_Error object on failure.
+	 * @param string|WP_Error $source        Đường dẫn tới nguồn gói đã tải về.
+	 * @param string          $remote_source Vị trí nguồn tệp từ xa.
+	 * @return string|WP_Error Nguồn như đã truyền, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function check_package( $source, $remote_source ) {
 		global $wp_filesystem;
@@ -329,10 +329,10 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 			return $source;
 		}
 
-		// Check that the folder contains a valid language.
+		// Kiểm tra thư mục có chứa ngôn ngữ hợp lệ.
 		$files = $wp_filesystem->dirlist( $remote_source );
 
-		// Check to see if the expected files exist in the folder.
+		// Kiểm tra xem các tệp mong đợi có tồn tại trong thư mục hay không.
 		$po  = false;
 		$mo  = false;
 		$php = false;
@@ -368,17 +368,17 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Gets the name of an item being updated.
+	 * Lấy tên của mục đang được cập nhật.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param object $update The data for an update.
-	 * @return string The name of the item being updated.
+	 * @param object $update Dữ liệu cho một bản cập nhật.
+	 * @return string Tên của mục đang được cập nhật.
 	 */
 	public function get_name_for_update( $update ) {
 		switch ( $update->type ) {
 			case 'core':
-				return 'WordPress'; // Not translated.
+				return 'WordPress'; // Không dịch.
 
 			case 'theme':
 				$theme = wp_get_theme( $update->slug );
@@ -398,20 +398,20 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Clears existing translations where this item is going to be installed into.
+	 * Xóa các bản dịch hiện có ở nơi mục này sẽ được cài đặt vào.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem Lớp con hệ thống tệp WordPress.
 	 *
-	 * @param string $remote_destination The location on the remote filesystem to be cleared.
-	 * @return bool|WP_Error True upon success, WP_Error on failure.
+	 * @param string $remote_destination Vị trí trên hệ thống tệp từ xa cần xóa.
+	 * @return bool|WP_Error True nếu thành công, WP_Error nếu thất bại.
 	 */
 	public function clear_destination( $remote_destination ) {
 		global $wp_filesystem;
 
 		$language_update    = $this->skin->language_update;
-		$language_directory = WP_LANG_DIR . '/'; // Local path for use with glob().
+		$language_directory = WP_LANG_DIR . '/'; // Đường dẫn cục bộ để sử dụng với glob().
 
 		if ( 'core' === $language_update->type ) {
 			$files = array(
@@ -453,18 +453,18 @@ class Language_Pack_Upgrader extends WP_Upgrader {
 
 		$files = array_filter( $files, array( $wp_filesystem, 'exists' ) );
 
-		// No files to delete.
+		// Không có tệp nào để xóa.
 		if ( ! $files ) {
 			return true;
 		}
 
-		// Check all files are writable before attempting to clear the destination.
+		// Kiểm tra tất cả các tệp có quyền ghi trước khi xóa đích đến.
 		$unwritable_files = array();
 
-		// Check writability.
+		// Kiểm tra quyền ghi.
 		foreach ( $files as $file ) {
 			if ( ! $wp_filesystem->is_writable( $file ) ) {
-				// Attempt to alter permissions to allow writes and try again.
+				// Thử thay đổi quyền để cho phép ghi và thử lại.
 				$wp_filesystem->chmod( $file, FS_CHMOD_FILE );
 				if ( ! $wp_filesystem->is_writable( $file ) ) {
 					$unwritable_files[] = $file;

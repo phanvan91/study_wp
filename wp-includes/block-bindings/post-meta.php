@@ -1,6 +1,6 @@
 <?php
 /**
- * Post Meta source for the block bindings.
+ * Nguồn Post Meta cho liên kết khối (block bindings).
  *
  * @since 6.5.0
  * @package WordPress
@@ -8,15 +8,15 @@
  */
 
 /**
- * Gets value for Post Meta source.
+ * Lấy giá trị cho nguồn Post Meta.
  *
  * @since 6.5.0
  * @access private
  *
- * @param array    $source_args    Array containing source arguments used to look up the override value.
- *                                 Example: array( "key" => "foo" ).
- * @param WP_Block $block_instance The block instance.
- * @return mixed The value computed for the source.
+ * @param array    $source_args    Mảng chứa các tham số nguồn dùng để tra cứu giá trị ghi đè.
+ *                                 Ví dụ: array( "key" => "foo" ).
+ * @param WP_Block $block_instance Thể hiện của khối.
+ * @return mixed Giá trị được tính toán cho nguồn.
  */
 function _block_bindings_post_meta_get_value( array $source_args, $block_instance ) {
 	if ( empty( $source_args['key'] ) ) {
@@ -28,20 +28,20 @@ function _block_bindings_post_meta_get_value( array $source_args, $block_instanc
 	}
 	$post_id = $block_instance->context['postId'];
 
-	// If a post isn't public, we need to prevent unauthorized users from accessing the post meta.
+	// Nếu bài viết không công khai, cần ngăn người dùng không được phép truy cập post meta.
 	$post = get_post( $post_id );
 	if ( ( ! is_post_publicly_viewable( $post ) && ! current_user_can( 'read_post', $post_id ) ) || post_password_required( $post ) ) {
 		return null;
 	}
 
-	// Check if the meta field is protected.
+	// Kiểm tra xem trường meta có được bảo vệ không.
 	if ( is_protected_meta( $source_args['key'], 'post' ) ) {
 		return null;
 	}
 
-	// Check if the meta field is registered to be shown in REST.
+	// Kiểm tra xem trường meta có được đăng ký hiển thị trong REST không.
 	$meta_keys = get_registered_meta_keys( 'post', $block_instance->context['postType'] );
-	// Add fields registered for all subtypes.
+	// Thêm các trường được đăng ký cho tất cả các kiểu phụ.
 	$meta_keys = array_merge( $meta_keys, get_registered_meta_keys( 'post', '' ) );
 	if ( empty( $meta_keys[ $source_args['key'] ]['show_in_rest'] ) ) {
 		return null;
@@ -51,7 +51,7 @@ function _block_bindings_post_meta_get_value( array $source_args, $block_instanc
 }
 
 /**
- * Registers Post Meta source in the block bindings registry.
+ * Đăng ký nguồn Post Meta trong registry liên kết khối.
  *
  * @since 6.5.0
  * @access private

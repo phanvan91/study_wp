@@ -1,20 +1,20 @@
 <?php
 /**
- * XML-RPC protocol support for WordPress.
+ * Hỗ trợ giao thức XML-RPC cho WordPress.
  *
  * @package WordPress
  * @subpackage Publishing
  */
 
 /**
- * WordPress XMLRPC server implementation.
+ * Triển khai máy chủ XMLRPC của WordPress.
  *
- * Implements compatibility for Blogger API, MetaWeblog API, MovableType, and
- * pingback. Additional WordPress API for managing comments, pages, posts,
- * options, etc.
+ * Triển khai tương thích cho Blogger API, MetaWeblog API, MovableType, và
+ * pingback. API WordPress bổ sung để quản lý bình luận, trang, bài viết,
+ * tùy chọn, v.v.
  *
- * As of WordPress 3.5.0, XML-RPC is enabled by default. It can be disabled
- * via the {@see 'xmlrpc_enabled'} filter found in wp_xmlrpc_server::set_is_enabled().
+ * Kể từ WordPress 3.5.0, XML-RPC được bật theo mặc định. Nó có thể bị tắt
+ * thông qua bộ lọc {@see 'xmlrpc_enabled'} có trong wp_xmlrpc_server::set_is_enabled().
  *
  * @since 1.5.0
  *
@@ -23,14 +23,14 @@
 #[AllowDynamicProperties]
 class wp_xmlrpc_server extends IXR_Server {
 	/**
-	 * Methods.
+	 * Các phương thức.
 	 *
 	 * @var array
 	 */
 	public $methods;
 
 	/**
-	 * Blog options.
+	 * Tùy chọn blog.
 	 *
 	 * @var array
 	 */
@@ -44,25 +44,25 @@ class wp_xmlrpc_server extends IXR_Server {
 	public $error;
 
 	/**
-	 * Flags that the user authentication has failed in this instance of wp_xmlrpc_server.
+	 * Cờ đánh dấu xác thực người dùng đã thất bại trong phiên bản wp_xmlrpc_server này.
 	 *
 	 * @var bool
 	 */
 	protected $auth_failed = false;
 
 	/**
-	 * Flags that XML-RPC is enabled
+	 * Cờ đánh dấu XML-RPC được bật
 	 *
 	 * @var bool
 	 */
 	private $is_enabled;
 
 	/**
-	 * Registers all of the XMLRPC methods that XMLRPC server understands.
+	 * Đăng ký tất cả các phương thức XMLRPC mà máy chủ XMLRPC hiểu được.
 	 *
-	 * Sets up server and method property. Passes XMLRPC methods through the
-	 * {@see 'xmlrpc_methods'} filter to allow plugins to extend or replace
-	 * XML-RPC methods.
+	 * Thiết lập thuộc tính server và method. Truyền các phương thức XMLRPC qua
+	 * bộ lọc {@see 'xmlrpc_methods'} để cho phép plugin mở rộng hoặc thay thế
+	 * các phương thức XML-RPC.
 	 *
 	 * @since 1.5.0
 	 */
@@ -138,8 +138,8 @@ class wp_xmlrpc_server extends IXR_Server {
 			'metaWeblog.newMediaObject'        => 'this:mw_newMediaObject',
 
 			/*
-			 * MetaWeblog API aliases for Blogger API.
-			 * See http://www.xmlrpc.com/stories/storyReader$2460
+			 * Bí danh MetaWeblog API cho Blogger API.
+			 * Xem http://www.xmlrpc.com/stories/storyReader$2460
 			 */
 			'metaWeblog.deletePost'            => 'this:blogger_deletePost',
 			'metaWeblog.getUsersBlogs'         => 'this:blogger_getUsersBlogs',
@@ -165,13 +165,13 @@ class wp_xmlrpc_server extends IXR_Server {
 		$this->initialise_blog_option_info();
 
 		/**
-		 * Filters the methods exposed by the XML-RPC server.
+		 * Lọc các phương thức được cung cấp bởi máy chủ XML-RPC.
 		 *
-		 * This filter can be used to add new methods, and remove built-in methods.
+		 * Bộ lọc này có thể được sử dụng để thêm phương thức mới, và loại bỏ các phương thức có sẵn.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param string[] $methods An array of XML-RPC methods, keyed by their methodName.
+		 * @param string[] $methods Mảng các phương thức XML-RPC, được khóa bởi methodName.
 		 */
 		$this->methods = apply_filters( 'xmlrpc_methods', $this->methods );
 
@@ -179,17 +179,17 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Sets wp_xmlrpc_server::$is_enabled property.
+	 * Thiết lập thuộc tính wp_xmlrpc_server::$is_enabled.
 	 *
-	 * Determines whether the xmlrpc server is enabled on this WordPress install
-	 * and set the is_enabled property accordingly.
+	 * Xác định xem máy chủ xmlrpc có được bật trên bản cài đặt WordPress này không
+	 * và thiết lập thuộc tính is_enabled tương ứng.
 	 *
 	 * @since 5.7.3
 	 */
 	private function set_is_enabled() {
 		/*
-		 * Respect old get_option() filters left for back-compat when the 'enable_xmlrpc'
-		 * option was deprecated in 3.5.0. Use the {@see 'xmlrpc_enabled'} hook instead.
+		 * Tôn trọng các bộ lọc get_option() cũ được giữ lại để tương thích ngược khi tùy chọn
+		 * 'enable_xmlrpc' bị loại bỏ trong 3.5.0. Sử dụng hook {@see 'xmlrpc_enabled'} thay thế.
 		 */
 		$is_enabled = apply_filters( 'pre_option_enable_xmlrpc', false );
 		if ( false === $is_enabled ) {
@@ -197,38 +197,38 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/**
-		 * Filters whether XML-RPC methods requiring authentication are enabled.
+		 * Lọc xem các phương thức XML-RPC yêu cầu xác thực có được bật hay không.
 		 *
-		 * Contrary to the way it's named, this filter does not control whether XML-RPC is *fully*
-		 * enabled, rather, it only controls whether XML-RPC methods requiring authentication -
-		 * such as for publishing purposes - are enabled.
+		 * Trái với tên gọi, bộ lọc này không kiểm soát việc XML-RPC có được bật *hoàn toàn*
+		 * hay không, mà chỉ kiểm soát các phương thức XML-RPC yêu cầu xác thực -
+		 * chẳng hạn như để đăng bài - có được bật hay không.
 		 *
-		 * Further, the filter does not control whether pingbacks or other custom endpoints that don't
-		 * require authentication are enabled. This behavior is expected, and due to how parity was matched
-		 * with the `enable_xmlrpc` UI option the filter replaced when it was introduced in 3.5.
+		 * Hơn nữa, bộ lọc không kiểm soát việc pingback hoặc các endpoint tùy chỉnh khác không
+		 * yêu cầu xác thực có được bật hay không. Hành vi này là có chủ đích, do cách tương đương
+		 * với tùy chọn giao diện `enable_xmlrpc` mà bộ lọc đã thay thế khi được giới thiệu trong 3.5.
 		 *
-		 * To disable XML-RPC methods that require authentication, use:
+		 * Để tắt các phương thức XML-RPC yêu cầu xác thực, sử dụng:
 		 *
 		 *     add_filter( 'xmlrpc_enabled', '__return_false' );
 		 *
-		 * For more granular control over all XML-RPC methods and requests, see the {@see 'xmlrpc_methods'}
-		 * and {@see 'xmlrpc_element_limit'} hooks.
+		 * Để kiểm soát chi tiết hơn tất cả phương thức và yêu cầu XML-RPC, xem các hook {@see 'xmlrpc_methods'}
+		 * và {@see 'xmlrpc_element_limit'}.
 		 *
 		 * @since 3.5.0
 		 *
-		 * @param bool $is_enabled Whether XML-RPC is enabled. Default true.
+		 * @param bool $is_enabled XML-RPC có được bật hay không. Mặc định true.
 		 */
 		$this->is_enabled = apply_filters( 'xmlrpc_enabled', $is_enabled );
 	}
 
 	/**
-	 * Makes private/protected methods readable for backward compatibility.
+	 * Cho phép đọc các phương thức private/protected để tương thích ngược.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $name      Method to call.
-	 * @param array  $arguments Arguments to pass when calling.
-	 * @return array|IXR_Error|false Return value of the callback, false otherwise.
+	 * @param string $name      Phương thức cần gọi.
+	 * @param array  $arguments Các tham số cần truyền khi gọi.
+	 * @return array|IXR_Error|false Giá trị trả về của callback, false nếu không.
 	 */
 	public function __call( $name, $arguments ) {
 		if ( '_multisite_getUsersBlogs' === $name ) {
@@ -238,7 +238,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Serves the XML-RPC request.
+	 * Phục vụ yêu cầu XML-RPC.
 	 *
 	 * @since 2.9.0
 	 */
@@ -247,28 +247,28 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Tests XMLRPC API by saying, "Hello!" to client.
+	 * Kiểm tra XMLRPC API bằng cách nói "Hello!" với client.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string Hello string response.
+	 * @return string Phản hồi chuỗi Hello.
 	 */
 	public function sayHello() {
 		return 'Hello!';
 	}
 
 	/**
-	 * Tests XMLRPC API by adding two numbers for client.
+	 * Kiểm tra XMLRPC API bằng cách cộng hai số cho client.
 	 *
 	 * @since 1.5.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int $0 A number to add.
-	 *     @type int $1 A second number to add.
+	 *     @type int $0 Số cần cộng.
+	 *     @type int $1 Số thứ hai cần cộng.
 	 * }
-	 * @return int Sum of the two given numbers.
+	 * @return int Tổng của hai số đã cho.
 	 */
 	public function addTwoNumbers( $args ) {
 		$number1 = $args[0];
@@ -277,13 +277,13 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Logs user in.
+	 * Đăng nhập người dùng.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $username User's username.
-	 * @param string $password User's password.
-	 * @return WP_User|false WP_User object if authentication passed, false otherwise.
+	 * @param string $username Tên đăng nhập của người dùng.
+	 * @param string $password Mật khẩu của người dùng.
+	 * @return WP_User|false Đối tượng WP_User nếu xác thực thành công, false nếu không.
 	 */
 	public function login(
 		$username,
@@ -304,16 +304,16 @@ class wp_xmlrpc_server extends IXR_Server {
 		if ( is_wp_error( $user ) ) {
 			$this->error = new IXR_Error( 403, __( 'Incorrect username or password.' ) );
 
-			// Flag that authentication has failed once on this wp_xmlrpc_server instance.
+			// Đánh dấu rằng xác thực đã thất bại một lần trên phiên bản wp_xmlrpc_server này.
 			$this->auth_failed = true;
 
 			/**
-			 * Filters the XML-RPC user login error message.
+			 * Lọc thông báo lỗi đăng nhập người dùng XML-RPC.
 			 *
 			 * @since 3.5.0
 			 *
-			 * @param IXR_Error $error The XML-RPC error message.
-			 * @param WP_Error  $user  WP_Error object.
+			 * @param IXR_Error $error Thông báo lỗi XML-RPC.
+			 * @param WP_Error  $user  Đối tượng WP_Error.
 			 */
 			$this->error = apply_filters( 'xmlrpc_login_error', $this->error, $user );
 			return false;
@@ -324,15 +324,15 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Checks user's credentials. Deprecated.
+	 * Kiểm tra thông tin đăng nhập người dùng. Đã lỗi thời.
 	 *
 	 * @since 1.5.0
-	 * @deprecated 2.8.0 Use wp_xmlrpc_server::login()
+	 * @deprecated 2.8.0 Sử dụng wp_xmlrpc_server::login()
 	 * @see wp_xmlrpc_server::login()
 	 *
-	 * @param string $username User's username.
-	 * @param string $password User's password.
-	 * @return bool Whether authentication passed.
+	 * @param string $username Tên đăng nhập của người dùng.
+	 * @param string $password Mật khẩu của người dùng.
+	 * @return bool Xác thực có thành công hay không.
 	 */
 	public function login_pass_ok(
 		$username,
@@ -343,13 +343,13 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Escapes string or array of strings for database.
+	 * Thoát ký tự đặc biệt cho chuỗi hoặc mảng chuỗi trong cơ sở dữ liệu.
 	 *
 	 * @since 1.5.2
 	 *
-	 * @param string|array $data Escape single string or array of strings.
-	 * @return string|void Returns with string is passed, alters by-reference
-	 *                     when array is passed.
+	 * @param string|array $data Thoát chuỗi đơn hoặc mảng chuỗi.
+	 * @return string|void Trả về khi chuỗi được truyền, thay đổi qua tham chiếu
+	 *                     khi mảng được truyền.
 	 */
 	public function escape( &$data ) {
 		if ( ! is_array( $data ) ) {
@@ -366,18 +366,18 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Sends error response to client.
+	 * Gửi phản hồi lỗi cho client.
 	 *
-	 * Sends an XML error response to the client. If the endpoint is enabled
-	 * an HTTP 200 response is always sent per the XML-RPC specification.
+	 * Gửi phản hồi lỗi XML cho client. Nếu endpoint được bật,
+	 * phản hồi HTTP 200 luôn được gửi theo đặc tả XML-RPC.
 	 *
 	 * @since 5.7.3
 	 *
-	 * @param IXR_Error|string $error   Error code or an error object.
-	 * @param false            $message Error message. Optional.
+	 * @param IXR_Error|string $error   Mã lỗi hoặc đối tượng lỗi.
+	 * @param false            $message Thông báo lỗi. Tùy chọn.
 	 */
 	public function error( $error, $message = false ) {
-		// Accepts either an error object or an error code and message
+		// Chấp nhận đối tượng lỗi hoặc mã lỗi và thông báo
 		if ( $message && ! is_object( $error ) ) {
 			$error = new IXR_Error( $error, $message );
 		}
@@ -390,12 +390,12 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves custom fields for post.
+	 * Lấy các trường tùy chỉnh cho bài viết.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param int $post_id Post ID.
-	 * @return array Custom fields, if exist.
+	 * @param int $post_id ID bài viết.
+	 * @return array Các trường tùy chỉnh, nếu tồn tại.
 	 */
 	public function get_custom_fields( $post_id ) {
 		$post_id = (int) $post_id;
@@ -403,7 +403,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		$custom_fields = array();
 
 		foreach ( (array) has_meta( $post_id ) as $meta ) {
-			// Don't expose protected fields.
+			// Không hiển thị các trường được bảo vệ.
 			if ( ! current_user_can( 'edit_post_meta', $post_id, $meta['meta_key'] ) ) {
 				continue;
 			}
@@ -419,12 +419,12 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Sets custom fields for post.
+	 * Thiết lập các trường tùy chỉnh cho bài viết.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param int   $post_id Post ID.
-	 * @param array $fields  Custom fields.
+	 * @param int   $post_id ID bài viết.
+	 * @param array $fields  Các trường tùy chỉnh.
 	 */
 	public function set_custom_fields( $post_id, $fields ) {
 		$post_id = (int) $post_id;
@@ -457,12 +457,12 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves custom fields for a term.
+	 * Lấy các trường tùy chỉnh cho một term.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param int $term_id Term ID.
-	 * @return array Array of custom fields, if they exist.
+	 * @param int $term_id ID term.
+	 * @return array Mảng các trường tùy chỉnh, nếu tồn tại.
 	 */
 	public function get_term_custom_fields( $term_id ) {
 		$term_id = (int) $term_id;
@@ -486,12 +486,12 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Sets custom fields for a term.
+	 * Thiết lập các trường tùy chỉnh cho một term.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param int   $term_id Term ID.
-	 * @param array $fields  Custom fields.
+	 * @param int   $term_id ID term.
+	 * @param array $fields  Các trường tùy chỉnh.
 	 */
 	public function set_term_custom_fields( $term_id, $fields ) {
 		$term_id = (int) $term_id;
@@ -519,15 +519,15 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Sets up blog options property.
+	 * Thiết lập thuộc tính tùy chọn blog.
 	 *
-	 * Passes property through {@see 'xmlrpc_blog_options'} filter.
+	 * Truyền thuộc tính qua bộ lọc {@see 'xmlrpc_blog_options'}.
 	 *
 	 * @since 2.6.0
 	 */
 	public function initialise_blog_option_info() {
 		$this->blog_options = array(
-			// Read-only options.
+			// Tùy chọn chỉ đọc.
 			'software_name'           => array(
 				'desc'     => __( 'Software Name' ),
 				'readonly' => true,
@@ -589,7 +589,7 @@ class wp_xmlrpc_server extends IXR_Server {
 				'value'    => current_theme_supports( 'post-thumbnails' ),
 			),
 
-			// Updatable options.
+			// Tùy chọn có thể cập nhật.
 			'time_zone'               => array(
 				'desc'     => __( 'Time Zone' ),
 				'readonly' => false,
@@ -678,40 +678,40 @@ class wp_xmlrpc_server extends IXR_Server {
 		);
 
 		/**
-		 * Filters the XML-RPC blog options property.
+		 * Lọc thuộc tính tùy chọn blog XML-RPC.
 		 *
 		 * @since 2.6.0
 		 *
-		 * @param array $blog_options An array of XML-RPC blog options.
+		 * @param array $blog_options Mảng các tùy chọn blog XML-RPC.
 		 */
 		$this->blog_options = apply_filters( 'xmlrpc_blog_options', $this->blog_options );
 	}
 
 	/**
-	 * Retrieves the blogs of the user.
+	 * Lấy danh sách blog của người dùng.
 	 *
 	 * @since 2.6.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type string $0 Username.
-	 *     @type string $1 Password.
+	 *     @type string $0 Tên đăng nhập.
+	 *     @type string $1 Mật khẩu.
 	 * }
-	 * @return array|IXR_Error Array contains:
+	 * @return array|IXR_Error Mảng chứa:
 	 *  - 'isAdmin'
-	 *  - 'isPrimary' - whether the blog is the user's primary blog
+	 *  - 'isPrimary' - blog có phải là blog chính của người dùng hay không
 	 *  - 'url'
 	 *  - 'blogid'
 	 *  - 'blogName'
-	 *  - 'xmlrpc' - url of xmlrpc endpoint
+	 *  - 'xmlrpc' - url của endpoint xmlrpc
 	 */
 	public function wp_getUsersBlogs( $args ) {
 		if ( ! $this->minimum_args( $args, 2 ) ) {
 			return $this->error;
 		}
 
-		// If this isn't on WPMU then just use blogger_getUsersBlogs().
+		// Nếu đây không phải WPMU thì chỉ cần sử dụng blogger_getUsersBlogs().
 		if ( ! is_multisite() ) {
 			array_unshift( $args, 1 );
 			return $this->blogger_getUsersBlogs( $args );
@@ -728,18 +728,18 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/**
-		 * Fires after the XML-RPC user has been authenticated but before the rest of
-		 * the method logic begins.
+		 * Kích hoạt sau khi người dùng XML-RPC đã được xác thực nhưng trước khi phần còn lại
+		 * của logic phương thức bắt đầu.
 		 *
-		 * All built-in XML-RPC methods use the action xmlrpc_call, with a parameter
-		 * equal to the method's name, e.g., wp.getUsersBlogs, wp.newPost, etc.
+		 * Tất cả phương thức XML-RPC có sẵn sử dụng action xmlrpc_call, với tham số
+		 * bằng tên phương thức, ví dụ: wp.getUsersBlogs, wp.newPost, v.v.
 		 *
 		 * @since 2.5.0
-		 * @since 5.7.0 Added the `$args` and `$server` parameters.
+		 * @since 5.7.0 Thêm tham số `$args` và `$server`.
 		 *
-		 * @param string           $name   The method name.
-		 * @param array|string     $args   The escaped arguments passed to the method.
-		 * @param wp_xmlrpc_server $server The XML-RPC server instance.
+		 * @param string           $name   Tên phương thức.
+		 * @param array|string     $args   Các tham số đã thoát ký tự truyền vào phương thức.
+		 * @param wp_xmlrpc_server $server Phiên bản máy chủ XML-RPC.
 		 */
 		do_action( 'xmlrpc_call', 'wp.getUsersBlogs', $args, $this );
 
@@ -755,7 +755,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		$current_network_id = get_current_network_id();
 
 		foreach ( $blogs as $blog ) {
-			// Don't include blogs that aren't hosted at this site.
+			// Không bao gồm các blog không được lưu trữ tại site này.
 			if ( $blog->site_id !== $current_network_id ) {
 				continue;
 			}
@@ -783,13 +783,13 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Checks if the method received at least the minimum number of arguments.
+	 * Kiểm tra phương thức có nhận đủ số tham số tối thiểu hay không.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param array $args  An array of arguments to check.
-	 * @param int   $count Minimum number of arguments.
-	 * @return bool True if `$args` contains at least `$count` arguments, false otherwise.
+	 * @param array $args  Mảng các tham số cần kiểm tra.
+	 * @param int   $count Số tham số tối thiểu.
+	 * @return bool True nếu `$args` chứa ít nhất `$count` tham số, false nếu không.
 	 */
 	protected function minimum_args( $args, $count ) {
 		if ( ! is_array( $args ) || count( $args ) < $count ) {
@@ -801,11 +801,11 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Prepares taxonomy data for return in an XML-RPC object.
+	 * Chuẩn bị dữ liệu taxonomy để trả về trong đối tượng XML-RPC.
 	 *
-	 * @param WP_Taxonomy $taxonomy The unprepared taxonomy data.
-	 * @param array       $fields   The subset of taxonomy fields to return.
-	 * @return array The prepared taxonomy data.
+	 * @param WP_Taxonomy $taxonomy Dữ liệu taxonomy chưa được chuẩn bị.
+	 * @param array       $fields   Tập con các trường taxonomy cần trả về.
+	 * @return array Dữ liệu taxonomy đã được chuẩn bị.
 	 */
 	protected function _prepare_taxonomy( $taxonomy, $fields ) {
 		$_taxonomy = array(
@@ -834,22 +834,22 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/**
-		 * Filters XML-RPC-prepared data for the given taxonomy.
+		 * Lọc dữ liệu đã chuẩn bị XML-RPC cho taxonomy đã cho.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param array       $_taxonomy An array of taxonomy data.
-		 * @param WP_Taxonomy $taxonomy  Taxonomy object.
-		 * @param array       $fields    The subset of taxonomy fields to return.
+		 * @param array       $_taxonomy Mảng dữ liệu taxonomy.
+		 * @param WP_Taxonomy $taxonomy  Đối tượng taxonomy.
+		 * @param array       $fields    Tập con các trường taxonomy cần trả về.
 		 */
 		return apply_filters( 'xmlrpc_prepare_taxonomy', $_taxonomy, $taxonomy, $fields );
 	}
 
 	/**
-	 * Prepares term data for return in an XML-RPC object.
+	 * Chuẩn bị dữ liệu term để trả về trong đối tượng XML-RPC.
 	 *
-	 * @param array|object $term The unprepared term data.
-	 * @return array The prepared term data.
+	 * @param array|object $term Dữ liệu term chưa được chuẩn bị.
+	 * @return array Dữ liệu term đã được chuẩn bị.
 	 */
 	protected function _prepare_term( $term ) {
 		$_term = $term;
@@ -857,34 +857,34 @@ class wp_xmlrpc_server extends IXR_Server {
 			$_term = get_object_vars( $_term );
 		}
 
-		// For integers which may be larger than XML-RPC supports ensure we return strings.
+		// Đối với số nguyên có thể lớn hơn XML-RPC hỗ trợ, đảm bảo trả về chuỗi.
 		$_term['term_id']          = (string) $_term['term_id'];
 		$_term['term_group']       = (string) $_term['term_group'];
 		$_term['term_taxonomy_id'] = (string) $_term['term_taxonomy_id'];
 		$_term['parent']           = (string) $_term['parent'];
 
-		// Count we are happy to return as an integer because people really shouldn't use terms that much.
+		// Số đếm chúng ta vui vẻ trả về dưới dạng số nguyên vì người ta thực sự không nên dùng quá nhiều term.
 		$_term['count'] = (int) $_term['count'];
 
-		// Get term meta.
+		// Lấy term meta.
 		$_term['custom_fields'] = $this->get_term_custom_fields( $_term['term_id'] );
 
 		/**
-		 * Filters XML-RPC-prepared data for the given term.
+		 * Lọc dữ liệu đã chuẩn bị XML-RPC cho term đã cho.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param array        $_term An array of term data.
-		 * @param array|object $term  Term object or array.
+		 * @param array        $_term Mảng dữ liệu term.
+		 * @param array|object $term  Đối tượng hoặc mảng term.
 		 */
 		return apply_filters( 'xmlrpc_prepare_term', $_term, $term );
 	}
 
 	/**
-	 * Converts a WordPress date string to an IXR_Date object.
+	 * Chuyển đổi chuỗi ngày WordPress sang đối tượng IXR_Date.
 	 *
-	 * @param string $date Date string to convert.
-	 * @return IXR_Date IXR_Date object.
+	 * @param string $date Chuỗi ngày cần chuyển đổi.
+	 * @return IXR_Date Đối tượng IXR_Date.
 	 */
 	protected function _convert_date( $date ) {
 		if ( '0000-00-00 00:00:00' === $date ) {
@@ -894,11 +894,11 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Converts a WordPress GMT date string to an IXR_Date object.
+	 * Chuyển đổi chuỗi ngày GMT WordPress sang đối tượng IXR_Date.
 	 *
-	 * @param string $date_gmt WordPress GMT date string.
-	 * @param string $date     Date string.
-	 * @return IXR_Date IXR_Date object.
+	 * @param string $date_gmt Chuỗi ngày GMT WordPress.
+	 * @param string $date     Chuỗi ngày.
+	 * @return IXR_Date Đối tượng IXR_Date.
 	 */
 	protected function _convert_date_gmt( $date_gmt, $date ) {
 		if ( '0000-00-00 00:00:00' !== $date && '0000-00-00 00:00:00' === $date_gmt ) {
@@ -908,17 +908,17 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Prepares post data for return in an XML-RPC object.
+	 * Chuẩn bị dữ liệu bài viết để trả về trong đối tượng XML-RPC.
 	 *
-	 * @param array $post   The unprepared post data.
-	 * @param array $fields The subset of post type fields to return.
-	 * @return array The prepared post data.
+	 * @param array $post   Dữ liệu bài viết chưa được chuẩn bị.
+	 * @param array $fields Tập con các trường loại bài viết cần trả về.
+	 * @return array Dữ liệu bài viết đã được chuẩn bị.
 	 */
 	protected function _prepare_post( $post, $fields ) {
-		// Holds the data for this post. built up based on $fields.
+		// Chứa dữ liệu cho bài viết này. Được xây dựng dựa trên $fields.
 		$_post = array( 'post_id' => (string) $post['ID'] );
 
-		// Prepare common post fields.
+		// Chuẩn bị các trường bài viết thông dụng.
 		$post_fields = array(
 			'post_title'        => $post['post_title'],
 			'post_date'         => $this->_convert_date( $post['post_date'] ),
@@ -950,18 +950,18 @@ class wp_xmlrpc_server extends IXR_Server {
 			$post_fields['post_thumbnail'] = $this->_prepare_media_item( get_post( $thumbnail_id ), $thumbnail_size );
 		}
 
-		// Consider future posts as published.
+		// Xem bài viết lên lịch như đã xuất bản.
 		if ( 'future' === $post_fields['post_status'] ) {
 			$post_fields['post_status'] = 'publish';
 		}
 
-		// Fill in blank post format.
+		// Điền định dạng bài viết trống.
 		$post_fields['post_format'] = get_post_format( $post['ID'] );
 		if ( empty( $post_fields['post_format'] ) ) {
 			$post_fields['post_format'] = 'standard';
 		}
 
-		// Merge requested $post_fields fields into $_post.
+		// Gộp các trường $post_fields được yêu cầu vào $_post.
 		if ( in_array( 'post', $fields, true ) ) {
 			$_post = array_merge( $_post, $post_fields );
 		} else {
@@ -996,26 +996,26 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/**
-		 * Filters XML-RPC-prepared date for the given post.
+		 * Lọc dữ liệu đã chuẩn bị XML-RPC cho bài viết đã cho.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param array $_post  An array of modified post data.
-		 * @param array $post   An array of post data.
-		 * @param array $fields An array of post fields.
+		 * @param array $_post  Mảng dữ liệu bài viết đã chỉnh sửa.
+		 * @param array $post   Mảng dữ liệu bài viết.
+		 * @param array $fields Mảng các trường bài viết.
 		 */
 		return apply_filters( 'xmlrpc_prepare_post', $_post, $post, $fields );
 	}
 
 	/**
-	 * Prepares post data for return in an XML-RPC object.
+	 * Chuẩn bị dữ liệu loại bài viết để trả về trong đối tượng XML-RPC.
 	 *
 	 * @since 3.4.0
-	 * @since 4.6.0 Converted the `$post_type` parameter to accept a WP_Post_Type object.
+	 * @since 4.6.0 Chuyển đổi tham số `$post_type` để chấp nhận đối tượng WP_Post_Type.
 	 *
-	 * @param WP_Post_Type $post_type Post type object.
-	 * @param array        $fields    The subset of post fields to return.
-	 * @return array The prepared post type data.
+	 * @param WP_Post_Type $post_type Đối tượng loại bài viết.
+	 * @param array        $fields    Tập con các trường bài viết cần trả về.
+	 * @return array Dữ liệu loại bài viết đã được chuẩn bị.
 	 */
 	protected function _prepare_post_type( $post_type, $fields ) {
 		$_post_type = array(
@@ -1049,23 +1049,23 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/**
-		 * Filters XML-RPC-prepared date for the given post type.
+		 * Lọc dữ liệu đã chuẩn bị XML-RPC cho loại bài viết đã cho.
 		 *
 		 * @since 3.4.0
-		 * @since 4.6.0 Converted the `$post_type` parameter to accept a WP_Post_Type object.
+		 * @since 4.6.0 Chuyển đổi tham số `$post_type` để chấp nhận đối tượng WP_Post_Type.
 		 *
-		 * @param array        $_post_type An array of post type data.
-		 * @param WP_Post_Type $post_type  Post type object.
+		 * @param array        $_post_type Mảng dữ liệu loại bài viết.
+		 * @param WP_Post_Type $post_type  Đối tượng loại bài viết.
 		 */
 		return apply_filters( 'xmlrpc_prepare_post_type', $_post_type, $post_type );
 	}
 
 	/**
-	 * Prepares media item data for return in an XML-RPC object.
+	 * Chuẩn bị dữ liệu mục media để trả về trong đối tượng XML-RPC.
 	 *
-	 * @param WP_Post $media_item     The unprepared media item data.
-	 * @param string  $thumbnail_size The image size to use for the thumbnail URL.
-	 * @return array The prepared media item data.
+	 * @param WP_Post $media_item     Dữ liệu mục media chưa được chuẩn bị.
+	 * @param string  $thumbnail_size Kích thước ảnh sử dụng cho URL ảnh thu nhỏ.
+	 * @return array Dữ liệu mục media đã được chuẩn bị.
 	 */
 	protected function _prepare_media_item( $media_item, $thumbnail_size = 'thumbnail' ) {
 		$_media_item = array(
@@ -1089,44 +1089,44 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/**
-		 * Filters XML-RPC-prepared data for the given media item.
+		 * Lọc dữ liệu đã chuẩn bị XML-RPC cho mục media đã cho.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param array   $_media_item    An array of media item data.
-		 * @param WP_Post $media_item     Media item object.
-		 * @param string  $thumbnail_size Image size.
+		 * @param array   $_media_item    Mảng dữ liệu mục media.
+		 * @param WP_Post $media_item     Đối tượng mục media.
+		 * @param string  $thumbnail_size Kích thước ảnh.
 		 */
 		return apply_filters( 'xmlrpc_prepare_media_item', $_media_item, $media_item, $thumbnail_size );
 	}
 
 	/**
-	 * Prepares page data for return in an XML-RPC object.
+	 * Chuẩn bị dữ liệu trang để trả về trong đối tượng XML-RPC.
 	 *
-	 * @param WP_Post $page The unprepared page data.
-	 * @return array The prepared page data.
+	 * @param WP_Post $page Dữ liệu trang chưa được chuẩn bị.
+	 * @return array Dữ liệu trang đã được chuẩn bị.
 	 */
 	protected function _prepare_page( $page ) {
-		// Get all of the page content and link.
+		// Lấy tất cả nội dung và liên kết của trang.
 		$full_page = get_extended( $page->post_content );
 		$link      = get_permalink( $page->ID );
 
-		// Get info the page parent if there is one.
+		// Lấy thông tin trang cha nếu có.
 		$parent_title = '';
 		if ( ! empty( $page->post_parent ) ) {
 			$parent       = get_post( $page->post_parent );
 			$parent_title = $parent->post_title;
 		}
 
-		// Determine comment and ping settings.
+		// Xác định cài đặt bình luận và ping.
 		$allow_comments = comments_open( $page->ID ) ? 1 : 0;
 		$allow_pings    = pings_open( $page->ID ) ? 1 : 0;
 
-		// Format page date.
+		// Định dạng ngày trang.
 		$page_date     = $this->_convert_date( $page->post_date );
 		$page_date_gmt = $this->_convert_date_gmt( $page->post_date_gmt, $page->post_date );
 
-		// Pull the categories info together.
+		// Tập hợp thông tin chuyên mục.
 		$categories = array();
 		if ( is_object_in_taxonomy( 'page', 'category' ) ) {
 			foreach ( wp_get_post_categories( $page->ID ) as $cat_id ) {
@@ -1134,7 +1134,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			}
 		}
 
-		// Get the author info.
+		// Lấy thông tin tác giả.
 		$author = get_userdata( $page->post_author );
 
 		$page_template = get_page_template_slug( $page->ID );
@@ -1170,24 +1170,24 @@ class wp_xmlrpc_server extends IXR_Server {
 		);
 
 		/**
-		 * Filters XML-RPC-prepared data for the given page.
+		 * Lọc dữ liệu đã chuẩn bị XML-RPC cho trang đã cho.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param array   $_page An array of page data.
-		 * @param WP_Post $page  Page object.
+		 * @param array   $_page Mảng dữ liệu trang.
+		 * @param WP_Post $page  Đối tượng trang.
 		 */
 		return apply_filters( 'xmlrpc_prepare_page', $_page, $page );
 	}
 
 	/**
-	 * Prepares comment data for return in an XML-RPC object.
+	 * Chuẩn bị dữ liệu bình luận để trả về trong đối tượng XML-RPC.
 	 *
-	 * @param WP_Comment $comment The unprepared comment data.
-	 * @return array The prepared comment data.
+	 * @param WP_Comment $comment Dữ liệu bình luận chưa được chuẩn bị.
+	 * @return array Dữ liệu bình luận đã được chuẩn bị.
 	 */
 	protected function _prepare_comment( $comment ) {
-		// Format page date.
+		// Định dạng ngày trang.
 		$comment_date_gmt = $this->_convert_date_gmt( $comment->comment_date_gmt, $comment->comment_date );
 
 		if ( '0' === $comment->comment_approved ) {
@@ -1217,22 +1217,22 @@ class wp_xmlrpc_server extends IXR_Server {
 		);
 
 		/**
-		 * Filters XML-RPC-prepared data for the given comment.
+		 * Lọc dữ liệu đã chuẩn bị XML-RPC cho bình luận đã cho.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param array      $_comment An array of prepared comment data.
-		 * @param WP_Comment $comment  Comment object.
+		 * @param array      $_comment Mảng dữ liệu bình luận đã chuẩn bị.
+		 * @param WP_Comment $comment  Đối tượng bình luận.
 		 */
 		return apply_filters( 'xmlrpc_prepare_comment', $_comment, $comment );
 	}
 
 	/**
-	 * Prepares user data for return in an XML-RPC object.
+	 * Chuẩn bị dữ liệu người dùng để trả về trong đối tượng XML-RPC.
 	 *
-	 * @param WP_User $user   The unprepared user object.
-	 * @param array   $fields The subset of user fields to return.
-	 * @return array The prepared user data.
+	 * @param WP_User $user   Đối tượng người dùng chưa được chuẩn bị.
+	 * @param array   $fields Tập con các trường người dùng cần trả về.
+	 * @return array Dữ liệu người dùng đã được chuẩn bị.
 	 */
 	protected function _prepare_user( $user, $fields ) {
 		$_user = array( 'user_id' => (string) $user->ID );
@@ -1263,63 +1263,63 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/**
-		 * Filters XML-RPC-prepared data for the given user.
+		 * Lọc dữ liệu đã chuẩn bị XML-RPC cho người dùng đã cho.
 		 *
 		 * @since 3.5.0
 		 *
-		 * @param array   $_user  An array of user data.
-		 * @param WP_User $user   User object.
-		 * @param array   $fields An array of user fields.
+		 * @param array   $_user  Mảng dữ liệu người dùng.
+		 * @param WP_User $user   Đối tượng người dùng.
+		 * @param array   $fields Mảng các trường người dùng.
 		 */
 		return apply_filters( 'xmlrpc_prepare_user', $_user, $user, $fields );
 	}
 
 	/**
-	 * Creates a new post for any registered post type.
+	 * Tạo bài viết mới cho bất kỳ loại bài viết đã đăng ký nào.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @link https://en.wikipedia.org/wiki/RSS_enclosure for information on RSS enclosures.
+	 * @link https://en.wikipedia.org/wiki/RSS_enclosure để biết thông tin về RSS enclosure.
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: top-level arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số cấp cao nhất phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
 	 *     @type array  $3 {
-	 *         Content struct for adding a new post. See wp_insert_post() for information on
-	 *         additional post fields
+	 *         Cấu trúc nội dung để thêm bài viết mới. Xem wp_insert_post() để biết thông tin về
+	 *         các trường bài viết bổ sung
 	 *
-	 *         @type string $post_type      Post type. Default 'post'.
-	 *         @type string $post_status    Post status. Default 'draft'
-	 *         @type string $post_title     Post title.
-	 *         @type int    $post_author    Post author ID.
-	 *         @type string $post_excerpt   Post excerpt.
-	 *         @type string $post_content   Post content.
-	 *         @type string $post_date_gmt  Post date in GMT.
-	 *         @type string $post_date      Post date.
-	 *         @type string $post_password  Post password (20-character limit).
-	 *         @type string $comment_status Post comment enabled status. Accepts 'open' or 'closed'.
-	 *         @type string $ping_status    Post ping status. Accepts 'open' or 'closed'.
-	 *         @type bool   $sticky         Whether the post should be sticky. Automatically false if
-	 *                                      `$post_status` is 'private'.
-	 *         @type int    $post_thumbnail ID of an image to use as the post thumbnail/featured image.
-	 *         @type array  $custom_fields  Array of meta key/value pairs to add to the post.
-	 *         @type array  $terms          Associative array with taxonomy names as keys and arrays
-	 *                                      of term IDs as values.
-	 *         @type array  $terms_names    Associative array with taxonomy names as keys and arrays
-	 *                                      of term names as values.
+	 *         @type string $post_type      Loại bài viết. Mặc định 'post'.
+	 *         @type string $post_status    Trạng thái bài viết. Mặc định 'draft'
+	 *         @type string $post_title     Tiêu đề bài viết.
+	 *         @type int    $post_author    ID tác giả bài viết.
+	 *         @type string $post_excerpt   Tóm tắt bài viết.
+	 *         @type string $post_content   Nội dung bài viết.
+	 *         @type string $post_date_gmt  Ngày bài viết theo GMT.
+	 *         @type string $post_date      Ngày bài viết.
+	 *         @type string $post_password  Mật khẩu bài viết (giới hạn 20 ký tự).
+	 *         @type string $comment_status Trạng thái bình luận bài viết. Chấp nhận 'open' hoặc 'closed'.
+	 *         @type string $ping_status    Trạng thái ping bài viết. Chấp nhận 'open' hoặc 'closed'.
+	 *         @type bool   $sticky         Bài viết có nên ghim hay không. Tự động false nếu
+	 *                                      `$post_status` là 'private'.
+	 *         @type int    $post_thumbnail ID ảnh sử dụng làm ảnh thu nhỏ/ảnh đại diện bài viết.
+	 *         @type array  $custom_fields  Mảng các cặp khóa/giá trị meta để thêm vào bài viết.
+	 *         @type array  $terms          Mảng kết hợp với tên taxonomy là khóa và mảng
+	 *                                      các ID term là giá trị.
+	 *         @type array  $terms_names    Mảng kết hợp với tên taxonomy là khóa và mảng
+	 *                                      các tên term là giá trị.
 	 *         @type array  $enclosure      {
-	 *             Array of feed enclosure data to add to post meta.
+	 *             Mảng dữ liệu enclosure feed để thêm vào post meta.
 	 *
-	 *             @type string $url    URL for the feed enclosure.
-	 *             @type int    $length Size in bytes of the enclosure.
-	 *             @type string $type   Mime-type for the enclosure.
+	 *             @type string $url    URL cho feed enclosure.
+	 *             @type int    $length Kích thước tính bằng byte của enclosure.
+	 *             @type string $type   Loại Mime của enclosure.
 	 *         }
 	 *     }
 	 * }
-	 * @return int|IXR_Error Post ID on success, IXR_Error instance otherwise.
+	 * @return int|IXR_Error ID bài viết khi thành công, phiên bản IXR_Error nếu không.
 	 */
 	public function wp_newPost( $args ) {
 		if ( ! $this->minimum_args( $args, 4 ) ) {
@@ -1337,14 +1337,14 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		// Convert the date field back to IXR form.
+		// Chuyển đổi trường ngày trở lại dạng IXR.
 		if ( isset( $content_struct['post_date'] ) && ! ( $content_struct['post_date'] instanceof IXR_Date ) ) {
 			$content_struct['post_date'] = $this->_convert_date( $content_struct['post_date'] );
 		}
 
 		/*
-		 * Ignore the existing GMT date if it is empty or a non-GMT date was supplied in $content_struct,
-		 * since _insert_post() will ignore the non-GMT date if the GMT date is set.
+		 * Bỏ qua ngày GMT hiện có nếu nó rỗng hoặc ngày không phải GMT được cung cấp trong $content_struct,
+		 * vì _insert_post() sẽ bỏ qua ngày không phải GMT nếu ngày GMT đã được thiết lập.
 		 */
 		if ( isset( $content_struct['post_date_gmt'] ) && ! ( $content_struct['post_date_gmt'] instanceof IXR_Date ) ) {
 			if ( '0000-00-00 00:00:00' === $content_struct['post_date_gmt'] || isset( $content_struct['post_date'] ) ) {
@@ -1354,7 +1354,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			}
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.newPost', $args, $this );
 
 		unset( $content_struct['ID'] );
@@ -1363,20 +1363,20 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Helper method for filtering out elements from an array.
+	 * Phương thức hỗ trợ để lọc bỏ các phần tử khỏi mảng.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param int $count Number to compare to one.
-	 * @return bool True if the number is greater than one, false otherwise.
+	 * @param int $count Số cần so sánh với một.
+	 * @return bool True nếu số lớn hơn một, false nếu không.
 	 */
 	private function _is_greater_than_one( $count ) {
 		return $count > 1;
 	}
 
 	/**
-	 * Encapsulates the logic for sticking a post and determining if
-	 * the user has permission to do so.
+	 * Đóng gói logic để ghim bài viết và xác định xem
+	 * người dùng có quyền làm điều đó hay không.
 	 *
 	 * @since 4.3.0
 	 *
@@ -1387,9 +1387,9 @@ class wp_xmlrpc_server extends IXR_Server {
 	private function _toggle_sticky( $post_data, $update = false ) {
 		$post_type = get_post_type_object( $post_data['post_type'] );
 
-		// Private and password-protected posts cannot be stickied.
+		// Bài viết riêng tư và có mật khẩu bảo vệ không thể được ghim.
 		if ( 'private' === $post_data['post_status'] || ! empty( $post_data['post_password'] ) ) {
-			// Error if the client tried to stick the post, otherwise, silently unstick.
+			// Báo lỗi nếu client cố ghim bài viết, nếu không thì âm thầm bỏ ghim.
 			if ( ! empty( $post_data['sticky'] ) ) {
 				return new IXR_Error( 401, __( 'Sorry, you cannot stick a private post.' ) );
 			}
@@ -1412,14 +1412,14 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Helper method for wp_newPost() and wp_editPost(), containing shared logic.
+	 * Phương thức hỗ trợ cho wp_newPost() và wp_editPost(), chứa logic dùng chung.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see wp_insert_post()
 	 *
-	 * @param WP_User         $user           The post author if post_author isn't set in $content_struct.
-	 * @param array|IXR_Error $content_struct Post data to insert.
+	 * @param WP_User         $user           Tác giả bài viết nếu post_author không được thiết lập trong $content_struct.
+	 * @param array|IXR_Error $content_struct Dữ liệu bài viết cần chèn.
 	 * @return IXR_Error|string
 	 */
 	protected function _insert_post( $user, $content_struct ) {
@@ -1521,22 +1521,22 @@ class wp_xmlrpc_server extends IXR_Server {
 			unset( $post_data['ping_status'] );
 		}
 
-		// Do some timestamp voodoo.
+		// Xử lý phép biến đổi mốc thời gian.
 		if ( ! empty( $post_data['post_date_gmt'] ) ) {
-			// We know this is supposed to be GMT, so we're going to slap that Z on there by force.
+			// Chúng ta biết đây phải là GMT, nên chúng ta sẽ ép thêm ký tự Z vào đó.
 			$date_created = rtrim( $post_data['post_date_gmt']->getIso(), 'Z' ) . 'Z';
 		} elseif ( ! empty( $post_data['post_date'] ) ) {
 			$date_created = $post_data['post_date']->getIso();
 		}
 
-		// Default to not flagging the post date to be edited unless it's intentional.
+		// Mặc định không đánh dấu ngày bài viết cần chỉnh sửa trừ khi có chủ đích.
 		$post_data['edit_date'] = false;
 
 		if ( ! empty( $date_created ) ) {
 			$post_data['post_date']     = iso8601_to_datetime( $date_created );
 			$post_data['post_date_gmt'] = iso8601_to_datetime( $date_created, 'gmt' );
 
-			// Flag the post date to be edited.
+			// Đánh dấu ngày bài viết cần chỉnh sửa.
 			$post_data['edit_date'] = true;
 		}
 
@@ -1553,7 +1553,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		if ( isset( $post_data['post_thumbnail'] ) ) {
-			// Empty value deletes, non-empty value adds/updates.
+			// Giá trị rỗng thì xóa, giá trị không rỗng thì thêm/cập nhật.
 			if ( ! $post_data['post_thumbnail'] ) {
 				delete_post_thumbnail( $post_id );
 			} elseif ( ! get_post( absint( $post_data['post_thumbnail'] ) ) ) {
@@ -1570,14 +1570,14 @@ class wp_xmlrpc_server extends IXR_Server {
 		if ( isset( $post_data['terms'] ) || isset( $post_data['terms_names'] ) ) {
 			$post_type_taxonomies = get_object_taxonomies( $post_data['post_type'], 'objects' );
 
-			// Accumulate term IDs from terms and terms_names.
+			// Tích lũy ID term từ terms và terms_names.
 			$terms = array();
 
-			// First validate the terms specified by ID.
+			// Trước tiên xác thực các term được chỉ định bằng ID.
 			if ( isset( $post_data['terms'] ) && is_array( $post_data['terms'] ) ) {
 				$taxonomies = array_keys( $post_data['terms'] );
 
-				// Validating term IDs.
+				// Xác thực các ID term.
 				foreach ( $taxonomies as $taxonomy ) {
 					if ( ! array_key_exists( $taxonomy, $post_type_taxonomies ) ) {
 						return new IXR_Error( 401, __( 'Sorry, one of the given taxonomies is not supported by the post type.' ) );
@@ -1601,7 +1601,7 @@ class wp_xmlrpc_server extends IXR_Server {
 				}
 			}
 
-			// Now validate terms specified by name.
+			// Bây giờ xác thực các term được chỉ định bằng tên.
 			if ( isset( $post_data['terms_names'] ) && is_array( $post_data['terms_names'] ) ) {
 				$taxonomies = array_keys( $post_data['terms_names'] );
 
@@ -1615,8 +1615,8 @@ class wp_xmlrpc_server extends IXR_Server {
 					}
 
 					/*
-					 * For hierarchical taxonomies, we can't assign a term when multiple terms
-					 * in the hierarchy share the same name.
+					 * Đối với taxonomy phân cấp, chúng ta không thể gán term khi nhiều term
+					 * trong phân cấp có cùng tên.
 					 */
 					$ambiguous_terms = array();
 					if ( is_taxonomy_hierarchical( $taxonomy ) ) {
@@ -1628,10 +1628,10 @@ class wp_xmlrpc_server extends IXR_Server {
 							)
 						);
 
-						// Count the number of terms with the same name.
+						// Đếm số lượng term có cùng tên.
 						$tax_term_names_count = array_count_values( $tax_term_names );
 
-						// Filter out non-ambiguous term names.
+						// Lọc bỏ các tên term không mơ hồ.
 						$ambiguous_tax_term_counts = array_filter( $tax_term_names_count, array( $this, '_is_greater_than_one' ) );
 
 						$ambiguous_terms = array_keys( $ambiguous_tax_term_counts );
@@ -1646,12 +1646,12 @@ class wp_xmlrpc_server extends IXR_Server {
 						$term = get_term_by( 'name', $term_name, $taxonomy );
 
 						if ( ! $term ) {
-							// Term doesn't exist, so check that the user is allowed to create new terms.
+							// Term không tồn tại, nên kiểm tra xem người dùng có được phép tạo term mới không.
 							if ( ! current_user_can( $post_type_taxonomies[ $taxonomy ]->cap->edit_terms ) ) {
 								return new IXR_Error( 401, __( 'Sorry, you are not allowed to add a term to one of the given taxonomies.' ) );
 							}
 
-							// Create the new term.
+							// Tạo term mới.
 							$term_info = wp_insert_term( $term_name, $taxonomy );
 							if ( is_wp_error( $term_info ) ) {
 								return new IXR_Error( 500, $term_info->get_error_message() );
@@ -1679,23 +1679,23 @@ class wp_xmlrpc_server extends IXR_Server {
 			unset( $post_data['post_format'] );
 		}
 
-		// Handle enclosures.
+		// Xử lý enclosure.
 		$enclosure = isset( $post_data['enclosure'] ) ? $post_data['enclosure'] : null;
 		$this->add_enclosure_if_new( $post_id, $enclosure );
 
 		$this->attach_uploads( $post_id, $post_data['post_content'] );
 
 		/**
-		 * Filters post data array to be inserted via XML-RPC.
+		 * Lọc mảng dữ liệu bài viết sẽ được chèn qua XML-RPC.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param array $post_data      Parsed array of post data.
-		 * @param array $content_struct Post data array.
+		 * @param array $post_data      Mảng dữ liệu bài viết đã phân tích.
+		 * @param array $content_struct Mảng dữ liệu bài viết.
 		 */
 		$post_data = apply_filters( 'xmlrpc_wp_insert_post_data', $post_data, $content_struct );
 
-		// Remove all null values to allow for using the insert/update post default values for those keys instead.
+		// Loại bỏ tất cả giá trị null để sử dụng giá trị mặc định của insert/update post cho những khóa đó thay thế.
 		$post_data = array_filter(
 			$post_data,
 			static function ( $value ) {
@@ -1720,23 +1720,23 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Edits a post for any registered post type.
+	 * Chỉnh sửa bài viết cho bất kỳ loại bài viết đã đăng ký nào.
 	 *
-	 * The $content_struct parameter only needs to contain fields that
-	 * should be changed. All other fields will retain their existing values.
+	 * Tham số $content_struct chỉ cần chứa các trường cần thay đổi.
+	 * Tất cả các trường khác sẽ giữ nguyên giá trị hiện có.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Post ID.
-	 *     @type array  $4 Extra content arguments.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID bài viết.
+	 *     @type array  $4 Các tham số nội dung bổ sung.
 	 * }
-	 * @return true|IXR_Error True on success, IXR_Error on failure.
+	 * @return true|IXR_Error True khi thành công, IXR_Error khi thất bại.
 	 */
 	public function wp_editPost( $args ) {
 		if ( ! $this->minimum_args( $args, 5 ) ) {
@@ -1755,7 +1755,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.editPost', $args, $this );
 
 		$post = get_post( $post_id, ARRAY_A );
@@ -1765,18 +1765,18 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		if ( isset( $content_struct['if_not_modified_since'] ) ) {
-			// If the post has been modified since the date provided, return an error.
+			// Nếu bài viết đã được sửa đổi kể từ ngày được cung cấp, trả về lỗi.
 			if ( mysql2date( 'U', $post['post_modified_gmt'] ) > $content_struct['if_not_modified_since']->getTimestamp() ) {
 				return new IXR_Error( 409, __( 'There is a revision of this post that is more recent.' ) );
 			}
 		}
 
-		// Convert the date field back to IXR form.
+		// Chuyển đổi trường ngày trở lại dạng IXR.
 		$post['post_date'] = $this->_convert_date( $post['post_date'] );
 
 		/*
-		 * Ignore the existing GMT date if it is empty or a non-GMT date was supplied in $content_struct,
-		 * since _insert_post() will ignore the non-GMT date if the GMT date is set.
+		 * Bỏ qua ngày GMT hiện có nếu nó rỗng hoặc ngày không phải GMT được cung cấp trong $content_struct,
+		 * vì _insert_post() sẽ bỏ qua ngày không phải GMT nếu ngày GMT đã được thiết lập.
 		 */
 		if ( '0000-00-00 00:00:00' === $post['post_date_gmt'] || isset( $content_struct['post_date'] ) ) {
 			unset( $post['post_date_gmt'] );
@@ -1785,10 +1785,10 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/*
-		 * If the API client did not provide 'post_date', then we must not perpetuate the value that
-		 * was stored in the database, or it will appear to be an intentional edit. Conveying it here
-		 * as if it was coming from the API client will cause an otherwise zeroed out 'post_date_gmt'
-		 * to get set with the value that was originally stored in the database when the draft was created.
+		 * Nếu client API không cung cấp 'post_date', thì chúng ta không được duy trì giá trị đã
+		 * lưu trong cơ sở dữ liệu, nếu không nó sẽ xuất hiện như một chỉnh sửa có chủ đích. Truyền nó ở đây
+		 * như thể nó đến từ client API sẽ khiến 'post_date_gmt' bị đặt về 0 được thiết lập với giá trị
+		 * ban đầu được lưu trong cơ sở dữ liệu khi bản nháp được tạo.
 		 */
 		if ( ! isset( $content_struct['post_date'] ) ) {
 			unset( $post['post_date'] );
@@ -1806,21 +1806,21 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Deletes a post for any registered post type.
+	 * Xóa bài viết cho bất kỳ loại bài viết đã đăng ký nào.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see wp_delete_post()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Post ID.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID bài viết.
 	 * }
-	 * @return true|IXR_Error True on success, IXR_Error instance on failure.
+	 * @return true|IXR_Error True khi thành công, phiên bản IXR_Error khi thất bại.
 	 */
 	public function wp_deletePost( $args ) {
 		if ( ! $this->minimum_args( $args, 4 ) ) {
@@ -1838,7 +1838,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.deletePost', $args, $this );
 
 		$post = get_post( $post_id, ARRAY_A );
@@ -1860,31 +1860,31 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves a post.
+	 * Lấy bài viết.
 	 *
 	 * @since 3.4.0
 	 *
-	 * The optional $fields parameter specifies what fields will be included
-	 * in the response array. This should be a list of field names. 'post_id' will
-	 * always be included in the response regardless of the value of $fields.
+	 * Tham số $fields tùy chọn xác định những trường nào sẽ được bao gồm
+	 * trong mảng phản hồi. Đây phải là danh sách tên trường. 'post_id' sẽ
+	 * luôn được bao gồm trong phản hồi bất kể giá trị của $fields.
 	 *
-	 * Instead of, or in addition to, individual field names, conceptual group
-	 * names can be used to specify multiple fields. The available conceptual
-	 * groups are 'post' (all basic fields), 'taxonomies', 'custom_fields',
-	 * and 'enclosure'.
+	 * Thay vì, hoặc bổ sung cho, các tên trường riêng lẻ, có thể sử dụng
+	 * tên nhóm khái niệm để chỉ định nhiều trường. Các nhóm khái niệm có sẵn
+	 * là 'post' (tất cả trường cơ bản), 'taxonomies', 'custom_fields',
+	 * và 'enclosure'.
 	 *
 	 * @see get_post()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Post ID.
-	 *     @type array  $4 Optional. The subset of post type fields to return.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID bài viết.
+	 *     @type array  $4 Tùy chọn. Tập con các trường loại bài viết cần trả về.
 	 * }
-	 * @return array|IXR_Error Array contains (based on $fields parameter):
+	 * @return array|IXR_Error Mảng chứa (dựa trên tham số $fields):
 	 *  - 'post_id'
 	 *  - 'post_title'
 	 *  - 'post_date'
@@ -1923,13 +1923,13 @@ class wp_xmlrpc_server extends IXR_Server {
 			$fields = $args[4];
 		} else {
 			/**
-			 * Filters the default post query fields used by the given XML-RPC method.
+			 * Lọc các trường truy vấn bài viết mặc định được sử dụng bởi phương thức XML-RPC đã cho.
 			 *
 			 * @since 3.4.0
 			 *
-			 * @param array  $fields An array of post fields to retrieve. By default,
-			 *                       contains 'post', 'terms', and 'custom_fields'.
-			 * @param string $method Method name.
+			 * @param array  $fields Mảng các trường bài viết cần lấy. Mặc định,
+			 *                       chứa 'post', 'terms', và 'custom_fields'.
+			 * @param string $method Tên phương thức.
 			 */
 			$fields = apply_filters( 'xmlrpc_default_post_fields', array( 'post', 'terms', 'custom_fields' ), 'wp.getPost' );
 		}
@@ -1939,7 +1939,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPost', $args, $this );
 
 		$post = get_post( $post_id, ARRAY_A );
@@ -1956,26 +1956,26 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves posts.
+	 * Lấy danh sách bài viết.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see wp_get_recent_posts()
-	 * @see wp_getPost() for more on `$fields`
-	 * @see get_posts() for more on `$filter` values
+	 * @see wp_getPost() để biết thêm về `$fields`
+	 * @see get_posts() để biết thêm về giá trị `$filter`
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type array  $3 Optional. Modifies the query used to retrieve posts. Accepts 'post_type',
-	 *                     'post_status', 'number', 'offset', 'orderby', 's', and 'order'.
-	 *                     Default empty array.
-	 *     @type array  $4 Optional. The subset of post type fields to return in the response array.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
+	 *     @type array  $3 Tùy chọn. Chỉnh sửa truy vấn dùng để lấy bài viết. Chấp nhận 'post_type',
+	 *                     'post_status', 'number', 'offset', 'orderby', 's', và 'order'.
+	 *                     Mặc định mảng rỗng.
+	 *     @type array  $4 Tùy chọn. Tập con các trường loại bài viết cần trả về trong mảng phản hồi.
 	 * }
-	 * @return array|IXR_Error Array containing a collection of posts.
+	 * @return array|IXR_Error Mảng chứa bộ sưu tập các bài viết.
 	 */
 	public function wp_getPosts( $args ) {
 		if ( ! $this->minimum_args( $args, 3 ) ) {
@@ -1991,7 +1991,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		if ( isset( $args[4] ) ) {
 			$fields = $args[4];
 		} else {
-			/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+			/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 			$fields = apply_filters( 'xmlrpc_default_post_fields', array( 'post', 'terms', 'custom_fields' ), 'wp.getPosts' );
 		}
 
@@ -2000,7 +2000,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPosts', $args, $this );
 
 		$query = array();
@@ -2050,7 +2050,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return array();
 		}
 
-		// Holds all the posts data.
+		// Chứa tất cả dữ liệu bài viết.
 		$struct = array();
 
 		foreach ( $posts_list as $post ) {
@@ -2065,23 +2065,23 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Creates a new term.
+	 * Tạo term mới.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see wp_insert_term()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type array  $3 Content struct for adding a new term. The struct must contain
-	 *                     the term 'name' and 'taxonomy'. Optional accepted values include
-	 *                     'parent', 'description', and 'slug'.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
+	 *     @type array  $3 Cấu trúc nội dung để thêm term mới. Cấu trúc phải chứa
+	 *                     'name' và 'taxonomy' của term. Giá trị tùy chọn được chấp nhận gồm
+	 *                     'parent', 'description', và 'slug'.
 	 * }
-	 * @return int|IXR_Error The term ID on success, or an IXR_Error object on failure.
+	 * @return int|IXR_Error ID term khi thành công, hoặc đối tượng IXR_Error khi thất bại.
 	 */
 	public function wp_newTerm( $args ) {
 		if ( ! $this->minimum_args( $args, 4 ) ) {
@@ -2099,7 +2099,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.newTerm', $args, $this );
 
 		if ( ! taxonomy_exists( $content_struct['taxonomy'] ) ) {
@@ -2114,7 +2114,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		$taxonomy = (array) $taxonomy;
 
-		// Hold the data of the term.
+		// Chứa dữ liệu của term.
 		$term_data = array();
 
 		$term_data['name'] = trim( $content_struct['name'] );
@@ -2159,7 +2159,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 500, __( 'Sorry, the term could not be created.' ) );
 		}
 
-		// Add term meta.
+		// Thêm term meta.
 		if ( isset( $content_struct['custom_fields'] ) ) {
 			$this->set_term_custom_fields( $term['term_id'], $content_struct['custom_fields'] );
 		}
@@ -2168,24 +2168,24 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Edits a term.
+	 * Chỉnh sửa term.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see wp_update_term()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Term ID.
-	 *     @type array  $4 Content struct for editing a term. The struct must contain the
-	 *                     term 'taxonomy'. Optional accepted values include 'name', 'parent',
-	 *                     'description', and 'slug'.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID term.
+	 *     @type array  $4 Cấu trúc nội dung để chỉnh sửa term. Cấu trúc phải chứa
+	 *                     'taxonomy' của term. Giá trị tùy chọn được chấp nhận gồm 'name', 'parent',
+	 *                     'description', và 'slug'.
 	 * }
-	 * @return true|IXR_Error True on success, IXR_Error instance on failure.
+	 * @return true|IXR_Error True khi thành công, phiên bản IXR_Error khi thất bại.
 	 */
 	public function wp_editTerm( $args ) {
 		if ( ! $this->minimum_args( $args, 5 ) ) {
@@ -2204,7 +2204,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.editTerm', $args, $this );
 
 		if ( ! taxonomy_exists( $content_struct['taxonomy'] ) ) {
@@ -2215,7 +2215,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		$taxonomy = (array) $taxonomy;
 
-		// Hold the data of the term.
+		// Chứa dữ liệu của term.
 		$term_data = array();
 
 		$term = get_term( $term_id, $content_struct['taxonomy'] );
@@ -2277,7 +2277,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 500, __( 'Sorry, editing the term failed.' ) );
 		}
 
-		// Update term meta.
+		// Cập nhật term meta.
 		if ( isset( $content_struct['custom_fields'] ) ) {
 			$this->set_term_custom_fields( $term_id, $content_struct['custom_fields'] );
 		}
@@ -2286,22 +2286,22 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Deletes a term.
+	 * Xóa term.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see wp_delete_term()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type string $3 Taxonomy name.
-	 *     @type int    $4 Term ID.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
+	 *     @type string $3 Tên taxonomy.
+	 *     @type int    $4 ID term.
 	 * }
-	 * @return true|IXR_Error True on success, IXR_Error instance on failure.
+	 * @return true|IXR_Error True khi thành công, phiên bản IXR_Error khi thất bại.
 	 */
 	public function wp_deleteTerm( $args ) {
 		if ( ! $this->minimum_args( $args, 5 ) ) {
@@ -2320,7 +2320,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.deleteTerm', $args, $this );
 
 		if ( ! taxonomy_exists( $taxonomy ) ) {
@@ -2356,22 +2356,22 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves a term.
+	 * Lấy term.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see get_term()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type string $3 Taxonomy name.
-	 *     @type int    $4 Term ID.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
+	 *     @type string $3 Tên taxonomy.
+	 *     @type int    $4 ID term.
 	 * }
-	 * @return array|IXR_Error IXR_Error on failure, array on success, containing:
+	 * @return array|IXR_Error IXR_Error khi thất bại, mảng khi thành công, chứa:
 	 *  - 'term_id'
 	 *  - 'name'
 	 *  - 'slug'
@@ -2399,7 +2399,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getTerm', $args, $this );
 
 		if ( ! taxonomy_exists( $taxonomy ) ) {
@@ -2426,26 +2426,26 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves all terms for a taxonomy.
+	 * Lấy tất cả term cho một taxonomy.
 	 *
 	 * @since 3.4.0
 	 *
-	 * The optional $filter parameter modifies the query used to retrieve terms.
-	 * Accepted keys are 'number', 'offset', 'orderby', 'order', 'hide_empty', and 'search'.
+	 * Tham số $filter tùy chọn chỉnh sửa truy vấn dùng để lấy term.
+	 * Các khóa được chấp nhận là 'number', 'offset', 'orderby', 'order', 'hide_empty', và 'search'.
 	 *
 	 * @see get_terms()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type string $3 Taxonomy name.
-	 *     @type array  $4 Optional. Modifies the query used to retrieve posts. Accepts 'number',
-	 *                     'offset', 'orderby', 'order', 'hide_empty', and 'search'. Default empty array.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
+	 *     @type string $3 Tên taxonomy.
+	 *     @type array  $4 Tùy chọn. Chỉnh sửa truy vấn dùng để lấy bài viết. Chấp nhận 'number',
+	 *                     'offset', 'orderby', 'order', 'hide_empty', và 'search'. Mặc định mảng rỗng.
 	 * }
-	 * @return array|IXR_Error An associative array of terms data on success, IXR_Error instance otherwise.
+	 * @return array|IXR_Error Mảng kết hợp dữ liệu term khi thành công, phiên bản IXR_Error nếu không.
 	 */
 	public function wp_getTerms( $args ) {
 		if ( ! $this->minimum_args( $args, 4 ) ) {
@@ -2464,7 +2464,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getTerms', $args, $this );
 
 		if ( ! taxonomy_exists( $taxonomy ) ) {
@@ -2521,24 +2521,24 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves a taxonomy.
+	 * Lấy taxonomy.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see get_taxonomy()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các tham số phương thức. Lưu ý: tham số phải theo đúng thứ tự như đã ghi.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type string $3 Taxonomy name.
-	 *     @type array  $4 Optional. Array of taxonomy fields to limit to in the return.
-	 *                     Accepts 'labels', 'cap', 'menu', and 'object_type'.
-	 *                     Default empty array.
+	 *     @type int    $0 ID Blog (không sử dụng).
+	 *     @type string $1 Tên đăng nhập.
+	 *     @type string $2 Mật khẩu.
+	 *     @type string $3 Tên taxonomy.
+	 *     @type array  $4 Tùy chọn. Mảng các trường taxonomy giới hạn trả về.
+	 *                     Chấp nhận 'labels', 'cap', 'menu', và 'object_type'.
+	 *                     Mặc định mảng rỗng.
 	 * }
-	 * @return array|IXR_Error An array of taxonomy data on success, IXR_Error instance otherwise.
+	 * @return array|IXR_Error Mảng dữ liệu taxonomy khi thành công, phiên bản IXR_Error nếu không.
 	 */
 	public function wp_getTaxonomy( $args ) {
 		if ( ! $this->minimum_args( $args, 4 ) ) {
@@ -2571,7 +2571,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getTaxonomy', $args, $this );
 
 		if ( ! taxonomy_exists( $taxonomy ) ) {
@@ -2620,7 +2620,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		if ( isset( $args[4] ) ) {
 			$fields = $args[4];
 		} else {
-			/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+			/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 			$fields = apply_filters( 'xmlrpc_default_taxonomy_fields', array( 'labels', 'cap', 'object_type' ), 'wp.getTaxonomies' );
 		}
 
@@ -2629,7 +2629,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getTaxonomies', $args, $this );
 
 		$taxonomies = get_taxonomies( $filter, 'objects' );
@@ -2715,7 +2715,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getUser', $args, $this );
 
 		if ( ! current_user_can( 'edit_user', $user_id ) ) {
@@ -2769,7 +2769,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		if ( isset( $args[4] ) ) {
 			$fields = $args[4];
 		} else {
-			/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+			/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 			$fields = apply_filters( 'xmlrpc_default_user_fields', array( 'all' ), 'wp.getUsers' );
 		}
 
@@ -2778,7 +2778,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getUsers', $args, $this );
 
 		if ( ! current_user_can( 'list_users' ) ) {
@@ -2849,7 +2849,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		if ( isset( $args[3] ) ) {
 			$fields = $args[3];
 		} else {
-			/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+			/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 			$fields = apply_filters( 'xmlrpc_default_user_fields', array( 'all' ), 'wp.getProfile' );
 		}
 
@@ -2858,7 +2858,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getProfile', $args, $this );
 
 		if ( ! current_user_can( 'edit_user', $user->ID ) ) {
@@ -2908,7 +2908,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.editProfile', $args, $this );
 
 		if ( ! current_user_can( 'edit_user', $user->ID ) ) {
@@ -2997,7 +2997,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this page.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPage', $args, $this );
 
 		// If we found the page then format the data.
@@ -3040,7 +3040,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit pages.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPages', $args, $this );
 
 		$pages     = get_posts(
@@ -3095,7 +3095,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.newPage', $args, $this );
 
 		// Mark this as content for a page.
@@ -3132,7 +3132,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.deletePage', $args, $this );
 
 		/*
@@ -3201,7 +3201,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.editPage', $args, $this );
 
 		// Get the page data and make sure it is a page.
@@ -3264,7 +3264,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit pages.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPageList', $args, $this );
 
 		// Get list of page IDs and titles.
@@ -3325,7 +3325,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit posts.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getAuthors', $args, $this );
 
 		$authors = array();
@@ -3369,7 +3369,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you must be able to edit posts on this site in order to view tags.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getKeywords', $args, $this );
 
 		$tags = array();
@@ -3419,7 +3419,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.newCategory', $args, $this );
 
 		// Make sure the user is allowed to add a category.
@@ -3506,7 +3506,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.deleteCategory', $args, $this );
 
 		if ( ! current_user_can( 'delete_term', $category_id ) ) {
@@ -3563,7 +3563,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you must be able to edit posts on this site in order to view categories.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.suggestCategories', $args, $this );
 
 		$category_suggestions = array();
@@ -3609,7 +3609,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getComment', $args, $this );
 
 		$comment = get_comment( $comment_id );
@@ -3665,7 +3665,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getComments', $args, $this );
 
 		if ( isset( $struct['status'] ) ) {
@@ -3760,7 +3760,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 403, __( 'Sorry, you are not allowed to delete this comment.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.deleteComment', $args, $this );
 
 		$status = wp_delete_comment( $comment_id );
@@ -3828,7 +3828,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 403, __( 'Sorry, you are not allowed to moderate or edit this comment.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.editComment', $args, $this );
 		$comment = array(
 			'comment_ID' => $comment_id,
@@ -3845,9 +3845,9 @@ class wp_xmlrpc_server extends IXR_Server {
 			$comment['comment_approved'] = $content_struct['status'];
 		}
 
-		// Do some timestamp voodoo.
+		// Xử lý phép biến đổi mốc thời gian.
 		if ( ! empty( $content_struct['date_created_gmt'] ) ) {
-			// We know this is supposed to be GMT, so we're going to slap that Z on there by force.
+			// Chúng ta biết đây phải là GMT, nên chúng ta sẽ ép thêm ký tự Z vào đó.
 			$date_created = rtrim( $content_struct['date_created_gmt']->getIso(), 'Z' ) . 'Z';
 
 			$comment['comment_date']     = get_date_from_gmt( $date_created );
@@ -4015,14 +4015,14 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		$comment['comment_parent'] = isset( $content_struct['comment_parent'] ) ? absint( $content_struct['comment_parent'] ) : 0;
 
-		/** This filter is documented in wp-includes/comment.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-includes/comment.php */
 		$allow_empty = apply_filters( 'allow_empty_comment', false, $comment );
 
 		if ( ! $allow_empty && '' === $comment['comment_content'] ) {
 			return new IXR_Error( 403, __( 'Comment is required.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.newComment', $args, $this );
 
 		$comment_id = wp_new_comment( $comment, true );
@@ -4076,7 +4076,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details about this site.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getCommentStatusList', $args, $this );
 
 		return get_comment_statuses();
@@ -4118,7 +4118,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details of this post.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getCommentCount', $args, $this );
 
 		$count = wp_count_comments( $post_id );
@@ -4160,7 +4160,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details about this site.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPostStatusList', $args, $this );
 
 		return get_post_statuses();
@@ -4195,7 +4195,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details about this site.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPageStatusList', $args, $this );
 
 		return get_page_statuses();
@@ -4388,7 +4388,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 403, __( 'Sorry, you are not allowed to upload files.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getMediaItem', $args, $this );
 
 		$attachment = get_post( $attachment_id );
@@ -4444,7 +4444,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to upload files.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getMediaLibrary', $args, $this );
 
 		$parent_id = ( isset( $struct['parent_id'] ) ) ? absint( $struct['parent_id'] ) : '';
@@ -4500,7 +4500,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details about this site.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPostFormats', $args, $this );
 
 		$formats = get_post_format_strings();
@@ -4581,7 +4581,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPostType', $args, $this );
 
 		if ( ! post_type_exists( $post_type_name ) ) {
@@ -4629,7 +4629,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		if ( isset( $args[4] ) ) {
 			$fields = $args[4];
 		} else {
-			/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+			/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 			$fields = apply_filters( 'xmlrpc_default_posttype_fields', array( 'labels', 'cap', 'taxonomies' ), 'wp.getPostTypes' );
 		}
 
@@ -4638,7 +4638,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPostTypes', $args, $this );
 
 		$post_types = get_post_types( $filter, 'objects' );
@@ -4709,7 +4709,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getRevisions', $args, $this );
 
 		$post = get_post( $post_id );
@@ -4783,7 +4783,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.restoreRevision', $args, $this );
 
 		$revision = wp_get_post_revision( $revision_id );
@@ -4854,7 +4854,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'blogger.getUsersBlogs', $args, $this );
 
 		$is_admin = current_user_can( 'manage_options' );
@@ -4938,7 +4938,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to access user data on this site.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'blogger.getUserInfo', $args, $this );
 
 		$struct = array(
@@ -4988,7 +4988,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this post.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'blogger.getPost', $args, $this );
 
 		$categories = implode( ',', wp_get_post_categories( $post_id ) );
@@ -5045,7 +5045,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit posts.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'blogger.getRecentPosts', $args, $this );
 
 		$posts_list = wp_get_recent_posts( $query );
@@ -5135,7 +5135,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'blogger.newPost', $args, $this );
 
 		$cap = ( $publish ) ? 'publish_posts' : 'edit_posts';
@@ -5220,7 +5220,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'blogger.editPost', $args, $this );
 
 		$actual_post = get_post( $post_id, ARRAY_A );
@@ -5294,7 +5294,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'blogger.deletePost', $args, $this );
 
 		$actual_post = get_post( $post_id, ARRAY_A );
@@ -5382,7 +5382,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'metaWeblog.newPost', $args, $this );
 
 		$page_template = '';
@@ -5588,9 +5588,9 @@ class wp_xmlrpc_server extends IXR_Server {
 			}
 		}
 
-		// Do some timestamp voodoo.
+		// Xử lý phép biến đổi mốc thời gian.
 		if ( ! empty( $content_struct['date_created_gmt'] ) ) {
-			// We know this is supposed to be GMT, so we're going to slap that Z on there by force.
+			// Chúng ta biết đây phải là GMT, nên chúng ta sẽ ép thêm ký tự Z vào đó.
 			$date_created = rtrim( $content_struct['date_created_gmt']->getIso(), 'Z' ) . 'Z';
 		} elseif ( ! empty( $content_struct['dateCreated'] ) ) {
 			$date_created = $content_struct['dateCreated']->getIso();
@@ -5660,7 +5660,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			unset( $content_struct['wp_post_thumbnail'] );
 		}
 
-		// Handle enclosures.
+		// Xử lý enclosure.
 		$enclosure = isset( $content_struct['enclosure'] ) ? $content_struct['enclosure'] : null;
 		$this->add_enclosure_if_new( $post_id, $enclosure );
 
@@ -5778,7 +5778,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'metaWeblog.editPost', $args, $this );
 
 		$postdata = get_post( $post_id, ARRAY_A );
@@ -5994,22 +5994,22 @@ class wp_xmlrpc_server extends IXR_Server {
 			}
 		}
 
-		// Do some timestamp voodoo.
+		// Xử lý phép biến đổi mốc thời gian.
 		if ( ! empty( $content_struct['date_created_gmt'] ) ) {
-			// We know this is supposed to be GMT, so we're going to slap that Z on there by force.
+			// Chúng ta biết đây phải là GMT, nên chúng ta sẽ ép thêm ký tự Z vào đó.
 			$date_created = rtrim( $content_struct['date_created_gmt']->getIso(), 'Z' ) . 'Z';
 		} elseif ( ! empty( $content_struct['dateCreated'] ) ) {
 			$date_created = $content_struct['dateCreated']->getIso();
 		}
 
-		// Default to not flagging the post date to be edited unless it's intentional.
+		// Mặc định không đánh dấu ngày bài viết cần chỉnh sửa trừ khi có chủ đích.
 		$edit_date = false;
 
 		if ( ! empty( $date_created ) ) {
 			$post_date     = iso8601_to_datetime( $date_created );
 			$post_date_gmt = iso8601_to_datetime( $date_created, 'gmt' );
 
-			// Flag the post date to be edited.
+			// Đánh dấu ngày bài viết cần chỉnh sửa.
 			$edit_date = true;
 		} else {
 			$post_date     = $postdata['post_date'];
@@ -6068,7 +6068,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		if ( isset( $content_struct['wp_post_thumbnail'] ) ) {
 
-			// Empty value deletes, non-empty value adds/updates.
+			// Giá trị rỗng thì xóa, giá trị không rỗng thì thêm/cập nhật.
 			if ( empty( $content_struct['wp_post_thumbnail'] ) ) {
 				delete_post_thumbnail( $post_id );
 			} else {
@@ -6079,7 +6079,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			unset( $content_struct['wp_post_thumbnail'] );
 		}
 
-		// Handle enclosures.
+		// Xử lý enclosure.
 		$enclosure = isset( $content_struct['enclosure'] ) ? $content_struct['enclosure'] : null;
 		$this->add_enclosure_if_new( $post_id, $enclosure );
 
@@ -6138,7 +6138,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this post.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'metaWeblog.getPost', $args, $this );
 
 		if ( '' !== $postdata['post_date'] ) {
@@ -6167,13 +6167,13 @@ class wp_xmlrpc_server extends IXR_Server {
 			$post = get_extended( $postdata['post_content'] );
 			$link = get_permalink( $postdata['ID'] );
 
-			// Get the author info.
+			// Lấy thông tin tác giả.
 			$author = get_userdata( $postdata['post_author'] );
 
 			$allow_comments = ( 'open' === $postdata['comment_status'] ) ? 1 : 0;
 			$allow_pings    = ( 'open' === $postdata['ping_status'] ) ? 1 : 0;
 
-			// Consider future posts as published.
+			// Xem bài viết lên lịch như đã xuất bản.
 			if ( 'future' === $postdata['post_status'] ) {
 				$postdata['post_status'] = 'publish';
 			}
@@ -6279,7 +6279,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit posts.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'metaWeblog.getRecentPosts', $args, $this );
 
 		$posts_list = wp_get_recent_posts( $query );
@@ -6325,7 +6325,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			$allow_comments = ( 'open' === $entry['comment_status'] ) ? 1 : 0;
 			$allow_pings    = ( 'open' === $entry['ping_status'] ) ? 1 : 0;
 
-			// Consider future posts as published.
+			// Xem bài viết lên lịch như đã xuất bản.
 			if ( 'future' === $entry['post_status'] ) {
 				$entry['post_status'] = 'publish';
 			}
@@ -6400,7 +6400,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you must be able to edit posts on this site in order to view categories.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'metaWeblog.getCategories', $args, $this );
 
 		$categories_struct = array();
@@ -6457,7 +6457,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'metaWeblog.newMediaObject', $args, $this );
 
 		if ( ! current_user_can( 'upload_files' ) ) {
@@ -6578,7 +6578,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'mt.getRecentPostTitles', $args, $this );
 
 		$posts_list = wp_get_recent_posts( $query );
@@ -6640,7 +6640,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you must be able to edit posts on this site in order to view categories.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'mt.getCategoryList', $args, $this );
 
 		$categories_struct = array();
@@ -6698,7 +6698,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this post.' ) );
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'mt.getPostCategories', $args, $this );
 
 		$categories = array();
@@ -6745,7 +6745,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'mt.setPostCategories', $args, $this );
 
 		if ( ! get_post( $post_id ) ) {
@@ -6774,7 +6774,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	 * @return array
 	 */
 	public function mt_supportedMethods() {
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'mt.supportedMethods', array(), $this );
 
 		return array_keys( $this->methods );
@@ -6786,7 +6786,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	 * @since 1.5.0
 	 */
 	public function mt_supportedTextFilters() {
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'mt.supportedTextFilters', array(), $this );
 
 		/**
@@ -6812,7 +6812,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	public function mt_getTrackbackPings( $post_id ) {
 		global $wpdb;
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'mt.getTrackbackPings', $post_id, $this );
 
 		$actual_post = get_post( $post_id, ARRAY_A );
@@ -6869,7 +6869,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'mt.publishPost', $args, $this );
 
 		$postdata = get_post( $post_id, ARRAY_A );
@@ -6913,7 +6913,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	public function pingback_ping( $args ) {
 		global $wpdb;
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'pingback.ping', $args, $this );
 
 		$this->escape( $args );
@@ -7021,7 +7021,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		$remote_ip = preg_replace( '/[^0-9a-fA-F:., ]/', '', $_SERVER['REMOTE_ADDR'] );
 
-		/** This filter is documented in wp-includes/class-wp-http.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-includes/class-wp-http.php */
 		$user_agent = apply_filters( 'http_headers_useragent', 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' ), $pagelinkedfrom );
 
 		// Let's check the remote site.
@@ -7170,7 +7170,7 @@ class wp_xmlrpc_server extends IXR_Server {
 	public function pingback_extensions_getPingbacks( $url ) {
 		global $wpdb;
 
-		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
+		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'pingback.extensions.getPingbacks', $url, $this );
 
 		$url = $this->escape( $url );

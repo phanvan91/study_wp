@@ -1,8 +1,8 @@
 <?php
 /**
- * Core class used for managing HTTP transports and making HTTP requests.
+ * Lớp lõi được sử dụng để quản lý các giao thức HTTP và thực hiện các yêu cầu HTTP.
  *
- * This file is deprecated, use 'wp-includes/class-wp-http.php' instead.
+ * Tệp này đã bị loại bỏ, sử dụng 'wp-includes/class-wp-http.php' thay thế.
  *
  * @deprecated 5.9.0
  * @package WordPress
@@ -10,5 +10,5 @@
 
 _deprecated_file( basename( __FILE__ ), '5.9.0', WPINC . '/class-wp-http.php' );
 
-/** WP_Http class */
+/** Lớp WP_Http */
 require_once ABSPATH . WPINC . '/class-wp-http.php';

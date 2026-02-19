@@ -1,6 +1,6 @@
 <?php
 /**
- * Upgrade API: Core_Upgrader class
+ * API Nâng cấp: Lớp Core_Upgrader
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -8,24 +8,24 @@
  */
 
 /**
- * Core class used for updating core.
+ * Lớp lõi dùng để cập nhật lõi WordPress.
  *
- * It allows for WordPress to upgrade itself in combination with
- * the wp-admin/includes/update-core.php file.
+ * Cho phép WordPress tự nâng cấp kết hợp với
+ * tệp wp-admin/includes/update-core.php.
  *
- * Note: Newly introduced functions and methods cannot be used here.
- * All functions must be present in the previous version being upgraded from
- * as this file is used there too.
+ * Lưu ý: Các hàm và phương thức mới được giới thiệu không thể sử dụng ở đây.
+ * Tất cả các hàm phải có sẵn trong phiên bản trước đang được nâng cấp
+ * vì tệp này cũng được sử dụng ở đó.
  *
  * @since 2.8.0
- * @since 4.6.0 Moved to its own file from wp-admin/includes/class-wp-upgrader.php.
+ * @since 4.6.0 Được chuyển sang file riêng từ wp-admin/includes/class-wp-upgrader.php.
  *
  * @see WP_Upgrader
  */
 class Core_Upgrader extends WP_Upgrader {
 
 	/**
-	 * Initializes the upgrade strings.
+	 * Khởi tạo các chuỗi nâng cấp.
 	 *
 	 * @since 2.8.0
 	 */
@@ -33,7 +33,7 @@ class Core_Upgrader extends WP_Upgrader {
 		$this->strings['up_to_date'] = __( 'WordPress is at the latest version.' );
 		$this->strings['locked']     = __( 'Another update is currently in progress.' );
 		$this->strings['no_package'] = __( 'Update package not available.' );
-		/* translators: %s: Package URL. */
+		/* translators: %s: URL gói. */
 		$this->strings['downloading_package']   = sprintf( __( 'Downloading update from %s&#8230;' ), '<span class="code pre">%s</span>' );
 		$this->strings['unpack_package']        = __( 'Unpacking the update&#8230;' );
 		$this->strings['copy_failed']           = __( 'Could not copy files.' );
@@ -43,25 +43,25 @@ class Core_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Upgrades WordPress core.
+	 * Nâng cấp lõi WordPress.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @global WP_Filesystem_Base $wp_filesystem                WordPress filesystem subclass.
+	 * @global WP_Filesystem_Base $wp_filesystem                Lớp con hệ thống tệp WordPress.
 	 * @global callable           $_wp_filesystem_direct_method
 	 *
-	 * @param object $current Response object for whether WordPress is current.
+	 * @param object $current Đối tượng phản hồi cho biết WordPress có phải phiên bản mới nhất không.
 	 * @param array  $args {
-	 *     Optional. Arguments for upgrading WordPress core. Default empty array.
+	 *     Tùy chọn. Các tham số để nâng cấp lõi WordPress. Mặc định mảng rỗng.
 	 *
-	 *     @type bool $pre_check_md5    Whether to check the file checksums before
-	 *                                  attempting the upgrade. Default true.
-	 *     @type bool $attempt_rollback Whether to attempt to rollback the chances if
-	 *                                  there is a problem. Default false.
-	 *     @type bool $do_rollback      Whether to perform this "upgrade" as a rollback.
-	 *                                  Default false.
+	 *     @type bool $pre_check_md5    Có kiểm tra checksum tệp trước khi
+	 *                                  thực hiện nâng cấp hay không. Mặc định true.
+	 *     @type bool $attempt_rollback Có cố khôi phục thay đổi nếu
+	 *                                  có vấn đề hay không. Mặc định false.
+	 *     @type bool $do_rollback      Có thực hiện "nâng cấp" này như một lần khôi phục hay không.
+	 *                                  Mặc định false.
 	 * }
-	 * @return string|false|WP_Error New WordPress version on success, false or WP_Error on failure.
+	 * @return string|false|WP_Error Phiên bản WordPress mới khi thành công, false hoặc WP_Error khi thất bại.
 	 */
 	public function upgrade( $current, $args = array() ) {
 		global $wp_filesystem;
@@ -81,7 +81,7 @@ class Core_Upgrader extends WP_Upgrader {
 		$this->init();
 		$this->upgrade_strings();
 
-		// Is an update available?
+		// Có bản cập nhật nào không?
 		if ( ! isset( $current->response ) || 'latest' === $current->response ) {
 			return new WP_Error( 'up_to_date', $this->strings['up_to_date'] );
 		}
@@ -101,10 +101,10 @@ class Core_Upgrader extends WP_Upgrader {
 		}
 
 		/*
-		 * If partial update is returned from the API, use that, unless we're doing
-		 * a reinstallation. If we cross the new_bundled version number, then use
-		 * the new_bundled zip. Don't though if the constant is set to skip bundled items.
-		 * If the API returns a no_content zip, go with it. Finally, default to the full zip.
+		 * Nếu API trả về cập nhật từng phần, sử dụng nó, trừ khi đang
+		 * cài đặt lại. Nếu vượt qua số phiên bản new_bundled, thì sử dụng
+		 * zip new_bundled. Tuy nhiên nếu hằng số được đặt để bỏ qua các mục đi kèm thì không.
+		 * Nếu API trả về zip no_content, sử dụng nó. Cuối cùng, mặc định là zip đầy đủ.
 		 */
 		if ( $parsed_args['do_rollback'] && $current->packages->rollback ) {
 			$to_download = 'rollback';
@@ -119,7 +119,7 @@ class Core_Upgrader extends WP_Upgrader {
 			$to_download = 'full';
 		}
 
-		// Lock to prevent multiple Core Updates occurring.
+		// Khóa để ngăn nhiều cập nhật lõi xảy ra đồng thời.
 		$lock = WP_Upgrader::create_lock( 'core_updater', 15 * MINUTE_IN_SECONDS );
 		if ( ! $lock ) {
 			return new WP_Error( 'locked', $this->strings['locked'] );
@@ -128,15 +128,15 @@ class Core_Upgrader extends WP_Upgrader {
 		$download = $this->download_package( $current->packages->$to_download, false );
 
 		/*
-		 * Allow for signature soft-fail.
-		 * WARNING: This may be removed in the future.
+		 * Cho phép chữ ký lỗi mềm.
+		 * CẢNH BÁO: Điều này có thể bị loại bỏ trong tương lai.
 		 */
 		if ( is_wp_error( $download ) && $download->get_error_data( 'softfail-filename' ) ) {
-			// Output the failure error as a normal feedback, and not as an error:
-			/** This filter is documented in wp-admin/includes/update-core.php */
+			// Xuất lỗi thất bại dưới dạng phản hồi bình thường, không phải lỗi:
+			/** Bộ lọc này được ghi nhận trong wp-admin/includes/update-core.php */
 			apply_filters( 'update_feedback', $download->get_error_message() );
 
-			// Report this failure back to WordPress.org for debugging purposes.
+			// Báo cáo lỗi này về WordPress.org cho mục đích gỡ lỗi.
 			wp_version_check(
 				array(
 					'signature_failure_code' => $download->get_error_code(),
@@ -144,7 +144,7 @@ class Core_Upgrader extends WP_Upgrader {
 				)
 			);
 
-			// Pretend this error didn't happen.
+			// Giả vờ lỗi này không xảy ra.
 			$download = $download->get_error_data( 'softfail-filename' );
 		}
 
@@ -159,7 +159,7 @@ class Core_Upgrader extends WP_Upgrader {
 			return $working_dir;
 		}
 
-		// Copy update-core.php from the new version into place.
+		// Sao chép update-core.php từ phiên bản mới vào vị trí.
 		if ( ! $wp_filesystem->copy( $working_dir . '/wordpress/wp-admin/includes/update-core.php', $wp_dir . 'wp-admin/includes/update-core.php', true ) ) {
 			$wp_filesystem->delete( $working_dir, true );
 			WP_Upgrader::release_lock( 'core_updater' );
@@ -177,15 +177,15 @@ class Core_Upgrader extends WP_Upgrader {
 
 		$result = update_core( $working_dir, $wp_dir );
 
-		// In the event of an issue, we may be able to roll back.
+		// Trong trường hợp có vấn đề, chúng ta có thể khôi phục lại.
 		if ( $parsed_args['attempt_rollback'] && $current->packages->rollback && ! $parsed_args['do_rollback'] ) {
 			$try_rollback = false;
 			if ( is_wp_error( $result ) ) {
 				$error_code = $result->get_error_code();
 				/*
-				 * Not all errors are equal. These codes are critical: copy_failed__copy_dir,
-				 * mkdir_failed__copy_dir, copy_failed__copy_dir_retry, and disk_full.
-				 * do_rollback allows for update_core() to trigger a rollback if needed.
+				 * Không phải tất cả các lỗi đều như nhau. Các mã này là nghiêm trọng: copy_failed__copy_dir,
+				 * mkdir_failed__copy_dir, copy_failed__copy_dir_retry, và disk_full.
+				 * do_rollback cho phép update_core() kích hoạt khôi phục nếu cần.
 				 */
 				if ( str_contains( $error_code, 'do_rollback' ) ) {
 					$try_rollback = true;
@@ -197,10 +197,10 @@ class Core_Upgrader extends WP_Upgrader {
 			}
 
 			if ( $try_rollback ) {
-				/** This filter is documented in wp-admin/includes/update-core.php */
+				/** Bộ lọc này được ghi nhận trong wp-admin/includes/update-core.php */
 				apply_filters( 'update_feedback', $result );
 
-				/** This filter is documented in wp-admin/includes/update-core.php */
+				/** Bộ lọc này được ghi nhận trong wp-admin/includes/update-core.php */
 				apply_filters( 'update_feedback', $this->strings['start_rollback'] );
 
 				$rollback_result = $this->upgrade( $current, array_merge( $parsed_args, array( 'do_rollback' => true ) ) );
@@ -217,7 +217,7 @@ class Core_Upgrader extends WP_Upgrader {
 			}
 		}
 
-		/** This action is documented in wp-admin/includes/class-wp-upgrader.php */
+		/** Hành động này được ghi nhận trong wp-admin/includes/class-wp-upgrader.php */
 		do_action(
 			'upgrader_process_complete',
 			$this,
@@ -227,7 +227,7 @@ class Core_Upgrader extends WP_Upgrader {
 			)
 		);
 
-		// Clear the current updates.
+		// Xóa bộ nhớ đệm cập nhật hiện tại.
 		delete_site_transient( 'update_core' );
 
 		if ( ! $parsed_args['do_rollback'] ) {
@@ -244,11 +244,11 @@ class Core_Upgrader extends WP_Upgrader {
 
 			if ( is_wp_error( $result ) ) {
 				$stats['success'] = false;
-				// Did a rollback occur?
+				// Có xảy ra khôi phục không?
 				if ( ! empty( $try_rollback ) ) {
 					$stats['error_code'] = $original_result->get_error_code();
 					$stats['error_data'] = $original_result->get_error_data();
-					// Was the rollback successful? If not, collect its error too.
+					// Khôi phục có thành công không? Nếu không, thu thập lỗi của nó.
 					$stats['rollback'] = ! is_wp_error( $rollback_result );
 					if ( is_wp_error( $rollback_result ) ) {
 						$stats['rollback_code'] = $rollback_result->get_error_code();
@@ -269,12 +269,12 @@ class Core_Upgrader extends WP_Upgrader {
 	}
 
 	/**
-	 * Determines if this WordPress Core version should update to an offered version or not.
+	 * Xác định xem phiên bản WordPress lõi này có nên cập nhật lên phiên bản được đề xuất hay không.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param string $offered_ver The offered version, of the format x.y.z.
-	 * @return bool True if we should update to the offered version, otherwise false.
+	 * @param string $offered_ver Phiên bản được đề xuất, theo định dạng x.y.z.
+	 * @return bool True nếu nên cập nhật lên phiên bản được đề xuất, ngược lại false.
 	 */
 	public static function should_update_to_version( $offered_ver ) {
 		require ABSPATH . WPINC . '/version.php'; // $wp_version; // x.y.z
@@ -284,59 +284,59 @@ class Core_Upgrader extends WP_Upgrader {
 
 		$current_is_development_version = (bool) strpos( $wp_version, '-' );
 
-		// Defaults:
+		// Mặc định:
 		$upgrade_dev   = get_site_option( 'auto_update_core_dev', 'enabled' ) === 'enabled';
 		$upgrade_minor = get_site_option( 'auto_update_core_minor', 'enabled' ) === 'enabled';
 		$upgrade_major = get_site_option( 'auto_update_core_major', 'unset' ) === 'enabled';
 
-		// WP_AUTO_UPDATE_CORE = true (all), 'beta', 'rc', 'development', 'branch-development', 'minor', false.
+		// WP_AUTO_UPDATE_CORE = true (tất cả), 'beta', 'rc', 'development', 'branch-development', 'minor', false.
 		if ( defined( 'WP_AUTO_UPDATE_CORE' ) ) {
 			if ( false === WP_AUTO_UPDATE_CORE ) {
-				// Defaults to turned off, unless a filter allows it.
+				// Mặc định là tắt, trừ khi bộ lọc cho phép.
 				$upgrade_dev   = false;
 				$upgrade_minor = false;
 				$upgrade_major = false;
 			} elseif ( true === WP_AUTO_UPDATE_CORE
 				|| in_array( WP_AUTO_UPDATE_CORE, array( 'beta', 'rc', 'development', 'branch-development' ), true )
 			) {
-				// ALL updates for core.
+				// TẤT CẢ các cập nhật cho lõi.
 				$upgrade_dev   = true;
 				$upgrade_minor = true;
 				$upgrade_major = true;
 			} elseif ( 'minor' === WP_AUTO_UPDATE_CORE ) {
-				// Only minor updates for core.
+				// Chỉ cập nhật nhỏ cho lõi.
 				$upgrade_dev   = false;
 				$upgrade_minor = true;
 				$upgrade_major = false;
 			}
 		}
 
-		// 1: If we're already on that version, not much point in updating?
+		// 1: Nếu đã ở phiên bản đó, không cần cập nhật.
 		if ( $offered_ver === $wp_version ) {
 			return false;
 		}
 
-		// 2: If we're running a newer version, that's a nope.
+		// 2: Nếu đang chạy phiên bản mới hơn, không cập nhật.
 		if ( version_compare( $wp_version, $offered_ver, '>' ) ) {
 			return false;
 		}
 
 		$failure_data = get_site_option( 'auto_core_update_failed' );
 		if ( $failure_data ) {
-			// If this was a critical update failure, cannot update.
+			// Nếu đây là lỗi cập nhật nghiêm trọng, không thể cập nhật.
 			if ( ! empty( $failure_data['critical'] ) ) {
 				return false;
 			}
 
-			// Don't claim we can update on update-core.php if we have a non-critical failure logged.
+			// Không thông báo có thể cập nhật trên update-core.php nếu có lỗi không nghiêm trọng đã ghi.
 			if ( $wp_version === $failure_data['current'] && str_contains( $offered_ver, '.1.next.minor' ) ) {
 				return false;
 			}
 
 			/*
-			 * Cannot update if we're retrying the same A to B update that caused a non-critical failure.
-			 * Some non-critical failures do allow retries, like download_failed.
-			 * 3.7.1 => 3.7.2 resulted in files_not_writable, if we are still on 3.7.1 and still trying to update to 3.7.2.
+			 * Không thể cập nhật nếu đang thử lại cùng cập nhật A sang B đã gây lỗi không nghiêm trọng.
+			 * Một số lỗi không nghiêm trọng cho phép thử lại, như download_failed.
+			 * 3.7.1 => 3.7.2 dẫn đến files_not_writable, nếu vẫn ở 3.7.1 và vẫn cố cập nhật lên 3.7.2.
 			 */
 			if ( empty( $failure_data['retry'] ) && $wp_version === $failure_data['current'] && $offered_ver === $failure_data['attempted'] ) {
 				return false;
@@ -347,58 +347,57 @@ class Core_Upgrader extends WP_Upgrader {
 		if ( $current_is_development_version ) {
 
 			/**
-			 * Filters whether to enable automatic core updates for development versions.
+			 * Lọc việc có bật cập nhật tự động lõi cho phiên bản phát triển hay không.
 			 *
 			 * @since 3.7.0
 			 *
-			 * @param bool $upgrade_dev Whether to enable automatic updates for
-			 *                          development versions.
+			 * @param bool $upgrade_dev Có bật cập nhật tự động cho phiên bản phát triển hay không.
 			 */
 			if ( ! apply_filters( 'allow_dev_auto_core_updates', $upgrade_dev ) ) {
 				return false;
 			}
-			// Else fall through to minor + major branches below.
+			// Nếu không thì tiếp tục sang nhánh cập nhật nhỏ + lớn bên dưới.
 		}
 
-		// 4: Minor in-branch updates (3.7.0 -> 3.7.1 -> 3.7.2 -> 3.7.4).
+		// 4: Cập nhật nhỏ trong nhánh (3.7.0 -> 3.7.1 -> 3.7.2 -> 3.7.4).
 		if ( $current_branch === $new_branch ) {
 
 			/**
-			 * Filters whether to enable minor automatic core updates.
+			 * Lọc việc có bật cập nhật tự động lõi nhỏ hay không.
 			 *
 			 * @since 3.7.0
 			 *
-			 * @param bool $upgrade_minor Whether to enable minor automatic core updates.
+			 * @param bool $upgrade_minor Có bật cập nhật tự động lõi nhỏ hay không.
 			 */
 			return apply_filters( 'allow_minor_auto_core_updates', $upgrade_minor );
 		}
 
-		// 5: Major version updates (3.7.0 -> 3.8.0 -> 3.9.1).
+		// 5: Cập nhật phiên bản lớn (3.7.0 -> 3.8.0 -> 3.9.1).
 		if ( version_compare( $new_branch, $current_branch, '>' ) ) {
 
 			/**
-			 * Filters whether to enable major automatic core updates.
+			 * Lọc việc có bật cập nhật tự động lõi lớn hay không.
 			 *
 			 * @since 3.7.0
 			 *
-			 * @param bool $upgrade_major Whether to enable major automatic core updates.
+			 * @param bool $upgrade_major Có bật cập nhật tự động lõi lớn hay không.
 			 */
 			return apply_filters( 'allow_major_auto_core_updates', $upgrade_major );
 		}
 
-		// If we're not sure, we don't want it.
+		// Nếu không chắc chắn, không cập nhật.
 		return false;
 	}
 
 	/**
-	 * Compares the disk file checksums against the expected checksums.
+	 * So sánh checksum tệp trên đĩa với checksum mong đợi.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @global string $wp_version       The WordPress version string.
-	 * @global string $wp_local_package Locale code of the package.
+	 * @global string $wp_version       Chuỗi phiên bản WordPress.
+	 * @global string $wp_local_package Mã ngôn ngữ của gói.
 	 *
-	 * @return bool True if the checksums match, otherwise false.
+	 * @return bool True nếu checksum khớp, ngược lại false.
 	 */
 	public function check_files() {
 		global $wp_version, $wp_local_package;
@@ -410,7 +409,7 @@ class Core_Upgrader extends WP_Upgrader {
 		}
 
 		foreach ( $checksums as $file => $checksum ) {
-			// Skip files which get updated.
+			// Bỏ qua các tệp được cập nhật.
 			if ( str_starts_with( $file, 'wp-content' ) ) {
 				continue;
 			}

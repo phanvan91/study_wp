@@ -1,12 +1,12 @@
 <?php
 /**
- * Edit Tags Administration Screen.
+ * Màn hình quản trị Chỉnh sửa Thẻ.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Tải WordPress Administration Bootstrap */
 require_once __DIR__ . '/admin.php';
 
 if ( ! $taxnow ) {
@@ -32,9 +32,9 @@ if ( ! current_user_can( $tax->cap->manage_terms ) ) {
 }
 
 /**
- * $post_type is set when the WP_Terms_List_Table instance is created.
+ * $post_type được thiết lập khi thể hiện WP_Terms_List_Table được tạo.
  *
- * @global string $post_type Global post type.
+ * @global string $post_type Loại bài viết toàn cục.
  */
 global $post_type;
 
@@ -123,7 +123,7 @@ switch ( $wp_list_table->current_action() ) {
 
 		$location = add_query_arg( 'message', 2, $referer );
 
-		// When deleting a term, prevent the action from redirecting back to a term that no longer exists.
+		// Khi xóa term, ngăn hành động chuyển hướng về term không còn tồn tại.
 		$location = remove_query_arg( array( 'tag_ID', 'action' ), $location );
 
 		break;
@@ -203,7 +203,7 @@ switch ( $wp_list_table->current_action() ) {
 		$screen = get_current_screen()->id;
 		$tags   = (array) $_REQUEST['delete_tags'];
 
-		/** This action is documented in wp-admin/edit.php */
+		/** Action này được ghi nhận trong wp-admin/edit.php */
 		$location = apply_filters( "handle_bulk_actions-{$screen}", $location, $wp_list_table->current_action(), $tags ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 		break;
 }
@@ -221,12 +221,12 @@ if ( $location ) {
 	}
 
 	/**
-	 * Filters the taxonomy redirect destination URL.
+	 * Lọc URL đích chuyển hướng của taxonomy.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param string      $location The destination URL.
-	 * @param WP_Taxonomy $tax      The taxonomy object.
+	 * @param string      $location URL đích.
+	 * @param WP_Taxonomy $tax      Đối tượng taxonomy.
 	 */
 	wp_redirect( apply_filters( 'redirect_term_location', $location, $tax ) );
 	exit;
@@ -321,7 +321,7 @@ if ( 'category' === $taxonomy || 'link_category' === $taxonomy || 'post_tag' ===
 
 require_once ABSPATH . 'wp-admin/admin-header.php';
 
-// Also used by the Edit Tag form.
+// Cũng được sử dụng bởi form Chỉnh sửa Thẻ.
 require_once ABSPATH . 'wp-admin/includes/edit-tag-messages.php';
 
 if ( is_plugin_active( 'wpcat2tag-importer/wpcat2tag-importer.php' ) ) {
@@ -388,49 +388,49 @@ if ( $can_edit_terms ) {
 	<?php
 	if ( 'category' === $taxonomy ) {
 		/**
-		 * Fires before the Add Category form.
+		 * Kích hoạt trước form Thêm Chuyên mục.
 		 *
 		 * @since 2.1.0
-		 * @deprecated 3.0.0 Use {@see '{$taxonomy}_pre_add_form'} instead.
+		 * @deprecated 3.0.0 Sử dụng {@see '{$taxonomy}_pre_add_form'} thay thế.
 		 *
-		 * @param object $arg Optional arguments cast to an object.
+		 * @param object $arg Tham số tùy chọn được ép kiểu thành đối tượng.
 		 */
 		do_action_deprecated( 'add_category_form_pre', array( (object) array( 'parent' => 0 ) ), '3.0.0', '{$taxonomy}_pre_add_form' );
 	} elseif ( 'link_category' === $taxonomy ) {
 		/**
-		 * Fires before the link category form.
+		 * Kích hoạt trước form Chuyên mục Liên kết.
 		 *
 		 * @since 2.3.0
-		 * @deprecated 3.0.0 Use {@see '{$taxonomy}_pre_add_form'} instead.
+		 * @deprecated 3.0.0 Sử dụng {@see '{$taxonomy}_pre_add_form'} thay thế.
 		 *
-		 * @param object $arg Optional arguments cast to an object.
+		 * @param object $arg Tham số tùy chọn được ép kiểu thành đối tượng.
 		 */
 		do_action_deprecated( 'add_link_category_form_pre', array( (object) array( 'parent' => 0 ) ), '3.0.0', '{$taxonomy}_pre_add_form' );
 	} else {
 		/**
-		 * Fires before the Add Tag form.
+		 * Kích hoạt trước form Thêm Thẻ.
 		 *
 		 * @since 2.5.0
-		 * @deprecated 3.0.0 Use {@see '{$taxonomy}_pre_add_form'} instead.
+		 * @deprecated 3.0.0 Sử dụng {@see '{$taxonomy}_pre_add_form'} thay thế.
 		 *
-		 * @param string $taxonomy The taxonomy slug.
+		 * @param string $taxonomy Slug taxonomy.
 		 */
 		do_action_deprecated( 'add_tag_form_pre', array( $taxonomy ), '3.0.0', '{$taxonomy}_pre_add_form' );
 	}
 
 	/**
-	 * Fires before the Add Term form for all taxonomies.
+	 * Kích hoạt trước form Thêm Term cho tất cả taxonomy.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers to the taxonomy slug.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu đến slug taxonomy.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `category_pre_add_form`
 	 *  - `post_tag_pre_add_form`
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $taxonomy The taxonomy slug.
+	 * @param string $taxonomy Slug taxonomy.
 	 */
 	do_action( "{$taxonomy}_pre_add_form", $taxonomy );
 	?>
@@ -440,11 +440,11 @@ if ( $can_edit_terms ) {
 <form id="addtag" method="post" action="edit-tags.php" class="validate"
 	<?php
 	/**
-	 * Fires inside the Add Tag form tag.
+	 * Kích hoạt bên trong thẻ form Thêm Thẻ.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers to the taxonomy slug.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu đến slug taxonomy.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `category_term_new_form_tag`
 	 *  - `post_tag_term_new_form_tag`
@@ -485,25 +485,25 @@ if ( $can_edit_terms ) {
 		);
 
 		/**
-		 * Filters the taxonomy parent drop-down on the Edit Term page.
+		 * Lọc danh sách thả xuống cha taxonomy trên trang Chỉnh sửa Term.
 		 *
 		 * @since 3.7.0
-		 * @since 4.2.0 Added `$context` parameter.
+		 * @since 4.2.0 Đã thêm tham số `$context`.
 		 *
 		 * @param array  $dropdown_args {
-		 *     An array of taxonomy parent drop-down arguments.
+		 *     Mảng tham số danh sách thả xuống cha taxonomy.
 		 *
-		 *     @type int|bool $hide_empty       Whether to hide terms not attached to any posts. Default 0.
-		 *     @type bool     $hide_if_empty    Whether to hide the drop-down if no terms exist. Default false.
-		 *     @type string   $taxonomy         The taxonomy slug.
-		 *     @type string   $name             Value of the name attribute to use for the drop-down select element.
-		 *                                      Default 'parent'.
-		 *     @type string   $orderby          The field to order by. Default 'name'.
-		 *     @type bool     $hierarchical     Whether the taxonomy is hierarchical. Default true.
-		 *     @type string   $show_option_none Label to display if there are no terms. Default 'None'.
+		 *     @type int|bool $hide_empty       Có ẩn term không gắn với bài viết nào không. Mặc định 0.
+		 *     @type bool     $hide_if_empty    Có ẩn danh sách thả xuống nếu không có term nào không. Mặc định false.
+		 *     @type string   $taxonomy         Slug taxonomy.
+		 *     @type string   $name             Giá trị thuộc tính name cho phần tử select thả xuống.
+		 *                                      Mặc định 'parent'.
+		 *     @type string   $orderby          Trường để sắp xếp. Mặc định 'name'.
+		 *     @type bool     $hierarchical     Taxonomy có phân cấp hay không. Mặc định true.
+		 *     @type string   $show_option_none Nhãn hiển thị nếu không có term nào. Mặc định 'None'.
 		 * }
-		 * @param string $taxonomy The taxonomy slug.
-		 * @param string $context  Filter context. Accepts 'new' or 'edit'.
+		 * @param string $taxonomy Slug taxonomy.
+		 * @param string $context  Ngữ cảnh lọc. Chấp nhận 'new' hoặc 'edit'.
 		 */
 		$dropdown_args = apply_filters( 'taxonomy_parent_dropdown_args', $dropdown_args, $taxonomy, 'new' );
 
@@ -527,28 +527,28 @@ if ( $can_edit_terms ) {
 	<?php
 	if ( ! is_taxonomy_hierarchical( $taxonomy ) ) {
 		/**
-		 * Fires after the Add Tag form fields for non-hierarchical taxonomies.
+		 * Kích hoạt sau các trường form Thêm Thẻ cho taxonomy không phân cấp.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $taxonomy The taxonomy slug.
+		 * @param string $taxonomy Slug taxonomy.
 		 */
 		do_action( 'add_tag_form_fields', $taxonomy );
 	}
 
 	/**
-	 * Fires after the Add Term form fields.
+	 * Kích hoạt sau các trường form Thêm Term.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers to the taxonomy slug.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu đến slug taxonomy.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `category_add_form_fields`
 	 *  - `post_tag_add_form_fields`
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $taxonomy The taxonomy slug.
+	 * @param string $taxonomy Slug taxonomy.
 	 */
 	do_action( "{$taxonomy}_add_form_fields", $taxonomy );
 	?>
@@ -559,49 +559,49 @@ if ( $can_edit_terms ) {
 	<?php
 	if ( 'category' === $taxonomy ) {
 		/**
-		 * Fires at the end of the Edit Category form.
+		 * Kích hoạt ở cuối form Chỉnh sửa Chuyên mục.
 		 *
 		 * @since 2.1.0
-		 * @deprecated 3.0.0 Use {@see '{$taxonomy}_add_form'} instead.
+		 * @deprecated 3.0.0 Sử dụng {@see '{$taxonomy}_add_form'} thay thế.
 		 *
-		 * @param object $arg Optional arguments cast to an object.
+		 * @param object $arg Tham số tùy chọn được ép kiểu thành đối tượng.
 		 */
 		do_action_deprecated( 'edit_category_form', array( (object) array( 'parent' => 0 ) ), '3.0.0', '{$taxonomy}_add_form' );
 	} elseif ( 'link_category' === $taxonomy ) {
 		/**
-		 * Fires at the end of the Edit Link form.
+		 * Kích hoạt ở cuối form Chỉnh sửa Liên kết.
 		 *
 		 * @since 2.3.0
-		 * @deprecated 3.0.0 Use {@see '{$taxonomy}_add_form'} instead.
+		 * @deprecated 3.0.0 Sử dụng {@see '{$taxonomy}_add_form'} thay thế.
 		 *
-		 * @param object $arg Optional arguments cast to an object.
+		 * @param object $arg Tham số tùy chọn được ép kiểu thành đối tượng.
 		 */
 		do_action_deprecated( 'edit_link_category_form', array( (object) array( 'parent' => 0 ) ), '3.0.0', '{$taxonomy}_add_form' );
 	} else {
 		/**
-		 * Fires at the end of the Add Tag form.
+		 * Kích hoạt ở cuối form Thêm Thẻ.
 		 *
 		 * @since 2.7.0
-		 * @deprecated 3.0.0 Use {@see '{$taxonomy}_add_form'} instead.
+		 * @deprecated 3.0.0 Sử dụng {@see '{$taxonomy}_add_form'} thay thế.
 		 *
-		 * @param string $taxonomy The taxonomy slug.
+		 * @param string $taxonomy Slug taxonomy.
 		 */
 		do_action_deprecated( 'add_tag_form', array( $taxonomy ), '3.0.0', '{$taxonomy}_add_form' );
 	}
 
 	/**
-	 * Fires at the end of the Add Term form for all taxonomies.
+	 * Kích hoạt ở cuối form Thêm Term cho tất cả taxonomy.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers to the taxonomy slug.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu đến slug taxonomy.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `category_add_form`
 	 *  - `post_tag_add_form`
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $taxonomy The taxonomy slug.
+	 * @param string $taxonomy Slug taxonomy.
 	 */
 	do_action( "{$taxonomy}_add_form", $taxonomy );
 	?>
@@ -663,18 +663,18 @@ if ( $can_edit_terms ) {
 endif;
 
 /**
- * Fires after the taxonomy list table.
+ * Kích hoạt sau bảng danh sách taxonomy.
  *
- * The dynamic portion of the hook name, `$taxonomy`, refers to the taxonomy slug.
+ * Phần động của tên hook, `$taxonomy`, tham chiếu đến slug taxonomy.
  *
- * Possible hook names include:
+ * Các tên hook có thể bao gồm:
  *
  *  - `after-category-table`
  *  - `after-post_tag-table`
  *
  * @since 3.0.0
  *
- * @param string $taxonomy The taxonomy name.
+ * @param string $taxonomy Tên taxonomy.
  */
 do_action( "after-{$taxonomy}-table", $taxonomy );  // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 

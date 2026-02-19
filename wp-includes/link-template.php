@@ -1,48 +1,48 @@
 <?php
 /**
- * WordPress Link Template Functions
+ * Các hàm mẫu liên kết WordPress.
  *
  * @package WordPress
  * @subpackage Template
  */
 
 /**
- * Displays the permalink for the current post.
+ * Hiển thị đường dẫn tĩnh cho bài viết hiện tại.
  *
  * @since 1.2.0
- * @since 4.4.0 Added the `$post` parameter.
+ * @since 4.4.0 Thêm tham số `$post`.
  *
- * @param int|WP_Post $post Optional. Post ID or post object. Default is the global `$post`.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là biến toàn cục `$post`.
  */
 function the_permalink( $post = 0 ) {
 	/**
-	 * Filters the display of the permalink for the current post.
+	 * Lọc hiển thị đường dẫn tĩnh cho bài viết hiện tại.
 	 *
 	 * @since 1.5.0
-	 * @since 4.4.0 Added the `$post` parameter.
+	 * @since 4.4.0 Thêm tham số `$post`.
 	 *
-	 * @param string      $permalink The permalink for the current post.
-	 * @param int|WP_Post $post      Post ID, WP_Post object, or 0. Default 0.
+	 * @param string      $permalink Đường dẫn tĩnh cho bài viết hiện tại.
+	 * @param int|WP_Post $post      ID bài viết, đối tượng WP_Post, hoặc 0. Mặc định 0.
 	 */
 	echo esc_url( apply_filters( 'the_permalink', get_permalink( $post ), $post ) );
 }
 
 /**
- * Retrieves a trailing-slashed string if the site is set for adding trailing slashes.
+ * Lấy chuỗi có dấu gạch chéo cuối nếu trang web được thiết lập thêm dấu gạch chéo cuối.
  *
- * Conditionally adds a trailing slash if the permalink structure has a trailing
- * slash, strips the trailing slash if not. The string is passed through the
- * {@see 'user_trailingslashit'} filter. Will remove trailing slash from string, if
- * site is not set to have them.
+ * Thêm dấu gạch chéo cuối có điều kiện nếu cấu trúc đường dẫn tĩnh có dấu gạch chéo cuối,
+ * loại bỏ dấu gạch chéo cuối nếu không. Chuỗi được truyền qua bộ lọc
+ * {@see 'user_trailingslashit'}. Sẽ xóa dấu gạch chéo cuối khỏi chuỗi nếu
+ * trang web không được thiết lập có chúng.
  *
  * @since 2.2.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param string $url         URL with or without a trailing slash.
- * @param string $type_of_url Optional. The type of URL being considered (e.g. single, category, etc)
- *                            for use in the filter. Default empty string.
- * @return string The URL with the trailing slash appended or stripped.
+ * @param string $url         URL có hoặc không có dấu gạch chéo cuối.
+ * @param string $type_of_url Tùy chọn. Loại URL đang được xem xét (ví dụ: single, category, v.v.)
+ *                            để sử dụng trong bộ lọc. Mặc định chuỗi rỗng.
+ * @return string URL với dấu gạch chéo cuối được thêm hoặc loại bỏ.
  */
 function user_trailingslashit( $url, $type_of_url = '' ) {
 	global $wp_rewrite;
@@ -53,12 +53,12 @@ function user_trailingslashit( $url, $type_of_url = '' ) {
 	}
 
 	/**
-	 * Filters the trailing-slashed string, depending on whether the site is set to use trailing slashes.
+	 * Lọc chuỗi có dấu gạch chéo cuối, tùy thuộc vào việc trang web có được thiết lập sử dụng dấu gạch chéo cuối hay không.
 	 *
 	 * @since 2.2.0
 	 *
-	 * @param string $url         URL with or without a trailing slash.
-	 * @param string $type_of_url The type of URL being considered. Accepts 'single', 'single_trackback',
+	 * @param string $url         URL có hoặc không có dấu gạch chéo cuối.
+	 * @param string $type_of_url Loại URL đang được xem xét. Chấp nhận 'single', 'single_trackback',
 	 *                            'single_feed', 'single_paged', 'commentpaged', 'paged', 'home', 'feed',
 	 *                            'category', 'page', 'year', 'month', 'day', 'post_type_archive'.
 	 */
@@ -66,14 +66,14 @@ function user_trailingslashit( $url, $type_of_url = '' ) {
 }
 
 /**
- * Displays the permalink anchor for the current post.
+ * Hiển thị neo đường dẫn tĩnh cho bài viết hiện tại.
  *
- * The permalink mode title will use the post title for the 'a' element 'id'
- * attribute. The id mode uses 'post-' with the post ID for the 'id' attribute.
+ * Chế độ title sẽ sử dụng tiêu đề bài viết cho thuộc tính 'id' của phần tử 'a'.
+ * Chế độ id sử dụng 'post-' kèm ID bài viết cho thuộc tính 'id'.
  *
  * @since 0.71
  *
- * @param string $mode Optional. Permalink mode. Accepts 'title' or 'id'. Default 'id'.
+ * @param string $mode Tùy chọn. Chế độ đường dẫn tĩnh. Chấp nhận 'title' hoặc 'id'. Mặc định 'id'.
  */
 function permalink_anchor( $mode = 'id' ) {
 	$post = get_post();
@@ -90,15 +90,15 @@ function permalink_anchor( $mode = 'id' ) {
 }
 
 /**
- * Determine whether post should always use a plain permalink structure.
+ * Xác định xem bài viết có nên luôn sử dụng cấu trúc đường dẫn tĩnh đơn giản hay không.
  *
  * @since 5.7.0
  *
- * @param WP_Post|int|null $post   Optional. Post ID or post object. Defaults to global $post.
- * @param bool|null        $sample Optional. Whether to force consideration based on sample links.
- *                                 If omitted, a sample link is generated if a post object is passed
- *                                 with the filter property set to 'sample'.
- * @return bool Whether to use a plain permalink structure.
+ * @param WP_Post|int|null $post   Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là biến toàn cục $post.
+ * @param bool|null        $sample Tùy chọn. Có buộc xem xét dựa trên liên kết mẫu hay không.
+ *                                 Nếu bỏ qua, liên kết mẫu được tạo nếu đối tượng bài viết được truyền
+ *                                 với thuộc tính filter được đặt thành 'sample'.
+ * @return bool Có sử dụng cấu trúc đường dẫn tĩnh đơn giản hay không.
  */
 function wp_force_plain_post_permalink( $post = null, $sample = null ) {
 	if (
@@ -125,14 +125,14 @@ function wp_force_plain_post_permalink( $post = null, $sample = null ) {
 	}
 
 	if (
-		// Publicly viewable links never have plain permalinks.
+		// Các liên kết xem công khai không bao giờ có đường dẫn tĩnh đơn giản.
 		is_post_status_viewable( $post_status_obj ) ||
 		(
-			// Private posts don't have plain permalinks if the user can read them.
+			// Bài viết riêng tư không có đường dẫn tĩnh đơn giản nếu người dùng có thể đọc chúng.
 			$post_status_obj->private &&
 			current_user_can( 'read_post', $post->ID )
 		) ||
-		// Protected posts don't have plain links if getting a sample URL.
+		// Bài viết được bảo vệ không có liên kết đơn giản nếu đang lấy URL mẫu.
 		( $post_status_obj->protected && $sample )
 	) {
 		return false;
@@ -142,30 +142,30 @@ function wp_force_plain_post_permalink( $post = null, $sample = null ) {
 }
 
 /**
- * Retrieves the full permalink for the current post or post ID.
+ * Lấy đường dẫn tĩnh đầy đủ cho bài viết hiện tại hoặc ID bài viết.
  *
- * This function is an alias for get_permalink().
+ * Hàm này là bí danh cho get_permalink().
  *
  * @since 3.9.0
  *
  * @see get_permalink()
  *
- * @param int|WP_Post $post      Optional. Post ID or post object. Default is the global `$post`.
- * @param bool        $leavename Optional. Whether to keep post name or page name. Default false.
- * @return string|false The permalink URL. False if the post does not exist.
+ * @param int|WP_Post $post      Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là biến toàn cục `$post`.
+ * @param bool        $leavename Tùy chọn. Có giữ tên bài viết hoặc tên trang hay không. Mặc định false.
+ * @return string|false URL đường dẫn tĩnh. False nếu bài viết không tồn tại.
  */
 function get_the_permalink( $post = 0, $leavename = false ) {
 	return get_permalink( $post, $leavename );
 }
 
 /**
- * Retrieves the full permalink for the current post or post ID.
+ * Lấy đường dẫn tĩnh đầy đủ cho bài viết hiện tại hoặc ID bài viết.
  *
  * @since 1.0.0
  *
- * @param int|WP_Post $post      Optional. Post ID or post object. Default is the global `$post`.
- * @param bool        $leavename Optional. Whether to keep post name or page name. Default false.
- * @return string|false The permalink URL. False if the post does not exist.
+ * @param int|WP_Post $post      Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là biến toàn cục `$post`.
+ * @param bool        $leavename Tùy chọn. Có giữ tên bài viết hoặc tên trang hay không. Mặc định false.
+ * @return string|false URL đường dẫn tĩnh. False nếu bài viết không tồn tại.
  */
 function get_permalink( $post = 0, $leavename = false ) {
 	$rewritecode = array(
@@ -204,15 +204,15 @@ function get_permalink( $post = 0, $leavename = false ) {
 	$permalink = get_option( 'permalink_structure' );
 
 	/**
-	 * Filters the permalink structure for a post before token replacement occurs.
+	 * Lọc cấu trúc đường dẫn tĩnh cho bài viết trước khi thay thế token xảy ra.
 	 *
-	 * Only applies to posts with post_type of 'post'.
+	 * Chỉ áp dụng cho bài viết có post_type là 'post'.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string  $permalink The site's permalink structure.
-	 * @param WP_Post $post      The post in question.
-	 * @param bool    $leavename Whether to keep the post name.
+	 * @param string  $permalink Cấu trúc đường dẫn tĩnh của trang web.
+	 * @param WP_Post $post      Bài viết đang xét.
+	 * @param bool    $leavename Có giữ tên bài viết hay không.
 	 */
 	$permalink = apply_filters( 'pre_post_link', $permalink, $post, $leavename );
 
@@ -233,13 +233,13 @@ function get_permalink( $post = 0, $leavename = false ) {
 				);
 
 				/**
-				 * Filters the category that gets used in the %category% permalink token.
+				 * Lọc chuyên mục được sử dụng trong token đường dẫn tĩnh %category%.
 				 *
 				 * @since 3.5.0
 				 *
-				 * @param WP_Term  $cat  The category to use in the permalink.
-				 * @param array    $cats Array of all categories (WP_Term objects) associated with the post.
-				 * @param WP_Post  $post The post in question.
+				 * @param WP_Term  $cat  Chuyên mục để sử dụng trong đường dẫn tĩnh.
+				 * @param array    $cats Mảng tất cả chuyên mục (đối tượng WP_Term) liên kết với bài viết.
+				 * @param WP_Post  $post Bài viết đang xét.
 				 */
 				$category_object = apply_filters( 'post_link_category', $cats[0], $cats, $post );
 
@@ -250,8 +250,8 @@ function get_permalink( $post = 0, $leavename = false ) {
 				}
 			}
 			/*
-			 * Show default category in permalinks,
-			 * without having to assign it explicitly.
+			 * Hiển thị chuyên mục mặc định trong đường dẫn tĩnh,
+			 * mà không cần phải gán nó một cách rõ ràng.
 			 */
 			if ( empty( $category ) ) {
 				$default_category = get_term( get_option( 'default_category' ), 'category' );
@@ -268,8 +268,8 @@ function get_permalink( $post = 0, $leavename = false ) {
 		}
 
 		/*
-		 * This is not an API call because the permalink is based on the stored post_date value,
-		 * which should be parsed as local time regardless of the default PHP timezone.
+		 * Đây không phải là lệnh gọi API vì đường dẫn tĩnh dựa trên giá trị post_date được lưu trữ,
+		 * cần được phân tích cú pháp theo giờ địa phương bất kể múi giờ PHP mặc định.
 		 */
 		$date = explode( ' ', str_replace( array( '-', ':' ), ' ', $post->post_date ) );
 
@@ -290,36 +290,36 @@ function get_permalink( $post = 0, $leavename = false ) {
 		$permalink = home_url( str_replace( $rewritecode, $rewritereplace, $permalink ) );
 		$permalink = user_trailingslashit( $permalink, 'single' );
 
-	} else { // If they're not using the fancy permalink option.
+	} else { // Nếu họ không sử dụng tùy chọn đường dẫn tĩnh nâng cao.
 		$permalink = home_url( '?p=' . $post->ID );
 	}
 
 	/**
-	 * Filters the permalink for a post.
+	 * Lọc đường dẫn tĩnh cho bài viết.
 	 *
-	 * Only applies to posts with post_type of 'post'.
+	 * Chỉ áp dụng cho bài viết có post_type là 'post'.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string  $permalink The post's permalink.
-	 * @param WP_Post $post      The post in question.
-	 * @param bool    $leavename Whether to keep the post name.
+	 * @param string  $permalink Đường dẫn tĩnh của bài viết.
+	 * @param WP_Post $post      Bài viết đang xét.
+	 * @param bool    $leavename Có giữ tên bài viết hay không.
 	 */
 	return apply_filters( 'post_link', $permalink, $post, $leavename );
 }
 
 /**
- * Retrieves the permalink for a post of a custom post type.
+ * Lấy đường dẫn tĩnh cho bài viết thuộc loại bài viết tùy chỉnh.
  *
  * @since 3.0.0
- * @since 6.1.0 Returns false if the post does not exist.
+ * @since 6.1.0 Trả về false nếu bài viết không tồn tại.
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param int|WP_Post $post      Optional. Post ID or post object. Default is the global `$post`.
- * @param bool        $leavename Optional. Whether to keep post name. Default false.
- * @param bool        $sample    Optional. Is it a sample permalink. Default false.
- * @return string|false The post permalink URL. False if the post does not exist.
+ * @param int|WP_Post $post      Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là biến toàn cục `$post`.
+ * @param bool        $leavename Tùy chọn. Có giữ tên bài viết hay không. Mặc định false.
+ * @param bool        $sample    Tùy chọn. Có phải đường dẫn tĩnh mẫu hay không. Mặc định false.
+ * @return string|false URL đường dẫn tĩnh của bài viết. False nếu bài viết không tồn tại.
  */
 function get_post_permalink( $post = 0, $leavename = false, $sample = false ) {
 	global $wp_rewrite;
@@ -363,30 +363,30 @@ function get_post_permalink( $post = 0, $leavename = false, $sample = false ) {
 	}
 
 	/**
-	 * Filters the permalink for a post of a custom post type.
+	 * Lọc đường dẫn tĩnh cho bài viết thuộc loại bài viết tùy chỉnh.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string  $post_link The post's permalink.
-	 * @param WP_Post $post      The post in question.
-	 * @param bool    $leavename Whether to keep the post name.
-	 * @param bool    $sample    Is it a sample permalink.
+	 * @param string  $post_link Đường dẫn tĩnh của bài viết.
+	 * @param WP_Post $post      Bài viết đang xét.
+	 * @param bool    $leavename Có giữ tên bài viết hay không.
+	 * @param bool    $sample    Có phải đường dẫn tĩnh mẫu hay không.
 	 */
 	return apply_filters( 'post_type_link', $post_link, $post, $leavename, $sample );
 }
 
 /**
- * Retrieves the permalink for the current page or page ID.
+ * Lấy đường dẫn tĩnh cho trang hiện tại hoặc ID trang.
  *
- * Respects page_on_front. Use this one.
+ * Tôn trọng page_on_front. Sử dụng hàm này.
  *
  * @since 1.5.0
  *
- * @param int|WP_Post $post      Optional. Post ID or object. Default uses the global `$post`.
- * @param bool        $leavename Optional. Whether to keep the page name. Default false.
- * @param bool        $sample    Optional. Whether it should be treated as a sample permalink.
- *                               Default false.
- * @return string The page permalink.
+ * @param int|WP_Post $post      Tùy chọn. ID bài viết hoặc đối tượng. Mặc định sử dụng biến toàn cục `$post`.
+ * @param bool        $leavename Tùy chọn. Có giữ tên trang hay không. Mặc định false.
+ * @param bool        $sample    Tùy chọn. Có nên được xử lý như đường dẫn tĩnh mẫu hay không.
+ *                               Mặc định false.
+ * @return string Đường dẫn tĩnh của trang.
  */
 function get_page_link( $post = false, $leavename = false, $sample = false ) {
 	$post = get_post( $post );
@@ -398,32 +398,32 @@ function get_page_link( $post = false, $leavename = false, $sample = false ) {
 	}
 
 	/**
-	 * Filters the permalink for a page.
+	 * Lọc đường dẫn tĩnh cho trang.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $link    The page's permalink.
-	 * @param int    $post_id The ID of the page.
-	 * @param bool   $sample  Is it a sample permalink.
+	 * @param string $link    Đường dẫn tĩnh của trang.
+	 * @param int    $post_id ID của trang.
+	 * @param bool   $sample  Có phải đường dẫn tĩnh mẫu hay không.
 	 */
 	return apply_filters( 'page_link', $link, $post->ID, $sample );
 }
 
 /**
- * Retrieves the page permalink.
+ * Lấy đường dẫn tĩnh của trang.
  *
- * Ignores page_on_front. Internal use only.
+ * Bỏ qua page_on_front. Chỉ sử dụng nội bộ.
  *
  * @since 2.1.0
  * @access private
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param int|WP_Post $post      Optional. Post ID or object. Default uses the global `$post`.
- * @param bool        $leavename Optional. Whether to keep the page name. Default false.
- * @param bool        $sample    Optional. Whether it should be treated as a sample permalink.
- *                               Default false.
- * @return string The page permalink.
+ * @param int|WP_Post $post      Tùy chọn. ID bài viết hoặc đối tượng. Mặc định sử dụng biến toàn cục `$post`.
+ * @param bool        $leavename Tùy chọn. Có giữ tên trang hay không. Mặc định false.
+ * @param bool        $sample    Tùy chọn. Có nên được xử lý như đường dẫn tĩnh mẫu hay không.
+ *                               Mặc định false.
+ * @return string Đường dẫn tĩnh của trang.
  */
 function _get_page_link( $post = false, $leavename = false, $sample = false ) {
 	global $wp_rewrite;
@@ -446,28 +446,28 @@ function _get_page_link( $post = false, $leavename = false, $sample = false ) {
 	}
 
 	/**
-	 * Filters the permalink for a non-page_on_front page.
+	 * Lọc đường dẫn tĩnh cho trang không phải page_on_front.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $link    The page's permalink.
-	 * @param int    $post_id The ID of the page.
+	 * @param string $link    Đường dẫn tĩnh của trang.
+	 * @param int    $post_id ID của trang.
 	 */
 	return apply_filters( '_get_page_link', $link, $post->ID );
 }
 
 /**
- * Retrieves the permalink for an attachment.
+ * Lấy đường dẫn tĩnh cho tệp đính kèm.
  *
- * This can be used in the WordPress Loop or outside of it.
+ * Có thể được sử dụng trong Vòng lặp WordPress hoặc bên ngoài.
  *
  * @since 2.0.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param int|WP_Post $post      Optional. Post ID or object. Default uses the global `$post`.
- * @param bool        $leavename Optional. Whether to keep the page name. Default false.
- * @return string The attachment permalink.
+ * @param int|WP_Post $post      Tùy chọn. ID bài viết hoặc đối tượng. Mặc định sử dụng biến toàn cục `$post`.
+ * @param bool        $leavename Tùy chọn. Có giữ tên trang hay không. Mặc định false.
+ * @return string Đường dẫn tĩnh của tệp đính kèm.
  */
 function get_attachment_link( $post = null, $leavename = false ) {
 	global $wp_rewrite;
@@ -478,7 +478,7 @@ function get_attachment_link( $post = null, $leavename = false ) {
 	$force_plain_link = wp_force_plain_post_permalink( $post );
 	$parent_id        = $post->post_parent;
 	$parent           = $parent_id ? get_post( $parent_id ) : false;
-	$parent_valid     = true; // Default for no parent.
+	$parent_valid     = true; // Mặc định khi không có bài viết cha.
 	if (
 		$parent_id &&
 		(
@@ -487,7 +487,7 @@ function get_attachment_link( $post = null, $leavename = false ) {
 			! is_post_type_viewable( get_post_type( $parent ) )
 		)
 	) {
-		// Post is either its own parent or parent post unavailable.
+		// Bài viết là cha của chính nó hoặc bài viết cha không khả dụng.
 		$parent_valid = false;
 	}
 
@@ -495,13 +495,13 @@ function get_attachment_link( $post = null, $leavename = false ) {
 		$link = false;
 	} elseif ( $wp_rewrite->using_permalinks() && $parent ) {
 		if ( 'page' === $parent->post_type ) {
-			$parentlink = _get_page_link( $post->post_parent ); // Ignores page_on_front.
+			$parentlink = _get_page_link( $post->post_parent ); // Bỏ qua page_on_front.
 		} else {
 			$parentlink = get_permalink( $post->post_parent );
 		}
 
 		if ( is_numeric( $post->post_name ) || str_contains( get_option( 'permalink_structure' ), '%category%' ) ) {
-			$name = 'attachment/' . $post->post_name; // <permalink>/<int>/ is paged so we use the explicit attachment marker.
+			$name = 'attachment/' . $post->post_name; // <permalink>/<int>/ là phân trang nên chúng ta sử dụng đánh dấu tệp đính kèm rõ ràng.
 		} else {
 			$name = $post->post_name;
 		}
@@ -522,27 +522,27 @@ function get_attachment_link( $post = null, $leavename = false ) {
 	}
 
 	/**
-	 * Filters the permalink for an attachment.
+	 * Lọc đường dẫn tĩnh cho tệp đính kèm.
 	 *
 	 * @since 2.0.0
-	 * @since 5.6.0 Providing an empty string will now disable
-	 *              the view attachment page link on the media modal.
+	 * @since 5.6.0 Cung cấp chuỗi rỗng sẽ vô hiệu hóa
+	 *              liên kết xem trang tệp đính kèm trên modal phương tiện.
 	 *
-	 * @param string $link    The attachment's permalink.
-	 * @param int    $post_id Attachment ID.
+	 * @param string $link    Đường dẫn tĩnh của tệp đính kèm.
+	 * @param int    $post_id ID tệp đính kèm.
 	 */
 	return apply_filters( 'attachment_link', $link, $post->ID );
 }
 
 /**
- * Retrieves the permalink for the year archives.
+ * Lấy đường dẫn tĩnh cho lưu trữ theo năm.
  *
  * @since 1.5.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param int|false $year Integer of year. False for current year.
- * @return string The permalink for the specified year archive.
+ * @param int|false $year Số nguyên của năm. False cho năm hiện tại.
+ * @return string Đường dẫn tĩnh cho lưu trữ của năm được chỉ định.
  */
 function get_year_link( $year ) {
 	global $wp_rewrite;
@@ -558,26 +558,26 @@ function get_year_link( $year ) {
 	}
 
 	/**
-	 * Filters the year archive permalink.
+	 * Lọc đường dẫn tĩnh lưu trữ theo năm.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $yearlink Permalink for the year archive.
-	 * @param int    $year     Year for the archive.
+	 * @param string $yearlink Đường dẫn tĩnh cho lưu trữ theo năm.
+	 * @param int    $year     Năm cho lưu trữ.
 	 */
 	return apply_filters( 'year_link', $yearlink, $year );
 }
 
 /**
- * Retrieves the permalink for the month archives with year.
+ * Lấy đường dẫn tĩnh cho lưu trữ theo tháng kèm năm.
  *
  * @since 1.0.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param int|false $year  Integer of year. False for current year.
- * @param int|false $month Integer of month. False for current month.
- * @return string The permalink for the specified month and year archive.
+ * @param int|false $year  Số nguyên của năm. False cho năm hiện tại.
+ * @param int|false $month Số nguyên của tháng. False cho tháng hiện tại.
+ * @return string Đường dẫn tĩnh cho lưu trữ của tháng và năm được chỉ định.
  */
 function get_month_link( $year, $month ) {
 	global $wp_rewrite;
@@ -597,28 +597,28 @@ function get_month_link( $year, $month ) {
 	}
 
 	/**
-	 * Filters the month archive permalink.
+	 * Lọc đường dẫn tĩnh lưu trữ theo tháng.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $monthlink Permalink for the month archive.
-	 * @param int    $year      Year for the archive.
-	 * @param int    $month     The month for the archive.
+	 * @param string $monthlink Đường dẫn tĩnh cho lưu trữ theo tháng.
+	 * @param int    $year      Năm cho lưu trữ.
+	 * @param int    $month     Tháng cho lưu trữ.
 	 */
 	return apply_filters( 'month_link', $monthlink, $year, $month );
 }
 
 /**
- * Retrieves the permalink for the day archives with year and month.
+ * Lấy đường dẫn tĩnh cho lưu trữ theo ngày kèm năm và tháng.
  *
  * @since 1.0.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param int|false $year  Integer of year. False for current year.
- * @param int|false $month Integer of month. False for current month.
- * @param int|false $day   Integer of day. False for current day.
- * @return string The permalink for the specified day, month, and year archive.
+ * @param int|false $year  Số nguyên của năm. False cho năm hiện tại.
+ * @param int|false $month Số nguyên của tháng. False cho tháng hiện tại.
+ * @param int|false $day   Số nguyên của ngày. False cho ngày hiện tại.
+ * @return string Đường dẫn tĩnh cho lưu trữ của ngày, tháng và năm được chỉ định.
  */
 function get_day_link( $year, $month, $day ) {
 	global $wp_rewrite;
@@ -643,52 +643,52 @@ function get_day_link( $year, $month, $day ) {
 	}
 
 	/**
-	 * Filters the day archive permalink.
+	 * Lọc đường dẫn tĩnh lưu trữ theo ngày.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $daylink Permalink for the day archive.
-	 * @param int    $year    Year for the archive.
-	 * @param int    $month   Month for the archive.
-	 * @param int    $day     The day for the archive.
+	 * @param string $daylink Đường dẫn tĩnh cho lưu trữ theo ngày.
+	 * @param int    $year    Năm cho lưu trữ.
+	 * @param int    $month   Tháng cho lưu trữ.
+	 * @param int    $day     Ngày cho lưu trữ.
 	 */
 	return apply_filters( 'day_link', $daylink, $year, $month, $day );
 }
 
 /**
- * Displays the permalink for the feed type.
+ * Hiển thị đường dẫn tĩnh cho loại nguồn cấp dữ liệu.
  *
  * @since 3.0.0
  *
- * @param string $anchor The link's anchor text.
- * @param string $feed   Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                       Default is the value of get_default_feed().
+ * @param string $anchor Văn bản neo của liên kết.
+ * @param string $feed   Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                       Mặc định là giá trị của get_default_feed().
  */
 function the_feed_link( $anchor, $feed = '' ) {
 	$link = '<a href="' . esc_url( get_feed_link( $feed ) ) . '">' . $anchor . '</a>';
 
 	/**
-	 * Filters the feed link anchor tag.
+	 * Lọc thẻ neo liên kết nguồn cấp dữ liệu.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $link The complete anchor tag for a feed link.
-	 * @param string $feed The feed type. Possible values include 'rss2', 'atom',
-	 *                     or an empty string for the default feed type.
+	 * @param string $link Thẻ neo hoàn chỉnh cho liên kết nguồn cấp dữ liệu.
+	 * @param string $feed Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom',
+	 *                     hoặc chuỗi rỗng cho loại nguồn cấp dữ liệu mặc định.
 	 */
 	echo apply_filters( 'the_feed_link', $link, $feed );
 }
 
 /**
- * Retrieves the permalink for the feed type.
+ * Lấy đường dẫn tĩnh cho loại nguồn cấp dữ liệu.
  *
  * @since 1.5.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param string $feed Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                     Default is the value of get_default_feed().
- * @return string The feed permalink.
+ * @param string $feed Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                     Mặc định là giá trị của get_default_feed().
+ * @return string Đường dẫn tĩnh nguồn cấp dữ liệu.
  */
 function get_feed_link( $feed = '' ) {
 	global $wp_rewrite;
@@ -721,26 +721,26 @@ function get_feed_link( $feed = '' ) {
 	}
 
 	/**
-	 * Filters the feed type permalink.
+	 * Lọc đường dẫn tĩnh loại nguồn cấp dữ liệu.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $output The feed permalink.
-	 * @param string $feed   The feed type. Possible values include 'rss2', 'atom',
-	 *                       or an empty string for the default feed type.
+	 * @param string $output Đường dẫn tĩnh nguồn cấp dữ liệu.
+	 * @param string $feed   Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom',
+	 *                       hoặc chuỗi rỗng cho loại nguồn cấp dữ liệu mặc định.
 	 */
 	return apply_filters( 'feed_link', $output, $feed );
 }
 
 /**
- * Retrieves the permalink for the post comments feed.
+ * Lấy đường dẫn tĩnh cho nguồn cấp bình luận của bài viết.
  *
  * @since 2.2.0
  *
- * @param int    $post_id Optional. Post ID. Default is the ID of the global `$post`.
- * @param string $feed    Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                        Default is the value of get_default_feed().
- * @return string The permalink for the comments feed for the given post on success, empty string on failure.
+ * @param int    $post_id Tùy chọn. ID bài viết. Mặc định là ID của biến toàn cục `$post`.
+ * @param string $feed    Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                        Mặc định là giá trị của get_default_feed().
+ * @return string Đường dẫn tĩnh cho nguồn cấp bình luận của bài viết khi thành công, chuỗi rỗng khi thất bại.
  */
 function get_post_comments_feed_link( $post_id = 0, $feed = '' ) {
 	$post_id = absint( $post_id );
@@ -755,7 +755,7 @@ function get_post_comments_feed_link( $post_id = 0, $feed = '' ) {
 
 	$post = get_post( $post_id );
 
-	// Bail out if the post does not exist.
+	// Thoát nếu bài viết không tồn tại.
 	if ( ! $post instanceof WP_Post ) {
 		return '';
 	}
@@ -811,28 +811,28 @@ function get_post_comments_feed_link( $post_id = 0, $feed = '' ) {
 	}
 
 	/**
-	 * Filters the post comments feed permalink.
+	 * Lọc đường dẫn tĩnh nguồn cấp bình luận bài viết.
 	 *
 	 * @since 1.5.1
 	 *
-	 * @param string $url Post comments feed permalink.
+	 * @param string $url Đường dẫn tĩnh nguồn cấp bình luận bài viết.
 	 */
 	return apply_filters( 'post_comments_feed_link', $url );
 }
 
 /**
- * Displays the comment feed link for a post.
+ * Hiển thị liên kết nguồn cấp bình luận cho bài viết.
  *
- * Prints out the comment feed link for a post. Link text is placed in the
- * anchor. If no link text is specified, default text is used. If no post ID is
- * specified, the current post is used.
+ * In ra liên kết nguồn cấp bình luận cho bài viết. Văn bản liên kết được đặt trong
+ * thẻ neo. Nếu không có văn bản liên kết nào được chỉ định, văn bản mặc định sẽ được sử dụng.
+ * Nếu không có ID bài viết nào được chỉ định, bài viết hiện tại sẽ được sử dụng.
  *
  * @since 2.5.0
  *
- * @param string $link_text Optional. Descriptive link text. Default 'Comments Feed'.
- * @param int    $post_id   Optional. Post ID. Default is the ID of the global `$post`.
- * @param string $feed      Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                          Default is the value of get_default_feed().
+ * @param string $link_text Tùy chọn. Văn bản mô tả liên kết. Mặc định 'Comments Feed'.
+ * @param int    $post_id   Tùy chọn. ID bài viết. Mặc định là ID của biến toàn cục `$post`.
+ * @param string $feed      Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                          Mặc định là giá trị của get_default_feed().
  */
 function post_comments_feed_link( $link_text = '', $post_id = '', $feed = '' ) {
 	$url = get_post_comments_feed_link( $post_id, $feed );
@@ -842,30 +842,30 @@ function post_comments_feed_link( $link_text = '', $post_id = '', $feed = '' ) {
 
 	$link = '<a href="' . esc_url( $url ) . '">' . $link_text . '</a>';
 	/**
-	 * Filters the post comment feed link anchor tag.
+	 * Lọc thẻ neo liên kết nguồn cấp bình luận bài viết.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $link    The complete anchor tag for the comment feed link.
-	 * @param int    $post_id Post ID.
-	 * @param string $feed    The feed type. Possible values include 'rss2', 'atom',
-	 *                        or an empty string for the default feed type.
+	 * @param string $link    Thẻ neo hoàn chỉnh cho liên kết nguồn cấp bình luận.
+	 * @param int    $post_id ID bài viết.
+	 * @param string $feed    Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom',
+	 *                        hoặc chuỗi rỗng cho loại nguồn cấp dữ liệu mặc định.
 	 */
 	echo apply_filters( 'post_comments_feed_link_html', $link, $post_id, $feed );
 }
 
 /**
- * Retrieves the feed link for a given author.
+ * Lấy liên kết nguồn cấp dữ liệu cho tác giả được chỉ định.
  *
- * Returns a link to the feed for all posts by a given author. A specific feed
- * can be requested or left blank to get the default feed.
+ * Trả về liên kết đến nguồn cấp cho tất cả bài viết của một tác giả. Có thể yêu cầu
+ * một loại nguồn cấp cụ thể hoặc để trống để lấy nguồn cấp mặc định.
  *
  * @since 2.5.0
  *
- * @param int    $author_id Author ID.
- * @param string $feed      Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                          Default is the value of get_default_feed().
- * @return string Link to the feed for the author specified by $author_id.
+ * @param int    $author_id ID tác giả.
+ * @param string $feed      Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                          Mặc định là giá trị của get_default_feed().
+ * @return string Liên kết đến nguồn cấp cho tác giả được chỉ định bởi $author_id.
  */
 function get_author_feed_link( $author_id, $feed = '' ) {
 	$author_id           = (int) $author_id;
@@ -889,12 +889,12 @@ function get_author_feed_link( $author_id, $feed = '' ) {
 	}
 
 	/**
-	 * Filters the feed link for a given author.
+	 * Lọc liên kết nguồn cấp dữ liệu cho tác giả.
 	 *
 	 * @since 1.5.1
 	 *
-	 * @param string $link The author feed link.
-	 * @param string $feed Feed type. Possible values include 'rss2', 'atom'.
+	 * @param string $link Liên kết nguồn cấp của tác giả.
+	 * @param string $feed Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
 	 */
 	$link = apply_filters( 'author_feed_link', $link, $feed );
 
@@ -902,35 +902,35 @@ function get_author_feed_link( $author_id, $feed = '' ) {
 }
 
 /**
- * Retrieves the feed link for a category.
+ * Lấy liên kết nguồn cấp dữ liệu cho chuyên mục.
  *
- * Returns a link to the feed for all posts in a given category. A specific feed
- * can be requested or left blank to get the default feed.
+ * Trả về liên kết đến nguồn cấp cho tất cả bài viết trong một chuyên mục. Có thể yêu cầu
+ * một loại nguồn cấp cụ thể hoặc để trống để lấy nguồn cấp mặc định.
  *
  * @since 2.5.0
  *
- * @param int|WP_Term|object $cat  The ID or category object whose feed link will be retrieved.
- * @param string             $feed Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                                 Default is the value of get_default_feed().
- * @return string Link to the feed for the category specified by `$cat`.
+ * @param int|WP_Term|object $cat  ID hoặc đối tượng chuyên mục cần lấy liên kết nguồn cấp.
+ * @param string             $feed Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                                 Mặc định là giá trị của get_default_feed().
+ * @return string Liên kết đến nguồn cấp cho chuyên mục được chỉ định bởi `$cat`.
  */
 function get_category_feed_link( $cat, $feed = '' ) {
 	return get_term_feed_link( $cat, 'category', $feed );
 }
 
 /**
- * Retrieves the feed link for a term.
+ * Lấy liên kết nguồn cấp dữ liệu cho thuật ngữ phân loại.
  *
- * Returns a link to the feed for all posts in a given term. A specific feed
- * can be requested or left blank to get the default feed.
+ * Trả về liên kết đến nguồn cấp cho tất cả bài viết trong một thuật ngữ. Có thể yêu cầu
+ * một loại nguồn cấp cụ thể hoặc để trống để lấy nguồn cấp mặc định.
  *
  * @since 3.0.0
  *
- * @param int|WP_Term|object $term     The ID or term object whose feed link will be retrieved.
- * @param string             $taxonomy Optional. Taxonomy of `$term_id`.
- * @param string             $feed     Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                                     Default is the value of get_default_feed().
- * @return string|false Link to the feed for the term specified by `$term` and `$taxonomy`.
+ * @param int|WP_Term|object $term     ID hoặc đối tượng thuật ngữ cần lấy liên kết nguồn cấp.
+ * @param string             $taxonomy Tùy chọn. Phân loại của `$term_id`.
+ * @param string             $feed     Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                                     Mặc định là giá trị của get_default_feed().
+ * @return string|false Liên kết đến nguồn cấp cho thuật ngữ được chỉ định bởi `$term` và `$taxonomy`.
  */
 function get_term_feed_link( $term, $taxonomy = '', $feed = '' ) {
 	if ( ! is_object( $term ) ) {
@@ -973,33 +973,33 @@ function get_term_feed_link( $term, $taxonomy = '', $feed = '' ) {
 
 	if ( 'category' === $taxonomy ) {
 		/**
-		 * Filters the category feed link.
+		 * Lọc liên kết nguồn cấp chuyên mục.
 		 *
 		 * @since 1.5.1
 		 *
-		 * @param string $link The category feed link.
-		 * @param string $feed Feed type. Possible values include 'rss2', 'atom'.
+		 * @param string $link Liên kết nguồn cấp chuyên mục.
+		 * @param string $feed Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
 		 */
 		$link = apply_filters( 'category_feed_link', $link, $feed );
 	} elseif ( 'post_tag' === $taxonomy ) {
 		/**
-		 * Filters the post tag feed link.
+		 * Lọc liên kết nguồn cấp thẻ bài viết.
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param string $link The tag feed link.
-		 * @param string $feed Feed type. Possible values include 'rss2', 'atom'.
+		 * @param string $link Liên kết nguồn cấp thẻ.
+		 * @param string $feed Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
 		 */
 		$link = apply_filters( 'tag_feed_link', $link, $feed );
 	} else {
 		/**
-		 * Filters the feed link for a taxonomy other than 'category' or 'post_tag'.
+		 * Lọc liên kết nguồn cấp cho phân loại khác 'category' hoặc 'post_tag'.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $link     The taxonomy feed link.
-		 * @param string $feed     Feed type. Possible values include 'rss2', 'atom'.
-		 * @param string $taxonomy The taxonomy name.
+		 * @param string $link     Liên kết nguồn cấp phân loại.
+		 * @param string $feed     Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+		 * @param string $taxonomy Tên phân loại.
 		 */
 		$link = apply_filters( 'taxonomy_feed_link', $link, $feed, $taxonomy );
 	}
@@ -1008,76 +1008,76 @@ function get_term_feed_link( $term, $taxonomy = '', $feed = '' ) {
 }
 
 /**
- * Retrieves the permalink for a tag feed.
+ * Lấy đường dẫn tĩnh cho nguồn cấp của thẻ.
  *
  * @since 2.3.0
  *
- * @param int|WP_Term|object $tag  The ID or term object whose feed link will be retrieved.
- * @param string             $feed Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                                 Default is the value of get_default_feed().
- * @return string                  The feed permalink for the given tag.
+ * @param int|WP_Term|object $tag  ID hoặc đối tượng thuật ngữ cần lấy liên kết nguồn cấp.
+ * @param string             $feed Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                                 Mặc định là giá trị của get_default_feed().
+ * @return string                  Đường dẫn tĩnh nguồn cấp cho thẻ được chỉ định.
  */
 function get_tag_feed_link( $tag, $feed = '' ) {
 	return get_term_feed_link( $tag, 'post_tag', $feed );
 }
 
 /**
- * Retrieves the edit link for a tag.
+ * Lấy liên kết chỉnh sửa cho thẻ.
  *
  * @since 2.7.0
  *
- * @param int|WP_Term|object $tag      The ID or term object whose edit link will be retrieved.
- * @param string             $taxonomy Optional. Taxonomy slug. Default 'post_tag'.
- * @return string The edit tag link URL for the given tag.
+ * @param int|WP_Term|object $tag      ID hoặc đối tượng thuật ngữ cần lấy liên kết chỉnh sửa.
+ * @param string             $taxonomy Tùy chọn. Slug phân loại. Mặc định 'post_tag'.
+ * @return string URL liên kết chỉnh sửa thẻ cho thẻ được chỉ định.
  */
 function get_edit_tag_link( $tag, $taxonomy = 'post_tag' ) {
 	/**
-	 * Filters the edit link for a tag (or term in another taxonomy).
+	 * Lọc liên kết chỉnh sửa cho thẻ (hoặc thuật ngữ trong phân loại khác).
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $link The term edit link.
+	 * @param string $link Liên kết chỉnh sửa thuật ngữ.
 	 */
 	return apply_filters( 'get_edit_tag_link', get_edit_term_link( $tag, $taxonomy ) );
 }
 
 /**
- * Displays or retrieves the edit link for a tag with formatting.
+ * Hiển thị hoặc lấy liên kết chỉnh sửa thẻ với định dạng.
  *
  * @since 2.7.0
  *
- * @param string  $link   Optional. Anchor text. If empty, default is 'Edit This'. Default empty.
- * @param string  $before Optional. Display before edit link. Default empty.
- * @param string  $after  Optional. Display after edit link. Default empty.
- * @param WP_Term $tag    Optional. Term object. If null, the queried object will be inspected.
- *                        Default null.
+ * @param string  $link   Tùy chọn. Văn bản neo. Nếu rỗng, mặc định là 'Edit This'. Mặc định rỗng.
+ * @param string  $before Tùy chọn. Hiển thị trước liên kết chỉnh sửa. Mặc định rỗng.
+ * @param string  $after  Tùy chọn. Hiển thị sau liên kết chỉnh sửa. Mặc định rỗng.
+ * @param WP_Term $tag    Tùy chọn. Đối tượng thuật ngữ. Nếu null, đối tượng được truy vấn sẽ được kiểm tra.
+ *                        Mặc định null.
  */
 function edit_tag_link( $link = '', $before = '', $after = '', $tag = null ) {
 	$link = edit_term_link( $link, '', '', $tag, false );
 
 	/**
-	 * Filters the anchor tag for the edit link for a tag (or term in another taxonomy).
+	 * Lọc thẻ neo cho liên kết chỉnh sửa thẻ (hoặc thuật ngữ trong phân loại khác).
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $link The anchor tag for the edit link.
+	 * @param string $link Thẻ neo cho liên kết chỉnh sửa.
 	 */
 	echo $before . apply_filters( 'edit_tag_link', $link ) . $after;
 }
 
 /**
- * Retrieves the URL for editing a given term.
+ * Lấy URL chỉnh sửa cho thuật ngữ được chỉ định.
  *
  * @since 3.1.0
- * @since 4.5.0 The `$taxonomy` parameter was made optional.
+ * @since 4.5.0 Tham số `$taxonomy` trở thành tùy chọn.
  *
- * @param int|WP_Term|object $term        The ID or term object whose edit link will be retrieved.
- * @param string             $taxonomy    Optional. Taxonomy. Defaults to the taxonomy of the term identified
- *                                        by `$term`.
- * @param string             $object_type Optional. The object type. Used to highlight the proper post type
- *                                        menu on the linked page. Defaults to the first object_type associated
- *                                        with the taxonomy.
- * @return string|null The edit term link URL for the given term, or null on failure.
+ * @param int|WP_Term|object $term        ID hoặc đối tượng thuật ngữ cần lấy liên kết chỉnh sửa.
+ * @param string             $taxonomy    Tùy chọn. Phân loại. Mặc định là phân loại của thuật ngữ
+ *                                        được xác định bởi `$term`.
+ * @param string             $object_type Tùy chọn. Loại đối tượng. Dùng để đánh dấu menu loại bài viết
+ *                                        phù hợp trên trang liên kết. Mặc định là object_type đầu tiên
+ *                                        liên kết với phân loại.
+ * @return string|null URL liên kết chỉnh sửa thuật ngữ cho thuật ngữ được chỉ định, hoặc null khi thất bại.
  */
 function get_edit_term_link( $term, $taxonomy = '', $object_type = '' ) {
 	$term = get_term( $term, $taxonomy );
@@ -1109,29 +1109,29 @@ function get_edit_term_link( $term, $taxonomy = '', $object_type = '' ) {
 	}
 
 	/**
-	 * Filters the edit link for a term.
+	 * Lọc liên kết chỉnh sửa cho thuật ngữ.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $location    The edit link.
-	 * @param int    $term_id     Term ID.
-	 * @param string $taxonomy    Taxonomy name.
-	 * @param string $object_type The object type.
+	 * @param string $location    Liên kết chỉnh sửa.
+	 * @param int    $term_id     ID thuật ngữ.
+	 * @param string $taxonomy    Tên phân loại.
+	 * @param string $object_type Loại đối tượng.
 	 */
 	return apply_filters( 'get_edit_term_link', $location, $term_id, $taxonomy, $object_type );
 }
 
 /**
- * Displays or retrieves the edit term link with formatting.
+ * Hiển thị hoặc lấy liên kết chỉnh sửa thuật ngữ với định dạng.
  *
  * @since 3.1.0
  *
- * @param string           $link    Optional. Anchor text. If empty, default is 'Edit This'. Default empty.
- * @param string           $before  Optional. Display before edit link. Default empty.
- * @param string           $after   Optional. Display after edit link. Default empty.
- * @param int|WP_Term|null $term    Optional. Term ID or object. If null, the queried object will be inspected. Default null.
- * @param bool             $display Optional. Whether or not to echo the return. Default true.
- * @return string|void HTML content.
+ * @param string           $link    Tùy chọn. Văn bản neo. Nếu rỗng, mặc định là 'Edit This'. Mặc định rỗng.
+ * @param string           $before  Tùy chọn. Hiển thị trước liên kết chỉnh sửa. Mặc định rỗng.
+ * @param string           $after   Tùy chọn. Hiển thị sau liên kết chỉnh sửa. Mặc định rỗng.
+ * @param int|WP_Term|null $term    Tùy chọn. ID hoặc đối tượng thuật ngữ. Nếu null, đối tượng truy vấn sẽ được kiểm tra. Mặc định null.
+ * @param bool             $display Tùy chọn. Có echo kết quả trả về hay không. Mặc định true.
+ * @return string|void Nội dung HTML.
  */
 function edit_term_link( $link = '', $before = '', $after = '', $term = null, $display = true ) {
 	if ( is_null( $term ) ) {
@@ -1156,12 +1156,12 @@ function edit_term_link( $link = '', $before = '', $after = '', $term = null, $d
 	$link = '<a href="' . get_edit_term_link( $term->term_id, $term->taxonomy ) . '">' . $link . '</a>';
 
 	/**
-	 * Filters the anchor tag for the edit link of a term.
+	 * Lọc thẻ neo cho liên kết chỉnh sửa thuật ngữ.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $link    The anchor tag for the edit link.
-	 * @param int    $term_id Term ID.
+	 * @param string $link    Thẻ neo cho liên kết chỉnh sửa.
+	 * @param int    $term_id ID thuật ngữ.
 	 */
 	$link = $before . apply_filters( 'edit_term_link', $link, $term->term_id ) . $after;
 
@@ -1173,14 +1173,14 @@ function edit_term_link( $link = '', $before = '', $after = '', $term = null, $d
 }
 
 /**
- * Retrieves the permalink for a search.
+ * Lấy đường dẫn tĩnh cho tìm kiếm.
  *
  * @since 3.0.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param string $query Optional. The query string to use. If empty the current query is used. Default empty.
- * @return string The search permalink.
+ * @param string $query Tùy chọn. Chuỗi truy vấn để sử dụng. Nếu rỗng, truy vấn hiện tại sẽ được dùng. Mặc định rỗng.
+ * @return string Đường dẫn tĩnh tìm kiếm.
  */
 function get_search_link( $query = '' ) {
 	global $wp_rewrite;
@@ -1197,33 +1197,33 @@ function get_search_link( $query = '' ) {
 		$link = home_url( '?s=' . urlencode( $search ) );
 	} else {
 		$search = urlencode( $search );
-		$search = str_replace( '%2F', '/', $search ); // %2F(/) is not valid within a URL, send it un-encoded.
+		$search = str_replace( '%2F', '/', $search ); // %2F(/) không hợp lệ trong URL, gửi không mã hóa.
 		$link   = str_replace( '%search%', $search, $permastruct );
 		$link   = home_url( user_trailingslashit( $link, 'search' ) );
 	}
 
 	/**
-	 * Filters the search permalink.
+	 * Lọc đường dẫn tĩnh tìm kiếm.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $link   Search permalink.
-	 * @param string $search The URL-encoded search term.
+	 * @param string $link   Đường dẫn tĩnh tìm kiếm.
+	 * @param string $search Cụm từ tìm kiếm đã mã hóa URL.
 	 */
 	return apply_filters( 'search_link', $link, $search );
 }
 
 /**
- * Retrieves the permalink for the search results feed.
+ * Lấy đường dẫn tĩnh cho nguồn cấp kết quả tìm kiếm.
  *
  * @since 2.5.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param string $search_query Optional. Search query. Default empty.
- * @param string $feed         Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                             Default is the value of get_default_feed().
- * @return string The search results feed permalink.
+ * @param string $search_query Tùy chọn. Truy vấn tìm kiếm. Mặc định rỗng.
+ * @param string $feed         Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                             Mặc định là giá trị của get_default_feed().
+ * @return string Đường dẫn tĩnh nguồn cấp kết quả tìm kiếm.
  */
 function get_search_feed_link( $search_query = '', $feed = '' ) {
 	global $wp_rewrite;
@@ -1243,28 +1243,28 @@ function get_search_feed_link( $search_query = '', $feed = '' ) {
 	}
 
 	/**
-	 * Filters the search feed link.
+	 * Lọc liên kết nguồn cấp tìm kiếm.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $link Search feed link.
-	 * @param string $feed Feed type. Possible values include 'rss2', 'atom'.
-	 * @param string $type The search type. One of 'posts' or 'comments'.
+	 * @param string $link Liên kết nguồn cấp tìm kiếm.
+	 * @param string $feed Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+	 * @param string $type Loại tìm kiếm. Một trong 'posts' hoặc 'comments'.
 	 */
 	return apply_filters( 'search_feed_link', $link, $feed, 'posts' );
 }
 
 /**
- * Retrieves the permalink for the search results comments feed.
+ * Lấy đường dẫn tĩnh cho nguồn cấp bình luận kết quả tìm kiếm.
  *
  * @since 2.5.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param string $search_query Optional. Search query. Default empty.
- * @param string $feed         Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                             Default is the value of get_default_feed().
- * @return string The comments feed search results permalink.
+ * @param string $search_query Tùy chọn. Truy vấn tìm kiếm. Mặc định rỗng.
+ * @param string $feed         Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                             Mặc định là giá trị của get_default_feed().
+ * @return string Đường dẫn tĩnh nguồn cấp bình luận kết quả tìm kiếm.
  */
 function get_search_comments_feed_link( $search_query = '', $feed = '' ) {
 	global $wp_rewrite;
@@ -1283,21 +1283,21 @@ function get_search_comments_feed_link( $search_query = '', $feed = '' ) {
 		$link = add_query_arg( 'withcomments', 1, $link );
 	}
 
-	/** This filter is documented in wp-includes/link-template.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/link-template.php */
 	return apply_filters( 'search_feed_link', $link, $feed, 'comments' );
 }
 
 /**
- * Retrieves the permalink for a post type archive.
+ * Lấy đường dẫn tĩnh cho lưu trữ loại bài viết.
  *
  * @since 3.1.0
- * @since 4.5.0 Support for posts was added.
+ * @since 4.5.0 Thêm hỗ trợ cho bài viết.
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param string $post_type Post type.
- * @return string|false The post type archive permalink. False if the post type
- *                      does not exist or does not have an archive.
+ * @param string $post_type Loại bài viết.
+ * @return string|false Đường dẫn tĩnh lưu trữ loại bài viết. False nếu loại bài viết
+ *                      không tồn tại hoặc không có lưu trữ.
  */
 function get_post_type_archive_link( $post_type ) {
 	global $wp_rewrite;
@@ -1317,7 +1317,7 @@ function get_post_type_archive_link( $post_type ) {
 		} else {
 			$link = get_home_url();
 		}
-		/** This filter is documented in wp-includes/link-template.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/link-template.php */
 		return apply_filters( 'post_type_archive_link', $link, $post_type );
 	}
 
@@ -1338,26 +1338,26 @@ function get_post_type_archive_link( $post_type ) {
 	}
 
 	/**
-	 * Filters the post type archive permalink.
+	 * Lọc đường dẫn tĩnh lưu trữ loại bài viết.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $link      The post type archive permalink.
-	 * @param string $post_type Post type name.
+	 * @param string $link      Đường dẫn tĩnh lưu trữ loại bài viết.
+	 * @param string $post_type Tên loại bài viết.
 	 */
 	return apply_filters( 'post_type_archive_link', $link, $post_type );
 }
 
 /**
- * Retrieves the permalink for a post type archive feed.
+ * Lấy đường dẫn tĩnh cho nguồn cấp lưu trữ loại bài viết.
  *
  * @since 3.1.0
  *
- * @param string $post_type Post type.
- * @param string $feed      Optional. Feed type. Possible values include 'rss2', 'atom'.
- *                          Default is the value of get_default_feed().
- * @return string|false The post type feed permalink. False if the post type
- *                      does not exist or does not have an archive.
+ * @param string $post_type Loại bài viết.
+ * @param string $feed      Tùy chọn. Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
+ *                          Mặc định là giá trị của get_default_feed().
+ * @return string|false Đường dẫn tĩnh nguồn cấp loại bài viết. False nếu loại bài viết
+ *                      không tồn tại hoặc không có lưu trữ.
  */
 function get_post_type_archive_feed_link( $post_type, $feed = '' ) {
 	$default_feed = get_default_feed();
@@ -1382,29 +1382,29 @@ function get_post_type_archive_feed_link( $post_type, $feed = '' ) {
 	}
 
 	/**
-	 * Filters the post type archive feed link.
+	 * Lọc liên kết nguồn cấp lưu trữ loại bài viết.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $link The post type archive feed link.
-	 * @param string $feed Feed type. Possible values include 'rss2', 'atom'.
+	 * @param string $link Liên kết nguồn cấp lưu trữ loại bài viết.
+	 * @param string $feed Loại nguồn cấp dữ liệu. Các giá trị có thể bao gồm 'rss2', 'atom'.
 	 */
 	return apply_filters( 'post_type_archive_feed_link', $link, $feed );
 }
 
 /**
- * Retrieves the URL used for the post preview.
+ * Lấy URL được sử dụng để xem trước bài viết.
  *
- * Allows additional query args to be appended.
+ * Cho phép thêm các tham số truy vấn bổ sung.
  *
  * @since 4.4.0
  *
- * @param int|WP_Post $post         Optional. Post ID or `WP_Post` object. Defaults to global `$post`.
- * @param array       $query_args   Optional. Array of additional query args to be appended to the link.
- *                                  Default empty array.
- * @param string      $preview_link Optional. Base preview link to be used if it should differ from the
- *                                  post permalink. Default empty.
- * @return string|null URL used for the post preview, or null if the post does not exist.
+ * @param int|WP_Post $post         Tùy chọn. ID bài viết hoặc đối tượng `WP_Post`. Mặc định là biến toàn cục `$post`.
+ * @param array       $query_args   Tùy chọn. Mảng các tham số truy vấn bổ sung được thêm vào liên kết.
+ *                                  Mặc định mảng rỗng.
+ * @param string      $preview_link Tùy chọn. Liên kết xem trước cơ sở được sử dụng nếu nó khác với
+ *                                  đường dẫn tĩnh của bài viết. Mặc định rỗng.
+ * @return string|null URL được sử dụng để xem trước bài viết, hoặc null nếu bài viết không tồn tại.
  */
 function get_preview_post_link( $post = null, $query_args = array(), $preview_link = '' ) {
 	$post = get_post( $post );
@@ -1424,31 +1424,31 @@ function get_preview_post_link( $post = null, $query_args = array(), $preview_li
 	}
 
 	/**
-	 * Filters the URL used for a post preview.
+	 * Lọc URL được sử dụng để xem trước bài viết.
 	 *
 	 * @since 2.0.5
-	 * @since 4.0.0 Added the `$post` parameter.
+	 * @since 4.0.0 Thêm tham số `$post`.
 	 *
-	 * @param string  $preview_link URL used for the post preview.
-	 * @param WP_Post $post         Post object.
+	 * @param string  $preview_link URL được sử dụng để xem trước bài viết.
+	 * @param WP_Post $post         Đối tượng bài viết.
 	 */
 	return apply_filters( 'preview_post_link', $preview_link, $post );
 }
 
 /**
- * Retrieves the edit post link for post.
+ * Lấy liên kết chỉnh sửa bài viết.
  *
- * Can be used within the WordPress loop or outside of it. Can be used with
- * pages, posts, attachments, revisions, global styles, templates, and template parts.
+ * Có thể được sử dụng trong Vòng lặp WordPress hoặc bên ngoài. Có thể sử dụng với
+ * trang, bài viết, tệp đính kèm, bản sửa đổi, kiểu toàn cục, mẫu, và phần mẫu.
  *
  * @since 2.3.0
- * @since 6.3.0 Adds custom link for wp_navigation post types.
- *              Adds custom links for wp_template_part and wp_template post types.
+ * @since 6.3.0 Thêm liên kết tùy chỉnh cho loại bài viết wp_navigation.
+ *              Thêm liên kết tùy chỉnh cho loại bài viết wp_template_part và wp_template.
  *
- * @param int|WP_Post $post    Optional. Post ID or post object. Default is the global `$post`.
- * @param string      $context Optional. How to output the '&' character. Default '&amp;'.
- * @return string|null The edit post link for the given post. Null if the post type does not exist
- *                     or does not allow an editing UI.
+ * @param int|WP_Post $post    Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là biến toàn cục `$post`.
+ * @param string      $context Tùy chọn. Cách xuất ký tự '&'. Mặc định '&amp;'.
+ * @return string|null Liên kết chỉnh sửa bài viết cho bài viết được chỉ định. Null nếu loại bài viết không tồn tại
+ *                     hoặc không cho phép giao diện chỉnh sửa.
  */
 function get_edit_post_link( $post = 0, $context = 'display' ) {
 	$post = get_post( $post );
@@ -1487,29 +1487,28 @@ function get_edit_post_link( $post = 0, $context = 'display' ) {
 	}
 
 	/**
-	 * Filters the post edit link.
+	 * Lọc liên kết chỉnh sửa bài viết.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param string $link    The edit link.
-	 * @param int    $post_id Post ID.
-	 * @param string $context The link context. If set to 'display' then ampersands
-	 *                        are encoded.
+	 * @param string $link    Liên kết chỉnh sửa.
+	 * @param int    $post_id ID bài viết.
+	 * @param string $context Ngữ cảnh liên kết. Nếu đặt là 'display' thì các dấu & sẽ được mã hóa.
 	 */
 	return apply_filters( 'get_edit_post_link', $link, $post->ID, $context );
 }
 
 /**
- * Displays the edit post link for post.
+ * Hiển thị liên kết chỉnh sửa bài viết.
  *
  * @since 1.0.0
- * @since 4.4.0 The `$css_class` argument was added.
+ * @since 4.4.0 Thêm tham số `$css_class`.
  *
- * @param string      $text      Optional. Anchor text. If null, default is 'Edit This'. Default null.
- * @param string      $before    Optional. Display before edit link. Default empty.
- * @param string      $after     Optional. Display after edit link. Default empty.
- * @param int|WP_Post $post      Optional. Post ID or post object. Default is the global `$post`.
- * @param string      $css_class Optional. Add custom class to link. Default 'post-edit-link'.
+ * @param string      $text      Tùy chọn. Văn bản neo. Nếu null, mặc định là 'Edit This'. Mặc định null.
+ * @param string      $before    Tùy chọn. Hiển thị trước liên kết chỉnh sửa. Mặc định rỗng.
+ * @param string      $after     Tùy chọn. Hiển thị sau liên kết chỉnh sửa. Mặc định rỗng.
+ * @param int|WP_Post $post      Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là biến toàn cục `$post`.
+ * @param string      $css_class Tùy chọn. Thêm class tùy chỉnh cho liên kết. Mặc định 'post-edit-link'.
  */
 function edit_post_link( $text = null, $before = '', $after = '', $post = 0, $css_class = 'post-edit-link' ) {
 	$post = get_post( $post );
@@ -1531,28 +1530,28 @@ function edit_post_link( $text = null, $before = '', $after = '', $post = 0, $cs
 	$link = '<a class="' . esc_attr( $css_class ) . '" href="' . esc_url( $url ) . '">' . $text . '</a>';
 
 	/**
-	 * Filters the post edit link anchor tag.
+	 * Lọc thẻ neo liên kết chỉnh sửa bài viết.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param string $link    Anchor tag for the edit link.
-	 * @param int    $post_id Post ID.
-	 * @param string $text    Anchor text.
+	 * @param string $link    Thẻ neo cho liên kết chỉnh sửa.
+	 * @param int    $post_id ID bài viết.
+	 * @param string $text    Văn bản neo.
 	 */
 	echo $before . apply_filters( 'edit_post_link', $link, $post->ID, $text ) . $after;
 }
 
 /**
- * Retrieves the delete posts link for post.
+ * Lấy liên kết xóa bài viết.
  *
- * Can be used within the WordPress loop or outside of it, with any post type.
+ * Có thể được sử dụng trong Vòng lặp WordPress hoặc bên ngoài, với bất kỳ loại bài viết nào.
  *
  * @since 2.9.0
  *
- * @param int|WP_Post $post         Optional. Post ID or post object. Default is the global `$post`.
- * @param string      $deprecated   Not used.
- * @param bool        $force_delete Optional. Whether to bypass Trash and force deletion. Default false.
- * @return string|void The delete post link URL for the given post.
+ * @param int|WP_Post $post         Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là biến toàn cục `$post`.
+ * @param string      $deprecated   Không sử dụng.
+ * @param bool        $force_delete Tùy chọn. Có bỏ qua Thùng rác và buộc xóa hay không. Mặc định false.
+ * @return string|void URL liên kết xóa bài viết cho bài viết được chỉ định.
  */
 function get_delete_post_link( $post = 0, $deprecated = '', $force_delete = false ) {
 	if ( ! empty( $deprecated ) ) {
@@ -1580,28 +1579,28 @@ function get_delete_post_link( $post = 0, $deprecated = '', $force_delete = fals
 	$delete_link = add_query_arg( 'action', $action, admin_url( sprintf( $post_type_object->_edit_link, $post->ID ) ) );
 
 	/**
-	 * Filters the post delete link.
+	 * Lọc liên kết xóa bài viết.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $link         The delete link.
-	 * @param int    $post_id      Post ID.
-	 * @param bool   $force_delete Whether to bypass the Trash and force deletion. Default false.
+	 * @param string $link         Liên kết xóa.
+	 * @param int    $post_id      ID bài viết.
+	 * @param bool   $force_delete Có bỏ qua Thùng rác và buộc xóa hay không. Mặc định false.
 	 */
 	return apply_filters( 'get_delete_post_link', wp_nonce_url( $delete_link, "$action-post_{$post->ID}" ), $post->ID, $force_delete );
 }
 
 /**
- * Retrieves the edit comment link.
+ * Lấy liên kết chỉnh sửa bình luận.
  *
  * @since 2.3.0
- * @since 6.7.0 The $context parameter was added.
+ * @since 6.7.0 Thêm tham số $context.
  *
- * @param int|WP_Comment $comment_id Optional. Comment ID or WP_Comment object.
- * @param string         $context    Optional. Context in which the URL should be used. Either 'display',
- *                                   to include HTML entities, or 'url'. Default 'display'.
- * @return string|void The edit comment link URL for the given comment, or void if the comment id does not exist or
- *                     the current user is not allowed to edit it.
+ * @param int|WP_Comment $comment_id Tùy chọn. ID bình luận hoặc đối tượng WP_Comment.
+ * @param string         $context    Tùy chọn. Ngữ cảnh sử dụng URL. Có thể là 'display',
+ *                                   để bao gồm thực thể HTML, hoặc 'url'. Mặc định 'display'.
+ * @return string|void URL liên kết chỉnh sửa bình luận cho bình luận được chỉ định, hoặc void nếu ID bình luận không tồn tại hoặc
+ *                     người dùng hiện tại không được phép chỉnh sửa.
  */
 function get_edit_comment_link( $comment_id = 0, $context = 'display' ) {
 	$comment = get_comment( $comment_id );
@@ -1618,30 +1617,30 @@ function get_edit_comment_link( $comment_id = 0, $context = 'display' ) {
 
 	$location = admin_url( $action ) . $comment->comment_ID;
 
-	// Ensure the $comment_id variable passed to the filter is always an ID.
+	// Đảm bảo biến $comment_id được truyền vào bộ lọc luôn là ID.
 	$comment_id = (int) $comment->comment_ID;
 
 	/**
-	 * Filters the comment edit link.
+	 * Lọc liên kết chỉnh sửa bình luận.
 	 *
 	 * @since 2.3.0
-	 * @since 6.7.0 The $comment_id and $context parameters are now being passed to the filter.
+	 * @since 6.7.0 Các tham số $comment_id và $context giờ đây được truyền vào bộ lọc.
 	 *
-	 * @param string $location   The edit link.
-	 * @param int    $comment_id Unique ID of the comment to generate an edit link.
-	 * @param string $context    Context to include HTML entities in link. Default 'display'.
+	 * @param string $location   Liên kết chỉnh sửa.
+	 * @param int    $comment_id ID duy nhất của bình luận để tạo liên kết chỉnh sửa.
+	 * @param string $context    Ngữ cảnh để bao gồm thực thể HTML trong liên kết. Mặc định 'display'.
 	 */
 	return apply_filters( 'get_edit_comment_link', $location, $comment_id, $context );
 }
 
 /**
- * Displays the edit comment link with formatting.
+ * Hiển thị liên kết chỉnh sửa bình luận với định dạng.
  *
  * @since 1.0.0
  *
- * @param string $text   Optional. Anchor text. If null, default is 'Edit This'. Default null.
- * @param string $before Optional. Display before edit link. Default empty.
- * @param string $after  Optional. Display after edit link. Default empty.
+ * @param string $text   Tùy chọn. Văn bản neo. Nếu null, mặc định là 'Edit This'. Mặc định null.
+ * @param string $before Tùy chọn. Hiển thị trước liên kết chỉnh sửa. Mặc định rỗng.
+ * @param string $after  Tùy chọn. Hiển thị sau liên kết chỉnh sửa. Mặc định rỗng.
  */
 function edit_comment_link( $text = null, $before = '', $after = '' ) {
 	$comment = get_comment();
@@ -1657,24 +1656,24 @@ function edit_comment_link( $text = null, $before = '', $after = '' ) {
 	$link = '<a class="comment-edit-link" href="' . esc_url( get_edit_comment_link( $comment ) ) . '">' . $text . '</a>';
 
 	/**
-	 * Filters the comment edit link anchor tag.
+	 * Lọc thẻ neo liên kết chỉnh sửa bình luận.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param string $link       Anchor tag for the edit link.
-	 * @param string $comment_id Comment ID as a numeric string.
-	 * @param string $text       Anchor text.
+	 * @param string $link       Thẻ neo cho liên kết chỉnh sửa.
+	 * @param string $comment_id ID bình luận dạng chuỗi số.
+	 * @param string $text       Văn bản neo.
 	 */
 	echo $before . apply_filters( 'edit_comment_link', $link, $comment->comment_ID, $text ) . $after;
 }
 
 /**
- * Displays the edit bookmark link.
+ * Hiển thị liên kết chỉnh sửa dấu trang.
  *
  * @since 2.7.0
  *
- * @param int|stdClass $link Optional. Bookmark ID. Default is the ID of the current bookmark.
- * @return string|void The edit bookmark link URL.
+ * @param int|stdClass $link Tùy chọn. ID dấu trang. Mặc định là ID của dấu trang hiện tại.
+ * @return string|void URL liên kết chỉnh sửa dấu trang.
  */
 function get_edit_bookmark_link( $link = 0 ) {
 	$link = get_bookmark( $link );
@@ -1686,25 +1685,25 @@ function get_edit_bookmark_link( $link = 0 ) {
 	$location = admin_url( 'link.php?action=edit&amp;link_id=' ) . $link->link_id;
 
 	/**
-	 * Filters the bookmark edit link.
+	 * Lọc liên kết chỉnh sửa dấu trang.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $location The edit link.
-	 * @param int    $link_id  Bookmark ID.
+	 * @param string $location Liên kết chỉnh sửa.
+	 * @param int    $link_id  ID dấu trang.
 	 */
 	return apply_filters( 'get_edit_bookmark_link', $location, $link->link_id );
 }
 
 /**
- * Displays the edit bookmark link anchor content.
+ * Hiển thị nội dung neo liên kết chỉnh sửa dấu trang.
  *
  * @since 2.7.0
  *
- * @param string $link     Optional. Anchor text. If empty, default is 'Edit This'. Default empty.
- * @param string $before   Optional. Display before edit link. Default empty.
- * @param string $after    Optional. Display after edit link. Default empty.
- * @param int    $bookmark Optional. Bookmark ID. Default is the current bookmark.
+ * @param string $link     Tùy chọn. Văn bản neo. Nếu rỗng, mặc định là 'Edit This'. Mặc định rỗng.
+ * @param string $before   Tùy chọn. Hiển thị trước liên kết chỉnh sửa. Mặc định rỗng.
+ * @param string $after    Tùy chọn. Hiển thị sau liên kết chỉnh sửa. Mặc định rỗng.
+ * @param int    $bookmark Tùy chọn. ID dấu trang. Mặc định là dấu trang hiện tại.
  */
 function edit_bookmark_link( $link = '', $before = '', $after = '', $bookmark = null ) {
 	$bookmark = get_bookmark( $bookmark );
@@ -1720,23 +1719,23 @@ function edit_bookmark_link( $link = '', $before = '', $after = '', $bookmark = 
 	$link = '<a href="' . esc_url( get_edit_bookmark_link( $bookmark ) ) . '">' . $link . '</a>';
 
 	/**
-	 * Filters the bookmark edit link anchor tag.
+	 * Lọc thẻ neo liên kết chỉnh sửa dấu trang.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $link    Anchor tag for the edit link.
-	 * @param int    $link_id Bookmark ID.
+	 * @param string $link    Thẻ neo cho liên kết chỉnh sửa.
+	 * @param int    $link_id ID dấu trang.
 	 */
 	echo $before . apply_filters( 'edit_bookmark_link', $link, $bookmark->link_id ) . $after;
 }
 
 /**
- * Retrieves the edit user link.
+ * Lấy liên kết chỉnh sửa người dùng.
  *
  * @since 3.5.0
  *
- * @param int $user_id Optional. User ID. Defaults to the current user.
- * @return string URL to edit user page or empty string.
+ * @param int $user_id Tùy chọn. ID người dùng. Mặc định là người dùng hiện tại.
+ * @return string URL đến trang chỉnh sửa người dùng hoặc chuỗi rỗng.
  */
 function get_edit_user_link( $user_id = null ) {
 	if ( ! $user_id ) {
@@ -1760,72 +1759,72 @@ function get_edit_user_link( $user_id = null ) {
 	}
 
 	/**
-	 * Filters the user edit link.
+	 * Lọc liên kết chỉnh sửa người dùng.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $link    The edit link.
-	 * @param int    $user_id User ID.
+	 * @param string $link    Liên kết chỉnh sửa.
+	 * @param int    $user_id ID người dùng.
 	 */
 	return apply_filters( 'get_edit_user_link', $link, $user->ID );
 }
 
 //
-// Navigation links.
+// Liên kết điều hướng.
 //
 
 /**
- * Retrieves the previous post that is adjacent to the current post.
+ * Lấy bài viết trước đó liền kề với bài viết hiện tại.
  *
  * @since 1.5.0
  *
- * @param bool         $in_same_term   Optional. Whether post should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
- * @return WP_Post|null|string Post object if successful. Null if global `$post` is not set.
- *                             Empty string if no corresponding post exists.
+ * @param bool         $in_same_term   Tùy chọn. Bài viết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
+ * @return WP_Post|null|string Đối tượng bài viết nếu thành công. Null nếu biến toàn cục `$post` không được đặt.
+ *                             Chuỗi rỗng nếu không có bài viết tương ứng.
  */
 function get_previous_post( $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
 	return get_adjacent_post( $in_same_term, $excluded_terms, true, $taxonomy );
 }
 
 /**
- * Retrieves the next post that is adjacent to the current post.
+ * Lấy bài viết tiếp theo liền kề với bài viết hiện tại.
  *
  * @since 1.5.0
  *
- * @param bool         $in_same_term   Optional. Whether post should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
- * @return WP_Post|null|string Post object if successful. Null if global `$post` is not set.
- *                             Empty string if no corresponding post exists.
+ * @param bool         $in_same_term   Tùy chọn. Bài viết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
+ * @return WP_Post|null|string Đối tượng bài viết nếu thành công. Null nếu biến toàn cục `$post` không được đặt.
+ *                             Chuỗi rỗng nếu không có bài viết tương ứng.
  */
 function get_next_post( $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
 	return get_adjacent_post( $in_same_term, $excluded_terms, false, $taxonomy );
 }
 
 /**
- * Retrieves the adjacent post.
+ * Lấy bài viết liền kề.
  *
- * Can either be next or previous post.
+ * Có thể là bài viết tiếp theo hoặc bài viết trước đó.
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param bool         $in_same_term   Optional. Whether post should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty string.
- * @param bool         $previous       Optional. Whether to retrieve previous post.
- *                                     Default true.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
- * @return WP_Post|null|string Post object if successful. Null if global `$post` is not set.
- *                             Empty string if no corresponding post exists.
+ * @param bool         $in_same_term   Tùy chọn. Bài viết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định chuỗi rỗng.
+ * @param bool         $previous       Tùy chọn. Có lấy bài viết trước đó hay không.
+ *                                     Mặc định true.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
+ * @return WP_Post|null|string Đối tượng bài viết nếu thành công. Null nếu biến toàn cục `$post` không được đặt.
+ *                             Chuỗi rỗng nếu không có bài viết tương ứng.
  */
 function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previous = true, $taxonomy = 'category' ) {
 	global $wpdb;
@@ -1843,7 +1842,7 @@ function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previo
 	$adjacent = $previous ? 'previous' : 'next';
 
 	if ( ! empty( $excluded_terms ) && ! is_array( $excluded_terms ) ) {
-		// Back-compat, $excluded_terms used to be $excluded_categories with IDs separated by " and ".
+		// Tương thích ngược, $excluded_terms trước đây là $excluded_categories với các ID phân cách bằng " and ".
 		if ( str_contains( $excluded_terms, ' and ' ) ) {
 			_deprecated_argument(
 				__FUNCTION__,
@@ -1863,19 +1862,19 @@ function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previo
 	}
 
 	/**
-	 * Filters the IDs of terms excluded from adjacent post queries.
+	 * Lọc các ID thuật ngữ bị loại trừ khỏi truy vấn bài viết liền kề.
 	 *
-	 * The dynamic portion of the hook name, `$adjacent`, refers to the type
-	 * of adjacency, 'next' or 'previous'.
+	 * Phần động của tên hook, `$adjacent`, tham chiếu đến loại
+	 * liền kề, 'next' hoặc 'previous'.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `get_next_post_excluded_terms`
 	 *  - `get_previous_post_excluded_terms`
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param int[]|string $excluded_terms Array of excluded term IDs. Empty string if none were provided.
+	 * @param int[]|string $excluded_terms Mảng các ID thuật ngữ bị loại trừ. Chuỗi rỗng nếu không có giá trị nào được cung cấp.
 	 */
 	$excluded_terms = apply_filters( "get_{$adjacent}_post_excluded_terms", $excluded_terms );
 
@@ -1889,7 +1888,7 @@ function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previo
 			}
 			$term_array = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'ids' ) );
 
-			// Remove any exclusions from the term array to include.
+			// Loại bỏ bất kỳ mục loại trừ nào khỏi mảng thuật ngữ cần bao gồm.
 			$term_array = array_diff( $term_array, (array) $excluded_terms );
 			$term_array = array_map( 'intval', $term_array );
 
@@ -1905,7 +1904,7 @@ function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previo
 		}
 	}
 
-	// 'post_status' clause depends on the current user.
+	// Mệnh đề 'post_status' phụ thuộc vào người dùng hiện tại.
 	if ( is_user_logged_in() ) {
 		$user_id = get_current_user_id();
 
@@ -1918,8 +1917,8 @@ function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previo
 		}
 
 		/*
-		 * Results should include private posts belonging to the current user, or private posts where the
-		 * current user has the 'read_private_posts' cap.
+		 * Kết quả nên bao gồm bài viết riêng tư thuộc về người dùng hiện tại, hoặc bài viết riêng tư mà
+		 * người dùng hiện tại có quyền 'read_private_posts'.
 		 */
 		$private_states = get_post_stati( array( 'private' => true ) );
 		$where         .= " AND ( p.post_status = 'publish'";
@@ -1939,67 +1938,67 @@ function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previo
 	$order = $previous ? 'DESC' : 'ASC';
 
 	/**
-	 * Filters the JOIN clause in the SQL for an adjacent post query.
+	 * Lọc mệnh đề JOIN trong SQL cho truy vấn bài viết liền kề.
 	 *
-	 * The dynamic portion of the hook name, `$adjacent`, refers to the type
-	 * of adjacency, 'next' or 'previous'.
+	 * Phần động của tên hook, `$adjacent`, tham chiếu đến loại
+	 * liền kề, 'next' hoặc 'previous'.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `get_next_post_join`
 	 *  - `get_previous_post_join`
 	 *
 	 * @since 2.5.0
-	 * @since 4.4.0 Added the `$taxonomy` and `$post` parameters.
+	 * @since 4.4.0 Thêm các tham số `$taxonomy` và `$post`.
 	 *
-	 * @param string       $join           The JOIN clause in the SQL.
-	 * @param bool         $in_same_term   Whether post should be in the same taxonomy term.
-	 * @param int[]|string $excluded_terms Array of excluded term IDs. Empty string if none were provided.
-	 * @param string       $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
-	 * @param WP_Post      $post           WP_Post object.
+	 * @param string       $join           Mệnh đề JOIN trong SQL.
+	 * @param bool         $in_same_term   Bài viết có nên thuộc cùng thuật ngữ phân loại hay không.
+	 * @param int[]|string $excluded_terms Mảng các ID thuật ngữ bị loại trừ. Chuỗi rỗng nếu không có giá trị nào được cung cấp.
+	 * @param string       $taxonomy       Phân loại. Dùng để xác định thuật ngữ được sử dụng khi `$in_same_term` là true.
+	 * @param WP_Post      $post           Đối tượng WP_Post.
 	 */
 	$join = apply_filters( "get_{$adjacent}_post_join", $join, $in_same_term, $excluded_terms, $taxonomy, $post );
 
 	/**
-	 * Filters the WHERE clause in the SQL for an adjacent post query.
+	 * Lọc mệnh đề WHERE trong SQL cho truy vấn bài viết liền kề.
 	 *
-	 * The dynamic portion of the hook name, `$adjacent`, refers to the type
-	 * of adjacency, 'next' or 'previous'.
+	 * Phần động của tên hook, `$adjacent`, tham chiếu đến loại
+	 * liền kề, 'next' hoặc 'previous'.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `get_next_post_where`
 	 *  - `get_previous_post_where`
 	 *
 	 * @since 2.5.0
-	 * @since 4.4.0 Added the `$taxonomy` and `$post` parameters.
+	 * @since 4.4.0 Thêm các tham số `$taxonomy` và `$post`.
 	 *
-	 * @param string       $where          The `WHERE` clause in the SQL.
-	 * @param bool         $in_same_term   Whether post should be in the same taxonomy term.
-	 * @param int[]|string $excluded_terms Array of excluded term IDs. Empty string if none were provided.
-	 * @param string       $taxonomy       Taxonomy. Used to identify the term used when `$in_same_term` is true.
-	 * @param WP_Post      $post           WP_Post object.
+	 * @param string       $where          Mệnh đề `WHERE` trong SQL.
+	 * @param bool         $in_same_term   Bài viết có nên thuộc cùng thuật ngữ phân loại hay không.
+	 * @param int[]|string $excluded_terms Mảng các ID thuật ngữ bị loại trừ. Chuỗi rỗng nếu không có giá trị nào được cung cấp.
+	 * @param string       $taxonomy       Phân loại. Dùng để xác định thuật ngữ được sử dụng khi `$in_same_term` là true.
+	 * @param WP_Post      $post           Đối tượng WP_Post.
 	 */
 	$where = apply_filters( "get_{$adjacent}_post_where", $wpdb->prepare( "WHERE p.post_date $op %s AND p.post_type = %s $where", $current_post_date, $post->post_type ), $in_same_term, $excluded_terms, $taxonomy, $post );
 
 	/**
-	 * Filters the ORDER BY clause in the SQL for an adjacent post query.
+	 * Lọc mệnh đề ORDER BY trong SQL cho truy vấn bài viết liền kề.
 	 *
-	 * The dynamic portion of the hook name, `$adjacent`, refers to the type
-	 * of adjacency, 'next' or 'previous'.
+	 * Phần động của tên hook, `$adjacent`, tham chiếu đến loại
+	 * liền kề, 'next' hoặc 'previous'.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `get_next_post_sort`
 	 *  - `get_previous_post_sort`
 	 *
 	 * @since 2.5.0
-	 * @since 4.4.0 Added the `$post` parameter.
-	 * @since 4.9.0 Added the `$order` parameter.
+	 * @since 4.4.0 Thêm tham số `$post`.
+	 * @since 4.9.0 Thêm tham số `$order`.
 	 *
-	 * @param string $order_by The `ORDER BY` clause in the SQL.
-	 * @param WP_Post $post    WP_Post object.
-	 * @param string  $order   Sort order. 'DESC' for previous post, 'ASC' for next.
+	 * @param string $order_by Mệnh đề `ORDER BY` trong SQL.
+	 * @param WP_Post $post    Đối tượng WP_Post.
+	 * @param string  $order   Thứ tự sắp xếp. 'DESC' cho bài viết trước, 'ASC' cho bài viết tiếp theo.
 	 */
 	$sort = apply_filters( "get_{$adjacent}_post_sort", "ORDER BY p.post_date $order LIMIT 1", $post, $order );
 
@@ -2034,21 +2033,21 @@ function get_adjacent_post( $in_same_term = false, $excluded_terms = '', $previo
 }
 
 /**
- * Retrieves the adjacent post relational link.
+ * Lấy liên kết quan hệ bài viết liền kề.
  *
- * Can either be next or previous post relational link.
+ * Có thể là liên kết quan hệ bài viết tiếp theo hoặc trước đó.
  *
  * @since 2.8.0
  *
- * @param string       $title          Optional. Link title format. Default '%title'.
- * @param bool         $in_same_term   Optional. Whether link should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty.
- * @param bool         $previous       Optional. Whether to display link to previous or next post.
- *                                     Default true.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
- * @return string|void The adjacent post relational link URL.
+ * @param string       $title          Tùy chọn. Định dạng tiêu đề liên kết. Mặc định '%title'.
+ * @param bool         $in_same_term   Tùy chọn. Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param bool         $previous       Tùy chọn. Có hiển thị liên kết đến bài viết trước hay tiếp theo.
+ *                                     Mặc định true.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
+ * @return string|void URL liên kết quan hệ bài viết liền kề.
  */
 function get_adjacent_post_rel_link( $title = '%title', $in_same_term = false, $excluded_terms = '', $previous = true, $taxonomy = 'category' ) {
 	$post = get_post();
@@ -2085,34 +2084,34 @@ function get_adjacent_post_rel_link( $title = '%title', $in_same_term = false, $
 	$adjacent = $previous ? 'previous' : 'next';
 
 	/**
-	 * Filters the adjacent post relational link.
+	 * Lọc liên kết quan hệ bài viết liền kề.
 	 *
-	 * The dynamic portion of the hook name, `$adjacent`, refers to the type
-	 * of adjacency, 'next' or 'previous'.
+	 * Phần động của tên hook, `$adjacent`, tham chiếu đến loại
+	 * liền kề, 'next' hoặc 'previous'.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `next_post_rel_link`
 	 *  - `previous_post_rel_link`
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $link The relational link.
+	 * @param string $link Liên kết quan hệ.
 	 */
 	return apply_filters( "{$adjacent}_post_rel_link", $link );
 }
 
 /**
- * Displays the relational links for the posts adjacent to the current post.
+ * Hiển thị các liên kết quan hệ cho bài viết liền kề với bài viết hiện tại.
  *
  * @since 2.8.0
  *
- * @param string       $title          Optional. Link title format. Default '%title'.
- * @param bool         $in_same_term   Optional. Whether link should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
+ * @param string       $title          Tùy chọn. Định dạng tiêu đề liên kết. Mặc định '%title'.
+ * @param bool         $in_same_term   Tùy chọn. Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
  */
 function adjacent_posts_rel_link( $title = '%title', $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
 	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms, true, $taxonomy );
@@ -2120,13 +2119,13 @@ function adjacent_posts_rel_link( $title = '%title', $in_same_term = false, $exc
 }
 
 /**
- * Displays relational links for the posts adjacent to the current post for single post pages.
+ * Hiển thị liên kết quan hệ cho bài viết liền kề với bài viết hiện tại trên trang bài viết đơn.
  *
- * This is meant to be attached to actions like 'wp_head'. Do not call this directly in plugins
- * or theme templates.
+ * Hàm này được thiết kế để gắn vào các action như 'wp_head'. Không gọi trực tiếp trong plugin
+ * hoặc mẫu theme.
  *
  * @since 3.0.0
- * @since 5.6.0 No longer used in core.
+ * @since 5.6.0 Không còn được sử dụng trong lõi.
  *
  * @see adjacent_posts_rel_link()
  */
@@ -2138,57 +2137,57 @@ function adjacent_posts_rel_link_wp_head() {
 }
 
 /**
- * Displays the relational link for the next post adjacent to the current post.
+ * Hiển thị liên kết quan hệ cho bài viết tiếp theo liền kề với bài viết hiện tại.
  *
  * @since 2.8.0
  *
  * @see get_adjacent_post_rel_link()
  *
- * @param string       $title          Optional. Link title format. Default '%title'.
- * @param bool         $in_same_term   Optional. Whether link should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
+ * @param string       $title          Tùy chọn. Định dạng tiêu đề liên kết. Mặc định '%title'.
+ * @param bool         $in_same_term   Tùy chọn. Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
  */
 function next_post_rel_link( $title = '%title', $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
 	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms, false, $taxonomy );
 }
 
 /**
- * Displays the relational link for the previous post adjacent to the current post.
+ * Hiển thị liên kết quan hệ cho bài viết trước đó liền kề với bài viết hiện tại.
  *
  * @since 2.8.0
  *
  * @see get_adjacent_post_rel_link()
  *
- * @param string       $title          Optional. Link title format. Default '%title'.
- * @param bool         $in_same_term   Optional. Whether link should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default true.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
+ * @param string       $title          Tùy chọn. Định dạng tiêu đề liên kết. Mặc định '%title'.
+ * @param bool         $in_same_term   Tùy chọn. Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định true.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
  */
 function prev_post_rel_link( $title = '%title', $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
 	echo get_adjacent_post_rel_link( $title, $in_same_term, $excluded_terms, true, $taxonomy );
 }
 
 /**
- * Retrieves the boundary post.
+ * Lấy bài viết ở ranh giới.
  *
- * Boundary being either the first or last post by publish date within the constraints specified
- * by `$in_same_term` or `$excluded_terms`.
+ * Ranh giới là bài viết đầu tiên hoặc cuối cùng theo ngày xuất bản trong phạm vi ràng buộc được chỉ định
+ * bởi `$in_same_term` hoặc `$excluded_terms`.
  *
  * @since 2.8.0
  *
- * @param bool         $in_same_term   Optional. Whether returned post should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty.
- * @param bool         $start          Optional. Whether to retrieve first or last post.
- *                                     Default true.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
- * @return array|null Array containing the boundary post object if successful, null otherwise.
+ * @param bool         $in_same_term   Tùy chọn. Bài viết trả về có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param bool         $start          Tùy chọn. Có lấy bài viết đầu tiên hay cuối cùng.
+ *                                     Mặc định true.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
+ * @return array|null Mảng chứa đối tượng bài viết ranh giới nếu thành công, null nếu ngược lại.
  */
 function get_boundary_post( $in_same_term = false, $excluded_terms = '', $start = true, $taxonomy = 'category' ) {
 	$post = get_post();
@@ -2242,96 +2241,96 @@ function get_boundary_post( $in_same_term = false, $excluded_terms = '', $start 
 }
 
 /**
- * Retrieves the previous post link that is adjacent to the current post.
+ * Lấy liên kết bài viết trước đó liền kề với bài viết hiện tại.
  *
  * @since 3.7.0
  *
- * @param string       $format         Optional. Link anchor format. Default '&laquo; %link'.
- * @param string       $link           Optional. Link permalink format. Default '%title'.
- * @param bool         $in_same_term   Optional. Whether link should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
- * @return string The link URL of the previous post in relation to the current post.
+ * @param string       $format         Tùy chọn. Định dạng neo liên kết. Mặc định '&laquo; %link'.
+ * @param string       $link           Tùy chọn. Định dạng đường dẫn tĩnh liên kết. Mặc định '%title'.
+ * @param bool         $in_same_term   Tùy chọn. Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
+ * @return string URL liên kết của bài viết trước đó so với bài viết hiện tại.
  */
 function get_previous_post_link( $format = '&laquo; %link', $link = '%title', $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
 	return get_adjacent_post_link( $format, $link, $in_same_term, $excluded_terms, true, $taxonomy );
 }
 
 /**
- * Displays the previous post link that is adjacent to the current post.
+ * Hiển thị liên kết bài viết trước đó liền kề với bài viết hiện tại.
  *
  * @since 1.5.0
  *
  * @see get_previous_post_link()
  *
- * @param string       $format         Optional. Link anchor format. Default '&laquo; %link'.
- * @param string       $link           Optional. Link permalink format. Default '%title'.
- * @param bool         $in_same_term   Optional. Whether link should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
+ * @param string       $format         Tùy chọn. Định dạng neo liên kết. Mặc định '&laquo; %link'.
+ * @param string       $link           Tùy chọn. Định dạng đường dẫn tĩnh liên kết. Mặc định '%title'.
+ * @param bool         $in_same_term   Tùy chọn. Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
  */
 function previous_post_link( $format = '&laquo; %link', $link = '%title', $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
 	echo get_previous_post_link( $format, $link, $in_same_term, $excluded_terms, $taxonomy );
 }
 
 /**
- * Retrieves the next post link that is adjacent to the current post.
+ * Lấy liên kết bài viết tiếp theo liền kề với bài viết hiện tại.
  *
  * @since 3.7.0
  *
- * @param string       $format         Optional. Link anchor format. Default '&laquo; %link'.
- * @param string       $link           Optional. Link permalink format. Default '%title'.
- * @param bool         $in_same_term   Optional. Whether link should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
- * @return string The link URL of the next post in relation to the current post.
+ * @param string       $format         Tùy chọn. Định dạng neo liên kết. Mặc định '&laquo; %link'.
+ * @param string       $link           Tùy chọn. Định dạng đường dẫn tĩnh liên kết. Mặc định '%title'.
+ * @param bool         $in_same_term   Tùy chọn. Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
+ * @return string URL liên kết của bài viết tiếp theo so với bài viết hiện tại.
  */
 function get_next_post_link( $format = '%link &raquo;', $link = '%title', $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
 	return get_adjacent_post_link( $format, $link, $in_same_term, $excluded_terms, false, $taxonomy );
 }
 
 /**
- * Displays the next post link that is adjacent to the current post.
+ * Hiển thị liên kết bài viết tiếp theo liền kề với bài viết hiện tại.
  *
  * @since 1.5.0
  *
  * @see get_next_post_link()
  *
- * @param string       $format         Optional. Link anchor format. Default '&laquo; %link'.
- * @param string       $link           Optional. Link permalink format. Default '%title'.
- * @param bool         $in_same_term   Optional. Whether link should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded term IDs.
- *                                     Default empty.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
+ * @param string       $format         Tùy chọn. Định dạng neo liên kết. Mặc định '&laquo; %link'.
+ * @param string       $link           Tùy chọn. Định dạng đường dẫn tĩnh liên kết. Mặc định '%title'.
+ * @param bool         $in_same_term   Tùy chọn. Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
  */
 function next_post_link( $format = '%link &raquo;', $link = '%title', $in_same_term = false, $excluded_terms = '', $taxonomy = 'category' ) {
 	echo get_next_post_link( $format, $link, $in_same_term, $excluded_terms, $taxonomy );
 }
 
 /**
- * Retrieves the adjacent post link.
+ * Lấy liên kết bài viết liền kề.
  *
- * Can be either next post link or previous.
+ * Có thể là liên kết bài viết tiếp theo hoặc trước đó.
  *
  * @since 3.7.0
  *
- * @param string       $format         Link anchor format.
- * @param string       $link           Link permalink format.
- * @param bool         $in_same_term   Optional. Whether link should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded terms IDs.
- *                                     Default empty.
- * @param bool         $previous       Optional. Whether to display link to previous or next post.
- *                                     Default true.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
- * @return string The link URL of the previous or next post in relation to the current post.
+ * @param string       $format         Định dạng neo liên kết.
+ * @param string       $link           Định dạng đường dẫn tĩnh liên kết.
+ * @param bool         $in_same_term   Tùy chọn. Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param bool         $previous       Tùy chọn. Có hiển thị liên kết đến bài viết trước hay tiếp theo.
+ *                                     Mặc định true.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
+ * @return string URL liên kết của bài viết trước hoặc tiếp theo so với bài viết hiện tại.
  */
 function get_adjacent_post_link( $format, $link, $in_same_term = false, $excluded_terms = '', $previous = true, $taxonomy = 'category' ) {
 	if ( $previous && is_attachment() ) {
@@ -2349,7 +2348,7 @@ function get_adjacent_post_link( $format, $link, $in_same_term = false, $exclude
 			$title = $previous ? __( 'Previous Post' ) : __( 'Next Post' );
 		}
 
-		/** This filter is documented in wp-includes/post-template.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/post-template.php */
 		$title = apply_filters( 'the_title', $title, $post->ID );
 
 		$date = mysql2date( get_option( 'date_format' ), $post->post_date );
@@ -2366,60 +2365,60 @@ function get_adjacent_post_link( $format, $link, $in_same_term = false, $exclude
 	$adjacent = $previous ? 'previous' : 'next';
 
 	/**
-	 * Filters the adjacent post link.
+	 * Lọc liên kết bài viết liền kề.
 	 *
-	 * The dynamic portion of the hook name, `$adjacent`, refers to the type
-	 * of adjacency, 'next' or 'previous'.
+	 * Phần động của tên hook, `$adjacent`, tham chiếu đến loại
+	 * liền kề, 'next' hoặc 'previous'.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `next_post_link`
 	 *  - `previous_post_link`
 	 *
 	 * @since 2.6.0
-	 * @since 4.2.0 Added the `$adjacent` parameter.
+	 * @since 4.2.0 Thêm tham số `$adjacent`.
 	 *
-	 * @param string         $output   The adjacent post link.
-	 * @param string         $format   Link anchor format.
-	 * @param string         $link     Link permalink format.
-	 * @param WP_Post|string $post     The adjacent post. Empty string if no corresponding post exists.
-	 * @param string         $adjacent Whether the post is previous or next.
+	 * @param string         $output   Liên kết bài viết liền kề.
+	 * @param string         $format   Định dạng neo liên kết.
+	 * @param string         $link     Định dạng đường dẫn tĩnh liên kết.
+	 * @param WP_Post|string $post     Bài viết liền kề. Chuỗi rỗng nếu không có bài viết tương ứng.
+	 * @param string         $adjacent Bài viết là trước hay tiếp theo.
 	 */
 	return apply_filters( "{$adjacent}_post_link", $output, $format, $link, $post, $adjacent );
 }
 
 /**
- * Displays the adjacent post link.
+ * Hiển thị liên kết bài viết liền kề.
  *
- * Can be either next post link or previous.
+ * Có thể là liên kết bài viết tiếp theo hoặc trước đó.
  *
  * @since 2.5.0
  *
- * @param string       $format         Link anchor format.
- * @param string       $link           Link permalink format.
- * @param bool         $in_same_term   Optional. Whether link should be in the same taxonomy term.
- *                                     Default false.
- * @param int[]|string $excluded_terms Optional. Array or comma-separated list of excluded category IDs.
- *                                     Default empty.
- * @param bool         $previous       Optional. Whether to display link to previous or next post.
- *                                     Default true.
- * @param string       $taxonomy       Optional. Taxonomy, if `$in_same_term` is true. Default 'category'.
+ * @param string       $format         Định dạng neo liên kết.
+ * @param string       $link           Định dạng đường dẫn tĩnh liên kết.
+ * @param bool         $in_same_term   Tùy chọn. Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                     Mặc định false.
+ * @param int[]|string $excluded_terms Tùy chọn. Mảng hoặc danh sách phân cách bằng dấu phẩy các ID chuyên mục bị loại trừ.
+ *                                     Mặc định rỗng.
+ * @param bool         $previous       Tùy chọn. Có hiển thị liên kết đến bài viết trước hay tiếp theo.
+ *                                     Mặc định true.
+ * @param string       $taxonomy       Tùy chọn. Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
  */
 function adjacent_post_link( $format, $link, $in_same_term = false, $excluded_terms = '', $previous = true, $taxonomy = 'category' ) {
 	echo get_adjacent_post_link( $format, $link, $in_same_term, $excluded_terms, $previous, $taxonomy );
 }
 
 /**
- * Retrieves the link for a page number.
+ * Lấy liên kết cho số trang.
  *
  * @since 1.5.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param int  $pagenum Optional. Page number. Default 1.
- * @param bool $escape  Optional. Whether to escape the URL for display, with esc_url().
- *                      If set to false, prepares the URL with sanitize_url(). Default true.
- * @return string The link URL for the given page number.
+ * @param int  $pagenum Tùy chọn. Số trang. Mặc định 1.
+ * @param bool $escape  Tùy chọn. Có thoát URL để hiển thị bằng esc_url() hay không.
+ *                      Nếu đặt là false, chuẩn bị URL bằng sanitize_url(). Mặc định true.
+ * @return string URL liên kết cho số trang được chỉ định.
  */
 function get_pagenum_link( $pagenum = 1, $escape = true ) {
 	global $wp_rewrite;
@@ -2479,13 +2478,13 @@ function get_pagenum_link( $pagenum = 1, $escape = true ) {
 	}
 
 	/**
-	 * Filters the page number link for the current request.
+	 * Lọc liên kết số trang cho yêu cầu hiện tại.
 	 *
 	 * @since 2.5.0
-	 * @since 5.2.0 Added the `$pagenum` argument.
+	 * @since 5.2.0 Thêm tham số `$pagenum`.
 	 *
-	 * @param string $result  The page number link.
-	 * @param int    $pagenum The page number.
+	 * @param string $result  Liên kết số trang.
+	 * @param int    $pagenum Số trang.
 	 */
 	$result = apply_filters( 'get_pagenum_link', $result, $pagenum );
 
@@ -2497,16 +2496,16 @@ function get_pagenum_link( $pagenum = 1, $escape = true ) {
 }
 
 /**
- * Retrieves the next posts page link.
+ * Lấy liên kết trang bài viết tiếp theo.
  *
- * Backported from 2.1.3 to 2.0.10.
+ * Được chuyển ngược từ 2.1.3 về 2.0.10.
  *
  * @since 2.0.10
  *
  * @global int $paged
  *
- * @param int $max_page Optional. Max pages. Default 0.
- * @return string|void The link URL for next posts page.
+ * @param int $max_page Tùy chọn. Số trang tối đa. Mặc định 0.
+ * @return string|void URL liên kết cho trang bài viết tiếp theo.
  */
 function get_next_posts_page_link( $max_page = 0 ) {
 	global $paged;
@@ -2525,13 +2524,13 @@ function get_next_posts_page_link( $max_page = 0 ) {
 }
 
 /**
- * Displays or retrieves the next posts page link.
+ * Hiển thị hoặc lấy liên kết trang bài viết tiếp theo.
  *
  * @since 0.71
  *
- * @param int  $max_page Optional. Max pages. Default 0.
- * @param bool $display  Optional. Whether to echo the link. Default true.
- * @return string|void The link URL for next posts page if `$display = false`.
+ * @param int  $max_page Tùy chọn. Số trang tối đa. Mặc định 0.
+ * @param bool $display  Tùy chọn. Có echo liên kết hay không. Mặc định true.
+ * @return string|void URL liên kết cho trang bài viết tiếp theo nếu `$display = false`.
  */
 function next_posts( $max_page = 0, $display = true ) {
 	$link   = get_next_posts_page_link( $max_page );
@@ -2545,16 +2544,16 @@ function next_posts( $max_page = 0, $display = true ) {
 }
 
 /**
- * Retrieves the next posts page link.
+ * Lấy liên kết trang bài viết tiếp theo.
  *
  * @since 2.7.0
  *
  * @global int      $paged
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng truy vấn WordPress.
  *
- * @param string $label    Content for link text.
- * @param int    $max_page Optional. Max pages. Default 0.
- * @return string|void HTML-formatted next posts page link.
+ * @param string $label    Nội dung cho văn bản liên kết.
+ * @param int    $max_page Tùy chọn. Số trang tối đa. Mặc định 0.
+ * @return string|void Liên kết trang bài viết tiếp theo được định dạng HTML.
  */
 function get_next_posts_link( $label = null, $max_page = 0 ) {
 	global $paged, $wp_query;
@@ -2575,11 +2574,11 @@ function get_next_posts_link( $label = null, $max_page = 0 ) {
 
 	if ( ! is_single() && ( $next_page <= $max_page ) ) {
 		/**
-		 * Filters the anchor tag attributes for the next posts page link.
+		 * Lọc thuộc tính thẻ neo cho liên kết trang bài viết tiếp theo.
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param string $attributes Attributes for the anchor tag.
+		 * @param string $attributes Thuộc tính cho thẻ neo.
 		 */
 		$attr = apply_filters( 'next_posts_link_attributes', '' );
 
@@ -2593,29 +2592,29 @@ function get_next_posts_link( $label = null, $max_page = 0 ) {
 }
 
 /**
- * Displays the next posts page link.
+ * Hiển thị liên kết trang bài viết tiếp theo.
  *
  * @since 0.71
  *
- * @param string $label    Content for link text.
- * @param int    $max_page Optional. Max pages. Default 0.
+ * @param string $label    Nội dung cho văn bản liên kết.
+ * @param int    $max_page Tùy chọn. Số trang tối đa. Mặc định 0.
  */
 function next_posts_link( $label = null, $max_page = 0 ) {
 	echo get_next_posts_link( $label, $max_page );
 }
 
 /**
- * Retrieves the previous posts page link.
+ * Lấy liên kết trang bài viết trước đó.
  *
- * Will only return string, if not on a single page or post.
+ * Chỉ trả về chuỗi nếu không phải trên trang đơn hoặc bài viết đơn.
  *
- * Backported to 2.0.10 from 2.1.3.
+ * Được chuyển ngược về 2.0.10 từ 2.1.3.
  *
  * @since 2.0.10
  *
  * @global int $paged
  *
- * @return string|void The link for the previous posts page.
+ * @return string|void Liên kết cho trang bài viết trước đó.
  */
 function get_previous_posts_page_link() {
 	global $paged;
@@ -2632,12 +2631,12 @@ function get_previous_posts_page_link() {
 }
 
 /**
- * Displays or retrieves the previous posts page link.
+ * Hiển thị hoặc lấy liên kết trang bài viết trước đó.
  *
  * @since 0.71
  *
- * @param bool $display Optional. Whether to echo the link. Default true.
- * @return string|void The previous posts page link if `$display = false`.
+ * @param bool $display Tùy chọn. Có echo liên kết hay không. Mặc định true.
+ * @return string|void Liên kết trang bài viết trước đó nếu `$display = false`.
  */
 function previous_posts( $display = true ) {
 	$output = esc_url( get_previous_posts_page_link() );
@@ -2650,14 +2649,14 @@ function previous_posts( $display = true ) {
 }
 
 /**
- * Retrieves the previous posts page link.
+ * Lấy liên kết trang bài viết trước đó.
  *
  * @since 2.7.0
  *
  * @global int $paged
  *
- * @param string $label Optional. Previous page link text.
- * @return string|void HTML-formatted previous page link.
+ * @param string $label Tùy chọn. Văn bản liên kết trang trước.
+ * @return string|void Liên kết trang trước được định dạng HTML.
  */
 function get_previous_posts_link( $label = null ) {
 	global $paged;
@@ -2668,11 +2667,11 @@ function get_previous_posts_link( $label = null ) {
 
 	if ( ! is_single() && $paged > 1 ) {
 		/**
-		 * Filters the anchor tag attributes for the previous posts page link.
+		 * Lọc thuộc tính thẻ neo cho liên kết trang bài viết trước đó.
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param string $attributes Attributes for the anchor tag.
+		 * @param string $attributes Thuộc tính cho thẻ neo.
 		 */
 		$attr = apply_filters( 'previous_posts_link_attributes', '' );
 
@@ -2686,33 +2685,33 @@ function get_previous_posts_link( $label = null ) {
 }
 
 /**
- * Displays the previous posts page link.
+ * Hiển thị liên kết trang bài viết trước đó.
  *
  * @since 0.71
  *
- * @param string $label Optional. Previous page link text.
+ * @param string $label Tùy chọn. Văn bản liên kết trang trước.
  */
 function previous_posts_link( $label = null ) {
 	echo get_previous_posts_link( $label );
 }
 
 /**
- * Retrieves the post pages link navigation for previous and next pages.
+ * Lấy điều hướng liên kết trang bài viết cho trang trước và trang tiếp theo.
  *
  * @since 2.8.0
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng truy vấn WordPress.
  *
  * @param string|array $args {
- *     Optional. Arguments to build the post pages link navigation.
+ *     Tùy chọn. Các tham số để xây dựng điều hướng liên kết trang bài viết.
  *
- *     @type string $sep      Separator character. Default '&#8212;'.
- *     @type string $prelabel Link text to display for the previous page link.
- *                            Default '&laquo; Previous Page'.
- *     @type string $nxtlabel Link text to display for the next page link.
- *                            Default 'Next Page &raquo;'.
+ *     @type string $sep      Ký tự phân cách. Mặc định '&#8212;'.
+ *     @type string $prelabel Văn bản liên kết hiển thị cho liên kết trang trước.
+ *                            Mặc định '&laquo; Previous Page'.
+ *     @type string $nxtlabel Văn bản liên kết hiển thị cho liên kết trang tiếp theo.
+ *                            Mặc định 'Next Page &raquo;'.
  * }
- * @return string The posts link navigation.
+ * @return string Điều hướng liên kết bài viết.
  */
 function get_posts_nav_link( $args = array() ) {
 	global $wp_query;
@@ -2730,7 +2729,7 @@ function get_posts_nav_link( $args = array() ) {
 		$max_num_pages = $wp_query->max_num_pages;
 		$paged         = get_query_var( 'paged' );
 
-		// Only have sep if there's both prev and next results.
+		// Chỉ có dấu phân cách nếu có cả kết quả trước và tiếp theo.
 		if ( $paged < 2 || $paged >= $max_num_pages ) {
 			$args['sep'] = '';
 		}
@@ -2745,13 +2744,13 @@ function get_posts_nav_link( $args = array() ) {
 }
 
 /**
- * Displays the post pages link navigation for previous and next pages.
+ * Hiển thị điều hướng liên kết trang bài viết cho trang trước và trang tiếp theo.
  *
  * @since 0.71
  *
- * @param string $sep      Optional. Separator for posts navigation links. Default empty.
- * @param string $prelabel Optional. Label for previous pages. Default empty.
- * @param string $nxtlabel Optional Label for next pages. Default empty.
+ * @param string $sep      Tùy chọn. Dấu phân cách cho liên kết điều hướng bài viết. Mặc định rỗng.
+ * @param string $prelabel Tùy chọn. Nhãn cho trang trước. Mặc định rỗng.
+ * @param string $nxtlabel Tùy chọn. Nhãn cho trang tiếp theo. Mặc định rỗng.
  */
 function posts_nav_link( $sep = '', $prelabel = '', $nxtlabel = '' ) {
 	$args = array_filter( compact( 'sep', 'prelabel', 'nxtlabel' ) );
@@ -2759,34 +2758,34 @@ function posts_nav_link( $sep = '', $prelabel = '', $nxtlabel = '' ) {
 }
 
 /**
- * Retrieves the navigation to next/previous post, when applicable.
+ * Lấy điều hướng đến bài viết tiếp theo/trước đó, khi áp dụng được.
  *
  * @since 4.1.0
- * @since 4.4.0 Introduced the `in_same_term`, `excluded_terms`, and `taxonomy` arguments.
- * @since 5.3.0 Added the `aria_label` parameter.
- * @since 5.5.0 Added the `class` parameter.
+ * @since 4.4.0 Giới thiệu các tham số `in_same_term`, `excluded_terms`, và `taxonomy`.
+ * @since 5.3.0 Thêm tham số `aria_label`.
+ * @since 5.5.0 Thêm tham số `class`.
  *
  * @param array $args {
- *     Optional. Default post navigation arguments. Default empty array.
+ *     Tùy chọn. Các tham số điều hướng bài viết mặc định. Mặc định mảng rỗng.
  *
- *     @type string       $prev_text          Anchor text to display in the previous post link.
- *                                            Default '%title'.
- *     @type string       $next_text          Anchor text to display in the next post link.
- *                                            Default '%title'.
- *     @type bool         $in_same_term       Whether link should be in the same taxonomy term.
- *                                            Default false.
- *     @type int[]|string $excluded_terms     Array or comma-separated list of excluded term IDs.
- *                                            Default empty.
- *     @type string       $taxonomy           Taxonomy, if `$in_same_term` is true. Default 'category'.
- *     @type string       $screen_reader_text Screen reader text for the nav element.
- *                                            Default 'Post navigation'.
- *     @type string       $aria_label         ARIA label text for the nav element. Default 'Posts'.
- *     @type string       $class              Custom class for the nav element. Default 'post-navigation'.
+ *     @type string       $prev_text          Văn bản neo hiển thị trong liên kết bài viết trước.
+ *                                            Mặc định '%title'.
+ *     @type string       $next_text          Văn bản neo hiển thị trong liên kết bài viết tiếp theo.
+ *                                            Mặc định '%title'.
+ *     @type bool         $in_same_term       Liên kết có nên thuộc cùng thuật ngữ phân loại hay không.
+ *                                            Mặc định false.
+ *     @type int[]|string $excluded_terms     Mảng hoặc danh sách phân cách bằng dấu phẩy các ID thuật ngữ bị loại trừ.
+ *                                            Mặc định rỗng.
+ *     @type string       $taxonomy           Phân loại, nếu `$in_same_term` là true. Mặc định 'category'.
+ *     @type string       $screen_reader_text Văn bản đọc màn hình cho phần tử nav.
+ *                                            Mặc định 'Post navigation'.
+ *     @type string       $aria_label         Văn bản nhãn ARIA cho phần tử nav. Mặc định 'Posts'.
+ *     @type string       $class              Class tùy chỉnh cho phần tử nav. Mặc định 'post-navigation'.
  * }
- * @return string Markup for post links.
+ * @return string Markup cho liên kết bài viết.
  */
 function get_the_post_navigation( $args = array() ) {
-	// Make sure the nav element has an aria-label attribute: fallback to the screen reader text.
+	// Đảm bảo phần tử nav có thuộc tính aria-label: dự phòng bằng văn bản đọc màn hình.
 	if ( ! empty( $args['screen_reader_text'] ) && empty( $args['aria_label'] ) ) {
 		$args['aria_label'] = $args['screen_reader_text'];
 	}
@@ -2823,7 +2822,7 @@ function get_the_post_navigation( $args = array() ) {
 		$args['taxonomy']
 	);
 
-	// Only add markup if there's somewhere to navigate to.
+	// Chỉ thêm markup nếu có nơi để điều hướng đến.
 	if ( $previous || $next ) {
 		$navigation = _navigation_markup( $previous . $next, $args['class'], $args['screen_reader_text'], $args['aria_label'] );
 	}
@@ -2832,48 +2831,48 @@ function get_the_post_navigation( $args = array() ) {
 }
 
 /**
- * Displays the navigation to next/previous post, when applicable.
+ * Hiển thị điều hướng đến bài viết tiếp theo/trước đó, khi áp dụng được.
  *
  * @since 4.1.0
  *
- * @param array $args Optional. See get_the_post_navigation() for available arguments.
- *                    Default empty array.
+ * @param array $args Tùy chọn. Xem get_the_post_navigation() để biết các tham số có sẵn.
+ *                    Mặc định mảng rỗng.
  */
 function the_post_navigation( $args = array() ) {
 	echo get_the_post_navigation( $args );
 }
 
 /**
- * Returns the navigation to next/previous set of posts, when applicable.
+ * Trả về điều hướng đến tập bài viết tiếp theo/trước đó, khi áp dụng được.
  *
  * @since 4.1.0
- * @since 5.3.0 Added the `aria_label` parameter.
- * @since 5.5.0 Added the `class` parameter.
+ * @since 5.3.0 Thêm tham số `aria_label`.
+ * @since 5.5.0 Thêm tham số `class`.
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng truy vấn WordPress.
  *
  * @param array $args {
- *     Optional. Default posts navigation arguments. Default empty array.
+ *     Tùy chọn. Các tham số điều hướng bài viết mặc định. Mặc định mảng rỗng.
  *
- *     @type string $prev_text          Anchor text to display in the previous posts link.
- *                                      Default 'Older posts'.
- *     @type string $next_text          Anchor text to display in the next posts link.
- *                                      Default 'Newer posts'.
- *     @type string $screen_reader_text Screen reader text for the nav element.
- *                                      Default 'Posts navigation'.
- *     @type string $aria_label         ARIA label text for the nav element. Default 'Posts'.
- *     @type string $class              Custom class for the nav element. Default 'posts-navigation'.
+ *     @type string $prev_text          Văn bản neo hiển thị trong liên kết trang bài viết trước.
+ *                                      Mặc định 'Older posts'.
+ *     @type string $next_text          Văn bản neo hiển thị trong liên kết trang bài viết tiếp theo.
+ *                                      Mặc định 'Newer posts'.
+ *     @type string $screen_reader_text Văn bản đọc màn hình cho phần tử nav.
+ *                                      Mặc định 'Posts navigation'.
+ *     @type string $aria_label         Văn bản nhãn ARIA cho phần tử nav. Mặc định 'Posts'.
+ *     @type string $class              Class tùy chỉnh cho phần tử nav. Mặc định 'posts-navigation'.
  * }
- * @return string Markup for posts links.
+ * @return string Markup cho liên kết bài viết.
  */
 function get_the_posts_navigation( $args = array() ) {
 	global $wp_query;
 
 	$navigation = '';
 
-	// Don't print empty markup if there's only one page.
+	// Không in markup rỗng nếu chỉ có một trang.
 	if ( $wp_query->max_num_pages > 1 ) {
-		// Make sure the nav element has an aria-label attribute: fallback to the screen reader text.
+		// Đảm bảo phần tử nav có thuộc tính aria-label: dự phòng bằng văn bản đọc màn hình.
 		if ( ! empty( $args['screen_reader_text'] ) && empty( $args['aria_label'] ) ) {
 			$args['aria_label'] = $args['screen_reader_text'];
 		}
@@ -2907,44 +2906,44 @@ function get_the_posts_navigation( $args = array() ) {
 }
 
 /**
- * Displays the navigation to next/previous set of posts, when applicable.
+ * Hiển thị điều hướng đến tập bài viết tiếp theo/trước đó, khi áp dụng được.
  *
  * @since 4.1.0
  *
- * @param array $args Optional. See get_the_posts_navigation() for available arguments.
- *                    Default empty array.
+ * @param array $args Tùy chọn. Xem get_the_posts_navigation() để biết các tham số có sẵn.
+ *                    Mặc định mảng rỗng.
  */
 function the_posts_navigation( $args = array() ) {
 	echo get_the_posts_navigation( $args );
 }
 
 /**
- * Retrieves a paginated navigation to next/previous set of posts, when applicable.
+ * Lấy điều hướng phân trang đến tập bài viết tiếp theo/trước đó, khi áp dụng được.
  *
  * @since 4.1.0
- * @since 5.3.0 Added the `aria_label` parameter.
- * @since 5.5.0 Added the `class` parameter.
+ * @since 5.3.0 Thêm tham số `aria_label`.
+ * @since 5.5.0 Thêm tham số `class`.
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng truy vấn WordPress.
  *
  * @param array $args {
- *     Optional. Default pagination arguments, see paginate_links().
+ *     Tùy chọn. Các tham số phân trang mặc định, xem paginate_links().
  *
- *     @type string $screen_reader_text Screen reader text for navigation element.
- *                                      Default 'Posts pagination'.
- *     @type string $aria_label         ARIA label text for the nav element. Default 'Posts pagination'.
- *     @type string $class              Custom class for the nav element. Default 'pagination'.
+ *     @type string $screen_reader_text Văn bản đọc màn hình cho phần tử điều hướng.
+ *                                      Mặc định 'Posts pagination'.
+ *     @type string $aria_label         Văn bản nhãn ARIA cho phần tử nav. Mặc định 'Posts pagination'.
+ *     @type string $class              Class tùy chỉnh cho phần tử nav. Mặc định 'pagination'.
  * }
- * @return string Markup for pagination links.
+ * @return string Markup cho liên kết phân trang.
  */
 function get_the_posts_pagination( $args = array() ) {
 	global $wp_query;
 
 	$navigation = '';
 
-	// Don't print empty markup if there's only one page.
+	// Không in markup rỗng nếu chỉ có một trang.
 	if ( $wp_query->max_num_pages > 1 ) {
-		// Make sure the nav element has an aria-label attribute: fallback to the screen reader text.
+		// Đảm bảo phần tử nav có thuộc tính aria-label: dự phòng bằng văn bản đọc màn hình.
 		if ( ! empty( $args['screen_reader_text'] ) && empty( $args['aria_label'] ) ) {
 			$args['aria_label'] = $args['screen_reader_text'];
 		}
@@ -2962,27 +2961,27 @@ function get_the_posts_pagination( $args = array() ) {
 		);
 
 		/**
-		 * Filters the arguments for posts pagination links.
+		 * Lọc các tham số cho liên kết phân trang bài viết.
 		 *
 		 * @since 6.1.0
 		 *
 		 * @param array $args {
-		 *     Optional. Default pagination arguments, see paginate_links().
+		 *     Tùy chọn. Các tham số phân trang mặc định, xem paginate_links().
 		 *
-		 *     @type string $screen_reader_text Screen reader text for navigation element.
-		 *                                      Default 'Posts navigation'.
-		 *     @type string $aria_label         ARIA label text for the nav element. Default 'Posts'.
-		 *     @type string $class              Custom class for the nav element. Default 'pagination'.
+		 *     @type string $screen_reader_text Văn bản đọc màn hình cho phần tử điều hướng.
+		 *                                      Mặc định 'Posts navigation'.
+		 *     @type string $aria_label         Văn bản nhãn ARIA cho phần tử nav. Mặc định 'Posts'.
+		 *     @type string $class              Class tùy chỉnh cho phần tử nav. Mặc định 'pagination'.
 		 * }
 		 */
 		$args = apply_filters( 'the_posts_pagination_args', $args );
 
-		// Make sure we get a string back. Plain is the next best thing.
+		// Đảm bảo nhận lại chuỗi. Plain là lựa chọn tốt nhất tiếp theo.
 		if ( isset( $args['type'] ) && 'array' === $args['type'] ) {
 			$args['type'] = 'plain';
 		}
 
-		// Set up paginated links.
+		// Thiết lập liên kết phân trang.
 		$links = paginate_links( $args );
 
 		if ( $links ) {
@@ -2994,32 +2993,32 @@ function get_the_posts_pagination( $args = array() ) {
 }
 
 /**
- * Displays a paginated navigation to next/previous set of posts, when applicable.
+ * Hiển thị điều hướng phân trang đến tập bài viết tiếp theo/trước đó, khi áp dụng được.
  *
  * @since 4.1.0
  *
- * @param array $args Optional. See get_the_posts_pagination() for available arguments.
- *                    Default empty array.
+ * @param array $args Tùy chọn. Xem get_the_posts_pagination() để biết các tham số có sẵn.
+ *                    Mặc định mảng rỗng.
  */
 function the_posts_pagination( $args = array() ) {
 	echo get_the_posts_pagination( $args );
 }
 
 /**
- * Wraps passed links in navigational markup.
+ * Bọc các liên kết được truyền vào trong markup điều hướng.
  *
  * @since 4.1.0
- * @since 5.3.0 Added the `aria_label` parameter.
+ * @since 5.3.0 Thêm tham số `aria_label`.
  * @access private
  *
- * @param string $links              Navigational links.
- * @param string $css_class          Optional. Custom class for the nav element.
- *                                   Default 'posts-navigation'.
- * @param string $screen_reader_text Optional. Screen reader text for the nav element.
- *                                   Default 'Posts navigation'.
- * @param string $aria_label         Optional. ARIA label for the nav element.
- *                                   Defaults to the value of `$screen_reader_text`.
- * @return string Navigation template tag.
+ * @param string $links              Các liên kết điều hướng.
+ * @param string $css_class          Tùy chọn. Class tùy chỉnh cho phần tử nav.
+ *                                   Mặc định 'posts-navigation'.
+ * @param string $screen_reader_text Tùy chọn. Văn bản đọc màn hình cho phần tử nav.
+ *                                   Mặc định 'Posts navigation'.
+ * @param string $aria_label         Tùy chọn. Nhãn ARIA cho phần tử nav.
+ *                                   Mặc định là giá trị của `$screen_reader_text`.
+ * @return string Thẻ mẫu điều hướng.
  */
 function _navigation_markup( $links, $css_class = 'posts-navigation', $screen_reader_text = '', $aria_label = '' ) {
 	if ( empty( $screen_reader_text ) ) {
@@ -3036,11 +3035,11 @@ function _navigation_markup( $links, $css_class = 'posts-navigation', $screen_re
 	</nav>';
 
 	/**
-	 * Filters the navigation markup template.
+	 * Lọc mẫu markup điều hướng.
 	 *
-	 * Note: The filtered template HTML must contain specifiers for the navigation
-	 * class (%1$s), the screen-reader-text value (%2$s), placement of the navigation
-	 * links (%3$s), and ARIA label text if screen-reader-text does not fit that (%4$s):
+	 * Lưu ý: HTML mẫu được lọc phải chứa các chỉ định cho class điều hướng (%1$s),
+	 * giá trị screen-reader-text (%2$s), vị trí đặt liên kết điều hướng (%3$s),
+	 * và văn bản nhãn ARIA nếu screen-reader-text không phù hợp (%4$s):
 	 *
 	 *     <nav class="navigation %1$s" aria-label="%4$s">
 	 *         <h2 class="screen-reader-text">%2$s</h2>
@@ -3049,8 +3048,8 @@ function _navigation_markup( $links, $css_class = 'posts-navigation', $screen_re
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $template  The default template.
-	 * @param string $css_class The class passed by the calling function.
+	 * @param string $template  Mẫu mặc định.
+	 * @param string $css_class Class được truyền bởi hàm gọi.
 	 */
 	$template = apply_filters( 'navigation_markup_template', $template, $css_class );
 
@@ -3058,15 +3057,15 @@ function _navigation_markup( $links, $css_class = 'posts-navigation', $screen_re
 }
 
 /**
- * Retrieves the comments page number link.
+ * Lấy liên kết số trang bình luận.
  *
  * @since 2.7.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param int $pagenum  Optional. Page number. Default 1.
- * @param int $max_page Optional. The maximum number of comment pages. Default 0.
- * @return string The comments page number link URL.
+ * @param int $pagenum  Tùy chọn. Số trang. Mặc định 1.
+ * @param int $max_page Tùy chọn. Số trang bình luận tối đa. Mặc định 0.
+ * @return string URL liên kết số trang bình luận.
  */
 function get_comments_pagenum_link( $pagenum = 1, $max_page = 0 ) {
 	global $wp_rewrite;
@@ -3095,27 +3094,27 @@ function get_comments_pagenum_link( $pagenum = 1, $max_page = 0 ) {
 	$result .= '#comments';
 
 	/**
-	 * Filters the comments page number link for the current request.
+	 * Lọc liên kết số trang bình luận cho yêu cầu hiện tại.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $result The comments page number link.
+	 * @param string $result Liên kết số trang bình luận.
 	 */
 	return apply_filters( 'get_comments_pagenum_link', $result );
 }
 
 /**
- * Retrieves the link to the next comments page.
+ * Lấy liên kết đến trang bình luận tiếp theo.
  *
  * @since 2.7.1
- * @since 6.7.0 Added the `page` parameter.
+ * @since 6.7.0 Thêm tham số `page`.
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng truy vấn WordPress.
  *
- * @param string   $label    Optional. Label for link text. Default empty.
- * @param int      $max_page Optional. Max page. Default 0.
- * @param int|null $page     Optional. Page number. Default null.
- * @return string|void HTML-formatted link for the next page of comments.
+ * @param string   $label    Tùy chọn. Nhãn cho văn bản liên kết. Mặc định rỗng.
+ * @param int      $max_page Tùy chọn. Trang tối đa. Mặc định 0.
+ * @param int|null $page     Tùy chọn. Số trang. Mặc định null.
+ * @return string|void Liên kết định dạng HTML cho trang bình luận tiếp theo.
  */
 function get_next_comments_link( $label = '', $max_page = 0, $page = null ) {
 	global $wp_query;
@@ -3151,11 +3150,11 @@ function get_next_comments_link( $label = '', $max_page = 0, $page = null ) {
 	}
 
 	/**
-	 * Filters the anchor tag attributes for the next comments page link.
+	 * Lọc thuộc tính thẻ neo cho liên kết trang bình luận tiếp theo.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $attributes Attributes for the anchor tag.
+	 * @param string $attributes Thuộc tính cho thẻ neo.
 	 */
 	$attr = apply_filters( 'next_comments_link_attributes', '' );
 
@@ -3168,26 +3167,26 @@ function get_next_comments_link( $label = '', $max_page = 0, $page = null ) {
 }
 
 /**
- * Displays the link to the next comments page.
+ * Hiển thị liên kết đến trang bình luận tiếp theo.
  *
  * @since 2.7.0
  *
- * @param string $label    Optional. Label for link text. Default empty.
- * @param int    $max_page Optional. Max page. Default 0.
+ * @param string $label    Tùy chọn. Nhãn cho văn bản liên kết. Mặc định rỗng.
+ * @param int    $max_page Tùy chọn. Trang tối đa. Mặc định 0.
  */
 function next_comments_link( $label = '', $max_page = 0 ) {
 	echo get_next_comments_link( $label, $max_page );
 }
 
 /**
- * Retrieves the link to the previous comments page.
+ * Lấy liên kết đến trang bình luận trước đó.
  *
  * @since 2.7.1
- * @since 6.7.0 Added the `page` parameter.
+ * @since 6.7.0 Thêm tham số `page`.
  *
- * @param string   $label Optional. Label for comments link text. Default empty.
- * @param int|null $page  Optional. Page number. Default null.
- * @return string|void HTML-formatted link for the previous page of comments.
+ * @param string   $label Tùy chọn. Nhãn cho văn bản liên kết bình luận. Mặc định rỗng.
+ * @param int|null $page  Tùy chọn. Số trang. Mặc định null.
+ * @return string|void Liên kết định dạng HTML cho trang bình luận trước đó.
  */
 function get_previous_comments_link( $label = '', $page = null ) {
 	if ( ! is_singular() ) {
@@ -3209,11 +3208,11 @@ function get_previous_comments_link( $label = '', $page = null ) {
 	}
 
 	/**
-	 * Filters the anchor tag attributes for the previous comments page link.
+	 * Lọc thuộc tính thẻ neo cho liên kết trang bình luận trước đó.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $attributes Attributes for the anchor tag.
+	 * @param string $attributes Thuộc tính cho thẻ neo.
 	 */
 	$attr = apply_filters( 'previous_comments_link_attributes', '' );
 
@@ -3226,29 +3225,29 @@ function get_previous_comments_link( $label = '', $page = null ) {
 }
 
 /**
- * Displays the link to the previous comments page.
+ * Hiển thị liên kết đến trang bình luận trước đó.
  *
  * @since 2.7.0
  *
- * @param string $label Optional. Label for comments link text. Default empty.
+ * @param string $label Tùy chọn. Nhãn cho văn bản liên kết bình luận. Mặc định rỗng.
  */
 function previous_comments_link( $label = '' ) {
 	echo get_previous_comments_link( $label );
 }
 
 /**
- * Displays or retrieves pagination links for the comments on the current post.
+ * Hiển thị hoặc lấy liên kết phân trang cho bình luận trên bài viết hiện tại.
  *
  * @see paginate_links()
  * @since 2.7.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param string|array $args Optional args. See paginate_links(). Default empty array.
- * @return void|string|array Void if 'echo' argument is true and 'type' is not an array,
- *                           or if the query is not for an existing single post of any post type.
- *                           Otherwise, markup for comment page links or array of comment page links,
- *                           depending on 'type' argument.
+ * @param string|array $args Tham số tùy chọn. Xem paginate_links(). Mặc định mảng rỗng.
+ * @return void|string|array Void nếu tham số 'echo' là true và 'type' không phải mảng,
+ *                           hoặc nếu truy vấn không phải cho bài viết đơn hiện có thuộc bất kỳ loại bài viết nào.
+ *                           Nếu không, markup cho liên kết trang bình luận hoặc mảng liên kết trang bình luận,
+ *                           tùy thuộc vào tham số 'type'.
  */
 function paginate_comments_links( $args = array() ) {
 	global $wp_rewrite;
@@ -3286,31 +3285,31 @@ function paginate_comments_links( $args = array() ) {
 }
 
 /**
- * Retrieves navigation to next/previous set of comments, when applicable.
+ * Lấy điều hướng đến tập bình luận tiếp theo/trước đó, khi áp dụng được.
  *
  * @since 4.4.0
- * @since 5.3.0 Added the `aria_label` parameter.
- * @since 5.5.0 Added the `class` parameter.
+ * @since 5.3.0 Thêm tham số `aria_label`.
+ * @since 5.5.0 Thêm tham số `class`.
  *
  * @param array $args {
- *     Optional. Default comments navigation arguments.
+ *     Tùy chọn. Các tham số điều hướng bình luận mặc định.
  *
- *     @type string $prev_text          Anchor text to display in the previous comments link.
- *                                      Default 'Older comments'.
- *     @type string $next_text          Anchor text to display in the next comments link.
- *                                      Default 'Newer comments'.
- *     @type string $screen_reader_text Screen reader text for the nav element. Default 'Comments navigation'.
- *     @type string $aria_label         ARIA label text for the nav element. Default 'Comments'.
- *     @type string $class              Custom class for the nav element. Default 'comment-navigation'.
+ *     @type string $prev_text          Văn bản neo hiển thị trong liên kết bình luận trước.
+ *                                      Mặc định 'Older comments'.
+ *     @type string $next_text          Văn bản neo hiển thị trong liên kết bình luận tiếp theo.
+ *                                      Mặc định 'Newer comments'.
+ *     @type string $screen_reader_text Văn bản đọc màn hình cho phần tử nav. Mặc định 'Comments navigation'.
+ *     @type string $aria_label         Văn bản nhãn ARIA cho phần tử nav. Mặc định 'Comments'.
+ *     @type string $class              Class tùy chỉnh cho phần tử nav. Mặc định 'comment-navigation'.
  * }
- * @return string Markup for comments links.
+ * @return string Markup cho liên kết bình luận.
  */
 function get_the_comments_navigation( $args = array() ) {
 	$navigation = '';
 
-	// Are there comments to navigate through?
+	// Có bình luận để điều hướng qua không?
 	if ( get_comment_pages_count() > 1 ) {
-		// Make sure the nav element has an aria-label attribute: fallback to the screen reader text.
+		// Đảm bảo phần tử nav có thuộc tính aria-label: dự phòng bằng văn bản đọc màn hình.
 		if ( ! empty( $args['screen_reader_text'] ) && empty( $args['aria_label'] ) ) {
 			$args['aria_label'] = $args['screen_reader_text'];
 		}
@@ -3344,38 +3343,38 @@ function get_the_comments_navigation( $args = array() ) {
 }
 
 /**
- * Displays navigation to next/previous set of comments, when applicable.
+ * Hiển thị điều hướng đến tập bình luận tiếp theo/trước đó, khi áp dụng được.
  *
  * @since 4.4.0
  *
- * @param array $args See get_the_comments_navigation() for available arguments. Default empty array.
+ * @param array $args Xem get_the_comments_navigation() để biết các tham số có sẵn. Mặc định mảng rỗng.
  */
 function the_comments_navigation( $args = array() ) {
 	echo get_the_comments_navigation( $args );
 }
 
 /**
- * Retrieves a paginated navigation to next/previous set of comments, when applicable.
+ * Lấy điều hướng phân trang đến tập bình luận tiếp theo/trước đó, khi áp dụng được.
  *
  * @since 4.4.0
- * @since 5.3.0 Added the `aria_label` parameter.
- * @since 5.5.0 Added the `class` parameter.
+ * @since 5.3.0 Thêm tham số `aria_label`.
+ * @since 5.5.0 Thêm tham số `class`.
  *
  * @see paginate_comments_links()
  *
  * @param array $args {
- *     Optional. Default pagination arguments.
+ *     Tùy chọn. Các tham số phân trang mặc định.
  *
- *     @type string $screen_reader_text Screen reader text for the nav element. Default 'Comments pagination'.
- *     @type string $aria_label         ARIA label text for the nav element. Default 'Comments pagination'.
- *     @type string $class              Custom class for the nav element. Default 'comments-pagination'.
+ *     @type string $screen_reader_text Văn bản đọc màn hình cho phần tử nav. Mặc định 'Comments pagination'.
+ *     @type string $aria_label         Văn bản nhãn ARIA cho phần tử nav. Mặc định 'Comments pagination'.
+ *     @type string $class              Class tùy chỉnh cho phần tử nav. Mặc định 'comments-pagination'.
  * }
- * @return string Markup for pagination links.
+ * @return string Markup cho liên kết phân trang.
  */
 function get_the_comments_pagination( $args = array() ) {
 	$navigation = '';
 
-	// Make sure the nav element has an aria-label attribute: fallback to the screen reader text.
+	// Đảm bảo phần tử nav có thuộc tính aria-label: dự phòng bằng văn bản đọc màn hình.
 	if ( ! empty( $args['screen_reader_text'] ) && empty( $args['aria_label'] ) ) {
 		$args['aria_label'] = $args['screen_reader_text'];
 	}
@@ -3390,7 +3389,7 @@ function get_the_comments_pagination( $args = array() ) {
 	);
 	$args['echo'] = false;
 
-	// Make sure we get a string back. Plain is the next best thing.
+	// Đảm bảo nhận lại chuỗi. Plain là lựa chọn tốt nhất tiếp theo.
 	if ( isset( $args['type'] ) && 'array' === $args['type'] ) {
 		$args['type'] = 'plain';
 	}
@@ -3405,48 +3404,48 @@ function get_the_comments_pagination( $args = array() ) {
 }
 
 /**
- * Displays a paginated navigation to next/previous set of comments, when applicable.
+ * Hiển thị điều hướng phân trang đến tập bình luận tiếp theo/trước đó, khi áp dụng được.
  *
  * @since 4.4.0
  *
- * @param array $args See get_the_comments_pagination() for available arguments. Default empty array.
+ * @param array $args Xem get_the_comments_pagination() để biết các tham số có sẵn. Mặc định mảng rỗng.
  */
 function the_comments_pagination( $args = array() ) {
 	echo get_the_comments_pagination( $args );
 }
 
 /**
- * Retrieves the URL for the current site where the front end is accessible.
+ * Lấy URL cho trang web hiện tại nơi giao diện công khai có thể truy cập.
  *
- * Returns the 'home' option with the appropriate protocol. The protocol will be 'https'
- * if is_ssl() evaluates to true; otherwise, it will be the same as the 'home' option.
- * If `$scheme` is 'http' or 'https', is_ssl() is overridden.
+ * Trả về tùy chọn 'home' với giao thức phù hợp. Giao thức sẽ là 'https'
+ * nếu is_ssl() trả về true; nếu không, sẽ giống như tùy chọn 'home'.
+ * Nếu `$scheme` là 'http' hoặc 'https', is_ssl() sẽ bị ghi đè.
  *
  * @since 3.0.0
  *
- * @param string      $path   Optional. Path relative to the home URL. Default empty.
- * @param string|null $scheme Optional. Scheme to give the home URL context. Accepts
- *                            'http', 'https', 'relative', 'rest', or null. Default null.
- * @return string Home URL link with optional path appended.
+ * @param string      $path   Tùy chọn. Đường dẫn tương đối so với URL trang chủ. Mặc định rỗng.
+ * @param string|null $scheme Tùy chọn. Giao thức để cung cấp ngữ cảnh cho URL trang chủ. Chấp nhận
+ *                            'http', 'https', 'relative', 'rest', hoặc null. Mặc định null.
+ * @return string Liên kết URL trang chủ với đường dẫn tùy chọn được nối thêm.
  */
 function home_url( $path = '', $scheme = null ) {
 	return get_home_url( null, $path, $scheme );
 }
 
 /**
- * Retrieves the URL for a given site where the front end is accessible.
+ * Lấy URL cho trang web được chỉ định nơi giao diện công khai có thể truy cập.
  *
- * Returns the 'home' option with the appropriate protocol. The protocol will be 'https'
- * if is_ssl() evaluates to true; otherwise, it will be the same as the 'home' option.
- * If `$scheme` is 'http' or 'https', is_ssl() is overridden.
+ * Trả về tùy chọn 'home' với giao thức phù hợp. Giao thức sẽ là 'https'
+ * nếu is_ssl() trả về true; nếu không, sẽ giống như tùy chọn 'home'.
+ * Nếu `$scheme` là 'http' hoặc 'https', is_ssl() sẽ bị ghi đè.
  *
  * @since 3.0.0
  *
- * @param int|null    $blog_id Optional. Site ID. Default null (current site).
- * @param string      $path    Optional. Path relative to the home URL. Default empty.
- * @param string|null $scheme  Optional. Scheme to give the home URL context. Accepts
- *                             'http', 'https', 'relative', 'rest', or null. Default null.
- * @return string Home URL link with optional path appended.
+ * @param int|null    $blog_id Tùy chọn. ID trang web. Mặc định null (trang web hiện tại).
+ * @param string      $path    Tùy chọn. Đường dẫn tương đối so với URL trang chủ. Mặc định rỗng.
+ * @param string|null $scheme  Tùy chọn. Giao thức để cung cấp ngữ cảnh cho URL trang chủ. Chấp nhận
+ *                             'http', 'https', 'relative', 'rest', hoặc null. Mặc định null.
+ * @return string Liên kết URL trang chủ với đường dẫn tùy chọn được nối thêm.
  */
 function get_home_url( $blog_id = null, $path = '', $scheme = null ) {
 	$orig_scheme = $scheme;
@@ -3474,53 +3473,52 @@ function get_home_url( $blog_id = null, $path = '', $scheme = null ) {
 	}
 
 	/**
-	 * Filters the home URL.
+	 * Lọc URL trang chủ.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string      $url         The complete home URL including scheme and path.
-	 * @param string      $path        Path relative to the home URL. Blank string if no path is specified.
-	 * @param string|null $orig_scheme Scheme to give the home URL context. Accepts 'http', 'https',
-	 *                                 'relative', 'rest', or null.
-	 * @param int|null    $blog_id     Site ID, or null for the current site.
+	 * @param string      $url         URL trang chủ đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param string      $path        Đường dẫn tương đối so với URL trang chủ. Chuỗi rỗng nếu không có đường dẫn.
+	 * @param string|null $orig_scheme Giao thức để cung cấp ngữ cảnh cho URL trang chủ. Chấp nhận 'http', 'https',
+	 *                                 'relative', 'rest', hoặc null.
+	 * @param int|null    $blog_id     ID trang web, hoặc null cho trang web hiện tại.
 	 */
 	return apply_filters( 'home_url', $url, $path, $orig_scheme, $blog_id );
 }
 
 /**
- * Retrieves the URL for the current site where WordPress application files
- * (e.g. wp-blog-header.php or the wp-admin/ folder) are accessible.
+ * Lấy URL cho trang web hiện tại nơi các tệp ứng dụng WordPress
+ * (ví dụ: wp-blog-header.php hoặc thư mục wp-admin/) có thể truy cập.
  *
- * Returns the 'site_url' option with the appropriate protocol, 'https' if
- * is_ssl() and 'http' otherwise. If $scheme is 'http' or 'https', is_ssl() is
- * overridden.
+ * Trả về tùy chọn 'site_url' với giao thức phù hợp, 'https' nếu
+ * is_ssl() và 'http' nếu không. Nếu $scheme là 'http' hoặc 'https', is_ssl() sẽ bị ghi đè.
  *
  * @since 3.0.0
  *
- * @param string      $path   Optional. Path relative to the site URL. Default empty.
- * @param string|null $scheme Optional. Scheme to give the site URL context. See set_url_scheme().
- * @return string Site URL link with optional path appended.
+ * @param string      $path   Tùy chọn. Đường dẫn tương đối so với URL trang web. Mặc định rỗng.
+ * @param string|null $scheme Tùy chọn. Giao thức để cung cấp ngữ cảnh cho URL trang web. Xem set_url_scheme().
+ * @return string Liên kết URL trang web với đường dẫn tùy chọn được nối thêm.
  */
 function site_url( $path = '', $scheme = null ) {
 	return get_site_url( null, $path, $scheme );
 }
 
 /**
- * Retrieves the URL for a given site where WordPress application files
- * (e.g. wp-blog-header.php or the wp-admin/ folder) are accessible.
+ * Lấy URL cho trang web được chỉ định nơi các tệp ứng dụng WordPress
+ * (ví dụ: wp-blog-header.php hoặc thư mục wp-admin/) có thể truy cập.
  *
- * Returns the 'site_url' option with the appropriate protocol, 'https' if
- * is_ssl() and 'http' otherwise. If `$scheme` is 'http' or 'https',
- * `is_ssl()` is overridden.
+ * Trả về tùy chọn 'site_url' với giao thức phù hợp, 'https' nếu
+ * is_ssl() và 'http' nếu không. Nếu `$scheme` là 'http' hoặc 'https',
+ * `is_ssl()` sẽ bị ghi đè.
  *
  * @since 3.0.0
  *
- * @param int|null    $blog_id Optional. Site ID. Default null (current site).
- * @param string      $path    Optional. Path relative to the site URL. Default empty.
- * @param string|null $scheme  Optional. Scheme to give the site URL context. Accepts
- *                             'http', 'https', 'login', 'login_post', 'admin', or
- *                             'relative'. Default null.
- * @return string Site URL link with optional path appended.
+ * @param int|null    $blog_id Tùy chọn. ID trang web. Mặc định null (trang web hiện tại).
+ * @param string      $path    Tùy chọn. Đường dẫn tương đối so với URL trang web. Mặc định rỗng.
+ * @param string|null $scheme  Tùy chọn. Giao thức để cung cấp ngữ cảnh cho URL trang web. Chấp nhận
+ *                             'http', 'https', 'login', 'login_post', 'admin', hoặc
+ *                             'relative'. Mặc định null.
+ * @return string Liên kết URL trang web với đường dẫn tùy chọn được nối thêm.
  */
 function get_site_url( $blog_id = null, $path = '', $scheme = null ) {
 	if ( empty( $blog_id ) || ! is_multisite() ) {
@@ -3538,44 +3536,44 @@ function get_site_url( $blog_id = null, $path = '', $scheme = null ) {
 	}
 
 	/**
-	 * Filters the site URL.
+	 * Lọc URL trang web.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string      $url     The complete site URL including scheme and path.
-	 * @param string      $path    Path relative to the site URL. Blank string if no path is specified.
-	 * @param string|null $scheme  Scheme to give the site URL context. Accepts 'http', 'https', 'login',
-	 *                             'login_post', 'admin', 'relative' or null.
-	 * @param int|null    $blog_id Site ID, or null for the current site.
+	 * @param string      $url     URL trang web đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param string      $path    Đường dẫn tương đối so với URL trang web. Chuỗi rỗng nếu không có đường dẫn.
+	 * @param string|null $scheme  Giao thức để cung cấp ngữ cảnh cho URL trang web. Chấp nhận 'http', 'https', 'login',
+	 *                             'login_post', 'admin', 'relative' hoặc null.
+	 * @param int|null    $blog_id ID trang web, hoặc null cho trang web hiện tại.
 	 */
 	return apply_filters( 'site_url', $url, $path, $scheme, $blog_id );
 }
 
 /**
- * Retrieves the URL to the admin area for the current site.
+ * Lấy URL đến khu vực quản trị cho trang web hiện tại.
  *
  * @since 2.6.0
  *
- * @param string $path   Optional. Path relative to the admin URL. Default empty.
- * @param string $scheme The scheme to use. Default is 'admin', which obeys force_ssl_admin() and is_ssl().
- *                       'http' or 'https' can be passed to force those schemes.
- * @return string Admin URL link with optional path appended.
+ * @param string $path   Tùy chọn. Đường dẫn tương đối so với URL quản trị. Mặc định rỗng.
+ * @param string $scheme Giao thức sử dụng. Mặc định là 'admin', tuân theo force_ssl_admin() và is_ssl().
+ *                       Có thể truyền 'http' hoặc 'https' để buộc các giao thức đó.
+ * @return string Liên kết URL quản trị với đường dẫn tùy chọn được nối thêm.
  */
 function admin_url( $path = '', $scheme = 'admin' ) {
 	return get_admin_url( null, $path, $scheme );
 }
 
 /**
- * Retrieves the URL to the admin area for a given site.
+ * Lấy URL đến khu vực quản trị cho trang web được chỉ định.
  *
  * @since 3.0.0
  *
- * @param int|null $blog_id Optional. Site ID. Default null (current site).
- * @param string   $path    Optional. Path relative to the admin URL. Default empty.
- * @param string   $scheme  Optional. The scheme to use. Accepts 'http' or 'https',
- *                          to force those schemes. Default 'admin', which obeys
- *                          force_ssl_admin() and is_ssl().
- * @return string Admin URL link with optional path appended.
+ * @param int|null $blog_id Tùy chọn. ID trang web. Mặc định null (trang web hiện tại).
+ * @param string   $path    Tùy chọn. Đường dẫn tương đối so với URL quản trị. Mặc định rỗng.
+ * @param string   $scheme  Tùy chọn. Giao thức sử dụng. Chấp nhận 'http' hoặc 'https',
+ *                          để buộc các giao thức đó. Mặc định 'admin', tuân theo
+ *                          force_ssl_admin() và is_ssl().
+ * @return string Liên kết URL quản trị với đường dẫn tùy chọn được nối thêm.
  */
 function get_admin_url( $blog_id = null, $path = '', $scheme = 'admin' ) {
 	$url = get_site_url( $blog_id, 'wp-admin/', $scheme );
@@ -3585,29 +3583,29 @@ function get_admin_url( $blog_id = null, $path = '', $scheme = 'admin' ) {
 	}
 
 	/**
-	 * Filters the admin area URL.
+	 * Lọc URL khu vực quản trị.
 	 *
 	 * @since 2.8.0
-	 * @since 5.8.0 The `$scheme` parameter was added.
+	 * @since 5.8.0 Thêm tham số `$scheme`.
 	 *
-	 * @param string      $url     The complete admin area URL including scheme and path.
-	 * @param string      $path    Path relative to the admin area URL. Blank string if no path is specified.
-	 * @param int|null    $blog_id Site ID, or null for the current site.
-	 * @param string|null $scheme  The scheme to use. Accepts 'http', 'https',
-	 *                             'admin', or null. Default 'admin', which obeys force_ssl_admin() and is_ssl().
+	 * @param string      $url     URL khu vực quản trị đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param string      $path    Đường dẫn tương đối so với URL khu vực quản trị. Chuỗi rỗng nếu không có đường dẫn.
+	 * @param int|null    $blog_id ID trang web, hoặc null cho trang web hiện tại.
+	 * @param string|null $scheme  Giao thức sử dụng. Chấp nhận 'http', 'https',
+	 *                             'admin', hoặc null. Mặc định 'admin', tuân theo force_ssl_admin() và is_ssl().
 	 */
 	return apply_filters( 'admin_url', $url, $path, $blog_id, $scheme );
 }
 
 /**
- * Retrieves the URL to the includes directory.
+ * Lấy URL đến thư mục includes.
  *
  * @since 2.6.0
  *
- * @param string      $path   Optional. Path relative to the includes URL. Default empty.
- * @param string|null $scheme Optional. Scheme to give the includes URL context. Accepts
- *                            'http', 'https', or 'relative'. Default null.
- * @return string Includes URL link with optional path appended.
+ * @param string      $path   Tùy chọn. Đường dẫn tương đối so với URL includes. Mặc định rỗng.
+ * @param string|null $scheme Tùy chọn. Giao thức để cung cấp ngữ cảnh cho URL includes. Chấp nhận
+ *                            'http', 'https', hoặc 'relative'. Mặc định null.
+ * @return string Liên kết URL includes với đường dẫn tùy chọn được nối thêm.
  */
 function includes_url( $path = '', $scheme = null ) {
 	$url = site_url( '/' . WPINC . '/', $scheme );
@@ -3617,27 +3615,27 @@ function includes_url( $path = '', $scheme = null ) {
 	}
 
 	/**
-	 * Filters the URL to the includes directory.
+	 * Lọc URL đến thư mục includes.
 	 *
 	 * @since 2.8.0
-	 * @since 5.8.0 The `$scheme` parameter was added.
+	 * @since 5.8.0 Thêm tham số `$scheme`.
 	 *
-	 * @param string      $url    The complete URL to the includes directory including scheme and path.
-	 * @param string      $path   Path relative to the URL to the wp-includes directory. Blank string
-	 *                            if no path is specified.
-	 * @param string|null $scheme Scheme to give the includes URL context. Accepts
-	 *                            'http', 'https', 'relative', or null. Default null.
+	 * @param string      $url    URL đầy đủ đến thư mục includes bao gồm giao thức và đường dẫn.
+	 * @param string      $path   Đường dẫn tương đối so với URL thư mục wp-includes. Chuỗi rỗng
+	 *                            nếu không có đường dẫn.
+	 * @param string|null $scheme Giao thức để cung cấp ngữ cảnh cho URL includes. Chấp nhận
+	 *                            'http', 'https', 'relative', hoặc null. Mặc định null.
 	 */
 	return apply_filters( 'includes_url', $url, $path, $scheme );
 }
 
 /**
- * Retrieves the URL to the content directory.
+ * Lấy URL đến thư mục nội dung.
  *
  * @since 2.6.0
  *
- * @param string $path Optional. Path relative to the content URL. Default empty.
- * @return string Content URL link with optional path appended.
+ * @param string $path Tùy chọn. Đường dẫn tương đối so với URL nội dung. Mặc định rỗng.
+ * @return string Liên kết URL nội dung với đường dẫn tùy chọn được nối thêm.
  */
 function content_url( $path = '' ) {
 	$url = set_url_scheme( WP_CONTENT_URL );
@@ -3647,30 +3645,30 @@ function content_url( $path = '' ) {
 	}
 
 	/**
-	 * Filters the URL to the content directory.
+	 * Lọc URL đến thư mục nội dung.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $url  The complete URL to the content directory including scheme and path.
-	 * @param string $path Path relative to the URL to the content directory. Blank string
-	 *                     if no path is specified.
+	 * @param string $url  URL đầy đủ đến thư mục nội dung bao gồm giao thức và đường dẫn.
+	 * @param string $path Đường dẫn tương đối so với URL thư mục nội dung. Chuỗi rỗng
+	 *                     nếu không có đường dẫn.
 	 */
 	return apply_filters( 'content_url', $url, $path );
 }
 
 /**
- * Retrieves a URL within the plugins or mu-plugins directory.
+ * Lấy URL trong thư mục plugins hoặc mu-plugins.
  *
- * Defaults to the plugins directory URL if no arguments are supplied.
+ * Mặc định là URL thư mục plugins nếu không có tham số nào được cung cấp.
  *
  * @since 2.6.0
  *
- * @param string $path   Optional. Extra path appended to the end of the URL, including
- *                       the relative directory if $plugin is supplied. Default empty.
- * @param string $plugin Optional. A full path to a file inside a plugin or mu-plugin.
- *                       The URL will be relative to its directory. Default empty.
- *                       Typically this is done by passing `__FILE__` as the argument.
- * @return string Plugins URL link with optional paths appended.
+ * @param string $path   Tùy chọn. Đường dẫn bổ sung được nối vào cuối URL, bao gồm
+ *                       thư mục tương đối nếu $plugin được cung cấp. Mặc định rỗng.
+ * @param string $plugin Tùy chọn. Đường dẫn đầy đủ đến tệp bên trong plugin hoặc mu-plugin.
+ *                       URL sẽ tương đối so với thư mục của nó. Mặc định rỗng.
+ *                       Thường được thực hiện bằng cách truyền `__FILE__` làm tham số.
+ * @return string Liên kết URL plugins với đường dẫn tùy chọn được nối thêm.
  */
 function plugins_url( $path = '', $plugin = '' ) {
 
@@ -3698,34 +3696,33 @@ function plugins_url( $path = '', $plugin = '' ) {
 	}
 
 	/**
-	 * Filters the URL to the plugins directory.
+	 * Lọc URL đến thư mục plugins.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $url    The complete URL to the plugins directory including scheme and path.
-	 * @param string $path   Path relative to the URL to the plugins directory. Blank string
-	 *                       if no path is specified.
-	 * @param string $plugin The plugin file path to be relative to. Blank string if no plugin
-	 *                       is specified.
+	 * @param string $url    URL đầy đủ đến thư mục plugins bao gồm giao thức và đường dẫn.
+	 * @param string $path   Đường dẫn tương đối so với URL thư mục plugins. Chuỗi rỗng
+	 *                       nếu không có đường dẫn.
+	 * @param string $plugin Đường dẫn tệp plugin để tương đối. Chuỗi rỗng nếu không có plugin
+	 *                       nào được chỉ định.
 	 */
 	return apply_filters( 'plugins_url', $url, $path, $plugin );
 }
 
 /**
- * Retrieves the site URL for the current network.
+ * Lấy URL trang web cho mạng lưới hiện tại.
  *
- * Returns the site URL with the appropriate protocol, 'https' if
- * is_ssl() and 'http' otherwise. If $scheme is 'http' or 'https', is_ssl() is
- * overridden.
+ * Trả về URL trang web với giao thức phù hợp, 'https' nếu
+ * is_ssl() và 'http' nếu không. Nếu $scheme là 'http' hoặc 'https', is_ssl() sẽ bị ghi đè.
  *
  * @since 3.0.0
  *
  * @see set_url_scheme()
  *
- * @param string      $path   Optional. Path relative to the site URL. Default empty.
- * @param string|null $scheme Optional. Scheme to give the site URL context. Accepts
- *                            'http', 'https', or 'relative'. Default null.
- * @return string Site URL link with optional path appended.
+ * @param string      $path   Tùy chọn. Đường dẫn tương đối so với URL trang web. Mặc định rỗng.
+ * @param string|null $scheme Tùy chọn. Giao thức để cung cấp ngữ cảnh cho URL trang web. Chấp nhận
+ *                            'http', 'https', hoặc 'relative'. Mặc định null.
+ * @return string Liên kết URL trang web với đường dẫn tùy chọn được nối thêm.
  */
 function network_site_url( $path = '', $scheme = null ) {
 	if ( ! is_multisite() ) {
@@ -3745,32 +3742,31 @@ function network_site_url( $path = '', $scheme = null ) {
 	}
 
 	/**
-	 * Filters the network site URL.
+	 * Lọc URL trang web mạng lưới.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string      $url    The complete network site URL including scheme and path.
-	 * @param string      $path   Path relative to the network site URL. Blank string if
-	 *                            no path is specified.
-	 * @param string|null $scheme Scheme to give the URL context. Accepts 'http', 'https',
-	 *                            'relative' or null.
+	 * @param string      $url    URL trang web mạng lưới đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param string      $path   Đường dẫn tương đối so với URL trang web mạng lưới. Chuỗi rỗng nếu
+	 *                            không có đường dẫn.
+	 * @param string|null $scheme Giao thức để cung cấp ngữ cảnh cho URL. Chấp nhận 'http', 'https',
+	 *                            'relative' hoặc null.
 	 */
 	return apply_filters( 'network_site_url', $url, $path, $scheme );
 }
 
 /**
- * Retrieves the home URL for the current network.
+ * Lấy URL trang chủ cho mạng lưới hiện tại.
  *
- * Returns the home URL with the appropriate protocol, 'https' is_ssl()
- * and 'http' otherwise. If `$scheme` is 'http' or 'https', `is_ssl()` is
- * overridden.
+ * Trả về URL trang chủ với giao thức phù hợp, 'https' nếu is_ssl()
+ * và 'http' nếu không. Nếu `$scheme` là 'http' hoặc 'https', `is_ssl()` sẽ bị ghi đè.
  *
  * @since 3.0.0
  *
- * @param string      $path   Optional. Path relative to the home URL. Default empty.
- * @param string|null $scheme Optional. Scheme to give the home URL context. Accepts
- *                            'http', 'https', or 'relative'. Default null.
- * @return string Home URL link with optional path appended.
+ * @param string      $path   Tùy chọn. Đường dẫn tương đối so với URL trang chủ. Mặc định rỗng.
+ * @param string|null $scheme Tùy chọn. Giao thức để cung cấp ngữ cảnh cho URL trang chủ. Chấp nhận
+ *                            'http', 'https', hoặc 'relative'. Mặc định null.
+ * @return string Liên kết URL trang chủ với đường dẫn tùy chọn được nối thêm.
  */
 function network_home_url( $path = '', $scheme = null ) {
 	if ( ! is_multisite() ) {
@@ -3795,28 +3791,28 @@ function network_home_url( $path = '', $scheme = null ) {
 	}
 
 	/**
-	 * Filters the network home URL.
+	 * Lọc URL trang chủ mạng lưới.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string      $url         The complete network home URL including scheme and path.
-	 * @param string      $path        Path relative to the network home URL. Blank string
-	 *                                 if no path is specified.
-	 * @param string|null $orig_scheme Scheme to give the URL context. Accepts 'http', 'https',
-	 *                                 'relative' or null.
+	 * @param string      $url         URL trang chủ mạng lưới đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param string      $path        Đường dẫn tương đối so với URL trang chủ mạng lưới. Chuỗi rỗng
+	 *                                 nếu không có đường dẫn.
+	 * @param string|null $orig_scheme Giao thức để cung cấp ngữ cảnh cho URL. Chấp nhận 'http', 'https',
+	 *                                 'relative' hoặc null.
 	 */
 	return apply_filters( 'network_home_url', $url, $path, $orig_scheme );
 }
 
 /**
- * Retrieves the URL to the admin area for the network.
+ * Lấy URL đến khu vực quản trị cho mạng lưới.
  *
  * @since 3.0.0
  *
- * @param string $path   Optional path relative to the admin URL. Default empty.
- * @param string $scheme Optional. The scheme to use. Default is 'admin', which obeys force_ssl_admin()
- *                       and is_ssl(). 'http' or 'https' can be passed to force those schemes.
- * @return string Admin URL link with optional path appended.
+ * @param string $path   Tùy chọn. Đường dẫn tương đối so với URL quản trị. Mặc định rỗng.
+ * @param string $scheme Tùy chọn. Giao thức sử dụng. Mặc định là 'admin', tuân theo force_ssl_admin()
+ *                       và is_ssl(). Có thể truyền 'http' hoặc 'https' để buộc các giao thức đó.
+ * @return string Liên kết URL quản trị với đường dẫn tùy chọn được nối thêm.
  */
 function network_admin_url( $path = '', $scheme = 'admin' ) {
 	if ( ! is_multisite() ) {
@@ -3830,29 +3826,29 @@ function network_admin_url( $path = '', $scheme = 'admin' ) {
 	}
 
 	/**
-	 * Filters the network admin URL.
+	 * Lọc URL quản trị mạng lưới.
 	 *
 	 * @since 3.0.0
-	 * @since 5.8.0 The `$scheme` parameter was added.
+	 * @since 5.8.0 Thêm tham số `$scheme`.
 	 *
-	 * @param string      $url    The complete network admin URL including scheme and path.
-	 * @param string      $path   Path relative to the network admin URL. Blank string if
-	 *                            no path is specified.
-	 * @param string|null $scheme The scheme to use. Accepts 'http', 'https',
-	 *                            'admin', or null. Default is 'admin', which obeys force_ssl_admin() and is_ssl().
+	 * @param string      $url    URL quản trị mạng lưới đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param string      $path   Đường dẫn tương đối so với URL quản trị mạng lưới. Chuỗi rỗng nếu
+	 *                            không có đường dẫn.
+	 * @param string|null $scheme Giao thức sử dụng. Chấp nhận 'http', 'https',
+	 *                            'admin', hoặc null. Mặc định là 'admin', tuân theo force_ssl_admin() và is_ssl().
 	 */
 	return apply_filters( 'network_admin_url', $url, $path, $scheme );
 }
 
 /**
- * Retrieves the URL to the admin area for the current user.
+ * Lấy URL đến khu vực quản trị cho người dùng hiện tại.
  *
  * @since 3.0.0
  *
- * @param string $path   Optional. Path relative to the admin URL. Default empty.
- * @param string $scheme Optional. The scheme to use. Default is 'admin', which obeys force_ssl_admin()
- *                       and is_ssl(). 'http' or 'https' can be passed to force those schemes.
- * @return string Admin URL link with optional path appended.
+ * @param string $path   Tùy chọn. Đường dẫn tương đối so với URL quản trị. Mặc định rỗng.
+ * @param string $scheme Tùy chọn. Giao thức sử dụng. Mặc định là 'admin', tuân theo force_ssl_admin()
+ *                       và is_ssl(). Có thể truyền 'http' hoặc 'https' để buộc các giao thức đó.
+ * @return string Liên kết URL quản trị với đường dẫn tùy chọn được nối thêm.
  */
 function user_admin_url( $path = '', $scheme = 'admin' ) {
 	$url = network_site_url( 'wp-admin/user/', $scheme );
@@ -3862,29 +3858,29 @@ function user_admin_url( $path = '', $scheme = 'admin' ) {
 	}
 
 	/**
-	 * Filters the user admin URL for the current user.
+	 * Lọc URL quản trị người dùng cho người dùng hiện tại.
 	 *
 	 * @since 3.1.0
-	 * @since 5.8.0 The `$scheme` parameter was added.
+	 * @since 5.8.0 Thêm tham số `$scheme`.
 	 *
-	 * @param string      $url    The complete URL including scheme and path.
-	 * @param string      $path   Path relative to the URL. Blank string if
-	 *                            no path is specified.
-	 * @param string|null $scheme The scheme to use. Accepts 'http', 'https',
-	 *                            'admin', or null. Default is 'admin', which obeys force_ssl_admin() and is_ssl().
+	 * @param string      $url    URL đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param string      $path   Đường dẫn tương đối so với URL. Chuỗi rỗng nếu
+	 *                            không có đường dẫn.
+	 * @param string|null $scheme Giao thức sử dụng. Chấp nhận 'http', 'https',
+	 *                            'admin', hoặc null. Mặc định là 'admin', tuân theo force_ssl_admin() và is_ssl().
 	 */
 	return apply_filters( 'user_admin_url', $url, $path, $scheme );
 }
 
 /**
- * Retrieves the URL to the admin area for either the current site or the network depending on context.
+ * Lấy URL đến khu vực quản trị cho trang web hiện tại hoặc mạng lưới tùy thuộc vào ngữ cảnh.
  *
  * @since 3.1.0
  *
- * @param string $path   Optional. Path relative to the admin URL. Default empty.
- * @param string $scheme Optional. The scheme to use. Default is 'admin', which obeys force_ssl_admin()
- *                       and is_ssl(). 'http' or 'https' can be passed to force those schemes.
- * @return string Admin URL link with optional path appended.
+ * @param string $path   Tùy chọn. Đường dẫn tương đối so với URL quản trị. Mặc định rỗng.
+ * @param string $scheme Tùy chọn. Giao thức sử dụng. Mặc định là 'admin', tuân theo force_ssl_admin()
+ *                       và is_ssl(). Có thể truyền 'http' hoặc 'https' để buộc các giao thức đó.
+ * @return string Liên kết URL quản trị với đường dẫn tùy chọn được nối thêm.
  */
 function self_admin_url( $path = '', $scheme = 'admin' ) {
 	if ( is_network_admin() ) {
@@ -3896,27 +3892,27 @@ function self_admin_url( $path = '', $scheme = 'admin' ) {
 	}
 
 	/**
-	 * Filters the admin URL for the current site or network depending on context.
+	 * Lọc URL quản trị cho trang web hiện tại hoặc mạng lưới tùy thuộc vào ngữ cảnh.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param string $url    The complete URL including scheme and path.
-	 * @param string $path   Path relative to the URL. Blank string if no path is specified.
-	 * @param string $scheme The scheme to use.
+	 * @param string $url    URL đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param string $path   Đường dẫn tương đối so với URL. Chuỗi rỗng nếu không có đường dẫn.
+	 * @param string $scheme Giao thức sử dụng.
 	 */
 	return apply_filters( 'self_admin_url', $url, $path, $scheme );
 }
 
 /**
- * Sets the scheme for a URL.
+ * Đặt giao thức cho URL.
  *
  * @since 3.4.0
- * @since 4.4.0 The 'rest' scheme was added.
+ * @since 4.4.0 Thêm giao thức 'rest'.
  *
- * @param string      $url    Absolute URL that includes a scheme
- * @param string|null $scheme Optional. Scheme to give $url. Currently 'http', 'https', 'login',
- *                            'login_post', 'admin', 'relative', 'rest', 'rpc', or null. Default null.
- * @return string URL with chosen scheme.
+ * @param string      $url    URL tuyệt đối bao gồm giao thức.
+ * @param string|null $scheme Tùy chọn. Giao thức cho $url. Hiện tại là 'http', 'https', 'login',
+ *                            'login_post', 'admin', 'relative', 'rest', 'rpc', hoặc null. Mặc định null.
+ * @return string URL với giao thức đã chọn.
  */
 function set_url_scheme( $url, $scheme = null ) {
 	$orig_scheme = $scheme;
@@ -3944,33 +3940,34 @@ function set_url_scheme( $url, $scheme = null ) {
 	}
 
 	/**
-	 * Filters the resulting URL after setting the scheme.
+	 * Lọc URL kết quả sau khi đặt giao thức.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string      $url         The complete URL including scheme and path.
-	 * @param string      $scheme      Scheme applied to the URL. One of 'http', 'https', or 'relative'.
-	 * @param string|null $orig_scheme Scheme requested for the URL. One of 'http', 'https', 'login',
-	 *                                 'login_post', 'admin', 'relative', 'rest', 'rpc', or null.
+	 * @param string      $url         URL đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param string      $scheme      Giao thức được áp dụng cho URL. Một trong 'http', 'https', hoặc 'relative'.
+	 * @param string|null $orig_scheme Giao thức được yêu cầu cho URL. Một trong 'http', 'https', 'login',
+	 *                                 'login_post', 'admin', 'relative', 'rest', 'rpc', hoặc null.
 	 */
 	return apply_filters( 'set_url_scheme', $url, $scheme, $orig_scheme );
 }
 
 /**
- * Retrieves the URL to the user's dashboard.
+ * Lấy URL đến bảng điều khiển của người dùng.
  *
- * If a user does not belong to any site, the global user dashboard is used. If the user
- * belongs to the current site, the dashboard for the current site is returned. If the user
- * cannot edit the current site, the dashboard to the user's primary site is returned.
+ * Nếu người dùng không thuộc bất kỳ trang web nào, bảng điều khiển người dùng toàn cục sẽ được sử dụng.
+ * Nếu người dùng thuộc trang web hiện tại, bảng điều khiển cho trang web hiện tại sẽ được trả về.
+ * Nếu người dùng không thể chỉnh sửa trang web hiện tại, bảng điều khiển đến trang web chính của
+ * người dùng sẽ được trả về.
  *
  * @since 3.1.0
  *
- * @param int    $user_id Optional. User ID. Defaults to current user.
- * @param string $path    Optional path relative to the dashboard. Use only paths known to
- *                        both site and user admins. Default empty.
- * @param string $scheme  The scheme to use. Default is 'admin', which obeys force_ssl_admin()
- *                        and is_ssl(). 'http' or 'https' can be passed to force those schemes.
- * @return string Dashboard URL link with optional path appended.
+ * @param int    $user_id Tùy chọn. ID người dùng. Mặc định là người dùng hiện tại.
+ * @param string $path    Tùy chọn. Đường dẫn tương đối so với bảng điều khiển. Chỉ sử dụng đường dẫn
+ *                        được biết bởi cả quản trị viên trang web và người dùng. Mặc định rỗng.
+ * @param string $scheme  Giao thức sử dụng. Mặc định là 'admin', tuân theo force_ssl_admin()
+ *                        và is_ssl(). Có thể truyền 'http' hoặc 'https' để buộc các giao thức đó.
+ * @return string Liên kết URL bảng điều khiển với đường dẫn tùy chọn được nối thêm.
  */
 function get_dashboard_url( $user_id = 0, $path = '', $scheme = 'admin' ) {
 	$user_id = $user_id ? (int) $user_id : get_current_user_id();
@@ -3997,28 +3994,28 @@ function get_dashboard_url( $user_id = 0, $path = '', $scheme = 'admin' ) {
 	}
 
 	/**
-	 * Filters the dashboard URL for a user.
+	 * Lọc URL bảng điều khiển cho người dùng.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $url     The complete URL including scheme and path.
-	 * @param int    $user_id The user ID.
-	 * @param string $path    Path relative to the URL. Blank string if no path is specified.
-	 * @param string $scheme  Scheme to give the URL context. Accepts 'http', 'https', 'login',
-	 *                        'login_post', 'admin', 'relative' or null.
+	 * @param string $url     URL đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param int    $user_id ID người dùng.
+	 * @param string $path    Đường dẫn tương đối so với URL. Chuỗi rỗng nếu không có đường dẫn.
+	 * @param string $scheme  Giao thức để cung cấp ngữ cảnh cho URL. Chấp nhận 'http', 'https', 'login',
+	 *                        'login_post', 'admin', 'relative' hoặc null.
 	 */
 	return apply_filters( 'user_dashboard_url', $url, $user_id, $path, $scheme );
 }
 
 /**
- * Retrieves the URL to the user's profile editor.
+ * Lấy URL đến trình chỉnh sửa hồ sơ của người dùng.
  *
  * @since 3.1.0
  *
- * @param int    $user_id Optional. User ID. Defaults to current user.
- * @param string $scheme  Optional. The scheme to use. Default is 'admin', which obeys force_ssl_admin()
- *                        and is_ssl(). 'http' or 'https' can be passed to force those schemes.
- * @return string Dashboard URL link with optional path appended.
+ * @param int    $user_id Tùy chọn. ID người dùng. Mặc định là người dùng hiện tại.
+ * @param string $scheme  Tùy chọn. Giao thức sử dụng. Mặc định là 'admin', tuân theo force_ssl_admin()
+ *                        và is_ssl(). Có thể truyền 'http' hoặc 'https' để buộc các giao thức đó.
+ * @return string Liên kết URL bảng điều khiển với đường dẫn tùy chọn được nối thêm.
  */
 function get_edit_profile_url( $user_id = 0, $scheme = 'admin' ) {
 	$user_id = $user_id ? (int) $user_id : get_current_user_id();
@@ -4032,29 +4029,29 @@ function get_edit_profile_url( $user_id = 0, $scheme = 'admin' ) {
 	}
 
 	/**
-	 * Filters the URL for a user's profile editor.
+	 * Lọc URL cho trình chỉnh sửa hồ sơ người dùng.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $url     The complete URL including scheme and path.
-	 * @param int    $user_id The user ID.
-	 * @param string $scheme  Scheme to give the URL context. Accepts 'http', 'https', 'login',
-	 *                        'login_post', 'admin', 'relative' or null.
+	 * @param string $url     URL đầy đủ bao gồm giao thức và đường dẫn.
+	 * @param int    $user_id ID người dùng.
+	 * @param string $scheme  Giao thức để cung cấp ngữ cảnh cho URL. Chấp nhận 'http', 'https', 'login',
+	 *                        'login_post', 'admin', 'relative' hoặc null.
 	 */
 	return apply_filters( 'edit_profile_url', $url, $user_id, $scheme );
 }
 
 /**
- * Returns the canonical URL for a post.
+ * Trả về URL chuẩn cho bài viết.
  *
- * When the post is the same as the current requested page the function will handle the
- * pagination arguments too.
+ * Khi bài viết giống với trang được yêu cầu hiện tại, hàm cũng sẽ xử lý
+ * các tham số phân trang.
  *
  * @since 4.6.0
  *
- * @param int|WP_Post $post Optional. Post ID or object. Default is global `$post`.
- * @return string|false The canonical URL. False if the post does not exist
- *                      or has not been published yet.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng. Mặc định là biến toàn cục `$post`.
+ * @return string|false URL chuẩn. False nếu bài viết không tồn tại
+ *                      hoặc chưa được xuất bản.
  */
 function wp_get_canonical_url( $post = null ) {
 	$post = get_post( $post );
@@ -4069,7 +4066,7 @@ function wp_get_canonical_url( $post = null ) {
 
 	$canonical_url = get_permalink( $post );
 
-	// If a canonical is being generated for the current page, make sure it has pagination if needed.
+	// Nếu URL chuẩn đang được tạo cho trang hiện tại, đảm bảo nó có phân trang nếu cần.
 	if ( get_queried_object_id() === $post->ID ) {
 		$page = get_query_var( 'page', 0 );
 		if ( $page >= 2 ) {
@@ -4087,21 +4084,21 @@ function wp_get_canonical_url( $post = null ) {
 	}
 
 	/**
-	 * Filters the canonical URL for a post.
+	 * Lọc URL chuẩn cho bài viết.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param string  $canonical_url The post's canonical URL.
-	 * @param WP_Post $post          Post object.
+	 * @param string  $canonical_url URL chuẩn của bài viết.
+	 * @param WP_Post $post          Đối tượng bài viết.
 	 */
 	return apply_filters( 'get_canonical_url', $canonical_url, $post );
 }
 
 /**
- * Outputs rel=canonical for singular queries.
+ * Xuất rel=canonical cho các truy vấn bài viết đơn.
  *
  * @since 2.9.0
- * @since 4.6.0 Adjusted to use `wp_get_canonical_url()`.
+ * @since 4.6.0 Điều chỉnh để sử dụng `wp_get_canonical_url()`.
  */
 function rel_canonical() {
 	if ( ! is_singular() ) {
@@ -4122,38 +4119,37 @@ function rel_canonical() {
 }
 
 /**
- * Returns a shortlink for a post, page, attachment, or site.
+ * Trả về liên kết rút gọn cho bài viết, trang, tệp đính kèm, hoặc trang web.
  *
- * This function exists to provide a shortlink tag that all themes and plugins can target.
- * A plugin must hook in to provide the actual shortlinks. Default shortlink support is
- * limited to providing ?p= style links for posts. Plugins can short-circuit this function
- * via the {@see 'pre_get_shortlink'} filter or filter the output via the {@see 'get_shortlink'}
- * filter.
+ * Hàm này tồn tại để cung cấp thẻ liên kết rút gọn mà tất cả theme và plugin có thể nhắm đến.
+ * Một plugin phải hook vào để cung cấp liên kết rút gọn thực tế. Hỗ trợ liên kết rút gọn mặc định
+ * giới hạn ở việc cung cấp liên kết kiểu ?p= cho bài viết. Plugin có thể bỏ qua hàm này
+ * thông qua bộ lọc {@see 'pre_get_shortlink'} hoặc lọc đầu ra thông qua bộ lọc {@see 'get_shortlink'}.
  *
  * @since 3.0.0
  *
- * @param int    $id          Optional. A post or site ID. Default is 0, which means the current post or site.
- * @param string $context     Optional. Whether the ID is a 'site' ID, 'post' ID, or 'media' ID. If 'post',
- *                            the post_type of the post is consulted. If 'query', the current query is consulted
- *                            to determine the ID and context. Default 'post'.
- * @param bool   $allow_slugs Optional. Whether to allow post slugs in the shortlink. It is up to the plugin how
- *                            and whether to honor this. Default true.
- * @return string A shortlink or an empty string if no shortlink exists for the requested resource or if shortlinks
- *                are not enabled.
+ * @param int    $id          Tùy chọn. ID bài viết hoặc trang web. Mặc định là 0, nghĩa là bài viết hoặc trang web hiện tại.
+ * @param string $context     Tùy chọn. ID là ID 'site', ID 'post', hay ID 'media'. Nếu 'post',
+ *                            post_type của bài viết sẽ được tham chiếu. Nếu 'query', truy vấn hiện tại sẽ được
+ *                            tham chiếu để xác định ID và ngữ cảnh. Mặc định 'post'.
+ * @param bool   $allow_slugs Tùy chọn. Có cho phép slug bài viết trong liên kết rút gọn hay không. Tùy plugin
+ *                            quyết định cách và có tôn trọng điều này hay không. Mặc định true.
+ * @return string Liên kết rút gọn hoặc chuỗi rỗng nếu không có liên kết rút gọn cho tài nguyên được yêu cầu
+ *                hoặc nếu liên kết rút gọn không được bật.
  */
 function wp_get_shortlink( $id = 0, $context = 'post', $allow_slugs = true ) {
 	/**
-	 * Filters whether to preempt generating a shortlink for the given post.
+	 * Lọc có nên bỏ qua việc tạo liên kết rút gọn cho bài viết được chỉ định hay không.
 	 *
-	 * Returning a value other than false from the filter will short-circuit
-	 * the shortlink generation process, returning that value instead.
+	 * Trả về giá trị khác false từ bộ lọc sẽ bỏ qua quá trình tạo liên kết rút gọn,
+	 * trả về giá trị đó thay thế.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param false|string $return      Short-circuit return value. Either false or a URL string.
-	 * @param int          $id          Post ID, or 0 for the current post.
-	 * @param string       $context     The context for the link. One of 'post' or 'query',
-	 * @param bool         $allow_slugs Whether to allow post slugs in the shortlink.
+	 * @param false|string $return      Giá trị trả về bỏ qua. False hoặc chuỗi URL.
+	 * @param int          $id          ID bài viết, hoặc 0 cho bài viết hiện tại.
+	 * @param string       $context     Ngữ cảnh cho liên kết. Một trong 'post' hoặc 'query'.
+	 * @param bool         $allow_slugs Có cho phép slug bài viết trong liên kết rút gọn hay không.
 	 */
 	$shortlink = apply_filters( 'pre_get_shortlink', false, $id, $context, $allow_slugs );
 
@@ -4174,7 +4170,7 @@ function wp_get_shortlink( $id = 0, $context = 'post', $allow_slugs = true ) {
 
 	$shortlink = '';
 
-	// Return `?p=` link for all public post types.
+	// Trả về liên kết `?p=` cho tất cả loại bài viết công khai.
 	if ( ! empty( $post_id ) ) {
 		$post_type = get_post_type_object( $post->post_type );
 
@@ -4188,22 +4184,22 @@ function wp_get_shortlink( $id = 0, $context = 'post', $allow_slugs = true ) {
 	}
 
 	/**
-	 * Filters the shortlink for a post.
+	 * Lọc liên kết rút gọn cho bài viết.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $shortlink   Shortlink URL.
-	 * @param int    $id          Post ID, or 0 for the current post.
-	 * @param string $context     The context for the link. One of 'post' or 'query',
-	 * @param bool   $allow_slugs Whether to allow post slugs in the shortlink. Not used by default.
+	 * @param string $shortlink   URL liên kết rút gọn.
+	 * @param int    $id          ID bài viết, hoặc 0 cho bài viết hiện tại.
+	 * @param string $context     Ngữ cảnh cho liên kết. Một trong 'post' hoặc 'query'.
+	 * @param bool   $allow_slugs Có cho phép slug bài viết trong liên kết rút gọn hay không. Không được sử dụng theo mặc định.
 	 */
 	return apply_filters( 'get_shortlink', $shortlink, $id, $context, $allow_slugs );
 }
 
 /**
- * Injects rel=shortlink into the head if a shortlink is defined for the current page.
+ * Chèn rel=shortlink vào phần head nếu liên kết rút gọn được định nghĩa cho trang hiện tại.
  *
- * Attached to the {@see 'wp_head'} action.
+ * Được gắn vào hành động {@see 'wp_head'}.
  *
  * @since 3.0.0
  */
@@ -4218,9 +4214,9 @@ function wp_shortlink_wp_head() {
 }
 
 /**
- * Sends a Link: rel=shortlink header if a shortlink is defined for the current page.
+ * Gửi header Link: rel=shortlink nếu liên kết rút gọn được định nghĩa cho trang hiện tại.
  *
- * Attached to the {@see 'wp'} action.
+ * Được gắn vào hành động {@see 'wp'}.
  *
  * @since 3.0.0
  */
@@ -4239,19 +4235,19 @@ function wp_shortlink_header() {
 }
 
 /**
- * Displays the shortlink for a post.
+ * Hiển thị liên kết rút gọn cho bài viết.
  *
- * Must be called from inside "The Loop"
+ * Phải được gọi từ bên trong "Vòng lặp"
  *
- * Call like the_shortlink( __( 'Shortlinkage FTW' ) )
+ * Gọi như the_shortlink( __( 'Shortlinkage FTW' ) )
  *
  * @since 3.0.0
- * @since 6.8.0 Removed title attribute.
+ * @since 6.8.0 Loại bỏ thuộc tính title.
  *
- * @param string $text   Optional. The link text or HTML to be displayed. Defaults to 'This is the short link.'
- * @param string $title  Unused.
- * @param string $before Optional. HTML to display before the link. Default empty.
- * @param string $after  Optional. HTML to display after the link. Default empty.
+ * @param string $text   Tùy chọn. Văn bản liên kết hoặc HTML sẽ được hiển thị. Mặc định 'This is the short link.'
+ * @param string $title  Không sử dụng.
+ * @param string $before Tùy chọn. HTML hiển thị trước liên kết. Mặc định rỗng.
+ * @param string $after  Tùy chọn. HTML hiển thị sau liên kết. Mặc định rỗng.
  */
 function the_shortlink( $text = '', $title = '', $before = '', $after = '' ) {
 	$post = get_post();
@@ -4266,14 +4262,14 @@ function the_shortlink( $text = '', $title = '', $before = '', $after = '' ) {
 		$link = '<a rel="shortlink" href="' . esc_url( $shortlink ) . '">' . $text . '</a>';
 
 		/**
-		 * Filters the short link anchor tag for a post.
+		 * Lọc thẻ neo liên kết rút gọn cho bài viết.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $link      Shortlink anchor tag.
-		 * @param string $shortlink Shortlink URL.
-		 * @param string $text      Shortlink's text.
-		 * @param string $title     Shortlink's title attribute. Unused.
+		 * @param string $link      Thẻ neo liên kết rút gọn.
+		 * @param string $shortlink URL liên kết rút gọn.
+		 * @param string $text      Văn bản liên kết rút gọn.
+		 * @param string $title     Thuộc tính title của liên kết rút gọn. Không sử dụng.
 		 */
 		$link = apply_filters( 'the_shortlink', $link, $shortlink, $text, $title );
 		echo $before, $link, $after;
@@ -4281,42 +4277,42 @@ function the_shortlink( $text = '', $title = '', $before = '', $after = '' ) {
 }
 
 /**
- * Retrieves the avatar URL.
+ * Lấy URL ảnh đại diện.
  *
  * @since 4.2.0
  *
- * @param mixed $id_or_email The avatar to retrieve a URL for. Accepts a user ID, Gravatar SHA-256 or MD5 hash,
- *                           user email, WP_User object, WP_Post object, or WP_Comment object.
+ * @param mixed $id_or_email Ảnh đại diện cần lấy URL. Chấp nhận ID người dùng, hash SHA-256 hoặc MD5 của Gravatar,
+ *                           email người dùng, đối tượng WP_User, đối tượng WP_Post, hoặc đối tượng WP_Comment.
  * @param array $args {
- *     Optional. Arguments to use instead of the default arguments.
+ *     Tùy chọn. Các tham số sử dụng thay cho tham số mặc định.
  *
- *     @type int    $size           Height and width of the avatar in pixels. Default 96.
- *     @type string $default        URL for the default image or a default type. Accepts:
- *                                  - '404' (return a 404 instead of a default image)
- *                                  - 'retro' (a 8-bit arcade-style pixelated face)
- *                                  - 'robohash' (a robot)
- *                                  - 'monsterid' (a monster)
- *                                  - 'wavatar' (a cartoon face)
- *                                  - 'identicon' (the "quilt", a geometric pattern)
- *                                  - 'mystery', 'mm', or 'mysteryman' (The Oyster Man)
- *                                  - 'blank' (transparent GIF)
- *                                  - 'gravatar_default' (the Gravatar logo)
- *                                  Default is the value of the 'avatar_default' option,
- *                                  with a fallback of 'mystery'.
- *     @type bool   $force_default  Whether to always show the default image, never the Gravatar.
- *                                  Default false.
- *     @type string $rating         What rating to display avatars up to. Accepts:
- *                                  - 'G' (suitable for all audiences)
- *                                  - 'PG' (possibly offensive, usually for audiences 13 and above)
- *                                  - 'R' (intended for adult audiences above 17)
- *                                  - 'X' (even more mature than above)
- *                                  Default is the value of the 'avatar_rating' option.
- *     @type string $scheme         URL scheme to use. See set_url_scheme() for accepted values.
- *                                  Default null.
- *     @type array  $processed_args When the function returns, the value will be the processed/sanitized $args
- *                                  plus a "found_avatar" guess. Pass as a reference. Default null.
+ *     @type int    $size           Chiều cao và chiều rộng của ảnh đại diện tính bằng pixel. Mặc định 96.
+ *     @type string $default        URL cho ảnh mặc định hoặc loại mặc định. Chấp nhận:
+ *                                  - '404' (trả về 404 thay vì ảnh mặc định)
+ *                                  - 'retro' (khuôn mặt pixel kiểu arcade 8-bit)
+ *                                  - 'robohash' (một robot)
+ *                                  - 'monsterid' (một quái vật)
+ *                                  - 'wavatar' (khuôn mặt hoạt hình)
+ *                                  - 'identicon' ("tấm chăn", một hoa văn hình học)
+ *                                  - 'mystery', 'mm', hoặc 'mysteryman' (The Oyster Man)
+ *                                  - 'blank' (GIF trong suốt)
+ *                                  - 'gravatar_default' (logo Gravatar)
+ *                                  Mặc định là giá trị của tùy chọn 'avatar_default',
+ *                                  với dự phòng là 'mystery'.
+ *     @type bool   $force_default  Có luôn hiển thị ảnh mặc định thay vì Gravatar hay không.
+ *                                  Mặc định false.
+ *     @type string $rating         Hiển thị ảnh đại diện đến mức xếp hạng nào. Chấp nhận:
+ *                                  - 'G' (phù hợp với mọi đối tượng)
+ *                                  - 'PG' (có thể gây khó chịu, thường cho đối tượng từ 13 tuổi trở lên)
+ *                                  - 'R' (dành cho đối tượng người lớn trên 17 tuổi)
+ *                                  - 'X' (nội dung người lớn hơn mức trên)
+ *                                  Mặc định là giá trị của tùy chọn 'avatar_rating'.
+ *     @type string $scheme         Giao thức URL sử dụng. Xem set_url_scheme() để biết các giá trị được chấp nhận.
+ *                                  Mặc định null.
+ *     @type array  $processed_args Khi hàm trả về, giá trị sẽ là $args đã được xử lý/làm sạch
+ *                                  cộng thêm dự đoán "found_avatar". Truyền dưới dạng tham chiếu. Mặc định null.
  * }
- * @return string|false The URL of the avatar on success, false on failure.
+ * @return string|false URL của ảnh đại diện khi thành công, false khi thất bại.
  */
 function get_avatar_url( $id_or_email, $args = null ) {
 	$args = get_avatar_data( $id_or_email, $args );
@@ -4324,20 +4320,20 @@ function get_avatar_url( $id_or_email, $args = null ) {
 }
 
 /**
- * Check if this comment type allows avatars to be retrieved.
+ * Kiểm tra xem loại bình luận này có cho phép lấy ảnh đại diện hay không.
  *
  * @since 5.1.0
  *
- * @param string $comment_type Comment type to check.
- * @return bool Whether the comment type is allowed for retrieving avatars.
+ * @param string $comment_type Loại bình luận cần kiểm tra.
+ * @return bool Loại bình luận có được phép lấy ảnh đại diện hay không.
  */
 function is_avatar_comment_type( $comment_type ) {
 	/**
-	 * Filters the list of allowed comment types for retrieving avatars.
+	 * Lọc danh sách các loại bình luận được phép lấy ảnh đại diện.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $types An array of content types. Default only contains 'comment'.
+	 * @param array $types Mảng các loại nội dung. Mặc định chỉ chứa 'comment'.
 	 */
 	$allowed_comment_types = apply_filters( 'get_avatar_comment_types', array( 'comment' ) );
 
@@ -4345,56 +4341,56 @@ function is_avatar_comment_type( $comment_type ) {
 }
 
 /**
- * Retrieves default data about the avatar.
+ * Lấy dữ liệu mặc định về ảnh đại diện.
  *
  * @since 4.2.0
- * @since 6.7.0 Gravatar URLs always use HTTPS.
- * @since 6.8.0 Gravatar URLs use the SHA-256 hashing algorithm.
+ * @since 6.7.0 URL Gravatar luôn sử dụng HTTPS.
+ * @since 6.8.0 URL Gravatar sử dụng thuật toán băm SHA-256.
  *
- * @param mixed $id_or_email The avatar to retrieve. Accepts a user ID, Gravatar SHA-256 or MD5 hash,
- *                           user email, WP_User object, WP_Post object, or WP_Comment object.
+ * @param mixed $id_or_email Ảnh đại diện cần lấy. Chấp nhận ID người dùng, hash SHA-256 hoặc MD5 của Gravatar,
+ *                           email người dùng, đối tượng WP_User, đối tượng WP_Post, hoặc đối tượng WP_Comment.
  * @param array $args {
- *     Optional. Arguments to use instead of the default arguments.
+ *     Tùy chọn. Các tham số sử dụng thay cho tham số mặc định.
  *
- *     @type int    $size           Height and width of the avatar in pixels. Default 96.
- *     @type int    $height         Display height of the avatar in pixels. Defaults to $size.
- *     @type int    $width          Display width of the avatar in pixels. Defaults to $size.
- *     @type string $default        URL for the default image or a default type. Accepts:
- *                                  - '404' (return a 404 instead of a default image)
- *                                  - 'retro' (a 8-bit arcade-style pixelated face)
- *                                  - 'robohash' (a robot)
- *                                  - 'monsterid' (a monster)
- *                                  - 'wavatar' (a cartoon face)
- *                                  - 'identicon' (the "quilt", a geometric pattern)
- *                                  - 'mystery', 'mm', or 'mysteryman' (The Oyster Man)
- *                                  - 'blank' (transparent GIF)
- *                                  - 'gravatar_default' (the Gravatar logo)
- *                                  Default is the value of the 'avatar_default' option,
- *                                  with a fallback of 'mystery'.
- *     @type bool   $force_default  Whether to always show the default image, never the Gravatar.
- *                                  Default false.
- *     @type string $rating         What rating to display avatars up to. Accepts:
- *                                  - 'G' (suitable for all audiences)
- *                                  - 'PG' (possibly offensive, usually for audiences 13 and above)
- *                                  - 'R' (intended for adult audiences above 17)
- *                                  - 'X' (even more mature than above)
- *                                  Default is the value of the 'avatar_rating' option.
- *     @type string $scheme         URL scheme to use. See set_url_scheme() for accepted values.
- *                                  For Gravatars this setting is ignored and HTTPS is used to avoid
- *                                  unnecessary redirects. The setting is retained for systems using
- *                                  the {@see 'pre_get_avatar_data'} filter to customize avatars.
- *                                  Default null.
- *     @type array  $processed_args When the function returns, the value will be the processed/sanitized $args
- *                                  plus a "found_avatar" guess. Pass as a reference. Default null.
- *     @type string $extra_attr     HTML attributes to insert in the IMG element. Is not sanitized.
- *                                  Default empty.
+ *     @type int    $size           Chiều cao và chiều rộng của ảnh đại diện tính bằng pixel. Mặc định 96.
+ *     @type int    $height         Chiều cao hiển thị của ảnh đại diện tính bằng pixel. Mặc định là $size.
+ *     @type int    $width          Chiều rộng hiển thị của ảnh đại diện tính bằng pixel. Mặc định là $size.
+ *     @type string $default        URL cho ảnh mặc định hoặc loại mặc định. Chấp nhận:
+ *                                  - '404' (trả về 404 thay vì ảnh mặc định)
+ *                                  - 'retro' (khuôn mặt pixel kiểu arcade 8-bit)
+ *                                  - 'robohash' (một robot)
+ *                                  - 'monsterid' (một quái vật)
+ *                                  - 'wavatar' (khuôn mặt hoạt hình)
+ *                                  - 'identicon' ("tấm chăn", một hoa văn hình học)
+ *                                  - 'mystery', 'mm', hoặc 'mysteryman' (The Oyster Man)
+ *                                  - 'blank' (GIF trong suốt)
+ *                                  - 'gravatar_default' (logo Gravatar)
+ *                                  Mặc định là giá trị của tùy chọn 'avatar_default',
+ *                                  với dự phòng là 'mystery'.
+ *     @type bool   $force_default  Có luôn hiển thị ảnh mặc định thay vì Gravatar hay không.
+ *                                  Mặc định false.
+ *     @type string $rating         Hiển thị ảnh đại diện đến mức xếp hạng nào. Chấp nhận:
+ *                                  - 'G' (phù hợp với mọi đối tượng)
+ *                                  - 'PG' (có thể gây khó chịu, thường cho đối tượng từ 13 tuổi trở lên)
+ *                                  - 'R' (dành cho đối tượng người lớn trên 17 tuổi)
+ *                                  - 'X' (nội dung người lớn hơn mức trên)
+ *                                  Mặc định là giá trị của tùy chọn 'avatar_rating'.
+ *     @type string $scheme         Giao thức URL sử dụng. Xem set_url_scheme() để biết các giá trị được chấp nhận.
+ *                                  Đối với Gravatar, thiết lập này bị bỏ qua và HTTPS được sử dụng để tránh
+ *                                  chuyển hướng không cần thiết. Thiết lập được giữ lại cho các hệ thống sử dụng
+ *                                  bộ lọc {@see 'pre_get_avatar_data'} để tùy chỉnh ảnh đại diện.
+ *                                  Mặc định null.
+ *     @type array  $processed_args Khi hàm trả về, giá trị sẽ là $args đã được xử lý/làm sạch
+ *                                  cộng thêm dự đoán "found_avatar". Truyền dưới dạng tham chiếu. Mặc định null.
+ *     @type string $extra_attr     Các thuộc tính HTML để chèn vào phần tử IMG. Không được làm sạch.
+ *                                  Mặc định rỗng.
  * }
  * @return array {
- *     Along with the arguments passed in `$args`, this will contain a couple of extra arguments.
+ *     Cùng với các tham số được truyền trong `$args`, mảng này sẽ chứa một vài tham số bổ sung.
  *
- *     @type bool         $found_avatar True if an avatar was found for this user,
- *                                      false or not set if none was found.
- *     @type string|false $url          The URL of the avatar that was found, or false.
+ *     @type bool         $found_avatar True nếu tìm thấy ảnh đại diện cho người dùng này,
+ *                                      false hoặc không được đặt nếu không tìm thấy.
+ *     @type string|false $url          URL của ảnh đại diện được tìm thấy, hoặc false.
  * }
  */
 function get_avatar_data( $id_or_email, $args = null ) {
@@ -4408,7 +4404,7 @@ function get_avatar_data( $id_or_email, $args = null ) {
 			'force_default'  => false,
 			'rating'         => get_option( 'avatar_rating' ),
 			'scheme'         => null,
-			'processed_args' => null, // If used, should be a reference.
+			'processed_args' => null, // Nếu được sử dụng, nên là tham chiếu.
 			'extra_attr'     => '',
 		)
 	);
@@ -4462,17 +4458,17 @@ function get_avatar_data( $id_or_email, $args = null ) {
 	$args['found_avatar'] = false;
 
 	/**
-	 * Filters whether to retrieve the avatar URL early.
+	 * Lọc có nên lấy URL ảnh đại diện sớm hay không.
 	 *
-	 * Passing a non-null value in the 'url' member of the return array will
-	 * effectively short circuit get_avatar_data(), passing the value through
-	 * the {@see 'get_avatar_data'} filter and returning early.
+	 * Truyền giá trị không null trong thành viên 'url' của mảng trả về sẽ
+	 * bỏ qua get_avatar_data(), truyền giá trị qua
+	 * bộ lọc {@see 'get_avatar_data'} và trả về sớm.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param array $args        Arguments passed to get_avatar_data(), after processing.
-	 * @param mixed $id_or_email The avatar to retrieve. Accepts a user ID, Gravatar SHA-256 or MD5 hash,
-	 *                           user email, WP_User object, WP_Post object, or WP_Comment object.
+	 * @param array $args        Các tham số được truyền vào get_avatar_data(), sau khi xử lý.
+	 * @param mixed $id_or_email Ảnh đại diện cần lấy. Chấp nhận ID người dùng, hash SHA-256 hoặc MD5 của Gravatar,
+	 *                           email người dùng, đối tượng WP_User, đối tượng WP_Post, hoặc đối tượng WP_Comment.
 	 */
 	$args = apply_filters( 'pre_get_avatar_data', $args, $id_or_email );
 
@@ -4489,25 +4485,25 @@ function get_avatar_data( $id_or_email, $args = null ) {
 		$id_or_email = get_comment( $id_or_email );
 	}
 
-	// Process the user identifier.
+	// Xử lý mã định danh người dùng.
 	if ( is_numeric( $id_or_email ) ) {
 		$user = get_user_by( 'id', absint( $id_or_email ) );
 	} elseif ( is_string( $id_or_email ) ) {
 		if ( str_contains( $id_or_email, '@sha256.gravatar.com' ) ) {
-			// SHA-256 hash.
+			// Hash SHA-256.
 			list( $email_hash ) = explode( '@', $id_or_email );
 		} elseif ( str_contains( $id_or_email, '@md5.gravatar.com' ) ) {
-			// MD5 hash.
+			// Hash MD5.
 			list( $email_hash ) = explode( '@', $id_or_email );
 		} else {
-			// Email address.
+			// Địa chỉ email.
 			$email = $id_or_email;
 		}
 	} elseif ( $id_or_email instanceof WP_User ) {
-		// User object.
+		// Đối tượng người dùng.
 		$user = $id_or_email;
 	} elseif ( $id_or_email instanceof WP_Post ) {
-		// Post object.
+		// Đối tượng bài viết.
 		$user = get_user_by( 'id', (int) $id_or_email->post_author );
 	} elseif ( $id_or_email instanceof WP_Comment ) {
 		if ( ! is_avatar_comment_type( get_comment_type( $id_or_email ) ) ) {
@@ -4546,10 +4542,10 @@ function get_avatar_data( $id_or_email, $args = null ) {
 	);
 
 	/*
-	 * Gravatars are always served over HTTPS.
+	 * Gravatar luôn được phục vụ qua HTTPS.
 	 *
-	 * The Gravatar website redirects HTTP requests to HTTPS URLs so always
-	 * use the HTTPS scheme to avoid unnecessary redirects.
+	 * Trang web Gravatar chuyển hướng các yêu cầu HTTP sang URL HTTPS nên luôn
+	 * sử dụng giao thức HTTPS để tránh chuyển hướng không cần thiết.
 	 */
 	$url = 'https://secure.gravatar.com/avatar/' . $email_hash;
 
@@ -4559,39 +4555,39 @@ function get_avatar_data( $id_or_email, $args = null ) {
 	);
 
 	/**
-	 * Filters the avatar URL.
+	 * Lọc URL ảnh đại diện.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param string $url         The URL of the avatar.
-	 * @param mixed  $id_or_email The avatar to retrieve. Accepts a user ID, Gravatar SHA-256 or MD5 hash,
-	 *                            user email, WP_User object, WP_Post object, or WP_Comment object.
-	 * @param array  $args        Arguments passed to get_avatar_data(), after processing.
+	 * @param string $url         URL của ảnh đại diện.
+	 * @param mixed  $id_or_email Ảnh đại diện cần lấy. Chấp nhận ID người dùng, hash SHA-256 hoặc MD5 của Gravatar,
+	 *                            email người dùng, đối tượng WP_User, đối tượng WP_Post, hoặc đối tượng WP_Comment.
+	 * @param array  $args        Các tham số được truyền vào get_avatar_data(), sau khi xử lý.
 	 */
 	$args['url'] = apply_filters( 'get_avatar_url', $url, $id_or_email, $args );
 
 	/**
-	 * Filters the avatar data.
+	 * Lọc dữ liệu ảnh đại diện.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param array $args        Arguments passed to get_avatar_data(), after processing.
-	 * @param mixed $id_or_email The avatar to retrieve. Accepts a user ID, Gravatar SHA-256 or MD5 hash,
-	 *                           user email, WP_User object, WP_Post object, or WP_Comment object.
+	 * @param array $args        Các tham số được truyền vào get_avatar_data(), sau khi xử lý.
+	 * @param mixed $id_or_email Ảnh đại diện cần lấy. Chấp nhận ID người dùng, hash SHA-256 hoặc MD5 của Gravatar,
+	 *                           email người dùng, đối tượng WP_User, đối tượng WP_Post, hoặc đối tượng WP_Comment.
 	 */
 	return apply_filters( 'get_avatar_data', $args, $id_or_email );
 }
 
 /**
- * Retrieves the URL of a file in the theme.
+ * Lấy URL của một tệp trong theme.
  *
- * Searches in the stylesheet directory before the template directory so themes
- * which inherit from a parent theme can just override one file.
+ * Tìm kiếm trong thư mục stylesheet trước thư mục template để các theme
+ * kế thừa từ theme cha chỉ cần ghi đè một tệp.
  *
  * @since 4.7.0
  *
- * @param string $file Optional. File to search for in the stylesheet directory.
- * @return string The URL of the file.
+ * @param string $file Tùy chọn. Tệp cần tìm kiếm trong thư mục stylesheet.
+ * @return string URL của tệp.
  */
 function get_theme_file_uri( $file = '' ) {
 	$file = ltrim( $file, '/' );
@@ -4607,23 +4603,23 @@ function get_theme_file_uri( $file = '' ) {
 	}
 
 	/**
-	 * Filters the URL to a file in the theme.
+	 * Lọc URL đến một tệp trong theme.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string $url  The file URL.
-	 * @param string $file The requested file to search for.
+	 * @param string $url  URL của tệp.
+	 * @param string $file Tệp được yêu cầu tìm kiếm.
 	 */
 	return apply_filters( 'theme_file_uri', $url, $file );
 }
 
 /**
- * Retrieves the URL of a file in the parent theme.
+ * Lấy URL của một tệp trong theme cha.
  *
  * @since 4.7.0
  *
- * @param string $file Optional. File to return the URL for in the template directory.
- * @return string The URL of the file.
+ * @param string $file Tùy chọn. Tệp cần trả về URL trong thư mục template.
+ * @return string URL của tệp.
  */
 function get_parent_theme_file_uri( $file = '' ) {
 	$file = ltrim( $file, '/' );
@@ -4635,26 +4631,26 @@ function get_parent_theme_file_uri( $file = '' ) {
 	}
 
 	/**
-	 * Filters the URL to a file in the parent theme.
+	 * Lọc URL đến một tệp trong theme cha.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string $url  The file URL.
-	 * @param string $file The requested file to search for.
+	 * @param string $url  URL của tệp.
+	 * @param string $file Tệp được yêu cầu tìm kiếm.
 	 */
 	return apply_filters( 'parent_theme_file_uri', $url, $file );
 }
 
 /**
- * Retrieves the path of a file in the theme.
+ * Lấy đường dẫn của một tệp trong theme.
  *
- * Searches in the stylesheet directory before the template directory so themes
- * which inherit from a parent theme can just override one file.
+ * Tìm kiếm trong thư mục stylesheet trước thư mục template để các theme
+ * kế thừa từ theme cha chỉ cần ghi đè một tệp.
  *
  * @since 4.7.0
  *
- * @param string $file Optional. File to search for in the stylesheet directory.
- * @return string The path of the file.
+ * @param string $file Tùy chọn. Tệp cần tìm kiếm trong thư mục stylesheet.
+ * @return string Đường dẫn của tệp.
  */
 function get_theme_file_path( $file = '' ) {
 	$file = ltrim( $file, '/' );
@@ -4671,23 +4667,23 @@ function get_theme_file_path( $file = '' ) {
 	}
 
 	/**
-	 * Filters the path to a file in the theme.
+	 * Lọc đường dẫn đến một tệp trong theme.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string $path The file path.
-	 * @param string $file The requested file to search for.
+	 * @param string $path Đường dẫn của tệp.
+	 * @param string $file Tệp được yêu cầu tìm kiếm.
 	 */
 	return apply_filters( 'theme_file_path', $path, $file );
 }
 
 /**
- * Retrieves the path of a file in the parent theme.
+ * Lấy đường dẫn của một tệp trong theme cha.
  *
  * @since 4.7.0
  *
- * @param string $file Optional. File to return the path for in the template directory.
- * @return string The path of the file.
+ * @param string $file Tùy chọn. Tệp cần trả về đường dẫn trong thư mục template.
+ * @return string Đường dẫn của tệp.
  */
 function get_parent_theme_file_path( $file = '' ) {
 	$file = ltrim( $file, '/' );
@@ -4699,22 +4695,22 @@ function get_parent_theme_file_path( $file = '' ) {
 	}
 
 	/**
-	 * Filters the path to a file in the parent theme.
+	 * Lọc đường dẫn đến một tệp trong theme cha.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string $path The file path.
-	 * @param string $file The requested file to search for.
+	 * @param string $path Đường dẫn của tệp.
+	 * @param string $file Tệp được yêu cầu tìm kiếm.
 	 */
 	return apply_filters( 'parent_theme_file_path', $path, $file );
 }
 
 /**
- * Retrieves the URL to the privacy policy page.
+ * Lấy URL đến trang chính sách bảo mật.
  *
  * @since 4.9.6
  *
- * @return string The URL to the privacy policy page. Empty string if it doesn't exist.
+ * @return string URL đến trang chính sách bảo mật. Chuỗi rỗng nếu không tồn tại.
  */
 function get_privacy_policy_url() {
 	$url            = '';
@@ -4725,39 +4721,39 @@ function get_privacy_policy_url() {
 	}
 
 	/**
-	 * Filters the URL of the privacy policy page.
+	 * Lọc URL của trang chính sách bảo mật.
 	 *
 	 * @since 4.9.6
 	 *
-	 * @param string $url            The URL to the privacy policy page. Empty string
-	 *                               if it doesn't exist.
-	 * @param int    $policy_page_id The ID of privacy policy page.
+	 * @param string $url            URL đến trang chính sách bảo mật. Chuỗi rỗng
+	 *                               nếu không tồn tại.
+	 * @param int    $policy_page_id ID của trang chính sách bảo mật.
 	 */
 	return apply_filters( 'privacy_policy_url', $url, $policy_page_id );
 }
 
 /**
- * Displays the privacy policy link with formatting, when applicable.
+ * Hiển thị liên kết chính sách bảo mật với định dạng, khi có thể áp dụng.
  *
  * @since 4.9.6
  *
- * @param string $before Optional. Display before privacy policy link. Default empty.
- * @param string $after  Optional. Display after privacy policy link. Default empty.
+ * @param string $before Tùy chọn. Hiển thị trước liên kết chính sách bảo mật. Mặc định rỗng.
+ * @param string $after  Tùy chọn. Hiển thị sau liên kết chính sách bảo mật. Mặc định rỗng.
  */
 function the_privacy_policy_link( $before = '', $after = '' ) {
 	echo get_the_privacy_policy_link( $before, $after );
 }
 
 /**
- * Returns the privacy policy link with formatting, when applicable.
+ * Trả về liên kết chính sách bảo mật với định dạng, khi có thể áp dụng.
  *
  * @since 4.9.6
- * @since 6.2.0 Added 'privacy-policy' rel attribute.
+ * @since 6.2.0 Thêm thuộc tính rel 'privacy-policy'.
  *
- * @param string $before Optional. Display before privacy policy link. Default empty.
- * @param string $after  Optional. Display after privacy policy link. Default empty.
- * @return string Markup for the link and surrounding elements. Empty string if it
- *                doesn't exist.
+ * @param string $before Tùy chọn. Hiển thị trước liên kết chính sách bảo mật. Mặc định rỗng.
+ * @param string $after  Tùy chọn. Hiển thị sau liên kết chính sách bảo mật. Mặc định rỗng.
+ * @return string Markup cho liên kết và các phần tử xung quanh. Chuỗi rỗng nếu
+ *                không tồn tại.
  */
 function get_the_privacy_policy_link( $before = '', $after = '' ) {
 	$link               = '';
@@ -4774,14 +4770,14 @@ function get_the_privacy_policy_link( $before = '', $after = '' ) {
 	}
 
 	/**
-	 * Filters the privacy policy link.
+	 * Lọc liên kết chính sách bảo mật.
 	 *
 	 * @since 4.9.6
 	 *
-	 * @param string $link               The privacy policy link. Empty string if it
-	 *                                   doesn't exist.
-	 * @param string $privacy_policy_url The URL of the privacy policy. Empty string
-	 *                                   if it doesn't exist.
+	 * @param string $link               Liên kết chính sách bảo mật. Chuỗi rỗng nếu
+	 *                                   không tồn tại.
+	 * @param string $privacy_policy_url URL của chính sách bảo mật. Chuỗi rỗng
+	 *                                   nếu không tồn tại.
 	 */
 	$link = apply_filters( 'the_privacy_policy_link', $link, $privacy_policy_url );
 
@@ -4793,32 +4789,32 @@ function get_the_privacy_policy_link( $before = '', $after = '' ) {
 }
 
 /**
- * Returns an array of URL hosts which are considered to be internal hosts.
+ * Trả về mảng các host URL được coi là host nội bộ.
  *
- * By default the list of internal hosts is comprised of the host name of
- * the site's home_url() (as parsed by wp_parse_url()).
+ * Theo mặc định, danh sách các host nội bộ bao gồm tên host của
+ * home_url() của trang web (được phân tích bởi wp_parse_url()).
  *
- * This list is used when determining if a specified URL is a link to a page on
- * the site itself or a link offsite (to an external host). This is used, for
- * example, when determining if the "nofollow" attribute should be applied to a
- * link.
+ * Danh sách này được sử dụng khi xác định xem một URL được chỉ định là liên kết đến trang
+ * trên chính trang web hay liên kết ra bên ngoài (đến host bên ngoài). Điều này được sử dụng, ví dụ,
+ * khi xác định xem thuộc tính "nofollow" có nên được áp dụng cho một
+ * liên kết hay không.
  *
  * @see wp_is_internal_link
  *
  * @since 6.2.0
  *
- * @return string[] An array of URL hosts.
+ * @return string[] Mảng các host URL.
  */
 function wp_internal_hosts() {
 	static $internal_hosts;
 
 	if ( empty( $internal_hosts ) ) {
 		/**
-		 * Filters the array of URL hosts which are considered internal.
+		 * Lọc mảng các host URL được coi là nội bộ.
 		 *
 		 * @since 6.2.0
 		 *
-		 * @param string[] $internal_hosts An array of internal URL hostnames.
+		 * @param string[] $internal_hosts Mảng các tên host URL nội bộ.
 		 */
 		$internal_hosts = apply_filters(
 			'wp_internal_hosts',
@@ -4835,14 +4831,14 @@ function wp_internal_hosts() {
 }
 
 /**
- * Determines whether or not the specified URL is of a host included in the internal hosts list.
+ * Xác định xem URL được chỉ định có thuộc host nằm trong danh sách host nội bộ hay không.
  *
  * @see wp_internal_hosts()
  *
  * @since 6.2.0
  *
- * @param string $link The URL to test.
- * @return bool Returns true for internal URLs and false for all other URLs.
+ * @param string $link URL cần kiểm tra.
+ * @return bool Trả về true cho URL nội bộ và false cho tất cả URL khác.
  */
 function wp_is_internal_link( $link ) {
 	$link = strtolower( $link );

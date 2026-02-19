@@ -1,14 +1,14 @@
 <?php
 /**
- * Core Widgets API
+ * API Widget lõi
  *
- * This API is used for creating dynamic sidebar without hardcoding functionality into
- * themes.
+ * API này được sử dụng để tạo sidebar động mà không cần viết cứng chức năng
+ * vào theme.
  *
- * Includes both internal WordPress routines and theme-use routines.
+ * Bao gồm cả các hàm nội bộ của WordPress và các hàm dùng trong theme.
  *
- * This functionality was found in a plugin before the WordPress 2.2 release, which
- * included it in the core from that point on.
+ * Chức năng này được tìm thấy trong một plugin trước bản phát hành WordPress 2.2,
+ * sau đó được đưa vào lõi từ phiên bản đó trở đi.
  *
  * @link https://wordpress.org/documentation/article/manage-wordpress-widgets/
  * @link https://developer.wordpress.org/themes/functionality/widgets/
@@ -19,57 +19,57 @@
  */
 
 //
-// Global Variables.
+// Biến toàn cục.
 //
 
 /** @ignore */
 global $wp_registered_sidebars, $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates;
 
 /**
- * Stores the sidebars, since many themes can have more than one.
+ * Lưu trữ các sidebar, vì nhiều theme có thể có nhiều hơn một.
  *
  * @since 2.2.0
  *
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  */
 $wp_registered_sidebars = array();
 
 /**
- * Stores the registered widgets.
+ * Lưu trữ các widget đã đăng ký.
  *
  * @since 2.2.0
  *
- * @global array $wp_registered_widgets The registered widgets.
+ * @global array $wp_registered_widgets Các widget đã đăng ký.
  */
 $wp_registered_widgets = array();
 
 /**
- * Stores the registered widget controls (options).
+ * Lưu trữ các điều khiển widget đã đăng ký (tùy chọn).
  *
  * @since 2.2.0
  *
- * @global array $wp_registered_widget_controls The registered widget controls.
+ * @global array $wp_registered_widget_controls Các điều khiển widget đã đăng ký.
  */
 $wp_registered_widget_controls = array();
 
 /**
- * Stores the registered widget updates.
+ * Lưu trữ các cập nhật widget đã đăng ký.
  *
  * @since 2.8.0
  *
- * @global array $wp_registered_widget_updates The registered widget updates.
+ * @global array $wp_registered_widget_updates Các cập nhật widget đã đăng ký.
  */
 $wp_registered_widget_updates = array();
 
 /**
- * Private
+ * Riêng tư
  *
  * @global array $_wp_sidebars_widgets
  */
 $_wp_sidebars_widgets = array();
 
 /**
- * Private
+ * Riêng tư
  *
  * @global array $_wp_deprecated_widgets_callbacks
  */
@@ -99,23 +99,23 @@ $GLOBALS['_wp_deprecated_widgets_callbacks'] = array(
 );
 
 //
-// Template tags & API functions.
+// Thẻ mẫu & các hàm API.
 //
 
 /**
- * Registers a widget.
+ * Đăng ký một widget.
  *
- * Registers a WP_Widget widget
+ * Đăng ký một widget WP_Widget
  *
  * @since 2.8.0
- * @since 4.6.0 Updated the `$widget` parameter to also accept a WP_Widget instance object
- *              instead of simply a `WP_Widget` subclass name.
+ * @since 4.6.0 Cập nhật tham số `$widget` để cũng chấp nhận đối tượng thể hiện WP_Widget
+ *              thay vì chỉ tên lớp con `WP_Widget`.
  *
  * @see WP_Widget
  *
  * @global WP_Widget_Factory $wp_widget_factory
  *
- * @param string|WP_Widget $widget Either the name of a `WP_Widget` subclass or an instance of a `WP_Widget` subclass.
+ * @param string|WP_Widget $widget Tên lớp con `WP_Widget` hoặc thể hiện của lớp con `WP_Widget`.
  */
 function register_widget( $widget ) {
 	global $wp_widget_factory;
@@ -124,20 +124,20 @@ function register_widget( $widget ) {
 }
 
 /**
- * Unregisters a widget.
+ * Hủy đăng ký một widget.
  *
- * Unregisters a WP_Widget widget. Useful for un-registering default widgets.
- * Run within a function hooked to the {@see 'widgets_init'} action.
+ * Hủy đăng ký một widget WP_Widget. Hữu ích để hủy đăng ký các widget mặc định.
+ * Chạy trong một hàm được gắn vào action {@see 'widgets_init'}.
  *
  * @since 2.8.0
- * @since 4.6.0 Updated the `$widget` parameter to also accept a WP_Widget instance object
- *              instead of simply a `WP_Widget` subclass name.
+ * @since 4.6.0 Cập nhật tham số `$widget` để cũng chấp nhận đối tượng thể hiện WP_Widget
+ *              thay vì chỉ tên lớp con `WP_Widget`.
  *
  * @see WP_Widget
  *
  * @global WP_Widget_Factory $wp_widget_factory
  *
- * @param string|WP_Widget $widget Either the name of a `WP_Widget` subclass or an instance of a `WP_Widget` subclass.
+ * @param string|WP_Widget $widget Tên lớp con `WP_Widget` hoặc thể hiện của lớp con `WP_Widget`.
  */
 function unregister_widget( $widget ) {
 	global $wp_widget_factory;
@@ -146,29 +146,29 @@ function unregister_widget( $widget ) {
 }
 
 /**
- * Creates multiple sidebars.
+ * Tạo nhiều sidebar.
  *
- * If you wanted to quickly create multiple sidebars for a theme or internally.
- * This function will allow you to do so. If you don't pass the 'name' and/or
- * 'id' in `$args`, then they will be built for you.
+ * Nếu bạn muốn tạo nhanh nhiều sidebar cho theme hoặc nội bộ.
+ * Hàm này cho phép bạn làm điều đó. Nếu bạn không truyền 'name' và/hoặc
+ * 'id' trong `$args`, chúng sẽ được tự động tạo cho bạn.
  *
  * @since 2.2.0
  *
- * @see register_sidebar() The second parameter is documented by register_sidebar() and is the same here.
+ * @see register_sidebar() Tham số thứ hai được mô tả bởi register_sidebar() và giống nhau ở đây.
  *
- * @global array $wp_registered_sidebars The new sidebars are stored in this array by sidebar ID.
+ * @global array $wp_registered_sidebars Các sidebar mới được lưu trong mảng này theo ID sidebar.
  *
- * @param int          $number Optional. Number of sidebars to create. Default 1.
+ * @param int          $number Tùy chọn. Số lượng sidebar cần tạo. Mặc định 1.
  * @param array|string $args {
- *     Optional. Array or string of arguments for building a sidebar.
+ *     Tùy chọn. Mảng hoặc chuỗi tham số để xây dựng sidebar.
  *
- *     @type string $id   The base string of the unique identifier for each sidebar. If provided, and multiple
- *                        sidebars are being defined, the ID will have "-2" appended, and so on.
- *                        Default 'sidebar-' followed by the number the sidebar creation is currently at.
- *     @type string $name The name or title for the sidebars displayed in the admin dashboard. If registering
- *                        more than one sidebar, include '%d' in the string as a placeholder for the uniquely
- *                        assigned number for each sidebar.
- *                        Default 'Sidebar' for the first sidebar, otherwise 'Sidebar %d'.
+ *     @type string $id   Chuỗi cơ sở của định danh duy nhất cho mỗi sidebar. Nếu được cung cấp, và nhiều
+ *                        sidebar đang được định nghĩa, ID sẽ được thêm hậu tố "-2", v.v.
+ *                        Mặc định 'sidebar-' theo sau bởi số thứ tự sidebar hiện tại.
+ *     @type string $name Tên hoặc tiêu đề cho các sidebar hiển thị trong bảng quản trị. Nếu đăng ký
+ *                        nhiều hơn một sidebar, hãy bao gồm '%d' trong chuỗi làm chỗ giữ cho số
+ *                        được gán duy nhất cho mỗi sidebar.
+ *                        Mặc định 'Sidebar' cho sidebar đầu tiên, nếu không là 'Sidebar %d'.
  * }
  */
 function register_sidebars( $number = 1, $args = array() ) {
@@ -194,12 +194,12 @@ function register_sidebars( $number = 1, $args = array() ) {
 		}
 
 		/*
-		 * Custom specified ID's are suffixed if they exist already.
-		 * Automatically generated sidebar names need to be suffixed regardless starting at -0.
+		 * Các ID được chỉ định tùy chỉnh sẽ được thêm hậu tố nếu đã tồn tại.
+		 * Tên sidebar được tạo tự động cần được thêm hậu tố bắt đầu từ -0.
 		 */
 		if ( isset( $args['id'] ) ) {
 			$_args['id'] = $args['id'];
-			$n           = 2; // Start at -2 for conflicting custom IDs.
+			$n           = 2; // Bắt đầu từ -2 cho các ID tùy chỉnh bị trùng.
 			while ( is_registered_sidebar( $_args['id'] ) ) {
 				$_args['id'] = $args['id'] . '-' . $n++;
 			}
@@ -214,57 +214,57 @@ function register_sidebars( $number = 1, $args = array() ) {
 }
 
 /**
- * Builds the definition for a single sidebar and returns the ID.
+ * Xây dựng định nghĩa cho một sidebar đơn và trả về ID.
  *
- * Accepts either a string or an array and then parses that against a set
- * of default arguments for the new sidebar. WordPress will automatically
- * generate a sidebar ID and name based on the current number of registered
- * sidebars if those arguments are not included.
+ * Chấp nhận chuỗi hoặc mảng rồi phân tích so với một tập hợp
+ * tham số mặc định cho sidebar mới. WordPress sẽ tự động
+ * tạo ID và tên sidebar dựa trên số lượng sidebar đã đăng ký hiện tại
+ * nếu những tham số đó không được bao gồm.
  *
- * When allowing for automatic generation of the name and ID parameters, keep
- * in mind that the incrementor for your sidebar can change over time depending
- * on what other plugins and themes are installed.
+ * Khi cho phép tự động tạo tham số name và ID, hãy lưu ý
+ * rằng bộ đếm tăng dần cho sidebar của bạn có thể thay đổi theo thời gian tùy thuộc
+ * vào các plugin và theme khác được cài đặt.
  *
- * If theme support for 'widgets' has not yet been added when this function is
- * called, it will be automatically enabled through the use of add_theme_support().
+ * Nếu hỗ trợ theme cho 'widgets' chưa được thêm khi hàm này được
+ * gọi, nó sẽ được tự động kích hoạt thông qua add_theme_support().
  *
  * @since 2.2.0
- * @since 5.6.0 Added the `before_sidebar` and `after_sidebar` arguments.
- * @since 5.9.0 Added the `show_in_rest` argument.
+ * @since 5.6.0 Thêm tham số `before_sidebar` và `after_sidebar`.
+ * @since 5.9.0 Thêm tham số `show_in_rest`.
  *
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  *
  * @param array|string $args {
- *     Optional. Array or string of arguments for the sidebar being registered.
+ *     Tùy chọn. Mảng hoặc chuỗi tham số cho sidebar đang được đăng ký.
  *
- *     @type string $name           The name or title of the sidebar displayed in the Widgets
- *                                  interface. Default 'Sidebar $instance'.
- *     @type string $id             The unique identifier by which the sidebar will be called.
- *                                  Default 'sidebar-$instance'.
- *     @type string $description    Description of the sidebar, displayed in the Widgets interface.
- *                                  Default empty string.
- *     @type string $class          Extra CSS class to assign to the sidebar in the Widgets interface.
- *                                  Default empty.
- *     @type string $before_widget  HTML content to prepend to each widget's HTML output when assigned
- *                                  to this sidebar. Receives the widget's ID attribute as `%1$s`
- *                                  and class name as `%2$s`. Default is an opening list item element.
- *     @type string $after_widget   HTML content to append to each widget's HTML output when assigned
- *                                  to this sidebar. Default is a closing list item element.
- *     @type string $before_title   HTML content to prepend to the sidebar title when displayed.
- *                                  Default is an opening h2 element.
- *     @type string $after_title    HTML content to append to the sidebar title when displayed.
- *                                  Default is a closing h2 element.
- *     @type string $before_sidebar HTML content to prepend to the sidebar when displayed.
- *                                  Receives the `$id` argument as `%1$s` and `$class` as `%2$s`.
- *                                  Outputs after the {@see 'dynamic_sidebar_before'} action.
- *                                  Default empty string.
- *     @type string $after_sidebar  HTML content to append to the sidebar when displayed.
- *                                  Outputs before the {@see 'dynamic_sidebar_after'} action.
- *                                  Default empty string.
- *     @type bool $show_in_rest     Whether to show this sidebar publicly in the REST API.
- *                                  Defaults to only showing the sidebar to administrator users.
+ *     @type string $name           Tên hoặc tiêu đề của sidebar hiển thị trong giao diện Widget.
+ *                                  Mặc định 'Sidebar $instance'.
+ *     @type string $id             Định danh duy nhất mà sidebar sẽ được gọi.
+ *                                  Mặc định 'sidebar-$instance'.
+ *     @type string $description    Mô tả sidebar, hiển thị trong giao diện Widget.
+ *                                  Mặc định chuỗi rỗng.
+ *     @type string $class          Lớp CSS bổ sung gán cho sidebar trong giao diện Widget.
+ *                                  Mặc định rỗng.
+ *     @type string $before_widget  Nội dung HTML thêm trước đầu ra HTML của mỗi widget khi được gán
+ *                                  cho sidebar này. Nhận thuộc tính ID của widget là `%1$s`
+ *                                  và tên lớp là `%2$s`. Mặc định là phần tử mục danh sách mở.
+ *     @type string $after_widget   Nội dung HTML thêm sau đầu ra HTML của mỗi widget khi được gán
+ *                                  cho sidebar này. Mặc định là phần tử mục danh sách đóng.
+ *     @type string $before_title   Nội dung HTML thêm trước tiêu đề sidebar khi hiển thị.
+ *                                  Mặc định là phần tử h2 mở.
+ *     @type string $after_title    Nội dung HTML thêm sau tiêu đề sidebar khi hiển thị.
+ *                                  Mặc định là phần tử h2 đóng.
+ *     @type string $before_sidebar Nội dung HTML thêm trước sidebar khi hiển thị.
+ *                                  Nhận tham số `$id` là `%1$s` và `$class` là `%2$s`.
+ *                                  Xuất sau action {@see 'dynamic_sidebar_before'}.
+ *                                  Mặc định chuỗi rỗng.
+ *     @type string $after_sidebar  Nội dung HTML thêm sau sidebar khi hiển thị.
+ *                                  Xuất trước action {@see 'dynamic_sidebar_after'}.
+ *                                  Mặc định chuỗi rỗng.
+ *     @type bool $show_in_rest     Có hiển thị sidebar này công khai trong REST API hay không.
+ *                                  Mặc định chỉ hiển thị sidebar cho người dùng quản trị viên.
  * }
- * @return string Sidebar ID added to $wp_registered_sidebars global.
+ * @return string ID sidebar được thêm vào biến toàn cục $wp_registered_sidebars.
  */
 function register_sidebar( $args = array() ) {
 	global $wp_registered_sidebars;
@@ -289,13 +289,13 @@ function register_sidebar( $args = array() ) {
 	);
 
 	/**
-	 * Filters the sidebar default arguments.
+	 * Lọc các tham số mặc định của sidebar.
 	 *
 	 * @since 5.3.0
 	 *
 	 * @see register_sidebar()
 	 *
-	 * @param array $defaults The default sidebar arguments.
+	 * @param array $defaults Các tham số sidebar mặc định.
 	 */
 	$sidebar = wp_parse_args( $args, apply_filters( 'register_sidebar_defaults', $defaults ) );
 
@@ -318,11 +318,11 @@ function register_sidebar( $args = array() ) {
 	add_theme_support( 'widgets' );
 
 	/**
-	 * Fires once a sidebar has been registered.
+	 * Kích hoạt sau khi một sidebar đã được đăng ký.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $sidebar Parsed arguments for the registered sidebar.
+	 * @param array $sidebar Tham số đã phân tích cho sidebar đã đăng ký.
 	 */
 	do_action( 'register_sidebar', $sidebar );
 
@@ -330,13 +330,13 @@ function register_sidebar( $args = array() ) {
 }
 
 /**
- * Removes a sidebar from the list.
+ * Xóa một sidebar khỏi danh sách.
  *
  * @since 2.2.0
  *
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  *
- * @param string|int $sidebar_id The ID of the sidebar when it was registered.
+ * @param string|int $sidebar_id ID của sidebar khi nó được đăng ký.
  */
 function unregister_sidebar( $sidebar_id ) {
 	global $wp_registered_sidebars;
@@ -345,14 +345,14 @@ function unregister_sidebar( $sidebar_id ) {
 }
 
 /**
- * Checks if a sidebar is registered.
+ * Kiểm tra xem một sidebar đã được đăng ký chưa.
  *
  * @since 4.4.0
  *
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  *
- * @param string|int $sidebar_id The ID of the sidebar when it was registered.
- * @return bool True if the sidebar is registered, false otherwise.
+ * @param string|int $sidebar_id ID của sidebar khi nó được đăng ký.
+ * @return bool True nếu sidebar đã được đăng ký, false nếu không.
  */
 function is_registered_sidebar( $sidebar_id ) {
 	global $wp_registered_sidebars;
@@ -361,37 +361,37 @@ function is_registered_sidebar( $sidebar_id ) {
 }
 
 /**
- * Registers an instance of a widget.
+ * Đăng ký một thể hiện của widget.
  *
- * The default widget option is 'classname' that can be overridden.
+ * Tùy chọn widget mặc định là 'classname' có thể được ghi đè.
  *
- * The function can also be used to un-register widgets when `$output_callback`
- * parameter is an empty string.
+ * Hàm cũng có thể được sử dụng để hủy đăng ký widget khi tham số `$output_callback`
+ * là chuỗi rỗng.
  *
  * @since 2.2.0
- * @since 5.3.0 Formalized the existing and already documented `...$params` parameter
- *              by adding it to the function signature.
- * @since 5.8.0 Added show_instance_in_rest option.
+ * @since 5.3.0 Chính thức hóa tham số `...$params` đã tồn tại và được ghi nhận
+ *              bằng cách thêm vào chữ ký hàm.
+ * @since 5.8.0 Thêm tùy chọn show_instance_in_rest.
  *
- * @global array $wp_registered_widgets            Uses stored registered widgets.
- * @global array $wp_registered_widget_controls    Stores the registered widget controls (options).
- * @global array $wp_registered_widget_updates     The registered widget updates.
+ * @global array $wp_registered_widgets            Sử dụng các widget đã đăng ký được lưu trữ.
+ * @global array $wp_registered_widget_controls    Lưu trữ các điều khiển widget đã đăng ký (tùy chọn).
+ * @global array $wp_registered_widget_updates     Các cập nhật widget đã đăng ký.
  * @global array $_wp_deprecated_widgets_callbacks
  *
- * @param int|string $id              Widget ID.
- * @param string     $name            Widget display title.
- * @param callable   $output_callback Run when widget is called.
+ * @param int|string $id              ID Widget.
+ * @param string     $name            Tiêu đề hiển thị widget.
+ * @param callable   $output_callback Chạy khi widget được gọi.
  * @param array      $options {
- *     Optional. An array of supplementary widget options for the instance.
+ *     Tùy chọn. Mảng tùy chọn widget bổ sung cho thể hiện.
  *
- *     @type string $classname             Class name for the widget's HTML container. Default is a shortened
- *                                         version of the output callback name.
- *     @type string $description           Widget description for display in the widget administration
- *                                         panel and/or theme.
- *     @type bool   $show_instance_in_rest Whether to show the widget's instance settings in the REST API.
- *                                         Only available for WP_Widget based widgets.
+ *     @type string $classname             Tên lớp cho vùng chứa HTML của widget. Mặc định là phiên bản
+ *                                         rút gọn của tên callback đầu ra.
+ *     @type string $description           Mô tả widget để hiển thị trong bảng quản trị widget
+ *                                         và/hoặc theme.
+ *     @type bool   $show_instance_in_rest Có hiển thị cài đặt thể hiện widget trong REST API hay không.
+ *                                         Chỉ khả dụng cho các widget dựa trên WP_Widget.
  * }
- * @param mixed      ...$params       Optional additional parameters to pass to the callback function when it's called.
+ * @param mixed      ...$params       Tùy chọn các tham số bổ sung để truyền cho hàm callback khi nó được gọi.
  */
 function wp_register_sidebar_widget( $id, $name, $output_callback, $options = array(), ...$params ) {
 	global $wp_registered_widgets, $wp_registered_widget_controls, $wp_registered_widget_updates, $_wp_deprecated_widgets_callbacks;
@@ -423,11 +423,11 @@ function wp_register_sidebar_widget( $id, $name, $output_callback, $options = ar
 	if ( is_callable( $output_callback ) && ( ! isset( $wp_registered_widgets[ $id ] ) || did_action( 'widgets_init' ) ) ) {
 
 		/**
-		 * Fires once for each registered widget.
+		 * Kích hoạt một lần cho mỗi widget đã đăng ký.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param array $widget An array of default widget arguments.
+		 * @param array $widget Mảng tham số widget mặc định.
 		 */
 		do_action( 'wp_register_sidebar_widget', $widget );
 		$wp_registered_widgets[ $id ] = $widget;
@@ -435,18 +435,18 @@ function wp_register_sidebar_widget( $id, $name, $output_callback, $options = ar
 }
 
 /**
- * Retrieves description for widget.
+ * Lấy mô tả cho widget.
  *
- * When registering widgets, the options can also include 'description' that
- * describes the widget for display on the widget administration panel or
- * in the theme.
+ * Khi đăng ký widget, các tùy chọn cũng có thể bao gồm 'description'
+ * mô tả widget để hiển thị trên bảng quản trị widget hoặc
+ * trong theme.
  *
  * @since 2.5.0
  *
- * @global array $wp_registered_widgets The registered widgets.
+ * @global array $wp_registered_widgets Các widget đã đăng ký.
  *
- * @param int|string $id Widget ID.
- * @return string|void Widget description, if available.
+ * @param int|string $id ID Widget.
+ * @return string|void Mô tả widget, nếu có.
  */
 function wp_widget_description( $id ) {
 	if ( ! is_scalar( $id ) ) {
@@ -461,17 +461,17 @@ function wp_widget_description( $id ) {
 }
 
 /**
- * Retrieves description for a sidebar.
+ * Lấy mô tả cho sidebar.
  *
- * When registering sidebars a 'description' parameter can be included that
- * describes the sidebar for display on the widget administration panel.
+ * Khi đăng ký sidebar, tham số 'description' có thể được bao gồm
+ * để mô tả sidebar hiển thị trên bảng quản trị widget.
  *
  * @since 2.9.0
  *
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  *
- * @param string $id sidebar ID.
- * @return string|void Sidebar description, if available.
+ * @param string $id ID sidebar.
+ * @return string|void Mô tả sidebar, nếu có.
  */
 function wp_sidebar_description( $id ) {
 	if ( ! is_scalar( $id ) ) {
@@ -486,20 +486,20 @@ function wp_sidebar_description( $id ) {
 }
 
 /**
- * Remove widget from sidebar.
+ * Xóa widget khỏi sidebar.
  *
  * @since 2.2.0
  *
- * @param int|string $id Widget ID.
+ * @param int|string $id ID Widget.
  */
 function wp_unregister_sidebar_widget( $id ) {
 
 	/**
-	 * Fires just before a widget is removed from a sidebar.
+	 * Kích hoạt ngay trước khi widget bị xóa khỏi sidebar.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int|string $id The widget ID.
+	 * @param int|string $id ID Widget.
 	 */
 	do_action( 'wp_unregister_sidebar_widget', $id );
 
@@ -508,30 +508,30 @@ function wp_unregister_sidebar_widget( $id ) {
 }
 
 /**
- * Registers widget control callback for customizing options.
+ * Đăng ký callback điều khiển widget để tùy chỉnh tùy chọn.
  *
  * @since 2.2.0
- * @since 5.3.0 Formalized the existing and already documented `...$params` parameter
- *              by adding it to the function signature.
+ * @since 5.3.0 Chính thức hóa tham số `...$params` đã tồn tại và được ghi nhận
+ *              bằng cách thêm vào chữ ký hàm.
  *
- * @global array $wp_registered_widget_controls The registered widget controls.
- * @global array $wp_registered_widget_updates  The registered widget updates.
- * @global array $wp_registered_widgets         The registered widgets.
+ * @global array $wp_registered_widget_controls Các điều khiển widget đã đăng ký.
+ * @global array $wp_registered_widget_updates  Các cập nhật widget đã đăng ký.
+ * @global array $wp_registered_widgets         Các widget đã đăng ký.
  * @global array $_wp_deprecated_widgets_callbacks
  *
- * @param int|string $id               Sidebar ID.
- * @param string     $name             Sidebar display name.
- * @param callable   $control_callback Run when sidebar is displayed.
+ * @param int|string $id               ID Sidebar.
+ * @param string     $name             Tên hiển thị Sidebar.
+ * @param callable   $control_callback Chạy khi sidebar được hiển thị.
  * @param array      $options {
- *     Optional. Array or string of control options. Default empty array.
+ *     Tùy chọn. Mảng hoặc chuỗi tùy chọn điều khiển. Mặc định mảng rỗng.
  *
- *     @type int        $height  Never used. Default 200.
- *     @type int        $width   Width of the fully expanded control form (but try hard to use the default width).
- *                               Default 250.
- *     @type int|string $id_base Required for multi-widgets, i.e widgets that allow multiple instances such as the
- *                               text widget. The widget ID will end up looking like `{$id_base}-{$unique_number}`.
+ *     @type int        $height  Không bao giờ được sử dụng. Mặc định 200.
+ *     @type int        $width   Chiều rộng của form điều khiển khi mở rộng hoàn toàn (nhưng hãy cố gắng sử dụng chiều rộng mặc định).
+ *                               Mặc định 250.
+ *     @type int|string $id_base Bắt buộc cho multi-widget, tức là các widget cho phép nhiều thể hiện như
+ *                               widget văn bản. ID widget sẽ có dạng `{$id_base}-{$unique_number}`.
  * }
- * @param mixed      ...$params        Optional additional parameters to pass to the callback function when it's called.
+ * @param mixed      ...$params        Tùy chọn các tham số bổ sung để truyền cho hàm callback khi nó được gọi.
  */
 function wp_register_widget_control( $id, $name, $control_callback, $options = array(), ...$params ) {
 	global $wp_registered_widget_controls, $wp_registered_widget_updates, $wp_registered_widgets, $_wp_deprecated_widgets_callbacks;
@@ -557,7 +557,7 @@ function wp_register_widget_control( $id, $name, $control_callback, $options = a
 	$defaults          = array(
 		'width'  => 250,
 		'height' => 200,
-	); // Height is never used.
+	); // Chiều cao không bao giờ được sử dụng.
 	$options           = wp_parse_args( $options, $defaults );
 	$options['width']  = (int) $options['width'];
 	$options['height'] = (int) $options['height'];
@@ -585,19 +585,19 @@ function wp_register_widget_control( $id, $name, $control_callback, $options = a
 }
 
 /**
- * Registers the update callback for a widget.
+ * Đăng ký callback cập nhật cho widget.
  *
  * @since 2.8.0
- * @since 5.3.0 Formalized the existing and already documented `...$params` parameter
- *              by adding it to the function signature.
+ * @since 5.3.0 Chính thức hóa tham số `...$params` đã tồn tại và được ghi nhận
+ *              bằng cách thêm vào chữ ký hàm.
  *
- * @global array $wp_registered_widget_updates The registered widget updates.
+ * @global array $wp_registered_widget_updates Các cập nhật widget đã đăng ký.
  *
- * @param string   $id_base         The base ID of a widget created by extending WP_Widget.
- * @param callable $update_callback Update callback method for the widget.
- * @param array    $options         Optional. Widget control options. See wp_register_widget_control().
- *                                  Default empty array.
- * @param mixed    ...$params       Optional additional parameters to pass to the callback function when it's called.
+ * @param string   $id_base         ID cơ sở của widget được tạo bằng cách kế thừa WP_Widget.
+ * @param callable $update_callback Phương thức callback cập nhật cho widget.
+ * @param array    $options         Tùy chọn. Tùy chọn điều khiển widget. Xem wp_register_widget_control().
+ *                                  Mặc định mảng rỗng.
+ * @param mixed    ...$params       Tùy chọn các tham số bổ sung để truyền cho hàm callback khi nó được gọi.
  */
 function _register_widget_update_callback( $id_base, $update_callback, $options = array(), ...$params ) {
 	global $wp_registered_widget_updates;
@@ -619,20 +619,20 @@ function _register_widget_update_callback( $id_base, $update_callback, $options 
 }
 
 /**
- * Registers the form callback for a widget.
+ * Đăng ký callback form cho widget.
  *
  * @since 2.8.0
- * @since 5.3.0 Formalized the existing and already documented `...$params` parameter
- *              by adding it to the function signature.
+ * @since 5.3.0 Chính thức hóa tham số `...$params` đã tồn tại và được ghi nhận
+ *              bằng cách thêm vào chữ ký hàm.
  *
- * @global array $wp_registered_widget_controls The registered widget controls.
+ * @global array $wp_registered_widget_controls Các điều khiển widget đã đăng ký.
  *
- * @param int|string $id            Widget ID.
- * @param string     $name          Name attribute for the widget.
- * @param callable   $form_callback Form callback.
- * @param array      $options       Optional. Widget control options. See wp_register_widget_control().
- *                                  Default empty array.
- * @param mixed      ...$params     Optional additional parameters to pass to the callback function when it's called.
+ * @param int|string $id            ID Widget.
+ * @param string     $name          Thuộc tính tên cho widget.
+ * @param callable   $form_callback Callback form.
+ * @param array      $options       Tùy chọn. Tùy chọn điều khiển widget. Xem wp_register_widget_control().
+ *                                  Mặc định mảng rỗng.
+ * @param mixed      ...$params     Tùy chọn các tham số bổ sung để truyền cho hàm callback khi nó được gọi.
  */
 
 function _register_widget_form_callback( $id, $name, $form_callback, $options = array(), ...$params ) {
@@ -669,30 +669,30 @@ function _register_widget_form_callback( $id, $name, $form_callback, $options = 
 }
 
 /**
- * Removes control callback for widget.
+ * Xóa callback điều khiển cho widget.
  *
  * @since 2.2.0
  *
- * @param int|string $id Widget ID.
+ * @param int|string $id ID Widget.
  */
 function wp_unregister_widget_control( $id ) {
 	wp_register_widget_control( $id, '', '' );
 }
 
 /**
- * Displays dynamic sidebar.
+ * Hiển thị sidebar động.
  *
- * By default this displays the default sidebar or 'sidebar-1'. If your theme specifies the 'id' or
- * 'name' parameter for its registered sidebars you can pass an ID or name as the $index parameter.
- * Otherwise, you can pass in a numerical index to display the sidebar at that index.
+ * Theo mặc định, hiển thị sidebar mặc định hoặc 'sidebar-1'. Nếu theme của bạn chỉ định tham số 'id' hoặc
+ * 'name' cho các sidebar đã đăng ký, bạn có thể truyền ID hoặc tên làm tham số $index.
+ * Nếu không, bạn có thể truyền chỉ số dạng số để hiển thị sidebar tại chỉ số đó.
  *
  * @since 2.2.0
  *
- * @global array $wp_registered_sidebars The registered sidebars.
- * @global array $wp_registered_widgets  The registered widgets.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
+ * @global array $wp_registered_widgets  Các widget đã đăng ký.
  *
- * @param int|string $index Optional. Index, name or ID of dynamic sidebar. Default 1.
- * @return bool True, if widget sidebar was found and called. False if not found or not called.
+ * @param int|string $index Tùy chọn. Chỉ số, tên hoặc ID của sidebar động. Mặc định 1.
+ * @return bool True, nếu sidebar widget được tìm thấy và gọi. False nếu không tìm thấy hoặc không được gọi.
  */
 function dynamic_sidebar( $index = 1 ) {
 	global $wp_registered_sidebars, $wp_registered_widgets;
@@ -711,11 +711,11 @@ function dynamic_sidebar( $index = 1 ) {
 
 	$sidebars_widgets = wp_get_sidebars_widgets();
 	if ( empty( $wp_registered_sidebars[ $index ] ) || empty( $sidebars_widgets[ $index ] ) || ! is_array( $sidebars_widgets[ $index ] ) ) {
-		/** This action is documented in wp-includes/widget.php */
+		/** Action này được ghi nhận trong wp-includes/widget.php */
 		do_action( 'dynamic_sidebar_before', $index, false );
-		/** This action is documented in wp-includes/widget.php */
+		/** Action này được ghi nhận trong wp-includes/widget.php */
 		do_action( 'dynamic_sidebar_after', $index, false );
-		/** This filter is documented in wp-includes/widget.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/widget.php */
 		return apply_filters( 'dynamic_sidebar_has_widgets', false, $index );
 	}
 
@@ -724,16 +724,16 @@ function dynamic_sidebar( $index = 1 ) {
 	$sidebar['before_sidebar'] = sprintf( $sidebar['before_sidebar'], $sidebar['id'], $sidebar['class'] );
 
 	/**
-	 * Fires before widgets are rendered in a dynamic sidebar.
+	 * Kích hoạt trước khi các widget được hiển thị trong sidebar động.
 	 *
-	 * Note: The action also fires for empty sidebars, and on both the front end
-	 * and back end, including the Inactive Widgets sidebar on the Widgets screen.
+	 * Lưu ý: Action cũng kích hoạt cho các sidebar rỗng, và trên cả giao diện
+	 * trước và sau, bao gồm sidebar Widget không hoạt động trên màn hình Widget.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param int|string $index       Index, name, or ID of the dynamic sidebar.
-	 * @param bool       $has_widgets Whether the sidebar is populated with widgets.
-	 *                                Default true.
+	 * @param int|string $index       Chỉ số, tên, hoặc ID của sidebar động.
+	 * @param bool       $has_widgets Sidebar có được điền widget hay không.
+	 *                                Mặc định true.
 	 */
 	do_action( 'dynamic_sidebar_before', $index, true );
 
@@ -761,7 +761,7 @@ function dynamic_sidebar( $index = 1 ) {
 			(array) $wp_registered_widgets[ $id ]['params']
 		);
 
-		// Substitute HTML `id` and `class` attributes into `before_widget`.
+		// Thay thế thuộc tính HTML `id` và `class` vào `before_widget`.
 		$classname_ = '';
 		foreach ( (array) $wp_registered_widgets[ $id ]['classname'] as $cn ) {
 			if ( is_string( $cn ) ) {
@@ -779,10 +779,10 @@ function dynamic_sidebar( $index = 1 ) {
 		);
 
 		/**
-		 * Filters the parameters passed to a widget's display callback.
+		 * Lọc các tham số được truyền cho callback hiển thị của widget.
 		 *
-		 * Note: The filter is evaluated on both the front end and back end,
-		 * including for the Inactive Widgets sidebar on the Widgets screen.
+		 * Lưu ý: Bộ lọc được đánh giá trên cả giao diện trước và sau,
+		 * bao gồm sidebar Widget không hoạt động trên màn hình Widget.
 		 *
 		 * @since 2.5.0
 		 *
@@ -790,23 +790,23 @@ function dynamic_sidebar( $index = 1 ) {
 		 *
 		 * @param array $params {
 		 *     @type array $args  {
-		 *         An array of widget display arguments.
+		 *         Mảng tham số hiển thị widget.
 		 *
-		 *         @type string $name          Name of the sidebar the widget is assigned to.
-		 *         @type string $id            ID of the sidebar the widget is assigned to.
-		 *         @type string $description   The sidebar description.
-		 *         @type string $class         CSS class applied to the sidebar container.
-		 *         @type string $before_widget HTML markup to prepend to each widget in the sidebar.
-		 *         @type string $after_widget  HTML markup to append to each widget in the sidebar.
-		 *         @type string $before_title  HTML markup to prepend to the widget title when displayed.
-		 *         @type string $after_title   HTML markup to append to the widget title when displayed.
-		 *         @type string $widget_id     ID of the widget.
-		 *         @type string $widget_name   Name of the widget.
+		 *         @type string $name          Tên của sidebar mà widget được gán.
+		 *         @type string $id            ID của sidebar mà widget được gán.
+		 *         @type string $description   Mô tả sidebar.
+		 *         @type string $class         Lớp CSS áp dụng cho vùng chứa sidebar.
+		 *         @type string $before_widget Đánh dấu HTML thêm trước mỗi widget trong sidebar.
+		 *         @type string $after_widget  Đánh dấu HTML thêm sau mỗi widget trong sidebar.
+		 *         @type string $before_title  Đánh dấu HTML thêm trước tiêu đề widget khi hiển thị.
+		 *         @type string $after_title   Đánh dấu HTML thêm sau tiêu đề widget khi hiển thị.
+		 *         @type string $widget_id     ID của widget.
+		 *         @type string $widget_name   Tên của widget.
 		 *     }
 		 *     @type array $widget_args {
-		 *         An array of multi-widget arguments.
+		 *         Mảng tham số multi-widget.
 		 *
-		 *         @type int $number Number increment used for multiples of the same widget.
+		 *         @type int $number Số tăng dần được sử dụng cho nhiều widget cùng loại.
 		 *     }
 		 * }
 		 */
@@ -815,28 +815,28 @@ function dynamic_sidebar( $index = 1 ) {
 		$callback = $wp_registered_widgets[ $id ]['callback'];
 
 		/**
-		 * Fires before a widget's display callback is called.
+		 * Kích hoạt trước khi callback hiển thị của widget được gọi.
 		 *
-		 * Note: The action fires on both the front end and back end, including
-		 * for widgets in the Inactive Widgets sidebar on the Widgets screen.
+		 * Lưu ý: Action kích hoạt trên cả giao diện trước và sau, bao gồm
+		 * các widget trong sidebar Widget không hoạt động trên màn hình Widget.
 		 *
-		 * The action is not fired for empty sidebars.
+		 * Action không kích hoạt cho các sidebar rỗng.
 		 *
 		 * @since 3.0.0
 		 *
 		 * @param array $widget {
-		 *     An associative array of widget arguments.
+		 *     Mảng liên kết các tham số widget.
 		 *
-		 *     @type string   $name        Name of the widget.
-		 *     @type string   $id          Widget ID.
-		 *     @type callable $callback    When the hook is fired on the front end, `$callback` is an array
-		 *                                 containing the widget object. Fired on the back end, `$callback`
-		 *                                 is 'wp_widget_control', see `$_callback`.
-		 *     @type array    $params      An associative array of multi-widget arguments.
-		 *     @type string   $classname   CSS class applied to the widget container.
-		 *     @type string   $description The widget description.
-		 *     @type array    $_callback   When the hook is fired on the back end, `$_callback` is populated
-		 *                                 with an array containing the widget object, see `$callback`.
+		 *     @type string   $name        Tên của widget.
+		 *     @type string   $id          ID Widget.
+		 *     @type callable $callback    Khi hook được kích hoạt ở giao diện trước, `$callback` là mảng
+		 *                                 chứa đối tượng widget. Kích hoạt ở giao diện sau, `$callback`
+		 *                                 là 'wp_widget_control', xem `$_callback`.
+		 *     @type array    $params      Mảng liên kết các tham số multi-widget.
+		 *     @type string   $classname   Lớp CSS áp dụng cho vùng chứa widget.
+		 *     @type string   $description Mô tả widget.
+		 *     @type array    $_callback   Khi hook được kích hoạt ở giao diện sau, `$_callback` được điền
+		 *                                 bằng mảng chứa đối tượng widget, xem `$callback`.
 		 * }
 		 */
 		do_action( 'dynamic_sidebar', $wp_registered_widgets[ $id ] );
@@ -852,64 +852,64 @@ function dynamic_sidebar( $index = 1 ) {
 	}
 
 	/**
-	 * Fires after widgets are rendered in a dynamic sidebar.
+	 * Kích hoạt sau khi các widget được hiển thị trong sidebar động.
 	 *
-	 * Note: The action also fires for empty sidebars, and on both the front end
-	 * and back end, including the Inactive Widgets sidebar on the Widgets screen.
+	 * Lưu ý: Action cũng kích hoạt cho các sidebar rỗng, và trên cả giao diện
+	 * trước và sau, bao gồm sidebar Widget không hoạt động trên màn hình Widget.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param int|string $index       Index, name, or ID of the dynamic sidebar.
-	 * @param bool       $has_widgets Whether the sidebar is populated with widgets.
-	 *                                Default true.
+	 * @param int|string $index       Chỉ số, tên, hoặc ID của sidebar động.
+	 * @param bool       $has_widgets Sidebar có được điền widget hay không.
+	 *                                Mặc định true.
 	 */
 	do_action( 'dynamic_sidebar_after', $index, true );
 
 	/**
-	 * Filters whether a sidebar has widgets.
+	 * Lọc xem sidebar có widget hay không.
 	 *
-	 * Note: The filter is also evaluated for empty sidebars, and on both the front end
-	 * and back end, including the Inactive Widgets sidebar on the Widgets screen.
+	 * Lưu ý: Bộ lọc cũng được đánh giá cho các sidebar rỗng, và trên cả giao diện
+	 * trước và sau, bao gồm sidebar Widget không hoạt động trên màn hình Widget.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param bool       $did_one Whether at least one widget was rendered in the sidebar.
-	 *                            Default false.
-	 * @param int|string $index   Index, name, or ID of the dynamic sidebar.
+	 * @param bool       $did_one Có ít nhất một widget được hiển thị trong sidebar hay không.
+	 *                            Mặc định false.
+	 * @param int|string $index   Chỉ số, tên, hoặc ID của sidebar động.
 	 */
 	return apply_filters( 'dynamic_sidebar_has_widgets', $did_one, $index );
 }
 
 /**
- * Determines whether a given widget is displayed on the front end.
+ * Xác định xem một widget đã cho có được hiển thị ở giao diện trước hay không.
  *
- * Either $callback or $id_base can be used.
- * $id_base is the first argument when extending WP_Widget class.
- * Without the optional $widget_id parameter, returns the ID of the first sidebar
- * in which the first instance of the widget with the given callback or $id_base is found.
- * With the $widget_id parameter, returns the ID of the sidebar where
- * the widget with that callback/$id_base AND that ID is found.
+ * Có thể sử dụng $callback hoặc $id_base.
+ * $id_base là tham số đầu tiên khi kế thừa lớp WP_Widget.
+ * Không có tham số $widget_id tùy chọn, trả về ID của sidebar đầu tiên
+ * trong đó thể hiện đầu tiên của widget với callback hoặc $id_base đã cho được tìm thấy.
+ * Với tham số $widget_id, trả về ID của sidebar nơi
+ * widget với callback/$id_base ĐÓ VÀ ID đó được tìm thấy.
  *
- * NOTE: $widget_id and $id_base are the same for single widgets. To be effective
- * this function has to run after widgets have initialized, at action {@see 'init'} or later.
+ * LƯU Ý: $widget_id và $id_base giống nhau cho các widget đơn. Để có hiệu quả,
+ * hàm này phải chạy sau khi widget đã khởi tạo, tại action {@see 'init'} hoặc sau.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Thẻ điều kiện} trong Sổ tay nhà phát triển Theme.
  *
  * @since 2.2.0
  *
- * @global array $wp_registered_widgets The registered widgets.
+ * @global array $wp_registered_widgets Các widget đã đăng ký.
  *
- * @param callable|false $callback      Optional. Widget callback to check. Default false.
- * @param string|false   $widget_id     Optional. Widget ID. Optional, but needed for checking.
- *                                      Default false.
- * @param string|false   $id_base       Optional. The base ID of a widget created by extending WP_Widget.
- *                                      Default false.
- * @param bool           $skip_inactive Optional. Whether to check in 'wp_inactive_widgets'.
- *                                      Default true.
- * @return string|false ID of the sidebar in which the widget is active,
- *                      false if the widget is not active.
+ * @param callable|false $callback      Tùy chọn. Callback widget để kiểm tra. Mặc định false.
+ * @param string|false   $widget_id     Tùy chọn. ID Widget. Tùy chọn, nhưng cần thiết để kiểm tra.
+ *                                      Mặc định false.
+ * @param string|false   $id_base       Tùy chọn. ID cơ sở của widget được tạo bằng cách kế thừa WP_Widget.
+ *                                      Mặc định false.
+ * @param bool           $skip_inactive Tùy chọn. Có bỏ qua kiểm tra trong 'wp_inactive_widgets' hay không.
+ *                                      Mặc định true.
+ * @return string|false ID của sidebar mà widget đang hoạt động,
+ *                      false nếu widget không hoạt động.
  */
 function is_active_widget( $callback = false, $widget_id = false, $id_base = false, $skip_inactive = true ) {
 	global $wp_registered_widgets;
@@ -937,18 +937,18 @@ function is_active_widget( $callback = false, $widget_id = false, $id_base = fal
 }
 
 /**
- * Determines whether the dynamic sidebar is enabled and used by the theme.
+ * Xác định xem sidebar động có được bật và sử dụng bởi theme hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Thẻ điều kiện} trong Sổ tay nhà phát triển Theme.
  *
  * @since 2.2.0
  *
- * @global array $wp_registered_widgets  The registered widgets.
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_widgets  Các widget đã đăng ký.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  *
- * @return bool True if using widgets, false otherwise.
+ * @return bool True nếu đang sử dụng widget, false nếu không.
  */
 function is_dynamic_sidebar() {
 	global $wp_registered_widgets, $wp_registered_sidebars;
@@ -969,16 +969,16 @@ function is_dynamic_sidebar() {
 }
 
 /**
- * Determines whether a sidebar contains widgets.
+ * Xác định xem sidebar có chứa widget hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Thẻ điều kiện} trong Sổ tay nhà phát triển Theme.
  *
  * @since 2.8.0
  *
- * @param string|int $index Sidebar name, id or number to check.
- * @return bool True if the sidebar has widgets, false otherwise.
+ * @param string|int $index Tên, id hoặc số của sidebar để kiểm tra.
+ * @return bool True nếu sidebar có widget, false nếu không.
  */
 function is_active_sidebar( $index ) {
 	$index             = ( is_int( $index ) ) ? "sidebar-$index" : sanitize_title( $index );
@@ -986,26 +986,26 @@ function is_active_sidebar( $index ) {
 	$is_active_sidebar = ! empty( $sidebars_widgets[ $index ] );
 
 	/**
-	 * Filters whether a dynamic sidebar is considered "active".
+	 * Lọc xem sidebar động có được coi là "hoạt động" hay không.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param bool       $is_active_sidebar Whether or not the sidebar should be considered "active".
-	 *                                      In other words, whether the sidebar contains any widgets.
-	 * @param int|string $index             Index, name, or ID of the dynamic sidebar.
+	 * @param bool       $is_active_sidebar Sidebar có nên được coi là "hoạt động" hay không.
+	 *                                      Nói cách khác, sidebar có chứa widget nào không.
+	 * @param int|string $index             Chỉ số, tên, hoặc ID của sidebar động.
 	 */
 	return apply_filters( 'is_active_sidebar', $is_active_sidebar, $index );
 }
 
 //
-// Internal Functions.
+// Các hàm nội bộ.
 //
 
 /**
- * Retrieves the full list of sidebars and their widget instance IDs.
+ * Lấy danh sách đầy đủ các sidebar và ID thể hiện widget của chúng.
  *
- * Will upgrade sidebar widget list, if needed. Will also save updated list, if
- * needed.
+ * Sẽ nâng cấp danh sách widget sidebar, nếu cần. Cũng sẽ lưu danh sách
+ * đã cập nhật, nếu cần.
  *
  * @since 2.2.0
  * @access private
@@ -1013,8 +1013,8 @@ function is_active_sidebar( $index ) {
  * @global array $_wp_sidebars_widgets
  * @global array $sidebars_widgets
  *
- * @param bool $deprecated Not used (argument deprecated).
- * @return array Upgraded list of widgets to version 3 array format when called from the admin.
+ * @param bool $deprecated Không sử dụng (tham số đã ngừng sử dụng).
+ * @return array Danh sách widget đã nâng cấp lên định dạng mảng phiên bản 3 khi được gọi từ trang quản trị.
  */
 function wp_get_sidebars_widgets( $deprecated = true ) {
 	if ( true !== $deprecated ) {
@@ -1024,8 +1024,8 @@ function wp_get_sidebars_widgets( $deprecated = true ) {
 	global $_wp_sidebars_widgets, $sidebars_widgets;
 
 	/*
-	 * If loading from front page, consult $_wp_sidebars_widgets rather than options
-	 * to see if wp_convert_widget_settings() has made manipulations in memory.
+	 * Nếu tải từ trang giao diện, tham chiếu $_wp_sidebars_widgets thay vì options
+	 * để xem wp_convert_widget_settings() đã thực hiện thao tác trong bộ nhớ chưa.
 	 */
 	if ( ! is_admin() ) {
 		if ( empty( $_wp_sidebars_widgets ) ) {
@@ -1042,24 +1042,24 @@ function wp_get_sidebars_widgets( $deprecated = true ) {
 	}
 
 	/**
-	 * Filters the list of sidebars and their widgets.
+	 * Lọc danh sách các sidebar và widget của chúng.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param array $sidebars_widgets An associative array of sidebars and their widgets.
+	 * @param array $sidebars_widgets Mảng liên kết các sidebar và widget của chúng.
 	 */
 	return apply_filters( 'sidebars_widgets', $sidebars_widgets );
 }
 
 /**
- * Retrieves the registered sidebar with the given ID.
+ * Lấy sidebar đã đăng ký với ID đã cho.
  *
  * @since 5.9.0
  *
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  *
- * @param string $id The sidebar ID.
- * @return array|null The discovered sidebar, or null if it is not registered.
+ * @param string $id ID sidebar.
+ * @return array|null Sidebar được tìm thấy, hoặc null nếu nó chưa được đăng ký.
  */
 function wp_get_sidebar( $id ) {
 	global $wp_registered_sidebars;
@@ -1081,18 +1081,18 @@ function wp_get_sidebar( $id ) {
 }
 
 /**
- * Sets the sidebar widget option to update sidebars.
+ * Đặt tùy chọn widget sidebar để cập nhật các sidebar.
  *
  * @since 2.2.0
  * @access private
  *
  * @global array $_wp_sidebars_widgets
- * @param array $sidebars_widgets Sidebar widgets and their settings.
+ * @param array $sidebars_widgets Các widget sidebar và cài đặt của chúng.
  */
 function wp_set_sidebars_widgets( $sidebars_widgets ) {
 	global $_wp_sidebars_widgets;
 
-	// Clear cached value used in wp_get_sidebars_widgets().
+	// Xóa giá trị cache được sử dụng trong wp_get_sidebars_widgets().
 	$_wp_sidebars_widgets = null;
 
 	if ( ! isset( $sidebars_widgets['array_version'] ) ) {
@@ -1103,12 +1103,12 @@ function wp_set_sidebars_widgets( $sidebars_widgets ) {
 }
 
 /**
- * Retrieves default registered sidebars list.
+ * Lấy danh sách sidebar đã đăng ký mặc định.
  *
  * @since 2.2.0
  * @access private
  *
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  *
  * @return array
  */
@@ -1125,19 +1125,19 @@ function wp_get_widget_defaults() {
 }
 
 /**
- * Converts the widget settings from single to multi-widget format.
+ * Chuyển đổi cài đặt widget từ định dạng đơn sang đa widget.
  *
  * @since 2.8.0
  *
  * @global array $_wp_sidebars_widgets
  *
- * @param string $base_name   Root ID for all widgets of this type.
- * @param string $option_name Option name for this widget type.
- * @param array  $settings    The array of widget instance settings.
- * @return array The array of widget settings converted to multi-widget format.
+ * @param string $base_name   ID gốc cho tất cả widget cùng loại này.
+ * @param string $option_name Tên tùy chọn cho loại widget này.
+ * @param array  $settings    Mảng cài đặt thể hiện widget.
+ * @return array Mảng cài đặt widget đã chuyển đổi sang định dạng đa widget.
  */
 function wp_convert_widget_settings( $base_name, $option_name, $settings ) {
-	// This test may need expanding.
+	// Kiểm tra này có thể cần mở rộng.
 	$single  = false;
 	$changed = false;
 
@@ -1158,7 +1158,7 @@ function wp_convert_widget_settings( $base_name, $option_name, $settings ) {
 	if ( $single ) {
 		$settings = array( 2 => $settings );
 
-		// If loading from the front page, update sidebar in memory but don't save to options.
+		// Nếu tải từ trang giao diện, cập nhật sidebar trong bộ nhớ nhưng không lưu vào options.
 		if ( is_admin() ) {
 			$sidebars_widgets = get_option( 'sidebars_widgets' );
 		} else {
@@ -1194,25 +1194,25 @@ function wp_convert_widget_settings( $base_name, $option_name, $settings ) {
 }
 
 /**
- * Outputs an arbitrary widget as a template tag.
+ * Xuất một widget tùy ý dưới dạng thẻ mẫu.
  *
  * @since 2.8.0
  *
  * @global WP_Widget_Factory $wp_widget_factory
  *
- * @param string $widget   The widget's PHP class name (see class-wp-widget.php).
- * @param array  $instance Optional. The widget's instance settings. Default empty array.
+ * @param string $widget   Tên lớp PHP của widget (xem class-wp-widget.php).
+ * @param array  $instance Tùy chọn. Cài đặt thể hiện widget. Mặc định mảng rỗng.
  * @param array  $args {
- *     Optional. Array of arguments to configure the display of the widget.
+ *     Tùy chọn. Mảng tham số để cấu hình hiển thị widget.
  *
- *     @type string $before_widget HTML content that will be prepended to the widget's HTML output.
- *                                 Default `<div class="widget %s">`, where `%s` is the widget's class name.
- *     @type string $after_widget  HTML content that will be appended to the widget's HTML output.
- *                                 Default `</div>`.
- *     @type string $before_title  HTML content that will be prepended to the widget's title when displayed.
- *                                 Default `<h2 class="widgettitle">`.
- *     @type string $after_title   HTML content that will be appended to the widget's title when displayed.
- *                                 Default `</h2>`.
+ *     @type string $before_widget Nội dung HTML sẽ được thêm trước đầu ra HTML của widget.
+ *                                 Mặc định `<div class="widget %s">`, trong đó `%s` là tên lớp của widget.
+ *     @type string $after_widget  Nội dung HTML sẽ được thêm sau đầu ra HTML của widget.
+ *                                 Mặc định `</div>`.
+ *     @type string $before_title  Nội dung HTML sẽ được thêm trước tiêu đề widget khi hiển thị.
+ *                                 Mặc định `<h2 class="widgettitle">`.
+ *     @type string $after_title   Nội dung HTML sẽ được thêm sau tiêu đề widget khi hiển thị.
+ *                                 Mặc định `</h2>`.
  * }
  */
 function the_widget( $widget, $instance = array(), $args = array() ) {
@@ -1247,7 +1247,7 @@ function the_widget( $widget, $instance = array(), $args = array() ) {
 
 	$instance = wp_parse_args( $instance );
 
-	/** This filter is documented in wp-includes/class-wp-widget.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/class-wp-widget.php */
 	$instance = apply_filters( 'widget_display_callback', $instance, $widget_obj, $args );
 
 	if ( false === $instance ) {
@@ -1255,13 +1255,13 @@ function the_widget( $widget, $instance = array(), $args = array() ) {
 	}
 
 	/**
-	 * Fires before rendering the requested widget.
+	 * Kích hoạt trước khi hiển thị widget được yêu cầu.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $widget   The widget's class name.
-	 * @param array  $instance The current widget instance's settings.
-	 * @param array  $args     An array of the widget's sidebar arguments.
+	 * @param string $widget   Tên lớp của widget.
+	 * @param array  $instance Cài đặt thể hiện widget hiện tại.
+	 * @param array  $args     Mảng tham số sidebar của widget.
 	 */
 	do_action( 'the_widget', $widget, $instance, $args );
 
@@ -1270,19 +1270,19 @@ function the_widget( $widget, $instance = array(), $args = array() ) {
 }
 
 /**
- * Retrieves the widget ID base value.
+ * Lấy giá trị ID cơ sở của widget.
  *
  * @since 2.8.0
  *
- * @param string $id Widget ID.
- * @return string Widget ID base.
+ * @param string $id ID Widget.
+ * @return string ID cơ sở Widget.
  */
 function _get_widget_id_base( $id ) {
 	return preg_replace( '/-[0-9]+$/', '', $id );
 }
 
 /**
- * Handles sidebars config after theme change.
+ * Xử lý cấu hình sidebar sau khi thay đổi theme.
  *
  * @access private
  * @since 3.3.0
@@ -1300,27 +1300,27 @@ function _wp_sidebars_changed() {
 }
 
 /**
- * Validates and remaps any "orphaned" widgets to wp_inactive_widgets sidebar,
- * and saves the widget settings. This has to run at least on each theme change.
+ * Xác thực và ánh xạ lại các widget "mồ côi" sang sidebar wp_inactive_widgets,
+ * và lưu cài đặt widget. Hàm này phải chạy ít nhất mỗi lần thay đổi theme.
  *
- * For example, let's say theme A has a "footer" sidebar, and theme B doesn't have one.
- * After switching from theme A to theme B, all the widgets previously assigned
- * to the footer would be inaccessible. This function detects this scenario, and
- * moves all the widgets previously assigned to the footer under wp_inactive_widgets.
+ * Ví dụ, giả sử theme A có sidebar "footer", và theme B không có.
+ * Sau khi chuyển từ theme A sang theme B, tất cả widget trước đó được gán
+ * cho footer sẽ không thể truy cập. Hàm này phát hiện tình huống này, và
+ * chuyển tất cả widget trước đó được gán cho footer sang wp_inactive_widgets.
  *
- * Despite the word "retrieve" in the name, this function actually updates the database
- * and the global `$sidebars_widgets`. For that reason it should not be run on front end,
- * unless the `$theme_changed` value is 'customize' (to bypass the database write).
+ * Mặc dù có từ "retrieve" trong tên, hàm này thực sự cập nhật cơ sở dữ liệu
+ * và biến toàn cục `$sidebars_widgets`. Vì lý do đó không nên chạy ở giao diện trước,
+ * trừ khi giá trị `$theme_changed` là 'customize' (để bỏ qua ghi vào cơ sở dữ liệu).
  *
  * @since 2.8.0
  *
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  * @global array $sidebars_widgets
- * @global array $wp_registered_widgets  The registered widgets.
+ * @global array $wp_registered_widgets  Các widget đã đăng ký.
  *
- * @param string|bool $theme_changed Whether the theme was changed as a boolean. A value
- *                                   of 'customize' defers updates for the Customizer.
- * @return array Updated sidebars widgets.
+ * @param string|bool $theme_changed Theme đã thay đổi hay chưa dưới dạng boolean. Giá trị
+ *                                   'customize' hoãn cập nhật cho Trình tùy chỉnh.
+ * @return array Các widget sidebar đã cập nhật.
  */
 function retrieve_widgets( $theme_changed = false ) {
 	global $wp_registered_sidebars, $sidebars_widgets, $wp_registered_widgets;
@@ -1346,18 +1346,18 @@ function retrieve_widgets( $theme_changed = false ) {
 		}
 	}
 
-	// Discard invalid, theme-specific widgets from sidebars.
+	// Loại bỏ các widget không hợp lệ, thuộc theme cụ thể khỏi sidebar.
 	$sidebars_widgets = _wp_remove_unregistered_widgets( $sidebars_widgets, $registered_widgets_ids );
 	$sidebars_widgets = wp_map_sidebars_widgets( $sidebars_widgets );
 
-	// Find hidden/lost multi-widget instances.
+	// Tìm các thể hiện multi-widget bị ẩn/mất.
 	$shown_widgets = array_merge( ...array_values( $sidebars_widgets ) );
 	$lost_widgets  = array_diff( $registered_widgets_ids, $shown_widgets );
 
 	foreach ( $lost_widgets as $key => $widget_id ) {
 		$number = preg_replace( '/.+?-([0-9]+)$/', '$1', $widget_id );
 
-		// Only keep active and default widgets.
+		// Chỉ giữ các widget đang hoạt động và mặc định.
 		if ( is_numeric( $number ) && (int) $number < 2 ) {
 			unset( $lost_widgets[ $key ] );
 		}
@@ -1365,7 +1365,7 @@ function retrieve_widgets( $theme_changed = false ) {
 	$sidebars_widgets['wp_inactive_widgets'] = array_merge( $lost_widgets, (array) $sidebars_widgets['wp_inactive_widgets'] );
 
 	if ( 'customize' !== $theme_changed ) {
-		// Update the widgets settings in the database.
+		// Cập nhật cài đặt widget trong cơ sở dữ liệu.
 		wp_set_sidebars_widgets( $sidebars_widgets );
 	}
 
@@ -1373,15 +1373,15 @@ function retrieve_widgets( $theme_changed = false ) {
 }
 
 /**
- * Compares a list of sidebars with their widgets against an allowed list.
+ * So sánh danh sách sidebar với widget của chúng so với danh sách cho phép.
  *
  * @since 4.9.0
- * @since 4.9.2 Always tries to restore widget assignments from previous data, not just if sidebars needed mapping.
+ * @since 4.9.2 Luôn cố gắng khôi phục gán widget từ dữ liệu trước đó, không chỉ khi sidebar cần ánh xạ.
  *
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  *
- * @param array $existing_sidebars_widgets List of sidebars and their widget instance IDs.
- * @return array Mapped sidebars widgets.
+ * @param array $existing_sidebars_widgets Danh sách sidebar và ID thể hiện widget của chúng.
+ * @return array Các widget sidebar đã ánh xạ.
  */
 function wp_map_sidebars_widgets( $existing_sidebars_widgets ) {
 	global $wp_registered_sidebars;
@@ -1390,7 +1390,7 @@ function wp_map_sidebars_widgets( $existing_sidebars_widgets ) {
 		'wp_inactive_widgets' => array(),
 	);
 
-	// Short-circuit if there are no sidebars to map.
+	// Bỏ qua nếu không có sidebar để ánh xạ.
 	if ( ! is_array( $existing_sidebars_widgets ) || empty( $existing_sidebars_widgets ) ) {
 		return $new_sidebars_widgets;
 	}
@@ -1402,14 +1402,14 @@ function wp_map_sidebars_widgets( $existing_sidebars_widgets ) {
 		}
 	}
 
-	// If old and new theme have just one sidebar, map it and we're done.
+	// Nếu theme cũ và mới chỉ có một sidebar, ánh xạ nó và xong.
 	if ( 1 === count( $existing_sidebars_widgets ) && 1 === count( $wp_registered_sidebars ) ) {
 		$new_sidebars_widgets[ key( $wp_registered_sidebars ) ] = array_pop( $existing_sidebars_widgets );
 
 		return $new_sidebars_widgets;
 	}
 
-	// Map locations with the same slug.
+	// Ánh xạ các vị trí có cùng slug.
 	$existing_sidebars = array_keys( $existing_sidebars_widgets );
 
 	foreach ( $wp_registered_sidebars as $sidebar => $name ) {
@@ -1421,12 +1421,12 @@ function wp_map_sidebars_widgets( $existing_sidebars_widgets ) {
 		}
 	}
 
-	// If there are more sidebars, try to map them.
+	// Nếu có thêm sidebar, thử ánh xạ chúng.
 	if ( ! empty( $existing_sidebars_widgets ) ) {
 
 		/*
-		 * If old and new theme both have sidebars that contain phrases
-		 * from within the same group, make an educated guess and map it.
+		 * Nếu theme cũ và mới đều có sidebar chứa cụm từ
+		 * trong cùng nhóm, đoán thông minh và ánh xạ nó.
 		 */
 		$common_slug_groups = array(
 			array( 'sidebar', 'primary', 'main', 'right' ),
@@ -1435,74 +1435,74 @@ function wp_map_sidebars_widgets( $existing_sidebars_widgets ) {
 			array( 'header', 'top' ),
 		);
 
-		// Go through each group...
+		// Duyệt qua từng nhóm...
 		foreach ( $common_slug_groups as $slug_group ) {
 
-			// ...and see if any of these slugs...
+			// ...và xem có slug nào...
 			foreach ( $slug_group as $slug ) {
 
-				// ...and any of the new sidebars...
+				// ...và sidebar mới nào...
 				foreach ( $wp_registered_sidebars as $new_sidebar => $args ) {
 
-					// ...actually match!
+					// ...thực sự khớp!
 					if ( false === stripos( $new_sidebar, $slug ) && false === stripos( $slug, $new_sidebar ) ) {
 						continue;
 					}
 
-					// Then see if any of the existing sidebars...
+					// Sau đó xem sidebar hiện tại nào...
 					foreach ( $existing_sidebars_widgets as $sidebar => $widgets ) {
 
-						// ...and any slug in the same group...
+						// ...và slug nào trong cùng nhóm...
 						foreach ( $slug_group as $slug ) {
 
-							// ... have a match as well.
+							// ... cũng có sự khớp.
 							if ( false === stripos( $sidebar, $slug ) && false === stripos( $slug, $sidebar ) ) {
 								continue;
 							}
 
-							// Make sure this sidebar wasn't mapped and removed previously.
+							// Đảm bảo sidebar này chưa được ánh xạ và xóa trước đó.
 							if ( ! empty( $existing_sidebars_widgets[ $sidebar ] ) ) {
 
-								// We have a match that can be mapped!
+								// Chúng ta có sự khớp có thể ánh xạ!
 								$new_sidebars_widgets[ $new_sidebar ] = array_merge( $new_sidebars_widgets[ $new_sidebar ], $existing_sidebars_widgets[ $sidebar ] );
 
-								// Remove the mapped sidebar so it can't be mapped again.
+								// Xóa sidebar đã ánh xạ để không bị ánh xạ lại.
 								unset( $existing_sidebars_widgets[ $sidebar ] );
 
-								// Go back and check the next new sidebar.
+								// Quay lại và kiểm tra sidebar mới tiếp theo.
 								continue 3;
 							}
-						} // End foreach ( $slug_group as $slug ).
-					} // End foreach ( $existing_sidebars_widgets as $sidebar => $widgets ).
-				} // End foreach ( $wp_registered_sidebars as $new_sidebar => $args ).
-			} // End foreach ( $slug_group as $slug ).
-		} // End foreach ( $common_slug_groups as $slug_group ).
+						} // Kết thúc foreach ( $slug_group as $slug ).
+					} // Kết thúc foreach ( $existing_sidebars_widgets as $sidebar => $widgets ).
+				} // Kết thúc foreach ( $wp_registered_sidebars as $new_sidebar => $args ).
+			} // Kết thúc foreach ( $slug_group as $slug ).
+		} // Kết thúc foreach ( $common_slug_groups as $slug_group ).
 	}
 
-	// Move any left over widgets to inactive sidebar.
+	// Chuyển các widget còn lại sang sidebar không hoạt động.
 	foreach ( $existing_sidebars_widgets as $widgets ) {
 		if ( is_array( $widgets ) && ! empty( $widgets ) ) {
 			$new_sidebars_widgets['wp_inactive_widgets'] = array_merge( $new_sidebars_widgets['wp_inactive_widgets'], $widgets );
 		}
 	}
 
-	// Sidebars_widgets settings from when this theme was previously active.
+	// Cài đặt sidebars_widgets từ khi theme này được kích hoạt trước đó.
 	$old_sidebars_widgets = get_theme_mod( 'sidebars_widgets' );
 	$old_sidebars_widgets = isset( $old_sidebars_widgets['data'] ) ? $old_sidebars_widgets['data'] : false;
 
 	if ( is_array( $old_sidebars_widgets ) ) {
 
-		// Remove empty sidebars, no need to map those.
+		// Xóa sidebar rỗng, không cần ánh xạ những cái đó.
 		$old_sidebars_widgets = array_filter( $old_sidebars_widgets );
 
-		// Only check sidebars that are empty or have not been mapped to yet.
+		// Chỉ kiểm tra các sidebar rỗng hoặc chưa được ánh xạ.
 		foreach ( $new_sidebars_widgets as $new_sidebar => $new_widgets ) {
 			if ( array_key_exists( $new_sidebar, $old_sidebars_widgets ) && ! empty( $new_widgets ) ) {
 				unset( $old_sidebars_widgets[ $new_sidebar ] );
 			}
 		}
 
-		// Remove orphaned widgets, we're only interested in previously active sidebars.
+		// Xóa widget mồ côi, chúng ta chỉ quan tâm đến sidebar đã hoạt động trước đó.
 		foreach ( $old_sidebars_widgets as $sidebar => $widgets ) {
 			if ( str_starts_with( $sidebar, 'orphaned_widgets' ) ) {
 				unset( $old_sidebars_widgets[ $sidebar ] );
@@ -1513,36 +1513,36 @@ function wp_map_sidebars_widgets( $existing_sidebars_widgets ) {
 
 		if ( ! empty( $old_sidebars_widgets ) ) {
 
-			// Go through each remaining sidebar...
+			// Duyệt qua từng sidebar còn lại...
 			foreach ( $old_sidebars_widgets as $old_sidebar => $old_widgets ) {
 
-				// ...and check every new sidebar...
+				// ...và kiểm tra mọi sidebar mới...
 				foreach ( $new_sidebars_widgets as $new_sidebar => $new_widgets ) {
 
-					// ...for every widget we're trying to revive.
+					// ...cho mọi widget chúng ta đang cố khôi phục.
 					foreach ( $old_widgets as $key => $widget_id ) {
 						$active_key = array_search( $widget_id, $new_widgets, true );
 
-						// If the widget is used elsewhere...
+						// Nếu widget được sử dụng ở nơi khác...
 						if ( false !== $active_key ) {
 
-							// ...and that elsewhere is inactive widgets...
+							// ...và nơi đó là widget không hoạt động...
 							if ( 'wp_inactive_widgets' === $new_sidebar ) {
 
-								// ...remove it from there and keep the active version...
+								// ...xóa nó từ đó và giữ phiên bản hoạt động...
 								unset( $new_sidebars_widgets['wp_inactive_widgets'][ $active_key ] );
 							} else {
 
-								// ...otherwise remove it from the old sidebar and keep it in the new one.
+								// ...nếu không thì xóa nó khỏi sidebar cũ và giữ nó trong sidebar mới.
 								unset( $old_sidebars_widgets[ $old_sidebar ][ $key ] );
 							}
-						} // End if ( $active_key ).
-					} // End foreach ( $old_widgets as $key => $widget_id ).
-				} // End foreach ( $new_sidebars_widgets as $new_sidebar => $new_widgets ).
-			} // End foreach ( $old_sidebars_widgets as $old_sidebar => $old_widgets ).
-		} // End if ( ! empty( $old_sidebars_widgets ) ).
+						} // Kết thúc if ( $active_key ).
+					} // Kết thúc foreach ( $old_widgets as $key => $widget_id ).
+				} // Kết thúc foreach ( $new_sidebars_widgets as $new_sidebar => $new_widgets ).
+			} // Kết thúc foreach ( $old_sidebars_widgets as $old_sidebar => $old_widgets ).
+		} // Kết thúc if ( ! empty( $old_sidebars_widgets ) ).
 
-		// Restore widget settings from when theme was previously active.
+		// Khôi phục cài đặt widget từ khi theme được kích hoạt trước đó.
 		$new_sidebars_widgets = array_merge( $new_sidebars_widgets, $old_sidebars_widgets );
 	}
 
@@ -1550,15 +1550,15 @@ function wp_map_sidebars_widgets( $existing_sidebars_widgets ) {
 }
 
 /**
- * Compares a list of sidebars with their widgets against an allowed list.
+ * So sánh danh sách sidebar với widget của chúng so với danh sách cho phép.
  *
  * @since 4.9.0
  *
- * @global array $wp_registered_widgets The registered widgets.
+ * @global array $wp_registered_widgets Các widget đã đăng ký.
  *
- * @param array $sidebars_widgets   List of sidebars and their widget instance IDs.
- * @param array $allowed_widget_ids Optional. List of widget IDs to compare against. Default: Registered widgets.
- * @return array Sidebars with allowed widgets.
+ * @param array $sidebars_widgets   Danh sách sidebar và ID thể hiện widget của chúng.
+ * @param array $allowed_widget_ids Tùy chọn. Danh sách ID widget để so sánh. Mặc định: Widget đã đăng ký.
+ * @return array Các sidebar với widget được cho phép.
  */
 function _wp_remove_unregistered_widgets( $sidebars_widgets, $allowed_widget_ids = array() ) {
 	if ( empty( $allowed_widget_ids ) ) {
@@ -1575,12 +1575,12 @@ function _wp_remove_unregistered_widgets( $sidebars_widgets, $allowed_widget_ids
 }
 
 /**
- * Displays the RSS entries in a list.
+ * Hiển thị các mục RSS trong danh sách.
  *
  * @since 2.5.0
  *
- * @param string|array|object $rss  RSS url.
- * @param array               $args Widget arguments.
+ * @param string|array|object $rss  URL RSS.
+ * @param array               $args Tham số widget.
  */
 function wp_widget_rss_output( $rss, $args = array() ) {
 	if ( is_string( $rss ) ) {
@@ -1642,7 +1642,7 @@ function wp_widget_rss_output( $rss, $args = array() ) {
 		if ( $show_summary ) {
 			$summary = $desc;
 
-			// Change existing [...] to [&hellip;].
+			// Thay đổi [...] hiện tại thành [&hellip;].
 			if ( str_ends_with( $summary, '[...]' ) ) {
 				$summary = substr( $summary, 0, -5 ) . '[&hellip;]';
 			}
@@ -1682,16 +1682,16 @@ function wp_widget_rss_output( $rss, $args = array() ) {
 }
 
 /**
- * Displays RSS widget options form.
+ * Hiển thị form tùy chọn widget RSS.
  *
- * The options for what fields are displayed for the RSS form are all booleans
- * and are as follows: 'url', 'title', 'items', 'show_summary', 'show_author',
+ * Các tùy chọn cho trường nào được hiển thị trong form RSS đều là boolean
+ * và như sau: 'url', 'title', 'items', 'show_summary', 'show_author',
  * 'show_date'.
  *
  * @since 2.5.0
  *
- * @param array|string $args   Values for input fields.
- * @param array        $inputs Override default display options.
+ * @param array|string $args   Giá trị cho các trường nhập liệu.
+ * @param array        $inputs Ghi đè tùy chọn hiển thị mặc định.
  */
 function wp_widget_rss_form( $args, $inputs = null ) {
 	$default_inputs = array(
@@ -1751,7 +1751,7 @@ function wp_widget_rss_form( $args, $inputs = null ) {
 	<?php endif; ?>
 	</p>
 	<?php
-	endif; // End of display options.
+	endif; // Kết thúc tùy chọn hiển thị.
 foreach ( array_keys( $default_inputs ) as $input ) :
 	if ( 'hidden' === $inputs[ $input ] ) :
 		$id = str_replace( '_', '-', $input );
@@ -1763,19 +1763,19 @@ foreach ( array_keys( $default_inputs ) as $input ) :
 }
 
 /**
- * Processes RSS feed widget data and optionally retrieve feed items.
+ * Xử lý dữ liệu widget nguồn cấp RSS và tùy chọn lấy các mục nguồn cấp.
  *
- * The feed widget can not have more than 20 items or it will reset back to the
- * default, which is 10.
+ * Widget nguồn cấp không thể có nhiều hơn 20 mục nếu không sẽ đặt lại về
+ * mặc định là 10.
  *
- * The resulting array has the feed title, feed url, feed link (from channel),
- * feed items, error (if any), and whether to show summary, author, and date.
- * All respectively in the order of the array elements.
+ * Mảng kết quả có tiêu đề nguồn cấp, url nguồn cấp, liên kết nguồn cấp (từ kênh),
+ * các mục nguồn cấp, lỗi (nếu có), và có hiển thị tóm tắt, tác giả, và ngày hay không.
+ * Tất cả tương ứng theo thứ tự phần tử mảng.
  *
  * @since 2.5.0
  *
- * @param array $widget_rss RSS widget feed data. Expects unescaped data.
- * @param bool  $check_feed Optional. Whether to check feed for errors. Default true.
+ * @param array $widget_rss Dữ liệu nguồn cấp widget RSS. Yêu cầu dữ liệu chưa thoát.
+ * @param bool  $check_feed Tùy chọn. Có kiểm tra lỗi nguồn cấp hay không. Mặc định true.
  * @return array
  */
 function wp_widget_rss_process( $widget_rss, $check_feed = true ) {
@@ -1811,9 +1811,9 @@ function wp_widget_rss_process( $widget_rss, $check_feed = true ) {
 }
 
 /**
- * Registers all of the default WordPress widgets on startup.
+ * Đăng ký tất cả widget WordPress mặc định khi khởi động.
  *
- * Calls {@see 'widgets_init'} action after all of the WordPress widgets have been registered.
+ * Gọi action {@see 'widgets_init'} sau khi tất cả widget WordPress đã được đăng ký.
  *
  * @since 2.2.0
  */
@@ -1863,7 +1863,7 @@ function wp_widgets_init() {
 	register_widget( 'WP_Widget_Block' );
 
 	/**
-	 * Fires after all default WordPress widgets have been registered.
+	 * Kích hoạt sau khi tất cả widget WordPress mặc định đã được đăng ký.
 	 *
 	 * @since 2.2.0
 	 */
@@ -1871,8 +1871,8 @@ function wp_widgets_init() {
 }
 
 /**
- * Enables the widgets block editor. This is hooked into 'after_setup_theme' so
- * that the block editor is enabled by default but can be disabled by themes.
+ * Kích hoạt trình soạn thảo khối widget. Được gắn vào 'after_setup_theme' để
+ * trình soạn thảo khối được bật mặc định nhưng có thể bị tắt bởi theme.
  *
  * @since 5.8.0
  *
@@ -1883,21 +1883,21 @@ function wp_setup_widgets_block_editor() {
 }
 
 /**
- * Determines whether or not to use the block editor to manage widgets.
- * Defaults to true unless a theme has removed support for widgets-block-editor
- * or a plugin has filtered the return value of this function.
+ * Xác định có sử dụng trình soạn thảo khối để quản lý widget hay không.
+ * Mặc định true trừ khi theme đã xóa hỗ trợ cho widgets-block-editor
+ * hoặc plugin đã lọc giá trị trả về của hàm này.
  *
  * @since 5.8.0
  *
- * @return bool Whether to use the block editor to manage widgets.
+ * @return bool Có sử dụng trình soạn thảo khối để quản lý widget hay không.
  */
 function wp_use_widgets_block_editor() {
 	/**
-	 * Filters whether to use the block editor to manage widgets.
+	 * Lọc có sử dụng trình soạn thảo khối để quản lý widget hay không.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param bool $use_widgets_block_editor Whether to use the block editor to manage widgets.
+	 * @param bool $use_widgets_block_editor Có sử dụng trình soạn thảo khối để quản lý widget hay không.
 	 */
 	return apply_filters(
 		'use_widgets_block_editor',
@@ -1906,12 +1906,12 @@ function wp_use_widgets_block_editor() {
 }
 
 /**
- * Converts a widget ID into its id_base and number components.
+ * Chuyển đổi ID widget thành các thành phần id_base và number.
  *
  * @since 5.8.0
  *
- * @param string $id Widget ID.
- * @return array Array containing a widget's id_base and number components.
+ * @param string $id ID Widget.
+ * @return array Mảng chứa các thành phần id_base và number của widget.
  */
 function wp_parse_widget_id( $id ) {
 	$parsed = array();
@@ -1920,7 +1920,7 @@ function wp_parse_widget_id( $id ) {
 		$parsed['id_base'] = $matches[1];
 		$parsed['number']  = (int) $matches[2];
 	} else {
-		// Likely an old single widget.
+		// Có thể là widget đơn kiểu cũ.
 		$parsed['id_base'] = $id;
 	}
 
@@ -1928,12 +1928,12 @@ function wp_parse_widget_id( $id ) {
 }
 
 /**
- * Finds the sidebar that a given widget belongs to.
+ * Tìm sidebar mà widget đã cho thuộc về.
  *
  * @since 5.8.0
  *
- * @param string $widget_id The widget ID to look for.
- * @return string|null The found sidebar's ID, or null if it was not found.
+ * @param string $widget_id ID widget cần tìm.
+ * @return string|null ID của sidebar được tìm thấy, hoặc null nếu không tìm thấy.
  */
 function wp_find_widgets_sidebar( $widget_id ) {
 	foreach ( wp_get_sidebars_widgets() as $sidebar_id => $widget_ids ) {
@@ -1948,12 +1948,12 @@ function wp_find_widgets_sidebar( $widget_id ) {
 }
 
 /**
- * Assigns a widget to the given sidebar.
+ * Gán widget cho sidebar đã cho.
  *
  * @since 5.8.0
  *
- * @param string $widget_id  The widget ID to assign.
- * @param string $sidebar_id The sidebar ID to assign to. If empty, the widget won't be added to any sidebar.
+ * @param string $widget_id  ID widget cần gán.
+ * @param string $sidebar_id ID sidebar cần gán vào. Nếu rỗng, widget sẽ không được thêm vào sidebar nào.
  */
 function wp_assign_widget_to_sidebar( $widget_id, $sidebar_id ) {
 	$sidebars = wp_get_sidebars_widgets();
@@ -1962,7 +1962,7 @@ function wp_assign_widget_to_sidebar( $widget_id, $sidebar_id ) {
 		foreach ( $widgets as $i => $maybe_widget_id ) {
 			if ( $widget_id === $maybe_widget_id && $sidebar_id !== $maybe_sidebar_id ) {
 				unset( $sidebars[ $maybe_sidebar_id ][ $i ] );
-				// We could technically break 2 here, but continue looping in case the ID is duplicated.
+				// Về mặt kỹ thuật có thể break 2 ở đây, nhưng tiếp tục lặp trong trường hợp ID bị trùng.
 				continue 2;
 			}
 		}
@@ -1976,15 +1976,15 @@ function wp_assign_widget_to_sidebar( $widget_id, $sidebar_id ) {
 }
 
 /**
- * Calls the render callback of a widget and returns the output.
+ * Gọi callback hiển thị của widget và trả về đầu ra.
  *
  * @since 5.8.0
  *
- * @global array $wp_registered_widgets  The registered widgets.
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_widgets  Các widget đã đăng ký.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  *
- * @param string $widget_id Widget ID.
- * @param string $sidebar_id Sidebar ID.
+ * @param string $widget_id  ID Widget.
+ * @param string $sidebar_id ID Sidebar.
  * @return string
  */
 function wp_render_widget( $widget_id, $sidebar_id ) {
@@ -2015,7 +2015,7 @@ function wp_render_widget( $widget_id, $sidebar_id ) {
 		(array) $wp_registered_widgets[ $widget_id ]['params']
 	);
 
-	// Substitute HTML `id` and `class` attributes into `before_widget`.
+	// Thay thế thuộc tính HTML `id` và `class` vào `before_widget`.
 	$classname_ = '';
 	foreach ( (array) $wp_registered_widgets[ $widget_id ]['classname'] as $cn ) {
 		if ( is_string( $cn ) ) {
@@ -2027,14 +2027,14 @@ function wp_render_widget( $widget_id, $sidebar_id ) {
 	$classname_                 = ltrim( $classname_, '_' );
 	$params[0]['before_widget'] = sprintf( $params[0]['before_widget'], $widget_id, $classname_ );
 
-	/** This filter is documented in wp-includes/widgets.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/widgets.php */
 	$params = apply_filters( 'dynamic_sidebar_params', $params );
 
 	$callback = $wp_registered_widgets[ $widget_id ]['callback'];
 
 	ob_start();
 
-	/** This filter is documented in wp-includes/widgets.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/widgets.php */
 	do_action( 'dynamic_sidebar', $wp_registered_widgets[ $widget_id ] );
 
 	if ( is_callable( $callback ) ) {
@@ -2045,13 +2045,13 @@ function wp_render_widget( $widget_id, $sidebar_id ) {
 }
 
 /**
- * Calls the control callback of a widget and returns the output.
+ * Gọi callback điều khiển của widget và trả về đầu ra.
  *
  * @since 5.8.0
  *
- * @global array $wp_registered_widget_controls The registered widget controls.
+ * @global array $wp_registered_widget_controls Các điều khiển widget đã đăng ký.
  *
- * @param string $id Widget ID.
+ * @param string $id ID Widget.
  * @return string|null
  */
 function wp_render_widget_control( $id ) {
@@ -2074,16 +2074,16 @@ function wp_render_widget_control( $id ) {
 }
 
 /**
- * Displays a _doing_it_wrong() message for conflicting widget editor scripts.
+ * Hiển thị thông báo _doing_it_wrong() cho các script trình soạn thảo widget bị xung đột.
  *
- * The 'wp-editor' script module is exposed as window.wp.editor. This overrides
- * the legacy TinyMCE editor module which is required by the widgets editor.
- * Because of that conflict, these two shouldn't be enqueued together.
- * See https://core.trac.wordpress.org/ticket/53569.
+ * Module script 'wp-editor' được hiển thị dưới dạng window.wp.editor. Điều này ghi đè
+ * module trình soạn thảo TinyMCE cũ cần thiết cho trình soạn thảo widget.
+ * Do xung đột đó, hai module này không nên được enqueue cùng nhau.
+ * Xem https://core.trac.wordpress.org/ticket/53569.
  *
- * There is also another conflict related to styles where the block widgets
- * editor is hidden if a block enqueues 'wp-edit-post' stylesheet.
- * See https://core.trac.wordpress.org/ticket/53569.
+ * Cũng có một xung đột khác liên quan đến style, nơi trình soạn thảo
+ * widget khối bị ẩn nếu một khối enqueue stylesheet 'wp-edit-post'.
+ * Xem https://core.trac.wordpress.org/ticket/53569.
  *
  * @since 5.8.0
  * @access private
@@ -2128,12 +2128,12 @@ function wp_check_widget_editor_deps() {
 }
 
 /**
- * Registers the previous theme's sidebars for the block themes.
+ * Đăng ký các sidebar của theme trước cho các theme khối.
  *
  * @since 6.2.0
  * @access private
  *
- * @global array $wp_registered_sidebars The registered sidebars.
+ * @global array $wp_registered_sidebars Các sidebar đã đăng ký.
  */
 function _wp_block_theme_register_classic_sidebars() {
 	global $wp_registered_sidebars;
@@ -2147,7 +2147,7 @@ function _wp_block_theme_register_classic_sidebars() {
 		return;
 	}
 
-	// Don't use `register_sidebar` since it will enable the `widgets` support for a theme.
+	// Không sử dụng `register_sidebar` vì nó sẽ bật hỗ trợ `widgets` cho theme.
 	foreach ( $classic_sidebars as $sidebar ) {
 		$wp_registered_sidebars[ $sidebar['id'] ] = $sidebar;
 	}

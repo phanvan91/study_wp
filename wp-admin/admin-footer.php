@@ -1,12 +1,12 @@
 <?php
 /**
- * WordPress Administration Template Footer
+ * Mẫu Footer Quản trị WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
@@ -24,7 +24,7 @@ global $hook_suffix;
 <div id="wpfooter" role="contentinfo">
 	<?php
 	/**
-	 * Fires after the opening tag for the admin footer.
+	 * Kích hoạt sau thẻ mở của footer quản trị.
 	 *
 	 * @since 2.5.0
 	 */
@@ -39,11 +39,11 @@ global $hook_suffix;
 		);
 
 		/**
-		 * Filters the "Thank you" text displayed in the admin footer.
+		 * Lọc văn bản "Cảm ơn" hiển thị trong footer quản trị.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param string $text The content that will be printed.
+		 * @param string $text Nội dung sẽ được in ra.
 		 */
 		echo apply_filters( 'admin_footer_text', '<span id="footer-thankyou">' . $text . '</span>' );
 		?>
@@ -51,16 +51,16 @@ global $hook_suffix;
 	<p id="footer-upgrade" class="alignright">
 		<?php
 		/**
-		 * Filters the version/update text displayed in the admin footer.
+		 * Lọc văn bản phiên bản/cập nhật hiển thị trong footer quản trị.
 		 *
-		 * WordPress prints the current version and update information,
-		 * using core_update_footer() at priority 10.
+		 * WordPress in phiên bản hiện tại và thông tin cập nhật,
+		 * sử dụng core_update_footer() với độ ưu tiên 10.
 		 *
 		 * @since 2.3.0
 		 *
 		 * @see core_update_footer()
 		 *
-		 * @param string $content The content that will be printed.
+		 * @param string $content Nội dung sẽ được in ra.
 		 */
 		echo apply_filters( 'update_footer', '' );
 		?>
@@ -69,42 +69,42 @@ global $hook_suffix;
 </div>
 <?php
 /**
- * Prints scripts or data before the default footer scripts.
+ * In các script hoặc dữ liệu trước các script footer mặc định.
  *
  * @since 1.2.0
  *
- * @param string $data The data to print.
+ * @param string $data Dữ liệu cần in.
  */
 do_action( 'admin_footer', '' );
 
 /**
- * Prints scripts and data queued for the footer.
+ * In các script và dữ liệu được xếp hàng cho footer.
  *
- * The dynamic portion of the hook name, `$hook_suffix`,
- * refers to the global hook suffix of the current page.
+ * Phần động của tên hook, `$hook_suffix`,
+ * tham chiếu đến hậu tố hook toàn cục của trang hiện tại.
  *
  * @since 4.6.0
  */
 do_action( "admin_print_footer_scripts-{$hook_suffix}" ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
 /**
- * Prints any scripts and data queued for the footer.
+ * In bất kỳ script và dữ liệu nào được xếp hàng cho footer.
  *
  * @since 2.8.0
  */
 do_action( 'admin_print_footer_scripts' );
 
 /**
- * Prints scripts or data after the default footer scripts.
+ * In các script hoặc dữ liệu sau các script footer mặc định.
  *
- * The dynamic portion of the hook name, `$hook_suffix`,
- * refers to the global hook suffix of the current page.
+ * Phần động của tên hook, `$hook_suffix`,
+ * tham chiếu đến hậu tố hook toàn cục của trang hiện tại.
  *
  * @since 2.8.0
  */
 do_action( "admin_footer-{$hook_suffix}" ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
-// get_site_option() won't exist when auto upgrading from <= 2.7.
+// get_site_option() sẽ không tồn tại khi tự động nâng cấp từ <= 2.7.
 if ( function_exists( 'get_site_option' )
 	&& false === get_site_option( 'can_compress_scripts' )
 ) {

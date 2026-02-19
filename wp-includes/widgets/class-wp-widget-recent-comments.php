@@ -1,6 +1,6 @@
 <?php
 /**
- * Widget API: WP_Widget_Recent_Comments class
+ * Widget API: Lớp WP_Widget_Recent_Comments
  *
  * @package WordPress
  * @subpackage Widgets
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement a Recent Comments widget.
+ * Lớp cốt lõi dùng để triển khai widget Bình luận gần đây.
  *
  * @since 2.8.0
  *
@@ -17,7 +17,7 @@
 class WP_Widget_Recent_Comments extends WP_Widget {
 
 	/**
-	 * Sets up a new Recent Comments widget instance.
+	 * Thiết lập một phiên bản widget Bình luận gần đây mới.
 	 *
 	 * @since 2.8.0
 	 */
@@ -37,20 +37,20 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the default styles for the Recent Comments widget.
+	 * Xuất các kiểu mặc định cho widget Bình luận gần đây.
 	 *
 	 * @since 2.8.0
 	 */
 	public function recent_comments_style() {
 		/**
-		 * Filters the Recent Comments default widget styles.
+		 * Lọc các kiểu mặc định của widget Bình luận gần đây.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param bool   $active  Whether the widget is active. Default true.
-		 * @param string $id_base The widget ID.
+		 * @param bool   $active  Widget có đang hoạt động hay không. Mặc định true.
+		 * @param string $id_base ID của widget.
 		 */
-		if ( ! current_theme_supports( 'widgets' ) // Temp hack #14876.
+		if ( ! current_theme_supports( 'widgets' ) // Bản vá tạm thời #14876.
 			|| ! apply_filters( 'show_recent_comments_widget_style', true, $this->id_base ) ) {
 			return;
 		}
@@ -64,15 +64,15 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the content for the current Recent Comments widget instance.
+	 * Xuất nội dung cho phiên bản widget Bình luận gần đây hiện tại.
 	 *
 	 * @since 2.8.0
-	 * @since 5.4.0 Creates a unique HTML ID for the `<ul>` element
-	 *              if more than one instance is displayed on the page.
+	 * @since 5.4.0 Tạo ID HTML duy nhất cho phần tử `<ul>`
+	 *              nếu có nhiều hơn một phiên bản được hiển thị trên trang.
 	 *
-	 * @param array $args     Display arguments including 'before_title', 'after_title',
-	 *                        'before_widget', and 'after_widget'.
-	 * @param array $instance Settings for the current Recent Comments widget instance.
+	 * @param array $args     Các tham số hiển thị bao gồm 'before_title', 'after_title',
+	 *                        'before_widget', và 'after_widget'.
+	 * @param array $instance Cài đặt cho phiên bản widget Bình luận gần đây hiện tại.
 	 */
 	public function widget( $args, $instance ) {
 		static $first_instance = true;
@@ -86,7 +86,7 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 		$default_title = __( 'Recent Comments' );
 		$title         = ( ! empty( $instance['title'] ) ) ? $instance['title'] : $default_title;
 
-		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
+		/** Bộ lọc này được ghi chú tại wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $title, $instance, $this->id_base );
 
 		$number = ( ! empty( $instance['number'] ) ) ? absint( $instance['number'] ) : 5;
@@ -96,15 +96,15 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 
 		$comments = get_comments(
 			/**
-			 * Filters the arguments for the Recent Comments widget.
+			 * Lọc các tham số cho widget Bình luận gần đây.
 			 *
 			 * @since 3.4.0
-			 * @since 4.9.0 Added the `$instance` parameter.
+			 * @since 4.9.0 Thêm tham số `$instance`.
 			 *
-			 * @see WP_Comment_Query::query() for information on accepted arguments.
+			 * @see WP_Comment_Query::query() để biết thông tin về các tham số được chấp nhận.
 			 *
-			 * @param array $comment_args An array of arguments used to retrieve the recent comments.
-			 * @param array $instance     Array of settings for the current widget.
+			 * @param array $comment_args Mảng các tham số dùng để truy xuất bình luận gần đây.
+			 * @param array $instance     Mảng cài đặt cho widget hiện tại.
 			 */
 			apply_filters(
 				'widget_comments_args',
@@ -127,11 +127,11 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 
 		$format = current_theme_supports( 'html5', 'navigation-widgets' ) ? 'html5' : 'xhtml';
 
-		/** This filter is documented in wp-includes/widgets/class-wp-nav-menu-widget.php */
+		/** Bộ lọc này được ghi chú tại wp-includes/widgets/class-wp-nav-menu-widget.php */
 		$format = apply_filters( 'navigation_widgets_format', $format );
 
 		if ( 'html5' === $format ) {
-			// The title may be filtered: Strip out HTML and make sure the aria-label is never empty.
+			// Tiêu đề có thể bị lọc: Loại bỏ HTML và đảm bảo aria-label không bao giờ rỗng.
 			$title      = trim( strip_tags( $title ) );
 			$aria_label = $title ? $title : $default_title;
 			$output    .= '<nav aria-label="' . esc_attr( $aria_label ) . '">';
@@ -139,14 +139,14 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 
 		$output .= '<ul id="' . esc_attr( $recent_comments_id ) . '">';
 		if ( is_array( $comments ) && $comments ) {
-			// Prime cache for associated posts. (Prime post term cache if we need it for permalinks.)
+			// Nạp trước bộ nhớ đệm cho các bài viết liên quan. (Nạp trước bộ nhớ đệm term bài viết nếu cần cho đường dẫn tĩnh.)
 			$post_ids = array_unique( wp_list_pluck( $comments, 'comment_post_ID' ) );
 			_prime_post_caches( $post_ids, strpos( get_option( 'permalink_structure' ), '%category%' ), false );
 
 			foreach ( (array) $comments as $comment ) {
 				$output .= '<li class="recentcomments">';
 				$output .= sprintf(
-					/* translators: Comments widget. 1: Comment author, 2: Post link. */
+					/* translators: Widget bình luận. 1: Tác giả bình luận, 2: Liên kết bài viết. */
 					_x( '%1$s on %2$s', 'widgets' ),
 					'<span class="comment-author-link">' . get_comment_author_link( $comment ) . '</span>',
 					'<a href="' . esc_url( get_comment_link( $comment ) ) . '">' . get_the_title( $comment->comment_post_ID ) . '</a>'
@@ -166,14 +166,14 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 	}
 
 	/**
-	 * Handles updating settings for the current Recent Comments widget instance.
+	 * Xử lý cập nhật cài đặt cho phiên bản widget Bình luận gần đây hiện tại.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $new_instance New settings for this instance as input by the user via
+	 * @param array $new_instance Cài đặt mới cho phiên bản này do người dùng nhập qua
 	 *                            WP_Widget::form().
-	 * @param array $old_instance Old settings for this instance.
-	 * @return array Updated settings to save.
+	 * @param array $old_instance Cài đặt cũ cho phiên bản này.
+	 * @return array Cài đặt đã cập nhật để lưu.
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance           = $old_instance;
@@ -183,11 +183,11 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 	}
 
 	/**
-	 * Outputs the settings form for the Recent Comments widget.
+	 * Xuất biểu mẫu cài đặt cho widget Bình luận gần đây.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param array $instance Current settings.
+	 * @param array $instance Cài đặt hiện tại.
 	 */
 	public function form( $instance ) {
 		$title  = isset( $instance['title'] ) ? $instance['title'] : '';
@@ -206,11 +206,11 @@ class WP_Widget_Recent_Comments extends WP_Widget {
 	}
 
 	/**
-	 * Flushes the Recent Comments widget cache.
+	 * Xóa bộ nhớ đệm của widget Bình luận gần đây.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @deprecated 4.4.0 Fragment caching was removed in favor of split queries.
+	 * @deprecated 4.4.0 Bộ nhớ đệm phân đoạn đã được loại bỏ để thay bằng truy vấn tách biệt.
 	 */
 	public function flush_widget_cache() {
 		_deprecated_function( __METHOD__, '4.4.0' );

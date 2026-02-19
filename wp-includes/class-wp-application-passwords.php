@@ -1,13 +1,13 @@
 <?php
 /**
- * WP_Application_Passwords class
+ * Lớp WP_Application_Passwords
  *
  * @package WordPress
  * @since   5.6.0
  */
 
 /**
- * Class for displaying, modifying, and sanitizing application passwords.
+ * Lớp để hiển thị, chỉnh sửa và làm sạch mật khẩu ứng dụng.
  *
  * @package WordPress
  */
@@ -15,7 +15,7 @@
 class WP_Application_Passwords {
 
 	/**
-	 * The application passwords user meta key.
+	 * Khóa user meta cho mật khẩu ứng dụng.
 	 *
 	 * @since 5.6.0
 	 *
@@ -24,7 +24,7 @@ class WP_Application_Passwords {
 	const USERMETA_KEY_APPLICATION_PASSWORDS = '_application_passwords';
 
 	/**
-	 * The option name used to store whether application passwords are in use.
+	 * Tên option dùng để lưu trữ việc mật khẩu ứng dụng có đang được sử dụng hay không.
 	 *
 	 * @since 5.6.0
 	 *
@@ -33,7 +33,7 @@ class WP_Application_Passwords {
 	const OPTION_KEY_IN_USE = 'using_application_passwords';
 
 	/**
-	 * The generated application password length.
+	 * Độ dài mật khẩu ứng dụng được tạo.
 	 *
 	 * @since 5.6.0
 	 *
@@ -42,9 +42,9 @@ class WP_Application_Passwords {
 	const PW_LENGTH = 24;
 
 	/**
-	 * Checks if application passwords are being used by the site.
+	 * Kiểm tra xem mật khẩu ứng dụng có đang được sử dụng bởi site hay không.
 	 *
-	 * This returns true if at least one application password has ever been created.
+	 * Trả về true nếu ít nhất một mật khẩu ứng dụng đã từng được tạo.
 	 *
 	 * @since 5.6.0
 	 *
@@ -56,31 +56,31 @@ class WP_Application_Passwords {
 	}
 
 	/**
-	 * Creates a new application password.
+	 * Tạo một mật khẩu ứng dụng mới.
 	 *
 	 * @since 5.6.0
-	 * @since 5.7.0 Returns WP_Error if application name already exists.
-	 * @since 6.8.0 The hashed password value now uses wp_fast_hash() instead of phpass.
+	 * @since 5.7.0 Trả về WP_Error nếu tên ứng dụng đã tồn tại.
+	 * @since 6.8.0 Giá trị mật khẩu đã băm giờ sử dụng wp_fast_hash() thay vì phpass.
 	 *
-	 * @param int   $user_id  User ID.
+	 * @param int   $user_id  ID người dùng.
 	 * @param array $args     {
-	 *     Arguments used to create the application password.
+	 *     Các tham số dùng để tạo mật khẩu ứng dụng.
 	 *
-	 *     @type string $name   The name of the application password.
-	 *     @type string $app_id A UUID provided by the application to uniquely identify it.
+	 *     @type string $name   Tên của mật khẩu ứng dụng.
+	 *     @type string $app_id Một UUID được cung cấp bởi ứng dụng để nhận dạng duy nhất nó.
 	 * }
 	 * @return array|WP_Error {
-	 *     Application password details, or a WP_Error instance if an error occurs.
+	 *     Chi tiết mật khẩu ứng dụng, hoặc instance WP_Error nếu có lỗi xảy ra.
 	 *
-	 *     @type string $0 The generated application password in plain text.
+	 *     @type string $0 Mật khẩu ứng dụng được tạo dạng văn bản thuần.
 	 *     @type array  $1 {
-	 *         The details about the created password.
+	 *         Chi tiết về mật khẩu đã tạo.
 	 *
-	 *         @type string $uuid      The unique identifier for the application password.
-	 *         @type string $app_id    A UUID provided by the application to uniquely identify it.
-	 *         @type string $name      The name of the application password.
-	 *         @type string $password  A one-way hash of the password.
-	 *         @type int    $created   Unix timestamp of when the password was created.
+	 *         @type string $uuid      Định danh duy nhất cho mật khẩu ứng dụng.
+	 *         @type string $app_id    Một UUID được cung cấp bởi ứng dụng để nhận dạng duy nhất nó.
+	 *         @type string $name      Tên của mật khẩu ứng dụng.
+	 *         @type string $password  Giá trị băm một chiều của mật khẩu.
+	 *         @type int    $created   Timestamp Unix khi mật khẩu được tạo.
 	 *         @type null   $last_used Null.
 	 *         @type null   $last_ip   Null.
 	 *     }
@@ -122,29 +122,29 @@ class WP_Application_Passwords {
 		}
 
 		/**
-		 * Fires when an application password is created.
+		 * Kích hoạt khi một mật khẩu ứng dụng được tạo.
 		 *
 		 * @since 5.6.0
-		 * @since 6.8.0 The hashed password value now uses wp_fast_hash() instead of phpass.
+		 * @since 6.8.0 Giá trị mật khẩu đã băm giờ sử dụng wp_fast_hash() thay vì phpass.
 		 *
-		 * @param int    $user_id      The user ID.
+		 * @param int    $user_id      ID người dùng.
 		 * @param array  $new_item     {
-		 *     The details about the created password.
+		 *     Chi tiết về mật khẩu đã tạo.
 		 *
-		 *     @type string $uuid      The unique identifier for the application password.
-		 *     @type string $app_id    A UUID provided by the application to uniquely identify it.
-		 *     @type string $name      The name of the application password.
-		 *     @type string $password  A one-way hash of the password.
-		 *     @type int    $created   Unix timestamp of when the password was created.
+		 *     @type string $uuid      Định danh duy nhất cho mật khẩu ứng dụng.
+		 *     @type string $app_id    Một UUID được cung cấp bởi ứng dụng để nhận dạng duy nhất nó.
+		 *     @type string $name      Tên của mật khẩu ứng dụng.
+		 *     @type string $password  Giá trị băm một chiều của mật khẩu.
+		 *     @type int    $created   Timestamp Unix khi mật khẩu được tạo.
 		 *     @type null   $last_used Null.
 		 *     @type null   $last_ip   Null.
 		 * }
-		 * @param string $new_password The generated application password in plain text.
+		 * @param string $new_password Mật khẩu ứng dụng được tạo dạng văn bản thuần.
 		 * @param array  $args         {
-		 *     Arguments used to create the application password.
+		 *     Các tham số dùng để tạo mật khẩu ứng dụng.
 		 *
-		 *     @type string $name   The name of the application password.
-		 *     @type string $app_id A UUID provided by the application to uniquely identify it.
+		 *     @type string $name   Tên của mật khẩu ứng dụng.
+		 *     @type string $app_id Một UUID được cung cấp bởi ứng dụng để nhận dạng duy nhất nó.
 		 * }
 		 */
 		do_action( 'wp_create_application_password', $user_id, $new_item, $new_password, $args );
@@ -153,22 +153,22 @@ class WP_Application_Passwords {
 	}
 
 	/**
-	 * Gets a user's application passwords.
+	 * Lấy danh sách mật khẩu ứng dụng của người dùng.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param int $user_id User ID.
+	 * @param int $user_id ID người dùng.
 	 * @return array {
-	 *     The list of application passwords.
+	 *     Danh sách mật khẩu ứng dụng.
 	 *
 	 *     @type array ...$0 {
-	 *         @type string      $uuid      The unique identifier for the application password.
-	 *         @type string      $app_id    A UUID provided by the application to uniquely identify it.
-	 *         @type string      $name      The name of the application password.
-	 *         @type string      $password  A one-way hash of the password.
-	 *         @type int         $created   Unix timestamp of when the password was created.
-	 *         @type int|null    $last_used The Unix timestamp of the GMT date the application password was last used.
-	 *         @type string|null $last_ip   The IP address the application password was last used by.
+	 *         @type string      $uuid      Định danh duy nhất cho mật khẩu ứng dụng.
+	 *         @type string      $app_id    Một UUID được cung cấp bởi ứng dụng để nhận dạng duy nhất nó.
+	 *         @type string      $name      Tên của mật khẩu ứng dụng.
+	 *         @type string      $password  Giá trị băm một chiều của mật khẩu.
+	 *         @type int         $created   Timestamp Unix khi mật khẩu được tạo.
+	 *         @type int|null    $last_used Timestamp Unix theo GMT khi mật khẩu ứng dụng được sử dụng lần cuối.
+	 *         @type string|null $last_ip   Địa chỉ IP đã sử dụng mật khẩu ứng dụng lần cuối.
 	 *     }
 	 * }
 	 */
@@ -196,22 +196,22 @@ class WP_Application_Passwords {
 	}
 
 	/**
-	 * Gets a user's application password with the given UUID.
+	 * Lấy mật khẩu ứng dụng của người dùng theo UUID cho trước.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param int    $user_id User ID.
-	 * @param string $uuid    The password's UUID.
+	 * @param int    $user_id ID người dùng.
+	 * @param string $uuid    UUID của mật khẩu.
 	 * @return array|null {
-	 *     The application password if found, null otherwise.
+	 *     Mật khẩu ứng dụng nếu tìm thấy, null nếu không.
 	 *
-	 *     @type string      $uuid      The unique identifier for the application password.
-	 *     @type string      $app_id    A UUID provided by the application to uniquely identify it.
-	 *     @type string      $name      The name of the application password.
-	 *     @type string      $password  A one-way hash of the password.
-	 *     @type int         $created   Unix timestamp of when the password was created.
-	 *     @type int|null    $last_used The Unix timestamp of the GMT date the application password was last used.
-	 *     @type string|null $last_ip   The IP address the application password was last used by.
+	 *     @type string      $uuid      Định danh duy nhất cho mật khẩu ứng dụng.
+	 *     @type string      $app_id    Một UUID được cung cấp bởi ứng dụng để nhận dạng duy nhất nó.
+	 *     @type string      $name      Tên của mật khẩu ứng dụng.
+	 *     @type string      $password  Giá trị băm một chiều của mật khẩu.
+	 *     @type int         $created   Timestamp Unix khi mật khẩu được tạo.
+	 *     @type int|null    $last_used Timestamp Unix theo GMT khi mật khẩu ứng dụng được sử dụng lần cuối.
+	 *     @type string|null $last_ip   Địa chỉ IP đã sử dụng mật khẩu ứng dụng lần cuối.
 	 * }
 	 */
 	public static function get_user_application_password( $user_id, $uuid ) {
@@ -227,13 +227,13 @@ class WP_Application_Passwords {
 	}
 
 	/**
-	 * Checks if an application password with the given name exists for this user.
+	 * Kiểm tra xem mật khẩu ứng dụng với tên cho trước có tồn tại cho người dùng này không.
 	 *
 	 * @since 5.7.0
 	 *
-	 * @param int    $user_id User ID.
-	 * @param string $name    Application name.
-	 * @return bool Whether the provided application name exists.
+	 * @param int    $user_id ID người dùng.
+	 * @param string $name    Tên ứng dụng.
+	 * @return bool Tên ứng dụng đã cho có tồn tại hay không.
 	 */
 	public static function application_name_exists_for_user( $user_id, $name ) {
 		$passwords = static::get_user_application_passwords( $user_id );
@@ -248,25 +248,25 @@ class WP_Application_Passwords {
 	}
 
 	/**
-	 * Updates an application password.
+	 * Cập nhật mật khẩu ứng dụng.
 	 *
 	 * @since 5.6.0
-	 * @since 6.8.0 The actual password should now be hashed using wp_fast_hash().
+	 * @since 6.8.0 Mật khẩu thực tế giờ nên được băm bằng wp_fast_hash().
 	 *
-	 * @param int    $user_id User ID.
-	 * @param string $uuid    The password's UUID.
+	 * @param int    $user_id ID người dùng.
+	 * @param string $uuid    UUID của mật khẩu.
 	 * @param array  $update  {
-	 *     Information about the application password to update.
+	 *     Thông tin về mật khẩu ứng dụng cần cập nhật.
 	 *
-	 *     @type string      $uuid      The unique identifier for the application password.
-	 *     @type string      $app_id    A UUID provided by the application to uniquely identify it.
-	 *     @type string      $name      The name of the application password.
-	 *     @type string      $password  A one-way hash of the password.
-	 *     @type int         $created   Unix timestamp of when the password was created.
-	 *     @type int|null    $last_used The Unix timestamp of the GMT date the application password was last used.
-	 *     @type string|null $last_ip   The IP address the application password was last used by.
+	 *     @type string      $uuid      Định danh duy nhất cho mật khẩu ứng dụng.
+	 *     @type string      $app_id    Một UUID được cung cấp bởi ứng dụng để nhận dạng duy nhất nó.
+	 *     @type string      $name      Tên của mật khẩu ứng dụng.
+	 *     @type string      $password  Giá trị băm một chiều của mật khẩu.
+	 *     @type int         $created   Timestamp Unix khi mật khẩu được tạo.
+	 *     @type int|null    $last_used Timestamp Unix theo GMT khi mật khẩu ứng dụng được sử dụng lần cuối.
+	 *     @type string|null $last_ip   Địa chỉ IP đã sử dụng mật khẩu ứng dụng lần cuối.
 	 * }
-	 * @return true|WP_Error True if successful, otherwise a WP_Error instance is returned on error.
+	 * @return true|WP_Error True nếu thành công, nếu không trả về instance WP_Error khi có lỗi.
 	 */
 	public static function update_application_password( $user_id, $uuid, $update = array() ) {
 		$passwords = static::get_user_application_passwords( $user_id );
@@ -296,25 +296,25 @@ class WP_Application_Passwords {
 			}
 
 			/**
-			 * Fires when an application password is updated.
+			 * Kích hoạt khi mật khẩu ứng dụng được cập nhật.
 			 *
 			 * @since 5.6.0
-			 * @since 6.8.0 The password is now hashed using wp_fast_hash() instead of phpass.
-			 *              Existing passwords may still be hashed using phpass.
+			 * @since 6.8.0 Mật khẩu giờ được băm bằng wp_fast_hash() thay vì phpass.
+			 *              Các mật khẩu hiện có vẫn có thể được băm bằng phpass.
 			 *
-			 * @param int   $user_id The user ID.
+			 * @param int   $user_id ID người dùng.
 			 * @param array $item    {
-			 *     The updated application password details.
+			 *     Chi tiết mật khẩu ứng dụng đã cập nhật.
 			 *
-			 *     @type string      $uuid      The unique identifier for the application password.
-			 *     @type string      $app_id    A UUID provided by the application to uniquely identify it.
-			 *     @type string      $name      The name of the application password.
-			 *     @type string      $password  A one-way hash of the password.
-			 *     @type int         $created   Unix timestamp of when the password was created.
-			 *     @type int|null    $last_used The Unix timestamp of the GMT date the application password was last used.
-			 *     @type string|null $last_ip   The IP address the application password was last used by.
+			 *     @type string      $uuid      Định danh duy nhất cho mật khẩu ứng dụng.
+			 *     @type string      $app_id    Một UUID được cung cấp bởi ứng dụng để nhận dạng duy nhất nó.
+			 *     @type string      $name      Tên của mật khẩu ứng dụng.
+			 *     @type string      $password  Giá trị băm một chiều của mật khẩu.
+			 *     @type int         $created   Timestamp Unix khi mật khẩu được tạo.
+			 *     @type int|null    $last_used Timestamp Unix theo GMT khi mật khẩu ứng dụng được sử dụng lần cuối.
+			 *     @type string|null $last_ip   Địa chỉ IP đã sử dụng mật khẩu ứng dụng lần cuối.
 			 * }
-			 * @param array $update  The information to update.
+			 * @param array $update  Thông tin cần cập nhật.
 			 */
 			do_action( 'wp_update_application_password', $user_id, $item, $update );
 
@@ -325,13 +325,13 @@ class WP_Application_Passwords {
 	}
 
 	/**
-	 * Records that an application password has been used.
+	 * Ghi nhận rằng một mật khẩu ứng dụng đã được sử dụng.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param int    $user_id User ID.
-	 * @param string $uuid    The password's UUID.
-	 * @return true|WP_Error True if the usage was recorded, a WP_Error if an error occurs.
+	 * @param int    $user_id ID người dùng.
+	 * @param string $uuid    UUID của mật khẩu.
+	 * @return true|WP_Error True nếu ghi nhận thành công, WP_Error nếu có lỗi xảy ra.
 	 */
 	public static function record_application_password_usage( $user_id, $uuid ) {
 		$passwords = static::get_user_application_passwords( $user_id );
@@ -341,7 +341,7 @@ class WP_Application_Passwords {
 				continue;
 			}
 
-			// Only record activity once a day.
+			// Chỉ ghi nhận hoạt động một lần mỗi ngày.
 			if ( $password['last_used'] + DAY_IN_SECONDS > time() ) {
 				return true;
 			}
@@ -358,18 +358,18 @@ class WP_Application_Passwords {
 			return true;
 		}
 
-		// Specified application password not found!
+		// Không tìm thấy mật khẩu ứng dụng được chỉ định!
 		return new WP_Error( 'application_password_not_found', __( 'Could not find an application password with that id.' ) );
 	}
 
 	/**
-	 * Deletes an application password.
+	 * Xóa một mật khẩu ứng dụng.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param int    $user_id User ID.
-	 * @param string $uuid    The password's UUID.
-	 * @return true|WP_Error Whether the password was successfully found and deleted, a WP_Error otherwise.
+	 * @param int    $user_id ID người dùng.
+	 * @param string $uuid    UUID của mật khẩu.
+	 * @return true|WP_Error Mật khẩu có được tìm thấy và xóa thành công hay không, nếu không trả về WP_Error.
 	 */
 	public static function delete_application_password( $user_id, $uuid ) {
 		$passwords = static::get_user_application_passwords( $user_id );
@@ -384,12 +384,12 @@ class WP_Application_Passwords {
 				}
 
 				/**
-				 * Fires when an application password is deleted.
+				 * Kích hoạt khi mật khẩu ứng dụng bị xóa.
 				 *
 				 * @since 5.6.0
 				 *
-				 * @param int   $user_id The user ID.
-				 * @param array $item    The data about the application password.
+				 * @param int   $user_id ID người dùng.
+				 * @param array $item    Dữ liệu về mật khẩu ứng dụng.
 				 */
 				do_action( 'wp_delete_application_password', $user_id, $item );
 
@@ -401,12 +401,12 @@ class WP_Application_Passwords {
 	}
 
 	/**
-	 * Deletes all application passwords for the given user.
+	 * Xóa tất cả mật khẩu ứng dụng của người dùng cho trước.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param int $user_id User ID.
-	 * @return int|WP_Error The number of passwords that were deleted or a WP_Error on failure.
+	 * @param int $user_id ID người dùng.
+	 * @return int|WP_Error Số lượng mật khẩu đã xóa hoặc WP_Error khi thất bại.
 	 */
 	public static function delete_all_application_passwords( $user_id ) {
 		$passwords = static::get_user_application_passwords( $user_id );
@@ -419,7 +419,7 @@ class WP_Application_Passwords {
 			}
 
 			foreach ( $passwords as $item ) {
-				/** This action is documented in wp-includes/class-wp-application-passwords.php */
+				/** Action này được ghi nhận trong wp-includes/class-wp-application-passwords.php */
 				do_action( 'wp_delete_application_password', $user_id, $item );
 			}
 
@@ -430,39 +430,39 @@ class WP_Application_Passwords {
 	}
 
 	/**
-	 * Sets a user's application passwords.
+	 * Thiết lập danh sách mật khẩu ứng dụng của người dùng.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param int   $user_id   User ID.
+	 * @param int   $user_id   ID người dùng.
 	 * @param array $passwords {
-	 *     The list of application passwords.
+	 *     Danh sách mật khẩu ứng dụng.
 	 *
 	 *     @type array ...$0 {
-	 *         @type string      $uuid      The unique identifier for the application password.
-	 *         @type string      $app_id    A UUID provided by the application to uniquely identify it.
-	 *         @type string      $name      The name of the application password.
-	 *         @type string      $password  A one-way hash of the password.
-	 *         @type int         $created   Unix timestamp of when the password was created.
-	 *         @type int|null    $last_used The Unix timestamp of the GMT date the application password was last used.
-	 *         @type string|null $last_ip   The IP address the application password was last used by.
+	 *         @type string      $uuid      Định danh duy nhất cho mật khẩu ứng dụng.
+	 *         @type string      $app_id    Một UUID được cung cấp bởi ứng dụng để nhận dạng duy nhất nó.
+	 *         @type string      $name      Tên của mật khẩu ứng dụng.
+	 *         @type string      $password  Giá trị băm một chiều của mật khẩu.
+	 *         @type int         $created   Timestamp Unix khi mật khẩu được tạo.
+	 *         @type int|null    $last_used Timestamp Unix theo GMT khi mật khẩu ứng dụng được sử dụng lần cuối.
+	 *         @type string|null $last_ip   Địa chỉ IP đã sử dụng mật khẩu ứng dụng lần cuối.
 	 *     }
 	 * }
-	 * @return int|bool User meta ID if the key didn't exist (ie. this is the first time that an application password
-	 *                  has been saved for the user), true on successful update, false on failure or if the value passed
-	 *                  is the same as the one that is already in the database.
+	 * @return int|bool ID user meta nếu khóa chưa tồn tại (tức đây là lần đầu tiên mật khẩu ứng dụng
+	 *                  được lưu cho người dùng), true khi cập nhật thành công, false khi thất bại hoặc nếu giá trị
+	 *                  truyền vào giống với giá trị đã có trong cơ sở dữ liệu.
 	 */
 	protected static function set_user_application_passwords( $user_id, $passwords ) {
 		return update_user_meta( $user_id, static::USERMETA_KEY_APPLICATION_PASSWORDS, $passwords );
 	}
 
 	/**
-	 * Sanitizes and then splits a password into smaller chunks.
+	 * Làm sạch và sau đó chia mật khẩu thành các đoạn nhỏ hơn.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param string $raw_password The raw application password.
-	 * @return string The chunked password.
+	 * @param string $raw_password Mật khẩu ứng dụng thô.
+	 * @return string Mật khẩu đã được chia đoạn.
 	 */
 	public static function chunk_password(
 		#[\SensitiveParameter]
@@ -474,12 +474,12 @@ class WP_Application_Passwords {
 	}
 
 	/**
-	 * Hashes a plaintext application password.
+	 * Băm mật khẩu ứng dụng dạng văn bản thuần.
 	 *
 	 * @since 6.8.0
 	 *
-	 * @param string $password Plaintext password.
-	 * @return string Hashed password.
+	 * @param string $password Mật khẩu dạng văn bản thuần.
+	 * @return string Mật khẩu đã được băm.
 	 */
 	public static function hash_password(
 		#[\SensitiveParameter]
@@ -489,13 +489,13 @@ class WP_Application_Passwords {
 	}
 
 	/**
-	 * Checks a plaintext application password against a hashed password.
+	 * Kiểm tra mật khẩu ứng dụng dạng văn bản thuần so với mật khẩu đã băm.
 	 *
 	 * @since 6.8.0
 	 *
-	 * @param string $password Plaintext password.
-	 * @param string $hash     Hash of the password to check against.
-	 * @return bool Whether the password matches the hashed password.
+	 * @param string $password Mật khẩu dạng văn bản thuần.
+	 * @param string $hash     Giá trị băm của mật khẩu để so sánh.
+	 * @return bool Mật khẩu có khớp với mật khẩu đã băm hay không.
 	 */
 	public static function check_password(
 		#[\SensitiveParameter]
@@ -504,8 +504,8 @@ class WP_Application_Passwords {
 	): bool {
 		if ( ! str_starts_with( $hash, '$generic$' ) ) {
 			/*
-			 * If the hash doesn't start with `$generic$`, it is a hash created with `wp_hash_password()`.
-			 * This is the case for application passwords created before 6.8.0.
+			 * Nếu giá trị băm không bắt đầu bằng `$generic$`, đó là giá trị băm được tạo bằng `wp_hash_password()`.
+			 * Đây là trường hợp cho các mật khẩu ứng dụng được tạo trước phiên bản 6.8.0.
 			 */
 			return wp_check_password( $password, $hash );
 		}

@@ -1,17 +1,17 @@
 <?php
 /**
- * WordPress Administration Media API.
+ * API Media Quản trị WordPress.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Defines the default media upload tabs.
+ * Định nghĩa các tab tải lên media mặc định.
  *
  * @since 2.5.0
  *
- * @return string[] Default tabs.
+ * @return string[] Các tab mặc định.
  */
 function media_upload_tabs() {
 	$_default_tabs = array(
@@ -22,24 +22,24 @@ function media_upload_tabs() {
 	);
 
 	/**
-	 * Filters the available tabs in the legacy (pre-3.5.0) media popup.
+	 * Lọc các tab có sẵn trong popup media cũ (trước 3.5.0).
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string[] $_default_tabs An array of media tabs.
+	 * @param string[] $_default_tabs Mảng các tab media.
 	 */
 	return apply_filters( 'media_upload_tabs', $_default_tabs );
 }
 
 /**
- * Adds the gallery tab back to the tabs array if post has image attachments.
+ * Thêm lại tab gallery vào mảng tab nếu bài viết có ảnh đính kèm.
  *
  * @since 2.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
  * @param array $tabs
- * @return array $tabs with gallery if post has image attachment
+ * @return array $tabs có gallery nếu bài viết có ảnh đính kèm.
  */
 function update_gallery_tab( $tabs ) {
 	global $wpdb;
@@ -67,7 +67,7 @@ function update_gallery_tab( $tabs ) {
 }
 
 /**
- * Outputs the legacy media upload tabs UI.
+ * Xuất giao diện các tab tải lên media cũ.
  *
  * @since 2.5.0
  *
@@ -115,20 +115,20 @@ function the_media_upload_tabs() {
 }
 
 /**
- * Retrieves the image HTML to send to the editor.
+ * Lấy HTML ảnh để gửi đến trình soạn thảo.
  *
  * @since 2.5.0
  *
- * @param int          $id      Image attachment ID.
- * @param string       $caption Image caption.
- * @param string       $title   Image title attribute.
- * @param string       $align   Image CSS alignment property.
- * @param string       $url     Optional. Image src URL. Default empty.
- * @param bool|string  $rel     Optional. Value for rel attribute or whether to add a default value. Default false.
- * @param string|int[] $size    Optional. Image size. Accepts any registered image size name, or an array of
- *                              width and height values in pixels (in that order). Default 'medium'.
- * @param string       $alt     Optional. Image alt attribute. Default empty.
- * @return string The HTML output to insert into the editor.
+ * @param int          $id      ID đính kèm ảnh.
+ * @param string       $caption Chú thích ảnh.
+ * @param string       $title   Thuộc tính title của ảnh.
+ * @param string       $align   Thuộc tính CSS căn chỉnh ảnh.
+ * @param string       $url     Tùy chọn. URL nguồn ảnh. Mặc định rỗng.
+ * @param bool|string  $rel     Tùy chọn. Giá trị cho thuộc tính rel hoặc có thêm giá trị mặc định không. Mặc định false.
+ * @param string|int[] $size    Tùy chọn. Kích thước ảnh. Chấp nhận bất kỳ tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                              các giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'medium'.
+ * @param string       $alt     Tùy chọn. Thuộc tính alt của ảnh. Mặc định rỗng.
+ * @return string Đầu ra HTML để chèn vào trình soạn thảo.
  */
 function get_image_send_to_editor( $id, $caption, $title, $align, $url = '', $rel = false, $size = 'medium', $alt = '' ) {
 
@@ -149,21 +149,21 @@ function get_image_send_to_editor( $id, $caption, $title, $align, $url = '', $re
 	}
 
 	/**
-	 * Filters the image HTML markup to send to the editor when inserting an image.
+	 * Lọc đánh dấu HTML ảnh để gửi đến trình soạn thảo khi chèn ảnh.
 	 *
 	 * @since 2.5.0
-	 * @since 5.6.0 The `$rel` parameter was added.
+	 * @since 5.6.0 Thêm tham số `$rel`.
 	 *
-	 * @param string       $html    The image HTML markup to send.
-	 * @param int          $id      The attachment ID.
-	 * @param string       $caption The image caption.
-	 * @param string       $title   The image title.
-	 * @param string       $align   The image alignment.
-	 * @param string       $url     The image source URL.
-	 * @param string|int[] $size    Requested image size. Can be any registered image size name, or
-	 *                              an array of width and height values in pixels (in that order).
-	 * @param string       $alt     The image alternative, or alt, text.
-	 * @param string       $rel     The image rel attribute.
+	 * @param string       $html    Đánh dấu HTML ảnh để gửi.
+	 * @param int          $id      ID đính kèm.
+	 * @param string       $caption Chú thích ảnh.
+	 * @param string       $title   Tiêu đề ảnh.
+	 * @param string       $align   Căn chỉnh ảnh.
+	 * @param string       $url     URL nguồn ảnh.
+	 * @param string|int[] $size    Kích thước ảnh yêu cầu. Có thể là bất kỳ tên kích thước ảnh đã đăng ký, hoặc
+	 *                              mảng các giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+	 * @param string       $alt     Văn bản thay thế, hoặc alt, của ảnh.
+	 * @param string       $rel     Thuộc tính rel của ảnh.
 	 */
 	$html = apply_filters( 'image_send_to_editor', $html, $id, $caption, $title, $align, $url, $size, $alt, $rel );
 
@@ -171,47 +171,47 @@ function get_image_send_to_editor( $id, $caption, $title, $align, $url = '', $re
 }
 
 /**
- * Adds image shortcode with caption to editor.
+ * Thêm shortcode ảnh có chú thích vào trình soạn thảo.
  *
  * @since 2.6.0
  *
- * @param string  $html    The image HTML markup to send.
- * @param int     $id      Image attachment ID.
- * @param string  $caption Image caption.
- * @param string  $title   Image title attribute (not used).
- * @param string  $align   Image CSS alignment property.
- * @param string  $url     Image source URL (not used).
- * @param string  $size    Image size (not used).
- * @param string  $alt     Image `alt` attribute (not used).
- * @return string The image HTML markup with caption shortcode.
+ * @param string  $html    Đánh dấu HTML ảnh để gửi.
+ * @param int     $id      ID đính kèm ảnh.
+ * @param string  $caption Chú thích ảnh.
+ * @param string  $title   Thuộc tính title ảnh (không sử dụng).
+ * @param string  $align   Thuộc tính CSS căn chỉnh ảnh.
+ * @param string  $url     URL nguồn ảnh (không sử dụng).
+ * @param string  $size    Kích thước ảnh (không sử dụng).
+ * @param string  $alt     Thuộc tính `alt` ảnh (không sử dụng).
+ * @return string Đánh dấu HTML ảnh với shortcode chú thích.
  */
 function image_add_caption( $html, $id, $caption, $title, $align, $url, $size, $alt = '' ) {
 
 	/**
-	 * Filters the caption text.
+	 * Lọc văn bản chú thích.
 	 *
-	 * Note: If the caption text is empty, the caption shortcode will not be appended
-	 * to the image HTML when inserted into the editor.
+	 * Lưu ý: Nếu văn bản chú thích rỗng, shortcode chú thích sẽ không được nối
+	 * vào HTML ảnh khi chèn vào trình soạn thảo.
 	 *
-	 * Passing an empty value also prevents the {@see 'image_add_caption_shortcode'}
-	 * Filters from being evaluated at the end of image_add_caption().
+	 * Truyền giá trị rỗng cũng ngăn bộ lọc {@see 'image_add_caption_shortcode'}
+	 * được thực thi ở cuối image_add_caption().
 	 *
 	 * @since 4.1.0
 	 *
-	 * @param string $caption The original caption text.
-	 * @param int    $id      The attachment ID.
+	 * @param string $caption Văn bản chú thích gốc.
+	 * @param int    $id      ID đính kèm.
 	 */
 	$caption = apply_filters( 'image_add_caption_text', $caption, $id );
 
 	/**
-	 * Filters whether to disable captions.
+	 * Lọc có vô hiệu hóa chú thích hay không.
 	 *
-	 * Prevents image captions from being appended to image HTML when inserted into the editor.
+	 * Ngăn chú thích ảnh được nối vào HTML ảnh khi chèn vào trình soạn thảo.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param bool $bool Whether to disable appending captions. Returning true from the filter
-	 *                   will disable captions. Default empty string.
+	 * @param bool $bool Có vô hiệu hóa việc nối chú thích không. Trả về true từ bộ lọc
+	 *                   sẽ vô hiệu hóa chú thích. Mặc định chuỗi rỗng.
 	 */
 	if ( empty( $caption ) || apply_filters( 'disable_captions', '' ) ) {
 		return $html;
@@ -228,7 +228,7 @@ function image_add_caption( $html, $id, $caption, $title, $align, $url, $size, $
 	$caption = str_replace( array( "\r\n", "\r" ), "\n", $caption );
 	$caption = preg_replace_callback( '/<[a-zA-Z0-9]+(?: [^<>]+>)*/', '_cleanup_image_add_caption', $caption );
 
-	// Convert any remaining line breaks to <br />.
+	// Chuyển đổi các ngắt dòng còn lại thành <br />.
 	$caption = preg_replace( '/[ \n\t]*\n[ \t]*/', '<br />', $caption );
 
 	$html = preg_replace( '/(class=["\'][^\'"]*)align(none|left|right|center)\s?/', '$1', $html );
@@ -239,32 +239,32 @@ function image_add_caption( $html, $id, $caption, $title, $align, $url, $size, $
 	$shcode = '[caption id="' . $id . '" align="align' . $align . '" width="' . $width . '"]' . $html . ' ' . $caption . '[/caption]';
 
 	/**
-	 * Filters the image HTML markup including the caption shortcode.
+	 * Lọc đánh dấu HTML ảnh bao gồm shortcode chú thích.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param string $shcode The image HTML markup with caption shortcode.
-	 * @param string $html   The image HTML markup.
+	 * @param string $shcode Đánh dấu HTML ảnh với shortcode chú thích.
+	 * @param string $html   Đánh dấu HTML ảnh.
 	 */
 	return apply_filters( 'image_add_caption_shortcode', $shcode, $html );
 }
 
 /**
- * Private preg_replace callback used in image_add_caption().
+ * Callback preg_replace riêng được sử dụng trong image_add_caption().
  *
  * @access private
  * @since 3.4.0
  *
- * @param array $matches Single regex match.
- * @return string Cleaned up HTML for caption.
+ * @param array $matches Kết quả khớp regex đơn.
+ * @return string HTML đã được dọn dẹp cho chú thích.
  */
 function _cleanup_image_add_caption( $matches ) {
-	// Remove any line breaks from inside the tags.
+	// Xóa bất kỳ ngắt dòng nào từ bên trong các thẻ.
 	return preg_replace( '/[\r\n\t]+/', ' ', $matches[0] );
 }
 
 /**
- * Adds image HTML to editor.
+ * Thêm HTML ảnh vào trình soạn thảo.
  *
  * @since 2.5.0
  *
@@ -281,23 +281,23 @@ function media_send_to_editor( $html ) {
 }
 
 /**
- * Saves a file submitted from a POST request and create an attachment post for it.
+ * Lưu file được gửi từ yêu cầu POST và tạo bài viết đính kèm cho nó.
  *
  * @since 2.5.0
  *
- * @param string $file_id   Index of the `$_FILES` array that the file was sent.
- * @param int    $post_id   The post ID of a post to attach the media item to. Required, but can
- *                          be set to 0, creating a media item that has no relationship to a post.
- * @param array  $post_data Optional. Overwrite some of the attachment.
- * @param array  $overrides Optional. Override the wp_handle_upload() behavior.
- * @return int|WP_Error ID of the attachment or a WP_Error object on failure.
+ * @param string $file_id   Chỉ mục của mảng `$_FILES` mà file được gửi.
+ * @param int    $post_id   ID bài viết để đính kèm mục media vào. Bắt buộc, nhưng có thể
+ *                          đặt là 0, tạo mục media không có quan hệ với bài viết nào.
+ * @param array  $post_data Tùy chọn. Ghi đè một số thuộc tính của đính kèm.
+ * @param array  $overrides Tùy chọn. Ghi đè hành vi wp_handle_upload().
+ * @return int|WP_Error ID của đính kèm hoặc đối tượng WP_Error khi thất bại.
  */
 function media_handle_upload( $file_id, $post_id, $post_data = array(), $overrides = array( 'test_form' => false ) ) {
 	$time = current_time( 'mysql' );
 	$post = get_post( $post_id );
 
 	if ( $post ) {
-		// The post date doesn't usually matter for pages, so don't backdate this upload.
+		// Ngày đăng bài thường không quan trọng đối với trang, nên không lùi ngày cho tải lên này.
 		if ( 'page' !== $post->post_type && substr( $post->post_date, 0, 4 ) > 0 ) {
 			$time = $post->post_date;
 		}
@@ -387,7 +387,7 @@ function media_handle_upload( $file_id, $post_id, $post_data = array(), $overrid
 			$content .= ' ' . sprintf( __( 'Genre: %s.' ), $meta['genre'] );
 		}
 
-		// Use image exif/iptc data for title and caption defaults if possible.
+		// Sử dụng dữ liệu exif/iptc của ảnh cho tiêu đề và chú thích mặc định nếu có thể.
 	} elseif ( str_starts_with( $type, 'image/' ) ) {
 		$image_meta = wp_read_image_metadata( $file );
 
@@ -402,7 +402,7 @@ function media_handle_upload( $file_id, $post_id, $post_data = array(), $overrid
 		}
 	}
 
-	// Construct the attachment array.
+	// Xây dựng mảng đính kèm.
 	$attachment = array_merge(
 		array(
 			'post_mime_type' => $type,
@@ -415,24 +415,24 @@ function media_handle_upload( $file_id, $post_id, $post_data = array(), $overrid
 		$post_data
 	);
 
-	// This should never be set as it would then overwrite an existing attachment.
+	// Không bao giờ nên đặt giá trị này vì sẽ ghi đè đính kèm hiện có.
 	unset( $attachment['ID'] );
 
-	// Save the data.
+	// Lưu dữ liệu.
 	$attachment_id = wp_insert_attachment( $attachment, $file, $post_id, true );
 
 	if ( ! is_wp_error( $attachment_id ) ) {
 		/*
-		 * Set a custom header with the attachment_id.
-		 * Used by the browser/client to resume creating image sub-sizes after a PHP fatal error.
+		 * Đặt header tùy chỉnh với attachment_id.
+		 * Được trình duyệt/client sử dụng để tiếp tục tạo các kích thước con của ảnh sau lỗi PHP nghiêm trọng.
 		 */
 		if ( ! headers_sent() ) {
 			header( 'X-WP-Upload-Attachment-ID: ' . $attachment_id );
 		}
 
 		/*
-		 * The image sub-sizes are created during wp_generate_attachment_metadata().
-		 * This is generally slow and may cause timeouts or out of memory errors.
+		 * Các kích thước con của ảnh được tạo trong wp_generate_attachment_metadata().
+		 * Quá trình này thường chậm và có thể gây ra lỗi hết thời gian hoặc hết bộ nhớ.
 		 */
 		wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $file ) );
 	}
@@ -441,16 +441,16 @@ function media_handle_upload( $file_id, $post_id, $post_data = array(), $overrid
 }
 
 /**
- * Handles a side-loaded file in the same way as an uploaded file is handled by media_handle_upload().
+ * Xử lý file được tải bên ngoài giống cách file tải lên được xử lý bởi media_handle_upload().
  *
  * @since 2.6.0
- * @since 5.3.0 The `$post_id` parameter was made optional.
+ * @since 5.3.0 Tham số `$post_id` trở thành tùy chọn.
  *
- * @param string[] $file_array Array that represents a `$_FILES` upload array.
- * @param int      $post_id    Optional. The post ID the media is associated with.
- * @param string   $desc       Optional. Description of the side-loaded file. Default null.
- * @param array    $post_data  Optional. Post data to override. Default empty array.
- * @return int|WP_Error The ID of the attachment or a WP_Error on failure.
+ * @param string[] $file_array Mảng đại diện cho mảng tải lên `$_FILES`.
+ * @param int      $post_id    Tùy chọn. ID bài viết mà media được liên kết với.
+ * @param string   $desc       Tùy chọn. Mô tả file được tải bên ngoài. Mặc định null.
+ * @param array    $post_data  Tùy chọn. Dữ liệu bài viết để ghi đè. Mặc định mảng rỗng.
+ * @return int|WP_Error ID của đính kèm hoặc WP_Error khi thất bại.
  */
 function media_handle_sideload( $file_array, $post_id = 0, $desc = null, $post_data = array() ) {
 	$overrides = array( 'test_form' => false );
@@ -478,7 +478,7 @@ function media_handle_sideload( $file_array, $post_id = 0, $desc = null, $post_d
 	$title   = preg_replace( '/\.[^.]+$/', '', wp_basename( $file ) );
 	$content = '';
 
-	// Use image exif/iptc data for title and caption defaults if possible.
+	// Sử dụng dữ liệu exif/iptc của ảnh cho tiêu đề và chú thích mặc định nếu có thể.
 	$image_meta = wp_read_image_metadata( $file );
 
 	if ( $image_meta ) {
@@ -495,7 +495,7 @@ function media_handle_sideload( $file_array, $post_id = 0, $desc = null, $post_d
 		$title = $desc;
 	}
 
-	// Construct the attachment array.
+	// Xây dựng mảng đính kèm.
 	$attachment = array_merge(
 		array(
 			'post_mime_type' => $type,
@@ -507,10 +507,10 @@ function media_handle_sideload( $file_array, $post_id = 0, $desc = null, $post_d
 		$post_data
 	);
 
-	// This should never be set as it would then overwrite an existing attachment.
+	// Không bao giờ nên đặt giá trị này vì sẽ ghi đè đính kèm hiện có.
 	unset( $attachment['ID'] );
 
-	// Save the attachment metadata.
+	// Lưu metadata đính kèm.
 	$attachment_id = wp_insert_attachment( $attachment, $file, $post_id, true );
 
 	if ( ! is_wp_error( $attachment_id ) ) {
@@ -521,16 +521,16 @@ function media_handle_sideload( $file_array, $post_id = 0, $desc = null, $post_d
 }
 
 /**
- * Outputs the iframe to display the media upload page.
+ * Xuất iframe để hiển thị trang tải lên media.
  *
  * @since 2.5.0
- * @since 5.3.0 Formalized the existing and already documented `...$args` parameter
- *              by adding it to the function signature.
+ * @since 5.3.0 Chính thức hóa tham số `...$args` đã tồn tại và đã được tài liệu hóa
+ *              bằng cách thêm vào chữ ký hàm.
  *
  * @global string $body_id
  *
- * @param callable $content_func Function that outputs the content.
- * @param mixed    ...$args      Optional additional parameters to pass to the callback function when it's called.
+ * @param callable $content_func Hàm xuất nội dung.
+ * @param mixed    ...$args      Các tham số bổ sung tùy chọn để truyền vào hàm callback khi nó được gọi.
  */
 function wp_iframe( $content_func, ...$args ) {
 	global $body_id;
@@ -541,7 +541,7 @@ function wp_iframe( $content_func, ...$args ) {
 	<?php
 
 	wp_enqueue_style( 'colors' );
-	// Check callback name for 'media'.
+	// Kiểm tra tên callback có chứa 'media' không.
 	if (
 		( is_array( $content_func ) && ! empty( $content_func[1] ) && str_starts_with( (string) $content_func[1], 'media' ) ) ||
 		( ! is_array( $content_func ) && str_starts_with( $content_func, 'media' ) )
@@ -560,7 +560,7 @@ function wp_iframe( $content_func, ...$args ) {
 	do_action( 'admin_enqueue_scripts', 'media-upload-popup' );
 
 	/**
-	 * Fires when admin styles enqueued for the legacy (pre-3.5.0) media upload popup are printed.
+	 * Kích hoạt khi các style quản trị đã xếp hàng cho popup tải lên media cũ (trước 3.5.0) được in.
 	 *
 	 * @since 2.9.0
 	 */
@@ -570,7 +570,7 @@ function wp_iframe( $content_func, ...$args ) {
 	do_action( 'admin_print_styles' );
 
 	/**
-	 * Fires when admin scripts enqueued for the legacy (pre-3.5.0) media upload popup are printed.
+	 * Kích hoạt khi các script quản trị đã xếp hàng cho popup tải lên media cũ (trước 3.5.0) được in.
 	 *
 	 * @since 2.9.0
 	 */
@@ -580,8 +580,8 @@ function wp_iframe( $content_func, ...$args ) {
 	do_action( 'admin_print_scripts' );
 
 	/**
-	 * Fires when scripts enqueued for the admin header for the legacy (pre-3.5.0)
-	 * media upload popup are printed.
+	 * Kích hoạt khi các script đã xếp hàng cho header quản trị của popup tải lên
+	 * media cũ (trước 3.5.0) được in.
 	 *
 	 * @since 2.9.0
 	 */
@@ -592,11 +592,11 @@ function wp_iframe( $content_func, ...$args ) {
 
 	if ( is_string( $content_func ) ) {
 		/**
-		 * Fires in the admin header for each specific form tab in the legacy
-		 * (pre-3.5.0) media upload popup.
+		 * Kích hoạt trong header quản trị cho mỗi tab biểu mẫu cụ thể trong popup
+		 * tải lên media cũ (trước 3.5.0).
 		 *
-		 * The dynamic portion of the hook name, `$content_func`, refers to the form
-		 * callback for the media upload type.
+		 * Phần động của tên hook, `$content_func`, tham chiếu đến callback biểu mẫu
+		 * cho loại tải lên media.
 		 *
 		 * @since 2.5.0
 		 */
@@ -630,7 +630,7 @@ function wp_iframe( $content_func, ...$args ) {
 }
 
 /**
- * Adds the media button to the editor.
+ * Thêm nút media vào trình soạn thảo.
  *
  * @since 2.5.0
  *
@@ -662,14 +662,14 @@ function media_buttons( $editor_id = 'content' ) {
 	);
 
 	/**
-	 * Filters the legacy (pre-3.5.0) media buttons.
+	 * Lọc các nút media cũ (trước 3.5.0).
 	 *
-	 * Use {@see 'media_buttons'} action instead.
+	 * Sử dụng action {@see 'media_buttons'} thay thế.
 	 *
 	 * @since 2.5.0
-	 * @deprecated 3.5.0 Use {@see 'media_buttons'} action instead.
+	 * @deprecated 3.5.0 Sử dụng action {@see 'media_buttons'} thay thế.
 	 *
-	 * @param string $string Media buttons context. Default empty.
+	 * @param string $string Ngữ cảnh nút media. Mặc định rỗng.
 	 */
 	$legacy_filter = apply_filters_deprecated( 'media_buttons_context', array( '' ), '3.5.0', 'media_buttons' );
 
@@ -683,16 +683,16 @@ function media_buttons( $editor_id = 'content' ) {
 }
 
 /**
- * Retrieves the upload iframe source URL.
+ * Lấy URL nguồn iframe tải lên.
  *
  * @since 3.0.0
  *
  * @global int $post_ID
  *
- * @param string $type    Media type.
- * @param int    $post_id Post ID.
- * @param string $tab     Media upload tab.
- * @return string Upload iframe source URL.
+ * @param string $type    Loại media.
+ * @param int    $post_id ID bài viết.
+ * @param string $tab     Tab tải lên media.
+ * @return string URL nguồn iframe tải lên.
  */
 function get_upload_iframe_src( $type = null, $post_id = null, $tab = null ) {
 	global $post_ID;
@@ -712,19 +712,19 @@ function get_upload_iframe_src( $type = null, $post_id = null, $tab = null ) {
 	}
 
 	/**
-	 * Filters the upload iframe source URL for a specific media type.
+	 * Lọc URL nguồn iframe tải lên cho một loại media cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$type`, refers to the type
-	 * of media uploaded.
+	 * Phần động của tên hook, `$type`, tham chiếu đến loại
+	 * media được tải lên.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `image_upload_iframe_src`
 	 *  - `media_upload_iframe_src`
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $upload_iframe_src The upload iframe source URL.
+	 * @param string $upload_iframe_src URL nguồn iframe tải lên.
 	 */
 	$upload_iframe_src = apply_filters( "{$type}_upload_iframe_src", $upload_iframe_src );
 
@@ -732,11 +732,11 @@ function get_upload_iframe_src( $type = null, $post_id = null, $tab = null ) {
 }
 
 /**
- * Handles form submissions for the legacy media uploader.
+ * Xử lý các form gửi đi cho trình tải lên media cũ.
  *
  * @since 2.5.0
  *
- * @return null|array|void Array of error messages keyed by attachment ID, null or void on success.
+ * @return null|array|void Mảng thông báo lỗi được đánh khóa bởi ID đính kèm, null hoặc void khi thành công.
  */
 function media_upload_form_handler() {
 	check_admin_referer( 'media-form' );
@@ -780,14 +780,14 @@ function media_upload_form_handler() {
 			}
 
 			/**
-			 * Filters the attachment fields to be saved.
+			 * Lọc các trường đính kèm sẽ được lưu.
 			 *
 			 * @since 2.5.0
 			 *
 			 * @see wp_get_attachment_metadata()
 			 *
-			 * @param array $post       An array of post data.
-			 * @param array $attachment An array of attachment metadata.
+			 * @param array $post       Mảng dữ liệu bài viết.
+			 * @param array $attachment Mảng metadata đính kèm.
 			 */
 			$post = apply_filters( 'attachment_fields_to_save', $post, $attachment );
 
@@ -797,7 +797,7 @@ function media_upload_form_handler() {
 				if ( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) !== $image_alt ) {
 					$image_alt = wp_strip_all_tags( $image_alt, true );
 
-					// update_post_meta() expects slashed.
+					// update_post_meta() yêu cầu dữ liệu có slash.
 					update_post_meta( $attachment_id, '_wp_attachment_image_alt', wp_slash( $image_alt ) );
 				}
 			}
@@ -845,15 +845,15 @@ function media_upload_form_handler() {
 		}
 
 		/**
-		 * Filters the HTML markup for a media item sent to the editor.
+		 * Lọc đánh dấu HTML cho mục media được gửi đến trình soạn thảo.
 		 *
 		 * @since 2.5.0
 		 *
 		 * @see wp_get_attachment_metadata()
 		 *
-		 * @param string $html       HTML markup for a media item sent to the editor.
-		 * @param int    $send_id    The first key from the $_POST['send'] data.
-		 * @param array  $attachment Array of attachment metadata.
+		 * @param string $html       Đánh dấu HTML cho mục media được gửi đến trình soạn thảo.
+		 * @param int    $send_id    Khóa đầu tiên từ dữ liệu $_POST['send'].
+		 * @param array  $attachment Mảng metadata đính kèm.
 		 */
 		$html = apply_filters( 'media_send_to_editor', $html, $send_id, $attachment );
 
@@ -864,7 +864,7 @@ function media_upload_form_handler() {
 }
 
 /**
- * Handles the process of uploading media.
+ * Xử lý quá trình tải lên media.
  *
  * @since 2.5.0
  *
@@ -876,7 +876,7 @@ function wp_media_upload_handler() {
 
 	if ( isset( $_POST['html-upload'] ) && ! empty( $_FILES ) ) {
 		check_admin_referer( 'media-form' );
-		// Upload File button was clicked.
+		// Nút Tải File lên đã được nhấn.
 		$id = media_handle_upload( 'async-upload', $_REQUEST['post_id'] );
 		unset( $_FILES );
 
@@ -914,12 +914,12 @@ function wp_media_upload_handler() {
 			}
 
 			/**
-			 * Filters the URL sent to the editor for a specific media type.
+			 * Lọc URL được gửi đến trình soạn thảo cho loại media cụ thể.
 			 *
-			 * The dynamic portion of the hook name, `$type`, refers to the type
-			 * of media being sent.
+			 * Phần động của tên hook, `$type`, tham chiếu đến loại
+			 * media đang được gửi.
 			 *
-			 * Possible hook names include:
+			 * Các tên hook có thể bao gồm:
 			 *
 			 *  - `audio_send_to_editor_url`
 			 *  - `file_send_to_editor_url`
@@ -927,9 +927,9 @@ function wp_media_upload_handler() {
 			 *
 			 * @since 3.3.0
 			 *
-			 * @param string $html  HTML markup sent to the editor.
-			 * @param string $src   Media source URL.
-			 * @param string $title Media title.
+			 * @param string $html  Đánh dấu HTML được gửi đến trình soạn thảo.
+			 * @param string $src   URL nguồn media.
+			 * @param string $title Tiêu đề media.
 			 */
 			$html = apply_filters( "{$type}_send_to_editor_url", $html, sanitize_url( $src ), $title );
 		} else {
@@ -946,14 +946,14 @@ function wp_media_upload_handler() {
 			}
 
 			/**
-			 * Filters the image URL sent to the editor.
+			 * Lọc URL ảnh được gửi đến trình soạn thảo.
 			 *
 			 * @since 2.8.0
 			 *
-			 * @param string $html  HTML markup sent to the editor for an image.
-			 * @param string $src   Image source URL.
-			 * @param string $alt   Image alternate, or alt, text.
-			 * @param string $align The image alignment. Default 'alignnone'. Possible values include
+			 * @param string $html  Đánh dấu HTML được gửi đến trình soạn thảo cho ảnh.
+			 * @param string $src   URL nguồn ảnh.
+			 * @param string $alt   Văn bản thay thế, hoặc alt, của ảnh.
+			 * @param string $align Căn chỉnh ảnh. Mặc định 'alignnone'. Các giá trị có thể bao gồm
 			 *                      'alignleft', 'aligncenter', 'alignright', 'alignnone'.
 			 */
 			$html = apply_filters( 'image_send_to_editor_url', $html, sanitize_url( $src ), $alt, $align );
@@ -994,23 +994,22 @@ function wp_media_upload_handler() {
 }
 
 /**
- * Downloads an image from the specified URL, saves it as an attachment, and optionally attaches it to a post.
+ * Tải ảnh từ URL chỉ định, lưu dưới dạng đính kèm, và tùy chọn gắn vào bài viết.
  *
  * @since 2.6.0
- * @since 4.2.0 Introduced the `$return_type` parameter.
- * @since 4.8.0 Introduced the 'id' option for the `$return_type` parameter.
- * @since 5.3.0 The `$post_id` parameter was made optional.
- * @since 5.4.0 The original URL of the attachment is stored in the `_source_url`
- *              post meta value.
- * @since 5.8.0 Added 'webp' to the default list of allowed file extensions.
+ * @since 4.2.0 Thêm tham số `$return_type`.
+ * @since 4.8.0 Thêm tùy chọn 'id' cho tham số `$return_type`.
+ * @since 5.3.0 Tham số `$post_id` trở thành tùy chọn.
+ * @since 5.4.0 URL gốc của đính kèm được lưu trong giá trị post meta `_source_url`.
+ * @since 5.8.0 Thêm 'webp' vào danh sách phần mở rộng file được phép mặc định.
  *
- * @param string $file        The URL of the image to download.
- * @param int    $post_id     Optional. The post ID the media is to be associated with.
- * @param string $desc        Optional. Description of the image.
- * @param string $return_type Optional. Accepts 'html' (image tag html) or 'src' (URL),
- *                            or 'id' (attachment ID). Default 'html'.
- * @return string|int|WP_Error Populated HTML img tag, attachment ID, or attachment source
- *                             on success, WP_Error object otherwise.
+ * @param string $file        URL của ảnh cần tải.
+ * @param int    $post_id     Tùy chọn. ID bài viết mà media sẽ được liên kết với.
+ * @param string $desc        Tùy chọn. Mô tả ảnh.
+ * @param string $return_type Tùy chọn. Chấp nhận 'html' (html thẻ img) hoặc 'src' (URL),
+ *                            hoặc 'id' (ID đính kèm). Mặc định 'html'.
+ * @return string|int|WP_Error Thẻ HTML img đã được điền, ID đính kèm, hoặc nguồn đính kèm
+ *                             khi thành công, đối tượng WP_Error trong trường hợp khác.
  */
 function media_sideload_image( $file, $post_id = 0, $desc = null, $return_type = 'html' ) {
 	if ( ! empty( $file ) ) {
@@ -1018,9 +1017,9 @@ function media_sideload_image( $file, $post_id = 0, $desc = null, $return_type =
 		$allowed_extensions = array( 'jpg', 'jpeg', 'jpe', 'png', 'gif', 'webp' );
 
 		/**
-		 * Filters the list of allowed file extensions when sideloading an image from a URL.
+		 * Lọc danh sách phần mở rộng file được phép khi tải ảnh bên ngoài từ URL.
 		 *
-		 * The default allowed extensions are:
+		 * Các phần mở rộng được phép mặc định là:
 		 *
 		 *  - `jpg`
 		 *  - `jpeg`
@@ -1030,15 +1029,15 @@ function media_sideload_image( $file, $post_id = 0, $desc = null, $return_type =
 		 *  - `webp`
 		 *
 		 * @since 5.6.0
-		 * @since 5.8.0 Added 'webp' to the default list of allowed file extensions.
+		 * @since 5.8.0 Thêm 'webp' vào danh sách phần mở rộng file được phép mặc định.
 		 *
-		 * @param string[] $allowed_extensions Array of allowed file extensions.
-		 * @param string   $file               The URL of the image to download.
+		 * @param string[] $allowed_extensions Mảng các phần mở rộng file được phép.
+		 * @param string   $file               URL của ảnh cần tải.
 		 */
 		$allowed_extensions = apply_filters( 'image_sideload_extensions', $allowed_extensions, $file );
 		$allowed_extensions = array_map( 'preg_quote', $allowed_extensions );
 
-		// Set variables for storage, fix file filename for query strings.
+		// Đặt biến cho lưu trữ, sửa tên file cho query strings.
 		preg_match( '/[^\?]+\.(' . implode( '|', $allowed_extensions ) . ')\b/i', $file, $matches );
 
 		if ( ! $matches ) {
@@ -1048,27 +1047,27 @@ function media_sideload_image( $file, $post_id = 0, $desc = null, $return_type =
 		$file_array         = array();
 		$file_array['name'] = wp_basename( $matches[0] );
 
-		// Download file to temp location.
+		// Tải file về vị trí tạm.
 		$file_array['tmp_name'] = download_url( $file );
 
-		// If error storing temporarily, return the error.
+		// Nếu lỗi khi lưu trữ tạm thời, trả về lỗi.
 		if ( is_wp_error( $file_array['tmp_name'] ) ) {
 			return $file_array['tmp_name'];
 		}
 
-		// Do the validation and storage stuff.
+		// Thực hiện xác thực và lưu trữ.
 		$id = media_handle_sideload( $file_array, $post_id, $desc );
 
-		// If error storing permanently, unlink.
+		// Nếu lỗi khi lưu trữ vĩnh viễn, xóa file tạm.
 		if ( is_wp_error( $id ) ) {
 			@unlink( $file_array['tmp_name'] );
 			return $id;
 		}
 
-		// Store the original attachment source in meta.
+		// Lưu nguồn đính kèm gốc trong meta.
 		add_post_meta( $id, '_source_url', $file );
 
-		// If attachment ID was requested, return it.
+		// Nếu yêu cầu ID đính kèm, trả về nó.
 		if ( 'id' === $return_type ) {
 			return $id;
 		}
@@ -1076,7 +1075,7 @@ function media_sideload_image( $file, $post_id = 0, $desc = null, $return_type =
 		$src = wp_get_attachment_url( $id );
 	}
 
-	// Finally, check to make sure the file has been saved, then return the HTML.
+	// Cuối cùng, kiểm tra để đảm bảo file đã được lưu, sau đó trả về HTML.
 	if ( ! empty( $src ) ) {
 		if ( 'src' === $return_type ) {
 			return $src;
@@ -1092,7 +1091,7 @@ function media_sideload_image( $file, $post_id = 0, $desc = null, $return_type =
 }
 
 /**
- * Retrieves the legacy media uploader form in an iframe.
+ * Lấy form trình tải lên media cũ trong iframe.
  *
  * @since 2.5.0
  *
@@ -1118,7 +1117,7 @@ function media_upload_gallery() {
 }
 
 /**
- * Retrieves the legacy media library form in an iframe.
+ * Lấy form thư viện media cũ trong iframe.
  *
  * @since 2.5.0
  *
@@ -1142,7 +1141,7 @@ function media_upload_library() {
 }
 
 /**
- * Retrieves HTML for the image alignment radio buttons with the specified one checked.
+ * Lấy HTML cho các nút radio căn chỉnh ảnh với tùy chọn đã chọn được chỉ định.
  *
  * @since 2.7.0
  *
@@ -1180,7 +1179,7 @@ function image_align_input_fields( $post, $checked = '' ) {
 }
 
 /**
- * Retrieves HTML for the size radio buttons with the specified one checked.
+ * Lấy HTML cho các nút radio kích thước với tùy chọn đã chọn được chỉ định.
  *
  * @since 2.7.0
  *
@@ -1190,12 +1189,12 @@ function image_align_input_fields( $post, $checked = '' ) {
  */
 function image_size_input_fields( $post, $check = '' ) {
 	/**
-	 * Filters the names and labels of the default image sizes.
+	 * Lọc tên và nhãn của các kích thước ảnh mặc định.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string[] $size_names Array of image size labels keyed by their name. Default values
-	 *                             include 'Thumbnail', 'Medium', 'Large', and 'Full Size'.
+	 * @param string[] $size_names Mảng nhãn kích thước ảnh được đánh khóa theo tên. Giá trị mặc định
+	 *                             bao gồm 'Thumbnail', 'Medium', 'Large', và 'Full Size'.
 	 */
 	$size_names = apply_filters(
 		'image_size_names_choose',
@@ -1217,11 +1216,11 @@ function image_size_input_fields( $post, $check = '' ) {
 		$downsize = image_downsize( $post->ID, $size );
 		$checked  = '';
 
-		// Is this size selectable?
+		// Kích thước này có thể chọn được không?
 		$enabled = ( $downsize[3] || 'full' === $size );
 		$css_id  = "image-size-{$size}-{$post->ID}";
 
-		// If this size is the default but that's not available, don't select it.
+		// Nếu kích thước này là mặc định nhưng không khả dụng, không chọn nó.
 		if ( $size === $check ) {
 			if ( $enabled ) {
 				$checked = " checked='checked'";
@@ -1230,8 +1229,8 @@ function image_size_input_fields( $post, $check = '' ) {
 			}
 		} elseif ( ! $check && $enabled && 'thumbnail' !== $size ) {
 			/*
-			 * If $check is not enabled, default to the first available size
-			 * that's bigger than a thumbnail.
+			 * Nếu $check không được bật, mặc định chọn kích thước khả dụng đầu tiên
+			 * lớn hơn thumbnail.
 			 */
 			$check   = $size;
 			$checked = " checked='checked'";
@@ -1241,7 +1240,7 @@ function image_size_input_fields( $post, $check = '' ) {
 
 		$html .= "<label for='{$css_id}'>$label</label>";
 
-		// Only show the dimensions if that choice is available.
+		// Chỉ hiển thị kích thước nếu tùy chọn đó khả dụng.
 		if ( $enabled ) {
 			$html .= " <label for='{$css_id}' class='help'>" . sprintf( '(%d&nbsp;&times;&nbsp;%d)', $downsize[1], $downsize[2] ) . '</label>';
 		}
@@ -1258,7 +1257,7 @@ function image_size_input_fields( $post, $check = '' ) {
 }
 
 /**
- * Retrieves HTML for the Link URL buttons with the default link type as specified.
+ * Lấy HTML cho các nút URL liên kết với loại liên kết mặc định được chỉ định.
  *
  * @since 2.7.0
  *
@@ -1292,22 +1291,22 @@ function image_link_input_fields( $post, $url_type = '' ) {
 }
 
 /**
- * Outputs a textarea element for inputting an attachment caption.
+ * Xuất phần tử textarea để nhập chú thích đính kèm.
  *
  * @since 3.4.0
  *
- * @param WP_Post $edit_post Attachment WP_Post object.
- * @return string HTML markup for the textarea element.
+ * @param WP_Post $edit_post Đối tượng WP_Post đính kèm.
+ * @return string Đánh dấu HTML cho phần tử textarea.
  */
 function wp_caption_input_textarea( $edit_post ) {
-	// Post data is already escaped.
+	// Dữ liệu bài viết đã được escape.
 	$name = "attachments[{$edit_post->ID}][post_excerpt]";
 
 	return '<textarea name="' . $name . '" id="' . $name . '">' . $edit_post->post_excerpt . '</textarea>';
 }
 
 /**
- * Retrieves the image attachment fields to edit form fields.
+ * Lấy các trường chỉnh sửa form cho ảnh đính kèm.
  *
  * @since 2.5.0
  *
@@ -1320,13 +1319,13 @@ function image_attachment_fields_to_edit( $form_fields, $post ) {
 }
 
 /**
- * Retrieves the single non-image attachment fields to edit form fields.
+ * Lấy các trường chỉnh sửa form cho đính kèm đơn không phải ảnh.
  *
  * @since 2.5.0
  *
- * @param array   $form_fields An array of attachment form fields.
- * @param WP_Post $post        The WP_Post attachment object.
- * @return array Filtered attachment form fields.
+ * @param array   $form_fields Mảng các trường form đính kèm.
+ * @param WP_Post $post        Đối tượng WP_Post đính kèm.
+ * @return array Các trường form đính kèm đã lọc.
  */
 function media_single_attachment_fields_to_edit( $form_fields, $post ) {
 	unset( $form_fields['url'], $form_fields['align'], $form_fields['image-size'] );
@@ -1334,13 +1333,13 @@ function media_single_attachment_fields_to_edit( $form_fields, $post ) {
 }
 
 /**
- * Retrieves the post non-image attachment fields to edit form fields.
+ * Lấy các trường chỉnh sửa form cho đính kèm bài viết không phải ảnh.
  *
  * @since 2.8.0
  *
- * @param array   $form_fields An array of attachment form fields.
- * @param WP_Post $post        The WP_Post attachment object.
- * @return array Filtered attachment form fields.
+ * @param array   $form_fields Mảng các trường form đính kèm.
+ * @param WP_Post $post        Đối tượng WP_Post đính kèm.
+ * @return array Các trường form đính kèm đã lọc.
  */
 function media_post_single_attachment_fields_to_edit( $form_fields, $post ) {
 	unset( $form_fields['image_url'] );
@@ -1348,7 +1347,7 @@ function media_post_single_attachment_fields_to_edit( $form_fields, $post ) {
 }
 
 /**
- * Retrieves the media element HTML to send to the editor.
+ * Lấy HTML phần tử media để gửi đến trình soạn thảo.
  *
  * @since 2.5.0
  *
@@ -1374,7 +1373,7 @@ function image_media_send_to_editor( $html, $attachment_id, $attachment ) {
 }
 
 /**
- * Retrieves the attachment fields to edit form fields.
+ * Lấy các trường đính kèm để chỉnh sửa trong form.
  *
  * @since 2.5.0
  *
@@ -1463,14 +1462,14 @@ function get_attachment_fields_to_edit( $post, $errors = null ) {
 	}
 
 	/*
-	 * Merge default fields with their errors, so any key passed with the error
-	 * (e.g. 'error', 'helps', 'value') will replace the default.
-	 * The recursive merge is easily traversed with array casting:
+	 * Gộp các trường mặc định với lỗi của chúng, nên bất kỳ khóa nào truyền cùng với lỗi
+	 * (ví dụ: 'error', 'helps', 'value') sẽ thay thế giá trị mặc định.
+	 * Gộp đệ quy dễ dàng duyệt qua với ép kiểu mảng:
 	 * foreach ( (array) $things as $thing )
 	 */
 	$form_fields = array_merge_recursive( $form_fields, (array) $errors );
 
-	// This was formerly in image_attachment_fields_to_edit().
+	// Trước đây nằm trong image_attachment_fields_to_edit().
 	if ( str_starts_with( $post->post_mime_type, 'image' ) ) {
 		$alt = get_post_meta( $post->ID, '_wp_attachment_image_alt', true );
 
@@ -1499,12 +1498,12 @@ function get_attachment_fields_to_edit( $post, $errors = null ) {
 	}
 
 	/**
-	 * Filters the attachment fields to edit.
+	 * Lọc các trường đính kèm để chỉnh sửa.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param array   $form_fields An array of attachment form fields.
-	 * @param WP_Post $post        The WP_Post attachment object.
+	 * @param array   $form_fields Mảng các trường form đính kèm.
+	 * @param WP_Post $post        Đối tượng WP_Post đính kèm.
 	 */
 	$form_fields = apply_filters( 'attachment_fields_to_edit', $form_fields, $post );
 
@@ -1512,19 +1511,18 @@ function get_attachment_fields_to_edit( $post, $errors = null ) {
 }
 
 /**
- * Retrieves HTML for media items of post gallery.
+ * Lấy HTML cho các mục media của gallery bài viết.
  *
- * The HTML markup retrieved will be created for the progress of SWF Upload
- * component. Will also create link for showing and hiding the form to modify
- * the image attachment.
+ * Đánh dấu HTML được lấy sẽ được tạo cho tiến trình của thành phần SWF Upload.
+ * Cũng sẽ tạo liên kết để hiện và ẩn form chỉnh sửa ảnh đính kèm.
  *
  * @since 2.5.0
  *
- * @global WP_Query $wp_the_query WordPress Query object.
+ * @global WP_Query $wp_the_query Đối tượng WordPress Query.
  *
- * @param int   $post_id Post ID.
- * @param array $errors  Errors for attachment, if any.
- * @return string HTML content for media items of post gallery.
+ * @param int   $post_id ID bài viết.
+ * @param array $errors  Lỗi cho đính kèm, nếu có.
+ * @return string Nội dung HTML cho các mục media của gallery bài viết.
  */
 function get_media_items( $post_id, $errors ) {
 	$attachments = array();
@@ -1569,15 +1567,15 @@ function get_media_items( $post_id, $errors ) {
 }
 
 /**
- * Retrieves HTML form for modifying the image attachment.
+ * Lấy form HTML để chỉnh sửa ảnh đính kèm.
  *
  * @since 2.5.0
  *
  * @global string $redir_tab
  *
- * @param int          $attachment_id Attachment ID for modification.
- * @param string|array $args          Optional. Override defaults.
- * @return string HTML form for attachment.
+ * @param int          $attachment_id ID đính kèm để chỉnh sửa.
+ * @param string|array $args          Tùy chọn. Ghi đè mặc định.
+ * @return string Form HTML cho đính kèm.
  */
 function get_media_item( $attachment_id, $args = null ) {
 	global $redir_tab;
@@ -1607,13 +1605,13 @@ function get_media_item( $attachment_id, $args = null ) {
 	$parsed_args = wp_parse_args( $args, $default_args );
 
 	/**
-	 * Filters the arguments used to retrieve an image for the edit image form.
+	 * Lọc các tham số được sử dụng để lấy ảnh cho form chỉnh sửa ảnh.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @see get_media_item
 	 *
-	 * @param array $parsed_args An array of arguments.
+	 * @param array $parsed_args Mảng các tham số.
 	 */
 	$parsed_args = apply_filters( 'get_media_item_args', $parsed_args );
 
@@ -1641,7 +1639,7 @@ function get_media_item( $attachment_id, $args = null ) {
 		$toggle_links = '';
 	}
 
-	$display_title = ( ! empty( $title ) ) ? $title : $filename; // $title shouldn't ever be empty, but just in case.
+	$display_title = ( ! empty( $title ) ) ? $title : $filename; // $title không bao giờ nên rỗng, nhưng phòng trường hợp.
 	$display_title = $parsed_args['show_title'] ? "<div class='filename new'><span class='title'>" . wp_html_excerpt( $display_title, 60, '&hellip;' ) . '</span></div>' : '';
 
 	$gallery = ( ( isset( $_REQUEST['tab'] ) && 'gallery' === $_REQUEST['tab'] ) || ( isset( $redir_tab ) && 'gallery' === $redir_tab ) );
@@ -1669,12 +1667,12 @@ function get_media_item( $attachment_id, $args = null ) {
 	}
 
 	/**
-	 * Filters the media metadata.
+	 * Lọc metadata media.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string  $media_dims The HTML markup containing the media dimensions.
-	 * @param WP_Post $post       The WP_Post attachment object.
+	 * @param string  $media_dims Đánh dấu HTML chứa kích thước media.
+	 * @param WP_Post $post       Đối tượng WP_Post đính kèm.
 	 */
 	$media_dims = apply_filters( 'media_meta', $media_dims, $post );
 
@@ -1755,7 +1753,7 @@ function get_media_item( $attachment_id, $args = null ) {
 
 	if ( isset( $_GET['post_id'] ) ) {
 		$calling_post_id = absint( $_GET['post_id'] );
-	} elseif ( isset( $_POST ) && count( $_POST ) ) {// Like for async-upload where $_GET['post_id'] isn't set.
+	} elseif ( isset( $_POST ) && count( $_POST ) ) {// Giống như cho async-upload khi $_GET['post_id'] không được đặt.
 		$calling_post_id = $post->post_parent;
 	}
 
@@ -1807,10 +1805,10 @@ function get_media_item( $attachment_id, $args = null ) {
 			$item .= $field[ $field['input'] ];
 		} elseif ( 'textarea' === $field['input'] ) {
 			if ( 'post_content' === $id && user_can_richedit() ) {
-				// Sanitize_post() skips the post_content when user_can_richedit.
+				// Sanitize_post() bỏ qua post_content khi user_can_richedit.
 				$field['value'] = htmlspecialchars( $field['value'], ENT_QUOTES );
 			}
-			// Post_excerpt is already escaped by sanitize_post() in get_attachment_fields_to_edit().
+			// Post_excerpt đã được escape bởi sanitize_post() trong get_attachment_fields_to_edit().
 			$item .= "<textarea id='$name' name='$name'{$required_attr}>" . $field['value'] . '</textarea>';
 		} else {
 			$item .= "<input type='text' class='text' id='$name' name='$name' value='" . esc_attr( $field['value'] ) . "'{$required_attr} />";
@@ -1924,9 +1922,9 @@ function get_compat_media_markup( $attachment_id, $args = null ) {
 	}
 
 	/*
-	 * Merge default fields with their errors, so any key passed with the error
-	 * (e.g. 'error', 'helps', 'value') will replace the default.
-	 * The recursive merge is easily traversed with array casting:
+	 * Gộp các trường mặc định với lỗi của chúng, nên bất kỳ khóa nào truyền cùng với lỗi
+	 * (ví dụ: 'error', 'helps', 'value') sẽ thay thế giá trị mặc định.
+	 * Gộp đệ quy dễ dàng duyệt qua với ép kiểu mảng:
 	 * foreach ( (array) $things as $thing )
 	 */
 	$form_fields = array_merge_recursive( $form_fields, (array) $args['errors'] );
@@ -2000,7 +1998,7 @@ function get_compat_media_markup( $attachment_id, $args = null ) {
 			$item .= $field[ $field['input'] ];
 		} elseif ( 'textarea' === $field['input'] ) {
 			if ( 'post_content' === $id && user_can_richedit() ) {
-				// sanitize_post() skips the post_content when user_can_richedit.
+				// sanitize_post() bỏ qua post_content khi user_can_richedit.
 				$field['value'] = htmlspecialchars( $field['value'], ENT_QUOTES );
 			}
 			$item .= "<textarea id='$id_attr' name='$name'{$required_attr}>" . $field['value'] . '</textarea>';
@@ -2063,7 +2061,7 @@ function get_compat_media_markup( $attachment_id, $args = null ) {
 }
 
 /**
- * Outputs the legacy media upload header.
+ * Xuất header tải lên media cũ.
  *
  * @since 2.5.0
  */
@@ -2080,7 +2078,7 @@ function media_upload_header() {
 }
 
 /**
- * Outputs the legacy media upload form.
+ * Xuất form tải lên media cũ.
  *
  * @since 2.5.0
  *
@@ -2134,7 +2132,7 @@ function media_upload_form( $errors = null ) {
 
 	if ( is_multisite() && ! is_upload_space_available() ) {
 		/**
-		 * Fires when an upload will exceed the defined upload space quota for a network site.
+		 * Kích hoạt khi tải lên sẽ vượt quá hạn mức dung lượng tải lên đã định cho trang mạng.
 		 *
 		 * @since 3.5.0
 		 */
@@ -2143,7 +2141,7 @@ function media_upload_form( $errors = null ) {
 	}
 
 	/**
-	 * Fires just before the legacy (pre-3.5.0) upload interface is loaded.
+	 * Kích hoạt ngay trước khi giao diện tải lên cũ (trước 3.5.0) được tải.
 	 *
 	 * @since 2.6.0
 	 */
@@ -2158,18 +2156,18 @@ function media_upload_form( $errors = null ) {
 	);
 
 	/**
-	 * Filters the media upload post parameters.
+	 * Lọc các tham số POST tải lên media.
 	 *
-	 * @since 3.1.0 As 'swfupload_post_params'
+	 * @since 3.1.0 Dưới tên 'swfupload_post_params'
 	 * @since 3.3.0
 	 *
-	 * @param array $post_params An array of media upload parameters used by Plupload.
+	 * @param array $post_params Mảng các tham số tải lên media được sử dụng bởi Plupload.
 	 */
 	$post_params = apply_filters( 'upload_post_params', $post_params );
 
 	/*
-	* Since 4.9 the `runtimes` setting is hardcoded in our version of Plupload to `html5,html4`,
-	* and the `flash_swf_url` and `silverlight_xap_url` are not used.
+	* Từ phiên bản 4.9, cài đặt `runtimes` được cố định trong phiên bản Plupload của chúng ta là `html5,html4`,
+	* và `flash_swf_url` cùng `silverlight_xap_url` không được sử dụng.
 	*/
 	$plupload_init = array(
 		'browse_button'    => 'plupload-browse-button',
@@ -2182,9 +2180,9 @@ function media_upload_form( $errors = null ) {
 	);
 
 	/*
-	 * Currently only iOS Safari supports multiple files uploading,
-	 * but iOS 7.x has a bug that prevents uploading of videos when enabled.
-	 * See #29602.
+	 * Hiện tại chỉ iOS Safari hỗ trợ tải lên nhiều file,
+	 * nhưng iOS 7.x có lỗi ngăn tải lên video khi được bật.
+	 * Xem #29602.
 	 */
 	if (
 		wp_is_mobile() &&
@@ -2198,30 +2196,30 @@ function media_upload_form( $errors = null ) {
 	$prevent_unsupported_uploads = apply_filters( 'wp_prevent_unsupported_mime_type_uploads', true, null );
 
 	if ( $prevent_unsupported_uploads ) {
-		// Check if WebP images can be edited.
+		// Kiểm tra xem ảnh WebP có thể chỉnh sửa được không.
 		if ( ! wp_image_editor_supports( array( 'mime_type' => 'image/webp' ) ) ) {
 			$plupload_init['webp_upload_error'] = true;
 		}
 
-		// Check if AVIF images can be edited.
+		// Kiểm tra xem ảnh AVIF có thể chỉnh sửa được không.
 		if ( ! wp_image_editor_supports( array( 'mime_type' => 'image/avif' ) ) ) {
 			$plupload_init['avif_upload_error'] = true;
 		}
 	}
 
 	/**
-	 * Filters the default Plupload settings.
+	 * Lọc cài đặt Plupload mặc định.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param array $plupload_init An array of default settings used by Plupload.
+	 * @param array $plupload_init Mảng cài đặt mặc định được sử dụng bởi Plupload.
 	 */
 	$plupload_init = apply_filters( 'plupload_init', $plupload_init );
 
 	?>
 	<script type="text/javascript">
 	<?php
-	// Verify size is an int. If not return default value.
+	// Xác minh kích thước là số nguyên. Nếu không thì trả về giá trị mặc định.
 	$large_size_h = absint( get_option( 'large_size_h' ) );
 
 	if ( ! $large_size_h ) {
@@ -2242,9 +2240,9 @@ function media_upload_form( $errors = null ) {
 	<div id="plupload-upload-ui" class="hide-if-no-js">
 	<?php
 	/**
-	 * Fires before the upload interface loads.
+	 * Kích hoạt trước khi giao diện tải lên được tải.
 	 *
-	 * @since 2.6.0 As 'pre-flash-upload-ui'
+	 * @since 2.6.0 Dưới tên 'pre-flash-upload-ui'
 	 * @since 3.3.0
 	 */
 	do_action( 'pre-plupload-upload-ui' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
@@ -2259,9 +2257,9 @@ function media_upload_form( $errors = null ) {
 	</div>
 	<?php
 	/**
-	 * Fires after the upload interface loads.
+	 * Kích hoạt sau khi giao diện tải lên được tải.
 	 *
-	 * @since 2.6.0 As 'post-flash-upload-ui'
+	 * @since 2.6.0 Dưới tên 'post-flash-upload-ui'
 	 * @since 3.3.0
 	 */
 	do_action( 'post-plupload-upload-ui' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
@@ -2271,7 +2269,7 @@ function media_upload_form( $errors = null ) {
 	<div id="html-upload-ui" class="hide-if-js">
 	<?php
 	/**
-	 * Fires before the upload button in the media upload interface.
+	 * Kích hoạt trước nút tải lên trong giao diện tải lên media.
 	 *
 	 * @since 2.6.0
 	 */
@@ -2292,7 +2290,7 @@ function media_upload_form( $errors = null ) {
 	<div class="clear"></div>
 	<?php
 	/**
-	 * Fires after the upload button in the media upload interface.
+	 * Kích hoạt sau nút tải lên trong giao diện tải lên media.
 	 *
 	 * @since 2.6.0
 	 */

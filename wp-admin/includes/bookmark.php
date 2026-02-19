@@ -1,29 +1,29 @@
 <?php
 /**
- * WordPress Bookmark Administration API
+ * API Quản trị Bookmark WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * Adds a link using values provided in $_POST.
+ * Thêm một liên kết sử dụng các giá trị từ $_POST.
  *
  * @since 2.0.0
  *
- * @return int|WP_Error Value 0 or WP_Error on failure. The link ID on success.
+ * @return int|WP_Error Giá trị 0 hoặc WP_Error khi thất bại. ID liên kết khi thành công.
  */
 function add_link() {
 	return edit_link();
 }
 
 /**
- * Updates or inserts a link using values provided in $_POST.
+ * Cập nhật hoặc chèn một liên kết sử dụng các giá trị từ $_POST.
  *
  * @since 2.0.0
  *
- * @param int $link_id Optional. ID of the link to edit. Default 0.
- * @return int|WP_Error Value 0 or WP_Error on failure. The link ID on success.
+ * @param int $link_id Tùy chọn. ID của liên kết cần chỉnh sửa. Mặc định 0.
+ * @return int|WP_Error Giá trị 0 hoặc WP_Error khi thất bại. ID liên kết khi thành công.
  */
 function edit_link( $link_id = 0 ) {
 	if ( ! current_user_can( 'manage_links' ) ) {
@@ -51,11 +51,11 @@ function edit_link( $link_id = 0 ) {
 }
 
 /**
- * Retrieves the default link for editing.
+ * Lấy liên kết mặc định để chỉnh sửa.
  *
  * @since 2.0.0
  *
- * @return stdClass Default link object.
+ * @return stdClass Đối tượng liên kết mặc định.
  */
 function get_default_link_to_edit() {
 	$link = new stdClass();
@@ -77,23 +77,23 @@ function get_default_link_to_edit() {
 }
 
 /**
- * Deletes a specified link from the database.
+ * Xóa một liên kết được chỉ định khỏi cơ sở dữ liệu.
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int $link_id ID of the link to delete.
- * @return true Always true.
+ * @param int $link_id ID của liên kết cần xóa.
+ * @return true Luôn trả về true.
  */
 function wp_delete_link( $link_id ) {
 	global $wpdb;
 	/**
-	 * Fires before a link is deleted.
+	 * Kích hoạt trước khi một liên kết bị xóa.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param int $link_id ID of the link to delete.
+	 * @param int $link_id ID của liên kết cần xóa.
 	 */
 	do_action( 'delete_link', $link_id );
 
@@ -102,11 +102,11 @@ function wp_delete_link( $link_id ) {
 	$wpdb->delete( $wpdb->links, array( 'link_id' => $link_id ) );
 
 	/**
-	 * Fires after a link has been deleted.
+	 * Kích hoạt sau khi một liên kết đã bị xóa.
 	 *
 	 * @since 2.2.0
 	 *
-	 * @param int $link_id ID of the deleted link.
+	 * @param int $link_id ID của liên kết đã xóa.
 	 */
 	do_action( 'deleted_link', $link_id );
 
@@ -116,12 +116,12 @@ function wp_delete_link( $link_id ) {
 }
 
 /**
- * Retrieves the link category IDs associated with the link specified.
+ * Lấy các ID danh mục liên kết được liên kết với liên kết được chỉ định.
  *
  * @since 2.1.0
  *
- * @param int $link_id Link ID to look up.
- * @return int[] The IDs of the requested link's categories.
+ * @param int $link_id ID liên kết cần tra cứu.
+ * @return int[] Các ID danh mục của liên kết được yêu cầu.
  */
 function wp_get_link_cats( $link_id = 0 ) {
 	$cats = wp_get_object_terms( $link_id, 'link_category', array( 'fields' => 'ids' ) );
@@ -129,47 +129,47 @@ function wp_get_link_cats( $link_id = 0 ) {
 }
 
 /**
- * Retrieves link data based on its ID.
+ * Lấy dữ liệu liên kết dựa trên ID của nó.
  *
  * @since 2.0.0
  *
- * @param int|stdClass $link Link ID or object to retrieve.
- * @return object Link object for editing.
+ * @param int|stdClass $link ID liên kết hoặc đối tượng cần lấy.
+ * @return object Đối tượng liên kết để chỉnh sửa.
  */
 function get_link_to_edit( $link ) {
 	return get_bookmark( $link, OBJECT, 'edit' );
 }
 
 /**
- * Inserts a link into the database, or updates an existing link.
+ * Chèn một liên kết vào cơ sở dữ liệu, hoặc cập nhật liên kết hiện có.
  *
- * Runs all the necessary sanitizing, provides default values if arguments are missing,
- * and finally saves the link.
+ * Chạy tất cả các bước làm sạch dữ liệu cần thiết, cung cấp giá trị mặc định nếu thiếu tham số,
+ * và cuối cùng lưu liên kết.
  *
  * @since 2.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
  * @param array $linkdata {
- *     Elements that make up the link to insert.
+ *     Các phần tử tạo nên liên kết cần chèn.
  *
- *     @type int    $link_id          Optional. The ID of the existing link if updating.
- *     @type string $link_url         The URL the link points to.
- *     @type string $link_name        The title of the link.
- *     @type string $link_image       Optional. A URL of an image.
- *     @type string $link_target      Optional. The target element for the anchor tag.
- *     @type string $link_description Optional. A short description of the link.
- *     @type string $link_visible     Optional. 'Y' means visible, anything else means not.
- *     @type int    $link_owner       Optional. A user ID.
- *     @type int    $link_rating      Optional. A rating for the link.
- *     @type string $link_rel         Optional. A relationship of the link to you.
- *     @type string $link_notes       Optional. An extended description of or notes on the link.
- *     @type string $link_rss         Optional. A URL of an associated RSS feed.
- *     @type int    $link_category    Optional. The term ID of the link category.
- *                                    If empty, uses default link category.
+ *     @type int    $link_id          Tùy chọn. ID của liên kết hiện có nếu đang cập nhật.
+ *     @type string $link_url         URL mà liên kết trỏ đến.
+ *     @type string $link_name        Tiêu đề của liên kết.
+ *     @type string $link_image       Tùy chọn. URL của một hình ảnh.
+ *     @type string $link_target      Tùy chọn. Phần tử target cho thẻ anchor.
+ *     @type string $link_description Tùy chọn. Mô tả ngắn của liên kết.
+ *     @type string $link_visible     Tùy chọn. 'Y' nghĩa là hiển thị, giá trị khác nghĩa là không.
+ *     @type int    $link_owner       Tùy chọn. ID người dùng.
+ *     @type int    $link_rating      Tùy chọn. Đánh giá cho liên kết.
+ *     @type string $link_rel         Tùy chọn. Mối quan hệ của liên kết với bạn.
+ *     @type string $link_notes       Tùy chọn. Mô tả mở rộng hoặc ghi chú về liên kết.
+ *     @type string $link_rss         Tùy chọn. URL của nguồn cấp RSS liên quan.
+ *     @type int    $link_category    Tùy chọn. ID thuật ngữ của danh mục liên kết.
+ *                                    Nếu trống, sử dụng danh mục liên kết mặc định.
  * }
- * @param bool  $wp_error Optional. Whether to return a WP_Error object on failure. Default false.
- * @return int|WP_Error Value 0 or WP_Error on failure. The link ID on success.
+ * @param bool  $wp_error Tùy chọn. Có trả về đối tượng WP_Error khi thất bại không. Mặc định false.
+ * @return int|WP_Error Giá trị 0 hoặc WP_Error khi thất bại. ID liên kết khi thành công.
  */
 function wp_insert_link( $linkdata, $wp_error = false ) {
 	global $wpdb;
@@ -217,7 +217,7 @@ function wp_insert_link( $linkdata, $wp_error = false ) {
 	$link_category    = ( ! empty( $parsed_args['link_category'] ) ) ? $parsed_args['link_category'] : array();
 	$link_updated     = gmdate( 'Y-m-d H:i:s', current_time( 'timestamp', 0 ) );
 
-	// Make sure we set a valid category.
+	// Đảm bảo chúng ta đặt một danh mục hợp lệ.
 	if ( ! is_array( $link_category ) || 0 === count( $link_category ) ) {
 		$link_category = array( get_option( 'default_link_category' ) );
 	}
@@ -245,20 +245,20 @@ function wp_insert_link( $linkdata, $wp_error = false ) {
 
 	if ( $update ) {
 		/**
-		 * Fires after a link was updated in the database.
+		 * Kích hoạt sau khi một liên kết được cập nhật trong cơ sở dữ liệu.
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param int $link_id ID of the link that was updated.
+		 * @param int $link_id ID của liên kết đã được cập nhật.
 		 */
 		do_action( 'edit_link', $link_id );
 	} else {
 		/**
-		 * Fires after a link was added to the database.
+		 * Kích hoạt sau khi một liên kết được thêm vào cơ sở dữ liệu.
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param int $link_id ID of the link that was added.
+		 * @param int $link_id ID của liên kết đã được thêm.
 		 */
 		do_action( 'add_link', $link_id );
 	}
@@ -268,15 +268,15 @@ function wp_insert_link( $linkdata, $wp_error = false ) {
 }
 
 /**
- * Updates link with the specified link categories.
+ * Cập nhật liên kết với các danh mục liên kết được chỉ định.
  *
  * @since 2.1.0
  *
- * @param int   $link_id         ID of the link to update.
- * @param int[] $link_categories Array of link category IDs to add the link to.
+ * @param int   $link_id         ID của liên kết cần cập nhật.
+ * @param int[] $link_categories Mảng các ID danh mục liên kết để thêm liên kết vào.
  */
 function wp_set_link_cats( $link_id = 0, $link_categories = array() ) {
-	// If $link_categories isn't already an array, make it one:
+	// Nếu $link_categories chưa phải là mảng, chuyển nó thành mảng:
 	if ( ! is_array( $link_categories ) || 0 === count( $link_categories ) ) {
 		$link_categories = array( get_option( 'default_link_category' ) );
 	}
@@ -290,22 +290,22 @@ function wp_set_link_cats( $link_id = 0, $link_categories = array() ) {
 }
 
 /**
- * Updates a link in the database.
+ * Cập nhật một liên kết trong cơ sở dữ liệu.
  *
  * @since 2.0.0
  *
- * @param array $linkdata Link data to update. See wp_insert_link() for accepted arguments.
- * @return int|WP_Error Value 0 or WP_Error on failure. The updated link ID on success.
+ * @param array $linkdata Dữ liệu liên kết cần cập nhật. Xem wp_insert_link() để biết các tham số được chấp nhận.
+ * @return int|WP_Error Giá trị 0 hoặc WP_Error khi thất bại. ID liên kết đã cập nhật khi thành công.
  */
 function wp_update_link( $linkdata ) {
 	$link_id = (int) $linkdata['link_id'];
 
 	$link = get_bookmark( $link_id, ARRAY_A );
 
-	// Escape data pulled from DB.
+	// Escape dữ liệu lấy từ DB.
 	$link = wp_slash( $link );
 
-	// Passed link category list overwrites existing category list if not empty.
+	// Danh sách danh mục liên kết được truyền vào sẽ ghi đè danh sách danh mục hiện có nếu không rỗng.
 	if ( isset( $linkdata['link_category'] ) && is_array( $linkdata['link_category'] )
 		&& count( $linkdata['link_category'] ) > 0
 	) {
@@ -314,7 +314,7 @@ function wp_update_link( $linkdata ) {
 		$link_cats = $link['link_category'];
 	}
 
-	// Merge old and new fields with new fields overwriting old ones.
+	// Hợp nhất các trường cũ và mới, trường mới ghi đè trường cũ.
 	$linkdata                  = array_merge( $link, $linkdata );
 	$linkdata['link_category'] = $link_cats;
 
@@ -322,12 +322,12 @@ function wp_update_link( $linkdata ) {
 }
 
 /**
- * Outputs the 'disabled' message for the WordPress Link Manager.
+ * Hiển thị thông báo 'bị vô hiệu hóa' cho Trình quản lý Liên kết WordPress.
  *
  * @since 3.5.0
  * @access private
  *
- * @global string $pagenow The filename of the current screen.
+ * @global string $pagenow Tên tệp của màn hình hiện tại.
  */
 function wp_link_manager_disabled_message() {
 	global $pagenow;

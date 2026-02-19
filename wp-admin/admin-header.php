@@ -1,12 +1,12 @@
 <?php
 /**
- * WordPress Administration Template Header
+ * Mẫu Header Quản trị WordPress
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
@@ -17,22 +17,22 @@ if ( ! defined( 'WP_ADMIN' ) ) {
 }
 
 /**
- * In case admin-header.php is included in a function.
+ * Trong trường hợp admin-header.php được include trong một hàm.
  *
- * @global string    $title              The title of the current screen.
+ * @global string    $title              Tiêu đề của màn hình hiện tại.
  * @global string    $hook_suffix
- * @global WP_Screen $current_screen     WordPress current screen object.
- * @global WP_Locale $wp_locale          WordPress date and time locale object.
- * @global string    $pagenow            The filename of the current screen.
+ * @global WP_Screen $current_screen     Đối tượng màn hình hiện tại của WordPress.
+ * @global WP_Locale $wp_locale          Đối tượng ngôn ngữ ngày giờ của WordPress.
+ * @global string    $pagenow            Tên file của màn hình hiện tại.
  * @global string    $update_title
  * @global int       $total_update_count
  * @global string    $parent_file
- * @global string    $typenow            The post type of the current screen.
+ * @global string    $typenow            Loại bài viết của màn hình hiện tại.
  */
 global $title, $hook_suffix, $current_screen, $wp_locale, $pagenow,
 	$update_title, $total_update_count, $parent_file, $typenow;
 
-// Catch plugins that include admin-header.php before admin.php completes.
+// Bắt các plugin include admin-header.php trước khi admin.php hoàn tất.
 if ( empty( $current_screen ) ) {
 	set_current_screen();
 }
@@ -79,12 +79,12 @@ if ( wp_is_recovery_mode() ) {
 }
 
 /**
- * Filters the title tag content for an admin page.
+ * Lọc nội dung thẻ title cho một trang quản trị.
  *
  * @since 3.1.0
  *
- * @param string $admin_title The page title, with extra context added.
- * @param string $title       The original page title.
+ * @param string $admin_title Tiêu đề trang, với ngữ cảnh bổ sung được thêm vào.
+ * @param string $title       Tiêu đề trang gốc.
  */
 $admin_title = apply_filters( 'admin_title', $admin_title, $title );
 
@@ -114,54 +114,54 @@ var ajaxurl = '<?php echo esc_js( admin_url( 'admin-ajax.php', 'relative' ) ); ?
 <?php
 
 /**
- * Fires when enqueuing scripts for all admin pages.
+ * Kích hoạt khi nạp script cho tất cả các trang quản trị.
  *
  * @since 2.8.0
  *
- * @param string $hook_suffix The current admin page.
+ * @param string $hook_suffix Trang quản trị hiện tại.
  */
 do_action( 'admin_enqueue_scripts', $hook_suffix );
 
 /**
- * Fires when styles are printed for a specific admin page based on $hook_suffix.
+ * Kích hoạt khi các style được in cho một trang quản trị cụ thể dựa trên $hook_suffix.
  *
  * @since 2.6.0
  */
 do_action( "admin_print_styles-{$hook_suffix}" ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
 /**
- * Fires when styles are printed for all admin pages.
+ * Kích hoạt khi các style được in cho tất cả các trang quản trị.
  *
  * @since 2.6.0
  */
 do_action( 'admin_print_styles' );
 
 /**
- * Fires when scripts are printed for a specific admin page based on $hook_suffix.
+ * Kích hoạt khi các script được in cho một trang quản trị cụ thể dựa trên $hook_suffix.
  *
  * @since 2.1.0
  */
 do_action( "admin_print_scripts-{$hook_suffix}" ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
 /**
- * Fires when scripts are printed for all admin pages.
+ * Kích hoạt khi các script được in cho tất cả các trang quản trị.
  *
  * @since 2.1.0
  */
 do_action( 'admin_print_scripts' );
 
 /**
- * Fires in head section for a specific admin page.
+ * Kích hoạt trong phần head cho một trang quản trị cụ thể.
  *
- * The dynamic portion of the hook name, `$hook_suffix`, refers to the hook suffix
- * for the admin page.
+ * Phần động của tên hook, `$hook_suffix`, tham chiếu đến hậu tố hook
+ * cho trang quản trị.
  *
  * @since 2.1.0
  */
 do_action( "admin_head-{$hook_suffix}" ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
 /**
- * Fires in head section for all admin pages.
+ * Kích hoạt trong phần head cho tất cả các trang quản trị.
  *
  * @since 2.1.0
  */
@@ -221,10 +221,10 @@ if ( is_child_theme() ) {
 
 $error_get_last = error_get_last();
 
-// Print a CSS class to make PHP errors visible.
+// In một lớp CSS để làm cho lỗi PHP hiển thị.
 if ( $error_get_last && WP_DEBUG && WP_DEBUG_DISPLAY && ini_get( 'display_errors' )
-	// Don't print the class for PHP notices in wp-config.php, as they happen before WP_DEBUG takes effect,
-	// and should not be displayed with the `error_reporting` level previously set in wp-load.php.
+	// Không in lớp cho các thông báo PHP trong wp-config.php, vì chúng xảy ra trước khi WP_DEBUG có hiệu lực,
+	// và không nên được hiển thị với mức `error_reporting` đã được thiết lập trước đó trong wp-load.php.
 	&& ( E_NOTICE !== $error_get_last['type'] || 'wp-config.php' !== wp_basename( $error_get_last['file'] ) )
 ) {
 	$admin_body_class .= ' php-error';
@@ -236,18 +236,18 @@ unset( $error_get_last );
 </head>
 <?php
 /**
- * Filters the CSS classes for the body tag in the admin.
+ * Lọc các lớp CSS cho thẻ body trong trang quản trị.
  *
- * This filter differs from the {@see 'post_class'} and {@see 'body_class'} filters
- * in two important ways:
+ * Bộ lọc này khác với các bộ lọc {@see 'post_class'} và {@see 'body_class'}
+ * ở hai điểm quan trọng:
  *
- * 1. `$classes` is a space-separated string of class names instead of an array.
- * 2. Not all core admin classes are filterable, notably: wp-admin, wp-core-ui,
- *    and no-js cannot be removed.
+ * 1. `$classes` là một chuỗi các tên lớp phân cách bằng dấu cách thay vì mảng.
+ * 2. Không phải tất cả các lớp quản trị lõi đều có thể lọc được, đáng chú ý: wp-admin, wp-core-ui,
+ *    và no-js không thể bị xóa.
  *
  * @since 2.3.0
  *
- * @param string $classes Space-separated list of CSS classes.
+ * @param string $classes Danh sách các lớp CSS phân cách bằng dấu cách.
  */
 $admin_body_classes = apply_filters( 'admin_body_class', '' );
 $admin_body_classes = ltrim( $admin_body_classes . ' ' . $admin_body_class );
@@ -258,7 +258,7 @@ $admin_body_classes = ltrim( $admin_body_classes . ' ' . $admin_body_class );
 </script>
 
 <?php
-// Make sure the customize body classes are correct as early as possible.
+// Đảm bảo các lớp body tùy biến là chính xác càng sớm càng tốt.
 if ( current_user_can( 'customize' ) ) {
 	wp_customize_support_script();
 }
@@ -270,7 +270,7 @@ if ( current_user_can( 'customize' ) ) {
 
 <?php
 /**
- * Fires at the beginning of the content section in an admin page.
+ * Kích hoạt ở đầu phần nội dung trong một trang quản trị.
  *
  * @since 3.0.0
  */
@@ -292,21 +292,21 @@ $current_screen->render_screen_meta();
 
 if ( is_network_admin() ) {
 	/**
-	 * Prints network admin screen notices.
+	 * In các thông báo màn hình quản trị mạng.
 	 *
 	 * @since 3.1.0
 	 */
 	do_action( 'network_admin_notices' );
 } elseif ( is_user_admin() ) {
 	/**
-	 * Prints user admin screen notices.
+	 * In các thông báo màn hình quản trị người dùng.
 	 *
 	 * @since 3.1.0
 	 */
 	do_action( 'user_admin_notices' );
 } else {
 	/**
-	 * Prints admin screen notices.
+	 * In các thông báo màn hình quản trị.
 	 *
 	 * @since 3.1.0
 	 */
@@ -314,7 +314,7 @@ if ( is_network_admin() ) {
 }
 
 /**
- * Prints generic admin screen notices.
+ * In các thông báo màn hình quản trị chung.
  *
  * @since 3.1.0
  */

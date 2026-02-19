@@ -1,6 +1,6 @@
 <?php
 /**
- * WP_Theme Class
+ * Lớp WP_Theme
  *
  * @package WordPress
  * @subpackage Theme
@@ -10,7 +10,7 @@
 final class WP_Theme implements ArrayAccess {
 
 	/**
-	 * Whether the theme has been marked as updateable.
+	 * Liệu giao diện có được đánh dấu là có thể cập nhật hay không.
 	 *
 	 * @since 4.4.0
 	 * @var bool
@@ -20,11 +20,11 @@ final class WP_Theme implements ArrayAccess {
 	public $update = false;
 
 	/**
-	 * Headers for style.css files.
+	 * Các header cho tệp style.css.
 	 *
 	 * @since 3.4.0
-	 * @since 5.4.0 Added `Requires at least` and `Requires PHP` headers.
-	 * @since 6.1.0 Added `Update URI` header.
+	 * @since 5.4.0 Thêm header `Requires at least` và `Requires PHP`.
+	 * @since 6.1.0 Thêm header `Update URI`.
 	 * @var string[]
 	 */
 	private static $file_headers = array(
@@ -45,22 +45,22 @@ final class WP_Theme implements ArrayAccess {
 	);
 
 	/**
-	 * Default themes.
+	 * Các giao diện mặc định.
 	 *
 	 * @since 3.4.0
-	 * @since 3.5.0 Added the Twenty Twelve theme.
-	 * @since 3.6.0 Added the Twenty Thirteen theme.
-	 * @since 3.8.0 Added the Twenty Fourteen theme.
-	 * @since 4.1.0 Added the Twenty Fifteen theme.
-	 * @since 4.4.0 Added the Twenty Sixteen theme.
-	 * @since 4.7.0 Added the Twenty Seventeen theme.
-	 * @since 5.0.0 Added the Twenty Nineteen theme.
-	 * @since 5.3.0 Added the Twenty Twenty theme.
-	 * @since 5.6.0 Added the Twenty Twenty-One theme.
-	 * @since 5.9.0 Added the Twenty Twenty-Two theme.
-	 * @since 6.1.0 Added the Twenty Twenty-Three theme.
-	 * @since 6.4.0 Added the Twenty Twenty-Four theme.
-	 * @since 6.7.0 Added the Twenty Twenty-Five theme.
+	 * @since 3.5.0 Thêm giao diện Twenty Twelve.
+	 * @since 3.6.0 Thêm giao diện Twenty Thirteen.
+	 * @since 3.8.0 Thêm giao diện Twenty Fourteen.
+	 * @since 4.1.0 Thêm giao diện Twenty Fifteen.
+	 * @since 4.4.0 Thêm giao diện Twenty Sixteen.
+	 * @since 4.7.0 Thêm giao diện Twenty Seventeen.
+	 * @since 5.0.0 Thêm giao diện Twenty Nineteen.
+	 * @since 5.3.0 Thêm giao diện Twenty Twenty.
+	 * @since 5.6.0 Thêm giao diện Twenty Twenty-One.
+	 * @since 5.9.0 Thêm giao diện Twenty Twenty-Two.
+	 * @since 6.1.0 Thêm giao diện Twenty Twenty-Three.
+	 * @since 6.4.0 Thêm giao diện Twenty Twenty-Four.
+	 * @since 6.7.0 Thêm giao diện Twenty Twenty-Five.
 	 * @var string[]
 	 */
 	private static $default_themes = array(
@@ -84,7 +84,7 @@ final class WP_Theme implements ArrayAccess {
 	);
 
 	/**
-	 * Renamed theme tags.
+	 * Các thẻ giao diện đã được đổi tên.
 	 *
 	 * @since 3.8.0
 	 * @var string[]
@@ -95,7 +95,7 @@ final class WP_Theme implements ArrayAccess {
 	);
 
 	/**
-	 * Absolute path to the theme root, usually wp-content/themes
+	 * Đường dẫn tuyệt đối đến thư mục gốc giao diện, thường là wp-content/themes.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -103,7 +103,7 @@ final class WP_Theme implements ArrayAccess {
 	private $theme_root;
 
 	/**
-	 * Header data from the theme's style.css file.
+	 * Dữ liệu header từ tệp style.css của giao diện.
 	 *
 	 * @since 3.4.0
 	 * @var array
@@ -111,7 +111,7 @@ final class WP_Theme implements ArrayAccess {
 	private $headers = array();
 
 	/**
-	 * Header data from the theme's style.css file after being sanitized.
+	 * Dữ liệu header từ tệp style.css của giao diện sau khi đã được làm sạch.
 	 *
 	 * @since 3.4.0
 	 * @var array
@@ -119,7 +119,7 @@ final class WP_Theme implements ArrayAccess {
 	private $headers_sanitized;
 
 	/**
-	 * Is this theme a block theme.
+	 * Liệu giao diện này có phải là giao diện block hay không.
 	 *
 	 * @since 6.2.0
 	 * @var bool
@@ -127,9 +127,9 @@ final class WP_Theme implements ArrayAccess {
 	private $block_theme;
 
 	/**
-	 * Header name from the theme's style.css after being translated.
+	 * Tên header từ style.css của giao diện sau khi được dịch.
 	 *
-	 * Cached due to sorting functions running over the translated name.
+	 * Được lưu cache do các hàm sắp xếp chạy trên tên đã dịch.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -137,7 +137,7 @@ final class WP_Theme implements ArrayAccess {
 	private $name_translated;
 
 	/**
-	 * Errors encountered when initializing the theme.
+	 * Các lỗi gặp phải khi khởi tạo giao diện.
 	 *
 	 * @since 3.4.0
 	 * @var WP_Error
@@ -145,10 +145,10 @@ final class WP_Theme implements ArrayAccess {
 	private $errors;
 
 	/**
-	 * The directory name of the theme's files, inside the theme root.
+	 * Tên thư mục chứa các tệp của giao diện, bên trong thư mục gốc giao diện.
 	 *
-	 * In the case of a child theme, this is directory name of the child theme.
-	 * Otherwise, 'stylesheet' is the same as 'template'.
+	 * Trong trường hợp giao diện con, đây là tên thư mục của giao diện con.
+	 * Nếu không, 'stylesheet' giống với 'template'.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -156,10 +156,10 @@ final class WP_Theme implements ArrayAccess {
 	private $stylesheet;
 
 	/**
-	 * The directory name of the theme's files, inside the theme root.
+	 * Tên thư mục chứa các tệp của giao diện, bên trong thư mục gốc giao diện.
 	 *
-	 * In the case of a child theme, this is the directory name of the parent theme.
-	 * Otherwise, 'template' is the same as 'stylesheet'.
+	 * Trong trường hợp giao diện con, đây là tên thư mục của giao diện cha.
+	 * Nếu không, 'template' giống với 'stylesheet'.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -167,7 +167,7 @@ final class WP_Theme implements ArrayAccess {
 	private $template;
 
 	/**
-	 * A reference to the parent theme, in the case of a child theme.
+	 * Tham chiếu đến giao diện cha, trong trường hợp giao diện con.
 	 *
 	 * @since 3.4.0
 	 * @var WP_Theme
@@ -175,7 +175,7 @@ final class WP_Theme implements ArrayAccess {
 	private $parent;
 
 	/**
-	 * URL to the theme root, usually an absolute URL to wp-content/themes
+	 * URL đến thư mục gốc giao diện, thường là URL tuyệt đối tới wp-content/themes.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -183,7 +183,7 @@ final class WP_Theme implements ArrayAccess {
 	private $theme_root_uri;
 
 	/**
-	 * Flag for whether the theme's textdomain is loaded.
+	 * Cờ cho biết textdomain của giao diện đã được tải chưa.
 	 *
 	 * @since 3.4.0
 	 * @var bool
@@ -191,7 +191,7 @@ final class WP_Theme implements ArrayAccess {
 	private $textdomain_loaded;
 
 	/**
-	 * Stores an md5 hash of the theme root, to function as the cache key.
+	 * Lưu trữ hash md5 của thư mục gốc giao diện, dùng làm khóa cache.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -199,7 +199,7 @@ final class WP_Theme implements ArrayAccess {
 	private $cache_hash;
 
 	/**
-	 * Block template folders.
+	 * Các thư mục template block.
 	 *
 	 * @since 6.4.0
 	 * @var string[]
@@ -207,7 +207,7 @@ final class WP_Theme implements ArrayAccess {
 	private $block_template_folders;
 
 	/**
-	 * Default values for template folders.
+	 * Giá trị mặc định cho các thư mục template.
 	 *
 	 * @since 6.4.0
 	 * @var string[]
@@ -218,9 +218,9 @@ final class WP_Theme implements ArrayAccess {
 	);
 
 	/**
-	 * Flag for whether the themes cache bucket should be persistently cached.
+	 * Cờ cho biết bộ nhớ cache giao diện có nên được lưu vĩnh viễn hay không.
 	 *
-	 * Default is false. Can be set with the {@see 'wp_cache_themes_persistently'} filter.
+	 * Mặc định là false. Có thể thiết lập bằng bộ lọc {@see 'wp_cache_themes_persistently'}.
 	 *
 	 * @since 3.4.0
 	 * @var bool
@@ -228,9 +228,9 @@ final class WP_Theme implements ArrayAccess {
 	private static $persistently_cache;
 
 	/**
-	 * Expiration time for the themes cache bucket.
+	 * Thời gian hết hạn cho bộ nhớ cache giao diện.
 	 *
-	 * By default the bucket is not cached, so this value is useless.
+	 * Mặc định bộ nhớ cache không được sử dụng, nên giá trị này không có tác dụng.
 	 *
 	 * @since 3.4.0
 	 * @var bool
@@ -238,20 +238,20 @@ final class WP_Theme implements ArrayAccess {
 	private static $cache_expiration = 1800;
 
 	/**
-	 * Constructor for WP_Theme.
+	 * Hàm khởi tạo cho WP_Theme.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @global string[] $wp_theme_directories
 	 *
-	 * @param string        $theme_dir  Directory of the theme within the theme_root.
-	 * @param string        $theme_root Theme root.
-	 * @param WP_Theme|null $_child If this theme is a parent theme, the child may be passed for validation purposes.
+	 * @param string        $theme_dir  Thư mục của giao diện trong theme_root.
+	 * @param string        $theme_root Thư mục gốc giao diện.
+	 * @param WP_Theme|null $_child Nếu đây là giao diện cha, giao diện con có thể được truyền vào để xác thực.
 	 */
 	public function __construct( $theme_dir, $theme_root, $_child = null ) {
 		global $wp_theme_directories;
 
-		// Initialize caching on first run.
+		// Khởi tạo bộ nhớ cache ở lần chạy đầu tiên.
 		if ( ! isset( self::$persistently_cache ) ) {
 			/** This action is documented in wp-includes/theme.php */
 			self::$persistently_cache = apply_filters( 'wp_cache_themes_persistently', false, 'WP_Theme' );
@@ -265,13 +265,13 @@ final class WP_Theme implements ArrayAccess {
 			}
 		}
 
-		// Handle a numeric theme directory as a string.
+		// Xử lý tên thư mục giao diện dạng số thành chuỗi.
 		$theme_dir = (string) $theme_dir;
 
 		$this->theme_root = $theme_root;
 		$this->stylesheet = $theme_dir;
 
-		// Correct a situation where the theme is 'some-directory/some-theme' but 'some-directory' was passed in as part of the theme root instead.
+		// Sửa lại trường hợp giao diện là 'some-directory/some-theme' nhưng 'some-directory' được truyền vào như phần của theme root.
 		if ( ! in_array( $theme_root, (array) $wp_theme_directories, true )
 			&& in_array( dirname( $theme_root ), (array) $wp_theme_directories, true )
 		) {
@@ -324,7 +324,7 @@ final class WP_Theme implements ArrayAccess {
 					'template'               => $this->template,
 				)
 			);
-			if ( ! file_exists( $this->theme_root ) ) { // Don't cache this one.
+			if ( ! file_exists( $this->theme_root ) ) { // Không cache trường hợp này.
 				$this->errors->add( 'theme_root_missing', __( '<strong>Error:</strong> The themes directory is either empty or does not exist. Please check your installation.' ) );
 			}
 			return;
@@ -349,8 +349,8 @@ final class WP_Theme implements ArrayAccess {
 		} else {
 			$this->headers = get_file_data( $this->theme_root . '/' . $theme_file, self::$file_headers, 'theme' );
 			/*
-			 * Default themes always trump their pretenders.
-			 * Properly identify default themes that are inside a directory within wp-content/themes.
+			 * Giao diện mặc định luôn được ưu tiên hơn các giao diện giả mạo.
+			 * Xác định đúng các giao diện mặc định nằm trong thư mục con của wp-content/themes.
 			 */
 			$default_theme_slug = array_search( $this->headers['Name'], self::$default_themes, true );
 			if ( $default_theme_slug ) {
@@ -383,7 +383,7 @@ final class WP_Theme implements ArrayAccess {
 			return;
 		}
 
-		// (If template is set from cache [and there are no errors], we know it's good.)
+		// (Nếu template được lấy từ cache [và không có lỗi], ta biết nó hợp lệ.)
 		if ( ! $this->template ) {
 			$this->template = $this->headers['Template'];
 		}
@@ -418,13 +418,13 @@ final class WP_Theme implements ArrayAccess {
 			}
 		}
 
-		// If we got our data from cache, we can assume that 'template' is pointing to the right place.
+		// Nếu lấy dữ liệu từ cache, ta có thể giả định 'template' đang trỏ đúng chỗ.
 		if ( ! is_array( $cache )
 			&& $this->template !== $this->stylesheet
 			&& ! file_exists( $this->theme_root . '/' . $this->template . '/index.php' )
 		) {
 			/*
-			 * If we're in a directory of themes inside /themes, look for the parent nearby.
+			 * Nếu đang ở trong thư mục chứa giao diện bên trong /themes, tìm giao diện cha ở gần đó.
 			 * wp-content/themes/directory-of-themes/*
 			 */
 			$parent_dir  = dirname( $this->stylesheet );
@@ -436,12 +436,12 @@ final class WP_Theme implements ArrayAccess {
 				$this->template = $parent_dir . '/' . $this->template;
 			} elseif ( $directories && isset( $directories[ $this->template ] ) ) {
 				/*
-				 * Look for the template in the search_theme_directories() results, in case it is in another theme root.
-				 * We don't look into directories of themes, just the theme root.
+				 * Tìm template trong kết quả search_theme_directories(), trong trường hợp nó ở theme root khác.
+				 * Chúng ta không tìm trong thư mục con, chỉ trong thư mục gốc giao diện.
 				 */
 				$theme_root_template = $directories[ $this->template ]['theme_root'];
 			} else {
-				// Parent theme is missing.
+				// Giao diện cha bị thiếu.
 				$this->errors = new WP_Error(
 					'theme_no_parent',
 					sprintf(
@@ -466,9 +466,9 @@ final class WP_Theme implements ArrayAccess {
 			}
 		}
 
-		// Set the parent, if we're a child theme.
+		// Thiết lập giao diện cha, nếu là giao diện con.
 		if ( $this->template !== $this->stylesheet ) {
-			// If we are a parent, then there is a problem. Only two generations allowed! Cancel things out.
+			// Nếu chúng ta là cha, thì có vấn đề. Chỉ cho phép hai thế hệ! Hủy bỏ.
 			if ( $_child instanceof WP_Theme && $_child->template === $this->stylesheet ) {
 				$_child->parent = null;
 				$_child->errors = new WP_Error(
@@ -490,7 +490,7 @@ final class WP_Theme implements ArrayAccess {
 						'template'               => $_child->template,
 					)
 				);
-				// The two themes actually reference each other with the Template header.
+				// Hai giao diện thực sự tham chiếu lẫn nhau qua header Template.
 				if ( $_child->stylesheet === $this->template ) {
 					$this->errors = new WP_Error(
 						'theme_parent_invalid',
@@ -514,7 +514,7 @@ final class WP_Theme implements ArrayAccess {
 				}
 				return;
 			}
-			// Set the parent. Pass the current instance so we can do the checks above and assess errors.
+			// Thiết lập giao diện cha. Truyền instance hiện tại để thực hiện kiểm tra ở trên và đánh giá lỗi.
 			$this->parent = new WP_Theme( $this->template, isset( $theme_root_template ) ? $theme_root_template : $this->theme_root, $this );
 		}
 
@@ -522,7 +522,7 @@ final class WP_Theme implements ArrayAccess {
 			$this->errors = new WP_Error( 'theme_paused', __( 'This theme failed to load properly and was paused within the admin backend.' ) );
 		}
 
-		// We're good. If we didn't retrieve from cache, set it.
+		// Hoàn tất. Nếu không lấy từ cache, lưu vào cache.
 		if ( ! is_array( $cache ) ) {
 			$cache = array(
 				'block_theme'            => $this->is_block_theme(),
@@ -532,7 +532,7 @@ final class WP_Theme implements ArrayAccess {
 				'stylesheet'             => $this->stylesheet,
 				'template'               => $this->template,
 			);
-			// If the parent theme is in another root, we'll want to cache this. Avoids an entire branch of filesystem calls above.
+			// Nếu giao diện cha ở thư mục gốc khác, lưu cache. Tránh toàn bộ nhánh gọi filesystem ở trên.
 			if ( isset( $theme_root_template ) ) {
 				$cache['theme_root_template'] = $theme_root_template;
 			}
@@ -541,23 +541,23 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * When converting the object to a string, the theme name is returned.
+	 * Khi chuyển đổi đối tượng thành chuỗi, tên giao diện được trả về.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Theme name, ready for display (translated)
+	 * @return string Tên giao diện, sẵn sàng hiển thị (đã dịch).
 	 */
 	public function __toString() {
 		return (string) $this->display( 'Name' );
 	}
 
 	/**
-	 * __isset() magic method for properties formerly returned by current_theme_info()
+	 * Phương thức magic __isset() cho các thuộc tính trước đây được trả về bởi current_theme_info().
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $offset Property to check if set.
-	 * @return bool Whether the given property is set.
+	 * @param string $offset Thuộc tính cần kiểm tra.
+	 * @return bool Liệu thuộc tính đã cho có được thiết lập hay không.
 	 */
 	public function __isset( $offset ) {
 		static $properties = array(
@@ -581,12 +581,12 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * __get() magic method for properties formerly returned by current_theme_info()
+	 * Phương thức magic __get() cho các thuộc tính trước đây được trả về bởi current_theme_info().
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $offset Property to get.
-	 * @return mixed Property value.
+	 * @param string $offset Thuộc tính cần lấy.
+	 * @return mixed Giá trị thuộc tính.
 	 */
 	public function __get( $offset ) {
 		switch ( $offset ) {
@@ -607,7 +607,7 @@ final class WP_Theme implements ArrayAccess {
 				return $this->get_stylesheet();
 			case 'screenshot':
 				return $this->get_screenshot( 'relative' );
-			// 'author' and 'description' did not previously return translated data.
+			// 'author' và 'description' trước đây không trả về dữ liệu đã dịch.
 			case 'description':
 				return $this->display( 'Description' );
 			case 'author':
@@ -618,14 +618,14 @@ final class WP_Theme implements ArrayAccess {
 				return $this->get_theme_root();
 			case 'theme_root_uri':
 				return $this->get_theme_root_uri();
-			// For cases where the array was converted to an object.
+			// Cho trường hợp mảng được chuyển đổi thành đối tượng.
 			default:
 				return $this->offsetGet( $offset );
 		}
 	}
 
 	/**
-	 * Method to implement ArrayAccess for keys formerly returned by get_themes()
+	 * Phương thức triển khai ArrayAccess cho các khóa trước đây được trả về bởi get_themes().
 	 *
 	 * @since 3.4.0
 	 *
@@ -636,7 +636,7 @@ final class WP_Theme implements ArrayAccess {
 	public function offsetSet( $offset, $value ) {}
 
 	/**
-	 * Method to implement ArrayAccess for keys formerly returned by get_themes()
+	 * Phương thức triển khai ArrayAccess cho các khóa trước đây được trả về bởi get_themes().
 	 *
 	 * @since 3.4.0
 	 *
@@ -646,7 +646,7 @@ final class WP_Theme implements ArrayAccess {
 	public function offsetUnset( $offset ) {}
 
 	/**
-	 * Method to implement ArrayAccess for keys formerly returned by get_themes()
+	 * Phương thức triển khai ArrayAccess cho các khóa trước đây được trả về bởi get_themes().
 	 *
 	 * @since 3.4.0
 	 *
@@ -681,14 +681,13 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Method to implement ArrayAccess for keys formerly returned by get_themes().
+	 * Phương thức triển khai ArrayAccess cho các khóa trước đây được trả về bởi get_themes().
 	 *
-	 * Author, Author Name, Author URI, and Description did not previously return
-	 * translated data. We are doing so now as it is safe to do. However, as
-	 * Name and Title could have been used as the key for get_themes(), both remain
-	 * untranslated for back compatibility. This means that ['Name'] is not ideal,
-	 * and care should be taken to use `$theme::display( 'Name' )` to get a properly
-	 * translated header.
+	 * Author, Author Name, Author URI, và Description trước đây không trả về dữ liệu
+	 * đã dịch. Hiện tại chúng ta đang làm vậy vì nó an toàn. Tuy nhiên, vì Name và Title
+	 * có thể đã được sử dụng làm khóa cho get_themes(), cả hai vẫn không được dịch để
+	 * tương thích ngược. Điều này có nghĩa ['Name'] không lý tưởng, và nên cẩn thận sử dụng
+	 * `$theme::display( 'Name' )` để lấy header đã được dịch đúng cách.
 	 *
 	 * @since 3.4.0
 	 *
@@ -701,8 +700,8 @@ final class WP_Theme implements ArrayAccess {
 			case 'Name':
 			case 'Title':
 				/*
-				 * See note above about using translated data. get() is not ideal.
-				 * It is only for backward compatibility. Use display().
+				 * Xem ghi chú ở trên về việc sử dụng dữ liệu đã dịch. get() không lý tưởng.
+				 * Nó chỉ dùng cho tương thích ngược. Hãy sử dụng display().
 				 */
 				return $this->get( 'Name' );
 			case 'Author':
@@ -744,45 +743,45 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns errors property.
+	 * Trả về thuộc tính errors.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return WP_Error|false WP_Error if there are errors, or false.
+	 * @return WP_Error|false WP_Error nếu có lỗi, hoặc false.
 	 */
 	public function errors() {
 		return is_wp_error( $this->errors ) ? $this->errors : false;
 	}
 
 	/**
-	 * Determines whether the theme exists.
+	 * Xác định xem giao diện có tồn tại hay không.
 	 *
-	 * A theme with errors exists. A theme with the error of 'theme_not_found',
-	 * meaning that the theme's directory was not found, does not exist.
+	 * Giao diện có lỗi vẫn tồn tại. Giao diện có lỗi 'theme_not_found',
+	 * nghĩa là thư mục giao diện không được tìm thấy, thì không tồn tại.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return bool Whether the theme exists.
+	 * @return bool Liệu giao diện có tồn tại hay không.
 	 */
 	public function exists() {
 		return ! ( $this->errors() && in_array( 'theme_not_found', $this->errors()->get_error_codes(), true ) );
 	}
 
 	/**
-	 * Returns reference to the parent theme.
+	 * Trả về tham chiếu đến giao diện cha.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return WP_Theme|false Parent theme, or false if the active theme is not a child theme.
+	 * @return WP_Theme|false Giao diện cha, hoặc false nếu giao diện đang kích hoạt không phải giao diện con.
 	 */
 	public function parent() {
 		return isset( $this->parent ) ? $this->parent : false;
 	}
 
 	/**
-	 * Perform reinitialization tasks.
+	 * Thực hiện các tác vụ khởi tạo lại.
 	 *
-	 * Prevents a callback from being injected during unserialization of an object.
+	 * Ngăn chặn callback bị chèn vào trong quá trình giải tuần tự hóa đối tượng.
 	 */
 	public function __wakeup() {
 		if ( $this->parent && ! $this->parent instanceof self ) {
@@ -800,36 +799,36 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Adds theme data to cache.
+	 * Thêm dữ liệu giao diện vào cache.
 	 *
-	 * Cache entries keyed by the theme and the type of data.
+	 * Các mục cache được đánh khóa theo giao diện và loại dữ liệu.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string       $key  Type of data to store (theme, screenshot, headers, post_templates)
-	 * @param array|string $data Data to store
-	 * @return bool Return value from wp_cache_add()
+	 * @param string       $key  Loại dữ liệu cần lưu (theme, screenshot, headers, post_templates).
+	 * @param array|string $data Dữ liệu cần lưu.
+	 * @return bool Giá trị trả về từ wp_cache_add().
 	 */
 	private function cache_add( $key, $data ) {
 		return wp_cache_add( $key . '-' . $this->cache_hash, $data, 'themes', self::$cache_expiration );
 	}
 
 	/**
-	 * Gets theme data from cache.
+	 * Lấy dữ liệu giao diện từ cache.
 	 *
-	 * Cache entries are keyed by the theme and the type of data.
+	 * Các mục cache được đánh khóa theo giao diện và loại dữ liệu.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $key Type of data to retrieve (theme, screenshot, headers, post_templates)
-	 * @return mixed Retrieved data
+	 * @param string $key Loại dữ liệu cần lấy (theme, screenshot, headers, post_templates).
+	 * @return mixed Dữ liệu đã lấy.
 	 */
 	private function cache_get( $key ) {
 		return wp_cache_get( $key . '-' . $this->cache_hash, 'themes' );
 	}
 
 	/**
-	 * Clears the cache for the theme.
+	 * Xóa cache cho giao diện.
 	 *
 	 * @since 3.4.0
 	 */
@@ -852,20 +851,20 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Gets a raw, unformatted theme header.
+	 * Lấy header giao diện thô, chưa định dạng.
 	 *
-	 * The header is sanitized, but is not translated, and is not marked up for display.
-	 * To get a theme header for display, use the display() method.
+	 * Header đã được làm sạch, nhưng chưa được dịch và chưa được đánh dấu để hiển thị.
+	 * Để lấy header giao diện cho hiển thị, sử dụng phương thức display().
 	 *
-	 * Use the get_template() method, not the 'Template' header, for finding the template.
-	 * The 'Template' header is only good for what was written in the style.css, while
-	 * get_template() takes into account where WordPress actually located the theme and
-	 * whether it is actually valid.
+	 * Sử dụng phương thức get_template(), không phải header 'Template', để tìm template.
+	 * Header 'Template' chỉ phản ánh những gì được viết trong style.css, trong khi
+	 * get_template() tính đến vị trí WordPress thực sự tìm thấy giao diện và
+	 * liệu nó có thực sự hợp lệ hay không.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $header Theme header. Name, Description, Author, Version, ThemeURI, AuthorURI, Status, Tags.
-	 * @return string|array|false String or array (for Tags header) on success, false on failure.
+	 * @param string $header Header giao diện. Name, Description, Author, Version, ThemeURI, AuthorURI, Status, Tags.
+	 * @return string|array|false Chuỗi hoặc mảng (cho header Tags) khi thành công, false khi thất bại.
 	 */
 	public function get( $header ) {
 		if ( ! isset( $this->headers[ $header ] ) ) {
@@ -883,7 +882,7 @@ final class WP_Theme implements ArrayAccess {
 			return $this->headers_sanitized[ $header ];
 		}
 
-		// If themes are a persistent group, sanitize everything and cache it. One cache add is better than many cache sets.
+		// Nếu giao diện là nhóm cache vĩnh viễn, làm sạch tất cả và lưu cache. Một lần cache_add tốt hơn nhiều lần cache_set.
 		if ( self::$persistently_cache ) {
 			foreach ( array_keys( $this->headers ) as $_header ) {
 				$this->headers_sanitized[ $_header ] = $this->sanitize_header( $_header, $this->headers[ $_header ] );
@@ -897,15 +896,15 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Gets a theme header, formatted and translated for display.
+	 * Lấy header giao diện đã được định dạng và dịch để hiển thị.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $header    Theme header. Name, Description, Author, Version, ThemeURI, AuthorURI, Status, Tags.
-	 * @param bool   $markup    Optional. Whether to mark up the header. Defaults to true.
-	 * @param bool   $translate Optional. Whether to translate the header. Defaults to true.
-	 * @return string|array|false Processed header. An array for Tags if `$markup` is false, string otherwise.
-	 *                            False on failure.
+	 * @param string $header    Header giao diện. Name, Description, Author, Version, ThemeURI, AuthorURI, Status, Tags.
+	 * @param bool   $markup    Tùy chọn. Có đánh dấu header hay không. Mặc định true.
+	 * @param bool   $translate Tùy chọn. Có dịch header hay không. Mặc định true.
+	 * @return string|array|false Header đã xử lý. Mảng cho Tags nếu `$markup` là false, chuỗi cho các trường hợp khác.
+	 *                            False khi thất bại.
 	 */
 	public function display( $header, $markup = true, $translate = true ) {
 		$value = $this->get( $header );
@@ -929,17 +928,17 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Sanitizes a theme header.
+	 * Làm sạch header giao diện.
 	 *
 	 * @since 3.4.0
-	 * @since 5.4.0 Added support for `Requires at least` and `Requires PHP` headers.
-	 * @since 6.1.0 Added support for `Update URI` header.
+	 * @since 5.4.0 Thêm hỗ trợ cho header `Requires at least` và `Requires PHP`.
+	 * @since 6.1.0 Thêm hỗ trợ cho header `Update URI`.
 	 *
-	 * @param string $header Theme header. Accepts 'Name', 'Description', 'Author', 'Version',
+	 * @param string $header Header giao diện. Chấp nhận 'Name', 'Description', 'Author', 'Version',
 	 *                       'ThemeURI', 'AuthorURI', 'Status', 'Tags', 'RequiresWP', 'RequiresPHP',
 	 *                       'UpdateURI'.
-	 * @param string $value  Value to sanitize.
-	 * @return string|array An array for Tags header, string otherwise.
+	 * @param string $value  Giá trị cần làm sạch.
+	 * @return string|array Mảng cho header Tags, chuỗi cho các trường hợp khác.
 	 */
 	private function sanitize_header( $header, $value ) {
 		switch ( $header ) {
@@ -948,7 +947,7 @@ final class WP_Theme implements ArrayAccess {
 					$value = 'publish';
 					break;
 				}
-				// Fall through otherwise.
+				// Tiếp tục qua các trường hợp khác.
 			case 'Name':
 				static $header_tags = array(
 					'abbr'    => array( 'title' => true ),
@@ -961,7 +960,7 @@ final class WP_Theme implements ArrayAccess {
 				$value = wp_kses( $value, $header_tags );
 				break;
 			case 'Author':
-				// There shouldn't be anchor tags in Author, but some themes like to be challenging.
+				// Không nên có thẻ anchor trong Author, nhưng một số giao diện thích thử thách.
 			case 'Description':
 				static $header_tags_with_a = array(
 					'a'       => array(
@@ -996,14 +995,14 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Marks up a theme header.
+	 * Đánh dấu header giao diện.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string       $header    Theme header. Name, Description, Author, Version, ThemeURI, AuthorURI, Status, Tags.
-	 * @param string|array $value     Value to mark up. An array for Tags header, string otherwise.
-	 * @param string       $translate Whether the header has been translated.
-	 * @return string Value, marked up.
+	 * @param string       $header    Header giao diện. Name, Description, Author, Version, ThemeURI, AuthorURI, Status, Tags.
+	 * @param string|array $value     Giá trị cần đánh dấu. Mảng cho header Tags, chuỗi cho các trường hợp khác.
+	 * @param string       $translate Liệu header đã được dịch chưa.
+	 * @return string Giá trị đã đánh dấu.
 	 */
 	private function markup_header( $header, $value, $translate ) {
 		switch ( $header ) {
@@ -1039,18 +1038,18 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Translates a theme header.
+	 * Dịch header giao diện.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string       $header Theme header. Name, Description, Author, Version, ThemeURI, AuthorURI, Status, Tags.
-	 * @param string|array $value  Value to translate. An array for Tags header, string otherwise.
-	 * @return string|array Translated value. An array for Tags header, string otherwise.
+	 * @param string       $header Header giao diện. Name, Description, Author, Version, ThemeURI, AuthorURI, Status, Tags.
+	 * @param string|array $value  Giá trị cần dịch. Mảng cho header Tags, chuỗi cho các trường hợp khác.
+	 * @return string|array Giá trị đã dịch. Mảng cho header Tags, chuỗi cho các trường hợp khác.
 	 */
 	private function translate_header( $header, $value ) {
 		switch ( $header ) {
 			case 'Name':
-				// Cached for sorting reasons.
+				// Được lưu cache cho mục đích sắp xếp.
 				if ( isset( $this->name_translated ) ) {
 					return $this->name_translated;
 				}
@@ -1067,7 +1066,7 @@ final class WP_Theme implements ArrayAccess {
 				static $tags_list;
 				if ( ! isset( $tags_list ) ) {
 					$tags_list = array(
-						// As of 4.6, deprecated tags which are only used to provide translation for older themes.
+						// Kể từ 4.6, các thẻ không còn dùng, chỉ cung cấp bản dịch cho giao diện cũ.
 						'black'             => __( 'Black' ),
 						'blue'              => __( 'Blue' ),
 						'brown'             => __( 'Brown' ),
@@ -1091,7 +1090,7 @@ final class WP_Theme implements ArrayAccess {
 						'seasonal'          => __( 'Seasonal' ),
 					);
 
-					$feature_list = get_theme_feature_list( false ); // No API.
+					$feature_list = get_theme_feature_list( false ); // Không dùng API.
 
 					foreach ( $feature_list as $tags ) {
 						$tags_list += $tags;
@@ -1116,42 +1115,42 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns the directory name of the theme's "stylesheet" files, inside the theme root.
+	 * Trả về tên thư mục chứa các tệp "stylesheet" của giao diện, bên trong thư mục gốc giao diện.
 	 *
-	 * In the case of a child theme, this is directory name of the child theme.
-	 * Otherwise, get_stylesheet() is the same as get_template().
+	 * Trong trường hợp giao diện con, đây là tên thư mục của giao diện con.
+	 * Nếu không, get_stylesheet() giống với get_template().
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Stylesheet
+	 * @return string Stylesheet.
 	 */
 	public function get_stylesheet() {
 		return $this->stylesheet;
 	}
 
 	/**
-	 * Returns the directory name of the theme's "template" files, inside the theme root.
+	 * Trả về tên thư mục chứa các tệp "template" của giao diện, bên trong thư mục gốc giao diện.
 	 *
-	 * In the case of a child theme, this is the directory name of the parent theme.
-	 * Otherwise, the get_template() is the same as get_stylesheet().
+	 * Trong trường hợp giao diện con, đây là tên thư mục của giao diện cha.
+	 * Nếu không, get_template() giống với get_stylesheet().
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Template
+	 * @return string Template.
 	 */
 	public function get_template() {
 		return $this->template;
 	}
 
 	/**
-	 * Returns the absolute path to the directory of a theme's "stylesheet" files.
+	 * Trả về đường dẫn tuyệt đối đến thư mục chứa các tệp "stylesheet" của giao diện.
 	 *
-	 * In the case of a child theme, this is the absolute path to the directory
-	 * of the child theme's files.
+	 * Trong trường hợp giao diện con, đây là đường dẫn tuyệt đối đến thư mục
+	 * chứa các tệp của giao diện con.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Absolute path of the stylesheet directory.
+	 * @return string Đường dẫn tuyệt đối của thư mục stylesheet.
 	 */
 	public function get_stylesheet_directory() {
 		if ( $this->errors() && in_array( 'theme_root_missing', $this->errors()->get_error_codes(), true ) ) {
@@ -1162,14 +1161,14 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns the absolute path to the directory of a theme's "template" files.
+	 * Trả về đường dẫn tuyệt đối đến thư mục chứa các tệp "template" của giao diện.
 	 *
-	 * In the case of a child theme, this is the absolute path to the directory
-	 * of the parent theme's files.
+	 * Trong trường hợp giao diện con, đây là đường dẫn tuyệt đối đến thư mục
+	 * chứa các tệp của giao diện cha.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Absolute path of the template directory.
+	 * @return string Đường dẫn tuyệt đối của thư mục template.
 	 */
 	public function get_template_directory() {
 		if ( $this->parent() ) {
@@ -1182,28 +1181,28 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns the URL to the directory of a theme's "stylesheet" files.
+	 * Trả về URL đến thư mục chứa các tệp "stylesheet" của giao diện.
 	 *
-	 * In the case of a child theme, this is the URL to the directory of the
-	 * child theme's files.
+	 * Trong trường hợp giao diện con, đây là URL đến thư mục
+	 * chứa các tệp của giao diện con.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string URL to the stylesheet directory.
+	 * @return string URL đến thư mục stylesheet.
 	 */
 	public function get_stylesheet_directory_uri() {
 		return $this->get_theme_root_uri() . '/' . str_replace( '%2F', '/', rawurlencode( $this->stylesheet ) );
 	}
 
 	/**
-	 * Returns the URL to the directory of a theme's "template" files.
+	 * Trả về URL đến thư mục chứa các tệp "template" của giao diện.
 	 *
-	 * In the case of a child theme, this is the URL to the directory of the
-	 * parent theme's files.
+	 * Trong trường hợp giao diện con, đây là URL đến thư mục
+	 * chứa các tệp của giao diện cha.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string URL to the template directory.
+	 * @return string URL đến thư mục template.
 	 */
 	public function get_template_directory_uri() {
 		if ( $this->parent() ) {
@@ -1216,28 +1215,28 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns the absolute path to the directory of the theme root.
+	 * Trả về đường dẫn tuyệt đối đến thư mục gốc giao diện.
 	 *
-	 * This is typically the absolute path to wp-content/themes.
+	 * Đây thường là đường dẫn tuyệt đối tới wp-content/themes.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Theme root.
+	 * @return string Thư mục gốc giao diện.
 	 */
 	public function get_theme_root() {
 		return $this->theme_root;
 	}
 
 	/**
-	 * Returns the URL to the directory of the theme root.
+	 * Trả về URL đến thư mục gốc giao diện.
 	 *
-	 * This is typically the absolute URL to wp-content/themes. This forms the basis
-	 * for all other URLs returned by WP_Theme, so we pass it to the public function
-	 * get_theme_root_uri() and allow it to run the {@see 'theme_root_uri'} filter.
+	 * Đây thường là URL tuyệt đối tới wp-content/themes. Đây là cơ sở
+	 * cho tất cả các URL khác được trả về bởi WP_Theme, nên chúng ta truyền nó cho hàm
+	 * get_theme_root_uri() công khai và cho phép nó chạy bộ lọc {@see 'theme_root_uri'}.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Theme root URI.
+	 * @return string URI thư mục gốc giao diện.
 	 */
 	public function get_theme_root_uri() {
 		if ( ! isset( $this->theme_root_uri ) ) {
@@ -1247,17 +1246,17 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns the main screenshot file for the theme.
+	 * Trả về tệp ảnh chụp màn hình chính của giao diện.
 	 *
-	 * The main screenshot is called screenshot.png. gif and jpg extensions are also allowed.
+	 * Ảnh chụp màn hình chính có tên screenshot.png. Các đuôi gif và jpg cũng được chấp nhận.
 	 *
-	 * Screenshots for a theme must be in the stylesheet directory. (In the case of child
-	 * themes, parent theme screenshots are not inherited.)
+	 * Ảnh chụp màn hình phải nằm trong thư mục stylesheet. (Trong trường hợp giao diện con,
+	 * ảnh chụp màn hình của giao diện cha không được kế thừa.)
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $uri Type of URL to return, either 'relative' or an absolute URI. Defaults to absolute URI.
-	 * @return string|false Screenshot file. False if the theme does not have a screenshot.
+	 * @param string $uri Loại URL trả về, 'relative' hoặc URI tuyệt đối. Mặc định URI tuyệt đối.
+	 * @return string|false Tệp ảnh chụp màn hình. False nếu giao diện không có ảnh chụp.
 	 */
 	public function get_screenshot( $uri = 'uri' ) {
 		$screenshot = $this->cache_get( 'screenshot' );
@@ -1285,17 +1284,17 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns files in the theme's directory.
+	 * Trả về các tệp trong thư mục giao diện.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string[]|string $type          Optional. Array of extensions to find, string of a single extension,
-	 *                                       or null for all extensions. Default null.
-	 * @param int             $depth         Optional. How deep to search for files. Defaults to a flat scan (0 depth).
-	 *                                       -1 depth is infinite.
-	 * @param bool            $search_parent Optional. Whether to return parent files. Default false.
-	 * @return string[] Array of files, keyed by the path to the file relative to the theme's directory, with the values
-	 *                  being absolute paths.
+	 * @param string[]|string $type          Tùy chọn. Mảng các đuôi tệp cần tìm, chuỗi đuôi đơn,
+	 *                                       hoặc null cho tất cả. Mặc định null.
+	 * @param int             $depth         Tùy chọn. Tìm kiếm sâu bao nhiêu cấp. Mặc định quét phẳng (0).
+	 *                                       -1 là vô hạn.
+	 * @param bool            $search_parent Tùy chọn. Có trả về tệp giao diện cha hay không. Mặc định false.
+	 * @return string[] Mảng các tệp, đánh khóa theo đường dẫn tương đối so với thư mục giao diện,
+	 *                  với giá trị là đường dẫn tuyệt đối.
 	 */
 	public function get_files( $type = null, $depth = 0, $search_parent = false ) {
 		$files = (array) self::scandir( $this->get_stylesheet_directory(), $type, $depth );
@@ -1308,16 +1307,16 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns the theme's post templates.
+	 * Trả về các template bài viết của giao diện.
 	 *
 	 * @since 4.7.0
-	 * @since 5.8.0 Include block templates.
+	 * @since 5.8.0 Bao gồm các block template.
 	 *
-	 * @return array[] Array of page template arrays, keyed by post type and filename,
-	 *                 with the value of the translated header name.
+	 * @return array[] Mảng các mảng template trang, đánh khóa theo loại bài viết và tên tệp,
+	 *                 với giá trị là tên header đã dịch.
 	 */
 	public function get_post_templates() {
-		// If you screw up your active theme and we invalidate your parent, most things still work. Let it slide.
+		// Nếu bạn làm hỏng giao diện đang kích hoạt và chúng tôi vô hiệu hóa cha, hầu hết mọi thứ vẫn hoạt động. Hãy bỏ qua.
 		if ( $this->errors() && $this->errors()->get_error_codes() !== array( 'theme_parent_invalid' ) ) {
 			return array();
 		}
@@ -1381,15 +1380,15 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns the theme's post templates for a given post type.
+	 * Trả về các template bài viết của giao diện cho một loại bài viết cụ thể.
 	 *
 	 * @since 3.4.0
-	 * @since 4.7.0 Added the `$post_type` parameter.
+	 * @since 4.7.0 Thêm tham số `$post_type`.
 	 *
-	 * @param WP_Post|null $post      Optional. The post being edited, provided for context.
-	 * @param string       $post_type Optional. Post type to get the templates for. Default 'page'.
-	 *                                If a post is provided, its post type is used.
-	 * @return string[] Array of template header names keyed by the template file name.
+	 * @param WP_Post|null $post      Tùy chọn. Bài viết đang chỉnh sửa, cung cấp cho ngữ cảnh.
+	 * @param string       $post_type Tùy chọn. Loại bài viết cần lấy template. Mặc định 'page'.
+	 *                                Nếu bài viết được cung cấp, sẽ sử dụng loại bài viết của nó.
+	 * @return string[] Mảng tên header template đánh khóa bởi tên tệp template.
 	 */
 	public function get_page_templates( $post = null, $post_type = 'page' ) {
 		if ( $post ) {
@@ -1400,36 +1399,36 @@ final class WP_Theme implements ArrayAccess {
 		$post_templates = isset( $post_templates[ $post_type ] ) ? $post_templates[ $post_type ] : array();
 
 		/**
-		 * Filters list of page templates for a theme.
+		 * Lọc danh sách template trang cho một giao diện.
 		 *
 		 * @since 4.9.6
 		 *
-		 * @param string[]     $post_templates Array of template header names keyed by the template file name.
-		 * @param WP_Theme     $theme          The theme object.
-		 * @param WP_Post|null $post           The post being edited, provided for context, or null.
-		 * @param string       $post_type      Post type to get the templates for.
+		 * @param string[]     $post_templates Mảng tên header template đánh khóa bởi tên tệp template.
+		 * @param WP_Theme     $theme          Đối tượng giao diện.
+		 * @param WP_Post|null $post           Bài viết đang chỉnh sửa, cung cấp cho ngữ cảnh, hoặc null.
+		 * @param string       $post_type      Loại bài viết cần lấy template.
 		 */
 		$post_templates = (array) apply_filters( 'theme_templates', $post_templates, $this, $post, $post_type );
 
 		/**
-		 * Filters list of page templates for a theme.
+		 * Lọc danh sách template trang cho một giao diện.
 		 *
-		 * The dynamic portion of the hook name, `$post_type`, refers to the post type.
+		 * Phần động của tên hook, `$post_type`, tham chiếu đến loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `theme_post_templates`
 		 *  - `theme_page_templates`
 		 *  - `theme_attachment_templates`
 		 *
 		 * @since 3.9.0
-		 * @since 4.4.0 Converted to allow complete control over the `$page_templates` array.
-		 * @since 4.7.0 Added the `$post_type` parameter.
+		 * @since 4.4.0 Chuyển đổi để cho phép kiểm soát hoàn toàn mảng `$page_templates`.
+		 * @since 4.7.0 Thêm tham số `$post_type`.
 		 *
-		 * @param string[]     $post_templates Array of template header names keyed by the template file name.
-		 * @param WP_Theme     $theme          The theme object.
-		 * @param WP_Post|null $post           The post being edited, provided for context, or null.
-		 * @param string       $post_type      Post type to get the templates for.
+		 * @param string[]     $post_templates Mảng tên header template đánh khóa bởi tên tệp template.
+		 * @param WP_Theme     $theme          Đối tượng giao diện.
+		 * @param WP_Post|null $post           Bài viết đang chỉnh sửa, cung cấp cho ngữ cảnh, hoặc null.
+		 * @param string       $post_type      Loại bài viết cần lấy template.
 		 */
 		$post_templates = (array) apply_filters( "theme_{$post_type}_templates", $post_templates, $this, $post, $post_type );
 
@@ -1437,20 +1436,20 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Scans a directory for files of a certain extension.
+	 * Quét thư mục để tìm các tệp có đuôi mở rộng nhất định.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string            $path          Absolute path to search.
-	 * @param array|string|null $extensions    Optional. Array of extensions to find, string of a single extension,
-	 *                                         or null for all extensions. Default null.
-	 * @param int               $depth         Optional. How many levels deep to search for files. Accepts 0, 1+, or
-	 *                                         -1 (infinite depth). Default 0.
-	 * @param string            $relative_path Optional. The basename of the absolute path. Used to control the
-	 *                                         returned path for the found files, particularly when this function
-	 *                                         recurses to lower depths. Default empty.
-	 * @return string[]|false Array of files, keyed by the path to the file relative to the `$path` directory prepended
-	 *                        with `$relative_path`, with the values being absolute paths. False otherwise.
+	 * @param string            $path          Đường dẫn tuyệt đối cần tìm kiếm.
+	 * @param array|string|null $extensions    Tùy chọn. Mảng các đuôi tệp cần tìm, chuỗi đuôi đơn,
+	 *                                         hoặc null cho tất cả. Mặc định null.
+	 * @param int               $depth         Tùy chọn. Tìm kiếm sâu bao nhiêu cấp. Chấp nhận 0, 1+, hoặc
+	 *                                         -1 (vô hạn). Mặc định 0.
+	 * @param string            $relative_path Tùy chọn. Tên cơ sở của đường dẫn tuyệt đối. Dùng để kiểm soát
+	 *                                         đường dẫn trả về cho các tệp tìm thấy, đặc biệt khi hàm này
+	 *                                         đệ quy vào cấp sâu hơn. Mặc định rỗng.
+	 * @return string[]|false Mảng các tệp, đánh khóa theo đường dẫn tương đối so với thư mục `$path` với
+	 *                        tiền tố `$relative_path`, giá trị là đường dẫn tuyệt đối. False nếu không thành công.
 	 */
 	private static function scandir( $path, $extensions = null, $depth = 0, $relative_path = '' ) {
 		if ( ! is_dir( $path ) ) {
@@ -1471,11 +1470,11 @@ final class WP_Theme implements ArrayAccess {
 		$files   = array();
 
 		/**
-		 * Filters the array of excluded directories and files while scanning theme folder.
+		 * Lọc mảng các thư mục và tệp bị loại trừ khi quét thư mục giao diện.
 		 *
 		 * @since 4.7.4
 		 *
-		 * @param string[] $exclusions Array of excluded directories and files.
+		 * @param string[] $exclusions Mảng các thư mục và tệp bị loại trừ.
 		 */
 		$exclusions = (array) apply_filters( 'theme_scandir_exclusions', array( 'CVS', 'node_modules', 'vendor', 'bower_components' ) );
 
@@ -1498,15 +1497,15 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Loads the theme's textdomain.
+	 * Tải textdomain của giao diện.
 	 *
-	 * Translation files are not inherited from the parent theme. TODO: If this fails for the
-	 * child theme, it should probably try to load the parent theme's translations.
+	 * Các tệp dịch không được kế thừa từ giao diện cha. TODO: Nếu thất bại cho
+	 * giao diện con, có lẽ nên thử tải bản dịch của giao diện cha.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return bool True if the textdomain was successfully loaded or has already been loaded.
-	 *  False if no textdomain was specified in the file headers, or if the domain could not be loaded.
+	 * @return bool True nếu textdomain được tải thành công hoặc đã được tải.
+	 *  False nếu không có textdomain nào được chỉ định trong header, hoặc nếu domain không thể tải.
 	 */
 	public function load_textdomain() {
 		if ( isset( $this->textdomain_loaded ) ) {
@@ -1537,14 +1536,14 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Determines whether the theme is allowed (multisite only).
+	 * Xác định xem giao diện có được phép hay không (chỉ multisite).
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param string $check   Optional. Whether to check only the 'network'-wide settings, the 'site'
-	 *                        settings, or 'both'. Defaults to 'both'.
-	 * @param int    $blog_id Optional. Ignored if only network-wide settings are checked. Defaults to current site.
-	 * @return bool Whether the theme is allowed for the network. Returns true in single-site.
+	 * @param string $check   Tùy chọn. Kiểm tra chỉ cài đặt 'network', cài đặt 'site',
+	 *                        hoặc 'both'. Mặc định 'both'.
+	 * @param int    $blog_id Tùy chọn. Bỏ qua nếu chỉ kiểm tra cài đặt toàn mạng. Mặc định site hiện tại.
+	 * @return bool Liệu giao diện có được phép cho mạng hay không. Trả về true trong single-site.
 	 */
 	public function is_allowed( $check = 'both', $blog_id = null ) {
 		if ( ! is_multisite() ) {
@@ -1569,7 +1568,7 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns whether this theme is a block-based theme or not.
+	 * Trả về liệu giao diện này có phải là giao diện dựa trên block hay không.
 	 *
 	 * @since 5.9.0
 	 *
@@ -1598,15 +1597,15 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Retrieves the path of a file in the theme.
+	 * Lấy đường dẫn của một tệp trong giao diện.
 	 *
-	 * Searches in the stylesheet directory before the template directory so themes
-	 * which inherit from a parent theme can just override one file.
+	 * Tìm kiếm trong thư mục stylesheet trước thư mục template để các giao diện
+	 * kế thừa từ giao diện cha chỉ cần ghi đè một tệp.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param string $file Optional. File to search for in the stylesheet directory.
-	 * @return string The path of the file.
+	 * @param string $file Tùy chọn. Tệp cần tìm trong thư mục stylesheet.
+	 * @return string Đường dẫn của tệp.
 	 */
 	public function get_file_path( $file = '' ) {
 		$file = ltrim( $file, '/' );
@@ -1627,13 +1626,13 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Determines the latest WordPress default theme that is installed.
+	 * Xác định giao diện mặc định WordPress mới nhất đã được cài đặt.
 	 *
-	 * This hits the filesystem.
+	 * Phương thức này truy cập hệ thống tệp.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return WP_Theme|false Object, or false if no theme is installed, which would be bad.
+	 * @return WP_Theme|false Đối tượng, hoặc false nếu không có giao diện nào được cài đặt.
 	 */
 	public static function get_core_default_theme() {
 		foreach ( array_reverse( self::$default_themes ) as $slug => $name ) {
@@ -1646,35 +1645,35 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns array of stylesheet names of themes allowed on the site or network.
+	 * Trả về mảng tên stylesheet của các giao diện được phép trên site hoặc mạng.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param int $blog_id Optional. ID of the site. Defaults to the current site.
-	 * @return string[] Array of stylesheet names.
+	 * @param int $blog_id Tùy chọn. ID của site. Mặc định site hiện tại.
+	 * @return string[] Mảng tên stylesheet.
 	 */
 	public static function get_allowed( $blog_id = null ) {
 		/**
-		 * Filters the array of themes allowed on the network.
+		 * Lọc mảng các giao diện được phép trên mạng.
 		 *
-		 * Site is provided as context so that a list of network allowed themes can
-		 * be filtered further.
+		 * Site được cung cấp làm ngữ cảnh để danh sách giao diện được phép trên mạng
+		 * có thể được lọc thêm.
 		 *
 		 * @since 4.5.0
 		 *
-		 * @param string[] $allowed_themes An array of theme stylesheet names.
-		 * @param int      $blog_id        ID of the site.
+		 * @param string[] $allowed_themes Mảng tên stylesheet giao diện.
+		 * @param int      $blog_id        ID của site.
 		 */
 		$network = (array) apply_filters( 'network_allowed_themes', self::get_allowed_on_network(), $blog_id );
 		return $network + self::get_allowed_on_site( $blog_id );
 	}
 
 	/**
-	 * Returns array of stylesheet names of themes allowed on the network.
+	 * Trả về mảng tên stylesheet của các giao diện được phép trên mạng.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string[] Array of stylesheet names.
+	 * @return string[] Mảng tên stylesheet.
 	 */
 	public static function get_allowed_on_network() {
 		static $allowed_themes;
@@ -1683,11 +1682,11 @@ final class WP_Theme implements ArrayAccess {
 		}
 
 		/**
-		 * Filters the array of themes allowed on the network.
+		 * Lọc mảng các giao diện được phép trên mạng.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param string[] $allowed_themes An array of theme stylesheet names.
+		 * @param string[] $allowed_themes Mảng tên stylesheet giao diện.
 		 */
 		$allowed_themes = apply_filters( 'allowed_themes', $allowed_themes );
 
@@ -1695,12 +1694,12 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns array of stylesheet names of themes allowed on the site.
+	 * Trả về mảng tên stylesheet của các giao diện được phép trên site.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param int $blog_id Optional. ID of the site. Defaults to the current site.
-	 * @return string[] Array of stylesheet names.
+	 * @param int $blog_id Tùy chọn. ID của site. Mặc định site hiện tại.
+	 * @return string[] Mảng tên stylesheet.
 	 */
 	public static function get_allowed_on_site( $blog_id = null ) {
 		static $allowed_themes = array();
@@ -1711,12 +1710,12 @@ final class WP_Theme implements ArrayAccess {
 
 		if ( isset( $allowed_themes[ $blog_id ] ) ) {
 			/**
-			 * Filters the array of themes allowed on the site.
+			 * Lọc mảng các giao diện được phép trên site.
 			 *
 			 * @since 4.5.0
 			 *
-			 * @param string[] $allowed_themes An array of theme stylesheet names.
-			 * @param int      $blog_id        ID of the site. Defaults to current site.
+			 * @param string[] $allowed_themes Mảng tên stylesheet giao diện.
+			 * @param int      $blog_id        ID của site. Mặc định site hiện tại.
 			 */
 			return (array) apply_filters( 'site_allowed_themes', $allowed_themes[ $blog_id ], $blog_id );
 		}
@@ -1732,8 +1731,8 @@ final class WP_Theme implements ArrayAccess {
 		}
 
 		/*
-		 * This is all super old MU back compat joy.
-		 * 'allowedthemes' keys things by stylesheet. 'allowed_themes' keyed things by name.
+		 * Đây là tương thích ngược MU rất cũ.
+		 * 'allowedthemes' đánh khóa theo stylesheet. 'allowed_themes' đánh khóa theo tên.
 		 */
 		if ( false === $allowed_themes[ $blog_id ] ) {
 			if ( $current ) {
@@ -1756,7 +1755,7 @@ final class WP_Theme implements ArrayAccess {
 				}
 				$allowed_themes[ $blog_id ] = $converted;
 			}
-			// Set the option so we never have to go through this pain again.
+			// Thiết lập option để không bao giờ phải trải qua quá trình này nữa.
 			if ( is_admin() && $allowed_themes[ $blog_id ] ) {
 				if ( $current ) {
 					update_option( 'allowedthemes', $allowed_themes[ $blog_id ], false );
@@ -1775,19 +1774,19 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Returns the folder names of the block template directories.
+	 * Trả về tên thư mục của các thư mục block template.
 	 *
 	 * @since 6.4.0
 	 *
 	 * @return string[] {
-	 *     Folder names used by block themes.
+	 *     Tên thư mục được sử dụng bởi giao diện block.
 	 *
-	 *     @type string $wp_template      Theme-relative directory name for block templates.
-	 *     @type string $wp_template_part Theme-relative directory name for block template parts.
+	 *     @type string $wp_template      Tên thư mục tương đối với giao diện cho các block template.
+	 *     @type string $wp_template_part Tên thư mục tương đối với giao diện cho các phần block template.
 	 * }
 	 */
 	public function get_block_template_folders() {
-		// Return set/cached value if available.
+		// Trả về giá trị đã thiết lập/cache nếu có.
 		if ( isset( $this->block_template_folders ) ) {
 			return $this->block_template_folders;
 		}
@@ -1795,7 +1794,7 @@ final class WP_Theme implements ArrayAccess {
 		$this->block_template_folders = $this->default_template_folders;
 
 		$stylesheet_directory = $this->get_stylesheet_directory();
-		// If the theme uses deprecated block template folders.
+		// Nếu giao diện sử dụng thư mục block template không còn dùng.
 		if ( file_exists( $stylesheet_directory . '/block-templates' ) || file_exists( $stylesheet_directory . '/block-template-parts' ) ) {
 			$this->block_template_folders = array(
 				'wp_template'      => 'block-templates',
@@ -1806,35 +1805,35 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Gets block pattern data for a specified theme.
-	 * Each pattern is defined as a PHP file and defines
-	 * its metadata using plugin-style headers. The minimum required definition is:
+	 * Lấy dữ liệu block pattern cho một giao diện cụ thể.
+	 * Mỗi pattern được định nghĩa như một tệp PHP và khai báo
+	 * metadata bằng các header kiểu plugin. Định nghĩa tối thiểu bắt buộc là:
 	 *
 	 *     /**
 	 *      * Title: My Pattern
 	 *      * Slug: my-theme/my-pattern
 	 *      *
 	 *
-	 * The output of the PHP source corresponds to the content of the pattern, e.g.:
+	 * Đầu ra của mã nguồn PHP tương ứng với nội dung của pattern, ví dụ:
 	 *
 	 *     <main><p><?php echo "Hello"; ?></p></main>
 	 *
-	 * If applicable, this will collect from both parent and child theme.
+	 * Nếu có thể, phương thức này sẽ thu thập từ cả giao diện cha và giao diện con.
 	 *
-	 * Other settable fields include:
+	 * Các trường khác có thể thiết lập bao gồm:
 	 *
 	 *     - Description
 	 *     - Viewport Width
 	 *     - Inserter         (yes/no)
-	 *     - Categories       (comma-separated values)
-	 *     - Keywords         (comma-separated values)
-	 *     - Block Types      (comma-separated values)
-	 *     - Post Types       (comma-separated values)
-	 *     - Template Types   (comma-separated values)
+	 *     - Categories       (giá trị phân tách bằng dấu phẩy)
+	 *     - Keywords         (giá trị phân tách bằng dấu phẩy)
+	 *     - Block Types      (giá trị phân tách bằng dấu phẩy)
+	 *     - Post Types       (giá trị phân tách bằng dấu phẩy)
+	 *     - Template Types   (giá trị phân tách bằng dấu phẩy)
 	 *
 	 * @since 6.4.0
 	 *
-	 * @return array Block pattern data.
+	 * @return array Dữ liệu block pattern.
 	 */
 	public function get_block_patterns() {
 		$can_use_cached = ! wp_is_development_mode( 'theme' );
@@ -1844,7 +1843,7 @@ final class WP_Theme implements ArrayAccess {
 			if ( $can_use_cached ) {
 				return $pattern_data;
 			}
-			// If in development mode, clear pattern cache.
+			// Nếu đang ở chế độ phát triển, xóa cache pattern.
 			$this->delete_pattern_cache();
 		}
 
@@ -1861,12 +1860,12 @@ final class WP_Theme implements ArrayAccess {
 		$files = (array) self::scandir( $dirpath, 'php', -1 );
 
 		/**
-		 * Filters list of block pattern files for a theme.
+		 * Lọc danh sách tệp block pattern cho một giao diện.
 		 *
 		 * @since 6.8.0
 		 *
-		 * @param array  $files   Array of theme files found within `patterns` directory.
-		 * @param string $dirpath Path of theme `patterns` directory being scanned.
+		 * @param array  $files   Mảng các tệp giao diện tìm thấy trong thư mục `patterns`.
+		 * @param string $dirpath Đường dẫn thư mục `patterns` của giao diện đang được quét.
 		 */
 		$files = apply_filters( 'theme_block_pattern_files', $files, $dirpath );
 
@@ -1929,7 +1928,7 @@ final class WP_Theme implements ArrayAccess {
 				);
 			}
 
-			// Title is a required property.
+			// Title là thuộc tính bắt buộc.
 			if ( ! $pattern['title'] ) {
 				_doing_it_wrong(
 					__FUNCTION__,
@@ -1943,7 +1942,7 @@ final class WP_Theme implements ArrayAccess {
 				continue;
 			}
 
-			// For properties of type array, parse data as comma-separated.
+			// Với các thuộc tính kiểu mảng, phân tích dữ liệu phân tách bằng dấu phẩy.
 			foreach ( $properties_to_parse as $property ) {
 				if ( ! empty( $pattern[ $property ] ) ) {
 					$pattern[ $property ] = array_filter( wp_parse_list( (string) $pattern[ $property ] ) );
@@ -1952,7 +1951,7 @@ final class WP_Theme implements ArrayAccess {
 				}
 			}
 
-			// Parse properties of type int.
+			// Phân tích các thuộc tính kiểu int.
 			$property = 'viewportWidth';
 			if ( ! empty( $pattern[ $property ] ) ) {
 				$pattern[ $property ] = (int) $pattern[ $property ];
@@ -1960,7 +1959,7 @@ final class WP_Theme implements ArrayAccess {
 				unset( $pattern[ $property ] );
 			}
 
-			// Parse properties of type bool.
+			// Phân tích các thuộc tính kiểu bool.
 			$property = 'inserter';
 			if ( ! empty( $pattern[ $property ] ) ) {
 				$pattern[ $property ] = in_array(
@@ -1985,12 +1984,12 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Gets block pattern cache.
+	 * Lấy cache block pattern.
 	 *
 	 * @since 6.4.0
-	 * @since 6.6.0 Uses transients to cache regardless of site environment.
+	 * @since 6.6.0 Sử dụng transient để cache bất kể môi trường site.
 	 *
-	 * @return array|false Returns an array of patterns if cache is found, otherwise false.
+	 * @return array|false Trả về mảng các pattern nếu tìm thấy cache, ngược lại false.
 	 */
 	private function get_pattern_cache() {
 		if ( ! $this->exists() ) {
@@ -2006,12 +2005,12 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Sets block pattern cache.
+	 * Thiết lập cache block pattern.
 	 *
 	 * @since 6.4.0
-	 * @since 6.6.0 Uses transients to cache regardless of site environment.
+	 * @since 6.6.0 Sử dụng transient để cache bất kể môi trường site.
 	 *
-	 * @param array $patterns Block patterns data to set in cache.
+	 * @param array $patterns Dữ liệu block pattern cần lưu vào cache.
 	 */
 	private function set_pattern_cache( array $patterns ) {
 		$pattern_data = array(
@@ -2020,16 +2019,16 @@ final class WP_Theme implements ArrayAccess {
 		);
 
 		/**
-		 * Filters the cache expiration time for theme files.
+		 * Lọc thời gian hết hạn cache cho các tệp giao diện.
 		 *
 		 * @since 6.6.0
 		 *
-		 * @param int    $cache_expiration Cache expiration time in seconds.
-		 * @param string $cache_type       Type of cache being set.
+		 * @param int    $cache_expiration Thời gian hết hạn cache tính bằng giây.
+		 * @param string $cache_type       Loại cache đang được thiết lập.
 		 */
 		$cache_expiration = (int) apply_filters( 'wp_theme_files_cache_ttl', self::$cache_expiration, 'theme_block_patterns' );
 
-		// We don't want to cache patterns infinitely.
+		// Chúng ta không muốn cache pattern vô thời hạn.
 		if ( $cache_expiration <= 0 ) {
 			_doing_it_wrong(
 				__METHOD__,
@@ -2048,21 +2047,21 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Clears block pattern cache.
+	 * Xóa cache block pattern.
 	 *
 	 * @since 6.4.0
-	 * @since 6.6.0 Uses transients to cache regardless of site environment.
+	 * @since 6.6.0 Sử dụng transient để cache bất kể môi trường site.
 	 */
 	public function delete_pattern_cache() {
 		delete_site_transient( 'wp_theme_files_patterns-' . $this->cache_hash );
 	}
 
 	/**
-	 * Enables a theme for all sites on the current network.
+	 * Kích hoạt giao diện cho tất cả các site trên mạng hiện tại.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param string|string[] $stylesheets Stylesheet name or array of stylesheet names.
+	 * @param string|string[] $stylesheets Tên stylesheet hoặc mảng tên stylesheet.
 	 */
 	public static function network_enable_theme( $stylesheets ) {
 		if ( ! is_multisite() ) {
@@ -2082,11 +2081,11 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Disables a theme for all sites on the current network.
+	 * Vô hiệu hóa giao diện cho tất cả các site trên mạng hiện tại.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param string|string[] $stylesheets Stylesheet name or array of stylesheet names.
+	 * @param string|string[] $stylesheets Tên stylesheet hoặc mảng tên stylesheet.
 	 */
 	public static function network_disable_theme( $stylesheets ) {
 		if ( ! is_multisite() ) {
@@ -2108,11 +2107,11 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Sorts themes by name.
+	 * Sắp xếp các giao diện theo tên.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param WP_Theme[] $themes Array of theme objects to sort (passed by reference).
+	 * @param WP_Theme[] $themes Mảng các đối tượng giao diện cần sắp xếp (truyền bằng tham chiếu).
 	 */
 	public static function sort_by_name( &$themes ) {
 		if ( str_starts_with( get_user_locale(), 'en_' ) ) {
@@ -2126,31 +2125,31 @@ final class WP_Theme implements ArrayAccess {
 	}
 
 	/**
-	 * Callback function for usort() to naturally sort themes by name.
+	 * Hàm callback cho usort() để sắp xếp tự nhiên các giao diện theo tên.
 	 *
-	 * Accesses the Name header directly from the class for maximum speed.
-	 * Would choke on HTML but we don't care enough to slow it down with strip_tags().
+	 * Truy cập trực tiếp header Name từ lớp để đạt tốc độ tối đa.
+	 * Có thể bị lỗi với HTML nhưng không đáng để chậm lại với strip_tags().
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param WP_Theme $a First theme.
-	 * @param WP_Theme $b Second theme.
-	 * @return int Negative if `$a` falls lower in the natural order than `$b`. Zero if they fall equally.
-	 *             Greater than 0 if `$a` falls higher in the natural order than `$b`. Used with usort().
+	 * @param WP_Theme $a Giao diện thứ nhất.
+	 * @param WP_Theme $b Giao diện thứ hai.
+	 * @return int Âm nếu `$a` đứng trước `$b` trong thứ tự tự nhiên. Zero nếu bằng nhau.
+	 *             Lớn hơn 0 nếu `$a` đứng sau `$b` trong thứ tự tự nhiên. Dùng với usort().
 	 */
 	private static function _name_sort( $a, $b ) {
 		return strnatcasecmp( $a->headers['Name'], $b->headers['Name'] );
 	}
 
 	/**
-	 * Callback function for usort() to naturally sort themes by translated name.
+	 * Hàm callback cho usort() để sắp xếp tự nhiên các giao diện theo tên đã dịch.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param WP_Theme $a First theme.
-	 * @param WP_Theme $b Second theme.
-	 * @return int Negative if `$a` falls lower in the natural order than `$b`. Zero if they fall equally.
-	 *             Greater than 0 if `$a` falls higher in the natural order than `$b`. Used with usort().
+	 * @param WP_Theme $a Giao diện thứ nhất.
+	 * @param WP_Theme $b Giao diện thứ hai.
+	 * @return int Âm nếu `$a` đứng trước `$b` trong thứ tự tự nhiên. Zero nếu bằng nhau.
+	 *             Lớn hơn 0 nếu `$a` đứng sau `$b` trong thứ tự tự nhiên. Dùng với usort().
 	 */
 	private static function _name_sort_i18n( $a, $b ) {
 		return strnatcasecmp( $a->name_translated, $b->name_translated );

@@ -1,6 +1,6 @@
 <?php
 /**
- * oEmbed API: Top-level oEmbed functionality
+ * API oEmbed: Chức năng oEmbed cấp cao nhất
  *
  * @package WordPress
  * @subpackage oEmbed
@@ -8,19 +8,19 @@
  */
 
 /**
- * Registers an embed handler.
+ * Đăng ký một trình xử lý nhúng.
  *
- * Should probably only be used for sites that do not support oEmbed.
+ * Nên chỉ được sử dụng cho các trang web không hỗ trợ oEmbed.
  *
  * @since 2.9.0
  *
- * @global WP_Embed $wp_embed WordPress Embed object.
+ * @global WP_Embed $wp_embed Đối tượng WordPress Embed.
  *
- * @param string   $id       An internal ID/name for the handler. Needs to be unique.
- * @param string   $regex    The regex that will be used to see if this handler should be used for a URL.
- * @param callable $callback The callback function that will be called if the regex is matched.
- * @param int      $priority Optional. Used to specify the order in which the registered handlers will
- *                           be tested. Default 10.
+ * @param string   $id       ID/tên nội bộ cho trình xử lý. Cần phải là duy nhất.
+ * @param string   $regex    Biểu thức chính quy sẽ được sử dụng để xác định xem trình xử lý này có nên được dùng cho một URL hay không.
+ * @param callable $callback Hàm callback sẽ được gọi nếu biểu thức chính quy khớp.
+ * @param int      $priority Tùy chọn. Được sử dụng để chỉ định thứ tự kiểm tra các trình xử lý đã đăng ký.
+ *                           Mặc định 10.
  */
 function wp_embed_register_handler( $id, $regex, $callback, $priority = 10 ) {
 	global $wp_embed;
@@ -28,14 +28,14 @@ function wp_embed_register_handler( $id, $regex, $callback, $priority = 10 ) {
 }
 
 /**
- * Unregisters a previously-registered embed handler.
+ * Hủy đăng ký một trình xử lý nhúng đã được đăng ký trước đó.
  *
  * @since 2.9.0
  *
- * @global WP_Embed $wp_embed WordPress Embed object.
+ * @global WP_Embed $wp_embed Đối tượng WordPress Embed.
  *
- * @param string $id       The handler ID that should be removed.
- * @param int    $priority Optional. The priority of the handler to be removed. Default 10.
+ * @param string $id       ID trình xử lý cần được gỡ bỏ.
+ * @param int    $priority Tùy chọn. Mức độ ưu tiên của trình xử lý cần gỡ bỏ. Mặc định 10.
  */
 function wp_embed_unregister_handler( $id, $priority = 10 ) {
 	global $wp_embed;
@@ -43,25 +43,25 @@ function wp_embed_unregister_handler( $id, $priority = 10 ) {
 }
 
 /**
- * Creates default array of embed parameters.
+ * Tạo mảng mặc định của các tham số nhúng.
  *
- * The width defaults to the content width as specified by the theme. If the
- * theme does not specify a content width, then 500px is used.
+ * Chiều rộng mặc định là chiều rộng nội dung được chỉ định bởi theme. Nếu theme
+ * không chỉ định chiều rộng nội dung, thì 500px sẽ được sử dụng.
  *
- * The default height is 1.5 times the width, or 1000px, whichever is smaller.
+ * Chiều cao mặc định là 1.5 lần chiều rộng, hoặc 1000px, tùy giá trị nào nhỏ hơn.
  *
- * The {@see 'embed_defaults'} filter can be used to adjust either of these values.
+ * Bộ lọc {@see 'embed_defaults'} có thể được sử dụng để điều chỉnh một trong hai giá trị.
  *
  * @since 2.9.0
  *
  * @global int $content_width
  *
- * @param string $url Optional. The URL that should be embedded. Default empty.
+ * @param string $url Tùy chọn. URL cần được nhúng. Mặc định rỗng.
  * @return int[] {
- *     Indexed array of the embed width and height in pixels.
+ *     Mảng chỉ mục của chiều rộng và chiều cao nhúng tính bằng pixel.
  *
- *     @type int $0 The embed width.
- *     @type int $1 The embed height.
+ *     @type int $0 Chiều rộng nhúng.
+ *     @type int $1 Chiều cao nhúng.
  * }
  */
 function wp_embed_defaults( $url = '' ) {
@@ -76,39 +76,39 @@ function wp_embed_defaults( $url = '' ) {
 	$height = min( (int) ceil( $width * 1.5 ), 1000 );
 
 	/**
-	 * Filters the default array of embed dimensions.
+	 * Lọc mảng mặc định của kích thước nhúng.
 	 *
 	 * @since 2.9.0
 	 *
 	 * @param int[]  $size {
-	 *     Indexed array of the embed width and height in pixels.
+	 *     Mảng chỉ mục của chiều rộng và chiều cao nhúng tính bằng pixel.
 	 *
-	 *     @type int $0 The embed width.
-	 *     @type int $1 The embed height.
+	 *     @type int $0 Chiều rộng nhúng.
+	 *     @type int $1 Chiều cao nhúng.
 	 * }
-	 * @param string $url  The URL that should be embedded.
+	 * @param string $url  URL cần được nhúng.
 	 */
 	return apply_filters( 'embed_defaults', compact( 'width', 'height' ), $url );
 }
 
 /**
- * Attempts to fetch the embed HTML for a provided URL using oEmbed.
+ * Cố gắng lấy HTML nhúng cho một URL được cung cấp bằng oEmbed.
  *
  * @since 2.9.0
  *
  * @see WP_oEmbed
  *
- * @param string $url  The URL that should be embedded.
+ * @param string $url  URL cần được nhúng.
  * @param array|string $args {
- *     Optional. Additional arguments for retrieving embed HTML. Default empty.
+ *     Tùy chọn. Các tham số bổ sung để lấy HTML nhúng. Mặc định rỗng.
  *
- *     @type int|string $width    Optional. The `maxwidth` value passed to the provider URL.
- *     @type int|string $height   Optional. The `maxheight` value passed to the provider URL.
- *     @type bool       $discover Optional. Determines whether to attempt to discover link tags
- *                                at the given URL for an oEmbed provider when the provider URL
- *                                is not found in the built-in providers list. Default true.
+ *     @type int|string $width    Tùy chọn. Giá trị `maxwidth` được truyền tới URL nhà cung cấp.
+ *     @type int|string $height   Tùy chọn. Giá trị `maxheight` được truyền tới URL nhà cung cấp.
+ *     @type bool       $discover Tùy chọn. Xác định xem có cố gắng khám phá các thẻ link
+ *                                tại URL đã cho cho một nhà cung cấp oEmbed khi URL nhà cung cấp
+ *                                không được tìm thấy trong danh sách nhà cung cấp tích hợp. Mặc định true.
  * }
- * @return string|false The embed HTML on success, false on failure.
+ * @return string|false HTML nhúng khi thành công, false khi thất bại.
  */
 function wp_oembed_get( $url, $args = '' ) {
 	$oembed = _wp_oembed_get_object();
@@ -116,12 +116,12 @@ function wp_oembed_get( $url, $args = '' ) {
 }
 
 /**
- * Returns the initialized WP_oEmbed object.
+ * Trả về đối tượng WP_oEmbed đã được khởi tạo.
  *
  * @since 2.9.0
  * @access private
  *
- * @return WP_oEmbed object.
+ * @return WP_oEmbed Đối tượng.
  */
 function _wp_oembed_get_object() {
 	static $wp_oembed = null;
@@ -133,16 +133,16 @@ function _wp_oembed_get_object() {
 }
 
 /**
- * Adds a URL format and oEmbed provider URL pair.
+ * Thêm một cặp định dạng URL và URL nhà cung cấp oEmbed.
  *
  * @since 2.9.0
  *
  * @see WP_oEmbed
  *
- * @param string $format   The format of URL that this provider can handle. You can use asterisks
- *                         as wildcards.
- * @param string $provider The URL to the oEmbed provider.
- * @param bool   $regex    Optional. Whether the `$format` parameter is in a RegEx format. Default false.
+ * @param string $format   Định dạng URL mà nhà cung cấp này có thể xử lý. Bạn có thể sử dụng dấu sao
+ *                         làm ký tự đại diện.
+ * @param string $provider URL tới nhà cung cấp oEmbed.
+ * @param bool   $regex    Tùy chọn. Tham số `$format` có ở dạng RegEx hay không. Mặc định false.
  */
 function wp_oembed_add_provider( $format, $provider, $regex = false ) {
 	if ( did_action( 'plugins_loaded' ) ) {
@@ -154,14 +154,14 @@ function wp_oembed_add_provider( $format, $provider, $regex = false ) {
 }
 
 /**
- * Removes an oEmbed provider.
+ * Gỡ bỏ một nhà cung cấp oEmbed.
  *
  * @since 3.5.0
  *
  * @see WP_oEmbed
  *
- * @param string $format The URL format for the oEmbed provider to remove.
- * @return bool Was the provider removed successfully?
+ * @param string $format Định dạng URL của nhà cung cấp oEmbed cần gỡ bỏ.
+ * @return bool Nhà cung cấp đã được gỡ bỏ thành công chưa?
  */
 function wp_oembed_remove_provider( $format ) {
 	if ( did_action( 'plugins_loaded' ) ) {
@@ -179,10 +179,10 @@ function wp_oembed_remove_provider( $format ) {
 }
 
 /**
- * Determines if default embed handlers should be loaded.
+ * Xác định xem các trình xử lý nhúng mặc định có nên được tải hay không.
  *
- * Checks to make sure that the embeds library hasn't already been loaded. If
- * it hasn't, then it will load the embeds library.
+ * Kiểm tra để đảm bảo rằng thư viện nhúng chưa được tải. Nếu
+ * chưa, thì nó sẽ tải thư viện nhúng.
  *
  * @since 2.9.0
  *
@@ -190,13 +190,13 @@ function wp_oembed_remove_provider( $format ) {
  */
 function wp_maybe_load_embeds() {
 	/**
-	 * Filters whether to load the default embed handlers.
+	 * Lọc xem có tải các trình xử lý nhúng mặc định hay không.
 	 *
-	 * Returning a falsey value will prevent loading the default embed handlers.
+	 * Trả về giá trị falsy sẽ ngăn việc tải các trình xử lý nhúng mặc định.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param bool $maybe_load_embeds Whether to load the embeds library. Default true.
+	 * @param bool $maybe_load_embeds Có tải thư viện nhúng hay không. Mặc định true.
 	 */
 	if ( ! apply_filters( 'load_default_embeds', true ) ) {
 		return;
@@ -205,96 +205,96 @@ function wp_maybe_load_embeds() {
 	wp_embed_register_handler( 'youtube_embed_url', '#https?://(www.)?youtube\.com/(?:v|embed)/([^/]+)#i', 'wp_embed_handler_youtube' );
 
 	/**
-	 * Filters the audio embed handler callback.
+	 * Lọc callback trình xử lý nhúng âm thanh.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param callable $handler Audio embed handler callback function.
+	 * @param callable $handler Hàm callback trình xử lý nhúng âm thanh.
 	 */
 	wp_embed_register_handler( 'audio', '#^https?://.+?\.(' . implode( '|', wp_get_audio_extensions() ) . ')$#i', apply_filters( 'wp_audio_embed_handler', 'wp_embed_handler_audio' ), 9999 );
 
 	/**
-	 * Filters the video embed handler callback.
+	 * Lọc callback trình xử lý nhúng video.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param callable $handler Video embed handler callback function.
+	 * @param callable $handler Hàm callback trình xử lý nhúng video.
 	 */
 	wp_embed_register_handler( 'video', '#^https?://.+?\.(' . implode( '|', wp_get_video_extensions() ) . ')$#i', apply_filters( 'wp_video_embed_handler', 'wp_embed_handler_video' ), 9999 );
 }
 
 /**
- * YouTube iframe embed handler callback.
+ * Callback trình xử lý nhúng iframe YouTube.
  *
- * Catches YouTube iframe embed URLs that are not parsable by oEmbed but can be translated into a URL that is.
+ * Bắt các URL nhúng iframe YouTube không thể phân tích bởi oEmbed nhưng có thể chuyển đổi thành URL có thể phân tích.
  *
  * @since 4.0.0
  *
- * @global WP_Embed $wp_embed WordPress Embed object.
+ * @global WP_Embed $wp_embed Đối tượng WordPress Embed.
  *
- * @param array  $matches The RegEx matches from the provided regex when calling
+ * @param array  $matches Các kết quả khớp RegEx từ biểu thức chính quy được cung cấp khi gọi
  *                        wp_embed_register_handler().
- * @param array  $attr    Embed attributes.
- * @param string $url     The original URL that was matched by the regex.
- * @param array  $rawattr The original unmodified attributes.
- * @return string The embed HTML.
+ * @param array  $attr    Các thuộc tính nhúng.
+ * @param string $url     URL gốc được khớp bởi biểu thức chính quy.
+ * @param array  $rawattr Các thuộc tính gốc chưa được sửa đổi.
+ * @return string HTML nhúng.
  */
 function wp_embed_handler_youtube( $matches, $attr, $url, $rawattr ) {
 	global $wp_embed;
 	$embed = $wp_embed->autoembed( sprintf( 'https://youtube.com/watch?v=%s', urlencode( $matches[2] ) ) );
 
 	/**
-	 * Filters the YouTube embed output.
+	 * Lọc đầu ra nhúng YouTube.
 	 *
 	 * @since 4.0.0
 	 *
 	 * @see wp_embed_handler_youtube()
 	 *
-	 * @param string $embed   YouTube embed output.
-	 * @param array  $attr    An array of embed attributes.
-	 * @param string $url     The original URL that was matched by the regex.
-	 * @param array  $rawattr The original unmodified attributes.
+	 * @param string $embed   Đầu ra nhúng YouTube.
+	 * @param array  $attr    Một mảng các thuộc tính nhúng.
+	 * @param string $url     URL gốc được khớp bởi biểu thức chính quy.
+	 * @param array  $rawattr Các thuộc tính gốc chưa được sửa đổi.
 	 */
 	return apply_filters( 'wp_embed_handler_youtube', $embed, $attr, $url, $rawattr );
 }
 
 /**
- * Audio embed handler callback.
+ * Callback trình xử lý nhúng âm thanh.
  *
  * @since 3.6.0
  *
- * @param array  $matches The RegEx matches from the provided regex when calling wp_embed_register_handler().
- * @param array  $attr Embed attributes.
- * @param string $url The original URL that was matched by the regex.
- * @param array  $rawattr The original unmodified attributes.
- * @return string The embed HTML.
+ * @param array  $matches Các kết quả khớp RegEx từ biểu thức chính quy khi gọi wp_embed_register_handler().
+ * @param array  $attr Các thuộc tính nhúng.
+ * @param string $url URL gốc được khớp bởi biểu thức chính quy.
+ * @param array  $rawattr Các thuộc tính gốc chưa được sửa đổi.
+ * @return string HTML nhúng.
  */
 function wp_embed_handler_audio( $matches, $attr, $url, $rawattr ) {
 	$audio = sprintf( '[audio src="%s" /]', esc_url( $url ) );
 
 	/**
-	 * Filters the audio embed output.
+	 * Lọc đầu ra nhúng âm thanh.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $audio   Audio embed output.
-	 * @param array  $attr    An array of embed attributes.
-	 * @param string $url     The original URL that was matched by the regex.
-	 * @param array  $rawattr The original unmodified attributes.
+	 * @param string $audio   Đầu ra nhúng âm thanh.
+	 * @param array  $attr    Một mảng các thuộc tính nhúng.
+	 * @param string $url     URL gốc được khớp bởi biểu thức chính quy.
+	 * @param array  $rawattr Các thuộc tính gốc chưa được sửa đổi.
 	 */
 	return apply_filters( 'wp_embed_handler_audio', $audio, $attr, $url, $rawattr );
 }
 
 /**
- * Video embed handler callback.
+ * Callback trình xử lý nhúng video.
  *
  * @since 3.6.0
  *
- * @param array  $matches The RegEx matches from the provided regex when calling wp_embed_register_handler().
- * @param array  $attr    Embed attributes.
- * @param string $url     The original URL that was matched by the regex.
- * @param array  $rawattr The original unmodified attributes.
- * @return string The embed HTML.
+ * @param array  $matches Các kết quả khớp RegEx từ biểu thức chính quy khi gọi wp_embed_register_handler().
+ * @param array  $attr    Các thuộc tính nhúng.
+ * @param string $url     URL gốc được khớp bởi biểu thức chính quy.
+ * @param array  $rawattr Các thuộc tính gốc chưa được sửa đổi.
+ * @return string HTML nhúng.
  */
 function wp_embed_handler_video( $matches, $attr, $url, $rawattr ) {
 	$dimensions = '';
@@ -305,20 +305,20 @@ function wp_embed_handler_video( $matches, $attr, $url, $rawattr ) {
 	$video = sprintf( '[video %s src="%s" /]', $dimensions, esc_url( $url ) );
 
 	/**
-	 * Filters the video embed output.
+	 * Lọc đầu ra nhúng video.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $video   Video embed output.
-	 * @param array  $attr    An array of embed attributes.
-	 * @param string $url     The original URL that was matched by the regex.
-	 * @param array  $rawattr The original unmodified attributes.
+	 * @param string $video   Đầu ra nhúng video.
+	 * @param array  $attr    Một mảng các thuộc tính nhúng.
+	 * @param string $url     URL gốc được khớp bởi biểu thức chính quy.
+	 * @param array  $rawattr Các thuộc tính gốc chưa được sửa đổi.
 	 */
 	return apply_filters( 'wp_embed_handler_video', $video, $attr, $url, $rawattr );
 }
 
 /**
- * Registers the oEmbed REST API route.
+ * Đăng ký route REST API oEmbed.
  *
  * @since 4.4.0
  */
@@ -328,10 +328,10 @@ function wp_oembed_register_route() {
 }
 
 /**
- * Adds oEmbed discovery links in the head element of the website.
+ * Thêm các liên kết khám phá oEmbed vào phần tử head của website.
  *
  * @since 4.4.0
- * @since 6.8.0 Output was adjusted to only embed if the post supports it.
+ * @since 6.8.0 Đầu ra được điều chỉnh để chỉ nhúng nếu bài viết hỗ trợ.
  */
 function wp_oembed_add_discovery_links() {
 	$output = '';
@@ -345,46 +345,46 @@ function wp_oembed_add_discovery_links() {
 	}
 
 	/**
-	 * Filters the oEmbed discovery links HTML.
+	 * Lọc HTML các liên kết khám phá oEmbed.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $output HTML of the discovery links.
+	 * @param string $output HTML của các liên kết khám phá.
 	 */
 	echo apply_filters( 'oembed_discovery_links', $output );
 }
 
 /**
- * Adds the necessary JavaScript to communicate with the embedded iframes.
+ * Thêm JavaScript cần thiết để giao tiếp với các iframe được nhúng.
  *
- * This function is no longer used directly. For back-compat it exists exclusively as a way to indicate that the oEmbed
- * host JS _should_ be added. In `default-filters.php` there remains this code:
+ * Hàm này không còn được sử dụng trực tiếp nữa. Để tương thích ngược, nó tồn tại duy nhất như một cách để chỉ ra rằng
+ * JS host oEmbed _nên_ được thêm vào. Trong `default-filters.php` vẫn còn đoạn mã:
  *
  *     add_action( 'wp_head', 'wp_oembed_add_host_js' )
  *
- * Historically a site has been able to disable adding the oEmbed host script by doing:
+ * Trước đây một trang web có thể vô hiệu hóa việc thêm script host oEmbed bằng cách:
  *
  *     remove_action( 'wp_head', 'wp_oembed_add_host_js' )
  *
- * In order to ensure that such code still works as expected, this function remains. There is now a `has_action()` check
- * in `wp_maybe_enqueue_oembed_host_js()` to see if `wp_oembed_add_host_js()` has not been unhooked from running at the
- * `wp_head` action.
+ * Để đảm bảo rằng mã như vậy vẫn hoạt động như mong đợi, hàm này vẫn được giữ lại. Hiện có kiểm tra `has_action()`
+ * trong `wp_maybe_enqueue_oembed_host_js()` để xem liệu `wp_oembed_add_host_js()` chưa bị gỡ hook khỏi
+ * action `wp_head`.
  *
  * @since 4.4.0
- * @deprecated 5.9.0 Use {@see wp_maybe_enqueue_oembed_host_js()} instead.
+ * @deprecated 5.9.0 Sử dụng {@see wp_maybe_enqueue_oembed_host_js()} thay thế.
  */
 function wp_oembed_add_host_js() {}
 
 /**
- * Enqueue the wp-embed script if the provided oEmbed HTML contains a post embed.
+ * Đưa script wp-embed vào hàng đợi nếu HTML oEmbed được cung cấp chứa một bài viết nhúng.
  *
- * In order to only enqueue the wp-embed script on pages that actually contain post embeds, this function checks if the
- * provided HTML contains post embed markup and if so enqueues the script so that it will get printed in the footer.
+ * Để chỉ đưa script wp-embed vào hàng đợi trên các trang thực sự chứa bài viết nhúng, hàm này kiểm tra xem
+ * HTML được cung cấp có chứa markup bài viết nhúng hay không và nếu có thì đưa script vào hàng đợi để được in ở footer.
  *
  * @since 5.9.0
  *
- * @param string $html Embed markup.
- * @return string Embed markup (without modifications).
+ * @param string $html Markup nhúng.
+ * @return string Markup nhúng (không có sửa đổi).
  */
 function wp_maybe_enqueue_oembed_host_js( $html ) {
 	if (
@@ -398,12 +398,12 @@ function wp_maybe_enqueue_oembed_host_js( $html ) {
 }
 
 /**
- * Retrieves the URL to embed a specific post in an iframe.
+ * Lấy URL để nhúng một bài viết cụ thể trong iframe.
  *
  * @since 4.4.0
  *
- * @param int|WP_Post $post Optional. Post ID or object. Defaults to the current post.
- * @return string|false The post embed URL on success, false if the post doesn't exist.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng. Mặc định là bài viết hiện tại.
+ * @return string|false URL nhúng bài viết khi thành công, false nếu bài viết không tồn tại.
  */
 function get_post_embed_url( $post = null ) {
 	$post = get_post( $post );
@@ -420,26 +420,26 @@ function get_post_embed_url( $post = null ) {
 	}
 
 	/**
-	 * Filters the URL to embed a specific post.
+	 * Lọc URL để nhúng một bài viết cụ thể.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string  $embed_url The post embed URL.
-	 * @param WP_Post $post      The corresponding post object.
+	 * @param string  $embed_url URL nhúng bài viết.
+	 * @param WP_Post $post      Đối tượng bài viết tương ứng.
 	 */
 	return sanitize_url( apply_filters( 'post_embed_url', $embed_url, $post ) );
 }
 
 /**
- * Retrieves the oEmbed endpoint URL for a given permalink.
+ * Lấy URL endpoint oEmbed cho một permalink được cho.
  *
- * Pass an empty string as the first argument to get the endpoint base URL.
+ * Truyền chuỗi rỗng làm đối số đầu tiên để lấy URL cơ sở endpoint.
  *
  * @since 4.4.0
  *
- * @param string $permalink Optional. The permalink used for the `url` query arg. Default empty.
- * @param string $format    Optional. The requested response format. Default 'json'.
- * @return string The oEmbed endpoint URL.
+ * @param string $permalink Tùy chọn. Permalink được sử dụng cho đối số query `url`. Mặc định rỗng.
+ * @param string $format    Tùy chọn. Định dạng phản hồi được yêu cầu. Mặc định 'json'.
+ * @return string URL endpoint oEmbed.
  */
 function get_oembed_endpoint_url( $permalink = '', $format = 'json' ) {
 	$url = rest_url( 'oembed/1.0/embed' );
@@ -455,26 +455,26 @@ function get_oembed_endpoint_url( $permalink = '', $format = 'json' ) {
 	}
 
 	/**
-	 * Filters the oEmbed endpoint URL.
+	 * Lọc URL endpoint oEmbed.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $url       The URL to the oEmbed endpoint.
-	 * @param string $permalink The permalink used for the `url` query arg.
-	 * @param string $format    The requested response format.
+	 * @param string $url       URL tới endpoint oEmbed.
+	 * @param string $permalink Permalink được sử dụng cho đối số query `url`.
+	 * @param string $format    Định dạng phản hồi được yêu cầu.
 	 */
 	return apply_filters( 'oembed_endpoint_url', $url, $permalink, $format );
 }
 
 /**
- * Retrieves the embed code for a specific post.
+ * Lấy mã nhúng cho một bài viết cụ thể.
  *
  * @since 4.4.0
  *
- * @param int         $width  The width for the response.
- * @param int         $height The height for the response.
- * @param int|WP_Post $post   Optional. Post ID or object. Default is global `$post`.
- * @return string|false Embed code on success, false if post doesn't exist.
+ * @param int         $width  Chiều rộng cho phản hồi.
+ * @param int         $height Chiều cao cho phản hồi.
+ * @param int|WP_Post $post   Tùy chọn. ID bài viết hoặc đối tượng. Mặc định là `$post` toàn cục.
+ * @return string|false Mã nhúng khi thành công, false nếu bài viết không tồn tại.
  */
 function get_post_embed_html( $width, $height, $post = null ) {
 	$post = get_post( $post );
@@ -512,11 +512,11 @@ function get_post_embed_html( $width, $height, $post = null ) {
 	);
 
 	/*
-	 * Note that the script must be placed after the <blockquote> and <iframe> due to a regexp parsing issue in
-	 * `wp_filter_oembed_result()`. Because of the regex pattern starts with `|(<blockquote>.*?</blockquote>)?.*|`
-	 * wherein the <blockquote> is marked as being optional, if it is not at the beginning of the string then the group
-	 * will fail to match and everything will be matched by `.*` and not included in the group. This regex issue goes
-	 * back to WordPress 4.4, so in order to not break older installs this script must come at the end.
+	 * Lưu ý rằng script phải được đặt sau <blockquote> và <iframe> do lỗi phân tích regexp trong
+	 * `wp_filter_oembed_result()`. Vì mẫu regex bắt đầu với `|(<blockquote>.*?</blockquote>)?.*|`
+	 * trong đó <blockquote> được đánh dấu là tùy chọn, nếu nó không ở đầu chuỗi thì nhóm
+	 * sẽ không khớp và mọi thứ sẽ được khớp bởi `.*` và không được bao gồm trong nhóm. Lỗi regex này
+	 * có từ WordPress 4.4, vì vậy để không phá vỡ các bản cài đặt cũ, script này phải ở cuối.
 	 */
 	$output .= wp_get_inline_script_tag(
 		file_get_contents( ABSPATH . WPINC . '/js/wp-embed' . wp_scripts_get_suffix() . '.js' )

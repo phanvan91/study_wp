@@ -1,6 +1,6 @@
 <?php
 /**
- * PemFTP - An Ftp implementation in pure PHP
+ * PemFTP - Triển khai FTP bằng PHP thuần
  *
  * @package PemFTP
  * @since 2.5.0
@@ -13,7 +13,7 @@
  */
 
 /**
- * Socket Based FTP implementation
+ * Triển khai FTP dựa trên Socket
  *
  * @package PemFTP
  * @subpackage Socket
@@ -32,7 +32,7 @@ class ftp_sockets extends ftp_base {
 	}
 
 // <!-- --------------------------------------------------------------------------------------- -->
-// <!--       Private functions                                                                 -->
+// <!--       Các hàm riêng tư                                                                  -->
 // <!-- --------------------------------------------------------------------------------------- -->
 
 	function _settimeout($sock) {

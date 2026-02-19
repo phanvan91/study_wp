@@ -1,18 +1,18 @@
 <?php
 /**
- * New Post Administration Screen.
+ * Màn hình quản trị Tạo bài viết mới.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** Load WordPress Administration Bootstrap */
+/** Tải WordPress Administration Bootstrap */
 require_once __DIR__ . '/admin.php';
 
 /**
- * @global string       $post_type        Global post type.
- * @global WP_Post_Type $post_type_object Global post type object.
- * @global WP_Post      $post             Global post object.
+ * @global string       $post_type        Loại bài viết toàn cục.
+ * @global WP_Post_Type $post_type_object Đối tượng loại bài viết toàn cục.
+ * @global WP_Post      $post             Đối tượng bài viết toàn cục.
  */
 global $post_type, $post_type_object, $post;
 
@@ -36,13 +36,13 @@ if ( 'post' === $post_type ) {
 	$submenu_file = "post-new.php?post_type=$post_type";
 	if ( isset( $post_type_object ) && $post_type_object->show_in_menu && true !== $post_type_object->show_in_menu ) {
 		$parent_file = $post_type_object->show_in_menu;
-		// What if there isn't a post-new.php item for this post type?
+		// Nếu không có mục post-new.php cho loại bài viết này thì sao?
 		if ( ! isset( $_registered_pages[ get_plugin_page_hookname( "post-new.php?post_type=$post_type", $post_type_object->show_in_menu ) ] ) ) {
 			if ( isset( $_registered_pages[ get_plugin_page_hookname( "edit.php?post_type=$post_type", $post_type_object->show_in_menu ) ] ) ) {
-				// Fall back to edit.php for that post type, if it exists.
+				// Quay lại edit.php cho loại bài viết đó, nếu tồn tại.
 				$submenu_file = "edit.php?post_type=$post_type";
 			} else {
-				// Otherwise, give up and highlight the parent.
+				// Nếu không, bỏ cuộc và tô sáng mục cha.
 				$submenu_file = $parent_file;
 			}
 		}
@@ -66,7 +66,7 @@ if ( ! current_user_can( $post_type_object->cap->edit_posts ) || ! current_user_
 $post    = get_default_post_to_edit( $post_type, true );
 $post_ID = $post->ID;
 
-/** This filter is documented in wp-admin/post.php */
+/** Bộ lọc này được ghi chú trong wp-admin/post.php */
 if ( apply_filters( 'replace_editor', false, $post ) !== true ) {
 	if ( use_block_editor_for_post( $post ) ) {
 		require ABSPATH . 'wp-admin/edit-form-blocks.php';
@@ -75,7 +75,7 @@ if ( apply_filters( 'replace_editor', false, $post ) !== true ) {
 		require ABSPATH . 'wp-admin/edit-form-advanced.php';
 	}
 } else {
-	// Flag that we're not loading the block editor.
+	// Đánh dấu rằng chúng ta không tải trình soạn thảo khối.
 	$current_screen = get_current_screen();
 	$current_screen->is_block_editor( false );
 }

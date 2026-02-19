@@ -1,16 +1,16 @@
 <?php
 /**
- * Edit Posts Administration Screen.
+ * Màn hình quản trị Chỉnh sửa bài viết.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Tải WordPress Administration Bootstrap */
 require_once __DIR__ . '/admin.php';
 
 /**
- * @global string $typenow The post type of the current screen.
+ * @global string $typenow Loại bài viết của màn hình hiện tại.
  */
 global $typenow;
 
@@ -29,8 +29,8 @@ if ( 'attachment' === $typenow ) {
 }
 
 /**
- * @global string       $post_type        Global post type.
- * @global WP_Post_Type $post_type_object Global post type object.
+ * @global string       $post_type        Loại bài viết toàn cục.
+ * @global WP_Post_Type $post_type_object Đối tượng loại bài viết toàn cục.
  */
 global $post_type, $post_type_object;
 
@@ -52,7 +52,7 @@ if ( ! current_user_can( $post_type_object->cap->edit_posts ) ) {
 $wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 $pagenum       = $wp_list_table->get_pagenum();
 
-// Back-compat for viewing comments of an entry.
+// Tương thích ngược để xem bình luận của một mục.
 foreach ( array( 'p', 'attachment_id', 'page_id' ) as $_redirect ) {
 	if ( ! empty( $_REQUEST[ $_redirect ] ) ) {
 		wp_redirect( admin_url( 'edit-comments.php?p=' . absint( $_REQUEST[ $_redirect ] ) ) );
@@ -88,12 +88,12 @@ if ( $doaction ) {
 	$post_ids = array();
 
 	if ( 'delete_all' === $doaction ) {
-		// Prepare for deletion of all posts with a specified post status (i.e. Empty Trash).
+		// Chuẩn bị xóa tất cả bài viết với trạng thái được chỉ định (tức là Dọn sạch Thùng rác).
 		$post_status = preg_replace( '/[^a-z0-9_-]+/i', '', $_REQUEST['post_status'] );
-		// Validate the post status exists.
+		// Kiểm tra trạng thái bài viết tồn tại.
 		if ( get_post_status_object( $post_status ) ) {
 			/**
-			 * @global wpdb $wpdb WordPress database abstraction object.
+			 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 			 */
 			global $wpdb;
 
@@ -205,19 +205,19 @@ if ( $doaction ) {
 			$screen = get_current_screen()->id;
 
 			/**
-			 * Fires when a custom bulk action should be handled.
+			 * Kích hoạt khi cần xử lý hành động hàng loạt tùy chỉnh.
 			 *
-			 * The redirect link should be modified with success or failure feedback
-			 * from the action to be used to display feedback to the user.
+			 * Liên kết chuyển hướng nên được sửa đổi với phản hồi thành công hoặc thất bại
+			 * từ hành động để hiển thị phản hồi cho người dùng.
 			 *
-			 * The dynamic portion of the hook name, `$screen`, refers to the current screen ID.
+			 * Phần động của tên hook, `$screen`, tham chiếu đến ID màn hình hiện tại.
 			 *
 			 * @since 4.7.0
 			 *
-			 * @param string $sendback The redirect URL.
-			 * @param string $doaction The action being taken.
-			 * @param array  $items    The items to take the action on. Accepts an array of IDs of posts,
-			 *                         comments, terms, links, plugins, attachments, or users.
+			 * @param string $sendback URL chuyển hướng.
+			 * @param string $doaction Hành động đang được thực hiện.
+			 * @param array  $items    Các mục để thực hiện hành động. Chấp nhận mảng ID của bài viết,
+			 *                         bình luận, thuật ngữ, liên kết, plugin, tệp đính kèm, hoặc người dùng.
 			 */
 			$sendback = apply_filters( "handle_bulk_actions-{$screen}", $sendback, $doaction, $post_ids ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 			break;
@@ -242,7 +242,7 @@ if ( 'wp_block' === $post_type ) {
 	wp_enqueue_style( 'wp-list-reusable-blocks' );
 }
 
-// Used in the HTML title tag.
+// Sử dụng trong thẻ HTML title.
 $title = $post_type_object->labels->name;
 
 if ( 'post' === $post_type ) {
@@ -395,15 +395,15 @@ $bulk_messages['wp_block'] = array(
 );
 
 /**
- * Filters the bulk action updated messages.
+ * Lọc các thông báo cập nhật hành động hàng loạt.
  *
- * By default, custom post types use the messages for the 'post' post type.
+ * Mặc định, các loại bài viết tùy chỉnh sử dụng thông báo của loại bài viết 'post'.
  *
  * @since 3.7.0
  *
- * @param array[] $bulk_messages Arrays of messages, each keyed by the corresponding post type. Messages are
- *                               keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
- * @param int[]   $bulk_counts   Array of item counts for each message, used to build internationalized strings.
+ * @param array[] $bulk_messages Mảng các thông báo, mỗi mảng được đánh khóa bởi loại bài viết tương ứng. Thông báo
+ *                               được đánh khóa với 'updated', 'locked', 'deleted', 'trashed', và 'untrashed'.
+ * @param int[]   $bulk_counts   Mảng số lượng mục cho mỗi thông báo, dùng để xây dựng chuỗi đa ngôn ngữ.
  */
 $bulk_messages = apply_filters( 'bulk_post_updated_messages', $bulk_messages, $bulk_counts );
 $bulk_counts   = array_filter( $bulk_counts );
@@ -436,7 +436,7 @@ if ( isset( $_REQUEST['s'] ) && strlen( $_REQUEST['s'] ) ) {
 <hr class="wp-header-end">
 
 <?php
-// If we have a bulk message to issue:
+// Nếu có thông báo hàng loạt cần hiển thị:
 $messages = array();
 foreach ( $bulk_counts as $message => $count ) {
 	if ( isset( $bulk_messages[ $post_type ][ $message ] ) ) {

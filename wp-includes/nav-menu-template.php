@@ -1,63 +1,63 @@
 <?php
 /**
- * Nav Menu API: Template functions
+ * API Menu Điều hướng: Các hàm template
  *
  * @package WordPress
  * @subpackage Nav_Menus
  * @since 3.0.0
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-/** Walker_Nav_Menu class */
+/** Lớp Walker_Nav_Menu */
 require_once ABSPATH . WPINC . '/class-walker-nav-menu.php';
 
 /**
- * Displays a navigation menu.
+ * Hiển thị menu điều hướng.
  *
  * @since 3.0.0
- * @since 4.7.0 Added the `item_spacing` argument.
- * @since 5.5.0 Added the `container_aria_label` argument.
+ * @since 4.7.0 Thêm đối số `item_spacing`.
+ * @since 5.5.0 Thêm đối số `container_aria_label`.
  *
  * @param array $args {
- *     Optional. Array of nav menu arguments.
+ *     Tùy chọn. Mảng các đối số menu điều hướng.
  *
- *     @type int|string|WP_Term $menu                 Desired menu. Accepts a menu ID, slug, name, or object.
- *                                                    Default empty.
- *     @type string             $menu_class           CSS class to use for the ul element which forms the menu.
- *                                                    Default 'menu'.
- *     @type string             $menu_id              The ID that is applied to the ul element which forms the menu.
- *                                                    Default is the menu slug, incremented.
- *     @type string             $container            Whether to wrap the ul, and what to wrap it with.
- *                                                    Default 'div'.
- *     @type string             $container_class      Class that is applied to the container.
- *                                                    Default 'menu-{menu slug}-container'.
- *     @type string             $container_id         The ID that is applied to the container. Default empty.
- *     @type string             $container_aria_label The aria-label attribute that is applied to the container
- *                                                    when it's a nav element. Default empty.
- *     @type callable|false     $fallback_cb          If the menu doesn't exist, a callback function will fire.
- *                                                    Default is 'wp_page_menu'. Set to false for no fallback.
- *     @type string             $before               Text before the link markup. Default empty.
- *     @type string             $after                Text after the link markup. Default empty.
- *     @type string             $link_before          Text before the link text. Default empty.
- *     @type string             $link_after           Text after the link text. Default empty.
- *     @type bool               $echo                 Whether to echo the menu or return it. Default true.
- *     @type int                $depth                How many levels of the hierarchy are to be included.
- *                                                    0 means all. Default 0.
- *                                                    Default 0.
- *     @type object             $walker               Instance of a custom walker class. Default empty.
- *     @type string             $theme_location       Theme location to be used. Must be registered with
- *                                                    register_nav_menu() in order to be selectable by the user.
- *     @type string             $items_wrap           How the list items should be wrapped. Uses printf() format with
- *                                                    numbered placeholders. Default is a ul with an id and class.
- *     @type string             $item_spacing         Whether to preserve whitespace within the menu's HTML.
- *                                                    Accepts 'preserve' or 'discard'. Default 'preserve'.
+ *     @type int|string|WP_Term $menu                 Menu mong muốn. Chấp nhận ID menu, slug, tên, hoặc đối tượng.
+ *                                                    Mặc định rỗng.
+ *     @type string             $menu_class           Lớp CSS sử dụng cho phần tử ul tạo thành menu.
+ *                                                    Mặc định 'menu'.
+ *     @type string             $menu_id              ID được áp dụng cho phần tử ul tạo thành menu.
+ *                                                    Mặc định là slug menu, tăng dần.
+ *     @type string             $container            Có bọc phần tử ul hay không, và bọc bằng gì.
+ *                                                    Mặc định 'div'.
+ *     @type string             $container_class      Lớp được áp dụng cho container.
+ *                                                    Mặc định 'menu-{menu slug}-container'.
+ *     @type string             $container_id         ID được áp dụng cho container. Mặc định rỗng.
+ *     @type string             $container_aria_label Thuộc tính aria-label được áp dụng cho container
+ *                                                    khi nó là phần tử nav. Mặc định rỗng.
+ *     @type callable|false     $fallback_cb          Nếu menu không tồn tại, hàm callback dự phòng sẽ được gọi.
+ *                                                    Mặc định 'wp_page_menu'. Đặt false để không có dự phòng.
+ *     @type string             $before               Văn bản trước markup liên kết. Mặc định rỗng.
+ *     @type string             $after                Văn bản sau markup liên kết. Mặc định rỗng.
+ *     @type string             $link_before          Văn bản trước nội dung liên kết. Mặc định rỗng.
+ *     @type string             $link_after           Văn bản sau nội dung liên kết. Mặc định rỗng.
+ *     @type bool               $echo                 Có echo menu hay trả về nó. Mặc định true.
+ *     @type int                $depth                Bao nhiêu cấp của hệ thống phân cấp sẽ được bao gồm.
+ *                                                    0 nghĩa là tất cả. Mặc định 0.
+ *                                                    Mặc định 0.
+ *     @type object             $walker               Thể hiện của lớp walker tùy chỉnh. Mặc định rỗng.
+ *     @type string             $theme_location       Vị trí theme sẽ được sử dụng. Phải đăng ký với
+ *                                                    register_nav_menu() để người dùng có thể chọn.
+ *     @type string             $items_wrap           Cách các mục danh sách nên được bọc. Sử dụng định dạng printf() với
+ *                                                    các placeholder được đánh số. Mặc định là ul với id và class.
+ *     @type string             $item_spacing         Có giữ khoảng trắng trong HTML của menu hay không.
+ *                                                    Chấp nhận 'preserve' hoặc 'discard'. Mặc định 'preserve'.
  * }
- * @return void|string|false Void if 'echo' argument is true, menu output if 'echo' is false.
- *                           False if there are no items or no menu was found.
+ * @return void|string|false Void nếu đối số 'echo' là true, đầu ra menu nếu 'echo' là false.
+ *                           False nếu không có mục nào hoặc không tìm thấy menu.
  */
 function wp_nav_menu( $args = array() ) {
 	static $menu_id_slugs = array();
@@ -86,34 +86,34 @@ function wp_nav_menu( $args = array() ) {
 	$args = wp_parse_args( $args, $defaults );
 
 	if ( ! in_array( $args['item_spacing'], array( 'preserve', 'discard' ), true ) ) {
-		// Invalid value, fall back to default.
+		// Giá trị không hợp lệ, quay về mặc định.
 		$args['item_spacing'] = $defaults['item_spacing'];
 	}
 
 	/**
-	 * Filters the arguments used to display a navigation menu.
+	 * Lọc các đối số được sử dụng để hiển thị menu điều hướng.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @see wp_nav_menu()
 	 *
-	 * @param array $args Array of wp_nav_menu() arguments.
+	 * @param array $args Mảng các đối số wp_nav_menu().
 	 */
 	$args = apply_filters( 'wp_nav_menu_args', $args );
 	$args = (object) $args;
 
 	/**
-	 * Filters whether to short-circuit the wp_nav_menu() output.
+	 * Lọc xem có bỏ qua đầu ra wp_nav_menu() hay không.
 	 *
-	 * Returning a non-null value from the filter will short-circuit wp_nav_menu(),
-	 * echoing that value if $args->echo is true, returning that value otherwise.
+	 * Trả về giá trị khác null từ bộ lọc sẽ bỏ qua wp_nav_menu(),
+	 * echo giá trị đó nếu $args->echo là true, trả về giá trị đó trong trường hợp ngược lại.
 	 *
 	 * @since 3.9.0
 	 *
 	 * @see wp_nav_menu()
 	 *
-	 * @param string|null $output Nav menu output to short-circuit with. Default null.
-	 * @param stdClass    $args   An object containing wp_nav_menu() arguments.
+	 * @param string|null $output Đầu ra menu điều hướng để bỏ qua. Mặc định null.
+	 * @param stdClass    $args   Đối tượng chứa các đối số wp_nav_menu().
 	 */
 	$nav_menu = apply_filters( 'pre_wp_nav_menu', null, $args );
 
@@ -126,16 +126,16 @@ function wp_nav_menu( $args = array() ) {
 		return $nav_menu;
 	}
 
-	// Get the nav menu based on the requested menu.
+	// Lấy menu điều hướng dựa trên menu được yêu cầu.
 	$menu = wp_get_nav_menu_object( $args->menu );
 
-	// Get the nav menu based on the theme_location.
+	// Lấy menu điều hướng dựa trên theme_location.
 	$locations = get_nav_menu_locations();
 	if ( ! $menu && $args->theme_location && $locations && isset( $locations[ $args->theme_location ] ) ) {
 		$menu = wp_get_nav_menu_object( $locations[ $args->theme_location ] );
 	}
 
-	// Get the first menu that has items if we still can't find a menu.
+	// Lấy menu đầu tiên có các mục nếu vẫn chưa tìm thấy menu.
 	if ( ! $menu && ! $args->theme_location ) {
 		$menus = wp_get_nav_menus();
 		foreach ( $menus as $menu_maybe ) {
@@ -151,18 +151,18 @@ function wp_nav_menu( $args = array() ) {
 		$args->menu = $menu;
 	}
 
-	// If the menu exists, get its items.
+	// Nếu menu tồn tại, lấy các mục của nó.
 	if ( $menu && ! is_wp_error( $menu ) && ! isset( $menu_items ) ) {
 		$menu_items = wp_get_nav_menu_items( $menu->term_id, array( 'update_post_term_cache' => false ) );
 	}
 
 	/*
-	 * If no menu was found:
-	 *  - Fall back (if one was specified), or bail.
+	 * Nếu không tìm thấy menu:
+	 *  - Sử dụng dự phòng (nếu có chỉ định), hoặc thoát.
 	 *
-	 * If no menu items were found:
-	 *  - Fall back, but only if no theme location was specified.
-	 *  - Otherwise, bail.
+	 * Nếu không tìm thấy mục menu nào:
+	 *  - Sử dụng dự phòng, nhưng chỉ khi không có vị trí theme nào được chỉ định.
+	 *  - Nếu không, thoát.
 	 */
 	if ( ( ! $menu || is_wp_error( $menu ) || ( isset( $menu_items ) && empty( $menu_items ) && ! $args->theme_location ) )
 		&& isset( $args->fallback_cb ) && $args->fallback_cb && is_callable( $args->fallback_cb ) ) {
@@ -179,12 +179,12 @@ function wp_nav_menu( $args = array() ) {
 	$show_container = false;
 	if ( $args->container ) {
 		/**
-		 * Filters the list of HTML tags that are valid for use as menu containers.
+		 * Lọc danh sách các thẻ HTML hợp lệ để sử dụng làm container menu.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string[] $tags The acceptable HTML tags for use as menu containers.
-		 *                       Default is array containing 'div' and 'nav'.
+		 * @param string[] $tags Các thẻ HTML được chấp nhận để sử dụng làm container menu.
+		 *                       Mặc định là mảng chứa 'div' và 'nav'.
 		 */
 		$allowed_tags = apply_filters( 'wp_nav_menu_container_allowedtags', array( 'div', 'nav' ) );
 
@@ -197,15 +197,15 @@ function wp_nav_menu( $args = array() ) {
 		}
 	}
 
-	// Set up the $menu_item variables.
+	// Thiết lập các biến $menu_item.
 	_wp_menu_item_classes_by_context( $menu_items );
 
 	$sorted_menu_items        = array();
 	$menu_items_with_children = array();
 	foreach ( (array) $menu_items as $menu_item ) {
 		/*
-		 * Fix invalid `menu_item_parent`. See: https://core.trac.wordpress.org/ticket/56926.
-		 * Compare as strings. Plugins may change the ID to a string.
+		 * Sửa `menu_item_parent` không hợp lệ. Xem: https://core.trac.wordpress.org/ticket/56926.
+		 * So sánh dưới dạng chuỗi. Plugin có thể thay đổi ID thành chuỗi.
 		 */
 		if ( (string) $menu_item->ID === (string) $menu_item->menu_item_parent ) {
 			$menu_item->menu_item_parent = 0;
@@ -217,7 +217,7 @@ function wp_nav_menu( $args = array() ) {
 		}
 	}
 
-	// Add the menu-item-has-children class where applicable.
+	// Thêm lớp menu-item-has-children nơi phù hợp.
 	if ( $menu_items_with_children ) {
 		foreach ( $sorted_menu_items as &$menu_item ) {
 			if ( isset( $menu_items_with_children[ $menu_item->ID ] ) ) {
@@ -229,19 +229,19 @@ function wp_nav_menu( $args = array() ) {
 	unset( $menu_items, $menu_item );
 
 	/**
-	 * Filters the sorted list of menu item objects before generating the menu's HTML.
+	 * Lọc danh sách đã sắp xếp các đối tượng mục menu trước khi tạo HTML của menu.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param array    $sorted_menu_items The menu items, sorted by each menu item's menu order.
-	 * @param stdClass $args              An object containing wp_nav_menu() arguments.
+	 * @param array    $sorted_menu_items Các mục menu, sắp xếp theo thứ tự menu của từng mục.
+	 * @param stdClass $args              Đối tượng chứa các đối số wp_nav_menu().
 	 */
 	$sorted_menu_items = apply_filters( 'wp_nav_menu_objects', $sorted_menu_items, $args );
 
 	$items .= walk_nav_menu_tree( $sorted_menu_items, $args->depth, $args );
 	unset( $sorted_menu_items );
 
-	// Attributes.
+	// Thuộc tính.
 	if ( ! empty( $args->menu_id ) ) {
 		$wrap_id = $args->menu_id;
 	} else {
@@ -260,29 +260,29 @@ function wp_nav_menu( $args = array() ) {
 	$wrap_class = $args->menu_class ? $args->menu_class : '';
 
 	/**
-	 * Filters the HTML list content for navigation menus.
+	 * Lọc nội dung danh sách HTML cho các mục menu điều hướng.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @see wp_nav_menu()
 	 *
-	 * @param string   $items The HTML list content for the menu items.
-	 * @param stdClass $args  An object containing wp_nav_menu() arguments.
+	 * @param string   $items Nội dung danh sách HTML cho các mục menu.
+	 * @param stdClass $args  Đối tượng chứa các đối số wp_nav_menu().
 	 */
 	$items = apply_filters( 'wp_nav_menu_items', $items, $args );
 	/**
-	 * Filters the HTML list content for a specific navigation menu.
+	 * Lọc nội dung danh sách HTML cho một menu điều hướng cụ thể.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @see wp_nav_menu()
 	 *
-	 * @param string   $items The HTML list content for the menu items.
-	 * @param stdClass $args  An object containing wp_nav_menu() arguments.
+	 * @param string   $items Nội dung danh sách HTML cho các mục menu.
+	 * @param stdClass $args  Đối tượng chứa các đối số wp_nav_menu().
 	 */
 	$items = apply_filters( "wp_nav_menu_{$menu->slug}_items", $items, $args );
 
-	// Don't print any markup if there are no items at this point.
+	// Không in bất kỳ markup nào nếu không có mục nào tại thời điểm này.
 	if ( empty( $items ) ) {
 		return false;
 	}
@@ -295,14 +295,14 @@ function wp_nav_menu( $args = array() ) {
 	}
 
 	/**
-	 * Filters the HTML content for navigation menus.
+	 * Lọc nội dung HTML cho menu điều hướng.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @see wp_nav_menu()
 	 *
-	 * @param string   $nav_menu The HTML content for the navigation menu.
-	 * @param stdClass $args     An object containing wp_nav_menu() arguments.
+	 * @param string   $nav_menu Nội dung HTML cho menu điều hướng.
+	 * @param stdClass $args     Đối tượng chứa các đối số wp_nav_menu().
 	 */
 	$nav_menu = apply_filters( 'wp_nav_menu', $nav_menu, $args );
 
@@ -314,15 +314,15 @@ function wp_nav_menu( $args = array() ) {
 }
 
 /**
- * Adds the class property classes for the current context, if applicable.
+ * Thêm thuộc tính lớp cho ngữ cảnh hiện tại, nếu phù hợp.
  *
  * @access private
  * @since 3.0.0
  *
- * @global WP_Query   $wp_query   WordPress Query object.
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Query   $wp_query   Đối tượng truy vấn WordPress.
+ * @global WP_Rewrite $wp_rewrite Thành phần viết lại WordPress.
  *
- * @param array $menu_items The current menu item objects to which to add the class property information.
+ * @param array $menu_items Các đối tượng mục menu hiện tại cần thêm thông tin thuộc tính lớp.
  */
 function _wp_menu_item_classes_by_context( &$menu_items ) {
 	global $wp_query, $wp_rewrite;
@@ -403,17 +403,17 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 		$classes[] = 'menu-item-type-' . $menu_item->type;
 		$classes[] = 'menu-item-object-' . $menu_item->object;
 
-		// This menu item is set as the 'Front Page'.
+		// Mục menu này được đặt làm 'Trang Đầu'.
 		if ( 'post_type' === $menu_item->type && $front_page_id === (int) $menu_item->object_id ) {
 			$classes[] = 'menu-item-home';
 		}
 
-		// This menu item is set as the 'Privacy Policy Page'.
+		// Mục menu này được đặt làm 'Trang Chính sách Bảo mật'.
 		if ( 'post_type' === $menu_item->type && $privacy_policy_page_id === (int) $menu_item->object_id ) {
 			$classes[] = 'menu-item-privacy-policy';
 		}
 
-		// If the menu item corresponds to a taxonomy term for the currently queried non-hierarchical post object.
+		// Nếu mục menu tương ứng với thuật ngữ taxonomy cho đối tượng bài viết không phân cấp đang được truy vấn.
 		if ( $wp_query->is_singular && 'taxonomy' === $menu_item->type
 			&& in_array( (int) $menu_item->object_id, $possible_object_parents, true )
 		) {
@@ -421,7 +421,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 			$active_parent_item_ids[]   = (int) $menu_item->db_id;
 			$active_object              = $queried_object->post_type;
 
-			// If the menu item corresponds to the currently queried post or taxonomy object.
+			// Nếu mục menu tương ứng với đối tượng bài viết hoặc taxonomy đang được truy vấn.
 		} elseif (
 			(int) $menu_item->object_id === $queried_object_id
 			&& (
@@ -445,7 +445,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 			}
 
 			if ( 'post_type' === $menu_item->type && 'page' === $menu_item->object ) {
-				// Back compat classes for pages to match wp_page_menu().
+				// Các lớp tương thích ngược cho trang để phù hợp với wp_page_menu().
 				$classes[] = 'page_item';
 				$classes[] = 'page-item-' . $menu_item->object_id;
 				$classes[] = 'current_page_item';
@@ -455,7 +455,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 			$active_parent_object_ids[] = (int) $menu_item->post_parent;
 			$active_object              = $menu_item->object;
 
-			// If the menu item corresponds to the currently queried post type archive.
+			// Nếu mục menu tương ứng với trang lưu trữ loại bài viết đang được truy vấn.
 		} elseif (
 			'post_type_archive' === $menu_item->type
 			&& is_post_type_archive( array( $menu_item->object ) )
@@ -473,11 +473,11 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 
 			$active_parent_item_ids[] = (int) $menu_item->menu_item_parent;
 
-			// If the menu item corresponds to the currently requested URL.
+			// Nếu mục menu tương ứng với URL hiện tại đang được yêu cầu.
 		} elseif ( 'custom' === $menu_item->object && isset( $_SERVER['HTTP_HOST'] ) ) {
 			$_root_relative_current = untrailingslashit( $_SERVER['REQUEST_URI'] );
 
-			// If it's the customize page then it will strip the query var off the URL before entering the comparison block.
+			// Nếu đây là trang tùy chỉnh thì nó sẽ loại bỏ biến truy vấn khỏi URL trước khi vào khối so sánh.
 			if ( is_customize_preview() ) {
 				$_root_relative_current = strtok( untrailingslashit( $_SERVER['REQUEST_URI'] ), '?' );
 			}
@@ -509,14 +509,14 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 				}
 
 				if ( in_array( home_url(), array( untrailingslashit( $current_url ), untrailingslashit( $_indexless_current ) ), true ) ) {
-					// Back compat for home link to match wp_page_menu().
+					// Tương thích ngược cho liên kết trang chủ để phù hợp với wp_page_menu().
 					$classes[] = 'current_page_item';
 				}
 				$active_parent_item_ids[]   = (int) $menu_item->menu_item_parent;
 				$active_parent_object_ids[] = (int) $menu_item->post_parent;
 				$active_object              = $menu_item->object;
 
-				// Give front page item the 'current-menu-item' class when extra query arguments are involved.
+				// Thêm lớp 'current-menu-item' cho mục trang đầu khi có các đối số truy vấn bổ sung.
 			} elseif ( $item_url === $front_page_url && is_front_page() ) {
 				$classes[] = 'current-menu-item';
 			}
@@ -526,7 +526,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 			}
 		}
 
-		// Back-compat with wp_page_menu(): add "current_page_parent" to static home page link for any non-page query.
+		// Tương thích ngược với wp_page_menu(): thêm "current_page_parent" vào liên kết trang chủ tĩnh cho mọi truy vấn không phải trang.
 		if ( ! empty( $home_page_id ) && 'post_type' === $menu_item->type
 			&& empty( $wp_query->is_page ) && $home_page_id === (int) $menu_item->object_id
 		) {
@@ -539,7 +539,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 	$active_parent_item_ids   = array_filter( array_unique( $active_parent_item_ids ) );
 	$active_parent_object_ids = array_filter( array_unique( $active_parent_object_ids ) );
 
-	// Set parent's class.
+	// Thiết lập lớp cho phần tử cha.
 	foreach ( (array) $menu_items as $key => $parent_item ) {
 		$classes                                   = (array) $parent_item->classes;
 		$menu_items[ $key ]->current_item_ancestor = false;
@@ -548,7 +548,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 		if (
 			isset( $parent_item->type )
 			&& (
-				// Ancestral post object.
+				// Đối tượng bài viết tổ tiên.
 				(
 					'post_type' === $parent_item->type
 					&& ! empty( $queried_object->post_type )
@@ -557,7 +557,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 					&& (int) $parent_item->object_id !== $queried_object->ID
 				) ||
 
-				// Ancestral term.
+				// Thuật ngữ tổ tiên.
 				(
 					'taxonomy' === $parent_item->type
 					&& isset( $possible_taxonomy_ancestors[ $parent_item->object ] )
@@ -591,7 +591,7 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 		}
 
 		if ( 'post_type' === $parent_item->type && 'page' === $parent_item->object ) {
-			// Back compat classes for pages to match wp_page_menu().
+			// Các lớp tương thích ngược cho trang để phù hợp với wp_page_menu().
 			if ( in_array( 'current-menu-parent', $classes, true ) ) {
 				$classes[] = 'current_page_parent';
 			}
@@ -605,15 +605,15 @@ function _wp_menu_item_classes_by_context( &$menu_items ) {
 }
 
 /**
- * Retrieves the HTML list content for nav menu items.
+ * Lấy nội dung danh sách HTML cho các mục menu điều hướng.
  *
- * @uses Walker_Nav_Menu to create HTML list content.
+ * @uses Walker_Nav_Menu để tạo nội dung danh sách HTML.
  * @since 3.0.0
  *
- * @param array    $items The menu items, sorted by each menu item's menu order.
- * @param int      $depth Depth of the item in reference to parents.
- * @param stdClass $args  An object containing wp_nav_menu() arguments.
- * @return string The HTML list content for the menu items.
+ * @param array    $items Các mục menu, sắp xếp theo thứ tự menu của từng mục.
+ * @param int      $depth Độ sâu của mục tham chiếu đến các phần tử cha.
+ * @param stdClass $args  Đối tượng chứa các đối số wp_nav_menu().
+ * @return string Nội dung danh sách HTML cho các mục menu.
  */
 function walk_nav_menu_tree( $items, $depth, $args ) {
 	$walker = ( empty( $args->walker ) ) ? new Walker_Nav_Menu() : $args->walker;
@@ -622,7 +622,7 @@ function walk_nav_menu_tree( $items, $depth, $args ) {
 }
 
 /**
- * Prevents a menu item ID from being used more than once.
+ * Ngăn ID mục menu bị sử dụng nhiều hơn một lần.
  *
  * @since 3.0.1
  * @access private
@@ -644,54 +644,54 @@ function _nav_menu_item_id_use_once( $id, $item ) {
 }
 
 /**
- * Remove the `menu-item-has-children` class from bottom level menu items.
+ * Xóa lớp `menu-item-has-children` khỏi các mục menu cấp thấp nhất.
  *
- * This runs on the {@see 'nav_menu_css_class'} filter. The $args and $depth
- * parameters were added after the filter was originally introduced in
- * WordPress 3.0.0 so this needs to allow for cases in which the filter is
- * called without them.
+ * Hàm này chạy trên bộ lọc {@see 'nav_menu_css_class'}. Các tham số $args và $depth
+ * được thêm vào sau khi bộ lọc ban đầu được giới thiệu trong
+ * WordPress 3.0.0 nên cần cho phép các trường hợp bộ lọc
+ * được gọi mà không có chúng.
  *
  * @see https://core.trac.wordpress.org/ticket/56926
  *
  * @since 6.2.0
  *
- * @param string[]       $classes   Array of the CSS classes that are applied to the menu item's `<li>` element.
- * @param WP_Post        $menu_item The current menu item object.
- * @param stdClass|false $args      An object of wp_nav_menu() arguments. Default false ($args unspecified when filter is called).
- * @param int|false      $depth     Depth of menu item. Default false ($depth unspecified when filter is called).
- * @return string[] Modified nav menu classes.
+ * @param string[]       $classes   Mảng các lớp CSS được áp dụng cho phần tử `<li>` của mục menu.
+ * @param WP_Post        $menu_item Đối tượng mục menu hiện tại.
+ * @param stdClass|false $args      Đối tượng các đối số wp_nav_menu(). Mặc định false ($args chưa được chỉ định khi bộ lọc được gọi).
+ * @param int|false      $depth     Độ sâu của mục menu. Mặc định false ($depth chưa được chỉ định khi bộ lọc được gọi).
+ * @return string[] Các lớp menu điều hướng đã được sửa đổi.
  */
 function wp_nav_menu_remove_menu_item_has_children_class( $classes, $menu_item, $args = false, $depth = false ) {
 	/*
-	 * Account for the filter being called without the $args or $depth parameters.
+	 * Xử lý trường hợp bộ lọc được gọi mà không có tham số $args hoặc $depth.
 	 *
-	 * This occurs when a theme uses a custom walker calling the `nav_menu_css_class`
-	 * filter using the legacy formats prior to the introduction of the $args and
-	 * $depth parameters.
+	 * Điều này xảy ra khi theme sử dụng walker tùy chỉnh gọi bộ lọc `nav_menu_css_class`
+	 * sử dụng các định dạng cũ trước khi tham số $args và
+	 * $depth được giới thiệu.
 	 *
-	 * As both of these parameters are required for this function to determine
-	 * both the current and maximum depth of the menu tree, the function does not
-	 * attempt to remove the `menu-item-has-children` class if these parameters
-	 * are not set.
+	 * Vì cả hai tham số này đều cần thiết để hàm này xác định
+	 * cả độ sâu hiện tại và độ sâu tối đa của cây menu, hàm không
+	 * cố gắng xóa lớp `menu-item-has-children` nếu các tham số này
+	 * chưa được thiết lập.
 	 */
 	if ( false === $depth || false === $args ) {
 		return $classes;
 	}
 
-	// Max-depth is 1-based.
+	// Độ sâu tối đa tính từ 1.
 	$max_depth = isset( $args->depth ) ? (int) $args->depth : 0;
-	// Depth is 0-based so needs to be increased by one.
+	// Độ sâu tính từ 0 nên cần tăng thêm một.
 	$depth = $depth + 1;
 
-	// Complete menu tree is displayed.
+	// Toàn bộ cây menu được hiển thị.
 	if ( 0 === $max_depth ) {
 		return $classes;
 	}
 
 	/*
-	 * Remove the `menu-item-has-children` class from bottom level menu items.
-	 * -1 is used to display all menu items in one level so the class should
-	 * be removed from all menu items.
+	 * Xóa lớp `menu-item-has-children` khỏi các mục menu cấp thấp nhất.
+	 * -1 được sử dụng để hiển thị tất cả mục menu ở một cấp nên lớp này
+	 * nên được xóa khỏi tất cả mục menu.
 	 */
 	if ( -1 === $max_depth || $depth >= $max_depth ) {
 		$classes = array_diff( $classes, array( 'menu-item-has-children' ) );

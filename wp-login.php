@@ -1,11 +1,6 @@
 <?php
 /**
- * WordPress User Page
- *
  * Trang người dùng WordPress.
- *
- * Handles authentication, registering, resetting passwords, forgot password,
- * and other user handling.
  *
  * Xử lý xác thực, đăng ký, đặt lại mật khẩu, quên mật khẩu,
  * và các xử lý người dùng khác.
@@ -13,11 +8,9 @@
  * @package WordPress
  */
 
-/** Make sure that the WordPress bootstrap has run before continuing. */
 /** Đảm bảo WordPress bootstrap đã chạy trước khi tiếp tục. */
 require __DIR__ . '/wp-load.php';
 
-// Redirect to HTTPS login if forced to use SSL.
 // Chuyển hướng đến HTTPS login nếu bị buộc sử dụng SSL.
 if ( force_ssl_admin() && ! is_ssl() ) {
 	if ( str_starts_with( $_SERVER['REQUEST_URI'], 'http' ) ) {
@@ -30,22 +23,20 @@ if ( force_ssl_admin() && ! is_ssl() ) {
 }
 
 /**
- * Outputs the login page header.
- *
- * Xuất header của trang login.
+ * Xuất header của trang đăng nhập.
  *
  * @since 2.1.0
  *
- * @global string      $error         Login error message set by deprecated pluggable wp_login() function
- *                                    or plugins replacing it.
- * @global bool|string $interim_login Whether interim login modal is being displayed. String 'success'
- *                                    upon successful login.
- * @global string      $action        The action that brought the visitor to the login page.
+ * @global string      $error         Thông báo lỗi đăng nhập được thiết lập bởi hàm wp_login() pluggable đã lỗi thời
+ *                                    hoặc các plugin thay thế nó.
+ * @global bool|string $interim_login Cho biết modal đăng nhập tạm thời có đang được hiển thị hay không. Chuỗi 'success'
+ *                                    khi đăng nhập thành công.
+ * @global string      $action        Hành động đưa người truy cập đến trang đăng nhập.
  *
- * @param string|null   $title    Optional. WordPress login page title to display in the `<title>` element.
- *                                Defaults to 'Log In'.
- * @param string        $message  Optional. Message to display in header. Default empty.
- * @param WP_Error|null $wp_error Optional. The error to pass. Defaults to a WP_Error instance.
+ * @param string|null   $title    Tùy chọn. Tiêu đề trang đăng nhập WordPress hiển thị trong phần tử `<title>`.
+ *                                Mặc định là 'Log In'.
+ * @param string        $message  Tùy chọn. Thông báo hiển thị trong header. Mặc định rỗng.
+ * @param WP_Error|null $wp_error Tùy chọn. Đối tượng lỗi để truyền vào. Mặc định là một instance WP_Error.
  */
 function login_header( $title = null, $message = '', $wp_error = null ) {
 	global $error, $interim_login, $action;
@@ -54,7 +45,6 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 		$title = __( 'Log In' );
 	}
 
-	// Don't index any of these forms.
 	// Không index bất kỳ form nào trong số này.
 	add_filter( 'wp_robots', 'wp_robots_sensitive_page' );
 	add_action( 'login_head', 'wp_strict_cross_origin_referrer' );
@@ -65,17 +55,14 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 		$wp_error = new WP_Error();
 	}
 
-	// Shake it!
 	// Lắc nó!
 	$shake_error_codes = array( 'empty_password', 'empty_email', 'invalid_email', 'invalidcombo', 'empty_username', 'invalid_username', 'incorrect_password', 'retrieve_password_email_failure' );
 	/**
-	 * Filters the error codes array for shaking the login form.
-	 *
-	 * Filter mảng error codes để lắc form login.
+	 * Lọc mảng mã lỗi để lắc form đăng nhập.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string[] $shake_error_codes Error codes that shake the login form.
+	 * @param string[] $shake_error_codes Các mã lỗi khiến form đăng nhập bị lắc.
 	 */
 	$shake_error_codes = apply_filters( 'shake_error_codes', $shake_error_codes );
 
@@ -85,23 +72,21 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 
 	$login_title = get_bloginfo( 'name', 'display' );
 
-	/* translators: Login screen title. 1: Login screen name, 2: Network or site name. */
+	/* translators: Tiêu đề màn hình đăng nhập. 1: Tên màn hình đăng nhập, 2: Tên mạng hoặc site. */
 	$login_title = sprintf( __( '%1$s &lsaquo; %2$s &#8212; WordPress' ), $title, $login_title );
 
 	if ( wp_is_recovery_mode() ) {
-		/* translators: %s: Login screen title. */
+		/* translators: %s: Tiêu đề màn hình đăng nhập. */
 		$login_title = sprintf( __( 'Recovery Mode &#8212; %s' ), $login_title );
 	}
 
 	/**
-	 * Filters the title tag content for login page.
-	 *
-	 * Filter nội dung title tag cho trang login.
+	 * Lọc nội dung thẻ title cho trang đăng nhập.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param string $login_title The page title, with extra context added.
-	 * @param string $title       The original page title.
+	 * @param string $login_title Tiêu đề trang, đã thêm ngữ cảnh bổ sung.
+	 * @param string $title       Tiêu đề trang gốc.
 	 */
 	$login_title = apply_filters( 'login_title', $login_title, $title );
 
@@ -115,9 +100,9 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 	wp_enqueue_style( 'login' );
 
 	/*
-	 * Remove all stored post data on logging out.
-	 * This could be added by add_action('login_head'...) like wp_shake_js(),
-	 * but maybe better if it's not removable by plugins.
+	 * Xóa tất cả dữ liệu bài viết đã lưu khi đăng xuất.
+	 * Có thể thêm bằng add_action('login_head'...) như wp_shake_js(),
+	 * nhưng tốt hơn nếu plugin không thể gỡ bỏ được.
 	 */
 	if ( 'loggedout' === $wp_error->get_error_code() ) {
 		ob_start();
@@ -128,14 +113,14 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 	}
 
 	/**
-	 * Enqueues scripts and styles for the login page.
+	 * Đưa các script và style vào hàng đợi cho trang đăng nhập.
 	 *
 	 * @since 3.1.0
 	 */
 	do_action( 'login_enqueue_scripts' );
 
 	/**
-	 * Fires in the login page header after scripts are enqueued.
+	 * Kích hoạt trong header trang đăng nhập sau khi các script đã được đưa vào hàng đợi.
 	 *
 	 * @since 2.1.0
 	 */
@@ -144,23 +129,23 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 	$login_header_url = __( 'https://wordpress.org/' );
 
 	/**
-	 * Filters link URL of the header logo above login form.
+	 * Lọc URL liên kết của logo header phía trên form đăng nhập.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $login_header_url Login header logo URL.
+	 * @param string $login_header_url URL logo header đăng nhập.
 	 */
 	$login_header_url = apply_filters( 'login_headerurl', $login_header_url );
 
 	$login_header_title = '';
 
 	/**
-	 * Filters the title attribute of the header logo above login form.
+	 * Lọc thuộc tính title của logo header phía trên form đăng nhập.
 	 *
 	 * @since 2.1.0
-	 * @deprecated 5.2.0 Use {@see 'login_headertext'} instead.
+	 * @deprecated 5.2.0 Sử dụng {@see 'login_headertext'} thay thế.
 	 *
-	 * @param string $login_header_title Login header logo title attribute.
+	 * @param string $login_header_title Thuộc tính title của logo header đăng nhập.
 	 */
 	$login_header_title = apply_filters_deprecated(
 		'login_headertitle',
@@ -173,11 +158,11 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 	$login_header_text = empty( $login_header_title ) ? __( 'Powered by WordPress' ) : $login_header_title;
 
 	/**
-	 * Filters the link text of the header logo above the login form.
+	 * Lọc văn bản liên kết của logo header phía trên form đăng nhập.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string $login_header_text The login header logo link text.
+	 * @param string $login_header_text Văn bản liên kết logo header đăng nhập.
 	 */
 	$login_header_text = apply_filters( 'login_headertext', $login_header_text );
 
@@ -202,12 +187,12 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 	$classes[] = ' locale-' . sanitize_html_class( strtolower( str_replace( '_', '-', get_locale() ) ) );
 
 	/**
-	 * Filters the login page body classes.
+	 * Lọc các lớp CSS body của trang đăng nhập.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string[] $classes An array of body classes.
-	 * @param string   $action  The action that brought the visitor to the login page.
+	 * @param string[] $classes Mảng các lớp CSS body.
+	 * @param string   $action  Hành động đưa người truy cập đến trang đăng nhập.
 	 */
 	$classes = apply_filters( 'login_body_class', $classes, $action );
 
@@ -220,7 +205,7 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 
 	<?php
 	/**
-	 * Fires in the login page header after the body tag is opened.
+	 * Kích hoạt trong header trang đăng nhập sau khi thẻ body được mở.
 	 *
 	 * @since 4.6.0
 	 */
@@ -237,11 +222,11 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 		<h1 role="presentation" class="wp-login-logo"><a href="<?php echo esc_url( $login_header_url ); ?>"><?php echo $login_header_text; ?></a></h1>
 	<?php
 	/**
-	 * Filters the message to display above the login form.
+	 * Lọc thông báo hiển thị phía trên form đăng nhập.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $message Login message text.
+	 * @param string $message Văn bản thông báo đăng nhập.
 	 */
 	$message = apply_filters( 'login_message', $message );
 
@@ -249,7 +234,7 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 		echo $message . "\n";
 	}
 
-	// In case a plugin uses $error rather than the $wp_errors object.
+	// Trong trường hợp plugin sử dụng $error thay vì đối tượng $wp_errors.
 	if ( ! empty( $error ) ) {
 		$wp_error->add( 'error', $error );
 		unset( $error );
@@ -286,11 +271,11 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 			}
 
 			/**
-			 * Filters the error messages displayed above the login form.
+			 * Lọc các thông báo lỗi hiển thị phía trên form đăng nhập.
 			 *
 			 * @since 2.1.0
 			 *
-			 * @param string $errors Login error messages.
+			 * @param string $errors Các thông báo lỗi đăng nhập.
 			 */
 			$errors = apply_filters( 'login_errors', $errors );
 
@@ -306,11 +291,11 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 
 		if ( ! empty( $messages ) ) {
 			/**
-			 * Filters instructional messages displayed above the login form.
+			 * Lọc các thông báo hướng dẫn hiển thị phía trên form đăng nhập.
 			 *
 			 * @since 2.5.0
 			 *
-			 * @param string $messages Login messages.
+			 * @param string $messages Các thông báo đăng nhập.
 			 */
 			$messages = apply_filters( 'login_messages', $messages );
 
@@ -325,22 +310,22 @@ function login_header( $title = null, $message = '', $wp_error = null ) {
 			);
 		}
 	}
-} // End of login_header().
+} // Kết thúc login_header().
 
 /**
- * Outputs the footer for the login page.
+ * Xuất footer cho trang đăng nhập.
  *
  * @since 3.1.0
  *
- * @global bool|string $interim_login Whether interim login modal is being displayed. String 'success'
- *                                    upon successful login.
+ * @global bool|string $interim_login Cho biết modal đăng nhập tạm thời có đang được hiển thị hay không. Chuỗi 'success'
+ *                                    khi đăng nhập thành công.
  *
- * @param string $input_id Which input to auto-focus.
+ * @param string $input_id Input nào sẽ được tự động focus.
  */
 function login_footer( $input_id = '' ) {
 	global $interim_login;
 
-	// Don't allow interim logins to navigate away from the page.
+	// Không cho phép đăng nhập tạm thời điều hướng khỏi trang.
 	if ( ! $interim_login ) {
 		?>
 		<p id="backtoblog">
@@ -349,17 +334,17 @@ function login_footer( $input_id = '' ) {
 				'<a href="%s">%s</a>',
 				esc_url( home_url( '/' ) ),
 				sprintf(
-					/* translators: %s: Site title. */
+					/* translators: %s: Tiêu đề site. */
 					_x( '&larr; Go to %s', 'site' ),
 					get_bloginfo( 'title', 'display' )
 				)
 			);
 			/**
-			 * Filters the "Go to site" link displayed in the login page footer.
+			 * Lọc liên kết "Đi đến trang web" hiển thị trong footer trang đăng nhập.
 			 *
 			 * @since 5.7.0
 			 *
-			 * @param string $link HTML link to the home URL of the current site.
+			 * @param string $link Liên kết HTML đến URL trang chủ của trang web hiện tại.
 			 */
 			echo apply_filters( 'login_site_html_link', $html_link );
 			?>
@@ -370,17 +355,17 @@ function login_footer( $input_id = '' ) {
 	}
 
 	?>
-	</div><?php // End of <div id="login">. ?>
+	</div><?php // Kết thúc <div id="login">. ?>
 
 	<?php
 	if (
 		! $interim_login &&
 		/**
-		 * Filters whether to display the Language selector on the login screen.
+		 * Lọc việc có hiển thị bộ chọn Ngôn ngữ trên màn hình đăng nhập hay không.
 		 *
 		 * @since 5.9.0
 		 *
-		 * @param bool $display Whether to display the Language selector on the login screen.
+		 * @param bool $display Có hiển thị bộ chọn Ngôn ngữ trên màn hình đăng nhập hay không.
 		 */
 		apply_filters( 'login_display_language_dropdown', true )
 	) {
@@ -395,7 +380,7 @@ function login_footer( $input_id = '' ) {
 						<span class="dashicons dashicons-translation" aria-hidden="true"></span>
 						<span class="screen-reader-text">
 							<?php
-							/* translators: Hidden accessibility text. */
+							/* translators: Văn bản trợ năng ẩn. */
 							_e( 'Language' );
 							?>
 						</span>
@@ -412,13 +397,13 @@ function login_footer( $input_id = '' ) {
 					);
 
 					/**
-					 * Filters default arguments for the Languages select input on the login screen.
+					 * Lọc các tham số mặc định cho ô chọn Ngôn ngữ trên màn hình đăng nhập.
 					 *
-					 * The arguments get passed to the wp_dropdown_languages() function.
+					 * Các tham số được truyền vào hàm wp_dropdown_languages().
 					 *
 					 * @since 5.9.0
 					 *
-					 * @param array $args Arguments for the Languages select input on the login screen.
+					 * @param array $args Các tham số cho ô chọn Ngôn ngữ trên màn hình đăng nhập.
 					 */
 					wp_dropdown_languages( apply_filters( 'login_language_dropdown_args', $args ) );
 					?>
@@ -456,7 +441,7 @@ function login_footer( $input_id = '' ) {
 	}
 
 	/**
-	 * Fires in the login page footer.
+	 * Kích hoạt trong footer trang đăng nhập.
 	 *
 	 * @since 3.1.0
 	 */
@@ -469,7 +454,7 @@ function login_footer( $input_id = '' ) {
 }
 
 /**
- * Outputs the JavaScript to handle the form shaking on the login page.
+ * Xuất JavaScript để xử lý hiệu ứng lắc form trên trang đăng nhập.
  *
  * @since 3.0.0
  */
@@ -478,7 +463,7 @@ function wp_shake_js() {
 }
 
 /**
- * Outputs the viewport meta tag for the login page.
+ * Xuất thẻ meta viewport cho trang đăng nhập.
  *
  * @since 3.7.0
  */
@@ -489,9 +474,9 @@ function wp_login_viewport_meta() {
 }
 
 /*
- * Main part.
+ * Phần chính.
  *
- * Check the request and redirect or display a form based on the current action.
+ * Kiểm tra yêu cầu và chuyển hướng hoặc hiển thị form dựa trên hành động hiện tại.
  */
 
 $action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'login';
@@ -520,7 +505,7 @@ $default_actions = array(
 	WP_Recovery_Mode_Link_Service::LOGIN_ACTION_ENTERED,
 );
 
-// Validate action so as to default to the login screen.
+// Xác thực hành động để mặc định về màn hình đăng nhập.
 if ( ! in_array( $action, $default_actions, true ) && false === has_filter( 'login_form_' . $action ) ) {
 	$action = 'login';
 }
@@ -529,7 +514,7 @@ nocache_headers();
 
 header( 'Content-Type: ' . get_bloginfo( 'html_type' ) . '; charset=' . get_bloginfo( 'charset' ) );
 
-if ( defined( 'RELOCATE' ) && RELOCATE ) { // Move flag is set.
+if ( defined( 'RELOCATE' ) && RELOCATE ) { // Cờ di chuyển được thiết lập.
 	if ( isset( $_SERVER['PATH_INFO'] ) && ( $_SERVER['PATH_INFO'] !== $_SERVER['PHP_SELF'] ) ) {
 		$_SERVER['PHP_SELF'] = str_replace( $_SERVER['PATH_INFO'], '', $_SERVER['PHP_SELF'] );
 	}
@@ -541,7 +526,7 @@ if ( defined( 'RELOCATE' ) && RELOCATE ) { // Move flag is set.
 	}
 }
 
-// Set a cookie now to see if they are supported by the browser.
+// Đặt cookie ngay bây giờ để kiểm tra trình duyệt có hỗ trợ hay không.
 $secure = ( 'https' === parse_url( wp_login_url(), PHP_URL_SCHEME ) );
 setcookie( TEST_COOKIE, 'WP Cookie check', 0, COOKIEPATH, COOKIE_DOMAIN, $secure, true );
 
@@ -554,19 +539,19 @@ if ( isset( $_GET['wp_lang'] ) ) {
 }
 
 /**
- * Fires when the login form is initialized.
+ * Kích hoạt khi form đăng nhập được khởi tạo.
  *
  * @since 3.2.0
  */
 do_action( 'login_init' );
 
 /**
- * Fires before a specified login form action.
+ * Kích hoạt trước một hành động form đăng nhập cụ thể.
  *
- * The dynamic portion of the hook name, `$action`, refers to the action
- * that brought the visitor to the login form.
+ * Phần động của tên hook, `$action`, tham chiếu đến hành động
+ * đưa người truy cập đến form đăng nhập.
  *
- * Possible hook names include:
+ * Các tên hook có thể bao gồm:
  *
  *  - `login_form_checkemail`
  *  - `login_form_confirm_admin_email`
@@ -589,11 +574,11 @@ $http_post     = ( 'POST' === $_SERVER['REQUEST_METHOD'] );
 $interim_login = isset( $_REQUEST['interim-login'] );
 
 /**
- * Filters the separator used between login form navigation links.
+ * Lọc ký tự phân tách được sử dụng giữa các liên kết điều hướng form đăng nhập.
  *
  * @since 4.9.0
  *
- * @param string $login_link_separator The separator used between login form navigation links.
+ * @param string $login_link_separator Ký tự phân tách được sử dụng giữa các liên kết điều hướng form đăng nhập.
  */
 $login_link_separator = apply_filters( 'login_link_separator', ' | ' );
 
@@ -601,9 +586,9 @@ switch ( $action ) {
 
 	case 'confirm_admin_email':
 		/*
-		 * Note that `is_user_logged_in()` will return false immediately after logging in
-		 * as the current user is not set, see wp-includes/pluggable.php.
-		 * However this action runs on a redirect after logging in.
+		 * Lưu ý rằng `is_user_logged_in()` sẽ trả về false ngay sau khi đăng nhập
+		 * vì người dùng hiện tại chưa được thiết lập, xem wp-includes/pluggable.php.
+		 * Tuy nhiên hành động này chạy trên một chuyển hướng sau khi đăng nhập.
 		 */
 		if ( ! is_user_logged_in() ) {
 			wp_safe_redirect( wp_login_url() );
@@ -624,13 +609,13 @@ switch ( $action ) {
 		}
 
 		/**
-		 * Filters the interval for dismissing the admin email confirmation screen.
+		 * Lọc khoảng thời gian để ẩn màn hình xác nhận email quản trị.
 		 *
-		 * If `0` (zero) is returned, the "Remind me later" link will not be displayed.
+		 * Nếu trả về `0` (không), liên kết "Nhắc tôi sau" sẽ không được hiển thị.
 		 *
 		 * @since 5.3.1
 		 *
-		 * @param int $interval Interval time (in seconds). Default is 3 days.
+		 * @param int $interval Thời gian khoảng cách (tính bằng giây). Mặc định là 3 ngày.
 		 */
 		$remind_interval = (int) apply_filters( 'admin_email_remind_interval', 3 * DAY_IN_SECONDS );
 
@@ -656,13 +641,13 @@ switch ( $action ) {
 			}
 
 			/**
-			 * Filters the interval for redirecting the user to the admin email confirmation screen.
+			 * Lọc khoảng thời gian để chuyển hướng người dùng đến màn hình xác nhận email quản trị.
 			 *
-			 * If `0` (zero) is returned, the user will not be redirected.
+			 * Nếu trả về `0` (không), người dùng sẽ không bị chuyển hướng.
 			 *
 			 * @since 5.3.0
 			 *
-			 * @param int $interval Interval time (in seconds). Default is 6 months.
+			 * @param int $interval Thời gian khoảng cách (tính bằng giây). Mặc định là 6 tháng.
 			 */
 			$admin_email_check_interval = (int) apply_filters( 'admin_email_check_interval', 6 * MONTH_IN_SECONDS );
 
@@ -677,12 +662,12 @@ switch ( $action ) {
 		login_header( __( 'Confirm your administration email' ), '', $errors );
 
 		/**
-		 * Fires before the admin email confirm form.
+		 * Kích hoạt trước form xác nhận email quản trị.
 		 *
 		 * @since 5.3.0
 		 *
-		 * @param WP_Error $errors A `WP_Error` object containing any errors generated by using invalid
-		 *                         credentials. Note that the error object may not contain any errors.
+		 * @param WP_Error $errors Đối tượng `WP_Error` chứa các lỗi được tạo ra khi sử dụng thông tin
+		 *                         đăng nhập không hợp lệ. Lưu ý đối tượng lỗi có thể không chứa lỗi nào.
 		 */
 		do_action( 'admin_email_confirm', $errors );
 
@@ -691,7 +676,7 @@ switch ( $action ) {
 		<form class="admin-email-confirm-form" name="admin-email-confirm-form" action="<?php echo esc_url( site_url( 'wp-login.php?action=confirm_admin_email', 'login_post' ) ); ?>" method="post">
 			<?php
 			/**
-			 * Fires inside the admin-email-confirm-form form tags, before the hidden fields.
+			 * Kích hoạt bên trong thẻ form admin-email-confirm-form, trước các trường ẩn.
 			 *
 			 * @since 5.3.0
 			 */
@@ -709,12 +694,12 @@ switch ( $action ) {
 				<?php _e( 'Please verify that the <strong>administration email</strong> for this website is still correct.' ); ?>
 				<?php
 
-				/* translators: URL to the WordPress help section about admin email. */
+				/* translators: URL đến phần trợ giúp WordPress về email quản trị. */
 				$admin_email_help_url = __( 'https://wordpress.org/documentation/article/settings-general-screen/#email-address' );
 
 				$accessibility_text = sprintf(
 					'<span class="screen-reader-text"> %s</span>',
-					/* translators: Hidden accessibility text. */
+					/* translators: Văn bản trợ năng ẩn. */
 					__( '(opens in a new tab)' )
 				);
 
@@ -731,7 +716,7 @@ switch ( $action ) {
 				<?php
 
 				printf(
-					/* translators: %s: Admin email address. */
+					/* translators: %s: Địa chỉ email quản trị. */
 					__( 'Current administration email: %s' ),
 					'<strong>' . esc_html( $admin_email ) . '</strong>'
 				);
@@ -790,14 +775,14 @@ switch ( $action ) {
 		$hasher = new PasswordHash( 8, true );
 
 		/**
-		 * Filters the life span of the post password cookie.
+		 * Lọc thời hạn sống của cookie mật khẩu bài viết.
 		 *
-		 * By default, the cookie expires 10 days from creation. To turn this
-		 * into a session cookie, return 0.
+		 * Mặc định, cookie hết hạn sau 10 ngày kể từ khi tạo. Để biến thành
+		 * cookie phiên, hãy trả về 0.
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param int $expires The expiry time, as passed to setcookie().
+		 * @param int $expires Thời gian hết hạn, được truyền vào setcookie().
 		 */
 		$expire = apply_filters( 'post_password_expires', time() + 10 * DAY_IN_SECONDS );
 
@@ -835,13 +820,13 @@ switch ( $action ) {
 		}
 
 		/**
-		 * Filters the log out redirect URL.
+		 * Lọc URL chuyển hướng khi đăng xuất.
 		 *
 		 * @since 4.2.0
 		 *
-		 * @param string  $redirect_to           The redirect destination URL.
-		 * @param string  $requested_redirect_to The requested redirect destination URL passed as a parameter.
-		 * @param WP_User $user                  The WP_User object for the user that's logging out.
+		 * @param string  $redirect_to           URL đích chuyển hướng.
+		 * @param string  $requested_redirect_to URL đích chuyển hướng được yêu cầu, truyền vào dưới dạng tham số.
+		 * @param WP_User $user                  Đối tượng WP_User của người dùng đang đăng xuất.
 		 */
 		$redirect_to = apply_filters( 'logout_redirect', $redirect_to, $requested_redirect_to, $user );
 
@@ -870,22 +855,22 @@ switch ( $action ) {
 
 		$lostpassword_redirect = ! empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
 		/**
-		 * Filters the URL redirected to after submitting the lostpassword/retrievepassword form.
+		 * Lọc URL chuyển hướng sau khi gửi form quên mật khẩu/lấy lại mật khẩu.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $lostpassword_redirect The redirect destination URL.
+		 * @param string $lostpassword_redirect URL đích chuyển hướng.
 		 */
 		$redirect_to = apply_filters( 'lostpassword_redirect', $lostpassword_redirect );
 
 		/**
-		 * Fires before the lost password form.
+		 * Kích hoạt trước form quên mật khẩu.
 		 *
 		 * @since 1.5.1
-		 * @since 5.1.0 Added the `$errors` parameter.
+		 * @since 5.1.0 Thêm tham số `$errors`.
 		 *
-		 * @param WP_Error $errors A `WP_Error` object containing any errors generated by using invalid
-		 *                         credentials. Note that the error object may not contain any errors.
+		 * @param WP_Error $errors Đối tượng `WP_Error` chứa các lỗi được tạo ra khi sử dụng thông tin
+		 *                         đăng nhập không hợp lệ. Lưu ý đối tượng lỗi có thể không chứa lỗi nào.
 		 */
 		do_action( 'lost_password', $errors );
 
@@ -917,7 +902,7 @@ switch ( $action ) {
 			<?php
 
 			/**
-			 * Fires inside the lostpassword form tags, before the hidden fields.
+			 * Kích hoạt bên trong thẻ form quên mật khẩu, trước các trường ẩn.
 			 *
 			 * @since 2.1.0
 			 */
@@ -939,7 +924,7 @@ switch ( $action ) {
 
 				echo esc_html( $login_link_separator );
 
-				/** This filter is documented in wp-includes/general-template.php */
+				/** Bộ lọc này được ghi tài liệu trong wp-includes/general-template.php */
 				echo apply_filters( 'register', $registration_url );
 			}
 
@@ -989,7 +974,7 @@ switch ( $action ) {
 
 		$errors = new WP_Error();
 
-		// Check if password is one or all empty spaces.
+		// Kiểm tra nếu mật khẩu là một hoặc toàn bộ khoảng trắng.
 		if ( ! empty( $_POST['pass1'] ) ) {
 			$_POST['pass1'] = trim( $_POST['pass1'] );
 
@@ -998,18 +983,18 @@ switch ( $action ) {
 			}
 		}
 
-		// Check if password fields do not match.
+		// Kiểm tra nếu các trường mật khẩu không khớp.
 		if ( ! empty( $_POST['pass1'] ) && trim( $_POST['pass2'] ) !== $_POST['pass1'] ) {
 			$errors->add( 'password_reset_mismatch', __( '<strong>Error:</strong> The passwords do not match.' ) );
 		}
 
 		/**
-		 * Fires before the password reset procedure is validated.
+		 * Kích hoạt trước khi quy trình đặt lại mật khẩu được xác thực.
 		 *
 		 * @since 3.5.0
 		 *
-		 * @param WP_Error         $errors WP Error object.
-		 * @param WP_User|WP_Error $user   WP_User object if the login and reset key match. WP_Error object otherwise.
+		 * @param WP_Error         $errors Đối tượng WP Error.
+		 * @param WP_User|WP_Error $user   Đối tượng WP_User nếu đăng nhập và khóa đặt lại khớp. Đối tượng WP_Error nếu không.
 		 */
 		do_action( 'validate_password_reset', $errors, $user );
 
@@ -1078,11 +1063,11 @@ switch ( $action ) {
 			<?php
 
 			/**
-			 * Fires following the 'Strength indicator' meter in the user password reset form.
+			 * Kích hoạt sau thanh 'Chỉ báo độ mạnh' trong form đặt lại mật khẩu người dùng.
 			 *
 			 * @since 3.9.0
 			 *
-			 * @param WP_User $user User object of the user whose password is being reset.
+			 * @param WP_User $user Đối tượng người dùng có mật khẩu đang được đặt lại.
 			 */
 			do_action( 'resetpass_form', $user );
 
@@ -1103,7 +1088,7 @@ switch ( $action ) {
 
 				echo esc_html( $login_link_separator );
 
-				/** This filter is documented in wp-includes/general-template.php */
+				/** Bộ lọc này được ghi tài liệu trong wp-includes/general-template.php */
 				echo apply_filters( 'register', $registration_url );
 			}
 
@@ -1117,11 +1102,11 @@ switch ( $action ) {
 	case 'register':
 		if ( is_multisite() ) {
 			/**
-			 * Filters the Multisite sign up URL.
+			 * Lọc URL đăng ký Multisite.
 			 *
 			 * @since 3.0.0
 			 *
-			 * @param string $sign_up_url The sign up URL.
+			 * @param string $sign_up_url URL đăng ký.
 			 */
 			wp_redirect( apply_filters( 'wp_signup_location', network_site_url( 'wp-signup.php' ) ) );
 			exit;
@@ -1156,14 +1141,14 @@ switch ( $action ) {
 		$registration_redirect = ! empty( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
 
 		/**
-		 * Filters the registration redirect URL.
+		 * Lọc URL chuyển hướng đăng ký.
 		 *
 		 * @since 3.0.0
-		 * @since 5.9.0 Added the `$errors` parameter.
+		 * @since 5.9.0 Thêm tham số `$errors`.
 		 *
-		 * @param string       $registration_redirect The redirect destination URL.
-		 * @param int|WP_Error $errors                User id if registration was successful,
-		 *                                            WP_Error object otherwise.
+		 * @param string       $registration_redirect URL đích chuyển hướng.
+		 * @param int|WP_Error $errors                ID người dùng nếu đăng ký thành công,
+		 *                                            đối tượng WP_Error nếu không.
 		 */
 		$redirect_to = apply_filters( 'registration_redirect', $registration_redirect, $errors );
 
@@ -1192,7 +1177,7 @@ switch ( $action ) {
 			<?php
 
 			/**
-			 * Fires following the 'Email' field in the user registration form.
+			 * Kích hoạt sau trường 'Email' trong form đăng ký người dùng.
 			 *
 			 * @since 2.1.0
 			 */
@@ -1216,7 +1201,7 @@ switch ( $action ) {
 
 			$html_link = sprintf( '<a class="wp-login-lost-password" href="%s">%s</a>', esc_url( wp_lostpassword_url() ), __( 'Lost your password?' ) );
 
-			/** This filter is documented in wp-login.php */
+			/** Bộ lọc này được ghi tài liệu trong wp-login.php */
 			echo apply_filters( 'lost_password_html_link', $html_link );
 
 			?>
@@ -1234,7 +1219,7 @@ switch ( $action ) {
 			$errors->add(
 				'confirm',
 				sprintf(
-					/* translators: %s: Link to the login page. */
+					/* translators: %s: Liên kết đến trang đăng nhập. */
 					__( 'Check your email for the confirmation link, then visit the <a href="%s">login page</a>.' ),
 					wp_login_url()
 				),
@@ -1244,7 +1229,7 @@ switch ( $action ) {
 			$errors->add(
 				'registered',
 				sprintf(
-					/* translators: %s: Link to the login page. */
+					/* translators: %s: Liên kết đến trang đăng nhập. */
 					__( 'Registration complete. Please check your email, then visit the <a href="%s">login page</a>.' ),
 					wp_login_url()
 				),
@@ -1252,7 +1237,7 @@ switch ( $action ) {
 			);
 		}
 
-		/** This action is documented in wp-login.php */
+		/** Hành động này được ghi tài liệu trong wp-login.php */
 		$errors = apply_filters( 'wp_login_errors', $errors, $redirect_to );
 
 		login_header( __( 'Check your email' ), '', $errors );
@@ -1306,7 +1291,7 @@ switch ( $action ) {
 			wp_enqueue_script( 'customize-base' );
 		}
 
-		// If the user wants SSL but the session is not SSL, force a secure cookie.
+		// Nếu người dùng muốn SSL nhưng phiên không phải SSL, buộc sử dụng cookie an toàn.
 		if ( ! empty( $_POST['log'] ) && ! force_ssl_admin() ) {
 			$user_name = sanitize_user( wp_unslash( $_POST['log'] ) );
 			$user      = get_user_by( 'login', $user_name );
@@ -1325,7 +1310,7 @@ switch ( $action ) {
 
 		if ( isset( $_REQUEST['redirect_to'] ) && is_string( $_REQUEST['redirect_to'] ) ) {
 			$redirect_to = $_REQUEST['redirect_to'];
-			// Redirect to HTTPS if user wants SSL.
+			// Chuyển hướng đến HTTPS nếu người dùng muốn SSL.
 			if ( $secure_cookie && str_contains( $redirect_to, 'wp-admin' ) ) {
 				$redirect_to = preg_replace( '|^http://|', 'https://', $redirect_to );
 			}
@@ -1342,18 +1327,18 @@ switch ( $action ) {
 				$user = new WP_Error(
 					'test_cookie',
 					sprintf(
-						/* translators: 1: Browser cookie documentation URL, 2: Support forums URL. */
+						/* translators: 1: URL tài liệu cookie trình duyệt, 2: URL diễn đàn hỗ trợ. */
 						__( '<strong>Error:</strong> Cookies are blocked due to unexpected output. For help, please see <a href="%1$s">this documentation</a> or try the <a href="%2$s">support forums</a>.' ),
 						__( 'https://developer.wordpress.org/advanced-administration/wordpress/cookies/' ),
 						__( 'https://wordpress.org/support/forums/' )
 					)
 				);
 			} elseif ( isset( $_POST['testcookie'] ) && empty( $_COOKIE[ TEST_COOKIE ] ) ) {
-				// If cookies are disabled, the user can't log in even with a valid username and password.
+				// Nếu cookie bị vô hiệu hóa, người dùng không thể đăng nhập ngay cả với tên người dùng và mật khẩu hợp lệ.
 				$user = new WP_Error(
 					'test_cookie',
 					sprintf(
-						/* translators: %s: Browser cookie documentation URL. */
+						/* translators: %s: URL tài liệu cookie trình duyệt. */
 						__( '<strong>Error:</strong> Cookies are blocked or not supported by your browser. You must <a href="%s">enable cookies</a> to use WordPress.' ),
 						__( 'https://developer.wordpress.org/advanced-administration/wordpress/cookies/#enable-cookies-in-your-browser' )
 					)
@@ -1364,13 +1349,13 @@ switch ( $action ) {
 		$requested_redirect_to = isset( $_REQUEST['redirect_to'] ) && is_string( $_REQUEST['redirect_to'] ) ? $_REQUEST['redirect_to'] : '';
 
 		/**
-		 * Filters the login redirect URL.
+		 * Lọc URL chuyển hướng đăng nhập.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string           $redirect_to           The redirect destination URL.
-		 * @param string           $requested_redirect_to The requested redirect destination URL passed as a parameter.
-		 * @param WP_User|WP_Error $user                  WP_User object if login was successful, WP_Error object otherwise.
+		 * @param string           $redirect_to           URL đích chuyển hướng.
+		 * @param string           $requested_redirect_to URL đích chuyển hướng được yêu cầu, truyền vào dưới dạng tham số.
+		 * @param WP_User|WP_Error $user                  Đối tượng WP_User nếu đăng nhập thành công, đối tượng WP_Error nếu không.
 		 */
 		$redirect_to = apply_filters( 'login_redirect', $redirect_to, $requested_redirect_to, $user );
 
@@ -1384,7 +1369,7 @@ switch ( $action ) {
 				</div>
 				<?php
 
-				/** This action is documented in wp-login.php */
+				/** Hành động này được ghi tài liệu trong wp-login.php */
 				do_action( 'login_footer' );
 
 				if ( $customize_login ) {
@@ -1402,7 +1387,7 @@ switch ( $action ) {
 				exit;
 			}
 
-			// Check if it is time to add a redirect to the admin email confirmation screen.
+			// Kiểm tra xem đã đến lúc thêm chuyển hướng đến màn hình xác nhận email quản trị chưa.
 			if ( $user instanceof WP_User && $user->exists() && $user->has_cap( 'manage_options' ) ) {
 				$admin_email_lifespan = (int) get_option( 'admin_email_lifespan' );
 
@@ -1410,7 +1395,7 @@ switch ( $action ) {
 				 * If `0` (or anything "falsey" as it is cast to int) is returned, the user will not be redirected
 				 * to the admin email confirmation screen.
 				 */
-				/** This filter is documented in wp-login.php */
+				/** Bộ lọc này được ghi tài liệu trong wp-login.php */
 				$admin_email_check_interval = (int) apply_filters( 'admin_email_check_interval', 6 * MONTH_IN_SECONDS );
 
 				if ( $admin_email_check_interval > 0 && time() > $admin_email_lifespan ) {
@@ -1425,7 +1410,7 @@ switch ( $action ) {
 			}
 
 			if ( ( empty( $redirect_to ) || 'wp-admin/' === $redirect_to || admin_url() === $redirect_to ) ) {
-				// If the user doesn't belong to a blog, send them to user admin. If the user can't edit posts, send them to their profile.
+				// Nếu người dùng không thuộc blog nào, chuyển họ đến trang quản trị người dùng. Nếu không thể chỉnh sửa bài viết, chuyển họ đến trang hồ sơ.
 				if ( is_multisite() && ! get_active_blog_for_user( $user->ID ) && ! is_super_admin( $user->ID ) ) {
 					$redirect_to = user_admin_url();
 				} elseif ( is_multisite() && ! $user->has_cap( 'read' ) ) {
@@ -1443,7 +1428,7 @@ switch ( $action ) {
 		}
 
 		$errors = $user;
-		// Clear errors if loggedout is set.
+		// Xóa lỗi nếu loggedout được thiết lập.
 		if ( ! empty( $_GET['loggedout'] ) || $reauth ) {
 			$errors = new WP_Error();
 		}
@@ -1457,7 +1442,7 @@ switch ( $action ) {
 				$errors->add( 'expired', __( 'Your session has expired. Please log in to continue where you left off.' ), 'message' );
 			}
 		} else {
-			// Some parts of this script use the main login form to display a message.
+			// Một số phần của script này sử dụng form đăng nhập chính để hiển thị thông báo.
 			if ( isset( $_GET['loggedout'] ) && $_GET['loggedout'] ) {
 				$errors->add( 'loggedout', __( 'You are now logged out.' ), 'message' );
 			} elseif ( isset( $_GET['registration'] ) && 'disabled' === $_GET['registration'] ) {
@@ -1476,10 +1461,10 @@ switch ( $action ) {
 				}
 
 				if ( ! empty( $query['app_name'] ) ) {
-					/* translators: 1: Website name, 2: Application name. */
+					/* translators: 1: Tên website, 2: Tên ứng dụng. */
 					$message = sprintf( 'Please log in to %1$s to authorize %2$s to connect to your account.', get_bloginfo( 'name', 'display' ), '<strong>' . esc_html( $query['app_name'] ) . '</strong>' );
 				} else {
-					/* translators: %s: Website name. */
+					/* translators: %s: Tên website. */
 					$message = sprintf( 'Please log in to %s to proceed with authorization.', get_bloginfo( 'name', 'display' ) );
 				}
 
@@ -1488,16 +1473,16 @@ switch ( $action ) {
 		}
 
 		/**
-		 * Filters the login page errors.
+		 * Lọc các lỗi trang đăng nhập.
 		 *
 		 * @since 3.6.0
 		 *
-		 * @param WP_Error $errors      WP Error object.
-		 * @param string   $redirect_to Redirect destination URL.
+		 * @param WP_Error $errors      Đối tượng WP Error.
+		 * @param string   $redirect_to URL đích chuyển hướng.
 		 */
 		$errors = apply_filters( 'wp_login_errors', $errors, $redirect_to );
 
-		// Clear any stale cookies.
+		// Xóa bất kỳ cookie cũ nào.
 		if ( $reauth ) {
 			wp_clear_auth_cookie();
 		}
@@ -1585,7 +1570,7 @@ switch ( $action ) {
 				if ( get_option( 'users_can_register' ) ) {
 					$registration_url = sprintf( '<a class="wp-login-register" href="%s">%s</a>', esc_url( wp_registration_url() ), __( 'Register' ) );
 
-					/** This filter is documented in wp-includes/general-template.php */
+					/** Bộ lọc này được ghi tài liệu trong wp-includes/general-template.php */
 					echo apply_filters( 'register', $registration_url );
 
 					echo esc_html( $login_link_separator );
@@ -1594,11 +1579,11 @@ switch ( $action ) {
 				$html_link = sprintf( '<a class="wp-login-lost-password" href="%s">%s</a>', esc_url( wp_lostpassword_url() ), __( 'Lost your password?' ) );
 
 				/**
-				 * Filters the link that allows the user to reset the lost password.
+				 * Lọc liên kết cho phép người dùng đặt lại mật khẩu đã quên.
 				 *
 				 * @since 6.1.0
 				 *
-				 * @param string $html_link HTML link to the lost password form.
+				 * @param string $html_link Liên kết HTML đến form quên mật khẩu.
 				 */
 				echo apply_filters( 'lost_password_html_link', $html_link );
 
@@ -1637,7 +1622,7 @@ switch ( $action ) {
 			$login_script .= "wp_attempt_focus();\n";
 		}
 
-		// Run `wpOnload()` if defined.
+		// Chạy `wpOnload()` nếu đã được định nghĩa.
 		$login_script .= "if ( typeof wpOnload === 'function' ) { wpOnload() }";
 
 		wp_print_inline_script_tag( $login_script );

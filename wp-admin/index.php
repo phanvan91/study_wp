@@ -1,15 +1,15 @@
 <?php
 /**
- * Dashboard Administration Screen
+ * Màn hình Quản trị Bảng điều khiển
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** Load WordPress Bootstrap */
+/** Tải phần Khởi động WordPress */
 require_once __DIR__ . '/admin.php';
 
-/** Load WordPress dashboard API */
+/** Tải API bảng điều khiển WordPress */
 require_once ABSPATH . 'wp-admin/includes/dashboard.php';
 
 wp_dashboard_setup();
@@ -29,7 +29,7 @@ if ( wp_is_mobile() ) {
 	wp_enqueue_script( 'jquery-touch-punch' );
 }
 
-// Used in the HTML title tag.
+// Được sử dụng trong thẻ title HTML.
 $title       = __( 'Dashboard' );
 $parent_file = 'index.php';
 
@@ -46,7 +46,7 @@ $screen->add_help_tab(
 	)
 );
 
-// Help tabs.
+// Các tab trợ giúp.
 
 $help  = '<p>' . __( 'The left-hand navigation menu provides links to all of the WordPress administration screens, with submenu items displayed on hover. You can minimize this menu to a narrow icon strip by clicking on the Collapse Menu arrow at the bottom.' ) . '</p>';
 $help .= '<p>' . __( 'Links in the Toolbar at the top of the screen connect your dashboard and the front end of your site, and provide access to your profile and helpful WordPress information.' ) . '</p>';
@@ -142,17 +142,17 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 
 	<?php
 	if ( ! empty( $_GET['admin_email_remind_later'] ) ) :
-		/** This filter is documented in wp-login.php */
+		/** Bộ lọc này được ghi tài liệu trong wp-login.php */
 		$remind_interval = (int) apply_filters( 'admin_email_remind_interval', 3 * DAY_IN_SECONDS );
 		$postponed_time  = get_option( 'admin_email_lifespan' );
 
 		/*
-		 * Calculate how many seconds it's been since the reminder was postponed.
-		 * This allows us to not show it if the query arg is set, but visited due to caches, bookmarks or similar.
+		 * Tính toán đã bao nhiêu giây kể từ khi lời nhắc được hoãn lại.
+		 * Điều này cho phép chúng ta không hiển thị nó nếu tham số truy vấn được đặt, nhưng được truy cập do cache, bookmark hoặc tương tự.
 		 */
 		$time_passed = time() - ( $postponed_time - $remind_interval );
 
-		// Only show the dashboard notice if it's been less than a minute since the message was postponed.
+		// Chỉ hiển thị thông báo bảng điều khiển nếu chưa đến một phút kể từ khi tin nhắn được hoãn lại.
 		if ( $time_passed < MINUTE_IN_SECONDS ) :
 			$message = sprintf(
 				/* translators: %s: Human-readable time interval. */
@@ -175,7 +175,7 @@ if ( has_action( 'welcome_panel' ) && current_user_can( 'edit_theme_options' ) )
 	$classes = 'welcome-panel';
 
 	$option = (int) get_user_meta( get_current_user_id(), 'show_welcome_panel', true );
-	// 0 = hide, 1 = toggled to show or single site creator, 2 = multisite site owner.
+	// 0 = ẩn, 1 = bật hiển thị hoặc người tạo site đơn, 2 = chủ sở hữu site multisite.
 	$hide = ( 0 === $option || ( 2 === $option && wp_get_current_user()->user_email !== get_option( 'admin_email' ) ) );
 	if ( $hide ) {
 		$classes .= ' hidden';
@@ -187,9 +187,9 @@ if ( has_action( 'welcome_panel' ) && current_user_can( 'edit_theme_options' ) )
 		<a class="welcome-panel-close" href="<?php echo esc_url( admin_url( '?welcome=0' ) ); ?>" aria-label="<?php esc_attr_e( 'Dismiss the welcome panel' ); ?>"><?php _e( 'Dismiss' ); ?></a>
 		<?php
 		/**
-		 * Fires when adding content to the welcome panel on the admin dashboard.
+		 * Kích hoạt khi thêm nội dung vào bảng chào mừng trên bảng điều khiển quản trị.
 		 *
-		 * To remove the default welcome panel, use remove_action():
+		 * Để xóa bảng chào mừng mặc định, sử dụng remove_action():
 		 *
 		 *     remove_action( 'welcome_panel', 'wp_welcome_panel' );
 		 *

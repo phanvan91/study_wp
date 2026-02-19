@@ -1,10 +1,10 @@
 <?php
 /**
- * Core Metadata API
+ * API Metadata cốt lõi
  *
- * Functions for retrieving and manipulating metadata of various WordPress object types. Metadata
- * for an object is a represented by a simple key-value pair. Objects may contain multiple
- * metadata entries that share the same key and differ only in their value.
+ * Các hàm để lấy và thao tác metadata của các loại đối tượng WordPress khác nhau. Metadata
+ * cho một đối tượng được biểu diễn bằng một cặp khóa-giá trị đơn giản. Các đối tượng có thể chứa nhiều
+ * mục metadata chia sẻ cùng khóa và chỉ khác nhau về giá trị.
  *
  * @package WordPress
  * @subpackage Meta
@@ -13,27 +13,27 @@
 require ABSPATH . WPINC . '/class-wp-metadata-lazyloader.php';
 
 /**
- * Adds metadata for the specified object.
+ * Thêm metadata cho đối tượng được chỉ định.
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string $meta_type  Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                           or any other object type with an associated meta table.
- * @param int    $object_id  ID of the object metadata is for.
- * @param string $meta_key   Metadata key.
- * @param mixed  $meta_value Metadata value. Arrays and objects are stored as serialized data and
- *                           will be returned as the same type when retrieved. Other data types will
- *                           be stored as strings in the database:
- *                           - false is stored and retrieved as an empty string ('')
- *                           - true is stored and retrieved as '1'
- *                           - numbers (both integer and float) are stored and retrieved as strings
- *                           Must be serializable if non-scalar.
- * @param bool   $unique     Optional. Whether the specified metadata key should be unique for the object.
- *                           If true, and the object already has a value for the specified metadata key,
- *                           no change will be made. Default false.
- * @return int|false The meta ID on success, false on failure.
+ * @param string $meta_type  Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                           hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $object_id  ID của đối tượng mà metadata dành cho.
+ * @param string $meta_key   Khóa metadata.
+ * @param mixed  $meta_value Giá trị metadata. Mảng và đối tượng được lưu dưới dạng dữ liệu serialized và
+ *                           sẽ được trả về cùng kiểu khi lấy ra. Các kiểu dữ liệu khác sẽ
+ *                           được lưu dưới dạng chuỗi trong cơ sở dữ liệu:
+ *                           - false được lưu và trả về dưới dạng chuỗi rỗng ('')
+ *                           - true được lưu và trả về dưới dạng '1'
+ *                           - số (cả integer và float) được lưu và trả về dưới dạng chuỗi
+ *                           Phải có thể serialize nếu không phải scalar.
+ * @param bool   $unique     Tùy chọn. Liệu khóa metadata được chỉ định có nên là duy nhất cho đối tượng.
+ *                           Nếu true, và đối tượng đã có giá trị cho khóa metadata được chỉ định,
+ *                           sẽ không có thay đổi nào. Mặc định false.
+ * @return int|false ID meta khi thành công, false khi thất bại.
  */
 function add_metadata( $meta_type, $object_id, $meta_key, $meta_value, $unique = false ) {
 	global $wpdb;
@@ -62,13 +62,13 @@ function add_metadata( $meta_type, $object_id, $meta_key, $meta_value, $unique =
 	$meta_value = sanitize_meta( $meta_key, $meta_value, $meta_type, $meta_subtype );
 
 	/**
-	 * Short-circuits adding metadata of a specific type.
+	 * Bỏ qua (short-circuit) việc thêm metadata của một loại cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
-	 * Returning a non-null value will effectively short-circuit the function.
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
+	 * Trả về giá trị không null sẽ bỏ qua hàm một cách hiệu quả.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `add_post_metadata`
 	 *  - `add_comment_metadata`
@@ -77,11 +77,11 @@ function add_metadata( $meta_type, $object_id, $meta_key, $meta_value, $unique =
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param null|bool $check      Whether to allow adding metadata for the given type.
-	 * @param int       $object_id  ID of the object metadata is for.
-	 * @param string    $meta_key   Metadata key.
-	 * @param mixed     $meta_value Metadata value. Must be serializable if non-scalar.
-	 * @param bool      $unique     Whether the specified meta key should be unique for the object.
+	 * @param null|bool $check      Có cho phép thêm metadata cho loại đã cho hay không.
+	 * @param int       $object_id  ID của đối tượng mà metadata dành cho.
+	 * @param string    $meta_key   Khóa metadata.
+	 * @param mixed     $meta_value Giá trị metadata. Phải có thể serialize nếu không phải scalar.
+	 * @param bool      $unique     Liệu khóa meta đã chỉ định có nên là duy nhất cho đối tượng.
 	 */
 	$check = apply_filters( "add_{$meta_type}_metadata", null, $object_id, $meta_key, $meta_value, $unique );
 	if ( null !== $check ) {
@@ -102,12 +102,12 @@ function add_metadata( $meta_type, $object_id, $meta_key, $meta_value, $unique =
 	$meta_value  = maybe_serialize( $meta_value );
 
 	/**
-	 * Fires immediately before meta of a specific type is added.
+	 * Kích hoạt ngay trước khi meta của một loại cụ thể được thêm.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `add_post_meta`
 	 *  - `add_comment_meta`
@@ -116,9 +116,9 @@ function add_metadata( $meta_type, $object_id, $meta_key, $meta_value, $unique =
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param int    $object_id   ID of the object metadata is for.
-	 * @param string $meta_key    Metadata key.
-	 * @param mixed  $_meta_value Metadata value.
+	 * @param int    $object_id   ID của đối tượng mà metadata dành cho.
+	 * @param string $meta_key    Khóa metadata.
+	 * @param mixed  $_meta_value Giá trị metadata.
 	 */
 	do_action( "add_{$meta_type}_meta", $object_id, $meta_key, $_meta_value );
 
@@ -140,12 +140,12 @@ function add_metadata( $meta_type, $object_id, $meta_key, $meta_value, $unique =
 	wp_cache_delete( $object_id, $meta_type . '_meta' );
 
 	/**
-	 * Fires immediately after meta of a specific type is added.
+	 * Kích hoạt ngay sau khi meta của một loại cụ thể được thêm.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `added_post_meta`
 	 *  - `added_comment_meta`
@@ -154,10 +154,10 @@ function add_metadata( $meta_type, $object_id, $meta_key, $meta_value, $unique =
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param int    $mid         The meta ID after successful update.
-	 * @param int    $object_id   ID of the object metadata is for.
-	 * @param string $meta_key    Metadata key.
-	 * @param mixed  $_meta_value Metadata value.
+	 * @param int    $mid         ID meta sau khi cập nhật thành công.
+	 * @param int    $object_id   ID của đối tượng mà metadata dành cho.
+	 * @param string $meta_key    Khóa metadata.
+	 * @param mixed  $_meta_value Giá trị metadata.
 	 */
 	do_action( "added_{$meta_type}_meta", $mid, $object_id, $meta_key, $_meta_value );
 
@@ -165,25 +165,25 @@ function add_metadata( $meta_type, $object_id, $meta_key, $meta_value, $unique =
 }
 
 /**
- * Updates metadata for the specified object. If no value already exists for the specified object
- * ID and metadata key, the metadata will be added.
+ * Cập nhật metadata cho đối tượng được chỉ định. Nếu chưa có giá trị nào tồn tại cho
+ * ID đối tượng và khóa metadata được chỉ định, metadata sẽ được thêm mới.
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string $meta_type  Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                           or any other object type with an associated meta table.
- * @param int    $object_id  ID of the object metadata is for.
- * @param string $meta_key   Metadata key.
- * @param mixed  $meta_value Metadata value. Must be serializable if non-scalar.
- * @param mixed  $prev_value Optional. Previous value to check before updating.
- *                           If specified, only update existing metadata entries with
- *                           this value. Otherwise, update all entries. Default empty string.
- * @return int|bool The new meta field ID if a field with the given key didn't exist
- *                  and was therefore added, true on successful update,
- *                  false on failure or if the value passed to the function
- *                  is the same as the one that is already in the database.
+ * @param string $meta_type  Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                           hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $object_id  ID của đối tượng mà metadata dành cho.
+ * @param string $meta_key   Khóa metadata.
+ * @param mixed  $meta_value Giá trị metadata. Phải có thể serialize nếu không phải scalar.
+ * @param mixed  $prev_value Tùy chọn. Giá trị trước đó để kiểm tra trước khi cập nhật.
+ *                           Nếu được chỉ định, chỉ cập nhật các mục metadata hiện có với
+ *                           giá trị này. Nếu không, cập nhật tất cả các mục. Mặc định chuỗi rỗng.
+ * @return int|bool ID trường meta mới nếu trường với khóa đã cho không tồn tại
+ *                  và do đó được thêm mới, true khi cập nhật thành công,
+ *                  false khi thất bại hoặc nếu giá trị truyền vào hàm
+ *                  giống với giá trị đã có trong cơ sở dữ liệu.
  */
 function update_metadata( $meta_type, $object_id, $meta_key, $meta_value, $prev_value = '' ) {
 	global $wpdb;
@@ -215,13 +215,13 @@ function update_metadata( $meta_type, $object_id, $meta_key, $meta_value, $prev_
 	$meta_value   = sanitize_meta( $meta_key, $meta_value, $meta_type, $meta_subtype );
 
 	/**
-	 * Short-circuits updating metadata of a specific type.
+	 * Bỏ qua (short-circuit) việc cập nhật metadata của một loại cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
-	 * Returning a non-null value will effectively short-circuit the function.
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
+	 * Trả về giá trị không null sẽ bỏ qua hàm một cách hiệu quả.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `update_post_metadata`
 	 *  - `update_comment_metadata`
@@ -230,20 +230,20 @@ function update_metadata( $meta_type, $object_id, $meta_key, $meta_value, $prev_
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param null|bool $check      Whether to allow updating metadata for the given type.
-	 * @param int       $object_id  ID of the object metadata is for.
-	 * @param string    $meta_key   Metadata key.
-	 * @param mixed     $meta_value Metadata value. Must be serializable if non-scalar.
-	 * @param mixed     $prev_value Optional. Previous value to check before updating.
-	 *                              If specified, only update existing metadata entries with
-	 *                              this value. Otherwise, update all entries.
+	 * @param null|bool $check      Có cho phép cập nhật metadata cho loại đã cho hay không.
+	 * @param int       $object_id  ID của đối tượng mà metadata dành cho.
+	 * @param string    $meta_key   Khóa metadata.
+	 * @param mixed     $meta_value Giá trị metadata. Phải có thể serialize nếu không phải scalar.
+	 * @param mixed     $prev_value Tùy chọn. Giá trị trước đó để kiểm tra trước khi cập nhật.
+	 *                              Nếu được chỉ định, chỉ cập nhật các mục metadata hiện có với
+	 *                              giá trị này. Nếu không, cập nhật tất cả các mục.
 	 */
 	$check = apply_filters( "update_{$meta_type}_metadata", null, $object_id, $meta_key, $meta_value, $prev_value );
 	if ( null !== $check ) {
 		return (bool) $check;
 	}
 
-	// Compare existing value to new value if no prev value given and the key exists only once.
+	// So sánh giá trị hiện có với giá trị mới nếu không có giá trị trước đó và khóa chỉ tồn tại một lần.
 	if ( empty( $prev_value ) ) {
 		$old_value = get_metadata_raw( $meta_type, $object_id, $meta_key );
 		if ( is_countable( $old_value ) && count( $old_value ) === 1 ) {
@@ -274,12 +274,12 @@ function update_metadata( $meta_type, $object_id, $meta_key, $meta_value, $prev_
 
 	foreach ( $meta_ids as $meta_id ) {
 		/**
-		 * Fires immediately before updating metadata of a specific type.
+		 * Kích hoạt ngay trước khi cập nhật metadata của một loại cụ thể.
 		 *
-		 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-		 * (post, comment, term, user, or any other type with an associated meta table).
+		 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+		 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `update_post_meta`
 		 *  - `update_comment_meta`
@@ -288,24 +288,24 @@ function update_metadata( $meta_type, $object_id, $meta_key, $meta_value, $prev_
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param int    $meta_id     ID of the metadata entry to update.
-		 * @param int    $object_id   ID of the object metadata is for.
-		 * @param string $meta_key    Metadata key.
-		 * @param mixed  $_meta_value Metadata value.
+		 * @param int    $meta_id     ID của mục metadata cần cập nhật.
+		 * @param int    $object_id   ID của đối tượng mà metadata dành cho.
+		 * @param string $meta_key    Khóa metadata.
+		 * @param mixed  $_meta_value Giá trị metadata.
 		 */
 		do_action( "update_{$meta_type}_meta", $meta_id, $object_id, $meta_key, $_meta_value );
 
 		if ( 'post' === $meta_type ) {
 			/**
-			 * Fires immediately before updating a post's metadata.
+			 * Kích hoạt ngay trước khi cập nhật metadata của bài viết.
 			 *
 			 * @since 2.9.0
 			 *
-			 * @param int    $meta_id    ID of metadata entry to update.
-			 * @param int    $object_id  Post ID.
-			 * @param string $meta_key   Metadata key.
-			 * @param mixed  $meta_value Metadata value. This will be a PHP-serialized string representation of the value
-			 *                           if the value is an array, an object, or itself a PHP-serialized string.
+			 * @param int    $meta_id    ID của mục metadata cần cập nhật.
+			 * @param int    $object_id  ID bài viết.
+			 * @param string $meta_key   Khóa metadata.
+			 * @param mixed  $meta_value Giá trị metadata. Đây sẽ là chuỗi đại diện PHP-serialized của giá trị
+			 *                           nếu giá trị là mảng, đối tượng, hoặc chính nó là chuỗi PHP-serialized.
 			 */
 			do_action( 'update_postmeta', $meta_id, $object_id, $meta_key, $meta_value );
 		}
@@ -320,12 +320,12 @@ function update_metadata( $meta_type, $object_id, $meta_key, $meta_value, $prev_
 
 	foreach ( $meta_ids as $meta_id ) {
 		/**
-		 * Fires immediately after updating metadata of a specific type.
+		 * Kích hoạt ngay sau khi cập nhật metadata của một loại cụ thể.
 		 *
-		 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-		 * (post, comment, term, user, or any other type with an associated meta table).
+		 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+		 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `updated_post_meta`
 		 *  - `updated_comment_meta`
@@ -334,24 +334,24 @@ function update_metadata( $meta_type, $object_id, $meta_key, $meta_value, $prev_
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param int    $meta_id     ID of updated metadata entry.
-		 * @param int    $object_id   ID of the object metadata is for.
-		 * @param string $meta_key    Metadata key.
-		 * @param mixed  $_meta_value Metadata value.
+		 * @param int    $meta_id     ID của mục metadata đã cập nhật.
+		 * @param int    $object_id   ID của đối tượng mà metadata dành cho.
+		 * @param string $meta_key    Khóa metadata.
+		 * @param mixed  $_meta_value Giá trị metadata.
 		 */
 		do_action( "updated_{$meta_type}_meta", $meta_id, $object_id, $meta_key, $_meta_value );
 
 		if ( 'post' === $meta_type ) {
 			/**
-			 * Fires immediately after updating a post's metadata.
+			 * Kích hoạt ngay sau khi cập nhật metadata của bài viết.
 			 *
 			 * @since 2.9.0
 			 *
-			 * @param int    $meta_id    ID of updated metadata entry.
-			 * @param int    $object_id  Post ID.
-			 * @param string $meta_key   Metadata key.
-			 * @param mixed  $meta_value Metadata value. This will be a PHP-serialized string representation of the value
-			 *                           if the value is an array, an object, or itself a PHP-serialized string.
+			 * @param int    $meta_id    ID của mục metadata đã cập nhật.
+			 * @param int    $object_id  ID bài viết.
+			 * @param string $meta_key   Khóa metadata.
+			 * @param mixed  $meta_value Giá trị metadata. Đây sẽ là chuỗi đại diện PHP-serialized của giá trị
+			 *                           nếu giá trị là mảng, đối tượng, hoặc chính nó là chuỗi PHP-serialized.
 			 */
 			do_action( 'updated_postmeta', $meta_id, $object_id, $meta_key, $meta_value );
 		}
@@ -361,27 +361,27 @@ function update_metadata( $meta_type, $object_id, $meta_key, $meta_value, $prev_
 }
 
 /**
- * Deletes metadata for the specified object.
+ * Xóa metadata cho đối tượng được chỉ định.
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string $meta_type  Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                           or any other object type with an associated meta table.
- * @param int    $object_id  ID of the object metadata is for.
- * @param string $meta_key   Metadata key.
- * @param mixed  $meta_value Optional. Metadata value. Must be serializable if non-scalar.
- *                           If specified, only delete metadata entries with this value.
- *                           Otherwise, delete all entries with the specified meta_key.
- *                           Pass `null`, `false`, or an empty string to skip this check.
- *                           (For backward compatibility, it is not possible to pass an empty string
- *                           to delete those entries with an empty string for a value.)
- *                           Default empty string.
- * @param bool   $delete_all Optional. If true, delete matching metadata entries for all objects,
- *                           ignoring the specified object_id. Otherwise, only delete
- *                           matching metadata entries for the specified object_id. Default false.
- * @return bool True on successful delete, false on failure.
+ * @param string $meta_type  Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                           hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $object_id  ID của đối tượng mà metadata dành cho.
+ * @param string $meta_key   Khóa metadata.
+ * @param mixed  $meta_value Tùy chọn. Giá trị metadata. Phải có thể serialize nếu không phải scalar.
+ *                           Nếu được chỉ định, chỉ xóa các mục metadata có giá trị này.
+ *                           Nếu không, xóa tất cả các mục với meta_key đã chỉ định.
+ *                           Truyền `null`, `false`, hoặc chuỗi rỗng để bỏ qua kiểm tra này.
+ *                           (Để tương thích ngược, không thể truyền chuỗi rỗng
+ *                           để xóa các mục có giá trị là chuỗi rỗng.)
+ *                           Mặc định chuỗi rỗng.
+ * @param bool   $delete_all Tùy chọn. Nếu true, xóa các mục metadata khớp cho tất cả đối tượng,
+ *                           bỏ qua object_id đã chỉ định. Nếu không, chỉ xóa
+ *                           các mục metadata khớp cho object_id đã chỉ định. Mặc định false.
+ * @return bool True khi xóa thành công, false khi thất bại.
  */
 function delete_metadata( $meta_type, $object_id, $meta_key, $meta_value = '', $delete_all = false ) {
 	global $wpdb;
@@ -408,13 +408,13 @@ function delete_metadata( $meta_type, $object_id, $meta_key, $meta_value = '', $
 	$meta_value = wp_unslash( $meta_value );
 
 	/**
-	 * Short-circuits deleting metadata of a specific type.
+	 * Bỏ qua (short-circuit) việc xóa metadata của một loại cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
-	 * Returning a non-null value will effectively short-circuit the function.
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
+	 * Trả về giá trị không null sẽ bỏ qua hàm một cách hiệu quả.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `delete_post_metadata`
 	 *  - `delete_comment_metadata`
@@ -423,13 +423,13 @@ function delete_metadata( $meta_type, $object_id, $meta_key, $meta_value = '', $
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param null|bool $delete     Whether to allow metadata deletion of the given type.
-	 * @param int       $object_id  ID of the object metadata is for.
-	 * @param string    $meta_key   Metadata key.
-	 * @param mixed     $meta_value Metadata value. Must be serializable if non-scalar.
-	 * @param bool      $delete_all Whether to delete the matching metadata entries
-	 *                              for all objects, ignoring the specified $object_id.
-	 *                              Default false.
+	 * @param null|bool $delete     Có cho phép xóa metadata của loại đã cho hay không.
+	 * @param int       $object_id  ID của đối tượng mà metadata dành cho.
+	 * @param string    $meta_key   Khóa metadata.
+	 * @param mixed     $meta_value Giá trị metadata. Phải có thể serialize nếu không phải scalar.
+	 * @param bool      $delete_all Có xóa các mục metadata khớp cho tất cả đối tượng hay không,
+	 *                              bỏ qua $object_id đã chỉ định.
+	 *                              Mặc định false.
 	 */
 	$check = apply_filters( "delete_{$meta_type}_metadata", null, $object_id, $meta_key, $meta_value, $delete_all );
 	if ( null !== $check ) {
@@ -463,12 +463,12 @@ function delete_metadata( $meta_type, $object_id, $meta_key, $meta_value = '', $
 	}
 
 	/**
-	 * Fires immediately before deleting metadata of a specific type.
+	 * Kích hoạt ngay trước khi xóa metadata của một loại cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `delete_post_meta`
 	 *  - `delete_comment_meta`
@@ -477,21 +477,21 @@ function delete_metadata( $meta_type, $object_id, $meta_key, $meta_value = '', $
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string[] $meta_ids    An array of metadata entry IDs to delete.
-	 * @param int      $object_id   ID of the object metadata is for.
-	 * @param string   $meta_key    Metadata key.
-	 * @param mixed    $_meta_value Metadata value.
+	 * @param string[] $meta_ids    Mảng các ID mục metadata cần xóa.
+	 * @param int      $object_id   ID của đối tượng mà metadata dành cho.
+	 * @param string   $meta_key    Khóa metadata.
+	 * @param mixed    $_meta_value Giá trị metadata.
 	 */
 	do_action( "delete_{$meta_type}_meta", $meta_ids, $object_id, $meta_key, $_meta_value );
 
-	// Old-style action.
+	// Action kiểu cũ.
 	if ( 'post' === $meta_type ) {
 		/**
-		 * Fires immediately before deleting metadata for a post.
+		 * Kích hoạt ngay trước khi xóa metadata cho bài viết.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param string[] $meta_ids An array of metadata entry IDs to delete.
+		 * @param string[] $meta_ids Mảng các ID mục metadata cần xóa.
 		 */
 		do_action( 'delete_postmeta', $meta_ids );
 	}
@@ -512,12 +512,12 @@ function delete_metadata( $meta_type, $object_id, $meta_key, $meta_value = '', $
 	wp_cache_delete_multiple( $data, $meta_type . '_meta' );
 
 	/**
-	 * Fires immediately after deleting metadata of a specific type.
+	 * Kích hoạt ngay sau khi xóa metadata của một loại cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `deleted_post_meta`
 	 *  - `deleted_comment_meta`
@@ -526,21 +526,21 @@ function delete_metadata( $meta_type, $object_id, $meta_key, $meta_value = '', $
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string[] $meta_ids    An array of metadata entry IDs to delete.
-	 * @param int      $object_id   ID of the object metadata is for.
-	 * @param string   $meta_key    Metadata key.
-	 * @param mixed    $_meta_value Metadata value.
+	 * @param string[] $meta_ids    Mảng các ID mục metadata đã xóa.
+	 * @param int      $object_id   ID của đối tượng mà metadata dành cho.
+	 * @param string   $meta_key    Khóa metadata.
+	 * @param mixed    $_meta_value Giá trị metadata.
 	 */
 	do_action( "deleted_{$meta_type}_meta", $meta_ids, $object_id, $meta_key, $_meta_value );
 
-	// Old-style action.
+	// Action kiểu cũ.
 	if ( 'post' === $meta_type ) {
 		/**
-		 * Fires immediately after deleting metadata for a post.
+		 * Kích hoạt ngay sau khi xóa metadata cho bài viết.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param string[] $meta_ids An array of metadata entry IDs to delete.
+		 * @param string[] $meta_ids Mảng các ID mục metadata đã xóa.
 		 */
 		do_action( 'deleted_postmeta', $meta_ids );
 	}
@@ -549,38 +549,38 @@ function delete_metadata( $meta_type, $object_id, $meta_key, $meta_value = '', $
 }
 
 /**
- * Retrieves the value of a metadata field for the specified object type and ID.
+ * Lấy giá trị của trường metadata cho loại đối tượng và ID được chỉ định.
  *
- * If the meta field exists, a single value is returned if `$single` is true,
- * or an array of values if it's false.
+ * Nếu trường meta tồn tại, một giá trị đơn được trả về nếu `$single` là true,
+ * hoặc mảng các giá trị nếu là false.
  *
- * If the meta field does not exist, the result depends on get_metadata_default().
- * By default, an empty string is returned if `$single` is true, or an empty array
- * if it's false.
+ * Nếu trường meta không tồn tại, kết quả phụ thuộc vào get_metadata_default().
+ * Mặc định, chuỗi rỗng được trả về nếu `$single` là true, hoặc mảng rỗng
+ * nếu là false.
  *
  * @since 2.9.0
  *
  * @see get_metadata_raw()
  * @see get_metadata_default()
  *
- * @param string $meta_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                          or any other object type with an associated meta table.
- * @param int    $object_id ID of the object metadata is for.
- * @param string $meta_key  Optional. Metadata key. If not specified, retrieve all metadata for
- *                          the specified object. Default empty string.
- * @param bool   $single    Optional. If true, return only the first value of the specified `$meta_key`.
- *                          This parameter has no effect if `$meta_key` is not specified. Default false.
- * @return mixed An array of values if `$single` is false.
- *               The value of the meta field if `$single` is true.
- *               False for an invalid `$object_id` (non-numeric, zero, or negative value),
- *               or if `$meta_type` is not specified.
- *               An empty array if a valid but non-existing object ID is passed and `$single` is false.
- *               An empty string if a valid but non-existing object ID is passed and `$single` is true.
- *               Note: Non-serialized values are returned as strings:
- *               - false values are returned as empty strings ('')
- *               - true values are returned as '1'
- *               - numbers (both integer and float) are returned as strings
- *               Arrays and objects retain their original type.
+ * @param string $meta_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $object_id ID của đối tượng mà metadata dành cho.
+ * @param string $meta_key  Tùy chọn. Khóa metadata. Nếu không chỉ định, lấy tất cả metadata cho
+ *                          đối tượng được chỉ định. Mặc định chuỗi rỗng.
+ * @param bool   $single    Tùy chọn. Nếu true, chỉ trả về giá trị đầu tiên của `$meta_key` được chỉ định.
+ *                          Tham số này không có hiệu lực nếu `$meta_key` không được chỉ định. Mặc định false.
+ * @return mixed Mảng các giá trị nếu `$single` là false.
+ *               Giá trị của trường meta nếu `$single` là true.
+ *               False cho `$object_id` không hợp lệ (không phải số, bằng không, hoặc giá trị âm),
+ *               hoặc nếu `$meta_type` không được chỉ định.
+ *               Mảng rỗng nếu ID đối tượng hợp lệ nhưng không tồn tại và `$single` là false.
+ *               Chuỗi rỗng nếu ID đối tượng hợp lệ nhưng không tồn tại và `$single` là true.
+ *               Lưu ý: Các giá trị không serialize được trả về dưới dạng chuỗi:
+ *               - giá trị false được trả về dưới dạng chuỗi rỗng ('')
+ *               - giá trị true được trả về dưới dạng '1'
+ *               - số (cả integer và float) được trả về dưới dạng chuỗi
+ *               Mảng và đối tượng giữ nguyên kiểu ban đầu.
  */
 function get_metadata( $meta_type, $object_id, $meta_key = '', $single = false ) {
 	$value = get_metadata_raw( $meta_type, $object_id, $meta_key, $single );
@@ -592,22 +592,22 @@ function get_metadata( $meta_type, $object_id, $meta_key = '', $single = false )
 }
 
 /**
- * Retrieves raw metadata value for the specified object.
+ * Lấy giá trị metadata thô cho đối tượng được chỉ định.
  *
  * @since 5.5.0
  *
- * @param string $meta_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                          or any other object type with an associated meta table.
- * @param int    $object_id ID of the object metadata is for.
- * @param string $meta_key  Optional. Metadata key. If not specified, retrieve all metadata for
- *                          the specified object. Default empty string.
- * @param bool   $single    Optional. If true, return only the first value of the specified `$meta_key`.
- *                          This parameter has no effect if `$meta_key` is not specified. Default false.
- * @return mixed An array of values if `$single` is false.
- *               The value of the meta field if `$single` is true.
- *               False for an invalid `$object_id` (non-numeric, zero, or negative value),
- *               or if `$meta_type` is not specified.
- *               Null if the value does not exist.
+ * @param string $meta_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $object_id ID của đối tượng mà metadata dành cho.
+ * @param string $meta_key  Tùy chọn. Khóa metadata. Nếu không chỉ định, lấy tất cả metadata cho
+ *                          đối tượng được chỉ định. Mặc định chuỗi rỗng.
+ * @param bool   $single    Tùy chọn. Nếu true, chỉ trả về giá trị đầu tiên của `$meta_key` được chỉ định.
+ *                          Tham số này không có hiệu lực nếu `$meta_key` không được chỉ định. Mặc định false.
+ * @return mixed Mảng các giá trị nếu `$single` là false.
+ *               Giá trị của trường meta nếu `$single` là true.
+ *               False cho `$object_id` không hợp lệ (không phải số, bằng không, hoặc giá trị âm),
+ *               hoặc nếu `$meta_type` không được chỉ định.
+ *               Null nếu giá trị không tồn tại.
  */
 function get_metadata_raw( $meta_type, $object_id, $meta_key = '', $single = false ) {
 	if ( ! $meta_type || ! is_numeric( $object_id ) ) {
@@ -620,13 +620,13 @@ function get_metadata_raw( $meta_type, $object_id, $meta_key = '', $single = fal
 	}
 
 	/**
-	 * Short-circuits the return value of a meta field.
+	 * Bỏ qua (short-circuit) giá trị trả về của trường meta.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
-	 * Returning a non-null value will effectively short-circuit the function.
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
+	 * Trả về giá trị không null sẽ bỏ qua hàm một cách hiệu quả.
 	 *
-	 * Possible filter names include:
+	 * Các tên filter có thể bao gồm:
 	 *
 	 *  - `get_post_metadata`
 	 *  - `get_comment_metadata`
@@ -634,15 +634,15 @@ function get_metadata_raw( $meta_type, $object_id, $meta_key = '', $single = fal
 	 *  - `get_user_metadata`
 	 *
 	 * @since 3.1.0
-	 * @since 5.5.0 Added the `$meta_type` parameter.
+	 * @since 5.5.0 Thêm tham số `$meta_type`.
 	 *
-	 * @param mixed  $value     The value to return, either a single metadata value or an array
-	 *                          of values depending on the value of `$single`. Default null.
-	 * @param int    $object_id ID of the object metadata is for.
-	 * @param string $meta_key  Metadata key.
-	 * @param bool   $single    Whether to return only the first value of the specified `$meta_key`.
-	 * @param string $meta_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
-	 *                          or any other object type with an associated meta table.
+	 * @param mixed  $value     Giá trị để trả về, có thể là giá trị metadata đơn hoặc mảng
+	 *                          các giá trị tùy thuộc vào giá trị của `$single`. Mặc định null.
+	 * @param int    $object_id ID của đối tượng mà metadata dành cho.
+	 * @param string $meta_key  Khóa metadata.
+	 * @param bool   $single    Có chỉ trả về giá trị đầu tiên của `$meta_key` được chỉ định hay không.
+	 * @param string $meta_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+	 *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
 	 */
 	$check = apply_filters( "get_{$meta_type}_metadata", null, $object_id, $meta_key, $single, $meta_type );
 	if ( null !== $check ) {
@@ -680,21 +680,21 @@ function get_metadata_raw( $meta_type, $object_id, $meta_key = '', $single = fal
 }
 
 /**
- * Retrieves default metadata value for the specified meta key and object.
+ * Lấy giá trị metadata mặc định cho khóa meta và đối tượng được chỉ định.
  *
- * By default, an empty string is returned if `$single` is true, or an empty array
- * if it's false.
+ * Mặc định, chuỗi rỗng được trả về nếu `$single` là true, hoặc mảng rỗng
+ * nếu là false.
  *
  * @since 5.5.0
  *
- * @param string $meta_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                          or any other object type with an associated meta table.
- * @param int    $object_id ID of the object metadata is for.
- * @param string $meta_key  Metadata key.
- * @param bool   $single    Optional. If true, return only the first value of the specified `$meta_key`.
- *                          This parameter has no effect if `$meta_key` is not specified. Default false.
- * @return mixed An array of default values if `$single` is false.
- *               The default value of the meta field if `$single` is true.
+ * @param string $meta_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $object_id ID của đối tượng mà metadata dành cho.
+ * @param string $meta_key  Khóa metadata.
+ * @param bool   $single    Tùy chọn. Nếu true, chỉ trả về giá trị đầu tiên của `$meta_key` được chỉ định.
+ *                          Tham số này không có hiệu lực nếu `$meta_key` không được chỉ định. Mặc định false.
+ * @return mixed Mảng các giá trị mặc định nếu `$single` là false.
+ *               Giá trị mặc định của trường meta nếu `$single` là true.
  */
 function get_metadata_default( $meta_type, $object_id, $meta_key, $single = false ) {
 	if ( $single ) {
@@ -704,12 +704,12 @@ function get_metadata_default( $meta_type, $object_id, $meta_key, $single = fals
 	}
 
 	/**
-	 * Filters the default metadata value for a specified meta key and object.
+	 * Lọc giá trị metadata mặc định cho khóa meta và đối tượng được chỉ định.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
 	 *
-	 * Possible filter names include:
+	 * Các tên filter có thể bao gồm:
 	 *
 	 *  - `default_post_metadata`
 	 *  - `default_comment_metadata`
@@ -718,13 +718,13 @@ function get_metadata_default( $meta_type, $object_id, $meta_key, $single = fals
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param mixed  $value     The value to return, either a single metadata value or an array
-	 *                          of values depending on the value of `$single`.
-	 * @param int    $object_id ID of the object metadata is for.
-	 * @param string $meta_key  Metadata key.
-	 * @param bool   $single    Whether to return only the first value of the specified `$meta_key`.
-	 * @param string $meta_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
-	 *                          or any other object type with an associated meta table.
+	 * @param mixed  $value     Giá trị để trả về, có thể là giá trị metadata đơn hoặc mảng
+	 *                          các giá trị tùy thuộc vào giá trị của `$single`.
+	 * @param int    $object_id ID của đối tượng mà metadata dành cho.
+	 * @param string $meta_key  Khóa metadata.
+	 * @param bool   $single    Có chỉ trả về giá trị đầu tiên của `$meta_key` được chỉ định hay không.
+	 * @param string $meta_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+	 *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
 	 */
 	$value = apply_filters( "default_{$meta_type}_metadata", $value, $object_id, $meta_key, $single, $meta_type );
 
@@ -736,15 +736,15 @@ function get_metadata_default( $meta_type, $object_id, $meta_key, $single = fals
 }
 
 /**
- * Determines if a meta field with the given key exists for the given object ID.
+ * Xác định xem trường meta với khóa đã cho có tồn tại cho ID đối tượng đã cho hay không.
  *
  * @since 3.3.0
  *
- * @param string $meta_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                          or any other object type with an associated meta table.
- * @param int    $object_id ID of the object metadata is for.
- * @param string $meta_key  Metadata key.
- * @return bool Whether a meta field with the given key exists.
+ * @param string $meta_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $object_id ID của đối tượng mà metadata dành cho.
+ * @param string $meta_key  Khóa metadata.
+ * @return bool Liệu trường meta với khóa đã cho có tồn tại hay không.
  */
 function metadata_exists( $meta_type, $object_id, $meta_key ) {
 	if ( ! $meta_type || ! is_numeric( $object_id ) ) {
@@ -756,7 +756,7 @@ function metadata_exists( $meta_type, $object_id, $meta_key ) {
 		return false;
 	}
 
-	/** This filter is documented in wp-includes/meta.php */
+	/** Filter này được tài liệu hóa tại wp-includes/meta.php */
 	$check = apply_filters( "get_{$meta_type}_metadata", null, $object_id, $meta_key, true, $meta_type );
 	if ( null !== $check ) {
 		return (bool) $check;
@@ -777,26 +777,26 @@ function metadata_exists( $meta_type, $object_id, $meta_key ) {
 }
 
 /**
- * Retrieves metadata by meta ID.
+ * Lấy metadata theo ID meta.
  *
  * @since 3.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string $meta_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                          or any other object type with an associated meta table.
- * @param int    $meta_id   ID for a specific meta row.
+ * @param string $meta_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $meta_id   ID cho một hàng meta cụ thể.
  * @return stdClass|false {
- *     Metadata object, or boolean `false` if the metadata doesn't exist.
+ *     Đối tượng metadata, hoặc boolean `false` nếu metadata không tồn tại.
  *
- *     @type string $meta_key   The meta key.
- *     @type mixed  $meta_value The unserialized meta value.
- *     @type string $meta_id    Optional. The meta ID when the meta type is any value except 'user'.
- *     @type string $umeta_id   Optional. The meta ID when the meta type is 'user'.
- *     @type string $post_id    Optional. The object ID when the meta type is 'post'.
- *     @type string $comment_id Optional. The object ID when the meta type is 'comment'.
- *     @type string $term_id    Optional. The object ID when the meta type is 'term'.
- *     @type string $user_id    Optional. The object ID when the meta type is 'user'.
+ *     @type string $meta_key   Khóa meta.
+ *     @type mixed  $meta_value Giá trị meta đã unserialize.
+ *     @type string $meta_id    Tùy chọn. ID meta khi loại meta là bất kỳ giá trị nào ngoại trừ 'user'.
+ *     @type string $umeta_id   Tùy chọn. ID meta khi loại meta là 'user'.
+ *     @type string $post_id    Tùy chọn. ID đối tượng khi loại meta là 'post'.
+ *     @type string $comment_id Tùy chọn. ID đối tượng khi loại meta là 'comment'.
+ *     @type string $term_id    Tùy chọn. ID đối tượng khi loại meta là 'term'.
+ *     @type string $user_id    Tùy chọn. ID đối tượng khi loại meta là 'user'.
  * }
  */
 function get_metadata_by_mid( $meta_type, $meta_id ) {
@@ -817,13 +817,13 @@ function get_metadata_by_mid( $meta_type, $meta_id ) {
 	}
 
 	/**
-	 * Short-circuits the return value when fetching a meta field by meta ID.
+	 * Bỏ qua (short-circuit) giá trị trả về khi lấy trường meta theo ID meta.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
-	 * Returning a non-null value will effectively short-circuit the function.
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
+	 * Trả về giá trị không null sẽ bỏ qua hàm một cách hiệu quả.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `get_post_metadata_by_mid`
 	 *  - `get_comment_metadata_by_mid`
@@ -832,8 +832,8 @@ function get_metadata_by_mid( $meta_type, $meta_id ) {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param stdClass|null $value   The value to return.
-	 * @param int           $meta_id Meta ID.
+	 * @param stdClass|null $value   Giá trị để trả về.
+	 * @param int           $meta_id ID meta.
 	 */
 	$check = apply_filters( "get_{$meta_type}_metadata_by_mid", null, $meta_id );
 	if ( null !== $check ) {
@@ -856,23 +856,23 @@ function get_metadata_by_mid( $meta_type, $meta_id ) {
 }
 
 /**
- * Updates metadata by meta ID.
+ * Cập nhật metadata theo ID meta.
  *
  * @since 3.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string       $meta_type  Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                                 or any other object type with an associated meta table.
- * @param int          $meta_id    ID for a specific meta row.
- * @param string       $meta_value Metadata value. Must be serializable if non-scalar.
- * @param string|false $meta_key   Optional. You can provide a meta key to update it. Default false.
- * @return bool True on successful update, false on failure.
+ * @param string       $meta_type  Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                                 hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int          $meta_id    ID cho một hàng meta cụ thể.
+ * @param string       $meta_value Giá trị metadata. Phải có thể serialize nếu không phải scalar.
+ * @param string|false $meta_key   Tùy chọn. Bạn có thể cung cấp khóa meta để cập nhật nó. Mặc định false.
+ * @return bool True khi cập nhật thành công, false khi thất bại.
  */
 function update_metadata_by_mid( $meta_type, $meta_id, $meta_value, $meta_key = false ) {
 	global $wpdb;
 
-	// Make sure everything is valid.
+	// Đảm bảo mọi thứ đều hợp lệ.
 	if ( ! $meta_type || ! is_numeric( $meta_id ) || floor( $meta_id ) != $meta_id ) {
 		return false;
 	}
@@ -891,13 +891,13 @@ function update_metadata_by_mid( $meta_type, $meta_id, $meta_value, $meta_key = 
 	$id_column = ( 'user' === $meta_type ) ? 'umeta_id' : 'meta_id';
 
 	/**
-	 * Short-circuits updating metadata of a specific type by meta ID.
+	 * Bỏ qua (short-circuit) việc cập nhật metadata của một loại cụ thể theo ID meta.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
-	 * Returning a non-null value will effectively short-circuit the function.
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
+	 * Trả về giá trị không null sẽ bỏ qua hàm một cách hiệu quả.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `update_post_metadata_by_mid`
 	 *  - `update_comment_metadata_by_mid`
@@ -906,25 +906,25 @@ function update_metadata_by_mid( $meta_type, $meta_id, $meta_value, $meta_key = 
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param null|bool    $check      Whether to allow updating metadata for the given type.
-	 * @param int          $meta_id    Meta ID.
-	 * @param mixed        $meta_value Meta value. Must be serializable if non-scalar.
-	 * @param string|false $meta_key   Meta key, if provided.
+	 * @param null|bool    $check      Có cho phép cập nhật metadata cho loại đã cho hay không.
+	 * @param int          $meta_id    ID meta.
+	 * @param mixed        $meta_value Giá trị meta. Phải có thể serialize nếu không phải scalar.
+	 * @param string|false $meta_key   Khóa meta, nếu được cung cấp.
 	 */
 	$check = apply_filters( "update_{$meta_type}_metadata_by_mid", null, $meta_id, $meta_value, $meta_key );
 	if ( null !== $check ) {
 		return (bool) $check;
 	}
 
-	// Fetch the meta and go on if it's found.
+	// Lấy meta và tiếp tục nếu tìm thấy.
 	$meta = get_metadata_by_mid( $meta_type, $meta_id );
 	if ( $meta ) {
 		$original_key = $meta->meta_key;
 		$object_id    = $meta->{$column};
 
 		/*
-		 * If a new meta_key (last parameter) was specified, change the meta key,
-		 * otherwise use the original key in the update statement.
+		 * Nếu meta_key mới (tham số cuối) được chỉ định, thay đổi khóa meta,
+		 * nếu không sử dụng khóa gốc trong câu lệnh cập nhật.
 		 */
 		if ( false === $meta_key ) {
 			$meta_key = $original_key;
@@ -934,69 +934,69 @@ function update_metadata_by_mid( $meta_type, $meta_id, $meta_value, $meta_key = 
 
 		$meta_subtype = get_object_subtype( $meta_type, $object_id );
 
-		// Sanitize the meta.
+		// Làm sạch meta.
 		$_meta_value = $meta_value;
 		$meta_value  = sanitize_meta( $meta_key, $meta_value, $meta_type, $meta_subtype );
 		$meta_value  = maybe_serialize( $meta_value );
 
-		// Format the data query arguments.
+		// Định dạng các đối số truy vấn dữ liệu.
 		$data = array(
 			'meta_key'   => $meta_key,
 			'meta_value' => $meta_value,
 		);
 
-		// Format the where query arguments.
+		// Định dạng các đối số truy vấn where.
 		$where               = array();
 		$where[ $id_column ] = $meta_id;
 
-		/** This action is documented in wp-includes/meta.php */
+		/** Action này được tài liệu hóa tại wp-includes/meta.php */
 		do_action( "update_{$meta_type}_meta", $meta_id, $object_id, $meta_key, $_meta_value );
 
 		if ( 'post' === $meta_type ) {
-			/** This action is documented in wp-includes/meta.php */
+			/** Action này được tài liệu hóa tại wp-includes/meta.php */
 			do_action( 'update_postmeta', $meta_id, $object_id, $meta_key, $meta_value );
 		}
 
-		// Run the update query, all fields in $data are %s, $where is a %d.
+		// Chạy truy vấn cập nhật, tất cả các trường trong $data là %s, $where là %d.
 		$result = $wpdb->update( $table, $data, $where, '%s', '%d' );
 		if ( ! $result ) {
 			return false;
 		}
 
-		// Clear the caches.
+		// Xóa bộ nhớ đệm.
 		wp_cache_delete( $object_id, $meta_type . '_meta' );
 
-		/** This action is documented in wp-includes/meta.php */
+		/** Action này được tài liệu hóa tại wp-includes/meta.php */
 		do_action( "updated_{$meta_type}_meta", $meta_id, $object_id, $meta_key, $_meta_value );
 
 		if ( 'post' === $meta_type ) {
-			/** This action is documented in wp-includes/meta.php */
+			/** Action này được tài liệu hóa tại wp-includes/meta.php */
 			do_action( 'updated_postmeta', $meta_id, $object_id, $meta_key, $meta_value );
 		}
 
 		return true;
 	}
 
-	// And if the meta was not found.
+	// Và nếu meta không được tìm thấy.
 	return false;
 }
 
 /**
- * Deletes metadata by meta ID.
+ * Xóa metadata theo ID meta.
  *
  * @since 3.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string $meta_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                          or any other object type with an associated meta table.
- * @param int    $meta_id   ID for a specific meta row.
- * @return bool True on successful delete, false on failure.
+ * @param string $meta_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $meta_id   ID cho một hàng meta cụ thể.
+ * @return bool True khi xóa thành công, false khi thất bại.
  */
 function delete_metadata_by_mid( $meta_type, $meta_id ) {
 	global $wpdb;
 
-	// Make sure everything is valid.
+	// Đảm bảo mọi thứ đều hợp lệ.
 	if ( ! $meta_type || ! is_numeric( $meta_id ) || floor( $meta_id ) != $meta_id ) {
 		return false;
 	}
@@ -1011,18 +1011,18 @@ function delete_metadata_by_mid( $meta_type, $meta_id ) {
 		return false;
 	}
 
-	// Object and ID columns.
+	// Các cột đối tượng và ID.
 	$column    = sanitize_key( $meta_type . '_id' );
 	$id_column = ( 'user' === $meta_type ) ? 'umeta_id' : 'meta_id';
 
 	/**
-	 * Short-circuits deleting metadata of a specific type by meta ID.
+	 * Bỏ qua (short-circuit) việc xóa metadata của một loại cụ thể theo ID meta.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
-	 * Returning a non-null value will effectively short-circuit the function.
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
+	 * Trả về giá trị không null sẽ bỏ qua hàm một cách hiệu quả.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `delete_post_metadata_by_mid`
 	 *  - `delete_comment_metadata_by_mid`
@@ -1031,31 +1031,31 @@ function delete_metadata_by_mid( $meta_type, $meta_id ) {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param null|bool $delete  Whether to allow metadata deletion of the given type.
-	 * @param int       $meta_id Meta ID.
+	 * @param null|bool $delete  Có cho phép xóa metadata của loại đã cho hay không.
+	 * @param int       $meta_id ID meta.
 	 */
 	$check = apply_filters( "delete_{$meta_type}_metadata_by_mid", null, $meta_id );
 	if ( null !== $check ) {
 		return (bool) $check;
 	}
 
-	// Fetch the meta and go on if it's found.
+	// Lấy meta và tiếp tục nếu tìm thấy.
 	$meta = get_metadata_by_mid( $meta_type, $meta_id );
 	if ( $meta ) {
 		$object_id = (int) $meta->{$column};
 
-		/** This action is documented in wp-includes/meta.php */
+		/** Action này được tài liệu hóa tại wp-includes/meta.php */
 		do_action( "delete_{$meta_type}_meta", (array) $meta_id, $object_id, $meta->meta_key, $meta->meta_value );
 
-		// Old-style action.
+		// Action kiểu cũ.
 		if ( 'post' === $meta_type || 'comment' === $meta_type ) {
 			/**
-			 * Fires immediately before deleting post or comment metadata of a specific type.
+			 * Kích hoạt ngay trước khi xóa metadata bài viết hoặc bình luận của một loại cụ thể.
 			 *
-			 * The dynamic portion of the hook name, `$meta_type`, refers to the meta
-			 * object type (post or comment).
+			 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại
+			 * đối tượng meta (post hoặc comment).
 			 *
-			 * Possible hook names include:
+			 * Các tên hook có thể bao gồm:
 			 *
 			 *  - `delete_postmeta`
 			 *  - `delete_commentmeta`
@@ -1064,29 +1064,29 @@ function delete_metadata_by_mid( $meta_type, $meta_id ) {
 			 *
 			 * @since 3.4.0
 			 *
-			 * @param int $meta_id ID of the metadata entry to delete.
+			 * @param int $meta_id ID của mục metadata cần xóa.
 			 */
 			do_action( "delete_{$meta_type}meta", $meta_id );
 		}
 
-		// Run the query, will return true if deleted, false otherwise.
+		// Chạy truy vấn, sẽ trả về true nếu xóa thành công, false nếu không.
 		$result = (bool) $wpdb->delete( $table, array( $id_column => $meta_id ) );
 
-		// Clear the caches.
+		// Xóa bộ nhớ đệm.
 		wp_cache_delete( $object_id, $meta_type . '_meta' );
 
-		/** This action is documented in wp-includes/meta.php */
+		/** Action này được tài liệu hóa tại wp-includes/meta.php */
 		do_action( "deleted_{$meta_type}_meta", (array) $meta_id, $object_id, $meta->meta_key, $meta->meta_value );
 
-		// Old-style action.
+		// Action kiểu cũ.
 		if ( 'post' === $meta_type || 'comment' === $meta_type ) {
 			/**
-			 * Fires immediately after deleting post or comment metadata of a specific type.
+			 * Kích hoạt ngay sau khi xóa metadata bài viết hoặc bình luận của một loại cụ thể.
 			 *
-			 * The dynamic portion of the hook name, `$meta_type`, refers to the meta
-			 * object type (post or comment).
+			 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại
+			 * đối tượng meta (post hoặc comment).
 			 *
-			 * Possible hook names include:
+			 * Các tên hook có thể bao gồm:
 			 *
 			 *  - `deleted_postmeta`
 			 *  - `deleted_commentmeta`
@@ -1095,7 +1095,7 @@ function delete_metadata_by_mid( $meta_type, $meta_id ) {
 			 *
 			 * @since 3.4.0
 			 *
-			 * @param int $meta_id Deleted metadata entry ID.
+			 * @param int $meta_id ID mục metadata đã xóa.
 			 */
 			do_action( "deleted_{$meta_type}meta", $meta_id );
 		}
@@ -1104,21 +1104,21 @@ function delete_metadata_by_mid( $meta_type, $meta_id ) {
 
 	}
 
-	// Meta ID was not found.
+	// Không tìm thấy ID meta.
 	return false;
 }
 
 /**
- * Updates the metadata cache for the specified objects.
+ * Cập nhật bộ nhớ đệm metadata cho các đối tượng được chỉ định.
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string       $meta_type  Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                                 or any other object type with an associated meta table.
- * @param string|int[] $object_ids Array or comma delimited list of object IDs to update cache for.
- * @return array|false Metadata cache for the specified objects, or false on failure.
+ * @param string       $meta_type  Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                                 hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param string|int[] $object_ids Mảng hoặc danh sách phân tách bằng dấu phẩy các ID đối tượng để cập nhật bộ nhớ đệm.
+ * @return array|false Bộ nhớ đệm metadata cho các đối tượng được chỉ định, hoặc false khi thất bại.
  */
 function update_meta_cache( $meta_type, $object_ids ) {
 	global $wpdb;
@@ -1142,13 +1142,13 @@ function update_meta_cache( $meta_type, $object_ids ) {
 	$object_ids = array_map( 'intval', $object_ids );
 
 	/**
-	 * Short-circuits updating the metadata cache of a specific type.
+	 * Bỏ qua (short-circuit) việc cập nhật bộ nhớ đệm metadata của một loại cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$meta_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
-	 * Returning a non-null value will effectively short-circuit the function.
+	 * Phần động của tên hook, `$meta_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
+	 * Trả về giá trị không null sẽ bỏ qua hàm một cách hiệu quả.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `update_post_metadata_cache`
 	 *  - `update_comment_metadata_cache`
@@ -1157,8 +1157,8 @@ function update_meta_cache( $meta_type, $object_ids ) {
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param mixed $check      Whether to allow updating the meta cache of the given type.
-	 * @param int[] $object_ids Array of object IDs to update the meta cache for.
+	 * @param mixed $check      Có cho phép cập nhật bộ nhớ đệm meta của loại đã cho hay không.
+	 * @param int[] $object_ids Mảng các ID đối tượng để cập nhật bộ nhớ đệm meta.
 	 */
 	$check = apply_filters( "update_{$meta_type}_metadata_cache", null, $object_ids );
 	if ( null !== $check ) {
@@ -1182,7 +1182,7 @@ function update_meta_cache( $meta_type, $object_ids ) {
 		return $cache;
 	}
 
-	// Get meta info.
+	// Lấy thông tin meta.
 	$id_list   = implode( ',', $non_cached_ids );
 	$id_column = ( 'user' === $meta_type ) ? 'umeta_id' : 'meta_id';
 
@@ -1194,7 +1194,7 @@ function update_meta_cache( $meta_type, $object_ids ) {
 			$mkey = $metarow['meta_key'];
 			$mval = $metarow['meta_value'];
 
-			// Force subkeys to be array type.
+			// Buộc các khóa con phải là kiểu mảng.
 			if ( ! isset( $cache[ $mpid ] ) || ! is_array( $cache[ $mpid ] ) ) {
 				$cache[ $mpid ] = array();
 			}
@@ -1202,7 +1202,7 @@ function update_meta_cache( $meta_type, $object_ids ) {
 				$cache[ $mpid ][ $mkey ] = array();
 			}
 
-			// Add a value to the current pid/key.
+			// Thêm giá trị vào pid/key hiện tại.
 			$cache[ $mpid ][ $mkey ][] = $mval;
 		}
 	}
@@ -1220,11 +1220,11 @@ function update_meta_cache( $meta_type, $object_ids ) {
 }
 
 /**
- * Retrieves the queue for lazy-loading metadata.
+ * Lấy hàng đợi để tải lười (lazy-load) metadata.
  *
  * @since 4.5.0
  *
- * @return WP_Metadata_Lazyloader Metadata lazyloader queue.
+ * @return WP_Metadata_Lazyloader Hàng đợi tải lười metadata.
  */
 function wp_metadata_lazyloader() {
 	static $wp_metadata_lazyloader;
@@ -1237,23 +1237,23 @@ function wp_metadata_lazyloader() {
 }
 
 /**
- * Given a meta query, generates SQL clauses to be appended to a main query.
+ * Cho một truy vấn meta, tạo các mệnh đề SQL để nối vào truy vấn chính.
  *
  * @since 3.2.0
  *
  * @see WP_Meta_Query
  *
- * @param array  $meta_query        A meta query.
- * @param string $type              Type of meta.
- * @param string $primary_table     Primary database table name.
- * @param string $primary_id_column Primary ID column name.
- * @param object $context           Optional. The main query object. Default null.
+ * @param array  $meta_query        Một truy vấn meta.
+ * @param string $type              Loại meta.
+ * @param string $primary_table     Tên bảng cơ sở dữ liệu chính.
+ * @param string $primary_id_column Tên cột ID chính.
+ * @param object $context           Tùy chọn. Đối tượng truy vấn chính. Mặc định null.
  * @return string[]|false {
- *     Array containing JOIN and WHERE SQL clauses to append to the main query,
- *     or false if no table exists for the requested meta type.
+ *     Mảng chứa các mệnh đề SQL JOIN và WHERE để nối vào truy vấn chính,
+ *     hoặc false nếu không có bảng nào tồn tại cho loại meta được yêu cầu.
  *
- *     @type string $join  SQL fragment to append to the main JOIN clause.
- *     @type string $where SQL fragment to append to the main WHERE clause.
+ *     @type string $join  Đoạn SQL để nối vào mệnh đề JOIN chính.
+ *     @type string $where Đoạn SQL để nối vào mệnh đề WHERE chính.
  * }
  */
 function get_meta_sql( $meta_query, $type, $primary_table, $primary_id_column, $context = null ) {
@@ -1262,15 +1262,15 @@ function get_meta_sql( $meta_query, $type, $primary_table, $primary_id_column, $
 }
 
 /**
- * Retrieves the name of the metadata table for the specified object type.
+ * Lấy tên bảng metadata cho loại đối tượng được chỉ định.
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string $type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                     or any other object type with an associated meta table.
- * @return string|false Metadata table name, or false if no metadata table exists
+ * @param string $type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                     hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @return string|false Tên bảng metadata, hoặc false nếu không có bảng metadata nào tồn tại.
  */
 function _get_meta_table( $type ) {
 	global $wpdb;
@@ -1285,135 +1285,135 @@ function _get_meta_table( $type ) {
 }
 
 /**
- * Determines whether a meta key is considered protected.
+ * Xác định xem khóa meta có được coi là được bảo vệ hay không.
  *
  * @since 3.1.3
  *
- * @param string $meta_key  Metadata key.
- * @param string $meta_type Optional. Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                          or any other object type with an associated meta table. Default empty string.
- * @return bool Whether the meta key is considered protected.
+ * @param string $meta_key  Khóa metadata.
+ * @param string $meta_type Tùy chọn. Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết. Mặc định chuỗi rỗng.
+ * @return bool Liệu khóa meta có được coi là được bảo vệ hay không.
  */
 function is_protected_meta( $meta_key, $meta_type = '' ) {
 	$sanitized_key = preg_replace( "/[^\x20-\x7E\p{L}]/", '', $meta_key );
 	$protected     = strlen( $sanitized_key ) > 0 && ( '_' === $sanitized_key[0] );
 
 	/**
-	 * Filters whether a meta key is considered protected.
+	 * Lọc xem khóa meta có được coi là được bảo vệ hay không.
 	 *
 	 * @since 3.2.0
 	 *
-	 * @param bool   $protected Whether the key is considered protected.
-	 * @param string $meta_key  Metadata key.
-	 * @param string $meta_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
-	 *                          or any other object type with an associated meta table.
+	 * @param bool   $protected Liệu khóa có được coi là được bảo vệ hay không.
+	 * @param string $meta_key  Khóa metadata.
+	 * @param string $meta_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+	 *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
 	 */
 	return apply_filters( 'is_protected_meta', $protected, $meta_key, $meta_type );
 }
 
 /**
- * Sanitizes meta value.
+ * Làm sạch giá trị meta.
  *
  * @since 3.1.3
- * @since 4.9.8 The `$object_subtype` parameter was added.
+ * @since 4.9.8 Thêm tham số `$object_subtype`.
  *
- * @param string $meta_key       Metadata key.
- * @param mixed  $meta_value     Metadata value to sanitize.
- * @param string $object_type    Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                               or any other object type with an associated meta table.
- * @param string $object_subtype Optional. The subtype of the object type. Default empty string.
- * @return mixed Sanitized $meta_value.
+ * @param string $meta_key       Khóa metadata.
+ * @param mixed  $meta_value     Giá trị metadata cần làm sạch.
+ * @param string $object_type    Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                               hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param string $object_subtype Tùy chọn. Kiểu con của loại đối tượng. Mặc định chuỗi rỗng.
+ * @return mixed Giá trị $meta_value đã được làm sạch.
  */
 function sanitize_meta( $meta_key, $meta_value, $object_type, $object_subtype = '' ) {
 	if ( ! empty( $object_subtype ) && has_filter( "sanitize_{$object_type}_meta_{$meta_key}_for_{$object_subtype}" ) ) {
 
 		/**
-		 * Filters the sanitization of a specific meta key of a specific meta type and subtype.
+		 * Lọc việc làm sạch khóa meta cụ thể của loại meta và kiểu con cụ thể.
 		 *
-		 * The dynamic portions of the hook name, `$object_type`, `$meta_key`,
-		 * and `$object_subtype`, refer to the metadata object type (comment, post, term, or user),
-		 * the meta key value, and the object subtype respectively.
+		 * Các phần động của tên hook, `$object_type`, `$meta_key`,
+		 * và `$object_subtype`, tham chiếu đến loại đối tượng metadata (comment, post, term, hoặc user),
+		 * giá trị khóa meta, và kiểu con đối tượng tương ứng.
 		 *
 		 * @since 4.9.8
 		 *
-		 * @param mixed  $meta_value     Metadata value to sanitize.
-		 * @param string $meta_key       Metadata key.
-		 * @param string $object_type    Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
-		 *                               or any other object type with an associated meta table.
-		 * @param string $object_subtype Object subtype.
+		 * @param mixed  $meta_value     Giá trị metadata cần làm sạch.
+		 * @param string $meta_key       Khóa metadata.
+		 * @param string $object_type    Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+		 *                               hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+		 * @param string $object_subtype Kiểu con đối tượng.
 		 */
 		return apply_filters( "sanitize_{$object_type}_meta_{$meta_key}_for_{$object_subtype}", $meta_value, $meta_key, $object_type, $object_subtype );
 	}
 
 	/**
-	 * Filters the sanitization of a specific meta key of a specific meta type.
+	 * Lọc việc làm sạch của một khóa meta cụ thể thuộc một loại meta cụ thể.
 	 *
-	 * The dynamic portions of the hook name, `$meta_type`, and `$meta_key`,
-	 * refer to the metadata object type (comment, post, term, or user) and the meta
-	 * key value, respectively.
+	 * Các phần động của tên hook, `$meta_type` và `$meta_key`,
+	 * tham chiếu đến loại đối tượng metadata (comment, post, term, hoặc user) và giá trị
+	 * khóa meta, tương ứng.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param mixed  $meta_value  Metadata value to sanitize.
-	 * @param string $meta_key    Metadata key.
-	 * @param string $object_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
-	 *                            or any other object type with an associated meta table.
+	 * @param mixed  $meta_value  Giá trị metadata cần làm sạch.
+	 * @param string $meta_key    Khóa metadata.
+	 * @param string $object_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+	 *                            hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
 	 */
 	return apply_filters( "sanitize_{$object_type}_meta_{$meta_key}", $meta_value, $meta_key, $object_type );
 }
 
 /**
- * Registers a meta key.
+ * Đăng ký một khóa meta.
  *
- * It is recommended to register meta keys for a specific combination of object type and object subtype. If passing
- * an object subtype is omitted, the meta key will be registered for the entire object type, however it can be partly
- * overridden in case a more specific meta key of the same name exists for the same object type and a subtype.
+ * Khuyến nghị đăng ký khóa meta cho một tổ hợp cụ thể của loại đối tượng và kiểu con đối tượng. Nếu bỏ qua
+ * việc truyền kiểu con đối tượng, khóa meta sẽ được đăng ký cho toàn bộ loại đối tượng, tuy nhiên nó có thể bị
+ * ghi đè một phần nếu có khóa meta cụ thể hơn cùng tên tồn tại cho cùng loại đối tượng và một kiểu con.
  *
- * If an object type does not support any subtypes, such as users or comments, you should commonly call this function
- * without passing a subtype.
+ * Nếu một loại đối tượng không hỗ trợ bất kỳ kiểu con nào, chẳng hạn như users hoặc comments, bạn thường nên gọi hàm này
+ * mà không truyền kiểu con.
  *
  * @since 3.3.0
- * @since 4.6.0 {@link https://core.trac.wordpress.org/ticket/35658 Modified
- *              to support an array of data to attach to registered meta keys}. Previous arguments for
- *              `$sanitize_callback` and `$auth_callback` have been folded into this array.
- * @since 4.9.8 The `$object_subtype` argument was added to the arguments array.
- * @since 5.3.0 Valid meta types expanded to include "array" and "object".
- * @since 5.5.0 The `$default` argument was added to the arguments array.
- * @since 6.4.0 The `$revisions_enabled` argument was added to the arguments array.
- * @since 6.7.0 The `label` argument was added to the arguments array.
+ * @since 4.6.0 {@link https://core.trac.wordpress.org/ticket/35658 Được sửa đổi
+ *              để hỗ trợ mảng dữ liệu đính kèm vào khóa meta đã đăng ký}. Các tham số trước đó cho
+ *              `$sanitize_callback` và `$auth_callback` đã được gộp vào mảng này.
+ * @since 4.9.8 Tham số `$object_subtype` được thêm vào mảng tham số.
+ * @since 5.3.0 Các loại meta hợp lệ được mở rộng bao gồm "array" và "object".
+ * @since 5.5.0 Tham số `$default` được thêm vào mảng tham số.
+ * @since 6.4.0 Tham số `$revisions_enabled` được thêm vào mảng tham số.
+ * @since 6.7.0 Tham số `label` được thêm vào mảng tham số.
  *
- * @param string       $object_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                                  or any other object type with an associated meta table.
- * @param string       $meta_key    Meta key to register.
+ * @param string       $object_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                                  hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param string       $meta_key    Khóa meta cần đăng ký.
  * @param array        $args {
- *     Data used to describe the meta key when registered.
+ *     Dữ liệu dùng để mô tả khóa meta khi đăng ký.
  *
- *     @type string     $object_subtype    A subtype; e.g. if the object type is "post", the post type. If left empty,
- *                                         the meta key will be registered on the entire object type. Default empty.
- *     @type string     $type              The type of data associated with this meta key.
- *                                         Valid values are 'string', 'boolean', 'integer', 'number', 'array', and 'object'.
- *     @type string     $label             A human-readable label of the data attached to this meta key.
- *     @type string     $description       A description of the data attached to this meta key.
- *     @type bool       $single            Whether the meta key has one value per object, or an array of values per object.
- *     @type mixed      $default           The default value returned from get_metadata() if no value has been set yet.
- *                                         When using a non-single meta key, the default value is for the first entry.
- *                                         In other words, when calling get_metadata() with `$single` set to `false`,
- *                                         the default value given here will be wrapped in an array.
- *     @type callable   $sanitize_callback A function or method to call when sanitizing `$meta_key` data.
- *     @type callable   $auth_callback     Optional. A function or method to call when performing edit_post_meta,
- *                                         add_post_meta, and delete_post_meta capability checks.
- *     @type bool|array $show_in_rest      Whether data associated with this meta key can be considered public and
- *                                         should be accessible via the REST API. A custom post type must also declare
- *                                         support for custom fields for registered meta to be accessible via REST.
- *                                         When registering complex meta values this argument may optionally be an
- *                                         array with 'schema' or 'prepare_callback' keys instead of a boolean.
- *     @type bool       $revisions_enabled Whether to enable revisions support for this meta_key. Can only be used when the
- *                                         object type is 'post'.
+ *     @type string     $object_subtype    Kiểu con; ví dụ nếu loại đối tượng là "post", thì là loại bài viết. Nếu để trống,
+ *                                         khóa meta sẽ được đăng ký trên toàn bộ loại đối tượng. Mặc định rỗng.
+ *     @type string     $type              Kiểu dữ liệu liên kết với khóa meta này.
+ *                                         Các giá trị hợp lệ là 'string', 'boolean', 'integer', 'number', 'array', và 'object'.
+ *     @type string     $label             Nhãn mô tả dễ đọc cho dữ liệu đính kèm khóa meta này.
+ *     @type string     $description       Mô tả dữ liệu đính kèm khóa meta này.
+ *     @type bool       $single            Khóa meta có một giá trị cho mỗi đối tượng, hay một mảng giá trị cho mỗi đối tượng.
+ *     @type mixed      $default           Giá trị mặc định trả về từ get_metadata() nếu chưa có giá trị nào được đặt.
+ *                                         Khi sử dụng khóa meta không đơn lẻ, giá trị mặc định dành cho mục đầu tiên.
+ *                                         Nói cách khác, khi gọi get_metadata() với `$single` đặt là `false`,
+ *                                         giá trị mặc định ở đây sẽ được bọc trong một mảng.
+ *     @type callable   $sanitize_callback Hàm hoặc phương thức gọi khi làm sạch dữ liệu `$meta_key`.
+ *     @type callable   $auth_callback     Tùy chọn. Hàm hoặc phương thức gọi khi thực hiện kiểm tra quyền
+ *                                         edit_post_meta, add_post_meta, và delete_post_meta.
+ *     @type bool|array $show_in_rest      Dữ liệu liên kết với khóa meta này có thể được coi là công khai và
+ *                                         có thể truy cập qua REST API hay không. Loại bài viết tùy chỉnh cũng phải khai báo
+ *                                         hỗ trợ trường tùy chỉnh để meta đã đăng ký có thể truy cập qua REST.
+ *                                         Khi đăng ký giá trị meta phức tạp, tham số này có thể tùy chọn là một
+ *                                         mảng với khóa 'schema' hoặc 'prepare_callback' thay vì boolean.
+ *     @type bool       $revisions_enabled Có bật hỗ trợ phiên bản cho meta_key này hay không. Chỉ có thể sử dụng khi
+ *                                         loại đối tượng là 'post'.
  * }
- * @param string|array $deprecated Deprecated. Use `$args` instead.
- * @return bool True if the meta key was successfully registered in the global array, false if not.
- *              Registering a meta key with distinct sanitize and auth callbacks will fire those callbacks,
- *              but will not add to the global registry.
+ * @param string|array $deprecated Đã lỗi thời. Sử dụng `$args` thay thế.
+ * @return bool True nếu khóa meta được đăng ký thành công trong mảng toàn cục, false nếu không.
+ *              Đăng ký khóa meta với callback làm sạch và xác thực riêng biệt sẽ kích hoạt các callback đó,
+ *              nhưng sẽ không thêm vào registry toàn cục.
  */
 function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
 	global $wp_meta_keys;
@@ -1435,7 +1435,7 @@ function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
 		'revisions_enabled' => false,
 	);
 
-	// There used to be individual args for sanitize and auth callbacks.
+	// Trước đây có các tham số riêng lẻ cho callback làm sạch và xác thực.
 	$has_old_sanitize_cb = false;
 	$has_old_auth_cb     = false;
 
@@ -1455,21 +1455,21 @@ function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
 	}
 
 	/**
-	 * Filters the registration arguments when registering meta.
+	 * Lọc các tham số đăng ký khi đăng ký meta.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param array  $args        Array of meta registration arguments.
-	 * @param array  $defaults    Array of default arguments.
-	 * @param string $object_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
-	 *                            or any other object type with an associated meta table.
-	 * @param string $meta_key    Meta key.
+	 * @param array  $args        Mảng các tham số đăng ký meta.
+	 * @param array  $defaults    Mảng các tham số mặc định.
+	 * @param string $object_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+	 *                            hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+	 * @param string $meta_key    Khóa meta.
 	 */
 	$args = apply_filters( 'register_meta_args', $args, $defaults, $object_type, $meta_key );
 	unset( $defaults['default'] );
 	$args = wp_parse_args( $args, $defaults );
 
-	// Require an item schema when registering array meta.
+	// Yêu cầu schema cho mục khi đăng ký meta kiểu mảng.
 	if ( false !== $args['show_in_rest'] && 'array' === $args['type'] ) {
 		if ( ! is_array( $args['show_in_rest'] ) || ! isset( $args['show_in_rest']['schema']['items'] ) ) {
 			_doing_it_wrong( __FUNCTION__, __( 'When registering an "array" meta type to show in the REST API, you must specify the schema for each array item in "show_in_rest.schema.items".' ), '5.3.0' );
@@ -1491,7 +1491,7 @@ function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
 		}
 	}
 
-	// If `auth_callback` is not provided, fall back to `is_protected_meta()`.
+	// Nếu `auth_callback` không được cung cấp, sử dụng `is_protected_meta()` thay thế.
 	if ( empty( $args['auth_callback'] ) ) {
 		if ( is_protected_meta( $meta_key, $object_type ) ) {
 			$args['auth_callback'] = '__return_false';
@@ -1500,7 +1500,7 @@ function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
 		}
 	}
 
-	// Back-compat: old sanitize and auth callbacks are applied to all of an object type.
+	// Tương thích ngược: callback làm sạch và xác thực cũ được áp dụng cho toàn bộ loại đối tượng.
 	if ( is_callable( $args['sanitize_callback'] ) ) {
 		if ( ! empty( $object_subtype ) ) {
 			add_filter( "sanitize_{$object_type}_meta_{$meta_key}_for_{$object_subtype}", $args['sanitize_callback'], 10, 4 );
@@ -1535,7 +1535,7 @@ function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
 		}
 	}
 
-	// Global registry only contains meta keys registered with the array of arguments added in 4.6.0.
+	// Registry toàn cục chỉ chứa các khóa meta được đăng ký với mảng tham số được thêm trong 4.6.0.
 	if ( ! $has_old_auth_cb && ! $has_old_sanitize_cb ) {
 		unset( $args['object_subtype'] );
 
@@ -1548,19 +1548,19 @@ function register_meta( $object_type, $meta_key, $args, $deprecated = null ) {
 }
 
 /**
- * Filters into default_{$object_type}_metadata and adds in default value.
+ * Lọc vào default_{$object_type}_metadata và thêm giá trị mặc định.
  *
  * @since 5.5.0
  *
- * @param mixed  $value     Current value passed to filter.
- * @param int    $object_id ID of the object metadata is for.
- * @param string $meta_key  Metadata key.
- * @param bool   $single    If true, return only the first value of the specified `$meta_key`.
- *                          This parameter has no effect if `$meta_key` is not specified.
- * @param string $meta_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                          or any other object type with an associated meta table.
- * @return mixed An array of default values if `$single` is false.
- *               The default value of the meta field if `$single` is true.
+ * @param mixed  $value     Giá trị hiện tại được truyền vào bộ lọc.
+ * @param int    $object_id ID của đối tượng mà metadata dành cho.
+ * @param string $meta_key  Khóa metadata.
+ * @param bool   $single    Nếu true, chỉ trả về giá trị đầu tiên của `$meta_key` được chỉ định.
+ *                          Tham số này không có hiệu lực nếu `$meta_key` không được chỉ định.
+ * @param string $meta_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                          hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @return mixed Mảng các giá trị mặc định nếu `$single` là false.
+ *               Giá trị mặc định của trường meta nếu `$single` là true.
  */
 function filter_default_metadata( $value, $object_id, $meta_key, $single, $meta_type ) {
 	global $wp_meta_keys;
@@ -1586,7 +1586,7 @@ function filter_default_metadata( $value, $object_id, $meta_key, $single, $meta_
 		return $value;
 	}
 
-	// If this meta type does not have subtypes, then the default is keyed as an empty string.
+	// Nếu loại meta này không có kiểu con, thì giá trị mặc định được khóa bằng chuỗi rỗng.
 	if ( isset( $defaults[''] ) ) {
 		$metadata = $defaults[''];
 	} else {
@@ -1607,17 +1607,17 @@ function filter_default_metadata( $value, $object_id, $meta_key, $single, $meta_
 }
 
 /**
- * Checks if a meta key is registered.
+ * Kiểm tra xem một khóa meta đã được đăng ký hay chưa.
  *
  * @since 4.6.0
- * @since 4.9.8 The `$object_subtype` parameter was added.
+ * @since 4.9.8 Tham số `$object_subtype` được thêm.
  *
- * @param string $object_type    Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                               or any other object type with an associated meta table.
- * @param string $meta_key       Metadata key.
- * @param string $object_subtype Optional. The subtype of the object type. Default empty string.
- * @return bool True if the meta key is registered to the object type and, if provided,
- *              the object subtype. False if not.
+ * @param string $object_type    Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                               hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param string $meta_key       Khóa metadata.
+ * @param string $object_subtype Tùy chọn. Kiểu con của loại đối tượng. Mặc định chuỗi rỗng.
+ * @return bool True nếu khóa meta được đăng ký cho loại đối tượng và, nếu được cung cấp,
+ *              kiểu con đối tượng. False nếu không.
  */
 function registered_meta_key_exists( $object_type, $meta_key, $object_subtype = '' ) {
 	$meta_keys = get_registered_meta_keys( $object_type, $object_subtype );
@@ -1626,16 +1626,16 @@ function registered_meta_key_exists( $object_type, $meta_key, $object_subtype = 
 }
 
 /**
- * Unregisters a meta key from the list of registered keys.
+ * Hủy đăng ký một khóa meta khỏi danh sách các khóa đã đăng ký.
  *
  * @since 4.6.0
- * @since 4.9.8 The `$object_subtype` parameter was added.
+ * @since 4.9.8 Tham số `$object_subtype` được thêm.
  *
- * @param string $object_type    Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                               or any other object type with an associated meta table.
- * @param string $meta_key       Metadata key.
- * @param string $object_subtype Optional. The subtype of the object type. Default empty string.
- * @return bool True if successful. False if the meta key was not registered.
+ * @param string $object_type    Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                               hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param string $meta_key       Khóa metadata.
+ * @param string $object_subtype Tùy chọn. Kiểu con của loại đối tượng. Mặc định chuỗi rỗng.
+ * @return bool True nếu thành công. False nếu khóa meta chưa được đăng ký.
  */
 function unregister_meta_key( $object_type, $meta_key, $object_subtype = '' ) {
 	global $wp_meta_keys;
@@ -1664,7 +1664,7 @@ function unregister_meta_key( $object_type, $meta_key, $object_subtype = '' ) {
 
 	unset( $wp_meta_keys[ $object_type ][ $object_subtype ][ $meta_key ] );
 
-	// Do some clean up.
+	// Dọn dẹp.
 	if ( empty( $wp_meta_keys[ $object_type ][ $object_subtype ] ) ) {
 		unset( $wp_meta_keys[ $object_type ][ $object_subtype ] );
 	}
@@ -1676,15 +1676,15 @@ function unregister_meta_key( $object_type, $meta_key, $object_subtype = '' ) {
 }
 
 /**
- * Retrieves a list of registered metadata args for an object type, keyed by their meta keys.
+ * Lấy danh sách các tham số metadata đã đăng ký cho một loại đối tượng, được khóa bởi các khóa meta.
  *
  * @since 4.6.0
- * @since 4.9.8 The `$object_subtype` parameter was added.
+ * @since 4.9.8 Tham số `$object_subtype` được thêm.
  *
- * @param string $object_type    Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                               or any other object type with an associated meta table.
- * @param string $object_subtype Optional. The subtype of the object type. Default empty string.
- * @return array[] List of registered metadata args, keyed by their meta keys.
+ * @param string $object_type    Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                               hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param string $object_subtype Tùy chọn. Kiểu con của loại đối tượng. Mặc định chuỗi rỗng.
+ * @return array[] Danh sách các tham số metadata đã đăng ký, được khóa bởi các khóa meta.
  */
 function get_registered_meta_keys( $object_type, $object_subtype = '' ) {
 	global $wp_meta_keys;
@@ -1697,20 +1697,20 @@ function get_registered_meta_keys( $object_type, $object_subtype = '' ) {
 }
 
 /**
- * Retrieves registered metadata for a specified object.
+ * Lấy metadata đã đăng ký cho một đối tượng được chỉ định.
  *
- * The results include both meta that is registered specifically for the
- * object's subtype and meta that is registered for the entire object type.
+ * Kết quả bao gồm cả meta được đăng ký cụ thể cho kiểu con
+ * của đối tượng và meta được đăng ký cho toàn bộ loại đối tượng.
  *
  * @since 4.6.0
  *
- * @param string $object_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                            or any other object type with an associated meta table.
- * @param int    $object_id   ID of the object the metadata is for.
- * @param string $meta_key    Optional. Registered metadata key. If not specified, retrieve all registered
- *                            metadata for the specified object.
- * @return mixed A single value or array of values for a key if specified. An array of all registered keys
- *               and values for an object ID if not. False if a given $meta_key is not registered.
+ * @param string $object_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                            hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $object_id   ID của đối tượng mà metadata dành cho.
+ * @param string $meta_key    Tùy chọn. Khóa metadata đã đăng ký. Nếu không chỉ định, lấy tất cả metadata
+ *                            đã đăng ký cho đối tượng được chỉ định.
+ * @return mixed Giá trị đơn hoặc mảng giá trị cho một khóa nếu được chỉ định. Mảng tất cả khóa và
+ *               giá trị đã đăng ký cho ID đối tượng nếu không. False nếu $meta_key đã cho chưa được đăng ký.
  */
 function get_registered_metadata( $object_type, $object_id, $meta_key = '' ) {
 	$object_subtype = get_object_subtype( $object_type, $object_id );
@@ -1746,31 +1746,31 @@ function get_registered_metadata( $object_type, $object_id, $meta_key = '' ) {
 }
 
 /**
- * Filters out `register_meta()` args based on an allowed list.
+ * Lọc bỏ các tham số `register_meta()` dựa trên danh sách cho phép.
  *
- * `register_meta()` args may change over time, so requiring the allowed list
- * to be explicitly turned off is a warranty seal of sorts.
+ * Các tham số `register_meta()` có thể thay đổi theo thời gian, vì vậy việc yêu cầu danh sách
+ * cho phép phải được tắt rõ ràng là một dạng đảm bảo.
  *
  * @access private
  * @since 5.5.0
  *
- * @param array $args         Arguments from `register_meta()`.
- * @param array $default_args Default arguments for `register_meta()`.
- * @return array Filtered arguments.
+ * @param array $args         Các tham số từ `register_meta()`.
+ * @param array $default_args Các tham số mặc định cho `register_meta()`.
+ * @return array Các tham số đã lọc.
  */
 function _wp_register_meta_args_allowed_list( $args, $default_args ) {
 	return array_intersect_key( $args, $default_args );
 }
 
 /**
- * Returns the object subtype for a given object ID of a specific type.
+ * Trả về kiểu con đối tượng cho một ID đối tượng cụ thể thuộc một loại nhất định.
  *
  * @since 4.9.8
  *
- * @param string $object_type Type of object metadata is for. Accepts 'post', 'comment', 'term', 'user',
- *                            or any other object type with an associated meta table.
- * @param int    $object_id   ID of the object to retrieve its subtype.
- * @return string The object subtype or an empty string if unspecified subtype.
+ * @param string $object_type Loại đối tượng mà metadata dành cho. Chấp nhận 'post', 'comment', 'term', 'user',
+ *                            hoặc bất kỳ loại đối tượng nào khác có bảng meta liên kết.
+ * @param int    $object_id   ID của đối tượng cần lấy kiểu con.
+ * @return string Kiểu con đối tượng hoặc chuỗi rỗng nếu kiểu con không được chỉ định.
  */
 function get_object_subtype( $object_type, $object_id ) {
 	$object_id      = (int) $object_id;
@@ -1814,12 +1814,12 @@ function get_object_subtype( $object_type, $object_id ) {
 	}
 
 	/**
-	 * Filters the object subtype identifier for a non-standard object type.
+	 * Lọc định danh kiểu con đối tượng cho loại đối tượng không chuẩn.
 	 *
-	 * The dynamic portion of the hook name, `$object_type`, refers to the meta object type
-	 * (post, comment, term, user, or any other type with an associated meta table).
+	 * Phần động của tên hook, `$object_type`, tham chiếu đến loại đối tượng meta
+	 * (post, comment, term, user, hoặc bất kỳ loại nào khác có bảng meta liên kết).
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `get_object_subtype_post`
 	 *  - `get_object_subtype_comment`
@@ -1828,8 +1828,8 @@ function get_object_subtype( $object_type, $object_id ) {
 	 *
 	 * @since 4.9.8
 	 *
-	 * @param string $object_subtype Empty string to override.
-	 * @param int    $object_id      ID of the object to get the subtype for.
+	 * @param string $object_subtype Chuỗi rỗng để ghi đè.
+	 * @param int    $object_id      ID của đối tượng cần lấy kiểu con.
 	 */
 	return apply_filters( "get_object_subtype_{$object_type}", $object_subtype, $object_id );
 }

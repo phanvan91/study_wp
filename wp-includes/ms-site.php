@@ -1,6 +1,6 @@
 <?php
 /**
- * Site API
+ * API Site
  *
  * @package WordPress
  * @subpackage Multisite
@@ -8,38 +8,38 @@
  */
 
 /**
- * Inserts a new site into the database.
+ * Chèn một site mới vào cơ sở dữ liệu.
  *
  * @since 5.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
  * @param array $data {
- *     Data for the new site that should be inserted.
+ *     Dữ liệu cho site mới cần được chèn.
  *
- *     @type string $domain       Site domain. Default empty string.
- *     @type string $path         Site path. Default '/'.
- *     @type int    $network_id   The site's network ID. Default is the current network ID.
- *     @type string $registered   When the site was registered, in SQL datetime format. Default is
- *                                the current time.
- *     @type string $last_updated When the site was last updated, in SQL datetime format. Default is
- *                                the value of $registered.
- *     @type int    $public       Whether the site is public. Default 1.
- *     @type int    $archived     Whether the site is archived. Default 0.
- *     @type int    $mature       Whether the site is mature. Default 0.
- *     @type int    $spam         Whether the site is spam. Default 0.
- *     @type int    $deleted      Whether the site is deleted. Default 0.
- *     @type int    $lang_id      The site's language ID. Currently unused. Default 0.
- *     @type int    $user_id      User ID for the site administrator. Passed to the
- *                                `wp_initialize_site` hook.
- *     @type string $title        Site title. Default is 'Site %d' where %d is the site ID. Passed
- *                                to the `wp_initialize_site` hook.
- *     @type array  $options      Custom option $key => $value pairs to use. Default empty array. Passed
- *                                to the `wp_initialize_site` hook.
- *     @type array  $meta         Custom site metadata $key => $value pairs to use. Default empty array.
- *                                Passed to the `wp_initialize_site` hook.
+ *     @type string $domain       Tên miền site. Mặc định chuỗi rỗng.
+ *     @type string $path         Đường dẫn site. Mặc định '/'.
+ *     @type int    $network_id   ID mạng của site. Mặc định là ID mạng hiện tại.
+ *     @type string $registered   Thời điểm site được đăng ký, theo định dạng datetime SQL. Mặc định là
+ *                                thời gian hiện tại.
+ *     @type string $last_updated Thời điểm site được cập nhật lần cuối, theo định dạng datetime SQL. Mặc định là
+ *                                giá trị của $registered.
+ *     @type int    $public       Site có công khai hay không. Mặc định 1.
+ *     @type int    $archived     Site có bị lưu trữ hay không. Mặc định 0.
+ *     @type int    $mature       Site có đánh dấu trưởng thành hay không. Mặc định 0.
+ *     @type int    $spam         Site có phải spam hay không. Mặc định 0.
+ *     @type int    $deleted      Site có bị xóa hay không. Mặc định 0.
+ *     @type int    $lang_id      ID ngôn ngữ của site. Hiện chưa sử dụng. Mặc định 0.
+ *     @type int    $user_id      ID người dùng cho quản trị viên site. Được truyền tới
+ *                                hook `wp_initialize_site`.
+ *     @type string $title        Tiêu đề site. Mặc định là 'Site %d' trong đó %d là ID site. Được truyền
+ *                                tới hook `wp_initialize_site`.
+ *     @type array  $options      Các cặp tùy chọn tùy chỉnh $key => $value để sử dụng. Mặc định mảng rỗng. Được truyền
+ *                                tới hook `wp_initialize_site`.
+ *     @type array  $meta         Các cặp metadata tùy chỉnh $key => $value cho site. Mặc định mảng rỗng.
+ *                                Được truyền tới hook `wp_initialize_site`.
  * }
- * @return int|WP_Error The new site's ID on success, or error object on failure.
+ * @return int|WP_Error ID của site mới khi thành công, hoặc đối tượng lỗi khi thất bại.
  */
 function wp_insert_site( array $data ) {
 	global $wpdb;
@@ -80,59 +80,59 @@ function wp_insert_site( array $data ) {
 	}
 
 	/**
-	 * Fires once a site has been inserted into the database.
+	 * Kích hoạt khi một site đã được chèn vào cơ sở dữ liệu.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param WP_Site $new_site New site object.
+	 * @param WP_Site $new_site Đối tượng site mới.
 	 */
 	do_action( 'wp_insert_site', $new_site );
 
-	// Extract the passed arguments that may be relevant for site initialization.
+	// Trích xuất các tham số được truyền có thể liên quan đến việc khởi tạo site.
 	$args = array_diff_key( $data, $defaults );
 	if ( isset( $args['site_id'] ) ) {
 		unset( $args['site_id'] );
 	}
 
 	/**
-	 * Fires when a site's initialization routine should be executed.
+	 * Kích hoạt khi quy trình khởi tạo site cần được thực thi.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param WP_Site $new_site New site object.
-	 * @param array   $args     Arguments for the initialization.
+	 * @param WP_Site $new_site Đối tượng site mới.
+	 * @param array   $args     Các tham số cho việc khởi tạo.
 	 */
 	do_action( 'wp_initialize_site', $new_site, $args );
 
-	// Only compute extra hook parameters if the deprecated hook is actually in use.
+	// Chỉ tính toán các tham số hook bổ sung nếu hook đã lỗi thời thực sự đang được sử dụng.
 	if ( has_action( 'wpmu_new_blog' ) ) {
 		$user_id = ! empty( $args['user_id'] ) ? $args['user_id'] : 0;
 		$meta    = ! empty( $args['options'] ) ? $args['options'] : array();
 
-		// WPLANG was passed with `$meta` to the `wpmu_new_blog` hook prior to 5.1.0.
+		// WPLANG đã được truyền với `$meta` tới hook `wpmu_new_blog` trước phiên bản 5.1.0.
 		if ( ! array_key_exists( 'WPLANG', $meta ) ) {
 			$meta['WPLANG'] = get_network_option( $new_site->network_id, 'WPLANG' );
 		}
 
 		/*
-		 * Rebuild the data expected by the `wpmu_new_blog` hook prior to 5.1.0 using allowed keys.
-		 * The `$allowed_data_fields` matches the one used in `wpmu_create_blog()`.
+		 * Xây dựng lại dữ liệu được mong đợi bởi hook `wpmu_new_blog` trước phiên bản 5.1.0 sử dụng các khóa được phép.
+		 * `$allowed_data_fields` khớp với cái được sử dụng trong `wpmu_create_blog()`.
 		 */
 		$allowed_data_fields = array( 'public', 'archived', 'mature', 'spam', 'deleted', 'lang_id' );
 		$meta                = array_merge( array_intersect_key( $data, array_flip( $allowed_data_fields ) ), $meta );
 
 		/**
-		 * Fires immediately after a new site is created.
+		 * Kích hoạt ngay sau khi một site mới được tạo.
 		 *
 		 * @since MU (3.0.0)
-		 * @deprecated 5.1.0 Use {@see 'wp_initialize_site'} instead.
+		 * @deprecated 5.1.0 Sử dụng {@see 'wp_initialize_site'} thay thế.
 		 *
-		 * @param int    $site_id    Site ID.
-		 * @param int    $user_id    User ID.
-		 * @param string $domain     Site domain.
-		 * @param string $path       Site path.
-		 * @param int    $network_id Network ID. Only relevant on multi-network installations.
-		 * @param array  $meta       Meta data. Used to set initial site options.
+		 * @param int    $site_id    ID site.
+		 * @param int    $user_id    ID người dùng.
+		 * @param string $domain     Tên miền site.
+		 * @param string $path       Đường dẫn site.
+		 * @param int    $network_id ID mạng. Chỉ liên quan trên các cài đặt đa mạng.
+		 * @param array  $meta       Dữ liệu meta. Được sử dụng để thiết lập các tùy chọn site ban đầu.
 		 */
 		do_action_deprecated(
 			'wpmu_new_blog',
@@ -146,15 +146,15 @@ function wp_insert_site( array $data ) {
 }
 
 /**
- * Updates a site in the database.
+ * Cập nhật một site trong cơ sở dữ liệu.
  *
  * @since 5.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int   $site_id ID of the site that should be updated.
- * @param array $data    Site data to update. See {@see wp_insert_site()} for the list of supported keys.
- * @return int|WP_Error The updated site's ID on success, or error object on failure.
+ * @param int   $site_id ID của site cần được cập nhật.
+ * @param array $data    Dữ liệu site cần cập nhật. Xem {@see wp_insert_site()} để biết danh sách các khóa được hỗ trợ.
+ * @return int|WP_Error ID của site đã cập nhật khi thành công, hoặc đối tượng lỗi khi thất bại.
  */
 function wp_update_site( $site_id, array $data ) {
 	global $wpdb;
@@ -187,12 +187,12 @@ function wp_update_site( $site_id, array $data ) {
 	$new_site = get_site( $old_site->id );
 
 	/**
-	 * Fires once a site has been updated in the database.
+	 * Kích hoạt khi một site đã được cập nhật trong cơ sở dữ liệu.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param WP_Site $new_site New site object.
-	 * @param WP_Site $old_site Old site object.
+	 * @param WP_Site $new_site Đối tượng site mới.
+	 * @param WP_Site $old_site Đối tượng site cũ.
 	 */
 	do_action( 'wp_update_site', $new_site, $old_site );
 
@@ -200,14 +200,14 @@ function wp_update_site( $site_id, array $data ) {
 }
 
 /**
- * Deletes a site from the database.
+ * Xóa một site khỏi cơ sở dữ liệu.
  *
  * @since 5.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int $site_id ID of the site that should be deleted.
- * @return WP_Site|WP_Error The deleted site object on success, or error object on failure.
+ * @param int $site_id ID của site cần được xóa.
+ * @return WP_Site|WP_Error Đối tượng site đã xóa khi thành công, hoặc đối tượng lỗi khi thất bại.
  */
 function wp_delete_site( $site_id ) {
 	global $wpdb;
@@ -224,15 +224,15 @@ function wp_delete_site( $site_id ) {
 	$errors = new WP_Error();
 
 	/**
-	 * Fires before a site should be deleted from the database.
+	 * Kích hoạt trước khi một site bị xóa khỏi cơ sở dữ liệu.
 	 *
-	 * Plugins should amend the `$errors` object via its `WP_Error::add()` method. If any errors
-	 * are present, the site will not be deleted.
+	 * Plugin nên bổ sung vào đối tượng `$errors` thông qua phương thức `WP_Error::add()`. Nếu có bất kỳ
+	 * lỗi nào, site sẽ không bị xóa.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param WP_Error $errors   Error object to add validation errors to.
-	 * @param WP_Site  $old_site The site object to be deleted.
+	 * @param WP_Error $errors   Đối tượng lỗi để thêm các lỗi xác thực.
+	 * @param WP_Site  $old_site Đối tượng site sẽ bị xóa.
 	 */
 	do_action( 'wp_validate_site_deletion', $errors, $old_site );
 
@@ -241,22 +241,22 @@ function wp_delete_site( $site_id ) {
 	}
 
 	/**
-	 * Fires before a site is deleted.
+	 * Kích hoạt trước khi một site bị xóa.
 	 *
 	 * @since MU (3.0.0)
 	 * @deprecated 5.1.0
 	 *
-	 * @param int  $site_id The site ID.
-	 * @param bool $drop    True if site's table should be dropped. Default false.
+	 * @param int  $site_id ID site.
+	 * @param bool $drop    True nếu bảng của site nên bị xóa. Mặc định false.
 	 */
 	do_action_deprecated( 'delete_blog', array( $old_site->id, true ), '5.1.0' );
 
 	/**
-	 * Fires when a site's uninitialization routine should be executed.
+	 * Kích hoạt khi quy trình hủy khởi tạo site cần được thực thi.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param WP_Site $old_site Deleted site object.
+	 * @param WP_Site $old_site Đối tượng site đã xóa.
 	 */
 	do_action( 'wp_uninitialize_site', $old_site );
 
@@ -274,22 +274,22 @@ function wp_delete_site( $site_id ) {
 	clean_blog_cache( $old_site );
 
 	/**
-	 * Fires once a site has been deleted from the database.
+	 * Kích hoạt khi một site đã bị xóa khỏi cơ sở dữ liệu.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param WP_Site $old_site Deleted site object.
+	 * @param WP_Site $old_site Đối tượng site đã xóa.
 	 */
 	do_action( 'wp_delete_site', $old_site );
 
 	/**
-	 * Fires after the site is deleted from the network.
+	 * Kích hoạt sau khi site bị xóa khỏi mạng.
 	 *
 	 * @since 4.8.0
 	 * @deprecated 5.1.0
 	 *
-	 * @param int  $site_id The site ID.
-	 * @param bool $drop    True if site's tables should be dropped. Default false.
+	 * @param int  $site_id ID site.
+	 * @param bool $drop    True nếu các bảng của site nên bị xóa. Mặc định false.
 	 */
 	do_action_deprecated( 'deleted_blog', array( $old_site->id, true ), '5.1.0' );
 
@@ -297,15 +297,15 @@ function wp_delete_site( $site_id ) {
 }
 
 /**
- * Retrieves site data given a site ID or site object.
+ * Lấy dữ liệu site dựa trên ID site hoặc đối tượng site.
  *
- * Site data will be cached and returned after being passed through a filter.
- * If the provided site is empty, the current site global will be used.
+ * Dữ liệu site sẽ được lưu cache và trả về sau khi được truyền qua bộ lọc.
+ * Nếu site được cung cấp rỗng, biến toàn cục site hiện tại sẽ được sử dụng.
  *
  * @since 4.6.0
  *
- * @param WP_Site|int|null $site Optional. Site to retrieve. Default is the current site.
- * @return WP_Site|null The site object or null if not found.
+ * @param WP_Site|int|null $site Tùy chọn. Site cần lấy. Mặc định là site hiện tại.
+ * @return WP_Site|null Đối tượng site hoặc null nếu không tìm thấy.
  */
 function get_site( $site = null ) {
 	if ( empty( $site ) ) {
@@ -325,11 +325,11 @@ function get_site( $site = null ) {
 	}
 
 	/**
-	 * Fires after a site is retrieved.
+	 * Kích hoạt sau khi một site được lấy.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param WP_Site $_site Site data.
+	 * @param WP_Site $_site Dữ liệu site.
 	 */
 	$_site = apply_filters( 'get_site', $_site );
 
@@ -337,18 +337,18 @@ function get_site( $site = null ) {
 }
 
 /**
- * Adds any sites from the given IDs to the cache that do not already exist in cache.
+ * Thêm các site từ danh sách ID đã cho vào cache nếu chưa tồn tại trong cache.
  *
  * @since 4.6.0
- * @since 5.1.0 Introduced the `$update_meta_cache` parameter.
- * @since 6.1.0 This function is no longer marked as "private".
- * @since 6.3.0 Use wp_lazyload_site_meta() for lazy-loading of site meta.
+ * @since 5.1.0 Thêm tham số `$update_meta_cache`.
+ * @since 6.1.0 Hàm này không còn được đánh dấu là "private".
+ * @since 6.3.0 Sử dụng wp_lazyload_site_meta() để lazy-loading metadata site.
  *
  * @see update_site_cache()
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param array $ids               ID list.
- * @param bool  $update_meta_cache Optional. Whether to update the meta cache. Default true.
+ * @param array $ids               Danh sách ID.
+ * @param bool  $update_meta_cache Tùy chọn. Có cập nhật cache meta hay không. Mặc định true.
  */
 function _prime_site_caches( $ids, $update_meta_cache = true ) {
 	global $wpdb;
@@ -366,11 +366,11 @@ function _prime_site_caches( $ids, $update_meta_cache = true ) {
 }
 
 /**
- * Queue site meta for lazy-loading.
+ * Đưa metadata site vào hàng đợi để lazy-loading.
  *
  * @since 6.3.0
  *
- * @param array $site_ids List of site IDs.
+ * @param array $site_ids Danh sách ID site.
  */
 function wp_lazyload_site_meta( array $site_ids ) {
 	if ( empty( $site_ids ) ) {
@@ -381,13 +381,13 @@ function wp_lazyload_site_meta( array $site_ids ) {
 }
 
 /**
- * Updates sites in cache.
+ * Cập nhật các site trong cache.
  *
  * @since 4.6.0
- * @since 5.1.0 Introduced the `$update_meta_cache` parameter.
+ * @since 5.1.0 Thêm tham số `$update_meta_cache`.
  *
- * @param array $sites             Array of site objects.
- * @param bool  $update_meta_cache Whether to update site meta cache. Default true.
+ * @param array $sites             Mảng các đối tượng site.
+ * @param bool  $update_meta_cache Có cập nhật cache metadata site hay không. Mặc định true.
  */
 function update_site_cache( $sites, $update_meta_cache = true ) {
 	if ( ! $sites ) {
@@ -411,18 +411,18 @@ function update_site_cache( $sites, $update_meta_cache = true ) {
 }
 
 /**
- * Updates metadata cache for list of site IDs.
+ * Cập nhật cache metadata cho danh sách ID site.
  *
- * Performs SQL query to retrieve all metadata for the sites matching `$site_ids` and stores them in the cache.
- * Subsequent calls to `get_site_meta()` will not need to query the database.
+ * Thực hiện truy vấn SQL để lấy tất cả metadata cho các site khớp với `$site_ids` và lưu vào cache.
+ * Các lần gọi tiếp theo tới `get_site_meta()` sẽ không cần truy vấn cơ sở dữ liệu.
  *
  * @since 5.1.0
  *
- * @param array $site_ids List of site IDs.
- * @return array|false An array of metadata on success, false if there is nothing to update.
+ * @param array $site_ids Danh sách ID site.
+ * @return array|false Một mảng metadata khi thành công, false nếu không có gì để cập nhật.
  */
 function update_sitemeta_cache( $site_ids ) {
-	// Ensure this filter is hooked in even if the function is called early.
+	// Đảm bảo bộ lọc này được hook ngay cả khi hàm được gọi sớm.
 	if ( ! has_filter( 'update_blog_metadata_cache', 'wp_check_site_meta_support_prefilter' ) ) {
 		add_filter( 'update_blog_metadata_cache', 'wp_check_site_meta_support_prefilter' );
 	}
@@ -430,17 +430,17 @@ function update_sitemeta_cache( $site_ids ) {
 }
 
 /**
- * Retrieves a list of sites matching requested arguments.
+ * Lấy danh sách các site khớp với các tham số được yêu cầu.
  *
  * @since 4.6.0
- * @since 4.8.0 Introduced the 'lang_id', 'lang__in', and 'lang__not_in' parameters.
+ * @since 4.8.0 Thêm các tham số 'lang_id', 'lang__in', và 'lang__not_in'.
  *
  * @see WP_Site_Query::parse_query()
  *
- * @param string|array $args Optional. Array or string of arguments. See WP_Site_Query::__construct()
- *                           for information on accepted arguments. Default empty array.
- * @return WP_Site[]|int[]|int List of WP_Site objects, a list of site IDs when 'fields' is set to 'ids',
- *                             or the number of sites when 'count' is passed as a query var.
+ * @param string|array $args Tùy chọn. Mảng hoặc chuỗi các tham số. Xem WP_Site_Query::__construct()
+ *                           để biết thông tin về các tham số được chấp nhận. Mặc định mảng rỗng.
+ * @return WP_Site[]|int[]|int Danh sách đối tượng WP_Site, danh sách ID site khi 'fields' được đặt thành 'ids',
+ *                             hoặc số lượng site khi 'count' được truyền như biến truy vấn.
  */
 function get_sites( $args = array() ) {
 	$query = new WP_Site_Query();
@@ -449,21 +449,21 @@ function get_sites( $args = array() ) {
 }
 
 /**
- * Prepares site data for insertion or update in the database.
+ * Chuẩn bị dữ liệu site để chèn hoặc cập nhật trong cơ sở dữ liệu.
  *
  * @since 5.1.0
  *
- * @param array        $data     Associative array of site data passed to the respective function.
- *                               See {@see wp_insert_site()} for the possibly included data.
- * @param array        $defaults Site data defaults to parse $data against.
- * @param WP_Site|null $old_site Optional. Old site object if an update, or null if an insertion.
- *                               Default null.
- * @return array|WP_Error Site data ready for a database transaction, or WP_Error in case a validation
- *                        error occurred.
+ * @param array        $data     Mảng liên kết dữ liệu site được truyền tới hàm tương ứng.
+ *                               Xem {@see wp_insert_site()} để biết dữ liệu có thể bao gồm.
+ * @param array        $defaults Giá trị mặc định dữ liệu site để phân tích $data.
+ * @param WP_Site|null $old_site Tùy chọn. Đối tượng site cũ nếu là cập nhật, hoặc null nếu là chèn mới.
+ *                               Mặc định null.
+ * @return array|WP_Error Dữ liệu site sẵn sàng cho giao dịch cơ sở dữ liệu, hoặc WP_Error trong trường hợp
+ *                        xảy ra lỗi xác thực.
  */
 function wp_prepare_site_data( $data, $defaults, $old_site = null ) {
 
-	// Maintain backward-compatibility with `$site_id` as network ID.
+	// Duy trì tương thích ngược với `$site_id` như ID mạng.
 	if ( isset( $data['site_id'] ) ) {
 		if ( ! empty( $data['site_id'] ) && empty( $data['network_id'] ) ) {
 			$data['network_id'] = $data['site_id'];
@@ -472,12 +472,12 @@ function wp_prepare_site_data( $data, $defaults, $old_site = null ) {
 	}
 
 	/**
-	 * Filters passed site data in order to normalize it.
+	 * Lọc dữ liệu site được truyền để chuẩn hóa nó.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param array $data Associative array of site data passed to the respective function.
-	 *                    See {@see wp_insert_site()} for the possibly included data.
+	 * @param array $data Mảng liên kết dữ liệu site được truyền tới hàm tương ứng.
+	 *                    Xem {@see wp_insert_site()} để biết dữ liệu có thể bao gồm.
 	 */
 	$data = apply_filters( 'wp_normalize_site_data', $data );
 
@@ -487,17 +487,17 @@ function wp_prepare_site_data( $data, $defaults, $old_site = null ) {
 	$errors = new WP_Error();
 
 	/**
-	 * Fires when data should be validated for a site prior to inserting or updating in the database.
+	 * Kích hoạt khi dữ liệu cần được xác thực cho một site trước khi chèn hoặc cập nhật trong cơ sở dữ liệu.
 	 *
-	 * Plugins should amend the `$errors` object via its `WP_Error::add()` method.
+	 * Plugin nên bổ sung vào đối tượng `$errors` thông qua phương thức `WP_Error::add()`.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param WP_Error     $errors   Error object to add validation errors to.
-	 * @param array        $data     Associative array of complete site data. See {@see wp_insert_site()}
-	 *                               for the included data.
-	 * @param WP_Site|null $old_site The old site object if the data belongs to a site being updated,
-	 *                               or null if it is a new site being inserted.
+	 * @param WP_Error     $errors   Đối tượng lỗi để thêm các lỗi xác thực.
+	 * @param array        $data     Mảng liên kết dữ liệu site đầy đủ. Xem {@see wp_insert_site()}
+	 *                               để biết dữ liệu bao gồm.
+	 * @param WP_Site|null $old_site Đối tượng site cũ nếu dữ liệu thuộc về site đang được cập nhật,
+	 *                               hoặc null nếu là site mới đang được chèn.
 	 */
 	do_action( 'wp_validate_site_data', $errors, $data, $old_site );
 
@@ -505,7 +505,7 @@ function wp_prepare_site_data( $data, $defaults, $old_site = null ) {
 		return $errors;
 	}
 
-	// Prepare for database.
+	// Chuẩn bị cho cơ sở dữ liệu.
 	$data['site_id'] = $data['network_id'];
 	unset( $data['network_id'] );
 
@@ -513,31 +513,31 @@ function wp_prepare_site_data( $data, $defaults, $old_site = null ) {
 }
 
 /**
- * Normalizes data for a site prior to inserting or updating in the database.
+ * Chuẩn hóa dữ liệu cho một site trước khi chèn hoặc cập nhật trong cơ sở dữ liệu.
  *
  * @since 5.1.0
  *
- * @param array $data Associative array of site data passed to the respective function.
- *                    See {@see wp_insert_site()} for the possibly included data.
- * @return array Normalized site data.
+ * @param array $data Mảng liên kết dữ liệu site được truyền tới hàm tương ứng.
+ *                    Xem {@see wp_insert_site()} để biết dữ liệu có thể bao gồm.
+ * @return array Dữ liệu site đã được chuẩn hóa.
  */
 function wp_normalize_site_data( $data ) {
-	// Sanitize domain if passed.
+	// Làm sạch tên miền nếu được truyền.
 	if ( array_key_exists( 'domain', $data ) ) {
 		$data['domain'] = preg_replace( '/[^a-z0-9\-.:]+/i', '', $data['domain'] );
 	}
 
-	// Sanitize path if passed.
+	// Làm sạch đường dẫn nếu được truyền.
 	if ( array_key_exists( 'path', $data ) ) {
 		$data['path'] = trailingslashit( '/' . trim( $data['path'], '/' ) );
 	}
 
-	// Sanitize network ID if passed.
+	// Làm sạch ID mạng nếu được truyền.
 	if ( array_key_exists( 'network_id', $data ) ) {
 		$data['network_id'] = (int) $data['network_id'];
 	}
 
-	// Sanitize status fields if passed.
+	// Làm sạch các trường trạng thái nếu được truyền.
 	$status_fields = array( 'public', 'archived', 'mature', 'spam', 'deleted' );
 	foreach ( $status_fields as $status_field ) {
 		if ( array_key_exists( $status_field, $data ) ) {
@@ -545,7 +545,7 @@ function wp_normalize_site_data( $data ) {
 		}
 	}
 
-	// Strip date fields if empty.
+	// Loại bỏ các trường ngày nếu rỗng.
 	$date_fields = array( 'registered', 'last_updated' );
 	foreach ( $date_fields as $date_field ) {
 		if ( ! array_key_exists( $date_field, $data ) ) {
@@ -561,34 +561,34 @@ function wp_normalize_site_data( $data ) {
 }
 
 /**
- * Validates data for a site prior to inserting or updating in the database.
+ * Xác thực dữ liệu cho một site trước khi chèn hoặc cập nhật trong cơ sở dữ liệu.
  *
  * @since 5.1.0
  *
- * @param WP_Error     $errors   Error object, passed by reference. Will contain validation errors if
- *                               any occurred.
- * @param array        $data     Associative array of complete site data. See {@see wp_insert_site()}
- *                               for the included data.
- * @param WP_Site|null $old_site The old site object if the data belongs to a site being updated,
- *                               or null if it is a new site being inserted.
+ * @param WP_Error     $errors   Đối tượng lỗi, được truyền theo tham chiếu. Sẽ chứa lỗi xác thực nếu
+ *                               có bất kỳ lỗi nào xảy ra.
+ * @param array        $data     Mảng liên kết dữ liệu site đầy đủ. Xem {@see wp_insert_site()}
+ *                               để biết dữ liệu bao gồm.
+ * @param WP_Site|null $old_site Đối tượng site cũ nếu dữ liệu thuộc về site đang được cập nhật,
+ *                               hoặc null nếu là site mới đang được chèn.
  */
 function wp_validate_site_data( $errors, $data, $old_site = null ) {
-	// A domain must always be present.
+	// Tên miền phải luôn được cung cấp.
 	if ( empty( $data['domain'] ) ) {
 		$errors->add( 'site_empty_domain', __( 'Site domain must not be empty.' ) );
 	}
 
-	// A path must always be present.
+	// Đường dẫn phải luôn được cung cấp.
 	if ( empty( $data['path'] ) ) {
 		$errors->add( 'site_empty_path', __( 'Site path must not be empty.' ) );
 	}
 
-	// A network ID must always be present.
+	// ID mạng phải luôn được cung cấp.
 	if ( empty( $data['network_id'] ) ) {
 		$errors->add( 'site_empty_network_id', __( 'Site network ID must be provided.' ) );
 	}
 
-	// Both registration and last updated dates must always be present and valid.
+	// Cả ngày đăng ký và ngày cập nhật lần cuối phải luôn được cung cấp và hợp lệ.
 	$date_fields = array( 'registered', 'last_updated' );
 	foreach ( $date_fields as $date_field ) {
 		if ( empty( $data[ $date_field ] ) ) {
@@ -596,7 +596,7 @@ function wp_validate_site_data( $errors, $data, $old_site = null ) {
 			break;
 		}
 
-		// Allow '0000-00-00 00:00:00', although it be stripped out at this point.
+		// Cho phép '0000-00-00 00:00:00', mặc dù nó sẽ bị loại bỏ tại thời điểm này.
 		if ( '0000-00-00 00:00:00' !== $data[ $date_field ] ) {
 			$month      = substr( $data[ $date_field ], 5, 2 );
 			$day        = substr( $data[ $date_field ], 8, 2 );
@@ -613,7 +613,7 @@ function wp_validate_site_data( $errors, $data, $old_site = null ) {
 		return;
 	}
 
-	// If a new site, or domain/path/network ID have changed, ensure uniqueness.
+	// Nếu là site mới, hoặc tên miền/đường dẫn/ID mạng đã thay đổi, đảm bảo tính duy nhất.
 	if ( ! $old_site
 		|| $data['domain'] !== $old_site->domain
 		|| $data['path'] !== $old_site->path
@@ -626,29 +626,29 @@ function wp_validate_site_data( $errors, $data, $old_site = null ) {
 }
 
 /**
- * Runs the initialization routine for a given site.
+ * Chạy quy trình khởi tạo cho một site đã cho.
  *
- * This process includes creating the site's database tables and
- * populating them with defaults.
+ * Quy trình này bao gồm tạo các bảng cơ sở dữ liệu của site và
+ * điền dữ liệu mặc định vào chúng.
  *
  * @since 5.1.0
  *
- * @global wpdb     $wpdb     WordPress database abstraction object.
- * @global WP_Roles $wp_roles WordPress role management object.
+ * @global wpdb     $wpdb     Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
+ * @global WP_Roles $wp_roles Đối tượng quản lý vai trò WordPress.
  *
- * @param int|WP_Site $site_id Site ID or object.
+ * @param int|WP_Site $site_id ID site hoặc đối tượng.
  * @param array       $args    {
- *     Optional. Arguments to modify the initialization behavior.
+ *     Tùy chọn. Các tham số để thay đổi hành vi khởi tạo.
  *
- *     @type int    $user_id Required. User ID for the site administrator.
- *     @type string $title   Site title. Default is 'Site %d' where %d is the
- *                           site ID.
- *     @type array  $options Custom option $key => $value pairs to use. Default
- *                           empty array.
- *     @type array  $meta    Custom site metadata $key => $value pairs to use.
- *                           Default empty array.
+ *     @type int    $user_id Bắt buộc. ID người dùng cho quản trị viên site.
+ *     @type string $title   Tiêu đề site. Mặc định là 'Site %d' trong đó %d là
+ *                           ID site.
+ *     @type array  $options Các cặp tùy chọn tùy chỉnh $key => $value để sử dụng. Mặc định
+ *                           mảng rỗng.
+ *     @type array  $meta    Các cặp metadata tùy chỉnh $key => $value cho site. Mặc định
+ *                           mảng rỗng.
  * }
- * @return true|WP_Error True on success, or error object on failure.
+ * @return true|WP_Error True khi thành công, hoặc đối tượng lỗi khi thất bại.
  */
 function wp_initialize_site( $site_id, array $args = array() ) {
 	global $wpdb, $wp_roles;
@@ -675,7 +675,7 @@ function wp_initialize_site( $site_id, array $args = array() ) {
 		$args,
 		array(
 			'user_id' => 0,
-			/* translators: %d: Site ID. */
+			/* translators: %d: ID Site. */
 			'title'   => sprintf( __( 'Site %d' ), $site->id ),
 			'options' => array(),
 			'meta'    => array(),
@@ -683,13 +683,13 @@ function wp_initialize_site( $site_id, array $args = array() ) {
 	);
 
 	/**
-	 * Filters the arguments for initializing a site.
+	 * Lọc các tham số để khởi tạo một site.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param array      $args    Arguments to modify the initialization behavior.
-	 * @param WP_Site    $site    Site that is being initialized.
-	 * @param WP_Network $network Network that the site belongs to.
+	 * @param array      $args    Các tham số để thay đổi hành vi khởi tạo.
+	 * @param WP_Site    $site    Site đang được khởi tạo.
+	 * @param WP_Network $network Mạng mà site thuộc về.
 	 */
 	$args = apply_filters( 'wp_initialize_site_args', $args, $site, $network );
 
@@ -706,7 +706,7 @@ function wp_initialize_site( $site_id, array $args = array() ) {
 
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-	// Set up the database tables.
+	// Thiết lập các bảng cơ sở dữ liệu.
 	make_db_current_silent( 'blog' );
 
 	$home_scheme    = 'http';
@@ -720,7 +720,7 @@ function wp_initialize_site( $site_id, array $args = array() ) {
 		}
 	}
 
-	// Populate the site's options.
+	// Điền các tùy chọn cho site.
 	populate_options(
 		array_merge(
 			array(
@@ -736,25 +736,25 @@ function wp_initialize_site( $site_id, array $args = array() ) {
 		)
 	);
 
-	// Clean blog cache after populating options.
+	// Xóa cache blog sau khi điền tùy chọn.
 	clean_blog_cache( $site );
 
-	// Populate the site's roles.
+	// Điền các vai trò cho site.
 	populate_roles();
 	$wp_roles = new WP_Roles();
 
-	// Populate metadata for the site.
+	// Điền metadata cho site.
 	populate_site_meta( $site->id, $args['meta'] );
 
-	// Remove all permissions that may exist for the site.
+	// Xóa tất cả quyền có thể tồn tại cho site.
 	$table_prefix = $wpdb->get_blog_prefix();
-	delete_metadata( 'user', 0, $table_prefix . 'user_level', null, true );   // Delete all.
-	delete_metadata( 'user', 0, $table_prefix . 'capabilities', null, true ); // Delete all.
+	delete_metadata( 'user', 0, $table_prefix . 'user_level', null, true );   // Xóa tất cả.
+	delete_metadata( 'user', 0, $table_prefix . 'capabilities', null, true ); // Xóa tất cả.
 
-	// Install default site content.
+	// Cài đặt nội dung mặc định cho site.
 	wp_install_defaults( $args['user_id'] );
 
-	// Set the site administrator.
+	// Thiết lập quản trị viên site.
 	add_user_to_blog( $site->id, $args['user_id'], 'administrator' );
 	if ( ! user_can( $args['user_id'], 'manage_network' ) && ! get_user_meta( $args['user_id'], 'primary_blog', true ) ) {
 		update_user_meta( $args['user_id'], 'primary_blog', $site->id );
@@ -770,16 +770,16 @@ function wp_initialize_site( $site_id, array $args = array() ) {
 }
 
 /**
- * Runs the uninitialization routine for a given site.
+ * Chạy quy trình hủy khởi tạo cho một site đã cho.
  *
- * This process includes dropping the site's database tables and deleting its uploads directory.
+ * Quy trình này bao gồm xóa các bảng cơ sở dữ liệu của site và xóa thư mục tải lên.
  *
  * @since 5.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|WP_Site $site_id Site ID or object.
- * @return true|WP_Error True on success, or error object on failure.
+ * @param int|WP_Site $site_id ID site hoặc đối tượng.
+ * @return true|WP_Error True khi thành công, hoặc đối tượng lỗi khi thất bại.
  */
 function wp_uninitialize_site( $site_id ) {
 	global $wpdb;
@@ -804,7 +804,7 @@ function wp_uninitialize_site( $site_id ) {
 		)
 	);
 
-	// Remove users from the site.
+	// Xóa người dùng khỏi site.
 	if ( ! empty( $users ) ) {
 		foreach ( $users as $user_id ) {
 			remove_user_from_blog( $user_id, $site->id );
@@ -822,12 +822,12 @@ function wp_uninitialize_site( $site_id ) {
 	$tables = $wpdb->tables( 'blog' );
 
 	/**
-	 * Filters the tables to drop when the site is deleted.
+	 * Lọc các bảng cần xóa khi site bị xóa.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string[] $tables  Array of names of the site tables to be dropped.
-	 * @param int      $site_id The ID of the site to drop tables for.
+	 * @param string[] $tables  Mảng tên các bảng site sẽ bị xóa.
+	 * @param int      $site_id ID của site cần xóa bảng.
 	 */
 	$drop_tables = apply_filters( 'wpmu_drop_tables', $tables, $site->id );
 
@@ -836,12 +836,12 @@ function wp_uninitialize_site( $site_id ) {
 	}
 
 	/**
-	 * Filters the upload base directory to delete when the site is deleted.
+	 * Lọc thư mục cơ sở tải lên cần xóa khi site bị xóa.
 	 *
 	 * @since MU (3.0.0)
 	 *
-	 * @param string $basedir Uploads path without subdirectory. See {@see wp_upload_dir()}.
-	 * @param int    $site_id The site ID.
+	 * @param string $basedir Đường dẫn tải lên không có thư mục con. Xem {@see wp_upload_dir()}.
+	 * @param int    $site_id ID site.
 	 */
 	$dir     = apply_filters( 'wpmu_delete_blog_upload_dir', $uploads['basedir'], $site->id );
 	$dir     = rtrim( $dir, DIRECTORY_SEPARATOR );
@@ -850,7 +850,7 @@ function wp_uninitialize_site( $site_id ) {
 	$index   = 0;
 
 	while ( $index < count( $stack ) ) {
-		// Get indexed directory from stack.
+		// Lấy thư mục được đánh chỉ mục từ ngăn xếp.
 		$dir = $stack[ $index ];
 
 		// phpcs:disable WordPress.PHP.NoSilencedErrors.Discouraged
@@ -876,7 +876,7 @@ function wp_uninitialize_site( $site_id ) {
 		++$index;
 	}
 
-	$stack = array_reverse( $stack ); // Last added directories are deepest.
+	$stack = array_reverse( $stack ); // Các thư mục được thêm sau cùng là sâu nhất.
 	foreach ( (array) $stack as $dir ) {
 		if ( $dir !== $top_dir ) {
 			@rmdir( $dir );
@@ -892,16 +892,16 @@ function wp_uninitialize_site( $site_id ) {
 }
 
 /**
- * Checks whether a site is initialized.
+ * Kiểm tra xem một site đã được khởi tạo hay chưa.
  *
- * A site is considered initialized when its database tables are present.
+ * Một site được coi là đã khởi tạo khi các bảng cơ sở dữ liệu của nó hiện diện.
  *
  * @since 5.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int|WP_Site $site_id Site ID or object.
- * @return bool True if the site is initialized, false otherwise.
+ * @param int|WP_Site $site_id ID site hoặc đối tượng.
+ * @return bool True nếu site đã được khởi tạo, false nếu ngược lại.
  */
 function wp_is_site_initialized( $site_id ) {
 	global $wpdb;
@@ -912,16 +912,16 @@ function wp_is_site_initialized( $site_id ) {
 	$site_id = (int) $site_id;
 
 	/**
-	 * Filters the check for whether a site is initialized before the database is accessed.
+	 * Lọc việc kiểm tra xem một site đã được khởi tạo hay chưa trước khi truy cập cơ sở dữ liệu.
 	 *
-	 * Returning a non-null value will effectively short-circuit the function, returning
-	 * that value instead.
+	 * Trả về giá trị không phải null sẽ có hiệu quả ngắt mạch hàm, trả về
+	 * giá trị đó thay thế.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param bool|null $pre     The value to return instead. Default null
-	 *                           to continue with the check.
-	 * @param int       $site_id The site ID that is being checked.
+	 * @param bool|null $pre     Giá trị trả về thay thế. Mặc định null
+	 *                           để tiếp tục kiểm tra.
+	 * @param int       $site_id ID site đang được kiểm tra.
 	 */
 	$pre = apply_filters( 'pre_wp_is_site_initialized', null, $site_id );
 	if ( null !== $pre ) {
@@ -948,13 +948,13 @@ function wp_is_site_initialized( $site_id ) {
 }
 
 /**
- * Clean the blog cache
+ * Xóa cache blog
  *
  * @since 3.5.0
  *
  * @global bool $_wp_suspend_cache_invalidation
  *
- * @param WP_Site|int $blog The site object or ID to be cleared from cache.
+ * @param WP_Site|int $blog Đối tượng site hoặc ID cần xóa khỏi cache.
  */
 function clean_blog_cache( $blog ) {
 	global $_wp_suspend_cache_invalidation;
@@ -974,7 +974,7 @@ function clean_blog_cache( $blog ) {
 			return;
 		}
 
-		// Make sure a WP_Site object exists even when the site has been deleted.
+		// Đảm bảo đối tượng WP_Site tồn tại ngay cả khi site đã bị xóa.
 		$blog = new WP_Site(
 			(object) array(
 				'blog_id' => $blog_id,
@@ -996,141 +996,141 @@ function clean_blog_cache( $blog ) {
 	wp_cache_delete( $blog_id, 'blog_meta' );
 
 	/**
-	 * Fires immediately after a site has been removed from the object cache.
+	 * Kích hoạt ngay sau khi một site đã được xóa khỏi cache đối tượng.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param string  $id              Site ID as a numeric string.
-	 * @param WP_Site $blog            Site object.
-	 * @param string  $domain_path_key md5 hash of domain and path.
+	 * @param string  $id              ID site dưới dạng chuỗi số.
+	 * @param WP_Site $blog            Đối tượng site.
+	 * @param string  $domain_path_key Giá trị hash md5 của tên miền và đường dẫn.
 	 */
 	do_action( 'clean_site_cache', $blog_id, $blog, $domain_path_key );
 
 	wp_cache_set_sites_last_changed();
 
 	/**
-	 * Fires after the blog details cache is cleared.
+	 * Kích hoạt sau khi cache chi tiết blog được xóa.
 	 *
 	 * @since 3.4.0
-	 * @deprecated 4.9.0 Use {@see 'clean_site_cache'} instead.
+	 * @deprecated 4.9.0 Sử dụng {@see 'clean_site_cache'} thay thế.
 	 *
-	 * @param int $blog_id Blog ID.
+	 * @param int $blog_id ID blog.
 	 */
 	do_action_deprecated( 'refresh_blog_details', array( $blog_id ), '4.9.0', 'clean_site_cache' );
 }
 
 /**
- * Adds metadata to a site.
+ * Thêm metadata cho một site.
  *
  * @since 5.1.0
  *
- * @param int    $site_id    Site ID.
- * @param string $meta_key   Metadata name.
- * @param mixed  $meta_value Metadata value. Arrays and objects are stored as serialized data and
- *                           will be returned as the same type when retrieved. Other data types will
- *                           be stored as strings in the database:
- *                           - false is stored and retrieved as an empty string ('')
- *                           - true is stored and retrieved as '1'
- *                           - numbers (both integer and float) are stored and retrieved as strings
- *                           Must be serializable if non-scalar.
- * @param bool   $unique     Optional. Whether the same key should not be added.
- *                           Default false.
- * @return int|false Meta ID on success, false on failure.
+ * @param int    $site_id    ID site.
+ * @param string $meta_key   Tên metadata.
+ * @param mixed  $meta_value Giá trị metadata. Mảng và đối tượng được lưu dưới dạng dữ liệu đã serialize và
+ *                           sẽ được trả về cùng kiểu khi lấy ra. Các kiểu dữ liệu khác sẽ
+ *                           được lưu dưới dạng chuỗi trong cơ sở dữ liệu:
+ *                           - false được lưu và trả về dưới dạng chuỗi rỗng ('')
+ *                           - true được lưu và trả về dưới dạng '1'
+ *                           - số (cả integer và float) được lưu và trả về dưới dạng chuỗi
+ *                           Phải có thể serialize nếu không phải scalar.
+ * @param bool   $unique     Tùy chọn. Có nên không thêm cùng khóa hay không.
+ *                           Mặc định false.
+ * @return int|false ID meta khi thành công, false khi thất bại.
  */
 function add_site_meta( $site_id, $meta_key, $meta_value, $unique = false ) {
 	return add_metadata( 'blog', $site_id, $meta_key, $meta_value, $unique );
 }
 
 /**
- * Removes metadata matching criteria from a site.
+ * Xóa metadata khớp tiêu chí từ một site.
  *
- * You can match based on the key, or key and value. Removing based on key and
- * value, will keep from removing duplicate metadata with the same key. It also
- * allows removing all metadata matching key, if needed.
+ * Bạn có thể khớp dựa trên khóa, hoặc khóa và giá trị. Xóa dựa trên khóa và
+ * giá trị sẽ tránh xóa metadata trùng lặp có cùng khóa. Nó cũng
+ * cho phép xóa tất cả metadata khớp khóa, nếu cần.
  *
  * @since 5.1.0
  *
- * @param int    $site_id    Site ID.
- * @param string $meta_key   Metadata name.
- * @param mixed  $meta_value Optional. Metadata value. If provided,
- *                           rows will only be removed that match the value.
- *                           Must be serializable if non-scalar. Default empty.
- * @return bool True on success, false on failure.
+ * @param int    $site_id    ID site.
+ * @param string $meta_key   Tên metadata.
+ * @param mixed  $meta_value Tùy chọn. Giá trị metadata. Nếu được cung cấp,
+ *                           chỉ các hàng khớp giá trị mới bị xóa.
+ *                           Phải có thể serialize nếu không phải scalar. Mặc định rỗng.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function delete_site_meta( $site_id, $meta_key, $meta_value = '' ) {
 	return delete_metadata( 'blog', $site_id, $meta_key, $meta_value );
 }
 
 /**
- * Retrieves metadata for a site.
+ * Lấy metadata cho một site.
  *
  * @since 5.1.0
  *
- * @param int    $site_id Site ID.
- * @param string $key     Optional. The meta key to retrieve. By default,
- *                        returns data for all keys. Default empty.
- * @param bool   $single  Optional. Whether to return a single value.
- *                        This parameter has no effect if `$key` is not specified.
- *                        Default false.
- * @return mixed An array of values if `$single` is false.
- *               The value of meta data field if `$single` is true.
- *               False for an invalid `$site_id` (non-numeric, zero, or negative value).
- *               An empty array if a valid but non-existing site ID is passed and `$single` is false.
- *               An empty string if a valid but non-existing site ID is passed and `$single` is true.
- *               Note: Non-serialized values are returned as strings:
- *               - false values are returned as empty strings ('')
- *               - true values are returned as '1'
- *               - numbers (both integer and float) are returned as strings
- *               Arrays and objects retain their original type.
+ * @param int    $site_id ID site.
+ * @param string $key     Tùy chọn. Khóa meta cần lấy. Mặc định
+ *                        trả về dữ liệu cho tất cả các khóa. Mặc định rỗng.
+ * @param bool   $single  Tùy chọn. Có trả về một giá trị duy nhất hay không.
+ *                        Tham số này không có tác dụng nếu `$key` không được chỉ định.
+ *                        Mặc định false.
+ * @return mixed Một mảng giá trị nếu `$single` là false.
+ *               Giá trị của trường dữ liệu meta nếu `$single` là true.
+ *               False cho `$site_id` không hợp lệ (không phải số, bằng 0, hoặc giá trị âm).
+ *               Mảng rỗng nếu ID site hợp lệ nhưng không tồn tại được truyền và `$single` là false.
+ *               Chuỗi rỗng nếu ID site hợp lệ nhưng không tồn tại được truyền và `$single` là true.
+ *               Lưu ý: Giá trị không serialize được trả về dưới dạng chuỗi:
+ *               - Giá trị false được trả về dưới dạng chuỗi rỗng ('')
+ *               - Giá trị true được trả về dưới dạng '1'
+ *               - Số (cả integer và float) được trả về dưới dạng chuỗi
+ *               Mảng và đối tượng giữ nguyên kiểu ban đầu.
  */
 function get_site_meta( $site_id, $key = '', $single = false ) {
 	return get_metadata( 'blog', $site_id, $key, $single );
 }
 
 /**
- * Updates metadata for a site.
+ * Cập nhật metadata cho một site.
  *
- * Use the $prev_value parameter to differentiate between meta fields with the
- * same key and site ID.
+ * Sử dụng tham số $prev_value để phân biệt giữa các trường meta có cùng
+ * khóa và ID site.
  *
- * If the meta field for the site does not exist, it will be added.
+ * Nếu trường meta cho site không tồn tại, nó sẽ được thêm mới.
  *
  * @since 5.1.0
  *
- * @param int    $site_id    Site ID.
- * @param string $meta_key   Metadata key.
- * @param mixed  $meta_value Metadata value. Must be serializable if non-scalar.
- * @param mixed  $prev_value Optional. Previous value to check before updating.
- *                           If specified, only update existing metadata entries with
- *                           this value. Otherwise, update all entries. Default empty.
- * @return int|bool Meta ID if the key didn't exist, true on successful update,
- *                  false on failure or if the value passed to the function
- *                  is the same as the one that is already in the database.
+ * @param int    $site_id    ID site.
+ * @param string $meta_key   Khóa metadata.
+ * @param mixed  $meta_value Giá trị metadata. Phải có thể serialize nếu không phải scalar.
+ * @param mixed  $prev_value Tùy chọn. Giá trị trước đó để kiểm tra trước khi cập nhật.
+ *                           Nếu được chỉ định, chỉ cập nhật các mục metadata hiện có với
+ *                           giá trị này. Nếu không, cập nhật tất cả các mục. Mặc định rỗng.
+ * @return int|bool ID meta nếu khóa không tồn tại, true khi cập nhật thành công,
+ *                  false khi thất bại hoặc nếu giá trị được truyền tới hàm
+ *                  giống với giá trị đã có trong cơ sở dữ liệu.
  */
 function update_site_meta( $site_id, $meta_key, $meta_value, $prev_value = '' ) {
 	return update_metadata( 'blog', $site_id, $meta_key, $meta_value, $prev_value );
 }
 
 /**
- * Deletes everything from site meta matching meta key.
+ * Xóa tất cả từ metadata site khớp với khóa meta.
  *
  * @since 5.1.0
  *
- * @param string $meta_key Metadata key to search for when deleting.
- * @return bool Whether the site meta key was deleted from the database.
+ * @param string $meta_key Khóa metadata để tìm kiếm khi xóa.
+ * @return bool Khóa meta site đã được xóa khỏi cơ sở dữ liệu hay chưa.
  */
 function delete_site_meta_by_key( $meta_key ) {
 	return delete_metadata( 'blog', null, $meta_key, '', true );
 }
 
 /**
- * Updates the count of sites for a network based on a changed site.
+ * Cập nhật số lượng site cho một mạng dựa trên site đã thay đổi.
  *
  * @since 5.1.0
  *
- * @param WP_Site      $new_site The site object that has been inserted, updated or deleted.
- * @param WP_Site|null $old_site Optional. If $new_site has been updated, this must be the previous
- *                               state of that site. Default null.
+ * @param WP_Site      $new_site Đối tượng site đã được chèn, cập nhật hoặc xóa.
+ * @param WP_Site|null $old_site Tùy chọn. Nếu $new_site đã được cập nhật, đây phải là trạng thái trước
+ *                               của site đó. Mặc định null.
  */
 function wp_maybe_update_network_site_counts_on_update( $new_site, $old_site = null ) {
 	if ( null === $old_site ) {
@@ -1145,18 +1145,18 @@ function wp_maybe_update_network_site_counts_on_update( $new_site, $old_site = n
 }
 
 /**
- * Triggers actions on site status updates.
+ * Kích hoạt các action khi trạng thái site được cập nhật.
  *
  * @since 5.1.0
  *
- * @param WP_Site      $new_site The site object after the update.
- * @param WP_Site|null $old_site Optional. If $new_site has been updated, this must be the previous
- *                               state of that site. Default null.
+ * @param WP_Site      $new_site Đối tượng site sau khi cập nhật.
+ * @param WP_Site|null $old_site Tùy chọn. Nếu $new_site đã được cập nhật, đây phải là trạng thái trước
+ *                               của site đó. Mặc định null.
  */
 function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = null ) {
 	$site_id = $new_site->id;
 
-	// Use the default values for a site if no previous state is given.
+	// Sử dụng giá trị mặc định cho site nếu không có trạng thái trước đó.
 	if ( ! $old_site ) {
 		$old_site = new WP_Site( new stdClass() );
 	}
@@ -1165,21 +1165,21 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		if ( '1' === $new_site->spam ) {
 
 			/**
-			 * Fires when the 'spam' status is added to a site.
+			 * Kích hoạt khi trạng thái 'spam' được thêm vào site.
 			 *
 			 * @since MU (3.0.0)
 			 *
-			 * @param int $site_id Site ID.
+			 * @param int $site_id ID site.
 			 */
 			do_action( 'make_spam_blog', $site_id );
 		} else {
 
 			/**
-			 * Fires when the 'spam' status is removed from a site.
+			 * Kích hoạt khi trạng thái 'spam' được gỡ bỏ khỏi site.
 			 *
 			 * @since MU (3.0.0)
 			 *
-			 * @param int $site_id Site ID.
+			 * @param int $site_id ID site.
 			 */
 			do_action( 'make_ham_blog', $site_id );
 		}
@@ -1189,21 +1189,21 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		if ( '1' === $new_site->mature ) {
 
 			/**
-			 * Fires when the 'mature' status is added to a site.
+			 * Kích hoạt khi trạng thái 'mature' được thêm vào site.
 			 *
 			 * @since 3.1.0
 			 *
-			 * @param int $site_id Site ID.
+			 * @param int $site_id ID site.
 			 */
 			do_action( 'mature_blog', $site_id );
 		} else {
 
 			/**
-			 * Fires when the 'mature' status is removed from a site.
+			 * Kích hoạt khi trạng thái 'mature' được gỡ bỏ khỏi site.
 			 *
 			 * @since 3.1.0
 			 *
-			 * @param int $site_id Site ID.
+			 * @param int $site_id ID site.
 			 */
 			do_action( 'unmature_blog', $site_id );
 		}
@@ -1213,21 +1213,21 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		if ( '1' === $new_site->archived ) {
 
 			/**
-			 * Fires when the 'archived' status is added to a site.
+			 * Kích hoạt khi trạng thái 'archived' được thêm vào site.
 			 *
 			 * @since MU (3.0.0)
 			 *
-			 * @param int $site_id Site ID.
+			 * @param int $site_id ID site.
 			 */
 			do_action( 'archive_blog', $site_id );
 		} else {
 
 			/**
-			 * Fires when the 'archived' status is removed from a site.
+			 * Kích hoạt khi trạng thái 'archived' được gỡ bỏ khỏi site.
 			 *
 			 * @since MU (3.0.0)
 			 *
-			 * @param int $site_id Site ID.
+			 * @param int $site_id ID site.
 			 */
 			do_action( 'unarchive_blog', $site_id );
 		}
@@ -1237,21 +1237,21 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 		if ( '1' === $new_site->deleted ) {
 
 			/**
-			 * Fires when the 'deleted' status is added to a site.
+			 * Kích hoạt khi trạng thái 'deleted' được thêm vào site.
 			 *
 			 * @since 3.5.0
 			 *
-			 * @param int $site_id Site ID.
+			 * @param int $site_id ID site.
 			 */
 			do_action( 'make_delete_blog', $site_id );
 		} else {
 
 			/**
-			 * Fires when the 'deleted' status is removed from a site.
+			 * Kích hoạt khi trạng thái 'deleted' được gỡ bỏ khỏi site.
 			 *
 			 * @since 3.5.0
 			 *
-			 * @param int $site_id Site ID.
+			 * @param int $site_id ID site.
 			 */
 			do_action( 'make_undelete_blog', $site_id );
 		}
@@ -1260,25 +1260,25 @@ function wp_maybe_transition_site_statuses_on_update( $new_site, $old_site = nul
 	if ( $new_site->public !== $old_site->public ) {
 
 		/**
-		 * Fires after the current blog's 'public' setting is updated.
+		 * Kích hoạt sau khi thiết lập 'public' của blog hiện tại được cập nhật.
 		 *
 		 * @since MU (3.0.0)
 		 *
-		 * @param int    $site_id   Site ID.
-		 * @param string $is_public Whether the site is public. A numeric string,
-		 *                          for compatibility reasons. Accepts '1' or '0'.
+		 * @param int    $site_id   ID site.
+		 * @param string $is_public Site có công khai hay không. Chuỗi số,
+		 *                          vì lý do tương thích. Chấp nhận '1' hoặc '0'.
 		 */
 		do_action( 'update_blog_public', $site_id, $new_site->public );
 	}
 }
 
 /**
- * Cleans the necessary caches after specific site data has been updated.
+ * Xóa các cache cần thiết sau khi dữ liệu site cụ thể đã được cập nhật.
  *
  * @since 5.1.0
  *
- * @param WP_Site $new_site The site object after the update.
- * @param WP_Site $old_site The site object prior to the update.
+ * @param WP_Site $new_site Đối tượng site sau khi cập nhật.
+ * @param WP_Site $old_site Đối tượng site trước khi cập nhật.
  */
 function wp_maybe_clean_new_site_cache_on_update( $new_site, $old_site ) {
 	if ( $old_site->domain !== $new_site->domain || $old_site->path !== $new_site->path ) {
@@ -1287,17 +1287,17 @@ function wp_maybe_clean_new_site_cache_on_update( $new_site, $old_site ) {
 }
 
 /**
- * Updates the `blog_public` option for a given site ID.
+ * Cập nhật tùy chọn `blog_public` cho một ID site đã cho.
  *
  * @since 5.1.0
  *
- * @param int    $site_id   Site ID.
- * @param string $is_public Whether the site is public. A numeric string,
- *                          for compatibility reasons. Accepts '1' or '0'.
+ * @param int    $site_id   ID site.
+ * @param string $is_public Site có công khai hay không. Chuỗi số,
+ *                          vì lý do tương thích. Chấp nhận '1' hoặc '0'.
  */
 function wp_update_blog_public_option_on_site_update( $site_id, $is_public ) {
 
-	// Bail if the site's database tables do not exist (yet).
+	// Thoát sớm nếu các bảng cơ sở dữ liệu của site chưa tồn tại.
 	if ( ! wp_is_site_initialized( $site_id ) ) {
 		return;
 	}
@@ -1306,7 +1306,7 @@ function wp_update_blog_public_option_on_site_update( $site_id, $is_public ) {
 }
 
 /**
- * Sets the last changed time for the 'sites' cache group.
+ * Thiết lập thời gian thay đổi lần cuối cho nhóm cache 'sites'.
  *
  * @since 5.1.0
  */
@@ -1315,18 +1315,18 @@ function wp_cache_set_sites_last_changed() {
 }
 
 /**
- * Aborts calls to site meta if it is not supported.
+ * Hủy bỏ các lần gọi tới metadata site nếu nó không được hỗ trợ.
  *
  * @since 5.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param mixed $check Skip-value for whether to proceed site meta function execution.
- * @return mixed Original value of $check, or false if site meta is not supported.
+ * @param mixed $check Giá trị bỏ qua cho việc có tiếp tục thực thi hàm metadata site hay không.
+ * @return mixed Giá trị gốc của $check, hoặc false nếu metadata site không được hỗ trợ.
  */
 function wp_check_site_meta_support_prefilter( $check ) {
 	if ( ! is_site_meta_supported() ) {
-		/* translators: %s: Database table name. */
+		/* translators: %s: Tên bảng cơ sở dữ liệu. */
 		_doing_it_wrong( __FUNCTION__, sprintf( __( 'The %s table is not installed. Please run the network database upgrade.' ), $GLOBALS['wpdb']->blogmeta ), '5.1.0' );
 		return false;
 	}

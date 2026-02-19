@@ -1,6 +1,6 @@
 <?php
 /**
- * Multisite users administration panel.
+ * Bảng điều khiển quản lý người dùng trong Multisite.
  *
  * @package WordPress
  * @subpackage Multisite

@@ -1,15 +1,15 @@
 <?php
 /**
- * Contribute administration panel.
+ * Bảng quản trị Đóng góp.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** WordPress Administration Bootstrap */
+/** Khởi tạo Quản trị WordPress */
 require_once __DIR__ . '/admin.php';
 
-// Used in the HTML title tag.
+// Sử dụng trong thẻ HTML title.
 $title = __( 'Get Involved' );
 
 list( $display_version ) = explode( '-', get_bloginfo( 'version' ) );

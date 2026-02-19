@@ -1,6 +1,6 @@
 <?php
 /**
- * Post API: WP_Post class
+ * API Bài viết: Lớp WP_Post
  *
  * @package WordPress
  * @subpackage Post
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement the WP_Post object.
+ * Lớp lõi dùng để triển khai đối tượng WP_Post.
  *
  * @since 3.5.0
  *
@@ -22,7 +22,7 @@
 final class WP_Post {
 
 	/**
-	 * Post ID.
+	 * ID bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var int
@@ -30,9 +30,9 @@ final class WP_Post {
 	public $ID;
 
 	/**
-	 * ID of post author.
+	 * ID tác giả bài viết.
 	 *
-	 * A numeric string, for compatibility reasons.
+	 * Chuỗi số, vì lý do tương thích.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -40,7 +40,7 @@ final class WP_Post {
 	public $post_author = '0';
 
 	/**
-	 * The post's local publication time.
+	 * Thời gian xuất bản theo giờ địa phương của bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -48,7 +48,7 @@ final class WP_Post {
 	public $post_date = '0000-00-00 00:00:00';
 
 	/**
-	 * The post's GMT publication time.
+	 * Thời gian xuất bản theo GMT của bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -56,7 +56,7 @@ final class WP_Post {
 	public $post_date_gmt = '0000-00-00 00:00:00';
 
 	/**
-	 * The post's content.
+	 * Nội dung bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -64,7 +64,7 @@ final class WP_Post {
 	public $post_content = '';
 
 	/**
-	 * The post's title.
+	 * Tiêu đề bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -72,7 +72,7 @@ final class WP_Post {
 	public $post_title = '';
 
 	/**
-	 * The post's excerpt.
+	 * Tóm tắt bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -80,7 +80,7 @@ final class WP_Post {
 	public $post_excerpt = '';
 
 	/**
-	 * The post's status.
+	 * Trạng thái bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -88,7 +88,7 @@ final class WP_Post {
 	public $post_status = 'publish';
 
 	/**
-	 * Whether comments are allowed.
+	 * Cho phép bình luận hay không.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -96,7 +96,7 @@ final class WP_Post {
 	public $comment_status = 'open';
 
 	/**
-	 * Whether pings are allowed.
+	 * Cho phép ping hay không.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -104,7 +104,7 @@ final class WP_Post {
 	public $ping_status = 'open';
 
 	/**
-	 * The post's password in plain text.
+	 * Mật khẩu bài viết dạng văn bản thuần.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -112,7 +112,7 @@ final class WP_Post {
 	public $post_password = '';
 
 	/**
-	 * The post's slug.
+	 * Slug của bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -120,7 +120,7 @@ final class WP_Post {
 	public $post_name = '';
 
 	/**
-	 * URLs queued to be pinged.
+	 * Các URL đang chờ ping.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -128,7 +128,7 @@ final class WP_Post {
 	public $to_ping = '';
 
 	/**
-	 * URLs that have been pinged.
+	 * Các URL đã được ping.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -136,7 +136,7 @@ final class WP_Post {
 	public $pinged = '';
 
 	/**
-	 * The post's local modified time.
+	 * Thời gian chỉnh sửa theo giờ địa phương của bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -144,7 +144,7 @@ final class WP_Post {
 	public $post_modified = '0000-00-00 00:00:00';
 
 	/**
-	 * The post's GMT modified time.
+	 * Thời gian chỉnh sửa theo GMT của bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -152,7 +152,7 @@ final class WP_Post {
 	public $post_modified_gmt = '0000-00-00 00:00:00';
 
 	/**
-	 * A utility DB field for post content.
+	 * Trường tiện ích trong DB cho nội dung bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -160,7 +160,7 @@ final class WP_Post {
 	public $post_content_filtered = '';
 
 	/**
-	 * ID of a post's parent post.
+	 * ID bài viết cha.
 	 *
 	 * @since 3.5.0
 	 * @var int
@@ -168,7 +168,7 @@ final class WP_Post {
 	public $post_parent = 0;
 
 	/**
-	 * The unique identifier for a post, not necessarily a URL, used as the feed GUID.
+	 * Định danh duy nhất cho bài viết, không nhất thiết là URL, dùng làm GUID cho feed.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -176,7 +176,7 @@ final class WP_Post {
 	public $guid = '';
 
 	/**
-	 * A field used for ordering posts.
+	 * Trường dùng để sắp xếp bài viết.
 	 *
 	 * @since 3.5.0
 	 * @var int
@@ -184,7 +184,7 @@ final class WP_Post {
 	public $menu_order = 0;
 
 	/**
-	 * The post's type, like post or page.
+	 * Loại bài viết, như post hoặc page.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -192,7 +192,7 @@ final class WP_Post {
 	public $post_type = 'post';
 
 	/**
-	 * An attachment's mime type.
+	 * Kiểu MIME của tệp đính kèm.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -200,9 +200,9 @@ final class WP_Post {
 	public $post_mime_type = '';
 
 	/**
-	 * Cached comment count.
+	 * Số bình luận đã cache.
 	 *
-	 * A numeric string, for compatibility reasons.
+	 * Chuỗi số, vì lý do tương thích.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -210,9 +210,9 @@ final class WP_Post {
 	public $comment_count = '0';
 
 	/**
-	 * Stores the post object's sanitization level.
+	 * Lưu trữ mức độ làm sạch dữ liệu của đối tượng bài viết.
 	 *
-	 * Does not correspond to a DB field.
+	 * Không tương ứng với trường nào trong DB.
 	 *
 	 * @since 3.5.0
 	 * @var string
@@ -220,14 +220,14 @@ final class WP_Post {
 	public $filter;
 
 	/**
-	 * Retrieve WP_Post instance.
+	 * Lấy instance WP_Post.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
 	 *
-	 * @param int $post_id Post ID.
-	 * @return WP_Post|false Post object, false otherwise.
+	 * @param int $post_id ID bài viết.
+	 * @return WP_Post|false Đối tượng bài viết, false nếu không tìm thấy.
 	 */
 	public static function get_instance( $post_id ) {
 		global $wpdb;
@@ -256,11 +256,11 @@ final class WP_Post {
 	}
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param WP_Post|object $post Post object.
+	 * @param WP_Post|object $post Đối tượng bài viết.
 	 */
 	public function __construct( $post ) {
 		foreach ( get_object_vars( $post ) as $key => $value ) {
@@ -269,11 +269,11 @@ final class WP_Post {
 	}
 
 	/**
-	 * Isset-er.
+	 * Kiểm tra thuộc tính có tồn tại không.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $key Property to check if set.
+	 * @param string $key Thuộc tính cần kiểm tra.
 	 * @return bool
 	 */
 	public function __isset( $key ) {
@@ -297,11 +297,11 @@ final class WP_Post {
 	}
 
 	/**
-	 * Getter.
+	 * Lấy giá trị thuộc tính.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $key Key to get.
+	 * @param string $key Khóa cần lấy.
 	 * @return mixed
 	 */
 	public function __get( $key ) {
@@ -333,7 +333,7 @@ final class WP_Post {
 			return wp_list_pluck( $terms, 'name' );
 		}
 
-		// Rest of the values need filtering.
+		// Các giá trị còn lại cần được lọc.
 		if ( 'ancestors' === $key ) {
 			$value = get_post_ancestors( $this );
 		} else {
@@ -352,7 +352,7 @@ final class WP_Post {
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $filter Filter.
+	 * @param string $filter Bộ lọc.
 	 * @return WP_Post
 	 */
 	public function filter( $filter ) {
@@ -368,11 +368,11 @@ final class WP_Post {
 	}
 
 	/**
-	 * Convert object to array.
+	 * Chuyển đổi đối tượng sang mảng.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @return array Object as array.
+	 * @return array Đối tượng dưới dạng mảng.
 	 */
 	public function to_array() {
 		$post = get_object_vars( $this );

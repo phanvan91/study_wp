@@ -1,38 +1,38 @@
 <?php
 /**
- * Main WordPress Formatting API.
+ * API Định dạng chính của WordPress.
  *
- * Handles many functions for formatting output.
+ * Xử lý nhiều hàm để định dạng đầu ra.
  *
  * @package WordPress
  */
 
 /**
- * Replaces common plain text characters with formatted entities.
+ * Thay thế các ký tự văn bản thuần thường gặp bằng các thực thể đã định dạng.
  *
- * Returns given text with transformations of quotes into smart quotes, apostrophes,
- * dashes, ellipses, the trademark symbol, and the multiplication symbol.
+ * Trả về văn bản đã cho với các chuyển đổi dấu ngoặc kép thành dấu ngoặc kép thông minh, dấu nháy đơn,
+ * dấu gạch ngang, dấu ba chấm, ký hiệu thương hiệu và ký hiệu nhân.
  *
- * As an example,
+ * Ví dụ,
  *
  *     'cause today's effort makes it worth tomorrow's "holiday" ...
  *
- * Becomes:
+ * Trở thành:
  *
  *     &#8217;cause today&#8217;s effort makes it worth tomorrow&#8217;s &#8220;holiday&#8221; &#8230;
  *
- * Code within certain HTML blocks are skipped.
+ * Mã trong một số khối HTML nhất định sẽ được bỏ qua.
  *
- * Do not use this function before the {@see 'init'} action hook; everything will break.
+ * Không sử dụng hàm này trước hook hành động {@see 'init'}; mọi thứ sẽ bị hỏng.
  *
  * @since 0.71
  *
- * @global array $wp_cockneyreplace Array of formatted entities for certain common phrases.
+ * @global array $wp_cockneyreplace Mảng các thực thể đã định dạng cho một số cụm từ thông dụng.
  * @global array $shortcode_tags
  *
- * @param string $text  The text to be formatted.
- * @param bool   $reset Set to true for unit testing. Translated patterns will reset.
- * @return string The string replaced with HTML entities.
+ * @param string $text  Văn bản cần được định dạng.
+ * @param bool   $reset Đặt thành true cho kiểm thử đơn vị. Các mẫu đã dịch sẽ được đặt lại.
+ * @return string Chuỗi đã được thay thế bằng các thực thể HTML.
  */
 function wptexturize( $text, $reset = false ) {
 	global $wp_cockneyreplace, $shortcode_tags;
@@ -54,26 +54,26 @@ function wptexturize( $text, $reset = false ) {
 		$open_sq_flag                    = '<!--osq-->',
 		$apos_flag                       = '<!--apos-->';
 
-	// If there's nothing to do, just stop.
+	// Nếu không có gì để làm, dừng lại.
 	if ( empty( $text ) || false === $run_texturize ) {
 		return $text;
 	}
 
-	// Set up static variables. Run once only.
+	// Thiết lập các biến tĩnh. Chỉ chạy một lần.
 	if ( $reset || ! isset( $static_characters ) ) {
 		/**
-		 * Filters whether to skip running wptexturize().
+		 * Lọc xem có bỏ qua việc chạy wptexturize() hay không.
 		 *
-		 * Returning false from the filter will effectively short-circuit wptexturize()
-		 * and return the original text passed to the function instead.
+		 * Trả về false từ bộ lọc sẽ bỏ qua wptexturize()
+		 * và trả về văn bản gốc được truyền vào hàm.
 		 *
-		 * The filter runs only once, the first time wptexturize() is called.
+		 * Bộ lọc chỉ chạy một lần, lần đầu tiên wptexturize() được gọi.
 		 *
 		 * @since 4.0.0
 		 *
 		 * @see wptexturize()
 		 *
-		 * @param bool $run_texturize Whether to short-circuit wptexturize().
+		 * @param bool $run_texturize Có bỏ qua wptexturize() hay không.
 		 */
 		$run_texturize = apply_filters( 'run_wptexturize', $run_texturize );
 		if ( false === $run_texturize ) {
@@ -106,7 +106,7 @@ function wptexturize( $text, $reset = false ) {
 		$default_no_texturize_tags       = array( 'pre', 'code', 'kbd', 'style', 'script', 'tt' );
 		$default_no_texturize_shortcodes = array( 'code' );
 
-		// If a plugin has provided an autocorrect array, use it.
+		// Nếu một plugin đã cung cấp mảng tự động sửa, sử dụng nó.
 		if ( isset( $wp_cockneyreplace ) ) {
 			$cockney        = array_keys( $wp_cockneyreplace );
 			$cockneyreplace = array_values( $wp_cockneyreplace );
@@ -137,8 +137,8 @@ function wptexturize( $text, $reset = false ) {
 		$static_replacements = array_merge( array( '&#8230;', $opening_quote, $closing_quote, ' &#8482;' ), $cockneyreplace );
 
 		/*
-		 * Pattern-based replacements of characters.
-		 * Sort the remaining patterns into several arrays for performance tuning.
+		 * Thay thế ký tự dựa trên mẫu.
+		 * Sắp xếp các mẫu còn lại vào nhiều mảng để tối ưu hiệu năng.
 		 */
 		$dynamic_characters   = array(
 			'apos'  => array(),
@@ -153,7 +153,7 @@ function wptexturize( $text, $reset = false ) {
 		$dynamic              = array();
 		$spaces               = wp_spaces_regexp();
 
-		// '99' and '99" are ambiguous among other patterns; assume it's an abbreviated year at the end of a quotation.
+		// '99' và '99" không rõ ràng giữa các mẫu khác; giả định đó là năm viết tắt ở cuối trích dẫn.
 		if ( "'" !== $apos || "'" !== $closing_single_quote ) {
 			$dynamic[ '/\'(\d\d)\'(?=\Z|[.,:;!?)}\-\]]|&gt;|' . $spaces . ')/' ] = $apos_flag . '$1' . $closing_single_quote;
 		}
@@ -161,22 +161,22 @@ function wptexturize( $text, $reset = false ) {
 			$dynamic[ '/\'(\d\d)"(?=\Z|[.,:;!?)}\-\]]|&gt;|' . $spaces . ')/' ] = $apos_flag . '$1' . $closing_quote;
 		}
 
-		// '99 '99s '99's (apostrophe)  But never '9 or '99% or '999 or '99.0.
+		// '99 '99s '99's (dấu nháy đơn)  Nhưng không bao giờ '9 hoặc '99% hoặc '999 hoặc '99.0.
 		if ( "'" !== $apos ) {
 			$dynamic['/\'(?=\d\d(?:\Z|(?![%\d]|[.,]\d)))/'] = $apos_flag;
 		}
 
-		// Quoted numbers like '0.42'.
+		// Số trong ngoặc đơn như '0.42'.
 		if ( "'" !== $opening_single_quote && "'" !== $closing_single_quote ) {
 			$dynamic[ '/(?<=\A|' . $spaces . ')\'(\d[.,\d]*)\'/' ] = $open_sq_flag . '$1' . $closing_single_quote;
 		}
 
-		// Single quote at start, or preceded by (, {, <, [, ", -, or spaces.
+		// Dấu nháy đơn ở đầu, hoặc đứng sau (, {, <, [, ", -, hoặc khoảng trắng.
 		if ( "'" !== $opening_single_quote ) {
 			$dynamic[ '/(?<=\A|[([{"\-]|&lt;|' . $spaces . ')\'/' ] = $open_sq_flag;
 		}
 
-		// Apostrophe in a word. No spaces, double apostrophes, or other punctuation.
+		// Dấu nháy đơn trong một từ. Không có khoảng trắng, dấu nháy đơn kép, hoặc dấu câu khác.
 		if ( "'" !== $apos ) {
 			$dynamic[ '/(?<!' . $spaces . ')\'(?!\Z|[.,:;!?"\'(){}[\]\-]|&[lg]t;|' . $spaces . ')/' ] = $apos_flag;
 		}
@@ -185,12 +185,12 @@ function wptexturize( $text, $reset = false ) {
 		$dynamic_replacements['apos'] = array_values( $dynamic );
 		$dynamic                      = array();
 
-		// Quoted numbers like "42".
+		// Số trong ngoặc kép như "42".
 		if ( '"' !== $opening_quote && '"' !== $closing_quote ) {
 			$dynamic[ '/(?<=\A|' . $spaces . ')"(\d[.,\d]*)"/' ] = $open_q_flag . '$1' . $closing_quote;
 		}
 
-		// Double quote at start, or preceded by (, {, <, [, -, or spaces, and not followed by spaces.
+		// Dấu ngoặc kép ở đầu, hoặc đứng sau (, {, <, [, -, hoặc khoảng trắng, và không theo sau bởi khoảng trắng.
 		if ( '"' !== $opening_quote ) {
 			$dynamic[ '/(?<=\A|[([{\-]|&lt;|' . $spaces . ')"(?!' . $spaces . ')/' ] = $open_q_flag;
 		}
@@ -199,7 +199,7 @@ function wptexturize( $text, $reset = false ) {
 		$dynamic_replacements['quote'] = array_values( $dynamic );
 		$dynamic                       = array();
 
-		// Dashes and spaces.
+		// Dấu gạch ngang và khoảng trắng.
 		$dynamic['/---/'] = $em_dash;
 		$dynamic[ '/(?<=^|' . $spaces . ')--(?=$|' . $spaces . ')/' ] = $em_dash;
 		$dynamic['/(?<!xn)--/']                                       = $en_dash;
@@ -209,28 +209,28 @@ function wptexturize( $text, $reset = false ) {
 		$dynamic_replacements['dash'] = array_values( $dynamic );
 	}
 
-	// Must do this every time in case plugins use these filters in a context sensitive manner.
+	// Phải thực hiện mỗi lần phòng trường hợp plugin sử dụng các bộ lọc này theo cách phụ thuộc ngữ cảnh.
 	/**
-	 * Filters the list of HTML elements not to texturize.
+	 * Lọc danh sách các phần tử HTML không được texturize.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string[] $default_no_texturize_tags An array of HTML element names.
+	 * @param string[] $default_no_texturize_tags Mảng tên các phần tử HTML.
 	 */
 	$no_texturize_tags = apply_filters( 'no_texturize_tags', $default_no_texturize_tags );
 	/**
-	 * Filters the list of shortcodes not to texturize.
+	 * Lọc danh sách các shortcode không được texturize.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string[] $default_no_texturize_shortcodes An array of shortcode names.
+	 * @param string[] $default_no_texturize_shortcodes Mảng tên các shortcode.
 	 */
 	$no_texturize_shortcodes = apply_filters( 'no_texturize_shortcodes', $default_no_texturize_shortcodes );
 
 	$no_texturize_tags_stack       = array();
 	$no_texturize_shortcodes_stack = array();
 
-	// Look for shortcodes and HTML elements.
+	// Tìm kiếm shortcode và các phần tử HTML.
 
 	preg_match_all( '@\[/?([^<>&/\[\]\x00-\x20=]++)@', $text, $matches );
 	$tagnames         = array_intersect( array_keys( $shortcode_tags ), $matches[1] );
@@ -241,36 +241,36 @@ function wptexturize( $text, $reset = false ) {
 	$textarr = preg_split( $regex, $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY );
 
 	foreach ( $textarr as &$curl ) {
-		// Only call _wptexturize_pushpop_element if $curl is a delimiter.
+		// Chỉ gọi _wptexturize_pushpop_element nếu $curl là dấu phân cách.
 		$first = $curl[0];
 		if ( '<' === $first ) {
 			if ( str_starts_with( $curl, '<!--' ) ) {
-				// This is an HTML comment delimiter.
+				// Đây là dấu phân cách chú thích HTML.
 				continue;
 			} else {
-				// This is an HTML element delimiter.
+				// Đây là dấu phân cách phần tử HTML.
 
-				// Replace each & with &#038; unless it already looks like an entity.
+				// Thay thế mỗi & bằng &#038; trừ khi nó đã trông giống một thực thể.
 				$curl = preg_replace( '/&(?!#(?:\d+|x[a-f0-9]+);|[a-z1-4]{1,8};)/i', '&#038;', $curl );
 
 				_wptexturize_pushpop_element( $curl, $no_texturize_tags_stack, $no_texturize_tags );
 			}
 		} elseif ( '' === trim( $curl ) ) {
-			// This is a newline between delimiters. Performance improves when we check this.
+			// Đây là dòng mới giữa các dấu phân cách. Hiệu năng cải thiện khi kiểm tra điều này.
 			continue;
 
 		} elseif ( '[' === $first && $found_shortcodes && 1 === preg_match( '/^' . $shortcode_regex . '$/', $curl ) ) {
-			// This is a shortcode delimiter.
+			// Đây là dấu phân cách shortcode.
 
 			if ( ! str_starts_with( $curl, '[[' ) && ! str_ends_with( $curl, ']]' ) ) {
-				// Looks like a normal shortcode.
+				// Trông giống shortcode bình thường.
 				_wptexturize_pushpop_element( $curl, $no_texturize_shortcodes_stack, $no_texturize_shortcodes );
 			} else {
-				// Looks like an escaped shortcode.
+				// Trông giống shortcode đã được escape.
 				continue;
 			}
 		} elseif ( empty( $no_texturize_shortcodes_stack ) && empty( $no_texturize_tags_stack ) ) {
-			// This is neither a delimiter, nor is this content inside of no_texturize pairs. Do texturize.
+			// Đây không phải dấu phân cách, cũng không phải nội dung bên trong các cặp no_texturize. Thực hiện texturize.
 
 			$curl = str_replace( $static_characters, $static_replacements, $curl );
 
@@ -289,13 +289,13 @@ function wptexturize( $text, $reset = false ) {
 				$curl = preg_replace( $dynamic_characters['dash'], $dynamic_replacements['dash'], $curl );
 			}
 
-			// 9x9 (times), but never 0x9999.
+			// 9x9 (nhân), nhưng không bao giờ 0x9999.
 			if ( 1 === preg_match( '/(?<=\d)x\d/', $curl ) ) {
-				// Searching for a digit is 10 times more expensive than for the x, so we avoid doing this one!
+				// Tìm kiếm chữ số tốn kém gấp 10 lần so với tìm x, nên chúng ta tránh làm điều này!
 				$curl = preg_replace( '/\b(\d(?(?<=0)[\d\.,]+|[\d\.,]*))x(\d[\d\.,]*)\b/', '$1&#215;$2', $curl );
 			}
 
-			// Replace each & with &#038; unless it already looks like an entity.
+			// Thay thế mỗi & bằng &#038; trừ khi nó đã trông giống một thực thể.
 			$curl = preg_replace( '/&(?!#(?:\d+|x[a-f0-9]+);|[a-z1-4]{1,8};)/i', '&#038;', $curl );
 		}
 	}
@@ -304,18 +304,18 @@ function wptexturize( $text, $reset = false ) {
 }
 
 /**
- * Implements a logic tree to determine whether or not "7'." represents seven feet,
- * then converts the special char into either a prime char or a closing quote char.
+ * Triển khai cây logic để xác định "7'." có biểu thị bảy feet hay không,
+ * sau đó chuyển đổi ký tự đặc biệt thành ký tự prime hoặc ký tự ngoặc đóng.
  *
  * @since 4.3.0
  *
- * @param string $haystack    The plain text to be searched.
- * @param string $needle      The character to search for such as ' or ".
- * @param string $prime       The prime char to use for replacement.
- * @param string $open_quote  The opening quote char. Opening quote replacement must be
- *                            accomplished already.
- * @param string $close_quote The closing quote char to use for replacement.
- * @return string The $haystack value after primes and quotes replacements.
+ * @param string $haystack    Văn bản thuần để tìm kiếm.
+ * @param string $needle      Ký tự cần tìm như ' hoặc ".
+ * @param string $prime       Ký tự prime để sử dụng thay thế.
+ * @param string $open_quote  Ký tự ngoặc mở. Việc thay thế ngoặc mở phải
+ *                            được thực hiện trước.
+ * @param string $close_quote Ký tự ngoặc đóng để sử dụng thay thế.
+ * @return string Giá trị $haystack sau khi thay thế prime và ngoặc.
  */
 function wptexturize_primes( $haystack, $needle, $prime, $open_quote, $close_quote ) {
 	$spaces           = wp_spaces_regexp();
@@ -333,33 +333,33 @@ function wptexturize_primes( $haystack, $needle, $prime, $open_quote, $close_quo
 		} elseif ( 0 !== $key && 0 === substr_count( $sentence, $close_quote ) ) {
 			$sentence = preg_replace( $quote_pattern, $flag, $sentence, -1, $count );
 			if ( $count > 1 ) {
-				// This sentence appears to have multiple closing quotes. Attempt Vulcan logic.
+				// Câu này có vẻ có nhiều dấu ngoặc đóng. Thử logic Vulcan.
 				$sentence = preg_replace( $flag_no_digit, $close_quote, $sentence, -1, $count2 );
 				if ( 0 === $count2 ) {
-					// Try looking for a quote followed by a period.
+					// Thử tìm dấu ngoặc theo sau bởi dấu chấm.
 					$count2 = substr_count( $sentence, "$flag." );
 					if ( $count2 > 0 ) {
-						// Assume the rightmost quote-period match is the end of quotation.
+						// Giả định cặp ngoặc-chấm bên phải nhất là kết thúc trích dẫn.
 						$pos = strrpos( $sentence, "$flag." );
 					} else {
 						/*
-						 * When all else fails, make the rightmost candidate a closing quote.
-						 * This is most likely to be problematic in the context of bug #18549.
+						 * Khi mọi cách khác thất bại, biến ứng viên bên phải nhất thành dấu ngoặc đóng.
+						 * Điều này có khả năng gây vấn đề trong ngữ cảnh của bug #18549.
 						 */
 						$pos = strrpos( $sentence, $flag );
 					}
 					$sentence = substr_replace( $sentence, $close_quote, $pos, strlen( $flag ) );
 				}
-				// Use conventional replacement on any remaining primes and quotes.
+				// Sử dụng thay thế thông thường cho các prime và ngoặc còn lại.
 				$sentence = preg_replace( $prime_pattern, $prime, $sentence );
 				$sentence = preg_replace( $flag_after_digit, $prime, $sentence );
 				$sentence = str_replace( $flag, $close_quote, $sentence );
 			} elseif ( 1 === $count ) {
-				// Found only one closing quote candidate, so give it priority over primes.
+				// Chỉ tìm thấy một ứng viên dấu ngoặc đóng, nên ưu tiên nó hơn prime.
 				$sentence = str_replace( $flag, $close_quote, $sentence );
 				$sentence = preg_replace( $prime_pattern, $prime, $sentence );
 			} else {
-				// No closing quotes found. Just run primes pattern.
+				// Không tìm thấy dấu ngoặc đóng. Chỉ chạy mẫu prime.
 				$sentence = preg_replace( $prime_pattern, $prime, $sentence );
 			}
 		} else {
@@ -375,33 +375,33 @@ function wptexturize_primes( $haystack, $needle, $prime, $open_quote, $close_quo
 }
 
 /**
- * Searches for disabled element tags. Pushes element to stack on tag open
- * and pops on tag close.
+ * Tìm kiếm các thẻ phần tử bị vô hiệu hóa. Đẩy phần tử vào ngăn xếp khi mở thẻ
+ * và lấy ra khi đóng thẻ.
  *
- * Assumes first char of `$text` is tag opening and last char is tag closing.
- * Assumes second char of `$text` is optionally `/` to indicate closing as in `</html>`.
+ * Giả định ký tự đầu tiên của `$text` là mở thẻ và ký tự cuối là đóng thẻ.
+ * Giả định ký tự thứ hai của `$text` tùy chọn là `/` để chỉ đóng thẻ như `</html>`.
  *
  * @since 2.9.0
  * @access private
  *
- * @param string   $text              Text to check. Must be a tag like `<html>` or `[shortcode]`.
- * @param string[] $stack             Array of open tag elements.
- * @param string[] $disabled_elements Array of tag names to match against. Spaces are not allowed in tag names.
+ * @param string   $text              Văn bản cần kiểm tra. Phải là thẻ như `<html>` hoặc `[shortcode]`.
+ * @param string[] $stack             Mảng các phần tử thẻ đang mở.
+ * @param string[] $disabled_elements Mảng tên thẻ để so khớp. Không cho phép khoảng trắng trong tên thẻ.
  */
 function _wptexturize_pushpop_element( $text, &$stack, $disabled_elements ) {
-	// Is it an opening tag or closing tag?
+	// Đây là thẻ mở hay thẻ đóng?
 	if ( isset( $text[1] ) && '/' !== $text[1] ) {
 		$opening_tag = true;
 		$name_offset = 1;
 	} elseif ( 0 === count( $stack ) ) {
-		// Stack is empty. Just stop.
+		// Ngăn xếp trống. Dừng lại.
 		return;
 	} else {
 		$opening_tag = false;
 		$name_offset = 2;
 	}
 
-	// Parse out the tag name.
+	// Phân tích tên thẻ.
 	$space = strpos( $text, ' ' );
 	if ( false === $space ) {
 		$space = -1;
@@ -410,15 +410,15 @@ function _wptexturize_pushpop_element( $text, &$stack, $disabled_elements ) {
 	}
 	$tag = substr( $text, $name_offset, $space );
 
-	// Handle disabled tags.
+	// Xử lý các thẻ bị vô hiệu hóa.
 	if ( in_array( $tag, $disabled_elements, true ) ) {
 		if ( $opening_tag ) {
 			/*
-			 * This disables texturize until we find a closing tag of our type
-			 * (e.g. <pre>) even if there was invalid nesting before that.
+			 * Điều này vô hiệu hóa texturize cho đến khi tìm thấy thẻ đóng cùng loại
+			 * (ví dụ <pre>) ngay cả khi có lồng ghép không hợp lệ trước đó.
 			 *
-			 * Example: in the case <pre>sadsadasd</code>"baba"</pre>
-			 *          "baba" won't be texturized.
+			 * Ví dụ: trong trường hợp <pre>sadsadasd</code>"baba"</pre>
+			 *          "baba" sẽ không được texturize.
 			 */
 
 			array_push( $stack, $tag );
@@ -429,19 +429,19 @@ function _wptexturize_pushpop_element( $text, &$stack, $disabled_elements ) {
 }
 
 /**
- * Replaces double line breaks with paragraph elements.
+ * Thay thế các ngắt dòng kép bằng các phần tử đoạn văn.
  *
- * A group of regex replaces used to identify text formatted with newlines and
- * replace double line breaks with HTML paragraph tags. The remaining line breaks
- * after conversion become `<br />` tags, unless `$br` is set to '0' or 'false'.
+ * Một nhóm regex thay thế được sử dụng để nhận diện văn bản được định dạng bằng dòng mới và
+ * thay thế các ngắt dòng kép bằng thẻ đoạn văn HTML. Các ngắt dòng còn lại
+ * sau khi chuyển đổi trở thành thẻ `<br />`, trừ khi `$br` được đặt thành '0' hoặc 'false'.
  *
  * @since 0.71
  *
- * @param string $text The text which has to be formatted.
- * @param bool   $br   Optional. If set, this will convert all remaining line breaks
- *                     after paragraphing. Line breaks within `<script>`, `<style>`,
- *                     and `<svg>` tags are not affected. Default true.
- * @return string Text which has been converted into correct paragraph tags.
+ * @param string $text Văn bản cần được định dạng.
+ * @param bool   $br   Tùy chọn. Nếu được đặt, sẽ chuyển đổi tất cả ngắt dòng còn lại
+ *                     sau khi tạo đoạn văn. Ngắt dòng trong thẻ `<script>`, `<style>`,
+ *                     và `<svg>` không bị ảnh hưởng. Mặc định true.
+ * @return string Văn bản đã được chuyển đổi thành thẻ đoạn văn đúng.
  */
 function wpautop( $text, $br = true ) {
 	$pre_tags = array();
@@ -450,12 +450,12 @@ function wpautop( $text, $br = true ) {
 		return '';
 	}
 
-	// Just to make things a little easier, pad the end.
+	// Để mọi thứ dễ hơn một chút, thêm padding ở cuối.
 	$text = $text . "\n";
 
 	/*
-	 * Pre tags shouldn't be touched by autop.
-	 * Replace pre tags with placeholders and bring them back after autop.
+	 * Thẻ pre không nên bị autop xử lý.
+	 * Thay thế thẻ pre bằng placeholder và khôi phục chúng sau autop.
 	 */
 	if ( str_contains( $text, '<pre' ) ) {
 		$text_parts = explode( '</pre>', $text );
@@ -466,7 +466,7 @@ function wpautop( $text, $br = true ) {
 		foreach ( $text_parts as $text_part ) {
 			$start = strpos( $text_part, '<pre' );
 
-			// Malformed HTML?
+			// HTML bị lỗi?
 			if ( false === $start ) {
 				$text .= $text_part;
 				continue;
@@ -481,35 +481,35 @@ function wpautop( $text, $br = true ) {
 
 		$text .= $last_part;
 	}
-	// Change multiple <br>'s into two line breaks, which will turn into paragraphs.
+	// Chuyển nhiều thẻ <br> thành hai ngắt dòng, sẽ được biến thành đoạn văn.
 	$text = preg_replace( '|<br\s*/?>\s*<br\s*/?>|', "\n\n", $text );
 
 	$allblocks = '(?:table|thead|tfoot|caption|col|colgroup|tbody|tr|td|th|div|dl|dd|dt|ul|ol|li|pre|form|map|area|blockquote|address|style|p|h[1-6]|hr|fieldset|legend|section|article|aside|hgroup|header|footer|nav|figure|figcaption|details|menu|summary)';
 
-	// Add a double line break above block-level opening tags.
+	// Thêm ngắt dòng kép phía trên thẻ mở cấp khối.
 	$text = preg_replace( '!(<' . $allblocks . '[\s/>])!', "\n\n$1", $text );
 
-	// Add a double line break below block-level closing tags.
+	// Thêm ngắt dòng kép phía dưới thẻ đóng cấp khối.
 	$text = preg_replace( '!(</' . $allblocks . '>)!', "$1\n\n", $text );
 
-	// Add a double line break after hr tags, which are self closing.
+	// Thêm ngắt dòng kép sau thẻ hr, là thẻ tự đóng.
 	$text = preg_replace( '!(<hr\s*?/?>)!', "$1\n\n", $text );
 
-	// Standardize newline characters to "\n".
+	// Chuẩn hóa ký tự xuống dòng thành "\n".
 	$text = str_replace( array( "\r\n", "\r" ), "\n", $text );
 
-	// Find newlines in all elements and add placeholders.
+	// Tìm ký tự xuống dòng trong tất cả phần tử và thêm placeholder.
 	$text = wp_replace_in_html_tags( $text, array( "\n" => ' <!-- wpnl --> ' ) );
 
-	// Collapse line breaks before and after <option> elements so they don't get autop'd.
+	// Thu gọn ngắt dòng trước và sau phần tử <option> để chúng không bị autop.
 	if ( str_contains( $text, '<option' ) ) {
 		$text = preg_replace( '|\s*<option|', '<option', $text );
 		$text = preg_replace( '|</option>\s*|', '</option>', $text );
 	}
 
 	/*
-	 * Collapse line breaks inside <object> elements, before <param> and <embed> elements
-	 * so they don't get autop'd.
+	 * Thu gọn ngắt dòng bên trong phần tử <object>, trước phần tử <param> và <embed>
+	 * để chúng không bị autop.
 	 */
 	if ( str_contains( $text, '</object>' ) ) {
 		$text = preg_replace( '|(<object[^>]*>)\s*|', '$1', $text );
@@ -518,8 +518,8 @@ function wpautop( $text, $br = true ) {
 	}
 
 	/*
-	 * Collapse line breaks inside <audio> and <video> elements,
-	 * before and after <source> and <track> elements.
+	 * Thu gọn ngắt dòng bên trong phần tử <audio> và <video>,
+	 * trước và sau phần tử <source> và <track>.
 	 */
 	if ( str_contains( $text, '<source' ) || str_contains( $text, '<track' ) ) {
 		$text = preg_replace( '%([<\[](?:audio|video)[^>\]]*[>\]])\s*%', '$1', $text );
@@ -527,76 +527,76 @@ function wpautop( $text, $br = true ) {
 		$text = preg_replace( '%\s*(<(?:source|track)[^>]*>)\s*%', '$1', $text );
 	}
 
-	// Collapse line breaks before and after <figcaption> elements.
+	// Thu gọn ngắt dòng trước và sau phần tử <figcaption>.
 	if ( str_contains( $text, '<figcaption' ) ) {
 		$text = preg_replace( '|\s*(<figcaption[^>]*>)|', '$1', $text );
 		$text = preg_replace( '|</figcaption>\s*|', '</figcaption>', $text );
 	}
 
-	// Remove more than two contiguous line breaks.
+	// Xóa nhiều hơn hai ngắt dòng liên tiếp.
 	$text = preg_replace( "/\n\n+/", "\n\n", $text );
 
-	// Split up the contents into an array of strings, separated by double line breaks.
+	// Tách nội dung thành mảng chuỗi, phân tách bởi ngắt dòng kép.
 	$paragraphs = preg_split( '/\n\s*\n/', $text, -1, PREG_SPLIT_NO_EMPTY );
 
-	// Reset $text prior to rebuilding.
+	// Đặt lại $text trước khi xây dựng lại.
 	$text = '';
 
-	// Rebuild the content as a string, wrapping every bit with a <p>.
+	// Xây dựng lại nội dung dưới dạng chuỗi, bọc mỗi phần trong thẻ <p>.
 	foreach ( $paragraphs as $paragraph ) {
 		$text .= '<p>' . trim( $paragraph, "\n" ) . "</p>\n";
 	}
 
-	// Under certain strange conditions it could create a P of entirely whitespace.
+	// Trong một số điều kiện lạ, có thể tạo ra thẻ P chứa toàn khoảng trắng.
 	$text = preg_replace( '|<p>\s*</p>|', '', $text );
 
-	// Add a closing <p> inside <div>, <address>, or <form> tag if missing.
+	// Thêm thẻ đóng <p> bên trong thẻ <div>, <address>, hoặc <form> nếu thiếu.
 	$text = preg_replace( '!<p>([^<]+)</(div|address|form)>!', '<p>$1</p></$2>', $text );
 
-	// If an opening or closing block element tag is wrapped in a <p>, unwrap it.
+	// Nếu thẻ mở hoặc đóng phần tử khối được bọc trong <p>, bỏ bọc nó.
 	$text = preg_replace( '!<p>\s*(</?' . $allblocks . '[^>]*>)\s*</p>!', '$1', $text );
 
-	// In some cases <li> may get wrapped in <p>, fix them.
+	// Trong một số trường hợp <li> có thể bị bọc trong <p>, sửa chúng.
 	$text = preg_replace( '|<p>(<li.+?)</p>|', '$1', $text );
 
-	// If a <blockquote> is wrapped with a <p>, move it inside the <blockquote>.
+	// Nếu <blockquote> được bọc bởi <p>, di chuyển nó vào bên trong <blockquote>.
 	$text = preg_replace( '|<p><blockquote([^>]*)>|i', '<blockquote$1><p>', $text );
 	$text = str_replace( '</blockquote></p>', '</p></blockquote>', $text );
 
-	// If an opening or closing block element tag is preceded by an opening <p> tag, remove it.
+	// Nếu thẻ mở hoặc đóng phần tử khối đứng sau thẻ mở <p>, xóa thẻ <p>.
 	$text = preg_replace( '!<p>\s*(</?' . $allblocks . '[^>]*>)!', '$1', $text );
 
-	// If an opening or closing block element tag is followed by a closing <p> tag, remove it.
+	// Nếu thẻ mở hoặc đóng phần tử khối đứng trước thẻ đóng <p>, xóa thẻ </p>.
 	$text = preg_replace( '!(</?' . $allblocks . '[^>]*>)\s*</p>!', '$1', $text );
 
-	// Optionally insert line breaks.
+	// Tùy chọn chèn ngắt dòng.
 	if ( $br ) {
-		// Replace newlines that shouldn't be touched with a placeholder.
+		// Thay thế ký tự xuống dòng không nên xử lý bằng placeholder.
 		$text = preg_replace_callback( '/<(script|style|svg|math).*?<\/\\1>/s', '_autop_newline_preservation_helper', $text );
 
-		// Normalize <br>.
+		// Chuẩn hóa <br>.
 		$text = str_replace( array( '<br>', '<br/>' ), '<br />', $text );
 
-		// Replace any new line characters that aren't preceded by a <br /> with a <br />.
+		// Thay thế ký tự xuống dòng không có <br /> đứng trước bằng <br />.
 		$text = preg_replace( '|(?<!<br />)\s*\n|', "<br />\n", $text );
 
-		// Replace newline placeholders with newlines.
+		// Thay thế placeholder xuống dòng bằng ký tự xuống dòng.
 		$text = str_replace( '<WPPreserveNewline />', "\n", $text );
 	}
 
-	// If a <br /> tag is after an opening or closing block tag, remove it.
+	// Nếu thẻ <br /> nằm sau thẻ mở hoặc đóng khối, xóa nó.
 	$text = preg_replace( '!(</?' . $allblocks . '[^>]*>)\s*<br />!', '$1', $text );
 
-	// If a <br /> tag is before a subset of opening or closing block tags, remove it.
+	// Nếu thẻ <br /> nằm trước một tập con thẻ mở hoặc đóng khối, xóa nó.
 	$text = preg_replace( '!<br />(\s*</?(?:p|li|div|dl|dd|dt|th|pre|td|ul|ol)[^>]*>)!', '$1', $text );
 	$text = preg_replace( "|\n</p>$|", '</p>', $text );
 
-	// Replace placeholder <pre> tags with their original content.
+	// Thay thế thẻ <pre> placeholder bằng nội dung gốc của chúng.
 	if ( ! empty( $pre_tags ) ) {
 		$text = str_replace( array_keys( $pre_tags ), array_values( $pre_tags ), $text );
 	}
 
-	// Restore newlines in all elements.
+	// Khôi phục ký tự xuống dòng trong tất cả phần tử.
 	if ( str_contains( $text, '<!-- wpnl -->' ) ) {
 		$text = str_replace( array( ' <!-- wpnl --> ', '<!-- wpnl -->' ), "\n", $text );
 	}
@@ -605,23 +605,23 @@ function wpautop( $text, $br = true ) {
 }
 
 /**
- * Separates HTML elements and comments from the text.
+ * Tách các phần tử HTML và chú thích khỏi văn bản.
  *
  * @since 4.2.4
  *
- * @param string $input The text which has to be formatted.
- * @return string[] Array of the formatted text.
+ * @param string $input Văn bản cần được định dạng.
+ * @return string[] Mảng văn bản đã định dạng.
  */
 function wp_html_split( $input ) {
 	return preg_split( get_html_split_regex(), $input, -1, PREG_SPLIT_DELIM_CAPTURE );
 }
 
 /**
- * Retrieves the regular expression for an HTML element.
+ * Lấy biểu thức chính quy cho phần tử HTML.
  *
  * @since 4.4.0
  *
- * @return string The regular expression.
+ * @return string Biểu thức chính quy.
  */
 function get_html_split_regex() {
 	static $regex;
@@ -629,41 +629,41 @@ function get_html_split_regex() {
 	if ( ! isset( $regex ) ) {
 		// phpcs:disable Squiz.Strings.ConcatenationSpacing.PaddingFound -- don't remove regex indentation
 		$comments =
-			'!'             // Start of comment, after the <.
-			. '(?:'         // Unroll the loop: Consume everything until --> is found.
-			.     '-(?!->)' // Dash not followed by end of comment.
-			.     '[^\-]*+' // Consume non-dashes.
-			. ')*+'         // Loop possessively.
-			. '(?:-->)?';   // End of comment. If not found, match all input.
+			'!'             // Bắt đầu chú thích, sau dấu <.
+			. '(?:'         // Mở vòng lặp: Tiêu thụ mọi thứ cho đến khi tìm thấy -->.
+			.     '-(?!->)' // Gạch ngang không theo sau bởi kết thúc chú thích.
+			.     '[^\-]*+' // Tiêu thụ ký tự không phải gạch ngang.
+			. ')*+'         // Lặp chiếm hữu.
+			. '(?:-->)?';   // Kết thúc chú thích. Nếu không tìm thấy, khớp toàn bộ đầu vào.
 
 		$cdata =
-			'!\[CDATA\['    // Start of comment, after the <.
-			. '[^\]]*+'     // Consume non-].
-			. '(?:'         // Unroll the loop: Consume everything until ]]> is found.
-			.     '](?!]>)' // One ] not followed by end of comment.
-			.     '[^\]]*+' // Consume non-].
-			. ')*+'         // Loop possessively.
-			. '(?:]]>)?';   // End of comment. If not found, match all input.
+			'!\[CDATA\['    // Bắt đầu CDATA, sau dấu <.
+			. '[^\]]*+'     // Tiêu thụ ký tự không phải ].
+			. '(?:'         // Mở vòng lặp: Tiêu thụ mọi thứ cho đến khi tìm thấy ]]>.
+			.     '](?!]>)' // Một ] không theo sau bởi kết thúc chú thích.
+			.     '[^\]]*+' // Tiêu thụ ký tự không phải ].
+			. ')*+'         // Lặp chiếm hữu.
+			. '(?:]]>)?';   // Kết thúc chú thích. Nếu không tìm thấy, khớp toàn bộ đầu vào.
 
 		$escaped =
-			'(?='             // Is the element escaped?
+			'(?='             // Phần tử có được escape không?
 			.    '!--'
 			. '|'
 			.    '!\[CDATA\['
 			. ')'
-			. '(?(?=!-)'      // If yes, which type?
+			. '(?(?=!-)'      // Nếu có, loại nào?
 			.     $comments
 			. '|'
 			.     $cdata
 			. ')';
 
 		$regex =
-			'/('                // Capture the entire match.
-			.     '<'           // Find start of element.
-			.     '(?'          // Conditional expression follows.
-			.         $escaped  // Find end of escaped element.
-			.     '|'           // ...else...
-			.         '[^>]*>?' // Find end of normal element.
+			'/('                // Bắt toàn bộ kết quả khớp.
+			.     '<'           // Tìm đầu phần tử.
+			.     '(?'          // Biểu thức điều kiện theo sau.
+			.         $escaped  // Tìm cuối phần tử đã escape.
+			.     '|'           // ...nếu không...
+			.         '[^>]*>?' // Tìm cuối phần tử bình thường.
 			.     ')'
 			. ')/';
 		// phpcs:enable
@@ -673,15 +673,15 @@ function get_html_split_regex() {
 }
 
 /**
- * Retrieves the combined regular expression for HTML and shortcodes.
+ * Lấy biểu thức chính quy kết hợp cho HTML và shortcode.
  *
  * @access private
  * @ignore
- * @internal This function will be removed in 4.5.0 per Shortcode API Roadmap.
+ * @internal Hàm này sẽ bị xóa trong 4.5.0 theo Lộ trình API Shortcode.
  * @since 4.4.0
  *
- * @param string $shortcode_regex Optional. The result from _get_wptexturize_shortcode_regex().
- * @return string The regular expression.
+ * @param string $shortcode_regex Tùy chọn. Kết quả từ _get_wptexturize_shortcode_regex().
+ * @return string Biểu thức chính quy.
  */
 function _get_wptexturize_split_regex( $shortcode_regex = '' ) {
 	static $html_regex;
@@ -689,19 +689,19 @@ function _get_wptexturize_split_regex( $shortcode_regex = '' ) {
 	if ( ! isset( $html_regex ) ) {
 		// phpcs:disable Squiz.Strings.ConcatenationSpacing.PaddingFound -- don't remove regex indentation
 		$comment_regex =
-			'!'             // Start of comment, after the <.
-			. '(?:'         // Unroll the loop: Consume everything until --> is found.
-			.     '-(?!->)' // Dash not followed by end of comment.
-			.     '[^\-]*+' // Consume non-dashes.
-			. ')*+'         // Loop possessively.
-			. '(?:-->)?';   // End of comment. If not found, match all input.
+			'!'             // Bắt đầu chú thích, sau dấu <.
+			. '(?:'         // Mở vòng lặp: Tiêu thụ mọi thứ cho đến khi tìm thấy -->.
+			.     '-(?!->)' // Gạch ngang không theo sau bởi kết thúc chú thích.
+			.     '[^\-]*+' // Tiêu thụ ký tự không phải gạch ngang.
+			. ')*+'         // Lặp chiếm hữu.
+			. '(?:-->)?';   // Kết thúc chú thích. Nếu không tìm thấy, khớp toàn bộ đầu vào.
 
-		$html_regex = // Needs replaced with wp_html_split() per Shortcode API Roadmap.
-			'<'                  // Find start of element.
-			. '(?(?=!--)'        // Is this a comment?
-			.     $comment_regex // Find end of comment.
+		$html_regex = // Cần thay thế bằng wp_html_split() theo Lộ trình API Shortcode.
+			'<'                  // Tìm đầu phần tử.
+			. '(?(?=!--)'        // Đây có phải chú thích không?
+			.     $comment_regex // Tìm cuối chú thích.
 			. '|'
-			.     '[^>]*>?'      // Find end of element. If not found, match all input.
+			.     '[^>]*>?'      // Tìm cuối phần tử. Nếu không tìm thấy, khớp toàn bộ đầu vào.
 			. ')';
 		// phpcs:enable
 	}
@@ -716,56 +716,56 @@ function _get_wptexturize_split_regex( $shortcode_regex = '' ) {
 }
 
 /**
- * Retrieves the regular expression for shortcodes.
+ * Lấy biểu thức chính quy cho shortcode.
  *
  * @access private
  * @ignore
  * @since 4.4.0
  *
- * @param string[] $tagnames Array of shortcodes to find.
- * @return string The regular expression.
+ * @param string[] $tagnames Mảng các shortcode cần tìm.
+ * @return string Biểu thức chính quy.
  */
 function _get_wptexturize_shortcode_regex( $tagnames ) {
 	$tagregexp = implode( '|', array_map( 'preg_quote', $tagnames ) );
-	$tagregexp = "(?:$tagregexp)(?=[\\s\\]\\/])"; // Excerpt of get_shortcode_regex().
+	$tagregexp = "(?:$tagregexp)(?=[\\s\\]\\/])"; // Trích đoạn từ get_shortcode_regex().
 	// phpcs:disable Squiz.Strings.ConcatenationSpacing.PaddingFound -- don't remove regex indentation
 	$regex =
-		'\['                // Find start of shortcode.
-		. '[\/\[]?'         // Shortcodes may begin with [/ or [[.
-		. $tagregexp        // Only match registered shortcodes, because performance.
+		'\['                // Tìm đầu shortcode.
+		. '[\/\[]?'         // Shortcode có thể bắt đầu bằng [/ hoặc [[.
+		. $tagregexp        // Chỉ khớp shortcode đã đăng ký, vì lý do hiệu năng.
 		. '(?:'
-		.     '[^\[\]<>]+'  // Shortcodes do not contain other shortcodes. Quantifier critical.
+		.     '[^\[\]<>]+'  // Shortcode không chứa shortcode khác. Bộ đếm quan trọng.
 		. '|'
-		.     '<[^\[\]>]*>' // HTML elements permitted. Prevents matching ] before >.
-		. ')*+'             // Possessive critical.
-		. '\]'              // Find end of shortcode.
-		. '\]?';            // Shortcodes may end with ]].
+		.     '<[^\[\]>]*>' // Phần tử HTML được phép. Ngăn khớp ] trước >.
+		. ')*+'             // Chiếm hữu quan trọng.
+		. '\]'              // Tìm cuối shortcode.
+		. '\]?';            // Shortcode có thể kết thúc bằng ]].
 	// phpcs:enable
 
 	return $regex;
 }
 
 /**
- * Replaces characters or phrases within HTML elements only.
+ * Thay thế ký tự hoặc cụm từ chỉ bên trong các phần tử HTML.
  *
  * @since 4.2.3
  *
- * @param string $haystack      The text which has to be formatted.
- * @param array  $replace_pairs In the form array('from' => 'to', ...).
- * @return string The formatted text.
+ * @param string $haystack      Văn bản cần được định dạng.
+ * @param array  $replace_pairs Dạng mảng array('từ' => 'thành', ...).
+ * @return string Văn bản đã định dạng.
  */
 function wp_replace_in_html_tags( $haystack, $replace_pairs ) {
-	// Find all elements.
+	// Tìm tất cả phần tử.
 	$textarr = wp_html_split( $haystack );
 	$changed = false;
 
-	// Optimize when searching for one item.
+	// Tối ưu khi tìm kiếm một mục.
 	if ( 1 === count( $replace_pairs ) ) {
-		// Extract $needle and $replace.
+		// Trích xuất $needle và $replace.
 		$needle  = array_key_first( $replace_pairs );
 		$replace = $replace_pairs[ $needle ];
 
-		// Loop through delimiters (elements) only.
+		// Lặp qua các dấu phân cách (phần tử) only.
 		for ( $i = 1, $c = count( $textarr ); $i < $c; $i += 2 ) {
 			if ( str_contains( $textarr[ $i ], $needle ) ) {
 				$textarr[ $i ] = str_replace( $needle, $replace, $textarr[ $i ] );
@@ -773,16 +773,16 @@ function wp_replace_in_html_tags( $haystack, $replace_pairs ) {
 			}
 		}
 	} else {
-		// Extract all $needles.
+		// Trích xuất tất cả $needles.
 		$needles = array_keys( $replace_pairs );
 
-		// Loop through delimiters (elements) only.
+		// Lặp qua các dấu phân cách (phần tử) only.
 		for ( $i = 1, $c = count( $textarr ); $i < $c; $i += 2 ) {
 			foreach ( $needles as $needle ) {
 				if ( str_contains( $textarr[ $i ], $needle ) ) {
 					$textarr[ $i ] = strtr( $textarr[ $i ], $replace_pairs );
 					$changed       = true;
-					// After one strtr() break out of the foreach loop and look at next element.
+					// Sau một lần strtr() thoát vòng foreach và xem phần tử tiếp theo.
 					break;
 				}
 			}
@@ -797,12 +797,12 @@ function wp_replace_in_html_tags( $haystack, $replace_pairs ) {
 }
 
 /**
- * Newline preservation help function for wpautop().
+ * Hàm hỗ trợ bảo toàn xuống dòng cho wpautop().
  *
  * @since 3.1.0
  * @access private
  *
- * @param array $matches preg_replace_callback matches array
+ * @param array $matches Mảng kết quả khớp preg_replace_callback.
  * @return string
  */
 function _autop_newline_preservation_helper( $matches ) {
@@ -810,16 +810,16 @@ function _autop_newline_preservation_helper( $matches ) {
 }
 
 /**
- * Don't auto-p wrap shortcodes that stand alone.
+ * Không tự động bọc thẻ p cho shortcode đứng một mình.
  *
- * Ensures that shortcodes are not wrapped in `<p>...</p>`.
+ * Đảm bảo rằng shortcode không bị bọc trong `<p>...</p>`.
  *
  * @since 2.9.0
  *
  * @global array $shortcode_tags
  *
- * @param string $text The content.
- * @return string The filtered content.
+ * @param string $text Nội dung.
+ * @return string Nội dung đã lọc.
  */
 function shortcode_unautop( $text ) {
 	global $shortcode_tags;
@@ -834,34 +834,34 @@ function shortcode_unautop( $text ) {
 	// phpcs:disable Squiz.Strings.ConcatenationSpacing.PaddingFound,Universal.WhiteSpace.PrecisionAlignment.Found -- don't remove regex indentation
 	$pattern =
 		'/'
-		. '<p>'                              // Opening paragraph.
-		. '(?:' . $spaces . ')*+'            // Optional leading whitespace.
-		. '('                                // 1: The shortcode.
-		.     '\\['                          // Opening bracket.
-		.     "($tagregexp)"                 // 2: Shortcode name.
-		.     '(?![\\w-])'                   // Not followed by word character or hyphen.
-											 // Unroll the loop: Inside the opening shortcode tag.
-		.     '[^\\]\\/]*'                   // Not a closing bracket or forward slash.
+		. '<p>'                              // Thẻ mở đoạn văn.
+		. '(?:' . $spaces . ')*+'            // Khoảng trắng dẫn đầu tùy chọn.
+		. '('                                // 1: Shortcode.
+		.     '\\['                          // Ngoặc vuông mở.
+		.     "($tagregexp)"                 // 2: Tên shortcode.
+		.     '(?![\\w-])'                   // Không theo sau bởi ký tự từ hoặc gạch nối.
+											 // Mở vòng lặp: Bên trong thẻ mở shortcode.
+		.     '[^\\]\\/]*'                   // Không phải ngoặc đóng hoặc dấu gạch chéo.
 		.     '(?:'
-		.         '\\/(?!\\])'               // A forward slash not followed by a closing bracket.
-		.         '[^\\]\\/]*'               // Not a closing bracket or forward slash.
+		.         '\\/(?!\\])'               // Dấu gạch chéo không theo sau bởi ngoặc đóng.
+		.         '[^\\]\\/]*'               // Không phải ngoặc đóng hoặc dấu gạch chéo.
 		.     ')*?'
 		.     '(?:'
-		.         '\\/\\]'                   // Self closing tag and closing bracket.
+		.         '\\/\\]'                   // Thẻ tự đóng và ngoặc đóng.
 		.     '|'
-		.         '\\]'                      // Closing bracket.
-		.         '(?:'                      // Unroll the loop: Optionally, anything between the opening and closing shortcode tags.
-		.             '[^\\[]*+'             // Not an opening bracket.
+		.         '\\]'                      // Ngoặc đóng.
+		.         '(?:'                      // Mở vòng lặp: Tùy chọn, bất cứ gì giữa thẻ mở và đóng shortcode.
+		.             '[^\\[]*+'             // Không phải ngoặc mở.
 		.             '(?:'
-		.                 '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag.
-		.                 '[^\\[]*+'         // Not an opening bracket.
+		.                 '\\[(?!\\/\\2\\])' // Ngoặc mở không theo sau bởi thẻ đóng shortcode.
+		.                 '[^\\[]*+'         // Không phải ngoặc mở.
 		.             ')*+'
-		.             '\\[\\/\\2\\]'         // Closing shortcode tag.
+		.             '\\[\\/\\2\\]'         // Thẻ đóng shortcode.
 		.         ')?'
 		.     ')'
 		. ')'
-		. '(?:' . $spaces . ')*+'            // Optional trailing whitespace.
-		. '<\\/p>'                           // Closing paragraph.
+		. '(?:' . $spaces . ')*+'            // Khoảng trắng theo sau tùy chọn.
+		. '<\\/p>'                           // Thẻ đóng đoạn văn.
 		. '/';
 	// phpcs:enable
 
@@ -869,16 +869,16 @@ function shortcode_unautop( $text ) {
 }
 
 /**
- * Checks to see if a string is utf8 encoded.
+ * Kiểm tra xem một chuỗi có được mã hóa utf8 hay không.
  *
- * NOTE: This function checks for 5-Byte sequences, UTF8
- *       has Bytes Sequences with a maximum length of 4.
+ * LƯU Ý: Hàm này kiểm tra chuỗi 5 byte, UTF8
+ *         chỉ có chuỗi byte tối đa 4 byte.
  *
- * @author bmorel at ssi dot fr (modified)
+ * @author bmorel at ssi dot fr (đã sửa đổi)
  * @since 1.2.1
  *
- * @param string $str The string to be checked.
- * @return bool True if $str fits a UTF-8 model, false otherwise.
+ * @param string $str Chuỗi cần kiểm tra.
+ * @return bool True nếu $str phù hợp mô hình UTF-8, false nếu không.
  */
 function seems_utf8( $str ) {
 	mbstring_binary_safe_encoding();
@@ -901,10 +901,10 @@ function seems_utf8( $str ) {
 		} elseif ( ( $c & 0xFE ) === 0xFC ) {
 			$n = 5; // 1111110b
 		} else {
-			return false; // Does not match any model.
+			return false; // Không khớp với mô hình nào.
 		}
 
-		for ( $j = 0; $j < $n; $j++ ) { // n bytes matching 10bbbbbb follow?
+		for ( $j = 0; $j < $n; $j++ ) { // n byte khớp 10bbbbbb theo sau?
 			if ( ( ++$i === $length ) || ( ( ord( $str[ $i ] ) & 0xC0 ) !== 0x80 ) ) {
 				return false;
 			}
@@ -915,29 +915,29 @@ function seems_utf8( $str ) {
 }
 
 /**
- * Converts a number of special characters into their HTML entities.
+ * Chuyển đổi một số ký tự đặc biệt thành thực thể HTML tương ứng.
  *
- * Specifically deals with: `&`, `<`, `>`, `"`, and `'`.
+ * Xử lý cụ thể: `&`, `<`, `>`, `"`, và `'`.
  *
- * `$quote_style` can be set to ENT_COMPAT to encode `"` to
- * `&quot;`, or ENT_QUOTES to do both. Default is ENT_NOQUOTES where no quotes are encoded.
+ * `$quote_style` có thể đặt thành ENT_COMPAT để mã hóa `"` thành
+ * `&quot;`, hoặc ENT_QUOTES để mã hóa cả hai. Mặc định là ENT_NOQUOTES không mã hóa dấu ngoặc kép.
  *
  * @since 1.2.2
- * @since 5.5.0 `$quote_style` also accepts `ENT_XML1`.
+ * @since 5.5.0 `$quote_style` cũng chấp nhận `ENT_XML1`.
  * @access private
  *
- * @param string       $text          The text which is to be encoded.
- * @param int|string   $quote_style   Optional. Converts double quotes if set to ENT_COMPAT,
- *                                    both single and double if set to ENT_QUOTES or none if set to ENT_NOQUOTES.
- *                                    Converts single and double quotes, as well as converting HTML
- *                                    named entities (that are not also XML named entities) to their
- *                                    code points if set to ENT_XML1. Also compatible with old values;
- *                                    converting single quotes if set to 'single',
- *                                    double if set to 'double' or both if otherwise set.
- *                                    Default is ENT_NOQUOTES.
- * @param false|string $charset       Optional. The character encoding of the string. Default false.
- * @param bool         $double_encode Optional. Whether to encode existing HTML entities. Default false.
- * @return string The encoded text with HTML entities.
+ * @param string       $text          Văn bản cần được mã hóa.
+ * @param int|string   $quote_style   Tùy chọn. Chuyển đổi ngoặc kép nếu đặt ENT_COMPAT,
+ *                                    cả ngoặc đơn và kép nếu đặt ENT_QUOTES hoặc không chuyển nếu ENT_NOQUOTES.
+ *                                    Chuyển đổi ngoặc đơn và kép, cũng như chuyển thực thể HTML
+ *                                    có tên (không phải thực thể XML có tên) thành mã điểm
+ *                                    nếu đặt ENT_XML1. Cũng tương thích với giá trị cũ;
+ *                                    chuyển ngoặc đơn nếu đặt 'single',
+ *                                    ngoặc kép nếu đặt 'double' hoặc cả hai nếu đặt khác.
+ *                                    Mặc định là ENT_NOQUOTES.
+ * @param false|string $charset       Tùy chọn. Bảng mã ký tự của chuỗi. Mặc định false.
+ * @param bool         $double_encode Tùy chọn. Có mã hóa các thực thể HTML hiện có không. Mặc định false.
+ * @return string Văn bản đã mã hóa với thực thể HTML.
  */
 function _wp_specialchars( $text, $quote_style = ENT_NOQUOTES, $charset = false, $double_encode = false ) {
 	$text = (string) $text;
@@ -946,12 +946,12 @@ function _wp_specialchars( $text, $quote_style = ENT_NOQUOTES, $charset = false,
 		return '';
 	}
 
-	// Don't bother if there are no specialchars - saves some processing.
+	// Không cần xử lý nếu không có ký tự đặc biệt - tiết kiệm thời gian xử lý.
 	if ( ! preg_match( '/[&<>"\']/', $text ) ) {
 		return $text;
 	}
 
-	// Account for the previous behavior of the function when the $quote_style is not an accepted value.
+	// Xử lý hành vi trước đó của hàm khi $quote_style không phải giá trị được chấp nhận.
 	if ( empty( $quote_style ) ) {
 		$quote_style = ENT_NOQUOTES;
 	} elseif ( ENT_XML1 === $quote_style ) {
@@ -973,15 +973,15 @@ function _wp_specialchars( $text, $quote_style = ENT_NOQUOTES, $charset = false,
 
 	if ( ! $double_encode ) {
 		/*
-		 * Guarantee every &entity; is valid, convert &garbage; into &amp;garbage;
-		 * This is required for PHP < 5.4.0 because ENT_HTML401 flag is unavailable.
+		 * Đảm bảo mọi &entity; đều hợp lệ, chuyển &garbage; thành &amp;garbage;
+		 * Điều này cần thiết cho PHP < 5.4.0 vì cờ ENT_HTML401 không khả dụng.
 		 */
 		$text = wp_kses_normalize_entities( $text, ( $quote_style & ENT_XML1 ) ? 'xml' : 'html' );
 	}
 
 	$text = htmlspecialchars( $text, $quote_style, $charset, $double_encode );
 
-	// Back-compat.
+	// Tương thích ngược.
 	if ( 'single' === $_quote_style ) {
 		$text = str_replace( "'", '&#039;', $text );
 	}
@@ -990,24 +990,24 @@ function _wp_specialchars( $text, $quote_style = ENT_NOQUOTES, $charset = false,
 }
 
 /**
- * Converts a number of HTML entities into their special characters.
+ * Chuyển đổi một số thực thể HTML thành ký tự đặc biệt tương ứng.
  *
- * Specifically deals with: `&`, `<`, `>`, `"`, and `'`.
+ * Xử lý cụ thể: `&`, `<`, `>`, `"`, và `'`.
  *
- * `$quote_style` can be set to ENT_COMPAT to decode `"` entities,
- * or ENT_QUOTES to do both `"` and `'`. Default is ENT_NOQUOTES where no quotes are decoded.
+ * `$quote_style` có thể đặt thành ENT_COMPAT để giải mã thực thể `"`,
+ * hoặc ENT_QUOTES để giải mã cả `"` và `'`. Mặc định là ENT_NOQUOTES không giải mã dấu ngoặc kép.
  *
  * @since 2.8.0
  *
- * @param string     $text        The text which is to be decoded.
- * @param string|int $quote_style Optional. Converts double quotes if set to ENT_COMPAT,
- *                                both single and double if set to ENT_QUOTES or
- *                                none if set to ENT_NOQUOTES.
- *                                Also compatible with old _wp_specialchars() values;
- *                                converting single quotes if set to 'single',
- *                                double if set to 'double' or both if otherwise set.
- *                                Default is ENT_NOQUOTES.
- * @return string The decoded text without HTML entities.
+ * @param string     $text        Văn bản cần được giải mã.
+ * @param string|int $quote_style Tùy chọn. Chuyển đổi ngoặc kép nếu đặt ENT_COMPAT,
+ *                                cả ngoặc đơn và kép nếu đặt ENT_QUOTES hoặc
+ *                                không chuyển nếu đặt ENT_NOQUOTES.
+ *                                Cũng tương thích với giá trị cũ của _wp_specialchars();
+ *                                chuyển ngoặc đơn nếu đặt 'single',
+ *                                ngoặc kép nếu đặt 'double' hoặc cả hai nếu đặt khác.
+ *                                Mặc định là ENT_NOQUOTES.
+ * @return string Văn bản đã giải mã không có thực thể HTML.
  */
 function wp_specialchars_decode( $text, $quote_style = ENT_NOQUOTES ) {
 	$text = (string) $text;
@@ -1016,19 +1016,19 @@ function wp_specialchars_decode( $text, $quote_style = ENT_NOQUOTES ) {
 		return '';
 	}
 
-	// Don't bother if there are no entities - saves a lot of processing.
+	// Không cần xử lý nếu không có thực thể - tiết kiệm nhiều thời gian xử lý.
 	if ( ! str_contains( $text, '&' ) ) {
 		return $text;
 	}
 
-	// Match the previous behavior of _wp_specialchars() when the $quote_style is not an accepted value.
+	// Khớp hành vi trước đó của _wp_specialchars() khi $quote_style không phải giá trị được chấp nhận.
 	if ( empty( $quote_style ) ) {
 		$quote_style = ENT_NOQUOTES;
 	} elseif ( ! in_array( $quote_style, array( 0, 2, 3, 'single', 'double' ), true ) ) {
 		$quote_style = ENT_QUOTES;
 	}
 
-	// More complete than get_html_translation_table( HTML_SPECIALCHARS ).
+	// Đầy đủ hơn get_html_translation_table( HTML_SPECIALCHARS ).
 	$single      = array(
 		'&#039;' => '\'',
 		'&#x27;' => '\'',
@@ -1076,21 +1076,21 @@ function wp_specialchars_decode( $text, $quote_style = ENT_NOQUOTES ) {
 		$translation_preg = $others_preg;
 	}
 
-	// Remove zero padding on numeric entities.
+	// Xóa padding số 0 trên thực thể số.
 	$text = preg_replace( array_keys( $translation_preg ), array_values( $translation_preg ), $text );
 
-	// Replace characters according to translation table.
+	// Thay thế ký tự theo bảng chuyển đổi.
 	return strtr( $text, $translation );
 }
 
 /**
- * Checks for invalid UTF8 in a string.
+ * Kiểm tra UTF8 không hợp lệ trong chuỗi.
  *
  * @since 2.8.0
  *
- * @param string $text   The text which is to be checked.
- * @param bool   $strip  Optional. Whether to attempt to strip out invalid UTF8. Default false.
- * @return string The checked text.
+ * @param string $text  Văn bản cần kiểm tra.
+ * @param bool   $strip Tùy chọn. Có cố gắng loại bỏ UTF8 không hợp lệ không. Mặc định false.
+ * @return string Văn bản đã kiểm tra.
  */
 function wp_check_invalid_utf8( $text, $strip = false ) {
 	$text = (string) $text;
@@ -1099,7 +1099,7 @@ function wp_check_invalid_utf8( $text, $strip = false ) {
 		return '';
 	}
 
-	// Store the site charset as a static to avoid multiple calls to get_option().
+	// Lưu bảng mã trang web dưới dạng static để tránh gọi get_option() nhiều lần.
 	static $is_utf8 = null;
 	if ( ! isset( $is_utf8 ) ) {
 		$is_utf8 = is_utf8_charset();
@@ -1108,13 +1108,13 @@ function wp_check_invalid_utf8( $text, $strip = false ) {
 		return $text;
 	}
 
-	// Check for support for utf8 in the installed PCRE library once and store the result in a static.
+	// Kiểm tra hỗ trợ utf8 trong thư viện PCRE đã cài đặt một lần và lưu kết quả trong static.
 	static $utf8_pcre = null;
 	if ( ! isset( $utf8_pcre ) ) {
 		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 		$utf8_pcre = @preg_match( '/^./u', 'a' );
 	}
-	// We can't demand utf8 in the PCRE installation, so just return the string in those cases.
+	// Không thể yêu cầu utf8 trong cài đặt PCRE, nên chỉ trả về chuỗi trong các trường hợp đó.
 	if ( ! $utf8_pcre ) {
 		return $text;
 	}
@@ -1124,7 +1124,7 @@ function wp_check_invalid_utf8( $text, $strip = false ) {
 		return $text;
 	}
 
-	// Attempt to strip the bad chars if requested (not recommended).
+	// Cố gắng loại bỏ ký tự xấu nếu được yêu cầu (không khuyến khích).
 	if ( $strip && function_exists( 'iconv' ) ) {
 		return iconv( 'utf-8', 'utf-8', $text );
 	}
@@ -1133,15 +1133,15 @@ function wp_check_invalid_utf8( $text, $strip = false ) {
 }
 
 /**
- * Encodes the Unicode values to be used in the URI.
+ * Mã hóa các giá trị Unicode để sử dụng trong URI.
  *
  * @since 1.5.0
- * @since 5.8.3 Added the `encode_ascii_characters` parameter.
+ * @since 5.8.3 Thêm tham số `encode_ascii_characters`.
  *
- * @param string $utf8_string             String to encode.
- * @param int    $length                  Max length of the string.
- * @param bool   $encode_ascii_characters Whether to encode ascii characters such as < " '
- * @return string String with Unicode encoded for URI.
+ * @param string $utf8_string             Chuỗi cần mã hóa.
+ * @param int    $length                  Độ dài tối đa của chuỗi.
+ * @param bool   $encode_ascii_characters Có mã hóa ký tự ascii như < " ' hay không.
+ * @return string Chuỗi với Unicode đã mã hóa cho URI.
  */
 function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = false ) {
 	$unicode        = '';
@@ -1199,9 +1199,9 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
 }
 
 /**
- * Converts all accent characters to ASCII characters.
+ * Chuyển đổi tất cả ký tự có dấu thành ký tự ASCII.
  *
- * If there are no accent characters, then the string given is just returned.
+ * Nếu không có ký tự có dấu, chuỗi đầu vào sẽ được trả về nguyên trạng.
  *
  * **Accent characters converted:**
  *
@@ -1586,11 +1586,11 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
  * @since 6.0.0 Added the `$locale` parameter.
  * @since 6.1.0 Added Unicode NFC encoding normalization support.
  *
- * @param string $text   Text that might have accent characters.
- * @param string $locale Optional. The locale to use for accent removal. Some character
- *                       replacements depend on the locale being used (e.g. 'de_DE').
- *                       Defaults to the current locale.
- * @return string Filtered string with replaced "nice" characters.
+ * @param string $text   Văn bản có thể chứa ký tự có dấu.
+ * @param string $locale Tùy chọn. Ngôn ngữ sử dụng để loại bỏ dấu. Một số thay thế
+ *                       ký tự phụ thuộc vào ngôn ngữ đang dùng (ví dụ 'de_DE').
+ *                       Mặc định là ngôn ngữ hiện tại.
+ * @return string Chuỗi đã lọc với các ký tự đặc biệt đã được thay thế.
  */
 function remove_accents( $text, $locale = '' ) {
 	if ( ! preg_match( '/[\x80-\xff]/', $text ) ) {
@@ -1600,8 +1600,8 @@ function remove_accents( $text, $locale = '' ) {
 	if ( seems_utf8( $text ) ) {
 
 		/*
-		 * Unicode sequence normalization from NFD (Normalization Form Decomposed)
-		 * to NFC (Normalization Form [Pre]Composed), the encoding used in this function.
+		 * Chuẩn hóa chuỗi Unicode từ NFD (Dạng Chuẩn hóa Phân tách)
+		 * sang NFC (Dạng Chuẩn hóa [Tiền]Kết hợp), mã hóa được sử dụng trong hàm này.
 		 */
 		if ( function_exists( 'normalizer_is_normalized' )
 			&& function_exists( 'normalizer_normalize' )
@@ -1941,15 +1941,15 @@ function remove_accents( $text, $locale = '' ) {
 			'ǜ' => 'u',
 		);
 
-		// Used for locale-specific rules.
+		// Dùng cho các quy tắc theo ngôn ngữ cụ thể.
 		if ( empty( $locale ) ) {
 			$locale = get_locale();
 		}
 
 		/*
-		 * German has various locales (de_DE, de_CH, de_AT, ...) with formal and informal variants.
-		 * There is no 3-letter locale like 'def', so checking for 'de' instead of 'de_' is safe,
-		 * since 'de' itself would be a valid locale too.
+		 * Tiếng Đức có nhiều ngôn ngữ (de_DE, de_CH, de_AT, ...) với biến thể trang trọng và thân mật.
+		 * Không có ngôn ngữ 3 ký tự như 'def', nên kiểm tra 'de' thay vì 'de_' là an toàn,
+		 * vì 'de' chính nó cũng là một ngôn ngữ hợp lệ.
 		 */
 		if ( str_starts_with( $locale, 'de' ) ) {
 			$chars['Ä'] = 'Ae';
@@ -1976,7 +1976,7 @@ function remove_accents( $text, $locale = '' ) {
 		$text = strtr( $text, $chars );
 	} else {
 		$chars = array();
-		// Assume ISO-8859-1 if not UTF-8.
+		// Giả định ISO-8859-1 nếu không phải UTF-8.
 		$chars['in'] = "\x80\x83\x8a\x8e\x9a\x9e"
 			. "\x9f\xa2\xa5\xb5\xc0\xc1\xc2"
 			. "\xc3\xc4\xc5\xc7\xc8\xc9\xca"
@@ -2001,19 +2001,19 @@ function remove_accents( $text, $locale = '' ) {
 }
 
 /**
- * Sanitizes a filename, replacing whitespace with dashes.
+ * Làm sạch tên tệp, thay thế khoảng trắng bằng gạch ngang.
  *
- * Removes special characters that are illegal in filenames on certain
- * operating systems and special characters requiring special escaping
- * to manipulate at the command line. Replaces spaces and consecutive
- * dashes with a single dash. Trims period, dash and underscore from beginning
- * and end of filename. It is not guaranteed that this function will return a
- * filename that is allowed to be uploaded.
+ * Xóa các ký tự đặc biệt không hợp lệ trong tên tệp trên một số
+ * hệ điều hành và các ký tự đặc biệt cần escape đặc biệt
+ * để thao tác trên dòng lệnh. Thay thế khoảng trắng và các gạch ngang
+ * liên tiếp bằng một gạch ngang duy nhất. Cắt dấu chấm, gạch ngang và gạch dưới
+ * từ đầu và cuối tên tệp. Không đảm bảo hàm này sẽ trả về
+ * tên tệp được phép tải lên.
  *
  * @since 2.1.0
  *
- * @param string $filename The filename to be sanitized.
- * @return string The sanitized filename.
+ * @param string $filename Tên tệp cần được làm sạch.
+ * @return string Tên tệp đã làm sạch.
  */
 function sanitize_file_name( $filename ) {
 	$filename_raw = $filename;
@@ -2021,7 +2021,7 @@ function sanitize_file_name( $filename ) {
 
 	$special_chars = array( '?', '[', ']', '/', '\\', '=', '<', '>', ':', ';', ',', "'", '"', '&', '$', '#', '*', '(', ')', '|', '~', '`', '!', '{', '}', '%', '+', '’', '«', '»', '”', '“', chr( 0 ) );
 
-	// Check for support for utf8 in the installed PCRE library once and store the result in a static.
+	// Kiểm tra hỗ trợ utf8 trong thư viện PCRE đã cài đặt một lần và lưu kết quả trong static.
 	static $utf8_pcre = null;
 	if ( ! isset( $utf8_pcre ) ) {
 		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
@@ -2036,10 +2036,10 @@ function sanitize_file_name( $filename ) {
 
 	if ( $utf8_pcre ) {
 		/**
-		 * Replace all whitespace characters with a basic space (U+0020).
+		 * Thay thế tất cả ký tự khoảng trắng bằng dấu cách cơ bản (U+0020).
 		 *
-		 * The “Zs” in the pattern selects characters in the `Space_Separator`
-		 * category, which is what Unicode considers space characters.
+		 * "Zs" trong mẫu chọn các ký tự trong danh mục `Space_Separator`,
+		 * là những gì Unicode coi là ký tự khoảng trắng.
 		 *
 		 * @see https://www.unicode.org/reports/tr44/#General_Category_Values
 		 * @see https://www.unicode.org/versions/Unicode16.0.0/core-spec/chapter-6/#G17548
@@ -2049,12 +2049,12 @@ function sanitize_file_name( $filename ) {
 	}
 
 	/**
-	 * Filters the list of characters to remove from a filename.
+	 * Lọc danh sách ký tự cần xóa khỏi tên tệp.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string[] $special_chars Array of characters to remove.
-	 * @param string   $filename_raw  The original filename to be sanitized.
+	 * @param string[] $special_chars Mảng các ký tự cần xóa.
+	 * @param string   $filename_raw  Tên tệp gốc cần được làm sạch.
 	 */
 	$special_chars = apply_filters( 'sanitize_file_name_chars', $special_chars, $filename_raw );
 
@@ -2072,23 +2072,23 @@ function sanitize_file_name( $filename ) {
 		}
 	}
 
-	// Split the filename into a base and extension[s].
+	// Tách tên tệp thành phần cơ sở và (các) phần mở rộng.
 	$parts = explode( '.', $filename );
 
-	// Return if only one extension.
+	// Trả về nếu chỉ có một phần mở rộng.
 	if ( count( $parts ) <= 2 ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'sanitize_file_name', $filename, $filename_raw );
 	}
 
-	// Process multiple extensions.
+	// Xử lý nhiều phần mở rộng.
 	$filename  = array_shift( $parts );
 	$extension = array_pop( $parts );
 	$mimes     = get_allowed_mime_types();
 
 	/*
-	 * Loop over any intermediate extensions. Postfix them with a trailing underscore
-	 * if they are a 2 - 5 character long alpha string not in the allowed extension list.
+	 * Lặp qua các phần mở rộng trung gian. Thêm dấu gạch dưới phía sau
+	 * nếu chúng là chuỗi chữ cái dài 2-5 ký tự không nằm trong danh sách phần mở rộng cho phép.
 	 */
 	foreach ( (array) $parts as $part ) {
 		$filename .= '.' . $part;
@@ -2111,71 +2111,71 @@ function sanitize_file_name( $filename ) {
 	$filename .= '.' . $extension;
 
 	/**
-	 * Filters a sanitized filename string.
+	 * Lọc chuỗi tên tệp đã làm sạch.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $filename     Sanitized filename.
-	 * @param string $filename_raw The filename prior to sanitization.
+	 * @param string $filename     Tên tệp đã làm sạch.
+	 * @param string $filename_raw Tên tệp trước khi làm sạch.
 	 */
 	return apply_filters( 'sanitize_file_name', $filename, $filename_raw );
 }
 
 /**
- * Sanitizes a username, stripping out unsafe characters.
+ * Làm sạch tên người dùng, loại bỏ các ký tự không an toàn.
  *
- * Removes tags, percent-encoded characters, HTML entities, and if strict is enabled,
- * will only keep alphanumeric, _, space, ., -, @. After sanitizing, it passes the username,
- * raw username (the username in the parameter), and the value of $strict as parameters
- * for the {@see 'sanitize_user'} filter.
+ * Xóa thẻ, ký tự mã hóa phần trăm, thực thể HTML, và nếu chế độ nghiêm ngặt được bật,
+ * chỉ giữ lại chữ số, chữ cái, _, dấu cách, ., -, @. Sau khi làm sạch, truyền tên người dùng,
+ * tên người dùng gốc (tên trong tham số), và giá trị $strict làm tham số
+ * cho bộ lọc {@see 'sanitize_user'}.
  *
  * @since 2.0.0
  *
- * @param string $username The username to be sanitized.
- * @param bool   $strict   Optional. If set to true, limits $username to specific characters.
- *                         Default false.
- * @return string The sanitized username, after passing through filters.
+ * @param string $username Tên người dùng cần được làm sạch.
+ * @param bool   $strict   Tùy chọn. Nếu đặt true, giới hạn $username ở các ký tự cụ thể.
+ *                         Mặc định false.
+ * @return string Tên người dùng đã làm sạch, sau khi đi qua bộ lọc.
  */
 function sanitize_user( $username, $strict = false ) {
 	$raw_username = $username;
 	$username     = wp_strip_all_tags( $username );
 	$username     = remove_accents( $username );
-	// Remove percent-encoded characters.
+	// Xóa ký tự mã hóa phần trăm.
 	$username = preg_replace( '|%([a-fA-F0-9][a-fA-F0-9])|', '', $username );
-	// Remove HTML entities.
+	// Xóa thực thể HTML.
 	$username = preg_replace( '/&.+?;/', '', $username );
 
-	// If strict, reduce to ASCII for max portability.
+	// Nếu nghiêm ngặt, giảm xuống ASCII để tương thích tối đa.
 	if ( $strict ) {
 		$username = preg_replace( '|[^a-z0-9 _.\-@]|i', '', $username );
 	}
 
 	$username = trim( $username );
-	// Consolidate contiguous whitespace.
+	// Gộp khoảng trắng liên tiếp.
 	$username = preg_replace( '|\s+|', ' ', $username );
 
 	/**
-	 * Filters a sanitized username string.
+	 * Lọc chuỗi tên người dùng đã làm sạch.
 	 *
 	 * @since 2.0.1
 	 *
-	 * @param string $username     Sanitized username.
-	 * @param string $raw_username The username prior to sanitization.
-	 * @param bool   $strict       Whether to limit the sanitization to specific characters.
+	 * @param string $username     Tên người dùng đã làm sạch.
+	 * @param string $raw_username Tên người dùng trước khi làm sạch.
+	 * @param bool   $strict       Có giới hạn việc làm sạch ở các ký tự cụ thể hay không.
 	 */
 	return apply_filters( 'sanitize_user', $username, $raw_username, $strict );
 }
 
 /**
- * Sanitizes a string key.
+ * Làm sạch một khóa chuỗi.
  *
- * Keys are used as internal identifiers. Lowercase alphanumeric characters,
- * dashes, and underscores are allowed.
+ * Khóa được sử dụng làm định danh nội bộ. Cho phép ký tự chữ thường,
+ * số, gạch ngang và gạch dưới.
  *
  * @since 3.0.0
  *
- * @param string $key String key.
- * @return string Sanitized key.
+ * @param string $key Khóa chuỗi.
+ * @return string Khóa đã làm sạch.
  */
 function sanitize_key( $key ) {
 	$sanitized_key = '';
@@ -2186,33 +2186,33 @@ function sanitize_key( $key ) {
 	}
 
 	/**
-	 * Filters a sanitized key string.
+	 * Lọc chuỗi khóa đã làm sạch.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $sanitized_key Sanitized key.
-	 * @param string $key           The key prior to sanitization.
+	 * @param string $sanitized_key Khóa đã làm sạch.
+	 * @param string $key           Khóa trước khi làm sạch.
 	 */
 	return apply_filters( 'sanitize_key', $sanitized_key, $key );
 }
 
 /**
- * Sanitizes a string into a slug, which can be used in URLs or HTML attributes.
+ * Làm sạch chuỗi thành slug, có thể sử dụng trong URL hoặc thuộc tính HTML.
  *
- * By default, converts accent characters to ASCII characters and further
- * limits the output to alphanumeric characters, underscore (_) and dash (-)
- * through the {@see 'sanitize_title'} filter.
+ * Mặc định, chuyển đổi ký tự có dấu thành ký tự ASCII và giới hạn thêm
+ * đầu ra ở ký tự chữ số, gạch dưới (_) và gạch ngang (-)
+ * thông qua bộ lọc {@see 'sanitize_title'}.
  *
- * If `$title` is empty and `$fallback_title` is set, the latter will be used.
+ * Nếu `$title` rỗng và `$fallback_title` được đặt, giá trị sau sẽ được sử dụng.
  *
  * @since 1.0.0
  *
- * @param string $title          The string to be sanitized.
- * @param string $fallback_title Optional. A title to use if $title is empty. Default empty.
- * @param string $context        Optional. The operation for which the string is sanitized.
- *                               When set to 'save', the string runs through remove_accents().
- *                               Default 'save'.
- * @return string The sanitized string.
+ * @param string $title          Chuỗi cần được làm sạch.
+ * @param string $fallback_title Tùy chọn. Tiêu đề sử dụng nếu $title rỗng. Mặc định rỗng.
+ * @param string $context        Tùy chọn. Thao tác mà chuỗi được làm sạch cho.
+ *                               Khi đặt thành 'save', chuỗi đi qua remove_accents().
+ *                               Mặc định 'save'.
+ * @return string Chuỗi đã làm sạch.
  */
 function sanitize_title( $title, $fallback_title = '', $context = 'save' ) {
 	$raw_title = $title;
@@ -2222,13 +2222,13 @@ function sanitize_title( $title, $fallback_title = '', $context = 'save' ) {
 	}
 
 	/**
-	 * Filters a sanitized title string.
+	 * Lọc chuỗi tiêu đề đã làm sạch.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string $title     Sanitized title.
-	 * @param string $raw_title The title prior to sanitization.
-	 * @param string $context   The context for which the title is being sanitized.
+	 * @param string $title     Tiêu đề đã làm sạch.
+	 * @param string $raw_title Tiêu đề trước khi làm sạch.
+	 * @param string $context   Ngữ cảnh mà tiêu đề đang được làm sạch cho.
 	 */
 	$title = apply_filters( 'sanitize_title', $title, $raw_title, $context );
 
@@ -2240,14 +2240,14 @@ function sanitize_title( $title, $fallback_title = '', $context = 'save' ) {
 }
 
 /**
- * Sanitizes a title with the 'query' context.
+ * Làm sạch tiêu đề với ngữ cảnh 'query'.
  *
- * Used for querying the database for a value from URL.
+ * Dùng để truy vấn cơ sở dữ liệu cho giá trị từ URL.
  *
  * @since 3.1.0
  *
- * @param string $title The string to be sanitized.
- * @return string The sanitized string.
+ * @param string $title Chuỗi cần được làm sạch.
+ * @return string Chuỗi đã làm sạch.
  */
 function sanitize_title_for_query( $title ) {
 	return sanitize_title( $title, '', 'query' );
@@ -2542,13 +2542,13 @@ function convert_invalid_entities( $content ) {
 }
 
 /**
- * Balances tags if forced to, or if the 'use_balanceTags' option is set to true.
+ * Cân bằng thẻ nếu bị buộc, hoặc nếu tùy chọn 'use_balanceTags' được đặt thành true.
  *
  * @since 0.71
  *
- * @param string $text  Text to be balanced.
- * @param bool   $force If true, forces balancing, ignoring the value of the option. Default false.
- * @return string Balanced text.
+ * @param string $text  Văn bản cần được cân bằng.
+ * @param bool   $force Nếu true, buộc cân bằng, bỏ qua giá trị của tùy chọn. Mặc định false.
+ * @return string Văn bản đã cân bằng.
  */
 function balanceTags( $text, $force = false ) {  // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 	if ( $force || (int) get_option( 'use_balanceTags' ) === 1 ) {
@@ -2559,73 +2559,73 @@ function balanceTags( $text, $force = false ) {  // phpcs:ignore WordPress.Namin
 }
 
 /**
- * Balances tags of string using a modified stack.
+ * Cân bằng thẻ của chuỗi sử dụng ngăn xếp đã sửa đổi.
  *
  * @since 2.0.4
- * @since 5.3.0 Improve accuracy and add support for custom element tags.
+ * @since 5.3.0 Cải thiện độ chính xác và thêm hỗ trợ cho thẻ phần tử tùy chỉnh.
  *
  * @author Leonard Lin <leonard@acm.org>
  * @license GPL
  * @copyright November 4, 2001
  * @version 1.1
- * @todo Make better - change loop condition to $text in 1.2
- * @internal Modified by Scott Reilly (coffee2code) 02 Aug 2004
- *      1.1  Fixed handling of append/stack pop order of end text
- *           Added Cleaning Hooks
- *      1.0  First Version
+ * @todo Cải thiện - thay đổi điều kiện vòng lặp thành $text trong phiên bản 1.2
+ * @internal Sửa đổi bởi Scott Reilly (coffee2code) 02 Aug 2004
+ *      1.1  Sửa lỗi xử lý thứ tự nối/lấy ngăn xếp của văn bản kết thúc
+ *           Thêm Cleaning Hooks
+ *      1.0  Phiên bản đầu tiên
  *
- * @param string $text Text to be balanced.
- * @return string Balanced text.
+ * @param string $text Văn bản cần được cân bằng.
+ * @return string Văn bản đã cân bằng.
  */
 function force_balance_tags( $text ) {
 	$tagstack  = array();
 	$stacksize = 0;
 	$tagqueue  = '';
 	$newtext   = '';
-	// Known single-entity/self-closing tags.
+	// Các thẻ đơn/tự đóng đã biết.
 	$single_tags = array( 'area', 'base', 'basefont', 'br', 'col', 'command', 'embed', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'source', 'track', 'wbr' );
-	// Tags that can be immediately nested within themselves.
+	// Các thẻ có thể lồng trực tiếp bên trong chính chúng.
 	$nestable_tags = array( 'article', 'aside', 'blockquote', 'details', 'div', 'figure', 'object', 'q', 'section', 'span' );
 
-	// WP bug fix for comments - in case you REALLY meant to type '< !--'.
+	// Sửa lỗi WP cho chú thích - trong trường hợp bạn THỰC SỰ muốn gõ '< !--'.
 	$text = str_replace( '< !--', '<    !--', $text );
-	// WP bug fix for LOVE <3 (and other situations with '<' before a number).
+	// Sửa lỗi WP cho LOVE <3 (và các trường hợp khác có '<' trước một số).
 	$text = preg_replace( '#<([0-9]{1})#', '&lt;$1', $text );
 
 	/**
-	 * Matches supported tags.
+	 * Khớp các thẻ được hỗ trợ.
 	 *
-	 * To get the pattern as a string without the comments paste into a PHP
-	 * REPL like `php -a`.
+	 * Để lấy mẫu dưới dạng chuỗi không có chú thích, dán vào PHP
+	 * REPL như `php -a`.
 	 *
 	 * @see https://html.spec.whatwg.org/#elements-2
 	 * @see https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name
 	 *
 	 * @example
 	 * ~# php -a
-	 * php > $s = [paste copied contents of expression below including parentheses];
+	 * php > $s = [dán nội dung đã sao chép của biểu thức bên dưới bao gồm cả dấu ngoặc];
 	 * php > echo $s;
 	 */
 	$tag_pattern = (
-		'#<' . // Start with an opening bracket.
-		'(/?)' . // Group 1 - If it's a closing tag it'll have a leading slash.
-		'(' . // Group 2 - Tag name.
-			// Custom element tags have more lenient rules than HTML tag names.
+		'#<' . // Bắt đầu bằng dấu ngoặc mở.
+		'(/?)' . // Nhóm 1 - Nếu là thẻ đóng sẽ có dấu gạch chéo đầu.
+		'(' . // Nhóm 2 - Tên thẻ.
+			// Thẻ phần tử tùy chỉnh có quy tắc linh hoạt hơn tên thẻ HTML.
 			'(?:[a-z](?:[a-z0-9._]*)-(?:[a-z0-9._-]+)+)' .
 				'|' .
-			// Traditional tag rules approximate HTML tag names.
+			// Quy tắc thẻ truyền thống xấp xỉ tên thẻ HTML.
 			'(?:[\w:]+)' .
 		')' .
 		'(?:' .
-			// We either immediately close the tag with its '>' and have nothing here.
+			// Chúng ta đóng thẻ ngay lập tức bằng '>' và không có gì ở đây.
 			'\s*' .
-			'(/?)' . // Group 3 - "attributes" for empty tag.
+			'(/?)' . // Nhóm 3 - "thuộc tính" cho thẻ rỗng.
 				'|' .
-			// Or we must start with space characters to separate the tag name from the attributes (or whitespace).
-			'(\s+)' . // Group 4 - Pre-attribute whitespace.
-			'([^>]*)' . // Group 5 - Attributes.
+			// Hoặc chúng ta phải bắt đầu bằng ký tự khoảng trắng để phân tách tên thẻ khỏi thuộc tính (hoặc khoảng trắng).
+			'(\s+)' . // Nhóm 4 - Khoảng trắng trước thuộc tính.
+			'([^>]*)' . // Nhóm 5 - Thuộc tính.
 		')' .
-		'>#' // End with a closing bracket.
+		'>#' // Kết thúc bằng dấu ngoặc đóng.
 	);
 
 	while ( preg_match( $tag_pattern, $text, $regex ) ) {
@@ -2643,23 +2643,23 @@ function force_balance_tags( $text ) {
 		$i = strpos( $text, $full_match );
 		$l = strlen( $full_match );
 
-		// Clear the shifter.
+		// Xóa bộ đệm.
 		$tagqueue = '';
-		if ( $has_leading_slash ) { // End tag.
-			// If too many closing tags.
+		if ( $has_leading_slash ) { // Thẻ đóng.
+			// Nếu quá nhiều thẻ đóng.
 			if ( $stacksize <= 0 ) {
 				$tag = '';
-				// Or close to be safe $tag = '/' . $tag.
+				// Hoặc đóng để an toàn $tag = '/' . $tag.
 
-				// If stacktop value = tag close value, then pop.
-			} elseif ( $tagstack[ $stacksize - 1 ] === $tag ) { // Found closing tag.
-				$tag = '</' . $tag . '>'; // Close tag.
+				// Nếu giá trị đỉnh ngăn xếp = giá trị thẻ đóng, thì lấy ra.
+			} elseif ( $tagstack[ $stacksize - 1 ] === $tag ) { // Tìm thấy thẻ đóng.
+				$tag = '</' . $tag . '>'; // Đóng thẻ.
 				array_pop( $tagstack );
 				--$stacksize;
-			} else { // Closing tag not at top, search for it.
+			} else { // Thẻ đóng không ở đỉnh, tìm kiếm nó.
 				for ( $j = $stacksize - 1; $j >= 0; $j-- ) {
 					if ( $tagstack[ $j ] === $tag ) {
-						// Add tag to tagqueue.
+						// Thêm thẻ vào hàng đợi thẻ.
 						for ( $k = $stacksize - 1; $k >= $j; $k-- ) {
 							$tagqueue .= '</' . array_pop( $tagstack ) . '>';
 							--$stacksize;
@@ -2669,24 +2669,24 @@ function force_balance_tags( $text ) {
 				}
 				$tag = '';
 			}
-		} else { // Begin tag.
+		} else { // Thẻ mở.
 			if ( $has_self_closer ) {
 				/*
-				 * If it presents itself as a self-closing tag, but it isn't a known single-entity self-closing tag,
-				 * then don't let it be treated as such and immediately close it with a closing tag.
-				 * The tag will encapsulate no text as a result.
+				 * Nếu nó tự giới thiệu là thẻ tự đóng, nhưng không phải là thẻ tự đóng đơn thực thể đã biết,
+				 * thì không cho phép nó được xử lý như vậy và đóng ngay lập tức bằng thẻ đóng.
+				 * Kết quả là thẻ sẽ không bao bọc văn bản nào.
 				 */
 				if ( ! $is_single_tag ) {
 					$attributes = trim( substr( $attributes, 0, -1 ) ) . "></$tag";
 				}
 			} elseif ( $is_single_tag ) {
-				// Else if it's a known single-entity tag but it doesn't close itself, do so.
+				// Nếu là thẻ đơn thực thể đã biết nhưng không tự đóng, hãy đóng nó.
 				$pre_attribute_ws = ' ';
 				$attributes      .= '/';
 			} else {
 				/*
-				 * It's not a single-entity tag.
-				 * If the top of the stack is the same as the tag we want to push, close previous tag.
+				 * Đây không phải thẻ đơn thực thể.
+				 * Nếu đỉnh ngăn xếp giống với thẻ muốn đẩy vào, đóng thẻ trước đó.
 				 */
 				if ( $stacksize > 0 && ! in_array( $tag, $nestable_tags, true ) && $tagstack[ $stacksize - 1 ] === $tag ) {
 					$tagqueue = '</' . array_pop( $tagstack ) . '>';
@@ -2695,14 +2695,14 @@ function force_balance_tags( $text ) {
 				$stacksize = array_push( $tagstack, $tag );
 			}
 
-			// Attributes.
+			// Thuộc tính.
 			if ( $has_self_closer && $is_single_tag ) {
-				// We need some space - avoid <br/> and prefer <br />.
+				// Cần khoảng trắng - tránh <br/> và ưu tiên <br />.
 				$pre_attribute_ws = ' ';
 			}
 
 			$tag = '<' . $tag . $pre_attribute_ws . $attributes . '>';
-			// If already queuing a close tag, then put this tag on too.
+			// Nếu đã có thẻ đóng trong hàng đợi, thì đặt thẻ này vào luôn.
 			if ( ! empty( $tagqueue ) ) {
 				$tagqueue .= $tag;
 				$tag       = '';
@@ -2712,17 +2712,17 @@ function force_balance_tags( $text ) {
 		$text     = substr( $text, $i + $l );
 	}
 
-	// Clear tag queue.
+	// Xóa hàng đợi thẻ.
 	$newtext .= $tagqueue;
 
-	// Add remaining text.
+	// Thêm văn bản còn lại.
 	$newtext .= $text;
 
 	while ( $x = array_pop( $tagstack ) ) {
-		$newtext .= '</' . $x . '>'; // Add remaining tags to close.
+		$newtext .= '</' . $x . '>'; // Thêm các thẻ còn lại để đóng.
 	}
 
-	// WP fix for the bug with HTML comments.
+	// Sửa lỗi WP cho bug với chú thích HTML.
 	$newtext = str_replace( '< !--', '<!--', $newtext );
 	$newtext = str_replace( '<    !--', '< !--', $newtext );
 
@@ -2730,28 +2730,28 @@ function force_balance_tags( $text ) {
 }
 
 /**
- * Acts on text which is about to be edited.
+ * Xử lý văn bản sắp được chỉnh sửa.
  *
- * The $content is run through esc_textarea(), which uses htmlspecialchars()
- * to convert special characters to HTML entities. If `$richedit` is set to true,
- * it is simply a holder for the {@see 'format_to_edit'} filter.
+ * $content được chạy qua esc_textarea(), sử dụng htmlspecialchars()
+ * để chuyển đổi các ký tự đặc biệt thành thực thể HTML. Nếu `$richedit` được đặt thành true,
+ * nó chỉ đơn giản là nơi giữ cho bộ lọc {@see 'format_to_edit'}.
  *
  * @since 0.71
- * @since 4.4.0 The `$richedit` parameter was renamed to `$rich_text` for clarity.
+ * @since 4.4.0 Tham số `$richedit` được đổi tên thành `$rich_text` cho rõ ràng.
  *
- * @param string $content   The text about to be edited.
- * @param bool   $rich_text Optional. Whether `$content` should be considered rich text,
- *                          in which case it would not be passed through esc_textarea().
- *                          Default false.
- * @return string The text after the filter (and possibly htmlspecialchars()) has been run.
+ * @param string $content   Văn bản sắp được chỉnh sửa.
+ * @param bool   $rich_text Tùy chọn. Liệu `$content` có được coi là văn bản giàu hay không,
+ *                          trong trường hợp đó nó sẽ không được chạy qua esc_textarea().
+ *                          Mặc định false.
+ * @return string Văn bản sau khi bộ lọc (và có thể htmlspecialchars()) đã được chạy.
  */
 function format_to_edit( $content, $rich_text = false ) {
 	/**
-	 * Filters the text to be formatted for editing.
+	 * Lọc văn bản được định dạng để chỉnh sửa.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string $content The text, prior to formatting for editing.
+	 * @param string $content Văn bản, trước khi được định dạng để chỉnh sửa.
 	 */
 	$content = apply_filters( 'format_to_edit', $content );
 	if ( ! $rich_text ) {
@@ -2761,33 +2761,32 @@ function format_to_edit( $content, $rich_text = false ) {
 }
 
 /**
- * Add leading zeros when necessary.
+ * Thêm các số 0 đứng đầu khi cần thiết.
  *
- * If you set the threshold to '4' and the number is '10', then you will get
- * back '0010'. If you set the threshold to '4' and the number is '5000', then you
- * will get back '5000'.
+ * Nếu bạn đặt ngưỡng là '4' và số là '10', thì bạn sẽ nhận
+ * lại '0010'. Nếu bạn đặt ngưỡng là '4' và số là '5000', thì bạn
+ * sẽ nhận lại '5000'.
  *
- * Uses sprintf to append the amount of zeros based on the $threshold parameter
- * and the size of the number. If the number is large enough, then no zeros will
- * be appended.
+ * Sử dụng sprintf để thêm số lượng số 0 dựa trên tham số $threshold
+ * và kích thước của số. Nếu số đủ lớn, thì không có số 0 nào được thêm.
  *
  * @since 0.71
  *
- * @param int $number     Number to append zeros to if not greater than threshold.
- * @param int $threshold  Digit places number needs to be to not have zeros added.
- * @return string Adds leading zeros to number if needed.
+ * @param int $number     Số cần thêm số 0 nếu không lớn hơn ngưỡng.
+ * @param int $threshold  Số chữ số cần có để không phải thêm số 0.
+ * @return string Thêm các số 0 đứng đầu vào số nếu cần.
  */
 function zeroise( $number, $threshold ) {
 	return sprintf( '%0' . $threshold . 's', $number );
 }
 
 /**
- * Adds backslashes before letters and before a number at the start of a string.
+ * Thêm dấu gạch chéo ngược trước các chữ cái và trước một số ở đầu chuỗi.
  *
  * @since 0.71
  *
- * @param string $value Value to which backslashes will be added.
- * @return string String with backslashes inserted.
+ * @param string $value Giá trị sẽ được thêm dấu gạch chéo ngược.
+ * @return string Chuỗi đã chèn dấu gạch chéo ngược.
  */
 function backslashit( $value ) {
 	if ( isset( $value[0] ) && $value[0] >= '0' && $value[0] <= '9' ) {
@@ -2797,118 +2796,118 @@ function backslashit( $value ) {
 }
 
 /**
- * Appends a trailing slash.
+ * Thêm dấu gạch chéo ở cuối.
  *
- * Will remove trailing forward and backslashes if it exists already before adding
- * a trailing forward slash. This prevents double slashing a string or path.
+ * Sẽ xóa các dấu gạch chéo xuôi và ngược ở cuối nếu đã tồn tại trước khi thêm
+ * dấu gạch chéo xuôi ở cuối. Điều này ngăn việc tạo dấu gạch chéo kép trong chuỗi hoặc đường dẫn.
  *
- * The primary use of this is for paths and thus should be used for paths. It is
- * not restricted to paths and offers no specific path support.
+ * Mục đích sử dụng chính của hàm này là cho đường dẫn và do đó nên được sử dụng cho đường dẫn. Nó
+ * không bị giới hạn cho đường dẫn và không cung cấp hỗ trợ đường dẫn cụ thể.
  *
  * @since 1.2.0
  *
- * @param string $value Value to which trailing slash will be added.
- * @return string String with trailing slash added.
+ * @param string $value Giá trị sẽ được thêm dấu gạch chéo cuối.
+ * @return string Chuỗi đã thêm dấu gạch chéo cuối.
  */
 function trailingslashit( $value ) {
 	return untrailingslashit( $value ) . '/';
 }
 
 /**
- * Removes trailing forward slashes and backslashes if they exist.
+ * Xóa các dấu gạch chéo xuôi và ngược ở cuối nếu chúng tồn tại.
  *
- * The primary use of this is for paths and thus should be used for paths. It is
- * not restricted to paths and offers no specific path support.
+ * Mục đích sử dụng chính của hàm này là cho đường dẫn và do đó nên được sử dụng cho đường dẫn. Nó
+ * không bị giới hạn cho đường dẫn và không cung cấp hỗ trợ đường dẫn cụ thể.
  *
  * @since 2.2.0
  *
- * @param string $value Value from which trailing slashes will be removed.
- * @return string String without the trailing slashes.
+ * @param string $value Giá trị sẽ được xóa dấu gạch chéo cuối.
+ * @return string Chuỗi không có dấu gạch chéo cuối.
  */
 function untrailingslashit( $value ) {
 	return rtrim( $value, '/\\' );
 }
 
 /**
- * Adds slashes to a string or recursively adds slashes to strings within an array.
+ * Thêm dấu gạch chéo vào chuỗi hoặc đệ quy thêm dấu gạch chéo vào các chuỗi trong mảng.
  *
  * @since 0.71
  *
- * @param string|array $gpc String or array of data to slash.
- * @return string|array Slashed `$gpc`.
+ * @param string|array $gpc Chuỗi hoặc mảng dữ liệu cần thêm dấu gạch chéo.
+ * @return string|array `$gpc` đã thêm dấu gạch chéo.
  */
 function addslashes_gpc( $gpc ) {
 	return wp_slash( $gpc );
 }
 
 /**
- * Navigates through an array, object, or scalar, and removes slashes from the values.
+ * Duyệt qua mảng, đối tượng, hoặc giá trị đơn, và xóa dấu gạch chéo khỏi các giá trị.
  *
  * @since 2.0.0
  *
- * @param mixed $value The value to be stripped.
- * @return mixed Stripped value.
+ * @param mixed $value Giá trị cần xóa dấu gạch chéo.
+ * @return mixed Giá trị đã xóa dấu gạch chéo.
  */
 function stripslashes_deep( $value ) {
 	return map_deep( $value, 'stripslashes_from_strings_only' );
 }
 
 /**
- * Callback function for `stripslashes_deep()` which strips slashes from strings.
+ * Hàm callback cho `stripslashes_deep()` để xóa dấu gạch chéo khỏi chuỗi.
  *
  * @since 4.4.0
  *
- * @param mixed $value The array or string to be stripped.
- * @return mixed The stripped value.
+ * @param mixed $value Mảng hoặc chuỗi cần xóa dấu gạch chéo.
+ * @return mixed Giá trị đã xóa dấu gạch chéo.
  */
 function stripslashes_from_strings_only( $value ) {
 	return is_string( $value ) ? stripslashes( $value ) : $value;
 }
 
 /**
- * Navigates through an array, object, or scalar, and encodes the values to be used in a URL.
+ * Duyệt qua mảng, đối tượng, hoặc giá trị đơn, và mã hóa các giá trị để sử dụng trong URL.
  *
  * @since 2.2.0
  *
- * @param mixed $value The array or string to be encoded.
- * @return mixed The encoded value.
+ * @param mixed $value Mảng hoặc chuỗi cần mã hóa.
+ * @return mixed Giá trị đã mã hóa.
  */
 function urlencode_deep( $value ) {
 	return map_deep( $value, 'urlencode' );
 }
 
 /**
- * Navigates through an array, object, or scalar, and raw-encodes the values to be used in a URL.
+ * Duyệt qua mảng, đối tượng, hoặc giá trị đơn, và mã hóa thô các giá trị để sử dụng trong URL.
  *
  * @since 3.4.0
  *
- * @param mixed $value The array or string to be encoded.
- * @return mixed The encoded value.
+ * @param mixed $value Mảng hoặc chuỗi cần mã hóa.
+ * @return mixed Giá trị đã mã hóa.
  */
 function rawurlencode_deep( $value ) {
 	return map_deep( $value, 'rawurlencode' );
 }
 
 /**
- * Navigates through an array, object, or scalar, and decodes URL-encoded values
+ * Duyệt qua mảng, đối tượng, hoặc giá trị đơn, và giải mã các giá trị đã mã hóa URL.
  *
  * @since 4.4.0
  *
- * @param mixed $value The array or string to be decoded.
- * @return mixed The decoded value.
+ * @param mixed $value Mảng hoặc chuỗi cần giải mã.
+ * @return mixed Giá trị đã giải mã.
  */
 function urldecode_deep( $value ) {
 	return map_deep( $value, 'urldecode' );
 }
 
 /**
- * Converts email addresses characters to HTML entities to block spam bots.
+ * Chuyển đổi các ký tự địa chỉ email thành thực thể HTML để chặn bot spam.
  *
  * @since 0.71
  *
- * @param string $email_address Email address.
- * @param int    $hex_encoding  Optional. Set to 1 to enable hex encoding.
- * @return string Converted email address.
+ * @param string $email_address Địa chỉ email.
+ * @param int    $hex_encoding  Tùy chọn. Đặt thành 1 để bật mã hóa hex.
+ * @return string Địa chỉ email đã chuyển đổi.
  */
 function antispambot( $email_address, $hex_encoding = 0 ) {
 	$email_no_spam_address = '';
@@ -2929,23 +2928,23 @@ function antispambot( $email_address, $hex_encoding = 0 ) {
 }
 
 /**
- * Callback to convert URI match to HTML A element.
+ * Callback để chuyển đổi kết quả khớp URI thành phần tử HTML A.
  *
- * This function was backported from 2.5.0 to 2.3.2. Regex callback for make_clickable().
+ * Hàm này được backport từ 2.5.0 về 2.3.2. Callback regex cho make_clickable().
  *
  * @since 2.3.2
  * @access private
  *
- * @param array $matches Single Regex Match.
- * @return string HTML A element with URI address.
+ * @param array $matches Kết quả khớp Regex đơn.
+ * @return string Phần tử HTML A với địa chỉ URI.
  */
 function _make_url_clickable_cb( $matches ) {
 	$url = $matches[2];
 
 	if ( ')' === $matches[3] && strpos( $url, '(' ) ) {
 		/*
-		 * If the trailing character is a closing parenthesis, and the URL has an opening parenthesis in it,
-		 * add the closing parenthesis to the URL. Then we can let the parenthesis balancer do its thing below.
+		 * Nếu ký tự cuối là dấu ngoặc đóng, và URL có dấu ngoặc mở trong đó,
+		 * thêm dấu ngoặc đóng vào URL. Sau đó chúng ta có thể để bộ cân bằng ngoặc xử lý bên dưới.
 		 */
 		$url   .= $matches[3];
 		$suffix = '';
@@ -2957,7 +2956,7 @@ function _make_url_clickable_cb( $matches ) {
 		$url .= $matches[4];
 	}
 
-	// Include parentheses in the URL only if paired.
+	// Chỉ bao gồm dấu ngoặc đơn trong URL nếu chúng đi theo cặp.
 	while ( substr_count( $url, '(' ) < substr_count( $url, ')' ) ) {
 		$suffix = strrchr( $url, ')' ) . $suffix;
 		$url    = substr( $url, 0, strrpos( $url, ')' ) );
@@ -2974,22 +2973,22 @@ function _make_url_clickable_cb( $matches ) {
 }
 
 /**
- * Callback to convert URL match to HTML A element.
+ * Callback để chuyển đổi kết quả khớp URL thành phần tử HTML A.
  *
- * This function was backported from 2.5.0 to 2.3.2. Regex callback for make_clickable().
+ * Hàm này được backport từ 2.5.0 về 2.3.2. Callback regex cho make_clickable().
  *
  * @since 2.3.2
  * @access private
  *
- * @param array $matches Single Regex Match.
- * @return string HTML A element with URL address.
+ * @param array $matches Kết quả khớp Regex đơn.
+ * @return string Phần tử HTML A với địa chỉ URL.
  */
 function _make_web_ftp_clickable_cb( $matches ) {
 	$ret  = '';
 	$dest = $matches[2];
 	$dest = 'http://' . $dest;
 
-	// Removed trailing [.,;:)] from URL.
+	// Đã xóa [.,;:)] ở cuối khỏi URL.
 	$last_char = substr( $dest, -1 );
 	if ( in_array( $last_char, array( '.', ',', ';', ':', ')' ), true ) === true ) {
 		$ret  = $last_char;
@@ -3007,15 +3006,15 @@ function _make_web_ftp_clickable_cb( $matches ) {
 }
 
 /**
- * Callback to convert email address match to HTML A element.
+ * Callback để chuyển đổi kết quả khớp địa chỉ email thành phần tử HTML A.
  *
- * This function was backported from 2.5.0 to 2.3.2. Regex callback for make_clickable().
+ * Hàm này được backport từ 2.5.0 về 2.3.2. Callback regex cho make_clickable().
  *
  * @since 2.3.2
  * @access private
  *
- * @param array $matches Single Regex Match.
- * @return string HTML A element with email address.
+ * @param array $matches Kết quả khớp Regex đơn.
+ * @return string Phần tử HTML A với địa chỉ email.
  */
 function _make_email_clickable_cb( $matches ) {
 	$email = $matches[2] . '@' . $matches[3];
@@ -3024,24 +3023,24 @@ function _make_email_clickable_cb( $matches ) {
 }
 
 /**
- * Helper function used to build the "rel" attribute for a URL when creating an anchor using make_clickable().
+ * Hàm trợ giúp dùng để xây dựng thuộc tính "rel" cho URL khi tạo liên kết bằng make_clickable().
  *
  * @since 6.2.0
  *
- * @param string $url The URL.
- * @return string The rel attribute for the anchor or an empty string if no rel attribute should be added.
+ * @param string $url URL.
+ * @return string Thuộc tính rel cho liên kết hoặc chuỗi rỗng nếu không cần thêm thuộc tính rel.
  */
 function _make_clickable_rel_attr( $url ) {
 	$rel_parts        = array();
 	$scheme           = strtolower( wp_parse_url( $url, PHP_URL_SCHEME ) );
 	$nofollow_schemes = array_intersect( wp_allowed_protocols(), array( 'https', 'http' ) );
 
-	// Apply "nofollow" to external links with qualifying URL schemes (mailto:, tel:, etc... shouldn't be followed).
+	// Áp dụng "nofollow" cho liên kết ngoài với các lược đồ URL đủ điều kiện (mailto:, tel:, v.v... không nên theo dõi).
 	if ( ! wp_is_internal_link( $url ) && in_array( $scheme, $nofollow_schemes, true ) ) {
 		$rel_parts[] = 'nofollow';
 	}
 
-	// Apply "ugc" when in comment context.
+	// Áp dụng "ugc" khi trong ngữ cảnh bình luận.
 	if ( 'comment_text' === current_filter() ) {
 		$rel_parts[] = 'ugc';
 	}
@@ -3049,12 +3048,12 @@ function _make_clickable_rel_attr( $url ) {
 	$rel = implode( ' ', $rel_parts );
 
 	/**
-	 * Filters the rel value that is added to URL matches converted to links.
+	 * Lọc giá trị rel được thêm vào các kết quả khớp URL chuyển đổi thành liên kết.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param string $rel The rel value.
-	 * @param string $url The matched URL being converted to a link tag.
+	 * @param string $rel Giá trị rel.
+	 * @param string $url URL đã khớp đang được chuyển đổi thành thẻ liên kết.
 	 */
 	$rel = apply_filters( 'make_clickable_rel', $rel, $url );
 
@@ -3064,20 +3063,20 @@ function _make_clickable_rel_attr( $url ) {
 }
 
 /**
- * Converts plaintext URI to HTML links.
+ * Chuyển đổi URI văn bản thuần thành liên kết HTML.
  *
- * Converts URI, www and ftp, and email addresses. Finishes by fixing links
- * within links.
+ * Chuyển đổi URI, www và ftp, và địa chỉ email. Kết thúc bằng việc sửa liên kết
+ * bên trong liên kết.
  *
  * @since 0.71
  *
- * @param string $text Content to convert URIs.
- * @return string Content with converted URIs.
+ * @param string $text Nội dung cần chuyển đổi URI.
+ * @return string Nội dung với các URI đã chuyển đổi.
  */
 function make_clickable( $text ) {
 	$r               = '';
-	$textarr         = preg_split( '/(<[^<>]+>)/', $text, -1, PREG_SPLIT_DELIM_CAPTURE ); // Split out HTML tags.
-	$nested_code_pre = 0; // Keep track of how many levels link is nested inside <pre> or <code>.
+	$textarr         = preg_split( '/(<[^<>]+>)/', $text, -1, PREG_SPLIT_DELIM_CAPTURE ); // Tách các thẻ HTML.
+	$nested_code_pre = 0; // Theo dõi số cấp liên kết được lồng bên trong <pre> hoặc <code>.
 	foreach ( $textarr as $piece ) {
 
 		if ( preg_match( '|^<code[\s>]|i', $piece )
@@ -3104,36 +3103,36 @@ function make_clickable( $text ) {
 			continue;
 		}
 
-		// Long strings might contain expensive edge cases...
+		// Chuỗi dài có thể chứa các trường hợp biên tốn kém...
 		if ( 10000 < strlen( $piece ) ) {
-			// ...break it up.
-			foreach ( _split_str_by_whitespace( $piece, 2100 ) as $chunk ) { // 2100: Extra room for scheme and leading and trailing parentheses.
+			// ...chia nhỏ nó.
+			foreach ( _split_str_by_whitespace( $piece, 2100 ) as $chunk ) { // 2100: Dư chỗ cho lược đồ và dấu ngoặc đầu và cuối.
 				if ( 2101 < strlen( $chunk ) ) {
-					$r .= $chunk; // Too big, no whitespace: bail.
+					$r .= $chunk; // Quá lớn, không có khoảng trắng: bỏ qua.
 				} else {
 					$r .= make_clickable( $chunk );
 				}
 			}
 		} else {
-			$ret = " $piece "; // Pad with whitespace to simplify the regexes.
+			$ret = " $piece "; // Thêm khoảng trắng đệm để đơn giản hóa regex.
 
 			$url_clickable = '~
-				([\\s(<.,;:!?])                                # 1: Leading whitespace, or punctuation.
+				([\\s(<.,;:!?])                                # 1: Khoảng trắng đầu, hoặc dấu câu.
 				(                                              # 2: URL.
-					[\\w]{1,20}+://                                # Scheme and hier-part prefix.
-					(?=\S{1,2000}\s)                               # Limit to URLs less than about 2000 characters long.
-					[\\w\\x80-\\xff#%\\~/@\\[\\]*(+=&$-]*+         # Non-punctuation URL character.
-					(?:                                            # Unroll the Loop: Only allow punctuation URL character if followed by a non-punctuation URL character.
-						[\'.,;:!?)]                                    # Punctuation URL character.
-						[\\w\\x80-\\xff#%\\~/@\\[\\]*(+=&$-]++         # Non-punctuation URL character.
+					[\\w]{1,20}+://                                # Lược đồ và tiền tố hier-part.
+					(?=\S{1,2000}\s)                               # Giới hạn URL dưới khoảng 2000 ký tự.
+					[\\w\\x80-\\xff#%\\~/@\\[\\]*(+=&$-]*+         # Ký tự URL không phải dấu câu.
+					(?:                                            # Mở vòng lặp: Chỉ cho phép ký tự URL dấu câu nếu theo sau bởi ký tự URL không phải dấu câu.
+						[\'.,;:!?)]                                    # Ký tự URL dấu câu.
+						[\\w\\x80-\\xff#%\\~/@\\[\\]*(+=&$-]++         # Ký tự URL không phải dấu câu.
 					)*
 				)
-				(\)?)                                          # 3: Trailing closing parenthesis (for parenthesis balancing post processing).
-				(\\.\\w{2,6})?                                 # 4: Allowing file extensions (e.g., .jpg, .png).
+				(\)?)                                          # 3: Dấu ngoặc đóng cuối (cho xử lý cân bằng ngoặc sau).
+				(\\.\\w{2,6})?                                 # 4: Cho phép phần mở rộng tệp (ví dụ: .jpg, .png).
 			~xS';
 			/*
-			 * The regex is a non-anchored pattern and does not have a single fixed starting character.
-			 * Tell PCRE to spend more time optimizing since, when used on a page load, it will probably be used several times.
+			 * Regex là mẫu không neo và không có một ký tự bắt đầu cố định duy nhất.
+			 * Yêu cầu PCRE dành nhiều thời gian hơn để tối ưu vì khi sử dụng trên tải trang, nó có thể được dùng nhiều lần.
 			 */
 
 			$ret = preg_replace_callback( $url_clickable, '_make_url_clickable_cb', $ret );
@@ -3141,44 +3140,44 @@ function make_clickable( $text ) {
 			$ret = preg_replace_callback( '#([\s>])((www|ftp)\.[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]+)#is', '_make_web_ftp_clickable_cb', $ret );
 			$ret = preg_replace_callback( '#([\s>])([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})#i', '_make_email_clickable_cb', $ret );
 
-			$ret = substr( $ret, 1, -1 ); // Remove our whitespace padding.
+			$ret = substr( $ret, 1, -1 ); // Xóa khoảng trắng đệm của chúng ta.
 			$r  .= $ret;
 		}
 	}
 
-	// Cleanup of accidental links within links.
+	// Dọn dẹp các liên kết vô tình bên trong liên kết.
 	return preg_replace( '#(<a([ \r\n\t]+[^>]+?>|>))<a [^>]+?>([^>]+?)</a></a>#i', '$1$3</a>', $r );
 }
 
 /**
- * Breaks a string into chunks by splitting at whitespace characters.
+ * Chia chuỗi thành các đoạn bằng cách tách tại các ký tự khoảng trắng.
  *
- * The length of each returned chunk is as close to the specified length goal as possible,
- * with the caveat that each chunk includes its trailing delimiter.
- * Chunks longer than the goal are guaranteed to not have any inner whitespace.
+ * Độ dài của mỗi đoạn trả về gần nhất có thể với độ dài mục tiêu được chỉ định,
+ * với lưu ý rằng mỗi đoạn bao gồm cả dấu phân cách cuối của nó.
+ * Các đoạn dài hơn mục tiêu được đảm bảo không có khoảng trắng bên trong.
  *
- * Joining the returned chunks with empty delimiters reconstructs the input string losslessly.
+ * Nối các đoạn trả về với dấu phân cách rỗng sẽ tái tạo chuỗi đầu vào không mất dữ liệu.
  *
- * Input string must have no null characters (or eventual transformations on output chunks must not care about null characters)
+ * Chuỗi đầu vào không được có ký tự null (hoặc các chuyển đổi cuối cùng trên các đoạn đầu ra không được quan tâm đến ký tự null)
  *
  *     _split_str_by_whitespace( "1234 67890 1234 67890a cd 1234   890 123456789 1234567890a    45678   1 3 5 7 90 ", 10 ) ==
  *     array (
- *         0 => '1234 67890 ',  // 11 characters: Perfect split.
- *         1 => '1234 ',        //  5 characters: '1234 67890a' was too long.
- *         2 => '67890a cd ',   // 10 characters: '67890a cd 1234' was too long.
- *         3 => '1234   890 ',  // 11 characters: Perfect split.
- *         4 => '123456789 ',   // 10 characters: '123456789 1234567890a' was too long.
- *         5 => '1234567890a ', // 12 characters: Too long, but no inner whitespace on which to split.
- *         6 => '   45678   ',  // 11 characters: Perfect split.
- *         7 => '1 3 5 7 90 ',  // 11 characters: End of $text.
+ *         0 => '1234 67890 ',  // 11 ký tự: Tách hoàn hảo.
+ *         1 => '1234 ',        //  5 ký tự: '1234 67890a' quá dài.
+ *         2 => '67890a cd ',   // 10 ký tự: '67890a cd 1234' quá dài.
+ *         3 => '1234   890 ',  // 11 ký tự: Tách hoàn hảo.
+ *         4 => '123456789 ',   // 10 ký tự: '123456789 1234567890a' quá dài.
+ *         5 => '1234567890a ', // 12 ký tự: Quá dài, nhưng không có khoảng trắng bên trong để tách.
+ *         6 => '   45678   ',  // 11 ký tự: Tách hoàn hảo.
+ *         7 => '1 3 5 7 90 ',  // 11 ký tự: Cuối $text.
  *     );
  *
  * @since 3.4.0
  * @access private
  *
- * @param string $text   The string to split.
- * @param int    $goal   The desired chunk length.
- * @return array Numeric array of chunks.
+ * @param string $text   Chuỗi cần tách.
+ * @param int    $goal   Độ dài đoạn mong muốn.
+ * @return array Mảng số các đoạn.
  */
 function _split_str_by_whitespace( $text, $goal ) {
 	$chunks = array();
@@ -3208,15 +3207,15 @@ function _split_str_by_whitespace( $text, $goal ) {
 }
 
 /**
- * Callback to add a rel attribute to HTML A element.
+ * Callback để thêm thuộc tính rel vào phần tử HTML A.
  *
- * Will remove already existing string before adding to prevent invalidating (X)HTML.
+ * Sẽ xóa chuỗi đã tồn tại trước khi thêm để tránh làm mất hiệu lực (X)HTML.
  *
  * @since 5.3.0
  *
- * @param array  $matches Single match.
- * @param string $rel     The rel attribute to add.
- * @return string HTML A element with the added rel attribute.
+ * @param array  $matches Kết quả khớp đơn.
+ * @param string $rel     Thuộc tính rel cần thêm.
+ * @return string Phần tử HTML A với thuộc tính rel đã thêm.
  */
 function wp_rel_callback( $matches, $rel ) {
 	$text = $matches[1];
@@ -3250,15 +3249,15 @@ function wp_rel_callback( $matches, $rel ) {
 }
 
 /**
- * Adds `rel="nofollow"` string to all HTML A elements in content.
+ * Thêm chuỗi `rel="nofollow"` vào tất cả phần tử HTML A trong nội dung.
  *
  * @since 1.5.0
  *
- * @param string $text Content that may contain HTML A elements.
- * @return string Converted content.
+ * @param string $text Nội dung có thể chứa phần tử HTML A.
+ * @return string Nội dung đã chuyển đổi.
  */
 function wp_rel_nofollow( $text ) {
-	// This is a pre-save filter, so text is already escaped.
+	// Đây là bộ lọc trước khi lưu, nên văn bản đã được escape.
 	$text = stripslashes( $text );
 	$text = preg_replace_callback(
 		'|<a (.+?)>|i',
@@ -3271,28 +3270,28 @@ function wp_rel_nofollow( $text ) {
 }
 
 /**
- * Callback to add `rel="nofollow"` string to HTML A element.
+ * Callback để thêm chuỗi `rel="nofollow"` vào phần tử HTML A.
  *
  * @since 2.3.0
- * @deprecated 5.3.0 Use wp_rel_callback()
+ * @deprecated 5.3.0 Sử dụng wp_rel_callback()
  *
- * @param array $matches Single match.
- * @return string HTML A Element with `rel="nofollow"`.
+ * @param array $matches Kết quả khớp đơn.
+ * @return string Phần tử HTML A với `rel="nofollow"`.
  */
 function wp_rel_nofollow_callback( $matches ) {
 	return wp_rel_callback( $matches, 'nofollow' );
 }
 
 /**
- * Adds `rel="nofollow ugc"` string to all HTML A elements in content.
+ * Thêm chuỗi `rel="nofollow ugc"` vào tất cả phần tử HTML A trong nội dung.
  *
  * @since 5.3.0
  *
- * @param string $text Content that may contain HTML A elements.
- * @return string Converted content.
+ * @param string $text Nội dung có thể chứa phần tử HTML A.
+ * @return string Nội dung đã chuyển đổi.
  */
 function wp_rel_ugc( $text ) {
-	// This is a pre-save filter, so text is already escaped.
+	// Đây là bộ lọc trước khi lưu, nên văn bản đã được escape.
 	$text = stripslashes( $text );
 	$text = preg_replace_callback(
 		'|<a (.+?)>|i',
@@ -3305,19 +3304,19 @@ function wp_rel_ugc( $text ) {
 }
 
 /**
- * Adds `rel="noopener"` to all HTML A elements that have a target.
+ * Thêm `rel="noopener"` vào tất cả phần tử HTML A có thuộc tính target.
  *
  * @since 5.1.0
- * @since 5.6.0 Removed 'noreferrer' relationship.
+ * @since 5.6.0 Đã xóa quan hệ 'noreferrer'.
  * @deprecated 6.7.0
  *
- * @param string $text Content that may contain HTML A elements.
- * @return string Converted content.
+ * @param string $text Nội dung có thể chứa phần tử HTML A.
+ * @return string Nội dung đã chuyển đổi.
  */
 function wp_targeted_link_rel( $text ) {
 	_deprecated_function( __FUNCTION__, '6.7.0' );
 
-	// Don't run (more expensive) regex if no links with targets.
+	// Không chạy regex (tốn kém hơn) nếu không có liên kết có target.
 	if ( stripos( $text, 'target' ) === false || stripos( $text, '<a ' ) === false || is_serialized( $text ) ) {
 		return $text;
 	}
@@ -3344,16 +3343,16 @@ function wp_targeted_link_rel( $text ) {
 }
 
 /**
- * Callback to add `rel="noopener"` string to HTML A element.
+ * Callback để thêm chuỗi `rel="noopener"` vào phần tử HTML A.
  *
- * Will not duplicate an existing 'noopener' value to avoid invalidating the HTML.
+ * Sẽ không trùng lặp giá trị 'noopener' đã tồn tại để tránh làm mất hiệu lực HTML.
  *
  * @since 5.1.0
- * @since 5.6.0 Removed 'noreferrer' relationship.
+ * @since 5.6.0 Đã xóa quan hệ 'noreferrer'.
  * @deprecated 6.7.0
  *
- * @param array $matches Single match.
- * @return string HTML A Element with `rel="noopener"` in addition to any existing values.
+ * @param array $matches Kết quả khớp đơn.
+ * @return string Phần tử HTML A với `rel="noopener"` bổ sung vào các giá trị hiện có.
  */
 function wp_targeted_link_rel_callback( $matches ) {
 	_deprecated_function( __FUNCTION__, '6.7.0' );
@@ -3361,26 +3360,26 @@ function wp_targeted_link_rel_callback( $matches ) {
 	$link_html          = $matches[1];
 	$original_link_html = $link_html;
 
-	// Consider the HTML escaped if there are no unescaped quotes.
+	// Coi HTML đã được escape nếu không có dấu ngoặc kép chưa escape.
 	$is_escaped = ! preg_match( '/(^|[^\\\\])[\'"]/', $link_html );
 	if ( $is_escaped ) {
-		// Replace only the quotes so that they are parsable by wp_kses_hair(), leave the rest as is.
+		// Chỉ thay thế dấu ngoặc kép để chúng có thể được phân tích bởi wp_kses_hair(), giữ nguyên phần còn lại.
 		$link_html = preg_replace( '/\\\\([\'"])/', '$1', $link_html );
 	}
 
 	$atts = wp_kses_hair( $link_html, wp_allowed_protocols() );
 
 	/**
-	 * Filters the rel values that are added to links with `target` attribute.
+	 * Lọc các giá trị rel được thêm vào liên kết có thuộc tính `target`.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param string $rel       The rel values.
-	 * @param string $link_html The matched content of the link tag including all HTML attributes.
+	 * @param string $rel       Các giá trị rel.
+	 * @param string $link_html Nội dung đã khớp của thẻ liên kết bao gồm tất cả thuộc tính HTML.
 	 */
 	$rel = apply_filters( 'wp_targeted_link_rel', 'noopener', $link_html );
 
-	// Return early if no rel values to be added or if no actual target attribute.
+	// Trả về sớm nếu không có giá trị rel cần thêm hoặc nếu không có thuộc tính target thực tế.
 	if ( ! $rel || ! isset( $atts['target'] ) ) {
 		return "<a $original_link_html>";
 	}
@@ -3401,7 +3400,7 @@ function wp_targeted_link_rel_callback( $matches ) {
 }
 
 /**
- * Adds all filters modifying the rel attribute of targeted links.
+ * Thêm tất cả bộ lọc sửa đổi thuộc tính rel của liên kết có target.
  *
  * @since 5.1.0
  * @deprecated 6.7.0
@@ -3411,7 +3410,7 @@ function wp_init_targeted_link_rel_filters() {
 }
 
 /**
- * Removes all filters modifying the rel attribute of targeted links.
+ * Xóa tất cả bộ lọc sửa đổi thuộc tính rel của liên kết có target.
  *
  * @since 5.1.0
  * @deprecated 6.7.0
@@ -3421,19 +3420,19 @@ function wp_remove_targeted_link_rel_filters() {
 }
 
 /**
- * Converts one smiley code to the icon graphic file equivalent.
+ * Chuyển đổi một mã biểu tượng cảm xúc thành tệp đồ họa biểu tượng tương ứng.
  *
- * Callback handler for convert_smilies().
+ * Hàm xử lý callback cho convert_smilies().
  *
- * Looks up one smiley code in the $wpsmiliestrans global array and returns an
- * `<img>` string for that smiley.
+ * Tra cứu một mã biểu tượng cảm xúc trong mảng toàn cục $wpsmiliestrans và trả về
+ * chuỗi `<img>` cho biểu tượng cảm xúc đó.
  *
  * @since 2.8.0
  *
  * @global array $wpsmiliestrans
  *
- * @param array $matches Single match. Smiley code to convert to image.
- * @return string Image string for smiley.
+ * @param array $matches Kết quả khớp đơn. Mã biểu tượng cảm xúc cần chuyển đổi thành hình ảnh.
+ * @return string Chuỗi hình ảnh cho biểu tượng cảm xúc.
  */
 function translate_smiley( $matches ) {
 	global $wpsmiliestrans;
@@ -3449,19 +3448,19 @@ function translate_smiley( $matches ) {
 	$ext        = preg_match( '/\.([^.]+)$/', $img, $matches ) ? strtolower( $matches[1] ) : false;
 	$image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'webp', 'avif' );
 
-	// Don't convert smilies that aren't images - they're probably emoji.
+	// Không chuyển đổi biểu tượng cảm xúc không phải hình ảnh - chúng có thể là emoji.
 	if ( ! in_array( $ext, $image_exts, true ) ) {
 		return $img;
 	}
 
 	/**
-	 * Filters the Smiley image URL before it's used in the image element.
+	 * Lọc URL hình ảnh biểu tượng cảm xúc trước khi được sử dụng trong phần tử hình ảnh.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $smiley_url URL for the smiley image.
-	 * @param string $img        Filename for the smiley image.
-	 * @param string $site_url   Site URL, as returned by site_url().
+	 * @param string $smiley_url URL cho hình ảnh biểu tượng cảm xúc.
+	 * @param string $img        Tên tệp cho hình ảnh biểu tượng cảm xúc.
+	 * @param string $site_url   URL trang web, được trả về bởi site_url().
 	 */
 	$src_url = apply_filters( 'smilies_src', includes_url( "images/smilies/$img" ), $img, site_url() );
 
@@ -3469,56 +3468,56 @@ function translate_smiley( $matches ) {
 }
 
 /**
- * Converts text equivalent of smilies to images.
+ * Chuyển đổi văn bản tương đương biểu tượng cảm xúc thành hình ảnh.
  *
- * Will only convert smilies if the option 'use_smilies' is true and the global
- * used in the function isn't empty.
+ * Chỉ chuyển đổi biểu tượng cảm xúc nếu tùy chọn 'use_smilies' là true và biến
+ * toàn cục sử dụng trong hàm không rỗng.
  *
  * @since 0.71
  *
  * @global string|array $wp_smiliessearch
  *
- * @param string $text Content to convert smilies from text.
- * @return string Converted content with text smilies replaced with images.
+ * @param string $text Nội dung cần chuyển đổi biểu tượng cảm xúc từ văn bản.
+ * @return string Nội dung đã chuyển đổi với biểu tượng cảm xúc văn bản được thay bằng hình ảnh.
  */
 function convert_smilies( $text ) {
 	global $wp_smiliessearch;
 
 	if ( ! get_option( 'use_smilies' ) || empty( $wp_smiliessearch ) ) {
-		// Return default text.
+		// Trả về văn bản mặc định.
 		return $text;
 	}
 
-	// HTML loop taken from texturize function, could possible be consolidated.
-	$textarr = preg_split( '/(<[^>]*>)/U', $text, -1, PREG_SPLIT_DELIM_CAPTURE ); // Capture the tags as well as in between.
+	// Vòng lặp HTML lấy từ hàm texturize, có thể hợp nhất được.
+	$textarr = preg_split( '/(<[^>]*>)/U', $text, -1, PREG_SPLIT_DELIM_CAPTURE ); // Bắt cả thẻ lẫn nội dung giữa chúng.
 
 	if ( false === $textarr ) {
-		// Return default text.
+		// Trả về văn bản mặc định.
 		return $text;
 	}
 
-	// Loop stuff.
+	// Các biến vòng lặp.
 	$stop   = count( $textarr );
 	$output = '';
 
-	// Ignore processing of specific tags.
+	// Bỏ qua xử lý các thẻ cụ thể.
 	$tags_to_ignore       = 'code|pre|style|script|textarea';
 	$ignore_block_element = '';
 
 	for ( $i = 0; $i < $stop; $i++ ) {
 		$content = $textarr[ $i ];
 
-		// If we're in an ignore block, wait until we find its closing tag.
+		// Nếu đang ở trong khối bỏ qua, chờ cho đến khi tìm thấy thẻ đóng.
 		if ( '' === $ignore_block_element && preg_match( '/^<(' . $tags_to_ignore . ')[^>]*>/', $content, $matches ) ) {
 			$ignore_block_element = $matches[1];
 		}
 
-		// If it's not a tag and not in ignore block.
+		// Nếu không phải thẻ và không ở trong khối bỏ qua.
 		if ( '' === $ignore_block_element && strlen( $content ) > 0 && '<' !== $content[0] ) {
 			$content = preg_replace_callback( $wp_smiliessearch, 'translate_smiley', $content );
 		}
 
-		// Did we exit ignore block?
+		// Đã thoát khỏi khối bỏ qua chưa?
 		if ( '' !== $ignore_block_element && '</' . $ignore_block_element . '>' === $content ) {
 			$ignore_block_element = '';
 		}
@@ -3530,111 +3529,111 @@ function convert_smilies( $text ) {
 }
 
 /**
- * Verifies that an email is valid.
+ * Xác minh rằng email là hợp lệ.
  *
- * Does not grok i18n domains. Not RFC compliant.
+ * Không hỗ trợ tên miền i18n. Không tuân thủ RFC.
  *
  * @since 0.71
  *
- * @param string $email      Email address to verify.
- * @param bool   $deprecated Deprecated.
- * @return string|false Valid email address on success, false on failure.
+ * @param string $email      Địa chỉ email cần xác minh.
+ * @param bool   $deprecated Đã ngưng sử dụng.
+ * @return string|false Địa chỉ email hợp lệ khi thành công, false khi thất bại.
  */
 function is_email( $email, $deprecated = false ) {
 	if ( ! empty( $deprecated ) ) {
 		_deprecated_argument( __FUNCTION__, '3.0.0' );
 	}
 
-	// Test for the minimum length the email can be.
+	// Kiểm tra độ dài tối thiểu email có thể có.
 	if ( strlen( $email ) < 6 ) {
 		/**
-		 * Filters whether an email address is valid.
+		 * Lọc xem địa chỉ email có hợp lệ hay không.
 		 *
-		 * This filter is evaluated under several different contexts, such as 'email_too_short',
+		 * Bộ lọc này được đánh giá dưới nhiều ngữ cảnh khác nhau, như 'email_too_short',
 		 * 'email_no_at', 'local_invalid_chars', 'domain_period_sequence', 'domain_period_limits',
-		 * 'domain_no_periods', 'sub_hyphen_limits', 'sub_invalid_chars', or no specific context.
+		 * 'domain_no_periods', 'sub_hyphen_limits', 'sub_invalid_chars', hoặc không có ngữ cảnh cụ thể.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param string|false $is_email The email address if successfully passed the is_email() checks, false otherwise.
-		 * @param string       $email    The email address being checked.
-		 * @param string       $context  Context under which the email was tested.
+		 * @param string|false $is_email Địa chỉ email nếu vượt qua kiểm tra is_email() thành công, false nếu không.
+		 * @param string       $email    Địa chỉ email đang được kiểm tra.
+		 * @param string       $context  Ngữ cảnh mà email được kiểm tra.
 		 */
 		return apply_filters( 'is_email', false, $email, 'email_too_short' );
 	}
 
-	// Test for an @ character after the first position.
+	// Kiểm tra ký tự @ sau vị trí đầu tiên.
 	if ( strpos( $email, '@', 1 ) === false ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'is_email', false, $email, 'email_no_at' );
 	}
 
-	// Split out the local and domain parts.
+	// Tách phần local và phần domain.
 	list( $local, $domain ) = explode( '@', $email, 2 );
 
 	/*
-	 * LOCAL PART
-	 * Test for invalid characters.
+	 * PHẦN LOCAL
+	 * Kiểm tra ký tự không hợp lệ.
 	 */
 	if ( ! preg_match( '/^[a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~\.-]+$/', $local ) ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'is_email', false, $email, 'local_invalid_chars' );
 	}
 
 	/*
-	 * DOMAIN PART
-	 * Test for sequences of periods.
+	 * PHẦN DOMAIN
+	 * Kiểm tra các chuỗi dấu chấm liên tiếp.
 	 */
 	if ( preg_match( '/\.{2,}/', $domain ) ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'is_email', false, $email, 'domain_period_sequence' );
 	}
 
-	// Test for leading and trailing periods and whitespace.
+	// Kiểm tra dấu chấm và khoảng trắng ở đầu và cuối.
 	if ( trim( $domain, " \t\n\r\0\x0B." ) !== $domain ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'is_email', false, $email, 'domain_period_limits' );
 	}
 
-	// Split the domain into subs.
+	// Tách domain thành các phần con.
 	$subs = explode( '.', $domain );
 
-	// Assume the domain will have at least two subs.
+	// Giả định domain sẽ có ít nhất hai phần con.
 	if ( 2 > count( $subs ) ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'is_email', false, $email, 'domain_no_periods' );
 	}
 
-	// Loop through each sub.
+	// Lặp qua từng phần con.
 	foreach ( $subs as $sub ) {
-		// Test for leading and trailing hyphens and whitespace.
+		// Kiểm tra dấu gạch ngang và khoảng trắng ở đầu và cuối.
 		if ( trim( $sub, " \t\n\r\0\x0B-" ) !== $sub ) {
-			/** This filter is documented in wp-includes/formatting.php */
+			/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 			return apply_filters( 'is_email', false, $email, 'sub_hyphen_limits' );
 		}
 
-		// Test for invalid characters.
+		// Kiểm tra ký tự không hợp lệ.
 		if ( ! preg_match( '/^[a-z0-9-]+$/i', $sub ) ) {
-			/** This filter is documented in wp-includes/formatting.php */
+			/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 			return apply_filters( 'is_email', false, $email, 'sub_invalid_chars' );
 		}
 	}
 
-	// Congratulations, your email made it!
-	/** This filter is documented in wp-includes/formatting.php */
+	// Chúc mừng, email của bạn đã vượt qua!
+	/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 	return apply_filters( 'is_email', $email, $email, null );
 }
 
 /**
- * Converts to ASCII from email subjects.
+ * Chuyển đổi sang ASCII từ tiêu đề email.
  *
  * @since 1.2.0
  *
- * @param string $subject Subject line.
- * @return string Converted string to ASCII.
+ * @param string $subject Dòng tiêu đề.
+ * @return string Chuỗi đã chuyển đổi sang ASCII.
  */
 function wp_iso_descrambler( $subject ) {
-	/* this may only work with iso-8859-1, I'm afraid */
+	/* điều này có thể chỉ hoạt động với iso-8859-1 */
 	if ( ! preg_match( '#\=\?(.+)\?Q\?(.+)\?\=#i', $subject, $matches ) ) {
 		return $subject;
 	}
@@ -3644,29 +3643,29 @@ function wp_iso_descrambler( $subject ) {
 }
 
 /**
- * Helper function to convert hex encoded chars to ASCII.
+ * Hàm trợ giúp để chuyển đổi ký tự mã hóa hex sang ASCII.
  *
  * @since 3.1.0
  * @access private
  *
- * @param array $matches The preg_replace_callback matches array.
- * @return string Converted chars.
+ * @param array $matches Mảng kết quả khớp của preg_replace_callback.
+ * @return string Ký tự đã chuyển đổi.
  */
 function _wp_iso_convert( $matches ) {
 	return chr( hexdec( strtolower( $matches[1] ) ) );
 }
 
 /**
- * Given a date in the timezone of the site, returns that date in UTC.
+ * Cho một ngày trong múi giờ của trang web, trả về ngày đó theo UTC.
  *
- * Requires and returns a date in the Y-m-d H:i:s format.
- * Return format can be overridden using the $format parameter.
+ * Yêu cầu và trả về ngày ở định dạng Y-m-d H:i:s.
+ * Định dạng trả về có thể được ghi đè bằng tham số $format.
  *
  * @since 1.2.0
  *
- * @param string $date_string The date to be converted, in the timezone of the site.
- * @param string $format      The format string for the returned date. Default 'Y-m-d H:i:s'.
- * @return string Formatted version of the date, in UTC.
+ * @param string $date_string Ngày cần chuyển đổi, trong múi giờ của trang web.
+ * @param string $format      Chuỗi định dạng cho ngày trả về. Mặc định 'Y-m-d H:i:s'.
+ * @return string Phiên bản đã định dạng của ngày, theo UTC.
  */
 function get_gmt_from_date( $date_string, $format = 'Y-m-d H:i:s' ) {
 	$datetime = date_create( $date_string, wp_timezone() );
@@ -3679,16 +3678,16 @@ function get_gmt_from_date( $date_string, $format = 'Y-m-d H:i:s' ) {
 }
 
 /**
- * Given a date in UTC or GMT timezone, returns that date in the timezone of the site.
+ * Cho một ngày theo múi giờ UTC hoặc GMT, trả về ngày đó trong múi giờ của trang web.
  *
- * Requires a date in the Y-m-d H:i:s format.
- * Default return format of 'Y-m-d H:i:s' can be overridden using the `$format` parameter.
+ * Yêu cầu ngày ở định dạng Y-m-d H:i:s.
+ * Định dạng trả về mặc định 'Y-m-d H:i:s' có thể được ghi đè bằng tham số `$format`.
  *
  * @since 1.2.0
  *
- * @param string $date_string The date to be converted, in UTC or GMT timezone.
- * @param string $format      The format string for the returned date. Default 'Y-m-d H:i:s'.
- * @return string Formatted version of the date, in the site's timezone.
+ * @param string $date_string Ngày cần chuyển đổi, theo múi giờ UTC hoặc GMT.
+ * @param string $format      Chuỗi định dạng cho ngày trả về. Mặc định 'Y-m-d H:i:s'.
+ * @return string Phiên bản đã định dạng của ngày, trong múi giờ của trang web.
  */
 function get_date_from_gmt( $date_string, $format = 'Y-m-d H:i:s' ) {
 	$datetime = date_create( $date_string, new DateTimeZone( 'UTC' ) );
@@ -3701,15 +3700,15 @@ function get_date_from_gmt( $date_string, $format = 'Y-m-d H:i:s' ) {
 }
 
 /**
- * Given an ISO 8601 timezone, returns its UTC offset in seconds.
+ * Cho một múi giờ ISO 8601, trả về độ lệch UTC tính bằng giây.
  *
  * @since 1.5.0
  *
- * @param string $timezone Either 'Z' for 0 offset or '±hhmm'.
- * @return int|float The offset in seconds.
+ * @param string $timezone 'Z' cho độ lệch 0 hoặc '±hhmm'.
+ * @return int|float Độ lệch tính bằng giây.
  */
 function iso8601_timezone_to_offset( $timezone ) {
-	// $timezone is either 'Z' or '[+|-]hhmm'.
+	// $timezone là 'Z' hoặc '[+|-]hhmm'.
 	if ( 'Z' === $timezone ) {
 		$offset = 0;
 	} else {
@@ -3722,18 +3721,18 @@ function iso8601_timezone_to_offset( $timezone ) {
 }
 
 /**
- * Given an ISO 8601 (Ymd\TH:i:sO) date, returns a MySQL DateTime (Y-m-d H:i:s) format used by post_date[_gmt].
+ * Cho một ngày ISO 8601 (Ymd\TH:i:sO), trả về định dạng MySQL DateTime (Y-m-d H:i:s) được sử dụng bởi post_date[_gmt].
  *
  * @since 1.5.0
  *
- * @param string $date_string Date and time in ISO 8601 format {@link https://en.wikipedia.org/wiki/ISO_8601}.
- * @param string $timezone    Optional. If set to 'gmt' returns the result in UTC. Default 'user'.
- * @return string|false The date and time in MySQL DateTime format - Y-m-d H:i:s, or false on failure.
+ * @param string $date_string Ngày và giờ ở định dạng ISO 8601 {@link https://en.wikipedia.org/wiki/ISO_8601}.
+ * @param string $timezone    Tùy chọn. Nếu đặt thành 'gmt' trả về kết quả theo UTC. Mặc định 'user'.
+ * @return string|false Ngày và giờ ở định dạng MySQL DateTime - Y-m-d H:i:s, hoặc false khi thất bại.
  */
 function iso8601_to_datetime( $date_string, $timezone = 'user' ) {
 	$timezone    = strtolower( $timezone );
 	$wp_timezone = wp_timezone();
-	$datetime    = date_create( $date_string, $wp_timezone ); // Timezone is ignored if input has one.
+	$datetime    = date_create( $date_string, $wp_timezone ); // Múi giờ bị bỏ qua nếu đầu vào đã có.
 
 	if ( false === $datetime ) {
 		return false;
@@ -3751,97 +3750,97 @@ function iso8601_to_datetime( $date_string, $timezone = 'user' ) {
 }
 
 /**
- * Strips out all characters that are not allowable in an email.
+ * Loại bỏ tất cả ký tự không được phép trong email.
  *
  * @since 1.5.0
  *
- * @param string $email Email address to filter.
- * @return string Filtered email address.
+ * @param string $email Địa chỉ email cần lọc.
+ * @return string Địa chỉ email đã lọc.
  */
 function sanitize_email( $email ) {
-	// Test for the minimum length the email can be.
+	// Kiểm tra độ dài tối thiểu email có thể có.
 	if ( strlen( $email ) < 6 ) {
 		/**
-		 * Filters a sanitized email address.
+		 * Lọc địa chỉ email đã được làm sạch.
 		 *
-		 * This filter is evaluated under several contexts, including 'email_too_short',
+		 * Bộ lọc này được đánh giá dưới nhiều ngữ cảnh, bao gồm 'email_too_short',
 		 * 'email_no_at', 'local_invalid_chars', 'domain_period_sequence', 'domain_period_limits',
-		 * 'domain_no_periods', 'domain_no_valid_subs', or no context.
+		 * 'domain_no_periods', 'domain_no_valid_subs', hoặc không có ngữ cảnh.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param string $sanitized_email The sanitized email address.
-		 * @param string $email           The email address, as provided to sanitize_email().
-		 * @param string|null $message    A message to pass to the user. null if email is sanitized.
+		 * @param string $sanitized_email Địa chỉ email đã làm sạch.
+		 * @param string $email           Địa chỉ email, như được cung cấp cho sanitize_email().
+		 * @param string|null $message    Thông báo để truyền cho người dùng. null nếu email đã được làm sạch.
 		 */
 		return apply_filters( 'sanitize_email', '', $email, 'email_too_short' );
 	}
 
-	// Test for an @ character after the first position.
+	// Kiểm tra ký tự @ sau vị trí đầu tiên.
 	if ( strpos( $email, '@', 1 ) === false ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'sanitize_email', '', $email, 'email_no_at' );
 	}
 
-	// Split out the local and domain parts.
+	// Tách phần local và phần domain.
 	list( $local, $domain ) = explode( '@', $email, 2 );
 
 	/*
-	 * LOCAL PART
-	 * Test for invalid characters.
+	 * PHẦN LOCAL
+	 * Kiểm tra ký tự không hợp lệ.
 	 */
 	$local = preg_replace( '/[^a-zA-Z0-9!#$%&\'*+\/=?^_`{|}~\.-]/', '', $local );
 	if ( '' === $local ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'sanitize_email', '', $email, 'local_invalid_chars' );
 	}
 
 	/*
-	 * DOMAIN PART
-	 * Test for sequences of periods.
+	 * PHẦN DOMAIN
+	 * Kiểm tra các chuỗi dấu chấm liên tiếp.
 	 */
 	$domain = preg_replace( '/\.{2,}/', '', $domain );
 	if ( '' === $domain ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'sanitize_email', '', $email, 'domain_period_sequence' );
 	}
 
-	// Test for leading and trailing periods and whitespace.
+	// Kiểm tra dấu chấm và khoảng trắng ở đầu và cuối.
 	$domain = trim( $domain, " \t\n\r\0\x0B." );
 	if ( '' === $domain ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'sanitize_email', '', $email, 'domain_period_limits' );
 	}
 
-	// Split the domain into subs.
+	// Tách domain thành các phần con.
 	$subs = explode( '.', $domain );
 
-	// Assume the domain will have at least two subs.
+	// Giả định domain sẽ có ít nhất hai phần con.
 	if ( 2 > count( $subs ) ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'sanitize_email', '', $email, 'domain_no_periods' );
 	}
 
-	// Create an array that will contain valid subs.
+	// Tạo mảng chứa các phần con hợp lệ.
 	$new_subs = array();
 
-	// Loop through each sub.
+	// Lặp qua từng phần con.
 	foreach ( $subs as $sub ) {
-		// Test for leading and trailing hyphens.
+		// Kiểm tra dấu gạch ngang ở đầu và cuối.
 		$sub = trim( $sub, " \t\n\r\0\x0B-" );
 
-		// Test for invalid characters.
+		// Kiểm tra ký tự không hợp lệ.
 		$sub = preg_replace( '/[^a-z0-9-]+/i', '', $sub );
 
-		// If there's anything left, add it to the valid subs.
+		// Nếu còn gì đó, thêm vào các phần con hợp lệ.
 		if ( '' !== $sub ) {
 			$new_subs[] = $sub;
 		}
 	}
 
-	// If there aren't 2 or more valid subs.
+	// Nếu không có 2 hoặc nhiều phần con hợp lệ.
 	if ( 2 > count( $new_subs ) ) {
-		/** This filter is documented in wp-includes/formatting.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 		return apply_filters( 'sanitize_email', '', $email, 'domain_no_valid_subs' );
 	}
 
@@ -3852,7 +3851,7 @@ function sanitize_email( $email ) {
 	$sanitized_email = $local . '@' . $domain;
 
 	// Congratulations, your email made it!
-	/** This filter is documented in wp-includes/formatting.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 	return apply_filters( 'sanitize_email', $sanitized_email, $email, null );
 }
 
@@ -3980,7 +3979,7 @@ function wp_trim_excerpt( $text = '', $post = null ) {
 		 */
 		$filter_block_removed = remove_filter( 'the_content', 'do_blocks', 9 );
 
-		/** This filter is documented in wp-includes/post-template.php */
+		/** Bộ lọc này được ghi nhận trong wp-includes/post-template.php */
 		$text = apply_filters( 'the_content', $text );
 		$text = str_replace( ']]>', ']]&gt;', $text );
 
@@ -5949,14 +5948,14 @@ function _print_emoji_detection_script() {
 
 	if ( SCRIPT_DEBUG ) {
 		$settings['source'] = array(
-			/** This filter is documented in wp-includes/class-wp-scripts.php */
+			/** Bộ lọc này được ghi nhận trong wp-includes/class-wp-scripts.php */
 			'wpemoji' => apply_filters( 'script_loader_src', includes_url( "js/wp-emoji.js?$version" ), 'wpemoji' ),
-			/** This filter is documented in wp-includes/class-wp-scripts.php */
+			/** Bộ lọc này được ghi nhận trong wp-includes/class-wp-scripts.php */
 			'twemoji' => apply_filters( 'script_loader_src', includes_url( "js/twemoji.js?$version" ), 'twemoji' ),
 		);
 	} else {
 		$settings['source'] = array(
-			/** This filter is documented in wp-includes/class-wp-scripts.php */
+			/** Bộ lọc này được ghi nhận trong wp-includes/class-wp-scripts.php */
 			'concatemoji' => apply_filters( 'script_loader_src', includes_url( "js/wp-emoji-release.min.js?$version" ), 'concatemoji' ),
 		);
 	}
@@ -6027,10 +6026,10 @@ function wp_staticize_emoji( $text ) {
 		return $text;
 	}
 
-	/** This filter is documented in wp-includes/formatting.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 	$cdn_url = apply_filters( 'emoji_url', 'https://s.w.org/images/core/emoji/16.0.1/72x72/' );
 
-	/** This filter is documented in wp-includes/formatting.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 	$ext = apply_filters( 'emoji_ext', '.png' );
 
 	$output = '';
@@ -6142,7 +6141,7 @@ function wp_staticize_emoji_for_email( $mail ) {
 		$content_type = 'text/plain';
 	}
 
-	/** This filter is documented in wp-includes/pluggable.php */
+	/** Bộ lọc này được ghi nhận trong wp-includes/pluggable.php */
 	$content_type = apply_filters( 'wp_mail_content_type', $content_type );
 
 	if ( 'text/html' === $content_type ) {

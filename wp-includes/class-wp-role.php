@@ -1,6 +1,6 @@
 <?php
 /**
- * User API: WP_Role class
+ * API Người dùng: Lớp WP_Role
  *
  * @package WordPress
  * @subpackage Users
@@ -8,14 +8,14 @@
  */
 
 /**
- * Core class used to extend the user roles API.
+ * Lớp lõi dùng để mở rộng API vai trò người dùng.
  *
  * @since 2.0.0
  */
 #[AllowDynamicProperties]
 class WP_Role {
 	/**
-	 * Role name.
+	 * Tên vai trò.
 	 *
 	 * @since 2.0.0
 	 * @var string
@@ -23,25 +23,25 @@ class WP_Role {
 	public $name;
 
 	/**
-	 * List of capabilities the role contains.
+	 * Danh sách quyền hạn mà vai trò chứa.
 	 *
 	 * @since 2.0.0
-	 * @var bool[] Array of key/value pairs where keys represent a capability name and boolean values
-	 *             represent whether the role has that capability.
+	 * @var bool[] Mảng cặp khóa/giá trị trong đó khóa là tên quyền hạn và giá trị boolean
+	 *             cho biết vai trò có quyền hạn đó hay không.
 	 */
 	public $capabilities;
 
 	/**
-	 * Constructor - Set up object properties.
+	 * Hàm khởi tạo - Thiết lập các thuộc tính đối tượng.
 	 *
-	 * The list of capabilities must have the key as the name of the capability
-	 * and the value a boolean of whether it is granted to the role.
+	 * Danh sách quyền hạn phải có khóa là tên quyền hạn
+	 * và giá trị là boolean cho biết có được cấp cho vai trò hay không.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $role         Role name.
-	 * @param bool[] $capabilities Array of key/value pairs where keys represent a capability name and boolean values
-	 *                             represent whether the role has that capability.
+	 * @param string $role         Tên vai trò.
+	 * @param bool[] $capabilities Mảng cặp khóa/giá trị trong đó khóa là tên quyền hạn và giá trị boolean
+	 *                             cho biết vai trò có quyền hạn đó hay không.
 	 */
 	public function __construct( $role, $capabilities ) {
 		$this->name         = $role;
@@ -49,12 +49,12 @@ class WP_Role {
 	}
 
 	/**
-	 * Assign role a capability.
+	 * Gán quyền hạn cho vai trò.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $cap   Capability name.
-	 * @param bool   $grant Whether role has capability privilege.
+	 * @param string $cap   Tên quyền hạn.
+	 * @param bool   $grant Vai trò có được đặc quyền này hay không.
 	 */
 	public function add_cap( $cap, $grant = true ) {
 		$this->capabilities[ $cap ] = $grant;
@@ -62,11 +62,11 @@ class WP_Role {
 	}
 
 	/**
-	 * Removes a capability from a role.
+	 * Xóa quyền hạn khỏi vai trò.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $cap Capability name.
+	 * @param string $cap Tên quyền hạn.
 	 */
 	public function remove_cap( $cap ) {
 		unset( $this->capabilities[ $cap ] );
@@ -74,23 +74,23 @@ class WP_Role {
 	}
 
 	/**
-	 * Determines whether the role has the given capability.
+	 * Xác định xem vai trò có quyền hạn đã cho hay không.
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $cap Capability name.
-	 * @return bool Whether the role has the given capability.
+	 * @param string $cap Tên quyền hạn.
+	 * @return bool Vai trò có quyền hạn đã cho hay không.
 	 */
 	public function has_cap( $cap ) {
 		/**
-		 * Filters which capabilities a role has.
+		 * Lọc các quyền hạn mà một vai trò có.
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param bool[] $capabilities Array of key/value pairs where keys represent a capability name and boolean values
-		 *                             represent whether the role has that capability.
-		 * @param string $cap          Capability name.
-		 * @param string $name         Role name.
+		 * @param bool[] $capabilities Mảng cặp khóa/giá trị trong đó khóa là tên quyền hạn và giá trị boolean
+		 *                             cho biết vai trò có quyền hạn đó hay không.
+		 * @param string $cap          Tên quyền hạn.
+		 * @param string $name         Tên vai trò.
 		 */
 		$capabilities = apply_filters( 'role_has_cap', $this->capabilities, $cap, $this->name );
 

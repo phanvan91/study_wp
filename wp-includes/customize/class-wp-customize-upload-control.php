@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Upload_Control class
+ * API Tùy biến: Lớp WP_Customize_Upload_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,7 +8,7 @@
  */
 
 /**
- * Customize Upload Control Class.
+ * Lớp Điều khiển Tải lên trong Tùy biến.
  *
  * @since 3.4.0
  *
@@ -16,7 +16,7 @@
  */
 class WP_Customize_Upload_Control extends WP_Customize_Media_Control {
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 3.4.0
 	 * @var string
@@ -24,7 +24,7 @@ class WP_Customize_Upload_Control extends WP_Customize_Media_Control {
 	public $type = 'upload';
 
 	/**
-	 * Media control mime type.
+	 * Loại MIME của điều khiển phương tiện.
 	 *
 	 * @since 4.1.0
 	 * @var string
@@ -32,19 +32,19 @@ class WP_Customize_Upload_Control extends WP_Customize_Media_Control {
 	public $mime_type = '';
 
 	/**
-	 * Button labels.
+	 * Nhãn các nút.
 	 *
 	 * @since 4.1.0
 	 * @var array
 	 */
 	public $button_labels = array();
 
-	public $removed = '';         // Unused.
-	public $context;              // Unused.
-	public $extensions = array(); // Unused.
+	public $removed = '';         // Không sử dụng.
+	public $context;              // Không sử dụng.
+	public $extensions = array(); // Không sử dụng.
 
 	/**
-	 * Refresh the parameters passed to the JavaScript via JSON.
+	 * Làm mới các tham số được truyền tới JavaScript qua JSON.
 	 *
 	 * @since 3.4.0
 	 *
@@ -55,7 +55,7 @@ class WP_Customize_Upload_Control extends WP_Customize_Media_Control {
 
 		$value = $this->value();
 		if ( $value ) {
-			// Get the attachment model for the existing file.
+			// Lấy mô hình đính kèm cho tệp hiện có.
 			$attachment_id = attachment_url_to_postid( $value );
 			if ( $attachment_id ) {
 				$this->json['attachment'] = wp_prepare_attachment_for_js( $attachment_id );

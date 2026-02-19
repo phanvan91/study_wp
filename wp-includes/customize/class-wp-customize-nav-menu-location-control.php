@@ -1,6 +1,6 @@
 <?php
 /**
- * Customize API: WP_Customize_Nav_Menu_Location_Control class
+ * API Tùy biến: Lớp WP_Customize_Nav_Menu_Location_Control
  *
  * @package WordPress
  * @subpackage Customize
@@ -8,9 +8,9 @@
  */
 
 /**
- * Customize Menu Location Control Class.
+ * Lớp Điều khiển Vị trí Menu trong Tùy biến.
  *
- * This custom control is only needed for JS.
+ * Điều khiển tùy chỉnh này chỉ cần thiết cho JS.
  *
  * @since 4.3.0
  *
@@ -19,7 +19,7 @@
 class WP_Customize_Nav_Menu_Location_Control extends WP_Customize_Control {
 
 	/**
-	 * Control type.
+	 * Loại điều khiển.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -27,7 +27,7 @@ class WP_Customize_Nav_Menu_Location_Control extends WP_Customize_Control {
 	public $type = 'nav_menu_location';
 
 	/**
-	 * Location ID.
+	 * ID vị trí.
 	 *
 	 * @since 4.3.0
 	 * @var string
@@ -35,7 +35,7 @@ class WP_Customize_Nav_Menu_Location_Control extends WP_Customize_Control {
 	public $location_id = '';
 
 	/**
-	 * Refresh the parameters passed to JavaScript via JSON.
+	 * Làm mới các tham số được truyền tới JavaScript qua JSON.
 	 *
 	 * @since 4.3.0
 	 *
@@ -47,10 +47,10 @@ class WP_Customize_Nav_Menu_Location_Control extends WP_Customize_Control {
 	}
 
 	/**
-	 * Render content just like a normal select control.
+	 * Hiển thị nội dung giống như một điều khiển select thông thường.
 	 *
 	 * @since 4.3.0
-	 * @since 4.9.0 Added a button to create menus.
+	 * @since 4.9.0 Đã thêm nút để tạo menu.
 	 */
 	public function render_content() {
 		if ( empty( $this->choices ) ) {

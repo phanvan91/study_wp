@@ -1,20 +1,20 @@
 <?php
 /**
- * Administration API: Default admin hooks
+ * API Quản trị: Các hook admin mặc định
  *
  * @package WordPress
  * @subpackage Administration
  * @since 4.3.0
  */
 
-// Bookmark hooks.
+// Hook Bookmark.
 add_action( 'admin_page_access_denied', 'wp_link_manager_disabled_message' );
 
-// Dashboard hooks.
+// Hook Bảng điều khiển.
 add_action( 'activity_box_end', 'wp_dashboard_quota' );
 add_action( 'welcome_panel', 'wp_welcome_panel' );
 
-// Media hooks.
+// Hook Media.
 add_action( 'attachment_submitbox_misc_actions', 'attachment_submitbox_metadata' );
 add_filter( 'plupload_init', 'wp_show_heic_upload_error' );
 
@@ -37,12 +37,12 @@ add_filter( 'media_upload_library', 'media_upload_library' );
 
 add_filter( 'media_upload_tabs', 'update_gallery_tab' );
 
-// Admin color schemes.
+// Bảng màu quản trị.
 add_action( 'admin_init', 'register_admin_color_schemes', 1 );
 add_action( 'admin_head', 'wp_color_scheme_settings' );
 add_action( 'admin_color_scheme_picker', 'admin_color_scheme_picker' );
 
-// Misc hooks.
+// Hook khác.
 add_action( 'admin_init', 'wp_admin_headers' );
 add_action( 'admin_init', 'send_frame_options_header', 10, 0 );
 add_action( 'admin_head', 'wp_admin_canonical_url' );
@@ -51,7 +51,7 @@ add_action( 'admin_head', 'wp_admin_viewport_meta' );
 add_action( 'customize_controls_head', 'wp_admin_viewport_meta' );
 add_filter( 'nav_menu_meta_box_object', '_wp_nav_menu_meta_box_object' );
 
-// Prerendering.
+// Tải trước tài nguyên.
 if ( ! is_customize_preview() ) {
 	add_filter( 'admin_print_styles', 'wp_resource_hints', 1 );
 }
@@ -60,7 +60,7 @@ add_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 add_action( 'admin_print_scripts', 'print_head_scripts', 20 );
 add_action( 'admin_print_footer_scripts', '_wp_footer_scripts' );
 add_action( 'admin_enqueue_scripts', 'wp_enqueue_emoji_styles' );
-add_action( 'admin_print_styles', 'print_emoji_styles' ); // Retained for backwards-compatibility. Unhooked by wp_enqueue_emoji_styles().
+add_action( 'admin_print_styles', 'print_emoji_styles' ); // Giữ lại để tương thích ngược. Bị gỡ hook bởi wp_enqueue_emoji_styles().
 add_action( 'admin_print_styles', 'print_admin_styles', 20 );
 
 add_action( 'admin_print_scripts-index.php', 'wp_localize_community_events' );
@@ -89,13 +89,13 @@ add_action( 'use_block_editor_for_post_type', '_disable_block_editor_for_navigat
 add_action( 'edit_form_after_title', '_disable_content_editor_for_navigation_post_type' );
 add_action( 'edit_form_after_editor', '_enable_content_editor_for_navigation_post_type' );
 
-// Nav Menu hooks.
+// Hook Menu Điều hướng.
 add_action( 'admin_head-nav-menus.php', '_wp_delete_orphaned_draft_menu_items' );
 
-// Plugin hooks.
+// Hook Plugin.
 add_filter( 'allowed_options', 'option_update_filter' );
 
-// Plugin Install hooks.
+// Hook Cài đặt Plugin.
 add_action( 'install_plugins_featured', 'install_dashboard' );
 add_action( 'install_plugins_upload', 'install_plugins_upload' );
 add_action( 'install_plugins_search', 'display_plugins_table' );
@@ -106,17 +106,17 @@ add_action( 'install_plugins_beta', 'display_plugins_table' );
 add_action( 'install_plugins_favorites', 'display_plugins_table' );
 add_action( 'install_plugins_pre_plugin-information', 'install_plugin_information' );
 
-// Template hooks.
+// Hook Template.
 add_action( 'admin_enqueue_scripts', array( 'WP_Internal_Pointers', 'enqueue_scripts' ) );
 add_action( 'user_register', array( 'WP_Internal_Pointers', 'dismiss_pointers_for_new_users' ) );
 
-// Theme hooks.
+// Hook Giao diện.
 add_action( 'customize_controls_print_footer_scripts', 'customize_themes_print_templates' );
 
-// Theme Install hooks.
+// Hook Cài đặt Giao diện.
 add_action( 'install_themes_pre_theme-information', 'install_theme_information' );
 
-// User hooks.
+// Hook Người dùng.
 add_action( 'admin_init', 'default_password_nag_handler' );
 
 add_action( 'admin_notices', 'default_password_nag' );
@@ -126,9 +126,9 @@ add_action( 'profile_update', 'default_password_nag_edit_user', 10, 2 );
 
 add_action( 'personal_options_update', 'send_confirmation_on_profile_email' );
 
-// Update hooks.
-add_action( 'load-plugins.php', 'wp_plugin_update_rows', 20 ); // After wp_update_plugins() is called.
-add_action( 'load-themes.php', 'wp_theme_update_rows', 20 ); // After wp_update_themes() is called.
+// Hook Cập nhật.
+add_action( 'load-plugins.php', 'wp_plugin_update_rows', 20 ); // Sau khi wp_update_plugins() được gọi.
+add_action( 'load-themes.php', 'wp_theme_update_rows', 20 ); // Sau khi wp_update_themes() được gọi.
 
 add_action( 'admin_notices', 'update_nag', 3 );
 add_action( 'admin_notices', 'deactivated_plugins_notice', 5 );
@@ -139,36 +139,36 @@ add_action( 'admin_notices', 'wp_recovery_mode_nag', 1 );
 
 add_filter( 'update_footer', 'core_update_footer' );
 
-// Update Core hooks.
+// Hook Cập nhật Lõi.
 add_action( '_core_updated_successfully', '_redirect_to_about_wordpress' );
 
-// Upgrade hooks.
+// Hook Nâng cấp.
 add_action( 'upgrader_process_complete', array( 'Language_Pack_Upgrader', 'async_upgrade' ), 20 );
 add_action( 'upgrader_process_complete', 'wp_version_check', 10, 0 );
 add_action( 'upgrader_process_complete', 'wp_update_plugins', 10, 0 );
 add_action( 'upgrader_process_complete', 'wp_update_themes', 10, 0 );
 
-// Privacy hooks.
+// Hook Quyền riêng tư.
 add_filter( 'wp_privacy_personal_data_erasure_page', 'wp_privacy_process_personal_data_erasure_page', 10, 5 );
 add_filter( 'wp_privacy_personal_data_export_page', 'wp_privacy_process_personal_data_export_page', 10, 7 );
 add_action( 'wp_privacy_personal_data_export_file', 'wp_privacy_generate_personal_data_export_file', 10 );
 add_action( 'wp_privacy_personal_data_erased', '_wp_privacy_send_erasure_fulfillment_notification', 10 );
 
-// Privacy policy text changes check.
+// Kiểm tra thay đổi nội dung chính sách quyền riêng tư.
 add_action( 'admin_init', array( 'WP_Privacy_Policy_Content', 'text_change_check' ), 100 );
 
-// Show a "postbox" with the text suggestions for a privacy policy.
+// Hiển thị "postbox" với gợi ý nội dung cho chính sách quyền riêng tư.
 add_action( 'admin_notices', array( 'WP_Privacy_Policy_Content', 'notice' ) );
 
-// Add the suggested policy text from WordPress.
+// Thêm nội dung gợi ý chính sách từ WordPress.
 add_action( 'admin_init', array( 'WP_Privacy_Policy_Content', 'add_suggested_content' ), 1 );
 
-// Update the cached policy info when the policy page is updated.
+// Cập nhật thông tin chính sách đã cache khi trang chính sách được cập nhật.
 add_action( 'post_updated', array( 'WP_Privacy_Policy_Content', '_policy_page_updated' ) );
 
-// Append '(Draft)' to draft page titles in the privacy page dropdown.
+// Thêm '(Bản nháp)' vào tiêu đề trang bản nháp trong dropdown trang quyền riêng tư.
 add_filter( 'list_pages', '_wp_privacy_settings_filter_draft_page_titles', 10, 2 );
 
-// Font management.
+// Quản lý phông chữ.
 add_action( 'admin_print_styles', 'wp_print_font_faces', 50 );
 add_action( 'admin_print_styles', 'wp_print_font_faces_from_style_variations', 50 );

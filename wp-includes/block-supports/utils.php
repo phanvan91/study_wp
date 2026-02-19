@@ -1,6 +1,6 @@
 <?php
 /**
- * Block support utility functions.
+ * Các hàm tiện ích hỗ trợ block.
  *
  * @package WordPress
  * @subpackage Block Supports
@@ -8,17 +8,17 @@
  */
 
 /**
- * Checks whether serialization of the current block's supported properties
- * should occur.
+ * Kiểm tra xem việc tuần tự hóa các thuộc tính được hỗ trợ của block hiện tại
+ * có nên xảy ra hay không.
  *
  * @since 6.0.0
  * @access private
  *
- * @param WP_Block_Type $block_type  Block type.
- * @param string        $feature_set Name of block support feature set..
- * @param string        $feature     Optional name of individual feature to check.
+ * @param WP_Block_Type $block_type  Loại block.
+ * @param string        $feature_set Tên tập tính năng hỗ trợ block.
+ * @param string        $feature     Tên tùy chọn của tính năng cụ thể để kiểm tra.
  *
- * @return bool Whether to serialize block support styles & classes.
+ * @return bool Có nên tuần tự hóa các kiểu và lớp CSS hỗ trợ block hay không.
  */
 function wp_should_skip_block_supports_serialization( $block_type, $feature_set, $feature = null ) {
 	if ( ! is_object( $block_type ) || ! $feature_set ) {

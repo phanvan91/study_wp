@@ -1,6 +1,6 @@
 <?php
 /**
- * Upgrader API: Language_Pack_Upgrader_Skin class
+ * API Nâng cấp: Lớp Language_Pack_Upgrader_Skin
  *
  * @package WordPress
  * @subpackage Upgrader
@@ -8,10 +8,10 @@
  */
 
 /**
- * Translation Upgrader Skin for WordPress Translation Upgrades.
+ * Giao diện nâng cấp bản dịch cho việc nâng cấp bản dịch WordPress.
  *
  * @since 3.7.0
- * @since 4.6.0 Moved to its own file from wp-admin/includes/class-wp-upgrader-skins.php.
+ * @since 4.6.0 Được chuyển sang file riêng từ wp-admin/includes/class-wp-upgrader-skins.php.
  *
  * @see WP_Upgrader_Skin
  */
@@ -22,9 +22,9 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 	public $display_footer_actions = true;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * Sets up the language pack upgrader skin.
+	 * Thiết lập giao diện nâng cấp gói ngôn ngữ.
 	 *
 	 * @since 3.7.0
 	 *
@@ -47,7 +47,7 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Performs an action before a language pack update.
+	 * Thực hiện hành động trước khi cập nhật gói ngôn ngữ.
 	 *
 	 * @since 3.7.0
 	 */
@@ -61,12 +61,12 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Displays an error message about the update.
+	 * Hiển thị thông báo lỗi về việc cập nhật.
 	 *
 	 * @since 3.7.0
-	 * @since 5.9.0 Renamed `$error` to `$errors` for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$error` thành `$errors` để hỗ trợ tham số đặt tên PHP 8.
 	 *
-	 * @param string|WP_Error $errors Errors.
+	 * @param string|WP_Error $errors Các lỗi.
 	 */
 	public function error( $errors ) {
 		echo '<div class="lp-error">';
@@ -75,7 +75,7 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Performs an action following a language pack update.
+	 * Thực hiện hành động sau khi cập nhật gói ngôn ngữ.
 	 *
 	 * @since 3.7.0
 	 */
@@ -84,7 +84,7 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
-	 * Displays the footer following the bulk update process.
+	 * Hiển thị phần chân trang sau quá trình cập nhật hàng loạt.
 	 *
 	 * @since 3.7.0
 	 */
@@ -100,11 +100,11 @@ class Language_Pack_Upgrader_Skin extends WP_Upgrader_Skin {
 		);
 
 		/**
-		 * Filters the list of action links available following a translations update.
+		 * Lọc danh sách liên kết hành động có sẵn sau khi cập nhật bản dịch.
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param string[] $update_actions Array of translations update links.
+		 * @param string[] $update_actions Mảng các liên kết cập nhật bản dịch.
 		 */
 		$update_actions = apply_filters( 'update_translations_complete_actions', $update_actions );
 

@@ -1,62 +1,62 @@
 <?php
 /**
- * Used to set up and fix common variables and include
- * the Multisite procedural and class library.
+ * Được sử dụng để thiết lập và sửa các biến chung và bao gồm
+ * thư viện thủ tục và lớp Multisite.
  *
- * Allows for some configuration in wp-config.php (see ms-default-constants.php)
+ * Cho phép một số cấu hình trong wp-config.php (xem ms-default-constants.php)
  *
  * @package WordPress
  * @subpackage Multisite
  * @since 3.0.0
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
 /**
- * Objects representing the current network and current site.
+ * Các đối tượng đại diện cho mạng hiện tại và site hiện tại.
  *
- * These may be populated through a custom `sunrise.php`. If not, then this
- * file will attempt to populate them based on the current request.
+ * Chúng có thể được điền thông qua tệp `sunrise.php` tùy chỉnh. Nếu không, thì tệp
+ * này sẽ cố gắng điền chúng dựa trên yêu cầu hiện tại.
  *
- * @global WP_Network $current_site The current network.
- * @global object     $current_blog The current site.
- * @global string     $domain       Deprecated. The domain of the site found on load.
- *                                  Use `get_site()->domain` instead.
- * @global string     $path         Deprecated. The path of the site found on load.
- *                                  Use `get_site()->path` instead.
- * @global int        $site_id      Deprecated. The ID of the network found on load.
- *                                  Use `get_current_network_id()` instead.
- * @global bool       $public       Deprecated. Whether the site found on load is public.
- *                                  Use `get_site()->public` instead.
+ * @global WP_Network $current_site Mạng hiện tại.
+ * @global object     $current_blog Site hiện tại.
+ * @global string     $domain       Đã loại bỏ. Tên miền của site tìm thấy khi tải.
+ *                                  Sử dụng `get_site()->domain` thay thế.
+ * @global string     $path         Đã loại bỏ. Đường dẫn của site tìm thấy khi tải.
+ *                                  Sử dụng `get_site()->path` thay thế.
+ * @global int        $site_id      Đã loại bỏ. ID của mạng tìm thấy khi tải.
+ *                                  Sử dụng `get_current_network_id()` thay thế.
+ * @global bool       $public       Đã loại bỏ. Site tìm thấy khi tải có công khai hay không.
+ *                                  Sử dụng `get_site()->public` thay thế.
  *
  * @since 3.0.0
  */
 global $current_site, $current_blog, $domain, $path, $site_id, $public;
 
-/** WP_Network class */
+/** Lớp WP_Network */
 require_once ABSPATH . WPINC . '/class-wp-network.php';
 
-/** WP_Site class */
+/** Lớp WP_Site */
 require_once ABSPATH . WPINC . '/class-wp-site.php';
 
-/** Multisite loader */
+/** Trình tải Multisite */
 require_once ABSPATH . WPINC . '/ms-load.php';
 
-/** Default Multisite constants */
+/** Các hằng số Multisite mặc định */
 require_once ABSPATH . WPINC . '/ms-default-constants.php';
 
 if ( defined( 'SUNRISE' ) ) {
 	include_once WP_CONTENT_DIR . '/sunrise.php';
 }
 
-/** Check for and define SUBDOMAIN_INSTALL and the deprecated VHOST constant. */
+/** Kiểm tra và định nghĩa SUBDOMAIN_INSTALL và hằng số VHOST đã loại bỏ. */
 ms_subdomain_constants();
 
-// This block will process a request if the current network or current site objects
-// have not been populated in the global scope through something like `sunrise.php`.
+// Khối này sẽ xử lý yêu cầu nếu các đối tượng mạng hiện tại hoặc site hiện tại
+// chưa được điền trong phạm vi toàn cục thông qua thứ gì đó như `sunrise.php`.
 if ( ! isset( $current_site ) || ! isset( $current_blog ) ) {
 
 	$domain = strtolower( stripslashes( $_SERVER['HTTP_HOST'] ) );
@@ -77,7 +77,7 @@ if ( ! isset( $current_site ) || ! isset( $current_blog ) ) {
 	$bootstrap_result = ms_load_current_site_and_network( $domain, $path, is_subdomain_install() );
 
 	if ( true === $bootstrap_result ) {
-		// `$current_blog` and `$current_site are now populated.
+		// `$current_blog` và `$current_site` đã được điền.
 	} elseif ( false === $bootstrap_result ) {
 		ms_not_installed( $domain, $path );
 	} else {
@@ -90,8 +90,8 @@ if ( ! isset( $current_site ) || ! isset( $current_blog ) ) {
 	$public  = $current_blog->public;
 
 	if ( empty( $current_blog->site_id ) ) {
-		// This dates to [MU134] and shouldn't be relevant anymore,
-		// but it could be possible for arguments passed to insert_blog() etc.
+		// Điều này có từ [MU134] và không còn phù hợp nữa,
+		// nhưng có thể xảy ra với các tham số truyền cho insert_blog() v.v.
 		$current_blog->site_id = 1;
 	}
 
@@ -99,13 +99,13 @@ if ( ! isset( $current_site ) || ! isset( $current_blog ) ) {
 	wp_load_core_site_options( $site_id );
 }
 
-$wpdb->set_prefix( $table_prefix, false ); // $table_prefix can be set in sunrise.php.
+$wpdb->set_prefix( $table_prefix, false ); // $table_prefix có thể được đặt trong sunrise.php.
 $wpdb->set_blog_id( $current_blog->blog_id, $current_blog->site_id );
 $table_prefix       = $wpdb->get_blog_prefix();
 $_wp_switched_stack = array();
 $switched           = false;
 
-// Need to init cache again after blog_id is set.
+// Cần khởi tạo lại bộ nhớ đệm sau khi blog_id được đặt.
 wp_start_object_cache();
 
 if ( ! $current_site instanceof WP_Network ) {
@@ -116,12 +116,12 @@ if ( ! $current_blog instanceof WP_Site ) {
 	$current_blog = new WP_Site( $current_blog );
 }
 
-// Define upload directory constants.
+// Định nghĩa các hằng số thư mục upload.
 ms_upload_constants();
 
 /**
- * Fires after the current site and network have been detected and loaded
- * in multisite's bootstrap.
+ * Kích hoạt sau khi site hiện tại và mạng hiện tại đã được phát hiện và tải
+ * trong quá trình khởi động multisite.
  *
  * @since 4.6.0
  */

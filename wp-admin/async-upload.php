@@ -1,6 +1,6 @@
 <?php
 /**
- * Server-side file upload handler from wp-plupload or other asynchronous upload methods.
+ * Trình xử lý tải file phía máy chủ từ wp-plupload hoặc các phương thức tải lên bất đồng bộ khác.
  *
  * @package WordPress
  * @subpackage Administration
@@ -14,7 +14,7 @@ if ( ! defined( 'WP_ADMIN' ) ) {
 	define( 'WP_ADMIN', true );
 }
 
-/** Load WordPress Bootstrap */
+/** Nạp Bootstrap WordPress */
 require_once dirname( __DIR__ ) . '/wp-load.php';
 
 require_once ABSPATH . 'wp-admin/admin.php';
@@ -35,7 +35,7 @@ if ( ! current_user_can( 'upload_files' ) ) {
 	wp_die( __( 'Sorry, you are not allowed to upload files.' ) );
 }
 
-// Just fetch the detail form for that attachment.
+// Chỉ lấy form chi tiết cho attachment đó.
 if ( isset( $_REQUEST['attachment_id'] ) && (int) $_REQUEST['attachment_id'] && $_REQUEST['fetch'] ) {
 	$id   = (int) $_REQUEST['attachment_id'];
 	$post = get_post( $id );
@@ -54,7 +54,7 @@ if ( isset( $_REQUEST['attachment_id'] ) && (int) $_REQUEST['attachment_id'] && 
 						echo '<img class="pinkynail" src="' . esc_url( $thumb_url[0] ) . '" alt="" />';
 					}
 
-					// Title shouldn't ever be empty, but use filename just in case.
+					// Tiêu đề không nên bao giờ rỗng, nhưng dùng tên file phòng trường hợp.
 					$file     = get_attached_file( $post->ID );
 					$file_url = wp_get_attachment_url( $post->ID );
 					$title    = $post->post_title ? $post->post_title : wp_basename( $file );
@@ -139,18 +139,18 @@ if ( is_wp_error( $id ) ) {
 }
 
 if ( $_REQUEST['short'] ) {
-	// Short form response - attachment ID only.
+	// Phản hồi dạng ngắn - chỉ ID attachment.
 	echo $id;
 } else {
-	// Long form response - big chunk of HTML.
+	// Phản hồi dạng dài - khối HTML lớn.
 	$type = $_REQUEST['type'];
 
 	/**
-	 * Filters the returned ID of an uploaded attachment.
+	 * Lọc ID trả về của attachment đã tải lên.
 	 *
-	 * The dynamic portion of the hook name, `$type`, refers to the attachment type.
+	 * Phần động của tên hook, `$type`, tham chiếu đến loại attachment.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `async_upload_audio`
 	 *  - `async_upload_file`
@@ -159,7 +159,7 @@ if ( $_REQUEST['short'] ) {
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param int $id Uploaded attachment ID.
+	 * @param int $id ID attachment đã tải lên.
 	 */
 	echo apply_filters( "async_upload_{$type}", $id );
 }
