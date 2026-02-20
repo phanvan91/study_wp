@@ -1,20 +1,20 @@
 <?php
 /**
- * HTML API: WP_HTML_Tag_Processor class
+ * HTML API: Lớp WP_HTML_Tag_Processor
  *
- * Scans through an HTML document to find specific tags, then
- * transforms those tags by adding, removing, or updating the
- * values of the HTML attributes within that tag (opener).
+ * Quét qua tài liệu HTML để tìm các thẻ cụ thể, sau đó
+ * biến đổi các thẻ đó bằng cách thêm, xóa hoặc cập nhật
+ * giá trị các thuộc tính HTML trong thẻ mở đó.
  *
- * Does not fully parse HTML or _recurse_ into the HTML structure
- * Instead this scans linearly through a document and only parses
- * the HTML tag openers.
+ * Không phân tích đầy đủ HTML hoặc _đệ quy_ vào cấu trúc HTML.
+ * Thay vào đó, nó quét tuyến tính qua tài liệu và chỉ phân tích
+ * các thẻ mở HTML.
  *
- * ### Possible future direction for this module
+ * ### Hướng phát triển tương lai có thể cho module này
  *
- *  - Prune the whitespace when removing classes/attributes: e.g. "a b c" -> "c" not " c".
- *    This would increase the size of the changes for some operations but leave more
- *    natural-looking output HTML.
+ *  - Cắt bỏ khoảng trắng khi xóa class/thuộc tính: ví dụ "a b c" -> "c" chứ không phải " c".
+ *    Điều này sẽ tăng kích thước thay đổi cho một số thao tác nhưng cho ra
+ *    HTML đầu ra trông tự nhiên hơn.
  *
  * @package WordPress
  * @subpackage HTML-API

@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Templates_Controller class
+ * REST API: Lớp WP_REST_Templates_Controller
  *
  * @package    WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Base Templates REST API Controller.
+ * Bộ điều khiển REST API cơ sở cho Templates.
  *
  * @since 5.8.0
  *
@@ -17,7 +17,7 @@
 class WP_REST_Templates_Controller extends WP_REST_Controller {
 
 	/**
-	 * Post type.
+	 * Loại bài viết.
 	 *
 	 * @since 5.8.0
 	 * @var string
@@ -25,11 +25,11 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	protected $post_type;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $post_type Post type.
+	 * @param string $post_type Loại bài viết.
 	 */
 	public function __construct( $post_type ) {
 		$this->post_type = $post_type;
@@ -39,13 +39,13 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Registers the controllers routes.
+	 * Đăng ký các route của bộ điều khiển.
 	 *
 	 * @since 5.8.0
-	 * @since 6.1.0 Endpoint for fallback template content.
+	 * @since 6.1.0 Endpoint cho nội dung template dự phòng.
 	 */
 	public function register_routes() {
-		// Lists all templates.
+		// Liệt kê tất cả các template.
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base,
@@ -66,7 +66,7 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 			)
 		);
 
-		// Get fallback template content.
+		// Lấy nội dung template dự phòng.
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/lookup',
@@ -94,19 +94,19 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 			)
 		);
 
-		// Lists/updates a single template based on the given id.
+		// Liệt kê/cập nhật một template đơn lẻ dựa trên id đã cho.
 		register_rest_route(
 			$this->namespace,
-			// The route.
+			// Đường dẫn route.
 			sprintf(
 				'/%s/(?P<id>%s%s)',
 				$this->rest_base,
 				/*
-				 * Matches theme's directory: `/themes/<subdirectory>/<theme>/` or `/themes/<theme>/`.
-				 * Excludes invalid directory name characters: `/:<>*?"|`.
+				 * Khớp thư mục của theme: `/themes/<subdirectory>/<theme>/` hoặc `/themes/<theme>/`.
+				 * Loại trừ các ký tự tên thư mục không hợp lệ: `/:<>*?"|`.
 				 */
 				'([^\/:<>\*\?"\|]+(?:\/[^\/:<>\*\?"\|]+)?)',
-				// Matches the template name.
+				// Khớp tên template.
 				'[\/\w%-]+'
 			),
 			array(
@@ -149,12 +149,12 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Returns the fallback template for the given slug.
+	 * Trả về template dự phòng cho slug đã cho.
 	 *
 	 * @since 6.1.0
-	 * @since 6.3.0 Ignore empty templates.
+	 * @since 6.3.0 Bỏ qua các template rỗng.
 	 *
-	 * @param WP_REST_Request $request The request instance.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_template_fallback( $request ) {
@@ -165,24 +165,24 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 			array_shift( $hierarchy );
 		} while ( ! empty( $hierarchy ) && empty( $fallback_template->content ) );
 
-		// To maintain original behavior, return an empty object rather than a 404 error when no template is found.
+		// Để duy trì hành vi ban đầu, trả về đối tượng rỗng thay vì lỗi 404 khi không tìm thấy template.
 		$response = $fallback_template ? $this->prepare_item_for_response( $fallback_template, $request ) : new stdClass();
 
 		return rest_ensure_response( $response );
 	}
 
 	/**
-	 * Checks if the user has permissions to make the request.
+	 * Kiểm tra xem người dùng có quyền thực hiện yêu cầu không.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	protected function permissions_check( $request ) {
 		/*
-		 * Verify if the current user has edit_theme_options capability.
-		 * This capability is required to edit/view/delete templates.
+		 * Xác minh xem người dùng hiện tại có quyền edit_theme_options không.
+		 * Quyền này được yêu cầu để chỉnh sửa/xem/xóa các template.
 		 */
 		if ( ! current_user_can( 'edit_theme_options' ) ) {
 			return new WP_Error(
@@ -198,20 +198,20 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Requesting this endpoint for a template like 'twentytwentytwo//home'
-	 * requires using a path like /wp/v2/templates/twentytwentytwo//home. There
-	 * are special cases when WordPress routing corrects the name to contain
-	 * only a single slash like 'twentytwentytwo/home'.
+	 * Khi gửi yêu cầu đến endpoint này cho template như 'twentytwentytwo//home'
+	 * cần sử dụng đường dẫn như /wp/v2/templates/twentytwentytwo//home. Có
+	 * các trường hợp đặc biệt khi WordPress routing sửa tên thành chỉ chứa
+	 * một dấu gạch chéo như 'twentytwentytwo/home'.
 	 *
-	 * This method doubles the last slash if it's not already doubled. It relies
-	 * on the template ID format {theme_name}//{template_slug} and the fact that
-	 * slugs cannot contain slashes.
+	 * Phương thức này nhân đôi dấu gạch chéo cuối nếu chưa được nhân đôi. Nó dựa vào
+	 * định dạng ID template {theme_name}//{template_slug} và thực tế rằng
+	 * slug không thể chứa dấu gạch chéo.
 	 *
 	 * @since 5.9.0
 	 * @see https://core.trac.wordpress.org/ticket/54507
 	 *
-	 * @param string $id Template ID.
-	 * @return string Sanitized template ID.
+	 * @param string $id ID của template.
+	 * @return string ID template đã được làm sạch.
 	 */
 	public function _sanitize_template_id( $id ) {
 		$id = urldecode( $id );
@@ -233,13 +233,13 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to read templates.
+	 * Kiểm tra xem yêu cầu có quyền đọc các template không.
 	 *
 	 * @since 5.8.0
-	 * @since 6.6.0 Allow users with edit_posts capability to read templates.
+	 * @since 6.6.0 Cho phép người dùng có quyền edit_posts đọc các template.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function get_items_permissions_check( $request ) {
 		if ( current_user_can( 'edit_posts' ) ) {
@@ -261,16 +261,16 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Returns a list of templates.
+	 * Trả về danh sách các template.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request The request instance.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
 	 * @return WP_REST_Response
 	 */
 	public function get_items( $request ) {
 		if ( $request->is_method( 'HEAD' ) ) {
-			// Return early as this handler doesn't add any response headers.
+			// Trả về sớm vì handler này không thêm bất kỳ header phản hồi nào.
 			return new WP_REST_Response( array() );
 		}
 
@@ -295,13 +295,13 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to read a single template.
+	 * Kiểm tra xem yêu cầu có quyền đọc một template đơn lẻ không.
 	 *
 	 * @since 5.8.0
-	 * @since 6.6.0 Allow users with edit_posts capability to read individual templates.
+	 * @since 6.6.0 Cho phép người dùng có quyền edit_posts đọc template riêng lẻ.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access for the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc mục, đối tượng WP_Error nếu không.
 	 */
 	public function get_item_permissions_check( $request ) {
 		if ( current_user_can( 'edit_posts' ) ) {
@@ -323,11 +323,11 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Returns the given template
+	 * Trả về template đã cho
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request The request instance.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_item( $request ) {
@@ -345,24 +345,24 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to write a single template.
+	 * Kiểm tra xem yêu cầu có quyền ghi vào một template đơn lẻ không.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has write access for the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền ghi cho mục, đối tượng WP_Error nếu không.
 	 */
 	public function update_item_permissions_check( $request ) {
 		return $this->permissions_check( $request );
 	}
 
 	/**
-	 * Updates a single template.
+	 * Cập nhật một template đơn lẻ.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function update_item( $request ) {
 		$template = get_block_template( $request['id'], $this->post_type );
@@ -415,7 +415,7 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 		$request->set_param( 'context', 'edit' );
 
 		$post = get_post( $template->wp_id );
-		/** This action is documented in wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php */
+		/** Action này được ghi chú trong wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php */
 		do_action( "rest_after_insert_{$this->post_type}", $post, $request, false );
 
 		wp_after_insert_post( $post, $update, $post_before );
@@ -426,24 +426,24 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to create a template.
+	 * Kiểm tra xem yêu cầu có quyền tạo template không.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền tạo mục, đối tượng WP_Error nếu không.
 	 */
 	public function create_item_permissions_check( $request ) {
 		return $this->permissions_check( $request );
 	}
 
 	/**
-	 * Creates a single template.
+	 * Tạo một template đơn lẻ.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function create_item( $request ) {
 		$prepared_post = $this->prepare_item_for_database( $request );
@@ -475,7 +475,7 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 			return $fields_update;
 		}
 
-		/** This action is documented in wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php */
+		/** Action này được ghi chú trong wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php */
 		do_action( "rest_after_insert_{$this->post_type}", $post, $request, true );
 
 		wp_after_insert_post( $post, false, null );
@@ -490,24 +490,24 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to delete a single template.
+	 * Kiểm tra xem yêu cầu có quyền xóa một template đơn lẻ không.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has delete access for the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền xóa mục, đối tượng WP_Error nếu không.
 	 */
 	public function delete_item_permissions_check( $request ) {
 		return $this->permissions_check( $request );
 	}
 
 	/**
-	 * Deletes a single template.
+	 * Xóa một template đơn lẻ.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function delete_item( $request ) {
 		$template = get_block_template( $request['id'], $this->post_type );
@@ -523,7 +523,7 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 
 		$request->set_param( 'context', 'edit' );
 
-		// If we're forcing, then delete permanently.
+		// Nếu buộc xóa, thì xóa vĩnh viễn.
 		if ( $force ) {
 			$previous = $this->prepare_item_for_response( $template, $request );
 			$result   = wp_delete_post( $id, true );
@@ -535,7 +535,7 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 				)
 			);
 		} else {
-			// Otherwise, only trash if we haven't already.
+			// Nếu không, chỉ đưa vào thùng rác nếu chưa được đưa vào.
 			if ( 'trash' === $template->status ) {
 				return new WP_Error(
 					'rest_template_already_trashed',
@@ -545,8 +545,8 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 			}
 
 			/*
-			 * (Note that internally this falls through to `wp_delete_post()`
-			 * if the Trash is disabled.)
+			 * (Lưu ý rằng bên trong sẽ chuyển sang `wp_delete_post()`
+			 * nếu Thùng rác bị tắt.)
 			 */
 			$result           = wp_trash_post( $id );
 			$template->status = 'trash';
@@ -565,12 +565,12 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepares a single template for create or update.
+	 * Chuẩn bị một template đơn lẻ để tạo hoặc cập nhật.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return stdClass|WP_Error Changes to pass to wp_update_post.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @return stdClass|WP_Error Các thay đổi để truyền cho wp_update_post.
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$template = $request['id'] ? get_block_template( $request['id'], $this->post_type ) : null;
@@ -657,41 +657,41 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 			$changes->post_author = $post_author;
 		}
 
-		/** This filter is documented in wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php */
+		/** Bộ lọc này được ghi chú trong wp-includes/rest-api/endpoints/class-wp-rest-posts-controller.php */
 		return apply_filters( "rest_pre_insert_{$this->post_type}", $changes, $request );
 	}
 
 	/**
-	 * Prepare a single template output for response
+	 * Chuẩn bị đầu ra của một template đơn lẻ cho phản hồi
 	 *
 	 * @since 5.8.0
-	 * @since 5.9.0 Renamed `$template` to `$item` to match parent class for PHP 8 named parameter support.
-	 * @since 6.3.0 Added `modified` property to the response.
+	 * @since 5.9.0 Đổi tên `$template` thành `$item` để khớp với lớp cha cho hỗ trợ tham số đặt tên PHP 8.
+	 * @since 6.3.0 Thêm thuộc tính `modified` vào phản hồi.
 	 *
-	 * @param WP_Block_Template $item    Template instance.
-	 * @param WP_REST_Request   $request Request object.
-	 * @return WP_REST_Response Response object.
+	 * @param WP_Block_Template $item    Đối tượng template.
+	 * @param WP_REST_Request   $request Đối tượng yêu cầu.
+	 * @return WP_REST_Response Đối tượng phản hồi.
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		// Don't prepare the response body for HEAD requests.
+		// Không chuẩn bị nội dung phản hồi cho các yêu cầu HEAD.
 		if ( $request->is_method( 'HEAD' ) ) {
 			return new WP_REST_Response( array() );
 		}
 
 		/*
-		 * Resolve pattern blocks so they don't need to be resolved client-side
-		 * in the editor, improving performance.
+		 * Phân giải các block pattern để chúng không cần phải được phân giải phía client
+		 * trong trình soạn thảo, cải thiện hiệu suất.
 		 */
 		$blocks        = parse_blocks( $item->content );
 		$blocks        = resolve_pattern_blocks( $blocks );
 		$item->content = serialize_blocks( $blocks );
 
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả cụ thể hơn để sử dụng trong phương thức này.
 		$template = $item;
 
 		$fields = $this->get_fields_for_response( $request );
 
-		// Base fields for every template.
+		// Các trường cơ sở cho mọi template.
 		$data = array();
 
 		if ( rest_is_field_included( 'id', $fields ) ) {
@@ -743,7 +743,7 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 
 		if ( rest_is_field_included( 'title.rendered', $fields ) ) {
 			if ( $template->wp_id ) {
-				/** This filter is documented in wp-includes/post-template.php */
+				/** Bộ lọc này được ghi chú trong wp-includes/post-template.php */
 				$data['title']['rendered'] = apply_filters( 'the_title', $template->title, $template->wp_id );
 			} else {
 				$data['title']['rendered'] = $template->title;
@@ -797,7 +797,7 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 		$data    = $this->add_additional_fields_to_object( $data, $request );
 		$data    = $this->filter_response_by_context( $data, $context );
 
-		// Wrap the data in a response object.
+		// Bọc dữ liệu trong đối tượng phản hồi.
 		$response = rest_ensure_response( $data );
 
 		if ( rest_is_field_included( '_links', $fields ) || rest_is_field_included( '_embedded', $fields ) ) {
@@ -816,21 +816,21 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Returns the source from where the template originally comes from.
+	 * Trả về nguồn gốc ban đầu của template.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Block_Template $template_object Template instance.
-	 * @return string                            Original source of the template one of theme, plugin, site, or user.
+	 * @param WP_Block_Template $template_object Đối tượng template.
+	 * @return string                            Nguồn gốc của template: theme, plugin, site, hoặc user.
 	 */
 	private static function get_wp_templates_original_source_field( $template_object ) {
 		if ( 'wp_template' === $template_object->type || 'wp_template_part' === $template_object->type ) {
 			/*
-			 * Added by theme.
-			 * Template originally provided by a theme, but customized by a user.
-			 * Templates originally didn't have the 'origin' field so identify
-			 * older customized templates by checking for no origin and a 'theme'
-			 * or 'custom' source.
+			 * Được thêm bởi theme.
+			 * Template ban đầu được cung cấp bởi theme, nhưng đã được tùy chỉnh bởi người dùng.
+			 * Các template ban đầu không có trường 'origin' nên cần nhận diện
+			 * các template tùy chỉnh cũ bằng cách kiểm tra không có origin và nguồn
+			 * là 'theme' hoặc 'custom'.
 			 */
 			if ( $template_object->has_theme_file &&
 			( 'theme' === $template_object->origin || (
@@ -847,33 +847,33 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 				return 'theme';
 			}
 
-			// Added by plugin.
+			// Được thêm bởi plugin.
 			if ( 'plugin' === $template_object->origin ) {
 				return 'plugin';
 			}
 
 			/*
-			 * Added by site.
-			 * Template was created from scratch, but has no author. Author support
-			 * was only added to templates in WordPress 5.9. Fallback to showing the
-			 * site logo and title.
+			 * Được thêm bởi site.
+			 * Template được tạo từ đầu, nhưng không có tác giả. Hỗ trợ tác giả
+			 * chỉ được thêm vào template từ WordPress 5.9. Dự phòng hiển thị
+			 * logo và tiêu đề của site.
 			 */
 			if ( empty( $template_object->has_theme_file ) && 'custom' === $template_object->source && empty( $template_object->author ) ) {
 				return 'site';
 			}
 		}
 
-		// Added by user.
+		// Được thêm bởi người dùng.
 		return 'user';
 	}
 
 	/**
-	 * Returns a human readable text for the author of the template.
+	 * Trả về văn bản dễ đọc cho tác giả của template.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Block_Template $template_object Template instance.
-	 * @return string                            Human readable text for the author.
+	 * @param WP_Block_Template $template_object Đối tượng template.
+	 * @return string                            Văn bản dễ đọc cho tác giả.
 	 */
 	private static function get_wp_templates_author_text_field( $template_object ) {
 		$original_source = self::get_wp_templates_original_source_field( $template_object );
@@ -890,7 +890,7 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 
 					foreach ( $plugins as $plugin_file ) {
 						$plugin_basename = plugin_basename( $plugin_file );
-						// Split basename by '/' to get the plugin slug.
+						// Tách basename bằng '/' để lấy slug của plugin.
 						list( $plugin_slug, ) = explode( '/', $plugin_basename );
 
 						if ( $plugin_slug === $template_object->plugin ) {
@@ -906,8 +906,8 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 				}
 
 				/*
-				 * Fall back to the theme name if the plugin is not defined. That's needed to keep backwards
-				 * compatibility with templates that were registered before the plugin attribute was added.
+				 * Dự phòng sử dụng tên theme nếu plugin không được xác định. Điều này cần thiết để giữ
+				 * tương thích ngược với các template đã được đăng ký trước khi thuộc tính plugin được thêm vào.
 				 */
 				$plugins         = get_plugins();
 				$plugin_basename = plugin_basename( sanitize_text_field( $template_object->theme . '.php' ) );
@@ -927,18 +927,18 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 				return $author->get( 'display_name' );
 		}
 
-		// Fail-safe to return a string should the original source ever fall through.
+		// Dự phòng an toàn để trả về chuỗi trong trường hợp nguồn gốc không khớp bất kỳ trường hợp nào.
 		return '';
 	}
 
 
 	/**
-	 * Prepares links for the request.
+	 * Chuẩn bị các liên kết cho yêu cầu.
 	 *
 	 * @since 5.8.0
 	 *
 	 * @param integer $id ID.
-	 * @return array Links for the given post.
+	 * @return array Các liên kết cho bài viết đã cho.
 	 */
 	protected function prepare_links( $id ) {
 		$links = array(
@@ -978,11 +978,11 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get the link relations available for the post and current user.
+	 * Lấy các mối quan hệ liên kết có sẵn cho bài viết và người dùng hiện tại.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @return string[] List of link relations.
+	 * @return string[] Danh sách các mối quan hệ liên kết.
 	 */
 	protected function get_available_actions() {
 		$rels = array();
@@ -1001,12 +1001,12 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves the query params for the posts collection.
+	 * Lấy các tham số truy vấn cho bộ sưu tập bài viết.
 	 *
 	 * @since 5.8.0
-	 * @since 5.9.0 Added `'area'` and `'post_type'`.
+	 * @since 5.9.0 Thêm `'area'` và `'post_type'`.
 	 *
-	 * @return array Collection parameters.
+	 * @return array Các tham số bộ sưu tập.
 	 */
 	public function get_collection_params() {
 		return array(
@@ -1027,12 +1027,12 @@ class WP_REST_Templates_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves the block type' schema, conforming to JSON Schema.
+	 * Lấy schema của loại block, tuân thủ JSON Schema.
 	 *
 	 * @since 5.8.0
-	 * @since 5.9.0 Added `'area'`.
+	 * @since 5.9.0 Thêm `'area'`.
 	 *
-	 * @return array Item schema data.
+	 * @return array Dữ liệu schema của mục.
 	 */
 	public function get_item_schema() {
 		if ( $this->schema ) {

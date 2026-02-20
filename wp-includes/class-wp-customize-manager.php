@@ -1207,14 +1207,13 @@ final class WP_Customize_Manager {
 		$changeset_data = array();
 		if ( $this->changeset_post_id() ) {
 			/*
-			 * Don't re-import starter content into a changeset saved persistently.
-			 * This will need to be revisited in the future once theme switching
-			 * is allowed with drafted/scheduled changesets, since switching to
-			 * another theme could result in more starter content being applied.
-			 * However, when doing an explicit save it is currently possible for
-			 * nav menus and nav menu items specifically to lose their starter_content
-			 * flags, thus resulting in duplicates being created since they fail
-			 * to get re-used. See #40146.
+			 * Không nhập lại nội dung khởi đầu vào changeset đã được lưu vĩnh viễn.
+			 * Điều này cần được xem xét lại trong tương lai khi cho phép chuyển đổi
+			 * giao diện với các changeset đã lưu nháp/đã lên lịch, vì chuyển sang
+			 * giao diện khác có thể dẫn đến nhiều nội dung khởi đầu hơn được áp dụng.
+			 * Tuy nhiên, khi thực hiện lưu rõ ràng, hiện tại có thể xảy ra trường hợp
+			 * các menu điều hướng và mục menu điều hướng cụ thể bị mất cờ starter_content,
+			 * dẫn đến việc tạo bản sao vì chúng không được tái sử dụng. Xem #40146.
 			 */
 			if ( 'auto-draft' !== get_post_status( $this->changeset_post_id() ) ) {
 				return;
@@ -1230,7 +1229,7 @@ final class WP_Customize_Manager {
 		$nav_menus        = isset( $starter_content['nav_menus'] ) && ! empty( $this->nav_menus ) ? $starter_content['nav_menus'] : array();
 		$theme_mods       = isset( $starter_content['theme_mods'] ) ? $starter_content['theme_mods'] : array();
 
-		// Widgets.
+		// Widget.
 		$max_widget_numbers = array();
 		foreach ( $sidebars_widgets as $sidebar_id => $widgets ) {
 			$sidebar_widget_ids = array();
@@ -1307,8 +1306,8 @@ final class WP_Customize_Manager {
 		);
 
 		/*
-		 * Obtain all post types referenced in starter content to use in query.
-		 * This is needed because 'any' will not account for post types not yet registered.
+		 * Lấy tất cả các loại bài viết được tham chiếu trong nội dung khởi đầu để sử dụng trong truy vấn.
+		 * Điều này cần thiết vì 'any' sẽ không bao gồm các loại bài viết chưa được đăng ký.
 		 */
 		$post_types = array_filter( array_merge( array( 'attachment' ), wp_list_pluck( $posts, 'post_type' ) ) );
 
@@ -2019,8 +2018,8 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Prevents sending a 404 status when returning the response for the customize
-	 * preview, since it causes the jQuery Ajax to fail. Send 200 instead.
+	 * Ngăn gửi trạng thái 404 khi trả về phản hồi cho bản xem trước tùy biến,
+	 * vì nó làm cho jQuery Ajax thất bại. Gửi 200 thay thế.
 	 *
 	 * @since 4.0.0
 	 * @deprecated 4.7.0
@@ -2030,7 +2029,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Prints base element for preview frame.
+	 * In phần tử base cho khung xem trước.
 	 *
 	 * @since 3.4.0
 	 * @deprecated 4.7.0
@@ -2040,17 +2039,17 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Prints a workaround to handle HTML5 tags in IE < 9.
+	 * In giải pháp tạm để xử lý thẻ HTML5 trong IE < 9.
 	 *
 	 * @since 3.4.0
-	 * @deprecated 4.7.0 Customizer no longer supports IE8, so all supported browsers recognize HTML5.
+	 * @deprecated 4.7.0 Trình tùy biến không còn hỗ trợ IE8, nên tất cả trình duyệt được hỗ trợ đều nhận dạng HTML5.
 	 */
 	public function customize_preview_html5() {
 		_deprecated_function( __FUNCTION__, '4.7.0' );
 	}
 
 	/**
-	 * Prints CSS for loading indicators for the Customizer preview.
+	 * In CSS cho các chỉ báo đang tải của bản xem trước Trình tùy biến.
 	 *
 	 * @since 4.2.0
 	 */
@@ -2079,10 +2078,10 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Removes customize_messenger_channel query parameter from the preview window when it is not in an iframe.
+	 * Xóa tham số truy vấn customize_messenger_channel khỏi cửa sổ xem trước khi nó không nằm trong iframe.
 	 *
-	 * This ensures that the admin bar will be shown. It also ensures that link navigation will
-	 * work as expected since the parent frame is not being sent the URL to navigate to.
+	 * Điều này đảm bảo rằng thanh quản trị sẽ được hiển thị. Nó cũng đảm bảo rằng điều hướng liên kết sẽ
+	 * hoạt động như mong đợi vì khung cha không được gửi URL để điều hướng đến.
 	 *
 	 * @since 4.7.0
 	 */
@@ -2109,7 +2108,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Prints JavaScript settings for preview frame.
+	 * In cài đặt JavaScript cho khung xem trước.
 	 *
 	 * @since 3.4.0
 	 */
@@ -2118,7 +2117,7 @@ final class WP_Customize_Manager {
 		$setting_validities          = $this->validate_setting_values( $post_values );
 		$exported_setting_validities = array_map( array( $this, 'prepare_setting_validity_for_js' ), $setting_validities );
 
-		// Note that the REQUEST_URI is not passed into home_url() since this breaks subdirectory installations.
+		// Lưu ý rằng REQUEST_URI không được truyền vào home_url() vì điều này làm hỏng các cài đặt thư mục con.
 		$self_url           = empty( $_SERVER['REQUEST_URI'] ) ? home_url( '/' ) : sanitize_url( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 		$state_query_params = array(
 			'customize_theme',
@@ -2209,9 +2208,9 @@ final class WP_Customize_Manager {
 			(function( v ) {
 				<?php
 				/*
-				 * Serialize settings separately from the initial _wpCustomizeSettings
-				 * serialization in order to avoid a peak memory usage spike.
-				 * @todo We may not even need to export the values at all since the pane syncs them anyway.
+				 * Tuần tự hóa các cài đặt riêng biệt khỏi quá trình tuần tự hóa _wpCustomizeSettings ban đầu
+				 * để tránh đỉnh sử dụng bộ nhớ.
+				 * @todo Có thể chúng ta không cần xuất các giá trị vì bảng điều khiển đồng bộ chúng.
 				 */
 				foreach ( $this->settings as $id => $setting ) {
 					if ( $setting->check_capabilities() ) {
@@ -2230,7 +2229,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Prints a signature so we can ensure the Customizer was properly executed.
+	 * In chữ ký để đảm bảo Trình tùy biến đã được thực thi đúng cách.
 	 *
 	 * @since 3.4.0
 	 * @deprecated 4.7.0
@@ -2240,14 +2239,14 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Removes the signature in case we experience a case where the Customizer was not properly executed.
+	 * Xóa chữ ký trong trường hợp Trình tùy biến không được thực thi đúng cách.
 	 *
 	 * @since 3.4.0
 	 * @deprecated 4.7.0
 	 *
-	 * @param callable|null $callback Optional. Value passed through for {@see 'wp_die_handler'} filter.
-	 *                                Default null.
-	 * @return callable|null Value passed through for {@see 'wp_die_handler'} filter.
+	 * @param callable|null $callback Tùy chọn. Giá trị được truyền qua cho bộ lọc {@see 'wp_die_handler'}.
+	 *                                Mặc định null.
+	 * @return callable|null Giá trị được truyền qua cho bộ lọc {@see 'wp_die_handler'}.
 	 */
 	public function remove_preview_signature( $callback = null ) {
 		_deprecated_function( __METHOD__, '4.7.0' );
@@ -2256,93 +2255,93 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Determines whether it is a theme preview or not.
+	 * Xác định xem có phải đang xem trước giao diện hay không.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return bool True if it's a preview, false if not.
+	 * @return bool True nếu đang xem trước, false nếu không.
 	 */
 	public function is_preview() {
 		return (bool) $this->previewing;
 	}
 
 	/**
-	 * Retrieves the template name of the previewed theme.
+	 * Lấy tên mẫu của giao diện đang xem trước.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Template name.
+	 * @return string Tên mẫu.
 	 */
 	public function get_template() {
 		return $this->theme()->get_template();
 	}
 
 	/**
-	 * Retrieves the stylesheet name of the previewed theme.
+	 * Lấy tên stylesheet của giao diện đang xem trước.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Stylesheet name.
+	 * @return string Tên stylesheet.
 	 */
 	public function get_stylesheet() {
 		return $this->theme()->get_stylesheet();
 	}
 
 	/**
-	 * Retrieves the template root of the previewed theme.
+	 * Lấy thư mục gốc mẫu của giao diện đang xem trước.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Theme root.
+	 * @return string Thư mục gốc giao diện.
 	 */
 	public function get_template_root() {
 		return get_raw_theme_root( $this->get_template(), true );
 	}
 
 	/**
-	 * Retrieves the stylesheet root of the previewed theme.
+	 * Lấy thư mục gốc stylesheet của giao diện đang xem trước.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @return string Theme root.
+	 * @return string Thư mục gốc giao diện.
 	 */
 	public function get_stylesheet_root() {
 		return get_raw_theme_root( $this->get_stylesheet(), true );
 	}
 
 	/**
-	 * Filters the active theme and return the name of the previewed theme.
+	 * Lọc giao diện đang hoạt động và trả về tên của giao diện đang xem trước.
 	 *
 	 * @since 3.4.0
 	 *
-	 * @param mixed $current_theme {@internal Parameter is not used}
-	 * @return string Theme name.
+	 * @param mixed $current_theme {@internal Tham số không được sử dụng}
+	 * @return string Tên giao diện.
 	 */
 	public function current_theme( $current_theme ) {
 		return $this->theme()->display( 'Name' );
 	}
 
 	/**
-	 * Validates setting values.
+	 * Xác thực các giá trị cài đặt.
 	 *
-	 * Validation is skipped for unregistered settings or for values that are
-	 * already null since they will be skipped anyway. Sanitization is applied
-	 * to values that pass validation, and values that become null or `WP_Error`
-	 * after sanitizing are marked invalid.
+	 * Việc xác thực bị bỏ qua cho các cài đặt chưa đăng ký hoặc cho các giá trị đã
+	 * là null vì chúng sẽ bị bỏ qua. Quá trình làm sạch được áp dụng
+	 * cho các giá trị vượt qua xác thực, và các giá trị trở thành null hoặc `WP_Error`
+	 * sau khi làm sạch được đánh dấu không hợp lệ.
 	 *
 	 * @since 4.6.0
 	 *
 	 * @see WP_REST_Request::has_valid_params()
 	 * @see WP_Customize_Setting::validate()
 	 *
-	 * @param array $setting_values Mapping of setting IDs to values to validate and sanitize.
+	 * @param array $setting_values Ánh xạ từ ID cài đặt đến các giá trị cần xác thực và làm sạch.
 	 * @param array $options {
-	 *     Options.
+	 *     Các tùy chọn.
 	 *
-	 *     @type bool $validate_existence  Whether a setting's existence will be checked.
-	 *     @type bool $validate_capability Whether the setting capability will be checked.
+	 *     @type bool $validate_existence  Có kiểm tra sự tồn tại của cài đặt hay không.
+	 *     @type bool $validate_capability Có kiểm tra quyền của cài đặt hay không.
 	 * }
-	 * @return array Mapping of setting IDs to return value of validate method calls, either `true` or `WP_Error`.
+	 * @return array Ánh xạ từ ID cài đặt đến giá trị trả về của phương thức xác thực, `true` hoặc `WP_Error`.
 	 */
 	public function validate_setting_values( $setting_values, $options = array() ) {
 		$options = wp_parse_args(
@@ -2371,7 +2370,7 @@ final class WP_Customize_Manager {
 				$validity = $setting->validate( $unsanitized_value );
 			}
 			if ( ! is_wp_error( $validity ) ) {
-				/** This filter is documented in wp-includes/class-wp-customize-setting.php */
+				/** Bộ lọc này được ghi chú trong wp-includes/class-wp-customize-setting.php */
 				$late_validity = apply_filters( "customize_validate_{$setting->id}", new WP_Error(), $unsanitized_value, $setting );
 				if ( is_wp_error( $late_validity ) && $late_validity->has_errors() ) {
 					$validity = $late_validity;
@@ -2394,17 +2393,17 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Prepares setting validity for exporting to the client (JS).
+	 * Chuẩn bị tính hợp lệ của cài đặt để xuất ra phía client (JS).
 	 *
-	 * Converts `WP_Error` instance into array suitable for passing into the
-	 * `wp.customize.Notification` JS model.
+	 * Chuyển đổi thể hiện `WP_Error` thành mảng phù hợp để truyền vào
+	 * mô hình JS `wp.customize.Notification`.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param true|WP_Error $validity Setting validity.
-	 * @return true|array If `$validity` was a WP_Error, the error codes will be array-mapped
-	 *                    to their respective `message` and `data` to pass into the
-	 *                    `wp.customize.Notification` JS model.
+	 * @param true|WP_Error $validity Tính hợp lệ của cài đặt.
+	 * @return true|array Nếu `$validity` là WP_Error, các mã lỗi sẽ được ánh xạ mảng
+	 *                    với `message` và `data` tương ứng để truyền vào
+	 *                    mô hình JS `wp.customize.Notification`.
 	 */
 	public function prepare_setting_validity_for_js( $validity ) {
 		if ( is_wp_error( $validity ) ) {
@@ -2422,10 +2421,10 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Handles customize_save WP Ajax request to save/update a changeset.
+	 * Xử lý yêu cầu WP Ajax customize_save để lưu/cập nhật changeset.
 	 *
 	 * @since 3.4.0
-	 * @since 4.7.0 The semantics of this method have changed to update a changeset, optionally to also change the status and other attributes.
+	 * @since 4.7.0 Ngữ nghĩa của phương thức này đã thay đổi để cập nhật changeset, tùy chọn cũng thay đổi trạng thái và các thuộc tính khác.
 	 */
 	public function save() {
 		if ( ! is_user_logged_in() ) {
@@ -2462,13 +2461,13 @@ final class WP_Customize_Manager {
 			$input_changeset_data = array();
 		}
 
-		// Validate title.
+		// Xác thực tiêu đề.
 		$changeset_title = null;
 		if ( isset( $_POST['customize_changeset_title'] ) ) {
 			$changeset_title = sanitize_text_field( wp_unslash( $_POST['customize_changeset_title'] ) );
 		}
 
-		// Validate changeset status param.
+		// Xác thực tham số trạng thái changeset.
 		$is_publish       = null;
 		$changeset_status = null;
 		if ( isset( $_POST['customize_changeset_status'] ) ) {
@@ -2483,10 +2482,10 @@ final class WP_Customize_Manager {
 		}
 
 		/*
-		 * Validate changeset date param. Date is assumed to be in local time for
-		 * the WP if in MySQL format (YYYY-MM-DD HH:MM:SS). Otherwise, the date
-		 * is parsed with strtotime() so that ISO date format may be supplied
-		 * or a string like "+10 minutes".
+		 * Xác thực tham số ngày changeset. Ngày được giả định là giờ địa phương cho
+		 * WP nếu ở định dạng MySQL (YYYY-MM-DD HH:MM:SS). Ngược lại, ngày
+		 * được phân tích bằng strtotime() để có thể cung cấp định dạng ngày ISO
+		 * hoặc chuỗi như "+10 minutes".
 		 */
 		$changeset_date_gmt = null;
 		if ( isset( $_POST['customize_changeset_date'] ) ) {
@@ -2515,7 +2514,7 @@ final class WP_Customize_Manager {
 			$lock_user_id = wp_check_post_lock( $this->changeset_post_id() );
 		}
 
-		// Force request to autosave when changeset is locked.
+		// Buộc yêu cầu tự lưu khi changeset đang bị khóa.
 		if ( $lock_user_id && ! $autosave ) {
 			$autosave           = true;
 			$changeset_status   = null;
@@ -2540,7 +2539,7 @@ final class WP_Customize_Manager {
 			$autosaved = true;
 		}
 
-		// If the changeset was locked and an autosave request wasn't itself an error, then now explicitly return with a failure.
+		// Nếu changeset đã bị khóa và yêu cầu tự lưu không phải là lỗi, thì bây giờ trả về rõ ràng với thất bại.
 		if ( $lock_user_id && ! is_wp_error( $r ) ) {
 			$r = new WP_Error(
 				'changeset_locked',
@@ -2565,12 +2564,12 @@ final class WP_Customize_Manager {
 			$response       = $r;
 			$changeset_post = get_post( $this->changeset_post_id() );
 
-			// Dismiss all other auto-draft changeset posts for this user (they serve like autosave revisions), as there should only be one.
+			// Hủy bỏ tất cả các bài viết changeset bản nháp tự động khác cho người dùng này (chúng hoạt động như các bản sửa đổi tự lưu), vì chỉ nên có một.
 			if ( $is_new_changeset ) {
 				$this->dismiss_user_auto_draft_changesets();
 			}
 
-			// Note that if the changeset status was publish, then it will get set to Trash if revisions are not supported.
+			// Lưu ý rằng nếu trạng thái changeset là publish, thì nó sẽ được đặt thành Thùng rác nếu bản sửa đổi không được hỗ trợ.
 			$response['changeset_status'] = $changeset_post->post_status;
 			if ( $is_publish && 'trash' === $response['changeset_status'] ) {
 				$response['changeset_status'] = 'publish';
@@ -2598,15 +2597,15 @@ final class WP_Customize_Manager {
 		}
 
 		/**
-		 * Filters response data for a successful customize_save Ajax request.
+		 * Lọc dữ liệu phản hồi cho yêu cầu Ajax customize_save thành công.
 		 *
-		 * This filter does not apply if there was a nonce or authentication failure.
+		 * Bộ lọc này không áp dụng nếu có lỗi nonce hoặc xác thực.
 		 *
 		 * @since 4.2.0
 		 *
-		 * @param array                $response Additional information passed back to the 'saved'
-		 *                                       event on `wp.customize`.
-		 * @param WP_Customize_Manager $manager  WP_Customize_Manager instance.
+		 * @param array                $response Thông tin bổ sung được trả về sự kiện 'saved'
+		 *                                       trên `wp.customize`.
+		 * @param WP_Customize_Manager $manager  Thể hiện WP_Customize_Manager.
 		 */
 		$response = apply_filters( 'customize_save_response', $response, $this );
 
@@ -2618,23 +2617,23 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Saves the post for the loaded changeset.
+	 * Lưu bài viết cho changeset đã tải.
 	 *
 	 * @since 4.7.0
 	 *
 	 * @param array $args {
-	 *     Args for changeset post.
+	 *     Tham số cho bài viết changeset.
 	 *
-	 *     @type array  $data            Optional additional changeset data. Values will be merged on top of any existing post values.
-	 *     @type string $status          Post status. Optional. If supplied, the save will be transactional and a post revision will be allowed.
-	 *     @type string $title           Post title. Optional.
-	 *     @type string $date_gmt        Date in GMT. Optional.
-	 *     @type int    $user_id         ID for user who is saving the changeset. Optional, defaults to the current user ID.
-	 *     @type bool   $starter_content Whether the data is starter content. If false (default), then $starter_content will be cleared for any $data being saved.
-	 *     @type bool   $autosave        Whether this is a request to create an autosave revision.
+	 *     @type array  $data            Dữ liệu changeset bổ sung tùy chọn. Giá trị sẽ được gộp lên trên bất kỳ giá trị bài viết hiện có nào.
+	 *     @type string $status          Trạng thái bài viết. Tùy chọn. Nếu được cung cấp, quá trình lưu sẽ là giao dịch và bản sửa đổi bài viết sẽ được cho phép.
+	 *     @type string $title           Tiêu đề bài viết. Tùy chọn.
+	 *     @type string $date_gmt        Ngày theo GMT. Tùy chọn.
+	 *     @type int    $user_id         ID người dùng đang lưu changeset. Tùy chọn, mặc định là ID người dùng hiện tại.
+	 *     @type bool   $starter_content Dữ liệu có phải nội dung khởi đầu hay không. Nếu false (mặc định), $starter_content sẽ bị xóa cho bất kỳ $data nào được lưu.
+	 *     @type bool   $autosave        Đây có phải là yêu cầu tạo bản sửa đổi tự lưu hay không.
 	 * }
 	 *
-	 * @return array|WP_Error Returns array on success and WP_Error with array data on error.
+	 * @return array|WP_Error Trả về mảng khi thành công và WP_Error với dữ liệu mảng khi lỗi.
 	 */
 	public function save_changeset_post( $args = array() ) {
 
@@ -2671,12 +2670,12 @@ final class WP_Customize_Manager {
 			}
 		}
 
-		// Fail if attempting to publish but publish hook is missing.
+		// Thất bại nếu cố gắng xuất bản nhưng hook xuất bản bị thiếu.
 		if ( 'publish' === $args['status'] && false === has_action( 'transition_post_status', '_wp_customize_publish_changeset' ) ) {
 			return new WP_Error( 'missing_publish_callback' );
 		}
 
-		// Validate date.
+		// Xác thực ngày.
 		$now = gmdate( 'Y-m-d H:i:59' );
 		if ( $args['date_gmt'] ) {
 			$is_future_dated = ( mysql2date( 'U', $args['date_gmt'], false ) > mysql2date( 'U', $now, false ) );
@@ -2693,7 +2692,7 @@ final class WP_Customize_Manager {
 			}
 		} elseif ( $changeset_post_id && 'future' === $args['status'] ) {
 
-			// Fail if the new status is future but the existing post's date is not in the future.
+			// Thất bại nếu trạng thái mới là future nhưng ngày của bài viết hiện tại không ở trong tương lai.
 			$changeset_post = get_post( $changeset_post_id );
 			if ( mysql2date( 'U', $changeset_post->post_date_gmt, false ) <= mysql2date( 'U', $now, false ) ) {
 				return new WP_Error( 'not_future_date', __( 'You must supply a future date to schedule.' ) );
@@ -2704,7 +2703,7 @@ final class WP_Customize_Manager {
 			$args['status'] = 'future';
 		}
 
-		// Validate autosave param. See _wp_post_revision_fields() for why these fields are disallowed.
+		// Xác thực tham số tự lưu. Xem _wp_post_revision_fields() để biết tại sao các trường này không được phép.
 		if ( $args['autosave'] ) {
 			if ( $args['date_gmt'] ) {
 				return new WP_Error( 'illegal_autosave_with_date_gmt' );
@@ -2715,18 +2714,18 @@ final class WP_Customize_Manager {
 			}
 		}
 
-		// The request was made via wp.customize.previewer.save().
+		// Yêu cầu được thực hiện thông qua wp.customize.previewer.save().
 		$update_transactionally = (bool) $args['status'];
 		$allow_revision         = (bool) $args['status'];
 
-		// Amend post values with any supplied data.
+		// Bổ sung giá trị bài viết với bất kỳ dữ liệu nào được cung cấp.
 		foreach ( $args['data'] as $setting_id => $setting_params ) {
 			if ( is_array( $setting_params ) && array_key_exists( 'value', $setting_params ) ) {
 				$this->set_post_value( $setting_id, $setting_params['value'] ); // Add to post values so that they can be validated and sanitized.
 			}
 		}
 
-		// Note that in addition to post data, this will include any stashed theme mods.
+		// Lưu ý rằng ngoài dữ liệu bài viết, điều này sẽ bao gồm bất kỳ theme mod đã được lưu trữ tạm nào.
 		$post_values = $this->unsanitized_post_values(
 			array(
 				'exclude_changeset' => true,
@@ -2736,12 +2735,12 @@ final class WP_Customize_Manager {
 		$this->add_dynamic_settings( array_keys( $post_values ) ); // Ensure settings get created even if they lack an input value.
 
 		/*
-		 * Get list of IDs for settings that have values different from what is currently
-		 * saved in the changeset. By skipping any values that are already the same, the
-		 * subset of changed settings can be passed into validate_setting_values to prevent
-		 * an underprivileged modifying a single setting for which they have the capability
-		 * from being blocked from saving. This also prevents a user from touching of the
-		 * previous saved settings and overriding the associated user_id if they made no change.
+		 * Lấy danh sách ID cho các cài đặt có giá trị khác với giá trị hiện tại
+		 * đã lưu trong changeset. Bằng cách bỏ qua các giá trị đã giống nhau, tập con
+		 * của các cài đặt đã thay đổi có thể được truyền vào validate_setting_values để ngăn
+		 * người dùng không đủ quyền sửa đổi một cài đặt mà họ có khả năng
+		 * bị chặn lưu. Điều này cũng ngăn người dùng chạm vào các cài đặt
+		 * đã lưu trước đó và ghi đè user_id liên quan nếu họ không thay đổi gì.
 		 */
 		$changed_setting_ids = array();
 		foreach ( $post_values as $setting_id => $setting_value ) {
@@ -2766,19 +2765,19 @@ final class WP_Customize_Manager {
 		}
 
 		/**
-		 * Fires before save validation happens.
+		 * Kích hoạt trước khi xác thực lưu diễn ra.
 		 *
-		 * Plugins can add just-in-time {@see 'customize_validate_{$this->ID}'} filters
-		 * at this point to catch any settings registered after `customize_register`.
-		 * The dynamic portion of the hook name, `$this->ID` refers to the setting ID.
+		 * Plugin có thể thêm bộ lọc {@see 'customize_validate_{$this->ID}'} đúng lúc
+		 * tại thời điểm này để bắt bất kỳ cài đặt nào được đăng ký sau `customize_register`.
+		 * Phần động của tên hook, `$this->ID` tham chiếu đến ID cài đặt.
 		 *
 		 * @since 4.6.0
 		 *
-		 * @param WP_Customize_Manager $manager WP_Customize_Manager instance.
+		 * @param WP_Customize_Manager $manager Thể hiện WP_Customize_Manager.
 		 */
 		do_action( 'customize_save_validation_before', $this );
 
-		// Validate settings.
+		// Xác thực các cài đặt.
 		$validated_values      = array_merge(
 			array_fill_keys( array_keys( $args['data'] ), null ), // Make sure existence/capability checks are done on value-less setting updates.
 			$post_values
@@ -2793,8 +2792,8 @@ final class WP_Customize_Manager {
 		$invalid_setting_count = count( array_filter( $setting_validities, 'is_wp_error' ) );
 
 		/*
-		 * Short-circuit if there are invalid settings the update is transactional.
-		 * A changeset update is transactional when a status is supplied in the request.
+		 * Dừng sớm nếu có các cài đặt không hợp lệ khi cập nhật là giao dịch.
+		 * Cập nhật changeset là giao dịch khi trạng thái được cung cấp trong yêu cầu.
 		 */
 		if ( $update_transactionally && $invalid_setting_count > 0 ) {
 			$response = array(
@@ -2805,14 +2804,14 @@ final class WP_Customize_Manager {
 			return new WP_Error( 'transaction_fail', '', $response );
 		}
 
-		// Obtain/merge data for changeset.
+		// Lấy/gộp dữ liệu cho changeset.
 		$original_changeset_data = $this->get_changeset_post_data( $changeset_post_id );
 		$data                    = $original_changeset_data;
 		if ( is_wp_error( $data ) ) {
 			$data = array();
 		}
 
-		// Ensure that all post values are included in the changeset data.
+		// Đảm bảo rằng tất cả giá trị bài viết được bao gồm trong dữ liệu changeset.
 		foreach ( $post_values as $setting_id => $post_value ) {
 			if ( ! isset( $args['data'][ $setting_id ] ) ) {
 				$args['data'][ $setting_id ] = array();
@@ -2828,7 +2827,7 @@ final class WP_Customize_Manager {
 				continue;
 			}
 
-			// Skip updating changeset for invalid setting values.
+			// Bỏ qua cập nhật changeset cho các giá trị cài đặt không hợp lệ.
 			if ( isset( $setting_validities[ $setting_id ] ) && is_wp_error( $setting_validities[ $setting_id ] ) ) {
 				continue;
 			}
@@ -2839,7 +2838,7 @@ final class WP_Customize_Manager {
 			}
 
 			if ( null === $setting_params ) {
-				// Remove setting from changeset entirely.
+				// Xóa hoàn toàn cài đặt khỏi changeset.
 				unset( $data[ $changeset_setting_id ] );
 			} else {
 
@@ -2847,10 +2846,10 @@ final class WP_Customize_Manager {
 					$data[ $changeset_setting_id ] = array();
 				}
 
-				// Merge any additional setting params that have been supplied with the existing params.
+				// Gộp bất kỳ tham số cài đặt bổ sung nào đã được cung cấp với các tham số hiện có.
 				$merged_setting_params = array_merge( $data[ $changeset_setting_id ], $setting_params );
 
-				// Skip updating setting params if unchanged (ensuring the user_id is not overwritten).
+				// Bỏ qua cập nhật tham số cài đặt nếu không thay đổi (đảm bảo user_id không bị ghi đè).
 				if ( $data[ $changeset_setting_id ] === $merged_setting_params ) {
 					continue;
 				}
@@ -2864,7 +2863,7 @@ final class WP_Customize_Manager {
 					)
 				);
 
-				// Clear starter_content flag in data if changeset is not explicitly being updated for starter content.
+				// Xóa cờ starter_content trong dữ liệu nếu changeset không được cập nhật rõ ràng cho nội dung khởi đầu.
 				if ( empty( $args['starter_content'] ) ) {
 					unset( $data[ $changeset_setting_id ]['starter_content'] );
 				}
@@ -2882,37 +2881,37 @@ final class WP_Customize_Manager {
 		);
 
 		/**
-		 * Filters the settings' data that will be persisted into the changeset.
+		 * Lọc dữ liệu cài đặt sẽ được lưu trữ vào changeset.
 		 *
-		 * Plugins may amend additional data (such as additional meta for settings) into the changeset with this filter.
+		 * Plugin có thể bổ sung dữ liệu thêm (chẳng hạn như meta bổ sung cho cài đặt) vào changeset bằng bộ lọc này.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param array $data Updated changeset data, mapping setting IDs to arrays containing a $value item and optionally other metadata.
+		 * @param array $data Dữ liệu changeset đã cập nhật, ánh xạ ID cài đặt tới các mảng chứa mục $value và tùy chọn siêu dữ liệu khác.
 		 * @param array $context {
-		 *     Filter context.
+		 *     Ngữ cảnh bộ lọc.
 		 *
-		 *     @type string               $uuid          Changeset UUID.
-		 *     @type string               $title         Requested title for the changeset post.
-		 *     @type string               $status        Requested status for the changeset post.
-		 *     @type string               $date_gmt      Requested date for the changeset post in MySQL format and GMT timezone.
-		 *     @type int|false            $post_id       Post ID for the changeset, or false if it doesn't exist yet.
-		 *     @type array                $previous_data Previous data contained in the changeset.
-		 *     @type WP_Customize_Manager $manager       Manager instance.
+		 *     @type string               $uuid          UUID changeset.
+		 *     @type string               $title         Tiêu đề được yêu cầu cho bài viết changeset.
+		 *     @type string               $status        Trạng thái được yêu cầu cho bài viết changeset.
+		 *     @type string               $date_gmt      Ngày được yêu cầu cho bài viết changeset theo định dạng MySQL và múi giờ GMT.
+		 *     @type int|false            $post_id       ID bài viết cho changeset, hoặc false nếu chưa tồn tại.
+		 *     @type array                $previous_data Dữ liệu trước đó chứa trong changeset.
+		 *     @type WP_Customize_Manager $manager       Thể hiện Trình quản lý.
 		 * }
 		 */
 		$data = apply_filters( 'customize_changeset_save_data', $data, $filter_context );
 
-		// Switch theme if publishing changes now.
+		// Chuyển giao diện nếu đang xuất bản thay đổi ngay bây giờ.
 		if ( 'publish' === $args['status'] && ! $this->is_theme_active() ) {
-			// Temporarily stop previewing the theme to allow switch_themes() to operate properly.
+			// Tạm thời dừng xem trước giao diện để cho phép switch_themes() hoạt động đúng cách.
 			$this->stop_previewing_theme();
 			switch_theme( $this->get_stylesheet() );
 			update_option( 'theme_switched_via_customizer', true );
 			$this->start_previewing_theme();
 		}
 
-		// Gather the data for wp_insert_post()/wp_update_post().
+		// Thu thập dữ liệu cho wp_insert_post()/wp_update_post().
 		$post_array = array(
 			// JSON_UNESCAPED_SLASHES is only to improve readability as slashes needn't be escaped in storage.
 			'post_content' => wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT ),
@@ -2931,7 +2930,7 @@ final class WP_Customize_Manager {
 			$post_array['post_status'] = $args['status'];
 		}
 
-		// Reset post date to now if we are publishing, otherwise pass post_date_gmt and translate for post_date.
+		// Đặt lại ngày bài viết về hiện tại nếu đang xuất bản, ngược lại truyền post_date_gmt và chuyển đổi cho post_date.
 		if ( 'publish' === $args['status'] ) {
 			$post_array['post_date_gmt'] = '0000-00-00 00:00:00';
 			$post_array['post_date']     = '0000-00-00 00:00:00';

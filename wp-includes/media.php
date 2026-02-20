@@ -2934,7 +2934,7 @@ function gallery_shortcode( $attr ) {
 }
 
 /**
- * Outputs the templates used by playlists.
+ * Xuất các mẫu template được sử dụng bởi playlist.
  *
  * @since 3.9.0
  */
@@ -2988,11 +2988,11 @@ function wp_underscore_playlist_templates() {
 }
 
 /**
- * Outputs and enqueues default scripts and styles for playlists.
+ * Xuất và đưa vào hàng đợi các script và style mặc định cho playlist.
  *
  * @since 3.9.0
  *
- * @param string $type Type of playlist. Accepts 'audio' or 'video'.
+ * @param string $type Loại playlist. Chấp nhận 'audio' hoặc 'video'.
  */
 function wp_playlist_scripts( $type ) {
 	wp_enqueue_style( 'wp-mediaelement' );
@@ -3005,40 +3005,40 @@ function wp_playlist_scripts( $type ) {
 }
 
 /**
- * Builds the Playlist shortcode output.
+ * Xây dựng đầu ra shortcode Playlist.
  *
- * This implements the functionality of the playlist shortcode for displaying
- * a collection of WordPress audio or video files in a post.
+ * Triển khai chức năng của shortcode playlist để hiển thị
+ * bộ sưu tập các tệp âm thanh hoặc video WordPress trong bài viết.
  *
  * @since 3.9.0
  *
  * @global int $content_width
  *
  * @param array $attr {
- *     Array of default playlist attributes.
+ *     Mảng thuộc tính playlist mặc định.
  *
- *     @type string  $type         Type of playlist to display. Accepts 'audio' or 'video'. Default 'audio'.
- *     @type string  $order        Designates ascending or descending order of items in the playlist.
- *                                 Accepts 'ASC', 'DESC'. Default 'ASC'.
- *     @type string  $orderby      Any column, or columns, to sort the playlist. If $ids are
- *                                 passed, this defaults to the order of the $ids array ('post__in').
- *                                 Otherwise default is 'menu_order ID'.
- *     @type int     $id           If an explicit $ids array is not present, this parameter
- *                                 will determine which attachments are used for the playlist.
- *                                 Default is the current post ID.
- *     @type array   $ids          Create a playlist out of these explicit attachment IDs. If empty,
- *                                 a playlist will be created from all $type attachments of $id.
- *                                 Default empty.
- *     @type array   $exclude      List of specific attachment IDs to exclude from the playlist. Default empty.
- *     @type string  $style        Playlist style to use. Accepts 'light' or 'dark'. Default 'light'.
- *     @type bool    $tracklist    Whether to show or hide the playlist. Default true.
- *     @type bool    $tracknumbers Whether to show or hide the numbers next to entries in the playlist. Default true.
- *     @type bool    $images       Show or hide the video or audio thumbnail (Featured Image/post
- *                                 thumbnail). Default true.
- *     @type bool    $artists      Whether to show or hide artist name in the playlist. Default true.
+ *     @type string  $type         Loại playlist để hiển thị. Chấp nhận 'audio' hoặc 'video'. Mặc định 'audio'.
+ *     @type string  $order        Chỉ định thứ tự tăng dần hoặc giảm dần của các mục trong playlist.
+ *                                 Chấp nhận 'ASC', 'DESC'. Mặc định 'ASC'.
+ *     @type string  $orderby      Bất kỳ cột nào để sắp xếp playlist. Nếu $ids được
+ *                                 truyền, mặc định theo thứ tự mảng $ids ('post__in').
+ *                                 Nếu không, mặc định là 'menu_order ID'.
+ *     @type int     $id           Nếu mảng $ids rõ ràng không có, tham số này
+ *                                 sẽ xác định đính kèm nào được sử dụng cho playlist.
+ *                                 Mặc định là ID bài viết hiện tại.
+ *     @type array   $ids          Tạo playlist từ các ID đính kèm rõ ràng này. Nếu rỗng,
+ *                                 playlist sẽ được tạo từ tất cả đính kèm $type của $id.
+ *                                 Mặc định rỗng.
+ *     @type array   $exclude      Danh sách ID đính kèm cụ thể để loại trừ khỏi playlist. Mặc định rỗng.
+ *     @type string  $style        Kiểu playlist để sử dụng. Chấp nhận 'light' hoặc 'dark'. Mặc định 'light'.
+ *     @type bool    $tracklist    Có hiển thị hay ẩn playlist không. Mặc định true.
+ *     @type bool    $tracknumbers Có hiển thị hay ẩn số thứ tự bên cạnh các mục trong playlist không. Mặc định true.
+ *     @type bool    $images       Hiển thị hoặc ẩn ảnh thu nhỏ video hoặc âm thanh (Ảnh đại diện/ảnh thu nhỏ
+ *                                 bài viết). Mặc định true.
+ *     @type bool    $artists      Có hiển thị hay ẩn tên nghệ sĩ trong playlist không. Mặc định true.
  * }
  *
- * @return string Playlist output. Empty string if the passed type is unsupported.
+ * @return string Đầu ra playlist. Chuỗi rỗng nếu loại được truyền không được hỗ trợ.
  */
 function wp_playlist_shortcode( $attr ) {
 	global $content_width;
@@ -3048,7 +3048,7 @@ function wp_playlist_shortcode( $attr ) {
 	++$instance;
 
 	if ( ! empty( $attr['ids'] ) ) {
-		// 'ids' is explicitly ordered, unless you specify otherwise.
+		// 'ids' được sắp xếp theo thứ tự rõ ràng, trừ khi bạn chỉ định khác.
 		if ( empty( $attr['orderby'] ) ) {
 			$attr['orderby'] = 'post__in';
 		}
@@ -3056,17 +3056,17 @@ function wp_playlist_shortcode( $attr ) {
 	}
 
 	/**
-	 * Filters the playlist output.
+	 * Lọc đầu ra danh sách phát.
 	 *
-	 * Returning a non-empty value from the filter will short-circuit generation
-	 * of the default playlist output, returning the passed value instead.
+	 * Trả về giá trị không rỗng từ bộ lọc sẽ bỏ qua việc tạo
+	 * đầu ra danh sách phát mặc định, trả về giá trị đã truyền thay thế.
 	 *
 	 * @since 3.9.0
-	 * @since 4.2.0 The `$instance` parameter was added.
+	 * @since 4.2.0 Tham số `$instance` đã được thêm.
 	 *
-	 * @param string $output   Playlist output. Default empty.
-	 * @param array  $attr     An array of shortcode attributes.
-	 * @param int    $instance Unique numeric ID of this playlist shortcode instance.
+	 * @param string $output   Đầu ra danh sách phát. Mặc định rỗng.
+	 * @param array  $attr     Mảng các thuộc tính shortcode.
+	 * @param int    $instance ID số duy nhất của phiên bản shortcode danh sách phát này.
 	 */
 	$output = apply_filters( 'post_playlist', '', $attr, $instance );
 
@@ -3144,7 +3144,7 @@ function wp_playlist_shortcode( $attr ) {
 		return $output;
 	}
 
-	$outer = 22; // Default padding and border of wrapper.
+	$outer = 22; // Padding và border mặc định của wrapper.
 
 	$default_width  = 640;
 	$default_height = 360;
@@ -3154,7 +3154,7 @@ function wp_playlist_shortcode( $attr ) {
 
 	$data = array(
 		'type'         => $atts['type'],
-		// Don't pass strings to JSON, will be truthy in JS.
+		// Không truyền chuỗi cho JSON, sẽ là truthy trong JS.
 		'tracklist'    => wp_validate_boolean( $atts['tracklist'] ),
 		'tracknumbers' => wp_validate_boolean( $atts['tracknumbers'] ),
 		'images'       => wp_validate_boolean( $atts['images'] ),
@@ -3344,27 +3344,27 @@ function wp_get_attachment_id3_keys( $attachment, $context = 'display' ) {
 	return apply_filters( 'wp_get_attachment_id3_keys', $fields, $attachment, $context );
 }
 /**
- * Builds the Audio shortcode output.
+ * Tạo đầu ra shortcode Audio.
  *
- * This implements the functionality of the Audio Shortcode for displaying
- * WordPress mp3s in a post.
+ * Hàm này triển khai chức năng của Shortcode Audio để hiển thị
+ * các tệp mp3 WordPress trong bài viết.
  *
  * @since 3.6.0
- * @since 6.8.0 Added the 'muted' attribute.
+ * @since 6.8.0 Thuộc tính 'muted' đã được thêm.
  *
  * @param array  $attr {
- *     Attributes of the audio shortcode.
+ *     Các thuộc tính của shortcode audio.
  *
- *     @type string $src      URL to the source of the audio file. Default empty.
- *     @type string $loop     The 'loop' attribute for the `<audio>` element. Default empty.
- *     @type string $autoplay The 'autoplay' attribute for the `<audio>` element. Default empty.
- *     @type string $muted    The 'muted' attribute for the `<audio>` element. Default 'false'.
- *     @type string $preload  The 'preload' attribute for the `<audio>` element. Default 'none'.
- *     @type string $class    The 'class' attribute for the `<audio>` element. Default 'wp-audio-shortcode'.
- *     @type string $style    The 'style' attribute for the `<audio>` element. Default 'width: 100%;'.
+ *     @type string $src      URL đến nguồn tệp âm thanh. Mặc định rỗng.
+ *     @type string $loop     Thuộc tính 'loop' cho phần tử `<audio>`. Mặc định rỗng.
+ *     @type string $autoplay Thuộc tính 'autoplay' cho phần tử `<audio>`. Mặc định rỗng.
+ *     @type string $muted    Thuộc tính 'muted' cho phần tử `<audio>`. Mặc định 'false'.
+ *     @type string $preload  Thuộc tính 'preload' cho phần tử `<audio>`. Mặc định 'none'.
+ *     @type string $class    Thuộc tính 'class' cho phần tử `<audio>`. Mặc định 'wp-audio-shortcode'.
+ *     @type string $style    Thuộc tính 'style' cho phần tử `<audio>`. Mặc định 'width: 100%;'.
  * }
- * @param string $content Shortcode content.
- * @return string|void HTML content to display audio.
+ * @param string $content Nội dung shortcode.
+ * @return string|void Nội dung HTML để hiển thị âm thanh.
  */
 function wp_audio_shortcode( $attr, $content = '' ) {
 	$post_id = get_post() ? get_the_ID() : 0;
@@ -3373,16 +3373,16 @@ function wp_audio_shortcode( $attr, $content = '' ) {
 	++$instance;
 
 	/**
-	 * Filters the default audio shortcode output.
+	 * Lọc đầu ra shortcode audio mặc định.
 	 *
-	 * If the filtered output isn't empty, it will be used instead of generating the default audio template.
+	 * Nếu đầu ra đã lọc không rỗng, nó sẽ được sử dụng thay vì tạo mẫu audio mặc định.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $html     Empty variable to be replaced with shortcode markup.
-	 * @param array  $attr     Attributes of the shortcode. See {@see wp_audio_shortcode()}.
-	 * @param string $content  Shortcode content.
-	 * @param int    $instance Unique numeric ID of this audio shortcode instance.
+	 * @param string $html     Biến rỗng sẽ được thay thế bằng markup shortcode.
+	 * @param array  $attr     Các thuộc tính của shortcode. Xem {@see wp_audio_shortcode()}.
+	 * @param string $content  Nội dung shortcode.
+	 * @param int    $instance ID số duy nhất của phiên bản shortcode audio này.
 	 */
 	$override = apply_filters( 'wp_audio_shortcode_override', '', $attr, $content, $instance );
 
@@ -3448,11 +3448,11 @@ function wp_audio_shortcode( $attr, $content = '' ) {
 	}
 
 	/**
-	 * Filters the media library used for the audio shortcode.
+	 * Lọc thư viện media được sử dụng cho shortcode audio.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $library Media library used for the audio shortcode.
+	 * @param string $library Thư viện media được sử dụng cho shortcode audio.
 	 */
 	$library = apply_filters( 'wp_audio_shortcode_library', 'mediaelement' );
 
@@ -3462,13 +3462,13 @@ function wp_audio_shortcode( $attr, $content = '' ) {
 	}
 
 	/**
-	 * Filters the class attribute for the audio shortcode output container.
+	 * Lọc thuộc tính class cho container đầu ra shortcode audio.
 	 *
 	 * @since 3.6.0
-	 * @since 4.9.0 The `$atts` parameter was added.
+	 * @since 4.9.0 Tham số `$atts` đã được thêm.
 	 *
-	 * @param string $class CSS class or list of space-separated classes.
-	 * @param array  $atts  Array of audio shortcode attributes.
+	 * @param string $class Tên class CSS hoặc danh sách các class phân cách bằng dấu cách.
+	 * @param array  $atts  Mảng các thuộc tính shortcode audio.
 	 */
 	$atts['class'] = apply_filters( 'wp_audio_shortcode_class', $atts['class'], $atts );
 
@@ -3482,7 +3482,7 @@ function wp_audio_shortcode( $attr, $content = '' ) {
 		'style'    => $atts['style'],
 	);
 
-	// These ones should just be omitted altogether if they are blank.
+	// Những thuộc tính này nên được bỏ qua hoàn toàn nếu chúng rỗng.
 	foreach ( array( 'loop', 'autoplay', 'preload', 'muted' ) as $a ) {
 		if ( empty( $html_atts[ $a ] ) ) {
 			unset( $html_atts[ $a ] );
@@ -3493,16 +3493,16 @@ function wp_audio_shortcode( $attr, $content = '' ) {
 
 	foreach ( $html_atts as $attribute_name => $attribute_value ) {
 		if ( in_array( $attribute_name, array( 'loop', 'autoplay', 'muted' ), true ) && true === $attribute_value ) {
-			// Add boolean attributes without a value.
+			// Thêm thuộc tính boolean mà không có giá trị.
 			$attr_strings[] = esc_attr( $attribute_name );
 		} elseif ( 'preload' === $attribute_name && ! empty( $attribute_value ) ) {
-			// Handle the preload attribute with specific allowed values.
+			// Xử lý thuộc tính preload với các giá trị được phép cụ thể.
 			$allowed_preload_values = array( 'none', 'metadata', 'auto' );
 			if ( in_array( $attribute_value, $allowed_preload_values, true ) ) {
 				$attr_strings[] = sprintf( '%s="%s"', esc_attr( $attribute_name ), esc_attr( $attribute_value ) );
 			}
 		} else {
-			// For other attributes, include the value.
+			// Đối với các thuộc tính khác, bao gồm giá trị.
 			$attr_strings[] = sprintf( '%s="%s"', esc_attr( $attribute_name ), esc_attr( $attribute_value ) );
 		}
 	}
@@ -3537,66 +3537,66 @@ function wp_audio_shortcode( $attr, $content = '' ) {
 	$html .= '</audio>';
 
 	/**
-	 * Filters the audio shortcode output.
+	 * Lọc đầu ra shortcode audio.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $html    Audio shortcode HTML output.
-	 * @param array  $atts    Array of audio shortcode attributes.
-	 * @param string $audio   Audio file.
-	 * @param int    $post_id Post ID.
-	 * @param string $library Media library used for the audio shortcode.
+	 * @param string $html    Đầu ra HTML shortcode audio.
+	 * @param array  $atts    Mảng các thuộc tính shortcode audio.
+	 * @param string $audio   Tệp âm thanh.
+	 * @param int    $post_id ID bài viết.
+	 * @param string $library Thư viện media được sử dụng cho shortcode audio.
 	 */
 	return apply_filters( 'wp_audio_shortcode', $html, $atts, $audio, $post_id, $library );
 }
 add_shortcode( 'audio', 'wp_audio_shortcode' );
 
 /**
- * Returns a filtered list of supported video formats.
+ * Trả về danh sách đã lọc các định dạng video được hỗ trợ.
  *
  * @since 3.6.0
  *
- * @return string[] List of supported video formats.
+ * @return string[] Danh sách các định dạng video được hỗ trợ.
  */
 function wp_get_video_extensions() {
 	/**
-	 * Filters the list of supported video formats.
+	 * Lọc danh sách các định dạng video được hỗ trợ.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string[] $extensions An array of supported video formats. Defaults are
+	 * @param string[] $extensions Mảng các định dạng video được hỗ trợ. Mặc định là
 	 *                             'mp4', 'm4v', 'webm', 'ogv', 'flv'.
 	 */
 	return apply_filters( 'wp_video_extensions', array( 'mp4', 'm4v', 'webm', 'ogv', 'flv' ) );
 }
 
 /**
- * Builds the Video shortcode output.
+ * Tạo đầu ra shortcode Video.
  *
- * This implements the functionality of the Video Shortcode for displaying
- * WordPress mp4s in a post.
+ * Hàm này triển khai chức năng của Shortcode Video để hiển thị
+ * các tệp mp4 WordPress trong bài viết.
  *
  * @since 3.6.0
  *
  * @global int $content_width
  *
  * @param array  $attr {
- *     Attributes of the shortcode.
+ *     Các thuộc tính của shortcode.
  *
- *     @type string $src      URL to the source of the video file. Default empty.
- *     @type int    $height   Height of the video embed in pixels. Default 360.
- *     @type int    $width    Width of the video embed in pixels. Default $content_width or 640.
- *     @type string $poster   The 'poster' attribute for the `<video>` element. Default empty.
- *     @type string $loop     The 'loop' attribute for the `<video>` element. Default empty.
- *     @type string $autoplay The 'autoplay' attribute for the `<video>` element. Default empty.
- *     @type string $muted    The 'muted' attribute for the `<video>` element. Default false.
- *     @type string $preload  The 'preload' attribute for the `<video>` element.
- *                            Default 'metadata'.
- *     @type string $class    The 'class' attribute for the `<video>` element.
- *                            Default 'wp-video-shortcode'.
+ *     @type string $src      URL đến nguồn tệp video. Mặc định rỗng.
+ *     @type int    $height   Chiều cao của video nhúng tính bằng pixel. Mặc định 360.
+ *     @type int    $width    Chiều rộng của video nhúng tính bằng pixel. Mặc định $content_width hoặc 640.
+ *     @type string $poster   Thuộc tính 'poster' cho phần tử `<video>`. Mặc định rỗng.
+ *     @type string $loop     Thuộc tính 'loop' cho phần tử `<video>`. Mặc định rỗng.
+ *     @type string $autoplay Thuộc tính 'autoplay' cho phần tử `<video>`. Mặc định rỗng.
+ *     @type string $muted    Thuộc tính 'muted' cho phần tử `<video>`. Mặc định false.
+ *     @type string $preload  Thuộc tính 'preload' cho phần tử `<video>`.
+ *                            Mặc định 'metadata'.
+ *     @type string $class    Thuộc tính 'class' cho phần tử `<video>`.
+ *                            Mặc định 'wp-video-shortcode'.
  * }
- * @param string $content Shortcode content.
- * @return string|void HTML content to display video.
+ * @param string $content Nội dung shortcode.
+ * @return string|void Nội dung HTML để hiển thị video.
  */
 function wp_video_shortcode( $attr, $content = '' ) {
 	global $content_width;
@@ -3606,19 +3606,19 @@ function wp_video_shortcode( $attr, $content = '' ) {
 	++$instance;
 
 	/**
-	 * Filters the default video shortcode output.
+	 * Lọc đầu ra shortcode video mặc định.
 	 *
-	 * If the filtered output isn't empty, it will be used instead of generating
-	 * the default video template.
+	 * Nếu đầu ra đã lọc không rỗng, nó sẽ được sử dụng thay vì tạo
+	 * mẫu video mặc định.
 	 *
 	 * @since 3.6.0
 	 *
 	 * @see wp_video_shortcode()
 	 *
-	 * @param string $html     Empty variable to be replaced with shortcode markup.
-	 * @param array  $attr     Attributes of the shortcode. See {@see wp_video_shortcode()}.
-	 * @param string $content  Video shortcode content.
-	 * @param int    $instance Unique numeric ID of this video shortcode instance.
+	 * @param string $html     Biến rỗng sẽ được thay thế bằng markup shortcode.
+	 * @param array  $attr     Các thuộc tính của shortcode. Xem {@see wp_video_shortcode()}.
+	 * @param string $content  Nội dung shortcode video.
+	 * @param int    $instance ID số duy nhất của phiên bản shortcode video này.
 	 */
 	$override = apply_filters( 'wp_video_shortcode_override', '', $attr, $content, $instance );
 
@@ -3648,13 +3648,13 @@ function wp_video_shortcode( $attr, $content = '' ) {
 	$atts = shortcode_atts( $defaults_atts, $attr, 'video' );
 
 	if ( is_admin() ) {
-		// Shrink the video so it isn't huge in the admin.
+		// Thu nhỏ video để nó không quá lớn trong trang quản trị.
 		if ( $atts['width'] > $defaults_atts['width'] ) {
 			$atts['height'] = round( ( $atts['height'] * $defaults_atts['width'] ) / $atts['width'] );
 			$atts['width']  = $defaults_atts['width'];
 		}
 	} else {
-		// If the video is bigger than the theme.
+		// Nếu video lớn hơn theme.
 		if ( ! empty( $content_width ) && $atts['width'] > $content_width ) {
 			$atts['height'] = round( ( $atts['height'] * $content_width ) / $atts['width'] );
 			$atts['width']  = $content_width;
@@ -3712,11 +3712,11 @@ function wp_video_shortcode( $attr, $content = '' ) {
 	}
 
 	/**
-	 * Filters the media library used for the video shortcode.
+	 * Lọc thư viện media được sử dụng cho shortcode video.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $library Media library used for the video shortcode.
+	 * @param string $library Thư viện media được sử dụng cho shortcode video.
 	 */
 	$library = apply_filters( 'wp_video_shortcode_library', 'mediaelement' );
 	if ( 'mediaelement' === $library && did_action( 'init' ) ) {

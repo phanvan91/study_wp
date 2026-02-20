@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML API: WP_HTML_Doctype_Info class
+ * HTML API: Lớp WP_HTML_Doctype_Info
  *
  * @package WordPress
  * @subpackage HTML-API
@@ -8,43 +8,43 @@
  */
 
 /**
- * Core class used by the HTML API to represent a DOCTYPE declaration.
+ * Lớp lõi được sử dụng bởi HTML API để biểu diễn một khai báo DOCTYPE.
  *
- * This class parses DOCTYPE tokens for the full parser in the HTML Processor.
- * Most code interacting with HTML won't need to parse DOCTYPE declarations;
- * the HTML Processor is one exception. Consult the HTML Processor for proper
- * parsing of an HTML document.
+ * Lớp này phân tích các token DOCTYPE cho bộ phân tích đầy đủ trong HTML Processor.
+ * Hầu hết mã tương tác với HTML không cần phải phân tích khai báo DOCTYPE;
+ * HTML Processor là một ngoại lệ. Tham khảo HTML Processor để phân tích
+ * đúng cách một tài liệu HTML.
  *
- * A DOCTYPE declaration may indicate its document compatibility mode, which impacts
- * the structure of the following HTML as well as the behavior of CSS class selectors.
- * There are three possible modes:
+ * Một khai báo DOCTYPE có thể cho biết chế độ tương thích của tài liệu, ảnh hưởng đến
+ * cấu trúc của HTML tiếp theo cũng như hành vi của các bộ chọn lớp CSS.
+ * Có ba chế độ khả thi:
  *
- *  - "no-quirks" and "limited-quirks" modes (also called "standards mode").
- *  - "quirks" mode.
+ *  - Chế độ "no-quirks" và "limited-quirks" (còn gọi là "chế độ tiêu chuẩn").
+ *  - Chế độ "quirks".
  *
- * These modes mostly determine whether CSS class name selectors match values in the
- * HTML `class` attribute in an ASCII-case-insensitive way (quirks mode), or whether
- * they match only when byte-for-byte identical (no-quirks mode).
+ * Các chế độ này chủ yếu xác định liệu bộ chọn tên lớp CSS có khớp với giá trị trong
+ * thuộc tính `class` HTML theo kiểu không phân biệt chữ hoa chữ thường ASCII (chế độ quirks),
+ * hay chúng chỉ khớp khi giống hệt nhau từng byte (chế độ no-quirks).
  *
- * All HTML documents should start with the standard HTML5 DOCTYPE: `<!DOCTYPE html>`.
+ * Tất cả tài liệu HTML nên bắt đầu với DOCTYPE HTML5 tiêu chuẩn: `<!DOCTYPE html>`.
  *
- * > DOCTYPEs are required for legacy reasons. When omitted, browsers tend to use a different
- * > rendering mode that is incompatible with some specifications. Including the DOCTYPE in a
- * > document ensures that the browser makes a best-effort attempt at following the
- * > relevant specifications.
+ * > DOCTYPE là bắt buộc vì lý do kế thừa. Khi bị bỏ qua, trình duyệt có xu hướng sử dụng
+ * > chế độ hiển thị khác không tương thích với một số đặc tả. Bao gồm DOCTYPE trong
+ * > tài liệu đảm bảo rằng trình duyệt cố gắng hết sức để tuân theo
+ * > các đặc tả liên quan.
  *
  * @see https://html.spec.whatwg.org/#the-doctype
  *
- * DOCTYPE declarations comprise four properties: a name, public identifier, system identifier,
- * and an indication of which document compatability mode they would imply if an HTML parser
- * hadn't already determined it from other information.
+ * Khai báo DOCTYPE bao gồm bốn thuộc tính: tên, định danh công khai, định danh hệ thống,
+ * và chỉ báo về chế độ tương thích tài liệu nào chúng sẽ ngụ ý nếu bộ phân tích HTML
+ * chưa xác định nó từ thông tin khác.
  *
  * @see https://html.spec.whatwg.org/#the-initial-insertion-mode
  *
- * Historically, the DOCTYPE declaration was used in SGML documents to instruct a parser how
- * to interpret the various tags and entities within a document. Its role in HTML diverged
- * from how it was used in SGML and no meaning should be back-read into HTML based on how it
- * is used in SGML, XML, or XHTML documents.
+ * Trong lịch sử, khai báo DOCTYPE được sử dụng trong tài liệu SGML để hướng dẫn bộ phân tích
+ * cách diễn giải các thẻ và thực thể khác nhau trong một tài liệu. Vai trò của nó trong HTML đã
+ * phân kỳ với cách nó được sử dụng trong SGML và không nên suy luận ngược ý nghĩa vào HTML dựa
+ * trên cách nó được sử dụng trong tài liệu SGML, XML, hoặc XHTML.
  *
  * @see https://www.iso.org/standard/16387.html
  *
@@ -54,14 +54,14 @@
  */
 class WP_HTML_Doctype_Info {
 	/**
-	 * Name of the DOCTYPE: should be "html" for HTML documents.
+	 * Tên của DOCTYPE: nên là "html" cho tài liệu HTML.
 	 *
-	 * This value should be considered "read only" and not modified.
+	 * Giá trị này nên được coi là "chỉ đọc" và không được sửa đổi.
 	 *
-	 * Historically the DOCTYPE name indicates name of the document's root element.
+	 * Trong lịch sử, tên DOCTYPE cho biết tên của phần tử gốc của tài liệu.
 	 *
 	 *     <!DOCTYPE html>
-	 *               ╰──┴── name is "html".
+	 *               ╰──┴── tên là "html".
 	 *
 	 * @see https://html.spec.whatwg.org/#tokenization
 	 *
@@ -72,20 +72,20 @@ class WP_HTML_Doctype_Info {
 	public $name = null;
 
 	/**
-	 * Public identifier of the DOCTYPE.
+	 * Định danh công khai của DOCTYPE.
 	 *
-	 * This value should be considered "read only" and not modified.
+	 * Giá trị này nên được coi là "chỉ đọc" và không được sửa đổi.
 	 *
-	 * The public identifier is optional and should not appear in HTML documents.
-	 * A `null` value indicates that no public identifier was present in the DOCTYPE.
+	 * Định danh công khai là tùy chọn và không nên xuất hiện trong tài liệu HTML.
+	 * Giá trị `null` cho biết rằng không có định danh công khai nào có mặt trong DOCTYPE.
 	 *
-	 * Historically the presence of the public identifier indicated that a document
-	 * was meant to be shared between computer systems and the value indicated to a
-	 * knowledgeable parser how to find the relevant document type definition (DTD).
+	 * Trong lịch sử, sự hiện diện của định danh công khai cho biết rằng tài liệu
+	 * được dùng để chia sẻ giữa các hệ thống máy tính và giá trị cho biết với
+	 * bộ phân tích am hiểu cách tìm định nghĩa kiểu tài liệu (DTD) liên quan.
 	 *
 	 *     <!DOCTYPE html PUBLIC "public id goes here in quotes">
-	 *               │  │         ╰─── public identifier ─────╯
-	 *               ╰──┴── name is "html".
+	 *               │  │         ╰─── định danh công khai ────╯
+	 *               ╰──┴── tên là "html".
 	 *
 	 * @see https://html.spec.whatwg.org/#tokenization
 	 *
@@ -96,26 +96,26 @@ class WP_HTML_Doctype_Info {
 	public $public_identifier = null;
 
 	/**
-	 * System identifier of the DOCTYPE.
+	 * Định danh hệ thống của DOCTYPE.
 	 *
-	 * This value should be considered "read only" and not modified.
+	 * Giá trị này nên được coi là "chỉ đọc" và không được sửa đổi.
 	 *
-	 * The system identifier is optional and should not appear in HTML documents.
-	 * A `null` value indicates that no system identifier was present in the DOCTYPE.
+	 * Định danh hệ thống là tùy chọn và không nên xuất hiện trong tài liệu HTML.
+	 * Giá trị `null` cho biết rằng không có định danh hệ thống nào có mặt trong DOCTYPE.
 	 *
-	 * Historically the system identifier specified where a relevant document type
-	 * declaration for the given document is stored and may be retrieved.
+	 * Trong lịch sử, định danh hệ thống chỉ định nơi lưu trữ khai báo kiểu tài liệu
+	 * liên quan cho tài liệu đã cho và có thể được truy xuất.
 	 *
 	 *     <!DOCTYPE html SYSTEM "system id goes here in quotes">
-	 *               │  │         ╰──── system identifier ────╯
-	 *               ╰──┴── name is "html".
+	 *               │  │         ╰──── định danh hệ thống ────╯
+	 *               ╰──┴── tên là "html".
 	 *
-	 * If a public identifier were provided it would indicate to a knowledgeable
-	 * parser how to interpret the system identifier.
+	 * Nếu định danh công khai được cung cấp, nó sẽ cho biết với bộ phân tích
+	 * am hiểu cách diễn giải định danh hệ thống.
 	 *
 	 *     <!DOCTYPE html PUBLIC "public id goes here in quotes" "system id goes here in quotes">
-	 *               │  │         ╰─── public identifier ─────╯   ╰──── system identifier ────╯
-	 *               ╰──┴── name is "html".
+	 *               │  │         ╰─── định danh công khai ────╯   ╰──── định danh hệ thống ────╯
+	 *               ╰──┴── tên là "html".
 	 *
 	 * @see https://html.spec.whatwg.org/#tokenization
 	 *
@@ -126,52 +126,52 @@ class WP_HTML_Doctype_Info {
 	public $system_identifier = null;
 
 	/**
-	 * Which document compatability mode this DOCTYPE declaration indicates.
+	 * Chế độ tương thích tài liệu nào mà khai báo DOCTYPE này cho biết.
 	 *
-	 * This value should be considered "read only" and not modified.
+	 * Giá trị này nên được coi là "chỉ đọc" và không được sửa đổi.
 	 *
-	 * When an HTML parser has not already set the document compatability mode,
-	 * (e.g. "quirks" or "no-quirks" mode), it will infer if from the properties
-	 * of the appropriate DOCTYPE declaration, if one exists. The DOCTYPE can
-	 * indicate one of three possible document compatability modes:
+	 * Khi bộ phân tích HTML chưa thiết lập chế độ tương thích tài liệu,
+	 * (ví dụ: chế độ "quirks" hoặc "no-quirks"), nó sẽ suy luận từ các thuộc tính
+	 * của khai báo DOCTYPE phù hợp, nếu có. DOCTYPE có thể
+	 * cho biết một trong ba chế độ tương thích tài liệu khả thi:
 	 *
-	 *  - "no-quirks" and "limited-quirks" modes (also called "standards" mode).
-	 *  - "quirks" mode (also called `CSS1Compat` mode).
+	 *  - Chế độ "no-quirks" và "limited-quirks" (còn gọi là chế độ "tiêu chuẩn").
+	 *  - Chế độ "quirks" (còn gọi là chế độ `CSS1Compat`).
 	 *
-	 * An appropriate DOCTYPE is one encountered in the "initial" insertion mode,
-	 * before the HTML element has been opened and before finding any other
-	 * DOCTYPE declaration tokens.
+	 * DOCTYPE phù hợp là DOCTYPE được gặp trong chế độ chèn "initial",
+	 * trước khi phần tử HTML được mở và trước khi tìm thấy bất kỳ
+	 * token khai báo DOCTYPE nào khác.
 	 *
 	 * @see https://html.spec.whatwg.org/#the-initial-insertion-mode
 	 *
 	 * @since 6.7.0
 	 *
-	 * @var string One of "no-quirks", "limited-quirks", or "quirks".
+	 * @var string Một trong "no-quirks", "limited-quirks", hoặc "quirks".
 	 */
 	public $indicated_compatability_mode;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
-	 * This class should not be instantiated directly.
-	 * Use the static {@see self::from_doctype_token} method instead.
+	 * Lớp này không nên được khởi tạo trực tiếp.
+	 * Sử dụng phương thức tĩnh {@see self::from_doctype_token} thay thế.
 	 *
-	 * The arguments to this constructor correspond to the "DOCTYPE token"
-	 * as defined in the HTML specification.
+	 * Các tham số của hàm khởi tạo này tương ứng với "token DOCTYPE"
+	 * như được định nghĩa trong đặc tả HTML.
 	 *
-	 * > DOCTYPE tokens have a name, a public identifier, a system identifier,
-	 * > and a force-quirks flag. When a DOCTYPE token is created, its name, public identifier,
-	 * > and system identifier must be marked as missing (which is a distinct state from the
-	 * > empty string), and the force-quirks flag must be set to off (its other state is on).
+	 * > Các token DOCTYPE có tên, định danh công khai, định danh hệ thống,
+	 * > và cờ force-quirks. Khi một token DOCTYPE được tạo, tên, định danh công khai,
+	 * > và định danh hệ thống phải được đánh dấu là thiếu (đây là trạng thái khác biệt với
+	 * > chuỗi rỗng), và cờ force-quirks phải được đặt thành tắt (trạng thái khác của nó là bật).
 	 *
 	 * @see https://html.spec.whatwg.org/multipage/parsing.html#tokenization
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param string|null $name              Name of the DOCTYPE.
-	 * @param string|null $public_identifier Public identifier of the DOCTYPE.
-	 * @param string|null $system_identifier System identifier of the DOCTYPE.
-	 * @param bool        $force_quirks_flag Whether the force-quirks flag is set for the token.
+	 * @param string|null $name              Tên của DOCTYPE.
+	 * @param string|null $public_identifier Định danh công khai của DOCTYPE.
+	 * @param string|null $system_identifier Định danh hệ thống của DOCTYPE.
+	 * @param bool        $force_quirks_flag Cờ force-quirks có được đặt cho token hay không.
 	 */
 	private function __construct(
 		?string $name,
@@ -184,12 +184,12 @@ class WP_HTML_Doctype_Info {
 		$this->system_identifier = $system_identifier;
 
 		/*
-		 * > If the DOCTYPE token matches one of the conditions in the following list,
-		 * > then set the Document to quirks mode:
+		 * > Nếu token DOCTYPE khớp với một trong các điều kiện trong danh sách sau,
+		 * > thì đặt Tài liệu sang chế độ quirks:
 		 */
 
 		/*
-		 * > The force-quirks flag is set to on.
+		 * > Cờ force-quirks được đặt thành bật.
 		 */
 		if ( $force_quirks_flag ) {
 			$this->indicated_compatability_mode = 'quirks';
@@ -197,8 +197,8 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * Normative documents will contain the literal `<!DOCTYPE html>` with no
-		 * public or system identifiers; short-circuit to avoid extra parsing.
+		 * Tài liệu chuẩn sẽ chứa chuỗi `<!DOCTYPE html>` không có
+		 * định danh công khai hoặc hệ thống; thoát sớm để tránh phân tích thêm.
 		 */
 		if ( 'html' === $name && null === $public_identifier && null === $system_identifier ) {
 			$this->indicated_compatability_mode = 'no-quirks';
@@ -206,10 +206,10 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * > The name is not "html".
+		 * > Tên không phải là "html".
 		 *
-		 * The tokenizer must report the name in lower case even if provided in
-		 * the document in upper case; thus no conversion is required here.
+		 * Bộ phân tích token phải báo cáo tên bằng chữ thường ngay cả khi được cung cấp trong
+		 * tài liệu bằng chữ hoa; do đó không cần chuyển đổi ở đây.
 		 */
 		if ( 'html' !== $name ) {
 			$this->indicated_compatability_mode = 'quirks';
@@ -217,23 +217,23 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * Set up some variables to handle the rest of the conditions.
+		 * Thiết lập một số biến để xử lý các điều kiện còn lại.
 		 *
-		 * > set...the public identifier...to...the empty string if the public identifier was missing.
-		 * > set...the system identifier...to...the empty string if the system identifier was missing.
+		 * > đặt...định danh công khai...thành...chuỗi rỗng nếu định danh công khai bị thiếu.
+		 * > đặt...định danh hệ thống...thành...chuỗi rỗng nếu định danh hệ thống bị thiếu.
 		 * >
-		 * > The system identifier and public identifier strings must be compared...
-		 * > in an ASCII case-insensitive manner.
+		 * > Chuỗi định danh hệ thống và định danh công khai phải được so sánh...
+		 * > theo cách không phân biệt chữ hoa chữ thường ASCII.
 		 * >
-		 * > A system identifier whose value is the empty string is not considered missing
-		 * > for the purposes of the conditions above.
+		 * > Định danh hệ thống có giá trị là chuỗi rỗng không được coi là thiếu
+		 * > cho mục đích của các điều kiện ở trên.
 		 */
 		$system_identifier_is_missing = null === $system_identifier;
 		$public_identifier            = null === $public_identifier ? '' : strtolower( $public_identifier );
 		$system_identifier            = null === $system_identifier ? '' : strtolower( $system_identifier );
 
 		/*
-		 * > The public identifier is set to…
+		 * > Định danh công khai được đặt thành…
 		 */
 		if (
 			'-//w3o//dtd w3 html strict 3.0//en//' === $public_identifier ||
@@ -245,7 +245,7 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * > The system identifier is set to…
+		 * > Định danh hệ thống được đặt thành…
 		 */
 		if ( 'http://www.ibm.com/data/dtd/v11/ibmxhtml1-transitional.dtd' === $system_identifier ) {
 			$this->indicated_compatability_mode = 'quirks';
@@ -253,8 +253,8 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * All of the following conditions depend on matching the public identifier.
-		 * If the public identifier is empty, none of the following conditions will match.
+		 * Tất cả các điều kiện sau phụ thuộc vào việc khớp định danh công khai.
+		 * Nếu định danh công khai rỗng, không có điều kiện nào sau đây sẽ khớp.
 		 */
 		if ( '' === $public_identifier ) {
 			$this->indicated_compatability_mode = 'no-quirks';
@@ -262,11 +262,11 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * > The public identifier starts with…
+		 * > Định danh công khai bắt đầu bằng…
 		 *
-		 * @todo Optimize this matching. It shouldn't be a large overall performance issue,
-		 *       however, as only a single DOCTYPE declaration token should ever be parsed,
-		 *       and normative documents will have exited before reaching this condition.
+		 * @todo Tối ưu hóa việc khớp này. Nó không nên là vấn đề hiệu suất lớn nói chung,
+		 *       tuy nhiên, vì chỉ một token khai báo DOCTYPE duy nhất nên được phân tích,
+		 *       và tài liệu chuẩn sẽ đã thoát trước khi đến điều kiện này.
 		 */
 		if (
 			str_starts_with( $public_identifier, '+//silmaril//dtd html pro v0r11 19970101//' ) ||

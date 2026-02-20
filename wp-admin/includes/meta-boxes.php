@@ -348,13 +348,13 @@ function post_submit_meta_box( $post, $args = array() ) {
 <div id="major-publishing-actions">
 	<?php
 	/**
-	 * Fires at the beginning of the publishing actions section of the Publish meta box.
+	 * Kích hoạt ở đầu phần hành động xuất bản trong meta box Xuất bản.
 	 *
 	 * @since 2.7.0
-	 * @since 4.9.0 Added the `$post` parameter.
+	 * @since 4.9.0 Thêm tham số `$post`.
 	 *
-	 * @param WP_Post|null $post WP_Post object for the current post on Edit Post screen,
-	 *                           null on Edit Link screen.
+	 * @param WP_Post|null $post Đối tượng WP_Post cho bài viết hiện tại trên màn hình Sửa bài viết,
+	 *                           null trên màn hình Sửa liên kết.
 	 */
 	do_action( 'post_submitbox_start', $post );
 	?>
@@ -411,11 +411,11 @@ function post_submit_meta_box( $post, $args = array() ) {
 }
 
 /**
- * Displays attachment submit form fields.
+ * Hiển thị các trường form gửi tệp đính kèm.
  *
  * @since 3.5.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function attachment_submit_meta_box( $post ) {
 	?>
@@ -423,7 +423,7 @@ function attachment_submit_meta_box( $post ) {
 
 <div id="minor-publishing">
 
-	<?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key. ?>
+	<?php // Nút submit ẩn ở đầu để trình duyệt chọn đúng nút khi form được gửi bằng phím Enter. ?>
 <div style="display:none;">
 	<?php submit_button( __( 'Save' ), '', 'save' ); ?>
 </div>
@@ -449,13 +449,13 @@ function attachment_submit_meta_box( $post ) {
 
 	<?php
 	/**
-	 * Fires after the 'Uploaded on' section of the Save meta box
-	 * in the attachment editing screen.
+	 * Kích hoạt sau phần 'Đã tải lên vào' của meta box Lưu
+	 * trong màn hình chỉnh sửa tệp đính kèm.
 	 *
 	 * @since 3.5.0
-	 * @since 4.9.0 Added the `$post` parameter.
+	 * @since 4.9.0 Thêm tham số `$post`.
 	 *
-	 * @param WP_Post $post WP_Post object for the current attachment.
+	 * @param WP_Post $post Đối tượng WP_Post cho tệp đính kèm hiện tại.
 	 */
 	do_action( 'attachment_submitbox_misc_actions', $post );
 	?>
@@ -501,18 +501,18 @@ function attachment_submit_meta_box( $post ) {
 }
 
 /**
- * Displays post format form elements.
+ * Hiển thị các phần tử form định dạng bài viết.
  *
  * @since 3.1.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  * @param array   $box {
- *     Post formats meta box arguments.
+ *     Tham số meta box định dạng bài viết.
  *
- *     @type string   $id       Meta box 'id' attribute.
- *     @type string   $title    Meta box title.
- *     @type callable $callback Meta box display callback.
- *     @type array    $args     Extra meta box arguments.
+ *     @type string   $id       Thuộc tính 'id' của meta box.
+ *     @type string   $title    Tiêu đề meta box.
+ *     @type callable $callback Hàm callback hiển thị meta box.
+ *     @type array    $args     Tham số bổ sung cho meta box.
  * }
  */
 function post_format_meta_box( $post, $box ) {
@@ -524,7 +524,7 @@ function post_format_meta_box( $post, $box ) {
 			if ( ! $post_format ) {
 				$post_format = '0';
 			}
-			// Add in the current one if it isn't there yet, in case the active theme doesn't support it.
+			// Thêm định dạng hiện tại nếu chưa có, phòng trường hợp giao diện đang hoạt động không hỗ trợ nó.
 			if ( $post_format && ! in_array( $post_format, $post_formats[0], true ) ) {
 				$post_formats[0][] = $post_format;
 			}
@@ -549,23 +549,23 @@ endif;
 }
 
 /**
- * Displays post tags form fields.
+ * Hiển thị các trường form thẻ bài viết.
  *
  * @since 2.6.0
  *
- * @todo Create taxonomy-agnostic wrapper for this.
+ * @todo Tạo hàm bọc không phụ thuộc phân loại cho phần này.
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  * @param array   $box {
- *     Tags meta box arguments.
+ *     Tham số meta box thẻ.
  *
- *     @type string   $id       Meta box 'id' attribute.
- *     @type string   $title    Meta box title.
- *     @type callable $callback Meta box display callback.
+ *     @type string   $id       Thuộc tính 'id' của meta box.
+ *     @type string   $title    Tiêu đề meta box.
+ *     @type callable $callback Hàm callback hiển thị meta box.
  *     @type array    $args {
- *         Extra meta box arguments.
+ *         Tham số bổ sung cho meta box.
  *
- *         @type string $taxonomy Taxonomy. Default 'post_tag'.
+ *         @type string $taxonomy Phân loại. Mặc định 'post_tag'.
  *     }
  * }
  */
@@ -612,23 +612,23 @@ function post_tags_meta_box( $post, $box ) {
 }
 
 /**
- * Displays post categories form fields.
+ * Hiển thị các trường form chuyên mục bài viết.
  *
  * @since 2.6.0
  *
- * @todo Create taxonomy-agnostic wrapper for this.
+ * @todo Tạo hàm bọc không phụ thuộc phân loại cho phần này.
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  * @param array   $box {
- *     Categories meta box arguments.
+ *     Tham số meta box chuyên mục.
  *
- *     @type string   $id       Meta box 'id' attribute.
- *     @type string   $title    Meta box title.
- *     @type callable $callback Meta box display callback.
+ *     @type string   $id       Thuộc tính 'id' của meta box.
+ *     @type string   $title    Tiêu đề meta box.
+ *     @type callable $callback Hàm callback hiển thị meta box.
  *     @type array    $args {
- *         Extra meta box arguments.
+ *         Tham số bổ sung cho meta box.
  *
- *         @type string $taxonomy Taxonomy. Default 'category'.
+ *         @type string $taxonomy Phân loại. Mặc định 'category'.
  *     }
  * }
  */
@@ -658,7 +658,7 @@ function post_categories_meta_box( $post, $box ) {
 		<div id="<?php echo $tax_name; ?>-all" class="tabs-panel">
 			<?php
 			$name = ( 'category' === $tax_name ) ? 'post_category' : 'tax_input[' . $tax_name . ']';
-			// Allows for an empty term set to be sent. 0 is an invalid term ID and will be ignored by empty() checks.
+			// Cho phép gửi một tập hợp thuật ngữ rỗng. 0 là ID thuật ngữ không hợp lệ và sẽ bị bỏ qua bởi kiểm tra empty().
 			echo "<input type='hidden' name='{$name}[]' value='0' />";
 			?>
 			<ul id="<?php echo $tax_name; ?>checklist" data-wp-lists="list:<?php echo $tax_name; ?>" class="categorychecklist form-no-clear">
@@ -698,27 +698,27 @@ function post_categories_meta_box( $post, $box ) {
 					);
 
 					/**
-					 * Filters the arguments for the taxonomy parent dropdown on the Post Edit page.
+					 * Lọc các tham số cho menu thả xuống phân loại cha trên trang Sửa bài viết.
 					 *
 					 * @since 4.4.0
 					 *
 					 * @param array $parent_dropdown_args {
-					 *     Optional. Array of arguments to generate parent dropdown.
+					 *     Tùy chọn. Mảng tham số để tạo menu thả xuống cha.
 					 *
-					 *     @type string   $taxonomy         Name of the taxonomy to retrieve.
-					 *     @type bool     $hide_if_empty    True to skip generating markup if no
-					 *                                      categories are found. Default 0.
-					 *     @type string   $name             Value for the 'name' attribute
-					 *                                      of the select element.
-					 *                                      Default "new{$tax_name}_parent".
-					 *     @type string   $orderby          Which column to use for ordering
-					 *                                      terms. Default 'name'.
-					 *     @type bool|int $hierarchical     Whether to traverse the taxonomy
-					 *                                      hierarchy. Default 1.
-					 *     @type string   $show_option_none Text to display for the "none" option.
-					 *                                      Default "&mdash; {$parent} &mdash;",
-					 *                                      where `$parent` is 'parent_item'
-					 *                                      taxonomy label.
+					 *     @type string   $taxonomy         Tên phân loại cần lấy.
+					 *     @type bool     $hide_if_empty    True để bỏ qua tạo markup nếu không
+					 *                                      tìm thấy chuyên mục. Mặc định 0.
+					 *     @type string   $name             Giá trị cho thuộc tính 'name'
+					 *                                      của phần tử select.
+					 *                                      Mặc định "new{$tax_name}_parent".
+					 *     @type string   $orderby          Cột nào dùng để sắp xếp
+					 *                                      thuật ngữ. Mặc định 'name'.
+					 *     @type bool|int $hierarchical     Có duyệt phân cấp phân loại
+					 *                                      hay không. Mặc định 1.
+					 *     @type string   $show_option_none Văn bản hiển thị cho tùy chọn "không có".
+					 *                                      Mặc định "&mdash; {$parent} &mdash;",
+					 *                                      trong đó `$parent` là nhãn 'parent_item'
+					 *                                      của phân loại.
 					 * }
 					 */
 					$parent_dropdown_args = apply_filters( 'post_edit_category_parent_dropdown_args', $parent_dropdown_args );
@@ -736,11 +736,11 @@ function post_categories_meta_box( $post, $box ) {
 }
 
 /**
- * Displays post excerpt form fields.
+ * Hiển thị các trường form tóm tắt bài viết.
  *
  * @since 2.6.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function post_excerpt_meta_box( $post ) {
 	?>
@@ -763,11 +763,11 @@ function post_excerpt_meta_box( $post ) {
 }
 
 /**
- * Displays trackback links form fields.
+ * Hiển thị các trường form liên kết trackback.
  *
  * @since 2.6.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function post_trackback_meta_box( $post ) {
 	$form_trackback = '<input type="text" name="trackback_url" id="trackback_url" class="code" value="' .
@@ -804,11 +804,11 @@ function post_trackback_meta_box( $post ) {
 }
 
 /**
- * Displays custom fields form fields.
+ * Hiển thị các trường form trường tùy chỉnh.
  *
  * @since 2.6.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function post_custom_meta_box( $post ) {
 	?>
@@ -838,11 +838,11 @@ function post_custom_meta_box( $post ) {
 }
 
 /**
- * Displays comments status form fields.
+ * Hiển thị các trường form trạng thái bình luận.
  *
  * @since 2.6.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function post_comment_status_meta_box( $post ) {
 	?>
@@ -860,11 +860,11 @@ function post_comment_status_meta_box( $post ) {
 	</label>
 	<?php
 	/**
-	 * Fires at the end of the Discussion meta box on the post editing screen.
+	 * Kích hoạt ở cuối meta box Thảo luận trên màn hình chỉnh sửa bài viết.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param WP_Post $post WP_Post object for the current post.
+	 * @param WP_Post $post Đối tượng WP_Post cho bài viết hiện tại.
 	 */
 	do_action( 'post_comment_status_meta_box-options', $post ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 	?>
@@ -873,11 +873,11 @@ function post_comment_status_meta_box( $post ) {
 }
 
 /**
- * Displays comments for post table header
+ * Hiển thị tiêu đề bảng bình luận cho bài viết.
  *
  * @since 3.0.0
  *
- * @param array $result Table header rows.
+ * @param array $result Các hàng tiêu đề bảng.
  * @return array
  */
 function post_comment_meta_box_thead( $result ) {
@@ -886,11 +886,11 @@ function post_comment_meta_box_thead( $result ) {
 }
 
 /**
- * Displays comments for post.
+ * Hiển thị bình luận cho bài viết.
  *
  * @since 2.8.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function post_comment_meta_box( $post ) {
 	wp_nonce_field( 'get-comments', 'add_comment_nonce', false );
@@ -927,11 +927,11 @@ function post_comment_meta_box( $post ) {
 }
 
 /**
- * Displays slug form fields.
+ * Hiển thị các trường form slug.
  *
  * @since 2.6.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function post_slug_meta_box( $post ) {
 	/** This filter is documented in wp-admin/edit-tag-form.php */
@@ -947,13 +947,13 @@ function post_slug_meta_box( $post ) {
 }
 
 /**
- * Displays form field with list of authors.
+ * Hiển thị trường form với danh sách tác giả.
  *
  * @since 2.6.0
  *
  * @global int $user_ID
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function post_author_meta_box( $post ) {
 	global $user_ID;
@@ -979,26 +979,26 @@ function post_author_meta_box( $post ) {
 }
 
 /**
- * Displays list of revisions.
+ * Hiển thị danh sách các phiên bản.
  *
  * @since 2.6.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function post_revisions_meta_box( $post ) {
 	wp_list_post_revisions( $post );
 }
 
 //
-// Page-related Meta Boxes.
+// Meta Box liên quan đến Trang.
 //
 
 /**
- * Displays page attributes form fields.
+ * Hiển thị các trường form thuộc tính trang.
  *
  * @since 2.7.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function page_attributes_meta_box( $post ) {
 	if ( is_post_type_hierarchical( $post->post_type ) ) :
@@ -1013,14 +1013,14 @@ function page_attributes_meta_box( $post ) {
 		);
 
 		/**
-		 * Filters the arguments used to generate a Pages drop-down element.
+		 * Lọc các tham số dùng để tạo phần tử menu thả xuống Trang.
 		 *
 		 * @since 3.3.0
 		 *
 		 * @see wp_dropdown_pages()
 		 *
-		 * @param array   $dropdown_args Array of arguments used to generate the pages drop-down.
-		 * @param WP_Post $post          The current post.
+		 * @param array   $dropdown_args Mảng tham số dùng để tạo menu thả xuống trang.
+		 * @param WP_Post $post          Bài viết hiện tại.
 		 */
 		$dropdown_args = apply_filters( 'page_attributes_dropdown_pages_args', $dropdown_args, $post );
 		$pages         = wp_dropdown_pages( $dropdown_args );
@@ -1029,8 +1029,8 @@ function page_attributes_meta_box( $post ) {
 <p class="post-attributes-label-wrapper parent-id-label-wrapper"><label class="post-attributes-label" for="parent_id"><?php _e( 'Parent' ); ?></label></p>
 			<?php echo $pages; ?>
 			<?php
-		endif; // End empty pages check.
-	endif;  // End hierarchical check.
+		endif; // Kết thúc kiểm tra trang rỗng.
+	endif;  // Kết thúc kiểm tra phân cấp.
 
 	if ( count( get_page_templates( $post ) ) > 0 && (int) get_option( 'page_for_posts' ) !== $post->ID ) :
 		$template = ! empty( $post->page_template ) ? $post->page_template : false;
@@ -1038,13 +1038,13 @@ function page_attributes_meta_box( $post ) {
 <p class="post-attributes-label-wrapper page-template-label-wrapper"><label class="post-attributes-label" for="page_template"><?php _e( 'Template' ); ?></label>
 		<?php
 		/**
-		 * Fires immediately after the label inside the 'Template' section
-		 * of the 'Page Attributes' meta box.
+		 * Kích hoạt ngay sau nhãn bên trong phần 'Mẫu'
+		 * của meta box 'Thuộc tính Trang'.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string|false $template The template used for the current post.
-		 * @param WP_Post      $post     The current post.
+		 * @param string|false $template Mẫu được sử dụng cho bài viết hiện tại.
+		 * @param WP_Post      $post     Bài viết hiện tại.
 		 */
 		do_action( 'page_attributes_meta_box_template', $template, $post );
 		?>
@@ -1052,13 +1052,13 @@ function page_attributes_meta_box( $post ) {
 <select name="page_template" id="page_template">
 		<?php
 		/**
-		 * Filters the title of the default page template displayed in the drop-down.
+		 * Lọc tiêu đề của mẫu trang mặc định được hiển thị trong menu thả xuống.
 		 *
 		 * @since 4.1.0
 		 *
-		 * @param string $label   The display value for the default page template title.
-		 * @param string $context Where the option label is displayed. Possible values
-		 *                        include 'meta-box' or 'quick-edit'.
+		 * @param string $label   Giá trị hiển thị cho tiêu đề mẫu trang mặc định.
+		 * @param string $context Nơi nhãn tùy chọn được hiển thị. Các giá trị có thể
+		 *                        bao gồm 'meta-box' hoặc 'quick-edit'.
 		 */
 		$default_title = apply_filters( 'default_page_template_title', __( 'Default template' ), 'meta-box' );
 		?>
@@ -1071,11 +1071,11 @@ function page_attributes_meta_box( $post ) {
 <input name="menu_order" type="text" size="4" id="menu_order" value="<?php echo esc_attr( $post->menu_order ); ?>" />
 		<?php
 		/**
-		 * Fires before the help hint text in the 'Page Attributes' meta box.
+		 * Kích hoạt trước văn bản gợi ý trợ giúp trong meta box 'Thuộc tính Trang'.
 		 *
 		 * @since 4.9.0
 		 *
-		 * @param WP_Post $post The current post.
+		 * @param WP_Post $post Bài viết hiện tại.
 		 */
 		do_action( 'page_attributes_misc_attributes', $post );
 		?>
@@ -1087,15 +1087,15 @@ function page_attributes_meta_box( $post ) {
 }
 
 //
-// Link-related Meta Boxes.
+// Meta Box liên quan đến Liên kết.
 //
 
 /**
- * Displays link create form fields.
+ * Hiển thị các trường form tạo liên kết.
  *
  * @since 2.7.0
  *
- * @param object $link Current link object.
+ * @param object $link Đối tượng liên kết hiện tại.
  */
 function link_submit_meta_box( $link ) {
 	?>
@@ -1103,7 +1103,7 @@ function link_submit_meta_box( $link ) {
 
 <div id="minor-publishing">
 
-	<?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key. ?>
+	<?php // Nút submit ẩn ở đầu để trình duyệt chọn đúng nút khi form được gửi bằng phím Enter. ?>
 <div style="display:none;">
 	<?php submit_button( __( 'Save' ), '', 'save', false ); ?>
 </div>
@@ -1155,7 +1155,7 @@ function link_submit_meta_box( $link ) {
 </div>
 	<?php
 	/**
-	 * Fires at the end of the Publish box in the Link editing screen.
+	 * Kích hoạt ở cuối hộp Xuất bản trong màn hình chỉnh sửa Liên kết.
 	 *
 	 * @since 2.5.0
 	 */
@@ -1167,11 +1167,11 @@ function link_submit_meta_box( $link ) {
 }
 
 /**
- * Displays link categories form fields.
+ * Hiển thị các trường form chuyên mục liên kết.
  *
  * @since 2.6.0
  *
- * @param object $link Current link object.
+ * @param object $link Đối tượng liên kết hiện tại.
  */
 function link_categories_meta_box( $link ) {
 	?>
@@ -1219,11 +1219,11 @@ function link_categories_meta_box( $link ) {
 }
 
 /**
- * Displays form fields for changing link target.
+ * Hiển thị các trường form để thay đổi đích liên kết.
  *
  * @since 2.6.0
  *
- * @param object $link Current link object.
+ * @param object $link Đối tượng liên kết hiện tại.
  */
 function link_target_meta_box( $link ) {
 
@@ -1249,37 +1249,37 @@ function link_target_meta_box( $link ) {
 }
 
 /**
- * Displays 'checked' checkboxes attribute for XFN microformat options.
+ * Hiển thị thuộc tính 'checked' của checkbox cho các tùy chọn microformat XFN.
  *
  * @since 1.0.1
  *
- * @global object $link Current link object.
+ * @global object $link Đối tượng liên kết hiện tại.
  *
- * @param string $xfn_relationship XFN relationship category. Possible values are:
+ * @param string $xfn_relationship Danh mục mối quan hệ XFN. Các giá trị có thể là:
  *                                 'friendship', 'physical', 'professional',
  *                                 'geographical', 'family', 'romantic', 'identity'.
- * @param string $xfn_value        Optional. The XFN value to mark as checked
- *                                 if it matches the current link's relationship.
- *                                 Default empty string.
- * @param mixed  $deprecated       Deprecated. Not used.
+ * @param string $xfn_value        Không bắt buộc. Giá trị XFN để đánh dấu là đã chọn
+ *                                 nếu nó khớp với mối quan hệ của liên kết hiện tại.
+ *                                 Mặc định chuỗi rỗng.
+ * @param mixed  $deprecated       Đã lỗi thời. Không sử dụng.
  */
 function xfn_check( $xfn_relationship, $xfn_value = '', $deprecated = '' ) {
 	global $link;
 
 	if ( ! empty( $deprecated ) ) {
-		_deprecated_argument( __FUNCTION__, '2.5.0' ); // Never implemented.
+		_deprecated_argument( __FUNCTION__, '2.5.0' ); // Chưa bao giờ được triển khai.
 	}
 
 	$link_rel  = isset( $link->link_rel ) ? $link->link_rel : '';
 	$link_rels = preg_split( '/\s+/', $link_rel );
 
-	// Mark the specified value as checked if it matches the current link's relationship.
+	// Đánh dấu giá trị được chỉ định là đã chọn nếu nó khớp với mối quan hệ của liên kết hiện tại.
 	if ( '' !== $xfn_value && in_array( $xfn_value, $link_rels, true ) ) {
 		echo ' checked="checked"';
 	}
 
 	if ( '' === $xfn_value ) {
-		// Mark the 'none' value as checked if the current link does not match the specified relationship.
+		// Đánh dấu giá trị 'none' là đã chọn nếu liên kết hiện tại không khớp với mối quan hệ được chỉ định.
 		if ( 'family' === $xfn_relationship
 			&& ! array_intersect( $link_rels, array( 'child', 'parent', 'sibling', 'spouse', 'kin' ) )
 		) {
@@ -1298,7 +1298,7 @@ function xfn_check( $xfn_relationship, $xfn_value = '', $deprecated = '' ) {
 			echo ' checked="checked"';
 		}
 
-		// Mark the 'me' value as checked if it matches the current link's relationship.
+		// Đánh dấu giá trị 'me' là đã chọn nếu nó khớp với mối quan hệ của liên kết hiện tại.
 		if ( 'identity' === $xfn_relationship
 			&& in_array( 'me', $link_rels, true )
 		) {
@@ -1308,11 +1308,11 @@ function xfn_check( $xfn_relationship, $xfn_value = '', $deprecated = '' ) {
 }
 
 /**
- * Displays XFN form fields.
+ * Hiển thị các trường form XFN.
  *
  * @since 2.6.0
  *
- * @param object $link Current link object.
+ * @param object $link Đối tượng liên kết hiện tại.
  */
 function link_xfn_meta_box( $link ) {
 	?>
@@ -1468,11 +1468,11 @@ function link_xfn_meta_box( $link ) {
 }
 
 /**
- * Displays advanced link options form fields.
+ * Hiển thị các trường form tùy chọn liên kết nâng cao.
  *
  * @since 2.6.0
  *
- * @param object $link Current link object.
+ * @param object $link Đối tượng liên kết hiện tại.
  */
 function link_advanced_meta_box( $link ) {
 	?>
@@ -1509,11 +1509,11 @@ function link_advanced_meta_box( $link ) {
 }
 
 /**
- * Displays post thumbnail meta box.
+ * Hiển thị meta box ảnh đại diện bài viết.
  *
  * @since 2.9.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function post_thumbnail_meta_box( $post ) {
 	$thumbnail_id = get_post_meta( $post->ID, '_thumbnail_id', true );
@@ -1521,11 +1521,11 @@ function post_thumbnail_meta_box( $post ) {
 }
 
 /**
- * Displays fields for ID3 data.
+ * Hiển thị các trường dữ liệu ID3.
  *
  * @since 3.9.0
  *
- * @param WP_Post $post Current post object.
+ * @param WP_Post $post Đối tượng bài viết hiện tại.
  */
 function attachment_id3_data_meta_box( $post ) {
 	$meta = array();
@@ -1548,11 +1548,11 @@ function attachment_id3_data_meta_box( $post ) {
 }
 
 /**
- * Registers the default post meta boxes, and runs the `do_meta_boxes` actions.
+ * Đăng ký các meta box bài viết mặc định, và chạy các action `do_meta_boxes`.
  *
  * @since 5.0.0
  *
- * @param WP_Post $post The post object that these meta boxes are being generated for.
+ * @param WP_Post $post Đối tượng bài viết mà các meta box này đang được tạo cho.
  */
 function register_and_do_post_meta_boxes( $post ) {
 	$post_type        = $post->post_type;
@@ -1572,7 +1572,7 @@ function register_and_do_post_meta_boxes( $post ) {
 	if ( post_type_supports( $post_type, 'revisions' ) && 'auto-draft' !== $post->post_status ) {
 		$revisions = wp_get_latest_revision_id_and_total_count( $post->ID );
 
-		// We should aim to show the revisions meta box only when there are revisions.
+		// Chúng ta nên chỉ hiển thị meta box phiên bản khi có phiên bản.
 		if ( ! is_wp_error( $revisions ) && $revisions['count'] > 1 ) {
 			$publish_callback_args = array(
 				'revisions_count'        => $revisions['count'],
@@ -1601,7 +1601,7 @@ function register_and_do_post_meta_boxes( $post ) {
 		add_meta_box( 'formatdiv', _x( 'Format', 'post format' ), 'post_format_meta_box', null, 'side', 'core', array( '__back_compat_meta_box' => true ) );
 	}
 
-	// All taxonomies.
+	// Tất cả phân loại.
 	foreach ( get_object_taxonomies( $post ) as $tax_name ) {
 		$taxonomy = get_taxonomy( $tax_name );
 		if ( ! $taxonomy->show_ui || false === $taxonomy->meta_box_cb ) {
@@ -1662,18 +1662,18 @@ function register_and_do_post_meta_boxes( $post ) {
 	}
 
 	/**
-	 * Fires in the middle of built-in meta box registration.
+	 * Kích hoạt ở giữa quá trình đăng ký meta box tích hợp.
 	 *
 	 * @since 2.1.0
-	 * @deprecated 3.7.0 Use {@see 'add_meta_boxes'} instead.
+	 * @deprecated 3.7.0 Sử dụng {@see 'add_meta_boxes'} thay thế.
 	 *
-	 * @param WP_Post $post Post object.
+	 * @param WP_Post $post Đối tượng bài viết.
 	 */
 	do_action_deprecated( 'dbx_post_advanced', array( $post ), '3.7.0', 'add_meta_boxes' );
 
 	/*
-	 * Allow the Discussion meta box to show up if the post type supports comments,
-	 * or if comments or pings are open.
+	 * Cho phép meta box Thảo luận hiển thị nếu loại bài viết hỗ trợ bình luận,
+	 * hoặc nếu bình luận hoặc ping đang mở.
 	 */
 	if ( comments_open( $post ) || pings_open( $post ) || post_type_supports( $post_type, 'comments' ) ) {
 		add_meta_box( 'commentstatusdiv', __( 'Discussion' ), 'post_comment_status_meta_box', null, 'normal', 'core', array( '__back_compat_meta_box' => true ) );
@@ -1689,8 +1689,8 @@ function register_and_do_post_meta_boxes( $post ) {
 
 	if ( in_array( get_post_status( $post ), $statuses, true ) ) {
 		/*
-		 * If the post type support comments, or the post has comments,
-		 * allow the Comments meta box.
+		 * Nếu loại bài viết hỗ trợ bình luận, hoặc bài viết có bình luận,
+		 * cho phép meta box Bình luận.
 		 */
 		if ( comments_open( $post ) || pings_open( $post ) || $post->comment_count > 0 || post_type_supports( $post_type, 'comments' ) ) {
 			add_meta_box( 'commentsdiv', __( 'Comments' ), 'post_comment_meta_box', null, 'normal', 'core', array( '__back_compat_meta_box' => true ) );
@@ -1706,21 +1706,21 @@ function register_and_do_post_meta_boxes( $post ) {
 	}
 
 	/**
-	 * Fires after all built-in meta boxes have been added.
+	 * Kích hoạt sau khi tất cả meta box tích hợp đã được thêm.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string  $post_type Post type.
-	 * @param WP_Post $post      Post object.
+	 * @param string  $post_type Loại bài viết.
+	 * @param WP_Post $post      Đối tượng bài viết.
 	 */
 	do_action( 'add_meta_boxes', $post_type, $post );
 
 	/**
-	 * Fires after all built-in meta boxes have been added, contextually for the given post type.
+	 * Kích hoạt sau khi tất cả meta box tích hợp đã được thêm, theo ngữ cảnh cho loại bài viết đã cho.
 	 *
-	 * The dynamic portion of the hook name, `$post_type`, refers to the post type of the post.
+	 * Phần động của tên hook, `$post_type`, tham chiếu đến loại bài viết của bài viết.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `add_meta_boxes_post`
 	 *  - `add_meta_boxes_page`
@@ -1728,22 +1728,22 @@ function register_and_do_post_meta_boxes( $post ) {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param WP_Post $post Post object.
+	 * @param WP_Post $post Đối tượng bài viết.
 	 */
 	do_action( "add_meta_boxes_{$post_type}", $post );
 
 	/**
-	 * Fires after meta boxes have been added.
+	 * Kích hoạt sau khi meta box đã được thêm.
 	 *
-	 * Fires once for each of the default meta box contexts: normal, advanced, and side.
+	 * Kích hoạt một lần cho mỗi ngữ cảnh meta box mặc định: normal, advanced, và side.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string                $post_type Post type of the post on Edit Post screen, 'link' on Edit Link screen,
-	 *                                         'dashboard' on Dashboard screen.
-	 * @param string                $context   Meta box context. Possible values include 'normal', 'advanced', 'side'.
-	 * @param WP_Post|object|string $post      Post object on Edit Post screen, link object on Edit Link screen,
-	 *                                         an empty string on Dashboard screen.
+	 * @param string                $post_type Loại bài viết của bài viết trên màn hình Sửa Bài viết, 'link' trên màn hình Sửa Liên kết,
+	 *                                         'dashboard' trên màn hình Bảng điều khiển.
+	 * @param string                $context   Ngữ cảnh meta box. Các giá trị có thể bao gồm 'normal', 'advanced', 'side'.
+	 * @param WP_Post|object|string $post      Đối tượng bài viết trên màn hình Sửa Bài viết, đối tượng liên kết trên màn hình Sửa Liên kết,
+	 *                                         chuỗi rỗng trên màn hình Bảng điều khiển.
 	 */
 	do_action( 'do_meta_boxes', $post_type, 'normal', $post );
 	/** This action is documented in wp-admin/includes/meta-boxes.php */

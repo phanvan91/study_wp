@@ -297,7 +297,7 @@ class WP_Filesystem_Base {
 					printf( "\n" . __( 'Changing to %s' ) . "<br />\n", $newdir );
 				}
 
-				// Only search for the remaining path tokens in the directory, not the full path again.
+				// Chỉ tìm kiếm các token đường dẫn còn lại trong thư mục, không phải toàn bộ đường dẫn.
 				$newfolder = implode( '/', array_slice( $folder_parts, $index + 1 ) );
 				$ret       = $this->search_for_folder( $newfolder, $newdir, $loop );
 
@@ -308,8 +308,8 @@ class WP_Filesystem_Base {
 		}
 
 		/*
-		 * Only check this as a last resort, to prevent locating the incorrect install.
-		 * All above procedures will fail quickly if this is the right branch to take.
+		 * Chỉ kiểm tra điều này như phương án cuối cùng, để tránh định vị nhầm bản cài đặt.
+		 * Tất cả các quy trình ở trên sẽ thất bại nhanh chóng nếu đây là nhánh đúng cần đi.
 		 */
 		if ( isset( $files[ $last_path ] ) ) {
 			if ( $this->verbose ) {
@@ -321,68 +321,68 @@ class WP_Filesystem_Base {
 		}
 
 		/*
-		 * Prevent this function from looping again.
-		 * No need to proceed if we've just searched in `/`.
+		 * Ngăn hàm này lặp lại lần nữa.
+		 * Không cần tiếp tục nếu chúng ta vừa tìm kiếm trong `/`.
 		 */
 		if ( $loop || '/' === $base ) {
 			return false;
 		}
 
 		/*
-		 * As an extra last resort, Change back to / if the folder wasn't found.
-		 * This comes into effect when the CWD is /home/user/ but WP is at /var/www/....
+		 * Như một phương án cuối cùng bổ sung, quay lại / nếu thư mục không được tìm thấy.
+		 * Điều này có hiệu lực khi CWD là /home/user/ nhưng WP ở /var/www/....
 		 */
 		return $this->search_for_folder( $folder, '/', true );
 	}
 
 	/**
-	 * Returns the *nix-style file permissions for a file.
+	 * Trả về quyền tệp kiểu *nix cho một tệp.
 	 *
-	 * From the PHP documentation page for fileperms().
+	 * Từ trang tài liệu PHP cho fileperms().
 	 *
 	 * @link https://www.php.net/manual/en/function.fileperms.php
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file String filename.
-	 * @return string The *nix-style representation of permissions.
+	 * @param string $file Chuỗi tên tệp.
+	 * @return string Biểu diễn quyền kiểu *nix.
 	 */
 	public function gethchmod( $file ) {
 		$perms = intval( $this->getchmod( $file ), 8 );
 
 		if ( ( $perms & 0xC000 ) === 0xC000 ) { // Socket.
 			$info = 's';
-		} elseif ( ( $perms & 0xA000 ) === 0xA000 ) { // Symbolic Link.
+		} elseif ( ( $perms & 0xA000 ) === 0xA000 ) { // Liên kết tượng trưng.
 			$info = 'l';
-		} elseif ( ( $perms & 0x8000 ) === 0x8000 ) { // Regular.
+		} elseif ( ( $perms & 0x8000 ) === 0x8000 ) { // Thường.
 			$info = '-';
-		} elseif ( ( $perms & 0x6000 ) === 0x6000 ) { // Block special.
+		} elseif ( ( $perms & 0x6000 ) === 0x6000 ) { // Khối đặc biệt.
 			$info = 'b';
-		} elseif ( ( $perms & 0x4000 ) === 0x4000 ) { // Directory.
+		} elseif ( ( $perms & 0x4000 ) === 0x4000 ) { // Thư mục.
 			$info = 'd';
-		} elseif ( ( $perms & 0x2000 ) === 0x2000 ) { // Character special.
+		} elseif ( ( $perms & 0x2000 ) === 0x2000 ) { // Ký tự đặc biệt.
 			$info = 'c';
-		} elseif ( ( $perms & 0x1000 ) === 0x1000 ) { // FIFO pipe.
+		} elseif ( ( $perms & 0x1000 ) === 0x1000 ) { // Ống FIFO.
 			$info = 'p';
-		} else { // Unknown.
+		} else { // Không xác định.
 			$info = 'u';
 		}
 
-		// Owner.
+		// Chủ sở hữu.
 		$info .= ( ( $perms & 0x0100 ) ? 'r' : '-' );
 		$info .= ( ( $perms & 0x0080 ) ? 'w' : '-' );
 		$info .= ( ( $perms & 0x0040 ) ?
 					( ( $perms & 0x0800 ) ? 's' : 'x' ) :
 					( ( $perms & 0x0800 ) ? 'S' : '-' ) );
 
-		// Group.
+		// Nhóm.
 		$info .= ( ( $perms & 0x0020 ) ? 'r' : '-' );
 		$info .= ( ( $perms & 0x0010 ) ? 'w' : '-' );
 		$info .= ( ( $perms & 0x0008 ) ?
 					( ( $perms & 0x0400 ) ? 's' : 'x' ) :
 					( ( $perms & 0x0400 ) ? 'S' : '-' ) );
 
-		// World.
+		// Mọi người.
 		$info .= ( ( $perms & 0x0004 ) ? 'r' : '-' );
 		$info .= ( ( $perms & 0x0002 ) ? 'w' : '-' );
 		$info .= ( ( $perms & 0x0001 ) ?
@@ -393,29 +393,29 @@ class WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the permissions of the specified file or filepath in their octal format.
+	 * Lấy quyền của tệp hoặc đường dẫn được chỉ định ở dạng bát phân.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return string Mode of the file (the last 3 digits).
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return string Chế độ của tệp (3 chữ số cuối).
 	 */
 	public function getchmod( $file ) {
 		return '777';
 	}
 
 	/**
-	 * Converts *nix-style file permissions to an octal number.
+	 * Chuyển đổi quyền tệp kiểu *nix thành số bát phân.
 	 *
-	 * Converts '-rw-r--r--' to 0644
-	 * From "info at rvgate dot nl"'s comment on the PHP documentation for chmod()
+	 * Chuyển đổi '-rw-r--r--' thành 0644
+	 * Từ bình luận của "info at rvgate dot nl" trên tài liệu PHP cho chmod()
 	 *
 	 * @link https://www.php.net/manual/en/function.chmod.php#49614
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $mode string The *nix-style file permissions.
-	 * @return string Octal representation of permissions.
+	 * @param string $mode chuỗi Quyền tệp kiểu *nix.
+	 * @return string Biểu diễn bát phân của quyền.
 	 */
 	public function getnumchmodfromh( $mode ) {
 		$realmode = '';
@@ -448,141 +448,141 @@ class WP_Filesystem_Base {
 	}
 
 	/**
-	 * Determines if the string provided contains binary characters.
+	 * Xác định xem chuỗi được cung cấp có chứa ký tự nhị phân hay không.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $text String to test against.
-	 * @return bool True if string is binary, false otherwise.
+	 * @param string $text Chuỗi cần kiểm tra.
+	 * @return bool True nếu chuỗi là nhị phân, false nếu không.
 	 */
 	public function is_binary( $text ) {
 		return (bool) preg_match( '|[^\x20-\x7E]|', $text ); // chr(32)..chr(127)
 	}
 
 	/**
-	 * Changes the owner of a file or directory.
+	 * Thay đổi chủ sở hữu của tệp hoặc thư mục.
 	 *
-	 * Default behavior is to do nothing, override this in your subclass, if desired.
+	 * Hành vi mặc định là không làm gì, ghi đè trong lớp con của bạn nếu muốn.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string     $file      Path to the file or directory.
-	 * @param string|int $owner     A user name or number.
-	 * @param bool       $recursive Optional. If set to true, changes file owner recursively.
-	 *                              Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string     $file      Đường dẫn đến tệp hoặc thư mục.
+	 * @param string|int $owner     Tên người dùng hoặc số.
+	 * @param bool       $recursive Tùy chọn. Nếu đặt là true, thay đổi chủ sở hữu tệp đệ quy.
+	 *                              Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chown( $file, $owner, $recursive = false ) {
 		return false;
 	}
 
 	/**
-	 * Connects filesystem.
+	 * Kết nối hệ thống tệp.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @return bool True on success, false on failure (always true for WP_Filesystem_Direct).
+	 * @return bool True khi thành công, false khi thất bại (luôn true cho WP_Filesystem_Direct).
 	 */
 	public function connect() {
 		return true;
 	}
 
 	/**
-	 * Reads entire file into a string.
+	 * Đọc toàn bộ tệp vào một chuỗi.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $file Name of the file to read.
-	 * @return string|false Read data on success, false on failure.
+	 * @param string $file Tên tệp cần đọc.
+	 * @return string|false Dữ liệu đọc được khi thành công, false khi thất bại.
 	 */
 	public function get_contents( $file ) {
 		return false;
 	}
 
 	/**
-	 * Reads entire file into an array.
+	 * Đọc toàn bộ tệp vào một mảng.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $file Path to the file.
-	 * @return array|false File contents in an array on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return array|false Nội dung tệp trong một mảng khi thành công, false khi thất bại.
 	 */
 	public function get_contents_array( $file ) {
 		return false;
 	}
 
 	/**
-	 * Writes a string to a file.
+	 * Ghi một chuỗi vào tệp.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string    $file     Remote path to the file where to write the data.
-	 * @param string    $contents The data to write.
-	 * @param int|false $mode     Optional. The file permissions as octal number, usually 0644.
-	 *                            Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $file     Đường dẫn từ xa đến tệp cần ghi dữ liệu.
+	 * @param string    $contents Dữ liệu cần ghi.
+	 * @param int|false $mode     Tùy chọn. Quyền tệp dạng số bát phân, thường là 0644.
+	 *                            Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function put_contents( $file, $contents, $mode = false ) {
 		return false;
 	}
 
 	/**
-	 * Gets the current working directory.
+	 * Lấy thư mục làm việc hiện tại.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @return string|false The current working directory on success, false on failure.
+	 * @return string|false Thư mục làm việc hiện tại khi thành công, false khi thất bại.
 	 */
 	public function cwd() {
 		return false;
 	}
 
 	/**
-	 * Changes current directory.
+	 * Thay đổi thư mục hiện tại.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $dir The new current directory.
-	 * @return bool True on success, false on failure.
+	 * @param string $dir Thư mục hiện tại mới.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chdir( $dir ) {
 		return false;
 	}
 
 	/**
-	 * Changes the file group.
+	 * Thay đổi nhóm của tệp.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string     $file      Path to the file.
-	 * @param string|int $group     A group name or number.
-	 * @param bool       $recursive Optional. If set to true, changes file group recursively.
-	 *                              Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string     $file      Đường dẫn đến tệp.
+	 * @param string|int $group     Tên hoặc số nhóm.
+	 * @param bool       $recursive Tùy chọn. Nếu đặt là true, thay đổi nhóm tệp đệ quy.
+	 *                              Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chgrp( $file, $group, $recursive = false ) {
 		return false;
 	}
 
 	/**
-	 * Changes filesystem permissions.
+	 * Thay đổi quyền hệ thống tệp.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string    $file      Path to the file.
-	 * @param int|false $mode      Optional. The permissions as octal number, usually 0644 for files,
-	 *                             0755 for directories. Default false.
-	 * @param bool      $recursive Optional. If set to true, changes file permissions recursively.
-	 *                             Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $file      Đường dẫn đến tệp.
+	 * @param int|false $mode      Tùy chọn. Quyền dạng số bát phân, thường là 0644 cho tệp,
+	 *                             0755 cho thư mục. Mặc định false.
+	 * @param bool      $recursive Tùy chọn. Nếu đặt là true, thay đổi quyền tệp đệ quy.
+	 *                             Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chmod( $file, $mode = false, $recursive = false ) {
 		return false;

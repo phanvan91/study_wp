@@ -1,6 +1,6 @@
 <?php
 /**
- * Interactivity API: WP_Interactivity_API class.
+ * Interactivity API: Lớp WP_Interactivity_API.
  *
  * @package WordPress
  * @subpackage Interactivity API
@@ -8,13 +8,13 @@
  */
 
 /**
- * Class used to process the Interactivity API on the server.
+ * Lớp được sử dụng để xử lý Interactivity API trên máy chủ.
  *
  * @since 6.5.0
  */
 final class WP_Interactivity_API {
 	/**
-	 * Holds the mapping of directive attribute names to their processor methods.
+	 * Lưu trữ ánh xạ tên thuộc tính directive tới các phương thức xử lý của chúng.
 	 *
 	 * @since 6.5.0
 	 * @var array
@@ -28,19 +28,18 @@ final class WP_Interactivity_API {
 		'data-wp-style'         => 'data_wp_style_processor',
 		'data-wp-text'          => 'data_wp_text_processor',
 		/*
-		 * `data-wp-each` needs to be processed in the last place because it moves
-		 * the cursor to the end of the processed items to prevent them to be
-		 * processed twice.
+		 * `data-wp-each` cần được xử lý cuối cùng vì nó di chuyển con trỏ
+		 * đến cuối các phần tử đã xử lý để ngăn chúng bị xử lý hai lần.
 		 */
 		'data-wp-each'          => 'data_wp_each_processor',
 	);
 
 	/**
-	 * Holds the initial state of the different Interactivity API stores.
+	 * Lưu trữ trạng thái ban đầu của các Interactivity API store khác nhau.
 	 *
-	 * This state is used during the server directive processing. Then, it is
-	 * serialized and sent to the client as part of the interactivity data to be
-	 * recovered during the hydration of the client interactivity stores.
+	 * Trạng thái này được sử dụng trong quá trình xử lý directive phía máy chủ. Sau đó,
+	 * nó được tuần tự hóa và gửi đến client như một phần của dữ liệu tương tác để được
+	 * khôi phục trong quá trình hydration của các interactivity store phía client.
 	 *
 	 * @since 6.5.0
 	 * @var array
@@ -48,10 +47,10 @@ final class WP_Interactivity_API {
 	private $state_data = array();
 
 	/**
-	 * Holds the configuration required by the different Interactivity API stores.
+	 * Lưu trữ cấu hình cần thiết cho các Interactivity API store khác nhau.
 	 *
-	 * This configuration is serialized and sent to the client as part of the
-	 * interactivity data and can be accessed by the client interactivity stores.
+	 * Cấu hình này được tuần tự hóa và gửi đến client như một phần của dữ liệu
+	 * tương tác và có thể được truy cập bởi các interactivity store phía client.
 	 *
 	 * @since 6.5.0
 	 * @var array
@@ -59,14 +58,13 @@ final class WP_Interactivity_API {
 	private $config_data = array();
 
 	/**
-	 * Flag that indicates whether the `data-wp-router-region` directive has
-	 * been found in the HTML and processed.
+	 * Cờ cho biết directive `data-wp-router-region` đã được tìm thấy
+	 * trong HTML và đã được xử lý hay chưa.
 	 *
-	 * The value is saved in a private property of the WP_Interactivity_API
-	 * instance instead of using a static variable inside the processor
-	 * function, which would hold the same value for all instances
-	 * independently of whether they have processed any
-	 * `data-wp-router-region` directive or not.
+	 * Giá trị được lưu trong thuộc tính private của instance WP_Interactivity_API
+	 * thay vì sử dụng biến static bên trong hàm xử lý, vì biến static sẽ giữ
+	 * cùng một giá trị cho tất cả các instance bất kể chúng đã xử lý
+	 * directive `data-wp-router-region` nào hay chưa.
 	 *
 	 * @since 6.5.0
 	 * @var bool
@@ -74,10 +72,10 @@ final class WP_Interactivity_API {
 	private $has_processed_router_region = false;
 
 	/**
-	 * Stack of namespaces defined by `data-wp-interactive` directives, in
-	 * the order they are processed.
+	 * Ngăn xếp các namespace được định nghĩa bởi directive `data-wp-interactive`,
+	 * theo thứ tự chúng được xử lý.
 	 *
-	 * This is only available during directive processing, otherwise it is `null`.
+	 * Chỉ khả dụng trong quá trình xử lý directive, ngoài ra là `null`.
 	 *
 	 * @since 6.6.0
 	 * @var array<string>|null
@@ -85,10 +83,10 @@ final class WP_Interactivity_API {
 	private $namespace_stack = null;
 
 	/**
-	 * Stack of contexts defined by `data-wp-context` directives, in
-	 * the order they are processed.
+	 * Ngăn xếp các context được định nghĩa bởi directive `data-wp-context`,
+	 * theo thứ tự chúng được xử lý.
 	 *
-	 * This is only available during directive processing, otherwise it is `null`.
+	 * Chỉ khả dụng trong quá trình xử lý directive, ngoài ra là `null`.
 	 *
 	 * @since 6.6.0
 	 * @var array<array<mixed>>|null
@@ -96,9 +94,9 @@ final class WP_Interactivity_API {
 	private $context_stack = null;
 
 	/**
-	 * Representation in array format of the element currently being processed.
+	 * Biểu diễn dưới dạng mảng của phần tử đang được xử lý hiện tại.
 	 *
-	 * This is only available during directive processing, otherwise it is `null`.
+	 * Chỉ khả dụng trong quá trình xử lý directive, ngoài ra là `null`.
 	 *
 	 * @since 6.7.0
 	 * @var array{attributes: array<string, string|bool>}|null
@@ -106,23 +104,23 @@ final class WP_Interactivity_API {
 	private $current_element = null;
 
 	/**
-	 * Gets and/or sets the initial state of an Interactivity API store for a
-	 * given namespace.
+	 * Lấy và/hoặc thiết lập trạng thái ban đầu của một Interactivity API store
+	 * cho một namespace nhất định.
 	 *
-	 * If state for that store namespace already exists, it merges the new
-	 * provided state with the existing one.
+	 * Nếu trạng thái cho namespace store đó đã tồn tại, nó sẽ gộp trạng thái
+	 * mới được cung cấp với trạng thái hiện có.
 	 *
-	 * When no namespace is specified, it returns the state defined for the
-	 * current value in the internal namespace stack during a `process_directives` call.
+	 * Khi không chỉ định namespace, nó trả về trạng thái được định nghĩa cho
+	 * giá trị hiện tại trong ngăn xếp namespace nội bộ trong lệnh gọi `process_directives`.
 	 *
 	 * @since 6.5.0
-	 * @since 6.6.0 The `$store_namespace` param is optional.
+	 * @since 6.6.0 Tham số `$store_namespace` là tùy chọn.
 	 *
-	 * @param string $store_namespace Optional. The unique store namespace identifier.
-	 * @param array  $state           Optional. The array that will be merged with the existing state for the specified
-	 *                                store namespace.
-	 * @return array The current state for the specified store namespace. This will be the updated state if a $state
-	 *               argument was provided.
+	 * @param string $store_namespace Tùy chọn. Định danh namespace store duy nhất.
+	 * @param array  $state           Tùy chọn. Mảng sẽ được gộp với trạng thái hiện có cho
+	 *                                namespace store được chỉ định.
+	 * @return array Trạng thái hiện tại cho namespace store được chỉ định. Đây sẽ là trạng thái
+	 *               đã cập nhật nếu tham số $state được cung cấp.
 	 */
 	public function state( ?string $store_namespace = null, ?array $state = null ): array {
 		if ( ! $store_namespace ) {
@@ -166,19 +164,19 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Gets and/or sets the configuration of the Interactivity API for a given
-	 * store namespace.
+	 * Lấy và/hoặc thiết lập cấu hình của Interactivity API cho một namespace
+	 * store nhất định.
 	 *
-	 * If configuration for that store namespace exists, it merges the new
-	 * provided configuration with the existing one.
+	 * Nếu cấu hình cho namespace store đó đã tồn tại, nó sẽ gộp cấu hình
+	 * mới được cung cấp với cấu hình hiện có.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param string $store_namespace The unique store namespace identifier.
-	 * @param array  $config          Optional. The array that will be merged with the existing configuration for the
-	 *                                specified store namespace.
-	 * @return array The configuration for the specified store namespace. This will be the updated configuration if a
-	 *               $config argument was provided.
+	 * @param string $store_namespace Định danh namespace store duy nhất.
+	 * @param array  $config          Tùy chọn. Mảng sẽ được gộp với cấu hình hiện có cho
+	 *                                namespace store được chỉ định.
+	 * @return array Cấu hình cho namespace store được chỉ định. Đây sẽ là cấu hình
+	 *               đã cập nhật nếu tham số $config được cung cấp.
 	 */
 	public function config( string $store_namespace, array $config = array() ): array {
 		if ( ! isset( $this->config_data[ $store_namespace ] ) ) {
@@ -194,31 +192,31 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Prints the serialized client-side interactivity data.
+	 * In dữ liệu tương tác phía client đã được tuần tự hóa.
 	 *
-	 * Encodes the config and initial state into JSON and prints them inside a
-	 * script tag of type "application/json". Once in the browser, the state will
-	 * be parsed and used to hydrate the client-side interactivity stores and the
-	 * configuration will be available using a `getConfig` utility.
+	 * Mã hóa cấu hình và trạng thái ban đầu thành JSON và in chúng bên trong
+	 * thẻ script có type "application/json". Khi ở trên trình duyệt, trạng thái sẽ
+	 * được phân tích và sử dụng để hydrate các interactivity store phía client và
+	 * cấu hình sẽ khả dụng thông qua tiện ích `getConfig`.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @deprecated 6.7.0 Client data passing is handled by the {@see "script_module_data_{$module_id}"} filter.
+	 * @deprecated 6.7.0 Việc truyền dữ liệu client được xử lý bởi bộ lọc {@see "script_module_data_{$module_id}"}.
 	 */
 	public function print_client_interactivity_data() {
 		_deprecated_function( __METHOD__, '6.7.0' );
 	}
 
 	/**
-	 * Set client-side interactivity-router data.
+	 * Thiết lập dữ liệu interactivity-router phía client.
 	 *
-	 * Once in the browser, the state will be parsed and used to hydrate the client-side
-	 * interactivity stores and the configuration will be available using a `getConfig` utility.
+	 * Khi ở trên trình duyệt, trạng thái sẽ được phân tích và sử dụng để hydrate các
+	 * interactivity store phía client và cấu hình sẽ khả dụng thông qua tiện ích `getConfig`.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param array $data Data to filter.
-	 * @return array Data for the Interactivity Router script module.
+	 * @param array $data Dữ liệu cần lọc.
+	 * @return array Dữ liệu cho module script Interactivity Router.
 	 */
 	public function filter_script_module_interactivity_router_data( array $data ): array {
 		if ( ! isset( $data['i18n'] ) ) {
@@ -230,15 +228,15 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Set client-side interactivity data.
+	 * Thiết lập dữ liệu tương tác phía client.
 	 *
-	 * Once in the browser, the state will be parsed and used to hydrate the client-side
-	 * interactivity stores and the configuration will be available using a `getConfig` utility.
+	 * Khi ở trên trình duyệt, trạng thái sẽ được phân tích và sử dụng để hydrate các
+	 * interactivity store phía client và cấu hình sẽ khả dụng thông qua tiện ích `getConfig`.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param array $data Data to filter.
-	 * @return array Data for the Interactivity API script module.
+	 * @param array $data Dữ liệu cần lọc.
+	 * @return array Dữ liệu cho module script Interactivity API.
 	 */
 	public function filter_script_module_interactivity_data( array $data ): array {
 		if ( empty( $this->state_data ) && empty( $this->config_data ) ) {
@@ -269,14 +267,14 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Returns the latest value on the context stack with the passed namespace.
+	 * Trả về giá trị mới nhất trên ngăn xếp context với namespace được truyền vào.
 	 *
-	 * When the namespace is omitted, it uses the current namespace on the
-	 * namespace stack during a `process_directives` call.
+	 * Khi namespace bị bỏ qua, nó sử dụng namespace hiện tại trên ngăn xếp
+	 * namespace trong lệnh gọi `process_directives`.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param string $store_namespace Optional. The unique store namespace identifier.
+	 * @param string $store_namespace Tùy chọn. Định danh namespace store duy nhất.
 	 */
 	public function get_context( ?string $store_namespace = null ): array {
 		if ( null === $this->context_stack ) {
@@ -309,13 +307,13 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Returns an array representation of the current element being processed.
+	 * Trả về biểu diễn dạng mảng của phần tử đang được xử lý hiện tại.
 	 *
-	 * The returned array contains a copy of the element attributes.
+	 * Mảng trả về chứa một bản sao của các thuộc tính phần tử.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @return array{attributes: array<string, string|bool>}|null Current element.
+	 * @return array{attributes: array<string, string|bool>}|null Phần tử hiện tại.
 	 */
 	public function get_element(): ?array {
 		if ( null === $this->current_element ) {
@@ -330,9 +328,9 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Registers the `@wordpress/interactivity` script modules.
+	 * Đăng ký các module script `@wordpress/interactivity`.
 	 *
-	 * @deprecated 6.7.0 Script Modules registration is handled by {@see wp_default_script_modules()}.
+	 * @deprecated 6.7.0 Việc đăng ký Script Modules được xử lý bởi {@see wp_default_script_modules()}.
 	 *
 	 * @since 6.5.0
 	 */
@@ -341,7 +339,7 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Adds the necessary hooks for the Interactivity API.
+	 * Thêm các hook cần thiết cho Interactivity API.
 	 *
 	 * @since 6.5.0
 	 */
@@ -351,13 +349,13 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Processes the interactivity directives contained within the HTML content
-	 * and updates the markup accordingly.
+	 * Xử lý các directive tương tác có trong nội dung HTML
+	 * và cập nhật markup tương ứng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param string $html The HTML content to process.
-	 * @return string The processed HTML content. It returns the original content when the HTML contains unbalanced tags.
+	 * @param string $html Nội dung HTML cần xử lý.
+	 * @return string Nội dung HTML đã xử lý. Trả về nội dung gốc khi HTML chứa các thẻ không cân bằng.
 	 */
 	public function process_directives( string $html ): string {
 		if ( ! str_contains( $html, 'data-wp-' ) ) {
@@ -376,18 +374,18 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Processes the interactivity directives contained within the HTML content
-	 * and updates the markup accordingly.
+	 * Xử lý các directive tương tác có trong nội dung HTML
+	 * và cập nhật markup tương ứng.
 	 *
-	 * It uses the WP_Interactivity_API instance's context and namespace stacks,
-	 * which are shared between all calls.
+	 * Nó sử dụng ngăn xếp context và namespace của instance WP_Interactivity_API,
+	 * được chia sẻ giữa tất cả các lệnh gọi.
 	 *
-	 * This method returns null if the HTML contains unbalanced tags.
+	 * Phương thức này trả về null nếu HTML chứa các thẻ không cân bằng.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param string $html The HTML content to process.
-	 * @return string|null The processed HTML content. It returns null when the HTML contains unbalanced tags.
+	 * @param string $html Nội dung HTML cần xử lý.
+	 * @return string|null Nội dung HTML đã xử lý. Trả về null khi HTML chứa các thẻ không cân bằng.
 	 */
 	private function _process_directives( string $html ) {
 		$p          = new WP_Interactivity_API_Directives_Processor( $html );
@@ -398,8 +396,8 @@ final class WP_Interactivity_API {
 		$directive_processor_prefixes_reversed = array_reverse( $directive_processor_prefixes );
 
 		/*
-		 * Save the current size for each stack to restore them in case
-		 * the processing finds unbalanced tags.
+		 * Lưu kích thước hiện tại của mỗi ngăn xếp để khôi phục chúng
+		 * trong trường hợp quá trình xử lý tìm thấy các thẻ không cân bằng.
 		 */
 		$namespace_stack_size = count( $this->namespace_stack );
 		$context_stack_size   = count( $this->context_stack );
@@ -408,9 +406,9 @@ final class WP_Interactivity_API {
 			$tag_name = $p->get_tag();
 
 			/*
-			 * Directives inside SVG and MATH tags are not processed,
-			 * as they are not compatible with the Tag Processor yet.
-			 * We still process the rest of the HTML.
+			 * Các directive bên trong thẻ SVG và MATH không được xử lý,
+			 * vì chúng chưa tương thích với Tag Processor.
+			 * Chúng ta vẫn xử lý phần còn lại của HTML.
 			 */
 			if ( 'SVG' === $tag_name || 'MATH' === $tag_name ) {
 				if ( $p->get_attribute_names_with_prefix( 'data-wp-' ) ) {
@@ -428,43 +426,43 @@ final class WP_Interactivity_API {
 				if ( 0 === count( $tag_stack ) || $opening_tag_name !== $tag_name ) {
 
 					/*
-					 * If the tag stack is empty or the matching opening tag is not the
-					 * same than the closing tag, it means the HTML is unbalanced and it
-					 * stops processing it.
+					 * Nếu ngăn xếp thẻ trống hoặc thẻ mở tương ứng không giống
+					 * với thẻ đóng, nghĩa là HTML không cân bằng và nó sẽ
+					 * dừng xử lý.
 					 */
 					$unbalanced = true;
 					break;
 				} else {
-					// Remove the last tag from the stack.
+					// Xóa thẻ cuối cùng khỏi ngăn xếp.
 					array_pop( $tag_stack );
 				}
 			} else {
 				if ( 0 !== count( $p->get_attribute_names_with_prefix( 'data-wp-each-child' ) ) ) {
 					/*
-					 * If the tag has a `data-wp-each-child` directive, jump to its closer
-					 * tag because those tags have already been processed.
+					 * Nếu thẻ có directive `data-wp-each-child`, nhảy đến thẻ đóng
+					 * của nó vì những thẻ đó đã được xử lý rồi.
 					 */
 					$p->next_balanced_tag_closer_tag();
 					continue;
 				} else {
 					$directives_prefixes = array();
 
-					// Checks if there is a server directive processor registered for each directive.
+					// Kiểm tra xem có bộ xử lý directive phía máy chủ nào được đăng ký cho mỗi directive hay không.
 					foreach ( $p->get_attribute_names_with_prefix( 'data-wp-' ) as $attribute_name ) {
 						if ( ! preg_match(
 							/*
-							 * This must align with the client-side regex used by the interactivity API.
+							 * Regex này phải khớp với regex phía client được sử dụng bởi interactivity API.
 							 * @see https://github.com/WordPress/gutenberg/blob/ca616014255efbb61f34c10917d52a2d86c1c660/packages/interactivity/src/vdom.ts#L20-L32
 							 */
 							'/' .
 							'^data-wp-' .
-							// Match alphanumeric characters including hyphen-separated
-							// segments. It excludes underscore intentionally to prevent confusion.
-							// E.g., "custom-directive".
+							// Khớp các ký tự chữ và số bao gồm các đoạn phân cách bằng dấu gạch ngang.
+							// Loại trừ gạch dưới một cách có chủ đích để tránh nhầm lẫn.
+							// Ví dụ: "custom-directive".
 							'([a-z0-9]+(?:-[a-z0-9]+)*)' .
-							// (Optional) Match '--' followed by any alphanumeric charachters. It
-							// excludes underscore intentionally to prevent confusion, but it can
-							// contain multiple hyphens. E.g., "--custom-prefix--with-more-info".
+							// (Tùy chọn) Khớp '--' theo sau bởi bất kỳ ký tự chữ và số nào. Loại trừ
+							// gạch dưới một cách có chủ đích để tránh nhầm lẫn, nhưng có thể chứa
+							// nhiều dấu gạch ngang. Ví dụ: "--custom-prefix--with-more-info".
 							'(?:--([a-z0-9_-]+))?$' .
 							'/i',
 							$attribute_name

@@ -432,13 +432,13 @@ final class WP_Screen {
 	private function __construct() {}
 
 	/**
-	 * Indicates whether the screen is in a particular admin.
+	 * Cho biết màn hình có thuộc khu vực quản trị cụ thể hay không.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $admin The admin to check against (network | user | site).
-	 *                      If empty any of the three admins will result in true.
-	 * @return bool True if the screen is in the indicated admin, false otherwise.
+	 * @param string $admin Khu vực quản trị để kiểm tra (network | user | site).
+	 *                      Nếu rỗng, bất kỳ khu vực nào trong ba khu vực quản trị sẽ trả về true.
+	 * @return bool True nếu màn hình thuộc khu vực quản trị được chỉ định, false nếu không.
 	 */
 	public function in_admin( $admin = null ) {
 		if ( empty( $admin ) ) {
@@ -449,12 +449,12 @@ final class WP_Screen {
 	}
 
 	/**
-	 * Sets or returns whether the block editor is loading on the current screen.
+	 * Thiết lập hoặc trả về trạng thái trình soạn thảo khối có đang được tải trên màn hình hiện tại hay không.
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param bool $set Optional. Sets whether the block editor is loading on the current screen or not.
-	 * @return bool True if the block editor is being loaded, false otherwise.
+	 * @param bool $set Không bắt buộc. Thiết lập trình soạn thảo khối có đang được tải trên màn hình hiện tại hay không.
+	 * @return bool True nếu trình soạn thảo khối đang được tải, false nếu không.
 	 */
 	public function is_block_editor( $set = null ) {
 		if ( null !== $set ) {
@@ -465,25 +465,25 @@ final class WP_Screen {
 	}
 
 	/**
-	 * Sets the old string-based contextual help for the screen for backward compatibility.
+	 * Thiết lập trợ giúp ngữ cảnh dạng chuỗi cũ cho màn hình để tương thích ngược.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param WP_Screen $screen A screen object.
-	 * @param string    $help   Help text.
+	 * @param WP_Screen $screen Đối tượng màn hình.
+	 * @param string    $help   Văn bản trợ giúp.
 	 */
 	public static function add_old_compat_help( $screen, $help ) {
 		self::$_old_compat_help[ $screen->id ] = $help;
 	}
 
 	/**
-	 * Sets the parent information for the screen.
+	 * Thiết lập thông tin cha cho màn hình.
 	 *
-	 * This is called in admin-header.php after the menu parent for the screen has been determined.
+	 * Hàm này được gọi trong admin-header.php sau khi menu cha cho màn hình đã được xác định.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string $parent_file The parent file of the screen. Typically the $parent_file global.
+	 * @param string $parent_file Tệp cha của màn hình. Thường là biến toàn cục $parent_file.
 	 */
 	public function set_parentage( $parent_file ) {
 		$this->parent_file         = $parent_file;

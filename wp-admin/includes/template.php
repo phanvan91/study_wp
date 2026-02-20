@@ -1,41 +1,41 @@
 <?php
 /**
- * Template WordPress Administration API.
+ * API Quản trị Template WordPress.
  *
- * A Big Mess. Also some neat functions that are nicely written.
+ * Một mớ hỗn độn lớn. Nhưng cũng có một số hàm gọn gàng được viết rất tốt.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** Walker_Category_Checklist class */
+/** Lớp Walker_Category_Checklist */
 require_once ABSPATH . 'wp-admin/includes/class-walker-category-checklist.php';
 
-/** WP_Internal_Pointers class */
+/** Lớp WP_Internal_Pointers */
 require_once ABSPATH . 'wp-admin/includes/class-wp-internal-pointers.php';
 
 //
-// Category Checklists.
+// Danh sách kiểm tra Chuyên mục.
 //
 
 /**
- * Outputs an unordered list of checkbox input elements labeled with category names.
+ * Xuất danh sách không có thứ tự các phần tử input checkbox được gắn nhãn bằng tên chuyên mục.
  *
  * @since 2.5.1
  *
  * @see wp_terms_checklist()
  *
- * @param int         $post_id              Optional. Post to generate a categories checklist for. Default 0.
- *                                          $selected_cats must not be an array. Default 0.
- * @param int         $descendants_and_self Optional. ID of the category to output along with its descendants.
- *                                          Default 0.
- * @param int[]|false $selected_cats        Optional. Array of category IDs to mark as checked. Default false.
- * @param int[]|false $popular_cats         Optional. Array of category IDs to receive the "popular-category" class.
- *                                          Default false.
- * @param Walker      $walker               Optional. Walker object to use to build the output.
- *                                          Default is a Walker_Category_Checklist instance.
- * @param bool        $checked_ontop        Optional. Whether to move checked items out of the hierarchy and to
- *                                          the top of the list. Default true.
+ * @param int         $post_id              Tùy chọn. Bài viết để tạo danh sách kiểm tra chuyên mục. Mặc định 0.
+ *                                          $selected_cats không được là mảng. Mặc định 0.
+ * @param int         $descendants_and_self Tùy chọn. ID của chuyên mục để xuất cùng với các chuyên mục con.
+ *                                          Mặc định 0.
+ * @param int[]|false $selected_cats        Tùy chọn. Mảng các ID chuyên mục để đánh dấu đã chọn. Mặc định false.
+ * @param int[]|false $popular_cats         Tùy chọn. Mảng các ID chuyên mục nhận lớp "popular-category".
+ *                                          Mặc định false.
+ * @param Walker      $walker               Tùy chọn. Đối tượng Walker để xây dựng đầu ra.
+ *                                          Mặc định là một thể hiện Walker_Category_Checklist.
+ * @param bool        $checked_ontop        Tùy chọn. Có di chuyển các mục đã chọn ra khỏi cấu trúc phân cấp và lên
+ *                                          đầu danh sách hay không. Mặc định true.
  */
 function wp_category_checklist( $post_id = 0, $descendants_and_self = 0, $selected_cats = false, $popular_cats = false, $walker = null, $checked_ontop = true ) {
 	wp_terms_checklist(
@@ -52,31 +52,31 @@ function wp_category_checklist( $post_id = 0, $descendants_and_self = 0, $select
 }
 
 /**
- * Outputs an unordered list of checkbox input elements labelled with term names.
+ * Xuất danh sách không có thứ tự các phần tử input checkbox được gắn nhãn bằng tên term.
  *
- * Taxonomy-independent version of wp_category_checklist().
+ * Phiên bản không phụ thuộc taxonomy của wp_category_checklist().
  *
  * @since 3.0.0
- * @since 4.4.0 Introduced the `$echo` argument.
+ * @since 4.4.0 Giới thiệu tham số `$echo`.
  *
- * @param int          $post_id Optional. Post ID. Default 0.
+ * @param int          $post_id Tùy chọn. ID bài viết. Mặc định 0.
  * @param array|string $args {
- *     Optional. Array or string of arguments for generating a terms checklist. Default empty array.
+ *     Tùy chọn. Mảng hoặc chuỗi các tham số để tạo danh sách kiểm tra term. Mặc định mảng rỗng.
  *
- *     @type int    $descendants_and_self ID of the category to output along with its descendants.
- *                                        Default 0.
- *     @type int[]  $selected_cats        Array of category IDs to mark as checked. Default false.
- *     @type int[]  $popular_cats         Array of category IDs to receive the "popular-category" class.
- *                                        Default false.
- *     @type Walker $walker               Walker object to use to build the output. Default empty which
- *                                        results in a Walker_Category_Checklist instance being used.
- *     @type string $taxonomy             Taxonomy to generate the checklist for. Default 'category'.
- *     @type bool   $checked_ontop        Whether to move checked items out of the hierarchy and to
- *                                        the top of the list. Default true.
- *     @type bool   $echo                 Whether to echo the generated markup. False to return the markup instead
- *                                        of echoing it. Default true.
+ *     @type int    $descendants_and_self ID của chuyên mục để xuất cùng với các chuyên mục con.
+ *                                        Mặc định 0.
+ *     @type int[]  $selected_cats        Mảng các ID chuyên mục để đánh dấu đã chọn. Mặc định false.
+ *     @type int[]  $popular_cats         Mảng các ID chuyên mục nhận lớp "popular-category".
+ *                                        Mặc định false.
+ *     @type Walker $walker               Đối tượng Walker để xây dựng đầu ra. Mặc định rỗng, kết quả là
+ *                                        sử dụng một thể hiện Walker_Category_Checklist.
+ *     @type string $taxonomy             Taxonomy để tạo danh sách kiểm tra. Mặc định 'category'.
+ *     @type bool   $checked_ontop        Có di chuyển các mục đã chọn ra khỏi cấu trúc phân cấp và lên
+ *                                        đầu danh sách hay không. Mặc định true.
+ *     @type bool   $echo                 Có xuất markup đã tạo hay không. False để trả về markup thay vì
+ *                                        xuất ra. Mặc định true.
  * }
- * @return string HTML list of input elements.
+ * @return string Danh sách HTML các phần tử input.
  */
 function wp_terms_checklist( $post_id = 0, $args = array() ) {
 	$defaults = array(
@@ -90,14 +90,14 @@ function wp_terms_checklist( $post_id = 0, $args = array() ) {
 	);
 
 	/**
-	 * Filters the taxonomy terms checklist arguments.
+	 * Lọc các tham số danh sách kiểm tra term taxonomy.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see wp_terms_checklist()
 	 *
-	 * @param array|string $args    An array or string of arguments.
-	 * @param int          $post_id The post ID.
+	 * @param array|string $args    Mảng hoặc chuỗi các tham số.
+	 * @param int          $post_id ID bài viết.
 	 */
 	$params = apply_filters( 'wp_terms_checklist_args', $args, $post_id );
 
@@ -166,8 +166,8 @@ function wp_terms_checklist( $post_id = 0, $args = array() ) {
 
 	if ( $parsed_args['checked_ontop'] ) {
 		/*
-		 * Post-process $categories rather than adding an exclude to the get_terms() query
-		 * to keep the query the same across all posts (for any query cache).
+		 * Xử lý sau $categories thay vì thêm loại trừ vào truy vấn get_terms()
+		 * để giữ truy vấn giống nhau trên tất cả bài viết (cho bất kỳ bộ nhớ đệm truy vấn nào).
 		 */
 		$checked_categories = array();
 		$keys               = array_keys( $categories );
@@ -179,10 +179,10 @@ function wp_terms_checklist( $post_id = 0, $args = array() ) {
 			}
 		}
 
-		// Put checked categories on top.
+		// Đặt các chuyên mục đã chọn lên đầu.
 		$output .= $walker->walk( $checked_categories, 0, $args );
 	}
-	// Then the rest of them.
+	// Sau đó là phần còn lại.
 	$output .= $walker->walk( $categories, 0, $args );
 
 	if ( $parsed_args['echo'] ) {
@@ -193,20 +193,20 @@ function wp_terms_checklist( $post_id = 0, $args = array() ) {
 }
 
 /**
- * Retrieves a list of the most popular terms from the specified taxonomy.
+ * Lấy danh sách các term phổ biến nhất từ taxonomy được chỉ định.
  *
- * If the `$display` argument is true then the elements for a list of checkbox
- * `<input>` elements labelled with the names of the selected terms is output.
- * If the `$post_ID` global is not empty then the terms associated with that
- * post will be marked as checked.
+ * Nếu tham số `$display` là true thì các phần tử danh sách checkbox
+ * `<input>` được gắn nhãn bằng tên các term đã chọn sẽ được xuất.
+ * Nếu biến toàn cục `$post_ID` không rỗng thì các term liên kết với bài viết
+ * đó sẽ được đánh dấu đã chọn.
  *
  * @since 2.5.0
  *
- * @param string $taxonomy     Taxonomy to retrieve terms from.
- * @param int    $default_term Optional. Not used.
- * @param int    $number       Optional. Number of terms to retrieve. Default 10.
- * @param bool   $display      Optional. Whether to display the list as well. Default true.
- * @return int[] Array of popular term IDs.
+ * @param string $taxonomy     Taxonomy để lấy term từ đó.
+ * @param int    $default_term Tùy chọn. Không sử dụng.
+ * @param int    $number       Tùy chọn. Số lượng term cần lấy. Mặc định 10.
+ * @param bool   $display      Tùy chọn. Có hiển thị danh sách hay không. Mặc định true.
+ * @return int[] Mảng các ID term phổ biến.
  */
 function wp_popular_terms_checklist( $taxonomy, $default_term = 0, $number = 10, $display = true ) {
 	$post = get_post();
@@ -234,7 +234,7 @@ function wp_popular_terms_checklist( $taxonomy, $default_term = 0, $number = 10,
 	foreach ( (array) $terms as $term ) {
 		$popular_ids[] = $term->term_id;
 
-		if ( ! $display ) { // Hack for Ajax use.
+		if ( ! $display ) { // Mẹo cho sử dụng Ajax.
 			continue;
 		}
 
@@ -258,11 +258,11 @@ function wp_popular_terms_checklist( $taxonomy, $default_term = 0, $number = 10,
 }
 
 /**
- * Outputs a link category checklist element.
+ * Xuất phần tử danh sách kiểm tra danh mục liên kết.
  *
  * @since 2.5.1
  *
- * @param int $link_id Optional. The link ID. Default 0.
+ * @param int $link_id Tùy chọn. ID liên kết. Mặc định 0.
  */
 function wp_link_category_checklist( $link_id = 0 ) {
 	$default = 1;
@@ -271,7 +271,7 @@ function wp_link_category_checklist( $link_id = 0 ) {
 
 	if ( $link_id ) {
 		$checked_categories = wp_get_link_cats( $link_id );
-		// No selected categories, strange.
+		// Không có chuyên mục nào được chọn, lạ thật.
 		if ( ! count( $checked_categories ) ) {
 			$checked_categories[] = $default;
 		}
@@ -302,11 +302,11 @@ function wp_link_category_checklist( $link_id = 0 ) {
 }
 
 /**
- * Adds hidden fields with the data for use in the inline editor for posts and pages.
+ * Thêm các trường ẩn với dữ liệu để sử dụng trong trình chỉnh sửa inline cho bài viết và trang.
  *
  * @since 2.7.0
  *
- * @param WP_Post $post Post object.
+ * @param WP_Post $post Đối tượng bài viết.
  */
 function get_inline_data( $post ) {
 	$post_type_object = get_post_type_object( $post->post_type );
@@ -385,12 +385,12 @@ function get_inline_data( $post ) {
 	}
 
 	/**
-	 * Fires after outputting the fields for the inline editor for posts and pages.
+	 * Kích hoạt sau khi xuất các trường cho trình chỉnh sửa inline cho bài viết và trang.
 	 *
 	 * @since 4.9.8
 	 *
-	 * @param WP_Post      $post             The current post object.
-	 * @param WP_Post_Type $post_type_object The current post's post type object.
+	 * @param WP_Post      $post             Đối tượng bài viết hiện tại.
+	 * @param WP_Post_Type $post_type_object Đối tượng loại bài viết của bài viết hiện tại.
 	 */
 	do_action( 'add_inline_data', $post, $post_type_object );
 
@@ -398,34 +398,34 @@ function get_inline_data( $post ) {
 }
 
 /**
- * Outputs the in-line comment reply-to form in the Comments list table.
+ * Xuất biểu mẫu trả lời bình luận inline trong bảng danh sách Bình luận.
  *
  * @since 2.7.0
  *
  * @global WP_List_Table $wp_list_table
  *
- * @param int    $position  Optional. The value of the 'position' input field. Default 1.
- * @param bool   $checkbox  Optional. The value of the 'checkbox' input field. Default false.
- * @param string $mode      Optional. If set to 'single', will use WP_Post_Comments_List_Table,
- *                          otherwise WP_Comments_List_Table. Default 'single'.
- * @param bool   $table_row Optional. Whether to use a table instead of a div element. Default true.
+ * @param int    $position  Tùy chọn. Giá trị của trường input 'position'. Mặc định 1.
+ * @param bool   $checkbox  Tùy chọn. Giá trị của trường input 'checkbox'. Mặc định false.
+ * @param string $mode      Tùy chọn. Nếu đặt là 'single', sẽ sử dụng WP_Post_Comments_List_Table,
+ *                          nếu không sẽ dùng WP_Comments_List_Table. Mặc định 'single'.
+ * @param bool   $table_row Tùy chọn. Có sử dụng bảng thay vì phần tử div hay không. Mặc định true.
  */
 function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $table_row = true ) {
 	global $wp_list_table;
 	/**
-	 * Filters the in-line comment reply-to form output in the Comments
-	 * list table.
+	 * Lọc đầu ra biểu mẫu trả lời bình luận inline trong bảng danh sách
+	 * Bình luận.
 	 *
-	 * Returning a non-empty value here will short-circuit display
-	 * of the in-line comment-reply form in the Comments list table,
-	 * echoing the returned value instead.
+	 * Trả về giá trị không rỗng ở đây sẽ bỏ qua hiển thị biểu mẫu
+	 * trả lời bình luận inline trong bảng danh sách Bình luận,
+	 * xuất giá trị được trả về thay thế.
 	 *
 	 * @since 2.7.0
 	 *
 	 * @see wp_comment_reply()
 	 *
-	 * @param string $content The reply-to form content.
-	 * @param array  $args    An array of default args.
+	 * @param string $content Nội dung biểu mẫu trả lời.
+	 * @param array  $args    Mảng các tham số mặc định.
 	 */
 	$content = apply_filters(
 		'wp_comment_reply',
@@ -548,7 +548,7 @@ function wp_comment_reply( $position = 1, $checkbox = false, $mode = 'single', $
 }
 
 /**
- * Outputs 'undo move to Trash' text for comments.
+ * Xuất văn bản 'hoàn tác chuyển vào Thùng rác' cho bình luận.
  *
  * @since 2.9.0
  */
@@ -576,14 +576,14 @@ function wp_comment_trashnotice() {
 }
 
 /**
- * Outputs a post's public meta data in the Custom Fields meta box.
+ * Xuất dữ liệu meta công khai của bài viết trong hộp meta Trường tùy chỉnh.
  *
  * @since 1.2.0
  *
- * @param array[] $meta An array of meta data arrays keyed on 'meta_key' and 'meta_value'.
+ * @param array[] $meta Mảng các mảng dữ liệu meta được đánh khóa theo 'meta_key' và 'meta_value'.
  */
 function list_meta( $meta ) {
-	// Exit if no meta.
+	// Thoát nếu không có meta.
 	if ( ! $meta ) {
 		echo '
 <table id="list-table" style="display: none;">
@@ -596,7 +596,7 @@ function list_meta( $meta ) {
 	<tbody id="the-list" data-wp-lists="list:meta">
 	<tr><td></td></tr>
 	</tbody>
-</table>'; // TBODY needed for list-manipulation JS.
+</table>'; // TBODY cần thiết cho JS thao tác danh sách.
 		return;
 	}
 	$count = 0;
@@ -620,13 +620,13 @@ function list_meta( $meta ) {
 }
 
 /**
- * Outputs a single row of public meta data in the Custom Fields meta box.
+ * Xuất một hàng dữ liệu meta công khai trong hộp meta Trường tùy chỉnh.
  *
  * @since 2.5.0
  *
- * @param array $entry An array of meta data keyed on 'meta_key' and 'meta_value'.
- * @param int   $count Reference to the row number.
- * @return string A single row of public meta data.
+ * @param array $entry Mảng dữ liệu meta được đánh khóa theo 'meta_key' và 'meta_value'.
+ * @param int   $count Tham chiếu đến số thứ tự hàng.
+ * @return string Một hàng dữ liệu meta công khai.
  */
 function _list_meta_row( $entry, &$count ) {
 	static $update_nonce = '';
@@ -644,17 +644,17 @@ function _list_meta_row( $entry, &$count ) {
 
 	if ( is_serialized( $entry['meta_value'] ) ) {
 		if ( is_serialized_string( $entry['meta_value'] ) ) {
-			// This is a serialized string, so we should display it.
+			// Đây là chuỗi được tuần tự hóa, nên chúng ta nên hiển thị nó.
 			$entry['meta_value'] = maybe_unserialize( $entry['meta_value'] );
 		} else {
-			// This is a serialized array/object so we should NOT display it.
+			// Đây là mảng/đối tượng được tuần tự hóa nên chúng ta KHÔNG nên hiển thị nó.
 			--$count;
 			return '';
 		}
 	}
 
 	$entry['meta_key']   = esc_attr( $entry['meta_key'] );
-	$entry['meta_value'] = esc_textarea( $entry['meta_value'] ); // Using a <textarea />.
+	$entry['meta_value'] = esc_textarea( $entry['meta_value'] ); // Sử dụng <textarea />.
 	$entry['meta_id']    = (int) $entry['meta_id'];
 
 	$delete_nonce = wp_create_nonce( 'delete-meta_' . $entry['meta_id'] );
@@ -681,39 +681,39 @@ function _list_meta_row( $entry, &$count ) {
 }
 
 /**
- * Prints the form in the Custom Fields meta box.
+ * In biểu mẫu trong hộp meta Trường tùy chỉnh.
  *
  * @since 1.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param WP_Post $post Optional. The post being edited.
+ * @param WP_Post $post Tùy chọn. Bài viết đang được chỉnh sửa.
  */
 function meta_form( $post = null ) {
 	global $wpdb;
 	$post = get_post( $post );
 
 	/**
-	 * Filters values for the meta key dropdown in the Custom Fields meta box.
+	 * Lọc các giá trị cho danh sách thả xuống khóa meta trong hộp meta Trường tùy chỉnh.
 	 *
-	 * Returning a non-null value will effectively short-circuit and avoid a
-	 * potentially expensive query against postmeta.
+	 * Trả về giá trị không null sẽ bỏ qua và tránh một truy vấn
+	 * có thể tốn kém đối với postmeta.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array|null $keys Pre-defined meta keys to be used in place of a postmeta query. Default null.
-	 * @param WP_Post    $post The current post object.
+	 * @param array|null $keys Các khóa meta được định nghĩa trước để sử dụng thay cho truy vấn postmeta. Mặc định null.
+	 * @param WP_Post    $post Đối tượng bài viết hiện tại.
 	 */
 	$keys = apply_filters( 'postmeta_form_keys', null, $post );
 
 	if ( null === $keys ) {
 		/**
-		 * Filters the number of custom fields to retrieve for the drop-down
-		 * in the Custom Fields meta box.
+		 * Lọc số lượng trường tùy chỉnh cần lấy cho danh sách thả xuống
+		 * trong hộp meta Trường tùy chỉnh.
 		 *
 		 * @since 2.1.0
 		 *
-		 * @param int $limit Number of custom fields to retrieve. Default 30.
+		 * @param int $limit Số lượng trường tùy chỉnh cần lấy. Mặc định 30.
 		 */
 		$limit = apply_filters( 'postmeta_form_limit', 30 );
 
@@ -791,18 +791,18 @@ function meta_form( $post = null ) {
 }
 
 /**
- * Prints out HTML form date elements for editing post or comment publish date.
+ * In các phần tử biểu mẫu HTML ngày tháng để chỉnh sửa ngày xuất bản bài viết hoặc bình luận.
  *
  * @since 0.71
- * @since 4.4.0 Converted to use get_comment() instead of the global `$comment`.
+ * @since 4.4.0 Chuyển đổi sang sử dụng get_comment() thay vì biến toàn cục `$comment`.
  *
- * @global WP_Locale $wp_locale WordPress date and time locale object.
+ * @global WP_Locale $wp_locale Đối tượng locale ngày giờ WordPress.
  *
- * @param int|bool $edit      Accepts 1|true for editing the date, 0|false for adding the date.
- * @param int|bool $for_post  Accepts 1|true for applying the date to a post, 0|false for a comment.
- * @param int      $tab_index The tabindex attribute to add. Default 0.
- * @param int|bool $multi     Optional. Whether the additional fields and buttons should be added.
- *                            Default 0|false.
+ * @param int|bool $edit      Chấp nhận 1|true để chỉnh sửa ngày, 0|false để thêm ngày.
+ * @param int|bool $for_post  Chấp nhận 1|true để áp dụng ngày cho bài viết, 0|false cho bình luận.
+ * @param int      $tab_index Thuộc tính tabindex cần thêm. Mặc định 0.
+ * @param int|bool $multi     Tùy chọn. Có thêm các trường và nút bổ sung hay không.
+ *                            Mặc định 0|false.
  */
 function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
 	global $wp_locale;
@@ -817,7 +817,7 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0, $multi = 0 ) {
 		$tab_index_attribute = " tabindex=\"$tab_index\"";
 	}
 
-	// @todo Remove this?
+	// @todo Xóa cái này?
 	// echo '<label for="timestamp" style="display: block;"><input type="checkbox" class="checkbox" name="edit_date" value="1" id="timestamp"'.$tab_index_attribute.' /> '.__( 'Edit timestamp' ).'</label><br />';
 
 	$post_date = ( $for_post ) ? $post->post_date : get_comment()->comment_date;

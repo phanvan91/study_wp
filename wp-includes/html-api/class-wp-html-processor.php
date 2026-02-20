@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML API: WP_HTML_Processor class
+ * HTML API: Lớp WP_HTML_Processor
  *
  * @package WordPress
  * @subpackage HTML-API
@@ -8,132 +8,132 @@
  */
 
 /**
- * Core class used to safely parse and modify an HTML document.
+ * Lớp cốt lõi được sử dụng để phân tích và sửa đổi tài liệu HTML một cách an toàn.
  *
- * The HTML Processor class properly parses and modifies HTML5 documents.
+ * Lớp HTML Processor phân tích và sửa đổi đúng cách các tài liệu HTML5.
  *
- * It supports a subset of the HTML5 specification, and when it encounters
- * unsupported markup, it aborts early to avoid unintentionally breaking
- * the document. The HTML Processor should never break an HTML document.
+ * Nó hỗ trợ một tập con của đặc tả HTML5, và khi gặp phải markup
+ * không được hỗ trợ, nó sẽ dừng sớm để tránh vô tình làm hỏng
+ * tài liệu. HTML Processor không bao giờ làm hỏng một tài liệu HTML.
  *
- * While the `WP_HTML_Tag_Processor` is a valuable tool for modifying
- * attributes on individual HTML tags, the HTML Processor is more capable
- * and useful for the following operations:
+ * Trong khi `WP_HTML_Tag_Processor` là công cụ hữu ích để sửa đổi
+ * thuộc tính trên các thẻ HTML riêng lẻ, HTML Processor có khả năng
+ * mạnh hơn và hữu ích cho các thao tác sau:
  *
- *  - Querying based on nested HTML structure.
+ *  - Truy vấn dựa trên cấu trúc HTML lồng nhau.
  *
- * Eventually the HTML Processor will also support:
- *  - Wrapping a tag in surrounding HTML.
- *  - Unwrapping a tag by removing its parent.
- *  - Inserting and removing nodes.
- *  - Reading and changing inner content.
- *  - Navigating up or around HTML structure.
+ * Cuối cùng HTML Processor cũng sẽ hỗ trợ:
+ *  - Bọc một thẻ trong HTML bao quanh.
+ *  - Gỡ bọc một thẻ bằng cách xóa phần tử cha.
+ *  - Chèn và xóa các nút.
+ *  - Đọc và thay đổi nội dung bên trong.
+ *  - Điều hướng lên hoặc xung quanh cấu trúc HTML.
  *
- * ## Usage
+ * ## Cách sử dụng
  *
- * Use of this class requires three steps:
+ * Việc sử dụng lớp này yêu cầu ba bước:
  *
- *   1. Call a static creator method with your input HTML document.
- *   2. Find the location in the document you are looking for.
- *   3. Request changes to the document at that location.
+ *   1. Gọi phương thức tạo tĩnh với tài liệu HTML đầu vào của bạn.
+ *   2. Tìm vị trí trong tài liệu mà bạn đang tìm kiếm.
+ *   3. Yêu cầu thay đổi tài liệu tại vị trí đó.
  *
- * Example:
+ * Ví dụ:
  *
  *     $processor = WP_HTML_Processor::create_fragment( $html );
  *     if ( $processor->next_tag( array( 'breadcrumbs' => array( 'DIV', 'FIGURE', 'IMG' ) ) ) ) {
  *         $processor->add_class( 'responsive-image' );
  *     }
  *
- * #### Breadcrumbs
+ * #### Breadcrumbs (Đường dẫn phần tử)
  *
- * Breadcrumbs represent the stack of open elements from the root
- * of the document or fragment down to the currently-matched node,
- * if one is currently selected. Call WP_HTML_Processor::get_breadcrumbs()
- * to inspect the breadcrumbs for a matched tag.
+ * Breadcrumbs đại diện cho ngăn xếp các phần tử mở từ gốc
+ * của tài liệu hoặc fragment xuống nút hiện đang được khớp,
+ * nếu một nút đang được chọn. Gọi WP_HTML_Processor::get_breadcrumbs()
+ * để kiểm tra breadcrumbs cho một thẻ đã khớp.
  *
- * Breadcrumbs can specify nested HTML structure and are equivalent
- * to a CSS selector comprising tag names separated by the child
- * combinator, such as "DIV > FIGURE > IMG".
+ * Breadcrumbs có thể xác định cấu trúc HTML lồng nhau và tương đương
+ * với một bộ chọn CSS bao gồm tên thẻ phân tách bởi bộ kết hợp con,
+ * chẳng hạn như "DIV > FIGURE > IMG".
  *
- * Since all elements find themselves inside a full HTML document
- * when parsed, the return value from `get_breadcrumbs()` will always
- * contain any implicit outermost elements. For example, when parsing
- * with `create_fragment()` in the `BODY` context (the default), any
- * tag in the given HTML document will contain `array( 'HTML', 'BODY', … )`
- * in its breadcrumbs.
+ * Vì tất cả các phần tử đều nằm trong một tài liệu HTML đầy đủ
+ * khi được phân tích, giá trị trả về từ `get_breadcrumbs()` sẽ luôn
+ * chứa các phần tử ngoài cùng ngầm định. Ví dụ, khi phân tích
+ * với `create_fragment()` trong ngữ cảnh `BODY` (mặc định), bất kỳ
+ * thẻ nào trong tài liệu HTML đã cho sẽ chứa `array( 'HTML', 'BODY', … )`
+ * trong breadcrumbs của nó.
  *
- * Despite containing the implied outermost elements in their breadcrumbs,
- * tags may be found with the shortest-matching breadcrumb query. That is,
- * `array( 'IMG' )` matches all IMG elements and `array( 'P', 'IMG' )`
- * matches all IMG elements directly inside a P element. To ensure that no
- * partial matches erroneously match it's possible to specify in a query
- * the full breadcrumb match all the way down from the root HTML element.
+ * Mặc dù chứa các phần tử ngoài cùng ngầm định trong breadcrumbs,
+ * các thẻ có thể được tìm thấy với truy vấn breadcrumb khớp ngắn nhất. Nghĩa là,
+ * `array( 'IMG' )` khớp tất cả phần tử IMG và `array( 'P', 'IMG' )`
+ * khớp tất cả phần tử IMG nằm trực tiếp bên trong phần tử P. Để đảm bảo không có
+ * khớp một phần nào khớp nhầm, có thể chỉ định trong truy vấn
+ * toàn bộ breadcrumb khớp từ phần tử HTML gốc trở xuống.
  *
- * Example:
+ * Ví dụ:
  *
  *     $html = '<figure><img><figcaption>A <em>lovely</em> day outside</figcaption></figure>';
- *     //               ----- Matches here.
+ *     //               ----- Khớp tại đây.
  *     $processor->next_tag( array( 'breadcrumbs' => array( 'FIGURE', 'IMG' ) ) );
  *
  *     $html = '<figure><img><figcaption>A <em>lovely</em> day outside</figcaption></figure>';
- *     //                                  ---- Matches here.
+ *     //                                  ---- Khớp tại đây.
  *     $processor->next_tag( array( 'breadcrumbs' => array( 'FIGURE', 'FIGCAPTION', 'EM' ) ) );
  *
  *     $html = '<div><img></div><img>';
- *     //                       ----- Matches here, because IMG must be a direct child of the implicit BODY.
+ *     //                       ----- Khớp tại đây, vì IMG phải là con trực tiếp của BODY ngầm định.
  *     $processor->next_tag( array( 'breadcrumbs' => array( 'BODY', 'IMG' ) ) );
  *
- * ## HTML Support
+ * ## Hỗ trợ HTML
  *
- * This class implements a small part of the HTML5 specification.
- * It's designed to operate within its support and abort early whenever
- * encountering circumstances it can't properly handle. This is
- * the principle way in which this class remains as simple as possible
- * without cutting corners and breaking compliance.
+ * Lớp này triển khai một phần nhỏ của đặc tả HTML5.
+ * Nó được thiết kế để hoạt động trong phạm vi hỗ trợ và dừng sớm bất cứ khi nào
+ * gặp các trường hợp không thể xử lý đúng. Đây là
+ * cách chính để lớp này giữ được sự đơn giản nhất có thể
+ * mà không cắt xén và phá vỡ sự tuân thủ.
  *
- * ### Supported elements
+ * ### Các phần tử được hỗ trợ
  *
- * If any unsupported element appears in the HTML input the HTML Processor
- * will abort early and stop all processing. This draconian measure ensures
- * that the HTML Processor won't break any HTML it doesn't fully understand.
+ * Nếu bất kỳ phần tử không được hỗ trợ nào xuất hiện trong HTML đầu vào, HTML Processor
+ * sẽ dừng sớm và ngừng mọi xử lý. Biện pháp nghiêm ngặt này đảm bảo
+ * rằng HTML Processor sẽ không phá vỡ bất kỳ HTML nào mà nó không hiểu đầy đủ.
  *
- * The HTML Processor supports all elements other than a specific set:
+ * HTML Processor hỗ trợ tất cả các phần tử ngoại trừ một tập hợp cụ thể:
  *
- *  - Any element inside a TABLE.
- *  - Any element inside foreign content, including SVG and MATH.
- *  - Any element outside the IN BODY insertion mode, e.g. doctype declarations, meta, links.
+ *  - Bất kỳ phần tử nào bên trong TABLE.
+ *  - Bất kỳ phần tử nào bên trong nội dung ngoại lai, bao gồm SVG và MATH.
+ *  - Bất kỳ phần tử nào ngoài chế độ chèn IN BODY, ví dụ: khai báo doctype, meta, links.
  *
- * ### Supported markup
+ * ### Markup được hỗ trợ
  *
- * Some kinds of non-normative HTML involve reconstruction of formatting elements and
- * re-parenting of mis-nested elements. For example, a DIV tag found inside a TABLE
- * may in fact belong _before_ the table in the DOM. If the HTML Processor encounters
- * such a case it will stop processing.
+ * Một số loại HTML không chuẩn liên quan đến việc tái tạo các phần tử định dạng và
+ * tái gán cha cho các phần tử lồng sai. Ví dụ, một thẻ DIV tìm thấy bên trong TABLE
+ * thực tế có thể thuộc về _trước_ bảng trong DOM. Nếu HTML Processor gặp
+ * trường hợp như vậy, nó sẽ ngừng xử lý.
  *
- * The following list illustrates some common examples of unexpected HTML inputs that
- * the HTML Processor properly parses and represents:
+ * Danh sách sau minh họa một số ví dụ phổ biến về đầu vào HTML không mong đợi mà
+ * HTML Processor phân tích và biểu diễn đúng cách:
  *
- *  - HTML with optional tags omitted, e.g. `<p>one<p>two`.
- *  - HTML with unexpected tag closers, e.g. `<p>one </span> more</p>`.
- *  - Non-void tags with self-closing flag, e.g. `<div/>the DIV is still open.</div>`.
- *  - Heading elements which close open heading elements of another level, e.g. `<h1>Closed by </h2>`.
- *  - Elements containing text that looks like other tags but isn't, e.g. `<title>The <img> is plaintext</title>`.
- *  - SCRIPT and STYLE tags containing text that looks like HTML but isn't, e.g. `<script>document.write('<p>Hi</p>');</script>`.
- *  - SCRIPT content which has been escaped, e.g. `<script><!-- document.write('<script>console.log("hi")</script>') --></script>`.
+ *  - HTML với các thẻ tùy chọn bị bỏ qua, ví dụ: `<p>one<p>two`.
+ *  - HTML với các thẻ đóng không mong đợi, ví dụ: `<p>one </span> more</p>`.
+ *  - Thẻ không void với cờ tự đóng, ví dụ: `<div/>the DIV is still open.</div>`.
+ *  - Phần tử heading đóng các phần tử heading đang mở ở cấp khác, ví dụ: `<h1>Closed by </h2>`.
+ *  - Phần tử chứa văn bản trông giống thẻ khác nhưng không phải, ví dụ: `<title>The <img> is plaintext</title>`.
+ *  - Thẻ SCRIPT và STYLE chứa văn bản trông giống HTML nhưng không phải, ví dụ: `<script>document.write('<p>Hi</p>');</script>`.
+ *  - Nội dung SCRIPT đã được escape, ví dụ: `<script><!-- document.write('<script>console.log("hi")</script>') --></script>`.
  *
- * ### Unsupported Features
+ * ### Các tính năng không được hỗ trợ
  *
- * This parser does not report parse errors.
+ * Trình phân tích này không báo cáo lỗi phân tích.
  *
- * Normally, when additional HTML or BODY tags are encountered in a document, if there
- * are any additional attributes on them that aren't found on the previous elements,
- * the existing HTML and BODY elements adopt those missing attribute values. This
- * parser does not add those additional attributes.
+ * Thông thường, khi gặp các thẻ HTML hoặc BODY bổ sung trong tài liệu, nếu có
+ * bất kỳ thuộc tính bổ sung nào trên chúng không tìm thấy ở các phần tử trước đó,
+ * các phần tử HTML và BODY hiện có sẽ nhận những giá trị thuộc tính còn thiếu đó. Trình
+ * phân tích này không thêm các thuộc tính bổ sung đó.
  *
- * In certain situations, elements are moved to a different part of the document in
- * a process called "adoption" and "fostering." Because the nodes move to a location
- * in the document that the parser had already processed, this parser does not support
- * these situations and will bail.
+ * Trong một số tình huống, các phần tử được di chuyển đến một phần khác của tài liệu trong
+ * một quá trình gọi là "adoption" (nhận nuôi) và "fostering" (nuôi dưỡng). Vì các nút di chuyển
+ * đến một vị trí trong tài liệu mà trình phân tích đã xử lý trước đó, trình phân tích này
+ * không hỗ trợ các tình huống này và sẽ dừng lại.
  *
  * @since 6.4.0
  *
@@ -142,10 +142,10 @@
  */
 class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	/**
-	 * The maximum number of bookmarks allowed to exist at any given time.
+	 * Số lượng bookmark tối đa được phép tồn tại tại bất kỳ thời điểm nào.
 	 *
-	 * HTML processing requires more bookmarks than basic tag processing,
-	 * so this class constant from the Tag Processor is overwritten.
+	 * Xử lý HTML yêu cầu nhiều bookmark hơn so với xử lý thẻ cơ bản,
+	 * vì vậy hằng số lớp này từ Tag Processor được ghi đè.
 	 *
 	 * @since 6.4.0
 	 *
@@ -154,10 +154,10 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	const MAX_BOOKMARKS = 100;
 
 	/**
-	 * Holds the working state of the parser, including the stack of
-	 * open elements and the stack of active formatting elements.
+	 * Giữ trạng thái hoạt động của trình phân tích, bao gồm ngăn xếp
+	 * các phần tử mở và ngăn xếp các phần tử định dạng đang hoạt động.
 	 *
-	 * Initialized in the constructor.
+	 * Được khởi tạo trong constructor.
 	 *
 	 * @since 6.4.0
 	 *
@@ -166,12 +166,12 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	private $state;
 
 	/**
-	 * Used to create unique bookmark names.
+	 * Được sử dụng để tạo các tên bookmark duy nhất.
 	 *
-	 * This class sets a bookmark for every tag in the HTML document that it encounters.
-	 * The bookmark name is auto-generated and increments, starting with `1`. These are
-	 * internal bookmarks and are automatically released when the referring WP_HTML_Token
-	 * goes out of scope and is garbage-collected.
+	 * Lớp này đặt một bookmark cho mọi thẻ trong tài liệu HTML mà nó gặp.
+	 * Tên bookmark được tự động tạo và tăng dần, bắt đầu từ `1`. Đây là
+	 * các bookmark nội bộ và được tự động giải phóng khi WP_HTML_Token tham chiếu
+	 * ra khỏi phạm vi và được thu gom rác.
 	 *
 	 * @since 6.4.0
 	 *
@@ -182,7 +182,7 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	private $bookmark_counter = 0;
 
 	/**
-	 * Stores an explanation for why something failed, if it did.
+	 * Lưu trữ giải thích lý do tại sao có lỗi xảy ra, nếu có.
 	 *
 	 * @see self::get_last_error
 	 *
@@ -193,7 +193,7 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	private $last_error = null;
 
 	/**
-	 * Stores context for why the parser bailed on unsupported HTML, if it did.
+	 * Lưu trữ ngữ cảnh lý do trình phân tích dừng lại do HTML không được hỗ trợ, nếu có.
 	 *
 	 * @see self::get_unsupported_exception
 	 *
@@ -204,11 +204,11 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	private $unsupported_exception = null;
 
 	/**
-	 * Releases a bookmark when PHP garbage-collects its wrapping WP_HTML_Token instance.
+	 * Giải phóng bookmark khi PHP thu gom rác thể hiện WP_HTML_Token bao bọc nó.
 	 *
-	 * This function is created inside the class constructor so that it can be passed to
-	 * the stack of open elements and the stack of active formatting elements without
-	 * exposing it as a public method on the class.
+	 * Hàm này được tạo bên trong constructor của lớp để có thể truyền cho
+	 * ngăn xếp các phần tử mở và ngăn xếp các phần tử định dạng đang hoạt động mà
+	 * không phải phơi bày nó như một phương thức công khai trên lớp.
 	 *
 	 * @since 6.4.0
 	 *
@@ -217,8 +217,8 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	private $release_internal_bookmark_on_destruct = null;
 
 	/**
-	 * Stores stack events which arise during parsing of the
-	 * HTML document, which will then supply the "match" events.
+	 * Lưu trữ các sự kiện ngăn xếp phát sinh trong quá trình phân tích
+	 * tài liệu HTML, sau đó sẽ cung cấp các sự kiện "khớp".
 	 *
 	 * @since 6.6.0
 	 *
@@ -227,7 +227,7 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	private $element_queue = array();
 
 	/**
-	 * Stores the current breadcrumbs.
+	 * Lưu trữ breadcrumbs hiện tại.
 	 *
 	 * @since 6.7.0
 	 *
@@ -236,12 +236,12 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	private $breadcrumbs = array();
 
 	/**
-	 * Current stack event, if set, representing a matched token.
+	 * Sự kiện ngăn xếp hiện tại, nếu được thiết lập, đại diện cho một token đã khớp.
 	 *
-	 * Because the parser may internally point to a place further along in a document
-	 * than the nodes which have already been processed (some "virtual" nodes may have
-	 * appeared while scanning the HTML document), this will point at the "current" node
-	 * being processed. It comes from the front of the element queue.
+	 * Vì trình phân tích có thể nội bộ trỏ đến một vị trí xa hơn trong tài liệu
+	 * so với các nút đã được xử lý (một số nút "ảo" có thể đã xuất hiện
+	 * trong khi quét tài liệu HTML), biến này sẽ trỏ đến nút "hiện tại"
+	 * đang được xử lý. Nó đến từ đầu hàng đợi phần tử.
 	 *
 	 * @since 6.6.0
 	 *
@@ -250,47 +250,47 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	private $current_element = null;
 
 	/**
-	 * Context node if created as a fragment parser.
+	 * Nút ngữ cảnh nếu được tạo như trình phân tích fragment.
 	 *
 	 * @var WP_HTML_Token|null
 	 */
 	private $context_node = null;
 
 	/*
-	 * Public Interface Functions
+	 * Các hàm giao diện công khai
 	 */
 
 	/**
-	 * Creates an HTML processor in the fragment parsing mode.
+	 * Tạo một trình xử lý HTML ở chế độ phân tích fragment.
 	 *
-	 * Use this for cases where you are processing chunks of HTML that
-	 * will be found within a bigger HTML document, such as rendered
-	 * block output that exists within a post, `the_content` inside a
-	 * rendered site layout.
+	 * Sử dụng phương thức này cho các trường hợp bạn đang xử lý các đoạn HTML
+	 * sẽ được tìm thấy trong một tài liệu HTML lớn hơn, chẳng hạn như đầu ra
+	 * block đã render nằm trong một bài viết, `the_content` bên trong
+	 * bố cục trang web đã render.
 	 *
-	 * Fragment parsing occurs within a context, which is an HTML element
-	 * that the document will eventually be placed in. It becomes important
-	 * when special elements have different rules than others, such as inside
-	 * a TEXTAREA or a TITLE tag where things that look like tags are text,
-	 * or inside a SCRIPT tag where things that look like HTML syntax are JS.
+	 * Phân tích fragment xảy ra trong một ngữ cảnh, là một phần tử HTML
+	 * mà tài liệu cuối cùng sẽ được đặt vào. Điều này trở nên quan trọng
+	 * khi các phần tử đặc biệt có các quy tắc khác nhau, chẳng hạn như bên trong
+	 * thẻ TEXTAREA hoặc TITLE nơi những thứ trông giống thẻ là văn bản,
+	 * hoặc bên trong thẻ SCRIPT nơi những thứ trông giống cú pháp HTML là JS.
 	 *
-	 * The context value should be a representation of the tag into which the
-	 * HTML is found. For most cases this will be the body element. The HTML
-	 * form is provided because a context element may have attributes that
-	 * impact the parse, such as with a SCRIPT tag and its `type` attribute.
+	 * Giá trị ngữ cảnh phải là biểu diễn của thẻ chứa HTML.
+	 * Trong hầu hết các trường hợp, đây sẽ là phần tử body. Dạng HTML
+	 * được cung cấp vì phần tử ngữ cảnh có thể có các thuộc tính ảnh hưởng
+	 * đến quá trình phân tích, chẳng hạn như thẻ SCRIPT và thuộc tính `type` của nó.
 	 *
-	 * ## Current HTML Support
+	 * ## Hỗ trợ HTML hiện tại
 	 *
-	 *  - The only supported context is `<body>`, which is the default value.
-	 *  - The only supported document encoding is `UTF-8`, which is the default value.
+	 *  - Ngữ cảnh duy nhất được hỗ trợ là `<body>`, đây là giá trị mặc định.
+	 *  - Mã hóa tài liệu duy nhất được hỗ trợ là `UTF-8`, đây là giá trị mặc định.
 	 *
 	 * @since 6.4.0
-	 * @since 6.6.0 Returns `static` instead of `self` so it can create subclass instances.
+	 * @since 6.6.0 Trả về `static` thay vì `self` để có thể tạo thể hiện lớp con.
 	 *
-	 * @param string $html     Input HTML fragment to process.
-	 * @param string $context  Context element for the fragment, must be default of `<body>`.
-	 * @param string $encoding Text encoding of the document; must be default of 'UTF-8'.
-	 * @return static|null The created processor if successful, otherwise null.
+	 * @param string $html     Đoạn HTML đầu vào để xử lý.
+	 * @param string $context  Phần tử ngữ cảnh cho fragment, phải là giá trị mặc định `<body>`.
+	 * @param string $encoding Mã hóa văn bản của tài liệu; phải là giá trị mặc định 'UTF-8'.
+	 * @return static|null Trình xử lý đã tạo nếu thành công, ngược lại null.
 	 */
 	public static function create_fragment( $html, $context = '<body>', $encoding = 'UTF-8' ) {
 		if ( '<body>' !== $context || 'UTF-8' !== $encoding ) {
@@ -320,20 +320,20 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Creates an HTML processor in the full parsing mode.
+	 * Tạo một trình xử lý HTML ở chế độ phân tích đầy đủ.
 	 *
-	 * It's likely that a fragment parser is more appropriate, unless sending an
-	 * entire HTML document from start to finish. Consider a fragment parser with
-	 * a context node of `<body>`.
+	 * Có khả năng trình phân tích fragment phù hợp hơn, trừ khi gửi
+	 * toàn bộ tài liệu HTML từ đầu đến cuối. Hãy xem xét trình phân tích
+	 * fragment với nút ngữ cảnh `<body>`.
 	 *
-	 * UTF-8 is the only allowed encoding. If working with a document that
-	 * isn't UTF-8, first convert the document to UTF-8, then pass in the
-	 * converted HTML.
+	 * UTF-8 là mã hóa duy nhất được cho phép. Nếu làm việc với tài liệu
+	 * không phải UTF-8, hãy chuyển đổi tài liệu sang UTF-8 trước, sau đó
+	 * truyền vào HTML đã chuyển đổi.
 	 *
-	 * @param string      $html                    Input HTML document to process.
-	 * @param string|null $known_definite_encoding Optional. If provided, specifies the charset used
-	 *                                             in the input byte stream. Currently must be UTF-8.
-	 * @return static|null The created processor if successful, otherwise null.
+	 * @param string      $html                    Tài liệu HTML đầu vào để xử lý.
+	 * @param string|null $known_definite_encoding Tùy chọn. Nếu được cung cấp, chỉ định bộ mã ký tự được sử dụng
+	 *                                             trong luồng byte đầu vào. Hiện tại phải là UTF-8.
+	 * @return static|null Trình xử lý đã tạo nếu thành công, ngược lại null.
 	 */
 	public static function create_full_parser( $html, $known_definite_encoding = 'UTF-8' ) {
 		if ( 'UTF-8' !== $known_definite_encoding ) {
@@ -350,7 +350,7 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	/**
 	 * Constructor.
 	 *
-	 * Do not use this method. Use the static creator methods instead.
+	 * Không sử dụng phương thức này. Hãy sử dụng các phương thức tạo tĩnh thay thế.
 	 *
 	 * @access private
 	 *
@@ -358,8 +358,8 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 *
 	 * @see WP_HTML_Processor::create_fragment()
 	 *
-	 * @param string      $html                                  HTML to process.
-	 * @param string|null $use_the_static_create_methods_instead This constructor should not be called manually.
+	 * @param string      $html                                  HTML để xử lý.
+	 * @param string|null $use_the_static_create_methods_instead Constructor này không nên được gọi thủ công.
 	 */
 	public function __construct( $html, $use_the_static_create_methods_instead = null ) {
 		parent::__construct( $html );
@@ -407,9 +407,9 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 		);
 
 		/*
-		 * Create this wrapper so that it's possible to pass
-		 * a private method into WP_HTML_Token classes without
-		 * exposing it to any public API.
+		 * Tạo wrapper này để có thể truyền một phương thức riêng tư
+		 * vào các lớp WP_HTML_Token mà không phải phơi bày nó
+		 * ra bất kỳ API công khai nào.
 		 */
 		$this->release_internal_bookmark_on_destruct = function ( string $name ): void {
 			parent::release_bookmark( $name );
@@ -417,45 +417,45 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Creates a fragment processor at the current node.
+	 * Tạo một trình xử lý fragment tại nút hiện tại.
 	 *
-	 * HTML Fragment parsing always happens with a context node. HTML Fragment Processors can be
-	 * instantiated with a `BODY` context node via `WP_HTML_Processor::create_fragment( $html )`.
+	 * Phân tích HTML Fragment luôn xảy ra với một nút ngữ cảnh. Các trình xử lý HTML Fragment có thể
+	 * được khởi tạo với nút ngữ cảnh `BODY` thông qua `WP_HTML_Processor::create_fragment( $html )`.
 	 *
-	 * The context node may impact how a fragment of HTML is parsed. For example, consider the HTML
-	 * fragment `<td />Inside TD?</td>`.
+	 * Nút ngữ cảnh có thể ảnh hưởng đến cách một fragment HTML được phân tích. Ví dụ, xem xét
+	 * fragment HTML `<td />Inside TD?</td>`.
 	 *
-	 * A BODY context node will produce the following tree:
+	 * Nút ngữ cảnh BODY sẽ tạo ra cây sau:
 	 *
 	 *     └─#text Inside TD?
 	 *
-	 * Notice that the `<td>` tags are completely ignored.
+	 * Lưu ý rằng các thẻ `<td>` bị bỏ qua hoàn toàn.
 	 *
-	 * Compare that with an SVG context node that produces the following tree:
+	 * So sánh với nút ngữ cảnh SVG tạo ra cây sau:
 	 *
 	 *     ├─svg:td
 	 *     └─#text Inside TD?
 	 *
-	 * Here, a `td` node in the `svg` namespace is created, and its self-closing flag is respected.
-	 * This is a peculiarity of parsing HTML in foreign content like SVG.
+	 * Ở đây, một nút `td` trong không gian tên `svg` được tạo, và cờ tự đóng của nó được tôn trọng.
+	 * Đây là một đặc thù khi phân tích HTML trong nội dung ngoại lai như SVG.
 	 *
-	 * Finally, consider the tree produced with a TABLE context node:
+	 * Cuối cùng, xem xét cây được tạo với nút ngữ cảnh TABLE:
 	 *
 	 *     └─TBODY
 	 *       └─TR
 	 *         └─TD
 	 *           └─#text Inside TD?
 	 *
-	 * These examples demonstrate how important the context node may be when processing an HTML
-	 * fragment. Special care must be taken when processing fragments that are expected to appear
-	 * in specific contexts. SVG and TABLE are good examples, but there are others.
+	 * Các ví dụ này cho thấy nút ngữ cảnh quan trọng như thế nào khi xử lý một
+	 * fragment HTML. Cần đặc biệt cẩn thận khi xử lý các fragment dự kiến xuất hiện
+	 * trong các ngữ cảnh cụ thể. SVG và TABLE là ví dụ tốt, nhưng còn nhiều trường hợp khác.
 	 *
 	 * @see https://html.spec.whatwg.org/multipage/parsing.html#html-fragment-parsing-algorithm
 	 *
 	 * @since 6.8.0
 	 *
-	 * @param string $html Input HTML fragment to process.
-	 * @return static|null The created processor if successful, otherwise null.
+	 * @param string $html Đoạn HTML đầu vào để xử lý.
+	 * @return static|null Trình xử lý đã tạo nếu thành công, ngược lại null.
 	 */
 	private function create_fragment_at_current_node( string $html ) {
 		if ( $this->get_token_type() !== '#tag' || $this->is_tag_closer() ) {
@@ -484,8 +484,8 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 		}
 
 		/*
-		 * Prevent creating fragments at nodes that require a special tokenizer state.
-		 * This is unsupported by the HTML Processor.
+		 * Ngăn tạo fragment tại các nút yêu cầu trạng thái tokenizer đặc biệt.
+		 * Điều này không được hỗ trợ bởi HTML Processor.
 		 */
 		if (
 			'html' === $namespace &&
@@ -507,7 +507,7 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 
 		$fragment_processor->compat_mode = $this->compat_mode;
 
-		// @todo Create "fake" bookmarks for non-existent but implied nodes.
+		// @todo Tạo bookmark "giả" cho các nút không tồn tại nhưng được ngầm định.
 		$fragment_processor->bookmarks['root-node'] = new WP_HTML_Span( 0, 0 );
 		$root_node                                  = new WP_HTML_Token(
 			'root-node',
@@ -530,10 +530,10 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 		$fragment_processor->reset_insertion_mode_appropriately();
 
 		/*
-		 * > Set the parser's form element pointer to the nearest node to the context element that
-		 * > is a form element (going straight up the ancestor chain, and including the element
-		 * > itself, if it is a form element), if any. (If there is no such form element, the
-		 * > form element pointer keeps its initial value, null.)
+		 * > Đặt con trỏ phần tử form của trình phân tích đến nút gần nhất với phần tử ngữ cảnh mà
+		 * > là phần tử form (đi thẳng lên chuỗi tổ tiên, và bao gồm cả phần tử
+		 * > chính nó, nếu nó là phần tử form), nếu có. (Nếu không có phần tử form nào như vậy,
+		 * > con trỏ phần tử form giữ giá trị ban đầu của nó, null.)
 		 */
 		foreach ( $this->state->stack_of_open_elements->walk_up() as $element ) {
 			if ( 'FORM' === $element->node_name && 'html' === $element->namespace ) {

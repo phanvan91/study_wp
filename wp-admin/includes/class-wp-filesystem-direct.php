@@ -1,13 +1,13 @@
 <?php
 /**
- * WordPress Direct Filesystem.
+ * Hệ thống tập tin trực tiếp WordPress.
  *
  * @package WordPress
  * @subpackage Filesystem
  */
 
 /**
- * WordPress Filesystem Class for direct PHP file and folder manipulation.
+ * Lớp hệ thống tập tin WordPress để thao tác trực tiếp tập tin và thư mục PHP.
  *
  * @since 2.5.0
  *
@@ -16,11 +16,11 @@
 class WP_Filesystem_Direct extends WP_Filesystem_Base {
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param mixed $arg Not used.
+	 * @param mixed $arg Không sử dụng.
 	 */
 	public function __construct( $arg ) {
 		$this->method = 'direct';
@@ -28,39 +28,39 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Reads entire file into a string.
+	 * Đọc toàn bộ tập tin vào một chuỗi.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Name of the file to read.
-	 * @return string|false Read data on success, false on failure.
+	 * @param string $file Tên tập tin cần đọc.
+	 * @return string|false Dữ liệu đọc được khi thành công, false khi thất bại.
 	 */
 	public function get_contents( $file ) {
 		return @file_get_contents( $file );
 	}
 
 	/**
-	 * Reads entire file into an array.
+	 * Đọc toàn bộ tập tin vào một mảng.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return array|false File contents in an array on success, false on failure.
+	 * @param string $file Đường dẫn đến tập tin.
+	 * @return array|false Nội dung tập tin trong một mảng khi thành công, false khi thất bại.
 	 */
 	public function get_contents_array( $file ) {
 		return @file( $file );
 	}
 
 	/**
-	 * Writes a string to a file.
+	 * Ghi một chuỗi vào tập tin.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string    $file     Remote path to the file where to write the data.
-	 * @param string    $contents The data to write.
-	 * @param int|false $mode     Optional. The file permissions as octal number, usually 0644.
-	 *                            Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $file     Đường dẫn từ xa đến tập tin cần ghi dữ liệu.
+	 * @param string    $contents Dữ liệu cần ghi.
+	 * @param int|false $mode     Tùy chọn. Quyền tập tin dạng số bát phân, thường là 0644.
+	 *                            Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function put_contents( $file, $contents, $mode = false ) {
 		$fp = @fopen( $file, 'wb' );
@@ -89,38 +89,38 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the current working directory.
+	 * Lấy thư mục làm việc hiện tại.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return string|false The current working directory on success, false on failure.
+	 * @return string|false Thư mục làm việc hiện tại khi thành công, false khi thất bại.
 	 */
 	public function cwd() {
 		return getcwd();
 	}
 
 	/**
-	 * Changes current directory.
+	 * Thay đổi thư mục hiện tại.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $dir The new current directory.
-	 * @return bool True on success, false on failure.
+	 * @param string $dir Thư mục hiện tại mới.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chdir( $dir ) {
 		return @chdir( $dir );
 	}
 
 	/**
-	 * Changes the file group.
+	 * Thay đổi nhóm của tập tin.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string     $file      Path to the file.
-	 * @param string|int $group     A group name or number.
-	 * @param bool       $recursive Optional. If set to true, changes file group recursively.
-	 *                              Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string     $file      Đường dẫn đến tập tin.
+	 * @param string|int $group     Tên hoặc số nhóm.
+	 * @param bool       $recursive Tùy chọn. Nếu đặt là true, thay đổi nhóm tập tin đệ quy.
+	 *                              Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chgrp( $file, $group, $recursive = false ) {
 		if ( ! $this->exists( $file ) ) {
@@ -135,7 +135,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base {
 			return chgrp( $file, $group );
 		}
 
-		// Is a directory, and we want recursive.
+		// Là thư mục và muốn xử lý đệ quy.
 		$file     = trailingslashit( $file );
 		$filelist = $this->dirlist( $file );
 
@@ -147,16 +147,16 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Changes filesystem permissions.
+	 * Thay đổi quyền hệ thống tập tin.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string    $file      Path to the file.
-	 * @param int|false $mode      Optional. The permissions as octal number, usually 0644 for files,
-	 *                             0755 for directories. Default false.
-	 * @param bool      $recursive Optional. If set to true, changes file permissions recursively.
-	 *                             Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $file      Đường dẫn đến tập tin.
+	 * @param int|false $mode      Tùy chọn. Quyền dạng số bát phân, thường là 0644 cho tập tin,
+	 *                             0755 cho thư mục. Mặc định false.
+	 * @param bool      $recursive Tùy chọn. Nếu đặt là true, thay đổi quyền tập tin đệ quy.
+	 *                             Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chmod( $file, $mode = false, $recursive = false ) {
 		if ( ! $mode ) {
@@ -173,7 +173,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base {
 			return chmod( $file, $mode );
 		}
 
-		// Is a directory, and we want recursive.
+		// Là thư mục và muốn xử lý đệ quy.
 		$file     = trailingslashit( $file );
 		$filelist = $this->dirlist( $file );
 
@@ -185,15 +185,15 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Changes the owner of a file or directory.
+	 * Thay đổi chủ sở hữu của tập tin hoặc thư mục.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string     $file      Path to the file or directory.
-	 * @param string|int $owner     A user name or number.
-	 * @param bool       $recursive Optional. If set to true, changes file owner recursively.
-	 *                              Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string     $file      Đường dẫn đến tập tin hoặc thư mục.
+	 * @param string|int $owner     Tên người dùng hoặc số.
+	 * @param bool       $recursive Tùy chọn. Nếu đặt là true, thay đổi chủ sở hữu tập tin đệ quy.
+	 *                              Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chown( $file, $owner, $recursive = false ) {
 		if ( ! $this->exists( $file ) ) {
@@ -208,7 +208,7 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base {
 			return chown( $file, $owner );
 		}
 
-		// Is a directory, and we want recursive.
+		// Là thư mục và muốn xử lý đệ quy.
 		$filelist = $this->dirlist( $file );
 
 		foreach ( $filelist as $filename ) {
@@ -219,12 +219,12 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the file owner.
+	 * Lấy chủ sở hữu tập tin.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return string|false Username of the owner on success, false on failure.
+	 * @param string $file Đường dẫn đến tập tin.
+	 * @return string|false Tên người dùng của chủ sở hữu khi thành công, false khi thất bại.
 	 */
 	public function owner( $file ) {
 		$owneruid = @fileowner( $file );
@@ -247,14 +247,14 @@ class WP_Filesystem_Direct extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the permissions of the specified file or filepath in their octal format.
+	 * Lấy quyền của tập tin hoặc đường dẫn được chỉ định ở dạng bát phân.
 	 *
-	 * FIXME does not handle errors in fileperms()
+	 * FIXME không xử lý lỗi trong fileperms()
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return string Mode of the file (the last 3 digits).
+	 * @param string $file Đường dẫn đến tập tin.
+	 * @return string Chế độ của tập tin (3 chữ số cuối).
 	 */
 	public function getchmod( $file ) {
 		return substr( decoct( @fileperms( $file ) ), -3 );

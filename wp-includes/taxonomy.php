@@ -2422,14 +2422,14 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	}
 
 	/**
-	 * Filters a term before it is sanitized and inserted into the database.
+	 * Lọc term trước khi nó được làm sạch và chèn vào cơ sở dữ liệu.
 	 *
 	 * @since 3.0.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param string|WP_Error $term     The term name to add, or a WP_Error object if there's an error.
-	 * @param string          $taxonomy Taxonomy slug.
-	 * @param array|string    $args     Array or query string of arguments passed to wp_insert_term().
+	 * @param string|WP_Error $term     Tên term cần thêm, hoặc đối tượng WP_Error nếu có lỗi.
+	 * @param string          $taxonomy Slug taxonomy.
+	 * @param array|string    $args     Mảng hoặc chuỗi query string của tham số được truyền cho wp_insert_term().
 	 */
 	$term = apply_filters( 'pre_insert_term', $term, $taxonomy, $args );
 
@@ -2460,7 +2460,7 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	$args['name']     = $term;
 	$args['taxonomy'] = $taxonomy;
 
-	// Coerce null description to strings, to avoid database errors.
+	// Ép kiểu mô tả null thành chuỗi, để tránh lỗi cơ sở dữ liệu.
 	$args['description'] = (string) $args['description'];
 
 	$args = sanitize_term( $args, $taxonomy, 'db' );
@@ -2470,7 +2470,7 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	$description = wp_unslash( $args['description'] );
 	$parent      = (int) $args['parent'];
 
-	// Sanitization could clean the name to an empty string that must be checked again.
+	// Quá trình làm sạch có thể làm tên thành chuỗi rỗng, cần kiểm tra lại.
 	if ( '' === $name ) {
 		return new WP_Error( 'invalid_term_name', __( 'Invalid term name.' ) );
 	}
@@ -2486,12 +2486,12 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	if ( $args['alias_of'] ) {
 		$alias = get_term_by( 'slug', $args['alias_of'], $taxonomy );
 		if ( ! empty( $alias->term_group ) ) {
-			// The alias we want is already in a group, so let's use that one.
+			// Bí danh chúng ta muốn đã nằm trong một nhóm, vì vậy hãy sử dụng nhóm đó.
 			$term_group = $alias->term_group;
 		} elseif ( ! empty( $alias->term_id ) ) {
 			/*
-			 * The alias is not in a group, so we create a new one
-			 * and add the alias to it.
+			 * Bí danh không nằm trong nhóm nào, vì vậy chúng ta tạo nhóm mới
+			 * và thêm bí danh vào đó.
 			 */
 			$term_group = $wpdb->get_var( "SELECT MAX(term_group) FROM $wpdb->terms" ) + 1;
 
@@ -2506,8 +2506,8 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	}
 
 	/*
-	 * Prevent the creation of terms with duplicate names at the same level of a taxonomy hierarchy,
-	 * unless a unique slug has been explicitly provided.
+	 * Ngăn chặn việc tạo term có tên trùng lặp ở cùng cấp trong phân cấp taxonomy,
+	 * trừ khi slug duy nhất đã được cung cấp rõ ràng.
 	 */
 	$name_matches = get_terms(
 		array(
@@ -2520,8 +2520,8 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	);
 
 	/*
-	 * The `name` match in `get_terms()` doesn't differentiate accented characters,
-	 * so we do a stricter comparison here.
+	 * Phép so khớp `name` trong `get_terms()` không phân biệt ký tự có dấu,
+	 * vì vậy chúng ta thực hiện phép so sánh chặt chẽ hơn ở đây.
 	 */
 	$name_match = null;
 	if ( $name_matches ) {
@@ -2570,13 +2570,13 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	$data = compact( 'name', 'slug', 'term_group' );
 
 	/**
-	 * Filters term data before it is inserted into the database.
+	 * Lọc dữ liệu term trước khi nó được chèn vào cơ sở dữ liệu.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array  $data     Term data to be inserted.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Arguments passed to wp_insert_term().
+	 * @param array  $data     Dữ liệu term sẽ được chèn.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param array  $args     Tham số được truyền cho wp_insert_term().
 	 */
 	$data = apply_filters( 'wp_insert_term_data', $data, $taxonomy, $args );
 
@@ -2586,15 +2586,15 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 
 	$term_id = (int) $wpdb->insert_id;
 
-	// Seems unreachable. However, is used in the case that a term name is provided, which sanitizes to an empty string.
+	// Có vẻ không thể truy cập được. Tuy nhiên, được sử dụng trong trường hợp tên term được cung cấp nhưng sau khi làm sạch trở thành chuỗi rỗng.
 	if ( empty( $slug ) ) {
 		$slug = sanitize_title( $slug, $term_id );
 
-		/** This action is documented in wp-includes/taxonomy.php */
+		/** Action này được ghi chú trong wp-includes/taxonomy.php */
 		do_action( 'edit_terms', $term_id, $taxonomy );
 		$wpdb->update( $wpdb->terms, compact( 'slug' ), compact( 'term_id' ) );
 
-		/** This action is documented in wp-includes/taxonomy.php */
+		/** Action này được ghi chú trong wp-includes/taxonomy.php */
 		do_action( 'edited_terms', $term_id, $taxonomy );
 	}
 
@@ -2614,28 +2614,28 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	$tt_id = (int) $wpdb->insert_id;
 
 	/*
-	 * Confidence check: if we just created a term with the same parent + taxonomy + slug but a higher term_id than
-	 * an existing term, then we have unwittingly created a duplicate term. Delete the dupe, and use the term_id
-	 * and term_taxonomy_id of the older term instead. Then return out of the function so that the "create" hooks
-	 * are not fired.
+	 * Kiểm tra xác nhận: nếu chúng ta vừa tạo một term có cùng parent + taxonomy + slug nhưng term_id cao hơn
+	 * so với term hiện có, thì chúng ta đã vô tình tạo term trùng lặp. Xóa bản trùng, và sử dụng term_id
+	 * và term_taxonomy_id của term cũ hơn thay thế. Sau đó thoát khỏi hàm để các hook "create"
+	 * không được kích hoạt.
 	 */
 	$duplicate_term = $wpdb->get_row( $wpdb->prepare( "SELECT t.term_id, t.slug, tt.term_taxonomy_id, tt.taxonomy FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON ( tt.term_id = t.term_id ) WHERE t.slug = %s AND tt.parent = %d AND tt.taxonomy = %s AND t.term_id < %d AND tt.term_taxonomy_id != %d", $slug, $parent, $taxonomy, $term_id, $tt_id ) );
 
 	/**
-	 * Filters the duplicate term check that takes place during term creation.
+	 * Lọc kiểm tra term trùng lặp được thực hiện trong quá trình tạo term.
 	 *
-	 * Term parent + taxonomy + slug combinations are meant to be unique, and wp_insert_term()
-	 * performs a last-minute confirmation of this uniqueness before allowing a new term
-	 * to be created. Plugins with different uniqueness requirements may use this filter
-	 * to bypass or modify the duplicate-term check.
+	 * Tổ hợp parent + taxonomy + slug của term phải là duy nhất, và wp_insert_term()
+	 * thực hiện xác nhận cuối cùng về tính duy nhất này trước khi cho phép tạo term mới.
+	 * Các plugin có yêu cầu duy nhất khác có thể sử dụng bộ lọc này
+	 * để bỏ qua hoặc sửa đổi kiểm tra term trùng lặp.
 	 *
 	 * @since 5.1.0
 	 *
-	 * @param object $duplicate_term Duplicate term row from terms table, if found.
-	 * @param string $term           Term being inserted.
-	 * @param string $taxonomy       Taxonomy name.
-	 * @param array  $args           Arguments passed to wp_insert_term().
-	 * @param int    $tt_id          term_taxonomy_id for the newly created term.
+	 * @param object $duplicate_term Dòng term trùng lặp từ bảng terms, nếu tìm thấy.
+	 * @param string $term           Term đang được chèn.
+	 * @param string $taxonomy       Tên taxonomy.
+	 * @param array  $args           Tham số được truyền cho wp_insert_term().
+	 * @param int    $tt_id          term_taxonomy_id cho term mới được tạo.
 	 */
 	$duplicate_term = apply_filters( 'wp_insert_term_duplicate_term_check', $duplicate_term, $term, $taxonomy, $args, $tt_id );
 
@@ -2654,126 +2654,126 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 	}
 
 	/**
-	 * Fires immediately after a new term is created, before the term cache is cleaned.
+	 * Kích hoạt ngay sau khi term mới được tạo, trước khi cache term được dọn sạch.
 	 *
-	 * The {@see 'create_$taxonomy'} hook is also available for targeting a specific
-	 * taxonomy.
+	 * Hook {@see 'create_$taxonomy'} cũng có sẵn để nhắm mục tiêu một taxonomy
+	 * cụ thể.
 	 *
 	 * @since 2.3.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int    $term_id  Term ID.
-	 * @param int    $tt_id    Term taxonomy ID.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Arguments passed to wp_insert_term().
+	 * @param int    $term_id  ID term.
+	 * @param int    $tt_id    ID term taxonomy.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param array  $args     Tham số được truyền cho wp_insert_term().
 	 */
 	do_action( 'create_term', $term_id, $tt_id, $taxonomy, $args );
 
 	/**
-	 * Fires after a new term is created for a specific taxonomy.
+	 * Kích hoạt sau khi term mới được tạo cho một taxonomy cụ thể.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers
-	 * to the slug of the taxonomy the term was created for.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu
+	 * đến slug của taxonomy mà term được tạo cho.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `create_category`
 	 *  - `create_post_tag`
 	 *
 	 * @since 2.3.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int   $term_id Term ID.
-	 * @param int   $tt_id   Term taxonomy ID.
-	 * @param array $args    Arguments passed to wp_insert_term().
+	 * @param int   $term_id ID term.
+	 * @param int   $tt_id   ID term taxonomy.
+	 * @param array $args    Tham số được truyền cho wp_insert_term().
 	 */
 	do_action( "create_{$taxonomy}", $term_id, $tt_id, $args );
 
 	/**
-	 * Filters the term ID after a new term is created.
+	 * Lọc ID term sau khi term mới được tạo.
 	 *
 	 * @since 2.3.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int   $term_id Term ID.
-	 * @param int   $tt_id   Term taxonomy ID.
-	 * @param array $args    Arguments passed to wp_insert_term().
+	 * @param int   $term_id ID term.
+	 * @param int   $tt_id   ID term taxonomy.
+	 * @param array $args    Tham số được truyền cho wp_insert_term().
 	 */
 	$term_id = apply_filters( 'term_id_filter', $term_id, $tt_id, $args );
 
 	clean_term_cache( $term_id, $taxonomy );
 
 	/**
-	 * Fires after a new term is created, and after the term cache has been cleaned.
+	 * Kích hoạt sau khi term mới được tạo, và sau khi cache term được dọn sạch.
 	 *
-	 * The {@see 'created_$taxonomy'} hook is also available for targeting a specific
-	 * taxonomy.
+	 * Hook {@see 'created_$taxonomy'} cũng có sẵn để nhắm mục tiêu một taxonomy
+	 * cụ thể.
 	 *
 	 * @since 2.3.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int    $term_id  Term ID.
-	 * @param int    $tt_id    Term taxonomy ID.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Arguments passed to wp_insert_term().
+	 * @param int    $term_id  ID term.
+	 * @param int    $tt_id    ID term taxonomy.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param array  $args     Tham số được truyền cho wp_insert_term().
 	 */
 	do_action( 'created_term', $term_id, $tt_id, $taxonomy, $args );
 
 	/**
-	 * Fires after a new term in a specific taxonomy is created, and after the term
-	 * cache has been cleaned.
+	 * Kích hoạt sau khi term mới được tạo trong một taxonomy cụ thể, và sau khi cache term
+	 * được dọn sạch.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers to the taxonomy slug.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu đến slug taxonomy.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `created_category`
 	 *  - `created_post_tag`
 	 *
 	 * @since 2.3.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int   $term_id Term ID.
-	 * @param int   $tt_id   Term taxonomy ID.
-	 * @param array $args    Arguments passed to wp_insert_term().
+	 * @param int   $term_id ID term.
+	 * @param int   $tt_id   ID term taxonomy.
+	 * @param array $args    Tham số được truyền cho wp_insert_term().
 	 */
 	do_action( "created_{$taxonomy}", $term_id, $tt_id, $args );
 
 	/**
-	 * Fires after a term has been saved, and the term cache has been cleared.
+	 * Kích hoạt sau khi term được lưu, và cache term được dọn sạch.
 	 *
-	 * The {@see 'saved_$taxonomy'} hook is also available for targeting a specific
-	 * taxonomy.
+	 * Hook {@see 'saved_$taxonomy'} cũng có sẵn để nhắm mục tiêu một taxonomy
+	 * cụ thể.
 	 *
 	 * @since 5.5.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int    $term_id  Term ID.
-	 * @param int    $tt_id    Term taxonomy ID.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param bool   $update   Whether this is an existing term being updated.
-	 * @param array  $args     Arguments passed to wp_insert_term().
+	 * @param int    $term_id  ID term.
+	 * @param int    $tt_id    ID term taxonomy.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param bool   $update   Term hiện có đang được cập nhật hay không.
+	 * @param array  $args     Tham số được truyền cho wp_insert_term().
 	 */
 	do_action( 'saved_term', $term_id, $tt_id, $taxonomy, false, $args );
 
 	/**
-	 * Fires after a term in a specific taxonomy has been saved, and the term
-	 * cache has been cleared.
+	 * Kích hoạt sau khi term trong một taxonomy cụ thể được lưu, và cache term
+	 * được dọn sạch.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers to the taxonomy slug.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu đến slug taxonomy.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `saved_category`
 	 *  - `saved_post_tag`
 	 *
 	 * @since 5.5.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int   $term_id Term ID.
-	 * @param int   $tt_id   Term taxonomy ID.
-	 * @param bool  $update  Whether this is an existing term being updated.
-	 * @param array $args    Arguments passed to wp_insert_term().
+	 * @param int   $term_id ID term.
+	 * @param int   $tt_id   ID term taxonomy.
+	 * @param bool  $update  Term hiện có đang được cập nhật hay không.
+	 * @param array $args    Tham số được truyền cho wp_insert_term().
 	 */
 	do_action( "saved_{$taxonomy}", $term_id, $tt_id, false, $args );
 
@@ -2784,27 +2784,27 @@ function wp_insert_term( $term, $taxonomy, $args = array() ) {
 }
 
 /**
- * Creates term and taxonomy relationships.
+ * Tạo mối quan hệ giữa term và taxonomy.
  *
- * Relates an object (post, link, etc.) to a term and taxonomy type. Creates the
- * term and taxonomy relationship if it doesn't already exist. Creates a term if
- * it doesn't exist (using the slug).
+ * Liên kết một đối tượng (bài viết, liên kết, v.v.) với term và loại taxonomy. Tạo
+ * mối quan hệ term và taxonomy nếu chưa tồn tại. Tạo term nếu
+ * chưa tồn tại (sử dụng slug).
  *
- * A relationship means that the term is grouped in or belongs to the taxonomy.
- * A term has no meaning until it is given context by defining which taxonomy it
- * exists under.
+ * Mối quan hệ nghĩa là term được nhóm vào hoặc thuộc về taxonomy.
+ * Term không có ý nghĩa cho đến khi được đặt trong ngữ cảnh bằng cách xác định taxonomy
+ * mà nó thuộc về.
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param int              $object_id The object to relate to.
- * @param string|int|array $terms     A single term slug, single term ID, or array of either term slugs or IDs.
- *                                    Will replace all existing related terms in this taxonomy. Passing an
- *                                    empty array will remove all related terms.
- * @param string           $taxonomy  The context in which to relate the term to the object.
- * @param bool             $append    Optional. If false will delete difference of terms. Default false.
- * @return array|WP_Error Term taxonomy IDs of the affected terms or WP_Error on failure.
+ * @param int              $object_id Đối tượng cần liên kết.
+ * @param string|int|array $terms     Slug term đơn, ID term đơn, hoặc mảng slug hoặc ID term.
+ *                                    Sẽ thay thế tất cả term liên kết hiện có trong taxonomy này. Truyền
+ *                                    mảng rỗng sẽ xóa tất cả term liên kết.
+ * @param string           $taxonomy  Ngữ cảnh để liên kết term với đối tượng.
+ * @param bool             $append    Tùy chọn. Nếu false sẽ xóa phần khác biệt của term. Mặc định false.
+ * @return array|WP_Error ID term taxonomy của các term bị ảnh hưởng hoặc WP_Error khi thất bại.
  */
 function wp_set_object_terms( $object_id, $terms, $taxonomy, $append = false ) {
 	global $wpdb;

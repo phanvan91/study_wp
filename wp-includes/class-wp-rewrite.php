@@ -986,38 +986,38 @@ class WP_Rewrite {
 			$pagematch = $match . $pageregex;
 			$pagequery = $index . '?' . $query . '&paged=' . $this->preg_index( $num_toks + 1 );
 
-			// Create query for /comment-page-xx.
+			// Tạo truy vấn cho /comment-page-xx.
 			$commentmatch = $match . $commentregex;
 			$commentquery = $index . '?' . $query . '&cpage=' . $this->preg_index( $num_toks + 1 );
 
 			if ( get_option( 'page_on_front' ) ) {
-				// Create query for Root /comment-page-xx.
+				// Tạo truy vấn cho Root /comment-page-xx.
 				$rootcommentmatch = $match . $commentregex;
 				$rootcommentquery = $index . '?' . $query . '&page_id=' . get_option( 'page_on_front' ) . '&cpage=' . $this->preg_index( $num_toks + 1 );
 			}
 
-			// Create query for /feed/(feed|atom|rss|rss2|rdf).
+			// Tạo truy vấn cho /feed/(feed|atom|rss|rss2|rdf).
 			$feedmatch = $match . $feedregex;
 			$feedquery = $feedindex . '?' . $query . '&feed=' . $this->preg_index( $num_toks + 1 );
 
-			// Create query for /(feed|atom|rss|rss2|rdf) (see comment near creation of $feedregex).
+			// Tạo truy vấn cho /(feed|atom|rss|rss2|rdf) (xem chú thích gần nơi tạo $feedregex).
 			$feedmatch2 = $match . $feedregex2;
 			$feedquery2 = $feedindex . '?' . $query . '&feed=' . $this->preg_index( $num_toks + 1 );
 
-			// Create query and regex for embeds.
+			// Tạo truy vấn và regex cho nhúng (embeds).
 			$embedmatch = $match . $embedregex;
 			$embedquery = $embedindex . '?' . $query . '&embed=true';
 
-			// If asked to, turn the feed queries into comment feed ones.
+			// Nếu được yêu cầu, chuyển các truy vấn nguồn cấp thành truy vấn nguồn cấp bình luận.
 			if ( $forcomments ) {
 				$feedquery  .= '&withcomments=1';
 				$feedquery2 .= '&withcomments=1';
 			}
 
-			// Start creating the array of rewrites for this dir.
+			// Bắt đầu tạo mảng các quy tắc rewrite cho thư mục này.
 			$rewrite = array();
 
-			// ...adding on /feed/ regexes => queries.
+			// ...thêm các regex /feed/ => truy vấn.
 			if ( $feed ) {
 				$rewrite = array(
 					$feedmatch  => $feedquery,
@@ -1026,38 +1026,38 @@ class WP_Rewrite {
 				);
 			}
 
-			// ...and /page/xx ones.
+			// ...và các quy tắc /page/xx.
 			if ( $paged ) {
 				$rewrite = array_merge( $rewrite, array( $pagematch => $pagequery ) );
 			}
 
-			// Only on pages with comments add ../comment-page-xx/.
+			// Chỉ thêm ../comment-page-xx/ trên các trang có bình luận.
 			if ( EP_PAGES & $ep_mask || EP_PERMALINK & $ep_mask ) {
 				$rewrite = array_merge( $rewrite, array( $commentmatch => $commentquery ) );
 			} elseif ( EP_ROOT & $ep_mask && get_option( 'page_on_front' ) ) {
 				$rewrite = array_merge( $rewrite, array( $rootcommentmatch => $rootcommentquery ) );
 			}
 
-			// Do endpoints.
+			// Xử lý các điểm cuối.
 			if ( $endpoints ) {
 				foreach ( (array) $ep_query_append as $regex => $ep ) {
-					// Add the endpoints on if the mask fits.
+					// Thêm các điểm cuối nếu mặt nạ khớp.
 					if ( $ep[0] & $ep_mask || $ep[0] & $ep_mask_specific ) {
 						$rewrite[ $match . $regex ] = $index . '?' . $query . $ep[1] . $this->preg_index( $num_toks + 2 );
 					}
 				}
 			}
 
-			// If we've got some tags in this dir.
+			// Nếu có một số thẻ trong thư mục này.
 			if ( $num_toks ) {
 				$post = false;
 				$page = false;
 
 				/*
-				 * Check to see if this dir is permalink-level: i.e. the structure specifies an
-				 * individual post. Do this by checking it contains at least one of 1) post name,
-				 * 2) post ID, 3) page name, 4) timestamp (year, month, day, hour, second and
-				 * minute all present). Set these flags now as we need them for the endpoints.
+				 * Kiểm tra xem thư mục này có ở cấp permalink hay không: tức là cấu trúc chỉ định
+				 * một bài viết riêng lẻ. Thực hiện bằng cách kiểm tra nó chứa ít nhất một trong 1) tên bài viết,
+				 * 2) ID bài viết, 3) tên trang, 4) dấu thời gian (năm, tháng, ngày, giờ, giây và
+				 * phút đều có mặt). Thiết lập các cờ này ngay vì chúng ta cần chúng cho các điểm cuối.
 				 */
 				if ( str_contains( $struct, '%postname%' )
 					|| str_contains( $struct, '%post_id%' )
@@ -1076,81 +1076,81 @@ class WP_Rewrite {
 				}
 
 				if ( ! $post ) {
-					// For custom post types, we need to add on endpoints as well.
+					// Đối với các loại bài viết tùy chỉnh, chúng ta cũng cần thêm các điểm cuối.
 					foreach ( get_post_types( array( '_builtin' => false ) ) as $ptype ) {
 						if ( str_contains( $struct, "%$ptype%" ) ) {
 							$post = true;
 
-							// This is for page style attachment URLs.
+							// Đây là dành cho URL đính kèm kiểu trang.
 							$page = is_post_type_hierarchical( $ptype );
 							break;
 						}
 					}
 				}
 
-				// If creating rules for a permalink, do all the endpoints like attachments etc.
+				// Nếu đang tạo quy tắc cho permalink, xử lý tất cả các điểm cuối như đính kèm, v.v.
 				if ( $post ) {
-					// Create query and regex for trackback.
+					// Tạo truy vấn và regex cho trackback.
 					$trackbackmatch = $match . $trackbackregex;
 					$trackbackquery = $trackbackindex . '?' . $query . '&tb=1';
 
-					// Create query and regex for embeds.
+					// Tạo truy vấn và regex cho nhúng (embeds).
 					$embedmatch = $match . $embedregex;
 					$embedquery = $embedindex . '?' . $query . '&embed=true';
 
-					// Trim slashes from the end of the regex for this dir.
+					// Cắt bỏ dấu gạch chéo ở cuối regex cho thư mục này.
 					$match = rtrim( $match, '/' );
 
-					// Get rid of brackets.
+					// Loại bỏ dấu ngoặc.
 					$submatchbase = str_replace( array( '(', ')' ), '', $match );
 
-					// Add a rule for at attachments, which take the form of <permalink>/some-text.
+					// Thêm quy tắc cho đính kèm, có dạng <permalink>/some-text.
 					$sub1 = $submatchbase . '/([^/]+)/';
 
-					// Add trackback regex <permalink>/trackback/...
+					// Thêm regex trackback <permalink>/trackback/...
 					$sub1tb = $sub1 . $trackbackregex;
 
-					// And <permalink>/feed/(atom|...)
+					// Và <permalink>/feed/(atom|...)
 					$sub1feed = $sub1 . $feedregex;
 
-					// And <permalink>/(feed|atom...)
+					// Và <permalink>/(feed|atom...)
 					$sub1feed2 = $sub1 . $feedregex2;
 
-					// And <permalink>/comment-page-xx
+					// Và <permalink>/comment-page-xx
 					$sub1comment = $sub1 . $commentregex;
 
-					// And <permalink>/embed/...
+					// Và <permalink>/embed/...
 					$sub1embed = $sub1 . $embedregex;
 
 					/*
-					 * Add another rule to match attachments in the explicit form:
+					 * Thêm một quy tắc khác để khớp đính kèm ở dạng tường minh:
 					 * <permalink>/attachment/some-text
 					 */
 					$sub2 = $submatchbase . '/attachment/([^/]+)/';
 
-					// And add trackbacks <permalink>/attachment/trackback.
+					// Và thêm trackback <permalink>/attachment/trackback.
 					$sub2tb = $sub2 . $trackbackregex;
 
-					// Feeds, <permalink>/attachment/feed/(atom|...)
+					// Nguồn cấp, <permalink>/attachment/feed/(atom|...)
 					$sub2feed = $sub2 . $feedregex;
 
-					// And feeds again on to this <permalink>/attachment/(feed|atom...)
+					// Và thêm nguồn cấp tiếp vào <permalink>/attachment/(feed|atom...)
 					$sub2feed2 = $sub2 . $feedregex2;
 
-					// And <permalink>/comment-page-xx
+					// Và <permalink>/comment-page-xx
 					$sub2comment = $sub2 . $commentregex;
 
-					// And <permalink>/embed/...
+					// Và <permalink>/embed/...
 					$sub2embed = $sub2 . $embedregex;
 
-					// Create queries for these extra tag-ons we've just dealt with.
+					// Tạo truy vấn cho các phần thêm mà chúng ta vừa xử lý.
 					$subquery        = $index . '?attachment=' . $this->preg_index( 1 );
 					$subtbquery      = $subquery . '&tb=1';
 					$subfeedquery    = $subquery . '&feed=' . $this->preg_index( 2 );
 					$subcommentquery = $subquery . '&cpage=' . $this->preg_index( 2 );
 					$subembedquery   = $subquery . '&embed=true';
 
-					// Do endpoints for attachments.
+					// Xử lý các điểm cuối cho đính kèm.
 					if ( ! empty( $endpoints ) ) {
 						foreach ( (array) $ep_query_append as $regex => $ep ) {
 							if ( $ep[0] & EP_ATTACHMENT ) {
@@ -1161,46 +1161,46 @@ class WP_Rewrite {
 					}
 
 					/*
-					 * Now we've finished with endpoints, finish off the $sub1 and $sub2 matches
-					 * add a ? as we don't have to match that last slash, and finally a $ so we
-					 * match to the end of the URL
+					 * Bây giờ chúng ta đã xong với các điểm cuối, hoàn thiện các kết quả khớp $sub1 và $sub2
+					 * thêm dấu ? vì không cần khớp dấu gạch chéo cuối cùng, và cuối cùng là $ để
+					 * khớp đến hết URL
 					 */
 					$sub1 .= '?$';
 					$sub2 .= '?$';
 
 					/*
-					 * Post pagination, e.g. <permalink>/2/
-					 * Previously: '(/[0-9]+)?/?$', which produced '/2' for page.
-					 * When cast to int, returned 0.
+					 * Phân trang bài viết, ví dụ: <permalink>/2/
+					 * Trước đây: '(/[0-9]+)?/?$', tạo ra '/2' cho trang.
+					 * Khi chuyển sang int, trả về 0.
 					 */
 					$match = $match . '(?:/([0-9]+))?/?$';
 					$query = $index . '?' . $query . '&page=' . $this->preg_index( $num_toks + 1 );
 
-					// Not matching a permalink so this is a lot simpler.
+					// Không khớp permalink nên đơn giản hơn nhiều.
 				} else {
-					// Close the match and finalize the query.
+					// Đóng kết quả khớp và hoàn thiện truy vấn.
 					$match .= '?$';
 					$query  = $index . '?' . $query;
 				}
 
 				/*
-				 * Create the final array for this dir by joining the $rewrite array (which currently
-				 * only contains rules/queries for trackback, pages etc) to the main regex/query for
-				 * this dir
+				 * Tạo mảng cuối cùng cho thư mục này bằng cách nối mảng $rewrite (hiện tại
+				 * chỉ chứa các quy tắc/truy vấn cho trackback, trang, v.v.) với regex/truy vấn chính cho
+				 * thư mục này
 				 */
 				$rewrite = array_merge( $rewrite, array( $match => $query ) );
 
-				// If we're matching a permalink, add those extras (attachments etc) on.
+				// Nếu đang khớp permalink, thêm các phần bổ sung (đính kèm, v.v.) vào.
 				if ( $post ) {
-					// Add trackback.
+					// Thêm trackback.
 					$rewrite = array_merge( array( $trackbackmatch => $trackbackquery ), $rewrite );
 
-					// Add embed.
+					// Thêm nhúng (embed).
 					$rewrite = array_merge( array( $embedmatch => $embedquery ), $rewrite );
 
-					// Add regexes/queries for attachments, attachment trackbacks and so on.
+					// Thêm regex/truy vấn cho đính kèm, trackback đính kèm, v.v.
 					if ( ! $page ) {
-						// Require <permalink>/attachment/stuff form for pages because of confusion with subpages.
+						// Yêu cầu dạng <permalink>/attachment/stuff cho trang vì dễ nhầm lẫn với trang con.
 						$rewrite = array_merge(
 							$rewrite,
 							array(
@@ -1227,50 +1227,50 @@ class WP_Rewrite {
 					);
 				}
 			}
-			// Add the rules for this dir to the accumulating $post_rewrite.
+			// Thêm các quy tắc cho thư mục này vào $post_rewrite đang tích lũy.
 			$post_rewrite = array_merge( $rewrite, $post_rewrite );
 		}
 
-		// The finished rules. phew!
+		// Các quy tắc đã hoàn thành. Xong!
 		return $post_rewrite;
 	}
 
 	/**
-	 * Generates rewrite rules with permalink structure and walking directory only.
+	 * Tạo quy tắc rewrite chỉ với cấu trúc permalink và duyệt thư mục.
 	 *
-	 * Shorten version of WP_Rewrite::generate_rewrite_rules() that allows for shorter
-	 * list of parameters. See the method for longer description of what generating
-	 * rewrite rules does.
+	 * Phiên bản rút gọn của WP_Rewrite::generate_rewrite_rules() cho phép danh sách
+	 * tham số ngắn hơn. Xem phương thức đó để có mô tả chi tiết hơn về việc
+	 * tạo quy tắc rewrite.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @see WP_Rewrite::generate_rewrite_rules() See for long description and rest of parameters.
+	 * @see WP_Rewrite::generate_rewrite_rules() Xem mô tả chi tiết và các tham số còn lại.
 	 *
-	 * @param string $permalink_structure The permalink structure to generate rules.
-	 * @param bool   $walk_dirs           Optional. Whether to create list of directories to walk over.
-	 *                                    Default false.
-	 * @return array An array of rewrite rules keyed by their regex pattern.
+	 * @param string $permalink_structure Cấu trúc permalink để tạo quy tắc.
+	 * @param bool   $walk_dirs           Tùy chọn. Có tạo danh sách thư mục để duyệt hay không.
+	 *                                    Mặc định false.
+	 * @return array Mảng các quy tắc rewrite được đánh khóa bởi mẫu regex.
 	 */
 	public function generate_rewrite_rule( $permalink_structure, $walk_dirs = false ) {
 		return $this->generate_rewrite_rules( $permalink_structure, EP_NONE, false, false, false, $walk_dirs );
 	}
 
 	/**
-	 * Constructs rewrite matches and queries from permalink structure.
+	 * Xây dựng các kết quả khớp và truy vấn rewrite từ cấu trúc permalink.
 	 *
-	 * Runs the action {@see 'generate_rewrite_rules'} with the parameter that is an
-	 * reference to the current WP_Rewrite instance to further manipulate the
-	 * permalink structures and rewrite rules. Runs the {@see 'rewrite_rules_array'}
-	 * filter on the full rewrite rule array.
+	 * Chạy action {@see 'generate_rewrite_rules'} với tham số là tham chiếu đến
+	 * instance WP_Rewrite hiện tại để thao tác thêm với các cấu trúc permalink
+	 * và quy tắc rewrite. Chạy bộ lọc {@see 'rewrite_rules_array'}
+	 * trên toàn bộ mảng quy tắc rewrite.
 	 *
-	 * There are two ways to manipulate the rewrite rules, one by hooking into
-	 * the {@see 'generate_rewrite_rules'} action and gaining full control of the
-	 * object or just manipulating the rewrite rule array before it is passed
-	 * from the function.
+	 * Có hai cách để thao tác với các quy tắc rewrite, một là hook vào
+	 * action {@see 'generate_rewrite_rules'} và kiểm soát toàn bộ đối tượng
+	 * hoặc chỉ thao tác mảng quy tắc rewrite trước khi nó được trả về
+	 * từ hàm.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return string[] An associative array of matches and queries.
+	 * @return string[] Mảng kết hợp các kết quả khớp và truy vấn.
 	 */
 	public function rewrite_rules() {
 		$rewrite = array();

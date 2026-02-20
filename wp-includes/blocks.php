@@ -1190,7 +1190,7 @@ function apply_block_hooks_to_content( $content, $context = null, $callback = 'i
  * @return string Mã đánh dấu đã tuần tự hóa.
  */
 function apply_block_hooks_to_content_from_post_object( $content, $post = null, $callback = 'insert_hooked_blocks' ) {
-	// Default to the current post if no context is provided.
+	// Mặc định sử dụng bài viết hiện tại nếu không có ngữ cảnh nào được cung cấp.
 	if ( null === $post ) {
 		$post = get_post();
 	}
@@ -1200,11 +1200,11 @@ function apply_block_hooks_to_content_from_post_object( $content, $post = null, 
 	}
 
 	/*
-	 * If the content was created using the classic editor or using a single Classic block
-	 * (`core/freeform`), it might not contain any block markup at all.
-	 * However, we still might need to inject hooked blocks in the first child or last child
-	 * positions of the parent block. To be able to apply the Block Hooks algorithm, we wrap
-	 * the content in a `core/freeform` wrapper block.
+	 * Nếu nội dung được tạo bằng trình soạn thảo cổ điển hoặc sử dụng một block Classic đơn lẻ
+	 * (`core/freeform`), nó có thể không chứa bất kỳ mã đánh dấu block nào.
+	 * Tuy nhiên, chúng ta vẫn có thể cần chèn các block được gắn hook vào vị trí con đầu tiên hoặc
+	 * con cuối cùng của block cha. Để có thể áp dụng thuật toán Block Hooks, chúng ta bọc
+	 * nội dung trong một block bao ngoài `core/freeform`.
 	 */
 	if ( ! has_blocks( $content ) ) {
 		$original_content = $content;
@@ -1220,7 +1220,7 @@ function apply_block_hooks_to_content_from_post_object( $content, $post = null, 
 
 	$attributes = array();
 
-	// If context is a post object, `ignoredHookedBlocks` information is stored in its post meta.
+	// Nếu ngữ cảnh là đối tượng bài viết, thông tin `ignoredHookedBlocks` được lưu trong post meta của nó.
 	$ignored_hooked_blocks = get_post_meta( $post->ID, '_wp_ignored_hooked_blocks', true );
 	if ( ! empty( $ignored_hooked_blocks ) ) {
 		$ignored_hooked_blocks  = json_decode( $ignored_hooked_blocks, true );
@@ -1230,10 +1230,10 @@ function apply_block_hooks_to_content_from_post_object( $content, $post = null, 
 	}
 
 	/*
-	 * We need to wrap the content in a temporary wrapper block with that metadata
-	 * so the Block Hooks algorithm can insert blocks that are hooked as first or last child
-	 * of the wrapper block.
-	 * To that end, we need to determine the wrapper block type based on the post type.
+	 * Chúng ta cần bọc nội dung trong một block bao ngoài tạm thời với metadata đó
+	 * để thuật toán Block Hooks có thể chèn các block được gắn hook là con đầu tiên hoặc cuối cùng
+	 * của block bao ngoài.
+	 * Để thực hiện điều đó, chúng ta cần xác định loại block bao ngoài dựa trên loại bài viết.
 	 */
 	if ( 'wp_navigation' === $post->post_type ) {
 		$wrapper_block_type = 'core/navigation';
@@ -1250,9 +1250,9 @@ function apply_block_hooks_to_content_from_post_object( $content, $post = null, 
 	);
 
 	/*
-	 * We need to avoid inserting any blocks hooked into the `before` and `after` positions
-	 * of the temporary wrapper block that we create to wrap the content.
-	 * See https://core.trac.wordpress.org/ticket/63287 for more details.
+	 * Chúng ta cần tránh chèn bất kỳ block nào được gắn hook vào vị trí `before` và `after`
+	 * của block bao ngoài tạm thời mà chúng ta tạo để bọc nội dung.
+	 * Xem https://core.trac.wordpress.org/ticket/63287 để biết thêm chi tiết.
 	 */
 	$suppress_blocks_from_insertion_before_and_after_wrapper_block = static function ( $hooked_block_types, $relative_position, $anchor_block_type ) use ( $wrapper_block_type ) {
 		if (
@@ -1264,21 +1264,21 @@ function apply_block_hooks_to_content_from_post_object( $content, $post = null, 
 		return $hooked_block_types;
 	};
 
-	// Apply Block Hooks.
+	// Áp dụng Block Hooks.
 	add_filter( 'hooked_block_types', $suppress_blocks_from_insertion_before_and_after_wrapper_block, PHP_INT_MAX, 3 );
 	$content = apply_block_hooks_to_content( $content, $post, $callback );
 	remove_filter( 'hooked_block_types', $suppress_blocks_from_insertion_before_and_after_wrapper_block, PHP_INT_MAX );
 
-	// Finally, we need to remove the temporary wrapper block.
+	// Cuối cùng, chúng ta cần xóa block bao ngoài tạm thời.
 	$content = remove_serialized_parent_block( $content );
 
-	// If we wrapped the content in a `core/freeform` block, we also need to remove that.
+	// Nếu chúng ta đã bọc nội dung trong block `core/freeform`, chúng ta cũng cần xóa nó.
 	if ( ! empty( $content_wrapped_in_classic_block ) ) {
 		/*
-		 * We cannot simply use remove_serialized_parent_block() here,
-		 * as that function assumes that the block wrapper is at the top level.
-		 * However, there might now be a hooked block inserted next to it
-		 * (as first or last child of the parent).
+		 * Chúng ta không thể đơn giản sử dụng remove_serialized_parent_block() ở đây,
+		 * vì hàm đó giả định rằng block bao ngoài nằm ở cấp cao nhất.
+		 * Tuy nhiên, giờ có thể có một block được gắn hook được chèn bên cạnh nó
+		 * (là con đầu tiên hoặc cuối cùng của block cha).
 		 */
 		$content = str_replace( $content_wrapped_in_classic_block, $original_content, $content );
 	}
@@ -1817,17 +1817,17 @@ function traverse_and_serialize_block( $block, $pre_callback = null, $post_callb
 }
 
 /**
- * Replaces patterns in a block tree with their content.
+ * Thay thế các pattern trong cây block bằng nội dung của chúng.
  *
  * @since 6.6.0
  *
- * @param array $blocks An array blocks.
+ * @param array $blocks Mảng các block.
  *
- * @return array An array of blocks with patterns replaced by their content.
+ * @return array Mảng các block với pattern được thay thế bằng nội dung của chúng.
  */
 function resolve_pattern_blocks( $blocks ) {
 	static $inner_content;
-	// Keep track of seen references to avoid infinite loops.
+	// Theo dõi các tham chiếu đã thấy để tránh vòng lặp vô hạn.
 	static $seen_refs = array();
 	$i                = 0;
 	while ( $i < count( $blocks ) ) {
@@ -1842,7 +1842,7 @@ function resolve_pattern_blocks( $blocks ) {
 			$slug = $attrs['slug'];
 
 			if ( isset( $seen_refs[ $slug ] ) ) {
-				// Skip recursive patterns.
+				// Bỏ qua các pattern đệ quy.
 				array_splice( $blocks, $i, 1 );
 				continue;
 			}
@@ -1850,7 +1850,7 @@ function resolve_pattern_blocks( $blocks ) {
 			$registry = WP_Block_Patterns_Registry::get_instance();
 			$pattern  = $registry->get_registered( $slug );
 
-			// Skip unknown patterns.
+			// Bỏ qua các pattern không xác định.
 			if ( ! $pattern ) {
 				++$i;
 				continue;
@@ -1865,9 +1865,9 @@ function resolve_pattern_blocks( $blocks ) {
 			unset( $seen_refs[ $slug ] );
 			array_splice( $blocks, $i, 1, $blocks_to_insert );
 
-			// If we have inner content, we need to insert nulls in the
-			// inner content array, otherwise serialize_blocks will skip
-			// blocks.
+			// Nếu chúng ta có nội dung bên trong, chúng ta cần chèn null vào
+			// mảng nội dung bên trong, nếu không serialize_blocks sẽ bỏ qua
+			// các block.
 			if ( $inner_content ) {
 				$null_indices  = array_keys( $inner_content, null, true );
 				$content_index = $null_indices[ $i ];
@@ -1875,7 +1875,7 @@ function resolve_pattern_blocks( $blocks ) {
 				array_splice( $inner_content, $content_index, 1, $nulls );
 			}
 
-			// Skip inserted blocks.
+			// Bỏ qua các block đã chèn.
 			$i += count( $blocks_to_insert );
 		} else {
 			if ( ! empty( $blocks[ $i ]['innerBlocks'] ) ) {
@@ -1894,43 +1894,43 @@ function resolve_pattern_blocks( $blocks ) {
 }
 
 /**
- * Given an array of parsed block trees, applies callbacks before and after serializing them and
- * returns their concatenated output.
+ * Với mảng các cây block đã phân tích, áp dụng callback trước và sau khi tuần tự hóa chúng và
+ * trả về đầu ra nối của chúng.
  *
- * Recursively traverses the blocks and their inner blocks and applies the two callbacks provided as
- * arguments, the first one before serializing a block, and the second one after serializing.
- * If either callback returns a string value, it will be prepended and appended to the serialized
- * block markup, respectively.
+ * Duyệt đệ quy các block và các block con bên trong, áp dụng hai callback được cung cấp làm
+ * tham số, callback đầu tiên trước khi tuần tự hóa block, và callback thứ hai sau khi tuần tự hóa.
+ * Nếu callback nào trả về giá trị chuỗi, nó sẽ được thêm vào trước và nối thêm vào sau mã đánh dấu
+ * block đã tuần tự hóa tương ứng.
  *
- * The callbacks will receive a reference to the current block as their first argument, so that they
- * can also modify it, and the current block's parent block as second argument. Finally, the
- * `$pre_callback` receives the previous block, whereas the `$post_callback` receives
- * the next block as third argument.
+ * Các callback sẽ nhận tham chiếu đến block hiện tại làm tham số đầu tiên, để chúng
+ * cũng có thể sửa đổi nó, và block cha của block hiện tại làm tham số thứ hai. Cuối cùng,
+ * `$pre_callback` nhận block trước đó, trong khi `$post_callback` nhận
+ * block tiếp theo làm tham số thứ ba.
  *
- * Serialized blocks are returned including comment delimiters, and with all attributes serialized.
+ * Các block đã tuần tự hóa được trả về bao gồm các ký tự phân cách comment, với tất cả thuộc tính đã tuần tự hóa.
  *
- * This function should be used when there is a need to modify the saved blocks, or to inject markup
- * into the return value. Prefer `serialize_blocks` when preparing blocks to be saved to post content.
+ * Hàm này nên được sử dụng khi cần sửa đổi block đã lưu, hoặc chèn mã đánh dấu
+ * vào giá trị trả về. Ưu tiên `serialize_blocks` khi chuẩn bị block để lưu vào nội dung bài viết.
  *
- * This function is meant for internal use only.
+ * Hàm này chỉ dành cho sử dụng nội bộ.
  *
  * @since 6.4.0
  * @access private
  *
  * @see serialize_blocks()
  *
- * @param array[]  $blocks        An array of parsed blocks. See WP_Block_Parser_Block.
- * @param callable $pre_callback  Callback to run on each block in the tree before it is traversed and serialized.
- *                                It is called with the following arguments: &$block, $parent_block, $previous_block.
- *                                Its string return value will be prepended to the serialized block markup.
- * @param callable $post_callback Callback to run on each block in the tree after it is traversed and serialized.
- *                                It is called with the following arguments: &$block, $parent_block, $next_block.
- *                                Its string return value will be appended to the serialized block markup.
- * @return string Serialized block markup.
+ * @param array[]  $blocks        Mảng các block đã phân tích. Xem WP_Block_Parser_Block.
+ * @param callable $pre_callback  Callback để chạy trên mỗi block trong cây trước khi nó được duyệt và tuần tự hóa.
+ *                                Được gọi với các tham số sau: &$block, $parent_block, $previous_block.
+ *                                Giá trị chuỗi trả về sẽ được thêm vào trước mã đánh dấu block đã tuần tự hóa.
+ * @param callable $post_callback Callback để chạy trên mỗi block trong cây sau khi nó được duyệt và tuần tự hóa.
+ *                                Được gọi với các tham số sau: &$block, $parent_block, $next_block.
+ *                                Giá trị chuỗi trả về sẽ được nối thêm vào sau mã đánh dấu block đã tuần tự hóa.
+ * @return string Mã đánh dấu block đã tuần tự hóa.
  */
 function traverse_and_serialize_blocks( $blocks, $pre_callback = null, $post_callback = null ) {
 	$result       = '';
-	$parent_block = null; // At the top level, there is no parent block to pass to the callbacks; yet the callbacks expect a reference.
+	$parent_block = null; // Ở cấp cao nhất, không có block cha để truyền vào callback; tuy nhiên callback mong đợi một tham chiếu.
 
 	$pre_callback_is_callable  = is_callable( $pre_callback );
 	$post_callback_is_callable = is_callable( $post_callback );
@@ -1966,18 +1966,18 @@ function traverse_and_serialize_blocks( $blocks, $pre_callback = null, $post_cal
 }
 
 /**
- * Filters and sanitizes block content to remove non-allowable HTML
- * from parsed block attribute values.
+ * Lọc và làm sạch nội dung block để loại bỏ HTML không được phép
+ * khỏi các giá trị thuộc tính block đã phân tích.
  *
  * @since 5.3.1
  *
- * @param string         $text              Text that may contain block content.
- * @param array[]|string $allowed_html      Optional. An array of allowed HTML elements and attributes,
- *                                          or a context name such as 'post'. See wp_kses_allowed_html()
- *                                          for the list of accepted context names. Default 'post'.
- * @param string[]       $allowed_protocols Optional. Array of allowed URL protocols.
- *                                          Defaults to the result of wp_allowed_protocols().
- * @return string The filtered and sanitized content result.
+ * @param string         $text              Văn bản có thể chứa nội dung block.
+ * @param array[]|string $allowed_html      Tùy chọn. Mảng các phần tử và thuộc tính HTML được phép,
+ *                                          hoặc tên ngữ cảnh như 'post'. Xem wp_kses_allowed_html()
+ *                                          để biết danh sách các tên ngữ cảnh được chấp nhận. Mặc định 'post'.
+ * @param string[]       $allowed_protocols Tùy chọn. Mảng các giao thức URL được phép.
+ *                                          Mặc định là kết quả của wp_allowed_protocols().
+ * @return string Kết quả nội dung đã lọc và làm sạch.
  */
 function filter_block_content( $text, $allowed_html = 'post', $allowed_protocols = array() ) {
 	$result = '';
@@ -1996,31 +1996,31 @@ function filter_block_content( $text, $allowed_html = 'post', $allowed_protocols
 }
 
 /**
- * Callback used for regular expression replacement in filter_block_content().
+ * Callback được sử dụng cho thay thế biểu thức chính quy trong filter_block_content().
  *
  * @since 6.2.1
  * @access private
  *
- * @param array $matches Array of preg_replace_callback matches.
- * @return string Replacement string.
+ * @param array $matches Mảng các kết quả khớp của preg_replace_callback.
+ * @return string Chuỗi thay thế.
  */
 function _filter_block_content_callback( $matches ) {
 	return '<!--' . rtrim( $matches[1], '-' ) . '-->';
 }
 
 /**
- * Filters and sanitizes a parsed block to remove non-allowable HTML
- * from block attribute values.
+ * Lọc và làm sạch block đã phân tích để loại bỏ HTML không được phép
+ * khỏi các giá trị thuộc tính block.
  *
  * @since 5.3.1
  *
- * @param WP_Block_Parser_Block $block             The parsed block object.
- * @param array[]|string        $allowed_html      An array of allowed HTML elements and attributes,
- *                                                 or a context name such as 'post'. See wp_kses_allowed_html()
- *                                                 for the list of accepted context names.
- * @param string[]              $allowed_protocols Optional. Array of allowed URL protocols.
- *                                                 Defaults to the result of wp_allowed_protocols().
- * @return array The filtered and sanitized block object result.
+ * @param WP_Block_Parser_Block $block             Đối tượng block đã phân tích.
+ * @param array[]|string        $allowed_html      Mảng các phần tử và thuộc tính HTML được phép,
+ *                                                 hoặc tên ngữ cảnh như 'post'. Xem wp_kses_allowed_html()
+ *                                                 để biết danh sách các tên ngữ cảnh được chấp nhận.
+ * @param string[]              $allowed_protocols Tùy chọn. Mảng các giao thức URL được phép.
+ *                                                 Mặc định là kết quả của wp_allowed_protocols().
+ * @return array Kết quả đối tượng block đã lọc và làm sạch.
  */
 function filter_block_kses( $block, $allowed_html, $allowed_protocols = array() ) {
 	$block['attrs'] = filter_block_kses_value( $block['attrs'], $allowed_html, $allowed_protocols, $block );
@@ -2035,20 +2035,20 @@ function filter_block_kses( $block, $allowed_html, $allowed_protocols = array() 
 }
 
 /**
- * Filters and sanitizes a parsed block attribute value to remove
- * non-allowable HTML.
+ * Lọc và làm sạch giá trị thuộc tính block đã phân tích để loại bỏ
+ * HTML không được phép.
  *
  * @since 5.3.1
- * @since 6.5.5 Added the `$block_context` parameter.
+ * @since 6.5.5 Thêm tham số `$block_context`.
  *
- * @param string[]|string $value             The attribute value to filter.
- * @param array[]|string  $allowed_html      An array of allowed HTML elements and attributes,
- *                                           or a context name such as 'post'. See wp_kses_allowed_html()
- *                                           for the list of accepted context names.
- * @param string[]        $allowed_protocols Optional. Array of allowed URL protocols.
- *                                           Defaults to the result of wp_allowed_protocols().
- * @param array           $block_context     Optional. The block the attribute belongs to, in parsed block array format.
- * @return string[]|string The filtered and sanitized result.
+ * @param string[]|string $value             Giá trị thuộc tính cần lọc.
+ * @param array[]|string  $allowed_html      Mảng các phần tử và thuộc tính HTML được phép,
+ *                                           hoặc tên ngữ cảnh như 'post'. Xem wp_kses_allowed_html()
+ *                                           để biết danh sách các tên ngữ cảnh được chấp nhận.
+ * @param string[]        $allowed_protocols Tùy chọn. Mảng các giao thức URL được phép.
+ *                                           Mặc định là kết quả của wp_allowed_protocols().
+ * @param array           $block_context     Tùy chọn. Block mà thuộc tính thuộc về, ở định dạng mảng block đã phân tích.
+ * @return string[]|string Kết quả đã lọc và làm sạch.
  */
 function filter_block_kses_value( $value, $allowed_html, $allowed_protocols = array(), $block_context = null ) {
 	if ( is_array( $value ) ) {
@@ -2073,16 +2073,16 @@ function filter_block_kses_value( $value, $allowed_html, $allowed_protocols = ar
 }
 
 /**
- * Sanitizes the value of the Template Part block's `tagName` attribute.
+ * Làm sạch giá trị thuộc tính `tagName` của block Template Part.
  *
  * @since 6.5.5
  *
- * @param string         $attribute_value The attribute value to filter.
- * @param string         $attribute_name  The attribute name.
- * @param array[]|string $allowed_html    An array of allowed HTML elements and attributes,
- *                                        or a context name such as 'post'. See wp_kses_allowed_html()
- *                                        for the list of accepted context names.
- * @return string The sanitized attribute value.
+ * @param string         $attribute_value Giá trị thuộc tính cần lọc.
+ * @param string         $attribute_name  Tên thuộc tính.
+ * @param array[]|string $allowed_html    Mảng các phần tử và thuộc tính HTML được phép,
+ *                                        hoặc tên ngữ cảnh như 'post'. Xem wp_kses_allowed_html()
+ *                                        để biết danh sách các tên ngữ cảnh được chấp nhận.
+ * @return string Giá trị thuộc tính đã làm sạch.
  */
 function filter_block_core_template_part_attributes( $attribute_value, $attribute_name, $allowed_html ) {
 	if ( empty( $attribute_value ) || 'tagName' !== $attribute_name ) {
@@ -2095,15 +2095,15 @@ function filter_block_core_template_part_attributes( $attribute_value, $attribut
 }
 
 /**
- * Parses blocks out of a content string, and renders those appropriate for the excerpt.
+ * Phân tích các block từ chuỗi nội dung, và render những block phù hợp cho tóm tắt.
  *
- * As the excerpt should be a small string of text relevant to the full post content,
- * this function renders the blocks that are most likely to contain such text.
+ * Vì tóm tắt nên là một chuỗi văn bản ngắn liên quan đến toàn bộ nội dung bài viết,
+ * hàm này render các block có khả năng chứa văn bản như vậy nhất.
  *
  * @since 5.0.0
  *
- * @param string $content The content to parse.
- * @return string The parsed and filtered content.
+ * @param string $content Nội dung cần phân tích.
+ * @return string Nội dung đã phân tích và lọc.
  */
 function excerpt_remove_blocks( $content ) {
 	if ( ! has_blocks( $content ) ) {
@@ -2111,7 +2111,7 @@ function excerpt_remove_blocks( $content ) {
 	}
 
 	$allowed_inner_blocks = array(
-		// Classic blocks have their blockName set to null.
+		// Các block Classic có blockName được đặt là null.
 		null,
 		'core/freeform',
 		'core/heading',
@@ -2133,26 +2133,26 @@ function excerpt_remove_blocks( $content ) {
 	);
 
 	/**
-	 * Filters the list of blocks that can be used as wrapper blocks, allowing
-	 * excerpts to be generated from the `innerBlocks` of these wrappers.
+	 * Lọc danh sách các block có thể được sử dụng làm block bao ngoài, cho phép
+	 * tạo tóm tắt từ `innerBlocks` của các block bao ngoài này.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string[] $allowed_wrapper_blocks The list of names of allowed wrapper blocks.
+	 * @param string[] $allowed_wrapper_blocks Danh sách tên các block bao ngoài được phép.
 	 */
 	$allowed_wrapper_blocks = apply_filters( 'excerpt_allowed_wrapper_blocks', $allowed_wrapper_blocks );
 
 	$allowed_blocks = array_merge( $allowed_inner_blocks, $allowed_wrapper_blocks );
 
 	/**
-	 * Filters the list of blocks that can contribute to the excerpt.
+	 * Lọc danh sách các block có thể đóng góp vào tóm tắt.
 	 *
-	 * If a dynamic block is added to this list, it must not generate another
-	 * excerpt, as this will cause an infinite loop to occur.
+	 * Nếu một block động được thêm vào danh sách này, nó không được tạo ra
+	 * tóm tắt khác, vì điều này sẽ gây ra vòng lặp vô hạn.
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param string[] $allowed_blocks The list of names of allowed blocks.
+	 * @param string[] $allowed_blocks Danh sách tên các block được phép.
 	 */
 	$allowed_blocks = apply_filters( 'excerpt_allowed_blocks', $allowed_blocks );
 	$blocks         = parse_blocks( $content );
@@ -2166,7 +2166,7 @@ function excerpt_remove_blocks( $content ) {
 					continue;
 				}
 
-				// Skip the block if it has disallowed or nested inner blocks.
+				// Bỏ qua block nếu nó có các block con bên trong không được phép hoặc lồng nhau.
 				foreach ( $block['innerBlocks'] as $inner_block ) {
 					if (
 						! in_array( $inner_block['blockName'], $allowed_inner_blocks, true ) ||
@@ -2185,13 +2185,13 @@ function excerpt_remove_blocks( $content ) {
 }
 
 /**
- * Parses footnotes markup out of a content string,
- * and renders those appropriate for the excerpt.
+ * Phân tích mã đánh dấu chú thích cuối trang từ chuỗi nội dung,
+ * và render những phần phù hợp cho tóm tắt.
  *
  * @since 6.3.0
  *
- * @param string $content The content to parse.
- * @return string The parsed and filtered content.
+ * @param string $content Nội dung cần phân tích.
+ * @return string Nội dung đã phân tích và lọc.
  */
 function excerpt_remove_footnotes( $content ) {
 	if ( ! str_contains( $content, 'data-fn=' ) ) {
@@ -2206,15 +2206,15 @@ function excerpt_remove_footnotes( $content ) {
 }
 
 /**
- * Renders inner blocks from the allowed wrapper blocks
- * for generating an excerpt.
+ * Render các block con bên trong từ các block bao ngoài được phép
+ * để tạo tóm tắt.
  *
  * @since 5.8.0
  * @access private
  *
- * @param array $parsed_block   The parsed block.
- * @param array $allowed_blocks The list of allowed inner blocks.
- * @return string The rendered inner blocks.
+ * @param array $parsed_block   Block đã phân tích.
+ * @param array $allowed_blocks Danh sách các block con bên trong được phép.
+ * @return string Các block con bên trong đã render.
  */
 function _excerpt_render_inner_blocks( $parsed_block, $allowed_blocks ) {
 	$output = '';
@@ -2235,24 +2235,24 @@ function _excerpt_render_inner_blocks( $parsed_block, $allowed_blocks ) {
 }
 
 /**
- * Renders a single block into a HTML string.
+ * Render một block đơn lẻ thành chuỗi HTML.
  *
  * @since 5.0.0
  *
- * @global WP_Post $post The post to edit.
+ * @global WP_Post $post Bài viết cần chỉnh sửa.
  *
  * @param array $parsed_block {
- *     An associative array of the block being rendered. See WP_Block_Parser_Block.
+ *     Mảng liên kết của block đang được render. Xem WP_Block_Parser_Block.
  *
- *     @type string   $blockName    Name of block.
- *     @type array    $attrs        Attributes from block comment delimiters.
- *     @type array[]  $innerBlocks  List of inner blocks. An array of arrays that
- *                                  have the same structure as this one.
- *     @type string   $innerHTML    HTML from inside block comment delimiters.
- *     @type array    $innerContent List of string fragments and null markers where
- *                                  inner blocks were found.
+ *     @type string   $blockName    Tên của block.
+ *     @type array    $attrs        Thuộc tính từ các ký tự phân cách comment block.
+ *     @type array[]  $innerBlocks  Danh sách các block con bên trong. Mảng các mảng có
+ *                                  cùng cấu trúc với mảng này.
+ *     @type string   $innerHTML    HTML bên trong các ký tự phân cách comment block.
+ *     @type array    $innerContent Danh sách các đoạn chuỗi và điểm đánh dấu null nơi
+ *                                  tìm thấy các block con bên trong.
  * }
- * @return string String of rendered HTML.
+ * @return string Chuỗi HTML đã render.
  */
 function render_block( $parsed_block ) {
 	global $post;

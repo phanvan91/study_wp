@@ -1203,16 +1203,16 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
  *
  * Nếu không có ký tự có dấu, chuỗi đầu vào sẽ được trả về nguyên trạng.
  *
- * **Accent characters converted:**
+ * **Các ký tự có dấu được chuyển đổi:**
  *
- * Currency signs:
+ * Ký hiệu tiền tệ:
  *
  * |   Code   | Glyph | Replacement |     Description     |
  * | -------- | ----- | ----------- | ------------------- |
  * | U+00A3   | £     | (empty)     | British Pound sign  |
  * | U+20AC   | €     | E           | Euro sign           |
  *
- * Decompositions for Latin-1 Supplement:
+ * Phân rã cho Latin-1 Supplement:
  *
  * |  Code   | Glyph | Replacement |               Description              |
  * | ------- | ----- | ----------- | -------------------------------------- |
@@ -1281,7 +1281,7 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
  * | U+00FE  | þ     | th          | Latin small letter Thorn               |
  * | U+00FF  | ÿ     | y           | Latin small letter y with diaeresis    |
  *
- * Decompositions for Latin Extended-A:
+ * Phân rã cho Latin Extended-A:
  *
  * |  Code   | Glyph | Replacement |                    Description                    |
  * | ------- | ----- | ----------- | ------------------------------------------------- |
@@ -1434,7 +1434,7 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
  * | U+01DB  | Ǜ     | U           | Latin capital letter U with diaeresis and grave   |
  * | U+01DC  | ǜ     | u           | Latin small letter u with diaeresis and grave     |
  *
- * Decompositions for Latin Extended-B:
+ * Phân rã cho Latin Extended-B:
  *
  * |   Code   | Glyph | Replacement |                Description                |
  * | -------- | ----- | ----------- | ----------------------------------------- |
@@ -1445,7 +1445,7 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
  * | U+021A   | Ț     | T           | Latin capital letter T with comma below   |
  * | U+021B   | ț     | t           | Latin small letter t with comma below     |
  *
- * Vowels with diacritic (Chinese, Hanyu Pinyin):
+ * Nguyên âm có dấu phụ (Tiếng Trung, Hán Ngữ Bính Âm):
  *
  * |   Code   | Glyph | Replacement |                      Description                      |
  * | -------- | ----- | ----------- | ----------------------------------------------------- |
@@ -1541,8 +1541,8 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
  * | U+1EF8   | Ỹ     | Y           | Latin capital letter Y with tilde                     |
  * | U+1EF9   | ỹ     | y           | Latin small letter y with tilde                       |
  *
- * German (`de_DE`), German formal (`de_DE_formal`), German (Switzerland) formal (`de_CH`),
- * German (Switzerland) informal (`de_CH_informal`), and German (Austria) (`de_AT`) locales:
+ * Ngôn ngữ Đức (`de_DE`), Đức trang trọng (`de_DE_formal`), Đức (Thụy Sĩ) trang trọng (`de_CH`),
+ * Đức (Thụy Sĩ) thân mật (`de_CH_informal`), và Đức (Áo) (`de_AT`):
  *
  * |   Code   | Glyph | Replacement |               Description               |
  * | -------- | ----- | ----------- | --------------------------------------- |
@@ -1554,7 +1554,7 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
  * | U+00FC   | ü     | ue          | Latin small letter u with diaeresis     |
  * | U+00DF   | ß     | ss          | Latin small letter sharp s              |
  *
- * Danish (`da_DK`) locale:
+ * Ngôn ngữ Đan Mạch (`da_DK`):
  *
  * |   Code   | Glyph | Replacement |               Description               |
  * | -------- | ----- | ----------- | --------------------------------------- |
@@ -1565,13 +1565,13 @@ function utf8_uri_encode( $utf8_string, $length = 0, $encode_ascii_characters = 
  * | U+00C5   | Å     | Aa          | Latin capital letter A with ring above  |
  * | U+00E5   | å     | aa          | Latin small letter a with ring above    |
  *
- * Catalan (`ca`) locale:
+ * Ngôn ngữ Catalan (`ca`):
  *
  * |   Code   | Glyph | Replacement |               Description               |
  * | -------- | ----- | ----------- | --------------------------------------- |
  * | U+00B7   | l·l   | ll          | Flown dot (between two Ls)              |
  *
- * Serbian (`sr_RS`) and Bosnian (`bs_BA`) locales:
+ * Ngôn ngữ Serbia (`sr_RS`) và Bosnia (`bs_BA`):
  *
  * |   Code   | Glyph | Replacement |               Description               |
  * | -------- | ----- | ----------- | --------------------------------------- |
@@ -1612,7 +1612,7 @@ function remove_accents( $text, $locale = '' ) {
 		}
 
 		$chars = array(
-			// Decompositions for Latin-1 Supplement.
+			// Phân rã cho Latin-1 Supplement.
 			'ª' => 'a',
 			'º' => 'o',
 			'À' => 'A',
@@ -1677,7 +1677,7 @@ function remove_accents( $text, $locale = '' ) {
 			'þ' => 'th',
 			'ÿ' => 'y',
 			'Ø' => 'O',
-			// Decompositions for Latin Extended-A.
+			// Phân rã cho Latin Extended-A.
 			'Ā' => 'A',
 			'ā' => 'a',
 			'Ă' => 'A',
@@ -1806,23 +1806,23 @@ function remove_accents( $text, $locale = '' ) {
 			'Ž' => 'Z',
 			'ž' => 'z',
 			'ſ' => 's',
-			// Decompositions for Latin Extended-B.
+			// Phân rã cho Latin Extended-B.
 			'Ə' => 'E',
 			'ǝ' => 'e',
 			'Ș' => 'S',
 			'ș' => 's',
 			'Ț' => 'T',
 			'ț' => 't',
-			// Euro sign.
+			// Ký hiệu Euro.
 			'€' => 'E',
-			// GBP (Pound) sign.
+			// Ký hiệu GBP (Bảng Anh).
 			'£' => '',
-			// Vowels with diacritic (Vietnamese). Unmarked.
+			// Nguyên âm có dấu phụ (Tiếng Việt). Không dấu.
 			'Ơ' => 'O',
 			'ơ' => 'o',
 			'Ư' => 'U',
 			'ư' => 'u',
-			// Grave accent.
+			// Dấu huyền.
 			'Ầ' => 'A',
 			'ầ' => 'a',
 			'Ằ' => 'A',
@@ -1837,7 +1837,7 @@ function remove_accents( $text, $locale = '' ) {
 			'ừ' => 'u',
 			'Ỳ' => 'Y',
 			'ỳ' => 'y',
-			// Hook.
+			// Dấu hỏi.
 			'Ả' => 'A',
 			'ả' => 'a',
 			'Ẩ' => 'A',
@@ -1862,7 +1862,7 @@ function remove_accents( $text, $locale = '' ) {
 			'ử' => 'u',
 			'Ỷ' => 'Y',
 			'ỷ' => 'y',
-			// Tilde.
+			// Dấu ngã.
 			'Ẫ' => 'A',
 			'ẫ' => 'a',
 			'Ẵ' => 'A',
@@ -1879,7 +1879,7 @@ function remove_accents( $text, $locale = '' ) {
 			'ữ' => 'u',
 			'Ỹ' => 'Y',
 			'ỹ' => 'y',
-			// Acute accent.
+			// Dấu sắc.
 			'Ấ' => 'A',
 			'ấ' => 'a',
 			'Ắ' => 'A',
@@ -1892,7 +1892,7 @@ function remove_accents( $text, $locale = '' ) {
 			'ớ' => 'o',
 			'Ứ' => 'U',
 			'ứ' => 'u',
-			// Dot below.
+			// Dấu nặng.
 			'Ạ' => 'A',
 			'ạ' => 'a',
 			'Ậ' => 'A',
@@ -1917,15 +1917,15 @@ function remove_accents( $text, $locale = '' ) {
 			'ự' => 'u',
 			'Ỵ' => 'Y',
 			'ỵ' => 'y',
-			// Vowels with diacritic (Chinese, Hanyu Pinyin).
+			// Nguyên âm có dấu phụ (Tiếng Trung, Hán Ngữ Bính Âm).
 			'ɑ' => 'a',
-			// Macron.
+			// Dấu trường âm.
 			'Ǖ' => 'U',
 			'ǖ' => 'u',
-			// Acute accent.
+			// Dấu sắc.
 			'Ǘ' => 'U',
 			'ǘ' => 'u',
-			// Caron.
+			// Dấu mũ ngược.
 			'Ǎ' => 'A',
 			'ǎ' => 'a',
 			'Ǐ' => 'I',
@@ -1936,7 +1936,7 @@ function remove_accents( $text, $locale = '' ) {
 			'ǔ' => 'u',
 			'Ǚ' => 'U',
 			'ǚ' => 'u',
-			// Grave accent.
+			// Dấu huyền.
 			'Ǜ' => 'U',
 			'ǜ' => 'u',
 		);
@@ -2254,27 +2254,27 @@ function sanitize_title_for_query( $title ) {
 }
 
 /**
- * Sanitizes a title, replacing whitespace and a few other characters with dashes.
+ * Làm sạch tiêu đề, thay thế khoảng trắng và một vài ký tự khác bằng dấu gạch ngang.
  *
- * Limits the output to alphanumeric characters, underscore (_) and dash (-).
- * Whitespace becomes a dash.
+ * Giới hạn đầu ra chỉ gồm ký tự chữ-số, dấu gạch dưới (_) và dấu gạch ngang (-).
+ * Khoảng trắng trở thành dấu gạch ngang.
  *
  * @since 1.2.0
  *
- * @param string $title     The title to be sanitized.
- * @param string $raw_title Optional. Not used. Default empty.
- * @param string $context   Optional. The operation for which the string is sanitized.
- *                          When set to 'save', additional entities are converted to hyphens
- *                          or stripped entirely. Default 'display'.
- * @return string The sanitized title.
+ * @param string $title     Tiêu đề cần được làm sạch.
+ * @param string $raw_title Tùy chọn. Không sử dụng. Mặc định rỗng.
+ * @param string $context   Tùy chọn. Thao tác mà chuỗi được làm sạch cho.
+ *                          Khi đặt thành 'save', các thực thể bổ sung được chuyển thành dấu gạch ngang
+ *                          hoặc bị loại bỏ hoàn toàn. Mặc định 'display'.
+ * @return string Tiêu đề đã được làm sạch.
  */
 function sanitize_title_with_dashes( $title, $raw_title = '', $context = 'display' ) {
 	$title = strip_tags( $title );
-	// Preserve escaped octets.
+	// Bảo toàn các octet đã escape.
 	$title = preg_replace( '|%([a-fA-F0-9][a-fA-F0-9])|', '---$1---', $title );
-	// Remove percent signs that are not part of an octet.
+	// Xóa ký hiệu phần trăm không thuộc octet.
 	$title = str_replace( '%', '', $title );
-	// Restore octets.
+	// Khôi phục các octet.
 	$title = preg_replace( '|---([a-fA-F0-9][a-fA-F0-9])---|', '%$1', $title );
 
 	if ( seems_utf8( $title ) ) {
@@ -2287,27 +2287,27 @@ function sanitize_title_with_dashes( $title, $raw_title = '', $context = 'displa
 	$title = strtolower( $title );
 
 	if ( 'save' === $context ) {
-		// Convert &nbsp, &ndash, and &mdash to hyphens.
+		// Chuyển &nbsp, &ndash, và &mdash thành dấu gạch ngang.
 		$title = str_replace( array( '%c2%a0', '%e2%80%93', '%e2%80%94' ), '-', $title );
-		// Convert &nbsp, &ndash, and &mdash HTML entities to hyphens.
+		// Chuyển thực thể HTML &nbsp, &ndash, và &mdash thành dấu gạch ngang.
 		$title = str_replace( array( '&nbsp;', '&#160;', '&ndash;', '&#8211;', '&mdash;', '&#8212;' ), '-', $title );
-		// Convert forward slash to hyphen.
+		// Chuyển dấu gạch chéo xuôi thành dấu gạch ngang.
 		$title = str_replace( '/', '-', $title );
 
-		// Strip these characters entirely.
+		// Xóa hoàn toàn các ký tự này.
 		$title = str_replace(
 			array(
-				// Soft hyphens.
+				// Dấu gạch nối mềm.
 				'%c2%ad',
 				// &iexcl and &iquest.
 				'%c2%a1',
 				'%c2%bf',
-				// Angle quotes.
+				// Dấu ngoặc góc.
 				'%c2%ab',
 				'%c2%bb',
 				'%e2%80%b9',
 				'%e2%80%ba',
-				// Curly quotes.
+				// Dấu ngoặc kép cong.
 				'%e2%80%98',
 				'%e2%80%99',
 				'%e2%80%9c',
@@ -2316,7 +2316,7 @@ function sanitize_title_with_dashes( $title, $raw_title = '', $context = 'displa
 				'%e2%80%9b',
 				'%e2%80%9e',
 				'%e2%80%9f',
-				// Bullet.
+				// Dấu chấm tròn.
 				'%e2%80%a2',
 				// &copy, &reg, &deg, &hellip, and &trade.
 				'%c2%a9',
@@ -2324,60 +2324,60 @@ function sanitize_title_with_dashes( $title, $raw_title = '', $context = 'displa
 				'%c2%b0',
 				'%e2%80%a6',
 				'%e2%84%a2',
-				// Acute accents.
+				// Dấu sắc.
 				'%c2%b4',
 				'%cb%8a',
 				'%cc%81',
 				'%cd%81',
-				// Grave accent, macron, caron.
+				// Dấu huyền, dấu trường âm, dấu mũ ngược.
 				'%cc%80',
 				'%cc%84',
 				'%cc%8c',
-				// Non-visible characters that display without a width.
-				'%e2%80%8b', // Zero width space.
-				'%e2%80%8c', // Zero width non-joiner.
-				'%e2%80%8d', // Zero width joiner.
-				'%e2%80%8e', // Left-to-right mark.
-				'%e2%80%8f', // Right-to-left mark.
-				'%e2%80%aa', // Left-to-right embedding.
-				'%e2%80%ab', // Right-to-left embedding.
-				'%e2%80%ac', // Pop directional formatting.
-				'%e2%80%ad', // Left-to-right override.
-				'%e2%80%ae', // Right-to-left override.
-				'%ef%bb%bf', // Byte order mark.
-				'%ef%bf%bc', // Object replacement character.
+				// Ký tự không nhìn thấy hiển thị không có chiều rộng.
+				'%e2%80%8b', // Khoảng trắng không chiều rộng.
+				'%e2%80%8c', // Ký tự không nối không chiều rộng.
+				'%e2%80%8d', // Ký tự nối không chiều rộng.
+				'%e2%80%8e', // Dấu trái-sang-phải.
+				'%e2%80%8f', // Dấu phải-sang-trái.
+				'%e2%80%aa', // Nhúng trái-sang-phải.
+				'%e2%80%ab', // Nhúng phải-sang-trái.
+				'%e2%80%ac', // Bỏ định dạng hướng.
+				'%e2%80%ad', // Ghi đè trái-sang-phải.
+				'%e2%80%ae', // Ghi đè phải-sang-trái.
+				'%ef%bb%bf', // Dấu thứ tự byte.
+				'%ef%bf%bc', // Ký tự thay thế đối tượng.
 			),
 			'',
 			$title
 		);
 
-		// Convert non-visible characters that display with a width to hyphen.
+		// Chuyển ký tự không nhìn thấy hiển thị có chiều rộng thành dấu gạch ngang.
 		$title = str_replace(
 			array(
-				'%e2%80%80', // En quad.
-				'%e2%80%81', // Em quad.
-				'%e2%80%82', // En space.
-				'%e2%80%83', // Em space.
-				'%e2%80%84', // Three-per-em space.
-				'%e2%80%85', // Four-per-em space.
-				'%e2%80%86', // Six-per-em space.
-				'%e2%80%87', // Figure space.
-				'%e2%80%88', // Punctuation space.
-				'%e2%80%89', // Thin space.
-				'%e2%80%8a', // Hair space.
-				'%e2%80%a8', // Line separator.
-				'%e2%80%a9', // Paragraph separator.
-				'%e2%80%af', // Narrow no-break space.
+				'%e2%80%80', // Khoảng En.
+				'%e2%80%81', // Khoảng Em.
+				'%e2%80%82', // Khoảng trắng En.
+				'%e2%80%83', // Khoảng trắng Em.
+				'%e2%80%84', // Khoảng trắng ba-trên-em.
+				'%e2%80%85', // Khoảng trắng bốn-trên-em.
+				'%e2%80%86', // Khoảng trắng sáu-trên-em.
+				'%e2%80%87', // Khoảng trắng chữ số.
+				'%e2%80%88', // Khoảng trắng dấu câu.
+				'%e2%80%89', // Khoảng trắng mỏng.
+				'%e2%80%8a', // Khoảng trắng sợi tóc.
+				'%e2%80%a8', // Ký tự phân cách dòng.
+				'%e2%80%a9', // Ký tự phân cách đoạn.
+				'%e2%80%af', // Khoảng không ngắt hẹp.
 			),
 			'-',
 			$title
 		);
 
-		// Convert &times to 'x'.
+		// Chuyển &times thành 'x'.
 		$title = str_replace( '%c3%97', 'x', $title );
 	}
 
-	// Remove HTML entities.
+	// Xóa thực thể HTML.
 	$title = preg_replace( '/&.+?;/', '', $title );
 	$title = str_replace( '.', '-', $title );
 
@@ -2390,17 +2390,17 @@ function sanitize_title_with_dashes( $title, $raw_title = '', $context = 'displa
 }
 
 /**
- * Ensures a string is a valid SQL 'order by' clause.
+ * Đảm bảo một chuỗi là mệnh đề SQL 'order by' hợp lệ.
  *
- * Accepts one or more columns, with or without a sort order (ASC / DESC).
- * e.g. 'column_1', 'column_1, column_2', 'column_1 ASC, column_2 DESC' etc.
+ * Chấp nhận một hoặc nhiều cột, có hoặc không có thứ tự sắp xếp (ASC / DESC).
+ * Ví dụ: 'column_1', 'column_1, column_2', 'column_1 ASC, column_2 DESC' v.v.
  *
- * Also accepts 'RAND()'.
+ * Cũng chấp nhận 'RAND()'.
  *
  * @since 2.5.1
  *
- * @param string $orderby Order by clause to be validated.
- * @return string|false Returns $orderby if valid, false otherwise.
+ * @param string $orderby Mệnh đề order by cần được xác thực.
+ * @return string|false Trả về $orderby nếu hợp lệ, false nếu không.
  */
 function sanitize_sql_orderby( $orderby ) {
 	if ( preg_match( '/^\s*(([a-z0-9_]+|`[a-z0-9_]+`)(\s+(ASC|DESC))?\s*(,\s*(?=[a-z0-9_`])|$))+$/i', $orderby ) || preg_match( '/^\s*RAND\(\s*\)\s*$/i', $orderby ) ) {
@@ -2410,73 +2410,73 @@ function sanitize_sql_orderby( $orderby ) {
 }
 
 /**
- * Sanitizes an HTML classname to ensure it only contains valid characters.
+ * Làm sạch tên lớp HTML để đảm bảo chỉ chứa các ký tự hợp lệ.
  *
- * Strips the string down to A-Z,a-z,0-9,_,-. If this results in an empty
- * string then it will return the alternative value supplied.
+ * Loại bỏ chuỗi xuống còn A-Z,a-z,0-9,_,-. Nếu kết quả là chuỗi rỗng
+ * thì sẽ trả về giá trị thay thế được cung cấp.
  *
- * @todo Expand to support the full range of CDATA that a class attribute can contain.
+ * @todo Mở rộng hỗ trợ toàn bộ phạm vi CDATA mà thuộc tính class có thể chứa.
  *
  * @since 2.8.0
  *
- * @param string $classname The classname to be sanitized.
- * @param string $fallback  Optional. The value to return if the sanitization ends up as an empty string.
- *                          Default empty string.
- * @return string The sanitized value.
+ * @param string $classname Tên lớp cần được làm sạch.
+ * @param string $fallback  Tùy chọn. Giá trị trả về nếu việc làm sạch cho kết quả chuỗi rỗng.
+ *                          Mặc định là chuỗi rỗng.
+ * @return string Giá trị đã được làm sạch.
  */
 function sanitize_html_class( $classname, $fallback = '' ) {
-	// Strip out any percent-encoded characters.
+	// Xóa các ký tự mã hóa phần trăm.
 	$sanitized = preg_replace( '|%[a-fA-F0-9][a-fA-F0-9]|', '', $classname );
 
-	// Limit to A-Z, a-z, 0-9, '_', '-'.
+	// Giới hạn A-Z, a-z, 0-9, '_', '-'.
 	$sanitized = preg_replace( '/[^A-Za-z0-9_-]/', '', $sanitized );
 
 	if ( '' === $sanitized && $fallback ) {
 		return sanitize_html_class( $fallback );
 	}
 	/**
-	 * Filters a sanitized HTML class string.
+	 * Lọc chuỗi lớp HTML đã được làm sạch.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $sanitized The sanitized HTML class.
-	 * @param string $classname HTML class before sanitization.
-	 * @param string $fallback  The fallback string.
+	 * @param string $sanitized Lớp HTML đã được làm sạch.
+	 * @param string $classname Lớp HTML trước khi làm sạch.
+	 * @param string $fallback  Chuỗi dự phòng.
 	 */
 	return apply_filters( 'sanitize_html_class', $sanitized, $classname, $fallback );
 }
 
 /**
- * Strips out all characters not allowed in a locale name.
+ * Xóa tất cả ký tự không được phép trong tên ngôn ngữ.
  *
  * @since 6.2.1
  *
- * @param string $locale_name The locale name to be sanitized.
- * @return string The sanitized value.
+ * @param string $locale_name Tên ngôn ngữ cần được làm sạch.
+ * @return string Giá trị đã được làm sạch.
  */
 function sanitize_locale_name( $locale_name ) {
-	// Limit to A-Z, a-z, 0-9, '_', '-'.
+	// Giới hạn A-Z, a-z, 0-9, '_', '-'.
 	$sanitized = preg_replace( '/[^A-Za-z0-9_-]/', '', $locale_name );
 
 	/**
-	 * Filters a sanitized locale name string.
+	 * Lọc chuỗi tên ngôn ngữ đã được làm sạch.
 	 *
 	 * @since 6.2.1
 	 *
-	 * @param string $sanitized   The sanitized locale name.
-	 * @param string $locale_name The locale name before sanitization.
+	 * @param string $sanitized   Tên ngôn ngữ đã được làm sạch.
+	 * @param string $locale_name Tên ngôn ngữ trước khi làm sạch.
 	 */
 	return apply_filters( 'sanitize_locale_name', $sanitized, $locale_name );
 }
 
 /**
- * Converts lone & characters into `&#038;` (a.k.a. `&amp;`)
+ * Chuyển đổi ký tự & đứng một mình thành `&#038;` (hay còn gọi là `&amp;`)
  *
  * @since 0.71
  *
- * @param string $content    String of characters to be converted.
- * @param string $deprecated Not used.
- * @return string Converted string.
+ * @param string $content    Chuỗi ký tự cần được chuyển đổi.
+ * @param string $deprecated Không sử dụng.
+ * @return string Chuỗi đã được chuyển đổi.
  */
 function convert_chars( $content, $deprecated = '' ) {
 	if ( ! empty( $deprecated ) ) {
@@ -2491,19 +2491,19 @@ function convert_chars( $content, $deprecated = '' ) {
 }
 
 /**
- * Converts invalid Unicode references range to valid range.
+ * Chuyển đổi phạm vi tham chiếu Unicode không hợp lệ thành phạm vi hợp lệ.
  *
  * @since 4.3.0
  *
- * @param string $content String with entities that need converting.
- * @return string Converted string.
+ * @param string $content Chuỗi chứa thực thể cần được chuyển đổi.
+ * @return string Chuỗi đã được chuyển đổi.
  */
 function convert_invalid_entities( $content ) {
 	$wp_htmltranswinuni = array(
-		'&#128;' => '&#8364;', // The Euro sign.
+		'&#128;' => '&#8364;', // Ký hiệu Euro.
 		'&#129;' => '',
-		'&#130;' => '&#8218;', // These are Windows CP1252 specific characters.
-		'&#131;' => '&#402;',  // They would look weird on non-Windows browsers.
+		'&#130;' => '&#8218;', // Đây là các ký tự riêng của Windows CP1252.
+		'&#131;' => '&#402;',  // Chúng sẽ trông kỳ lạ trên trình duyệt không phải Windows.
 		'&#132;' => '&#8222;',
 		'&#133;' => '&#8230;',
 		'&#134;' => '&#8224;',
@@ -3844,29 +3844,29 @@ function sanitize_email( $email ) {
 		return apply_filters( 'sanitize_email', '', $email, 'domain_no_valid_subs' );
 	}
 
-	// Join valid subs into the new domain.
+	// Nối các phần con hợp lệ thành domain mới.
 	$domain = implode( '.', $new_subs );
 
-	// Put the email back together.
+	// Ghép email lại với nhau.
 	$sanitized_email = $local . '@' . $domain;
 
-	// Congratulations, your email made it!
+	// Chúc mừng, email của bạn đã vượt qua!
 	/** Bộ lọc này được ghi nhận trong wp-includes/formatting.php */
 	return apply_filters( 'sanitize_email', $sanitized_email, $email, null );
 }
 
 /**
- * Determines the difference between two timestamps.
+ * Xác định sự khác biệt giữa hai dấu thời gian.
  *
- * The difference is returned in a human-readable format such as "1 hour",
- * "5 minutes", "2 days".
+ * Sự khác biệt được trả về ở định dạng dễ đọc như "1 giờ",
+ * "5 phút", "2 ngày".
  *
  * @since 1.5.0
- * @since 5.3.0 Added support for showing a difference in seconds.
+ * @since 5.3.0 Thêm hỗ trợ hiển thị sự khác biệt tính bằng giây.
  *
- * @param int $from Unix timestamp from which the difference begins.
- * @param int $to   Optional. Unix timestamp to end the time difference. Default becomes time() if not set.
- * @return string Human-readable time difference.
+ * @param int $from Dấu thời gian Unix bắt đầu tính sự khác biệt.
+ * @param int $to   Tùy chọn. Dấu thời gian Unix kết thúc sự khác biệt. Mặc định là time() nếu không được đặt.
+ * @return string Sự khác biệt thời gian dễ đọc.
  */
 function human_time_diff( $from, $to = 0 ) {
 	if ( empty( $to ) ) {
@@ -3927,33 +3927,33 @@ function human_time_diff( $from, $to = 0 ) {
 	}
 
 	/**
-	 * Filters the human-readable difference between two timestamps.
+	 * Lọc sự khác biệt dễ đọc giữa hai dấu thời gian.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $since The difference in human-readable text.
-	 * @param int    $diff  The difference in seconds.
-	 * @param int    $from  Unix timestamp from which the difference begins.
-	 * @param int    $to    Unix timestamp to end the time difference.
+	 * @param string $since Sự khác biệt dưới dạng văn bản dễ đọc.
+	 * @param int    $diff  Sự khác biệt tính bằng giây.
+	 * @param int    $from  Dấu thời gian Unix bắt đầu tính sự khác biệt.
+	 * @param int    $to    Dấu thời gian Unix kết thúc sự khác biệt.
 	 */
 	return apply_filters( 'human_time_diff', $since, $diff, $from, $to );
 }
 
 /**
- * Generates an excerpt from the content, if needed.
+ * Tạo đoạn trích từ nội dung, nếu cần.
  *
- * Returns a maximum of 55 words with an ellipsis appended if necessary.
+ * Trả về tối đa 55 từ với dấu ba chấm được thêm vào nếu cần thiết.
  *
- * The 55-word limit can be modified by plugins/themes using the {@see 'excerpt_length'} filter
- * The ' [&hellip;]' string can be modified by plugins/themes using the {@see 'excerpt_more'} filter
+ * Giới hạn 55 từ có thể được sửa đổi bởi plugin/theme sử dụng bộ lọc {@see 'excerpt_length'}
+ * Chuỗi ' [&hellip;]' có thể được sửa đổi bởi plugin/theme sử dụng bộ lọc {@see 'excerpt_more'}
  *
  * @since 1.5.0
- * @since 5.2.0 Added the `$post` parameter.
- * @since 6.3.0 Removes footnotes markup from the excerpt content.
+ * @since 5.2.0 Thêm tham số `$post`.
+ * @since 6.3.0 Xóa markup chú thích cuối trang khỏi nội dung đoạn trích.
  *
- * @param string             $text Optional. The excerpt. If set to empty, an excerpt is generated.
- * @param WP_Post|object|int $post Optional. WP_Post instance or Post ID/object. Default null.
- * @return string The excerpt.
+ * @param string             $text Tùy chọn. Đoạn trích. Nếu để rỗng, đoạn trích sẽ được tạo tự động.
+ * @param WP_Post|object|int $post Tùy chọn. Đối tượng WP_Post hoặc ID/đối tượng bài viết. Mặc định null.
+ * @return string Đoạn trích.
  */
 function wp_trim_excerpt( $text = '', $post = null ) {
 	$raw_excerpt = $text;
@@ -3967,15 +3967,15 @@ function wp_trim_excerpt( $text = '', $post = null ) {
 		$text = excerpt_remove_footnotes( $text );
 
 		/*
-		 * Temporarily unhook wp_filter_content_tags() since any tags
-		 * within the excerpt are stripped out. Modifying the tags here
-		 * is wasteful and can lead to bugs in the image counting logic.
+		 * Tạm thời gỡ hook wp_filter_content_tags() vì mọi thẻ
+		 * trong đoạn trích đều bị loại bỏ. Sửa đổi các thẻ ở đây
+		 * là lãng phí và có thể dẫn đến lỗi trong logic đếm hình ảnh.
 		 */
 		$filter_image_removed = remove_filter( 'the_content', 'wp_filter_content_tags', 12 );
 
 		/*
-		 * Temporarily unhook do_blocks() since excerpt_remove_blocks( $text )
-		 * handles block rendering needed for excerpt.
+		 * Tạm thời gỡ hook do_blocks() vì excerpt_remove_blocks( $text )
+		 * xử lý việc render block cần thiết cho đoạn trích.
 		 */
 		$filter_block_removed = remove_filter( 'the_content', 'do_blocks', 9 );
 
@@ -3983,15 +3983,15 @@ function wp_trim_excerpt( $text = '', $post = null ) {
 		$text = apply_filters( 'the_content', $text );
 		$text = str_replace( ']]>', ']]&gt;', $text );
 
-		// Restore the original filter if removed.
+		// Khôi phục bộ lọc gốc nếu đã được gỡ.
 		if ( $filter_block_removed ) {
 			add_filter( 'the_content', 'do_blocks', 9 );
 		}
 
 		/*
-		 * Only restore the filter callback if it was removed above. The logic
-		 * to unhook and restore only applies on the default priority of 10,
-		 * which is generally used for the filter callback in WordPress core.
+		 * Chỉ khôi phục callback bộ lọc nếu nó đã được gỡ ở trên. Logic
+		 * gỡ và khôi phục chỉ áp dụng với ưu tiên mặc định là 10,
+		 * thường được sử dụng cho callback bộ lọc trong WordPress core.
 		 */
 		if ( $filter_image_removed ) {
 			add_filter( 'the_content', 'wp_filter_content_tags', 12 );
@@ -4001,11 +4001,11 @@ function wp_trim_excerpt( $text = '', $post = null ) {
 		$excerpt_length = (int) _x( '55', 'excerpt_length' );
 
 		/**
-		 * Filters the maximum number of words in a post excerpt.
+		 * Lọc số từ tối đa trong đoạn trích bài viết.
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param int $number The maximum number of words. Default 55.
+		 * @param int $number Số từ tối đa. Mặc định 55.
 		 */
 		$excerpt_length = (int) apply_filters( 'excerpt_length', $excerpt_length );
 

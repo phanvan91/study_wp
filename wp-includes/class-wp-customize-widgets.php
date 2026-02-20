@@ -20,7 +20,7 @@
 final class WP_Customize_Widgets {
 
 	/**
-	 * WP_Customize_Manager instance.
+	 * Thực thể WP_Customize_Manager.
 	 *
 	 * @since 3.9.0
 	 * @var WP_Customize_Manager
@@ -28,7 +28,7 @@ final class WP_Customize_Widgets {
 	public $manager;
 
 	/**
-	 * All id_bases for widgets defined in core.
+	 * Tất cả id_base cho các widget được định nghĩa trong core.
 	 *
 	 * @since 3.9.0
 	 * @var array
@@ -72,7 +72,7 @@ final class WP_Customize_Widgets {
 	protected $old_sidebars_widgets = array();
 
 	/**
-	 * Mapping of widget ID base to whether it supports selective refresh.
+	 * Ánh xạ ID base của widget đến việc nó có hỗ trợ làm mới chọn lọc hay không.
 	 *
 	 * @since 4.5.0
 	 * @var array
@@ -80,7 +80,7 @@ final class WP_Customize_Widgets {
 	protected $selective_refreshable_widgets;
 
 	/**
-	 * Mapping of setting type to setting ID pattern.
+	 * Ánh xạ loại cài đặt đến mẫu ID cài đặt.
 	 *
 	 * @since 4.2.0
 	 * @var array
@@ -91,21 +91,21 @@ final class WP_Customize_Widgets {
 	);
 
 	/**
-	 * Initial loader.
+	 * Trình tải khởi tạo.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param WP_Customize_Manager $manager Customizer bootstrap instance.
+	 * @param WP_Customize_Manager $manager Thực thể khởi động Trình tùy biến.
 	 */
 	public function __construct( $manager ) {
 		$this->manager = $manager;
 
-		// See https://github.com/xwp/wp-customize-snapshots/blob/962586659688a5b1fd9ae93618b7ce2d4e7a421c/php/class-customize-snapshot-manager.php#L420-L449
+		// Xem https://github.com/xwp/wp-customize-snapshots/blob/962586659688a5b1fd9ae93618b7ce2d4e7a421c/php/class-customize-snapshot-manager.php#L420-L449
 		add_filter( 'customize_dynamic_setting_args', array( $this, 'filter_customize_dynamic_setting_args' ), 10, 2 );
 		add_action( 'widgets_init', array( $this, 'register_settings' ), 95 );
 		add_action( 'customize_register', array( $this, 'schedule_customize_register' ), 1 );
 
-		// Skip remaining hooks when the user can't manage widgets anyway.
+		// Bỏ qua các hook còn lại khi người dùng không thể quản lý widget.
 		if ( ! current_user_can( 'edit_theme_options' ) ) {
 			return;
 		}
@@ -125,23 +125,23 @@ final class WP_Customize_Widgets {
 		add_filter( 'is_active_sidebar', array( $this, 'tally_sidebars_via_is_active_sidebar_calls' ), 10, 2 );
 		add_filter( 'dynamic_sidebar_has_widgets', array( $this, 'tally_sidebars_via_dynamic_sidebar_calls' ), 10, 2 );
 
-		// Selective Refresh.
+		// Làm mới chọn lọc.
 		add_filter( 'customize_dynamic_partial_args', array( $this, 'customize_dynamic_partial_args' ), 10, 2 );
 		add_action( 'customize_preview_init', array( $this, 'selective_refresh_init' ) );
 	}
 
 	/**
-	 * List whether each registered widget can be use selective refresh.
+	 * Liệt kê xem mỗi widget đã đăng ký có thể sử dụng làm mới chọn lọc hay không.
 	 *
-	 * If the theme does not support the customize-selective-refresh-widgets feature,
-	 * then this will always return an empty array.
+	 * Nếu giao diện không hỗ trợ tính năng customize-selective-refresh-widgets,
+	 * thì hàm này sẽ luôn trả về mảng rỗng.
 	 *
 	 * @since 4.5.0
 	 *
 	 * @global WP_Widget_Factory $wp_widget_factory
 	 *
-	 * @return array Mapping of id_base to support. If theme doesn't support
-	 *               selective refresh, an empty array is returned.
+	 * @return array Ánh xạ id_base đến hỗ trợ. Nếu giao diện không hỗ trợ
+	 *               làm mới chọn lọc, mảng rỗng sẽ được trả về.
 	 */
 	public function get_selective_refreshable_widgets() {
 		global $wp_widget_factory;
@@ -158,12 +158,12 @@ final class WP_Customize_Widgets {
 	}
 
 	/**
-	 * Determines if a widget supports selective refresh.
+	 * Xác định xem widget có hỗ trợ làm mới chọn lọc hay không.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @param string $id_base Widget ID Base.
-	 * @return bool Whether the widget can be selective refreshed.
+	 * @param string $id_base ID Base của widget.
+	 * @return bool Liệu widget có thể được làm mới chọn lọc hay không.
 	 */
 	public function is_widget_selective_refreshable( $id_base ) {
 		$selective_refreshable_widgets = $this->get_selective_refreshable_widgets();
@@ -171,12 +171,12 @@ final class WP_Customize_Widgets {
 	}
 
 	/**
-	 * Retrieves the widget setting type given a setting ID.
+	 * Lấy loại cài đặt widget dựa trên ID cài đặt.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param string $setting_id Setting ID.
-	 * @return string|void Setting type.
+	 * @param string $setting_id ID cài đặt.
+	 * @return string|void Loại cài đặt.
 	 */
 	protected function get_setting_type( $setting_id ) {
 		static $cache = array();
@@ -192,8 +192,8 @@ final class WP_Customize_Widgets {
 	}
 
 	/**
-	 * Inspects the incoming customized data for any widget settings, and dynamically adds
-	 * them up-front so widgets will be initialized properly.
+	 * Kiểm tra dữ liệu tùy biến đến để tìm các cài đặt widget, và thêm chúng
+	 * một cách động từ đầu để widget được khởi tạo đúng cách.
 	 *
 	 * @since 4.2.0
 	 */
@@ -219,13 +219,13 @@ final class WP_Customize_Widgets {
 	}
 
 	/**
-	 * Determines the arguments for a dynamically-created setting.
+	 * Xác định các đối số cho cài đặt được tạo động.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param false|array $args       The arguments to the WP_Customize_Setting constructor.
-	 * @param string      $setting_id ID for dynamic setting, usually coming from `$_POST['customized']`.
-	 * @return array|false Setting arguments, false otherwise.
+	 * @param false|array $args       Các đối số cho hàm khởi tạo WP_Customize_Setting.
+	 * @param string      $setting_id ID cho cài đặt động, thường đến từ `$_POST['customized']`.
+	 * @return array|false Các đối số cài đặt, false nếu không có.
 	 */
 	public function filter_customize_dynamic_setting_args( $args, $setting_id ) {
 		if ( $this->get_setting_type( $setting_id ) ) {
@@ -235,13 +235,13 @@ final class WP_Customize_Widgets {
 	}
 
 	/**
-	 * Retrieves an unslashed post value or return a default.
+	 * Lấy giá trị post đã bỏ dấu gạch chéo hoặc trả về giá trị mặc định.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param string $name          Post value.
-	 * @param mixed  $default_value Default post value.
-	 * @return mixed Unslashed post value or default value.
+	 * @param string $name          Giá trị post.
+	 * @param mixed  $default_value Giá trị post mặc định.
+	 * @return mixed Giá trị post đã bỏ dấu gạch chéo hoặc giá trị mặc định.
 	 */
 	protected function get_post_value( $name, $default_value = null ) {
 		if ( ! isset( $_POST[ $name ] ) ) {
@@ -252,13 +252,13 @@ final class WP_Customize_Widgets {
 	}
 
 	/**
-	 * Override sidebars_widgets for theme switch.
+	 * Ghi đè sidebars_widgets khi chuyển giao diện.
 	 *
-	 * When switching a theme via the Customizer, supply any previously-configured
-	 * sidebars_widgets from the target theme as the initial sidebars_widgets
-	 * setting. Also store the old theme's existing settings so that they can
-	 * be passed along for storing in the sidebars_widgets theme_mod when the
-	 * theme gets switched.
+	 * Khi chuyển giao diện qua Trình tùy biến, cung cấp bất kỳ sidebars_widgets
+	 * đã cấu hình trước đó từ giao diện đích làm cài đặt sidebars_widgets
+	 * ban đầu. Đồng thời lưu trữ các cài đặt hiện có của giao diện cũ để chúng
+	 * có thể được truyền đi để lưu trong theme_mod sidebars_widgets khi
+	 * giao diện được chuyển.
 	 *
 	 * @since 3.9.0
 	 *
@@ -274,23 +274,23 @@ final class WP_Customize_Widgets {
 
 		$this->old_sidebars_widgets = wp_get_sidebars_widgets();
 		add_filter( 'customize_value_old_sidebars_widgets_data', array( $this, 'filter_customize_value_old_sidebars_widgets_data' ) );
-		$this->manager->set_post_value( 'old_sidebars_widgets_data', $this->old_sidebars_widgets ); // Override any value cached in changeset.
+		$this->manager->set_post_value( 'old_sidebars_widgets_data', $this->old_sidebars_widgets ); // Ghi đè mọi giá trị đã cache trong changeset.
 
-		// retrieve_widgets() looks at the global $sidebars_widgets.
+		// retrieve_widgets() xem biến toàn cục $sidebars_widgets.
 		$sidebars_widgets = $this->old_sidebars_widgets;
 		$sidebars_widgets = retrieve_widgets( 'customize' );
 		add_filter( 'option_sidebars_widgets', array( $this, 'filter_option_sidebars_widgets_for_theme_switch' ), 1 );
-		// Reset global cache var used by wp_get_sidebars_widgets().
+		// Đặt lại biến cache toàn cục được sử dụng bởi wp_get_sidebars_widgets().
 		unset( $GLOBALS['_wp_sidebars_widgets'] );
 	}
 
 	/**
-	 * Filters old_sidebars_widgets_data Customizer setting.
+	 * Lọc cài đặt Trình tùy biến old_sidebars_widgets_data.
 	 *
-	 * When switching themes, filter the Customizer setting old_sidebars_widgets_data
-	 * to supply initial $sidebars_widgets before they were overridden by retrieve_widgets().
-	 * The value for old_sidebars_widgets_data gets set in the old theme's sidebars_widgets
-	 * theme_mod.
+	 * Khi chuyển giao diện, lọc cài đặt Trình tùy biến old_sidebars_widgets_data
+	 * để cung cấp $sidebars_widgets ban đầu trước khi chúng bị ghi đè bởi retrieve_widgets().
+	 * Giá trị cho old_sidebars_widgets_data được đặt trong theme_mod sidebars_widgets
+	 * của giao diện cũ.
 	 *
 	 * @since 3.9.0
 	 *
@@ -304,11 +304,11 @@ final class WP_Customize_Widgets {
 	}
 
 	/**
-	 * Filters sidebars_widgets option for theme switch.
+	 * Lọc tùy chọn sidebars_widgets khi chuyển giao diện.
 	 *
-	 * When switching themes, the retrieve_widgets() function is run when the Customizer initializes,
-	 * and then the new sidebars_widgets here get supplied as the default value for the sidebars_widgets
-	 * option.
+	 * Khi chuyển giao diện, hàm retrieve_widgets() được chạy khi Trình tùy biến khởi tạo,
+	 * và sau đó sidebars_widgets mới ở đây được cung cấp làm giá trị mặc định cho tùy chọn
+	 * sidebars_widgets.
 	 *
 	 * @since 3.9.0
 	 *
@@ -325,28 +325,28 @@ final class WP_Customize_Widgets {
 	}
 
 	/**
-	 * Ensures all widgets get loaded into the Customizer.
+	 * Đảm bảo tất cả widget được tải vào Trình tùy biến.
 	 *
-	 * Note: these actions are also fired in wp_ajax_update_widget().
+	 * Lưu ý: các action này cũng được kích hoạt trong wp_ajax_update_widget().
 	 *
 	 * @since 3.9.0
 	 */
 	public function customize_controls_init() {
-		/** This action is documented in wp-admin/includes/ajax-actions.php */
+		/** Action này được ghi chú trong wp-admin/includes/ajax-actions.php */
 		do_action( 'load-widgets.php' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
-		/** This action is documented in wp-admin/includes/ajax-actions.php */
+		/** Action này được ghi chú trong wp-admin/includes/ajax-actions.php */
 		do_action( 'widgets.php' ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 
-		/** This action is documented in wp-admin/widgets.php */
+		/** Action này được ghi chú trong wp-admin/widgets.php */
 		do_action( 'sidebar_admin_setup' );
 	}
 
 	/**
-	 * Ensures widgets are available for all types of previews.
+	 * Đảm bảo widget khả dụng cho tất cả các loại xem trước.
 	 *
-	 * When in preview, hook to {@see 'customize_register'} for settings after WordPress is loaded
-	 * so that all filters have been initialized (e.g. Widget Visibility).
+	 * Khi ở chế độ xem trước, gắn hook vào {@see 'customize_register'} cho các cài đặt sau khi WordPress
+	 * được tải để tất cả các bộ lọc đã được khởi tạo (ví dụ Widget Visibility).
 	 *
 	 * @since 3.9.0
 	 */
@@ -359,7 +359,7 @@ final class WP_Customize_Widgets {
 	}
 
 	/**
-	 * Registers Customizer settings and controls for all sidebars and widgets.
+	 * Đăng ký cài đặt và điều khiển Trình tùy biến cho tất cả sidebar và widget.
 	 *
 	 * @since 3.9.0
 	 *
@@ -383,9 +383,9 @@ final class WP_Customize_Widgets {
 		$new_setting_ids = array();
 
 		/*
-		 * Register a setting for all widgets, including those which are active,
-		 * inactive, and orphaned since a widget may get suppressed from a sidebar
-		 * via a plugin (like Widget Visibility).
+		 * Đăng ký cài đặt cho tất cả widget, bao gồm những widget đang hoạt động,
+		 * không hoạt động, và mồ côi vì widget có thể bị ẩn khỏi sidebar
+		 * bởi plugin (như Widget Visibility).
 		 */
 		foreach ( array_keys( $wp_registered_widgets ) as $widget_id ) {
 			$setting_id   = $this->get_setting_id( $widget_id );
@@ -397,8 +397,8 @@ final class WP_Customize_Widgets {
 		}
 
 		/*
-		 * Add a setting which will be supplied for the theme's sidebars_widgets
-		 * theme_mod when the theme is switched.
+		 * Thêm cài đặt sẽ được cung cấp cho theme_mod sidebars_widgets
+		 * của giao diện khi giao diện được chuyển.
 		 */
 		if ( ! $this->manager->is_theme_active() ) {
 			$setting_id   = 'old_sidebars_widgets_data';
@@ -434,7 +434,7 @@ final class WP_Customize_Widgets {
 			$is_inactive_widgets   = ( 'wp_inactive_widgets' === $sidebar_id );
 			$is_active_sidebar     = ( $is_registered_sidebar && ! $is_inactive_widgets );
 
-			// Add setting for managing the sidebar's widgets.
+			// Thêm cài đặt để quản lý các widget của sidebar.
 			if ( $is_registered_sidebar || $is_inactive_widgets ) {
 				$setting_id   = sprintf( 'sidebars_widgets[%s]', $sidebar_id );
 				$setting_args = $this->get_setting_args( $setting_id );

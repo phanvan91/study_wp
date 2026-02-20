@@ -1,6 +1,6 @@
 <?php
 /**
- * Taxonomy API: Core category-specific template tags
+ * Taxonomy API: Các thẻ template chuyên biệt cho chuyên mục
  *
  * @package WordPress
  * @subpackage Template
@@ -8,14 +8,14 @@
  */
 
 /**
- * Retrieves category link URL.
+ * Lấy URL liên kết chuyên mục.
  *
  * @since 1.0.0
  *
  * @see get_term_link()
  *
- * @param int|object $category Category ID or object.
- * @return string Link on success, empty string if category does not exist.
+ * @param int|object $category ID chuyên mục hoặc đối tượng.
+ * @return string Liên kết nếu thành công, chuỗi rỗng nếu chuyên mục không tồn tại.
  */
 function get_category_link( $category ) {
 	if ( ! is_object( $category ) ) {
@@ -32,17 +32,17 @@ function get_category_link( $category ) {
 }
 
 /**
- * Retrieves category parents with separator.
+ * Lấy các chuyên mục cha với ký tự phân cách.
  *
  * @since 1.2.0
- * @since 4.8.0 The `$visited` parameter was deprecated and renamed to `$deprecated`.
+ * @since 4.8.0 Tham số `$visited` đã ngừng sử dụng và đổi tên thành `$deprecated`.
  *
- * @param int    $category_id Category ID.
- * @param bool   $link        Optional. Whether to format with link. Default false.
- * @param string $separator   Optional. How to separate categories. Default '/'.
- * @param bool   $nicename    Optional. Whether to use nice name for display. Default false.
- * @param array  $deprecated  Not used.
- * @return string|WP_Error A list of category parents on success, WP_Error on failure.
+ * @param int    $category_id ID chuyên mục.
+ * @param bool   $link        Tùy chọn. Có định dạng với liên kết hay không. Mặc định false.
+ * @param string $separator   Tùy chọn. Cách phân cách các chuyên mục. Mặc định '/'.
+ * @param bool   $nicename    Tùy chọn. Có sử dụng tên đẹp để hiển thị hay không. Mặc định false.
+ * @param array  $deprecated  Không sử dụng.
+ * @return string|WP_Error Danh sách các chuyên mục cha nếu thành công, WP_Error nếu thất bại.
  */
 function get_category_parents( $category_id, $link = false, $separator = '/', $nicename = false, $deprecated = array() ) {
 
@@ -62,17 +62,17 @@ function get_category_parents( $category_id, $link = false, $separator = '/', $n
 }
 
 /**
- * Retrieves post categories.
+ * Lấy các chuyên mục của bài viết.
  *
- * This tag may be used outside The Loop by passing a post ID as the parameter.
+ * Thẻ này có thể được sử dụng bên ngoài Vòng lặp bằng cách truyền ID bài viết làm tham số.
  *
- * Note: This function only returns results from the default "category" taxonomy.
- * For custom taxonomies use get_the_terms().
+ * Lưu ý: Hàm này chỉ trả về kết quả từ taxonomy "category" mặc định.
+ * Đối với taxonomy tùy chỉnh, sử dụng get_the_terms().
  *
  * @since 0.71
  *
- * @param int $post_id Optional. The post ID. Defaults to current post ID.
- * @return WP_Term[] Array of WP_Term objects, one for each category assigned to the post.
+ * @param int $post_id Tùy chọn. ID bài viết. Mặc định là ID bài viết hiện tại.
+ * @return WP_Term[] Mảng các đối tượng WP_Term, mỗi đối tượng cho một chuyên mục được gán cho bài viết.
  */
 function get_the_category( $post_id = false ) {
 	$categories = get_the_terms( $post_id, 'category' );
@@ -87,24 +87,24 @@ function get_the_category( $post_id = false ) {
 	}
 
 	/**
-	 * Filters the array of categories to return for a post.
+	 * Lọc mảng các chuyên mục trả về cho một bài viết.
 	 *
 	 * @since 3.1.0
-	 * @since 4.4.0 Added the `$post_id` parameter.
+	 * @since 4.4.0 Thêm tham số `$post_id`.
 	 *
-	 * @param WP_Term[] $categories An array of categories to return for the post.
-	 * @param int|false $post_id    The post ID.
+	 * @param WP_Term[] $categories Mảng các chuyên mục trả về cho bài viết.
+	 * @param int|false $post_id    ID bài viết.
 	 */
 	return apply_filters( 'get_the_categories', $categories, $post_id );
 }
 
 /**
- * Retrieves category name based on category ID.
+ * Lấy tên chuyên mục dựa trên ID chuyên mục.
  *
  * @since 0.71
  *
- * @param int $cat_id Category ID.
- * @return string|WP_Error Category name on success, WP_Error on failure.
+ * @param int $cat_id ID chuyên mục.
+ * @return string|WP_Error Tên chuyên mục nếu thành công, WP_Error nếu thất bại.
  */
 function get_the_category_by_ID( $cat_id ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionNameInvalid
 	$cat_id   = (int) $cat_id;
@@ -118,25 +118,25 @@ function get_the_category_by_ID( $cat_id ) { // phpcs:ignore WordPress.NamingCon
 }
 
 /**
- * Retrieves category list for a post in either HTML list or custom format.
+ * Lấy danh sách chuyên mục cho bài viết dưới dạng danh sách HTML hoặc định dạng tùy chỉnh.
  *
- * Generally used for quick, delimited (e.g. comma-separated) lists of categories,
- * as part of a post entry meta.
+ * Thường được sử dụng cho các danh sách chuyên mục nhanh, có phân cách (ví dụ: phân cách bằng dấu phẩy),
+ * như một phần của meta entry bài viết.
  *
- * For a more powerful, list-based function, see wp_list_categories().
+ * Để có hàm mạnh mẽ hơn dựa trên danh sách, xem wp_list_categories().
  *
  * @since 1.5.1
  *
  * @see wp_list_categories()
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param string $separator Optional. Separator between the categories. By default, the links are placed
- *                          in an unordered list. An empty string will result in the default behavior.
- * @param string $parents   Optional. How to display the parents. Accepts 'multiple', 'single', or empty.
- *                          Default empty string.
- * @param int    $post_id   Optional. ID of the post to retrieve categories for. Defaults to the current post.
- * @return string Category list for a post.
+ * @param string $separator Tùy chọn. Ký tự phân cách giữa các chuyên mục. Mặc định, các liên kết được đặt
+ *                          trong danh sách không có thứ tự. Chuỗi rỗng sẽ sử dụng hành vi mặc định.
+ * @param string $parents   Tùy chọn. Cách hiển thị các chuyên mục cha. Chấp nhận 'multiple', 'single', hoặc rỗng.
+ *                          Mặc định chuỗi rỗng.
+ * @param int    $post_id   Tùy chọn. ID bài viết để lấy chuyên mục. Mặc định là bài viết hiện tại.
+ * @return string Danh sách chuyên mục cho bài viết.
  */
 function get_the_category_list( $separator = '', $parents = '', $post_id = false ) {
 	global $wp_rewrite;
@@ -147,13 +147,13 @@ function get_the_category_list( $separator = '', $parents = '', $post_id = false
 	}
 
 	/**
-	 * Filters the categories before building the category list.
+	 * Lọc các chuyên mục trước khi xây dựng danh sách chuyên mục.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_Term[] $categories An array of the post's categories.
-	 * @param int|false $post_id    ID of the post to retrieve categories for.
-	 *                              When `false`, defaults to the current post in the loop.
+	 * @param WP_Term[] $categories Mảng các chuyên mục của bài viết.
+	 * @param int|false $post_id    ID bài viết để lấy chuyên mục.
+	 *                              Khi `false`, mặc định là bài viết hiện tại trong vòng lặp.
 	 */
 	$categories = apply_filters( 'the_category_list', get_the_category( $post_id ), $post_id );
 
@@ -218,41 +218,41 @@ function get_the_category_list( $separator = '', $parents = '', $post_id = false
 	}
 
 	/**
-	 * Filters the category or list of categories.
+	 * Lọc chuyên mục hoặc danh sách các chuyên mục.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string $thelist   List of categories for the current post.
-	 * @param string $separator Separator used between the categories.
-	 * @param string $parents   How to display the category parents. Accepts 'multiple',
-	 *                          'single', or empty.
+	 * @param string $thelist   Danh sách chuyên mục cho bài viết hiện tại.
+	 * @param string $separator Ký tự phân cách được sử dụng giữa các chuyên mục.
+	 * @param string $parents   Cách hiển thị các chuyên mục cha. Chấp nhận 'multiple',
+	 *                          'single', hoặc rỗng.
 	 */
 	return apply_filters( 'the_category', $thelist, $separator, $parents );
 }
 
 /**
- * Checks if the current post is within any of the given categories.
+ * Kiểm tra xem bài viết hiện tại có thuộc bất kỳ chuyên mục nào trong các chuyên mục đã cho hay không.
  *
- * The given categories are checked against the post's categories' term_ids, names and slugs.
- * Categories given as integers will only be checked against the post's categories' term_ids.
+ * Các chuyên mục đã cho được kiểm tra dựa trên term_ids, tên và slug của các chuyên mục bài viết.
+ * Chuyên mục được truyền dưới dạng số nguyên chỉ kiểm tra dựa trên term_ids của các chuyên mục bài viết.
  *
- * Prior to v2.5 of WordPress, category names were not supported.
- * Prior to v2.7, category slugs were not supported.
- * Prior to v2.7, only one category could be compared: in_category( $single_category ).
- * Prior to v2.7, this function could only be used in the WordPress Loop.
- * As of 2.7, the function can be used anywhere if it is provided a post ID or post object.
+ * Trước phiên bản 2.5 của WordPress, tên chuyên mục chưa được hỗ trợ.
+ * Trước phiên bản 2.7, slug chuyên mục chưa được hỗ trợ.
+ * Trước phiên bản 2.7, chỉ có thể so sánh một chuyên mục: in_category( $single_category ).
+ * Trước phiên bản 2.7, hàm này chỉ có thể sử dụng trong Vòng lặp WordPress.
+ * Từ phiên bản 2.7, hàm có thể sử dụng ở bất kỳ đâu nếu được cung cấp ID bài viết hoặc đối tượng bài viết.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm theme tương tự, hãy xem
+ * bài viết {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Conditional Tags} trong Sổ tay Nhà phát triển Theme.
  *
  * @since 1.2.0
- * @since 2.7.0 The `$post` parameter was added.
+ * @since 2.7.0 Thêm tham số `$post`.
  *
- * @param int|string|int[]|string[] $category Category ID, name, slug, or array of such
- *                                            to check against.
- * @param int|WP_Post               $post     Optional. Post to check. Defaults to the current post.
- * @return bool True if the current post is in any of the given categories.
+ * @param int|string|int[]|string[] $category ID chuyên mục, tên, slug, hoặc mảng các giá trị đó
+ *                                            để kiểm tra.
+ * @param int|WP_Post               $post     Tùy chọn. Bài viết để kiểm tra. Mặc định là bài viết hiện tại.
+ * @return bool True nếu bài viết hiện tại thuộc bất kỳ chuyên mục nào đã cho.
  */
 function in_category( $category, $post = null ) {
 	if ( empty( $category ) ) {
@@ -263,83 +263,83 @@ function in_category( $category, $post = null ) {
 }
 
 /**
- * Displays category list for a post in either HTML list or custom format.
+ * Hiển thị danh sách chuyên mục cho bài viết dưới dạng danh sách HTML hoặc định dạng tùy chỉnh.
  *
  * @since 0.71
  *
- * @param string $separator Optional. Separator between the categories. By default, the links are placed
- *                          in an unordered list. An empty string will result in the default behavior.
- * @param string $parents   Optional. How to display the parents. Accepts 'multiple', 'single', or empty.
- *                          Default empty string.
- * @param int    $post_id   Optional. ID of the post to retrieve categories for. Defaults to the current post.
+ * @param string $separator Tùy chọn. Ký tự phân cách giữa các chuyên mục. Mặc định, các liên kết được đặt
+ *                          trong danh sách không có thứ tự. Chuỗi rỗng sẽ sử dụng hành vi mặc định.
+ * @param string $parents   Tùy chọn. Cách hiển thị các chuyên mục cha. Chấp nhận 'multiple', 'single', hoặc rỗng.
+ *                          Mặc định chuỗi rỗng.
+ * @param int    $post_id   Tùy chọn. ID bài viết để lấy chuyên mục. Mặc định là bài viết hiện tại.
  */
 function the_category( $separator = '', $parents = '', $post_id = false ) {
 	echo get_the_category_list( $separator, $parents, $post_id );
 }
 
 /**
- * Retrieves category description.
+ * Lấy mô tả chuyên mục.
  *
  * @since 1.0.0
  *
- * @param int $category Optional. Category ID. Defaults to the current category ID.
- * @return string Category description, if available.
+ * @param int $category Tùy chọn. ID chuyên mục. Mặc định là ID chuyên mục hiện tại.
+ * @return string Mô tả chuyên mục, nếu có.
  */
 function category_description( $category = 0 ) {
 	return term_description( $category );
 }
 
 /**
- * Displays or retrieves the HTML dropdown list of categories.
+ * Hiển thị hoặc lấy danh sách dropdown HTML của các chuyên mục.
  *
- * The 'hierarchical' argument, which is disabled by default, will override the
- * depth argument, unless it is true. When the argument is false, it will
- * display all of the categories. When it is enabled it will use the value in
- * the 'depth' argument.
+ * Đối số 'hierarchical', bị tắt theo mặc định, sẽ ghi đè đối số
+ * depth, trừ khi nó là true. Khi đối số là false, nó sẽ
+ * hiển thị tất cả các chuyên mục. Khi được bật, nó sẽ sử dụng giá trị trong
+ * đối số 'depth'.
  *
  * @since 2.1.0
- * @since 4.2.0 Introduced the `value_field` argument.
- * @since 4.6.0 Introduced the `required` argument.
- * @since 6.1.0 Introduced the `aria_describedby` argument.
+ * @since 4.2.0 Giới thiệu đối số `value_field`.
+ * @since 4.6.0 Giới thiệu đối số `required`.
+ * @since 6.1.0 Giới thiệu đối số `aria_describedby`.
  *
  * @param array|string $args {
- *     Optional. Array or string of arguments to generate a categories drop-down element. See WP_Term_Query::__construct()
- *     for information on additional accepted arguments.
+ *     Tùy chọn. Mảng hoặc chuỗi các đối số để tạo phần tử dropdown chuyên mục. Xem WP_Term_Query::__construct()
+ *     để biết thông tin về các đối số bổ sung được chấp nhận.
  *
- *     @type string       $show_option_all   Text to display for showing all categories. Default empty.
- *     @type string       $show_option_none  Text to display for showing no categories. Default empty.
- *     @type string       $option_none_value Value to use when no category is selected. Default empty.
- *     @type string       $orderby           Which column to use for ordering categories. See get_terms() for a list
- *                                           of accepted values. Default 'id' (term_id).
- *     @type bool         $pad_counts        See get_terms() for an argument description. Default false.
- *     @type bool|int     $show_count        Whether to include post counts. Accepts 0, 1, or their bool equivalents.
- *                                           Default 0.
- *     @type bool|int     $echo              Whether to echo or return the generated markup. Accepts 0, 1, or their
- *                                           bool equivalents. Default 1.
- *     @type bool|int     $hierarchical      Whether to traverse the taxonomy hierarchy. Accepts 0, 1, or their bool
- *                                           equivalents. Default 0.
- *     @type int          $depth             Maximum depth. Default 0.
- *     @type int          $tab_index         Tab index for the select element. Default 0 (no tabindex).
- *     @type string       $name              Value for the 'name' attribute of the select element. Default 'cat'.
- *     @type string       $id                Value for the 'id' attribute of the select element. Defaults to the value
- *                                           of `$name`.
- *     @type string       $class             Value for the 'class' attribute of the select element. Default 'postform'.
- *     @type int|string   $selected          Value of the option that should be selected. Default 0.
- *     @type string       $value_field       Term field that should be used to populate the 'value' attribute
- *                                           of the option elements. Accepts any valid term field: 'term_id', 'name',
+ *     @type string       $show_option_all   Văn bản hiển thị cho tùy chọn tất cả chuyên mục. Mặc định rỗng.
+ *     @type string       $show_option_none  Văn bản hiển thị cho tùy chọn không có chuyên mục. Mặc định rỗng.
+ *     @type string       $option_none_value Giá trị sử dụng khi không có chuyên mục nào được chọn. Mặc định rỗng.
+ *     @type string       $orderby           Cột dùng để sắp xếp chuyên mục. Xem get_terms() để biết danh sách
+ *                                           các giá trị được chấp nhận. Mặc định 'id' (term_id).
+ *     @type bool         $pad_counts        Xem get_terms() để biết mô tả đối số. Mặc định false.
+ *     @type bool|int     $show_count        Có bao gồm số lượng bài viết hay không. Chấp nhận 0, 1, hoặc tương đương bool.
+ *                                           Mặc định 0.
+ *     @type bool|int     $echo              Có echo hay trả về markup được tạo. Chấp nhận 0, 1, hoặc tương đương bool.
+ *                                           Mặc định 1.
+ *     @type bool|int     $hierarchical      Có duyệt theo phân cấp taxonomy hay không. Chấp nhận 0, 1, hoặc tương đương bool.
+ *                                           Mặc định 0.
+ *     @type int          $depth             Độ sâu tối đa. Mặc định 0.
+ *     @type int          $tab_index         Chỉ mục tab cho phần tử select. Mặc định 0 (không có tabindex).
+ *     @type string       $name              Giá trị cho thuộc tính 'name' của phần tử select. Mặc định 'cat'.
+ *     @type string       $id                Giá trị cho thuộc tính 'id' của phần tử select. Mặc định là giá trị
+ *                                           của `$name`.
+ *     @type string       $class             Giá trị cho thuộc tính 'class' của phần tử select. Mặc định 'postform'.
+ *     @type int|string   $selected          Giá trị của tùy chọn cần được chọn. Mặc định 0.
+ *     @type string       $value_field       Trường term dùng để điền thuộc tính 'value'
+ *                                           của các phần tử option. Chấp nhận bất kỳ trường term hợp lệ: 'term_id', 'name',
  *                                           'slug', 'term_group', 'term_taxonomy_id', 'taxonomy', 'description',
- *                                           'parent', 'count'. Default 'term_id'.
- *     @type string|array $taxonomy          Name of the taxonomy or taxonomies to retrieve. Default 'category'.
- *     @type bool         $hide_if_empty     True to skip generating markup if no categories are found.
- *                                           Default false (create select element even if no categories are found).
- *     @type bool         $required          Whether the `<select>` element should have the HTML5 'required' attribute.
- *                                           Default false.
- *     @type Walker       $walker            Walker object to use to build the output. Default empty which results in a
- *                                           Walker_CategoryDropdown instance being used.
- *     @type string       $aria_describedby  The 'id' of an element that contains descriptive text for the select.
- *                                           Default empty string.
+ *                                           'parent', 'count'. Mặc định 'term_id'.
+ *     @type string|array $taxonomy          Tên taxonomy hoặc các taxonomy cần lấy. Mặc định 'category'.
+ *     @type bool         $hide_if_empty     True để bỏ qua tạo markup nếu không tìm thấy chuyên mục.
+ *                                           Mặc định false (tạo phần tử select ngay cả khi không tìm thấy chuyên mục).
+ *     @type bool         $required          Phần tử `<select>` có nên có thuộc tính HTML5 'required' hay không.
+ *                                           Mặc định false.
+ *     @type Walker       $walker            Đối tượng Walker dùng để xây dựng đầu ra. Mặc định rỗng sẽ sử dụng
+ *                                           instance Walker_CategoryDropdown.
+ *     @type string       $aria_describedby  'id' của phần tử chứa văn bản mô tả cho select.
+ *                                           Mặc định chuỗi rỗng.
  * }
- * @return string HTML dropdown list of categories.
+ * @return string Danh sách dropdown HTML của các chuyên mục.
  */
 function wp_dropdown_categories( $args = '' ) {
 	$defaults = array(
@@ -369,7 +369,7 @@ function wp_dropdown_categories( $args = '' ) {
 
 	$defaults['selected'] = ( is_category() ) ? get_query_var( 'cat' ) : 0;
 
-	// Back compat.
+	// Tương thích ngược.
 	if ( isset( $args['type'] ) && 'link' === $args['type'] ) {
 		_deprecated_argument(
 			__FUNCTION__,
@@ -384,7 +384,7 @@ function wp_dropdown_categories( $args = '' ) {
 		$args['taxonomy'] = 'link_category';
 	}
 
-	// Parse incoming $args into an array and merge it with $defaults.
+	// Phân tích $args đầu vào thành mảng và hợp nhất với $defaults.
 	$parsed_args = wp_parse_args( $args, $defaults );
 
 	$option_none_value = $parsed_args['option_none_value'];
@@ -400,7 +400,7 @@ function wp_dropdown_categories( $args = '' ) {
 		$tab_index_attribute = " tabindex=\"$tab_index\"";
 	}
 
-	// Avoid clashes with the 'name' param of get_terms().
+	// Tránh xung đột với tham số 'name' của get_terms().
 	$get_terms_args = $parsed_args;
 	unset( $get_terms_args['name'] );
 	$categories = get_terms( $get_terms_args );
@@ -420,19 +420,19 @@ function wp_dropdown_categories( $args = '' ) {
 	if ( empty( $categories ) && ! $parsed_args['hide_if_empty'] && ! empty( $parsed_args['show_option_none'] ) ) {
 
 		/**
-		 * Filters a taxonomy drop-down display element.
+		 * Lọc phần tử hiển thị dropdown taxonomy.
 		 *
-		 * A variety of taxonomy drop-down display elements can be modified
-		 * just prior to display via this filter. Filterable arguments include
-		 * 'show_option_none', 'show_option_all', and various forms of the
-		 * term name.
+		 * Nhiều phần tử hiển thị dropdown taxonomy có thể được chỉnh sửa
+		 * ngay trước khi hiển thị thông qua bộ lọc này. Các đối số có thể lọc bao gồm
+		 * 'show_option_none', 'show_option_all', và các dạng khác nhau của
+		 * tên term.
 		 *
 		 * @since 1.2.0
 		 *
 		 * @see wp_dropdown_categories()
 		 *
-		 * @param string       $element  Category name.
-		 * @param WP_Term|null $category The category object, or null if there's no corresponding category.
+		 * @param string       $element  Tên chuyên mục.
+		 * @param WP_Term|null $category Đối tượng chuyên mục, hoặc null nếu không có chuyên mục tương ứng.
 		 */
 		$show_option_none = apply_filters( 'list_cats', $parsed_args['show_option_none'], null );
 		$output          .= "\t<option value='" . esc_attr( $option_none_value ) . "' selected='selected'>$show_option_none</option>\n";
@@ -469,12 +469,12 @@ function wp_dropdown_categories( $args = '' ) {
 	}
 
 	/**
-	 * Filters the taxonomy drop-down output.
+	 * Lọc đầu ra dropdown taxonomy.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $output      HTML output.
-	 * @param array  $parsed_args Arguments used to build the drop-down.
+	 * @param string $output      Đầu ra HTML.
+	 * @param array  $parsed_args Các đối số được sử dụng để xây dựng dropdown.
 	 */
 	$output = apply_filters( 'wp_dropdown_cats', $output, $parsed_args );
 
@@ -486,54 +486,54 @@ function wp_dropdown_categories( $args = '' ) {
 }
 
 /**
- * Displays or retrieves the HTML list of categories.
+ * Hiển thị hoặc lấy danh sách HTML các chuyên mục.
  *
  * @since 2.1.0
- * @since 4.4.0 Introduced the `hide_title_if_empty` and `separator` arguments.
- * @since 4.4.0 The `current_category` argument was modified to optionally accept an array of values.
- * @since 6.1.0 Default value of the 'use_desc_for_title' argument was changed from 1 to 0.
+ * @since 4.4.0 Giới thiệu đối số `hide_title_if_empty` và `separator`.
+ * @since 4.4.0 Đối số `current_category` được chỉnh sửa để tùy chọn chấp nhận mảng giá trị.
+ * @since 6.1.0 Giá trị mặc định của đối số 'use_desc_for_title' được thay đổi từ 1 sang 0.
  *
  * @param array|string $args {
- *     Array of optional arguments. See get_categories(), get_terms(), and WP_Term_Query::__construct()
- *     for information on additional accepted arguments.
+ *     Mảng các đối số tùy chọn. Xem get_categories(), get_terms(), và WP_Term_Query::__construct()
+ *     để biết thông tin về các đối số bổ sung được chấp nhận.
  *
- *     @type int|int[]    $current_category      ID of category, or array of IDs of categories, that should get the
- *                                               'current-cat' class. Default 0.
- *     @type int          $depth                 Category depth. Used for tab indentation. Default 0.
- *     @type bool|int     $echo                  Whether to echo or return the generated markup. Accepts 0, 1, or their
- *                                               bool equivalents. Default 1.
- *     @type int[]|string $exclude               Array or comma/space-separated string of term IDs to exclude.
- *                                               If `$hierarchical` is true, descendants of `$exclude` terms will also
- *                                               be excluded; see `$exclude_tree`. See get_terms().
- *                                               Default empty string.
- *     @type int[]|string $exclude_tree          Array or comma/space-separated string of term IDs to exclude, along
- *                                               with their descendants. See get_terms(). Default empty string.
- *     @type string       $feed                  Text to use for the feed link. Default 'Feed for all posts filed
+ *     @type int|int[]    $current_category      ID chuyên mục, hoặc mảng các ID chuyên mục, sẽ nhận
+ *                                               class 'current-cat'. Mặc định 0.
+ *     @type int          $depth                 Độ sâu chuyên mục. Dùng cho thụt lề tab. Mặc định 0.
+ *     @type bool|int     $echo                  Có echo hay trả về markup được tạo. Chấp nhận 0, 1, hoặc
+ *                                               tương đương bool. Mặc định 1.
+ *     @type int[]|string $exclude               Mảng hoặc chuỗi phân cách bằng dấu phẩy/khoảng trắng các ID term cần loại trừ.
+ *                                               Nếu `$hierarchical` là true, các term con của `$exclude` cũng sẽ
+ *                                               bị loại trừ; xem `$exclude_tree`. Xem get_terms().
+ *                                               Mặc định chuỗi rỗng.
+ *     @type int[]|string $exclude_tree          Mảng hoặc chuỗi phân cách bằng dấu phẩy/khoảng trắng các ID term cần loại trừ,
+ *                                               cùng với các term con của chúng. Xem get_terms(). Mặc định chuỗi rỗng.
+ *     @type string       $feed                  Văn bản sử dụng cho liên kết feed. Mặc định 'Feed for all posts filed
  *                                               under [cat name]'.
- *     @type string       $feed_image            URL of an image to use for the feed link. Default empty string.
- *     @type string       $feed_type             Feed type. Used to build feed link. See get_term_feed_link().
- *                                               Default empty string (default feed).
- *     @type bool         $hide_title_if_empty   Whether to hide the `$title_li` element if there are no terms in
- *                                               the list. Default false (title will always be shown).
- *     @type string       $separator             Separator between links. Default '<br />'.
- *     @type bool|int     $show_count            Whether to include post counts. Accepts 0, 1, or their bool equivalents.
- *                                               Default 0.
- *     @type string       $show_option_all       Text to display for showing all categories. Default empty string.
- *     @type string       $show_option_none      Text to display for the 'no categories' option.
- *                                               Default 'No categories'.
- *     @type string       $style                 The style used to display the categories list. If 'list', categories
- *                                               will be output as an unordered list. If left empty or another value,
- *                                               categories will be output separated by `<br>` tags. Default 'list'.
- *     @type string       $taxonomy              Name of the taxonomy to retrieve. Default 'category'.
- *     @type string       $title_li              Text to use for the list title `<li>` element. Pass an empty string
- *                                               to disable. Default 'Categories'.
- *     @type bool|int     $use_desc_for_title    Whether to use the category description as the title attribute.
- *                                               Accepts 0, 1, or their bool equivalents. Default 0.
- *     @type Walker       $walker                Walker object to use to build the output. Default empty which results
- *                                               in a Walker_Category instance being used.
+ *     @type string       $feed_image            URL hình ảnh sử dụng cho liên kết feed. Mặc định chuỗi rỗng.
+ *     @type string       $feed_type             Loại feed. Dùng để xây dựng liên kết feed. Xem get_term_feed_link().
+ *                                               Mặc định chuỗi rỗng (feed mặc định).
+ *     @type bool         $hide_title_if_empty   Có ẩn phần tử `$title_li` nếu không có term nào trong
+ *                                               danh sách. Mặc định false (tiêu đề luôn được hiển thị).
+ *     @type string       $separator             Ký tự phân cách giữa các liên kết. Mặc định '<br />'.
+ *     @type bool|int     $show_count            Có bao gồm số lượng bài viết hay không. Chấp nhận 0, 1, hoặc tương đương bool.
+ *                                               Mặc định 0.
+ *     @type string       $show_option_all       Văn bản hiển thị cho tùy chọn tất cả chuyên mục. Mặc định chuỗi rỗng.
+ *     @type string       $show_option_none      Văn bản hiển thị cho tùy chọn 'không có chuyên mục'.
+ *                                               Mặc định 'No categories'.
+ *     @type string       $style                 Kiểu hiển thị danh sách chuyên mục. Nếu 'list', chuyên mục
+ *                                               sẽ xuất ra dưới dạng danh sách không có thứ tự. Nếu rỗng hoặc giá trị khác,
+ *                                               chuyên mục sẽ xuất ra phân cách bằng thẻ `<br>`. Mặc định 'list'.
+ *     @type string       $taxonomy              Tên taxonomy cần lấy. Mặc định 'category'.
+ *     @type string       $title_li              Văn bản sử dụng cho phần tử `<li>` tiêu đề danh sách. Truyền chuỗi rỗng
+ *                                               để tắt. Mặc định 'Categories'.
+ *     @type bool|int     $use_desc_for_title    Có sử dụng mô tả chuyên mục làm thuộc tính title hay không.
+ *                                               Chấp nhận 0, 1, hoặc tương đương bool. Mặc định 0.
+ *     @type Walker       $walker                Đối tượng Walker dùng để xây dựng đầu ra. Mặc định rỗng sẽ sử dụng
+ *                                               instance Walker_Category.
  * }
- * @return void|string|false Void if 'echo' argument is true, HTML list of categories if 'echo' is false.
- *                           False if the taxonomy does not exist.
+ * @return void|string|false Void nếu đối số 'echo' là true, danh sách HTML các chuyên mục nếu 'echo' là false.
+ *                           False nếu taxonomy không tồn tại.
  */
 function wp_list_categories( $args = '' ) {
 	$defaults = array(
@@ -567,7 +567,7 @@ function wp_list_categories( $args = '' ) {
 		$parsed_args['pad_counts'] = true;
 	}
 
-	// Descendants of exclusions should be excluded too.
+	// Các term con của các term bị loại trừ cũng nên bị loại trừ.
 	if ( $parsed_args['hierarchical'] ) {
 		$exclude_tree = array();
 
@@ -617,13 +617,13 @@ function wp_list_categories( $args = '' ) {
 
 			$posts_page = '';
 
-			// For taxonomies that belong only to custom post types, point to a valid archive.
+			// Đối với taxonomy chỉ thuộc về các loại bài viết tùy chỉnh, trỏ đến một trang lưu trữ hợp lệ.
 			$taxonomy_object = get_taxonomy( $parsed_args['taxonomy'] );
 			if ( ! in_array( 'post', $taxonomy_object->object_type, true ) && ! in_array( 'page', $taxonomy_object->object_type, true ) ) {
 				foreach ( $taxonomy_object->object_type as $object_type ) {
 					$_object_type = get_post_type_object( $object_type );
 
-					// Grab the first one.
+					// Lấy cái đầu tiên.
 					if ( ! empty( $_object_type->has_archive ) ) {
 						$posts_page = get_post_type_archive_link( $object_type );
 						break;
@@ -631,7 +631,7 @@ function wp_list_categories( $args = '' ) {
 				}
 			}
 
-			// Fallback for the 'All' link is the posts page.
+			// Dự phòng cho liên kết 'Tất cả' là trang bài viết.
 			if ( ! $posts_page ) {
 				if ( 'page' === get_option( 'show_on_front' ) && get_option( 'page_for_posts' ) ) {
 					$posts_page = get_permalink( get_option( 'page_for_posts' ) );
@@ -670,13 +670,13 @@ function wp_list_categories( $args = '' ) {
 	}
 
 	/**
-	 * Filters the HTML output of a taxonomy list.
+	 * Lọc đầu ra HTML của danh sách taxonomy.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string       $output HTML output.
-	 * @param array|string $args   An array or query string of taxonomy-listing arguments. See
-	 *                             wp_list_categories() for information on accepted arguments.
+	 * @param string       $output Đầu ra HTML.
+	 * @param array|string $args   Mảng hoặc chuỗi truy vấn các đối số liệt kê taxonomy. Xem
+	 *                             wp_list_categories() để biết thông tin về các đối số được chấp nhận.
 	 */
 	$html = apply_filters( 'wp_list_categories', $output, $args );
 
@@ -688,30 +688,30 @@ function wp_list_categories( $args = '' ) {
 }
 
 /**
- * Displays a tag cloud.
+ * Hiển thị đám mây thẻ.
  *
- * Outputs a list of tags in what is called a 'tag cloud', where the size of each tag
- * is determined by how many times that particular tag has been assigned to posts.
+ * Xuất danh sách các thẻ dưới dạng 'đám mây thẻ', trong đó kích thước của mỗi thẻ
+ * được xác định bởi số lần thẻ đó được gán cho bài viết.
  *
  * @since 2.3.0
- * @since 2.8.0 Added the `taxonomy` argument.
- * @since 4.8.0 Added the `show_count` argument.
+ * @since 2.8.0 Thêm đối số `taxonomy`.
+ * @since 4.8.0 Thêm đối số `show_count`.
  *
  * @param array|string $args {
- *     Optional. Array or string of arguments for displaying a tag cloud. See wp_generate_tag_cloud()
- *     and get_terms() for the full lists of arguments that can be passed in `$args`.
+ *     Tùy chọn. Mảng hoặc chuỗi các đối số để hiển thị đám mây thẻ. Xem wp_generate_tag_cloud()
+ *     và get_terms() để biết danh sách đầy đủ các đối số có thể truyền trong `$args`.
  *
- *     @type int    $number    The number of tags to display. Accepts any positive integer
- *                             or zero to return all. Default 45.
- *     @type string $link      Whether to display term editing links or term permalinks.
- *                             Accepts 'edit' and 'view'. Default 'view'.
- *     @type string $post_type The post type. Used to highlight the proper post type menu
- *                             on the linked edit page. Defaults to the first post type
- *                             associated with the taxonomy.
- *     @type bool   $echo      Whether or not to echo the return value. Default true.
+ *     @type int    $number    Số lượng thẻ hiển thị. Chấp nhận bất kỳ số nguyên dương nào
+ *                             hoặc 0 để trả về tất cả. Mặc định 45.
+ *     @type string $link      Hiển thị liên kết chỉnh sửa term hay liên kết cố định term.
+ *                             Chấp nhận 'edit' và 'view'. Mặc định 'view'.
+ *     @type string $post_type Loại bài viết. Dùng để tô sáng menu loại bài viết phù hợp
+ *                             trên trang chỉnh sửa được liên kết. Mặc định là loại bài viết đầu tiên
+ *                             liên kết với taxonomy.
+ *     @type bool   $echo      Có echo giá trị trả về hay không. Mặc định true.
  * }
- * @return void|string|string[] Void if 'echo' argument is true, or on failure. Otherwise, tag cloud
- *                              as a string or an array, depending on 'format' argument.
+ * @return void|string|string[] Void nếu đối số 'echo' là true, hoặc khi thất bại. Nếu không, đám mây thẻ
+ *                              dưới dạng chuỗi hoặc mảng, tùy thuộc vào đối số 'format'.
  */
 function wp_tag_cloud( $args = '' ) {
 	$defaults = array(
@@ -763,17 +763,17 @@ function wp_tag_cloud( $args = '' ) {
 		$tags[ $key ]->id   = $tag->term_id;
 	}
 
-	// Here's where those top tags get sorted according to $args.
+	// Đây là nơi các thẻ hàng đầu được sắp xếp theo $args.
 	$return = wp_generate_tag_cloud( $tags, $args );
 
 	/**
-	 * Filters the tag cloud output.
+	 * Lọc đầu ra đám mây thẻ.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param string|string[] $return Tag cloud as a string or an array, depending on 'format' argument.
-	 * @param array           $args   An array of tag cloud arguments. See wp_tag_cloud()
-	 *                                for information on accepted arguments.
+	 * @param string|string[] $return Đám mây thẻ dưới dạng chuỗi hoặc mảng, tùy thuộc vào đối số 'format'.
+	 * @param array           $args   Mảng các đối số đám mây thẻ. Xem wp_tag_cloud()
+	 *                                để biết thông tin về các đối số được chấp nhận.
 	 */
 	$return = apply_filters( 'wp_tag_cloud', $return, $args );
 
@@ -785,62 +785,62 @@ function wp_tag_cloud( $args = '' ) {
 }
 
 /**
- * Default topic count scaling for tag links.
+ * Tỷ lệ đếm chủ đề mặc định cho liên kết thẻ.
  *
  * @since 2.9.0
  *
- * @param int $count Number of posts with that tag.
- * @return int Scaled count.
+ * @param int $count Số lượng bài viết có thẻ đó.
+ * @return int Số đếm đã được chia tỷ lệ.
  */
 function default_topic_count_scale( $count ) {
 	return round( log10( $count + 1 ) * 100 );
 }
 
 /**
- * Generates a tag cloud (heatmap) from provided data.
+ * Tạo đám mây thẻ (heatmap) từ dữ liệu được cung cấp.
  *
- * @todo Complete functionality.
+ * @todo Hoàn thiện chức năng.
  * @since 2.3.0
- * @since 4.8.0 Added the `show_count` argument.
+ * @since 4.8.0 Thêm đối số `show_count`.
  *
- * @param WP_Term[]    $tags Array of WP_Term objects to generate the tag cloud for.
+ * @param WP_Term[]    $tags Mảng các đối tượng WP_Term để tạo đám mây thẻ.
  * @param string|array $args {
- *     Optional. Array or string of arguments for generating a tag cloud.
+ *     Tùy chọn. Mảng hoặc chuỗi các đối số để tạo đám mây thẻ.
  *
- *     @type int      $smallest                   Smallest font size used to display tags. Paired
- *                                                with the value of `$unit`, to determine CSS text
- *                                                size unit. Default 8 (pt).
- *     @type int      $largest                    Largest font size used to display tags. Paired
- *                                                with the value of `$unit`, to determine CSS text
- *                                                size unit. Default 22 (pt).
- *     @type string   $unit                       CSS text size unit to use with the `$smallest`
- *                                                and `$largest` values. Accepts any valid CSS text
- *                                                size unit. Default 'pt'.
- *     @type int      $number                     The number of tags to return. Accepts any
- *                                                positive integer or zero to return all.
- *                                                Default 0.
- *     @type string   $format                     Format to display the tag cloud in. Accepts 'flat'
- *                                                (tags separated with spaces), 'list' (tags displayed
- *                                                in an unordered list), or 'array' (returns an array).
- *                                                Default 'flat'.
- *     @type string   $separator                  HTML or text to separate the tags. Default "\n" (newline).
- *     @type string   $orderby                    Value to order tags by. Accepts 'name' or 'count'.
- *                                                Default 'name'. The {@see 'tag_cloud_sort'} filter
- *                                                can also affect how tags are sorted.
- *     @type string   $order                      How to order the tags. Accepts 'ASC' (ascending),
- *                                                'DESC' (descending), or 'RAND' (random). Default 'ASC'.
- *     @type int|bool $filter                     Whether to enable filtering of the final output
- *                                                via {@see 'wp_generate_tag_cloud'}. Default 1.
- *     @type array    $topic_count_text           Nooped plural text from _n_noop() to supply to
- *                                                tag counts. Default null.
- *     @type callable $topic_count_text_callback  Callback used to generate nooped plural text for
- *                                                tag counts based on the count. Default null.
- *     @type callable $topic_count_scale_callback Callback used to determine the tag count scaling
- *                                                value. Default default_topic_count_scale().
- *     @type bool|int $show_count                 Whether to display the tag counts. Default 0. Accepts
- *                                                0, 1, or their bool equivalents.
+ *     @type int      $smallest                   Kích thước font nhỏ nhất dùng để hiển thị thẻ. Kết hợp
+ *                                                với giá trị `$unit`, để xác định đơn vị kích thước
+ *                                                chữ CSS. Mặc định 8 (pt).
+ *     @type int      $largest                    Kích thước font lớn nhất dùng để hiển thị thẻ. Kết hợp
+ *                                                với giá trị `$unit`, để xác định đơn vị kích thước
+ *                                                chữ CSS. Mặc định 22 (pt).
+ *     @type string   $unit                       Đơn vị kích thước chữ CSS sử dụng với giá trị `$smallest`
+ *                                                và `$largest`. Chấp nhận bất kỳ đơn vị kích thước
+ *                                                chữ CSS hợp lệ. Mặc định 'pt'.
+ *     @type int      $number                     Số lượng thẻ trả về. Chấp nhận bất kỳ
+ *                                                số nguyên dương hoặc 0 để trả về tất cả.
+ *                                                Mặc định 0.
+ *     @type string   $format                     Định dạng hiển thị đám mây thẻ. Chấp nhận 'flat'
+ *                                                (thẻ phân cách bằng khoảng trắng), 'list' (thẻ hiển thị
+ *                                                trong danh sách không có thứ tự), hoặc 'array' (trả về mảng).
+ *                                                Mặc định 'flat'.
+ *     @type string   $separator                  HTML hoặc văn bản phân cách các thẻ. Mặc định "\n" (dòng mới).
+ *     @type string   $orderby                    Giá trị để sắp xếp thẻ. Chấp nhận 'name' hoặc 'count'.
+ *                                                Mặc định 'name'. Bộ lọc {@see 'tag_cloud_sort'}
+ *                                                cũng có thể ảnh hưởng đến cách thẻ được sắp xếp.
+ *     @type string   $order                      Cách sắp xếp các thẻ. Chấp nhận 'ASC' (tăng dần),
+ *                                                'DESC' (giảm dần), hoặc 'RAND' (ngẫu nhiên). Mặc định 'ASC'.
+ *     @type int|bool $filter                     Có bật lọc đầu ra cuối cùng hay không
+ *                                                thông qua {@see 'wp_generate_tag_cloud'}. Mặc định 1.
+ *     @type array    $topic_count_text           Văn bản số nhiều nooped từ _n_noop() cung cấp cho
+ *                                                số đếm thẻ. Mặc định null.
+ *     @type callable $topic_count_text_callback  Callback dùng để tạo văn bản số nhiều nooped cho
+ *                                                số đếm thẻ dựa trên số đếm. Mặc định null.
+ *     @type callable $topic_count_scale_callback Callback dùng để xác định giá trị chia tỷ lệ
+ *                                                số đếm thẻ. Mặc định default_topic_count_scale().
+ *     @type bool|int $show_count                 Có hiển thị số đếm thẻ hay không. Mặc định 0. Chấp nhận
+ *                                                0, 1, hoặc tương đương bool.
  * }
- * @return string|string[] Tag cloud as a string or an array, depending on 'format' argument.
+ * @return string|string[] Đám mây thẻ dưới dạng chuỗi hoặc mảng, tùy thuộc vào đối số 'format'.
  */
 function wp_generate_tag_cloud( $tags, $args = '' ) {
 	$defaults = array(
@@ -867,12 +867,12 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 		return $return;
 	}
 
-	// Juggle topic counts.
+	// Xử lý số đếm chủ đề.
 	if ( isset( $args['topic_count_text'] ) ) {
-		// First look for nooped plural support via topic_count_text.
+		// Trước tiên tìm hỗ trợ số nhiều nooped thông qua topic_count_text.
 		$translate_nooped_plural = $args['topic_count_text'];
 	} elseif ( ! empty( $args['topic_count_text_callback'] ) ) {
-		// Look for the alternative callback style. Ignore the previous default.
+		// Tìm kiểu callback thay thế. Bỏ qua giá trị mặc định trước đó.
 		if ( 'default_topic_count_text' === $args['topic_count_text_callback'] ) {
 			/* translators: %s: Number of items (tags). */
 			$translate_nooped_plural = _n_noop( '%s item', '%s items' );
@@ -880,22 +880,22 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 			$translate_nooped_plural = false;
 		}
 	} elseif ( isset( $args['single_text'] ) && isset( $args['multiple_text'] ) ) {
-		// If no callback exists, look for the old-style single_text and multiple_text arguments.
+		// Nếu không có callback, tìm các đối số kiểu cũ single_text và multiple_text.
 		// phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralSingular,WordPress.WP.I18n.NonSingularStringLiteralPlural
 		$translate_nooped_plural = _n_noop( $args['single_text'], $args['multiple_text'] );
 	} else {
-		// This is the default for when no callback, plural, or argument is passed in.
+		// Đây là giá trị mặc định khi không có callback, số nhiều, hoặc đối số nào được truyền vào.
 		/* translators: %s: Number of items (tags). */
 		$translate_nooped_plural = _n_noop( '%s item', '%s items' );
 	}
 
 	/**
-	 * Filters how the items in a tag cloud are sorted.
+	 * Lọc cách các mục trong đám mây thẻ được sắp xếp.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param WP_Term[] $tags Ordered array of terms.
-	 * @param array     $args An array of tag cloud arguments.
+	 * @param WP_Term[] $tags Mảng các term đã được sắp xếp.
+	 * @param array     $args Mảng các đối số đám mây thẻ.
 	 */
 	$tags_sorted = apply_filters( 'tag_cloud_sort', $tags, $args );
 	if ( empty( $tags_sorted ) ) {
@@ -909,7 +909,7 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 		if ( 'RAND' === $args['order'] ) {
 			shuffle( $tags );
 		} else {
-			// SQL cannot save you; this is a second (potentially different) sort on a subset of data.
+			// SQL không thể giúp bạn ở đây; đây là lần sắp xếp thứ hai (có thể khác) trên một tập con dữ liệu.
 			if ( 'name' === $args['orderby'] ) {
 				uasort( $tags, '_wp_object_name_sort_cb' );
 			} else {
@@ -927,7 +927,7 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 	}
 
 	$counts      = array();
-	$real_counts = array(); // For the alt tag.
+	$real_counts = array(); // Cho thẻ alt.
 	foreach ( (array) $tags as $key => $tag ) {
 		$real_counts[ $key ] = $tag->count;
 		$counts[ $key ]      = call_user_func( $args['topic_count_scale_callback'], $tag->count );
@@ -946,21 +946,21 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 
 	$aria_label = false;
 	/*
-	 * Determine whether to output an 'aria-label' attribute with the tag name and count.
-	 * When tags have a different font size, they visually convey an important information
-	 * that should be available to assistive technologies too. On the other hand, sometimes
-	 * themes set up the Tag Cloud to display all tags with the same font size (setting
-	 * the 'smallest' and 'largest' arguments to the same value).
-	 * In order to always serve the same content to all users, the 'aria-label' gets printed out:
-	 * - when tags have a different size
-	 * - when the tag count is displayed (for example when users check the checkbox in the
-	 *   Tag Cloud widget), regardless of the tags font size
+	 * Xác định có xuất thuộc tính 'aria-label' với tên thẻ và số đếm hay không.
+	 * Khi các thẻ có kích thước font khác nhau, chúng truyền đạt thông tin quan trọng
+	 * bằng hình ảnh mà cũng cần có sẵn cho các công nghệ hỗ trợ. Mặt khác, đôi khi
+	 * các theme thiết lập Đám mây thẻ hiển thị tất cả thẻ với cùng kích thước font (đặt
+	 * đối số 'smallest' và 'largest' cùng giá trị).
+	 * Để luôn cung cấp cùng nội dung cho tất cả người dùng, 'aria-label' được xuất ra:
+	 * - khi các thẻ có kích thước khác nhau
+	 * - khi số đếm thẻ được hiển thị (ví dụ khi người dùng đánh dấu checkbox trong
+	 *   widget Đám mây thẻ), bất kể kích thước font của thẻ
 	 */
 	if ( $args['show_count'] || 0 !== $font_spread ) {
 		$aria_label = true;
 	}
 
-	// Assemble the data that will be used to generate the tag cloud markup.
+	// Tập hợp dữ liệu sẽ được sử dụng để tạo markup đám mây thẻ.
 	$tags_data = array();
 	foreach ( $tags as $key => $tag ) {
 		$tag_id = isset( $tag->id ) ? $tag->id : $key;
@@ -990,17 +990,17 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 	}
 
 	/**
-	 * Filters the data used to generate the tag cloud.
+	 * Lọc dữ liệu được sử dụng để tạo đám mây thẻ.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param array[] $tags_data An array of term data arrays for terms used to generate the tag cloud.
+	 * @param array[] $tags_data Mảng các mảng dữ liệu term cho các term được sử dụng để tạo đám mây thẻ.
 	 */
 	$tags_data = apply_filters( 'wp_generate_tag_cloud_data', $tags_data );
 
 	$a = array();
 
-	// Generate the output links array.
+	// Tạo mảng liên kết đầu ra.
 	foreach ( $tags_data as $key => $tag_data ) {
 		$class = $tag_data['class'] . ' tag-link-position-' . ( $key + 1 );
 		$a[]   = sprintf(
@@ -1021,9 +1021,9 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 			break;
 		case 'list':
 			/*
-			 * Force role="list", as some browsers (sic: Safari 10) don't expose to assistive
-			 * technologies the default role when the list is styled with `list-style: none`.
-			 * Note: this is redundant but doesn't harm.
+			 * Ép buộc role="list", vì một số trình duyệt (đặc biệt: Safari 10) không cung cấp cho
+			 * các công nghệ hỗ trợ vai trò mặc định khi danh sách được tạo kiểu với `list-style: none`.
+			 * Lưu ý: điều này dư thừa nhưng không gây hại.
 			 */
 			$return  = "<ul class='wp-tag-cloud' role='list'>\n\t<li>";
 			$return .= implode( "</li>\n\t<li>", $a );
@@ -1036,20 +1036,20 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 
 	if ( $args['filter'] ) {
 		/**
-		 * Filters the generated output of a tag cloud.
+		 * Lọc đầu ra đã tạo của đám mây thẻ.
 		 *
-		 * The filter is only evaluated if a true value is passed
-		 * to the $filter argument in wp_generate_tag_cloud().
+		 * Bộ lọc chỉ được đánh giá nếu giá trị true được truyền
+		 * cho đối số $filter trong wp_generate_tag_cloud().
 		 *
 		 * @since 2.3.0
 		 *
 		 * @see wp_generate_tag_cloud()
 		 *
-		 * @param string[]|string $return String containing the generated HTML tag cloud output
-		 *                                or an array of tag links if the 'format' argument
-		 *                                equals 'array'.
-		 * @param WP_Term[]       $tags   An array of terms used in the tag cloud.
-		 * @param array           $args   An array of wp_generate_tag_cloud() arguments.
+		 * @param string[]|string $return Chuỗi chứa đầu ra HTML đám mây thẻ đã tạo
+		 *                                hoặc mảng liên kết thẻ nếu đối số 'format'
+		 *                                bằng 'array'.
+		 * @param WP_Term[]       $tags   Mảng các term được sử dụng trong đám mây thẻ.
+		 * @param array           $args   Mảng các đối số wp_generate_tag_cloud().
 		 */
 		return apply_filters( 'wp_generate_tag_cloud', $return, $tags, $args );
 	} else {
@@ -1058,17 +1058,17 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 }
 
 /**
- * Serves as a callback for comparing objects based on name.
+ * Dùng làm callback để so sánh các đối tượng dựa trên tên.
  *
- * Used with `uasort()`.
+ * Sử dụng với `uasort()`.
  *
  * @since 3.1.0
  * @access private
  *
- * @param object $a The first object to compare.
- * @param object $b The second object to compare.
- * @return int Negative number if `$a->name` is less than `$b->name`, zero if they are equal,
- *             or greater than zero if `$a->name` is greater than `$b->name`.
+ * @param object $a Đối tượng thứ nhất để so sánh.
+ * @param object $b Đối tượng thứ hai để so sánh.
+ * @return int Số âm nếu `$a->name` nhỏ hơn `$b->name`, 0 nếu bằng nhau,
+ *             hoặc lớn hơn 0 nếu `$a->name` lớn hơn `$b->name`.
  */
 function _wp_object_name_sort_cb( $a, $b ) {
 	return strnatcasecmp( $a->name, $b->name );

@@ -2553,21 +2553,21 @@ function wp_ajax_media_create_image_subsizes() {
 		}
 	}
 
-	// At this point the image has been uploaded successfully.
+	// Tại thời điểm này hình ảnh đã được tải lên thành công.
 	wp_send_json_success( $response );
 }
 
 /**
- * Handles uploading attachments via AJAX.
+ * Xử lý tải lên tệp đính kèm qua AJAX.
  *
  * @since 3.3.0
  */
 function wp_ajax_upload_attachment() {
 	check_ajax_referer( 'media-form' );
 	/*
-	 * This function does not use wp_send_json_success() / wp_send_json_error()
-	 * as the html4 Plupload handler requires a text/html Content-Type for older IE.
-	 * See https://core.trac.wordpress.org/ticket/31037
+	 * Hàm này không sử dụng wp_send_json_success() / wp_send_json_error()
+	 * vì trình xử lý Plupload html4 yêu cầu Content-Type text/html cho các phiên bản IE cũ.
+	 * Xem https://core.trac.wordpress.org/ticket/31037
 	 */
 
 	if ( ! current_user_can( 'upload_files' ) ) {
@@ -2610,7 +2610,7 @@ function wp_ajax_upload_attachment() {
 		wp_die( $post_data->get_error_message() );
 	}
 
-	// If the context is custom header or background, make sure the uploaded file is an image.
+	// Nếu ngữ cảnh là header tùy chỉnh hoặc nền, đảm bảo tệp tải lên là hình ảnh.
 	if ( isset( $post_data['context'] ) && in_array( $post_data['context'], array( 'custom-header', 'custom-background' ), true ) ) {
 		$wp_filetype = wp_check_filetype_and_ext( $_FILES['async-upload']['tmp_name'], $_FILES['async-upload']['name'] );
 
@@ -2671,7 +2671,7 @@ function wp_ajax_upload_attachment() {
 }
 
 /**
- * Handles image editing via AJAX.
+ * Xử lý chỉnh sửa hình ảnh qua AJAX.
  *
  * @since 3.1.0
  */
@@ -2726,12 +2726,12 @@ function wp_ajax_image_editor() {
 }
 
 /**
- * Handles setting the featured image via AJAX.
+ * Xử lý đặt ảnh đại diện qua AJAX.
  *
  * @since 3.1.0
  */
 function wp_ajax_set_post_thumbnail() {
-	$json = ! empty( $_REQUEST['json'] ); // New-style request.
+	$json = ! empty( $_REQUEST['json'] ); // Yêu cầu kiểu mới.
 
 	$post_id = (int) $_POST['post_id'];
 	if ( ! current_user_can( 'edit_post', $post_id ) ) {
@@ -2764,7 +2764,7 @@ function wp_ajax_set_post_thumbnail() {
 }
 
 /**
- * Handles retrieving HTML for the featured image via AJAX.
+ * Xử lý lấy HTML cho ảnh đại diện qua AJAX.
  *
  * @since 4.6.0
  */

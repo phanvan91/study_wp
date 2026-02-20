@@ -887,7 +887,7 @@ function wp_extract_urls( $content ) {
 function do_enclose( $content, $post ) {
 	global $wpdb;
 
-	// @todo Tidy this code and make the debug code optional.
+	// @todo Dọn dẹp đoạn mã này và làm cho mã debug trở thành tùy chọn.
 	require_once ABSPATH . WPINC . '/class-IXR.php';
 
 	$post = get_post( $post );
@@ -2971,7 +2971,7 @@ function wp_upload_bits( $name, $deprecated, $bits, $time = null ) {
 		clean_dirsize_cache( $new_file );
 	}
 
-	/** This filter is documented in wp-admin/includes/file.php */
+	/** Bộ lọc này được ghi nhận trong wp-admin/includes/file.php */
 	return apply_filters(
 		'wp_handle_upload',
 		array(
@@ -3179,8 +3179,8 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 
 		foreach ( $google_docs_types as $google_docs_type ) {
 			/*
-			 * finfo_file() can return duplicate mime type for Google docs,
-			 * this conditional reduces it to a single instance.
+			 * finfo_file() có thể trả về kiểu mime trùng lặp cho Google docs,
+			 * điều kiện này giảm nó xuống còn một thực thể duy nhất.
 			 *
 			 * @see https://bugs.php.net/bug.php?id=77784
 			 * @see https://core.trac.wordpress.org/ticket/57898
@@ -3190,7 +3190,7 @@ function wp_check_filetype_and_ext( $file, $filename, $mimes = null ) {
 			}
 		}
 
-		// fileinfo often misidentifies obscure files as one of these types.
+		// fileinfo thường nhận dạng sai các tệp ít phổ biến thành một trong các kiểu này.
 		$nonspecific_types = array(
 			'application/octet-stream',
 			'application/encrypted',
@@ -5180,43 +5180,43 @@ function _wp_array_set( &$input_array, $path, $value = null ) {
 }
 
 /**
- * This function is trying to replicate what
- * lodash's kebabCase (JS library) does in the client.
+ * Hàm này cố gắng tái tạo những gì
+ * kebabCase của lodash (thư viện JS) thực hiện ở phía client.
  *
- * The reason we need this function is that we do some processing
- * in both the client and the server (e.g.: we generate
- * preset classes from preset slugs) that needs to
- * create the same output.
+ * Lý do chúng ta cần hàm này là vì chúng ta xử lý
+ * ở cả phía client và server (ví dụ: chúng ta tạo
+ * các lớp preset từ slug preset) cần
+ * tạo ra cùng một đầu ra.
  *
- * We can't remove or update the client's library due to backward compatibility
- * (some of the output of lodash's kebabCase is saved in the post content).
- * We have to make the server behave like the client.
+ * Chúng ta không thể xóa hoặc cập nhật thư viện phía client vì tương thích ngược
+ * (một số đầu ra của kebabCase trong lodash được lưu trong nội dung bài viết).
+ * Chúng ta phải làm cho server hoạt động giống client.
  *
- * Changes to this function should follow updates in the client
- * with the same logic.
+ * Các thay đổi cho hàm này nên theo dõi các cập nhật ở phía client
+ * với cùng logic.
  *
  * @link https://github.com/lodash/lodash/blob/4.17/dist/lodash.js#L14369
  * @link https://github.com/lodash/lodash/blob/4.17/dist/lodash.js#L278
  * @link https://github.com/lodash-php/lodash-php/blob/master/src/String/kebabCase.php
  * @link https://github.com/lodash-php/lodash-php/blob/master/src/internal/unicodeWords.php
  *
- * @param string $input_string The string to kebab-case.
+ * @param string $input_string Chuỗi để chuyển thành kebab-case.
  *
- * @return string kebab-cased-string.
+ * @return string Chuỗi đã chuyển thành kebab-case.
  */
 function _wp_to_kebab_case( $input_string ) {
-	// Ignore the camelCase names for variables so the names are the same as lodash so comparing and porting new changes is easier.
+	// Bỏ qua quy tắc đặt tên camelCase cho biến để tên giống lodash, giúp so sánh và chuyển đổi các thay đổi mới dễ hơn.
 	// phpcs:disable WordPress.NamingConventions.ValidVariableName.VariableNotSnakeCase
 
 	/*
-	 * Some notable things we've removed compared to the lodash version are:
+	 * Một số điều đáng chú ý mà chúng ta đã loại bỏ so với phiên bản lodash:
 	 *
-	 * - non-alphanumeric characters: rsAstralRange, rsEmoji, etc
-	 * - the groups that processed the apostrophe, as it's removed before passing the string to preg_match: rsApos, rsOptContrLower, and rsOptContrUpper
+	 * - các ký tự không phải chữ-số: rsAstralRange, rsEmoji, v.v.
+	 * - các nhóm xử lý dấu nháy đơn, vì nó được xóa trước khi truyền chuỗi tới preg_match: rsApos, rsOptContrLower, và rsOptContrUpper
 	 *
 	 */
 
-	/** Used to compose unicode character classes. */
+	/** Dùng để tạo các lớp ký tự unicode. */
 	$rsLowerRange       = 'a-z\\xdf-\\xf6\\xf8-\\xff';
 	$rsNonCharRange     = '\\x00-\\x2f\\x3a-\\x40\\x5b-\\x60\\x7b-\\xbf';
 	$rsPunctuationRange = '\\x{2000}-\\x{206f}';
@@ -5224,14 +5224,14 @@ function _wp_to_kebab_case( $input_string ) {
 	$rsUpperRange       = 'A-Z\\xc0-\\xd6\\xd8-\\xde';
 	$rsBreakRange       = $rsNonCharRange . $rsPunctuationRange . $rsSpaceRange;
 
-	/** Used to compose unicode capture groups. */
+	/** Dùng để tạo các nhóm bắt unicode. */
 	$rsBreak  = '[' . $rsBreakRange . ']';
 	$rsDigits = '\\d+'; // The last lodash version in GitHub uses a single digit here and expands it when in use.
 	$rsLower  = '[' . $rsLowerRange . ']';
 	$rsMisc   = '[^' . $rsBreakRange . $rsDigits . $rsLowerRange . $rsUpperRange . ']';
 	$rsUpper  = '[' . $rsUpperRange . ']';
 
-	/** Used to compose unicode regexes. */
+	/** Dùng để tạo các biểu thức chính quy unicode. */
 	$rsMiscLower = '(?:' . $rsLower . '|' . $rsMisc . ')';
 	$rsMiscUpper = '(?:' . $rsUpper . '|' . $rsMisc . ')';
 	$rsOrdLower  = '\\d*(?:1st|2nd|3rd|(?![123])\\dth)(?=\\b|[A-Z_])';
@@ -5256,12 +5256,12 @@ function _wp_to_kebab_case( $input_string ) {
 }
 
 /**
- * Determines if the variable is a numeric-indexed array.
+ * Xác định xem biến có phải là mảng có chỉ mục số hay không.
  *
  * @since 4.4.0
  *
- * @param mixed $data Variable to check.
- * @return bool Whether the variable is a list.
+ * @param mixed $data Biến cần kiểm tra.
+ * @return bool Liệu biến có phải là danh sách hay không.
  */
 function wp_is_numeric_array( $data ) {
 	if ( ! is_array( $data ) ) {
@@ -5275,32 +5275,32 @@ function wp_is_numeric_array( $data ) {
 }
 
 /**
- * Filters a list of objects, based on a set of key => value arguments.
+ * Lọc danh sách đối tượng, dựa trên tập hợp các đối số key => value.
  *
- * Retrieves the objects from the list that match the given arguments.
- * Key represents property name, and value represents property value.
+ * Lấy các đối tượng từ danh sách khớp với các đối số đã cho.
+ * Key đại diện cho tên thuộc tính, và value đại diện cho giá trị thuộc tính.
  *
- * If an object has more properties than those specified in arguments,
- * that will not disqualify it. When using the 'AND' operator,
- * any missing properties will disqualify it.
+ * Nếu một đối tượng có nhiều thuộc tính hơn những thuộc tính được chỉ định trong đối số,
+ * điều đó sẽ không loại trừ nó. Khi sử dụng toán tử 'AND',
+ * bất kỳ thuộc tính thiếu nào sẽ loại trừ nó.
  *
- * When using the `$field` argument, this function can also retrieve
- * a particular field from all matching objects, whereas wp_list_filter()
- * only does the filtering.
+ * Khi sử dụng đối số `$field`, hàm này cũng có thể lấy
+ * một trường cụ thể từ tất cả các đối tượng khớp, trong khi wp_list_filter()
+ * chỉ thực hiện việc lọc.
  *
  * @since 3.0.0
- * @since 4.7.0 Uses `WP_List_Util` class.
+ * @since 4.7.0 Sử dụng lớp `WP_List_Util`.
  *
- * @param array       $input_list An array of objects to filter.
- * @param array       $args       Optional. An array of key => value arguments to match
- *                                against each object. Default empty array.
- * @param string      $operator   Optional. The logical operation to perform. 'AND' means
- *                                all elements from the array must match. 'OR' means only
- *                                one element needs to match. 'NOT' means no elements may
- *                                match. Default 'AND'.
- * @param bool|string $field      Optional. A field from the object to place instead
- *                                of the entire object. Default false.
- * @return array A list of objects or object fields.
+ * @param array       $input_list Mảng các đối tượng cần lọc.
+ * @param array       $args       Tùy chọn. Mảng các đối số key => value để khớp
+ *                                với mỗi đối tượng. Mặc định mảng rỗng.
+ * @param string      $operator   Tùy chọn. Phép toán logic cần thực hiện. 'AND' nghĩa là
+ *                                tất cả phần tử từ mảng phải khớp. 'OR' nghĩa là chỉ
+ *                                một phần tử cần khớp. 'NOT' nghĩa là không phần tử nào
+ *                                được khớp. Mặc định 'AND'.
+ * @param bool|string $field      Tùy chọn. Trường từ đối tượng để đặt thay vì
+ *                                toàn bộ đối tượng. Mặc định false.
+ * @return array Danh sách các đối tượng hoặc các trường đối tượng.
  */
 function wp_filter_object_list( $input_list, $args = array(), $operator = 'and', $field = false ) {
 	if ( ! is_array( $input_list ) ) {
@@ -5319,52 +5319,52 @@ function wp_filter_object_list( $input_list, $args = array(), $operator = 'and',
 }
 
 /**
- * Filters a list of objects, based on a set of key => value arguments.
+ * Lọc danh sách đối tượng, dựa trên tập hợp các đối số key => value.
  *
- * Retrieves the objects from the list that match the given arguments.
- * Key represents property name, and value represents property value.
+ * Lấy các đối tượng từ danh sách khớp với các đối số đã cho.
+ * Key đại diện cho tên thuộc tính, và value đại diện cho giá trị thuộc tính.
  *
- * If an object has more properties than those specified in arguments,
- * that will not disqualify it. When using the 'AND' operator,
- * any missing properties will disqualify it.
+ * Nếu một đối tượng có nhiều thuộc tính hơn những thuộc tính được chỉ định trong đối số,
+ * điều đó sẽ không loại trừ nó. Khi sử dụng toán tử 'AND',
+ * bất kỳ thuộc tính thiếu nào sẽ loại trừ nó.
  *
- * If you want to retrieve a particular field from all matching objects,
- * use wp_filter_object_list() instead.
+ * Nếu bạn muốn lấy một trường cụ thể từ tất cả các đối tượng khớp,
+ * hãy sử dụng wp_filter_object_list() thay thế.
  *
  * @since 3.1.0
- * @since 4.7.0 Uses `WP_List_Util` class.
- * @since 5.9.0 Converted into a wrapper for `wp_filter_object_list()`.
+ * @since 4.7.0 Sử dụng lớp `WP_List_Util`.
+ * @since 5.9.0 Được chuyển thành wrapper cho `wp_filter_object_list()`.
  *
- * @param array  $input_list An array of objects to filter.
- * @param array  $args       Optional. An array of key => value arguments to match
- *                           against each object. Default empty array.
- * @param string $operator   Optional. The logical operation to perform. 'AND' means
- *                           all elements from the array must match. 'OR' means only
- *                           one element needs to match. 'NOT' means no elements may
- *                           match. Default 'AND'.
- * @return array Array of found values.
+ * @param array  $input_list Mảng các đối tượng cần lọc.
+ * @param array  $args       Tùy chọn. Mảng các đối số key => value để khớp
+ *                           với mỗi đối tượng. Mặc định mảng rỗng.
+ * @param string $operator   Tùy chọn. Phép toán logic cần thực hiện. 'AND' nghĩa là
+ *                           tất cả phần tử từ mảng phải khớp. 'OR' nghĩa là chỉ
+ *                           một phần tử cần khớp. 'NOT' nghĩa là không phần tử nào
+ *                           được khớp. Mặc định 'AND'.
+ * @return array Mảng các giá trị tìm thấy.
  */
 function wp_list_filter( $input_list, $args = array(), $operator = 'AND' ) {
 	return wp_filter_object_list( $input_list, $args, $operator );
 }
 
 /**
- * Plucks a certain field out of each object or array in an array.
+ * Trích xuất một trường cụ thể từ mỗi đối tượng hoặc mảng trong một mảng.
  *
- * This has the same functionality and prototype of
- * array_column() (PHP 5.5) but also supports objects.
+ * Hàm này có cùng chức năng và nguyên mẫu như
+ * array_column() (PHP 5.5) nhưng cũng hỗ trợ đối tượng.
  *
  * @since 3.1.0
- * @since 4.0.0 $index_key parameter added.
- * @since 4.7.0 Uses `WP_List_Util` class.
+ * @since 4.0.0 Thêm tham số $index_key.
+ * @since 4.7.0 Sử dụng lớp `WP_List_Util`.
  *
- * @param array      $input_list List of objects or arrays.
- * @param int|string $field      Field from the object to place instead of the entire object.
- * @param int|string $index_key  Optional. Field from the object to use as keys for the new array.
- *                               Default null.
- * @return array Array of found values. If `$index_key` is set, an array of found values with keys
- *               corresponding to `$index_key`. If `$index_key` is null, array keys from the original
- *               `$input_list` will be preserved in the results.
+ * @param array      $input_list Danh sách các đối tượng hoặc mảng.
+ * @param int|string $field      Trường từ đối tượng để đặt thay vì toàn bộ đối tượng.
+ * @param int|string $index_key  Tùy chọn. Trường từ đối tượng để sử dụng làm khóa cho mảng mới.
+ *                               Mặc định null.
+ * @return array Mảng các giá trị tìm thấy. Nếu `$index_key` được đặt, mảng các giá trị tìm thấy với khóa
+ *               tương ứng với `$index_key`. Nếu `$index_key` là null, các khóa mảng từ
+ *               `$input_list` gốc sẽ được bảo toàn trong kết quả.
  */
 function wp_list_pluck( $input_list, $field, $index_key = null ) {
 	if ( ! is_array( $input_list ) ) {
@@ -5377,18 +5377,18 @@ function wp_list_pluck( $input_list, $field, $index_key = null ) {
 }
 
 /**
- * Sorts an array of objects or arrays based on one or more orderby arguments.
+ * Sắp xếp mảng đối tượng hoặc mảng dựa trên một hoặc nhiều đối số orderby.
  *
  * @since 4.7.0
  *
- * @param array        $input_list    An array of objects or arrays to sort.
- * @param string|array $orderby       Optional. Either the field name to order by or an array
- *                                    of multiple orderby fields as `$orderby => $order`.
- *                                    Default empty array.
- * @param string       $order         Optional. Either 'ASC' or 'DESC'. Only used if `$orderby`
- *                                    is a string. Default 'ASC'.
- * @param bool         $preserve_keys Optional. Whether to preserve keys. Default false.
- * @return array The sorted array.
+ * @param array        $input_list    Mảng các đối tượng hoặc mảng cần sắp xếp.
+ * @param string|array $orderby       Tùy chọn. Tên trường để sắp xếp hoặc mảng
+ *                                    của nhiều trường orderby dưới dạng `$orderby => $order`.
+ *                                    Mặc định mảng rỗng.
+ * @param string       $order         Tùy chọn. 'ASC' hoặc 'DESC'. Chỉ được sử dụng nếu `$orderby`
+ *                                    là chuỗi. Mặc định 'ASC'.
+ * @param bool         $preserve_keys Tùy chọn. Có bảo toàn khóa hay không. Mặc định false.
+ * @return array Mảng đã sắp xếp.
  */
 function wp_list_sort( $input_list, $orderby = array(), $order = 'ASC', $preserve_keys = false ) {
 	if ( ! is_array( $input_list ) ) {
@@ -5401,24 +5401,24 @@ function wp_list_sort( $input_list, $orderby = array(), $order = 'ASC', $preserv
 }
 
 /**
- * Determines if Widgets library should be loaded.
+ * Xác định xem thư viện Widget có nên được tải hay không.
  *
- * Checks to make sure that the widgets library hasn't already been loaded.
- * If it hasn't, then it will load the widgets library and run an action hook.
+ * Kiểm tra để đảm bảo thư viện widget chưa được tải.
+ * Nếu chưa, thì nó sẽ tải thư viện widget và chạy một action hook.
  *
  * @since 2.2.0
  */
 function wp_maybe_load_widgets() {
 	/**
-	 * Filters whether to load the Widgets library.
+	 * Lọc xem có nên tải thư viện Widget hay không.
 	 *
-	 * Returning a falsey value from the filter will effectively short-circuit
-	 * the Widgets library from loading.
+	 * Trả về giá trị falsey từ bộ lọc sẽ ngắn mạch hiệu quả
+	 * việc tải thư viện Widget.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param bool $wp_maybe_load_widgets Whether to load the Widgets library.
-	 *                                    Default true.
+	 * @param bool $wp_maybe_load_widgets Có nên tải thư viện Widget hay không.
+	 *                                    Mặc định true.
 	 */
 	if ( ! apply_filters( 'load_default_widgets', true ) ) {
 		return;
@@ -5430,10 +5430,10 @@ function wp_maybe_load_widgets() {
 }
 
 /**
- * Appends the Widgets menu to the themes main menu.
+ * Thêm menu Widget vào menu chính của giao diện.
  *
  * @since 2.2.0
- * @since 5.9.3 Don't specify menu order when the active theme is a block theme.
+ * @since 5.9.3 Không chỉ định thứ tự menu khi giao diện đang hoạt động là block theme.
  *
  * @global array $submenu
  */
@@ -5455,9 +5455,9 @@ function wp_widgets_add_menu() {
 }
 
 /**
- * Flushes all output buffers for PHP 5.2.
+ * Xả tất cả bộ đệm đầu ra cho PHP 5.2.
  *
- * Make sure all output buffers are flushed before our singletons are destroyed.
+ * Đảm bảo tất cả bộ đệm đầu ra được xả trước khi các singleton của chúng ta bị hủy.
  *
  * @since 2.2.0
  */
@@ -5469,80 +5469,80 @@ function wp_ob_end_flush_all() {
 }
 
 /**
- * Loads custom DB error or display WordPress DB error.
+ * Tải lỗi DB tùy chỉnh hoặc hiển thị lỗi DB WordPress.
  *
- * If a file exists in the wp-content directory named db-error.php, then it will
- * be loaded instead of displaying the WordPress DB error. If it is not found,
- * then the WordPress DB error will be displayed instead.
+ * Nếu một tệp tồn tại trong thư mục wp-content có tên db-error.php, thì nó sẽ
+ * được tải thay vì hiển thị lỗi DB WordPress. Nếu không tìm thấy,
+ * thì lỗi DB WordPress sẽ được hiển thị thay thế.
  *
- * The WordPress DB error sets the HTTP status header to 500 to try to prevent
- * search engines from caching the message. Custom DB messages should do the
- * same.
+ * Lỗi DB WordPress đặt header trạng thái HTTP thành 500 để cố ngăn
+ * các công cụ tìm kiếm lưu đệm thông báo. Thông báo DB tùy chỉnh nên làm
+ * tương tự.
  *
- * This function was backported to WordPress 2.3.2, but originally was added
- * in WordPress 2.5.0.
+ * Hàm này được backport về WordPress 2.3.2, nhưng ban đầu được thêm
+ * trong WordPress 2.5.0.
  *
  * @since 2.3.2
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function dead_db() {
 	global $wpdb;
 
 	wp_load_translations_early();
 
-	// Load custom DB error template, if present.
+	// Tải template lỗi DB tùy chỉnh, nếu có.
 	if ( file_exists( WP_CONTENT_DIR . '/db-error.php' ) ) {
 		require_once WP_CONTENT_DIR . '/db-error.php';
 		die();
 	}
 
-	// If installing or in the admin, provide the verbose message.
+	// Nếu đang cài đặt hoặc trong trang quản trị, cung cấp thông báo chi tiết.
 	if ( wp_installing() || defined( 'WP_ADMIN' ) ) {
 		wp_die( $wpdb->error );
 	}
 
-	// Otherwise, be terse.
+	// Nếu không, hiển thị ngắn gọn.
 	wp_die( '<h1>' . __( 'Error establishing a database connection' ) . '</h1>', __( 'Database Error' ) );
 }
 
 /**
- * Marks a function as deprecated and inform when it has been used.
+ * Đánh dấu một hàm là không còn được khuyến nghị và thông báo khi nó được sử dụng.
  *
- * There is a {@see 'deprecated_function_run'} hook that will be called that can be used
- * to get the backtrace up to what file and function called the deprecated function.
+ * Có một hook {@see 'deprecated_function_run'} sẽ được gọi và có thể được sử dụng
+ * để lấy backtrace đến tệp và hàm nào đã gọi hàm không còn được khuyến nghị.
  *
- * The current behavior is to trigger a user error if `WP_DEBUG` is true.
+ * Hành vi hiện tại là kích hoạt lỗi người dùng nếu `WP_DEBUG` là true.
  *
- * This function is to be used in every function that is deprecated.
+ * Hàm này được sử dụng trong mọi hàm không còn được khuyến nghị.
  *
  * @since 2.5.0
- * @since 5.4.0 This function is no longer marked as "private".
- * @since 5.4.0 The error type is now classified as E_USER_DEPRECATED (used to default to E_USER_NOTICE).
+ * @since 5.4.0 Hàm này không còn được đánh dấu là "private".
+ * @since 5.4.0 Loại lỗi hiện được phân loại là E_USER_DEPRECATED (trước đây mặc định là E_USER_NOTICE).
  *
- * @param string $function_name The function that was called.
- * @param string $version       The version of WordPress that deprecated the function.
- * @param string $replacement   Optional. The function that should have been called. Default empty string.
+ * @param string $function_name Hàm đã được gọi.
+ * @param string $version       Phiên bản WordPress đã loại bỏ hàm.
+ * @param string $replacement   Tùy chọn. Hàm lẽ ra nên được gọi. Mặc định chuỗi rỗng.
  */
 function _deprecated_function( $function_name, $version, $replacement = '' ) {
 
 	/**
-	 * Fires when a deprecated function is called.
+	 * Kích hoạt khi một hàm không còn được khuyến nghị được gọi.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $function_name The function that was called.
-	 * @param string $replacement   The function that should have been called.
-	 * @param string $version       The version of WordPress that deprecated the function.
+	 * @param string $function_name Hàm đã được gọi.
+	 * @param string $replacement   Hàm lẽ ra nên được gọi.
+	 * @param string $version       Phiên bản WordPress đã loại bỏ hàm.
 	 */
 	do_action( 'deprecated_function_run', $function_name, $replacement, $version );
 
 	/**
-	 * Filters whether to trigger an error for deprecated functions.
+	 * Lọc xem có nên kích hoạt lỗi cho các hàm không còn được khuyến nghị hay không.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
+	 * @param bool $trigger Có nên kích hoạt lỗi cho các hàm không còn được khuyến nghị hay không. Mặc định true.
 	 */
 	if ( WP_DEBUG && apply_filters( 'deprecated_function_trigger_error', true ) ) {
 		if ( function_exists( '__' ) ) {
@@ -5584,47 +5584,47 @@ function _deprecated_function( $function_name, $version, $replacement = '' ) {
 }
 
 /**
- * Marks a constructor as deprecated and informs when it has been used.
+ * Đánh dấu một constructor là không còn được khuyến nghị và thông báo khi nó được sử dụng.
  *
- * Similar to _deprecated_function(), but with different strings. Used to
- * remove PHP4-style constructors.
+ * Tương tự _deprecated_function(), nhưng với chuỗi khác. Được sử dụng để
+ * loại bỏ các constructor kiểu PHP4.
  *
- * The current behavior is to trigger a user error if `WP_DEBUG` is true.
+ * Hành vi hiện tại là kích hoạt lỗi người dùng nếu `WP_DEBUG` là true.
  *
- * This function is to be used in every PHP4-style constructor method that is deprecated.
+ * Hàm này được sử dụng trong mọi phương thức constructor kiểu PHP4 không còn được khuyến nghị.
  *
  * @since 4.3.0
- * @since 4.5.0 Added the `$parent_class` parameter.
- * @since 5.4.0 This function is no longer marked as "private".
- * @since 5.4.0 The error type is now classified as E_USER_DEPRECATED (used to default to E_USER_NOTICE).
+ * @since 4.5.0 Thêm tham số `$parent_class`.
+ * @since 5.4.0 Hàm này không còn được đánh dấu là "private".
+ * @since 5.4.0 Loại lỗi hiện được phân loại là E_USER_DEPRECATED (trước đây mặc định là E_USER_NOTICE).
  *
- * @param string $class_name   The class containing the deprecated constructor.
- * @param string $version      The version of WordPress that deprecated the function.
- * @param string $parent_class Optional. The parent class calling the deprecated constructor.
- *                             Default empty string.
+ * @param string $class_name   Lớp chứa constructor không còn được khuyến nghị.
+ * @param string $version      Phiên bản WordPress đã loại bỏ hàm.
+ * @param string $parent_class Tùy chọn. Lớp cha gọi constructor không còn được khuyến nghị.
+ *                             Mặc định chuỗi rỗng.
  */
 function _deprecated_constructor( $class_name, $version, $parent_class = '' ) {
 
 	/**
-	 * Fires when a deprecated constructor is called.
+	 * Kích hoạt khi một constructor không còn được khuyến nghị được gọi.
 	 *
 	 * @since 4.3.0
-	 * @since 4.5.0 Added the `$parent_class` parameter.
+	 * @since 4.5.0 Thêm tham số `$parent_class`.
 	 *
-	 * @param string $class_name   The class containing the deprecated constructor.
-	 * @param string $version      The version of WordPress that deprecated the function.
-	 * @param string $parent_class The parent class calling the deprecated constructor.
+	 * @param string $class_name   Lớp chứa constructor không còn được khuyến nghị.
+	 * @param string $version      Phiên bản WordPress đã loại bỏ hàm.
+	 * @param string $parent_class Lớp cha gọi constructor không còn được khuyến nghị.
 	 */
 	do_action( 'deprecated_constructor_run', $class_name, $version, $parent_class );
 
 	/**
-	 * Filters whether to trigger an error for deprecated functions.
+	 * Lọc xem có nên kích hoạt lỗi cho các hàm không còn được khuyến nghị hay không.
 	 *
-	 * `WP_DEBUG` must be true in addition to the filter evaluating to true.
+	 * `WP_DEBUG` phải được đặt thành true ngoài việc bộ lọc đánh giá là true.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param bool $trigger Whether to trigger the error for deprecated functions. Default true.
+	 * @param bool $trigger Có nên kích hoạt lỗi cho các hàm không còn được khuyến nghị hay không. Mặc định true.
 	 */
 	if ( WP_DEBUG && apply_filters( 'deprecated_constructor_trigger_error', true ) ) {
 		if ( function_exists( '__' ) ) {
@@ -5670,42 +5670,42 @@ function _deprecated_constructor( $class_name, $version, $parent_class = '' ) {
 }
 
 /**
- * Marks a class as deprecated and informs when it has been used.
+ * Đánh dấu một lớp là không còn được khuyến nghị và thông báo khi nó được sử dụng.
  *
- * There is a {@see 'deprecated_class_run'} hook that will be called that can be used
- * to get the backtrace up to what file and function called the deprecated class.
+ * Có một hook {@see 'deprecated_class_run'} sẽ được gọi và có thể được sử dụng
+ * để lấy backtrace đến tệp và hàm nào đã gọi lớp không còn được khuyến nghị.
  *
- * The current behavior is to trigger a user error if `WP_DEBUG` is true.
+ * Hành vi hiện tại là kích hoạt lỗi người dùng nếu `WP_DEBUG` là true.
  *
- * This function is to be used in the class constructor for every deprecated class.
- * See {@see _deprecated_constructor()} for deprecating PHP4-style constructors.
+ * Hàm này được sử dụng trong constructor của mọi lớp không còn được khuyến nghị.
+ * Xem {@see _deprecated_constructor()} để loại bỏ các constructor kiểu PHP4.
  *
  * @since 6.4.0
  *
- * @param string $class_name  The name of the class being instantiated.
- * @param string $version     The version of WordPress that deprecated the class.
- * @param string $replacement Optional. The class or function that should have been called.
- *                            Default empty string.
+ * @param string $class_name  Tên của lớp đang được khởi tạo.
+ * @param string $version     Phiên bản WordPress đã loại bỏ lớp.
+ * @param string $replacement Tùy chọn. Lớp hoặc hàm lẽ ra nên được gọi.
+ *                            Mặc định chuỗi rỗng.
  */
 function _deprecated_class( $class_name, $version, $replacement = '' ) {
 
 	/**
-	 * Fires when a deprecated class is called.
+	 * Kích hoạt khi một lớp không còn được khuyến nghị được gọi.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param string $class_name  The name of the class being instantiated.
-	 * @param string $replacement The class or function that should have been called.
-	 * @param string $version     The version of WordPress that deprecated the class.
+	 * @param string $class_name  Tên của lớp đang được khởi tạo.
+	 * @param string $replacement Lớp hoặc hàm lẽ ra nên được gọi.
+	 * @param string $version     Phiên bản WordPress đã loại bỏ lớp.
 	 */
 	do_action( 'deprecated_class_run', $class_name, $replacement, $version );
 
 	/**
-	 * Filters whether to trigger an error for a deprecated class.
+	 * Lọc xem có nên kích hoạt lỗi cho lớp không còn được khuyến nghị hay không.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param bool $trigger Whether to trigger an error for a deprecated class. Default true.
+	 * @param bool $trigger Có nên kích hoạt lỗi cho lớp không còn được khuyến nghị hay không. Mặc định true.
 	 */
 	if ( WP_DEBUG && apply_filters( 'deprecated_class_trigger_error', true ) ) {
 		if ( function_exists( '__' ) ) {
@@ -5747,45 +5747,45 @@ function _deprecated_class( $class_name, $version, $replacement = '' ) {
 }
 
 /**
- * Marks a file as deprecated and inform when it has been used.
+ * Đánh dấu một tệp là không còn được khuyến nghị và thông báo khi nó được sử dụng.
  *
- * There is a {@see 'deprecated_file_included'} hook that will be called that can be used
- * to get the backtrace up to what file and function included the deprecated file.
+ * Có một hook {@see 'deprecated_file_included'} sẽ được gọi và có thể được sử dụng
+ * để lấy backtrace đến tệp và hàm nào đã include tệp không còn được khuyến nghị.
  *
- * The current behavior is to trigger a user error if `WP_DEBUG` is true.
+ * Hành vi hiện tại là kích hoạt lỗi người dùng nếu `WP_DEBUG` là true.
  *
- * This function is to be used in every file that is deprecated.
+ * Hàm này được sử dụng trong mọi tệp không còn được khuyến nghị.
  *
  * @since 2.5.0
- * @since 5.4.0 This function is no longer marked as "private".
- * @since 5.4.0 The error type is now classified as E_USER_DEPRECATED (used to default to E_USER_NOTICE).
+ * @since 5.4.0 Hàm này không còn được đánh dấu là "private".
+ * @since 5.4.0 Loại lỗi hiện được phân loại là E_USER_DEPRECATED (trước đây mặc định là E_USER_NOTICE).
  *
- * @param string $file        The file that was included.
- * @param string $version     The version of WordPress that deprecated the file.
- * @param string $replacement Optional. The file that should have been included based on ABSPATH.
- *                            Default empty string.
- * @param string $message     Optional. A message regarding the change. Default empty string.
+ * @param string $file        Tệp đã được include.
+ * @param string $version     Phiên bản WordPress đã loại bỏ tệp.
+ * @param string $replacement Tùy chọn. Tệp lẽ ra nên được include dựa trên ABSPATH.
+ *                            Mặc định chuỗi rỗng.
+ * @param string $message     Tùy chọn. Thông báo liên quan đến thay đổi. Mặc định chuỗi rỗng.
  */
 function _deprecated_file( $file, $version, $replacement = '', $message = '' ) {
 
 	/**
-	 * Fires when a deprecated file is called.
+	 * Kích hoạt khi một tệp không còn được khuyến nghị được gọi.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file        The file that was called.
-	 * @param string $replacement The file that should have been included based on ABSPATH.
-	 * @param string $version     The version of WordPress that deprecated the file.
-	 * @param string $message     A message regarding the change.
+	 * @param string $file        Tệp đã được gọi.
+	 * @param string $replacement Tệp lẽ ra nên được include dựa trên ABSPATH.
+	 * @param string $version     Phiên bản WordPress đã loại bỏ tệp.
+	 * @param string $message     Thông báo liên quan đến thay đổi.
 	 */
 	do_action( 'deprecated_file_included', $file, $replacement, $version, $message );
 
 	/**
-	 * Filters whether to trigger an error for deprecated files.
+	 * Lọc xem có nên kích hoạt lỗi cho các tệp không còn được khuyến nghị hay không.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param bool $trigger Whether to trigger the error for deprecated files. Default true.
+	 * @param bool $trigger Có nên kích hoạt lỗi cho các tệp không còn được khuyến nghị hay không. Mặc định true.
 	 */
 	if ( WP_DEBUG && apply_filters( 'deprecated_file_trigger_error', true ) ) {
 		$message = empty( $message ) ? '' : ' ' . $message;
@@ -5828,50 +5828,50 @@ function _deprecated_file( $file, $version, $replacement = '', $message = '' ) {
 	}
 }
 /**
- * Marks a function argument as deprecated and inform when it has been used.
+ * Đánh dấu một tham số hàm là không còn được khuyến nghị và thông báo khi nó được sử dụng.
  *
- * This function is to be used whenever a deprecated function argument is used.
- * Before this function is called, the argument must be checked for whether it was
- * used by comparing it to its default value or evaluating whether it is empty.
+ * Hàm này được sử dụng bất cứ khi nào một tham số hàm không còn được khuyến nghị được sử dụng.
+ * Trước khi hàm này được gọi, tham số phải được kiểm tra xem nó đã được sử dụng hay chưa
+ * bằng cách so sánh với giá trị mặc định hoặc đánh giá xem nó có rỗng hay không.
  *
- * For example:
+ * Ví dụ:
  *
  *     if ( ! empty( $deprecated ) ) {
  *         _deprecated_argument( __FUNCTION__, '3.0.0' );
  *     }
  *
- * There is a {@see 'deprecated_argument_run'} hook that will be called that can be used
- * to get the backtrace up to what file and function used the deprecated argument.
+ * Có một hook {@see 'deprecated_argument_run'} sẽ được gọi và có thể được sử dụng
+ * để lấy backtrace đến tệp và hàm nào đã sử dụng tham số không còn được khuyến nghị.
  *
- * The current behavior is to trigger a user error if WP_DEBUG is true.
+ * Hành vi hiện tại là kích hoạt lỗi người dùng nếu WP_DEBUG là true.
  *
  * @since 3.0.0
- * @since 5.4.0 This function is no longer marked as "private".
- * @since 5.4.0 The error type is now classified as E_USER_DEPRECATED (used to default to E_USER_NOTICE).
+ * @since 5.4.0 Hàm này không còn được đánh dấu là "private".
+ * @since 5.4.0 Loại lỗi hiện được phân loại là E_USER_DEPRECATED (trước đây mặc định là E_USER_NOTICE).
  *
- * @param string $function_name The function that was called.
- * @param string $version       The version of WordPress that deprecated the argument used.
- * @param string $message       Optional. A message regarding the change. Default empty string.
+ * @param string $function_name Hàm đã được gọi.
+ * @param string $version       Phiên bản WordPress đã loại bỏ tham số được sử dụng.
+ * @param string $message       Tùy chọn. Thông báo liên quan đến thay đổi. Mặc định chuỗi rỗng.
  */
 function _deprecated_argument( $function_name, $version, $message = '' ) {
 
 	/**
-	 * Fires when a deprecated argument is called.
+	 * Kích hoạt khi một tham số không còn được khuyến nghị được gọi.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $function_name The function that was called.
-	 * @param string $message       A message regarding the change.
-	 * @param string $version       The version of WordPress that deprecated the argument used.
+	 * @param string $function_name Hàm đã được gọi.
+	 * @param string $message       Thông báo liên quan đến thay đổi.
+	 * @param string $version       Phiên bản WordPress đã loại bỏ tham số được sử dụng.
 	 */
 	do_action( 'deprecated_argument_run', $function_name, $message, $version );
 
 	/**
-	 * Filters whether to trigger an error for deprecated arguments.
+	 * Lọc xem có nên kích hoạt lỗi cho các tham số không còn được khuyến nghị hay không.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param bool $trigger Whether to trigger the error for deprecated arguments. Default true.
+	 * @param bool $trigger Có nên kích hoạt lỗi cho các tham số không còn được khuyến nghị hay không. Mặc định true.
 	 */
 	if ( WP_DEBUG && apply_filters( 'deprecated_argument_trigger_error', true ) ) {
 		if ( function_exists( '__' ) ) {
@@ -5913,45 +5913,45 @@ function _deprecated_argument( $function_name, $version, $message = '' ) {
 }
 
 /**
- * Marks a deprecated action or filter hook as deprecated and throws a notice.
+ * Đánh dấu một action hoặc filter hook không còn được khuyến nghị và ném ra thông báo.
  *
- * Use the {@see 'deprecated_hook_run'} action to get the backtrace describing where
- * the deprecated hook was called.
+ * Sử dụng action {@see 'deprecated_hook_run'} để lấy backtrace mô tả nơi
+ * hook không còn được khuyến nghị được gọi.
  *
- * Default behavior is to trigger a user error if `WP_DEBUG` is true.
+ * Hành vi mặc định là kích hoạt lỗi người dùng nếu `WP_DEBUG` là true.
  *
- * This function is called by the do_action_deprecated() and apply_filters_deprecated()
- * functions, and so generally does not need to be called directly.
+ * Hàm này được gọi bởi các hàm do_action_deprecated() và apply_filters_deprecated(),
+ * và do đó thường không cần được gọi trực tiếp.
  *
  * @since 4.6.0
- * @since 5.4.0 The error type is now classified as E_USER_DEPRECATED (used to default to E_USER_NOTICE).
+ * @since 5.4.0 Loại lỗi hiện được phân loại là E_USER_DEPRECATED (trước đây mặc định là E_USER_NOTICE).
  * @access private
  *
- * @param string $hook        The hook that was used.
- * @param string $version     The version of WordPress that deprecated the hook.
- * @param string $replacement Optional. The hook that should have been used. Default empty string.
- * @param string $message     Optional. A message regarding the change. Default empty.
+ * @param string $hook        Hook đã được sử dụng.
+ * @param string $version     Phiên bản WordPress đã loại bỏ hook.
+ * @param string $replacement Tùy chọn. Hook lẽ ra nên được sử dụng. Mặc định chuỗi rỗng.
+ * @param string $message     Tùy chọn. Thông báo liên quan đến thay đổi. Mặc định chuỗi rỗng.
  */
 function _deprecated_hook( $hook, $version, $replacement = '', $message = '' ) {
 	/**
-	 * Fires when a deprecated hook is called.
+	 * Kích hoạt khi một hook không còn được khuyến nghị được gọi.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param string $hook        The hook that was called.
-	 * @param string $replacement The hook that should be used as a replacement.
-	 * @param string $version     The version of WordPress that deprecated the argument used.
-	 * @param string $message     A message regarding the change.
+	 * @param string $hook        Hook đã được gọi.
+	 * @param string $replacement Hook lẽ ra nên được sử dụng thay thế.
+	 * @param string $version     Phiên bản WordPress đã loại bỏ tham số được sử dụng.
+	 * @param string $message     Thông báo liên quan đến thay đổi.
 	 */
 	do_action( 'deprecated_hook_run', $hook, $replacement, $version, $message );
 
 	/**
-	 * Filters whether to trigger deprecated hook errors.
+	 * Lọc xem có nên kích hoạt lỗi cho hook không còn được khuyến nghị hay không.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param bool $trigger Whether to trigger deprecated hook errors. Requires
-	 *                      `WP_DEBUG` to be defined true.
+	 * @param bool $trigger Có nên kích hoạt lỗi cho hook không còn được khuyến nghị hay không. Yêu cầu
+	 *                      `WP_DEBUG` được định nghĩa là true.
 	 */
 	if ( WP_DEBUG && apply_filters( 'deprecated_hook_trigger_error', true ) ) {
 		$message = empty( $message ) ? '' : ' ' . $message;
@@ -5978,43 +5978,43 @@ function _deprecated_hook( $hook, $version, $replacement = '', $message = '' ) {
 }
 
 /**
- * Marks something as being incorrectly called.
+ * Đánh dấu một thứ gì đó được gọi không đúng cách.
  *
- * There is a {@see 'doing_it_wrong_run'} hook that will be called that can be used
- * to get the backtrace up to what file and function called the deprecated function.
+ * Có một hook {@see 'doing_it_wrong_run'} sẽ được gọi và có thể được sử dụng
+ * để lấy backtrace đến tệp và hàm nào đã gọi hàm không đúng cách.
  *
- * The current behavior is to trigger a user error if `WP_DEBUG` is true.
+ * Hành vi hiện tại là kích hoạt lỗi người dùng nếu `WP_DEBUG` là true.
  *
  * @since 3.1.0
- * @since 5.4.0 This function is no longer marked as "private".
+ * @since 5.4.0 Hàm này không còn được đánh dấu là "private".
  *
- * @param string $function_name The function that was called.
- * @param string $message       A message explaining what has been done incorrectly.
- * @param string $version       The version of WordPress where the message was added.
+ * @param string $function_name Hàm đã được gọi.
+ * @param string $message       Thông báo giải thích điều gì đã được thực hiện không đúng cách.
+ * @param string $version       Phiên bản WordPress nơi thông báo được thêm vào.
  */
 function _doing_it_wrong( $function_name, $message, $version ) {
 
 	/**
-	 * Fires when the given function is being used incorrectly.
+	 * Kích hoạt khi hàm đã cho đang được sử dụng không đúng cách.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $function_name The function that was called.
-	 * @param string $message       A message explaining what has been done incorrectly.
-	 * @param string $version       The version of WordPress where the message was added.
+	 * @param string $function_name Hàm đã được gọi.
+	 * @param string $message       Thông báo giải thích điều gì đã được thực hiện không đúng cách.
+	 * @param string $version       Phiên bản WordPress nơi thông báo được thêm vào.
 	 */
 	do_action( 'doing_it_wrong_run', $function_name, $message, $version );
 
 	/**
-	 * Filters whether to trigger an error for _doing_it_wrong() calls.
+	 * Lọc xem có nên kích hoạt lỗi cho các lời gọi _doing_it_wrong() hay không.
 	 *
 	 * @since 3.1.0
-	 * @since 5.1.0 Added the $function_name, $message and $version parameters.
+	 * @since 5.1.0 Thêm các tham số $function_name, $message và $version.
 	 *
-	 * @param bool   $trigger       Whether to trigger the error for _doing_it_wrong() calls. Default true.
-	 * @param string $function_name The function that was called.
-	 * @param string $message       A message explaining what has been done incorrectly.
-	 * @param string $version       The version of WordPress where the message was added.
+	 * @param bool   $trigger       Có nên kích hoạt lỗi cho các lời gọi _doing_it_wrong() hay không. Mặc định true.
+	 * @param string $function_name Hàm đã được gọi.
+	 * @param string $message       Thông báo giải thích điều gì đã được thực hiện không đúng cách.
+	 * @param string $version       Phiên bản WordPress nơi thông báo được thêm vào.
 	 */
 	if ( WP_DEBUG && apply_filters( 'doing_it_wrong_trigger_error', true, $function_name, $message, $version ) ) {
 		if ( function_exists( '__' ) ) {
@@ -6059,38 +6059,38 @@ function _doing_it_wrong( $function_name, $message, $version ) {
 }
 
 /**
- * Generates a user-level error/warning/notice/deprecation message.
+ * Tạo thông báo lỗi/cảnh báo/chú ý/loại bỏ ở cấp người dùng.
  *
- * Generates the message when `WP_DEBUG` is true.
+ * Tạo thông báo khi `WP_DEBUG` là true.
  *
  * @since 6.4.0
  *
- * @param string $function_name The function that triggered the error.
- * @param string $message       The message explaining the error.
- *                              The message can contain allowed HTML 'a' (with href), 'code',
- *                              'br', 'em', and 'strong' tags and http or https protocols.
- *                              If it contains other HTML tags or protocols, the message should be escaped
- *                              before passing to this function to avoid being stripped {@see wp_kses()}.
- * @param int    $error_level   Optional. The designated error type for this error.
- *                              Only works with E_USER family of constants. Default E_USER_NOTICE.
+ * @param string $function_name Hàm đã kích hoạt lỗi.
+ * @param string $message       Thông báo giải thích lỗi.
+ *                              Thông báo có thể chứa các thẻ HTML được phép 'a' (với href), 'code',
+ *                              'br', 'em', và 'strong' và các giao thức http hoặc https.
+ *                              Nếu chứa các thẻ HTML hoặc giao thức khác, thông báo nên được escape
+ *                              trước khi truyền vào hàm này để tránh bị loại bỏ {@see wp_kses()}.
+ * @param int    $error_level   Tùy chọn. Loại lỗi được chỉ định cho lỗi này.
+ *                              Chỉ hoạt động với họ hằng số E_USER. Mặc định E_USER_NOTICE.
  */
 function wp_trigger_error( $function_name, $message, $error_level = E_USER_NOTICE ) {
 
-	// Bail out if WP_DEBUG is not turned on.
+	// Thoát sớm nếu WP_DEBUG không được bật.
 	if ( ! WP_DEBUG ) {
 		return;
 	}
 
 	/**
-	 * Fires when the given function triggers a user-level error/warning/notice/deprecation message.
+	 * Kích hoạt khi hàm đã cho kích hoạt thông báo lỗi/cảnh báo/chú ý/loại bỏ ở cấp người dùng.
 	 *
-	 * Can be used for debug backtracking.
+	 * Có thể được sử dụng để theo dõi ngược debug.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param string $function_name The function that was called.
-	 * @param string $message       A message explaining what has been done incorrectly.
-	 * @param int    $error_level   The designated error type for this error.
+	 * @param string $function_name Hàm đã được gọi.
+	 * @param string $message       Thông báo giải thích điều gì đã được thực hiện không đúng cách.
+	 * @param int    $error_level   Loại lỗi được chỉ định cho lỗi này.
 	 */
 	do_action( 'wp_trigger_error_run', $function_name, $message, $error_level );
 
@@ -6118,11 +6118,11 @@ function wp_trigger_error( $function_name, $message, $error_level = E_USER_NOTIC
 }
 
 /**
- * Determines whether the server is running an earlier than 1.5.0 version of lighttpd.
+ * Xác định xem máy chủ có đang chạy phiên bản lighttpd trước 1.5.0 hay không.
  *
  * @since 2.5.0
  *
- * @return bool Whether the server is running lighttpd < 1.5.0.
+ * @return bool Liệu máy chủ có đang chạy lighttpd < 1.5.0 hay không.
  */
 function is_lighttpd_before_150() {
 	$server_parts    = explode( '/', isset( $_SERVER['SERVER_SOFTWARE'] ) ? $_SERVER['SERVER_SOFTWARE'] : '' );
@@ -6132,15 +6132,15 @@ function is_lighttpd_before_150() {
 }
 
 /**
- * Determines whether the specified module exist in the Apache config.
+ * Xác định xem module được chỉ định có tồn tại trong cấu hình Apache hay không.
  *
  * @since 2.5.0
  *
  * @global bool $is_apache
  *
- * @param string $mod           The module, e.g. mod_rewrite.
- * @param bool   $default_value Optional. The default return value if the module is not found. Default false.
- * @return bool Whether the specified module is loaded.
+ * @param string $mod           Module, ví dụ mod_rewrite.
+ * @param bool   $default_value Tùy chọn. Giá trị trả về mặc định nếu module không được tìm thấy. Mặc định false.
+ * @return bool Liệu module được chỉ định có được tải hay không.
  */
 function apache_mod_loaded( $mod, $default_value = false ) {
 	global $is_apache;
@@ -6176,67 +6176,67 @@ function apache_mod_loaded( $mod, $default_value = false ) {
 }
 
 /**
- * Checks if IIS 7+ supports pretty permalinks.
+ * Kiểm tra xem IIS 7+ có hỗ trợ permalink đẹp hay không.
  *
  * @since 2.8.0
  *
  * @global bool $is_iis7
  *
- * @return bool Whether IIS7 supports permalinks.
+ * @return bool Liệu IIS7 có hỗ trợ permalink hay không.
  */
 function iis7_supports_permalinks() {
 	global $is_iis7;
 
 	$supports_permalinks = false;
 	if ( $is_iis7 ) {
-		/* First we check if the DOMDocument class exists. If it does not exist, then we cannot
-		 * easily update the xml configuration file, hence we just bail out and tell user that
-		 * pretty permalinks cannot be used.
+		/* Đầu tiên chúng ta kiểm tra xem lớp DOMDocument có tồn tại hay không. Nếu nó không tồn tại, thì chúng ta không thể
+		 * dễ dàng cập nhật tệp cấu hình xml, do đó chúng ta chỉ thoát ra và thông báo cho người dùng rằng
+		 * permalink đẹp không thể được sử dụng.
 		 *
-		 * Next we check if the URL Rewrite Module 1.1 is loaded and enabled for the website. When
-		 * URL Rewrite 1.1 is loaded it always sets a server variable called 'IIS_UrlRewriteModule'.
-		 * Lastly we make sure that PHP is running via FastCGI. This is important because if it runs
-		 * via ISAPI then pretty permalinks will not work.
+		 * Tiếp theo chúng ta kiểm tra xem Module URL Rewrite 1.1 có được tải và bật cho trang web hay không. Khi
+		 * URL Rewrite 1.1 được tải, nó luôn đặt một biến máy chủ có tên 'IIS_UrlRewriteModule'.
+		 * Cuối cùng chúng ta đảm bảo rằng PHP đang chạy qua FastCGI. Điều này quan trọng vì nếu nó chạy
+		 * qua ISAPI thì permalink đẹp sẽ không hoạt động.
 		 */
 		$supports_permalinks = class_exists( 'DOMDocument', false ) && isset( $_SERVER['IIS_UrlRewriteModule'] ) && ( 'cgi-fcgi' === PHP_SAPI );
 	}
 
 	/**
-	 * Filters whether IIS 7+ supports pretty permalinks.
+	 * Lọc xem IIS 7+ có hỗ trợ permalink đẹp hay không.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param bool $supports_permalinks Whether IIS7 supports permalinks. Default false.
+	 * @param bool $supports_permalinks Liệu IIS7 có hỗ trợ permalink hay không. Mặc định false.
 	 */
 	return apply_filters( 'iis7_supports_permalinks', $supports_permalinks );
 }
 
 /**
- * Validates a file name and path against an allowed set of rules.
+ * Xác thực tên file và đường dẫn dựa trên tập hợp quy tắc được phép.
  *
- * A return value of `1` means the file path contains directory traversal.
+ * Giá trị trả về `1` nghĩa là đường dẫn file chứa duyệt thư mục.
  *
- * A return value of `2` means the file path contains a Windows drive path.
+ * Giá trị trả về `2` nghĩa là đường dẫn file chứa đường dẫn ổ đĩa Windows.
  *
- * A return value of `3` means the file is not in the allowed files list.
+ * Giá trị trả về `3` nghĩa là file không nằm trong danh sách file được phép.
  *
  * @since 1.2.0
  *
- * @param string   $file          File path.
- * @param string[] $allowed_files Optional. Array of allowed files. Default empty array.
- * @return int 0 means nothing is wrong, greater than 0 means something was wrong.
+ * @param string   $file          Đường dẫn file.
+ * @param string[] $allowed_files Tùy chọn. Mảng các file được phép. Mặc định mảng rỗng.
+ * @return int 0 nghĩa là không có vấn đề, lớn hơn 0 nghĩa là có vấn đề.
  */
 function validate_file( $file, $allowed_files = array() ) {
 	if ( ! is_scalar( $file ) || '' === $file ) {
 		return 0;
 	}
 
-	// Normalize path for Windows servers.
+	// Chuẩn hóa đường dẫn cho máy chủ Windows.
 	$file = wp_normalize_path( $file );
-	// Normalize path for $allowed_files as well so it's an apples to apples comparison.
+	// Chuẩn hóa đường dẫn cho $allowed_files để so sánh nhất quán.
 	$allowed_files = array_map( 'wp_normalize_path', $allowed_files );
 
-	// `../` on its own is not allowed:
+	// `../` đơn lẻ không được phép:
 	if ( '../' === $file ) {
 		return 1;
 	}

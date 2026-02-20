@@ -1,6 +1,6 @@
 <?php
 /**
- * WP_Theme_JSON class
+ * Lớp WP_Theme_JSON
  *
  * @package WordPress
  * @subpackage Theme
@@ -8,11 +8,11 @@
  */
 
 /**
- * Class that encapsulates the processing of structures that adhere to the theme.json spec.
+ * Lớp đóng gói việc xử lý các cấu trúc tuân theo đặc tả theme.json.
  *
- * This class is for internal core usage and is not supposed to be used by extenders (plugins and/or themes).
- * This is a low-level API that may need to do breaking changes. Please,
- * use get_global_settings, get_global_styles, and get_global_stylesheet instead.
+ * Lớp này dùng nội bộ trong lõi WordPress và không dành cho các nhà phát triển mở rộng (plugin và/hoặc theme).
+ * Đây là API cấp thấp có thể có các thay đổi phá vỡ tương thích. Vui lòng
+ * sử dụng get_global_settings, get_global_styles, và get_global_stylesheet thay thế.
  *
  * @access private
  */
@@ -20,7 +20,7 @@
 class WP_Theme_JSON {
 
 	/**
-	 * Container of data in theme.json format.
+	 * Bộ chứa dữ liệu theo định dạng theme.json.
 	 *
 	 * @since 5.8.0
 	 * @var array
@@ -28,18 +28,18 @@ class WP_Theme_JSON {
 	protected $theme_json = null;
 
 	/**
-	 * Holds block metadata extracted from block.json
-	 * to be shared among all instances so we don't
-	 * process it twice.
+	 * Lưu trữ metadata của block được trích xuất từ block.json
+	 * để chia sẻ giữa tất cả các instance nhằm tránh
+	 * xử lý hai lần.
 	 *
 	 * @since 5.8.0
-	 * @since 6.1.0 Initialize as an empty array.
+	 * @since 6.1.0 Khởi tạo như mảng rỗng.
 	 * @var array
 	 */
 	protected static $blocks_metadata = array();
 
 	/**
-	 * The CSS selector for the top-level preset settings.
+	 * Bộ chọn CSS cho các cài đặt preset cấp cao nhất.
 	 *
 	 * @since 6.6.0
 	 * @var string
@@ -47,7 +47,7 @@ class WP_Theme_JSON {
 	const ROOT_CSS_PROPERTIES_SELECTOR = ':root';
 
 	/**
-	 * The CSS selector for the top-level styles.
+	 * Bộ chọn CSS cho các kiểu dáng cấp cao nhất.
 	 *
 	 * @since 5.8.0
 	 * @var string
@@ -55,10 +55,10 @@ class WP_Theme_JSON {
 	const ROOT_BLOCK_SELECTOR = 'body';
 
 	/**
-	 * The sources of data this object can represent.
+	 * Các nguồn dữ liệu mà đối tượng này có thể đại diện.
 	 *
 	 * @since 5.8.0
-	 * @since 6.1.0 Added 'blocks'.
+	 * @since 6.1.0 Thêm 'blocks'.
 	 * @var string[]
 	 */
 	const VALID_ORIGINS = array(
@@ -69,10 +69,10 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * Presets are a set of values that serve
-	 * to bootstrap some styles: colors, font sizes, etc.
+	 * Preset là tập hợp các giá trị dùng để
+	 * khởi tạo một số kiểu dáng: màu sắc, cỡ chữ, v.v.
 	 *
-	 * They are a unkeyed array of values such as:
+	 * Chúng là mảng không có khóa chứa các giá trị như:
 	 *
 	 *     array(
 	 *       array(
@@ -82,50 +82,50 @@ class WP_Theme_JSON {
 	 *       ),
 	 *     )
 	 *
-	 * This contains the necessary metadata to process them:
+	 * Chứa metadata cần thiết để xử lý chúng:
 	 *
-	 * - path             => Where to find the preset within the settings section.
-	 * - prevent_override => Disables override of default presets by theme presets.
-	 *                       The relationship between whether to override the defaults
-	 *                       and whether the defaults are enabled is inverse:
-	 *                         - If defaults are enabled  => theme presets should not be overridden
-	 *                         - If defaults are disabled => theme presets should be overridden
-	 *                       For example, a theme sets defaultPalette to false,
-	 *                       making the default palette hidden from the user.
-	 *                       In that case, we want all the theme presets to be present,
-	 *                       so they should override the defaults by setting this false.
-	 * - use_default_names => whether to use the default names
-	 * - value_key        => the key that represents the value
-	 * - value_func       => optionally, instead of value_key, a function to generate
-	 *                       the value that takes a preset as an argument
-	 *                       (either value_key or value_func should be present)
-	 * - css_vars         => template string to use in generating the CSS Custom Property.
-	 *                       Example output: "--wp--preset--duotone--blue: <value>" will generate as many CSS Custom Properties as presets defined
-	 *                       substituting the $slug for the slug's value for each preset value.
-	 * - classes          => array containing a structure with the classes to
-	 *                       generate for the presets, where for each array item
-	 *                       the key is the class name and the value the property name.
-	 *                       The "$slug" substring will be replaced by the slug of each preset.
-	 *                       For example:
+	 * - path             => Vị trí tìm preset trong phần settings.
+	 * - prevent_override => Vô hiệu hóa ghi đè preset mặc định bởi preset của theme.
+	 *                       Mối quan hệ giữa việc ghi đè giá trị mặc định
+	 *                       và việc bật giá trị mặc định là ngược nhau:
+	 *                         - Nếu giá trị mặc định được bật => preset của theme không nên bị ghi đè
+	 *                         - Nếu giá trị mặc định bị tắt   => preset của theme nên được ghi đè
+	 *                       Ví dụ, theme đặt defaultPalette là false,
+	 *                       ẩn bảng màu mặc định khỏi người dùng.
+	 *                       Trong trường hợp đó, ta muốn tất cả preset của theme hiện diện,
+	 *                       nên chúng cần ghi đè giá trị mặc định bằng cách đặt giá trị này là false.
+	 * - use_default_names => có sử dụng tên mặc định hay không
+	 * - value_key        => khóa đại diện cho giá trị
+	 * - value_func       => tùy chọn, thay vì value_key, là hàm để tạo
+	 *                       giá trị nhận preset làm tham số
+	 *                       (phải có value_key hoặc value_func)
+	 * - css_vars         => chuỗi mẫu dùng để tạo CSS Custom Property.
+	 *                       Ví dụ đầu ra: "--wp--preset--duotone--blue: <value>" sẽ tạo nhiều CSS Custom Properties tương ứng với số preset đã định nghĩa
+	 *                       thay thế $slug bằng giá trị slug cho mỗi giá trị preset.
+	 * - classes          => mảng chứa cấu trúc với các lớp CSS cần
+	 *                       tạo cho preset, trong đó mỗi phần tử
+	 *                       khóa là tên lớp và giá trị là tên thuộc tính.
+	 *                       Chuỗi con "$slug" sẽ được thay thế bởi slug của mỗi preset.
+	 *                       Ví dụ:
 	 *                       'classes' => array(
 	 *                         '.has-$slug-color'            => 'color',
 	 *                         '.has-$slug-background-color' => 'background-color',
 	 *                         '.has-$slug-border-color'     => 'border-color',
 	 *                       )
-	 * - properties       => array of CSS properties to be used by kses to
-	 *                       validate the content of each preset
-	 *                       by means of the remove_insecure_properties method.
+	 * - properties       => mảng các thuộc tính CSS được kses sử dụng để
+	 *                       xác thực nội dung của mỗi preset
+	 *                       thông qua phương thức remove_insecure_properties.
 	 *
 	 * @since 5.8.0
-	 * @since 5.9.0 Added the `color.duotone` and `typography.fontFamilies` presets,
-	 *              `use_default_names` preset key, and simplified the metadata structure.
-	 * @since 6.0.0 Replaced `override` with `prevent_override` and updated the
-	 *              `prevent_override` value for `color.duotone` to use `color.defaultDuotone`.
-	 * @since 6.2.0 Added 'shadow' presets.
-	 * @since 6.3.0 Replaced value_func for duotone with `null`. Custom properties are handled by class-wp-duotone.php.
-	 * @since 6.6.0 Added the `dimensions.aspectRatios` and `dimensions.defaultAspectRatios` presets.
-	 *              Updated the 'prevent_override' value for font size presets to use 'typography.defaultFontSizes'
-	 *              and spacing size presets to use `spacing.defaultSpacingSizes`.
+	 * @since 5.9.0 Thêm preset `color.duotone` và `typography.fontFamilies`,
+	 *              khóa preset `use_default_names`, và đơn giản hóa cấu trúc metadata.
+	 * @since 6.0.0 Thay thế `override` bằng `prevent_override` và cập nhật
+	 *              giá trị `prevent_override` cho `color.duotone` sử dụng `color.defaultDuotone`.
+	 * @since 6.2.0 Thêm preset 'shadow'.
+	 * @since 6.3.0 Thay thế value_func cho duotone bằng `null`. Các thuộc tính tùy chỉnh được xử lý bởi class-wp-duotone.php.
+	 * @since 6.6.0 Thêm preset `dimensions.aspectRatios` và `dimensions.defaultAspectRatios`.
+	 *              Cập nhật giá trị 'prevent_override' cho preset cỡ chữ sử dụng 'typography.defaultFontSizes'
+	 *              và preset kích thước khoảng cách sử dụng `spacing.defaultSpacingSizes`.
 	 * @var array
 	 */
 	const PRESETS_METADATA = array(
@@ -164,7 +164,7 @@ class WP_Theme_JSON {
 			'path'              => array( 'color', 'duotone' ),
 			'prevent_override'  => array( 'color', 'defaultDuotone' ),
 			'use_default_names' => false,
-			'value_func'        => null, // CSS Custom Properties for duotone are handled by block supports in class-wp-duotone.php.
+			'value_func'        => null, // CSS Custom Properties cho duotone được xử lý bởi block supports trong class-wp-duotone.php.
 			'css_vars'          => null,
 			'classes'           => array(),
 			'properties'        => array( 'filter' ),
@@ -208,25 +208,25 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * Metadata for style properties.
+	 * Metadata cho các thuộc tính kiểu dáng.
 	 *
-	 * Each element is a direct mapping from the CSS property name to the
-	 * path to the value in theme.json & block attributes.
+	 * Mỗi phần tử là ánh xạ trực tiếp từ tên thuộc tính CSS đến
+	 * đường dẫn giá trị trong theme.json và thuộc tính block.
 	 *
 	 * @since 5.8.0
-	 * @since 5.9.0 Added the `border-*`, `font-family`, `font-style`, `font-weight`,
+	 * @since 5.9.0 Thêm các thuộc tính `border-*`, `font-family`, `font-style`, `font-weight`,
 	 *              `letter-spacing`, `margin-*`, `padding-*`, `--wp--style--block-gap`,
-	 *              `text-decoration`, `text-transform`, and `filter` properties,
-	 *              simplified the metadata structure.
-	 * @since 6.1.0 Added the `border-*-color`, `border-*-width`, `border-*-style`,
-	 *              `--wp--style--root--padding-*`, and `box-shadow` properties,
-	 *              removed the `--wp--style--block-gap` property.
-	 * @since 6.2.0 Added `outline-*`, and `min-height` properties.
-	 * @since 6.3.0 Added `column-count` property.
-	 * @since 6.4.0 Added `writing-mode` property.
-	 * @since 6.5.0 Added `aspect-ratio` property.
-	 * @since 6.6.0 Added `background-[image|position|repeat|size]` properties.
-	 * @since 6.7.0 Added `background-attachment` property.
+	 *              `text-decoration`, `text-transform`, và `filter`,
+	 *              đơn giản hóa cấu trúc metadata.
+	 * @since 6.1.0 Thêm các thuộc tính `border-*-color`, `border-*-width`, `border-*-style`,
+	 *              `--wp--style--root--padding-*`, và `box-shadow`,
+	 *              xóa thuộc tính `--wp--style--block-gap`.
+	 * @since 6.2.0 Thêm các thuộc tính `outline-*`, và `min-height`.
+	 * @since 6.3.0 Thêm thuộc tính `column-count`.
+	 * @since 6.4.0 Thêm thuộc tính `writing-mode`.
+	 * @since 6.5.0 Thêm thuộc tính `aspect-ratio`.
+	 * @since 6.6.0 Thêm các thuộc tính `background-[image|position|repeat|size]`.
+	 * @since 6.7.0 Thêm thuộc tính `background-attachment`.
 	 * @var array
 	 */
 	const PROPERTIES_METADATA = array(
@@ -295,17 +295,17 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * Indirect metadata for style properties that are not directly output.
+	 * Metadata gián tiếp cho các thuộc tính kiểu dáng không được xuất trực tiếp.
 	 *
-	 * Each element maps from a CSS property name to an array of
-	 * paths to the value in theme.json & block attributes.
+	 * Mỗi phần tử ánh xạ từ tên thuộc tính CSS đến mảng
+	 * đường dẫn giá trị trong theme.json và thuộc tính block.
 	 *
-	 * Indirect properties are not output directly by `compute_style_properties`,
-	 * but are used elsewhere in the processing of global styles. The indirect
-	 * property is used to validate whether a style value is allowed.
+	 * Các thuộc tính gián tiếp không được xuất trực tiếp bởi `compute_style_properties`,
+	 * mà được sử dụng ở nơi khác trong quá trình xử lý kiểu dáng toàn cục. Thuộc tính
+	 * gián tiếp dùng để xác thực xem một giá trị kiểu dáng có được phép hay không.
 	 *
 	 * @since 6.2.0
-	 * @since 6.6.0 Added background-image properties.
+	 * @since 6.6.0 Thêm các thuộc tính background-image.
 	 * @var array
 	 */
 	const INDIRECT_PROPERTIES_METADATA = array(
@@ -328,13 +328,13 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * Protected style properties.
+	 * Các thuộc tính kiểu dáng được bảo vệ.
 	 *
-	 * These style properties are only rendered if a setting enables it
-	 * via a value other than `null`.
+	 * Các thuộc tính kiểu dáng này chỉ được render nếu một cài đặt kích hoạt nó
+	 * thông qua giá trị khác `null`.
 	 *
-	 * Each element maps the style property to the corresponding theme.json
-	 * setting key.
+	 * Mỗi phần tử ánh xạ thuộc tính kiểu dáng đến khóa cài đặt
+	 * theme.json tương ứng.
 	 *
 	 * @since 5.9.0
 	 * @var array
@@ -344,13 +344,13 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * The top-level keys a theme.json can have.
+	 * Các khóa cấp cao nhất mà theme.json có thể có.
 	 *
-	 * @since 5.8.0 As `ALLOWED_TOP_LEVEL_KEYS`.
-	 * @since 5.9.0 Renamed from `ALLOWED_TOP_LEVEL_KEYS` to `VALID_TOP_LEVEL_KEYS`,
-	 *              added the `customTemplates` and `templateParts` values.
-	 * @since 6.3.0 Added the `description` value.
-	 * @since 6.6.0 Added `blockTypes` to support block style variation theme.json partials.
+	 * @since 5.8.0 Với tên `ALLOWED_TOP_LEVEL_KEYS`.
+	 * @since 5.9.0 Đổi tên từ `ALLOWED_TOP_LEVEL_KEYS` thành `VALID_TOP_LEVEL_KEYS`,
+	 *              thêm giá trị `customTemplates` và `templateParts`.
+	 * @since 6.3.0 Thêm giá trị `description`.
+	 * @since 6.6.0 Thêm `blockTypes` để hỗ trợ các phần theme.json biến thể kiểu block.
 	 * @var string[]
 	 */
 	const VALID_TOP_LEVEL_KEYS = array(
@@ -367,23 +367,23 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * The valid properties under the settings key.
+	 * Các thuộc tính hợp lệ trong khóa settings.
 	 *
-	 * @since 5.8.0 As `ALLOWED_SETTINGS`.
-	 * @since 5.9.0 Renamed from `ALLOWED_SETTINGS` to `VALID_SETTINGS`,
-	 *              added new properties for `border`, `color`, `spacing`,
-	 *              and `typography`, and renamed others according to the new schema.
-	 * @since 6.0.0 Added `color.defaultDuotone`.
-	 * @since 6.1.0 Added `layout.definitions` and `useRootPaddingAwareAlignments`.
-	 * @since 6.2.0 Added `dimensions.minHeight`, 'shadow.presets', 'shadow.defaultPresets',
-	 *              `position.fixed` and `position.sticky`.
-	 * @since 6.3.0 Added support for `typography.textColumns`, removed `layout.definitions`.
-	 * @since 6.4.0 Added support for `layout.allowEditing`, `background.backgroundImage`,
-	 *              `typography.writingMode`, `lightbox.enabled` and `lightbox.allowEditing`.
-	 * @since 6.5.0 Added support for `layout.allowCustomContentAndWideSize`,
-	 *              `background.backgroundSize` and `dimensions.aspectRatio`.
-	 * @since 6.6.0 Added support for 'dimensions.aspectRatios', 'dimensions.defaultAspectRatios',
-	 *              'typography.defaultFontSizes', and 'spacing.defaultSpacingSizes'.
+	 * @since 5.8.0 Với tên `ALLOWED_SETTINGS`.
+	 * @since 5.9.0 Đổi tên từ `ALLOWED_SETTINGS` thành `VALID_SETTINGS`,
+	 *              thêm thuộc tính mới cho `border`, `color`, `spacing`,
+	 *              và `typography`, đổi tên các thuộc tính khác theo schema mới.
+	 * @since 6.0.0 Thêm `color.defaultDuotone`.
+	 * @since 6.1.0 Thêm `layout.definitions` và `useRootPaddingAwareAlignments`.
+	 * @since 6.2.0 Thêm `dimensions.minHeight`, 'shadow.presets', 'shadow.defaultPresets',
+	 *              `position.fixed` và `position.sticky`.
+	 * @since 6.3.0 Thêm hỗ trợ `typography.textColumns`, xóa `layout.definitions`.
+	 * @since 6.4.0 Thêm hỗ trợ `layout.allowEditing`, `background.backgroundImage`,
+	 *              `typography.writingMode`, `lightbox.enabled` và `lightbox.allowEditing`.
+	 * @since 6.5.0 Thêm hỗ trợ `layout.allowCustomContentAndWideSize`,
+	 *              `background.backgroundSize` và `dimensions.aspectRatio`.
+	 * @since 6.6.0 Thêm hỗ trợ 'dimensions.aspectRatios', 'dimensions.defaultAspectRatios',
+	 *              'typography.defaultFontSizes', và 'spacing.defaultSpacingSizes'.
 	 * @var array
 	 */
 	const VALID_SETTINGS = array(
@@ -471,7 +471,7 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * The valid properties for fontFamilies under settings key.
+	 * Các thuộc tính hợp lệ cho fontFamilies trong khóa settings.
 	 *
 	 * @since 6.5.0
 	 * @var array
@@ -502,19 +502,19 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * The valid properties under the styles key.
+	 * Các thuộc tính hợp lệ trong khóa styles.
 	 *
-	 * @since 5.8.0 As `ALLOWED_STYLES`.
-	 * @since 5.9.0 Renamed from `ALLOWED_STYLES` to `VALID_STYLES`,
-	 *              added new properties for `border`, `filter`, `spacing`,
-	 *              and `typography`.
-	 * @since 6.1.0 Added new side properties for `border`,
-	 *              added new property `shadow`,
-	 *              updated `blockGap` to be allowed at any level.
-	 * @since 6.2.0 Added `outline`, and `minHeight` properties.
-	 * @since 6.3.0 Added support for `typography.textColumns`.
-	 * @since 6.5.0 Added support for `dimensions.aspectRatio`.
-	 * @since 6.6.0 Added `background` sub properties to top-level only.
+	 * @since 5.8.0 Với tên `ALLOWED_STYLES`.
+	 * @since 5.9.0 Đổi tên từ `ALLOWED_STYLES` thành `VALID_STYLES`,
+	 *              thêm thuộc tính mới cho `border`, `filter`, `spacing`,
+	 *              và `typography`.
+	 * @since 6.1.0 Thêm thuộc tính cạnh mới cho `border`,
+	 *              thêm thuộc tính mới `shadow`,
+	 *              cập nhật `blockGap` được phép ở mọi cấp.
+	 * @since 6.2.0 Thêm các thuộc tính `outline`, và `minHeight`.
+	 * @since 6.3.0 Thêm hỗ trợ `typography.textColumns`.
+	 * @since 6.5.0 Thêm hỗ trợ `dimensions.aspectRatio`.
+	 * @since 6.6.0 Thêm thuộc tính con `background` chỉ ở cấp cao nhất.
 	 * @var array
 	 */
 	const VALID_STYLES = array(
@@ -576,19 +576,19 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * Defines which pseudo selectors are enabled for which elements.
+	 * Định nghĩa pseudo selector nào được bật cho phần tử nào.
 	 *
-	 * The order of the selectors should be: link, any-link, visited, hover, focus, focus-visible, active.
-	 * This is to ensure the user action (hover, focus and active) styles have a higher
-	 * specificity than the visited styles, which in turn have a higher specificity than
-	 * the unvisited styles.
+	 * Thứ tự của các bộ chọn phải là: link, any-link, visited, hover, focus, focus-visible, active.
+	 * Điều này đảm bảo các kiểu hành động người dùng (hover, focus và active) có độ ưu tiên
+	 * cao hơn kiểu visited, và kiểu visited có độ ưu tiên cao hơn
+	 * kiểu chưa truy cập.
 	 *
-	 * See https://core.trac.wordpress.org/ticket/56928.
-	 * Note: this will affect both top-level and block-level elements.
+	 * Xem https://core.trac.wordpress.org/ticket/56928.
+	 * Lưu ý: điều này ảnh hưởng đến cả phần tử cấp cao nhất và cấp block.
 	 *
 	 * @since 6.1.0
-	 * @since 6.2.0 Added support for ':link' and ':any-link'.
-	 * @since 6.8.0 Added support for ':focus-visible'.
+	 * @since 6.2.0 Thêm hỗ trợ ':link' và ':any-link'.
+	 * @since 6.8.0 Thêm hỗ trợ ':focus-visible'.
 	 * @var array
 	 */
 	const VALID_ELEMENT_PSEUDO_SELECTORS = array(
@@ -597,14 +597,14 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * The valid elements that can be found under styles.
+	 * Các phần tử hợp lệ có thể tìm thấy trong styles.
 	 *
 	 * @since 5.8.0
-	 * @since 6.1.0 Added `heading`, `button`, and `caption` elements.
+	 * @since 6.1.0 Thêm các phần tử `heading`, `button`, và `caption`.
 	 * @var string[]
 	 */
 	const ELEMENTS = array(
-		'link'    => 'a:where(:not(.wp-element-button))', // The `where` is needed to lower the specificity.
+		'link'    => 'a:where(:not(.wp-element-button))', // `where` cần thiết để giảm độ ưu tiên.
 		'heading' => 'h1, h2, h3, h4, h5, h6',
 		'h1'      => 'h1',
 		'h2'      => 'h2',
@@ -612,9 +612,9 @@ class WP_Theme_JSON {
 		'h4'      => 'h4',
 		'h5'      => 'h5',
 		'h6'      => 'h6',
-		// We have the .wp-block-button__link class so that this will target older buttons that have been serialized.
+		// Có lớp .wp-block-button__link để nhắm đến các nút cũ đã được serialize.
 		'button'  => '.wp-element-button, .wp-block-button__link',
-		// The block classes are necessary to target older content that won't use the new class names.
+		// Các lớp block cần thiết để nhắm đến nội dung cũ không sử dụng tên lớp mới.
 		'caption' => '.wp-element-caption, .wp-block-audio figcaption, .wp-block-embed figcaption, .wp-block-gallery figcaption, .wp-block-image figcaption, .wp-block-table figcaption, .wp-block-video figcaption',
 		'cite'    => 'cite',
 	);
@@ -625,8 +625,8 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * List of block support features that can have their related styles
-	 * generated under their own feature level selector rather than the block's.
+	 * Danh sách các tính năng hỗ trợ block có thể tạo kiểu dáng liên quan
+	 * dưới bộ chọn cấp tính năng riêng thay vì bộ chọn của block.
 	 *
 	 * @since 6.1.0
 	 * @var string[]
@@ -639,14 +639,14 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * Return the input schema at the root and per origin.
+	 * Trả về schema đầu vào tại gốc và theo từng nguồn gốc.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array $schema The base schema.
-	 * @return array The schema at the root and per origin.
+	 * @param array $schema Schema cơ sở.
+	 * @return array Schema tại gốc và theo từng nguồn gốc.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 * schema_in_root_and_per_origin(
 	 *   array(
 	 *    'fontFamily' => null,
@@ -654,7 +654,7 @@ class WP_Theme_JSON {
 	 *   )
 	 * )
 	 *
-	 * Returns:
+	 * Trả về:
 	 * array(
 	 *  'fontFamily' => null,
 	 *  'slug' => null,
@@ -685,12 +685,12 @@ class WP_Theme_JSON {
 	}
 
 	/**
-	 * Returns a class name by an element name.
+	 * Trả về tên lớp CSS theo tên phần tử.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param string $element The name of the element.
-	 * @return string The name of the class.
+	 * @param string $element Tên của phần tử.
+	 * @return string Tên của lớp CSS.
 	 */
 	public static function get_element_class_name( $element ) {
 		$class_name = '';
@@ -703,12 +703,12 @@ class WP_Theme_JSON {
 	}
 
 	/**
-	 * Options that settings.appearanceTools enables.
+	 * Các tùy chọn mà settings.appearanceTools kích hoạt.
 	 *
 	 * @since 6.0.0
-	 * @since 6.2.0 Added `dimensions.minHeight` and `position.sticky`.
-	 * @since 6.4.0 Added `background.backgroundImage`.
-	 * @since 6.5.0 Added `background.backgroundSize` and `dimensions.aspectRatio`.
+	 * @since 6.2.0 Thêm `dimensions.minHeight` và `position.sticky`.
+	 * @since 6.4.0 Thêm `background.backgroundImage`.
+	 * @since 6.5.0 Thêm `background.backgroundSize` và `dimensions.aspectRatio`.
 	 * @var array
 	 */
 	const APPEARANCE_TOOLS_OPT_INS = array(
@@ -732,25 +732,25 @@ class WP_Theme_JSON {
 	);
 
 	/**
-	 * The latest version of the schema in use.
+	 * Phiên bản mới nhất của schema đang sử dụng.
 	 *
 	 * @since 5.8.0
-	 * @since 5.9.0 Changed value from 1 to 2.
-	 * @since 6.6.0 Changed value from 2 to 3.
+	 * @since 5.9.0 Đổi giá trị từ 1 thành 2.
+	 * @since 6.6.0 Đổi giá trị từ 2 thành 3.
 	 * @var int
 	 */
 	const LATEST_SCHEMA = 3;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 5.8.0
-	 * @since 6.6.0 Key spacingScale by origin, and Pre-generate the spacingSizes from spacingScale.
-	 *              Added unwrapping of shared block style variations into block type variations if registered.
+	 * @since 6.6.0 Phân khóa spacingScale theo nguồn gốc, và tạo trước spacingSizes từ spacingScale.
+	 *              Thêm việc mở gói các biến thể kiểu block dùng chung thành biến thể theo loại block nếu đã đăng ký.
 	 *
-	 * @param array  $theme_json A structure that follows the theme.json schema.
-	 * @param string $origin     Optional. What source of data this object represents.
-	 *                           One of 'blocks', 'default', 'theme', or 'custom'. Default 'theme'.
+	 * @param array  $theme_json Cấu trúc tuân theo schema theme.json.
+	 * @param string $origin     Tùy chọn. Nguồn dữ liệu mà đối tượng này đại diện.
+	 *                           Một trong 'blocks', 'default', 'theme', hoặc 'custom'. Mặc định 'theme'.
 	 */
 	public function __construct( $theme_json = array( 'version' => self::LATEST_SCHEMA ), $origin = 'theme' ) {
 		if ( ! in_array( $origin, static::VALID_ORIGINS, true ) ) {
@@ -766,7 +766,7 @@ class WP_Theme_JSON {
 		$this->theme_json    = static::sanitize( $this->theme_json, $valid_block_names, $valid_element_names, $valid_variations );
 		$this->theme_json    = static::maybe_opt_in_into_settings( $this->theme_json );
 
-		// Internally, presets are keyed by origin.
+		// Nội bộ, các preset được phân khóa theo nguồn gốc.
 		$nodes = static::get_setting_nodes( $this->theme_json );
 		foreach ( $nodes as $node ) {
 			foreach ( static::PRESETS_METADATA as $preset_metadata ) {
@@ -776,7 +776,7 @@ class WP_Theme_JSON {
 				}
 				$preset = _wp_array_get( $this->theme_json, $path, null );
 				if ( null !== $preset ) {
-					// If the preset is not already keyed by origin.
+					// Nếu preset chưa được phân khóa theo nguồn gốc.
 					if ( isset( $preset[0] ) || empty( $preset ) ) {
 						_wp_array_set( $this->theme_json, $path, array( $origin => $preset ) );
 					}
@@ -784,17 +784,17 @@ class WP_Theme_JSON {
 			}
 		}
 
-		// In addition to presets, spacingScale (which generates presets) is also keyed by origin.
+		// Ngoài preset, spacingScale (tạo ra preset) cũng được phân khóa theo nguồn gốc.
 		$scale_path    = array( 'settings', 'spacing', 'spacingScale' );
 		$spacing_scale = _wp_array_get( $this->theme_json, $scale_path, null );
 		if ( null !== $spacing_scale ) {
-			// If the spacingScale is not already keyed by origin.
+			// Nếu spacingScale chưa được phân khóa theo nguồn gốc.
 			if ( empty( array_intersect( array_keys( $spacing_scale ), static::VALID_ORIGINS ) ) ) {
 				_wp_array_set( $this->theme_json, $scale_path, array( $origin => $spacing_scale ) );
 			}
 		}
 
-		// Pre-generate the spacingSizes from spacingScale.
+		// Tạo trước spacingSizes từ spacingScale.
 		$scale_path    = array( 'settings', 'spacing', 'spacingScale', $origin );
 		$spacing_scale = _wp_array_get( $this->theme_json, $scale_path, null );
 		if ( isset( $spacing_scale ) ) {
@@ -807,14 +807,14 @@ class WP_Theme_JSON {
 	}
 
 	/**
-	 * Unwraps shared block style variations.
+	 * Mở gói các biến thể kiểu block dùng chung.
 	 *
-	 * It takes the shared variations (styles.variations.variationName) and
-	 * applies them to all the blocks that have the given variation registered
+	 * Lấy các biến thể dùng chung (styles.variations.variationName) và
+	 * áp dụng chúng cho tất cả các block đã đăng ký biến thể đó
 	 * (styles.blocks.blockType.variations.variationName).
 	 *
-	 * For example, given the `core/paragraph` and `core/group` blocks have
-	 * registered the `section-a` style variation, and given the following input:
+	 * Ví dụ, giả sử block `core/paragraph` và `core/group` đã
+	 * đăng ký biến thể kiểu `section-a`, và với đầu vào sau:
 	 *
 	 * {
 	 *   "styles": {
@@ -824,7 +824,7 @@ class WP_Theme_JSON {
 	 *   }
 	 * }
 	 *
-	 * It returns the following output:
+	 * Sẽ trả về đầu ra sau:
 	 *
 	 * {
 	 *   "styles": {
@@ -845,9 +845,9 @@ class WP_Theme_JSON {
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param array $theme_json       A structure that follows the theme.json schema.
-	 * @param array $valid_variations Valid block style variations.
-	 * @return array Theme json data with shared variation definitions unwrapped under appropriate block types.
+	 * @param array $theme_json       Cấu trúc tuân theo schema theme.json.
+	 * @param array $valid_variations Các biến thể kiểu block hợp lệ.
+	 * @return array Dữ liệu theme json với các định nghĩa biến thể dùng chung được mở gói vào các loại block tương ứng.
 	 */
 	private static function unwrap_shared_block_style_variations( $theme_json, $valid_variations ) {
 		if ( empty( $theme_json['styles']['variations'] ) || empty( $valid_variations ) ) {
@@ -874,12 +874,12 @@ class WP_Theme_JSON {
 	}
 
 	/**
-	 * Enables some opt-in settings if theme declared support.
+	 * Kích hoạt một số cài đặt tùy chọn nếu theme đã khai báo hỗ trợ.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param array $theme_json A theme.json structure to modify.
-	 * @return array The modified theme.json structure.
+	 * @param array $theme_json Cấu trúc theme.json cần chỉnh sửa.
+	 * @return array Cấu trúc theme.json đã được chỉnh sửa.
 	 */
 	protected static function maybe_opt_in_into_settings( $theme_json ) {
 		$new_theme_json = $theme_json;
@@ -903,17 +903,17 @@ class WP_Theme_JSON {
 	}
 
 	/**
-	 * Enables some settings.
+	 * Kích hoạt một số cài đặt.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param array $context The context to which the settings belong.
+	 * @param array $context Ngữ cảnh mà các cài đặt thuộc về.
 	 */
 	protected static function do_opt_in_into_settings( &$context ) {
 		foreach ( static::APPEARANCE_TOOLS_OPT_INS as $path ) {
 			/*
-			 * Use "unset prop" as a marker instead of "null" because
-			 * "null" can be a valid value for some props (e.g. blockGap).
+			 * Sử dụng "unset prop" làm dấu hiệu thay vì "null" vì
+			 * "null" có thể là giá trị hợp lệ cho một số thuộc tính (ví dụ: blockGap).
 			 */
 			if ( 'unset prop' === _wp_array_get( $context, $path, 'unset prop' ) ) {
 				_wp_array_set( $context, $path, true );
@@ -924,18 +924,18 @@ class WP_Theme_JSON {
 	}
 
 	/**
-	 * Sanitizes the input according to the schemas.
+	 * Làm sạch đầu vào theo các schema.
 	 *
 	 * @since 5.8.0
-	 * @since 5.9.0 Added the `$valid_block_names` and `$valid_element_name` parameters.
-	 * @since 6.3.0 Added the `$valid_variations` parameter.
-	 * @since 6.6.0 Updated schema to allow extended block style variations.
+	 * @since 5.9.0 Thêm tham số `$valid_block_names` và `$valid_element_name`.
+	 * @since 6.3.0 Thêm tham số `$valid_variations`.
+	 * @since 6.6.0 Cập nhật schema để cho phép biến thể kiểu block mở rộng.
 	 *
-	 * @param array $input               Structure to sanitize.
-	 * @param array $valid_block_names   List of valid block names.
-	 * @param array $valid_element_names List of valid element names.
-	 * @param array $valid_variations    List of valid variations per block.
-	 * @return array The sanitized output.
+	 * @param array $input               Cấu trúc cần làm sạch.
+	 * @param array $valid_block_names   Danh sách tên block hợp lệ.
+	 * @param array $valid_element_names Danh sách tên phần tử hợp lệ.
+	 * @param array $valid_variations    Danh sách biến thể hợp lệ theo từng block.
+	 * @return array Đầu ra đã được làm sạch.
 	 */
 	protected static function sanitize( $input, $valid_block_names, $valid_element_names, $valid_variations ) {
 		$output = array();
@@ -944,17 +944,17 @@ class WP_Theme_JSON {
 			return $output;
 		}
 
-		// Preserve only the top most level keys.
+		// Chỉ giữ lại các khóa ở cấp cao nhất.
 		$output = array_intersect_key( $input, array_flip( static::VALID_TOP_LEVEL_KEYS ) );
 
 		/*
-		 * Remove any rules that are annotated as "top" in VALID_STYLES constant.
-		 * Some styles are only meant to be available at the top-level (e.g.: blockGap),
-		 * hence, the schema for blocks & elements should not have them.
+		 * Xóa bất kỳ quy tắc nào được đánh dấu là "top" trong hằng số VALID_STYLES.
+		 * Một số kiểu dáng chỉ dành cho cấp cao nhất (ví dụ: blockGap),
+		 * do đó, schema cho block và phần tử không nên chứa chúng.
 		 */
 		$styles_non_top_level = static::VALID_STYLES;
 		foreach ( array_keys( $styles_non_top_level ) as $section ) {
-			// array_key_exists() needs to be used instead of isset() because the value can be null.
+			// Cần dùng array_key_exists() thay vì isset() vì giá trị có thể là null.
 			if ( array_key_exists( $section, $styles_non_top_level ) && is_array( $styles_non_top_level[ $section ] ) ) {
 				foreach ( array_keys( $styles_non_top_level[ $section ] ) as $prop ) {
 					if ( 'top' === $styles_non_top_level[ $section ][ $prop ] ) {
@@ -964,16 +964,16 @@ class WP_Theme_JSON {
 			}
 		}
 
-		// Build the schema based on valid block & element names.
+		// Xây dựng schema dựa trên tên block và phần tử hợp lệ.
 		$schema                 = array();
 		$schema_styles_elements = array();
 
 		/*
-		 * Set allowed element pseudo selectors based on per element allow list.
-		 * Target data structure in schema:
-		 * e.g.
-		 * - top level elements: `$schema['styles']['elements']['link'][':hover']`.
-		 * - block level elements: `$schema['styles']['blocks']['core/button']['elements']['link'][':hover']`.
+		 * Đặt các pseudo selector cho phần tử được cho phép dựa trên danh sách cho phép theo phần tử.
+		 * Cấu trúc dữ liệu mục tiêu trong schema:
+		 * ví dụ:
+		 * - phần tử cấp cao nhất: `$schema['styles']['elements']['link'][':hover']`.
+		 * - phần tử cấp block: `$schema['styles']['blocks']['core/button']['elements']['link'][':hover']`.
 		 */
 		foreach ( $valid_element_names as $element ) {
 			$schema_styles_elements[ $element ] = $styles_non_top_level;
@@ -989,14 +989,14 @@ class WP_Theme_JSON {
 		$schema_settings_blocks = array();
 
 		/*
-		 * Generate a schema for blocks.
-		 * - Block styles can contain `elements` & `variations` definitions.
-		 * - Variations definitions cannot be nested.
-		 * - Variations can contain styles for inner `blocks`.
-		 * - Variation inner `blocks` styles can contain `elements`.
+		 * Tạo schema cho các block.
+		 * - Kiểu dáng block có thể chứa định nghĩa `elements` và `variations`.
+		 * - Định nghĩa biến thể không thể lồng nhau.
+		 * - Biến thể có thể chứa kiểu dáng cho `blocks` bên trong.
+		 * - Kiểu dáng `blocks` bên trong của biến thể có thể chứa `elements`.
 		 *
-		 * As each variation needs a `blocks` schema but further nested
-		 * inner `blocks`, the overall schema will be generated in multiple passes.
+		 * Vì mỗi biến thể cần schema `blocks` nhưng không lồng thêm
+		 * `blocks` bên trong nữa, schema tổng thể sẽ được tạo qua nhiều lượt.
 		 */
 		foreach ( $valid_block_names as $block ) {
 			$schema_settings_blocks[ $block ]           = static::VALID_SETTINGS;
@@ -1009,7 +1009,7 @@ class WP_Theme_JSON {
 		$block_style_variation_styles['elements'] = $schema_styles_elements;
 
 		foreach ( $valid_block_names as $block ) {
-			// Build the schema for each block style variation.
+			// Xây dựng schema cho từng biến thể kiểu block.
 			$style_variation_names = array();
 			if (
 				! empty( $input['styles']['blocks'][ $block ]['variations'] ) &&
@@ -1037,7 +1037,7 @@ class WP_Theme_JSON {
 		$schema['settings']['blocks']                     = $schema_settings_blocks;
 		$schema['settings']['typography']['fontFamilies'] = static::schema_in_root_and_per_origin( static::FONT_FAMILY_SCHEMA );
 
-		// Remove anything that's not present in the schema.
+		// Xóa bất kỳ thứ gì không có trong schema.
 		foreach ( array( 'styles', 'settings' ) as $subtree ) {
 			if ( ! isset( $input[ $subtree ] ) ) {
 				continue;
@@ -1061,19 +1061,19 @@ class WP_Theme_JSON {
 	}
 
 	/**
-	 * Appends a sub-selector to an existing one.
+	 * Nối thêm bộ chọn con vào bộ chọn hiện có.
 	 *
-	 * Given the compounded $selector "h1, h2, h3"
-	 * and the $to_append selector ".some-class" the result will be
+	 * Cho bộ chọn kết hợp $selector "h1, h2, h3"
+	 * và bộ chọn $to_append ".some-class", kết quả sẽ là
 	 * "h1.some-class, h2.some-class, h3.some-class".
 	 *
 	 * @since 5.8.0
-	 * @since 6.1.0 Added append position.
-	 * @since 6.3.0 Removed append position parameter.
+	 * @since 6.1.0 Thêm vị trí nối.
+	 * @since 6.3.0 Xóa tham số vị trí nối.
 	 *
-	 * @param string $selector  Original selector.
-	 * @param string $to_append Selector to append.
-	 * @return string The new selector.
+	 * @param string $selector  Bộ chọn gốc.
+	 * @param string $to_append Bộ chọn cần nối thêm.
+	 * @return string Bộ chọn mới.
 	 */
 	protected static function append_to_selector( $selector, $to_append ) {
 		if ( ! str_contains( $selector, ',' ) ) {
@@ -1088,17 +1088,17 @@ class WP_Theme_JSON {
 	}
 
 	/**
-	 * Prepends a sub-selector to an existing one.
+	 * Thêm bộ chọn con vào trước bộ chọn hiện có.
 	 *
-	 * Given the compounded $selector "h1, h2, h3"
-	 * and the $to_prepend selector ".some-class " the result will be
+	 * Cho bộ chọn kết hợp $selector "h1, h2, h3"
+	 * và bộ chọn $to_prepend ".some-class ", kết quả sẽ là
 	 * ".some-class h1, .some-class  h2, .some-class  h3".
 	 *
 	 * @since 6.3.0
 	 *
-	 * @param string $selector   Original selector.
-	 * @param string $to_prepend Selector to prepend.
-	 * @return string The new selector.
+	 * @param string $selector   Bộ chọn gốc.
+	 * @param string $to_prepend Bộ chọn cần thêm vào trước.
+	 * @return string Bộ chọn mới.
 	 */
 	protected static function prepend_to_selector( $selector, $to_prepend ) {
 		if ( ! str_contains( $selector, ',' ) ) {

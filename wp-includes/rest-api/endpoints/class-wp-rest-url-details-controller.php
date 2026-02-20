@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_URL_Details_Controller class
+ * REST API: Lớp WP_REST_URL_Details_Controller
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,8 +8,8 @@
  */
 
 /**
- * Controller which provides REST endpoint for retrieving information
- * from a remote site's HTML response.
+ * Bộ điều khiển cung cấp endpoint REST API để lấy thông tin
+ * từ phản hồi HTML của một trang web từ xa.
  *
  * @since 5.9.0
  *
@@ -18,7 +18,7 @@
 class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 
 	/**
-	 * Constructs the controller.
+	 * Hàm khởi tạo bộ điều khiển.
 	 *
 	 * @since 5.9.0
 	 */
@@ -28,7 +28,7 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Registers the necessary REST API routes.
+	 * Đăng ký các route REST API cần thiết.
 	 *
 	 * @since 5.9.0
 	 */
@@ -58,11 +58,11 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves the item's schema, conforming to JSON Schema.
+	 * Lấy schema của mục, tuân thủ JSON Schema.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @return array Item schema data.
+	 * @return array Dữ liệu schema của mục.
 	 */
 	public function get_item_schema() {
 		if ( $this->schema ) {
@@ -124,12 +124,12 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves the contents of the title tag from the HTML response.
+	 * Lấy nội dung của thẻ title từ phản hồi HTML.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error The parsed details as a response object. WP_Error if there are errors.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Chi tiết đã phân tích dưới dạng đối tượng phản hồi. WP_Error nếu có lỗi.
 	 */
 	public function parse_url_details( $request ) {
 		$url = untrailingslashit( $request['url'] );
@@ -138,10 +138,10 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 			return new WP_Error( 'rest_invalid_url', __( 'Invalid URL' ), array( 'status' => 404 ) );
 		}
 
-		// Transient per URL.
+		// Transient cho mỗi URL.
 		$cache_key = $this->build_cache_key_for_url( $url );
 
-		// Attempt to retrieve cached response.
+		// Thử lấy phản hồi đã được lưu cache.
 		$cached_response = $this->get_cache( $cache_key );
 
 		if ( ! empty( $cached_response ) ) {
@@ -149,12 +149,12 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 		} else {
 			$remote_url_response = $this->get_remote_url( $url );
 
-			// Exit if we don't have a valid body or it's empty.
+			// Thoát nếu không có body hợp lệ hoặc body rỗng.
 			if ( is_wp_error( $remote_url_response ) || empty( $remote_url_response ) ) {
 				return $remote_url_response;
 			}
 
-			// Cache the valid response.
+			// Lưu cache phản hồi hợp lệ.
 			$this->set_cache( $cache_key, $remote_url_response );
 		}
 
@@ -171,28 +171,28 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 			$request
 		);
 
-		// Wrap the data in a response object.
+		// Bọc dữ liệu trong đối tượng phản hồi.
 		$response = rest_ensure_response( $data );
 
 		/**
-		 * Filters the URL data for the response.
+		 * Lọc dữ liệu URL cho phản hồi.
 		 *
 		 * @since 5.9.0
 		 *
-		 * @param WP_REST_Response $response            The response object.
-		 * @param string           $url                 The requested URL.
-		 * @param WP_REST_Request  $request             Request object.
-		 * @param string           $remote_url_response HTTP response body from the remote URL.
+		 * @param WP_REST_Response $response            Đối tượng phản hồi.
+		 * @param string           $url                 URL được yêu cầu.
+		 * @param WP_REST_Request  $request             Đối tượng yêu cầu.
+		 * @param string           $remote_url_response Nội dung phản hồi HTTP từ URL từ xa.
 		 */
 		return apply_filters( 'rest_prepare_url_details', $response, $url, $request, $remote_url_response );
 	}
 
 	/**
-	 * Checks whether a given request has permission to read remote URLs.
+	 * Kiểm tra xem yêu cầu có quyền đọc các URL từ xa không.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @return true|WP_Error True if the request has permission, else WP_Error.
+	 * @return true|WP_Error True nếu yêu cầu có quyền, ngược lại là WP_Error.
 	 */
 	public function permissions_check() {
 		if ( current_user_can( 'edit_posts' ) ) {
@@ -213,24 +213,24 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves the document title from a remote URL.
+	 * Lấy tiêu đề tài liệu từ một URL từ xa.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param string $url The website URL whose HTML to access.
-	 * @return string|WP_Error The HTTP response from the remote URL on success.
-	 *                         WP_Error if no response or no content.
+	 * @param string $url URL của trang web cần truy cập HTML.
+	 * @return string|WP_Error Phản hồi HTTP từ URL từ xa khi thành công.
+	 *                         WP_Error nếu không có phản hồi hoặc không có nội dung.
 	 */
 	private function get_remote_url( $url ) {
 
 		/*
-		 * Provide a modified UA string to workaround web properties which block WordPress "Pingbacks".
-		 * Why? The UA string used for pingback requests contains `WordPress/` which is very similar
-		 * to that used as the default UA string by the WP HTTP API. Therefore requests from this
-		 * REST endpoint are being unintentionally blocked as they are misidentified as pingback requests.
-		 * By slightly modifying the UA string, but still retaining the "WordPress" identification (via "WP")
-		 * we are able to work around this issue.
-		 * Example UA string: `WP-URLDetails/5.9-alpha-51389 (+http://localhost:8888)`.
+		 * Cung cấp chuỗi UA đã sửa đổi để khắc phục các trang web chặn "Pingbacks" của WordPress.
+		 * Tại sao? Chuỗi UA dùng cho yêu cầu pingback chứa `WordPress/` rất giống với
+		 * chuỗi UA mặc định của WP HTTP API. Do đó các yêu cầu từ endpoint REST này
+		 * bị chặn ngoài ý muốn vì bị nhầm lẫn là yêu cầu pingback.
+		 * Bằng cách sửa đổi nhẹ chuỗi UA, nhưng vẫn giữ nhận diện "WordPress" (qua "WP")
+		 * chúng ta có thể khắc phục vấn đề này.
+		 * Ví dụ chuỗi UA: `WP-URLDetails/5.9-alpha-51389 (+http://localhost:8888)`.
 		*/
 		$modified_user_agent = 'WP-URLDetails/' . get_bloginfo( 'version' ) . ' (+' . get_bloginfo( 'url' ) . ')';
 
@@ -240,21 +240,21 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 		);
 
 		/**
-		 * Filters the HTTP request args for URL data retrieval.
+		 * Lọc các tham số yêu cầu HTTP để lấy dữ liệu URL.
 		 *
-		 * Can be used to adjust response size limit and other WP_Http::request() args.
+		 * Có thể được dùng để điều chỉnh giới hạn kích thước phản hồi và các tham số WP_Http::request() khác.
 		 *
 		 * @since 5.9.0
 		 *
-		 * @param array  $args Arguments used for the HTTP request.
-		 * @param string $url  The attempted URL.
+		 * @param array  $args Các tham số dùng cho yêu cầu HTTP.
+		 * @param string $url  URL được thử.
 		 */
 		$args = apply_filters( 'rest_url_details_http_request_args', $args, $url );
 
 		$response = wp_safe_remote_get( $url, $args );
 
 		if ( WP_Http::OK !== wp_remote_retrieve_response_code( $response ) ) {
-			// Not saving the error response to cache since the error might be temporary.
+			// Không lưu phản hồi lỗi vào cache vì lỗi có thể chỉ là tạm thời.
 			return new WP_Error(
 				'no_response',
 				__( 'URL not found. Response returned a non-200 status code for this URL.' ),
@@ -276,12 +276,12 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Parses the title tag contents from the provided HTML.
+	 * Phân tích nội dung thẻ title từ HTML được cung cấp.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param string $html The HTML from the remote website at URL.
-	 * @return string The title tag contents on success. Empty string if not found.
+	 * @param string $html HTML từ trang web từ xa tại URL.
+	 * @return string Nội dung thẻ title khi thành công. Chuỗi rỗng nếu không tìm thấy.
 	 */
 	private function get_title( $html ) {
 		$pattern = '#<title[^>]*>(.*?)<\s*/\s*title>#is';
@@ -297,16 +297,16 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Parses the site icon from the provided HTML.
+	 * Phân tích biểu tượng trang web từ HTML được cung cấp.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param string $html The HTML from the remote website at URL.
-	 * @param string $url  The target website URL.
-	 * @return string The icon URI on success. Empty string if not found.
+	 * @param string $html HTML từ trang web từ xa tại URL.
+	 * @param string $url  URL của trang web đích.
+	 * @return string URI của biểu tượng khi thành công. Chuỗi rỗng nếu không tìm thấy.
 	 */
 	private function get_icon( $html, $url ) {
-		// Grab the icon's link element.
+		// Lấy phần tử link của biểu tượng.
 		$pattern = '#<link\s[^>]*rel=(?:[\"\']??)\s*(?:icon|shortcut icon|icon shortcut)\s*(?:[\"\']??)[^>]*\/?>#isU';
 		preg_match( $pattern, $html, $element );
 		if ( empty( $element[0] ) || ! is_string( $element[0] ) ) {
@@ -314,7 +314,7 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 		}
 		$element = trim( $element[0] );
 
-		// Get the icon's href value.
+		// Lấy giá trị href của biểu tượng.
 		$pattern = '#href=([\"\']??)([^\" >]*?)\\1[^>]*#isU';
 		preg_match( $pattern, $element, $icon );
 		if ( empty( $icon[2] ) || ! is_string( $icon[2] ) ) {
@@ -322,13 +322,13 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 		}
 		$icon = trim( $icon[2] );
 
-		// If the icon is a data URL, return it.
+		// Nếu biểu tượng là URL dạng data, trả về nó.
 		$parsed_icon = parse_url( $icon );
 		if ( isset( $parsed_icon['scheme'] ) && 'data' === $parsed_icon['scheme'] ) {
 			return $icon;
 		}
 
-		// Attempt to convert relative URLs to absolute.
+		// Thử chuyển đổi URL tương đối thành URL tuyệt đối.
 		if ( ! is_string( $url ) || '' === $url ) {
 			return $icon;
 		}
@@ -342,21 +342,21 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Parses the meta description from the provided HTML.
+	 * Phân tích mô tả meta từ HTML được cung cấp.
 	 *
 	 * @since 5.9.0
 	 *
 	 * @param array $meta_elements {
-	 *     A multidimensional indexed array on success, else empty array.
+	 *     Mảng đa chiều được đánh chỉ mục khi thành công, ngược lại là mảng rỗng.
 	 *
-	 *     @type string[] $0 Meta elements with a content attribute.
-	 *     @type string[] $1 Content attribute's opening quotation mark.
-	 *     @type string[] $2 Content attribute's value for each meta element.
+	 *     @type string[] $0 Các phần tử meta có thuộc tính content.
+	 *     @type string[] $1 Dấu ngoặc kép mở của thuộc tính content.
+	 *     @type string[] $2 Giá trị thuộc tính content cho mỗi phần tử meta.
 	 * }
-	 * @return string The meta description contents on success. Empty string if not found.
+	 * @return string Nội dung mô tả meta khi thành công. Chuỗi rỗng nếu không tìm thấy.
 	 */
 	private function get_description( $meta_elements ) {
-		// Bail out if there are no meta elements.
+		// Thoát nếu không có phần tử meta nào.
 		if ( empty( $meta_elements[0] ) ) {
 			return '';
 		}
@@ -367,7 +367,7 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 			'(?:description|og:description)'
 		);
 
-		// Bail out if description not found.
+		// Thoát nếu không tìm thấy mô tả.
 		if ( '' === $description ) {
 			return '';
 		}
@@ -376,21 +376,21 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Parses the Open Graph (OG) Image from the provided HTML.
+	 * Phân tích hình ảnh Open Graph (OG) từ HTML được cung cấp.
 	 *
-	 * See: https://ogp.me/.
+	 * Xem: https://ogp.me/.
 	 *
 	 * @since 5.9.0
 	 *
 	 * @param array  $meta_elements {
-	 *     A multidimensional indexed array on success, else empty array.
+	 *     Mảng đa chiều được đánh chỉ mục khi thành công, ngược lại là mảng rỗng.
 	 *
-	 *     @type string[] $0 Meta elements with a content attribute.
-	 *     @type string[] $1 Content attribute's opening quotation mark.
-	 *     @type string[] $2 Content attribute's value for each meta element.
+	 *     @type string[] $0 Các phần tử meta có thuộc tính content.
+	 *     @type string[] $1 Dấu ngoặc kép mở của thuộc tính content.
+	 *     @type string[] $2 Giá trị thuộc tính content cho mỗi phần tử meta.
 	 * }
-	 * @param string $url The target website URL.
-	 * @return string The OG image on success. Empty string if not found.
+	 * @param string $url URL của trang web đích.
+	 * @return string Hình ảnh OG khi thành công. Chuỗi rỗng nếu không tìm thấy.
 	 */
 	private function get_image( $meta_elements, $url ) {
 		$image = $this->get_metadata_from_meta_element(
@@ -399,12 +399,12 @@ class WP_REST_URL_Details_Controller extends WP_REST_Controller {
 			'(?:og:image|og:image:url)'
 		);
 
-		// Bail out if image not found.
+		// Thoát nếu không tìm thấy hình ảnh.
 		if ( '' === $image ) {
 			return '';
 		}
 
-		// Attempt to convert relative URLs to absolute.
+		// Thử chuyển đổi URL tương đối thành URL tuyệt đối.
 		$parsed_url = parse_url( $url );
 		if ( isset( $parsed_url['scheme'] ) && isset( $parsed_url['host'] ) ) {
 			$root_url = $parsed_url['scheme'] . '://' . $parsed_url['host'] . '/';

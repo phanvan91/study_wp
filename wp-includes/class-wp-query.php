@@ -1,6 +1,6 @@
 <?php
 /**
- * Query API: WP_Query class
+ * Query API: Lớp WP_Query
  *
  * @package WordPress
  * @subpackage Query
@@ -8,18 +8,18 @@
  */
 
 /**
- * The WordPress Query class.
+ * Lớp Query của WordPress.
  *
  * @link https://developer.wordpress.org/reference/classes/wp_query/
  *
  * @since 1.5.0
- * @since 4.5.0 Removed the `$comments_popup` property.
+ * @since 4.5.0 Đã loại bỏ thuộc tính `$comments_popup`.
  */
 #[AllowDynamicProperties]
 class WP_Query {
 
 	/**
-	 * Query vars set by the user.
+	 * Các biến truy vấn được thiết lập bởi người dùng.
 	 *
 	 * @since 1.5.0
 	 * @var array
@@ -27,7 +27,7 @@ class WP_Query {
 	public $query;
 
 	/**
-	 * Query vars, after parsing.
+	 * Các biến truy vấn, sau khi phân tích.
 	 *
 	 * @since 1.5.0
 	 * @var array
@@ -35,33 +35,33 @@ class WP_Query {
 	public $query_vars = array();
 
 	/**
-	 * Taxonomy query, as passed to get_tax_sql().
+	 * Truy vấn taxonomy, được truyền vào get_tax_sql().
 	 *
 	 * @since 3.1.0
-	 * @var WP_Tax_Query|null A taxonomy query instance.
+	 * @var WP_Tax_Query|null Một thể hiện truy vấn taxonomy.
 	 */
 	public $tax_query;
 
 	/**
-	 * Metadata query container.
+	 * Bộ chứa truy vấn metadata.
 	 *
 	 * @since 3.2.0
-	 * @var WP_Meta_Query A meta query instance.
+	 * @var WP_Meta_Query Một thể hiện truy vấn meta.
 	 */
 	public $meta_query = false;
 
 	/**
-	 * Date query container.
+	 * Bộ chứa truy vấn ngày tháng.
 	 *
 	 * @since 3.7.0
-	 * @var WP_Date_Query A date query instance.
+	 * @var WP_Date_Query Một thể hiện truy vấn ngày tháng.
 	 */
 	public $date_query = false;
 
 	/**
-	 * Holds the data for a single object that is queried.
+	 * Giữ dữ liệu cho một đối tượng đơn lẻ được truy vấn.
 	 *
-	 * Holds the contents of a post, page, category, attachment.
+	 * Giữ nội dung của bài viết, trang, chuyên mục, tệp đính kèm.
 	 *
 	 * @since 1.5.0
 	 * @var WP_Term|WP_Post_Type|WP_Post|WP_User|null
@@ -69,7 +69,7 @@ class WP_Query {
 	public $queried_object;
 
 	/**
-	 * The ID of the queried object.
+	 * ID của đối tượng được truy vấn.
 	 *
 	 * @since 1.5.0
 	 * @var int
@@ -77,7 +77,7 @@ class WP_Query {
 	public $queried_object_id;
 
 	/**
-	 * SQL for the database query.
+	 * Câu lệnh SQL cho truy vấn cơ sở dữ liệu.
 	 *
 	 * @since 2.0.1
 	 * @var string
@@ -85,7 +85,7 @@ class WP_Query {
 	public $request;
 
 	/**
-	 * Array of post objects or post IDs.
+	 * Mảng các đối tượng bài viết hoặc ID bài viết.
 	 *
 	 * @since 1.5.0
 	 * @var WP_Post[]|int[]
@@ -93,7 +93,7 @@ class WP_Query {
 	public $posts;
 
 	/**
-	 * The number of posts for the current query.
+	 * Số lượng bài viết cho truy vấn hiện tại.
 	 *
 	 * @since 1.5.0
 	 * @var int
@@ -101,7 +101,7 @@ class WP_Query {
 	public $post_count = 0;
 
 	/**
-	 * Index of the current item in the loop.
+	 * Chỉ mục của mục hiện tại trong vòng lặp.
 	 *
 	 * @since 1.5.0
 	 * @var int
@@ -109,7 +109,7 @@ class WP_Query {
 	public $current_post = -1;
 
 	/**
-	 * Whether the caller is before the loop.
+	 * Cho biết người gọi đang ở trước vòng lặp hay không.
 	 *
 	 * @since 6.3.0
 	 * @var bool
@@ -117,7 +117,7 @@ class WP_Query {
 	public $before_loop = true;
 
 	/**
-	 * Whether the loop has started and the caller is in the loop.
+	 * Cho biết vòng lặp đã bắt đầu và người gọi đang ở trong vòng lặp hay không.
 	 *
 	 * @since 2.0.0
 	 * @var bool
@@ -125,10 +125,10 @@ class WP_Query {
 	public $in_the_loop = false;
 
 	/**
-	 * The current post.
+	 * Bài viết hiện tại.
 	 *
-	 * This property does not get populated when the `fields` argument is set to
-	 * `ids` or `id=>parent`.
+	 * Thuộc tính này không được điền khi tham số `fields` được đặt thành
+	 * `ids` hoặc `id=>parent`.
 	 *
 	 * @since 1.5.0
 	 * @var WP_Post|null
@@ -136,7 +136,7 @@ class WP_Query {
 	public $post;
 
 	/**
-	 * The list of comments for current post.
+	 * Danh sách bình luận cho bài viết hiện tại.
 	 *
 	 * @since 2.2.0
 	 * @var WP_Comment[]
@@ -144,7 +144,7 @@ class WP_Query {
 	public $comments;
 
 	/**
-	 * The number of comments for the posts.
+	 * Số lượng bình luận cho các bài viết.
 	 *
 	 * @since 2.2.0
 	 * @var int
@@ -152,7 +152,7 @@ class WP_Query {
 	public $comment_count = 0;
 
 	/**
-	 * The index of the comment in the comment loop.
+	 * Chỉ mục của bình luận trong vòng lặp bình luận.
 	 *
 	 * @since 2.2.0
 	 * @var int
@@ -160,7 +160,7 @@ class WP_Query {
 	public $current_comment = -1;
 
 	/**
-	 * Current comment object.
+	 * Đối tượng bình luận hiện tại.
 	 *
 	 * @since 2.2.0
 	 * @var WP_Comment
@@ -168,9 +168,9 @@ class WP_Query {
 	public $comment;
 
 	/**
-	 * The number of found posts for the current query.
+	 * Số lượng bài viết tìm được cho truy vấn hiện tại.
 	 *
-	 * If limit clause was not used, equals $post_count.
+	 * Nếu mệnh đề limit không được sử dụng, bằng với $post_count.
 	 *
 	 * @since 2.1.0
 	 * @var int
@@ -178,7 +178,7 @@ class WP_Query {
 	public $found_posts = 0;
 
 	/**
-	 * The number of pages.
+	 * Số lượng trang.
 	 *
 	 * @since 2.1.0
 	 * @var int
@@ -186,7 +186,7 @@ class WP_Query {
 	public $max_num_pages = 0;
 
 	/**
-	 * The number of comment pages.
+	 * Số lượng trang bình luận.
 	 *
 	 * @since 2.7.0
 	 * @var int
@@ -194,7 +194,7 @@ class WP_Query {
 	public $max_num_comment_pages = 0;
 
 	/**
-	 * Signifies whether the current query is for a single post.
+	 * Cho biết truy vấn hiện tại có phải là cho một bài viết đơn lẻ hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -202,7 +202,7 @@ class WP_Query {
 	public $is_single = false;
 
 	/**
-	 * Signifies whether the current query is for a preview.
+	 * Cho biết truy vấn hiện tại có phải là cho bản xem trước hay không.
 	 *
 	 * @since 2.0.0
 	 * @var bool
@@ -210,7 +210,7 @@ class WP_Query {
 	public $is_preview = false;
 
 	/**
-	 * Signifies whether the current query is for a page.
+	 * Cho biết truy vấn hiện tại có phải là cho một trang hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -218,7 +218,7 @@ class WP_Query {
 	public $is_page = false;
 
 	/**
-	 * Signifies whether the current query is for an archive.
+	 * Cho biết truy vấn hiện tại có phải là cho một lưu trữ hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -226,7 +226,7 @@ class WP_Query {
 	public $is_archive = false;
 
 	/**
-	 * Signifies whether the current query is for a date archive.
+	 * Cho biết truy vấn hiện tại có phải là cho lưu trữ theo ngày hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -234,7 +234,7 @@ class WP_Query {
 	public $is_date = false;
 
 	/**
-	 * Signifies whether the current query is for a year archive.
+	 * Cho biết truy vấn hiện tại có phải là cho lưu trữ theo năm hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -242,7 +242,7 @@ class WP_Query {
 	public $is_year = false;
 
 	/**
-	 * Signifies whether the current query is for a month archive.
+	 * Cho biết truy vấn hiện tại có phải là cho lưu trữ theo tháng hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -250,7 +250,7 @@ class WP_Query {
 	public $is_month = false;
 
 	/**
-	 * Signifies whether the current query is for a day archive.
+	 * Cho biết truy vấn hiện tại có phải là cho lưu trữ theo ngày hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -258,7 +258,7 @@ class WP_Query {
 	public $is_day = false;
 
 	/**
-	 * Signifies whether the current query is for a specific time.
+	 * Cho biết truy vấn hiện tại có phải là cho một thời gian cụ thể hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -266,7 +266,7 @@ class WP_Query {
 	public $is_time = false;
 
 	/**
-	 * Signifies whether the current query is for an author archive.
+	 * Cho biết truy vấn hiện tại có phải là cho lưu trữ theo tác giả hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -274,7 +274,7 @@ class WP_Query {
 	public $is_author = false;
 
 	/**
-	 * Signifies whether the current query is for a category archive.
+	 * Cho biết truy vấn hiện tại có phải là cho lưu trữ theo chuyên mục hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -282,7 +282,7 @@ class WP_Query {
 	public $is_category = false;
 
 	/**
-	 * Signifies whether the current query is for a tag archive.
+	 * Cho biết truy vấn hiện tại có phải là cho lưu trữ theo thẻ hay không.
 	 *
 	 * @since 2.3.0
 	 * @var bool
@@ -290,7 +290,7 @@ class WP_Query {
 	public $is_tag = false;
 
 	/**
-	 * Signifies whether the current query is for a taxonomy archive.
+	 * Cho biết truy vấn hiện tại có phải là cho lưu trữ theo taxonomy hay không.
 	 *
 	 * @since 2.5.0
 	 * @var bool
@@ -298,7 +298,7 @@ class WP_Query {
 	public $is_tax = false;
 
 	/**
-	 * Signifies whether the current query is for a search.
+	 * Cho biết truy vấn hiện tại có phải là cho tìm kiếm hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -306,7 +306,7 @@ class WP_Query {
 	public $is_search = false;
 
 	/**
-	 * Signifies whether the current query is for a feed.
+	 * Cho biết truy vấn hiện tại có phải là cho feed hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -314,7 +314,7 @@ class WP_Query {
 	public $is_feed = false;
 
 	/**
-	 * Signifies whether the current query is for a comment feed.
+	 * Cho biết truy vấn hiện tại có phải là cho feed bình luận hay không.
 	 *
 	 * @since 2.2.0
 	 * @var bool
@@ -322,7 +322,7 @@ class WP_Query {
 	public $is_comment_feed = false;
 
 	/**
-	 * Signifies whether the current query is for trackback endpoint call.
+	 * Cho biết truy vấn hiện tại có phải là cho lời gọi endpoint trackback hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -330,7 +330,7 @@ class WP_Query {
 	public $is_trackback = false;
 
 	/**
-	 * Signifies whether the current query is for the site homepage.
+	 * Cho biết truy vấn hiện tại có phải là cho trang chủ của website hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -338,7 +338,7 @@ class WP_Query {
 	public $is_home = false;
 
 	/**
-	 * Signifies whether the current query is for the Privacy Policy page.
+	 * Cho biết truy vấn hiện tại có phải là cho trang Chính sách Bảo mật hay không.
 	 *
 	 * @since 5.2.0
 	 * @var bool
@@ -346,7 +346,7 @@ class WP_Query {
 	public $is_privacy_policy = false;
 
 	/**
-	 * Signifies whether the current query couldn't find anything.
+	 * Cho biết truy vấn hiện tại không tìm thấy kết quả nào hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -354,7 +354,7 @@ class WP_Query {
 	public $is_404 = false;
 
 	/**
-	 * Signifies whether the current query is for an embed.
+	 * Cho biết truy vấn hiện tại có phải là cho nội dung nhúng hay không.
 	 *
 	 * @since 4.4.0
 	 * @var bool
@@ -362,7 +362,7 @@ class WP_Query {
 	public $is_embed = false;
 
 	/**
-	 * Signifies whether the current query is for a paged result and not for the first page.
+	 * Cho biết truy vấn hiện tại có phải là cho kết quả phân trang và không phải trang đầu tiên hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -370,7 +370,7 @@ class WP_Query {
 	public $is_paged = false;
 
 	/**
-	 * Signifies whether the current query is for an administrative interface page.
+	 * Cho biết truy vấn hiện tại có phải là cho trang giao diện quản trị hay không.
 	 *
 	 * @since 1.5.0
 	 * @var bool
@@ -378,7 +378,7 @@ class WP_Query {
 	public $is_admin = false;
 
 	/**
-	 * Signifies whether the current query is for an attachment page.
+	 * Cho biết truy vấn hiện tại có phải là cho trang tệp đính kèm hay không.
 	 *
 	 * @since 2.0.0
 	 * @var bool
@@ -386,8 +386,8 @@ class WP_Query {
 	public $is_attachment = false;
 
 	/**
-	 * Signifies whether the current query is for an existing single post of any post type
-	 * (post, attachment, page, custom post types).
+	 * Cho biết truy vấn hiện tại có phải là cho một bài viết đơn lẻ hiện có thuộc bất kỳ loại bài viết nào
+	 * (bài viết, tệp đính kèm, trang, loại bài viết tùy chỉnh).
 	 *
 	 * @since 2.1.0
 	 * @var bool
@@ -395,7 +395,7 @@ class WP_Query {
 	public $is_singular = false;
 
 	/**
-	 * Signifies whether the current query is for the robots.txt file.
+	 * Cho biết truy vấn hiện tại có phải là cho tệp robots.txt hay không.
 	 *
 	 * @since 2.1.0
 	 * @var bool
@@ -403,7 +403,7 @@ class WP_Query {
 	public $is_robots = false;
 
 	/**
-	 * Signifies whether the current query is for the favicon.ico file.
+	 * Cho biết truy vấn hiện tại có phải là cho tệp favicon.ico hay không.
 	 *
 	 * @since 5.4.0
 	 * @var bool
@@ -411,9 +411,9 @@ class WP_Query {
 	public $is_favicon = false;
 
 	/**
-	 * Signifies whether the current query is for the page_for_posts page.
+	 * Cho biết truy vấn hiện tại có phải là cho trang page_for_posts hay không.
 	 *
-	 * Basically, the homepage if the option isn't set for the static homepage.
+	 * Về cơ bản, đây là trang chủ nếu tùy chọn không được thiết lập cho trang chủ tĩnh.
 	 *
 	 * @since 2.1.0
 	 * @var bool
@@ -421,7 +421,7 @@ class WP_Query {
 	public $is_posts_page = false;
 
 	/**
-	 * Signifies whether the current query is for a post type archive.
+	 * Cho biết truy vấn hiện tại có phải là cho lưu trữ loại bài viết hay không.
 	 *
 	 * @since 3.1.0
 	 * @var bool
@@ -429,8 +429,8 @@ class WP_Query {
 	public $is_post_type_archive = false;
 
 	/**
-	 * Stores the ->query_vars state like md5(serialize( $this->query_vars ) ) so we know
-	 * whether we have to re-parse because something has changed
+	 * Lưu trữ trạng thái ->query_vars dưới dạng md5(serialize( $this->query_vars ) ) để biết
+	 * liệu có cần phân tích lại vì có gì đó đã thay đổi hay không.
 	 *
 	 * @since 3.1.0
 	 * @var bool|string
@@ -438,8 +438,8 @@ class WP_Query {
 	private $query_vars_hash = false;
 
 	/**
-	 * Whether query vars have changed since the initial parse_query() call. Used to catch modifications to query vars made
-	 * via pre_get_posts hooks.
+	 * Cho biết các biến truy vấn đã thay đổi kể từ lời gọi parse_query() ban đầu hay chưa.
+	 * Được dùng để phát hiện các thay đổi biến truy vấn qua hook pre_get_posts.
 	 *
 	 * @since 3.1.1
 	 * @var bool
@@ -447,7 +447,7 @@ class WP_Query {
 	private $query_vars_changed = true;
 
 	/**
-	 * Set if post thumbnails are cached
+	 * Đã thiết lập nếu hình thu nhỏ bài viết được lưu trong bộ nhớ đệm.
 	 *
 	 * @since 3.2.0
 	 * @var bool
@@ -455,7 +455,7 @@ class WP_Query {
 	public $thumbnails_cached = false;
 
 	/**
-	 * Controls whether an attachment query should include filenames or not.
+	 * Kiểm soát liệu truy vấn tệp đính kèm có nên bao gồm tên tệp hay không.
 	 *
 	 * @since 6.0.3
 	 * @var bool
@@ -463,7 +463,7 @@ class WP_Query {
 	protected $allow_query_attachment_by_filename = false;
 
 	/**
-	 * Cached list of search stopwords.
+	 * Danh sách từ dừng tìm kiếm đã được lưu trong bộ nhớ đệm.
 	 *
 	 * @since 3.7.0
 	 * @var array
@@ -475,10 +475,10 @@ class WP_Query {
 	private $compat_methods = array( 'init_query_flags', 'parse_tax_query' );
 
 	/**
-	 * The cache key generated by the query.
+	 * Khóa bộ nhớ đệm được tạo bởi truy vấn.
 	 *
-	 * The cache key is generated by the method ::generate_cache_key() after the
-	 * query has been normalized.
+	 * Khóa bộ nhớ đệm được tạo bởi phương thức ::generate_cache_key() sau khi
+	 * truy vấn đã được chuẩn hóa.
 	 *
 	 * @since 6.8.0
 	 * @var string
@@ -486,9 +486,9 @@ class WP_Query {
 	private $query_cache_key = '';
 
 	/**
-	 * Resets query flags to false.
+	 * Đặt lại các cờ truy vấn về false.
 	 *
-	 * The query flags are what page info WordPress was able to figure out.
+	 * Các cờ truy vấn là thông tin trang mà WordPress có thể xác định được.
 	 *
 	 * @since 2.0.0
 	 */
@@ -524,7 +524,7 @@ class WP_Query {
 	}
 
 	/**
-	 * Initiates object properties and sets default values.
+	 * Khởi tạo các thuộc tính đối tượng và thiết lập giá trị mặc định.
 	 *
 	 * @since 1.5.0
 	 */
@@ -552,7 +552,7 @@ class WP_Query {
 	}
 
 	/**
-	 * Reparses the query vars.
+	 * Phân tích lại các biến truy vấn.
 	 *
 	 * @since 1.5.0
 	 */
@@ -561,13 +561,13 @@ class WP_Query {
 	}
 
 	/**
-	 * Fills in the query variables, which do not exist within the parameter.
+	 * Điền vào các biến truy vấn chưa tồn tại trong tham số.
 	 *
 	 * @since 2.1.0
-	 * @since 4.5.0 Removed the `comments_popup` public query variable.
+	 * @since 4.5.0 Đã loại bỏ biến truy vấn công khai `comments_popup`.
 	 *
-	 * @param array $query_vars Defined query variables.
-	 * @return array Complete query variables with undefined ones filled in empty.
+	 * @param array $query_vars Các biến truy vấn đã được định nghĩa.
+	 * @return array Các biến truy vấn đầy đủ với các biến chưa định nghĩa được điền giá trị rỗng.
 	 */
 	public function fill_query_vars( $query_vars ) {
 		$keys = array(
@@ -644,86 +644,86 @@ class WP_Query {
 	}
 
 	/**
-	 * Parses a query string and sets query type booleans.
+	 * Phân tích chuỗi truy vấn và thiết lập các biến boolean loại truy vấn.
 	 *
 	 * @since 1.5.0
-	 * @since 4.2.0 Introduced the ability to order by specific clauses of a `$meta_query`, by passing the clause's
-	 *              array key to `$orderby`.
-	 * @since 4.4.0 Introduced `$post_name__in` and `$title` parameters. `$s` was updated to support excluded
-	 *              search terms, by prepending a hyphen.
-	 * @since 4.5.0 Removed the `$comments_popup` parameter.
-	 *              Introduced the `$comment_status` and `$ping_status` parameters.
-	 *              Introduced `RAND(x)` syntax for `$orderby`, which allows an integer seed value to random sorts.
-	 * @since 4.6.0 Added 'post_name__in' support for `$orderby`. Introduced the `$lazy_load_term_meta` argument.
-	 * @since 4.9.0 Introduced the `$comment_count` parameter.
-	 * @since 5.1.0 Introduced the `$meta_compare_key` parameter.
-	 * @since 5.3.0 Introduced the `$meta_type_key` parameter.
-	 * @since 6.1.0 Introduced the `$update_menu_item_cache` parameter.
-	 * @since 6.2.0 Introduced the `$search_columns` parameter.
+	 * @since 4.2.0 Giới thiệu khả năng sắp xếp theo các mệnh đề cụ thể của `$meta_query`, bằng cách truyền
+	 *              khóa mảng của mệnh đề vào `$orderby`.
+	 * @since 4.4.0 Giới thiệu tham số `$post_name__in` và `$title`. `$s` được cập nhật để hỗ trợ loại trừ
+	 *              các từ tìm kiếm, bằng cách thêm dấu gạch ngang phía trước.
+	 * @since 4.5.0 Đã loại bỏ tham số `$comments_popup`.
+	 *              Giới thiệu các tham số `$comment_status` và `$ping_status`.
+	 *              Giới thiệu cú pháp `RAND(x)` cho `$orderby`, cho phép giá trị seed số nguyên cho sắp xếp ngẫu nhiên.
+	 * @since 4.6.0 Thêm hỗ trợ 'post_name__in' cho `$orderby`. Giới thiệu tham số `$lazy_load_term_meta`.
+	 * @since 4.9.0 Giới thiệu tham số `$comment_count`.
+	 * @since 5.1.0 Giới thiệu tham số `$meta_compare_key`.
+	 * @since 5.3.0 Giới thiệu tham số `$meta_type_key`.
+	 * @since 6.1.0 Giới thiệu tham số `$update_menu_item_cache`.
+	 * @since 6.2.0 Giới thiệu tham số `$search_columns`.
 	 *
 	 * @param string|array $query {
-	 *     Optional. Array or string of Query parameters.
+	 *     Tùy chọn. Mảng hoặc chuỗi các tham số truy vấn.
 	 *
-	 *     @type int             $attachment_id          Attachment post ID. Used for 'attachment' post_type.
-	 *     @type int|string      $author                 Author ID, or comma-separated list of IDs.
-	 *     @type string          $author_name            User 'user_nicename'.
-	 *     @type int[]           $author__in             An array of author IDs to query from.
-	 *     @type int[]           $author__not_in         An array of author IDs not to query from.
-	 *     @type bool            $cache_results          Whether to cache post information. Default true.
-	 *     @type int|string      $cat                    Category ID or comma-separated list of IDs (this or any children).
-	 *     @type int[]           $category__and          An array of category IDs (AND in).
-	 *     @type int[]           $category__in           An array of category IDs (OR in, no children).
-	 *     @type int[]           $category__not_in       An array of category IDs (NOT in).
-	 *     @type string          $category_name          Use category slug (not name, this or any children).
-	 *     @type array|int       $comment_count          Filter results by comment count. Provide an integer to match
-	 *                                                   comment count exactly. Provide an array with integer 'value'
-	 *                                                   and 'compare' operator ('=', '!=', '>', '>=', '<', '<=' ) to
-	 *                                                   compare against comment_count in a specific way.
-	 *     @type string          $comment_status         Comment status.
-	 *     @type int             $comments_per_page      The number of comments to return per page.
-	 *                                                   Default 'comments_per_page' option.
-	 *     @type array           $date_query             An associative array of WP_Date_Query arguments.
-	 *                                                   See WP_Date_Query::__construct().
-	 *     @type int             $day                    Day of the month. Default empty. Accepts numbers 1-31.
-	 *     @type bool            $exact                  Whether to search by exact keyword. Default false.
-	 *     @type string          $fields                 Post fields to query for. Accepts:
-	 *                                                   - '' Returns an array of complete post objects (`WP_Post[]`).
-	 *                                                   - 'ids' Returns an array of post IDs (`int[]`).
-	 *                                                   - 'id=>parent' Returns an associative array of parent post IDs,
-	 *                                                     keyed by post ID (`int[]`).
-	 *                                                   Default ''.
-	 *     @type int             $hour                   Hour of the day. Default empty. Accepts numbers 0-23.
-	 *     @type int|bool        $ignore_sticky_posts    Whether to ignore sticky posts or not. Setting this to false
-	 *                                                   excludes stickies from 'post__in'. Accepts 1|true, 0|false.
-	 *                                                   Default false.
-	 *     @type int             $m                      Combination YearMonth. Accepts any four-digit year and month
-	 *                                                   numbers 01-12. Default empty.
-	 *     @type string|string[] $meta_key               Meta key or keys to filter by.
-	 *     @type string|string[] $meta_value             Meta value or values to filter by.
-	 *     @type string          $meta_compare           MySQL operator used for comparing the meta value.
-	 *                                                   See WP_Meta_Query::__construct() for accepted values and default value.
-	 *     @type string          $meta_compare_key       MySQL operator used for comparing the meta key.
-	 *                                                   See WP_Meta_Query::__construct() for accepted values and default value.
-	 *     @type string          $meta_type              MySQL data type that the meta_value column will be CAST to for comparisons.
-	 *                                                   See WP_Meta_Query::__construct() for accepted values and default value.
-	 *     @type string          $meta_type_key          MySQL data type that the meta_key column will be CAST to for comparisons.
-	 *                                                   See WP_Meta_Query::__construct() for accepted values and default value.
-	 *     @type array           $meta_query             An associative array of WP_Meta_Query arguments.
-	 *                                                   See WP_Meta_Query::__construct() for accepted values.
-	 *     @type int             $menu_order             The menu order of the posts.
-	 *     @type int             $minute                 Minute of the hour. Default empty. Accepts numbers 0-59.
-	 *     @type int             $monthnum               The two-digit month. Default empty. Accepts numbers 1-12.
-	 *     @type string          $name                   Post slug.
-	 *     @type bool            $nopaging               Show all posts (true) or paginate (false). Default false.
-	 *     @type bool            $no_found_rows          Whether to skip counting the total rows found. Enabling can improve
-	 *                                                   performance. Default false.
-	 *     @type int             $offset                 The number of posts to offset before retrieval.
-	 *     @type string          $order                  Designates ascending or descending order of posts. Default 'DESC'.
-	 *                                                   Accepts 'ASC', 'DESC'.
-	 *     @type string|array    $orderby                Sort retrieved posts by parameter. One or more options may be passed.
-	 *                                                   To use 'meta_value', or 'meta_value_num', 'meta_key=keyname' must be
-	 *                                                   also be defined. To sort by a specific `$meta_query` clause, use that
-	 *                                                   clause's array key. Accepts:
+	 *     @type int             $attachment_id          ID bài viết tệp đính kèm. Dùng cho post_type 'attachment'.
+	 *     @type int|string      $author                 ID tác giả, hoặc danh sách ID phân cách bằng dấu phẩy.
+	 *     @type string          $author_name            'user_nicename' của người dùng.
+	 *     @type int[]           $author__in             Mảng các ID tác giả để truy vấn.
+	 *     @type int[]           $author__not_in         Mảng các ID tác giả không truy vấn.
+	 *     @type bool            $cache_results          Có lưu bộ nhớ đệm thông tin bài viết hay không. Mặc định true.
+	 *     @type int|string      $cat                    ID chuyên mục hoặc danh sách ID phân cách bằng dấu phẩy (chuyên mục này hoặc con của nó).
+	 *     @type int[]           $category__and          Mảng các ID chuyên mục (AND in).
+	 *     @type int[]           $category__in           Mảng các ID chuyên mục (OR in, không bao gồm con).
+	 *     @type int[]           $category__not_in       Mảng các ID chuyên mục (NOT in).
+	 *     @type string          $category_name          Dùng slug chuyên mục (không phải tên, chuyên mục này hoặc con của nó).
+	 *     @type array|int       $comment_count          Lọc kết quả theo số lượng bình luận. Cung cấp số nguyên để khớp
+	 *                                                   chính xác số lượng bình luận. Cung cấp mảng với số nguyên 'value'
+	 *                                                   và toán tử 'compare' ('=', '!=', '>', '>=', '<', '<=' ) để
+	 *                                                   so sánh với comment_count theo cách cụ thể.
+	 *     @type string          $comment_status         Trạng thái bình luận.
+	 *     @type int             $comments_per_page      Số lượng bình luận trả về mỗi trang.
+	 *                                                   Mặc định là tùy chọn 'comments_per_page'.
+	 *     @type array           $date_query             Mảng liên kết các tham số WP_Date_Query.
+	 *                                                   Xem WP_Date_Query::__construct().
+	 *     @type int             $day                    Ngày trong tháng. Mặc định rỗng. Chấp nhận số 1-31.
+	 *     @type bool            $exact                  Có tìm kiếm theo từ khóa chính xác hay không. Mặc định false.
+	 *     @type string          $fields                 Các trường bài viết để truy vấn. Chấp nhận:
+	 *                                                   - '' Trả về mảng các đối tượng bài viết đầy đủ (`WP_Post[]`).
+	 *                                                   - 'ids' Trả về mảng các ID bài viết (`int[]`).
+	 *                                                   - 'id=>parent' Trả về mảng liên kết các ID bài viết cha,
+	 *                                                     được đánh khóa theo ID bài viết (`int[]`).
+	 *                                                   Mặc định ''.
+	 *     @type int             $hour                   Giờ trong ngày. Mặc định rỗng. Chấp nhận số 0-23.
+	 *     @type int|bool        $ignore_sticky_posts    Có bỏ qua bài viết ghim hay không. Đặt thành false
+	 *                                                   sẽ loại trừ bài ghim khỏi 'post__in'. Chấp nhận 1|true, 0|false.
+	 *                                                   Mặc định false.
+	 *     @type int             $m                      Kết hợp NămTháng. Chấp nhận bất kỳ năm bốn chữ số và tháng
+	 *                                                   từ 01-12. Mặc định rỗng.
+	 *     @type string|string[] $meta_key               Khóa meta hoặc các khóa meta để lọc.
+	 *     @type string|string[] $meta_value             Giá trị meta hoặc các giá trị meta để lọc.
+	 *     @type string          $meta_compare           Toán tử MySQL dùng để so sánh giá trị meta.
+	 *                                                   Xem WP_Meta_Query::__construct() để biết các giá trị chấp nhận và giá trị mặc định.
+	 *     @type string          $meta_compare_key       Toán tử MySQL dùng để so sánh khóa meta.
+	 *                                                   Xem WP_Meta_Query::__construct() để biết các giá trị chấp nhận và giá trị mặc định.
+	 *     @type string          $meta_type              Kiểu dữ liệu MySQL mà cột meta_value sẽ được CAST sang để so sánh.
+	 *                                                   Xem WP_Meta_Query::__construct() để biết các giá trị chấp nhận và giá trị mặc định.
+	 *     @type string          $meta_type_key          Kiểu dữ liệu MySQL mà cột meta_key sẽ được CAST sang để so sánh.
+	 *                                                   Xem WP_Meta_Query::__construct() để biết các giá trị chấp nhận và giá trị mặc định.
+	 *     @type array           $meta_query             Mảng liên kết các tham số WP_Meta_Query.
+	 *                                                   Xem WP_Meta_Query::__construct() để biết các giá trị chấp nhận.
+	 *     @type int             $menu_order             Thứ tự menu của các bài viết.
+	 *     @type int             $minute                 Phút trong giờ. Mặc định rỗng. Chấp nhận số 0-59.
+	 *     @type int             $monthnum               Tháng hai chữ số. Mặc định rỗng. Chấp nhận số 1-12.
+	 *     @type string          $name                   Slug bài viết.
+	 *     @type bool            $nopaging               Hiển thị tất cả bài viết (true) hoặc phân trang (false). Mặc định false.
+	 *     @type bool            $no_found_rows          Có bỏ qua đếm tổng số hàng tìm được hay không. Bật có thể cải thiện
+	 *                                                   hiệu suất. Mặc định false.
+	 *     @type int             $offset                 Số lượng bài viết bỏ qua trước khi lấy dữ liệu.
+	 *     @type string          $order                  Chỉ định thứ tự tăng dần hoặc giảm dần của bài viết. Mặc định 'DESC'.
+	 *                                                   Chấp nhận 'ASC', 'DESC'.
+	 *     @type string|array    $orderby                Sắp xếp bài viết lấy được theo tham số. Có thể truyền một hoặc nhiều tùy chọn.
+	 *                                                   Để dùng 'meta_value', hoặc 'meta_value_num', phải định nghĩa
+	 *                                                   'meta_key=keyname'. Để sắp xếp theo mệnh đề `$meta_query` cụ thể,
+	 *                                                   dùng khóa mảng của mệnh đề đó. Chấp nhận:
 	 *                                                   - 'none'
 	 *                                                   - 'name'
 	 *                                                   - 'author'
@@ -735,69 +735,69 @@ class WP_Query {
 	 *                                                   - 'ID'
 	 *                                                   - 'rand'
 	 *                                                   - 'relevance'
-	 *                                                   - 'RAND(x)' (where 'x' is an integer seed value)
+	 *                                                   - 'RAND(x)' (trong đó 'x' là giá trị seed số nguyên)
 	 *                                                   - 'comment_count'
 	 *                                                   - 'meta_value'
 	 *                                                   - 'meta_value_num'
 	 *                                                   - 'post__in'
 	 *                                                   - 'post_name__in'
 	 *                                                   - 'post_parent__in'
-	 *                                                   - The array keys of `$meta_query`.
-	 *                                                   Default is 'date', except when a search is being performed, when
-	 *                                                   the default is 'relevance'.
-	 *     @type int             $p                      Post ID.
-	 *     @type int             $page                   Show the number of posts that would show up on page X of a
-	 *                                                   static front page.
-	 *     @type int             $paged                  The number of the current page.
-	 *     @type int             $page_id                Page ID.
-	 *     @type string          $pagename               Page slug.
-	 *     @type string          $perm                   Show posts if user has the appropriate capability.
-	 *     @type string          $ping_status            Ping status.
-	 *     @type int[]           $post__in               An array of post IDs to retrieve, sticky posts will be included.
-	 *     @type int[]           $post__not_in           An array of post IDs not to retrieve. Note: a string of comma-
-	 *                                                   separated IDs will NOT work.
-	 *     @type string          $post_mime_type         The mime type of the post. Used for 'attachment' post_type.
-	 *     @type string[]        $post_name__in          An array of post slugs that results must match.
-	 *     @type int             $post_parent            Page ID to retrieve child pages for. Use 0 to only retrieve
-	 *                                                   top-level pages.
-	 *     @type int[]           $post_parent__in        An array containing parent page IDs to query child pages from.
-	 *     @type int[]           $post_parent__not_in    An array containing parent page IDs not to query child pages from.
-	 *     @type string|string[] $post_type              A post type slug (string) or array of post type slugs.
-	 *                                                   Default 'any' if using 'tax_query'.
-	 *     @type string|string[] $post_status            A post status (string) or array of post statuses.
-	 *     @type int             $posts_per_page         The number of posts to query for. Use -1 to request all posts.
-	 *     @type int             $posts_per_archive_page The number of posts to query for by archive page. Overrides
-	 *                                                   'posts_per_page' when is_archive(), or is_search() are true.
-	 *     @type string          $s                      Search keyword(s). Prepending a term with a hyphen will
-	 *                                                   exclude posts matching that term. Eg, 'pillow -sofa' will
-	 *                                                   return posts containing 'pillow' but not 'sofa'. The
-	 *                                                   character used for exclusion can be modified using the
-	 *                                                   the 'wp_query_search_exclusion_prefix' filter.
-	 *     @type string[]        $search_columns         Array of column names to be searched. Accepts 'post_title',
-	 *                                                   'post_excerpt' and 'post_content'. Default empty array.
-	 *     @type int             $second                 Second of the minute. Default empty. Accepts numbers 0-59.
-	 *     @type bool            $sentence               Whether to search by phrase. Default false.
-	 *     @type bool            $suppress_filters       Whether to suppress filters. Default false.
-	 *     @type string          $tag                    Tag slug. Comma-separated (either), Plus-separated (all).
-	 *     @type int[]           $tag__and               An array of tag IDs (AND in).
-	 *     @type int[]           $tag__in                An array of tag IDs (OR in).
-	 *     @type int[]           $tag__not_in            An array of tag IDs (NOT in).
-	 *     @type int             $tag_id                 Tag id or comma-separated list of IDs.
-	 *     @type string[]        $tag_slug__and          An array of tag slugs (AND in).
-	 *     @type string[]        $tag_slug__in           An array of tag slugs (OR in). unless 'ignore_sticky_posts' is
-	 *                                                   true. Note: a string of comma-separated IDs will NOT work.
-	 *     @type array           $tax_query              An associative array of WP_Tax_Query arguments.
-	 *                                                   See WP_Tax_Query::__construct().
-	 *     @type string          $title                  Post title.
-	 *     @type bool            $update_post_meta_cache Whether to update the post meta cache. Default true.
-	 *     @type bool            $update_post_term_cache Whether to update the post term cache. Default true.
-	 *     @type bool            $update_menu_item_cache Whether to update the menu item cache. Default false.
-	 *     @type bool            $lazy_load_term_meta    Whether to lazy-load term meta. Setting to false will
-	 *                                                   disable cache priming for term meta, so that each
-	 *                                                   get_term_meta() call will hit the database.
-	 *                                                   Defaults to the value of `$update_post_term_cache`.
-	 *     @type int             $w                      The week number of the year. Default empty. Accepts numbers 0-53.
-	 *     @type int             $year                   The four-digit year. Default empty. Accepts any four-digit year.
+	 *                                                   - Các khóa mảng của `$meta_query`.
+	 *                                                   Mặc định là 'date', ngoại trừ khi đang thực hiện tìm kiếm,
+	 *                                                   khi đó mặc định là 'relevance'.
+	 *     @type int             $p                      ID bài viết.
+	 *     @type int             $page                   Hiển thị số bài viết sẽ xuất hiện trên trang X của
+	 *                                                   trang chủ tĩnh.
+	 *     @type int             $paged                  Số trang hiện tại.
+	 *     @type int             $page_id                ID trang.
+	 *     @type string          $pagename               Slug trang.
+	 *     @type string          $perm                   Hiển thị bài viết nếu người dùng có quyền phù hợp.
+	 *     @type string          $ping_status            Trạng thái ping.
+	 *     @type int[]           $post__in               Mảng các ID bài viết để lấy, bài viết ghim sẽ được bao gồm.
+	 *     @type int[]           $post__not_in           Mảng các ID bài viết không lấy. Lưu ý: chuỗi các ID phân cách
+	 *                                                   bằng dấu phẩy sẽ KHÔNG hoạt động.
+	 *     @type string          $post_mime_type         Kiểu mime của bài viết. Dùng cho post_type 'attachment'.
+	 *     @type string[]        $post_name__in          Mảng các slug bài viết mà kết quả phải khớp.
+	 *     @type int             $post_parent            ID trang để lấy các trang con. Dùng 0 để chỉ lấy
+	 *                                                   các trang cấp cao nhất.
+	 *     @type int[]           $post_parent__in        Mảng chứa các ID trang cha để truy vấn trang con.
+	 *     @type int[]           $post_parent__not_in    Mảng chứa các ID trang cha không truy vấn trang con.
+	 *     @type string|string[] $post_type              Slug loại bài viết (chuỗi) hoặc mảng các slug loại bài viết.
+	 *                                                   Mặc định 'any' nếu dùng 'tax_query'.
+	 *     @type string|string[] $post_status            Trạng thái bài viết (chuỗi) hoặc mảng các trạng thái bài viết.
+	 *     @type int             $posts_per_page         Số lượng bài viết cần truy vấn. Dùng -1 để yêu cầu tất cả bài viết.
+	 *     @type int             $posts_per_archive_page Số lượng bài viết cần truy vấn cho trang lưu trữ. Ghi đè
+	 *                                                   'posts_per_page' khi is_archive(), hoặc is_search() trả về true.
+	 *     @type string          $s                      Từ khóa tìm kiếm. Thêm dấu gạch ngang trước từ sẽ
+	 *                                                   loại trừ bài viết khớp với từ đó. Ví dụ, 'pillow -sofa' sẽ
+	 *                                                   trả về bài viết chứa 'pillow' nhưng không chứa 'sofa'. Ký tự
+	 *                                                   dùng để loại trừ có thể thay đổi bằng bộ lọc
+	 *                                                   'wp_query_search_exclusion_prefix'.
+	 *     @type string[]        $search_columns         Mảng tên cột cần tìm kiếm. Chấp nhận 'post_title',
+	 *                                                   'post_excerpt' và 'post_content'. Mặc định mảng rỗng.
+	 *     @type int             $second                 Giây trong phút. Mặc định rỗng. Chấp nhận số 0-59.
+	 *     @type bool            $sentence               Có tìm kiếm theo cụm từ hay không. Mặc định false.
+	 *     @type bool            $suppress_filters       Có chặn các bộ lọc hay không. Mặc định false.
+	 *     @type string          $tag                    Slug thẻ. Phân cách bằng dấu phẩy (một trong các), phân cách bằng dấu cộng (tất cả).
+	 *     @type int[]           $tag__and               Mảng các ID thẻ (AND in).
+	 *     @type int[]           $tag__in                Mảng các ID thẻ (OR in).
+	 *     @type int[]           $tag__not_in            Mảng các ID thẻ (NOT in).
+	 *     @type int             $tag_id                 ID thẻ hoặc danh sách ID phân cách bằng dấu phẩy.
+	 *     @type string[]        $tag_slug__and          Mảng các slug thẻ (AND in).
+	 *     @type string[]        $tag_slug__in           Mảng các slug thẻ (OR in). trừ khi 'ignore_sticky_posts' là
+	 *                                                   true. Lưu ý: chuỗi các ID phân cách bằng dấu phẩy sẽ KHÔNG hoạt động.
+	 *     @type array           $tax_query              Mảng liên kết các tham số WP_Tax_Query.
+	 *                                                   Xem WP_Tax_Query::__construct().
+	 *     @type string          $title                  Tiêu đề bài viết.
+	 *     @type bool            $update_post_meta_cache Có cập nhật bộ nhớ đệm meta bài viết hay không. Mặc định true.
+	 *     @type bool            $update_post_term_cache Có cập nhật bộ nhớ đệm term bài viết hay không. Mặc định true.
+	 *     @type bool            $update_menu_item_cache Có cập nhật bộ nhớ đệm mục menu hay không. Mặc định false.
+	 *     @type bool            $lazy_load_term_meta    Có tải lười meta của term hay không. Đặt thành false sẽ
+	 *                                                   vô hiệu hóa việc nạp trước bộ nhớ đệm cho meta term, để mỗi lần
+	 *                                                   gọi get_term_meta() sẽ truy vấn cơ sở dữ liệu.
+	 *                                                   Mặc định theo giá trị của `$update_post_term_cache`.
+	 *     @type int             $w                      Số tuần trong năm. Mặc định rỗng. Chấp nhận số 0-53.
+	 *     @type int             $year                   Năm bốn chữ số. Mặc định rỗng. Chấp nhận bất kỳ năm bốn chữ số nào.
 	 * }
 	 */
 	public function parse_query( $query = '' ) {
@@ -833,8 +833,8 @@ class WP_Query {
 		$qv['w']        = is_scalar( $qv['w'] ) ? absint( $qv['w'] ) : 0;
 		$qv['m']        = is_scalar( $qv['m'] ) ? preg_replace( '|[^0-9]|', '', $qv['m'] ) : '';
 		$qv['paged']    = is_scalar( $qv['paged'] ) ? absint( $qv['paged'] ) : 0;
-		$qv['cat']      = preg_replace( '|[^0-9,-]|', '', $qv['cat'] ); // Array or comma-separated list of positive or negative integers.
-		$qv['author']   = is_scalar( $qv['author'] ) ? preg_replace( '|[^0-9,-]|', '', $qv['author'] ) : ''; // Comma-separated list of positive or negative integers.
+		$qv['cat']      = preg_replace( '|[^0-9,-]|', '', $qv['cat'] ); // Mảng hoặc danh sách phân cách bằng dấu phẩy gồm các số nguyên dương hoặc âm.
+		$qv['author']   = is_scalar( $qv['author'] ) ? preg_replace( '|[^0-9,-]|', '', $qv['author'] ) : ''; // Danh sách phân cách bằng dấu phẩy gồm các số nguyên dương hoặc âm.
 		$qv['pagename'] = is_scalar( $qv['pagename'] ) ? trim( $qv['pagename'] ) : '';
 		$qv['name']     = is_scalar( $qv['name'] ) ? trim( $qv['name'] ) : '';
 		$qv['title']    = is_scalar( $qv['title'] ) ? trim( $qv['title'] ) : '';
@@ -863,12 +863,12 @@ class WP_Query {
 			$qv['menu_order'] = '';
 		}
 
-		// Fairly large, potentially too large, upper bound for search string lengths.
+		// Giới hạn trên khá lớn, có thể quá lớn, cho độ dài chuỗi tìm kiếm.
 		if ( ! is_scalar( $qv['s'] ) || ( ! empty( $qv['s'] ) && strlen( $qv['s'] ) > 1600 ) ) {
 			$qv['s'] = '';
 		}
 
-		// Compat. Map subpost to attachment.
+		// Tương thích ngược. Ánh xạ subpost thành attachment.
 		if ( is_scalar( $qv['subpost'] ) && '' != $qv['subpost'] ) {
 			$qv['attachment'] = $qv['subpost'];
 		}
@@ -889,7 +889,7 @@ class WP_Query {
 			$this->is_page   = true;
 			$this->is_single = false;
 		} else {
-			// Look for archive queries. Dates, categories, authors, search, post type archives.
+			// Tìm kiếm các truy vấn lưu trữ. Ngày tháng, chuyên mục, tác giả, tìm kiếm, lưu trữ loại bài viết.
 
 			if ( isset( $this->query['s'] ) ) {
 				$this->is_search = true;
@@ -1018,7 +1018,7 @@ class WP_Query {
 			$this->is_paged = true;
 		}
 
-		// If we're previewing inside the write screen.
+		// Nếu đang xem trước trong màn hình soạn thảo.
 		if ( '' != $qv['preview'] ) {
 			$this->is_preview = true;
 		}
@@ -1044,7 +1044,7 @@ class WP_Query {
 			$this->is_home = true;
 		}
 
-		// Correct `is_*` for 'page_on_front' and 'page_for_posts'.
+		// Sửa `is_*` cho 'page_on_front' và 'page_for_posts'.
 		if ( $this->is_home && 'page' === get_option( 'show_on_front' ) && get_option( 'page_on_front' ) ) {
 			$_query = wp_parse_args( $this->query );
 			// 'pagename' can be set and empty depending on matched rewrite rules. Ignore an empty 'pagename'.

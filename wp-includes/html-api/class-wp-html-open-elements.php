@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML API: WP_HTML_Open_Elements class
+ * HTML API: Lớp WP_HTML_Open_Elements
  *
  * @package WordPress
  * @subpackage HTML-API
@@ -8,17 +8,17 @@
  */
 
 /**
- * Core class used by the HTML processor during HTML parsing
- * for managing the stack of open elements.
+ * Lớp lõi được sử dụng bởi bộ xử lý HTML trong quá trình phân tích cú pháp HTML
+ * để quản lý ngăn xếp các phần tử đang mở.
  *
- * This class is designed for internal use by the HTML processor.
+ * Lớp này được thiết kế để sử dụng nội bộ bởi bộ xử lý HTML.
  *
- * > Initially, the stack of open elements is empty. The stack grows
- * > downwards; the topmost node on the stack is the first one added
- * > to the stack, and the bottommost node of the stack is the most
- * > recently added node in the stack (notwithstanding when the stack
- * > is manipulated in a random access fashion as part of the handling
- * > for misnested tags).
+ * > Ban đầu, ngăn xếp các phần tử đang mở là rỗng. Ngăn xếp phát triển
+ * > xuống dưới; nút trên cùng của ngăn xếp là nút được thêm đầu tiên
+ * > vào ngăn xếp, và nút dưới cùng của ngăn xếp là nút được thêm gần
+ * > đây nhất trong ngăn xếp (không tính đến khi ngăn xếp được thao tác
+ * > theo kiểu truy cập ngẫu nhiên như một phần của việc xử lý các thẻ
+ * > lồng sai).
  *
  * @since 6.4.0
  *
@@ -29,7 +29,7 @@
  */
 class WP_HTML_Open_Elements {
 	/**
-	 * Holds the stack of open element references.
+	 * Lưu trữ ngăn xếp các tham chiếu phần tử đang mở.
 	 *
 	 * @since 6.4.0
 	 *
@@ -38,12 +38,12 @@ class WP_HTML_Open_Elements {
 	public $stack = array();
 
 	/**
-	 * Whether a P element is in button scope currently.
+	 * Phần tử P có đang nằm trong phạm vi button hiện tại hay không.
 	 *
-	 * This class optimizes scope lookup by pre-calculating
-	 * this value when elements are added and removed to the
-	 * stack of open elements which might change its value.
-	 * This avoids frequent iteration over the stack.
+	 * Lớp này tối ưu hóa việc tra cứu phạm vi bằng cách tính trước
+	 * giá trị này khi các phần tử được thêm vào và xóa khỏi ngăn xếp
+	 * các phần tử đang mở mà có thể thay đổi giá trị của nó.
+	 * Điều này tránh việc lặp lại thường xuyên trên ngăn xếp.
 	 *
 	 * @since 6.4.0
 	 *
@@ -52,9 +52,9 @@ class WP_HTML_Open_Elements {
 	private $has_p_in_button_scope = false;
 
 	/**
-	 * A function that will be called when an item is popped off the stack of open elements.
+	 * Hàm sẽ được gọi khi một phần tử bị lấy ra khỏi ngăn xếp các phần tử đang mở.
 	 *
-	 * The function will be called with the popped item as its argument.
+	 * Hàm sẽ được gọi với phần tử bị lấy ra làm tham số.
 	 *
 	 * @since 6.6.0
 	 *
@@ -63,9 +63,9 @@ class WP_HTML_Open_Elements {
 	private $pop_handler = null;
 
 	/**
-	 * A function that will be called when an item is pushed onto the stack of open elements.
+	 * Hàm sẽ được gọi khi một phần tử được đẩy vào ngăn xếp các phần tử đang mở.
 	 *
-	 * The function will be called with the pushed item as its argument.
+	 * Hàm sẽ được gọi với phần tử được đẩy vào làm tham số.
 	 *
 	 * @since 6.6.0
 	 *
@@ -74,47 +74,47 @@ class WP_HTML_Open_Elements {
 	private $push_handler = null;
 
 	/**
-	 * Sets a pop handler that will be called when an item is popped off the stack of
-	 * open elements.
+	 * Thiết lập trình xử lý pop sẽ được gọi khi một phần tử bị lấy ra khỏi ngăn xếp
+	 * các phần tử đang mở.
 	 *
-	 * The function will be called with the pushed item as its argument.
+	 * Hàm sẽ được gọi với phần tử được đẩy vào làm tham số.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param Closure $handler The handler function.
+	 * @param Closure $handler Hàm xử lý.
 	 */
 	public function set_pop_handler( Closure $handler ): void {
 		$this->pop_handler = $handler;
 	}
 
 	/**
-	 * Sets a push handler that will be called when an item is pushed onto the stack of
-	 * open elements.
+	 * Thiết lập trình xử lý push sẽ được gọi khi một phần tử được đẩy vào ngăn xếp
+	 * các phần tử đang mở.
 	 *
-	 * The function will be called with the pushed item as its argument.
+	 * Hàm sẽ được gọi với phần tử được đẩy vào làm tham số.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param Closure $handler The handler function.
+	 * @param Closure $handler Hàm xử lý.
 	 */
 	public function set_push_handler( Closure $handler ): void {
 		$this->push_handler = $handler;
 	}
 
 	/**
-	 * Returns the name of the node at the nth position on the stack
-	 * of open elements, or `null` if no such position exists.
+	 * Trả về tên của nút tại vị trí thứ n trên ngăn xếp
+	 * các phần tử đang mở, hoặc `null` nếu vị trí đó không tồn tại.
 	 *
-	 * Note that this uses a 1-based index, which represents the
-	 * "nth item" on the stack, counting from the top, where the
-	 * top-most element is the 1st, the second is the 2nd, etc...
+	 * Lưu ý rằng chỉ số này bắt đầu từ 1, đại diện cho
+	 * "phần tử thứ n" trên ngăn xếp, đếm từ trên xuống, trong đó
+	 * phần tử trên cùng là thứ 1, phần tử thứ hai là thứ 2, v.v...
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param int $nth Retrieve the nth item on the stack, with 1 being
-	 *                 the top element, 2 being the second, etc...
-	 * @return WP_HTML_Token|null Name of the node on the stack at the given location,
-	 *                            or `null` if the location isn't on the stack.
+	 * @param int $nth Lấy phần tử thứ n trên ngăn xếp, với 1 là
+	 *                 phần tử trên cùng, 2 là phần tử thứ hai, v.v...
+	 * @return WP_HTML_Token|null Tên của nút trên ngăn xếp tại vị trí đã cho,
+	 *                            hoặc `null` nếu vị trí đó không nằm trên ngăn xếp.
 	 */
 	public function at( int $nth ): ?WP_HTML_Token {
 		foreach ( $this->walk_down() as $item ) {
@@ -127,12 +127,12 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Reports if a node of a given name is in the stack of open elements.
+	 * Báo cáo nếu một nút có tên cho trước nằm trong ngăn xếp các phần tử đang mở.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param string $node_name Name of node for which to check.
-	 * @return bool Whether a node of the given name is in the stack of open elements.
+	 * @param string $node_name Tên nút cần kiểm tra.
+	 * @return bool Nút có tên đã cho có nằm trong ngăn xếp các phần tử đang mở hay không.
 	 */
 	public function contains( string $node_name ): bool {
 		foreach ( $this->walk_up() as $item ) {
@@ -145,12 +145,12 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Reports if a specific node is in the stack of open elements.
+	 * Báo cáo nếu một nút cụ thể nằm trong ngăn xếp các phần tử đang mở.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param WP_HTML_Token $token Look for this node in the stack.
-	 * @return bool Whether the referenced node is in the stack of open elements.
+	 * @param WP_HTML_Token $token Tìm nút này trong ngăn xếp.
+	 * @return bool Nút được tham chiếu có nằm trong ngăn xếp các phần tử đang mở hay không.
 	 */
 	public function contains_node( WP_HTML_Token $token ): bool {
 		foreach ( $this->walk_up() as $item ) {
@@ -163,23 +163,23 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Returns how many nodes are currently in the stack of open elements.
+	 * Trả về số lượng nút hiện có trong ngăn xếp các phần tử đang mở.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @return int How many node are in the stack of open elements.
+	 * @return int Số lượng nút trong ngăn xếp các phần tử đang mở.
 	 */
 	public function count(): int {
 		return count( $this->stack );
 	}
 
 	/**
-	 * Returns the node at the end of the stack of open elements,
-	 * if one exists. If the stack is empty, returns null.
+	 * Trả về nút ở cuối ngăn xếp các phần tử đang mở,
+	 * nếu có. Nếu ngăn xếp rỗng, trả về null.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @return WP_HTML_Token|null Last node in the stack of open elements, if one exists, otherwise null.
+	 * @return WP_HTML_Token|null Nút cuối cùng trong ngăn xếp các phần tử đang mở, nếu có, ngược lại là null.
 	 */
 	public function current_node(): ?WP_HTML_Token {
 		$current_node = end( $this->stack );
@@ -188,20 +188,20 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Indicates if the current node is of a given type or name.
+	 * Cho biết nút hiện tại có thuộc loại hoặc tên đã cho hay không.
 	 *
-	 * It's possible to pass either a node type or a node name to this function.
-	 * In the case there is no current element it will always return `false`.
+	 * Có thể truyền vào loại nút hoặc tên nút cho hàm này.
+	 * Trong trường hợp không có phần tử hiện tại, hàm sẽ luôn trả về `false`.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
-	 *     // Is the current node a text node?
+	 *     // Nút hiện tại có phải là nút văn bản không?
 	 *     $stack->current_node_is( '#text' );
 	 *
-	 *     // Is the current node a DIV element?
+	 *     // Nút hiện tại có phải là phần tử DIV không?
 	 *     $stack->current_node_is( 'DIV' );
 	 *
-	 *     // Is the current node any element/tag?
+	 *     // Nút hiện tại có phải là bất kỳ phần tử/thẻ nào không?
 	 *     $stack->current_node_is( '#tag' );
 	 *
 	 * @see WP_HTML_Tag_Processor::get_token_type
@@ -211,8 +211,8 @@ class WP_HTML_Open_Elements {
 	 *
 	 * @access private
 	 *
-	 * @param string $identity Check if the current node has this name or type (depending on what is provided).
-	 * @return bool Whether there is a current element that matches the given identity, whether a token name or type.
+	 * @param string $identity Kiểm tra xem nút hiện tại có tên hoặc loại này không (tùy thuộc vào giá trị được cung cấp).
+	 * @return bool Có phần tử hiện tại nào khớp với danh tính đã cho hay không, dù là tên token hay loại token.
 	 */
 	public function current_node_is( string $identity ): bool {
 		$current_node = end( $this->stack );
@@ -230,15 +230,15 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Returns whether an element is in a specific scope.
+	 * Trả về phần tử có nằm trong một phạm vi cụ thể hay không.
 	 *
 	 * @since 6.4.0
 	 *
 	 * @see https://html.spec.whatwg.org/#has-an-element-in-the-specific-scope
 	 *
-	 * @param string   $tag_name         Name of tag check.
-	 * @param string[] $termination_list List of elements that terminate the search.
-	 * @return bool Whether the element was found in a specific scope.
+	 * @param string   $tag_name         Tên thẻ cần kiểm tra.
+	 * @param string[] $termination_list Danh sách các phần tử kết thúc tìm kiếm.
+	 * @return bool Phần tử có được tìm thấy trong phạm vi cụ thể hay không.
 	 */
 	public function has_element_in_specific_scope( string $tag_name, $termination_list ): bool {
 		foreach ( $this->walk_up() as $node ) {
@@ -266,11 +266,11 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Returns whether a particular element is in scope.
+	 * Trả về một phần tử cụ thể có nằm trong phạm vi hay không.
 	 *
-	 * > The stack of open elements is said to have a particular element in
-	 * > scope when it has that element in the specific scope consisting of
-	 * > the following element types:
+	 * > Ngăn xếp các phần tử đang mở được cho là có một phần tử cụ thể trong
+	 * > phạm vi khi nó có phần tử đó trong phạm vi cụ thể bao gồm
+	 * > các loại phần tử sau:
 	 * >
 	 * >   - applet
 	 * >   - caption
@@ -292,12 +292,12 @@ class WP_HTML_Open_Elements {
 	 * >   - SVG title
 	 *
 	 * @since 6.4.0
-	 * @since 6.7.0 Full support.
+	 * @since 6.7.0 Hỗ trợ đầy đủ.
 	 *
 	 * @see https://html.spec.whatwg.org/#has-an-element-in-scope
 	 *
-	 * @param string $tag_name Name of tag to check.
-	 * @return bool Whether given element is in scope.
+	 * @param string $tag_name Tên thẻ cần kiểm tra.
+	 * @return bool Phần tử đã cho có nằm trong phạm vi hay không.
 	 */
 	public function has_element_in_scope( string $tag_name ): bool {
 		return $this->has_element_in_specific_scope(
@@ -328,24 +328,24 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Returns whether a particular element is in list item scope.
+	 * Trả về một phần tử cụ thể có nằm trong phạm vi mục danh sách hay không.
 	 *
-	 * > The stack of open elements is said to have a particular element
-	 * > in list item scope when it has that element in the specific scope
-	 * > consisting of the following element types:
+	 * > Ngăn xếp các phần tử đang mở được cho là có một phần tử cụ thể
+	 * > trong phạm vi mục danh sách khi nó có phần tử đó trong phạm vi cụ thể
+	 * > bao gồm các loại phần tử sau:
 	 * >
-	 * >   - All the element types listed above for the has an element in scope algorithm.
-	 * >   - ol in the HTML namespace
-	 * >   - ul in the HTML namespace
+	 * >   - Tất cả các loại phần tử được liệt kê ở trên cho thuật toán có phần tử trong phạm vi.
+	 * >   - ol trong không gian tên HTML
+	 * >   - ul trong không gian tên HTML
 	 *
 	 * @since 6.4.0
-	 * @since 6.5.0 Implemented: no longer throws on every invocation.
-	 * @since 6.7.0 Supports all required HTML elements.
+	 * @since 6.5.0 Đã triển khai: không còn ném ngoại lệ mỗi lần gọi.
+	 * @since 6.7.0 Hỗ trợ tất cả các phần tử HTML cần thiết.
 	 *
 	 * @see https://html.spec.whatwg.org/#has-an-element-in-list-item-scope
 	 *
-	 * @param string $tag_name Name of tag to check.
-	 * @return bool Whether given element is in scope.
+	 * @param string $tag_name Tên thẻ cần kiểm tra.
+	 * @return bool Phần tử đã cho có nằm trong phạm vi hay không.
 	 */
 	public function has_element_in_list_item_scope( string $tag_name ): bool {
 		return $this->has_element_in_specific_scope(
@@ -379,22 +379,22 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Returns whether a particular element is in button scope.
+	 * Trả về một phần tử cụ thể có nằm trong phạm vi button hay không.
 	 *
-	 * > The stack of open elements is said to have a particular element
-	 * > in button scope when it has that element in the specific scope
-	 * > consisting of the following element types:
+	 * > Ngăn xếp các phần tử đang mở được cho là có một phần tử cụ thể
+	 * > trong phạm vi button khi nó có phần tử đó trong phạm vi cụ thể
+	 * > bao gồm các loại phần tử sau:
 	 * >
-	 * >   - All the element types listed above for the has an element in scope algorithm.
-	 * >   - button in the HTML namespace
+	 * >   - Tất cả các loại phần tử được liệt kê ở trên cho thuật toán có phần tử trong phạm vi.
+	 * >   - button trong không gian tên HTML
 	 *
 	 * @since 6.4.0
-	 * @since 6.7.0 Supports all required HTML elements.
+	 * @since 6.7.0 Hỗ trợ tất cả các phần tử HTML cần thiết.
 	 *
 	 * @see https://html.spec.whatwg.org/#has-an-element-in-button-scope
 	 *
-	 * @param string $tag_name Name of tag to check.
-	 * @return bool Whether given element is in scope.
+	 * @param string $tag_name Tên thẻ cần kiểm tra.
+	 * @return bool Phần tử đã cho có nằm trong phạm vi hay không.
 	 */
 	public function has_element_in_button_scope( string $tag_name ): bool {
 		return $this->has_element_in_specific_scope(
@@ -426,23 +426,23 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Returns whether a particular element is in table scope.
+	 * Trả về một phần tử cụ thể có nằm trong phạm vi table hay không.
 	 *
-	 * > The stack of open elements is said to have a particular element
-	 * > in table scope when it has that element in the specific scope
-	 * > consisting of the following element types:
+	 * > Ngăn xếp các phần tử đang mở được cho là có một phần tử cụ thể
+	 * > trong phạm vi table khi nó có phần tử đó trong phạm vi cụ thể
+	 * > bao gồm các loại phần tử sau:
 	 * >
-	 * >   - html in the HTML namespace
-	 * >   - table in the HTML namespace
-	 * >   - template in the HTML namespace
+	 * >   - html trong không gian tên HTML
+	 * >   - table trong không gian tên HTML
+	 * >   - template trong không gian tên HTML
 	 *
 	 * @since 6.4.0
-	 * @since 6.7.0 Full implementation.
+	 * @since 6.7.0 Triển khai đầy đủ.
 	 *
 	 * @see https://html.spec.whatwg.org/#has-an-element-in-table-scope
 	 *
-	 * @param string $tag_name Name of tag to check.
-	 * @return bool Whether given element is in scope.
+	 * @param string $tag_name Tên thẻ cần kiểm tra.
+	 * @return bool Phần tử đã cho có nằm trong phạm vi hay không.
 	 */
 	public function has_element_in_table_scope( string $tag_name ): bool {
 		return $this->has_element_in_specific_scope(
@@ -456,24 +456,24 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Returns whether a particular element is in select scope.
+	 * Trả về một phần tử cụ thể có nằm trong phạm vi select hay không.
 	 *
-	 * This test differs from the others like it, in that its rules are inverted.
-	 * Instead of arriving at a match when one of any tag in a termination group
-	 * is reached, this one terminates if any other tag is reached.
+	 * Kiểm tra này khác với các kiểm tra tương tự khác, ở chỗ các quy tắc của nó bị đảo ngược.
+	 * Thay vì đạt được kết quả khớp khi gặp một thẻ bất kỳ trong nhóm kết thúc,
+	 * kiểm tra này kết thúc nếu gặp bất kỳ thẻ nào khác.
 	 *
-	 * > The stack of open elements is said to have a particular element in select scope when it has
-	 * > that element in the specific scope consisting of all element types except the following:
-	 * >   - optgroup in the HTML namespace
-	 * >   - option in the HTML namespace
+	 * > Ngăn xếp các phần tử đang mở được cho là có một phần tử cụ thể trong phạm vi select khi nó có
+	 * > phần tử đó trong phạm vi cụ thể bao gồm tất cả các loại phần tử ngoại trừ:
+	 * >   - optgroup trong không gian tên HTML
+	 * >   - option trong không gian tên HTML
 	 *
-	 * @since 6.4.0 Stub implementation (throws).
-	 * @since 6.7.0 Full implementation.
+	 * @since 6.4.0 Triển khai sơ bộ (ném ngoại lệ).
+	 * @since 6.7.0 Triển khai đầy đủ.
 	 *
 	 * @see https://html.spec.whatwg.org/#has-an-element-in-select-scope
 	 *
-	 * @param string $tag_name Name of tag to check.
-	 * @return bool Whether the given element is in SELECT scope.
+	 * @param string $tag_name Tên thẻ cần kiểm tra.
+	 * @return bool Phần tử đã cho có nằm trong phạm vi SELECT hay không.
 	 */
 	public function has_element_in_select_scope( string $tag_name ): bool {
 		foreach ( $this->walk_up() as $node ) {
@@ -493,26 +493,26 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Returns whether a P is in BUTTON scope.
+	 * Trả về P có nằm trong phạm vi BUTTON hay không.
 	 *
 	 * @since 6.4.0
 	 *
 	 * @see https://html.spec.whatwg.org/#has-an-element-in-button-scope
 	 *
-	 * @return bool Whether a P is in BUTTON scope.
+	 * @return bool P có nằm trong phạm vi BUTTON hay không.
 	 */
 	public function has_p_in_button_scope(): bool {
 		return $this->has_p_in_button_scope;
 	}
 
 	/**
-	 * Pops a node off of the stack of open elements.
+	 * Lấy một nút ra khỏi ngăn xếp các phần tử đang mở.
 	 *
 	 * @since 6.4.0
 	 *
 	 * @see https://html.spec.whatwg.org/#stack-of-open-elements
 	 *
-	 * @return bool Whether a node was popped off of the stack.
+	 * @return bool Có nút nào được lấy ra khỏi ngăn xếp hay không.
 	 */
 	public function pop(): bool {
 		$item = array_pop( $this->stack );
@@ -525,14 +525,14 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Pops nodes off of the stack of open elements until an HTML tag with the given name has been popped.
+	 * Lấy các nút ra khỏi ngăn xếp các phần tử đang mở cho đến khi một thẻ HTML có tên đã cho được lấy ra.
 	 *
 	 * @since 6.4.0
 	 *
 	 * @see WP_HTML_Open_Elements::pop
 	 *
-	 * @param string $html_tag_name Name of tag that needs to be popped off of the stack of open elements.
-	 * @return bool Whether a tag of the given name was found and popped off of the stack of open elements.
+	 * @param string $html_tag_name Tên thẻ cần được lấy ra khỏi ngăn xếp các phần tử đang mở.
+	 * @return bool Thẻ có tên đã cho có được tìm thấy và lấy ra khỏi ngăn xếp các phần tử đang mở hay không.
 	 */
 	public function pop_until( string $html_tag_name ): bool {
 		foreach ( $this->walk_up() as $item ) {
@@ -558,13 +558,13 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Pushes a node onto the stack of open elements.
+	 * Đẩy một nút vào ngăn xếp các phần tử đang mở.
 	 *
 	 * @since 6.4.0
 	 *
 	 * @see https://html.spec.whatwg.org/#stack-of-open-elements
 	 *
-	 * @param WP_HTML_Token $stack_item Item to add onto stack.
+	 * @param WP_HTML_Token $stack_item Phần tử cần thêm vào ngăn xếp.
 	 */
 	public function push( WP_HTML_Token $stack_item ): void {
 		$this->stack[] = $stack_item;
@@ -572,12 +572,12 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Removes a specific node from the stack of open elements.
+	 * Xóa một nút cụ thể khỏi ngăn xếp các phần tử đang mở.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param WP_HTML_Token $token The node to remove from the stack of open elements.
-	 * @return bool Whether the node was found and removed from the stack of open elements.
+	 * @param WP_HTML_Token $token Nút cần xóa khỏi ngăn xếp các phần tử đang mở.
+	 * @return bool Nút có được tìm thấy và xóa khỏi ngăn xếp các phần tử đang mở hay không.
 	 */
 	public function remove_node( WP_HTML_Token $token ): bool {
 		foreach ( $this->walk_up() as $position_from_end => $item ) {
@@ -596,12 +596,12 @@ class WP_HTML_Open_Elements {
 
 
 	/**
-	 * Steps through the stack of open elements, starting with the top element
-	 * (added first) and walking downwards to the one added last.
+	 * Duyệt qua ngăn xếp các phần tử đang mở, bắt đầu từ phần tử trên cùng
+	 * (được thêm đầu tiên) và đi xuống phần tử được thêm cuối cùng.
 	 *
-	 * This generator function is designed to be used inside a "foreach" loop.
+	 * Hàm generator này được thiết kế để sử dụng trong vòng lặp "foreach".
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $html = '<em><strong><a>We are here';
 	 *     foreach ( $stack->walk_down() as $node ) {
@@ -609,8 +609,8 @@ class WP_HTML_Open_Elements {
 	 *     }
 	 *     > EM -> STRONG -> A ->
 	 *
-	 * To start with the most-recently added element and walk towards the top,
-	 * see WP_HTML_Open_Elements::walk_up().
+	 * Để bắt đầu từ phần tử được thêm gần nhất và đi lên trên cùng,
+	 * xem WP_HTML_Open_Elements::walk_up().
 	 *
 	 * @since 6.4.0
 	 */
@@ -623,12 +623,12 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Steps through the stack of open elements, starting with the bottom element
-	 * (added last) and walking upwards to the one added first.
+	 * Duyệt qua ngăn xếp các phần tử đang mở, bắt đầu từ phần tử dưới cùng
+	 * (được thêm cuối cùng) và đi lên phần tử được thêm đầu tiên.
 	 *
-	 * This generator function is designed to be used inside a "foreach" loop.
+	 * Hàm generator này được thiết kế để sử dụng trong vòng lặp "foreach".
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $html = '<em><strong><a>We are here';
 	 *     foreach ( $stack->walk_up() as $node ) {
@@ -636,14 +636,14 @@ class WP_HTML_Open_Elements {
 	 *     }
 	 *     > A -> STRONG -> EM ->
 	 *
-	 * To start with the first added element and walk towards the bottom,
-	 * see WP_HTML_Open_Elements::walk_down().
+	 * Để bắt đầu từ phần tử được thêm đầu tiên và đi xuống dưới cùng,
+	 * xem WP_HTML_Open_Elements::walk_down().
 	 *
 	 * @since 6.4.0
-	 * @since 6.5.0 Accepts $above_this_node to start traversal above a given node, if it exists.
+	 * @since 6.5.0 Chấp nhận $above_this_node để bắt đầu duyệt phía trên nút đã cho, nếu nó tồn tại.
 	 *
-	 * @param WP_HTML_Token|null $above_this_node Optional. Start traversing above this node,
-	 *                                            if provided and if the node exists.
+	 * @param WP_HTML_Token|null $above_this_node Tùy chọn. Bắt đầu duyệt phía trên nút này,
+	 *                                            nếu được cung cấp và nếu nút tồn tại.
 	 */
 	public function walk_up( ?WP_HTML_Token $above_this_node = null ) {
 		$has_found_node = null === $above_this_node;
@@ -661,21 +661,21 @@ class WP_HTML_Open_Elements {
 	}
 
 	/*
-	 * Internal helpers.
+	 * Các hàm hỗ trợ nội bộ.
 	 */
 
 	/**
-	 * Updates internal flags after adding an element.
+	 * Cập nhật các cờ nội bộ sau khi thêm một phần tử.
 	 *
-	 * Certain conditions (such as "has_p_in_button_scope") are maintained here as
-	 * flags that are only modified when adding and removing elements. This allows
-	 * the HTML Processor to quickly check for these conditions instead of iterating
-	 * over the open stack elements upon each new tag it encounters. These flags,
-	 * however, need to be maintained as items are added and removed from the stack.
+	 * Một số điều kiện nhất định (chẳng hạn như "has_p_in_button_scope") được duy trì ở đây dưới
+	 * dạng cờ chỉ được thay đổi khi thêm và xóa phần tử. Điều này cho phép
+	 * bộ xử lý HTML kiểm tra nhanh các điều kiện này thay vì phải lặp lại
+	 * trên ngăn xếp các phần tử đang mở mỗi khi gặp thẻ mới. Tuy nhiên, các cờ
+	 * này cần được duy trì khi các mục được thêm vào và xóa khỏi ngăn xếp.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param WP_HTML_Token $item Element that was added to the stack of open elements.
+	 * @param WP_HTML_Token $item Phần tử đã được thêm vào ngăn xếp các phần tử đang mở.
 	 */
 	public function after_element_push( WP_HTML_Token $item ): void {
 		$namespaced_name = 'html' === $item->namespace
@@ -683,8 +683,8 @@ class WP_HTML_Open_Elements {
 			: "{$item->namespace} {$item->node_name}";
 
 		/*
-		 * When adding support for new elements, expand this switch to trap
-		 * cases where the precalculated value needs to change.
+		 * Khi thêm hỗ trợ cho các phần tử mới, mở rộng switch này để bắt
+		 * các trường hợp mà giá trị đã tính trước cần thay đổi.
 		 */
 		switch ( $namespaced_name ) {
 			case 'APPLET':
@@ -720,22 +720,22 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Updates internal flags after removing an element.
+	 * Cập nhật các cờ nội bộ sau khi xóa một phần tử.
 	 *
-	 * Certain conditions (such as "has_p_in_button_scope") are maintained here as
-	 * flags that are only modified when adding and removing elements. This allows
-	 * the HTML Processor to quickly check for these conditions instead of iterating
-	 * over the open stack elements upon each new tag it encounters. These flags,
-	 * however, need to be maintained as items are added and removed from the stack.
+	 * Một số điều kiện nhất định (chẳng hạn như "has_p_in_button_scope") được duy trì ở đây dưới
+	 * dạng cờ chỉ được thay đổi khi thêm và xóa phần tử. Điều này cho phép
+	 * bộ xử lý HTML kiểm tra nhanh các điều kiện này thay vì phải lặp lại
+	 * trên ngăn xếp các phần tử đang mở mỗi khi gặp thẻ mới. Tuy nhiên, các cờ
+	 * này cần được duy trì khi các mục được thêm vào và xóa khỏi ngăn xếp.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param WP_HTML_Token $item Element that was removed from the stack of open elements.
+	 * @param WP_HTML_Token $item Phần tử đã bị xóa khỏi ngăn xếp các phần tử đang mở.
 	 */
 	public function after_element_pop( WP_HTML_Token $item ): void {
 		/*
-		 * When adding support for new elements, expand this switch to trap
-		 * cases where the precalculated value needs to change.
+		 * Khi thêm hỗ trợ cho các phần tử mới, mở rộng switch này để bắt
+		 * các trường hợp mà giá trị đã tính trước cần thay đổi.
 		 */
 		switch ( $item->node_name ) {
 			case 'APPLET':
@@ -768,11 +768,11 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Clear the stack back to a table context.
+	 * Xóa ngăn xếp trở lại ngữ cảnh table.
 	 *
-	 * > When the steps above require the UA to clear the stack back to a table context, it means
-	 * > that the UA must, while the current node is not a table, template, or html element, pop
-	 * > elements from the stack of open elements.
+	 * > Khi các bước ở trên yêu cầu UA xóa ngăn xếp trở lại ngữ cảnh table, điều đó có nghĩa
+	 * > là UA phải, trong khi nút hiện tại không phải là phần tử table, template, hoặc html, lấy
+	 * > các phần tử ra khỏi ngăn xếp các phần tử đang mở.
 	 *
 	 * @see https://html.spec.whatwg.org/multipage/parsing.html#clear-the-stack-back-to-a-table-context
 	 *
@@ -792,11 +792,11 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Clear the stack back to a table body context.
+	 * Xóa ngăn xếp trở lại ngữ cảnh thân table.
 	 *
-	 * > When the steps above require the UA to clear the stack back to a table body context, it
-	 * > means that the UA must, while the current node is not a tbody, tfoot, thead, template, or
-	 * > html element, pop elements from the stack of open elements.
+	 * > Khi các bước ở trên yêu cầu UA xóa ngăn xếp trở lại ngữ cảnh thân table, điều đó
+	 * > có nghĩa là UA phải, trong khi nút hiện tại không phải là phần tử tbody, tfoot, thead, template, hoặc
+	 * > html, lấy các phần tử ra khỏi ngăn xếp các phần tử đang mở.
 	 *
 	 * @see https://html.spec.whatwg.org/multipage/parsing.html#clear-the-stack-back-to-a-table-body-context
 	 *
@@ -818,11 +818,11 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Clear the stack back to a table row context.
+	 * Xóa ngăn xếp trở lại ngữ cảnh hàng table.
 	 *
-	 * > When the steps above require the UA to clear the stack back to a table row context, it
-	 * > means that the UA must, while the current node is not a tr, template, or html element, pop
-	 * > elements from the stack of open elements.
+	 * > Khi các bước ở trên yêu cầu UA xóa ngăn xếp trở lại ngữ cảnh hàng table, điều đó
+	 * > có nghĩa là UA phải, trong khi nút hiện tại không phải là phần tử tr, template, hoặc html, lấy
+	 * > các phần tử ra khỏi ngăn xếp các phần tử đang mở.
 	 *
 	 * @see https://html.spec.whatwg.org/multipage/parsing.html#clear-the-stack-back-to-a-table-row-context
 	 *
@@ -842,7 +842,7 @@ class WP_HTML_Open_Elements {
 	}
 
 	/**
-	 * Wakeup magic method.
+	 * Phương thức magic wakeup.
 	 *
 	 * @since 6.6.0
 	 */

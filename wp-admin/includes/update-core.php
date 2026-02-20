@@ -1,10 +1,10 @@
 <?php
 /**
- * WordPress core upgrade functionality.
+ * Chức năng nâng cấp lõi WordPress.
  *
- * Note: Newly introduced functions and methods cannot be used here.
- * All functions must be present in the previous version being upgraded from
- * as this file is used there too.
+ * Lưu ý: Các hàm và phương thức mới được giới thiệu không thể sử dụng ở đây.
+ * Tất cả các hàm phải có trong phiên bản trước đang được nâng cấp
+ * vì tệp này cũng được sử dụng ở phiên bản đó.
  *
  * @package WordPress
  * @subpackage Administration
@@ -12,9 +12,9 @@
  */
 
 /**
- * Stores files to be deleted.
+ * Lưu trữ các tệp cần xóa.
  *
- * Bundled theme files should not be included in this list.
+ * Các tệp giao diện đi kèm không nên được đưa vào danh sách này.
  *
  * @since 2.7.0
  *
@@ -844,12 +844,12 @@ $_old_files = array(
 );
 
 /**
- * Stores Requests files to be preloaded and deleted.
+ * Lưu trữ các tệp Requests cần tải trước và xóa.
  *
- * For classes/interfaces, use the class/interface name
- * as the array key.
+ * Đối với các lớp/giao diện, sử dụng tên lớp/giao diện
+ * làm khóa mảng.
  *
- * All other files/directories should not have a key.
+ * Tất cả các tệp/thư mục khác không nên có khóa.
  *
  * @since 6.2.0
  *
@@ -860,13 +860,13 @@ $_old_files = array(
 global $_old_requests_files;
 
 $_old_requests_files = array(
-	// Interfaces.
+	// Giao diện.
 	'Requests_Auth'                              => 'wp-includes/Requests/Auth.php',
 	'Requests_Hooker'                            => 'wp-includes/Requests/Hooker.php',
 	'Requests_Proxy'                             => 'wp-includes/Requests/Proxy.php',
 	'Requests_Transport'                         => 'wp-includes/Requests/Transport.php',
 
-	// Classes.
+	// Các lớp.
 	'Requests_Auth_Basic'                        => 'wp-includes/Requests/Auth/Basic.php',
 	'Requests_Cookie_Jar'                        => 'wp-includes/Requests/Cookie/Jar.php',
 	'Requests_Exception_HTTP'                    => 'wp-includes/Requests/Exception/HTTP.php',
@@ -921,7 +921,7 @@ $_old_requests_files = array(
 	'Requests_SSL'                               => 'wp-includes/Requests/SSL.php',
 	'Requests_Session'                           => 'wp-includes/Requests/Session.php',
 
-	// Directories.
+	// Thư mục.
 	'wp-includes/Requests/Auth/',
 	'wp-includes/Requests/Cookie/',
 	'wp-includes/Requests/Exception/HTTP/',
@@ -934,22 +934,22 @@ $_old_requests_files = array(
 );
 
 /**
- * Stores new files in wp-content to copy
+ * Lưu trữ các tệp mới trong wp-content để sao chép.
  *
- * The contents of this array indicate any new bundled plugins/themes which
- * should be installed with the WordPress Upgrade. These items will not be
- * re-installed in future upgrades, this behavior is controlled by the
- * introduced version present here being older than the current installed version.
+ * Nội dung của mảng này chỉ ra các plugin/giao diện đi kèm mới nào
+ * nên được cài đặt cùng với việc nâng cấp WordPress. Các mục này sẽ không được
+ * cài đặt lại trong các lần nâng cấp sau, hành vi này được kiểm soát bởi
+ * phiên bản giới thiệu ở đây cũ hơn phiên bản đang cài đặt hiện tại.
  *
- * The content of this array should follow the following format:
- * Filename (relative to wp-content) => Introduced version
- * Directories should be noted by suffixing it with a trailing slash (/)
+ * Nội dung của mảng này nên tuân theo định dạng sau:
+ * Tên tệp (tương đối so với wp-content) => Phiên bản giới thiệu
+ * Thư mục nên được đánh dấu bằng dấu gạch chéo cuối (/)
  *
  * @since 3.2.0
- * @since 4.7.0 New themes were not automatically installed for 4.4-4.6 on
- *              upgrade. New themes are now installed again. To disable new
- *              themes from being installed on upgrade, explicitly define
- *              CORE_UPGRADE_SKIP_NEW_BUNDLED as true.
+ * @since 4.7.0 Các giao diện mới không được tự động cài đặt cho 4.4-4.6 khi
+ *              nâng cấp. Các giao diện mới giờ đã được cài đặt lại. Để tắt việc cài đặt
+ *              giao diện mới khi nâng cấp, hãy định nghĩa rõ ràng
+ *              CORE_UPGRADE_SKIP_NEW_BUNDLED là true.
  * @global string[] $_new_bundled_files
  * @var string[]
  * @name $_new_bundled_files
@@ -976,97 +976,97 @@ $_new_bundled_files = array(
 );
 
 /**
- * Upgrades the core of WordPress.
+ * Nâng cấp lõi WordPress.
  *
- * This will create a .maintenance file at the base of the WordPress directory
- * to ensure that people can not access the website, when the files are being
- * copied to their locations.
+ * Hàm này sẽ tạo tệp .maintenance tại thư mục gốc WordPress
+ * để đảm bảo người dùng không thể truy cập trang web khi các tệp đang được
+ * sao chép đến vị trí của chúng.
  *
- * The files in the `$_old_files` list will be removed and the new files
- * copied from the zip file after the database is upgraded.
+ * Các tệp trong danh sách `$_old_files` sẽ bị xóa và các tệp mới
+ * được sao chép từ tệp zip sau khi cơ sở dữ liệu được nâng cấp.
  *
- * The files in the `$_new_bundled_files` list will be added to the installation
- * if the version is greater than or equal to the old version being upgraded.
+ * Các tệp trong danh sách `$_new_bundled_files` sẽ được thêm vào bản cài đặt
+ * nếu phiên bản lớn hơn hoặc bằng phiên bản cũ đang được nâng cấp.
  *
- * The steps for the upgrader for after the new release is downloaded and
- * unzipped is:
+ * Các bước cho trình nâng cấp sau khi bản phát hành mới được tải về và
+ * giải nén là:
  *
- *   1. Test unzipped location for select files to ensure that unzipped worked.
- *   2. Create the .maintenance file in current WordPress base.
- *   3. Copy new WordPress directory over old WordPress files.
- *   4. Upgrade WordPress to new version.
- *      1. Copy all files/folders other than wp-content
- *      2. Copy any language files to `WP_LANG_DIR` (which may differ from `WP_CONTENT_DIR`
- *      3. Copy any new bundled themes/plugins to their respective locations
- *   5. Delete new WordPress directory path.
- *   6. Delete .maintenance file.
- *   7. Remove old files.
- *   8. Delete 'update_core' option.
+ *   1. Kiểm tra vị trí giải nén với các tệp chọn lọc để đảm bảo giải nén thành công.
+ *   2. Tạo tệp .maintenance trong thư mục gốc WordPress hiện tại.
+ *   3. Sao chép thư mục WordPress mới đè lên các tệp WordPress cũ.
+ *   4. Nâng cấp WordPress lên phiên bản mới.
+ *      1. Sao chép tất cả tệp/thư mục ngoại trừ wp-content
+ *      2. Sao chép các tệp ngôn ngữ vào `WP_LANG_DIR` (có thể khác với `WP_CONTENT_DIR`)
+ *      3. Sao chép các giao diện/plugin đi kèm mới đến vị trí tương ứng
+ *   5. Xóa đường dẫn thư mục WordPress mới.
+ *   6. Xóa tệp .maintenance.
+ *   7. Xóa các tệp cũ.
+ *   8. Xóa tùy chọn 'update_core'.
  *
- * There are several areas of failure. For instance if PHP times out before step
- * 6, then you will not be able to access any portion of your site. Also, since
- * the upgrade will not continue where it left off, you will not be able to
- * automatically remove old files and remove the 'update_core' option. This
- * isn't that bad.
+ * Có nhiều điểm có thể xảy ra lỗi. Ví dụ nếu PHP hết thời gian trước bước
+ * 6, bạn sẽ không thể truy cập bất kỳ phần nào của trang web. Ngoài ra, vì
+ * quá trình nâng cấp sẽ không tiếp tục từ nơi đã dừng, bạn sẽ không thể
+ * tự động xóa các tệp cũ và xóa tùy chọn 'update_core'. Điều này
+ * không quá nghiêm trọng.
  *
- * If the copy of the new WordPress over the old fails, then the worse is that
- * the new WordPress directory will remain.
+ * Nếu việc sao chép WordPress mới đè lên bản cũ thất bại, thì điều tồi tệ nhất là
+ * thư mục WordPress mới sẽ vẫn còn.
  *
- * If it is assumed that every file will be copied over, including plugins and
- * themes, then if you edit the default theme, you should rename it, so that
- * your changes remain.
+ * Nếu giả định rằng mọi tệp sẽ được sao chép đè, bao gồm plugin và
+ * giao diện, thì nếu bạn chỉnh sửa giao diện mặc định, bạn nên đổi tên nó để
+ * các thay đổi của bạn được giữ lại.
  *
  * @since 2.7.0
  *
- * @global WP_Filesystem_Base $wp_filesystem          WordPress filesystem subclass.
+ * @global WP_Filesystem_Base $wp_filesystem          Lớp con hệ thống tệp WordPress.
  * @global string[]           $_old_files
  * @global string[]           $_old_requests_files
  * @global string[]           $_new_bundled_files
- * @global wpdb               $wpdb                   WordPress database abstraction object.
+ * @global wpdb               $wpdb                   Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @param string $from New release unzipped path.
- * @param string $to   Path to old WordPress installation.
- * @return string|WP_Error New WordPress version on success, WP_Error on failure.
+ * @param string $from Đường dẫn giải nén bản phát hành mới.
+ * @param string $to   Đường dẫn đến bản cài đặt WordPress cũ.
+ * @return string|WP_Error Phiên bản WordPress mới khi thành công, WP_Error khi thất bại.
  */
 function update_core( $from, $to ) {
 	global $wp_filesystem, $_old_files, $_old_requests_files, $_new_bundled_files, $wpdb;
 
 	/*
-	 * Give core update script an additional 300 seconds (5 minutes)
-	 * to finish updating large files when running on slower servers.
+	 * Cho script cập nhật lõi thêm 300 giây (5 phút)
+	 * để hoàn thành cập nhật các tệp lớn khi chạy trên máy chủ chậm.
 	 */
 	if ( function_exists( 'set_time_limit' ) ) {
 		set_time_limit( 300 );
 	}
 
 	/*
-	 * Merge the old Requests files and directories into the `$_old_files`.
-	 * Then preload these Requests files first, before the files are deleted
-	 * and replaced to ensure the code is in memory if needed.
+	 * Gộp các tệp và thư mục Requests cũ vào `$_old_files`.
+	 * Sau đó tải trước các tệp Requests này, trước khi các tệp bị xóa
+	 * và thay thế để đảm bảo mã nguồn đã ở trong bộ nhớ nếu cần.
 	 */
 	$_old_files = array_merge( $_old_files, array_values( $_old_requests_files ) );
 	_preload_old_requests_classes_and_interfaces( $to );
 
 	/**
-	 * Filters feedback messages displayed during the core update process.
+	 * Lọc các thông báo phản hồi hiển thị trong quá trình cập nhật lõi.
 	 *
-	 * The filter is first evaluated after the zip file for the latest version
-	 * has been downloaded and unzipped. It is evaluated five more times during
-	 * the process:
+	 * Bộ lọc được đánh giá lần đầu sau khi tệp zip của phiên bản mới nhất
+	 * đã được tải về và giải nén. Nó được đánh giá thêm năm lần nữa trong
+	 * quá trình:
 	 *
-	 * 1. Before WordPress begins the core upgrade process.
-	 * 2. Before Maintenance Mode is enabled.
-	 * 3. Before WordPress begins copying over the necessary files.
-	 * 4. Before Maintenance Mode is disabled.
-	 * 5. Before the database is upgraded.
+	 * 1. Trước khi WordPress bắt đầu quá trình nâng cấp lõi.
+	 * 2. Trước khi Chế độ Bảo trì được bật.
+	 * 3. Trước khi WordPress bắt đầu sao chép các tệp cần thiết.
+	 * 4. Trước khi Chế độ Bảo trì được tắt.
+	 * 5. Trước khi cơ sở dữ liệu được nâng cấp.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $feedback The core update feedback messages.
+	 * @param string $feedback Các thông báo phản hồi cập nhật lõi.
 	 */
 	apply_filters( 'update_feedback', __( 'Verifying the unpacked files&#8230;' ) );
 
-	// Confidence check the unzipped distribution.
+	// Kiểm tra xác nhận bản phân phối đã giải nén.
 	$distro = '';
 	$roots  = array( '/wordpress/', '/wordpress-mu/' );
 
@@ -1086,10 +1086,10 @@ function update_core( $from, $to ) {
 	}
 
 	/*
-	 * Import $wp_version, $required_php_version, $required_php_extensions, and $required_mysql_version from the new version.
-	 * DO NOT globalize any variables imported from `version-current.php` in this function.
+	 * Nhập $wp_version, $required_php_version, $required_php_extensions, và $required_mysql_version từ phiên bản mới.
+	 * KHÔNG toàn cục hóa bất kỳ biến nào được nhập từ `version-current.php` trong hàm này.
 	 *
-	 * BC Note: $wp_filesystem->wp_content_dir() returned unslashed pre-2.8.
+	 * Ghi chú tương thích ngược: $wp_filesystem->wp_content_dir() trả về không có dấu gạch chéo trước phiên bản 2.8.
 	 */
 	$versions_file = trailingslashit( $wp_filesystem->wp_content_dir() ) . 'upgrade/version-current.php';
 
@@ -1106,8 +1106,8 @@ function update_core( $from, $to ) {
 	$wp_filesystem->chmod( $versions_file, FS_CHMOD_FILE );
 
 	/*
-	 * `wp_opcache_invalidate()` only exists in WordPress 5.5 or later,
-	 * so don't run it when upgrading from older versions.
+	 * `wp_opcache_invalidate()` chỉ tồn tại trong WordPress 5.5 trở lên,
+	 * nên không chạy khi nâng cấp từ các phiên bản cũ hơn.
 	 */
 	if ( function_exists( 'wp_opcache_invalidate' ) ) {
 		wp_opcache_invalidate( $versions_file );

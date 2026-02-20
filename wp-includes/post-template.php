@@ -194,28 +194,28 @@ function the_guid( $post = 0 ) {
 	$post_id   = isset( $post->ID ) ? $post->ID : 0;
 
 	/**
-	 * Filters the escaped Global Unique Identifier (guid) of the post.
+	 * Lọc Định danh toàn cục duy nhất (guid) đã escape của bài viết.
 	 *
 	 * @since 4.2.0
 	 *
 	 * @see get_the_guid()
 	 *
-	 * @param string $post_guid Escaped Global Unique Identifier (guid) of the post.
-	 * @param int    $post_id   The post ID.
+	 * @param string $post_guid Định danh toàn cục duy nhất (guid) đã escape của bài viết.
+	 * @param int    $post_id   ID bài viết.
 	 */
 	echo apply_filters( 'the_guid', $post_guid, $post_id );
 }
 
 /**
- * Retrieves the Post Global Unique Identifier (guid).
+ * Lấy Định danh toàn cục duy nhất (guid) của bài viết.
  *
- * The guid will appear to be a link, but should not be used as an link to the
- * post. The reason you should not use it as a link, is because of moving the
- * blog across domains.
+ * Guid sẽ trông giống một liên kết, nhưng không nên được sử dụng làm liên kết đến
+ * bài viết. Lý do không nên dùng nó làm liên kết là vì việc di chuyển
+ * blog giữa các tên miền.
  *
  * @since 1.5.0
  *
- * @param int|WP_Post $post Optional. Post ID or post object. Default is global $post.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là $post toàn cục.
  * @return string
  */
 function get_the_guid( $post = 0 ) {
@@ -225,33 +225,33 @@ function get_the_guid( $post = 0 ) {
 	$post_id   = isset( $post->ID ) ? $post->ID : 0;
 
 	/**
-	 * Filters the Global Unique Identifier (guid) of the post.
+	 * Lọc Định danh toàn cục duy nhất (guid) của bài viết.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $post_guid Global Unique Identifier (guid) of the post.
-	 * @param int    $post_id   The post ID.
+	 * @param string $post_guid Định danh toàn cục duy nhất (guid) của bài viết.
+	 * @param int    $post_id   ID bài viết.
 	 */
 	return apply_filters( 'get_the_guid', $post_guid, $post_id );
 }
 
 /**
- * Displays the post content.
+ * Hiển thị nội dung bài viết.
  *
  * @since 0.71
  *
- * @param string $more_link_text Optional. Content for when there is more text.
- * @param bool   $strip_teaser   Optional. Strip teaser content before the more text. Default false.
+ * @param string $more_link_text Tùy chọn. Nội dung khi có thêm văn bản.
+ * @param bool   $strip_teaser   Tùy chọn. Loại bỏ nội dung giới thiệu trước văn bản xem thêm. Mặc định false.
  */
 function the_content( $more_link_text = null, $strip_teaser = false ) {
 	$content = get_the_content( $more_link_text, $strip_teaser );
 
 	/**
-	 * Filters the post content.
+	 * Lọc nội dung bài viết.
 	 *
 	 * @since 0.71
 	 *
-	 * @param string $content Content of the current post.
+	 * @param string $content Nội dung của bài viết hiện tại.
 	 */
 	$content = apply_filters( 'the_content', $content );
 	$content = str_replace( ']]>', ']]&gt;', $content );
@@ -259,21 +259,21 @@ function the_content( $more_link_text = null, $strip_teaser = false ) {
 }
 
 /**
- * Retrieves the post content.
+ * Lấy nội dung bài viết.
  *
  * @since 0.71
- * @since 5.2.0 Added the `$post` parameter.
+ * @since 5.2.0 Thêm tham số `$post`.
  *
- * @global int   $page      Page number of a single post/page.
- * @global int   $more      Boolean indicator for whether single post/page is being viewed.
- * @global bool  $preview   Whether post/page is in preview mode.
- * @global array $pages     Array of all pages in post/page. Each array element contains
- *                          part of the content separated by the `<!--nextpage-->` tag.
- * @global int   $multipage Boolean indicator for whether multiple pages are in play.
+ * @global int   $page      Số trang của bài viết/trang đơn.
+ * @global int   $more      Chỉ báo boolean cho biết bài viết/trang đơn đang được xem.
+ * @global bool  $preview   Liệu bài viết/trang có đang ở chế độ xem trước hay không.
+ * @global array $pages     Mảng tất cả các trang trong bài viết/trang. Mỗi phần tử mảng chứa
+ *                          một phần nội dung được phân tách bởi thẻ `<!--nextpage-->`.
+ * @global int   $multipage Chỉ báo boolean cho biết nhiều trang đang được sử dụng.
  *
- * @param string             $more_link_text Optional. Content for when there is more text.
- * @param bool               $strip_teaser   Optional. Strip teaser content before the more text. Default false.
- * @param WP_Post|object|int $post           Optional. WP_Post instance or Post ID/object. Default null.
+ * @param string             $more_link_text Tùy chọn. Nội dung khi có thêm văn bản.
+ * @param bool               $strip_teaser   Tùy chọn. Loại bỏ nội dung giới thiệu trước văn bản xem thêm. Mặc định false.
+ * @param WP_Post|object|int $post           Tùy chọn. Thực thể WP_Post hoặc ID/đối tượng bài viết. Mặc định null.
  * @return string
  */
 function get_the_content( $more_link_text = null, $strip_teaser = false, $post = null ) {
@@ -286,8 +286,8 @@ function get_the_content( $more_link_text = null, $strip_teaser = false, $post =
 	}
 
 	/*
-	 * Use the globals if the $post parameter was not specified,
-	 * but only after they have been set up in setup_postdata().
+	 * Sử dụng biến toàn cục nếu tham số $post không được chỉ định,
+	 * nhưng chỉ sau khi chúng đã được thiết lập trong setup_postdata().
 	 */
 	if ( null === $post && did_action( 'the_post' ) ) {
 		$elements = compact( 'page', 'more', 'preview', 'pages', 'multipage' );
@@ -315,14 +315,14 @@ function get_the_content( $more_link_text = null, $strip_teaser = false, $post =
 	$output     = '';
 	$has_teaser = false;
 
-	// If post password required and it doesn't match the cookie.
+	// Nếu bài viết yêu cầu mật khẩu và không khớp với cookie.
 	if ( post_password_required( $_post ) ) {
 		return get_the_password_form( $_post );
 	}
 
-	// If the requested page doesn't exist.
+	// Nếu trang được yêu cầu không tồn tại.
 	if ( $elements['page'] > count( $elements['pages'] ) ) {
-		// Give them the highest numbered page that DOES exist.
+		// Cung cấp trang có số cao nhất mà TỒN TẠI.
 		$elements['page'] = count( $elements['pages'] );
 	}
 
@@ -330,7 +330,7 @@ function get_the_content( $more_link_text = null, $strip_teaser = false, $post =
 	$content = $elements['pages'][ $page_no - 1 ];
 	if ( preg_match( '/<!--more(.*?)?-->/', $content, $matches ) ) {
 		if ( has_block( 'more', $content ) ) {
-			// Remove the core/more block delimiters. They will be left over after $content is split up.
+			// Xóa các dấu phân cách khối core/more. Chúng sẽ bị thừa lại sau khi $content được tách ra.
 			$content = preg_replace( '/<!-- \/?wp:more(.*?) -->/', '', $content );
 		}
 
@@ -366,12 +366,12 @@ function get_the_content( $more_link_text = null, $strip_teaser = false, $post =
 			if ( ! empty( $more_link_text ) ) {
 
 				/**
-				 * Filters the Read More link text.
+				 * Lọc văn bản liên kết Đọc Thêm.
 				 *
 				 * @since 2.8.0
 				 *
-				 * @param string $more_link_element Read More link element.
-				 * @param string $more_link_text    Read More text.
+				 * @param string $more_link_element Phần tử liên kết Đọc Thêm.
+				 * @param string $more_link_text    Văn bản Đọc Thêm.
 				 */
 				$output .= apply_filters( 'the_content_more_link', ' <a href="' . get_permalink( $_post ) . "#more-{$_post->ID}\" class=\"more-link\">$more_link_text</a>", $more_link_text );
 			}
@@ -383,32 +383,32 @@ function get_the_content( $more_link_text = null, $strip_teaser = false, $post =
 }
 
 /**
- * Displays the post excerpt.
+ * Hiển thị tóm tắt bài viết.
  *
  * @since 0.71
  */
 function the_excerpt() {
 
 	/**
-	 * Filters the displayed post excerpt.
+	 * Lọc tóm tắt bài viết được hiển thị.
 	 *
 	 * @since 0.71
 	 *
 	 * @see get_the_excerpt()
 	 *
-	 * @param string $post_excerpt The post excerpt.
+	 * @param string $post_excerpt Tóm tắt bài viết.
 	 */
 	echo apply_filters( 'the_excerpt', get_the_excerpt() );
 }
 
 /**
- * Retrieves the post excerpt.
+ * Lấy tóm tắt bài viết.
  *
  * @since 0.71
- * @since 4.5.0 Introduced the `$post` parameter.
+ * @since 4.5.0 Giới thiệu tham số `$post`.
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global $post.
- * @return string Post excerpt.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là $post toàn cục.
+ * @return string Tóm tắt bài viết.
  */
 function get_the_excerpt( $post = null ) {
 	if ( is_bool( $post ) ) {
@@ -425,28 +425,28 @@ function get_the_excerpt( $post = null ) {
 	}
 
 	/**
-	 * Filters the retrieved post excerpt.
+	 * Lọc tóm tắt bài viết đã lấy.
 	 *
 	 * @since 1.2.0
-	 * @since 4.5.0 Introduced the `$post` parameter.
+	 * @since 4.5.0 Giới thiệu tham số `$post`.
 	 *
-	 * @param string  $post_excerpt The post excerpt.
-	 * @param WP_Post $post         Post object.
+	 * @param string  $post_excerpt Tóm tắt bài viết.
+	 * @param WP_Post $post         Đối tượng bài viết.
 	 */
 	return apply_filters( 'get_the_excerpt', $post->post_excerpt, $post );
 }
 
 /**
- * Determines whether the post has a custom excerpt.
+ * Xác định xem bài viết có tóm tắt tùy chỉnh hay không.
  *
- * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
- * Conditional Tags} article in the Theme Developer Handbook.
+ * Để biết thêm thông tin về hàm này và các hàm giao diện tương tự, hãy xem bài viết
+ * {@link https://developer.wordpress.org/themes/basics/conditional-tags/
+ * Thẻ điều kiện} trong Sổ tay nhà phát triển giao diện.
  *
  * @since 2.3.0
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global $post.
- * @return bool True if the post has a custom excerpt, false otherwise.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là $post toàn cục.
+ * @return bool True nếu bài viết có tóm tắt tùy chỉnh, false nếu không.
  */
 function has_excerpt( $post = 0 ) {
 	$post = get_post( $post );
@@ -454,42 +454,42 @@ function has_excerpt( $post = 0 ) {
 }
 
 /**
- * Displays the classes for the post container element.
+ * Hiển thị các lớp CSS cho phần tử chứa bài viết.
  *
  * @since 2.7.0
  *
- * @param string|string[] $css_class Optional. One or more classes to add to the class list.
- *                                   Default empty.
- * @param int|WP_Post     $post      Optional. Post ID or post object. Defaults to the global `$post`.
+ * @param string|string[] $css_class Tùy chọn. Một hoặc nhiều lớp CSS để thêm vào danh sách lớp.
+ *                                   Mặc định rỗng.
+ * @param int|WP_Post     $post      Tùy chọn. ID bài viết hoặc đối tượng bài viết. Mặc định là `$post` toàn cục.
  */
 function post_class( $css_class = '', $post = null ) {
-	// Separates classes with a single space, collates classes for post DIV.
+	// Phân tách các lớp bằng một khoảng trắng, tổng hợp các lớp cho DIV bài viết.
 	echo 'class="' . esc_attr( implode( ' ', get_post_class( $css_class, $post ) ) ) . '"';
 }
 
 /**
- * Retrieves an array of the class names for the post container element.
+ * Lấy mảng tên lớp CSS cho phần tử chứa bài viết.
  *
- * The class names are many:
+ * Có nhiều tên lớp:
  *
- *  - If the post has a post thumbnail, `has-post-thumbnail` is added as a class.
- *  - If the post is sticky, then the `sticky` class name is added.
- *  - The class `hentry` is always added to each post.
- *  - For each taxonomy that the post belongs to, a class will be added of the format
- *    `{$taxonomy}-{$slug}`, e.g. `category-foo` or `my_custom_taxonomy-bar`.
- *    The `post_tag` taxonomy is a special case; the class has the `tag-` prefix
- *    instead of `post_tag-`.
+ *  - Nếu bài viết có ảnh đại diện, `has-post-thumbnail` được thêm làm lớp.
+ *  - Nếu bài viết được ghim, thì tên lớp `sticky` được thêm.
+ *  - Lớp `hentry` luôn được thêm cho mỗi bài viết.
+ *  - Với mỗi taxonomy mà bài viết thuộc về, một lớp sẽ được thêm theo định dạng
+ *    `{$taxonomy}-{$slug}`, ví dụ `category-foo` hoặc `my_custom_taxonomy-bar`.
+ *    Taxonomy `post_tag` là trường hợp đặc biệt; lớp có tiền tố `tag-`
+ *    thay vì `post_tag-`.
  *
- * All class names are passed through the filter, {@see 'post_class'}, followed by
- * `$css_class` parameter value, with the post ID as the last parameter.
+ * Tất cả tên lớp được truyền qua bộ lọc, {@see 'post_class'}, theo sau bởi
+ * giá trị tham số `$css_class`, với ID bài viết làm tham số cuối cùng.
  *
  * @since 2.7.0
- * @since 4.2.0 Custom taxonomy class names were added.
+ * @since 4.2.0 Thêm tên lớp taxonomy tùy chỉnh.
  *
- * @param string|string[] $css_class Optional. Space-separated string or array of class names
- *                                   to add to the class list. Default empty.
- * @param int|WP_Post     $post      Optional. Post ID or post object.
- * @return string[] Array of class names.
+ * @param string|string[] $css_class Tùy chọn. Chuỗi phân tách bằng khoảng trắng hoặc mảng tên lớp
+ *                                   để thêm vào danh sách lớp. Mặc định rỗng.
+ * @param int|WP_Post     $post      Tùy chọn. ID bài viết hoặc đối tượng bài viết.
+ * @return string[] Mảng tên lớp.
  */
 function get_post_class( $css_class = '', $post = null ) {
 	$post = get_post( $post );
@@ -502,7 +502,7 @@ function get_post_class( $css_class = '', $post = null ) {
 		}
 		$classes = array_map( 'esc_attr', $css_class );
 	} else {
-		// Ensure that we always coerce class to being an array.
+		// Đảm bảo luôn ép lớp thành mảng.
 		$css_class = array();
 	}
 
@@ -517,7 +517,7 @@ function get_post_class( $css_class = '', $post = null ) {
 	$classes[] = 'type-' . $post->post_type;
 	$classes[] = 'status-' . $post->post_status;
 
-	// Post Format.
+	// Định dạng bài viết.
 	if ( post_type_supports( $post->post_type, 'post-formats' ) ) {
 		$post_format = get_post_format( $post->ID );
 
@@ -530,19 +530,19 @@ function get_post_class( $css_class = '', $post = null ) {
 
 	$post_password_required = post_password_required( $post->ID );
 
-	// Post requires password.
+	// Bài viết yêu cầu mật khẩu.
 	if ( $post_password_required ) {
 		$classes[] = 'post-password-required';
 	} elseif ( ! empty( $post->post_password ) ) {
 		$classes[] = 'post-password-protected';
 	}
 
-	// Post thumbnails.
+	// Ảnh đại diện bài viết.
 	if ( current_theme_supports( 'post-thumbnails' ) && has_post_thumbnail( $post->ID ) && ! is_attachment( $post ) && ! $post_password_required ) {
 		$classes[] = 'has-post-thumbnail';
 	}
 
-	// Sticky for Sticky Posts.
+	// Ghim cho các bài viết ghim.
 	if ( is_sticky( $post->ID ) ) {
 		if ( is_home() && ! is_paged() ) {
 			$classes[] = 'sticky';
@@ -551,23 +551,23 @@ function get_post_class( $css_class = '', $post = null ) {
 		}
 	}
 
-	// hentry for hAtom compliance.
+	// hentry cho tuân thủ hAtom.
 	$classes[] = 'hentry';
 
-	// All public taxonomies.
+	// Tất cả các taxonomy công khai.
 	$taxonomies = get_taxonomies( array( 'public' => true ) );
 
 	/**
-	 * Filters the taxonomies to generate classes for each individual term.
+	 * Lọc các taxonomy để tạo lớp cho mỗi term riêng lẻ.
 	 *
-	 * Default is all public taxonomies registered to the post type.
+	 * Mặc định là tất cả taxonomy công khai đã đăng ký cho loại bài viết.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param string[] $taxonomies List of all taxonomy names to generate classes for.
-	 * @param int      $post_id    The post ID.
-	 * @param string[] $classes    An array of post class names.
-	 * @param string[] $css_class  An array of additional class names added to the post.
+	 * @param string[] $taxonomies Danh sách tất cả tên taxonomy để tạo lớp.
+	 * @param int      $post_id    ID bài viết.
+	 * @param string[] $classes    Mảng tên lớp của bài viết.
+	 * @param string[] $css_class  Mảng tên lớp bổ sung được thêm cho bài viết.
 	*/
 	$taxonomies = apply_filters( 'post_class_taxonomies', $taxonomies, $post->ID, $classes, $css_class );
 
@@ -583,7 +583,7 @@ function get_post_class( $css_class = '', $post = null ) {
 					$term_class = $term->term_id;
 				}
 
-				// 'post_tag' uses the 'tag' prefix for backward compatibility.
+				// 'post_tag' sử dụng tiền tố 'tag' để tương thích ngược.
 				if ( 'post_tag' === $taxonomy ) {
 					$classes[] = 'tag-' . $term_class;
 				} else {
@@ -596,13 +596,13 @@ function get_post_class( $css_class = '', $post = null ) {
 	$classes = array_map( 'esc_attr', $classes );
 
 	/**
-	 * Filters the list of CSS class names for the current post.
+	 * Lọc danh sách tên lớp CSS cho bài viết hiện tại.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string[] $classes   An array of post class names.
-	 * @param string[] $css_class An array of additional class names added to the post.
-	 * @param int      $post_id   The post ID.
+	 * @param string[] $classes   Mảng tên lớp của bài viết.
+	 * @param string[] $css_class Mảng tên lớp bổ sung được thêm cho bài viết.
+	 * @param int      $post_id   ID bài viết.
 	 */
 	$classes = apply_filters( 'post_class', $classes, $css_class, $post->ID );
 
@@ -610,28 +610,28 @@ function get_post_class( $css_class = '', $post = null ) {
 }
 
 /**
- * Displays the class names for the body element.
+ * Hiển thị tên lớp CSS cho phần tử body.
  *
  * @since 2.8.0
  *
- * @param string|string[] $css_class Optional. Space-separated string or array of class names
- *                                   to add to the class list. Default empty.
+ * @param string|string[] $css_class Tùy chọn. Chuỗi phân tách bằng khoảng trắng hoặc mảng tên lớp
+ *                                   để thêm vào danh sách lớp. Mặc định rỗng.
  */
 function body_class( $css_class = '' ) {
-	// Separates class names with a single space, collates class names for body element.
+	// Phân tách tên lớp bằng một khoảng trắng, tổng hợp tên lớp cho phần tử body.
 	echo 'class="' . esc_attr( implode( ' ', get_body_class( $css_class ) ) ) . '"';
 }
 
 /**
- * Retrieves an array of the class names for the body element.
+ * Lấy mảng tên lớp CSS cho phần tử body.
  *
  * @since 2.8.0
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng truy vấn WordPress.
  *
- * @param string|string[] $css_class Optional. Space-separated string or array of class names
- *                                   to add to the class list. Default empty.
- * @return string[] Array of class names.
+ * @param string|string[] $css_class Tùy chọn. Chuỗi phân tách bằng khoảng trắng hoặc mảng tên lớp
+ *                                   để thêm vào danh sách lớp. Mặc định rỗng.
+ * @return string[] Mảng tên lớp.
  */
 function get_body_class( $css_class = '' ) {
 	global $wp_query;
@@ -698,7 +698,7 @@ function get_body_class( $css_class = '' ) {
 				$classes[] = 'single-' . sanitize_html_class( $post->post_type, $post_id );
 				$classes[] = 'postid-' . $post_id;
 
-				// Post Format.
+				// Định dạng bài viết.
 				if ( post_type_supports( $post->post_type, 'post-formats' ) ) {
 					$post_format = get_post_format( $post->ID );
 
@@ -849,19 +849,19 @@ function get_body_class( $css_class = '' ) {
 		}
 		$classes = array_merge( $classes, $css_class );
 	} else {
-		// Ensure that we always coerce class to being an array.
+		// Đảm bảo luôn ép lớp thành mảng.
 		$css_class = array();
 	}
 
 	$classes = array_map( 'esc_attr', $classes );
 
 	/**
-	 * Filters the list of CSS body class names for the current post or page.
+	 * Lọc danh sách tên lớp CSS body cho bài viết hoặc trang hiện tại.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string[] $classes   An array of body class names.
-	 * @param string[] $css_class An array of additional class names added to the body.
+	 * @param string[] $classes   Mảng tên lớp body.
+	 * @param string[] $css_class Mảng tên lớp bổ sung được thêm cho body.
 	 */
 	$classes = apply_filters( 'body_class', $classes, $css_class );
 
@@ -869,23 +869,23 @@ function get_body_class( $css_class = '' ) {
 }
 
 /**
- * Determines whether the post requires password and whether a correct password has been provided.
+ * Xác định xem bài viết có yêu cầu mật khẩu hay không và liệu mật khẩu đúng đã được cung cấp.
  *
  * @since 2.7.0
  *
- * @param int|WP_Post|null $post An optional post. Global $post used if not provided.
- * @return bool false if a password is not required or the correct password cookie is present, true otherwise.
+ * @param int|WP_Post|null $post Bài viết tùy chọn. $post toàn cục được sử dụng nếu không được cung cấp.
+ * @return bool False nếu không yêu cầu mật khẩu hoặc cookie mật khẩu đúng đã có, true nếu ngược lại.
  */
 function post_password_required( $post = null ) {
 	$post = get_post( $post );
 
 	if ( empty( $post->post_password ) ) {
-		/** This filter is documented in wp-includes/post-template.php */
+		/** Bộ lọc này được ghi chú trong wp-includes/post-template.php */
 		return apply_filters( 'post_password_required', false, $post );
 	}
 
 	if ( ! isset( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] ) ) {
-		/** This filter is documented in wp-includes/post-template.php */
+		/** Bộ lọc này được ghi chú trong wp-includes/post-template.php */
 		return apply_filters( 'post_password_required', true, $post );
 	}
 
@@ -900,29 +900,29 @@ function post_password_required( $post = null ) {
 	}
 
 	/**
-	 * Filters whether a post requires the user to supply a password.
+	 * Lọc xem bài viết có yêu cầu người dùng cung cấp mật khẩu hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param bool    $required Whether the user needs to supply a password. True if password has not been
-	 *                          provided or is incorrect, false if password has been supplied or is not required.
-	 * @param WP_Post $post     Post object.
+	 * @param bool    $required Liệu người dùng có cần cung cấp mật khẩu. True nếu mật khẩu chưa được
+	 *                          cung cấp hoặc không đúng, false nếu mật khẩu đã được cung cấp hoặc không yêu cầu.
+	 * @param WP_Post $post     Đối tượng bài viết.
 	 */
 	return apply_filters( 'post_password_required', $required, $post );
 }
 
 //
-// Page Template Functions for usage in Themes.
+// Hàm mẫu trang để sử dụng trong Giao diện.
 //
 
 /**
- * The formatted output of a list of pages.
+ * Đầu ra đã được định dạng của danh sách các trang.
  *
- * Displays page links for paginated posts (i.e. including the `<!--nextpage-->`
- * Quicktag one or more times). This tag must be within The Loop.
+ * Hiển thị liên kết trang cho các bài viết phân trang (tức là bao gồm Quicktag
+ * `<!--nextpage-->` một hoặc nhiều lần). Thẻ này phải nằm trong Vòng lặp.
  *
  * @since 1.2.0
- * @since 5.1.0 Added the `aria_current` argument.
+ * @since 5.1.0 Thêm đối số `aria_current`.
  *
  * @global int $page
  * @global int $numpages
@@ -930,27 +930,27 @@ function post_password_required( $post = null ) {
  * @global int $more
  *
  * @param string|array $args {
- *     Optional. Array or string of default arguments.
+ *     Tùy chọn. Mảng hoặc chuỗi các đối số mặc định.
  *
- *     @type string       $before           HTML or text to prepend to each link. Default is `<p> Pages:`.
- *     @type string       $after            HTML or text to append to each link. Default is `</p>`.
- *     @type string       $link_before      HTML or text to prepend to each link, inside the `<a>` tag.
- *                                          Also prepended to the current item, which is not linked. Default empty.
- *     @type string       $link_after       HTML or text to append to each Pages link inside the `<a>` tag.
- *                                          Also appended to the current item, which is not linked. Default empty.
- *     @type string       $aria_current     The value for the aria-current attribute. Possible values are 'page',
- *                                          'step', 'location', 'date', 'time', 'true', 'false'. Default is 'page'.
- *     @type string       $next_or_number   Indicates whether page numbers should be used. Valid values are number
- *                                          and next. Default is 'number'.
- *     @type string       $separator        Text between pagination links. Default is ' '.
- *     @type string       $nextpagelink     Link text for the next page link, if available. Default is 'Next Page'.
- *     @type string       $previouspagelink Link text for the previous page link, if available. Default is 'Previous Page'.
- *     @type string       $pagelink         Format string for page numbers. The % in the parameter string will be
- *                                          replaced with the page number, so 'Page %' generates "Page 1", "Page 2", etc.
- *                                          Defaults to '%', just the page number.
- *     @type int|bool     $echo             Whether to echo or not. Accepts 1|true or 0|false. Default 1|true.
+ *     @type string       $before           HTML hoặc văn bản thêm trước mỗi liên kết. Mặc định là `<p> Pages:`.
+ *     @type string       $after            HTML hoặc văn bản thêm sau mỗi liên kết. Mặc định là `</p>`.
+ *     @type string       $link_before      HTML hoặc văn bản thêm trước mỗi liên kết, bên trong thẻ `<a>`.
+ *                                          Cũng thêm trước mục hiện tại, không có liên kết. Mặc định rỗng.
+ *     @type string       $link_after       HTML hoặc văn bản thêm sau mỗi liên kết trang bên trong thẻ `<a>`.
+ *                                          Cũng thêm sau mục hiện tại, không có liên kết. Mặc định rỗng.
+ *     @type string       $aria_current     Giá trị cho thuộc tính aria-current. Các giá trị có thể là 'page',
+ *                                          'step', 'location', 'date', 'time', 'true', 'false'. Mặc định là 'page'.
+ *     @type string       $next_or_number   Chỉ ra liệu số trang có nên được sử dụng. Các giá trị hợp lệ là number
+ *                                          và next. Mặc định là 'number'.
+ *     @type string       $separator        Văn bản giữa các liên kết phân trang. Mặc định là ' '.
+ *     @type string       $nextpagelink     Văn bản liên kết cho trang tiếp theo, nếu có. Mặc định là 'Next Page'.
+ *     @type string       $previouspagelink Văn bản liên kết cho trang trước, nếu có. Mặc định là 'Previous Page'.
+ *     @type string       $pagelink         Chuỗi định dạng cho số trang. Ký tự % trong chuỗi tham số sẽ được
+ *                                          thay bằng số trang, nên 'Page %' tạo ra "Page 1", "Page 2", v.v.
+ *                                          Mặc định là '%', chỉ số trang.
+ *     @type int|bool     $echo             Có echo hay không. Chấp nhận 1|true hoặc 0|false. Mặc định 1|true.
  * }
- * @return string Formatted output in HTML.
+ * @return string Đầu ra đã định dạng dạng HTML.
  */
 function wp_link_pages( $args = '' ) {
 	global $page, $numpages, $multipage, $more;
@@ -1015,7 +1015,7 @@ function wp_link_pages( $args = '' ) {
 			if ( $prev > 0 ) {
 				$link = _wp_link_page( $prev ) . $parsed_args['link_before'] . $parsed_args['previouspagelink'] . $parsed_args['link_after'] . '</a>';
 
-				/** This filter is documented in wp-includes/post-template.php */
+				/** Bộ lọc này được ghi chú trong wp-includes/post-template.php */
 				$output .= apply_filters( 'wp_link_pages_link', $link, $prev );
 			}
 			$next = $page + 1;
@@ -1025,7 +1025,7 @@ function wp_link_pages( $args = '' ) {
 				}
 				$link = _wp_link_page( $next ) . $parsed_args['link_before'] . $parsed_args['nextpagelink'] . $parsed_args['link_after'] . '</a>';
 
-				/** This filter is documented in wp-includes/post-template.php */
+				/** Bộ lọc này được ghi chú trong wp-includes/post-template.php */
 				$output .= apply_filters( 'wp_link_pages_link', $link, $next );
 			}
 			$output .= $parsed_args['after'];

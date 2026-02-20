@@ -1,6 +1,6 @@
 <?php
 /**
- * Post API: WP_Post_Type class
+ * API Bài viết: Lớp WP_Post_Type
  *
  * @package WordPress
  * @subpackage Post
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used for interacting with post types.
+ * Lớp lõi được sử dụng để tương tác với các loại bài viết.
  *
  * @since 4.6.0
  *
@@ -17,7 +17,7 @@
 #[AllowDynamicProperties]
 final class WP_Post_Type {
 	/**
-	 * Post type key.
+	 * Khóa loại bài viết.
 	 *
 	 * @since 4.6.0
 	 * @var string $name
@@ -25,7 +25,7 @@ final class WP_Post_Type {
 	public $name;
 
 	/**
-	 * Name of the post type shown in the menu. Usually plural.
+	 * Tên của loại bài viết hiển thị trong menu. Thường ở dạng số nhiều.
 	 *
 	 * @since 4.6.0
 	 * @var string $label
@@ -33,10 +33,10 @@ final class WP_Post_Type {
 	public $label;
 
 	/**
-	 * Labels object for this post type.
+	 * Đối tượng nhãn cho loại bài viết này.
 	 *
-	 * If not set, post labels are inherited for non-hierarchical types
-	 * and page labels for hierarchical ones.
+	 * Nếu không được thiết lập, nhãn bài viết được kế thừa cho các loại không phân cấp
+	 * và nhãn trang cho các loại phân cấp.
 	 *
 	 * @see get_post_type_labels()
 	 *
@@ -46,7 +46,7 @@ final class WP_Post_Type {
 	public $labels;
 
 	/**
-	 * Default labels.
+	 * Các nhãn mặc định.
 	 *
 	 * @since 6.0.0
 	 * @var (string|null)[][] $default_labels
@@ -54,9 +54,9 @@ final class WP_Post_Type {
 	protected static $default_labels = array();
 
 	/**
-	 * A short descriptive summary of what the post type is.
+	 * Mô tả ngắn gọn về loại bài viết.
 	 *
-	 * Default empty.
+	 * Mặc định rỗng.
 	 *
 	 * @since 4.6.0
 	 * @var string $description
@@ -64,12 +64,12 @@ final class WP_Post_Type {
 	public $description = '';
 
 	/**
-	 * Whether a post type is intended for use publicly either via the admin interface or by front-end users.
+	 * Liệu loại bài viết có được dùng công khai qua giao diện quản trị hoặc bởi người dùng giao diện trước hay không.
 	 *
-	 * While the default settings of $exclude_from_search, $publicly_queryable, $show_ui, and $show_in_nav_menus
-	 * are inherited from public, each does not rely on this relationship and controls a very specific intention.
+	 * Mặc dù các thiết lập mặc định của $exclude_from_search, $publicly_queryable, $show_ui, và $show_in_nav_menus
+	 * được kế thừa từ public, mỗi cái không phụ thuộc vào mối quan hệ này và kiểm soát một mục đích rất cụ thể.
 	 *
-	 * Default false.
+	 * Mặc định false.
 	 *
 	 * @since 4.6.0
 	 * @var bool $public
@@ -77,9 +77,9 @@ final class WP_Post_Type {
 	public $public = false;
 
 	/**
-	 * Whether the post type is hierarchical (e.g. page).
+	 * Liệu loại bài viết có phân cấp hay không (ví dụ: trang).
 	 *
-	 * Default false.
+	 * Mặc định false.
 	 *
 	 * @since 4.6.0
 	 * @var bool $hierarchical
@@ -87,10 +87,10 @@ final class WP_Post_Type {
 	public $hierarchical = false;
 
 	/**
-	 * Whether to exclude posts with this post type from front end search
-	 * results.
+	 * Liệu có loại trừ các bài viết thuộc loại này khỏi kết quả tìm kiếm
+	 * giao diện trước hay không.
 	 *
-	 * Default is the opposite value of $public.
+	 * Mặc định là giá trị ngược lại của $public.
 	 *
 	 * @since 4.6.0
 	 * @var bool $exclude_from_search
@@ -98,15 +98,15 @@ final class WP_Post_Type {
 	public $exclude_from_search = null;
 
 	/**
-	 * Whether queries can be performed on the front end for the post type as part of `parse_request()`.
+	 * Liệu có thể thực hiện truy vấn ở giao diện trước cho loại bài viết này như một phần của `parse_request()` hay không.
 	 *
-	 * Endpoints would include:
+	 * Các endpoint bao gồm:
 	 *
 	 * - `?post_type={post_type_key}`
 	 * - `?{post_type_key}={single_post_slug}`
 	 * - `?{post_type_query_var}={single_post_slug}`
 	 *
-	 * Default is the value of $public.
+	 * Mặc định là giá trị của $public.
 	 *
 	 * @since 4.6.0
 	 * @var bool $publicly_queryable
@@ -114,9 +114,9 @@ final class WP_Post_Type {
 	public $publicly_queryable = null;
 
 	/**
-	 * Whether this post type is embeddable.
+	 * Liệu loại bài viết này có thể nhúng hay không.
 	 *
-	 * Default is the value of $public.
+	 * Mặc định là giá trị của $public.
 	 *
 	 * @since 6.8.0
 	 * @var bool $embeddable
@@ -124,9 +124,9 @@ final class WP_Post_Type {
 	public $embeddable = null;
 
 	/**
-	 * Whether to generate and allow a UI for managing this post type in the admin.
+	 * Liệu có tạo và cho phép giao diện quản lý loại bài viết này trong trang quản trị hay không.
 	 *
-	 * Default is the value of $public.
+	 * Mặc định là giá trị của $public.
 	 *
 	 * @since 4.6.0
 	 * @var bool $show_ui
@@ -134,13 +134,13 @@ final class WP_Post_Type {
 	public $show_ui = null;
 
 	/**
-	 * Where to show the post type in the admin menu.
+	 * Vị trí hiển thị loại bài viết trong menu quản trị.
 	 *
-	 * To work, $show_ui must be true. If true, the post type is shown in its own top level menu. If false, no menu is
-	 * shown. If a string of an existing top level menu ('tools.php' or 'edit.php?post_type=page', for example), the
-	 * post type will be placed as a sub-menu of that.
+	 * Để hoạt động, $show_ui phải là true. Nếu true, loại bài viết được hiển thị trong menu cấp cao nhất riêng. Nếu false, không hiển thị menu.
+	 * Nếu là chuỗi của một menu cấp cao nhất đã tồn tại ('tools.php' hoặc 'edit.php?post_type=page', ví dụ),
+	 * loại bài viết sẽ được đặt làm menu con của menu đó.
 	 *
-	 * Default is the value of $show_ui.
+	 * Mặc định là giá trị của $show_ui.
 	 *
 	 * @since 4.6.0
 	 * @var bool|string $show_in_menu
@@ -148,9 +148,9 @@ final class WP_Post_Type {
 	public $show_in_menu = null;
 
 	/**
-	 * Makes this post type available for selection in navigation menus.
+	 * Cho phép loại bài viết này có thể được chọn trong menu điều hướng.
 	 *
-	 * Default is the value $public.
+	 * Mặc định là giá trị của $public.
 	 *
 	 * @since 4.6.0
 	 * @var bool $show_in_nav_menus
@@ -158,9 +158,9 @@ final class WP_Post_Type {
 	public $show_in_nav_menus = null;
 
 	/**
-	 * Makes this post type available via the admin bar.
+	 * Cho phép loại bài viết này hiển thị qua thanh quản trị.
 	 *
-	 * Default is the value of $show_in_menu.
+	 * Mặc định là giá trị của $show_in_menu.
 	 *
 	 * @since 4.6.0
 	 * @var bool $show_in_admin_bar
@@ -168,9 +168,9 @@ final class WP_Post_Type {
 	public $show_in_admin_bar = null;
 
 	/**
-	 * The position in the menu order the post type should appear.
+	 * Vị trí trong thứ tự menu mà loại bài viết sẽ xuất hiện.
 	 *
-	 * To work, $show_in_menu must be true. Default null (at the bottom).
+	 * Để hoạt động, $show_in_menu phải là true. Mặc định null (ở cuối).
 	 *
 	 * @since 4.6.0
 	 * @var int $menu_position
@@ -178,14 +178,14 @@ final class WP_Post_Type {
 	public $menu_position = null;
 
 	/**
-	 * The URL or reference to the icon to be used for this menu.
+	 * URL hoặc tham chiếu đến biểu tượng được sử dụng cho menu này.
 	 *
-	 * Pass a base64-encoded SVG using a data URI, which will be colored to match the color scheme.
-	 * This should begin with 'data:image/svg+xml;base64,'. Pass the name of a Dashicons helper class
-	 * to use a font icon, e.g. 'dashicons-chart-pie'. Pass 'none' to leave div.wp-menu-image empty
-	 * so an icon can be added via CSS.
+	 * Truyền SVG mã hóa base64 sử dụng data URI, sẽ được tô màu phù hợp với bảng màu.
+	 * Giá trị phải bắt đầu bằng 'data:image/svg+xml;base64,'. Truyền tên lớp trợ giúp Dashicons
+	 * để sử dụng biểu tượng font, ví dụ 'dashicons-chart-pie'. Truyền 'none' để div.wp-menu-image trống
+	 * để có thể thêm biểu tượng qua CSS.
 	 *
-	 * Defaults to use the posts icon.
+	 * Mặc định sử dụng biểu tượng bài viết.
 	 *
 	 * @since 4.6.0
 	 * @var string $menu_icon
@@ -193,11 +193,11 @@ final class WP_Post_Type {
 	public $menu_icon = null;
 
 	/**
-	 * The string to use to build the read, edit, and delete capabilities.
+	 * Chuỗi được sử dụng để xây dựng các quyền đọc, sửa và xóa.
 	 *
-	 * May be passed as an array to allow for alternative plurals when using
-	 * this argument as a base to construct the capabilities, e.g.
-	 * array( 'story', 'stories' ). Default 'post'.
+	 * Có thể được truyền dưới dạng mảng để cho phép dạng số nhiều thay thế khi sử dụng
+	 * đối số này làm cơ sở để xây dựng các quyền, ví dụ
+	 * array( 'story', 'stories' ). Mặc định 'post'.
 	 *
 	 * @since 4.6.0
 	 * @var string $capability_type
@@ -205,9 +205,9 @@ final class WP_Post_Type {
 	public $capability_type = 'post';
 
 	/**
-	 * Whether to use the internal default meta capability handling.
+	 * Liệu có sử dụng xử lý quyền meta mặc định nội bộ hay không.
 	 *
-	 * Default false.
+	 * Mặc định false.
 	 *
 	 * @since 4.6.0
 	 * @var bool $map_meta_cap
@@ -215,9 +215,9 @@ final class WP_Post_Type {
 	public $map_meta_cap = false;
 
 	/**
-	 * Provide a callback function that sets up the meta boxes for the edit form.
+	 * Cung cấp hàm callback để thiết lập các hộp meta cho biểu mẫu chỉnh sửa.
 	 *
-	 * Do `remove_meta_box()` and `add_meta_box()` calls in the callback. Default null.
+	 * Gọi `remove_meta_box()` và `add_meta_box()` trong callback. Mặc định null.
 	 *
 	 * @since 4.6.0
 	 * @var callable $register_meta_box_cb
@@ -225,11 +225,11 @@ final class WP_Post_Type {
 	public $register_meta_box_cb = null;
 
 	/**
-	 * An array of taxonomy identifiers that will be registered for the post type.
+	 * Mảng các định danh taxonomy sẽ được đăng ký cho loại bài viết.
 	 *
-	 * Taxonomies can be registered later with `register_taxonomy()` or `register_taxonomy_for_object_type()`.
+	 * Các taxonomy có thể được đăng ký sau bằng `register_taxonomy()` hoặc `register_taxonomy_for_object_type()`.
 	 *
-	 * Default empty array.
+	 * Mặc định mảng rỗng.
 	 *
 	 * @since 4.6.0
 	 * @var string[] $taxonomies
@@ -237,9 +237,9 @@ final class WP_Post_Type {
 	public $taxonomies = array();
 
 	/**
-	 * Whether there should be post type archives, or if a string, the archive slug to use.
+	 * Liệu có nên có trang lưu trữ loại bài viết hay không, hoặc nếu là chuỗi, đường dẫn lưu trữ sẽ được sử dụng.
 	 *
-	 * Will generate the proper rewrite rules if $rewrite is enabled. Default false.
+	 * Sẽ tạo các quy tắc viết lại phù hợp nếu $rewrite được bật. Mặc định false.
 	 *
 	 * @since 4.6.0
 	 * @var bool|string $has_archive

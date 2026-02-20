@@ -1,24 +1,24 @@
 <?php
 /**
- * Core Navigation Menu API
+ * API Menu Điều hướng Lõi
  *
  * @package WordPress
  * @subpackage Nav_Menus
  * @since 3.0.0
  */
 
-/** Walker_Nav_Menu_Edit class */
+/** Lớp Walker_Nav_Menu_Edit */
 require_once ABSPATH . 'wp-admin/includes/class-walker-nav-menu-edit.php';
 
-/** Walker_Nav_Menu_Checklist class */
+/** Lớp Walker_Nav_Menu_Checklist */
 require_once ABSPATH . 'wp-admin/includes/class-walker-nav-menu-checklist.php';
 
 /**
- * Prints the appropriate response to a menu quick search.
+ * In phản hồi phù hợp cho tìm kiếm nhanh menu.
  *
  * @since 3.0.0
  *
- * @param array $request The unsanitized request values.
+ * @param array $request Các giá trị yêu cầu chưa được làm sạch.
  */
 function _wp_ajax_menu_quick_search( $request = array() ) {
 	$args            = array();
@@ -162,12 +162,12 @@ function _wp_ajax_menu_quick_search( $request = array() ) {
 }
 
 /**
- * Register nav menu meta boxes and advanced menu items.
+ * Đăng ký hộp meta menu điều hướng và các mục menu nâng cao.
  *
  * @since 3.0.0
  */
 function wp_nav_menu_setup() {
-	// Register meta boxes.
+	// Đăng ký các hộp meta.
 	wp_nav_menu_post_type_meta_boxes();
 	add_meta_box(
 		'add-custom-links',
@@ -179,10 +179,10 @@ function wp_nav_menu_setup() {
 	);
 	wp_nav_menu_taxonomy_meta_boxes();
 
-	// Register advanced menu items (columns).
+	// Đăng ký các mục menu nâng cao (cột).
 	add_filter( 'manage_nav-menus_columns', 'wp_nav_menu_manage_columns' );
 
-	// If first time editing, disable advanced items by default.
+	// Nếu lần đầu chỉnh sửa, tắt các mục nâng cao theo mặc định.
 	if ( false === get_user_option( 'managenav-menuscolumnshidden' ) ) {
 		$user = wp_get_current_user();
 		update_user_meta(
@@ -200,11 +200,11 @@ function wp_nav_menu_setup() {
 }
 
 /**
- * Limit the amount of meta boxes to pages, posts, links, and categories for first time users.
+ * Giới hạn số lượng hộp meta cho trang, bài viết, liên kết và chuyên mục cho người dùng lần đầu.
  *
  * @since 3.0.0
  *
- * @global array $wp_meta_boxes Global meta box state.
+ * @global array $wp_meta_boxes Trạng thái hộp meta toàn cục.
  */
 function wp_initial_nav_menu_meta_boxes() {
 	global $wp_meta_boxes;
@@ -233,7 +233,7 @@ function wp_initial_nav_menu_meta_boxes() {
 }
 
 /**
- * Creates meta boxes for any post type menu item..
+ * Tạo hộp meta cho bất kỳ mục menu loại bài viết nào.
  *
  * @since 3.0.0
  */
@@ -246,22 +246,21 @@ function wp_nav_menu_post_type_meta_boxes() {
 
 	foreach ( $post_types as $post_type ) {
 		/**
-		 * Filters whether a menu items meta box will be added for the current
-		 * object type.
+		 * Lọc xem hộp meta mục menu có được thêm cho loại đối tượng hiện tại hay không.
 		 *
-		 * If a falsey value is returned instead of an object, the menu items
-		 * meta box for the current meta box object will not be added.
+		 * Nếu giá trị sai được trả về thay vì đối tượng, hộp meta
+		 * mục menu cho đối tượng hộp meta hiện tại sẽ không được thêm.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param WP_Post_Type|false $post_type The current object to add a menu items
-		 *                                      meta box for.
+		 * @param WP_Post_Type|false $post_type Đối tượng hiện tại để thêm hộp meta
+		 *                                      mục menu.
 		 */
 		$post_type = apply_filters( 'nav_menu_meta_box_object', $post_type );
 
 		if ( $post_type ) {
 			$id = $post_type->name;
-			// Give pages a higher priority.
+			// Ưu tiên trang cao hơn.
 			$priority = ( 'page' === $post_type->name ? 'core' : 'default' );
 			add_meta_box(
 				"add-post-type-{$id}",
@@ -277,7 +276,7 @@ function wp_nav_menu_post_type_meta_boxes() {
 }
 
 /**
- * Creates meta boxes for any taxonomy menu item.
+ * Tạo hộp meta cho bất kỳ mục menu phân loại nào.
  *
  * @since 3.0.0
  */
@@ -289,7 +288,7 @@ function wp_nav_menu_taxonomy_meta_boxes() {
 	}
 
 	foreach ( $taxonomies as $tax ) {
-		/** This filter is documented in wp-admin/includes/nav-menu.php */
+		/** Bộ lọc này được ghi nhận tại wp-admin/includes/nav-menu.php */
 		$tax = apply_filters( 'nav_menu_meta_box_object', $tax );
 
 		if ( $tax ) {
@@ -308,16 +307,16 @@ function wp_nav_menu_taxonomy_meta_boxes() {
 }
 
 /**
- * Check whether to disable the Menu Locations meta box submit button and inputs.
+ * Kiểm tra có nên vô hiệu hóa nút gửi và các đầu vào của hộp meta Vị trí Menu hay không.
  *
  * @since 3.6.0
- * @since 5.3.1 The `$display` parameter was added.
+ * @since 5.3.1 Tham số `$display` được thêm vào.
  *
- * @global bool $one_theme_location_no_menus to determine if no menus exist
+ * @global bool $one_theme_location_no_menus để xác định xem không có menu nào tồn tại
  *
- * @param int|string $nav_menu_selected_id ID, name, or slug of the currently selected menu.
- * @param bool       $display              Whether to display or just return the string.
- * @return string|false Disabled attribute if at least one menu exists, false if not.
+ * @param int|string $nav_menu_selected_id ID, tên, hoặc slug của menu đang được chọn.
+ * @param bool       $display              Có hiển thị hay chỉ trả về chuỗi.
+ * @return string|false Thuộc tính vô hiệu hóa nếu có ít nhất một menu tồn tại, false nếu không.
  */
 function wp_nav_menu_disabled_check( $nav_menu_selected_id, $display = true ) {
 	global $one_theme_location_no_menus;
@@ -330,7 +329,7 @@ function wp_nav_menu_disabled_check( $nav_menu_selected_id, $display = true ) {
 }
 
 /**
- * Displays a meta box for the custom links menu item.
+ * Hiển thị hộp meta cho mục menu liên kết tùy chỉnh.
  *
  * @since 3.0.0
  *
@@ -377,21 +376,21 @@ function wp_nav_menu_item_link_meta_box() {
 }
 
 /**
- * Displays a meta box for a post type menu item.
+ * Hiển thị hộp meta cho mục menu loại bài viết.
  *
  * @since 3.0.0
  *
  * @global int        $_nav_menu_placeholder
  * @global int|string $nav_menu_selected_id
  *
- * @param string $data_object Not used.
+ * @param string $data_object Không sử dụng.
  * @param array  $box {
- *     Post type menu item meta box arguments.
+ *     Đối số hộp meta mục menu loại bài viết.
  *
- *     @type string       $id       Meta box 'id' attribute.
- *     @type string       $title    Meta box title.
- *     @type callable     $callback Meta box display callback.
- *     @type WP_Post_Type $args     Extra meta box arguments (the post type object for this meta box).
+ *     @type string       $id       Thuộc tính 'id' của hộp meta.
+ *     @type string       $title    Tiêu đề hộp meta.
+ *     @type callable     $callback Hàm callback hiển thị hộp meta.
+ *     @type WP_Post_Type $args     Đối số bổ sung hộp meta (đối tượng loại bài viết cho hộp meta này).
  * }
  */
 function wp_nav_menu_item_post_type_meta_box( $data_object, $box ) {
@@ -401,7 +400,7 @@ function wp_nav_menu_item_post_type_meta_box( $data_object, $box ) {
 	$post_type      = get_post_type_object( $post_type_name );
 	$tab_name       = $post_type_name . '-tab';
 
-	// Paginate browsing for large numbers of post objects.
+	// Phân trang duyệt cho số lượng lớn đối tượng bài viết.
 	$per_page = 50;
 	$pagenum  = isset( $_REQUEST[ $tab_name ] ) && isset( $_REQUEST['paged'] ) ? absint( $_REQUEST['paged'] ) : 1;
 	$offset   = 0 < $pagenum ? $per_page * ( $pagenum - 1 ) : 0;
@@ -422,14 +421,14 @@ function wp_nav_menu_item_post_type_meta_box( $data_object, $box ) {
 	}
 
 	/*
-	 * If we're dealing with pages, let's prioritize the Front Page,
-	 * Posts Page and Privacy Policy Page at the top of the list.
+	 * Nếu đang xử lý trang, hãy ưu tiên Trang Chủ,
+	 * Trang Bài viết và Trang Chính sách Bảo mật ở đầu danh sách.
 	 */
 	$important_pages = array();
 	if ( 'page' === $post_type_name ) {
 		$suppress_page_ids = array();
 
-		// Insert Front Page or custom Home link.
+		// Chèn Trang Chủ hoặc liên kết Trang chủ tùy chỉnh.
 		$front_page = 'page' === get_option( 'show_on_front' ) ? (int) get_option( 'page_on_front' ) : 0;
 
 		$front_page_obj = null;
@@ -461,7 +460,7 @@ function wp_nav_menu_item_post_type_meta_box( $data_object, $box ) {
 			$important_pages[] = $front_page_obj;
 		}
 
-		// Insert Posts Page.
+		// Chèn Trang Bài viết.
 		$posts_page = 'page' === get_option( 'show_on_front' ) ? (int) get_option( 'page_for_posts' ) : 0;
 
 		if ( ! empty( $posts_page ) ) {
@@ -475,7 +474,7 @@ function wp_nav_menu_item_post_type_meta_box( $data_object, $box ) {
 			}
 		}
 
-		// Insert Privacy Policy Page.
+		// Chèn Trang Chính sách Bảo mật.
 		$privacy_policy_page_id = (int) get_option( 'wp_page_for_privacy_policy' );
 
 		if ( ! empty( $privacy_policy_page_id ) ) {
@@ -489,17 +488,17 @@ function wp_nav_menu_item_post_type_meta_box( $data_object, $box ) {
 			}
 		}
 
-		// Add suppression array to arguments for WP_Query.
+		// Thêm mảng loại trừ vào đối số cho WP_Query.
 		if ( ! empty( $suppress_page_ids ) ) {
 			$args['post__not_in'] = $suppress_page_ids;
 		}
 	}
 
-	// @todo Transient caching of these results with proper invalidation on updating of a post of this type.
+	// @todo Lưu cache tạm thời các kết quả này với cơ chế hủy cache phù hợp khi cập nhật bài viết thuộc loại này.
 	$get_posts = new WP_Query();
 	$posts     = $get_posts->query( $args );
 
-	// Only suppress and insert when more than just suppression pages available.
+	// Chỉ loại trừ và chèn khi có nhiều hơn các trang bị loại trừ.
 	if ( ! $get_posts->post_count ) {
 		if ( ! empty( $suppress_page_ids ) ) {
 			unset( $args['post__not_in'] );
@@ -623,23 +622,23 @@ function wp_nav_menu_item_post_type_meta_box( $data_object, $box ) {
 				$args['walker'] = $walker;
 
 				/**
-				 * Filters the posts displayed in the 'Most Recent' tab of the current
-				 * post type's menu items meta box.
+				 * Lọc các bài viết hiển thị trong tab 'Gần đây nhất' của hộp meta
+				 * mục menu loại bài viết hiện tại.
 				 *
-				 * The dynamic portion of the hook name, `$post_type_name`, refers to the post type name.
+				 * Phần động của tên hook, `$post_type_name`, đề cập đến tên loại bài viết.
 				 *
-				 * Possible hook names include:
+				 * Các tên hook có thể bao gồm:
 				 *
 				 *  - `nav_menu_items_post_recent`
 				 *  - `nav_menu_items_page_recent`
 				 *
 				 * @since 4.3.0
-				 * @since 4.9.0 Added the `$recent_args` parameter.
+				 * @since 4.9.0 Thêm tham số `$recent_args`.
 				 *
-				 * @param WP_Post[] $most_recent An array of post objects being listed.
-				 * @param array     $args        An array of `WP_Query` arguments for the meta box.
-				 * @param array     $box         Arguments passed to `wp_nav_menu_item_post_type_meta_box()`.
-				 * @param array     $recent_args An array of `WP_Query` arguments for 'Most Recent' tab.
+				 * @param WP_Post[] $most_recent Mảng các đối tượng bài viết được liệt kê.
+				 * @param array     $args        Mảng đối số `WP_Query` cho hộp meta.
+				 * @param array     $box         Đối số được truyền cho `wp_nav_menu_item_post_type_meta_box()`.
+				 * @param array     $recent_args Mảng đối số `WP_Query` cho tab 'Gần đây nhất'.
 				 */
 				$most_recent = apply_filters(
 					"nav_menu_items_{$post_type_name}_recent",
@@ -759,26 +758,26 @@ function wp_nav_menu_item_post_type_meta_box( $data_object, $box ) {
 				}
 
 				/**
-				 * Filters the posts displayed in the 'View All' tab of the current
-				 * post type's menu items meta box.
+				 * Lọc các bài viết hiển thị trong tab 'Xem tất cả' của hộp meta
+				 * mục menu loại bài viết hiện tại.
 				 *
-				 * The dynamic portion of the hook name, `$post_type_name`, refers
-				 * to the slug of the current post type.
+				 * Phần động của tên hook, `$post_type_name`, đề cập đến
+				 * slug của loại bài viết hiện tại.
 				 *
-				 * Possible hook names include:
+				 * Các tên hook có thể bao gồm:
 				 *
 				 *  - `nav_menu_items_post`
 				 *  - `nav_menu_items_page`
 				 *
 				 * @since 3.2.0
-				 * @since 4.6.0 Converted the `$post_type` parameter to accept a WP_Post_Type object.
+				 * @since 4.6.0 Chuyển đổi tham số `$post_type` để chấp nhận đối tượng WP_Post_Type.
 				 *
 				 * @see WP_Query::query()
 				 *
-				 * @param object[]     $posts     The posts for the current post type. Mostly `WP_Post` objects, but
-				 *                                can also contain "fake" post objects to represent other menu items.
-				 * @param array        $args      An array of `WP_Query` arguments.
-				 * @param WP_Post_Type $post_type The current post type object for this menu item meta box.
+				 * @param object[]     $posts     Các bài viết cho loại bài viết hiện tại. Chủ yếu là đối tượng `WP_Post`, nhưng
+				 *                                cũng có thể chứa đối tượng bài viết "giả" để đại diện cho các mục menu khác.
+				 * @param array        $args      Mảng đối số `WP_Query`.
+				 * @param WP_Post_Type $post_type Đối tượng loại bài viết hiện tại cho hộp meta mục menu này.
 				 */
 				$posts = apply_filters(
 					"nav_menu_items_{$post_type_name}",
@@ -826,20 +825,20 @@ function wp_nav_menu_item_post_type_meta_box( $data_object, $box ) {
 }
 
 /**
- * Displays a meta box for a taxonomy menu item.
+ * Hiển thị hộp meta cho mục menu phân loại.
  *
  * @since 3.0.0
  *
  * @global int|string $nav_menu_selected_id
  *
- * @param string $data_object Not used.
+ * @param string $data_object Không sử dụng.
  * @param array  $box {
- *     Taxonomy menu item meta box arguments.
+ *     Đối số hộp meta mục menu phân loại.
  *
- *     @type string   $id       Meta box 'id' attribute.
- *     @type string   $title    Meta box title.
- *     @type callable $callback Meta box display callback.
- *     @type object   $args     Extra meta box arguments (the taxonomy object for this meta box).
+ *     @type string   $id       Thuộc tính 'id' của hộp meta.
+ *     @type string   $title    Tiêu đề hộp meta.
+ *     @type callable $callback Hàm callback hiển thị hộp meta.
+ *     @type object   $args     Đối số bổ sung hộp meta (đối tượng phân loại cho hộp meta này).
  * }
  */
 function wp_nav_menu_item_taxonomy_meta_box( $data_object, $box ) {
@@ -849,7 +848,7 @@ function wp_nav_menu_item_taxonomy_meta_box( $data_object, $box ) {
 	$taxonomy      = get_taxonomy( $taxonomy_name );
 	$tab_name      = $taxonomy_name . '-tab';
 
-	// Paginate browsing for large numbers of objects.
+	// Phân trang duyệt cho số lượng lớn đối tượng.
 	$per_page = 50;
 	$pagenum  = isset( $_REQUEST[ $tab_name ] ) && isset( $_REQUEST['paged'] ) ? absint( $_REQUEST['paged'] ) : 1;
 	$offset   = 0 < $pagenum ? $per_page * ( $pagenum - 1 ) : 0;
@@ -1121,13 +1120,13 @@ function wp_nav_menu_item_taxonomy_meta_box( $data_object, $box ) {
 }
 
 /**
- * Save posted nav menu item data.
+ * Lưu dữ liệu mục menu điều hướng đã gửi.
  *
  * @since 3.0.0
  *
- * @param int     $menu_id   The menu ID for which to save this item. Value of 0 makes a draft, orphaned menu item. Default 0.
- * @param array[] $menu_data The unsanitized POSTed menu item data.
- * @return int[] The database IDs of the items saved
+ * @param int     $menu_id   ID menu để lưu mục này. Giá trị 0 tạo mục menu nháp, mồ côi. Mặc định 0.
+ * @param array[] $menu_data Dữ liệu mục menu POST chưa được làm sạch.
+ * @return int[] Các ID cơ sở dữ liệu của các mục đã lưu
  */
 function wp_save_nav_menu_items( $menu_id = 0, $menu_data = array() ) {
 	$menu_id     = (int) $menu_id;
@@ -1135,7 +1134,7 @@ function wp_save_nav_menu_items( $menu_id = 0, $menu_data = array() ) {
 
 	if ( 0 === $menu_id || is_nav_menu( $menu_id ) ) {
 
-		// Loop through all the menu items' POST values.
+		// Duyệt qua tất cả các giá trị POST của mục menu.
 		foreach ( (array) $menu_data as $_possible_db_id => $_item_object_data ) {
 			if (
 				// Checkbox is not checked.

@@ -172,43 +172,43 @@ if ( ! function_exists( 'wp_mail' ) ) :
 	 * @return bool Email có được gửi thành công hay không.
 	 */
 	function wp_mail( $to, $subject, $message, $headers = '', $attachments = array() ) {
-		// Compact the input, apply the filters, and extract them back out.
+		// Gom gọn đầu vào, áp dụng các bộ lọc, và tách chúng ra lại.
 
 		/**
-		 * Filters the wp_mail() arguments.
+		 * Lọc các tham số của wp_mail().
 		 *
 		 * @since 2.2.0
 		 *
 		 * @param array $args {
-		 *     Array of the `wp_mail()` arguments.
+		 *     Mảng các tham số của `wp_mail()`.
 		 *
-		 *     @type string|string[] $to          Array or comma-separated list of email addresses to send message.
-		 *     @type string          $subject     Email subject.
-		 *     @type string          $message     Message contents.
-		 *     @type string|string[] $headers     Additional headers.
-		 *     @type string|string[] $attachments Paths to files to attach.
+		 *     @type string|string[] $to          Mảng hoặc danh sách địa chỉ email phân cách bằng dấu phẩy để gửi tin nhắn.
+		 *     @type string          $subject     Tiêu đề email.
+		 *     @type string          $message     Nội dung tin nhắn.
+		 *     @type string|string[] $headers     Các header bổ sung.
+		 *     @type string|string[] $attachments Đường dẫn đến các tệp đính kèm.
 		 * }
 		 */
 		$atts = apply_filters( 'wp_mail', compact( 'to', 'subject', 'message', 'headers', 'attachments' ) );
 
 		/**
-		 * Filters whether to preempt sending an email.
+		 * Lọc xem có bỏ qua việc gửi email hay không.
 		 *
-		 * Returning a non-null value will short-circuit {@see wp_mail()}, returning
-		 * that value instead. A boolean return value should be used to indicate whether
-		 * the email was successfully sent.
+		 * Trả về giá trị không phải null sẽ bỏ qua {@see wp_mail()}, trả về
+		 * giá trị đó thay thế. Giá trị trả về boolean nên được sử dụng để chỉ ra
+		 * email có được gửi thành công hay không.
 		 *
 		 * @since 5.7.0
 		 *
-		 * @param null|bool $return Short-circuit return value.
+		 * @param null|bool $return Giá trị trả về bỏ qua.
 		 * @param array     $atts {
-		 *     Array of the `wp_mail()` arguments.
+		 *     Mảng các tham số của `wp_mail()`.
 		 *
-		 *     @type string|string[] $to          Array or comma-separated list of email addresses to send message.
-		 *     @type string          $subject     Email subject.
-		 *     @type string          $message     Message contents.
-		 *     @type string|string[] $headers     Additional headers.
-		 *     @type string|string[] $attachments Paths to files to attach.
+		 *     @type string|string[] $to          Mảng hoặc danh sách địa chỉ email phân cách bằng dấu phẩy để gửi tin nhắn.
+		 *     @type string          $subject     Tiêu đề email.
+		 *     @type string          $message     Nội dung tin nhắn.
+		 *     @type string|string[] $headers     Các header bổ sung.
+		 *     @type string|string[] $attachments Đường dẫn đến các tệp đính kèm.
 		 * }
 		 */
 		$pre_wp_mail = apply_filters( 'pre_wp_mail', null, $atts );
@@ -246,7 +246,7 @@ if ( ! function_exists( 'wp_mail' ) ) :
 		}
 		global $phpmailer;
 
-		// (Re)create it, if it's gone missing.
+		// Tạo (lại) nó, nếu nó bị mất.
 		if ( ! ( $phpmailer instanceof PHPMailer\PHPMailer\PHPMailer ) ) {
 			require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
 			require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
@@ -259,7 +259,7 @@ if ( ! function_exists( 'wp_mail' ) ) :
 			};
 		}
 
-		// Headers.
+		// Các header.
 		$cc       = array();
 		$bcc      = array();
 		$reply_to = array();
@@ -269,8 +269,8 @@ if ( ! function_exists( 'wp_mail' ) ) :
 		} else {
 			if ( ! is_array( $headers ) ) {
 				/*
-				 * Explode the headers out, so this function can take
-				 * both string headers and an array of headers.
+				 * Tách các header ra, để hàm này có thể nhận
+				 * cả header dạng chuỗi và dạng mảng.
 				 */
 				$tempheaders = explode( "\n", str_replace( "\r\n", "\n", $headers ) );
 			} else {
@@ -278,9 +278,9 @@ if ( ! function_exists( 'wp_mail' ) ) :
 			}
 			$headers = array();
 
-			// If it's actually got contents.
+			// Nếu nó thực sự có nội dung.
 			if ( ! empty( $tempheaders ) ) {
-				// Iterate through the raw headers.
+				// Duyệt qua các header thô.
 				foreach ( (array) $tempheaders as $header ) {
 					if ( ! str_contains( $header, ':' ) ) {
 						if ( false !== stripos( $header, 'boundary=' ) ) {
@@ -289,19 +289,19 @@ if ( ! function_exists( 'wp_mail' ) ) :
 						}
 						continue;
 					}
-					// Explode them out.
+					// Tách chúng ra.
 					list( $name, $content ) = explode( ':', trim( $header ), 2 );
 
-					// Cleanup crew.
+					// Dọn dẹp.
 					$name    = trim( $name );
 					$content = trim( $content );
 
 					switch ( strtolower( $name ) ) {
-						// Mainly for legacy -- process a "From:" header if it's there.
+						// Chủ yếu để tương thích ngược -- xử lý header "From:" nếu có.
 						case 'from':
 							$bracket_pos = strpos( $content, '<' );
 							if ( false !== $bracket_pos ) {
-								// Text before the bracketed email is the "From" name.
+								// Văn bản trước email trong ngoặc nhọn là tên "From".
 								if ( $bracket_pos > 0 ) {
 									$from_name = substr( $content, 0, $bracket_pos );
 									$from_name = str_replace( '"', '', $from_name );
@@ -312,7 +312,7 @@ if ( ! function_exists( 'wp_mail' ) ) :
 								$from_email = str_replace( '>', '', $from_email );
 								$from_email = trim( $from_email );
 
-								// Avoid setting an empty $from_email.
+								// Tránh thiết lập $from_email rỗng.
 							} elseif ( '' !== trim( $content ) ) {
 								$from_email = trim( $content );
 							}
@@ -328,7 +328,7 @@ if ( ! function_exists( 'wp_mail' ) ) :
 									$charset  = '';
 								}
 
-								// Avoid setting an empty $content_type.
+								// Tránh thiết lập $content_type rỗng.
 							} elseif ( '' !== trim( $content ) ) {
 								$content_type = trim( $content );
 							}
@@ -343,7 +343,7 @@ if ( ! function_exists( 'wp_mail' ) ) :
 							$reply_to = array_merge( (array) $reply_to, explode( ',', $content ) );
 							break;
 						default:
-							// Add it to our grand headers array.
+							// Thêm vào mảng header chính.
 							$headers[ trim( $name ) ] = trim( $content );
 							break;
 					}
@@ -351,7 +351,7 @@ if ( ! function_exists( 'wp_mail' ) ) :
 			}
 		}
 
-		// Empty out the values that may be set.
+		// Xóa sạch các giá trị có thể đã được thiết lập.
 		$phpmailer->clearAllRecipients();
 		$phpmailer->clearAttachments();
 		$phpmailer->clearCustomHeaders();
@@ -359,22 +359,22 @@ if ( ! function_exists( 'wp_mail' ) ) :
 		$phpmailer->Body    = '';
 		$phpmailer->AltBody = '';
 
-		// Set "From" name and email.
+		// Thiết lập tên và email "From".
 
-		// If we don't have a name from the input headers.
+		// Nếu chúng ta không có tên từ các header đầu vào.
 		if ( ! isset( $from_name ) ) {
 			$from_name = 'WordPress';
 		}
 
 		/*
-		 * If we don't have an email from the input headers, default to wordpress@$sitename
-		 * Some hosts will block outgoing mail from this address if it doesn't exist,
-		 * but there's no easy alternative. Defaulting to admin_email might appear to be
-		 * another option, but some hosts may refuse to relay mail from an unknown domain.
-		 * See https://core.trac.wordpress.org/ticket/5007.
+		 * Nếu chúng ta không có email từ các header đầu vào, mặc định là wordpress@$sitename
+		 * Một số máy chủ sẽ chặn thư đi từ địa chỉ này nếu nó không tồn tại,
+		 * nhưng không có giải pháp thay thế dễ dàng. Sử dụng admin_email mặc định có vẻ là
+		 * một lựa chọn khác, nhưng một số máy chủ có thể từ chối chuyển tiếp thư từ tên miền không xác định.
+		 * Xem https://core.trac.wordpress.org/ticket/5007.
 		 */
 		if ( ! isset( $from_email ) ) {
-			// Get the site domain and get rid of www.
+			// Lấy tên miền trang web và loại bỏ www.
 			$sitename   = wp_parse_url( network_home_url(), PHP_URL_HOST );
 			$from_email = 'wordpress@';
 
@@ -388,20 +388,20 @@ if ( ! function_exists( 'wp_mail' ) ) :
 		}
 
 		/**
-		 * Filters the email address to send from.
+		 * Lọc địa chỉ email gửi đi.
 		 *
 		 * @since 2.2.0
 		 *
-		 * @param string $from_email Email address to send from.
+		 * @param string $from_email Địa chỉ email gửi đi.
 		 */
 		$from_email = apply_filters( 'wp_mail_from', $from_email );
 
 		/**
-		 * Filters the name to associate with the "from" email address.
+		 * Lọc tên liên kết với địa chỉ email "from".
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param string $from_name Name associated with the "from" email address.
+		 * @param string $from_name Tên liên kết với địa chỉ email "from".
 		 */
 		$from_name = apply_filters( 'wp_mail_from_name', $from_name );
 
@@ -411,17 +411,17 @@ if ( ! function_exists( 'wp_mail' ) ) :
 			$mail_error_data                             = compact( 'to', 'subject', 'message', 'headers', 'attachments' );
 			$mail_error_data['phpmailer_exception_code'] = $e->getCode();
 
-			/** This filter is documented in wp-includes/pluggable.php */
+			/** Bộ lọc này được ghi chép trong wp-includes/pluggable.php */
 			do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', $e->getMessage(), $mail_error_data ) );
 
 			return false;
 		}
 
-		// Set mail's subject and body.
+		// Thiết lập tiêu đề và nội dung email.
 		$phpmailer->Subject = $subject;
 		$phpmailer->Body    = $message;
 
-		// Set destination addresses, using appropriate methods for handling addresses.
+		// Thiết lập địa chỉ đích, sử dụng các phương thức phù hợp để xử lý địa chỉ.
 		$address_headers = compact( 'to', 'cc', 'bcc', 'reply_to' );
 
 		foreach ( $address_headers as $address_header => $addresses ) {
@@ -431,7 +431,7 @@ if ( ! function_exists( 'wp_mail' ) ) :
 
 			foreach ( (array) $addresses as $address ) {
 				try {
-					// Break $recipient into name and address parts if in the format "Foo <bar@baz.com>".
+					// Tách $recipient thành phần tên và địa chỉ nếu ở định dạng "Foo <bar@baz.com>".
 					$recipient_name = '';
 
 					if ( preg_match( '/(.*)<(.+)>/', $address, $matches ) ) {
@@ -461,50 +461,50 @@ if ( ! function_exists( 'wp_mail' ) ) :
 			}
 		}
 
-		// Set to use PHP's mail().
+		// Thiết lập sử dụng hàm mail() của PHP.
 		$phpmailer->isMail();
 
-		// Set Content-Type and charset.
+		// Thiết lập Content-Type và bộ mã ký tự.
 
-		// If we don't have a Content-Type from the input headers.
+		// Nếu chúng ta không có Content-Type từ các header đầu vào.
 		if ( ! isset( $content_type ) ) {
 			$content_type = 'text/plain';
 		}
 
 		/**
-		 * Filters the wp_mail() content type.
+		 * Lọc loại nội dung của wp_mail().
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param string $content_type Default wp_mail() content type.
+		 * @param string $content_type Loại nội dung mặc định của wp_mail().
 		 */
 		$content_type = apply_filters( 'wp_mail_content_type', $content_type );
 
 		$phpmailer->ContentType = $content_type;
 
-		// Set whether it's plaintext, depending on $content_type.
+		// Thiết lập có phải văn bản thuần hay không, tùy thuộc vào $content_type.
 		if ( 'text/html' === $content_type ) {
 			$phpmailer->isHTML( true );
 		}
 
-		// If we don't have a charset from the input headers.
+		// Nếu chúng ta không có bộ mã ký tự từ các header đầu vào.
 		if ( ! isset( $charset ) ) {
 			$charset = get_bloginfo( 'charset' );
 		}
 
 		/**
-		 * Filters the default wp_mail() charset.
+		 * Lọc bộ mã ký tự mặc định của wp_mail().
 		 *
 		 * @since 2.3.0
 		 *
-		 * @param string $charset Default email charset.
+		 * @param string $charset Bộ mã ký tự mặc định của email.
 		 */
 		$phpmailer->CharSet = apply_filters( 'wp_mail_charset', $charset );
 
-		// Set custom headers.
+		// Thiết lập các header tùy chỉnh.
 		if ( ! empty( $headers ) ) {
 			foreach ( (array) $headers as $name => $content ) {
-				// Only add custom headers not added automatically by PHPMailer.
+				// Chỉ thêm các header tùy chỉnh chưa được PHPMailer thêm tự động.
 				if ( ! in_array( $name, array( 'MIME-Version', 'X-Mailer' ), true ) ) {
 					try {
 						$phpmailer->addCustomHeader( sprintf( '%1$s: %2$s', $name, $content ) );
@@ -532,37 +532,37 @@ if ( ! function_exists( 'wp_mail' ) ) :
 		}
 
 		/**
-		 * Fires after PHPMailer is initialized.
+		 * Kích hoạt sau khi PHPMailer được khởi tạo.
 		 *
 		 * @since 2.2.0
 		 *
-		 * @param PHPMailer $phpmailer The PHPMailer instance (passed by reference).
+		 * @param PHPMailer $phpmailer Thể hiện PHPMailer (truyền theo tham chiếu).
 		 */
 		do_action_ref_array( 'phpmailer_init', array( &$phpmailer ) );
 
 		$mail_data = compact( 'to', 'subject', 'message', 'headers', 'attachments' );
 
-		// Send!
+		// Gửi!
 		try {
 			$send = $phpmailer->send();
 
 			/**
-			 * Fires after PHPMailer has successfully sent an email.
+			 * Kích hoạt sau khi PHPMailer đã gửi email thành công.
 			 *
-			 * The firing of this action does not necessarily mean that the recipient(s) received the
-			 * email successfully. It only means that the `send` method above was able to
-			 * process the request without any errors.
+			 * Việc kích hoạt hành động này không nhất thiết có nghĩa là người nhận đã nhận được
+			 * email thành công. Nó chỉ có nghĩa là phương thức `send` ở trên có thể
+			 * xử lý yêu cầu mà không gặp lỗi nào.
 			 *
 			 * @since 5.9.0
 			 *
 			 * @param array $mail_data {
-			 *     An array containing the email recipient(s), subject, message, headers, and attachments.
+			 *     Mảng chứa người nhận email, tiêu đề, tin nhắn, header và tệp đính kèm.
 			 *
-			 *     @type string[] $to          Email addresses to send message.
-			 *     @type string   $subject     Email subject.
-			 *     @type string   $message     Message contents.
-			 *     @type string[] $headers     Additional headers.
-			 *     @type string[] $attachments Paths to files to attach.
+			 *     @type string[] $to          Các địa chỉ email để gửi tin nhắn.
+			 *     @type string   $subject     Tiêu đề email.
+			 *     @type string   $message     Nội dung tin nhắn.
+			 *     @type string[] $headers     Các header bổ sung.
+			 *     @type string[] $attachments Đường dẫn đến các tệp đính kèm.
 			 * }
 			 */
 			do_action( 'wp_mail_succeeded', $mail_data );
@@ -572,12 +572,12 @@ if ( ! function_exists( 'wp_mail' ) ) :
 			$mail_data['phpmailer_exception_code'] = $e->getCode();
 
 			/**
-			 * Fires after a PHPMailer\PHPMailer\Exception is caught.
+			 * Kích hoạt sau khi bắt được PHPMailer\PHPMailer\Exception.
 			 *
 			 * @since 4.4.0
 			 *
-			 * @param WP_Error $error A WP_Error object with the PHPMailer\PHPMailer\Exception message, and an array
-			 *                        containing the mail recipient, subject, message, headers, and attachments.
+			 * @param WP_Error $error Đối tượng WP_Error với thông báo PHPMailer\PHPMailer\Exception, và mảng
+			 *                        chứa người nhận, tiêu đề, tin nhắn, header và tệp đính kèm.
 			 */
 			do_action( 'wp_mail_failed', new WP_Error( 'wp_mail_failed', $e->getMessage(), $mail_data ) );
 
@@ -588,15 +588,15 @@ endif;
 
 if ( ! function_exists( 'wp_authenticate' ) ) :
 	/**
-	 * Authenticates a user, confirming the login credentials are valid.
+	 * Xác thực người dùng, xác nhận thông tin đăng nhập hợp lệ.
 	 *
 	 * @since 2.5.0
-	 * @since 4.5.0 `$username` now accepts an email address.
+	 * @since 4.5.0 `$username` giờ chấp nhận địa chỉ email.
 	 *
-	 * @param string $username User's username or email address.
-	 * @param string $password User's password.
-	 * @return WP_User|WP_Error WP_User object if the credentials are valid,
-	 *                          otherwise WP_Error.
+	 * @param string $username Tên đăng nhập hoặc địa chỉ email của người dùng.
+	 * @param string $password Mật khẩu của người dùng.
+	 * @return WP_User|WP_Error Đối tượng WP_User nếu thông tin đăng nhập hợp lệ,
+	 *                          ngược lại là WP_Error.
 	 */
 	function wp_authenticate(
 		$username,
@@ -607,25 +607,25 @@ if ( ! function_exists( 'wp_authenticate' ) ) :
 		$password = trim( $password );
 
 		/**
-		 * Filters whether a set of user login credentials are valid.
+		 * Lọc xem thông tin đăng nhập của người dùng có hợp lệ hay không.
 		 *
-		 * A WP_User object is returned if the credentials authenticate a user.
-		 * WP_Error or null otherwise.
+		 * Đối tượng WP_User được trả về nếu thông tin đăng nhập xác thực người dùng thành công.
+		 * WP_Error hoặc null trong trường hợp ngược lại.
 		 *
 		 * @since 2.8.0
-		 * @since 4.5.0 `$username` now accepts an email address.
+		 * @since 4.5.0 `$username` giờ chấp nhận địa chỉ email.
 		 *
-		 * @param null|WP_User|WP_Error $user     WP_User if the user is authenticated.
-		 *                                        WP_Error or null otherwise.
-		 * @param string                $username Username or email address.
-		 * @param string                $password User password.
+		 * @param null|WP_User|WP_Error $user     WP_User nếu người dùng được xác thực.
+		 *                                        WP_Error hoặc null trong trường hợp ngược lại.
+		 * @param string                $username Tên đăng nhập hoặc địa chỉ email.
+		 * @param string                $password Mật khẩu người dùng.
 		 */
 		$user = apply_filters( 'authenticate', null, $username, $password );
 
 		if ( null === $user || false === $user ) {
 			/*
-			 * TODO: What should the error message be? (Or would these even happen?)
-			 * Only needed if all authentication handlers fail to return anything.
+			 * TODO: Thông báo lỗi nên là gì? (Hoặc liệu điều này có xảy ra không?)
+			 * Chỉ cần thiết nếu tất cả các trình xử lý xác thực đều không trả về gì.
 			 */
 			$user = new WP_Error( 'authentication_failed', __( '<strong>Error:</strong> Invalid username, email address or incorrect password.' ) );
 		}
@@ -636,14 +636,14 @@ if ( ! function_exists( 'wp_authenticate' ) ) :
 			$error = $user;
 
 			/**
-			 * Fires after a user login has failed.
+			 * Kích hoạt sau khi đăng nhập người dùng thất bại.
 			 *
 			 * @since 2.5.0
-			 * @since 4.5.0 The value of `$username` can now be an email address.
-			 * @since 5.4.0 The `$error` parameter was added.
+			 * @since 4.5.0 Giá trị của `$username` giờ có thể là địa chỉ email.
+			 * @since 5.4.0 Tham số `$error` đã được thêm vào.
 			 *
-			 * @param string   $username Username or email address.
-			 * @param WP_Error $error    A WP_Error object with the authentication failure details.
+			 * @param string   $username Tên đăng nhập hoặc địa chỉ email.
+			 * @param WP_Error $error    Đối tượng WP_Error chứa chi tiết lỗi xác thực.
 			 */
 			do_action( 'wp_login_failed', $username, $error );
 		}
@@ -654,7 +654,7 @@ endif;
 
 if ( ! function_exists( 'wp_logout' ) ) :
 	/**
-	 * Logs the current user out.
+	 * Đăng xuất người dùng hiện tại.
 	 *
 	 * @since 2.5.0
 	 */
@@ -666,12 +666,12 @@ if ( ! function_exists( 'wp_logout' ) ) :
 		wp_set_current_user( 0 );
 
 		/**
-		 * Fires after a user is logged out.
+		 * Kích hoạt sau khi người dùng đăng xuất.
 		 *
 		 * @since 1.5.0
-		 * @since 5.5.0 Added the `$user_id` parameter.
+		 * @since 5.5.0 Thêm tham số `$user_id`.
 		 *
-		 * @param int $user_id ID of the user that was logged out.
+		 * @param int $user_id ID của người dùng đã đăng xuất.
 		 */
 		do_action( 'wp_logout', $user_id );
 	}
@@ -679,34 +679,34 @@ endif;
 
 if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 	/**
-	 * Validates authentication cookie.
+	 * Xác thực cookie xác thực.
 	 *
-	 * The checks include making sure that the authentication cookie is set and
-	 * pulling in the contents (if $cookie is not used).
+	 * Các kiểm tra bao gồm đảm bảo rằng cookie xác thực đã được thiết lập và
+	 * lấy nội dung (nếu $cookie không được sử dụng).
 	 *
-	 * Makes sure the cookie is not expired. Verifies the hash in cookie is what is
-	 * should be and compares the two.
+	 * Đảm bảo cookie chưa hết hạn. Xác minh hash trong cookie đúng như
+	 * mong đợi và so sánh hai giá trị.
 	 *
 	 * @since 2.5.0
 	 *
 	 * @global int $login_grace_period
 	 *
-	 * @param string $cookie Optional. If used, will validate contents instead of cookie's.
-	 * @param string $scheme Optional. The cookie scheme to use: 'auth', 'secure_auth', or 'logged_in'.
-	 *                       Note: This does *not* default to 'auth' like other cookie functions.
-	 * @return int|false User ID if valid cookie, false if invalid.
+	 * @param string $cookie Tùy chọn. Nếu được sử dụng, sẽ xác thực nội dung thay vì cookie.
+	 * @param string $scheme Tùy chọn. Sơ đồ cookie để sử dụng: 'auth', 'secure_auth', hoặc 'logged_in'.
+	 *                       Lưu ý: Giá trị này *không* mặc định là 'auth' như các hàm cookie khác.
+	 * @return int|false ID người dùng nếu cookie hợp lệ, false nếu không hợp lệ.
 	 */
 	function wp_validate_auth_cookie( $cookie = '', $scheme = '' ) {
 		$cookie_elements = wp_parse_auth_cookie( $cookie, $scheme );
 		if ( ! $cookie_elements ) {
 			/**
-			 * Fires if an authentication cookie is malformed.
+			 * Kích hoạt nếu cookie xác thực bị sai định dạng.
 			 *
 			 * @since 2.7.0
 			 *
-			 * @param string $cookie Malformed auth cookie.
-			 * @param string $scheme Authentication scheme. Values include 'auth', 'secure_auth',
-			 *                       or 'logged_in'.
+			 * @param string $cookie Cookie xác thực bị sai định dạng.
+			 * @param string $scheme Sơ đồ xác thực. Các giá trị bao gồm 'auth', 'secure_auth',
+			 *                       hoặc 'logged_in'.
 			 */
 			do_action( 'auth_cookie_malformed', $cookie, $scheme );
 			return false;
@@ -720,27 +720,27 @@ if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 
 		$expired = (int) $expiration;
 
-		// Allow a grace period for POST and Ajax requests.
+		// Cho phép thời gian gia hạn cho các yêu cầu POST và Ajax.
 		if ( wp_doing_ajax() || 'POST' === $_SERVER['REQUEST_METHOD'] ) {
 			$expired += HOUR_IN_SECONDS;
 		}
 
-		// Quick check to see if an honest cookie has expired.
+		// Kiểm tra nhanh xem cookie hợp lệ đã hết hạn chưa.
 		if ( $expired < time() ) {
 			/**
-			 * Fires once an authentication cookie has expired.
+			 * Kích hoạt khi cookie xác thực đã hết hạn.
 			 *
 			 * @since 2.7.0
 			 *
 			 * @param string[] $cookie_elements {
-			 *     Authentication cookie components. None of the components should be assumed
-			 *     to be valid as they come directly from a client-provided cookie value.
+			 *     Các thành phần cookie xác thực. Không nên giả định bất kỳ thành phần nào
+			 *     là hợp lệ vì chúng đến trực tiếp từ giá trị cookie do client cung cấp.
 			 *
-			 *     @type string $username   User's username.
-			 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-			 *     @type string $token      User's session token used.
-			 *     @type string $hmac       The security hash for the cookie.
-			 *     @type string $scheme     The cookie scheme to use.
+			 *     @type string $username   Tên đăng nhập của người dùng.
+			 *     @type string $expiration Thời gian cookie hết hạn dưới dạng timestamp UNIX.
+			 *     @type string $token      Token phiên làm việc của người dùng được sử dụng.
+			 *     @type string $hmac       Hash bảo mật cho cookie.
+			 *     @type string $scheme     Sơ đồ cookie để sử dụng.
 			 * }
 			 */
 			do_action( 'auth_cookie_expired', $cookie_elements );
@@ -750,19 +750,19 @@ if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 		$user = get_user_by( 'login', $username );
 		if ( ! $user ) {
 			/**
-			 * Fires if a bad username is entered in the user authentication process.
+			 * Kích hoạt nếu tên đăng nhập không hợp lệ được nhập trong quá trình xác thực người dùng.
 			 *
 			 * @since 2.7.0
 			 *
 			 * @param string[] $cookie_elements {
-			 *     Authentication cookie components. None of the components should be assumed
-			 *     to be valid as they come directly from a client-provided cookie value.
+			 *     Các thành phần cookie xác thực. Không nên giả định bất kỳ thành phần nào
+			 *     là hợp lệ vì chúng đến trực tiếp từ giá trị cookie do client cung cấp.
 			 *
-			 *     @type string $username   User's username.
-			 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-			 *     @type string $token      User's session token used.
-			 *     @type string $hmac       The security hash for the cookie.
-			 *     @type string $scheme     The cookie scheme to use.
+			 *     @type string $username   Tên đăng nhập của người dùng.
+			 *     @type string $expiration Thời gian cookie hết hạn dưới dạng timestamp UNIX.
+			 *     @type string $token      Token phiên làm việc của người dùng được sử dụng.
+			 *     @type string $hmac       Hash bảo mật cho cookie.
+			 *     @type string $scheme     Sơ đồ cookie để sử dụng.
 			 * }
 			 */
 			do_action( 'auth_cookie_bad_username', $cookie_elements );
@@ -770,10 +770,10 @@ if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 		}
 
 		if ( str_starts_with( $user->user_pass, '$P$' ) || str_starts_with( $user->user_pass, '$2y$' ) ) {
-			// Retain previous behaviour of phpass or vanilla bcrypt hashed passwords.
+			// Giữ lại hành vi trước đây của mật khẩu được hash bằng phpass hoặc bcrypt thuần.
 			$pass_frag = substr( $user->user_pass, 8, 4 );
 		} else {
-			// Otherwise, use a substring from the end of the hash to avoid dealing with potentially long hash prefixes.
+			// Ngược lại, sử dụng chuỗi con từ cuối hash để tránh xử lý các tiền tố hash có thể dài.
 			$pass_frag = substr( $user->user_pass, -4 );
 		}
 
@@ -783,19 +783,19 @@ if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 
 		if ( ! hash_equals( $hash, $hmac ) ) {
 			/**
-			 * Fires if a bad authentication cookie hash is encountered.
+			 * Kích hoạt nếu gặp hash cookie xác thực không hợp lệ.
 			 *
 			 * @since 2.7.0
 			 *
 			 * @param string[] $cookie_elements {
-			 *     Authentication cookie components. None of the components should be assumed
-			 *     to be valid as they come directly from a client-provided cookie value.
+			 *     Các thành phần cookie xác thực. Không nên giả định bất kỳ thành phần nào
+			 *     là hợp lệ vì chúng đến trực tiếp từ giá trị cookie do client cung cấp.
 			 *
-			 *     @type string $username   User's username.
-			 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-			 *     @type string $token      User's session token used.
-			 *     @type string $hmac       The security hash for the cookie.
-			 *     @type string $scheme     The cookie scheme to use.
+			 *     @type string $username   Tên đăng nhập của người dùng.
+			 *     @type string $expiration Thời gian cookie hết hạn dưới dạng timestamp UNIX.
+			 *     @type string $token      Token phiên làm việc của người dùng được sử dụng.
+			 *     @type string $hmac       Hash bảo mật cho cookie.
+			 *     @type string $scheme     Sơ đồ cookie để sử dụng.
 			 * }
 			 */
 			do_action( 'auth_cookie_bad_hash', $cookie_elements );

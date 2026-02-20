@@ -1,47 +1,47 @@
 <?php
 /**
- * WordPress Upgrade API
+ * API Nâng cấp WordPress
  *
- * Most of the functions are pluggable and can be overwritten.
+ * Hầu hết các hàm đều có thể ghi đè (pluggable) và được viết lại.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
-/** Include user installation customization script. */
+/** Nạp script tùy chỉnh cài đặt của người dùng. */
 if ( file_exists( WP_CONTENT_DIR . '/install.php' ) ) {
 	require WP_CONTENT_DIR . '/install.php';
 }
 
-/** WordPress Administration API */
+/** API Quản trị WordPress */
 require_once ABSPATH . 'wp-admin/includes/admin.php';
 
-/** WordPress Schema API */
+/** API Schema WordPress */
 require_once ABSPATH . 'wp-admin/includes/schema.php';
 
 if ( ! function_exists( 'wp_install' ) ) :
 	/**
-	 * Installs the site.
+	 * Cài đặt trang web.
 	 *
-	 * Runs the required functions to set up and populate the database,
-	 * including primary admin user and initial options.
+	 * Chạy các hàm cần thiết để thiết lập và điền dữ liệu vào cơ sở dữ liệu,
+	 * bao gồm người dùng quản trị chính và các tùy chọn ban đầu.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $blog_title    Site title.
-	 * @param string $user_name     User's username.
-	 * @param string $user_email    User's email.
-	 * @param bool   $is_public     Whether the site is public.
-	 * @param string $deprecated    Optional. Not used.
-	 * @param string $user_password Optional. User's chosen password. Default empty (random password).
-	 * @param string $language      Optional. Language chosen. Default empty.
+	 * @param string $blog_title    Tiêu đề trang web.
+	 * @param string $user_name     Tên đăng nhập của người dùng.
+	 * @param string $user_email    Email của người dùng.
+	 * @param bool   $is_public     Trang web có công khai hay không.
+	 * @param string $deprecated    Tùy chọn. Không sử dụng.
+	 * @param string $user_password Tùy chọn. Mật khẩu do người dùng chọn. Mặc định rỗng (mật khẩu ngẫu nhiên).
+	 * @param string $language      Tùy chọn. Ngôn ngữ được chọn. Mặc định rỗng.
 	 * @return array {
-	 *     Data for the newly installed site.
+	 *     Dữ liệu cho trang web mới được cài đặt.
 	 *
-	 *     @type string $url              The URL of the site.
-	 *     @type int    $user_id          The ID of the site owner.
-	 *     @type string $password         The password of the site owner, if their user account didn't already exist.
-	 *     @type string $password_message The explanatory message regarding the password.
+	 *     @type string $url              URL của trang web.
+	 *     @type int    $user_id          ID của chủ sở hữu trang web.
+	 *     @type string $password         Mật khẩu của chủ sở hữu trang web, nếu tài khoản người dùng chưa tồn tại trước đó.
+	 *     @type string $password_message Thông báo giải thích liên quan đến mật khẩu.
 	 * }
 	 */
 	function wp_install(
@@ -63,10 +63,10 @@ if ( ! function_exists( 'wp_install' ) ) :
 		make_db_current_silent();
 
 		/*
-		 * Ensure update checks are delayed after installation.
+		 * Đảm bảo các kiểm tra cập nhật được trì hoãn sau khi cài đặt.
 		 *
-		 * This prevents users being presented with a maintenance mode screen
-		 * immediately after installation.
+		 * Điều này ngăn người dùng thấy màn hình chế độ bảo trì
+		 * ngay sau khi cài đặt.
 		 */
 		wp_unschedule_hook( 'wp_version_check' );
 		wp_unschedule_hook( 'wp_update_plugins' );
@@ -83,7 +83,7 @@ if ( ! function_exists( 'wp_install' ) ) :
 		update_option( 'admin_email', $user_email );
 		update_option( 'blog_public', $is_public );
 
-		// Freshness of site - in the future, this could get more specific about actions taken, perhaps.
+		// Độ mới của trang web - trong tương lai, điều này có thể cụ thể hơn về các hành động đã thực hiện.
 		update_option( 'fresh_site', 1, false );
 
 		if ( $language ) {
@@ -94,14 +94,14 @@ if ( ! function_exists( 'wp_install' ) ) :
 
 		update_option( 'siteurl', $guessurl );
 
-		// If not a public site, don't ping.
+		// Nếu không phải trang web công khai, không ping.
 		if ( ! $is_public ) {
 			update_option( 'default_pingback_flag', 0 );
 		}
 
 		/*
-		 * Create default user. If the user already exists, the user tables are
-		 * being shared among sites. Just set the role in that case.
+		 * Tạo người dùng mặc định. Nếu người dùng đã tồn tại, các bảng người dùng
+		 * đang được chia sẻ giữa các trang web. Chỉ cần đặt vai trò trong trường hợp đó.
 		 */
 		$user_id        = username_exists( $user_name );
 		$user_password  = trim( $user_password );
@@ -116,7 +116,7 @@ if ( ! function_exists( 'wp_install' ) ) :
 			$email_password = true;
 			$user_created   = true;
 		} elseif ( ! $user_id ) {
-			// Password has been provided.
+			// Mật khẩu đã được cung cấp.
 			$message      = '<em>' . __( 'Your chosen password.' ) . '</em>';
 			$user_id      = wp_create_user( $user_name, $user_password, $user_email );
 			$user_created = true;
@@ -143,11 +143,11 @@ if ( ! function_exists( 'wp_install' ) ) :
 		wp_cache_flush();
 
 		/**
-		 * Fires after a site is fully installed.
+		 * Kích hoạt sau khi trang web được cài đặt hoàn tất.
 		 *
 		 * @since 3.9.0
 		 *
-		 * @param WP_User $user The site owner.
+		 * @param WP_User $user Chủ sở hữu trang web.
 		 */
 		do_action( 'wp_install', $user );
 
@@ -162,23 +162,23 @@ endif;
 
 if ( ! function_exists( 'wp_install_defaults' ) ) :
 	/**
-	 * Creates the initial content for a newly-installed site.
+	 * Tạo nội dung ban đầu cho trang web mới được cài đặt.
 	 *
-	 * Adds the default "Uncategorized" category, the first post (with comment),
-	 * first page, and default widgets for default theme for the current version.
+	 * Thêm chuyên mục mặc định "Uncategorized", bài viết đầu tiên (kèm bình luận),
+	 * trang đầu tiên, và các widget mặc định cho theme mặc định của phiên bản hiện tại.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @global wpdb       $wpdb         WordPress database abstraction object.
-	 * @global WP_Rewrite $wp_rewrite   WordPress rewrite component.
-	 * @global string     $table_prefix The database table prefix.
+	 * @global wpdb       $wpdb         Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
+	 * @global WP_Rewrite $wp_rewrite   Thành phần viết lại URL của WordPress.
+	 * @global string     $table_prefix Tiền tố bảng cơ sở dữ liệu.
 	 *
-	 * @param int $user_id User ID.
+	 * @param int $user_id ID người dùng.
 	 */
 	function wp_install_defaults( $user_id ) {
 		global $wpdb, $wp_rewrite, $table_prefix;
 
-		// Default category.
+		// Chuyên mục mặc định.
 		$cat_name = __( 'Uncategorized' );
 		/* translators: Default category slug. */
 		$cat_slug = sanitize_title( _x( 'Uncategorized', 'Default category slug' ) );
@@ -206,7 +206,7 @@ if ( ! function_exists( 'wp_install_defaults' ) ) :
 		);
 		$cat_tt_id = $wpdb->insert_id;
 
-		// First post.
+		// Bài viết đầu tiên.
 		$now             = current_time( 'mysql' );
 		$now_gmt         = current_time( 'mysql', 1 );
 		$first_post_guid = get_option( 'home' ) . '/?p=1';
@@ -226,7 +226,7 @@ if ( ! function_exists( 'wp_install_defaults' ) ) :
 				sprintf( '<a href="%s">%s</a>', esc_url( network_home_url() ), get_network()->site_name )
 			);
 
-			// Back-compat for pre-4.4.
+			// Tương thích ngược cho phiên bản trước 4.4.
 			$first_post = str_replace( 'SITE_URL', esc_url( network_home_url() ), $first_post );
 			$first_post = str_replace( 'SITE_NAME', get_network()->site_name, $first_post );
 		} else {
@@ -269,7 +269,7 @@ if ( ! function_exists( 'wp_install_defaults' ) ) :
 			)
 		);
 
-		// Default comment.
+		// Bình luận mặc định.
 		if ( is_multisite() ) {
 			$first_comment_author = get_site_option( 'first_comment_author' );
 			$first_comment_email  = get_site_option( 'first_comment_email' );
@@ -304,7 +304,7 @@ Commenter avatars come from <a href="%s">Gravatar</a>.'
 			)
 		);
 
-		// First page.
+		// Trang đầu tiên.
 		if ( is_multisite() ) {
 			$first_page = get_site_option( 'first_page' );
 		}
@@ -370,9 +370,9 @@ Commenter avatars come from <a href="%s">Gravatar</a>.'
 			)
 		);
 
-		// Privacy Policy page.
+		// Trang Chính sách Bảo mật.
 		if ( is_multisite() ) {
-			// Disable by default unless the suggested content is provided.
+			// Tắt theo mặc định trừ khi nội dung gợi ý được cung cấp.
 			$privacy_policy_content = get_site_option( 'default_privacy_policy_content' );
 		} else {
 			if ( ! class_exists( 'WP_Privacy_Policy_Content' ) ) {
@@ -418,7 +418,7 @@ Commenter avatars come from <a href="%s">Gravatar</a>.'
 			update_option( 'wp_page_for_privacy_policy', 3 );
 		}
 
-		// Set up default widgets for default theme.
+		// Thiết lập các widget mặc định cho theme mặc định.
 		update_option(
 			'widget_block',
 			array(
@@ -454,20 +454,20 @@ Commenter avatars come from <a href="%s">Gravatar</a>.'
 		}
 
 		if ( is_multisite() ) {
-			// Flush rules to pick up the new page.
+			// Làm mới quy tắc rewrite để nhận diện trang mới.
 			$wp_rewrite->init();
 			$wp_rewrite->flush_rules();
 
 			$user = new WP_User( $user_id );
 			$wpdb->update( $wpdb->options, array( 'option_value' => $user->user_email ), array( 'option_name' => 'admin_email' ) );
 
-			// Remove all perms except for the login user.
+			// Xóa tất cả quyền trừ người dùng đang đăng nhập.
 			$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->usermeta WHERE user_id != %d AND meta_key = %s", $user_id, $table_prefix . 'user_level' ) );
 			$wpdb->query( $wpdb->prepare( "DELETE FROM $wpdb->usermeta WHERE user_id != %d AND meta_key = %s", $user_id, $table_prefix . 'capabilities' ) );
 
 			/*
-			 * Delete any caps that snuck into the previously active blog. (Hardcoded to blog 1 for now.)
-			 * TODO: Get previous_blog_id.
+			 * Xóa các quyền đã lọt vào blog đang hoạt động trước đó. (Hiện tại cố định là blog 1.)
+			 * TODO: Lấy previous_blog_id.
 			 */
 			if ( ! is_super_admin( $user_id ) && 1 !== $user_id ) {
 				$wpdb->delete(
@@ -483,31 +483,31 @@ Commenter avatars come from <a href="%s">Gravatar</a>.'
 endif;
 
 /**
- * Maybe enable pretty permalinks on installation.
+ * Có thể bật đường dẫn tĩnh đẹp khi cài đặt.
  *
- * If after enabling pretty permalinks don't work, fallback to query-string permalinks.
+ * Nếu sau khi bật đường dẫn tĩnh đẹp mà không hoạt động, chuyển sang đường dẫn dạng query-string.
  *
  * @since 4.2.0
  *
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @global WP_Rewrite $wp_rewrite Thành phần viết lại URL của WordPress.
  *
- * @return bool Whether pretty permalinks are enabled. False otherwise.
+ * @return bool Đường dẫn tĩnh đẹp có được bật hay không. False nếu không.
  */
 function wp_install_maybe_enable_pretty_permalinks() {
 	global $wp_rewrite;
 
-	// Bail if a permalink structure is already enabled.
+	// Thoát nếu cấu trúc đường dẫn tĩnh đã được bật.
 	if ( get_option( 'permalink_structure' ) ) {
 		return true;
 	}
 
 	/*
-	 * The Permalink structures to attempt.
+	 * Các cấu trúc đường dẫn tĩnh cần thử.
 	 *
-	 * The first is designed for mod_rewrite or nginx rewriting.
+	 * Cấu trúc đầu tiên được thiết kế cho mod_rewrite hoặc nginx rewriting.
 	 *
-	 * The second is PATHINFO-based permalinks for web server configurations
-	 * without a true rewrite module enabled.
+	 * Cấu trúc thứ hai là đường dẫn tĩnh dựa trên PATHINFO cho cấu hình máy chủ web
+	 * không có module rewrite thực sự được bật.
 	 */
 	$permalink_structures = array(
 		'/%year%/%monthnum%/%day%/%postname%/',
@@ -518,25 +518,25 @@ function wp_install_maybe_enable_pretty_permalinks() {
 		$wp_rewrite->set_permalink_structure( $permalink_structure );
 
 		/*
-		 * Flush rules with the hard option to force refresh of the web-server's
-		 * rewrite config file (e.g. .htaccess or web.config).
+		 * Làm mới quy tắc rewrite với tùy chọn cứng để buộc cập nhật lại
+		 * file cấu hình rewrite của máy chủ web (ví dụ: .htaccess hoặc web.config).
 		 */
 		$wp_rewrite->flush_rules( true );
 
 		$test_url = '';
 
-		// Test against a real WordPress post.
+		// Kiểm tra với một bài viết WordPress thực.
 		$first_post = get_page_by_path( sanitize_title( _x( 'hello-world', 'Default post slug' ) ), OBJECT, 'post' );
 		if ( $first_post ) {
 			$test_url = get_permalink( $first_post->ID );
 		}
 
 		/*
-		 * Send a request to the site, and check whether
-		 * the 'X-Pingback' header is returned as expected.
+		 * Gửi một yêu cầu đến trang web, và kiểm tra xem
+		 * header 'X-Pingback' có được trả về như mong đợi không.
 		 *
-		 * Uses wp_remote_get() instead of wp_remote_head() because web servers
-		 * can block head requests.
+		 * Sử dụng wp_remote_get() thay vì wp_remote_head() vì máy chủ web
+		 * có thể chặn yêu cầu HEAD.
 		 */
 		$response          = wp_remote_get( $test_url, array( 'timeout' => 5 ) );
 		$x_pingback_header = wp_remote_retrieve_header( $response, 'X-Pingback' );
@@ -548,8 +548,8 @@ function wp_install_maybe_enable_pretty_permalinks() {
 	}
 
 	/*
-	 * If it makes it this far, pretty permalinks failed.
-	 * Fallback to query-string permalinks.
+	 * Nếu đến được đây, đường dẫn tĩnh đẹp đã thất bại.
+	 * Chuyển sang đường dẫn dạng query-string.
 	 */
 	$wp_rewrite->set_permalink_structure( '' );
 	$wp_rewrite->flush_rules( true );
@@ -559,18 +559,18 @@ function wp_install_maybe_enable_pretty_permalinks() {
 
 if ( ! function_exists( 'wp_new_blog_notification' ) ) :
 	/**
-	 * Notifies the site admin that the installation of WordPress is complete.
+	 * Thông báo cho quản trị viên rằng việc cài đặt WordPress đã hoàn tất.
 	 *
-	 * Sends an email to the new administrator that the installation is complete
-	 * and provides them with a record of their login credentials.
+	 * Gửi email cho quản trị viên mới rằng việc cài đặt đã hoàn tất
+	 * và cung cấp cho họ bản ghi thông tin đăng nhập.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $blog_title Site title.
-	 * @param string $blog_url   Site URL.
-	 * @param int    $user_id    Administrator's user ID.
-	 * @param string $password   Administrator's password. Note that a placeholder message is
-	 *                           usually passed instead of the actual password.
+	 * @param string $blog_title Tiêu đề trang web.
+	 * @param string $blog_url   URL trang web.
+	 * @param int    $user_id    ID người dùng quản trị viên.
+	 * @param string $password   Mật khẩu quản trị viên. Lưu ý rằng thường một thông báo
+	 *                           giữ chỗ được truyền thay vì mật khẩu thực.
 	 */
 	function wp_new_blog_notification(
 		$blog_title,
@@ -617,23 +617,23 @@ https://wordpress.org/
 		);
 
 		/**
-		 * Filters the contents of the email sent to the site administrator when WordPress is installed.
+		 * Lọc nội dung email gửi cho quản trị viên khi WordPress được cài đặt.
 		 *
 		 * @since 5.6.0
 		 *
 		 * @param array $installed_email {
-		 *     Used to build wp_mail().
+		 *     Dùng để xây dựng wp_mail().
 		 *
-		 *     @type string $to      The email address of the recipient.
-		 *     @type string $subject The subject of the email.
-		 *     @type string $message The content of the email.
+		 *     @type string $to      Địa chỉ email người nhận.
+		 *     @type string $subject Tiêu đề email.
+		 *     @type string $message Nội dung email.
 		 *     @type string $headers Headers.
 		 * }
-		 * @param WP_User $user          The site administrator user object.
-		 * @param string  $blog_title    The site title.
-		 * @param string  $blog_url      The site URL.
-		 * @param string  $password      The site administrator's password. Note that a placeholder message
-		 *                               is usually passed instead of the user's actual password.
+		 * @param WP_User $user          Đối tượng người dùng quản trị viên.
+		 * @param string  $blog_title    Tiêu đề trang web.
+		 * @param string  $blog_url      URL trang web.
+		 * @param string  $password      Mật khẩu quản trị viên. Lưu ý rằng thường một thông báo
+		 *                               giữ chỗ được truyền thay vì mật khẩu thực của người dùng.
 		 */
 		$installed_email = apply_filters( 'wp_installed_email', $installed_email, $user, $blog_title, $blog_url, $password );
 
@@ -648,21 +648,21 @@ endif;
 
 if ( ! function_exists( 'wp_upgrade' ) ) :
 	/**
-	 * Runs WordPress Upgrade functions.
+	 * Chạy các hàm nâng cấp WordPress.
 	 *
-	 * Upgrades the database if needed during a site update.
+	 * Nâng cấp cơ sở dữ liệu nếu cần trong quá trình cập nhật trang web.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @global int $wp_current_db_version The old (current) database version.
-	 * @global int $wp_db_version         The new database version.
+	 * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+	 * @global int $wp_db_version         Phiên bản cơ sở dữ liệu mới.
 	 */
 	function wp_upgrade() {
 		global $wp_current_db_version, $wp_db_version;
 
 		$wp_current_db_version = (int) __get_option( 'db_version' );
 
-		// We are up to date. Nothing to do.
+		// Đã cập nhật. Không cần làm gì.
 		if ( $wp_db_version === $wp_current_db_version ) {
 			return;
 		}
@@ -689,28 +689,28 @@ if ( ! function_exists( 'wp_upgrade' ) ) :
 		delete_transient( 'wp_core_block_css_files' );
 
 		/**
-		 * Fires after a site is fully upgraded.
+		 * Kích hoạt sau khi trang web được nâng cấp hoàn toàn.
 		 *
 		 * @since 3.9.0
 		 *
-		 * @param int $wp_db_version         The new $wp_db_version.
-		 * @param int $wp_current_db_version The old (current) $wp_db_version.
+		 * @param int $wp_db_version         $wp_db_version mới.
+		 * @param int $wp_current_db_version $wp_db_version cũ (hiện tại).
 		 */
 		do_action( 'wp_upgrade', $wp_db_version, $wp_current_db_version );
 	}
 endif;
 
 /**
- * Functions to be called in installation and upgrade scripts.
+ * Các hàm được gọi trong script cài đặt và nâng cấp.
  *
- * Contains conditional checks to determine which upgrade scripts to run,
- * based on database version and WP version being updated-to.
+ * Chứa các kiểm tra có điều kiện để xác định script nâng cấp nào cần chạy,
+ * dựa trên phiên bản cơ sở dữ liệu và phiên bản WP đang được cập nhật.
  *
  * @ignore
  * @since 1.0.1
  *
- * @global int $wp_current_db_version The old (current) database version.
- * @global int $wp_db_version         The new database version.
+ * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global int $wp_db_version         Phiên bản cơ sở dữ liệu mới.
  */
 function upgrade_all() {
 	global $wp_current_db_version, $wp_db_version;
@@ -722,11 +722,11 @@ function upgrade_all() {
 		return;
 	}
 
-	// If the version is not set in the DB, try to guess the version.
+	// Nếu phiên bản chưa được đặt trong DB, thử đoán phiên bản.
 	if ( empty( $wp_current_db_version ) ) {
 		$wp_current_db_version = 0;
 
-		// If the template option exists, we have 1.5.
+		// Nếu tùy chọn template tồn tại, chúng ta đang ở phiên bản 1.5.
 		$template = __get_option( 'template' );
 		if ( ! empty( $template ) ) {
 			$wp_current_db_version = 2541;
@@ -895,17 +895,17 @@ function upgrade_all() {
 }
 
 /**
- * Execute changes made in WordPress 1.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 1.0.
  *
  * @ignore
  * @since 1.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_100() {
 	global $wpdb;
 
-	// Get the title and ID of every post, post_name to check if it already has a value.
+	// Lấy tiêu đề và ID của mỗi bài viết, post_name để kiểm tra xem đã có giá trị chưa.
 	$posts = $wpdb->get_results( "SELECT ID, post_title, post_name FROM $wpdb->posts WHERE post_name = ''" );
 	if ( $posts ) {
 		foreach ( $posts as $post ) {
@@ -944,9 +944,9 @@ function upgrade_100() {
 	$allposts = $wpdb->get_results( "SELECT ID, post_category FROM $wpdb->posts WHERE post_category != '0' $catwhere" );
 	if ( $allposts ) :
 		foreach ( $allposts as $post ) {
-			// Check to see if it's already been imported.
+			// Kiểm tra xem đã được nhập chưa.
 			$cat = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $wpdb->post2cat WHERE post_id = %d AND category_id = %d", $post->ID, $post->post_category ) );
-			if ( ! $cat && 0 !== (int) $post->post_category ) { // If there's no result.
+			if ( ! $cat && 0 !== (int) $post->post_category ) { // Nếu không có kết quả.
 				$wpdb->insert(
 					$wpdb->post2cat,
 					array(
@@ -960,12 +960,12 @@ function upgrade_100() {
 }
 
 /**
- * Execute changes made in WordPress 1.0.1.
+ * Thực thi các thay đổi được thực hiện trong WordPress 1.0.1.
  *
  * @ignore
  * @since 1.0.1
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_101() {
 	global $wpdb;

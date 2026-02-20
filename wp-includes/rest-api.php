@@ -320,7 +320,7 @@ function create_initial_rest_routes() {
 	$controller = new WP_REST_Application_Passwords_Controller();
 	$controller->register_routes();
 
-	// Comments.
+	// Bình luận.
 	$controller = new WP_REST_Comments_Controller();
 	$controller->register_routes();
 
@@ -331,106 +331,106 @@ function create_initial_rest_routes() {
 	);
 
 	/**
-	 * Filters the search handlers to use in the REST search controller.
+	 * Lọc các trình xử lý tìm kiếm để sử dụng trong bộ điều khiển tìm kiếm REST.
 	 *
 	 * @since 5.0.0
 	 *
-	 * @param array $search_handlers List of search handlers to use in the controller. Each search
-	 *                               handler instance must extend the `WP_REST_Search_Handler` class.
-	 *                               Default is only a handler for posts.
+	 * @param array $search_handlers Danh sách các trình xử lý tìm kiếm để sử dụng trong bộ điều khiển. Mỗi thực thể
+	 *                               trình xử lý tìm kiếm phải mở rộng lớp `WP_REST_Search_Handler`.
+	 *                               Mặc định chỉ có trình xử lý cho bài viết.
 	 */
 	$search_handlers = apply_filters( 'wp_rest_search_handlers', $search_handlers );
 
 	$controller = new WP_REST_Search_Controller( $search_handlers );
 	$controller->register_routes();
 
-	// Block Renderer.
+	// Bộ render khối.
 	$controller = new WP_REST_Block_Renderer_Controller();
 	$controller->register_routes();
 
-	// Block Types.
+	// Loại khối.
 	$controller = new WP_REST_Block_Types_Controller();
 	$controller->register_routes();
 
-	// Settings.
+	// Cài đặt.
 	$controller = new WP_REST_Settings_Controller();
 	$controller->register_routes();
 
-	// Themes.
+	// Giao diện.
 	$controller = new WP_REST_Themes_Controller();
 	$controller->register_routes();
 
-	// Plugins.
+	// Plugin.
 	$controller = new WP_REST_Plugins_Controller();
 	$controller->register_routes();
 
-	// Sidebars.
+	// Thanh bên.
 	$controller = new WP_REST_Sidebars_Controller();
 	$controller->register_routes();
 
-	// Widget Types.
+	// Loại widget.
 	$controller = new WP_REST_Widget_Types_Controller();
 	$controller->register_routes();
 
-	// Widgets.
+	// Widget.
 	$controller = new WP_REST_Widgets_Controller();
 	$controller->register_routes();
 
-	// Block Directory.
+	// Thư mục khối.
 	$controller = new WP_REST_Block_Directory_Controller();
 	$controller->register_routes();
 
-	// Pattern Directory.
+	// Thư mục mẫu.
 	$controller = new WP_REST_Pattern_Directory_Controller();
 	$controller->register_routes();
 
-	// Block Patterns.
+	// Mẫu khối.
 	$controller = new WP_REST_Block_Patterns_Controller();
 	$controller->register_routes();
 
-	// Block Pattern Categories.
+	// Danh mục mẫu khối.
 	$controller = new WP_REST_Block_Pattern_Categories_Controller();
 	$controller->register_routes();
 
-	// Site Health.
+	// Sức khỏe trang web.
 	$site_health = WP_Site_Health::get_instance();
 	$controller  = new WP_REST_Site_Health_Controller( $site_health );
 	$controller->register_routes();
 
-	// URL Details.
+	// Chi tiết URL.
 	$controller = new WP_REST_URL_Details_Controller();
 	$controller->register_routes();
 
-	// Menu Locations.
+	// Vị trí menu.
 	$controller = new WP_REST_Menu_Locations_Controller();
 	$controller->register_routes();
 
-	// Site Editor Export.
+	// Xuất trình soạn thảo trang web.
 	$controller = new WP_REST_Edit_Site_Export_Controller();
 	$controller->register_routes();
 
-	// Navigation Fallback.
+	// Điều hướng dự phòng.
 	$controller = new WP_REST_Navigation_Fallback_Controller();
 	$controller->register_routes();
 
-	// Font Collections.
+	// Bộ sưu tập phông chữ.
 	$font_collections_controller = new WP_REST_Font_Collections_Controller();
 	$font_collections_controller->register_routes();
 }
 
 /**
- * Loads the REST API.
+ * Tải REST API.
  *
  * @since 4.4.0
  *
- * @global WP $wp Current WordPress environment instance.
+ * @global WP $wp Thực thể môi trường WordPress hiện tại.
  */
 function rest_api_loaded() {
 	if ( empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
 		return;
 	}
 
-	// Return an error message if query_var is not a string.
+	// Trả về thông báo lỗi nếu query_var không phải chuỗi.
 	if ( ! is_string( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
 		$rest_type_error = new WP_Error(
 			'rest_path_invalid_type',
@@ -441,59 +441,59 @@ function rest_api_loaded() {
 	}
 
 	/**
-	 * Whether this is a REST Request.
+	 * Đây có phải là yêu cầu REST không.
 	 *
 	 * @since 4.4.0
 	 * @var bool
 	 */
 	define( 'REST_REQUEST', true );
 
-	// Initialize the server.
+	// Khởi tạo server.
 	$server = rest_get_server();
 
-	// Fire off the request.
+	// Thực thi yêu cầu.
 	$route = untrailingslashit( $GLOBALS['wp']->query_vars['rest_route'] );
 	if ( empty( $route ) ) {
 		$route = '/';
 	}
 	$server->serve_request( $route );
 
-	// We're done.
+	// Hoàn tất.
 	die();
 }
 
 /**
- * Retrieves the URL prefix for any API resource.
+ * Lấy tiền tố URL cho bất kỳ tài nguyên API nào.
  *
  * @since 4.4.0
  *
- * @return string Prefix.
+ * @return string Tiền tố.
  */
 function rest_get_url_prefix() {
 	/**
-	 * Filters the REST URL prefix.
+	 * Lọc tiền tố URL REST.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $prefix URL prefix. Default 'wp-json'.
+	 * @param string $prefix Tiền tố URL. Mặc định 'wp-json'.
 	 */
 	return apply_filters( 'rest_url_prefix', 'wp-json' );
 }
 
 /**
- * Retrieves the URL to a REST endpoint on a site.
+ * Lấy URL đến endpoint REST trên một trang web.
  *
- * Note: The returned URL is NOT escaped.
+ * Lưu ý: URL trả về KHÔNG được escape.
  *
  * @since 4.4.0
  *
- * @todo Check if this is even necessary
- * @global WP_Rewrite $wp_rewrite WordPress rewrite component.
+ * @todo Kiểm tra xem điều này có thực sự cần thiết không
+ * @global WP_Rewrite $wp_rewrite Thành phần rewrite của WordPress.
  *
- * @param int|null $blog_id Optional. Blog ID. Default of null returns URL for current blog.
- * @param string   $path    Optional. REST route. Default '/'.
- * @param string   $scheme  Optional. Sanitization scheme. Default 'rest'.
- * @return string Full URL to the endpoint.
+ * @param int|null $blog_id Tùy chọn. ID blog. Mặc định null trả về URL cho blog hiện tại.
+ * @param string   $path    Tùy chọn. Route REST. Mặc định '/'.
+ * @param string   $scheme  Tùy chọn. Kiểu làm sạch. Mặc định 'rest'.
+ * @return string URL đầy đủ đến endpoint.
  */
 function get_rest_url( $blog_id = null, $path = '/', $scheme = 'rest' ) {
 	if ( empty( $path ) ) {
@@ -515,8 +515,8 @@ function get_rest_url( $blog_id = null, $path = '/', $scheme = 'rest' ) {
 	} else {
 		$url = trailingslashit( get_home_url( $blog_id, '', $scheme ) );
 		/*
-		 * nginx only allows HTTP/1.0 methods when redirecting from / to /index.php.
-		 * To work around this, we manually add index.php to the URL, avoiding the redirect.
+		 * nginx chỉ cho phép các phương thức HTTP/1.0 khi chuyển hướng từ / sang /index.php.
+		 * Để giải quyết vấn đề này, chúng ta thêm index.php vào URL thủ công, tránh chuyển hướng.
 		 */
 		if ( ! str_ends_with( $url, 'index.php' ) ) {
 			$url .= 'index.php';
@@ -526,7 +526,7 @@ function get_rest_url( $blog_id = null, $path = '/', $scheme = 'rest' ) {
 	}
 
 	if ( is_ssl() && isset( $_SERVER['SERVER_NAME'] ) ) {
-		// If the current host is the same as the REST URL host, force the REST URL scheme to HTTPS.
+		// Nếu host hiện tại giống với host URL REST, buộc kiểu URL REST sang HTTPS.
 		if ( parse_url( get_home_url( $blog_id ), PHP_URL_HOST ) === $_SERVER['SERVER_NAME'] ) {
 			$url = set_url_scheme( $url, 'https' );
 		}
@@ -534,52 +534,52 @@ function get_rest_url( $blog_id = null, $path = '/', $scheme = 'rest' ) {
 
 	if ( is_admin() && force_ssl_admin() ) {
 		/*
-		 * In this situation the home URL may be http:, and `is_ssl()` may be false,
-		 * but the admin is served over https: (one way or another), so REST API usage
-		 * will be blocked by browsers unless it is also served over HTTPS.
+		 * Trong trường hợp này URL trang chủ có thể là http:, và `is_ssl()` có thể là false,
+		 * nhưng trang quản trị được phục vụ qua https: (bằng cách này hay cách khác), nên việc sử dụng REST API
+		 * sẽ bị trình duyệt chặn trừ khi nó cũng được phục vụ qua HTTPS.
 		 */
 		$url = set_url_scheme( $url, 'https' );
 	}
 
 	/**
-	 * Filters the REST URL.
+	 * Lọc URL REST.
 	 *
-	 * Use this filter to adjust the url returned by the get_rest_url() function.
+	 * Sử dụng bộ lọc này để điều chỉnh url trả về bởi hàm get_rest_url().
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string   $url     REST URL.
-	 * @param string   $path    REST route.
-	 * @param int|null $blog_id Blog ID.
-	 * @param string   $scheme  Sanitization scheme.
+	 * @param string   $url     URL REST.
+	 * @param string   $path    Route REST.
+	 * @param int|null $blog_id ID blog.
+	 * @param string   $scheme  Kiểu làm sạch.
 	 */
 	return apply_filters( 'rest_url', $url, $path, $blog_id, $scheme );
 }
 
 /**
- * Retrieves the URL to a REST endpoint.
+ * Lấy URL đến endpoint REST.
  *
- * Note: The returned URL is NOT escaped.
+ * Lưu ý: URL trả về KHÔNG được escape.
  *
  * @since 4.4.0
  *
- * @param string $path   Optional. REST route. Default empty.
- * @param string $scheme Optional. Sanitization scheme. Default 'rest'.
- * @return string Full URL to the endpoint.
+ * @param string $path   Tùy chọn. Route REST. Mặc định rỗng.
+ * @param string $scheme Tùy chọn. Kiểu làm sạch. Mặc định 'rest'.
+ * @return string URL đầy đủ đến endpoint.
  */
 function rest_url( $path = '', $scheme = 'rest' ) {
 	return get_rest_url( null, $path, $scheme );
 }
 
 /**
- * Do a REST request.
+ * Thực hiện một yêu cầu REST.
  *
- * Used primarily to route internal requests through WP_REST_Server.
+ * Chủ yếu được sử dụng để định tuyến các yêu cầu nội bộ qua WP_REST_Server.
  *
  * @since 4.4.0
  *
- * @param WP_REST_Request|string $request Request.
- * @return WP_REST_Response REST response.
+ * @param WP_REST_Request|string $request Yêu cầu.
+ * @return WP_REST_Response Phản hồi REST.
  */
 function rest_do_request( $request ) {
 	$request = rest_ensure_request( $request );
@@ -587,15 +587,15 @@ function rest_do_request( $request ) {
 }
 
 /**
- * Retrieves the current REST server instance.
+ * Lấy thực thể máy chủ REST hiện tại.
  *
- * Instantiates a new instance if none exists already.
+ * Khởi tạo thực thể mới nếu chưa tồn tại.
  *
  * @since 4.5.0
  *
- * @global WP_REST_Server $wp_rest_server REST server instance.
+ * @global WP_REST_Server $wp_rest_server Thực thể máy chủ REST.
  *
- * @return WP_REST_Server REST server instance.
+ * @return WP_REST_Server Thực thể máy chủ REST.
  */
 function rest_get_server() {
 	/* @var WP_REST_Server $wp_rest_server */
@@ -603,27 +603,27 @@ function rest_get_server() {
 
 	if ( empty( $wp_rest_server ) ) {
 		/**
-		 * Filters the REST Server Class.
+		 * Lọc lớp máy chủ REST.
 		 *
-		 * This filter allows you to adjust the server class used by the REST API, using a
-		 * different class to handle requests.
+		 * Bộ lọc này cho phép bạn thay đổi lớp máy chủ được sử dụng bởi REST API, sử dụng một
+		 * lớp khác để xử lý các yêu cầu.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param string $class_name The name of the server class. Default 'WP_REST_Server'.
+		 * @param string $class_name Tên lớp máy chủ. Mặc định 'WP_REST_Server'.
 		 */
 		$wp_rest_server_class = apply_filters( 'wp_rest_server_class', 'WP_REST_Server' );
 		$wp_rest_server       = new $wp_rest_server_class();
 
 		/**
-		 * Fires when preparing to serve a REST API request.
+		 * Kích hoạt khi chuẩn bị phục vụ yêu cầu REST API.
 		 *
-		 * Endpoint objects should be created and register their hooks on this action rather
-		 * than another action to ensure they're only loaded when needed.
+		 * Các đối tượng endpoint nên được tạo và đăng ký hook của chúng trên action này thay vì
+		 * action khác để đảm bảo chúng chỉ được tải khi cần thiết.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param WP_REST_Server $wp_rest_server Server object.
+		 * @param WP_REST_Server $wp_rest_server Đối tượng máy chủ.
 		 */
 		do_action( 'rest_api_init', $wp_rest_server );
 	}
@@ -632,13 +632,13 @@ function rest_get_server() {
 }
 
 /**
- * Ensures request arguments are a request object (for consistency).
+ * Đảm bảo các tham số yêu cầu là một đối tượng yêu cầu (để nhất quán).
  *
  * @since 4.4.0
- * @since 5.3.0 Accept string argument for the request path.
+ * @since 5.3.0 Chấp nhận tham số chuỗi cho đường dẫn yêu cầu.
  *
- * @param array|string|WP_REST_Request $request Request to check.
- * @return WP_REST_Request REST request instance.
+ * @param array|string|WP_REST_Request $request Yêu cầu cần kiểm tra.
+ * @return WP_REST_Request Thực thể yêu cầu REST.
  */
 function rest_ensure_request( $request ) {
 	if ( $request instanceof WP_REST_Request ) {
@@ -653,18 +653,18 @@ function rest_ensure_request( $request ) {
 }
 
 /**
- * Ensures a REST response is a response object (for consistency).
+ * Đảm bảo phản hồi REST là một đối tượng phản hồi (để nhất quán).
  *
- * This implements WP_REST_Response, allowing usage of `set_status`/`header`/etc
- * without needing to double-check the object. Will also allow WP_Error to indicate error
- * responses, so users should immediately check for this value.
+ * Hàm này triển khai WP_REST_Response, cho phép sử dụng `set_status`/`header`/v.v.
+ * mà không cần kiểm tra lại đối tượng. Cũng cho phép WP_Error chỉ ra phản hồi lỗi,
+ * nên người dùng cần kiểm tra giá trị này ngay lập tức.
  *
  * @since 4.4.0
  *
- * @param WP_REST_Response|WP_Error|WP_HTTP_Response|mixed $response Response to check.
- * @return WP_REST_Response|WP_Error If response generated an error, WP_Error, if response
- *                                   is already an instance, WP_REST_Response, otherwise
- *                                   returns a new WP_REST_Response instance.
+ * @param WP_REST_Response|WP_Error|WP_HTTP_Response|mixed $response Phản hồi cần kiểm tra.
+ * @return WP_REST_Response|WP_Error Nếu phản hồi tạo ra lỗi, WP_Error, nếu phản hồi
+ *                                   đã là thực thể, WP_REST_Response, ngược lại
+ *                                   trả về thực thể WP_REST_Response mới.
  */
 function rest_ensure_response( $response ) {
 	if ( is_wp_error( $response ) ) {
@@ -676,8 +676,8 @@ function rest_ensure_response( $response ) {
 	}
 
 	/*
-	 * While WP_HTTP_Response is the base class of WP_REST_Response, it doesn't provide
-	 * all the required methods used in WP_REST_Server::dispatch().
+	 * Mặc dù WP_HTTP_Response là lớp cơ sở của WP_REST_Response, nó không cung cấp
+	 * tất cả các phương thức cần thiết được sử dụng trong WP_REST_Server::dispatch().
 	 */
 	if ( $response instanceof WP_HTTP_Response ) {
 		return new WP_REST_Response(

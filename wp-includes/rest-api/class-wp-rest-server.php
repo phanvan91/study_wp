@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Server class
+ * REST API: Lớp WP_REST_Server
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class used to implement the WordPress REST API server.
+ * Lớp lõi dùng để triển khai máy chủ REST API của WordPress.
  *
  * @since 4.4.0
  */
@@ -16,7 +16,7 @@
 class WP_REST_Server {
 
 	/**
-	 * Alias for GET transport method.
+	 * Bí danh cho phương thức truyền tải GET.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -24,7 +24,7 @@ class WP_REST_Server {
 	const READABLE = 'GET';
 
 	/**
-	 * Alias for POST transport method.
+	 * Bí danh cho phương thức truyền tải POST.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -32,7 +32,7 @@ class WP_REST_Server {
 	const CREATABLE = 'POST';
 
 	/**
-	 * Alias for POST, PUT, PATCH transport methods together.
+	 * Bí danh cho các phương thức truyền tải POST, PUT, PATCH kết hợp.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -40,7 +40,7 @@ class WP_REST_Server {
 	const EDITABLE = 'POST, PUT, PATCH';
 
 	/**
-	 * Alias for DELETE transport method.
+	 * Bí danh cho phương thức truyền tải DELETE.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -48,7 +48,7 @@ class WP_REST_Server {
 	const DELETABLE = 'DELETE';
 
 	/**
-	 * Alias for GET, POST, PUT, PATCH & DELETE transport methods together.
+	 * Bí danh cho các phương thức truyền tải GET, POST, PUT, PATCH & DELETE kết hợp.
 	 *
 	 * @since 4.4.0
 	 * @var string
@@ -56,7 +56,7 @@ class WP_REST_Server {
 	const ALLMETHODS = 'GET, POST, PUT, PATCH, DELETE';
 
 	/**
-	 * Namespaces registered to the server.
+	 * Các namespace đã đăng ký với máy chủ.
 	 *
 	 * @since 4.4.0
 	 * @var array
@@ -64,7 +64,7 @@ class WP_REST_Server {
 	protected $namespaces = array();
 
 	/**
-	 * Endpoints registered to the server.
+	 * Các endpoint đã đăng ký với máy chủ.
 	 *
 	 * @since 4.4.0
 	 * @var array
@@ -72,7 +72,7 @@ class WP_REST_Server {
 	protected $endpoints = array();
 
 	/**
-	 * Options defined for the routes.
+	 * Các tùy chọn được định nghĩa cho các route.
 	 *
 	 * @since 4.4.0
 	 * @var array
@@ -80,7 +80,7 @@ class WP_REST_Server {
 	protected $route_options = array();
 
 	/**
-	 * Caches embedded requests.
+	 * Bộ nhớ đệm cho các yêu cầu nhúng.
 	 *
 	 * @since 5.4.0
 	 * @var array
@@ -88,7 +88,7 @@ class WP_REST_Server {
 	protected $embed_cache = array();
 
 	/**
-	 * Stores request objects that are currently being handled.
+	 * Lưu trữ các đối tượng yêu cầu đang được xử lý.
 	 *
 	 * @since 6.5.0
 	 * @var array
@@ -96,13 +96,13 @@ class WP_REST_Server {
 	protected $dispatching_requests = array();
 
 	/**
-	 * Instantiates the REST server.
+	 * Khởi tạo máy chủ REST.
 	 *
 	 * @since 4.4.0
 	 */
 	public function __construct() {
 		$this->endpoints = array(
-			// Meta endpoints.
+			// Các endpoint meta.
 			'/'         => array(
 				'callback' => array( $this, 'get_index' ),
 				'methods'  => 'GET',
@@ -162,72 +162,70 @@ class WP_REST_Server {
 
 
 	/**
-	 * Checks the authentication headers if supplied.
+	 * Kiểm tra các header xác thực nếu được cung cấp.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return WP_Error|null|true WP_Error indicates unsuccessful login, null indicates successful
-	 *                            or no authentication provided
+	 * @return WP_Error|null|true WP_Error cho biết đăng nhập không thành công, null cho biết thành công
+	 *                            hoặc không có xác thực nào được cung cấp
 	 */
 	public function check_authentication() {
 		/**
-		 * Filters REST API authentication errors.
+		 * Lọc các lỗi xác thực REST API.
 		 *
-		 * This is used to pass a WP_Error from an authentication method back to
-		 * the API.
+		 * Được sử dụng để truyền WP_Error từ phương thức xác thực trở lại API.
 		 *
-		 * Authentication methods should check first if they're being used, as
-		 * multiple authentication methods can be enabled on a site (cookies,
-		 * HTTP basic auth, OAuth). If the authentication method hooked in is
-		 * not actually being attempted, null should be returned to indicate
-		 * another authentication method should check instead. Similarly,
-		 * callbacks should ensure the value is `null` before checking for
-		 * errors.
+		 * Các phương thức xác thực nên kiểm tra trước xem chúng có đang được sử dụng không,
+		 * vì nhiều phương thức xác thực có thể được kích hoạt trên một trang web (cookies,
+		 * HTTP basic auth, OAuth). Nếu phương thức xác thực được hook vào thực tế không
+		 * đang được thử, nên trả về null để chỉ ra rằng phương thức xác thực khác
+		 * nên kiểm tra thay thế. Tương tự, các callback nên đảm bảo giá trị là `null`
+		 * trước khi kiểm tra lỗi.
 		 *
-		 * A WP_Error instance can be returned if an error occurs, and this should
-		 * match the format used by API methods internally (that is, the `status`
-		 * data should be used). A callback can return `true` to indicate that
-		 * the authentication method was used, and it succeeded.
+		 * Một instance WP_Error có thể được trả về nếu có lỗi xảy ra, và nó nên
+		 * phù hợp với định dạng được sử dụng bên trong các phương thức API (tức là,
+		 * dữ liệu `status` nên được sử dụng). Một callback có thể trả về `true` để chỉ ra rằng
+		 * phương thức xác thực đã được sử dụng và thành công.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param WP_Error|null|true $errors WP_Error if authentication error, null if authentication
-		 *                                   method wasn't used, true if authentication succeeded.
+		 * @param WP_Error|null|true $errors WP_Error nếu lỗi xác thực, null nếu phương thức
+		 *                                   xác thực không được sử dụng, true nếu xác thực thành công.
 		 */
 		return apply_filters( 'rest_authentication_errors', null );
 	}
 
 	/**
-	 * Converts an error to a response object.
+	 * Chuyển đổi lỗi thành đối tượng phản hồi.
 	 *
-	 * This iterates over all error codes and messages to change it into a flat
-	 * array. This enables simpler client behavior, as it is represented as a
-	 * list in JSON rather than an object/map.
+	 * Phương thức này lặp qua tất cả mã lỗi và thông báo để chuyển thành mảng
+	 * phẳng. Điều này cho phép hành vi phía client đơn giản hơn, vì nó được biểu diễn
+	 * dưới dạng danh sách trong JSON thay vì object/map.
 	 *
 	 * @since 4.4.0
-	 * @since 5.7.0 Converted to a wrapper of {@see rest_convert_error_to_response()}.
+	 * @since 5.7.0 Đã chuyển thành wrapper của {@see rest_convert_error_to_response()}.
 	 *
-	 * @param WP_Error $error WP_Error instance.
-	 * @return WP_REST_Response List of associative arrays with code and message keys.
+	 * @param WP_Error $error Instance WP_Error.
+	 * @return WP_REST_Response Danh sách các mảng kết hợp với khóa code và message.
 	 */
 	protected function error_to_response( $error ) {
 		return rest_convert_error_to_response( $error );
 	}
 
 	/**
-	 * Retrieves an appropriate error representation in JSON.
+	 * Lấy biểu diễn lỗi phù hợp dạng JSON.
 	 *
-	 * Note: This should only be used in WP_REST_Server::serve_request(), as it
-	 * cannot handle WP_Error internally. All callbacks and other internal methods
-	 * should instead return a WP_Error with the data set to an array that includes
-	 * a 'status' key, with the value being the HTTP status to send.
+	 * Lưu ý: Chỉ nên sử dụng phương thức này trong WP_REST_Server::serve_request(), vì nó
+	 * không thể xử lý WP_Error nội bộ. Tất cả callback và phương thức nội bộ khác
+	 * nên trả về WP_Error với dữ liệu được thiết lập thành mảng bao gồm
+	 * khóa 'status', với giá trị là mã trạng thái HTTP cần gửi.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $code    WP_Error-style code.
-	 * @param string $message Human-readable message.
-	 * @param int    $status  Optional. HTTP status code to send. Default null.
-	 * @return string JSON representation of the error
+	 * @param string $code    Mã kiểu WP_Error.
+	 * @param string $message Thông báo con người đọc được.
+	 * @param int    $status  Tùy chọn. Mã trạng thái HTTP cần gửi. Mặc định null.
+	 * @return string Biểu diễn JSON của lỗi
 	 */
 	protected function json_error( $code, $message, $status = null ) {
 		if ( $status ) {
@@ -240,13 +238,13 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Gets the encoding options passed to {@see wp_json_encode}.
+	 * Lấy các tùy chọn mã hóa được truyền cho {@see wp_json_encode}.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @param \WP_REST_Request $request The current request object.
+	 * @param \WP_REST_Request $request Đối tượng yêu cầu hiện tại.
 	 *
-	 * @return int The JSON encode options.
+	 * @return int Các tùy chọn mã hóa JSON.
 	 */
 	protected function get_json_encode_options( WP_REST_Request $request ) {
 		$options = 0;
@@ -256,56 +254,56 @@ class WP_REST_Server {
 		}
 
 		/**
-		 * Filters the JSON encoding options used to send the REST API response.
+		 * Lọc các tùy chọn mã hóa JSON dùng để gửi phản hồi REST API.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param int $options             JSON encoding options {@see json_encode()}.
-		 * @param WP_REST_Request $request Current request object.
+		 * @param int $options             Các tùy chọn mã hóa JSON {@see json_encode()}.
+		 * @param WP_REST_Request $request Đối tượng yêu cầu hiện tại.
 		 */
 		return apply_filters( 'rest_json_encode_options', $options, $request );
 	}
 
 	/**
-	 * Handles serving a REST API request.
+	 * Xử lý phục vụ một yêu cầu REST API.
 	 *
-	 * Matches the current server URI to a route and runs the first matching
-	 * callback then outputs a JSON representation of the returned value.
+	 * Khớp URI máy chủ hiện tại với một route và chạy callback khớp đầu tiên
+	 * sau đó xuất biểu diễn JSON của giá trị trả về.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @see WP_REST_Server::dispatch()
 	 *
-	 * @global WP_User $current_user The currently authenticated user.
+	 * @global WP_User $current_user Người dùng đang được xác thực.
 	 *
-	 * @param string $path Optional. The request route. If not set, `$_SERVER['PATH_INFO']` will be used.
-	 *                     Default null.
-	 * @return null|false Null if not served and a HEAD request, false otherwise.
+	 * @param string $path Tùy chọn. Route yêu cầu. Nếu không thiết lập, `$_SERVER['PATH_INFO']` sẽ được sử dụng.
+	 *                     Mặc định null.
+	 * @return null|false Null nếu không phục vụ và là yêu cầu HEAD, false trong trường hợp khác.
 	 */
 	public function serve_request( $path = null ) {
-		/* @var WP_User|null $current_user */
+		/* @var WP_User|null $current_user Người dùng hiện tại */
 		global $current_user;
 
 		if ( $current_user instanceof WP_User && ! $current_user->exists() ) {
 			/*
-			 * If there is no current user authenticated via other means, clear
-			 * the cached lack of user, so that an authenticate check can set it
-			 * properly.
+			 * Nếu không có người dùng hiện tại được xác thực qua phương thức khác,
+			 * xóa bộ nhớ đệm thiếu người dùng, để kiểm tra xác thực có thể thiết lập
+			 * đúng cách.
 			 *
-			 * This is done because for authentications such as Application
-			 * Passwords, we don't want it to be accepted unless the current HTTP
-			 * request is a REST API request, which can't always be identified early
-			 * enough in evaluation.
+			 * Điều này được thực hiện vì đối với các phương thức xác thực như Application
+			 * Passwords, chúng ta không muốn chấp nhận trừ khi yêu cầu HTTP hiện tại
+			 * là yêu cầu REST API, điều mà không phải lúc nào cũng có thể xác định đủ sớm
+			 * trong quá trình đánh giá.
 			 */
 			$current_user = null;
 		}
 
 		/**
-		 * Filters whether JSONP is enabled for the REST API.
+		 * Lọc xem JSONP có được bật cho REST API hay không.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param bool $jsonp_enabled Whether JSONP is enabled. Default true.
+		 * @param bool $jsonp_enabled JSONP có được bật hay không. Mặc định true.
 		 */
 		$jsonp_enabled = apply_filters( 'rest_jsonp_enabled', true );
 
@@ -324,20 +322,20 @@ class WP_REST_Server {
 		}
 
 		/*
-		 * Mitigate possible JSONP Flash attacks.
+		 * Giảm thiểu các cuộc tấn công JSONP Flash có thể xảy ra.
 		 *
 		 * https://miki.it/blog/2014/7/8/abusing-jsonp-with-rosetta-flash/
 		 */
 		$this->send_header( 'X-Content-Type-Options', 'nosniff' );
 
 		/**
-		 * Filters whether the REST API is enabled.
+		 * Lọc xem REST API có được bật hay không.
 		 *
 		 * @since 4.4.0
-		 * @deprecated 4.7.0 Use the {@see 'rest_authentication_errors'} filter to
-		 *                   restrict access to the REST API.
+		 * @deprecated 4.7.0 Sử dụng bộ lọc {@see 'rest_authentication_errors'} để
+		 *                   hạn chế quyền truy cập REST API.
 		 *
-		 * @param bool $rest_enabled Whether the REST API is enabled. Default true.
+		 * @param bool $rest_enabled REST API có được bật hay không. Mặc định true.
 		 */
 		apply_filters_deprecated(
 			'rest_enabled',
@@ -380,9 +378,9 @@ class WP_REST_Server {
 		$request->set_body( self::get_raw_data() );
 
 		/*
-		 * HTTP method override for clients that can't use PUT/PATCH/DELETE. First, we check
-		 * $_GET['_method']. If that is not set, we check for the HTTP_X_HTTP_METHOD_OVERRIDE
-		 * header.
+		 * Ghi đè phương thức HTTP cho các client không thể sử dụng PUT/PATCH/DELETE. Đầu tiên,
+		 * chúng ta kiểm tra $_GET['_method']. Nếu không được thiết lập, chúng ta kiểm tra header
+		 * HTTP_X_HTTP_METHOD_OVERRIDE.
 		 */
 		$method_overridden = false;
 		if ( isset( $_GET['_method'] ) ) {
@@ -395,13 +393,13 @@ class WP_REST_Server {
 		$expose_headers = array( 'X-WP-Total', 'X-WP-TotalPages', 'Link' );
 
 		/**
-		 * Filters the list of response headers that are exposed to REST API CORS requests.
+		 * Lọc danh sách các header phản hồi được hiển thị cho các yêu cầu CORS của REST API.
 		 *
 		 * @since 5.5.0
-		 * @since 6.3.0 The `$request` parameter was added.
+		 * @since 6.3.0 Đã thêm tham số `$request`.
 		 *
-		 * @param string[]        $expose_headers The list of response headers to expose.
-		 * @param WP_REST_Request $request        The request in context.
+		 * @param string[]        $expose_headers Danh sách các header phản hồi cần hiển thị.
+		 * @param WP_REST_Request $request        Yêu cầu trong ngữ cảnh.
 		 */
 		$expose_headers = apply_filters( 'rest_exposed_cors_headers', $expose_headers, $request );
 
@@ -416,18 +414,18 @@ class WP_REST_Server {
 		);
 
 		/**
-		 * Filters the list of request headers that are allowed for REST API CORS requests.
+		 * Lọc danh sách các header yêu cầu được phép cho các yêu cầu CORS của REST API.
 		 *
-		 * The allowed headers are passed to the browser to specify which
-		 * headers can be passed to the REST API. By default, we allow the
-		 * Content-* headers needed to upload files to the media endpoints.
-		 * As well as the Authorization and Nonce headers for allowing authentication.
+		 * Các header được phép được truyền tới trình duyệt để chỉ định header nào
+		 * có thể được truyền tới REST API. Theo mặc định, chúng ta cho phép các header
+		 * Content-* cần thiết để tải lên tệp tới các endpoint media.
+		 * Cũng như các header Authorization và Nonce để cho phép xác thực.
 		 *
 		 * @since 5.5.0
-		 * @since 6.3.0 The `$request` parameter was added.
+		 * @since 6.3.0 Đã thêm tham số `$request`.
 		 *
-		 * @param string[]        $allow_headers The list of request headers to allow.
-		 * @param WP_REST_Request $request       The request in context.
+		 * @param string[]        $allow_headers Danh sách các header yêu cầu được phép.
+		 * @param WP_REST_Request $request       Yêu cầu trong ngữ cảnh.
 		 */
 		$allow_headers = apply_filters( 'rest_allowed_cors_headers', $allow_headers, $request );
 
@@ -439,35 +437,35 @@ class WP_REST_Server {
 			$result = $this->dispatch( $request );
 		}
 
-		// Normalize to either WP_Error or WP_REST_Response...
+		// Chuẩn hóa thành WP_Error hoặc WP_REST_Response...
 		$result = rest_ensure_response( $result );
 
-		// ...then convert WP_Error across.
+		// ...sau đó chuyển đổi WP_Error.
 		if ( is_wp_error( $result ) ) {
 			$result = $this->error_to_response( $result );
 		}
 
 		/**
-		 * Filters the REST API response.
+		 * Lọc phản hồi REST API.
 		 *
-		 * Allows modification of the response before returning.
+		 * Cho phép chỉnh sửa phản hồi trước khi trả về.
 		 *
 		 * @since 4.4.0
-		 * @since 4.5.0 Applied to embedded responses.
+		 * @since 4.5.0 Áp dụng cho các phản hồi nhúng.
 		 *
-		 * @param WP_HTTP_Response $result  Result to send to the client. Usually a `WP_REST_Response`.
-		 * @param WP_REST_Server   $server  Server instance.
-		 * @param WP_REST_Request  $request Request used to generate the response.
+		 * @param WP_HTTP_Response $result  Kết quả gửi tới client. Thường là `WP_REST_Response`.
+		 * @param WP_REST_Server   $server  Instance máy chủ.
+		 * @param WP_REST_Request  $request Yêu cầu dùng để tạo phản hồi.
 		 */
 		$result = apply_filters( 'rest_post_dispatch', rest_ensure_response( $result ), $this, $request );
 
-		// Wrap the response in an envelope if asked for.
+		// Bọc phản hồi trong envelope nếu được yêu cầu.
 		if ( isset( $_GET['_envelope'] ) ) {
 			$embed  = isset( $_GET['_embed'] ) ? rest_parse_embed_param( $_GET['_embed'] ) : false;
 			$result = $this->envelope_response( $result, $embed );
 		}
 
-		// Send extra data from response objects.
+		// Gửi dữ liệu bổ sung từ các đối tượng phản hồi.
 		$headers = $result->get_headers();
 		$this->send_headers( $headers );
 
@@ -475,18 +473,18 @@ class WP_REST_Server {
 		$this->set_status( $code );
 
 		/**
-		 * Filters whether to send no-cache headers on a REST API request.
+		 * Lọc xem có nên gửi header không-lưu-đệm trong yêu cầu REST API hay không.
 		 *
 		 * @since 4.4.0
-		 * @since 6.3.2 Moved the block to catch the filter added on rest_cookie_check_errors() from wp-includes/rest-api.php.
+		 * @since 6.3.2 Đã chuyển khối để bắt bộ lọc được thêm vào rest_cookie_check_errors() từ wp-includes/rest-api.php.
 		 *
-		 * @param bool $rest_send_nocache_headers Whether to send no-cache headers.
+		 * @param bool $rest_send_nocache_headers Có gửi header không-lưu-đệm hay không.
 		 */
 		$send_no_cache_headers = apply_filters( 'rest_send_nocache_headers', is_user_logged_in() );
 
 		/*
-		 * Send no-cache headers if $send_no_cache_headers is true,
-		 * OR if the HTTP_X_HTTP_METHOD_OVERRIDE is used but resulted a 4xx response code.
+		 * Gửi header không-lưu-đệm nếu $send_no_cache_headers là true,
+		 * HOẶC nếu HTTP_X_HTTP_METHOD_OVERRIDE được sử dụng nhưng cho kết quả mã phản hồi 4xx.
 		 */
 		if ( $send_no_cache_headers || ( true === $method_overridden && str_starts_with( $code, '4' ) ) ) {
 			foreach ( wp_get_nocache_headers() as $header => $header_value ) {
@@ -499,18 +497,18 @@ class WP_REST_Server {
 		}
 
 		/**
-		 * Filters whether the REST API request has already been served.
+		 * Lọc xem yêu cầu REST API đã được phục vụ chưa.
 		 *
-		 * Allow sending the request manually - by returning true, the API result
-		 * will not be sent to the client.
+		 * Cho phép gửi yêu cầu thủ công - bằng cách trả về true, kết quả API
+		 * sẽ không được gửi tới client.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param bool             $served  Whether the request has already been served.
-		 *                                           Default false.
-		 * @param WP_HTTP_Response $result  Result to send to the client. Usually a `WP_REST_Response`.
-		 * @param WP_REST_Request  $request Request used to generate the response.
-		 * @param WP_REST_Server   $server  Server instance.
+		 * @param bool             $served  Yêu cầu đã được phục vụ chưa.
+		 *                                           Mặc định false.
+		 * @param WP_HTTP_Response $result  Kết quả gửi tới client. Thường là `WP_REST_Response`.
+		 * @param WP_REST_Request  $request Yêu cầu dùng để tạo phản hồi.
+		 * @param WP_REST_Server   $server  Instance máy chủ.
 		 */
 		$served = apply_filters( 'rest_pre_serve_request', false, $result, $request, $this );
 
@@ -519,25 +517,25 @@ class WP_REST_Server {
 				return null;
 			}
 
-			// Embed links inside the request.
+			// Nhúng các liên kết vào bên trong yêu cầu.
 			$embed  = isset( $_GET['_embed'] ) ? rest_parse_embed_param( $_GET['_embed'] ) : false;
 			$result = $this->response_to_data( $result, $embed );
 
 			/**
-			 * Filters the REST API response.
+			 * Lọc phản hồi REST API.
 			 *
-			 * Allows modification of the response data after inserting
-			 * embedded data (if any) and before echoing the response data.
+			 * Cho phép chỉnh sửa dữ liệu phản hồi sau khi chèn dữ liệu nhúng
+			 * (nếu có) và trước khi xuất dữ liệu phản hồi.
 			 *
 			 * @since 4.8.1
 			 *
-			 * @param array            $result  Response data to send to the client.
-			 * @param WP_REST_Server   $server  Server instance.
-			 * @param WP_REST_Request  $request Request used to generate the response.
+			 * @param array            $result  Dữ liệu phản hồi gửi tới client.
+			 * @param WP_REST_Server   $server  Instance máy chủ.
+			 * @param WP_REST_Request  $request Yêu cầu dùng để tạo phản hồi.
 			 */
 			$result = apply_filters( 'rest_pre_echo_response', $result, $this, $request );
 
-			// The 204 response shouldn't have a body.
+			// Phản hồi 204 không nên có body.
 			if ( 204 === $code || null === $result ) {
 				return null;
 			}
@@ -559,7 +557,7 @@ class WP_REST_Server {
 			}
 
 			if ( $jsonp_callback ) {
-				// Prepend '/**/' to mitigate possible JSONP Flash attacks.
+				// Thêm '/**/' vào đầu để giảm thiểu các cuộc tấn công JSONP Flash có thể xảy ra.
 				// https://miki.it/blog/2014/7/8/abusing-jsonp-with-rosetta-flash/
 				echo '/**/' . $jsonp_callback . '(' . $result . ')';
 			} else {
@@ -571,18 +569,18 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Converts a response to data to send.
+	 * Chuyển đổi phản hồi thành dữ liệu để gửi.
 	 *
 	 * @since 4.4.0
-	 * @since 5.4.0 The `$embed` parameter can now contain a list of link relations to include.
+	 * @since 5.4.0 Tham số `$embed` giờ có thể chứa danh sách các quan hệ liên kết cần bao gồm.
 	 *
-	 * @param WP_REST_Response $response Response object.
-	 * @param bool|string[]    $embed    Whether to embed all links, a filtered list of link relations, or no links.
+	 * @param WP_REST_Response $response Đối tượng phản hồi.
+	 * @param bool|string[]    $embed    Có nhúng tất cả liên kết, danh sách quan hệ liên kết đã lọc, hay không có liên kết nào.
 	 * @return array {
-	 *     Data with sub-requests embedded.
+	 *     Dữ liệu với các yêu cầu con được nhúng.
 	 *
-	 *     @type array $_links    Links.
-	 *     @type array $_embedded Embedded objects.
+	 *     @type array $_links    Các liên kết.
+	 *     @type array $_embedded Các đối tượng được nhúng.
 	 * }
 	 */
 	public function response_to_data( $response, $embed ) {
@@ -590,13 +588,13 @@ class WP_REST_Server {
 		$links = self::get_compact_response_links( $response );
 
 		if ( ! empty( $links ) ) {
-			// Convert links to part of the data.
+			// Chuyển đổi các liên kết thành một phần của dữ liệu.
 			$data['_links'] = $links;
 		}
 
 		if ( $embed ) {
 			$this->embed_cache = array();
-			// Determine if this is a numeric array.
+			// Xác định xem đây có phải là mảng số hay không.
 			if ( wp_is_numeric_array( $data ) ) {
 				foreach ( $data as $key => $item ) {
 					$data[ $key ] = $this->embed_links( $item, $embed );
@@ -611,15 +609,15 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Retrieves links from a response.
+	 * Lấy các liên kết từ phản hồi.
 	 *
-	 * Extracts the links from a response into a structured hash, suitable for
-	 * direct output.
+	 * Trích xuất các liên kết từ phản hồi thành hash có cấu trúc, phù hợp cho
+	 * xuất trực tiếp.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_REST_Response $response Response to extract links from.
-	 * @return array Map of link relation to list of link hashes.
+	 * @param WP_REST_Response $response Phản hồi để trích xuất liên kết.
+	 * @return array Ánh xạ quan hệ liên kết tới danh sách các hash liên kết.
 	 */
 	public static function get_response_links( $response ) {
 		$links = $response->get_links();
@@ -628,7 +626,7 @@ class WP_REST_Server {
 			return array();
 		}
 
-		// Convert links to part of the data.
+		// Chuyển đổi các liên kết thành một phần của dữ liệu.
 		$data = array();
 		foreach ( $links as $rel => $items ) {
 			$data[ $rel ] = array();
@@ -655,16 +653,16 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Gets the target links for a REST API Link.
+	 * Lấy các liên kết đích cho một Liên kết REST API.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param array $link
+	 * @param array $link Liên kết.
 	 *
 	 * @return array|null
 	 */
 	protected static function get_target_hints_for_link( $link ) {
-		// Prefer targetHints that were specifically designated by the developer.
+		// Ưu tiên các targetHints được chỉ định cụ thể bởi nhà phát triển.
 		if ( isset( $link['targetHints']['allow'] ) ) {
 			return null;
 		}
@@ -706,15 +704,15 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Retrieves the CURIEs (compact URIs) used for relations.
+	 * Lấy các CURIE (URI rút gọn) được sử dụng cho các quan hệ.
 	 *
-	 * Extracts the links from a response into a structured hash, suitable for
-	 * direct output.
+	 * Trích xuất các liên kết từ phản hồi thành hash có cấu trúc, phù hợp cho
+	 * xuất trực tiếp.
 	 *
 	 * @since 4.5.0
 	 *
-	 * @param WP_REST_Response $response Response to extract links from.
-	 * @return array Map of link relation to list of link hashes.
+	 * @param WP_REST_Response $response Phản hồi để trích xuất liên kết.
+	 * @return array Ánh xạ quan hệ liên kết tới danh sách các hash liên kết.
 	 */
 	public static function get_compact_response_links( $response ) {
 		$links = self::get_response_links( $response );
@@ -728,14 +726,14 @@ class WP_REST_Server {
 
 		foreach ( $links as $rel => $items ) {
 
-			// Convert $rel URIs to their compact versions if they exist.
+			// Chuyển đổi URI $rel thành phiên bản rút gọn nếu tồn tại.
 			foreach ( $curies as $curie ) {
 				$href_prefix = substr( $curie['href'], 0, strpos( $curie['href'], '{rel}' ) );
 				if ( ! str_starts_with( $rel, $href_prefix ) ) {
 					continue;
 				}
 
-				// Relation now changes from '$uri' to '$curie:$relation'.
+				// Quan hệ giờ thay đổi từ '$uri' thành '$curie:$relation'.
 				$rel_regex = str_replace( '\{rel\}', '(.+)', preg_quote( $curie['href'], '!' ) );
 				preg_match( '!' . $rel_regex . '!', $rel, $matches );
 				if ( $matches ) {
@@ -748,7 +746,7 @@ class WP_REST_Server {
 			}
 		}
 
-		// Push the curies onto the start of the links array.
+		// Đẩy các curie vào đầu mảng liên kết.
 		if ( $used_curies ) {
 			$links['curies'] = array_values( $used_curies );
 		}
@@ -757,18 +755,18 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Embeds the links from the data into the request.
+	 * Nhúng các liên kết từ dữ liệu vào yêu cầu.
 	 *
 	 * @since 4.4.0
-	 * @since 5.4.0 The `$embed` parameter can now contain a list of link relations to include.
+	 * @since 5.4.0 Tham số `$embed` giờ có thể chứa danh sách các quan hệ liên kết cần bao gồm.
 	 *
-	 * @param array         $data  Data from the request.
-	 * @param bool|string[] $embed Whether to embed all links or a filtered list of link relations.
+	 * @param array         $data  Dữ liệu từ yêu cầu.
+	 * @param bool|string[] $embed Có nhúng tất cả liên kết hay danh sách quan hệ liên kết đã lọc.
 	 * @return array {
-	 *     Data with sub-requests embedded.
+	 *     Dữ liệu với các yêu cầu con được nhúng.
 	 *
-	 *     @type array $_links    Links.
-	 *     @type array $_embedded Embedded objects.
+	 *     @type array $_links    Các liên kết.
+	 *     @type array $_embedded Các đối tượng được nhúng.
 	 * }
 	 */
 	protected function embed_links( $data, $embed = true ) {
@@ -780,8 +778,8 @@ class WP_REST_Server {
 
 		foreach ( $data['_links'] as $rel => $links ) {
 			/*
-			 * If a list of relations was specified, and the link relation
-			 * is not in the list of allowed relations, don't process the link.
+			 * Nếu một danh sách quan hệ được chỉ định, và quan hệ liên kết
+			 * không nằm trong danh sách các quan hệ được phép, không xử lý liên kết.
 			 */
 			if ( is_array( $embed ) && ! in_array( $rel, $embed, true ) ) {
 				continue;
@@ -790,22 +788,22 @@ class WP_REST_Server {
 			$embeds = array();
 
 			foreach ( $links as $item ) {
-				// Determine if the link is embeddable.
+				// Xác định xem liên kết có thể nhúng được không.
 				if ( empty( $item['embeddable'] ) ) {
-					// Ensure we keep the same order.
+					// Đảm bảo giữ nguyên thứ tự.
 					$embeds[] = array();
 					continue;
 				}
 
 				if ( ! array_key_exists( $item['href'], $this->embed_cache ) ) {
-					// Run through our internal routing and serve.
+					// Chạy qua hệ thống định tuyến nội bộ và phục vụ.
 					$request = WP_REST_Request::from_url( $item['href'] );
 					if ( ! $request ) {
 						$embeds[] = array();
 						continue;
 					}
 
-					// Embedded resources get passed context=embed.
+					// Các tài nguyên nhúng được truyền context=embed.
 					if ( empty( $request['context'] ) ) {
 						$request['context'] = 'embed';
 					}
@@ -828,7 +826,7 @@ class WP_REST_Server {
 				$embeds[] = $this->embed_cache[ $item['href'] ];
 			}
 
-			// Determine if any real links were found.
+			// Xác định xem có liên kết thực sự nào được tìm thấy không.
 			$has_links = count( array_filter( $embeds ) );
 
 			if ( $has_links ) {
@@ -844,18 +842,18 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Wraps the response in an envelope.
+	 * Bọc phản hồi trong envelope.
 	 *
-	 * The enveloping technique is used to work around browser/client
-	 * compatibility issues. Essentially, it converts the full HTTP response to
-	 * data instead.
+	 * Kỹ thuật envelope được sử dụng để giải quyết các vấn đề tương thích
+	 * trình duyệt/client. Về cơ bản, nó chuyển đổi toàn bộ phản hồi HTTP
+	 * thành dữ liệu.
 	 *
 	 * @since 4.4.0
-	 * @since 6.0.0 The `$embed` parameter can now contain a list of link relations to include.
+	 * @since 6.0.0 Tham số `$embed` giờ có thể chứa danh sách các quan hệ liên kết cần bao gồm.
 	 *
-	 * @param WP_REST_Response $response Response object.
-	 * @param bool|string[]    $embed    Whether to embed all links, a filtered list of link relations, or no links.
-	 * @return WP_REST_Response New response with wrapped data
+	 * @param WP_REST_Response $response Đối tượng phản hồi.
+	 * @param bool|string[]    $embed    Có nhúng tất cả liên kết, danh sách quan hệ liên kết đã lọc, hay không có liên kết nào.
+	 * @return WP_REST_Response Phản hồi mới với dữ liệu đã bọc.
 	 */
 	public function envelope_response( $response, $embed ) {
 		$envelope = array(
@@ -865,35 +863,35 @@ class WP_REST_Server {
 		);
 
 		/**
-		 * Filters the enveloped form of a REST API response.
+		 * Lọc dạng envelope của phản hồi REST API.
 		 *
 		 * @since 4.4.0
 		 *
 		 * @param array            $envelope {
-		 *     Envelope data.
+		 *     Dữ liệu envelope.
 		 *
-		 *     @type array $body    Response data.
-		 *     @type int   $status  The 3-digit HTTP status code.
-		 *     @type array $headers Map of header name to header value.
+		 *     @type array $body    Dữ liệu phản hồi.
+		 *     @type int   $status  Mã trạng thái HTTP 3 chữ số.
+		 *     @type array $headers Ánh xạ tên header tới giá trị header.
 		 * }
-		 * @param WP_REST_Response $response Original response data.
+		 * @param WP_REST_Response $response Dữ liệu phản hồi gốc.
 		 */
 		$envelope = apply_filters( 'rest_envelope_response', $envelope, $response );
 
-		// Ensure it's still a response and return.
+		// Đảm bảo nó vẫn là phản hồi và trả về.
 		return rest_ensure_response( $envelope );
 	}
 
 	/**
-	 * Registers a route to the server.
+	 * Đăng ký một route tới máy chủ.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @param string $route_namespace Namespace.
-	 * @param string $route           The REST route.
-	 * @param array  $route_args      Route arguments.
-	 * @param bool   $override        Optional. Whether the route should be overridden if it already exists.
-	 *                                Default false.
+	 * @param string $route           Route REST.
+	 * @param array  $route_args      Các đối số route.
+	 * @param bool   $override        Tùy chọn. Có ghi đè route nếu nó đã tồn tại hay không.
+	 *                                Mặc định false.
 	 */
 	public function register_route( $route_namespace, $route, $route_args, $override = false ) {
 		if ( ! isset( $this->namespaces[ $route_namespace ] ) ) {
@@ -919,7 +917,7 @@ class WP_REST_Server {
 			);
 		}
 
-		// Associative to avoid double-registration.
+		// Dùng mảng kết hợp để tránh đăng ký trùng lặp.
 		$this->namespaces[ $route_namespace ][ $route ] = true;
 
 		$route_args['namespace'] = $route_namespace;
@@ -932,25 +930,24 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Retrieves the route map.
+	 * Lấy bản đồ route.
 	 *
-	 * The route map is an associative array with path regexes as the keys. The
-	 * value is an indexed array with the callback function/method as the first
-	 * item, and a bitmask of HTTP methods as the second item (see the class
-	 * constants).
+	 * Bản đồ route là mảng kết hợp với biểu thức chính quy đường dẫn làm khóa. Giá trị
+	 * là mảng chỉ mục với hàm/phương thức callback là phần tử đầu tiên, và bitmask
+	 * của các phương thức HTTP là phần tử thứ hai (xem các hằng số của lớp).
 	 *
-	 * Each route can be mapped to more than one callback by using an array of
-	 * the indexed arrays. This allows mapping e.g. GET requests to one callback
-	 * and POST requests to another.
+	 * Mỗi route có thể được ánh xạ tới nhiều hơn một callback bằng cách sử dụng mảng
+	 * các mảng chỉ mục. Điều này cho phép ánh xạ ví dụ yêu cầu GET tới một callback
+	 * và yêu cầu POST tới callback khác.
 	 *
-	 * Note that the path regexes (array keys) must have @ escaped, as this is
-	 * used as the delimiter with preg_match()
+	 * Lưu ý rằng biểu thức chính quy đường dẫn (khóa mảng) phải thoát ký tự @, vì nó
+	 * được sử dụng làm dấu phân cách với preg_match()
 	 *
 	 * @since 4.4.0
-	 * @since 5.4.0 Added `$route_namespace` parameter.
+	 * @since 5.4.0 Đã thêm tham số `$route_namespace`.
 	 *
-	 * @param string $route_namespace Optionally, only return routes in the given namespace.
-	 * @return array `'/path/regex' => array( $callback, $bitmask )` or
+	 * @param string $route_namespace Tùy chọn, chỉ trả về các route trong namespace đã cho.
+	 * @return array `'/path/regex' => array( $callback, $bitmask )` hoặc
 	 *               `'/path/regex' => array( array( $callback, $bitmask ), ...)`.
 	 */
 	public function get_routes( $route_namespace = '' ) {
@@ -961,18 +958,18 @@ class WP_REST_Server {
 		}
 
 		/**
-		 * Filters the array of available REST API endpoints.
+		 * Lọc mảng các endpoint REST API có sẵn.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param array $endpoints The available endpoints. An array of matching regex patterns, each mapped
-		 *                         to an array of callbacks for the endpoint. These take the format
-		 *                         `'/path/regex' => array( $callback, $bitmask )` or
+		 * @param array $endpoints Các endpoint có sẵn. Mảng các mẫu regex khớp, mỗi mẫu được ánh xạ
+		 *                         tới mảng các callback cho endpoint. Chúng có định dạng
+		 *                         `'/path/regex' => array( $callback, $bitmask )` hoặc
 		 *                         `'/path/regex' => array( array( $callback, $bitmask ).
 		 */
 		$endpoints = apply_filters( 'rest_endpoints', $endpoints );
 
-		// Normalize the endpoints.
+		// Chuẩn hóa các endpoint.
 		$defaults = array(
 			'methods'       => '',
 			'accept_json'   => false,
@@ -984,7 +981,7 @@ class WP_REST_Server {
 		foreach ( $endpoints as $route => &$handlers ) {
 
 			if ( isset( $handlers['callback'] ) ) {
-				// Single endpoint, add one deeper.
+				// Endpoint đơn, thêm một tầng sâu hơn.
 				$handlers = array( $handlers );
 			}
 
@@ -995,7 +992,7 @@ class WP_REST_Server {
 			foreach ( $handlers as $key => &$handler ) {
 
 				if ( ! is_numeric( $key ) ) {
-					// Route option, move it to the options.
+					// Tùy chọn route, di chuyển nó sang các tùy chọn.
 					$this->route_options[ $route ][ $key ] = $handler;
 					unset( $handlers[ $key ] );
 					continue;
@@ -1003,7 +1000,7 @@ class WP_REST_Server {
 
 				$handler = wp_parse_args( $handler, $defaults );
 
-				// Allow comma-separated HTTP methods.
+				// Cho phép các phương thức HTTP phân tách bằng dấu phẩy.
 				if ( is_string( $handler['methods'] ) ) {
 					$methods = explode( ',', $handler['methods'] );
 				} elseif ( is_array( $handler['methods'] ) ) {
@@ -1025,23 +1022,23 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Retrieves namespaces registered on the server.
+	 * Lấy các namespace đã đăng ký trên máy chủ.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return string[] List of registered namespaces.
+	 * @return string[] Danh sách các namespace đã đăng ký.
 	 */
 	public function get_namespaces() {
 		return array_keys( $this->namespaces );
 	}
 
 	/**
-	 * Retrieves specified options for a route.
+	 * Lấy các tùy chọn được chỉ định cho một route.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $route Route pattern to fetch options for.
-	 * @return array|null Data as an associative array if found, or null if not found.
+	 * @param string $route Mẫu route để lấy tùy chọn.
+	 * @return array|null Dữ liệu dưới dạng mảng kết hợp nếu tìm thấy, hoặc null nếu không tìm thấy.
 	 */
 	public function get_route_options( $route ) {
 		if ( ! isset( $this->route_options[ $route ] ) ) {
@@ -1052,12 +1049,12 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Matches the request to a callback and call it.
+	 * Khớp yêu cầu với callback và gọi nó.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_REST_Request $request Request to attempt dispatching.
-	 * @return WP_REST_Response Response returned by the callback.
+	 * @param WP_REST_Request $request Yêu cầu cần thử điều phối.
+	 * @return WP_REST_Response Phản hồi được trả về bởi callback.
 	 */
 	public function dispatch( $request ) {
 		$this->dispatching_requests[] = $request;

@@ -154,7 +154,7 @@ class wpdb {
 	protected $result;
 
 	/**
-	 * Cached column info, for confidence checking data before inserting.
+	 * Thông tin cột được lưu trong bộ nhớ đệm, để kiểm tra độ tin cậy dữ liệu trước khi chèn.
 	 *
 	 * @since 4.2.0
 	 *
@@ -163,7 +163,7 @@ class wpdb {
 	protected $col_meta = array();
 
 	/**
-	 * Calculated character sets keyed by table name.
+	 * Bộ ký tự đã tính toán được đánh khóa theo tên bảng.
 	 *
 	 * @since 4.2.0
 	 *
@@ -172,7 +172,7 @@ class wpdb {
 	protected $table_charset = array();
 
 	/**
-	 * Whether text fields in the current query need to be confidence checked.
+	 * Liệu các trường văn bản trong truy vấn hiện tại có cần được kiểm tra độ tin cậy hay không.
 	 *
 	 * @since 4.2.0
 	 *
@@ -181,7 +181,7 @@ class wpdb {
 	protected $check_current_query = true;
 
 	/**
-	 * Flag to ensure we don't run into recursion problems when checking the collation.
+	 * Cờ để đảm bảo chúng ta không gặp vấn đề đệ quy khi kiểm tra collation.
 	 *
 	 * @since 4.2.0
 	 *
@@ -191,7 +191,7 @@ class wpdb {
 	private $checking_collation = false;
 
 	/**
-	 * Saved info on the table column.
+	 * Thông tin đã lưu về cột của bảng.
 	 *
 	 * @since 0.71
 	 *
@@ -200,31 +200,31 @@ class wpdb {
 	protected $col_info;
 
 	/**
-	 * Log of queries that were executed, for debugging purposes.
+	 * Nhật ký các truy vấn đã được thực thi, cho mục đích gỡ lỗi.
 	 *
 	 * @since 1.5.0
-	 * @since 2.5.0 The third element in each query log was added to record the calling functions.
-	 * @since 5.1.0 The fourth element in each query log was added to record the start time.
-	 * @since 5.3.0 The fifth element in each query log was added to record custom data.
+	 * @since 2.5.0 Phần tử thứ ba trong mỗi nhật ký truy vấn được thêm để ghi lại các hàm gọi.
+	 * @since 5.1.0 Phần tử thứ tư trong mỗi nhật ký truy vấn được thêm để ghi lại thời gian bắt đầu.
+	 * @since 5.3.0 Phần tử thứ năm trong mỗi nhật ký truy vấn được thêm để ghi lại dữ liệu tùy chỉnh.
 	 *
 	 * @var array[] {
-	 *     Array of arrays containing information about queries that were executed.
+	 *     Mảng các mảng chứa thông tin về các truy vấn đã thực thi.
 	 *
 	 *     @type array ...$0 {
-	 *         Data for each query.
+	 *         Dữ liệu cho mỗi truy vấn.
 	 *
-	 *         @type string $0 The query's SQL.
-	 *         @type float  $1 Total time spent on the query, in seconds.
-	 *         @type string $2 Comma-separated list of the calling functions.
-	 *         @type float  $3 Unix timestamp of the time at the start of the query.
-	 *         @type array  $4 Custom query data.
+	 *         @type string $0 Câu lệnh SQL của truy vấn.
+	 *         @type float  $1 Tổng thời gian thực hiện truy vấn, tính bằng giây.
+	 *         @type string $2 Danh sách các hàm gọi, phân cách bởi dấu phẩy.
+	 *         @type float  $3 Mốc thời gian Unix tại thời điểm bắt đầu truy vấn.
+	 *         @type array  $4 Dữ liệu tùy chỉnh của truy vấn.
 	 *     }
 	 * }
 	 */
 	public $queries;
 
 	/**
-	 * The number of times to retry reconnecting before dying. Default 5.
+	 * Số lần thử kết nối lại trước khi dừng. Mặc định 5.
 	 *
 	 * @since 3.9.0
 	 *
@@ -234,10 +234,10 @@ class wpdb {
 	protected $reconnect_retries = 5;
 
 	/**
-	 * WordPress table prefix.
+	 * Tiền tố bảng WordPress.
 	 *
-	 * You can set this to have multiple WordPress installations in a single database.
-	 * The second reason is for possible security precautions.
+	 * Bạn có thể đặt giá trị này để có nhiều bản cài đặt WordPress trong một cơ sở dữ liệu.
+	 * Lý do thứ hai là cho các biện pháp bảo mật có thể.
 	 *
 	 * @since 2.5.0
 	 *
@@ -246,7 +246,7 @@ class wpdb {
 	public $prefix = '';
 
 	/**
-	 * WordPress base table prefix.
+	 * Tiền tố bảng cơ sở của WordPress.
 	 *
 	 * @since 3.0.0
 	 *
@@ -255,7 +255,7 @@ class wpdb {
 	public $base_prefix;
 
 	/**
-	 * Whether the database queries are ready to start executing.
+	 * Liệu các truy vấn cơ sở dữ liệu đã sẵn sàng để bắt đầu thực thi hay chưa.
 	 *
 	 * @since 2.3.2
 	 *
@@ -264,7 +264,7 @@ class wpdb {
 	public $ready = false;
 
 	/**
-	 * Blog ID.
+	 * ID Blog.
 	 *
 	 * @since 3.0.0
 	 *
@@ -273,7 +273,7 @@ class wpdb {
 	public $blogid = 0;
 
 	/**
-	 * Site ID.
+	 * ID Site.
 	 *
 	 * @since 3.0.0
 	 *
@@ -282,7 +282,7 @@ class wpdb {
 	public $siteid = 0;
 
 	/**
-	 * List of WordPress per-site tables.
+	 * Danh sách các bảng WordPress theo từng site.
 	 *
 	 * @since 2.5.0
 	 *
@@ -303,7 +303,7 @@ class wpdb {
 	);
 
 	/**
-	 * List of deprecated WordPress tables.
+	 * Danh sách các bảng WordPress đã ngừng sử dụng.
 	 *
 	 * 'categories', 'post2cat', and 'link2cat' were deprecated in 2.3.0, db version 5539.
 	 *
@@ -315,7 +315,7 @@ class wpdb {
 	public $old_tables = array( 'categories', 'post2cat', 'link2cat' );
 
 	/**
-	 * List of WordPress global tables.
+	 * Danh sách các bảng toàn cục của WordPress.
 	 *
 	 * @since 3.0.0
 	 *
@@ -325,7 +325,7 @@ class wpdb {
 	public $global_tables = array( 'users', 'usermeta' );
 
 	/**
-	 * List of Multisite global tables.
+	 * Danh sách các bảng toàn cục của Multisite.
 	 *
 	 * @since 3.0.0
 	 *
@@ -342,7 +342,7 @@ class wpdb {
 	);
 
 	/**
-	 * List of deprecated WordPress Multisite global tables.
+	 * Danh sách các bảng toàn cục Multisite của WordPress đã ngừng sử dụng.
 	 *
 	 * @since 6.1.0
 	 *
@@ -352,7 +352,7 @@ class wpdb {
 	public $old_ms_global_tables = array( 'sitecategories' );
 
 	/**
-	 * WordPress Comments table.
+	 * Bảng Bình luận WordPress.
 	 *
 	 * @since 1.5.0
 	 *
@@ -361,7 +361,7 @@ class wpdb {
 	public $comments;
 
 	/**
-	 * WordPress Comment Metadata table.
+	 * Bảng Metadata Bình luận WordPress.
 	 *
 	 * @since 2.9.0
 	 *
@@ -370,7 +370,7 @@ class wpdb {
 	public $commentmeta;
 
 	/**
-	 * WordPress Links table.
+	 * Bảng Liên kết WordPress.
 	 *
 	 * @since 1.5.0
 	 *
@@ -379,7 +379,7 @@ class wpdb {
 	public $links;
 
 	/**
-	 * WordPress Options table.
+	 * Bảng Tùy chọn WordPress.
 	 *
 	 * @since 1.5.0
 	 *
@@ -388,7 +388,7 @@ class wpdb {
 	public $options;
 
 	/**
-	 * WordPress Post Metadata table.
+	 * Bảng Metadata Bài viết WordPress.
 	 *
 	 * @since 1.5.0
 	 *
@@ -397,7 +397,7 @@ class wpdb {
 	public $postmeta;
 
 	/**
-	 * WordPress Posts table.
+	 * Bảng Bài viết WordPress.
 	 *
 	 * @since 1.5.0
 	 *
@@ -406,7 +406,7 @@ class wpdb {
 	public $posts;
 
 	/**
-	 * WordPress Terms table.
+	 * Bảng Thuật ngữ WordPress.
 	 *
 	 * @since 2.3.0
 	 *
@@ -415,7 +415,7 @@ class wpdb {
 	public $terms;
 
 	/**
-	 * WordPress Term Relationships table.
+	 * Bảng Quan hệ Thuật ngữ WordPress.
 	 *
 	 * @since 2.3.0
 	 *
@@ -424,7 +424,7 @@ class wpdb {
 	public $term_relationships;
 
 	/**
-	 * WordPress Term Taxonomy table.
+	 * Bảng Phân loại Thuật ngữ WordPress.
 	 *
 	 * @since 2.3.0
 	 *
@@ -433,7 +433,7 @@ class wpdb {
 	public $term_taxonomy;
 
 	/**
-	 * WordPress Term Meta table.
+	 * Bảng Meta Thuật ngữ WordPress.
 	 *
 	 * @since 4.4.0
 	 *
@@ -442,11 +442,11 @@ class wpdb {
 	public $termmeta;
 
 	//
-	// Global and Multisite tables
+	// Các bảng Toàn cục và Multisite
 	//
 
 	/**
-	 * WordPress User Metadata table.
+	 * Bảng Metadata Người dùng WordPress.
 	 *
 	 * @since 2.3.0
 	 *
@@ -455,7 +455,7 @@ class wpdb {
 	public $usermeta;
 
 	/**
-	 * WordPress Users table.
+	 * Bảng Người dùng WordPress.
 	 *
 	 * @since 1.5.0
 	 *
@@ -464,7 +464,7 @@ class wpdb {
 	public $users;
 
 	/**
-	 * Multisite Blogs table.
+	 * Bảng Blog Multisite.
 	 *
 	 * @since 3.0.0
 	 *
@@ -473,7 +473,7 @@ class wpdb {
 	public $blogs;
 
 	/**
-	 * Multisite Blog Metadata table.
+	 * Bảng Metadata Blog Multisite.
 	 *
 	 * @since 5.1.0
 	 *
@@ -482,7 +482,7 @@ class wpdb {
 	public $blogmeta;
 
 	/**
-	 * Multisite Registration Log table.
+	 * Bảng Nhật ký Đăng ký Multisite.
 	 *
 	 * @since 3.0.0
 	 *
@@ -491,7 +491,7 @@ class wpdb {
 	public $registration_log;
 
 	/**
-	 * Multisite Signups table.
+	 * Bảng Đăng ký Multisite.
 	 *
 	 * @since 3.0.0
 	 *
@@ -500,7 +500,7 @@ class wpdb {
 	public $signups;
 
 	/**
-	 * Multisite Sites table.
+	 * Bảng Site Multisite.
 	 *
 	 * @since 3.0.0
 	 *
@@ -509,7 +509,7 @@ class wpdb {
 	public $site;
 
 	/**
-	 * Multisite Sitewide Terms table.
+	 * Bảng Thuật ngữ toàn Site Multisite.
 	 *
 	 * @since 3.0.0
 	 *
@@ -518,7 +518,7 @@ class wpdb {
 	public $sitecategories;
 
 	/**
-	 * Multisite Site Metadata table.
+	 * Bảng Metadata Site Multisite.
 	 *
 	 * @since 3.0.0
 	 *
@@ -527,10 +527,10 @@ class wpdb {
 	public $sitemeta;
 
 	/**
-	 * Format specifiers for DB columns.
+	 * Các ký hiệu định dạng cho cột DB.
 	 *
-	 * Columns not listed here default to %s. Initialized during WP load.
-	 * Keys are column names, values are format types: 'ID' => '%d'.
+	 * Các cột không được liệt kê ở đây mặc định là %s. Được khởi tạo trong quá trình tải WP.
+	 * Khóa là tên cột, giá trị là kiểu định dạng: 'ID' => '%d'.
 	 *
 	 * @since 2.8.0
 	 *
@@ -544,7 +544,7 @@ class wpdb {
 	public $field_types = array();
 
 	/**
-	 * Database table columns charset.
+	 * Bộ ký tự cột bảng cơ sở dữ liệu.
 	 *
 	 * @since 2.2.0
 	 *
@@ -553,7 +553,7 @@ class wpdb {
 	public $charset;
 
 	/**
-	 * Database table columns collate.
+	 * Collation cột bảng cơ sở dữ liệu.
 	 *
 	 * @since 2.2.0
 	 *
@@ -562,7 +562,7 @@ class wpdb {
 	public $collate;
 
 	/**
-	 * Database Username.
+	 * Tên người dùng cơ sở dữ liệu.
 	 *
 	 * @since 2.9.0
 	 *
@@ -571,7 +571,7 @@ class wpdb {
 	protected $dbuser;
 
 	/**
-	 * Database Password.
+	 * Mật khẩu cơ sở dữ liệu.
 	 *
 	 * @since 3.1.0
 	 *
@@ -580,7 +580,7 @@ class wpdb {
 	protected $dbpassword;
 
 	/**
-	 * Database Name.
+	 * Tên cơ sở dữ liệu.
 	 *
 	 * @since 3.1.0
 	 *
@@ -589,7 +589,7 @@ class wpdb {
 	protected $dbname;
 
 	/**
-	 * Database Host.
+	 * Máy chủ cơ sở dữ liệu.
 	 *
 	 * @since 3.1.0
 	 *
@@ -598,13 +598,13 @@ class wpdb {
 	protected $dbhost;
 
 	/**
-	 * Database handle.
+	 * Handle cơ sở dữ liệu.
 	 *
-	 * Possible values:
+	 * Các giá trị có thể:
 	 *
-	 * - `mysqli` instance during normal operation
-	 * - `null` if the connection is yet to be made or has been closed
-	 * - `false` if the connection has failed
+	 * - Đối tượng `mysqli` trong hoạt động bình thường
+	 * - `null` nếu kết nối chưa được thiết lập hoặc đã bị đóng
+	 * - `false` nếu kết nối đã thất bại
 	 *
 	 * @since 0.71
 	 *
@@ -613,7 +613,7 @@ class wpdb {
 	protected $dbh;
 
 	/**
-	 * A textual description of the last query/get_row/get_var call.
+	 * Mô tả dạng văn bản của lần gọi query/get_row/get_var cuối cùng.
 	 *
 	 * @since 3.0.0
 	 *
@@ -622,12 +622,12 @@ class wpdb {
 	public $func_call;
 
 	/**
-	 * Whether MySQL is used as the database engine.
+	 * Liệu MySQL có được sử dụng làm engine cơ sở dữ liệu hay không.
 	 *
-	 * Set in wpdb::db_connect() to true, by default. This is used when checking
-	 * against the required MySQL version for WordPress. Normally, a replacement
-	 * database drop-in (db.php) will skip these checks, but setting this to true
-	 * will force the checks to occur.
+	 * Được đặt thành true trong wpdb::db_connect(), theo mặc định. Giá trị này được sử dụng khi kiểm tra
+	 * phiên bản MySQL yêu cầu cho WordPress. Thông thường, một file drop-in thay thế
+	 * cơ sở dữ liệu (db.php) sẽ bỏ qua các kiểm tra này, nhưng đặt giá trị này thành true
+	 * sẽ buộc các kiểm tra phải thực hiện.
 	 *
 	 * @since 3.3.0
 	 *
@@ -636,7 +636,7 @@ class wpdb {
 	public $is_mysql = null;
 
 	/**
-	 * A list of incompatible SQL modes.
+	 * Danh sách các chế độ SQL không tương thích.
 	 *
 	 * @since 3.9.0
 	 *
@@ -652,17 +652,17 @@ class wpdb {
 	);
 
 	/**
-	 * Backward compatibility, where wpdb::prepare() has not quoted formatted/argnum placeholders.
+	 * Tương thích ngược, khi wpdb::prepare() không bọc ngoặc kép cho các placeholder có định dạng/argnum.
 	 *
-	 * This is often used for table/field names (before %i was supported), and sometimes string formatting, e.g.
+	 * Điều này thường được sử dụng cho tên bảng/trường (trước khi %i được hỗ trợ), và đôi khi cho định dạng chuỗi, ví dụ:
 	 *
 	 *     $wpdb->prepare( 'WHERE `%1$s` = "%2$s something %3$s" OR %1$s = "%4$-10s"', 'field_1', 'a', 'b', 'c' );
 	 *
-	 * But it's risky, e.g. forgetting to add quotes, resulting in SQL Injection vulnerabilities:
+	 * Nhưng điều này rủi ro, ví dụ quên thêm dấu ngoặc kép, dẫn đến lỗ hổng SQL Injection:
 	 *
 	 *     $wpdb->prepare( 'WHERE (id = %1s) OR (id = %2$s)', $_GET['id'], $_GET['id'] ); // ?id=id
 	 *
-	 * This feature is preserved while plugin authors update their code to use safer approaches:
+	 * Tính năng này được giữ lại trong khi các tác giả plugin cập nhật mã nguồn để sử dụng các cách tiếp cận an toàn hơn:
 	 *
 	 *     $_GET['key'] = 'a`b';
 	 *
@@ -671,19 +671,19 @@ class wpdb {
 	 *
 	 *     $wpdb->prepare( 'WHERE %i = %s',         $_GET['key'], $_GET['value'] ); // WHERE `a``b` = 'value'
 	 *
-	 * While changing to false will be fine for queries not using formatted/argnum placeholders,
-	 * any remaining cases are most likely going to result in SQL errors (good, in a way):
+	 * Trong khi chuyển sang false sẽ ổn với các truy vấn không sử dụng placeholder có định dạng/argnum,
+	 * các trường hợp còn lại rất có thể sẽ dẫn đến lỗi SQL (tốt, theo một cách nào đó):
 	 *
 	 *     $wpdb->prepare( 'WHERE %1$s = "%2$-10s"', 'my_field', 'my_value' );
 	 *     true  = WHERE my_field = "my_value  "
 	 *     false = WHERE 'my_field' = "'my_value  '"
 	 *
-	 * But there may be some queries that result in an SQL Injection vulnerability:
+	 * Nhưng có thể có một số truy vấn dẫn đến lỗ hổng SQL Injection:
 	 *
 	 *     $wpdb->prepare( 'WHERE id = %1$s', $_GET['id'] ); // ?id=id
 	 *
-	 * So there may need to be a `_doing_it_wrong()` phase, after we know everyone can use
-	 * identifier placeholders (%i), but before this feature is disabled or removed.
+	 * Vì vậy có thể cần một giai đoạn `_doing_it_wrong()`, sau khi biết rằng mọi người có thể sử dụng
+	 * placeholder định danh (%i), nhưng trước khi tính năng này bị vô hiệu hóa hoặc loại bỏ.
 	 *
 	 * @since 6.2.0
 	 * @var bool
@@ -691,22 +691,22 @@ class wpdb {
 	private $allow_unsafe_unquoted_parameters = true;
 
 	/**
-	 * Whether to use the mysqli extension over mysql. This is no longer used as the mysql
-	 * extension is no longer supported.
+	 * Liệu có sử dụng extension mysqli thay cho mysql hay không. Thuộc tính này không còn được sử dụng vì extension mysql
+	 * không còn được hỗ trợ.
 	 *
-	 * Default true.
+	 * Mặc định true.
 	 *
 	 * @since 3.9.0
-	 * @since 6.4.0 This property was removed.
-	 * @since 6.4.1 This property was reinstated and its default value was changed to true.
-	 *              The property is no longer used in core but may be accessed externally.
+	 * @since 6.4.0 Thuộc tính này đã bị loại bỏ.
+	 * @since 6.4.1 Thuộc tính này đã được khôi phục và giá trị mặc định được thay đổi thành true.
+	 *              Thuộc tính này không còn được sử dụng trong lõi nhưng có thể được truy cập từ bên ngoài.
 	 *
 	 * @var bool
 	 */
 	private $use_mysqli = true;
 
 	/**
-	 * Whether we've managed to successfully connect at some point.
+	 * Liệu chúng ta đã kết nối thành công tại một thời điểm nào đó hay chưa.
 	 *
 	 * @since 3.9.0
 	 *
@@ -715,9 +715,9 @@ class wpdb {
 	private $has_connected = false;
 
 	/**
-	 * Time when the last query was performed.
+	 * Thời điểm truy vấn cuối cùng được thực hiện.
 	 *
-	 * Only set when `SAVEQUERIES` is defined and truthy.
+	 * Chỉ được đặt khi `SAVEQUERIES` được định nghĩa và có giá trị truthy.
 	 *
 	 * @since 1.5.0
 	 *
@@ -726,7 +726,7 @@ class wpdb {
 	public $time_start = null;
 
 	/**
-	 * The last SQL error that was encountered.
+	 * Lỗi SQL cuối cùng gặp phải.
 	 *
 	 * @since 2.5.0
 	 *
@@ -735,19 +735,19 @@ class wpdb {
 	public $error = null;
 
 	/**
-	 * Connects to the database server and selects a database.
+	 * Kết nối đến máy chủ cơ sở dữ liệu và chọn cơ sở dữ liệu.
 	 *
-	 * Does the actual setting up
-	 * of the class properties and connection to the database.
+	 * Thực hiện việc thiết lập thực tế
+	 * các thuộc tính của lớp và kết nối đến cơ sở dữ liệu.
 	 *
 	 * @since 2.0.8
 	 *
 	 * @link https://core.trac.wordpress.org/ticket/3354
 	 *
-	 * @param string $dbuser     Database user.
-	 * @param string $dbpassword Database password.
-	 * @param string $dbname     Database name.
-	 * @param string $dbhost     Database host.
+	 * @param string $dbuser     Tên người dùng cơ sở dữ liệu.
+	 * @param string $dbpassword Mật khẩu cơ sở dữ liệu.
+	 * @param string $dbname     Tên cơ sở dữ liệu.
+	 * @param string $dbhost     Máy chủ cơ sở dữ liệu.
 	 */
 	public function __construct(
 		$dbuser,
@@ -765,7 +765,7 @@ class wpdb {
 		$this->dbname     = $dbname;
 		$this->dbhost     = $dbhost;
 
-		// wp-config.php creation will manually connect when ready.
+		// Quá trình tạo wp-config.php sẽ kết nối thủ công khi sẵn sàng.
 		if ( defined( 'WP_SETUP_CONFIG' ) ) {
 			return;
 		}
@@ -774,12 +774,12 @@ class wpdb {
 	}
 
 	/**
-	 * Makes private properties readable for backward compatibility.
+	 * Cho phép đọc các thuộc tính private để tương thích ngược.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $name The private member to get, and optionally process.
-	 * @return mixed The private member.
+	 * @param string $name Thành viên private cần lấy, và tùy chọn xử lý.
+	 * @return mixed Thành viên private.
 	 */
 	public function __get( $name ) {
 		if ( 'col_info' === $name ) {
@@ -790,12 +790,12 @@ class wpdb {
 	}
 
 	/**
-	 * Makes private properties settable for backward compatibility.
+	 * Cho phép gán giá trị cho các thuộc tính private để tương thích ngược.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $name  The private member to set.
-	 * @param mixed  $value The value to set.
+	 * @param string $name  Thành viên private cần gán.
+	 * @param mixed  $value Giá trị cần gán.
 	 */
 	public function __set( $name, $value ) {
 		$protected_members = array(
@@ -811,30 +811,30 @@ class wpdb {
 	}
 
 	/**
-	 * Makes private properties check-able for backward compatibility.
+	 * Cho phép kiểm tra sự tồn tại của các thuộc tính private để tương thích ngược.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $name The private member to check.
-	 * @return bool If the member is set or not.
+	 * @param string $name Thành viên private cần kiểm tra.
+	 * @return bool Liệu thành viên đã được gán hay chưa.
 	 */
 	public function __isset( $name ) {
 		return isset( $this->$name );
 	}
 
 	/**
-	 * Makes private properties un-settable for backward compatibility.
+	 * Cho phép hủy gán các thuộc tính private để tương thích ngược.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $name  The private member to unset
+	 * @param string $name  Thành viên private cần hủy gán.
 	 */
 	public function __unset( $name ) {
 		unset( $this->$name );
 	}
 
 	/**
-	 * Sets $this->charset and $this->collate.
+	 * Đặt giá trị cho $this->charset và $this->collate.
 	 *
 	 * @since 3.1.0
 	 */
@@ -864,18 +864,18 @@ class wpdb {
 	}
 
 	/**
-	 * Determines the best charset and collation to use given a charset and collation.
+	 * Xác định bộ ký tự và collation tốt nhất để sử dụng dựa trên bộ ký tự và collation cho trước.
 	 *
-	 * For example, when able, utf8mb4 should be used instead of utf8.
+	 * Ví dụ, khi có thể, utf8mb4 nên được sử dụng thay vì utf8.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param string $charset The character set to check.
-	 * @param string $collate The collation to check.
+	 * @param string $charset Bộ ký tự cần kiểm tra.
+	 * @param string $collate Collation cần kiểm tra.
 	 * @return array {
-	 *     The most appropriate character set and collation to use.
+	 *     Bộ ký tự và collation phù hợp nhất để sử dụng.
 	 *
-	 *     @type string $charset Character set.
+	 *     @type string $charset Bộ ký tự.
 	 *     @type string $collate Collation.
 	 * }
 	 */
@@ -889,7 +889,7 @@ class wpdb {
 		}
 
 		if ( 'utf8mb4' === $charset ) {
-			// _general_ is outdated, so we can upgrade it to _unicode_, instead.
+			// _general_ đã lỗi thời, nên chúng ta có thể nâng cấp lên _unicode_ thay thế.
 			if ( ! $collate || 'utf8_general_ci' === $collate ) {
 				$collate = 'utf8mb4_unicode_ci';
 			} else {
@@ -897,7 +897,7 @@ class wpdb {
 			}
 		}
 
-		// _unicode_520_ is a better collation, we should use that when it's available.
+		// _unicode_520_ là collation tốt hơn, chúng ta nên sử dụng nó khi có sẵn.
 		if ( $this->has_cap( 'utf8mb4_520' ) && 'utf8mb4_unicode_ci' === $collate ) {
 			$collate = 'utf8mb4_unicode_520_ci';
 		}
@@ -906,13 +906,13 @@ class wpdb {
 	}
 
 	/**
-	 * Sets the connection's character set.
+	 * Đặt bộ ký tự cho kết nối.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param mysqli $dbh     The connection returned by `mysqli_connect()`.
-	 * @param string $charset Optional. The character set. Default null.
-	 * @param string $collate Optional. The collation. Default null.
+	 * @param mysqli $dbh     Kết nối được trả về bởi `mysqli_connect()`.
+	 * @param string $charset Tùy chọn. Bộ ký tự. Mặc định null.
+	 * @param string $collate Tùy chọn. Collation. Mặc định null.
 	 */
 	public function set_charset( $dbh, $charset = null, $collate = null ) {
 		if ( ! isset( $charset ) ) {
@@ -939,13 +939,13 @@ class wpdb {
 	}
 
 	/**
-	 * Changes the current SQL mode, and ensures its WordPress compatibility.
+	 * Thay đổi chế độ SQL hiện tại, và đảm bảo tính tương thích với WordPress.
 	 *
-	 * If no modes are passed, it will ensure the current MySQL server modes are compatible.
+	 * Nếu không truyền chế độ nào, hàm sẽ đảm bảo các chế độ máy chủ MySQL hiện tại là tương thích.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param array $modes Optional. A list of SQL modes to set. Default empty array.
+	 * @param array $modes Tùy chọn. Danh sách các chế độ SQL cần đặt. Mặc định mảng rỗng.
 	 */
 	public function set_sql_mode( $modes = array() ) {
 		if ( empty( $modes ) ) {
@@ -973,11 +973,11 @@ class wpdb {
 		$modes = array_change_key_case( $modes, CASE_UPPER );
 
 		/**
-		 * Filters the list of incompatible SQL modes to exclude.
+		 * Lọc danh sách các chế độ SQL không tương thích cần loại trừ.
 		 *
 		 * @since 3.9.0
 		 *
-		 * @param array $incompatible_modes An array of incompatible modes.
+		 * @param array $incompatible_modes Mảng các chế độ không tương thích.
 		 */
 		$incompatible_modes = (array) apply_filters( 'incompatible_sql_modes', $this->incompatible_modes );
 
@@ -993,14 +993,14 @@ class wpdb {
 	}
 
 	/**
-	 * Sets the table prefix for the WordPress tables.
+	 * Đặt tiền tố bảng cho các bảng WordPress.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $prefix          Alphanumeric name for the new prefix.
-	 * @param bool   $set_table_names Optional. Whether the table names, e.g. wpdb::$posts,
-	 *                                should be updated or not. Default true.
-	 * @return string|WP_Error Old prefix or WP_Error on error.
+	 * @param string $prefix          Tên chữ-số cho tiền tố mới.
+	 * @param bool   $set_table_names Tùy chọn. Liệu tên các bảng, ví dụ wpdb::$posts,
+	 *                                có nên được cập nhật hay không. Mặc định true.
+	 * @return string|WP_Error Tiền tố cũ hoặc WP_Error khi có lỗi.
 	 */
 	public function set_prefix( $prefix, $set_table_names = true ) {
 
@@ -1039,13 +1039,13 @@ class wpdb {
 	}
 
 	/**
-	 * Sets blog ID.
+	 * Đặt ID blog.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @param int $blog_id
-	 * @param int $network_id Optional. Network ID. Default 0.
-	 * @return int Previous blog ID.
+	 * @param int $network_id Tùy chọn. ID mạng. Mặc định 0.
+	 * @return int ID blog trước đó.
 	 */
 	public function set_blog_id( $blog_id, $network_id = 0 ) {
 		if ( ! empty( $network_id ) ) {
@@ -1069,13 +1069,13 @@ class wpdb {
 	}
 
 	/**
-	 * Gets blog prefix.
+	 * Lấy tiền tố blog.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int $blog_id Optional. Blog ID to retrieve the table prefix for.
-	 *                     Defaults to the current blog ID.
-	 * @return string Blog prefix.
+	 * @param int $blog_id Tùy chọn. ID blog để lấy tiền tố bảng.
+	 *                     Mặc định là ID blog hiện tại.
+	 * @return string Tiền tố blog.
 	 */
 	public function get_blog_prefix( $blog_id = null ) {
 		if ( is_multisite() ) {
@@ -1096,21 +1096,21 @@ class wpdb {
 	}
 
 	/**
-	 * Returns an array of WordPress tables.
+	 * Trả về một mảng các bảng WordPress.
 	 *
-	 * Also allows for the `CUSTOM_USER_TABLE` and `CUSTOM_USER_META_TABLE` to override the WordPress users
-	 * and usermeta tables that would otherwise be determined by the prefix.
+	 * Cũng cho phép `CUSTOM_USER_TABLE` và `CUSTOM_USER_META_TABLE` ghi đè các bảng users
+	 * và usermeta của WordPress mà thường được xác định bởi tiền tố.
 	 *
-	 * The `$scope` argument can take one of the following:
+	 * Tham số `$scope` có thể nhận một trong các giá trị sau:
 	 *
-	 * - 'all' - returns 'all' and 'global' tables. No old tables are returned.
-	 * - 'blog' - returns the blog-level tables for the queried blog.
-	 * - 'global' - returns the global tables for the installation, returning multisite tables only on multisite.
-	 * - 'ms_global' - returns the multisite global tables, regardless if current installation is multisite.
-	 * - 'old' - returns tables which are deprecated.
+	 * - 'all' - trả về các bảng 'all' và 'global'. Không trả về các bảng cũ.
+	 * - 'blog' - trả về các bảng cấp blog cho blog được truy vấn.
+	 * - 'global' - trả về các bảng toàn cục cho bản cài đặt, chỉ trả về bảng multisite trên multisite.
+	 * - 'ms_global' - trả về các bảng toàn cục multisite, bất kể bản cài đặt hiện tại có phải multisite hay không.
+	 * - 'old' - trả về các bảng đã ngừng sử dụng.
 	 *
 	 * @since 3.0.0
-	 * @since 6.1.0 `old` now includes deprecated multisite global tables only on multisite.
+	 * @since 6.1.0 `old` giờ bao gồm các bảng toàn cục multisite đã ngừng sử dụng chỉ trên multisite.
 	 *
 	 * @uses wpdb::$tables
 	 * @uses wpdb::$old_tables
@@ -1118,13 +1118,13 @@ class wpdb {
 	 * @uses wpdb::$ms_global_tables
 	 * @uses wpdb::$old_ms_global_tables
 	 *
-	 * @param string $scope   Optional. Possible values include 'all', 'global', 'ms_global', 'blog',
-	 *                        or 'old' tables. Default 'all'.
-	 * @param bool   $prefix  Optional. Whether to include table prefixes. If blog prefix is requested,
-	 *                        then the custom users and usermeta tables will be mapped. Default true.
-	 * @param int    $blog_id Optional. The blog_id to prefix. Used only when prefix is requested.
-	 *                        Defaults to `wpdb::$blogid`.
-	 * @return string[] Table names. When a prefix is requested, the key is the unprefixed table name.
+	 * @param string $scope   Tùy chọn. Các giá trị có thể bao gồm 'all', 'global', 'ms_global', 'blog',
+	 *                        hoặc 'old'. Mặc định 'all'.
+	 * @param bool   $prefix  Tùy chọn. Liệu có bao gồm tiền tố bảng hay không. Nếu yêu cầu tiền tố blog,
+	 *                        thì các bảng users và usermeta tùy chỉnh sẽ được ánh xạ. Mặc định true.
+	 * @param int    $blog_id Tùy chọn. blog_id để thêm tiền tố. Chỉ sử dụng khi yêu cầu tiền tố.
+	 *                        Mặc định là `wpdb::$blogid`.
+	 * @return string[] Tên các bảng. Khi yêu cầu tiền tố, khóa là tên bảng không có tiền tố.
 	 */
 	public function tables( $scope = 'all', $prefix = true, $blog_id = 0 ) {
 		switch ( $scope ) {
@@ -1185,16 +1185,16 @@ class wpdb {
 	}
 
 	/**
-	 * Selects a database using the current or provided database connection.
+	 * Chọn cơ sở dữ liệu sử dụng kết nối cơ sở dữ liệu hiện tại hoặc được cung cấp.
 	 *
-	 * The database name will be changed based on the current database connection.
-	 * On failure, the execution will bail and display a DB error.
+	 * Tên cơ sở dữ liệu sẽ được thay đổi dựa trên kết nối cơ sở dữ liệu hiện tại.
+	 * Khi thất bại, quá trình thực thi sẽ dừng lại và hiển thị lỗi DB.
 	 *
 	 * @since 0.71
 	 *
-	 * @param string $db  Database name.
-	 * @param mysqli $dbh Optional. Database connection.
-	 *                    Defaults to the current database handle.
+	 * @param string $db  Tên cơ sở dữ liệu.
+	 * @param mysqli $dbh Tùy chọn. Kết nối cơ sở dữ liệu.
+	 *                    Mặc định là handle cơ sở dữ liệu hiện tại.
 	 */
 	public function select( $db, $dbh = null ) {
 		if ( is_null( $dbh ) ) {
@@ -1246,12 +1246,12 @@ class wpdb {
 	}
 
 	/**
-	 * Do not use, deprecated.
+	 * Không sử dụng, đã ngừng hỗ trợ.
 	 *
-	 * Use esc_sql() or wpdb::prepare() instead.
+	 * Sử dụng esc_sql() hoặc wpdb::prepare() thay thế.
 	 *
 	 * @since 2.8.0
-	 * @deprecated 3.6.0 Use wpdb::prepare()
+	 * @deprecated 3.6.0 Sử dụng wpdb::prepare()
 	 * @see wpdb::prepare()
 	 * @see esc_sql()
 	 *
@@ -1266,14 +1266,14 @@ class wpdb {
 	}
 
 	/**
-	 * Real escape using mysqli_real_escape_string().
+	 * Escape thực sự sử dụng mysqli_real_escape_string().
 	 *
 	 * @since 2.8.0
 	 *
 	 * @see mysqli_real_escape_string()
 	 *
-	 * @param string $data String to escape.
-	 * @return string Escaped string.
+	 * @param string $data Chuỗi cần escape.
+	 * @return string Chuỗi đã được escape.
 	 */
 	public function _real_escape( $data ) {
 		if ( ! is_scalar( $data ) ) {
@@ -1296,14 +1296,14 @@ class wpdb {
 	}
 
 	/**
-	 * Escapes data. Works on arrays.
+	 * Escape dữ liệu. Hoạt động với mảng.
 	 *
 	 * @since 2.8.0
 	 *
 	 * @uses wpdb::_real_escape()
 	 *
-	 * @param string|array $data Data to escape.
-	 * @return string|array Escaped data, in the same type as supplied.
+	 * @param string|array $data Dữ liệu cần escape.
+	 * @return string|array Dữ liệu đã được escape, cùng kiểu với dữ liệu đầu vào.
 	 */
 	public function _escape( $data ) {
 		if ( is_array( $data ) ) {
@@ -1322,17 +1322,17 @@ class wpdb {
 	}
 
 	/**
-	 * Do not use, deprecated.
+	 * Không sử dụng, đã ngừng hỗ trợ.
 	 *
-	 * Use esc_sql() or wpdb::prepare() instead.
+	 * Sử dụng esc_sql() hoặc wpdb::prepare() thay thế.
 	 *
 	 * @since 0.71
-	 * @deprecated 3.6.0 Use wpdb::prepare()
+	 * @deprecated 3.6.0 Sử dụng wpdb::prepare()
 	 * @see wpdb::prepare()
 	 * @see esc_sql()
 	 *
-	 * @param string|array $data Data to escape.
-	 * @return string|array Escaped data, in the same type as supplied.
+	 * @param string|array $data Dữ liệu cần escape.
+	 * @return string|array Dữ liệu đã được escape, cùng kiểu với dữ liệu đầu vào.
 	 */
 	public function escape( $data ) {
 		if ( func_num_args() === 1 && function_exists( '_deprecated_function' ) ) {
@@ -1354,13 +1354,13 @@ class wpdb {
 	}
 
 	/**
-	 * Escapes content by reference for insertion into the database, for security.
+	 * Escape nội dung theo tham chiếu để chèn vào cơ sở dữ liệu, vì mục đích bảo mật.
 	 *
 	 * @uses wpdb::_real_escape()
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param string $data String to escape.
+	 * @param string $data Chuỗi cần escape.
 	 */
 	public function escape_by_ref( &$data ) {
 		if ( ! is_float( $data ) ) {
@@ -1369,30 +1369,30 @@ class wpdb {
 	}
 
 	/**
-	 * Quotes an identifier for a MySQL database, e.g. table/field names.
+	 * Bọc ngoặc một định danh cho cơ sở dữ liệu MySQL, ví dụ tên bảng/trường.
 	 *
 	 * @since 6.2.0
 	 *
-	 * @param string $identifier Identifier to escape.
-	 * @return string Escaped identifier.
+	 * @param string $identifier Định danh cần escape.
+	 * @return string Định danh đã được escape.
 	 */
 	public function quote_identifier( $identifier ) {
 		return '`' . $this->_escape_identifier_value( $identifier ) . '`';
 	}
 
 	/**
-	 * Escapes an identifier value without adding the surrounding quotes.
+	 * Escape giá trị định danh mà không thêm dấu ngoặc bao quanh.
 	 *
-	 * - Permitted characters in quoted identifiers include the full Unicode
-	 *   Basic Multilingual Plane (BMP), except U+0000.
-	 * - To quote the identifier itself, you need to double the character, e.g. `a``b`.
+	 * - Các ký tự được phép trong định danh có ngoặc bao gồm toàn bộ Unicode
+	 *   Basic Multilingual Plane (BMP), ngoại trừ U+0000.
+	 * - Để bọc ngoặc chính định danh, bạn cần nhân đôi ký tự, ví dụ `a``b`.
 	 *
 	 * @since 6.2.0
 	 *
 	 * @link https://dev.mysql.com/doc/refman/8.0/en/identifiers.html
 	 *
-	 * @param string $identifier Identifier to escape.
-	 * @return string Escaped identifier.
+	 * @param string $identifier Định danh cần escape.
+	 * @return string Định danh đã được escape.
 	 */
 	private function _escape_identifier_value( $identifier ) {
 		return str_replace( '`', '``', $identifier );

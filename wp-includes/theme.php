@@ -1324,18 +1324,18 @@ function get_header_image_tag( $attr = array() ) {
 		unset( $attr['fetchpriority'] );
 	}
 
-	// If the `decoding` attribute is overridden and set to false or an empty string.
+	// Nếu thuộc tính `decoding` bị ghi đè và được đặt thành false hoặc chuỗi rỗng.
 	if ( isset( $attr['decoding'] ) && ! $attr['decoding'] ) {
 		unset( $attr['decoding'] );
 	}
 
 	/**
-	 * Filters the list of header image attributes.
+	 * Lọc danh sách thuộc tính ảnh header.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param array  $attr   Array of the attributes for the image tag.
-	 * @param object $header The custom header object returned by 'get_custom_header()'.
+	 * @param array  $attr   Mảng các thuộc tính cho thẻ ảnh.
+	 * @param object $header Đối tượng header tùy chỉnh được trả về bởi 'get_custom_header()'.
 	 */
 	$attr = apply_filters( 'get_header_image_tag_attributes', $attr, $header );
 
@@ -1349,30 +1349,30 @@ function get_header_image_tag( $attr = array() ) {
 	$html .= ' />';
 
 	/**
-	 * Filters the markup of header images.
+	 * Lọc mã HTML của ảnh header.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $html   The HTML image tag markup being filtered.
-	 * @param object $header The custom header object returned by 'get_custom_header()'.
-	 * @param array  $attr   Array of the attributes for the image tag.
+	 * @param string $html   Mã HTML thẻ ảnh đang được lọc.
+	 * @param object $header Đối tượng header tùy chỉnh được trả về bởi 'get_custom_header()'.
+	 * @param array  $attr   Mảng các thuộc tính cho thẻ ảnh.
 	 */
 	return apply_filters( 'get_header_image_tag', $html, $header, $attr );
 }
 
 /**
- * Displays the image markup for a custom header image.
+ * Hiển thị mã HTML ảnh cho ảnh header tùy chỉnh.
  *
  * @since 4.4.0
  *
- * @param array $attr Optional. Attributes for the image markup. Default empty.
+ * @param array $attr Tùy chọn. Các thuộc tính cho mã HTML ảnh. Mặc định rỗng.
  */
 function the_header_image_tag( $attr = array() ) {
 	echo get_header_image_tag( $attr );
 }
 
 /**
- * Gets random header image data from registered images in theme.
+ * Lấy dữ liệu ảnh header ngẫu nhiên từ các ảnh đã đăng ký trong theme.
  *
  * @since 3.4.0
  *
@@ -1425,11 +1425,11 @@ function _get_random_header_data() {
 }
 
 /**
- * Gets random header image URL from registered images in theme.
+ * Lấy URL ảnh header ngẫu nhiên từ các ảnh đã đăng ký trong theme.
  *
  * @since 3.2.0
  *
- * @return string Path to header image.
+ * @return string Đường dẫn đến ảnh header.
  */
 function get_random_header_image() {
 	$random_image = _get_random_header_data();
@@ -1442,16 +1442,16 @@ function get_random_header_image() {
 }
 
 /**
- * Checks if random header image is in use.
+ * Kiểm tra xem ảnh header ngẫu nhiên có đang được sử dụng hay không.
  *
- * Always true if user expressly chooses the option in Appearance > Header.
- * Also true if theme has multiple header images registered, no specific header image
- * is chosen, and theme turns on random headers with add_theme_support().
+ * Luôn trả về true nếu người dùng chọn rõ ràng tùy chọn này trong Giao diện > Header.
+ * Cũng trả về true nếu theme có nhiều ảnh header đã đăng ký, không có ảnh header cụ thể
+ * nào được chọn, và theme bật header ngẫu nhiên bằng add_theme_support().
  *
  * @since 3.2.0
  *
- * @param string $type The random pool to use. Possible values include 'any',
- *                     'default', 'uploaded'. Default 'any'.
+ * @param string $type Nhóm ngẫu nhiên để sử dụng. Các giá trị có thể bao gồm 'any',
+ *                     'default', 'uploaded'. Mặc định 'any'.
  * @return bool
  */
 function is_random_header_image( $type = 'any' ) {
@@ -1478,7 +1478,7 @@ function is_random_header_image( $type = 'any' ) {
 }
 
 /**
- * Displays header image URL.
+ * Hiển thị URL ảnh header.
  *
  * @since 2.1.0
  */
@@ -1491,7 +1491,7 @@ function header_image() {
 }
 
 /**
- * Gets the header images uploaded for the active theme.
+ * Lấy các ảnh header đã tải lên cho theme đang hoạt động.
  *
  * @since 3.2.0
  *
@@ -1500,7 +1500,7 @@ function header_image() {
 function get_uploaded_header_images() {
 	$header_images = array();
 
-	// @todo Caching.
+	// @todo Bộ nhớ đệm.
 	$headers = get_posts(
 		array(
 			'post_type'  => 'attachment',
@@ -1544,7 +1544,7 @@ function get_uploaded_header_images() {
 }
 
 /**
- * Gets the header image data.
+ * Lấy dữ liệu ảnh header.
  *
  * @since 3.4.0
  *
@@ -1589,14 +1589,14 @@ function get_custom_header() {
 }
 
 /**
- * Registers a selection of default headers to be displayed by the custom header admin UI.
+ * Đăng ký một bộ header mặc định để hiển thị bởi giao diện quản trị header tùy chỉnh.
  *
  * @since 3.0.0
  *
  * @global array $_wp_default_headers
  *
- * @param array $headers Array of headers keyed by a string ID. The IDs point to arrays
- *                       containing 'url', 'thumbnail_url', and 'description' keys.
+ * @param array $headers Mảng các header được khóa bởi ID dạng chuỗi. Các ID trỏ đến mảng
+ *                       chứa các khóa 'url', 'thumbnail_url' và 'description'.
  */
 function register_default_headers( $headers ) {
 	global $_wp_default_headers;
@@ -1605,19 +1605,19 @@ function register_default_headers( $headers ) {
 }
 
 /**
- * Unregisters default headers.
+ * Hủy đăng ký các header mặc định.
  *
- * This function must be called after register_default_headers() has already added the
- * header you want to remove.
+ * Hàm này phải được gọi sau khi register_default_headers() đã thêm
+ * header mà bạn muốn xóa.
  *
  * @see register_default_headers()
  * @since 3.0.0
  *
  * @global array $_wp_default_headers
  *
- * @param string|array $header The header string id (key of array) to remove, or an array thereof.
- * @return bool|void A single header returns true on success, false on failure.
- *                   There is currently no return value for multiple headers.
+ * @param string|array $header ID chuỗi của header (khóa của mảng) cần xóa, hoặc một mảng các ID.
+ * @return bool|void Một header đơn trả về true khi thành công, false khi thất bại.
+ *                   Hiện tại không có giá trị trả về cho nhiều header.
  */
 function unregister_default_headers( $header ) {
 	global $_wp_default_headers;
@@ -1633,43 +1633,43 @@ function unregister_default_headers( $header ) {
 }
 
 /**
- * Checks whether a header video is set or not.
+ * Kiểm tra xem video header đã được thiết lập hay chưa.
  *
  * @since 4.7.0
  *
  * @see get_header_video_url()
  *
- * @return bool Whether a header video is set or not.
+ * @return bool Video header đã được thiết lập hay chưa.
  */
 function has_header_video() {
 	return (bool) get_header_video_url();
 }
 
 /**
- * Retrieves header video URL for custom header.
+ * Lấy URL video header cho header tùy chỉnh.
  *
- * Uses a local video if present, or falls back to an external video.
+ * Sử dụng video cục bộ nếu có, hoặc dùng video bên ngoài làm phương án dự phòng.
  *
  * @since 4.7.0
  *
- * @return string|false Header video URL or false if there is no video.
+ * @return string|false URL video header hoặc false nếu không có video.
  */
 function get_header_video_url() {
 	$id = absint( get_theme_mod( 'header_video' ) );
 
 	if ( $id ) {
-		// Get the file URL from the attachment ID.
+		// Lấy URL tệp từ ID đính kèm.
 		$url = wp_get_attachment_url( $id );
 	} else {
 		$url = get_theme_mod( 'external_header_video' );
 	}
 
 	/**
-	 * Filters the header video URL.
+	 * Lọc URL video header.
 	 *
 	 * @since 4.7.3
 	 *
-	 * @param string $url Header video URL, if available.
+	 * @param string $url URL video header, nếu có.
 	 */
 	$url = apply_filters( 'get_header_video_url', $url );
 
@@ -1681,7 +1681,7 @@ function get_header_video_url() {
 }
 
 /**
- * Displays header video URL.
+ * Hiển thị URL video header.
  *
  * @since 4.7.0
  */
@@ -1694,7 +1694,7 @@ function the_header_video_url() {
 }
 
 /**
- * Retrieves header video settings.
+ * Lấy cài đặt video header.
  *
  * @since 4.7.0
  *
@@ -1728,21 +1728,21 @@ function get_header_video_settings() {
 	}
 
 	/**
-	 * Filters header video settings.
+	 * Lọc cài đặt video header.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array $settings An array of header video settings.
+	 * @param array $settings Mảng các cài đặt video header.
 	 */
 	return apply_filters( 'header_video_settings', $settings );
 }
 
 /**
- * Checks whether a custom header is set or not.
+ * Kiểm tra xem header tùy chỉnh đã được thiết lập hay chưa.
  *
  * @since 4.7.0
  *
- * @return bool True if a custom header is set. False if not.
+ * @return bool True nếu header tùy chỉnh đã được thiết lập. False nếu chưa.
  */
 function has_custom_header() {
 	if ( has_header_image() || ( has_header_video() && is_header_video_active() ) ) {
@@ -1753,11 +1753,11 @@ function has_custom_header() {
 }
 
 /**
- * Checks whether the custom header video is eligible to show on the current page.
+ * Kiểm tra xem video header tùy chỉnh có đủ điều kiện hiển thị trên trang hiện tại hay không.
  *
  * @since 4.7.0
  *
- * @return bool True if the custom header video should be shown. False if not.
+ * @return bool True nếu video header tùy chỉnh nên được hiển thị. False nếu không.
  */
 function is_header_video_active() {
 	if ( ! get_theme_support( 'custom-header', 'video' ) ) {
@@ -1773,25 +1773,25 @@ function is_header_video_active() {
 	}
 
 	/**
-	 * Filters whether the custom header video is eligible to show on the current page.
+	 * Lọc xem video header tùy chỉnh có đủ điều kiện hiển thị trên trang hiện tại hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param bool $show_video Whether the custom header video should be shown. Returns the value
-	 *                         of the theme setting for the `custom-header`'s `video-active-callback`.
-	 *                         If no callback is set, the default value is that of `is_front_page()`.
+	 * @param bool $show_video Video header tùy chỉnh có nên được hiển thị hay không. Trả về giá trị
+	 *                         của cài đặt theme cho `video-active-callback` của `custom-header`.
+	 *                         Nếu không có callback nào được thiết lập, giá trị mặc định là của `is_front_page()`.
 	 */
 	return apply_filters( 'is_header_video_active', $show_video );
 }
 
 /**
- * Retrieves the markup for a custom header.
+ * Lấy mã HTML cho header tùy chỉnh.
  *
- * The container div will always be returned in the Customizer preview.
+ * Thẻ div chứa sẽ luôn được trả về trong bản xem trước Trình tùy biến.
  *
  * @since 4.7.0
  *
- * @return string The markup for a custom header on success.
+ * @return string Mã HTML cho header tùy chỉnh khi thành công.
  */
 function get_custom_header_markup() {
 	if ( ! has_custom_header() && ! is_customize_preview() ) {
@@ -1805,9 +1805,9 @@ function get_custom_header_markup() {
 }
 
 /**
- * Prints the markup for a custom header.
+ * In mã HTML cho header tùy chỉnh.
  *
- * A container div will always be printed in the Customizer preview.
+ * Thẻ div chứa sẽ luôn được in trong bản xem trước Trình tùy biến.
  *
  * @since 4.7.0
  */
@@ -1826,7 +1826,7 @@ function the_custom_header_markup() {
 }
 
 /**
- * Retrieves background image for custom background.
+ * Lấy ảnh nền cho nền tùy chỉnh.
  *
  * @since 3.0.0
  *
@@ -1837,7 +1837,7 @@ function get_background_image() {
 }
 
 /**
- * Displays background image path.
+ * Hiển thị đường dẫn ảnh nền.
  *
  * @since 3.0.0
  */
@@ -1846,7 +1846,7 @@ function background_image() {
 }
 
 /**
- * Retrieves value for custom background color.
+ * Lấy giá trị màu nền tùy chỉnh.
  *
  * @since 3.0.0
  *
@@ -1857,7 +1857,7 @@ function get_background_color() {
 }
 
 /**
- * Displays background color value.
+ * Hiển thị giá trị màu nền.
  *
  * @since 3.0.0
  */
@@ -1866,17 +1866,17 @@ function background_color() {
 }
 
 /**
- * Default custom background callback.
+ * Callback mặc định cho nền tùy chỉnh.
  *
  * @since 3.0.0
  */
 function _custom_background_cb() {
-	// $background is the saved custom image, or the default image.
+	// $background là ảnh tùy chỉnh đã lưu, hoặc ảnh mặc định.
 	$background = set_url_scheme( get_background_image() );
 
 	/*
-	 * $color is the saved custom color.
-	 * A default has to be specified in style.css. It will not be printed here.
+	 * $color là màu tùy chỉnh đã lưu.
+	 * Giá trị mặc định phải được chỉ định trong style.css. Nó sẽ không được in ở đây.
 	 */
 	$color = get_background_color();
 
@@ -1898,7 +1898,7 @@ function _custom_background_cb() {
 	if ( $background ) {
 		$image = ' background-image: url("' . sanitize_url( $background ) . '");';
 
-		// Background Position.
+		// Vị trí nền.
 		$position_x = get_theme_mod( 'background_position_x', get_theme_support( 'custom-background', 'default-position-x' ) );
 		$position_y = get_theme_mod( 'background_position_y', get_theme_support( 'custom-background', 'default-position-y' ) );
 
@@ -1912,7 +1912,7 @@ function _custom_background_cb() {
 
 		$position = " background-position: $position_x $position_y;";
 
-		// Background Size.
+		// Kích thước nền.
 		$size = get_theme_mod( 'background_size', get_theme_support( 'custom-background', 'default-size' ) );
 
 		if ( ! in_array( $size, array( 'auto', 'contain', 'cover' ), true ) ) {
@@ -1921,7 +1921,7 @@ function _custom_background_cb() {
 
 		$size = " background-size: $size;";
 
-		// Background Repeat.
+		// Lặp lại nền.
 		$repeat = get_theme_mod( 'background_repeat', get_theme_support( 'custom-background', 'default-repeat' ) );
 
 		if ( ! in_array( $repeat, array( 'repeat-x', 'repeat-y', 'repeat', 'no-repeat' ), true ) ) {
@@ -1930,7 +1930,7 @@ function _custom_background_cb() {
 
 		$repeat = " background-repeat: $repeat;";
 
-		// Background Scroll.
+		// Cuộn nền.
 		$attachment = get_theme_mod( 'background_attachment', get_theme_support( 'custom-background', 'default-attachment' ) );
 
 		if ( 'fixed' !== $attachment ) {
@@ -1949,7 +1949,7 @@ body.custom-background { <?php echo trim( $style ); ?> }
 }
 
 /**
- * Renders the Custom CSS style element.
+ * Hiển thị phần tử style CSS tùy chỉnh.
  *
  * @since 4.7.0
  */
@@ -1960,7 +1960,7 @@ function wp_custom_css_cb() {
 		?>
 		<style<?php echo $type_attr; ?> id="wp-custom-css">
 			<?php
-			// Note that esc_html() cannot be used because `div &gt; span` is not interpreted properly.
+			// Lưu ý rằng esc_html() không thể sử dụng vì `div &gt; span` không được diễn giải đúng.
 			echo strip_tags( $styles );
 			?>
 		</style>
@@ -1969,12 +1969,12 @@ function wp_custom_css_cb() {
 }
 
 /**
- * Fetches the `custom_css` post for a given theme.
+ * Lấy bài viết `custom_css` cho một theme nhất định.
  *
  * @since 4.7.0
  *
- * @param string $stylesheet Optional. A theme object stylesheet name. Defaults to the active theme.
- * @return WP_Post|null The custom_css post or null if none exists.
+ * @param string $stylesheet Tùy chọn. Tên stylesheet của đối tượng theme. Mặc định là theme đang hoạt động.
+ * @return WP_Post|null Bài viết custom_css hoặc null nếu không tồn tại.
  */
 function wp_get_custom_css_post( $stylesheet = '' ) {
 	if ( empty( $stylesheet ) ) {
@@ -2001,13 +2001,13 @@ function wp_get_custom_css_post( $stylesheet = '' ) {
 			$post = get_post( $post_id );
 		}
 
-		// `-1` indicates no post exists; no query necessary.
+		// `-1` cho biết không có bài viết nào tồn tại; không cần truy vấn.
 		if ( ! $post && -1 !== $post_id ) {
 			$query = new WP_Query( $custom_css_query_vars );
 			$post  = $query->post;
 			/*
-			 * Cache the lookup. See wp_update_custom_css_post().
-			 * @todo This should get cleared if a custom_css post is added/removed.
+			 * Lưu bộ nhớ đệm tra cứu. Xem wp_update_custom_css_post().
+			 * @todo Nên xóa bộ nhớ đệm này khi bài viết custom_css được thêm/xóa.
 			 */
 			set_theme_mod( 'custom_css_post_id', $post ? $post->ID : -1 );
 		}
@@ -2020,12 +2020,12 @@ function wp_get_custom_css_post( $stylesheet = '' ) {
 }
 
 /**
- * Fetches the saved Custom CSS content for rendering.
+ * Lấy nội dung Custom CSS đã lưu để hiển thị.
  *
  * @since 4.7.0
  *
- * @param string $stylesheet Optional. A theme object stylesheet name. Defaults to the active theme.
- * @return string The Custom CSS Post content.
+ * @param string $stylesheet Tùy chọn. Tên stylesheet của đối tượng theme. Mặc định là theme đang hoạt động.
+ * @return string Nội dung bài viết Custom CSS.
  */
 function wp_get_custom_css( $stylesheet = '' ) {
 	$css = '';
@@ -2040,12 +2040,12 @@ function wp_get_custom_css( $stylesheet = '' ) {
 	}
 
 	/**
-	 * Filters the custom CSS output into the head element.
+	 * Lọc đầu ra Custom CSS vào phần tử head.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string $css        CSS pulled in from the Custom CSS post type.
-	 * @param string $stylesheet The theme stylesheet name.
+	 * @param string $css        CSS được lấy từ loại bài viết Custom CSS.
+	 * @param string $stylesheet Tên stylesheet của theme.
 	 */
 	$css = apply_filters( 'wp_get_custom_css', $css, $stylesheet );
 
@@ -2053,22 +2053,22 @@ function wp_get_custom_css( $stylesheet = '' ) {
 }
 
 /**
- * Updates the `custom_css` post for a given theme.
+ * Cập nhật bài viết `custom_css` cho một theme nhất định.
  *
- * Inserts a `custom_css` post when one doesn't yet exist.
+ * Chèn bài viết `custom_css` khi chưa tồn tại.
  *
  * @since 4.7.0
  *
- * @param string $css CSS, stored in `post_content`.
+ * @param string $css CSS, được lưu trong `post_content`.
  * @param array  $args {
- *     Args.
+ *     Các tham số.
  *
- *     @type string $preprocessed Optional. Pre-processed CSS, stored in `post_content_filtered`.
- *                                Normally empty string.
- *     @type string $stylesheet   Optional. Stylesheet (child theme) to update.
- *                                Defaults to active theme/stylesheet.
+ *     @type string $preprocessed Tùy chọn. CSS đã tiền xử lý, được lưu trong `post_content_filtered`.
+ *                                Thường là chuỗi rỗng.
+ *     @type string $stylesheet   Tùy chọn. Stylesheet (theme con) cần cập nhật.
+ *                                Mặc định là theme/stylesheet đang hoạt động.
  * }
- * @return WP_Post|WP_Error Post on success, error on failure.
+ * @return WP_Post|WP_Error Bài viết khi thành công, lỗi khi thất bại.
  */
 function wp_update_custom_css_post( $css, $args = array() ) {
 	$args = wp_parse_args(
@@ -2085,13 +2085,13 @@ function wp_update_custom_css_post( $css, $args = array() ) {
 	);
 
 	/**
-	 * Filters the `css` (`post_content`) and `preprocessed` (`post_content_filtered`) args
-	 * for a `custom_css` post being updated.
+	 * Lọc các tham số `css` (`post_content`) và `preprocessed` (`post_content_filtered`)
+	 * cho bài viết `custom_css` đang được cập nhật.
 	 *
-	 * This filter can be used by plugin that offer CSS pre-processors, to store the original
-	 * pre-processed CSS in `post_content_filtered` and then store processed CSS in `post_content`.
-	 * When used in this way, the `post_content_filtered` should be supplied as the setting value
-	 * instead of `post_content` via a the `customize_value_custom_css` filter, for example:
+	 * Bộ lọc này có thể được sử dụng bởi plugin cung cấp bộ tiền xử lý CSS, để lưu CSS
+	 * tiền xử lý gốc trong `post_content_filtered` và sau đó lưu CSS đã xử lý trong `post_content`.
+	 * Khi sử dụng theo cách này, `post_content_filtered` nên được cung cấp làm giá trị cài đặt
+	 * thay vì `post_content` thông qua bộ lọc `customize_value_custom_css`, ví dụ:
 	 *
 	 * <code>
 	 * add_filter( 'customize_value_custom_css', function( $value, $setting ) {
@@ -2105,18 +2105,18 @@ function wp_update_custom_css_post( $css, $args = array() ) {
 	 *
 	 * @since 4.7.0
 	 * @param array $data {
-	 *     Custom CSS data.
+	 *     Dữ liệu Custom CSS.
 	 *
-	 *     @type string $css          CSS stored in `post_content`.
-	 *     @type string $preprocessed Pre-processed CSS stored in `post_content_filtered`.
-	 *                                Normally empty string.
+	 *     @type string $css          CSS được lưu trong `post_content`.
+	 *     @type string $preprocessed CSS đã tiền xử lý được lưu trong `post_content_filtered`.
+	 *                                Thường là chuỗi rỗng.
 	 * }
 	 * @param array $args {
-	 *     The args passed into `wp_update_custom_css_post()` merged with defaults.
+	 *     Các tham số được truyền vào `wp_update_custom_css_post()` đã hợp nhất với giá trị mặc định.
 	 *
-	 *     @type string $css          The original CSS passed in to be updated.
-	 *     @type string $preprocessed The original preprocessed CSS passed in to be updated.
-	 *     @type string $stylesheet   The stylesheet (theme) being updated.
+	 *     @type string $css          CSS gốc được truyền vào để cập nhật.
+	 *     @type string $preprocessed CSS tiền xử lý gốc được truyền vào để cập nhật.
+	 *     @type string $stylesheet   Stylesheet (theme) đang được cập nhật.
 	 * }
 	 */
 	$data = apply_filters( 'update_custom_css_data', $data, array_merge( $args, compact( 'css' ) ) );
@@ -2130,7 +2130,7 @@ function wp_update_custom_css_post( $css, $args = array() ) {
 		'post_content_filtered' => $data['preprocessed'],
 	);
 
-	// Update post if it already exists, otherwise create a new one.
+	// Cập nhật bài viết nếu đã tồn tại, nếu không tạo bài viết mới.
 	$post = wp_get_custom_css_post( $args['stylesheet'] );
 	if ( $post ) {
 		$post_data['ID'] = $post->ID;
@@ -2143,7 +2143,7 @@ function wp_update_custom_css_post( $css, $args = array() ) {
 				set_theme_mod( 'custom_css_post_id', $r );
 			}
 
-			// Trigger creation of a revision. This should be removed once #30854 is resolved.
+			// Kích hoạt tạo phiên bản sửa đổi. Nên xóa khi #30854 được giải quyết.
 			$revisions = wp_get_latest_revision_id_and_total_count( $r );
 			if ( ! is_wp_error( $revisions ) && 0 === $revisions['count'] ) {
 				wp_save_post_revision( $r );
@@ -2158,26 +2158,26 @@ function wp_update_custom_css_post( $css, $args = array() ) {
 }
 
 /**
- * Adds callback for custom TinyMCE editor stylesheets.
+ * Thêm callback cho các stylesheet tùy chỉnh của trình soạn thảo TinyMCE.
  *
- * The parameter $stylesheet is the name of the stylesheet, relative to
- * the theme root. It also accepts an array of stylesheets.
- * It is optional and defaults to 'editor-style.css'.
+ * Tham số $stylesheet là tên stylesheet, tương đối so với thư mục gốc theme.
+ * Nó cũng chấp nhận mảng các stylesheet.
+ * Tham số này là tùy chọn và mặc định là 'editor-style.css'.
  *
- * This function automatically adds another stylesheet with -rtl prefix, e.g. editor-style-rtl.css.
- * If that file doesn't exist, it is removed before adding the stylesheet(s) to TinyMCE.
- * If an array of stylesheets is passed to add_editor_style(),
- * RTL is only added for the first stylesheet.
+ * Hàm này tự động thêm một stylesheet khác có tiền tố -rtl, ví dụ editor-style-rtl.css.
+ * Nếu tệp đó không tồn tại, nó sẽ bị xóa trước khi thêm stylesheet(s) vào TinyMCE.
+ * Nếu truyền mảng các stylesheet vào add_editor_style(),
+ * RTL chỉ được thêm cho stylesheet đầu tiên.
  *
- * Since version 3.4 the TinyMCE body has .rtl CSS class.
- * It is a better option to use that class and add any RTL styles to the main stylesheet.
+ * Từ phiên bản 3.4, phần thân TinyMCE có lớp CSS .rtl.
+ * Tốt hơn nên sử dụng lớp đó và thêm bất kỳ kiểu RTL nào vào stylesheet chính.
  *
  * @since 3.0.0
  *
  * @global array $editor_styles
  *
- * @param array|string $stylesheet Optional. Stylesheet name or array thereof, relative to theme root.
- *                                 Defaults to 'editor-style.css'
+ * @param array|string $stylesheet Tùy chọn. Tên stylesheet hoặc mảng tên, tương đối so với thư mục gốc theme.
+ *                                 Mặc định 'editor-style.css'
  */
 function add_editor_style( $stylesheet = 'editor-style.css' ) {
 	global $editor_styles;
@@ -2196,13 +2196,13 @@ function add_editor_style( $stylesheet = 'editor-style.css' ) {
 }
 
 /**
- * Removes all visual editor stylesheets.
+ * Xóa tất cả stylesheet của trình soạn thảo trực quan.
  *
  * @since 3.1.0
  *
  * @global array $editor_styles
  *
- * @return bool True on success, false if there were no stylesheets to remove.
+ * @return bool True khi thành công, false nếu không có stylesheet nào để xóa.
  */
 function remove_editor_styles() {
 	if ( ! current_theme_supports( 'editor-style' ) ) {
@@ -2216,17 +2216,17 @@ function remove_editor_styles() {
 }
 
 /**
- * Retrieves any registered editor stylesheet URLs.
+ * Lấy các URL stylesheet trình soạn thảo đã đăng ký.
  *
  * @since 4.0.0
  *
- * @global array $editor_styles Registered editor stylesheets
+ * @global array $editor_styles Các stylesheet trình soạn thảo đã đăng ký
  *
- * @return string[] If registered, a list of editor stylesheet URLs.
+ * @return string[] Nếu đã đăng ký, danh sách các URL stylesheet trình soạn thảo.
  */
 function get_editor_stylesheets() {
 	$stylesheets = array();
-	// Load editor_style.css if the active theme supports it.
+	// Tải editor_style.css nếu theme đang hoạt động hỗ trợ.
 	if ( ! empty( $GLOBALS['editor_styles'] ) && is_array( $GLOBALS['editor_styles'] ) ) {
 		$editor_styles = $GLOBALS['editor_styles'];
 
@@ -2234,7 +2234,7 @@ function get_editor_stylesheets() {
 		$style_uri     = get_stylesheet_directory_uri();
 		$style_dir     = get_stylesheet_directory();
 
-		// Support externally referenced styles (like, say, fonts).
+		// Hỗ trợ các kiểu tham chiếu bên ngoài (ví dụ, phông chữ).
 		foreach ( $editor_styles as $key => $file ) {
 			if ( preg_match( '~^(https?:)?//~', $file ) ) {
 				$stylesheets[] = sanitize_url( $file );
@@ -2242,7 +2242,7 @@ function get_editor_stylesheets() {
 			}
 		}
 
-		// Look in a parent theme first, that way child theme CSS overrides.
+		// Tìm trong theme cha trước, để CSS theme con ghi đè.
 		if ( is_child_theme() ) {
 			$template_uri = get_template_directory_uri();
 			$template_dir = get_template_directory();
@@ -2262,21 +2262,21 @@ function get_editor_stylesheets() {
 	}
 
 	/**
-	 * Filters the array of URLs of stylesheets applied to the editor.
+	 * Lọc mảng URL các stylesheet được áp dụng cho trình soạn thảo.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param string[] $stylesheets Array of URLs of stylesheets to be applied to the editor.
+	 * @param string[] $stylesheets Mảng URL các stylesheet sẽ được áp dụng cho trình soạn thảo.
 	 */
 	return apply_filters( 'editor_stylesheets', $stylesheets );
 }
 
 /**
- * Expands a theme's starter content configuration using core-provided data.
+ * Mở rộng cấu hình nội dung khởi đầu của theme bằng dữ liệu do lõi cung cấp.
  *
  * @since 4.7.0
  *
- * @return array Array of starter content.
+ * @return array Mảng nội dung khởi đầu.
  */
 function get_theme_starter_content() {
 	$theme_support = get_theme_support( 'starter-content' );
@@ -2481,19 +2481,19 @@ function get_theme_starter_content() {
 
 	foreach ( $config as $type => $args ) {
 		switch ( $type ) {
-			// Use options and theme_mods as-is.
+			// Sử dụng options và theme_mods nguyên trạng.
 			case 'options':
 			case 'theme_mods':
 				$content[ $type ] = $config[ $type ];
 				break;
 
-			// Widgets are grouped into sidebars.
+			// Widget được nhóm theo thanh bên.
 			case 'widgets':
 				foreach ( $config[ $type ] as $sidebar_id => $widgets ) {
 					foreach ( $widgets as $id => $widget ) {
 						if ( is_array( $widget ) ) {
 
-							// Item extends core content.
+							// Mục mở rộng nội dung lõi.
 							if ( ! empty( $core_content[ $type ][ $id ] ) ) {
 								$widget = array(
 									$core_content[ $type ][ $id ][0],
@@ -2512,11 +2512,11 @@ function get_theme_starter_content() {
 				}
 				break;
 
-			// And nav menu items are grouped into nav menus.
+			// Và các mục menu điều hướng được nhóm theo menu điều hướng.
 			case 'nav_menus':
 				foreach ( $config[ $type ] as $nav_menu_location => $nav_menu ) {
 
-					// Ensure nav menus get a name.
+					// Đảm bảo menu điều hướng có tên.
 					if ( empty( $nav_menu['name'] ) ) {
 						$nav_menu['name'] = $nav_menu_location;
 					}
@@ -2526,7 +2526,7 @@ function get_theme_starter_content() {
 					foreach ( $nav_menu['items'] as $id => $nav_menu_item ) {
 						if ( is_array( $nav_menu_item ) ) {
 
-							// Item extends core content.
+							// Mục mở rộng nội dung lõi.
 							if ( ! empty( $core_content[ $type ][ $id ] ) ) {
 								$nav_menu_item = array_merge( $core_content[ $type ][ $id ], $nav_menu_item );
 							}
@@ -2542,7 +2542,7 @@ function get_theme_starter_content() {
 				}
 				break;
 
-			// Attachments are posts but have special treatment.
+			// Tệp đính kèm là bài viết nhưng được xử lý đặc biệt.
 			case 'attachments':
 				foreach ( $config[ $type ] as $id => $item ) {
 					if ( ! empty( $item['file'] ) ) {
@@ -2552,19 +2552,19 @@ function get_theme_starter_content() {
 				break;
 
 			/*
-			 * All that's left now are posts (besides attachments).
-			 * Not a default case for the sake of clarity and future work.
+			 * Tất cả những gì còn lại bây giờ là bài viết (ngoài tệp đính kèm).
+			 * Không phải trường hợp mặc định vì mục đích rõ ràng và công việc trong tương lai.
 			 */
 			case 'posts':
 				foreach ( $config[ $type ] as $id => $item ) {
 					if ( is_array( $item ) ) {
 
-						// Item extends core content.
+						// Mục mở rộng nội dung lõi.
 						if ( ! empty( $core_content[ $type ][ $id ] ) ) {
 							$item = array_merge( $core_content[ $type ][ $id ], $item );
 						}
 
-						// Enforce a subset of fields.
+						// Áp dụng một tập con các trường.
 						$content[ $type ][ $id ] = wp_array_slice_assoc(
 							$item,
 							array(
@@ -2588,24 +2588,24 @@ function get_theme_starter_content() {
 	}
 
 	/**
-	 * Filters the expanded array of starter content.
+	 * Lọc mảng nội dung khởi đầu đã mở rộng.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array $content Array of starter content.
-	 * @param array $config  Array of theme-specific starter content configuration.
+	 * @param array $content Mảng nội dung khởi đầu.
+	 * @param array $config  Mảng cấu hình nội dung khởi đầu riêng của theme.
 	 */
 	return apply_filters( 'get_theme_starter_content', $content, $config );
 }
 
 /**
- * Registers theme support for a given feature.
+ * Đăng ký hỗ trợ theme cho một tính năng nhất định.
  *
- * Must be called in the theme's functions.php file to work.
- * If attached to a hook, it must be {@see 'after_setup_theme'}.
- * The {@see 'init'} hook may be too late for some features.
+ * Phải được gọi trong tệp functions.php của theme để hoạt động.
+ * Nếu gắn vào hook, nó phải là {@see 'after_setup_theme'}.
+ * Hook {@see 'init'} có thể quá muộn cho một số tính năng.
  *
- * Example usage:
+ * Ví dụ sử dụng:
  *
  *     add_theme_support( 'title-tag' );
  *     add_theme_support( 'custom-logo', array(
@@ -2614,39 +2614,39 @@ function get_theme_starter_content() {
  *     ) );
  *
  * @since 2.9.0
- * @since 3.4.0 The `custom-header-uploads` feature was deprecated.
- * @since 3.6.0 The `html5` feature was added.
- * @since 3.6.1 The `html5` feature requires an array of types to be passed. Defaults to
- *              'comment-list', 'comment-form', 'search-form' for backward compatibility.
- * @since 3.9.0 The `html5` feature now also accepts 'gallery' and 'caption'.
- * @since 4.1.0 The `title-tag` feature was added.
- * @since 4.5.0 The `customize-selective-refresh-widgets` feature was added.
- * @since 4.7.0 The `starter-content` feature was added.
- * @since 5.0.0 The `responsive-embeds`, `align-wide`, `dark-editor-style`, `disable-custom-colors`,
+ * @since 3.4.0 Tính năng `custom-header-uploads` đã bị loại bỏ.
+ * @since 3.6.0 Tính năng `html5` đã được thêm.
+ * @since 3.6.1 Tính năng `html5` yêu cầu truyền mảng các loại. Mặc định là
+ *              'comment-list', 'comment-form', 'search-form' để tương thích ngược.
+ * @since 3.9.0 Tính năng `html5` giờ cũng chấp nhận 'gallery' và 'caption'.
+ * @since 4.1.0 Tính năng `title-tag` đã được thêm.
+ * @since 4.5.0 Tính năng `customize-selective-refresh-widgets` đã được thêm.
+ * @since 4.7.0 Tính năng `starter-content` đã được thêm.
+ * @since 5.0.0 Các tính năng `responsive-embeds`, `align-wide`, `dark-editor-style`, `disable-custom-colors`,
  *              `disable-custom-font-sizes`, `editor-color-palette`, `editor-font-sizes`,
- *              `editor-styles`, and `wp-block-styles` features were added.
- * @since 5.3.0 The `html5` feature now also accepts 'script' and 'style'.
- * @since 5.3.0 Formalized the existing and already documented `...$args` parameter
- *              by adding it to the function signature.
- * @since 5.4.0 The `disable-custom-gradients` feature limits to default gradients or gradients added
- *              through `editor-gradient-presets` theme support.
- * @since 5.5.0 The `core-block-patterns` feature was added and is enabled by default.
- * @since 5.5.0 The `custom-logo` feature now also accepts 'unlink-homepage-logo'.
- * @since 5.6.0 The `post-formats` feature warns if no array is passed as the second parameter.
- * @since 5.8.0 The `widgets-block-editor` feature enables the Widgets block editor.
- * @since 5.8.0 The `block-templates` feature indicates whether a theme uses block-based templates.
- * @since 6.0.0 The `html5` feature warns if no array is passed as the second parameter.
- * @since 6.1.0 The `block-template-parts` feature allows to edit any reusable template part from site editor.
- * @since 6.1.0 The `disable-layout-styles` feature disables the default layout styles.
- * @since 6.3.0 The `link-color` feature allows to enable the link color setting.
- * @since 6.3.0 The `border` feature allows themes without theme.json to add border styles to blocks.
- * @since 6.5.0 The `appearance-tools` feature enables a few design tools for blocks,
- *              see `WP_Theme_JSON::APPEARANCE_TOOLS_OPT_INS` for a complete list.
- * @since 6.6.0 The `editor-spacing-sizes` feature was added.
+ *              `editor-styles`, và `wp-block-styles` đã được thêm.
+ * @since 5.3.0 Tính năng `html5` giờ cũng chấp nhận 'script' và 'style'.
+ * @since 5.3.0 Chính thức hóa tham số `...$args` đã tồn tại và đã được tài liệu hóa
+ *              bằng cách thêm vào chữ ký hàm.
+ * @since 5.4.0 Tính năng `disable-custom-gradients` giới hạn ở gradient mặc định hoặc gradient được thêm
+ *              thông qua hỗ trợ theme `editor-gradient-presets`.
+ * @since 5.5.0 Tính năng `core-block-patterns` đã được thêm và được bật theo mặc định.
+ * @since 5.5.0 Tính năng `custom-logo` giờ cũng chấp nhận 'unlink-homepage-logo'.
+ * @since 5.6.0 Tính năng `post-formats` cảnh báo nếu không truyền mảng làm tham số thứ hai.
+ * @since 5.8.0 Tính năng `widgets-block-editor` bật trình soạn thảo khối Widget.
+ * @since 5.8.0 Tính năng `block-templates` cho biết theme có sử dụng mẫu dựa trên khối hay không.
+ * @since 6.0.0 Tính năng `html5` cảnh báo nếu không truyền mảng làm tham số thứ hai.
+ * @since 6.1.0 Tính năng `block-template-parts` cho phép chỉnh sửa bất kỳ phần mẫu tái sử dụng nào từ trình soạn thảo trang.
+ * @since 6.1.0 Tính năng `disable-layout-styles` vô hiệu hóa các kiểu bố cục mặc định.
+ * @since 6.3.0 Tính năng `link-color` cho phép bật cài đặt màu liên kết.
+ * @since 6.3.0 Tính năng `border` cho phép theme không có theme.json thêm kiểu viền cho các khối.
+ * @since 6.5.0 Tính năng `appearance-tools` bật một số công cụ thiết kế cho khối,
+ *              xem `WP_Theme_JSON::APPEARANCE_TOOLS_OPT_INS` để biết danh sách đầy đủ.
+ * @since 6.6.0 Tính năng `editor-spacing-sizes` đã được thêm.
  *
  * @global array $_wp_theme_features
  *
- * @param string $feature The feature being added. Likely core values include:
+ * @param string $feature Tính năng đang được thêm. Các giá trị lõi có thể bao gồm:
  *                          - 'admin-bar'
  *                          - 'align-wide'
  *                          - 'appearance-tools'
@@ -2684,8 +2684,8 @@ function get_theme_starter_content() {
  *                          - 'widgets'
  *                          - 'widgets-block-editor'
  *                          - 'wp-block-styles'
- * @param mixed  ...$args Optional extra arguments to pass along with certain features.
- * @return void|false Void on success, false on failure.
+ * @param mixed  ...$args Các tham số bổ sung tùy chọn để truyền cùng với một số tính năng nhất định.
+ * @return void|false Void khi thành công, false khi thất bại.
  */
 function add_theme_support( $feature, ...$args ) {
 	global $_wp_theme_features;

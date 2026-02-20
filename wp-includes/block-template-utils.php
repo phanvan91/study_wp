@@ -1,12 +1,12 @@
 <?php
 /**
- * Utilities used to fetch and create templates and template parts.
+ * Các tiện ích dùng để lấy và tạo template và template part.
  *
  * @package WordPress
  * @since 5.8.0
  */
 
-// Define constants for supported wp_template_part_area taxonomy.
+// Định nghĩa các hằng số cho taxonomy wp_template_part_area được hỗ trợ.
 if ( ! defined( 'WP_TEMPLATE_PART_AREA_HEADER' ) ) {
 	define( 'WP_TEMPLATE_PART_AREA_HEADER', 'header' );
 }
@@ -21,25 +21,25 @@ if ( ! defined( 'WP_TEMPLATE_PART_AREA_UNCATEGORIZED' ) ) {
 }
 
 /**
- * For backward compatibility reasons,
- * block themes might be using block-templates or block-template-parts,
- * this function ensures we fallback to these folders properly.
+ * Vì lý do tương thích ngược,
+ * các theme khối có thể đang sử dụng block-templates hoặc block-template-parts,
+ * hàm này đảm bảo chúng ta fallback về các thư mục này một cách chính xác.
  *
  * @since 5.9.0
  *
- * @param string $theme_stylesheet The stylesheet. Default is to leverage the main theme root.
+ * @param string $theme_stylesheet Stylesheet. Mặc định là sử dụng thư mục gốc của theme chính.
  *
  * @return string[] {
- *     Folder names used by block themes.
+ *     Tên thư mục được sử dụng bởi các theme khối.
  *
- *     @type string $wp_template      Theme-relative directory name for block templates.
- *     @type string $wp_template_part Theme-relative directory name for block template parts.
+ *     @type string $wp_template      Tên thư mục tương đối với theme cho các template khối.
+ *     @type string $wp_template_part Tên thư mục tương đối với theme cho các template part khối.
  * }
  */
 function get_block_theme_folders( $theme_stylesheet = null ) {
 	$theme = wp_get_theme( (string) $theme_stylesheet );
 	if ( ! $theme->exists() ) {
-		// Return the default folders if the theme doesn't exist.
+		// Trả về các thư mục mặc định nếu theme không tồn tại.
 		return array(
 			'wp_template'      => 'templates',
 			'wp_template_part' => 'parts',
@@ -49,21 +49,21 @@ function get_block_theme_folders( $theme_stylesheet = null ) {
 }
 
 /**
- * Returns a filtered list of allowed area values for template parts.
+ * Trả về danh sách đã lọc các giá trị vùng được phép cho template part.
  *
  * @since 5.9.0
  *
  * @return array[] {
- *     The allowed template part area values.
+ *     Các giá trị vùng template part được phép.
  *
  *     @type array ...$0 {
- *         Data for the allowed template part area.
+ *         Dữ liệu cho vùng template part được phép.
  *
- *         @type string $area        Template part area name.
- *         @type string $label       Template part area label.
- *         @type string $description Template part area description.
- *         @type string $icon        Template part area icon.
- *         @type string $area_tag    Template part area tag.
+ *         @type string $area        Tên vùng template part.
+ *         @type string $label       Nhãn vùng template part.
+ *         @type string $description Mô tả vùng template part.
+ *         @type string $icon        Biểu tượng vùng template part.
+ *         @type string $area_tag    Thẻ vùng template part.
  *     }
  * }
  */
@@ -99,21 +99,21 @@ function get_allowed_block_template_part_areas() {
 	);
 
 	/**
-	 * Filters the list of allowed template part area values.
+	 * Lọc danh sách các giá trị vùng template part được phép.
 	 *
 	 * @since 5.9.0
 	 *
 	 * @param array[] $default_area_definitions {
-	 *     The allowed template part area values.
+	 *     Các giá trị vùng template part được phép.
 	 *
 	 *     @type array ...$0 {
-	 *         Data for the template part area.
+	 *         Dữ liệu cho vùng template part.
 	 *
-	 *         @type string $area        Template part area name.
-	 *         @type string $label       Template part area label.
-	 *         @type string $description Template part area description.
-	 *         @type string $icon        Template part area icon.
-	 *         @type string $area_tag    Template part area tag.
+	 *         @type string $area        Tên vùng template part.
+	 *         @type string $label       Nhãn vùng template part.
+	 *         @type string $description Mô tả vùng template part.
+	 *         @type string $icon        Biểu tượng vùng template part.
+	 *         @type string $area_tag    Thẻ vùng template part.
 	 *     }
 	 * }
 	 */
@@ -122,19 +122,19 @@ function get_allowed_block_template_part_areas() {
 
 
 /**
- * Returns a filtered list of default template types, containing their
- * localized titles and descriptions.
+ * Trả về danh sách đã lọc các loại template mặc định, chứa
+ * tiêu đề và mô tả đã được bản địa hóa.
  *
  * @since 5.9.0
  *
  * @return array[] {
- *     The default template types.
+ *     Các loại template mặc định.
  *
  *     @type array ...$0 {
- *         Data for the template type.
+ *         Dữ liệu cho loại template.
  *
- *         @type string $title       Template type title.
- *         @type string $description Template type description.
+ *         @type string $title       Tiêu đề loại template.
+ *         @type string $description Mô tả loại template.
  *    }
  * }
  */
@@ -206,7 +206,7 @@ function get_default_block_template_types() {
 		),
 	);
 
-	// Add a title and description to post format templates.
+	// Thêm tiêu đề và mô tả cho các template định dạng bài viết.
 	$post_formats = get_post_format_strings();
 	foreach ( $post_formats as $post_format_slug => $post_format_name ) {
 		$default_template_types[ 'taxonomy-post_format-post-format-' . $post_format_slug ] = array(
@@ -224,18 +224,18 @@ function get_default_block_template_types() {
 	}
 
 	/**
-	 * Filters the list of default template types.
+	 * Lọc danh sách các loại template mặc định.
 	 *
 	 * @since 5.9.0
 	 *
 	 * @param array[] $default_template_types {
-	 *     The default template types.
+	 *     Các loại template mặc định.
 	 *
 	 *     @type array ...$0 {
-	 *         Data for the template type.
+	 *         Dữ liệu cho loại template.
 	 *
-	 *         @type string $title       Template type title.
-	 *         @type string $description Template type description.
+	 *         @type string $title       Tiêu đề loại template.
+	 *         @type string $description Mô tả loại template.
 	 *    }
 	 * }
 	 */
@@ -243,14 +243,14 @@ function get_default_block_template_types() {
 }
 
 /**
- * Checks whether the input 'area' is a supported value.
- * Returns the input if supported, otherwise returns the 'uncategorized' value.
+ * Kiểm tra xem giá trị 'area' đầu vào có được hỗ trợ không.
+ * Trả về giá trị đầu vào nếu được hỗ trợ, nếu không trả về giá trị 'uncategorized'.
  *
  * @since 5.9.0
  * @access private
  *
- * @param string $type Template part area name.
- * @return string Input if supported, else the uncategorized value.
+ * @param string $type Tên vùng template part.
+ * @return string Giá trị đầu vào nếu được hỗ trợ, nếu không là giá trị uncategorized.
  */
 function _filter_block_template_part_area( $type ) {
 	$allowed_areas = array_map(
@@ -274,13 +274,13 @@ function _filter_block_template_part_area( $type ) {
 }
 
 /**
- * Finds all nested template part file paths in a theme's directory.
+ * Tìm tất cả đường dẫn tệp template part lồng nhau trong thư mục của theme.
  *
  * @since 5.9.0
  * @access private
  *
- * @param string $base_directory The theme's file path.
- * @return string[] A list of paths to all template part files.
+ * @param string $base_directory Đường dẫn tệp của theme.
+ * @return string[] Danh sách đường dẫn đến tất cả các tệp template part.
  */
 function _get_block_templates_paths( $base_directory ) {
 	static $template_path_list = array();
@@ -300,24 +300,24 @@ function _get_block_templates_paths( $base_directory ) {
 }
 
 /**
- * Retrieves the template file from the theme for a given slug.
+ * Lấy tệp template từ theme cho một slug nhất định.
  *
  * @since 5.9.0
  * @access private
  *
- * @param string $template_type Template type. Either 'wp_template' or 'wp_template_part'.
- * @param string $slug          Template slug.
+ * @param string $template_type Loại template. Có thể là 'wp_template' hoặc 'wp_template_part'.
+ * @param string $slug          Slug template.
  * @return array|null {
- *     Array with template metadata if $template_type is one of 'wp_template' or 'wp_template_part',
- *     null otherwise.
+ *     Mảng chứa metadata template nếu $template_type là 'wp_template' hoặc 'wp_template_part',
+ *     null trong trường hợp khác.
  *
- *     @type string   $slug      Template slug.
- *     @type string   $path      Template file path.
- *     @type string   $theme     Theme slug.
- *     @type string   $type      Template type.
- *     @type string   $area      Template area. Only for 'wp_template_part'.
- *     @type string   $title     Optional. Template title.
- *     @type string[] $postTypes Optional. List of post types that the template supports. Only for 'wp_template'.
+ *     @type string   $slug      Slug template.
+ *     @type string   $path      Đường dẫn tệp template.
+ *     @type string   $theme     Slug theme.
+ *     @type string   $type      Loại template.
+ *     @type string   $area      Vùng template. Chỉ cho 'wp_template_part'.
+ *     @type string   $title     Tùy chọn. Tiêu đề template.
+ *     @type string[] $postTypes Tùy chọn. Danh sách các loại bài viết mà template hỗ trợ. Chỉ cho 'wp_template'.
  * }
  */
 function _get_block_template_file( $template_type, $slug ) {
@@ -356,23 +356,23 @@ function _get_block_template_file( $template_type, $slug ) {
 }
 
 /**
- * Retrieves the template files from the theme.
+ * Lấy các tệp template từ theme.
  *
  * @since 5.9.0
- * @since 6.3.0 Added the `$query` parameter.
+ * @since 6.3.0 Thêm tham số `$query`.
  * @access private
  *
- * @param string $template_type Template type. Either 'wp_template' or 'wp_template_part'.
+ * @param string $template_type Loại template. Có thể là 'wp_template' hoặc 'wp_template_part'.
  * @param array  $query {
- *     Arguments to retrieve templates. Optional, empty by default.
+ *     Các đối số để lấy template. Tùy chọn, mặc định rỗng.
  *
- *     @type string[] $slug__in     List of slugs to include.
- *     @type string[] $slug__not_in List of slugs to skip.
- *     @type string   $area         A 'wp_template_part_area' taxonomy value to filter by (for 'wp_template_part' template type only).
- *     @type string   $post_type    Post type to get the templates for.
+ *     @type string[] $slug__in     Danh sách các slug cần bao gồm.
+ *     @type string[] $slug__not_in Danh sách các slug cần bỏ qua.
+ *     @type string   $area         Giá trị taxonomy 'wp_template_part_area' để lọc (chỉ cho loại template 'wp_template_part').
+ *     @type string   $post_type    Loại bài viết để lấy template.
  * }
  *
- * @return array|null Template files on success, null if `$template_type` is not matched.
+ * @return array|null Các tệp template khi thành công, null nếu `$template_type` không khớp.
  */
 function _get_block_templates_files( $template_type, $query = array() ) {
 	if ( 'wp_template' !== $template_type && 'wp_template_part' !== $template_type ) {
@@ -384,7 +384,7 @@ function _get_block_templates_files( $template_type, $query = array() ) {
 		$default_template_types = get_default_block_template_types();
 	}
 
-	// Prepare metadata from $query.
+	// Chuẩn bị metadata từ $query.
 	$slugs_to_include = isset( $query['slug__in'] ) ? $query['slug__in'] : array();
 	$slugs_to_skip    = isset( $query['slug__not_in'] ) ? $query['slug__not_in'] : array();
 	$area             = isset( $query['area'] ) ? $query['area'] : null;
@@ -395,7 +395,7 @@ function _get_block_templates_files( $template_type, $query = array() ) {
 	$themes     = array(
 		$stylesheet => get_stylesheet_directory(),
 	);
-	// Add the parent theme if it's not the same as the current theme.
+	// Thêm theme cha nếu nó không giống với theme hiện tại.
 	if ( $stylesheet !== $template ) {
 		$themes[ $template ] = get_template_directory();
 	}
@@ -407,25 +407,25 @@ function _get_block_templates_files( $template_type, $query = array() ) {
 			$template_base_path = $template_base_paths[ $template_type ];
 			$template_slug      = substr(
 				$template_file,
-				// Starting position of slug.
+				// Vị trí bắt đầu của slug.
 				strpos( $template_file, $template_base_path . DIRECTORY_SEPARATOR ) + 1 + strlen( $template_base_path ),
-				// Subtract ending '.html'.
+				// Trừ đi phần đuôi '.html'.
 				-5
 			);
 
-			// Skip this item if its slug doesn't match any of the slugs to include.
+			// Bỏ qua mục này nếu slug của nó không khớp với bất kỳ slug nào cần bao gồm.
 			if ( ! empty( $slugs_to_include ) && ! in_array( $template_slug, $slugs_to_include, true ) ) {
 				continue;
 			}
 
-			// Skip this item if its slug matches any of the slugs to skip.
+			// Bỏ qua mục này nếu slug của nó khớp với bất kỳ slug nào cần bỏ qua.
 			if ( ! empty( $slugs_to_skip ) && in_array( $template_slug, $slugs_to_skip, true ) ) {
 				continue;
 			}
 
 			/*
-			 * The child theme items (stylesheet) are processed before the parent theme's (template).
-			 * If a child theme defines a template, prevent the parent template from being added to the list as well.
+			 * Các mục của theme con (stylesheet) được xử lý trước theme cha (template).
+			 * Nếu theme con định nghĩa một template, ngăn template của theme cha được thêm vào danh sách.
 			 */
 			if ( isset( $template_files[ $template_slug ] ) ) {
 				continue;
@@ -456,7 +456,7 @@ function _get_block_templates_files( $template_type, $query = array() ) {
 					$template_files[ $template_slug ] = $candidate;
 				}
 
-				// The custom templates with no associated post types are available for all post types.
+				// Các template tùy chỉnh không có loại bài viết liên kết sẽ khả dụng cho tất cả loại bài viết.
 				if ( $post_type && ! isset( $candidate['postTypes'] ) && $is_custom ) {
 					$template_files[ $template_slug ] = $candidate;
 				}
@@ -468,13 +468,13 @@ function _get_block_templates_files( $template_type, $query = array() ) {
 }
 
 /**
- * Attempts to add custom template information to the template item.
+ * Cố gắng thêm thông tin template tùy chỉnh vào mục template.
  *
  * @since 5.9.0
  * @access private
  *
- * @param array $template_item Template to add information to (requires 'slug' field).
- * @return array Template item.
+ * @param array $template_item Template cần thêm thông tin (yêu cầu trường 'slug').
+ * @return array Mục template.
  */
 function _add_block_template_info( $template_item ) {
 	if ( ! wp_theme_has_theme_json() ) {
@@ -491,13 +491,13 @@ function _add_block_template_info( $template_item ) {
 }
 
 /**
- * Attempts to add the template part's area information to the input template.
+ * Cố gắng thêm thông tin vùng của template part vào template đầu vào.
  *
  * @since 5.9.0
  * @access private
  *
- * @param array $template_info Template to add information to (requires 'type' and 'slug' fields).
- * @return array Template info.
+ * @param array $template_info Template cần thêm thông tin (yêu cầu trường 'type' và 'slug').
+ * @return array Thông tin template.
  */
 function _add_block_template_part_area_info( $template_info ) {
 	if ( wp_theme_has_theme_json() ) {
@@ -515,14 +515,14 @@ function _add_block_template_part_area_info( $template_info ) {
 }
 
 /**
- * Returns an array containing the references of
- * the passed blocks and their inner blocks.
+ * Trả về một mảng chứa các tham chiếu của
+ * các khối được truyền vào và các khối con bên trong.
  *
  * @since 5.9.0
  * @access private
  *
- * @param array $blocks array of blocks.
- * @return array block references to the passed blocks and their inner blocks.
+ * @param array $blocks Mảng các khối.
+ * @return array Các tham chiếu khối đến các khối được truyền vào và các khối con bên trong.
  */
 function _flatten_blocks( &$blocks ) {
 	$all_blocks = array();
@@ -547,13 +547,13 @@ function _flatten_blocks( &$blocks ) {
 }
 
 /**
- * Injects the active theme's stylesheet as a `theme` attribute
- * into a given template part block.
+ * Chèn stylesheet của theme đang hoạt động dưới dạng thuộc tính `theme`
+ * vào một khối template part nhất định.
  *
  * @since 6.4.0
  * @access private
  *
- * @param array $block a parsed block.
+ * @param array $block Một khối đã được phân tích.
  */
 function _inject_theme_attribute_in_template_part_block( &$block ) {
 	if (
@@ -565,12 +565,12 @@ function _inject_theme_attribute_in_template_part_block( &$block ) {
 }
 
 /**
- * Removes the `theme` attribute from a given template part block.
+ * Xóa thuộc tính `theme` khỏi một khối template part nhất định.
  *
  * @since 6.4.0
  * @access private
  *
- * @param array $block a parsed block.
+ * @param array $block Một khối đã được phân tích.
  */
 function _remove_theme_attribute_from_template_part_block( &$block ) {
 	if (
@@ -582,14 +582,14 @@ function _remove_theme_attribute_from_template_part_block( &$block ) {
 }
 
 /**
- * Builds a unified template object based on a theme file.
+ * Xây dựng đối tượng template thống nhất dựa trên tệp theme.
  *
  * @since 5.9.0
- * @since 6.3.0 Added `modified` property to template objects.
+ * @since 6.3.0 Thêm thuộc tính `modified` cho các đối tượng template.
  * @access private
  *
- * @param array  $template_file Theme file.
- * @param string $template_type Template type. Either 'wp_template' or 'wp_template_part'.
+ * @param array  $template_file Tệp theme.
+ * @param string $template_type Loại template. Có thể là 'wp_template' hoặc 'wp_template_part'.
  * @return WP_Block_Template Template.
  */
 function _build_block_template_result_from_file( $template_file, $template_type ) {
@@ -634,8 +634,8 @@ function _build_block_template_result_from_file( $template_file, $template_type 
 
 	if ( 'wp_template_part' === $template->type ) {
 		/*
-		 * In order for hooked blocks to be inserted at positions first_child and last_child in a template part,
-		 * we need to wrap its content a mock template part block and traverse it.
+		 * Để các khối hook được chèn vào vị trí first_child và last_child trong template part,
+		 * chúng ta cần bọc nội dung của nó trong một khối template part giả và duyệt qua nó.
 		 */
 		$content           = get_comment_delimited_block_content(
 			'core/template-part',
@@ -660,17 +660,17 @@ function _build_block_template_result_from_file( $template_file, $template_type 
 }
 
 /**
- * Builds the title and description of a post-specific template based on the underlying referenced post.
+ * Xây dựng tiêu đề và mô tả của template cụ thể cho bài viết dựa trên bài viết được tham chiếu.
  *
- * Mutates the underlying template object.
+ * Thay đổi trực tiếp đối tượng template bên dưới.
  *
  * @since 6.1.0
  * @access private
  *
- * @param string            $post_type Post type, e.g. page, post, product.
- * @param string            $slug      Slug of the post, e.g. a-story-about-shoes.
- * @param WP_Block_Template $template  Template to mutate adding the description and title computed.
- * @return bool Returns true if the referenced post was found and false otherwise.
+ * @param string            $post_type Loại bài viết, ví dụ: page, post, product.
+ * @param string            $slug      Slug của bài viết, ví dụ: a-story-about-shoes.
+ * @param WP_Block_Template $template  Template cần thay đổi, thêm mô tả và tiêu đề đã tính toán.
+ * @return bool Trả về true nếu bài viết được tham chiếu được tìm thấy và false nếu không.
  */
 function _wp_build_title_and_description_for_single_post_type_block_template( $post_type, $slug, WP_Block_Template $template ) {
 	$post_type_object = get_post_type_object( $post_type );
@@ -738,17 +738,17 @@ function _wp_build_title_and_description_for_single_post_type_block_template( $p
 }
 
 /**
- * Builds the title and description of a taxonomy-specific template based on the underlying entity referenced.
+ * Xây dựng tiêu đề và mô tả của template cụ thể cho taxonomy dựa trên thực thể được tham chiếu.
  *
- * Mutates the underlying template object.
+ * Thay đổi trực tiếp đối tượng template bên dưới.
  *
  * @since 6.1.0
  * @access private
  *
- * @param string            $taxonomy Identifier of the taxonomy, e.g. category.
- * @param string            $slug     Slug of the term, e.g. shoes.
- * @param WP_Block_Template $template Template to mutate adding the description and title computed.
- * @return bool True if the term referenced was found and false otherwise.
+ * @param string            $taxonomy Định danh của taxonomy, ví dụ: category.
+ * @param string            $slug     Slug của term, ví dụ: shoes.
+ * @param WP_Block_Template $template Template cần thay đổi, thêm mô tả và tiêu đề đã tính toán.
+ * @return bool True nếu term được tham chiếu được tìm thấy và false nếu không.
  */
 function _wp_build_title_and_description_for_taxonomy_block_template( $taxonomy, $slug, WP_Block_Template $template ) {
 	$taxonomy_object = get_taxonomy( $taxonomy );
@@ -817,19 +817,19 @@ function _wp_build_title_and_description_for_taxonomy_block_template( $taxonomy,
 }
 
 /**
- * Builds a block template object from a post object.
+ * Xây dựng đối tượng template khối từ đối tượng bài viết.
  *
- * This is a helper function that creates a block template object from a given post object.
- * It is self-sufficient in that it only uses information passed as arguments; it does not
- * query the database for additional information.
+ * Đây là hàm trợ giúp tạo đối tượng template khối từ đối tượng bài viết cho trước.
+ * Nó tự cung cấp đủ vì chỉ sử dụng thông tin được truyền dưới dạng đối số; nó không
+ * truy vấn cơ sở dữ liệu để lấy thêm thông tin.
  *
  * @since 6.5.3
  * @access private
  *
- * @param WP_Post $post  Template post.
- * @param array   $terms Additional terms to inform the template object.
- * @param array   $meta  Additional meta fields to inform the template object.
- * @return WP_Block_Template|WP_Error Template or error object.
+ * @param WP_Post $post  Bài viết template.
+ * @param array   $terms Các term bổ sung để cung cấp thông tin cho đối tượng template.
+ * @param array   $meta  Các trường meta bổ sung để cung cấp thông tin cho đối tượng template.
+ * @return WP_Block_Template|WP_Error Đối tượng template hoặc đối tượng lỗi.
  */
 function _build_block_template_object_from_post_object( $post, $terms = array(), $meta = array() ) {
 	if ( empty( $terms['wp_theme'] ) ) {
@@ -875,15 +875,15 @@ function _build_block_template_object_from_post_object( $post, $terms = array(),
 }
 
 /**
- * Builds a unified template object based a post Object.
+ * Xây dựng đối tượng template thống nhất dựa trên đối tượng bài viết.
  *
  * @since 5.9.0
- * @since 6.3.0 Added `modified` property to template objects.
- * @since 6.4.0 Added support for a revision post to be passed to this function.
+ * @since 6.3.0 Thêm thuộc tính `modified` cho các đối tượng template.
+ * @since 6.4.0 Thêm hỗ trợ truyền bài viết phiên bản sửa đổi vào hàm này.
  * @access private
  *
- * @param WP_Post $post Template post.
- * @return WP_Block_Template|WP_Error Template or error object.
+ * @param WP_Post $post Bài viết template.
+ * @return WP_Block_Template|WP_Error Đối tượng template hoặc đối tượng lỗi.
  */
 function _build_block_template_result_from_post( $post ) {
 	$post_id = wp_is_post_revision( $post );
@@ -926,11 +926,11 @@ function _build_block_template_result_from_post( $post ) {
 		return $template;
 	}
 
-	// Check for a block template without a description and title or with a title equal to the slug.
+	// Kiểm tra template khối không có mô tả và tiêu đề hoặc có tiêu đề bằng slug.
 	if ( 'wp_template' === $parent_post->post_type && empty( $template->description ) && ( empty( $template->title ) || $template->title === $template->slug ) ) {
 		$matches = array();
 
-		// Check for a block template for a single author, page, post, tag, category, custom post type, or custom taxonomy.
+		// Kiểm tra template khối cho một tác giả, trang, bài viết, thẻ, chuyên mục, loại bài viết tùy chỉnh, hoặc taxonomy tùy chỉnh.
 		if ( preg_match( '/(author|page|single|tag|category|taxonomy)-(.+)/', $template->slug, $matches ) ) {
 			$type           = $matches[1];
 			$slug_remaining = $matches[2];
@@ -996,7 +996,7 @@ function _build_block_template_result_from_post( $post ) {
 					foreach ( $post_types as $post_type ) {
 						$post_type_length = strlen( $post_type ) + 1;
 
-						// If $slug_remaining starts with $post_type followed by a hyphen.
+						// Nếu $slug_remaining bắt đầu bằng $post_type theo sau là dấu gạch ngang.
 						if ( 0 === strncmp( $slug_remaining, $post_type . '-', $post_type_length ) ) {
 							$slug  = substr( $slug_remaining, $post_type_length, strlen( $slug_remaining ) );
 							$found = _wp_build_title_and_description_for_single_post_type_block_template( $post_type, $slug, $template );
@@ -1019,7 +1019,7 @@ function _build_block_template_result_from_post( $post ) {
 					foreach ( $taxonomies as $taxonomy ) {
 						$taxonomy_length = strlen( $taxonomy ) + 1;
 
-						// If $slug_remaining starts with $taxonomy followed by a hyphen.
+						// Nếu $slug_remaining bắt đầu bằng $taxonomy theo sau là dấu gạch ngang.
 						if ( 0 === strncmp( $slug_remaining, $taxonomy . '-', $taxonomy_length ) ) {
 							$slug  = substr( $slug_remaining, $taxonomy_length, strlen( $slug_remaining ) );
 							$found = _wp_build_title_and_description_for_taxonomy_block_template( $taxonomy, $slug, $template );
@@ -1052,8 +1052,8 @@ function _build_block_template_result_from_post( $post ) {
 		$attributes                     = ! empty( $existing_ignored_hooked_blocks ) ? array( 'metadata' => array( 'ignoredHookedBlocks' => json_decode( $existing_ignored_hooked_blocks, true ) ) ) : array();
 
 		/*
-		 * In order for hooked blocks to be inserted at positions first_child and last_child in a template part,
-		 * we need to wrap its content a mock template part block and traverse it.
+		 * Để các khối hook được chèn vào vị trí first_child và last_child trong template part,
+		 * chúng ta cần bọc nội dung của nó trong một khối template part giả và duyệt qua nó.
 		 */
 		$content           = get_comment_delimited_block_content(
 			'core/template-part',
@@ -1078,20 +1078,20 @@ function _build_block_template_result_from_post( $post ) {
 }
 
 /**
- * Retrieves a list of unified template objects based on a query.
+ * Lấy danh sách đối tượng template thống nhất dựa trên truy vấn.
  *
  * @since 5.8.0
  *
  * @param array  $query {
- *     Optional. Arguments to retrieve templates.
+ *     Tùy chọn. Các đối số để lấy template.
  *
- *     @type string[] $slug__in  List of slugs to include.
- *     @type int      $wp_id     Post ID of customized template.
- *     @type string   $area      A 'wp_template_part_area' taxonomy value to filter by (for 'wp_template_part' template type only).
- *     @type string   $post_type Post type to get the templates for.
+ *     @type string[] $slug__in  Danh sách slug cần bao gồm.
+ *     @type int      $wp_id     ID bài viết của template đã tùy chỉnh.
+ *     @type string   $area      Giá trị taxonomy 'wp_template_part_area' để lọc (chỉ cho loại template 'wp_template_part').
+ *     @type string   $post_type Loại bài viết để lấy template.
  * }
- * @param string $template_type Template type. Either 'wp_template' or 'wp_template_part'.
- * @return WP_Block_Template[] Array of block templates.
+ * @param string $template_type Loại template. Có thể là 'wp_template' hoặc 'wp_template_part'.
+ * @return WP_Block_Template[] Mảng các template khối.
  */
 function get_block_templates( $query = array(), $template_type = 'wp_template' ) {
 	/**
