@@ -1,6 +1,6 @@
 <?php
 /**
- * HTML API: WP_HTML_Processor_State class
+ * HTML API: Lớp WP_HTML_Processor_State
  *
  * @package WordPress
  * @subpackage HTML-API
@@ -8,10 +8,10 @@
  */
 
 /**
- * Core class used by the HTML processor during HTML parsing
- * for managing the internal parsing state.
+ * Lớp lõi được sử dụng bởi bộ xử lý HTML trong quá trình phân tích cú pháp HTML
+ * để quản lý trạng thái phân tích nội bộ.
  *
- * This class is designed for internal use by the HTML processor.
+ * Lớp này được thiết kế để sử dụng nội bộ bởi bộ xử lý HTML.
  *
  * @since 6.4.0
  *
@@ -21,22 +21,22 @@
  */
 class WP_HTML_Processor_State {
 	/*
-	 * Insertion mode constants.
+	 * Các hằng số chế độ chèn.
 	 *
-	 * These constants exist and are named to make it easier to
-	 * discover and recognize the supported insertion modes in
-	 * the parser.
+	 * Các hằng số này tồn tại và được đặt tên để giúp dễ dàng
+	 * khám phá và nhận ra các chế độ chèn được hỗ trợ trong
+	 * bộ phân tích.
 	 *
-	 * Out of all the possible insertion modes, only those
-	 * supported by the parser are listed here. As support
-	 * is added to the parser for more modes, add them here
-	 * following the same naming and value pattern.
+	 * Trong tất cả các chế độ chèn có thể, chỉ những chế độ
+	 * được bộ phân tích hỗ trợ mới được liệt kê ở đây. Khi thêm
+	 * hỗ trợ cho nhiều chế độ hơn vào bộ phân tích, thêm chúng ở đây
+	 * theo cùng mẫu đặt tên và giá trị.
 	 *
 	 * @see https://html.spec.whatwg.org/#the-insertion-mode
 	 */
 
 	/**
-	 * Initial insertion mode for full HTML parser.
+	 * Chế độ chèn ban đầu cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.4.0
 	 *
@@ -48,7 +48,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_INITIAL = 'insertion-mode-initial';
 
 	/**
-	 * Before HTML insertion mode for full HTML parser.
+	 * Chế độ chèn trước HTML cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -60,7 +60,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_BEFORE_HTML = 'insertion-mode-before-html';
 
 	/**
-	 * Before head insertion mode for full HTML parser.
+	 * Chế độ chèn trước head cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -72,7 +72,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_BEFORE_HEAD = 'insertion-mode-before-head';
 
 	/**
-	 * In head insertion mode for full HTML parser.
+	 * Chế độ chèn trong head cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -84,7 +84,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_HEAD = 'insertion-mode-in-head';
 
 	/**
-	 * In head noscript insertion mode for full HTML parser.
+	 * Chế độ chèn trong head noscript cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -96,7 +96,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_HEAD_NOSCRIPT = 'insertion-mode-in-head-noscript';
 
 	/**
-	 * After head insertion mode for full HTML parser.
+	 * Chế độ chèn sau head cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -108,7 +108,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_AFTER_HEAD = 'insertion-mode-after-head';
 
 	/**
-	 * In body insertion mode for full HTML parser.
+	 * Chế độ chèn trong body cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.4.0
 	 *
@@ -120,7 +120,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_BODY = 'insertion-mode-in-body';
 
 	/**
-	 * In table insertion mode for full HTML parser.
+	 * Chế độ chèn trong table cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -132,7 +132,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_TABLE = 'insertion-mode-in-table';
 
 	/**
-	 * In table text insertion mode for full HTML parser.
+	 * Chế độ chèn văn bản trong table cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -144,7 +144,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_TABLE_TEXT = 'insertion-mode-in-table-text';
 
 	/**
-	 * In caption insertion mode for full HTML parser.
+	 * Chế độ chèn trong caption cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -156,7 +156,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_CAPTION = 'insertion-mode-in-caption';
 
 	/**
-	 * In column group insertion mode for full HTML parser.
+	 * Chế độ chèn trong nhóm cột cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -168,7 +168,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_COLUMN_GROUP = 'insertion-mode-in-column-group';
 
 	/**
-	 * In table body insertion mode for full HTML parser.
+	 * Chế độ chèn trong thân table cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -180,7 +180,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_TABLE_BODY = 'insertion-mode-in-table-body';
 
 	/**
-	 * In row insertion mode for full HTML parser.
+	 * Chế độ chèn trong hàng cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -192,7 +192,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_ROW = 'insertion-mode-in-row';
 
 	/**
-	 * In cell insertion mode for full HTML parser.
+	 * Chế độ chèn trong ô cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -204,7 +204,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_CELL = 'insertion-mode-in-cell';
 
 	/**
-	 * In select insertion mode for full HTML parser.
+	 * Chế độ chèn trong select cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -216,7 +216,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_SELECT = 'insertion-mode-in-select';
 
 	/**
-	 * In select in table insertion mode for full HTML parser.
+	 * Chế độ chèn trong select trong table cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -228,7 +228,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_SELECT_IN_TABLE = 'insertion-mode-in-select-in-table';
 
 	/**
-	 * In template insertion mode for full HTML parser.
+	 * Chế độ chèn trong template cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -240,7 +240,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_TEMPLATE = 'insertion-mode-in-template';
 
 	/**
-	 * After body insertion mode for full HTML parser.
+	 * Chế độ chèn sau body cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -252,7 +252,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_AFTER_BODY = 'insertion-mode-after-body';
 
 	/**
-	 * In frameset insertion mode for full HTML parser.
+	 * Chế độ chèn trong frameset cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -264,7 +264,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_IN_FRAMESET = 'insertion-mode-in-frameset';
 
 	/**
-	 * After frameset insertion mode for full HTML parser.
+	 * Chế độ chèn sau frameset cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -276,7 +276,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_AFTER_FRAMESET = 'insertion-mode-after-frameset';
 
 	/**
-	 * After after body insertion mode for full HTML parser.
+	 * Chế độ chèn sau sau body cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -288,7 +288,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_AFTER_AFTER_BODY = 'insertion-mode-after-after-body';
 
 	/**
-	 * After after frameset insertion mode for full HTML parser.
+	 * Chế độ chèn sau sau frameset cho bộ phân tích HTML đầy đủ.
 	 *
 	 * @since 6.7.0
 	 *
@@ -300,7 +300,7 @@ class WP_HTML_Processor_State {
 	const INSERTION_MODE_AFTER_AFTER_FRAMESET = 'insertion-mode-after-after-frameset';
 
 	/**
-	 * The stack of template insertion modes.
+	 * Ngăn xếp các chế độ chèn template.
 	 *
 	 * @since 6.7.0
 	 *
@@ -311,9 +311,9 @@ class WP_HTML_Processor_State {
 	public $stack_of_template_insertion_modes = array();
 
 	/**
-	 * Tracks open elements while scanning HTML.
+	 * Theo dõi các phần tử đang mở trong quá trình quét HTML.
 	 *
-	 * This property is initialized in the constructor and never null.
+	 * Thuộc tính này được khởi tạo trong hàm khởi tạo và không bao giờ null.
 	 *
 	 * @since 6.4.0
 	 *
@@ -324,9 +324,9 @@ class WP_HTML_Processor_State {
 	public $stack_of_open_elements;
 
 	/**
-	 * Tracks open formatting elements, used to handle mis-nested formatting element tags.
+	 * Theo dõi các phần tử định dạng đang mở, được sử dụng để xử lý các thẻ định dạng lồng sai.
 	 *
-	 * This property is initialized in the constructor and never null.
+	 * Thuộc tính này được khởi tạo trong hàm khởi tạo và không bao giờ null.
 	 *
 	 * @since 6.4.0
 	 *
@@ -337,7 +337,7 @@ class WP_HTML_Processor_State {
 	public $active_formatting_elements;
 
 	/**
-	 * Refers to the currently-matched tag, if any.
+	 * Tham chiếu đến thẻ hiện đang khớp, nếu có.
 	 *
 	 * @since 6.4.0
 	 *
@@ -346,7 +346,7 @@ class WP_HTML_Processor_State {
 	public $current_token = null;
 
 	/**
-	 * Tree construction insertion mode.
+	 * Chế độ chèn cho việc xây dựng cây.
 	 *
 	 * @since 6.4.0
 	 *
@@ -357,23 +357,23 @@ class WP_HTML_Processor_State {
 	public $insertion_mode = self::INSERTION_MODE_INITIAL;
 
 	/**
-	 * Context node initializing fragment parser, if created as a fragment parser.
+	 * Nút ngữ cảnh khởi tạo bộ phân tích đoạn, nếu được tạo như bộ phân tích đoạn.
 	 *
 	 * @since 6.4.0
-	 * @deprecated 6.8.0 WP_HTML_Processor tracks the context_node internally.
+	 * @deprecated 6.8.0 WP_HTML_Processor theo dõi context_node nội bộ.
 	 *
 	 * @var null
 	 */
 	public $context_node = null;
 
 	/**
-	 * The recognized encoding of the input byte stream.
+	 * Bảng mã được nhận dạng của luồng byte đầu vào.
 	 *
-	 * > The stream of code points that comprises the input to the tokenization
-	 * > stage will be initially seen by the user agent as a stream of bytes
-	 * > (typically coming over the network or from the local file system).
-	 * > The bytes encode the actual characters according to a particular character
-	 * > encoding, which the user agent uses to decode the bytes into characters.
+	 * > Luồng các điểm mã tạo nên đầu vào cho giai đoạn phân tách token
+	 * > ban đầu sẽ được tác nhân người dùng nhìn nhận như một luồng byte
+	 * > (thường đến từ mạng hoặc từ hệ thống tệp cục bộ).
+	 * > Các byte mã hóa các ký tự thực tế theo một bảng mã ký tự
+	 * > cụ thể, mà tác nhân người dùng sử dụng để giải mã các byte thành ký tự.
 	 *
 	 * @since 6.7.0
 	 *
@@ -382,15 +382,15 @@ class WP_HTML_Processor_State {
 	public $encoding = null;
 
 	/**
-	 * The parser's confidence in the input encoding.
+	 * Mức độ tin cậy của bộ phân tích vào bảng mã đầu vào.
 	 *
-	 * > When the HTML parser is decoding an input byte stream, it uses a character
-	 * > encoding and a confidence. The confidence is either tentative, certain, or
-	 * > irrelevant. The encoding used, and whether the confidence in that encoding
-	 * > is tentative or certain, is used during the parsing to determine whether to
-	 * > change the encoding. If no encoding is necessary, e.g. because the parser is
-	 * > operating on a Unicode stream and doesn't have to use a character encoding
-	 * > at all, then the confidence is irrelevant.
+	 * > Khi bộ phân tích HTML đang giải mã một luồng byte đầu vào, nó sử dụng một bảng mã
+	 * > ký tự và một mức độ tin cậy. Mức độ tin cậy có thể là tạm thời, chắc chắn, hoặc
+	 * > không liên quan. Bảng mã được sử dụng, và liệu mức độ tin cậy vào bảng mã đó
+	 * > là tạm thời hay chắc chắn, được sử dụng trong quá trình phân tích để xác định liệu
+	 * > có nên thay đổi bảng mã hay không. Nếu không cần bảng mã, ví dụ vì bộ phân tích
+	 * > đang hoạt động trên một luồng Unicode và không cần sử dụng bảng mã ký tự
+	 * > nào cả, thì mức độ tin cậy là không liên quan.
 	 *
 	 * @since 6.7.0
 	 *
@@ -399,7 +399,7 @@ class WP_HTML_Processor_State {
 	public $encoding_confidence = 'tentative';
 
 	/**
-	 * HEAD element pointer.
+	 * Con trỏ phần tử HEAD.
 	 *
 	 * @since 6.7.0
 	 *
@@ -410,14 +410,14 @@ class WP_HTML_Processor_State {
 	public $head_element = null;
 
 	/**
-	 * FORM element pointer.
+	 * Con trỏ phần tử FORM.
 	 *
-	 * > points to the last form element that was opened and whose end tag has
-	 * > not yet been seen. It is used to make form controls associate with
-	 * > forms in the face of dramatically bad markup, for historical reasons.
-	 * > It is ignored inside template elements.
+	 * > trỏ đến phần tử form cuối cùng được mở và chưa thấy thẻ đóng của nó.
+	 * > Nó được sử dụng để liên kết các điều khiển biểu mẫu với biểu mẫu khi gặp
+	 * > markup rất tệ, vì lý do lịch sử.
+	 * > Nó bị bỏ qua bên trong các phần tử template.
 	 *
-	 * @todo This may be invalidated by a seek operation.
+	 * @todo Giá trị này có thể bị vô hiệu bởi thao tác seek.
 	 *
 	 * @see https://html.spec.whatwg.org/#form-element-pointer
 	 *
@@ -428,9 +428,9 @@ class WP_HTML_Processor_State {
 	public $form_element = null;
 
 	/**
-	 * The frameset-ok flag indicates if a `FRAMESET` element is allowed in the current state.
+	 * Cờ frameset-ok cho biết liệu phần tử `FRAMESET` có được phép trong trạng thái hiện tại hay không.
 	 *
-	 * > The frameset-ok flag is set to "ok" when the parser is created. It is set to "not ok" after certain tokens are seen.
+	 * > Cờ frameset-ok được đặt thành "ok" khi bộ phân tích được tạo. Nó được đặt thành "not ok" sau khi gặp một số token nhất định.
 	 *
 	 * @since 6.4.0
 	 *
@@ -441,7 +441,7 @@ class WP_HTML_Processor_State {
 	public $frameset_ok = true;
 
 	/**
-	 * Constructor - creates a new and empty state value.
+	 * Hàm khởi tạo - tạo một giá trị trạng thái mới và rỗng.
 	 *
 	 * @since 6.4.0
 	 *

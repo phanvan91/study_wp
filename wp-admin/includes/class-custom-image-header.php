@@ -1,13 +1,13 @@
 <?php
 /**
- * The custom header image script.
+ * Script ảnh header tùy chỉnh.
  *
  * @package WordPress
  * @subpackage Administration
  */
 
 /**
- * The custom header image class.
+ * Lớp ảnh header tùy chỉnh.
  *
  * @since 2.1.0
  */
@@ -15,7 +15,7 @@
 class Custom_Image_Header {
 
 	/**
-	 * Callback for administration header.
+	 * Hàm callback cho header quản trị.
 	 *
 	 * @since 2.1.0
 	 * @var callable
@@ -23,7 +23,7 @@ class Custom_Image_Header {
 	public $admin_header_callback;
 
 	/**
-	 * Callback for header div.
+	 * Hàm callback cho div header.
 	 *
 	 * @since 3.0.0
 	 * @var callable
@@ -31,7 +31,7 @@ class Custom_Image_Header {
 	public $admin_image_div_callback;
 
 	/**
-	 * Holds default headers.
+	 * Lưu trữ các header mặc định.
 	 *
 	 * @since 3.0.0
 	 * @var array
@@ -39,7 +39,7 @@ class Custom_Image_Header {
 	public $default_headers = array();
 
 	/**
-	 * Used to trigger a success message when settings updated and set to true.
+	 * Được sử dụng để kích hoạt thông báo thành công khi cài đặt được cập nhật và đặt thành true.
 	 *
 	 * @since 3.0.0
 	 * @var bool
@@ -47,13 +47,13 @@ class Custom_Image_Header {
 	private $updated;
 
 	/**
-	 * Constructor - Registers administration header callback.
+	 * Hàm khởi tạo - Đăng ký hàm callback header quản trị.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param callable $admin_header_callback    Administration header callback.
-	 * @param callable $admin_image_div_callback Optional. Custom image div output callback.
-	 *                                           Default empty string.
+	 * @param callable $admin_header_callback    Hàm callback header quản trị.
+	 * @param callable $admin_image_div_callback Tùy chọn. Hàm callback xuất div ảnh tùy chỉnh.
+	 *                                           Mặc định chuỗi rỗng.
 	 */
 	public function __construct( $admin_header_callback, $admin_image_div_callback = '' ) {
 		$this->admin_header_callback    = $admin_header_callback;
@@ -68,7 +68,7 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Sets up the hooks for the Custom Header admin page.
+	 * Thiết lập các hook cho trang quản trị Header Tùy chỉnh.
 	 *
 	 * @since 2.1.0
 	 */
@@ -97,7 +97,7 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Adds contextual help.
+	 * Thêm trợ giúp theo ngữ cảnh.
 	 *
 	 * @since 3.0.0
 	 */
@@ -148,11 +148,11 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Gets the current step.
+	 * Lấy bước hiện tại.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @return int Current step.
+	 * @return int Bước hiện tại.
 	 */
 	public function step() {
 		if ( ! isset( $_GET['step'] ) ) {
@@ -171,7 +171,7 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Sets up the enqueue for the JavaScript files.
+	 * Thiết lập hàng đợi nạp cho các tệp JavaScript.
 	 *
 	 * @since 2.1.0
 	 */
@@ -190,7 +190,7 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Sets up the enqueue for the CSS files.
+	 * Thiết lập hàng đợi nạp cho các tệp CSS.
 	 *
 	 * @since 2.7.0
 	 */
@@ -205,7 +205,7 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Executes custom header modification.
+	 * Thực thi sửa đổi header tùy chỉnh.
 	 *
 	 * @since 2.6.0
 	 */
@@ -264,7 +264,7 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Processes the default headers.
+	 * Xử lý các header mặc định.
 	 *
 	 * @since 3.0.0
 	 *
@@ -301,15 +301,15 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Displays UI for selecting one of several default headers.
+	 * Hiển thị giao diện để chọn một trong nhiều header mặc định.
 	 *
-	 * Shows the random image option if this theme has multiple header images.
-	 * Random image option is on by default if no header has been set.
+	 * Hiển thị tùy chọn ảnh ngẫu nhiên nếu giao diện có nhiều ảnh header.
+	 * Tùy chọn ảnh ngẫu nhiên được bật mặc định nếu chưa đặt header nào.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $type The header type. One of 'default' (for the Uploaded Images control)
-	 *                     or 'uploaded' (for the Uploaded Images control).
+	 * @param string $type Loại header. Một trong 'default' (cho điều khiển Ảnh Mặc định)
+	 *                     hoặc 'uploaded' (cho điều khiển Ảnh Đã tải lên).
 	 */
 	public function show_header_selector( $type = 'default' ) {
 		if ( 'default' === $type ) {
@@ -348,7 +348,7 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Executes JavaScript depending on step.
+	 * Thực thi JavaScript tùy thuộc vào bước.
 	 *
 	 * @since 2.1.0
 	 */
@@ -363,7 +363,7 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Displays JavaScript based on Step 1 and 3.
+	 * Hiển thị JavaScript dựa trên Bước 1 và 3.
 	 *
 	 * @since 2.6.0
 	 */
@@ -424,7 +424,7 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Displays JavaScript based on Step 2.
+	 * Hiển thị JavaScript dựa trên Bước 2.
 	 *
 	 * @since 2.6.0
 	 */
@@ -500,7 +500,7 @@ class Custom_Image_Header {
 	}
 
 	/**
-	 * Displays first step of custom header image page.
+	 * Hiển thị bước đầu tiên của trang ảnh header tùy chỉnh.
 	 *
 	 * @since 2.1.0
 	 */
@@ -821,7 +821,7 @@ endif;
 	}
 
 	/**
-	 * Displays second step of custom header image page.
+	 * Hiển thị bước thứ hai của trang ảnh header tùy chỉnh.
 	 *
 	 * @since 2.1.0
 	 */
@@ -859,7 +859,7 @@ endif;
 
 		$max_width = 0;
 
-		// For flex, limit size of image displayed to 1500px unless theme says otherwise.
+		// Đối với flex, giới hạn kích thước ảnh hiển thị ở 1500px trừ khi giao diện quy định khác.
 		if ( current_theme_supports( 'custom-header', 'flex-width' ) ) {
 			$max_width = 1500;
 		}
@@ -870,13 +870,13 @@ endif;
 
 		$max_width = max( $max_width, get_theme_support( 'custom-header', 'width' ) );
 
-		// If flexible height isn't supported and the image is the exact right size.
+		// Nếu chiều cao linh hoạt không được hỗ trợ và ảnh có kích thước đúng chính xác.
 		if ( ! current_theme_supports( 'custom-header', 'flex-height' )
 			&& ! current_theme_supports( 'custom-header', 'flex-width' )
 			&& (int) get_theme_support( 'custom-header', 'width' ) === $width
 			&& (int) get_theme_support( 'custom-header', 'height' ) === $height
 		) {
-			// Add the metadata.
+			// Thêm metadata.
 			if ( file_exists( $file ) ) {
 				wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $file ) );
 			}

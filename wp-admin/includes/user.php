@@ -65,8 +65,8 @@ function edit_user( $user_id = 0 ) {
 		$potential_role = isset( $wp_roles->role_objects[ $new_role ] ) ? $wp_roles->role_objects[ $new_role ] : false;
 
 		/*
-		 * Don't let anyone with 'promote_users' edit their own role to something without it.
-		 * Multisite super admins can freely edit their roles, they possess all caps.
+		 * Không cho phép ai có quyền 'promote_users' chỉnh sửa vai trò của mình thành vai trò không có quyền đó.
+		 * Quản trị viên cấp cao Multisite có thể tự do chỉnh sửa vai trò, họ sở hữu tất cả quyền.
 		 */
 		if (
 			( is_multisite() && current_user_can( 'manage_network_users' ) ) ||
@@ -147,38 +147,38 @@ function edit_user( $user_id = 0 ) {
 
 	$errors = new WP_Error();
 
-	/* checking that username has been typed */
+	/* kiểm tra rằng tên đăng nhập đã được nhập */
 	if ( '' === $user->user_login ) {
 		$errors->add( 'user_login', __( '<strong>Error:</strong> Please enter a username.' ) );
 	}
 
-	/* checking that nickname has been typed */
+	/* kiểm tra rằng biệt danh đã được nhập */
 	if ( $update && empty( $user->nickname ) ) {
 		$errors->add( 'nickname', __( '<strong>Error:</strong> Please enter a nickname.' ) );
 	}
 
 	/**
-	 * Fires before the password and confirm password fields are checked for congruity.
+	 * Kích hoạt trước khi các trường mật khẩu và xác nhận mật khẩu được kiểm tra tính khớp nhau.
 	 *
 	 * @since 1.5.1
 	 *
-	 * @param string $user_login The username.
-	 * @param string $pass1     The password (passed by reference).
-	 * @param string $pass2     The confirmed password (passed by reference).
+	 * @param string $user_login Tên đăng nhập.
+	 * @param string $pass1     Mật khẩu (truyền theo tham chiếu).
+	 * @param string $pass2     Mật khẩu xác nhận (truyền theo tham chiếu).
 	 */
 	do_action_ref_array( 'check_passwords', array( $user->user_login, &$pass1, &$pass2 ) );
 
-	// Check for blank password when adding a user.
+	// Kiểm tra mật khẩu trống khi thêm người dùng.
 	if ( ! $update && empty( $pass1 ) ) {
 		$errors->add( 'pass', __( '<strong>Error:</strong> Please enter a password.' ), array( 'form-field' => 'pass1' ) );
 	}
 
-	// Check for "\" in password.
+	// Kiểm tra ký tự "\" trong mật khẩu.
 	if ( str_contains( wp_unslash( $pass1 ), '\\' ) ) {
 		$errors->add( 'pass', __( '<strong>Error:</strong> Passwords may not contain the character "\\".' ), array( 'form-field' => 'pass1' ) );
 	}
 
-	// Checking the password has been typed twice the same.
+	// Kiểm tra mật khẩu đã được nhập hai lần giống nhau.
 	if ( ( $update || ! empty( $pass1 ) ) && $pass1 !== $pass2 ) {
 		$errors->add( 'pass', __( '<strong>Error:</strong> Passwords do not match. Please enter the same password in both password fields.' ), array( 'form-field' => 'pass1' ) );
 	}
@@ -202,7 +202,7 @@ function edit_user( $user_id = 0 ) {
 		$errors->add( 'invalid_username', __( '<strong>Error:</strong> Sorry, that username is not allowed.' ) );
 	}
 
-	// Checking email address.
+	// Kiểm tra địa chỉ email.
 	if ( empty( $user->user_email ) ) {
 		$errors->add( 'empty_email', __( '<strong>Error:</strong> Please enter an email address.' ), array( 'form-field' => 'email' ) );
 	} elseif ( ! is_email( $user->user_email ) ) {
@@ -215,13 +215,13 @@ function edit_user( $user_id = 0 ) {
 	}
 
 	/**
-	 * Fires before user profile update errors are returned.
+	 * Kích hoạt trước khi trả về lỗi cập nhật hồ sơ người dùng.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param WP_Error $errors WP_Error object (passed by reference).
-	 * @param bool     $update Whether this is a user update.
-	 * @param stdClass $user   User object (passed by reference).
+	 * @param WP_Error $errors Đối tượng WP_Error (truyền theo tham chiếu).
+	 * @param bool     $update Đây có phải là cập nhật người dùng hay không.
+	 * @param stdClass $user   Đối tượng người dùng (truyền theo tham chiếu).
 	 */
 	do_action_ref_array( 'user_profile_update_errors', array( &$errors, $update, &$user ) );
 

@@ -2498,11 +2498,11 @@ class WP_Site_Health {
 	 */
 	public function get_test_persistent_object_cache() {
 		/**
-		 * Filters the action URL for the persistent object cache health check.
+		 * Lọc URL hành động cho kiểm tra sức khỏe bộ nhớ đệm đối tượng bền vững.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param string $action_url Learn more link for persistent object cache health check.
+		 * @param string $action_url Liên kết tìm hiểu thêm cho kiểm tra sức khỏe bộ nhớ đệm đối tượng bền vững.
 		 */
 		$action_url = apply_filters(
 			'site_status_persistent_object_cache_url',
@@ -2554,17 +2554,17 @@ class WP_Site_Health {
 		}
 
 		/**
-		 * Filters the second paragraph of the health check's description
-		 * when suggesting the use of a persistent object cache.
+		 * Lọc đoạn thứ hai của mô tả kiểm tra sức khỏe
+		 * khi đề xuất sử dụng bộ nhớ đệm đối tượng bền vững.
 		 *
-		 * Hosts may want to replace the notes to recommend their preferred object caching solution.
+		 * Nhà cung cấp hosting có thể muốn thay thế ghi chú để khuyến nghị giải pháp bộ nhớ đệm đối tượng ưa thích của họ.
 		 *
-		 * Plugin authors may want to append notes (not replace) on why object caching is recommended for their plugin.
+		 * Tác giả plugin có thể muốn bổ sung ghi chú (không thay thế) về lý do bộ nhớ đệm đối tượng được khuyến nghị cho plugin của họ.
 		 *
 		 * @since 6.1.0
 		 *
-		 * @param string   $notes              The notes appended to the health check description.
-		 * @param string[] $available_services The list of available persistent object cache services.
+		 * @param string   $notes              Ghi chú được thêm vào mô tả kiểm tra sức khỏe.
+		 * @param string[] $available_services Danh sách các dịch vụ bộ nhớ đệm đối tượng bền vững khả dụng.
 		 */
 		$notes = apply_filters( 'site_status_persistent_object_cache_notes', $notes, $available_services );
 
@@ -2587,11 +2587,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Calculates total amount of autoloaded data.
+	 * Tính tổng dung lượng dữ liệu tự động tải.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @return int Autoloaded data in bytes.
+	 * @return int Dữ liệu tự động tải tính bằng byte.
 	 */
 	public function get_autoloaded_options_size() {
 		$alloptions = wp_load_alloptions();
@@ -2609,11 +2609,11 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Tests the number of autoloaded options.
+	 * Kiểm tra số lượng tùy chọn tự động tải.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @return array The test results.
+	 * @return array Kết quả kiểm tra.
 	 */
 	public function get_test_autoloaded_options() {
 		$autoloaded_options_size  = $this->get_autoloaded_options_size();
@@ -2639,11 +2639,11 @@ class WP_Site_Health {
 		);
 
 		/**
-		 * Filters max bytes threshold to trigger warning in Site Health.
+		 * Lọc ngưỡng byte tối đa để kích hoạt cảnh báo trong Sức khỏe Website.
 		 *
 		 * @since 6.6.0
 		 *
-		 * @param int $limit Autoloaded options threshold size. Default 800000.
+		 * @param int $limit Kích thước ngưỡng tùy chọn tự động tải. Mặc định 800000.
 		 */
 		$limit = apply_filters( 'site_status_autoloaded_options_size_limit', 800000 );
 
@@ -2661,11 +2661,11 @@ class WP_Site_Health {
 		);
 
 		/**
-		 * Filters description to be shown on Site Health warning when threshold is met.
+		 * Lọc mô tả hiển thị trong cảnh báo Sức khỏe Website khi đạt ngưỡng.
 		 *
 		 * @since 6.6.0
 		 *
-		 * @param string $description Description message when autoloaded options bigger than threshold.
+		 * @param string $description Thông báo mô tả khi tùy chọn tự động tải vượt ngưỡng.
 		 */
 		$result['description'] = apply_filters( 'site_status_autoloaded_options_limit_description', $result['description'] );
 
@@ -2677,27 +2677,26 @@ class WP_Site_Health {
 		);
 
 		/**
-		 * Filters actionable information to tackle the problem. It can be a link to an external guide.
+		 * Lọc thông tin hành động để giải quyết vấn đề. Có thể là liên kết đến hướng dẫn bên ngoài.
 		 *
 		 * @since 6.6.0
 		 *
-		 * @param string $actions Call to Action to be used to point to the right direction to solve the issue.
+		 * @param string $actions Lời kêu gọi hành động được sử dụng để chỉ đúng hướng giải quyết vấn đề.
 		 */
 		$result['actions'] = apply_filters( 'site_status_autoloaded_options_action_to_perform', $result['actions'] );
 		return $result;
 	}
 
 	/**
-	 * Returns a set of tests that belong to the site status page.
+	 * Trả về tập hợp các bài kiểm tra thuộc trang trạng thái website.
 	 *
-	 * Each site status test is defined here, they may be `direct` tests, that run on page load, or `async` tests
-	 * which will run later down the line via JavaScript calls to improve page performance and hopefully also user
-	 * experiences.
+	 * Mỗi bài kiểm tra trạng thái website được định nghĩa tại đây, có thể là kiểm tra `direct` chạy khi tải trang, hoặc kiểm tra `async`
+	 * sẽ chạy sau thông qua các lời gọi JavaScript để cải thiện hiệu suất trang và hy vọng cũng cải thiện trải nghiệm người dùng.
 	 *
 	 * @since 5.2.0
-	 * @since 5.6.0 Added support for `has_rest` and `permissions`.
+	 * @since 5.6.0 Thêm hỗ trợ cho `has_rest` và `permissions`.
 	 *
-	 * @return array The list of tests to run.
+	 * @return array Danh sách các bài kiểm tra cần chạy.
 	 */
 	public static function get_tests() {
 		$tests = array(
@@ -2804,7 +2803,7 @@ class WP_Site_Health {
 			),
 		);
 
-		// Conditionally include Authorization header test if the site isn't protected by Basic Auth.
+		// Bao gồm kiểm tra header Authorization có điều kiện nếu website không được bảo vệ bằng Basic Auth.
 		if ( ! wp_is_site_protected_by_basic_auth() ) {
 			$tests['async']['authorization_header'] = array(
 				'label'     => __( 'Authorization header' ),
@@ -2815,7 +2814,7 @@ class WP_Site_Health {
 			);
 		}
 
-		// Only check for caches in production environments.
+		// Chỉ kiểm tra bộ nhớ đệm trong môi trường sản xuất.
 		if ( 'production' === wp_get_environment_type() ) {
 			$tests['async']['page_cache'] = array(
 				'label'             => __( 'Page cache' ),
@@ -2831,60 +2830,60 @@ class WP_Site_Health {
 		}
 
 		/**
-		 * Filters which site status tests are run on a site.
+		 * Lọc các bài kiểm tra trạng thái website được chạy trên website.
 		 *
-		 * The site health is determined by a set of tests based on best practices from
-		 * both the WordPress Hosting Team and web standards in general.
+		 * Sức khỏe website được xác định bởi tập hợp các bài kiểm tra dựa trên các phương pháp tốt nhất
+		 * từ cả Nhóm Hosting WordPress và các tiêu chuẩn web nói chung.
 		 *
-		 * Some sites may not have the same requirements, for example the automatic update
-		 * checks may be handled by a host, and are therefore disabled in core.
-		 * Or maybe you want to introduce a new test, is caching enabled/disabled/stale for example.
+		 * Một số website có thể không có cùng yêu cầu, ví dụ kiểm tra cập nhật tự động
+		 * có thể được xử lý bởi nhà cung cấp hosting, và do đó bị vô hiệu trong lõi.
+		 * Hoặc bạn có thể muốn giới thiệu bài kiểm tra mới, ví dụ bộ nhớ đệm có bật/tắt/cũ hay không.
 		 *
-		 * Tests may be added either as direct, or asynchronous ones. Any test that may require some time
-		 * to complete should run asynchronously, to avoid extended loading periods within wp-admin.
+		 * Các bài kiểm tra có thể được thêm dưới dạng trực tiếp hoặc bất đồng bộ. Bất kỳ bài kiểm tra nào có thể cần thời gian
+		 * để hoàn thành nên chạy bất đồng bộ, để tránh thời gian tải kéo dài trong wp-admin.
 		 *
 		 * @since 5.2.0
-		 * @since 5.6.0 Added the `async_direct_test` array key for asynchronous tests.
-		 *              Added the `skip_cron` array key for all tests.
+		 * @since 5.6.0 Thêm khóa mảng `async_direct_test` cho các bài kiểm tra bất đồng bộ.
+		 *              Thêm khóa mảng `skip_cron` cho tất cả các bài kiểm tra.
 		 *
 		 * @param array[] $tests {
-		 *     An associative array of direct and asynchronous tests.
+		 *     Mảng liên kết chứa các bài kiểm tra trực tiếp và bất đồng bộ.
 		 *
 		 *     @type array[] $direct {
-		 *         An array of direct tests.
+		 *         Mảng các bài kiểm tra trực tiếp.
 		 *
 		 *         @type array ...$identifier {
-		 *             `$identifier` should be a unique identifier for the test. Plugins and themes are encouraged to
-		 *             prefix test identifiers with their slug to avoid collisions between tests.
+		 *             `$identifier` phải là định danh duy nhất cho bài kiểm tra. Plugin và giao diện được khuyến khích
+		 *             thêm tiền tố slug vào định danh bài kiểm tra để tránh xung đột giữa các bài kiểm tra.
 		 *
-		 *             @type string   $label     The friendly label to identify the test.
-		 *             @type callable $test      The callback function that runs the test and returns its result.
-		 *             @type bool     $skip_cron Whether to skip this test when running as cron.
+		 *             @type string   $label     Nhãn thân thiện để nhận dạng bài kiểm tra.
+		 *             @type callable $test      Hàm callback chạy bài kiểm tra và trả về kết quả.
+		 *             @type bool     $skip_cron Có bỏ qua bài kiểm tra này khi chạy dưới dạng cron hay không.
 		 *         }
 		 *     }
 		 *     @type array[] $async {
-		 *         An array of asynchronous tests.
+		 *         Mảng các bài kiểm tra bất đồng bộ.
 		 *
 		 *         @type array ...$identifier {
-		 *             `$identifier` should be a unique identifier for the test. Plugins and themes are encouraged to
-		 *             prefix test identifiers with their slug to avoid collisions between tests.
+		 *             `$identifier` phải là định danh duy nhất cho bài kiểm tra. Plugin và giao diện được khuyến khích
+		 *             thêm tiền tố slug vào định danh bài kiểm tra để tránh xung đột giữa các bài kiểm tra.
 		 *
-		 *             @type string   $label             The friendly label to identify the test.
-		 *             @type string   $test              An admin-ajax.php action to be called to perform the test, or
-		 *                                               if `$has_rest` is true, a URL to a REST API endpoint to perform
-		 *                                               the test.
-		 *             @type bool     $has_rest          Whether the `$test` property points to a REST API endpoint.
-		 *             @type bool     $skip_cron         Whether to skip this test when running as cron.
-		 *             @type callable $async_direct_test A manner of directly calling the test marked as asynchronous,
-		 *                                               as the scheduled event can not authenticate, and endpoints
-		 *                                               may require authentication.
+		 *             @type string   $label             Nhãn thân thiện để nhận dạng bài kiểm tra.
+		 *             @type string   $test              Hành động admin-ajax.php được gọi để thực hiện bài kiểm tra, hoặc
+		 *                                               nếu `$has_rest` là true, một URL đến điểm cuối REST API để thực hiện
+		 *                                               bài kiểm tra.
+		 *             @type bool     $has_rest          Thuộc tính `$test` có trỏ đến điểm cuối REST API hay không.
+		 *             @type bool     $skip_cron         Có bỏ qua bài kiểm tra này khi chạy dưới dạng cron hay không.
+		 *             @type callable $async_direct_test Cách gọi trực tiếp bài kiểm tra được đánh dấu là bất đồng bộ,
+		 *                                               vì sự kiện đã lên lịch không thể xác thực, và các điểm cuối
+		 *                                               có thể yêu cầu xác thực.
 		 *         }
 		 *     }
 		 * }
 		 */
 		$tests = apply_filters( 'site_status_tests', $tests );
 
-		// Ensure that the filtered tests contain the required array keys.
+		// Đảm bảo rằng các bài kiểm tra đã lọc chứa các khóa mảng bắt buộc.
 		$tests = array_merge(
 			array(
 				'direct' => array(),
@@ -2897,14 +2896,14 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Adds a class to the body HTML tag.
+	 * Thêm lớp CSS vào thẻ HTML body.
 	 *
-	 * Filters the body class string for admin pages and adds our own class for easier styling.
+	 * Lọc chuỗi lớp body cho các trang quản trị và thêm lớp riêng để dễ dàng tạo kiểu hơn.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string $body_class The body class string.
-	 * @return string The modified body class string.
+	 * @param string $body_class Chuỗi lớp body.
+	 * @return string Chuỗi lớp body đã sửa đổi.
 	 */
 	public function admin_body_class( $body_class ) {
 		$screen = get_current_screen();
@@ -2918,7 +2917,7 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Initiates the WP_Cron schedule test cases.
+	 * Khởi tạo các trường hợp kiểm tra lịch trình WP_Cron.
 	 *
 	 * @since 5.2.0
 	 */
@@ -2928,7 +2927,7 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Populates the list of cron events and store them to a class-wide variable.
+	 * Điền danh sách các sự kiện cron và lưu chúng vào biến toàn lớp.
 	 *
 	 * @since 5.2.0
 	 */
@@ -2961,15 +2960,15 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Checks if any scheduled tasks have been missed.
+	 * Kiểm tra xem có tác vụ đã lên lịch nào bị bỏ lỡ không.
 	 *
-	 * Returns a boolean value of `true` if a scheduled task has been missed and ends processing.
+	 * Trả về giá trị boolean `true` nếu một tác vụ đã lên lịch bị bỏ lỡ và kết thúc xử lý.
 	 *
-	 * If the list of crons is an instance of WP_Error, returns the instance instead of a boolean value.
+	 * Nếu danh sách cron là một thể hiện của WP_Error, trả về thể hiện đó thay vì giá trị boolean.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return bool|WP_Error True if a cron was missed, false if not. WP_Error if the cron is set to that.
+	 * @return bool|WP_Error True nếu một cron bị bỏ lỡ, false nếu không. WP_Error nếu cron được đặt thành đó.
 	 */
 	public function has_missed_cron() {
 		if ( is_wp_error( $this->crons ) ) {
@@ -2987,15 +2986,15 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Checks if any scheduled tasks are late.
+	 * Kiểm tra xem có tác vụ đã lên lịch nào bị trễ không.
 	 *
-	 * Returns a boolean value of `true` if a scheduled task is late and ends processing.
+	 * Trả về giá trị boolean `true` nếu một tác vụ đã lên lịch bị trễ và kết thúc xử lý.
 	 *
-	 * If the list of crons is an instance of WP_Error, returns the instance instead of a boolean value.
+	 * Nếu danh sách cron là một thể hiện của WP_Error, trả về thể hiện đó thay vì giá trị boolean.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @return bool|WP_Error True if a cron is late, false if not. WP_Error if the cron is set to that.
+	 * @return bool|WP_Error True nếu một cron bị trễ, false nếu không. WP_Error nếu cron được đặt thành đó.
 	 */
 	public function has_late_cron() {
 		if ( is_wp_error( $this->crons ) ) {
@@ -3017,15 +3016,15 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Checks for potential issues with plugin and theme auto-updates.
+	 * Kiểm tra các vấn đề tiềm ẩn với tự động cập nhật plugin và giao diện.
 	 *
-	 * Though there is no way to 100% determine if plugin and theme auto-updates are configured
-	 * correctly, a few educated guesses could be made to flag any conditions that would
-	 * potentially cause unexpected behaviors.
+	 * Mặc dù không có cách nào để xác định 100% liệu tự động cập nhật plugin và giao diện có được cấu hình
+	 * đúng hay không, một vài phỏng đoán có cơ sở có thể được đưa ra để đánh dấu bất kỳ điều kiện nào
+	 * có thể gây ra hành vi không mong đợi.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @return object The test results.
+	 * @return object Kết quả kiểm tra.
 	 */
 	public function detect_plugin_theme_auto_update_issues() {
 		$mock_plugin = (object) array(
@@ -3101,14 +3100,14 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Runs a loopback test on the site.
+	 * Chạy kiểm tra loopback trên website.
 	 *
-	 * Loopbacks are what WordPress uses to communicate with itself to start up WP_Cron, scheduled posts,
-	 * make sure plugin or theme edits don't cause site failures and similar.
+	 * Loopback là cách WordPress giao tiếp với chính nó để khởi chạy WP_Cron, bài viết đã lên lịch,
+	 * đảm bảo việc chỉnh sửa plugin hoặc giao diện không gây lỗi website và tương tự.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @return object The test results.
+	 * @return object Kết quả kiểm tra.
 	 */
 	public function can_perform_loopback() {
 		$body    = array( 'site-health' => 'loopback-test' );
@@ -3128,14 +3127,14 @@ class WP_Site_Health {
 		$url = site_url( 'wp-cron.php' );
 
 		/*
-		 * A post request is used for the wp-cron.php loopback test to cause the file
-		 * to finish early without triggering cron jobs. This has two benefits:
-		 * - cron jobs are not triggered a second time on the site health page,
-		 * - the loopback request finishes sooner providing a quicker result.
+		 * Yêu cầu POST được sử dụng cho kiểm tra loopback wp-cron.php để khiến tệp
+		 * kết thúc sớm mà không kích hoạt các tác vụ cron. Điều này có hai lợi ích:
+		 * - các tác vụ cron không bị kích hoạt lần thứ hai trên trang sức khỏe website,
+		 * - yêu cầu loopback kết thúc sớm hơn, cung cấp kết quả nhanh hơn.
 		 *
-		 * Using a POST request causes the loopback to differ slightly to the standard
-		 * GET request WordPress uses for wp-cron.php loopback requests but is close
-		 * enough. See https://core.trac.wordpress.org/ticket/52547
+		 * Sử dụng yêu cầu POST khiến loopback hơi khác so với yêu cầu GET tiêu chuẩn
+		 * mà WordPress sử dụng cho các yêu cầu loopback wp-cron.php nhưng đủ gần.
+		 * Xem https://core.trac.wordpress.org/ticket/52547
 		 */
 		$r = wp_remote_post( $url, compact( 'body', 'cookies', 'headers', 'timeout', 'sslverify' ) );
 
@@ -3173,7 +3172,7 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Creates a weekly cron event, if one does not already exist.
+	 * Tạo sự kiện cron hàng tuần, nếu chưa tồn tại.
 	 *
 	 * @since 5.4.0
 	 */
@@ -3184,12 +3183,12 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Runs the scheduled event to check and update the latest site health status for the website.
+	 * Chạy sự kiện đã lên lịch để kiểm tra và cập nhật trạng thái sức khỏe website mới nhất.
 	 *
 	 * @since 5.4.0
 	 */
 	public function wp_cron_scheduled_check() {
-		// Bootstrap wp-admin, as WP_Cron doesn't do this for us.
+		// Khởi tạo wp-admin, vì WP_Cron không làm điều này cho chúng ta.
 		require_once trailingslashit( ABSPATH ) . 'wp-admin/includes/admin.php';
 
 		$tests = WP_Site_Health::get_tests();
@@ -3202,7 +3201,7 @@ class WP_Site_Health {
 			'critical'    => 0,
 		);
 
-		// Don't run https test on development environments.
+		// Không chạy kiểm tra https trên môi trường phát triển.
 		if ( $this->is_development_environment() ) {
 			unset( $tests['async']['https_status'] );
 		}
@@ -3234,15 +3233,15 @@ class WP_Site_Health {
 				continue;
 			}
 
-			// Local endpoints may require authentication, so asynchronous tests can pass a direct test runner as well.
+			// Các điểm cuối cục bộ có thể yêu cầu xác thực, nên các bài kiểm tra bất đồng bộ cũng có thể truyền trình chạy kiểm tra trực tiếp.
 			if ( ! empty( $test['async_direct_test'] ) && is_callable( $test['async_direct_test'] ) ) {
-				// This test is callable, do so and continue to the next asynchronous check.
+				// Bài kiểm tra này có thể gọi được, thực hiện nó và tiếp tục kiểm tra bất đồng bộ tiếp theo.
 				$results[] = $this->perform_test( $test['async_direct_test'] );
 				continue;
 			}
 
 			if ( is_string( $test['test'] ) ) {
-				// Check if this test has a REST API endpoint.
+				// Kiểm tra xem bài kiểm tra này có điểm cuối REST API không.
 				if ( isset( $test['has_rest'] ) && $test['has_rest'] ) {
 					$result_fetch = wp_remote_get(
 						$test['test'],
@@ -3295,25 +3294,25 @@ class WP_Site_Health {
 	}
 
 	/**
-	 * Checks if the current environment type is set to 'development' or 'local'.
+	 * Kiểm tra xem loại môi trường hiện tại có được đặt thành 'development' hoặc 'local' không.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @return bool True if it is a development environment, false if not.
+	 * @return bool True nếu là môi trường phát triển, false nếu không.
 	 */
 	public function is_development_environment() {
 		return in_array( wp_get_environment_type(), array( 'development', 'local' ), true );
 	}
 
 	/**
-	 * Returns a list of headers and its verification callback to verify if page cache is enabled or not.
+	 * Trả về danh sách các header và callback xác minh để kiểm tra xem bộ nhớ đệm trang có được bật hay không.
 	 *
-	 * Note: key is header name and value could be callable function to verify header value.
-	 * Empty value mean existence of header detect page cache is enabled.
+	 * Lưu ý: khóa là tên header và giá trị có thể là hàm callable để xác minh giá trị header.
+	 * Giá trị rỗng có nghĩa là sự tồn tại của header phát hiện bộ nhớ đệm trang được bật.
 	 *
 	 * @since 6.1.0
 	 *
-	 * @return array List of client caching headers and their (optional) verification callbacks.
+	 * @return array Danh sách các header bộ nhớ đệm phía khách hàng và các callback xác minh (tùy chọn).
 	 */
 	public function get_page_cache_headers() {
 

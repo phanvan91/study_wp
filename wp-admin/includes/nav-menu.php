@@ -1137,24 +1137,24 @@ function wp_save_nav_menu_items( $menu_id = 0, $menu_data = array() ) {
 		// Duyệt qua tất cả các giá trị POST của mục menu.
 		foreach ( (array) $menu_data as $_possible_db_id => $_item_object_data ) {
 			if (
-				// Checkbox is not checked.
+				// Checkbox không được chọn.
 				empty( $_item_object_data['menu-item-object-id'] ) &&
 				(
-					// And item type either isn't set.
+					// Và loại mục menu không được đặt.
 					! isset( $_item_object_data['menu-item-type'] ) ||
-					// Or URL is the default.
+					// Hoặc URL là giá trị mặc định.
 					in_array( $_item_object_data['menu-item-url'], array( 'https://', 'http://', '' ), true ) ||
-					// Or it's not a custom menu item (but not the custom home page).
+					// Hoặc không phải là mục menu tùy chỉnh (nhưng không phải trang chủ tùy chỉnh).
 					! ( 'custom' === $_item_object_data['menu-item-type'] && ! isset( $_item_object_data['menu-item-db-id'] ) ) ||
-					// Or it *is* a custom menu item that already exists.
+					// Hoặc nó *là* mục menu tùy chỉnh đã tồn tại.
 					! empty( $_item_object_data['menu-item-db-id'] )
 				)
 			) {
-				// Then this potential menu item is not getting added to this menu.
+				// Mục menu tiềm năng này sẽ không được thêm vào menu này.
 				continue;
 			}
 
-			// If this possible menu item doesn't actually have a menu database ID yet.
+			// Nếu mục menu tiềm năng này chưa thực sự có ID cơ sở dữ liệu menu.
 			if (
 				empty( $_item_object_data['menu-item-db-id'] ) ||
 				( 0 > $_possible_db_id ) ||
@@ -1190,14 +1190,14 @@ function wp_save_nav_menu_items( $menu_id = 0, $menu_data = array() ) {
 }
 
 /**
- * Adds custom arguments to some of the meta box object types.
+ * Thêm các đối số tùy chỉnh cho một số loại đối tượng meta box.
  *
  * @since 3.0.0
  *
  * @access private
  *
- * @param object $data_object The post type or taxonomy meta-object.
- * @return object The post type or taxonomy object.
+ * @param object $data_object Đối tượng meta loại bài viết hoặc taxonomy.
+ * @return object Đối tượng loại bài viết hoặc taxonomy.
  */
 function _wp_nav_menu_meta_box_object( $data_object = null ) {
 	if ( isset( $data_object->name ) ) {
@@ -1208,20 +1208,20 @@ function _wp_nav_menu_meta_box_object( $data_object = null ) {
 				'post_status' => 'publish',
 			);
 
-			// Posts should show only published items.
+			// Bài viết chỉ nên hiển thị các mục đã xuất bản.
 		} elseif ( 'post' === $data_object->name ) {
 			$data_object->_default_query = array(
 				'post_status' => 'publish',
 			);
 
-			// Categories should be in reverse chronological order.
+			// Chuyên mục nên theo thứ tự thời gian ngược.
 		} elseif ( 'category' === $data_object->name ) {
 			$data_object->_default_query = array(
 				'orderby' => 'id',
 				'order'   => 'DESC',
 			);
 
-			// Custom post types should show only published items.
+			// Các loại bài viết tùy chỉnh chỉ nên hiển thị các mục đã xuất bản.
 		} else {
 			$data_object->_default_query = array(
 				'post_status' => 'publish',
@@ -1233,17 +1233,17 @@ function _wp_nav_menu_meta_box_object( $data_object = null ) {
 }
 
 /**
- * Returns the menu formatted to edit.
+ * Trả về menu được định dạng để chỉnh sửa.
  *
  * @since 3.0.0
  *
- * @param int $menu_id Optional. The ID of the menu to format. Default 0.
- * @return string|WP_Error The menu formatted to edit or error object on failure.
+ * @param int $menu_id Tùy chọn. ID của menu cần định dạng. Mặc định 0.
+ * @return string|WP_Error Menu được định dạng để chỉnh sửa hoặc đối tượng lỗi khi thất bại.
  */
 function wp_get_nav_menu_to_edit( $menu_id = 0 ) {
 	$menu = wp_get_nav_menu_object( $menu_id );
 
-	// If the menu exists, get its items.
+	// Nếu menu tồn tại, lấy các mục của nó.
 	if ( is_nav_menu( $menu ) ) {
 		$menu_items = wp_get_nav_menu_items( $menu->term_id, array( 'post_status' => 'any' ) );
 		$result     = '<div id="menu-instructions" class="post-body-plain';
@@ -1256,12 +1256,12 @@ function wp_get_nav_menu_to_edit( $menu_id = 0 ) {
 		}
 
 		/**
-		 * Filters the Walker class used when adding nav menu items.
+		 * Lọc lớp Walker được sử dụng khi thêm các mục menu điều hướng.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string $class   The walker class to use. Default 'Walker_Nav_Menu_Edit'.
-		 * @param int    $menu_id ID of the menu being rendered.
+		 * @param string $class   Lớp walker để sử dụng. Mặc định 'Walker_Nav_Menu_Edit'.
+		 * @param int    $menu_id ID của menu đang được hiển thị.
 		 */
 		$walker_class_name = apply_filters( 'wp_edit_nav_menu_walker', 'Walker_Nav_Menu_Edit', $menu_id );
 
@@ -1323,11 +1323,11 @@ function wp_get_nav_menu_to_edit( $menu_id = 0 ) {
 }
 
 /**
- * Returns the columns for the nav menus page.
+ * Trả về các cột cho trang menu điều hướng.
  *
  * @since 3.0.0
  *
- * @return string[] Array of column titles keyed by their column name.
+ * @return string[] Mảng tiêu đề cột được đánh chỉ mục theo tên cột.
  */
 function wp_nav_menu_manage_columns() {
 	return array(
@@ -1342,19 +1342,19 @@ function wp_nav_menu_manage_columns() {
 }
 
 /**
- * Deletes orphaned draft menu items
+ * Xóa các mục menu nháp mồ côi
  *
  * @access private
  * @since 3.0.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function _wp_delete_orphaned_draft_menu_items() {
 	global $wpdb;
 
 	$delete_timestamp = time() - ( DAY_IN_SECONDS * EMPTY_TRASH_DAYS );
 
-	// Delete orphaned draft menu items.
+	// Xóa các mục menu nháp mồ côi.
 	$menu_items_to_delete = $wpdb->get_col(
 		$wpdb->prepare(
 			"SELECT ID FROM $wpdb->posts AS p
@@ -1371,13 +1371,13 @@ function _wp_delete_orphaned_draft_menu_items() {
 }
 
 /**
- * Saves nav menu items.
+ * Lưu các mục menu điều hướng.
  *
  * @since 3.6.0
  *
- * @param int|string $nav_menu_selected_id    ID, slug, or name of the currently-selected menu.
- * @param string     $nav_menu_selected_title Title of the currently-selected menu.
- * @return string[] The menu updated messages.
+ * @param int|string $nav_menu_selected_id    ID, slug, hoặc tên của menu hiện đang được chọn.
+ * @param string     $nav_menu_selected_title Tiêu đề của menu hiện đang được chọn.
+ * @return string[] Các thông báo cập nhật menu.
  */
 function wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selected_title ) {
 	$unsorted_menu_items = wp_get_nav_menu_items(
@@ -1393,7 +1393,7 @@ function wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selecte
 	$messages   = array();
 	$menu_items = array();
 
-	// Index menu items by DB ID.
+	// Đánh chỉ mục các mục menu theo ID cơ sở dữ liệu.
 	foreach ( $unsorted_menu_items as $_item ) {
 		$menu_items[ $_item->db_id ] = $_item;
 	}
@@ -1416,11 +1416,11 @@ function wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selecte
 
 	wp_defer_term_counting( true );
 
-	// Loop through all the menu items' POST variables.
+	// Duyệt qua tất cả các biến POST của mục menu.
 	if ( ! empty( $_POST['menu-item-db-id'] ) ) {
 		foreach ( (array) $_POST['menu-item-db-id'] as $_key => $k ) {
 
-			// Menu item title can't be blank.
+			// Tiêu đề mục menu không được để trống.
 			if ( ! isset( $_POST['menu-item-title'][ $_key ] ) || '' === $_POST['menu-item-title'][ $_key ] ) {
 				continue;
 			}
@@ -1450,7 +1450,7 @@ function wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selecte
 		}
 	}
 
-	// Remove menu items from the menu that weren't in $_POST.
+	// Xóa các mục menu khỏi menu mà không có trong $_POST.
 	if ( ! empty( $menu_items ) ) {
 		foreach ( array_keys( $menu_items ) as $menu_item_id ) {
 			if ( is_nav_menu_item( $menu_item_id ) ) {
@@ -1459,7 +1459,7 @@ function wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selecte
 		}
 	}
 
-	// Store 'auto-add' pages.
+	// Lưu trữ các trang 'tự động thêm'.
 	$auto_add        = ! empty( $_POST['auto-add-pages'] );
 	$nav_menu_option = (array) get_option( 'nav_menu_options' );
 
@@ -1478,7 +1478,7 @@ function wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selecte
 		}
 	}
 
-	// Remove non-existent/deleted menus.
+	// Xóa các menu không tồn tại/đã bị xóa.
 	$nav_menu_option['auto_add'] = array_intersect(
 		$nav_menu_option['auto_add'],
 		wp_get_nav_menus( array( 'fields' => 'ids' ) )
@@ -1507,8 +1507,8 @@ function wp_nav_menu_update_menu_items( $nav_menu_selected_id, $nav_menu_selecte
 }
 
 /**
- * If a JSON blob of navigation menu data is in POST data, expand it and inject
- * it into `$_POST` to avoid PHP `max_input_vars` limitations. See #14134.
+ * Nếu có dữ liệu JSON menu điều hướng trong dữ liệu POST, giải nén và chèn
+ * nó vào `$_POST` để tránh giới hạn `max_input_vars` của PHP. Xem #14134.
  *
  * @ignore
  * @since 4.5.3
@@ -1524,8 +1524,8 @@ function _wp_expand_nav_menu_post_data() {
 	if ( ! is_null( $data ) && $data ) {
 		foreach ( $data as $post_input_data ) {
 			/*
-			 * For input names that are arrays (e.g. `menu-item-db-id[3][4][5]`),
-			 * derive the array path keys via regex and set the value in $_POST.
+			 * Đối với tên input là mảng (ví dụ `menu-item-db-id[3][4][5]`),
+			 * trích xuất các khóa đường dẫn mảng qua regex và đặt giá trị trong $_POST.
 			 */
 			preg_match( '#([^\[]*)(\[(.+)\])?#', $post_input_data->name, $matches );
 
@@ -1537,7 +1537,7 @@ function _wp_expand_nav_menu_post_data() {
 
 			$new_post_data = array();
 
-			// Build the new array value from leaf to trunk.
+			// Xây dựng giá trị mảng mới từ lá đến gốc.
 			for ( $i = count( $array_bits ) - 1; $i >= 0; $i-- ) {
 				if ( count( $array_bits ) - 1 === $i ) {
 					$new_post_data[ $array_bits[ $i ] ] = wp_slash( $post_input_data->value );

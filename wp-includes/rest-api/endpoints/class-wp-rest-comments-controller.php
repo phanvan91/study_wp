@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Comments_Controller class
+ * REST API: Lớp WP_REST_Comments_Controller
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core controller used to access comments via the REST API.
+ * Lớp điều khiển cốt lõi được sử dụng để truy cập bình luận thông qua REST API.
  *
  * @since 4.7.0
  *
@@ -17,7 +17,7 @@
 class WP_REST_Comments_Controller extends WP_REST_Controller {
 
 	/**
-	 * Instance of a comment meta fields object.
+	 * Đối tượng chứa các trường meta của bình luận.
 	 *
 	 * @since 4.7.0
 	 * @var WP_REST_Comment_Meta_Fields
@@ -25,7 +25,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	protected $meta;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 4.7.0
 	 */
@@ -37,7 +37,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Registers the routes for comments.
+	 * Đăng ký các route cho bình luận.
 	 *
 	 * @since 4.7.0
 	 *
@@ -115,12 +115,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to read comments.
+	 * Kiểm tra xem một yêu cầu có quyền đọc bình luận hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng lỗi nếu không.
 	 */
 	public function get_items_permissions_check( $request ) {
 
@@ -184,23 +184,23 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves a list of comment items.
+	 * Lấy danh sách các mục bình luận.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng lỗi khi thất bại.
 	 */
 	public function get_items( $request ) {
 
-		// Retrieve the list of registered collection query parameters.
+		// Lấy danh sách các tham số truy vấn bộ sưu tập đã đăng ký.
 		$registered = $this->get_collection_params();
 
 		/*
-		 * This array defines mappings between public API query parameters whose
-		 * values are accepted as-passed, and their internal WP_Query parameter
-		 * name equivalents (some are the same). Only values which are also
-		 * present in $registered will be set.
+		 * Mảng này định nghĩa ánh xạ giữa các tham số truy vấn API công khai có
+		 * giá trị được chấp nhận nguyên trạng, và tên tham số WP_Query nội bộ
+		 * tương đương (một số giống nhau). Chỉ các giá trị cũng có mặt
+		 * trong $registered mới được thiết lập.
 		 */
 		$parameter_mappings = array(
 			'author'         => 'author__in',
@@ -222,8 +222,8 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		$prepared_args = array();
 
 		/*
-		 * For each known parameter which is both registered and present in the request,
-		 * set the parameter's value on the query $prepared_args.
+		 * Với mỗi tham số đã biết vừa được đăng ký vừa có mặt trong yêu cầu,
+		 * thiết lập giá trị của tham số trên truy vấn $prepared_args.
 		 */
 		foreach ( $parameter_mappings as $api_param => $wp_param ) {
 			if ( isset( $registered[ $api_param ], $request[ $api_param ] ) ) {
@@ -231,7 +231,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Ensure certain parameter values default to empty strings.
+		// Đảm bảo một số giá trị tham số mặc định là chuỗi rỗng.
 		foreach ( array( 'author_email', 'search' ) as $param ) {
 			if ( ! isset( $prepared_args[ $param ] ) ) {
 				$prepared_args[ $param ] = '';
@@ -248,12 +248,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 
 		$prepared_args['date_query'] = array();
 
-		// Set before into date query. Date query must be specified as an array of an array.
+		// Thiết lập before vào truy vấn ngày. Truy vấn ngày phải được chỉ định dưới dạng mảng của mảng.
 		if ( isset( $registered['before'], $request['before'] ) ) {
 			$prepared_args['date_query'][0]['before'] = $request['before'];
 		}
 
-		// Set after into date query. Date query must be specified as an array of an array.
+		// Thiết lập after vào truy vấn ngày. Truy vấn ngày phải được chỉ định dưới dạng mảng của mảng.
 		if ( isset( $registered['after'], $request['after'] ) ) {
 			$prepared_args['date_query'][0]['after'] = $request['after'];
 		}
@@ -264,21 +264,21 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 
 		$is_head_request = $request->is_method( 'HEAD' );
 		if ( $is_head_request ) {
-			// Force the 'fields' argument. For HEAD requests, only post IDs are required to calculate pagination.
+			// Bắt buộc đối số 'fields'. Với yêu cầu HEAD, chỉ cần ID bài viết để tính phân trang.
 			$prepared_args['fields'] = 'ids';
-			// Disable priming comment meta for HEAD requests to improve performance.
+			// Tắt việc nạp trước meta bình luận cho yêu cầu HEAD để cải thiện hiệu suất.
 			$prepared_args['update_comment_meta_cache'] = false;
 		}
 
 		/**
-		 * Filters WP_Comment_Query arguments when querying comments via the REST API.
+		 * Lọc các đối số WP_Comment_Query khi truy vấn bình luận qua REST API.
 		 *
 		 * @since 4.7.0
 		 *
 		 * @link https://developer.wordpress.org/reference/classes/wp_comment_query/
 		 *
-		 * @param array           $prepared_args Array of arguments for WP_Comment_Query.
-		 * @param WP_REST_Request $request       The REST API request.
+		 * @param array           $prepared_args Mảng các đối số cho WP_Comment_Query.
+		 * @param WP_REST_Request $request       Yêu cầu REST API.
 		 */
 		$prepared_args = apply_filters( 'rest_comment_query', $prepared_args, $request );
 
@@ -302,7 +302,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		$max_pages      = (int) $query->max_num_pages;
 
 		if ( $total_comments < 1 ) {
-			// Out-of-bounds, run the query again without LIMIT for total count.
+			// Vượt giới hạn, chạy lại truy vấn không có LIMIT để lấy tổng số.
 			unset( $prepared_args['number'], $prepared_args['offset'] );
 
 			$query                    = new WP_Comment_Query();
@@ -341,12 +341,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get the comment, if the ID is valid.
+	 * Lấy bình luận, nếu ID hợp lệ.
 	 *
 	 * @since 4.7.2
 	 *
-	 * @param int $id Supplied ID.
-	 * @return WP_Comment|WP_Error Comment object if ID is valid, WP_Error otherwise.
+	 * @param int $id ID được cung cấp.
+	 * @return WP_Comment|WP_Error Đối tượng bình luận nếu ID hợp lệ, WP_Error nếu không.
 	 */
 	protected function get_comment( $id ) {
 		$error = new WP_Error(
@@ -381,12 +381,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to read the comment.
+	 * Kiểm tra xem một yêu cầu có quyền đọc bình luận hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access for the item, error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc mục, đối tượng lỗi nếu không.
 	 */
 	public function get_item_permissions_check( $request ) {
 		$comment = $this->get_comment( $request['id'] );
@@ -424,12 +424,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves a comment.
+	 * Lấy một bình luận.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng lỗi khi thất bại.
 	 */
 	public function get_item( $request ) {
 		$comment = $this->get_comment( $request['id'] );
@@ -444,12 +444,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to create a comment.
+	 * Kiểm tra xem một yêu cầu có quyền tạo bình luận hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to create items, error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền tạo mục, đối tượng lỗi nếu không.
 	 */
 	public function create_item_permissions_check( $request ) {
 		if ( ! is_user_logged_in() ) {
@@ -462,16 +462,15 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			}
 
 			/**
-			 * Filters whether comments can be created via the REST API without authentication.
+			 * Lọc xem có cho phép tạo bình luận qua REST API mà không cần xác thực hay không.
 			 *
-			 * Enables creating comments for anonymous users.
+			 * Cho phép tạo bình luận cho người dùng ẩn danh.
 			 *
 			 * @since 4.7.0
 			 *
-			 * @param bool $allow_anonymous Whether to allow anonymous comments to
-			 *                              be created. Default `false`.
-			 * @param WP_REST_Request $request Request used to generate the
-			 *                                 response.
+			 * @param bool $allow_anonymous Có cho phép tạo bình luận ẩn danh hay không.
+			 *                              Mặc định `false`.
+			 * @param WP_REST_Request $request Yêu cầu được sử dụng để tạo phản hồi.
 			 */
 			$allow_anonymous = apply_filters( 'rest_allow_anonymous_comments', false, $request );
 
@@ -484,7 +483,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Limit who can set comment `author`, `author_ip` or `status` to anything other than the default.
+		// Giới hạn ai có thể thiết lập `author`, `author_ip` hoặc `status` của bình luận khác giá trị mặc định.
 		if ( isset( $request['author'] ) && get_current_user_id() !== $request['author'] && ! current_user_can( 'moderate_comments' ) ) {
 			return new WP_Error(
 				'rest_comment_invalid_author',
@@ -568,12 +567,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Creates a comment.
+	 * Tạo một bình luận.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng lỗi khi thất bại.
 	 */
 	public function create_item( $request ) {
 		if ( ! empty( $request['id'] ) ) {
@@ -584,7 +583,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			);
 		}
 
-		// Do not allow comments to be created with a non-default type.
+		// Không cho phép tạo bình luận với loại không phải mặc định.
 		if ( ! empty( $request['type'] ) && 'comment' !== $request['type'] ) {
 			return new WP_Error(
 				'rest_invalid_comment_type',
@@ -612,12 +611,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			);
 		}
 
-		// Setting remaining values before wp_insert_comment so we can use wp_allow_comment().
+		// Thiết lập các giá trị còn lại trước wp_insert_comment để có thể sử dụng wp_allow_comment().
 		if ( ! isset( $prepared_comment['comment_date_gmt'] ) ) {
 			$prepared_comment['comment_date_gmt'] = current_time( 'mysql', true );
 		}
 
-		// Set author data if the user's logged in.
+		// Thiết lập dữ liệu tác giả nếu người dùng đã đăng nhập.
 		$missing_author = empty( $prepared_comment['user_id'] )
 			&& empty( $prepared_comment['comment_author'] )
 			&& empty( $prepared_comment['comment_author_email'] )
@@ -632,7 +631,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 			$prepared_comment['comment_author_url']   = $user->user_url;
 		}
 
-		// Honor the discussion setting that requires a name and email address of the comment author.
+		// Tuân thủ cài đặt thảo luận yêu cầu tên và địa chỉ email của tác giả bình luận.
 		if ( get_option( 'require_name_email' ) ) {
 			if ( empty( $prepared_comment['comment_author'] ) || empty( $prepared_comment['comment_author_email'] ) ) {
 				return new WP_Error(
@@ -692,17 +691,17 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		}
 
 		/**
-		 * Filters a comment before it is inserted via the REST API.
+		 * Lọc bình luận trước khi được chèn qua REST API.
 		 *
-		 * Allows modification of the comment right before it is inserted via wp_insert_comment().
-		 * Returning a WP_Error value from the filter will short-circuit insertion and allow
-		 * skipping further processing.
+		 * Cho phép sửa đổi bình luận ngay trước khi được chèn qua wp_insert_comment().
+		 * Trả về giá trị WP_Error từ bộ lọc sẽ rút ngắn việc chèn và cho phép
+		 * bỏ qua xử lý tiếp theo.
 		 *
 		 * @since 4.7.0
-		 * @since 4.8.0 `$prepared_comment` can now be a WP_Error to short-circuit insertion.
+		 * @since 4.8.0 `$prepared_comment` giờ có thể là WP_Error để rút ngắn việc chèn.
 		 *
-		 * @param array|WP_Error  $prepared_comment The prepared comment data for wp_insert_comment().
-		 * @param WP_REST_Request $request          Request used to insert the comment.
+		 * @param array|WP_Error  $prepared_comment Dữ liệu bình luận đã chuẩn bị cho wp_insert_comment().
+		 * @param WP_REST_Request $request          Yêu cầu được sử dụng để chèn bình luận.
 		 */
 		$prepared_comment = apply_filters( 'rest_pre_insert_comment', $prepared_comment, $request );
 		if ( is_wp_error( $prepared_comment ) ) {
@@ -726,14 +725,14 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		$comment = get_comment( $comment_id );
 
 		/**
-		 * Fires after a comment is created or updated via the REST API.
+		 * Kích hoạt sau khi bình luận được tạo hoặc cập nhật qua REST API.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_Comment      $comment  Inserted or updated comment object.
-		 * @param WP_REST_Request $request  Request object.
-		 * @param bool            $creating True when creating a comment, false
-		 *                                  when updating.
+		 * @param WP_Comment      $comment  Đối tượng bình luận đã chèn hoặc cập nhật.
+		 * @param WP_REST_Request $request  Đối tượng yêu cầu.
+		 * @param bool            $creating True khi tạo bình luận, false
+		 *                                  khi cập nhật.
 		 */
 		do_action( 'rest_insert_comment', $comment, $request, true );
 
@@ -757,14 +756,14 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		$request->set_param( 'context', $context );
 
 		/**
-		 * Fires completely after a comment is created or updated via the REST API.
+		 * Kích hoạt hoàn toàn sau khi bình luận được tạo hoặc cập nhật qua REST API.
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param WP_Comment      $comment  Inserted or updated comment object.
-		 * @param WP_REST_Request $request  Request object.
-		 * @param bool            $creating True when creating a comment, false
-		 *                                  when updating.
+		 * @param WP_Comment      $comment  Đối tượng bình luận đã chèn hoặc cập nhật.
+		 * @param WP_REST_Request $request  Đối tượng yêu cầu.
+		 * @param bool            $creating True khi tạo bình luận, false
+		 *                                  khi cập nhật.
 		 */
 		do_action( 'rest_after_insert_comment', $comment, $request, true );
 
@@ -778,12 +777,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given REST request has access to update a comment.
+	 * Kiểm tra xem một yêu cầu REST có quyền cập nhật bình luận hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to update the item, error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền cập nhật mục, đối tượng lỗi nếu không.
 	 */
 	public function update_item_permissions_check( $request ) {
 		$comment = $this->get_comment( $request['id'] );
@@ -803,12 +802,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Updates a comment.
+	 * Cập nhật một bình luận.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng lỗi khi thất bại.
 	 */
 	public function update_item( $request ) {
 		$comment = $this->get_comment( $request['id'] );
@@ -845,7 +844,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		}
 
 		if ( empty( $prepared_args ) && isset( $request['status'] ) ) {
-			// Only the comment status is being changed.
+			// Chỉ trạng thái bình luận đang được thay đổi.
 			$change = $this->handle_status_param( $request['status'], $id );
 
 			if ( ! $change ) {
@@ -898,7 +897,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 
 		$comment = get_comment( $id );
 
-		/** This action is documented in wp-includes/rest-api/endpoints/class-wp-rest-comments-controller.php */
+		/** Action này được ghi chú trong wp-includes/rest-api/endpoints/class-wp-rest-comments-controller.php */
 		do_action( 'rest_insert_comment', $comment, $request, false );
 
 		$schema = $this->get_item_schema();
@@ -919,7 +918,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 
 		$request->set_param( 'context', 'edit' );
 
-		/** This action is documented in wp-includes/rest-api/endpoints/class-wp-rest-comments-controller.php */
+		/** Action này được ghi chú trong wp-includes/rest-api/endpoints/class-wp-rest-comments-controller.php */
 		do_action( 'rest_after_insert_comment', $comment, $request, false );
 
 		$response = $this->prepare_item_for_response( $comment, $request );
@@ -928,12 +927,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to delete a comment.
+	 * Kiểm tra xem một yêu cầu có quyền xóa bình luận hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to delete the item, error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền xóa mục, đối tượng lỗi nếu không.
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$comment = $this->get_comment( $request['id'] );
@@ -952,12 +951,12 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Deletes a comment.
+	 * Xóa một bình luận.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng lỗi khi thất bại.
 	 */
 	public function delete_item( $request ) {
 		$comment = $this->get_comment( $request['id'] );
@@ -968,14 +967,14 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		$force = isset( $request['force'] ) ? (bool) $request['force'] : false;
 
 		/**
-		 * Filters whether a comment can be trashed via the REST API.
+		 * Lọc xem bình luận có thể được chuyển vào thùng rác qua REST API hay không.
 		 *
-		 * Return false to disable trash support for the comment.
+		 * Trả về false để tắt hỗ trợ thùng rác cho bình luận.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param bool       $supports_trash Whether the comment supports trashing.
-		 * @param WP_Comment $comment        The comment object being considered for trashing support.
+		 * @param bool       $supports_trash Bình luận có hỗ trợ chuyển vào thùng rác hay không.
+		 * @param WP_Comment $comment        Đối tượng bình luận đang được xem xét hỗ trợ thùng rác.
 		 */
 		$supports_trash = apply_filters( 'rest_comment_trashable', ( EMPTY_TRASH_DAYS > 0 ), $comment );
 
@@ -992,7 +991,7 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 				)
 			);
 		} else {
-			// If this type doesn't support trashing, error out.
+			// Nếu loại này không hỗ trợ thùng rác, trả về lỗi.
 			if ( ! $supports_trash ) {
 				return new WP_Error(
 					'rest_trash_not_supported',
@@ -1024,13 +1023,13 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 		}
 
 		/**
-		 * Fires after a comment is deleted via the REST API.
+		 * Kích hoạt sau khi bình luận bị xóa qua REST API.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_Comment       $comment  The deleted comment data.
-		 * @param WP_REST_Response $response The response returned from the API.
-		 * @param WP_REST_Request  $request  The request sent to the API.
+		 * @param WP_Comment       $comment  Dữ liệu bình luận đã xóa.
+		 * @param WP_REST_Response $response Phản hồi trả về từ API.
+		 * @param WP_REST_Request  $request  Yêu cầu gửi đến API.
 		 */
 		do_action( 'rest_delete_comment', $comment, $response, $request );
 
@@ -1038,22 +1037,22 @@ class WP_REST_Comments_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepares a single comment output for response.
+	 * Chuẩn bị đầu ra của một bình luận cho phản hồi.
 	 *
 	 * @since 4.7.0
-	 * @since 5.9.0 Renamed `$comment` to `$item` to match parent class for PHP 8 named parameter support.
+	 * @since 5.9.0 Đổi tên `$comment` thành `$item` để khớp lớp cha cho hỗ trợ tham số đặt tên PHP 8.
 	 *
-	 * @param WP_Comment      $item    Comment object.
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response Response object.
+	 * @param WP_Comment      $item    Đối tượng bình luận.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @return WP_REST_Response Đối tượng phản hồi.
 	 */
 	public function prepare_item_for_response( $item, $request ) {
-		// Restores the more descriptive, specific name for use within this method.
+		// Khôi phục tên mô tả chi tiết hơn để sử dụng trong phương thức này.
 		$comment = $item;
 
-		// Don't prepare the response body for HEAD requests.
+		// Không chuẩn bị nội dung phản hồi cho yêu cầu HEAD.
 		if ( $request->is_method( 'HEAD' ) ) {
-			/** This filter is documented in wp-includes/rest-api/endpoints/class-wp-rest-comments-controller.php */
+			/** Bộ lọc này được ghi chú trong wp-includes/rest-api/endpoints/class-wp-rest-comments-controller.php */
 			return apply_filters( 'rest_prepare_comment', new WP_REST_Response( array() ), $comment, $request );
 		}
 

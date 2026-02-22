@@ -547,9 +547,9 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 		$fragment_processor->state->encoding_confidence = 'irrelevant';
 
 		/*
-		 * Update the parsing namespace near the end of the process.
-		 * This is important so that any push/pop from the stack of open
-		 * elements does not change the parsing namespace.
+		 * Cập nhật không gian tên phân tích gần cuối quá trình.
+		 * Điều này quan trọng để bất kỳ push/pop nào từ ngăn xếp
+		 * các phần tử mở không thay đổi không gian tên phân tích.
 		 */
 		$fragment_processor->change_parsing_namespace(
 			$this->current_element->token->integration_node_type ? 'html' : $namespace
@@ -559,13 +559,13 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Stops the parser and terminates its execution when encountering unsupported markup.
+	 * Dừng trình phân tích và kết thúc thực thi khi gặp markup không được hỗ trợ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception Halts execution of the parser.
+	 * @throws WP_HTML_Unsupported_Exception Dừng thực thi trình phân tích.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param string $message Explains support is missing in order to parse the current node.
+	 * @param string $message Giải thích lý do thiếu hỗ trợ để phân tích nút hiện tại.
 	 */
 	private function bail( string $message ) {
 		$here  = $this->bookmarks[ $this->state->current_token->bookmark_name ];
@@ -596,16 +596,16 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Returns the last error, if any.
+	 * Trả về lỗi cuối cùng, nếu có.
 	 *
-	 * Various situations lead to parsing failure but this class will
-	 * return `false` in all those cases. To determine why something
-	 * failed it's possible to request the last error. This can be
-	 * helpful to know to distinguish whether a given tag couldn't
-	 * be found or if content in the document caused the processor
-	 * to give up and abort processing.
+	 * Nhiều tình huống khác nhau dẫn đến lỗi phân tích nhưng lớp này sẽ
+	 * trả về `false` trong tất cả các trường hợp đó. Để xác định lý do
+	 * thất bại, có thể yêu cầu lỗi cuối cùng. Điều này có thể
+	 * hữu ích để phân biệt xem một thẻ nhất định không thể
+	 * được tìm thấy hay nội dung trong tài liệu khiến trình xử lý
+	 * từ bỏ và hủy xử lý.
 	 *
-	 * Example
+	 * Ví dụ
 	 *
 	 *     $processor = WP_HTML_Processor::create_fragment( '<template><strong><button><em><p><em>' );
 	 *     false === $processor->next_tag();
@@ -616,16 +616,16 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 * @see self::ERROR_UNSUPPORTED
 	 * @see self::ERROR_EXCEEDED_MAX_BOOKMARKS
 	 *
-	 * @return string|null The last error, if one exists, otherwise null.
+	 * @return string|null Lỗi cuối cùng, nếu tồn tại, ngược lại null.
 	 */
 	public function get_last_error(): ?string {
 		return $this->last_error;
 	}
 
 	/**
-	 * Returns context for why the parser aborted due to unsupported HTML, if it did.
+	 * Trả về ngữ cảnh lý do trình phân tích dừng lại do HTML không được hỗ trợ, nếu có.
 	 *
-	 * This is meant for debugging purposes, not for production use.
+	 * Phương thức này dùng cho mục đích gỡ lỗi, không phải cho môi trường production.
 	 *
 	 * @since 6.7.0
 	 *
@@ -638,28 +638,28 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Finds the next tag matching the $query.
+	 * Tìm thẻ tiếp theo khớp với $query.
 	 *
-	 * @todo Support matching the class name and tag name.
+	 * @todo Hỗ trợ khớp tên lớp và tên thẻ.
 	 *
 	 * @since 6.4.0
-	 * @since 6.6.0 Visits all tokens, including virtual ones.
+	 * @since 6.6.0 Duyệt qua tất cả token, bao gồm cả token ảo.
 	 *
-	 * @throws Exception When unable to allocate a bookmark for the next token in the input HTML document.
+	 * @throws Exception Khi không thể cấp phát bookmark cho token tiếp theo trong tài liệu HTML đầu vào.
 	 *
 	 * @param array|string|null $query {
-	 *     Optional. Which tag name to find, having which class, etc. Default is to find any tag.
+	 *     Tùy chọn. Tên thẻ cần tìm, có lớp nào, v.v. Mặc định là tìm bất kỳ thẻ nào.
 	 *
-	 *     @type string|null $tag_name     Which tag to find, or `null` for "any tag."
-	 *     @type string      $tag_closers  'visit' to pause at tag closers, 'skip' or unset to only visit openers.
-	 *     @type int|null    $match_offset Find the Nth tag matching all search criteria.
-	 *                                     1 for "first" tag, 3 for "third," etc.
-	 *                                     Defaults to first tag.
-	 *     @type string|null $class_name   Tag must contain this whole class name to match.
-	 *     @type string[]    $breadcrumbs  DOM sub-path at which element is found, e.g. `array( 'FIGURE', 'IMG' )`.
-	 *                                     May also contain the wildcard `*` which matches a single element, e.g. `array( 'SECTION', '*' )`.
+	 *     @type string|null $tag_name     Thẻ cần tìm, hoặc `null` cho "bất kỳ thẻ nào."
+	 *     @type string      $tag_closers  'visit' để dừng tại thẻ đóng, 'skip' hoặc không đặt để chỉ duyệt thẻ mở.
+	 *     @type int|null    $match_offset Tìm thẻ thứ N khớp tất cả tiêu chí tìm kiếm.
+	 *                                     1 cho thẻ "đầu tiên", 3 cho thẻ "thứ ba", v.v.
+	 *                                     Mặc định là thẻ đầu tiên.
+	 *     @type string|null $class_name   Thẻ phải chứa toàn bộ tên lớp này để khớp.
+	 *     @type string[]    $breadcrumbs  Đường dẫn con DOM nơi phần tử được tìm thấy, ví dụ: `array( 'FIGURE', 'IMG' )`.
+	 *                                     Cũng có thể chứa ký tự đại diện `*` khớp một phần tử đơn, ví dụ: `array( 'SECTION', '*' )`.
 	 * }
-	 * @return bool Whether a tag was matched.
+	 * @return bool Liệu có thẻ nào được khớp hay không.
 	 */
 	public function next_tag( $query = null ): bool {
 		$visit_closers = isset( $query['tag_closers'] ) && 'visit' === $query['tag_closers'];
@@ -742,35 +742,35 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Finds the next token in the HTML document.
+	 * Tìm token tiếp theo trong tài liệu HTML.
 	 *
-	 * This doesn't currently have a way to represent non-tags and doesn't process
-	 * semantic rules for text nodes. For access to the raw tokens consider using
-	 * WP_HTML_Tag_Processor instead.
+	 * Phương thức này hiện tại không có cách biểu diễn các phần tử không phải thẻ và không xử lý
+	 * các quy tắc ngữ nghĩa cho nút văn bản. Để truy cập các token thô, hãy cân nhắc sử dụng
+	 * WP_HTML_Tag_Processor thay thế.
 	 *
-	 * @since 6.5.0 Added for internal support; do not use.
-	 * @since 6.7.2 Refactored so subclasses may extend.
+	 * @since 6.5.0 Thêm cho hỗ trợ nội bộ; không sử dụng.
+	 * @since 6.7.2 Tái cấu trúc để lớp con có thể mở rộng.
 	 *
-	 * @return bool Whether a token was parsed.
+	 * @return bool Liệu có token nào được phân tích hay không.
 	 */
 	public function next_token(): bool {
 		return $this->next_visitable_token();
 	}
 
 	/**
-	 * Ensures internal accounting is maintained for HTML semantic rules while
-	 * the underlying Tag Processor class is seeking to a bookmark.
+	 * Đảm bảo kế toán nội bộ được duy trì cho các quy tắc ngữ nghĩa HTML trong khi
+	 * lớp Tag Processor bên dưới đang tìm kiếm đến một bookmark.
 	 *
-	 * This doesn't currently have a way to represent non-tags and doesn't process
-	 * semantic rules for text nodes. For access to the raw tokens consider using
-	 * WP_HTML_Tag_Processor instead.
+	 * Phương thức này hiện tại không có cách biểu diễn các phần tử không phải thẻ và không xử lý
+	 * các quy tắc ngữ nghĩa cho nút văn bản. Để truy cập các token thô, hãy cân nhắc sử dụng
+	 * WP_HTML_Tag_Processor thay thế.
 	 *
-	 * Note that this method may call itself recursively. This is why it is not
-	 * implemented as {@see WP_HTML_Processor::next_token()}, which instead calls
-	 * this method similarly to how {@see WP_HTML_Tag_Processor::next_token()}
-	 * calls the {@see WP_HTML_Tag_Processor::base_class_next_token()} method.
+	 * Lưu ý rằng phương thức này có thể gọi đệ quy chính nó. Đây là lý do nó không
+	 * được triển khai như {@see WP_HTML_Processor::next_token()}, mà thay vào đó gọi
+	 * phương thức này tương tự cách {@see WP_HTML_Tag_Processor::next_token()}
+	 * gọi phương thức {@see WP_HTML_Tag_Processor::base_class_next_token()}.
 	 *
-	 * @since 6.7.2 Added for internal support.
+	 * @since 6.7.2 Thêm cho hỗ trợ nội bộ.
 	 *
 	 * @access private
 	 *
@@ -784,23 +784,23 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 		}
 
 		/*
-		 * Prime the events if there are none.
+		 * Khởi tạo các sự kiện nếu chưa có.
 		 *
-		 * @todo In some cases, probably related to the adoption agency
-		 *       algorithm, this call to step() doesn't create any new
-		 *       events. Calling it again creates them. Figure out why
-		 *       this is and if it's inherent or if it's a bug. Looping
-		 *       until there are events or until there are no more
-		 *       tokens works in the meantime and isn't obviously wrong.
+		 * @todo Trong một số trường hợp, có thể liên quan đến thuật toán
+		 *       adoption agency, lời gọi step() này không tạo ra sự kiện
+		 *       mới nào. Gọi lại lần nữa thì tạo được. Cần tìm hiểu
+		 *       tại sao và liệu đây là bản chất hay là lỗi. Lặp
+		 *       cho đến khi có sự kiện hoặc không còn token nào
+		 *       hoạt động tạm thời và không rõ ràng là sai.
 		 */
 		if ( empty( $this->element_queue ) && $this->step() ) {
 			return $this->next_visitable_token();
 		}
 
-		// Process the next event on the queue.
+		// Xử lý sự kiện tiếp theo trong hàng đợi.
 		$this->current_element = array_shift( $this->element_queue );
 		if ( ! isset( $this->current_element ) ) {
-			// There are no tokens left, so close all remaining open elements.
+			// Không còn token nào, đóng tất cả các phần tử mở còn lại.
 			while ( $this->state->stack_of_open_elements->pop() ) {
 				continue;
 			}
@@ -811,22 +811,22 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 		$is_pop = WP_HTML_Stack_Event::POP === $this->current_element->operation;
 
 		/*
-		 * The root node only exists in the fragment parser, and closing it
-		 * indicates that the parse is complete. Stop before popping it from
-		 * the breadcrumbs.
+		 * Nút gốc chỉ tồn tại trong trình phân tích fragment, và việc đóng nó
+		 * cho biết quá trình phân tích đã hoàn tất. Dừng trước khi loại bỏ nó
+		 * khỏi breadcrumbs.
 		 */
 		if ( 'root-node' === $this->current_element->token->bookmark_name ) {
 			return $this->next_visitable_token();
 		}
 
-		// Adjust the breadcrumbs for this event.
+		// Điều chỉnh breadcrumbs cho sự kiện này.
 		if ( $is_pop ) {
 			array_pop( $this->breadcrumbs );
 		} else {
 			$this->breadcrumbs[] = $this->current_element->token->node_name;
 		}
 
-		// Avoid sending close events for elements which don't expect a closing.
+		// Tránh gửi sự kiện đóng cho các phần tử không mong đợi thẻ đóng.
 		if ( $is_pop && ! $this->expects_closer( $this->current_element->token ) ) {
 			return $this->next_visitable_token();
 		}
@@ -835,9 +835,9 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Indicates if the current tag token is a tag closer.
+	 * Cho biết token thẻ hiện tại có phải là thẻ đóng hay không.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $p = WP_HTML_Processor::create_fragment( '<div></div>' );
 	 *     $p->next_tag( array( 'tag_name' => 'div', 'tag_closers' => 'visit' ) );
@@ -846,9 +846,9 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 *     $p->next_tag( array( 'tag_name' => 'div', 'tag_closers' => 'visit' ) );
 	 *     $p->is_tag_closer() === true;
 	 *
-	 * @since 6.6.0 Subclassed for HTML Processor.
+	 * @since 6.6.0 Lớp con hóa cho HTML Processor.
 	 *
-	 * @return bool Whether the current tag is a tag closer.
+	 * @return bool Liệu thẻ hiện tại có phải là thẻ đóng hay không.
 	 */
 	public function is_tag_closer(): bool {
 		return $this->is_virtual()
@@ -857,12 +857,12 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Indicates if the currently-matched token is virtual, created by a stack operation
-	 * while processing HTML, rather than a token found in the HTML text itself.
+	 * Cho biết token hiện đang khớp có phải là ảo hay không, được tạo bởi thao tác ngăn xếp
+	 * trong quá trình xử lý HTML, thay vì là token được tìm thấy trong văn bản HTML gốc.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @return bool Whether the current token is virtual.
+	 * @return bool Liệu token hiện tại có phải là ảo hay không.
 	 */
 	private function is_virtual(): bool {
 		return (
@@ -872,16 +872,16 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Indicates if the currently-matched tag matches the given breadcrumbs.
+	 * Cho biết thẻ hiện đang khớp có khớp với breadcrumbs đã cho hay không.
 	 *
-	 * A "*" represents a single tag wildcard, where any tag matches, but not no tags.
+	 * Ký tự "*" đại diện cho một ký tự đại diện thẻ đơn, nơi bất kỳ thẻ nào cũng khớp, nhưng không phải không có thẻ.
 	 *
-	 * At some point this function _may_ support a `**` syntax for matching any number
-	 * of unspecified tags in the breadcrumb stack. This has been intentionally left
-	 * out, however, to keep this function simple and to avoid introducing backtracking,
-	 * which could open up surprising performance breakdowns.
+	 * Tại một thời điểm nào đó, hàm này _có thể_ hỗ trợ cú pháp `**` để khớp bất kỳ số lượng
+	 * thẻ không xác định nào trong ngăn xếp breadcrumb. Điều này đã được cố ý bỏ qua
+	 * để giữ cho hàm đơn giản và tránh giới thiệu backtracking,
+	 * có thể gây ra các sự cố hiệu suất bất ngờ.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $processor = WP_HTML_Processor::create_fragment( '<div><span><figure><img></figure></span></div>' );
 	 *     $processor->next_tag( 'img' );
@@ -892,17 +892,17 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param string[] $breadcrumbs DOM sub-path at which element is found, e.g. `array( 'FIGURE', 'IMG' )`.
-	 *                              May also contain the wildcard `*` which matches a single element, e.g. `array( 'SECTION', '*' )`.
-	 * @return bool Whether the currently-matched tag is found at the given nested structure.
+	 * @param string[] $breadcrumbs Đường dẫn con DOM nơi phần tử được tìm thấy, ví dụ: `array( 'FIGURE', 'IMG' )`.
+	 *                              Cũng có thể chứa ký tự đại diện `*` khớp một phần tử đơn, ví dụ: `array( 'SECTION', '*' )`.
+	 * @return bool Liệu thẻ hiện đang khớp có được tìm thấy tại cấu trúc lồng nhau đã cho hay không.
 	 */
 	public function matches_breadcrumbs( $breadcrumbs ): bool {
-		// Everything matches when there are zero constraints.
+		// Mọi thứ đều khớp khi không có ràng buộc nào.
 		if ( 0 === count( $breadcrumbs ) ) {
 			return true;
 		}
 
-		// Start at the last crumb.
+		// Bắt đầu tại crumb cuối cùng.
 		$crumb = end( $breadcrumbs );
 
 		if ( '*' !== $crumb && $this->get_tag() !== strtoupper( $crumb ) ) {
@@ -926,22 +926,22 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Indicates if the currently-matched node expects a closing
-	 * token, or if it will self-close on the next step.
+	 * Cho biết nút hiện đang khớp có mong đợi một token đóng hay không,
+	 * hoặc liệu nó sẽ tự đóng ở bước tiếp theo.
 	 *
-	 * Most HTML elements expect a closer, such as a P element or
-	 * a DIV element. Others, like an IMG element are void and don't
-	 * have a closing tag. Special elements, such as SCRIPT and STYLE,
-	 * are treated just like void tags. Text nodes and self-closing
-	 * foreign content will also act just like a void tag, immediately
-	 * closing as soon as the processor advances to the next token.
+	 * Hầu hết các phần tử HTML mong đợi thẻ đóng, chẳng hạn như phần tử P hoặc
+	 * phần tử DIV. Các phần tử khác, như IMG là void và không
+	 * có thẻ đóng. Các phần tử đặc biệt, chẳng hạn như SCRIPT và STYLE,
+	 * được xử lý giống như thẻ void. Nút văn bản và nội dung ngoại lai
+	 * tự đóng cũng hoạt động giống như thẻ void, đóng ngay lập tức
+	 * khi trình xử lý chuyển đến token tiếp theo.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param WP_HTML_Token|null $node Optional. Node to examine, if provided.
-	 *                                 Default is to examine current node.
-	 * @return bool|null Whether to expect a closer for the currently-matched node,
-	 *                   or `null` if not matched on any token.
+	 * @param WP_HTML_Token|null $node Tùy chọn. Nút cần kiểm tra, nếu được cung cấp.
+	 *                                 Mặc định là kiểm tra nút hiện tại.
+	 * @return bool|null Liệu có mong đợi thẻ đóng cho nút hiện đang khớp hay không,
+	 *                   hoặc `null` nếu không khớp với bất kỳ token nào.
 	 */
 	public function expects_closer( ?WP_HTML_Token $node = null ): ?bool {
 		$token_name = $node->node_name ?? $this->get_token_name();
@@ -954,47 +954,47 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 		$token_has_self_closing = $node->has_self_closing_flag ?? $this->has_self_closing_flag();
 
 		return ! (
-			// Comments, text nodes, and other atomic tokens.
+			// Comment, nút văn bản, và các token nguyên tử khác.
 			'#' === $token_name[0] ||
-			// Doctype declarations.
+			// Khai báo Doctype.
 			'html' === $token_name ||
-			// Void elements.
+			// Phần tử void.
 			( 'html' === $token_namespace && self::is_void( $token_name ) ) ||
-			// Special atomic elements.
+			// Phần tử nguyên tử đặc biệt.
 			( 'html' === $token_namespace && in_array( $token_name, array( 'IFRAME', 'NOEMBED', 'NOFRAMES', 'SCRIPT', 'STYLE', 'TEXTAREA', 'TITLE', 'XMP' ), true ) ) ||
-			// Self-closing elements in foreign content.
+			// Phần tử tự đóng trong nội dung ngoại lai.
 			( 'html' !== $token_namespace && $token_has_self_closing )
 		);
 	}
 
 	/**
-	 * Steps through the HTML document and stop at the next tag, if any.
+	 * Bước qua tài liệu HTML và dừng lại ở thẻ tiếp theo, nếu có.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @throws Exception When unable to allocate a bookmark for the next token in the input HTML document.
+	 * @throws Exception Khi không thể cấp phát bookmark cho token tiếp theo trong tài liệu HTML đầu vào.
 	 *
 	 * @see self::PROCESS_NEXT_NODE
 	 * @see self::REPROCESS_CURRENT_NODE
 	 *
-	 * @param string $node_to_process Whether to parse the next node or reprocess the current node.
-	 * @return bool Whether a tag was matched.
+	 * @param string $node_to_process Liệu phân tích nút tiếp theo hay xử lý lại nút hiện tại.
+	 * @return bool Liệu có thẻ nào được khớp hay không.
 	 */
 	public function step( $node_to_process = self::PROCESS_NEXT_NODE ): bool {
-		// Refuse to proceed if there was a previous error.
+		// Từ chối tiếp tục nếu đã có lỗi trước đó.
 		if ( null !== $this->last_error ) {
 			return false;
 		}
 
 		if ( self::REPROCESS_CURRENT_NODE !== $node_to_process ) {
 			/*
-			 * Void elements still hop onto the stack of open elements even though
-			 * there's no corresponding closing tag. This is important for managing
-			 * stack-based operations such as "navigate to parent node" or checking
-			 * on an element's breadcrumbs.
+			 * Phần tử void vẫn được đẩy lên ngăn xếp các phần tử mở mặc dù
+			 * không có thẻ đóng tương ứng. Điều này quan trọng để quản lý
+			 * các thao tác dựa trên ngăn xếp như "điều hướng đến nút cha" hoặc kiểm tra
+			 * breadcrumbs của phần tử.
 			 *
-			 * When moving on to the next node, therefore, if the bottom-most element
-			 * on the stack is a void element, it must be closed.
+			 * Do đó, khi chuyển sang nút tiếp theo, nếu phần tử ở đáy
+			 * ngăn xếp là phần tử void, nó phải được đóng.
 			 */
 			$top_node = $this->state->stack_of_open_elements->current_node();
 			if ( isset( $top_node ) && ! $this->expects_closer( $top_node ) ) {
@@ -1009,7 +1009,7 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 			}
 		}
 
-		// Finish stepping when there are no more tokens in the document.
+		// Kết thúc bước khi không còn token nào trong tài liệu.
 		if (
 			WP_HTML_Tag_Processor::STATE_INCOMPLETE_INPUT === $this->parser_state ||
 			WP_HTML_Tag_Processor::STATE_COMPLETE === $this->parser_state
@@ -1124,26 +1124,26 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 				case WP_HTML_Processor_State::INSERTION_MODE_AFTER_AFTER_FRAMESET:
 					return $this->step_after_after_frameset();
 
-				// This should be unreachable but PHP doesn't have total type checking on switch.
+				// Đây không nên xảy ra nhưng PHP không có kiểm tra kiểu toàn diện trên switch.
 				default:
 					$this->bail( "Unaware of the requested parsing mode: '{$this->state->insertion_mode}'." );
 			}
 		} catch ( WP_HTML_Unsupported_Exception $e ) {
 			/*
-			 * Exceptions are used in this class to escape deep call stacks that
-			 * otherwise might involve messier calling and return conventions.
+			 * Ngoại lệ được sử dụng trong lớp này để thoát khỏi các ngăn xếp gọi sâu
+			 * mà nếu không sẽ liên quan đến các quy ước gọi và trả về phức tạp hơn.
 			 */
 			return false;
 		}
 	}
 
 	/**
-	 * Computes the HTML breadcrumbs for the currently-matched node, if matched.
+	 * Tính toán breadcrumbs HTML cho nút hiện đang khớp, nếu đã khớp.
 	 *
-	 * Breadcrumbs start at the outermost parent and descend toward the matched element.
-	 * They always include the entire path from the root HTML node to the matched element.
+	 * Breadcrumbs bắt đầu từ phần tử cha ngoài cùng và đi xuống phần tử đã khớp.
+	 * Chúng luôn bao gồm toàn bộ đường dẫn từ nút HTML gốc đến phần tử đã khớp.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $processor = WP_HTML_Processor::create_fragment( '<p><strong><em><img></em></strong></p>' );
 	 *     $processor->next_tag( 'IMG' );
@@ -1151,63 +1151,63 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 *
 	 * @since 6.4.0
 	 *
-	 * @return string[] Array of tag names representing path to matched node.
+	 * @return string[] Mảng tên thẻ đại diện cho đường dẫn đến nút đã khớp.
 	 */
 	public function get_breadcrumbs(): array {
 		return $this->breadcrumbs;
 	}
 
 	/**
-	 * Returns the nesting depth of the current location in the document.
+	 * Trả về độ sâu lồng nhau của vị trí hiện tại trong tài liệu.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $processor = WP_HTML_Processor::create_fragment( '<div><p></p></div>' );
-	 *     // The processor starts in the BODY context, meaning it has depth from the start: HTML > BODY.
+	 *     // Trình xử lý bắt đầu trong ngữ cảnh BODY, nghĩa là nó có độ sâu từ đầu: HTML > BODY.
 	 *     2 === $processor->get_current_depth();
 	 *
-	 *     // Opening the DIV element increases the depth.
+	 *     // Mở phần tử DIV tăng độ sâu.
 	 *     $processor->next_token();
 	 *     3 === $processor->get_current_depth();
 	 *
-	 *     // Opening the P element increases the depth.
+	 *     // Mở phần tử P tăng độ sâu.
 	 *     $processor->next_token();
 	 *     4 === $processor->get_current_depth();
 	 *
-	 *     // The P element is closed during `next_token()` so the depth is decreased to reflect that.
+	 *     // Phần tử P được đóng trong `next_token()` nên độ sâu giảm để phản ánh điều đó.
 	 *     $processor->next_token();
 	 *     3 === $processor->get_current_depth();
 	 *
 	 * @since 6.6.0
 	 *
-	 * @return int Nesting-depth of current location in the document.
+	 * @return int Độ sâu lồng nhau của vị trí hiện tại trong tài liệu.
 	 */
 	public function get_current_depth(): int {
 		return count( $this->breadcrumbs );
 	}
 
 	/**
-	 * Normalizes an HTML fragment by serializing it.
+	 * Chuẩn hóa một fragment HTML bằng cách tuần tự hóa nó.
 	 *
-	 * This method assumes that the given HTML snippet is found in BODY context.
-	 * For normalizing full documents or fragments found in other contexts, create
-	 * a new processor using {@see WP_HTML_Processor::create_fragment} or
-	 * {@see WP_HTML_Processor::create_full_parser} and call {@see WP_HTML_Processor::serialize}
-	 * on the created instances.
+	 * Phương thức này giả định rằng đoạn HTML đã cho nằm trong ngữ cảnh BODY.
+	 * Để chuẩn hóa toàn bộ tài liệu hoặc fragment được tìm thấy trong các ngữ cảnh khác, hãy tạo
+	 * trình xử lý mới bằng {@see WP_HTML_Processor::create_fragment} hoặc
+	 * {@see WP_HTML_Processor::create_full_parser} và gọi {@see WP_HTML_Processor::serialize}
+	 * trên các thể hiện đã tạo.
 	 *
-	 * Many aspects of an input HTML fragment may be changed during normalization.
+	 * Nhiều khía cạnh của fragment HTML đầu vào có thể bị thay đổi trong quá trình chuẩn hóa.
 	 *
-	 *  - Attribute values will be double-quoted.
-	 *  - Duplicate attributes will be removed.
-	 *  - Omitted tags will be added.
-	 *  - Tag and attribute name casing will be lower-cased,
-	 *    except for specific SVG and MathML tags or attributes.
-	 *  - Text will be re-encoded, null bytes handled,
-	 *    and invalid UTF-8 replaced with U+FFFD.
-	 *  - Any incomplete syntax trailing at the end will be omitted,
-	 *    for example, an unclosed comment opener will be removed.
+	 *  - Giá trị thuộc tính sẽ được đặt trong dấu ngoặc kép.
+	 *  - Thuộc tính trùng lặp sẽ bị loại bỏ.
+	 *  - Thẻ bị bỏ sót sẽ được thêm vào.
+	 *  - Tên thẻ và thuộc tính sẽ được chuyển thành chữ thường,
+	 *    ngoại trừ các thẻ hoặc thuộc tính SVG và MathML cụ thể.
+	 *  - Văn bản sẽ được mã hóa lại, byte null được xử lý,
+	 *    và UTF-8 không hợp lệ được thay thế bằng U+FFFD.
+	 *  - Bất kỳ cú pháp chưa hoàn thành nào ở cuối sẽ bị bỏ qua,
+	 *    ví dụ: một ký hiệu mở comment chưa đóng sẽ bị xóa.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     echo WP_HTML_Processor::normalize( '<a href=#anchor v=5 href="/" enabled>One</a another v=5><!--' );
 	 *     // <a href="#anchor" v="5" enabled>One</a>
@@ -1220,35 +1220,35 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param string $html Input HTML to normalize.
+	 * @param string $html HTML đầu vào cần chuẩn hóa.
 	 *
-	 * @return string|null Normalized output, or `null` if unable to normalize.
+	 * @return string|null Đầu ra đã chuẩn hóa, hoặc `null` nếu không thể chuẩn hóa.
 	 */
 	public static function normalize( string $html ): ?string {
 		return static::create_fragment( $html )->serialize();
 	}
 
 	/**
-	 * Returns normalized HTML for a fragment by serializing it.
+	 * Trả về HTML đã chuẩn hóa cho một fragment bằng cách tuần tự hóa nó.
 	 *
-	 * This differs from {@see WP_HTML_Processor::normalize} in that it starts with
-	 * a specific HTML Processor, which _must_ not have already started scanning;
-	 * it must be in the initial ready state and will be in the completed state once
-	 * serialization is complete.
+	 * Phương thức này khác với {@see WP_HTML_Processor::normalize} ở chỗ nó bắt đầu với
+	 * một HTML Processor cụ thể, mà _phải_ chưa bắt đầu quét;
+	 * nó phải ở trạng thái sẵn sàng ban đầu và sẽ ở trạng thái hoàn thành khi
+	 * quá trình tuần tự hóa kết thúc.
 	 *
-	 * Many aspects of an input HTML fragment may be changed during normalization.
+	 * Nhiều khía cạnh của fragment HTML đầu vào có thể bị thay đổi trong quá trình chuẩn hóa.
 	 *
-	 *  - Attribute values will be double-quoted.
-	 *  - Duplicate attributes will be removed.
-	 *  - Omitted tags will be added.
-	 *  - Tag and attribute name casing will be lower-cased,
-	 *    except for specific SVG and MathML tags or attributes.
-	 *  - Text will be re-encoded, null bytes handled,
-	 *    and invalid UTF-8 replaced with U+FFFD.
-	 *  - Any incomplete syntax trailing at the end will be omitted,
-	 *    for example, an unclosed comment opener will be removed.
+	 *  - Giá trị thuộc tính sẽ được đặt trong dấu ngoặc kép.
+	 *  - Thuộc tính trùng lặp sẽ bị loại bỏ.
+	 *  - Thẻ bị bỏ sót sẽ được thêm vào.
+	 *  - Tên thẻ và thuộc tính sẽ được chuyển thành chữ thường,
+	 *    ngoại trừ các thẻ hoặc thuộc tính SVG và MathML cụ thể.
+	 *  - Văn bản sẽ được mã hóa lại, byte null được xử lý,
+	 *    và UTF-8 không hợp lệ được thay thế bằng U+FFFD.
+	 *  - Bất kỳ cú pháp chưa hoàn thành nào ở cuối sẽ bị bỏ qua,
+	 *    ví dụ: một ký hiệu mở comment chưa đóng sẽ bị xóa.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $processor = WP_HTML_Processor::create_fragment( '<a href=#anchor v=5 href="/" enabled>One</a another v=5><!--' );
 	 *     echo $processor->serialize();
@@ -1264,8 +1264,8 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 *
 	 * @since 6.7.0
 	 *
-	 * @return string|null Normalized HTML markup represented by processor,
-	 *                     or `null` if unable to generate serialization.
+	 * @return string|null Markup HTML đã chuẩn hóa được biểu diễn bởi trình xử lý,
+	 *                     hoặc `null` nếu không thể tạo tuần tự hóa.
 	 */
 	public function serialize(): ?string {
 		if ( WP_HTML_Tag_Processor::STATE_READY !== $this->parser_state ) {
@@ -1295,17 +1295,17 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Serializes the currently-matched token.
+	 * Tuần tự hóa token hiện đang khớp.
 	 *
-	 * This method produces a fully-normative HTML string for the currently-matched token,
-	 * if able. If not matched at any token or if the token doesn't correspond to any HTML
-	 * it will return an empty string (for example, presumptuous end tags are ignored).
+	 * Phương thức này tạo ra một chuỗi HTML hoàn toàn chuẩn cho token hiện đang khớp,
+	 * nếu có thể. Nếu không khớp tại bất kỳ token nào hoặc nếu token không tương ứng với bất kỳ HTML nào
+	 * thì sẽ trả về một chuỗi rỗng (ví dụ: thẻ đóng giả định sẽ bị bỏ qua).
 	 *
 	 * @see static::serialize()
 	 *
 	 * @since 6.7.0
 	 *
-	 * @return string Serialization of token, or empty string if no serialization exists.
+	 * @return string Kết quả tuần tự hóa của token, hoặc chuỗi rỗng nếu không có tuần tự hóa.
 	 */
 	protected function serialize_token(): string {
 		$html       = '';
@@ -1343,7 +1343,7 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 				$html .= htmlspecialchars( $this->get_modifiable_text(), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8' );
 				break;
 
-			// Unlike the `<>` which is interpreted as plaintext, this is ignored entirely.
+			// Khác với `<>` được hiểu là văn bản thuần, cái này bị bỏ qua hoàn toàn.
 			case '#presumptuous-tag':
 				break;
 
@@ -1394,7 +1394,7 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 
 		$html .= '>';
 
-		// Flush out self-contained elements.
+		// Xuất ra các phần tử tự chứa.
 		if ( $in_html && in_array( $tag_name, array( 'IFRAME', 'NOEMBED', 'NOFRAMES', 'SCRIPT', 'STYLE', 'TEXTAREA', 'TITLE', 'XMP' ), true ) ) {
 			$text = $this->get_modifiable_text();
 
@@ -1420,19 +1420,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'initial' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'initial'.
 	 *
-	 * This internal function performs the 'initial' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'initial'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#the-initial-insertion-mode
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_initial(): bool {
 		$token_name = $this->get_token_name();
@@ -1491,19 +1491,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'before html' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'before html'.
 	 *
-	 * This internal function performs the 'before html' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'before html'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#the-before-html-insertion-mode
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_before_html(): bool {
 		$token_name = $this->get_token_name();
@@ -1588,19 +1588,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'before head' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'before head'.
 	 *
-	 * This internal function performs the 'before head' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'before head'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#the-before-head-insertion-mode
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_before_head(): bool {
 		$token_name = $this->get_token_name();
@@ -1685,19 +1685,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in head' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in head'.
 	 *
-	 * This internal function performs the 'in head' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in head'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inhead
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_head(): bool {
 		$token_name = $this->get_token_name();
@@ -1903,19 +1903,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in head noscript' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in head noscript'.
 	 *
-	 * This internal function performs the 'in head noscript' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in head noscript'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-inheadnoscript
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_head_noscript(): bool {
 		$token_name = $this->get_token_name();
@@ -2006,19 +2006,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'after head' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'after head'.
 	 *
-	 * This internal function performs the 'after head' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'after head'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#the-after-head-insertion-mode
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_after_head(): bool {
 		$token_name = $this->get_token_name();
@@ -2150,19 +2150,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in body' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in body'.
 	 *
-	 * This internal function performs the 'in body' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in body'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-inbody
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_body(): bool {
 		$token_name = $this->get_token_name();
@@ -3175,19 +3175,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in table' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in table'.
 	 *
-	 * This internal function performs the 'in table' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in table'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-intable
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_table(): bool {
 		$token_name = $this->get_token_name();
@@ -3431,38 +3431,38 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in table text' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in table text'.
 	 *
-	 * This internal function performs the 'in table text' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in table text'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-intabletext
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_table_text(): bool {
 		$this->bail( 'No support for parsing in the ' . WP_HTML_Processor_State::INSERTION_MODE_IN_TABLE_TEXT . ' state.' );
 	}
 
 	/**
-	 * Parses next element in the 'in caption' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in caption'.
 	 *
-	 * This internal function performs the 'in caption' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in caption'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-incaption
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_caption(): bool {
 		$tag_name = $this->get_tag();
@@ -3534,19 +3534,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in column group' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in column group'.
 	 *
-	 * This internal function performs the 'in column group' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in column group'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-incolgroup
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_column_group(): bool {
 		$token_name = $this->get_token_name();
@@ -3641,19 +3641,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in table body' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in table body'.
 	 *
-	 * This internal function performs the 'in table body' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in table body'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-intbody
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_table_body(): bool {
 		$tag_name = $this->get_tag();
@@ -3744,19 +3744,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in row' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in row'.
 	 *
-	 * This internal function performs the 'in row' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in row'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-intr
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_row(): bool {
 		$tag_name = $this->get_tag();
@@ -3854,19 +3854,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in cell' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in cell'.
 	 *
-	 * This internal function performs the 'in cell' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in cell'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-intd
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_cell(): bool {
 		$tag_name = $this->get_tag();
@@ -3958,19 +3958,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in select' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in select'.
 	 *
-	 * This internal function performs the 'in select' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in select'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inselect
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_select(): bool {
 		$token_name = $this->get_token_name();
@@ -4133,19 +4133,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in select in table' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in select in table'.
 	 *
-	 * This internal function performs the 'in select in table' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in select in table'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-inselectintable
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_select_in_table(): bool {
 		$token_name = $this->get_token_name();
@@ -4197,19 +4197,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in template' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in template'.
 	 *
-	 * This internal function performs the 'in template' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in template'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-intemplate
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_template(): bool {
 		$token_name = $this->get_token_name();
@@ -4326,19 +4326,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'after body' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'after body'.
 	 *
-	 * This internal function performs the 'after body' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'after body'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-afterbody
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_after_body(): bool {
 		$tag_name   = $this->get_token_name();
@@ -4415,19 +4415,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in frameset' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in frameset'.
 	 *
-	 * This internal function performs the 'in frameset' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in frameset'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-inframeset
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_frameset(): bool {
 		$tag_name   = $this->get_token_name();
@@ -4534,19 +4534,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'after frameset' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'after frameset'.
 	 *
-	 * This internal function performs the 'after frameset' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'after frameset'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-afterframeset
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_after_frameset(): bool {
 		$tag_name   = $this->get_token_name();
@@ -4619,19 +4619,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'after after body' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'after after body'.
 	 *
-	 * This internal function performs the 'after after body' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'after after body'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#the-after-after-body-insertion-mode
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_after_after_body(): bool {
 		$tag_name   = $this->get_token_name();
@@ -4682,19 +4682,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'after after frameset' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'after after frameset'.
 	 *
-	 * This internal function performs the 'after after frameset' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'after after frameset'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#the-after-after-frameset-insertion-mode
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_after_after_frameset(): bool {
 		$tag_name   = $this->get_token_name();
@@ -4750,19 +4750,19 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Parses next element in the 'in foreign content' insertion mode.
+	 * Phân tích phần tử tiếp theo trong chế độ chèn 'in foreign content'.
 	 *
-	 * This internal function performs the 'in foreign content' insertion mode
-	 * logic for the generalized WP_HTML_Processor::step() function.
+	 * Hàm nội bộ này thực hiện logic chế độ chèn 'in foreign content'
+	 * cho hàm WP_HTML_Processor::step() tổng quát.
 	 *
-	 * @since 6.7.0 Stub implementation.
+	 * @since 6.7.0 Triển khai sơ bộ.
 	 *
-	 * @throws WP_HTML_Unsupported_Exception When encountering unsupported HTML input.
+	 * @throws WP_HTML_Unsupported_Exception Khi gặp đầu vào HTML không được hỗ trợ.
 	 *
 	 * @see https://html.spec.whatwg.org/#parsing-main-inforeign
 	 * @see WP_HTML_Processor::step
 	 *
-	 * @return bool Whether an element was found.
+	 * @return bool Liệu có phần tử nào được tìm thấy hay không.
 	 */
 	private function step_in_foreign_content(): bool {
 		$tag_name   = $this->get_token_name();
@@ -5073,14 +5073,14 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 */
 
 	/**
-	 * Creates a new bookmark for the currently-matched token and returns the generated name.
+	 * Tạo một bookmark mới cho token hiện đang khớp và trả về tên được tạo.
 	 *
 	 * @since 6.4.0
-	 * @since 6.5.0 Renamed from bookmark_tag() to bookmark_token().
+	 * @since 6.5.0 Đổi tên từ bookmark_tag() thành bookmark_token().
 	 *
-	 * @throws Exception When unable to allocate requested bookmark.
+	 * @throws Exception Khi không thể cấp phát bookmark được yêu cầu.
 	 *
-	 * @return string|false Name of created bookmark, or false if unable to create.
+	 * @return string|false Tên của bookmark đã tạo, hoặc false nếu không thể tạo.
 	 */
 	private function bookmark_token() {
 		if ( ! parent::set_bookmark( ++$this->bookmark_counter ) ) {
@@ -5092,13 +5092,13 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/*
-	 * HTML semantic overrides for Tag Processor
+	 * Ghi đè ngữ nghĩa HTML cho Tag Processor
 	 */
 
 	/**
-	 * Indicates the namespace of the current token, or "html" if there is none.
+	 * Cho biết không gian tên của token hiện tại, hoặc "html" nếu không có.
 	 *
-	 * @return string One of "html", "math", or "svg".
+	 * @return string Một trong "html", "math", hoặc "svg".
 	 */
 	public function get_namespace(): string {
 		if ( ! isset( $this->current_element ) ) {
@@ -5109,14 +5109,14 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Returns the uppercase name of the matched tag.
+	 * Trả về tên viết hoa của thẻ đã khớp.
 	 *
-	 * The semantic rules for HTML specify that certain tags be reprocessed
-	 * with a different tag name. Because of this, the tag name presented
-	 * by the HTML Processor may differ from the one reported by the HTML
-	 * Tag Processor, which doesn't apply these semantic rules.
+	 * Các quy tắc ngữ nghĩa cho HTML chỉ định rằng một số thẻ nhất định phải được xử lý lại
+	 * với tên thẻ khác. Vì điều này, tên thẻ được trình bày bởi HTML Processor
+	 * có thể khác với tên được báo cáo bởi HTML Tag Processor, vốn không áp dụng
+	 * các quy tắc ngữ nghĩa này.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $processor = new WP_HTML_Tag_Processor( '<div class="test">Test</div>' );
 	 *     $processor->next_tag() === true;
@@ -5127,7 +5127,7 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 *
 	 * @since 6.4.0
 	 *
-	 * @return string|null Name of currently matched tag in input HTML, or `null` if none found.
+	 * @return string|null Tên thẻ hiện đang khớp trong HTML đầu vào, hoặc `null` nếu không tìm thấy.
 	 */
 	public function get_tag(): ?string {
 		if ( null !== $this->last_error ) {
@@ -5150,45 +5150,45 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Indicates if the currently matched tag contains the self-closing flag.
+	 * Cho biết thẻ hiện đang khớp có chứa cờ tự đóng hay không.
 	 *
-	 * No HTML elements ought to have the self-closing flag and for those, the self-closing
-	 * flag will be ignored. For void elements this is benign because they "self close"
-	 * automatically. For non-void HTML elements though problems will appear if someone
-	 * intends to use a self-closing element in place of that element with an empty body.
-	 * For HTML foreign elements and custom elements the self-closing flag determines if
-	 * they self-close or not.
+	 * Không có phần tử HTML nào nên có cờ tự đóng và đối với những phần tử đó, cờ tự đóng
+	 * sẽ bị bỏ qua. Đối với phần tử void thì điều này vô hại vì chúng "tự đóng"
+	 * một cách tự động. Tuy nhiên đối với phần tử HTML không phải void, vấn đề sẽ phát sinh nếu ai đó
+	 * có ý định sử dụng phần tử tự đóng thay cho phần tử đó với thân rỗng.
+	 * Đối với phần tử ngoại lai HTML và phần tử tùy chỉnh, cờ tự đóng xác định
+	 * liệu chúng tự đóng hay không.
 	 *
-	 * This function does not determine if a tag is self-closing,
-	 * but only if the self-closing flag is present in the syntax.
+	 * Hàm này không xác định liệu thẻ có tự đóng hay không,
+	 * mà chỉ kiểm tra cờ tự đóng có hiện diện trong cú pháp hay không.
 	 *
-	 * @since 6.6.0 Subclassed for the HTML Processor.
+	 * @since 6.6.0 Lớp con hóa cho HTML Processor.
 	 *
-	 * @return bool Whether the currently matched tag contains the self-closing flag.
+	 * @return bool Liệu thẻ hiện đang khớp có chứa cờ tự đóng hay không.
 	 */
 	public function has_self_closing_flag(): bool {
 		return $this->is_virtual() ? false : parent::has_self_closing_flag();
 	}
 
 	/**
-	 * Returns the node name represented by the token.
+	 * Trả về tên nút được biểu diễn bởi token.
 	 *
-	 * This matches the DOM API value `nodeName`. Some values
-	 * are static, such as `#text` for a text node, while others
-	 * are dynamically generated from the token itself.
+	 * Giá trị này khớp với giá trị DOM API `nodeName`. Một số giá trị
+	 * là tĩnh, chẳng hạn như `#text` cho nút văn bản, trong khi các giá trị khác
+	 * được tạo động từ chính token.
 	 *
-	 * Dynamic names:
-	 *  - Uppercase tag name for tag matches.
-	 *  - `html` for DOCTYPE declarations.
+	 * Tên động:
+	 *  - Tên thẻ viết hoa cho các thẻ khớp.
+	 *  - `html` cho khai báo DOCTYPE.
 	 *
-	 * Note that if the Tag Processor is not matched on a token
-	 * then this function will return `null`, either because it
-	 * hasn't yet found a token or because it reached the end
-	 * of the document without matching a token.
+	 * Lưu ý rằng nếu Tag Processor không khớp trên một token
+	 * thì hàm này sẽ trả về `null`, hoặc vì nó
+	 * chưa tìm thấy token hoặc vì nó đã đến cuối
+	 * tài liệu mà không khớp được token nào.
 	 *
-	 * @since 6.6.0 Subclassed for the HTML Processor.
+	 * @since 6.6.0 Lớp con hóa cho HTML Processor.
 	 *
-	 * @return string|null Name of the matched token.
+	 * @return string|null Tên của token đã khớp.
 	 */
 	public function get_token_name(): ?string {
 		return $this->is_virtual()
@@ -5197,26 +5197,26 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Indicates the kind of matched token, if any.
+	 * Cho biết loại token đã khớp, nếu có.
 	 *
-	 * This differs from `get_token_name()` in that it always
-	 * returns a static string indicating the type, whereas
-	 * `get_token_name()` may return values derived from the
-	 * token itself, such as a tag name or processing
-	 * instruction tag.
+	 * Phương thức này khác với `get_token_name()` ở chỗ nó luôn
+	 * trả về một chuỗi tĩnh cho biết loại, trong khi
+	 * `get_token_name()` có thể trả về các giá trị được suy ra từ
+	 * chính token, chẳng hạn như tên thẻ hoặc thẻ
+	 * chỉ thị xử lý.
 	 *
-	 * Possible values:
-	 *  - `#tag` when matched on a tag.
-	 *  - `#text` when matched on a text node.
-	 *  - `#cdata-section` when matched on a CDATA node.
-	 *  - `#comment` when matched on a comment.
-	 *  - `#doctype` when matched on a DOCTYPE declaration.
-	 *  - `#presumptuous-tag` when matched on an empty tag closer.
-	 *  - `#funky-comment` when matched on a funky comment.
+	 * Các giá trị có thể:
+	 *  - `#tag` khi khớp trên một thẻ.
+	 *  - `#text` khi khớp trên một nút văn bản.
+	 *  - `#cdata-section` khi khớp trên một nút CDATA.
+	 *  - `#comment` khi khớp trên một comment.
+	 *  - `#doctype` khi khớp trên một khai báo DOCTYPE.
+	 *  - `#presumptuous-tag` khi khớp trên một thẻ đóng rỗng.
+	 *  - `#funky-comment` khi khớp trên một comment kỳ lạ.
 	 *
-	 * @since 6.6.0 Subclassed for the HTML Processor.
+	 * @since 6.6.0 Lớp con hóa cho HTML Processor.
 	 *
-	 * @return string|null What kind of token is matched, or null.
+	 * @return string|null Loại token đã khớp, hoặc null.
 	 */
 	public function get_token_type(): ?string {
 		if ( $this->is_virtual() ) {
@@ -5243,9 +5243,9 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Returns the value of a requested attribute from a matched tag opener if that attribute exists.
+	 * Trả về giá trị của thuộc tính được yêu cầu từ thẻ mở đã khớp nếu thuộc tính đó tồn tại.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $p = WP_HTML_Processor::create_fragment( '<div enabled class="test" data-test-id="14">Test</div>' );
 	 *     $p->next_token() === true;
@@ -5256,57 +5256,57 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 *     $p->next_tag() === false;
 	 *     $p->get_attribute( 'class' ) === null;
 	 *
-	 * @since 6.6.0 Subclassed for HTML Processor.
+	 * @since 6.6.0 Lớp con hóa cho HTML Processor.
 	 *
-	 * @param string $name Name of attribute whose value is requested.
-	 * @return string|true|null Value of attribute or `null` if not available. Boolean attributes return `true`.
+	 * @param string $name Tên thuộc tính cần lấy giá trị.
+	 * @return string|true|null Giá trị thuộc tính hoặc `null` nếu không có sẵn. Thuộc tính boolean trả về `true`.
 	 */
 	public function get_attribute( $name ) {
 		return $this->is_virtual() ? null : parent::get_attribute( $name );
 	}
 
 	/**
-	 * Updates or creates a new attribute on the currently matched tag with the passed value.
+	 * Cập nhật hoặc tạo thuộc tính mới trên thẻ hiện đang khớp với giá trị được truyền vào.
 	 *
-	 * For boolean attributes special handling is provided:
-	 *  - When `true` is passed as the value, then only the attribute name is added to the tag.
-	 *  - When `false` is passed, the attribute gets removed if it existed before.
+	 * Đối với thuộc tính boolean, xử lý đặc biệt được cung cấp:
+	 *  - Khi `true` được truyền làm giá trị, chỉ tên thuộc tính được thêm vào thẻ.
+	 *  - Khi `false` được truyền, thuộc tính sẽ bị xóa nếu nó đã tồn tại trước đó.
 	 *
-	 * For string attributes, the value is escaped using the `esc_attr` function.
+	 * Đối với thuộc tính chuỗi, giá trị được escape bằng hàm `esc_attr`.
 	 *
-	 * @since 6.6.0 Subclassed for the HTML Processor.
+	 * @since 6.6.0 Lớp con hóa cho HTML Processor.
 	 *
-	 * @param string      $name  The attribute name to target.
-	 * @param string|bool $value The new attribute value.
-	 * @return bool Whether an attribute value was set.
+	 * @param string      $name  Tên thuộc tính cần nhắm đến.
+	 * @param string|bool $value Giá trị thuộc tính mới.
+	 * @return bool Liệu giá trị thuộc tính đã được đặt hay không.
 	 */
 	public function set_attribute( $name, $value ): bool {
 		return $this->is_virtual() ? false : parent::set_attribute( $name, $value );
 	}
 
 	/**
-	 * Remove an attribute from the currently-matched tag.
+	 * Xóa một thuộc tính khỏi thẻ hiện đang khớp.
 	 *
-	 * @since 6.6.0 Subclassed for HTML Processor.
+	 * @since 6.6.0 Lớp con hóa cho HTML Processor.
 	 *
-	 * @param string $name The attribute name to remove.
-	 * @return bool Whether an attribute was removed.
+	 * @param string $name Tên thuộc tính cần xóa.
+	 * @return bool Liệu thuộc tính đã được xóa hay không.
 	 */
 	public function remove_attribute( $name ): bool {
 		return $this->is_virtual() ? false : parent::remove_attribute( $name );
 	}
 
 	/**
-	 * Gets lowercase names of all attributes matching a given prefix in the current tag.
+	 * Lấy tên chữ thường của tất cả thuộc tính khớp với tiền tố đã cho trong thẻ hiện tại.
 	 *
-	 * Note that matching is case-insensitive. This is in accordance with the spec:
+	 * Lưu ý rằng việc khớp không phân biệt hoa thường. Điều này tuân theo đặc tả:
 	 *
-	 * > There must never be two or more attributes on
-	 * > the same start tag whose names are an ASCII
-	 * > case-insensitive match for each other.
-	 *     - HTML 5 spec
+	 * > Không bao giờ được có hai hoặc nhiều thuộc tính trên
+	 * > cùng một thẻ mở mà tên của chúng là một
+	 * > khớp không phân biệt hoa thường ASCII với nhau.
+	 *     - Đặc tả HTML 5
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $p = new WP_HTML_Tag_Processor( '<div data-ENABLED class="test" DATA-test-id="14">Test</div>' );
 	 *     $p->next_tag( array( 'class_name' => 'test' ) ) === true;
@@ -5315,12 +5315,12 @@ class WP_HTML_Processor extends WP_HTML_Tag_Processor {
 	 *     $p->next_tag() === false;
 	 *     $p->get_attribute_names_with_prefix( 'data-' ) === null;
 	 *
-	 * @since 6.6.0 Subclassed for the HTML Processor.
+	 * @since 6.6.0 Lớp con hóa cho HTML Processor.
 	 *
 	 * @see https://html.spec.whatwg.org/multipage/syntax.html#attributes-2:ascii-case-insensitive
 	 *
-	 * @param string $prefix Prefix of requested attribute names.
-	 * @return array|null List of attribute names, or `null` when no tag opener is matched.
+	 * @param string $prefix Tiền tố của tên thuộc tính được yêu cầu.
+	 * @return array|null Danh sách tên thuộc tính, hoặc `null` khi không có thẻ mở nào khớp.
 	 */
 	public function get_attribute_names_with_prefix( $prefix ): ?array {
 		return $this->is_virtual() ? null : parent::get_attribute_names_with_prefix( $prefix );

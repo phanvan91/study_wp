@@ -1399,31 +1399,31 @@ class wpdb {
 	}
 
 	/**
-	 * Prepares a SQL query for safe execution.
+	 * Chuẩn bị một truy vấn SQL để thực thi an toàn.
 	 *
-	 * Uses `sprintf()`-like syntax. The following placeholders can be used in the query string:
+	 * Sử dụng cú pháp tương tự `sprintf()`. Các placeholder sau có thể được sử dụng trong chuỗi truy vấn:
 	 *
-	 * - `%d` (integer)
-	 * - `%f` (float)
-	 * - `%s` (string)
-	 * - `%i` (identifier, e.g. table/field names)
+	 * - `%d` (số nguyên)
+	 * - `%f` (số thực)
+	 * - `%s` (chuỗi)
+	 * - `%i` (định danh, ví dụ tên bảng/trường)
 	 *
-	 * All placeholders MUST be left unquoted in the query string. A corresponding argument
-	 * MUST be passed for each placeholder.
+	 * Tất cả các placeholder PHẢI được để không có dấu ngoặc kép trong chuỗi truy vấn. Một đối số tương ứng
+	 * PHẢI được truyền cho mỗi placeholder.
 	 *
-	 * Note: There is one exception to the above: for compatibility with old behavior,
-	 * numbered or formatted string placeholders (eg, `%1$s`, `%5s`) will not have quotes
-	 * added by this function, so should be passed with appropriate quotes around them.
+	 * Lưu ý: Có một ngoại lệ cho quy tắc trên: để tương thích ngược,
+	 * các placeholder chuỗi có đánh số hoặc định dạng (ví dụ `%1$s`, `%5s`) sẽ không được thêm dấu ngoặc kép
+	 * bởi hàm này, nên cần được truyền kèm dấu ngoặc kép phù hợp bao quanh.
 	 *
-	 * Literal percentage signs (`%`) in the query string must be written as `%%`. Percentage wildcards
-	 * (for example, to use in LIKE syntax) must be passed via a substitution argument containing
-	 * the complete LIKE string, these cannot be inserted directly in the query string.
-	 * Also see wpdb::esc_like().
+	 * Ký tự phần trăm (`%`) trong chuỗi truy vấn phải được viết dưới dạng `%%`. Các ký tự đại diện phần trăm
+	 * (ví dụ, để sử dụng trong cú pháp LIKE) phải được truyền qua đối số thay thế chứa
+	 * chuỗi LIKE hoàn chỉnh, chúng không thể được chèn trực tiếp vào chuỗi truy vấn.
+	 * Xem thêm wpdb::esc_like().
 	 *
-	 * Arguments may be passed as individual arguments to the method, or as a single array
-	 * containing all arguments. A combination of the two is not supported.
+	 * Các đối số có thể được truyền riêng lẻ cho phương thức, hoặc dưới dạng một mảng
+	 * chứa tất cả đối số. Không hỗ trợ kết hợp cả hai cách.
 	 *
-	 * Examples:
+	 * Ví dụ:
 	 *
 	 *     $wpdb->prepare(
 	 *         "SELECT * FROM `table` WHERE `column` = %s AND `field` = %d OR `other_field` LIKE %s",
@@ -1436,24 +1436,24 @@ class wpdb {
 	 *     );
 	 *
 	 * @since 2.3.0
-	 * @since 5.3.0 Formalized the existing and already documented `...$args` parameter
-	 *              by updating the function signature. The second parameter was changed
-	 *              from `$args` to `...$args`.
-	 * @since 6.2.0 Added `%i` for identifiers, e.g. table or field names.
-	 *              Check support via `wpdb::has_cap( 'identifier_placeholders' )`.
-	 *              This preserves compatibility with `sprintf()`, as the C version uses
-	 *              `%d` and `$i` as a signed integer, whereas PHP only supports `%d`.
+	 * @since 5.3.0 Chính thức hóa tham số `...$args` đã có và đã được tài liệu hóa
+	 *              bằng cách cập nhật chữ ký hàm. Tham số thứ hai được đổi
+	 *              từ `$args` thành `...$args`.
+	 * @since 6.2.0 Thêm `%i` cho định danh, ví dụ tên bảng hoặc trường.
+	 *              Kiểm tra hỗ trợ qua `wpdb::has_cap( 'identifier_placeholders' )`.
+	 *              Điều này giữ tương thích với `sprintf()`, vì phiên bản C sử dụng
+	 *              `%d` và `$i` cho số nguyên có dấu, trong khi PHP chỉ hỗ trợ `%d`.
 	 *
-	 * @link https://www.php.net/sprintf Description of syntax.
+	 * @link https://www.php.net/sprintf Mô tả cú pháp.
 	 *
-	 * @param string      $query   Query statement with `sprintf()`-like placeholders.
-	 * @param array|mixed $args    The array of variables to substitute into the query's placeholders
-	 *                             if being called with an array of arguments, or the first variable
-	 *                             to substitute into the query's placeholders if being called with
-	 *                             individual arguments.
-	 * @param mixed       ...$args Further variables to substitute into the query's placeholders
-	 *                             if being called with individual arguments.
-	 * @return string|void Sanitized query string, if there is a query to prepare.
+	 * @param string      $query   Câu lệnh truy vấn với các placeholder kiểu `sprintf()`.
+	 * @param array|mixed $args    Mảng các biến để thay thế vào các placeholder của truy vấn
+	 *                             nếu được gọi với mảng đối số, hoặc biến đầu tiên
+	 *                             để thay thế vào placeholder nếu được gọi với
+	 *                             các đối số riêng lẻ.
+	 * @param mixed       ...$args Các biến tiếp theo để thay thế vào các placeholder của truy vấn
+	 *                             nếu được gọi với các đối số riêng lẻ.
+	 * @return string|void Chuỗi truy vấn đã được làm sạch, nếu có truy vấn cần chuẩn bị.
 	 */
 	public function prepare( $query, ...$args ) {
 		if ( is_null( $query ) ) {
@@ -1461,11 +1461,11 @@ class wpdb {
 		}
 
 		/*
-		 * This is not meant to be foolproof -- but it will catch obviously incorrect usage.
+		 * Đây không nhằm mục đích chống lỗi hoàn toàn -- nhưng sẽ phát hiện được các cách sử dụng sai rõ ràng.
 		 *
-		 * Note: str_contains() is not used here, as this file can be included
-		 * directly outside of WordPress core, e.g. by HyperDB, in which case
-		 * the polyfills from wp-includes/compat.php are not loaded.
+		 * Lưu ý: str_contains() không được sử dụng ở đây, vì file này có thể được include
+		 * trực tiếp bên ngoài lõi WordPress, ví dụ bởi HyperDB, trong trường hợp đó
+		 * các polyfill từ wp-includes/compat.php không được tải.
 		 */
 		if ( false === strpos( $query, '%' ) ) {
 			wp_load_translations_early();
@@ -1481,48 +1481,48 @@ class wpdb {
 		}
 
 		/*
-		 * Specify the formatting allowed in a placeholder. The following are allowed:
+		 * Chỉ định các định dạng được phép trong placeholder. Các định dạng sau được cho phép:
 		 *
-		 * - Sign specifier, e.g. $+d
-		 * - Numbered placeholders, e.g. %1$s
-		 * - Padding specifier, including custom padding characters, e.g. %05s, %'#5s
-		 * - Alignment specifier, e.g. %05-s
-		 * - Precision specifier, e.g. %.2f
+		 * - Chỉ định dấu, ví dụ $+d
+		 * - Placeholder có đánh số, ví dụ %1$s
+		 * - Chỉ định đệm, bao gồm ký tự đệm tùy chỉnh, ví dụ %05s, %'#5s
+		 * - Chỉ định căn chỉnh, ví dụ %05-s
+		 * - Chỉ định độ chính xác, ví dụ %.2f
 		 */
 		$allowed_format = '(?:[1-9][0-9]*[$])?[-+0-9]*(?: |0|\'.)?[-+0-9]*(?:\.[0-9]+)?';
 
 		/*
-		 * If a %s placeholder already has quotes around it, removing the existing quotes
-		 * and re-inserting them ensures the quotes are consistent.
+		 * Nếu placeholder %s đã có dấu ngoặc kép bao quanh, việc xóa dấu ngoặc kép hiện có
+		 * và chèn lại đảm bảo dấu ngoặc kép nhất quán.
 		 *
-		 * For backward compatibility, this is only applied to %s, and not to placeholders like %1$s,
-		 * which are frequently used in the middle of longer strings, or as table name placeholders.
+		 * Để tương thích ngược, điều này chỉ áp dụng cho %s, không áp dụng cho các placeholder như %1$s,
+		 * thường được sử dụng ở giữa các chuỗi dài hơn, hoặc làm placeholder tên bảng.
 		 */
-		$query = str_replace( "'%s'", '%s', $query ); // Strip any existing single quotes.
-		$query = str_replace( '"%s"', '%s', $query ); // Strip any existing double quotes.
+		$query = str_replace( "'%s'", '%s', $query ); // Loại bỏ dấu ngoặc đơn hiện có.
+		$query = str_replace( '"%s"', '%s', $query ); // Loại bỏ dấu ngoặc kép hiện có.
 
-		// Escape any unescaped percents (i.e. anything unrecognised).
+		// Escape các ký tự phần trăm chưa được escape (tức là bất kỳ thứ gì không được nhận dạng).
 		$query = preg_replace( "/%(?:%|$|(?!($allowed_format)?[sdfFi]))/", '%%\\1', $query );
 
-		// Extract placeholders from the query.
+		// Trích xuất các placeholder từ truy vấn.
 		$split_query = preg_split( "/(^|[^%]|(?:%%)+)(%(?:$allowed_format)?[sdfFi])/", $query, -1, PREG_SPLIT_DELIM_CAPTURE );
 
 		$split_query_count = count( $split_query );
 
 		/*
-		 * Split always returns with 1 value before the first placeholder (even with $query = "%s"),
-		 * then 3 additional values per placeholder.
+		 * Split luôn trả về 1 giá trị trước placeholder đầu tiên (kể cả khi $query = "%s"),
+		 * sau đó 3 giá trị bổ sung cho mỗi placeholder.
 		 */
 		$placeholder_count = ( ( $split_query_count - 1 ) / 3 );
 
-		// If args were passed as an array, as in vsprintf(), move them up.
+		// Nếu các đối số được truyền dưới dạng mảng, như trong vsprintf(), di chuyển chúng lên.
 		$passed_as_array = ( isset( $args[0] ) && is_array( $args[0] ) && 1 === count( $args ) );
 		if ( $passed_as_array ) {
 			$args = $args[0];
 		}
 
 		$new_query       = '';
-		$key             = 2; // Keys 0 and 1 in $split_query contain values before the first placeholder.
+		$key             = 2; // Khóa 0 và 1 trong $split_query chứa các giá trị trước placeholder đầu tiên.
 		$arg_id          = 0;
 		$arg_identifiers = array();
 		$arg_strings     = array();
@@ -1535,20 +1535,20 @@ class wpdb {
 
 			if ( 'f' === $type && true === $this->allow_unsafe_unquoted_parameters
 				/*
-				 * Note: str_ends_with() is not used here, as this file can be included
-				 * directly outside of WordPress core, e.g. by HyperDB, in which case
-				 * the polyfills from wp-includes/compat.php are not loaded.
+				 * Lưu ý: str_ends_with() không được sử dụng ở đây, vì file này có thể được include
+				 * trực tiếp bên ngoài lõi WordPress, ví dụ bởi HyperDB, trong trường hợp đó
+				 * các polyfill từ wp-includes/compat.php không được tải.
 				 */
 				&& '%' === substr( $split_query[ $key - 1 ], -1, 1 )
 			) {
 
 				/*
-				 * Before WP 6.2 the "force floats to be locale-unaware" RegEx didn't
-				 * convert "%%%f" to "%%%F" (note the uppercase F).
-				 * This was because it didn't check to see if the leading "%" was escaped.
-				 * And because the "Escape any unescaped percents" RegEx used "[sdF]" in its
-				 * negative lookahead assertion, when there was an odd number of "%", it added
-				 * an extra "%", to give the fully escaped "%%%%f" (not a placeholder).
+				 * Trước WP 6.2, RegEx "buộc số thực không phụ thuộc locale" không
+				 * chuyển đổi "%%%f" thành "%%%F" (lưu ý chữ F viết hoa).
+				 * Điều này là do nó không kiểm tra xem "%" đứng đầu đã được escape chưa.
+				 * Và vì RegEx "Escape các phần trăm chưa escape" sử dụng "[sdF]" trong
+				 * phép khẳng định phủ định nhìn trước, khi có số lẻ "%", nó thêm
+				 * một "%" bổ sung, cho ra "%%%%f" đã escape đầy đủ (không phải placeholder).
 				 */
 
 				$s = $split_query[ $key - 2 ] . $split_query[ $key - 1 ];
@@ -1564,7 +1564,7 @@ class wpdb {
 
 			} else {
 
-				// Force floats to be locale-unaware.
+				// Buộc số thực không phụ thuộc locale.
 				if ( 'f' === $type ) {
 					$type        = 'F';
 					$placeholder = '%' . $format . $type;
@@ -1572,19 +1572,19 @@ class wpdb {
 
 				if ( 'i' === $type ) {
 					$placeholder = '`%' . $format . 's`';
-					// Using a simple strpos() due to previous checking (e.g. $allowed_format).
+					// Sử dụng strpos() đơn giản do đã kiểm tra trước đó (ví dụ $allowed_format).
 					$argnum_pos = strpos( $format, '$' );
 
 					if ( false !== $argnum_pos ) {
-						// sprintf() argnum starts at 1, $arg_id from 0.
+						// sprintf() argnum bắt đầu từ 1, $arg_id từ 0.
 						$arg_identifiers[] = ( ( (int) substr( $format, 0, $argnum_pos ) ) - 1 );
 					} else {
 						$arg_identifiers[] = $arg_id;
 					}
 				} elseif ( 'd' !== $type && 'F' !== $type ) {
 					/*
-					 * i.e. ( 's' === $type ), where 'd' and 'F' keeps $placeholder unchanged,
-					 * and we ensure string escaping is used as a safe default (e.g. even if 'x').
+					 * Tức là ( 's' === $type ), trong đó 'd' và 'F' giữ nguyên $placeholder,
+					 * và chúng ta đảm bảo escape chuỗi được sử dụng làm mặc định an toàn (ví dụ kể cả khi là 'x').
 					 */
 					$argnum_pos = strpos( $format, '$' );
 
@@ -1595,15 +1595,15 @@ class wpdb {
 					}
 
 					/*
-					 * Unquoted strings for backward compatibility (dangerous).
-					 * First, "numbered or formatted string placeholders (eg, %1$s, %5s)".
-					 * Second, if "%s" has a "%" before it, even if it's unrelated (e.g. "LIKE '%%%s%%'").
+					 * Chuỗi không có dấu ngoặc kép để tương thích ngược (nguy hiểm).
+					 * Thứ nhất, "các placeholder chuỗi có đánh số hoặc định dạng (ví dụ %1$s, %5s)".
+					 * Thứ hai, nếu "%s" có "%" đứng trước, kể cả khi không liên quan (ví dụ "LIKE '%%%s%%'").
 					 */
 					if ( true !== $this->allow_unsafe_unquoted_parameters
 						/*
-						 * Note: str_ends_with() is not used here, as this file can be included
-						 * directly outside of WordPress core, e.g. by HyperDB, in which case
-						 * the polyfills from wp-includes/compat.php are not loaded.
+						 * Lưu ý: str_ends_with() không được sử dụng ở đây, vì file này có thể được include
+						 * trực tiếp bên ngoài lõi WordPress, ví dụ bởi HyperDB, trong trường hợp đó
+						 * các polyfill từ wp-includes/compat.php không được tải.
 						 */
 						|| ( '' === $format && '%' !== substr( $split_query[ $key - 1 ], -1, 1 ) )
 					) {
@@ -1612,14 +1612,14 @@ class wpdb {
 				}
 			}
 
-			// Glue (-2), any leading characters (-1), then the new $placeholder.
+			// Nối (-2), các ký tự đứng đầu (-1), sau đó $placeholder mới.
 			$new_query .= $split_query[ $key - 2 ] . $split_query[ $key - 1 ] . $placeholder;
 
 			$key += 3;
 			++$arg_id;
 		}
 
-		// Replace $query; and add remaining $query characters, or index 0 if there were no placeholders.
+		// Thay thế $query; và thêm các ký tự $query còn lại, hoặc chỉ mục 0 nếu không có placeholder.
 		$query = $new_query . $split_query[ $key - 2 ];
 
 		$dual_use = array_intersect( $arg_identifiers, $arg_strings );
@@ -1631,7 +1631,7 @@ class wpdb {
 
 			$key    = 2;
 			$arg_id = 0;
-			// Parse again (only used when there is an error).
+			// Phân tích lại (chỉ sử dụng khi có lỗi).
 			while ( $key < $split_query_count ) {
 				$placeholder = $split_query[ $key ];
 
@@ -1674,8 +1674,8 @@ class wpdb {
 		if ( $args_count !== $placeholder_count ) {
 			if ( 1 === $placeholder_count && $passed_as_array ) {
 				/*
-				 * If the passed query only expected one argument,
-				 * but the wrong number of arguments was sent as an array, bail.
+				 * Nếu truy vấn được truyền chỉ mong đợi một đối số,
+				 * nhưng số lượng đối số sai được gửi dưới dạng mảng, thoát.
 				 */
 				wp_load_translations_early();
 				_doing_it_wrong(
@@ -1687,9 +1687,9 @@ class wpdb {
 				return;
 			} else {
 				/*
-				 * If we don't have the right number of placeholders,
-				 * but they were passed as individual arguments,
-				 * or we were expecting multiple arguments in an array, throw a warning.
+				 * Nếu không có đúng số lượng placeholder,
+				 * nhưng chúng được truyền dưới dạng đối số riêng lẻ,
+				 * hoặc chúng ta mong đợi nhiều đối số trong một mảng, phát cảnh báo.
 				 */
 				wp_load_translations_early();
 				_doing_it_wrong(
@@ -1704,14 +1704,14 @@ class wpdb {
 				);
 
 				/*
-				 * If we don't have enough arguments to match the placeholders,
-				 * return an empty string to avoid a fatal error on PHP 8.
+				 * Nếu không có đủ đối số để khớp với các placeholder,
+				 * trả về chuỗi rỗng để tránh lỗi nghiêm trọng trên PHP 8.
 				 */
 				if ( $args_count < $placeholder_count ) {
 					$max_numbered_placeholder = 0;
 
 					for ( $i = 2, $l = $split_query_count; $i < $l; $i += 3 ) {
-						// Assume a leading number is for a numbered placeholder, e.g. '%3$s'.
+						// Giả định số đứng đầu là cho placeholder có đánh số, ví dụ '%3$s'.
 						$argnum = (int) substr( $split_query[ $i ], 1 );
 
 						if ( $max_numbered_placeholder < $argnum ) {
@@ -1746,7 +1746,7 @@ class wpdb {
 						'4.8.2'
 					);
 
-					// Preserving old behavior, where values are escaped as strings.
+					// Giữ lại hành vi cũ, trong đó các giá trị được escape dưới dạng chuỗi.
 					$value = '';
 				}
 
@@ -1760,41 +1760,41 @@ class wpdb {
 	}
 
 	/**
-	 * First half of escaping for `LIKE` special characters `%` and `_` before preparing for SQL.
+	 * Nửa đầu của quá trình escape các ký tự đặc biệt `%` và `_` của `LIKE` trước khi chuẩn bị SQL.
 	 *
-	 * Use this only before wpdb::prepare() or esc_sql(). Reversing the order is very bad for security.
+	 * Chỉ sử dụng trước wpdb::prepare() hoặc esc_sql(). Đảo ngược thứ tự rất nguy hiểm cho bảo mật.
 	 *
-	 * Example Prepared Statement:
+	 * Ví dụ Prepared Statement:
 	 *
 	 *     $wild = '%';
 	 *     $find = 'only 43% of planets';
 	 *     $like = $wild . $wpdb->esc_like( $find ) . $wild;
 	 *     $sql  = $wpdb->prepare( "SELECT * FROM $wpdb->posts WHERE post_content LIKE %s", $like );
 	 *
-	 * Example Escape Chain:
+	 * Ví dụ chuỗi Escape:
 	 *
 	 *     $sql  = esc_sql( $wpdb->esc_like( $input ) );
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $text The raw text to be escaped. The input typed by the user
-	 *                     should have no extra or deleted slashes.
-	 * @return string Text in the form of a LIKE phrase. The output is not SQL safe.
-	 *                Call wpdb::prepare() or wpdb::_real_escape() next.
+	 * @param string $text Văn bản thô cần escape. Dữ liệu đầu vào do người dùng nhập
+	 *                     không nên có thêm hoặc bị xóa dấu gạch chéo ngược.
+	 * @return string Văn bản dưới dạng cụm từ LIKE. Đầu ra chưa an toàn cho SQL.
+	 *                Gọi wpdb::prepare() hoặc wpdb::_real_escape() tiếp theo.
 	 */
 	public function esc_like( $text ) {
 		return addcslashes( $text, '_%\\' );
 	}
 
 	/**
-	 * Prints SQL/DB error.
+	 * Hiển thị lỗi SQL/DB.
 	 *
 	 * @since 0.71
 	 *
-	 * @global array $EZSQL_ERROR Stores error information of query and error string.
+	 * @global array $EZSQL_ERROR Lưu trữ thông tin lỗi của truy vấn và chuỗi lỗi.
 	 *
-	 * @param string $str The error to display.
-	 * @return void|false Void if the showing of errors is enabled, false if disabled.
+	 * @param string $str Lỗi cần hiển thị.
+	 * @return void|false Void nếu hiển thị lỗi được bật, false nếu bị tắt.
 	 */
 	public function print_error( $str = '' ) {
 		global $EZSQL_ERROR;
@@ -1814,7 +1814,7 @@ class wpdb {
 
 		$caller = $this->get_caller();
 		if ( $caller ) {
-			// Not translated, as this will only appear in the error log.
+			// Không dịch, vì nội dung này chỉ xuất hiện trong nhật ký lỗi.
 			$error_str = sprintf( 'WordPress database error %1$s for query %2$s made by %3$s', $str, $this->last_query, $caller );
 		} else {
 			$error_str = sprintf( 'WordPress database error %1$s for query %2$s', $str, $this->last_query );
@@ -1822,14 +1822,14 @@ class wpdb {
 
 		error_log( $error_str );
 
-		// Are we showing errors?
+		// Chúng ta có đang hiển thị lỗi không?
 		if ( ! $this->show_errors ) {
 			return false;
 		}
 
 		wp_load_translations_early();
 
-		// If there is an error then take note of it.
+		// Nếu có lỗi thì ghi nhận nó.
 		if ( is_multisite() ) {
 			$msg = sprintf(
 				"%s [%s]\n%s\n",
@@ -1858,17 +1858,17 @@ class wpdb {
 	}
 
 	/**
-	 * Enables showing of database errors.
+	 * Bật hiển thị lỗi cơ sở dữ liệu.
 	 *
-	 * This function should be used only to enable showing of errors.
-	 * wpdb::hide_errors() should be used instead for hiding errors.
+	 * Hàm này chỉ nên được sử dụng để bật hiển thị lỗi.
+	 * Sử dụng wpdb::hide_errors() để ẩn lỗi.
 	 *
 	 * @since 0.71
 	 *
 	 * @see wpdb::hide_errors()
 	 *
-	 * @param bool $show Optional. Whether to show errors. Default true.
-	 * @return bool Whether showing of errors was previously active.
+	 * @param bool $show Tùy chọn. Có hiển thị lỗi hay không. Mặc định true.
+	 * @return bool Liệu hiển thị lỗi trước đó có đang bật hay không.
 	 */
 	public function show_errors( $show = true ) {
 		$errors            = $this->show_errors;
@@ -1877,15 +1877,15 @@ class wpdb {
 	}
 
 	/**
-	 * Disables showing of database errors.
+	 * Tắt hiển thị lỗi cơ sở dữ liệu.
 	 *
-	 * By default database errors are not shown.
+	 * Theo mặc định, lỗi cơ sở dữ liệu không được hiển thị.
 	 *
 	 * @since 0.71
 	 *
 	 * @see wpdb::show_errors()
 	 *
-	 * @return bool Whether showing of errors was previously active.
+	 * @return bool Liệu hiển thị lỗi trước đó có đang bật hay không.
 	 */
 	public function hide_errors() {
 		$show              = $this->show_errors;
@@ -1894,16 +1894,16 @@ class wpdb {
 	}
 
 	/**
-	 * Enables or disables suppressing of database errors.
+	 * Bật hoặc tắt chế độ ẩn lỗi cơ sở dữ liệu.
 	 *
-	 * By default database errors are suppressed.
+	 * Theo mặc định, lỗi cơ sở dữ liệu được ẩn.
 	 *
 	 * @since 2.5.0
 	 *
 	 * @see wpdb::hide_errors()
 	 *
-	 * @param bool $suppress Optional. Whether to suppress errors. Default true.
-	 * @return bool Whether suppressing of errors was previously active.
+	 * @param bool $suppress Tùy chọn. Có ẩn lỗi hay không. Mặc định true.
+	 * @return bool Liệu chế độ ẩn lỗi trước đó có đang bật hay không.
 	 */
 	public function suppress_errors( $suppress = true ) {
 		$errors                = $this->suppress_errors;
@@ -1912,7 +1912,7 @@ class wpdb {
 	}
 
 	/**
-	 * Kills cached query results.
+	 * Xóa kết quả truy vấn đã lưu trong bộ nhớ đệm.
 	 *
 	 * @since 0.71
 	 */
@@ -1928,12 +1928,12 @@ class wpdb {
 			mysqli_free_result( $this->result );
 			$this->result = null;
 
-			// Confidence check before using the handle.
+			// Kiểm tra an toàn trước khi sử dụng handle.
 			if ( empty( $this->dbh ) || ! ( $this->dbh instanceof mysqli ) ) {
 				return;
 			}
 
-			// Clear out any results from a multi-query.
+			// Xóa sạch mọi kết quả từ truy vấn đa câu lệnh.
 			while ( mysqli_more_results( $this->dbh ) ) {
 				mysqli_next_result( $this->dbh );
 			}
@@ -1941,15 +1941,15 @@ class wpdb {
 	}
 
 	/**
-	 * Connects to and selects database.
+	 * Kết nối đến và chọn cơ sở dữ liệu.
 	 *
-	 * If `$allow_bail` is false, the lack of database connection will need to be handled manually.
+	 * Nếu `$allow_bail` là false, việc thiếu kết nối cơ sở dữ liệu cần được xử lý thủ công.
 	 *
 	 * @since 3.0.0
-	 * @since 3.9.0 $allow_bail parameter added.
+	 * @since 3.9.0 Thêm tham số $allow_bail.
 	 *
-	 * @param bool $allow_bail Optional. Allows the function to bail. Default true.
-	 * @return bool True with a successful connection, false on failure.
+	 * @param bool $allow_bail Tùy chọn. Cho phép hàm dừng thực thi. Mặc định true.
+	 * @return bool True khi kết nối thành công, false khi thất bại.
 	 */
 	public function db_connect( $allow_bail = true ) {
 		$this->is_mysql = true;
@@ -1957,9 +1957,9 @@ class wpdb {
 		$client_flags = defined( 'MYSQL_CLIENT_FLAGS' ) ? MYSQL_CLIENT_FLAGS : 0;
 
 		/*
-		 * Set the MySQLi error reporting off because WordPress handles its own.
-		 * This is due to the default value change from `MYSQLI_REPORT_OFF`
-		 * to `MYSQLI_REPORT_ERROR|MYSQLI_REPORT_STRICT` in PHP 8.1.
+		 * Tắt báo lỗi MySQLi vì WordPress tự xử lý lỗi.
+		 * Điều này do giá trị mặc định đã thay đổi từ `MYSQLI_REPORT_OFF`
+		 * sang `MYSQLI_REPORT_ERROR|MYSQLI_REPORT_STRICT` trong PHP 8.1.
 		 */
 		mysqli_report( MYSQLI_REPORT_OFF );
 
@@ -1976,8 +1976,8 @@ class wpdb {
 		}
 
 		/*
-		 * If using the `mysqlnd` library, the IPv6 address needs to be enclosed
-		 * in square brackets, whereas it doesn't while using the `libmysqlclient` library.
+		 * Nếu sử dụng thư viện `mysqlnd`, địa chỉ IPv6 cần được bao trong
+		 * dấu ngoặc vuông, trong khi không cần khi sử dụng thư viện `libmysqlclient`.
 		 * @see https://bugs.php.net/bug.php?id=67563
 		 */
 		if ( $is_ipv6 && extension_loaded( 'mysqlnd' ) ) {
@@ -1998,7 +1998,7 @@ class wpdb {
 		if ( ! $this->dbh && $allow_bail ) {
 			wp_load_translations_early();
 
-			// Load custom DB error template, if present.
+			// Tải mẫu lỗi DB tùy chỉnh, nếu có.
 			if ( file_exists( WP_CONTENT_DIR . '/db-error.php' ) ) {
 				require_once WP_CONTENT_DIR . '/db-error.php';
 				die();
@@ -2048,31 +2048,31 @@ class wpdb {
 	}
 
 	/**
-	 * Parses the DB_HOST setting to interpret it for mysqli_real_connect().
+	 * Phân tích cài đặt DB_HOST để diễn giải cho mysqli_real_connect().
 	 *
-	 * mysqli_real_connect() doesn't support the host param including a port or socket
-	 * like mysql_connect() does. This duplicates how mysql_connect() detects a port
-	 * and/or socket file.
+	 * mysqli_real_connect() không hỗ trợ tham số host bao gồm cổng hoặc socket
+	 * như mysql_connect(). Hàm này mô phỏng cách mysql_connect() phát hiện cổng
+	 * và/hoặc file socket.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param string $host The DB_HOST setting to parse.
+	 * @param string $host Cài đặt DB_HOST cần phân tích.
 	 * @return array|false {
-	 *     Array containing the host, the port, the socket and
-	 *     whether it is an IPv6 address, in that order.
-	 *     False if the host couldn't be parsed.
+	 *     Mảng chứa host, cổng, socket và
+	 *     có phải địa chỉ IPv6 hay không, theo thứ tự đó.
+	 *     False nếu không thể phân tích host.
 	 *
-	 *     @type string      $0 Host name.
-	 *     @type string|null $1 Port.
+	 *     @type string      $0 Tên host.
+	 *     @type string|null $1 Cổng.
 	 *     @type string|null $2 Socket.
-	 *     @type bool        $3 Whether it is an IPv6 address.
+	 *     @type bool        $3 Có phải địa chỉ IPv6 hay không.
 	 * }
 	 */
 	public function parse_db_host( $host ) {
 		$socket  = null;
 		$is_ipv6 = false;
 
-		// First peel off the socket parameter from the right, if it exists.
+		// Đầu tiên tách tham số socket từ bên phải, nếu có.
 		$socket_pos = strpos( $host, ':/' );
 		if ( false !== $socket_pos ) {
 			$socket = substr( $host, $socket_pos + 1 );
@@ -2080,14 +2080,14 @@ class wpdb {
 		}
 
 		/*
-		 * We need to check for an IPv6 address first.
-		 * An IPv6 address will always contain at least two colons.
+		 * Cần kiểm tra địa chỉ IPv6 trước.
+		 * Một địa chỉ IPv6 luôn chứa ít nhất hai dấu hai chấm.
 		 */
 		if ( substr_count( $host, ':' ) > 1 ) {
 			$pattern = '#^(?:\[)?(?P<host>[0-9a-fA-F:]+)(?:\]:(?P<port>[\d]+))?#';
 			$is_ipv6 = true;
 		} else {
-			// We seem to be dealing with an IPv4 address.
+			// Có vẻ đang xử lý địa chỉ IPv4.
 			$pattern = '#^(?P<host>[^:/]*)(?::(?P<port>[\d]+))?#';
 		}
 
@@ -2095,39 +2095,39 @@ class wpdb {
 		$result  = preg_match( $pattern, $host, $matches );
 
 		if ( 1 !== $result ) {
-			// Couldn't parse the address, bail.
+			// Không thể phân tích địa chỉ, dừng lại.
 			return false;
 		}
 
 		$host = ! empty( $matches['host'] ) ? $matches['host'] : '';
-		// MySQLi port cannot be a string; must be null or an integer.
+		// Cổng MySQLi không thể là chuỗi; phải là null hoặc số nguyên.
 		$port = ! empty( $matches['port'] ) ? absint( $matches['port'] ) : null;
 
 		return array( $host, $port, $socket, $is_ipv6 );
 	}
 
 	/**
-	 * Checks that the connection to the database is still up. If not, try to reconnect.
+	 * Kiểm tra kết nối đến cơ sở dữ liệu vẫn hoạt động. Nếu không, thử kết nối lại.
 	 *
-	 * If this function is unable to reconnect, it will forcibly die, or if called
-	 * after the {@see 'template_redirect'} hook has been fired, return false instead.
+	 * Nếu hàm này không thể kết nối lại, nó sẽ buộc dừng thực thi, hoặc nếu được gọi
+	 * sau khi hook {@see 'template_redirect'} đã được kích hoạt, trả về false thay thế.
 	 *
-	 * If `$allow_bail` is false, the lack of database connection will need to be handled manually.
+	 * Nếu `$allow_bail` là false, việc thiếu kết nối cơ sở dữ liệu cần được xử lý thủ công.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param bool $allow_bail Optional. Allows the function to bail. Default true.
-	 * @return bool|void True if the connection is up.
+	 * @param bool $allow_bail Tùy chọn. Cho phép hàm dừng thực thi. Mặc định true.
+	 * @return bool|void True nếu kết nối vẫn hoạt động.
 	 */
 	public function check_connection( $allow_bail = true ) {
-		// Check if the connection is alive.
+		// Kiểm tra xem kết nối có còn sống không.
 		if ( ! empty( $this->dbh ) && mysqli_query( $this->dbh, 'DO 1' ) !== false ) {
 			return true;
 		}
 
 		$error_reporting = false;
 
-		// Disable warnings, as we don't want to see a multitude of "unable to connect" messages.
+		// Tắt cảnh báo, vì chúng ta không muốn thấy hàng loạt thông báo "không thể kết nối".
 		if ( WP_DEBUG ) {
 			$error_reporting = error_reporting();
 			error_reporting( $error_reporting & ~E_WARNING );
@@ -2135,8 +2135,8 @@ class wpdb {
 
 		for ( $tries = 1; $tries <= $this->reconnect_retries; $tries++ ) {
 			/*
-			 * On the last try, re-enable warnings. We want to see a single instance
-			 * of the "unable to connect" message on the bail() screen, if it appears.
+			 * Ở lần thử cuối cùng, bật lại cảnh báo. Chúng ta muốn thấy một lần duy nhất
+			 * thông báo "không thể kết nối" trên màn hình bail(), nếu nó xuất hiện.
 			 */
 			if ( $this->reconnect_retries === $tries && WP_DEBUG ) {
 				error_reporting( $error_reporting );
@@ -2154,8 +2154,8 @@ class wpdb {
 		}
 
 		/*
-		 * If template_redirect has already happened, it's too late for wp_die()/dead_db().
-		 * Let's just return and hope for the best.
+		 * Nếu template_redirect đã xảy ra, thì quá muộn cho wp_die()/dead_db().
+		 * Hãy cứ trả về và hy vọng điều tốt nhất.
 		 */
 		if ( did_action( 'template_redirect' ) ) {
 			return false;
@@ -2186,28 +2186,28 @@ class wpdb {
 			__( 'https://wordpress.org/support/forums/' )
 		) . "</p>\n";
 
-		// We weren't able to reconnect, so we better bail.
+		// Không thể kết nối lại, nên tốt hơn là dừng thực thi.
 		$this->bail( $message, 'db_connect_fail' );
 
 		/*
-		 * Call dead_db() if bail didn't die, because this database is no more.
-		 * It has ceased to be (at least temporarily).
+		 * Gọi dead_db() nếu bail không dừng, vì cơ sở dữ liệu này không còn hoạt động.
+		 * Nó đã ngừng hoạt động (ít nhất là tạm thời).
 		 */
 		dead_db();
 	}
 
 	/**
-	 * Performs a database query, using current database connection.
+	 * Thực hiện truy vấn cơ sở dữ liệu, sử dụng kết nối cơ sở dữ liệu hiện tại.
 	 *
-	 * More information can be found on the documentation page.
+	 * Thông tin thêm có thể tìm thấy trên trang tài liệu.
 	 *
 	 * @since 0.71
 	 *
 	 * @link https://developer.wordpress.org/reference/classes/wpdb/
 	 *
-	 * @param string $query Database query.
-	 * @return int|bool Boolean true for CREATE, ALTER, TRUNCATE and DROP queries. Number of rows
-	 *                  affected/selected for all other queries. Boolean false on error.
+	 * @param string $query Truy vấn cơ sở dữ liệu.
+	 * @return int|bool Boolean true cho các truy vấn CREATE, ALTER, TRUNCATE và DROP. Số hàng
+	 *                  bị ảnh hưởng/được chọn cho tất cả các truy vấn khác. Boolean false khi lỗi.
 	 */
 	public function query( $query ) {
 		if ( ! $this->ready ) {
@@ -2216,14 +2216,14 @@ class wpdb {
 		}
 
 		/**
-		 * Filters the database query.
+		 * Lọc truy vấn cơ sở dữ liệu.
 		 *
-		 * Some queries are made before the plugins have been loaded,
-		 * and thus cannot be filtered with this method.
+		 * Một số truy vấn được thực hiện trước khi các plugin được tải,
+		 * và do đó không thể được lọc bằng phương thức này.
 		 *
 		 * @since 2.1.0
 		 *
-		 * @param string $query Database query.
+		 * @param string $query Truy vấn cơ sở dữ liệu.
 		 */
 		$query = apply_filters( 'query', $query );
 
@@ -2234,15 +2234,15 @@ class wpdb {
 
 		$this->flush();
 
-		// Log how the function was called.
+		// Ghi nhật ký cách hàm được gọi.
 		$this->func_call = "\$db->query(\"$query\")";
 
-		// If we're writing to the database, make sure the query will write safely.
+		// Nếu đang ghi vào cơ sở dữ liệu, đảm bảo truy vấn sẽ ghi an toàn.
 		if ( $this->check_current_query && ! $this->check_ascii( $query ) ) {
 			$stripped_query = $this->strip_invalid_text_from_query( $query );
 			/*
-			 * strip_invalid_text_from_query() can perform queries, so we need
-			 * to flush again, just to make sure everything is clear.
+			 * strip_invalid_text_from_query() có thể thực hiện truy vấn, nên chúng ta cần
+			 * xóa bộ đệm lại, chỉ để đảm bảo mọi thứ đã sạch.
 			 */
 			$this->flush();
 			if ( $stripped_query !== $query ) {
@@ -2259,20 +2259,20 @@ class wpdb {
 
 		$this->check_current_query = true;
 
-		// Keep track of the last query for debug.
+		// Theo dõi truy vấn cuối cùng để gỡ lỗi.
 		$this->last_query = $query;
 
 		$this->_do_query( $query );
 
-		// Database server has gone away, try to reconnect.
+		// Máy chủ cơ sở dữ liệu đã mất kết nối, thử kết nối lại.
 		$mysql_errno = 0;
 
 		if ( $this->dbh instanceof mysqli ) {
 			$mysql_errno = mysqli_errno( $this->dbh );
 		} else {
 			/*
-			 * $dbh is defined, but isn't a real connection.
-			 * Something has gone horribly wrong, let's try a reconnect.
+			 * $dbh đã được định nghĩa, nhưng không phải kết nối thực.
+			 * Đã xảy ra lỗi nghiêm trọng, hãy thử kết nối lại.
 			 */
 			$mysql_errno = 2006;
 		}
@@ -2286,7 +2286,7 @@ class wpdb {
 			}
 		}
 
-		// If there is an error then take note of it.
+		// Nếu có lỗi thì ghi nhận lại.
 		if ( $this->dbh instanceof mysqli ) {
 			$this->last_error = mysqli_error( $this->dbh );
 		} else {
@@ -2294,7 +2294,7 @@ class wpdb {
 		}
 
 		if ( $this->last_error ) {
-			// Clear insert_id on a subsequent failed insert.
+			// Xóa insert_id khi insert tiếp theo thất bại.
 			if ( $this->insert_id && preg_match( '/^\s*(insert|replace)\s/i', $query ) ) {
 				$this->insert_id = 0;
 			}
@@ -2308,12 +2308,12 @@ class wpdb {
 		} elseif ( preg_match( '/^\s*(insert|delete|update|replace)\s/i', $query ) ) {
 			$this->rows_affected = mysqli_affected_rows( $this->dbh );
 
-			// Take note of the insert_id.
+			// Ghi nhận insert_id.
 			if ( preg_match( '/^\s*(insert|replace)\s/i', $query ) ) {
 				$this->insert_id = mysqli_insert_id( $this->dbh );
 			}
 
-			// Return number of rows affected.
+			// Trả về số hàng bị ảnh hưởng.
 			$return_val = $this->rows_affected;
 		} else {
 			$num_rows = 0;
@@ -2325,7 +2325,7 @@ class wpdb {
 				}
 			}
 
-			// Log and return the number of rows selected.
+			// Ghi nhật ký và trả về số hàng được chọn.
 			$this->num_rows = $num_rows;
 			$return_val     = $num_rows;
 		}
@@ -2334,13 +2334,13 @@ class wpdb {
 	}
 
 	/**
-	 * Internal function to perform the mysqli_query() call.
+	 * Hàm nội bộ để thực hiện lệnh gọi mysqli_query().
 	 *
 	 * @since 3.9.0
 	 *
 	 * @see wpdb::query()
 	 *
-	 * @param string $query The query to run.
+	 * @param string $query Truy vấn cần chạy.
 	 */
 	private function _do_query( $query ) {
 		if ( defined( 'SAVEQUERIES' ) && SAVEQUERIES ) {
@@ -2365,30 +2365,30 @@ class wpdb {
 	}
 
 	/**
-	 * Logs query data.
+	 * Ghi nhật ký dữ liệu truy vấn.
 	 *
 	 * @since 5.3.0
 	 *
-	 * @param string $query           The query's SQL.
-	 * @param float  $query_time      Total time spent on the query, in seconds.
-	 * @param string $query_callstack Comma-separated list of the calling functions.
-	 * @param float  $query_start     Unix timestamp of the time at the start of the query.
-	 * @param array  $query_data      Custom query data.
+	 * @param string $query           Câu lệnh SQL của truy vấn.
+	 * @param float  $query_time      Tổng thời gian thực hiện truy vấn, tính bằng giây.
+	 * @param string $query_callstack Danh sách các hàm gọi, phân cách bằng dấu phẩy.
+	 * @param float  $query_start     Dấu thời gian Unix tại thời điểm bắt đầu truy vấn.
+	 * @param array  $query_data      Dữ liệu truy vấn tùy chỉnh.
 	 */
 	public function log_query( $query, $query_time, $query_callstack, $query_start, $query_data ) {
 		/**
-		 * Filters the custom data to log alongside a query.
+		 * Lọc dữ liệu tùy chỉnh được ghi cùng với truy vấn.
 		 *
-		 * Caution should be used when modifying any of this data, it is recommended that any additional
-		 * information you need to store about a query be added as a new associative array element.
+		 * Nên cẩn thận khi thay đổi bất kỳ dữ liệu nào trong này, khuyến khích thêm thông tin
+		 * bổ sung cần lưu trữ về truy vấn dưới dạng phần tử mới trong mảng kết hợp.
 		 *
 		 * @since 5.3.0
 		 *
-		 * @param array  $query_data      Custom query data.
-		 * @param string $query           The query's SQL.
-		 * @param float  $query_time      Total time spent on the query, in seconds.
-		 * @param string $query_callstack Comma-separated list of the calling functions.
-		 * @param float  $query_start     Unix timestamp of the time at the start of the query.
+		 * @param array  $query_data      Dữ liệu truy vấn tùy chỉnh.
+		 * @param string $query           Câu lệnh SQL của truy vấn.
+		 * @param float  $query_time      Tổng thời gian thực hiện truy vấn, tính bằng giây.
+		 * @param string $query_callstack Danh sách các hàm gọi, phân cách bằng dấu phẩy.
+		 * @param float  $query_start     Dấu thời gian Unix tại thời điểm bắt đầu truy vấn.
 		 */
 		$query_data = apply_filters( 'log_query_custom_data', $query_data, $query, $query_time, $query_callstack, $query_start );
 
@@ -2402,25 +2402,25 @@ class wpdb {
 	}
 
 	/**
-	 * Generates and returns a placeholder escape string for use in queries returned by ::prepare().
+	 * Tạo và trả về chuỗi thoát placeholder để sử dụng trong các truy vấn trả về bởi ::prepare().
 	 *
 	 * @since 4.8.3
 	 *
-	 * @return string String to escape placeholders.
+	 * @return string Chuỗi để thoát các placeholder.
 	 */
 	public function placeholder_escape() {
 		static $placeholder;
 
 		if ( ! $placeholder ) {
-			// Old WP installs may not have AUTH_SALT defined.
+			// Các bản cài WP cũ có thể chưa định nghĩa AUTH_SALT.
 			$salt = defined( 'AUTH_SALT' ) && AUTH_SALT ? AUTH_SALT : (string) rand();
 
 			$placeholder = '{' . hash_hmac( 'sha256', uniqid( $salt, true ), $salt ) . '}';
 		}
 
 		/*
-		 * Add the filter to remove the placeholder escaper. Uses priority 0, so that anything
-		 * else attached to this filter will receive the query with the placeholder string removed.
+		 * Thêm bộ lọc để xóa chuỗi thoát placeholder. Sử dụng ưu tiên 0, để bất cứ thứ gì
+		 * khác được gắn vào bộ lọc này sẽ nhận được truy vấn đã xóa chuỗi placeholder.
 		 */
 		if ( false === has_filter( 'query', array( $this, 'remove_placeholder_escape' ) ) ) {
 			add_filter( 'query', array( $this, 'remove_placeholder_escape' ), 0 );
@@ -2430,37 +2430,37 @@ class wpdb {
 	}
 
 	/**
-	 * Adds a placeholder escape string, to escape anything that resembles a printf() placeholder.
+	 * Thêm chuỗi thoát placeholder, để thoát bất cứ thứ gì giống placeholder của printf().
 	 *
 	 * @since 4.8.3
 	 *
-	 * @param string $query The query to escape.
-	 * @return string The query with the placeholder escape string inserted where necessary.
+	 * @param string $query Truy vấn cần thoát.
+	 * @return string Truy vấn với chuỗi thoát placeholder được chèn vào nơi cần thiết.
 	 */
 	public function add_placeholder_escape( $query ) {
 		/*
-		 * To prevent returning anything that even vaguely resembles a placeholder,
-		 * we clobber every % we can find.
+		 * Để ngăn trả về bất cứ thứ gì dù chỉ mơ hồ giống placeholder,
+		 * chúng ta thay thế mọi ký tự % tìm được.
 		 */
 		return str_replace( '%', $this->placeholder_escape(), $query );
 	}
 
 	/**
-	 * Removes the placeholder escape strings from a query.
+	 * Xóa các chuỗi thoát placeholder khỏi truy vấn.
 	 *
 	 * @since 4.8.3
 	 *
-	 * @param string $query The query from which the placeholder will be removed.
-	 * @return string The query with the placeholder removed.
+	 * @param string $query Truy vấn cần xóa placeholder.
+	 * @return string Truy vấn đã xóa placeholder.
 	 */
 	public function remove_placeholder_escape( $query ) {
 		return str_replace( $this->placeholder_escape(), '%', $query );
 	}
 
 	/**
-	 * Inserts a row into the table.
+	 * Chèn một hàng vào bảng.
 	 *
-	 * Examples:
+	 * Ví dụ:
 	 *
 	 *     $wpdb->insert(
 	 *         'table',
@@ -2487,29 +2487,29 @@ class wpdb {
 	 * @see wpdb::$field_types
 	 * @see wp_set_wpdb_vars()
 	 *
-	 * @param string          $table  Table name.
-	 * @param array           $data   Data to insert (in column => value pairs).
-	 *                                Both `$data` columns and `$data` values should be "raw" (neither should be SQL escaped).
-	 *                                Sending a null value will cause the column to be set to NULL - the corresponding
-	 *                                format is ignored in this case.
-	 * @param string[]|string $format Optional. An array of formats to be mapped to each of the value in `$data`.
-	 *                                If string, that format will be used for all of the values in `$data`.
-	 *                                A format is one of '%d', '%f', '%s' (integer, float, string).
-	 *                                If omitted, all values in `$data` will be treated as strings unless otherwise
-	 *                                specified in wpdb::$field_types. Default null.
-	 * @return int|false The number of rows inserted, or false on error.
+	 * @param string          $table  Tên bảng.
+	 * @param array           $data   Dữ liệu cần chèn (dạng cặp cột => giá trị).
+	 *                                Cả cột và giá trị `$data` đều nên là "thô" (không được escape SQL).
+	 *                                Gửi giá trị null sẽ đặt cột thành NULL - định dạng tương ứng
+	 *                                sẽ bị bỏ qua trong trường hợp này.
+	 * @param string[]|string $format Tùy chọn. Mảng các định dạng được ánh xạ tới mỗi giá trị trong `$data`.
+	 *                                Nếu là chuỗi, định dạng đó sẽ được dùng cho tất cả giá trị trong `$data`.
+	 *                                Định dạng là một trong '%d', '%f', '%s' (số nguyên, số thực, chuỗi).
+	 *                                Nếu bỏ qua, tất cả giá trị trong `$data` sẽ được xử lý như chuỗi trừ khi
+	 *                                được chỉ định khác trong wpdb::$field_types. Mặc định null.
+	 * @return int|false Số hàng được chèn, hoặc false khi lỗi.
 	 */
 	public function insert( $table, $data, $format = null ) {
 		return $this->_insert_replace_helper( $table, $data, $format, 'INSERT' );
 	}
 
 	/**
-	 * Replaces a row in the table or inserts it if it does not exist, based on a PRIMARY KEY or a UNIQUE index.
+	 * Thay thế một hàng trong bảng hoặc chèn nếu chưa tồn tại, dựa trên PRIMARY KEY hoặc chỉ mục UNIQUE.
 	 *
-	 * A REPLACE works exactly like an INSERT, except that if an old row in the table has the same value as a new row
-	 * for a PRIMARY KEY or a UNIQUE index, the old row is deleted before the new row is inserted.
+	 * REPLACE hoạt động giống hệt INSERT, ngoại trừ nếu một hàng cũ trong bảng có cùng giá trị với hàng mới
+	 * cho PRIMARY KEY hoặc chỉ mục UNIQUE, hàng cũ sẽ bị xóa trước khi hàng mới được chèn.
 	 *
-	 * Examples:
+	 * Ví dụ:
 	 *
 	 *     $wpdb->replace(
 	 *         'table',
@@ -2539,27 +2539,27 @@ class wpdb {
 	 * @see wpdb::$field_types
 	 * @see wp_set_wpdb_vars()
 	 *
-	 * @param string          $table  Table name.
-	 * @param array           $data   Data to insert (in column => value pairs).
-	 *                                Both `$data` columns and `$data` values should be "raw" (neither should be SQL escaped).
-	 *                                A primary key or unique index is required to perform a replace operation.
-	 *                                Sending a null value will cause the column to be set to NULL - the corresponding
-	 *                                format is ignored in this case.
-	 * @param string[]|string $format Optional. An array of formats to be mapped to each of the value in `$data`.
-	 *                                If string, that format will be used for all of the values in `$data`.
-	 *                                A format is one of '%d', '%f', '%s' (integer, float, string).
-	 *                                If omitted, all values in `$data` will be treated as strings unless otherwise
-	 *                                specified in wpdb::$field_types. Default null.
-	 * @return int|false The number of rows affected, or false on error.
+	 * @param string          $table  Tên bảng.
+	 * @param array           $data   Dữ liệu cần chèn (dạng cặp cột => giá trị).
+	 *                                Cả cột và giá trị `$data` đều nên là "thô" (không được escape SQL).
+	 *                                Cần có khóa chính hoặc chỉ mục duy nhất để thực hiện thao tác thay thế.
+	 *                                Gửi giá trị null sẽ đặt cột thành NULL - định dạng tương ứng
+	 *                                sẽ bị bỏ qua trong trường hợp này.
+	 * @param string[]|string $format Tùy chọn. Mảng các định dạng được ánh xạ tới mỗi giá trị trong `$data`.
+	 *                                Nếu là chuỗi, định dạng đó sẽ được dùng cho tất cả giá trị trong `$data`.
+	 *                                Định dạng là một trong '%d', '%f', '%s' (số nguyên, số thực, chuỗi).
+	 *                                Nếu bỏ qua, tất cả giá trị trong `$data` sẽ được xử lý như chuỗi trừ khi
+	 *                                được chỉ định khác trong wpdb::$field_types. Mặc định null.
+	 * @return int|false Số hàng bị ảnh hưởng, hoặc false khi lỗi.
 	 */
 	public function replace( $table, $data, $format = null ) {
 		return $this->_insert_replace_helper( $table, $data, $format, 'REPLACE' );
 	}
 
 	/**
-	 * Helper function for insert and replace.
+	 * Hàm trợ giúp cho insert và replace.
 	 *
-	 * Runs an insert or replace query based on `$type` argument.
+	 * Chạy truy vấn insert hoặc replace dựa trên tham số `$type`.
 	 *
 	 * @since 3.0.0
 	 *
@@ -2567,19 +2567,19 @@ class wpdb {
 	 * @see wpdb::$field_types
 	 * @see wp_set_wpdb_vars()
 	 *
-	 * @param string          $table  Table name.
-	 * @param array           $data   Data to insert (in column => value pairs).
-	 *                                Both `$data` columns and `$data` values should be "raw" (neither should be SQL escaped).
-	 *                                Sending a null value will cause the column to be set to NULL - the corresponding
-	 *                                format is ignored in this case.
-	 * @param string[]|string $format Optional. An array of formats to be mapped to each of the value in `$data`.
-	 *                                If string, that format will be used for all of the values in `$data`.
-	 *                                A format is one of '%d', '%f', '%s' (integer, float, string).
-	 *                                If omitted, all values in `$data` will be treated as strings unless otherwise
-	 *                                specified in wpdb::$field_types. Default null.
-	 * @param string          $type   Optional. Type of operation. Either 'INSERT' or 'REPLACE'.
-	 *                                Default 'INSERT'.
-	 * @return int|false The number of rows affected, or false on error.
+	 * @param string          $table  Tên bảng.
+	 * @param array           $data   Dữ liệu cần chèn (dạng cặp cột => giá trị).
+	 *                                Cả cột và giá trị `$data` đều nên là "thô" (không được escape SQL).
+	 *                                Gửi giá trị null sẽ đặt cột thành NULL - định dạng tương ứng
+	 *                                sẽ bị bỏ qua trong trường hợp này.
+	 * @param string[]|string $format Tùy chọn. Mảng các định dạng được ánh xạ tới mỗi giá trị trong `$data`.
+	 *                                Nếu là chuỗi, định dạng đó sẽ được dùng cho tất cả giá trị trong `$data`.
+	 *                                Định dạng là một trong '%d', '%f', '%s' (số nguyên, số thực, chuỗi).
+	 *                                Nếu bỏ qua, tất cả giá trị trong `$data` sẽ được xử lý như chuỗi trừ khi
+	 *                                được chỉ định khác trong wpdb::$field_types. Mặc định null.
+	 * @param string          $type   Tùy chọn. Loại thao tác. Có thể là 'INSERT' hoặc 'REPLACE'.
+	 *                                Mặc định 'INSERT'.
+	 * @return int|false Số hàng bị ảnh hưởng, hoặc false khi lỗi.
 	 */
 	public function _insert_replace_helper( $table, $data, $format = null, $type = 'INSERT' ) {
 		$this->insert_id = 0;
@@ -2615,9 +2615,9 @@ class wpdb {
 	}
 
 	/**
-	 * Updates a row in the table.
+	 * Cập nhật một hàng trong bảng.
 	 *
-	 * Examples:
+	 * Ví dụ:
 	 *
 	 *     $wpdb->update(
 	 *         'table',
@@ -2653,27 +2653,27 @@ class wpdb {
 	 * @see wpdb::$field_types
 	 * @see wp_set_wpdb_vars()
 	 *
-	 * @param string       $table           Table name.
-	 * @param array        $data            Data to update (in column => value pairs).
-	 *                                      Both $data columns and $data values should be "raw" (neither should be SQL escaped).
-	 *                                      Sending a null value will cause the column to be set to NULL - the corresponding
-	 *                                      format is ignored in this case.
-	 * @param array        $where           A named array of WHERE clauses (in column => value pairs).
-	 *                                      Multiple clauses will be joined with ANDs.
-	 *                                      Both $where columns and $where values should be "raw".
-	 *                                      Sending a null value will create an IS NULL comparison - the corresponding
-	 *                                      format will be ignored in this case.
-	 * @param string[]|string $format       Optional. An array of formats to be mapped to each of the values in $data.
-	 *                                      If string, that format will be used for all of the values in $data.
-	 *                                      A format is one of '%d', '%f', '%s' (integer, float, string).
-	 *                                      If omitted, all values in $data will be treated as strings unless otherwise
-	 *                                      specified in wpdb::$field_types. Default null.
-	 * @param string[]|string $where_format Optional. An array of formats to be mapped to each of the values in $where.
-	 *                                      If string, that format will be used for all of the items in $where.
-	 *                                      A format is one of '%d', '%f', '%s' (integer, float, string).
-	 *                                      If omitted, all values in $where will be treated as strings unless otherwise
-	 *                                      specified in wpdb::$field_types. Default null.
-	 * @return int|false The number of rows updated, or false on error.
+	 * @param string       $table           Tên bảng.
+	 * @param array        $data            Dữ liệu cần cập nhật (dạng cặp cột => giá trị).
+	 *                                      Cả cột và giá trị $data đều nên là "thô" (không được escape SQL).
+	 *                                      Gửi giá trị null sẽ đặt cột thành NULL - định dạng tương ứng
+	 *                                      sẽ bị bỏ qua trong trường hợp này.
+	 * @param array        $where           Mảng đặt tên các mệnh đề WHERE (dạng cặp cột => giá trị).
+	 *                                      Nhiều mệnh đề sẽ được nối bằng AND.
+	 *                                      Cả cột và giá trị $where đều nên là "thô".
+	 *                                      Gửi giá trị null sẽ tạo so sánh IS NULL - định dạng tương ứng
+	 *                                      sẽ bị bỏ qua trong trường hợp này.
+	 * @param string[]|string $format       Tùy chọn. Mảng các định dạng được ánh xạ tới mỗi giá trị trong $data.
+	 *                                      Nếu là chuỗi, định dạng đó sẽ được dùng cho tất cả giá trị trong $data.
+	 *                                      Định dạng là một trong '%d', '%f', '%s' (số nguyên, số thực, chuỗi).
+	 *                                      Nếu bỏ qua, tất cả giá trị trong $data sẽ được xử lý như chuỗi trừ khi
+	 *                                      được chỉ định khác trong wpdb::$field_types. Mặc định null.
+	 * @param string[]|string $where_format Tùy chọn. Mảng các định dạng được ánh xạ tới mỗi giá trị trong $where.
+	 *                                      Nếu là chuỗi, định dạng đó sẽ được dùng cho tất cả mục trong $where.
+	 *                                      Định dạng là một trong '%d', '%f', '%s' (số nguyên, số thực, chuỗi).
+	 *                                      Nếu bỏ qua, tất cả giá trị trong $where sẽ được xử lý như chuỗi trừ khi
+	 *                                      được chỉ định khác trong wpdb::$field_types. Mặc định null.
+	 * @return int|false Số hàng được cập nhật, hoặc false khi lỗi.
 	 */
 	public function update( $table, $data, $where, $format = null, $where_format = null ) {
 		if ( ! is_array( $data ) || ! is_array( $where ) ) {
@@ -2721,9 +2721,9 @@ class wpdb {
 	}
 
 	/**
-	 * Deletes a row in the table.
+	 * Xóa một hàng trong bảng.
 	 *
-	 * Examples:
+	 * Ví dụ:
 	 *
 	 *     $wpdb->delete(
 	 *         'table',
@@ -2747,18 +2747,18 @@ class wpdb {
 	 * @see wpdb::$field_types
 	 * @see wp_set_wpdb_vars()
 	 *
-	 * @param string          $table        Table name.
-	 * @param array           $where        A named array of WHERE clauses (in column => value pairs).
-	 *                                      Multiple clauses will be joined with ANDs.
-	 *                                      Both $where columns and $where values should be "raw".
-	 *                                      Sending a null value will create an IS NULL comparison - the corresponding
-	 *                                      format will be ignored in this case.
-	 * @param string[]|string $where_format Optional. An array of formats to be mapped to each of the values in $where.
-	 *                                      If string, that format will be used for all of the items in $where.
-	 *                                      A format is one of '%d', '%f', '%s' (integer, float, string).
-	 *                                      If omitted, all values in $data will be treated as strings unless otherwise
-	 *                                      specified in wpdb::$field_types. Default null.
-	 * @return int|false The number of rows deleted, or false on error.
+	 * @param string          $table        Tên bảng.
+	 * @param array           $where        Mảng đặt tên các mệnh đề WHERE (dạng cặp cột => giá trị).
+	 *                                      Nhiều mệnh đề sẽ được nối bằng AND.
+	 *                                      Cả cột và giá trị $where đều nên là "thô".
+	 *                                      Gửi giá trị null sẽ tạo so sánh IS NULL - định dạng tương ứng
+	 *                                      sẽ bị bỏ qua trong trường hợp này.
+	 * @param string[]|string $where_format Tùy chọn. Mảng các định dạng được ánh xạ tới mỗi giá trị trong $where.
+	 *                                      Nếu là chuỗi, định dạng đó sẽ được dùng cho tất cả mục trong $where.
+	 *                                      Định dạng là một trong '%d', '%f', '%s' (số nguyên, số thực, chuỗi).
+	 *                                      Nếu bỏ qua, tất cả giá trị trong $data sẽ được xử lý như chuỗi trừ khi
+	 *                                      được chỉ định khác trong wpdb::$field_types. Mặc định null.
+	 * @return int|false Số hàng bị xóa, hoặc false khi lỗi.
 	 */
 	public function delete( $table, $where, $where_format = null ) {
 		if ( ! is_array( $where ) ) {
@@ -2791,21 +2791,21 @@ class wpdb {
 	}
 
 	/**
-	 * Processes arrays of field/value pairs and field formats.
+	 * Xử lý mảng các cặp trường/giá trị và định dạng trường.
 	 *
-	 * This is a helper method for wpdb's CRUD methods, which take field/value pairs
-	 * for inserts, updates, and where clauses. This method first pairs each value
-	 * with a format. Then it determines the charset of that field, using that
-	 * to determine if any invalid text would be stripped. If text is stripped,
-	 * then field processing is rejected and the query fails.
+	 * Đây là phương thức trợ giúp cho các phương thức CRUD của wpdb, nhận các cặp trường/giá trị
+	 * cho insert, update và mệnh đề where. Phương thức này trước tiên ghép mỗi giá trị
+	 * với một định dạng. Sau đó xác định bộ ký tự của trường đó, sử dụng nó
+	 * để xác định xem có văn bản không hợp lệ nào bị loại bỏ không. Nếu có,
+	 * thì việc xử lý trường bị từ chối và truy vấn thất bại.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param string          $table  Table name.
-	 * @param array           $data   Array of values keyed by their field names.
-	 * @param string[]|string $format Formats or format to be mapped to the values in the data.
-	 * @return array|false An array of fields that contain paired value and formats.
-	 *                     False for invalid values.
+	 * @param string          $table  Tên bảng.
+	 * @param array           $data   Mảng giá trị được đánh khóa theo tên trường.
+	 * @param string[]|string $format Định dạng hoặc các định dạng được ánh xạ tới giá trị trong dữ liệu.
+	 * @return array|false Mảng các trường chứa giá trị và định dạng đã ghép cặp.
+	 *                     False cho các giá trị không hợp lệ.
 	 */
 	protected function process_fields( $table, $data, $format ) {
 		$data = $this->process_field_formats( $data, $format );
@@ -2857,17 +2857,17 @@ class wpdb {
 	}
 
 	/**
-	 * Prepares arrays of value/format pairs as passed to wpdb CRUD methods.
+	 * Chuẩn bị mảng các cặp giá trị/định dạng được truyền cho các phương thức CRUD của wpdb.
 	 *
 	 * @since 4.2.0
 	 *
-	 * @param array           $data   Array of values keyed by their field names.
-	 * @param string[]|string $format Formats or format to be mapped to the values in the data.
+	 * @param array           $data   Mảng giá trị được đánh khóa theo tên trường.
+	 * @param string[]|string $format Định dạng hoặc các định dạng được ánh xạ tới giá trị trong dữ liệu.
 	 * @return array {
-	 *     Array of values and formats keyed by their field names.
+	 *     Mảng giá trị và định dạng được đánh khóa theo tên trường.
 	 *
-	 *     @type mixed  $value  The value to be formatted.
-	 *     @type string $format The format to be mapped to the value.
+	 *     @type mixed  $value  Giá trị cần định dạng.
+	 *     @type string $format Định dạng được ánh xạ tới giá trị.
 	 * }
 	 */
 	protected function process_field_formats( $data, $format ) {
@@ -2896,32 +2896,32 @@ class wpdb {
 	}
 
 	/**
-	 * Adds field charsets to field/value/format arrays generated by wpdb::process_field_formats().
+	 * Thêm bộ ký tự trường vào mảng trường/giá trị/định dạng được tạo bởi wpdb::process_field_formats().
 	 *
 	 * @since 4.2.0
 	 *
 	 * @param array $data {
-	 *     Array of values and formats keyed by their field names,
-	 *     as it comes from the wpdb::process_field_formats() method.
+	 *     Mảng giá trị và định dạng được đánh khóa theo tên trường,
+	 *     như được trả về từ phương thức wpdb::process_field_formats().
 	 *
 	 *     @type array ...$0 {
-	 *         Value and format for this field.
+	 *         Giá trị và định dạng cho trường này.
 	 *
-	 *         @type mixed  $value  The value to be formatted.
-	 *         @type string $format The format to be mapped to the value.
+	 *         @type mixed  $value  Giá trị cần định dạng.
+	 *         @type string $format Định dạng được ánh xạ tới giá trị.
 	 *     }
 	 * }
-	 * @param string $table Table name.
+	 * @param string $table Tên bảng.
 	 * @return array|false {
-	 *     The same array of data with additional 'charset' keys, or false if
-	 *     the charset for the table cannot be found.
+	 *     Cùng mảng dữ liệu với khóa 'charset' bổ sung, hoặc false nếu
+	 *     không tìm được bộ ký tự cho bảng.
 	 *
 	 *     @type array ...$0 {
-	 *         Value, format, and charset for this field.
+	 *         Giá trị, định dạng và bộ ký tự cho trường này.
 	 *
-	 *         @type mixed        $value   The value to be formatted.
-	 *         @type string       $format  The format to be mapped to the value.
-	 *         @type string|false $charset The charset to be used for the value.
+	 *         @type mixed        $value   Giá trị cần định dạng.
+	 *         @type string       $format  Định dạng được ánh xạ tới giá trị.
+	 *         @type string|false $charset Bộ ký tự được sử dụng cho giá trị.
 	 *     }
 	 * }
 	 */
@@ -2929,8 +2929,8 @@ class wpdb {
 		foreach ( $data as $field => $value ) {
 			if ( '%d' === $value['format'] || '%f' === $value['format'] ) {
 				/*
-				 * We can skip this field if we know it isn't a string.
-				 * This checks %d/%f versus ! %s because its sprintf() could take more.
+				 * Có thể bỏ qua trường này nếu biết nó không phải chuỗi.
+				 * Kiểm tra %d/%f thay vì ! %s vì sprintf() của nó có thể nhận thêm.
 				 */
 				$value['charset'] = false;
 			} else {
@@ -2947,39 +2947,39 @@ class wpdb {
 	}
 
 	/**
-	 * For string fields, records the maximum string length that field can safely save.
+	 * Đối với trường chuỗi, ghi nhận độ dài chuỗi tối đa mà trường có thể lưu an toàn.
 	 *
 	 * @since 4.2.1
 	 *
 	 * @param array $data {
-	 *     Array of values, formats, and charsets keyed by their field names,
-	 *     as it comes from the wpdb::process_field_charsets() method.
+	 *     Mảng giá trị, định dạng và bộ ký tự được đánh khóa theo tên trường,
+	 *     như được trả về từ phương thức wpdb::process_field_charsets().
 	 *
 	 *     @type array ...$0 {
-	 *         Value, format, and charset for this field.
+	 *         Giá trị, định dạng và bộ ký tự cho trường này.
 	 *
-	 *         @type mixed        $value   The value to be formatted.
-	 *         @type string       $format  The format to be mapped to the value.
-	 *         @type string|false $charset The charset to be used for the value.
+	 *         @type mixed        $value   Giá trị cần định dạng.
+	 *         @type string       $format  Định dạng được ánh xạ tới giá trị.
+	 *         @type string|false $charset Bộ ký tự được sử dụng cho giá trị.
 	 *     }
 	 * }
-	 * @param string $table Table name.
+	 * @param string $table Tên bảng.
 	 * @return array|false {
-	 *     The same array of data with additional 'length' keys, or false if
-	 *     information for the table cannot be found.
+	 *     Cùng mảng dữ liệu với khóa 'length' bổ sung, hoặc false nếu
+	 *     không tìm được thông tin cho bảng.
 	 *
 	 *     @type array ...$0 {
-	 *         Value, format, charset, and length for this field.
+	 *         Giá trị, định dạng, bộ ký tự và độ dài cho trường này.
 	 *
-	 *         @type mixed        $value   The value to be formatted.
-	 *         @type string       $format  The format to be mapped to the value.
-	 *         @type string|false $charset The charset to be used for the value.
+	 *         @type mixed        $value   Giá trị cần định dạng.
+	 *         @type string       $format  Định dạng được ánh xạ tới giá trị.
+	 *         @type string|false $charset Bộ ký tự được sử dụng cho giá trị.
 	 *         @type array|false  $length  {
-	 *             Information about the maximum length of the value.
-	 *             False if the column has no length.
+	 *             Thông tin về độ dài tối đa của giá trị.
+	 *             False nếu cột không có độ dài.
 	 *
-	 *             @type string $type   One of 'byte' or 'char'.
-	 *             @type int    $length The column length.
+	 *             @type string $type   Một trong 'byte' hoặc 'char'.
+	 *             @type int    $length Độ dài cột.
 	 *         }
 	 *     }
 	 * }
@@ -2988,8 +2988,8 @@ class wpdb {
 		foreach ( $data as $field => $value ) {
 			if ( '%d' === $value['format'] || '%f' === $value['format'] ) {
 				/*
-				 * We can skip this field if we know it isn't a string.
-				 * This checks %d/%f versus ! %s because its sprintf() could take more.
+				 * Có thể bỏ qua trường này nếu biết nó không phải chuỗi.
+				 * Kiểm tra %d/%f thay vì ! %s vì sprintf() của nó có thể nhận thêm.
 				 */
 				$value['length'] = false;
 			} else {
@@ -3006,19 +3006,19 @@ class wpdb {
 	}
 
 	/**
-	 * Retrieves one value from the database.
+	 * Lấy một giá trị từ cơ sở dữ liệu.
 	 *
-	 * Executes a SQL query and returns the value from the SQL result.
-	 * If the SQL result contains more than one column and/or more than one row,
-	 * the value in the column and row specified is returned. If $query is null,
-	 * the value in the specified column and row from the previous SQL result is returned.
+	 * Thực thi truy vấn SQL và trả về giá trị từ kết quả SQL.
+	 * Nếu kết quả SQL chứa nhiều hơn một cột và/hoặc nhiều hơn một hàng,
+	 * giá trị tại cột và hàng được chỉ định sẽ được trả về. Nếu $query là null,
+	 * giá trị tại cột và hàng chỉ định từ kết quả SQL trước đó được trả về.
 	 *
 	 * @since 0.71
 	 *
-	 * @param string|null $query Optional. SQL query. Defaults to null, use the result from the previous query.
-	 * @param int         $x     Optional. Column of value to return. Indexed from 0. Default 0.
-	 * @param int         $y     Optional. Row of value to return. Indexed from 0. Default 0.
-	 * @return string|null Database query result (as string), or null on failure.
+	 * @param string|null $query Tùy chọn. Truy vấn SQL. Mặc định null, sử dụng kết quả từ truy vấn trước.
+	 * @param int         $x     Tùy chọn. Cột của giá trị cần trả về. Đánh số từ 0. Mặc định 0.
+	 * @param int         $y     Tùy chọn. Hàng của giá trị cần trả về. Đánh số từ 0. Mặc định 0.
+	 * @return string|null Kết quả truy vấn cơ sở dữ liệu (dạng chuỗi), hoặc null khi thất bại.
 	 */
 	public function get_var( $query = null, $x = 0, $y = 0 ) {
 		$this->func_call = "\$db->get_var(\"$query\", $x, $y)";
@@ -3031,28 +3031,28 @@ class wpdb {
 			$this->query( $query );
 		}
 
-		// Extract var out of cached results based on x,y vals.
+		// Trích xuất biến từ kết quả đã lưu trong bộ nhớ đệm dựa trên giá trị x,y.
 		if ( ! empty( $this->last_result[ $y ] ) ) {
 			$values = array_values( get_object_vars( $this->last_result[ $y ] ) );
 		}
 
-		// If there is a value return it, else return null.
+		// Nếu có giá trị thì trả về, không thì trả về null.
 		return ( isset( $values[ $x ] ) && '' !== $values[ $x ] ) ? $values[ $x ] : null;
 	}
 
 	/**
-	 * Retrieves one row from the database.
+	 * Lấy một hàng từ cơ sở dữ liệu.
 	 *
-	 * Executes a SQL query and returns the row from the SQL result.
+	 * Thực thi truy vấn SQL và trả về hàng từ kết quả SQL.
 	 *
 	 * @since 0.71
 	 *
-	 * @param string|null $query  SQL query.
-	 * @param string      $output Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
-	 *                            correspond to an stdClass object, an associative array, or a numeric array,
-	 *                            respectively. Default OBJECT.
-	 * @param int         $y      Optional. Row to return. Indexed from 0. Default 0.
-	 * @return array|object|null|void Database query result in format specified by $output or null on failure.
+	 * @param string|null $query  Truy vấn SQL.
+	 * @param string      $output Tùy chọn. Kiểu trả về yêu cầu. Một trong OBJECT, ARRAY_A, hoặc ARRAY_N,
+	 *                            tương ứng với đối tượng stdClass, mảng kết hợp, hoặc mảng số,
+	 *                            theo thứ tự. Mặc định OBJECT.
+	 * @param int         $y      Tùy chọn. Hàng cần trả về. Đánh số từ 0. Mặc định 0.
+	 * @return array|object|null|void Kết quả truy vấn theo định dạng chỉ định bởi $output hoặc null khi thất bại.
 	 */
 	public function get_row( $query = null, $output = OBJECT, $y = 0 ) {
 		$this->func_call = "\$db->get_row(\"$query\",$output,$y)";

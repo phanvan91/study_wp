@@ -1,6 +1,6 @@
 <?php
 /**
- * Toolbar API: Top-level Toolbar functionality
+ * API Thanh công cụ: Chức năng Thanh công cụ cấp cao nhất
  *
  * @package WordPress
  * @subpackage Toolbar
@@ -8,17 +8,17 @@
  */
 
 /**
- * Instantiates the admin bar object and set it up as a global for access elsewhere.
+ * Khởi tạo đối tượng thanh quản trị và thiết lập nó như biến toàn cục để truy cập từ nơi khác.
  *
- * UNHOOKING THIS FUNCTION WILL NOT PROPERLY REMOVE THE ADMIN BAR.
- * For that, use show_admin_bar(false) or the {@see 'show_admin_bar'} filter.
+ * GỠ HOOK HÀM NÀY SẼ KHÔNG XÓA ĐÚNG CÁCH THANH QUẢN TRỊ.
+ * Để làm điều đó, hãy sử dụng show_admin_bar(false) hoặc bộ lọc {@see 'show_admin_bar'}.
  *
  * @since 3.1.0
  * @access private
  *
  * @global WP_Admin_Bar $wp_admin_bar
  *
- * @return bool Whether the admin bar was successfully initialized.
+ * @return bool Liệu thanh quản trị đã được khởi tạo thành công hay không.
  */
 function _wp_admin_bar_init() {
 	global $wp_admin_bar;
@@ -27,17 +27,17 @@ function _wp_admin_bar_init() {
 		return false;
 	}
 
-	/* Load the admin bar class code ready for instantiation */
+	/* Tải mã lớp thanh quản trị sẵn sàng để khởi tạo */
 	require_once ABSPATH . WPINC . '/class-wp-admin-bar.php';
 
-	/* Instantiate the admin bar */
+	/* Khởi tạo thanh quản trị */
 
 	/**
-	 * Filters the admin bar class to instantiate.
+	 * Lọc lớp thanh quản trị để khởi tạo.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $wp_admin_bar_class Admin bar class to use. Default 'WP_Admin_Bar'.
+	 * @param string $wp_admin_bar_class Lớp thanh quản trị để sử dụng. Mặc định 'WP_Admin_Bar'.
 	 */
 	$admin_bar_class = apply_filters( 'wp_admin_bar_class', 'WP_Admin_Bar' );
 	if ( class_exists( $admin_bar_class ) ) {
@@ -53,20 +53,20 @@ function _wp_admin_bar_init() {
 }
 
 /**
- * Renders the admin bar to the page based on the $wp_admin_bar->menu member var.
+ * Render thanh quản trị vào trang dựa trên biến thành viên $wp_admin_bar->menu.
  *
- * This is called very early on the {@see 'wp_body_open'} action so that it will render
- * before anything else being added to the page body.
+ * Hàm này được gọi rất sớm trong action {@see 'wp_body_open'} để nó được render
+ * trước bất kỳ nội dung nào khác được thêm vào thân trang.
  *
- * For backward compatibility with themes not using the 'wp_body_open' action,
- * the function is also called late on {@see 'wp_footer'}.
+ * Để tương thích ngược với các theme không sử dụng action 'wp_body_open',
+ * hàm cũng được gọi muộn trong {@see 'wp_footer'}.
  *
- * It includes the {@see 'admin_bar_menu'} action which should be used to hook in and
- * add new menus to the admin bar. This also gives you access to the `$post` global,
- * among others.
+ * Hàm bao gồm action {@see 'admin_bar_menu'} được sử dụng để hook vào và
+ * thêm các menu mới cho thanh quản trị. Điều này cũng cho phép truy cập vào biến toàn cục `$post`,
+ * cùng nhiều biến khác.
  *
  * @since 3.1.0
- * @since 5.4.0 Called on 'wp_body_open' action first, with 'wp_footer' as a fallback.
+ * @since 5.4.0 Được gọi trong action 'wp_body_open' trước, với 'wp_footer' làm dự phòng.
  *
  * @global WP_Admin_Bar $wp_admin_bar
  */
@@ -83,21 +83,21 @@ function wp_admin_bar_render() {
 	}
 
 	/**
-	 * Loads all necessary admin bar items.
+	 * Tải tất cả các mục thanh quản trị cần thiết.
 	 *
-	 * This hook can add, remove, or manipulate admin bar items. The priority
-	 * determines the placement for new items, and changes to existing items
-	 * would require a high priority. To remove or manipulate existing nodes
-	 * without a specific priority, use `wp_before_admin_bar_render`.
+	 * Hook này có thể thêm, xóa, hoặc thao tác các mục thanh quản trị. Mức ưu tiên
+	 * xác định vị trí đặt cho các mục mới, và các thay đổi cho các mục hiện có
+	 * sẽ yêu cầu mức ưu tiên cao. Để xóa hoặc thao tác các nút hiện có
+	 * mà không cần mức ưu tiên cụ thể, hãy sử dụng `wp_before_admin_bar_render`.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance, passed by reference.
+	 * @param WP_Admin_Bar $wp_admin_bar Thực thể WP_Admin_Bar, truyền theo tham chiếu.
 	 */
 	do_action_ref_array( 'admin_bar_menu', array( &$wp_admin_bar ) );
 
 	/**
-	 * Fires before the admin bar is rendered.
+	 * Kích hoạt trước khi thanh quản trị được render.
 	 *
 	 * @since 3.1.0
 	 */
@@ -106,7 +106,7 @@ function wp_admin_bar_render() {
 	$wp_admin_bar->render();
 
 	/**
-	 * Fires after the admin bar is rendered.
+	 * Kích hoạt sau khi thanh quản trị được render.
 	 *
 	 * @since 3.1.0
 	 */
@@ -116,11 +116,11 @@ function wp_admin_bar_render() {
 }
 
 /**
- * Adds the WordPress logo menu.
+ * Thêm menu logo WordPress.
  *
  * @since 3.3.0
  *
- * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
+ * @param WP_Admin_Bar $wp_admin_bar Thực thể WP_Admin_Bar.
  */
 function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 	if ( current_user_can( 'read' ) ) {
@@ -146,7 +146,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 		),
 	);
 
-	// Set tabindex="0" to make sub menus accessible when no URL is available.
+	// Đặt tabindex="0" để làm cho các menu con có thể truy cập khi không có URL.
 	if ( ! $about_url ) {
 		$wp_logo_menu_args['meta'] = array(
 			'tabindex' => 0,
@@ -156,7 +156,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 	$wp_admin_bar->add_node( $wp_logo_menu_args );
 
 	if ( $about_url ) {
-		// Add "About WordPress" link.
+		// Thêm liên kết "Giới thiệu WordPress".
 		$wp_admin_bar->add_node(
 			array(
 				'parent' => 'wp-logo',
@@ -168,7 +168,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 	}
 
 	if ( $contribute_url ) {
-		// Add contribute link.
+		// Thêm liên kết đóng góp.
 		$wp_admin_bar->add_node(
 			array(
 				'parent' => 'wp-logo',
@@ -179,7 +179,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 		);
 	}
 
-	// Add WordPress.org link.
+	// Thêm liên kết WordPress.org.
 	$wp_admin_bar->add_node(
 		array(
 			'parent' => 'wp-logo-external',
@@ -189,7 +189,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 		)
 	);
 
-	// Add documentation link.
+	// Thêm liên kết tài liệu.
 	$wp_admin_bar->add_node(
 		array(
 			'parent' => 'wp-logo-external',
@@ -199,7 +199,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 		)
 	);
 
-	// Add learn link.
+	// Thêm liên kết học tập.
 	$wp_admin_bar->add_node(
 		array(
 			'parent' => 'wp-logo-external',
@@ -209,7 +209,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 		)
 	);
 
-	// Add forums link.
+	// Thêm liên kết diễn đàn.
 	$wp_admin_bar->add_node(
 		array(
 			'parent' => 'wp-logo-external',
@@ -219,7 +219,7 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 		)
 	);
 
-	// Add feedback link.
+	// Thêm liên kết phản hồi.
 	$wp_admin_bar->add_node(
 		array(
 			'parent' => 'wp-logo-external',
@@ -231,11 +231,11 @@ function wp_admin_bar_wp_menu( $wp_admin_bar ) {
 }
 
 /**
- * Adds the sidebar toggle button.
+ * Thêm nút chuyển đổi thanh bên.
  *
  * @since 3.8.0
  *
- * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
+ * @param WP_Admin_Bar $wp_admin_bar Thực thể WP_Admin_Bar.
  */
 function wp_admin_bar_sidebar_toggle( $wp_admin_bar ) {
 	if ( is_admin() ) {
@@ -253,11 +253,11 @@ function wp_admin_bar_sidebar_toggle( $wp_admin_bar ) {
 }
 
 /**
- * Adds the "My Account" item.
+ * Thêm mục "Tài khoản của tôi".
  *
  * @since 3.3.0
  *
- * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
+ * @param WP_Admin_Bar $wp_admin_bar Thực thể WP_Admin_Bar.
  */
 function wp_admin_bar_my_account_item( $wp_admin_bar ) {
 	$user_id      = get_current_user_id();
@@ -297,11 +297,11 @@ function wp_admin_bar_my_account_item( $wp_admin_bar ) {
 }
 
 /**
- * Adds the "My Account" submenu items.
+ * Thêm các mục menu con "Tài khoản của tôi".
  *
  * @since 3.1.0
  *
- * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
+ * @param WP_Admin_Bar $wp_admin_bar Thực thể WP_Admin_Bar.
  */
 function wp_admin_bar_my_account_menu( $wp_admin_bar ) {
 	$user_id      = get_current_user_id();
@@ -357,19 +357,19 @@ function wp_admin_bar_my_account_menu( $wp_admin_bar ) {
 }
 
 /**
- * Adds the "Site Name" menu.
+ * Thêm menu "Tên trang web".
  *
  * @since 3.3.0
  *
- * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
+ * @param WP_Admin_Bar $wp_admin_bar Thực thể WP_Admin_Bar.
  */
 function wp_admin_bar_site_menu( $wp_admin_bar ) {
-	// Don't show for logged out users.
+	// Không hiển thị cho người dùng chưa đăng nhập.
 	if ( ! is_user_logged_in() ) {
 		return;
 	}
 
-	// Show only when the user is a member of this site, or they're a super admin.
+	// Chỉ hiển thị khi người dùng là thành viên của trang web này, hoặc họ là quản trị viên tối cao.
 	if ( ! is_user_member_of_blog() && ! current_user_can( 'manage_network' ) ) {
 		return;
 	}
@@ -401,10 +401,10 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
 		)
 	);
 
-	// Create submenu items.
+	// Tạo các mục menu con.
 
 	if ( is_admin() ) {
-		// Add an option to visit the site.
+		// Thêm tùy chọn truy cập trang web.
 		$wp_admin_bar->add_node(
 			array(
 				'parent' => 'site-name',
@@ -425,7 +425,7 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
 			);
 		}
 	} elseif ( current_user_can( 'read' ) ) {
-		// We're on the front end, link to the Dashboard.
+		// Chúng ta đang ở giao diện, liên kết đến Bảng điều khiển.
 		$wp_admin_bar->add_node(
 			array(
 				'parent' => 'site-name',
@@ -435,10 +435,10 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
 			)
 		);
 
-		// Add the appearance submenu items.
+		// Thêm các mục menu con giao diện.
 		wp_admin_bar_appearance_menu( $wp_admin_bar );
 
-		// Add a Plugins link.
+		// Thêm liên kết Plugin.
 		if ( current_user_can( 'activate_plugins' ) ) {
 			$wp_admin_bar->add_node(
 				array(
@@ -453,25 +453,25 @@ function wp_admin_bar_site_menu( $wp_admin_bar ) {
 }
 
 /**
- * Adds the "Edit Site" link to the Toolbar.
+ * Thêm liên kết "Chỉnh sửa trang web" vào Thanh công cụ.
  *
  * @since 5.9.0
- * @since 6.3.0 Added `$_wp_current_template_id` global for editing of current template directly from the admin bar.
- * @since 6.6.0 Added the `canvas` query arg to the Site Editor link.
+ * @since 6.3.0 Thêm biến toàn cục `$_wp_current_template_id` để chỉnh sửa template hiện tại trực tiếp từ thanh quản trị.
+ * @since 6.6.0 Thêm tham số truy vấn `canvas` vào liên kết Trình soạn thảo trang web.
  *
  * @global string $_wp_current_template_id
  *
- * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
+ * @param WP_Admin_Bar $wp_admin_bar Thực thể WP_Admin_Bar.
  */
 function wp_admin_bar_edit_site_menu( $wp_admin_bar ) {
 	global $_wp_current_template_id;
 
-	// Don't show if a block theme is not activated.
+	// Không hiển thị nếu theme khối chưa được kích hoạt.
 	if ( ! wp_is_block_theme() ) {
 		return;
 	}
 
-	// Don't show for users who can't edit theme options or when in the admin.
+	// Không hiển thị cho người dùng không có quyền chỉnh sửa tùy chọn theme hoặc khi đang trong trang quản trị.
 	if ( ! current_user_can( 'edit_theme_options' ) || is_admin() ) {
 		return;
 	}
@@ -493,28 +493,28 @@ function wp_admin_bar_edit_site_menu( $wp_admin_bar ) {
 }
 
 /**
- * Adds the "Customize" link to the Toolbar.
+ * Thêm liên kết "Tùy chỉnh" vào Thanh công cụ.
  *
  * @since 4.3.0
  *
  * @global WP_Customize_Manager $wp_customize
  *
- * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
+ * @param WP_Admin_Bar $wp_admin_bar Thực thể WP_Admin_Bar.
  */
 function wp_admin_bar_customize_menu( $wp_admin_bar ) {
 	global $wp_customize;
 
-	// Don't show if a block theme is activated and no plugins use the customizer.
+	// Không hiển thị nếu theme khối được kích hoạt và không có plugin nào sử dụng tùy chỉnh.
 	if ( wp_is_block_theme() && ! has_action( 'customize_register' ) ) {
 		return;
 	}
 
-	// Don't show for users who can't access the customizer or when in the admin.
+	// Không hiển thị cho người dùng không thể truy cập tùy chỉnh hoặc khi đang trong trang quản trị.
 	if ( ! current_user_can( 'customize' ) || is_admin() ) {
 		return;
 	}
 
-	// Don't show if the user cannot edit a given customize_changeset post currently being previewed.
+	// Không hiển thị nếu người dùng không thể chỉnh sửa bài viết customize_changeset đang được xem trước.
 	if ( is_customize_preview() && $wp_customize->changeset_post_id()
 		&& ! current_user_can( get_post_type_object( 'customize_changeset' )->cap->edit_post, $wp_customize->changeset_post_id() )
 	) {
@@ -545,19 +545,19 @@ function wp_admin_bar_customize_menu( $wp_admin_bar ) {
 }
 
 /**
- * Adds the "My Sites/[Site Name]" menu and all submenus.
+ * Thêm menu "Trang web của tôi/[Tên trang web]" và tất cả các menu con.
  *
  * @since 3.1.0
  *
- * @param WP_Admin_Bar $wp_admin_bar The WP_Admin_Bar instance.
+ * @param WP_Admin_Bar $wp_admin_bar Thực thể WP_Admin_Bar.
  */
 function wp_admin_bar_my_sites_menu( $wp_admin_bar ) {
-	// Don't show for logged out users or single site mode.
+	// Không hiển thị cho người dùng chưa đăng nhập hoặc chế độ đơn trang web.
 	if ( ! is_user_logged_in() || ! is_multisite() ) {
 		return;
 	}
 
-	// Show only when the user has at least one site, or they're a super admin.
+	// Chỉ hiển thị khi người dùng có ít nhất một trang web, hoặc họ là quản trị viên tối cao.
 	if ( count( $wp_admin_bar->user->blogs ) < 1 && ! current_user_can( 'manage_network' ) ) {
 		return;
 	}

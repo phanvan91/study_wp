@@ -330,7 +330,7 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * > The system identifier is missing and the public identifier starts with…
+		 * > Định danh hệ thống bị thiếu và định danh công khai bắt đầu bằng…
 		 */
 		if (
 			$system_identifier_is_missing && (
@@ -343,12 +343,12 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * > Otherwise, if the DOCTYPE token matches one of the conditions in
-		 * > the following list, then set the Document to limited-quirks mode.
+		 * > Nếu không, nếu token DOCTYPE khớp với một trong các điều kiện trong
+		 * > danh sách sau, thì đặt Tài liệu sang chế độ limited-quirks.
 		 */
 
 		/*
-		 * > The public identifier starts with…
+		 * > Định danh công khai bắt đầu bằng…
 		 */
 		if (
 			str_starts_with( $public_identifier, '-//w3c//dtd xhtml 1.0 frameset//' ) ||
@@ -359,7 +359,7 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * > The system identifier is not missing and the public identifier starts with…
+		 * > Định danh hệ thống không bị thiếu và định danh công khai bắt đầu bằng…
 		 */
 		if (
 			! $system_identifier_is_missing && (
@@ -375,27 +375,27 @@ class WP_HTML_Doctype_Info {
 	}
 
 	/**
-	 * Creates a WP_HTML_Doctype_Info instance by parsing a raw DOCTYPE declaration token.
+	 * Tạo một instance WP_HTML_Doctype_Info bằng cách phân tích một token khai báo DOCTYPE thô.
 	 *
-	 * Use this method to parse a DOCTYPE declaration token and get access to its properties
-	 * via the returned WP_HTML_Doctype_Info class instance. The provided input must parse
-	 * properly as a DOCTYPE declaration, though it must not represent a valid DOCTYPE.
+	 * Sử dụng phương thức này để phân tích một token khai báo DOCTYPE và truy cập các thuộc tính
+	 * của nó thông qua instance lớp WP_HTML_Doctype_Info được trả về. Đầu vào được cung cấp phải
+	 * phân tích đúng như một khai báo DOCTYPE, mặc dù nó không nhất thiết phải đại diện cho một DOCTYPE hợp lệ.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
-	 *     // Normative HTML DOCTYPE declaration.
+	 *     // Khai báo DOCTYPE HTML chuẩn.
 	 *     $doctype = WP_HTML_Doctype_Info::from_doctype_token( '<!DOCTYPE html>' );
 	 *     'no-quirks' === $doctype->indicated_compatability_mode;
 	 *
-	 *     // A nonsensical DOCTYPE is still valid, and will indicate "quirks" mode.
+	 *     // Một DOCTYPE vô nghĩa vẫn hợp lệ và sẽ cho biết chế độ "quirks".
 	 *     $doctype = WP_HTML_Doctype_Info::from_doctype_token( '<!doctypeJSON SILLY "nonsense\'>' );
 	 *     'quirks' === $doctype->indicated_compatability_mode;
 	 *
-	 *     // Textual quirks present in raw HTML are handled appropriately.
+	 *     // Các đặc điểm văn bản trong HTML thô được xử lý phù hợp.
 	 *     $doctype = WP_HTML_Doctype_Info::from_doctype_token( "<!DOCTYPE\nhtml\n>" );
 	 *     'no-quirks' === $doctype->indicated_compatability_mode;
 	 *
-	 *     // Anything other than a proper DOCTYPE declaration token fails to parse.
+	 *     // Bất kỳ thứ gì khác ngoài token khai báo DOCTYPE đúng sẽ không phân tích được.
 	 *     null === WP_HTML_Doctype_Info::from_doctype_token( ' <!DOCTYPE>' );
 	 *     null === WP_HTML_Doctype_Info::from_doctype_token( '<!DOCTYPE ><p>' );
 	 *     null === WP_HTML_Doctype_Info::from_doctype_token( '<!TYPEDOC>' );
@@ -404,10 +404,10 @@ class WP_HTML_Doctype_Info {
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param string $doctype_html The complete raw DOCTYPE HTML string, e.g. `<!DOCTYPE html>`.
+	 * @param string $doctype_html Chuỗi HTML DOCTYPE thô hoàn chỉnh, ví dụ `<!DOCTYPE html>`.
 	 *
-	 * @return WP_HTML_Doctype_Info|null A WP_HTML_Doctype_Info instance will be returned if the
-	 *                                   provided DOCTYPE HTML is a valid DOCTYPE. Otherwise, null.
+	 * @return WP_HTML_Doctype_Info|null Một instance WP_HTML_Doctype_Info sẽ được trả về nếu
+	 *                                   HTML DOCTYPE được cung cấp là một DOCTYPE hợp lệ. Ngược lại, null.
 	 */
 	public static function from_doctype_token( string $doctype_html ): ?self {
 		$doctype_name      = null;
@@ -417,17 +417,17 @@ class WP_HTML_Doctype_Info {
 		$end = strlen( $doctype_html ) - 1;
 
 		/*
-		 * This parser combines the rules for parsing DOCTYPE tokens found in the HTML
-		 * specification for the DOCTYPE related tokenizer states.
+		 * Bộ phân tích này kết hợp các quy tắc phân tích token DOCTYPE được tìm thấy trong
+		 * đặc tả HTML cho các trạng thái bộ phân tích token liên quan đến DOCTYPE.
 		 *
 		 * @see https://html.spec.whatwg.org/#doctype-state
 		 */
 
 		/*
-		 * - Valid DOCTYPE HTML token must be at least `<!DOCTYPE>` assuming a complete token not
-		 *   ending in end-of-file.
-		 * - It must start with an ASCII case-insensitive match for `<!DOCTYPE`.
-		 * - The only occurrence of `>` must be the final byte in the HTML string.
+		 * - Token HTML DOCTYPE hợp lệ phải có ít nhất `<!DOCTYPE>` giả sử một token hoàn chỉnh
+		 *   không kết thúc bằng end-of-file.
+		 * - Nó phải bắt đầu bằng một khớp không phân biệt chữ hoa chữ thường ASCII cho `<!DOCTYPE`.
+		 * - Lần xuất hiện duy nhất của `>` phải là byte cuối cùng trong chuỗi HTML.
 		 */
 		if (
 			$end < 9 ||
@@ -437,13 +437,13 @@ class WP_HTML_Doctype_Info {
 		}
 
 		$at = 9;
-		// Is there one and only one `>`?
+		// Có đúng một và chỉ một `>` không?
 		if ( '>' !== $doctype_html[ $end ] || ( strcspn( $doctype_html, '>', $at ) + $at ) < $end ) {
 			return null;
 		}
 
 		/*
-		 * Perform newline normalization and ensure the $end value is correct after normalization.
+		 * Thực hiện chuẩn hóa ký tự xuống dòng và đảm bảo giá trị $end là đúng sau khi chuẩn hóa.
 		 *
 		 * @see https://html.spec.whatwg.org/#preprocessing-the-input-stream
 		 * @see https://infra.spec.whatwg.org/#normalize-newlines
@@ -453,27 +453,27 @@ class WP_HTML_Doctype_Info {
 		$end          = strlen( $doctype_html ) - 1;
 
 		/*
-		 * In this state, the doctype token has been found and its "content" optionally including the
-		 * name, public identifier, and system identifier is between the current position and the end.
+		 * Trong trạng thái này, token doctype đã được tìm thấy và "nội dung" của nó tùy chọn bao gồm
+		 * tên, định danh công khai, và định danh hệ thống nằm giữa vị trí hiện tại và cuối.
 		 *
-		 *     "<!DOCTYPE...declaration...>"
-		 *               ╰─ $at           ╰─ $end
+		 *     "<!DOCTYPE...khai báo...>"
+		 *               ╰─ $at        ╰─ $end
 		 *
-		 * It's also possible that the declaration part is empty.
+		 * Cũng có thể phần khai báo là rỗng.
 		 *
 		 *               ╭─ $at
 		 *     "<!DOCTYPE>"
 		 *               ╰─ $end
 		 *
-		 * Rules for parsing ">" which terminates the DOCTYPE do not need to be considered as they
-		 * have been handled above in the condition that the provided DOCTYPE HTML must contain
-		 * exactly one ">" character in the final position.
+		 * Các quy tắc phân tích ">" kết thúc DOCTYPE không cần được xem xét vì chúng
+		 * đã được xử lý ở trên trong điều kiện rằng HTML DOCTYPE được cung cấp phải chứa
+		 * đúng một ký tự ">" ở vị trí cuối cùng.
 		 */
 
 		/*
 		 *
-		 * Parsing effectively begins in "Before DOCTYPE name state". Ignore whitespace and
-		 * proceed to the next state.
+		 * Quá trình phân tích thực tế bắt đầu ở "Trạng thái trước tên DOCTYPE". Bỏ qua khoảng trắng và
+		 * tiến đến trạng thái tiếp theo.
 		 *
 		 * @see https://html.spec.whatwg.org/#before-doctype-name-state
 		 */
@@ -493,10 +493,10 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * "After DOCTYPE name state"
+		 * "Trạng thái sau tên DOCTYPE"
 		 *
-		 * Find a case-insensitive match for "PUBLIC" or "SYSTEM" at this point.
-		 * Otherwise, set force-quirks and enter bogus DOCTYPE state (skip the rest of the doctype).
+		 * Tìm một khớp không phân biệt chữ hoa chữ thường cho "PUBLIC" hoặc "SYSTEM" tại điểm này.
+		 * Nếu không, đặt force-quirks và vào trạng thái DOCTYPE giả (bỏ qua phần còn lại của doctype).
 		 *
 		 * @see https://html.spec.whatwg.org/#after-doctype-name-state
 		 */
@@ -505,9 +505,9 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * > If the six characters starting from the current input character are an ASCII
-		 * > case-insensitive match for the word "PUBLIC", then consume those characters
-		 * > and switch to the after DOCTYPE public keyword state.
+		 * > Nếu sáu ký tự bắt đầu từ ký tự đầu vào hiện tại là một khớp
+		 * > không phân biệt chữ hoa chữ thường ASCII cho từ "PUBLIC", thì tiêu thụ các ký tự đó
+		 * > và chuyển sang trạng thái sau từ khóa PUBLIC của DOCTYPE.
 		 */
 		if ( 0 === substr_compare( $doctype_html, 'PUBLIC', $at, 6, true ) ) {
 			$at += 6;
@@ -519,9 +519,9 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * > Otherwise, if the six characters starting from the current input character are an ASCII
-		 * > case-insensitive match for the word "SYSTEM", then consume those characters and switch
-		 * > to the after DOCTYPE system keyword state.
+		 * > Nếu không, nếu sáu ký tự bắt đầu từ ký tự đầu vào hiện tại là một khớp
+		 * > không phân biệt chữ hoa chữ thường ASCII cho từ "SYSTEM", thì tiêu thụ các ký tự đó
+		 * > và chuyển sang trạng thái sau từ khóa SYSTEM của DOCTYPE.
 		 */
 		if ( 0 === substr_compare( $doctype_html, 'SYSTEM', $at, 6, true ) ) {
 			$at += 6;
@@ -533,17 +533,17 @@ class WP_HTML_Doctype_Info {
 		}
 
 		/*
-		 * > Otherwise, this is an invalid-character-sequence-after-doctype-name parse error.
-		 * > Set the current DOCTYPE token's force-quirks flag to on. Reconsume in the bogus
-		 * > DOCTYPE state.
+		 * > Nếu không, đây là lỗi phân tích chuỗi-ký-tự-không-hợp-lệ-sau-tên-doctype.
+		 * > Đặt cờ force-quirks của token DOCTYPE hiện tại thành bật. Tiêu thụ lại trong trạng thái
+		 * > DOCTYPE giả.
 		 */
 		return new self( $doctype_name, $doctype_public_id, $doctype_system_id, true );
 
 		parse_doctype_public_identifier:
 		/*
-		 * The parser should enter "DOCTYPE public identifier (double-quoted) state" or
-		 * "DOCTYPE public identifier (single-quoted) state" by finding one of the valid quotes.
-		 * Anything else forces quirks mode and ignores the rest of the contents.
+		 * Bộ phân tích nên vào "trạng thái định danh công khai DOCTYPE (nháy kép)" hoặc
+		 * "trạng thái định danh công khai DOCTYPE (nháy đơn)" bằng cách tìm một trong các dấu nháy hợp lệ.
+		 * Bất kỳ thứ gì khác sẽ buộc chế độ quirks và bỏ qua phần còn lại của nội dung.
 		 *
 		 * @see https://html.spec.whatwg.org/#doctype-public-identifier-(double-quoted)-state
 		 * @see https://html.spec.whatwg.org/#doctype-public-identifier-(single-quoted)-state
@@ -551,8 +551,8 @@ class WP_HTML_Doctype_Info {
 		$closer_quote = $doctype_html[ $at ];
 
 		/*
-		 * > This is a missing-quote-before-doctype-public-identifier parse error. Set the
-		 * > current DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
+		 * > Đây là lỗi phân tích thiếu-dấu-nháy-trước-định-danh-công-khai-doctype. Đặt cờ
+		 * > force-quirks của token DOCTYPE hiện tại thành bật. Tiêu thụ lại trong trạng thái DOCTYPE giả.
 		 */
 		if ( '"' !== $closer_quote && "'" !== $closer_quote ) {
 			return new self( $doctype_name, $doctype_public_id, $doctype_system_id, true );
@@ -571,9 +571,9 @@ class WP_HTML_Doctype_Info {
 		++$at;
 
 		/*
-		 * "Between DOCTYPE public and system identifiers state"
+		 * "Trạng thái giữa định danh công khai và định danh hệ thống của DOCTYPE"
 		 *
-		 * Advance through whitespace between public and system identifiers.
+		 * Di chuyển qua khoảng trắng giữa định danh công khai và định danh hệ thống.
 		 *
 		 * @see https://html.spec.whatwg.org/#between-doctype-public-and-system-identifiers-state
 		 */
@@ -584,9 +584,9 @@ class WP_HTML_Doctype_Info {
 
 		parse_doctype_system_identifier:
 		/*
-		 * The parser should enter "DOCTYPE system identifier (double-quoted) state" or
-		 * "DOCTYPE system identifier (single-quoted) state" by finding one of the valid quotes.
-		 * Anything else forces quirks mode and ignores the rest of the contents.
+		 * Bộ phân tích nên vào "trạng thái định danh hệ thống DOCTYPE (nháy kép)" hoặc
+		 * "trạng thái định danh hệ thống DOCTYPE (nháy đơn)" bằng cách tìm một trong các dấu nháy hợp lệ.
+		 * Bất kỳ thứ gì khác sẽ buộc chế độ quirks và bỏ qua phần còn lại của nội dung.
 		 *
 		 * @see https://html.spec.whatwg.org/#doctype-system-identifier-(double-quoted)-state
 		 * @see https://html.spec.whatwg.org/#doctype-system-identifier-(single-quoted)-state
@@ -594,8 +594,8 @@ class WP_HTML_Doctype_Info {
 		$closer_quote = $doctype_html[ $at ];
 
 		/*
-		 * > This is a missing-quote-before-doctype-system-identifier parse error. Set the
-		 * > current DOCTYPE token's force-quirks flag to on. Reconsume in the bogus DOCTYPE state.
+		 * > Đây là lỗi phân tích thiếu-dấu-nháy-trước-định-danh-hệ-thống-doctype. Đặt cờ
+		 * > force-quirks của token DOCTYPE hiện tại thành bật. Tiêu thụ lại trong trạng thái DOCTYPE giả.
 		 */
 		if ( '"' !== $closer_quote && "'" !== $closer_quote ) {
 			return new self( $doctype_name, $doctype_public_id, $doctype_system_id, true );

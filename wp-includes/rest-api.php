@@ -691,13 +691,13 @@ function rest_ensure_response( $response ) {
 }
 
 /**
- * Handles _deprecated_function() errors.
+ * Xử lý các lỗi _deprecated_function().
  *
  * @since 4.4.0
  *
- * @param string $function_name The function that was called.
- * @param string $replacement   The function that should have been called.
- * @param string $version       Version.
+ * @param string $function_name Hàm đã được gọi.
+ * @param string $replacement   Hàm nên được gọi thay thế.
+ * @param string $version       Phiên bản.
  */
 function rest_handle_deprecated_function( $function_name, $replacement, $version ) {
 	if ( ! WP_DEBUG || headers_sent() ) {
@@ -715,13 +715,13 @@ function rest_handle_deprecated_function( $function_name, $replacement, $version
 }
 
 /**
- * Handles _deprecated_argument() errors.
+ * Xử lý các lỗi _deprecated_argument().
  *
  * @since 4.4.0
  *
- * @param string $function_name The function that was called.
- * @param string $message       A message regarding the change.
- * @param string $version       Version.
+ * @param string $function_name Hàm đã được gọi.
+ * @param string $message       Thông điệp về sự thay đổi.
+ * @param string $version       Phiên bản.
  */
 function rest_handle_deprecated_argument( $function_name, $message, $version ) {
 	if ( ! WP_DEBUG || headers_sent() ) {
@@ -739,13 +739,13 @@ function rest_handle_deprecated_argument( $function_name, $message, $version ) {
 }
 
 /**
- * Handles _doing_it_wrong errors.
+ * Xử lý các lỗi _doing_it_wrong.
  *
  * @since 5.5.0
  *
- * @param string      $function_name The function that was called.
- * @param string      $message       A message explaining what has been done incorrectly.
- * @param string|null $version       The version of WordPress where the message was added.
+ * @param string      $function_name Hàm đã được gọi.
+ * @param string      $message       Thông điệp giải thích những gì đã được thực hiện không đúng.
+ * @param string|null $version       Phiên bản WordPress khi thông điệp được thêm vào.
  */
 function rest_handle_doing_it_wrong( $function_name, $message, $version ) {
 	if ( ! WP_DEBUG || headers_sent() ) {
@@ -766,18 +766,18 @@ function rest_handle_doing_it_wrong( $function_name, $message, $version ) {
 }
 
 /**
- * Sends Cross-Origin Resource Sharing headers with API requests.
+ * Gửi header Chia sẻ Tài nguyên Đa Nguồn gốc (CORS) cùng với các yêu cầu API.
  *
  * @since 4.4.0
  *
- * @param mixed $value Response data.
- * @return mixed Response data.
+ * @param mixed $value Dữ liệu phản hồi.
+ * @return mixed Dữ liệu phản hồi.
  */
 function rest_send_cors_headers( $value ) {
 	$origin = get_http_origin();
 
 	if ( $origin ) {
-		// Requests from file:// and data: URLs send "Origin: null".
+		// Các yêu cầu từ URL file:// và data: gửi "Origin: null".
 		if ( 'null' !== $origin ) {
 			$origin = sanitize_url( $origin );
 		}
@@ -793,17 +793,17 @@ function rest_send_cors_headers( $value ) {
 }
 
 /**
- * Handles OPTIONS requests for the server.
+ * Xử lý các yêu cầu OPTIONS cho máy chủ.
  *
- * This is handled outside of the server code, as it doesn't obey normal route
- * mapping.
+ * Điều này được xử lý bên ngoài mã máy chủ, vì nó không tuân theo ánh xạ
+ * route thông thường.
  *
  * @since 4.4.0
  *
- * @param mixed           $response Current response, either response or `null` to indicate pass-through.
- * @param WP_REST_Server  $handler  ResponseHandler instance (usually WP_REST_Server).
- * @param WP_REST_Request $request  The request that was used to make current response.
- * @return WP_REST_Response Modified response, either response or `null` to indicate pass-through.
+ * @param mixed           $response Phản hồi hiện tại, có thể là phản hồi hoặc `null` để cho biết chuyển tiếp.
+ * @param WP_REST_Server  $handler  Thể hiện ResponseHandler (thường là WP_REST_Server).
+ * @param WP_REST_Request $request  Yêu cầu đã được sử dụng để tạo phản hồi hiện tại.
+ * @return WP_REST_Response Phản hồi đã sửa đổi, có thể là phản hồi hoặc `null` để cho biết chuyển tiếp.
  */
 function rest_handle_options_request( $response, $handler, $request ) {
 	if ( ! empty( $response ) || $request->get_method() !== 'OPTIONS' ) {
@@ -842,14 +842,14 @@ function rest_handle_options_request( $response, $handler, $request ) {
 }
 
 /**
- * Sends the "Allow" header to state all methods that can be sent to the current route.
+ * Gửi header "Allow" để nêu tất cả các phương thức có thể gửi đến route hiện tại.
  *
  * @since 4.4.0
  *
- * @param WP_REST_Response $response Current response being served.
- * @param WP_REST_Server   $server   ResponseHandler instance (usually WP_REST_Server).
- * @param WP_REST_Request  $request  The request that was used to make current response.
- * @return WP_REST_Response Response to be served, with "Allow" header if route has allowed methods.
+ * @param WP_REST_Response $response Phản hồi hiện tại đang được phục vụ.
+ * @param WP_REST_Server   $server   Thể hiện ResponseHandler (thường là WP_REST_Server).
+ * @param WP_REST_Request  $request  Yêu cầu đã được sử dụng để tạo phản hồi hiện tại.
+ * @return WP_REST_Response Phản hồi sẽ được phục vụ, với header "Allow" nếu route có các phương thức được phép.
  */
 function rest_send_allow_header( $response, $server, $request ) {
 	$matched_route = $response->get_matched_route();
@@ -862,7 +862,7 @@ function rest_send_allow_header( $response, $server, $request ) {
 
 	$allowed_methods = array();
 
-	// Get the allowed methods across the routes.
+	// Lấy các phương thức được phép trên tất cả các route.
 	foreach ( $routes[ $matched_route ] as $_handler ) {
 		foreach ( $_handler['methods'] as $handler_method => $value ) {
 
@@ -877,7 +877,7 @@ function rest_send_allow_header( $response, $server, $request ) {
 		}
 	}
 
-	// Strip out all the methods that are not allowed (false values).
+	// Loại bỏ tất cả các phương thức không được phép (giá trị false).
 	$allowed_methods = array_filter( $allowed_methods );
 
 	if ( $allowed_methods ) {
@@ -888,14 +888,14 @@ function rest_send_allow_header( $response, $server, $request ) {
 }
 
 /**
- * Recursively computes the intersection of arrays using keys for comparison.
+ * Tính toán đệ quy phần giao của các mảng sử dụng khóa để so sánh.
  *
  * @since 5.3.0
  *
- * @param array $array1 The array with master keys to check.
- * @param array $array2 An array to compare keys against.
- * @return array An associative array containing all the entries of array1 which have keys
- *               that are present in all arguments.
+ * @param array $array1 Mảng với các khóa chính để kiểm tra.
+ * @param array $array2 Mảng để so sánh khóa.
+ * @return array Mảng kết hợp chứa tất cả các mục của array1 có khóa
+ *               xuất hiện trong tất cả các tham số.
  */
 function _rest_array_intersect_key_recursive( $array1, $array2 ) {
 	$array1 = array_intersect_key( $array1, $array2 );
@@ -908,14 +908,14 @@ function _rest_array_intersect_key_recursive( $array1, $array2 ) {
 }
 
 /**
- * Filters the REST API response to include only an allow-listed set of response object fields.
+ * Lọc phản hồi REST API để chỉ bao gồm một tập hợp các trường đối tượng phản hồi trong danh sách cho phép.
  *
  * @since 4.8.0
  *
- * @param WP_REST_Response $response Current response being served.
- * @param WP_REST_Server   $server   ResponseHandler instance (usually WP_REST_Server).
- * @param WP_REST_Request  $request  The request that was used to make current response.
- * @return WP_REST_Response Response to be served, trimmed down to contain a subset of fields.
+ * @param WP_REST_Response $response Phản hồi hiện tại đang được phục vụ.
+ * @param WP_REST_Server   $server   Thể hiện ResponseHandler (thường là WP_REST_Server).
+ * @param WP_REST_Request  $request  Yêu cầu đã được sử dụng để tạo phản hồi hiện tại.
+ * @return WP_REST_Response Phản hồi sẽ được phục vụ, đã được cắt giảm chỉ chứa một tập con các trường.
  */
 function rest_filter_response_fields( $response, $server, $request ) {
 	if ( ! isset( $request['_fields'] ) || $response->is_error() ) {
@@ -930,10 +930,10 @@ function rest_filter_response_fields( $response, $server, $request ) {
 		return $response;
 	}
 
-	// Trim off outside whitespace from the comma delimited list.
+	// Loại bỏ khoảng trắng bên ngoài từ danh sách phân cách bằng dấu phẩy.
 	$fields = array_map( 'trim', $fields );
 
-	// Create nested array of accepted field hierarchy.
+	// Tạo mảng lồng nhau của hệ thống phân cấp trường được chấp nhận.
 	$fields_as_keyed = array();
 	foreach ( $fields as $field ) {
 		$parts = explode( '.', $field );
@@ -941,7 +941,7 @@ function rest_filter_response_fields( $response, $server, $request ) {
 		while ( count( $parts ) > 1 ) {
 			$next = array_shift( $parts );
 			if ( isset( $ref[ $next ] ) && true === $ref[ $next ] ) {
-				// Skip any sub-properties if their parent prop is already marked for inclusion.
+				// Bỏ qua các thuộc tính con nếu thuộc tính cha đã được đánh dấu để bao gồm.
 				break 2;
 			}
 			$ref[ $next ] = isset( $ref[ $next ] ) ? $ref[ $next ] : array();
@@ -966,20 +966,20 @@ function rest_filter_response_fields( $response, $server, $request ) {
 }
 
 /**
- * Given an array of fields to include in a response, some of which may be
- * `nested.fields`, determine whether the provided field should be included
- * in the response body.
+ * Với một mảng các trường cần bao gồm trong phản hồi, một số trong đó có thể là
+ * `trường.lồng_nhau`, xác định xem trường được cung cấp có nên được bao gồm
+ * trong phần thân phản hồi hay không.
  *
- * If a parent field is passed in, the presence of any nested field within
- * that parent will cause the method to return `true`. For example "title"
- * will return true if any of `title`, `title.raw` or `title.rendered` is
- * provided.
+ * Nếu một trường cha được truyền vào, sự hiện diện của bất kỳ trường lồng nhau nào trong
+ * trường cha đó sẽ khiến phương thức trả về `true`. Ví dụ "title"
+ * sẽ trả về true nếu bất kỳ `title`, `title.raw` hoặc `title.rendered` nào
+ * được cung cấp.
  *
  * @since 5.3.0
  *
- * @param string $field  A field to test for inclusion in the response body.
- * @param array  $fields An array of string fields supported by the endpoint.
- * @return bool Whether to include the field or not.
+ * @param string $field  Một trường để kiểm tra có bao gồm trong phần thân phản hồi hay không.
+ * @param array  $fields Mảng các trường chuỗi được hỗ trợ bởi endpoint.
+ * @return bool Có bao gồm trường hay không.
  */
 function rest_is_field_included( $field, $fields ) {
 	if ( in_array( $field, $fields, true ) ) {
@@ -988,15 +988,15 @@ function rest_is_field_included( $field, $fields ) {
 
 	foreach ( $fields as $accepted_field ) {
 		/*
-		 * Check to see if $field is the parent of any item in $fields.
-		 * A field "parent" should be accepted if "parent.child" is accepted.
+		 * Kiểm tra xem $field có phải là trường cha của bất kỳ mục nào trong $fields không.
+		 * Trường "parent" nên được chấp nhận nếu "parent.child" được chấp nhận.
 		 */
 		if ( str_starts_with( $accepted_field, "$field." ) ) {
 			return true;
 		}
 		/*
-		 * Conversely, if "parent" is accepted, all "parent.child" fields
-		 * should also be accepted.
+		 * Ngược lại, nếu "parent" được chấp nhận, tất cả các trường "parent.child"
+		 * cũng nên được chấp nhận.
 		 */
 		if ( str_starts_with( $field, "$accepted_field." ) ) {
 			return true;
@@ -1007,7 +1007,7 @@ function rest_is_field_included( $field, $fields ) {
 }
 
 /**
- * Adds the REST API URL to the WP RSD endpoint.
+ * Thêm URL REST API vào endpoint WP RSD.
  *
  * @since 4.4.0
  *
@@ -1025,7 +1025,7 @@ function rest_output_rsd() {
 }
 
 /**
- * Outputs the REST API link tag into page header.
+ * Xuất thẻ liên kết REST API vào header trang.
  *
  * @since 4.4.0
  *
@@ -1052,7 +1052,7 @@ function rest_output_link_wp_head() {
 }
 
 /**
- * Sends a Link header for the REST API.
+ * Gửi header Link cho REST API.
  *
  * @since 4.4.0
  */
@@ -1084,19 +1084,19 @@ function rest_output_link_header() {
 }
 
 /**
- * Checks for errors when using cookie-based authentication.
+ * Kiểm tra lỗi khi sử dụng xác thực dựa trên cookie.
  *
- * WordPress' built-in cookie authentication is always active
- * for logged in users. However, the API has to check nonces
- * for each request to ensure users are not vulnerable to CSRF.
+ * Xác thực cookie tích hợp của WordPress luôn hoạt động
+ * cho người dùng đã đăng nhập. Tuy nhiên, API phải kiểm tra nonce
+ * cho mỗi yêu cầu để đảm bảo người dùng không bị tấn công CSRF.
  *
  * @since 4.4.0
  *
  * @global mixed          $wp_rest_auth_cookie
  *
- * @param WP_Error|mixed $result Error from another authentication handler,
- *                               null if we should handle it, or another value if not.
- * @return WP_Error|mixed|bool WP_Error if the cookie is invalid, the $result, otherwise true.
+ * @param WP_Error|mixed $result Lỗi từ trình xử lý xác thực khác,
+ *                               null nếu chúng ta nên xử lý, hoặc giá trị khác nếu không.
+ * @return WP_Error|mixed|bool WP_Error nếu cookie không hợp lệ, $result, hoặc true.
  */
 function rest_cookie_check_errors( $result ) {
 	if ( ! empty( $result ) ) {
@@ -1106,15 +1106,15 @@ function rest_cookie_check_errors( $result ) {
 	global $wp_rest_auth_cookie;
 
 	/*
-	 * Is cookie authentication being used? (If we get an auth
-	 * error, but we're still logged in, another authentication
-	 * must have been used).
+	 * Xác thực cookie có đang được sử dụng không? (Nếu chúng ta nhận được lỗi
+	 * xác thực, nhưng vẫn đang đăng nhập, thì một phương thức xác thực
+	 * khác phải đã được sử dụng).
 	 */
 	if ( true !== $wp_rest_auth_cookie && is_user_logged_in() ) {
 		return $result;
 	}
 
-	// Determine if there is a nonce.
+	// Xác định xem có nonce hay không.
 	$nonce = null;
 
 	if ( isset( $_REQUEST['_wpnonce'] ) ) {
@@ -1124,12 +1124,12 @@ function rest_cookie_check_errors( $result ) {
 	}
 
 	if ( null === $nonce ) {
-		// No nonce at all, so act as if it's an unauthenticated request.
+		// Hoàn toàn không có nonce, nên xử lý như một yêu cầu chưa xác thực.
 		wp_set_current_user( 0 );
 		return true;
 	}
 
-	// Check the nonce.
+	// Kiểm tra nonce.
 	$result = wp_verify_nonce( $nonce, 'wp_rest' );
 
 	if ( ! $result ) {
@@ -1137,16 +1137,16 @@ function rest_cookie_check_errors( $result ) {
 		return new WP_Error( 'rest_cookie_invalid_nonce', __( 'Cookie check failed' ), array( 'status' => 403 ) );
 	}
 
-	// Send a refreshed nonce in header.
+	// Gửi nonce đã làm mới trong header.
 	rest_get_server()->send_header( 'X-WP-Nonce', wp_create_nonce( 'wp_rest' ) );
 
 	return true;
 }
 
 /**
- * Collects cookie authentication status.
+ * Thu thập trạng thái xác thực cookie.
  *
- * Collects errors from wp_validate_auth_cookie for use by rest_cookie_check_errors.
+ * Thu thập các lỗi từ wp_validate_auth_cookie để sử dụng bởi rest_cookie_check_errors.
  *
  * @since 4.4.0
  *
@@ -1167,16 +1167,16 @@ function rest_cookie_collect_status() {
 }
 
 /**
- * Collects the status of authenticating with an application password.
+ * Thu thập trạng thái xác thực bằng mật khẩu ứng dụng.
  *
  * @since 5.6.0
- * @since 5.7.0 Added the `$app_password` parameter.
+ * @since 5.7.0 Thêm tham số `$app_password`.
  *
  * @global WP_User|WP_Error|null $wp_rest_application_password_status
  * @global string|null $wp_rest_application_password_uuid
  *
- * @param WP_Error $user_or_error The authenticated user or error instance.
- * @param array    $app_password  The Application Password used to authenticate.
+ * @param WP_Error $user_or_error Người dùng đã xác thực hoặc thể hiện lỗi.
+ * @param array    $app_password  Mật khẩu Ứng dụng được sử dụng để xác thực.
  */
 function rest_application_password_collect_status( $user_or_error, $app_password = array() ) {
 	global $wp_rest_application_password_status, $wp_rest_application_password_uuid;
@@ -1191,13 +1191,13 @@ function rest_application_password_collect_status( $user_or_error, $app_password
 }
 
 /**
- * Gets the Application Password used for authenticating the request.
+ * Lấy Mật khẩu Ứng dụng được sử dụng để xác thực yêu cầu.
  *
  * @since 5.7.0
  *
  * @global string|null $wp_rest_application_password_uuid
  *
- * @return string|null The Application Password UUID, or null if Application Passwords was not used.
+ * @return string|null UUID của Mật khẩu Ứng dụng, hoặc null nếu Mật khẩu Ứng dụng không được sử dụng.
  */
 function rest_get_authenticated_app_password() {
 	global $wp_rest_application_password_uuid;
@@ -1206,15 +1206,15 @@ function rest_get_authenticated_app_password() {
 }
 
 /**
- * Checks for errors when using application password-based authentication.
+ * Kiểm tra lỗi khi sử dụng xác thực dựa trên mật khẩu ứng dụng.
  *
  * @since 5.6.0
  *
  * @global WP_User|WP_Error|null $wp_rest_application_password_status
  *
- * @param WP_Error|null|true $result Error from another authentication handler,
- *                                   null if we should handle it, or another value if not.
- * @return WP_Error|null|true WP_Error if the application password is invalid, the $result, otherwise true.
+ * @param WP_Error|null|true $result Lỗi từ trình xử lý xác thực khác,
+ *                                   null nếu chúng ta nên xử lý, hoặc giá trị khác nếu không.
+ * @return WP_Error|null|true WP_Error nếu mật khẩu ứng dụng không hợp lệ, $result, hoặc true.
  */
 function rest_application_password_check_errors( $result ) {
 	global $wp_rest_application_password_status;
@@ -1243,11 +1243,11 @@ function rest_application_password_check_errors( $result ) {
 }
 
 /**
- * Adds Application Passwords info to the REST API index.
+ * Thêm thông tin Mật khẩu Ứng dụng vào chỉ mục REST API.
  *
  * @since 5.6.0
  *
- * @param WP_REST_Response $response The index response object.
+ * @param WP_REST_Response $response Đối tượng phản hồi chỉ mục.
  * @return WP_REST_Response
  */
 function rest_add_application_passwords_to_index( $response ) {
@@ -1265,15 +1265,15 @@ function rest_add_application_passwords_to_index( $response ) {
 }
 
 /**
- * Retrieves the avatar URLs in various sizes.
+ * Lấy các URL ảnh đại diện ở nhiều kích thước khác nhau.
  *
  * @since 4.7.0
  *
  * @see get_avatar_url()
  *
- * @param mixed $id_or_email The avatar to retrieve a URL for. Accepts a user ID, Gravatar MD5 hash,
- *                           user email, WP_User object, WP_Post object, or WP_Comment object.
- * @return (string|false)[] Avatar URLs keyed by size. Each value can be a URL string or boolean false.
+ * @param mixed $id_or_email Ảnh đại diện cần lấy URL. Chấp nhận ID người dùng, mã MD5 Gravatar,
+ *                           email người dùng, đối tượng WP_User, đối tượng WP_Post, hoặc đối tượng WP_Comment.
+ * @return (string|false)[] Các URL ảnh đại diện được đánh khóa theo kích thước. Mỗi giá trị có thể là chuỗi URL hoặc boolean false.
  */
 function rest_get_avatar_urls( $id_or_email ) {
 	$avatar_sizes = rest_get_avatar_sizes();
@@ -1287,39 +1287,39 @@ function rest_get_avatar_urls( $id_or_email ) {
 }
 
 /**
- * Retrieves the pixel sizes for avatars.
+ * Lấy các kích thước pixel cho ảnh đại diện.
  *
  * @since 4.7.0
  *
- * @return int[] List of pixel sizes for avatars. Default `[ 24, 48, 96 ]`.
+ * @return int[] Danh sách kích thước pixel cho ảnh đại diện. Mặc định `[ 24, 48, 96 ]`.
  */
 function rest_get_avatar_sizes() {
 	/**
-	 * Filters the REST avatar sizes.
+	 * Lọc các kích thước ảnh đại diện REST.
 	 *
-	 * Use this filter to adjust the array of sizes returned by the
-	 * `rest_get_avatar_sizes` function.
+	 * Sử dụng bộ lọc này để điều chỉnh mảng kích thước được trả về bởi
+	 * hàm `rest_get_avatar_sizes`.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param int[] $sizes An array of int values that are the pixel sizes for avatars.
-	 *                     Default `[ 24, 48, 96 ]`.
+	 * @param int[] $sizes Mảng các giá trị int là kích thước pixel cho ảnh đại diện.
+	 *                     Mặc định `[ 24, 48, 96 ]`.
 	 */
 	return apply_filters( 'rest_avatar_sizes', array( 24, 48, 96 ) );
 }
 
 /**
- * Parses an RFC3339 time into a Unix timestamp.
+ * Phân tích thời gian RFC3339 thành dấu thời gian Unix.
  *
- * Explicitly check for `false` to detect failure, as zero is a valid return
- * value on success.
+ * Kiểm tra rõ ràng `false` để phát hiện lỗi, vì zero là giá trị trả về
+ * hợp lệ khi thành công.
  *
  * @since 4.4.0
  *
- * @param string $date      RFC3339 timestamp.
- * @param bool   $force_utc Optional. Whether to force UTC timezone instead of using
- *                          the timestamp's timezone. Default false.
- * @return int|false Unix timestamp on success, false on failure.
+ * @param string $date      Dấu thời gian RFC3339.
+ * @param bool   $force_utc Tùy chọn. Có buộc sử dụng múi giờ UTC thay vì sử dụng
+ *                          múi giờ của dấu thời gian hay không. Mặc định false.
+ * @return int|false Dấu thời gian Unix khi thành công, false khi thất bại.
  */
 function rest_parse_date( $date, $force_utc = false ) {
 	if ( $force_utc ) {
@@ -1336,12 +1336,12 @@ function rest_parse_date( $date, $force_utc = false ) {
 }
 
 /**
- * Parses a 3 or 6 digit hex color (with #).
+ * Phân tích mã màu hex 3 hoặc 6 ký tự (có #).
  *
  * @since 5.4.0
  *
- * @param string $color 3 or 6 digit hex color (with #).
- * @return string|false Color value on success, false on failure.
+ * @param string $color Mã màu hex 3 hoặc 6 ký tự (có #).
+ * @return string|false Giá trị màu khi thành công, false khi thất bại.
  */
 function rest_parse_hex_color( $color ) {
 	$regex = '|^#([A-Fa-f0-9]{3}){1,2}$|';
@@ -1353,27 +1353,27 @@ function rest_parse_hex_color( $color ) {
 }
 
 /**
- * Parses a date into both its local and UTC equivalent, in MySQL datetime format.
+ * Phân tích ngày tháng thành cả dạng nội địa và UTC tương đương, theo định dạng datetime MySQL.
  *
  * @since 4.4.0
  *
  * @see rest_parse_date()
  *
- * @param string $date   RFC3339 timestamp.
- * @param bool   $is_utc Whether the provided date should be interpreted as UTC. Default false.
+ * @param string $date   Dấu thời gian RFC3339.
+ * @param bool   $is_utc Có nên diễn giải ngày được cung cấp là UTC hay không. Mặc định false.
  * @return array|null {
- *     Local and UTC datetime strings, in MySQL datetime format (Y-m-d H:i:s),
- *     null on failure.
+ *     Các chuỗi datetime nội địa và UTC, theo định dạng datetime MySQL (Y-m-d H:i:s),
+ *     null khi thất bại.
  *
- *     @type string $0 Local datetime string.
- *     @type string $1 UTC datetime string.
+ *     @type string $0 Chuỗi datetime nội địa.
+ *     @type string $1 Chuỗi datetime UTC.
  * }
  */
 function rest_get_date_with_gmt( $date, $is_utc = false ) {
 	/*
-	 * Whether or not the original date actually has a timezone string
-	 * changes the way we need to do timezone conversion.
-	 * Store this info before parsing the date, and use it later.
+	 * Việc ngày gốc có thực sự chứa chuỗi múi giờ hay không
+	 * sẽ thay đổi cách chúng ta cần thực hiện chuyển đổi múi giờ.
+	 * Lưu thông tin này trước khi phân tích ngày, và sử dụng sau.
 	 */
 	$has_timezone = preg_match( '#(Z|[+-]\d{2}(:\d{2})?)$#', $date );
 
@@ -1384,9 +1384,9 @@ function rest_get_date_with_gmt( $date, $is_utc = false ) {
 	}
 
 	/*
-	 * At this point $date could either be a local date (if we were passed
-	 * a *local* date without a timezone offset) or a UTC date (otherwise).
-	 * Timezone conversion needs to be handled differently between these two cases.
+	 * Tại thời điểm này $date có thể là ngày nội địa (nếu chúng ta được truyền
+	 * một ngày *nội địa* không có độ lệch múi giờ) hoặc ngày UTC (trường hợp khác).
+	 * Chuyển đổi múi giờ cần được xử lý khác nhau giữa hai trường hợp này.
 	 */
 	if ( ! $is_utc && ! $has_timezone ) {
 		$local = gmdate( 'Y-m-d H:i:s', $date );
@@ -1400,18 +1400,18 @@ function rest_get_date_with_gmt( $date, $is_utc = false ) {
 }
 
 /**
- * Returns a contextual HTTP error code for authorization failure.
+ * Trả về mã lỗi HTTP theo ngữ cảnh cho lỗi ủy quyền.
  *
  * @since 4.7.0
  *
- * @return int 401 if the user is not logged in, 403 if the user is logged in.
+ * @return int 401 nếu người dùng chưa đăng nhập, 403 nếu người dùng đã đăng nhập.
  */
 function rest_authorization_required_code() {
 	return is_user_logged_in() ? 403 : 401;
 }
 
 /**
- * Validate a request argument based on details registered to the route.
+ * Xác thực một tham số yêu cầu dựa trên chi tiết đã đăng ký cho route.
  *
  * @since 4.7.0
  *
@@ -1431,7 +1431,7 @@ function rest_validate_request_arg( $value, $request, $param ) {
 }
 
 /**
- * Sanitize a request argument based on details registered to the route.
+ * Làm sạch một tham số yêu cầu dựa trên chi tiết đã đăng ký cho route.
  *
  * @since 4.7.0
  *
@@ -1451,10 +1451,10 @@ function rest_sanitize_request_arg( $value, $request, $param ) {
 }
 
 /**
- * Parse a request argument based on details registered to the route.
+ * Phân tích một tham số yêu cầu dựa trên chi tiết đã đăng ký cho route.
  *
- * Runs a validation check and sanitizes the value, primarily to be used via
- * the `sanitize_callback` arguments in the endpoint args registration.
+ * Chạy kiểm tra xác thực và làm sạch giá trị, chủ yếu được sử dụng thông qua
+ * tham số `sanitize_callback` trong đăng ký args của endpoint.
  *
  * @since 4.7.0
  *
@@ -1476,14 +1476,14 @@ function rest_parse_request_arg( $value, $request, $param ) {
 }
 
 /**
- * Determines if an IP address is valid.
+ * Xác định xem một địa chỉ IP có hợp lệ hay không.
  *
- * Handles both IPv4 and IPv6 addresses.
+ * Xử lý cả địa chỉ IPv4 và IPv6.
  *
  * @since 4.7.0
  *
- * @param string $ip IP address.
- * @return string|false The valid IP address, otherwise false.
+ * @param string $ip Địa chỉ IP.
+ * @return string|false Địa chỉ IP hợp lệ, ngược lại false.
  */
 function rest_is_ip_address( $ip ) {
 	$ipv4_pattern = '/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/';
@@ -1496,15 +1496,15 @@ function rest_is_ip_address( $ip ) {
 }
 
 /**
- * Changes a boolean-like value into the proper boolean value.
+ * Chuyển đổi giá trị giống boolean thành giá trị boolean đúng.
  *
  * @since 4.7.0
  *
- * @param bool|string|int $value The value being evaluated.
- * @return bool Returns the proper associated boolean value.
+ * @param bool|string|int $value Giá trị đang được đánh giá.
+ * @return bool Trả về giá trị boolean tương ứng đúng.
  */
 function rest_sanitize_boolean( $value ) {
-	// String values are translated to `true`; make sure 'false' is false.
+	// Giá trị chuỗi được chuyển thành `true`; đảm bảo 'false' là false.
 	if ( is_string( $value ) ) {
 		$value = strtolower( $value );
 		if ( in_array( $value, array( 'false', '0' ), true ) ) {
@@ -1512,17 +1512,17 @@ function rest_sanitize_boolean( $value ) {
 		}
 	}
 
-	// Everything else will map nicely to boolean.
+	// Mọi thứ khác sẽ ánh xạ tốt sang boolean.
 	return (bool) $value;
 }
 
 /**
- * Determines if a given value is boolean-like.
+ * Xác định xem một giá trị cho trước có giống boolean hay không.
  *
  * @since 4.7.0
  *
- * @param bool|string $maybe_bool The value being evaluated.
- * @return bool True if a boolean, otherwise false.
+ * @param bool|string $maybe_bool Giá trị đang được đánh giá.
+ * @return bool True nếu là boolean, ngược lại false.
  */
 function rest_is_boolean( $maybe_bool ) {
 	if ( is_bool( $maybe_bool ) ) {
@@ -1550,23 +1550,23 @@ function rest_is_boolean( $maybe_bool ) {
 }
 
 /**
- * Determines if a given value is integer-like.
+ * Xác định xem một giá trị cho trước có giống số nguyên hay không.
  *
  * @since 5.5.0
  *
- * @param mixed $maybe_integer The value being evaluated.
- * @return bool True if an integer, otherwise false.
+ * @param mixed $maybe_integer Giá trị đang được đánh giá.
+ * @return bool True nếu là số nguyên, ngược lại false.
  */
 function rest_is_integer( $maybe_integer ) {
 	return is_numeric( $maybe_integer ) && round( (float) $maybe_integer ) === (float) $maybe_integer;
 }
 
 /**
- * Determines if a given value is array-like.
+ * Xác định xem một giá trị cho trước có giống mảng hay không.
  *
  * @since 5.5.0
  *
- * @param mixed $maybe_array The value being evaluated.
+ * @param mixed $maybe_array Giá trị đang được đánh giá.
  * @return bool
  */
 function rest_is_array( $maybe_array ) {
@@ -1578,12 +1578,12 @@ function rest_is_array( $maybe_array ) {
 }
 
 /**
- * Converts an array-like value to an array.
+ * Chuyển đổi giá trị giống mảng thành mảng.
  *
  * @since 5.5.0
  *
- * @param mixed $maybe_array The value being evaluated.
- * @return array Returns the array extracted from the value.
+ * @param mixed $maybe_array Giá trị đang được đánh giá.
+ * @return array Trả về mảng được trích xuất từ giá trị.
  */
 function rest_sanitize_array( $maybe_array ) {
 	if ( is_scalar( $maybe_array ) ) {
@@ -1594,17 +1594,17 @@ function rest_sanitize_array( $maybe_array ) {
 		return array();
 	}
 
-	// Normalize to numeric array so nothing unexpected is in the keys.
+	// Chuẩn hóa thành mảng số để không có gì không mong muốn trong các khóa.
 	return array_values( $maybe_array );
 }
 
 /**
- * Determines if a given value is object-like.
+ * Xác định xem một giá trị cho trước có giống đối tượng hay không.
  *
  * @since 5.5.0
  *
- * @param mixed $maybe_object The value being evaluated.
- * @return bool True if object like, otherwise false.
+ * @param mixed $maybe_object Giá trị đang được đánh giá.
+ * @return bool True nếu giống đối tượng, ngược lại false.
  */
 function rest_is_object( $maybe_object ) {
 	if ( '' === $maybe_object ) {
@@ -1623,12 +1623,12 @@ function rest_is_object( $maybe_object ) {
 }
 
 /**
- * Converts an object-like value to an array.
+ * Chuyển đổi giá trị giống đối tượng thành mảng.
  *
  * @since 5.5.0
  *
- * @param mixed $maybe_object The value being evaluated.
- * @return array Returns the object extracted from the value as an associative array.
+ * @param mixed $maybe_object Giá trị đang được đánh giá.
+ * @return array Trả về đối tượng được trích xuất từ giá trị dưới dạng mảng kết hợp.
  */
 function rest_sanitize_object( $maybe_object ) {
 	if ( '' === $maybe_object ) {
@@ -1651,13 +1651,13 @@ function rest_sanitize_object( $maybe_object ) {
 }
 
 /**
- * Gets the best type for a value.
+ * Lấy kiểu tốt nhất cho một giá trị.
  *
  * @since 5.5.0
  *
- * @param mixed    $value The value to check.
- * @param string[] $types The list of possible types.
- * @return string The best matching type, an empty string if no types match.
+ * @param mixed    $value Giá trị cần kiểm tra.
+ * @param string[] $types Danh sách các kiểu có thể.
+ * @return string Kiểu khớp tốt nhất, chuỗi rỗng nếu không có kiểu nào khớp.
  */
 function rest_get_best_type_for_value( $value, $types ) {
 	static $checks = array(
@@ -1671,8 +1671,8 @@ function rest_get_best_type_for_value( $value, $types ) {
 	);
 
 	/*
-	 * Both arrays and objects allow empty strings to be converted to their types.
-	 * But the best answer for this type is a string.
+	 * Cả mảng và đối tượng đều cho phép chuỗi rỗng được chuyển đổi sang kiểu của chúng.
+	 * Nhưng câu trả lời tốt nhất cho kiểu này là chuỗi.
 	 */
 	if ( '' === $value && in_array( 'string', $types, true ) ) {
 		return 'string';
@@ -1688,16 +1688,16 @@ function rest_get_best_type_for_value( $value, $types ) {
 }
 
 /**
- * Handles getting the best type for a multi-type schema.
+ * Xử lý việc lấy kiểu tốt nhất cho schema đa kiểu.
  *
- * This is a wrapper for {@see rest_get_best_type_for_value()} that handles
- * backward compatibility for schemas that use invalid types.
+ * Đây là bao bọc cho {@see rest_get_best_type_for_value()} xử lý
+ * tương thích ngược cho các schema sử dụng kiểu không hợp lệ.
  *
  * @since 5.5.0
  *
- * @param mixed  $value The value to check.
- * @param array  $args  The schema array to use.
- * @param string $param The parameter name, used in error messages.
+ * @param mixed  $value Giá trị cần kiểm tra.
+ * @param array  $args  Mảng schema để sử dụng.
+ * @param string $param Tên tham số, được sử dụng trong thông báo lỗi.
  * @return string
  */
 function rest_handle_multi_type_schema( $value, $args, $param = '' ) {
@@ -1720,7 +1720,7 @@ function rest_handle_multi_type_schema( $value, $args, $param = '' ) {
 			return '';
 		}
 
-		// Backward compatibility for previous behavior which allowed the value if there was an invalid type used.
+		// Tương thích ngược với hành vi trước đó cho phép giá trị nếu kiểu không hợp lệ được sử dụng.
 		$best_type = reset( $invalid_types );
 	}
 
@@ -1728,12 +1728,12 @@ function rest_handle_multi_type_schema( $value, $args, $param = '' ) {
 }
 
 /**
- * Checks if an array is made up of unique items.
+ * Kiểm tra xem một mảng có chứa các phần tử duy nhất hay không.
  *
  * @since 5.5.0
  *
- * @param array $input_array The array to check.
- * @return bool True if the array contains unique items, false otherwise.
+ * @param array $input_array Mảng cần kiểm tra.
+ * @return bool True nếu mảng chứa các phần tử duy nhất, ngược lại false.
  */
 function rest_validate_array_contains_unique_items( $input_array ) {
 	$seen = array();
@@ -1755,14 +1755,14 @@ function rest_validate_array_contains_unique_items( $input_array ) {
 }
 
 /**
- * Stabilizes a value following JSON Schema semantics.
+ * Ổn định một giá trị theo ngữ nghĩa JSON Schema.
  *
- * For lists, order is preserved. For objects, properties are reordered alphabetically.
+ * Với danh sách, thứ tự được giữ nguyên. Với đối tượng, các thuộc tính được sắp xếp lại theo thứ tự bảng chữ cái.
  *
  * @since 5.5.0
  *
- * @param mixed $value The value to stabilize. Must already be sanitized. Objects should have been converted to arrays.
- * @return mixed The stabilized value.
+ * @param mixed $value Giá trị cần ổn định. Phải đã được làm sạch. Đối tượng nên đã được chuyển đổi thành mảng.
+ * @return mixed Giá trị đã được ổn định.
  */
 function rest_stabilize_value( $value ) {
 	if ( is_scalar( $value ) || is_null( $value ) ) {
@@ -1785,13 +1785,13 @@ function rest_stabilize_value( $value ) {
 }
 
 /**
- * Validates if the JSON Schema pattern matches a value.
+ * Xác thực xem mẫu JSON Schema có khớp với một giá trị hay không.
  *
  * @since 5.6.0
  *
- * @param string $pattern The pattern to match against.
- * @param string $value   The value to check.
- * @return bool           True if the pattern matches the given value, false otherwise.
+ * @param string $pattern Mẫu để so khớp.
+ * @param string $value   Giá trị cần kiểm tra.
+ * @return bool           True nếu mẫu khớp với giá trị cho trước, ngược lại false.
  */
 function rest_validate_json_schema_pattern( $pattern, $value ) {
 	$escaped_pattern = str_replace( '#', '\\#', $pattern );
@@ -1800,13 +1800,13 @@ function rest_validate_json_schema_pattern( $pattern, $value ) {
 }
 
 /**
- * Finds the schema for a property using the patternProperties keyword.
+ * Tìm schema cho một thuộc tính sử dụng từ khóa patternProperties.
  *
  * @since 5.6.0
  *
- * @param string $property The property name to check.
- * @param array  $args     The schema array to use.
- * @return array|null      The schema of matching pattern property, or null if no patterns match.
+ * @param string $property Tên thuộc tính cần kiểm tra.
+ * @param array  $args     Mảng schema để sử dụng.
+ * @return array|null      Schema của thuộc tính mẫu khớp, hoặc null nếu không có mẫu nào khớp.
  */
 function rest_find_matching_pattern_property_schema( $property, $args ) {
 	if ( isset( $args['patternProperties'] ) ) {

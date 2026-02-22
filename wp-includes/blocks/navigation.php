@@ -1,26 +1,26 @@
 <?php
 /**
- * Server-side rendering of the `core/navigation` block.
+ * Kết xuất phía máy chủ của block `core/navigation`.
  *
  * @package WordPress
  */
 
 /**
- * Helper functions used to render the navigation block.
+ * Các hàm trợ giúp được sử dụng để kết xuất block điều hướng.
  *
  * @since 6.5.0
  */
 class WP_Navigation_Block_Renderer {
 
 	/**
-	 * Used to determine whether or not a navigation has submenus.
+	 * Được sử dụng để xác định xem điều hướng có menu con hay không.
 	 *
 	 * @since 6.5.0
 	 */
 	private static $has_submenus = false;
 
 	/**
-	 * Used to determine which blocks need an <li> wrapper.
+	 * Được sử dụng để xác định những block nào cần bọc thẻ <li>.
 	 *
 	 * @since 6.5.0
 	 *
@@ -33,7 +33,7 @@ class WP_Navigation_Block_Renderer {
 	);
 
 	/**
-	 * Keeps track of all the navigation names that have been seen.
+	 * Theo dõi tất cả các tên điều hướng đã được sử dụng.
 	 *
 	 * @since 6.5.0
 	 *
@@ -42,16 +42,16 @@ class WP_Navigation_Block_Renderer {
 	private static $seen_menu_names = array();
 
 	/**
-	 * Returns whether or not this is responsive navigation.
+	 * Trả về liệu đây có phải là điều hướng đáp ứng hay không.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array $attributes The block attributes.
-	 * @return bool Returns whether or not this is responsive navigation.
+	 * @param array $attributes Các thuộc tính của block.
+	 * @return bool Trả về liệu đây có phải là điều hướng đáp ứng hay không.
 	 */
 	private static function is_responsive( $attributes ) {
 		/**
-		 * This is for backwards compatibility after the `isResponsive` attribute was been removed.
+		 * Điều này dùng để tương thích ngược sau khi thuộc tính `isResponsive` đã bị loại bỏ.
 		 */
 
 		$has_old_responsive_attribute = ! empty( $attributes['isResponsive'] ) && $attributes['isResponsive'];
@@ -59,12 +59,12 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Returns whether or not a navigation has a submenu.
+	 * Trả về liệu điều hướng có menu con hay không.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Block_List $inner_blocks The list of inner blocks.
-	 * @return bool Returns whether or not a navigation has a submenu and also sets the member variable.
+	 * @param WP_Block_List $inner_blocks Danh sách các block con.
+	 * @return bool Trả về liệu điều hướng có menu con hay không và cũng thiết lập biến thành viên.
 	 */
 	private static function has_submenus( $inner_blocks ) {
 		if ( true === static::$has_submenus ) {
@@ -72,7 +72,7 @@ class WP_Navigation_Block_Renderer {
 		}
 
 		foreach ( $inner_blocks as $inner_block ) {
-			// If this is a page list then work out if any of the pages have children.
+			// Nếu đây là danh sách trang thì xác định xem có trang nào có trang con không.
 			if ( 'core/page-list' === $inner_block->name ) {
 				$all_pages = get_pages(
 					array(
@@ -87,7 +87,7 @@ class WP_Navigation_Block_Renderer {
 					}
 				}
 			}
-			// If this is a navigation submenu then we know we have submenus.
+			// Nếu đây là menu con điều hướng thì ta biết rằng có menu con.
 			if ( 'core/navigation-submenu' === $inner_block->name ) {
 				static::$has_submenus = true;
 				break;
@@ -98,13 +98,13 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Determine whether the navigation blocks is interactive.
+	 * Xác định xem block điều hướng có tương tác hay không.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array         $attributes   The block attributes.
-	 * @param WP_Block_List $inner_blocks The list of inner blocks.
-	 * @return bool Returns whether or not to load the view script.
+	 * @param array         $attributes   Các thuộc tính của block.
+	 * @param WP_Block_List $inner_blocks Danh sách các block con.
+	 * @return bool Trả về liệu có nên tải script hiển thị hay không.
 	 */
 	private static function is_interactive( $attributes, $inner_blocks ) {
 		$has_submenus       = static::has_submenus( $inner_blocks );
@@ -113,27 +113,27 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Returns whether or not a block needs a list item wrapper.
+	 * Trả về liệu block có cần bọc thẻ mục danh sách hay không.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Block $block The block.
-	 * @return bool Returns whether or not a block needs a list item wrapper.
+	 * @param WP_Block $block Block cần kiểm tra.
+	 * @return bool Trả về liệu block có cần bọc thẻ mục danh sách hay không.
 	 */
 	private static function does_block_need_a_list_item_wrapper( $block ) {
 
 		/**
-		 * Filter the list of blocks that need a list item wrapper.
+		 * Lọc danh sách các block cần bọc thẻ mục danh sách.
 		 *
-		 * Affords the ability to customize which blocks need a list item wrapper when rendered
-		 * within a core/navigation block.
-		 * This is useful for blocks that are not list items but should be wrapped in a list
-		 * item when used as a child of a navigation block.
+		 * Cho phép tùy chỉnh những block nào cần bọc thẻ mục danh sách khi kết xuất
+		 * bên trong block core/navigation.
+		 * Điều này hữu ích cho các block không phải mục danh sách nhưng cần được bọc trong thẻ
+		 * mục danh sách khi được sử dụng như block con của block điều hướng.
 		 *
 		 * @since 6.5.0
 		 *
-		 * @param array $needs_list_item_wrapper The list of blocks that need a list item wrapper.
-		 * @return array The list of blocks that need a list item wrapper.
+		 * @param array $needs_list_item_wrapper Danh sách các block cần bọc thẻ mục danh sách.
+		 * @return array Danh sách các block cần bọc thẻ mục danh sách.
 		 */
 		$needs_list_item_wrapper = apply_filters( 'block_core_navigation_listable_blocks', static::$needs_list_item_wrapper );
 
@@ -141,12 +141,12 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Returns the markup for a single inner block.
+	 * Trả về mã đánh dấu cho một block con đơn lẻ.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Block $inner_block The inner block.
-	 * @return string Returns the markup for a single inner block.
+	 * @param WP_Block $inner_block Block con.
+	 * @return string Trả về mã đánh dấu cho một block con đơn lẻ.
 	 */
 	private static function get_markup_for_inner_block( $inner_block ) {
 		$inner_block_content = $inner_block->render();
@@ -160,13 +160,13 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Returns the html for the inner blocks of the navigation block.
+	 * Trả về HTML cho các block con của block điều hướng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array         $attributes   The block attributes.
-	 * @param WP_Block_List $inner_blocks The list of inner blocks.
-	 * @return string Returns the html for the inner blocks of the navigation block.
+	 * @param array         $attributes   Các thuộc tính của block.
+	 * @param WP_Block_List $inner_blocks Danh sách các block con.
+	 * @return string Trả về HTML cho các block con của block điều hướng.
 	 */
 	private static function get_inner_blocks_html( $attributes, $inner_blocks ) {
 		$has_submenus   = static::has_submenus( $inner_blocks );
@@ -209,7 +209,7 @@ class WP_Navigation_Block_Renderer {
 			$inner_blocks_html .= '</ul>';
 		}
 
-		// Add directives to the submenu if needed.
+		// Thêm các chỉ thị vào menu con nếu cần.
 		if ( $has_submenus && $is_interactive ) {
 			$tags              = new WP_HTML_Tag_Processor( $inner_blocks_html );
 			$inner_blocks_html = block_core_navigation_add_directives_to_submenu( $tags, $attributes );
@@ -219,12 +219,12 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Gets the inner blocks for the navigation block from the navigation post.
+	 * Lấy các block con cho block điều hướng từ bài viết điều hướng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array $attributes The block attributes.
-	 * @return WP_Block_List Returns the inner blocks for the navigation block.
+	 * @param array $attributes Các thuộc tính của block.
+	 * @return WP_Block_List Trả về các block con cho block điều hướng.
 	 */
 	private static function get_inner_blocks_from_navigation_post( $attributes ) {
 		$navigation_post = get_post( $attributes['ref'] );
@@ -232,40 +232,40 @@ class WP_Navigation_Block_Renderer {
 			return new WP_Block_List( array(), $attributes );
 		}
 
-		// Only published posts are valid. If this is changed then a corresponding change
-		// must also be implemented in `use-navigation-menu.js`.
+		// Chỉ các bài viết đã xuất bản mới hợp lệ. Nếu thay đổi điều này thì cần
+		// cập nhật tương ứng trong `use-navigation-menu.js`.
 		if ( 'publish' === $navigation_post->post_status ) {
 			$parsed_blocks = parse_blocks( $navigation_post->post_content );
 
-			// 'parse_blocks' includes a null block with '\n\n' as the content when
-			// it encounters whitespace. This code strips it.
+			// 'parse_blocks' bao gồm một block null với '\n\n' làm nội dung khi
+			// gặp khoảng trắng. Đoạn mã này loại bỏ chúng.
 			$blocks = block_core_navigation_filter_out_empty_blocks( $parsed_blocks );
 
-			// Re-serialize, and run Block Hooks algorithm to inject hooked blocks.
-			// TODO: See if we can move the apply_block_hooks_to_content_from_post_object() call
-			// before the parse_blocks() call further above, to avoid the extra serialization/parsing.
+			// Tuần tự hóa lại, và chạy thuật toán Block Hooks để chèn các block được gắn.
+			// TODO: Xem xét liệu có thể di chuyển lệnh gọi apply_block_hooks_to_content_from_post_object()
+			// trước lệnh gọi parse_blocks() ở trên, để tránh tuần tự hóa/phân tích thêm.
 			$markup = serialize_blocks( $blocks );
 			$markup = apply_block_hooks_to_content_from_post_object( $markup, $navigation_post );
 			$blocks = parse_blocks( $markup );
 
-			// TODO - this uses the full navigation block attributes for the
-			// context which could be refined.
+			// TODO - điều này sử dụng toàn bộ thuộc tính block điều hướng cho
+			// ngữ cảnh, có thể được tinh chỉnh.
 			return new WP_Block_List( $blocks, $attributes );
 		}
 	}
 
 	/**
-	 * Gets the inner blocks for the navigation block from the fallback.
+	 * Lấy các block con cho block điều hướng từ phương án dự phòng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array $attributes The block attributes.
-	 * @return WP_Block_List Returns the inner blocks for the navigation block.
+	 * @param array $attributes Các thuộc tính của block.
+	 * @return WP_Block_List Trả về các block con cho block điều hướng.
 	 */
 	private static function get_inner_blocks_from_fallback( $attributes ) {
 		$fallback_blocks = block_core_navigation_get_fallback_blocks();
 
-		// Fallback my have been filtered so do basic test for validity.
+		// Phương án dự phòng có thể đã được lọc nên cần kiểm tra tính hợp lệ cơ bản.
 		if ( empty( $fallback_blocks ) || ! is_array( $fallback_blocks ) ) {
 			return new WP_Block_List( array(), $attributes );
 		}
@@ -274,28 +274,28 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Gets the inner blocks for the navigation block.
+	 * Lấy các block con cho block điều hướng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array    $attributes The block attributes.
-	 * @param WP_Block $block The parsed block.
-	 * @return WP_Block_List Returns the inner blocks for the navigation block.
+	 * @param array    $attributes Các thuộc tính của block.
+	 * @param WP_Block $block Block đã được phân tích.
+	 * @return WP_Block_List Trả về các block con cho block điều hướng.
 	 */
 	private static function get_inner_blocks( $attributes, $block ) {
 		$inner_blocks = $block->inner_blocks;
 
-		// Ensure that blocks saved with the legacy ref attribute name (navigationMenuId) continue to render.
+		// Đảm bảo rằng các block đã lưu với tên thuộc tính ref cũ (navigationMenuId) vẫn tiếp tục kết xuất.
 		if ( array_key_exists( 'navigationMenuId', $attributes ) ) {
 			$attributes['ref'] = $attributes['navigationMenuId'];
 		}
 
-		// If:
-		// - the gutenberg plugin is active
-		// - `__unstableLocation` is defined
-		// - we have menu items at the defined location
-		// - we don't have a relationship to a `wp_navigation` Post (via `ref`).
-		// ...then create inner blocks from the classic menu assigned to that location.
+		// Nếu:
+		// - plugin gutenberg đang hoạt động
+		// - `__unstableLocation` được định nghĩa
+		// - có các mục menu tại vị trí đã định nghĩa
+		// - không có mối quan hệ với bài viết `wp_navigation` (qua `ref`).
+		// ...thì tạo các block con từ menu cổ điển được gán cho vị trí đó.
 		if (
 			defined( 'IS_GUTENBERG_PLUGIN' ) && IS_GUTENBERG_PLUGIN &&
 			array_key_exists( '__unstableLocation', $attributes ) &&
@@ -305,19 +305,19 @@ class WP_Navigation_Block_Renderer {
 			$inner_blocks = block_core_navigation_get_inner_blocks_from_unstable_location( $attributes );
 		}
 
-		// Load inner blocks from the navigation post.
+		// Tải các block con từ bài viết điều hướng.
 		if ( array_key_exists( 'ref', $attributes ) ) {
 			$inner_blocks = static::get_inner_blocks_from_navigation_post( $attributes );
 		}
 
-		// If there are no inner blocks then fallback to rendering an appropriate fallback.
+		// Nếu không có block con nào thì sử dụng phương án dự phòng phù hợp để kết xuất.
 		if ( empty( $inner_blocks ) ) {
 			$inner_blocks = static::get_inner_blocks_from_fallback( $attributes );
 		}
 
 		/**
-		 * Filter navigation block $inner_blocks.
-		 * Allows modification of a navigation block menu items.
+		 * Lọc $inner_blocks của block điều hướng.
+		 * Cho phép chỉnh sửa các mục menu của block điều hướng.
 		 *
 		 * @since 6.1.0
 		 *
@@ -334,12 +334,12 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Gets the name of the current navigation, if it has one.
+	 * Lấy tên của điều hướng hiện tại, nếu có.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array $attributes The block attributes.
-	 * @return string Returns the name of the navigation.
+	 * @param array $attributes Các thuộc tính của block.
+	 * @return string Trả về tên của điều hướng.
 	 */
 	private static function get_navigation_name( $attributes ) {
 
@@ -349,20 +349,20 @@ class WP_Navigation_Block_Renderer {
 			return $navigation_name;
 		}
 
-		// Load the navigation post.
+		// Tải bài viết điều hướng.
 		if ( array_key_exists( 'ref', $attributes ) ) {
 			$navigation_post = get_post( $attributes['ref'] );
 			if ( ! isset( $navigation_post ) ) {
 				return $navigation_name;
 			}
 
-			// Only published posts are valid. If this is changed then a corresponding change
-			// must also be implemented in `use-navigation-menu.js`.
+			// Chỉ các bài viết đã xuất bản mới hợp lệ. Nếu thay đổi điều này thì cần
+			// cập nhật tương ứng trong `use-navigation-menu.js`.
 			if ( 'publish' === $navigation_post->post_status ) {
 				$navigation_name = $navigation_post->post_title;
 
-				// This is used to count the number of times a navigation name has been seen,
-				// so that we can ensure every navigation has a unique id.
+				// Điều này được sử dụng để đếm số lần tên điều hướng đã xuất hiện,
+				// để đảm bảo mỗi điều hướng có id duy nhất.
 				if ( isset( static::$seen_menu_names[ $navigation_name ] ) ) {
 					++static::$seen_menu_names[ $navigation_name ];
 				} else {
@@ -375,12 +375,12 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Returns the layout class for the navigation block.
+	 * Trả về lớp CSS bố cục cho block điều hướng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array $attributes The block attributes.
-	 * @return string Returns the layout class for the navigation block.
+	 * @param array $attributes Các thuộc tính của block.
+	 * @return string Trả về lớp CSS bố cục cho block điều hướng.
 	 */
 	private static function get_layout_class( $attributes ) {
 		$layout_justification = array(
@@ -408,21 +408,21 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Return classes for the navigation block.
+	 * Trả về các lớp CSS cho block điều hướng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array $attributes The block attributes.
-	 * @return string Returns the classes for the navigation block.
+	 * @param array $attributes Các thuộc tính của block.
+	 * @return string Trả về các lớp CSS cho block điều hướng.
 	 */
 	private static function get_classes( $attributes ) {
-		// Restore legacy classnames for submenu positioning.
+		// Khôi phục các tên lớp cũ cho vị trí menu con.
 		$layout_class       = static::get_layout_class( $attributes );
 		$colors             = block_core_navigation_build_css_colors( $attributes );
 		$font_sizes         = block_core_navigation_build_css_font_sizes( $attributes );
 		$is_responsive_menu = static::is_responsive( $attributes );
 
-		// Manually add block support text decoration as CSS class.
+		// Thêm thủ công trang trí văn bản hỗ trợ block dưới dạng lớp CSS.
 		$text_decoration       = $attributes['style']['typography']['textDecoration'] ?? null;
 		$text_decoration_class = sprintf( 'has-text-decoration-%s', $text_decoration );
 
@@ -437,12 +437,12 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Get styles for the navigation block.
+	 * Lấy các kiểu dáng cho block điều hướng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array $attributes The block attributes.
-	 * @return string Returns the styles for the navigation block.
+	 * @param array $attributes Các thuộc tính của block.
+	 * @return string Trả về các kiểu dáng cho block điều hướng.
 	 */
 	private static function get_styles( $attributes ) {
 		$colors       = block_core_navigation_build_css_colors( $attributes );
@@ -452,14 +452,14 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Get the responsive container markup
+	 * Lấy mã đánh dấu của vùng chứa đáp ứng
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array         $attributes The block attributes.
-	 * @param WP_Block_List $inner_blocks The list of inner blocks.
-	 * @param string        $inner_blocks_html The markup for the inner blocks.
-	 * @return string Returns the container markup.
+	 * @param array         $attributes Các thuộc tính của block.
+	 * @param WP_Block_List $inner_blocks Danh sách các block con.
+	 * @param string        $inner_blocks_html Mã đánh dấu cho các block con.
+	 * @return string Trả về mã đánh dấu của vùng chứa.
 	 */
 	private static function get_responsive_container_markup( $attributes, $inner_blocks, $inner_blocks_html ) {
 		$is_interactive  = static::is_interactive( $attributes, $inner_blocks );
@@ -488,10 +488,10 @@ class WP_Navigation_Block_Renderer {
 		$toggle_button_content       = $should_display_icon_label ? $toggle_button_icon : __( 'Menu' );
 		$toggle_close_button_icon    = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="m13.06 12 6.47-6.47-1.06-1.06L12 10.94 5.53 4.47 4.47 5.53 10.94 12l-6.47 6.47 1.06 1.06L12 13.06l6.47 6.47 1.06-1.06L13.06 12Z"></path></svg>';
 		$toggle_close_button_content = $should_display_icon_label ? $toggle_close_button_icon : __( 'Close' );
-		$toggle_aria_label_open      = $should_display_icon_label ? 'aria-label="' . __( 'Open menu' ) . '"' : ''; // Open button label.
-		$toggle_aria_label_close     = $should_display_icon_label ? 'aria-label="' . __( 'Close menu' ) . '"' : ''; // Close button label.
+		$toggle_aria_label_open      = $should_display_icon_label ? 'aria-label="' . __( 'Open menu' ) . '"' : ''; // Nhãn nút mở.
+		$toggle_aria_label_close     = $should_display_icon_label ? 'aria-label="' . __( 'Close menu' ) . '"' : ''; // Nhãn nút đóng.
 
-		// Add Interactivity API directives to the markup if needed.
+		// Thêm các chỉ thị Interactivity API vào mã đánh dấu nếu cần.
 		$open_button_directives          = '';
 		$responsive_container_directives = '';
 		$responsive_dialog_directives    = '';
@@ -554,13 +554,13 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Get the wrapper attributes
+	 * Lấy các thuộc tính bọc ngoài
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array         $attributes    The block attributes.
-	 * @param WP_Block_List $inner_blocks  A list of inner blocks.
-	 * @return string Returns the navigation block markup.
+	 * @param array         $attributes    Các thuộc tính của block.
+	 * @param WP_Block_List $inner_blocks  Danh sách các block con.
+	 * @return string Trả về mã đánh dấu block điều hướng.
 	 */
 	private static function get_nav_wrapper_attributes( $attributes, $inner_blocks ) {
 		$nav_menu_name      = static::get_unique_navigation_name( $attributes );
@@ -586,18 +586,18 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Gets the nav element directives.
+	 * Lấy các chỉ thị cho phần tử nav.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param bool $is_interactive Whether the block is interactive.
-	 * @return string the directives for the navigation element.
+	 * @param bool $is_interactive Liệu block có tương tác hay không.
+	 * @return string Các chỉ thị cho phần tử điều hướng.
 	 */
 	private static function get_nav_element_directives( $is_interactive ) {
 		if ( ! $is_interactive ) {
 			return '';
 		}
-		// When adding to this array be mindful of security concerns.
+		// Khi thêm vào mảng này hãy lưu ý đến các vấn đề bảo mật.
 		$nav_element_context    = wp_interactivity_data_wp_context(
 			array(
 				'overlayOpenedBy' => array(
@@ -618,13 +618,13 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Handle view script module loading.
+	 * Xử lý việc tải module script hiển thị.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array         $attributes   The block attributes.
-	 * @param WP_Block      $block        The parsed block.
-	 * @param WP_Block_List $inner_blocks The list of inner blocks.
+	 * @param array         $attributes   Các thuộc tính của block.
+	 * @param WP_Block      $block        Block đã được phân tích.
+	 * @param WP_Block_List $inner_blocks Danh sách các block con.
 	 */
 	private static function handle_view_script_module_loading( $attributes, $block, $inner_blocks ) {
 		if ( static::is_interactive( $attributes, $inner_blocks ) ) {
@@ -633,13 +633,13 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Returns the markup for the navigation block.
+	 * Trả về mã đánh dấu cho block điều hướng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array         $attributes The block attributes.
-	 * @param WP_Block_List $inner_blocks The list of inner blocks.
-	 * @return string Returns the navigation wrapper markup.
+	 * @param array         $attributes Các thuộc tính của block.
+	 * @param WP_Block_List $inner_blocks Danh sách các block con.
+	 * @return string Trả về mã đánh dấu bọc ngoài của điều hướng.
 	 */
 	private static function get_wrapper_markup( $attributes, $inner_blocks ) {
 		$inner_blocks_html = static::get_inner_blocks_html( $attributes, $inner_blocks );
@@ -650,18 +650,18 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Returns a unique name for the navigation.
+	 * Trả về tên duy nhất cho điều hướng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array $attributes The block attributes.
-	 * @return string Returns a unique name for the navigation.
+	 * @param array $attributes Các thuộc tính của block.
+	 * @return string Trả về tên duy nhất cho điều hướng.
 	 */
 	private static function get_unique_navigation_name( $attributes ) {
 		$nav_menu_name = static::get_navigation_name( $attributes );
 
-		// If the menu name has been used previously then append an ID
-		// to the name to ensure uniqueness across a given post.
+		// Nếu tên menu đã được sử dụng trước đó thì thêm ID
+		// vào tên để đảm bảo tính duy nhất trong một bài viết.
 		if ( isset( static::$seen_menu_names[ $nav_menu_name ] ) && static::$seen_menu_names[ $nav_menu_name ] > 1 ) {
 			$count         = static::$seen_menu_names[ $nav_menu_name ];
 			$nav_menu_name = $nav_menu_name . ' ' . ( $count );
@@ -671,22 +671,22 @@ class WP_Navigation_Block_Renderer {
 	}
 
 	/**
-	 * Renders the navigation block.
+	 * Kết xuất block điều hướng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array    $attributes The block attributes.
-	 * @param string   $content    The saved content.
-	 * @param WP_Block $block      The parsed block.
-	 * @return string Returns the navigation block markup.
+	 * @param array    $attributes Các thuộc tính của block.
+	 * @param string   $content    Nội dung đã lưu.
+	 * @param WP_Block $block      Block đã được phân tích.
+	 * @return string Trả về mã đánh dấu block điều hướng.
 	 */
 	public static function render( $attributes, $content, $block ) {
 		/**
-		 * Deprecated:
-		 * The rgbTextColor and rgbBackgroundColor attributes
-		 * have been deprecated in favor of
-		 * customTextColor and customBackgroundColor ones.
-		 * Move the values from old attrs to the new ones.
+		 * Không dùng nữa:
+		 * Các thuộc tính rgbTextColor và rgbBackgroundColor
+		 * đã ngừng sử dụng và được thay thế bởi
+		 * customTextColor và customBackgroundColor.
+		 * Di chuyển các giá trị từ thuộc tính cũ sang thuộc tính mới.
 		 */
 		if ( isset( $attributes['rgbTextColor'] ) && empty( $attributes['textColor'] ) ) {
 			$attributes['customTextColor'] = $attributes['rgbTextColor'];
@@ -699,7 +699,7 @@ class WP_Navigation_Block_Renderer {
 		unset( $attributes['rgbTextColor'], $attributes['rgbBackgroundColor'] );
 
 		$inner_blocks = static::get_inner_blocks( $attributes, $block );
-		// Prevent navigation blocks referencing themselves from rendering.
+		// Ngăn chặn các block điều hướng tham chiếu đến chính nó khi kết xuất.
 		if ( block_core_navigation_block_contains_core_navigation( $inner_blocks ) ) {
 			return '';
 		}
@@ -714,34 +714,34 @@ class WP_Navigation_Block_Renderer {
 	}
 }
 
-// These functions are used for the __unstableLocation feature and only active
-// when the gutenberg plugin is active.
+// Các hàm này được sử dụng cho tính năng __unstableLocation và chỉ hoạt động
+// khi plugin gutenberg đang hoạt động.
 if ( defined( 'IS_GUTENBERG_PLUGIN' ) && IS_GUTENBERG_PLUGIN ) {
 	/**
-	 * Returns the menu items for a WordPress menu location.
+	 * Trả về các mục menu cho một vị trí menu WordPress.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param string $location The menu location.
-	 * @return array Menu items for the location.
+	 * @param string $location Vị trí menu.
+	 * @return array Các mục menu cho vị trí đó.
 	 */
 	function block_core_navigation_get_menu_items_at_location( $location ) {
 		if ( empty( $location ) ) {
 			return;
 		}
 
-		// Build menu data. The following approximates the code in
-		// `wp_nav_menu()` and `gutenberg_output_block_nav_menu`.
+		// Xây dựng dữ liệu menu. Đoạn mã sau mô phỏng mã trong
+		// `wp_nav_menu()` và `gutenberg_output_block_nav_menu`.
 
-		// Find the location in the list of locations, returning early if the
-		// location can't be found.
+		// Tìm vị trí trong danh sách các vị trí, trả về sớm nếu
+		// không tìm thấy vị trí.
 		$locations = get_nav_menu_locations();
 		if ( ! isset( $locations[ $location ] ) ) {
 			return;
 		}
 
-		// Get the menu from the location, returning early if there is no
-		// menu or there was an error.
+		// Lấy menu từ vị trí, trả về sớm nếu không có
+		// menu hoặc có lỗi xảy ra.
 		$menu = wp_get_nav_menu_object( $locations[ $location ] );
 		if ( ! $menu || is_wp_error( $menu ) ) {
 			return;
@@ -755,14 +755,14 @@ if ( defined( 'IS_GUTENBERG_PLUGIN' ) && IS_GUTENBERG_PLUGIN ) {
 
 
 	/**
-	 * Sorts a standard array of menu items into a nested structure keyed by the
-	 * id of the parent menu.
+	 * Sắp xếp mảng tiêu chuẩn các mục menu thành cấu trúc lồng nhau theo
+	 * id của menu cha.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param array $menu_items Menu items to sort.
-	 * @return array An array keyed by the id of the parent menu where each element
-	 *               is an array of menu items that belong to that parent.
+	 * @param array $menu_items Các mục menu cần sắp xếp.
+	 * @return array Mảng được đánh khóa theo id của menu cha, trong đó mỗi phần tử
+	 *               là mảng các mục menu thuộc về menu cha đó.
 	 */
 	function block_core_navigation_sort_menu_items_by_parent_id( $menu_items ) {
 		$sorted_menu_items = array();
@@ -780,12 +780,12 @@ if ( defined( 'IS_GUTENBERG_PLUGIN' ) && IS_GUTENBERG_PLUGIN ) {
 	}
 
 	/**
-	 * Gets the inner blocks for the navigation block from the unstable location attribute.
+	 * Lấy các block con cho block điều hướng từ thuộc tính vị trí không ổn định.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param array $attributes The block attributes.
-	 * @return WP_Block_List Returns the inner blocks for the navigation block.
+	 * @param array $attributes Các thuộc tính của block.
+	 * @return WP_Block_List Trả về các block con cho block điều hướng.
 	 */
 	function block_core_navigation_get_inner_blocks_from_unstable_location( $attributes ) {
 		$menu_items = block_core_navigation_get_menu_items_at_location( $attributes['__unstableLocation'] );
@@ -800,15 +800,15 @@ if ( defined( 'IS_GUTENBERG_PLUGIN' ) && IS_GUTENBERG_PLUGIN ) {
 }
 
 /**
- * Add Interactivity API directives to the navigation-submenu and page-list
- * blocks markup using the Tag Processor.
+ * Thêm các chỉ thị Interactivity API vào mã đánh dấu các block navigation-submenu
+ * và page-list sử dụng Tag Processor.
  *
  * @since 6.3.0
  *
- * @param WP_HTML_Tag_Processor $tags             Markup of the navigation block.
- * @param array                 $block_attributes Block attributes.
+ * @param WP_HTML_Tag_Processor $tags             Mã đánh dấu của block điều hướng.
+ * @param array                 $block_attributes Các thuộc tính block.
  *
- * @return string Submenu markup with the directives injected.
+ * @return string Mã đánh dấu menu con với các chỉ thị đã được chèn.
  */
 function block_core_navigation_add_directives_to_submenu( $tags, $block_attributes ) {
 	while ( $tags->next_tag(
@@ -817,17 +817,16 @@ function block_core_navigation_add_directives_to_submenu( $tags, $block_attribut
 			'class_name' => 'has-child',
 		)
 	) ) {
-		// Add directives to the parent `<li>`.
+		// Thêm các chỉ thị vào phần tử cha `<li>`.
 		$tags->set_attribute( 'data-wp-interactive', 'core/navigation' );
 		$tags->set_attribute( 'data-wp-context', '{ "submenuOpenedBy": { "click": false, "hover": false, "focus": false }, "type": "submenu", "modal": null }' );
 		$tags->set_attribute( 'data-wp-watch', 'callbacks.initMenu' );
 		$tags->set_attribute( 'data-wp-on--focusout', 'actions.handleMenuFocusout' );
 		$tags->set_attribute( 'data-wp-on--keydown', 'actions.handleMenuKeydown' );
 
-		// This is a fix for Safari. Without it, Safari doesn't change the active
-		// element when the user clicks on a button. It can be removed once we add
-		// an overlay to capture the clicks, instead of relying on the focusout
-		// event.
+		// Đây là bản sửa lỗi cho Safari. Nếu không có nó, Safari không thay đổi phần tử
+		// đang hoạt động khi người dùng nhấp vào nút. Có thể xóa khi chúng ta thêm
+		// lớp phủ để bắt các lần nhấp, thay vì dựa vào sự kiện focusout.
 		$tags->set_attribute( 'tabindex', '-1' );
 
 		if ( ! isset( $block_attributes['openSubmenusOnClick'] ) || false === $block_attributes['openSubmenusOnClick'] ) {
@@ -835,7 +834,7 @@ function block_core_navigation_add_directives_to_submenu( $tags, $block_attribut
 			$tags->set_attribute( 'data-wp-on-async--mouseleave', 'actions.closeMenuOnHover' );
 		}
 
-		// Add directives to the toggle submenu button.
+		// Thêm các chỉ thị vào nút bật/tắt menu con.
 		if ( $tags->next_tag(
 			array(
 				'tag_name'   => 'BUTTON',
@@ -844,9 +843,9 @@ function block_core_navigation_add_directives_to_submenu( $tags, $block_attribut
 		) ) {
 			$tags->set_attribute( 'data-wp-on-async--click', 'actions.toggleMenuOnClick' );
 			$tags->set_attribute( 'data-wp-bind--aria-expanded', 'state.isMenuOpen' );
-			// The `aria-expanded` attribute for SSR is already added in the submenu block.
+			// Thuộc tính `aria-expanded` cho SSR đã được thêm trong block menu con.
 		}
-		// Add directives to the submenu.
+		// Thêm các chỉ thị vào menu con.
 		if ( $tags->next_tag(
 			array(
 				'tag_name'   => 'UL',
@@ -856,21 +855,21 @@ function block_core_navigation_add_directives_to_submenu( $tags, $block_attribut
 			$tags->set_attribute( 'data-wp-on-async--focus', 'actions.openMenuOnFocus' );
 		}
 
-		// Iterate through subitems if exist.
+		// Lặp qua các mục con nếu tồn tại.
 		block_core_navigation_add_directives_to_submenu( $tags, $block_attributes );
 	}
 	return $tags->get_updated_html();
 }
 
 /**
- * Build an array with CSS classes and inline styles defining the colors
- * which will be applied to the navigation markup in the front-end.
+ * Xây dựng mảng với các lớp CSS và kiểu nội tuyến định nghĩa các màu sắc
+ * sẽ được áp dụng cho mã đánh dấu điều hướng ở phía giao diện.
  *
  * @since 5.9.0
  *
- * @param array $attributes Navigation block attributes.
+ * @param array $attributes Các thuộc tính block điều hướng.
  *
- * @return array Colors CSS classes and inline styles.
+ * @return array Các lớp CSS và kiểu nội tuyến của màu sắc.
  */
 function block_core_navigation_build_css_colors( $attributes ) {
 	$colors = array(

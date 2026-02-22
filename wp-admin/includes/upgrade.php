@@ -717,7 +717,7 @@ function upgrade_all() {
 
 	$wp_current_db_version = (int) __get_option( 'db_version' );
 
-	// We are up to date. Nothing to do.
+	// Đã cập nhật. Không cần làm gì.
 	if ( $wp_db_version === $wp_current_db_version ) {
 		return;
 	}
@@ -970,7 +970,7 @@ function upgrade_100() {
 function upgrade_101() {
 	global $wpdb;
 
-	// Clean up indices, add a few.
+	// Dọn dẹp chỉ mục, thêm một vài cái.
 	add_clean_index( $wpdb->posts, 'post_name' );
 	add_clean_index( $wpdb->posts, 'post_status' );
 	add_clean_index( $wpdb->categories, 'category_nicename' );
@@ -981,18 +981,18 @@ function upgrade_101() {
 }
 
 /**
- * Execute changes made in WordPress 1.2.
+ * Thực thi các thay đổi được thực hiện trong WordPress 1.2.
  *
  * @ignore
  * @since 1.2.0
- * @since 6.8.0 User passwords are no longer hashed with md5.
+ * @since 6.8.0 Mật khẩu người dùng không còn được băm bằng md5.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_110() {
 	global $wpdb;
 
-	// Set user_nicename.
+	// Đặt user_nicename.
 	$users = $wpdb->get_results( "SELECT ID, user_nickname, user_nicename FROM $wpdb->users" );
 	foreach ( $users as $user ) {
 		if ( '' === $user->user_nicename ) {
@@ -1001,7 +1001,7 @@ function upgrade_110() {
 		}
 	}
 
-	// Get the GMT offset, we'll use that later on.
+	// Lấy độ lệch GMT, chúng ta sẽ dùng sau.
 	$all_options = get_alloptions_110();
 
 	$time_difference = $all_options->time_difference;
@@ -1015,19 +1015,19 @@ function upgrade_110() {
 	$diff_gmt_weblogger    = $diff_gmt_server - $diff_weblogger_server;
 	$gmt_offset            = -$diff_gmt_weblogger;
 
-	// Add a gmt_offset option, with value $gmt_offset.
+	// Thêm tùy chọn gmt_offset, với giá trị $gmt_offset.
 	add_option( 'gmt_offset', $gmt_offset );
 
 	/*
-	 * Check if we already set the GMT fields. If we did, then
-	 * MAX(post_date_gmt) can't be '0000-00-00 00:00:00'.
-	 * <michel_v> I just slapped myself silly for not thinking about it earlier.
+	 * Kiểm tra xem chúng ta đã đặt các trường GMT chưa. Nếu đã đặt thì
+	 * MAX(post_date_gmt) không thể là '0000-00-00 00:00:00'.
+	 * <michel_v> Tôi tự vả mình vì không nghĩ ra sớm hơn.
 	 */
 	$got_gmt_fields = ( '0000-00-00 00:00:00' !== $wpdb->get_var( "SELECT MAX(post_date_gmt) FROM $wpdb->posts" ) );
 
 	if ( ! $got_gmt_fields ) {
 
-		// Add or subtract time to all dates, to get GMT dates.
+		// Cộng hoặc trừ thời gian cho tất cả các ngày, để lấy ngày GMT.
 		$add_hours   = (int) $diff_gmt_weblogger;
 		$add_minutes = (int) ( 60 * ( $diff_gmt_weblogger - $add_hours ) );
 		$wpdb->query( "UPDATE $wpdb->posts SET post_date_gmt = DATE_ADD(post_date, INTERVAL '$add_hours:$add_minutes' HOUR_MINUTE)" );
@@ -1039,17 +1039,17 @@ function upgrade_110() {
 }
 
 /**
- * Execute changes made in WordPress 1.5.
+ * Thực thi các thay đổi được thực hiện trong WordPress 1.5.
  *
  * @ignore
  * @since 1.5.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_130() {
 	global $wpdb;
 
-	// Remove extraneous backslashes.
+	// Loại bỏ dấu gạch chéo ngược thừa.
 	$posts = $wpdb->get_results( "SELECT ID, post_title, post_content, post_excerpt, guid, post_date, post_name, post_status, post_author FROM $wpdb->posts" );
 	if ( $posts ) {
 		foreach ( $posts as $post ) {
@@ -1067,7 +1067,7 @@ function upgrade_130() {
 		}
 	}
 
-	// Remove extraneous backslashes.
+	// Loại bỏ dấu gạch chéo ngược thừa.
 	$comments = $wpdb->get_results( "SELECT comment_ID, comment_author, comment_content FROM $wpdb->comments" );
 	if ( $comments ) {
 		foreach ( $comments as $comment ) {
@@ -1078,7 +1078,7 @@ function upgrade_130() {
 		}
 	}
 
-	// Remove extraneous backslashes.
+	// Loại bỏ dấu gạch chéo ngược thừa.
 	$links = $wpdb->get_results( "SELECT link_id, link_name, link_description FROM $wpdb->links" );
 	if ( $links ) {
 		foreach ( $links as $link ) {
@@ -1092,25 +1092,25 @@ function upgrade_130() {
 	$active_plugins = __get_option( 'active_plugins' );
 
 	/*
-	 * If plugins are not stored in an array, they're stored in the old
-	 * newline separated format. Convert to new format.
+	 * Nếu plugin không được lưu trong mảng, chúng được lưu theo định dạng
+	 * phân tách bằng dòng mới cũ. Chuyển đổi sang định dạng mới.
 	 */
 	if ( ! is_array( $active_plugins ) ) {
 		$active_plugins = explode( "\n", trim( $active_plugins ) );
 		update_option( 'active_plugins', $active_plugins );
 	}
 
-	// Obsolete tables.
+	// Các bảng lỗi thời.
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'optionvalues' );
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'optiontypes' );
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'optiongroups' );
 	$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'optiongroup_options' );
 
-	// Update comments table to use comment_type.
+	// Cập nhật bảng bình luận để sử dụng comment_type.
 	$wpdb->query( "UPDATE $wpdb->comments SET comment_type='trackback', comment_content = REPLACE(comment_content, '<trackback />', '') WHERE comment_content LIKE '<trackback />%'" );
 	$wpdb->query( "UPDATE $wpdb->comments SET comment_type='pingback', comment_content = REPLACE(comment_content, '<pingback />', '') WHERE comment_content LIKE '<pingback />%'" );
 
-	// Some versions have multiple duplicate option_name rows with the same values.
+	// Một số phiên bản có nhiều hàng option_name trùng lặp với cùng giá trị.
 	$options = $wpdb->get_results( "SELECT option_name, COUNT(option_name) AS dupes FROM `$wpdb->options` GROUP BY option_name" );
 	foreach ( $options as $option ) {
 		if ( $option->dupes > 1 ) { // Could this be done in the query?
@@ -1127,13 +1127,13 @@ function upgrade_130() {
 }
 
 /**
- * Execute changes made in WordPress 2.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 2.0.
  *
  * @ignore
  * @since 2.0.0
  *
- * @global wpdb $wpdb                  WordPress database abstraction object.
- * @global int  $wp_current_db_version The old (current) database version.
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
  */
 function upgrade_160() {
 	global $wpdb, $wp_current_db_version;
@@ -1196,7 +1196,7 @@ function upgrade_160() {
 			$wpdb->update( $wpdb->users, array( 'display_name' => $id ), array( 'ID' => $user->ID ) );
 		endif;
 
-		// FIXME: RESET_CAPS is temporary code to reset roles and caps if flag is set.
+		// FIXME: RESET_CAPS là mã tạm thời để đặt lại vai trò và quyền nếu cờ được đặt.
 		$caps = get_user_meta( $user->ID, $wpdb->prefix . 'capabilities' );
 		if ( empty( $caps ) || defined( 'RESET_CAPS' ) ) {
 			$level = get_user_meta( $user->ID, $wpdb->prefix . 'user_level', true );
@@ -1212,7 +1212,7 @@ function upgrade_160() {
 	}
 	$wpdb->show_errors();
 
-	// Populate comment_count field of posts table.
+	// Điền dữ liệu trường comment_count của bảng bài viết.
 	$comments = $wpdb->get_results( "SELECT comment_post_ID, COUNT(*) as c FROM $wpdb->comments WHERE comment_approved = '1' GROUP BY comment_post_ID" );
 	if ( is_array( $comments ) ) {
 		foreach ( $comments as $comment ) {
@@ -1221,8 +1221,8 @@ function upgrade_160() {
 	}
 
 	/*
-	 * Some alpha versions used a post status of object instead of attachment
-	 * and put the mime type in post_type instead of post_mime_type.
+	 * Một số phiên bản alpha đã dùng trạng thái bài viết là object thay vì attachment
+	 * và đặt kiểu mime trong post_type thay vì post_mime_type.
 	 */
 	if ( $wp_current_db_version > 2541 && $wp_current_db_version <= 3091 ) {
 		$objects = $wpdb->get_results( "SELECT ID, post_type FROM $wpdb->posts WHERE post_status = 'object'" );
@@ -1246,19 +1246,19 @@ function upgrade_160() {
 }
 
 /**
- * Execute changes made in WordPress 2.1.
+ * Thực thi các thay đổi được thực hiện trong WordPress 2.1.
  *
  * @ignore
  * @since 2.1.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_210() {
 	global $wp_current_db_version, $wpdb;
 
 	if ( $wp_current_db_version < 3506 ) {
-		// Update status and type.
+		// Cập nhật trạng thái và kiểu.
 		$posts = $wpdb->get_results( "SELECT ID, post_status FROM $wpdb->posts" );
 
 		if ( ! empty( $posts ) ) {
@@ -1284,7 +1284,7 @@ function upgrade_210() {
 	}
 
 	if ( $wp_current_db_version < 3531 ) {
-		// Give future posts a post_status of future.
+		// Đặt trạng thái future cho các bài viết lên lịch trong tương lai.
 		$now = gmdate( 'Y-m-d H:i:59' );
 		$wpdb->query( "UPDATE $wpdb->posts SET post_status = 'future' WHERE post_status = 'publish' AND post_date_gmt > '$now'" );
 
@@ -1298,13 +1298,13 @@ function upgrade_210() {
 }
 
 /**
- * Execute changes made in WordPress 2.3.
+ * Thực thi các thay đổi được thực hiện trong WordPress 2.3.
  *
  * @ignore
  * @since 2.3.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_230() {
 	global $wp_current_db_version, $wpdb;
@@ -1313,7 +1313,7 @@ function upgrade_230() {
 		populate_roles_230();
 	}
 
-	// Convert categories to terms.
+	// Chuyển đổi chuyên mục sang term.
 	$tt_ids     = array();
 	$have_tags  = false;
 	$categories = $wpdb->get_results( "SELECT * FROM $wpdb->categories ORDER BY cat_ID" );
@@ -1325,7 +1325,7 @@ function upgrade_230() {
 		$parent      = $category->category_parent;
 		$term_group  = 0;
 
-		// Associate terms with the same slug in a term group and make slugs unique.
+		// Liên kết các term có cùng slug vào một nhóm term và đảm bảo slug duy nhất.
 		$exists = $wpdb->get_results( $wpdb->prepare( "SELECT term_id, term_group FROM $wpdb->terms WHERE slug = %s", $slug ) );
 		if ( $exists ) {
 			$term_group = $exists[0]->term_group;
@@ -1414,11 +1414,11 @@ function upgrade_230() {
 		);
 	}
 
-	// < 3570 we used linkcategories. >= 3570 we used categories and link2cat.
+	// < 3570 chúng ta dùng linkcategories. >= 3570 chúng ta dùng categories và link2cat.
 	if ( $wp_current_db_version < 3570 ) {
 		/*
-		 * Create link_category terms for link categories. Create a map of link
-		 * category IDs to link_category terms.
+		 * Tạo các term link_category cho danh mục liên kết. Tạo ánh xạ từ
+		 * ID danh mục liên kết sang các term link_category.
 		 */
 		$link_cat_id_map  = array();
 		$default_link_cat = 0;
@@ -1431,7 +1431,7 @@ function upgrade_230() {
 			$slug       = sanitize_title( $name );
 			$term_group = 0;
 
-			// Associate terms with the same slug in a term group and make slugs unique.
+			// Liên kết các term có cùng slug vào một nhóm term và đảm bảo slug duy nhất.
 			$exists = $wpdb->get_results( $wpdb->prepare( "SELECT term_id, term_group FROM $wpdb->terms WHERE slug = %s", $slug ) );
 			if ( $exists ) {
 				$term_group = $exists[0]->term_group;
@@ -1459,7 +1459,7 @@ function upgrade_230() {
 			$tt_ids[ $term_id ] = (int) $wpdb->insert_id;
 		}
 
-		// Associate links to categories.
+		// Liên kết các link với chuyên mục.
 		$links = $wpdb->get_results( "SELECT link_id, link_category FROM $wpdb->links" );
 		if ( ! empty( $links ) ) {
 			foreach ( $links as $link ) {
@@ -1485,7 +1485,7 @@ function upgrade_230() {
 			}
 		}
 
-		// Set default to the last category we grabbed during the upgrade loop.
+		// Đặt mặc định là chuyên mục cuối cùng chúng ta lấy trong vòng lặp nâng cấp.
 		update_option( 'default_link_category', $default_link_cat );
 	} else {
 		$links = $wpdb->get_results( "SELECT link_id, category_id FROM $wpdb->link2cat GROUP BY link_id, category_id" );
@@ -1508,11 +1508,11 @@ function upgrade_230() {
 	}
 
 	if ( $wp_current_db_version < 4772 ) {
-		// Obsolete linkcategories table.
+		// Bảng linkcategories lỗi thời.
 		$wpdb->query( 'DROP TABLE IF EXISTS ' . $wpdb->prefix . 'linkcategories' );
 	}
 
-	// Recalculate all counts.
+	// Tính lại tất cả số đếm.
 	$terms = $wpdb->get_results( "SELECT term_taxonomy_id, taxonomy FROM $wpdb->term_taxonomy" );
 	foreach ( (array) $terms as $term ) {
 		if ( 'post_tag' === $term->taxonomy || 'category' === $term->taxonomy ) {
@@ -1525,12 +1525,12 @@ function upgrade_230() {
 }
 
 /**
- * Remove old options from the database.
+ * Xóa các tùy chọn cũ khỏi cơ sở dữ liệu.
  *
  * @ignore
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_230_options_table() {
 	global $wpdb;
@@ -1543,12 +1543,12 @@ function upgrade_230_options_table() {
 }
 
 /**
- * Remove old categories, link2cat, and post2cat database tables.
+ * Xóa các bảng cơ sở dữ liệu cũ: categories, link2cat và post2cat.
  *
  * @ignore
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_230_old_tables() {
 	global $wpdb;
@@ -1558,26 +1558,26 @@ function upgrade_230_old_tables() {
 }
 
 /**
- * Upgrade old slugs made in version 2.2.
+ * Nâng cấp slug cũ được tạo trong phiên bản 2.2.
  *
  * @ignore
  * @since 2.2.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_old_slugs() {
-	// Upgrade people who were using the Redirect Old Slugs plugin.
+	// Nâng cấp cho người dùng đang sử dụng plugin Redirect Old Slugs.
 	global $wpdb;
 	$wpdb->query( "UPDATE $wpdb->postmeta SET meta_key = '_wp_old_slug' WHERE meta_key = 'old_slug'" );
 }
 
 /**
- * Execute changes made in WordPress 2.5.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 2.5.0.
  *
  * @ignore
  * @since 2.5.0
  *
- * @global int $wp_current_db_version The old (current) database version.
+ * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
  */
 function upgrade_250() {
 	global $wp_current_db_version;
@@ -1588,12 +1588,12 @@ function upgrade_250() {
 }
 
 /**
- * Execute changes made in WordPress 2.5.2.
+ * Thực thi các thay đổi được thực hiện trong WordPress 2.5.2.
  *
  * @ignore
  * @since 2.5.2
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_252() {
 	global $wpdb;
@@ -1602,12 +1602,12 @@ function upgrade_252() {
 }
 
 /**
- * Execute changes made in WordPress 2.6.
+ * Thực thi các thay đổi được thực hiện trong WordPress 2.6.
  *
  * @ignore
  * @since 2.6.0
  *
- * @global int $wp_current_db_version The old (current) database version.
+ * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
  */
 function upgrade_260() {
 	global $wp_current_db_version;
@@ -1618,13 +1618,13 @@ function upgrade_260() {
 }
 
 /**
- * Execute changes made in WordPress 2.7.
+ * Thực thi các thay đổi được thực hiện trong WordPress 2.7.
  *
  * @ignore
  * @since 2.7.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_270() {
 	global $wp_current_db_version, $wpdb;
@@ -1633,20 +1633,20 @@ function upgrade_270() {
 		populate_roles_270();
 	}
 
-	// Update post_date for unpublished posts with empty timestamp.
+	// Cập nhật post_date cho các bài viết chưa xuất bản có timestamp rỗng.
 	if ( $wp_current_db_version < 8921 ) {
 		$wpdb->query( "UPDATE $wpdb->posts SET post_date = post_modified WHERE post_date = '0000-00-00 00:00:00'" );
 	}
 }
 
 /**
- * Execute changes made in WordPress 2.8.
+ * Thực thi các thay đổi được thực hiện trong WordPress 2.8.
  *
  * @ignore
  * @since 2.8.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_280() {
 	global $wp_current_db_version, $wpdb;
@@ -1673,20 +1673,20 @@ function upgrade_280() {
 }
 
 /**
- * Execute changes made in WordPress 2.9.
+ * Thực thi các thay đổi được thực hiện trong WordPress 2.9.
  *
  * @ignore
  * @since 2.9.0
  *
- * @global int $wp_current_db_version The old (current) database version.
+ * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
  */
 function upgrade_290() {
 	global $wp_current_db_version;
 
 	if ( $wp_current_db_version < 11958 ) {
 		/*
-		 * Previously, setting depth to 1 would redundantly disable threading,
-		 * but now 2 is the minimum depth to avoid confusion.
+		 * Trước đây, đặt độ sâu là 1 sẽ vô hiệu hóa luồng bình luận một cách thừa thãi,
+		 * nhưng giờ 2 là độ sâu tối thiểu để tránh nhầm lẫn.
 		 */
 		if ( 1 === (int) get_option( 'thread_comments_depth' ) ) {
 			update_option( 'thread_comments_depth', 2 );
@@ -1696,13 +1696,13 @@ function upgrade_290() {
 }
 
 /**
- * Execute changes made in WordPress 3.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 3.0.
  *
  * @ignore
  * @since 3.0.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_300() {
 	global $wp_current_db_version, $wpdb;
@@ -1715,7 +1715,7 @@ function upgrade_300() {
 		add_site_option( 'siteurl', '' );
 	}
 
-	// 3.0 screen options key name changes.
+	// 3.0 thay đổi tên khóa tùy chọn màn hình.
 	if ( wp_should_upgrade_global_tables() ) {
 		$sql    = "DELETE FROM $wpdb->usermeta
 			WHERE meta_key LIKE %s
@@ -1746,13 +1746,13 @@ function upgrade_300() {
 }
 
 /**
- * Execute changes made in WordPress 3.3.
+ * Thực thi các thay đổi được thực hiện trong WordPress 3.3.
  *
  * @ignore
  * @since 3.3.0
  *
- * @global int   $wp_current_db_version The old (current) database version.
- * @global wpdb  $wpdb                  WordPress database abstraction object.
+ * @global int   $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb  $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  * @global array $wp_registered_widgets
  * @global array $sidebars_widgets
  */
@@ -1821,7 +1821,7 @@ function upgrade_330() {
 			$sidebars_widgets                   = $_sidebars_widgets;
 			unset( $_sidebars_widgets );
 
-			// Intentional fall-through to upgrade to the next version.
+			// Cố ý rơi xuống để nâng cấp lên phiên bản tiếp theo.
 		case 2:
 			$sidebars_widgets                  = retrieve_widgets();
 			$sidebars_widgets['array_version'] = 3;
@@ -1830,13 +1830,13 @@ function upgrade_330() {
 }
 
 /**
- * Execute changes made in WordPress 3.4.
+ * Thực thi các thay đổi được thực hiện trong WordPress 3.4.
  *
  * @ignore
  * @since 3.4.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_340() {
 	global $wp_current_db_version, $wpdb;
@@ -1867,13 +1867,13 @@ function upgrade_340() {
 }
 
 /**
- * Execute changes made in WordPress 3.5.
+ * Thực thi các thay đổi được thực hiện trong WordPress 3.5.
  *
  * @ignore
  * @since 3.5.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_350() {
 	global $wp_current_db_version, $wpdb;
@@ -1904,12 +1904,12 @@ function upgrade_350() {
 }
 
 /**
- * Execute changes made in WordPress 3.7.
+ * Thực thi các thay đổi được thực hiện trong WordPress 3.7.
  *
  * @ignore
  * @since 3.7.0
  *
- * @global int $wp_current_db_version The old (current) database version.
+ * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
  */
 function upgrade_370() {
 	global $wp_current_db_version;
@@ -1920,12 +1920,12 @@ function upgrade_370() {
 }
 
 /**
- * Execute changes made in WordPress 3.7.2.
+ * Thực thi các thay đổi được thực hiện trong WordPress 3.7.2.
  *
  * @ignore
  * @since 3.7.2
  *
- * @global int $wp_current_db_version The old (current) database version.
+ * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
  */
 function upgrade_372() {
 	global $wp_current_db_version;
@@ -1936,12 +1936,12 @@ function upgrade_372() {
 }
 
 /**
- * Execute changes made in WordPress 3.8.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 3.8.0.
  *
  * @ignore
  * @since 3.8.0
  *
- * @global int $wp_current_db_version The old (current) database version.
+ * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
  */
 function upgrade_380() {
 	global $wp_current_db_version;
@@ -1952,12 +1952,12 @@ function upgrade_380() {
 }
 
 /**
- * Execute changes made in WordPress 4.0.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 4.0.0.
  *
  * @ignore
  * @since 4.0.0
  *
- * @global int $wp_current_db_version The old (current) database version.
+ * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
  */
 function upgrade_400() {
 	global $wp_current_db_version;
@@ -1974,7 +1974,7 @@ function upgrade_400() {
 }
 
 /**
- * Execute changes made in WordPress 4.2.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 4.2.0.
  *
  * @ignore
  * @since 4.2.0
@@ -1982,13 +1982,13 @@ function upgrade_400() {
 function upgrade_420() {}
 
 /**
- * Executes changes made in WordPress 4.3.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 4.3.0.
  *
  * @ignore
  * @since 4.3.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_430() {
 	global $wp_current_db_version, $wpdb;
@@ -1997,7 +1997,7 @@ function upgrade_430() {
 		upgrade_430_fix_comments();
 	}
 
-	// Shared terms are split in a separate process.
+	// Các term được chia sẻ được tách trong một tiến trình riêng.
 	if ( $wp_current_db_version < 32814 ) {
 		update_option( 'finished_splitting_shared_terms', 0 );
 		wp_schedule_single_event( time() + ( 1 * MINUTE_IN_SECONDS ), 'wp_split_shared_term_batch' );
@@ -2021,12 +2021,12 @@ function upgrade_430() {
 }
 
 /**
- * Executes comments changes made in WordPress 4.3.0.
+ * Thực thi các thay đổi bình luận được thực hiện trong WordPress 4.3.0.
  *
  * @ignore
  * @since 4.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_430_fix_comments() {
 	global $wpdb;
@@ -2051,7 +2051,7 @@ function upgrade_430_fix_comments() {
 	}
 
 	if ( 'byte' !== $content_length['type'] || 0 === $content_length['length'] ) {
-		// Sites with malformed DB schemas are on their own.
+		// Các trang web có schema DB bị lỗi phải tự xử lý.
 		return;
 	}
 
@@ -2070,13 +2070,13 @@ function upgrade_430_fix_comments() {
 }
 
 /**
- * Executes changes made in WordPress 4.3.1.
+ * Thực thi các thay đổi được thực hiện trong WordPress 4.3.1.
  *
  * @ignore
  * @since 4.3.1
  */
 function upgrade_431() {
-	// Fix incorrect cron entries for term splitting.
+	// Sửa các mục cron không chính xác cho việc tách term.
 	$cron_array = _get_cron_array();
 	if ( isset( $cron_array['wp_batch_split_terms'] ) ) {
 		unset( $cron_array['wp_batch_split_terms'] );
@@ -2085,13 +2085,13 @@ function upgrade_431() {
 }
 
 /**
- * Executes changes made in WordPress 4.4.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 4.4.0.
  *
  * @ignore
  * @since 4.4.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_440() {
 	global $wp_current_db_version, $wpdb;
@@ -2100,7 +2100,7 @@ function upgrade_440() {
 		$wpdb->query( "ALTER TABLE {$wpdb->options} MODIFY option_name VARCHAR(191)" );
 	}
 
-	// Remove the unused 'add_users' role.
+	// Xóa vai trò 'add_users' không sử dụng.
 	$roles = wp_roles();
 	foreach ( $roles->role_objects as $role ) {
 		if ( $role->has_cap( 'add_users' ) ) {
@@ -2110,13 +2110,13 @@ function upgrade_440() {
 }
 
 /**
- * Executes changes made in WordPress 4.5.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 4.5.0.
  *
  * @ignore
  * @since 4.5.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_450() {
 	global $wp_current_db_version, $wpdb;
@@ -2125,32 +2125,32 @@ function upgrade_450() {
 		wp_clear_scheduled_hook( 'wp_maybe_auto_update' );
 	}
 
-	// Remove unused email confirmation options, moved to usermeta.
+	// Xóa các tùy chọn xác nhận email không sử dụng, đã chuyển sang usermeta.
 	if ( $wp_current_db_version < 36679 && is_multisite() ) {
 		$wpdb->query( "DELETE FROM $wpdb->options WHERE option_name REGEXP '^[0-9]+_new_email$'" );
 	}
 
-	// Remove unused user setting for wpLink.
+	// Xóa cài đặt người dùng không sử dụng cho wpLink.
 	delete_user_setting( 'wplink' );
 }
 
 /**
- * Executes changes made in WordPress 4.6.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 4.6.0.
  *
  * @ignore
  * @since 4.6.0
  *
- * @global int $wp_current_db_version The old (current) database version.
+ * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
  */
 function upgrade_460() {
 	global $wp_current_db_version;
 
-	// Remove unused post meta.
+	// Xóa post meta không sử dụng.
 	if ( $wp_current_db_version < 37854 ) {
 		delete_post_meta_by_key( '_post_restored_from' );
 	}
 
-	// Remove plugins with callback as an array object/method as the uninstall hook, see #13786.
+	// Xóa các plugin có callback là mảng đối tượng/phương thức làm hook gỡ cài đặt, xem #13786.
 	if ( $wp_current_db_version < 37965 ) {
 		$uninstall_plugins = get_option( 'uninstall_plugins', array() );
 
@@ -2167,7 +2167,7 @@ function upgrade_460() {
 }
 
 /**
- * Executes changes made in WordPress 5.0.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 5.0.0.
  *
  * @ignore
  * @since 5.0.0
@@ -2177,7 +2177,7 @@ function upgrade_500() {
 }
 
 /**
- * Executes changes made in WordPress 5.1.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 5.1.0.
  *
  * @ignore
  * @since 5.1.0
@@ -2187,18 +2187,18 @@ function upgrade_510() {
 }
 
 /**
- * Executes changes made in WordPress 5.3.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 5.3.0.
  *
  * @ignore
  * @since 5.3.0
  */
 function upgrade_530() {
 	/*
-	 * The `admin_email_lifespan` option may have been set by an admin that just logged in,
-	 * saw the verification screen, clicked on a button there, and is now upgrading the db,
-	 * or by populate_options() that is called earlier in upgrade_all().
-	 * In the second case `admin_email_lifespan` should be reset so the verification screen
-	 * is shown next time an admin logs in.
+	 * Tùy chọn `admin_email_lifespan` có thể đã được đặt bởi quản trị viên vừa đăng nhập,
+	 * nhìn thấy màn hình xác minh, nhấn nút ở đó, và bây giờ đang nâng cấp cơ sở dữ liệu,
+	 * hoặc bởi populate_options() được gọi sớm hơn trong upgrade_all().
+	 * Trong trường hợp thứ hai, `admin_email_lifespan` nên được đặt lại để màn hình xác minh
+	 * được hiển thị lần tiếp theo quản trị viên đăng nhập.
 	 */
 	if ( function_exists( 'current_user_can' ) && ! current_user_can( 'manage_options' ) ) {
 		update_option( 'admin_email_lifespan', 0 );
@@ -2206,12 +2206,12 @@ function upgrade_530() {
 }
 
 /**
- * Executes changes made in WordPress 5.5.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 5.5.0.
  *
  * @ignore
  * @since 5.5.0
  *
- * @global int $wp_current_db_version The old (current) database version.
+ * @global int $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
  */
 function upgrade_550() {
 	global $wp_current_db_version;
@@ -2223,12 +2223,12 @@ function upgrade_550() {
 	}
 
 	if ( $wp_current_db_version < 48575 ) {
-		// Use more clear and inclusive language.
+		// Sử dụng ngôn ngữ rõ ràng và bao dung hơn.
 		$disallowed_list = get_option( 'blacklist_keys' );
 
 		/*
-		 * This option key was briefly renamed `blocklist_keys`.
-		 * Account for sites that have this key present when the original key does not exist.
+		 * Khóa tùy chọn này đã được đổi tên tạm thời thành `blocklist_keys`.
+		 * Xử lý cho các trang web có khóa này khi khóa gốc không tồn tại.
 		 */
 		if ( false === $disallowed_list ) {
 			$disallowed_list = get_option( 'blocklist_keys' );
@@ -2246,21 +2246,21 @@ function upgrade_550() {
 }
 
 /**
- * Executes changes made in WordPress 5.6.0.
+ * Thực thi các thay đổi được thực hiện trong WordPress 5.6.0.
  *
  * @ignore
  * @since 5.6.0
  *
- * @global int  $wp_current_db_version The old (current) database version.
- * @global wpdb $wpdb                  WordPress database abstraction object.
+ * @global int  $wp_current_db_version Phiên bản cơ sở dữ liệu cũ (hiện tại).
+ * @global wpdb $wpdb                  Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function upgrade_560() {
 	global $wp_current_db_version, $wpdb;
 
 	if ( $wp_current_db_version < 49572 ) {
 		/*
-		 * Clean up the `post_category` column removed from schema in version 2.8.0.
-		 * Its presence may conflict with `WP_Post::__get()`.
+		 * Dọn dẹp cột `post_category` đã bị xóa khỏi schema trong phiên bản 2.8.0.
+		 * Sự hiện diện của nó có thể xung đột với `WP_Post::__get()`.
 		 */
 		$post_category_exists = $wpdb->get_var( "SHOW COLUMNS FROM $wpdb->posts LIKE 'post_category'" );
 		if ( ! is_null( $post_category_exists ) ) {

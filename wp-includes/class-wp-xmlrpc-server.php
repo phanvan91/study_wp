@@ -3144,24 +3144,24 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 404, __( 'Sorry, no such page.' ) );
 		}
 
-		// Make sure the user can delete pages.
+		// Đảm bảo người dùng có quyền xóa trang.
 		if ( ! current_user_can( 'delete_page', $page_id ) ) {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to delete this page.' ) );
 		}
 
-		// Attempt to delete the page.
+		// Cố gắng xóa trang.
 		$result = wp_delete_post( $page_id );
 		if ( ! $result ) {
 			return new IXR_Error( 500, __( 'Failed to delete the page.' ) );
 		}
 
 		/**
-		 * Fires after a page has been successfully deleted via XML-RPC.
+		 * Kích hoạt sau khi một trang đã được xóa thành công qua XML-RPC.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param int   $page_id ID of the deleted page.
-		 * @param array $args    An array of arguments to delete the page.
+		 * @param int   $page_id ID của trang đã xóa.
+		 * @param array $args    Mảng các đối số để xóa trang.
 		 */
 		do_action( 'xmlrpc_call_success_wp_deletePage', $page_id, $args ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.NotLowercase
 
@@ -3169,24 +3169,24 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Edits a page.
+	 * Chỉnh sửa một trang.
 	 *
 	 * @since 2.2.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type int    $1 Page ID.
-	 *     @type string $2 Username.
-	 *     @type string $3 Password.
-	 *     @type string $4 Content.
-	 *     @type int    $5 Publish flag. 0 for draft, 1 for publish.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type int    $1 ID trang.
+	 *     @type string $2 Tên người dùng.
+	 *     @type string $3 Mật khẩu.
+	 *     @type string $4 Nội dung.
+	 *     @type int    $5 Cờ xuất bản. 0 là bản nháp, 1 là xuất bản.
 	 * }
 	 * @return array|IXR_Error
 	 */
 	public function wp_editPage( $args ) {
-		// Items will be escaped in mw_editPost().
+		// Các mục sẽ được thoát ký tự trong mw_editPost().
 		$page_id  = (int) $args[1];
 		$username = $args[2];
 		$password = $args[3];
@@ -3204,21 +3204,21 @@ class wp_xmlrpc_server extends IXR_Server {
 		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.editPage', $args, $this );
 
-		// Get the page data and make sure it is a page.
+		// Lấy dữ liệu trang và đảm bảo nó là một trang.
 		$actual_page = get_post( $page_id, ARRAY_A );
 		if ( ! $actual_page || ( 'page' !== $actual_page['post_type'] ) ) {
 			return new IXR_Error( 404, __( 'Sorry, no such page.' ) );
 		}
 
-		// Make sure the user is allowed to edit pages.
+		// Đảm bảo người dùng được phép chỉnh sửa trang.
 		if ( ! current_user_can( 'edit_page', $page_id ) ) {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this page.' ) );
 		}
 
-		// Mark this as content for a page.
+		// Đánh dấu đây là nội dung cho một trang.
 		$content['post_type'] = 'page';
 
-		// Arrange args in the way mw_editPost() understands.
+		// Sắp xếp đối số theo cách mà mw_editPost() hiểu được.
 		$args = array(
 			$page_id,
 			$username,
@@ -3227,23 +3227,23 @@ class wp_xmlrpc_server extends IXR_Server {
 			$publish,
 		);
 
-		// Let mw_editPost() do all of the heavy lifting.
+		// Để mw_editPost() xử lý toàn bộ công việc nặng.
 		return $this->mw_editPost( $args );
 	}
 
 	/**
-	 * Retrieves page list.
+	 * Lấy danh sách trang.
 	 *
 	 * @since 2.2.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -3267,7 +3267,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.getPageList', $args, $this );
 
-		// Get list of page IDs and titles.
+		// Lấy danh sách ID và tiêu đề trang.
 		$page_list = $wpdb->get_results(
 			"
 			SELECT ID page_id,
@@ -3282,7 +3282,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		"
 		);
 
-		// The date needs to be formatted properly.
+		// Ngày cần được định dạng đúng.
 		$num_pages = count( $page_list );
 		for ( $i = 0; $i < $num_pages; $i++ ) {
 			$page_list[ $i ]->dateCreated      = $this->_convert_date( $page_list[ $i ]->post_date );
@@ -3297,16 +3297,16 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves authors list.
+	 * Lấy danh sách tác giả.
 	 *
 	 * @since 2.2.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -3341,16 +3341,16 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Gets the list of all tags.
+	 * Lấy danh sách tất cả các thẻ.
 	 *
 	 * @since 2.7.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -3393,19 +3393,19 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Creates a new category.
+	 * Tạo một chuyên mục mới.
 	 *
 	 * @since 2.2.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type array  $3 Category.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type array  $3 Chuyên mục.
 	 * }
-	 * @return int|IXR_Error Category ID.
+	 * @return int|IXR_Error ID chuyên mục.
 	 */
 	public function wp_newCategory( $args ) {
 		$this->escape( $args );
@@ -3422,28 +3422,28 @@ class wp_xmlrpc_server extends IXR_Server {
 		/** Action này được ghi tài liệu trong wp-includes/class-wp-xmlrpc-server.php */
 		do_action( 'xmlrpc_call', 'wp.newCategory', $args, $this );
 
-		// Make sure the user is allowed to add a category.
+		// Đảm bảo người dùng được phép thêm chuyên mục.
 		if ( ! current_user_can( 'manage_categories' ) ) {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to add a category.' ) );
 		}
 
 		/*
-		 * If no slug was provided, make it empty
-		 * so that WordPress will generate one.
+		 * Nếu không có slug được cung cấp, để trống
+		 * để WordPress tự sinh slug.
 		 */
 		if ( empty( $category['slug'] ) ) {
 			$category['slug'] = '';
 		}
 
 		/*
-		 * If no parent_id was provided, make it empty
-		 * so that it will be a top-level page (no parent).
+		 * Nếu không có parent_id được cung cấp, để trống
+		 * để nó là trang cấp cao nhất (không có trang cha).
 		 */
 		if ( ! isset( $category['parent_id'] ) ) {
 			$category['parent_id'] = '';
 		}
 
-		// If no description was provided, make it empty.
+		// Nếu không có mô tả được cung cấp, để trống.
 		if ( empty( $category['description'] ) ) {
 			$category['description'] = '';
 		}
@@ -3467,12 +3467,12 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/**
-		 * Fires after a new category has been successfully created via XML-RPC.
+		 * Kích hoạt sau khi một chuyên mục mới được tạo thành công qua XML-RPC.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param int   $cat_id ID of the new category.
-		 * @param array $args   An array of new category arguments.
+		 * @param int   $cat_id ID của chuyên mục mới.
+		 * @param array $args   Mảng các đối số cho chuyên mục mới.
 		 */
 		do_action( 'xmlrpc_call_success_wp_newCategory', $cat_id, $args ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.NotLowercase
 
@@ -3480,19 +3480,19 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Deletes a category.
+	 * Xóa một chuyên mục.
 	 *
 	 * @since 2.5.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Category ID.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID chuyên mục.
 	 * }
-	 * @return bool|IXR_Error See wp_delete_term() for return info.
+	 * @return bool|IXR_Error Xem wp_delete_term() để biết thông tin trả về.
 	 */
 	public function wp_deleteCategory( $args ) {
 		$this->escape( $args );
@@ -3517,12 +3517,12 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		if ( true === $status ) {
 			/**
-			 * Fires after a category has been successfully deleted via XML-RPC.
+			 * Kích hoạt sau khi một chuyên mục đã được xóa thành công qua XML-RPC.
 			 *
 			 * @since 3.4.0
 			 *
-			 * @param int   $category_id ID of the deleted category.
-			 * @param array $args        An array of arguments to delete the category.
+			 * @param int   $category_id ID của chuyên mục đã xóa.
+			 * @param array $args        Mảng các đối số để xóa chuyên mục.
 			 */
 			do_action( 'xmlrpc_call_success_wp_deleteCategory', $category_id, $args ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.NotLowercase
 		}
@@ -3531,18 +3531,18 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves category list.
+	 * Lấy danh sách chuyên mục.
 	 *
 	 * @since 2.2.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type array  $3 Category
-	 *     @type int    $4 Max number of results.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type array  $3 Chuyên mục
+	 *     @type int    $4 Số kết quả tối đa.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -3583,17 +3583,17 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves a comment.
+	 * Lấy một bình luận.
 	 *
 	 * @since 2.7.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Comment ID.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID bình luận.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -3625,33 +3625,33 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves comments.
+	 * Lấy danh sách bình luận.
 	 *
-	 * Besides the common blog_id (unused), username, and password arguments,
-	 * it takes a filter array as the last argument.
+	 * Ngoài các đối số chung blog_id (không sử dụng), tên người dùng và mật khẩu,
+	 * phương thức nhận một mảng bộ lọc làm đối số cuối cùng.
 	 *
-	 * Accepted 'filter' keys are 'status', 'post_id', 'offset', and 'number'.
+	 * Các khóa 'filter' được chấp nhận là 'status', 'post_id', 'offset', và 'number'.
 	 *
-	 * The defaults are as follows:
-	 * - 'status'  - Default is ''. Filter by status (e.g., 'approve', 'hold')
-	 * - 'post_id' - Default is ''. The post where the comment is posted.
-	 *               Empty string shows all comments.
-	 * - 'number'  - Default is 10. Total number of media items to retrieve.
-	 * - 'offset'  - Default is 0. See WP_Query::query() for more.
+	 * Giá trị mặc định như sau:
+	 * - 'status'  - Mặc định là ''. Lọc theo trạng thái (ví dụ: 'approve', 'hold')
+	 * - 'post_id' - Mặc định là ''. Bài viết chứa bình luận.
+	 *               Chuỗi rỗng hiển thị tất cả bình luận.
+	 * - 'number'  - Mặc định là 10. Tổng số mục media cần lấy.
+	 * - 'offset'  - Mặc định là 0. Xem WP_Query::query() để biết thêm.
 	 *
 	 * @since 2.7.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type array  $3 Optional. Query arguments.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type array  $3 Tùy chọn. Các đối số truy vấn.
 	 * }
-	 * @return array|IXR_Error Array containing a collection of comments.
-	 *                         See wp_xmlrpc_server::wp_getComment() for a description
-	 *                         of each item contents.
+	 * @return array|IXR_Error Mảng chứa bộ sưu tập các bình luận.
+	 *                         Xem wp_xmlrpc_server::wp_getComment() để biết mô tả
+	 *                         nội dung của từng mục.
 	 */
 	public function wp_getComments( $args ) {
 		$this->escape( $args );
@@ -3723,22 +3723,22 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Deletes a comment.
+	 * Xóa một bình luận.
 	 *
-	 * By default, the comment will be moved to the Trash instead of deleted.
-	 * See wp_delete_comment() for more information on this behavior.
+	 * Theo mặc định, bình luận sẽ được chuyển vào Thùng rác thay vì bị xóa.
+	 * Xem wp_delete_comment() để biết thêm thông tin về hành vi này.
 	 *
 	 * @since 2.7.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Comment ID.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID bình luận.
 	 * }
-	 * @return bool|IXR_Error See wp_delete_comment().
+	 * @return bool|IXR_Error Xem wp_delete_comment().
 	 */
 	public function wp_deleteComment( $args ) {
 		$this->escape( $args );
@@ -3767,12 +3767,12 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		if ( true === $status ) {
 			/**
-			 * Fires after a comment has been successfully deleted via XML-RPC.
+			 * Kích hoạt sau khi một bình luận đã được xóa thành công qua XML-RPC.
 			 *
 			 * @since 3.4.0
 			 *
-			 * @param int   $comment_id ID of the deleted comment.
-			 * @param array $args       An array of arguments to delete the comment.
+			 * @param int   $comment_id ID của bình luận đã xóa.
+			 * @param array $args       Mảng các đối số để xóa bình luận.
 			 */
 			do_action( 'xmlrpc_call_success_wp_deleteComment', $comment_id, $args ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.NotLowercase
 		}
@@ -3781,31 +3781,31 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Edits a comment.
+	 * Chỉnh sửa một bình luận.
 	 *
-	 * Besides the common blog_id (unused), username, and password arguments,
-	 * it takes a comment_id integer and a content_struct array as the last argument.
+	 * Ngoài các đối số chung blog_id (không sử dụng), tên người dùng và mật khẩu,
+	 * phương thức nhận một số nguyên comment_id và mảng content_struct làm đối số cuối cùng.
 	 *
-	 * The allowed keys in the content_struct array are:
+	 * Các khóa được phép trong mảng content_struct là:
 	 *  - 'author'
 	 *  - 'author_url'
 	 *  - 'author_email'
 	 *  - 'content'
 	 *  - 'date_created_gmt'
-	 *  - 'status'. Common statuses are 'approve', 'hold', 'spam'. See get_comment_statuses() for more details.
+	 *  - 'status'. Các trạng thái phổ biến là 'approve', 'hold', 'spam'. Xem get_comment_statuses() để biết thêm chi tiết.
 	 *
 	 * @since 2.7.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Comment ID.
-	 *     @type array  $4 Content structure.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID bình luận.
+	 *     @type array  $4 Cấu trúc nội dung.
 	 * }
-	 * @return true|IXR_Error True, on success.
+	 * @return true|IXR_Error True khi thành công.
 	 */
 	public function wp_editComment( $args ) {
 		$this->escape( $args );
@@ -3880,12 +3880,12 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/**
-		 * Fires after a comment has been successfully updated via XML-RPC.
+		 * Kích hoạt sau khi một bình luận đã được cập nhật thành công qua XML-RPC.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param int   $comment_id ID of the updated comment.
-		 * @param array $args       An array of arguments to update the comment.
+		 * @param int   $comment_id ID của bình luận đã cập nhật.
+		 * @param array $args       Mảng các đối số để cập nhật bình luận.
 		 */
 		do_action( 'xmlrpc_call_success_wp_editComment', $comment_id, $args ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.NotLowercase
 
@@ -3893,20 +3893,20 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Creates a new comment.
+	 * Tạo một bình luận mới.
 	 *
 	 * @since 2.7.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int        $0 Blog ID (unused).
-	 *     @type string     $1 Username.
-	 *     @type string     $2 Password.
-	 *     @type string|int $3 Post ID or URL.
-	 *     @type array      $4 Content structure.
+	 *     @type int        $0 Blog ID (không sử dụng).
+	 *     @type string     $1 Tên người dùng.
+	 *     @type string     $2 Mật khẩu.
+	 *     @type string|int $3 ID bài viết hoặc URL.
+	 *     @type array      $4 Cấu trúc nội dung.
 	 * }
-	 * @return int|IXR_Error See wp_new_comment().
+	 * @return int|IXR_Error Xem wp_new_comment().
 	 */
 	public function wp_newComment( $args ) {
 		$this->escape( $args );
@@ -3917,12 +3917,12 @@ class wp_xmlrpc_server extends IXR_Server {
 		$content_struct = $args[4];
 
 		/**
-		 * Filters whether to allow anonymous comments over XML-RPC.
+		 * Lọc xem có cho phép bình luận ẩn danh qua XML-RPC hay không.
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param bool $allow Whether to allow anonymous commenting via XML-RPC.
-		 *                    Default false.
+		 * @param bool $allow Có cho phép bình luận ẩn danh qua XML-RPC hay không.
+		 *                    Mặc định false.
 		 */
 		$allow_anon = apply_filters( 'xmlrpc_allow_anonymous_comments', false );
 
@@ -4035,12 +4035,12 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		/**
-		 * Fires after a new comment has been successfully created via XML-RPC.
+		 * Kích hoạt sau khi một bình luận mới được tạo thành công qua XML-RPC.
 		 *
 		 * @since 3.4.0
 		 *
-		 * @param int   $comment_id ID of the new comment.
-		 * @param array $args       An array of new comment arguments.
+		 * @param int   $comment_id ID của bình luận mới.
+		 * @param array $args       Mảng các đối số cho bình luận mới.
 		 */
 		do_action( 'xmlrpc_call_success_wp_newComment', $comment_id, $args ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.NotLowercase
 
@@ -4048,16 +4048,16 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves all of the comment status.
+	 * Lấy tất cả trạng thái bình luận.
 	 *
 	 * @since 2.7.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -4083,17 +4083,17 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves comment counts.
+	 * Lấy số lượng bình luận.
 	 *
 	 * @since 2.5.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Post ID.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID bài viết.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -4132,16 +4132,16 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves post statuses.
+	 * Lấy danh sách trạng thái bài viết.
 	 *
 	 * @since 2.5.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -4167,16 +4167,16 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves page statuses.
+	 * Lấy danh sách trạng thái trang.
 	 *
 	 * @since 2.5.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -4202,16 +4202,16 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves page templates.
+	 * Lấy danh sách mẫu trang.
 	 *
 	 * @since 2.6.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -4237,17 +4237,17 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves blog options.
+	 * Lấy các tùy chọn blog.
 	 *
 	 * @since 2.6.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type array  $3 Optional. Options.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type array  $3 Tùy chọn. Các tùy chọn.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -4263,7 +4263,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return $this->error;
 		}
 
-		// If no specific options where asked for, return all of them.
+		// Nếu không có tùy chọn cụ thể nào được yêu cầu, trả về tất cả.
 		if ( count( $options ) === 0 ) {
 			$options = array_keys( $this->blog_options );
 		}
@@ -4272,11 +4272,11 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves blog options value from list.
+	 * Lấy giá trị tùy chọn blog từ danh sách.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array $options Options to retrieve.
+	 * @param array $options Các tùy chọn cần lấy.
 	 * @return array
 	 */
 	public function _getOptions( $options ) {
@@ -4285,7 +4285,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		foreach ( $options as $option ) {
 			if ( array_key_exists( $option, $this->blog_options ) ) {
 				$data[ $option ] = $this->blog_options[ $option ];
-				// Is the value static or dynamic?
+				// Giá trị là tĩnh hay động?
 				if ( isset( $data[ $option ]['option'] ) ) {
 					$data[ $option ]['value'] = get_option( $data[ $option ]['option'] );
 					unset( $data[ $option ]['option'] );
@@ -4301,17 +4301,17 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Updates blog options.
+	 * Cập nhật các tùy chọn blog.
 	 *
 	 * @since 2.6.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type array  $3 Options.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type array  $3 Các tùy chọn.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -4345,24 +4345,24 @@ class wp_xmlrpc_server extends IXR_Server {
 			update_option( $this->blog_options[ $o_name ]['option'], wp_unslash( $o_value ) );
 		}
 
-		// Now return the updated values.
+		// Bây giờ trả về các giá trị đã cập nhật.
 		return $this->_getOptions( $option_names );
 	}
 
 	/**
-	 * Retrieves a media item by ID.
+	 * Lấy một mục media theo ID.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Attachment ID.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID đính kèm.
 	 * }
-	 * @return array|IXR_Error Associative array contains:
+	 * @return array|IXR_Error Mảng liên kết chứa:
 	 *  - 'date_created_gmt'
 	 *  - 'parent'
 	 *  - 'link'
@@ -4400,33 +4400,33 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves a collection of media library items (or attachments).
+	 * Lấy bộ sưu tập các mục thư viện media (hoặc đính kèm).
 	 *
-	 * Besides the common blog_id (unused), username, and password arguments,
-	 * it takes a filter array as the last argument.
+	 * Ngoài các đối số chung blog_id (không sử dụng), tên người dùng và mật khẩu,
+	 * phương thức nhận một mảng bộ lọc làm đối số cuối cùng.
 	 *
-	 * Accepted 'filter' keys are 'parent_id', 'mime_type', 'offset', and 'number'.
+	 * Các khóa 'filter' được chấp nhận là 'parent_id', 'mime_type', 'offset', và 'number'.
 	 *
-	 * The defaults are as follows:
-	 * - 'number'    - Default is 5. Total number of media items to retrieve.
-	 * - 'offset'    - Default is 0. See WP_Query::query() for more.
-	 * - 'parent_id' - Default is ''. The post where the media item is attached.
-	 *                 Empty string shows all media items. 0 shows unattached media items.
-	 * - 'mime_type' - Default is ''. Filter by mime type (e.g., 'image/jpeg', 'application/pdf')
+	 * Giá trị mặc định như sau:
+	 * - 'number'    - Mặc định là 5. Tổng số mục media cần lấy.
+	 * - 'offset'    - Mặc định là 0. Xem WP_Query::query() để biết thêm.
+	 * - 'parent_id' - Mặc định là ''. Bài viết nơi mục media được đính kèm.
+	 *                 Chuỗi rỗng hiển thị tất cả mục media. 0 hiển thị mục media chưa đính kèm.
+	 * - 'mime_type' - Mặc định là ''. Lọc theo loại mime (ví dụ: 'image/jpeg', 'application/pdf')
 	 *
 	 * @since 3.1.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type array  $3 Optional. Query arguments.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type array  $3 Tùy chọn. Các đối số truy vấn.
 	 * }
-	 * @return array|IXR_Error Array containing a collection of media items.
-	 *                         See wp_xmlrpc_server::wp_getMediaItem() for a description
-	 *                         of each item contents.
+	 * @return array|IXR_Error Mảng chứa bộ sưu tập các mục media.
+	 *                         Xem wp_xmlrpc_server::wp_getMediaItem() để biết mô tả
+	 *                         nội dung của từng mục.
 	 */
 	public function wp_getMediaLibrary( $args ) {
 		$this->escape( $args );
@@ -4472,18 +4472,18 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves a list of post formats used by the site.
+	 * Lấy danh sách định dạng bài viết được sử dụng bởi trang web.
 	 *
 	 * @since 3.1.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
 	 * }
-	 * @return array|IXR_Error List of post formats, otherwise IXR_Error object.
+	 * @return array|IXR_Error Danh sách định dạng bài viết, hoặc đối tượng IXR_Error.
 	 */
 	public function wp_getPostFormats( $args ) {
 		$this->escape( $args );
@@ -4505,7 +4505,7 @@ class wp_xmlrpc_server extends IXR_Server {
 
 		$formats = get_post_format_strings();
 
-		// Find out if they want a list of currently supports formats.
+		// Tìm hiểu xem họ có muốn danh sách các định dạng hiện được hỗ trợ không.
 		if ( isset( $args[3] ) && is_array( $args[3] ) ) {
 			if ( $args[3]['show-supported'] ) {
 				if ( current_theme_supports( 'post-formats' ) ) {
@@ -4524,20 +4524,20 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves a post type.
+	 * Lấy một loại bài viết.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see get_post_type_object()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type string $3 Post type name.
-	 *     @type array  $4 Optional. Fields to fetch.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type string $3 Tên loại bài viết.
+	 *     @type array  $4 Tùy chọn. Các trường cần lấy.
 	 * }
 	 * @return array|IXR_Error Array contains:
 	 *  - 'labels'
@@ -4565,13 +4565,13 @@ class wp_xmlrpc_server extends IXR_Server {
 			$fields = $args[4];
 		} else {
 			/**
-			 * Filters the default post type query fields used by the given XML-RPC method.
+			 * Lọc các trường truy vấn loại bài viết mặc định được sử dụng bởi phương thức XML-RPC đã cho.
 			 *
 			 * @since 3.4.0
 			 *
-			 * @param array  $fields An array of post type fields to retrieve. By default,
-			 *                       contains 'labels', 'cap', and 'taxonomies'.
-			 * @param string $method The method name.
+			 * @param array  $fields Mảng các trường loại bài viết cần lấy. Theo mặc định,
+			 *                       chứa 'labels', 'cap', và 'taxonomies'.
+			 * @param string $method Tên phương thức.
 			 */
 			$fields = apply_filters( 'xmlrpc_default_posttype_fields', array( 'labels', 'cap', 'taxonomies' ), 'wp.getPostType' );
 		}
@@ -4598,20 +4598,20 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves post types.
+	 * Lấy danh sách loại bài viết.
 	 *
 	 * @since 3.4.0
 	 *
 	 * @see get_post_types()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type array  $3 Optional. Query arguments.
-	 *     @type array  $4 Optional. Fields to fetch.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type array  $3 Tùy chọn. Các đối số truy vấn.
+	 *     @type array  $4 Tùy chọn. Các trường cần lấy.
 	 * }
 	 * @return array|IXR_Error
 	 */
@@ -4657,26 +4657,26 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Retrieves revisions for a specific post.
+	 * Lấy các bản sửa đổi cho một bài viết cụ thể.
 	 *
 	 * @since 3.5.0
 	 *
-	 * The optional $fields parameter specifies what fields will be included
-	 * in the response array.
+	 * Tham số $fields tùy chọn xác định những trường nào sẽ được bao gồm
+	 * trong mảng phản hồi.
 	 *
 	 * @uses wp_get_post_revisions()
-	 * @see wp_getPost() for more on $fields
+	 * @see wp_getPost() để biết thêm về $fields
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Post ID.
-	 *     @type array  $4 Optional. Fields to fetch.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID bài viết.
+	 *     @type array  $4 Tùy chọn. Các trường cần lấy.
 	 * }
-	 * @return array|IXR_Error Array containing a collection of posts.
+	 * @return array|IXR_Error Mảng chứa bộ sưu tập các bài viết.
 	 */
 	public function wp_getRevisions( $args ) {
 		if ( ! $this->minimum_args( $args, 4 ) ) {
@@ -4693,13 +4693,13 @@ class wp_xmlrpc_server extends IXR_Server {
 			$fields = $args[4];
 		} else {
 			/**
-			 * Filters the default revision query fields used by the given XML-RPC method.
+			 * Lọc các trường truy vấn bản sửa đổi mặc định được sử dụng bởi phương thức XML-RPC đã cho.
 			 *
 			 * @since 3.5.0
 			 *
-			 * @param array  $field  An array of revision fields to retrieve. By default,
-			 *                       contains 'post_date' and 'post_date_gmt'.
-			 * @param string $method The method name.
+			 * @param array  $field  Mảng các trường bản sửa đổi cần lấy. Theo mặc định,
+			 *                       chứa 'post_date' và 'post_date_gmt'.
+			 * @param string $method Tên phương thức.
 			 */
 			$fields = apply_filters( 'xmlrpc_default_revision_fields', array( 'post_date', 'post_date_gmt' ), 'wp.getRevisions' );
 		}
@@ -4721,7 +4721,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit posts.' ) );
 		}
 
-		// Check if revisions are enabled.
+		// Kiểm tra xem bản sửa đổi có được bật không.
 		if ( ! wp_revisions_enabled( $post ) ) {
 			return new IXR_Error( 401, __( 'Sorry, revisions are disabled.' ) );
 		}
@@ -4739,7 +4739,7 @@ class wp_xmlrpc_server extends IXR_Server {
 				continue;
 			}
 
-			// Skip autosaves.
+			// Bỏ qua các bản lưu tự động.
 			if ( wp_is_post_autosave( $revision ) ) {
 				continue;
 			}
@@ -4751,21 +4751,21 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/**
-	 * Restores a post revision.
+	 * Khôi phục một bản sửa đổi bài viết.
 	 *
 	 * @since 3.5.0
 	 *
 	 * @uses wp_restore_post_revision()
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
-	 *     @type int    $3 Revision ID.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
+	 *     @type int    $3 ID bản sửa đổi.
 	 * }
-	 * @return bool|IXR_Error false if there was an error restoring, true if success.
+	 * @return bool|IXR_Error false nếu có lỗi khi khôi phục, true nếu thành công.
 	 */
 	public function wp_restoreRevision( $args ) {
 		if ( ! $this->minimum_args( $args, 3 ) ) {
@@ -4804,7 +4804,7 @@ class wp_xmlrpc_server extends IXR_Server {
 			return new IXR_Error( 401, __( 'Sorry, you are not allowed to edit this post.' ) );
 		}
 
-		// Check if revisions are disabled.
+		// Kiểm tra xem bản sửa đổi có bị vô hiệu hóa không.
 		if ( ! wp_revisions_enabled( $post ) ) {
 			return new IXR_Error( 401, __( 'Sorry, revisions are disabled.' ) );
 		}
@@ -4815,23 +4815,23 @@ class wp_xmlrpc_server extends IXR_Server {
 	}
 
 	/*
-	 * Blogger API functions.
-	 * Specs on http://plant.blogger.com/api and https://groups.yahoo.com/group/bloggerDev/
+	 * Các hàm Blogger API.
+	 * Thông số kỹ thuật tại http://plant.blogger.com/api và https://groups.yahoo.com/group/bloggerDev/
 	 */
 
 	/**
-	 * Retrieves blogs that user owns.
+	 * Lấy các blog mà người dùng sở hữu.
 	 *
-	 * Will make more sense once we support multiple blogs.
+	 * Sẽ có ý nghĩa hơn khi chúng ta hỗ trợ nhiều blog.
 	 *
 	 * @since 1.5.0
 	 *
 	 * @param array $args {
-	 *     Method arguments. Note: arguments must be ordered as documented.
+	 *     Các đối số của phương thức. Lưu ý: các đối số phải được sắp xếp theo thứ tự như tài liệu.
 	 *
-	 *     @type int    $0 Blog ID (unused).
-	 *     @type string $1 Username.
-	 *     @type string $2 Password.
+	 *     @type int    $0 Blog ID (không sử dụng).
+	 *     @type string $1 Tên người dùng.
+	 *     @type string $2 Mật khẩu.
 	 * }
 	 * @return array|IXR_Error
 	 */

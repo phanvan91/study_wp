@@ -4010,11 +4010,11 @@ function wp_trim_excerpt( $text = '', $post = null ) {
 		$excerpt_length = (int) apply_filters( 'excerpt_length', $excerpt_length );
 
 		/**
-		 * Filters the string in the "more" link displayed after a trimmed excerpt.
+		 * Lọc chuỗi trong liên kết "xem thêm" hiển thị sau đoạn trích đã cắt.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param string $more_string The string shown within the more link.
+		 * @param string $more_string Chuỗi hiển thị bên trong liên kết xem thêm.
 		 */
 		$excerpt_more = apply_filters( 'excerpt_more', ' ' . '[&hellip;]' );
 		$text         = wp_trim_words( $text, $excerpt_length, $excerpt_more );
@@ -4022,29 +4022,29 @@ function wp_trim_excerpt( $text = '', $post = null ) {
 	}
 
 	/**
-	 * Filters the trimmed excerpt string.
+	 * Lọc chuỗi đoạn trích đã cắt.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $text        The trimmed text.
-	 * @param string $raw_excerpt The text prior to trimming.
+	 * @param string $text        Văn bản đã cắt.
+	 * @param string $raw_excerpt Văn bản trước khi cắt.
 	 */
 	return apply_filters( 'wp_trim_excerpt', $text, $raw_excerpt );
 }
 
 /**
- * Trims text to a certain number of words.
+ * Cắt văn bản theo một số lượng từ nhất định.
  *
- * This function is localized. For languages that count 'words' by the individual
- * character (such as East Asian languages), the $num_words argument will apply
- * to the number of individual characters.
+ * Hàm này được bản địa hóa. Đối với các ngôn ngữ đếm 'từ' theo từng ký tự
+ * riêng lẻ (như các ngôn ngữ Đông Á), tham số $num_words sẽ áp dụng
+ * cho số lượng ký tự riêng lẻ.
  *
  * @since 3.3.0
  *
- * @param string $text      Text to trim.
- * @param int    $num_words Number of words. Default 55.
- * @param string $more      Optional. What to append if $text needs to be trimmed. Default '&hellip;'.
- * @return string Trimmed text.
+ * @param string $text      Văn bản cần cắt.
+ * @param int    $num_words Số từ. Mặc định 55.
+ * @param string $more      Tùy chọn. Nội dung thêm vào nếu $text cần được cắt. Mặc định '&hellip;'.
+ * @return string Văn bản đã cắt.
  */
 function wp_trim_words( $text, $num_words = 55, $more = null ) {
 	if ( null === $more ) {
@@ -4074,37 +4074,37 @@ function wp_trim_words( $text, $num_words = 55, $more = null ) {
 	}
 
 	/**
-	 * Filters the text content after words have been trimmed.
+	 * Lọc nội dung văn bản sau khi đã cắt từ.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string $text          The trimmed text.
-	 * @param int    $num_words     The number of words to trim the text to. Default 55.
-	 * @param string $more          An optional string to append to the end of the trimmed text, e.g. &hellip;.
-	 * @param string $original_text The text before it was trimmed.
+	 * @param string $text          Văn bản đã cắt.
+	 * @param int    $num_words     Số từ để cắt văn bản. Mặc định 55.
+	 * @param string $more          Chuỗi tùy chọn thêm vào cuối văn bản đã cắt, ví dụ &hellip;.
+	 * @param string $original_text Văn bản trước khi cắt.
 	 */
 	return apply_filters( 'wp_trim_words', $text, $num_words, $more, $original_text );
 }
 
 /**
- * Converts named entities into numbered entities.
+ * Chuyển đổi thực thể có tên thành thực thể có số.
  *
  * @since 1.5.1
  *
- * @param string $text The text within which entities will be converted.
- * @return string Text with converted entities.
+ * @param string $text Văn bản chứa các thực thể sẽ được chuyển đổi.
+ * @return string Văn bản với các thực thể đã chuyển đổi.
  */
 function ent2ncr( $text ) {
 
 	/**
-	 * Filters text before named entities are converted into numbered entities.
+	 * Lọc văn bản trước khi thực thể có tên được chuyển đổi thành thực thể có số.
 	 *
-	 * A non-null string must be returned for the filter to be evaluated.
+	 * Phải trả về một chuỗi không null để bộ lọc được đánh giá.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param string|null $converted_text The text to be converted. Default null.
-	 * @param string      $text           The text prior to entity conversion.
+	 * @param string|null $converted_text Văn bản sẽ được chuyển đổi. Mặc định null.
+	 * @param string      $text           Văn bản trước khi chuyển đổi thực thể.
 	 */
 	$filtered = apply_filters( 'pre_ent2ncr', null, $text );
 	if ( null !== $filtered ) {
@@ -4374,22 +4374,22 @@ function ent2ncr( $text ) {
 }
 
 /**
- * Formats text for the editor.
+ * Định dạng văn bản cho trình soạn thảo.
  *
- * Generally the browsers treat everything inside a textarea as text, but
- * it is still a good idea to HTML entity encode `<`, `>` and `&` in the content.
+ * Thông thường các trình duyệt xử lý mọi thứ bên trong textarea như văn bản thuần,
+ * nhưng vẫn nên mã hóa thực thể HTML cho `<`, `>` và `&` trong nội dung.
  *
- * The filter {@see 'format_for_editor'} is applied here. If `$text` is empty the
- * filter will be applied to an empty string.
+ * Bộ lọc {@see 'format_for_editor'} được áp dụng ở đây. Nếu `$text` rỗng,
+ * bộ lọc sẽ được áp dụng cho chuỗi rỗng.
  *
  * @since 4.3.0
  *
  * @see _WP_Editors::editor()
  *
- * @param string $text           The text to be formatted.
- * @param string $default_editor The default editor for the current user.
- *                               It is usually either 'html' or 'tinymce'.
- * @return string The formatted text after filter is applied.
+ * @param string $text           Văn bản cần định dạng.
+ * @param string $default_editor Trình soạn thảo mặc định cho người dùng hiện tại.
+ *                               Thường là 'html' hoặc 'tinymce'.
+ * @return string Văn bản đã định dạng sau khi bộ lọc được áp dụng.
  */
 function format_for_editor( $text, $default_editor = null ) {
 	if ( $text ) {
@@ -4397,31 +4397,31 @@ function format_for_editor( $text, $default_editor = null ) {
 	}
 
 	/**
-	 * Filters the text after it is formatted for the editor.
+	 * Lọc văn bản sau khi được định dạng cho trình soạn thảo.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param string $text           The formatted text.
-	 * @param string $default_editor The default editor for the current user.
-	 *                               It is usually either 'html' or 'tinymce'.
+	 * @param string $text           Văn bản đã định dạng.
+	 * @param string $default_editor Trình soạn thảo mặc định cho người dùng hiện tại.
+	 *                               Thường là 'html' hoặc 'tinymce'.
 	 */
 	return apply_filters( 'format_for_editor', $text, $default_editor );
 }
 
 /**
- * Performs a deep string replace operation to ensure the values in $search are no longer present.
+ * Thực hiện thao tác thay thế chuỗi sâu để đảm bảo các giá trị trong $search không còn tồn tại.
  *
- * Repeats the replacement operation until it no longer replaces anything to remove "nested" values
- * e.g. $subject = '%0%0%0DDD', $search ='%0D', $result ='' rather than the '%0%0DD' that
- * str_replace would return
+ * Lặp lại thao tác thay thế cho đến khi không còn thay thế được gì để xóa các giá trị "lồng nhau"
+ * ví dụ $subject = '%0%0%0DDD', $search ='%0D', $result ='' thay vì '%0%0DD' mà
+ * str_replace sẽ trả về
  *
  * @since 2.8.1
  * @access private
  *
- * @param string|array $search  The value being searched for, otherwise known as the needle.
- *                              An array may be used to designate multiple needles.
- * @param string       $subject The string being searched and replaced on, otherwise known as the haystack.
- * @return string The string with the replaced values.
+ * @param string|array $search  Giá trị đang tìm kiếm, còn gọi là kim.
+ *                              Có thể sử dụng mảng để chỉ định nhiều kim.
+ * @param string       $subject Chuỗi đang được tìm kiếm và thay thế, còn gọi là đống cỏ.
+ * @return string Chuỗi với các giá trị đã thay thế.
  */
 function _deep_replace( $search, $subject ) {
 	$subject = (string) $subject;
@@ -4435,23 +4435,23 @@ function _deep_replace( $search, $subject ) {
 }
 
 /**
- * Escapes data for use in a MySQL query.
+ * Escape dữ liệu để sử dụng trong truy vấn MySQL.
  *
- * Usually you should prepare queries using wpdb::prepare().
- * Sometimes, spot-escaping is required or useful. One example
- * is preparing an array for use in an IN clause.
+ * Thông thường bạn nên chuẩn bị truy vấn bằng wpdb::prepare().
+ * Đôi khi, escape tại chỗ là cần thiết hoặc hữu ích. Một ví dụ
+ * là chuẩn bị mảng để sử dụng trong mệnh đề IN.
  *
- * NOTE: Since 4.8.3, '%' characters will be replaced with a placeholder string,
- * this prevents certain SQLi attacks from taking place. This change in behavior
- * may cause issues for code that expects the return value of esc_sql() to be usable
- * for other purposes.
+ * LƯU Ý: Kể từ 4.8.3, các ký tự '%' sẽ được thay thế bằng chuỗi placeholder,
+ * điều này ngăn chặn một số cuộc tấn công SQLi. Thay đổi hành vi này
+ * có thể gây ra vấn đề cho mã nguồn mong đợi giá trị trả về của esc_sql() có thể sử dụng
+ * cho các mục đích khác.
  *
  * @since 2.8.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string|array $data Unescaped data.
- * @return string|array Escaped data, in the same type as supplied.
+ * @param string|array $data Dữ liệu chưa được escape.
+ * @return string|array Dữ liệu đã escape, cùng kiểu dữ liệu như đã cung cấp.
  */
 function esc_sql( $data ) {
 	global $wpdb;
@@ -4459,21 +4459,21 @@ function esc_sql( $data ) {
 }
 
 /**
- * Checks and cleans a URL.
+ * Kiểm tra và làm sạch URL.
  *
- * A number of characters are removed from the URL. If the URL is for displaying
- * (the default behavior) ampersands are also replaced. The {@see 'clean_url'} filter
- * is applied to the returned cleaned URL.
+ * Một số ký tự được xóa khỏi URL. Nếu URL dùng để hiển thị
+ * (hành vi mặc định) thì dấu & cũng được thay thế. Bộ lọc {@see 'clean_url'}
+ * được áp dụng cho URL đã làm sạch trả về.
  *
  * @since 2.8.0
  *
- * @param string   $url       The URL to be cleaned.
- * @param string[] $protocols Optional. An array of acceptable protocols.
- *                            Defaults to return value of wp_allowed_protocols().
- * @param string   $_context  Private. Use sanitize_url() for database usage.
- * @return string The cleaned URL after the {@see 'clean_url'} filter is applied.
- *                An empty string is returned if `$url` specifies a protocol other than
- *                those in `$protocols`, or if `$url` contains an empty string.
+ * @param string   $url       URL cần làm sạch.
+ * @param string[] $protocols Tùy chọn. Mảng các giao thức được chấp nhận.
+ *                            Mặc định là giá trị trả về của wp_allowed_protocols().
+ * @param string   $_context  Riêng tư. Sử dụng sanitize_url() cho cơ sở dữ liệu.
+ * @return string URL đã làm sạch sau khi bộ lọc {@see 'clean_url'} được áp dụng.
+ *                Trả về chuỗi rỗng nếu `$url` chỉ định giao thức không nằm trong
+ *                `$protocols`, hoặc nếu `$url` chứa chuỗi rỗng.
  */
 function esc_url( $url, $protocols = null, $_context = 'display' ) {
 	$original_url = $url;
@@ -4496,9 +4496,9 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 
 	$url = str_replace( ';//', '://', $url );
 	/*
-	 * If the URL doesn't appear to contain a scheme, we presume
-	 * it needs http:// prepended (unless it's a relative link
-	 * starting with /, # or ?, or a PHP file).
+	 * Nếu URL không có vẻ chứa scheme, chúng ta giả định
+	 * nó cần thêm http:// vào đầu (trừ khi đó là liên kết tương đối
+	 * bắt đầu bằng /, # hoặc ?, hoặc là tệp PHP).
 	 */
 	if ( ! str_contains( $url, ':' ) && ! in_array( $url[0], array( '/', '#', '?' ), true ) &&
 		! preg_match( '/^[a-z0-9-]+?\.php/i', $url )
@@ -4506,7 +4506,7 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 		$url = 'http://' . $url;
 	}
 
-	// Replace ampersands and single quotes only when displaying.
+	// Thay thế dấu & và dấu nháy đơn chỉ khi hiển thị.
 	if ( 'display' === $_context ) {
 		$url = wp_kses_normalize_entities( $url );
 		$url = str_replace( '&amp;', '&#038;', $url );
@@ -4563,63 +4563,63 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 	}
 
 	/**
-	 * Filters a string cleaned and escaped for output as a URL.
+	 * Lọc chuỗi đã làm sạch và escape để xuất ra dưới dạng URL.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param string $good_protocol_url The cleaned URL to be returned.
-	 * @param string $original_url      The URL prior to cleaning.
-	 * @param string $_context          If 'display', replace ampersands and single quotes only.
+	 * @param string $good_protocol_url URL đã làm sạch sẽ được trả về.
+	 * @param string $original_url      URL trước khi làm sạch.
+	 * @param string $_context          Nếu là 'display', chỉ thay thế dấu & và dấu nháy đơn.
 	 */
 	return apply_filters( 'clean_url', $good_protocol_url, $original_url, $_context );
 }
 
 /**
- * Sanitizes a URL for database or redirect usage.
+ * Làm sạch URL cho mục đích cơ sở dữ liệu hoặc chuyển hướng.
  *
- * This function is an alias for sanitize_url().
+ * Hàm này là alias cho sanitize_url().
  *
  * @since 2.8.0
- * @since 6.1.0 Turned into an alias for sanitize_url().
+ * @since 6.1.0 Chuyển thành alias cho sanitize_url().
  *
  * @see sanitize_url()
  *
- * @param string   $url       The URL to be cleaned.
- * @param string[] $protocols Optional. An array of acceptable protocols.
- *                            Defaults to return value of wp_allowed_protocols().
- * @return string The cleaned URL after sanitize_url() is run.
+ * @param string   $url       URL cần làm sạch.
+ * @param string[] $protocols Tùy chọn. Mảng các giao thức được chấp nhận.
+ *                            Mặc định là giá trị trả về của wp_allowed_protocols().
+ * @return string URL đã làm sạch sau khi chạy sanitize_url().
  */
 function esc_url_raw( $url, $protocols = null ) {
 	return sanitize_url( $url, $protocols );
 }
 
 /**
- * Sanitizes a URL for database or redirect usage.
+ * Làm sạch URL cho mục đích cơ sở dữ liệu hoặc chuyển hướng.
  *
  * @since 2.3.1
- * @since 2.8.0 Deprecated in favor of esc_url_raw().
- * @since 5.9.0 Restored (un-deprecated).
+ * @since 2.8.0 Không dùng nữa, ưu tiên esc_url_raw().
+ * @since 5.9.0 Khôi phục (bỏ deprecated).
  *
  * @see esc_url()
  *
- * @param string   $url       The URL to be cleaned.
- * @param string[] $protocols Optional. An array of acceptable protocols.
- *                            Defaults to return value of wp_allowed_protocols().
- * @return string The cleaned URL after esc_url() is run with the 'db' context.
+ * @param string   $url       URL cần làm sạch.
+ * @param string[] $protocols Tùy chọn. Mảng các giao thức được chấp nhận.
+ *                            Mặc định là giá trị trả về của wp_allowed_protocols().
+ * @return string URL đã làm sạch sau khi chạy esc_url() với ngữ cảnh 'db'.
  */
 function sanitize_url( $url, $protocols = null ) {
 	return esc_url( $url, $protocols, 'db' );
 }
 
 /**
- * Converts entities, while preserving already-encoded entities.
+ * Chuyển đổi thực thể, đồng thời bảo toàn các thực thể đã được mã hóa.
  *
- * @link https://www.php.net/htmlentities Borrowed from the PHP Manual user notes.
+ * @link https://www.php.net/htmlentities Tham khảo từ ghi chú người dùng PHP Manual.
  *
  * @since 1.2.2
  *
- * @param string $text The text to be converted.
- * @return string Converted text.
+ * @param string $text Văn bản cần chuyển đổi.
+ * @return string Văn bản đã chuyển đổi.
  */
 function htmlentities2( $text ) {
 	$translation_table = get_html_translation_table( HTML_ENTITIES, ENT_QUOTES );
@@ -4630,16 +4630,16 @@ function htmlentities2( $text ) {
 }
 
 /**
- * Escapes single quotes, `"`, `<`, `>`, `&`, and fixes line endings.
+ * Escape dấu nháy đơn, `"`, `<`, `>`, `&`, và sửa ký tự xuống dòng.
  *
- * Escapes text strings for echoing in JS. It is intended to be used for inline JS
- * (in a tag attribute, for example `onclick="..."`). Note that the strings have to
- * be in single quotes. The {@see 'js_escape'} filter is also applied here.
+ * Escape chuỗi văn bản để hiển thị trong JS. Được thiết kế để sử dụng cho JS nội tuyến
+ * (trong thuộc tính thẻ, ví dụ `onclick="..."`). Lưu ý rằng các chuỗi phải
+ * nằm trong dấu nháy đơn. Bộ lọc {@see 'js_escape'} cũng được áp dụng ở đây.
  *
  * @since 2.8.0
  *
- * @param string $text The text to be escaped.
- * @return string Escaped text.
+ * @param string $text Văn bản cần escape.
+ * @return string Văn bản đã escape.
  */
 function esc_js( $text ) {
 	$safe_text = wp_check_invalid_utf8( $text );
@@ -4648,21 +4648,21 @@ function esc_js( $text ) {
 	$safe_text = str_replace( "\r", '', $safe_text );
 	$safe_text = str_replace( "\n", '\\n', addslashes( $safe_text ) );
 	/**
-	 * Filters a string cleaned and escaped for output in JavaScript.
+	 * Lọc chuỗi đã làm sạch và escape để xuất ra trong JavaScript.
 	 *
-	 * Text passed to esc_js() is stripped of invalid or special characters,
-	 * and properly slashed for output.
+	 * Văn bản truyền vào esc_js() được loại bỏ các ký tự không hợp lệ hoặc đặc biệt,
+	 * và được thêm dấu gạch chéo đúng cách cho đầu ra.
 	 *
 	 * @since 2.0.6
 	 *
-	 * @param string $safe_text The text after it has been escaped.
-	 * @param string $text      The text prior to being escaped.
+	 * @param string $safe_text Văn bản sau khi đã escape.
+	 * @param string $text      Văn bản trước khi escape.
 	 */
 	return apply_filters( 'js_escape', $safe_text, $text );
 }
 
 /**
- * Escaping for HTML blocks.
+ * Escape cho khối HTML.
  *
  * @since 2.8.0
  *
@@ -4673,21 +4673,21 @@ function esc_html( $text ) {
 	$safe_text = wp_check_invalid_utf8( $text );
 	$safe_text = _wp_specialchars( $safe_text, ENT_QUOTES );
 	/**
-	 * Filters a string cleaned and escaped for output in HTML.
+	 * Lọc chuỗi đã làm sạch và escape để xuất ra trong HTML.
 	 *
-	 * Text passed to esc_html() is stripped of invalid or special characters
-	 * before output.
+	 * Văn bản truyền vào esc_html() được loại bỏ các ký tự không hợp lệ hoặc đặc biệt
+	 * trước khi xuất ra.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $safe_text The text after it has been escaped.
-	 * @param string $text      The text prior to being escaped.
+	 * @param string $safe_text Văn bản sau khi đã escape.
+	 * @param string $text      Văn bản trước khi escape.
 	 */
 	return apply_filters( 'esc_html', $safe_text, $text );
 }
 
 /**
- * Escaping for HTML attributes.
+ * Escape cho thuộc tính HTML.
  *
  * @since 2.8.0
  *
@@ -4698,21 +4698,21 @@ function esc_attr( $text ) {
 	$safe_text = wp_check_invalid_utf8( $text );
 	$safe_text = _wp_specialchars( $safe_text, ENT_QUOTES );
 	/**
-	 * Filters a string cleaned and escaped for output in an HTML attribute.
+	 * Lọc chuỗi đã làm sạch và escape để xuất ra trong thuộc tính HTML.
 	 *
-	 * Text passed to esc_attr() is stripped of invalid or special characters
-	 * before output.
+	 * Văn bản truyền vào esc_attr() được loại bỏ các ký tự không hợp lệ hoặc đặc biệt
+	 * trước khi xuất ra.
 	 *
 	 * @since 2.0.6
 	 *
-	 * @param string $safe_text The text after it has been escaped.
-	 * @param string $text      The text prior to being escaped.
+	 * @param string $safe_text Văn bản sau khi đã escape.
+	 * @param string $text      Văn bản trước khi escape.
 	 */
 	return apply_filters( 'attribute_escape', $safe_text, $text );
 }
 
 /**
- * Escaping for textarea values.
+ * Escape cho giá trị textarea.
  *
  * @since 3.1.0
  *
@@ -4722,23 +4722,23 @@ function esc_attr( $text ) {
 function esc_textarea( $text ) {
 	$safe_text = htmlspecialchars( $text, ENT_QUOTES, get_option( 'blog_charset' ) );
 	/**
-	 * Filters a string cleaned and escaped for output in a textarea element.
+	 * Lọc chuỗi đã làm sạch và escape để xuất ra trong phần tử textarea.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param string $safe_text The text after it has been escaped.
-	 * @param string $text      The text prior to being escaped.
+	 * @param string $safe_text Văn bản sau khi đã escape.
+	 * @param string $text      Văn bản trước khi escape.
 	 */
 	return apply_filters( 'esc_textarea', $safe_text, $text );
 }
 
 /**
- * Escaping for XML blocks.
+ * Escape cho khối XML.
  *
  * @since 5.5.0
  *
- * @param string $text Text to escape.
- * @return string Escaped text.
+ * @param string $text Văn bản cần escape.
+ * @return string Văn bản đã escape.
  */
 function esc_xml( $text ) {
 	$safe_text = wp_check_invalid_utf8( $text );
@@ -4764,27 +4764,27 @@ EOF;
 			}
 
 			if ( isset( $matches['non_cdata'] ) ) {
-				// escape HTML entities in the non-CDATA Section.
+				// escape các thực thể HTML trong phần không phải CDATA.
 				return _wp_specialchars( $matches['non_cdata'], ENT_XML1 );
 			}
 
-			// Return the CDATA Section unchanged, escape HTML entities in the rest.
+			// Trả về phần CDATA không thay đổi, escape các thực thể HTML trong phần còn lại.
 			return _wp_specialchars( $matches['non_cdata_followed_by_cdata'], ENT_XML1 ) . $matches['cdata'];
 		},
 		$safe_text
 	);
 
 	/**
-	 * Filters a string cleaned and escaped for output in XML.
+	 * Lọc chuỗi đã làm sạch và escape để xuất ra trong XML.
 	 *
-	 * Text passed to esc_xml() is stripped of invalid or special characters
-	 * before output. HTML named character references are converted to their
-	 * equivalent code points.
+	 * Văn bản truyền vào esc_xml() được loại bỏ các ký tự không hợp lệ hoặc đặc biệt
+	 * trước khi xuất ra. Tham chiếu ký tự HTML có tên được chuyển đổi thành
+	 * mã điểm tương ứng.
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param string $safe_text The text after it has been escaped.
-	 * @param string $text      The text prior to being escaped.
+	 * @param string $safe_text Văn bản sau khi đã escape.
+	 * @param string $text      Văn bản trước khi escape.
 	 */
 	return apply_filters( 'esc_xml', $safe_text, $text );
 }

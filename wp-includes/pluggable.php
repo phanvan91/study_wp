@@ -805,45 +805,45 @@ if ( ! function_exists( 'wp_validate_auth_cookie' ) ) :
 		$manager = WP_Session_Tokens::get_instance( $user->ID );
 		if ( ! $manager->verify( $token ) ) {
 			/**
-			 * Fires if a bad session token is encountered.
+			 * Kích hoạt nếu gặp token phiên làm việc không hợp lệ.
 			 *
 			 * @since 4.0.0
 			 *
 			 * @param string[] $cookie_elements {
-			 *     Authentication cookie components. None of the components should be assumed
-			 *     to be valid as they come directly from a client-provided cookie value.
+			 *     Các thành phần cookie xác thực. Không nên giả định bất kỳ thành phần nào
+			 *     là hợp lệ vì chúng đến trực tiếp từ giá trị cookie do client cung cấp.
 			 *
-			 *     @type string $username   User's username.
-			 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-			 *     @type string $token      User's session token used.
-			 *     @type string $hmac       The security hash for the cookie.
-			 *     @type string $scheme     The cookie scheme to use.
+			 *     @type string $username   Tên đăng nhập của người dùng.
+			 *     @type string $expiration Thời gian cookie hết hạn dưới dạng timestamp UNIX.
+			 *     @type string $token      Token phiên làm việc của người dùng được sử dụng.
+			 *     @type string $hmac       Hash bảo mật cho cookie.
+			 *     @type string $scheme     Sơ đồ cookie để sử dụng.
 			 * }
 			 */
 			do_action( 'auth_cookie_bad_session_token', $cookie_elements );
 			return false;
 		}
 
-		// Ajax/POST grace period set above.
+		// Thời gian gia hạn Ajax/POST đã được thiết lập ở trên.
 		if ( $expiration < time() ) {
 			$GLOBALS['login_grace_period'] = 1;
 		}
 
 		/**
-		 * Fires once an authentication cookie has been validated.
+		 * Kích hoạt khi cookie xác thực đã được xác nhận hợp lệ.
 		 *
 		 * @since 2.7.0
 		 *
 		 * @param string[] $cookie_elements {
-		 *     Authentication cookie components.
+		 *     Các thành phần cookie xác thực.
 		 *
-		 *     @type string $username   User's username.
-		 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-		 *     @type string $token      User's session token used.
-		 *     @type string $hmac       The security hash for the cookie.
-		 *     @type string $scheme     The cookie scheme to use.
+		 *     @type string $username   Tên đăng nhập của người dùng.
+		 *     @type string $expiration Thời gian cookie hết hạn dưới dạng timestamp UNIX.
+		 *     @type string $token      Token phiên làm việc của người dùng được sử dụng.
+		 *     @type string $hmac       Hash bảo mật cho cookie.
+		 *     @type string $scheme     Sơ đồ cookie để sử dụng.
 		 * }
-		 * @param WP_User  $user            User object.
+		 * @param WP_User  $user            Đối tượng người dùng.
 		 */
 		do_action( 'auth_cookie_valid', $cookie_elements, $user );
 
@@ -853,17 +853,17 @@ endif;
 
 if ( ! function_exists( 'wp_generate_auth_cookie' ) ) :
 	/**
-	 * Generates authentication cookie contents.
+	 * Tạo nội dung cookie xác thực.
 	 *
 	 * @since 2.5.0
-	 * @since 4.0.0 The `$token` parameter was added.
+	 * @since 4.0.0 Thêm tham số `$token`.
 	 *
-	 * @param int    $user_id    User ID.
-	 * @param int    $expiration The time the cookie expires as a UNIX timestamp.
-	 * @param string $scheme     Optional. The cookie scheme to use: 'auth', 'secure_auth', or 'logged_in'.
-	 *                           Default 'auth'.
-	 * @param string $token      User's session token to use for this cookie.
-	 * @return string Authentication cookie contents. Empty string if user does not exist.
+	 * @param int    $user_id    ID người dùng.
+	 * @param int    $expiration Thời gian cookie hết hạn dưới dạng timestamp UNIX.
+	 * @param string $scheme     Tùy chọn. Sơ đồ cookie để sử dụng: 'auth', 'secure_auth', hoặc 'logged_in'.
+	 *                           Mặc định 'auth'.
+	 * @param string $token      Token phiên làm việc của người dùng cho cookie này.
+	 * @return string Nội dung cookie xác thực. Chuỗi rỗng nếu người dùng không tồn tại.
 	 */
 	function wp_generate_auth_cookie( $user_id, $expiration, $scheme = 'auth', $token = '' ) {
 		$user = get_userdata( $user_id );
@@ -877,10 +877,10 @@ if ( ! function_exists( 'wp_generate_auth_cookie' ) ) :
 		}
 
 		if ( str_starts_with( $user->user_pass, '$P$' ) || str_starts_with( $user->user_pass, '$2y$' ) ) {
-			// Retain previous behaviour of phpass or vanilla bcrypt hashed passwords.
+			// Giữ lại hành vi trước đây của mật khẩu được hash bằng phpass hoặc bcrypt thuần.
 			$pass_frag = substr( $user->user_pass, 8, 4 );
 		} else {
-			// Otherwise, use a substring from the end of the hash to avoid dealing with potentially long hash prefixes.
+			// Ngược lại, sử dụng chuỗi con từ cuối hash để tránh xử lý các tiền tố hash có thể dài.
 			$pass_frag = substr( $user->user_pass, -4 );
 		}
 
@@ -891,16 +891,16 @@ if ( ! function_exists( 'wp_generate_auth_cookie' ) ) :
 		$cookie = $user->user_login . '|' . $expiration . '|' . $token . '|' . $hash;
 
 		/**
-		 * Filters the authentication cookie.
+		 * Lọc cookie xác thực.
 		 *
 		 * @since 2.5.0
-		 * @since 4.0.0 The `$token` parameter was added.
+		 * @since 4.0.0 Thêm tham số `$token`.
 		 *
-		 * @param string $cookie     Authentication cookie.
-		 * @param int    $user_id    User ID.
-		 * @param int    $expiration The time the cookie expires as a UNIX timestamp.
-		 * @param string $scheme     Cookie scheme used. Accepts 'auth', 'secure_auth', or 'logged_in'.
-		 * @param string $token      User's session token used.
+		 * @param string $cookie     Cookie xác thực.
+		 * @param int    $user_id    ID người dùng.
+		 * @param int    $expiration Thời gian cookie hết hạn dưới dạng timestamp UNIX.
+		 * @param string $scheme     Sơ đồ cookie được sử dụng. Chấp nhận 'auth', 'secure_auth', hoặc 'logged_in'.
+		 * @param string $token      Token phiên làm việc của người dùng được sử dụng.
 		 */
 		return apply_filters( 'auth_cookie', $cookie, $user_id, $expiration, $scheme, $token );
 	}
@@ -908,23 +908,23 @@ endif;
 
 if ( ! function_exists( 'wp_parse_auth_cookie' ) ) :
 	/**
-	 * Parses a cookie into its components.
+	 * Phân tích cookie thành các thành phần.
 	 *
 	 * @since 2.7.0
-	 * @since 4.0.0 The `$token` element was added to the return value.
+	 * @since 4.0.0 Thêm phần tử `$token` vào giá trị trả về.
 	 *
-	 * @param string $cookie Authentication cookie.
-	 * @param string $scheme Optional. The cookie scheme to use: 'auth', 'secure_auth', or 'logged_in'.
+	 * @param string $cookie Cookie xác thực.
+	 * @param string $scheme Tùy chọn. Sơ đồ cookie để sử dụng: 'auth', 'secure_auth', hoặc 'logged_in'.
 	 * @return string[]|false {
-	 *     Authentication cookie components. None of the components should be assumed
-	 *     to be valid as they come directly from a client-provided cookie value. If
-	 *     the cookie value is malformed, false is returned.
+	 *     Các thành phần cookie xác thực. Không nên giả định bất kỳ thành phần nào
+	 *     là hợp lệ vì chúng đến trực tiếp từ giá trị cookie do client cung cấp. Nếu
+	 *     giá trị cookie bị sai định dạng, false sẽ được trả về.
 	 *
-	 *     @type string $username   User's username.
-	 *     @type string $expiration The time the cookie expires as a UNIX timestamp.
-	 *     @type string $token      User's session token used.
-	 *     @type string $hmac       The security hash for the cookie.
-	 *     @type string $scheme     The cookie scheme to use.
+	 *     @type string $username   Tên đăng nhập của người dùng.
+	 *     @type string $expiration Thời gian cookie hết hạn dưới dạng timestamp UNIX.
+	 *     @type string $token      Token phiên làm việc của người dùng được sử dụng.
+	 *     @type string $hmac       Hash bảo mật cho cookie.
+	 *     @type string $scheme     Sơ đồ cookie để sử dụng.
 	 * }
 	 */
 	function wp_parse_auth_cookie( $cookie = '', $scheme = '' ) {
@@ -968,41 +968,41 @@ endif;
 
 if ( ! function_exists( 'wp_set_auth_cookie' ) ) :
 	/**
-	 * Sets the authentication cookies based on user ID.
+	 * Thiết lập cookie xác thực dựa trên ID người dùng.
 	 *
-	 * The $remember parameter increases the time that the cookie will be kept. The
-	 * default the cookie is kept without remembering is two days. When $remember is
-	 * set, the cookies will be kept for 14 days or two weeks.
+	 * Tham số $remember tăng thời gian giữ cookie. Mặc định cookie được giữ
+	 * mà không ghi nhớ là hai ngày. Khi $remember được thiết lập, cookie sẽ
+	 * được giữ trong 14 ngày hoặc hai tuần.
 	 *
 	 * @since 2.5.0
-	 * @since 4.3.0 Added the `$token` parameter.
+	 * @since 4.3.0 Thêm tham số `$token`.
 	 *
-	 * @param int         $user_id  User ID.
-	 * @param bool        $remember Whether to remember the user.
-	 * @param bool|string $secure   Whether the auth cookie should only be sent over HTTPS. Default is an empty
-	 *                              string which means the value of `is_ssl()` will be used.
-	 * @param string      $token    Optional. User's session token to use for this cookie.
+	 * @param int         $user_id  ID người dùng.
+	 * @param bool        $remember Có ghi nhớ người dùng hay không.
+	 * @param bool|string $secure   Cookie xác thực chỉ gửi qua HTTPS hay không. Mặc định là chuỗi rỗng
+	 *                              nghĩa là giá trị của `is_ssl()` sẽ được sử dụng.
+	 * @param string      $token    Tùy chọn. Token phiên làm việc của người dùng cho cookie này.
 	 */
 	function wp_set_auth_cookie( $user_id, $remember = false, $secure = '', $token = '' ) {
 		if ( $remember ) {
 			/**
-			 * Filters the duration of the authentication cookie expiration period.
+			 * Lọc thời lượng của khoảng thời gian hết hạn cookie xác thực.
 			 *
 			 * @since 2.8.0
 			 *
-			 * @param int  $length   Duration of the expiration period in seconds.
-			 * @param int  $user_id  User ID.
-			 * @param bool $remember Whether to remember the user login. Default false.
+			 * @param int  $length   Thời lượng của khoảng thời gian hết hạn tính bằng giây.
+			 * @param int  $user_id  ID người dùng.
+			 * @param bool $remember Có ghi nhớ đăng nhập của người dùng hay không. Mặc định false.
 			 */
 			$expiration = time() + apply_filters( 'auth_cookie_expiration', 14 * DAY_IN_SECONDS, $user_id, $remember );
 
 			/*
-			 * Ensure the browser will continue to send the cookie after the expiration time is reached.
-			 * Needed for the login grace period in wp_validate_auth_cookie().
+			 * Đảm bảo trình duyệt sẽ tiếp tục gửi cookie sau khi đến thời gian hết hạn.
+			 * Cần thiết cho thời gian gia hạn đăng nhập trong wp_validate_auth_cookie().
 			 */
 			$expire = $expiration + ( 12 * HOUR_IN_SECONDS );
 		} else {
-			/** This filter is documented in wp-includes/pluggable.php */
+			/** Bộ lọc này được ghi chép trong wp-includes/pluggable.php */
 			$expiration = time() + apply_filters( 'auth_cookie_expiration', 2 * DAY_IN_SECONDS, $user_id, $remember );
 			$expire     = 0;
 		}
@@ -1011,27 +1011,27 @@ if ( ! function_exists( 'wp_set_auth_cookie' ) ) :
 			$secure = is_ssl();
 		}
 
-		// Front-end cookie is secure when the auth cookie is secure and the site's home URL uses HTTPS.
+		// Cookie front-end được bảo mật khi cookie xác thực bảo mật và URL trang chủ sử dụng HTTPS.
 		$secure_logged_in_cookie = $secure && 'https' === parse_url( get_option( 'home' ), PHP_URL_SCHEME );
 
 		/**
-		 * Filters whether the auth cookie should only be sent over HTTPS.
+		 * Lọc xem cookie xác thực có chỉ nên gửi qua HTTPS hay không.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param bool $secure  Whether the cookie should only be sent over HTTPS.
-		 * @param int  $user_id User ID.
+		 * @param bool $secure  Cookie có chỉ nên gửi qua HTTPS hay không.
+		 * @param int  $user_id ID người dùng.
 		 */
 		$secure = apply_filters( 'secure_auth_cookie', $secure, $user_id );
 
 		/**
-		 * Filters whether the logged in cookie should only be sent over HTTPS.
+		 * Lọc xem cookie đăng nhập có chỉ nên gửi qua HTTPS hay không.
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param bool $secure_logged_in_cookie Whether the logged in cookie should only be sent over HTTPS.
-		 * @param int  $user_id                 User ID.
-		 * @param bool $secure                  Whether the auth cookie should only be sent over HTTPS.
+		 * @param bool $secure_logged_in_cookie Cookie đăng nhập có chỉ nên gửi qua HTTPS hay không.
+		 * @param int  $user_id                 ID người dùng.
+		 * @param bool $secure                  Cookie xác thực có chỉ nên gửi qua HTTPS hay không.
 		 */
 		$secure_logged_in_cookie = apply_filters( 'secure_logged_in_cookie', $secure_logged_in_cookie, $user_id, $secure );
 
@@ -1052,54 +1052,54 @@ if ( ! function_exists( 'wp_set_auth_cookie' ) ) :
 		$logged_in_cookie = wp_generate_auth_cookie( $user_id, $expiration, 'logged_in', $token );
 
 		/**
-		 * Fires immediately before the authentication cookie is set.
+		 * Kích hoạt ngay trước khi cookie xác thực được thiết lập.
 		 *
 		 * @since 2.5.0
-		 * @since 4.9.0 The `$token` parameter was added.
+		 * @since 4.9.0 Thêm tham số `$token`.
 		 *
-		 * @param string $auth_cookie Authentication cookie value.
-		 * @param int    $expire      The time the login grace period expires as a UNIX timestamp.
-		 *                            Default is 12 hours past the cookie's expiration time.
-		 * @param int    $expiration  The time when the authentication cookie expires as a UNIX timestamp.
-		 *                            Default is 14 days from now.
-		 * @param int    $user_id     User ID.
-		 * @param string $scheme      Authentication scheme. Values include 'auth' or 'secure_auth'.
-		 * @param string $token       User's session token to use for this cookie.
+		 * @param string $auth_cookie Giá trị cookie xác thực.
+		 * @param int    $expire      Thời gian gia hạn đăng nhập hết hạn dưới dạng timestamp UNIX.
+		 *                            Mặc định là 12 giờ sau thời gian hết hạn cookie.
+		 * @param int    $expiration  Thời gian cookie xác thực hết hạn dưới dạng timestamp UNIX.
+		 *                            Mặc định là 14 ngày kể từ bây giờ.
+		 * @param int    $user_id     ID người dùng.
+		 * @param string $scheme      Sơ đồ xác thực. Các giá trị bao gồm 'auth' hoặc 'secure_auth'.
+		 * @param string $token       Token phiên làm việc của người dùng cho cookie này.
 		 */
 		do_action( 'set_auth_cookie', $auth_cookie, $expire, $expiration, $user_id, $scheme, $token );
 
 		/**
-		 * Fires immediately before the logged-in authentication cookie is set.
+		 * Kích hoạt ngay trước khi cookie xác thực đăng nhập được thiết lập.
 		 *
 		 * @since 2.6.0
-		 * @since 4.9.0 The `$token` parameter was added.
+		 * @since 4.9.0 Thêm tham số `$token`.
 		 *
-		 * @param string $logged_in_cookie The logged-in cookie value.
-		 * @param int    $expire           The time the login grace period expires as a UNIX timestamp.
-		 *                                 Default is 12 hours past the cookie's expiration time.
-		 * @param int    $expiration       The time when the logged-in authentication cookie expires as a UNIX timestamp.
-		 *                                 Default is 14 days from now.
-		 * @param int    $user_id          User ID.
-		 * @param string $scheme           Authentication scheme. Default 'logged_in'.
-		 * @param string $token            User's session token to use for this cookie.
+		 * @param string $logged_in_cookie Giá trị cookie đăng nhập.
+		 * @param int    $expire           Thời gian gia hạn đăng nhập hết hạn dưới dạng timestamp UNIX.
+		 *                                 Mặc định là 12 giờ sau thời gian hết hạn cookie.
+		 * @param int    $expiration       Thời gian cookie xác thực đăng nhập hết hạn dưới dạng timestamp UNIX.
+		 *                                 Mặc định là 14 ngày kể từ bây giờ.
+		 * @param int    $user_id          ID người dùng.
+		 * @param string $scheme           Sơ đồ xác thực. Mặc định 'logged_in'.
+		 * @param string $token            Token phiên làm việc của người dùng cho cookie này.
 		 */
 		do_action( 'set_logged_in_cookie', $logged_in_cookie, $expire, $expiration, $user_id, 'logged_in', $token );
 
 		/**
-		 * Allows preventing auth cookies from actually being sent to the client.
+		 * Cho phép ngăn chặn cookie xác thực được gửi đến client.
 		 *
 		 * @since 4.7.4
-		 * @since 6.2.0 The `$expire`, `$expiration`, `$user_id`, `$scheme`, and `$token` parameters were added.
+		 * @since 6.2.0 Thêm các tham số `$expire`, `$expiration`, `$user_id`, `$scheme`, và `$token`.
 		 *
-		 * @param bool   $send       Whether to send auth cookies to the client. Default true.
-		 * @param int    $expire     The time the login grace period expires as a UNIX timestamp.
-		 *                           Default is 12 hours past the cookie's expiration time. Zero when clearing cookies.
-		 * @param int    $expiration The time when the logged-in authentication cookie expires as a UNIX timestamp.
-		 *                           Default is 14 days from now. Zero when clearing cookies.
-		 * @param int    $user_id    User ID. Zero when clearing cookies.
-		 * @param string $scheme     Authentication scheme. Values include 'auth' or 'secure_auth'.
-		 *                           Empty string when clearing cookies.
-		 * @param string $token      User's session token to use for this cookie. Empty string when clearing cookies.
+		 * @param bool   $send       Có gửi cookie xác thực đến client hay không. Mặc định true.
+		 * @param int    $expire     Thời gian gia hạn đăng nhập hết hạn dưới dạng timestamp UNIX.
+		 *                           Mặc định là 12 giờ sau thời gian hết hạn cookie. Bằng không khi xóa cookie.
+		 * @param int    $expiration Thời gian cookie xác thực đăng nhập hết hạn dưới dạng timestamp UNIX.
+		 *                           Mặc định là 14 ngày kể từ bây giờ. Bằng không khi xóa cookie.
+		 * @param int    $user_id    ID người dùng. Bằng không khi xóa cookie.
+		 * @param string $scheme     Sơ đồ xác thực. Các giá trị bao gồm 'auth' hoặc 'secure_auth'.
+		 *                           Chuỗi rỗng khi xóa cookie.
+		 * @param string $token      Token phiên làm việc của người dùng cho cookie này. Chuỗi rỗng khi xóa cookie.
 		 */
 		if ( ! apply_filters( 'send_auth_cookies', true, $expire, $expiration, $user_id, $scheme, $token ) ) {
 			return;
@@ -1116,24 +1116,24 @@ endif;
 
 if ( ! function_exists( 'wp_clear_auth_cookie' ) ) :
 	/**
-	 * Removes all of the cookies associated with authentication.
+	 * Xóa tất cả cookie liên quan đến xác thực.
 	 *
 	 * @since 2.5.0
 	 */
 	function wp_clear_auth_cookie() {
 		/**
-		 * Fires just before the authentication cookies are cleared.
+		 * Kích hoạt ngay trước khi các cookie xác thực bị xóa.
 		 *
 		 * @since 2.7.0
 		 */
 		do_action( 'clear_auth_cookie' );
 
-		/** This filter is documented in wp-includes/pluggable.php */
+		/** Bộ lọc này được ghi chép trong wp-includes/pluggable.php */
 		if ( ! apply_filters( 'send_auth_cookies', true, 0, 0, 0, '', '' ) ) {
 			return;
 		}
 
-		// Auth cookies.
+		// Cookie xác thực.
 		setcookie( AUTH_COOKIE, ' ', time() - YEAR_IN_SECONDS, ADMIN_COOKIE_PATH, COOKIE_DOMAIN );
 		setcookie( SECURE_AUTH_COOKIE, ' ', time() - YEAR_IN_SECONDS, ADMIN_COOKIE_PATH, COOKIE_DOMAIN );
 		setcookie( AUTH_COOKIE, ' ', time() - YEAR_IN_SECONDS, PLUGINS_COOKIE_PATH, COOKIE_DOMAIN );
@@ -1141,23 +1141,23 @@ if ( ! function_exists( 'wp_clear_auth_cookie' ) ) :
 		setcookie( LOGGED_IN_COOKIE, ' ', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN );
 		setcookie( LOGGED_IN_COOKIE, ' ', time() - YEAR_IN_SECONDS, SITECOOKIEPATH, COOKIE_DOMAIN );
 
-		// Settings cookies.
+		// Cookie cài đặt.
 		setcookie( 'wp-settings-' . get_current_user_id(), ' ', time() - YEAR_IN_SECONDS, SITECOOKIEPATH );
 		setcookie( 'wp-settings-time-' . get_current_user_id(), ' ', time() - YEAR_IN_SECONDS, SITECOOKIEPATH );
 
-		// Old cookies.
+		// Cookie cũ.
 		setcookie( AUTH_COOKIE, ' ', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN );
 		setcookie( AUTH_COOKIE, ' ', time() - YEAR_IN_SECONDS, SITECOOKIEPATH, COOKIE_DOMAIN );
 		setcookie( SECURE_AUTH_COOKIE, ' ', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN );
 		setcookie( SECURE_AUTH_COOKIE, ' ', time() - YEAR_IN_SECONDS, SITECOOKIEPATH, COOKIE_DOMAIN );
 
-		// Even older cookies.
+		// Cookie cũ hơn nữa.
 		setcookie( USER_COOKIE, ' ', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN );
 		setcookie( PASS_COOKIE, ' ', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN );
 		setcookie( USER_COOKIE, ' ', time() - YEAR_IN_SECONDS, SITECOOKIEPATH, COOKIE_DOMAIN );
 		setcookie( PASS_COOKIE, ' ', time() - YEAR_IN_SECONDS, SITECOOKIEPATH, COOKIE_DOMAIN );
 
-		// Post password cookie.
+		// Cookie mật khẩu bài viết.
 		setcookie( 'wp-postpass_' . COOKIEHASH, ' ', time() - YEAR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN );
 	}
 endif;

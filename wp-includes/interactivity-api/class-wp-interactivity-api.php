@@ -476,8 +476,8 @@ final class WP_Interactivity_API {
 					}
 
 					/*
-					 * If this tag will visit its closer tag, it adds it to the tag stack
-					 * so it can process its closing tag and check for unbalanced tags.
+					 * Nếu thẻ này sẽ duyệt đến thẻ đóng của nó, nó sẽ thêm vào ngăn xếp thẻ
+					 * để có thể xử lý thẻ đóng và kiểm tra các thẻ không cân bằng.
 					 */
 					if ( $p->has_and_visits_its_closer_tag() ) {
 						$tag_stack[] = array( $tag_name, $directives_prefixes );
@@ -485,20 +485,20 @@ final class WP_Interactivity_API {
 				}
 			}
 			/*
-			 * If the matching opener tag didn't have any directives, it can skip the
-			 * processing.
+			 * Nếu thẻ mở tương ứng không có directive nào, có thể bỏ qua
+			 * quá trình xử lý.
 			 */
 			if ( 0 === count( $directives_prefixes ) ) {
 				continue;
 			}
 
-			// Directive processing might be different depending on if it is entering the tag or exiting it.
+			// Việc xử lý directive có thể khác nhau tùy thuộc vào việc đang vào hay ra khỏi thẻ.
 			$modes = array(
 				'enter' => ! $p->is_tag_closer(),
 				'exit'  => $p->is_tag_closer() || ! $p->has_and_visits_its_closer_tag(),
 			);
 
-			// Get the element attributes to include them in the element representation.
+			// Lấy các thuộc tính phần tử để đưa vào biểu diễn phần tử.
 			$element_attrs = array();
 			$attr_names    = $p->get_attribute_names_with_prefix( '' ) ?? array();
 
@@ -506,7 +506,7 @@ final class WP_Interactivity_API {
 				$element_attrs[ $name ] = $p->get_attribute( $name );
 			}
 
-			// Assign the current element right before running its directive processors.
+			// Gán phần tử hiện tại ngay trước khi chạy các bộ xử lý directive của nó.
 			$this->current_element = array(
 				'attributes' => $element_attrs,
 			);
@@ -517,8 +517,8 @@ final class WP_Interactivity_API {
 				}
 
 				/*
-				 * Sorts the attributes by the order of the `directives_processor` array
-				 * and checks what directives are present in this element.
+				 * Sắp xếp các thuộc tính theo thứ tự của mảng `directives_processor`
+				 * và kiểm tra những directive nào có mặt trong phần tử này.
 				 */
 				$existing_directives_prefixes = array_intersect(
 					'enter' === $mode ? $directive_processor_prefixes : $directive_processor_prefixes_reversed,
@@ -533,21 +533,21 @@ final class WP_Interactivity_API {
 				}
 			}
 
-			// Clear the current element.
+			// Xóa phần tử hiện tại.
 			$this->current_element = null;
 		}
 
 		if ( $unbalanced ) {
-			// Reset the namespace and context stacks to their previous values.
+			// Khôi phục ngăn xếp namespace và context về giá trị trước đó.
 			array_splice( $this->namespace_stack, $namespace_stack_size );
 			array_splice( $this->context_stack, $context_stack_size );
 		}
 
 		/*
-		 * It returns null if the HTML is unbalanced because unbalanced HTML is
-		 * not safe to process. In that case, the Interactivity API runtime will
-		 * update the HTML on the client side during the hydration. It will also
-		 * display a notice to the developer to inform them about the issue.
+		 * Trả về null nếu HTML không cân bằng vì HTML không cân bằng
+		 * không an toàn để xử lý. Trong trường hợp đó, runtime của Interactivity API sẽ
+		 * cập nhật HTML ở phía client trong quá trình hydration. Nó cũng sẽ
+		 * hiển thị thông báo cho nhà phát triển để thông tin về vấn đề này.
 		 */
 		if ( $unbalanced || 0 < count( $tag_stack ) ) {
 			$tag_errored = 0 < count( $tag_stack ) ? end( $tag_stack )[0] : $tag_name;
@@ -561,16 +561,16 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Evaluates the reference path passed to a directive based on the current
-	 * store namespace, state and context.
+	 * Đánh giá đường dẫn tham chiếu được truyền cho directive dựa trên
+	 * namespace store, trạng thái và context hiện tại.
 	 *
 	 * @since 6.5.0
-	 * @since 6.6.0 The function now adds a warning when the namespace is null, falsy, or the directive value is empty.
-	 * @since 6.6.0 Removed `default_namespace` and `context` arguments.
-	 * @since 6.6.0 Add support for derived state.
+	 * @since 6.6.0 Hàm giờ thêm cảnh báo khi namespace là null, falsy, hoặc giá trị directive rỗng.
+	 * @since 6.6.0 Đã xóa các tham số `default_namespace` và `context`.
+	 * @since 6.6.0 Thêm hỗ trợ cho trạng thái phái sinh.
 	 *
-	 * @param string|true $directive_value The directive attribute value string or `true` when it's a boolean attribute.
-	 * @return mixed|null The result of the evaluation. Null if the reference path doesn't exist or the namespace is falsy.
+	 * @param string|true $directive_value Chuỗi giá trị thuộc tính directive hoặc `true` khi là thuộc tính boolean.
+	 * @return mixed|null Kết quả đánh giá. Null nếu đường dẫn tham chiếu không tồn tại hoặc namespace là falsy.
 	 */
 	private function evaluate( $directive_value ) {
 		$default_namespace = end( $this->namespace_stack );
@@ -589,17 +589,17 @@ final class WP_Interactivity_API {
 			'context' => $context[ $ns ] ?? array(),
 		);
 
-		// Checks if the reference path is preceded by a negation operator (!).
+		// Kiểm tra xem đường dẫn tham chiếu có được đi trước bởi toán tử phủ định (!) hay không.
 		$should_negate_value = '!' === $path[0];
 		$path                = $should_negate_value ? substr( $path, 1 ) : $path;
 
-		// Extracts the value from the store using the reference path.
+		// Trích xuất giá trị từ store bằng đường dẫn tham chiếu.
 		$path_segments = explode( '.', $path );
 		$current       = $store;
 		foreach ( $path_segments as $path_segment ) {
 			/*
-			 * Special case for numeric arrays and strings. Add length
-			 * property mimicking JavaScript behavior.
+			 * Trường hợp đặc biệt cho mảng số và chuỗi. Thêm thuộc tính
+			 * length mô phỏng hành vi của JavaScript.
 			 *
 			 * @since 6.8.0
 			 */
@@ -611,16 +611,16 @@ final class WP_Interactivity_API {
 
 				if ( is_string( $current ) ) {
 					/*
-					 * Differences in encoding between PHP strings and
-					 * JavaScript mean that it's complicated to calculate
-					 * the string length JavaScript would see from PHP.
-					 * `strlen` is a reasonable approximation.
+					 * Sự khác biệt về mã hóa giữa chuỗi PHP và
+					 * JavaScript có nghĩa là việc tính toán độ dài chuỗi
+					 * mà JavaScript sẽ thấy từ PHP là phức tạp.
+					 * `strlen` là một xấp xỉ hợp lý.
 					 *
-					 * Users that desire a more precise length likely have
-					 * more precise needs than "bytelength" and should
-					 * implement their own length calculation in derived
-					 * state taking into account encoding and their desired
-					 * output (codepoints, graphemes, bytes, etc.).
+					 * Người dùng muốn độ dài chính xác hơn có thể có
+					 * nhu cầu chính xác hơn "bytelength" và nên
+					 * triển khai tính toán độ dài riêng trong trạng thái
+					 * phái sinh có tính đến mã hóa và đầu ra mong muốn
+					 * (codepoints, graphemes, bytes, v.v.).
 					 */
 					$current = strlen( $current );
 					break;
@@ -638,9 +638,9 @@ final class WP_Interactivity_API {
 
 			if ( $current instanceof Closure ) {
 				/*
-				 * This state getter's namespace is added to the stack so that
-				 * `state()` or `get_config()` read that namespace when called
-				 * without specifying one.
+				 * Namespace của getter trạng thái này được thêm vào ngăn xếp để
+				 * `state()` hoặc `get_config()` đọc namespace đó khi được gọi
+				 * mà không chỉ định namespace.
 				 */
 				array_push( $this->namespace_stack, $ns );
 				try {
@@ -658,24 +658,24 @@ final class WP_Interactivity_API {
 					);
 					return null;
 				} finally {
-					// Remove the property's namespace from the stack.
+					// Xóa namespace của thuộc tính khỏi ngăn xếp.
 					array_pop( $this->namespace_stack );
 				}
 			}
 		}
 
-		// Returns the opposite if it contains a negation operator (!).
+		// Trả về giá trị đảo ngược nếu chứa toán tử phủ định (!).
 		return $should_negate_value ? ! $current : $current;
 	}
 
 	/**
-	 * Extracts the directive attribute name to separate and return the directive
-	 * prefix and an optional suffix.
+	 * Trích xuất tên thuộc tính directive để tách và trả về tiền tố directive
+	 * và hậu tố tùy chọn.
 	 *
-	 * The suffix is the string after the first double hyphen and the prefix is
-	 * everything that comes before the suffix.
+	 * Hậu tố là chuỗi sau dấu gạch ngang kép đầu tiên và tiền tố là
+	 * mọi thứ phía trước hậu tố.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     extract_prefix_and_suffix( 'data-wp-interactive' )   => array( 'data-wp-interactive', null )
 	 *     extract_prefix_and_suffix( 'data-wp-bind--src' )     => array( 'data-wp-bind', 'src' )
@@ -683,25 +683,24 @@ final class WP_Interactivity_API {
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param string $directive_name The directive attribute name.
-	 * @return array An array containing the directive prefix and optional suffix.
+	 * @param string $directive_name Tên thuộc tính directive.
+	 * @return array Mảng chứa tiền tố directive và hậu tố tùy chọn.
 	 */
 	private function extract_prefix_and_suffix( string $directive_name ): array {
 		return explode( '--', $directive_name, 2 );
 	}
 
 	/**
-	 * Parses and extracts the namespace and reference path from the given
-	 * directive attribute value.
+	 * Phân tích và trích xuất namespace và đường dẫn tham chiếu từ giá trị
+	 * thuộc tính directive đã cho.
 	 *
-	 * If the value doesn't contain an explicit namespace, it returns the
-	 * default one. If the value contains a JSON object instead of a reference
-	 * path, the function tries to parse it and return the resulting array. If
-	 * the value contains strings that represent booleans ("true" and "false"),
-	 * numbers ("1" and "1.2") or "null", the function also transform them to
-	 * regular booleans, numbers and `null`.
+	 * Nếu giá trị không chứa namespace rõ ràng, nó trả về namespace mặc định.
+	 * Nếu giá trị chứa đối tượng JSON thay vì đường dẫn tham chiếu, hàm sẽ
+	 * cố phân tích và trả về mảng kết quả. Nếu giá trị chứa chuỗi đại diện
+	 * cho boolean ("true" và "false"), số ("1" và "1.2") hoặc "null", hàm
+	 * cũng chuyển đổi chúng thành boolean, số và `null` thông thường.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     extract_directive_value( 'actions.foo', 'myPlugin' )                      => array( 'myPlugin', 'actions.foo' )
 	 *     extract_directive_value( 'otherPlugin::actions.foo', 'myPlugin' )         => array( 'otherPlugin', 'actions.foo' )
@@ -710,26 +709,24 @@ final class WP_Interactivity_API {
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param string|true $directive_value   The directive attribute value. It can be `true` when it's a boolean
-	 *                                       attribute.
-	 * @param string|null $default_namespace Optional. The default namespace if none is explicitly defined.
-	 * @return array An array containing the namespace in the first item and the JSON, the reference path, or null on the
-	 *               second item.
+	 * @param string|true $directive_value   Giá trị thuộc tính directive. Có thể là `true` khi là thuộc tính boolean.
+	 * @param string|null $default_namespace Tùy chọn. Namespace mặc định nếu không có namespace nào được định nghĩa rõ ràng.
+	 * @return array Mảng chứa namespace ở phần tử đầu tiên và JSON, đường dẫn tham chiếu, hoặc null ở phần tử thứ hai.
 	 */
 	private function extract_directive_value( $directive_value, $default_namespace = null ): array {
 		if ( empty( $directive_value ) || is_bool( $directive_value ) ) {
 			return array( $default_namespace, null );
 		}
 
-		// Replaces the value and namespace if there is a namespace in the value.
+		// Thay thế giá trị và namespace nếu có namespace trong giá trị.
 		if ( 1 === preg_match( '/^([\w\-_\/]+)::./', $directive_value ) ) {
 			list($default_namespace, $directive_value) = explode( '::', $directive_value, 2 );
 		}
 
 		/*
-		 * Tries to decode the value as a JSON object. If it fails and the value
-		 * isn't `null`, it returns the value as it is. Otherwise, it returns the
-		 * decoded JSON or null for the string `null`.
+		 * Cố giải mã giá trị dưới dạng đối tượng JSON. Nếu thất bại và giá trị
+		 * không phải `null`, nó trả về giá trị nguyên bản. Ngược lại, nó trả về
+		 * JSON đã giải mã hoặc null cho chuỗi `null`.
 		 */
 		$decoded_json = json_decode( $directive_value, true );
 		if ( null !== $decoded_json || 'null' === $directive_value ) {
@@ -740,10 +737,10 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Transforms a kebab-case string to camelCase.
+	 * Chuyển đổi chuỗi kebab-case thành camelCase.
 	 *
-	 * @param string $str The kebab-case string to transform to camelCase.
-	 * @return string The transformed camelCase string.
+	 * @param string $str Chuỗi kebab-case cần chuyển đổi thành camelCase.
+	 * @return string Chuỗi camelCase đã chuyển đổi.
 	 */
 	private function kebab_to_camel_case( string $str ): string {
 		return lcfirst(
@@ -758,33 +755,32 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Processes the `data-wp-interactive` directive.
+	 * Xử lý directive `data-wp-interactive`.
 	 *
-	 * It adds the default store namespace defined in the directive value to the
-	 * stack so that it's available for the nested interactivity elements.
+	 * Nó thêm namespace store mặc định được định nghĩa trong giá trị directive vào
+	 * ngăn xếp để có sẵn cho các phần tử tương tác lồng nhau.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Interactivity_API_Directives_Processor $p    The directives processor instance.
-	 * @param string                                    $mode Whether the processing is entering or exiting the tag.
+	 * @param WP_Interactivity_API_Directives_Processor $p    Instance bộ xử lý directive.
+	 * @param string                                    $mode Xử lý đang vào hay ra khỏi thẻ.
 	 */
 	private function data_wp_interactive_processor( WP_Interactivity_API_Directives_Processor $p, string $mode ) {
-		// When exiting tags, it removes the last namespace from the stack.
+		// Khi thoát khỏi thẻ, xóa namespace cuối cùng khỏi ngăn xếp.
 		if ( 'exit' === $mode ) {
 			array_pop( $this->namespace_stack );
 			return;
 		}
 
-		// Tries to decode the `data-wp-interactive` attribute value.
+		// Cố giải mã giá trị thuộc tính `data-wp-interactive`.
 		$attribute_value = $p->get_attribute( 'data-wp-interactive' );
 
 		/*
-		 * Pushes the newly defined namespace or the current one if the
-		 * `data-wp-interactive` definition was invalid or does not contain a
-		 * namespace. It does so because the function pops out the current namespace
-		 * from the stack whenever it finds a `data-wp-interactive`'s closing tag,
-		 * independently of whether the previous `data-wp-interactive` definition
-		 * contained a valid namespace.
+		 * Đẩy namespace mới được định nghĩa hoặc namespace hiện tại nếu định nghĩa
+		 * `data-wp-interactive` không hợp lệ hoặc không chứa namespace. Nó làm vậy
+		 * vì hàm sẽ lấy namespace hiện tại ra khỏi ngăn xếp bất cứ khi nào tìm thấy
+		 * thẻ đóng của `data-wp-interactive`, bất kể định nghĩa `data-wp-interactive`
+		 * trước đó có chứa namespace hợp lệ hay không.
 		 */
 		$new_namespace = null;
 		if ( is_string( $attribute_value ) && ! empty( $attribute_value ) ) {
@@ -801,18 +797,18 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Processes the `data-wp-context` directive.
+	 * Xử lý directive `data-wp-context`.
 	 *
-	 * It adds the context defined in the directive value to the stack so that
-	 * it's available for the nested interactivity elements.
+	 * Nó thêm context được định nghĩa trong giá trị directive vào ngăn xếp để
+	 * có sẵn cho các phần tử tương tác lồng nhau.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Interactivity_API_Directives_Processor $p               The directives processor instance.
-	 * @param string                                    $mode            Whether the processing is entering or exiting the tag.
+	 * @param WP_Interactivity_API_Directives_Processor $p               Instance bộ xử lý directive.
+	 * @param string                                    $mode            Xử lý đang vào hay ra khỏi thẻ.
 	 */
 	private function data_wp_context_processor( WP_Interactivity_API_Directives_Processor $p, string $mode ) {
-		// When exiting tags, it removes the last context from the stack.
+		// Khi thoát khỏi thẻ, xóa context cuối cùng khỏi ngăn xếp.
 		if ( 'exit' === $mode ) {
 			array_pop( $this->context_stack );
 			return;
@@ -821,14 +817,14 @@ final class WP_Interactivity_API {
 		$attribute_value = $p->get_attribute( 'data-wp-context' );
 		$namespace_value = end( $this->namespace_stack );
 
-		// Separates the namespace from the context JSON object.
+		// Tách namespace khỏi đối tượng JSON context.
 		list( $namespace_value, $decoded_json ) = is_string( $attribute_value ) && ! empty( $attribute_value )
 			? $this->extract_directive_value( $attribute_value, $namespace_value )
 			: array( $namespace_value, null );
 
 		/*
-		 * If there is a namespace, it adds a new context to the stack merging the
-		 * previous context with the new one.
+		 * Nếu có namespace, nó thêm context mới vào ngăn xếp bằng cách gộp
+		 * context trước đó với context mới.
 		 */
 		if ( is_string( $namespace_value ) ) {
 			$this->context_stack[] = array_replace_recursive(
@@ -837,24 +833,24 @@ final class WP_Interactivity_API {
 			);
 		} else {
 			/*
-			 * If there is no namespace, it pushes the current context to the stack.
-			 * It needs to do so because the function pops out the current context
-			 * from the stack whenever it finds a `data-wp-context`'s closing tag.
+			 * Nếu không có namespace, nó đẩy context hiện tại vào ngăn xếp.
+			 * Cần làm vậy vì hàm sẽ lấy context hiện tại ra khỏi ngăn xếp
+			 * bất cứ khi nào tìm thấy thẻ đóng của `data-wp-context`.
 			 */
 			$this->context_stack[] = end( $this->context_stack );
 		}
 	}
 
 	/**
-	 * Processes the `data-wp-bind` directive.
+	 * Xử lý directive `data-wp-bind`.
 	 *
-	 * It updates or removes the bound attributes based on the evaluation of its
-	 * associated reference.
+	 * Nó cập nhật hoặc xóa các thuộc tính được ràng buộc dựa trên kết quả đánh giá
+	 * tham chiếu liên quan.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Interactivity_API_Directives_Processor $p               The directives processor instance.
-	 * @param string                                    $mode            Whether the processing is entering or exiting the tag.
+	 * @param WP_Interactivity_API_Directives_Processor $p               Instance bộ xử lý directive.
+	 * @param string                                    $mode            Xử lý đang vào hay ra khỏi thẻ.
 	 */
 	private function data_wp_bind_processor( WP_Interactivity_API_Directives_Processor $p, string $mode ) {
 		if ( 'enter' === $mode ) {
@@ -877,10 +873,10 @@ final class WP_Interactivity_API {
 					)
 				) {
 					/*
-					 * If the result of the evaluation is a boolean and the attribute is
-					 * `aria-` or `data-, convert it to a string "true" or "false". It
-					 * follows the exact same logic as Preact because it needs to
-					 * replicate what Preact will later do in the client:
+					 * Nếu kết quả đánh giá là boolean và thuộc tính là `aria-` hoặc `data-`,
+					 * chuyển đổi nó thành chuỗi "true" hoặc "false". Nó tuân theo logic
+					 * giống hệt Preact vì cần tái tạo những gì Preact sẽ thực hiện sau đó
+					 * ở phía client:
 					 * https://github.com/preactjs/preact/blob/ea49f7a0f9d1ff2c98c0bdd66aa0cbc583055246/src/diff/props.js#L131C24-L136
 					 */
 					if (
@@ -898,15 +894,15 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Processes the `data-wp-class` directive.
+	 * Xử lý directive `data-wp-class`.
 	 *
-	 * It adds or removes CSS classes in the current HTML element based on the
-	 * evaluation of its associated references.
+	 * Nó thêm hoặc xóa các lớp CSS trong phần tử HTML hiện tại dựa trên
+	 * kết quả đánh giá các tham chiếu liên quan.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Interactivity_API_Directives_Processor $p               The directives processor instance.
-	 * @param string                                    $mode            Whether the processing is entering or exiting the tag.
+	 * @param WP_Interactivity_API_Directives_Processor $p               Instance bộ xử lý directive.
+	 * @param string                                    $mode            Xử lý đang vào hay ra khỏi thẻ.
 	 */
 	private function data_wp_class_processor( WP_Interactivity_API_Directives_Processor $p, string $mode ) {
 		if ( 'enter' === $mode ) {
@@ -931,15 +927,15 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Processes the `data-wp-style` directive.
+	 * Xử lý directive `data-wp-style`.
 	 *
-	 * It updates the style attribute value of the current HTML element based on
-	 * the evaluation of its associated references.
+	 * Nó cập nhật giá trị thuộc tính style của phần tử HTML hiện tại dựa trên
+	 * kết quả đánh giá các tham chiếu liên quan.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Interactivity_API_Directives_Processor $p               The directives processor instance.
-	 * @param string                                    $mode            Whether the processing is entering or exiting the tag.
+	 * @param WP_Interactivity_API_Directives_Processor $p               Instance bộ xử lý directive.
+	 * @param string                                    $mode            Xử lý đang vào hay ra khỏi thẻ.
 	 */
 	private function data_wp_style_processor( WP_Interactivity_API_Directives_Processor $p, string $mode ) {
 		if ( 'enter' === $mode ) {
@@ -957,15 +953,15 @@ final class WP_Interactivity_API {
 				$style_attribute_value     = ( $style_attribute_value && ! is_bool( $style_attribute_value ) ) ? $style_attribute_value : '';
 
 				/*
-				 * Checks first if the style property is not falsy and the style
-				 * attribute value is not empty because if it is, it doesn't need to
-				 * update the attribute value.
+				 * Kiểm tra trước xem thuộc tính style có phải falsy không và giá trị
+				 * thuộc tính style có rỗng không, vì nếu rỗng thì không cần
+				 * cập nhật giá trị thuộc tính.
 				 */
 				if ( $style_property_value || $style_attribute_value ) {
 					$style_attribute_value = $this->merge_style_property( $style_attribute_value, $style_property, $style_property_value );
 					/*
-					 * If the style attribute value is not empty, it sets it. Otherwise,
-					 * it removes it.
+					 * Nếu giá trị thuộc tính style không rỗng, đặt giá trị. Ngược lại,
+					 * xóa nó.
 					 */
 					if ( ! empty( $style_attribute_value ) ) {
 						$p->set_attribute( 'style', $style_attribute_value );
@@ -978,25 +974,25 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Merges an individual style property in the `style` attribute of an HTML
-	 * element, updating or removing the property when necessary.
+	 * Gộp một thuộc tính style riêng lẻ trong thuộc tính `style` của phần tử HTML,
+	 * cập nhật hoặc xóa thuộc tính khi cần thiết.
 	 *
-	 * If a property is modified, the old one is removed and the new one is added
-	 * at the end of the list.
+	 * Nếu một thuộc tính bị sửa đổi, thuộc tính cũ sẽ bị xóa và thuộc tính mới
+	 * được thêm vào cuối danh sách.
 	 *
 	 * @since 6.5.0
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     merge_style_property( 'color:green;', 'color', 'red' )      => 'color:red;'
 	 *     merge_style_property( 'background:green;', 'color', 'red' ) => 'background:green;color:red;'
 	 *     merge_style_property( 'color:green;', 'color', null )       => ''
 	 *
-	 * @param string            $style_attribute_value The current style attribute value.
-	 * @param string            $style_property_name   The style property name to set.
-	 * @param string|false|null $style_property_value  The value to set for the style property. With false, null or an
-	 *                                                 empty string, it removes the style property.
-	 * @return string The new style attribute value after the specified property has been added, updated or removed.
+	 * @param string            $style_attribute_value Giá trị thuộc tính style hiện tại.
+	 * @param string            $style_property_name   Tên thuộc tính style cần đặt.
+	 * @param string|false|null $style_property_value  Giá trị cần đặt cho thuộc tính style. Với false, null hoặc
+	 *                                                 chuỗi rỗng, thuộc tính style sẽ bị xóa.
+	 * @return string Giá trị thuộc tính style mới sau khi thuộc tính đã được thêm, cập nhật hoặc xóa.
 	 */
 	private function merge_style_property( string $style_attribute_value, string $style_property_name, $style_property_value ): string {
 		$style_assignments    = explode( ';', $style_attribute_value );
@@ -1004,7 +1000,7 @@ final class WP_Interactivity_API {
 		$style_property_value = ! empty( $style_property_value ) ? rtrim( trim( $style_property_value ), ';' ) : null;
 		$new_style_property   = $style_property_value ? $style_property_name . ':' . $style_property_value . ';' : '';
 
-		// Generates an array with all the properties but the modified one.
+		// Tạo mảng với tất cả các thuộc tính ngoại trừ thuộc tính bị sửa đổi.
 		foreach ( $style_assignments as $style_assignment ) {
 			if ( empty( trim( $style_assignment ) ) ) {
 				continue;
@@ -1015,22 +1011,22 @@ final class WP_Interactivity_API {
 			}
 		}
 
-		// Adds the new/modified property at the end of the list.
+		// Thêm thuộc tính mới/đã sửa đổi vào cuối danh sách.
 		$result[] = $new_style_property;
 
 		return implode( '', $result );
 	}
 
 	/**
-	 * Processes the `data-wp-text` directive.
+	 * Xử lý directive `data-wp-text`.
 	 *
-	 * It updates the inner content of the current HTML element based on the
-	 * evaluation of its associated reference.
+	 * Nó cập nhật nội dung bên trong của phần tử HTML hiện tại dựa trên
+	 * kết quả đánh giá tham chiếu liên quan.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Interactivity_API_Directives_Processor $p               The directives processor instance.
-	 * @param string                                    $mode            Whether the processing is entering or exiting the tag.
+	 * @param WP_Interactivity_API_Directives_Processor $p               Instance bộ xử lý directive.
+	 * @param string                                    $mode            Xử lý đang vào hay ra khỏi thẻ.
 	 */
 	private function data_wp_text_processor( WP_Interactivity_API_Directives_Processor $p, string $mode ) {
 		if ( 'enter' === $mode ) {
@@ -1038,9 +1034,8 @@ final class WP_Interactivity_API {
 			$result          = $this->evaluate( $attribute_value );
 
 			/*
-			 * Follows the same logic as Preact in the client and only changes the
-			 * content if the value is a string or a number. Otherwise, it removes the
-			 * content.
+			 * Tuân theo logic giống Preact ở phía client và chỉ thay đổi nội dung
+			 * nếu giá trị là chuỗi hoặc số. Ngược lại, nó xóa nội dung.
 			 */
 			if ( is_string( $result ) || is_numeric( $result ) ) {
 				$p->set_content_between_balanced_tags( esc_html( $result ) );
@@ -1051,11 +1046,11 @@ final class WP_Interactivity_API {
 	}
 
 	/**
-	 * Returns the CSS styles for animating the top loading bar in the router.
+	 * Trả về các kiểu CSS cho hiệu ứng thanh tải phía trên trong router.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @return string The CSS styles for the router's top loading bar animation.
+	 * @return string Các kiểu CSS cho hiệu ứng thanh tải phía trên của router.
 	 */
 	private function get_router_animation_styles(): string {
 		return <<<CSS
@@ -1090,23 +1085,23 @@ CSS;
 	}
 
 	/**
-	 * Deprecated.
+	 * Đã ngừng sử dụng.
 	 *
 	 * @since 6.5.0
-	 * @deprecated 6.7.0 Use {@see WP_Interactivity_API::print_router_markup} instead.
+	 * @deprecated 6.7.0 Sử dụng {@see WP_Interactivity_API::print_router_markup} thay thế.
 	 */
 	public function print_router_loading_and_screen_reader_markup() {
 		_deprecated_function( __METHOD__, '6.7.0', 'WP_Interactivity_API::print_router_markup' );
 
-		// Call the new method.
+		// Gọi phương thức mới.
 		$this->print_router_markup();
 	}
 
 	/**
-	 * Outputs markup for the @wordpress/interactivity-router script module.
+	 * Xuất mã đánh dấu cho module script @wordpress/interactivity-router.
 	 *
-	 * This method prints a div element representing a loading bar visible during
-	 * navigation.
+	 * Phương thức này in một phần tử div đại diện cho thanh tải hiển thị
+	 * trong quá trình điều hướng.
 	 *
 	 * @since 6.7.0
 	 */
@@ -1122,44 +1117,44 @@ HTML;
 	}
 
 	/**
-	 * Processes the `data-wp-router-region` directive.
+	 * Xử lý directive `data-wp-router-region`.
 	 *
-	 * It renders in the footer a set of HTML elements to notify users about
-	 * client-side navigations. More concretely, the elements added are 1) a
-	 * top loading bar to visually inform that a navigation is in progress
-	 * and 2) an `aria-live` region for accessible navigation announcements.
+	 * Nó kết xuất trong footer một tập hợp các phần tử HTML để thông báo cho người dùng
+	 * về điều hướng phía client. Cụ thể hơn, các phần tử được thêm là 1) thanh tải
+	 * phía trên để thông báo trực quan rằng điều hướng đang diễn ra và 2) vùng
+	 * `aria-live` cho thông báo điều hướng trợ năng.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Interactivity_API_Directives_Processor $p               The directives processor instance.
-	 * @param string                                    $mode            Whether the processing is entering or exiting the tag.
+	 * @param WP_Interactivity_API_Directives_Processor $p               Instance bộ xử lý directive.
+	 * @param string                                    $mode            Xử lý đang vào hay ra khỏi thẻ.
 	 */
 	private function data_wp_router_region_processor( WP_Interactivity_API_Directives_Processor $p, string $mode ) {
 		if ( 'enter' === $mode && ! $this->has_processed_router_region ) {
 			$this->has_processed_router_region = true;
 
-			// Enqueues as an inline style.
+			// Đưa vào hàng đợi dưới dạng kiểu nội tuyến.
 			wp_register_style( 'wp-interactivity-router-animations', false );
 			wp_add_inline_style( 'wp-interactivity-router-animations', $this->get_router_animation_styles() );
 			wp_enqueue_style( 'wp-interactivity-router-animations' );
 
-			// Adds the necessary markup to the footer.
+			// Thêm mã đánh dấu cần thiết vào footer.
 			add_action( 'wp_footer', array( $this, 'print_router_markup' ) );
 		}
 	}
 
 	/**
-	 * Processes the `data-wp-each` directive.
+	 * Xử lý directive `data-wp-each`.
 	 *
-	 * This directive gets an array passed as reference and iterates over it
-	 * generating new content for each item based on the inner markup of the
-	 * `template` tag.
+	 * Directive này nhận một mảng được truyền dưới dạng tham chiếu và lặp qua nó
+	 * để tạo nội dung mới cho mỗi mục dựa trên mã đánh dấu bên trong
+	 * thẻ `template`.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @param WP_Interactivity_API_Directives_Processor $p               The directives processor instance.
-	 * @param string                                    $mode            Whether the processing is entering or exiting the tag.
-	 * @param array                                     $tag_stack       The reference to the tag stack.
+	 * @param WP_Interactivity_API_Directives_Processor $p               Instance bộ xử lý directive.
+	 * @param string                                    $mode            Xử lý đang vào hay ra khỏi thẻ.
+	 * @param array                                     $tag_stack       Tham chiếu đến ngăn xếp thẻ.
 	 */
 	private function data_wp_each_processor( WP_Interactivity_API_Directives_Processor $p, string $mode, array &$tag_stack ) {
 		if ( 'enter' === $mode && 'TEMPLATE' === $p->get_tag() ) {
@@ -1169,24 +1164,24 @@ HTML;
 			$attribute_value  = $p->get_attribute( $attribute_name );
 			$result           = $this->evaluate( $attribute_value );
 
-			// Gets the content between the template tags and leaves the cursor in the closer tag.
+			// Lấy nội dung giữa các thẻ template và để con trỏ ở thẻ đóng.
 			$inner_content = $p->get_content_between_balanced_template_tags();
 
-			// Checks if there is a manual server-side directive processing.
+			// Kiểm tra xem có xử lý directive phía máy chủ thủ công hay không.
 			$template_end = 'data-wp-each: template end';
 			$p->set_bookmark( $template_end );
 			$p->next_tag();
 			$manual_sdp = $p->get_attribute( 'data-wp-each-child' );
-			$p->seek( $template_end ); // Rewinds to the template closer tag.
+			$p->seek( $template_end ); // Quay lại thẻ đóng template.
 			$p->release_bookmark( $template_end );
 
 			/*
-			 * It doesn't process in these situations:
-			 * - Manual server-side directive processing.
-			 * - Empty or non-array values.
-			 * - Associative arrays because those are deserialized as objects in JS.
-			 * - Templates that contain top-level texts because those texts can't be
-			 *   identified and removed in the client.
+			 * Không xử lý trong các trường hợp sau:
+			 * - Xử lý directive phía máy chủ thủ công.
+			 * - Giá trị rỗng hoặc không phải mảng.
+			 * - Mảng kết hợp vì chúng được giải tuần tự hóa thành đối tượng trong JS.
+			 * - Template chứa văn bản cấp cao nhất vì văn bản đó không thể
+			 *   được nhận dạng và xóa ở phía client.
 			 */
 			if (
 				$manual_sdp ||
@@ -1200,31 +1195,31 @@ HTML;
 				return;
 			}
 
-			// Extracts the namespace from the directive attribute value.
+			// Trích xuất namespace từ giá trị thuộc tính directive.
 			$namespace_value         = end( $this->namespace_stack );
 			list( $namespace_value ) = is_string( $attribute_value ) && ! empty( $attribute_value )
 				? $this->extract_directive_value( $attribute_value, $namespace_value )
 				: array( $namespace_value, null );
 
-			// Processes the inner content for each item of the array.
+			// Xử lý nội dung bên trong cho mỗi phần tử của mảng.
 			$processed_content = '';
 			foreach ( $result as $item ) {
-				// Creates a new context that includes the current item of the array.
+				// Tạo context mới bao gồm phần tử hiện tại của mảng.
 				$this->context_stack[] = array_replace_recursive(
 					end( $this->context_stack ) !== false ? end( $this->context_stack ) : array(),
 					array( $namespace_value => array( $item_name => $item ) )
 				);
 
-				// Processes the inner content with the new context.
+				// Xử lý nội dung bên trong với context mới.
 				$processed_item = $this->_process_directives( $inner_content );
 
 				if ( null === $processed_item ) {
-					// If the HTML is unbalanced, stop processing it.
+					// Nếu HTML không cân bằng, dừng xử lý.
 					array_pop( $this->context_stack );
 					return;
 				}
 
-				// Adds the `data-wp-each-child` to each top-level tag.
+				// Thêm `data-wp-each-child` vào mỗi thẻ cấp cao nhất.
 				$i = new WP_Interactivity_API_Directives_Processor( $processed_item );
 				while ( $i->next_tag() ) {
 					$i->set_attribute( 'data-wp-each-child', true );
@@ -1232,14 +1227,14 @@ HTML;
 				}
 				$processed_content .= $i->get_updated_html();
 
-				// Removes the current context from the stack.
+				// Xóa context hiện tại khỏi ngăn xếp.
 				array_pop( $this->context_stack );
 			}
 
-			// Appends the processed content after the tag closer of the template.
+			// Thêm nội dung đã xử lý sau thẻ đóng của template.
 			$p->append_content_after_template_tag_closer( $processed_content );
 
-			// Pops the last tag because it skipped the closing tag of the template tag.
+			// Lấy thẻ cuối cùng ra vì nó đã bỏ qua thẻ đóng của thẻ template.
 			array_pop( $tag_stack );
 		}
 	}

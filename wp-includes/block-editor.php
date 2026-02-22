@@ -1,6 +1,6 @@
 <?php
 /**
- * Block Editor API.
+ * API Trình soạn thảo Block.
  *
  * @package WordPress
  * @subpackage Editor
@@ -8,12 +8,12 @@
  */
 
 /**
- * Returns the list of default categories for block types.
+ * Trả về danh sách các chuyên mục mặc định cho các loại block.
  *
  * @since 5.8.0
- * @since 6.3.0 Reusable Blocks renamed to Patterns.
+ * @since 6.3.0 Block Tái sử dụng được đổi tên thành Mẫu (Patterns).
  *
- * @return array[] Array of categories for block types.
+ * @return array[] Mảng các chuyên mục cho các loại block.
  */
 function get_default_block_categories() {
 	return array(
@@ -56,15 +56,15 @@ function get_default_block_categories() {
 }
 
 /**
- * Returns all the categories for block types that will be shown in the block editor.
+ * Trả về tất cả các chuyên mục cho các loại block sẽ hiển thị trong trình soạn thảo block.
  *
  * @since 5.0.0
- * @since 5.8.0 It is possible to pass the block editor context as param.
+ * @since 5.8.0 Có thể truyền ngữ cảnh trình soạn thảo block làm tham số.
  *
- * @param WP_Post|WP_Block_Editor_Context $post_or_block_editor_context The current post object or
- *                                                                      the block editor context.
+ * @param WP_Post|WP_Block_Editor_Context $post_or_block_editor_context Đối tượng bài viết hiện tại hoặc
+ *                                                                      ngữ cảnh trình soạn thảo block.
  *
- * @return array[] Array of categories for block types.
+ * @return array[] Mảng các chuyên mục cho các loại block.
  */
 function get_block_categories( $post_or_block_editor_context ) {
 	$block_categories     = get_default_block_categories();
@@ -76,12 +76,12 @@ function get_block_categories( $post_or_block_editor_context ) {
 		) : $post_or_block_editor_context;
 
 	/**
-	 * Filters the default array of categories for block types.
+	 * Lọc mảng chuyên mục mặc định cho các loại block.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param array[]                 $block_categories     Array of categories for block types.
-	 * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+	 * @param array[]                 $block_categories     Mảng các chuyên mục cho các loại block.
+	 * @param WP_Block_Editor_Context $block_editor_context Ngữ cảnh trình soạn thảo block hiện tại.
 	 */
 	$block_categories = apply_filters( 'block_categories_all', $block_categories, $block_editor_context );
 
@@ -89,13 +89,13 @@ function get_block_categories( $post_or_block_editor_context ) {
 		$post = $block_editor_context->post;
 
 		/**
-		 * Filters the default array of categories for block types.
+		 * Lọc mảng chuyên mục mặc định cho các loại block.
 		 *
 		 * @since 5.0.0
-		 * @deprecated 5.8.0 Use the {@see 'block_categories_all'} filter instead.
+		 * @deprecated 5.8.0 Sử dụng bộ lọc {@see 'block_categories_all'} thay thế.
 		 *
-		 * @param array[] $block_categories Array of categories for block types.
-		 * @param WP_Post $post             Post being loaded.
+		 * @param array[] $block_categories Mảng các chuyên mục cho các loại block.
+		 * @param WP_Post $post             Bài viết đang được tải.
 		 */
 		$block_categories = apply_filters_deprecated( 'block_categories', array( $block_categories, $post ), '5.8.0', 'block_categories_all' );
 	}
@@ -104,25 +104,25 @@ function get_block_categories( $post_or_block_editor_context ) {
 }
 
 /**
- * Gets the list of allowed block types to use in the block editor.
+ * Lấy danh sách các loại block được phép sử dụng trong trình soạn thảo block.
  *
  * @since 5.8.0
  *
- * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+ * @param WP_Block_Editor_Context $block_editor_context Ngữ cảnh trình soạn thảo block hiện tại.
  *
- * @return bool|string[] Array of block type slugs, or boolean to enable/disable all.
+ * @return bool|string[] Mảng các slug loại block, hoặc boolean để bật/tắt tất cả.
  */
 function get_allowed_block_types( $block_editor_context ) {
 	$allowed_block_types = true;
 
 	/**
-	 * Filters the allowed block types for all editor types.
+	 * Lọc các loại block được phép cho tất cả các loại trình soạn thảo.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param bool|string[]           $allowed_block_types  Array of block type slugs, or boolean to enable/disable all.
-	 *                                                      Default true (all registered block types supported).
-	 * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+	 * @param bool|string[]           $allowed_block_types  Mảng các slug loại block, hoặc boolean để bật/tắt tất cả.
+	 *                                                      Mặc định true (tất cả loại block đã đăng ký được hỗ trợ).
+	 * @param WP_Block_Editor_Context $block_editor_context Ngữ cảnh trình soạn thảo block hiện tại.
 	 */
 	$allowed_block_types = apply_filters( 'allowed_block_types_all', $allowed_block_types, $block_editor_context );
 
@@ -130,14 +130,14 @@ function get_allowed_block_types( $block_editor_context ) {
 		$post = $block_editor_context->post;
 
 		/**
-		 * Filters the allowed block types for the editor.
+		 * Lọc các loại block được phép cho trình soạn thảo.
 		 *
 		 * @since 5.0.0
-		 * @deprecated 5.8.0 Use the {@see 'allowed_block_types_all'} filter instead.
+		 * @deprecated 5.8.0 Sử dụng bộ lọc {@see 'allowed_block_types_all'} thay thế.
 		 *
-		 * @param bool|string[] $allowed_block_types Array of block type slugs, or boolean to enable/disable all.
-		 *                                           Default true (all registered block types supported)
-		 * @param WP_Post       $post                The post resource data.
+		 * @param bool|string[] $allowed_block_types Mảng các slug loại block, hoặc boolean để bật/tắt tất cả.
+		 *                                           Mặc định true (tất cả loại block đã đăng ký được hỗ trợ).
+		 * @param WP_Post       $post                Dữ liệu tài nguyên bài viết.
 		 */
 		$allowed_block_types = apply_filters_deprecated( 'allowed_block_types', array( $allowed_block_types, $post ), '5.8.0', 'allowed_block_types_all' );
 	}
@@ -146,16 +146,16 @@ function get_allowed_block_types( $block_editor_context ) {
 }
 
 /**
- * Returns the default block editor settings.
+ * Trả về các cài đặt mặc định của trình soạn thảo block.
  *
  * @since 5.8.0
  *
- * @return array The default block editor settings.
+ * @return array Các cài đặt mặc định của trình soạn thảo block.
  */
 function get_default_block_editor_settings() {
-	// Media settings.
+	// Cài đặt phương tiện.
 
-	// wp_max_upload_size() can be expensive, so only call it when relevant for the current user.
+	// wp_max_upload_size() có thể tốn tài nguyên, nên chỉ gọi khi liên quan đến người dùng hiện tại.
 	$max_upload_size = 0;
 	if ( current_user_can( 'upload_files' ) ) {
 		$max_upload_size = wp_max_upload_size();
@@ -164,7 +164,7 @@ function get_default_block_editor_settings() {
 		}
 	}
 
-	/** This filter is documented in wp-admin/includes/media.php */
+	/** Bộ lọc này được ghi chú trong wp-admin/includes/media.php */
 	$image_size_names = apply_filters(
 		'image_size_names_choose',
 		array(
@@ -195,8 +195,8 @@ function get_default_block_editor_settings() {
 		}
 	}
 
-	// These styles are used if the "no theme styles" options is triggered or on
-	// themes without their own editor styles.
+	// Những kiểu này được sử dụng nếu tùy chọn "không có kiểu theme" được kích hoạt hoặc trên
+	// các theme không có kiểu trình soạn thảo riêng.
 	$default_editor_styles_file = ABSPATH . WPINC . '/css/dist/block-editor/default-editor-styles.css';
 
 	static $default_editor_styles_file_contents = false;
@@ -224,7 +224,7 @@ function get_default_block_editor_settings() {
 		'imageSizes'                       => $available_image_sizes,
 		'maxUploadFileSize'                => $max_upload_size,
 		'__experimentalDashboardLink'      => admin_url( '/' ),
-		// The following flag is required to enable the new Gallery block format on the mobile apps in 5.9.
+		// Cờ sau đây được yêu cầu để kích hoạt định dạng block Gallery mới trên ứng dụng di động trong 5.9.
 		'__unstableGalleryWithImageBlocks' => true,
 	);
 
@@ -237,25 +237,25 @@ function get_default_block_editor_settings() {
 }
 
 /**
- * Returns the block editor settings needed to use the Legacy Widget block which
- * is not registered by default.
+ * Trả về các cài đặt trình soạn thảo block cần thiết để sử dụng block Widget Cũ (Legacy Widget)
+ * vốn không được đăng ký theo mặc định.
  *
  * @since 5.8.0
  *
- * @return array Settings to be used with get_block_editor_settings().
+ * @return array Các cài đặt để sử dụng với get_block_editor_settings().
  */
 function get_legacy_widget_block_editor_settings() {
 	$editor_settings = array();
 
 	/**
-	 * Filters the list of widget-type IDs that should **not** be offered by the
-	 * Legacy Widget block.
+	 * Lọc danh sách các ID loại widget **không** nên được cung cấp bởi
+	 * block Widget Cũ (Legacy Widget).
 	 *
-	 * Returning an empty array will make all widgets available.
+	 * Trả về mảng rỗng sẽ làm cho tất cả widget khả dụng.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string[] $widgets An array of excluded widget-type IDs.
+	 * @param string[] $widgets Mảng các ID loại widget bị loại trừ.
 	 */
 	$editor_settings['widgetTypesToHideFromLegacyWidgetBlock'] = apply_filters(
 		'widget_types_to_hide_from_legacy_widget_block',
@@ -283,50 +283,50 @@ function get_legacy_widget_block_editor_settings() {
 }
 
 /**
- * Collect the block editor assets that need to be loaded into the editor's iframe.
+ * Thu thập các tài nguyên trình soạn thảo block cần được tải vào iframe của trình soạn thảo.
  *
  * @since 6.0.0
  * @access private
  *
- * @global WP_Styles  $wp_styles  The WP_Styles current instance.
- * @global WP_Scripts $wp_scripts The WP_Scripts current instance.
+ * @global WP_Styles  $wp_styles  Thực thể WP_Styles hiện tại.
+ * @global WP_Scripts $wp_scripts Thực thể WP_Scripts hiện tại.
  *
  * @return array {
- *     The block editor assets.
+ *     Các tài nguyên trình soạn thảo block.
  *
- *     @type string|false $styles  String containing the HTML for styles.
- *     @type string|false $scripts String containing the HTML for scripts.
+ *     @type string|false $styles  Chuỗi chứa HTML cho các kiểu.
+ *     @type string|false $scripts Chuỗi chứa HTML cho các script.
  * }
  */
 function _wp_get_iframed_editor_assets() {
 	global $wp_styles, $wp_scripts;
 
-	// Keep track of the styles and scripts instance to restore later.
+	// Lưu lại thực thể styles và scripts để khôi phục sau.
 	$current_wp_styles  = $wp_styles;
 	$current_wp_scripts = $wp_scripts;
 
-	// Create new instances to collect the assets.
+	// Tạo các thực thể mới để thu thập tài nguyên.
 	$wp_styles  = new WP_Styles();
 	$wp_scripts = new WP_Scripts();
 
 	/*
-	 * Register all currently registered styles and scripts. The actions that
-	 * follow enqueue assets, but don't necessarily register them.
+	 * Đăng ký tất cả các kiểu và script hiện đã đăng ký. Các action tiếp theo
+	 * enqueue tài nguyên, nhưng không nhất thiết phải đăng ký chúng.
 	 */
 	$wp_styles->registered  = $current_wp_styles->registered;
 	$wp_scripts->registered = $current_wp_scripts->registered;
 
 	/*
-	 * We generally do not need reset styles for the iframed editor.
-	 * However, if it's a classic theme, margins will be added to every block,
-	 * which is reset specifically for list items, so classic themes rely on
-	 * these reset styles.
+	 * Nhìn chung chúng ta không cần kiểu reset cho trình soạn thảo iframe.
+	 * Tuy nhiên, nếu là theme cổ điển, margin sẽ được thêm vào mỗi block,
+	 * được reset cụ thể cho các mục danh sách, nên các theme cổ điển phụ thuộc
+	 * vào các kiểu reset này.
 	 */
 	$wp_styles->done =
 		wp_theme_has_theme_json() ? array( 'wp-reset-editor-styles' ) : array();
 
 	wp_enqueue_script( 'wp-polyfill' );
-	// Enqueue the `editorStyle` handles for all core block, and dependencies.
+	// Enqueue các handle `editorStyle` cho tất cả block lõi, và các phụ thuộc.
 	wp_enqueue_style( 'wp-edit-blocks' );
 
 	if ( current_theme_supports( 'wp-block-styles' ) ) {
@@ -334,8 +334,8 @@ function _wp_get_iframed_editor_assets() {
 	}
 
 	/*
-	 * We don't want to load EDITOR scripts in the iframe, only enqueue
-	 * front-end assets for the content.
+	 * Chúng ta không muốn tải script TRÌNH SOẠN THẢO trong iframe, chỉ enqueue
+	 * các tài nguyên giao diện trước cho nội dung.
 	 */
 	add_filter( 'should_load_block_editor_scripts_and_styles', '__return_false' );
 	do_action( 'enqueue_block_assets' );
@@ -344,8 +344,8 @@ function _wp_get_iframed_editor_assets() {
 	$block_registry = WP_Block_Type_Registry::get_instance();
 
 	/*
-	 * Additionally, do enqueue `editorStyle` assets for all blocks, which
-	 * contains editor-only styling for blocks (editor content).
+	 * Ngoài ra, enqueue các tài nguyên `editorStyle` cho tất cả các block,
+	 * chứa kiểu chỉ dành cho trình soạn thảo cho các block (nội dung trình soạn thảo).
 	 */
 	foreach ( $block_registry->get_all_registered() as $block_type ) {
 		if ( isset( $block_type->editor_style_handles ) && is_array( $block_type->editor_style_handles ) ) {
@@ -356,8 +356,8 @@ function _wp_get_iframed_editor_assets() {
 	}
 
 	/**
-	 * Remove the deprecated `print_emoji_styles` handler.
-	 * It avoids breaking style generation with a deprecation message.
+	 * Xóa trình xử lý `print_emoji_styles` đã ngừng sử dụng.
+	 * Tránh làm hỏng việc tạo kiểu với thông báo ngừng sử dụng.
 	 */
 	$has_emoji_styles = has_action( 'wp_print_styles', 'print_emoji_styles' );
 	if ( $has_emoji_styles ) {
@@ -379,7 +379,7 @@ function _wp_get_iframed_editor_assets() {
 	wp_print_footer_scripts();
 	$scripts = ob_get_clean();
 
-	// Restore the original instances.
+	// Khôi phục các thực thể ban đầu.
 	$wp_styles  = $current_wp_styles;
 	$wp_scripts = $current_wp_scripts;
 
@@ -390,13 +390,13 @@ function _wp_get_iframed_editor_assets() {
 }
 
 /**
- * Finds the first occurrence of a specific block in an array of blocks.
+ * Tìm lần xuất hiện đầu tiên của một block cụ thể trong mảng các block.
  *
  * @since 6.3.0
  *
- * @param array  $blocks     Array of blocks.
- * @param string $block_name Name of the block to find.
- * @return array Found block, or empty array if none found.
+ * @param array  $blocks     Mảng các block.
+ * @param string $block_name Tên của block cần tìm.
+ * @return array Block được tìm thấy, hoặc mảng rỗng nếu không tìm thấy.
  */
 function wp_get_first_block( $blocks, $block_name ) {
 	foreach ( $blocks as $block ) {
@@ -416,15 +416,15 @@ function wp_get_first_block( $blocks, $block_name ) {
 }
 
 /**
- * Retrieves Post Content block attributes from the current post template.
+ * Lấy các thuộc tính block Nội dung Bài viết từ template bài viết hiện tại.
  *
  * @since 6.3.0
- * @since 6.4.0 Return null if there is no post content block.
+ * @since 6.4.0 Trả về null nếu không có block nội dung bài viết.
  * @access private
  *
  * @global int $post_ID
  *
- * @return array|null Post Content block attributes array or null if Post Content block doesn't exist.
+ * @return array|null Mảng thuộc tính block Nội dung Bài viết hoặc null nếu block Nội dung Bài viết không tồn tại.
  */
 function wp_get_post_content_block_attributes() {
 	global $post_ID;
@@ -477,14 +477,14 @@ function wp_get_post_content_block_attributes() {
 }
 
 /**
- * Returns the contextualized block editor settings for a selected editor context.
+ * Trả về các cài đặt trình soạn thảo block theo ngữ cảnh cho ngữ cảnh trình soạn thảo đã chọn.
  *
  * @since 5.8.0
  *
- * @param array                   $custom_settings      Custom settings to use with the given editor type.
- * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+ * @param array                   $custom_settings      Các cài đặt tùy chỉnh để sử dụng với loại trình soạn thảo đã cho.
+ * @param WP_Block_Editor_Context $block_editor_context Ngữ cảnh trình soạn thảo block hiện tại.
  *
- * @return array The contextualized block editor settings.
+ * @return array Các cài đặt trình soạn thảo block theo ngữ cảnh.
  */
 function get_block_editor_settings( array $custom_settings, $block_editor_context ) {
 	$editor_settings = array_merge(
@@ -530,8 +530,8 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
 		}
 
 		/*
-		 * Add the custom CSS as a separate stylesheet so any invalid CSS
-		 * entered by users does not break other global styles.
+		 * Thêm CSS tùy chỉnh dưới dạng stylesheet riêng để bất kỳ CSS không hợp lệ nào
+		 * được người dùng nhập không làm hỏng các kiểu toàn cục khác.
 		 */
 		$global_styles[] = array(
 			'css'            => wp_get_global_stylesheet( array( 'custom-css' ) ),
@@ -539,7 +539,7 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
 			'isGlobalStyles' => true,
 		);
 	} else {
-		// If there is no `theme.json` file, ensure base layout styles are still available.
+		// Nếu không có tệp `theme.json`, đảm bảo các kiểu bố cục cơ sở vẫn khả dụng.
 		$block_classes = array(
 			'css'            => 'base-layout-styles',
 			'__unstableType' => 'base-layout',
@@ -555,7 +555,7 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
 	$editor_settings['styles'] = array_merge( $global_styles, get_block_editor_theme_styles() );
 
 	$editor_settings['__experimentalFeatures'] = wp_get_global_settings();
-	// These settings may need to be updated based on data coming from theme.json sources.
+	// Các cài đặt này có thể cần được cập nhật dựa trên dữ liệu từ các nguồn theme.json.
 	if ( isset( $editor_settings['__experimentalFeatures']['color']['palette'] ) ) {
 		$colors_by_origin          = $editor_settings['__experimentalFeatures']['color']['palette'];
 		$editor_settings['colors'] = isset( $colors_by_origin['custom'] ) ?
@@ -653,12 +653,12 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
 	$editor_settings['canUpdateBlockBindings'] = current_user_can( 'edit_block_binding', $block_editor_context );
 
 	/**
-	 * Filters the settings to pass to the block editor for all editor type.
+	 * Lọc các cài đặt để truyền cho trình soạn thảo block cho tất cả loại trình soạn thảo.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param array                   $editor_settings      Default editor settings.
-	 * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+	 * @param array                   $editor_settings      Các cài đặt trình soạn thảo mặc định.
+	 * @param WP_Block_Editor_Context $block_editor_context Ngữ cảnh trình soạn thảo block hiện tại.
 	 */
 	$editor_settings = apply_filters( 'block_editor_settings_all', $editor_settings, $block_editor_context );
 
@@ -666,13 +666,13 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
 		$post = $block_editor_context->post;
 
 		/**
-		 * Filters the settings to pass to the block editor.
+		 * Lọc các cài đặt để truyền cho trình soạn thảo block.
 		 *
 		 * @since 5.0.0
-		 * @deprecated 5.8.0 Use the {@see 'block_editor_settings_all'} filter instead.
+		 * @deprecated 5.8.0 Sử dụng bộ lọc {@see 'block_editor_settings_all'} thay thế.
 		 *
-		 * @param array   $editor_settings Default editor settings.
-		 * @param WP_Post $post            Post being edited.
+		 * @param array   $editor_settings Các cài đặt trình soạn thảo mặc định.
+		 * @param WP_Post $post            Bài viết đang được chỉnh sửa.
 		 */
 		$editor_settings = apply_filters_deprecated( 'block_editor_settings', array( $editor_settings, $post ), '5.8.0', 'block_editor_settings_all' );
 	}
@@ -681,28 +681,28 @@ function get_block_editor_settings( array $custom_settings, $block_editor_contex
 }
 
 /**
- * Preloads common data used with the block editor by specifying an array of
- * REST API paths that will be preloaded for a given block editor context.
+ * Tải trước dữ liệu phổ biến được sử dụng với trình soạn thảo block bằng cách chỉ định mảng
+ * các đường dẫn REST API sẽ được tải trước cho ngữ cảnh trình soạn thảo block đã cho.
  *
  * @since 5.8.0
  *
- * @global WP_Post    $post       Global post object.
- * @global WP_Scripts $wp_scripts The WP_Scripts object for printing scripts.
- * @global WP_Styles  $wp_styles  The WP_Styles object for printing styles.
+ * @global WP_Post    $post       Đối tượng bài viết toàn cục.
+ * @global WP_Scripts $wp_scripts Đối tượng WP_Scripts để in script.
+ * @global WP_Styles  $wp_styles  Đối tượng WP_Styles để in kiểu.
  *
- * @param (string|string[])[]     $preload_paths        List of paths to preload.
- * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+ * @param (string|string[])[]     $preload_paths        Danh sách các đường dẫn cần tải trước.
+ * @param WP_Block_Editor_Context $block_editor_context Ngữ cảnh trình soạn thảo block hiện tại.
  */
 function block_editor_rest_api_preload( array $preload_paths, $block_editor_context ) {
 	global $post, $wp_scripts, $wp_styles;
 
 	/**
-	 * Filters the array of REST API paths that will be used to preloaded common data for the block editor.
+	 * Lọc mảng các đường dẫn REST API sẽ được sử dụng để tải trước dữ liệu phổ biến cho trình soạn thảo block.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param (string|string[])[]     $preload_paths        Array of paths to preload.
-	 * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+	 * @param (string|string[])[]     $preload_paths        Mảng các đường dẫn cần tải trước.
+	 * @param WP_Block_Editor_Context $block_editor_context Ngữ cảnh trình soạn thảo block hiện tại.
 	 */
 	$preload_paths = apply_filters( 'block_editor_rest_api_preload_paths', $preload_paths, $block_editor_context );
 
@@ -710,15 +710,15 @@ function block_editor_rest_api_preload( array $preload_paths, $block_editor_cont
 		$selected_post = $block_editor_context->post;
 
 		/**
-		 * Filters the array of paths that will be preloaded.
+		 * Lọc mảng các đường dẫn sẽ được tải trước.
 		 *
-		 * Preload common data by specifying an array of REST API paths that will be preloaded.
+		 * Tải trước dữ liệu phổ biến bằng cách chỉ định mảng các đường dẫn REST API sẽ được tải trước.
 		 *
 		 * @since 5.0.0
-		 * @deprecated 5.8.0 Use the {@see 'block_editor_rest_api_preload_paths'} filter instead.
+		 * @deprecated 5.8.0 Sử dụng bộ lọc {@see 'block_editor_rest_api_preload_paths'} thay thế.
 		 *
-		 * @param (string|string[])[] $preload_paths Array of paths to preload.
-		 * @param WP_Post             $selected_post Post being edited.
+		 * @param (string|string[])[] $preload_paths Mảng các đường dẫn cần tải trước.
+		 * @param WP_Post             $selected_post Bài viết đang được chỉnh sửa.
 		 */
 		$preload_paths = apply_filters_deprecated( 'block_editor_preload_paths', array( $preload_paths, $selected_post ), '5.8.0', 'block_editor_rest_api_preload_paths' );
 	}
@@ -728,11 +728,11 @@ function block_editor_rest_api_preload( array $preload_paths, $block_editor_cont
 	}
 
 	/*
-	 * Ensure the global $post, $wp_scripts, and $wp_styles remain the same after
-	 * API data is preloaded.
-	 * Because API preloading can call the_content and other filters, plugins
-	 * can unexpectedly modify the global $post or enqueue assets which are not
-	 * intended for the block editor.
+	 * Đảm bảo biến toàn cục $post, $wp_scripts, và $wp_styles giữ nguyên sau khi
+	 * dữ liệu API được tải trước.
+	 * Vì việc tải trước API có thể gọi the_content và các bộ lọc khác, plugin
+	 * có thể vô tình sửa đổi biến toàn cục $post hoặc enqueue các tài nguyên không
+	 * dành cho trình soạn thảo block.
 	 */
 	$backup_global_post = ! empty( $post ) ? clone $post : $post;
 	$backup_wp_scripts  = ! empty( $wp_scripts ) ? clone $wp_scripts : $wp_scripts;
@@ -757,7 +757,7 @@ function block_editor_rest_api_preload( array $preload_paths, $block_editor_cont
 		array()
 	);
 
-	// Restore the global $post, $wp_scripts, and $wp_styles as they were before API preloading.
+	// Khôi phục biến toàn cục $post, $wp_scripts, và $wp_styles về trạng thái trước khi tải trước API.
 	$post       = $backup_global_post;
 	$wp_scripts = $backup_wp_scripts;
 	$wp_styles  = $backup_wp_styles;
@@ -773,13 +773,13 @@ function block_editor_rest_api_preload( array $preload_paths, $block_editor_cont
 }
 
 /**
- * Creates an array of theme styles to load into the block editor.
+ * Tạo mảng các kiểu theme để tải vào trình soạn thảo block.
  *
  * @since 5.8.0
  *
  * @global array $editor_styles
  *
- * @return array An array of theme styles for the block editor.
+ * @return array Mảng các kiểu theme cho trình soạn thảo block.
  */
 function get_block_editor_theme_styles() {
 	global $editor_styles;
@@ -815,12 +815,12 @@ function get_block_editor_theme_styles() {
 }
 
 /**
- * Returns the classic theme supports settings for block editor.
+ * Trả về các cài đặt hỗ trợ theme cổ điển cho trình soạn thảo block.
  *
  * @since 6.2.0
- * @since 6.6.0 Add support for 'editor-spacing-sizes' theme support.
+ * @since 6.6.0 Thêm hỗ trợ cho 'editor-spacing-sizes' theme support.
  *
- * @return array The classic theme supports settings.
+ * @return array Các cài đặt hỗ trợ theme cổ điển.
  */
 function get_classic_theme_supports_block_editor_settings() {
 	$theme_settings = array(
@@ -833,7 +833,7 @@ function get_classic_theme_supports_block_editor_settings() {
 		'enableCustomUnits'      => get_theme_support( 'custom-units' ),
 	);
 
-	// Theme settings.
+	// Cài đặt theme.
 	$color_palette = current( (array) get_theme_support( 'editor-color-palette' ) );
 	if ( false !== $color_palette ) {
 		$theme_settings['colors'] = $color_palette;
@@ -858,9 +858,9 @@ function get_classic_theme_supports_block_editor_settings() {
 }
 
 /**
- * Initialize site preview.
+ * Khởi tạo xem trước trang web.
  *
- * This function sets IFRAME_REQUEST to true if the site preview parameter is set.
+ * Hàm này thiết lập IFRAME_REQUEST thành true nếu tham số xem trước trang web được đặt.
  *
  * @since 6.8.0
  */

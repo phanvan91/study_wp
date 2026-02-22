@@ -3230,12 +3230,12 @@ function wp_playlist_shortcode( $attr ) {
 
 	if ( 1 === $instance ) {
 		/**
-		 * Prints and enqueues playlist scripts, styles, and JavaScript templates.
+		 * In và đưa vào hàng đợi các script, style và mẫu JavaScript của playlist.
 		 *
 		 * @since 3.9.0
 		 *
-		 * @param string $type  Type of playlist. Possible values are 'audio' or 'video'.
-		 * @param string $style The 'theme' for the playlist. Core provides 'light' and 'dark'.
+		 * @param string $type  Loại playlist. Giá trị có thể là 'audio' hoặc 'video'.
+		 * @param string $style 'Theme' cho playlist. Lõi cung cấp 'light' và 'dark'.
 		 */
 		do_action( 'wp_playlist_scripts', $atts['type'], $atts['style'] );
 	}
@@ -3270,52 +3270,52 @@ function wp_playlist_shortcode( $attr ) {
 add_shortcode( 'playlist', 'wp_playlist_shortcode' );
 
 /**
- * Provides a No-JS Flash fallback as a last resort for audio / video.
+ * Cung cấp phương án dự phòng Flash No-JS như giải pháp cuối cùng cho audio / video.
  *
  * @since 3.6.0
  *
- * @param string $url The media element URL.
- * @return string Fallback HTML.
+ * @param string $url URL phần tử media.
+ * @return string HTML dự phòng.
  */
 function wp_mediaelement_fallback( $url ) {
 	/**
-	 * Filters the MediaElement fallback output for no-JS.
+	 * Lọc đầu ra dự phòng MediaElement cho No-JS.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $output Fallback output for no-JS.
-	 * @param string $url    Media file URL.
+	 * @param string $output Đầu ra dự phòng cho No-JS.
+	 * @param string $url    URL tệp media.
 	 */
 	return apply_filters( 'wp_mediaelement_fallback', sprintf( '<a href="%1$s">%1$s</a>', esc_url( $url ) ), $url );
 }
 
 /**
- * Returns a filtered list of supported audio formats.
+ * Trả về danh sách đã lọc các định dạng âm thanh được hỗ trợ.
  *
  * @since 3.6.0
  *
- * @return string[] Supported audio formats.
+ * @return string[] Các định dạng âm thanh được hỗ trợ.
  */
 function wp_get_audio_extensions() {
 	/**
-	 * Filters the list of supported audio formats.
+	 * Lọc danh sách các định dạng âm thanh được hỗ trợ.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string[] $extensions An array of supported audio formats. Defaults are
+	 * @param string[] $extensions Mảng các định dạng âm thanh được hỗ trợ. Mặc định là
 	 *                            'mp3', 'ogg', 'flac', 'm4a', 'wav'.
 	 */
 	return apply_filters( 'wp_audio_extensions', array( 'mp3', 'ogg', 'flac', 'm4a', 'wav' ) );
 }
 
 /**
- * Returns useful keys to use to lookup data from an attachment's stored metadata.
+ * Trả về các khóa hữu ích để tra cứu dữ liệu từ metadata đã lưu của đính kèm.
  *
  * @since 3.9.0
  *
- * @param WP_Post $attachment The current attachment, provided for context.
- * @param string  $context    Optional. The context. Accepts 'edit', 'display'. Default 'display'.
- * @return string[] Key/value pairs of field keys to labels.
+ * @param WP_Post $attachment Đính kèm hiện tại, được cung cấp để làm ngữ cảnh.
+ * @param string  $context    Tùy chọn. Ngữ cảnh. Chấp nhận 'edit', 'display'. Mặc định 'display'.
+ * @return string[] Các cặp khóa/giá trị của khóa trường đến nhãn.
  */
 function wp_get_attachment_id3_keys( $attachment, $context = 'display' ) {
 	$fields = array(
@@ -3333,13 +3333,13 @@ function wp_get_attachment_id3_keys( $attachment, $context = 'display' ) {
 	}
 
 	/**
-	 * Filters the editable list of keys to look up data from an attachment's metadata.
+	 * Lọc danh sách có thể chỉnh sửa các khóa để tra cứu dữ liệu từ metadata của đính kèm.
 	 *
 	 * @since 3.9.0
 	 *
-	 * @param array   $fields     Key/value pairs of field keys to labels.
-	 * @param WP_Post $attachment Attachment object.
-	 * @param string  $context    The context. Accepts 'edit', 'display'. Default 'display'.
+	 * @param array   $fields     Các cặp khóa/giá trị của khóa trường đến nhãn.
+	 * @param WP_Post $attachment Đối tượng đính kèm.
+	 * @param string  $context    Ngữ cảnh. Chấp nhận 'edit', 'display'. Mặc định 'display'.
 	 */
 	return apply_filters( 'wp_get_attachment_id3_keys', $fields, $attachment, $context );
 }
@@ -3726,33 +3726,33 @@ function wp_video_shortcode( $attr, $content = '' ) {
 	}
 
 	/*
-	 * MediaElement.js has issues with some URL formats for Vimeo and YouTube,
-	 * so update the URL to prevent the ME.js player from breaking.
+	 * MediaElement.js gặp vấn đề với một số định dạng URL cho Vimeo và YouTube,
+	 * nên cập nhật URL để tránh trình phát ME.js bị hỏng.
 	 */
 	if ( 'mediaelement' === $library ) {
 		if ( $is_youtube ) {
-			// Remove `feature` query arg and force SSL - see #40866.
+			// Xóa tham số truy vấn `feature` và buộc SSL - xem #40866.
 			$atts['src'] = remove_query_arg( 'feature', $atts['src'] );
 			$atts['src'] = set_url_scheme( $atts['src'], 'https' );
 		} elseif ( $is_vimeo ) {
-			// Remove all query arguments and force SSL - see #40866.
+			// Xóa tất cả tham số truy vấn và buộc SSL - xem #40866.
 			$parsed_vimeo_url = wp_parse_url( $atts['src'] );
 			$vimeo_src        = 'https://' . $parsed_vimeo_url['host'] . $parsed_vimeo_url['path'];
 
-			// Add loop param for mejs bug - see #40977, not needed after #39686.
+			// Thêm tham số loop cho lỗi mejs - xem #40977, không cần sau #39686.
 			$loop        = $atts['loop'] ? '1' : '0';
 			$atts['src'] = add_query_arg( 'loop', $loop, $vimeo_src );
 		}
 	}
 
 	/**
-	 * Filters the class attribute for the video shortcode output container.
+	 * Lọc thuộc tính class cho vùng chứa đầu ra shortcode video.
 	 *
 	 * @since 3.6.0
-	 * @since 4.9.0 The `$atts` parameter was added.
+	 * @since 4.9.0 Thêm tham số `$atts`.
 	 *
-	 * @param string $class CSS class or list of space-separated classes.
-	 * @param array  $atts  Array of video shortcode attributes.
+	 * @param string $class Lớp CSS hoặc danh sách các lớp phân cách bằng dấu cách.
+	 * @param array  $atts  Mảng các thuộc tính shortcode video.
 	 */
 	$atts['class'] = apply_filters( 'wp_video_shortcode_class', $atts['class'], $atts );
 
@@ -3768,7 +3768,7 @@ function wp_video_shortcode( $attr, $content = '' ) {
 		'preload'  => $atts['preload'],
 	);
 
-	// These ones should just be omitted altogether if they are blank.
+	// Những thuộc tính này nên được bỏ qua hoàn toàn nếu chúng rỗng.
 	foreach ( array( 'poster', 'loop', 'autoplay', 'preload', 'muted' ) as $a ) {
 		if ( empty( $html_atts[ $a ] ) ) {
 			unset( $html_atts[ $a ] );
@@ -3778,16 +3778,16 @@ function wp_video_shortcode( $attr, $content = '' ) {
 	$attr_strings = array();
 	foreach ( $html_atts as $attribute_name => $attribute_value ) {
 		if ( in_array( $attribute_name, array( 'loop', 'autoplay', 'muted' ), true ) && true === $attribute_value ) {
-			// Add boolean attributes without their value for true.
+			// Thêm thuộc tính boolean mà không có giá trị cho true.
 			$attr_strings[] = esc_attr( $attribute_name );
 		} elseif ( 'preload' === $attribute_name && ! empty( $attribute_value ) ) {
-			// Handle the preload attribute with specific allowed values.
+			// Xử lý thuộc tính preload với các giá trị được phép cụ thể.
 			$allowed_preload_values = array( 'none', 'metadata', 'auto' );
 			if ( in_array( $attribute_value, $allowed_preload_values, true ) ) {
 				$attr_strings[] = sprintf( '%s="%s"', esc_attr( $attribute_name ), esc_attr( $attribute_value ) );
 			}
 		} elseif ( ! empty( $attribute_value ) ) {
-			// For non-boolean attributes, add them with their value.
+			// Cho các thuộc tính không phải boolean, thêm chúng cùng với giá trị.
 			$attr_strings[] = sprintf( '%s="%s"', esc_attr( $attribute_name ), esc_attr( $attribute_value ) );
 		}
 	}
@@ -3839,90 +3839,90 @@ function wp_video_shortcode( $attr, $content = '' ) {
 	$output = sprintf( '<div style="%s" class="wp-video">%s</div>', $width_rule, $html );
 
 	/**
-	 * Filters the output of the video shortcode.
+	 * Lọc đầu ra của shortcode video.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $output  Video shortcode HTML output.
-	 * @param array  $atts    Array of video shortcode attributes.
-	 * @param string $video   Video file.
-	 * @param int    $post_id Post ID.
-	 * @param string $library Media library used for the video shortcode.
+	 * @param string $output  Đầu ra HTML shortcode video.
+	 * @param array  $atts    Mảng các thuộc tính shortcode video.
+	 * @param string $video   Tệp video.
+	 * @param int    $post_id ID bài viết.
+	 * @param string $library Thư viện media được sử dụng cho shortcode video.
 	 */
 	return apply_filters( 'wp_video_shortcode', $output, $atts, $video, $post_id, $library );
 }
 add_shortcode( 'video', 'wp_video_shortcode' );
 
 /**
- * Gets the previous image link that has the same post parent.
+ * Lấy liên kết hình ảnh trước đó có cùng bài viết cha.
  *
  * @since 5.8.0
  *
  * @see get_adjacent_image_link()
  *
- * @param string|int[] $size Optional. Image size. Accepts any registered image size name, or an array
- *                           of width and height values in pixels (in that order). Default 'thumbnail'.
- * @param string|false $text Optional. Link text. Default false.
- * @return string Markup for previous image link.
+ * @param string|int[] $size Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                           giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
+ * @param string|false $text Tùy chọn. Văn bản liên kết. Mặc định false.
+ * @return string Markup cho liên kết hình ảnh trước đó.
  */
 function get_previous_image_link( $size = 'thumbnail', $text = false ) {
 	return get_adjacent_image_link( true, $size, $text );
 }
 
 /**
- * Displays previous image link that has the same post parent.
+ * Hiển thị liên kết hình ảnh trước đó có cùng bài viết cha.
  *
  * @since 2.5.0
  *
- * @param string|int[] $size Optional. Image size. Accepts any registered image size name, or an array
- *                           of width and height values in pixels (in that order). Default 'thumbnail'.
- * @param string|false $text Optional. Link text. Default false.
+ * @param string|int[] $size Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                           giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
+ * @param string|false $text Tùy chọn. Văn bản liên kết. Mặc định false.
  */
 function previous_image_link( $size = 'thumbnail', $text = false ) {
 	echo get_previous_image_link( $size, $text );
 }
 
 /**
- * Gets the next image link that has the same post parent.
+ * Lấy liên kết hình ảnh tiếp theo có cùng bài viết cha.
  *
  * @since 5.8.0
  *
  * @see get_adjacent_image_link()
  *
- * @param string|int[] $size Optional. Image size. Accepts any registered image size name, or an array
- *                           of width and height values in pixels (in that order). Default 'thumbnail'.
- * @param string|false $text Optional. Link text. Default false.
- * @return string Markup for next image link.
+ * @param string|int[] $size Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                           giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
+ * @param string|false $text Tùy chọn. Văn bản liên kết. Mặc định false.
+ * @return string Markup cho liên kết hình ảnh tiếp theo.
  */
 function get_next_image_link( $size = 'thumbnail', $text = false ) {
 	return get_adjacent_image_link( false, $size, $text );
 }
 
 /**
- * Displays next image link that has the same post parent.
+ * Hiển thị liên kết hình ảnh tiếp theo có cùng bài viết cha.
  *
  * @since 2.5.0
  *
- * @param string|int[] $size Optional. Image size. Accepts any registered image size name, or an array
- *                           of width and height values in pixels (in that order). Default 'thumbnail'.
- * @param string|false $text Optional. Link text. Default false.
+ * @param string|int[] $size Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                           giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
+ * @param string|false $text Tùy chọn. Văn bản liên kết. Mặc định false.
  */
 function next_image_link( $size = 'thumbnail', $text = false ) {
 	echo get_next_image_link( $size, $text );
 }
 
 /**
- * Gets the next or previous image link that has the same post parent.
+ * Lấy liên kết hình ảnh tiếp theo hoặc trước đó có cùng bài viết cha.
  *
- * Retrieves the current attachment object from the $post global.
+ * Lấy đối tượng đính kèm hiện tại từ biến toàn cục $post.
  *
  * @since 5.8.0
  *
- * @param bool         $prev Optional. Whether to display the next (false) or previous (true) link. Default true.
- * @param string|int[] $size Optional. Image size. Accepts any registered image size name, or an array
- *                           of width and height values in pixels (in that order). Default 'thumbnail'.
- * @param bool         $text Optional. Link text. Default false.
- * @return string Markup for image link.
+ * @param bool         $prev Tùy chọn. Hiển thị liên kết tiếp theo (false) hay trước đó (true). Mặc định true.
+ * @param string|int[] $size Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                           giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
+ * @param bool         $text Tùy chọn. Văn bản liên kết. Mặc định false.
+ * @return string Markup cho liên kết hình ảnh.
  */
 function get_adjacent_image_link( $prev = true, $size = 'thumbnail', $text = false ) {
 	$post        = get_post();
@@ -3961,54 +3961,54 @@ function get_adjacent_image_link( $prev = true, $size = 'thumbnail', $text = fal
 	$adjacent = $prev ? 'previous' : 'next';
 
 	/**
-	 * Filters the adjacent image link.
+	 * Lọc liên kết hình ảnh liền kề.
 	 *
-	 * The dynamic portion of the hook name, `$adjacent`, refers to the type of adjacency,
-	 * either 'next', or 'previous'.
+	 * Phần động của tên hook, `$adjacent`, tham chiếu đến loại liền kề,
+	 * có thể là 'next' hoặc 'previous'.
 	 *
-	 * Possible hook names include:
+	 * Tên hook có thể bao gồm:
 	 *
 	 *  - `next_image_link`
 	 *  - `previous_image_link`
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string $output        Adjacent image HTML markup.
-	 * @param int    $attachment_id Attachment ID
-	 * @param string|int[] $size    Requested image size. Can be any registered image size name, or
-	 *                              an array of width and height values in pixels (in that order).
-	 * @param string $text          Link text.
+	 * @param string $output        Markup HTML hình ảnh liền kề.
+	 * @param int    $attachment_id ID đính kèm.
+	 * @param string|int[] $size    Kích thước hình ảnh được yêu cầu. Có thể là tên kích thước ảnh đã đăng ký, hoặc
+	 *                              mảng giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó).
+	 * @param string $text          Văn bản liên kết.
 	 */
 	return apply_filters( "{$adjacent}_image_link", $output, $attachment_id, $size, $text );
 }
 
 /**
- * Displays next or previous image link that has the same post parent.
+ * Hiển thị liên kết hình ảnh tiếp theo hoặc trước đó có cùng bài viết cha.
  *
- * Retrieves the current attachment object from the $post global.
+ * Lấy đối tượng đính kèm hiện tại từ biến toàn cục $post.
  *
  * @since 2.5.0
  *
- * @param bool         $prev Optional. Whether to display the next (false) or previous (true) link. Default true.
- * @param string|int[] $size Optional. Image size. Accepts any registered image size name, or an array
- *                           of width and height values in pixels (in that order). Default 'thumbnail'.
- * @param bool         $text Optional. Link text. Default false.
+ * @param bool         $prev Tùy chọn. Hiển thị liên kết tiếp theo (false) hay trước đó (true). Mặc định true.
+ * @param string|int[] $size Tùy chọn. Kích thước hình ảnh. Chấp nhận tên kích thước ảnh đã đăng ký, hoặc mảng
+ *                           giá trị chiều rộng và chiều cao tính bằng pixel (theo thứ tự đó). Mặc định 'thumbnail'.
+ * @param bool         $text Tùy chọn. Văn bản liên kết. Mặc định false.
  */
 function adjacent_image_link( $prev = true, $size = 'thumbnail', $text = false ) {
 	echo get_adjacent_image_link( $prev, $size, $text );
 }
 
 /**
- * Retrieves taxonomies attached to given the attachment.
+ * Lấy các taxonomy được gắn vào đính kèm đã cho.
  *
  * @since 2.5.0
- * @since 4.7.0 Introduced the `$output` parameter.
+ * @since 4.7.0 Giới thiệu tham số `$output`.
  *
- * @param int|array|object $attachment Attachment ID, data array, or data object.
- * @param string           $output     Output type. 'names' to return an array of taxonomy names,
- *                                     or 'objects' to return an array of taxonomy objects.
- *                                     Default is 'names'.
- * @return string[]|WP_Taxonomy[] List of taxonomies or taxonomy names. Empty array on failure.
+ * @param int|array|object $attachment ID đính kèm, mảng dữ liệu, hoặc đối tượng dữ liệu.
+ * @param string           $output     Loại đầu ra. 'names' để trả về mảng tên taxonomy,
+ *                                     hoặc 'objects' để trả về mảng đối tượng taxonomy.
+ *                                     Mặc định 'names'.
+ * @return string[]|WP_Taxonomy[] Danh sách taxonomy hoặc tên taxonomy. Mảng rỗng khi thất bại.
  */
 function get_attachment_taxonomies( $attachment, $output = 'names' ) {
 	if ( is_int( $attachment ) ) {
@@ -4060,17 +4060,17 @@ function get_attachment_taxonomies( $attachment, $output = 'names' ) {
 }
 
 /**
- * Retrieves all of the taxonomies that are registered for attachments.
+ * Lấy tất cả taxonomy đã đăng ký cho đính kèm.
  *
- * Handles mime-type-specific taxonomies such as attachment:image and attachment:video.
+ * Xử lý các taxonomy cụ thể theo loại mime như attachment:image và attachment:video.
  *
  * @since 3.5.0
  *
  * @see get_taxonomies()
  *
- * @param string $output Optional. The type of taxonomy output to return. Accepts 'names' or 'objects'.
- *                       Default 'names'.
- * @return string[]|WP_Taxonomy[] Array of names or objects of registered taxonomies for attachments.
+ * @param string $output Tùy chọn. Loại đầu ra taxonomy cần trả về. Chấp nhận 'names' hoặc 'objects'.
+ *                       Mặc định 'names'.
+ * @return string[]|WP_Taxonomy[] Mảng tên hoặc đối tượng các taxonomy đã đăng ký cho đính kèm.
  */
 function get_taxonomies_for_attachments( $output = 'names' ) {
 	$taxonomies = array();
@@ -4092,17 +4092,17 @@ function get_taxonomies_for_attachments( $output = 'names' ) {
 }
 
 /**
- * Determines whether the value is an acceptable type for GD image functions.
+ * Xác định xem giá trị có phải là kiểu được chấp nhận cho các hàm hình ảnh GD không.
  *
- * In PHP 8.0, the GD extension uses GdImage objects for its data structures.
- * This function checks if the passed value is either a GdImage object instance
- * or a resource of type `gd`. Any other type will return false.
+ * Trong PHP 8.0, phần mở rộng GD sử dụng đối tượng GdImage cho cấu trúc dữ liệu.
+ * Hàm này kiểm tra xem giá trị được truyền có phải là instance đối tượng GdImage
+ * hoặc tài nguyên kiểu `gd` không. Bất kỳ kiểu nào khác sẽ trả về false.
  *
  * @since 5.6.0
  *
- * @param resource|GdImage|false $image A value to check the type for.
- * @return bool True if `$image` is either a GD image resource or a GdImage instance,
- *              false otherwise.
+ * @param resource|GdImage|false $image Giá trị để kiểm tra kiểu.
+ * @return bool True nếu `$image` là tài nguyên hình ảnh GD hoặc instance GdImage,
+ *              false trong trường hợp khác.
  */
 function is_gd_image( $image ) {
 	if ( $image instanceof GdImage
@@ -4115,16 +4115,16 @@ function is_gd_image( $image ) {
 }
 
 /**
- * Creates a new GD image resource with transparency support.
+ * Tạo tài nguyên hình ảnh GD mới với hỗ trợ trong suốt.
  *
- * @todo Deprecate if possible.
+ * @todo Ngưng sử dụng nếu có thể.
  *
  * @since 2.9.0
  *
- * @param int $width  Image width in pixels.
- * @param int $height Image height in pixels.
- * @return resource|GdImage|false The GD image resource or GdImage instance on success.
- *                                False on failure.
+ * @param int $width  Chiều rộng hình ảnh tính bằng pixel.
+ * @param int $height Chiều cao hình ảnh tính bằng pixel.
+ * @return resource|GdImage|false Tài nguyên hình ảnh GD hoặc instance GdImage khi thành công.
+ *                                False khi thất bại.
  */
 function wp_imagecreatetruecolor( $width, $height ) {
 	$img = imagecreatetruecolor( $width, $height );
@@ -4140,21 +4140,21 @@ function wp_imagecreatetruecolor( $width, $height ) {
 }
 
 /**
- * Based on a supplied width/height example, returns the biggest possible dimensions based on the max width/height.
+ * Dựa trên ví dụ chiều rộng/chiều cao được cung cấp, trả về kích thước lớn nhất có thể dựa trên chiều rộng/chiều cao tối đa.
  *
  * @since 2.9.0
  *
  * @see wp_constrain_dimensions()
  *
- * @param int $example_width  The width of an example embed.
- * @param int $example_height The height of an example embed.
- * @param int $max_width      The maximum allowed width.
- * @param int $max_height     The maximum allowed height.
+ * @param int $example_width  Chiều rộng của embed ví dụ.
+ * @param int $example_height Chiều cao của embed ví dụ.
+ * @param int $max_width      Chiều rộng tối đa cho phép.
+ * @param int $max_height     Chiều cao tối đa cho phép.
  * @return int[] {
- *     An array of maximum width and height values.
+ *     Mảng các giá trị chiều rộng và chiều cao tối đa.
  *
- *     @type int $0 The maximum width in pixels.
- *     @type int $1 The maximum height in pixels.
+ *     @type int $0 Chiều rộng tối đa tính bằng pixel.
+ *     @type int $1 Chiều cao tối đa tính bằng pixel.
  * }
  */
 function wp_expand_dimensions( $example_width, $example_height, $max_width, $max_height ) {
@@ -4167,56 +4167,56 @@ function wp_expand_dimensions( $example_width, $example_height, $max_width, $max
 }
 
 /**
- * Determines the maximum upload size allowed in php.ini.
+ * Xác định kích thước tải lên tối đa được phép trong php.ini.
  *
  * @since 2.5.0
  *
- * @return int Allowed upload size.
+ * @return int Kích thước tải lên được phép.
  */
 function wp_max_upload_size() {
 	$u_bytes = wp_convert_hr_to_bytes( ini_get( 'upload_max_filesize' ) );
 	$p_bytes = wp_convert_hr_to_bytes( ini_get( 'post_max_size' ) );
 
 	/**
-	 * Filters the maximum upload size allowed in php.ini.
+	 * Lọc kích thước tải lên tối đa được phép trong php.ini.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param int $size    Max upload size limit in bytes.
-	 * @param int $u_bytes Maximum upload filesize in bytes.
-	 * @param int $p_bytes Maximum size of POST data in bytes.
+	 * @param int $size    Giới hạn kích thước tải lên tối đa tính bằng byte.
+	 * @param int $u_bytes Kích thước tệp tải lên tối đa tính bằng byte.
+	 * @param int $p_bytes Kích thước tối đa của dữ liệu POST tính bằng byte.
 	 */
 	return apply_filters( 'upload_size_limit', min( $u_bytes, $p_bytes ), $u_bytes, $p_bytes );
 }
 
 /**
- * Returns a WP_Image_Editor instance and loads file into it.
+ * Trả về instance WP_Image_Editor và tải tệp vào đó.
  *
  * @since 3.5.0
  *
- * @param string $path Path to the file to load.
- * @param array  $args Optional. Additional arguments for retrieving the image editor.
- *                     Default empty array.
- * @return WP_Image_Editor|WP_Error The WP_Image_Editor object on success,
- *                                  a WP_Error object otherwise.
+ * @param string $path Đường dẫn đến tệp cần tải.
+ * @param array  $args Tùy chọn. Các tham số bổ sung để lấy trình chỉnh sửa hình ảnh.
+ *                     Mặc định mảng rỗng.
+ * @return WP_Image_Editor|WP_Error Đối tượng WP_Image_Editor khi thành công,
+ *                                  đối tượng WP_Error trong trường hợp khác.
  */
 function wp_get_image_editor( $path, $args = array() ) {
 	$args['path'] = $path;
 
-	// If the mime type is not set in args, try to extract and set it from the file.
+	// Nếu loại mime chưa được đặt trong args, thử trích xuất và đặt nó từ tệp.
 	if ( ! isset( $args['mime_type'] ) ) {
 		$file_info = wp_check_filetype( $args['path'] );
 
 		/*
-		 * If $file_info['type'] is false, then we let the editor attempt to
-		 * figure out the file type, rather than forcing a failure based on extension.
+		 * Nếu $file_info['type'] là false, thì chúng ta để trình chỉnh sửa cố gắng
+		 * xác định loại tệp, thay vì buộc thất bại dựa trên phần mở rộng.
 		 */
 		if ( isset( $file_info ) && $file_info['type'] ) {
 			$args['mime_type'] = $file_info['type'];
 		}
 	}
 
-	// Check and set the output mime type mapped to the input type.
+	// Kiểm tra và đặt loại mime đầu ra được ánh xạ từ loại đầu vào.
 	if ( isset( $args['mime_type'] ) ) {
 		$output_format = wp_get_image_editor_output_format( $path, $args['mime_type'] );
 		if ( isset( $output_format[ $args['mime_type'] ] ) ) {
@@ -4241,27 +4241,27 @@ function wp_get_image_editor( $path, $args = array() ) {
 }
 
 /**
- * Tests whether there is an editor that supports a given mime type or methods.
+ * Kiểm tra xem có trình chỉnh sửa nào hỗ trợ loại mime hoặc phương thức đã cho không.
  *
  * @since 3.5.0
  *
- * @param string|array $args Optional. Array of arguments to retrieve the image editor supports.
- *                           Default empty array.
- * @return bool True if an eligible editor is found; false otherwise.
+ * @param string|array $args Tùy chọn. Mảng tham số để lấy hỗ trợ của trình chỉnh sửa hình ảnh.
+ *                           Mặc định mảng rỗng.
+ * @return bool True nếu tìm thấy trình chỉnh sửa đủ điều kiện; false trong trường hợp khác.
  */
 function wp_image_editor_supports( $args = array() ) {
 	return (bool) _wp_image_editor_choose( $args );
 }
 
 /**
- * Tests which editors are capable of supporting the request.
+ * Kiểm tra những trình chỉnh sửa nào có khả năng hỗ trợ yêu cầu.
  *
  * @ignore
  * @since 3.5.0
  *
- * @param array $args Optional. Array of arguments for choosing a capable editor. Default empty array.
- * @return string|false Class name for the first editor that claims to support the request.
- *                      False if no editor claims to support the request.
+ * @param array $args Tùy chọn. Mảng tham số để chọn trình chỉnh sửa có khả năng. Mặc định mảng rỗng.
+ * @return string|false Tên lớp cho trình chỉnh sửa đầu tiên tuyên bố hỗ trợ yêu cầu.
+ *                      False nếu không có trình chỉnh sửa nào tuyên bố hỗ trợ yêu cầu.
  */
 function _wp_image_editor_choose( $args = array() ) {
 	require_once ABSPATH . WPINC . '/class-wp-image-editor.php';
@@ -4269,11 +4269,11 @@ function _wp_image_editor_choose( $args = array() ) {
 	require_once ABSPATH . WPINC . '/class-wp-image-editor-imagick.php';
 	require_once ABSPATH . WPINC . '/class-avif-info.php';
 	/**
-	 * Filters the list of image editing library classes.
+	 * Lọc danh sách các lớp thư viện chỉnh sửa hình ảnh.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param string[] $image_editors Array of available image editor class names. Defaults are
+	 * @param string[] $image_editors Mảng tên lớp trình chỉnh sửa hình ảnh có sẵn. Mặc định là
 	 *                                'WP_Image_Editor_Imagick', 'WP_Image_Editor_GD'.
 	 */
 	$implementations = apply_filters( 'wp_image_editors', array( 'WP_Image_Editor_Imagick', 'WP_Image_Editor_GD' ) );
@@ -4284,14 +4284,14 @@ function _wp_image_editor_choose( $args = array() ) {
 		$editors = array();
 	}
 
-	// Cache the chosen editor implementation based on specific args and available implementations.
+	// Lưu cache triển khai trình chỉnh sửa được chọn dựa trên args cụ thể và các triển khai có sẵn.
 	$cache_key = md5( serialize( array( $args, $implementations ) ) );
 
 	if ( isset( $editors[ $cache_key ] ) ) {
 		return $editors[ $cache_key ];
 	}
 
-	// Assume no support until a capable implementation is identified.
+	// Giả định không hỗ trợ cho đến khi xác định được triển khai có khả năng.
 	$editor = false;
 
 	foreach ( $implementations as $implementation ) {

@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Widgets_Controller class
+ * REST API: Lớp WP_REST_Widgets_Controller
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class to access widgets via the REST API.
+ * Lớp cốt lõi để truy cập widget thông qua REST API.
  *
  * @since 5.8.0
  *
@@ -17,7 +17,7 @@
 class WP_REST_Widgets_Controller extends WP_REST_Controller {
 
 	/**
-	 * Tracks whether {@see retrieve_widgets()} has been called in the current request.
+	 * Theo dõi xem {@see retrieve_widgets()} đã được gọi trong yêu cầu hiện tại hay chưa.
 	 *
 	 * @since 5.9.0
 	 * @var bool
@@ -25,7 +25,7 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	protected $widgets_retrieved = false;
 
 	/**
-	 * Whether the controller supports batching.
+	 * Xác định controller có hỗ trợ xử lý hàng loạt hay không.
 	 *
 	 * @since 5.9.0
 	 * @var array
@@ -33,7 +33,7 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	protected $allow_batch = array( 'v1' => true );
 
 	/**
-	 * Widgets controller constructor.
+	 * Hàm khởi tạo controller widget.
 	 *
 	 * @since 5.8.0
 	 */
@@ -43,7 +43,7 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Registers the widget routes for the controller.
+	 * Đăng ký các route widget cho controller.
 	 *
 	 * @since 5.8.0
 	 */
@@ -105,12 +105,12 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to get widgets.
+	 * Kiểm tra xem yêu cầu có quyền lấy danh sách widget hay không.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function get_items_permissions_check( $request ) {
 		$this->retrieve_widgets();
@@ -128,16 +128,16 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves a collection of widgets.
+	 * Lấy danh sách widget.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response Response object.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response Đối tượng phản hồi.
 	 */
 	public function get_items( $request ) {
 		if ( $request->is_method( 'HEAD' ) ) {
-			// Return early as this handler doesn't add any response headers.
+			// Trả về sớm vì handler này không thêm header phản hồi nào.
 			return new WP_REST_Response( array() );
 		}
 
@@ -168,12 +168,12 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to get a widget.
+	 * Kiểm tra xem yêu cầu có quyền lấy một widget hay không.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function get_item_permissions_check( $request ) {
 		$this->retrieve_widgets();
@@ -189,12 +189,12 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a sidebar can be read publicly.
+	 * Kiểm tra xem sidebar có thể đọc công khai hay không.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param string $sidebar_id The sidebar ID.
-	 * @return bool Whether the sidebar can be read.
+	 * @param string $sidebar_id ID của sidebar.
+	 * @return bool Sidebar có thể đọc hay không.
 	 */
 	protected function check_read_sidebar_permission( $sidebar_id ) {
 		$sidebar = wp_get_sidebar( $sidebar_id );
@@ -203,12 +203,12 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Gets an individual widget.
+	 * Lấy một widget riêng lẻ.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function get_item( $request ) {
 		$this->retrieve_widgets();
@@ -228,24 +228,24 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to create widgets.
+	 * Kiểm tra xem yêu cầu có quyền tạo widget hay không.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function create_item_permissions_check( $request ) {
 		return $this->permissions_check( $request );
 	}
 
 	/**
-	 * Creates a widget.
+	 * Tạo một widget.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function create_item( $request ) {
 		$sidebar_id = $request['sidebar'];
@@ -272,39 +272,39 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to update widgets.
+	 * Kiểm tra xem yêu cầu có quyền cập nhật widget hay không.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function update_item_permissions_check( $request ) {
 		return $this->permissions_check( $request );
 	}
 
 	/**
-	 * Updates an existing widget.
+	 * Cập nhật một widget hiện có.
 	 *
 	 * @since 5.8.0
 	 *
 	 * @global WP_Widget_Factory $wp_widget_factory
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function update_item( $request ) {
 		global $wp_widget_factory;
 
 		/*
-		 * retrieve_widgets() contains logic to move "hidden" or "lost" widgets to the
-		 * wp_inactive_widgets sidebar based on the contents of the $sidebars_widgets global.
+		 * retrieve_widgets() chứa logic để di chuyển widget "ẩn" hoặc "thất lạc" đến
+		 * sidebar wp_inactive_widgets dựa trên nội dung của biến toàn cục $sidebars_widgets.
 		 *
-		 * When batch requests are processed, this global is not properly updated by previous
-		 * calls, resulting in widgets incorrectly being moved to the wp_inactive_widgets
-		 * sidebar.
+		 * Khi các yêu cầu hàng loạt được xử lý, biến toàn cục này không được cập nhật
+		 * đúng cách bởi các lần gọi trước đó, dẫn đến việc widget bị di chuyển nhầm
+		 * đến sidebar wp_inactive_widgets.
 		 *
-		 * See https://core.trac.wordpress.org/ticket/53657.
+		 * Xem https://core.trac.wordpress.org/ticket/53657.
 		 */
 		wp_get_sidebars_widgets();
 		$this->retrieve_widgets();
@@ -312,7 +312,7 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 		$widget_id  = $request['id'];
 		$sidebar_id = wp_find_widgets_sidebar( $widget_id );
 
-		// Allow sidebar to be unset or missing when widget is not a WP_Widget.
+		// Cho phép sidebar không được đặt hoặc thiếu khi widget không phải là WP_Widget.
 		$parsed_id     = wp_parse_widget_id( $widget_id );
 		$widget_object = $wp_widget_factory->get_widget_object( $parsed_id['id_base'] );
 		if ( is_null( $sidebar_id ) && $widget_object ) {
@@ -346,40 +346,40 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to delete widgets.
+	 * Kiểm tra xem yêu cầu có quyền xóa widget hay không.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function delete_item_permissions_check( $request ) {
 		return $this->permissions_check( $request );
 	}
 
 	/**
-	 * Deletes a widget.
+	 * Xóa một widget.
 	 *
 	 * @since 5.8.0
 	 *
 	 * @global WP_Widget_Factory $wp_widget_factory
-	 * @global array             $wp_registered_widget_updates The registered widget update functions.
+	 * @global array             $wp_registered_widget_updates Các hàm cập nhật widget đã đăng ký.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function delete_item( $request ) {
 		global $wp_widget_factory, $wp_registered_widget_updates;
 
 		/*
-		 * retrieve_widgets() contains logic to move "hidden" or "lost" widgets to the
-		 * wp_inactive_widgets sidebar based on the contents of the $sidebars_widgets global.
+		 * retrieve_widgets() chứa logic để di chuyển widget "ẩn" hoặc "thất lạc" đến
+		 * sidebar wp_inactive_widgets dựa trên nội dung của biến toàn cục $sidebars_widgets.
 		 *
-		 * When batch requests are processed, this global is not properly updated by previous
-		 * calls, resulting in widgets incorrectly being moved to the wp_inactive_widgets
-		 * sidebar.
+		 * Khi các yêu cầu hàng loạt được xử lý, biến toàn cục này không được cập nhật
+		 * đúng cách bởi các lần gọi trước đó, dẫn đến việc widget bị di chuyển nhầm
+		 * đến sidebar wp_inactive_widgets.
 		 *
-		 * See https://core.trac.wordpress.org/ticket/53657.
+		 * Xem https://core.trac.wordpress.org/ticket/53657.
 		 */
 		wp_get_sidebars_widgets();
 		$this->retrieve_widgets();
@@ -414,7 +414,7 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 			);
 			$_REQUEST = $_POST;
 
-			/** This action is documented in wp-admin/widgets-form.php */
+			/** Hành động này được ghi chú trong wp-admin/widgets-form.php */
 			do_action( 'delete_widget', $widget_id, $sidebar_id, $id_base );
 
 			$callback = $wp_registered_widget_updates[ $id_base ]['callback'];
@@ -433,9 +433,9 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 
 			if ( $widget_object ) {
 				/*
-				 * WP_Widget sets `updated = true` after an update to prevent more than one widget
-				 * from being saved per request. This isn't what we want in the REST API, though,
-				 * as we support batch requests.
+				 * WP_Widget đặt `updated = true` sau khi cập nhật để ngăn nhiều hơn một widget
+				 * được lưu trên mỗi yêu cầu. Tuy nhiên, đây không phải điều chúng ta muốn trong REST API,
+				 * vì chúng ta hỗ trợ yêu cầu hàng loạt.
 				 */
 				$widget_object->updated = false;
 			}
@@ -461,14 +461,14 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 		}
 
 		/**
-		 * Fires after a widget is deleted via the REST API.
+		 * Kích hoạt sau khi widget bị xóa thông qua REST API.
 		 *
 		 * @since 5.8.0
 		 *
-		 * @param string                    $widget_id  ID of the widget marked for deletion.
-		 * @param string                    $sidebar_id ID of the sidebar the widget was deleted from.
-		 * @param WP_REST_Response|WP_Error $response   The response data, or WP_Error object on failure.
-		 * @param WP_REST_Request           $request    The request sent to the API.
+		 * @param string                    $widget_id  ID của widget được đánh dấu để xóa.
+		 * @param string                    $sidebar_id ID của sidebar mà widget đã bị xóa khỏi.
+		 * @param WP_REST_Response|WP_Error $response   Dữ liệu phản hồi, hoặc đối tượng WP_Error khi thất bại.
+		 * @param WP_REST_Request           $request    Yêu cầu được gửi đến API.
 		 */
 		do_action( 'rest_delete_widget', $widget_id, $sidebar_id, $response, $request );
 
@@ -476,11 +476,11 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Performs a permissions check for managing widgets.
+	 * Thực hiện kiểm tra quyền để quản lý widget.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
 	 * @return true|WP_Error
 	 */
 	protected function permissions_check( $request ) {
@@ -498,7 +498,7 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Looks for "lost" widgets once per request.
+	 * Tìm kiếm widget "thất lạc" một lần cho mỗi yêu cầu.
 	 *
 	 * @since 5.9.0
 	 *
@@ -512,24 +512,24 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Saves the widget in the request object.
+	 * Lưu widget trong đối tượng yêu cầu.
 	 *
 	 * @since 5.8.0
 	 *
 	 * @global WP_Widget_Factory $wp_widget_factory
-	 * @global array             $wp_registered_widget_updates The registered widget update functions.
+	 * @global array             $wp_registered_widget_updates Các hàm cập nhật widget đã đăng ký.
 	 *
-	 * @param WP_REST_Request $request    Full details about the request.
-	 * @param string          $sidebar_id ID of the sidebar the widget belongs to.
-	 * @return string|WP_Error The saved widget ID.
+	 * @param WP_REST_Request $request    Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @param string          $sidebar_id ID của sidebar mà widget thuộc về.
+	 * @return string|WP_Error ID widget đã lưu.
 	 */
 	protected function save_widget( $request, $sidebar_id ) {
 		global $wp_widget_factory, $wp_registered_widget_updates;
 
-		require_once ABSPATH . 'wp-admin/includes/widgets.php'; // For next_widget_id_number().
+		require_once ABSPATH . 'wp-admin/includes/widgets.php'; // Cho hàm next_widget_id_number().
 
 		if ( isset( $request['id'] ) ) {
-			// Saving an existing widget.
+			// Đang lưu một widget hiện có.
 			$id            = $request['id'];
 			$parsed_id     = wp_parse_widget_id( $id );
 			$id_base       = $parsed_id['id_base'];
@@ -537,7 +537,7 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 			$widget_object = $wp_widget_factory->get_widget_object( $id_base );
 			$creating      = false;
 		} elseif ( $request['id_base'] ) {
-			// Saving a new widget.
+			// Đang lưu một widget mới.
 			$id_base       = $request['id_base'];
 			$widget_object = $wp_widget_factory->get_widget_object( $id_base );
 			$number        = $widget_object ? next_widget_id_number( $id_base ) : null;
@@ -629,27 +629,27 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 		$_REQUEST = $original_request;
 
 		if ( $widget_object ) {
-			// Register any multi-widget that the update callback just created.
+			// Đăng ký bất kỳ multi-widget nào mà callback cập nhật vừa tạo.
 			$widget_object->_set( $number );
 			$widget_object->_register_one( $number );
 
 			/*
-			 * WP_Widget sets `updated = true` after an update to prevent more than one widget
-			 * from being saved per request. This isn't what we want in the REST API, though,
-			 * as we support batch requests.
+			 * WP_Widget đặt `updated = true` sau khi cập nhật để ngăn nhiều hơn một widget
+			 * được lưu trên mỗi yêu cầu. Tuy nhiên, đây không phải điều chúng ta muốn trong REST API,
+			 * vì chúng ta hỗ trợ yêu cầu hàng loạt.
 			 */
 			$widget_object->updated = false;
 		}
 
 		/**
-		 * Fires after a widget is created or updated via the REST API.
+		 * Kích hoạt sau khi widget được tạo hoặc cập nhật thông qua REST API.
 		 *
 		 * @since 5.8.0
 		 *
-		 * @param string          $id         ID of the widget being saved.
-		 * @param string          $sidebar_id ID of the sidebar containing the widget being saved.
-		 * @param WP_REST_Request $request    Request object.
-		 * @param bool            $creating   True when creating a widget, false when updating.
+		 * @param string          $id         ID của widget đang được lưu.
+		 * @param string          $sidebar_id ID của sidebar chứa widget đang được lưu.
+		 * @param WP_REST_Request $request    Đối tượng yêu cầu.
+		 * @param bool            $creating   True khi tạo widget, false khi cập nhật.
 		 */
 		do_action( 'rest_after_save_widget', $id, $sidebar_id, $request, $creating );
 
@@ -657,16 +657,16 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepares the widget for the REST response.
+	 * Chuẩn bị widget cho phản hồi REST.
 	 *
 	 * @since 5.8.0
 	 *
 	 * @global WP_Widget_Factory $wp_widget_factory
-	 * @global array             $wp_registered_widgets The registered widgets.
+	 * @global array             $wp_registered_widgets Các widget đã đăng ký.
 	 *
-	 * @param array           $item    An array containing a widget_id and sidebar_id.
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param array           $item    Mảng chứa widget_id và sidebar_id.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function prepare_item_for_response( $item, $request ) {
 		global $wp_widget_factory, $wp_registered_widgets;
@@ -683,9 +683,9 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 		}
 
 		$widget = $wp_registered_widgets[ $widget_id ];
-		// Don't prepare the response body for HEAD requests.
+		// Không chuẩn bị nội dung phản hồi cho các yêu cầu HEAD.
 		if ( $request->is_method( 'HEAD' ) ) {
-			/** This filter is documented in wp-includes/rest-api/endpoints/class-wp-rest-widgets-controller.php */
+			/** Bộ lọc này được ghi chú trong wp-includes/rest-api/endpoints/class-wp-rest-widgets-controller.php */
 			return apply_filters( 'rest_prepare_widget', new WP_REST_Response( array() ), $widget, $request );
 		}
 
@@ -725,7 +725,7 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 				$prepared['instance']['hash']    = wp_hash( $serialized_instance );
 
 				if ( ! empty( $widget_object->widget_options['show_instance_in_rest'] ) ) {
-					// Use new stdClass so that JSON result is {} and not [].
+					// Sử dụng new stdClass để kết quả JSON là {} chứ không phải [].
 					$prepared['instance']['raw'] = empty( $instance ) ? new stdClass() : $instance;
 				}
 			}
@@ -742,24 +742,24 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 		}
 
 		/**
-		 * Filters the REST API response for a widget.
+		 * Lọc phản hồi REST API cho widget.
 		 *
 		 * @since 5.8.0
 		 *
-		 * @param WP_REST_Response|WP_Error $response The response object, or WP_Error object on failure.
-		 * @param array                     $widget   The registered widget data.
-		 * @param WP_REST_Request           $request  Request used to generate the response.
+		 * @param WP_REST_Response|WP_Error $response Đối tượng phản hồi, hoặc đối tượng WP_Error khi thất bại.
+		 * @param array                     $widget   Dữ liệu widget đã đăng ký.
+		 * @param WP_REST_Request           $request  Yêu cầu dùng để tạo phản hồi.
 		 */
 		return apply_filters( 'rest_prepare_widget', $response, $widget, $request );
 	}
 
 	/**
-	 * Prepares links for the widget.
+	 * Chuẩn bị các liên kết cho widget.
 	 *
 	 * @since 5.8.0
 	 *
 	 * @param array $prepared Widget.
-	 * @return array Links for the given widget.
+	 * @return array Các liên kết cho widget.
 	 */
 	protected function prepare_links( $prepared ) {
 		$id_base = ! empty( $prepared['id_base'] ) ? $prepared['id_base'] : $prepared['id'];
@@ -782,7 +782,7 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Gets the list of collection params.
+	 * Lấy danh sách các tham số bộ sưu tập.
 	 *
 	 * @since 5.8.0
 	 *
@@ -799,11 +799,11 @@ class WP_REST_Widgets_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves the widget's schema, conforming to JSON Schema.
+	 * Lấy schema của widget, tuân thủ JSON Schema.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @return array Item schema data.
+	 * @return array Dữ liệu schema của mục.
 	 */
 	public function get_item_schema() {
 		if ( $this->schema ) {

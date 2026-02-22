@@ -1047,7 +1047,7 @@ class WP_Query {
 		// Sửa `is_*` cho 'page_on_front' và 'page_for_posts'.
 		if ( $this->is_home && 'page' === get_option( 'show_on_front' ) && get_option( 'page_on_front' ) ) {
 			$_query = wp_parse_args( $this->query );
-			// 'pagename' can be set and empty depending on matched rewrite rules. Ignore an empty 'pagename'.
+			// 'pagename' có thể được thiết lập nhưng rỗng tùy thuộc vào quy tắc rewrite khớp. Bỏ qua 'pagename' rỗng.
 			if ( isset( $_query['pagename'] ) && '' === $_query['pagename'] ) {
 				unset( $_query['pagename'] );
 			}
@@ -1058,7 +1058,7 @@ class WP_Query {
 				$this->is_page = true;
 				$this->is_home = false;
 				$qv['page_id'] = get_option( 'page_on_front' );
-				// Correct <!--nextpage--> for 'page_on_front'.
+				// Sửa <!--nextpage--> cho 'page_on_front'.
 				if ( ! empty( $qv['paged'] ) ) {
 					$qv['page'] = $qv['paged'];
 					unset( $qv['paged'] );
@@ -1071,7 +1071,7 @@ class WP_Query {
 
 			if ( $this->queried_object && 'attachment' === $this->queried_object->post_type ) {
 				if ( preg_match( '/^[^%]*%(?:postname)%/', get_option( 'permalink_structure' ) ) ) {
-					// See if we also have a post with the same slug.
+					// Xem thử có bài viết nào cũng có cùng slug hay không.
 					$post = get_page_by_path( $qv['pagename'], OBJECT, 'post' );
 					if ( $post ) {
 						$this->queried_object = $post;
@@ -1133,7 +1133,7 @@ class WP_Query {
 		}
 
 		$this->is_singular = $this->is_single || $this->is_page || $this->is_attachment;
-		// Done correcting `is_*` for 'page_on_front' and 'page_for_posts'.
+		// Hoàn tất việc sửa `is_*` cho 'page_on_front' và 'page_for_posts'.
 
 		if ( '404' == $qv['error'] ) {
 			$this->set_404();
@@ -1145,23 +1145,23 @@ class WP_Query {
 		$this->query_vars_changed = false;
 
 		/**
-		 * Fires after the main query vars have been parsed.
+		 * Kích hoạt sau khi các biến truy vấn chính đã được phân tích.
 		 *
 		 * @since 1.5.0
 		 *
-		 * @param WP_Query $query The WP_Query instance (passed by reference).
+		 * @param WP_Query $query Thể hiện WP_Query (truyền theo tham chiếu).
 		 */
 		do_action_ref_array( 'parse_query', array( &$this ) );
 	}
 
 	/**
-	 * Parses various taxonomy related query vars.
+	 * Phân tích các biến truy vấn liên quan đến taxonomy.
 	 *
-	 * For BC, this method is not marked as protected. See [28987].
+	 * Để tương thích ngược, phương thức này không được đánh dấu là protected. Xem [28987].
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param array $q The query variables. Passed by reference.
+	 * @param array $q Các biến truy vấn. Truyền theo tham chiếu.
 	 */
 	public function parse_tax_query( &$q ) {
 		if ( ! empty( $q['tax_query'] ) && is_array( $q['tax_query'] ) ) {
@@ -1180,7 +1180,7 @@ class WP_Query {
 
 		foreach ( get_taxonomies( array(), 'objects' ) as $taxonomy => $t ) {
 			if ( 'post_tag' === $taxonomy ) {
-				continue; // Handled further down in the $q['tag'] block.
+				continue; // Được xử lý ở phía dưới trong khối $q['tag'].
 			}
 
 			if ( $t->query_var && ! empty( $q[ $t->query_var ] ) ) {
@@ -1223,12 +1223,12 @@ class WP_Query {
 			}
 		}
 
-		// If query string 'cat' is an array, implode it.
+		// Nếu chuỗi truy vấn 'cat' là mảng, gộp nó lại.
 		if ( is_array( $q['cat'] ) ) {
 			$q['cat'] = implode( ',', $q['cat'] );
 		}
 
-		// Category stuff.
+		// Xử lý chuyên mục.
 
 		if ( ! empty( $q['cat'] ) && ! $this->is_singular ) {
 			$cat_in     = array();
@@ -1311,12 +1311,12 @@ class WP_Query {
 			);
 		}
 
-		// If query string 'tag' is array, implode it.
+		// Nếu chuỗi truy vấn 'tag' là mảng, gộp nó lại.
 		if ( is_array( $q['tag'] ) ) {
 			$q['tag'] = implode( ',', $q['tag'] );
 		}
 
-		// Tag stuff.
+		// Xử lý thẻ.
 
 		if ( '' !== $q['tag'] && ! $this->is_singular && $this->query_vars_changed ) {
 			if ( str_contains( $q['tag'], ',' ) ) {
@@ -1401,36 +1401,36 @@ class WP_Query {
 		$this->tax_query = new WP_Tax_Query( $tax_query );
 
 		/**
-		 * Fires after taxonomy-related query vars have been parsed.
+		 * Kích hoạt sau khi các biến truy vấn liên quan đến taxonomy đã được phân tích.
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param WP_Query $query The WP_Query instance.
+		 * @param WP_Query $query Thể hiện WP_Query.
 		 */
 		do_action( 'parse_tax_query', $this );
 	}
 
 	/**
-	 * Generates SQL for the WHERE clause based on passed search terms.
+	 * Tạo SQL cho mệnh đề WHERE dựa trên các từ tìm kiếm được truyền vào.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param array $q Query variables.
-	 * @return string WHERE clause.
+	 * @param array $q Các biến truy vấn.
+	 * @return string Mệnh đề WHERE.
 	 */
 	protected function parse_search( &$q ) {
 		global $wpdb;
 
 		$search = '';
 
-		// Added slashes screw with quote grouping when done early, so done later.
+		// Thêm dấu gạch chéo sẽ làm hỏng việc nhóm dấu ngoặc kép nếu làm sớm, nên thực hiện sau.
 		$q['s'] = stripslashes( $q['s'] );
 		if ( empty( $_GET['s'] ) && $this->is_main_query() ) {
 			$q['s'] = urldecode( $q['s'] );
 		}
-		// There are no line breaks in <input /> fields.
+		// Không có ngắt dòng trong các trường <input />.
 		$q['s']                  = str_replace( array( "\r", "\n" ), '', $q['s'] );
 		$q['search_terms_count'] = 1;
 		if ( ! empty( $q['sentence'] ) ) {
@@ -1439,7 +1439,7 @@ class WP_Query {
 			if ( preg_match_all( '/".*?("|$)|((?<=[\t ",+])|^)[^\t ",+]+/', $q['s'], $matches ) ) {
 				$q['search_terms_count'] = count( $matches[0] );
 				$q['search_terms']       = $this->parse_search_terms( $matches[0] );
-				// If the search string has only short terms or stopwords, or is 10+ terms long, match it as sentence.
+				// Nếu chuỗi tìm kiếm chỉ có từ ngắn hoặc từ dừng, hoặc dài hơn 10 từ, khớp như câu.
 				if ( empty( $q['search_terms'] ) || count( $q['search_terms'] ) > 9 ) {
 					$q['search_terms'] = array( $q['s'] );
 				}
@@ -1459,37 +1459,37 @@ class WP_Query {
 		}
 
 		/**
-		 * Filters the columns to search in a WP_Query search.
+		 * Lọc các cột để tìm kiếm trong truy vấn WP_Query.
 		 *
-		 * The supported columns are `post_title`, `post_excerpt` and `post_content`.
-		 * They are all included by default.
+		 * Các cột được hỗ trợ là `post_title`, `post_excerpt` và `post_content`.
+		 * Tất cả đều được bao gồm theo mặc định.
 		 *
 		 * @since 6.2.0
 		 *
-		 * @param string[] $search_columns Array of column names to be searched.
-		 * @param string   $search         Text being searched.
-		 * @param WP_Query $query          The current WP_Query instance.
+		 * @param string[] $search_columns Mảng tên các cột cần tìm kiếm.
+		 * @param string   $search         Văn bản đang được tìm kiếm.
+		 * @param WP_Query $query          Thể hiện WP_Query hiện tại.
 		 */
 		$search_columns = (array) apply_filters( 'post_search_columns', $search_columns, $q['s'], $this );
 
-		// Use only supported search columns.
+		// Chỉ sử dụng các cột tìm kiếm được hỗ trợ.
 		$search_columns = array_intersect( $search_columns, $default_search_columns );
 		if ( empty( $search_columns ) ) {
 			$search_columns = $default_search_columns;
 		}
 
 		/**
-		 * Filters the prefix that indicates that a search term should be excluded from results.
+		 * Lọc tiền tố chỉ định rằng một từ tìm kiếm nên bị loại trừ khỏi kết quả.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param string $exclusion_prefix The prefix. Default '-'. Returning
-		 *                                 an empty value disables exclusions.
+		 * @param string $exclusion_prefix Tiền tố. Mặc định '-'. Trả về
+		 *                                 giá trị rỗng sẽ vô hiệu hóa loại trừ.
 		 */
 		$exclusion_prefix = apply_filters( 'wp_query_search_exclusion_prefix', '-' );
 
 		foreach ( $q['search_terms'] as $term ) {
-			// If there is an $exclusion_prefix, terms prefixed with it should be excluded.
+			// Nếu có $exclusion_prefix, các từ có tiền tố này sẽ bị loại trừ.
 			$exclude = $exclusion_prefix && str_starts_with( $term, $exclusion_prefix );
 			if ( $exclude ) {
 				$like_op  = 'NOT LIKE';
@@ -1532,16 +1532,16 @@ class WP_Query {
 	}
 
 	/**
-	 * Checks if the terms are suitable for searching.
+	 * Kiểm tra xem các từ có phù hợp để tìm kiếm hay không.
 	 *
-	 * Uses an array of stopwords (terms) that are excluded from the separate
-	 * term matching when searching for posts. The list of English stopwords is
-	 * the approximate search engines list, and is translatable.
+	 * Sử dụng mảng các từ dừng (terms) được loại trừ khỏi việc khớp
+	 * từ riêng biệt khi tìm kiếm bài viết. Danh sách từ dừng tiếng Anh
+	 * là danh sách gần đúng của các công cụ tìm kiếm, và có thể dịch được.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param string[] $terms Array of terms to check.
-	 * @return string[] Terms that are not stopwords.
+	 * @param string[] $terms Mảng các từ cần kiểm tra.
+	 * @return string[] Các từ không phải từ dừng.
 	 */
 	protected function parse_search_terms( $terms ) {
 		$strtolower = function_exists( 'mb_strtolower' ) ? 'mb_strtolower' : 'strtolower';
@@ -1550,14 +1550,14 @@ class WP_Query {
 		$stopwords = $this->get_search_stopwords();
 
 		foreach ( $terms as $term ) {
-			// Keep before/after spaces when term is for exact match.
+			// Giữ khoảng trắng trước/sau khi từ dùng cho khớp chính xác.
 			if ( preg_match( '/^".+"$/', $term ) ) {
 				$term = trim( $term, "\"'" );
 			} else {
 				$term = trim( $term, "\"' " );
 			}
 
-			// Avoid single A-Z and single dashes.
+			// Tránh các ký tự A-Z đơn lẻ và dấu gạch ngang đơn lẻ.
 			if ( ! $term || ( 1 === strlen( $term ) && preg_match( '/^[a-z\-]$/i', $term ) ) ) {
 				continue;
 			}
@@ -1573,11 +1573,11 @@ class WP_Query {
 	}
 
 	/**
-	 * Retrieves stopwords used when parsing search terms.
+	 * Lấy danh sách từ dừng được sử dụng khi phân tích các từ tìm kiếm.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @return string[] Stopwords.
+	 * @return string[] Các từ dừng.
 	 */
 	protected function get_search_stopwords() {
 		if ( isset( $this->stopwords ) ) {
@@ -1585,9 +1585,9 @@ class WP_Query {
 		}
 
 		/*
-		 * translators: This is a comma-separated list of very common words that should be excluded from a search,
-		 * like a, an, and the. These are usually called "stopwords". You should not simply translate these individual
-		 * words into your language. Instead, look for and provide commonly accepted stopwords in your language.
+		 * translators: Đây là danh sách phân cách bằng dấu phẩy các từ rất phổ biến nên được loại trừ khỏi tìm kiếm,
+		 * như a, an, và the. Chúng thường được gọi là "từ dừng". Bạn không nên đơn giản dịch từng từ
+		 * sang ngôn ngữ của mình. Thay vào đó, hãy tìm và cung cấp các từ dừng được chấp nhận phổ biến trong ngôn ngữ của bạn.
 		 */
 		$words = explode(
 			',',
@@ -1606,25 +1606,25 @@ class WP_Query {
 		}
 
 		/**
-		 * Filters stopwords used when parsing search terms.
+		 * Lọc các từ dừng được sử dụng khi phân tích các từ tìm kiếm.
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param string[] $stopwords Array of stopwords.
+		 * @param string[] $stopwords Mảng các từ dừng.
 		 */
 		$this->stopwords = apply_filters( 'wp_search_stopwords', $stopwords );
 		return $this->stopwords;
 	}
 
 	/**
-	 * Generates SQL for the ORDER BY condition based on passed search terms.
+	 * Tạo SQL cho điều kiện ORDER BY dựa trên các từ tìm kiếm được truyền vào.
 	 *
 	 * @since 3.7.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param array $q Query variables.
-	 * @return string ORDER BY clause.
+	 * @param array $q Các biến truy vấn.
+	 * @return string Mệnh đề ORDER BY.
 	 */
 	protected function parse_search_order( &$q ) {
 		global $wpdb;
@@ -1632,7 +1632,7 @@ class WP_Query {
 		if ( $q['search_terms_count'] > 1 ) {
 			$num_terms = count( $q['search_orderby_title'] );
 
-			// If the search terms contain negative queries, don't bother ordering by sentence matches.
+			// Nếu các từ tìm kiếm chứa truy vấn phủ định, không cần sắp xếp theo khớp câu.
 			$like = '';
 			if ( ! preg_match( '/(?:\s|^)\-/', $q['s'] ) ) {
 				$like = '%' . $wpdb->esc_like( $q['s'] ) . '%';
@@ -1640,25 +1640,25 @@ class WP_Query {
 
 			$search_orderby = '';
 
-			// Sentence match in 'post_title'.
+			// Khớp câu trong 'post_title'.
 			if ( $like ) {
 				$search_orderby .= $wpdb->prepare( "WHEN {$wpdb->posts}.post_title LIKE %s THEN 1 ", $like );
 			}
 
 			/*
-			 * Sanity limit, sort as sentence when more than 6 terms
-			 * (few searches are longer than 6 terms and most titles are not).
+			 * Giới hạn hợp lý, sắp xếp như câu khi có nhiều hơn 6 từ
+			 * (ít tìm kiếm nào dài hơn 6 từ và hầu hết tiêu đề cũng không).
 			 */
 			if ( $num_terms < 7 ) {
-				// All words in title.
+				// Tất cả các từ trong tiêu đề.
 				$search_orderby .= 'WHEN ' . implode( ' AND ', $q['search_orderby_title'] ) . ' THEN 2 ';
-				// Any word in title, not needed when $num_terms == 1.
+				// Bất kỳ từ nào trong tiêu đề, không cần khi $num_terms == 1.
 				if ( $num_terms > 1 ) {
 					$search_orderby .= 'WHEN ' . implode( ' OR ', $q['search_orderby_title'] ) . ' THEN 3 ';
 				}
 			}
 
-			// Sentence match in 'post_content' and 'post_excerpt'.
+			// Khớp câu trong 'post_content' và 'post_excerpt'.
 			if ( $like ) {
 				$search_orderby .= $wpdb->prepare( "WHEN {$wpdb->posts}.post_excerpt LIKE %s THEN 4 ", $like );
 				$search_orderby .= $wpdb->prepare( "WHEN {$wpdb->posts}.post_content LIKE %s THEN 5 ", $like );
@@ -1668,7 +1668,7 @@ class WP_Query {
 				$search_orderby = '(CASE ' . $search_orderby . 'ELSE 6 END)';
 			}
 		} else {
-			// Single word or sentence search.
+			// Tìm kiếm từ đơn hoặc câu.
 			$search_orderby = reset( $q['search_orderby_title'] ) . ' DESC';
 		}
 
@@ -1676,19 +1676,19 @@ class WP_Query {
 	}
 
 	/**
-	 * Converts the given orderby alias (if allowed) to a properly-prefixed value.
+	 * Chuyển đổi bí danh orderby đã cho (nếu được phép) thành giá trị có tiền tố bảng phù hợp.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param string $orderby Alias for the field to order by.
-	 * @return string|false Table-prefixed value to used in the ORDER clause. False otherwise.
+	 * @param string $orderby Bí danh cho trường cần sắp xếp.
+	 * @return string|false Giá trị có tiền tố bảng dùng trong mệnh đề ORDER. False nếu không hợp lệ.
 	 */
 	protected function parse_orderby( $orderby ) {
 		global $wpdb;
 
-		// Used to filter values.
+		// Dùng để lọc giá trị.
 		$allowed_keys = array(
 			'post_name',
 			'post_author',
@@ -1729,7 +1729,7 @@ class WP_Query {
 			$allowed_keys   = array_merge( $allowed_keys, array_keys( $meta_clauses ) );
 		}
 
-		// If RAND() contains a seed value, sanitize and add to allowed keys.
+		// Nếu RAND() chứa giá trị seed, làm sạch và thêm vào các khóa được phép.
 		$rand_with_seed = false;
 		if ( preg_match( '/RAND\(([0-9]+)\)/i', $orderby, $matches ) ) {
 			$orderby        = sprintf( 'RAND(%s)', (int) $matches[1] );
@@ -1789,13 +1789,13 @@ class WP_Query {
 				break;
 			default:
 				if ( array_key_exists( $orderby, $meta_clauses ) ) {
-					// $orderby corresponds to a meta_query clause.
+					// $orderby tương ứng với một mệnh đề meta_query.
 					$meta_clause    = $meta_clauses[ $orderby ];
 					$orderby_clause = "CAST({$meta_clause['alias']}.meta_value AS {$meta_clause['cast']})";
 				} elseif ( $rand_with_seed ) {
 					$orderby_clause = $orderby;
 				} else {
-					// Default: order by post field.
+					// Mặc định: sắp xếp theo trường bài viết.
 					$orderby_clause = "{$wpdb->posts}.post_" . sanitize_key( $orderby );
 				}
 
@@ -1806,12 +1806,12 @@ class WP_Query {
 	}
 
 	/**
-	 * Parse an 'order' query variable and cast it to ASC or DESC as necessary.
+	 * Phân tích biến truy vấn 'order' và chuyển đổi sang ASC hoặc DESC nếu cần.
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $order The 'order' query variable.
-	 * @return string The sanitized 'order' query variable.
+	 * @param string $order Biến truy vấn 'order'.
+	 * @return string Biến truy vấn 'order' đã được làm sạch.
 	 */
 	protected function parse_order( $order ) {
 		if ( ! is_string( $order ) || empty( $order ) ) {
@@ -1826,7 +1826,7 @@ class WP_Query {
 	}
 
 	/**
-	 * Sets the 404 property and saves whether query is feed.
+	 * Thiết lập thuộc tính 404 và lưu trạng thái feed của truy vấn.
 	 *
 	 * @since 2.0.0
 	 */
@@ -1839,25 +1839,25 @@ class WP_Query {
 		$this->is_feed = $is_feed;
 
 		/**
-		 * Fires after a 404 is triggered.
+		 * Kích hoạt sau khi lỗi 404 được kích hoạt.
 		 *
 		 * @since 5.5.0
 		 *
-		 * @param WP_Query $query The WP_Query instance (passed by reference).
+		 * @param WP_Query $query Thể hiện WP_Query (truyền theo tham chiếu).
 		 */
 		do_action_ref_array( 'set_404', array( $this ) );
 	}
 
 	/**
-	 * Retrieves the value of a query variable.
+	 * Lấy giá trị của một biến truy vấn.
 	 *
 	 * @since 1.5.0
-	 * @since 3.9.0 The `$default_value` argument was introduced.
+	 * @since 3.9.0 Giới thiệu tham số `$default_value`.
 	 *
-	 * @param string $query_var     Query variable key.
-	 * @param mixed  $default_value Optional. Value to return if the query variable is not set.
-	 *                              Default empty string.
-	 * @return mixed Contents of the query variable.
+	 * @param string $query_var     Khóa biến truy vấn.
+	 * @param mixed  $default_value Tùy chọn. Giá trị trả về nếu biến truy vấn chưa được thiết lập.
+	 *                              Mặc định chuỗi rỗng.
+	 * @return mixed Nội dung của biến truy vấn.
 	 */
 	public function get( $query_var, $default_value = '' ) {
 		if ( isset( $this->query_vars[ $query_var ] ) ) {
@@ -1868,28 +1868,28 @@ class WP_Query {
 	}
 
 	/**
-	 * Sets the value of a query variable.
+	 * Thiết lập giá trị của một biến truy vấn.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $query_var Query variable key.
-	 * @param mixed  $value     Query variable value.
+	 * @param string $query_var Khóa biến truy vấn.
+	 * @param mixed  $value     Giá trị biến truy vấn.
 	 */
 	public function set( $query_var, $value ) {
 		$this->query_vars[ $query_var ] = $value;
 	}
 
 	/**
-	 * Retrieves an array of posts based on query variables.
+	 * Lấy mảng các bài viết dựa trên biến truy vấn.
 	 *
-	 * There are a few filters and actions that can be used to modify the post
-	 * database query.
+	 * Có một số bộ lọc và hành động có thể dùng để chỉnh sửa
+	 * truy vấn cơ sở dữ liệu bài viết.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @return WP_Post[]|int[] Array of post objects or post IDs.
+	 * @return WP_Post[]|int[] Mảng các đối tượng bài viết hoặc ID bài viết.
 	 */
 	public function get_posts() {
 		global $wpdb;
@@ -1897,39 +1897,39 @@ class WP_Query {
 		$this->parse_query();
 
 		/**
-		 * Fires after the query variable object is created, but before the actual query is run.
+		 * Kích hoạt sau khi đối tượng biến truy vấn được tạo, nhưng trước khi truy vấn thực tế được chạy.
 		 *
-		 * Note: If using conditional tags, use the method versions within the passed instance
-		 * (e.g. $this->is_main_query() instead of is_main_query()). This is because the functions
-		 * like is_main_query() test against the global $wp_query instance, not the passed one.
+		 * Lưu ý: Nếu sử dụng các thẻ điều kiện, hãy dùng phiên bản phương thức trong thể hiện được truyền
+		 * (ví dụ: $this->is_main_query() thay vì is_main_query()). Điều này bởi vì các hàm
+		 * như is_main_query() kiểm tra đối với thể hiện $wp_query toàn cục, không phải thể hiện được truyền.
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param WP_Query $query The WP_Query instance (passed by reference).
+		 * @param WP_Query $query Thể hiện WP_Query (truyền theo tham chiếu).
 		 */
 		do_action_ref_array( 'pre_get_posts', array( &$this ) );
 
-		// Shorthand.
+		// Viết tắt.
 		$q = &$this->query_vars;
 
-		// Fill again in case 'pre_get_posts' unset some vars.
+		// Điền lại trong trường hợp 'pre_get_posts' đã hủy thiết lập một số biến.
 		$q = $this->fill_query_vars( $q );
 
 		/**
-		 * Filters whether an attachment query should include filenames or not.
+		 * Lọc xem truy vấn tệp đính kèm có nên bao gồm tên tệp hay không.
 		 *
 		 * @since 6.0.3
 		 *
-		 * @param bool $allow_query_attachment_by_filename Whether or not to include filenames.
+		 * @param bool $allow_query_attachment_by_filename Có bao gồm tên tệp hay không.
 		 */
 		$this->allow_query_attachment_by_filename = apply_filters( 'wp_allow_query_attachment_by_filename', false );
 		remove_all_filters( 'wp_allow_query_attachment_by_filename' );
 
-		// Parse meta query.
+		// Phân tích truy vấn meta.
 		$this->meta_query = new WP_Meta_Query();
 		$this->meta_query->parse_query_vars( $q );
 
-		// Set a flag if a 'pre_get_posts' hook changed the query vars.
+		// Đặt cờ nếu hook 'pre_get_posts' đã thay đổi các biến truy vấn.
 		$hash = md5( serialize( $this->query_vars ) );
 		if ( $hash !== $this->query_vars_hash ) {
 			$this->query_vars_changed = true;
@@ -1937,7 +1937,7 @@ class WP_Query {
 		}
 		unset( $hash );
 
-		// First let's clear some variables.
+		// Trước tiên, xóa một số biến.
 		$distinct         = '';
 		$whichauthor      = '';
 		$whichmimetype    = '';
@@ -1988,7 +1988,7 @@ class WP_Query {
 
 		if ( ! isset( $q['lazy_load_term_meta'] ) ) {
 			$q['lazy_load_term_meta'] = $q['update_post_term_cache'];
-		} elseif ( $q['lazy_load_term_meta'] ) { // Lazy loading term meta only works if term caches are primed.
+		} elseif ( $q['lazy_load_term_meta'] ) { // Tải lười meta term chỉ hoạt động nếu bộ nhớ đệm term đã được nạp trước.
 			$q['update_post_term_cache'] = true;
 		}
 
@@ -2023,7 +2023,7 @@ class WP_Query {
 		}
 
 		if ( $this->is_feed ) {
-			// This overrides 'posts_per_page'.
+			// Điều này ghi đè 'posts_per_page'.
 			if ( ! empty( $q['posts_per_rss'] ) ) {
 				$q['posts_per_page'] = $q['posts_per_rss'];
 			} else {
@@ -2053,7 +2053,7 @@ class WP_Query {
 			$q['page'] = is_scalar( $q['page'] ) ? absint( trim( $q['page'], '/' ) ) : 0;
 		}
 
-		// If true, forcibly turns off SQL_CALC_FOUND_ROWS even when limits are present.
+		// Nếu true, buộc tắt SQL_CALC_FOUND_ROWS ngay cả khi có mệnh đề giới hạn.
 		if ( isset( $q['no_found_rows'] ) ) {
 			$q['no_found_rows'] = (bool) $q['no_found_rows'];
 		} else {
@@ -2069,13 +2069,13 @@ class WP_Query {
 				break;
 			case '':
 				/*
-				 * Set the default to 'all'.
+				 * Đặt giá trị mặc định thành 'all'.
 				 *
-				 * This is used in `WP_Query::the_post` to determine if the
-				 * entire post object has been queried.
+				 * Điều này được sử dụng trong `WP_Query::the_post` để xác định
+				 * liệu toàn bộ đối tượng bài viết đã được truy vấn hay chưa.
 				 */
 				$q['fields'] = 'all';
-				// Falls through.
+				// Tiếp tục xuống.
 			default:
 				$fields = "{$wpdb->posts}.*";
 		}
@@ -2083,7 +2083,7 @@ class WP_Query {
 		if ( '' !== $q['menu_order'] ) {
 			$where .= " AND {$wpdb->posts}.menu_order = " . $q['menu_order'];
 		}
-		// The "m" parameter is meant for months but accepts datetimes of varying specificity.
+		// Tham số "m" dùng cho tháng nhưng chấp nhận datetime với độ chính xác khác nhau.
 		if ( $q['m'] ) {
 			$where .= " AND YEAR({$wpdb->posts}.post_date)=" . substr( $q['m'], 0, 4 );
 			if ( strlen( $q['m'] ) > 5 ) {
@@ -2103,7 +2103,7 @@ class WP_Query {
 			}
 		}
 
-		// Handle the other individual date parameters.
+		// Xử lý các tham số ngày tháng riêng lẻ khác.
 		$date_parameters = array();
 
 		if ( '' !== $q['hour'] ) {
@@ -2140,13 +2140,13 @@ class WP_Query {
 		}
 		unset( $date_parameters, $date_query );
 
-		// Handle complex date queries.
+		// Xử lý các truy vấn ngày tháng phức tạp.
 		if ( ! empty( $q['date_query'] ) ) {
 			$this->date_query = new WP_Date_Query( $q['date_query'] );
 			$where           .= $this->date_query->get_sql();
 		}
 
-		// If we've got a post_type AND it's not "any" post_type.
+		// Nếu có post_type VÀ nó không phải post_type "any".
 		if ( ! empty( $q['post_type'] ) && 'any' !== $q['post_type'] ) {
 			foreach ( (array) $q['post_type'] as $_post_type ) {
 				$ptype_obj = get_post_type_object( $_post_type );
@@ -2155,17 +2155,17 @@ class WP_Query {
 				}
 
 				if ( ! $ptype_obj->hierarchical ) {
-					// Non-hierarchical post types can directly use 'name'.
+					// Loại bài viết không phân cấp có thể sử dụng trực tiếp 'name'.
 					$q['name'] = $q[ $ptype_obj->query_var ];
 				} else {
-					// Hierarchical post types will operate through 'pagename'.
+					// Loại bài viết phân cấp sẽ hoạt động thông qua 'pagename'.
 					$q['pagename'] = $q[ $ptype_obj->query_var ];
 					$q['name']     = '';
 				}
 
-				// Only one request for a slug is possible, this is why name & pagename are overwritten above.
+				// Chỉ có thể có một yêu cầu cho slug, đây là lý do name & pagename bị ghi đè ở trên.
 				break;
-			} // End foreach.
+			} // Kết thúc foreach.
 			unset( $ptype_obj );
 		}
 
@@ -2173,7 +2173,7 @@ class WP_Query {
 			$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_title = %s", stripslashes( $q['title'] ) );
 		}
 
-		// Parameters related to 'post_name'.
+		// Các tham số liên quan đến 'post_name'.
 		if ( '' !== $q['name'] ) {
 			$q['name'] = sanitize_title_for_query( $q['name'] );
 			$where    .= " AND {$wpdb->posts}.post_name = '" . $q['name'] . "'";
@@ -2224,23 +2224,23 @@ class WP_Query {
 			$where          .= " AND {$wpdb->posts}.post_name = '" . $q['attachment'] . "'";
 		} elseif ( is_array( $q['post_name__in'] ) && ! empty( $q['post_name__in'] ) ) {
 			$q['post_name__in'] = array_map( 'sanitize_title_for_query', $q['post_name__in'] );
-			// Duplicate array before sorting to allow for the orderby clause.
+			// Sao chép mảng trước khi sắp xếp để cho phép mệnh đề orderby.
 			$post_name__in_for_where = array_unique( $q['post_name__in'] );
 			sort( $post_name__in_for_where );
 			$post_name__in = "'" . implode( "','", $post_name__in_for_where ) . "'";
 			$where        .= " AND {$wpdb->posts}.post_name IN ($post_name__in)";
 		}
 
-		// If an attachment is requested by number, let it supersede any post number.
+		// Nếu tệp đính kèm được yêu cầu theo số, cho phép nó ghi đè bất kỳ số bài viết nào.
 		if ( $q['attachment_id'] ) {
 			$q['p'] = absint( $q['attachment_id'] );
 		}
 
-		// If a post number is specified, load that post.
+		// Nếu số bài viết được chỉ định, tải bài viết đó.
 		if ( $q['p'] ) {
 			$where .= " AND {$wpdb->posts}.ID = " . $q['p'];
 		} elseif ( $q['post__in'] ) {
-			// Duplicate array before sorting to allow for the orderby clause.
+			// Sao chép mảng trước khi sắp xếp để cho phép mệnh đề orderby.
 			$post__in_for_where = $q['post__in'];
 			$post__in_for_where = array_unique( array_map( 'absint', $post__in_for_where ) );
 			sort( $post__in_for_where );
@@ -2255,7 +2255,7 @@ class WP_Query {
 		if ( is_numeric( $q['post_parent'] ) ) {
 			$where .= $wpdb->prepare( " AND {$wpdb->posts}.post_parent = %d ", $q['post_parent'] );
 		} elseif ( $q['post_parent__in'] ) {
-			// Duplicate array before sorting to allow for the orderby clause.
+			// Sao chép mảng trước khi sắp xếp để cho phép mệnh đề orderby.
 			$post_parent__in_for_where = $q['post_parent__in'];
 			$post_parent__in_for_where = array_unique( array_map( 'absint', $post_parent__in_for_where ) );
 			sort( $post_parent__in_for_where );
@@ -2274,24 +2274,24 @@ class WP_Query {
 			}
 		}
 
-		// If a search pattern is specified, load the posts that match.
+		// Nếu mẫu tìm kiếm được chỉ định, tải các bài viết khớp.
 		if ( strlen( $q['s'] ) ) {
 			$search = $this->parse_search( $q );
 		}
 
 		if ( ! $q['suppress_filters'] ) {
 			/**
-			 * Filters the search SQL that is used in the WHERE clause of WP_Query.
+			 * Lọc SQL tìm kiếm được sử dụng trong mệnh đề WHERE của WP_Query.
 			 *
 			 * @since 3.0.0
 			 *
-			 * @param string   $search Search SQL for WHERE clause.
-			 * @param WP_Query $query  The current WP_Query object.
+			 * @param string   $search SQL tìm kiếm cho mệnh đề WHERE.
+			 * @param WP_Query $query  Đối tượng WP_Query hiện tại.
 			 */
 			$search = apply_filters_ref_array( 'posts_search', array( $search, &$this ) );
 		}
 
-		// Taxonomies.
+		// Taxonomy.
 		if ( ! $this->is_singular ) {
 			$this->parse_tax_query( $q );
 
@@ -2303,7 +2303,7 @@ class WP_Query {
 
 		if ( $this->is_tax ) {
 			if ( empty( $post_type ) ) {
-				// Do a fully inclusive search for currently registered post types of queried taxonomies.
+				// Tìm kiếm toàn diện cho các loại bài viết đã đăng ký của taxonomy được truy vấn.
 				$post_type  = array();
 				$taxonomies = array_keys( $this->tax_query->queried_terms );
 				foreach ( get_post_types( array( 'exclude_from_search' => false ) ) as $pt ) {
@@ -2317,7 +2317,7 @@ class WP_Query {
 				} elseif ( count( $post_type ) === 1 ) {
 					$post_type = $post_type[0];
 				} else {
-					// Sort post types to ensure same cache key generation.
+					// Sắp xếp loại bài viết để đảm bảo tạo cùng khóa bộ nhớ đệm.
 					sort( $post_type );
 				}
 
@@ -2328,14 +2328,14 @@ class WP_Query {
 		}
 
 		/*
-		 * Ensure that 'taxonomy', 'term', 'term_id', 'cat', and
-		 * 'category_name' vars are set for backward compatibility.
+		 * Đảm bảo rằng các biến 'taxonomy', 'term', 'term_id', 'cat', và
+		 * 'category_name' được thiết lập để tương thích ngược.
 		 */
 		if ( ! empty( $this->tax_query->queried_terms ) ) {
 
 			/*
-			 * Set 'taxonomy', 'term', and 'term_id' to the
-			 * first taxonomy other than 'post_tag' or 'category'.
+			 * Thiết lập 'taxonomy', 'term', và 'term_id' thành
+			 * taxonomy đầu tiên không phải 'post_tag' hoặc 'category'.
 			 */
 			if ( ! isset( $q['taxonomy'] ) ) {
 				foreach ( $this->tax_query->queried_terms as $queried_taxonomy => $queried_items ) {
@@ -2352,7 +2352,7 @@ class WP_Query {
 							$q['term_id'] = $queried_items['terms'][0];
 						}
 
-						// Take the first one we find.
+						// Lấy cái đầu tiên tìm thấy.
 						break;
 					}
 				}
@@ -2387,7 +2387,7 @@ class WP_Query {
 			$groupby = "{$wpdb->posts}.ID";
 		}
 
-		// Author/user stuff.
+		// Xử lý tác giả/người dùng.
 
 		if ( ! empty( $q['author'] ) && '0' != $q['author'] ) {
 			$q['author'] = addslashes_gpc( '' . urldecode( $q['author'] ) );
@@ -2416,15 +2416,15 @@ class WP_Query {
 			$where     .= " AND {$wpdb->posts}.post_author IN ($author__in) ";
 		}
 
-		// Author stuff for nice URLs.
+		// Xử lý tác giả cho URL thân thiện.
 
 		if ( '' !== $q['author_name'] ) {
 			if ( str_contains( $q['author_name'], '/' ) ) {
 				$q['author_name'] = explode( '/', $q['author_name'] );
 				if ( $q['author_name'][ count( $q['author_name'] ) - 1 ] ) {
-					$q['author_name'] = $q['author_name'][ count( $q['author_name'] ) - 1 ]; // No trailing slash.
+					$q['author_name'] = $q['author_name'][ count( $q['author_name'] ) - 1 ]; // Không có dấu gạch chéo cuối.
 				} else {
-					$q['author_name'] = $q['author_name'][ count( $q['author_name'] ) - 2 ]; // There was a trailing slash.
+					$q['author_name'] = $q['author_name'][ count( $q['author_name'] ) - 2 ]; // Có dấu gạch chéo cuối.
 				}
 			}
 			$q['author_name'] = sanitize_title_for_query( $q['author_name'] );
@@ -2435,9 +2435,9 @@ class WP_Query {
 			$whichauthor .= " AND ({$wpdb->posts}.post_author = " . absint( $q['author'] ) . ')';
 		}
 
-		// Matching by comment count.
+		// Khớp theo số lượng bình luận.
 		if ( isset( $q['comment_count'] ) ) {
-			// Numeric comment count is converted to array format.
+			// Số lượng bình luận dạng số được chuyển đổi sang dạng mảng.
 			if ( is_numeric( $q['comment_count'] ) ) {
 				$q['comment_count'] = array(
 					'value' => (int) $q['comment_count'],
@@ -2452,7 +2452,7 @@ class WP_Query {
 					$q['comment_count']
 				);
 
-				// Fallback for invalid compare operators is '='.
+				// Giá trị mặc định cho toán tử so sánh không hợp lệ là '='.
 				$compare_operators = array( '=', '!=', '>', '>=', '<', '<=' );
 				if ( ! in_array( $q['comment_count']['compare'], $compare_operators, true ) ) {
 					$q['comment_count']['compare'] = '=';
@@ -2462,7 +2462,7 @@ class WP_Query {
 			}
 		}
 
-		// MIME-Type stuff for attachment browsing.
+		// Xử lý MIME-Type cho duyệt tệp đính kèm.
 
 		if ( isset( $q['post_mime_type'] ) && '' !== $q['post_mime_type'] ) {
 			$whichmimetype = wp_post_mime_type_where( $q['post_mime_type'], $wpdb->posts );
@@ -2486,17 +2486,17 @@ class WP_Query {
 			$q['order'] = $rand ? '' : $this->parse_order( $q['order'] );
 		}
 
-		// These values of orderby should ignore the 'order' parameter.
+		// Các giá trị orderby này nên bỏ qua tham số 'order'.
 		$force_asc = array( 'post__in', 'post_name__in', 'post_parent__in' );
 		if ( isset( $q['orderby'] ) && in_array( $q['orderby'], $force_asc, true ) ) {
 			$q['order'] = '';
 		}
 
-		// Order by.
+		// Sắp xếp theo.
 		if ( empty( $q['orderby'] ) ) {
 			/*
-			 * Boolean false or empty array blanks out ORDER BY,
-			 * while leaving the value unset or otherwise empty sets the default.
+			 * Boolean false hoặc mảng rỗng sẽ xóa ORDER BY,
+			 * trong khi để giá trị chưa thiết lập hoặc rỗng sẽ đặt giá trị mặc định.
 			 */
 			if ( isset( $q['orderby'] ) && ( is_array( $q['orderby'] ) || false === $q['orderby'] ) ) {
 				$orderby = '';
@@ -2526,7 +2526,7 @@ class WP_Query {
 
 				foreach ( explode( ' ', $q['orderby'] ) as $i => $orderby ) {
 					$parsed = $this->parse_orderby( $orderby );
-					// Only allow certain values for safety.
+					// Chỉ cho phép một số giá trị nhất định để đảm bảo an toàn.
 					if ( ! $parsed ) {
 						continue;
 					}
@@ -2543,7 +2543,7 @@ class WP_Query {
 			}
 		}
 
-		// Order search results by relevance only when another "orderby" is not specified in the query.
+		// Sắp xếp kết quả tìm kiếm theo mức độ liên quan chỉ khi không có "orderby" khác được chỉ định trong truy vấn.
 		if ( ! empty( $q['s'] ) ) {
 			$search_orderby = '';
 			if ( ! empty( $q['search_orderby_title'] ) && ( empty( $q['orderby'] ) && ! $this->is_feed ) || ( isset( $q['orderby'] ) && 'relevance' === $q['orderby'] ) ) {
@@ -2552,7 +2552,7 @@ class WP_Query {
 
 			if ( ! $q['suppress_filters'] ) {
 				/**
-				 * Filters the ORDER BY used when ordering search results.
+				 * Lọc mệnh đề ORDER BY khi sắp xếp kết quả tìm kiếm.
 				 *
 				 * @since 3.7.0
 				 *

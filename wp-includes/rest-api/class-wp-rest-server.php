@@ -1060,26 +1060,26 @@ class WP_REST_Server {
 		$this->dispatching_requests[] = $request;
 
 		/**
-		 * Filters the pre-calculated result of a REST API dispatch request.
+		 * Lọc kết quả đã tính toán trước của yêu cầu điều phối REST API.
 		 *
-		 * Allow hijacking the request before dispatching by returning a non-empty. The returned value
-		 * will be used to serve the request instead.
+		 * Cho phép chiếm quyền yêu cầu trước khi điều phối bằng cách trả về giá trị không rỗng.
+		 * Giá trị trả về sẽ được sử dụng để phục vụ yêu cầu thay thế.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param mixed           $result  Response to replace the requested version with. Can be anything
-		 *                                 a normal endpoint can return, or null to not hijack the request.
-		 * @param WP_REST_Server  $server  Server instance.
-		 * @param WP_REST_Request $request Request used to generate the response.
+		 * @param mixed           $result  Phản hồi để thay thế phiên bản được yêu cầu. Có thể là bất kỳ thứ gì
+		 *                                 mà endpoint thông thường có thể trả về, hoặc null để không chiếm quyền yêu cầu.
+		 * @param WP_REST_Server  $server  Instance máy chủ.
+		 * @param WP_REST_Request $request Yêu cầu dùng để tạo phản hồi.
 		 */
 		$result = apply_filters( 'rest_pre_dispatch', null, $this, $request );
 
 		if ( ! empty( $result ) ) {
 
-			// Normalize to either WP_Error or WP_REST_Response...
+			// Chuẩn hóa thành WP_Error hoặc WP_REST_Response...
 			$result = rest_ensure_response( $result );
 
-			// ...then convert WP_Error across.
+			// ...sau đó chuyển đổi WP_Error.
 			if ( is_wp_error( $result ) ) {
 				$result = $this->error_to_response( $result );
 			}
@@ -1125,26 +1125,26 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Returns whether the REST server is currently dispatching / responding to a request.
+	 * Trả về liệu máy chủ REST có đang điều phối / phản hồi yêu cầu hay không.
 	 *
-	 * This may be a standalone REST API request, or an internal request dispatched from within a regular page load.
+	 * Đây có thể là yêu cầu REST API độc lập, hoặc yêu cầu nội bộ được điều phối từ bên trong quá trình tải trang thông thường.
 	 *
 	 * @since 6.5.0
 	 *
-	 * @return bool Whether the REST server is currently handling a request.
+	 * @return bool Liệu máy chủ REST có đang xử lý yêu cầu hay không.
 	 */
 	public function is_dispatching() {
 		return (bool) $this->dispatching_requests;
 	}
 
 	/**
-	 * Matches a request object to its handler.
+	 * Khớp đối tượng yêu cầu với handler tương ứng.
 	 *
 	 * @access private
 	 * @since 5.6.0
 	 *
-	 * @param WP_REST_Request $request The request object.
-	 * @return array|WP_Error The route and request handler on success or a WP_Error instance if no handler was found.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @return array|WP_Error Route và handler yêu cầu khi thành công hoặc instance WP_Error nếu không tìm thấy handler.
 	 */
 	protected function match_request_to_handler( $request ) {
 		$method = $request->get_method();
@@ -1182,7 +1182,7 @@ class WP_REST_Server {
 			foreach ( $handlers as $handler ) {
 				$callback = $handler['callback'];
 
-				// Fallback to GET method if no HEAD method is registered.
+				// Dự phòng sang phương thức GET nếu không có phương thức HEAD nào được đăng ký.
 				$checked_method = $method;
 				if ( 'HEAD' === $method && empty( $handler['methods']['HEAD'] ) ) {
 					$checked_method = 'GET';
@@ -1220,38 +1220,38 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Dispatches the request to the callback handler.
+	 * Điều phối yêu cầu đến handler callback.
 	 *
 	 * @access private
 	 * @since 5.6.0
 	 *
-	 * @param WP_REST_Request $request  The request object.
-	 * @param string          $route    The matched route regex.
-	 * @param array           $handler  The matched route handler.
-	 * @param WP_Error|null   $response The current error object if any.
+	 * @param WP_REST_Request $request  Đối tượng yêu cầu.
+	 * @param string          $route    Biểu thức chính quy route đã khớp.
+	 * @param array           $handler  Handler route đã khớp.
+	 * @param WP_Error|null   $response Đối tượng lỗi hiện tại nếu có.
 	 * @return WP_REST_Response
 	 */
 	protected function respond_to_request( $request, $route, $handler, $response ) {
 		/**
-		 * Filters the response before executing any REST API callbacks.
+		 * Lọc phản hồi trước khi thực thi bất kỳ callback REST API nào.
 		 *
-		 * Allows plugins to perform additional validation after a
-		 * request is initialized and matched to a registered route,
-		 * but before it is executed.
+		 * Cho phép plugin thực hiện xác thực bổ sung sau khi yêu cầu
+		 * được khởi tạo và khớp với route đã đăng ký,
+		 * nhưng trước khi nó được thực thi.
 		 *
-		 * Note that this filter will not be called for requests that
-		 * fail to authenticate or match to a registered route.
+		 * Lưu ý rằng bộ lọc này sẽ không được gọi cho các yêu cầu
+		 * không xác thực được hoặc không khớp với route đã đăng ký.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_REST_Response|WP_HTTP_Response|WP_Error|mixed $response Result to send to the client.
-		 *                                                                   Usually a WP_REST_Response or WP_Error.
-		 * @param array                                            $handler  Route handler used for the request.
-		 * @param WP_REST_Request                                  $request  Request used to generate the response.
+		 * @param WP_REST_Response|WP_HTTP_Response|WP_Error|mixed $response Kết quả gửi tới client.
+		 *                                                                   Thường là WP_REST_Response hoặc WP_Error.
+		 * @param array                                            $handler  Handler route được sử dụng cho yêu cầu.
+		 * @param WP_REST_Request                                  $request  Yêu cầu dùng để tạo phản hồi.
 		 */
 		$response = apply_filters( 'rest_request_before_callbacks', $response, $handler, $request );
 
-		// Check permission specified on the route.
+		// Kiểm tra quyền được chỉ định trên route.
 		if ( ! is_wp_error( $response ) && ! empty( $handler['permission_callback'] ) ) {
 			$permission = call_user_func( $handler['permission_callback'], $request );
 
@@ -1268,21 +1268,21 @@ class WP_REST_Server {
 
 		if ( ! is_wp_error( $response ) ) {
 			/**
-			 * Filters the REST API dispatch request result.
+			 * Lọc kết quả điều phối yêu cầu REST API.
 			 *
-			 * Allow plugins to override dispatching the request.
+			 * Cho phép plugin ghi đè việc điều phối yêu cầu.
 			 *
 			 * @since 4.4.0
-			 * @since 4.5.0 Added `$route` and `$handler` parameters.
+			 * @since 4.5.0 Đã thêm tham số `$route` và `$handler`.
 			 *
-			 * @param mixed           $dispatch_result Dispatch result, will be used if not empty.
-			 * @param WP_REST_Request $request         Request used to generate the response.
-			 * @param string          $route           Route matched for the request.
-			 * @param array           $handler         Route handler used for the request.
+			 * @param mixed           $dispatch_result Kết quả điều phối, sẽ được sử dụng nếu không rỗng.
+			 * @param WP_REST_Request $request         Yêu cầu dùng để tạo phản hồi.
+			 * @param string          $route           Route đã khớp cho yêu cầu.
+			 * @param array           $handler         Handler route được sử dụng cho yêu cầu.
 			 */
 			$dispatch_result = apply_filters( 'rest_dispatch_request', null, $request, $route, $handler );
 
-			// Allow plugins to halt the request via this filter.
+			// Cho phép plugin dừng yêu cầu thông qua bộ lọc này.
 			if ( null !== $dispatch_result ) {
 				$response = $dispatch_result;
 			} else {
@@ -1291,25 +1291,24 @@ class WP_REST_Server {
 		}
 
 		/**
-		 * Filters the response immediately after executing any REST API
-		 * callbacks.
+		 * Lọc phản hồi ngay sau khi thực thi bất kỳ callback REST API nào.
 		 *
-		 * Allows plugins to perform any needed cleanup, for example,
-		 * to undo changes made during the {@see 'rest_request_before_callbacks'}
-		 * filter.
+		 * Cho phép plugin thực hiện bất kỳ dọn dẹp cần thiết nào, ví dụ,
+		 * để hoàn tác các thay đổi được thực hiện trong bộ lọc
+		 * {@see 'rest_request_before_callbacks'}.
 		 *
-		 * Note that this filter will not be called for requests that
-		 * fail to authenticate or match to a registered route.
+		 * Lưu ý rằng bộ lọc này sẽ không được gọi cho các yêu cầu
+		 * không xác thực được hoặc không khớp với route đã đăng ký.
 		 *
-		 * Note that an endpoint's `permission_callback` can still be
-		 * called after this filter - see `rest_send_allow_header()`.
+		 * Lưu ý rằng `permission_callback` của endpoint vẫn có thể được
+		 * gọi sau bộ lọc này - xem `rest_send_allow_header()`.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_REST_Response|WP_HTTP_Response|WP_Error|mixed $response Result to send to the client.
-		 *                                                                   Usually a WP_REST_Response or WP_Error.
-		 * @param array                                            $handler  Route handler used for the request.
-		 * @param WP_REST_Request                                  $request  Request used to generate the response.
+		 * @param WP_REST_Response|WP_HTTP_Response|WP_Error|mixed $response Kết quả gửi tới client.
+		 *                                                                   Thường là WP_REST_Response hoặc WP_Error.
+		 * @param array                                            $handler  Handler route được sử dụng cho yêu cầu.
+		 * @param WP_REST_Request                                  $request  Yêu cầu dùng để tạo phản hồi.
 		 */
 		$response = apply_filters( 'rest_request_after_callbacks', $response, $handler, $request );
 
@@ -1326,14 +1325,14 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Returns if an error occurred during most recent JSON encode/decode.
+	 * Trả về lỗi nếu có lỗi xảy ra trong lần mã hóa/giải mã JSON gần nhất.
 	 *
-	 * Strings to be translated will be in format like
+	 * Các chuỗi cần dịch sẽ có định dạng như
 	 * "Encoding error: Maximum stack depth exceeded".
 	 *
 	 * @since 4.4.0
 	 *
-	 * @return false|string Boolean false or string error message.
+	 * @return false|string Boolean false hoặc chuỗi thông báo lỗi.
 	 */
 	protected function get_json_last_error() {
 		$last_error_code = json_last_error();
@@ -1346,21 +1345,21 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Retrieves the site index.
+	 * Lấy chỉ mục trang web.
 	 *
-	 * This endpoint describes the capabilities of the site.
+	 * Endpoint này mô tả các khả năng của trang web.
 	 *
 	 * @since 4.4.0
 	 *
 	 * @param array $request {
-	 *     Request.
+	 *     Yêu cầu.
 	 *
-	 *     @type string $context Context.
+	 *     @type string $context Ngữ cảnh.
 	 * }
-	 * @return WP_REST_Response The API root index data.
+	 * @return WP_REST_Response Dữ liệu chỉ mục gốc API.
 	 */
 	public function get_index( $request ) {
-		// General site data.
+		// Dữ liệu chung của trang web.
 		$available = array(
 			'name'            => get_option( 'blogname' ),
 			'description'     => get_option( 'blogdescription' ),
@@ -1403,27 +1402,27 @@ class WP_REST_Server {
 		}
 
 		/**
-		 * Filters the REST API root index data.
+		 * Lọc dữ liệu chỉ mục gốc REST API.
 		 *
-		 * This contains the data describing the API. This includes information
-		 * about supported authentication schemes, supported namespaces, routes
-		 * available on the API, and a small amount of data about the site.
+		 * Chứa dữ liệu mô tả API. Bao gồm thông tin về các phương thức
+		 * xác thực được hỗ trợ, các namespace được hỗ trợ, các route
+		 * có sẵn trên API, và một lượng nhỏ dữ liệu về trang web.
 		 *
 		 * @since 4.4.0
-		 * @since 6.0.0 Added `$request` parameter.
+		 * @since 6.0.0 Đã thêm tham số `$request`.
 		 *
-		 * @param WP_REST_Response $response Response data.
-		 * @param WP_REST_Request  $request  Request data.
+		 * @param WP_REST_Response $response Dữ liệu phản hồi.
+		 * @param WP_REST_Request  $request  Dữ liệu yêu cầu.
 		 */
 		return apply_filters( 'rest_index', $response, $request );
 	}
 
 	/**
-	 * Adds a link to the active theme for users who have proper permissions.
+	 * Thêm liên kết đến theme đang hoạt động cho người dùng có quyền phù hợp.
 	 *
 	 * @since 5.7.0
 	 *
-	 * @param WP_REST_Response $response REST API response.
+	 * @param WP_REST_Response $response Phản hồi REST API.
 	 */
 	protected function add_active_theme_link_to_index( WP_REST_Response $response ) {
 		$should_add = current_user_can( 'switch_themes' ) || current_user_can( 'manage_network_themes' );
@@ -1448,14 +1447,14 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Exposes the site logo through the WordPress REST API.
+	 * Hiển thị logo trang web thông qua WordPress REST API.
 	 *
-	 * This is used for fetching this information when user has no rights
-	 * to update settings.
+	 * Được sử dụng để lấy thông tin này khi người dùng không có quyền
+	 * cập nhật cài đặt.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param WP_REST_Response $response REST API response.
+	 * @param WP_REST_Response $response Phản hồi REST API.
 	 */
 	protected function add_site_logo_to_index( WP_REST_Response $response ) {
 		$site_logo_id = get_theme_mod( 'custom_logo', 0 );
@@ -1464,14 +1463,14 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Exposes the site icon through the WordPress REST API.
+	 * Hiển thị biểu tượng trang web thông qua WordPress REST API.
 	 *
-	 * This is used for fetching this information when user has no rights
-	 * to update settings.
+	 * Được sử dụng để lấy thông tin này khi người dùng không có quyền
+	 * cập nhật cài đặt.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param WP_REST_Response $response REST API response.
+	 * @param WP_REST_Response $response Phản hồi REST API.
 	 */
 	protected function add_site_icon_to_index( WP_REST_Response $response ) {
 		$site_icon_id = get_option( 'site_icon', 0 );
@@ -1482,15 +1481,15 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Exposes an image through the WordPress REST API.
-	 * This is used for fetching this information when user has no rights
-	 * to update settings.
+	 * Hiển thị hình ảnh thông qua WordPress REST API.
+	 * Được sử dụng để lấy thông tin này khi người dùng không có quyền
+	 * cập nhật cài đặt.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param WP_REST_Response $response REST API response.
-	 * @param int              $image_id Image attachment ID.
-	 * @param string           $type     Type of Image.
+	 * @param WP_REST_Response $response Phản hồi REST API.
+	 * @param int              $image_id ID đính kèm hình ảnh.
+	 * @param string           $type     Loại hình ảnh.
 	 */
 	protected function add_image_to_index( WP_REST_Response $response, $image_id, $type ) {
 		$response->data[ $type ] = (int) $image_id;
@@ -1507,13 +1506,13 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Retrieves the index for a namespace.
+	 * Lấy chỉ mục cho một namespace.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_REST_Request $request REST request instance.
-	 * @return WP_REST_Response|WP_Error WP_REST_Response instance if the index was found,
-	 *                                   WP_Error if the namespace isn't set.
+	 * @param WP_REST_Request $request Instance yêu cầu REST.
+	 * @return WP_REST_Response|WP_Error Instance WP_REST_Response nếu tìm thấy chỉ mục,
+	 *                                   WP_Error nếu namespace chưa được thiết lập.
 	 */
 	public function get_namespace_index( $request ) {
 		$namespace = $request['namespace'];
@@ -1535,36 +1534,36 @@ class WP_REST_Server {
 		);
 		$response = rest_ensure_response( $data );
 
-		// Link to the root index.
+		// Liên kết đến chỉ mục gốc.
 		$response->add_link( 'up', rest_url( '/' ) );
 
 		/**
-		 * Filters the REST API namespace index data.
+		 * Lọc dữ liệu chỉ mục namespace REST API.
 		 *
-		 * This typically is just the route data for the namespace, but you can
-		 * add any data you'd like here.
+		 * Thông thường đây chỉ là dữ liệu route cho namespace, nhưng bạn có thể
+		 * thêm bất kỳ dữ liệu nào bạn muốn ở đây.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param WP_REST_Response $response Response data.
-		 * @param WP_REST_Request  $request  Request data. The namespace is passed as the 'namespace' parameter.
+		 * @param WP_REST_Response $response Dữ liệu phản hồi.
+		 * @param WP_REST_Request  $request  Dữ liệu yêu cầu. Namespace được truyền dưới dạng tham số 'namespace'.
 		 */
 		return apply_filters( 'rest_namespace_index', $response, $request );
 	}
 
 	/**
-	 * Retrieves the publicly-visible data for routes.
+	 * Lấy dữ liệu hiển thị công khai cho các route.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array  $routes  Routes to get data for.
-	 * @param string $context Optional. Context for data. Accepts 'view' or 'help'. Default 'view'.
-	 * @return array[] Route data to expose in indexes, keyed by route.
+	 * @param array  $routes  Các route cần lấy dữ liệu.
+	 * @param string $context Tùy chọn. Ngữ cảnh cho dữ liệu. Chấp nhận 'view' hoặc 'help'. Mặc định 'view'.
+	 * @return array[] Dữ liệu route để hiển thị trong chỉ mục, được đánh khóa theo route.
 	 */
 	public function get_data_for_routes( $routes, $context = 'view' ) {
 		$available = array();
 
-		// Find the available routes.
+		// Tìm các route có sẵn.
 		foreach ( $routes as $route => $callbacks ) {
 			$data = $this->get_data_for_route( $route, $callbacks, $context );
 			if ( empty( $data ) ) {
@@ -1572,39 +1571,39 @@ class WP_REST_Server {
 			}
 
 			/**
-			 * Filters the publicly-visible data for a single REST API route.
+			 * Lọc dữ liệu hiển thị công khai cho một route REST API đơn lẻ.
 			 *
 			 * @since 4.4.0
 			 *
-			 * @param array $data Publicly-visible data for the route.
+			 * @param array $data Dữ liệu hiển thị công khai cho route.
 			 */
 			$available[ $route ] = apply_filters( 'rest_endpoints_description', $data );
 		}
 
 		/**
-		 * Filters the publicly-visible data for REST API routes.
+		 * Lọc dữ liệu hiển thị công khai cho các route REST API.
 		 *
-		 * This data is exposed on indexes and can be used by clients or
-		 * developers to investigate the site and find out how to use it. It
-		 * acts as a form of self-documentation.
+		 * Dữ liệu này được hiển thị trên các chỉ mục và có thể được sử dụng bởi client hoặc
+		 * nhà phát triển để khám phá trang web và tìm hiểu cách sử dụng nó. Nó
+		 * đóng vai trò như một dạng tài liệu tự mô tả.
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param array[] $available Route data to expose in indexes, keyed by route.
-		 * @param array   $routes    Internal route data as an associative array.
+		 * @param array[] $available Dữ liệu route để hiển thị trong chỉ mục, được đánh khóa theo route.
+		 * @param array   $routes    Dữ liệu route nội bộ dưới dạng mảng kết hợp.
 		 */
 		return apply_filters( 'rest_route_data', $available, $routes );
 	}
 
 	/**
-	 * Retrieves publicly-visible data for the route.
+	 * Lấy dữ liệu hiển thị công khai cho route.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $route     Route to get data for.
-	 * @param array  $callbacks Callbacks to convert to data.
-	 * @param string $context   Optional. Context for the data. Accepts 'view' or 'help'. Default 'view'.
-	 * @return array|null Data for the route, or null if no publicly-visible data.
+	 * @param string $route     Route cần lấy dữ liệu.
+	 * @param array  $callbacks Các callback để chuyển đổi thành dữ liệu.
+	 * @param string $context   Tùy chọn. Ngữ cảnh cho dữ liệu. Chấp nhận 'view' hoặc 'help'. Mặc định 'view'.
+	 * @return array|null Dữ liệu cho route, hoặc null nếu không có dữ liệu hiển thị công khai.
 	 */
 	public function get_data_for_route( $route, $callbacks, $context = 'view' ) {
 		$data = array(
@@ -1634,7 +1633,7 @@ class WP_REST_Server {
 		$route = preg_replace( '#\(\?P<(\w+?)>.*?\)#', '{$1}', $route );
 
 		foreach ( $callbacks as $callback ) {
-			// Skip to the next route if any callback is hidden.
+			// Bỏ qua và chuyển sang route tiếp theo nếu bất kỳ callback nào bị ẩn.
 			if ( empty( $callback['show_in_index'] ) ) {
 				continue;
 			}
@@ -1668,7 +1667,7 @@ class WP_REST_Server {
 
 			$data['endpoints'][] = $endpoint_data;
 
-			// For non-variable routes, generate links.
+			// Đối với các route không có biến, tạo liên kết.
 			if ( ! str_contains( $route, '{' ) ) {
 				$data['_links'] = array(
 					'self' => array(
@@ -1681,7 +1680,7 @@ class WP_REST_Server {
 		}
 
 		if ( empty( $data['methods'] ) ) {
-			// No methods supported, hide the route.
+			// Không có phương thức nào được hỗ trợ, ẩn route.
 			return null;
 		}
 
@@ -1689,30 +1688,30 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Gets the maximum number of requests that can be included in a batch.
+	 * Lấy số lượng yêu cầu tối đa có thể được đưa vào một lô.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @return int The maximum requests.
+	 * @return int Số yêu cầu tối đa.
 	 */
 	protected function get_max_batch_size() {
 		/**
-		 * Filters the maximum number of REST API requests that can be included in a batch.
+		 * Lọc số lượng yêu cầu REST API tối đa có thể được đưa vào một lô.
 		 *
 		 * @since 5.6.0
 		 *
-		 * @param int $max_size The maximum size.
+		 * @param int $max_size Kích thước tối đa.
 		 */
 		return apply_filters( 'rest_get_max_batch_size', 25 );
 	}
 
 	/**
-	 * Serves the batch/v1 request.
+	 * Phục vụ yêu cầu batch/v1.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param WP_REST_Request $batch_request The batch request object.
-	 * @return WP_REST_Response The generated response object.
+	 * @param WP_REST_Request $batch_request Đối tượng yêu cầu lô.
+	 * @return WP_REST_Response Đối tượng phản hồi được tạo ra.
 	 */
 	public function serve_batch_request_v1( WP_REST_Request $batch_request ) {
 		$requests = array();
@@ -1863,42 +1862,42 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Sends an HTTP status code.
+	 * Gửi mã trạng thái HTTP.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param int $code HTTP status.
+	 * @param int $code Trạng thái HTTP.
 	 */
 	protected function set_status( $code ) {
 		status_header( $code );
 	}
 
 	/**
-	 * Sends an HTTP header.
+	 * Gửi một header HTTP.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $key Header key.
-	 * @param string $value Header value.
+	 * @param string $key Khóa header.
+	 * @param string $value Giá trị header.
 	 */
 	public function send_header( $key, $value ) {
 		/*
-		 * Sanitize as per RFC2616 (Section 4.2):
+		 * Làm sạch theo RFC2616 (Mục 4.2):
 		 *
-		 * Any LWS that occurs between field-content MAY be replaced with a
-		 * single SP before interpreting the field value or forwarding the
-		 * message downstream.
+		 * Bất kỳ LWS nào xuất hiện giữa field-content CÓ THỂ được thay thế bằng
+		 * một SP duy nhất trước khi diễn giải giá trị trường hoặc chuyển tiếp
+		 * thông điệp xuống hạ nguồn.
 		 */
 		$value = preg_replace( '/\s+/', ' ', $value );
 		header( sprintf( '%s: %s', $key, $value ) );
 	}
 
 	/**
-	 * Sends multiple HTTP headers.
+	 * Gửi nhiều header HTTP.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $headers Map of header name to header value.
+	 * @param array $headers Ánh xạ tên header tới giá trị header.
 	 */
 	public function send_headers( $headers ) {
 		foreach ( $headers as $key => $value ) {
@@ -1907,30 +1906,30 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Removes an HTTP header from the current response.
+	 * Xóa một header HTTP khỏi phản hồi hiện tại.
 	 *
 	 * @since 4.8.0
 	 *
-	 * @param string $key Header key.
+	 * @param string $key Khóa header.
 	 */
 	public function remove_header( $key ) {
 		header_remove( $key );
 	}
 
 	/**
-	 * Retrieves the raw request entity (body).
+	 * Lấy thực thể yêu cầu thô (body).
 	 *
 	 * @since 4.4.0
 	 *
-	 * @global string $HTTP_RAW_POST_DATA Raw post data.
+	 * @global string $HTTP_RAW_POST_DATA Dữ liệu bài viết thô.
 	 *
-	 * @return string Raw request data.
+	 * @return string Dữ liệu yêu cầu thô.
 	 */
 	public static function get_raw_data() {
 		// phpcs:disable PHPCompatibility.Variables.RemovedPredefinedGlobalVariables.http_raw_post_dataDeprecatedRemoved
 		global $HTTP_RAW_POST_DATA;
 
-		// $HTTP_RAW_POST_DATA was deprecated in PHP 5.6 and removed in PHP 7.0.
+		// $HTTP_RAW_POST_DATA đã bị ngừng sử dụng trong PHP 5.6 và bị xóa trong PHP 7.0.
 		if ( ! isset( $HTTP_RAW_POST_DATA ) ) {
 			$HTTP_RAW_POST_DATA = file_get_contents( 'php://input' );
 		}
@@ -1940,17 +1939,17 @@ class WP_REST_Server {
 	}
 
 	/**
-	 * Extracts headers from a PHP-style $_SERVER array.
+	 * Trích xuất các header từ mảng $_SERVER kiểu PHP.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param array $server Associative array similar to `$_SERVER`.
-	 * @return array Headers extracted from the input.
+	 * @param array $server Mảng kết hợp tương tự `$_SERVER`.
+	 * @return array Các header được trích xuất từ đầu vào.
 	 */
 	public function get_headers( $server ) {
 		$headers = array();
 
-		// CONTENT_* headers are not prefixed with HTTP_.
+		// Các header CONTENT_* không có tiền tố HTTP_.
 		$additional = array(
 			'CONTENT_LENGTH' => true,
 			'CONTENT_MD5'    => true,
@@ -1962,8 +1961,8 @@ class WP_REST_Server {
 				$headers[ substr( $key, 5 ) ] = $value;
 			} elseif ( 'REDIRECT_HTTP_AUTHORIZATION' === $key && empty( $server['HTTP_AUTHORIZATION'] ) ) {
 				/*
-				 * In some server configurations, the authorization header is passed in this alternate location.
-				 * Since it would not be passed in in both places we do not check for both headers and resolve.
+				 * Trong một số cấu hình máy chủ, header xác thực được truyền ở vị trí thay thế này.
+				 * Vì nó sẽ không được truyền ở cả hai nơi nên chúng ta không cần kiểm tra cả hai header.
 				 */
 				$headers['AUTHORIZATION'] = $value;
 			} elseif ( isset( $additional[ $key ] ) ) {

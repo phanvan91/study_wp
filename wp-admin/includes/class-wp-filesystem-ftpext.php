@@ -1,13 +1,13 @@
 <?php
 /**
- * WordPress FTP Filesystem.
+ * Hệ thống tệp FTP của WordPress.
  *
  * @package WordPress
  * @subpackage Filesystem
  */
 
 /**
- * WordPress Filesystem Class for implementing FTP.
+ * Lớp hệ thống tệp WordPress triển khai FTP.
  *
  * @since 2.5.0
  *
@@ -22,7 +22,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	public $link;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 2.5.0
 	 *
@@ -32,13 +32,13 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 		$this->method = 'ftpext';
 		$this->errors = new WP_Error();
 
-		// Check if possible to use ftp functions.
+		// Kiểm tra xem có thể sử dụng các hàm ftp không.
 		if ( ! extension_loaded( 'ftp' ) ) {
 			$this->errors->add( 'no_ftp_ext', __( 'The ftp PHP extension is not available' ) );
 			return;
 		}
 
-		// This class uses the timeout on a per-connection basis, others use it on a per-action basis.
+		// Lớp này sử dụng thời gian chờ trên cơ sở từng kết nối, các lớp khác sử dụng trên cơ sở từng hành động.
 		if ( ! defined( 'FS_TIMEOUT' ) ) {
 			define( 'FS_TIMEOUT', 4 * MINUTE_IN_SECONDS );
 		}
@@ -55,7 +55,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			$this->options['hostname'] = $opt['hostname'];
 		}
 
-		// Check if the options provided are OK.
+		// Kiểm tra các tùy chọn được cung cấp có hợp lệ không.
 		if ( empty( $opt['username'] ) ) {
 			$this->errors->add( 'empty_username', __( 'FTP username is required' ) );
 		} else {
@@ -76,11 +76,11 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Connects filesystem.
+	 * Kết nối hệ thống tệp.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return bool True on success, false on failure.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function connect() {
 		if ( isset( $this->options['ssl'] ) && $this->options['ssl'] && function_exists( 'ftp_ssl_connect' ) ) {
@@ -115,7 +115,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			return false;
 		}
 
-		// Set the connection to use Passive FTP.
+		// Đặt kết nối sử dụng FTP thụ động.
 		ftp_pasv( $this->link, true );
 
 		if ( @ftp_get_option( $this->link, FTP_TIMEOUT_SEC ) < FS_TIMEOUT ) {
@@ -126,13 +126,13 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Reads entire file into a string.
+	 * Đọc toàn bộ tệp vào một chuỗi.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Name of the file to read.
-	 * @return string|false Read data on success, false if no temporary file could be opened,
-	 *                      or if the file couldn't be retrieved.
+	 * @param string $file Tên tệp cần đọc.
+	 * @return string|false Dữ liệu đọc được khi thành công, false nếu không thể mở tệp tạm,
+	 *                      hoặc nếu không thể lấy tệp.
 	 */
 	public function get_contents( $file ) {
 		$tempfile   = wp_tempnam( $file );
@@ -149,7 +149,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			return false;
 		}
 
-		fseek( $temphandle, 0 ); // Skip back to the start of the file being written to.
+		fseek( $temphandle, 0 ); // Quay lại đầu tệp đang được ghi.
 		$contents = '';
 
 		while ( ! feof( $temphandle ) ) {
@@ -163,27 +163,27 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Reads entire file into an array.
+	 * Đọc toàn bộ tệp vào một mảng.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return array|false File contents in an array on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return array|false Nội dung tệp trong một mảng khi thành công, false khi thất bại.
 	 */
 	public function get_contents_array( $file ) {
 		return explode( "\n", $this->get_contents( $file ) );
 	}
 
 	/**
-	 * Writes a string to a file.
+	 * Ghi một chuỗi vào tệp.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string    $file     Remote path to the file where to write the data.
-	 * @param string    $contents The data to write.
-	 * @param int|false $mode     Optional. The file permissions as octal number, usually 0644.
-	 *                            Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $file     Đường dẫn từ xa đến tệp cần ghi dữ liệu.
+	 * @param string    $contents Dữ liệu cần ghi.
+	 * @param int|false $mode     Tùy chọn. Quyền tệp dạng số bát phân, thường là 0644.
+	 *                            Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function put_contents( $file, $contents, $mode = false ) {
 		$tempfile   = wp_tempnam( $file );
@@ -207,7 +207,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			return false;
 		}
 
-		fseek( $temphandle, 0 ); // Skip back to the start of the file being written to.
+		fseek( $temphandle, 0 ); // Quay lại đầu tệp đang được ghi.
 
 		$ret = ftp_fput( $this->link, $file, $temphandle, FTP_BINARY );
 
@@ -220,11 +220,11 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the current working directory.
+	 * Lấy thư mục làm việc hiện tại.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return string|false The current working directory on success, false on failure.
+	 * @return string|false Thư mục làm việc hiện tại khi thành công, false khi thất bại.
 	 */
 	public function cwd() {
 		$cwd = ftp_pwd( $this->link );
@@ -237,28 +237,28 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Changes current directory.
+	 * Thay đổi thư mục hiện tại.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $dir The new current directory.
-	 * @return bool True on success, false on failure.
+	 * @param string $dir Thư mục hiện tại mới.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chdir( $dir ) {
 		return @ftp_chdir( $this->link, $dir );
 	}
 
 	/**
-	 * Changes filesystem permissions.
+	 * Thay đổi quyền hệ thống tệp.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string    $file      Path to the file.
-	 * @param int|false $mode      Optional. The permissions as octal number, usually 0644 for files,
-	 *                             0755 for directories. Default false.
-	 * @param bool      $recursive Optional. If set to true, changes file permissions recursively.
-	 *                             Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $file      Đường dẫn đến tệp.
+	 * @param int|false $mode      Tùy chọn. Quyền dạng số bát phân, thường là 0644 cho tệp,
+	 *                             0755 cho thư mục. Mặc định false.
+	 * @param bool      $recursive Tùy chọn. Nếu đặt true, thay đổi quyền tệp đệ quy.
+	 *                             Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chmod( $file, $mode = false, $recursive = false ) {
 		if ( ! $mode ) {
@@ -271,7 +271,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			}
 		}
 
-		// chmod any sub-objects if recursive.
+		// Chmod các đối tượng con nếu đệ quy.
 		if ( $recursive && $this->is_dir( $file ) ) {
 			$filelist = $this->dirlist( $file );
 
@@ -280,7 +280,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			}
 		}
 
-		// chmod the file or directory.
+		// Chmod tệp hoặc thư mục.
 		if ( ! function_exists( 'ftp_chmod' ) ) {
 			return (bool) ftp_site( $this->link, sprintf( 'CHMOD %o %s', $mode, $file ) );
 		}
@@ -289,12 +289,12 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the file owner.
+	 * Lấy chủ sở hữu tệp.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return string|false Username of the owner on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return string|false Tên người dùng chủ sở hữu khi thành công, false khi thất bại.
 	 */
 	public function owner( $file ) {
 		$dir = $this->dirlist( $file );
@@ -303,12 +303,12 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the permissions of the specified file or filepath in their octal format.
+	 * Lấy quyền của tệp hoặc đường dẫn tệp được chỉ định dưới dạng bát phân.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return string Mode of the file (the last 3 digits).
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return string Chế độ của tệp (3 chữ số cuối).
 	 */
 	public function getchmod( $file ) {
 		$dir = $this->dirlist( $file );
@@ -317,12 +317,12 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the file's group.
+	 * Lấy nhóm của tệp.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return string|false The group on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return string|false Nhóm khi thành công, false khi thất bại.
 	 */
 	public function group( $file ) {
 		$dir = $this->dirlist( $file );
@@ -331,17 +331,17 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Copies a file.
+	 * Sao chép một tệp.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string    $source      Path to the source file.
-	 * @param string    $destination Path to the destination file.
-	 * @param bool      $overwrite   Optional. Whether to overwrite the destination file if it exists.
-	 *                               Default false.
-	 * @param int|false $mode        Optional. The permissions as octal number, usually 0644 for files,
-	 *                               0755 for dirs. Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $source      Đường dẫn đến tệp nguồn.
+	 * @param string    $destination Đường dẫn đến tệp đích.
+	 * @param bool      $overwrite   Tùy chọn. Có ghi đè tệp đích nếu đã tồn tại hay không.
+	 *                               Mặc định false.
+	 * @param int|false $mode        Tùy chọn. Quyền dạng số bát phân, thường là 0644 cho tệp,
+	 *                               0755 cho thư mục. Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function copy( $source, $destination, $overwrite = false, $mode = false ) {
 		if ( ! $overwrite && $this->exists( $destination ) ) {
@@ -358,38 +358,38 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Moves a file or directory.
+	 * Di chuyển một tệp hoặc thư mục.
 	 *
-	 * After moving files or directories, OPcache will need to be invalidated.
+	 * Sau khi di chuyển tệp hoặc thư mục, OPcache sẽ cần được vô hiệu hóa.
 	 *
-	 * If moving a directory fails, `copy_dir()` can be used for a recursive copy.
+	 * Nếu việc di chuyển thư mục thất bại, `copy_dir()` có thể được sử dụng để sao chép đệ quy.
 	 *
-	 * Use `move_dir()` for moving directories with OPcache invalidation and a
-	 * fallback to `copy_dir()`.
+	 * Sử dụng `move_dir()` để di chuyển thư mục với vô hiệu hóa OPcache và
+	 * dự phòng sang `copy_dir()`.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $source      Path to the source file or directory.
-	 * @param string $destination Path to the destination file or directory.
-	 * @param bool   $overwrite   Optional. Whether to overwrite the destination if it exists.
-	 *                            Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string $source      Đường dẫn đến tệp hoặc thư mục nguồn.
+	 * @param string $destination Đường dẫn đến tệp hoặc thư mục đích.
+	 * @param bool   $overwrite   Tùy chọn. Có ghi đè đích nếu đã tồn tại hay không.
+	 *                            Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function move( $source, $destination, $overwrite = false ) {
 		return ftp_rename( $this->link, $source, $destination );
 	}
 
 	/**
-	 * Deletes a file or directory.
+	 * Xóa một tệp hoặc thư mục.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string       $file      Path to the file or directory.
-	 * @param bool         $recursive Optional. If set to true, deletes files and folders recursively.
-	 *                                Default false.
-	 * @param string|false $type      Type of resource. 'f' for file, 'd' for directory.
-	 *                                Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string       $file      Đường dẫn đến tệp hoặc thư mục.
+	 * @param bool         $recursive Tùy chọn. Nếu đặt true, xóa tệp và thư mục đệ quy.
+	 *                                Mặc định false.
+	 * @param string|false $type      Loại tài nguyên. 'f' cho tệp, 'd' cho thư mục.
+	 *                                Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function delete( $file, $recursive = false, $type = false ) {
 		if ( empty( $file ) ) {
@@ -416,20 +416,20 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Checks if a file or directory exists.
+	 * Kiểm tra xem tệp hoặc thư mục có tồn tại không.
 	 *
 	 * @since 2.5.0
-	 * @since 6.3.0 Returns false for an empty path.
+	 * @since 6.3.0 Trả về false cho đường dẫn trống.
 	 *
-	 * @param string $path Path to file or directory.
-	 * @return bool Whether $path exists or not.
+	 * @param string $path Đường dẫn đến tệp hoặc thư mục.
+	 * @return bool $path có tồn tại hay không.
 	 */
 	public function exists( $path ) {
 		/*
-		 * Check for empty path. If ftp_nlist() receives an empty path,
-		 * it checks the current working directory and may return true.
+		 * Kiểm tra đường dẫn trống. Nếu ftp_nlist() nhận đường dẫn trống,
+		 * nó sẽ kiểm tra thư mục làm việc hiện tại và có thể trả về true.
 		 *
-		 * See https://core.trac.wordpress.org/ticket/33058.
+		 * Xem https://core.trac.wordpress.org/ticket/33058.
 		 */
 		if ( '' === $path ) {
 			return false;
@@ -438,31 +438,31 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 		$list = ftp_nlist( $this->link, $path );
 
 		if ( empty( $list ) && $this->is_dir( $path ) ) {
-			return true; // File is an empty directory.
+			return true; // Tệp là một thư mục trống.
 		}
 
-		return ! empty( $list ); // Empty list = no file, so invert.
+		return ! empty( $list ); // Danh sách trống = không có tệp, nên đảo ngược.
 	}
 
 	/**
-	 * Checks if resource is a file.
+	 * Kiểm tra xem tài nguyên có phải là tệp không.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file File path.
-	 * @return bool Whether $file is a file.
+	 * @param string $file Đường dẫn tệp.
+	 * @return bool $file có phải là tệp hay không.
 	 */
 	public function is_file( $file ) {
 		return $this->exists( $file ) && ! $this->is_dir( $file );
 	}
 
 	/**
-	 * Checks if resource is a directory.
+	 * Kiểm tra xem tài nguyên có phải là thư mục không.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $path Directory path.
-	 * @return bool Whether $path is a directory.
+	 * @param string $path Đường dẫn thư mục.
+	 * @return bool $path có phải là thư mục hay không.
 	 */
 	public function is_dir( $path ) {
 		$cwd    = $this->cwd();
@@ -477,60 +477,60 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Checks if a file is readable.
+	 * Kiểm tra xem tệp có đọc được không.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to file.
-	 * @return bool Whether $file is readable.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return bool $file có đọc được hay không.
 	 */
 	public function is_readable( $file ) {
 		return true;
 	}
 
 	/**
-	 * Checks if a file or directory is writable.
+	 * Kiểm tra xem tệp hoặc thư mục có ghi được không.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $path Path to file or directory.
-	 * @return bool Whether $path is writable.
+	 * @param string $path Đường dẫn đến tệp hoặc thư mục.
+	 * @return bool $path có ghi được hay không.
 	 */
 	public function is_writable( $path ) {
 		return true;
 	}
 
 	/**
-	 * Gets the file's last access time.
+	 * Lấy thời gian truy cập cuối cùng của tệp.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to file.
-	 * @return int|false Unix timestamp representing last access time, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return int|false Dấu thời gian Unix biểu thị thời gian truy cập cuối, false khi thất bại.
 	 */
 	public function atime( $file ) {
 		return false;
 	}
 
 	/**
-	 * Gets the file modification time.
+	 * Lấy thời gian sửa đổi tệp.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to file.
-	 * @return int|false Unix timestamp representing modification time, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return int|false Dấu thời gian Unix biểu thị thời gian sửa đổi, false khi thất bại.
 	 */
 	public function mtime( $file ) {
 		return ftp_mdtm( $this->link, $file );
 	}
 
 	/**
-	 * Gets the file size (in bytes).
+	 * Lấy kích thước tệp (tính bằng byte).
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file Path to file.
-	 * @return int|false Size of the file in bytes on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return int|false Kích thước tệp tính bằng byte khi thành công, false khi thất bại.
 	 */
 	public function size( $file ) {
 		$size = ftp_size( $this->link, $file );
@@ -539,36 +539,36 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Sets the access and modification times of a file.
+	 * Đặt thời gian truy cập và sửa đổi của tệp.
 	 *
-	 * Note: If $file doesn't exist, it will be created.
+	 * Lưu ý: Nếu $file không tồn tại, nó sẽ được tạo.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $file  Path to file.
-	 * @param int    $time  Optional. Modified time to set for file.
-	 *                      Default 0.
-	 * @param int    $atime Optional. Access time to set for file.
-	 *                      Default 0.
-	 * @return bool True on success, false on failure.
+	 * @param string $file  Đường dẫn đến tệp.
+	 * @param int    $time  Tùy chọn. Thời gian sửa đổi để đặt cho tệp.
+	 *                      Mặc định 0.
+	 * @param int    $atime Tùy chọn. Thời gian truy cập để đặt cho tệp.
+	 *                      Mặc định 0.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function touch( $file, $time = 0, $atime = 0 ) {
 		return false;
 	}
 
 	/**
-	 * Creates a directory.
+	 * Tạo một thư mục.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string           $path  Path for new directory.
-	 * @param int|false        $chmod Optional. The permissions as octal number (or false to skip chmod).
-	 *                                Default false.
-	 * @param string|int|false $chown Optional. A user name or number (or false to skip chown).
-	 *                                Default false.
-	 * @param string|int|false $chgrp Optional. A group name or number (or false to skip chgrp).
-	 *                                Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string           $path  Đường dẫn cho thư mục mới.
+	 * @param int|false        $chmod Tùy chọn. Quyền dạng số bát phân (hoặc false để bỏ qua chmod).
+	 *                                Mặc định false.
+	 * @param string|int|false $chown Tùy chọn. Tên hoặc số người dùng (hoặc false để bỏ qua chown).
+	 *                                Mặc định false.
+	 * @param string|int|false $chgrp Tùy chọn. Tên hoặc số nhóm (hoặc false để bỏ qua chgrp).
+	 *                                Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function mkdir( $path, $chmod = false, $chown = false, $chgrp = false ) {
 		$path = untrailingslashit( $path );
@@ -587,14 +587,14 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Deletes a directory.
+	 * Xóa một thư mục.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $path      Path to directory.
-	 * @param bool   $recursive Optional. Whether to recursively remove files/directories.
-	 *                          Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string $path      Đường dẫn đến thư mục.
+	 * @param bool   $recursive Tùy chọn. Có xóa đệ quy tệp/thư mục hay không.
+	 *                          Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function rmdir( $path, $recursive = false ) {
 		return $this->delete( $path, $recursive );
@@ -603,22 +603,22 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	/**
 	 * @param string $line
 	 * @return array {
-	 *     Array of file information.
+	 *     Mảng thông tin tệp.
 	 *
-	 *     @type string       $name        Name of the file or directory.
-	 *     @type string       $perms       *nix representation of permissions.
-	 *     @type string       $permsn      Octal representation of permissions.
-	 *     @type string|false $number      File number as a string, or false if not available.
-	 *     @type string|false $owner       Owner name or ID, or false if not available.
-	 *     @type string|false $group       File permissions group, or false if not available.
-	 *     @type string|false $size        Size of file in bytes as a string, or false if not available.
-	 *     @type string|false $lastmodunix Last modified unix timestamp as a string, or false if not available.
-	 *     @type string|false $lastmod     Last modified month (3 letters) and day (without leading 0), or
-	 *                                     false if not available.
-	 *     @type string|false $time        Last modified time, or false if not available.
-	 *     @type string       $type        Type of resource. 'f' for file, 'd' for directory, 'l' for link.
-	 *     @type array|false  $files       If a directory and `$recursive` is true, contains another array of files.
-	 *                                     False if unable to list directory contents.
+	 *     @type string       $name        Tên tệp hoặc thư mục.
+	 *     @type string       $perms       Biểu diễn quyền dạng *nix.
+	 *     @type string       $permsn      Biểu diễn quyền dạng bát phân.
+	 *     @type string|false $number      Số tệp dạng chuỗi, hoặc false nếu không khả dụng.
+	 *     @type string|false $owner       Tên hoặc ID chủ sở hữu, hoặc false nếu không khả dụng.
+	 *     @type string|false $group       Nhóm quyền tệp, hoặc false nếu không khả dụng.
+	 *     @type string|false $size        Kích thước tệp tính bằng byte dạng chuỗi, hoặc false nếu không khả dụng.
+	 *     @type string|false $lastmodunix Dấu thời gian Unix sửa đổi cuối dạng chuỗi, hoặc false nếu không khả dụng.
+	 *     @type string|false $lastmod     Tháng sửa đổi cuối (3 ký tự) và ngày (không có số 0 đầu), hoặc
+	 *                                     false nếu không khả dụng.
+	 *     @type string|false $time        Thời gian sửa đổi cuối, hoặc false nếu không khả dụng.
+	 *     @type string       $type        Loại tài nguyên. 'f' cho tệp, 'd' cho thư mục, 'l' cho liên kết.
+	 *     @type array|false  $files       Nếu là thư mục và `$recursive` là true, chứa một mảng tệp khác.
+	 *                                     False nếu không thể liệt kê nội dung thư mục.
 	 * }
 	 */
 	public function parselisting( $line ) {
@@ -634,7 +634,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			if ( $lucifer[3] < 70 ) {
 				$lucifer[3] += 2000;
 			} else {
-				$lucifer[3] += 1900; // 4-digit year fix.
+				$lucifer[3] += 1900; // Sửa lỗi năm 4 chữ số.
 			}
 
 			$b['isdir'] = ( '<DIR>' === $lucifer[7] );
@@ -710,7 +710,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 			}
 		}
 
-		// Replace symlinks formatted as "source -> target" with just the source name.
+		// Thay thế liên kết tượng trưng có định dạng "nguồn -> đích" bằng chỉ tên nguồn.
 		if ( isset( $b['islink'] ) && $b['islink'] ) {
 			$b['name'] = preg_replace( '/(\s*->\s*.*)$/', '', $b['name'] );
 		}
@@ -719,37 +719,37 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets details for files in a directory or a specific file.
+	 * Lấy chi tiết các tệp trong thư mục hoặc một tệp cụ thể.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $path           Path to directory or file.
-	 * @param bool   $include_hidden Optional. Whether to include details of hidden ("." prefixed) files.
-	 *                               Default true.
-	 * @param bool   $recursive      Optional. Whether to recursively include file details in nested directories.
-	 *                               Default false.
+	 * @param string $path           Đường dẫn đến thư mục hoặc tệp.
+	 * @param bool   $include_hidden Tùy chọn. Có bao gồm chi tiết tệp ẩn (tiền tố ".") hay không.
+	 *                               Mặc định true.
+	 * @param bool   $recursive      Tùy chọn. Có bao gồm đệ quy chi tiết tệp trong thư mục lồng nhau hay không.
+	 *                               Mặc định false.
 	 * @return array|false {
-	 *     Array of arrays containing file information. False if unable to list directory contents.
+	 *     Mảng các mảng chứa thông tin tệp. False nếu không thể liệt kê nội dung thư mục.
 	 *
 	 *     @type array ...$0 {
-	 *         Array of file information. Note that some elements may not be available on all filesystems.
+	 *         Mảng thông tin tệp. Lưu ý rằng một số phần tử có thể không khả dụng trên tất cả hệ thống tệp.
 	 *
-	 *         @type string           $name        Name of the file or directory.
-	 *         @type string           $perms       *nix representation of permissions.
-	 *         @type string           $permsn      Octal representation of permissions.
-	 *         @type int|string|false $number      File number. May be a numeric string. False if not available.
-	 *         @type string|false     $owner       Owner name or ID, or false if not available.
-	 *         @type string|false     $group       File permissions group, or false if not available.
-	 *         @type int|string|false $size        Size of file in bytes. May be a numeric string.
-	 *                                             False if not available.
-	 *         @type int|string|false $lastmodunix Last modified unix timestamp. May be a numeric string.
-	 *                                             False if not available.
-	 *         @type string|false     $lastmod     Last modified month (3 letters) and day (without leading 0), or
-	 *                                             false if not available.
-	 *         @type string|false     $time        Last modified time, or false if not available.
-	 *         @type string           $type        Type of resource. 'f' for file, 'd' for directory, 'l' for link.
-	 *         @type array|false      $files       If a directory and `$recursive` is true, contains another array of
-	 *                                             files. False if unable to list directory contents.
+	 *         @type string           $name        Tên tệp hoặc thư mục.
+	 *         @type string           $perms       Biểu diễn quyền dạng *nix.
+	 *         @type string           $permsn      Biểu diễn quyền dạng bát phân.
+	 *         @type int|string|false $number      Số tệp. Có thể là chuỗi số. False nếu không khả dụng.
+	 *         @type string|false     $owner       Tên hoặc ID chủ sở hữu, hoặc false nếu không khả dụng.
+	 *         @type string|false     $group       Nhóm quyền tệp, hoặc false nếu không khả dụng.
+	 *         @type int|string|false $size        Kích thước tệp tính bằng byte. Có thể là chuỗi số.
+	 *                                             False nếu không khả dụng.
+	 *         @type int|string|false $lastmodunix Dấu thời gian Unix sửa đổi cuối. Có thể là chuỗi số.
+	 *                                             False nếu không khả dụng.
+	 *         @type string|false     $lastmod     Tháng sửa đổi cuối (3 ký tự) và ngày (không có số 0 đầu), hoặc
+	 *                                             false nếu không khả dụng.
+	 *         @type string|false     $time        Thời gian sửa đổi cuối, hoặc false nếu không khả dụng.
+	 *         @type string           $type        Loại tài nguyên. 'f' cho tệp, 'd' cho thư mục, 'l' cho liên kết.
+	 *         @type array|false      $files       Nếu là thư mục và `$recursive` là true, chứa một mảng tệp khác.
+	 *                                             False nếu không thể liệt kê nội dung thư mục.
 	 *     }
 	 * }
 	 */
@@ -763,7 +763,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 
 		$pwd = ftp_pwd( $this->link );
 
-		if ( ! @ftp_chdir( $this->link, $path ) ) { // Can't change to folder = folder doesn't exist.
+		if ( ! @ftp_chdir( $this->link, $path ) ) { // Không thể chuyển sang thư mục = thư mục không tồn tại.
 			return false;
 		}
 
@@ -771,7 +771,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 
 		@ftp_chdir( $this->link, $pwd );
 
-		if ( empty( $list ) ) { // Empty array = non-existent folder (real folder will show . at least).
+		if ( empty( $list ) ) { // Mảng trống = thư mục không tồn tại (thư mục thật sẽ hiển thị ít nhất dấu chấm).
 			return false;
 		}
 
@@ -818,7 +818,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Destructor.
+	 * Hàm hủy.
 	 *
 	 * @since 2.5.0
 	 */

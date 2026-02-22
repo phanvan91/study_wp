@@ -679,7 +679,7 @@ if ( ! CUSTOM_TAGS ) {
 	);
 
 	/**
-	 * @var string[] $allowedxmlentitynames Array of KSES allowed XML entity names.
+	 * @var string[] $allowedxmlentitynames Mảng các tên thực thể XML được KSES cho phép.
 	 * @since 5.5.0
 	 */
 	$allowedxmlentitynames = array(
@@ -724,25 +724,25 @@ if ( ! CUSTOM_TAGS ) {
 }
 
 /**
- * Filters text content and strips out disallowed HTML.
+ * Lọc nội dung văn bản và loại bỏ HTML không được phép.
  *
- * This function makes sure that only the allowed HTML element names, attribute
- * names, attribute values, and HTML entities will occur in the given text string.
+ * Hàm này đảm bảo rằng chỉ các tên phần tử HTML, tên thuộc tính,
+ * giá trị thuộc tính và thực thể HTML được phép mới xuất hiện trong chuỗi văn bản đã cho.
  *
- * This function expects unslashed data.
+ * Hàm này yêu cầu dữ liệu chưa được thoát ký tự (unslashed).
  *
- * @see wp_kses_post() for specifically filtering post content and fields.
- * @see wp_allowed_protocols() for the default allowed protocols in link URLs.
+ * @see wp_kses_post() để lọc riêng nội dung và trường bài viết.
+ * @see wp_allowed_protocols() để biết các giao thức URL mặc định được phép.
  *
  * @since 1.0.0
  *
- * @param string         $content           Text content to filter.
- * @param array[]|string $allowed_html      An array of allowed HTML elements and attributes,
- *                                          or a context name such as 'post'. See wp_kses_allowed_html()
- *                                          for the list of accepted context names.
- * @param string[]       $allowed_protocols Optional. Array of allowed URL protocols.
- *                                          Defaults to the result of wp_allowed_protocols().
- * @return string Filtered content containing only the allowed HTML.
+ * @param string         $content           Nội dung văn bản cần lọc.
+ * @param array[]|string $allowed_html      Mảng các phần tử và thuộc tính HTML được phép,
+ *                                          hoặc tên ngữ cảnh như 'post'. Xem wp_kses_allowed_html()
+ *                                          để biết danh sách tên ngữ cảnh được chấp nhận.
+ * @param string[]       $allowed_protocols Tùy chọn. Mảng các giao thức URL được phép.
+ *                                          Mặc định là kết quả của wp_allowed_protocols().
+ * @return string Nội dung đã lọc chỉ chứa HTML được phép.
  */
 function wp_kses( $content, $allowed_html, $allowed_protocols = array() ) {
 	if ( empty( $allowed_protocols ) ) {
@@ -757,15 +757,15 @@ function wp_kses( $content, $allowed_html, $allowed_protocols = array() ) {
 }
 
 /**
- * Filters one HTML attribute and ensures its value is allowed.
+ * Lọc một thuộc tính HTML và đảm bảo giá trị của nó được phép.
  *
- * This function can escape data in some situations where `wp_kses()` must strip the whole attribute.
+ * Hàm này có thể thoát ký tự dữ liệu trong một số trường hợp mà `wp_kses()` phải loại bỏ toàn bộ thuộc tính.
  *
  * @since 4.2.3
  *
- * @param string $attr    The 'whole' attribute, including name and value.
- * @param string $element The HTML element name to which the attribute belongs.
- * @return string Filtered attribute.
+ * @param string $attr    Thuộc tính 'toàn bộ', bao gồm tên và giá trị.
+ * @param string $element Tên phần tử HTML mà thuộc tính thuộc về.
+ * @return string Thuộc tính đã được lọc.
  */
 function wp_kses_one_attr( $attr, $element ) {
 	$uris              = wp_kses_uri_attributes();
@@ -773,7 +773,7 @@ function wp_kses_one_attr( $attr, $element ) {
 	$allowed_protocols = wp_allowed_protocols();
 	$attr              = wp_kses_no_null( $attr, array( 'slash_zero' => 'keep' ) );
 
-	// Preserve leading and trailing whitespace.
+	// Giữ nguyên khoảng trắng ở đầu và cuối.
 	$matches = array();
 	preg_match( '/^\s*/', $attr, $matches );
 	$lead = $matches[0];
@@ -785,15 +785,15 @@ function wp_kses_one_attr( $attr, $element ) {
 		$attr = substr( $attr, strlen( $lead ), -strlen( $trail ) );
 	}
 
-	// Parse attribute name and value from input.
+	// Phân tích tên thuộc tính và giá trị từ đầu vào.
 	$split = preg_split( '/\s*=\s*/', $attr, 2 );
 	$name  = $split[0];
 	if ( count( $split ) === 2 ) {
 		$value = $split[1];
 
 		/*
-		 * Remove quotes surrounding $value.
-		 * Also guarantee correct quoting in $attr for this one attribute.
+		 * Loại bỏ dấu ngoặc kép bao quanh $value.
+		 * Đồng thời đảm bảo dấu ngoặc kép đúng trong $attr cho thuộc tính này.
 		 */
 		if ( '' === $value ) {
 			$quote = '';
@@ -809,10 +809,10 @@ function wp_kses_one_attr( $attr, $element ) {
 			$quote = '"';
 		}
 
-		// Sanitize quotes, angle braces, and entities.
+		// Làm sạch dấu ngoặc kép, dấu ngoặc nhọn và thực thể.
 		$value = esc_attr( $value );
 
-		// Sanitize URI values.
+		// Làm sạch giá trị URI.
 		if ( in_array( strtolower( $name ), $uris, true ) ) {
 			$value = wp_kses_bad_protocol( $value, $allowed_protocols );
 		}
@@ -824,57 +824,57 @@ function wp_kses_one_attr( $attr, $element ) {
 		$vless = 'y';
 	}
 
-	// Sanitize attribute by name.
+	// Làm sạch thuộc tính theo tên.
 	wp_kses_attr_check( $name, $value, $attr, $vless, $element, $allowed_html );
 
-	// Restore whitespace.
+	// Khôi phục khoảng trắng.
 	return $lead . $attr . $trail;
 }
 
 /**
- * Returns an array of allowed HTML tags and attributes for a given context.
+ * Trả về mảng các thẻ HTML và thuộc tính được phép cho ngữ cảnh đã cho.
  *
  * @since 3.5.0
- * @since 5.0.1 `form` removed as allowable HTML tag.
+ * @since 5.0.1 Loại bỏ `form` khỏi danh sách thẻ HTML được phép.
  *
  * @global array $allowedposttags
  * @global array $allowedtags
  * @global array $allowedentitynames
  *
- * @param string|array $context The context for which to retrieve tags. Allowed values are 'post',
- *                              'strip', 'data', 'entities', or the name of a field filter such as
- *                              'pre_user_description', or an array of allowed HTML elements and attributes.
- * @return array Array of allowed HTML tags and their allowed attributes.
+ * @param string|array $context Ngữ cảnh để lấy các thẻ. Các giá trị được phép là 'post',
+ *                              'strip', 'data', 'entities', hoặc tên của bộ lọc trường như
+ *                              'pre_user_description', hoặc mảng các phần tử và thuộc tính HTML được phép.
+ * @return array Mảng các thẻ HTML được phép và thuộc tính được phép của chúng.
  */
 function wp_kses_allowed_html( $context = '' ) {
 	global $allowedposttags, $allowedtags, $allowedentitynames;
 
 	if ( is_array( $context ) ) {
-		// When `$context` is an array it's actually an array of allowed HTML elements and attributes.
+		// Khi `$context` là mảng thì thực chất đó là mảng các phần tử và thuộc tính HTML được phép.
 		$html    = $context;
 		$context = 'explicit';
 
 		/**
-		 * Filters the HTML tags that are allowed for a given context.
+		 * Lọc các thẻ HTML được phép cho ngữ cảnh đã cho.
 		 *
-		 * HTML tags and attribute names are case-insensitive in HTML but must be
-		 * added to the KSES allow list in lowercase. An item added to the allow list
-		 * in upper or mixed case will not recognized as permitted by KSES.
+		 * Tên thẻ HTML và tên thuộc tính không phân biệt hoa thường trong HTML nhưng phải được
+		 * thêm vào danh sách cho phép KSES bằng chữ thường. Mục được thêm vào danh sách cho phép
+		 * bằng chữ hoa hoặc hoa thường lẫn lộn sẽ không được KSES nhận diện là được phép.
 		 *
 		 * @since 3.5.0
 		 *
-		 * @param array[] $html    Allowed HTML tags.
-		 * @param string  $context Context name.
+		 * @param array[] $html    Các thẻ HTML được phép.
+		 * @param string  $context Tên ngữ cảnh.
 		 */
 		return apply_filters( 'wp_kses_allowed_html', $html, $context );
 	}
 
 	switch ( $context ) {
 		case 'post':
-			/** This filter is documented in wp-includes/kses.php */
+			/** Filter này được ghi tài liệu trong wp-includes/kses.php */
 			$tags = apply_filters( 'wp_kses_allowed_html', $allowedposttags, $context );
 
-			// 5.0.1 removed the `<form>` tag, allow it if a filter is allowing it's sub-elements `<input>` or `<select>`.
+			// 5.0.1 đã loại bỏ thẻ `<form>`, cho phép nó nếu bộ lọc đang cho phép các phần tử con `<input>` hoặc `<select>`.
 			if ( ! CUSTOM_TAGS && ! isset( $tags['form'] ) && ( isset( $tags['input'] ) || isset( $tags['select'] ) ) ) {
 				$tags = $allowedposttags;
 
@@ -888,7 +888,7 @@ function wp_kses_allowed_html( $context = '' ) {
 					'target'         => true,
 				);
 
-				/** This filter is documented in wp-includes/kses.php */
+				/** Filter này được ghi tài liệu trong wp-includes/kses.php */
 				$tags = apply_filters( 'wp_kses_allowed_html', $tags, $context );
 			}
 
@@ -900,83 +900,83 @@ function wp_kses_allowed_html( $context = '' ) {
 			$tags                = $allowedtags;
 			$tags['a']['rel']    = true;
 			$tags['a']['target'] = true;
-			/** This filter is documented in wp-includes/kses.php */
+			/** Filter này được ghi tài liệu trong wp-includes/kses.php */
 			return apply_filters( 'wp_kses_allowed_html', $tags, $context );
 
 		case 'strip':
-			/** This filter is documented in wp-includes/kses.php */
+			/** Filter này được ghi tài liệu trong wp-includes/kses.php */
 			return apply_filters( 'wp_kses_allowed_html', array(), $context );
 
 		case 'entities':
-			/** This filter is documented in wp-includes/kses.php */
+			/** Filter này được ghi tài liệu trong wp-includes/kses.php */
 			return apply_filters( 'wp_kses_allowed_html', $allowedentitynames, $context );
 
 		case 'data':
 		default:
-			/** This filter is documented in wp-includes/kses.php */
+			/** Filter này được ghi tài liệu trong wp-includes/kses.php */
 			return apply_filters( 'wp_kses_allowed_html', $allowedtags, $context );
 	}
 }
 
 /**
- * You add any KSES hooks here.
+ * Thêm bất kỳ hook KSES nào ở đây.
  *
- * There is currently only one KSES WordPress hook, {@see 'pre_kses'}, and it is called here.
- * All parameters are passed to the hooks and expected to receive a string.
+ * Hiện tại chỉ có một hook KSES WordPress, {@see 'pre_kses'}, và nó được gọi ở đây.
+ * Tất cả tham số được truyền vào hook và kỳ vọng nhận về một chuỗi.
  *
  * @since 1.0.0
  *
- * @param string         $content           Content to filter through KSES.
- * @param array[]|string $allowed_html      An array of allowed HTML elements and attributes,
- *                                          or a context name such as 'post'. See wp_kses_allowed_html()
- *                                          for the list of accepted context names.
- * @param string[]       $allowed_protocols Array of allowed URL protocols.
- * @return string Filtered content through {@see 'pre_kses'} hook.
+ * @param string         $content           Nội dung cần lọc qua KSES.
+ * @param array[]|string $allowed_html      Mảng các phần tử và thuộc tính HTML được phép,
+ *                                          hoặc tên ngữ cảnh như 'post'. Xem wp_kses_allowed_html()
+ *                                          để biết danh sách tên ngữ cảnh được chấp nhận.
+ * @param string[]       $allowed_protocols Mảng các giao thức URL được phép.
+ * @return string Nội dung đã lọc qua hook {@see 'pre_kses'}.
  */
 function wp_kses_hook( $content, $allowed_html, $allowed_protocols ) {
 	/**
-	 * Filters content to be run through KSES.
+	 * Lọc nội dung trước khi chạy qua KSES.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param string         $content           Content to filter through KSES.
-	 * @param array[]|string $allowed_html      An array of allowed HTML elements and attributes,
-	 *                                          or a context name such as 'post'. See wp_kses_allowed_html()
-	 *                                          for the list of accepted context names.
-	 * @param string[]       $allowed_protocols Array of allowed URL protocols.
+	 * @param string         $content           Nội dung cần lọc qua KSES.
+	 * @param array[]|string $allowed_html      Mảng các phần tử và thuộc tính HTML được phép,
+	 *                                          hoặc tên ngữ cảnh như 'post'. Xem wp_kses_allowed_html()
+	 *                                          để biết danh sách tên ngữ cảnh được chấp nhận.
+	 * @param string[]       $allowed_protocols Mảng các giao thức URL được phép.
 	 */
 	return apply_filters( 'pre_kses', $content, $allowed_html, $allowed_protocols );
 }
 
 /**
- * Returns the version number of KSES.
+ * Trả về số phiên bản của KSES.
  *
  * @since 1.0.0
  *
- * @return string KSES version number.
+ * @return string Số phiên bản KSES.
  */
 function wp_kses_version() {
 	return '0.2.2';
 }
 
 /**
- * Searches for HTML tags, no matter how malformed.
+ * Tìm kiếm các thẻ HTML, bất kể chúng bị biến dạng thế nào.
  *
- * It also matches stray `>` characters.
+ * Hàm này cũng khớp với các ký tự `>` đứng lẻ.
  *
  * @since 1.0.0
- * @since 6.6.0 Recognize additional forms of invalid HTML which convert into comments.
+ * @since 6.6.0 Nhận diện thêm các dạng HTML không hợp lệ được chuyển thành bình luận.
  *
- * @global array[]|string $pass_allowed_html      An array of allowed HTML elements and attributes,
- *                                                or a context name such as 'post'.
- * @global string[]       $pass_allowed_protocols Array of allowed URL protocols.
+ * @global array[]|string $pass_allowed_html      Mảng các phần tử và thuộc tính HTML được phép,
+ *                                                hoặc tên ngữ cảnh như 'post'.
+ * @global string[]       $pass_allowed_protocols Mảng các giao thức URL được phép.
  *
- * @param string         $content           Content to filter.
- * @param array[]|string $allowed_html      An array of allowed HTML elements and attributes,
- *                                          or a context name such as 'post'. See wp_kses_allowed_html()
- *                                          for the list of accepted context names.
- * @param string[]       $allowed_protocols Array of allowed URL protocols.
- * @return string Content with fixed HTML tags
+ * @param string         $content           Nội dung cần lọc.
+ * @param array[]|string $allowed_html      Mảng các phần tử và thuộc tính HTML được phép,
+ *                                          hoặc tên ngữ cảnh như 'post'. Xem wp_kses_allowed_html()
+ *                                          để biết danh sách tên ngữ cảnh được chấp nhận.
+ * @param string[]       $allowed_protocols Mảng các giao thức URL được phép.
+ * @return string Nội dung với các thẻ HTML đã được sửa chữa.
  */
 function wp_kses_split( $content, $allowed_html, $allowed_protocols ) {
 	global $pass_allowed_html, $pass_allowed_protocols;
@@ -1002,18 +1002,18 @@ REGEX;
 }
 
 /**
- * Returns an array of HTML attribute names whose value contains a URL.
+ * Trả về mảng tên thuộc tính HTML có giá trị chứa URL.
  *
- * This function returns a list of all HTML attributes that must contain
- * a URL according to the HTML specification.
+ * Hàm này trả về danh sách tất cả thuộc tính HTML phải chứa
+ * URL theo đặc tả HTML.
  *
- * This list includes URI attributes both allowed and disallowed by KSES.
+ * Danh sách này bao gồm cả thuộc tính URI được phép và không được phép bởi KSES.
  *
  * @link https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
  *
  * @since 5.0.1
  *
- * @return string[] HTML attribute names whose value contains a URL.
+ * @return string[] Tên thuộc tính HTML có giá trị chứa URL.
  */
 function wp_kses_uri_attributes() {
 	$uri_attributes = array(
@@ -1037,14 +1037,14 @@ function wp_kses_uri_attributes() {
 	);
 
 	/**
-	 * Filters the list of attributes that are required to contain a URL.
+	 * Lọc danh sách các thuộc tính bắt buộc phải chứa URL.
 	 *
-	 * Use this filter to add any `data-` attributes that are required to be
-	 * validated as a URL.
+	 * Sử dụng bộ lọc này để thêm bất kỳ thuộc tính `data-` nào cần được
+	 * xác thực là URL.
 	 *
 	 * @since 5.0.1
 	 *
-	 * @param string[] $uri_attributes HTML attribute names whose value contains a URL.
+	 * @param string[] $uri_attributes Tên thuộc tính HTML có giá trị chứa URL.
 	 */
 	$uri_attributes = apply_filters( 'wp_kses_uri_attributes', $uri_attributes );
 
@@ -1052,17 +1052,17 @@ function wp_kses_uri_attributes() {
 }
 
 /**
- * Callback for `wp_kses_split()`.
+ * Callback cho `wp_kses_split()`.
  *
  * @since 3.1.0
  * @access private
  * @ignore
  *
- * @global array[]|string $pass_allowed_html      An array of allowed HTML elements and attributes,
- *                                                or a context name such as 'post'.
- * @global string[]       $pass_allowed_protocols Array of allowed URL protocols.
+ * @global array[]|string $pass_allowed_html      Mảng các phần tử và thuộc tính HTML được phép,
+ *                                                hoặc tên ngữ cảnh như 'post'.
+ * @global string[]       $pass_allowed_protocols Mảng các giao thức URL được phép.
  *
- * @param array $matches preg_replace regexp matches
+ * @param array $matches Các kết quả khớp regexp của preg_replace.
  * @return string
  */
 function _wp_kses_split_callback( $matches ) {
@@ -1072,66 +1072,65 @@ function _wp_kses_split_callback( $matches ) {
 }
 
 /**
- * Callback for `wp_kses_split()` for fixing malformed HTML tags.
+ * Callback cho `wp_kses_split()` để sửa các thẻ HTML bị biến dạng.
  *
- * This function does a lot of work. It rejects some very malformed things like
- * `<:::>`. It returns an empty string, if the element isn't allowed (look ma, no
- * `strip_tags()`!). Otherwise it splits the tag into an element and an attribute
- * list.
+ * Hàm này xử lý rất nhiều việc. Nó loại bỏ một số thứ bị biến dạng nghiêm trọng như
+ * `<:::>`. Nó trả về chuỗi rỗng nếu phần tử không được phép (không cần
+ * `strip_tags()`!). Nếu không, nó tách thẻ thành phần tử và danh sách thuộc tính.
  *
- * After the tag is split into an element and an attribute list, it is run
- * through another filter which will remove illegal attributes and once that is
- * completed, will be returned.
+ * Sau khi thẻ được tách thành phần tử và danh sách thuộc tính, nó được chạy
+ * qua bộ lọc khác để loại bỏ các thuộc tính không hợp lệ và khi hoàn thành
+ * sẽ được trả về.
  *
  * @access private
  * @ignore
  * @since 1.0.0
- * @since 6.6.0 Recognize additional forms of invalid HTML which convert into comments.
+ * @since 6.6.0 Nhận diện thêm các dạng HTML không hợp lệ được chuyển thành bình luận.
  *
- * @param string         $content           Content to filter.
- * @param array[]|string $allowed_html      An array of allowed HTML elements and attributes,
- *                                          or a context name such as 'post'. See wp_kses_allowed_html()
- *                                          for the list of accepted context names.
- * @param string[]       $allowed_protocols Array of allowed URL protocols.
+ * @param string         $content           Nội dung cần lọc.
+ * @param array[]|string $allowed_html      Mảng các phần tử và thuộc tính HTML được phép,
+ *                                          hoặc tên ngữ cảnh như 'post'. Xem wp_kses_allowed_html()
+ *                                          để biết danh sách tên ngữ cảnh được chấp nhận.
+ * @param string[]       $allowed_protocols Mảng các giao thức URL được phép.
  *
- * @return string Fixed HTML element
+ * @return string Phần tử HTML đã được sửa.
  */
 function wp_kses_split2( $content, $allowed_html, $allowed_protocols ) {
 	$content = wp_kses_stripslashes( $content );
 
 	/*
-	 * The regex pattern used to split HTML into chunks attempts
-	 * to split on HTML token boundaries. This function should
-	 * thus receive chunks that _either_ start with meaningful
-	 * syntax tokens, like a tag `<div>` or a comment `<!-- ... -->`.
+	 * Mẫu regex được sử dụng để tách HTML thành các đoạn cố gắng
+	 * tách tại ranh giới token HTML. Hàm này do đó nên nhận được
+	 * các đoạn _hoặc_ bắt đầu bằng các token cú pháp có ý nghĩa,
+	 * như thẻ `<div>` hoặc bình luận `<!-- ... -->`.
 	 *
-	 * If the first character of the `$content` chunk _isn't_ one
-	 * of these syntax elements, which always starts with `<`, then
-	 * the match had to be for the final alternation of `>`. In such
-	 * case, it's probably standing on its own and could be encoded
-	 * with a character reference to remove ambiguity.
+	 * Nếu ký tự đầu tiên của đoạn `$content` _không phải_ là một
+	 * trong các phần tử cú pháp này, mà luôn bắt đầu bằng `<`, thì
+	 * kết quả khớp phải là cho nhánh cuối cùng `>`. Trong trường hợp
+	 * đó, nó có thể đứng một mình và có thể được mã hóa
+	 * bằng tham chiếu ký tự để loại bỏ sự mơ hồ.
 	 *
-	 * In other words, if this chunk isn't from a match of a syntax
-	 * token, it's just a plaintext greater-than (`>`) sign.
+	 * Nói cách khác, nếu đoạn này không phải từ kết quả khớp token
+	 * cú pháp, thì nó chỉ là dấu lớn hơn (`>`) trong văn bản thuần.
 	 */
 	if ( ! str_starts_with( $content, '<' ) ) {
 		return '&gt;';
 	}
 
 	/*
-	 * When certain invalid syntax constructs appear, the HTML parser
-	 * shifts into what's called the "bogus comment state." This is a
-	 * plaintext state that consumes everything until the nearest `>`
-	 * and then transforms the entire span into an HTML comment.
+	 * Khi một số cấu trúc cú pháp không hợp lệ xuất hiện, trình phân tích HTML
+	 * chuyển sang trạng thái gọi là "trạng thái bình luận giả" (bogus comment state).
+	 * Đây là trạng thái văn bản thuần tiêu thụ mọi thứ cho đến dấu `>` gần nhất
+	 * và sau đó chuyển đổi toàn bộ đoạn thành bình luận HTML.
 	 *
-	 * Preserve these comments and do not treat them like tags.
+	 * Giữ nguyên các bình luận này và không xử lý chúng như thẻ.
 	 *
 	 * @see https://html.spec.whatwg.org/#bogus-comment-state
 	 */
 	if ( 1 === preg_match( '~^(?:</[^a-zA-Z][^>]*>|<![a-z][^>]*>)$~', $content ) ) {
 		/**
-		 * Since the pattern matches `</…>` and also `<!…>`, this will
-		 * preserve the type of the cleaned-up token in the output.
+		 * Vì mẫu khớp với `</…>` và cả `<!…>`, điều này sẽ
+		 * giữ nguyên kiểu token đã được làm sạch trong đầu ra.
 		 */
 		$opener  = $content[1];
 		$content = substr( $content, 2, -1 );
@@ -1141,13 +1140,13 @@ function wp_kses_split2( $content, $allowed_html, $allowed_protocols ) {
 			$content = wp_kses( $content, $allowed_html, $allowed_protocols );
 		} while ( $prev !== $content );
 
-		// Recombine the modified inner content with the original token structure.
+		// Kết hợp lại nội dung bên trong đã chỉnh sửa với cấu trúc token gốc.
 		return "<{$opener}{$content}>";
 	}
 
 	/*
-	 * Normative HTML comments should be handled separately as their
-	 * parsing rules differ from those for tags and text nodes.
+	 * Bình luận HTML chuẩn cần được xử lý riêng vì quy tắc
+	 * phân tích của chúng khác với quy tắc cho thẻ và nút văn bản.
 	 */
 	if ( str_starts_with( $content, '<!--' ) ) {
 		$content = str_replace( array( '<!--', '-->' ), '', $content );
@@ -1160,15 +1159,15 @@ function wp_kses_split2( $content, $allowed_html, $allowed_protocols ) {
 			return '';
 		}
 
-		// Prevent multiple dashes in comments.
+		// Ngăn chặn nhiều dấu gạch ngang liên tiếp trong bình luận.
 		$content = preg_replace( '/--+/', '-', $content );
-		// Prevent three dashes closing a comment.
+		// Ngăn chặn ba dấu gạch ngang đóng bình luận.
 		$content = preg_replace( '/-$/', '', $content );
 
 		return "<!--{$content}-->";
 	}
 
-	// It's seriously malformed.
+	// Bị biến dạng nghiêm trọng.
 	if ( ! preg_match( '%^<\s*(/\s*)?([a-zA-Z0-9-]+)([^>]*)>?$%', $content, $matches ) ) {
 		return '';
 	}
@@ -1181,12 +1180,12 @@ function wp_kses_split2( $content, $allowed_html, $allowed_protocols ) {
 		$allowed_html = wp_kses_allowed_html( $allowed_html );
 	}
 
-	// They are using a not allowed HTML element.
+	// Họ đang sử dụng phần tử HTML không được phép.
 	if ( ! isset( $allowed_html[ strtolower( $elem ) ] ) ) {
 		return '';
 	}
 
-	// No attributes are allowed for closing elements.
+	// Không có thuộc tính nào được phép cho phần tử đóng.
 	if ( '' !== $slash ) {
 		return "</$elem>";
 	}
@@ -1195,33 +1194,32 @@ function wp_kses_split2( $content, $allowed_html, $allowed_protocols ) {
 }
 
 /**
- * Removes all attributes, if none are allowed for this element.
+ * Loại bỏ tất cả thuộc tính, nếu không có thuộc tính nào được phép cho phần tử này.
  *
- * If some are allowed it calls `wp_kses_hair()` to split them further, and then
- * it builds up new HTML code from the data that `wp_kses_hair()` returns. It also
- * removes `<` and `>` characters, if there are any left. One more thing it does
- * is to check if the tag has a closing XHTML slash, and if it does, it puts one
- * in the returned code as well.
+ * Nếu một số thuộc tính được phép, hàm gọi `wp_kses_hair()` để tách chúng thêm, và sau đó
+ * xây dựng mã HTML mới từ dữ liệu mà `wp_kses_hair()` trả về. Nó cũng loại bỏ
+ * các ký tự `<` và `>` nếu còn sót lại. Một việc nữa nó làm là kiểm tra xem thẻ
+ * có dấu gạch chéo đóng XHTML không, và nếu có, nó cũng đặt dấu đó vào mã trả về.
  *
- * An array of allowed values can be defined for attributes. If the attribute value
- * doesn't fall into the list, the attribute will be removed from the tag.
+ * Có thể định nghĩa mảng các giá trị được phép cho thuộc tính. Nếu giá trị thuộc tính
+ * không nằm trong danh sách, thuộc tính sẽ bị loại bỏ khỏi thẻ.
  *
- * Attributes can be marked as required. If a required attribute is not present,
- * KSES will remove all attributes from the tag. As KSES doesn't match opening and
- * closing tags, it's not possible to safely remove the tag itself, the safest
- * fallback is to strip all attributes from the tag, instead.
+ * Thuộc tính có thể được đánh dấu là bắt buộc. Nếu thuộc tính bắt buộc không có mặt,
+ * KSES sẽ loại bỏ tất cả thuộc tính khỏi thẻ. Vì KSES không khớp thẻ mở và
+ * thẻ đóng, không thể loại bỏ an toàn chính thẻ đó, giải pháp an toàn nhất
+ * là loại bỏ tất cả thuộc tính khỏi thẻ.
  *
  * @since 1.0.0
- * @since 5.9.0 Added support for an array of allowed values for attributes.
- *              Added support for required attributes.
+ * @since 5.9.0 Thêm hỗ trợ mảng giá trị được phép cho thuộc tính.
+ *              Thêm hỗ trợ thuộc tính bắt buộc.
  *
- * @param string         $element           HTML element/tag.
- * @param string         $attr              HTML attributes from HTML element to closing HTML element tag.
- * @param array[]|string $allowed_html      An array of allowed HTML elements and attributes,
- *                                          or a context name such as 'post'. See wp_kses_allowed_html()
- *                                          for the list of accepted context names.
- * @param string[]       $allowed_protocols Array of allowed URL protocols.
- * @return string Sanitized HTML element.
+ * @param string         $element           Phần tử/thẻ HTML.
+ * @param string         $attr              Các thuộc tính HTML từ phần tử HTML đến thẻ đóng phần tử HTML.
+ * @param array[]|string $allowed_html      Mảng các phần tử và thuộc tính HTML được phép,
+ *                                          hoặc tên ngữ cảnh như 'post'. Xem wp_kses_allowed_html()
+ *                                          để biết danh sách tên ngữ cảnh được chấp nhận.
+ * @param string[]       $allowed_protocols Mảng các giao thức URL được phép.
+ * @return string Phần tử HTML đã được làm sạch.
  */
 function wp_kses_attr( $element, $attr, $allowed_html, $allowed_protocols ) {
 	if ( ! is_array( $allowed_html ) ) {

@@ -154,10 +154,10 @@ function export_wp( $args = array() ) {
 			$posts_in     = array_map( 'absint', $next_posts );
 			$placeholders = array_fill( 0, count( $posts_in ), '%d' );
 
-			// Create a string for the placeholders.
+			// Tạo chuỗi cho các placeholder.
 			$in_placeholder = implode( ',', $placeholders );
 
-			// Prepare the SQL statement for attachment ids.
+			// Chuẩn bị câu lệnh SQL cho ID tệp đính kèm.
 			$attachment_ids = $wpdb->get_col(
 				$wpdb->prepare(
 					"
@@ -184,13 +184,13 @@ function export_wp( $args = array() ) {
 			$additional_ids = array_merge( $additional_ids, $attachment_ids, $thumbnails_ids );
 		}
 
-		// Merge the additional IDs back with the original post IDs after processing all posts
+		// Gộp các ID bổ sung trở lại với các ID bài viết gốc sau khi xử lý tất cả bài viết
 		$post_ids = array_unique( array_merge( $post_ids, $additional_ids ) );
 	}
 
 	/*
-	 * Get the requested terms ready, empty unless posts filtered by category
-	 * or all content.
+	 * Chuẩn bị các term được yêu cầu, rỗng trừ khi bài viết được lọc theo chuyên mục
+	 * hoặc tất cả nội dung.
 	 */
 	$cats  = array();
 	$tags  = array();
@@ -211,7 +211,7 @@ function export_wp( $args = array() ) {
 			)
 		);
 
-		// Put categories in order with no child going before its parent.
+		// Sắp xếp chuyên mục theo thứ tự sao cho không có con nào đứng trước cha.
 		while ( $cat = array_shift( $categories ) ) {
 			if ( ! $cat->parent || isset( $cats[ $cat->parent ] ) ) {
 				$cats[ $cat->term_id ] = $cat;
@@ -220,7 +220,7 @@ function export_wp( $args = array() ) {
 			}
 		}
 
-		// Put terms in order with no child going before its parent.
+		// Sắp xếp term theo thứ tự sao cho không có con nào đứng trước cha.
 		while ( $t = array_shift( $custom_terms ) ) {
 			if ( ! $t->parent || isset( $terms[ $t->parent ] ) ) {
 				$terms[ $t->term_id ] = $t;
@@ -233,11 +233,11 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Wraps given string in XML CDATA tag.
+	 * Bọc chuỗi cho trước trong thẻ XML CDATA.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $str String to wrap in XML CDATA tag.
+	 * @param string $str Chuỗi cần bọc trong thẻ XML CDATA.
 	 * @return string
 	 */
 	function wxr_cdata( $str ) {
@@ -251,28 +251,28 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Returns the URL of the site.
+	 * Trả về URL của trang web.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @return string Site URL.
+	 * @return string URL trang web.
 	 */
 	function wxr_site_url() {
 		if ( is_multisite() ) {
-			// Multisite: the base URL.
+			// Multisite: URL cơ sở.
 			return network_home_url();
 		} else {
-			// WordPress (single site): the site URL.
+			// WordPress (trang đơn): URL trang web.
 			return get_bloginfo_rss( 'url' );
 		}
 	}
 
 	/**
-	 * Outputs a cat_name XML tag from a given category object.
+	 * Xuất thẻ XML cat_name từ đối tượng chuyên mục cho trước.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param WP_Term $category Category Object.
+	 * @param WP_Term $category Đối tượng Chuyên mục.
 	 */
 	function wxr_cat_name( $category ) {
 		if ( empty( $category->name ) ) {
@@ -283,11 +283,11 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Outputs a category_description XML tag from a given category object.
+	 * Xuất thẻ XML category_description từ đối tượng chuyên mục cho trước.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param WP_Term $category Category Object.
+	 * @param WP_Term $category Đối tượng Chuyên mục.
 	 */
 	function wxr_category_description( $category ) {
 		if ( empty( $category->description ) ) {
@@ -298,11 +298,11 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Outputs a tag_name XML tag from a given tag object.
+	 * Xuất thẻ XML tag_name từ đối tượng thẻ cho trước.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param WP_Term $tag Tag Object.
+	 * @param WP_Term $tag Đối tượng Thẻ.
 	 */
 	function wxr_tag_name( $tag ) {
 		if ( empty( $tag->name ) ) {
@@ -313,11 +313,11 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Outputs a tag_description XML tag from a given tag object.
+	 * Xuất thẻ XML tag_description từ đối tượng thẻ cho trước.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param WP_Term $tag Tag Object.
+	 * @param WP_Term $tag Đối tượng Thẻ.
 	 */
 	function wxr_tag_description( $tag ) {
 		if ( empty( $tag->description ) ) {
@@ -328,11 +328,11 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Outputs a term_name XML tag from a given term object.
+	 * Xuất thẻ XML term_name từ đối tượng term cho trước.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param WP_Term $term Term Object.
+	 * @param WP_Term $term Đối tượng Term.
 	 */
 	function wxr_term_name( $term ) {
 		if ( empty( $term->name ) ) {
@@ -343,11 +343,11 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Outputs a term_description XML tag from a given term object.
+	 * Xuất thẻ XML term_description từ đối tượng term cho trước.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param WP_Term $term Term Object.
+	 * @param WP_Term $term Đối tượng Term.
 	 */
 	function wxr_term_description( $term ) {
 		if ( empty( $term->description ) ) {
@@ -358,13 +358,13 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Outputs term meta XML tags for a given term object.
+	 * Xuất các thẻ XML term meta cho đối tượng term cho trước.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param WP_Term $term Term object.
+	 * @param WP_Term $term Đối tượng term.
 	 */
 	function wxr_term_meta( $term ) {
 		global $wpdb;
@@ -373,16 +373,16 @@ function export_wp( $args = array() ) {
 
 		foreach ( $termmeta as $meta ) {
 			/**
-			 * Filters whether to selectively skip term meta used for WXR exports.
+			 * Lọc xem có nên bỏ qua chọn lọc term meta dùng cho xuất WXR hay không.
 			 *
-			 * Returning a truthy value from the filter will skip the current meta
-			 * object from being exported.
+			 * Trả về giá trị truthy từ bộ lọc sẽ bỏ qua đối tượng meta hiện tại
+			 * khỏi việc xuất.
 			 *
 			 * @since 4.6.0
 			 *
-			 * @param bool   $skip     Whether to skip the current piece of term meta. Default false.
-			 * @param string $meta_key Current meta key.
-			 * @param object $meta     Current meta object.
+			 * @param bool   $skip     Có bỏ qua phần term meta hiện tại hay không. Mặc định false.
+			 * @param string $meta_key Khóa meta hiện tại.
+			 * @param object $meta     Đối tượng meta hiện tại.
 			 */
 			if ( ! apply_filters( 'wxr_export_skip_termmeta', false, $meta->meta_key, $meta ) ) {
 				printf( "\t\t<wp:termmeta>\n\t\t\t<wp:meta_key>%s</wp:meta_key>\n\t\t\t<wp:meta_value>%s</wp:meta_value>\n\t\t</wp:termmeta>\n", wxr_cdata( $meta->meta_key ), wxr_cdata( $meta->meta_value ) );
@@ -391,13 +391,13 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Outputs list of authors with posts.
+	 * Xuất danh sách tác giả có bài viết.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param int[] $post_ids Optional. Array of post IDs to filter the query by.
+	 * @param int[] $post_ids Tùy chọn. Mảng ID bài viết để lọc truy vấn.
 	 */
 	function wxr_authors_list( ?array $post_ids = null ) {
 		global $wpdb;
@@ -430,7 +430,7 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Outputs all navigation menu terms.
+	 * Xuất tất cả các term menu điều hướng.
 	 *
 	 * @since 3.1.0
 	 */
@@ -451,7 +451,7 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Outputs list of taxonomy terms, in XML tag format, associated with a post.
+	 * Xuất danh sách các term taxonomy, dưới dạng thẻ XML, liên kết với một bài viết.
 	 *
 	 * @since 2.3.0
 	 */
@@ -470,12 +470,12 @@ function export_wp( $args = array() ) {
 	}
 
 	/**
-	 * Determines whether to selectively skip post meta used for WXR exports.
+	 * Xác định xem có nên bỏ qua chọn lọc post meta dùng cho xuất WXR hay không.
 	 *
 	 * @since 3.3.0
 	 *
-	 * @param bool   $return_me Whether to skip the current post meta. Default false.
-	 * @param string $meta_key  Meta key.
+	 * @param bool   $return_me Có bỏ qua post meta hiện tại hay không. Mặc định false.
+	 * @param string $meta_key  Khóa meta.
 	 * @return bool
 	 */
 	function wxr_filter_postmeta( $return_me, $meta_key ) {
@@ -581,42 +581,42 @@ function export_wp( $args = array() ) {
 		 */
 		global $wp_query;
 
-		// Fake being in the loop.
+		// Giả lập đang trong vòng lặp.
 		$wp_query->in_the_loop = true;
 
-		// Fetch 20 posts at a time rather than loading the entire table into memory.
+		// Lấy 20 bài viết mỗi lần thay vì tải toàn bộ bảng vào bộ nhớ.
 		while ( $next_posts = array_splice( $post_ids, 0, 20 ) ) {
 			$where = 'WHERE ID IN (' . implode( ',', $next_posts ) . ')';
 			$posts = $wpdb->get_results( "SELECT * FROM {$wpdb->posts} $where" );
 
-			// Begin Loop.
+			// Bắt đầu vòng lặp.
 			foreach ( $posts as $post ) {
 				setup_postdata( $post );
 
 				/**
-				 * Filters the post title used for WXR exports.
+				 * Lọc tiêu đề bài viết dùng cho xuất WXR.
 				 *
 				 * @since 5.7.0
 				 *
-				 * @param string $post_title Title of the current post.
+				 * @param string $post_title Tiêu đề của bài viết hiện tại.
 				 */
 				$title = wxr_cdata( apply_filters( 'the_title_export', $post->post_title ) );
 
 				/**
-				 * Filters the post content used for WXR exports.
+				 * Lọc nội dung bài viết dùng cho xuất WXR.
 				 *
 				 * @since 2.5.0
 				 *
-				 * @param string $post_content Content of the current post.
+				 * @param string $post_content Nội dung của bài viết hiện tại.
 				 */
 				$content = wxr_cdata( apply_filters( 'the_content_export', $post->post_content ) );
 
 				/**
-				 * Filters the post excerpt used for WXR exports.
+				 * Lọc đoạn trích bài viết dùng cho xuất WXR.
 				 *
 				 * @since 2.6.0
 				 *
-				 * @param string $post_excerpt Excerpt for the current post.
+				 * @param string $post_excerpt Đoạn trích của bài viết hiện tại.
 				 */
 				$excerpt = wxr_cdata( apply_filters( 'the_excerpt_export', $post->post_excerpt ) );
 
@@ -653,16 +653,16 @@ function export_wp( $args = array() ) {
 				$postmeta = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->postmeta WHERE post_id = %d", $post->ID ) );
 				foreach ( $postmeta as $meta ) :
 					/**
-					 * Filters whether to selectively skip post meta used for WXR exports.
+					 * Lọc xem có nên bỏ qua chọn lọc post meta dùng cho xuất WXR hay không.
 					 *
-					 * Returning a truthy value from the filter will skip the current meta
-					 * object from being exported.
+					 * Trả về giá trị truthy từ bộ lọc sẽ bỏ qua đối tượng meta hiện tại
+					 * khỏi việc xuất.
 					 *
 					 * @since 3.3.0
 					 *
-					 * @param bool   $skip     Whether to skip the current post meta. Default false.
-					 * @param string $meta_key Current meta key.
-					 * @param object $meta     Current meta object.
+					 * @param bool   $skip     Có bỏ qua post meta hiện tại hay không. Mặc định false.
+					 * @param string $meta_key Khóa meta hiện tại.
+					 * @param object $meta     Đối tượng meta hiện tại.
 					 */
 					if ( apply_filters( 'wxr_export_skip_postmeta', false, $meta->meta_key, $meta ) ) {
 						continue;
@@ -696,16 +696,16 @@ function export_wp( $args = array() ) {
 					$c_meta = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $wpdb->commentmeta WHERE comment_id = %d", $c->comment_ID ) );
 					foreach ( $c_meta as $meta ) :
 						/**
-						 * Filters whether to selectively skip comment meta used for WXR exports.
+						 * Lọc xem có nên bỏ qua chọn lọc comment meta dùng cho xuất WXR hay không.
 						 *
-						 * Returning a truthy value from the filter will skip the current meta
-						 * object from being exported.
+						 * Trả về giá trị truthy từ bộ lọc sẽ bỏ qua đối tượng meta hiện tại
+						 * khỏi việc xuất.
 						 *
 						 * @since 4.0.0
 						 *
-						 * @param bool   $skip     Whether to skip the current comment meta. Default false.
-						 * @param string $meta_key Current meta key.
-						 * @param object $meta     Current meta object.
+						 * @param bool   $skip     Có bỏ qua comment meta hiện tại hay không. Mặc định false.
+						 * @param string $meta_key Khóa meta hiện tại.
+						 * @param object $meta     Đối tượng meta hiện tại.
 						 */
 						if ( apply_filters( 'wxr_export_skip_commentmeta', false, $meta->meta_key, $meta ) ) {
 							continue;

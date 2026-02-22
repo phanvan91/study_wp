@@ -100,7 +100,7 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 		}
 
 		if ( empty( $opt['password'] ) ) {
-			// Password can be blank if we are using keys.
+			// Mật khẩu có thể để trống nếu chúng ta sử dụng khóa.
 			if ( ! $this->keys ) {
 				$this->errors->add( 'empty_password', __( 'SSH2 password is required' ) );
 			} else {
@@ -112,11 +112,11 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Connects filesystem.
+	 * Kết nối hệ thống tệp.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @return bool True on success, false on failure.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function connect() {
 		if ( ! $this->keys ) {
@@ -185,17 +185,17 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the ssh2.sftp PHP stream wrapper path to open for the given file.
+	 * Lấy đường dẫn bọc luồng PHP ssh2.sftp để mở cho tệp đã cho.
 	 *
-	 * This method also works around a PHP bug where the root directory (/) cannot
-	 * be opened by PHP functions, causing a false failure. In order to work around
-	 * this, the path is converted to /./ which is semantically the same as /
-	 * See https://bugs.php.net/bug.php?id=64169 for more details.
+	 * Phương thức này cũng xử lý lỗi PHP khi thư mục gốc (/) không thể
+	 * được mở bởi các hàm PHP, gây ra lỗi giả. Để khắc phục điều này,
+	 * đường dẫn được chuyển đổi thành /./ có ý nghĩa tương đương với /
+	 * Xem https://bugs.php.net/bug.php?id=64169 để biết thêm chi tiết.
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param string $path The File/Directory path on the remote server to return
-	 * @return string The ssh2.sftp:// wrapped path to use.
+	 * @param string $path Đường dẫn Tệp/Thư mục trên máy chủ từ xa cần trả về.
+	 * @return string Đường dẫn được bọc ssh2.sftp:// để sử dụng.
 	 */
 	public function sftp_path( $path ) {
 		if ( '/' === $path ) {
@@ -210,8 +210,8 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	 *
 	 * @param string $command
 	 * @param bool   $returnbool
-	 * @return bool|string True on success, false on failure. String if the command was executed, `$returnbool`
-	 *                     is false (default), and data from the resulting stream was retrieved.
+	 * @return bool|string True khi thành công, false khi thất bại. Chuỗi nếu lệnh đã được thực thi, `$returnbool`
+	 *                     là false (mặc định), và dữ liệu từ luồng kết quả đã được lấy.
 	 */
 	public function run_command( $command, $returnbool = false ) {
 		if ( ! $this->link ) {
@@ -246,40 +246,40 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Reads entire file into a string.
+	 * Đọc toàn bộ tệp vào một chuỗi.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $file Name of the file to read.
-	 * @return string|false Read data on success, false if no temporary file could be opened,
-	 *                      or if the file couldn't be retrieved.
+	 * @param string $file Tên tệp cần đọc.
+	 * @return string|false Dữ liệu đọc được khi thành công, false nếu không thể mở tệp tạm thời,
+	 *                      hoặc nếu không thể lấy tệp.
 	 */
 	public function get_contents( $file ) {
 		return file_get_contents( $this->sftp_path( $file ) );
 	}
 
 	/**
-	 * Reads entire file into an array.
+	 * Đọc toàn bộ tệp vào một mảng.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return array|false File contents in an array on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return array|false Nội dung tệp trong một mảng khi thành công, false khi thất bại.
 	 */
 	public function get_contents_array( $file ) {
 		return file( $this->sftp_path( $file ) );
 	}
 
 	/**
-	 * Writes a string to a file.
+	 * Ghi một chuỗi vào tệp.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string    $file     Remote path to the file where to write the data.
-	 * @param string    $contents The data to write.
-	 * @param int|false $mode     Optional. The file permissions as octal number, usually 0644.
-	 *                            Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $file     Đường dẫn từ xa đến tệp cần ghi dữ liệu.
+	 * @param string    $contents Dữ liệu cần ghi.
+	 * @param int|false $mode     Tùy chọn. Quyền tệp dạng số bát phân, thường là 0644.
+	 *                            Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function put_contents( $file, $contents, $mode = false ) {
 		$ret = file_put_contents( $this->sftp_path( $file ), $contents );
@@ -294,11 +294,11 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the current working directory.
+	 * Lấy thư mục làm việc hiện tại.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @return string|false The current working directory on success, false on failure.
+	 * @return string|false Thư mục làm việc hiện tại khi thành công, false khi thất bại.
 	 */
 	public function cwd() {
 		$cwd = ssh2_sftp_realpath( $this->sftp_link, '.' );
@@ -311,27 +311,27 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Changes current directory.
+	 * Thay đổi thư mục hiện tại.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $dir The new current directory.
-	 * @return bool True on success, false on failure.
+	 * @param string $dir Thư mục hiện tại mới.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chdir( $dir ) {
 		return $this->run_command( 'cd ' . $dir, true );
 	}
 
 	/**
-	 * Changes the file group.
+	 * Thay đổi nhóm của tệp.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string     $file      Path to the file.
-	 * @param string|int $group     A group name or number.
-	 * @param bool       $recursive Optional. If set to true, changes file group recursively.
-	 *                              Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string     $file      Đường dẫn đến tệp.
+	 * @param string|int $group     Tên hoặc số nhóm.
+	 * @param bool       $recursive Tùy chọn. Nếu đặt là true, thay đổi nhóm tệp đệ quy.
+	 *                              Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chgrp( $file, $group, $recursive = false ) {
 		if ( ! $this->exists( $file ) ) {
@@ -346,16 +346,16 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Changes filesystem permissions.
+	 * Thay đổi quyền hệ thống tệp.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string    $file      Path to the file.
-	 * @param int|false $mode      Optional. The permissions as octal number, usually 0644 for files,
-	 *                             0755 for directories. Default false.
-	 * @param bool      $recursive Optional. If set to true, changes file permissions recursively.
-	 *                             Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $file      Đường dẫn đến tệp.
+	 * @param int|false $mode      Tùy chọn. Quyền dạng số bát phân, thường là 0644 cho tệp,
+	 *                             0755 cho thư mục. Mặc định false.
+	 * @param bool      $recursive Tùy chọn. Nếu đặt là true, thay đổi quyền tệp đệ quy.
+	 *                             Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chmod( $file, $mode = false, $recursive = false ) {
 		if ( ! $this->exists( $file ) ) {
@@ -380,15 +380,15 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Changes the owner of a file or directory.
+	 * Thay đổi chủ sở hữu của tệp hoặc thư mục.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string     $file      Path to the file or directory.
-	 * @param string|int $owner     A user name or number.
-	 * @param bool       $recursive Optional. If set to true, changes file owner recursively.
-	 *                              Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string     $file      Đường dẫn đến tệp hoặc thư mục.
+	 * @param string|int $owner     Tên người dùng hoặc số.
+	 * @param bool       $recursive Tùy chọn. Nếu đặt là true, thay đổi chủ sở hữu tệp đệ quy.
+	 *                              Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function chown( $file, $owner, $recursive = false ) {
 		if ( ! $this->exists( $file ) ) {
@@ -403,12 +403,12 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the file owner.
+	 * Lấy chủ sở hữu tệp.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return string|false Username of the owner on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return string|false Tên người dùng của chủ sở hữu khi thành công, false khi thất bại.
 	 */
 	public function owner( $file ) {
 		$owneruid = @fileowner( $this->sftp_path( $file ) );
@@ -431,24 +431,24 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the permissions of the specified file or filepath in their octal format.
+	 * Lấy quyền của tệp hoặc đường dẫn được chỉ định ở dạng bát phân.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return string Mode of the file (the last 3 digits).
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return string Chế độ của tệp (3 chữ số cuối).
 	 */
 	public function getchmod( $file ) {
 		return substr( decoct( @fileperms( $this->sftp_path( $file ) ) ), -3 );
 	}
 
 	/**
-	 * Gets the file's group.
+	 * Lấy nhóm của tệp.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $file Path to the file.
-	 * @return string|false The group on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return string|false Nhóm khi thành công, false khi thất bại.
 	 */
 	public function group( $file ) {
 		$gid = @filegroup( $this->sftp_path( $file ) );
@@ -471,17 +471,17 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Copies a file.
+	 * Sao chép một tệp.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string    $source      Path to the source file.
-	 * @param string    $destination Path to the destination file.
-	 * @param bool      $overwrite   Optional. Whether to overwrite the destination file if it exists.
-	 *                               Default false.
-	 * @param int|false $mode        Optional. The permissions as octal number, usually 0644 for files,
-	 *                               0755 for dirs. Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $source      Đường dẫn đến tệp nguồn.
+	 * @param string    $destination Đường dẫn đến tệp đích.
+	 * @param bool      $overwrite   Tùy chọn. Có ghi đè tệp đích nếu nó tồn tại hay không.
+	 *                               Mặc định false.
+	 * @param int|false $mode        Tùy chọn. Quyền dạng số bát phân, thường là 0644 cho tệp,
+	 *                               0755 cho thư mục. Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function copy( $source, $destination, $overwrite = false, $mode = false ) {
 		if ( ! $overwrite && $this->exists( $destination ) ) {
@@ -498,30 +498,30 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Moves a file or directory.
+	 * Di chuyển một tệp hoặc thư mục.
 	 *
-	 * After moving files or directories, OPcache will need to be invalidated.
+	 * Sau khi di chuyển tệp hoặc thư mục, OPcache sẽ cần được vô hiệu hóa.
 	 *
-	 * If moving a directory fails, `copy_dir()` can be used for a recursive copy.
+	 * Nếu di chuyển thư mục thất bại, `copy_dir()` có thể được sử dụng để sao chép đệ quy.
 	 *
-	 * Use `move_dir()` for moving directories with OPcache invalidation and a
-	 * fallback to `copy_dir()`.
+	 * Sử dụng `move_dir()` để di chuyển thư mục với vô hiệu hóa OPcache và
+	 * phương án dự phòng `copy_dir()`.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $source      Path to the source file or directory.
-	 * @param string $destination Path to the destination file or directory.
-	 * @param bool   $overwrite   Optional. Whether to overwrite the destination if it exists.
-	 *                            Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string $source      Đường dẫn đến tệp hoặc thư mục nguồn.
+	 * @param string $destination Đường dẫn đến tệp hoặc thư mục đích.
+	 * @param bool   $overwrite   Tùy chọn. Có ghi đè đích nếu nó tồn tại hay không.
+	 *                            Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function move( $source, $destination, $overwrite = false ) {
 		if ( $this->exists( $destination ) ) {
 			if ( $overwrite ) {
-				// We need to remove the destination before we can rename the source.
+				// Chúng ta cần xóa đích trước khi có thể đổi tên nguồn.
 				$this->delete( $destination, false, 'f' );
 			} else {
-				// If we're not overwriting, the rename will fail, so return early.
+				// Nếu không ghi đè, việc đổi tên sẽ thất bại, nên trả về sớm.
 				return false;
 			}
 		}
@@ -530,16 +530,16 @@ class WP_Filesystem_SSH2 extends WP_Filesystem_Base {
 	}
 
 	/**
-	 * Deletes a file or directory.
+	 * Xóa một tệp hoặc thư mục.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string       $file      Path to the file or directory.
-	 * @param bool         $recursive Optional. If set to true, deletes files and folders recursively.
-	 *                                Default false.
-	 * @param string|false $type      Type of resource. 'f' for file, 'd' for directory.
-	 *                                Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string       $file      Đường dẫn đến tệp hoặc thư mục.
+	 * @param bool         $recursive Tùy chọn. Nếu đặt là true, xóa tệp và thư mục đệ quy.
+	 *                                Mặc định false.
+	 * @param string|false $type      Loại tài nguyên. 'f' cho tệp, 'd' cho thư mục.
+	 *                                Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function delete( $file, $recursive = false, $type = false ) {
 		if ( 'f' === $type || $this->is_file( $file ) ) {

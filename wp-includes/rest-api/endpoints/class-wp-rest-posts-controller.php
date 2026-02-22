@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Posts_Controller class
+ * REST API: Lớp WP_REST_Posts_Controller
  *
  * @package WordPress
  * @subpackage REST_API
@@ -8,7 +8,7 @@
  */
 
 /**
- * Core class to access posts via the REST API.
+ * Lớp cốt lõi để truy cập bài viết qua REST API.
  *
  * @since 4.7.0
  *
@@ -16,7 +16,7 @@
  */
 class WP_REST_Posts_Controller extends WP_REST_Controller {
 	/**
-	 * Post type.
+	 * Loại bài viết.
 	 *
 	 * @since 4.7.0
 	 * @var string
@@ -24,7 +24,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	protected $post_type;
 
 	/**
-	 * Instance of a post meta fields object.
+	 * Thể hiện của đối tượng trường meta bài viết.
 	 *
 	 * @since 4.7.0
 	 * @var WP_REST_Post_Meta_Fields
@@ -32,7 +32,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	protected $meta;
 
 	/**
-	 * Passwordless post access permitted.
+	 * Cho phép truy cập bài viết không cần mật khẩu.
 	 *
 	 * @since 5.7.1
 	 * @var int[]
@@ -40,7 +40,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	protected $password_check_passed = array();
 
 	/**
-	 * Whether the controller supports batching.
+	 * Liệu controller có hỗ trợ xử lý theo lô hay không.
 	 *
 	 * @since 5.9.0
 	 * @var array
@@ -48,11 +48,11 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	protected $allow_batch = array( 'v1' => true );
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string $post_type Post type.
+	 * @param string $post_type Loại bài viết.
 	 */
 	public function __construct( $post_type ) {
 		$this->post_type = $post_type;
@@ -64,7 +64,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Registers the routes for posts.
+	 * Đăng ký các route cho bài viết.
 	 *
 	 * @since 4.7.0
 	 *
@@ -150,12 +150,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to read posts.
+	 * Kiểm tra xem yêu cầu đã cho có quyền đọc bài viết hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function get_items_permissions_check( $request ) {
 
@@ -173,17 +173,17 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Overrides the result of the post password check for REST requested posts.
+	 * Ghi đè kết quả kiểm tra mật khẩu bài viết cho các bài viết được yêu cầu qua REST.
 	 *
-	 * Allow users to read the content of password protected posts if they have
-	 * previously passed a permission check or if they have the `edit_post` capability
-	 * for the post being checked.
+	 * Cho phép người dùng đọc nội dung của bài viết được bảo vệ bằng mật khẩu nếu họ đã
+	 * vượt qua kiểm tra quyền trước đó hoặc nếu họ có quyền `edit_post`
+	 * cho bài viết đang được kiểm tra.
 	 *
 	 * @since 5.7.1
 	 *
-	 * @param bool    $required Whether the post requires a password check.
-	 * @param WP_Post $post     The post been password checked.
-	 * @return bool Result of password check taking into account REST API considerations.
+	 * @param bool    $required Liệu bài viết có yêu cầu kiểm tra mật khẩu hay không.
+	 * @param WP_Post $post     Bài viết đang được kiểm tra mật khẩu.
+	 * @return bool Kết quả kiểm tra mật khẩu có tính đến các cân nhắc REST API.
 	 */
 	public function check_password_required( $required, $post ) {
 		if ( ! $required ) {
@@ -197,7 +197,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		if ( ! empty( $this->password_check_passed[ $post->ID ] ) ) {
-			// Password previously checked and approved.
+			// Mật khẩu đã được kiểm tra và phê duyệt trước đó.
 			return false;
 		}
 
@@ -205,16 +205,16 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Retrieves a collection of posts.
+	 * Lấy một tập hợp bài viết.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Thông tin đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function get_items( $request ) {
 
-		// Ensure a search string is set in case the orderby is set to 'relevance'.
+		// Đảm bảo chuỗi tìm kiếm được thiết lập trong trường hợp orderby được đặt thành 'relevance'.
 		if ( ! empty( $request['orderby'] ) && 'relevance' === $request['orderby'] && empty( $request['search'] ) ) {
 			return new WP_Error(
 				'rest_no_search_term_defined',
@@ -223,7 +223,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			);
 		}
 
-		// Ensure an include parameter is set in case the orderby is set to 'include'.
+		// Đảm bảo tham số include được thiết lập trong trường hợp orderby được đặt thành 'include'.
 		if ( ! empty( $request['orderby'] ) && 'include' === $request['orderby'] && empty( $request['include'] ) ) {
 			return new WP_Error(
 				'rest_orderby_include_missing_include',
@@ -232,15 +232,15 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			);
 		}
 
-		// Retrieve the list of registered collection query parameters.
+		// Lấy danh sách các tham số truy vấn tập hợp đã đăng ký.
 		$registered = $this->get_collection_params();
 		$args       = array();
 
 		/*
-		 * This array defines mappings between public API query parameters whose
-		 * values are accepted as-passed, and their internal WP_Query parameter
-		 * name equivalents (some are the same). Only values which are also
-		 * present in $registered will be set.
+		 * Mảng này định nghĩa ánh xạ giữa các tham số truy vấn API công khai mà
+		 * giá trị được chấp nhận nguyên trạng, và tên tham số WP_Query nội bộ
+		 * tương ứng (một số giống nhau). Chỉ các giá trị cũng
+		 * có trong $registered mới được thiết lập.
 		 */
 		$parameter_mappings = array(
 			'author'         => 'author__in',
@@ -262,8 +262,8 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		);
 
 		/*
-		 * For each known parameter which is both registered and present in the request,
-		 * set the parameter's value on the query $args.
+		 * Với mỗi tham số đã biết vừa được đăng ký vừa có trong yêu cầu,
+		 * thiết lập giá trị của tham số trên $args truy vấn.
 		 */
 		foreach ( $parameter_mappings as $api_param => $wp_param ) {
 			if ( isset( $registered[ $api_param ], $request[ $api_param ] ) ) {
@@ -271,7 +271,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Check for & assign any parameters which require special handling or setting.
+		// Kiểm tra và gán các tham số cần xử lý hoặc thiết lập đặc biệt.
 		$args['date_query'] = array();
 
 		if ( isset( $registered['before'], $request['before'] ) ) {
@@ -302,7 +302,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			);
 		}
 
-		// Ensure our per_page parameter overrides any provided posts_per_page filter.
+		// Đảm bảo tham số per_page của chúng ta ghi đè bất kỳ bộ lọc posts_per_page nào được cung cấp.
 		if ( isset( $registered['per_page'] ) ) {
 			$args['posts_per_page'] = $request['per_page'];
 		}
@@ -314,33 +314,33 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 			if ( $request['sticky'] ) {
 				/*
-				 * As post__in will be used to only get sticky posts,
-				 * we have to support the case where post__in was already
-				 * specified.
+				 * Vì post__in sẽ được sử dụng để chỉ lấy bài viết ghim,
+				 * chúng ta phải hỗ trợ trường hợp post__in đã được
+				 * chỉ định trước đó.
 				 */
 				$args['post__in'] = $args['post__in'] ? array_intersect( $sticky_posts, $args['post__in'] ) : $sticky_posts;
 
 				/*
-				 * If we intersected, but there are no post IDs in common,
-				 * WP_Query won't return "no posts" for post__in = array()
-				 * so we have to fake it a bit.
+				 * Nếu chúng ta đã giao nhau, nhưng không có ID bài viết chung nào,
+				 * WP_Query sẽ không trả về "không có bài viết" cho post__in = array()
+				 * vì vậy chúng ta phải giả lập điều đó.
 				 */
 				if ( ! $args['post__in'] ) {
 					$args['post__in'] = array( 0 );
 				}
 			} elseif ( $sticky_posts ) {
 				/*
-				 * As post___not_in will be used to only get posts that
-				 * are not sticky, we have to support the case where post__not_in
-				 * was already specified.
+				 * Vì post___not_in sẽ được sử dụng để chỉ lấy bài viết
+				 * không ghim, chúng ta phải hỗ trợ trường hợp post__not_in
+				 * đã được chỉ định trước đó.
 				 */
 				$args['post__not_in'] = array_merge( $args['post__not_in'], $sticky_posts );
 			}
 		}
 
 		/*
-		 * Honor the original REST API `post__in` behavior. Don't prepend sticky posts
-		 * when `post__in` has been specified.
+		 * Tôn trọng hành vi `post__in` gốc của REST API. Không thêm bài viết ghim
+		 * vào đầu khi `post__in` đã được chỉ định.
 		 */
 		if ( ! empty( $args['post__in'] ) ) {
 			unset( $args['ignore_sticky_posts'] );
@@ -358,16 +358,16 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		if ( isset( $registered['format'], $request['format'] ) ) {
 			$formats = $request['format'];
 			/*
-			 * The relation needs to be set to `OR` since the request can contain
-			 * two separate conditions. The user may be querying for items that have
-			 * either the `standard` format or a specific format.
+			 * Quan hệ cần được đặt thành `OR` vì yêu cầu có thể chứa
+			 * hai điều kiện riêng biệt. Người dùng có thể đang truy vấn các mục có
+			 * định dạng `standard` hoặc một định dạng cụ thể.
 			 */
 			$formats_query = array( 'relation' => 'OR' );
 
 			/*
-			 * The default post format, `standard`, is not stored in the database.
-			 * If `standard` is part of the request, the query needs to exclude all post items that
-			 * have a format assigned.
+			 * Định dạng bài viết mặc định, `standard`, không được lưu trong cơ sở dữ liệu.
+			 * Nếu `standard` là một phần của yêu cầu, truy vấn cần loại trừ tất cả các mục bài viết
+			 * đã được gán định dạng.
 			 */
 			if ( in_array( 'standard', $formats, true ) ) {
 				$formats_query[] = array(
@@ -375,13 +375,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 					'field'    => 'slug',
 					'operator' => 'NOT EXISTS',
 				);
-				// Remove the `standard` format, since it cannot be queried.
+				// Xóa định dạng `standard`, vì nó không thể truy vấn được.
 				unset( $formats[ array_search( 'standard', $formats, true ) ] );
 			}
 
-			// Add any remaining formats to the formats query.
+			// Thêm các định dạng còn lại vào truy vấn định dạng.
 			if ( ! empty( $formats ) ) {
-				// Add the `post-format-` prefix.
+				// Thêm tiền tố `post-format-`.
 				$terms = array_map(
 					static function ( $format ) {
 						return "post-format-$format";
@@ -397,7 +397,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				);
 			}
 
-			// Enable filtering by both post formats and other taxonomies by combining them with `AND`.
+			// Cho phép lọc theo cả định dạng bài viết và các taxonomy khác bằng cách kết hợp chúng với `AND`.
 			if ( isset( $args['tax_query'] ) ) {
 				$args['tax_query'][] = array(
 					'relation' => 'AND',
@@ -408,38 +408,38 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Force the post_type argument, since it's not a user input variable.
+		// Buộc đối số post_type, vì nó không phải là biến đầu vào của người dùng.
 		$args['post_type'] = $this->post_type;
 
 		$is_head_request = $request->is_method( 'HEAD' );
 		if ( $is_head_request ) {
-			// Force the 'fields' argument. For HEAD requests, only post IDs are required to calculate pagination.
+			// Buộc đối số 'fields'. Đối với yêu cầu HEAD, chỉ cần ID bài viết để tính toán phân trang.
 			$args['fields'] = 'ids';
-			// Disable priming post meta for HEAD requests to improve performance.
+			// Tắt nạp trước meta bài viết cho yêu cầu HEAD để cải thiện hiệu năng.
 			$args['update_post_term_cache'] = false;
 			$args['update_post_meta_cache'] = false;
 		}
 
 		/**
-		 * Filters WP_Query arguments when querying posts via the REST API.
+		 * Lọc các đối số WP_Query khi truy vấn bài viết qua REST API.
 		 *
-		 * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+		 * Phần động của tên hook, `$this->post_type`, tham chiếu đến slug loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `rest_post_query`
 		 *  - `rest_page_query`
 		 *  - `rest_attachment_query`
 		 *
-		 * Enables adding extra arguments or setting defaults for a post collection request.
+		 * Cho phép thêm các đối số bổ sung hoặc thiết lập giá trị mặc định cho yêu cầu tập hợp bài viết.
 		 *
 		 * @since 4.7.0
-		 * @since 5.7.0 Moved after the `tax_query` query arg is generated.
+		 * @since 5.7.0 Được chuyển sau khi đối số truy vấn `tax_query` được tạo.
 		 *
 		 * @link https://developer.wordpress.org/reference/classes/wp_query/
 		 *
-		 * @param array           $args    Array of arguments for WP_Query.
-		 * @param WP_REST_Request $request The REST API request.
+		 * @param array           $args    Mảng các đối số cho WP_Query.
+		 * @param WP_REST_Request $request Yêu cầu REST API.
 		 */
 		$args       = apply_filters( "rest_{$this->post_type}_query", $args, $request );
 		$query_args = $this->prepare_items_query( $args, $request );
@@ -447,7 +447,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$posts_query  = new WP_Query();
 		$query_result = $posts_query->query( $query_args );
 
-		// Allow access to all password protected posts if the context is edit.
+		// Cho phép truy cập tất cả bài viết được bảo vệ bằng mật khẩu nếu ngữ cảnh là edit.
 		if ( 'edit' === $request['context'] ) {
 			add_filter( 'post_password_required', array( $this, 'check_password_required' ), 10, 2 );
 		}
@@ -478,7 +478,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Reset filter.
+		// Đặt lại bộ lọc.
 		if ( 'edit' === $request['context'] ) {
 			remove_filter( 'post_password_required', array( $this, 'check_password_required' ) );
 		}
@@ -487,7 +487,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$total_posts = $posts_query->found_posts;
 
 		if ( $total_posts < 1 && $page > 1 ) {
-			// Out-of-bounds, run the query again without LIMIT for total count.
+			// Vượt quá giới hạn, chạy lại truy vấn không có LIMIT để đếm tổng số.
 			unset( $query_args['paged'] );
 
 			$count_query = new WP_Query();
@@ -535,12 +535,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Gets the post, if the ID is valid.
+	 * Lấy bài viết, nếu ID hợp lệ.
 	 *
 	 * @since 4.7.2
 	 *
-	 * @param int $id Supplied ID.
-	 * @return WP_Post|WP_Error Post object if ID is valid, WP_Error otherwise.
+	 * @param int $id ID được cung cấp.
+	 * @return WP_Post|WP_Error Đối tượng bài viết nếu ID hợp lệ, WP_Error nếu không.
 	 */
 	protected function get_post( $id ) {
 		$error = new WP_Error(
@@ -562,12 +562,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to read a post.
+	 * Kiểm tra xem yêu cầu đã cho có quyền đọc một bài viết hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object or false otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return bool|WP_Error True nếu yêu cầu có quyền đọc mục, đối tượng WP_Error hoặc false nếu không.
 	 */
 	public function get_item_permissions_check( $request ) {
 		$post = $this->get_post( $request['id'] );
@@ -584,7 +584,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		if ( $post && ! empty( $request->get_query_params()['password'] ) ) {
-			// Check post password, and return error if invalid.
+			// Kiểm tra mật khẩu bài viết, và trả về lỗi nếu không hợp lệ.
 			if ( ! hash_equals( $post->post_password, $request->get_query_params()['password'] ) ) {
 				return new WP_Error(
 					'rest_post_incorrect_password',
@@ -594,7 +594,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Allow access to all password protected posts if the context is edit.
+		// Cho phép truy cập tất cả bài viết được bảo vệ bằng mật khẩu nếu ngữ cảnh là edit.
 		if ( 'edit' === $request['context'] ) {
 			add_filter( 'post_password_required', array( $this, 'check_password_required' ), 10, 2 );
 		}
@@ -607,26 +607,26 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if the user can access password-protected content.
+	 * Kiểm tra xem người dùng có thể truy cập nội dung được bảo vệ bằng mật khẩu hay không.
 	 *
-	 * This method determines whether we need to override the regular password
-	 * check in core with a filter.
+	 * Phương thức này xác định xem chúng ta có cần ghi đè kiểm tra mật khẩu
+	 * thông thường trong core bằng bộ lọc hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_Post         $post    Post to check against.
-	 * @param WP_REST_Request $request Request data to check.
-	 * @return bool True if the user can access password-protected content, otherwise false.
+	 * @param WP_Post         $post    Bài viết cần kiểm tra.
+	 * @param WP_REST_Request $request Dữ liệu yêu cầu cần kiểm tra.
+	 * @return bool True nếu người dùng có thể truy cập nội dung được bảo vệ bằng mật khẩu, ngược lại false.
 	 */
 	public function can_access_password_content( $post, $request ) {
 		if ( empty( $post->post_password ) ) {
-			// No filter required.
+			// Không cần bộ lọc.
 			return false;
 		}
 
 		/*
-		 * Users always gets access to password protected content in the edit
-		 * context if they have the `edit_post` meta capability.
+		 * Người dùng luôn có quyền truy cập nội dung được bảo vệ bằng mật khẩu trong ngữ cảnh
+		 * edit nếu họ có meta capability `edit_post`.
 		 */
 		if (
 			'edit' === $request['context'] &&
@@ -635,22 +635,22 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			return true;
 		}
 
-		// No password, no auth.
+		// Không có mật khẩu, không cần xác thực.
 		if ( empty( $request['password'] ) ) {
 			return false;
 		}
 
-		// Double-check the request password.
+		// Kiểm tra lại mật khẩu yêu cầu.
 		return hash_equals( $post->post_password, $request['password'] );
 	}
 
 	/**
-	 * Retrieves a single post.
+	 * Lấy một bài viết đơn lẻ.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function get_item( $request ) {
 		$post = $this->get_post( $request['id'] );
@@ -669,12 +669,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to create a post.
+	 * Kiểm tra xem yêu cầu đã cho có quyền tạo bài viết hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to create items, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền tạo mục, đối tượng WP_Error nếu không.
 	 */
 	public function create_item_permissions_check( $request ) {
 		if ( ! empty( $request['id'] ) ) {
@@ -723,12 +723,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Creates a single post.
+	 * Tạo một bài viết đơn lẻ.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function create_item( $request ) {
 		if ( ! empty( $request['id'] ) ) {
@@ -752,9 +752,9 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			&& in_array( $prepared_post->post_status, array( 'draft', 'pending' ), true )
 		) {
 			/*
-			 * `wp_unique_post_slug()` returns the same slug for 'draft' or 'pending' posts.
+			 * `wp_unique_post_slug()` trả về cùng một slug cho bài viết 'draft' hoặc 'pending'.
 			 *
-			 * To ensure that a unique slug is generated, pass the post data with the 'publish' status.
+			 * Để đảm bảo tạo ra slug duy nhất, truyền dữ liệu bài viết với trạng thái 'publish'.
 			 */
 			$prepared_post->post_name = wp_unique_post_slug(
 				$prepared_post->post_name,
@@ -781,11 +781,11 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$post = get_post( $post_id );
 
 		/**
-		 * Fires after a single post is created or updated via the REST API.
+		 * Kích hoạt sau khi một bài viết đơn lẻ được tạo hoặc cập nhật qua REST API.
 		 *
-		 * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+		 * Phần động của tên hook, `$this->post_type`, tham chiếu đến slug loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `rest_insert_post`
 		 *  - `rest_insert_page`
@@ -793,9 +793,9 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_Post         $post     Inserted or updated post object.
-		 * @param WP_REST_Request $request  Request object.
-		 * @param bool            $creating True when creating a post, false when updating.
+		 * @param WP_Post         $post     Đối tượng bài viết đã chèn hoặc cập nhật.
+		 * @param WP_REST_Request $request  Đối tượng yêu cầu.
+		 * @param bool            $creating True khi tạo bài viết, false khi cập nhật.
 		 */
 		do_action( "rest_insert_{$this->post_type}", $post, $request, true );
 
@@ -845,11 +845,11 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		$request->set_param( 'context', 'edit' );
 
 		/**
-		 * Fires after a single post is completely created or updated via the REST API.
+		 * Kích hoạt sau khi một bài viết đơn lẻ được tạo hoặc cập nhật hoàn toàn qua REST API.
 		 *
-		 * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+		 * Phần động của tên hook, `$this->post_type`, tham chiếu đến slug loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `rest_after_insert_post`
 		 *  - `rest_after_insert_page`
@@ -857,9 +857,9 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param WP_Post         $post     Inserted or updated post object.
-		 * @param WP_REST_Request $request  Request object.
-		 * @param bool            $creating True when creating a post, false when updating.
+		 * @param WP_Post         $post     Đối tượng bài viết đã chèn hoặc cập nhật.
+		 * @param WP_REST_Request $request  Đối tượng yêu cầu.
+		 * @param bool            $creating True khi tạo bài viết, false khi cập nhật.
 		 */
 		do_action( "rest_after_insert_{$this->post_type}", $post, $request, true );
 
@@ -875,12 +875,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to update a post.
+	 * Kiểm tra xem yêu cầu đã cho có quyền cập nhật bài viết hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to update the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền cập nhật mục, đối tượng WP_Error nếu không.
 	 */
 	public function update_item_permissions_check( $request ) {
 		$post = $this->get_post( $request['id'] );
@@ -926,12 +926,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Updates a single post.
+	 * Cập nhật một bài viết đơn lẻ.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function update_item( $request ) {
 		$valid_check = $this->get_post( $request['id'] );
@@ -953,9 +953,9 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		/*
-		 * `wp_unique_post_slug()` returns the same slug for 'draft' or 'pending' posts.
+		 * `wp_unique_post_slug()` trả về cùng một slug cho bài viết 'draft' hoặc 'pending'.
 		 *
-		 * To ensure that a unique slug is generated, pass the post data with the 'publish' status.
+		 * Để đảm bảo tạo ra slug duy nhất, truyền dữ liệu bài viết với trạng thái 'publish'.
 		 */
 		if ( ! empty( $post->post_name ) && in_array( $post_status, array( 'draft', 'pending' ), true ) ) {
 			$post_parent     = ! empty( $post->post_parent ) ? $post->post_parent : 0;
@@ -968,7 +968,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			);
 		}
 
-		// Convert the post object to an array, otherwise wp_update_post() will expect non-escaped input.
+		// Chuyển đổi đối tượng bài viết thành mảng, nếu không wp_update_post() sẽ yêu cầu dữ liệu đầu vào chưa được escape.
 		$post_id = wp_update_post( wp_slash( (array) $post ), true, false );
 
 		if ( is_wp_error( $post_id ) ) {
@@ -1030,7 +1030,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		$request->set_param( 'context', 'edit' );
 
-		// Filter is fired in WP_REST_Attachments_Controller subclass.
+		// Bộ lọc được kích hoạt trong lớp con WP_REST_Attachments_Controller.
 		if ( 'attachment' === $this->post_type ) {
 			$response = $this->prepare_item_for_response( $post, $request );
 			return rest_ensure_response( $response );
@@ -1047,12 +1047,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to delete a post.
+	 * Kiểm tra xem yêu cầu đã cho có quyền xóa bài viết hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has access to delete the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền xóa mục, đối tượng WP_Error nếu không.
 	 */
 	public function delete_item_permissions_check( $request ) {
 		$post = $this->get_post( $request['id'] );
@@ -1072,12 +1072,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Deletes a single post.
+	 * Xóa một bài viết đơn lẻ.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @param WP_REST_Request $request Chi tiết đầy đủ về yêu cầu.
+	 * @return WP_REST_Response|WP_Error Đối tượng phản hồi khi thành công, hoặc đối tượng WP_Error khi thất bại.
 	 */
 	public function delete_item( $request ) {
 		$post = $this->get_post( $request['id'] );
@@ -1095,22 +1095,22 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		/**
-		 * Filters whether a post is trashable.
+		 * Lọc xem bài viết có thể cho vào thùng rác hay không.
 		 *
-		 * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+		 * Phần động của tên hook, `$this->post_type`, tham chiếu đến slug loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `rest_post_trashable`
 		 *  - `rest_page_trashable`
 		 *  - `rest_attachment_trashable`
 		 *
-		 * Pass false to disable Trash support for the post.
+		 * Trả về false để tắt hỗ trợ Thùng rác cho bài viết.
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param bool    $supports_trash Whether the post type support trashing.
-		 * @param WP_Post $post           The Post object being considered for trashing support.
+		 * @param bool    $supports_trash Liệu loại bài viết có hỗ trợ cho vào thùng rác hay không.
+		 * @param WP_Post $post           Đối tượng Bài viết đang được xem xét hỗ trợ thùng rác.
 		 */
 		$supports_trash = apply_filters( "rest_{$this->post_type}_trashable", $supports_trash, $post );
 
@@ -1124,7 +1124,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		$request->set_param( 'context', 'edit' );
 
-		// If we're forcing, then delete permanently.
+		// Nếu chúng ta đang buộc xóa, thì xóa vĩnh viễn.
 		if ( $force ) {
 			$previous = $this->prepare_item_for_response( $post, $request );
 			$result   = wp_delete_post( $id, true );
@@ -1136,7 +1136,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				)
 			);
 		} else {
-			// If we don't support trashing for this type, error out.
+			// Nếu chúng ta không hỗ trợ thùng rác cho loại này, trả về lỗi.
 			if ( ! $supports_trash ) {
 				return new WP_Error(
 					'rest_trash_not_supported',
@@ -1146,7 +1146,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 				);
 			}
 
-			// Otherwise, only trash if we haven't already.
+			// Nếu không, chỉ cho vào thùng rác nếu chưa làm trước đó.
 			if ( 'trash' === $post->post_status ) {
 				return new WP_Error(
 					'rest_already_trashed',
@@ -1156,8 +1156,8 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 
 			/*
-			 * (Note that internally this falls through to `wp_delete_post()`
-			 * if the Trash is disabled.)
+			 * (Lưu ý rằng nội bộ sẽ chuyển sang `wp_delete_post()`
+			 * nếu Thùng rác bị tắt.)
 			 */
 			$result   = wp_trash_post( $id );
 			$post     = get_post( $id );
@@ -1173,11 +1173,11 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		/**
-		 * Fires immediately after a single post is deleted or trashed via the REST API.
+		 * Kích hoạt ngay sau khi một bài viết đơn lẻ bị xóa hoặc cho vào thùng rác qua REST API.
 		 *
-		 * They dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+		 * Phần động của tên hook, `$this->post_type`, tham chiếu đến slug loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `rest_delete_post`
 		 *  - `rest_delete_page`
@@ -1185,9 +1185,9 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param WP_Post          $post     The deleted or trashed post.
-		 * @param WP_REST_Response $response The response data.
-		 * @param WP_REST_Request  $request  The request sent to the API.
+		 * @param WP_Post          $post     Bài viết đã bị xóa hoặc cho vào thùng rác.
+		 * @param WP_REST_Response $response Dữ liệu phản hồi.
+		 * @param WP_REST_Request  $request  Yêu cầu được gửi đến API.
 		 */
 		do_action( "rest_delete_{$this->post_type}", $post, $response, $request );
 
@@ -1195,27 +1195,27 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Determines the allowed query_vars for a get_items() response and prepares
-	 * them for WP_Query.
+	 * Xác định các query_vars được phép cho phản hồi get_items() và chuẩn bị
+	 * chúng cho WP_Query.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array           $prepared_args Optional. Prepared WP_Query arguments. Default empty array.
-	 * @param WP_REST_Request $request       Optional. Full details about the request.
-	 * @return array Items query arguments.
+	 * @param array           $prepared_args Tùy chọn. Các đối số WP_Query đã chuẩn bị. Mặc định mảng rỗng.
+	 * @param WP_REST_Request $request       Tùy chọn. Chi tiết đầy đủ về yêu cầu.
+	 * @return array Các đối số truy vấn mục.
 	 */
 	protected function prepare_items_query( $prepared_args = array(), $request = null ) {
 		$query_args = array();
 
 		foreach ( $prepared_args as $key => $value ) {
 			/**
-			 * Filters the query_vars used in get_items() for the constructed query.
+			 * Lọc các query_vars được sử dụng trong get_items() cho truy vấn đã xây dựng.
 			 *
-			 * The dynamic portion of the hook name, `$key`, refers to the query_var key.
+			 * Phần động của tên hook, `$key`, tham chiếu đến khóa query_var.
 			 *
 			 * @since 4.7.0
 			 *
-			 * @param string $value The query_var value.
+			 * @param string $value Giá trị query_var.
 			 */
 			$query_args[ $key ] = apply_filters( "rest_query_var-{$key}", $value ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
 		}
@@ -1224,7 +1224,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			$query_args['ignore_sticky_posts'] = true;
 		}
 
-		// Map to proper WP_Query orderby param.
+		// Ánh xạ sang tham số orderby đúng của WP_Query.
 		if ( isset( $query_args['orderby'] ) && isset( $request['orderby'] ) ) {
 			$orderby_mappings = array(
 				'id'            => 'ID',
@@ -1242,43 +1242,43 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks the post_date_gmt or modified_gmt and prepare any post or
-	 * modified date for single post output.
+	 * Kiểm tra post_date_gmt hoặc modified_gmt và chuẩn bị bất kỳ ngày đăng hoặc
+	 * ngày chỉnh sửa nào cho đầu ra bài viết đơn lẻ.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string      $date_gmt GMT publication time.
-	 * @param string|null $date     Optional. Local publication time. Default null.
-	 * @return string|null ISO8601/RFC3339 formatted datetime.
+	 * @param string      $date_gmt Thời gian xuất bản theo GMT.
+	 * @param string|null $date     Tùy chọn. Thời gian xuất bản theo giờ địa phương. Mặc định null.
+	 * @return string|null Ngày giờ được định dạng ISO8601/RFC3339.
 	 */
 	protected function prepare_date_response( $date_gmt, $date = null ) {
-		// Use the date if passed.
+		// Sử dụng ngày nếu được truyền vào.
 		if ( isset( $date ) ) {
 			return mysql_to_rfc3339( $date );
 		}
 
-		// Return null if $date_gmt is empty/zeros.
+		// Trả về null nếu $date_gmt rỗng hoặc toàn số không.
 		if ( '0000-00-00 00:00:00' === $date_gmt ) {
 			return null;
 		}
 
-		// Return the formatted datetime.
+		// Trả về ngày giờ đã được định dạng.
 		return mysql_to_rfc3339( $date_gmt );
 	}
 
 	/**
-	 * Prepares a single post for create or update.
+	 * Chuẩn bị một bài viết đơn lẻ để tạo hoặc cập nhật.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return stdClass|WP_Error Post object or WP_Error.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @return stdClass|WP_Error Đối tượng bài viết hoặc WP_Error.
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$prepared_post  = new stdClass();
 		$current_status = '';
 
-		// Post ID.
+		// ID bài viết.
 		if ( isset( $request['id'] ) ) {
 			$existing_post = $this->get_post( $request['id'] );
 			if ( is_wp_error( $existing_post ) ) {
@@ -1291,7 +1291,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 
 		$schema = $this->get_item_schema();
 
-		// Post title.
+		// Tiêu đề bài viết.
 		if ( ! empty( $schema['properties']['title'] ) && isset( $request['title'] ) ) {
 			if ( is_string( $request['title'] ) ) {
 				$prepared_post->post_title = $request['title'];
@@ -1300,7 +1300,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Post content.
+		// Nội dung bài viết.
 		if ( ! empty( $schema['properties']['content'] ) && isset( $request['content'] ) ) {
 			if ( is_string( $request['content'] ) ) {
 				$prepared_post->post_content = $request['content'];
@@ -1309,7 +1309,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Post excerpt.
+		// Tóm tắt bài viết.
 		if ( ! empty( $schema['properties']['excerpt'] ) && isset( $request['excerpt'] ) ) {
 			if ( is_string( $request['excerpt'] ) ) {
 				$prepared_post->post_excerpt = $request['excerpt'];
@@ -1318,18 +1318,18 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Post type.
+		// Loại bài viết.
 		if ( empty( $request['id'] ) ) {
-			// Creating new post, use default type for the controller.
+			// Tạo bài viết mới, sử dụng loại mặc định cho controller.
 			$prepared_post->post_type = $this->post_type;
 		} else {
-			// Updating a post, use previous type.
+			// Cập nhật bài viết, sử dụng loại trước đó.
 			$prepared_post->post_type = get_post_type( $request['id'] );
 		}
 
 		$post_type = get_post_type_object( $prepared_post->post_type );
 
-		// Post status.
+		// Trạng thái bài viết.
 		if (
 			! empty( $schema['properties']['status'] ) &&
 			isset( $request['status'] ) &&
@@ -1344,7 +1344,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			$prepared_post->post_status = $status;
 		}
 
-		// Post date.
+		// Ngày đăng bài viết.
 		if ( ! empty( $schema['properties']['date'] ) && ! empty( $request['date'] ) ) {
 			$current_date = isset( $prepared_post->ID ) ? get_post( $prepared_post->ID )->post_date : false;
 			$date_data    = rest_get_date_with_gmt( $request['date'] );
@@ -1364,8 +1364,8 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		}
 
 		/*
-		 * Sending a null date or date_gmt value resets date and date_gmt to their
-		 * default values (`0000-00-00 00:00:00`).
+		 * Gửi giá trị null cho date hoặc date_gmt sẽ đặt lại date và date_gmt về
+		 * giá trị mặc định (`0000-00-00 00:00:00`).
 		 */
 		if (
 			( ! empty( $schema['properties']['date_gmt'] ) && $request->has_param( 'date_gmt' ) && null === $request['date_gmt'] ) ||
@@ -1375,12 +1375,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			$prepared_post->post_date     = null;
 		}
 
-		// Post slug.
+		// Slug bài viết.
 		if ( ! empty( $schema['properties']['slug'] ) && isset( $request['slug'] ) ) {
 			$prepared_post->post_name = $request['slug'];
 		}
 
-		// Author.
+		// Tác giả.
 		if ( ! empty( $schema['properties']['author'] ) && ! empty( $request['author'] ) ) {
 			$post_author = (int) $request['author'];
 
@@ -1399,7 +1399,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			$prepared_post->post_author = $post_author;
 		}
 
-		// Post password.
+		// Mật khẩu bài viết.
 		if ( ! empty( $schema['properties']['password'] ) && isset( $request['password'] ) ) {
 			$prepared_post->post_password = $request['password'];
 
@@ -1432,7 +1432,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Parent.
+		// Bài viết cha.
 		if ( ! empty( $schema['properties']['parent'] ) && isset( $request['parent'] ) ) {
 			if ( 0 === (int) $request['parent'] ) {
 				$prepared_post->post_parent = 0;
@@ -1451,32 +1451,32 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 		}
 
-		// Menu order.
+		// Thứ tự menu.
 		if ( ! empty( $schema['properties']['menu_order'] ) && isset( $request['menu_order'] ) ) {
 			$prepared_post->menu_order = (int) $request['menu_order'];
 		}
 
-		// Comment status.
+		// Trạng thái bình luận.
 		if ( ! empty( $schema['properties']['comment_status'] ) && ! empty( $request['comment_status'] ) ) {
 			$prepared_post->comment_status = $request['comment_status'];
 		}
 
-		// Ping status.
+		// Trạng thái ping.
 		if ( ! empty( $schema['properties']['ping_status'] ) && ! empty( $request['ping_status'] ) ) {
 			$prepared_post->ping_status = $request['ping_status'];
 		}
 
 		if ( ! empty( $schema['properties']['template'] ) ) {
-			// Force template to null so that it can be handled exclusively by the REST controller.
+			// Buộc template về null để nó có thể được xử lý riêng bởi REST controller.
 			$prepared_post->page_template = null;
 		}
 
 		/**
-		 * Filters a post before it is inserted via the REST API.
+		 * Lọc bài viết trước khi nó được chèn qua REST API.
 		 *
-		 * The dynamic portion of the hook name, `$this->post_type`, refers to the post type slug.
+		 * Phần động của tên hook, `$this->post_type`, tham chiếu đến slug loại bài viết.
 		 *
-		 * Possible hook names include:
+		 * Các tên hook có thể bao gồm:
 		 *
 		 *  - `rest_pre_insert_post`
 		 *  - `rest_pre_insert_page`
@@ -1484,24 +1484,24 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 		 *
 		 * @since 4.7.0
 		 *
-		 * @param stdClass        $prepared_post An object representing a single post prepared
-		 *                                       for inserting or updating the database.
-		 * @param WP_REST_Request $request       Request object.
+		 * @param stdClass        $prepared_post Đối tượng đại diện cho một bài viết đơn lẻ đã chuẩn bị
+		 *                                       để chèn hoặc cập nhật cơ sở dữ liệu.
+		 * @param WP_REST_Request $request       Đối tượng yêu cầu.
 		 */
 		return apply_filters( "rest_pre_insert_{$this->post_type}", $prepared_post, $request );
 	}
 
 	/**
-	 * Checks whether the status is valid for the given post.
+	 * Kiểm tra xem trạng thái có hợp lệ cho bài viết đã cho hay không.
 	 *
-	 * Allows for sending an update request with the current status, even if that status would not be acceptable.
+	 * Cho phép gửi yêu cầu cập nhật với trạng thái hiện tại, ngay cả khi trạng thái đó thường không được chấp nhận.
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param string          $status  The provided status.
-	 * @param WP_REST_Request $request The request object.
-	 * @param string          $param   The parameter name.
-	 * @return true|WP_Error True if the status is valid, or WP_Error if not.
+	 * @param string          $status  Trạng thái được cung cấp.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @param string          $param   Tên tham số.
+	 * @return true|WP_Error True nếu trạng thái hợp lệ, hoặc WP_Error nếu không.
 	 */
 	public function check_status( $status, $request, $param ) {
 		if ( $request['id'] ) {
@@ -1518,13 +1518,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Determines validity and normalizes the given status parameter.
+	 * Xác định tính hợp lệ và chuẩn hóa tham số trạng thái đã cho.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param string       $post_status Post status.
-	 * @param WP_Post_Type $post_type   Post type.
-	 * @return string|WP_Error Post status or WP_Error if lacking the proper permission.
+	 * @param string       $post_status Trạng thái bài viết.
+	 * @param WP_Post_Type $post_type   Loại bài viết.
+	 * @return string|WP_Error Trạng thái bài viết hoặc WP_Error nếu thiếu quyền phù hợp.
 	 */
 	protected function handle_status_param( $post_status, $post_type ) {
 
@@ -1562,13 +1562,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Determines the featured media based on a request param.
+	 * Xác định media nổi bật dựa trên tham số yêu cầu.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param int $featured_media Featured Media ID.
-	 * @param int $post_id        Post ID.
-	 * @return bool|WP_Error Whether the post thumbnail was successfully deleted, otherwise WP_Error.
+	 * @param int $featured_media ID media nổi bật.
+	 * @param int $post_id        ID bài viết.
+	 * @return bool|WP_Error Liệu ảnh đại diện bài viết có được xóa thành công hay không, nếu không là WP_Error.
 	 */
 	protected function handle_featured_media( $featured_media, $post_id ) {
 
@@ -1590,13 +1590,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks whether the template is valid for the given post.
+	 * Kiểm tra xem template có hợp lệ cho bài viết đã cho hay không.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param string          $template Page template filename.
-	 * @param WP_REST_Request $request  Request.
-	 * @return true|WP_Error True if template is still valid or if the same as existing value, or a WP_Error if template not supported.
+	 * @param string          $template Tên tệp template trang.
+	 * @param WP_REST_Request $request  Yêu cầu.
+	 * @return true|WP_Error True nếu template vẫn hợp lệ hoặc giống giá trị hiện tại, hoặc WP_Error nếu template không được hỗ trợ.
 	 */
 	public function check_template( $template, $request ) {
 
@@ -1612,12 +1612,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			$current_template = '';
 		}
 
-		// Always allow for updating a post to the same template, even if that template is no longer supported.
+		// Luôn cho phép cập nhật bài viết với cùng template, ngay cả khi template đó không còn được hỗ trợ.
 		if ( $template === $current_template ) {
 			return true;
 		}
 
-		// If this is a create request, get_post() will return null and wp theme will fallback to the passed post type.
+		// Nếu đây là yêu cầu tạo mới, get_post() sẽ trả về null và giao diện wp sẽ dùng loại bài viết được truyền vào.
 		$allowed_templates = wp_get_theme()->get_page_templates( $post, $this->post_type );
 
 		if ( isset( $allowed_templates[ $template ] ) ) {
@@ -1632,14 +1632,14 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Sets the template for a post.
+	 * Đặt template cho bài viết.
 	 *
 	 * @since 4.7.0
-	 * @since 4.9.0 Added the `$validate` parameter.
+	 * @since 4.9.0 Thêm tham số `$validate`.
 	 *
-	 * @param string $template Page template filename.
-	 * @param int    $post_id  Post ID.
-	 * @param bool   $validate Whether to validate that the template selected is valid.
+	 * @param string $template Tên tệp template trang.
+	 * @param int    $post_id  ID bài viết.
+	 * @param bool   $validate Có kiểm tra tính hợp lệ của template được chọn hay không.
 	 */
 	public function handle_template( $template, $post_id, $validate = false ) {
 
@@ -1651,13 +1651,13 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Updates the post's terms from a REST request.
+	 * Cập nhật các term của bài viết từ yêu cầu REST.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param int             $post_id The post ID to update the terms form.
-	 * @param WP_REST_Request $request The request object with post and terms data.
-	 * @return null|WP_Error WP_Error on an error assigning any of the terms, otherwise null.
+	 * @param int             $post_id ID bài viết cần cập nhật form các term.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu với dữ liệu bài viết và term.
+	 * @return null|WP_Error WP_Error khi có lỗi gán bất kỳ term nào, ngược lại null.
 	 */
 	protected function handle_terms( $post_id, $request ) {
 		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
@@ -1680,12 +1680,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks whether current user can assign all terms sent with the current request.
+	 * Kiểm tra xem người dùng hiện tại có thể gán tất cả các term được gửi cùng yêu cầu hay không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_REST_Request $request The request object with post and terms data.
-	 * @return bool Whether the current user can assign the provided terms.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu với dữ liệu bài viết và term.
+	 * @return bool Liệu người dùng hiện tại có thể gán các term được cung cấp hay không.
 	 */
 	protected function check_assign_terms_permission( $request ) {
 		$taxonomies = wp_list_filter( get_object_taxonomies( $this->post_type, 'objects' ), array( 'show_in_rest' => true ) );
@@ -1697,7 +1697,7 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 			}
 
 			foreach ( (array) $request[ $base ] as $term_id ) {
-				// Invalid terms will be rejected later.
+				// Các term không hợp lệ sẽ bị từ chối sau.
 				if ( ! get_term( $term_id, $taxonomy->name ) ) {
 					continue;
 				}
@@ -1712,12 +1712,12 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given post type can be viewed or managed.
+	 * Kiểm tra xem loại bài viết đã cho có thể xem hoặc quản lý được không.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_Post_Type|string $post_type Post type name or object.
-	 * @return bool Whether the post type is allowed in REST.
+	 * @param WP_Post_Type|string $post_type Tên hoặc đối tượng loại bài viết.
+	 * @return bool Liệu loại bài viết có được phép trong REST hay không.
 	 */
 	protected function check_is_post_type_allowed( $post_type ) {
 		if ( ! is_object( $post_type ) ) {
@@ -1732,14 +1732,14 @@ class WP_REST_Posts_Controller extends WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a post can be read.
+	 * Kiểm tra xem bài viết có thể đọc được không.
 	 *
-	 * Correctly handles posts with the inherit status.
+	 * Xử lý chính xác các bài viết có trạng thái inherit.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param WP_Post $post Post object.
-	 * @return bool Whether the post can be read.
+	 * @param WP_Post $post Đối tượng bài viết.
+	 * @return bool Liệu bài viết có thể đọc được hay không.
 	 */
 	public function check_read_permission( $post ) {
 		$post_type = get_post_type_object( $post->post_type );

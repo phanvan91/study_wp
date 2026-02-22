@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API: WP_REST_Global_Styles_Controller class
+ * REST API: Lớp WP_REST_Global_Styles_Controller
  *
  * @package    WordPress
  * @subpackage REST_API
@@ -8,11 +8,11 @@
  */
 
 /**
- * Base Global Styles REST API Controller.
+ * Controller REST API cơ bản cho Global Styles.
  */
 class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	/**
-	 * Whether the controller supports batching.
+	 * Xác định controller có hỗ trợ xử lý hàng loạt hay không.
 	 *
 	 * @since 6.6.0
 	 * @var array
@@ -20,18 +20,18 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	protected $allow_batch = array( 'v1' => false );
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 6.6.0
 	 *
-	 * @param string $post_type Post type.
+	 * @param string $post_type Loại bài viết.
 	 */
 	public function __construct( $post_type = 'wp_global_styles' ) {
 		parent::__construct( $post_type );
 	}
 
 	/**
-	 * Registers the controllers routes.
+	 * Đăng ký các route cho controller.
 	 *
 	 * @since 5.9.0
 	 */
@@ -55,16 +55,16 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 			)
 		);
 
-		// List themes global styles.
+		// Liệt kê global styles của giao diện.
 		register_rest_route(
 			$this->namespace,
-			// The route.
+			// Route.
 			sprintf(
 				'/%s/themes/(?P<stylesheet>%s)',
 				$this->rest_base,
 				/*
-				 * Matches theme's directory: `/themes/<subdirectory>/<theme>/` or `/themes/<theme>/`.
-				 * Excludes invalid directory name characters: `/:<>*?"|`.
+				 * Khớp thư mục giao diện: `/themes/<thư_mục_con>/<giao_diện>/` hoặc `/themes/<giao_diện>/`.
+				 * Loại trừ các ký tự tên thư mục không hợp lệ: `/:<>*?"|`.
 				 */
 				'[^\/:<>\*\?"\|]+(?:\/[^\/:<>\*\?"\|]+)?'
 			),
@@ -85,7 +85,7 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 			)
 		);
 
-		// Lists/updates a single global style variation based on the given id.
+		// Liệt kê/cập nhật một biến thể global style dựa trên id cho trước.
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base . '/(?P<id>[\/\w-]+)',
@@ -115,26 +115,26 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Sanitize the global styles ID or stylesheet to decode endpoint.
-	 * For example, `wp/v2/global-styles/twentytwentytwo%200.4.0`
-	 * would be decoded to `twentytwentytwo 0.4.0`.
+	 * Làm sạch ID hoặc stylesheet của global styles để giải mã endpoint.
+	 * Ví dụ, `wp/v2/global-styles/twentytwentytwo%200.4.0`
+	 * sẽ được giải mã thành `twentytwentytwo 0.4.0`.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param string $id_or_stylesheet Global styles ID or stylesheet.
-	 * @return string Sanitized global styles ID or stylesheet.
+	 * @param string $id_or_stylesheet ID hoặc stylesheet của global styles.
+	 * @return string ID hoặc stylesheet đã được làm sạch.
 	 */
 	public function _sanitize_global_styles_callback( $id_or_stylesheet ) {
 		return urldecode( $id_or_stylesheet );
 	}
 
 	/**
-	 * Get the post, if the ID is valid.
+	 * Lấy bài viết nếu ID hợp lệ.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param int $id Supplied ID.
-	 * @return WP_Post|WP_Error Post object if ID is valid, WP_Error otherwise.
+	 * @param int $id ID được cung cấp.
+	 * @return WP_Post|WP_Error Đối tượng bài viết nếu ID hợp lệ, WP_Error nếu không.
 	 */
 	protected function get_post( $id ) {
 		$error = new WP_Error(
@@ -157,12 +157,12 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to read a single global style.
+	 * Kiểm tra xem yêu cầu có quyền đọc một global style hay không.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function get_item_permissions_check( $request ) {
 		$post = $this->get_post( $request['id'] );
@@ -190,24 +190,24 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Checks if a global style can be read.
+	 * Kiểm tra xem global style có thể được đọc hay không.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param WP_Post $post Post object.
-	 * @return bool Whether the post can be read.
+	 * @param WP_Post $post Đối tượng bài viết.
+	 * @return bool Bài viết có thể được đọc hay không.
 	 */
 	public function check_read_permission( $post ) {
 		return current_user_can( 'read_post', $post->ID );
 	}
 
 	/**
-	 * Checks if a given request has access to write a single global styles config.
+	 * Kiểm tra xem yêu cầu có quyền ghi một cấu hình global styles hay không.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has write access for the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền ghi, đối tượng WP_Error nếu không.
 	 */
 	public function update_item_permissions_check( $request ) {
 		$post = $this->get_post( $request['id'] );
@@ -227,14 +227,14 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Prepares a single global styles config for update.
+	 * Chuẩn bị một cấu hình global styles để cập nhật.
 	 *
 	 * @since 5.9.0
-	 * @since 6.2.0 Added validation of styles.css property.
-	 * @since 6.6.0 Added registration of block style variations from theme.json sources (theme.json, user theme.json, partials).
+	 * @since 6.2.0 Thêm xác thực thuộc tính styles.css.
+	 * @since 6.6.0 Thêm đăng ký biến thể kiểu block từ nguồn theme.json (theme.json, user theme.json, partials).
 	 *
-	 * @param WP_REST_Request $request Request object.
-	 * @return stdClass|WP_Error Prepared item on success. WP_Error on when the custom CSS is not valid.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @return stdClass|WP_Error Mục đã chuẩn bị khi thành công. WP_Error khi CSS tùy chỉnh không hợp lệ.
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$changes     = new stdClass();
@@ -265,7 +265,7 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 				$config['styles'] = $existing_config['styles'];
 			}
 
-			// Register theme-defined variations e.g. from block style variation partials under `/styles`.
+			// Đăng ký các biến thể do giao diện định nghĩa, ví dụ từ các partial biến thể kiểu block trong `/styles`.
 			$variations = WP_Theme_JSON_Resolver::get_style_variations( 'block' );
 			wp_register_block_style_variations_from_theme_json_partials( $variations );
 
@@ -279,7 +279,7 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 			$changes->post_content                 = wp_json_encode( $config );
 		}
 
-		// Post title.
+		// Tiêu đề bài viết.
 		if ( isset( $request['title'] ) ) {
 			if ( is_string( $request['title'] ) ) {
 				$changes->post_title = $request['title'];
@@ -292,14 +292,14 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Prepare a global styles config output for response.
+	 * Chuẩn bị đầu ra cấu hình global styles cho phản hồi.
 	 *
 	 * @since 5.9.0
-	 * @since 6.6.0 Added custom relative theme file URIs to `_links`.
+	 * @since 6.6.0 Thêm URI tệp giao diện tương đối tùy chỉnh vào `_links`.
 	 *
-	 * @param WP_Post         $post    Global Styles post object.
-	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response Response object.
+	 * @param WP_Post         $post    Đối tượng bài viết Global Styles.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @return WP_REST_Response Đối tượng phản hồi.
 	 */
 	public function prepare_item_for_response( $post, $request ) {
 		$raw_config                       = json_decode( $post->post_content, true );
@@ -311,7 +311,7 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 			$config     = $theme_json->get_raw_data();
 		}
 
-		// Base fields for every post.
+		// Các trường cơ bản cho mỗi bài viết.
 		$fields = $this->get_fields_for_response( $request );
 		$data   = array();
 
@@ -347,13 +347,13 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 		$data    = $this->add_additional_fields_to_object( $data, $request );
 		$data    = $this->filter_response_by_context( $data, $context );
 
-		// Wrap the data in a response object.
+		// Bọc dữ liệu trong đối tượng phản hồi.
 		$response = rest_ensure_response( $data );
 
 		if ( rest_is_field_included( '_links', $fields ) || rest_is_field_included( '_embedded', $fields ) ) {
 			$links = $this->prepare_links( $post->ID );
 
-			// Only return resolved URIs for get requests to user theme JSON.
+			// Chỉ trả về URI đã phân giải cho các yêu cầu get đến user theme JSON.
 			if ( $theme_json ) {
 				$resolved_theme_uris = WP_Theme_JSON_Resolver::get_resolved_theme_uris( $theme_json );
 				if ( ! empty( $resolved_theme_uris ) ) {
@@ -375,13 +375,13 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Prepares links for the request.
+	 * Chuẩn bị các liên kết cho yêu cầu.
 	 *
 	 * @since 5.9.0
-	 * @since 6.3.0 Adds revisions count and rest URL href to version-history.
+	 * @since 6.3.0 Thêm số lượng bản sửa đổi và href URL REST vào version-history.
 	 *
 	 * @param integer $id ID.
-	 * @return array Links for the given post.
+	 * @return array Các liên kết cho bài viết.
 	 */
 	protected function prepare_links( $id ) {
 		$base = sprintf( '%s/%s', $this->namespace, $this->rest_base );
@@ -409,15 +409,15 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Get the link relations available for the post and current user.
+	 * Lấy các quan hệ liên kết khả dụng cho bài viết và người dùng hiện tại.
 	 *
 	 * @since 5.9.0
-	 * @since 6.2.0 Added 'edit-css' action.
-	 * @since 6.6.0 Added $post and $request parameters.
+	 * @since 6.2.0 Thêm hành động 'edit-css'.
+	 * @since 6.6.0 Thêm tham số $post và $request.
 	 *
-	 * @param WP_Post         $post    Post object.
-	 * @param WP_REST_Request $request Request object.
-	 * @return array List of link relations.
+	 * @param WP_Post         $post    Đối tượng bài viết.
+	 * @param WP_REST_Request $request Đối tượng yêu cầu.
+	 * @return array Danh sách các quan hệ liên kết.
 	 */
 	protected function get_available_actions( $post, $request ) {
 		$rels = array();
@@ -435,22 +435,22 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Retrieves the query params for the global styles collection.
+	 * Lấy các tham số truy vấn cho bộ sưu tập global styles.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @return array Collection parameters.
+	 * @return array Các tham số bộ sưu tập.
 	 */
 	public function get_collection_params() {
 		return array();
 	}
 
 	/**
-	 * Retrieves the global styles type' schema, conforming to JSON Schema.
+	 * Lấy schema của loại global styles, tuân thủ JSON Schema.
 	 *
 	 * @since 5.9.0
 	 *
-	 * @return array Item schema data.
+	 * @return array Dữ liệu schema của mục.
 	 */
 	public function get_item_schema() {
 		if ( $this->schema ) {
@@ -506,18 +506,18 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to read a single theme global styles config.
+	 * Kiểm tra xem yêu cầu có quyền đọc cấu hình global styles của giao diện hay không.
 	 *
 	 * @since 5.9.0
-	 * @since 6.7.0 Allow users with edit post capabilities to view theme global styles.
+	 * @since 6.7.0 Cho phép người dùng có quyền chỉnh sửa bài viết xem global styles của giao diện.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access for the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function get_theme_item_permissions_check( $request ) {
 		/*
-		 * Verify if the current user has edit_posts capability.
-		 * This capability is required to view global styles.
+		 * Xác minh người dùng hiện tại có quyền edit_posts hay không.
+		 * Quyền này được yêu cầu để xem global styles.
 		 */
 		if ( current_user_can( 'edit_posts' ) ) {
 			return true;
@@ -530,7 +530,7 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 		}
 
 		/*
-		 * Verify if the current user has edit_theme_options capability.
+		 * Xác minh người dùng hiện tại có quyền edit_theme_options hay không.
 		 */
 		if ( current_user_can( 'edit_theme_options' ) ) {
 			return true;
@@ -546,17 +546,17 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Returns the given theme global styles config.
+	 * Trả về cấu hình global styles của giao diện.
 	 *
 	 * @since 5.9.0
-	 * @since 6.6.0 Added custom relative theme file URIs to `_links`.
+	 * @since 6.6.0 Thêm URI tệp giao diện tương đối tùy chỉnh vào `_links`.
 	 *
-	 * @param WP_REST_Request $request The request instance.
+	 * @param WP_REST_Request $request Thể hiện yêu cầu.
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_theme_item( $request ) {
 		if ( get_stylesheet() !== $request['stylesheet'] ) {
-			// This endpoint only supports the active theme for now.
+			// Endpoint này hiện chỉ hỗ trợ giao diện đang kích hoạt.
 			return new WP_Error(
 				'rest_theme_not_found',
 				__( 'Theme not found.' ),
@@ -600,32 +600,32 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to read a single theme global styles config.
+	 * Kiểm tra xem yêu cầu có quyền đọc cấu hình global styles của giao diện hay không.
 	 *
 	 * @since 6.0.0
-	 * @since 6.7.0 Allow users with edit post capabilities to view theme global styles.
+	 * @since 6.7.0 Cho phép người dùng có quyền chỉnh sửa bài viết xem global styles của giao diện.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 * @return true|WP_Error True if the request has read access for the item, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Thông tin chi tiết đầy đủ về yêu cầu.
+	 * @return true|WP_Error True nếu yêu cầu có quyền đọc, đối tượng WP_Error nếu không.
 	 */
 	public function get_theme_items_permissions_check( $request ) {
 		return $this->get_theme_item_permissions_check( $request );
 	}
 
 	/**
-	 * Returns the given theme global styles variations.
+	 * Trả về các biến thể global styles của giao diện.
 	 *
 	 * @since 6.0.0
-	 * @since 6.2.0 Returns parent theme variations, if they exist.
-	 * @since 6.6.0 Added custom relative theme file URIs to `_links` for each item.
+	 * @since 6.2.0 Trả về các biến thể của giao diện cha, nếu có.
+	 * @since 6.6.0 Thêm URI tệp giao diện tương đối tùy chỉnh vào `_links` cho mỗi mục.
 	 *
-	 * @param WP_REST_Request $request The request instance.
+	 * @param WP_REST_Request $request Thể hiện yêu cầu.
 	 *
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_theme_items( $request ) {
 		if ( get_stylesheet() !== $request['stylesheet'] ) {
-			// This endpoint only supports the active theme for now.
+			// Endpoint này hiện chỉ hỗ trợ giao diện đang kích hoạt.
 			return new WP_Error(
 				'rest_theme_not_found',
 				__( 'Theme not found.' ),
@@ -635,7 +635,7 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 
 		$response = array();
 
-		// Register theme-defined variations e.g. from block style variation partials under `/styles`.
+		// Đăng ký các biến thể do giao diện định nghĩa, ví dụ từ các partial biến thể kiểu block trong `/styles`.
 		$partials = WP_Theme_JSON_Resolver::get_style_variations( 'block' );
 		wp_register_block_style_variations_from_theme_json_partials( $partials );
 
@@ -658,15 +658,15 @@ class WP_REST_Global_Styles_Controller extends WP_REST_Posts_Controller {
 	}
 
 	/**
-	 * Validate style.css as valid CSS.
+	 * Xác thực style.css là CSS hợp lệ.
 	 *
-	 * Currently just checks for invalid markup.
+	 * Hiện tại chỉ kiểm tra markup không hợp lệ.
 	 *
 	 * @since 6.2.0
-	 * @since 6.4.0 Changed method visibility to protected.
+	 * @since 6.4.0 Thay đổi khả năng hiển thị phương thức thành protected.
 	 *
-	 * @param string $css CSS to validate.
-	 * @return true|WP_Error True if the input was validated, otherwise WP_Error.
+	 * @param string $css CSS cần xác thực.
+	 * @return true|WP_Error True nếu đầu vào hợp lệ, ngược lại WP_Error.
 	 */
 	protected function validate_custom_css( $css ) {
 		if ( preg_match( '#</?\w+#', $css ) ) {

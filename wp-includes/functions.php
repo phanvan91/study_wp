@@ -6241,22 +6241,22 @@ function validate_file( $file, $allowed_files = array() ) {
 		return 1;
 	}
 
-	// More than one occurrence of `../` is not allowed:
+	// Nhiều hơn một lần xuất hiện `../` không được phép:
 	if ( preg_match_all( '#\.\./#', $file, $matches, PREG_SET_ORDER ) && ( count( $matches ) > 1 ) ) {
 		return 1;
 	}
 
-	// `../` which does not occur at the end of the path is not allowed:
+	// `../` không xuất hiện ở cuối đường dẫn thì không được phép:
 	if ( str_contains( $file, '../' ) && '../' !== mb_substr( $file, -3, 3 ) ) {
 		return 1;
 	}
 
-	// Files not in the allowed file list are not allowed:
+	// Các file không nằm trong danh sách file được phép thì không được phép:
 	if ( ! empty( $allowed_files ) && ! in_array( $file, $allowed_files, true ) ) {
 		return 3;
 	}
 
-	// Absolute Windows drive paths are not allowed:
+	// Đường dẫn ổ đĩa Windows tuyệt đối không được phép:
 	if ( ':' === substr( $file, 1, 1 ) ) {
 		return 2;
 	}
@@ -6265,12 +6265,12 @@ function validate_file( $file, $allowed_files = array() ) {
 }
 
 /**
- * Determines whether to force SSL used for the Administration Screens.
+ * Xác định xem có bắt buộc sử dụng SSL cho Màn hình Quản trị hay không.
  *
  * @since 2.6.0
  *
- * @param string|bool|null $force Optional. Whether to force SSL in admin screens. Default null.
- * @return bool True if forced, false if not forced.
+ * @param string|bool|null $force Tùy chọn. Có bắt buộc SSL trong màn hình quản trị hay không. Mặc định null.
+ * @return bool True nếu bắt buộc, false nếu không bắt buộc.
  */
 function force_ssl_admin( $force = null ) {
 	static $forced = false;
@@ -6285,14 +6285,14 @@ function force_ssl_admin( $force = null ) {
 }
 
 /**
- * Guesses the URL for the site.
+ * Đoán URL cho trang web.
  *
- * Will remove wp-admin links to retrieve only return URLs not in the wp-admin
- * directory.
+ * Sẽ xóa các liên kết wp-admin để chỉ trả về các URL không nằm trong
+ * thư mục wp-admin.
  *
  * @since 2.6.0
  *
- * @return string The guessed URL.
+ * @return string URL đã đoán.
  */
 function wp_guess_url() {
 	if ( defined( 'WP_SITEURL' ) && '' !== WP_SITEURL ) {
@@ -6301,25 +6301,25 @@ function wp_guess_url() {
 		$abspath_fix         = str_replace( '\\', '/', ABSPATH );
 		$script_filename_dir = dirname( $_SERVER['SCRIPT_FILENAME'] );
 
-		// The request is for the admin.
+		// Yêu cầu dành cho trang quản trị.
 		if ( str_contains( $_SERVER['REQUEST_URI'], 'wp-admin' ) || str_contains( $_SERVER['REQUEST_URI'], 'wp-login.php' ) ) {
 			$path = preg_replace( '#/(wp-admin/?.*|wp-login\.php.*)#i', '', $_SERVER['REQUEST_URI'] );
 
-			// The request is for a file in ABSPATH.
+			// Yêu cầu dành cho một file trong ABSPATH.
 		} elseif ( $script_filename_dir . '/' === $abspath_fix ) {
-			// Strip off any file/query params in the path.
+			// Loại bỏ file/tham số truy vấn trong đường dẫn.
 			$path = preg_replace( '#/[^/]*$#i', '', $_SERVER['PHP_SELF'] );
 
 		} else {
 			if ( str_contains( $_SERVER['SCRIPT_FILENAME'], $abspath_fix ) ) {
-				// Request is hitting a file inside ABSPATH.
+				// Yêu cầu đang truy cập một file bên trong ABSPATH.
 				$directory = str_replace( ABSPATH, '', $script_filename_dir );
-				// Strip off the subdirectory, and any file/query params.
+				// Loại bỏ thư mục con, và file/tham số truy vấn.
 				$path = preg_replace( '#/' . preg_quote( $directory, '#' ) . '/[^/]*$#i', '', $_SERVER['REQUEST_URI'] );
 			} elseif ( str_contains( $abspath_fix, $script_filename_dir ) ) {
-				// Request is hitting a file above ABSPATH.
+				// Yêu cầu đang truy cập một file phía trên ABSPATH.
 				$subdirectory = substr( $abspath_fix, strpos( $abspath_fix, $script_filename_dir ) + strlen( $script_filename_dir ) );
-				// Strip off any file/query params from the path, appending the subdirectory to the installation.
+				// Loại bỏ file/tham số truy vấn từ đường dẫn, thêm thư mục con vào cài đặt.
 				$path = preg_replace( '#/[^/]*$#i', '', $_SERVER['REQUEST_URI'] ) . $subdirectory;
 			} else {
 				$path = $_SERVER['REQUEST_URI'];
@@ -6334,20 +6334,20 @@ function wp_guess_url() {
 }
 
 /**
- * Temporarily suspends cache additions.
+ * Tạm thời dừng việc thêm vào bộ nhớ đệm.
  *
- * Stops more data being added to the cache, but still allows cache retrieval.
- * This is useful for actions, such as imports, when a lot of data would otherwise
- * be almost uselessly added to the cache.
+ * Ngăn thêm dữ liệu mới vào bộ nhớ đệm, nhưng vẫn cho phép truy xuất bộ nhớ đệm.
+ * Điều này hữu ích cho các thao tác như nhập dữ liệu, khi nhiều dữ liệu
+ * sẽ được thêm vào bộ nhớ đệm mà hầu như không có ích.
  *
- * Suspension lasts for a single page load at most. Remember to call this
- * function again if you wish to re-enable cache adds earlier.
+ * Việc tạm dừng kéo dài tối đa trong một lần tải trang. Nhớ gọi lại hàm này
+ * nếu bạn muốn bật lại việc thêm bộ nhớ đệm sớm hơn.
  *
  * @since 3.3.0
  *
- * @param bool $suspend Optional. Suspends additions if true, re-enables them if false.
- *                      Defaults to not changing the current setting.
- * @return bool The current suspend setting.
+ * @param bool $suspend Tùy chọn. Tạm dừng thêm nếu true, bật lại nếu false.
+ *                      Mặc định là không thay đổi cài đặt hiện tại.
+ * @return bool Cài đặt tạm dừng hiện tại.
  */
 function wp_suspend_cache_addition( $suspend = null ) {
 	static $_suspend = false;
@@ -6360,18 +6360,18 @@ function wp_suspend_cache_addition( $suspend = null ) {
 }
 
 /**
- * Suspends cache invalidation.
+ * Tạm dừng việc vô hiệu hóa bộ nhớ đệm.
  *
- * Turns cache invalidation on and off. Useful during imports where you don't want to do
- * invalidations every time a post is inserted. Callers must be sure that what they are
- * doing won't lead to an inconsistent cache when invalidation is suspended.
+ * Bật và tắt việc vô hiệu hóa bộ nhớ đệm. Hữu ích trong quá trình nhập dữ liệu khi bạn không muốn
+ * vô hiệu hóa mỗi khi một bài viết được chèn. Người gọi phải chắc chắn rằng những gì họ
+ * đang làm sẽ không dẫn đến bộ nhớ đệm không nhất quán khi việc vô hiệu hóa bị tạm dừng.
  *
  * @since 2.7.0
  *
  * @global bool $_wp_suspend_cache_invalidation
  *
- * @param bool $suspend Optional. Whether to suspend or enable cache invalidation. Default true.
- * @return bool The current suspend setting.
+ * @param bool $suspend Tùy chọn. Có tạm dừng hoặc bật lại việc vô hiệu hóa bộ nhớ đệm hay không. Mặc định true.
+ * @return bool Cài đặt tạm dừng hiện tại.
  */
 function wp_suspend_cache_invalidation( $suspend = true ) {
 	global $_wp_suspend_cache_invalidation;
@@ -6382,16 +6382,16 @@ function wp_suspend_cache_invalidation( $suspend = true ) {
 }
 
 /**
- * Determines whether a site is the main site of the current network.
+ * Xác định xem một trang web có phải là trang chính của mạng hiện tại hay không.
  *
  * @since 3.0.0
- * @since 4.9.0 The `$network_id` parameter was added.
+ * @since 4.9.0 Tham số `$network_id` được thêm vào.
  *
- * @param int $site_id    Optional. Site ID to test. Defaults to current site.
- * @param int $network_id Optional. Network ID of the network to check for.
- *                        Defaults to current network.
- * @return bool True if $site_id is the main site of the network, or if not
- *              running Multisite.
+ * @param int $site_id    Tùy chọn. ID trang web cần kiểm tra. Mặc định là trang web hiện tại.
+ * @param int $network_id Tùy chọn. ID mạng của mạng cần kiểm tra.
+ *                        Mặc định là mạng hiện tại.
+ * @return bool True nếu $site_id là trang chính của mạng, hoặc nếu không
+ *              chạy Multisite.
  */
 function is_main_site( $site_id = null, $network_id = null ) {
 	if ( ! is_multisite() ) {
@@ -6408,13 +6408,13 @@ function is_main_site( $site_id = null, $network_id = null ) {
 }
 
 /**
- * Gets the main site ID.
+ * Lấy ID trang chính.
  *
  * @since 4.9.0
  *
- * @param int $network_id Optional. The ID of the network for which to get the main site.
- *                        Defaults to the current network.
- * @return int The ID of the main site.
+ * @param int $network_id Tùy chọn. ID của mạng cần lấy trang chính.
+ *                        Mặc định là mạng hiện tại.
+ * @return int ID của trang chính.
  */
 function get_main_site_id( $network_id = null ) {
 	if ( ! is_multisite() ) {
@@ -6430,12 +6430,12 @@ function get_main_site_id( $network_id = null ) {
 }
 
 /**
- * Determines whether a network is the main network of the Multisite installation.
+ * Xác định xem một mạng có phải là mạng chính của cài đặt Multisite hay không.
  *
  * @since 3.7.0
  *
- * @param int $network_id Optional. Network ID to test. Defaults to current network.
- * @return bool True if $network_id is the main network, or if not running Multisite.
+ * @param int $network_id Tùy chọn. ID mạng cần kiểm tra. Mặc định là mạng hiện tại.
+ * @return bool True nếu $network_id là mạng chính, hoặc nếu không chạy Multisite.
  */
 function is_main_network( $network_id = null ) {
 	if ( ! is_multisite() ) {
@@ -6452,11 +6452,11 @@ function is_main_network( $network_id = null ) {
 }
 
 /**
- * Gets the main network ID.
+ * Lấy ID mạng chính.
  *
  * @since 4.3.0
  *
- * @return int The ID of the main network.
+ * @return int ID của mạng chính.
  */
 function get_main_network_id() {
 	if ( ! is_multisite() ) {
@@ -6468,7 +6468,7 @@ function get_main_network_id() {
 	if ( defined( 'PRIMARY_NETWORK_ID' ) ) {
 		$main_network_id = PRIMARY_NETWORK_ID;
 	} elseif ( isset( $current_network->id ) && 1 === (int) $current_network->id ) {
-		// If the current network has an ID of 1, assume it is the main network.
+		// Nếu mạng hiện tại có ID là 1, giả định nó là mạng chính.
 		$main_network_id = 1;
 	} else {
 		$_networks       = get_networks(
@@ -6481,27 +6481,27 @@ function get_main_network_id() {
 	}
 
 	/**
-	 * Filters the main network ID.
+	 * Lọc ID mạng chính.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param int $main_network_id The ID of the main network.
+	 * @param int $main_network_id ID của mạng chính.
 	 */
 	return (int) apply_filters( 'get_main_network_id', $main_network_id );
 }
 
 /**
- * Determines whether site meta is enabled.
+ * Xác định xem meta trang web có được bật hay không.
  *
- * This function checks whether the 'blogmeta' database table exists. The result is saved as
- * a setting for the main network, making it essentially a global setting. Subsequent requests
- * will refer to this setting instead of running the query.
+ * Hàm này kiểm tra xem bảng cơ sở dữ liệu 'blogmeta' có tồn tại hay không. Kết quả được lưu
+ * như một cài đặt cho mạng chính, về cơ bản là một cài đặt toàn cục. Các yêu cầu tiếp theo
+ * sẽ tham chiếu đến cài đặt này thay vì chạy truy vấn.
  *
  * @since 5.1.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  *
- * @return bool True if site meta is supported, false otherwise.
+ * @return bool True nếu meta trang web được hỗ trợ, false nếu ngược lại.
  */
 function is_site_meta_supported() {
 	global $wpdb;
@@ -6523,13 +6523,13 @@ function is_site_meta_supported() {
 }
 
 /**
- * Modifies gmt_offset for smart timezone handling.
+ * Chỉnh sửa gmt_offset để xử lý múi giờ thông minh.
  *
- * Overrides the gmt_offset option if we have a timezone_string available.
+ * Ghi đè tùy chọn gmt_offset nếu có timezone_string khả dụng.
  *
  * @since 2.8.0
  *
- * @return float|false Timezone GMT offset, false otherwise.
+ * @return float|false Độ lệch GMT của múi giờ, false nếu ngược lại.
  */
 function wp_timezone_override_offset() {
 	$timezone_string = get_option( 'timezone_string' );
@@ -6547,7 +6547,7 @@ function wp_timezone_override_offset() {
 }
 
 /**
- * Sort-helper for timezones.
+ * Hàm hỗ trợ sắp xếp múi giờ.
  *
  * @since 2.9.0
  * @access private
@@ -6557,9 +6557,9 @@ function wp_timezone_override_offset() {
  * @return int
  */
 function _wp_timezone_choice_usort_callback( $a, $b ) {
-	// Don't use translated versions of Etc.
+	// Không sử dụng phiên bản đã dịch của Etc.
 	if ( 'Etc' === $a['continent'] && 'Etc' === $b['continent'] ) {
-		// Make the order of these more like the old dropdown.
+		// Sắp xếp theo thứ tự giống danh sách thả xuống cũ hơn.
 		if ( str_starts_with( $a['city'], 'GMT+' ) && str_starts_with( $b['city'], 'GMT+' ) ) {
 			return -1 * ( strnatcasecmp( $a['city'], $b['city'] ) );
 		}
@@ -6590,7 +6590,7 @@ function _wp_timezone_choice_usort_callback( $a, $b ) {
 
 		return strnatcasecmp( $a['t_city'], $b['t_city'] );
 	} else {
-		// Force Etc to the bottom of the list.
+		// Đẩy Etc xuống cuối danh sách.
 		if ( 'Etc' === $a['continent'] ) {
 			return 1;
 		}
@@ -6604,13 +6604,13 @@ function _wp_timezone_choice_usort_callback( $a, $b ) {
 }
 
 /**
- * Gives a nicely-formatted list of timezone strings.
+ * Trả về danh sách chuỗi múi giờ được định dạng đẹp.
  *
  * @since 2.9.0
- * @since 4.7.0 Added the `$locale` parameter.
+ * @since 4.7.0 Thêm tham số `$locale`.
  *
- * @param string $selected_zone Selected timezone.
- * @param string $locale        Optional. Locale to load the timezones in. Default current site locale.
+ * @param string $selected_zone Múi giờ đã chọn.
+ * @param string $locale        Tùy chọn. Locale để tải múi giờ. Mặc định locale hiện tại của trang web.
  * @return string
  */
 function wp_timezone_choice( $selected_zone, $locale = null ) {
@@ -6618,7 +6618,7 @@ function wp_timezone_choice( $selected_zone, $locale = null ) {
 
 	$continents = array( 'Africa', 'America', 'Antarctica', 'Arctic', 'Asia', 'Atlantic', 'Australia', 'Europe', 'Indian', 'Pacific' );
 
-	// Load translations for continents and cities.
+	// Tải bản dịch cho các lục địa và thành phố.
 	if ( ! $mo_loaded || $locale !== $locale_loaded ) {
 		$locale_loaded = $locale ? $locale : get_locale();
 		$mofile        = WP_LANG_DIR . '/continents-cities-' . $locale_loaded . '.mo';
@@ -6636,7 +6636,7 @@ function wp_timezone_choice( $selected_zone, $locale = null ) {
 			continue;
 		}
 
-		// This determines what gets set and translated - we don't translate Etc/* strings here, they are done later.
+		// Điều này xác định những gì được đặt và dịch - chúng ta không dịch các chuỗi Etc/* ở đây, chúng được xử lý sau.
 		$exists    = array(
 			0 => ( isset( $zone[0] ) && $zone[0] ),
 			1 => ( isset( $zone[1] ) && $zone[1] ),
@@ -6665,7 +6665,7 @@ function wp_timezone_choice( $selected_zone, $locale = null ) {
 		$structure[] = '<option selected="selected" value="">' . __( 'Select a city' ) . '</option>';
 	}
 
-	// If this is a deprecated, but valid, timezone string, display it at the top of the list as-is.
+	// Nếu đây là chuỗi múi giờ đã lỗi thời nhưng vẫn hợp lệ, hiển thị nó ở đầu danh sách nguyên trạng.
 	if ( in_array( $selected_zone, $tz_identifiers, true ) === false
 		&& in_array( $selected_zone, timezone_identifiers_list( DateTimeZone::ALL_WITH_BC ), true )
 	) {
@@ -6673,33 +6673,33 @@ function wp_timezone_choice( $selected_zone, $locale = null ) {
 	}
 
 	foreach ( $zonen as $key => $zone ) {
-		// Build value in an array to join later.
+		// Xây dựng giá trị trong một mảng để nối sau.
 		$value = array( $zone['continent'] );
 
 		if ( empty( $zone['city'] ) ) {
-			// It's at the continent level (generally won't happen).
+			// Nó ở cấp lục địa (thường sẽ không xảy ra).
 			$display = $zone['t_continent'];
 		} else {
-			// It's inside a continent group.
+			// Nằm trong một nhóm lục địa.
 
-			// Continent optgroup.
+			// Optgroup lục địa.
 			if ( ! isset( $zonen[ $key - 1 ] ) || $zonen[ $key - 1 ]['continent'] !== $zone['continent'] ) {
 				$label       = $zone['t_continent'];
 				$structure[] = '<optgroup label="' . esc_attr( $label ) . '">';
 			}
 
-			// Add the city to the value.
+			// Thêm thành phố vào giá trị.
 			$value[] = $zone['city'];
 
 			$display = $zone['t_city'];
 			if ( ! empty( $zone['subcity'] ) ) {
-				// Add the subcity to the value.
+				// Thêm thành phố phụ vào giá trị.
 				$value[]  = $zone['subcity'];
 				$display .= ' - ' . $zone['t_subcity'];
 			}
 		}
 
-		// Build the value.
+		// Xây dựng giá trị.
 		$value    = implode( '/', $value );
 		$selected = '';
 		if ( $value === $selected_zone ) {
@@ -6707,13 +6707,13 @@ function wp_timezone_choice( $selected_zone, $locale = null ) {
 		}
 		$structure[] = '<option ' . $selected . 'value="' . esc_attr( $value ) . '">' . esc_html( $display ) . '</option>';
 
-		// Close continent optgroup.
+		// Đóng optgroup lục địa.
 		if ( ! empty( $zone['city'] ) && ( ! isset( $zonen[ $key + 1 ] ) || ( isset( $zonen[ $key + 1 ] ) && $zonen[ $key + 1 ]['continent'] !== $zone['continent'] ) ) ) {
 			$structure[] = '</optgroup>';
 		}
 	}
 
-	// Do UTC.
+	// Xử lý UTC.
 	$structure[] = '<optgroup label="' . esc_attr__( 'UTC' ) . '">';
 	$selected    = '';
 	if ( 'UTC' === $selected_zone ) {
@@ -6722,7 +6722,7 @@ function wp_timezone_choice( $selected_zone, $locale = null ) {
 	$structure[] = '<option ' . $selected . 'value="' . esc_attr( 'UTC' ) . '">' . __( 'UTC' ) . '</option>';
 	$structure[] = '</optgroup>';
 
-	// Do manual UTC offsets.
+	// Xử lý độ lệch UTC thủ công.
 	$structure[]  = '<optgroup label="' . esc_attr__( 'Manual Offsets' ) . '">';
 	$offset_range = array(
 		-12,
@@ -6805,14 +6805,14 @@ function wp_timezone_choice( $selected_zone, $locale = null ) {
 }
 
 /**
- * Strips close comment and close php tags from file headers used by WP.
+ * Loại bỏ thẻ đóng comment và thẻ đóng PHP từ header file được WP sử dụng.
  *
  * @since 2.8.0
  * @access private
  *
  * @see https://core.trac.wordpress.org/ticket/8497
  *
- * @param string $str Header comment to clean up.
+ * @param string $str Comment header cần dọn dẹp.
  * @return string
  */
 function _cleanup_header_comment( $str ) {
@@ -6820,14 +6820,14 @@ function _cleanup_header_comment( $str ) {
 }
 
 /**
- * Permanently deletes comments or posts of any type that have held a status
- * of 'trash' for the number of days defined in EMPTY_TRASH_DAYS.
+ * Xóa vĩnh viễn các bình luận hoặc bài viết thuộc bất kỳ loại nào đã giữ trạng thái
+ * 'trash' trong số ngày được định nghĩa trong EMPTY_TRASH_DAYS.
  *
- * The default value of `EMPTY_TRASH_DAYS` is 30 (days).
+ * Giá trị mặc định của `EMPTY_TRASH_DAYS` là 30 (ngày).
  *
  * @since 2.9.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
  */
 function wp_scheduled_delete() {
 	global $wpdb;
@@ -6872,49 +6872,49 @@ function wp_scheduled_delete() {
 }
 
 /**
- * Retrieves metadata from a file.
+ * Lấy metadata từ file.
  *
- * Searches for metadata in the first 8 KB of a file, such as a plugin or theme.
- * Each piece of metadata must be on its own line. Fields can not span multiple
- * lines, the value will get cut at the end of the first line.
+ * Tìm kiếm metadata trong 8 KB đầu tiên của file, chẳng hạn như plugin hoặc theme.
+ * Mỗi phần metadata phải nằm trên dòng riêng. Các trường không thể kéo dài nhiều
+ * dòng, giá trị sẽ bị cắt ở cuối dòng đầu tiên.
  *
- * If the file data is not within that first 8 KB, then the author should correct
- * their plugin file and move the data headers to the top.
+ * Nếu dữ liệu file không nằm trong 8 KB đầu tiên đó, tác giả nên sửa lại
+ * file plugin và di chuyển header dữ liệu lên đầu.
  *
  * @link https://codex.wordpress.org/File_Header
  *
  * @since 2.9.0
  *
- * @param string $file            Absolute path to the file.
- * @param array  $default_headers List of headers, in the format `array( 'HeaderKey' => 'Header Name' )`.
- * @param string $context         Optional. If specified adds filter hook {@see 'extra_$context_headers'}.
- *                                Default empty string.
- * @return string[] Array of file header values keyed by header name.
+ * @param string $file            Đường dẫn tuyệt đối đến file.
+ * @param array  $default_headers Danh sách header, theo định dạng `array( 'HeaderKey' => 'Header Name' )`.
+ * @param string $context         Tùy chọn. Nếu được chỉ định, thêm hook bộ lọc {@see 'extra_$context_headers'}.
+ *                                Mặc định chuỗi rỗng.
+ * @return string[] Mảng giá trị header file được khóa bởi tên header.
  */
 function get_file_data( $file, $default_headers, $context = '' ) {
-	// Pull only the first 8 KB of the file in.
+	// Chỉ lấy 8 KB đầu tiên của file.
 	$file_data = file_get_contents( $file, false, null, 0, 8 * KB_IN_BYTES );
 
 	if ( false === $file_data ) {
 		$file_data = '';
 	}
 
-	// Make sure we catch CR-only line endings.
+	// Đảm bảo bắt được các dòng kết thúc chỉ bằng CR.
 	$file_data = str_replace( "\r", "\n", $file_data );
 
 	/**
-	 * Filters extra file headers by context.
+	 * Lọc các header file bổ sung theo ngữ cảnh.
 	 *
-	 * The dynamic portion of the hook name, `$context`, refers to
-	 * the context where extra headers might be loaded.
+	 * Phần động của tên hook, `$context`, tham chiếu đến
+	 * ngữ cảnh nơi các header bổ sung có thể được tải.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param array $extra_context_headers Empty array by default.
+	 * @param array $extra_context_headers Mảng rỗng theo mặc định.
 	 */
 	$extra_headers = $context ? apply_filters( "extra_{$context}_headers", array() ) : array();
 	if ( $extra_headers ) {
-		$extra_headers = array_combine( $extra_headers, $extra_headers ); // Keys equal values.
+		$extra_headers = array_combine( $extra_headers, $extra_headers ); // Khóa bằng giá trị.
 		$all_headers   = array_merge( $extra_headers, (array) $default_headers );
 	} else {
 		$all_headers = $default_headers;
@@ -6932,9 +6932,9 @@ function get_file_data( $file, $default_headers, $context = '' ) {
 }
 
 /**
- * Returns true.
+ * Trả về true.
  *
- * Useful for returning true to filters easily.
+ * Hữu ích để dễ dàng trả về true cho các bộ lọc.
  *
  * @since 3.0.0
  *
@@ -6947,9 +6947,9 @@ function __return_true() { // phpcs:ignore WordPress.NamingConventions.ValidFunc
 }
 
 /**
- * Returns false.
+ * Trả về false.
  *
- * Useful for returning false to filters easily.
+ * Hữu ích để dễ dàng trả về false cho các bộ lọc.
  *
  * @since 3.0.0
  *
@@ -6962,9 +6962,9 @@ function __return_false() { // phpcs:ignore WordPress.NamingConventions.ValidFun
 }
 
 /**
- * Returns 0.
+ * Trả về 0.
  *
- * Useful for returning 0 to filters easily.
+ * Hữu ích để dễ dàng trả về 0 cho các bộ lọc.
  *
  * @since 3.0.0
  *
@@ -6975,48 +6975,48 @@ function __return_zero() { // phpcs:ignore WordPress.NamingConventions.ValidFunc
 }
 
 /**
- * Returns an empty array.
+ * Trả về mảng rỗng.
  *
- * Useful for returning an empty array to filters easily.
+ * Hữu ích để dễ dàng trả về mảng rỗng cho các bộ lọc.
  *
  * @since 3.0.0
  *
- * @return array Empty array.
+ * @return array Mảng rỗng.
  */
 function __return_empty_array() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionDoubleUnderscore,PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames.FunctionDoubleUnderscore
 	return array();
 }
 
 /**
- * Returns null.
+ * Trả về null.
  *
- * Useful for returning null to filters easily.
+ * Hữu ích để dễ dàng trả về null cho các bộ lọc.
  *
  * @since 3.4.0
  *
- * @return null Null value.
+ * @return null Giá trị null.
  */
 function __return_null() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionDoubleUnderscore,PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames.FunctionDoubleUnderscore
 	return null;
 }
 
 /**
- * Returns an empty string.
+ * Trả về chuỗi rỗng.
  *
- * Useful for returning an empty string to filters easily.
+ * Hữu ích để dễ dàng trả về chuỗi rỗng cho các bộ lọc.
  *
  * @since 3.7.0
  *
  * @see __return_null()
  *
- * @return string Empty string.
+ * @return string Chuỗi rỗng.
  */
 function __return_empty_string() { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.FunctionDoubleUnderscore,PHPCompatibility.FunctionNameRestrictions.ReservedFunctionNames.FunctionDoubleUnderscore
 	return '';
 }
 
 /**
- * Sends a HTTP header to disable content type sniffing in browsers which support it.
+ * Gửi header HTTP để vô hiệu hóa việc phát hiện kiểu nội dung trong các trình duyệt hỗ trợ.
  *
  * @since 3.0.0
  *
@@ -7028,13 +7028,13 @@ function send_nosniff_header() {
 }
 
 /**
- * Returns a MySQL expression for selecting the week number based on the start_of_week option.
+ * Trả về biểu thức MySQL để chọn số tuần dựa trên tùy chọn start_of_week.
  *
  * @ignore
  * @since 3.0.0
  *
- * @param string $column Database column.
- * @return string SQL clause.
+ * @param string $column Cột cơ sở dữ liệu.
+ * @return string Mệnh đề SQL.
  */
 function _wp_mysql_week( $column ) {
 	$start_of_week = (int) get_option( 'start_of_week' );
@@ -7054,17 +7054,17 @@ function _wp_mysql_week( $column ) {
 }
 
 /**
- * Finds hierarchy loops using a callback function that maps object IDs to parent IDs.
+ * Tìm vòng lặp phân cấp sử dụng hàm callback ánh xạ ID đối tượng sang ID cha.
  *
  * @since 3.1.0
  * @access private
  *
- * @param callable $callback      Function that accepts ( ID, $callback_args ) and outputs parent_ID.
- * @param int      $start         The ID to start the loop check at.
- * @param int      $start_parent  The parent_ID of $start to use instead of calling $callback( $start ).
- *                                Use null to always use $callback.
- * @param array    $callback_args Optional. Additional arguments to send to $callback. Default empty array.
- * @return array IDs of all members of loop.
+ * @param callable $callback      Hàm nhận ( ID, $callback_args ) và xuất ra parent_ID.
+ * @param int      $start         ID để bắt đầu kiểm tra vòng lặp.
+ * @param int      $start_parent  Parent_ID của $start để sử dụng thay vì gọi $callback( $start ).
+ *                                Sử dụng null để luôn dùng $callback.
+ * @param array    $callback_args Tùy chọn. Các đối số bổ sung gửi đến $callback. Mặc định mảng rỗng.
+ * @return array ID của tất cả các thành viên trong vòng lặp.
  */
 function wp_find_hierarchy_loop( $callback, $start, $start_parent, $callback_args = array() ) {
 	$override = is_null( $start_parent ) ? array() : array( $start => $start_parent );
@@ -7078,24 +7078,24 @@ function wp_find_hierarchy_loop( $callback, $start, $start_parent, $callback_arg
 }
 
 /**
- * Uses the "The Tortoise and the Hare" algorithm to detect loops.
+ * Sử dụng thuật toán "Rùa và Thỏ" để phát hiện vòng lặp.
  *
- * For every step of the algorithm, the hare takes two steps and the tortoise one.
- * If the hare ever laps the tortoise, there must be a loop.
+ * Mỗi bước của thuật toán, thỏ đi hai bước và rùa đi một bước.
+ * Nếu thỏ bắt kịp rùa, phải có vòng lặp.
  *
  * @since 3.1.0
  * @access private
  *
- * @param callable $callback      Function that accepts ( ID, callback_arg, ... ) and outputs parent_ID.
- * @param int      $start         The ID to start the loop check at.
- * @param array    $override      Optional. An array of ( ID => parent_ID, ... ) to use instead of $callback.
- *                                Default empty array.
- * @param array    $callback_args Optional. Additional arguments to send to $callback. Default empty array.
- * @param bool     $_return_loop  Optional. Return loop members or just detect presence of loop? Only set
- *                                to true if you already know the given $start is part of a loop (otherwise
- *                                the returned array might include branches). Default false.
- * @return mixed Scalar ID of some arbitrary member of the loop, or array of IDs of all members of loop if
- *               $_return_loop
+ * @param callable $callback      Hàm nhận ( ID, callback_arg, ... ) và xuất ra parent_ID.
+ * @param int      $start         ID để bắt đầu kiểm tra vòng lặp.
+ * @param array    $override      Tùy chọn. Mảng ( ID => parent_ID, ... ) để sử dụng thay cho $callback.
+ *                                Mặc định mảng rỗng.
+ * @param array    $callback_args Tùy chọn. Các đối số bổ sung gửi đến $callback. Mặc định mảng rỗng.
+ * @param bool     $_return_loop  Tùy chọn. Trả về các thành viên vòng lặp hay chỉ phát hiện sự tồn tại?
+ *                                Chỉ đặt true nếu bạn đã biết $start là phần của vòng lặp (nếu không
+ *                                mảng trả về có thể bao gồm các nhánh). Mặc định false.
+ * @return mixed ID vô hướng của một thành viên bất kỳ trong vòng lặp, hoặc mảng ID của tất cả thành viên
+ *               nếu $_return_loop
  */
 function wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override = array(), $callback_args = array(), $_return_loop = false ) {
 	$tortoise        = $start;
@@ -7103,7 +7103,7 @@ function wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override = ar
 	$evanescent_hare = $start;
 	$return          = array();
 
-	// Set evanescent_hare to one past hare. Increment hare two steps.
+	// Đặt evanescent_hare đi trước hare một bước. Tăng hare hai bước.
 	while (
 		$tortoise
 	&&
@@ -7117,12 +7117,12 @@ function wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override = ar
 			$return[ $hare ]            = true;
 		}
 
-		// Tortoise got lapped - must be a loop.
+		// Rùa bị bắt kịp - phải có vòng lặp.
 		if ( $tortoise === $evanescent_hare || $tortoise === $hare ) {
 			return $_return_loop ? $return : $tortoise;
 		}
 
-		// Increment tortoise by one step.
+		// Tăng rùa một bước.
 		$tortoise = isset( $override[ $tortoise ] ) ? $override[ $tortoise ] : call_user_func_array( $callback, array_merge( array( $tortoise ), $callback_args ) );
 	}
 
@@ -7130,7 +7130,7 @@ function wp_find_hierarchy_loop_tortoise_hare( $callback, $start, $override = ar
 }
 
 /**
- * Sends a HTTP header to limit rendering of pages to same origin iframes.
+ * Gửi header HTTP để giới hạn việc hiển thị trang trong iframe cùng nguồn gốc.
  *
  * @since 3.1.3
  *
@@ -7141,23 +7141,23 @@ function send_frame_options_header() {
 }
 
 /**
- * Sends a referrer policy header so referrers are not sent externally from administration screens.
+ * Gửi header chính sách referrer để referrer không được gửi ra bên ngoài từ màn hình quản trị.
  *
  * @since 4.9.0
- * @since 6.8.0 This function was moved from `wp-admin/includes/misc.php` to `wp-includes/functions.php`.
+ * @since 6.8.0 Hàm này được chuyển từ `wp-admin/includes/misc.php` sang `wp-includes/functions.php`.
  */
 function wp_admin_headers() {
 	$policy = 'strict-origin-when-cross-origin';
 
 	/**
-	 * Filters the admin referrer policy header value.
+	 * Lọc giá trị header chính sách referrer của quản trị.
 	 *
 	 * @since 4.9.0
-	 * @since 4.9.5 The default value was changed to 'strict-origin-when-cross-origin'.
+	 * @since 4.9.5 Giá trị mặc định được thay đổi thành 'strict-origin-when-cross-origin'.
 	 *
 	 * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
 	 *
-	 * @param string $policy The admin referrer policy header value. Default 'strict-origin-when-cross-origin'.
+	 * @param string $policy Giá trị header chính sách referrer quản trị. Mặc định 'strict-origin-when-cross-origin'.
 	 */
 	$policy = apply_filters( 'admin_referrer_policy', $policy );
 
@@ -7165,22 +7165,22 @@ function wp_admin_headers() {
 }
 
 /**
- * Retrieves a list of protocols to allow in HTML attributes.
+ * Lấy danh sách các giao thức được phép trong thuộc tính HTML.
  *
  * @since 3.3.0
- * @since 4.3.0 Added 'webcal' to the protocols array.
- * @since 4.7.0 Added 'urn' to the protocols array.
- * @since 5.3.0 Added 'sms' to the protocols array.
- * @since 5.6.0 Added 'irc6' and 'ircs' to the protocols array.
+ * @since 4.3.0 Thêm 'webcal' vào mảng giao thức.
+ * @since 4.7.0 Thêm 'urn' vào mảng giao thức.
+ * @since 5.3.0 Thêm 'sms' vào mảng giao thức.
+ * @since 5.6.0 Thêm 'irc6' và 'ircs' vào mảng giao thức.
  *
  * @see wp_kses()
  * @see esc_url()
  *
- * @return string[] Array of allowed protocols. Defaults to an array containing 'http', 'https',
+ * @return string[] Mảng các giao thức được phép. Mặc định là mảng chứa 'http', 'https',
  *                  'ftp', 'ftps', 'mailto', 'news', 'irc', 'irc6', 'ircs', 'gopher', 'nntp', 'feed',
- *                  'telnet', 'mms', 'rtsp', 'sms', 'svn', 'tel', 'fax', 'xmpp', 'webcal', and 'urn'.
- *                  This covers all common link protocols, except for 'javascript' which should not
- *                  be allowed for untrusted users.
+ *                  'telnet', 'mms', 'rtsp', 'sms', 'svn', 'tel', 'fax', 'xmpp', 'webcal' và 'urn'.
+ *                  Bao phủ tất cả giao thức liên kết phổ biến, trừ 'javascript' không nên
+ *                  cho phép đối với người dùng không tin cậy.
  */
 function wp_allowed_protocols() {
 	static $protocols = array();
@@ -7191,11 +7191,11 @@ function wp_allowed_protocols() {
 
 	if ( ! did_action( 'wp_loaded' ) ) {
 		/**
-		 * Filters the list of protocols allowed in HTML attributes.
+		 * Lọc danh sách các giao thức được phép trong thuộc tính HTML.
 		 *
 		 * @since 3.0.0
 		 *
-		 * @param string[] $protocols Array of allowed protocols e.g. 'http', 'ftp', 'tel', and more.
+		 * @param string[] $protocols Mảng các giao thức được phép, ví dụ: 'http', 'ftp', 'tel', v.v.
 		 */
 		$protocols = array_unique( (array) apply_filters( 'kses_allowed_protocols', $protocols ) );
 	}
@@ -7204,21 +7204,21 @@ function wp_allowed_protocols() {
 }
 
 /**
- * Returns a comma-separated string or array of functions that have been called to get
- * to the current point in code.
+ * Trả về chuỗi phân cách bằng dấu phẩy hoặc mảng các hàm đã được gọi để đến
+ * điểm hiện tại trong mã.
  *
  * @since 3.4.0
  *
  * @see https://core.trac.wordpress.org/ticket/19589
  *
- * @param string $ignore_class Optional. A class to ignore all function calls within - useful
- *                             when you want to just give info about the callee. Default null.
- * @param int    $skip_frames  Optional. A number of stack frames to skip - useful for unwinding
- *                             back to the source of the issue. Default 0.
- * @param bool   $pretty       Optional. Whether you want a comma separated string instead of
- *                             the raw array returned. Default true.
- * @return string|array Either a string containing a reversed comma separated trace or an array
- *                      of individual calls.
+ * @param string $ignore_class Tùy chọn. Lớp để bỏ qua tất cả lời gọi hàm bên trong - hữu ích
+ *                             khi bạn chỉ muốn cung cấp thông tin về hàm được gọi. Mặc định null.
+ * @param int    $skip_frames  Tùy chọn. Số khung ngăn xếp cần bỏ qua - hữu ích để quay lại
+ *                             nguồn gốc vấn đề. Mặc định 0.
+ * @param bool   $pretty       Tùy chọn. Có muốn chuỗi phân cách bằng dấu phẩy thay vì
+ *                             mảng thô hay không. Mặc định true.
+ * @return string|array Chuỗi chứa trace đảo ngược phân cách bằng dấu phẩy hoặc mảng
+ *                      các lời gọi riêng lẻ.
  */
 function wp_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pretty = true ) {
 	static $truncate_paths;
@@ -7226,7 +7226,7 @@ function wp_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pr
 	$trace       = debug_backtrace( false );
 	$caller      = array();
 	$check_class = ! is_null( $ignore_class );
-	++$skip_frames; // Skip this function.
+	++$skip_frames; // Bỏ qua hàm này.
 
 	if ( ! isset( $truncate_paths ) ) {
 		$truncate_paths = array(
@@ -7240,7 +7240,7 @@ function wp_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pr
 			--$skip_frames;
 		} elseif ( isset( $call['class'] ) ) {
 			if ( $check_class && $ignore_class === $call['class'] ) {
-				continue; // Filter out calls.
+				continue; // Lọc bỏ các lời gọi.
 			}
 
 			$caller[] = "{$call['class']}{$call['type']}{$call['function']}";
@@ -7263,14 +7263,14 @@ function wp_debug_backtrace_summary( $ignore_class = null, $skip_frames = 0, $pr
 }
 
 /**
- * Retrieves IDs that are not already present in the cache.
+ * Lấy các ID chưa có trong bộ nhớ đệm.
  *
  * @since 3.4.0
- * @since 6.1.0 This function is no longer marked as "private".
+ * @since 6.1.0 Hàm này không còn được đánh dấu là "private".
  *
- * @param int[]  $object_ids  Array of IDs.
- * @param string $cache_group The cache group to check against.
- * @return int[] Array of IDs not present in the cache.
+ * @param int[]  $object_ids  Mảng các ID.
+ * @param string $cache_group Nhóm bộ nhớ đệm cần kiểm tra.
+ * @return int[] Mảng các ID không có trong bộ nhớ đệm.
  */
 function _get_non_cached_ids( $object_ids, $cache_group ) {
 	$object_ids = array_filter( $object_ids, '_validate_cache_id' );
@@ -7293,20 +7293,20 @@ function _get_non_cached_ids( $object_ids, $cache_group ) {
 }
 
 /**
- * Checks whether the given cache ID is either an integer or an integer-like string.
+ * Kiểm tra xem ID bộ nhớ đệm đã cho có phải là số nguyên hoặc chuỗi giống số nguyên hay không.
  *
- * Both `16` and `"16"` are considered valid, other numeric types and numeric strings
- * (`16.3` and `"16.3"`) are considered invalid.
+ * Cả `16` và `"16"` đều được coi là hợp lệ, các kiểu số và chuỗi số khác
+ * (`16.3` và `"16.3"`) được coi là không hợp lệ.
  *
  * @since 6.3.0
  *
- * @param mixed $object_id The cache ID to validate.
- * @return bool Whether the given $object_id is a valid cache ID.
+ * @param mixed $object_id ID bộ nhớ đệm cần xác thực.
+ * @return bool Liệu $object_id đã cho có phải là ID bộ nhớ đệm hợp lệ hay không.
  */
 function _validate_cache_id( $object_id ) {
 	/*
-	 * filter_var() could be used here, but the `filter` PHP extension
-	 * is considered optional and may not be available.
+	 * filter_var() có thể được sử dụng ở đây, nhưng phần mở rộng PHP `filter`
+	 * được coi là tùy chọn và có thể không khả dụng.
 	 */
 	if ( is_int( $object_id )
 		|| ( is_string( $object_id ) && (string) (int) $object_id === $object_id ) ) {
@@ -7321,12 +7321,12 @@ function _validate_cache_id( $object_id ) {
 }
 
 /**
- * Tests if the current device has the capability to upload files.
+ * Kiểm tra xem thiết bị hiện tại có khả năng tải file lên hay không.
  *
  * @since 3.4.0
  * @access private
  *
- * @return bool Whether the device is able to upload files.
+ * @return bool Liệu thiết bị có thể tải file lên hay không.
  */
 function _device_can_upload() {
 	if ( ! wp_is_mobile() ) {
@@ -7345,18 +7345,18 @@ function _device_can_upload() {
 }
 
 /**
- * Tests if a given path is a stream URL
+ * Kiểm tra xem đường dẫn đã cho có phải là URL stream hay không.
  *
  * @since 3.5.0
  *
- * @param string $path The resource path or URL.
- * @return bool True if the path is a stream URL.
+ * @param string $path Đường dẫn tài nguyên hoặc URL.
+ * @return bool True nếu đường dẫn là URL stream.
  */
 function wp_is_stream( $path ) {
 	$scheme_separator = strpos( $path, '://' );
 
 	if ( false === $scheme_separator ) {
-		// $path isn't a stream.
+		// $path không phải là stream.
 		return false;
 	}
 
@@ -7366,38 +7366,38 @@ function wp_is_stream( $path ) {
 }
 
 /**
- * Tests if the supplied date is valid for the Gregorian calendar.
+ * Kiểm tra xem ngày cung cấp có hợp lệ cho lịch Gregory hay không.
  *
  * @since 3.5.0
  *
  * @link https://www.php.net/manual/en/function.checkdate.php
  *
- * @param int    $month       Month number.
- * @param int    $day         Day number.
- * @param int    $year        Year number.
- * @param string $source_date The date to filter.
- * @return bool True if valid date, false if not valid date.
+ * @param int    $month       Số tháng.
+ * @param int    $day         Số ngày.
+ * @param int    $year        Số năm.
+ * @param string $source_date Ngày cần lọc.
+ * @return bool True nếu ngày hợp lệ, false nếu không hợp lệ.
  */
 function wp_checkdate( $month, $day, $year, $source_date ) {
 	/**
-	 * Filters whether the given date is valid for the Gregorian calendar.
+	 * Lọc xem ngày đã cho có hợp lệ cho lịch Gregory hay không.
 	 *
 	 * @since 3.5.0
 	 *
-	 * @param bool   $checkdate   Whether the given date is valid.
-	 * @param string $source_date Date to check.
+	 * @param bool   $checkdate   Liệu ngày đã cho có hợp lệ hay không.
+	 * @param string $source_date Ngày cần kiểm tra.
 	 */
 	return apply_filters( 'wp_checkdate', checkdate( $month, $day, $year ), $source_date );
 }
 
 /**
- * Loads the auth check for monitoring whether the user is still logged in.
+ * Tải kiểm tra xác thực để theo dõi xem người dùng còn đăng nhập hay không.
  *
- * Can be disabled with remove_action( 'admin_enqueue_scripts', 'wp_auth_check_load' );
+ * Có thể vô hiệu hóa bằng remove_action( 'admin_enqueue_scripts', 'wp_auth_check_load' );
  *
- * This is disabled for certain screens where a login screen could cause an
- * inconvenient interruption. A filter called {@see 'wp_auth_check_load'} can be used
- * for fine-grained control.
+ * Tính năng này bị tắt cho một số màn hình nhất định nơi màn hình đăng nhập có thể gây
+ * gián đoạn bất tiện. Bộ lọc {@see 'wp_auth_check_load'} có thể được sử dụng
+ * để kiểm soát chi tiết.
  *
  * @since 3.6.0
  */
@@ -7415,15 +7415,15 @@ function wp_auth_check_load() {
 	$show   = ! in_array( $screen->id, $hidden, true );
 
 	/**
-	 * Filters whether to load the authentication check.
+	 * Lọc xem có tải kiểm tra xác thực hay không.
 	 *
-	 * Returning a falsey value from the filter will effectively short-circuit
-	 * loading the authentication check.
+	 * Trả về giá trị falsy từ bộ lọc sẽ bỏ qua
+	 * việc tải kiểm tra xác thực.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param bool      $show   Whether to load the authentication check.
-	 * @param WP_Screen $screen The current screen object.
+	 * @param bool      $show   Có tải kiểm tra xác thực hay không.
+	 * @param WP_Screen $screen Đối tượng màn hình hiện tại.
 	 */
 	if ( apply_filters( 'wp_auth_check_load', $show, $screen ) ) {
 		wp_enqueue_style( 'wp-auth-check' );
@@ -7435,7 +7435,7 @@ function wp_auth_check_load() {
 }
 
 /**
- * Outputs the HTML that shows the wp-login dialog when the user is no longer logged in.
+ * Xuất HTML hiển thị hộp thoại wp-login khi người dùng không còn đăng nhập.
  *
  * @since 3.6.0
  */
@@ -7445,11 +7445,11 @@ function wp_auth_check_html() {
 	$same_domain    = str_starts_with( $login_url, $current_domain );
 
 	/**
-	 * Filters whether the authentication check originated at the same domain.
+	 * Lọc xem kiểm tra xác thực có bắt nguồn từ cùng tên miền hay không.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param bool $same_domain Whether the authentication check originated at the same domain.
+	 * @param bool $same_domain Liệu kiểm tra xác thực có bắt nguồn từ cùng tên miền hay không.
 	 */
 	$same_domain = apply_filters( 'wp_auth_check_same_domain', $same_domain );
 	$wrap_class  = $same_domain ? 'hidden' : 'hidden fallback';
@@ -7491,17 +7491,17 @@ function wp_auth_check_html() {
 }
 
 /**
- * Checks whether a user is still logged in, for the heartbeat.
+ * Kiểm tra xem người dùng còn đăng nhập hay không, cho heartbeat.
  *
- * Send a result that shows a log-in box if the user is no longer logged in,
- * or if their cookie is within the grace period.
+ * Gửi kết quả hiển thị hộp đăng nhập nếu người dùng không còn đăng nhập,
+ * hoặc nếu cookie của họ đang trong thời gian gia hạn.
  *
  * @since 3.6.0
  *
  * @global int $login_grace_period
  *
- * @param array $response  The Heartbeat response.
- * @return array The Heartbeat response with 'wp-auth-check' value set.
+ * @param array $response  Phản hồi Heartbeat.
+ * @return array Phản hồi Heartbeat với giá trị 'wp-auth-check' được đặt.
  */
 function wp_auth_check( $response ) {
 	$response['wp-auth-check'] = is_user_logged_in() && empty( $GLOBALS['login_grace_period'] );
@@ -7509,20 +7509,20 @@ function wp_auth_check( $response ) {
 }
 
 /**
- * Returns RegEx body to liberally match an opening HTML tag.
+ * Trả về phần thân RegEx để khớp linh hoạt thẻ HTML mở.
  *
- * Matches an opening HTML tag that:
- * 1. Is self-closing or
- * 2. Has no body but has a closing tag of the same name or
- * 3. Contains a body and a closing tag of the same name
+ * Khớp thẻ HTML mở mà:
+ * 1. Tự đóng hoặc
+ * 2. Không có nội dung nhưng có thẻ đóng cùng tên hoặc
+ * 3. Chứa nội dung và thẻ đóng cùng tên
  *
- * Note: this RegEx does not balance inner tags and does not attempt
- * to produce valid HTML
+ * Lưu ý: RegEx này không cân bằng thẻ bên trong và không cố gắng
+ * tạo ra HTML hợp lệ.
  *
  * @since 3.6.0
  *
- * @param string $tag An HTML tag name. Example: 'video'.
- * @return string Tag RegEx.
+ * @param string $tag Tên thẻ HTML. Ví dụ: 'video'.
+ * @return string RegEx thẻ.
  */
 function get_tag_regex( $tag ) {
 	if ( empty( $tag ) ) {
@@ -7532,50 +7532,50 @@ function get_tag_regex( $tag ) {
 }
 
 /**
- * Indicates if a given slug for a character set represents the UTF-8
- * text encoding. If not provided, examines the current blog's charset.
+ * Xác định xem slug bộ ký tự đã cho có đại diện cho mã hóa văn bản UTF-8 hay không.
+ * Nếu không được cung cấp, kiểm tra bộ ký tự của blog hiện tại.
  *
- * A charset is considered to represent UTF-8 if it is a case-insensitive
- * match of "UTF-8" with or without the hyphen.
+ * Bộ ký tự được coi là đại diện cho UTF-8 nếu nó khớp không phân biệt hoa thường
+ * với "UTF-8" có hoặc không có dấu gạch nối.
  *
- * Example:
+ * Ví dụ:
  *
  *     true  === is_utf8_charset( 'UTF-8' );
  *     true  === is_utf8_charset( 'utf8' );
  *     false === is_utf8_charset( 'latin1' );
  *     false === is_utf8_charset( 'UTF 8' );
  *
- *     // Only strings match.
+ *     // Chỉ chuỗi mới khớp.
  *     false === is_utf8_charset( [ 'charset' => 'utf-8' ] );
  *
- *     // Without a given charset, it depends on the site option "blog_charset".
+ *     // Không có bộ ký tự đã cho, phụ thuộc vào tùy chọn trang "blog_charset".
  *     $is_utf8 = is_utf8_charset();
  *
  * @since 6.6.0
- * @since 6.6.1 A wrapper for _is_utf8_charset
+ * @since 6.6.1 Trở thành wrapper cho _is_utf8_charset
  *
  * @see _is_utf8_charset
  *
- * @param string|null $blog_charset Optional. Slug representing a text character encoding, or "charset".
- *                                  E.g. "UTF-8", "Windows-1252", "ISO-8859-1", "SJIS".
- *                                  Default value is to infer from "blog_charset" option.
- * @return bool Whether the slug represents the UTF-8 encoding.
+ * @param string|null $blog_charset Tùy chọn. Slug đại diện cho mã hóa ký tự văn bản, hoặc "charset".
+ *                                  Ví dụ: "UTF-8", "Windows-1252", "ISO-8859-1", "SJIS".
+ *                                  Giá trị mặc định được suy ra từ tùy chọn "blog_charset".
+ * @return bool Liệu slug có đại diện cho mã hóa UTF-8 hay không.
  */
 function is_utf8_charset( $blog_charset = null ) {
 	return _is_utf8_charset( $blog_charset ?? get_option( 'blog_charset' ) );
 }
 
 /**
- * Retrieves a canonical form of the provided charset appropriate for passing to PHP
- * functions such as htmlspecialchars() and charset HTML attributes.
+ * Lấy dạng chuẩn của bộ ký tự được cung cấp phù hợp để truyền cho các hàm PHP
+ * như htmlspecialchars() và thuộc tính charset HTML.
  *
  * @since 3.6.0
  * @access private
  *
  * @see https://core.trac.wordpress.org/ticket/23688
  *
- * @param string $charset A charset name, e.g. "UTF-8", "Windows-1252", "SJIS".
- * @return string The canonical form of the charset.
+ * @param string $charset Tên bộ ký tự, ví dụ: "UTF-8", "Windows-1252", "SJIS".
+ * @return string Dạng chuẩn của bộ ký tự.
  */
 function _canonical_charset( $charset ) {
 	if ( is_utf8_charset( $charset ) ) {
@@ -7583,13 +7583,13 @@ function _canonical_charset( $charset ) {
 	}
 
 	/*
-	 * Normalize the ISO-8859-1 family of languages.
+	 * Chuẩn hóa họ ngôn ngữ ISO-8859-1.
 	 *
-	 * This is not required for htmlspecialchars(), as it properly recognizes all of
-	 * the input character sets that here are transformed into "ISO-8859-1".
+	 * Điều này không bắt buộc cho htmlspecialchars(), vì nó nhận dạng đúng tất cả
+	 * các bộ ký tự đầu vào mà ở đây được chuyển đổi thành "ISO-8859-1".
 	 *
-	 * @todo Should this entire check be removed since it's not required for the stated purpose?
-	 * @todo Should WordPress transform other potential charset equivalents, such as "latin1"?
+	 * @todo Liệu toàn bộ kiểm tra này có nên được xóa vì không cần thiết cho mục đích đã nêu?
+	 * @todo Liệu WordPress có nên chuyển đổi các bộ ký tự tương đương tiềm năng khác, như "latin1"?
 	 */
 	if (
 		( 0 === strcasecmp( 'iso-8859-1', $charset ) ) ||
@@ -7602,27 +7602,27 @@ function _canonical_charset( $charset ) {
 }
 
 /**
- * Sets the mbstring internal encoding to a binary safe encoding when func_overload
- * is enabled.
+ * Đặt mã hóa nội bộ mbstring thành mã hóa an toàn nhị phân khi func_overload
+ * được bật.
  *
- * When mbstring.func_overload is in use for multi-byte encodings, the results from
- * strlen() and similar functions respect the utf8 characters, causing binary data
- * to return incorrect lengths.
+ * Khi mbstring.func_overload được sử dụng cho mã hóa nhiều byte, kết quả từ
+ * strlen() và các hàm tương tự tôn trọng các ký tự utf8, khiến dữ liệu nhị phân
+ * trả về độ dài không chính xác.
  *
- * This function overrides the mbstring encoding to a binary-safe encoding, and
- * resets it to the users expected encoding afterwards through the
- * `reset_mbstring_encoding` function.
+ * Hàm này ghi đè mã hóa mbstring thành mã hóa an toàn nhị phân, và
+ * đặt lại thành mã hóa mong đợi của người dùng sau đó thông qua
+ * hàm `reset_mbstring_encoding`.
  *
- * It is safe to recursively call this function, however each
- * `mbstring_binary_safe_encoding()` call must be followed up with an equal number
- * of `reset_mbstring_encoding()` calls.
+ * Gọi đệ quy hàm này là an toàn, tuy nhiên mỗi lời gọi
+ * `mbstring_binary_safe_encoding()` phải được theo sau bởi số lượng tương ứng
+ * các lời gọi `reset_mbstring_encoding()`.
  *
  * @since 3.7.0
  *
  * @see reset_mbstring_encoding()
  *
- * @param bool $reset Optional. Whether to reset the encoding back to a previously-set encoding.
- *                    Default false.
+ * @param bool $reset Tùy chọn. Có đặt lại mã hóa về mã hóa đã đặt trước đó hay không.
+ *                    Mặc định false.
  */
 function mbstring_binary_safe_encoding( $reset = false ) {
 	static $encodings  = array();
@@ -7655,7 +7655,7 @@ function mbstring_binary_safe_encoding( $reset = false ) {
 }
 
 /**
- * Resets the mbstring internal encoding to a users previously set encoding.
+ * Đặt lại mã hóa nội bộ mbstring về mã hóa đã đặt trước đó của người dùng.
  *
  * @see mbstring_binary_safe_encoding()
  *
@@ -7666,14 +7666,14 @@ function reset_mbstring_encoding() {
 }
 
 /**
- * Filters/validates a variable as a boolean.
+ * Lọc/xác thực biến dưới dạng boolean.
  *
- * Alternative to `filter_var( $value, FILTER_VALIDATE_BOOLEAN )`.
+ * Thay thế cho `filter_var( $value, FILTER_VALIDATE_BOOLEAN )`.
  *
  * @since 4.0.0
  *
- * @param mixed $value Boolean value to validate.
- * @return bool Whether the value is validated.
+ * @param mixed $value Giá trị boolean cần xác thực.
+ * @return bool Liệu giá trị có được xác thực hay không.
  */
 function wp_validate_boolean( $value ) {
 	if ( is_bool( $value ) ) {
@@ -7688,21 +7688,21 @@ function wp_validate_boolean( $value ) {
 }
 
 /**
- * Deletes a file.
+ * Xóa file.
  *
  * @since 4.2.0
- * @since 6.7.0 A return value was added.
+ * @since 6.7.0 Giá trị trả về được thêm vào.
  *
- * @param string $file The path to the file to delete.
- * @return bool True on success, false on failure.
+ * @param string $file Đường dẫn đến file cần xóa.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function wp_delete_file( $file ) {
 	/**
-	 * Filters the path of the file to delete.
+	 * Lọc đường dẫn file cần xóa.
 	 *
 	 * @since 2.1.0
 	 *
-	 * @param string $file Path to the file to delete.
+	 * @param string $file Đường dẫn đến file cần xóa.
 	 */
 	$delete = apply_filters( 'wp_delete_file', $file );
 
@@ -7714,13 +7714,13 @@ function wp_delete_file( $file ) {
 }
 
 /**
- * Deletes a file if its path is within the given directory.
+ * Xóa file nếu đường dẫn của nó nằm trong thư mục đã cho.
  *
  * @since 4.9.7
  *
- * @param string $file      Absolute path to the file to delete.
- * @param string $directory Absolute path to a directory.
- * @return bool True on success, false on failure.
+ * @param string $file      Đường dẫn tuyệt đối đến file cần xóa.
+ * @param string $directory Đường dẫn tuyệt đối đến thư mục.
+ * @return bool True khi thành công, false khi thất bại.
  */
 function wp_delete_file_from_directory( $file, $directory ) {
 	if ( wp_is_stream( $file ) ) {
@@ -7747,13 +7747,13 @@ function wp_delete_file_from_directory( $file, $directory ) {
 }
 
 /**
- * Outputs a small JS snippet on preview tabs/windows to remove `window.name` when a user is navigating to another page.
+ * Xuất đoạn JS nhỏ trên các tab/cửa sổ xem trước để xóa `window.name` khi người dùng điều hướng đến trang khác.
  *
- * This prevents reusing the same tab for a preview when the user has navigated away.
+ * Điều này ngăn việc sử dụng lại cùng tab cho xem trước khi người dùng đã điều hướng đi.
  *
  * @since 4.3.0
  *
- * @global WP_Post $post Global post object.
+ * @global WP_Post $post Đối tượng bài viết toàn cục.
  */
 function wp_post_preview_js() {
 	global $post;
@@ -7762,7 +7762,7 @@ function wp_post_preview_js() {
 		return;
 	}
 
-	// Has to match the window name used in post_submit_meta_box().
+	// Phải khớp với tên cửa sổ được sử dụng trong post_submit_meta_box().
 	$name = 'wp-preview-' . (int) $post->ID;
 
 	ob_start();
@@ -7785,38 +7785,38 @@ function wp_post_preview_js() {
 }
 
 /**
- * Parses and formats a MySQL datetime (Y-m-d H:i:s) for ISO8601 (Y-m-d\TH:i:s).
+ * Phân tích và định dạng datetime MySQL (Y-m-d H:i:s) cho ISO8601 (Y-m-d\TH:i:s).
  *
- * Explicitly strips timezones, as datetimes are not saved with any timezone
- * information. Including any information on the offset could be misleading.
+ * Loại bỏ rõ ràng múi giờ, vì datetime không được lưu với bất kỳ thông tin
+ * múi giờ nào. Bao gồm bất kỳ thông tin nào về độ lệch có thể gây hiểu lầm.
  *
- * Despite historical function name, the output does not conform to RFC3339 format,
- * which must contain timezone.
+ * Mặc dù tên hàm lịch sử, đầu ra không tuân theo định dạng RFC3339,
+ * vốn phải chứa múi giờ.
  *
  * @since 4.4.0
  *
- * @param string $date_string Date string to parse and format.
- * @return string Date formatted for ISO8601 without time zone.
+ * @param string $date_string Chuỗi ngày cần phân tích và định dạng.
+ * @return string Ngày được định dạng cho ISO8601 không có múi giờ.
  */
 function mysql_to_rfc3339( $date_string ) {
 	return mysql2date( 'Y-m-d\TH:i:s', $date_string, false );
 }
 
 /**
- * Attempts to raise the PHP memory limit for memory intensive processes.
+ * Cố gắng nâng giới hạn bộ nhớ PHP cho các tiến trình sử dụng nhiều bộ nhớ.
  *
- * Only allows raising the existing limit and prevents lowering it.
+ * Chỉ cho phép nâng giới hạn hiện tại và ngăn việc hạ thấp nó.
  *
  * @since 4.6.0
  *
- * @param string $context Optional. Context in which the function is called. Accepts either 'admin',
- *                        'image', 'cron', or an arbitrary other context. If an arbitrary context is passed,
- *                        the similarly arbitrary {@see '$context_memory_limit'} filter will be
- *                        invoked. Default 'admin'.
- * @return int|string|false The limit that was set or false on failure.
+ * @param string $context Tùy chọn. Ngữ cảnh gọi hàm. Chấp nhận 'admin',
+ *                        'image', 'cron', hoặc ngữ cảnh tùy ý khác. Nếu ngữ cảnh tùy ý được truyền,
+ *                        bộ lọc tùy ý tương ứng {@see '$context_memory_limit'} sẽ được
+ *                        gọi. Mặc định 'admin'.
+ * @return int|string|false Giới hạn đã được đặt hoặc false khi thất bại.
  */
 function wp_raise_memory_limit( $context = 'admin' ) {
-	// Exit early if the limit cannot be changed.
+	// Thoát sớm nếu giới hạn không thể thay đổi.
 	if ( false === wp_is_ini_value_changeable( 'memory_limit' ) ) {
 		return false;
 	}
@@ -7835,16 +7835,16 @@ function wp_raise_memory_limit( $context = 'admin' ) {
 	switch ( $context ) {
 		case 'admin':
 			/**
-			 * Filters the maximum memory limit available for administration screens.
+			 * Lọc giới hạn bộ nhớ tối đa khả dụng cho màn hình quản trị.
 			 *
-			 * This only applies to administrators, who may require more memory for tasks
-			 * like updates. Memory limits when processing images (uploaded or edited by
-			 * users of any role) are handled separately.
+			 * Chỉ áp dụng cho quản trị viên, người có thể cần nhiều bộ nhớ hơn cho các tác vụ
+			 * như cập nhật. Giới hạn bộ nhớ khi xử lý ảnh (được tải lên hoặc chỉnh sửa bởi
+			 * người dùng bất kỳ vai trò nào) được xử lý riêng biệt.
 			 *
-			 * The `WP_MAX_MEMORY_LIMIT` constant specifically defines the maximum memory
-			 * limit available when in the administration back end. The default is 256M
-			 * (256 megabytes of memory) or the original `memory_limit` php.ini value if
-			 * this is higher.
+			 * Hằng số `WP_MAX_MEMORY_LIMIT` định nghĩa cụ thể giới hạn bộ nhớ tối đa
+			 * khả dụng khi ở trang quản trị. Mặc định là 256M
+			 * (256 megabyte bộ nhớ) hoặc giá trị `memory_limit` php.ini ban đầu nếu
+			 * cao hơn.
 			 *
 			 * @since 3.0.0
 			 * @since 4.6.0 The default now takes the original `memory_limit` into account.

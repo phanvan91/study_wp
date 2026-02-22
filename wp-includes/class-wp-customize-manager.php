@@ -2939,9 +2939,9 @@ final class WP_Customize_Manager {
 			$post_array['post_date']     = get_date_from_gmt( $args['date_gmt'] );
 		} elseif ( $changeset_post_id && 'auto-draft' === get_post_status( $changeset_post_id ) ) {
 			/*
-			 * Keep bumping the date for the auto-draft whenever it is modified;
-			 * this extends its life, preserving it from garbage-collection via
-			 * wp_delete_auto_drafts().
+			 * Tiếp tục đẩy ngày cho bản auto-draft mỗi khi được sửa đổi;
+			 * điều này kéo dài vòng đời của nó, bảo vệ nó khỏi bị dọn rác
+			 * thông qua wp_delete_auto_drafts().
 			 */
 			$post_array['post_date']     = current_time( 'mysql' );
 			$post_array['post_date_gmt'] = '';
@@ -2951,14 +2951,14 @@ final class WP_Customize_Manager {
 		add_filter( 'wp_save_post_revision_post_has_changed', array( $this, '_filter_revision_post_has_changed' ), 5, 3 );
 
 		/*
-		 * Update the changeset post. The publish_customize_changeset action will cause the settings in the
-		 * changeset to be saved via WP_Customize_Setting::save(). Updating a post with publish status will
-		 * trigger WP_Customize_Manager::publish_changeset_values().
+		 * Cập nhật bài viết changeset. Action publish_customize_changeset sẽ khiến các cài đặt trong
+		 * changeset được lưu thông qua WP_Customize_Setting::save(). Cập nhật bài viết có trạng thái publish sẽ
+		 * kích hoạt WP_Customize_Manager::publish_changeset_values().
 		 */
 		add_filter( 'wp_insert_post_data', array( $this, 'preserve_insert_changeset_post_content' ), 5, 3 );
 		if ( $changeset_post_id ) {
 			if ( $args['autosave'] && 'auto-draft' !== get_post_status( $changeset_post_id ) ) {
-				// See _wp_translate_postdata() for why this is required as it will use the edit_post meta capability.
+				// Xem _wp_translate_postdata() để biết tại sao điều này là cần thiết vì nó sẽ sử dụng meta capability edit_post.
 				add_filter( 'map_meta_cap', array( $this, 'grant_edit_post_capability_for_changeset' ), 10, 4 );
 
 				$post_array['post_ID']   = $post_array['ID'];
@@ -2968,11 +2968,11 @@ final class WP_Customize_Manager {
 
 				remove_filter( 'map_meta_cap', array( $this, 'grant_edit_post_capability_for_changeset' ), 10 );
 			} else {
-				$post_array['edit_date'] = true; // Prevent date clearing.
+				$post_array['edit_date'] = true; // Ngăn việc xóa ngày.
 
 				$r = wp_update_post( wp_slash( $post_array ), true );
 
-				// Delete autosave revision for user when the changeset is updated.
+				// Xóa bản lưu tự động cho người dùng khi changeset được cập nhật.
 				if ( ! empty( $args['user_id'] ) ) {
 					$autosave_draft = wp_get_post_autosave( $changeset_post_id, $args['user_id'] );
 					if ( $autosave_draft ) {
@@ -2983,12 +2983,12 @@ final class WP_Customize_Manager {
 		} else {
 			$r = wp_insert_post( wp_slash( $post_array ), true );
 			if ( ! is_wp_error( $r ) ) {
-				$this->_changeset_post_id = $r; // Update cached post ID for the loaded changeset.
+				$this->_changeset_post_id = $r; // Cập nhật ID bài viết đã cache cho changeset đã tải.
 			}
 		}
 		remove_filter( 'wp_insert_post_data', array( $this, 'preserve_insert_changeset_post_content' ), 5 );
 
-		$this->_changeset_data = null; // Reset so WP_Customize_Manager::changeset_data() will re-populate with updated contents.
+		$this->_changeset_data = null; // Đặt lại để WP_Customize_Manager::changeset_data() sẽ nạp lại với nội dung đã cập nhật.
 
 		remove_filter( 'wp_save_post_revision_post_has_changed', array( $this, '_filter_revision_post_has_changed' ) );
 
@@ -3005,33 +3005,33 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Preserves the initial JSON post_content passed to save into the post.
+	 * Giữ nguyên nội dung JSON post_content ban đầu được truyền vào để lưu bài viết.
 	 *
-	 * This is needed to prevent KSES and other {@see 'content_save_pre'} filters
-	 * from corrupting JSON data.
+	 * Điều này cần thiết để ngăn KSES và các bộ lọc {@see 'content_save_pre'} khác
+	 * làm hỏng dữ liệu JSON.
 	 *
-	 * Note that WP_Customize_Manager::validate_setting_values() have already
-	 * run on the setting values being serialized as JSON into the post content
-	 * so it is pre-sanitized.
+	 * Lưu ý rằng WP_Customize_Manager::validate_setting_values() đã chạy
+	 * trên các giá trị cài đặt được tuần tự hóa dưới dạng JSON vào nội dung bài viết
+	 * nên nó đã được làm sạch trước.
 	 *
-	 * Also, the sanitization logic is re-run through the respective
-	 * WP_Customize_Setting::sanitize() method when being read out of the
-	 * changeset, via WP_Customize_Manager::post_value(), and this sanitized
-	 * value will also be sent into WP_Customize_Setting::update() for
-	 * persisting to the DB.
+	 * Ngoài ra, logic làm sạch được chạy lại thông qua phương thức
+	 * WP_Customize_Setting::sanitize() tương ứng khi được đọc ra từ
+	 * changeset, thông qua WP_Customize_Manager::post_value(), và giá trị
+	 * đã làm sạch này cũng sẽ được gửi vào WP_Customize_Setting::update() để
+	 * lưu trữ vào cơ sở dữ liệu.
 	 *
-	 * Multiple users can collaborate on a single changeset, where one user may
-	 * have the unfiltered_html capability but another may not. A user with
-	 * unfiltered_html may add a script tag to some field which needs to be kept
-	 * intact even when another user updates the changeset to modify another field
-	 * when they do not have unfiltered_html.
+	 * Nhiều người dùng có thể cộng tác trên một changeset duy nhất, trong đó một người dùng có thể
+	 * có quyền unfiltered_html nhưng người khác thì không. Người dùng có
+	 * unfiltered_html có thể thêm thẻ script vào một trường cần được giữ
+	 * nguyên vẹn ngay cả khi người dùng khác cập nhật changeset để sửa đổi trường khác
+	 * khi họ không có quyền unfiltered_html.
 	 *
 	 * @since 5.4.1
 	 *
-	 * @param array $data                An array of slashed and processed post data.
-	 * @param array $postarr             An array of sanitized (and slashed) but otherwise unmodified post data.
-	 * @param array $unsanitized_postarr An array of slashed yet *unsanitized* and unprocessed post data as originally passed to wp_insert_post().
-	 * @return array Filtered post data.
+	 * @param array $data                Mảng dữ liệu bài viết đã được xử lý và thêm dấu gạch chéo.
+	 * @param array $postarr             Mảng dữ liệu bài viết đã được làm sạch (và thêm dấu gạch chéo) nhưng không bị sửa đổi khác.
+	 * @param array $unsanitized_postarr Mảng dữ liệu bài viết đã thêm dấu gạch chéo nhưng *chưa được làm sạch* và chưa xử lý như ban đầu được truyền vào wp_insert_post().
+	 * @return array Dữ liệu bài viết đã lọc.
 	 */
 	public function preserve_insert_changeset_post_content( $data, $postarr, $unsanitized_postarr ) {
 		if (
@@ -3050,20 +3050,20 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Trashes or deletes a changeset post.
+	 * Chuyển vào thùng rác hoặc xóa bài viết changeset.
 	 *
-	 * The following re-formulates the logic from `wp_trash_post()` as done in
-	 * `wp_publish_post()`. The reason for bypassing `wp_trash_post()` is that it
-	 * will mutate the the `post_content` and the `post_name` when they should be
-	 * untouched.
+	 * Đoạn sau tái cấu trúc logic từ `wp_trash_post()` như đã làm trong
+	 * `wp_publish_post()`. Lý do bỏ qua `wp_trash_post()` là vì nó
+	 * sẽ thay đổi `post_content` và `post_name` trong khi chúng cần được
+	 * giữ nguyên.
 	 *
 	 * @since 4.9.0
 	 *
 	 * @see wp_trash_post()
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @global wpdb $wpdb Đối tượng trừu tượng hóa cơ sở dữ liệu WordPress.
 	 *
-	 * @param int|WP_Post $post The changeset post.
-	 * @return mixed A WP_Post object for the trashed post or an empty value on failure.
+	 * @param int|WP_Post $post Bài viết changeset.
+	 * @return mixed Đối tượng WP_Post cho bài viết đã chuyển vào thùng rác hoặc giá trị rỗng nếu thất bại.
 	 */
 	public function trash_changeset_post( $post ) {
 		global $wpdb;
@@ -3085,13 +3085,13 @@ final class WP_Customize_Manager {
 
 		$previous_status = $post->post_status;
 
-		/** This filter is documented in wp-includes/post.php */
+		/** Bộ lọc này được ghi chú trong wp-includes/post.php */
 		$check = apply_filters( 'pre_trash_post', null, $post, $previous_status );
 		if ( null !== $check ) {
 			return $check;
 		}
 
-		/** This action is documented in wp-includes/post.php */
+		/** Action này được ghi chú trong wp-includes/post.php */
 		do_action( 'wp_trash_post', $post_id, $previous_status );
 
 		add_post_meta( $post_id, '_wp_trash_meta_status', $previous_status );
@@ -3104,33 +3104,33 @@ final class WP_Customize_Manager {
 		$post->post_status = $new_status;
 		wp_transition_post_status( $new_status, $previous_status, $post );
 
-		/** This action is documented in wp-includes/post.php */
+		/** Action này được ghi chú trong wp-includes/post.php */
 		do_action( "edit_post_{$post->post_type}", $post->ID, $post );
 
-		/** This action is documented in wp-includes/post.php */
+		/** Action này được ghi chú trong wp-includes/post.php */
 		do_action( 'edit_post', $post->ID, $post );
 
-		/** This action is documented in wp-includes/post.php */
+		/** Action này được ghi chú trong wp-includes/post.php */
 		do_action( "save_post_{$post->post_type}", $post->ID, $post, true );
 
-		/** This action is documented in wp-includes/post.php */
+		/** Action này được ghi chú trong wp-includes/post.php */
 		do_action( 'save_post', $post->ID, $post, true );
 
-		/** This action is documented in wp-includes/post.php */
+		/** Action này được ghi chú trong wp-includes/post.php */
 		do_action( 'wp_insert_post', $post->ID, $post, true );
 
 		wp_after_insert_post( get_post( $post_id ), true, $post );
 
 		wp_trash_post_comments( $post_id );
 
-		/** This action is documented in wp-includes/post.php */
+		/** Action này được ghi chú trong wp-includes/post.php */
 		do_action( 'trashed_post', $post_id, $previous_status );
 
 		return $post;
 	}
 
 	/**
-	 * Handles request to trash a changeset.
+	 * Xử lý yêu cầu chuyển changeset vào thùng rác.
 	 *
 	 * @since 4.9.0
 	 */
@@ -3215,14 +3215,14 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Re-maps 'edit_post' meta cap for a customize_changeset post to be the same as 'customize' maps.
+	 * Ánh xạ lại meta cap 'edit_post' cho bài viết customize_changeset để giống với ánh xạ 'customize'.
 	 *
-	 * There is essentially a "meta meta" cap in play here, where 'edit_post' meta cap maps to
-	 * the 'customize' meta cap which then maps to 'edit_theme_options'. This is currently
-	 * required in core for `wp_create_post_autosave()` because it will call
-	 * `_wp_translate_postdata()` which in turn will check if a user can 'edit_post', but the
-	 * the caps for the customize_changeset post type are all mapping to the meta capability.
-	 * This should be able to be removed once #40922 is addressed in core.
+	 * Về cơ bản có một "meta meta" cap đang hoạt động ở đây, trong đó meta cap 'edit_post' ánh xạ đến
+	 * meta cap 'customize' rồi ánh xạ đến 'edit_theme_options'. Điều này hiện tại
+	 * được yêu cầu trong core cho `wp_create_post_autosave()` vì nó sẽ gọi
+	 * `_wp_translate_postdata()` và kiểm tra xem người dùng có quyền 'edit_post' không, nhưng
+	 * các cap cho loại bài viết customize_changeset đều ánh xạ đến meta capability.
+	 * Điều này có thể được loại bỏ khi #40922 được xử lý trong core.
 	 *
 	 * @since 4.9.0
 	 *
@@ -3230,11 +3230,11 @@ final class WP_Customize_Manager {
 	 * @see WP_Customize_Manager::save_changeset_post()
 	 * @see _wp_translate_postdata()
 	 *
-	 * @param string[] $caps    Array of the user's capabilities.
-	 * @param string   $cap     Capability name.
-	 * @param int      $user_id The user ID.
-	 * @param array    $args    Adds the context to the cap. Typically the object ID.
-	 * @return array Capabilities.
+	 * @param string[] $caps    Mảng các quyền hạn của người dùng.
+	 * @param string   $cap     Tên quyền hạn.
+	 * @param int      $user_id ID của người dùng.
+	 * @param array    $args    Thêm ngữ cảnh cho quyền hạn. Thường là ID đối tượng.
+	 * @return array Các quyền hạn.
 	 */
 	public function grant_edit_post_capability_for_changeset( $caps, $cap, $user_id, $args ) {
 		if ( 'edit_post' === $cap && ! empty( $args[0] ) && 'customize_changeset' === get_post_type( $args[0] ) ) {
@@ -3245,12 +3245,12 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Marks the changeset post as being currently edited by the current user.
+	 * Đánh dấu bài viết changeset đang được chỉnh sửa bởi người dùng hiện tại.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param int  $changeset_post_id Changeset post ID.
-	 * @param bool $take_over Whether to take over the changeset. Default false.
+	 * @param int  $changeset_post_id ID bài viết changeset.
+	 * @param bool $take_over Có tiếp quản changeset không. Mặc định false.
 	 */
 	public function set_changeset_lock( $changeset_post_id, $take_over = false ) {
 		if ( $changeset_post_id ) {
@@ -3270,11 +3270,11 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Refreshes changeset lock with the current time if current user edited the changeset before.
+	 * Làm mới khóa changeset với thời gian hiện tại nếu người dùng hiện tại đã chỉnh sửa changeset trước đó.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param int $changeset_post_id Changeset post ID.
+	 * @param int $changeset_post_id ID bài viết changeset.
 	 */
 	public function refresh_changeset_lock( $changeset_post_id ) {
 		if ( ! $changeset_post_id ) {
@@ -3295,14 +3295,14 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Filters heartbeat settings for the Customizer.
+	 * Lọc cài đặt heartbeat cho Trình tùy biến.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @global string $pagenow The filename of the current screen.
+	 * @global string $pagenow Tên tệp của màn hình hiện tại.
 	 *
-	 * @param array $settings Current settings to filter.
-	 * @return array Heartbeat settings.
+	 * @param array $settings Cài đặt hiện tại để lọc.
+	 * @return array Cài đặt heartbeat.
 	 */
 	public function add_customize_screen_to_heartbeat_settings( $settings ) {
 		global $pagenow;
@@ -3315,12 +3315,12 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Gets lock user data.
+	 * Lấy dữ liệu người dùng đang khóa.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param int $user_id User ID.
-	 * @return array|null User data formatted for client.
+	 * @param int $user_id ID người dùng.
+	 * @return array|null Dữ liệu người dùng được định dạng cho phía client.
 	 */
 	protected function get_lock_user_data( $user_id ) {
 		if ( ! $user_id ) {
@@ -3346,14 +3346,14 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Checks locked changeset with heartbeat API.
+	 * Kiểm tra changeset bị khóa bằng API heartbeat.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param array  $response  The Heartbeat response.
-	 * @param array  $data      The $_POST data sent.
-	 * @param string $screen_id The screen id.
-	 * @return array The Heartbeat response.
+	 * @param array  $response  Phản hồi Heartbeat.
+	 * @param array  $data      Dữ liệu $_POST đã gửi.
+	 * @param string $screen_id ID màn hình.
+	 * @return array Phản hồi Heartbeat.
 	 */
 	public function check_changeset_lock_with_heartbeat( $response, $data, $screen_id ) {
 		if ( isset( $data['changeset_uuid'] ) ) {
@@ -3374,7 +3374,7 @@ final class WP_Customize_Manager {
 				$response['customize_changeset_lock_user'] = $this->get_lock_user_data( $lock_user_id );
 			} else {
 
-				// Refreshing time will ensure that the user is sitting on customizer and has not closed the customizer tab.
+				// Làm mới thời gian sẽ đảm bảo rằng người dùng đang ở trên trang tùy biến và chưa đóng tab tùy biến.
 				$this->refresh_changeset_lock( $changeset_post_id );
 			}
 		}
@@ -3383,7 +3383,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Removes changeset lock when take over request is sent via Ajax.
+	 * Xóa khóa changeset khi yêu cầu tiếp quản được gửi qua Ajax.
 	 *
 	 * @since 4.9.0
 	 */
@@ -3427,7 +3427,7 @@ final class WP_Customize_Manager {
 	}
 
 	/**
-	 * Determines whether a changeset revision should be made.
+	 * Xác định xem có nên tạo bản sửa đổi changeset hay không.
 	 *
 	 * @since 4.7.0
 	 * @var bool
@@ -3435,16 +3435,16 @@ final class WP_Customize_Manager {
 	protected $store_changeset_revision;
 
 	/**
-	 * Filters whether a changeset has changed to create a new revision.
+	 * Lọc xem changeset đã thay đổi để tạo bản sửa đổi mới hay chưa.
 	 *
-	 * Note that this will not be called while a changeset post remains in auto-draft status.
+	 * Lưu ý rằng hàm này sẽ không được gọi khi bài viết changeset vẫn ở trạng thái auto-draft.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param bool    $post_has_changed Whether the post has changed.
-	 * @param WP_Post $latest_revision  The latest revision post object.
-	 * @param WP_Post $post             The post object.
-	 * @return bool Whether a revision should be made.
+	 * @param bool    $post_has_changed Liệu bài viết đã thay đổi hay chưa.
+	 * @param WP_Post $latest_revision  Đối tượng bài viết bản sửa đổi mới nhất.
+	 * @param WP_Post $post             Đối tượng bài viết.
+	 * @return bool Liệu có nên tạo bản sửa đổi hay không.
 	 */
 	public function _filter_revision_post_has_changed( $post_has_changed, $latest_revision, $post ) {
 		unset( $latest_revision );

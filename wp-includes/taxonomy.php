@@ -2846,7 +2846,7 @@ function wp_set_object_terms( $object_id, $terms, $taxonomy, $append = false ) {
 		$term_info = term_exists( $term, $taxonomy );
 
 		if ( ! $term_info ) {
-			// Skip if a non-existent term ID is passed.
+			// Bỏ qua nếu ID term không tồn tại được truyền vào.
 			if ( is_int( $term ) ) {
 				continue;
 			}
@@ -2866,14 +2866,14 @@ function wp_set_object_terms( $object_id, $terms, $taxonomy, $append = false ) {
 		}
 
 		/**
-		 * Fires immediately before an object-term relationship is added.
+		 * Kích hoạt ngay trước khi mối quan hệ đối tượng-term được thêm.
 		 *
 		 * @since 2.9.0
-		 * @since 4.7.0 Added the `$taxonomy` parameter.
+		 * @since 4.7.0 Thêm tham số `$taxonomy`.
 		 *
-		 * @param int    $object_id Object ID.
-		 * @param int    $tt_id     Term taxonomy ID.
-		 * @param string $taxonomy  Taxonomy slug.
+		 * @param int    $object_id ID đối tượng.
+		 * @param int    $tt_id     ID taxonomy của term.
+		 * @param string $taxonomy  Slug taxonomy.
 		 */
 		do_action( 'add_term_relationship', $object_id, $tt_id, $taxonomy );
 
@@ -2886,14 +2886,14 @@ function wp_set_object_terms( $object_id, $terms, $taxonomy, $append = false ) {
 		);
 
 		/**
-		 * Fires immediately after an object-term relationship is added.
+		 * Kích hoạt ngay sau khi mối quan hệ đối tượng-term được thêm.
 		 *
 		 * @since 2.9.0
-		 * @since 4.7.0 Added the `$taxonomy` parameter.
+		 * @since 4.7.0 Thêm tham số `$taxonomy`.
 		 *
-		 * @param int    $object_id Object ID.
-		 * @param int    $tt_id     Term taxonomy ID.
-		 * @param string $taxonomy  Taxonomy slug.
+		 * @param int    $object_id ID đối tượng.
+		 * @param int    $tt_id     ID taxonomy của term.
+		 * @param string $taxonomy  Slug taxonomy.
 		 */
 		do_action( 'added_term_relationship', $object_id, $tt_id, $taxonomy );
 
@@ -2951,16 +2951,16 @@ function wp_set_object_terms( $object_id, $terms, $taxonomy, $append = false ) {
 	wp_cache_set_terms_last_changed();
 
 	/**
-	 * Fires after an object's terms have been set.
+	 * Kích hoạt sau khi các term của đối tượng đã được thiết lập.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param int    $object_id  Object ID.
-	 * @param array  $terms      An array of object term IDs or slugs.
-	 * @param array  $tt_ids     An array of term taxonomy IDs.
-	 * @param string $taxonomy   Taxonomy slug.
-	 * @param bool   $append     Whether to append new terms to the old terms.
-	 * @param array  $old_tt_ids Old array of term taxonomy IDs.
+	 * @param int    $object_id  ID đối tượng.
+	 * @param array  $terms      Mảng các ID hoặc slug term của đối tượng.
+	 * @param array  $tt_ids     Mảng các ID taxonomy của term.
+	 * @param string $taxonomy   Slug taxonomy.
+	 * @param bool   $append     Có nối thêm term mới vào term cũ hay không.
+	 * @param array  $old_tt_ids Mảng cũ các ID taxonomy của term.
 	 */
 	do_action( 'set_object_terms', $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids );
 
@@ -2968,30 +2968,30 @@ function wp_set_object_terms( $object_id, $terms, $taxonomy, $append = false ) {
 }
 
 /**
- * Adds term(s) associated with a given object.
+ * Thêm (các) term liên kết với đối tượng cho trước.
  *
  * @since 3.6.0
  *
- * @param int              $object_id The ID of the object to which the terms will be added.
- * @param string|int|array $terms     The slug(s) or ID(s) of the term(s) to add.
- * @param array|string     $taxonomy  Taxonomy name.
- * @return array|WP_Error Term taxonomy IDs of the affected terms.
+ * @param int              $object_id ID của đối tượng mà các term sẽ được thêm vào.
+ * @param string|int|array $terms     (Các) slug hoặc ID của (các) term cần thêm.
+ * @param array|string     $taxonomy  Tên taxonomy.
+ * @return array|WP_Error Các ID taxonomy của term bị ảnh hưởng.
  */
 function wp_add_object_terms( $object_id, $terms, $taxonomy ) {
 	return wp_set_object_terms( $object_id, $terms, $taxonomy, true );
 }
 
 /**
- * Removes term(s) associated with a given object.
+ * Xóa (các) term liên kết với đối tượng cho trước.
  *
  * @since 3.6.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int              $object_id The ID of the object from which the terms will be removed.
- * @param string|int|array $terms     The slug(s) or ID(s) of the term(s) to remove.
- * @param string           $taxonomy  Taxonomy name.
- * @return bool|WP_Error True on success, false or WP_Error on failure.
+ * @param int              $object_id ID của đối tượng mà các term sẽ bị xóa khỏi.
+ * @param string|int|array $terms     (Các) slug hoặc ID của (các) term cần xóa.
+ * @param string           $taxonomy  Tên taxonomy.
+ * @return bool|WP_Error True nếu thành công, false hoặc WP_Error nếu thất bại.
  */
 function wp_remove_object_terms( $object_id, $terms, $taxonomy ) {
 	global $wpdb;
@@ -3015,7 +3015,7 @@ function wp_remove_object_terms( $object_id, $terms, $taxonomy ) {
 
 		$term_info = term_exists( $term, $taxonomy );
 		if ( ! $term_info ) {
-			// Skip if a non-existent term ID is passed.
+			// Bỏ qua nếu ID term không tồn tại được truyền vào.
 			if ( is_int( $term ) ) {
 				continue;
 			}
@@ -3032,14 +3032,14 @@ function wp_remove_object_terms( $object_id, $terms, $taxonomy ) {
 		$in_tt_ids = "'" . implode( "', '", $tt_ids ) . "'";
 
 		/**
-		 * Fires immediately before an object-term relationship is deleted.
+		 * Kích hoạt ngay trước khi mối quan hệ đối tượng-term bị xóa.
 		 *
 		 * @since 2.9.0
-		 * @since 4.7.0 Added the `$taxonomy` parameter.
+		 * @since 4.7.0 Thêm tham số `$taxonomy`.
 		 *
-		 * @param int    $object_id Object ID.
-		 * @param array  $tt_ids    An array of term taxonomy IDs.
-		 * @param string $taxonomy  Taxonomy slug.
+		 * @param int    $object_id ID đối tượng.
+		 * @param array  $tt_ids    Mảng các ID taxonomy của term.
+		 * @param string $taxonomy  Slug taxonomy.
 		 */
 		do_action( 'delete_term_relationships', $object_id, $tt_ids, $taxonomy );
 
@@ -3049,14 +3049,14 @@ function wp_remove_object_terms( $object_id, $terms, $taxonomy ) {
 		wp_cache_set_terms_last_changed();
 
 		/**
-		 * Fires immediately after an object-term relationship is deleted.
+		 * Kích hoạt ngay sau khi mối quan hệ đối tượng-term bị xóa.
 		 *
 		 * @since 2.9.0
-		 * @since 4.7.0 Added the `$taxonomy` parameter.
+		 * @since 4.7.0 Thêm tham số `$taxonomy`.
 		 *
-		 * @param int    $object_id Object ID.
-		 * @param array  $tt_ids    An array of term taxonomy IDs.
-		 * @param string $taxonomy  Taxonomy slug.
+		 * @param int    $object_id ID đối tượng.
+		 * @param array  $tt_ids    Mảng các ID taxonomy của term.
+		 * @param string $taxonomy  Slug taxonomy.
 		 */
 		do_action( 'deleted_term_relationships', $object_id, $tt_ids, $taxonomy );
 
@@ -3069,27 +3069,27 @@ function wp_remove_object_terms( $object_id, $terms, $taxonomy ) {
 }
 
 /**
- * Makes term slug unique, if it isn't already.
+ * Tạo slug của term là duy nhất, nếu chưa duy nhất.
  *
- * The `$slug` has to be unique global to every taxonomy, meaning that one
- * taxonomy term can't have a matching slug with another taxonomy term. Each
- * slug has to be globally unique for every taxonomy.
+ * `$slug` phải là duy nhất toàn cục cho mọi taxonomy, nghĩa là một
+ * term taxonomy không thể có slug trùng với term taxonomy khác. Mỗi
+ * slug phải là duy nhất toàn cục cho mọi taxonomy.
  *
- * The way this works is that if the taxonomy that the term belongs to is
- * hierarchical and has a parent, it will append that parent to the $slug.
+ * Cách hoạt động là nếu taxonomy mà term thuộc về là
+ * phân cấp và có parent, nó sẽ nối thêm parent đó vào $slug.
  *
- * If that still doesn't return a unique slug, then it tries to append a number
- * until it finds a number that is truly unique.
+ * Nếu vẫn không trả về slug duy nhất, thì nó sẽ thử nối thêm một số
+ * cho đến khi tìm được số thực sự duy nhất.
  *
- * The only purpose for `$term` is for appending a parent, if one exists.
+ * Mục đích duy nhất của `$term` là để nối thêm parent, nếu tồn tại.
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param string $slug The string that will be tried for a unique slug.
- * @param object $term The term object that the `$slug` will belong to.
- * @return string Will return a true unique slug.
+ * @param string $slug Chuỗi sẽ được thử cho slug duy nhất.
+ * @param object $term Đối tượng term mà `$slug` sẽ thuộc về.
+ * @return string Sẽ trả về slug thực sự duy nhất.
  */
 function wp_unique_term_slug( $slug, $term ) {
 	global $wpdb;
@@ -3097,14 +3097,14 @@ function wp_unique_term_slug( $slug, $term ) {
 	$needs_suffix  = true;
 	$original_slug = $slug;
 
-	// As of 4.1, duplicate slugs are allowed as long as they're in different taxonomies.
+	// Từ phiên bản 4.1, slug trùng lặp được cho phép miễn là chúng ở các taxonomy khác nhau.
 	if ( ! term_exists( $slug ) || get_option( 'db_version' ) >= 30133 && ! get_term_by( 'slug', $slug, $term->taxonomy ) ) {
 		$needs_suffix = false;
 	}
 
 	/*
-	 * If the taxonomy supports hierarchy and the term has a parent, make the slug unique
-	 * by incorporating parent slugs.
+	 * Nếu taxonomy hỗ trợ phân cấp và term có parent, tạo slug duy nhất
+	 * bằng cách kết hợp slug của parent.
 	 */
 	$parent_suffix = '';
 	if ( $needs_suffix && is_taxonomy_hierarchical( $term->taxonomy ) && ! empty( $term->parent ) ) {
@@ -3126,16 +3126,16 @@ function wp_unique_term_slug( $slug, $term ) {
 		}
 	}
 
-	// If we didn't get a unique slug, try appending a number to make it unique.
+	// Nếu không có được slug duy nhất, thử nối thêm số để tạo slug duy nhất.
 
 	/**
-	 * Filters whether the proposed unique term slug is bad.
+	 * Lọc xem slug term duy nhất đề xuất có xấu hay không.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param bool   $needs_suffix Whether the slug needs to be made unique with a suffix.
-	 * @param string $slug         The slug.
-	 * @param object $term         Term object.
+	 * @param bool   $needs_suffix Slug có cần được tạo duy nhất bằng hậu tố hay không.
+	 * @param string $slug         Slug.
+	 * @param object $term         Đối tượng term.
 	 */
 	if ( apply_filters( 'wp_unique_term_slug_is_bad_slug', $needs_suffix, $slug, $term ) ) {
 		if ( $parent_suffix ) {
@@ -3160,51 +3160,51 @@ function wp_unique_term_slug( $slug, $term ) {
 	}
 
 	/**
-	 * Filters the unique term slug.
+	 * Lọc slug term duy nhất.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param string $slug          Unique term slug.
-	 * @param object $term          Term object.
-	 * @param string $original_slug Slug originally passed to the function for testing.
+	 * @param string $slug          Slug term duy nhất.
+	 * @param object $term          Đối tượng term.
+	 * @param string $original_slug Slug ban đầu được truyền vào hàm để kiểm tra.
 	 */
 	return apply_filters( 'wp_unique_term_slug', $slug, $term, $original_slug );
 }
 
 /**
- * Updates term based on arguments provided.
+ * Cập nhật term dựa trên các tham số được cung cấp.
  *
- * The `$args` will indiscriminately override all values with the same field name.
- * Care must be taken to not override important information need to update or
- * update will fail (or perhaps create a new term, neither would be acceptable).
+ * `$args` sẽ ghi đè không phân biệt tất cả giá trị có cùng tên trường.
+ * Cần cẩn thận để không ghi đè thông tin quan trọng cần thiết cho việc cập nhật,
+ * nếu không cập nhật sẽ thất bại (hoặc có thể tạo term mới, cả hai đều không chấp nhận được).
  *
- * Defaults will set 'alias_of', 'description', 'parent', and 'slug' if not
- * defined in `$args` already.
+ * Giá trị mặc định sẽ thiết lập 'alias_of', 'description', 'parent', và 'slug' nếu chưa
+ * được định nghĩa trong `$args`.
  *
- * 'alias_of' will create a term group, if it doesn't already exist, and
- * update it for the `$term`.
+ * 'alias_of' sẽ tạo nhóm term, nếu chưa tồn tại, và
+ * cập nhật nó cho `$term`.
  *
- * If the 'slug' argument in `$args` is missing, then the 'name' will be used.
- * If you set 'slug' and it isn't unique, then a WP_Error is returned.
- * If you don't pass any slug, then a unique one will be created.
+ * Nếu tham số 'slug' trong `$args` bị thiếu, thì 'name' sẽ được sử dụng.
+ * Nếu bạn đặt 'slug' và nó không duy nhất, thì WP_Error sẽ được trả về.
+ * Nếu bạn không truyền slug nào, thì một slug duy nhất sẽ được tạo.
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param int          $term_id  The ID of the term.
- * @param string       $taxonomy The taxonomy of the term.
+ * @param int          $term_id  ID của term.
+ * @param string       $taxonomy Taxonomy của term.
  * @param array        $args {
- *     Optional. Array of arguments for updating a term.
+ *     Tùy chọn. Mảng tham số để cập nhật term.
  *
- *     @type string $alias_of    Slug of the term to make this term an alias of.
- *                               Default empty string. Accepts a term slug.
- *     @type string $description The term description. Default empty string.
- *     @type int    $parent      The id of the parent term. Default 0.
- *     @type string $slug        The term slug to use. Default empty string.
+ *     @type string $alias_of    Slug của term để biến term này thành bí danh.
+ *                               Mặc định chuỗi rỗng. Chấp nhận slug term.
+ *     @type string $description Mô tả của term. Mặc định chuỗi rỗng.
+ *     @type int    $parent      ID của term cha. Mặc định 0.
+ *     @type string $slug        Slug term để sử dụng. Mặc định chuỗi rỗng.
  * }
- * @return array|WP_Error An array containing the `term_id` and `term_taxonomy_id`,
- *                        WP_Error otherwise.
+ * @return array|WP_Error Mảng chứa `term_id` và `term_taxonomy_id`,
+ *                        WP_Error nếu ngược lại.
  */
 function wp_update_term( $term_id, $taxonomy, $args = array() ) {
 	global $wpdb;
@@ -3215,7 +3215,7 @@ function wp_update_term( $term_id, $taxonomy, $args = array() ) {
 
 	$term_id = (int) $term_id;
 
-	// First, get all of the original args.
+	// Đầu tiên, lấy tất cả các tham số gốc.
 	$term = get_term( $term_id, $taxonomy );
 
 	if ( is_wp_error( $term ) ) {
@@ -3228,10 +3228,10 @@ function wp_update_term( $term_id, $taxonomy, $args = array() ) {
 
 	$term = (array) $term->data;
 
-	// Escape data pulled from DB.
+	// Escape dữ liệu lấy từ DB.
 	$term = wp_slash( $term );
 
-	// Merge old and new args with new args overwriting old ones.
+	// Gộp tham số cũ và mới, tham số mới ghi đè lên tham số cũ.
 	$args = array_merge( $term, $args );
 
 	$defaults    = array(
@@ -3273,12 +3273,12 @@ function wp_update_term( $term_id, $taxonomy, $args = array() ) {
 	if ( $args['alias_of'] ) {
 		$alias = get_term_by( 'slug', $args['alias_of'], $taxonomy );
 		if ( ! empty( $alias->term_group ) ) {
-			// The alias we want is already in a group, so let's use that one.
+			// Bí danh muốn dùng đã nằm trong một nhóm, vậy hãy dùng nhóm đó.
 			$term_group = $alias->term_group;
 		} elseif ( ! empty( $alias->term_id ) ) {
 			/*
-			 * The alias is not in a group, so we create a new one
-			 * and add the alias to it.
+			 * Bí danh chưa nằm trong nhóm nào, nên chúng ta tạo nhóm mới
+			 * và thêm bí danh vào đó.
 			 */
 			$term_group = $wpdb->get_var( "SELECT MAX(term_group) FROM $wpdb->terms" ) + 1;
 
@@ -3295,26 +3295,26 @@ function wp_update_term( $term_id, $taxonomy, $args = array() ) {
 	}
 
 	/**
-	 * Filters the term parent.
+	 * Lọc term cha.
 	 *
-	 * Hook to this filter to see if it will cause a hierarchy loop.
+	 * Hook vào filter này để kiểm tra xem nó có gây ra vòng lặp phân cấp hay không.
 	 *
 	 * @since 3.1.0
 	 *
-	 * @param int    $parent_term ID of the parent term.
-	 * @param int    $term_id     Term ID.
-	 * @param string $taxonomy    Taxonomy slug.
-	 * @param array  $parsed_args An array of potentially altered update arguments for the given term.
-	 * @param array  $args        Arguments passed to wp_update_term().
+	 * @param int    $parent_term ID của term cha.
+	 * @param int    $term_id     ID term.
+	 * @param string $taxonomy    Slug taxonomy.
+	 * @param array  $parsed_args Mảng các tham số cập nhật có thể đã được thay đổi cho term cho trước.
+	 * @param array  $args        Tham số được truyền vào wp_update_term().
 	 */
 	$parent = (int) apply_filters( 'wp_update_term_parent', $args['parent'], $term_id, $taxonomy, $parsed_args, $args );
 
-	// Check for duplicate slug.
+	// Kiểm tra slug trùng lặp.
 	$duplicate = get_term_by( 'slug', $slug, $taxonomy );
 	if ( $duplicate && $duplicate->term_id !== $term_id ) {
 		/*
-		 * If an empty slug was passed or the parent changed, reset the slug to something unique.
-		 * Otherwise, bail.
+		 * Nếu slug rỗng được truyền vào hoặc parent đã thay đổi, đặt lại slug thành giá trị duy nhất.
+		 * Nếu không, thoát ra.
 		 */
 		if ( $empty_slug || ( $parent !== (int) $term['parent'] ) ) {
 			$slug = wp_unique_term_slug( $slug, (object) $args );
@@ -3326,35 +3326,35 @@ function wp_update_term( $term_id, $taxonomy, $args = array() ) {
 
 	$tt_id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT tt.term_taxonomy_id FROM $wpdb->term_taxonomy AS tt INNER JOIN $wpdb->terms AS t ON tt.term_id = t.term_id WHERE tt.taxonomy = %s AND t.term_id = %d", $taxonomy, $term_id ) );
 
-	// Check whether this is a shared term that needs splitting.
+	// Kiểm tra xem đây có phải là term dùng chung cần tách hay không.
 	$_term_id = _split_shared_term( $term_id, $tt_id );
 	if ( ! is_wp_error( $_term_id ) ) {
 		$term_id = $_term_id;
 	}
 
 	/**
-	 * Fires immediately before the given terms are edited.
+	 * Kích hoạt ngay trước khi các term cho trước được chỉnh sửa.
 	 *
 	 * @since 2.9.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int    $term_id  Term ID.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Arguments passed to wp_update_term().
+	 * @param int    $term_id  ID term.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param array  $args     Tham số được truyền vào wp_update_term().
 	 */
 	do_action( 'edit_terms', $term_id, $taxonomy, $args );
 
 	$data = compact( 'name', 'slug', 'term_group' );
 
 	/**
-	 * Filters term data before it is updated in the database.
+	 * Lọc dữ liệu term trước khi được cập nhật trong cơ sở dữ liệu.
 	 *
 	 * @since 4.7.0
 	 *
-	 * @param array  $data     Term data to be updated.
-	 * @param int    $term_id  Term ID.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Arguments passed to wp_update_term().
+	 * @param array  $data     Dữ liệu term sẽ được cập nhật.
+	 * @param int    $term_id  ID term.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param array  $args     Tham số được truyền vào wp_update_term().
 	 */
 	$data = apply_filters( 'wp_update_term_data', $data, $term_id, $taxonomy, $args );
 
@@ -3366,125 +3366,125 @@ function wp_update_term( $term_id, $taxonomy, $args = array() ) {
 	}
 
 	/**
-	 * Fires immediately after a term is updated in the database, but before its
-	 * term-taxonomy relationship is updated.
+	 * Kích hoạt ngay sau khi term được cập nhật trong cơ sở dữ liệu, nhưng trước khi
+	 * mối quan hệ term-taxonomy được cập nhật.
 	 *
 	 * @since 2.9.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int    $term_id  Term ID.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Arguments passed to wp_update_term().
+	 * @param int    $term_id  ID term.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param array  $args     Tham số được truyền vào wp_update_term().
 	 */
 	do_action( 'edited_terms', $term_id, $taxonomy, $args );
 
 	/**
-	 * Fires immediate before a term-taxonomy relationship is updated.
+	 * Kích hoạt ngay trước khi mối quan hệ term-taxonomy được cập nhật.
 	 *
 	 * @since 2.9.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int    $tt_id    Term taxonomy ID.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Arguments passed to wp_update_term().
+	 * @param int    $tt_id    ID taxonomy của term.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param array  $args     Tham số được truyền vào wp_update_term().
 	 */
 	do_action( 'edit_term_taxonomy', $tt_id, $taxonomy, $args );
 
 	$wpdb->update( $wpdb->term_taxonomy, compact( 'term_id', 'taxonomy', 'description', 'parent' ), array( 'term_taxonomy_id' => $tt_id ) );
 
 	/**
-	 * Fires immediately after a term-taxonomy relationship is updated.
+	 * Kích hoạt ngay sau khi mối quan hệ term-taxonomy được cập nhật.
 	 *
 	 * @since 2.9.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int    $tt_id    Term taxonomy ID.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Arguments passed to wp_update_term().
+	 * @param int    $tt_id    ID taxonomy của term.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param array  $args     Tham số được truyền vào wp_update_term().
 	 */
 	do_action( 'edited_term_taxonomy', $tt_id, $taxonomy, $args );
 
 	/**
-	 * Fires after a term has been updated, but before the term cache has been cleaned.
+	 * Kích hoạt sau khi term đã được cập nhật, nhưng trước khi bộ nhớ đệm term được xóa.
 	 *
-	 * The {@see 'edit_$taxonomy'} hook is also available for targeting a specific
-	 * taxonomy.
+	 * Hook {@see 'edit_$taxonomy'} cũng có sẵn để nhắm đến một
+	 * taxonomy cụ thể.
 	 *
 	 * @since 2.3.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int    $term_id  Term ID.
-	 * @param int    $tt_id    Term taxonomy ID.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Arguments passed to wp_update_term().
+	 * @param int    $term_id  ID term.
+	 * @param int    $tt_id    ID taxonomy của term.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param array  $args     Tham số được truyền vào wp_update_term().
 	 */
 	do_action( 'edit_term', $term_id, $tt_id, $taxonomy, $args );
 
 	/**
-	 * Fires after a term in a specific taxonomy has been updated, but before the term
-	 * cache has been cleaned.
+	 * Kích hoạt sau khi term trong một taxonomy cụ thể đã được cập nhật, nhưng trước khi
+	 * bộ nhớ đệm term được xóa.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers to the taxonomy slug.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu đến slug taxonomy.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `edit_category`
 	 *  - `edit_post_tag`
 	 *
 	 * @since 2.3.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int   $term_id Term ID.
-	 * @param int   $tt_id   Term taxonomy ID.
-	 * @param array $args    Arguments passed to wp_update_term().
+	 * @param int   $term_id ID term.
+	 * @param int   $tt_id   ID taxonomy của term.
+	 * @param array $args    Tham số được truyền vào wp_update_term().
 	 */
 	do_action( "edit_{$taxonomy}", $term_id, $tt_id, $args );
 
-	/** This filter is documented in wp-includes/taxonomy.php */
+	/** Filter này được ghi chú tại wp-includes/taxonomy.php */
 	$term_id = apply_filters( 'term_id_filter', $term_id, $tt_id );
 
 	clean_term_cache( $term_id, $taxonomy );
 
 	/**
-	 * Fires after a term has been updated, and the term cache has been cleaned.
+	 * Kích hoạt sau khi term đã được cập nhật, và bộ nhớ đệm term đã được xóa.
 	 *
-	 * The {@see 'edited_$taxonomy'} hook is also available for targeting a specific
-	 * taxonomy.
+	 * Hook {@see 'edited_$taxonomy'} cũng có sẵn để nhắm đến một
+	 * taxonomy cụ thể.
 	 *
 	 * @since 2.3.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int    $term_id  Term ID.
-	 * @param int    $tt_id    Term taxonomy ID.
-	 * @param string $taxonomy Taxonomy slug.
-	 * @param array  $args     Arguments passed to wp_update_term().
+	 * @param int    $term_id  ID term.
+	 * @param int    $tt_id    ID taxonomy của term.
+	 * @param string $taxonomy Slug taxonomy.
+	 * @param array  $args     Tham số được truyền vào wp_update_term().
 	 */
 	do_action( 'edited_term', $term_id, $tt_id, $taxonomy, $args );
 
 	/**
-	 * Fires after a term for a specific taxonomy has been updated, and the term
-	 * cache has been cleaned.
+	 * Kích hoạt sau khi term cho một taxonomy cụ thể đã được cập nhật, và bộ nhớ đệm
+	 * term đã được xóa.
 	 *
-	 * The dynamic portion of the hook name, `$taxonomy`, refers to the taxonomy slug.
+	 * Phần động của tên hook, `$taxonomy`, tham chiếu đến slug taxonomy.
 	 *
-	 * Possible hook names include:
+	 * Các tên hook có thể bao gồm:
 	 *
 	 *  - `edited_category`
 	 *  - `edited_post_tag`
 	 *
 	 * @since 2.3.0
-	 * @since 6.1.0 The `$args` parameter was added.
+	 * @since 6.1.0 Thêm tham số `$args`.
 	 *
-	 * @param int   $term_id Term ID.
-	 * @param int   $tt_id   Term taxonomy ID.
-	 * @param array $args    Arguments passed to wp_update_term().
+	 * @param int   $term_id ID term.
+	 * @param int   $tt_id   ID taxonomy của term.
+	 * @param array $args    Tham số được truyền vào wp_update_term().
 	 */
 	do_action( "edited_{$taxonomy}", $term_id, $tt_id, $args );
 
-	/** This action is documented in wp-includes/taxonomy.php */
+	/** Action này được ghi chú tại wp-includes/taxonomy.php */
 	do_action( 'saved_term', $term_id, $tt_id, $taxonomy, true, $args );
 
-	/** This action is documented in wp-includes/taxonomy.php */
+	/** Action này được ghi chú tại wp-includes/taxonomy.php */
 	do_action( "saved_{$taxonomy}", $term_id, $tt_id, true, $args );
 
 	return array(
@@ -3494,19 +3494,19 @@ function wp_update_term( $term_id, $taxonomy, $args = array() ) {
 }
 
 /**
- * Enables or disables term counting.
+ * Bật hoặc tắt việc đếm term.
  *
  * @since 2.5.0
  *
- * @param bool $defer Optional. Enable if true, disable if false.
- * @return bool Whether term counting is enabled or disabled.
+ * @param bool $defer Tùy chọn. Bật nếu true, tắt nếu false.
+ * @return bool Việc đếm term đang được bật hay tắt.
  */
 function wp_defer_term_counting( $defer = null ) {
 	static $_defer = false;
 
 	if ( is_bool( $defer ) ) {
 		$_defer = $defer;
-		// Flush any deferred counts.
+		// Xả tất cả các đếm bị trì hoãn.
 		if ( ! $defer ) {
 			wp_update_term_count( null, null, true );
 		}
@@ -3516,20 +3516,20 @@ function wp_defer_term_counting( $defer = null ) {
 }
 
 /**
- * Updates the amount of terms in taxonomy.
+ * Cập nhật số lượng term trong taxonomy.
  *
- * If there is a taxonomy callback applied, then it will be called for updating
- * the count.
+ * Nếu có callback taxonomy được áp dụng, thì nó sẽ được gọi để cập nhật
+ * số đếm.
  *
- * The default action is to count what the amount of terms have the relationship
- * of term ID. Once that is done, then update the database.
+ * Hành động mặc định là đếm số lượng term có mối quan hệ
+ * với ID term. Sau khi hoàn thành, thì cập nhật cơ sở dữ liệu.
  *
  * @since 2.3.0
  *
- * @param int|array $terms       The term_taxonomy_id of the terms.
- * @param string    $taxonomy    The context of the term.
- * @param bool      $do_deferred Whether to flush the deferred term counts too. Default false.
- * @return bool If no terms will return false, and if successful will return true.
+ * @param int|array $terms       term_taxonomy_id của các term.
+ * @param string    $taxonomy    Ngữ cảnh của term.
+ * @param bool      $do_deferred Có xả các đếm term bị trì hoãn hay không. Mặc định false.
+ * @return bool Nếu không có term sẽ trả về false, và nếu thành công sẽ trả về true.
  */
 function wp_update_term_count( $terms, $taxonomy, $do_deferred = false ) {
 	static $_deferred = array();
@@ -3561,13 +3561,13 @@ function wp_update_term_count( $terms, $taxonomy, $do_deferred = false ) {
 }
 
 /**
- * Performs term count update immediately.
+ * Thực hiện cập nhật số đếm term ngay lập tức.
  *
  * @since 2.5.0
  *
- * @param array  $terms    The term_taxonomy_id of terms to update.
- * @param string $taxonomy The context of the term.
- * @return true Always true when complete.
+ * @param array  $terms    term_taxonomy_id của các term cần cập nhật.
+ * @param string $taxonomy Ngữ cảnh của term.
+ * @return true Luôn trả về true khi hoàn thành.
  */
 function wp_update_term_count_now( $terms, $taxonomy ) {
 	$terms = array_map( 'intval', $terms );
@@ -3584,10 +3584,10 @@ function wp_update_term_count_now( $terms, $taxonomy ) {
 		}
 
 		if ( array_filter( $object_types, 'post_type_exists' ) == $object_types ) {
-			// Only post types are attached to this taxonomy.
+			// Chỉ các post type được gắn với taxonomy này.
 			_update_post_term_count( $terms, $taxonomy );
 		} else {
-			// Default count updater.
+			// Bộ cập nhật số đếm mặc định.
 			_update_generic_term_count( $terms, $taxonomy );
 		}
 	}
@@ -3598,24 +3598,24 @@ function wp_update_term_count_now( $terms, $taxonomy ) {
 }
 
 //
-// Cache.
+// Bộ nhớ đệm.
 //
 
 /**
- * Removes the taxonomy relationship to terms from the cache.
+ * Xóa mối quan hệ taxonomy với term khỏi bộ nhớ đệm.
  *
- * Will remove the entire taxonomy relationship containing term `$object_id`. The
- * term IDs have to exist within the taxonomy `$object_type` for the deletion to
- * take place.
+ * Sẽ xóa toàn bộ mối quan hệ taxonomy chứa term `$object_id`. Các
+ * ID term phải tồn tại trong taxonomy `$object_type` để việc xóa
+ * diễn ra.
  *
  * @since 2.3.0
  *
  * @global bool $_wp_suspend_cache_invalidation
  *
- * @see get_object_taxonomies() for more on $object_type.
+ * @see get_object_taxonomies() để biết thêm về $object_type.
  *
- * @param int|array    $object_ids  Single or list of term object ID(s).
- * @param array|string $object_type The taxonomy object type.
+ * @param int|array    $object_ids  Một hoặc danh sách (các) ID đối tượng term.
+ * @param array|string $object_type Loại đối tượng taxonomy.
  */
 function clean_object_term_cache( $object_ids, $object_type ) {
 	global $_wp_suspend_cache_invalidation;
@@ -3637,29 +3637,29 @@ function clean_object_term_cache( $object_ids, $object_type ) {
 	wp_cache_set_terms_last_changed();
 
 	/**
-	 * Fires after the object term cache has been cleaned.
+	 * Kích hoạt sau khi bộ nhớ đệm term của đối tượng đã được xóa.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param array  $object_ids An array of object IDs.
-	 * @param string $object_type Object type.
+	 * @param array  $object_ids Mảng các ID đối tượng.
+	 * @param string $object_type Loại đối tượng.
 	 */
 	do_action( 'clean_object_term_cache', $object_ids, $object_type );
 }
 
 /**
- * Removes all of the term IDs from the cache.
+ * Xóa tất cả các ID term khỏi bộ nhớ đệm.
  *
  * @since 2.3.0
  *
- * @global wpdb $wpdb                           WordPress database abstraction object.
+ * @global wpdb $wpdb                           Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  * @global bool $_wp_suspend_cache_invalidation
  *
- * @param int|int[] $ids            Single or array of term IDs.
- * @param string    $taxonomy       Optional. Taxonomy slug. Can be empty, in which case the taxonomies of the passed
- *                                  term IDs will be used. Default empty.
- * @param bool      $clean_taxonomy Optional. Whether to clean taxonomy wide caches (true), or just individual
- *                                  term object caches (false). Default true.
+ * @param int|int[] $ids            Một hoặc mảng các ID term.
+ * @param string    $taxonomy       Tùy chọn. Slug taxonomy. Có thể rỗng, trong trường hợp đó các taxonomy của
+ *                                  ID term được truyền sẽ được sử dụng. Mặc định rỗng.
+ * @param bool      $clean_taxonomy Tùy chọn. Có xóa bộ nhớ đệm toàn bộ taxonomy (true), hay chỉ bộ nhớ đệm
+ *                                  đối tượng term riêng lẻ (false). Mặc định true.
  */
 function clean_term_cache( $ids, $taxonomy = '', $clean_taxonomy = true ) {
 	global $wpdb, $_wp_suspend_cache_invalidation;
@@ -3673,7 +3673,7 @@ function clean_term_cache( $ids, $taxonomy = '', $clean_taxonomy = true ) {
 	}
 
 	$taxonomies = array();
-	// If no taxonomy, assume tt_ids.
+	// Nếu không có taxonomy, giả định là tt_ids.
 	if ( empty( $taxonomy ) ) {
 		$tt_ids = array_map( 'intval', $ids );
 		$tt_ids = implode( ', ', $tt_ids );
@@ -3697,14 +3697,14 @@ function clean_term_cache( $ids, $taxonomy = '', $clean_taxonomy = true ) {
 		}
 
 		/**
-		 * Fires once after each taxonomy's term cache has been cleaned.
+		 * Kích hoạt một lần sau khi bộ nhớ đệm term của mỗi taxonomy đã được xóa.
 		 *
 		 * @since 2.5.0
-		 * @since 4.5.0 Added the `$clean_taxonomy` parameter.
+		 * @since 4.5.0 Thêm tham số `$clean_taxonomy`.
 		 *
-		 * @param array  $ids            An array of term IDs.
-		 * @param string $taxonomy       Taxonomy slug.
-		 * @param bool   $clean_taxonomy Whether or not to clean taxonomy-wide caches
+		 * @param array  $ids            Mảng các ID term.
+		 * @param string $taxonomy       Slug taxonomy.
+		 * @param bool   $clean_taxonomy Có xóa bộ nhớ đệm toàn bộ taxonomy hay không.
 		 */
 		do_action( 'clean_term_cache', $ids, $taxonomy, $clean_taxonomy );
 	}
@@ -3713,57 +3713,57 @@ function clean_term_cache( $ids, $taxonomy = '', $clean_taxonomy = true ) {
 }
 
 /**
- * Cleans the caches for a taxonomy.
+ * Xóa bộ nhớ đệm cho một taxonomy.
  *
  * @since 4.9.0
  *
- * @param string $taxonomy Taxonomy slug.
+ * @param string $taxonomy Slug taxonomy.
  */
 function clean_taxonomy_cache( $taxonomy ) {
 	wp_cache_delete( 'all_ids', $taxonomy );
 	wp_cache_delete( 'get', $taxonomy );
 	wp_cache_set_terms_last_changed();
 
-	// Regenerate cached hierarchy.
+	// Tái tạo phân cấp đã được lưu đệm.
 	delete_option( "{$taxonomy}_children" );
 	_get_term_hierarchy( $taxonomy );
 
 	/**
-	 * Fires after a taxonomy's caches have been cleaned.
+	 * Kích hoạt sau khi bộ nhớ đệm của taxonomy đã được xóa.
 	 *
 	 * @since 4.9.0
 	 *
-	 * @param string $taxonomy Taxonomy slug.
+	 * @param string $taxonomy Slug taxonomy.
 	 */
 	do_action( 'clean_taxonomy_cache', $taxonomy );
 }
 
 /**
- * Retrieves the cached term objects for the given object ID.
+ * Lấy các đối tượng term đã được lưu đệm cho ID đối tượng cho trước.
  *
- * Upstream functions (like get_the_terms() and is_object_in_term()) are
- * responsible for populating the object-term relationship cache. The current
- * function only fetches relationship data that is already in the cache.
+ * Các hàm phía trên (như get_the_terms() và is_object_in_term()) chịu trách nhiệm
+ * tạo bộ nhớ đệm mối quan hệ đối tượng-term. Hàm hiện tại
+ * chỉ lấy dữ liệu mối quan hệ đã có trong bộ nhớ đệm.
  *
  * @since 2.3.0
- * @since 4.7.0 Returns a `WP_Error` object if there's an error with
- *              any of the matched terms.
+ * @since 4.7.0 Trả về đối tượng `WP_Error` nếu có lỗi với
+ *              bất kỳ term nào khớp.
  *
- * @param int    $id       Term object ID, for example a post, comment, or user ID.
- * @param string $taxonomy Taxonomy name.
- * @return bool|WP_Term[]|WP_Error Array of `WP_Term` objects, if cached.
- *                                 False if cache is empty for `$taxonomy` and `$id`.
- *                                 WP_Error if get_term() returns an error object for any term.
+ * @param int    $id       ID đối tượng term, ví dụ ID bài viết, bình luận, hoặc người dùng.
+ * @param string $taxonomy Tên taxonomy.
+ * @return bool|WP_Term[]|WP_Error Mảng các đối tượng `WP_Term`, nếu đã được lưu đệm.
+ *                                 False nếu bộ nhớ đệm rỗng cho `$taxonomy` và `$id`.
+ *                                 WP_Error nếu get_term() trả về đối tượng lỗi cho bất kỳ term nào.
  */
 function get_object_term_cache( $id, $taxonomy ) {
 	$_term_ids = wp_cache_get( $id, "{$taxonomy}_relationships" );
 
-	// We leave the priming of relationship caches to upstream functions.
+	// Chúng ta để việc nạp trước bộ nhớ đệm mối quan hệ cho các hàm phía trên.
 	if ( false === $_term_ids ) {
 		return false;
 	}
 
-	// Backward compatibility for if a plugin is putting objects into the cache, rather than IDs.
+	// Tương thích ngược cho trường hợp plugin đặt đối tượng vào bộ nhớ đệm thay vì ID.
 	$term_ids = array();
 	foreach ( $_term_ids as $term_id ) {
 		if ( is_numeric( $term_id ) ) {
@@ -3773,7 +3773,7 @@ function get_object_term_cache( $id, $taxonomy ) {
 		}
 	}
 
-	// Fill the term objects.
+	// Điền các đối tượng term.
 	_prime_term_caches( $term_ids );
 
 	$terms = array();
@@ -3790,21 +3790,21 @@ function get_object_term_cache( $id, $taxonomy ) {
 }
 
 /**
- * Updates the cache for the given term object ID(s).
+ * Cập nhật bộ nhớ đệm cho (các) ID đối tượng term cho trước.
  *
- * Note: Due to performance concerns, great care should be taken to only update
- * term caches when necessary. Processing time can increase exponentially depending
- * on both the number of passed term IDs and the number of taxonomies those terms
- * belong to.
+ * Lưu ý: Do lo ngại về hiệu suất, cần rất cẩn thận để chỉ cập nhật
+ * bộ nhớ đệm term khi cần thiết. Thời gian xử lý có thể tăng theo cấp số nhân phụ thuộc
+ * vào cả số lượng ID term được truyền và số lượng taxonomy mà các term đó
+ * thuộc về.
  *
- * Caches will only be updated for terms not already cached.
+ * Bộ nhớ đệm chỉ được cập nhật cho các term chưa được lưu đệm.
  *
  * @since 2.3.0
  *
- * @param string|int[]    $object_ids  Comma-separated list or array of term object IDs.
- * @param string|string[] $object_type The taxonomy object type or array of the same.
- * @return void|false Void on success or if the `$object_ids` parameter is empty,
- *                    false if all of the terms in `$object_ids` are already cached.
+ * @param string|int[]    $object_ids  Danh sách phân cách bằng dấu phẩy hoặc mảng các ID đối tượng term.
+ * @param string|string[] $object_type Loại đối tượng taxonomy hoặc mảng tương tự.
+ * @return void|false Void nếu thành công hoặc nếu tham số `$object_ids` rỗng,
+ *                    false nếu tất cả term trong `$object_ids` đã được lưu đệm.
  */
 function update_object_term_cache( $object_ids, $object_type ) {
 	if ( empty( $object_ids ) ) {
@@ -3874,20 +3874,20 @@ function update_object_term_cache( $object_ids, $object_type ) {
 }
 
 /**
- * Updates terms in cache.
+ * Cập nhật các term trong bộ nhớ đệm.
  *
  * @since 2.3.0
  *
- * @param WP_Term[] $terms    Array of term objects to change.
- * @param string    $taxonomy Not used.
+ * @param WP_Term[] $terms    Mảng các đối tượng term cần thay đổi.
+ * @param string    $taxonomy Không sử dụng.
  */
 function update_term_cache( $terms, $taxonomy = '' ) {
 	$data = array();
 	foreach ( (array) $terms as $term ) {
-		// Create a copy in case the array was passed by reference.
+		// Tạo bản sao phòng trường hợp mảng được truyền theo tham chiếu.
 		$_term = clone $term;
 
-		// Object ID should not be cached.
+		// ID đối tượng không nên được lưu đệm.
 		unset( $_term->object_id );
 
 		$data[ $term->term_id ] = $_term;
@@ -3896,17 +3896,17 @@ function update_term_cache( $terms, $taxonomy = '' ) {
 }
 
 //
-// Private.
+// Riêng tư.
 //
 
 /**
- * Retrieves children of taxonomy as term IDs.
+ * Lấy các term con của taxonomy dưới dạng ID term.
  *
  * @access private
  * @since 2.3.0
  *
- * @param string $taxonomy Taxonomy name.
- * @return array Empty if $taxonomy isn't hierarchical or returns children as term IDs.
+ * @param string $taxonomy Tên taxonomy.
+ * @return array Rỗng nếu $taxonomy không phân cấp hoặc trả về các term con dưới dạng ID term.
  */
 function _get_term_hierarchy( $taxonomy ) {
 	if ( ! is_taxonomy_hierarchical( $taxonomy ) ) {
@@ -3938,23 +3938,23 @@ function _get_term_hierarchy( $taxonomy ) {
 }
 
 /**
- * Gets the subset of $terms that are descendants of $term_id.
+ * Lấy tập con của $terms là hậu duệ của $term_id.
  *
- * If `$terms` is an array of objects, then _get_term_children() returns an array of objects.
- * If `$terms` is an array of IDs, then _get_term_children() returns an array of IDs.
+ * Nếu `$terms` là mảng các đối tượng, thì _get_term_children() trả về mảng các đối tượng.
+ * Nếu `$terms` là mảng các ID, thì _get_term_children() trả về mảng các ID.
  *
  * @access private
  * @since 2.3.0
  *
- * @param int    $term_id   The ancestor term: all returned terms should be descendants of `$term_id`.
- * @param array  $terms     The set of terms - either an array of term objects or term IDs - from which those that
- *                          are descendants of $term_id will be chosen.
- * @param string $taxonomy  The taxonomy which determines the hierarchy of the terms.
- * @param array  $ancestors Optional. Term ancestors that have already been identified. Passed by reference, to keep
- *                          track of found terms when recursing the hierarchy. The array of located ancestors is used
- *                          to prevent infinite recursion loops. For performance, `term_ids` are used as array keys,
- *                          with 1 as value. Default empty array.
- * @return array|WP_Error The subset of $terms that are descendants of $term_id.
+ * @param int    $term_id   Term tổ tiên: tất cả term trả về phải là hậu duệ của `$term_id`.
+ * @param array  $terms     Tập hợp các term - mảng đối tượng term hoặc ID term - từ đó những term
+ *                          là hậu duệ của $term_id sẽ được chọn.
+ * @param string $taxonomy  Taxonomy xác định phân cấp của các term.
+ * @param array  $ancestors Tùy chọn. Các term tổ tiên đã được xác định. Truyền theo tham chiếu, để theo dõi
+ *                          các term tìm thấy khi duyệt đệ quy phân cấp. Mảng các tổ tiên đã xác định được dùng
+ *                          để ngăn vòng lặp đệ quy vô hạn. Để tăng hiệu suất, `term_ids` được dùng làm khóa mảng,
+ *                          với giá trị là 1. Mặc định mảng rỗng.
+ * @return array|WP_Error Tập con của $terms là hậu duệ của $term_id.
  */
 function _get_term_children( $term_id, $terms, $taxonomy, &$ancestors = array() ) {
 	$empty_array = array();
@@ -3970,7 +3970,7 @@ function _get_term_children( $term_id, $terms, $taxonomy, &$ancestors = array() 
 		return $empty_array;
 	}
 
-	// Include the term itself in the ancestors array, so we can properly detect when a loop has occurred.
+	// Bao gồm chính term trong mảng tổ tiên, để có thể phát hiện đúng khi vòng lặp xảy ra.
 	if ( empty( $ancestors ) ) {
 		$ancestors[ $term_id ] = 1;
 	}
@@ -3985,7 +3985,7 @@ function _get_term_children( $term_id, $terms, $taxonomy, &$ancestors = array() 
 			$use_id = true;
 		}
 
-		// Don't recurse if we've already identified the term as a child - this indicates a loop.
+		// Không đệ quy nếu đã xác định term là con - điều này cho thấy có vòng lặp.
 		if ( isset( $ancestors[ $term->term_id ] ) ) {
 			continue;
 		}
@@ -4014,23 +4014,23 @@ function _get_term_children( $term_id, $terms, $taxonomy, &$ancestors = array() 
 }
 
 /**
- * Adds count of children to parent count.
+ * Cộng số đếm của term con vào số đếm term cha.
  *
- * Recalculates term counts by including items from child terms. Assumes all
- * relevant children are already in the $terms argument.
+ * Tính lại số đếm term bằng cách bao gồm các mục từ term con. Giả định tất cả
+ * các term con liên quan đã có trong tham số $terms.
  *
  * @access private
  * @since 2.3.0
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param object[]|WP_Term[] $terms    List of term objects (passed by reference).
- * @param string             $taxonomy Term context.
+ * @param object[]|WP_Term[] $terms    Danh sách các đối tượng term (truyền theo tham chiếu).
+ * @param string             $taxonomy Ngữ cảnh term.
  */
 function _pad_term_counts( &$terms, $taxonomy ) {
 	global $wpdb;
 
-	// This function only works for hierarchical taxonomies like post categories.
+	// Hàm này chỉ hoạt động cho các taxonomy phân cấp như chuyên mục bài viết.
 	if ( ! is_taxonomy_hierarchical( $taxonomy ) ) {
 		return;
 	}
@@ -4050,7 +4050,7 @@ function _pad_term_counts( &$terms, $taxonomy ) {
 		$term_ids[ $term->term_taxonomy_id ] = $term->term_id;
 	}
 
-	// Get the object and term IDs and stick them in a lookup table.
+	// Lấy các ID đối tượng và term rồi đưa vào bảng tra cứu.
 	$tax_obj      = get_taxonomy( $taxonomy );
 	$object_types = esc_sql( $tax_obj->object_type );
 	$results      = $wpdb->get_results( "SELECT object_id, term_taxonomy_id FROM $wpdb->term_relationships INNER JOIN $wpdb->posts ON object_id = ID WHERE term_taxonomy_id IN (" . implode( ',', array_keys( $term_ids ) ) . ") AND post_type IN ('" . implode( "', '", $object_types ) . "') AND post_status = 'publish'" );
@@ -4061,7 +4061,7 @@ function _pad_term_counts( &$terms, $taxonomy ) {
 		$term_items[ $id ][ $row->object_id ] = isset( $term_items[ $id ][ $row->object_id ] ) ? ++$term_items[ $id ][ $row->object_id ] : 1;
 	}
 
-	// Touch every ancestor's lookup row for each post in each term.
+	// Cập nhật hàng tra cứu của mọi tổ tiên cho mỗi bài viết trong mỗi term.
 	foreach ( $term_ids as $term_id ) {
 		$child     = $term_id;
 		$ancestors = array();
@@ -4082,7 +4082,7 @@ function _pad_term_counts( &$terms, $taxonomy ) {
 		}
 	}
 
-	// Transfer the touched cells.
+	// Chuyển các ô đã được cập nhật.
 	foreach ( (array) $term_items as $id => $items ) {
 		if ( isset( $terms_by_id[ $id ] ) ) {
 			$terms_by_id[ $id ]->count = count( $items );
@@ -4091,16 +4091,16 @@ function _pad_term_counts( &$terms, $taxonomy ) {
 }
 
 /**
- * Adds any terms from the given IDs to the cache that do not already exist in cache.
+ * Thêm bất kỳ term nào từ các ID cho trước vào bộ nhớ đệm mà chưa tồn tại trong bộ nhớ đệm.
  *
  * @since 4.6.0
- * @since 6.1.0 This function is no longer marked as "private".
- * @since 6.3.0 Use wp_lazyload_term_meta() for lazy-loading of term meta.
+ * @since 6.1.0 Hàm này không còn được đánh dấu là "private".
+ * @since 6.3.0 Sử dụng wp_lazyload_term_meta() để tải lười term meta.
  *
- * @global wpdb $wpdb WordPress database abstraction object.
+ * @global wpdb $wpdb Đối tượng trừu tượng cơ sở dữ liệu WordPress.
  *
- * @param array $term_ids          Array of term IDs.
- * @param bool  $update_meta_cache Optional. Whether to update the meta cache. Default true.
+ * @param array $term_ids          Mảng các ID term.
+ * @param bool  $update_meta_cache Tùy chọn. Có cập nhật bộ nhớ đệm meta hay không. Mặc định true.
  */
 function _prime_term_caches( $term_ids, $update_meta_cache = true ) {
 	global $wpdb;

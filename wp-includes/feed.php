@@ -1,9 +1,9 @@
 <?php
 /**
- * WordPress Feed API
+ * API Feed của WordPress
  *
- * Many of the functions used in here belong in The Loop, or The Loop for the
- * Feeds.
+ * Nhiều hàm được sử dụng ở đây thuộc về Vòng lặp (The Loop), hoặc Vòng lặp
+ * dành cho các Feed.
  *
  * @package WordPress
  * @subpackage Feed
@@ -11,80 +11,80 @@
  */
 
 /**
- * Retrieves RSS container for the bloginfo function.
+ * Lấy container RSS cho hàm bloginfo.
  *
- * You can retrieve anything that you can using the get_bloginfo() function.
- * Everything will be stripped of tags and characters converted, when the values
- * are retrieved for use in the feeds.
+ * Bạn có thể lấy bất kỳ thông tin nào mà bạn có thể sử dụng với hàm get_bloginfo().
+ * Tất cả sẽ được loại bỏ thẻ và chuyển đổi ký tự, khi các giá trị
+ * được lấy để sử dụng trong các feed.
  *
  * @since 1.5.1
  *
- * @see get_bloginfo() For the list of possible values to display.
+ * @see get_bloginfo() Để xem danh sách các giá trị có thể hiển thị.
  *
- * @param string $show See get_bloginfo() for possible values.
+ * @param string $show Xem get_bloginfo() để biết các giá trị có thể dùng.
  * @return string
  */
 function get_bloginfo_rss( $show = '' ) {
 	$info = strip_tags( get_bloginfo( $show ) );
 	/**
-	 * Filters the bloginfo for use in RSS feeds.
+	 * Lọc thông tin blog để sử dụng trong các feed RSS.
 	 *
 	 * @since 2.2.0
 	 *
 	 * @see convert_chars()
 	 * @see get_bloginfo()
 	 *
-	 * @param string $info Converted string value of the blog information.
-	 * @param string $show The type of blog information to retrieve.
+	 * @param string $info Giá trị chuỗi đã chuyển đổi của thông tin blog.
+	 * @param string $show Loại thông tin blog cần lấy.
 	 */
 	return apply_filters( 'get_bloginfo_rss', convert_chars( $info ), $show );
 }
 
 /**
- * Displays RSS container for the bloginfo function.
+ * Hiển thị container RSS cho hàm bloginfo.
  *
- * You can retrieve anything that you can using the get_bloginfo() function.
- * Everything will be stripped of tags and characters converted, when the values
- * are retrieved for use in the feeds.
+ * Bạn có thể lấy bất kỳ thông tin nào mà bạn có thể sử dụng với hàm get_bloginfo().
+ * Tất cả sẽ được loại bỏ thẻ và chuyển đổi ký tự, khi các giá trị
+ * được lấy để sử dụng trong các feed.
  *
  * @since 0.71
  *
- * @see get_bloginfo() For the list of possible values to display.
+ * @see get_bloginfo() Để xem danh sách các giá trị có thể hiển thị.
  *
- * @param string $show See get_bloginfo() for possible values.
+ * @param string $show Xem get_bloginfo() để biết các giá trị có thể dùng.
  */
 function bloginfo_rss( $show = '' ) {
 	/**
-	 * Filters the bloginfo for display in RSS feeds.
+	 * Lọc thông tin blog để hiển thị trong các feed RSS.
 	 *
 	 * @since 2.1.0
 	 *
 	 * @see get_bloginfo()
 	 *
-	 * @param string $rss_container RSS container for the blog information.
-	 * @param string $show          The type of blog information to retrieve.
+	 * @param string $rss_container Container RSS cho thông tin blog.
+	 * @param string $show          Loại thông tin blog cần lấy.
 	 */
 	echo apply_filters( 'bloginfo_rss', get_bloginfo_rss( $show ), $show );
 }
 
 /**
- * Retrieves the default feed.
+ * Lấy feed mặc định.
  *
- * The default feed is 'rss2', unless a plugin changes it through the
- * {@see 'default_feed'} filter.
+ * Feed mặc định là 'rss2', trừ khi một plugin thay đổi nó thông qua
+ * bộ lọc {@see 'default_feed'}.
  *
  * @since 2.5.0
  *
- * @return string Default feed, or for example 'rss2', 'atom', etc.
+ * @return string Feed mặc định, ví dụ 'rss2', 'atom', v.v.
  */
 function get_default_feed() {
 	/**
-	 * Filters the default feed type.
+	 * Lọc loại feed mặc định.
 	 *
 	 * @since 2.5.0
 	 *
-	 * @param string $feed_type Type of default feed. Possible values include 'rss2', 'atom'.
-	 *                          Default 'rss2'.
+	 * @param string $feed_type Loại feed mặc định. Các giá trị có thể bao gồm 'rss2', 'atom'.
+	 *                          Mặc định 'rss2'.
 	 */
 	$default_feed = apply_filters( 'default_feed', 'rss2' );
 
@@ -92,13 +92,13 @@ function get_default_feed() {
 }
 
 /**
- * Retrieves the blog title for the feed title.
+ * Lấy tiêu đề blog cho tiêu đề feed.
  *
  * @since 2.2.0
- * @since 4.4.0 The optional `$sep` parameter was deprecated and renamed to `$deprecated`.
+ * @since 4.4.0 Tham số tùy chọn `$sep` đã bị loại bỏ và đổi tên thành `$deprecated`.
  *
- * @param string $deprecated Unused.
- * @return string The document title.
+ * @param string $deprecated Không sử dụng.
+ * @return string Tiêu đề tài liệu.
  */
 function get_wp_title_rss( $deprecated = '&#8211;' ) {
 	if ( '&#8211;' !== $deprecated ) {
@@ -107,24 +107,24 @@ function get_wp_title_rss( $deprecated = '&#8211;' ) {
 	}
 
 	/**
-	 * Filters the blog title for use as the feed title.
+	 * Lọc tiêu đề blog để sử dụng làm tiêu đề feed.
 	 *
 	 * @since 2.2.0
-	 * @since 4.4.0 The `$sep` parameter was deprecated and renamed to `$deprecated`.
+	 * @since 4.4.0 Tham số `$sep` đã bị loại bỏ và đổi tên thành `$deprecated`.
 	 *
-	 * @param string $title      The current blog title.
-	 * @param string $deprecated Unused.
+	 * @param string $title      Tiêu đề blog hiện tại.
+	 * @param string $deprecated Không sử dụng.
 	 */
 	return apply_filters( 'get_wp_title_rss', wp_get_document_title(), $deprecated );
 }
 
 /**
- * Displays the blog title for display of the feed title.
+ * Hiển thị tiêu đề blog cho việc hiển thị tiêu đề feed.
  *
  * @since 2.2.0
- * @since 4.4.0 The optional `$sep` parameter was deprecated and renamed to `$deprecated`.
+ * @since 4.4.0 Tham số tùy chọn `$sep` đã bị loại bỏ và đổi tên thành `$deprecated`.
  *
- * @param string $deprecated Unused.
+ * @param string $deprecated Không sử dụng.
  */
 function wp_title_rss( $deprecated = '&#8211;' ) {
 	if ( '&#8211;' !== $deprecated ) {
@@ -133,43 +133,43 @@ function wp_title_rss( $deprecated = '&#8211;' ) {
 	}
 
 	/**
-	 * Filters the blog title for display of the feed title.
+	 * Lọc tiêu đề blog để hiển thị tiêu đề feed.
 	 *
 	 * @since 2.2.0
-	 * @since 4.4.0 The `$sep` parameter was deprecated and renamed to `$deprecated`.
+	 * @since 4.4.0 Tham số `$sep` đã bị loại bỏ và đổi tên thành `$deprecated`.
 	 *
 	 * @see get_wp_title_rss()
 	 *
-	 * @param string $wp_title_rss The current blog title.
-	 * @param string $deprecated   Unused.
+	 * @param string $wp_title_rss Tiêu đề blog hiện tại.
+	 * @param string $deprecated   Không sử dụng.
 	 */
 	echo apply_filters( 'wp_title_rss', get_wp_title_rss(), $deprecated );
 }
 
 /**
- * Retrieves the current post title for the feed.
+ * Lấy tiêu đề bài viết hiện tại cho feed.
  *
  * @since 2.0.0
- * @since 6.6.0 Added the `$post` parameter.
+ * @since 6.6.0 Thêm tham số `$post`.
  *
- * @param int|WP_Post $post Optional. Post ID or WP_Post object. Default is global $post.
- * @return string Current post title.
+ * @param int|WP_Post $post Tùy chọn. ID bài viết hoặc đối tượng WP_Post. Mặc định là $post toàn cục.
+ * @return string Tiêu đề bài viết hiện tại.
  */
 function get_the_title_rss( $post = 0 ) {
 	$title = get_the_title( $post );
 
 	/**
-	 * Filters the post title for use in a feed.
+	 * Lọc tiêu đề bài viết để sử dụng trong feed.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string $title The current post title.
+	 * @param string $title Tiêu đề bài viết hiện tại.
 	 */
 	return apply_filters( 'the_title_rss', $title );
 }
 
 /**
- * Displays the post title in the feed.
+ * Hiển thị tiêu đề bài viết trong feed.
  *
  * @since 0.71
  */
@@ -178,115 +178,115 @@ function the_title_rss() {
 }
 
 /**
- * Retrieves the post content for feeds.
+ * Lấy nội dung bài viết cho các feed.
  *
  * @since 2.9.0
  *
  * @see get_the_content()
  *
- * @param string $feed_type The type of feed. rss2 | atom | rss | rdf
- * @return string The filtered content.
+ * @param string $feed_type Loại feed. rss2 | atom | rss | rdf
+ * @return string Nội dung đã được lọc.
  */
 function get_the_content_feed( $feed_type = null ) {
 	if ( ! $feed_type ) {
 		$feed_type = get_default_feed();
 	}
 
-	/** This filter is documented in wp-includes/post-template.php */
+	/** Bộ lọc này được ghi chú trong wp-includes/post-template.php */
 	$content = apply_filters( 'the_content', get_the_content() );
 	$content = str_replace( ']]>', ']]&gt;', $content );
 
 	/**
-	 * Filters the post content for use in feeds.
+	 * Lọc nội dung bài viết để sử dụng trong các feed.
 	 *
 	 * @since 2.9.0
 	 *
-	 * @param string $content   The current post content.
-	 * @param string $feed_type Type of feed. Possible values include 'rss2', 'atom'.
-	 *                          Default 'rss2'.
+	 * @param string $content   Nội dung bài viết hiện tại.
+	 * @param string $feed_type Loại feed. Các giá trị có thể bao gồm 'rss2', 'atom'.
+	 *                          Mặc định 'rss2'.
 	 */
 	return apply_filters( 'the_content_feed', $content, $feed_type );
 }
 
 /**
- * Displays the post content for feeds.
+ * Hiển thị nội dung bài viết cho các feed.
  *
  * @since 2.9.0
  *
- * @param string $feed_type The type of feed. rss2 | atom | rss | rdf
+ * @param string $feed_type Loại feed. rss2 | atom | rss | rdf
  */
 function the_content_feed( $feed_type = null ) {
 	echo get_the_content_feed( $feed_type );
 }
 
 /**
- * Displays the post excerpt for the feed.
+ * Hiển thị trích đoạn bài viết cho feed.
  *
  * @since 0.71
  */
 function the_excerpt_rss() {
 	$output = get_the_excerpt();
 	/**
-	 * Filters the post excerpt for a feed.
+	 * Lọc trích đoạn bài viết cho feed.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string $output The current post excerpt.
+	 * @param string $output Trích đoạn bài viết hiện tại.
 	 */
 	echo apply_filters( 'the_excerpt_rss', $output );
 }
 
 /**
- * Displays the permalink to the post for use in feeds.
+ * Hiển thị đường dẫn cố định đến bài viết để sử dụng trong các feed.
  *
  * @since 2.3.0
  */
 function the_permalink_rss() {
 	/**
-	 * Filters the permalink to the post for use in feeds.
+	 * Lọc đường dẫn cố định đến bài viết để sử dụng trong các feed.
 	 *
 	 * @since 2.3.0
 	 *
-	 * @param string $post_permalink The current post permalink.
+	 * @param string $post_permalink Đường dẫn cố định của bài viết hiện tại.
 	 */
 	echo esc_url( apply_filters( 'the_permalink_rss', get_permalink() ) );
 }
 
 /**
- * Outputs the link to the comments for the current post in an XML safe way.
+ * Xuất liên kết đến phần bình luận của bài viết hiện tại theo cách an toàn cho XML.
  *
  * @since 3.0.0
  */
 function comments_link_feed() {
 	/**
-	 * Filters the comments permalink for the current post.
+	 * Lọc đường dẫn cố định bình luận cho bài viết hiện tại.
 	 *
 	 * @since 3.6.0
 	 *
-	 * @param string $comment_permalink The current comment permalink with
-	 *                                  '#comments' appended.
+	 * @param string $comment_permalink Đường dẫn cố định bình luận hiện tại với
+	 *                                  '#comments' được nối thêm.
 	 */
 	echo esc_url( apply_filters( 'comments_link_feed', get_comments_link() ) );
 }
 
 /**
- * Displays the feed GUID for the current comment.
+ * Hiển thị GUID feed cho bình luận hiện tại.
  *
  * @since 2.5.0
  *
- * @param int|WP_Comment $comment_id Optional comment object or ID. Defaults to global comment object.
+ * @param int|WP_Comment $comment_id Đối tượng hoặc ID bình luận tùy chọn. Mặc định là đối tượng bình luận toàn cục.
  */
 function comment_guid( $comment_id = null ) {
 	echo esc_url( get_comment_guid( $comment_id ) );
 }
 
 /**
- * Retrieves the feed GUID for the current comment.
+ * Lấy GUID feed cho bình luận hiện tại.
  *
  * @since 2.5.0
  *
- * @param int|WP_Comment $comment_id Optional comment object or ID. Defaults to global comment object.
- * @return string|false GUID for comment on success, false on failure.
+ * @param int|WP_Comment $comment_id Đối tượng hoặc ID bình luận tùy chọn. Mặc định là đối tượng bình luận toàn cục.
+ * @return string|false GUID cho bình luận khi thành công, false khi thất bại.
  */
 function get_comment_guid( $comment_id = null ) {
 	$comment = get_comment( $comment_id );
@@ -299,48 +299,48 @@ function get_comment_guid( $comment_id = null ) {
 }
 
 /**
- * Displays the link to the comments.
+ * Hiển thị liên kết đến phần bình luận.
  *
  * @since 1.5.0
- * @since 4.4.0 Introduced the `$comment` argument.
+ * @since 4.4.0 Giới thiệu tham số `$comment`.
  *
- * @param int|WP_Comment $comment Optional. Comment object or ID. Defaults to global comment object.
+ * @param int|WP_Comment $comment Tùy chọn. Đối tượng hoặc ID bình luận. Mặc định là đối tượng bình luận toàn cục.
  */
 function comment_link( $comment = null ) {
 	/**
-	 * Filters the current comment's permalink.
+	 * Lọc đường dẫn cố định của bình luận hiện tại.
 	 *
 	 * @since 3.6.0
 	 *
 	 * @see get_comment_link()
 	 *
-	 * @param string $comment_permalink The current comment permalink.
+	 * @param string $comment_permalink Đường dẫn cố định bình luận hiện tại.
 	 */
 	echo esc_url( apply_filters( 'comment_link', get_comment_link( $comment ) ) );
 }
 
 /**
- * Retrieves the current comment author for use in the feeds.
+ * Lấy tác giả bình luận hiện tại để sử dụng trong các feed.
  *
  * @since 2.0.0
  *
- * @return string Comment Author.
+ * @return string Tác giả bình luận.
  */
 function get_comment_author_rss() {
 	/**
-	 * Filters the current comment author for use in a feed.
+	 * Lọc tác giả bình luận hiện tại để sử dụng trong feed.
 	 *
 	 * @since 1.5.0
 	 *
 	 * @see get_comment_author()
 	 *
-	 * @param string $comment_author The current comment author.
+	 * @param string $comment_author Tác giả bình luận hiện tại.
 	 */
 	return apply_filters( 'comment_author_rss', get_comment_author() );
 }
 
 /**
- * Displays the current comment author in the feed.
+ * Hiển thị tác giả bình luận hiện tại trong feed.
  *
  * @since 1.0.0
  */
@@ -349,34 +349,34 @@ function comment_author_rss() {
 }
 
 /**
- * Displays the current comment content for use in the feeds.
+ * Hiển thị nội dung bình luận hiện tại để sử dụng trong các feed.
  *
  * @since 1.0.0
  */
 function comment_text_rss() {
 	$comment_text = get_comment_text();
 	/**
-	 * Filters the current comment content for use in a feed.
+	 * Lọc nội dung bình luận hiện tại để sử dụng trong feed.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @param string $comment_text The content of the current comment.
+	 * @param string $comment_text Nội dung của bình luận hiện tại.
 	 */
 	$comment_text = apply_filters( 'comment_text_rss', $comment_text );
 	echo $comment_text;
 }
 
 /**
- * Retrieves all of the post categories, formatted for use in feeds.
+ * Lấy tất cả chuyên mục của bài viết, được định dạng để sử dụng trong các feed.
  *
- * All of the categories for the current post in the feed loop, will be
- * retrieved and have feed markup added, so that they can easily be added to the
- * RSS2, Atom, or RSS1 and RSS0.91 RDF feeds.
+ * Tất cả chuyên mục của bài viết hiện tại trong vòng lặp feed sẽ được
+ * lấy và thêm markup feed, để chúng có thể dễ dàng được thêm vào
+ * các feed RSS2, Atom, hoặc RSS1 và RSS0.91 RDF.
  *
  * @since 2.1.0
  *
- * @param string $type Optional, default is the type returned by get_default_feed().
- * @return string All of the post categories for displaying in the feed.
+ * @param string $type Tùy chọn, mặc định là loại được trả về bởi get_default_feed().
+ * @return string Tất cả chuyên mục bài viết để hiển thị trong feed.
  */
 function get_the_category_rss( $type = null ) {
 	if ( empty( $type ) ) {
@@ -417,34 +417,34 @@ function get_the_category_rss( $type = null ) {
 	}
 
 	/**
-	 * Filters all of the post categories for display in a feed.
+	 * Lọc tất cả chuyên mục bài viết để hiển thị trong feed.
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string $the_list All of the RSS post categories.
-	 * @param string $type     Type of feed. Possible values include 'rss2', 'atom'.
-	 *                         Default 'rss2'.
+	 * @param string $the_list Tất cả chuyên mục bài viết RSS.
+	 * @param string $type     Loại feed. Các giá trị có thể bao gồm 'rss2', 'atom'.
+	 *                         Mặc định 'rss2'.
 	 */
 	return apply_filters( 'the_category_rss', $the_list, $type );
 }
 
 /**
- * Displays the post categories in the feed.
+ * Hiển thị chuyên mục bài viết trong feed.
  *
  * @since 0.71
  *
- * @see get_the_category_rss() For better explanation.
+ * @see get_the_category_rss() Để xem giải thích chi tiết hơn.
  *
- * @param string $type Optional, default is the type returned by get_default_feed().
+ * @param string $type Tùy chọn, mặc định là loại được trả về bởi get_default_feed().
  */
 function the_category_rss( $type = null ) {
 	echo get_the_category_rss( $type );
 }
 
 /**
- * Displays the HTML type based on the blog setting.
+ * Hiển thị loại HTML dựa trên cài đặt blog.
  *
- * The two possible values are either 'xhtml' or 'html'.
+ * Hai giá trị có thể là 'xhtml' hoặc 'html'.
  *
  * @since 2.2.0
  */
@@ -459,16 +459,15 @@ function html_type_rss() {
 }
 
 /**
- * Displays the rss enclosure for the current post.
+ * Hiển thị enclosure RSS cho bài viết hiện tại.
  *
- * Uses the global $post to check whether the post requires a password and if
- * the user has the password for the post. If not then it will return before
- * displaying.
+ * Sử dụng biến toàn cục $post để kiểm tra xem bài viết có yêu cầu mật khẩu hay không
+ * và liệu người dùng có mật khẩu cho bài viết hay không. Nếu không thì sẽ trả về
+ * trước khi hiển thị.
  *
- * Also uses the function get_post_custom() to get the post's 'enclosure'
- * metadata field and parses the value to display the enclosure(s). The
- * enclosure(s) consist of enclosure HTML tag(s) with a URI and other
- * attributes.
+ * Cũng sử dụng hàm get_post_custom() để lấy trường metadata 'enclosure'
+ * của bài viết và phân tích giá trị để hiển thị (các) enclosure. Các
+ * enclosure bao gồm (các) thẻ HTML enclosure với URI và các thuộc tính khác.
  *
  * @since 1.5.0
  */
@@ -486,16 +485,16 @@ function rss_enclosure() {
 					continue;
 				}
 
-				// Only get the first element, e.g. 'audio/mpeg' from 'audio/mpeg mpga mp2 mp3'.
+				// Chỉ lấy phần tử đầu tiên, ví dụ 'audio/mpeg' từ 'audio/mpeg mpga mp2 mp3'.
 				$t    = preg_split( '/[ \t]/', trim( $enclosure[2] ) );
 				$type = $t[0];
 
 				/**
-				 * Filters the RSS enclosure HTML link tag for the current post.
+				 * Lọc thẻ liên kết HTML enclosure RSS cho bài viết hiện tại.
 				 *
 				 * @since 2.2.0
 				 *
-				 * @param string $html_link_tag The HTML link tag with a URI and other attributes.
+				 * @param string $html_link_tag Thẻ liên kết HTML với URI và các thuộc tính khác.
 				 */
 				echo apply_filters( 'rss_enclosure', '<enclosure url="' . esc_url( trim( $enclosure[0] ) ) . '" length="' . absint( trim( $enclosure[1] ) ) . '" type="' . esc_attr( $type ) . '" />' . "\n" );
 			}
@@ -504,15 +503,15 @@ function rss_enclosure() {
 }
 
 /**
- * Displays the atom enclosure for the current post.
+ * Hiển thị enclosure atom cho bài viết hiện tại.
  *
- * Uses the global $post to check whether the post requires a password and if
- * the user has the password for the post. If not then it will return before
- * displaying.
+ * Sử dụng biến toàn cục $post để kiểm tra xem bài viết có yêu cầu mật khẩu hay không
+ * và liệu người dùng có mật khẩu cho bài viết hay không. Nếu không thì sẽ trả về
+ * trước khi hiển thị.
  *
- * Also uses the function get_post_custom() to get the post's 'enclosure'
- * metadata field and parses the value to display the enclosure(s). The
- * enclosure(s) consist of link HTML tag(s) with a URI and other attributes.
+ * Cũng sử dụng hàm get_post_custom() để lấy trường metadata 'enclosure'
+ * của bài viết và phân tích giá trị để hiển thị (các) enclosure. Các
+ * enclosure bao gồm (các) thẻ HTML link với URI và các thuộc tính khác.
  *
  * @since 2.2.0
  */
@@ -532,12 +531,12 @@ function atom_enclosure() {
 
 				$mimes = get_allowed_mime_types();
 
-				// Parse URL.
+				// Phân tích URL.
 				if ( isset( $enclosure[0] ) && is_string( $enclosure[0] ) ) {
 					$url = trim( $enclosure[0] );
 				}
 
-				// Parse length and type.
+				// Phân tích độ dài và loại.
 				for ( $i = 1; $i <= 2; $i++ ) {
 					if ( isset( $enclosure[ $i ] ) ) {
 						if ( is_numeric( $enclosure[ $i ] ) ) {
@@ -556,11 +555,11 @@ function atom_enclosure() {
 				);
 
 				/**
-				 * Filters the atom enclosure HTML link tag for the current post.
+				 * Lọc thẻ liên kết HTML enclosure atom cho bài viết hiện tại.
 				 *
 				 * @since 2.2.0
 				 *
-				 * @param string $html_link_tag The HTML link tag with a URI and other attributes.
+				 * @param string $html_link_tag Thẻ liên kết HTML với URI và các thuộc tính khác.
 				 */
 				echo apply_filters( 'atom_enclosure', $html_link_tag );
 			}
@@ -569,21 +568,21 @@ function atom_enclosure() {
 }
 
 /**
- * Determines the type of a string of data with the data formatted.
+ * Xác định loại của một chuỗi dữ liệu với dữ liệu đã được định dạng.
  *
- * Tell whether the type is text, HTML, or XHTML, per RFC 4287 section 3.1.
+ * Cho biết loại là text, HTML, hay XHTML, theo RFC 4287 mục 3.1.
  *
- * In the case of WordPress, text is defined as containing no markup,
- * XHTML is defined as "well formed", and HTML as tag soup (i.e., the rest).
+ * Trong trường hợp của WordPress, text được định nghĩa là không chứa markup,
+ * XHTML được định nghĩa là "đúng chuẩn" (well formed), và HTML là tag soup (tức là phần còn lại).
  *
- * Container div tags are added to XHTML values, per section 3.1.1.3.
+ * Các thẻ div container được thêm vào các giá trị XHTML, theo mục 3.1.1.3.
  *
  * @link http://www.atomenabled.org/developers/syndication/atom-format-spec.php#rfc.section.3.1
  *
  * @since 2.5.0
  *
- * @param string $data Input string.
- * @return array array(type, value)
+ * @param string $data Chuỗi đầu vào.
+ * @return array array(loại, giá trị)
  */
 function prep_atom_text_construct( $data ) {
 	if ( ! str_contains( $data, '<' ) && ! str_contains( $data, '&' ) ) {
@@ -619,7 +618,7 @@ function prep_atom_text_construct( $data ) {
 }
 
 /**
- * Displays Site Icon in atom feeds.
+ * Hiển thị Biểu tượng Trang trong các feed atom.
  *
  * @since 4.3.0
  *
@@ -633,7 +632,7 @@ function atom_site_icon() {
 }
 
 /**
- * Displays Site Icon in RSS2.
+ * Hiển thị Biểu tượng Trang trong RSS2.
  *
  * @since 4.3.0
  */
@@ -657,11 +656,11 @@ function rss2_site_icon() {
 }
 
 /**
- * Returns the link for the currently displayed feed.
+ * Trả về liên kết cho feed hiện đang được hiển thị.
  *
  * @since 5.3.0
  *
- * @return string Correct link for the atom:self element.
+ * @return string Liên kết chính xác cho phần tử atom:self.
  */
 function get_self_link() {
 	$parsed = parse_url( home_url() );
@@ -675,38 +674,38 @@ function get_self_link() {
 }
 
 /**
- * Displays the link for the currently displayed feed in a XSS safe way.
+ * Hiển thị liên kết cho feed hiện đang được hiển thị theo cách an toàn XSS.
  *
- * Generate a correct link for the atom:self element.
+ * Tạo liên kết chính xác cho phần tử atom:self.
  *
  * @since 2.5.0
  */
 function self_link() {
 	/**
-	 * Filters the current feed URL.
+	 * Lọc URL feed hiện tại.
 	 *
 	 * @since 3.6.0
 	 *
 	 * @see set_url_scheme()
 	 * @see wp_unslash()
 	 *
-	 * @param string $feed_link The link for the feed with set URL scheme.
+	 * @param string $feed_link Liên kết cho feed với scheme URL đã được thiết lập.
 	 */
 	echo esc_url( apply_filters( 'self_link', get_self_link() ) );
 }
 
 /**
- * Gets the UTC time of the most recently modified post from WP_Query.
+ * Lấy thời gian UTC của bài viết được chỉnh sửa gần đây nhất từ WP_Query.
  *
- * If viewing a comment feed, the time of the most recently modified
- * comment will be returned.
+ * Nếu đang xem feed bình luận, thời gian của bình luận được chỉnh sửa
+ * gần đây nhất sẽ được trả về.
  *
  * @since 5.2.0
  *
- * @global WP_Query $wp_query WordPress Query object.
+ * @global WP_Query $wp_query Đối tượng WordPress Query.
  *
- * @param string $format Date format string to return the time in.
- * @return string|false The time in requested format, or false on failure.
+ * @param string $format Chuỗi định dạng ngày để trả về thời gian.
+ * @return string|false Thời gian theo định dạng yêu cầu, hoặc false khi thất bại.
  */
 function get_feed_build_date( $format ) {
 	global $wp_query;
@@ -716,24 +715,24 @@ function get_feed_build_date( $format ) {
 	$utc               = new DateTimeZone( 'UTC' );
 
 	if ( ! empty( $wp_query ) && $wp_query->have_posts() ) {
-		// Extract the post modified times from the posts.
+		// Trích xuất thời gian chỉnh sửa bài viết từ các bài viết.
 		$modified_times = wp_list_pluck( $wp_query->posts, 'post_modified_gmt' );
 
-		// If this is a comment feed, check those objects too.
+		// Nếu đây là feed bình luận, kiểm tra cả các đối tượng đó.
 		if ( $wp_query->is_comment_feed() && $wp_query->comment_count ) {
-			// Extract the comment modified times from the comments.
+			// Trích xuất thời gian chỉnh sửa bình luận từ các bình luận.
 			$comment_times = wp_list_pluck( $wp_query->comments, 'comment_date_gmt' );
 
-			// Add the comment times to the post times for comparison.
+			// Thêm thời gian bình luận vào thời gian bài viết để so sánh.
 			$modified_times = array_merge( $modified_times, $comment_times );
 		}
 
-		// Determine the maximum modified time.
+		// Xác định thời gian chỉnh sửa tối đa.
 		$datetime = date_create_immutable_from_format( 'Y-m-d H:i:s', max( $modified_times ), $utc );
 	}
 
 	if ( false === $datetime ) {
-		// Fall back to last time any post was modified or published.
+		// Dự phòng về thời gian cuối cùng bất kỳ bài viết nào được chỉnh sửa hoặc xuất bản.
 		$datetime = date_create_immutable_from_format( 'Y-m-d H:i:s', get_lastpostmodified( 'GMT' ), $utc );
 	}
 
@@ -742,24 +741,24 @@ function get_feed_build_date( $format ) {
 	}
 
 	/**
-	 * Filters the date the last post or comment in the query was modified.
+	 * Lọc ngày mà bài viết hoặc bình luận cuối cùng trong truy vấn được chỉnh sửa.
 	 *
 	 * @since 5.2.0
 	 *
-	 * @param string|false $max_modified_time Date the last post or comment was modified in the query, in UTC.
-	 *                                        False on failure.
-	 * @param string       $format            The date format requested in get_feed_build_date().
+	 * @param string|false $max_modified_time Ngày bài viết hoặc bình luận cuối cùng được chỉnh sửa trong truy vấn, theo UTC.
+	 *                                        False khi thất bại.
+	 * @param string       $format            Định dạng ngày được yêu cầu trong get_feed_build_date().
 	 */
 	return apply_filters( 'get_feed_build_date', $max_modified_time, $format );
 }
 
 /**
- * Returns the content type for specified feed type.
+ * Trả về loại nội dung cho loại feed được chỉ định.
  *
  * @since 2.8.0
  *
- * @param string $type Type of feed. Possible values include 'rss', rss2', 'atom', and 'rdf'.
- * @return string Content type for specified feed type.
+ * @param string $type Loại feed. Các giá trị có thể bao gồm 'rss', 'rss2', 'atom', và 'rdf'.
+ * @return string Loại nội dung cho loại feed được chỉ định.
  */
 function feed_content_type( $type = '' ) {
 	if ( empty( $type ) ) {
@@ -777,25 +776,25 @@ function feed_content_type( $type = '' ) {
 	$content_type = ( ! empty( $types[ $type ] ) ) ? $types[ $type ] : 'application/octet-stream';
 
 	/**
-	 * Filters the content type for a specific feed type.
+	 * Lọc loại nội dung cho một loại feed cụ thể.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string $content_type Content type indicating the type of data that a feed contains.
-	 * @param string $type         Type of feed. Possible values include 'rss', rss2', 'atom', and 'rdf'.
+	 * @param string $content_type Loại nội dung cho biết loại dữ liệu mà feed chứa.
+	 * @param string $type         Loại feed. Các giá trị có thể bao gồm 'rss', 'rss2', 'atom', và 'rdf'.
 	 */
 	return apply_filters( 'feed_content_type', $content_type, $type );
 }
 
 /**
- * Builds SimplePie object based on RSS or Atom feed from URL.
+ * Xây dựng đối tượng SimplePie dựa trên feed RSS hoặc Atom từ URL.
  *
  * @since 2.8.0
  *
- * @param string|string[] $url URL of feed to retrieve. If an array of URLs, the feeds are merged
- *                             using SimplePie's multifeed feature.
- *                             See also {@link http://simplepie.org/wiki/faq/typical_multifeed_gotchas}
- * @return SimplePie\SimplePie|WP_Error SimplePie object on success or WP_Error object on failure.
+ * @param string|string[] $url URL của feed cần lấy. Nếu là mảng URL, các feed sẽ được gộp
+ *                             sử dụng tính năng multifeed của SimplePie.
+ *                             Xem thêm {@link http://simplepie.org/wiki/faq/typical_multifeed_gotchas}
+ * @return SimplePie\SimplePie|WP_Error Đối tượng SimplePie khi thành công hoặc đối tượng WP_Error khi thất bại.
  */
 function fetch_feed( $url ) {
 	if ( ! class_exists( 'SimplePie\SimplePie', false ) ) {
@@ -810,17 +809,17 @@ function fetch_feed( $url ) {
 
 	$feed->set_sanitize_class( 'WP_SimplePie_Sanitize_KSES' );
 	/*
-	 * We must manually overwrite $feed->sanitize because SimplePie's constructor
-	 * sets it before we have a chance to set the sanitization class.
+	 * Chúng ta phải ghi đè thủ công $feed->sanitize vì hàm khởi tạo của SimplePie
+	 * thiết lập nó trước khi chúng ta có cơ hội thiết lập lớp sanitization.
 	 */
 	$feed->sanitize = new WP_SimplePie_Sanitize_KSES();
 
-	// Register the cache handler using the recommended method for SimplePie 1.3 or later.
+	// Đăng ký trình xử lý cache bằng phương thức được khuyến nghị cho SimplePie 1.3 trở lên.
 	if ( method_exists( 'SimplePie_Cache', 'register' ) ) {
 		SimplePie_Cache::register( 'wp_transient', 'WP_Feed_Cache_Transient' );
 		$feed->set_cache_location( 'wp_transient' );
 	} else {
-		// Back-compat for SimplePie 1.2.x.
+		// Tương thích ngược cho SimplePie 1.2.x.
 		require_once ABSPATH . WPINC . '/class-wp-feed-cache.php';
 		$feed->set_cache_class( 'WP_Feed_Cache' );
 	}
@@ -828,16 +827,16 @@ function fetch_feed( $url ) {
 	$feed->set_file_class( 'WP_SimplePie_File' );
 
 	$feed->set_feed_url( $url );
-	/** This filter is documented in wp-includes/class-wp-feed-cache-transient.php */
+	/** Bộ lọc này được ghi chú trong wp-includes/class-wp-feed-cache-transient.php */
 	$feed->set_cache_duration( apply_filters( 'wp_feed_cache_transient_lifetime', 12 * HOUR_IN_SECONDS, $url ) );
 
 	/**
-	 * Fires just before processing the SimplePie feed object.
+	 * Kích hoạt ngay trước khi xử lý đối tượng feed SimplePie.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param SimplePie\SimplePie $feed SimplePie feed object (passed by reference).
-	 * @param string|string[]     $url  URL of feed or array of URLs of feeds to retrieve.
+	 * @param SimplePie\SimplePie $feed Đối tượng feed SimplePie (truyền bằng tham chiếu).
+	 * @param string|string[]     $url  URL của feed hoặc mảng URL của các feed cần lấy.
 	 */
 	do_action_ref_array( 'wp_feed_options', array( &$feed, $url ) );
 

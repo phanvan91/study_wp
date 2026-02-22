@@ -22,66 +22,66 @@
  */
 
 /**
- * Core class used to modify attributes in an HTML document for tags matching a query.
+ * Lớp cốt lõi dùng để chỉnh sửa thuộc tính trong tài liệu HTML cho các thẻ khớp với truy vấn.
  *
- * ## Usage
+ * ## Cách sử dụng
  *
- * Use of this class requires three steps:
+ * Việc sử dụng lớp này yêu cầu ba bước:
  *
- *  1. Create a new class instance with your input HTML document.
- *  2. Find the tag(s) you are looking for.
- *  3. Request changes to the attributes in those tag(s).
+ *  1. Tạo một instance mới với tài liệu HTML đầu vào.
+ *  2. Tìm (các) thẻ bạn đang tìm kiếm.
+ *  3. Yêu cầu thay đổi thuộc tính trong (các) thẻ đó.
  *
- * Example:
+ * Ví dụ:
  *
  *     $tags = new WP_HTML_Tag_Processor( $html );
  *     if ( $tags->next_tag( 'option' ) ) {
  *         $tags->set_attribute( 'selected', true );
  *     }
  *
- * ### Finding tags
+ * ### Tìm kiếm thẻ
  *
- * The `next_tag()` function moves the internal cursor through
- * your input HTML document until it finds a tag meeting any of
- * the supplied restrictions in the optional query argument. If
- * no argument is provided then it will find the next HTML tag,
- * regardless of what kind it is.
+ * Hàm `next_tag()` di chuyển con trỏ nội bộ qua
+ * tài liệu HTML đầu vào cho đến khi tìm thấy thẻ đáp ứng bất kỳ
+ * ràng buộc nào được cung cấp trong tham số truy vấn tùy chọn. Nếu
+ * không có tham số nào được cung cấp thì nó sẽ tìm thẻ HTML tiếp theo,
+ * bất kể loại nào.
  *
- * If you want to _find whatever the next tag is_:
+ * Nếu bạn muốn _tìm thẻ tiếp theo bất kỳ_:
  *
  *     $tags->next_tag();
  *
- * | Goal                                                      | Query                                                                           |
+ * | Mục tiêu                                                  | Truy vấn                                                                        |
  * |-----------------------------------------------------------|---------------------------------------------------------------------------------|
- * | Find any tag.                                             | `$tags->next_tag();`                                                            |
- * | Find next image tag.                                      | `$tags->next_tag( array( 'tag_name' => 'img' ) );`                              |
- * | Find next image tag (without passing the array).          | `$tags->next_tag( 'img' );`                                                     |
- * | Find next tag containing the `fullwidth` CSS class.       | `$tags->next_tag( array( 'class_name' => 'fullwidth' ) );`                      |
- * | Find next image tag containing the `fullwidth` CSS class. | `$tags->next_tag( array( 'tag_name' => 'img', 'class_name' => 'fullwidth' ) );` |
+ * | Tìm thẻ bất kỳ.                                          | `$tags->next_tag();`                                                            |
+ * | Tìm thẻ image tiếp theo.                                  | `$tags->next_tag( array( 'tag_name' => 'img' ) );`                              |
+ * | Tìm thẻ image tiếp theo (không truyền mảng).              | `$tags->next_tag( 'img' );`                                                     |
+ * | Tìm thẻ tiếp theo chứa class CSS `fullwidth`.             | `$tags->next_tag( array( 'class_name' => 'fullwidth' ) );`                      |
+ * | Tìm thẻ image tiếp theo chứa class CSS `fullwidth`.       | `$tags->next_tag( array( 'tag_name' => 'img', 'class_name' => 'fullwidth' ) );` |
  *
- * If a tag was found meeting your criteria then `next_tag()`
- * will return `true` and you can proceed to modify it. If it
- * returns `false`, however, it failed to find the tag and
- * moved the cursor to the end of the file.
+ * Nếu tìm thấy thẻ đáp ứng tiêu chí thì `next_tag()`
+ * sẽ trả về `true` và bạn có thể tiến hành chỉnh sửa. Nếu nó
+ * trả về `false`, nghĩa là không tìm thấy thẻ và
+ * con trỏ đã di chuyển đến cuối tệp.
  *
- * Once the cursor reaches the end of the file the processor
- * is done and if you want to reach an earlier tag you will
- * need to recreate the processor and start over, as it's
- * unable to back up or move in reverse.
+ * Khi con trỏ đến cuối tệp, bộ xử lý đã hoàn tất
+ * và nếu bạn muốn truy cập thẻ trước đó, bạn sẽ
+ * cần tạo lại bộ xử lý và bắt đầu lại, vì nó
+ * không thể quay ngược hoặc di chuyển ngược.
  *
- * See the section on bookmarks for an exception to this
- * no-backing-up rule.
+ * Xem phần về bookmark để biết ngoại lệ cho
+ * quy tắc không-quay-ngược này.
  *
- * #### Custom queries
+ * #### Truy vấn tùy chỉnh
  *
- * Sometimes it's necessary to further inspect an HTML tag than
- * the query syntax here permits. In these cases one may further
- * inspect the search results using the read-only functions
- * provided by the processor or external state or variables.
+ * Đôi khi cần phải kiểm tra thẻ HTML kỹ hơn so với
+ * cú pháp truy vấn ở đây cho phép. Trong những trường hợp này, người dùng có thể
+ * kiểm tra thêm kết quả tìm kiếm bằng các hàm chỉ-đọc
+ * được cung cấp bởi bộ xử lý hoặc trạng thái/biến bên ngoài.
  *
- * Example:
+ * Ví dụ:
  *
- *     // Paint up to the first five DIV or SPAN tags marked with the "jazzy" style.
+ *     // Tô màu tối đa năm thẻ DIV hoặc SPAN đầu tiên được đánh dấu với style "jazzy".
  *     $remaining_count = 5;
  *     while ( $remaining_count > 0 && $tags->next_tag() ) {
  *         if (
@@ -93,35 +93,35 @@
  *         }
  *     }
  *
- * `get_attribute()` will return `null` if the attribute wasn't present
- * on the tag when it was called. It may return `""` (the empty string)
- * in cases where the attribute was present but its value was empty.
- * For boolean attributes, those whose name is present but no value is
- * given, it will return `true` (the only way to set `false` for an
- * attribute is to remove it).
+ * `get_attribute()` sẽ trả về `null` nếu thuộc tính không có mặt
+ * trên thẻ khi nó được gọi. Nó có thể trả về `""` (chuỗi rỗng)
+ * trong trường hợp thuộc tính có mặt nhưng giá trị của nó rỗng.
+ * Đối với thuộc tính boolean, những thuộc tính có tên nhưng không có giá trị,
+ * nó sẽ trả về `true` (cách duy nhất để đặt `false` cho một
+ * thuộc tính là xóa nó đi).
  *
- * #### When matching fails
+ * #### Khi khớp thất bại
  *
- * When `next_tag()` returns `false` it could mean different things:
+ * Khi `next_tag()` trả về `false`, điều đó có thể có các ý nghĩa khác nhau:
  *
- *  - The requested tag wasn't found in the input document.
- *  - The input document ended in the middle of an HTML syntax element.
+ *  - Thẻ được yêu cầu không được tìm thấy trong tài liệu đầu vào.
+ *  - Tài liệu đầu vào kết thúc ở giữa một phần tử cú pháp HTML.
  *
- * When a document ends in the middle of a syntax element it will pause
- * the processor. This is to make it possible in the future to extend the
- * input document and proceed - an important requirement for chunked
- * streaming parsing of a document.
+ * Khi tài liệu kết thúc ở giữa một phần tử cú pháp, bộ xử lý sẽ tạm dừng.
+ * Điều này là để trong tương lai có thể mở rộng tài liệu đầu vào và
+ * tiếp tục - một yêu cầu quan trọng cho việc phân tích cú pháp
+ * theo luồng từng phần của tài liệu.
  *
- * Example:
+ * Ví dụ:
  *
  *     $processor = new WP_HTML_Tag_Processor( 'This <div is="a" partial="token' );
  *     false === $processor->next_tag();
  *
- * If a special element (see next section) is encountered but no closing tag
- * is found it will count as an incomplete tag. The parser will pause as if
- * the opening tag were incomplete.
+ * Nếu gặp một phần tử đặc biệt (xem phần tiếp theo) nhưng không tìm thấy thẻ đóng,
+ * nó sẽ được coi là thẻ không hoàn chỉnh. Bộ phân tích sẽ tạm dừng như thể
+ * thẻ mở chưa hoàn chỉnh.
  *
- * Example:
+ * Ví dụ:
  *
  *     $processor = new WP_HTML_Tag_Processor( '<style>// there could be more styling to come' );
  *     false === $processor->next_tag();
@@ -129,100 +129,100 @@
  *     $processor = new WP_HTML_Tag_Processor( '<style>// this is everything</style><div>' );
  *     true === $processor->next_tag( 'DIV' );
  *
- * #### Special self-contained elements
+ * #### Các phần tử đặc biệt tự chứa
  *
- * Some HTML elements are handled in a special way; their start and end tags
- * act like a void tag. These are special because their contents can't contain
- * HTML markup. Everything inside these elements is handled in a special way
- * and content that _appears_ like HTML tags inside of them isn't. There can
- * be no nesting in these elements.
+ * Một số phần tử HTML được xử lý theo cách đặc biệt; thẻ mở và thẻ đóng
+ * hoạt động giống như thẻ void. Chúng đặc biệt vì nội dung bên trong không thể chứa
+ * markup HTML. Mọi thứ bên trong các phần tử này được xử lý theo cách đặc biệt
+ * và nội dung _trông giống_ thẻ HTML bên trong chúng thực ra không phải. Không thể
+ * có lồng nhau trong các phần tử này.
  *
- * In the following list, "raw text" means that all of the content in the HTML
- * until the matching closing tag is treated verbatim without any replacements
- * and without any parsing.
+ * Trong danh sách sau, "văn bản thô" nghĩa là tất cả nội dung trong HTML
+ * cho đến thẻ đóng tương ứng được xử lý nguyên bản mà không có bất kỳ thay thế
+ * hay phân tích cú pháp nào.
  *
- *  - IFRAME allows no content but requires a closing tag.
- *  - NOEMBED (deprecated) content is raw text.
- *  - NOFRAMES (deprecated) content is raw text.
- *  - SCRIPT content is plaintext apart from legacy rules allowing `</script>` inside an HTML comment.
- *  - STYLE content is raw text.
- *  - TITLE content is plain text but character references are decoded.
- *  - TEXTAREA content is plain text but character references are decoded.
- *  - XMP (deprecated) content is raw text.
+ *  - IFRAME không cho phép nội dung nhưng yêu cầu thẻ đóng.
+ *  - NOEMBED (deprecated) nội dung là văn bản thô.
+ *  - NOFRAMES (deprecated) nội dung là văn bản thô.
+ *  - SCRIPT nội dung là plaintext ngoại trừ các quy tắc kế thừa cho phép `</script>` bên trong comment HTML.
+ *  - STYLE nội dung là văn bản thô.
+ *  - TITLE nội dung là plain text nhưng tham chiếu ký tự được giải mã.
+ *  - TEXTAREA nội dung là plain text nhưng tham chiếu ký tự được giải mã.
+ *  - XMP (deprecated) nội dung là văn bản thô.
  *
- * ### Modifying HTML attributes for a found tag
+ * ### Chỉnh sửa thuộc tính HTML cho thẻ đã tìm thấy
  *
- * Once you've found the start of an opening tag you can modify
- * any number of the attributes on that tag. You can set a new
- * value for an attribute, remove the entire attribute, or do
- * nothing and move on to the next opening tag.
+ * Khi bạn đã tìm thấy đầu của thẻ mở, bạn có thể chỉnh sửa
+ * bất kỳ số lượng thuộc tính nào trên thẻ đó. Bạn có thể đặt giá trị
+ * mới cho thuộc tính, xóa toàn bộ thuộc tính, hoặc
+ * không làm gì và chuyển sang thẻ mở tiếp theo.
  *
- * Example:
+ * Ví dụ:
  *
  *     if ( $tags->next_tag( array( 'class_name' => 'wp-group-block' ) ) ) {
  *         $tags->set_attribute( 'title', 'This groups the contained content.' );
  *         $tags->remove_attribute( 'data-test-id' );
  *     }
  *
- * If `set_attribute()` is called for an existing attribute it will
- * overwrite the existing value. Similarly, calling `remove_attribute()`
- * for a non-existing attribute has no effect on the document. Both
- * of these methods are safe to call without knowing if a given attribute
- * exists beforehand.
+ * Nếu `set_attribute()` được gọi cho thuộc tính đã tồn tại, nó sẽ
+ * ghi đè giá trị hiện tại. Tương tự, gọi `remove_attribute()`
+ * cho thuộc tính không tồn tại không có tác dụng gì lên tài liệu. Cả
+ * hai phương thức này đều an toàn khi gọi mà không cần biết trước
+ * thuộc tính đã tồn tại hay chưa.
  *
- * ### Modifying CSS classes for a found tag
+ * ### Chỉnh sửa class CSS cho thẻ đã tìm thấy
  *
- * The tag processor treats the `class` attribute as a special case.
- * Because it's a common operation to add or remove CSS classes, this
- * interface adds helper methods to make that easier.
+ * Bộ xử lý thẻ coi thuộc tính `class` là trường hợp đặc biệt.
+ * Vì việc thêm hoặc xóa class CSS là thao tác phổ biến, giao diện
+ * này bổ sung các phương thức trợ giúp để làm điều đó dễ dàng hơn.
  *
- * As with attribute values, adding or removing CSS classes is a safe
- * operation that doesn't require checking if the attribute or class
- * exists before making changes. If removing the only class then the
- * entire `class` attribute will be removed.
+ * Giống như giá trị thuộc tính, thêm hoặc xóa class CSS là thao tác
+ * an toàn không cần kiểm tra xem thuộc tính hoặc class có tồn tại
+ * trước khi thay đổi hay không. Nếu xóa class duy nhất thì
+ * toàn bộ thuộc tính `class` sẽ bị xóa.
  *
- * Example:
+ * Ví dụ:
  *
- *     // from `<span>Yippee!</span>`
- *     //   to `<span class="is-active">Yippee!</span>`
+ *     // từ `<span>Yippee!</span>`
+ *     //   thành `<span class="is-active">Yippee!</span>`
  *     $tags->add_class( 'is-active' );
  *
- *     // from `<span class="excited">Yippee!</span>`
- *     //   to `<span class="excited is-active">Yippee!</span>`
+ *     // từ `<span class="excited">Yippee!</span>`
+ *     //   thành `<span class="excited is-active">Yippee!</span>`
  *     $tags->add_class( 'is-active' );
  *
- *     // from `<span class="is-active heavy-accent">Yippee!</span>`
- *     //   to `<span class="is-active heavy-accent">Yippee!</span>`
+ *     // từ `<span class="is-active heavy-accent">Yippee!</span>`
+ *     //   thành `<span class="is-active heavy-accent">Yippee!</span>`
  *     $tags->add_class( 'is-active' );
  *
- *     // from `<input type="text" class="is-active rugby not-disabled" length="24">`
- *     //   to `<input type="text" class="is-active not-disabled" length="24">
+ *     // từ `<input type="text" class="is-active rugby not-disabled" length="24">`
+ *     //   thành `<input type="text" class="is-active not-disabled" length="24">
  *     $tags->remove_class( 'rugby' );
  *
- *     // from `<input type="text" class="rugby" length="24">`
- *     //   to `<input type="text" length="24">
+ *     // từ `<input type="text" class="rugby" length="24">`
+ *     //   thành `<input type="text" length="24">
  *     $tags->remove_class( 'rugby' );
  *
- *     // from `<input type="text" length="24">`
- *     //   to `<input type="text" length="24">
+ *     // từ `<input type="text" length="24">`
+ *     //   thành `<input type="text" length="24">
  *     $tags->remove_class( 'rugby' );
  *
- * When class changes are enqueued but a direct change to `class` is made via
- * `set_attribute` then the changes to `set_attribute` (or `remove_attribute`)
- * will take precedence over those made through `add_class` and `remove_class`.
+ * Khi các thay đổi class được xếp hàng đợi nhưng thay đổi trực tiếp đến `class` được thực hiện qua
+ * `set_attribute` thì các thay đổi của `set_attribute` (hoặc `remove_attribute`)
+ * sẽ được ưu tiên hơn những thay đổi qua `add_class` và `remove_class`.
  *
- * ### Bookmarks
+ * ### Bookmark
  *
- * While scanning through the input HTMl document it's possible to set
- * a named bookmark when a particular tag is found. Later on, after
- * continuing to scan other tags, it's possible to `seek` to one of
- * the set bookmarks and then proceed again from that point forward.
+ * Khi quét qua tài liệu HTML đầu vào, có thể đặt
+ * một bookmark có tên khi tìm thấy một thẻ cụ thể. Sau đó, sau khi
+ * tiếp tục quét các thẻ khác, có thể `seek` đến một trong
+ * các bookmark đã đặt và tiếp tục lại từ điểm đó.
  *
- * Because bookmarks create processing overhead one should avoid
- * creating too many of them. As a rule, create only bookmarks
- * of known string literal names; avoid creating "mark_{$index}"
- * and so on. It's fine from a performance standpoint to create a
- * bookmark and update it frequently, such as within a loop.
+ * Vì bookmark tạo ra chi phí xử lý, nên tránh
+ * tạo quá nhiều. Nguyên tắc là chỉ tạo bookmark
+ * với tên chuỗi cố định; tránh tạo "mark_{$index}"
+ * v.v. Về mặt hiệu suất, việc tạo bookmark và cập nhật
+ * thường xuyên là hoàn toàn ổn, chẳng hạn trong vòng lặp.
  *
  *     $total_todos = 0;
  *     while ( $p->next_tag( array( 'tag_name' => 'UL', 'class_name' => 'todo' ) ) ) {
@@ -243,14 +243,14 @@
  *         }
  *     }
  *
- * ## Tokens and finer-grained processing.
+ * ## Token và xử lý chi tiết hơn.
  *
- * It's possible to scan through every lexical token in the
- * HTML document using the `next_token()` function. This
- * alternative form takes no argument and provides no built-in
- * query syntax.
+ * Có thể quét qua mọi token từ vựng trong
+ * tài liệu HTML bằng hàm `next_token()`. Dạng thay thế
+ * này không nhận tham số và không cung cấp cú pháp
+ * truy vấn tích hợp.
  *
- * Example:
+ * Ví dụ:
  *
  *      $title = '(untitled)';
  *      $text  = '';
@@ -271,147 +271,146 @@
  *      }
  *      return trim( "# {$title}\n\n{$text}" );
  *
- * ### Tokens and _modifiable text_.
+ * ### Token và _văn bản có thể chỉnh sửa_.
  *
- * #### Special "atomic" HTML elements.
+ * #### Các phần tử HTML "nguyên tử" đặc biệt.
  *
- * Not all HTML elements are able to contain other elements inside of them.
- * For instance, the contents inside a TITLE element are plaintext (except
- * that character references like &amp; will be decoded). This means that
- * if the string `<img>` appears inside a TITLE element, then it's not an
- * image tag, but rather it's text describing an image tag. Likewise, the
- * contents of a SCRIPT or STYLE element are handled entirely separately in
- * a browser than the contents of other elements because they represent a
- * different language than HTML.
+ * Không phải tất cả phần tử HTML đều có thể chứa phần tử khác bên trong.
+ * Ví dụ, nội dung bên trong phần tử TITLE là plaintext (ngoại trừ
+ * các tham chiếu ký tự như &amp; sẽ được giải mã). Điều này có nghĩa là
+ * nếu chuỗi `<img>` xuất hiện bên trong phần tử TITLE, thì đó không phải là
+ * thẻ image, mà là văn bản mô tả thẻ image. Tương tự,
+ * nội dung của phần tử SCRIPT hoặc STYLE được xử lý hoàn toàn riêng biệt
+ * trong trình duyệt so với nội dung các phần tử khác vì chúng đại diện cho
+ * ngôn ngữ khác với HTML.
  *
- * For these elements the Tag Processor treats the entire sequence as one,
- * from the opening tag, including its contents, through its closing tag.
- * This means that the it's not possible to match the closing tag for a
- * SCRIPT element unless it's unexpected; the Tag Processor already matched
- * it when it found the opening tag.
+ * Đối với các phần tử này, Tag Processor xử lý toàn bộ chuỗi như một thể,
+ * từ thẻ mở, bao gồm nội dung, đến thẻ đóng.
+ * Điều này có nghĩa là không thể khớp thẻ đóng cho phần tử
+ * SCRIPT trừ khi nó bất ngờ; Tag Processor đã khớp
+ * nó khi tìm thấy thẻ mở.
  *
- * The inner contents of these elements are that element's _modifiable text_.
+ * Nội dung bên trong của các phần tử này là _văn bản có thể chỉnh sửa_ của phần tử đó.
  *
- * The special elements are:
- *  - `SCRIPT` whose contents are treated as raw plaintext but supports a legacy
- *    style of including JavaScript inside of HTML comments to avoid accidentally
- *    closing the SCRIPT from inside a JavaScript string. E.g. `console.log( '</script>' )`.
- *  - `TITLE` and `TEXTAREA` whose contents are treated as plaintext and then any
- *    character references are decoded. E.g. `1 &lt; 2 < 3` becomes `1 < 2 < 3`.
- *  - `IFRAME`, `NOSCRIPT`, `NOEMBED`, `NOFRAME`, `STYLE` whose contents are treated as
- *    raw plaintext and left as-is. E.g. `1 &lt; 2 < 3` remains `1 &lt; 2 < 3`.
+ * Các phần tử đặc biệt là:
+ *  - `SCRIPT` có nội dung được coi là plaintext thô nhưng hỗ trợ kiểu kế thừa
+ *    bao gồm JavaScript bên trong comment HTML để tránh vô tình
+ *    đóng SCRIPT từ bên trong chuỗi JavaScript. Vd: `console.log( '</script>' )`.
+ *  - `TITLE` và `TEXTAREA` có nội dung được coi là plaintext và sau đó mọi
+ *    tham chiếu ký tự được giải mã. Vd: `1 &lt; 2 < 3` trở thành `1 < 2 < 3`.
+ *  - `IFRAME`, `NOSCRIPT`, `NOEMBED`, `NOFRAME`, `STYLE` có nội dung được coi là
+ *    plaintext thô và giữ nguyên. Vd: `1 &lt; 2 < 3` vẫn là `1 &lt; 2 < 3`.
  *
- * #### Other tokens with modifiable text.
+ * #### Các token khác có văn bản có thể chỉnh sửa.
  *
- * There are also non-elements which are void/self-closing in nature and contain
- * modifiable text that is part of that individual syntax token itself.
+ * Cũng có các thành phần không phải phần tử, có tính chất void/tự đóng và chứa
+ * văn bản có thể chỉnh sửa là một phần của chính token cú pháp đó.
  *
- *  - `#text` nodes, whose entire token _is_ the modifiable text.
- *  - HTML comments and tokens that become comments due to some syntax error. The
- *    text for these tokens is the portion of the comment inside of the syntax.
- *    E.g. for `<!-- comment -->` the text is `" comment "` (note the spaces are included).
- *  - `CDATA` sections, whose text is the content inside of the section itself. E.g. for
- *    `<![CDATA[some content]]>` the text is `"some content"` (with restrictions [1]).
- *  - "Funky comments," which are a special case of invalid closing tags whose name is
- *    invalid. The text for these nodes is the text that a browser would transform into
- *    an HTML comment when parsing. E.g. for `</%post_author>` the text is `%post_author`.
- *  - `DOCTYPE` declarations like `<DOCTYPE html>` which have no closing tag.
- *  - XML Processing instruction nodes like `<?wp __( "Like" ); ?>` (with restrictions [2]).
- *  - The empty end tag `</>` which is ignored in the browser and DOM.
+ *  - Các nút `#text`, toàn bộ token _chính là_ văn bản có thể chỉnh sửa.
+ *  - Comment HTML và các token trở thành comment do lỗi cú pháp. Văn bản
+ *    cho các token này là phần của comment bên trong cú pháp.
+ *    Vd: với `<!-- comment -->` văn bản là `" comment "` (lưu ý khoảng trắng được bao gồm).
+ *  - Các phần `CDATA`, văn bản là nội dung bên trong phần đó. Vd: với
+ *    `<![CDATA[some content]]>` văn bản là `"some content"` (có hạn chế [1]).
+ *  - "Funky comment," là trường hợp đặc biệt của thẻ đóng không hợp lệ có tên
+ *    không hợp lệ. Văn bản cho các nút này là văn bản mà trình duyệt sẽ chuyển đổi thành
+ *    comment HTML khi phân tích. Vd: với `</%post_author>` văn bản là `%post_author`.
+ *  - Khai báo `DOCTYPE` như `<DOCTYPE html>` không có thẻ đóng.
+ *  - Các nút XML Processing instruction như `<?wp __( "Like" ); ?>` (có hạn chế [2]).
+ *  - Thẻ đóng rỗng `</>` bị bỏ qua trong trình duyệt và DOM.
  *
- * [1]: There are no CDATA sections in HTML. When encountering `<![CDATA[`, everything
- *      until the next `>` becomes a bogus HTML comment, meaning there can be no CDATA
- *      section in an HTML document containing `>`. The Tag Processor will first find
- *      all valid and bogus HTML comments, and then if the comment _would_ have been a
- *      CDATA section _were they to exist_, it will indicate this as the type of comment.
+ * [1]: Không có phần CDATA trong HTML. Khi gặp `<![CDATA[`, mọi thứ
+ *      cho đến `>` tiếp theo trở thành comment HTML bogus, nghĩa là không thể có phần
+ *      CDATA trong tài liệu HTML chứa `>`. Tag Processor sẽ tìm tất cả
+ *      comment HTML hợp lệ và bogus trước, sau đó nếu comment _đáng lẽ_ là phần
+ *      CDATA _nếu chúng tồn tại_, nó sẽ chỉ ra đây là loại comment.
  *
- * [2]: XML allows a broader range of characters in a processing instruction's target name
- *      and disallows "xml" as a name, since it's special. The Tag Processor only recognizes
- *      target names with an ASCII-representable subset of characters. It also exhibits the
- *      same constraint as with CDATA sections, in that `>` cannot exist within the token
- *      since Processing Instructions do no exist within HTML and their syntax transforms
- *      into a bogus comment in the DOM.
+ * [2]: XML cho phép phạm vi ký tự rộng hơn trong tên đích của processing instruction
+ *      và không cho phép "xml" làm tên, vì nó đặc biệt. Tag Processor chỉ nhận diện
+ *      tên đích với tập con ký tự có thể biểu diễn bằng ASCII. Nó cũng có
+ *      cùng hạn chế với phần CDATA, là `>` không thể tồn tại trong token
+ *      vì Processing Instruction không tồn tại trong HTML và cú pháp của chúng chuyển đổi
+ *      thành comment bogus trong DOM.
  *
- * ## Design and limitations
+ * ## Thiết kế và giới hạn
  *
- * The Tag Processor is designed to linearly scan HTML documents and tokenize
- * HTML tags and their attributes. It's designed to do this as efficiently as
- * possible without compromising parsing integrity. Therefore it will be
- * slower than some methods of modifying HTML, such as those incorporating
- * over-simplified PCRE patterns, but will not introduce the defects and
- * failures that those methods bring in, which lead to broken page renders
- * and often to security vulnerabilities. On the other hand, it will be faster
- * than full-blown HTML parsers such as DOMDocument and use considerably
- * less memory. It requires a negligible memory overhead, enough to consider
- * it a zero-overhead system.
+ * Tag Processor được thiết kế để quét tuyến tính các tài liệu HTML và tokenize
+ * các thẻ HTML cùng thuộc tính của chúng. Nó được thiết kế để thực hiện điều này hiệu quả
+ * nhất có thể mà không ảnh hưởng tính toàn vẹn của phân tích cú pháp. Do đó nó sẽ
+ * chậm hơn một số phương pháp chỉnh sửa HTML, như những phương pháp sử dụng
+ * pattern PCRE đơn giản hóa quá mức, nhưng sẽ không tạo ra các lỗi và
+ * thất bại mà những phương pháp đó mang lại, dẫn đến hiển thị trang bị hỏng
+ * và thường là lỗ hổng bảo mật. Mặt khác, nó sẽ nhanh hơn
+ * các bộ phân tích HTML đầy đủ như DOMDocument và sử dụng ít bộ nhớ hơn
+ * đáng kể. Nó yêu cầu chi phí bộ nhớ không đáng kể, đủ để coi
+ * nó là hệ thống không có chi phí.
  *
- * The performance characteristics are maintained by avoiding tree construction
- * and semantic cleanups which are specified in HTML5. Because of this, for
- * example, it's not possible for the Tag Processor to associate any given
- * opening tag with its corresponding closing tag, or to return the inner markup
- * inside an element. Systems may be built on top of the Tag Processor to do
- * this, but the Tag Processor is and should be constrained so it can remain an
- * efficient, low-level, and reliable HTML scanner.
+ * Các đặc tính hiệu suất được duy trì bằng cách tránh xây dựng cây
+ * và dọn dẹp ngữ nghĩa được quy định trong HTML5. Vì điều này, ví dụ,
+ * Tag Processor không thể liên kết bất kỳ thẻ mở nào với thẻ đóng
+ * tương ứng, hoặc trả về markup bên trong của một phần tử. Các hệ thống có thể
+ * được xây dựng trên nền Tag Processor để làm điều này, nhưng Tag Processor nên
+ * được giới hạn để có thể duy trì là bộ quét HTML hiệu quả, cấp thấp và đáng tin cậy.
  *
- * The Tag Processor's design incorporates a "garbage-in-garbage-out" philosophy.
- * HTML5 specifies that certain invalid content be transformed into different forms
- * for display, such as removing null bytes from an input document and replacing
- * invalid characters with the Unicode replacement character `U+FFFD` (visually "�").
- * Where errors or transformations exist within the HTML5 specification, the Tag Processor
- * leaves those invalid inputs untouched, passing them through to the final browser
- * to handle. While this implies that certain operations will be non-spec-compliant,
- * such as reading the value of an attribute with invalid content, it also preserves a
- * simplicity and efficiency for handling those error cases.
+ * Thiết kế của Tag Processor áp dụng triết lý "rác vào-rác ra".
+ * HTML5 quy định rằng nội dung không hợp lệ nhất định phải được chuyển đổi sang dạng khác
+ * để hiển thị, chẳng hạn xóa byte null khỏi tài liệu đầu vào và thay thế
+ * ký tự không hợp lệ bằng ký tự thay thế Unicode `U+FFFD` (hiển thị "�").
+ * Khi có lỗi hoặc chuyển đổi trong đặc tả HTML5, Tag Processor
+ * giữ nguyên các đầu vào không hợp lệ đó, chuyển chúng qua trình duyệt cuối cùng
+ * để xử lý. Mặc dù điều này ngụ ý rằng một số thao tác sẽ không tuân thủ đặc tả,
+ * chẳng hạn đọc giá trị thuộc tính có nội dung không hợp lệ, nó cũng bảo tồn
+ * sự đơn giản và hiệu quả cho việc xử lý các trường hợp lỗi đó.
  *
- * Most operations within the Tag Processor are designed to minimize the difference
- * between an input and output document for any given change. For example, the
- * `add_class` and `remove_class` methods preserve whitespace and the class ordering
- * within the `class` attribute; and when encountering tags with duplicated attributes,
- * the Tag Processor will leave those invalid duplicate attributes where they are but
- * update the proper attribute which the browser will read for parsing its value. An
- * exception to this rule is that all attribute updates store their values as
- * double-quoted strings, meaning that attributes on input with single-quoted or
- * unquoted values will appear in the output with double-quotes.
+ * Hầu hết các thao tác trong Tag Processor được thiết kế để giảm thiểu sự khác biệt
+ * giữa tài liệu đầu vào và đầu ra cho bất kỳ thay đổi nào. Ví dụ,
+ * phương thức `add_class` và `remove_class` bảo tồn khoảng trắng và thứ tự class
+ * trong thuộc tính `class`; và khi gặp thẻ có thuộc tính trùng lặp,
+ * Tag Processor sẽ giữ nguyên các thuộc tính trùng lặp không hợp lệ ở vị trí của chúng nhưng
+ * cập nhật thuộc tính đúng mà trình duyệt sẽ đọc để phân tích giá trị. Một
+ * ngoại lệ cho quy tắc này là tất cả cập nhật thuộc tính lưu giá trị dưới dạng
+ * chuỗi ngoặc kép, nghĩa là thuộc tính đầu vào với giá trị ngoặc đơn hoặc
+ * không có ngoặc sẽ xuất hiện trong đầu ra với ngoặc kép.
  *
- * ### Scripting Flag
+ * ### Cờ Scripting
  *
- * The Tag Processor parses HTML with the "scripting flag" disabled. This means
- * that it doesn't run any scripts while parsing the page. In a browser with
- * JavaScript enabled, for example, the script can change the parse of the
- * document as it loads. On the server, however, evaluating JavaScript is not
- * only impractical, but also unwanted.
+ * Tag Processor phân tích HTML với "cờ scripting" bị tắt. Điều này có nghĩa là
+ * nó không chạy bất kỳ script nào trong khi phân tích trang. Trong trình duyệt có
+ * JavaScript được bật, ví dụ, script có thể thay đổi cách phân tích
+ * tài liệu khi nó tải. Trên máy chủ, tuy nhiên, việc thực thi JavaScript không
+ * chỉ không thực tế, mà còn không mong muốn.
  *
- * Practically this means that the Tag Processor will descend into NOSCRIPT
- * elements and process its child tags. Were the scripting flag enabled, such
- * as in a typical browser, the contents of NOSCRIPT are skipped entirely.
+ * Trên thực tế, điều này có nghĩa là Tag Processor sẽ đi vào bên trong các phần tử
+ * NOSCRIPT và xử lý các thẻ con của nó. Nếu cờ scripting được bật, như
+ * trong trình duyệt thông thường, nội dung của NOSCRIPT bị bỏ qua hoàn toàn.
  *
- * This allows the HTML API to process the content that will be presented in
- * a browser when scripting is disabled, but it offers a different view of a
- * page than most browser sessions will experience. E.g. the tags inside the
- * NOSCRIPT disappear.
+ * Điều này cho phép HTML API xử lý nội dung sẽ được trình bày trong
+ * trình duyệt khi scripting bị tắt, nhưng nó cung cấp một cái nhìn khác về
+ * trang so với hầu hết các phiên trình duyệt sẽ trải nghiệm. Vd: các thẻ bên trong
+ * NOSCRIPT biến mất.
  *
- * ### Text Encoding
+ * ### Mã hóa văn bản
  *
- * The Tag Processor assumes that the input HTML document is encoded with a
- * text encoding compatible with 7-bit ASCII's '<', '>', '&', ';', '/', '=',
- * "'", '"', 'a' - 'z', 'A' - 'Z', and the whitespace characters ' ', tab,
- * carriage-return, newline, and form-feed.
+ * Tag Processor giả định rằng tài liệu HTML đầu vào được mã hóa với
+ * mã hóa văn bản tương thích với ASCII 7-bit cho '<', '>', '&', ';', '/', '=',
+ * "'", '"', 'a' - 'z', 'A' - 'Z', và các ký tự khoảng trắng ' ', tab,
+ * carriage-return, newline, và form-feed.
  *
- * In practice, this includes almost every single-byte encoding as well as
- * UTF-8. Notably, however, it does not include UTF-16. If providing input
- * that's incompatible, then convert the encoding beforehand.
+ * Trên thực tế, điều này bao gồm hầu hết mọi mã hóa byte đơn cũng như
+ * UTF-8. Tuy nhiên, đáng chú ý, nó không bao gồm UTF-16. Nếu cung cấp đầu vào
+ * không tương thích, hãy chuyển đổi mã hóa trước.
  *
  * @since 6.2.0
- * @since 6.2.1 Fix: Support for various invalid comments; attribute updates are case-insensitive.
- * @since 6.3.2 Fix: Skip HTML-like content inside rawtext elements such as STYLE.
- * @since 6.5.0 Pauses processor when input ends in an incomplete syntax token.
- *              Introduces "special" elements which act like void elements, e.g. TITLE, STYLE.
- *              Allows scanning through all tokens and processing modifiable text, where applicable.
+ * @since 6.2.1 Sửa lỗi: Hỗ trợ các comment không hợp lệ khác nhau; cập nhật thuộc tính không phân biệt hoa thường.
+ * @since 6.3.2 Sửa lỗi: Bỏ qua nội dung giống HTML bên trong phần tử rawtext như STYLE.
+ * @since 6.5.0 Tạm dừng bộ xử lý khi đầu vào kết thúc ở token cú pháp không hoàn chỉnh.
+ *              Giới thiệu các phần tử "đặc biệt" hoạt động như phần tử void, vd: TITLE, STYLE.
+ *              Cho phép quét qua tất cả token và xử lý văn bản có thể chỉnh sửa, khi áp dụng được.
  */
 class WP_HTML_Tag_Processor {
 	/**
-	 * The maximum number of bookmarks allowed to exist at
-	 * any given time.
+	 * Số lượng bookmark tối đa được phép tồn tại
+	 * tại bất kỳ thời điểm nào.
 	 *
 	 * @since 6.2.0
 	 * @var int
@@ -421,8 +420,8 @@ class WP_HTML_Tag_Processor {
 	const MAX_BOOKMARKS = 10;
 
 	/**
-	 * Maximum number of times seek() can be called.
-	 * Prevents accidental infinite loops.
+	 * Số lần tối đa seek() có thể được gọi.
+	 * Ngăn chặn vòng lặp vô hạn do vô tình.
 	 *
 	 * @since 6.2.0
 	 * @var int
@@ -432,7 +431,7 @@ class WP_HTML_Tag_Processor {
 	const MAX_SEEK_OPS = 1000;
 
 	/**
-	 * The HTML document to parse.
+	 * Tài liệu HTML cần phân tích.
 	 *
 	 * @since 6.2.0
 	 * @var string
@@ -440,7 +439,7 @@ class WP_HTML_Tag_Processor {
 	protected $html;
 
 	/**
-	 * The last query passed to next_tag().
+	 * Truy vấn cuối cùng được truyền vào next_tag().
 	 *
 	 * @since 6.2.0
 	 * @var array|null
@@ -448,7 +447,7 @@ class WP_HTML_Tag_Processor {
 	private $last_query;
 
 	/**
-	 * The tag name this processor currently scans for.
+	 * Tên thẻ mà bộ xử lý hiện đang tìm kiếm.
 	 *
 	 * @since 6.2.0
 	 * @var string|null
@@ -456,7 +455,7 @@ class WP_HTML_Tag_Processor {
 	private $sought_tag_name;
 
 	/**
-	 * The CSS class name this processor currently scans for.
+	 * Tên class CSS mà bộ xử lý hiện đang tìm kiếm.
 	 *
 	 * @since 6.2.0
 	 * @var string|null
@@ -464,7 +463,7 @@ class WP_HTML_Tag_Processor {
 	private $sought_class_name;
 
 	/**
-	 * The match offset this processor currently scans for.
+	 * Vị trí khớp mà bộ xử lý hiện đang tìm kiếm.
 	 *
 	 * @since 6.2.0
 	 * @var int|null
@@ -472,7 +471,7 @@ class WP_HTML_Tag_Processor {
 	private $sought_match_offset;
 
 	/**
-	 * Whether to visit tag closers, e.g. </div>, when walking an input document.
+	 * Có duyệt qua các thẻ đóng, vd: </div>, khi duyệt tài liệu đầu vào hay không.
 	 *
 	 * @since 6.2.0
 	 * @var bool
@@ -480,19 +479,19 @@ class WP_HTML_Tag_Processor {
 	private $stop_on_tag_closers;
 
 	/**
-	 * Specifies mode of operation of the parser at any given time.
+	 * Chỉ định chế độ hoạt động của bộ phân tích tại bất kỳ thời điểm nào.
 	 *
-	 * | State           | Meaning                                                              |
+	 * | Trạng thái      | Ý nghĩa                                                              |
 	 * | ----------------|----------------------------------------------------------------------|
-	 * | *Ready*         | The parser is ready to run.                                          |
-	 * | *Complete*      | There is nothing left to parse.                                      |
-	 * | *Incomplete*    | The HTML ended in the middle of a token; nothing more can be parsed. |
-	 * | *Matched tag*   | Found an HTML tag; it's possible to modify its attributes.           |
-	 * | *Text node*     | Found a #text node; this is plaintext and modifiable.                |
-	 * | *CDATA node*    | Found a CDATA section; this is modifiable.                           |
-	 * | *Comment*       | Found a comment or bogus comment; this is modifiable.                |
-	 * | *Presumptuous*  | Found an empty tag closer: `</>`.                                    |
-	 * | *Funky comment* | Found a tag closer with an invalid tag name; this is modifiable.     |
+	 * | *Ready*         | Bộ phân tích sẵn sàng chạy.                                          |
+	 * | *Complete*      | Không còn gì để phân tích.                                           |
+	 * | *Incomplete*    | HTML kết thúc giữa token; không thể phân tích thêm.                  |
+	 * | *Matched tag*   | Tìm thấy thẻ HTML; có thể chỉnh sửa thuộc tính của nó.              |
+	 * | *Text node*     | Tìm thấy nút #text; đây là plaintext và có thể chỉnh sửa.           |
+	 * | *CDATA node*    | Tìm thấy phần CDATA; có thể chỉnh sửa.                              |
+	 * | *Comment*       | Tìm thấy comment hoặc bogus comment; có thể chỉnh sửa.              |
+	 * | *Presumptuous*  | Tìm thấy thẻ đóng rỗng: `</>`.                                      |
+	 * | *Funky comment* | Tìm thấy thẻ đóng với tên thẻ không hợp lệ; có thể chỉnh sửa.      |
 	 *
 	 * @since 6.5.0
 	 *
@@ -512,21 +511,21 @@ class WP_HTML_Tag_Processor {
 	protected $parser_state = self::STATE_READY;
 
 	/**
-	 * Indicates if the document is in quirks mode or no-quirks mode.
+	 * Cho biết tài liệu đang ở chế độ quirks hay no-quirks.
 	 *
-	 *  Impact on HTML parsing:
+	 *  Tác động đến phân tích HTML:
 	 *
-	 *   - In `NO_QUIRKS_MODE` (also known as "standard mode"):
-	 *       - CSS class and ID selectors match byte-for-byte (case-sensitively).
-	 *       - A TABLE start tag `<table>` implicitly closes any open `P` element.
+	 *   - Trong `NO_QUIRKS_MODE` (còn gọi là "chế độ chuẩn"):
+	 *       - Bộ chọn CSS class và ID khớp theo từng byte (phân biệt hoa thường).
+	 *       - Thẻ mở TABLE `<table>` ngầm đóng bất kỳ phần tử `P` nào đang mở.
 	 *
-	 *   - In `QUIRKS_MODE`:
-	 *       - CSS class and ID selectors match match in an ASCII case-insensitive manner.
-	 *       - A TABLE start tag `<table>` opens a `TABLE` element as a child of a `P`
-	 *         element if one is open.
+	 *   - Trong `QUIRKS_MODE`:
+	 *       - Bộ chọn CSS class và ID khớp theo cách không phân biệt hoa thường ASCII.
+	 *       - Thẻ mở TABLE `<table>` mở một phần tử `TABLE` như con của phần tử `P`
+	 *         nếu có phần tử P đang mở.
 	 *
-	 * Quirks and no-quirks mode are thus mostly about styling, but have an impact when
-	 * tables are found inside paragraph elements.
+	 * Chế độ quirks và no-quirks chủ yếu liên quan đến kiểu dáng, nhưng có tác động khi
+	 * bảng được tìm thấy bên trong các phần tử đoạn văn.
 	 *
 	 * @see self::QUIRKS_MODE
 	 * @see self::NO_QUIRKS_MODE
@@ -538,15 +537,15 @@ class WP_HTML_Tag_Processor {
 	protected $compat_mode = self::NO_QUIRKS_MODE;
 
 	/**
-	 * Indicates whether the parser is inside foreign content,
-	 * e.g. inside an SVG or MathML element.
+	 * Cho biết bộ phân tích có đang ở trong nội dung ngoại lai hay không,
+	 * vd: bên trong phần tử SVG hoặc MathML.
 	 *
-	 * One of 'html', 'svg', or 'math'.
+	 * Một trong 'html', 'svg', hoặc 'math'.
 	 *
-	 * Several parsing rules change based on whether the parser
-	 * is inside foreign content, including whether CDATA sections
-	 * are allowed and whether a self-closing flag indicates that
-	 * an element has no content.
+	 * Một số quy tắc phân tích thay đổi dựa trên việc bộ phân tích
+	 * có đang ở trong nội dung ngoại lai hay không, bao gồm việc phần CDATA
+	 * có được phép hay không và cờ tự đóng có chỉ ra rằng
+	 * phần tử không có nội dung hay không.
 	 *
 	 * @since 6.7.0
 	 *
@@ -555,11 +554,11 @@ class WP_HTML_Tag_Processor {
 	private $parsing_namespace = 'html';
 
 	/**
-	 * What kind of syntax token became an HTML comment.
+	 * Loại token cú pháp nào đã trở thành comment HTML.
 	 *
-	 * Since there are many ways in which HTML syntax can create an HTML comment,
-	 * this indicates which of those caused it. This allows the Tag Processor to
-	 * represent more from the original input document than would appear in the DOM.
+	 * Vì có nhiều cách mà cú pháp HTML có thể tạo ra comment HTML,
+	 * thuộc tính này cho biết cách nào đã gây ra nó. Điều này cho phép Tag Processor
+	 * biểu diễn nhiều hơn từ tài liệu đầu vào gốc so với những gì xuất hiện trong DOM.
 	 *
 	 * @since 6.5.0
 	 *
@@ -568,7 +567,7 @@ class WP_HTML_Tag_Processor {
 	protected $comment_type = null;
 
 	/**
-	 * What kind of text the matched text node represents, if it was subdivided.
+	 * Loại văn bản mà nút text đã khớp đại diện, nếu nó đã được chia nhỏ.
 	 *
 	 * @see self::TEXT_IS_NULL_SEQUENCE
 	 * @see self::TEXT_IS_WHITESPACE
@@ -582,11 +581,11 @@ class WP_HTML_Tag_Processor {
 	protected $text_node_classification = self::TEXT_IS_GENERIC;
 
 	/**
-	 * How many bytes from the original HTML document have been read and parsed.
+	 * Số byte đã được đọc và phân tích từ tài liệu HTML gốc.
 	 *
-	 * This value points to the latest byte offset in the input document which
-	 * has been already parsed. It is the internal cursor for the Tag Processor
-	 * and updates while scanning through the HTML tokens.
+	 * Giá trị này trỏ đến offset byte mới nhất trong tài liệu đầu vào
+	 * đã được phân tích. Nó là con trỏ nội bộ của Tag Processor
+	 * và được cập nhật khi quét qua các token HTML.
 	 *
 	 * @since 6.2.0
 	 * @var int
@@ -594,13 +593,13 @@ class WP_HTML_Tag_Processor {
 	private $bytes_already_parsed = 0;
 
 	/**
-	 * Byte offset in input document where current token starts.
+	 * Offset byte trong tài liệu đầu vào nơi token hiện tại bắt đầu.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     <div id="test">...
 	 *     01234
-	 *     - token starts at 0
+	 *     - token bắt đầu tại 0
 	 *
 	 * @since 6.5.0
 	 *
@@ -609,17 +608,17 @@ class WP_HTML_Tag_Processor {
 	private $token_starts_at;
 
 	/**
-	 * Byte length of current token.
+	 * Độ dài byte của token hiện tại.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     <div id="test">...
 	 *     012345678901234
-	 *     - token length is 14 - 0 = 14
+	 *     - độ dài token là 14 - 0 = 14
 	 *
 	 *     a <!-- comment --> is a token.
 	 *     0123456789 123456789 123456789
-	 *     - token length is 17 - 2 = 15
+	 *     - độ dài token là 17 - 2 = 15
 	 *
 	 * @since 6.5.0
 	 *
@@ -628,13 +627,13 @@ class WP_HTML_Tag_Processor {
 	private $token_length;
 
 	/**
-	 * Byte offset in input document where current tag name starts.
+	 * Offset byte trong tài liệu đầu vào nơi tên thẻ hiện tại bắt đầu.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     <div id="test">...
 	 *     01234
-	 *      - tag name starts at 1
+	 *      - tên thẻ bắt đầu tại 1
 	 *
 	 * @since 6.2.0
 	 *
@@ -643,13 +642,13 @@ class WP_HTML_Tag_Processor {
 	private $tag_name_starts_at;
 
 	/**
-	 * Byte length of current tag name.
+	 * Độ dài byte của tên thẻ hiện tại.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     <div id="test">...
 	 *     01234
-	 *      --- tag name length is 3
+	 *      --- độ dài tên thẻ là 3
 	 *
 	 * @since 6.2.0
 	 *
@@ -658,7 +657,7 @@ class WP_HTML_Tag_Processor {
 	private $tag_name_length;
 
 	/**
-	 * Byte offset into input document where current modifiable text starts.
+	 * Offset byte trong tài liệu đầu vào nơi văn bản có thể chỉnh sửa hiện tại bắt đầu.
 	 *
 	 * @since 6.5.0
 	 *
@@ -667,7 +666,7 @@ class WP_HTML_Tag_Processor {
 	private $text_starts_at;
 
 	/**
-	 * Byte length of modifiable text.
+	 * Độ dài byte của văn bản có thể chỉnh sửa.
 	 *
 	 * @since 6.5.0
 	 *
@@ -676,34 +675,34 @@ class WP_HTML_Tag_Processor {
 	private $text_length;
 
 	/**
-	 * Whether the current tag is an opening tag, e.g. <div>, or a closing tag, e.g. </div>.
+	 * Thẻ hiện tại là thẻ mở, vd: <div>, hay thẻ đóng, vd: </div>.
 	 *
 	 * @var bool
 	 */
 	private $is_closing_tag;
 
 	/**
-	 * Lazily-built index of attributes found within an HTML tag, keyed by the attribute name.
+	 * Chỉ mục thuộc tính được xây dựng lười (lazily-built) tìm thấy trong thẻ HTML, đánh khóa bằng tên thuộc tính.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
-	 *     // Supposing the parser is working through this content
-	 *     // and stops after recognizing the `id` attribute.
+	 *     // Giả sử bộ phân tích đang xử lý nội dung này
+	 *     // và dừng lại sau khi nhận diện thuộc tính `id`.
 	 *     // <div id="test-4" class=outline title="data:text/plain;base64=asdk3nk1j3fo8">
-	 *     //                 ^ parsing will continue from this point.
+	 *     //                 ^ phân tích sẽ tiếp tục từ điểm này.
 	 *     $this->attributes = array(
 	 *         'id' => new WP_HTML_Attribute_Token( 'id', 9, 6, 5, 11, false )
 	 *     );
 	 *
-	 *     // When picking up parsing again, or when asking to find the
-	 *     // `class` attribute we will continue and add to this array.
+	 *     // Khi tiếp tục phân tích, hoặc khi yêu cầu tìm
+	 *     // thuộc tính `class` chúng ta sẽ tiếp tục và thêm vào mảng này.
 	 *     $this->attributes = array(
 	 *         'id'    => new WP_HTML_Attribute_Token( 'id', 9, 6, 5, 11, false ),
 	 *         'class' => new WP_HTML_Attribute_Token( 'class', 23, 7, 17, 13, false )
 	 *     );
 	 *
-	 *     // Note that only the `class` attribute value is stored in the index.
-	 *     // That's because it is the only value used by this class at the moment.
+	 *     // Lưu ý chỉ giá trị thuộc tính `class` được lưu trong chỉ mục.
+	 *     // Đó là vì nó là giá trị duy nhất được sử dụng bởi lớp này tại thời điểm hiện tại.
 	 *
 	 * @since 6.2.0
 	 * @var WP_HTML_Attribute_Token[]
@@ -711,8 +710,8 @@ class WP_HTML_Tag_Processor {
 	private $attributes = array();
 
 	/**
-	 * Tracks spans of duplicate attributes on a given tag, used for removing
-	 * all copies of an attribute when calling `remove_attribute()`.
+	 * Theo dõi các khoảng thuộc tính trùng lặp trên một thẻ, dùng để xóa
+	 * tất cả bản sao của thuộc tính khi gọi `remove_attribute()`.
 	 *
 	 * @since 6.3.2
 	 *
@@ -721,21 +720,21 @@ class WP_HTML_Tag_Processor {
 	private $duplicate_attributes = null;
 
 	/**
-	 * Which class names to add or remove from a tag.
+	 * Các tên class cần thêm hoặc xóa khỏi thẻ.
 	 *
-	 * These are tracked separately from attribute updates because they are
-	 * semantically distinct, whereas this interface exists for the common
-	 * case of adding and removing class names while other attributes are
-	 * generally modified as with DOM `setAttribute` calls.
+	 * Chúng được theo dõi riêng biệt với cập nhật thuộc tính vì chúng
+	 * khác biệt về ngữ nghĩa, trong khi giao diện này tồn tại cho trường hợp
+	 * phổ biến là thêm và xóa tên class trong khi các thuộc tính khác
+	 * thường được chỉnh sửa như với lệnh gọi DOM `setAttribute`.
 	 *
-	 * When modifying an HTML document these will eventually be collapsed
-	 * into a single `set_attribute( 'class', $changes )` call.
+	 * Khi chỉnh sửa tài liệu HTML, chúng sẽ được gộp lại
+	 * thành một lệnh gọi `set_attribute( 'class', $changes )` duy nhất.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
-	 *     // Add the `wp-block-group` class, remove the `wp-group` class.
+	 *     // Thêm class `wp-block-group`, xóa class `wp-group`.
 	 *     $classname_updates = array(
-	 *         // Indexed by a comparable class name.
+	 *         // Đánh chỉ mục bằng tên class có thể so sánh.
 	 *         'wp-block-group' => WP_HTML_Tag_Processor::ADD_CLASS,
 	 *         'wp-group'       => WP_HTML_Tag_Processor::REMOVE_CLASS
 	 *     );
@@ -746,8 +745,8 @@ class WP_HTML_Tag_Processor {
 	private $classname_updates = array();
 
 	/**
-	 * Tracks a semantic location in the original HTML which
-	 * shifts with updates as they are applied to the document.
+	 * Theo dõi một vị trí ngữ nghĩa trong HTML gốc
+	 * dịch chuyển theo các cập nhật khi chúng được áp dụng vào tài liệu.
 	 *
 	 * @since 6.2.0
 	 * @var WP_HTML_Span[]
@@ -759,40 +758,40 @@ class WP_HTML_Tag_Processor {
 	const SKIP_CLASS   = null;
 
 	/**
-	 * Lexical replacements to apply to input HTML document.
+	 * Các thay thế từ vựng cần áp dụng vào tài liệu HTML đầu vào.
 	 *
-	 * "Lexical" in this class refers to the part of this class which
-	 * operates on pure text _as text_ and not as HTML. There's a line
-	 * between the public interface, with HTML-semantic methods like
-	 * `set_attribute` and `add_class`, and an internal state that tracks
-	 * text offsets in the input document.
+	 * "Từ vựng" trong lớp này đề cập đến phần của lớp hoạt động
+	 * trên văn bản thuần _dưới dạng văn bản_ chứ không phải HTML. Có một ranh giới
+	 * giữa giao diện công khai, với các phương thức ngữ nghĩa HTML như
+	 * `set_attribute` và `add_class`, và trạng thái nội bộ theo dõi
+	 * các offset văn bản trong tài liệu đầu vào.
 	 *
-	 * When higher-level HTML methods are called, those have to transform their
-	 * operations (such as setting an attribute's value) into text diffing
-	 * operations (such as replacing the sub-string from indices A to B with
-	 * some given new string). These text-diffing operations are the lexical
-	 * updates.
+	 * Khi các phương thức HTML cấp cao hơn được gọi, chúng phải chuyển đổi
+	 * các thao tác (như đặt giá trị thuộc tính) thành các thao tác so sánh văn bản
+	 * (như thay thế chuỗi con từ chỉ mục A đến B bằng
+	 * chuỗi mới cho trước). Các thao tác so sánh văn bản này là các cập nhật
+	 * từ vựng.
 	 *
-	 * As new higher-level methods are added they need to collapse their
-	 * operations into these lower-level lexical updates since that's the
-	 * Tag Processor's internal language of change. Any code which creates
-	 * these lexical updates must ensure that they do not cross HTML syntax
-	 * boundaries, however, so these should never be exposed outside of this
-	 * class or any classes which intentionally expand its functionality.
+	 * Khi các phương thức cấp cao mới được thêm vào, chúng cần gộp các thao tác
+	 * thành các cập nhật từ vựng cấp thấp hơn vì đó là
+	 * ngôn ngữ thay đổi nội bộ của Tag Processor. Bất kỳ mã nào tạo
+	 * các cập nhật từ vựng này phải đảm bảo rằng chúng không vượt qua ranh giới
+	 * cú pháp HTML, do đó chúng không bao giờ được phơi bày bên ngoài
+	 * lớp này hoặc bất kỳ lớp nào cố ý mở rộng chức năng của nó.
 	 *
-	 * These are enqueued while editing the document instead of being immediately
-	 * applied to avoid processing overhead, string allocations, and string
-	 * copies when applying many updates to a single document.
+	 * Chúng được xếp hàng đợi trong khi chỉnh sửa tài liệu thay vì được áp dụng
+	 * ngay lập tức để tránh chi phí xử lý, cấp phát chuỗi, và sao chép
+	 * chuỗi khi áp dụng nhiều cập nhật vào một tài liệu duy nhất.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
-	 *     // Replace an attribute stored with a new value, indices
-	 *     // sourced from the lazily-parsed HTML recognizer.
+	 *     // Thay thế thuộc tính đã lưu bằng giá trị mới, chỉ mục
+	 *     // lấy từ bộ nhận dạng HTML được phân tích lười.
 	 *     $start  = $attributes['src']->start;
 	 *     $length = $attributes['src']->length;
 	 *     $modifications[] = new WP_HTML_Text_Replacement( $start, $length, $new_value );
 	 *
-	 *     // Correspondingly, something like this will appear in this array.
+	 *     // Tương ứng, một thứ như thế này sẽ xuất hiện trong mảng này.
 	 *     $lexical_updates = array(
 	 *         WP_HTML_Text_Replacement( 14, 28, 'https://my-site.my-domain/wp-content/uploads/2014/08/kittens.jpg' )
 	 *     );
@@ -803,7 +802,7 @@ class WP_HTML_Tag_Processor {
 	protected $lexical_updates = array();
 
 	/**
-	 * Tracks and limits `seek()` calls to prevent accidental infinite loops.
+	 * Theo dõi và giới hạn các lệnh gọi `seek()` để ngăn vòng lặp vô hạn do vô tình.
 	 *
 	 * @since 6.2.0
 	 * @var int
@@ -813,12 +812,12 @@ class WP_HTML_Tag_Processor {
 	protected $seek_count = 0;
 
 	/**
-	 * Whether the parser should skip over an immediately-following linefeed
-	 * character, as is the case with LISTING, PRE, and TEXTAREA.
+	 * Bộ phân tích có nên bỏ qua ký tự xuống dòng ngay sau đó hay không,
+	 * như trường hợp với LISTING, PRE, và TEXTAREA.
 	 *
-	 * > If the next token is a U+000A LINE FEED (LF) character token, then
-	 * > ignore that token and move on to the next one. (Newlines at the start
-	 * > of [these] elements are ignored as an authoring convenience.)
+	 * > Nếu token tiếp theo là ký tự U+000A LINE FEED (LF), thì
+	 * > bỏ qua token đó và chuyển sang token tiếp theo. (Các dòng mới ở đầu
+	 * > của [các phần tử này] được bỏ qua để thuận tiện cho tác giả.)
 	 *
 	 * @since 6.7.0
 	 *
@@ -827,25 +826,25 @@ class WP_HTML_Tag_Processor {
 	private $skip_newline_at = null;
 
 	/**
-	 * Constructor.
+	 * Hàm khởi tạo.
 	 *
 	 * @since 6.2.0
 	 *
-	 * @param string $html HTML to process.
+	 * @param string $html HTML cần xử lý.
 	 */
 	public function __construct( $html ) {
 		$this->html = $html;
 	}
 
 	/**
-	 * Switches parsing mode into a new namespace, such as when
-	 * encountering an SVG tag and entering foreign content.
+	 * Chuyển chế độ phân tích sang không gian tên mới, chẳng hạn khi
+	 * gặp thẻ SVG và đi vào nội dung ngoại lai.
 	 *
 	 * @since 6.7.0
 	 *
-	 * @param string $new_namespace One of 'html', 'svg', or 'math' indicating into what
-	 *                              namespace the next tokens will be processed.
-	 * @return bool Whether the namespace was valid and changed.
+	 * @param string $new_namespace Một trong 'html', 'svg', hoặc 'math' cho biết không gian tên
+	 *                              mà các token tiếp theo sẽ được xử lý.
+	 * @return bool Không gian tên có hợp lệ và đã được thay đổi hay không.
 	 */
 	public function change_parsing_namespace( string $new_namespace ): bool {
 		if ( ! in_array( $new_namespace, array( 'html', 'math', 'svg' ), true ) ) {
@@ -857,22 +856,22 @@ class WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Finds the next tag matching the $query.
+	 * Tìm thẻ tiếp theo khớp với $query.
 	 *
 	 * @since 6.2.0
-	 * @since 6.5.0 No longer processes incomplete tokens at end of document; pauses the processor at start of token.
+	 * @since 6.5.0 Không còn xử lý token không hoàn chỉnh ở cuối tài liệu; tạm dừng bộ xử lý tại đầu token.
 	 *
 	 * @param array|string|null $query {
-	 *     Optional. Which tag name to find, having which class, etc. Default is to find any tag.
+	 *     Tùy chọn. Tên thẻ cần tìm, có class nào, v.v. Mặc định là tìm bất kỳ thẻ nào.
 	 *
-	 *     @type string|null $tag_name     Which tag to find, or `null` for "any tag."
-	 *     @type int|null    $match_offset Find the Nth tag matching all search criteria.
-	 *                                     1 for "first" tag, 3 for "third," etc.
-	 *                                     Defaults to first tag.
-	 *     @type string|null $class_name   Tag must contain this whole class name to match.
-	 *     @type string|null $tag_closers  "visit" or "skip": whether to stop on tag closers, e.g. </div>.
+	 *     @type string|null $tag_name     Thẻ nào cần tìm, hoặc `null` cho "bất kỳ thẻ nào."
+	 *     @type int|null    $match_offset Tìm thẻ thứ N khớp với tất cả tiêu chí tìm kiếm.
+	 *                                     1 cho thẻ "đầu tiên", 3 cho thẻ "thứ ba," v.v.
+	 *                                     Mặc định là thẻ đầu tiên.
+	 *     @type string|null $class_name   Thẻ phải chứa toàn bộ tên class này để khớp.
+	 *     @type string|null $tag_closers  "visit" hoặc "skip": có dừng tại thẻ đóng hay không, vd: </div>.
 	 * }
-	 * @return bool Whether a tag was matched.
+	 * @return bool Có thẻ nào được khớp hay không.
 	 */
 	public function next_tag( $query = null ): bool {
 		$this->parse_query( $query );
@@ -896,57 +895,56 @@ class WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Finds the next token in the HTML document.
+	 * Tìm token tiếp theo trong tài liệu HTML.
 	 *
-	 * An HTML document can be viewed as a stream of tokens,
-	 * where tokens are things like HTML tags, HTML comments,
-	 * text nodes, etc. This method finds the next token in
-	 * the HTML document and returns whether it found one.
+	 * Tài liệu HTML có thể được xem như một luồng các token,
+	 * trong đó token là những thứ như thẻ HTML, comment HTML,
+	 * nút text, v.v. Phương thức này tìm token tiếp theo trong
+	 * tài liệu HTML và trả về có tìm thấy hay không.
 	 *
-	 * If it starts parsing a token and reaches the end of the
-	 * document then it will seek to the start of the last
-	 * token and pause, returning `false` to indicate that it
-	 * failed to find a complete token.
+	 * Nếu bắt đầu phân tích token và đến cuối tài liệu
+	 * thì nó sẽ quay về đầu token cuối cùng và tạm dừng,
+	 * trả về `false` để chỉ ra rằng không tìm thấy token hoàn chỉnh.
 	 *
-	 * Possible token types, based on the HTML specification:
+	 * Các loại token có thể, dựa trên đặc tả HTML:
 	 *
-	 *  - an HTML tag, whether opening, closing, or void.
-	 *  - a text node - the plaintext inside tags.
-	 *  - an HTML comment.
-	 *  - a DOCTYPE declaration.
-	 *  - a processing instruction, e.g. `<?xml version="1.0" ?>`.
+	 *  - thẻ HTML, dù là thẻ mở, thẻ đóng, hay thẻ void.
+	 *  - nút text - plaintext bên trong các thẻ.
+	 *  - comment HTML.
+	 *  - khai báo DOCTYPE.
+	 *  - processing instruction, vd: `<?xml version="1.0" ?>`.
 	 *
-	 * The Tag Processor currently only supports the tag token.
+	 * Tag Processor hiện chỉ hỗ trợ token thẻ.
 	 *
 	 * @since 6.5.0
-	 * @since 6.7.0 Recognizes CDATA sections within foreign content.
+	 * @since 6.7.0 Nhận diện các phần CDATA trong nội dung ngoại lai.
 	 *
-	 * @return bool Whether a token was parsed.
+	 * @return bool Có token nào được phân tích hay không.
 	 */
 	public function next_token(): bool {
 		return $this->base_class_next_token();
 	}
 
 	/**
-	 * Internal method which finds the next token in the HTML document.
+	 * Phương thức nội bộ tìm token tiếp theo trong tài liệu HTML.
 	 *
-	 * This method is a protected internal function which implements the logic for
-	 * finding the next token in a document. It exists so that the parser can update
-	 * its state without affecting the location of the cursor in the document and
-	 * without triggering subclass methods for things like `next_token()`, e.g. when
-	 * applying patches before searching for the next token.
+	 * Phương thức này là hàm nội bộ được bảo vệ thực hiện logic để
+	 * tìm token tiếp theo trong tài liệu. Nó tồn tại để bộ phân tích có thể cập nhật
+	 * trạng thái mà không ảnh hưởng đến vị trí con trỏ trong tài liệu và
+	 * không kích hoạt các phương thức lớp con cho những thứ như `next_token()`, vd: khi
+	 * áp dụng bản vá trước khi tìm kiếm token tiếp theo.
 	 *
 	 * @since 6.5.0
 	 *
 	 * @access private
 	 *
-	 * @return bool Whether a token was parsed.
+	 * @return bool Có token nào được phân tích hay không.
 	 */
 	private function base_class_next_token(): bool {
 		$was_at = $this->bytes_already_parsed;
 		$this->after_tag();
 
-		// Don't proceed if there's nothing more to scan.
+		// Không tiếp tục nếu không còn gì để quét.
 		if (
 			self::STATE_COMPLETE === $this->parser_state ||
 			self::STATE_INCOMPLETE_INPUT === $this->parser_state
@@ -955,8 +953,8 @@ class WP_HTML_Tag_Processor {
 		}
 
 		/*
-		 * The next step in the parsing loop determines the parsing state;
-		 * clear it so that state doesn't linger from the previous step.
+		 * Bước tiếp theo trong vòng lặp phân tích xác định trạng thái phân tích;
+		 * xóa nó để trạng thái không còn sót lại từ bước trước.
 		 */
 		$this->parser_state = self::STATE_READY;
 
@@ -965,7 +963,7 @@ class WP_HTML_Tag_Processor {
 			return false;
 		}
 
-		// Find the next tag if it exists.
+		// Tìm thẻ tiếp theo nếu nó tồn tại.
 		if ( false === $this->parse_next_tag() ) {
 			if ( self::STATE_INCOMPLETE_INPUT === $this->parser_state ) {
 				$this->bytes_already_parsed = $was_at;
@@ -975,10 +973,10 @@ class WP_HTML_Tag_Processor {
 		}
 
 		/*
-		 * For legacy reasons the rest of this function handles tags and their
-		 * attributes. If the processor has reached the end of the document
-		 * or if it matched any other token then it should return here to avoid
-		 * attempting to process tag-specific syntax.
+		 * Vì lý do kế thừa, phần còn lại của hàm này xử lý các thẻ và
+		 * thuộc tính của chúng. Nếu bộ xử lý đã đến cuối tài liệu
+		 * hoặc nếu nó khớp với token khác thì nên trả về ở đây để tránh
+		 * cố gắng xử lý cú pháp dành riêng cho thẻ.
 		 */
 		if (
 			self::STATE_INCOMPLETE_INPUT !== $this->parser_state &&
@@ -988,17 +986,17 @@ class WP_HTML_Tag_Processor {
 			return true;
 		}
 
-		// Parse all of its attributes.
+		// Phân tích tất cả thuộc tính của nó.
 		while ( $this->parse_next_attribute() ) {
 			continue;
 		}
 
-		// Ensure that the tag closes before the end of the document.
+		// Đảm bảo thẻ đóng trước khi kết thúc tài liệu.
 		if (
 			self::STATE_INCOMPLETE_INPUT === $this->parser_state ||
 			$this->bytes_already_parsed >= strlen( $this->html )
 		) {
-			// Does this appropriately clear state (parsed attributes)?
+			// Liệu điều này có xóa trạng thái đúng cách (thuộc tính đã phân tích)?
 			$this->parser_state         = self::STATE_INCOMPLETE_INPUT;
 			$this->bytes_already_parsed = $was_at;
 
@@ -1017,8 +1015,8 @@ class WP_HTML_Tag_Processor {
 		$this->token_length         = $this->bytes_already_parsed - $this->token_starts_at;
 
 		/*
-		 * Certain tags require additional processing. The first-letter pre-check
-		 * avoids unnecessary string allocation when comparing the tag names.
+		 * Một số thẻ yêu cầu xử lý bổ sung. Kiểm tra trước chữ cái đầu tiên
+		 * tránh cấp phát chuỗi không cần thiết khi so sánh tên thẻ.
 		 *
 		 *  - IFRAME
 		 *  - LISTING (deprecated)
@@ -1042,8 +1040,8 @@ class WP_HTML_Tag_Processor {
 		$tag_name = $this->get_tag();
 
 		/*
-		 * For LISTING, PRE, and TEXTAREA, the first linefeed of an immediately-following
-		 * text node is ignored as an authoring convenience.
+		 * Đối với LISTING, PRE, và TEXTAREA, dòng mới đầu tiên của nút text
+		 * ngay sau đó được bỏ qua để thuận tiện cho tác giả.
 		 *
 		 * @see static::skip_newline_at
 		 */
@@ -1053,19 +1051,19 @@ class WP_HTML_Tag_Processor {
 		}
 
 		/*
-		 * There are certain elements whose children are not DATA but are instead
-		 * RCDATA or RAWTEXT. These cannot contain other elements, and the contents
-		 * are parsed as plaintext, with character references decoded in RCDATA but
-		 * not in RAWTEXT.
+		 * Có một số phần tử mà con của chúng không phải DATA mà thay vào đó là
+		 * RCDATA hoặc RAWTEXT. Chúng không thể chứa các phần tử khác, và nội dung
+		 * được phân tích như plaintext, với tham chiếu ký tự được giải mã trong RCDATA nhưng
+		 * không trong RAWTEXT.
 		 *
-		 * These elements are described here as "self-contained" or special atomic
-		 * elements whose end tag is consumed with the opening tag, and they will
-		 * contain modifiable text inside of them.
+		 * Các phần tử này được mô tả ở đây là "tự chứa" hoặc phần tử nguyên tử đặc biệt
+		 * mà thẻ đóng được tiêu thụ cùng với thẻ mở, và chúng sẽ
+		 * chứa văn bản có thể chỉnh sửa bên trong.
 		 *
-		 * Preserve the opening tag pointers, as these will be overwritten
-		 * when finding the closing tag. They will be reset after finding
-		 * the closing to tag to point to the opening of the special atomic
-		 * tag sequence.
+		 * Giữ lại các con trỏ thẻ mở, vì chúng sẽ bị ghi đè
+		 * khi tìm thẻ đóng. Chúng sẽ được đặt lại sau khi tìm thấy
+		 * thẻ đóng để trỏ đến đầu chuỗi thẻ
+		 * nguyên tử đặc biệt.
 		 */
 		$tag_name_starts_at   = $this->tag_name_starts_at;
 		$tag_name_length      = $this->tag_name_length;
@@ -1073,7 +1071,7 @@ class WP_HTML_Tag_Processor {
 		$attributes           = $this->attributes;
 		$duplicate_attributes = $this->duplicate_attributes;
 
-		// Find the closing tag if necessary.
+		// Tìm thẻ đóng nếu cần thiết.
 		switch ( $tag_name ) {
 			case 'SCRIPT':
 				$found_closer = $this->skip_script_data();
@@ -1085,15 +1083,15 @@ class WP_HTML_Tag_Processor {
 				break;
 
 			/*
-			 * In the browser this list would include the NOSCRIPT element,
-			 * but the Tag Processor is an environment with the scripting
-			 * flag disabled, meaning that it needs to descend into the
-			 * NOSCRIPT element to be able to properly process what will be
-			 * sent to a browser.
+			 * Trong trình duyệt, danh sách này sẽ bao gồm phần tử NOSCRIPT,
+			 * nhưng Tag Processor là môi trường có cờ scripting
+			 * bị tắt, nghĩa là nó cần đi sâu vào
+			 * phần tử NOSCRIPT để có thể xử lý đúng những gì sẽ được
+			 * gửi đến trình duyệt.
 			 *
-			 * Note that this rule makes HTML5 syntax incompatible with XML,
-			 * because the parsing of this token depends on client application.
-			 * The NOSCRIPT element cannot be represented in the XHTML syntax.
+			 * Lưu ý rằng quy tắc này khiến cú pháp HTML5 không tương thích với XML,
+			 * vì việc phân tích token này phụ thuộc vào ứng dụng khách.
+			 * Phần tử NOSCRIPT không thể được biểu diễn trong cú pháp XHTML.
 			 */
 			case 'IFRAME':
 			case 'NOEMBED':
@@ -1103,7 +1101,7 @@ class WP_HTML_Tag_Processor {
 				$found_closer = $this->skip_rawtext( $tag_name );
 				break;
 
-			// No other tags should be treated in their entirety here.
+			// Không thẻ nào khác nên được xử lý toàn bộ ở đây.
 			default:
 				return true;
 		}
@@ -1115,11 +1113,11 @@ class WP_HTML_Tag_Processor {
 		}
 
 		/*
-		 * The values here look like they reference the opening tag but they reference
-		 * the closing tag instead. This is why the opening tag values were stored
-		 * above in a variable. It reads confusingly here, but that's because the
-		 * functions that skip the contents have moved all the internal cursors past
-		 * the inner content of the tag.
+		 * Các giá trị ở đây trông như tham chiếu đến thẻ mở nhưng thực ra tham chiếu
+		 * đến thẻ đóng. Đây là lý do tại sao các giá trị thẻ mở đã được lưu
+		 * ở trên trong biến. Đọc ở đây có thể gây nhầm lẫn, nhưng đó là vì
+		 * các hàm bỏ qua nội dung đã di chuyển tất cả con trỏ nội bộ qua
+		 * nội dung bên trong của thẻ.
 		 */
 		$this->token_starts_at      = $was_at;
 		$this->token_length         = $this->bytes_already_parsed - $this->token_starts_at;
@@ -1134,10 +1132,10 @@ class WP_HTML_Tag_Processor {
 	}
 
 	/**
-	 * Whether the processor paused because the input HTML document ended
-	 * in the middle of a syntax element, such as in the middle of a tag.
+	 * Bộ xử lý có tạm dừng vì tài liệu HTML đầu vào kết thúc
+	 * ở giữa phần tử cú pháp hay không, chẳng hạn ở giữa một thẻ.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $processor = new WP_HTML_Tag_Processor( '<input type="text" value="Th' );
 	 *     false      === $processor->get_next_tag();
@@ -1145,25 +1143,25 @@ class WP_HTML_Tag_Processor {
 	 *
 	 * @since 6.5.0
 	 *
-	 * @return bool Whether the parse paused at the start of an incomplete token.
+	 * @return bool Bộ phân tích có tạm dừng tại đầu token không hoàn chỉnh hay không.
 	 */
 	public function paused_at_incomplete_token(): bool {
 		return self::STATE_INCOMPLETE_INPUT === $this->parser_state;
 	}
 
 	/**
-	 * Generator for a foreach loop to step through each class name for the matched tag.
+	 * Bộ sinh (generator) cho vòng lặp foreach để duyệt qua từng tên class của thẻ đã khớp.
 	 *
-	 * This generator function is designed to be used inside a "foreach" loop.
+	 * Hàm generator này được thiết kế để sử dụng bên trong vòng lặp "foreach".
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     $p = new WP_HTML_Tag_Processor( "<div class='free &lt;egg&lt;\tlang-en'>" );
 	 *     $p->next_tag();
 	 *     foreach ( $p->class_list() as $class_name ) {
 	 *         echo "{$class_name} ";
 	 *     }
-	 *     // Outputs: "free <egg> lang-en "
+	 *     // Đầu ra: "free <egg> lang-en "
 	 *
 	 * @since 6.4.0
 	 */
@@ -1172,7 +1170,7 @@ class WP_HTML_Tag_Processor {
 			return;
 		}
 
-		/** @var string $class contains the string value of the class attribute, with character references decoded. */
+		/** @var string $class chứa giá trị chuỗi của thuộc tính class, với tham chiếu ký tự đã được giải mã. */
 		$class = $this->get_attribute( 'class' );
 
 		if ( ! is_string( $class ) ) {
@@ -1185,13 +1183,13 @@ class WP_HTML_Tag_Processor {
 
 		$at = 0;
 		while ( $at < strlen( $class ) ) {
-			// Skip past any initial boundary characters.
+			// Bỏ qua các ký tự ranh giới ban đầu.
 			$at += strspn( $class, " \t\f\r\n", $at );
 			if ( $at >= strlen( $class ) ) {
 				return;
 			}
 
-			// Find the byte length until the next boundary.
+			// Tìm độ dài byte cho đến ranh giới tiếp theo.
 			$length = strcspn( $class, " \t\f\r\n", $at );
 			if ( 0 === $length ) {
 				return;
@@ -1204,9 +1202,9 @@ class WP_HTML_Tag_Processor {
 			$at += $length;
 
 			/*
-			 * It's expected that the number of class names for a given tag is relatively small.
-			 * Given this, it is probably faster overall to scan an array for a value rather
-			 * than to use the class name as a key and check if it's a key of $seen.
+			 * Dự kiến số lượng tên class cho một thẻ nhất định là tương đối nhỏ.
+			 * Với điều này, tổng thể có lẽ nhanh hơn khi quét mảng tìm giá trị hơn
+			 * là sử dụng tên class làm khóa và kiểm tra xem nó có phải là khóa của $seen.
 			 */
 			if ( in_array( $name, $seen, true ) ) {
 				continue;
@@ -1219,12 +1217,12 @@ class WP_HTML_Tag_Processor {
 
 
 	/**
-	 * Returns if a matched tag contains the given ASCII case-insensitive class name.
+	 * Trả về thẻ đã khớp có chứa tên class CSS không phân biệt hoa thường ASCII đã cho hay không.
 	 *
 	 * @since 6.4.0
 	 *
-	 * @param string $wanted_class Look for this CSS class name, ASCII case-insensitive.
-	 * @return bool|null Whether the matched tag contains the given class name, or null if not matched.
+	 * @param string $wanted_class Tìm tên class CSS này, không phân biệt hoa thường ASCII.
+	 * @return bool|null Thẻ đã khớp có chứa tên class đã cho hay không, hoặc null nếu chưa khớp.
 	 */
 	public function has_class( $wanted_class ): ?bool {
 		if ( self::STATE_MATCHED_TAG !== $this->parser_state ) {
@@ -1248,36 +1246,36 @@ class WP_HTML_Tag_Processor {
 
 
 	/**
-	 * Sets a bookmark in the HTML document.
+	 * Đặt bookmark trong tài liệu HTML.
 	 *
-	 * Bookmarks represent specific places or tokens in the HTML
-	 * document, such as a tag opener or closer. When applying
-	 * edits to a document, such as setting an attribute, the
-	 * text offsets of that token may shift; the bookmark is
-	 * kept updated with those shifts and remains stable unless
-	 * the entire span of text in which the token sits is removed.
+	 * Bookmark đại diện cho các vị trí hoặc token cụ thể trong tài liệu HTML,
+	 * chẳng hạn như thẻ mở hoặc thẻ đóng. Khi áp dụng
+	 * chỉnh sửa vào tài liệu, chẳng hạn đặt thuộc tính,
+	 * offset văn bản của token đó có thể dịch chuyển; bookmark
+	 * được cập nhật theo các dịch chuyển đó và vẫn ổn định trừ khi
+	 * toàn bộ khoảng văn bản chứa token bị xóa.
 	 *
-	 * Release bookmarks when they are no longer needed.
+	 * Giải phóng bookmark khi không còn cần thiết.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     <main><h2>Surprising fact you may not know!</h2></main>
 	 *           ^  ^
-	 *            \-|-- this `H2` opener bookmark tracks the token
+	 *            \-|-- bookmark thẻ mở `H2` này theo dõi token
 	 *
 	 *     <main class="clickbait"><h2>Surprising fact you may no…
 	 *                             ^  ^
-	 *                              \-|-- it shifts with edits
+	 *                              \-|-- nó dịch chuyển theo các chỉnh sửa
 	 *
-	 * Bookmarks provide the ability to seek to a previously-scanned
-	 * place in the HTML document. This avoids the need to re-scan
-	 * the entire document.
+	 * Bookmark cung cấp khả năng quay về vị trí đã quét trước đó
+	 * trong tài liệu HTML. Điều này tránh việc phải quét lại
+	 * toàn bộ tài liệu.
 	 *
-	 * Example:
+	 * Ví dụ:
 	 *
 	 *     <ul><li>One</li><li>Two</li><li>Three</li></ul>
 	 *                                 ^^^^
-	 *                                 want to note this last item
+	 *                                 muốn ghi chú mục cuối cùng này
 	 *
 	 *     $p = new WP_HTML_Tag_Processor( $html );
 	 *     $in_list = false;

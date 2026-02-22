@@ -589,272 +589,272 @@ class WP_Filesystem_Base {
 	}
 
 	/**
-	 * Gets the file owner.
+	 * Lấy chủ sở hữu tệp.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $file Path to the file.
-	 * @return string|false Username of the owner on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return string|false Tên người dùng của chủ sở hữu khi thành công, false khi thất bại.
 	 */
 	public function owner( $file ) {
 		return false;
 	}
 
 	/**
-	 * Gets the file's group.
+	 * Lấy nhóm của tệp.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $file Path to the file.
-	 * @return string|false The group on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return string|false Nhóm khi thành công, false khi thất bại.
 	 */
 	public function group( $file ) {
 		return false;
 	}
 
 	/**
-	 * Copies a file.
+	 * Sao chép một tệp.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string    $source      Path to the source file.
-	 * @param string    $destination Path to the destination file.
-	 * @param bool      $overwrite   Optional. Whether to overwrite the destination file if it exists.
-	 *                               Default false.
-	 * @param int|false $mode        Optional. The permissions as octal number, usually 0644 for files,
-	 *                               0755 for dirs. Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string    $source      Đường dẫn đến tệp nguồn.
+	 * @param string    $destination Đường dẫn đến tệp đích.
+	 * @param bool      $overwrite   Tùy chọn. Có ghi đè tệp đích nếu nó tồn tại hay không.
+	 *                               Mặc định false.
+	 * @param int|false $mode        Tùy chọn. Quyền dạng số bát phân, thường là 0644 cho tệp,
+	 *                               0755 cho thư mục. Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function copy( $source, $destination, $overwrite = false, $mode = false ) {
 		return false;
 	}
 
 	/**
-	 * Moves a file.
+	 * Di chuyển một tệp.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $source      Path to the source file.
-	 * @param string $destination Path to the destination file.
-	 * @param bool   $overwrite   Optional. Whether to overwrite the destination file if it exists.
-	 *                            Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string $source      Đường dẫn đến tệp nguồn.
+	 * @param string $destination Đường dẫn đến tệp đích.
+	 * @param bool   $overwrite   Tùy chọn. Có ghi đè tệp đích nếu nó tồn tại hay không.
+	 *                            Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function move( $source, $destination, $overwrite = false ) {
 		return false;
 	}
 
 	/**
-	 * Deletes a file or directory.
+	 * Xóa một tệp hoặc thư mục.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string       $file      Path to the file or directory.
-	 * @param bool         $recursive Optional. If set to true, deletes files and folders recursively.
-	 *                                Default false.
-	 * @param string|false $type      Type of resource. 'f' for file, 'd' for directory.
-	 *                                Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string       $file      Đường dẫn đến tệp hoặc thư mục.
+	 * @param bool         $recursive Tùy chọn. Nếu đặt là true, xóa tệp và thư mục đệ quy.
+	 *                                Mặc định false.
+	 * @param string|false $type      Loại tài nguyên. 'f' cho tệp, 'd' cho thư mục.
+	 *                                Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function delete( $file, $recursive = false, $type = false ) {
 		return false;
 	}
 
 	/**
-	 * Checks if a file or directory exists.
+	 * Kiểm tra xem tệp hoặc thư mục có tồn tại hay không.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $path Path to file or directory.
-	 * @return bool Whether $path exists or not.
+	 * @param string $path Đường dẫn đến tệp hoặc thư mục.
+	 * @return bool Liệu $path có tồn tại hay không.
 	 */
 	public function exists( $path ) {
 		return false;
 	}
 
 	/**
-	 * Checks if resource is a file.
+	 * Kiểm tra xem tài nguyên có phải là tệp hay không.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $file File path.
-	 * @return bool Whether $file is a file.
+	 * @param string $file Đường dẫn tệp.
+	 * @return bool Liệu $file có phải là tệp hay không.
 	 */
 	public function is_file( $file ) {
 		return false;
 	}
 
 	/**
-	 * Checks if resource is a directory.
+	 * Kiểm tra xem tài nguyên có phải là thư mục hay không.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $path Directory path.
-	 * @return bool Whether $path is a directory.
+	 * @param string $path Đường dẫn thư mục.
+	 * @return bool Liệu $path có phải là thư mục hay không.
 	 */
 	public function is_dir( $path ) {
 		return false;
 	}
 
 	/**
-	 * Checks if a file is readable.
+	 * Kiểm tra xem tệp có thể đọc được hay không.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $file Path to file.
-	 * @return bool Whether $file is readable.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return bool Liệu $file có thể đọc được hay không.
 	 */
 	public function is_readable( $file ) {
 		return false;
 	}
 
 	/**
-	 * Checks if a file or directory is writable.
+	 * Kiểm tra xem tệp hoặc thư mục có thể ghi được hay không.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $path Path to file or directory.
-	 * @return bool Whether $path is writable.
+	 * @param string $path Đường dẫn đến tệp hoặc thư mục.
+	 * @return bool Liệu $path có thể ghi được hay không.
 	 */
 	public function is_writable( $path ) {
 		return false;
 	}
 
 	/**
-	 * Gets the file's last access time.
+	 * Lấy thời gian truy cập cuối cùng của tệp.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $file Path to file.
-	 * @return int|false Unix timestamp representing last access time, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return int|false Dấu thời gian Unix đại diện cho thời gian truy cập cuối cùng, false khi thất bại.
 	 */
 	public function atime( $file ) {
 		return false;
 	}
 
 	/**
-	 * Gets the file modification time.
+	 * Lấy thời gian chỉnh sửa tệp.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $file Path to file.
-	 * @return int|false Unix timestamp representing modification time, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return int|false Dấu thời gian Unix đại diện cho thời gian chỉnh sửa, false khi thất bại.
 	 */
 	public function mtime( $file ) {
 		return false;
 	}
 
 	/**
-	 * Gets the file size (in bytes).
+	 * Lấy kích thước tệp (tính bằng byte).
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $file Path to file.
-	 * @return int|false Size of the file in bytes on success, false on failure.
+	 * @param string $file Đường dẫn đến tệp.
+	 * @return int|false Kích thước tệp tính bằng byte khi thành công, false khi thất bại.
 	 */
 	public function size( $file ) {
 		return false;
 	}
 
 	/**
-	 * Sets the access and modification times of a file.
+	 * Đặt thời gian truy cập và chỉnh sửa của tệp.
 	 *
-	 * Note: If $file doesn't exist, it will be created.
+	 * Lưu ý: Nếu $file không tồn tại, nó sẽ được tạo.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $file  Path to file.
-	 * @param int    $time  Optional. Modified time to set for file.
-	 *                      Default 0.
-	 * @param int    $atime Optional. Access time to set for file.
-	 *                      Default 0.
-	 * @return bool True on success, false on failure.
+	 * @param string $file  Đường dẫn đến tệp.
+	 * @param int    $time  Tùy chọn. Thời gian chỉnh sửa cần đặt cho tệp.
+	 *                      Mặc định 0.
+	 * @param int    $atime Tùy chọn. Thời gian truy cập cần đặt cho tệp.
+	 *                      Mặc định 0.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function touch( $file, $time = 0, $atime = 0 ) {
 		return false;
 	}
 
 	/**
-	 * Creates a directory.
+	 * Tạo một thư mục.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string           $path  Path for new directory.
-	 * @param int|false        $chmod Optional. The permissions as octal number (or false to skip chmod).
-	 *                                Default false.
-	 * @param string|int|false $chown Optional. A user name or number (or false to skip chown).
-	 *                                Default false.
-	 * @param string|int|false $chgrp Optional. A group name or number (or false to skip chgrp).
-	 *                                Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string           $path  Đường dẫn cho thư mục mới.
+	 * @param int|false        $chmod Tùy chọn. Quyền dạng số bát phân (hoặc false để bỏ qua chmod).
+	 *                                Mặc định false.
+	 * @param string|int|false $chown Tùy chọn. Tên người dùng hoặc số (hoặc false để bỏ qua chown).
+	 *                                Mặc định false.
+	 * @param string|int|false $chgrp Tùy chọn. Tên nhóm hoặc số (hoặc false để bỏ qua chgrp).
+	 *                                Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function mkdir( $path, $chmod = false, $chown = false, $chgrp = false ) {
 		return false;
 	}
 
 	/**
-	 * Deletes a directory.
+	 * Xóa một thư mục.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $path      Path to directory.
-	 * @param bool   $recursive Optional. Whether to recursively remove files/directories.
-	 *                          Default false.
-	 * @return bool True on success, false on failure.
+	 * @param string $path      Đường dẫn đến thư mục.
+	 * @param bool   $recursive Tùy chọn. Có xóa đệ quy tệp/thư mục hay không.
+	 *                          Mặc định false.
+	 * @return bool True khi thành công, false khi thất bại.
 	 */
 	public function rmdir( $path, $recursive = false ) {
 		return false;
 	}
 
 	/**
-	 * Gets details for files in a directory or a specific file.
+	 * Lấy chi tiết cho các tệp trong thư mục hoặc một tệp cụ thể.
 	 *
 	 * @since 2.5.0
 	 * @abstract
 	 *
-	 * @param string $path           Path to directory or file.
-	 * @param bool   $include_hidden Optional. Whether to include details of hidden ("." prefixed) files.
-	 *                               Default true.
-	 * @param bool   $recursive      Optional. Whether to recursively include file details in nested directories.
-	 *                               Default false.
+	 * @param string $path           Đường dẫn đến thư mục hoặc tệp.
+	 * @param bool   $include_hidden Tùy chọn. Có bao gồm chi tiết của các tệp ẩn (có tiền tố ".") hay không.
+	 *                               Mặc định true.
+	 * @param bool   $recursive      Tùy chọn. Có bao gồm đệ quy chi tiết tệp trong các thư mục lồng nhau hay không.
+	 *                               Mặc định false.
 	 * @return array|false {
-	 *     Array of arrays containing file information. False if unable to list directory contents.
+	 *     Mảng các mảng chứa thông tin tệp. False nếu không thể liệt kê nội dung thư mục.
 	 *
 	 *     @type array ...$0 {
-	 *         Array of file information. Note that some elements may not be available on all filesystems.
+	 *         Mảng thông tin tệp. Lưu ý rằng một số phần tử có thể không khả dụng trên tất cả hệ thống tệp.
 	 *
-	 *         @type string           $name        Name of the file or directory.
-	 *         @type string           $perms       *nix representation of permissions.
-	 *         @type string           $permsn      Octal representation of permissions.
-	 *         @type int|string|false $number      File number. May be a numeric string. False if not available.
-	 *         @type string|false     $owner       Owner name or ID, or false if not available.
-	 *         @type string|false     $group       File permissions group, or false if not available.
-	 *         @type int|string|false $size        Size of file in bytes. May be a numeric string.
-	 *                                             False if not available.
-	 *         @type int|string|false $lastmodunix Last modified unix timestamp. May be a numeric string.
-	 *                                             False if not available.
-	 *         @type string|false     $lastmod     Last modified month (3 letters) and day (without leading 0), or
-	 *                                             false if not available.
-	 *         @type string|false     $time        Last modified time, or false if not available.
-	 *         @type string           $type        Type of resource. 'f' for file, 'd' for directory, 'l' for link.
-	 *         @type array|false      $files       If a directory and `$recursive` is true, contains another array of
-	 *                                             files. False if unable to list directory contents.
+	 *         @type string           $name        Tên tệp hoặc thư mục.
+	 *         @type string           $perms       Biểu diễn quyền kiểu *nix.
+	 *         @type string           $permsn      Biểu diễn quyền dạng bát phân.
+	 *         @type int|string|false $number      Số tệp. Có thể là chuỗi số. False nếu không khả dụng.
+	 *         @type string|false     $owner       Tên hoặc ID chủ sở hữu, hoặc false nếu không khả dụng.
+	 *         @type string|false     $group       Nhóm quyền tệp, hoặc false nếu không khả dụng.
+	 *         @type int|string|false $size        Kích thước tệp tính bằng byte. Có thể là chuỗi số.
+	 *                                             False nếu không khả dụng.
+	 *         @type int|string|false $lastmodunix Dấu thời gian unix chỉnh sửa cuối cùng. Có thể là chuỗi số.
+	 *                                             False nếu không khả dụng.
+	 *         @type string|false     $lastmod     Tháng chỉnh sửa cuối cùng (3 chữ cái) và ngày (không có số 0 đứng đầu), hoặc
+	 *                                             false nếu không khả dụng.
+	 *         @type string|false     $time        Thời gian chỉnh sửa cuối cùng, hoặc false nếu không khả dụng.
+	 *         @type string           $type        Loại tài nguyên. 'f' cho tệp, 'd' cho thư mục, 'l' cho liên kết.
+	 *         @type array|false      $files       Nếu là thư mục và `$recursive` là true, chứa mảng khác của
+	 *                                             các tệp. False nếu không thể liệt kê nội dung thư mục.
 	 *     }
 	 * }
 	 */

@@ -1,13 +1,13 @@
 <?php
 /**
- * HTTP API: WP_Http class
+ * HTTP API: Lớp WP_Http
  *
  * @package WordPress
  * @subpackage HTTP
  * @since 2.7.0
  */
 
-// Don't load directly.
+// Không tải trực tiếp.
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
@@ -20,20 +20,20 @@ if ( ! class_exists( 'WpOrg\Requests\Autoload' ) ) {
 }
 
 /**
- * Core class used for managing HTTP transports and making HTTP requests.
+ * Lớp cốt lõi dùng để quản lý các phương thức truyền tải HTTP và thực hiện các yêu cầu HTTP.
  *
- * This class is used to consistently make outgoing HTTP requests easy for developers
- * while still being compatible with the many PHP configurations under which
- * WordPress runs.
+ * Lớp này được sử dụng để giúp các nhà phát triển dễ dàng thực hiện các yêu cầu HTTP đi ra
+ * một cách nhất quán trong khi vẫn tương thích với nhiều cấu hình PHP khác nhau
+ * mà WordPress chạy trên đó.
  *
- * Debugging includes several actions, which pass different variables for debugging the HTTP API.
+ * Gỡ lỗi bao gồm nhiều action, truyền các biến khác nhau để gỡ lỗi HTTP API.
  *
  * @since 2.7.0
  */
 #[AllowDynamicProperties]
 class WP_Http {
 
-	// Aliases for HTTP response codes.
+	// Bí danh cho các mã phản hồi HTTP.
 	const HTTP_CONTINUE       = 100;
 	const SWITCHING_PROTOCOLS = 101;
 	const PROCESSING          = 102;
@@ -101,122 +101,122 @@ class WP_Http {
 	const NETWORK_AUTHENTICATION_REQUIRED = 511;
 
 	/**
-	 * Send an HTTP request to a URI.
+	 * Gửi một yêu cầu HTTP đến URI.
 	 *
-	 * Please note: The only URI that are supported in the HTTP Transport implementation
-	 * are the HTTP and HTTPS protocols.
+	 * Xin lưu ý: Các URI duy nhất được hỗ trợ trong triển khai HTTP Transport
+	 * là giao thức HTTP và HTTPS.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string       $url  The request URL.
+	 * @param string       $url  URL yêu cầu.
 	 * @param string|array $args {
-	 *     Optional. Array or string of HTTP request arguments.
+	 *     Tùy chọn. Mảng hoặc chuỗi các đối số yêu cầu HTTP.
 	 *
-	 *     @type string       $method              Request method. Accepts 'GET', 'POST', 'HEAD', 'PUT', 'DELETE',
-	 *                                             'TRACE', 'OPTIONS', or 'PATCH'.
-	 *                                             Some transports technically allow others, but should not be
-	 *                                             assumed. Default 'GET'.
-	 *     @type float        $timeout             How long the connection should stay open in seconds. Default 5.
-	 *     @type int          $redirection         Number of allowed redirects. Not supported by all transports.
-	 *                                             Default 5.
-	 *     @type string       $httpversion         Version of the HTTP protocol to use. Accepts '1.0' and '1.1'.
-	 *                                             Default '1.0'.
-	 *     @type string       $user-agent          User-agent value sent.
-	 *                                             Default 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' ).
-	 *     @type bool         $reject_unsafe_urls  Whether to pass URLs through wp_http_validate_url().
-	 *                                             Default false.
-	 *     @type bool         $blocking            Whether the calling code requires the result of the request.
-	 *                                             If set to false, the request will be sent to the remote server,
-	 *                                             and processing returned to the calling code immediately, the caller
-	 *                                             will know if the request succeeded or failed, but will not receive
-	 *                                             any response from the remote server. Default true.
-	 *     @type string|array $headers             Array or string of headers to send with the request.
-	 *                                             Default empty array.
-	 *     @type array        $cookies             List of cookies to send with the request. Default empty array.
-	 *     @type string|array $body                Body to send with the request. Default null.
-	 *     @type bool         $compress            Whether to compress the $body when sending the request.
-	 *                                             Default false.
-	 *     @type bool         $decompress          Whether to decompress a compressed response. If set to false and
-	 *                                             compressed content is returned in the response anyway, it will
-	 *                                             need to be separately decompressed. Default true.
-	 *     @type bool         $sslverify           Whether to verify SSL for the request. Default true.
-	 *     @type string       $sslcertificates     Absolute path to an SSL certificate .crt file.
-	 *                                             Default ABSPATH . WPINC . '/certificates/ca-bundle.crt'.
-	 *     @type bool         $stream              Whether to stream to a file. If set to true and no filename was
-	 *                                             given, it will be dropped it in the WP temp dir and its name will
-	 *                                             be set using the basename of the URL. Default false.
-	 *     @type string       $filename            Filename of the file to write to when streaming. $stream must be
-	 *                                             set to true. Default null.
-	 *     @type int          $limit_response_size Size in bytes to limit the response to. Default null.
+	 *     @type string       $method              Phương thức yêu cầu. Chấp nhận 'GET', 'POST', 'HEAD', 'PUT', 'DELETE',
+	 *                                             'TRACE', 'OPTIONS', hoặc 'PATCH'.
+	 *                                             Một số phương thức truyền tải cho phép các giá trị khác, nhưng không nên
+	 *                                             giả định điều đó. Mặc định 'GET'.
+	 *     @type float        $timeout             Thời gian kết nối nên giữ mở tính bằng giây. Mặc định 5.
+	 *     @type int          $redirection         Số lần chuyển hướng được phép. Không được hỗ trợ bởi tất cả
+	 *                                             phương thức truyền tải. Mặc định 5.
+	 *     @type string       $httpversion         Phiên bản giao thức HTTP sử dụng. Chấp nhận '1.0' và '1.1'.
+	 *                                             Mặc định '1.0'.
+	 *     @type string       $user-agent          Giá trị user-agent được gửi.
+	 *                                             Mặc định 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' ).
+	 *     @type bool         $reject_unsafe_urls  Có truyền URL qua wp_http_validate_url() hay không.
+	 *                                             Mặc định false.
+	 *     @type bool         $blocking            Có yêu cầu mã gọi cần kết quả của yêu cầu hay không.
+	 *                                             Nếu đặt thành false, yêu cầu sẽ được gửi đến máy chủ từ xa,
+	 *                                             và xử lý được trả về mã gọi ngay lập tức, người gọi
+	 *                                             sẽ biết yêu cầu thành công hay thất bại, nhưng sẽ không nhận
+	 *                                             bất kỳ phản hồi nào từ máy chủ từ xa. Mặc định true.
+	 *     @type string|array $headers             Mảng hoặc chuỗi các header gửi kèm yêu cầu.
+	 *                                             Mặc định mảng rỗng.
+	 *     @type array        $cookies             Danh sách cookie gửi kèm yêu cầu. Mặc định mảng rỗng.
+	 *     @type string|array $body                Nội dung gửi kèm yêu cầu. Mặc định null.
+	 *     @type bool         $compress            Có nén $body khi gửi yêu cầu hay không.
+	 *                                             Mặc định false.
+	 *     @type bool         $decompress          Có giải nén phản hồi đã nén hay không. Nếu đặt thành false và
+	 *                                             nội dung nén vẫn được trả về trong phản hồi, nó sẽ
+	 *                                             cần được giải nén riêng. Mặc định true.
+	 *     @type bool         $sslverify           Có xác minh SSL cho yêu cầu hay không. Mặc định true.
+	 *     @type string       $sslcertificates     Đường dẫn tuyệt đối đến tệp chứng chỉ SSL .crt.
+	 *                                             Mặc định ABSPATH . WPINC . '/certificates/ca-bundle.crt'.
+	 *     @type bool         $stream              Có truyền trực tuyến vào tệp hay không. Nếu đặt thành true và không có
+	 *                                             tên tệp nào được cung cấp, nó sẽ được lưu trong thư mục tạm WP và tên
+	 *                                             sẽ được đặt theo tên cơ sở của URL. Mặc định false.
+	 *     @type string       $filename            Tên tệp để ghi vào khi truyền trực tuyến. $stream phải được
+	 *                                             đặt thành true. Mặc định null.
+	 *     @type int          $limit_response_size Kích thước tính bằng byte để giới hạn phản hồi. Mặc định null.
 	 *
 	 * }
 	 * @return array|WP_Error {
-	 *     Array of response data, or a WP_Error instance upon error.
+	 *     Mảng dữ liệu phản hồi, hoặc thể hiện WP_Error khi có lỗi.
 	 *
-	 *     @type \WpOrg\Requests\Utility\CaseInsensitiveDictionary $headers       Response headers keyed by name.
-	 *     @type string                                            $body          Response body.
+	 *     @type \WpOrg\Requests\Utility\CaseInsensitiveDictionary $headers       Các header phản hồi được đánh khóa theo tên.
+	 *     @type string                                            $body          Nội dung phản hồi.
 	 *     @type array                                             $response      {
-	 *         Array of HTTP response data.
+	 *         Mảng dữ liệu phản hồi HTTP.
 	 *
-	 *         @type int|false    $code    HTTP response status code.
-	 *         @type string|false $message HTTP response message.
+	 *         @type int|false    $code    Mã trạng thái phản hồi HTTP.
+	 *         @type string|false $message Thông điệp phản hồi HTTP.
 	 *     }
-	 *     @type WP_HTTP_Cookie[]                                  $cookies       Array of cookies set by the server.
-	 *     @type string|null                                       $filename      Optional. Filename of the response.
-	 *     @type WP_HTTP_Requests_Response|null                    $http_response Response object.
+	 *     @type WP_HTTP_Cookie[]                                  $cookies       Mảng cookie được thiết lập bởi máy chủ.
+	 *     @type string|null                                       $filename      Tùy chọn. Tên tệp của phản hồi.
+	 *     @type WP_HTTP_Requests_Response|null                    $http_response Đối tượng phản hồi.
 	 * }
 	 */
 	public function request( $url, $args = array() ) {
 		$defaults = array(
 			'method'              => 'GET',
 			/**
-			 * Filters the timeout value for an HTTP request.
+			 * Lọc giá trị thời gian chờ cho yêu cầu HTTP.
 			 *
 			 * @since 2.7.0
-			 * @since 5.1.0 The `$url` parameter was added.
+			 * @since 5.1.0 Tham số `$url` được thêm vào.
 			 *
-			 * @param float  $timeout_value Time in seconds until a request times out. Default 5.
-			 * @param string $url           The request URL.
+			 * @param float  $timeout_value Thời gian tính bằng giây cho đến khi yêu cầu hết hạn. Mặc định 5.
+			 * @param string $url           URL yêu cầu.
 			 */
 			'timeout'             => apply_filters( 'http_request_timeout', 5, $url ),
 			/**
-			 * Filters the number of redirects allowed during an HTTP request.
+			 * Lọc số lần chuyển hướng được phép trong yêu cầu HTTP.
 			 *
 			 * @since 2.7.0
-			 * @since 5.1.0 The `$url` parameter was added.
+			 * @since 5.1.0 Tham số `$url` được thêm vào.
 			 *
-			 * @param int    $redirect_count Number of redirects allowed. Default 5.
-			 * @param string $url            The request URL.
+			 * @param int    $redirect_count Số lần chuyển hướng được phép. Mặc định 5.
+			 * @param string $url            URL yêu cầu.
 			 */
 			'redirection'         => apply_filters( 'http_request_redirection_count', 5, $url ),
 			/**
-			 * Filters the version of the HTTP protocol used in a request.
+			 * Lọc phiên bản giao thức HTTP được sử dụng trong yêu cầu.
 			 *
 			 * @since 2.7.0
-			 * @since 5.1.0 The `$url` parameter was added.
+			 * @since 5.1.0 Tham số `$url` được thêm vào.
 			 *
-			 * @param string $version Version of HTTP used. Accepts '1.0' and '1.1'. Default '1.0'.
-			 * @param string $url     The request URL.
+			 * @param string $version Phiên bản HTTP được sử dụng. Chấp nhận '1.0' và '1.1'. Mặc định '1.0'.
+			 * @param string $url     URL yêu cầu.
 			 */
 			'httpversion'         => apply_filters( 'http_request_version', '1.0', $url ),
 			/**
-			 * Filters the user agent value sent with an HTTP request.
+			 * Lọc giá trị user agent được gửi kèm yêu cầu HTTP.
 			 *
 			 * @since 2.7.0
-			 * @since 5.1.0 The `$url` parameter was added.
+			 * @since 5.1.0 Tham số `$url` được thêm vào.
 			 *
-			 * @param string $user_agent WordPress user agent string.
-			 * @param string $url        The request URL.
+			 * @param string $user_agent Chuỗi user agent của WordPress.
+			 * @param string $url        URL yêu cầu.
 			 */
 			'user-agent'          => apply_filters( 'http_headers_useragent', 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' ), $url ),
 			/**
-			 * Filters whether to pass URLs through wp_http_validate_url() in an HTTP request.
+			 * Lọc có truyền URL qua wp_http_validate_url() trong yêu cầu HTTP hay không.
 			 *
 			 * @since 3.6.0
-			 * @since 5.1.0 The `$url` parameter was added.
+			 * @since 5.1.0 Tham số `$url` được thêm vào.
 			 *
-			 * @param bool   $pass_url Whether to pass URLs through wp_http_validate_url(). Default false.
-			 * @param string $url      The request URL.
+			 * @param bool   $pass_url Có truyền URL qua wp_http_validate_url() hay không. Mặc định false.
+			 * @param string $url      URL yêu cầu.
 			 */
 			'reject_unsafe_urls'  => apply_filters( 'http_request_reject_unsafe_urls', false, $url ),
 			'blocking'            => true,
@@ -232,47 +232,47 @@ class WP_Http {
 			'limit_response_size' => null,
 		);
 
-		// Pre-parse for the HEAD checks.
+		// Phân tích trước cho các kiểm tra HEAD.
 		$args = wp_parse_args( $args );
 
-		// By default, HEAD requests do not cause redirections.
+		// Mặc định, các yêu cầu HEAD không gây ra chuyển hướng.
 		if ( isset( $args['method'] ) && 'HEAD' === $args['method'] ) {
 			$defaults['redirection'] = 0;
 		}
 
 		$parsed_args = wp_parse_args( $args, $defaults );
 		/**
-		 * Filters the arguments used in an HTTP request.
+		 * Lọc các đối số được sử dụng trong yêu cầu HTTP.
 		 *
 		 * @since 2.7.0
 		 *
-		 * @param array  $parsed_args An array of HTTP request arguments.
-		 * @param string $url         The request URL.
+		 * @param array  $parsed_args Mảng các đối số yêu cầu HTTP.
+		 * @param string $url         URL yêu cầu.
 		 */
 		$parsed_args = apply_filters( 'http_request_args', $parsed_args, $url );
 
-		// The transports decrement this, store a copy of the original value for loop purposes.
+		// Các phương thức truyền tải giảm giá trị này, lưu bản sao của giá trị gốc cho mục đích vòng lặp.
 		if ( ! isset( $parsed_args['_redirection'] ) ) {
 			$parsed_args['_redirection'] = $parsed_args['redirection'];
 		}
 
 		/**
-		 * Filters the preemptive return value of an HTTP request.
+		 * Lọc giá trị trả về ưu tiên của yêu cầu HTTP.
 		 *
-		 * Returning a non-false value from the filter will short-circuit the HTTP request and return
-		 * early with that value. A filter should return one of:
+		 * Trả về giá trị không phải false từ bộ lọc sẽ rút ngắn yêu cầu HTTP và trả về
+		 * sớm với giá trị đó. Bộ lọc nên trả về một trong:
 		 *
-		 *  - An array containing 'headers', 'body', 'response', 'cookies', and 'filename' elements
-		 *  - A WP_Error instance
-		 *  - boolean false to avoid short-circuiting the response
+		 *  - Mảng chứa các phần tử 'headers', 'body', 'response', 'cookies', và 'filename'
+		 *  - Thể hiện WP_Error
+		 *  - boolean false để tránh rút ngắn phản hồi
 		 *
-		 * Returning any other value may result in unexpected behavior.
+		 * Trả về bất kỳ giá trị nào khác có thể dẫn đến hành vi không mong muốn.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param false|array|WP_Error $response    A preemptive return value of an HTTP request. Default false.
-		 * @param array                $parsed_args HTTP request arguments.
-		 * @param string               $url         The request URL.
+		 * @param false|array|WP_Error $response    Giá trị trả về ưu tiên của yêu cầu HTTP. Mặc định false.
+		 * @param array                $parsed_args Các đối số yêu cầu HTTP.
+		 * @param string               $url         URL yêu cầu.
 		 */
 		$pre = apply_filters( 'pre_http_request', false, $parsed_args, $url );
 
@@ -293,31 +293,31 @@ class WP_Http {
 
 		if ( empty( $url ) || empty( $parsed_url['scheme'] ) ) {
 			$response = new WP_Error( 'http_request_failed', __( 'A valid URL was not provided.' ) );
-			/** This action is documented in wp-includes/class-wp-http.php */
+			/** Action này được ghi chú trong wp-includes/class-wp-http.php */
 			do_action( 'http_api_debug', $response, 'response', 'WpOrg\Requests\Requests', $parsed_args, $url );
 			return $response;
 		}
 
 		if ( $this->block_request( $url ) ) {
 			$response = new WP_Error( 'http_request_not_executed', __( 'User has blocked requests through HTTP.' ) );
-			/** This action is documented in wp-includes/class-wp-http.php */
+			/** Action này được ghi chú trong wp-includes/class-wp-http.php */
 			do_action( 'http_api_debug', $response, 'response', 'WpOrg\Requests\Requests', $parsed_args, $url );
 			return $response;
 		}
 
-		// If we are streaming to a file but no filename was given drop it in the WP temp dir
-		// and pick its name using the basename of the $url.
+		// Nếu chúng ta đang truyền trực tuyến vào tệp nhưng không có tên tệp nào được cung cấp, lưu vào thư mục tạm WP
+		// và đặt tên bằng tên cơ sở của $url.
 		if ( $parsed_args['stream'] ) {
 			if ( empty( $parsed_args['filename'] ) ) {
 				$parsed_args['filename'] = get_temp_dir() . basename( $url );
 			}
 
-			// Force some settings if we are streaming to a file and check for existence
-			// and perms of destination directory.
+			// Buộc một số thiết lập nếu đang truyền trực tuyến vào tệp và kiểm tra sự tồn tại
+			// và quyền truy cập của thư mục đích.
 			$parsed_args['blocking'] = true;
 			if ( ! wp_is_writable( dirname( $parsed_args['filename'] ) ) ) {
 				$response = new WP_Error( 'http_request_failed', __( 'Destination directory for file streaming does not exist or is not writable.' ) );
-				/** This action is documented in wp-includes/class-wp-http.php */
+				/** Action này được ghi chú trong wp-includes/class-wp-http.php */
 				do_action( 'http_api_debug', $response, 'response', 'WpOrg\Requests\Requests', $parsed_args, $url );
 				return $response;
 			}
@@ -327,13 +327,13 @@ class WP_Http {
 			$parsed_args['headers'] = array();
 		}
 
-		// WP allows passing in headers as a string, weirdly.
+		// WP cho phép truyền header dưới dạng chuỗi, điều kỳ lạ.
 		if ( ! is_array( $parsed_args['headers'] ) ) {
 			$processed_headers      = WP_Http::processHeaders( $parsed_args['headers'] );
 			$parsed_args['headers'] = $processed_headers['headers'];
 		}
 
-		// Setup arguments.
+		// Thiết lập các đối số.
 		$headers = $parsed_args['headers'];
 		$data    = $parsed_args['body'];
 		$type    = $parsed_args['method'];
@@ -344,10 +344,10 @@ class WP_Http {
 			'hooks'     => new WP_HTTP_Requests_Hooks( $url, $parsed_args ),
 		);
 
-		// Ensure redirects follow browser behavior.
+		// Đảm bảo chuyển hướng theo hành vi trình duyệt.
 		$options['hooks']->register( 'requests.before_redirect', array( static::class, 'browser_redirect_compatibility' ) );
 
-		// Validate redirected URLs.
+		// Xác thực các URL đã chuyển hướng.
 		if ( function_exists( 'wp_kses_bad_protocol' ) && $parsed_args['reject_unsafe_urls'] ) {
 			$options['hooks']->register( 'requests.before_redirect', array( static::class, 'validate_redirects' ) );
 		}
@@ -361,17 +361,17 @@ class WP_Http {
 			$options['redirects'] = $parsed_args['redirection'];
 		}
 
-		// Use byte limit, if we can.
+		// Sử dụng giới hạn byte, nếu có thể.
 		if ( isset( $parsed_args['limit_response_size'] ) ) {
 			$options['max_bytes'] = $parsed_args['limit_response_size'];
 		}
 
-		// If we've got cookies, use and convert them to WpOrg\Requests\Cookie.
+		// Nếu có cookie, sử dụng và chuyển đổi chúng sang WpOrg\Requests\Cookie.
 		if ( ! empty( $parsed_args['cookies'] ) ) {
 			$options['cookies'] = WP_Http::normalize_cookies( $parsed_args['cookies'] );
 		}
 
-		// SSL certificate handling.
+		// Xử lý chứng chỉ SSL.
 		if ( ! $parsed_args['sslverify'] ) {
 			$options['verify']     = false;
 			$options['verifyname'] = false;
@@ -379,24 +379,24 @@ class WP_Http {
 			$options['verify'] = $parsed_args['sslcertificates'];
 		}
 
-		// All non-GET/HEAD requests should put the arguments in the form body.
+		// Tất cả các yêu cầu không phải GET/HEAD nên đặt đối số trong nội dung form.
 		if ( 'HEAD' !== $type && 'GET' !== $type ) {
 			$options['data_format'] = 'body';
 		}
 
 		/**
-		 * Filters whether SSL should be verified for non-local requests.
+		 * Lọc có nên xác minh SSL cho các yêu cầu không phải cục bộ hay không.
 		 *
 		 * @since 2.8.0
-		 * @since 5.1.0 The `$url` parameter was added.
+		 * @since 5.1.0 Tham số `$url` được thêm vào.
 		 *
-		 * @param bool|string $ssl_verify Boolean to control whether to verify the SSL connection
-		 *                                or path to an SSL certificate.
-		 * @param string      $url        The request URL.
+		 * @param bool|string $ssl_verify Boolean để kiểm soát có xác minh kết nối SSL hay không
+		 *                                hoặc đường dẫn đến chứng chỉ SSL.
+		 * @param string      $url        URL yêu cầu.
 		 */
 		$options['verify'] = apply_filters( 'https_ssl_verify', $options['verify'], $url );
 
-		// Check for proxies.
+		// Kiểm tra proxy.
 		$proxy = new WP_HTTP_Proxy();
 		if ( $proxy->is_enabled() && $proxy->send_through_proxy( $url ) ) {
 			$options['proxy'] = new WpOrg\Requests\Proxy\Http( $proxy->host() . ':' . $proxy->port() );
@@ -408,17 +408,17 @@ class WP_Http {
 			}
 		}
 
-		// Avoid issues where mbstring.func_overload is enabled.
+		// Tránh các vấn đề khi mbstring.func_overload được bật.
 		mbstring_binary_safe_encoding();
 
 		try {
 			$requests_response = WpOrg\Requests\Requests::request( $url, $headers, $data, $type, $options );
 
-			// Convert the response into an array.
+			// Chuyển đổi phản hồi thành mảng.
 			$http_response = new WP_HTTP_Requests_Response( $requests_response, $parsed_args['filename'] );
 			$response      = $http_response->to_array();
 
-			// Add the original object to the array.
+			// Thêm đối tượng gốc vào mảng.
 			$response['http_response'] = $http_response;
 		} catch ( WpOrg\Requests\Exception $e ) {
 			$response = new WP_Error( 'http_request_failed', $e->getMessage() );
@@ -427,15 +427,15 @@ class WP_Http {
 		reset_mbstring_encoding();
 
 		/**
-		 * Fires after an HTTP API response is received and before the response is returned.
+		 * Kích hoạt sau khi nhận phản hồi HTTP API và trước khi phản hồi được trả về.
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param array|WP_Error $response    HTTP response or WP_Error object.
-		 * @param string         $context     Context under which the hook is fired.
-		 * @param string         $class       HTTP transport used.
-		 * @param array          $parsed_args HTTP request arguments.
-		 * @param string         $url         The request URL.
+		 * @param array|WP_Error $response    Phản hồi HTTP hoặc đối tượng WP_Error.
+		 * @param string         $context     Ngữ cảnh mà hook được kích hoạt.
+		 * @param string         $class       Phương thức truyền tải HTTP được sử dụng.
+		 * @param array          $parsed_args Các đối số yêu cầu HTTP.
+		 * @param string         $url         URL yêu cầu.
 		 */
 		do_action( 'http_api_debug', $response, 'response', 'WpOrg\Requests\Requests', $parsed_args, $url );
 		if ( is_wp_error( $response ) ) {
@@ -456,24 +456,24 @@ class WP_Http {
 		}
 
 		/**
-		 * Filters a successful HTTP API response immediately before the response is returned.
+		 * Lọc phản hồi HTTP API thành công ngay trước khi phản hồi được trả về.
 		 *
 		 * @since 2.9.0
 		 *
-		 * @param array  $response    HTTP response.
-		 * @param array  $parsed_args HTTP request arguments.
-		 * @param string $url         The request URL.
+		 * @param array  $response    Phản hồi HTTP.
+		 * @param array  $parsed_args Các đối số yêu cầu HTTP.
+		 * @param string $url         URL yêu cầu.
 		 */
 		return apply_filters( 'http_response', $response, $parsed_args, $url );
 	}
 
 	/**
-	 * Normalizes cookies for using in Requests.
+	 * Chuẩn hóa cookie để sử dụng trong Requests.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param array $cookies Array of cookies to send with the request.
-	 * @return WpOrg\Requests\Cookie\Jar Cookie holder object.
+	 * @param array $cookies Mảng cookie gửi kèm yêu cầu.
+	 * @return WpOrg\Requests\Cookie\Jar Đối tượng chứa cookie.
 	 */
 	public static function normalize_cookies( $cookies ) {
 		$cookie_jar = new WpOrg\Requests\Cookie\Jar();
@@ -496,34 +496,34 @@ class WP_Http {
 	}
 
 	/**
-	 * Match redirect behavior to browser handling.
+	 * Khớp hành vi chuyển hướng với cách xử lý của trình duyệt.
 	 *
-	 * Changes 302 redirects from POST to GET to match browser handling. Per
-	 * RFC 7231, user agents can deviate from the strict reading of the
-	 * specification for compatibility purposes.
+	 * Thay đổi chuyển hướng 302 từ POST sang GET để khớp với cách xử lý trình duyệt. Theo
+	 * RFC 7231, các user agent có thể lệch khỏi cách đọc nghiêm ngặt của
+	 * đặc tả vì mục đích tương thích.
 	 *
 	 * @since 4.6.0
 	 *
-	 * @param string                  $location URL to redirect to.
-	 * @param array                   $headers  Headers for the redirect.
-	 * @param string|array            $data     Body to send with the request.
-	 * @param array                   $options  Redirect request options.
-	 * @param WpOrg\Requests\Response $original Response object.
+	 * @param string                  $location URL để chuyển hướng đến.
+	 * @param array                   $headers  Các header cho chuyển hướng.
+	 * @param string|array            $data     Nội dung gửi kèm yêu cầu.
+	 * @param array                   $options  Các tùy chọn yêu cầu chuyển hướng.
+	 * @param WpOrg\Requests\Response $original Đối tượng phản hồi.
 	 */
 	public static function browser_redirect_compatibility( $location, $headers, $data, &$options, $original ) {
-		// Browser compatibility.
+		// Tương thích trình duyệt.
 		if ( 302 === $original->status_code ) {
 			$options['type'] = WpOrg\Requests\Requests::GET;
 		}
 	}
 
 	/**
-	 * Validate redirected URLs.
+	 * Xác thực các URL đã chuyển hướng.
 	 *
 	 * @since 4.7.5
 	 *
-	 * @throws WpOrg\Requests\Exception On unsuccessful URL validation.
-	 * @param string $location URL to redirect to.
+	 * @throws WpOrg\Requests\Exception Khi xác thực URL không thành công.
+	 * @param string $location URL để chuyển hướng đến.
 	 */
 	public static function validate_redirects( $location ) {
 		if ( ! wp_http_validate_url( $location ) ) {
@@ -532,41 +532,41 @@ class WP_Http {
 	}
 
 	/**
-	 * Tests which transports are capable of supporting the request.
+	 * Kiểm tra phương thức truyền tải nào có khả năng hỗ trợ yêu cầu.
 	 *
 	 * @since 3.2.0
-	 * @deprecated 6.4.0 Use WpOrg\Requests\Requests::get_transport_class()
+	 * @deprecated 6.4.0 Sử dụng WpOrg\Requests\Requests::get_transport_class()
 	 * @see WpOrg\Requests\Requests::get_transport_class()
 	 *
-	 * @param array  $args Request arguments.
-	 * @param string $url  URL to request.
-	 * @return string|false Class name for the first transport that claims to support the request.
-	 *                      False if no transport claims to support the request.
+	 * @param array  $args Các đối số yêu cầu.
+	 * @param string $url  URL cần yêu cầu.
+	 * @return string|false Tên lớp của phương thức truyền tải đầu tiên tuyên bố hỗ trợ yêu cầu.
+	 *                      False nếu không có phương thức nào tuyên bố hỗ trợ.
 	 */
 	public function _get_first_available_transport( $args, $url = null ) {
 		$transports = array( 'curl', 'streams' );
 
 		/**
-		 * Filters which HTTP transports are available and in what order.
+		 * Lọc các phương thức truyền tải HTTP nào khả dụng và theo thứ tự nào.
 		 *
 		 * @since 3.7.0
-		 * @deprecated 6.4.0 Use WpOrg\Requests\Requests::get_transport_class()
+		 * @deprecated 6.4.0 Sử dụng WpOrg\Requests\Requests::get_transport_class()
 		 *
-		 * @param string[] $transports Array of HTTP transports to check. Default array contains
-		 *                             'curl' and 'streams', in that order.
-		 * @param array    $args       HTTP request arguments.
-		 * @param string   $url        The URL to request.
+		 * @param string[] $transports Mảng các phương thức truyền tải HTTP cần kiểm tra. Mảng mặc định chứa
+		 *                             'curl' và 'streams', theo thứ tự đó.
+		 * @param array    $args       Các đối số yêu cầu HTTP.
+		 * @param string   $url        URL cần yêu cầu.
 		 */
 		$request_order = apply_filters_deprecated( 'http_api_transports', array( $transports, $args, $url ), '6.4.0' );
 
-		// Loop over each transport on each HTTP request looking for one which will serve this request's needs.
+		// Duyệt qua từng phương thức truyền tải cho mỗi yêu cầu HTTP để tìm phương thức phục vụ nhu cầu của yêu cầu.
 		foreach ( $request_order as $transport ) {
 			if ( in_array( $transport, $transports, true ) ) {
 				$transport = ucfirst( $transport );
 			}
 			$class = 'WP_Http_' . $transport;
 
-			// Check to see if this transport is a possibility, calls the transport statically.
+			// Kiểm tra xem phương thức truyền tải này có khả thi không, gọi phương thức truyền tải tĩnh.
 			if ( ! call_user_func( array( $class, 'test' ), $args, $url ) ) {
 				continue;
 			}
@@ -578,21 +578,21 @@ class WP_Http {
 	}
 
 	/**
-	 * Dispatches a HTTP request to a supporting transport.
+	 * Điều phối yêu cầu HTTP đến phương thức truyền tải hỗ trợ.
 	 *
-	 * Tests each transport in order to find a transport which matches the request arguments.
-	 * Also caches the transport instance to be used later.
+	 * Kiểm tra từng phương thức truyền tải để tìm phương thức khớp với đối số yêu cầu.
+	 * Cũng lưu đệm thể hiện phương thức truyền tải để sử dụng sau.
 	 *
-	 * The order for requests is cURL, and then PHP Streams.
+	 * Thứ tự cho các yêu cầu là cURL, sau đó là PHP Streams.
 	 *
 	 * @since 3.2.0
-	 * @deprecated 5.1.0 Use WP_Http::request()
+	 * @deprecated 5.1.0 Sử dụng WP_Http::request()
 	 * @see WP_Http::request()
 	 *
-	 * @param string $url  URL to request.
-	 * @param array  $args Request arguments.
-	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'.
-	 *                        A WP_Error instance upon error.
+	 * @param string $url  URL cần yêu cầu.
+	 * @param array  $args Các đối số yêu cầu.
+	 * @return array|WP_Error Mảng chứa 'headers', 'body', 'response', 'cookies', 'filename'.
+	 *                        Thể hiện WP_Error khi có lỗi.
 	 */
 	private function _dispatch_request( $url, $args ) {
 		static $transports = array();
@@ -602,35 +602,35 @@ class WP_Http {
 			return new WP_Error( 'http_failure', __( 'There are no HTTP transports available which can complete the requested request.' ) );
 		}
 
-		// Transport claims to support request, instantiate it and give it a whirl.
+		// Phương thức truyền tải tuyên bố hỗ trợ yêu cầu, khởi tạo và thử nghiệm nó.
 		if ( empty( $transports[ $class ] ) ) {
 			$transports[ $class ] = new $class();
 		}
 
 		$response = $transports[ $class ]->request( $url, $args );
 
-		/** This action is documented in wp-includes/class-wp-http.php */
+		/** Action này được ghi chú trong wp-includes/class-wp-http.php */
 		do_action( 'http_api_debug', $response, 'response', $class, $args, $url );
 
 		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
 
-		/** This filter is documented in wp-includes/class-wp-http.php */
+		/** Bộ lọc này được ghi chú trong wp-includes/class-wp-http.php */
 		return apply_filters( 'http_response', $response, $args, $url );
 	}
 
 	/**
-	 * Uses the POST HTTP method.
+	 * Sử dụng phương thức HTTP POST.
 	 *
-	 * Used for sending data that is expected to be in the body.
+	 * Dùng để gửi dữ liệu dự kiến nằm trong nội dung.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string       $url  The request URL.
-	 * @param string|array $args Optional. Override the defaults.
-	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'.
-	 *                        A WP_Error instance upon error. See WP_Http::response() for details.
+	 * @param string       $url  URL yêu cầu.
+	 * @param string|array $args Tùy chọn. Ghi đè các giá trị mặc định.
+	 * @return array|WP_Error Mảng chứa 'headers', 'body', 'response', 'cookies', 'filename'.
+	 *                        Thể hiện WP_Error khi có lỗi. Xem WP_Http::response() để biết chi tiết.
 	 */
 	public function post( $url, $args = array() ) {
 		$defaults    = array( 'method' => 'POST' );
@@ -639,16 +639,16 @@ class WP_Http {
 	}
 
 	/**
-	 * Uses the GET HTTP method.
+	 * Sử dụng phương thức HTTP GET.
 	 *
-	 * Used for sending data that is expected to be in the body.
+	 * Dùng để gửi dữ liệu dự kiến nằm trong nội dung.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string       $url  The request URL.
-	 * @param string|array $args Optional. Override the defaults.
-	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'.
-	 *                        A WP_Error instance upon error. See WP_Http::response() for details.
+	 * @param string       $url  URL yêu cầu.
+	 * @param string|array $args Tùy chọn. Ghi đè các giá trị mặc định.
+	 * @return array|WP_Error Mảng chứa 'headers', 'body', 'response', 'cookies', 'filename'.
+	 *                        Thể hiện WP_Error khi có lỗi. Xem WP_Http::response() để biết chi tiết.
 	 */
 	public function get( $url, $args = array() ) {
 		$defaults    = array( 'method' => 'GET' );
@@ -657,16 +657,16 @@ class WP_Http {
 	}
 
 	/**
-	 * Uses the HEAD HTTP method.
+	 * Sử dụng phương thức HTTP HEAD.
 	 *
-	 * Used for sending data that is expected to be in the body.
+	 * Dùng để gửi dữ liệu dự kiến nằm trong nội dung.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string       $url  The request URL.
-	 * @param string|array $args Optional. Override the defaults.
-	 * @return array|WP_Error Array containing 'headers', 'body', 'response', 'cookies', 'filename'.
-	 *                        A WP_Error instance upon error. See WP_Http::response() for details.
+	 * @param string       $url  URL yêu cầu.
+	 * @param string|array $args Tùy chọn. Ghi đè các giá trị mặc định.
+	 * @return array|WP_Error Mảng chứa 'headers', 'body', 'response', 'cookies', 'filename'.
+	 *                        Thể hiện WP_Error khi có lỗi. Xem WP_Http::response() để biết chi tiết.
 	 */
 	public function head( $url, $args = array() ) {
 		$defaults    = array( 'method' => 'HEAD' );
@@ -675,16 +675,16 @@ class WP_Http {
 	}
 
 	/**
-	 * Parses the responses and splits the parts into headers and body.
+	 * Phân tích các phản hồi và tách các phần thành header và nội dung.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string $response The full response string.
+	 * @param string $response Chuỗi phản hồi đầy đủ.
 	 * @return array {
-	 *     Array with response headers and body.
+	 *     Mảng chứa header và nội dung phản hồi.
 	 *
-	 *     @type string $headers HTTP response headers.
-	 *     @type string $body    HTTP response body.
+	 *     @type string $headers Các header phản hồi HTTP.
+	 *     @type string $body    Nội dung phản hồi HTTP.
 	 * }
 	 */
 	public static function processResponse( $response ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
@@ -697,30 +697,30 @@ class WP_Http {
 	}
 
 	/**
-	 * Transforms header string into an array.
+	 * Chuyển đổi chuỗi header thành mảng.
 	 *
 	 * @since 2.7.0
 	 *
-	 * @param string|array $headers The original headers. If a string is passed, it will be converted
-	 *                              to an array. If an array is passed, then it is assumed to be
-	 *                              raw header data with numeric keys with the headers as the values.
-	 *                              No headers must be passed that were already processed.
-	 * @param string       $url     Optional. The URL that was requested. Default empty.
+	 * @param string|array $headers Các header gốc. Nếu truyền chuỗi, nó sẽ được chuyển đổi
+	 *                              thành mảng. Nếu truyền mảng, giả định đó là dữ liệu header
+	 *                              thô với khóa số và header là giá trị.
+	 *                              Không được truyền header đã xử lý.
+	 * @param string       $url     Tùy chọn. URL đã được yêu cầu. Mặc định rỗng.
 	 * @return array {
-	 *     Processed string headers. If duplicate headers are encountered,
-	 *     then a numbered array is returned as the value of that header-key.
+	 *     Các header chuỗi đã xử lý. Nếu gặp header trùng lặp,
+	 *     mảng có số thứ tự sẽ được trả về làm giá trị của khóa header đó.
 	 *
 	 *     @type array            $response {
-	 *         @type int    $code    The response status code. Default 0.
-	 *         @type string $message The response message. Default empty.
+	 *         @type int    $code    Mã trạng thái phản hồi. Mặc định 0.
+	 *         @type string $message Thông điệp phản hồi. Mặc định rỗng.
 	 *     }
-	 *     @type array            $newheaders The processed header data as a multidimensional array.
-	 *     @type WP_Http_Cookie[] $cookies    If the original headers contain the 'Set-Cookie' key,
-	 *                                        an array containing `WP_Http_Cookie` objects is returned.
+	 *     @type array            $newheaders Dữ liệu header đã xử lý dưới dạng mảng đa chiều.
+	 *     @type WP_Http_Cookie[] $cookies    Nếu header gốc chứa khóa 'Set-Cookie',
+	 *                                        mảng chứa các đối tượng `WP_Http_Cookie` sẽ được trả về.
 	 * }
 	 */
 	public static function processHeaders( $headers, $url = '' ) { // phpcs:ignore WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid
-		// Split headers, one per array element.
+		// Tách header, mỗi phần tử mảng một header.
 		if ( is_string( $headers ) ) {
 			// Tolerate line terminator: CRLF = LF (RFC 2616 19.3).
 			$headers = str_replace( "\r\n", "\n", $headers );

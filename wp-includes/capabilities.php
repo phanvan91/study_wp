@@ -1,53 +1,53 @@
 <?php
 /**
- * Core User Role & Capabilities API
+ * API Vai trò & Quyền Người dùng Lõi
  *
  * @package WordPress
  * @subpackage Users
  */
 
 /**
- * Maps a capability to the primitive capabilities required of the given user to
- * satisfy the capability being checked.
+ * Ánh xạ một quyền đến các quyền nguyên thủy mà người dùng cần có để
+ * thỏa mãn quyền đang được kiểm tra.
  *
- * This function also accepts an ID of an object to map against if the capability is a meta capability. Meta
- * capabilities such as `edit_post` and `edit_user` are capabilities used by this function to map to primitive
- * capabilities that a user or role requires, such as `edit_posts` and `edit_others_posts`.
+ * Hàm này cũng chấp nhận ID của đối tượng để ánh xạ nếu quyền là meta capability. Các meta
+ * capability như `edit_post` và `edit_user` là các quyền được hàm này sử dụng để ánh xạ đến các quyền
+ * nguyên thủy mà người dùng hoặc vai trò cần, như `edit_posts` và `edit_others_posts`.
  *
- * Example usage:
+ * Ví dụ sử dụng:
  *
  *     map_meta_cap( 'edit_posts', $user->ID );
  *     map_meta_cap( 'edit_post', $user->ID, $post->ID );
  *     map_meta_cap( 'edit_post_meta', $user->ID, $post->ID, $meta_key );
  *
- * This function does not check whether the user has the required capabilities,
- * it just returns what the required capabilities are.
+ * Hàm này không kiểm tra xem người dùng có các quyền cần thiết hay không,
+ * nó chỉ trả về các quyền cần thiết là gì.
  *
  * @since 2.0.0
- * @since 4.9.6 Added the `export_others_personal_data`, `erase_others_personal_data`,
- *              and `manage_privacy_options` capabilities.
- * @since 5.1.0 Added the `update_php` capability.
- * @since 5.2.0 Added the `resume_plugin` and `resume_theme` capabilities.
- * @since 5.3.0 Formalized the existing and already documented `...$args` parameter
- *              by adding it to the function signature.
- * @since 5.7.0 Added the `create_app_password`, `list_app_passwords`, `read_app_password`,
+ * @since 4.9.6 Thêm các quyền `export_others_personal_data`, `erase_others_personal_data`,
+ *              và `manage_privacy_options`.
+ * @since 5.1.0 Thêm quyền `update_php`.
+ * @since 5.2.0 Thêm các quyền `resume_plugin` và `resume_theme`.
+ * @since 5.3.0 Chính thức hóa tham số `...$args` đã tồn tại và đã được ghi chú
+ *              bằng cách thêm vào chữ ký hàm.
+ * @since 5.7.0 Thêm các quyền `create_app_password`, `list_app_passwords`, `read_app_password`,
  *              `edit_app_password`, `delete_app_passwords`, `delete_app_password`,
- *              and `update_https` capabilities.
- * @since 6.7.0 Added the `edit_block_binding` capability.
+ *              và `update_https`.
+ * @since 6.7.0 Thêm quyền `edit_block_binding`.
  *
- * @global array $post_type_meta_caps Used to get post type meta capabilities.
+ * @global array $post_type_meta_caps Dùng để lấy các meta capability của loại bài viết.
  *
- * @param string $cap     Capability being checked.
- * @param int    $user_id User ID.
- * @param mixed  ...$args Optional further parameters, typically starting with an object ID.
- * @return string[] Primitive capabilities required of the user.
+ * @param string $cap     Quyền đang được kiểm tra.
+ * @param int    $user_id ID người dùng.
+ * @param mixed  ...$args Các tham số bổ sung tùy chọn, thường bắt đầu với ID đối tượng.
+ * @return string[] Các quyền nguyên thủy mà người dùng cần có.
  */
 function map_meta_cap( $cap, $user_id, ...$args ) {
 	$caps = array();
 
 	switch ( $cap ) {
 		case 'remove_user':
-			// In multisite the user must be a super admin to remove themselves.
+			// Trong multisite, người dùng phải là super admin để xóa chính mình.
 			if ( isset( $args[0] ) && $user_id === (int) $args[0] && ! is_super_admin( $user_id ) ) {
 				$caps[] = 'do_not_allow';
 			} else {
@@ -60,26 +60,26 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 			break;
 		case 'edit_user':
 		case 'edit_users':
-			// Allow user to edit themselves.
+			// Cho phép người dùng chỉnh sửa chính mình.
 			if ( 'edit_user' === $cap && isset( $args[0] ) && $user_id === (int) $args[0] ) {
 				break;
 			}
 
-			// In multisite the user must have manage_network_users caps. If editing a super admin, the user must be a super admin.
+			// Trong multisite, người dùng phải có quyền manage_network_users. Nếu chỉnh sửa super admin, người dùng phải là super admin.
 			if ( is_multisite() && ( ( ! is_super_admin( $user_id ) && 'edit_user' === $cap && is_super_admin( $args[0] ) ) || ! user_can( $user_id, 'manage_network_users' ) ) ) {
 				$caps[] = 'do_not_allow';
 			} else {
-				$caps[] = 'edit_users'; // edit_user maps to edit_users.
+				$caps[] = 'edit_users'; // edit_user ánh xạ sang edit_users.
 			}
 			break;
 		case 'delete_post':
 		case 'delete_page':
 			if ( ! isset( $args[0] ) ) {
 				if ( 'delete_post' === $cap ) {
-					/* translators: %s: Capability name. */
+					/* translators: %s: Tên quyền. */
 					$message = __( 'When checking for the %s capability, you must always check it against a specific post.' );
 				} else {
-					/* translators: %s: Capability name. */
+					/* translators: %s: Tên quyền. */
 					$message = __( 'When checking for the %s capability, you must always check it against a specific page.' );
 				}
 
@@ -113,7 +113,7 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 
 			$post_type = get_post_type_object( $post->post_type );
 			if ( ! $post_type ) {
-				/* translators: 1: Post type, 2: Capability name. */
+				/* translators: 1: Post type, 2: Tên quyền. */
 				$message = __( 'The post type %1$s is not registered, so it may not be reliable to check the capability %2$s against a post of that type.' );
 
 				_doing_it_wrong(
@@ -132,16 +132,16 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 
 			if ( ! $post_type->map_meta_cap ) {
 				$caps[] = $post_type->cap->$cap;
-				// Prior to 3.1 we would re-call map_meta_cap here.
+				// Trước phiên bản 3.1, chúng ta sẽ gọi lại map_meta_cap ở đây.
 				if ( 'delete_post' === $cap ) {
 					$cap = $post_type->cap->$cap;
 				}
 				break;
 			}
 
-			// If the post author is set and the user is the author...
+			// Nếu tác giả bài viết được đặt và người dùng là tác giả...
 			if ( $post->post_author && $user_id === (int) $post->post_author ) {
-				// If the post is published or scheduled...
+				// Nếu bài viết đã xuất bản hoặc lên lịch...
 				if ( in_array( $post->post_status, array( 'publish', 'future' ), true ) ) {
 					$caps[] = $post_type->cap->delete_published_posts;
 				} elseif ( 'trash' === $post->post_status ) {
@@ -152,13 +152,13 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 						$caps[] = $post_type->cap->delete_posts;
 					}
 				} else {
-					// If the post is draft...
+					// Nếu bài viết là bản nháp...
 					$caps[] = $post_type->cap->delete_posts;
 				}
 			} else {
-				// The user is trying to edit someone else's post.
+				// Người dùng đang cố xóa bài viết của người khác.
 				$caps[] = $post_type->cap->delete_others_posts;
-				// The post is published or scheduled, extra cap required.
+				// Bài viết đã xuất bản hoặc lên lịch, cần quyền bổ sung.
 				if ( in_array( $post->post_status, array( 'publish', 'future' ), true ) ) {
 					$caps[] = $post_type->cap->delete_published_posts;
 				} elseif ( 'private' === $post->post_status ) {
@@ -167,8 +167,8 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 			}
 
 			/*
-			 * Setting the privacy policy page requires `manage_privacy_options`,
-			 * so deleting it should require that too.
+			 * Thiết lập trang chính sách bảo mật yêu cầu `manage_privacy_options`,
+			 * nên việc xóa nó cũng cần yêu cầu quyền đó.
 			 */
 			if ( (int) get_option( 'wp_page_for_privacy_policy' ) === $post->ID ) {
 				$caps = array_merge( $caps, map_meta_cap( 'manage_privacy_options', $user_id ) );
@@ -176,17 +176,17 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 
 			break;
 		/*
-		 * edit_post breaks down to edit_posts, edit_published_posts, or
+		 * edit_post phân tích thành edit_posts, edit_published_posts, hoặc
 		 * edit_others_posts.
 		 */
 		case 'edit_post':
 		case 'edit_page':
 			if ( ! isset( $args[0] ) ) {
 				if ( 'edit_post' === $cap ) {
-					/* translators: %s: Capability name. */
+					/* translators: %s: Tên quyền. */
 					$message = __( 'When checking for the %s capability, you must always check it against a specific post.' );
 				} else {
-					/* translators: %s: Capability name. */
+					/* translators: %s: Tên quyền. */
 					$message = __( 'When checking for the %s capability, you must always check it against a specific page.' );
 				}
 
@@ -216,7 +216,7 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 
 			$post_type = get_post_type_object( $post->post_type );
 			if ( ! $post_type ) {
-				/* translators: 1: Post type, 2: Capability name. */
+				/* translators: 1: Post type, 2: Tên quyền. */
 				$message = __( 'The post type %1$s is not registered, so it may not be reliable to check the capability %2$s against a post of that type.' );
 
 				_doing_it_wrong(
@@ -235,16 +235,16 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 
 			if ( ! $post_type->map_meta_cap ) {
 				$caps[] = $post_type->cap->$cap;
-				// Prior to 3.1 we would re-call map_meta_cap here.
+				// Trước phiên bản 3.1, chúng ta sẽ gọi lại map_meta_cap ở đây.
 				if ( 'edit_post' === $cap ) {
 					$cap = $post_type->cap->$cap;
 				}
 				break;
 			}
 
-			// If the post author is set and the user is the author...
+			// Nếu tác giả bài viết được đặt và người dùng là tác giả...
 			if ( $post->post_author && $user_id === (int) $post->post_author ) {
-				// If the post is published or scheduled...
+				// Nếu bài viết đã xuất bản hoặc lên lịch...
 				if ( in_array( $post->post_status, array( 'publish', 'future' ), true ) ) {
 					$caps[] = $post_type->cap->edit_published_posts;
 				} elseif ( 'trash' === $post->post_status ) {
@@ -255,13 +255,13 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 						$caps[] = $post_type->cap->edit_posts;
 					}
 				} else {
-					// If the post is draft...
+					// Nếu bài viết là bản nháp...
 					$caps[] = $post_type->cap->edit_posts;
 				}
 			} else {
-				// The user is trying to edit someone else's post.
+				// Người dùng đang cố chỉnh sửa bài viết của người khác.
 				$caps[] = $post_type->cap->edit_others_posts;
-				// The post is published or scheduled, extra cap required.
+				// Bài viết đã xuất bản hoặc lên lịch, cần quyền bổ sung.
 				if ( in_array( $post->post_status, array( 'publish', 'future' ), true ) ) {
 					$caps[] = $post_type->cap->edit_published_posts;
 				} elseif ( 'private' === $post->post_status ) {
@@ -270,8 +270,8 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 			}
 
 			/*
-			 * Setting the privacy policy page requires `manage_privacy_options`,
-			 * so editing it should require that too.
+			 * Thiết lập trang chính sách bảo mật yêu cầu `manage_privacy_options`,
+			 * nên việc chỉnh sửa nó cũng cần yêu cầu quyền đó.
 			 */
 			if ( (int) get_option( 'wp_page_for_privacy_policy' ) === $post->ID ) {
 				$caps = array_merge( $caps, map_meta_cap( 'manage_privacy_options', $user_id ) );
@@ -282,10 +282,10 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 		case 'read_page':
 			if ( ! isset( $args[0] ) ) {
 				if ( 'read_post' === $cap ) {
-					/* translators: %s: Capability name. */
+					/* translators: %s: Tên quyền. */
 					$message = __( 'When checking for the %s capability, you must always check it against a specific post.' );
 				} else {
-					/* translators: %s: Capability name. */
+					/* translators: %s: Tên quyền. */
 					$message = __( 'When checking for the %s capability, you must always check it against a specific page.' );
 				}
 
@@ -315,7 +315,7 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 
 			$post_type = get_post_type_object( $post->post_type );
 			if ( ! $post_type ) {
-				/* translators: 1: Post type, 2: Capability name. */
+				/* translators: 1: Post type, 2: Tên quyền. */
 				$message = __( 'The post type %1$s is not registered, so it may not be reliable to check the capability %2$s against a post of that type.' );
 
 				_doing_it_wrong(
@@ -334,7 +334,7 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 
 			if ( ! $post_type->map_meta_cap ) {
 				$caps[] = $post_type->cap->$cap;
-				// Prior to 3.1 we would re-call map_meta_cap here.
+				// Trước phiên bản 3.1, chúng ta sẽ gọi lại map_meta_cap ở đây.
 				if ( 'read_post' === $cap ) {
 					$cap = $post_type->cap->$cap;
 				}
@@ -343,7 +343,7 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 
 			$status_obj = get_post_status_object( get_post_status( $post ) );
 			if ( ! $status_obj ) {
-				/* translators: 1: Post status, 2: Capability name. */
+				/* translators: 1: Post status, 2: Tên quyền. */
 				$message = __( 'The post status %1$s is not registered, so it may not be reliable to check the capability %2$s against a post with that status.' );
 
 				_doing_it_wrong(
@@ -375,7 +375,7 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 			break;
 		case 'publish_post':
 			if ( ! isset( $args[0] ) ) {
-				/* translators: %s: Capability name. */
+				/* translators: %s: Tên quyền. */
 				$message = __( 'When checking for the %s capability, you must always check it against a specific post.' );
 
 				_doing_it_wrong(
@@ -396,7 +396,7 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 
 			$post_type = get_post_type_object( $post->post_type );
 			if ( ! $post_type ) {
-				/* translators: 1: Post type, 2: Capability name. */
+				/* translators: 1: Post type, 2: Tên quyền. */
 				$message = __( 'The post type %1$s is not registered, so it may not be reliable to check the capability %2$s against a post of that type.' );
 
 				_doing_it_wrong(
@@ -431,16 +431,16 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 
 			if ( ! isset( $args[0] ) ) {
 				if ( 'post' === $object_type ) {
-					/* translators: %s: Capability name. */
+					/* translators: %s: Tên quyền. */
 					$message = __( 'When checking for the %s capability, you must always check it against a specific post.' );
 				} elseif ( 'comment' === $object_type ) {
-					/* translators: %s: Capability name. */
+					/* translators: %s: Tên quyền. */
 					$message = __( 'When checking for the %s capability, you must always check it against a specific comment.' );
 				} elseif ( 'term' === $object_type ) {
-					/* translators: %s: Capability name. */
+					/* translators: %s: Tên quyền. */
 					$message = __( 'When checking for the %s capability, you must always check it against a specific term.' );
 				} else {
-					/* translators: %s: Capability name. */
+					/* translators: %s: Tên quyền. */
 					$message = __( 'When checking for the %s capability, you must always check it against a specific user.' );
 				}
 
@@ -473,7 +473,7 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 				if ( ! empty( $object_subtype ) && has_filter( "auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}" ) ) {
 
 					/**
-					 * Filters whether the user is allowed to edit a specific meta key of a specific object type and subtype.
+					 * Lọc xem người dùng có được phép chỉnh sửa meta key cụ thể của loại đối tượng và loại con cụ thể hay không.
 					 *
 					 * The dynamic portions of the hook name, `$object_type`, `$meta_key`,
 					 * and `$object_subtype`, refer to the metadata object type (comment, post, term or user),
@@ -481,20 +481,20 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 					 *
 					 * @since 4.9.8
 					 *
-					 * @param bool     $allowed   Whether the user can add the object meta. Default false.
-					 * @param string   $meta_key  The meta key.
-					 * @param int      $object_id Object ID.
+					 * @param bool     $allowed   Liệu người dùng có thể thêm object meta hay không. Mặc định false.
+					 * @param string   $meta_key  Meta key.
+					 * @param int      $object_id ID đối tượng.
 					 * @param int      $user_id   User ID.
-					 * @param string   $cap       Capability name.
-					 * @param string[] $caps      Array of the user's capabilities.
+					 * @param string   $cap       Tên quyền.
+					 * @param string[] $caps      Mảng các quyền của người dùng.
 					 */
 					$allowed = apply_filters( "auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}", $allowed, $meta_key, $object_id, $user_id, $cap, $caps );
 				} else {
 
 					/**
-					 * Filters whether the user is allowed to edit a specific meta key of a specific object type.
+					 * Lọc xem người dùng có được phép chỉnh sửa meta key cụ thể của loại đối tượng cụ thể hay không.
 					 *
-					 * Return true to have the mapped meta caps from `edit_{$object_type}` apply.
+					 * Trả về true để áp dụng các meta cap đã ánh xạ từ `edit_{$object_type}`.
 					 *
 					 * The dynamic portion of the hook name, `$object_type` refers to the object type being filtered.
 					 * The dynamic portion of the hook name, `$meta_key`, refers to the meta key passed to map_meta_cap().
@@ -502,12 +502,12 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 					 * @since 3.3.0 As `auth_post_meta_{$meta_key}`.
 					 * @since 4.6.0
 					 *
-					 * @param bool     $allowed   Whether the user can add the object meta. Default false.
-					 * @param string   $meta_key  The meta key.
-					 * @param int      $object_id Object ID.
+					 * @param bool     $allowed   Liệu người dùng có thể thêm object meta hay không. Mặc định false.
+					 * @param string   $meta_key  Meta key.
+					 * @param int      $object_id ID đối tượng.
 					 * @param int      $user_id   User ID.
-					 * @param string   $cap       Capability name.
-					 * @param string[] $caps      Array of the user's capabilities.
+					 * @param string   $cap       Tên quyền.
+					 * @param string[] $caps      Mảng các quyền của người dùng.
 					 */
 					$allowed = apply_filters( "auth_{$object_type}_meta_{$meta_key}", $allowed, $meta_key, $object_id, $user_id, $cap, $caps );
 				}
@@ -515,9 +515,9 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 				if ( ! empty( $object_subtype ) ) {
 
 					/**
-					 * Filters whether the user is allowed to edit meta for specific object types/subtypes.
+					 * Lọc xem người dùng có được phép chỉnh sửa meta cho các loại đối tượng/loại con cụ thể hay không.
 					 *
-					 * Return true to have the mapped meta caps from `edit_{$object_type}` apply.
+					 * Trả về true để áp dụng các meta cap đã ánh xạ từ `edit_{$object_type}`.
 					 *
 					 * The dynamic portion of the hook name, `$object_type` refers to the object type being filtered.
 					 * The dynamic portion of the hook name, `$object_subtype` refers to the object subtype being filtered.
@@ -528,12 +528,12 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 					 *              `auth_{$object_type}_{$object_subtype}_meta_{$meta_key}`.
 					 * @deprecated 4.9.8 Use {@see 'auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}'} instead.
 					 *
-					 * @param bool     $allowed   Whether the user can add the object meta. Default false.
-					 * @param string   $meta_key  The meta key.
-					 * @param int      $object_id Object ID.
+					 * @param bool     $allowed   Liệu người dùng có thể thêm object meta hay không. Mặc định false.
+					 * @param string   $meta_key  Meta key.
+					 * @param int      $object_id ID đối tượng.
 					 * @param int      $user_id   User ID.
-					 * @param string   $cap       Capability name.
-					 * @param string[] $caps      Array of the user's capabilities.
+					 * @param string   $cap       Tên quyền.
+					 * @param string[] $caps      Mảng các quyền của người dùng.
 					 */
 					$allowed = apply_filters_deprecated(
 						"auth_{$object_type}_{$object_subtype}_meta_{$meta_key}",
@@ -550,7 +550,7 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 			break;
 		case 'edit_comment':
 			if ( ! isset( $args[0] ) ) {
-				/* translators: %s: Capability name. */
+				/* translators: %s: Tên quyền. */
 				$message = __( 'When checking for the %s capability, you must always check it against a specific comment.' );
 
 				_doing_it_wrong(
@@ -706,7 +706,7 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 		case 'delete_term':
 		case 'assign_term':
 			if ( ! isset( $args[0] ) ) {
-				/* translators: %s: Capability name. */
+				/* translators: %s: Tên quyền. */
 				$message = __( 'When checking for the %s capability, you must always check it against a specific term.' );
 
 				_doing_it_wrong(
@@ -862,50 +862,50 @@ function map_meta_cap( $cap, $user_id, ...$args ) {
 	}
 
 	/**
-	 * Filters the primitive capabilities required of the given user to satisfy the
-	 * capability being checked.
+	 * Lọc các quyền nguyên thủy mà người dùng cần có để thỏa mãn
+	 * quyền đang được kiểm tra.
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param string[] $caps    Primitive capabilities required of the user.
-	 * @param string   $cap     Capability being checked.
-	 * @param int      $user_id The user ID.
-	 * @param array    $args    Adds context to the capability check, typically
-	 *                          starting with an object ID.
+	 * @param string[] $caps    Các quyền nguyên thủy mà người dùng cần có.
+	 * @param string   $cap     Quyền đang được kiểm tra.
+	 * @param int      $user_id ID người dùng.
+	 * @param array    $args    Thêm ngữ cảnh cho việc kiểm tra quyền, thường
+	 *                          bắt đầu với ID đối tượng.
 	 */
 	return apply_filters( 'map_meta_cap', $caps, $cap, $user_id, $args );
 }
 
 /**
- * Returns whether the current user has the specified capability.
+ * Trả về liệu người dùng hiện tại có quyền được chỉ định hay không.
  *
- * This function also accepts an ID of an object to check against if the capability is a meta capability. Meta
- * capabilities such as `edit_post` and `edit_user` are capabilities used by the `map_meta_cap()` function to
- * map to primitive capabilities that a user or role has, such as `edit_posts` and `edit_others_posts`.
+ * Hàm này cũng chấp nhận ID của đối tượng để kiểm tra nếu quyền là meta capability. Các meta
+ * capability như `edit_post` và `edit_user` là các quyền được hàm `map_meta_cap()` sử dụng để
+ * ánh xạ đến các quyền nguyên thủy mà người dùng hoặc vai trò có, như `edit_posts` và `edit_others_posts`.
  *
- * Example usage:
+ * Ví dụ sử dụng:
  *
  *     current_user_can( 'edit_posts' );
  *     current_user_can( 'edit_post', $post->ID );
  *     current_user_can( 'edit_post_meta', $post->ID, $meta_key );
  *
- * While checking against particular roles in place of a capability is supported
- * in part, this practice is discouraged as it may produce unreliable results.
+ * Mặc dù việc kiểm tra theo vai trò cụ thể thay vì quyền được hỗ trợ một phần,
+ * nhưng thực hành này không được khuyến khích vì có thể tạo ra kết quả không đáng tin cậy.
  *
- * Note: Will always return true if the current user is a super admin, unless specifically denied.
+ * Lưu ý: Luôn trả về true nếu người dùng hiện tại là super admin, trừ khi bị từ chối cụ thể.
  *
  * @since 2.0.0
- * @since 5.3.0 Formalized the existing and already documented `...$args` parameter
- *              by adding it to the function signature.
- * @since 5.8.0 Converted to wrapper for the user_can() function.
+ * @since 5.3.0 Chính thức hóa tham số `...$args` đã tồn tại và đã được ghi chú
+ *              bằng cách thêm vào chữ ký hàm.
+ * @since 5.8.0 Chuyển đổi thành wrapper cho hàm user_can().
  *
  * @see WP_User::has_cap()
  * @see map_meta_cap()
  *
- * @param string $capability Capability name.
- * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
- * @return bool Whether the current user has the given capability. If `$capability` is a meta cap and `$object_id` is
- *              passed, whether the current user has the given meta capability for the given object.
+ * @param string $capability Tên quyền.
+ * @param mixed  ...$args    Các tham số bổ sung tùy chọn, thường bắt đầu với ID đối tượng.
+ * @return bool Liệu người dùng hiện tại có quyền đã cho hay không. Nếu `$capability` là meta cap và `$object_id` được
+ *              truyền, liệu người dùng hiện tại có meta capability đã cho cho đối tượng đã cho hay không.
  */
 function current_user_can( $capability, ...$args ) {
 	return user_can( wp_get_current_user(), $capability, ...$args );
@@ -929,7 +929,7 @@ function current_user_can( $capability, ...$args ) {
  * @since 6.7.0
  *
  * @param int    $site_id    Site ID.
- * @param string $capability Capability name.
+ * @param string $capability Tên quyền.
  * @param mixed  ...$args    Optional further parameters, typically starting with an object ID.
  * @return bool Whether the user has the given capability.
  */
@@ -963,7 +963,7 @@ function current_user_can_for_site( $site_id, $capability, ...$args ) {
  *              by adding it to the function signature.
  *
  * @param int|WP_Post $post       Post ID or post object.
- * @param string      $capability Capability name.
+ * @param string      $capability Tên quyền.
  * @param mixed       ...$args    Optional further parameters, typically starting with an object ID.
  * @return bool Whether the post author has the given capability.
  */
@@ -1000,7 +1000,7 @@ function author_can( $post, $capability, ...$args ) {
  *              by adding it to the function signature.
  *
  * @param int|WP_User $user       User ID or object.
- * @param string      $capability Capability name.
+ * @param string      $capability Tên quyền.
  * @param mixed       ...$args    Optional further parameters, typically starting with an object ID.
  * @return bool Whether the user has the given capability.
  */
@@ -1035,7 +1035,7 @@ function user_can( $user, $capability, ...$args ) {
  *
  * @param int|WP_User $user       User ID or object.
  * @param int         $site_id    Site ID.
- * @param string      $capability Capability name.
+ * @param string      $capability Tên quyền.
  * @param mixed       ...$args    Optional further parameters, typically starting with an object ID.
  * @return bool Whether the user has the given capability.
  */

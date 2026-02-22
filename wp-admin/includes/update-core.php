@@ -742,7 +742,7 @@ $_old_files = array(
 	'wp-includes/blocks/query-title/editor-rtl.css',
 	'wp-includes/blocks/query-title/editor-rtl.min.css',
 	/*
-	 * Restored in WordPress 6.7
+	 * Được khôi phục trong WordPress 6.7
 	 *
 	 * 'wp-includes/blocks/tag-cloud/editor.css',
 	 * 'wp-includes/blocks/tag-cloud/editor.min.css',
@@ -781,11 +781,11 @@ $_old_files = array(
 	/*
 	 * 6.7
 	 *
-	 * WordPress 6.7 included a SimplePie upgrade that included a major
-	 * refactoring of the file structure and library. The old files are
-	 * split in to two sections to account for this: files and directories.
+	 * WordPress 6.7 bao gồm một bản nâng cấp SimplePie với việc tái cấu trúc
+	 * lớn cấu trúc tệp và thư viện. Các tệp cũ được chia thành hai phần
+	 * để xử lý điều này: tệp và thư mục.
 	 *
-	 * See https://core.trac.wordpress.org/changeset/59141
+	 * Xem https://core.trac.wordpress.org/changeset/59141
 	 */
 	// 6.7 - files
 	'wp-includes/js/dist/interactivity-router.asset.php',
@@ -1118,13 +1118,13 @@ function update_core( $from, $to ) {
 
 	$php_version    = PHP_VERSION;
 	$mysql_version  = $wpdb->db_version();
-	$old_wp_version = $GLOBALS['wp_version']; // The version of WordPress we're updating from.
+	$old_wp_version = $GLOBALS['wp_version']; // Phiên bản WordPress mà chúng ta đang cập nhật từ đó.
 	/*
-	 * Note: str_contains() is not used here, as this file is included
-	 * when updating from older WordPress versions, in which case
-	 * the polyfills from wp-includes/compat.php may not be available.
+	 * Lưu ý: str_contains() không được sử dụng ở đây, vì tệp này được bao gồm
+	 * khi cập nhật từ các phiên bản WordPress cũ hơn, trong trường hợp đó
+	 * các polyfill từ wp-includes/compat.php có thể không khả dụng.
 	 */
-	$development_build = ( false !== strpos( $old_wp_version . $wp_version, '-' ) ); // A dash in the version indicates a development release.
+	$development_build = ( false !== strpos( $old_wp_version . $wp_version, '-' ) ); // Dấu gạch ngang trong phiên bản cho biết đây là bản phát hành phát triển.
 	$php_compat        = version_compare( $php_version, $required_php_version, '>=' );
 
 	if ( file_exists( WP_CONTENT_DIR . '/db.php' ) && empty( $wpdb->is_mysql ) ) {
@@ -1141,7 +1141,7 @@ function update_core( $from, $to ) {
 
 	if ( function_exists( 'wp_get_update_php_url' ) ) {
 		$php_update_message = '</p><p>' . sprintf(
-			/* translators: %s: URL to Update PHP page. */
+			/* translators: %s: URL đến trang Cập nhật PHP. */
 			__( '<a href="%s">Learn more about updating PHP</a>.' ),
 			esc_url( wp_get_update_php_url() )
 		);
@@ -1159,7 +1159,7 @@ function update_core( $from, $to ) {
 		return new WP_Error(
 			'php_mysql_not_compatible',
 			sprintf(
-				/* translators: 1: WordPress version number, 2: Minimum required PHP version number, 3: Minimum required MySQL version number, 4: Current PHP version number, 5: Current MySQL version number. */
+				/* translators: 1: Số phiên bản WordPress, 2: Số phiên bản PHP tối thiểu yêu cầu, 3: Số phiên bản MySQL tối thiểu yêu cầu, 4: Số phiên bản PHP hiện tại, 5: Số phiên bản MySQL hiện tại. */
 				__( 'The update cannot be installed because WordPress %1$s requires PHP version %2$s or higher and MySQL version %3$s or higher. You are running PHP version %4$s and MySQL version %5$s.' ),
 				$wp_version,
 				$required_php_version,
@@ -1172,7 +1172,7 @@ function update_core( $from, $to ) {
 		return new WP_Error(
 			'php_not_compatible',
 			sprintf(
-				/* translators: 1: WordPress version number, 2: Minimum required PHP version number, 3: Current PHP version number. */
+				/* translators: 1: Số phiên bản WordPress, 2: Số phiên bản PHP tối thiểu yêu cầu, 3: Số phiên bản PHP hiện tại. */
 				__( 'The update cannot be installed because WordPress %1$s requires PHP version %2$s or higher. You are running version %3$s.' ),
 				$wp_version,
 				$required_php_version,
@@ -1183,7 +1183,7 @@ function update_core( $from, $to ) {
 		return new WP_Error(
 			'mysql_not_compatible',
 			sprintf(
-				/* translators: 1: WordPress version number, 2: Minimum required MySQL version number, 3: Current MySQL version number. */
+				/* translators: 1: Số phiên bản WordPress, 2: Số phiên bản MySQL tối thiểu yêu cầu, 3: Số phiên bản MySQL hiện tại. */
 				__( 'The update cannot be installed because WordPress %1$s requires MySQL version %2$s or higher. You are running version %3$s.' ),
 				$wp_version,
 				$required_mysql_version,
@@ -1203,7 +1203,7 @@ function update_core( $from, $to ) {
 			$missing_extensions->add(
 				"php_not_compatible_{$extension}",
 				sprintf(
-					/* translators: 1: WordPress version number, 2: The PHP extension name needed. */
+					/* translators: 1: Số phiên bản WordPress, 2: Tên phần mở rộng PHP cần thiết. */
 					__( 'The update cannot be installed because WordPress %1$s requires the %2$s PHP extension.' ),
 					$wp_version,
 					$extension
@@ -1211,7 +1211,7 @@ function update_core( $from, $to ) {
 			);
 		}
 
-		// Add a warning when required PHP extensions are missing.
+		// Thêm cảnh báo khi thiếu các phần mở rộng PHP yêu cầu.
 		if ( ! empty( $missing_extensions->errors ) ) {
 			return $missing_extensions;
 		}
@@ -1221,15 +1221,15 @@ function update_core( $from, $to ) {
 	apply_filters( 'update_feedback', __( 'Preparing to install the latest version&#8230;' ) );
 
 	/*
-	 * Don't copy wp-content, we'll deal with that below.
-	 * We also copy version.php last so failed updates report their old version.
+	 * Không sao chép wp-content, chúng ta sẽ xử lý nó bên dưới.
+	 * Chúng ta cũng sao chép version.php cuối cùng để các bản cập nhật thất bại báo cáo phiên bản cũ.
 	 */
 	$skip              = array( 'wp-content', 'wp-includes/version.php' );
 	$check_is_writable = array();
 
-	// Check to see which files don't really need updating - only available for 3.7 and higher.
+	// Kiểm tra xem tệp nào thực sự không cần cập nhật - chỉ khả dụng cho phiên bản 3.7 trở lên.
 	if ( function_exists( 'get_core_checksums' ) ) {
-		// Find the local version of the working directory.
+		// Tìm phiên bản cục bộ của thư mục làm việc.
 		$working_dir_local = WP_CONTENT_DIR . '/upgrade/' . basename( $from ) . $distro;
 
 		$checksums = get_core_checksums( $wp_version, isset( $wp_local_package ) ? $wp_local_package : 'en_US' );
@@ -1241,9 +1241,9 @@ function update_core( $from, $to ) {
 		if ( is_array( $checksums ) ) {
 			foreach ( $checksums as $file => $checksum ) {
 				/*
-				 * Note: str_starts_with() is not used here, as this file is included
-				 * when updating from older WordPress versions, in which case
-				 * the polyfills from wp-includes/compat.php may not be available.
+				 * Lưu ý: str_starts_with() không được sử dụng ở đây, vì tệp này được bao gồm
+				 * khi cập nhật từ các phiên bản WordPress cũ hơn, trong trường hợp đó
+				 * các polyfill từ wp-includes/compat.php có thể không khả dụng.
 				 */
 				if ( 'wp-content' === substr( $file, 0, 10 ) ) {
 					continue;
@@ -1272,7 +1272,7 @@ function update_core( $from, $to ) {
 		}
 	}
 
-	// If we're using the direct method, we can predict write failures that are due to permissions.
+	// Nếu chúng ta đang sử dụng phương thức trực tiếp, chúng ta có thể dự đoán lỗi ghi do quyền truy cập.
 	if ( $check_is_writable && 'direct' === $wp_filesystem->method ) {
 		$files_writable = array_filter( $check_is_writable, array( $wp_filesystem, 'is_writable' ) );
 
@@ -1280,7 +1280,7 @@ function update_core( $from, $to ) {
 			$files_not_writable = array_diff_key( $check_is_writable, $files_writable );
 
 			foreach ( $files_not_writable as $relative_file_not_writable => $file_not_writable ) {
-				// If the writable check failed, chmod file to 0644 and try again, same as copy_dir().
+				// Nếu kiểm tra quyền ghi thất bại, chmod tệp thành 0644 và thử lại, giống như copy_dir().
 				$wp_filesystem->chmod( $file_not_writable, FS_CHMOD_FILE );
 
 				if ( $wp_filesystem->is_writable( $file_not_writable ) ) {
@@ -1288,7 +1288,7 @@ function update_core( $from, $to ) {
 				}
 			}
 
-			// Store package-relative paths (the key) of non-writable files in the WP_Error object.
+			// Lưu đường dẫn tương đối với gói (khóa) của các tệp không ghi được vào đối tượng WP_Error.
 			$error_data = version_compare( $old_wp_version, '3.7-beta2', '>' ) ? array_keys( $files_not_writable ) : '';
 
 			if ( $files_not_writable ) {
@@ -1304,7 +1304,7 @@ function update_core( $from, $to ) {
 	/** This filter is documented in wp-admin/includes/update-core.php */
 	apply_filters( 'update_feedback', __( 'Enabling Maintenance mode&#8230;' ) );
 
-	// Create maintenance file to signal that we are upgrading.
+	// Tạo tệp bảo trì để báo hiệu rằng chúng ta đang nâng cấp.
 	$maintenance_string = '<?php $upgrading = ' . time() . '; ?>';
 	$maintenance_file   = $to . '.maintenance';
 	$wp_filesystem->delete( $maintenance_file );
@@ -1313,7 +1313,7 @@ function update_core( $from, $to ) {
 	/** This filter is documented in wp-admin/includes/update-core.php */
 	apply_filters( 'update_feedback', __( 'Copying the required files&#8230;' ) );
 
-	// Copy new versions of WP files into place.
+	// Sao chép các phiên bản mới của tệp WP vào đúng vị trí.
 	$result = copy_dir( $from . $distro, $to, $skip );
 
 	if ( is_wp_error( $result ) ) {
@@ -1324,7 +1324,7 @@ function update_core( $from, $to ) {
 		);
 	}
 
-	// Since we know the core files have copied over, we can now copy the version file.
+	// Vì chúng ta biết các tệp lõi đã được sao chép, bây giờ chúng ta có thể sao chép tệp phiên bản.
 	if ( ! is_wp_error( $result ) ) {
 		if ( ! $wp_filesystem->copy( $from . $distro . 'wp-includes/version.php', $to . 'wp-includes/version.php', true /* overwrite */ ) ) {
 			$wp_filesystem->delete( $from, true );
@@ -1338,15 +1338,15 @@ function update_core( $from, $to ) {
 		$wp_filesystem->chmod( $to . 'wp-includes/version.php', FS_CHMOD_FILE );
 
 		/*
-		 * `wp_opcache_invalidate()` only exists in WordPress 5.5 or later,
-		 * so don't run it when upgrading from older versions.
+		 * `wp_opcache_invalidate()` chỉ tồn tại trong WordPress 5.5 trở lên,
+		 * vì vậy không chạy nó khi nâng cấp từ các phiên bản cũ hơn.
 		 */
 		if ( function_exists( 'wp_opcache_invalidate' ) ) {
 			wp_opcache_invalidate( $to . 'wp-includes/version.php' );
 		}
 	}
 
-	// Check to make sure everything copied correctly, ignoring the contents of wp-content.
+	// Kiểm tra để đảm bảo mọi thứ đã được sao chép chính xác, bỏ qua nội dung của wp-content.
 	$skip   = array( 'wp-content' );
 	$failed = array();
 
@@ -1380,7 +1380,7 @@ function update_core( $from, $to ) {
 		}
 	}
 
-	// Some files didn't copy properly.
+	// Một số tệp không được sao chép đúng cách.
 	if ( ! empty( $failed ) ) {
 		$total_size = 0;
 
@@ -1391,8 +1391,8 @@ function update_core( $from, $to ) {
 		}
 
 		/*
-		 * If we don't have enough free space, it isn't worth trying again.
-		 * Unlikely to be hit due to the check in unzip_file().
+		 * Nếu chúng ta không có đủ dung lượng trống, việc thử lại là không đáng.
+		 * Khó xảy ra do kiểm tra trong unzip_file().
 		 */
 		$available_space = function_exists( 'disk_free_space' ) ? @disk_free_space( ABSPATH ) : false;
 
@@ -1412,8 +1412,8 @@ function update_core( $from, $to ) {
 	}
 
 	/*
-	 * Custom content directory needs updating now.
-	 * Copy languages.
+	 * Thư mục nội dung tùy chỉnh cần được cập nhật ngay bây giờ.
+	 * Sao chép ngôn ngữ.
 	 */
 	if ( ! is_wp_error( $result ) && $wp_filesystem->is_dir( $from . $distro . 'wp-content/languages' ) ) {
 		if ( WP_LANG_DIR !== ABSPATH . WPINC . '/languages' || @is_dir( WP_LANG_DIR ) ) {
@@ -1422,15 +1422,15 @@ function update_core( $from, $to ) {
 			$lang_dir = WP_CONTENT_DIR . '/languages';
 		}
 		/*
-		 * Note: str_starts_with() is not used here, as this file is included
-		 * when updating from older WordPress versions, in which case
-		 * the polyfills from wp-includes/compat.php may not be available.
+		 * Lưu ý: str_starts_with() không được sử dụng ở đây, vì tệp này được bao gồm
+		 * khi cập nhật từ các phiên bản WordPress cũ hơn, trong trường hợp đó
+		 * các polyfill từ wp-includes/compat.php có thể không khả dụng.
 		 */
-		// Check if the language directory exists first.
+		// Kiểm tra xem thư mục ngôn ngữ có tồn tại không trước tiên.
 		if ( ! @is_dir( $lang_dir ) && 0 === strpos( $lang_dir, ABSPATH ) ) {
-			// If it's within the ABSPATH we can handle it here, otherwise they're out of luck.
+			// Nếu nó nằm trong ABSPATH, chúng ta có thể xử lý ở đây, nếu không thì không thể làm gì.
 			$wp_filesystem->mkdir( $to . str_replace( ABSPATH, '', $lang_dir ), FS_CHMOD_DIR );
-			clearstatcache(); // For FTP, need to clear the stat cache.
+			clearstatcache(); // Đối với FTP, cần xóa bộ nhớ đệm stat.
 		}
 
 		if ( @is_dir( $lang_dir ) ) {
@@ -1453,12 +1453,12 @@ function update_core( $from, $to ) {
 	/** This filter is documented in wp-admin/includes/update-core.php */
 	apply_filters( 'update_feedback', __( 'Disabling Maintenance mode&#8230;' ) );
 
-	// Remove maintenance file, we're done with potential site-breaking changes.
+	// Xóa tệp bảo trì, chúng ta đã hoàn thành các thay đổi có thể gây hỏng trang.
 	$wp_filesystem->delete( $maintenance_file );
 
 	/*
-	 * 3.5 -> 3.5+ - an empty twentytwelve directory was created upon upgrade to 3.5 for some users,
-	 * preventing installation of Twenty Twelve.
+	 * 3.5 -> 3.5+ - một thư mục twentytwelve rỗng đã được tạo khi nâng cấp lên 3.5 cho một số người dùng,
+	 * ngăn cản việc cài đặt Twenty Twelve.
 	 */
 	if ( '3.5' === $old_wp_version ) {
 		if ( is_dir( WP_CONTENT_DIR . '/themes/twentytwelve' )
@@ -1469,10 +1469,10 @@ function update_core( $from, $to ) {
 	}
 
 	/*
-	 * Copy new bundled plugins & themes.
-	 * This gives us the ability to install new plugins & themes bundled with
-	 * future versions of WordPress whilst avoiding the re-install upon upgrade issue.
-	 * $development_build controls us overwriting bundled themes and plugins when a non-stable release is being updated.
+	 * Sao chép các plugin & giao diện đi kèm mới.
+	 * Điều này cho phép chúng ta cài đặt các plugin & giao diện mới đi kèm với
+	 * các phiên bản WordPress tương lai trong khi tránh vấn đề cài đặt lại khi nâng cấp.
+	 * $development_build kiểm soát việc ghi đè các giao diện và plugin đi kèm khi bản phát hành không ổn định đang được cập nhật.
 	 */
 	if ( ! is_wp_error( $result )
 		&& ( ! defined( 'CORE_UPGRADE_SKIP_NEW_BUNDLED' ) || ! CORE_UPGRADE_SKIP_NEW_BUNDLED )

@@ -3911,12 +3911,12 @@ function _wp_privacy_action_request_types() {
 }
 
 /**
- * Registers the personal data exporter for users.
+ * Đăng ký trình xuất dữ liệu cá nhân cho người dùng.
  *
  * @since 4.9.6
  *
- * @param array[] $exporters An array of personal data exporters.
- * @return array[] An array of personal data exporters.
+ * @param array[] $exporters Mảng các trình xuất dữ liệu cá nhân.
+ * @return array[] Mảng các trình xuất dữ liệu cá nhân.
  */
 function wp_register_user_personal_data_exporter( $exporters ) {
 	$exporters['wordpress-user'] = array(
@@ -3928,18 +3928,18 @@ function wp_register_user_personal_data_exporter( $exporters ) {
 }
 
 /**
- * Finds and exports personal data associated with an email address from the user and user_meta table.
+ * Tìm và xuất dữ liệu cá nhân liên kết với địa chỉ email từ bảng user và user_meta.
  *
  * @since 4.9.6
- * @since 5.4.0 Added 'Community Events Location' group to the export data.
- * @since 5.4.0 Added 'Session Tokens' group to the export data.
+ * @since 5.4.0 Thêm nhóm 'Community Events Location' vào dữ liệu xuất.
+ * @since 5.4.0 Thêm nhóm 'Session Tokens' vào dữ liệu xuất.
  *
- * @param string $email_address  The user's email address.
+ * @param string $email_address  Địa chỉ email của người dùng.
  * @return array {
- *     An array of personal data.
+ *     Mảng dữ liệu cá nhân.
  *
- *     @type array[] $data An array of personal data arrays.
- *     @type bool    $done Whether the exporter is finished.
+ *     @type array[] $data Mảng các mảng dữ liệu cá nhân.
+ *     @type bool    $done Liệu trình xuất đã hoàn thành hay chưa.
  * }
  */
 function wp_user_personal_data_exporter( $email_address ) {
@@ -4003,28 +4003,28 @@ function wp_user_personal_data_exporter( $email_address ) {
 		}
 	}
 
-	// Get the list of reserved names.
+	// Lấy danh sách các tên đã được đặt trước.
 	$reserved_names = array_values( $user_props_to_export );
 
 	/**
-	 * Filters the user's profile data for the privacy exporter.
+	 * Lọc dữ liệu hồ sơ người dùng cho trình xuất quyền riêng tư.
 	 *
 	 * @since 5.4.0
 	 *
 	 * @param array    $additional_user_profile_data {
-	 *     An array of name-value pairs of additional user data items. Default empty array.
+	 *     Mảng các cặp tên-giá trị của các mục dữ liệu người dùng bổ sung. Mặc định mảng rỗng.
 	 *
-	 *     @type string $name  The user-facing name of an item name-value pair,e.g. 'IP Address'.
-	 *     @type string $value The user-facing value of an item data pair, e.g. '50.60.70.0'.
+	 *     @type string $name  Tên hiển thị cho người dùng của cặp tên-giá trị, ví dụ 'IP Address'.
+	 *     @type string $value Giá trị hiển thị cho người dùng của cặp dữ liệu, ví dụ '50.60.70.0'.
 	 * }
-	 * @param WP_User  $user           The user whose data is being exported.
-	 * @param string[] $reserved_names An array of reserved names. Any item in `$additional_user_data`
-	 *                                 that uses one of these for its `name` will not be included in the export.
+	 * @param WP_User  $user           Người dùng đang được xuất dữ liệu.
+	 * @param string[] $reserved_names Mảng các tên đã được đặt trước. Bất kỳ mục nào trong `$additional_user_data`
+	 *                                 sử dụng một trong các tên này cho `name` sẽ không được bao gồm trong dữ liệu xuất.
 	 */
 	$_extra_data = apply_filters( 'wp_privacy_additional_user_profile_data', array(), $user, $reserved_names );
 
 	if ( is_array( $_extra_data ) && ! empty( $_extra_data ) ) {
-		// Remove items that use reserved names.
+		// Loại bỏ các mục sử dụng tên đã được đặt trước.
 		$extra_data = array_filter(
 			$_extra_data,
 			static function ( $item ) use ( $reserved_names ) {
@@ -4131,12 +4131,12 @@ function wp_user_personal_data_exporter( $email_address ) {
 }
 
 /**
- * Updates log when privacy request is confirmed.
+ * Cập nhật nhật ký khi yêu cầu quyền riêng tư được xác nhận.
  *
  * @since 4.9.6
  * @access private
  *
- * @param int $request_id ID of the request.
+ * @param int $request_id ID của yêu cầu.
  */
 function _wp_privacy_account_request_confirmed( $request_id ) {
 	$request = wp_get_user_request( $request_id );
@@ -4159,14 +4159,14 @@ function _wp_privacy_account_request_confirmed( $request_id ) {
 }
 
 /**
- * Notifies the site administrator via email when a request is confirmed.
+ * Thông báo cho quản trị viên site qua email khi yêu cầu được xác nhận.
  *
- * Without this, the admin would have to manually check the site to see if any
- * action was needed on their part yet.
+ * Nếu không có thông báo này, quản trị viên sẽ phải kiểm tra site thủ công để xem
+ * liệu có hành động nào cần thực hiện hay chưa.
  *
  * @since 4.9.6
  *
- * @param int $request_id The ID of the request.
+ * @param int $request_id ID của yêu cầu.
  */
 function _wp_privacy_send_request_confirmation_notification( $request_id ) {
 	$request = wp_get_user_request( $request_id );
@@ -4189,18 +4189,17 @@ function _wp_privacy_send_request_confirmation_notification( $request_id ) {
 	$action_description = wp_user_request_action_description( $request->action_name );
 
 	/**
-	 * Filters the recipient of the data request confirmation notification.
+	 * Lọc người nhận thông báo xác nhận yêu cầu dữ liệu.
 	 *
-	 * In a Multisite environment, this will default to the email address of the
-	 * network admin because, by default, single site admins do not have the
-	 * capabilities required to process requests. Some networks may wish to
-	 * delegate those capabilities to a single-site admin, or a dedicated person
-	 * responsible for managing privacy requests.
+	 * Trong môi trường Multisite, mặc định sẽ là địa chỉ email của quản trị viên
+	 * mạng vì theo mặc định, quản trị viên site đơn không có quyền cần thiết để
+	 * xử lý yêu cầu. Một số mạng có thể muốn ủy quyền cho quản trị viên site đơn,
+	 * hoặc một người chuyên trách quản lý các yêu cầu quyền riêng tư.
 	 *
 	 * @since 4.9.6
 	 *
-	 * @param string          $admin_email The email address of the notification recipient.
-	 * @param WP_User_Request $request     The request that is initiating the notification.
+	 * @param string          $admin_email Địa chỉ email của người nhận thông báo.
+	 * @param WP_User_Request $request     Yêu cầu đang khởi tạo thông báo.
 	 */
 	$admin_email = apply_filters( 'user_request_confirmed_email_to', get_site_option( 'admin_email' ), $request );
 
@@ -4222,22 +4221,22 @@ function _wp_privacy_send_request_confirmation_notification( $request_id ) {
 	);
 
 	/**
-	 * Filters the subject of the user request confirmation email.
+	 * Lọc tiêu đề email xác nhận yêu cầu người dùng.
 	 *
 	 * @since 4.9.8
 	 *
-	 * @param string $subject    The email subject.
-	 * @param string $sitename   The name of the site.
+	 * @param string $subject    Tiêu đề email.
+	 * @param string $sitename   Tên của site.
 	 * @param array  $email_data {
-	 *     Data relating to the account action email.
+	 *     Dữ liệu liên quan đến email hành động tài khoản.
 	 *
-	 *     @type WP_User_Request $request     User request object.
-	 *     @type string          $user_email  The email address confirming a request.
-	 *     @type string          $description Description of the action being performed so the user knows what the email is for.
-	 *     @type string          $manage_url  The link to click manage privacy requests of this type.
-	 *     @type string          $sitename    The site name sending the mail.
-	 *     @type string          $siteurl     The site URL sending the mail.
-	 *     @type string          $admin_email The administrator email receiving the mail.
+	 *     @type WP_User_Request $request     Đối tượng yêu cầu người dùng.
+	 *     @type string          $user_email  Địa chỉ email đang xác nhận yêu cầu.
+	 *     @type string          $description Mô tả hành động đang được thực hiện để người dùng biết email dùng cho mục đích gì.
+	 *     @type string          $manage_url  Liên kết để quản lý yêu cầu quyền riêng tư thuộc loại này.
+	 *     @type string          $sitename    Tên site gửi email.
+	 *     @type string          $siteurl     URL site gửi email.
+	 *     @type string          $admin_email Email quản trị viên nhận email.
 	 * }
 	 */
 	$subject = apply_filters( 'user_request_confirmed_email_subject', $subject, $email_data['sitename'], $email_data );
@@ -4261,35 +4260,35 @@ All at ###SITENAME###
 	);
 
 	/**
-	 * Filters the body of the user request confirmation email.
+	 * Lọc nội dung email xác nhận yêu cầu người dùng.
 	 *
-	 * The email is sent to an administrator when a user request is confirmed.
+	 * Email được gửi đến quản trị viên khi yêu cầu của người dùng được xác nhận.
 	 *
-	 * The following strings have a special meaning and will get replaced dynamically:
+	 * Các chuỗi sau có ý nghĩa đặc biệt và sẽ được thay thế động:
 	 *
-	 * ###SITENAME###    The name of the site.
-	 * ###USER_EMAIL###  The user email for the request.
-	 * ###DESCRIPTION### Description of the action being performed so the user knows what the email is for.
-	 * ###MANAGE_URL###  The URL to manage requests.
-	 * ###SITEURL###     The URL to the site.
+	 * ###SITENAME###    Tên của site.
+	 * ###USER_EMAIL###  Email người dùng cho yêu cầu.
+	 * ###DESCRIPTION### Mô tả hành động đang được thực hiện để người dùng biết email dùng cho mục đích gì.
+	 * ###MANAGE_URL###  URL để quản lý yêu cầu.
+	 * ###SITEURL###     URL đến site.
 	 *
 	 * @since 4.9.6
-	 * @deprecated 5.8.0 Use {@see 'user_request_confirmed_email_content'} instead.
-	 *                   For user erasure fulfillment email content
-	 *                   use {@see 'user_erasure_fulfillment_email_content'} instead.
+	 * @deprecated 5.8.0 Sử dụng {@see 'user_request_confirmed_email_content'} thay thế.
+	 *                   Đối với nội dung email hoàn tất xóa dữ liệu người dùng
+	 *                   sử dụng {@see 'user_erasure_fulfillment_email_content'} thay thế.
 	 *
-	 * @param string $content    The email content.
+	 * @param string $content    Nội dung email.
 	 * @param array  $email_data {
-	 *     Data relating to the account action email.
+	 *     Dữ liệu liên quan đến email hành động tài khoản.
 	 *
-	 *     @type WP_User_Request $request     User request object.
-	 *     @type string          $user_email  The email address confirming a request.
-	 *     @type string          $description Description of the action being performed
-	 *                                        so the user knows what the email is for.
-	 *     @type string          $manage_url  The link to click manage privacy requests of this type.
-	 *     @type string          $sitename    The site name sending the mail.
-	 *     @type string          $siteurl     The site URL sending the mail.
-	 *     @type string          $admin_email The administrator email receiving the mail.
+	 *     @type WP_User_Request $request     Đối tượng yêu cầu người dùng.
+	 *     @type string          $user_email  Địa chỉ email đang xác nhận yêu cầu.
+	 *     @type string          $description Mô tả hành động đang được thực hiện
+	 *                                        để người dùng biết email dùng cho mục đích gì.
+	 *     @type string          $manage_url  Liên kết để quản lý yêu cầu quyền riêng tư thuộc loại này.
+	 *     @type string          $sitename    Tên site gửi email.
+	 *     @type string          $siteurl     URL site gửi email.
+	 *     @type string          $admin_email Email quản trị viên nhận email.
 	 * }
 	 */
 	$content = apply_filters_deprecated(
@@ -4305,30 +4304,30 @@ All at ###SITENAME###
 	);
 
 	/**
-	 * Filters the body of the user request confirmation email.
+	 * Lọc nội dung email xác nhận yêu cầu người dùng.
 	 *
-	 * The email is sent to an administrator when a user request is confirmed.
-	 * The following strings have a special meaning and will get replaced dynamically:
+	 * Email được gửi đến quản trị viên khi yêu cầu của người dùng được xác nhận.
+	 * Các chuỗi sau có ý nghĩa đặc biệt và sẽ được thay thế động:
 	 *
-	 * ###SITENAME###    The name of the site.
-	 * ###USER_EMAIL###  The user email for the request.
-	 * ###DESCRIPTION### Description of the action being performed so the user knows what the email is for.
-	 * ###MANAGE_URL###  The URL to manage requests.
-	 * ###SITEURL###     The URL to the site.
+	 * ###SITENAME###    Tên của site.
+	 * ###USER_EMAIL###  Email người dùng cho yêu cầu.
+	 * ###DESCRIPTION### Mô tả hành động đang được thực hiện để người dùng biết email dùng cho mục đích gì.
+	 * ###MANAGE_URL###  URL để quản lý yêu cầu.
+	 * ###SITEURL###     URL đến site.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $content    The email content.
+	 * @param string $content    Nội dung email.
 	 * @param array  $email_data {
-	 *     Data relating to the account action email.
+	 *     Dữ liệu liên quan đến email hành động tài khoản.
 	 *
-	 *     @type WP_User_Request $request     User request object.
-	 *     @type string          $user_email  The email address confirming a request.
-	 *     @type string          $description Description of the action being performed so the user knows what the email is for.
-	 *     @type string          $manage_url  The link to click manage privacy requests of this type.
-	 *     @type string          $sitename    The site name sending the mail.
-	 *     @type string          $siteurl     The site URL sending the mail.
-	 *     @type string          $admin_email The administrator email receiving the mail.
+	 *     @type WP_User_Request $request     Đối tượng yêu cầu người dùng.
+	 *     @type string          $user_email  Địa chỉ email đang xác nhận yêu cầu.
+	 *     @type string          $description Mô tả hành động đang được thực hiện để người dùng biết email dùng cho mục đích gì.
+	 *     @type string          $manage_url  Liên kết để quản lý yêu cầu quyền riêng tư thuộc loại này.
+	 *     @type string          $sitename    Tên site gửi email.
+	 *     @type string          $siteurl     URL site gửi email.
+	 *     @type string          $admin_email Email quản trị viên nhận email.
 	 * }
 	 */
 	$content = apply_filters( 'user_request_confirmed_email_content', $content, $email_data );
@@ -4342,24 +4341,24 @@ All at ###SITENAME###
 	$headers = '';
 
 	/**
-	 * Filters the headers of the user request confirmation email.
+	 * Lọc tiêu đề (headers) của email xác nhận yêu cầu người dùng.
 	 *
 	 * @since 5.4.0
 	 *
-	 * @param string|array $headers    The email headers.
-	 * @param string       $subject    The email subject.
-	 * @param string       $content    The email content.
-	 * @param int          $request_id The request ID.
+	 * @param string|array $headers    Tiêu đề email.
+	 * @param string       $subject    Chủ đề email.
+	 * @param string       $content    Nội dung email.
+	 * @param int          $request_id ID yêu cầu.
 	 * @param array        $email_data {
-	 *     Data relating to the account action email.
+	 *     Dữ liệu liên quan đến email hành động tài khoản.
 	 *
-	 *     @type WP_User_Request $request     User request object.
-	 *     @type string          $user_email  The email address confirming a request.
-	 *     @type string          $description Description of the action being performed so the user knows what the email is for.
-	 *     @type string          $manage_url  The link to click manage privacy requests of this type.
-	 *     @type string          $sitename    The site name sending the mail.
-	 *     @type string          $siteurl     The site URL sending the mail.
-	 *     @type string          $admin_email The administrator email receiving the mail.
+	 *     @type WP_User_Request $request     Đối tượng yêu cầu người dùng.
+	 *     @type string          $user_email  Địa chỉ email đang xác nhận yêu cầu.
+	 *     @type string          $description Mô tả hành động đang được thực hiện để người dùng biết email dùng cho mục đích gì.
+	 *     @type string          $manage_url  Liên kết để quản lý yêu cầu quyền riêng tư thuộc loại này.
+	 *     @type string          $sitename    Tên site gửi email.
+	 *     @type string          $siteurl     URL site gửi email.
+	 *     @type string          $admin_email Email quản trị viên nhận email.
 	 * }
 	 */
 	$headers = apply_filters( 'user_request_confirmed_email_headers', $headers, $subject, $content, $request_id, $email_data );
@@ -4372,13 +4371,13 @@ All at ###SITENAME###
 }
 
 /**
- * Notifies the user when their erasure request is fulfilled.
+ * Thông báo cho người dùng khi yêu cầu xóa dữ liệu của họ được hoàn tất.
  *
- * Without this, the user would never know if their data was actually erased.
+ * Nếu không có thông báo này, người dùng sẽ không bao giờ biết liệu dữ liệu của họ đã thực sự được xóa hay chưa.
  *
  * @since 4.9.6
  *
- * @param int $request_id The privacy request post ID associated with this request.
+ * @param int $request_id ID bài viết yêu cầu quyền riêng tư liên kết với yêu cầu này.
  */
 function _wp_privacy_send_erasure_fulfillment_notification( $request_id ) {
 	$request = wp_get_user_request( $request_id );
@@ -4393,7 +4392,7 @@ function _wp_privacy_send_erasure_fulfillment_notification( $request_id ) {
 		return;
 	}
 
-	// Localize message content for user; fallback to site default for visitors.
+	// Bản địa hóa nội dung tin nhắn cho người dùng; dự phòng về mặc định site cho khách truy cập.
 	if ( ! empty( $request->user_id ) ) {
 		$switched_locale = switch_to_user_locale( $request->user_id );
 	} else {
@@ -4401,12 +4400,12 @@ function _wp_privacy_send_erasure_fulfillment_notification( $request_id ) {
 	}
 
 	/**
-	 * Filters the recipient of the data erasure fulfillment notification.
+	 * Lọc người nhận thông báo hoàn tất xóa dữ liệu.
 	 *
 	 * @since 4.9.6
 	 *
-	 * @param string          $user_email The email address of the notification recipient.
-	 * @param WP_User_Request $request    The request that is initiating the notification.
+	 * @param string          $user_email Địa chỉ email của người nhận thông báo.
+	 * @param WP_User_Request $request    Yêu cầu đang khởi tạo thông báo.
 	 */
 	$user_email = apply_filters( 'user_erasure_fulfillment_email_to', $request->email, $request );
 
@@ -4425,23 +4424,23 @@ function _wp_privacy_send_erasure_fulfillment_notification( $request_id ) {
 	);
 
 	/**
-	 * Filters the subject of the email sent when an erasure request is completed.
+	 * Lọc tiêu đề email được gửi khi yêu cầu xóa dữ liệu hoàn tất.
 	 *
 	 * @since 4.9.8
-	 * @deprecated 5.8.0 Use {@see 'user_erasure_fulfillment_email_subject'} instead.
+	 * @deprecated 5.8.0 Sử dụng {@see 'user_erasure_fulfillment_email_subject'} thay thế.
 	 *
-	 * @param string $subject    The email subject.
-	 * @param string $sitename   The name of the site.
+	 * @param string $subject    Tiêu đề email.
+	 * @param string $sitename   Tên của site.
 	 * @param array  $email_data {
-	 *     Data relating to the account action email.
+	 *     Dữ liệu liên quan đến email hành động tài khoản.
 	 *
-	 *     @type WP_User_Request $request            User request object.
-	 *     @type string          $message_recipient  The address that the email will be sent to. Defaults
-	 *                                               to the value of `$request->email`, but can be changed
-	 *                                               by the `user_erasure_fulfillment_email_to` filter.
-	 *     @type string          $privacy_policy_url Privacy policy URL.
-	 *     @type string          $sitename           The site name sending the mail.
-	 *     @type string          $siteurl            The site URL sending the mail.
+	 *     @type WP_User_Request $request            Đối tượng yêu cầu người dùng.
+	 *     @type string          $message_recipient  Địa chỉ mà email sẽ được gửi đến. Mặc định
+	 *                                               là giá trị của `$request->email`, nhưng có thể thay đổi
+	 *                                               bởi bộ lọc `user_erasure_fulfillment_email_to`.
+	 *     @type string          $privacy_policy_url URL chính sách bảo mật.
+	 *     @type string          $sitename           Tên site gửi email.
+	 *     @type string          $siteurl            URL site gửi email.
 	 * }
 	 */
 	$subject = apply_filters_deprecated(
@@ -4452,22 +4451,22 @@ function _wp_privacy_send_erasure_fulfillment_notification( $request_id ) {
 	);
 
 	/**
-	 * Filters the subject of the email sent when an erasure request is completed.
+	 * Lọc tiêu đề email được gửi khi yêu cầu xóa dữ liệu hoàn tất.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $subject    The email subject.
-	 * @param string $sitename   The name of the site.
+	 * @param string $subject    Tiêu đề email.
+	 * @param string $sitename   Tên của site.
 	 * @param array  $email_data {
-	 *     Data relating to the account action email.
+	 *     Dữ liệu liên quan đến email hành động tài khoản.
 	 *
-	 *     @type WP_User_Request $request            User request object.
-	 *     @type string          $message_recipient  The address that the email will be sent to. Defaults
-	 *                                               to the value of `$request->email`, but can be changed
-	 *                                               by the `user_erasure_fulfillment_email_to` filter.
-	 *     @type string          $privacy_policy_url Privacy policy URL.
-	 *     @type string          $sitename           The site name sending the mail.
-	 *     @type string          $siteurl            The site URL sending the mail.
+	 *     @type WP_User_Request $request            Đối tượng yêu cầu người dùng.
+	 *     @type string          $message_recipient  Địa chỉ mà email sẽ được gửi đến. Mặc định
+	 *                                               là giá trị của `$request->email`, nhưng có thể thay đổi
+	 *                                               bởi bộ lọc `user_erasure_fulfillment_email_to`.
+	 *     @type string          $privacy_policy_url URL chính sách bảo mật.
+	 *     @type string          $sitename           Tên site gửi email.
+	 *     @type string          $siteurl            URL site gửi email.
 	 * }
 	 */
 	$subject = apply_filters( 'user_erasure_fulfillment_email_subject', $subject, $email_data['sitename'], $email_data );
@@ -4503,33 +4502,33 @@ All at ###SITENAME###
 	}
 
 	/**
-	 * Filters the body of the data erasure fulfillment notification.
+	 * Lọc nội dung thông báo hoàn tất xóa dữ liệu.
 	 *
-	 * The email is sent to a user when their data erasure request is fulfilled
-	 * by an administrator.
+	 * Email được gửi đến người dùng khi yêu cầu xóa dữ liệu của họ được
+	 * quản trị viên hoàn tất.
 	 *
-	 * The following strings have a special meaning and will get replaced dynamically:
+	 * Các chuỗi sau có ý nghĩa đặc biệt và sẽ được thay thế động:
 	 *
-	 * ###SITENAME###           The name of the site.
-	 * ###PRIVACY_POLICY_URL### Privacy policy page URL.
-	 * ###SITEURL###            The URL to the site.
+	 * ###SITENAME###           Tên của site.
+	 * ###PRIVACY_POLICY_URL### URL trang chính sách bảo mật.
+	 * ###SITEURL###            URL đến site.
 	 *
 	 * @since 4.9.6
-	 * @deprecated 5.8.0 Use {@see 'user_erasure_fulfillment_email_content'} instead.
-	 *                   For user request confirmation email content
-	 *                   use {@see 'user_request_confirmed_email_content'} instead.
+	 * @deprecated 5.8.0 Sử dụng {@see 'user_erasure_fulfillment_email_content'} thay thế.
+	 *                   Đối với nội dung email xác nhận yêu cầu người dùng
+	 *                   sử dụng {@see 'user_request_confirmed_email_content'} thay thế.
 	 *
-	 * @param string $content The email content.
+	 * @param string $content Nội dung email.
 	 * @param array  $email_data {
-	 *     Data relating to the account action email.
+	 *     Dữ liệu liên quan đến email hành động tài khoản.
 	 *
-	 *     @type WP_User_Request $request            User request object.
-	 *     @type string          $message_recipient  The address that the email will be sent to. Defaults
-	 *                                               to the value of `$request->email`, but can be changed
-	 *                                               by the `user_erasure_fulfillment_email_to` filter.
-	 *     @type string          $privacy_policy_url Privacy policy URL.
-	 *     @type string          $sitename           The site name sending the mail.
-	 *     @type string          $siteurl            The site URL sending the mail.
+	 *     @type WP_User_Request $request            Đối tượng yêu cầu người dùng.
+	 *     @type string          $message_recipient  Địa chỉ mà email sẽ được gửi đến. Mặc định
+	 *                                               là giá trị của `$request->email`, nhưng có thể thay đổi
+	 *                                               bởi bộ lọc `user_erasure_fulfillment_email_to`.
+	 *     @type string          $privacy_policy_url URL chính sách bảo mật.
+	 *     @type string          $sitename           Tên site gửi email.
+	 *     @type string          $siteurl            URL site gửi email.
 	 * }
 	 */
 	$content = apply_filters_deprecated(
@@ -4545,30 +4544,30 @@ All at ###SITENAME###
 	);
 
 	/**
-	 * Filters the body of the data erasure fulfillment notification.
+	 * Lọc nội dung thông báo hoàn tất xóa dữ liệu.
 	 *
-	 * The email is sent to a user when their data erasure request is fulfilled
-	 * by an administrator.
+	 * Email được gửi đến người dùng khi yêu cầu xóa dữ liệu của họ được
+	 * quản trị viên hoàn tất.
 	 *
-	 * The following strings have a special meaning and will get replaced dynamically:
+	 * Các chuỗi sau có ý nghĩa đặc biệt và sẽ được thay thế động:
 	 *
-	 * ###SITENAME###           The name of the site.
-	 * ###PRIVACY_POLICY_URL### Privacy policy page URL.
-	 * ###SITEURL###            The URL to the site.
+	 * ###SITENAME###           Tên của site.
+	 * ###PRIVACY_POLICY_URL### URL trang chính sách bảo mật.
+	 * ###SITEURL###            URL đến site.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string $content The email content.
+	 * @param string $content Nội dung email.
 	 * @param array  $email_data {
-	 *     Data relating to the account action email.
+	 *     Dữ liệu liên quan đến email hành động tài khoản.
 	 *
-	 *     @type WP_User_Request $request            User request object.
-	 *     @type string          $message_recipient  The address that the email will be sent to. Defaults
-	 *                                               to the value of `$request->email`, but can be changed
-	 *                                               by the `user_erasure_fulfillment_email_to` filter.
-	 *     @type string          $privacy_policy_url Privacy policy URL.
-	 *     @type string          $sitename           The site name sending the mail.
-	 *     @type string          $siteurl            The site URL sending the mail.
+	 *     @type WP_User_Request $request            Đối tượng yêu cầu người dùng.
+	 *     @type string          $message_recipient  Địa chỉ mà email sẽ được gửi đến. Mặc định
+	 *                                               là giá trị của `$request->email`, nhưng có thể thay đổi
+	 *                                               bởi bộ lọc `user_erasure_fulfillment_email_to`.
+	 *     @type string          $privacy_policy_url URL chính sách bảo mật.
+	 *     @type string          $sitename           Tên site gửi email.
+	 *     @type string          $siteurl            URL site gửi email.
 	 * }
 	 */
 	$content = apply_filters( 'user_erasure_fulfillment_email_content', $content, $email_data );
@@ -4580,25 +4579,25 @@ All at ###SITENAME###
 	$headers = '';
 
 	/**
-	 * Filters the headers of the data erasure fulfillment notification.
+	 * Lọc tiêu đề (headers) của thông báo hoàn tất xóa dữ liệu.
 	 *
 	 * @since 5.4.0
-	 * @deprecated 5.8.0 Use {@see 'user_erasure_fulfillment_email_headers'} instead.
+	 * @deprecated 5.8.0 Sử dụng {@see 'user_erasure_fulfillment_email_headers'} thay thế.
 	 *
-	 * @param string|array $headers    The email headers.
-	 * @param string       $subject    The email subject.
-	 * @param string       $content    The email content.
-	 * @param int          $request_id The request ID.
+	 * @param string|array $headers    Tiêu đề email.
+	 * @param string       $subject    Chủ đề email.
+	 * @param string       $content    Nội dung email.
+	 * @param int          $request_id ID yêu cầu.
 	 * @param array        $email_data {
-	 *     Data relating to the account action email.
+	 *     Dữ liệu liên quan đến email hành động tài khoản.
 	 *
-	 *     @type WP_User_Request $request            User request object.
-	 *     @type string          $message_recipient  The address that the email will be sent to. Defaults
-	 *                                               to the value of `$request->email`, but can be changed
-	 *                                               by the `user_erasure_fulfillment_email_to` filter.
-	 *     @type string          $privacy_policy_url Privacy policy URL.
-	 *     @type string          $sitename           The site name sending the mail.
-	 *     @type string          $siteurl            The site URL sending the mail.
+	 *     @type WP_User_Request $request            Đối tượng yêu cầu người dùng.
+	 *     @type string          $message_recipient  Địa chỉ mà email sẽ được gửi đến. Mặc định
+	 *                                               là giá trị của `$request->email`, nhưng có thể thay đổi
+	 *                                               bởi bộ lọc `user_erasure_fulfillment_email_to`.
+	 *     @type string          $privacy_policy_url URL chính sách bảo mật.
+	 *     @type string          $sitename           Tên site gửi email.
+	 *     @type string          $siteurl            URL site gửi email.
 	 * }
 	 */
 	$headers = apply_filters_deprecated(
@@ -4609,24 +4608,24 @@ All at ###SITENAME###
 	);
 
 	/**
-	 * Filters the headers of the data erasure fulfillment notification.
+	 * Lọc tiêu đề (headers) của thông báo hoàn tất xóa dữ liệu.
 	 *
 	 * @since 5.8.0
 	 *
-	 * @param string|array $headers    The email headers.
-	 * @param string       $subject    The email subject.
-	 * @param string       $content    The email content.
-	 * @param int          $request_id The request ID.
+	 * @param string|array $headers    Tiêu đề email.
+	 * @param string       $subject    Chủ đề email.
+	 * @param string       $content    Nội dung email.
+	 * @param int          $request_id ID yêu cầu.
 	 * @param array        $email_data {
-	 *     Data relating to the account action email.
+	 *     Dữ liệu liên quan đến email hành động tài khoản.
 	 *
-	 *     @type WP_User_Request $request            User request object.
-	 *     @type string          $message_recipient  The address that the email will be sent to. Defaults
-	 *                                               to the value of `$request->email`, but can be changed
-	 *                                               by the `user_erasure_fulfillment_email_to` filter.
-	 *     @type string          $privacy_policy_url Privacy policy URL.
-	 *     @type string          $sitename           The site name sending the mail.
-	 *     @type string          $siteurl            The site URL sending the mail.
+	 *     @type WP_User_Request $request            Đối tượng yêu cầu người dùng.
+	 *     @type string          $message_recipient  Địa chỉ mà email sẽ được gửi đến. Mặc định
+	 *                                               là giá trị của `$request->email`, nhưng có thể thay đổi
+	 *                                               bởi bộ lọc `user_erasure_fulfillment_email_to`.
+	 *     @type string          $privacy_policy_url URL chính sách bảo mật.
+	 *     @type string          $sitename           Tên site gửi email.
+	 *     @type string          $siteurl            URL site gửi email.
 	 * }
 	 */
 	$headers = apply_filters( 'user_erasure_fulfillment_email_headers', $headers, $subject, $content, $request_id, $email_data );
@@ -4643,13 +4642,13 @@ All at ###SITENAME###
 }
 
 /**
- * Returns request confirmation message HTML.
+ * Trả về HTML thông báo xác nhận yêu cầu.
  *
  * @since 4.9.6
  * @access private
  *
- * @param int $request_id The request ID being confirmed.
- * @return string The confirmation message.
+ * @param int $request_id ID yêu cầu đang được xác nhận.
+ * @return string Thông báo xác nhận.
  */
 function _wp_privacy_account_request_confirmed_message( $request_id ) {
 	$request = wp_get_user_request( $request_id );
@@ -4668,12 +4667,12 @@ function _wp_privacy_account_request_confirmed_message( $request_id ) {
 	}
 
 	/**
-	 * Filters the message displayed to a user when they confirm a data request.
+	 * Lọc thông báo hiển thị cho người dùng khi họ xác nhận yêu cầu dữ liệu.
 	 *
 	 * @since 4.9.6
 	 *
-	 * @param string $message    The message to the user.
-	 * @param int    $request_id The ID of the request being confirmed.
+	 * @param string $message    Thông báo gửi đến người dùng.
+	 * @param int    $request_id ID của yêu cầu đang được xác nhận.
 	 */
 	$message = apply_filters( 'user_request_action_confirmed_message', $message, $request_id );
 
@@ -4681,21 +4680,21 @@ function _wp_privacy_account_request_confirmed_message( $request_id ) {
 }
 
 /**
- * Creates and logs a user request to perform a specific action.
+ * Tạo và ghi nhật ký yêu cầu người dùng để thực hiện hành động cụ thể.
  *
- * Requests are stored inside a post type named `user_request` since they can apply to both
- * users on the site, or guests without a user account.
+ * Các yêu cầu được lưu trữ trong loại bài viết có tên `user_request` vì chúng có thể áp dụng cho cả
+ * người dùng trên site, hoặc khách không có tài khoản người dùng.
  *
  * @since 4.9.6
- * @since 5.7.0 Added the `$status` parameter.
+ * @since 5.7.0 Thêm tham số `$status`.
  *
- * @param string $email_address           User email address. This can be the address of a registered
- *                                        or non-registered user.
- * @param string $action_name             Name of the action that is being confirmed. Required.
- * @param array  $request_data            Misc data you want to send with the verification request and pass
- *                                        to the actions once the request is confirmed.
- * @param string $status                  Optional request status (pending or confirmed). Default 'pending'.
- * @return int|WP_Error                   Returns the request ID if successful, or a WP_Error object on failure.
+ * @param string $email_address           Địa chỉ email người dùng. Có thể là địa chỉ của người dùng
+ *                                        đã đăng ký hoặc chưa đăng ký.
+ * @param string $action_name             Tên hành động đang được xác nhận. Bắt buộc.
+ * @param array  $request_data            Dữ liệu khác bạn muốn gửi cùng yêu cầu xác minh và truyền
+ *                                        cho các hành động khi yêu cầu được xác nhận.
+ * @param string $status                  Trạng thái yêu cầu tùy chọn (pending hoặc confirmed). Mặc định 'pending'.
+ * @return int|WP_Error                   Trả về ID yêu cầu nếu thành công, hoặc đối tượng WP_Error khi thất bại.
  */
 function wp_create_user_request( $email_address = '', $action_name = '', $request_data = array(), $status = 'pending' ) {
 	$email_address = sanitize_email( $email_address );
@@ -4716,7 +4715,7 @@ function wp_create_user_request( $email_address = '', $action_name = '', $reques
 	$user    = get_user_by( 'email', $email_address );
 	$user_id = $user && ! is_wp_error( $user ) ? $user->ID : 0;
 
-	// Check for duplicates.
+	// Kiểm tra trùng lặp.
 	$requests_query = new WP_Query(
 		array(
 			'post_type'     => 'user_request',
@@ -4752,12 +4751,12 @@ function wp_create_user_request( $email_address = '', $action_name = '', $reques
 }
 
 /**
- * Gets action description from the name and return a string.
+ * Lấy mô tả hành động từ tên và trả về chuỗi.
  *
  * @since 4.9.6
  *
- * @param string $action_name Action name of the request.
- * @return string Human readable action name.
+ * @param string $action_name Tên hành động của yêu cầu.
+ * @return string Tên hành động dễ đọc cho người dùng.
  */
 function wp_user_request_action_description( $action_name ) {
 	switch ( $action_name ) {
@@ -4774,25 +4773,25 @@ function wp_user_request_action_description( $action_name ) {
 	}
 
 	/**
-	 * Filters the user action description.
+	 * Lọc mô tả hành động người dùng.
 	 *
 	 * @since 4.9.6
 	 *
-	 * @param string $description The default description.
-	 * @param string $action_name The name of the request.
+	 * @param string $description Mô tả mặc định.
+	 * @param string $action_name Tên của yêu cầu.
 	 */
 	return apply_filters( 'user_request_action_description', $description, $action_name );
 }
 
 /**
- * Send a confirmation request email to confirm an action.
+ * Gửi email yêu cầu xác nhận để xác nhận một hành động.
  *
- * If the request is not already pending, it will be updated.
+ * Nếu yêu cầu chưa ở trạng thái chờ, nó sẽ được cập nhật.
  *
  * @since 4.9.6
  *
- * @param string $request_id ID of the request created via wp_create_user_request().
- * @return true|WP_Error True on success, `WP_Error` on failure.
+ * @param string $request_id ID của yêu cầu được tạo qua wp_create_user_request().
+ * @return true|WP_Error True khi thành công, `WP_Error` khi thất bại.
  */
 function wp_send_user_request( $request_id ) {
 	$request_id = absint( $request_id );
@@ -4802,7 +4801,7 @@ function wp_send_user_request( $request_id ) {
 		return new WP_Error( 'invalid_request', __( 'Invalid personal data request.' ) );
 	}
 
-	// Localize message content for user; fallback to site default for visitors.
+	// Bản địa hóa nội dung tin nhắn cho người dùng; dự phòng về mặc định site cho khách truy cập.
 	if ( ! empty( $request->user_id ) ) {
 		$switched_locale = switch_to_user_locale( $request->user_id );
 	} else {
